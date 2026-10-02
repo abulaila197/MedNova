@@ -1,11 +1,10 @@
-import { Text } from 'react-native';
-
 import { Screen } from '@/components/Screen';
+import { Leaderboard } from '@/features/profile/Leaderboard';
 
 export default function Page() {
   return (
     <Screen tab={null} glow={35}>
-      <Text style={{ color: '#888', padding: 20 }}>leaderboard</Text>
+      <Leaderboard />
     </Screen>
   );
 }

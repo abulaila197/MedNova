@@ -1,0 +1,224 @@
+import { LinearGradient } from 'expo-linear-gradient';
+import { router } from 'expo-router';
+import { useState } from 'react';
+import { Pressable, ScrollView, StyleSheet, Text, TextInput, useWindowDimensions, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import Svg, { Path } from 'react-native-svg';
+
+import { TopInset } from '@/components/StatusMock';
+import { useTheme } from '@/state/app';
+import { u } from '@/theme/scale';
+import { F } from '@/theme/tokens';
+
+import { cssAngle } from './ease';
+import { Sky, Stars } from './Sky';
+
+// Sign-in colours from the prototype (d-auth / l-auth: `.auth` and `.auth.lite`).
+const C = {
+  dark: {
+    status: 'rgba(238,240,255,0.85)',
+    welcome: '#f8fbff',
+    accent: '#6fd6ff',
+    cardGrad: ['#10153a', '#0b0f2c'] as const,
+    cardEdge: 'rgba(201,184,255,0.22)',
+    cardShadow: `0px ${u(24)}px ${u(50)}px ${u(-20)}px rgba(0,0,0,0.9), 0px 0px 0px 1px rgba(0,0,0,0.4)`,
+    tabs: '#070a1f',
+    tabOff: '#9aa0c4',
+    tabOn: ['#5a46c9', '#2a7fb8'] as const,
+    tabOnTxt: '#ffffff',
+    h3: '#eef0ff',
+    lbl: '#b9bee0',
+    inBg: '#070a1f',
+    inEdge: 'rgba(255,255,255,0.08)',
+    inTxt: '#6f7598',
+    inValue: '#eef0ff',
+    pri: ['#a48bff', '#6fd6ff'] as const,
+    priTxt: '#0b0b26',
+    or: '#9aa0c4',
+    orLine: 'rgba(255,255,255,0.12)',
+    ggl: '#f4f3ff',
+    gglEdge: null as string | null,
+    link: '#6fd6ff',
+    linkLine: 'rgba(111,214,255,0.4)',
+    agree: '#9aa0c4',
+  },
+  light: {
+    status: 'rgba(42,38,32,0.85)',
+    welcome: '#2a2620',
+    accent: '#e5833a',
+    cardGrad: ['#fbf9f4', '#fbf9f4'] as const,
+    cardEdge: '#dcd6c8',
+    cardShadow: `0px ${u(24)}px ${u(50)}px ${u(-24)}px rgba(60,50,30,0.45), 0px 0px 0px 1px rgba(40,36,28,0.04)`,
+    tabs: '#efebe2',
+    tabOff: '#7a7264',
+    tabOn: ['#e9bf4f', '#e5833a'] as const,
+    tabOnTxt: '#2a1a06',
+    h3: '#2a2620',
+    lbl: '#7a7264',
+    inBg: '#f3efe6',
+    inEdge: '#e2dccf',
+    inTxt: '#9a9282',
+    inValue: '#2a2620',
+    pri: ['#e9bf4f', '#e5833a'] as const,
+    priTxt: '#2a1a06',
+    or: '#9a9282',
+    orLine: '#e2dccf',
+    ggl: '#ffffff',
+    gglEdge: '#e2dccf' as string | null,
+    link: '#b8741f',
+    linkLine: 'rgba(184,116,31,0.4)',
+    agree: '#8a8274',
+  },
+};
+
+const TAB = cssAngle(100, 105, 27);
+const PRI = cssAngle(100, 216, 35);
+
+function Google() {
+  return (
+    <Svg width={u(12)} height={u(12)} viewBox="0 0 48 48">
+      <Path
+        fill="#FFC107"
+        d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"
+      />
+      <Path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3 0 5.8 1.1 7.9 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z" />
+      <Path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z" />
+      <Path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z" />
+    </Svg>
+  );
+}
+
+/** Sign in / create account. Follows the app mode: Nebula, or Warm Stone in light mode. */
+export function SignIn() {
+  const t = useTheme();
+  const lt = t.mode === 'light';
+  const c = lt ? C.light : C.dark;
+  const { width: w, height: h } = useWindowDimensions();
+  const ins = useSafeAreaInsets();
+  const [tab, setTab] = useState<'in' | 'up'>('in');
+  const enter = () => router.replace('/games');
+  const legal = () => router.push('/privacy');
+
+  const tabBtn = (key: 'in' | 'up', label: string) => {
+    const on = tab === key;
+    return (
+      <Pressable key={key} onPress={() => setTab(key)} style={s.tab} accessibilityRole="tab" accessibilityState={{ selected: on }}>
+        {on ? <LinearGradient colors={c.tabOn} start={TAB.start} end={TAB.end} style={[StyleSheet.absoluteFill, { borderRadius: u(9) }]} /> : null}
+        <Text style={[s.tabTxt, { color: on ? c.tabOnTxt : c.tabOff }]}>{label}</Text>
+      </Pressable>
+    );
+  };
+
+  return (
+    <View style={[s.root, { backgroundColor: lt ? '#e7e2d8' : '#070a1c' }]}>
+      <Sky w={w} h={h} light={lt} />
+      {lt ? null : <Stars si={0} hd={h / u(1)} />}
+      <TopInset color={c.status} />
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={{ flexGrow: 1, paddingTop: u(14), paddingBottom: u(22) + ins.bottom, paddingHorizontal: u(18) }}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}>
+        <View style={s.head}>
+          <Text style={[s.welcome, { color: c.welcome }]}>Welcome to</Text>
+          <Text style={[s.brand, { color: c.accent }]}>MedNova</Text>
+        </View>
+
+        <View style={[s.card, { borderColor: c.cardEdge, boxShadow: c.cardShadow }]}>
+          <LinearGradient colors={c.cardGrad} style={[StyleSheet.absoluteFill, { borderRadius: u(21) }]} />
+          <View style={[s.tabs, { backgroundColor: c.tabs }]} accessibilityRole="tablist">
+            {tabBtn('in', 'Sign In')}
+            {tabBtn('up', 'Create Account')}
+          </View>
+          <Text style={[s.h3, { color: c.h3 }]}>{tab === 'in' ? 'Welcome back' : 'Create your account'}</Text>
+          <Text style={[s.lbl, { color: c.lbl }]}>EMAIL ADDRESS</Text>
+          <View>
+          <TextInput
+            placeholder="you@example.com"
+            placeholderTextColor={c.inTxt}
+            autoCapitalize="none"
+            autoComplete="email"
+            keyboardType="email-address"
+            style={[s.in, { backgroundColor: c.inBg, borderColor: c.inEdge, color: c.inValue }]}
+          />
+          </View>
+          <Text style={[s.lbl, { color: c.lbl }]}>PASSWORD</Text>
+          <View>
+          <TextInput
+            placeholder="Enter your password"
+            placeholderTextColor={c.inTxt}
+            secureTextEntry
+            autoComplete={tab === 'in' ? 'current-password' : 'new-password'}
+            style={[s.in, { backgroundColor: c.inBg, borderColor: c.inEdge, color: c.inValue }]}
+          />
+          </View>
+          <Pressable onPress={enter} accessibilityRole="button" style={s.pri}>
+            <LinearGradient colors={c.pri} start={PRI.start} end={PRI.end} style={[StyleSheet.absoluteFill, { borderRadius: u(12) }]} />
+            <Text style={[s.priTxt, { color: c.priTxt }]}>Sign In</Text>
+          </Pressable>
+          <View style={s.or}>
+            <View style={[s.orLine, { backgroundColor: c.orLine }]} />
+            <Text style={[s.orTxt, { color: c.or }]}>OR</Text>
+            <View style={[s.orLine, { backgroundColor: c.orLine }]} />
+          </View>
+          <Pressable
+            onPress={enter}
+            accessibilityRole="button"
+            style={[s.ggl, { backgroundColor: c.ggl }, c.gglEdge ? { borderWidth: 1, borderColor: c.gglEdge, height: u(33) } : null]}>
+            <Google />
+            <Text style={s.gglTxt}>Continue with Google</Text>
+          </Pressable>
+          <Pressable onPress={enter} accessibilityRole="button" style={s.guest}>
+            <Text style={[s.guestTxt, { color: c.link }]}>Continue as guest</Text>
+            <View style={[s.guestLine, { backgroundColor: c.linkLine }]} />
+          </Pressable>
+          <Text style={[s.agree, { color: c.agree }]}>
+            By continuing you agree to the{' '}
+            <Text style={{ color: c.link }} onPress={legal} accessibilityRole="link">
+              Privacy Policy
+            </Text>{' '}
+            and{' '}
+            <Text style={{ color: c.link }} onPress={legal} accessibilityRole="link">
+              Terms
+            </Text>
+            .
+          </Text>
+        </View>
+      </ScrollView>
+    </View>
+  );
+}
+
+const s = StyleSheet.create({
+  root: { flex: 1, overflow: 'hidden' },
+  head: { paddingTop: u(30) },
+  welcome: { fontFamily: F.display, fontSize: u(21), lineHeight: u(20.58), letterSpacing: u(-1.2), alignSelf: 'flex-start' },
+  brand: { fontFamily: F.display, fontSize: u(52), lineHeight: u(50.96), letterSpacing: u(-1.2), alignSelf: 'center', marginTop: u(2) },
+  card: { marginTop: u(36), borderWidth: 1, borderRadius: u(22), padding: u(14), gap: u(8) },
+  tabs: { flexDirection: 'row', padding: u(3), borderRadius: u(12) },
+  tab: { flex: 1, height: u(27), borderRadius: u(9), alignItems: 'center', justifyContent: 'center' },
+  tabTxt: { fontFamily: F.bodySemi, fontSize: u(10.5) },
+  h3: { fontFamily: F.display, fontSize: u(22), lineHeight: u(28), marginTop: u(4) },
+  lbl: { fontFamily: F.mono, fontSize: u(7.5), lineHeight: u(10), letterSpacing: u(1.2) },
+  in: {
+    height: u(33),
+    borderRadius: u(11),
+    borderWidth: 1,
+    paddingHorizontal: u(11),
+    paddingVertical: 0,
+    fontFamily: F.body,
+    fontSize: u(10.5),
+    outlineStyle: 'none',
+  } as object,
+  pri: { height: u(35), borderRadius: u(12), alignItems: 'center', justifyContent: 'center' },
+  priTxt: { fontFamily: F.bodyBold, fontSize: u(12) },
+  or: { flexDirection: 'row', alignItems: 'center', gap: u(8), height: u(10) },
+  orLine: { flex: 1, height: 1 },
+  orTxt: { fontFamily: F.mono, fontSize: u(7.5), letterSpacing: u(1.5) },
+  ggl: { height: u(31), borderRadius: u(12), flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: u(7) },
+  gglTxt: { fontFamily: F.bodySemi, fontSize: u(10.5), color: '#16162b' },
+  guest: { alignSelf: 'center', height: u(13), justifyContent: 'center' },
+  guestTxt: { fontFamily: F.body, fontSize: u(10.5), lineHeight: u(13) },
+  guestLine: { position: 'absolute', left: 0, right: 0, top: u(13.4), height: Math.max(1, u(0.8)) },
+  agree: { fontFamily: F.body, fontSize: u(8), lineHeight: u(10), textAlign: 'center' },
+});

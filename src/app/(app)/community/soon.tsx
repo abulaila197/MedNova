@@ -1,11 +1,10 @@
-import { Text } from 'react-native';
-
 import { Screen } from '@/components/Screen';
+import { Soon } from '@/features/community/Soon';
 
 export default function Page() {
   return (
     <Screen tab='community' glow={14}>
-      <Text style={{ color: '#888', padding: 20 }}>community/soon</Text>
+      <Soon />
     </Screen>
   );
 }

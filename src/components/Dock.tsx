@@ -60,6 +60,7 @@ export function Dock({ active }: { active: Tab }) {
 
 const s = StyleSheet.create({
   dock: {
+    zIndex: 2,
     flexDirection: 'row',
     paddingHorizontal: u(10),
     paddingTop: u(6),

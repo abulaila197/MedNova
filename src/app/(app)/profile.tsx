@@ -1,11 +1,10 @@
-import { Text } from 'react-native';
-
 import { Screen } from '@/components/Screen';
+import { Profile } from '@/features/profile/Profile';
 
 export default function Page() {
   return (
     <Screen tab={null} glow={28}>
-      <Text style={{ color: '#888', padding: 20 }}>profile</Text>
+      <Profile />
     </Screen>
   );
 }
