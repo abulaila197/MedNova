@@ -42,4 +42,12 @@ export type GameDef = {
   expCap: (settings: Record<string, unknown>) => number;
   /** One line per item on the results page. */
   itemLabel?: (item: PlayItem) => string;
+  /** What one item is called, as in "Resume word 3" (default "case"). */
+  itemNoun?: string;
+  /** Heading for the item list on results (default "Cases"). */
+  itemsTitle?: string;
+  /** Replaces the Points and Solved figures on results when the game counts differently; null keeps the default. */
+  summary?: (play: Play, items: PlayItem[]) => { value: string; label: string }[] | null;
+  /** Note under the players list in setup (default: the phone owner earns EXP and Learn entries). */
+  playersNote?: (players: number) => string;
 };

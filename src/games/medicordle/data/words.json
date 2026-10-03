@@ -1,0 +1,1752 @@
+[
+ {
+  "id": "classic-001",
+  "style": "classic",
+  "word": "SCURVY",
+  "definition": "Vitamin C deficiency causing bleeding and weak collagen.",
+  "dossier": null
+ },
+ {
+  "id": "classic-002",
+  "style": "classic",
+  "word": "LARYNX",
+  "definition": "Voice box connecting the pharynx to the trachea.",
+  "dossier": null
+ },
+ {
+  "id": "classic-003",
+  "style": "classic",
+  "word": "MYOPIA",
+  "definition": "Nearsightedness.",
+  "dossier": null
+ },
+ {
+  "id": "classic-004",
+  "style": "classic",
+  "word": "CATION",
+  "definition": "Positively charged ion.",
+  "dossier": null
+ },
+ {
+  "id": "classic-005",
+  "style": "classic",
+  "word": "HICCUP",
+  "definition": "Spasmodic diaphragm contraction with vocal cord closure.",
+  "dossier": null
+ },
+ {
+  "id": "classic-006",
+  "style": "classic",
+  "word": "UREMIA",
+  "definition": "Toxic buildup of urea in blood from kidney failure.",
+  "dossier": null
+ },
+ {
+  "id": "classic-007",
+  "style": "classic",
+  "word": "CORNEA",
+  "definition": "Transparent outer front layer of the eye.",
+  "dossier": null
+ },
+ {
+  "id": "classic-008",
+  "style": "classic",
+  "word": "FAVISM",
+  "definition": "Acute hemolysis from fava beans in G6PD deficiency.",
+  "dossier": null
+ },
+ {
+  "id": "classic-009",
+  "style": "classic",
+  "word": "BICEPS",
+  "definition": "Two-headed flexor muscle of the upper arm.",
+  "dossier": null
+ },
+ {
+  "id": "classic-010",
+  "style": "classic",
+  "word": "ANGINA",
+  "definition": "Chest pain from reduced cardiac blood flow.",
+  "dossier": null
+ },
+ {
+  "id": "classic-011",
+  "style": "classic",
+  "word": "PTOSIS",
+  "definition": "Drooping of the upper eyelid.",
+  "dossier": null
+ },
+ {
+  "id": "classic-012",
+  "style": "classic",
+  "word": "ENZYME",
+  "definition": "Protein catalyst speeding up biochemical reactions.",
+  "dossier": null
+ },
+ {
+  "id": "classic-013",
+  "style": "classic",
+  "word": "MELENA",
+  "definition": "Dark, tarry stools from upper GI bleeding.",
+  "dossier": null
+ },
+ {
+  "id": "classic-014",
+  "style": "classic",
+  "word": "ATAXIA",
+  "definition": "Lack of voluntary muscle coordination.",
+  "dossier": null
+ },
+ {
+  "id": "classic-015",
+  "style": "classic",
+  "word": "HERNIA",
+  "definition": "Protrusion of tissue through an abnormal opening.",
+  "dossier": null
+ },
+ {
+  "id": "classic-016",
+  "style": "classic",
+  "word": "CERVIX",
+  "definition": "Lower neck of the uterus.",
+  "dossier": null
+ },
+ {
+  "id": "classic-017",
+  "style": "classic",
+  "word": "KELOID",
+  "definition": "Raised scar extending beyond the original wound boundary.",
+  "dossier": null
+ },
+ {
+  "id": "classic-018",
+  "style": "classic",
+  "word": "MORULA",
+  "definition": "Solid ball of cells in early embryonic cleavage.",
+  "dossier": null
+ },
+ {
+  "id": "classic-019",
+  "style": "classic",
+  "word": "TETANY",
+  "definition": "Involuntary muscle spasms from low calcium.",
+  "dossier": null
+ },
+ {
+  "id": "classic-020",
+  "style": "classic",
+  "word": "ANEMIA",
+  "definition": "Deficiency of red blood cells or hemoglobin.",
+  "dossier": null
+ },
+ {
+  "id": "classic-021",
+  "style": "classic",
+  "word": "SPLEEN",
+  "definition": "Organ filtering blood and managing immune responses.",
+  "dossier": null
+ },
+ {
+  "id": "classic-022",
+  "style": "classic",
+  "word": "EMESIS",
+  "definition": "Vomiting.",
+  "dossier": null
+ },
+ {
+  "id": "classic-023",
+  "style": "classic",
+  "word": "BUNION",
+  "definition": "Bony deformity at the base of the big toe.",
+  "dossier": null
+ },
+ {
+  "id": "classic-024",
+  "style": "classic",
+  "word": "MACULA",
+  "definition": "Central retinal area responsible for sharp vision.",
+  "dossier": null
+ },
+ {
+  "id": "classic-025",
+  "style": "classic",
+  "word": "SEPSIS",
+  "definition": "Life-threatening organ dysfunction from infection response.",
+  "dossier": null
+ },
+ {
+  "id": "classic-026",
+  "style": "classic",
+  "word": "DERMIS",
+  "definition": "Inner connective tissue layer of the skin.",
+  "dossier": null
+ },
+ {
+  "id": "classic-027",
+  "style": "classic",
+  "word": "DENGUE",
+  "definition": "Mosquito-borne viral fever causing severe body aches.",
+  "dossier": "dengue-fever"
+ },
+ {
+  "id": "classic-028",
+  "style": "classic",
+  "word": "STAPES",
+  "definition": "Stirrup-shaped middle ear bone.",
+  "dossier": null
+ },
+ {
+  "id": "classic-029",
+  "style": "classic",
+  "word": "ATONIA",
+  "definition": "Loss of normal muscle tone.",
+  "dossier": null
+ },
+ {
+  "id": "classic-030",
+  "style": "classic",
+  "word": "CORYZA",
+  "definition": "Acute inflammation of nasal mucous membranes; cold.",
+  "dossier": null
+ },
+ {
+  "id": "classic-031",
+  "style": "classic",
+  "word": "FIBULA",
+  "definition": "Outer, smaller leg bone below the knee.",
+  "dossier": null
+ },
+ {
+  "id": "classic-032",
+  "style": "classic",
+  "word": "KETONE",
+  "definition": "Byproduct of fatty acid breakdown elevated in fasting/DKA.",
+  "dossier": null
+ },
+ {
+  "id": "classic-033",
+  "style": "classic",
+  "word": "MURMUR",
+  "definition": "Extra heart sound from turbulent blood flow.",
+  "dossier": null
+ },
+ {
+  "id": "classic-034",
+  "style": "classic",
+  "word": "EMBRYO",
+  "definition": "Developing organism from fertilization to week 8.",
+  "dossier": null
+ },
+ {
+  "id": "classic-035",
+  "style": "classic",
+  "word": "VESSEL",
+  "definition": "Tube that carries blood or lymph through the body.",
+  "dossier": null
+ },
+ {
+  "id": "classic-036",
+  "style": "classic",
+  "word": "MITRAL",
+  "definition": "Left atrioventricular valve of the heart.",
+  "dossier": null
+ },
+ {
+  "id": "classic-037",
+  "style": "classic",
+  "word": "ANTRUM",
+  "definition": "Anatomical chamber or cavity.",
+  "dossier": null
+ },
+ {
+  "id": "classic-038",
+  "style": "classic",
+  "word": "RABIES",
+  "definition": "Fatal viral CNS infection from animal bites.",
+  "dossier": "rabies"
+ },
+ {
+  "id": "classic-039",
+  "style": "classic",
+  "word": "PANNUS",
+  "definition": "Abnormal tissue layer over a joint or cornea.",
+  "dossier": null
+ },
+ {
+  "id": "classic-040",
+  "style": "classic",
+  "word": "BUFFER",
+  "definition": "Solution resisting changes in pH.",
+  "dossier": null
+ },
+ {
+  "id": "classic-041",
+  "style": "classic",
+  "word": "ECZEMA",
+  "definition": "Itchy, inflammatory skin condition.",
+  "dossier": "atopic-dermatitis-eczema"
+ },
+ {
+  "id": "classic-042",
+  "style": "classic",
+  "word": "ANURIA",
+  "definition": "Absence of urine production (under 100 mL/day).",
+  "dossier": null
+ },
+ {
+  "id": "classic-043",
+  "style": "classic",
+  "word": "GOITER",
+  "definition": "Enlargement of the thyroid gland.",
+  "dossier": null
+ },
+ {
+  "id": "classic-044",
+  "style": "classic",
+  "word": "AXILLA",
+  "definition": "The armpit region.",
+  "dossier": null
+ },
+ {
+  "id": "classic-045",
+  "style": "classic",
+  "word": "LIGAND",
+  "definition": "Molecule that binds to a specific receptor.",
+  "dossier": null
+ },
+ {
+  "id": "classic-046",
+  "style": "classic",
+  "word": "STROKE",
+  "definition": "Sudden loss of brain function from vascular interruption.",
+  "dossier": null
+ },
+ {
+  "id": "classic-047",
+  "style": "classic",
+  "word": "ENAMEL",
+  "definition": "Hard outer layer of teeth.",
+  "dossier": null
+ },
+ {
+  "id": "classic-048",
+  "style": "classic",
+  "word": "CHOREA",
+  "definition": "Involuntary, rapid, jerky movements.",
+  "dossier": null
+ },
+ {
+  "id": "classic-049",
+  "style": "classic",
+  "word": "CORTEX",
+  "definition": "Outer layer of neural tissue in the brain.",
+  "dossier": null
+ },
+ {
+  "id": "classic-050",
+  "style": "classic",
+  "word": "ADNEXA",
+  "definition": "Appendages or adjacent structural tissues of an organ.",
+  "dossier": null
+ },
+ {
+  "id": "classic-051",
+  "style": "classic",
+  "word": "PALATE",
+  "definition": "Roof of the mouth.",
+  "dossier": null
+ },
+ {
+  "id": "classic-052",
+  "style": "classic",
+  "word": "LIPOMA",
+  "definition": "Benign tumor of fat cells.",
+  "dossier": null
+ },
+ {
+  "id": "classic-053",
+  "style": "classic",
+  "word": "AREOLA",
+  "definition": "Pigmented ring around the nipple.",
+  "dossier": null
+ },
+ {
+  "id": "classic-054",
+  "style": "classic",
+  "word": "ASTHMA",
+  "definition": "Chronic airway inflammation causing wheezing and dyspnea.",
+  "dossier": "asthma"
+ },
+ {
+  "id": "classic-055",
+  "style": "classic",
+  "word": "PLEURA",
+  "definition": "Membrane lining the lungs and chest cavity.",
+  "dossier": null
+ },
+ {
+  "id": "classic-056",
+  "style": "classic",
+  "word": "URETER",
+  "definition": "Tube carrying urine from kidney to bladder.",
+  "dossier": null
+ },
+ {
+  "id": "classic-057",
+  "style": "classic",
+  "word": "CARPUS",
+  "definition": "The wrist bones.",
+  "dossier": null
+ },
+ {
+  "id": "classic-058",
+  "style": "classic",
+  "word": "THRUSH",
+  "definition": "Oral fungal infection (Candida).",
+  "dossier": "superficial-candidiasis-oral-thrush-vulvovaginal-candidiasis"
+ },
+ {
+  "id": "classic-059",
+  "style": "classic",
+  "word": "NAUSEA",
+  "definition": "Urge to vomit.",
+  "dossier": null
+ },
+ {
+  "id": "classic-060",
+  "style": "classic",
+  "word": "ATRIUM",
+  "definition": "Upper chamber of the heart.",
+  "dossier": null
+ },
+ {
+  "id": "classic-061",
+  "style": "classic",
+  "word": "FASCIA",
+  "definition": "Connective tissue sheet enclosing muscles and organs.",
+  "dossier": null
+ },
+ {
+  "id": "classic-062",
+  "style": "classic",
+  "word": "OEDEMA",
+  "definition": "Fluid swelling in tissues.",
+  "dossier": null
+ },
+ {
+  "id": "classic-063",
+  "style": "classic",
+  "word": "SULCUS",
+  "definition": "Groove on an organ surface, especially the brain.",
+  "dossier": null
+ },
+ {
+  "id": "classic-064",
+  "style": "classic",
+  "word": "ANOXIA",
+  "definition": "Complete absence of oxygen supply to tissues.",
+  "dossier": null
+ },
+ {
+  "id": "classic-065",
+  "style": "classic",
+  "word": "CANCER",
+  "definition": "Malignant growth of abnormal cells.",
+  "dossier": null
+ },
+ {
+  "id": "classic-066",
+  "style": "classic",
+  "word": "TRAGUS",
+  "definition": "Cartilaginous projection in front of the ear canal.",
+  "dossier": null
+ },
+ {
+  "id": "classic-067",
+  "style": "classic",
+  "word": "BRUISE",
+  "definition": "Blood accumulation under skin from trauma; ecchymosis.",
+  "dossier": null
+ },
+ {
+  "id": "classic-068",
+  "style": "classic",
+  "word": "MYXOMA",
+  "definition": "Benign primary heart tumor.",
+  "dossier": null
+ },
+ {
+  "id": "classic-069",
+  "style": "classic",
+  "word": "ATYPIA",
+  "definition": "Abnormal cell appearance under microscopy.",
+  "dossier": null
+ },
+ {
+  "id": "classic-070",
+  "style": "classic",
+  "word": "RADIUS",
+  "definition": "Lateral forearm bone on the thumb side.",
+  "dossier": null
+ },
+ {
+  "id": "classic-071",
+  "style": "classic",
+  "word": "RECTUM",
+  "definition": "Terminal section of the large intestine.",
+  "dossier": null
+ },
+ {
+  "id": "classic-072",
+  "style": "classic",
+  "word": "HERPES",
+  "definition": "Viral infection causing painful mucosal/skin blisters.",
+  "dossier": "herpes-simplex"
+ },
+ {
+  "id": "classic-073",
+  "style": "classic",
+  "word": "MIOSIS",
+  "definition": "Constriction of the pupil.",
+  "dossier": null
+ },
+ {
+  "id": "classic-074",
+  "style": "classic",
+  "word": "PELVIS",
+  "definition": "Bony basin supporting the lower trunk.",
+  "dossier": null
+ },
+ {
+  "id": "classic-075",
+  "style": "classic",
+  "word": "PHOBIA",
+  "definition": "Irrational, persistent fear.",
+  "dossier": null
+ },
+ {
+  "id": "classic-076",
+  "style": "classic",
+  "word": "SOLEUS",
+  "definition": "Flat calf muscle beneath the gastrocnemius.",
+  "dossier": null
+ },
+ {
+  "id": "classic-077",
+  "style": "classic",
+  "word": "NEURON",
+  "definition": "Nerve cell transmitting electrical signals.",
+  "dossier": null
+ },
+ {
+  "id": "classic-078",
+  "style": "classic",
+  "word": "PAPULE",
+  "definition": "Raised, solid skin lesion under 1 cm.",
+  "dossier": null
+ },
+ {
+  "id": "classic-079",
+  "style": "classic",
+  "word": "LIPIDS",
+  "definition": "Water-insoluble organic fats and oils.",
+  "dossier": null
+ },
+ {
+  "id": "classic-080",
+  "style": "classic",
+  "word": "ARTERY",
+  "definition": "Blood vessel carrying blood away from the heart.",
+  "dossier": null
+ },
+ {
+  "id": "classic-081",
+  "style": "classic",
+  "word": "THYMUS",
+  "definition": "Lymphoid organ for T-cell maturation.",
+  "dossier": null
+ },
+ {
+  "id": "classic-082",
+  "style": "classic",
+  "word": "MACULE",
+  "definition": "Flat, discolored skin lesion under 1 cm.",
+  "dossier": null
+ },
+ {
+  "id": "classic-083",
+  "style": "classic",
+  "word": "SACRUM",
+  "definition": "Triangular bone at the base of the spine.",
+  "dossier": null
+ },
+ {
+  "id": "classic-084",
+  "style": "classic",
+  "word": "MUSCLE",
+  "definition": "Contractile tissue producing movement.",
+  "dossier": null
+ },
+ {
+  "id": "classic-085",
+  "style": "classic",
+  "word": "FUNDUS",
+  "definition": "Base or roof of a hollow organ.",
+  "dossier": null
+ },
+ {
+  "id": "classic-086",
+  "style": "classic",
+  "word": "NODULE",
+  "definition": "Raised, solid mass over 1 cm.",
+  "dossier": null
+ },
+ {
+  "id": "classic-087",
+  "style": "classic",
+  "word": "RIGORS",
+  "definition": "Sudden chills with violent shivering.",
+  "dossier": null
+ },
+ {
+  "id": "classic-088",
+  "style": "classic",
+  "word": "TYPHUS",
+  "definition": "Bacterial infection spread by lice, fleas, or mites.",
+  "dossier": null
+ },
+ {
+  "id": "classic-089",
+  "style": "classic",
+  "word": "TENDON",
+  "definition": "Fibrous tissue connecting muscle to bone.",
+  "dossier": null
+ },
+ {
+  "id": "classic-090",
+  "style": "classic",
+  "word": "SEROSA",
+  "definition": "Smooth lining membrane of internal organs.",
+  "dossier": null
+ },
+ {
+  "id": "classic-091",
+  "style": "classic",
+  "word": "PALLOR",
+  "definition": "Unnatural paleness of the skin.",
+  "dossier": null
+ },
+ {
+  "id": "classic-092",
+  "style": "classic",
+  "word": "PYEMIA",
+  "definition": "Septicemia causing widespread metastatic abscesses.",
+  "dossier": null
+ },
+ {
+  "id": "classic-093",
+  "style": "classic",
+  "word": "TESTES",
+  "definition": "Male gonads producing sperm and testosterone.",
+  "dossier": null
+ },
+ {
+  "id": "classic-094",
+  "style": "classic",
+  "word": "PLAGUE",
+  "definition": "Bacterial infection caused by Yersinia pestis.",
+  "dossier": "plague-bubonic-pneumonic"
+ },
+ {
+  "id": "classic-095",
+  "style": "classic",
+  "word": "LAMINA",
+  "definition": "Thin plate or layer, as in a vertebra.",
+  "dossier": null
+ },
+ {
+  "id": "classic-096",
+  "style": "classic",
+  "word": "UTERUS",
+  "definition": "Female organ where fetus develops.",
+  "dossier": null
+ },
+ {
+  "id": "classic-097",
+  "style": "classic",
+  "word": "TISSUE",
+  "definition": "Group of similar cells performing a unified function.",
+  "dossier": null
+ },
+ {
+  "id": "classic-098",
+  "style": "classic",
+  "word": "VAGINA",
+  "definition": "Muscular canal leading to the cervix.",
+  "dossier": null
+ },
+ {
+  "id": "classic-099",
+  "style": "classic",
+  "word": "TONSIL",
+  "definition": "Lymphoid tissue mass in the throat.",
+  "dossier": null
+ },
+ {
+  "id": "classic-100",
+  "style": "classic",
+  "word": "WHEEZE",
+  "definition": "High-pitched whistling breath sound.",
+  "dossier": null
+ },
+ {
+  "id": "custom-001",
+  "style": "custom",
+  "word": "GONORRHEA",
+  "definition": "Sexually transmitted Neisseria infection causing urethritis and cervicitis.",
+  "dossier": null
+ },
+ {
+  "id": "custom-002",
+  "style": "custom",
+  "word": "ANEURYSM",
+  "definition": "Abnormal bulging of a weakened artery wall.",
+  "dossier": null
+ },
+ {
+  "id": "custom-003",
+  "style": "custom",
+  "word": "MENINGITIS",
+  "definition": "Inflammation of the membranes covering the brain and spinal cord.",
+  "dossier": "meningitis-overview"
+ },
+ {
+  "id": "custom-004",
+  "style": "custom",
+  "word": "OSTEOPOROSIS",
+  "definition": "Loss of bone mass and strength that raises fracture risk.",
+  "dossier": null
+ },
+ {
+  "id": "custom-005",
+  "style": "custom",
+  "word": "TUBERCULOSIS",
+  "definition": "Mycobacterial infection, classically with cough, night sweats and lung cavities.",
+  "dossier": "tuberculosis"
+ },
+ {
+  "id": "custom-006",
+  "style": "custom",
+  "word": "ANTHRAX",
+  "definition": "Bacillus anthracis infection with a black painless skin ulcer or severe lung disease.",
+  "dossier": "anthrax-inhalational"
+ },
+ {
+  "id": "custom-007",
+  "style": "custom",
+  "word": "PANCREATITIS",
+  "definition": "Inflammation of the pancreas with severe upper abdominal pain radiating to the back.",
+  "dossier": "acute-pancreatitis"
+ },
+ {
+  "id": "custom-008",
+  "style": "custom",
+  "word": "NEPHROLITHIASIS",
+  "definition": "Stones forming in the kidney.",
+  "dossier": "nephrolithiasis-kidney-stones"
+ },
+ {
+  "id": "custom-009",
+  "style": "custom",
+  "word": "CUSHING",
+  "definition": "Syndrome of excess cortisol with central obesity, moon face and purple striae.",
+  "dossier": "cushing-syndrome"
+ },
+ {
+  "id": "custom-010",
+  "style": "custom",
+  "word": "SEMINOMA",
+  "definition": "The most common germ cell tumor of the testis.",
+  "dossier": null
+ },
+ {
+  "id": "custom-011",
+  "style": "custom",
+  "word": "ARRHYTHMIA",
+  "definition": "Abnormal heart rate or rhythm.",
+  "dossier": null
+ },
+ {
+  "id": "custom-012",
+  "style": "custom",
+  "word": "PERICARDITIS",
+  "definition": "Inflammation of the sac around the heart, with chest pain eased by leaning forward.",
+  "dossier": "acute-pericarditis"
+ },
+ {
+  "id": "custom-013",
+  "style": "custom",
+  "word": "GLAUCOMA",
+  "definition": "Optic nerve damage, often from raised eye pressure, causing loss of peripheral vision.",
+  "dossier": null
+ },
+ {
+  "id": "custom-014",
+  "style": "custom",
+  "word": "PARAGANGLIOMA",
+  "definition": "Neuroendocrine tumor of paraganglia outside the adrenal gland.",
+  "dossier": null
+ },
+ {
+  "id": "custom-015",
+  "style": "custom",
+  "word": "CHONDROMA",
+  "definition": "Benign tumor of cartilage.",
+  "dossier": null
+ },
+ {
+  "id": "custom-016",
+  "style": "custom",
+  "word": "EMPHYSEMA",
+  "definition": "Destruction of alveolar walls with permanent enlargement of air spaces.",
+  "dossier": null
+ },
+ {
+  "id": "custom-017",
+  "style": "custom",
+  "word": "MYXEDEMA",
+  "definition": "Severe hypothyroidism with non-pitting swelling of the skin.",
+  "dossier": null
+ },
+ {
+  "id": "custom-018",
+  "style": "custom",
+  "word": "CELLULITIS",
+  "definition": "Spreading bacterial infection of the dermis and subcutaneous tissue.",
+  "dossier": null
+ },
+ {
+  "id": "custom-019",
+  "style": "custom",
+  "word": "HYPERTENSION",
+  "definition": "Persistently raised arterial blood pressure.",
+  "dossier": "essential-hypertension"
+ },
+ {
+  "id": "custom-020",
+  "style": "custom",
+  "word": "CHOLANGITIS",
+  "definition": "Infection or inflammation of the bile ducts.",
+  "dossier": "acute-cholangitis"
+ },
+ {
+  "id": "custom-021",
+  "style": "custom",
+  "word": "EPILEPSY",
+  "definition": "Tendency to recurrent, unprovoked seizures.",
+  "dossier": "epilepsy"
+ },
+ {
+  "id": "custom-022",
+  "style": "custom",
+  "word": "TERATOMA",
+  "definition": "Germ cell tumor containing tissues from more than one germ layer.",
+  "dossier": null
+ },
+ {
+  "id": "custom-023",
+  "style": "custom",
+  "word": "BRONCHIECTASIS",
+  "definition": "Permanent widening of the bronchi with chronic productive cough.",
+  "dossier": "bronchiectasis"
+ },
+ {
+  "id": "custom-024",
+  "style": "custom",
+  "word": "CHOLECYSTITIS",
+  "definition": "Inflammation of the gallbladder, usually from a gallstone blocking its duct.",
+  "dossier": "acute-cholecystitis"
+ },
+ {
+  "id": "custom-025",
+  "style": "custom",
+  "word": "LEUKEMIA",
+  "definition": "Cancer of blood-forming cells in the bone marrow.",
+  "dossier": "leukemia-overview"
+ },
+ {
+  "id": "custom-026",
+  "style": "custom",
+  "word": "TYPHOID",
+  "definition": "Salmonella Typhi infection with sustained fever and rose spots.",
+  "dossier": "typhoid-fever"
+ },
+ {
+  "id": "custom-027",
+  "style": "custom",
+  "word": "CIRRHOSIS",
+  "definition": "End-stage scarring of the liver with regenerating nodules.",
+  "dossier": null
+ },
+ {
+  "id": "custom-028",
+  "style": "custom",
+  "word": "IMPETIGO",
+  "definition": "Superficial skin infection with honey-colored crusts.",
+  "dossier": "impetigo"
+ },
+ {
+  "id": "custom-029",
+  "style": "custom",
+  "word": "UVEITIS",
+  "definition": "Inflammation of the middle, pigmented layer of the eye.",
+  "dossier": null
+ },
+ {
+  "id": "custom-030",
+  "style": "custom",
+  "word": "HEPATITIS",
+  "definition": "Inflammation of the liver.",
+  "dossier": null
+ },
+ {
+  "id": "custom-031",
+  "style": "custom",
+  "word": "TETANUS",
+  "definition": "Clostridium tetani toxin causing muscle rigidity, lockjaw and spasms.",
+  "dossier": "tetanus"
+ },
+ {
+  "id": "custom-032",
+  "style": "custom",
+  "word": "DIVERTICULITIS",
+  "definition": "Inflammation of pouches in the colon wall, often with left lower abdominal pain.",
+  "dossier": "acute-diverticulitis"
+ },
+ {
+  "id": "custom-033",
+  "style": "custom",
+  "word": "LYMPHOMA",
+  "definition": "Cancer of lymphocytes, usually arising in lymph nodes.",
+  "dossier": null
+ },
+ {
+  "id": "custom-034",
+  "style": "custom",
+  "word": "DIPHTHERIA",
+  "definition": "Toxin-making throat infection with a grey membrane over the tonsils.",
+  "dossier": null
+ },
+ {
+  "id": "custom-035",
+  "style": "custom",
+  "word": "ECLAMPSIA",
+  "definition": "Seizures in pregnancy on a background of high blood pressure and proteinuria.",
+  "dossier": null
+ },
+ {
+  "id": "custom-036",
+  "style": "custom",
+  "word": "CONJUNCTIVITIS",
+  "definition": "Inflammation of the membrane lining the eyelids and white of the eye.",
+  "dossier": null
+ },
+ {
+  "id": "custom-037",
+  "style": "custom",
+  "word": "CHORIOCARCINOMA",
+  "definition": "Malignant tumor of trophoblast cells that secretes hCG.",
+  "dossier": null
+ },
+ {
+  "id": "custom-038",
+  "style": "custom",
+  "word": "ENDOCARDITIS",
+  "definition": "Infection or inflammation of the inner heart lining, usually the valves.",
+  "dossier": "infective-endocarditis"
+ },
+ {
+  "id": "custom-039",
+  "style": "custom",
+  "word": "MALARIA",
+  "definition": "Plasmodium infection spread by Anopheles mosquitoes, with cyclic fevers.",
+  "dossier": "malaria"
+ },
+ {
+  "id": "custom-040",
+  "style": "custom",
+  "word": "VASCULITIS",
+  "definition": "Inflammation of blood vessel walls.",
+  "dossier": null
+ },
+ {
+  "id": "custom-041",
+  "style": "custom",
+  "word": "MELANOMA",
+  "definition": "Malignant tumor of melanocytes, the most dangerous skin cancer.",
+  "dossier": "melanoma"
+ },
+ {
+  "id": "custom-042",
+  "style": "custom",
+  "word": "PREECLAMPSIA",
+  "definition": "New hypertension with protein in the urine after 20 weeks of pregnancy.",
+  "dossier": "preeclampsia"
+ },
+ {
+  "id": "custom-043",
+  "style": "custom",
+  "word": "ALZHEIMER",
+  "definition": "The most common cause of dementia, with amyloid plaques and tau tangles.",
+  "dossier": "alzheimer-disease"
+ },
+ {
+  "id": "custom-044",
+  "style": "custom",
+  "word": "HIRSCHSPRUNG",
+  "definition": "Missing nerve cells in the distal bowel causing functional obstruction in newborns.",
+  "dossier": "hirschsprung-disease"
+ },
+ {
+  "id": "custom-045",
+  "style": "custom",
+  "word": "BOTULISM",
+  "definition": "Clostridium botulinum toxin causing descending flaccid paralysis.",
+  "dossier": "botulism"
+ },
+ {
+  "id": "custom-046",
+  "style": "custom",
+  "word": "KERATITIS",
+  "definition": "Inflammation of the cornea.",
+  "dossier": null
+ },
+ {
+  "id": "custom-047",
+  "style": "custom",
+  "word": "NEPHROSIS",
+  "definition": "Kidney disease with heavy protein loss in the urine and edema.",
+  "dossier": null
+ },
+ {
+  "id": "custom-048",
+  "style": "custom",
+  "word": "CHOLERA",
+  "definition": "Vibrio infection with profuse rice-water diarrhea.",
+  "dossier": null
+ },
+ {
+  "id": "custom-049",
+  "style": "custom",
+  "word": "CATARACT",
+  "definition": "Clouding of the lens of the eye.",
+  "dossier": "cataract"
+ },
+ {
+  "id": "custom-050",
+  "style": "custom",
+  "word": "SILICOSIS",
+  "definition": "Lung fibrosis from inhaled silica dust.",
+  "dossier": null
+ },
+ {
+  "id": "custom-051",
+  "style": "custom",
+  "word": "VARICELLA",
+  "definition": "Chickenpox: an itchy rash of blisters at different stages.",
+  "dossier": "varicella-chickenpox"
+ },
+ {
+  "id": "custom-052",
+  "style": "custom",
+  "word": "OSTEOMALACIA",
+  "definition": "Soft bones from poor mineralization, usually vitamin D deficiency, in adults.",
+  "dossier": null
+ },
+ {
+  "id": "custom-053",
+  "style": "custom",
+  "word": "PNEUMONIA",
+  "definition": "Infection of the lung tissue filling the alveoli.",
+  "dossier": "community-acquired-pneumonia"
+ },
+ {
+  "id": "custom-054",
+  "style": "custom",
+  "word": "FIBROADENOMA",
+  "definition": "Common benign, mobile breast lump in young women.",
+  "dossier": null
+ },
+ {
+  "id": "custom-055",
+  "style": "custom",
+  "word": "CARDIOMYOPATHY",
+  "definition": "Disease of the heart muscle itself.",
+  "dossier": null
+ },
+ {
+  "id": "custom-056",
+  "style": "custom",
+  "word": "ACROMEGALY",
+  "definition": "Excess growth hormone in adults causing enlarged hands, feet and jaw.",
+  "dossier": null
+ },
+ {
+  "id": "custom-057",
+  "style": "custom",
+  "word": "MYASTHENIA",
+  "definition": "Autoimmune attack on acetylcholine receptors causing fatigable muscle weakness.",
+  "dossier": "myasthenia-gravis"
+ },
+ {
+  "id": "custom-058",
+  "style": "custom",
+  "word": "PSORIASIS",
+  "definition": "Chronic skin disease with well-defined silvery scaly plaques.",
+  "dossier": "psoriasis"
+ },
+ {
+  "id": "custom-059",
+  "style": "custom",
+  "word": "GLOMERULITIS",
+  "definition": "Inflammation of the kidney glomeruli.",
+  "dossier": null
+ },
+ {
+  "id": "custom-060",
+  "style": "custom",
+  "word": "PERITONITIS",
+  "definition": "Inflammation of the lining of the abdominal cavity.",
+  "dossier": null
+ },
+ {
+  "id": "custom-061",
+  "style": "custom",
+  "word": "HASHIMOTO",
+  "definition": "Autoimmune thyroiditis, the most common cause of hypothyroidism.",
+  "dossier": "hashimoto-thyroiditis"
+ },
+ {
+  "id": "custom-062",
+  "style": "custom",
+  "word": "HODGKIN",
+  "definition": "Lymphoma with Reed-Sternberg cells.",
+  "dossier": "hodgkin-lymphoma"
+ },
+ {
+  "id": "custom-063",
+  "style": "custom",
+  "word": "ORCHITIS",
+  "definition": "Inflammation of the testis, classically after mumps.",
+  "dossier": null
+ },
+ {
+  "id": "custom-064",
+  "style": "custom",
+  "word": "HYPOTENSION",
+  "definition": "Abnormally low blood pressure.",
+  "dossier": null
+ },
+ {
+  "id": "custom-065",
+  "style": "custom",
+  "word": "OSTEOSARCOMA",
+  "definition": "Malignant bone-forming tumor, often near the knee in teenagers.",
+  "dossier": null
+ },
+ {
+  "id": "custom-066",
+  "style": "custom",
+  "word": "ERYSIPELAS",
+  "definition": "Superficial streptococcal skin infection with a raised, sharply defined edge.",
+  "dossier": null
+ },
+ {
+  "id": "custom-067",
+  "style": "custom",
+  "word": "ESOPHAGITIS",
+  "definition": "Inflammation of the esophagus.",
+  "dossier": null
+ },
+ {
+  "id": "custom-068",
+  "style": "custom",
+  "word": "MEASLES",
+  "definition": "Highly contagious viral illness with Koplik spots and a spreading rash.",
+  "dossier": "measles-rubeola"
+ },
+ {
+  "id": "custom-069",
+  "style": "custom",
+  "word": "MENINGIOMA",
+  "definition": "Usually benign tumor arising from the meninges.",
+  "dossier": null
+ },
+ {
+  "id": "custom-070",
+  "style": "custom",
+  "word": "VENTRICULITIS",
+  "definition": "Inflammation of the lining of the brain's ventricles.",
+  "dossier": null
+ },
+ {
+  "id": "custom-071",
+  "style": "custom",
+  "word": "RETINOPATHY",
+  "definition": "Damage to the retina, as from diabetes or hypertension.",
+  "dossier": null
+ },
+ {
+  "id": "custom-072",
+  "style": "custom",
+  "word": "HYPOTHYROIDISM",
+  "definition": "Underactive thyroid causing tiredness, weight gain and cold intolerance.",
+  "dossier": "primary-hypothyroidism"
+ },
+ {
+  "id": "custom-073",
+  "style": "custom",
+  "word": "NEUROBLASTOMA",
+  "definition": "Childhood tumor of neural crest cells, often in the adrenal gland.",
+  "dossier": null
+ },
+ {
+  "id": "custom-074",
+  "style": "custom",
+  "word": "PNEUMOTHORAX",
+  "definition": "Air in the pleural space causing lung collapse.",
+  "dossier": "pneumothorax"
+ },
+ {
+  "id": "custom-075",
+  "style": "custom",
+  "word": "MIGRAINE",
+  "definition": "Recurrent throbbing headache, often one-sided, with nausea and light sensitivity.",
+  "dossier": "migraine"
+ },
+ {
+  "id": "custom-076",
+  "style": "custom",
+  "word": "GLIOBLASTOMA",
+  "definition": "The most aggressive primary brain tumor in adults.",
+  "dossier": null
+ },
+ {
+  "id": "custom-077",
+  "style": "custom",
+  "word": "OSTEOMYELITIS",
+  "definition": "Infection of bone.",
+  "dossier": "osteomyelitis"
+ },
+ {
+  "id": "custom-078",
+  "style": "custom",
+  "word": "HEMORRHAGE",
+  "definition": "Escape of blood from a ruptured vessel.",
+  "dossier": null
+ },
+ {
+  "id": "custom-079",
+  "style": "custom",
+  "word": "RUBELLA",
+  "definition": "German measles: a mild rash illness that harms the fetus in pregnancy.",
+  "dossier": null
+ },
+ {
+  "id": "custom-080",
+  "style": "custom",
+  "word": "PARKINSONISM",
+  "definition": "Slowness, rigidity and resting tremor from any cause.",
+  "dossier": null
+ },
+ {
+  "id": "custom-081",
+  "style": "custom",
+  "word": "GASTRITIS",
+  "definition": "Inflammation of the stomach lining.",
+  "dossier": null
+ },
+ {
+  "id": "custom-082",
+  "style": "custom",
+  "word": "PYELONEPHRITIS",
+  "definition": "Bacterial infection of the kidney with fever and flank pain.",
+  "dossier": "acute-pyelonephritis"
+ },
+ {
+  "id": "custom-083",
+  "style": "custom",
+  "word": "SCABIES",
+  "definition": "Itchy skin infestation by the mite Sarcoptes scabiei.",
+  "dossier": "scabies"
+ },
+ {
+  "id": "custom-084",
+  "style": "custom",
+  "word": "CYSTITIS",
+  "definition": "Inflammation of the urinary bladder.",
+  "dossier": "acute-cystitis-lower-urinary-tract-infection"
+ },
+ {
+  "id": "custom-085",
+  "style": "custom",
+  "word": "MYOCARDITIS",
+  "definition": "Inflammation of the heart muscle.",
+  "dossier": "myocarditis"
+ },
+ {
+  "id": "custom-086",
+  "style": "custom",
+  "word": "CHANCROID",
+  "definition": "Sexually transmitted infection with a painful genital ulcer, caused by Haemophilus ducreyi.",
+  "dossier": null
+ },
+ {
+  "id": "custom-087",
+  "style": "custom",
+  "word": "ACHALASIA",
+  "definition": "Failure of the lower esophageal sphincter to relax, causing difficulty swallowing.",
+  "dossier": "achalasia"
+ },
+ {
+  "id": "custom-088",
+  "style": "custom",
+  "word": "PROSTATITIS",
+  "definition": "Inflammation of the prostate gland.",
+  "dossier": "acute-bacterial-prostatitis"
+ },
+ {
+  "id": "custom-089",
+  "style": "custom",
+  "word": "ENDOMETRIOSIS",
+  "definition": "Endometrial tissue growing outside the uterus, causing pelvic pain.",
+  "dossier": "endometriosis"
+ },
+ {
+  "id": "custom-090",
+  "style": "custom",
+  "word": "THYROIDITIS",
+  "definition": "Inflammation of the thyroid gland.",
+  "dossier": null
+ },
+ {
+  "id": "custom-091",
+  "style": "custom",
+  "word": "BRONCHIOLITIS",
+  "definition": "Viral infection of the small airways in infants, most often RSV.",
+  "dossier": "rsv-bronchiolitis"
+ },
+ {
+  "id": "custom-092",
+  "style": "custom",
+  "word": "INFLUENZA",
+  "definition": "Acute viral respiratory illness with fever and body aches.",
+  "dossier": null
+ },
+ {
+  "id": "custom-093",
+  "style": "custom",
+  "word": "DYSGERMINOMA",
+  "definition": "Ovarian germ cell tumor that matches the testicular seminoma.",
+  "dossier": null
+ },
+ {
+  "id": "custom-094",
+  "style": "custom",
+  "word": "AORTITIS",
+  "definition": "Inflammation of the wall of the aorta.",
+  "dossier": null
+ },
+ {
+  "id": "custom-095",
+  "style": "custom",
+  "word": "HYPERTHYROIDISM",
+  "definition": "Overactive thyroid causing weight loss, tremor and heat intolerance.",
+  "dossier": null
+ },
+ {
+  "id": "custom-096",
+  "style": "custom",
+  "word": "APPENDICITIS",
+  "definition": "Inflammation of the appendix with pain moving to the right lower abdomen.",
+  "dossier": "acute-appendicitis"
+ },
+ {
+  "id": "custom-097",
+  "style": "custom",
+  "word": "SARCOIDOSIS",
+  "definition": "Multisystem disease of non-caseating granulomas, often in the lungs.",
+  "dossier": "sarcoidosis"
+ },
+ {
+  "id": "custom-098",
+  "style": "custom",
+  "word": "COLITIS",
+  "definition": "Inflammation of the colon.",
+  "dossier": null
+ },
+ {
+  "id": "custom-099",
+  "style": "custom",
+  "word": "HYDRONEPHROSIS",
+  "definition": "Swelling of the kidney from blocked urine outflow.",
+  "dossier": null
+ },
+ {
+  "id": "custom-100",
+  "style": "custom",
+  "word": "ENCEPHALITIS",
+  "definition": "Inflammation of the brain tissue.",
+  "dossier": null
+ },
+ {
+  "id": "custom-101",
+  "style": "custom",
+  "word": "KAWASAKI",
+  "definition": "Childhood vasculitis with fever, red eyes and lips, and coronary aneurysm risk.",
+  "dossier": "kawasaki-disease"
+ },
+ {
+  "id": "custom-102",
+  "style": "custom",
+  "word": "ACHONDROGENESIS",
+  "definition": "Lethal inherited failure of cartilage and bone formation.",
+  "dossier": null
+ },
+ {
+  "id": "custom-103",
+  "style": "custom",
+  "word": "ADENOMYOSIS",
+  "definition": "Endometrial tissue growing into the muscle of the uterus.",
+  "dossier": null
+ },
+ {
+  "id": "custom-104",
+  "style": "custom",
+  "word": "AMEBIASIS",
+  "definition": "Entamoeba histolytica infection causing bloody diarrhea or liver abscess.",
+  "dossier": null
+ },
+ {
+  "id": "custom-105",
+  "style": "custom",
+  "word": "ANTHRACOSIS",
+  "definition": "Harmless deposit of coal dust in the lungs.",
+  "dossier": null
+ },
+ {
+  "id": "custom-106",
+  "style": "custom",
+  "word": "ASBESTOSIS",
+  "definition": "Lung fibrosis from inhaled asbestos fibers.",
+  "dossier": null
+ },
+ {
+  "id": "custom-107",
+  "style": "custom",
+  "word": "BALANITIS",
+  "definition": "Inflammation of the head of the penis.",
+  "dossier": null
+ },
+ {
+  "id": "custom-108",
+  "style": "custom",
+  "word": "CHIKUNGUNYA",
+  "definition": "Mosquito-borne viral fever with severe joint pain.",
+  "dossier": null
+ },
+ {
+  "id": "custom-109",
+  "style": "custom",
+  "word": "CHONDROSARCOMA",
+  "definition": "Malignant tumor of cartilage.",
+  "dossier": null
+ },
+ {
+  "id": "custom-110",
+  "style": "custom",
+  "word": "CANDIDIASIS",
+  "definition": "Infection with Candida yeast.",
+  "dossier": "superficial-candidiasis-oral-thrush-vulvovaginal-candidiasis"
+ },
+ {
+  "id": "custom-111",
+  "style": "custom",
+  "word": "CRYPTOCOCCOSIS",
+  "definition": "Fungal infection, often meningitis in people with weak immunity.",
+  "dossier": null
+ },
+ {
+  "id": "custom-112",
+  "style": "custom",
+  "word": "DYSENTERY",
+  "definition": "Bloody diarrhea from infection of the colon.",
+  "dossier": null
+ },
+ {
+  "id": "custom-113",
+  "style": "custom",
+  "word": "EPIDIDYMITIS",
+  "definition": "Inflammation of the coiled tube behind the testis.",
+  "dossier": null
+ },
+ {
+  "id": "custom-114",
+  "style": "custom",
+  "word": "FASCIITIS",
+  "definition": "Inflammation of fascia, as in the plantar or necrotizing forms.",
+  "dossier": null
+ },
+ {
+  "id": "custom-115",
+  "style": "custom",
+  "word": "FILARIASIS",
+  "definition": "Infection by thread-like worms that can block lymph vessels.",
+  "dossier": null
+ },
+ {
+  "id": "custom-116",
+  "style": "custom",
+  "word": "GIARDIASIS",
+  "definition": "Giardia infection causing greasy diarrhea and bloating.",
+  "dossier": "giardiasis"
+ },
+ {
+  "id": "custom-117",
+  "style": "custom",
+  "word": "HISTOPLASMOSIS",
+  "definition": "Fungal lung infection from soil with bird or bat droppings.",
+  "dossier": null
+ },
+ {
+  "id": "custom-118",
+  "style": "custom",
+  "word": "LEPTOSPIROSIS",
+  "definition": "Bacterial infection from water contaminated by animal urine.",
+  "dossier": "leptospirosis"
+ },
+ {
+  "id": "custom-119",
+  "style": "custom",
+  "word": "LEPROSY",
+  "definition": "Chronic Mycobacterium leprae infection of skin and nerves.",
+  "dossier": null
+ },
+ {
+  "id": "custom-120",
+  "style": "custom",
+  "word": "MONONUCLEOSIS",
+  "definition": "Glandular fever, usually from Epstein-Barr virus.",
+  "dossier": "infectious-mononucleosis-ebv"
+ },
+ {
+  "id": "custom-121",
+  "style": "custom",
+  "word": "MOLLUSCUM",
+  "definition": "Poxvirus skin infection with small pearly bumps.",
+  "dossier": "molluscum-contagiosum"
+ },
+ {
+  "id": "custom-122",
+  "style": "custom",
+  "word": "ONYCHOMYCOSIS",
+  "definition": "Fungal infection of the nails.",
+  "dossier": "onychomycosis-fungal-nail-infection"
+ },
+ {
+  "id": "custom-123",
+  "style": "custom",
+  "word": "PAROTITIS",
+  "definition": "Inflammation of the parotid salivary gland.",
+  "dossier": null
+ },
+ {
+  "id": "custom-124",
+  "style": "custom",
+  "word": "PERTUSSIS",
+  "definition": "Whooping cough from Bordetella infection.",
+  "dossier": "acute-pertussis-whooping-cough"
+ },
+ {
+  "id": "custom-125",
+  "style": "custom",
+  "word": "PELLAGRA",
+  "definition": "Niacin deficiency: dermatitis, diarrhea and dementia.",
+  "dossier": null
+ },
+ {
+  "id": "custom-126",
+  "style": "custom",
+  "word": "PHARYNGITIS",
+  "definition": "Inflammation of the throat.",
+  "dossier": "acute-pharyngitis"
+ },
+ {
+  "id": "custom-127",
+  "style": "custom",
+  "word": "PLEURISY",
+  "definition": "Inflammation of the pleura with sharp chest pain on breathing.",
+  "dossier": null
+ },
+ {
+  "id": "custom-128",
+  "style": "custom",
+  "word": "PNEUMOCONIOSIS",
+  "definition": "Lung disease from inhaled mineral dust.",
+  "dossier": null
+ },
+ {
+  "id": "custom-129",
+  "style": "custom",
+  "word": "POLYMYOSITIS",
+  "definition": "Inflammatory disease of muscle with weakness near the trunk.",
+  "dossier": null
+ },
+ {
+  "id": "custom-130",
+  "style": "custom",
+  "word": "RHINOPHYMA",
+  "definition": "Thick, bulbous nose from advanced rosacea.",
+  "dossier": null
+ },
+ {
+  "id": "custom-131",
+  "style": "custom",
+  "word": "SCHISTOSOMIASIS",
+  "definition": "Blood fluke infection caught in fresh water.",
+  "dossier": null
+ },
+ {
+  "id": "custom-132",
+  "style": "custom",
+  "word": "SHIGELLOSIS",
+  "definition": "Shigella infection causing bloody diarrhea.",
+  "dossier": null
+ },
+ {
+  "id": "custom-133",
+  "style": "custom",
+  "word": "SPOROTRICHOSIS",
+  "definition": "Fungal skin infection from a thorn prick, spreading along lymph vessels.",
+  "dossier": null
+ },
+ {
+  "id": "custom-134",
+  "style": "custom",
+  "word": "TAENIASIS",
+  "definition": "Tapeworm infection of the intestine.",
+  "dossier": null
+ },
+ {
+  "id": "custom-135",
+  "style": "custom",
+  "word": "TRICHINOSIS",
+  "definition": "Roundworm infection from undercooked meat, causing muscle pain.",
+  "dossier": null
+ },
+ {
+  "id": "custom-136",
+  "style": "custom",
+  "word": "TULAREMIA",
+  "definition": "Francisella tularensis infection, often caught from rabbits or ticks.",
+  "dossier": "tularemia"
+ },
+ {
+  "id": "custom-137",
+  "style": "custom",
+  "word": "TOXOPLASMOSIS",
+  "definition": "Toxoplasma gondii infection, linked to cats and undercooked meat.",
+  "dossier": null
+ },
+ {
+  "id": "custom-138",
+  "style": "custom",
+  "word": "YERSINIOSIS",
+  "definition": "Yersinia infection that can mimic appendicitis.",
+  "dossier": null
+ },
+ {
+  "id": "custom-139",
+  "style": "custom",
+  "word": "LYMPHANGITIS",
+  "definition": "Inflammation of lymph vessels with red streaks up a limb.",
+  "dossier": null
+ },
+ {
+  "id": "custom-140",
+  "style": "custom",
+  "word": "PITYRIASIS",
+  "definition": "Group of skin conditions with fine, bran-like scaling.",
+  "dossier": null
+ },
+ {
+  "id": "custom-141",
+  "style": "custom",
+  "word": "BRUCELLOSIS",
+  "definition": "Infection from unpasteurised milk causing undulant fever.",
+  "dossier": "brucellosis"
+ },
+ {
+  "id": "custom-142",
+  "style": "custom",
+  "word": "PEMPHIGUS",
+  "definition": "Autoimmune disease with fragile blisters of skin and mouth.",
+  "dossier": null
+ },
+ {
+  "id": "custom-143",
+  "style": "custom",
+  "word": "SCLERODERMA",
+  "definition": "Autoimmune disease with hardening and tightening of the skin.",
+  "dossier": "systemic-sclerosis-scleroderma"
+ },
+ {
+  "id": "custom-144",
+  "style": "custom",
+  "word": "URTICARIA",
+  "definition": "Hives: raised, itchy, short-lived wheals.",
+  "dossier": "urticaria-hives"
+ },
+ {
+  "id": "custom-145",
+  "style": "custom",
+  "word": "ROSACEA",
+  "definition": "Chronic facial redness with flushing and pimples.",
+  "dossier": "rosacea"
+ },
+ {
+  "id": "custom-146",
+  "style": "custom",
+  "word": "VITILIGO",
+  "definition": "Loss of skin pigment in white patches.",
+  "dossier": "vitiligo"
+ },
+ {
+  "id": "custom-147",
+  "style": "custom",
+  "word": "FIBROMYALGIA",
+  "definition": "Chronic widespread pain with tender points and fatigue.",
+  "dossier": null
+ },
+ {
+  "id": "custom-148",
+  "style": "custom",
+  "word": "OSTEOPENIA",
+  "definition": "Bone density lower than normal but not yet osteoporosis.",
+  "dossier": null
+ },
+ {
+  "id": "custom-149",
+  "style": "custom",
+  "word": "TENOSYNOVITIS",
+  "definition": "Inflammation of a tendon and its sheath.",
+  "dossier": null
+ },
+ {
+  "id": "custom-150",
+  "style": "custom",
+  "word": "MASTOCYTOSIS",
+  "definition": "Too many mast cells in the skin or organs.",
+  "dossier": null
+ }
+]

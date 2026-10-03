@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { GAMES } from '@/data/games';
 import { useTheme } from '@/state/app';
@@ -34,18 +34,15 @@ export function Results({ def, play, items }: { def: GameDef; play: Play; items:
         <Title lead="Game" em="over" />
       </View>
       <Card style={s.top}>
-        <View style={s.stat}>
-          <Text style={[s.big, { color: t.white }]}>{play.score}</Text>
-          <Kick>{multi ? 'Your points' : 'Points'}</Kick>
-        </View>
-        <View style={s.stat}>
-          <Text style={[s.big, { color: t.accent }]}>{`+${play.expEarned}`}</Text>
-          <Kick>EXP</Kick>
-        </View>
-        <View style={s.stat}>
-          <Text style={[s.big, { color: t.white }]}>{`${right}/${mine.length}`}</Text>
-          <Kick>Solved</Kick>
-        </View>
+        {(def.summary?.(play, items) ?? [
+          { value: String(play.score), label: multi ? 'Your points' : 'Points' },
+          { value: `${right}/${mine.length}`, label: 'Solved' },
+        ]).map((x) => (
+          <View key={x.label} style={s.stat}>
+            <Text style={[s.big, { color: t.white }]}>{x.value}</Text>
+            <Kick>{x.label}</Kick>
+          </View>
+        )).flatMap((el, i) => (i === 0 ? [el, <ExpStat key="exp" exp={play.expEarned} />] : [el]))}
       </Card>
       {play.standings.length > 1 ? (
         <Card>
@@ -61,14 +58,20 @@ export function Results({ def, play, items }: { def: GameDef; play: Play; items:
         </Card>
       ) : null}
       <Card>
-        <Kick>Cases</Kick>
+        <Kick>{def.itemsTitle ?? 'Cases'}</Kick>
         {items.map((i) => (
           <View key={i.id} style={s.row}>
             <Text style={[s.mark, { color: i.outcome === 'right' ? t.accent : t.rose }]}>{MARK[i.outcome]}</Text>
             <Text style={[s.item, { color: t.fg }]} numberOfLines={1}>
-              {multi ? `${nameOf.get(i.seat) ?? ''} · ` : ''}
+              {multi ? `${nameOf.get(i.seat) ?? 'Nobody'} · ` : ''}
               {def.itemLabel?.(i) ?? i.itemId}
             </Text>
+            {/* RS1: dossier links only here, once the game has ended. */}
+            {i.answerKey ? (
+              <Pressable onPress={() => router.push(`/learn/dossier?id=${i.answerKey}`)} hitSlop={u(6)} accessibilityRole="link" accessibilityLabel={`Open the dossier for ${def.itemLabel?.(i) ?? i.itemId}`}>
+                <Text style={[s.link, { color: t.accent }]}>Dossier ›</Text>
+              </Pressable>
+            ) : null}
             <Text style={[s.pts, { color: t.soft }]}>{i.points}</Text>
           </View>
         ))}
@@ -83,6 +86,16 @@ export function Results({ def, play, items }: { def: GameDef; play: Play; items:
   );
 }
 
+function ExpStat({ exp }: { exp: number }) {
+  const t = useTheme();
+  return (
+    <View style={s.stat}>
+      <Text style={[s.big, { color: t.accent }]}>{`+${exp}`}</Text>
+      <Kick>EXP</Kick>
+    </View>
+  );
+}
+
 const s = StyleSheet.create({
   top: { flexDirection: 'row', justifyContent: 'space-around' },
   stat: { alignItems: 'center', gap: u(2) },
@@ -93,4 +106,5 @@ const s = StyleSheet.create({
   mark: { fontFamily: F.bodyBold, fontSize: u(12), width: u(12) },
   item: { flex: 1, fontFamily: F.body, fontSize: u(11.5) },
   pts: { fontFamily: F.mono, fontSize: u(10.5) },
+  link: { fontFamily: F.bodySemi, fontSize: u(10) },
 });

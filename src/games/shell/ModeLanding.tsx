@@ -93,7 +93,7 @@ export function ModeLanding({ def }: { def: GameDef }) {
               : null}
             {m.soon ? null : (
               <View style={s.btns}>
-                {bm ? <Btn label={`Resume case ${(bm.resume as { index?: number } | null)?.index != null ? (bm.resume as { index: number }).index + 1 : ''}`.trim()} onPress={() => router.push(`/play/${def.key}/run?play=${bm.id}`)} style={{ flex: 1 }} /> : null}
+                {bm ? <Btn label={`Resume ${def.itemNoun ?? 'case'} ${(bm.resume as { index?: number } | null)?.index != null ? (bm.resume as { index: number }).index + 1 : ''}`.trim()} onPress={() => router.push(`/play/${def.key}/run?play=${bm.id}`)} style={{ flex: 1 }} /> : null}
                 {bm ? <Ghost label="New game" onPress={() => go(m.mode)} style={{ flex: 1 }} /> : <Btn label="Play" onPress={() => go(m.mode)} style={{ flex: 1 }} />}
               </View>
             )}

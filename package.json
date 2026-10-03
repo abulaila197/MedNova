@@ -38,7 +38,8 @@
   },
   "devDependencies": {
     "@types/react": "~19.2.2",
-    "typescript": "~6.0.3"
+    "typescript": "~6.0.3",
+    "word-list": "^4.1.0"
   },
   "scripts": {
     "start": "expo start",

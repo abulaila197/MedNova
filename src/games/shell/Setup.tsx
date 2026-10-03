@@ -46,7 +46,7 @@ export function Setup({ def, mode, prefill, prefillSeats }: { def: GameDef; mode
         <Kick>Set up your game</Kick>
         <Title lead={g.lead} em={g.em} size={26} />
       </View>
-      {range ? <Players seats={seats} setSeats={setSeats} min={range.min} max={range.max} /> : null}
+      {range ? <Players seats={seats} setSeats={setSeats} min={range.min} max={range.max} note={def.playersNote?.(seats.length)} /> : null}
       {opts.map((o) => (
         <Card key={o.key}>
           <Text style={[s.lbl, { color: t.white }]}>{o.label}</Text>
@@ -60,7 +60,7 @@ export function Setup({ def, mode, prefill, prefillSeats }: { def: GameDef; mode
 }
 
 /** Players for a one-phone game: a name and a colour each. Player 1 is the phone owner (DPO6). */
-function Players({ seats, setSeats, min, max }: { seats: Seat[]; setSeats: (f: (p: Seat[]) => Seat[]) => void; min: number; max: number }) {
+function Players({ seats, setSeats, min, max, note }: { seats: Seat[]; setSeats: (f: (p: Seat[]) => Seat[]) => void; min: number; max: number; note?: string }) {
   const t = useTheme();
   const set = (i: number, patch: Partial<Seat>) => setSeats((p) => p.map((x, j) => (j === i ? { ...x, ...patch } : x)));
   const add = () =>
@@ -107,7 +107,7 @@ function Players({ seats, setSeats, min, max }: { seats: Seat[]; setSeats: (f: (
         </View>
       ))}
       {seats.length < max ? <Ghost label="Add player" onPress={add} /> : null}
-      <Body>Player 1 is you, the phone owner. Only your points earn EXP and only your missed cases go to Learn.</Body>
+      <Body>{note ?? 'Player 1 is you, the phone owner. Only your points earn EXP and only your missed cases go to Learn.'}</Body>
     </Card>
   );
 }
