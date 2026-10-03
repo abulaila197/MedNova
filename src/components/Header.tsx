@@ -1,47 +1,83 @@
 import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
+import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { MenuIcon } from '@/components/Icons';
-import { PulseStar } from '@/components/PulseStar';
+import { PulseStar, TokenCoin } from '@/components/PulseStar';
+import { engine, EXP_PER_TOKEN } from '@/games/engine';
 import { useApp, useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
-/** Locked header (decisions 59-60): see-through bar with blur and a lit bottom edge. */
-export function Header() {
+/** Token balance for the coin, refreshed while the header is on screen (the wallet lives on the phone, rule 6). */
+function useTokens() {
+  const [b, setB] = useState({ exp: 0, tokens: 0 });
+  useEffect(() => {
+    let live = true;
+    const load = () => engine.wallet.balance().then((x) => live && setB((p) => (p.exp === x.exp && p.tokens === x.tokens ? p : x)));
+    load();
+    const id = setInterval(load, 1500);
+    return () => {
+      live = false;
+      clearInterval(id);
+    };
+  }, []);
+  return b;
+}
+
+/**
+ * Locked header (decisions 59-60): see-through bar with blur and a lit bottom edge.
+ * `game` is the game-page version (GH1-GH3): the same parts made smaller, plus the token coin at the far right.
+ */
+export function Header({ variant = 'app' }: { variant?: 'app' | 'game' }) {
   const t = useTheme();
+  const g = variant === 'game';
+  const z = g ? gs : s;
   const lt = t.mode === 'light';
   const setMenu = useApp((s) => s.setMenu);
   const setReport = useApp((s) => s.setReport);
   return (
-    <View style={[s.bar, { shadowColor: lt ? 'rgba(80,60,20,0.35)' : '#000' }]}>
+    <View style={[z.bar, { shadowColor: lt ? 'rgba(80,60,20,0.35)' : '#000' }]}>
       <BlurView intensity={20} tint={lt ? 'light' : 'dark'} style={StyleSheet.absoluteFill} />
       <LinearGradient colors={[t.headerTop, t.headerBottom]} style={StyleSheet.absoluteFill} />
-      <View style={[s.edge, { backgroundColor: t.headerEdge }]} />
-      {lt ? <View style={[s.edge, { bottom: -1, backgroundColor: 'rgba(29,34,48,0.12)' }]} /> : null}
-      <View style={s.row}>
-        <Pressable onPress={() => setMenu(true)} style={[s.mb, { backgroundColor: t.chip, borderColor: t.chipLine }]} accessibilityLabel="Open menu">
-          <MenuIcon size={u(14)} color={t.menuBtn} />
+      <View style={[z.edge, { backgroundColor: t.headerEdge }]} />
+      {lt ? <View style={[z.edge, { bottom: -1, backgroundColor: 'rgba(29,34,48,0.12)' }]} /> : null}
+      <View style={z.row}>
+        <Pressable onPress={() => setMenu(true)} style={[z.mb, { backgroundColor: t.chip, borderColor: t.chipLine }]} accessibilityLabel="Open menu">
+          <MenuIcon size={u(g ? 12 : 14)} color={t.menuBtn} />
         </Pressable>
-        <View style={s.lk}>
-          <PulseStar width={u(20)} height={u(21)} light={lt} />
-          <Text style={[s.wmk, { color: t.white }]}>
+        <View style={z.lk}>
+          <PulseStar width={u(g ? 16 : 20)} height={u(g ? 17 : 21)} light={lt} />
+          <Text style={[z.wmk, { color: t.white }]}>
             Med<Text style={{ color: t.accent }}>Nova</Text>
           </Text>
         </View>
       </View>
-      <View style={s.row}>
-        <Pressable onPress={() => setReport(true)} style={[s.rp, { backgroundColor: t.red }]} accessibilityLabel="Report a problem">
-          <Text style={s.rpT}>!</Text>
+      <View style={z.row}>
+        <Pressable onPress={() => setReport(true)} style={[z.rp, { backgroundColor: t.red }]} accessibilityLabel="Report a problem">
+          <Text style={z.rpT}>!</Text>
         </Pressable>
         <Pressable onPress={() => router.push('/auth')} accessibilityLabel="Sign in">
-          <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={s.si}>
-            <Text style={[s.siT, { color: t.onGrad }]}>Sign in</Text>
+          <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={z.si}>
+            <Text style={[z.siT, { color: t.onGrad }]}>Sign in</Text>
           </LinearGradient>
         </Pressable>
+        {g ? <Coin light={lt} /> : null}
       </View>
+    </View>
+  );
+}
+
+/** Token count + coin; display only until the wallet sheet is built after the games (GH4). */
+function Coin({ light }: { light: boolean }) {
+  const t = useTheme();
+  const { exp, tokens } = useTokens();
+  return (
+    <View style={gs.coin} accessible accessibilityLabel={`${tokens} tokens, ${exp} of ${EXP_PER_TOKEN} EXP toward the next token`}>
+      <Text style={[gs.coinT, { color: t.fg }]}>{tokens}</Text>
+      <TokenCoin size={u(17)} progress={exp / EXP_PER_TOKEN} light={light} track={light ? 'rgba(29,34,48,0.12)' : 'rgba(255,255,255,0.12)'} />
     </View>
   );
 }
@@ -67,4 +103,19 @@ const s = StyleSheet.create({
   rpT: { color: '#fff', fontFamily: F.bodyBold, fontSize: u(11), lineHeight: u(13) },
   si: { paddingVertical: u(5), paddingHorizontal: u(10), borderRadius: 999 },
   siT: { fontFamily: F.bodySemi, fontSize: u(10) },
+});
+
+/** Game header: everything about a fifth smaller; the coin with its ring is no wider than the report button. */
+const gs = StyleSheet.create({
+  ...s,
+  bar: { ...s.bar, height: u(36), paddingHorizontal: u(12) },
+  row: { ...s.row, gap: u(7) },
+  mb: { ...s.mb, width: u(22), height: u(22), borderRadius: u(8) },
+  wmk: { ...s.wmk, fontSize: u(14), letterSpacing: u(-0.14) },
+  rp: { ...s.rp, width: u(17), height: u(17), borderRadius: u(8.5) },
+  rpT: { ...s.rpT, fontSize: u(9.5), lineHeight: u(11) },
+  si: { ...s.si, paddingVertical: u(4), paddingHorizontal: u(9) },
+  siT: { ...s.siT, fontSize: u(9) },
+  coin: { flexDirection: 'row', alignItems: 'center', gap: u(3) },
+  coinT: { fontFamily: F.bodyBold, fontSize: u(11), lineHeight: u(13), fontVariant: ['tabular-nums'] },
 });

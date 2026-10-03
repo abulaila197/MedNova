@@ -7,10 +7,10 @@ import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
-/** A game page: the app sky and header, no dock, content scrolls with a gap under the header. */
+/** A game page: the app sky and the game header (GH1), no dock, content scrolls with a gap under the header. */
 export function GameScreen({ children, scroll = true, top }: { children: ReactNode; scroll?: boolean; top?: ReactNode }) {
   return (
-    <Screen dock={false} glow={1}>
+    <Screen dock={false} glow={1} game>
       {top}
       {scroll ? (
         <ScrollView contentContainerStyle={s.body} showsVerticalScrollIndicator={false}>

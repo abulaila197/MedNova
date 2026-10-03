@@ -9,7 +9,7 @@ import { TopInset } from '@/components/StatusMock';
 import { useTheme } from '@/state/app';
 
 /** A page of the app: sky, drifting glow, grain, header, content, docked nav. */
-export function Screen({ children, tab = null, glow = 0, header = true, dock = true, under }: { children: ReactNode; tab?: Tab; glow?: number; header?: boolean; dock?: boolean; under?: ReactNode }) {
+export function Screen({ children, tab = null, glow = 0, header = true, dock = true, under, game = false }: { children: ReactNode; tab?: Tab; glow?: number; header?: boolean; dock?: boolean; under?: ReactNode; game?: boolean }) {
   const t = useTheme();
   const { width, height } = useWindowDimensions();
   return (
@@ -18,7 +18,7 @@ export function Screen({ children, tab = null, glow = 0, header = true, dock = t
       <Grain />
       {under}
       <TopInset color={t.fg} />
-      {header ? <Header /> : null}
+      {header ? <Header variant={game ? 'game' : 'app'} /> : null}
       <View style={s.body}>{children}</View>
       {dock ? <Dock active={tab} /> : null}
     </View>
