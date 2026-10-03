@@ -292,7 +292,7 @@ function Tile({ c, size, letter, mark, delay, ghost, typed, edge }: { c: SlideCo
         lit ? { boxShadow: `0 0 ${Math.round(size * 0.3)}px ${bg}88` } : null,
       ]}>
       {bg && missing ? <View style={[StyleSheet.absoluteFill, { backgroundColor: bg, opacity: 0.5 }]} /> : bg ? <Animated.View style={[StyleSheet.absoluteFill, { backgroundColor: bg }, colour]} /> : null}
-      <View style={[s.slideTop, { height: size * 0.22, backgroundColor: c.glassTop, borderBottomColor: c.line }]} />
+      <LinearGradient colors={[c.fadeTop, 'transparent']} style={[s.slideTop, { height: size * 0.5 }]} pointerEvents="none" />
       {edge ? <View style={[s.edge, { backgroundColor: edge }]} /> : null}
       {delay >= 0 ? <Animated.View style={[s.sheen, { width: size * 0.5, height: size * 2, top: -size * 0.5, backgroundColor: c.sheen }, sheen]} /> : null}
       <Text style={[s.tileT, { fontSize: fs, color: mark === 'off' || mark === 'missing' ? c.offText : lit ? c.onTile : ghost ? c.ghost : t.fg }]}>{letter || ghost || (mark === 'missing' ? '–' : '')}</Text>
@@ -336,7 +336,7 @@ function Key({ label, a11y, wide, c, bg, fg, onPress }: { label: string; a11y?: 
   const t = useTheme();
   return (
     <Pressable onPress={onPress} style={({ pressed }) => [s.key, wide && s.keyWide, { backgroundColor: bg ?? c.key, borderColor: c.line, opacity: pressed ? 0.7 : 1 }]} accessibilityRole="button" accessibilityLabel={a11y ?? label}>
-      <View style={[s.keyTop, { backgroundColor: c.glassTop }]} />
+      <LinearGradient colors={[c.fadeTop, 'transparent']} style={s.keyTop} pointerEvents="none" />
       <Text style={[s.keyT, wide && s.keyTW, { color: fg ?? t.fg }]}>{label}</Text>
     </Pressable>
   );
@@ -361,7 +361,7 @@ const s = StyleSheet.create({
   board: { borderWidth: 1, borderRadius: u(14), gap: GAP, alignItems: 'center', alignSelf: 'center' },
   row: { flexDirection: 'row', gap: GAP },
   tile: { borderWidth: 1, overflow: 'hidden', alignItems: 'center', justifyContent: 'center' },
-  slideTop: { position: 'absolute', left: 0, right: 0, top: 0, borderBottomWidth: 1 },
+  slideTop: { position: 'absolute', left: 0, right: 0, top: 0 },
   edge: { position: 'absolute', left: 0, top: 0, bottom: 0, width: 3 },
   sheen: { position: 'absolute' },
   tileT: { fontFamily: F.bodyBold },
@@ -377,7 +377,7 @@ const s = StyleSheet.create({
   krow: { flexDirection: 'row', justifyContent: 'center', gap: u(3.5) },
   key: { flex: 1, maxWidth: u(23), height: u(34), borderRadius: u(3), borderWidth: 1, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
   keyWide: { flex: 1.6, maxWidth: u(38) },
-  keyTop: { position: 'absolute', left: 0, right: 0, top: 0, height: u(3) },
+  keyTop: { position: 'absolute', left: 0, right: 0, top: 0, height: '50%' },
   keyT: { fontFamily: F.bodySemi, fontSize: u(11) },
   keyTW: { fontSize: u(9) },
   dock: { gap: u(8) },

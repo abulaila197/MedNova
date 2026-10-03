@@ -9,6 +9,8 @@ const dark = {
   onTile: '#07101f',
   glass: 'rgba(160,220,255,0.08)',
   glassTop: 'rgba(255,255,255,0.07)',
+  /** Soft top sheen on every slide and key: fades out with no edge. */
+  fadeTop: 'rgba(255,255,255,0.12)',
   sheen: 'rgba(255,255,255,0.22)',
   line: 'rgba(255,255,255,0.09)',
   boxA: '#0f1433',
@@ -25,6 +27,7 @@ const light: typeof dark = {
   onTile: '#ffffff',
   glass: 'rgba(255,255,255,0.55)',
   glassTop: 'rgba(255,255,255,0.6)',
+  fadeTop: 'rgba(255,255,255,0.38)',
   sheen: 'rgba(255,255,255,0.7)',
   line: 'rgba(29,34,48,0.12)',
   boxA: '#f6f2ea',
