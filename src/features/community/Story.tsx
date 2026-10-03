@@ -1,8 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { StyleSheet, Text, View } from 'react-native';
 
-import { Crop, Fade, Feather } from '@/features/community/fx';
-import { focusPlace, OLD_ART, photo, PH_H, PH_W, type PhotoKey } from '@/features/community/data';
+import { Empty, Fade } from '@/features/community/fx';
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F, type Theme } from '@/theme/tokens';
@@ -25,14 +24,11 @@ const SPINE: Dot[] = [
   { art: 'cs', state: 'new' },
 ];
 
-// Story area: design y 88..545 (282 x 457). The photo box of the preview sits at (-34,-60), 350 x 557.
-const AW = 282;
+// Story area: design y 88..545 (282 x 457).
 const AH = 457;
-const IMG = { x: -34, y: -60, w: 350, h: 557 };
 
 function StoryDot({ t, d }: { t: Theme; d: Dot }) {
   const p = C[t.mode];
-  const k = OLD_ART[d.art] as PhotoKey;
   const size = d.state === 'on' ? 32 : 24;
   const ring = d.state === 'on' ? 1.5 : 1;
   const col = d.state === 'on' ? t.accent : d.state === 'seen' ? 'rgba(255,255,255,0.18)' : p.ring;
@@ -40,9 +36,9 @@ function StoryDot({ t, d }: { t: Theme; d: Dot }) {
   return (
     <View style={{ width: u(outer), height: u(outer), borderRadius: u(outer / 2), backgroundColor: col, alignItems: 'center', justifyContent: 'center', margin: u(-(outer - size) / 2) }}>
       <View style={{ width: u(size + 4), height: u(size + 4), borderRadius: u((size + 4) / 2), backgroundColor: GAP, alignItems: 'center', justifyContent: 'center' }}>
-        <Crop source={photo(t.mode, k)} w={size} h={size} radius={size / 2} place={focusPlace(k, size, size, size / 220)}>
+        <Empty w={size} h={size} radius={size / 2}>
           {d.state === 'seen' ? <View style={[StyleSheet.absoluteFill, { backgroundColor: t.mode === 'dark' ? 'rgba(20,22,40,0.45)' : 'rgba(120,110,95,0.35)' }]} /> : null}
-        </Crop>
+        </Empty>
       </View>
     </View>
   );
@@ -52,25 +48,9 @@ function StoryDot({ t, d }: { t: Theme; d: Dot }) {
 export function Story() {
   const t = useTheme();
   const p = C[t.mode];
-  const lt = t.mode === 'light';
-  const k = OLD_ART.sd as PhotoKey;
-  // bring the photo's subject (target) up into the right half of the frame
-  const w = 420;
-  const h = (w * PH_H) / PH_W;
-  const place = { x: 250 - 0.71 * w - IMG.x, y: 310 - 0.81 * h - IMG.y, w, h };
   return (
     <Fade stops={[[0, 1], [0.76, 1], [0.97, 0], [1, 0]]} style={s.area}>
-      <View style={[StyleSheet.absoluteFill, lt ? { mixBlendMode: 'multiply' } : null]} pointerEvents="none">
-        <Feather
-          source={photo(t.mode, k)}
-          box={{ w: AW, h: AH }}
-          place={{ x: place.x + IMG.x, y: place.y + IMG.y, w, h }}
-          ellipse={{ cx: IMG.x + 0.45 * IMG.w, cy: IMG.y + 0.48 * IMG.h, rx: 0.7 * IMG.w, ry: 0.6 * IMG.h }}
-          stops={[[0, 1], [0.35, 1], [0.62, 0.45], [0.84, 0]]}
-          vfade={[[0, 0], [0.05, 1], [1, 1]]}
-          opacity={lt ? 0.6 : 1}
-        />
-      </View>
+      <Empty w={210} h={300} radius={18} style={{ position: 'absolute', left: u(18), top: u(8) }} />
       <View style={s.vkBox} pointerEvents="none">
         <Text style={[s.vk, { color: t.mute }]} numberOfLines={1}>
           <Text style={{ color: t.fg }}>SHORT</Text> · 03 / 14

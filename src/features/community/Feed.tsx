@@ -3,8 +3,7 @@ import { router } from 'expo-router';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 
-import { Crop, Fade } from '@/features/community/fx';
-import { focusPlace, OLD_ART, photo, type PhotoKey } from '@/features/community/data';
+import { Empty, Fade } from '@/features/community/fx';
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F, type Theme } from '@/theme/tokens';
@@ -26,22 +25,20 @@ const CARDS: Card[] = [
 const openStory = () => router.push('/community/story');
 
 function Avatar({ t, art, first }: { t: Theme; art: string; first?: boolean }) {
-  const k = OLD_ART[art] as PhotoKey;
   return (
     <View style={[s.av, { marginLeft: first ? u(-2) : u(-11), borderColor: t.panel }]}>
-      <Crop source={photo(t.mode, k)} w={20} h={20} radius={10} place={focusPlace(k, 20, 20, 0.11)} />
+      <Empty w={20} h={20} radius={10} />
     </View>
   );
 }
 
 function Media({ t, c }: { t: Theme; c: Extract<Card, { kind: 'media' }> }) {
   const p = C[t.mode];
-  const k = OLD_ART[c.art] as PhotoKey;
   return (
     <Pressable onPress={openStory} style={[s.fr, { backgroundColor: t.panel, borderColor: t.panelLine }]} accessibilityRole="button" accessibilityLabel={c.title}>
-      <Crop source={photo(t.mode, k)} w={252} h={116} place={focusPlace(k, 252, 116)}>
+      <Empty w={252} h={116}>
         <LinearGradient colors={['transparent', p.shade]} locations={[0.45, 1]} style={StyleSheet.absoluteFill} />
-      </Crop>
+      </Empty>
       {c.play ? (
         <View style={[s.pl, { backgroundColor: p.play }]}>
           <Svg width={u(9)} height={u(9)} viewBox="0 0 10 10">

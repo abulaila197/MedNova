@@ -1,10 +1,10 @@
 import { Screen } from '@/components/Screen';
-import { Soon } from '@/features/community/Soon';
+import { Feed } from '@/features/community/Feed';
 
 export default function Page() {
   return (
     <Screen tab='community' glow={14}>
-      <Soon />
+      <Feed />
     </Screen>
   );
 }

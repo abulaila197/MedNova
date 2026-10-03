@@ -4,6 +4,7 @@ import { useEffect, useId, useRef, type ReactNode } from 'react';
 import { Image, type ImageSourcePropType, Platform, View, type ViewStyle } from 'react-native';
 import Svg, { Defs, G, Image as SvgImage, LinearGradient as LinearGradientSvg, Mask, RadialGradient, Rect, Stop } from 'react-native-svg';
 
+import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 
 /** Unique, url()-safe id for SVG defs. */
@@ -125,6 +126,16 @@ export function Crop({ source, w, h, place, radius = 0, style, children }: { sou
   return (
     <View style={[{ width: u(w), height: u(h), borderRadius: u(radius), overflow: 'hidden' }, style]}>
       <Image source={source} style={{ position: 'absolute', left: u(place.x), top: u(place.y), width: u(place.w), height: u(place.h) }} />
+      {children}
+    </View>
+  );
+}
+
+/** Empty photo frame: a soft tinted box that keeps a photo's place until real content exists. */
+export function Empty({ w, h, radius = 0, style, children }: { w: number; h: number; radius?: number; style?: ViewStyle; children?: ReactNode }) {
+  const t = useTheme();
+  return (
+    <View style={[{ width: u(w), height: u(h), borderRadius: u(radius), overflow: 'hidden', backgroundColor: t.card2, borderWidth: 1, borderColor: t.chipLine }, style]}>
       {children}
     </View>
   );

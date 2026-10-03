@@ -30,7 +30,9 @@ type SceneDef = {
   /** the scene::after veil over the photo */
   veil: Stop3[];
   /** which photo edge needs a soft fade (the prototype leaves a hard edge there) */
-  fade: 'right' | 'top';
+  fade: 'top' | null;
+  /** extra horizontal shift in design px that centres the artwork and makes the photo cover the full width */
+  shift?: number;
 };
 
 const SCENES: SceneDef[] = [
@@ -39,14 +41,16 @@ const SCENES: SceneDef[] = [
     size: 186,
     pos: [-76, -15],
     veil: [[0, 1], [0.3, 1], [0.46, 0], [0.8, 0], [0.96, 1]],
-    fade: 'right',
+    fade: null,
+    shift: 24,
   },
   {
     src: require('@/assets/onboarding/learning-space.jpg'),
     size: 174,
     pos: [-63.5, -61],
     veil: [[0, 0.6], [0.12, 0], [0.54, 0], [0.7, 1]],
-    fade: 'right',
+    fade: null,
+    shift: 16,
   },
   {
     src: require('@/assets/onboarding/nova-community.jpg'),
@@ -64,34 +68,31 @@ function Scene({ si, w, h, padTop, padBottom }: { si: number; w: number; h: numb
   const ch = (h - padTop - padBottom) / 100;
   const iw = d.size * cw;
   const ih = iw * IMG_RATIO;
-  const x = d.pos ? d.pos[0] * cw : (w - iw) * 0.5;
+  const x = (d.pos ? d.pos[0] * cw : (w - iw) * 0.5) + u(d.shift ?? 0);
   const y = d.pos ? d.pos[1] * ch : h - ih;
   const id = `ob${si}`;
   const soft = u(26);
   return (
     <Svg width={w} height={h} style={StyleSheet.absoluteFill} pointerEvents="none">
       <Defs>
-        {d.fade === 'right' ? (
-          <SvgLinear id={`${id}e`} gradientUnits="userSpaceOnUse" x1={x + iw - soft} y1={0} x2={x + iw} y2={0}>
-            <Stop offset={0} stopColor="#fff" stopOpacity={1} />
-            <Stop offset={1} stopColor="#fff" stopOpacity={0} />
-          </SvgLinear>
-        ) : (
-          <SvgLinear id={`${id}e`} gradientUnits="userSpaceOnUse" x1={0} y1={y} x2={0} y2={y + soft * 1.4}>
-            <Stop offset={0} stopColor="#fff" stopOpacity={0} />
-            <Stop offset={1} stopColor="#fff" stopOpacity={1} />
-          </SvgLinear>
-        )}
-        <Mask id={`${id}m`} maskUnits="userSpaceOnUse" x={0} y={0} width={w} height={h}>
-          <Rect x={0} y={0} width={w} height={h} fill={`url(#${id}e)`} />
-        </Mask>
+        {d.fade === 'top' ? (
+          <>
+            <SvgLinear id={`${id}e`} gradientUnits="userSpaceOnUse" x1={0} y1={y} x2={0} y2={y + soft * 1.4}>
+              <Stop offset={0} stopColor="#fff" stopOpacity={0} />
+              <Stop offset={1} stopColor="#fff" stopOpacity={1} />
+            </SvgLinear>
+            <Mask id={`${id}m`} maskUnits="userSpaceOnUse" x={0} y={0} width={w} height={h}>
+              <Rect x={0} y={0} width={w} height={h} fill={`url(#${id}e)`} />
+            </Mask>
+          </>
+        ) : null}
         <SvgLinear id={`${id}v`} x1={0} y1={0} x2={0} y2={1}>
           {d.veil.map(([o, a], i) => (
             <Stop key={i} offset={o} stopColor={NAVY} stopOpacity={a} />
           ))}
         </SvgLinear>
       </Defs>
-      <SvgImage href={d.src} x={x} y={y} width={iw} height={ih} preserveAspectRatio="none" mask={`url(#${id}m)`} />
+      <SvgImage href={d.src} x={x} y={y} width={iw} height={ih} preserveAspectRatio="none" mask={d.fade ? `url(#${id}m)` : undefined} />
       <Rect x={0} y={0} width={w} height={h} fill={`url(#${id}v)`} />
     </Svg>
   );
