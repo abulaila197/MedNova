@@ -1,7 +1,7 @@
 import { Redirect, router, useLocalSearchParams } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 
-import { engine, type Play } from '@/games/engine';
+import { engine, type Play, type Standing } from '@/games/engine';
 import { finishPlay } from '@/games/shell/flow';
 import { gameDef } from '@/games/shell/registry';
 
@@ -15,9 +15,9 @@ export default function Run() {
   }, [playId]);
 
   const onFinish = useCallback(
-    async (score: number) => {
+    async (score: number, standings?: Standing[]) => {
       if (!def || !play) return;
-      await finishPlay(def, play, score);
+      await finishPlay(def, play, score, standings);
       router.replace(`/play/${game}/results?play=${play.id}`);
     },
     [def, play, game],

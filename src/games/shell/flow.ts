@@ -1,6 +1,6 @@
 // The shared play flow every game uses, so the general rules never differ between games.
 import { engine, GUEST_TRIALS, TRIAL_MODES } from '../engine';
-import type { GameKey, Mode, Play, PlayItem, Seat } from '../engine/types';
+import type { GameKey, Mode, Play, PlayItem, Seat, Standing } from '../engine/types';
 import { useSession } from './session';
 import type { GameDef } from './types';
 
@@ -26,10 +26,10 @@ export async function recordItem(play: Play, item: Omit<PlayItem, 'id' | 'at' | 
 }
 
 /** Ends the play, then pays EXP on the phone at once (rule 6). */
-export async function finishPlay(def: GameDef, play: Play, score: number) {
+export async function finishPlay(def: GameDef, play: Play, score: number, standings?: Standing[]) {
   const items = await engine.recorder.itemsOf(play.id);
   const exp = Math.max(0, Math.min(def.exp(score, items), def.expCap(play.settings)));
-  await engine.recorder.finish(play.id, { score, expEarned: exp });
+  await engine.recorder.finish(play.id, { score, standings, expEarned: exp });
   const paid = await engine.wallet.earn(play.id, exp, def.expCap(play.settings));
   return { exp: paid, items };
 }

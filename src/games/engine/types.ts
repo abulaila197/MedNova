@@ -16,7 +16,7 @@ export type PlayStatus = 'in_progress' | 'finished';
 
 export type Outcome = 'right' | 'wrong' | 'skipped' | 'timed_out';
 
-export type Seat = { seat: number; name: string; removed?: boolean };
+export type Seat = { seat: number; name: string; color?: string; removed?: boolean };
 
 export type Standing = { seat: number; name: string; score: number; timeMs: number; rank: number };
 

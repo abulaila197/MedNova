@@ -1,6 +1,6 @@
 import type { ComponentType } from 'react';
 
-import type { GameKey, Mode, Play, PlayItem } from '../engine/types';
+import type { GameKey, Mode, Play, PlayItem, Standing } from '../engine/types';
 
 /** One mode card on a game's landing page. */
 export type ModeDef = {
@@ -23,8 +23,8 @@ export type SetupOption = {
 
 export type PlayProps = {
   play: Play;
-  /** Called when the game is over; the shell records it and opens results. */
-  onFinish: (score: number) => void;
+  /** Called when the game is over; the shell records it and opens results. Multiplayer passes the standings. */
+  onFinish: (score: number, standings?: Standing[]) => void;
   /** Called when the player leaves from the pause menu (solo bookmarks, rule 7). */
   onQuit: () => void;
 };
@@ -34,6 +34,8 @@ export type GameDef = {
   key: GameKey;
   modes: ModeDef[];
   setup: Partial<Record<Mode, SetupOption[]>>;
+  /** Modes that take named players in setup (one phone). Seat 0 is the phone owner. */
+  players?: Partial<Record<Mode, { min: number; max: number }>>;
   Play: Partial<Record<Mode, ComponentType<PlayProps>>>;
   /** EXP for a finished play, and the per-play sanity cap (rule 6). */
   exp: (score: number, items: PlayItem[]) => number;
