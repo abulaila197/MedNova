@@ -237,7 +237,7 @@ function Differential({ wrong }: { wrong: string[] }) {
   return (
     <View style={s.ddx}>
       <Kick>
-        Differential · {wrong.length} of {DP.maxGuesses} used
+        Differential
       </Kick>
       <View style={s.chips}>
         {wrong.map((id) => (

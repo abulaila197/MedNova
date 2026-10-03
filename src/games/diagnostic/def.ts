@@ -13,7 +13,7 @@ export const diagnosticPursuit: GameDef = {
       blurb: 'Clues arrive one by one. Name the disease with as few as you can.',
       howTo: [
         'Each case starts with one clue. Type a diagnosis and submit it.',
-        'A wrong guess shows the next clue. Six wrong guesses end the case.',
+        'A wrong guess shows the next clue. A wrong guess when all six clues are showing ends the case.',
         'Reveal shows a clue for fewer points. Hint shows the medical field for 1 token.',
         'Fewer clues and a faster answer score more.',
       ],

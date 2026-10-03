@@ -41,13 +41,20 @@ export function reveal(a: Attempt): Attempt {
 
 export type GuessOutcome = 'correct' | 'wrong' | 'wrong_out' | 'ignored';
 
-/** A wrong guess shows the next clue; the 6th wrong guess fails the case. The same wrong pick twice is ignored. */
+/**
+ * Guesses are not a fixed 6: each clue revealed with the button uses up one guess (Yazan, 2026-10-03),
+ * so a player who revealed 2 clues has 4 guesses. A wrong guess shows the next clue; the last allowed
+ * wrong guess fails the case. The same wrong pick twice is ignored.
+ */
+export const guessesAllowed = (a: Attempt) => Math.max(1, DP.maxGuesses - a.reveals);
+export const guessesLeft = (a: Attempt) => Math.max(0, guessesAllowed(a) - a.wrong.length);
+
 export function guess(a: Attempt, answerId: string, accepted: boolean): { attempt: Attempt; outcome: GuessOutcome } {
   if (a.status !== 'active') return { attempt: a, outcome: 'ignored' };
   if (accepted) return { attempt: { ...a, status: 'solved' }, outcome: 'correct' };
   if (a.wrong.includes(answerId)) return { attempt: a, outcome: 'ignored' };
   const wrong = [...a.wrong, answerId];
-  if (wrong.length >= DP.maxGuesses) return { attempt: { ...a, wrong, status: 'failed' }, outcome: 'wrong_out' };
+  if (wrong.length >= guessesAllowed(a)) return { attempt: { ...a, wrong, status: 'failed' }, outcome: 'wrong_out' };
   return { attempt: { ...a, wrong, cluesShown: Math.min(DP.clueCount, a.cluesShown + 1) }, outcome: 'wrong' };
 }
 

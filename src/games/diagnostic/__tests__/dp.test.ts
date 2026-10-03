@@ -1,7 +1,7 @@
 /// <reference types="node" />
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { buildIndex, cluePoints, guess, MAX_CASE_POINTS, newAttempt, search, speedBonus } from '../core';
+import { buildIndex, cluePoints, guess, guessesLeft, MAX_CASE_POINTS, newAttempt, reveal, search, speedBonus } from '../core';
 import { elapsed, snapshot, startRun, step } from '../solo';
 
 test('scoring matches the original config', () => {
@@ -21,6 +21,22 @@ test('attempt: wrong shows next clue, duplicate ignored, 6th wrong fails', () =>
   const last = guess(a, 'x9', false);
   assert.equal(last.outcome, 'wrong_out');
   assert.equal(last.attempt.status, 'failed');
+});
+
+test('attempt: each revealed clue uses up one guess', () => {
+  let a = reveal(reveal(newAttempt()));
+  assert.equal(guessesLeft(a), 4);
+  for (let i = 0; i < 3; i++) a = guess(a, `x${i}`, false).attempt;
+  assert.equal(a.cluesShown, 6);
+  assert.equal(guessesLeft(a), 1);
+  const last = guess(a, 'x9', false);
+  assert.equal(last.outcome, 'wrong_out');
+  assert.equal(last.attempt.wrong.length, 4);
+  // every clue revealed by button: one guess left
+  let b = newAttempt();
+  for (let i = 0; i < 5; i++) b = reveal(b);
+  assert.equal(guessesLeft(b), 1);
+  assert.equal(guess(b, 'y', false).outcome, 'wrong_out');
 });
 
 test('solo run: solve, skip, pause keeps clock, done after last case', () => {
