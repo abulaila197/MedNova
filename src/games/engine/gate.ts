@@ -1,16 +1,19 @@
-// Guest trial gate (rules 19-20): 3 plays per game + mode, then sign-in before setup.
-// A play counts once its first case is answered.
+// Guest trial gate (rules 19-20, revised 2026-10-03): 3 free plays per game, shared by Solo and
+// Offline Multiplayer together, then sign-in before setup. A play counts once its first case is answered.
 import { serial, type KV } from './storage';
 import type { GameKey, Mode } from './types';
 
 export const GUEST_TRIALS = 3;
 const KEY = 'guest_trials';
 
-type Counted = Record<string, string[]>; // "game:mode" -> play ids that counted
+type Counted = Record<string, string[]>; // game -> play ids that counted
+
+/** Modes that draw on the shared free plays. Online Multiplayer always needs sign-in (no free plays). */
+export const TRIAL_MODES: Mode[] = ['solo', 'offline'];
 
 export function createGate(kv: KV) {
   const load = async () => (await kv.get<Counted>(KEY)) ?? {};
-  const k = (g: GameKey, m: Mode) => `${g}:${m}`;
+  const k = (g: GameKey, _m?: Mode) => g;
   const run = serial();
   return {
     used(game: GameKey, mode: Mode) {
@@ -22,6 +25,7 @@ export function createGate(kv: KV) {
     mustSignIn(game: GameKey, mode: Mode, signedIn: boolean) {
       return run(async () => {
         if (signedIn) return false;
+        if (!TRIAL_MODES.includes(mode)) return true;
         return ((await load())[k(game, mode)] ?? []).length >= GUEST_TRIALS;
       });
     },

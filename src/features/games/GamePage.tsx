@@ -1,8 +1,10 @@
 import { LinearGradient } from 'expo-linear-gradient';
+import { router } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated, { type SharedValue, useAnimatedStyle } from 'react-native-reanimated';
 
 import type { Game } from '@/data/games';
+import { gameDef } from '@/games/shell/registry';
 import { useApp, useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
@@ -29,7 +31,7 @@ export function GamePage({ game, j, pos, active }: { game: Game; j: number; pos:
           {game.lead} <Text style={{ color: t.accent, fontFamily: F.displayItalic }}>{game.em}</Text>
         </Text>
         <Text style={[s.desc, { color: DESC[t.mode] }]}>{game.desc}</Text>
-        <Pressable onPress={() => useApp.getState().setPlaying(`${game.lead} ${game.em}`)} style={s.goWrap} accessibilityRole="button" accessibilityLabel={`Play ${game.lead} ${game.em}`}>
+        <Pressable onPress={() => (gameDef(game.key) ? router.push(`/play/${game.key}`) : useApp.getState().setPlaying(`${game.lead} ${game.em}`))} style={s.goWrap} accessibilityRole="button" accessibilityLabel={`Play ${game.lead} ${game.em}`}>
           <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.go}>
             <Text style={[s.goT, { color: t.onGrad }]}>Play</Text>
           </LinearGradient>

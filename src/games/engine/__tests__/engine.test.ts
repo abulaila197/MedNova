@@ -83,17 +83,20 @@ test('wallet: spend needs tokens, refund once', async () => {
   assert.equal((await w.balance()).tokens, 2);
 });
 
-test('gate: 3 trials per game+mode, idempotent per play, signed-in never gated', async () => {
+test('gate: 3 trials per game shared by solo and offline, idempotent per play, signed-in never gated', async () => {
   const g = createGate(memoryKV());
-  for (let i = 0; i < GUEST_TRIALS; i++) {
-    assert.equal(await g.mustSignIn('nova-crossword', 'solo', false), false);
-    await g.countPlay('nova-crossword', 'solo', `p${i}`);
-    await g.countPlay('nova-crossword', 'solo', `p${i}`);
-  }
-  assert.equal(await g.used('nova-crossword', 'solo'), GUEST_TRIALS);
+  await g.countPlay('nova-crossword', 'solo', 'p0');
+  await g.countPlay('nova-crossword', 'solo', 'p0');
+  await g.countPlay('nova-crossword', 'offline', 'p1');
+  assert.equal(await g.mustSignIn('nova-crossword', 'solo', false), false);
+  await g.countPlay('nova-crossword', 'solo', 'p2');
+  assert.equal(await g.used('nova-crossword', 'offline'), GUEST_TRIALS);
   assert.equal(await g.mustSignIn('nova-crossword', 'solo', false), true);
+  assert.equal(await g.mustSignIn('nova-crossword', 'offline', false), true, 'solo and offline share the 3');
   assert.equal(await g.mustSignIn('nova-crossword', 'solo', true), false);
-  assert.equal(await g.mustSignIn('nova-crossword', 'offline', false), false, 'modes counted apart');
+  assert.equal(await g.mustSignIn('the-riddler', 'solo', false), false, 'games counted apart');
+  assert.equal(await g.mustSignIn('the-riddler', 'online', false), true, 'online always needs sign-in');
+  assert.equal(await g.mustSignIn('the-riddler', 'online', true), false);
 });
 
 test('picker: unseen first, then reshuffle when the bank runs out', async () => {
