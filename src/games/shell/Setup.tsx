@@ -107,7 +107,7 @@ function Players({ seats, setSeats, min, max, note }: { seats: Seat[]; setSeats:
         </View>
       ))}
       {seats.length < max ? <Ghost label="Add player" onPress={add} /> : null}
-      <Body>{note ?? 'Player 1 is you, the phone owner. Only your points earn EXP and only your missed cases go to Learn.'}</Body>
+      <Body>{note ?? 'Player 1 is you, the phone owner. Offline earns no EXP; only your missed cases go to Learn.'}</Body>
     </Card>
   );
 }

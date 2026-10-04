@@ -79,7 +79,8 @@ export const diagnosticPursuit: GameDef = {
   Play: { solo: SoloPlay, offline: OfflinePlay },
   // DP4: EXP = points ÷ 10; the cap is the most a game of this length can earn.
   exp: (score) => Math.floor(score / 10),
-  expCap: (settings) => Math.floor((Number(settings.cases) || 5) * MAX_CASE_POINTS / 10),
+  // DPO6 (revised): Offline earns no EXP, like Medicordle; the owner's misses still feed Learn.
+  expCap: (settings, mode) => (mode === 'offline' ? 0 : Math.floor((Number(settings.cases) || 5) * MAX_CASE_POINTS / 10)),
   itemLabel: (item) => {
     const c = caseById.get(item.itemId);
     return (c && guessById.get(c.answer_id)?.label) ?? c?.disease ?? item.itemId;
