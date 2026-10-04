@@ -120,7 +120,11 @@ export function HeatBoard(p: BoardProps) {
             <Animated.Text entering={FadeIn} style={[s.notice, { color: t.soft }]}>{p.notice}</Animated.Text>
           ) : null}
           {p.dock ? (
-            <Animated.View entering={FadeInDown.duration(260)}>{p.dock}</Animated.View>
+            // Time up and turn over sit in the middle of the screen (Yazan, 2026-10-04).
+            <>
+              <Animated.View entering={FadeInDown.duration(260)}>{p.dock}</Animated.View>
+              <View style={{ flex: 1.15 }} />
+            </>
           ) : p.helpers ? (
             <Helpers {...p.helpers} disabled={p.round.phase !== 'playing'} />
           ) : null}
