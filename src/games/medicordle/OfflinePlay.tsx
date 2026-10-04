@@ -10,6 +10,7 @@ import { usePauseHide } from '../engine/usePauseHide';
 import { Curtain } from '../shell/Curtain';
 import { recordItem } from '../shell/flow';
 import { PauseMenu } from '../shell/PauseMenu';
+import { teamLap, teamsOf } from '../shell/teams';
 import type { PlayProps } from '../shell/types';
 import { Btn, GameScreen } from '../shell/ui';
 import { lengthCheck, type Style } from './core';
@@ -38,10 +39,12 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
     (async () => {
       let r = play.resume as OfflineRun | null;
       if (!r) {
-        const seats = play.seats.filter((x) => !x.removed).map((x) => x.seat);
+        const live = play.seats.filter((x) => !x.removed);
+        const seats = live.map((x) => x.seat);
         const words = Number(play.settings.words) || 3;
         const ids = await engine.picker.pick(play.game, poolFor(style).map((w) => w.id), words);
-        r = startOffline(style, seats, ids, (Number(play.settings.turn) || 20) * 1000);
+        const teams = teamsOf(play);
+        r = startOffline(style, seats, ids, (Number(play.settings.turn) || 20) * 1000, Math.random, teams ? teamLap(live, teams) : null);
       }
       if (live) {
         runRef.current = r;

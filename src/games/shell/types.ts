@@ -48,6 +48,9 @@ export type GameDef = {
   itemsTitle?: string;
   /** Replaces the Points and Solved figures on results when the game counts differently; null keeps the default. */
   summary?: (play: Play, items: PlayItem[]) => { value: string; label: string }[] | null;
+  /** Modes that offer team play (TM1); the host turns it on in setup. Team score is the average unless 'sum'. */
+  teams?: Partial<Record<Mode, true>>;
+  teamScore?: 'average' | 'sum';
   /** Note under the players list in setup (default: the phone owner earns EXP and Learn entries). */
   playersNote?: (players: number) => string;
 };

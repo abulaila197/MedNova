@@ -8,6 +8,7 @@ import { F } from '@/theme/tokens';
 
 import type { Play, PlayItem } from '../engine/types';
 import { startPlay } from './flow';
+import { teamsOf, teamStandings } from './teams';
 import type { GameDef } from './types';
 import { Body, Btn, Card, GameScreen, Ghost, Kick, Title } from './ui';
 
@@ -27,6 +28,8 @@ export function Results({ def, play, items }: { def: GameDef; play: Play; items:
   const right = mine.filter((i) => i.outcome === 'right').length;
   const nameOf = new Map(play.seats.map((x) => [x.seat, x.name]));
   const colorOf = new Map(play.seats.map((x) => [x.seat, x.color]));
+  const teams = teamsOf(play);
+  const teamRows = teams && play.standings.length > 1 ? teamStandings(play.standings, play.seats, teams, def.teamScore) : null;
   return (
     <GameScreen>
       <View style={{ gap: u(6) }}>
@@ -44,9 +47,23 @@ export function Results({ def, play, items }: { def: GameDef; play: Play; items:
           </View>
         )).flatMap((el, i) => (i === 0 ? [el, <ExpStat key="exp" exp={play.expEarned} />] : [el]))}
       </Card>
+      {teamRows ? (
+        <Card>
+          <Kick>Teams</Kick>
+          {teamRows.map((r) => (
+            <View key={r.id} style={s.row}>
+              <Text style={[s.rank, { color: t.dim }]}>{r.rank}</Text>
+              <View style={[s.dot, { backgroundColor: r.color }]} />
+              <Text style={[s.item, { color: r.rank === 1 ? r.color : t.fg }]}>{r.name}</Text>
+              <Text style={[s.pts, { color: t.soft }]}>{r.score}</Text>
+            </View>
+          ))}
+          <Body>{def.teamScore === 'sum' ? 'A team scores every word its players won.' : 'A team scores its players\' average.'}</Body>
+        </Card>
+      ) : null}
       {play.standings.length > 1 ? (
         <Card>
-          <Kick>Standings</Kick>
+          <Kick>{teamRows ? 'Players' : 'Standings'}</Kick>
           {play.standings.map((r) => (
             <View key={r.seat} style={s.row}>
               <Text style={[s.rank, { color: t.dim }]}>{r.rank}</Text>

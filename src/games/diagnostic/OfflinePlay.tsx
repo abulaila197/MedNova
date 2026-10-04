@@ -5,6 +5,7 @@ import { usePauseHide } from '../engine/usePauseHide';
 import { Curtain } from '../shell/Curtain';
 import { recordItem } from '../shell/flow';
 import { PauseMenu } from '../shell/PauseMenu';
+import { teamLap, teamsOf } from '../shell/teams';
 import type { PlayProps } from '../shell/types';
 import { GameScreen } from '../shell/ui';
 import { CaseBoard, pointsLine } from './CaseBoard';
@@ -38,10 +39,12 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
     (async () => {
       let r = play.resume as OfflineRun | null;
       if (!r) {
-        const seats = play.seats.filter((x) => !x.removed).map((x) => x.seat);
+        const seats = play.seats.filter((x) => !x.removed);
         const rounds = Number(play.settings.cases) || 3;
         const ids = await engine.picker.pick(play.game, poolFor(play.settings.difficulty as Difficulty), rounds * seats.length);
-        r = startOffline(shuffle(seats), rounds, ids);
+        // TMG-DP: own cases as before; with teams on, teams alternate in the turn order (TM5).
+        const teams = teamsOf(play);
+        r = startOffline(teams ? teamLap(seats, teams) : shuffle(seats.map((x) => x.seat)), rounds, ids);
       }
       if (live) {
         runRef.current = r;

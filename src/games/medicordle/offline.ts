@@ -24,6 +24,8 @@ export type OfflineRun = {
   /** Seat of the last turn played, so the next lap never starts with them (NM14). */
   last: number | null;
   seats: number[];
+  /** Teams on (TM5): a fixed lap where teams alternate, used instead of random laps. */
+  teamOrder?: number[] | null;
   removed: number[];
   phase: OfflinePhase;
   before: 'ready' | 'playing' | 'wordOver' | null;
@@ -44,12 +46,16 @@ export type OfflineEvent =
 
 const active = (r: Pick<OfflineRun, 'seats' | 'removed'>) => r.seats.filter((s) => !r.removed.includes(s));
 
-export function startOffline(style: Style, seats: number[], wordIds: string[], turnMs: number, rng: () => number = Math.random): OfflineRun {
+export function startOffline(style: Style, seats: number[], wordIds: string[], turnMs: number, rng: () => number = Math.random, teamOrder: number[] | null = null): OfflineRun {
   return {
-    style, wordIds, turnMs, index: 0, rows: offlineRows(seats.length), turns: [], lap: nextLap(seats, null, rng), last: null,
-    seats, removed: [], phase: 'ready', before: null, elapsedMs: 0, runningSince: null, results: [], rowSeq: 0,
+    style, wordIds, turnMs, index: 0, rows: offlineRows(seats.length), turns: [], lap: teamOrder ? [...teamOrder] : nextLap(seats, null, rng), last: null,
+    seats, teamOrder, removed: [], phase: 'ready', before: null, elapsedMs: 0, runningSince: null, results: [], rowSeq: 0,
   };
 }
+
+/** The next lap: the team order when teams are on, else random with nobody twice in a row (NM14). */
+const lapFor = (r: OfflineRun, seats: number[], last: number | null, rng: () => number) =>
+  r.teamOrder ? r.teamOrder.filter((s) => seats.includes(s)) : nextLap(seats, last, rng);
 
 export const currentSeat = (r: OfflineRun) => r.lap[0];
 export const turnElapsed = (r: OfflineRun, now: number) => Math.min(r.turnMs, r.elapsedMs + (r.runningSince == null ? 0 : Math.max(0, now - r.runningSince)));
@@ -70,7 +76,7 @@ function afterTurn(r: OfflineRun, turn: Turn, answer: string | null, rng: () => 
   const turns = [...r.turns, turn];
   const solved = turn.word != null && turn.word === answer;
   let lap = r.lap.slice(1);
-  if (!lap.length) lap = nextLap(active(r), turn.seat, rng);
+  if (!lap.length) lap = lapFor(r, active(r), turn.seat, rng);
   const base = { ...r, turns, lap, last: turn.seat, elapsedMs: 0, runningSince: null, rowSeq: r.rowSeq + (turn.word ? 1 : 0) };
   if (solved || turns.length >= r.rows) {
     const res: WordOutcome = { wordId: r.wordIds[r.index], winner: solved ? turn.seat : null, turns };
@@ -102,7 +108,7 @@ export function stepOffline(r: OfflineRun, e: OfflineEvent, rng: () => number = 
       if (r.index + 1 >= r.wordIds.length) return { ...r, phase: 'done' };
       // A new word starts a fresh full lap (equal guesses per word), still never with the last player.
       const seats = active(r);
-      return { ...r, index: r.index + 1, rows: offlineRows(seats.length), turns: [], lap: nextLap(seats, r.last, rng), phase: 'ready', before: null, elapsedMs: 0, runningSince: null };
+      return { ...r, index: r.index + 1, rows: offlineRows(seats.length), turns: [], lap: lapFor(r, seats, r.last, rng), phase: 'ready', before: null, elapsedMs: 0, runningSince: null };
     }
     case 'REMOVE': {
       // Rule 17: a removed player's turns are skipped; at least 2 players stay.
@@ -110,7 +116,7 @@ export function stepOffline(r: OfflineRun, e: OfflineEvent, rng: () => number = 
       const removed = [...r.removed, e.seat];
       const onTurn = currentSeat(r) === e.seat && r.phase !== 'wordOver' && !(r.phase === 'paused' && r.before === 'wordOver');
       let lap = r.lap.filter((s) => s !== e.seat);
-      if (!lap.length) lap = nextLap(r.seats.filter((s) => !removed.includes(s)), r.last, rng);
+      if (!lap.length) lap = lapFor(r, r.seats.filter((s) => !removed.includes(s)), r.last, rng);
       if (!onTurn) return { ...r, removed, lap };
       // Their running turn is dropped (not counted as a row) and the next player gets ready.
       return { ...r, removed, lap, phase: r.phase === 'paused' ? 'paused' : 'ready', before: r.phase === 'paused' ? 'ready' : null, elapsedMs: 0, runningSince: null };

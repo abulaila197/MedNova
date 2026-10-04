@@ -39,6 +39,7 @@ export const novaMedicordle: GameDef = {
         'Each lap goes round every player in a random order, and nobody plays twice in a row.',
         'Rows round up so everyone gets the same number of guesses. A turn that runs out of time passes.',
         'Whoever guesses the word wins it. Most words wins. There are no hints and no EXP in this mode.',
+        'You can split players into teams. Teams take turns one after another, and the guesser\'s whole team wins the word.',
       ],
     },
     {
@@ -87,6 +88,9 @@ export const novaMedicordle: GameDef = {
     ],
   },
   players: { offline: { min: 2, max: 6 } },
+  // TMG-NM: the guesser's whole team wins the word, so a team scores its words (not an average).
+  teams: { offline: true },
+  teamScore: 'sum',
   playersNote: (n) => `Player 1 is you, the phone owner. With ${n} players the board has ${offlineRows(n)} rows, ${offlineRows(n) / n} guesses each.`,
   Play: { solo: SoloPlay, offline: OfflinePlay },
   // NM22: Solo EXP per word is stored on each item; NM25: Offline earns none.

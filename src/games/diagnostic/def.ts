@@ -28,6 +28,7 @@ export const diagnosticPursuit: GameDef = {
         'Each round, every player gets their own case and 90 seconds.',
         'A wrong guess shows the next clue. Reveal shows one for fewer points. There is no hint.',
         'Pass the phone when the curtain shows the next name. Most points after the last round wins.',
+        'You can split players into teams. Teams take turns one after another, and a team scores its players\' average.',
       ],
     },
     {
@@ -75,6 +76,7 @@ export const diagnosticPursuit: GameDef = {
       },
     ],
   },
+  teams: { offline: true },
   players: { offline: { min: 2, max: 6 } },
   Play: { solo: SoloPlay, offline: OfflinePlay },
   // DP4: EXP = points ÷ 10; the cap is the most a game of this length can earn.
