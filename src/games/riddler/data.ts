@@ -1,3 +1,4 @@
+import { fullName } from '../shell/names';
 import type { Answer, Riddle } from './core';
 import riddlesJson from './data/riddles.json';
 import extraJson from './data/extra-answers.json';
@@ -13,10 +14,17 @@ export const imageOf = (id: string) => IMAGES[id];
  * Look-alikes never match a riddle, so they are always wrong picks.
  */
 export const ANSWERS: Answer[] = [
-  ...RIDDLES.map((r) => ({ id: r.id, label: r.answer })),
-  ...(extraJson as string[]).map((label, i) => ({ id: `x-${i + 1}`, label })),
+  ...RIDDLES.map((r) => ({ id: r.id, label: r.answer, aliases: r.aliases })),
+  ...(extraJson as { label: string; aliases: string[] }[]).map((x, i) => ({ id: `x-${i + 1}`, ...x })),
 ];
-export const answerLabel = (id: string) => ANSWERS.find((a) => a.id === id)?.label ?? id;
+const answerById = new Map(ANSWERS.map((a) => [a.id, a]));
+/** An answer as shown everywhere: "Main name (other 1, other 2)" (NL1). */
+export const answerLabel = (id: string) => {
+  const a = answerById.get(id);
+  return a ? fullName(a) : id;
+};
+/** A riddle's answer as shown on result and reveal cards. */
+export const riddleName = (r: Riddle) => fullName({ label: r.answer, aliases: r.aliases });
 
 /** RD1: only condition riddles feed Learn; signs and symptoms are not saved. */
 export const feedsLearn = (r: Riddle) => r.kind === 'condition';

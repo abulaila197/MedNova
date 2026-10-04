@@ -7,9 +7,10 @@ import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F, type Theme } from '@/theme/tokens';
 
+import { fullName } from '../shell/names';
 import { Btn, GameScreen, Kick, RoundBtn } from '../shell/ui';
 import { DP, cluePoints, search, type Attempt, type DPCase, type GuessEntry } from './core';
-import { INDEX, guessById } from './data';
+import { INDEX, guessById, guessName } from './data';
 
 // The Diagnostic Pursuit case screen (v2, DP10-DP13), shared by Solo and Offline Multiplayer:
 // old clue-card style in MedNova colours, Focus mode while typing.
@@ -235,7 +236,7 @@ function Differential({ wrong }: { wrong: string[] }) {
       <View style={s.chips}>
         {wrong.map((id) => (
           <Text key={id} style={[s.chip, { color: t.mute, borderColor: t.chipLine }]}>
-            {guessById.get(id)?.label ?? id}
+            {guessName(id)}
           </Text>
         ))}
       </View>
@@ -271,7 +272,7 @@ function AnswerBox({ wrong, wrongSeq, focused, onFocus, onBlur, onGuess }: { wro
   const [text, setText] = useState('');
   const [picked, setPicked] = useState<GuessEntry | null>(null);
   const sugs = useMemo(() => (picked ? [] : search(INDEX, text).filter((g) => !wrong.includes(g.id))), [text, picked, wrong]);
-  const exact = sugs.find((g) => g.label.toLowerCase() === text.trim().toLowerCase()) ?? null;
+  const exact = sugs.find((g) => fullName(g).toLowerCase() === text.trim().toLowerCase()) ?? null;
   const choice = picked ?? exact;
 
   // Shake and clear on a wrong guess.
@@ -297,20 +298,21 @@ function AnswerBox({ wrong, wrongSeq, focused, onFocus, onBlur, onGuess }: { wro
       {sugs.length ? (
         <View style={[s.sugs, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
           {sugs.map((g, i) => {
-            const hit = g.label.toLowerCase().startsWith(q) ? text.trim().length : 0;
+            const name = fullName(g);
+            const hit = name.toLowerCase().startsWith(q) ? text.trim().length : 0;
             return (
               <Pressable
                 key={g.id}
                 onPress={() => {
                   setPicked(g);
-                  setText(g.label);
+                  setText(name);
                 }}
                 style={[s.sg, i === 0 && { backgroundColor: t.tabOn }]}
                 accessibilityRole="button"
-                accessibilityLabel={g.label}>
-                <Text style={[s.sgT, { color: t.soft }]} numberOfLines={1}>
-                  <Text style={{ color: t.white, fontFamily: F.bodyBold }}>{g.label.slice(0, hit)}</Text>
-                  {g.label.slice(hit)}
+                accessibilityLabel={name}>
+                <Text style={[s.sgT, { color: t.soft }]} numberOfLines={2}>
+                  <Text style={{ color: t.white, fontFamily: F.bodyBold }}>{name.slice(0, hit)}</Text>
+                  {name.slice(hit)}
                 </Text>
               </Pressable>
             );
@@ -361,7 +363,7 @@ function ResultCard({ r, c }: { r: BoardResult; c: DPCase }) {
   return (
     <Animated.View entering={FadeInDown.duration(280)} style={[s.res, { backgroundColor: t.panel, borderColor: alpha(tone, 0.6) }]}>
       <Kick color={tone}>{word}</Kick>
-      <Text style={[s.resD, { color: t.white }]}>{c.disease}</Text>
+      <Text style={[s.resD, { color: t.white }]}>{guessById.has(c.answer_id) ? guessName(c.answer_id) : c.disease}</Text>
       <Text style={[s.resF, { color: t.mute }]}>{c.fields.join(' · ')}</Text>
       <Text style={[s.resL, { color: t.soft }]}>{r.line}</Text>
       <Btn label={r.nextLabel} onPress={r.onNext} style={{ marginTop: u(4) }} />

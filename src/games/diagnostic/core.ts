@@ -1,6 +1,8 @@
 // Diagnostic Pursuit rules, ported from the original game code (config, attempt, solo scoring, answer search).
 // Pure: no clock, no storage. The solo run on top of these lives in solo.ts.
 
+import { indexNames, searchNames, type NameIndex } from '../shell/names';
+
 export const DP = {
   clueCount: 6,
   maxGuesses: 6,
@@ -75,34 +77,11 @@ export function speedBonus(elapsedMs: number) {
 /** Most points a case can give: first clue + full speed bonus = 120. */
 export const MAX_CASE_POINTS = DP.cluePoints[0] + DP.speedBonusMax;
 
-// ---- answer search ----
+// ---- answer search (NL1: the main name and up to 2 other names; a missing 's doesn't count) ----
 
-export function normalize(text: string) {
-  return text
-    .normalize('NFD')
-    .replace(/[̀-ͯ]/g, '')
-    .toLowerCase()
-    .replace(/[^a-z0-9\s]/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
+export type Indexed = NameIndex<GuessEntry>;
 
-export type Indexed = { entry: GuessEntry; main: string; full: string };
+export const buildIndex = (list: readonly GuessEntry[]): Indexed => indexNames(list);
 
-export function buildIndex(list: readonly GuessEntry[]): Indexed[] {
-  return list.map((entry) => ({ entry, main: normalize(entry.label), full: normalize([entry.label, ...entry.aliases].join(' ')) }));
-}
-
-/** Nothing until 2 letters; then up to 5 matches: label prefix, then word prefix (aliases too), then all words. */
-export function search(index: readonly Indexed[], raw: string): GuessEntry[] {
-  const q = normalize(raw);
-  if (q.replace(/\s/g, '').length < DP.search.minQueryLength) return [];
-  const tokens = q.split(' ');
-  const hits: { e: Indexed; s: number }[] = [];
-  for (const e of index) {
-    const s = e.main.startsWith(q) ? 0 : (' ' + e.full).includes(' ' + q) ? 1 : tokens.every((t) => e.full.includes(t)) ? 2 : -1;
-    if (s >= 0) hits.push({ e, s });
-  }
-  hits.sort((a, b) => a.s - b.s || a.e.main.length - b.e.main.length || a.e.main.localeCompare(b.e.main));
-  return hits.slice(0, DP.search.maxSuggestions).map((h) => h.e.entry);
-}
+/** Nothing until 2 letters; then up to 5 matches: main name prefix, other name prefix, word prefix, then all words. */
+export const search = (index: Indexed, raw: string): GuessEntry[] => searchNames(index, raw, { min: DP.search.minQueryLength, max: DP.search.maxSuggestions });

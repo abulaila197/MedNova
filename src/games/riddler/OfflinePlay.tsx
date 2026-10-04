@@ -14,7 +14,7 @@ import { teamLap, teamsOf } from '../shell/teams';
 import type { PlayProps } from '../shell/types';
 import { Btn, GameScreen, Kick } from '../shell/ui';
 import { clock, shuffle } from './core';
-import { RIDDLES, answerLabel, feedsLearn, riddleById } from './data';
+import { RIDDLES, answerLabel, feedsLearn, riddleById, riddleName } from './data';
 import {
   currentPhoto, currentSeat, lockLeft, offlineRows, previousLine, riddlerTieBreak, snapshotOffline, startOffline, stepOffline, turnLeft,
   type OfflineEvent, type OfflineRun,
@@ -171,7 +171,7 @@ function Reveal({ run, names, colors, onNext }: { run: OfflineRun; names: Record
   return (
     <View style={[s.card, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
       <Kick color={t.accent}>The answer</Kick>
-      <Text style={[s.ans, { color: t.white }]}>{r.answer}</Text>
+      <Text style={[s.ans, { color: t.white }]}>{riddleName(r)}</Text>
       <View style={{ gap: u(4) }}>
         {rows.map((x) => (
           <View key={x.seat} style={s.row}>

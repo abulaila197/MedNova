@@ -4,6 +4,7 @@ import { test } from 'node:test';
 
 import { levelExp, search, startLevel, starsFor, stepLevel, type Answer } from '../core';
 import { LOCK_MS, currentSeat, lockLeft, offlineRows, previousLine, scorePhoto, startOffline, stepOffline } from '../offline';
+import { fullName } from '../../shell/names';
 
 const guess = (l: ReturnType<typeof startLevel>, answerId: string, now: number) => stepLevel(l, { type: 'GUESS', answerId, now });
 
@@ -37,11 +38,26 @@ test('a level: wrong picks cost a life, repeats are free, 3 wrong fails, right s
 });
 
 test('search: nothing under 2 letters, label prefix first, skips wrong picks', () => {
-  const list: Answer[] = [{ id: 'a', label: 'Rabies' }, { id: 'b', label: 'Raccoon eyes' }, { id: 'c', label: 'Hemophilia B (Christmas disease)' }];
+  const list: Answer[] = [{ id: 'a', label: 'Rabies' }, { id: 'b', label: 'Raccoon eyes' }, { id: 'c', label: 'Hemophilia B', aliases: ['Christmas disease'] }];
   assert.deepEqual(search(list, 'r'), []);
   assert.deepEqual(search(list, 'ra').map((a) => a.id), ['a', 'b']);
   assert.deepEqual(search(list, 'christ').map((a) => a.id), ['c']);
   assert.deepEqual(search(list, 'ra', ['a']).map((a) => a.id), ['b']);
+});
+
+test('names: up to 2 other names in brackets, only those count, a missing \'s does not matter', () => {
+  const list: Answer[] = [
+    { id: 'cd', label: 'Crohn disease', aliases: ['Regional enteritis'] },
+    { id: 'mi', label: 'Myocardial infarction', aliases: ['MI', 'Heart attack', 'Coronary thrombosis'] },
+    { id: 'se', label: "Otitis externa", aliases: ["Swimmer's ear"] },
+  ];
+  assert.equal(fullName(list[1]), 'Myocardial infarction (MI, Heart attack)');
+  assert.equal(fullName(list[0]), 'Crohn disease (Regional enteritis)');
+  for (const q of ["crohn's", 'crohns', 'crohn', "Crohn's disease"]) assert.deepEqual(search(list, q).map((a) => a.id), ['cd'], q);
+  assert.deepEqual(search(list, 'heart att').map((a) => a.id), ['mi']);
+  assert.deepEqual(search(list, 'coronary thr'), []);
+  assert.deepEqual(search(list, 'swimmers ear').map((a) => a.id), ['se']);
+  assert.deepEqual(search(list, 'swimmer ear').map((a) => a.id), ['se']);
 });
 
 test('photo scoring (RD5): 100, 80... by time, ties share, bonus up to 50, time out 0', () => {

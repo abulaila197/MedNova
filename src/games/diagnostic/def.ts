@@ -1,6 +1,6 @@
 import type { GameDef } from '../shell/types';
 import { MAX_CASE_POINTS } from './core';
-import { caseById, guessById, LEVELS, levelCount } from './data';
+import { caseById, guessById, guessName, LEVELS, levelCount } from './data';
 import { OfflinePlay } from './OfflinePlay';
 import { SoloPlay } from './SoloPlay';
 
@@ -85,6 +85,6 @@ export const diagnosticPursuit: GameDef = {
   expCap: (settings, mode) => (mode === 'offline' ? 0 : Math.floor((Number(settings.cases) || 5) * MAX_CASE_POINTS / 10)),
   itemLabel: (item) => {
     const c = caseById.get(item.itemId);
-    return (c && guessById.get(c.answer_id)?.label) ?? c?.disease ?? item.itemId;
+    return (c && guessById.has(c.answer_id) ? guessName(c.answer_id) : c?.disease) ?? item.itemId;
   },
 };

@@ -3,6 +3,7 @@
   "id": "r-001",
   "kind": "condition",
   "answer": "Forearm fracture",
+  "aliases": [],
   "definition": "A break of the radius, ulna, or both, often after a fall on an outstretched hand, causing pain, swelling, and deformity between the elbow and wrist.",
   "dossier": null,
   "w": 294,
@@ -13,6 +14,7 @@
   "id": "r-002",
   "kind": "condition",
   "answer": "Rabies",
+  "aliases": [],
   "definition": "A fatal encephalitis classically linked to a bite from an infected mammal, with hydrophobia and aerophobia.",
   "dossier": "rabies",
   "w": 1024,
@@ -23,6 +25,9 @@
   "id": "r-003",
   "kind": "condition",
   "answer": "Bell's palsy",
+  "aliases": [
+   "Idiopathic facial palsy"
+  ],
   "definition": "An acute unilateral lower motor neuron facial palsy causing weakness of the entire side of the face.",
   "dossier": "bell-palsy",
   "w": 1024,
@@ -33,6 +38,7 @@
   "id": "r-004",
   "kind": "sign",
   "answer": "Strawberry tongue",
+  "aliases": [],
   "definition": "A red, swollen tongue with prominent papillae, classically seen in scarlet fever and Kawasaki disease.",
   "dossier": null,
   "w": 812,
@@ -43,6 +49,9 @@
   "id": "r-005",
   "kind": "condition",
   "answer": "Cat-scratch disease",
+  "aliases": [
+   "Cat-scratch fever"
+  ],
   "definition": "A cat-associated infection classically causing regional lymphadenopathy after an inoculation papule.",
   "dossier": "cat-scratch-disease",
   "w": 1024,
@@ -53,6 +62,9 @@
   "id": "r-006",
   "kind": "condition",
   "answer": "Chickenpox",
+  "aliases": [
+   "Varicella"
+  ],
   "definition": "A varicella-zoster infection causing crops of itchy vesicles in different stages of healing.",
   "dossier": "varicella-chickenpox",
   "w": 1024,
@@ -62,7 +74,11 @@
  {
   "id": "r-007",
   "kind": "condition",
-  "answer": "Hemophilia B (Christmas disease)",
+  "answer": "Hemophilia B",
+  "aliases": [
+   "Christmas Disease",
+   "Factor IX Deficiency"
+  ],
   "definition": "An X-linked coagulation disorder caused by factor IX deficiency, producing deep bleeding and hemarthroses.",
   "dossier": "hemophilia-b-christmas-disease",
   "w": 1024,
@@ -73,6 +89,9 @@
   "id": "r-008",
   "kind": "sign",
   "answer": "Foot drop",
+  "aliases": [
+   "Drop foot"
+  ],
   "definition": "Inability to dorsiflex the ankle, typically from common peroneal nerve or L5 root injury, so the toes catch on the ground when walking.",
   "dossier": null,
   "w": 793,
@@ -82,7 +101,11 @@
  {
   "id": "r-009",
   "kind": "condition",
-  "answer": "Diabetes mellitus (DM)",
+  "answer": "Diabetes mellitus",
+  "aliases": [
+   "DM",
+   "Diabetes"
+  ],
   "definition": "A metabolic disorder characterized by chronic hyperglycemia from inadequate insulin secretion, action, or both.",
   "dossier": "diabetes-mellitus-overview",
   "w": 1024,
@@ -93,6 +116,7 @@
   "id": "r-010",
   "kind": "condition",
   "answer": "Frostbite",
+  "aliases": [],
   "definition": "A cold injury producing numb, pale or waxy skin that can become blistered or necrotic after rewarming.",
   "dossier": "frostbite",
   "w": 1408,
@@ -103,6 +127,7 @@
   "id": "r-011",
   "kind": "sign",
   "answer": "Pencil in cup deformity",
+  "aliases": [],
   "definition": "A radiographic deformity in which one bone end is eroded to a point and the adjacent bone base is cupped, classically seen in psoriatic arthritis.",
   "dossier": null,
   "w": 1080,
@@ -112,7 +137,10 @@
  {
   "id": "r-012",
   "kind": "condition",
-  "answer": "Gallstones (cholelithiasis)",
+  "answer": "Gallstones",
+  "aliases": [
+   "Cholelithiasis"
+  ],
   "definition": "Hard deposits of cholesterol or bilirubin in the biliary tract that can cause episodic right upper quadrant pain, especially after fatty meals.",
   "dossier": "cholelithiasis-gallstones-biliary-colic",
   "w": 1024,
@@ -123,6 +151,9 @@
   "id": "r-013",
   "kind": "condition",
   "answer": "Herpes simplex",
+  "aliases": [
+   "HSV"
+  ],
   "definition": "A herpesvirus infection producing grouped painful vesicles, often recurring at the oral or genital sites.",
   "dossier": "herpes-simplex",
   "w": 1600,
@@ -133,6 +164,9 @@
   "id": "r-014",
   "kind": "sign",
   "answer": "Mallet finger",
+  "aliases": [
+   "Baseball finger"
+  ],
   "definition": "A finger deformity from rupture or avulsion of the extensor tendon at the distal phalanx, leaving the fingertip unable to actively extend.",
   "dossier": null,
   "w": 992,
@@ -143,6 +177,7 @@
   "id": "r-015",
   "kind": "condition",
   "answer": "Angelman syndrome",
+  "aliases": [],
   "definition": "A neurodevelopmental disorder with severe speech impairment, ataxia, happy demeanor, and frequent inappropriate laughter.",
   "dossier": "angelman-syndrome",
   "w": 1024,
@@ -153,6 +188,9 @@
   "id": "r-016",
   "kind": "condition",
   "answer": "Athlete's foot",
+  "aliases": [
+   "Tinea pedis"
+  ],
   "definition": "A superficial dermatophyte infection of the feet causing interdigital scaling, itching, and fissuring.",
   "dossier": "athletes-foot-tinea-pedis",
   "w": 1024,
@@ -163,6 +201,7 @@
   "id": "r-017",
   "kind": "sign",
   "answer": "Double bubble sign",
+  "aliases": [],
   "definition": "A radiographic finding of two gas-filled chambers in the upper abdomen, classically indicating duodenal atresia in newborns.",
   "dossier": null,
   "w": 871,
@@ -173,6 +212,9 @@
   "id": "r-018",
   "kind": "condition",
   "answer": "Baker cyst",
+  "aliases": [
+   "Popliteal cyst"
+  ],
   "definition": "A fluid-filled swelling in the popliteal fossa, often arising from a knee joint effusion.",
   "dossier": "baker-cyst",
   "w": 1024,
@@ -183,6 +225,9 @@
   "id": "r-019",
   "kind": "condition",
   "answer": "Hookworm infestation",
+  "aliases": [
+   "Ancylostomiasis"
+  ],
   "definition": "An intestinal nematode infection acquired through skin penetration, classically associated with barefoot exposure to contaminated soil.",
   "dossier": "hookworm-infection",
   "w": 1024,
@@ -193,6 +238,9 @@
   "id": "r-020",
   "kind": "sign",
   "answer": "Saddle nose",
+  "aliases": [
+   "Saddle nose deformity"
+  ],
   "definition": "A nasal deformity with a collapsed, depressed bridge, seen after trauma, cocaine use, granulomatosis with polyangiitis, or congenital syphilis.",
   "dossier": null,
   "w": 737,
@@ -203,6 +251,9 @@
   "id": "r-021",
   "kind": "condition",
   "answer": "Horner syndrome",
+  "aliases": [
+   "Oculosympathetic palsy"
+  ],
   "definition": "A sympathetic pathway lesion causing ptosis, miosis, and reduced facial sweating on the affected side.",
   "dossier": "horner-syndrome",
   "w": 1024,
@@ -213,6 +264,7 @@
   "id": "r-022",
   "kind": "sign",
   "answer": "Hammer toe",
+  "aliases": [],
   "definition": "A flexion deformity at the proximal interphalangeal joint of a lesser toe, often related to tight footwear.",
   "dossier": null,
   "w": 1015,
@@ -223,6 +275,10 @@
   "id": "r-023",
   "kind": "condition",
   "answer": "Hunter syndrome",
+  "aliases": [
+   "MPS II",
+   "Mucopolysaccharidosis type II"
+  ],
   "definition": "An X-linked lysosomal storage disorder with coarse facial features, skeletal abnormalities, and no corneal clouding.",
   "dossier": "hunter-syndrome-mps-ii",
   "w": 1024,
@@ -233,6 +289,9 @@
   "id": "r-024",
   "kind": "sign",
   "answer": "Jaundice",
+  "aliases": [
+   "Icterus"
+  ],
   "definition": "Yellow discoloration of skin and sclera caused by elevated bilirubin, with the pattern helping localize the cause.",
   "dossier": null,
   "w": 1024,
@@ -243,6 +302,9 @@
   "id": "r-025",
   "kind": "condition",
   "answer": "Kallmann syndrome",
+  "aliases": [
+   "Hypogonadotropic hypogonadism with anosmia"
+  ],
   "definition": "A congenital hypogonadotropic hypogonadism associated with absent or reduced sense of smell.",
   "dossier": "kallmann-syndrome",
   "w": 1024,
@@ -253,6 +315,10 @@
   "id": "r-026",
   "kind": "condition",
   "answer": "Red Man syndrome",
+  "aliases": [
+   "Vancomycin flushing syndrome",
+   "Vancomycin infusion reaction"
+  ],
   "definition": "An infusion-related reaction to rapid vancomycin administration causing flushing and itching of the face, neck, and upper torso.",
   "dossier": null,
   "w": 1027,
@@ -263,6 +329,9 @@
   "id": "r-027",
   "kind": "condition",
   "answer": "Kawasaki disease",
+  "aliases": [
+   "Mucocutaneous lymph node syndrome"
+  ],
   "definition": "A childhood vasculitis characterized by prolonged fever, conjunctival injection, oral changes, rash, and cervical lymphadenopathy.",
   "dossier": "kawasaki-disease",
   "w": 1024,
@@ -273,6 +342,7 @@
   "id": "r-028",
   "kind": "condition",
   "answer": "Bankart lesion",
+  "aliases": [],
   "definition": "A tear of the anteroinferior glenoid labrum associated with recurrent anterior shoulder dislocation.",
   "dossier": "bankart-lesion",
   "w": 1024,
@@ -283,6 +353,7 @@
   "id": "r-029",
   "kind": "sign",
   "answer": "Wrist drop",
+  "aliases": [],
   "definition": "Inability to extend the wrist and fingers due to radial nerve injury, such as after a humeral shaft fracture.",
   "dossier": null,
   "w": 990,
@@ -293,6 +364,9 @@
   "id": "r-030",
   "kind": "condition",
   "answer": "Buerger disease",
+  "aliases": [
+   "Thromboangiitis obliterans"
+  ],
   "definition": "A nonatherosclerotic inflammatory disease of small and medium arteries strongly associated with tobacco exposure.",
   "dossier": "buerger-disease-thromboangiitis-obliterans",
   "w": 1024,
@@ -303,6 +377,9 @@
   "id": "r-031",
   "kind": "condition",
   "answer": "Castleman disease",
+  "aliases": [
+   "Angiofollicular lymph node hyperplasia"
+  ],
   "definition": "A rare lymphoproliferative disorder involving enlarged lymph nodes, with unicentric and multicentric forms.",
   "dossier": "castleman-disease",
   "w": 1024,
@@ -313,6 +390,10 @@
   "id": "r-032",
   "kind": "condition",
   "answer": "Ringworm infection",
+  "aliases": [
+   "Ringworm",
+   "Tinea corporis"
+  ],
   "definition": "A dermatophyte infection producing an annular, scaly, expanding rash with central clearing.",
   "dossier": "tinea-corporis-ringworm",
   "w": 1024,
@@ -323,6 +404,9 @@
   "id": "r-033",
   "kind": "sign",
   "answer": "Bamboo sign",
+  "aliases": [
+   "Bamboo spine"
+  ],
   "definition": "A spinal radiographic appearance of fused vertebrae with marginal syndesmophytes, characteristic of ankylosing spondylitis.",
   "dossier": null,
   "w": 1008,
@@ -333,6 +417,9 @@
   "id": "r-034",
   "kind": "condition",
   "answer": "Goodpasture syndrome",
+  "aliases": [
+   "Anti-GBM disease"
+  ],
   "definition": "An autoimmune pulmonary-renal syndrome characterized by diffuse alveolar hemorrhage and rapidly progressive glomerulonephritis.",
   "dossier": "goodpasture-syndrome-anti-gbm-disease",
   "w": 1024,
@@ -343,6 +430,9 @@
   "id": "r-035",
   "kind": "condition",
   "answer": "Graves disease",
+  "aliases": [
+   "Basedow disease"
+  ],
   "definition": "An autoimmune cause of hyperthyroidism often associated with diffuse goiter, ophthalmopathy, and pretibial skin changes.",
   "dossier": "graves-disease",
   "w": 2048,
@@ -353,6 +443,7 @@
   "id": "r-036",
   "kind": "sign",
   "answer": "Koplik spots",
+  "aliases": [],
   "definition": "Tiny bluish-white lesions on the buccal mucosa that are a classic early finding of measles.",
   "dossier": null,
   "w": 1600,
@@ -363,6 +454,9 @@
   "id": "r-037",
   "kind": "condition",
   "answer": "Arrhythmia",
+  "aliases": [
+   "Dysrhythmia"
+  ],
   "definition": "An abnormality of heart rate or rhythm, which may be too fast, too slow, or irregular, due to disturbed impulse formation or conduction.",
   "dossier": null,
   "w": 298,
@@ -373,6 +467,9 @@
   "id": "r-038",
   "kind": "condition",
   "answer": "Krabbe disease",
+  "aliases": [
+   "Globoid cell leukodystrophy"
+  ],
   "definition": "A lysosomal storage disease causing progressive neurologic deterioration from psychosine accumulation.",
   "dossier": "krabbe-disease",
   "w": 1024,
@@ -383,6 +480,7 @@
   "id": "r-039",
   "kind": "condition",
   "answer": "Leukemia",
+  "aliases": [],
   "definition": "A malignancy of blood-forming tissues causing abnormal proliferation of leukocytes and their precursors.",
   "dossier": "leukemia-overview",
   "w": 1024,
@@ -393,6 +491,9 @@
   "id": "r-040",
   "kind": "condition",
   "answer": "Lyme disease",
+  "aliases": [
+   "Lyme borreliosis"
+  ],
   "definition": "A tick-borne infection classically associated with an expanding erythema migrans rash and later neurologic, cardiac, or joint disease.",
   "dossier": "lyme-disease",
   "w": 1024,
@@ -403,6 +504,10 @@
   "id": "r-041",
   "kind": "sign",
   "answer": "Babinski sign",
+  "aliases": [
+   "Extensor plantar response",
+   "Babinski reflex"
+  ],
   "definition": "Upward extension of the great toe with fanning of the other toes on stroking the sole; it indicates an upper motor neuron lesion in adults but is normal in infants.",
   "dossier": null,
   "w": 1060,
@@ -413,6 +518,7 @@
   "id": "r-042",
   "kind": "condition",
   "answer": "Malaria",
+  "aliases": [],
   "definition": "A Plasmodium infection transmitted by Anopheles mosquitoes, classically causing cyclical fevers and hemolysis.",
   "dossier": "malaria",
   "w": 1024,
@@ -423,6 +529,7 @@
   "id": "r-043",
   "kind": "condition",
   "answer": "Marfan syndrome",
+  "aliases": [],
   "definition": "A connective-tissue disorder associated with tall habitus, long limbs and fingers, lens dislocation, and aortic root disease.",
   "dossier": "marfan-syndrome",
   "w": 1024,
@@ -433,6 +540,9 @@
   "id": "r-044",
   "kind": "symptom",
   "answer": "Amnesia",
+  "aliases": [
+   "Memory loss"
+  ],
   "definition": "Loss of memory, with inability to recall past information or form new memories, which may follow head injury, stroke, or other brain disease.",
   "dossier": null,
   "w": 278,
@@ -443,6 +553,9 @@
   "id": "r-045",
   "kind": "condition",
   "answer": "Measles",
+  "aliases": [
+   "Rubeola"
+  ],
   "definition": "A highly contagious viral illness with fever, cough, coryza, conjunctivitis, and a descending maculopapular rash.",
   "dossier": "measles-rubeola",
   "w": 1024,
@@ -453,6 +566,7 @@
   "id": "r-046",
   "kind": "condition",
   "answer": "Migraine",
+  "aliases": [],
   "definition": "A recurrent headache disorder often featuring unilateral throbbing pain, nausea, and sensitivity to light or sound.",
   "dossier": "migraine",
   "w": 1024,
@@ -463,6 +577,9 @@
   "id": "r-047",
   "kind": "sign",
   "answer": "Raccoon eyes",
+  "aliases": [
+   "Periorbital ecchymosis"
+  ],
   "definition": "Periorbital bruising without direct eye trauma, classically suggesting a basilar skull fracture.",
   "dossier": null,
   "w": 1036,
@@ -472,7 +589,10 @@
  {
   "id": "r-048",
   "kind": "condition",
-  "answer": "Mpox (monkeypox)",
+  "answer": "Mpox",
+  "aliases": [
+   "Monkeypox"
+  ],
   "definition": "A zoonotic orthopoxvirus infection causing fever and characteristic deep-seated vesiculopustular lesions.",
   "dossier": "mpox-monkeypox",
   "w": 1024,
@@ -483,6 +603,7 @@
   "id": "r-049",
   "kind": "condition",
   "answer": "Niemann-Pick disease",
+  "aliases": [],
   "definition": "A lysosomal lipid-storage disorder that can cause hepatosplenomegaly, neurologic disease, and foam cells.",
   "dossier": "niemann-pick-disease",
   "w": 1024,
@@ -493,6 +614,9 @@
   "id": "r-050",
   "kind": "condition",
   "answer": "Parkinson disease",
+  "aliases": [
+   "Paralysis agitans"
+  ],
   "definition": "A neurodegenerative disorder classically producing bradykinesia, resting tremor, rigidity, and postural instability.",
   "dossier": "parkinson-disease",
   "w": 1225,
@@ -503,6 +627,10 @@
   "id": "r-051",
   "kind": "sign",
   "answer": "Ptosis",
+  "aliases": [
+   "Blepharoptosis",
+   "Droopy eyelid"
+  ],
   "definition": "Drooping of the upper eyelid, which may arise from third cranial nerve palsy, Horner syndrome, or myasthenia gravis.",
   "dossier": null,
   "w": 961,
@@ -513,6 +641,10 @@
   "id": "r-052",
   "kind": "condition",
   "answer": "Pompe disease",
+  "aliases": [
+   "GSD II",
+   "Acid maltase deficiency"
+  ],
   "definition": "A glycogen storage disorder due to acid alpha-glucosidase deficiency, causing hypotonia, cardiomyopathy, or limb-girdle weakness.",
   "dossier": "pompe-disease-gsd-ii",
   "w": 1024,
@@ -523,6 +655,10 @@
   "id": "r-053",
   "kind": "condition",
   "answer": "Pott's disease",
+  "aliases": [
+   "Spinal tuberculosis",
+   "Tuberculous spondylitis"
+  ],
   "definition": "Tuberculosis involving the spine, producing vertebral destruction, back pain, and possible paraspinal abscess formation.",
   "dossier": "pott-disease-spinal-tuberculosis",
   "w": 1024,
@@ -533,6 +669,10 @@
   "id": "r-054",
   "kind": "sign",
   "answer": "Steppage gait",
+  "aliases": [
+   "Foot drop gait",
+   "High stepping gait"
+  ],
   "definition": "A gait in which the hip and knee are lifted high to clear a drooping foot, commonly caused by peroneal nerve palsy.",
   "dossier": null,
   "w": 1064,
@@ -543,6 +683,9 @@
   "id": "r-055",
   "kind": "condition",
   "answer": "Addison disease",
+  "aliases": [
+   "Primary adrenal insufficiency"
+  ],
   "definition": "Primary adrenal insufficiency causing low cortisol and aldosterone, often with hyperpigmentation, hypotension, and electrolyte abnormalities.",
   "dossier": "addison-disease",
   "w": 2048,
@@ -553,6 +696,9 @@
   "id": "r-056",
   "kind": "condition",
   "answer": "Batten disease",
+  "aliases": [
+   "Juvenile neuronal ceroid lipofuscinosis"
+  ],
   "definition": "A group of inherited neuronal ceroid lipofuscinoses causing progressive neurodegeneration, seizures, and visual loss.",
   "dossier": "batten-disease",
   "w": 1024,
@@ -563,6 +709,9 @@
   "id": "r-057",
   "kind": "sign",
   "answer": "Fixed pupil",
+  "aliases": [
+   "Nonreactive pupil"
+  ],
   "definition": "A pupil that does not constrict to light, which may indicate third nerve compression, raised intracranial pressure, or drug effect.",
   "dossier": null,
   "w": 916,
@@ -573,6 +722,10 @@
   "id": "r-058",
   "kind": "condition",
   "answer": "Broken heart syndrome",
+  "aliases": [
+   "Takotsubo cardiomyopathy",
+   "Stress cardiomyopathy"
+  ],
   "definition": "A transient stress-related cardiomyopathy that often causes apical ballooning after intense emotional or physical stress.",
   "dossier": "takotsubo-cardiomyopathy",
   "w": 312,
@@ -583,6 +736,7 @@
   "id": "r-059",
   "kind": "condition",
   "answer": "Cataract",
+  "aliases": [],
   "definition": "An opacity of the crystalline lens causing progressive painless visual blurring and glare.",
   "dossier": "cataract",
   "w": 1024,
@@ -593,6 +747,9 @@
   "id": "r-060",
   "kind": "condition",
   "answer": "Supracondylar fracture",
+  "aliases": [
+   "Supracondylar humerus fracture"
+  ],
   "definition": "A fracture of the distal humerus just above the elbow, common in children after a fall on an outstretched arm, with risk to the brachial artery and nerves.",
   "dossier": null,
   "w": 300,
@@ -603,6 +760,7 @@
   "id": "r-061",
   "kind": "condition",
   "answer": "Fanconi anemia",
+  "aliases": [],
   "definition": "An inherited bone-marrow-failure syndrome with pancytopenia, congenital anomalies, and increased cancer risk.",
   "dossier": "fanconi-anemia",
   "w": 1024,
@@ -613,6 +771,7 @@
   "id": "r-062",
   "kind": "condition",
   "answer": "Gangrene",
+  "aliases": [],
   "definition": "Tissue necrosis associated with ischemia or severe infection, sometimes producing black discoloration and a foul odor.",
   "dossier": "gangrene",
   "w": 1024,
@@ -623,6 +782,9 @@
   "id": "r-063",
   "kind": "sign",
   "answer": "Scissoring gait",
+  "aliases": [
+   "Scissor gait"
+  ],
   "definition": "A stiff gait in which the legs cross at the knees because of spastic adductor tone, classically seen in cerebral palsy.",
   "dossier": null,
   "w": 1060,
@@ -633,6 +795,9 @@
   "id": "r-064",
   "kind": "condition",
   "answer": "Raynaud's disease",
+  "aliases": [
+   "Primary Raynaud phenomenon"
+  ],
   "definition": "Episodic vasospasm of small arteries, usually in fingers or toes, causing sequential pallor, cyanosis, and erythema with cold or stress.",
   "dossier": "raynaud-phenomenon",
   "w": 1024,
@@ -643,6 +808,9 @@
   "id": "r-065",
   "kind": "condition",
   "answer": "Refsum's disease",
+  "aliases": [
+   "Adult Refsum disease"
+  ],
   "definition": "A rare disorder of phytanic-acid accumulation causing retinitis pigmentosa, anosmia, peripheral neuropathy, and cerebellar ataxia.",
   "dossier": "refsum-disease",
   "w": 1024,
@@ -653,6 +821,9 @@
   "id": "r-066",
   "kind": "sign",
   "answer": "Orthostatic hypotension",
+  "aliases": [
+   "Postural hypotension"
+  ],
   "definition": "A drop in blood pressure of at least 20 mmHg systolic or 10 mmHg diastolic within 3 minutes of standing, causing dizziness or fainting, from volume depletion, medications, or autonomic dysfunction.",
   "dossier": null,
   "w": 1060,
@@ -663,6 +834,9 @@
   "id": "r-067",
   "kind": "condition",
   "answer": "Cushing disease",
+  "aliases": [
+   "Pituitary Cushing syndrome"
+  ],
   "definition": "A pituitary ACTH-producing adenoma causing endogenous hypercortisolism, often with central obesity, striae, and muscle weakness.",
   "dossier": "cushing-disease",
   "w": 1024,
@@ -673,6 +847,10 @@
   "id": "r-068",
   "kind": "condition",
   "answer": "Roseola",
+  "aliases": [
+   "Exanthem subitum",
+   "Sixth disease"
+  ],
   "definition": "A childhood illness with several days of high fever followed by a sudden rose-pink maculopapular rash as the fever resolves.",
   "dossier": "roseola-exanthem-subitum",
   "w": 1024,
@@ -682,7 +860,10 @@
  {
   "id": "r-069",
   "kind": "sign",
-  "answer": "Rebound tenderness (Blumberg sign)",
+  "answer": "Rebound tenderness",
+  "aliases": [
+   "Blumberg sign"
+  ],
   "definition": "Abdominal pain that is worse when pressure is suddenly released, suggesting peritoneal irritation such as in appendicitis.",
   "dossier": null,
   "w": 1048,
@@ -693,6 +874,9 @@
   "id": "r-070",
   "kind": "condition",
   "answer": "Sheehan syndrome",
+  "aliases": [
+   "Postpartum pituitary necrosis"
+  ],
   "definition": "Postpartum pituitary ischemic necrosis causing failure of lactation and multiple anterior pituitary hormone deficiencies.",
   "dossier": "sheehan-syndrome",
   "w": 1024,
@@ -703,6 +887,10 @@
   "id": "r-071",
   "kind": "condition",
   "answer": "Tapeworm infestation",
+  "aliases": [
+   "Taeniasis",
+   "Cestodiasis"
+  ],
   "definition": "An intestinal cestode infection acquired by eating undercooked infected meat or food contaminated with eggs, with segments or eggs sometimes found in stool.",
   "dossier": "tapeworm-infection",
   "w": 1024,
@@ -713,6 +901,7 @@
   "id": "r-072",
   "kind": "condition",
   "answer": "Monoplegia",
+  "aliases": [],
   "definition": "Paralysis of a single limb, often from a cortical lesion or a peripheral nerve or plexus injury.",
   "dossier": null,
   "w": 774,
@@ -723,6 +912,9 @@
   "id": "r-073",
   "kind": "condition",
   "answer": "Tetanus",
+  "aliases": [
+   "Lockjaw"
+  ],
   "definition": "A toxin-mediated neurologic illness causing trismus, muscle rigidity, and painful spasms after contamination of a wound.",
   "dossier": "tetanus",
   "w": 1024,
@@ -733,6 +925,9 @@
   "id": "r-074",
   "kind": "condition",
   "answer": "Tuberculosis",
+  "aliases": [
+   "TB"
+  ],
   "definition": "An airborne infection caused by Mycobacterium tuberculosis, classically affecting the lungs with chronic cough, fever, weight loss, and night sweats.",
   "dossier": "tuberculosis",
   "w": 1024,
@@ -742,7 +937,10 @@
  {
   "id": "r-075",
   "kind": "sign",
-  "answer": "Pulsus paradoxus (paradoxical pulse)",
+  "answer": "Pulsus paradoxus",
+  "aliases": [
+   "Paradoxical pulse"
+  ],
   "definition": "An exaggerated fall in systolic blood pressure of more than 10 mmHg during inspiration, classically seen in cardiac tamponade and severe asthma.",
   "dossier": null,
   "w": 1063,
@@ -753,6 +951,9 @@
   "id": "r-076",
   "kind": "condition",
   "answer": "Down syndrome",
+  "aliases": [
+   "Trisomy 21"
+  ],
   "definition": "A chromosomal disorder caused by an extra chromosome 21, associated with characteristic facial features, hypotonia, and variable intellectual disability.",
   "dossier": "down-syndrome-trisomy-21",
   "w": 1024,
@@ -763,6 +964,10 @@
   "id": "r-077",
   "kind": "condition",
   "answer": "Turner syndrome",
+  "aliases": [
+   "Monosomy X",
+   "45,X"
+  ],
   "definition": "A monosomy X disorder associated with short stature, gonadal dysgenesis, and characteristic features such as webbed neck.",
   "dossier": "turner-syndrome",
   "w": 1024,
@@ -772,7 +977,10 @@
  {
   "id": "r-078",
   "kind": "sign",
-  "answer": "Spoon nails (koilonychia)",
+  "answer": "Spoon nails",
+  "aliases": [
+   "Koilonychia"
+  ],
   "definition": "Thin nails with a concave, spoon-shaped dip, classically linked to iron-deficiency anemia.",
   "dossier": null,
   "w": 1061,
@@ -782,7 +990,11 @@
  {
   "id": "r-079",
   "kind": "condition",
-  "answer": "Weil disease (severe leptospirosis)",
+  "answer": "Weil disease",
+  "aliases": [
+   "Icterohemorrhagic leptospirosis",
+   "Weil syndrome"
+  ],
   "definition": "A severe form of leptospirosis marked by jaundice and acute kidney injury, often after exposure to water contaminated with animal urine.",
   "dossier": "leptospirosis",
   "w": 1024,
@@ -793,6 +1005,10 @@
   "id": "r-080",
   "kind": "condition",
   "answer": "Subdural hematoma",
+  "aliases": [
+   "SDH",
+   "Subdural hemorrhage"
+  ],
   "definition": "A collection of blood between the dura and arachnoid from torn bridging veins, appearing crescent-shaped on CT, especially after head trauma in older adults.",
   "dossier": "subdural-hematoma",
   "w": 752,
@@ -803,6 +1019,10 @@
   "id": "r-081",
   "kind": "condition",
   "answer": "Wolff-Parkinson-White syndrome",
+  "aliases": [
+   "WPW syndrome",
+   "WPW"
+  ],
   "definition": "A pre-excitation syndrome caused by an accessory atrioventricular pathway, producing a short PR interval and delta wave on ECG.",
   "dossier": "wolff-parkinson-white-syndrome",
   "w": 1024,
@@ -813,6 +1033,7 @@
   "id": "r-082",
   "kind": "condition",
   "answer": "Yellow fever",
+  "aliases": [],
   "definition": "A mosquito-borne flaviviral illness that can cause fever, jaundice, hemorrhage, and severe hepatic injury.",
   "dossier": "yellow-fever",
   "w": 1024,
@@ -822,7 +1043,11 @@
  {
   "id": "r-083",
   "kind": "sign",
-  "answer": "Water hammer pulse (collapsing pulse)",
+  "answer": "Water hammer pulse",
+  "aliases": [
+   "Collapsing pulse",
+   "Corrigan pulse"
+  ],
   "definition": "A forceful pulse with a rapid upstroke and sudden collapse, with wide pulse pressure, classically seen in aortic regurgitation.",
   "dossier": null,
   "w": 1049,
@@ -833,6 +1058,9 @@
   "id": "r-084",
   "kind": "condition",
   "answer": "Rocky Mountain spotted fever",
+  "aliases": [
+   "RMSF"
+  ],
   "definition": "A tick-borne rickettsial illness characterized by fever and a petechial or maculopapular rash that often involves wrists and ankles.",
   "dossier": "rocky-mountain-spotted-fever",
   "w": 1600,
@@ -843,6 +1071,9 @@
   "id": "r-085",
   "kind": "sign",
   "answer": "Claw hand",
+  "aliases": [
+   "Ulnar claw hand"
+  ],
   "definition": "A hand deformity with hyperextended metacarpophalangeal joints and flexed interphalangeal joints of the ring and little fingers, from ulnar nerve injury.",
   "dossier": null,
   "w": 665,
@@ -852,7 +1083,10 @@
  {
   "id": "r-086",
   "kind": "symptom",
-  "answer": "Diplopia (Double vision)",
+  "answer": "Diplopia",
+  "aliases": [
+   "Double vision"
+  ],
   "definition": "Seeing two images of a single object instead of one; binocular diplopia suggests eye misalignment, as in cranial nerve palsy or myasthenia gravis.",
   "dossier": null,
   "w": 296,

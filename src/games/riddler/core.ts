@@ -1,12 +1,16 @@
 // The Riddler: pure rules for one Solo level (RD3, RD4, RD9-RD11) and the answer search.
 // A level is one rebus picture with 3 lives, a stopwatch and an optional paid hint (the definition).
 
+import { indexNames, searchNames, type NameIndex, type Named } from '../shell/names';
+
 export type Kind = 'condition' | 'sign' | 'symptom';
 
 export type Riddle = {
   id: string;
   kind: Kind;
+  /** Main name; `aliases` holds at most 2 other names (NL1). */
   answer: string;
+  aliases: string[];
   definition: string;
   /** Canonical dossier id; only condition riddles link one (RD1). */
   dossier: string | null;
@@ -89,34 +93,17 @@ export function stepLevel(l: Level, e: LevelEvent): Level {
 /** Saved for resume: a running level is saved paused at the exact clock (rule 10). */
 export const snapshotLevel = (l: Level, now: number) => (l.phase === 'playing' ? stepLevel(l, { type: 'PAUSE', now }) : l);
 
-// ---- answer search (as coded: a flat list, label prefix first) ----
+// ---- answer search (NL1: the main name and up to 2 other names; a missing 's doesn't count) ----
 
-export type Answer = { id: string; label: string };
+export type Answer = Named & { id: string };
 
-export function normalize(text: string) {
-  return text
-    .normalize('NFD')
-    .replace(/[̀-ͯ]/g, '')
-    .toLowerCase()
-    .replace(/[^a-z0-9\s]/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
-}
+const indexes = new WeakMap<readonly Answer[], NameIndex<Answer>>();
 
-/** Nothing until 2 letters; then up to 5: label prefix, then a word prefix (inside brackets too), then all words. */
+/** Nothing until 2 letters; then up to 5: main name prefix, other name prefix, word prefix, then all words. */
 export function search(list: readonly Answer[], raw: string, skip: readonly string[] = []): Answer[] {
-  const q = normalize(raw);
-  if (q.replace(/\s/g, '').length < RD.minQuery) return [];
-  const tokens = q.split(' ');
-  const hits: { a: Answer; n: string; s: number }[] = [];
-  for (const a of list) {
-    if (skip.includes(a.id)) continue;
-    const n = normalize(a.label);
-    const s = n.startsWith(q) ? 0 : (' ' + n).includes(' ' + q) ? 1 : tokens.every((t) => n.includes(t)) ? 2 : -1;
-    if (s >= 0) hits.push({ a, n, s });
-  }
-  hits.sort((x, y) => x.s - y.s || x.n.length - y.n.length || x.n.localeCompare(y.n));
-  return hits.slice(0, RD.maxSuggestions).map((h) => h.a);
+  let index = indexes.get(list);
+  if (!index) indexes.set(list, (index = indexNames(list)));
+  return searchNames(index, raw, { min: RD.minQuery, max: RD.maxSuggestions, skip: (a) => skip.includes(a.id) });
 }
 
 export function shuffle<T>(a: readonly T[], rng: () => number = Math.random): T[] {

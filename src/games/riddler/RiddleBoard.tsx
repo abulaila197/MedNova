@@ -8,6 +8,7 @@ import { F } from '@/theme/tokens';
 
 import { GameScreen, Kick, RoundBtn } from '../shell/ui';
 import { RD, clock, search, type Riddle } from './core';
+import { fullName } from '../shell/names';
 import { ANSWERS, answerLabel, imageOf } from './data';
 
 // The Riddler's own design language (RD14): "Pinboard".
@@ -180,12 +181,13 @@ function AnswerBox({ wrong, wrongSeq, locked, disabled, onGuess }: { wrong: stri
       {sugs.length && !locked ? (
         <View style={[s.sugs, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
           {sugs.map((a, i) => {
-            const hit = a.label.toLowerCase().startsWith(q) ? text.trim().length : 0;
+            const name = fullName(a);
+            const hit = name.toLowerCase().startsWith(q) ? text.trim().length : 0;
             return (
-              <Pressable key={a.id} onPress={() => pick(a.id)} style={[s.sg, i > 0 && { borderTopWidth: 1, borderTopColor: t.panelLine }]} accessibilityRole="button" accessibilityLabel={`Answer ${a.label}`}>
-                <Text style={[s.sgT, { color: t.fg }]} numberOfLines={1}>
-                  <Text style={{ color: t.accent, fontFamily: F.bodyBold }}>{a.label.slice(0, hit)}</Text>
-                  {a.label.slice(hit)}
+              <Pressable key={a.id} onPress={() => pick(a.id)} style={[s.sg, i > 0 && { borderTopWidth: 1, borderTopColor: t.panelLine }]} accessibilityRole="button" accessibilityLabel={`Answer ${name}`}>
+                <Text style={[s.sgT, { color: t.fg }]} numberOfLines={2}>
+                  <Text style={{ color: t.accent, fontFamily: F.bodyBold }}>{name.slice(0, hit)}</Text>
+                  {name.slice(hit)}
                 </Text>
               </Pressable>
             );

@@ -1,948 +1,5172 @@
 [
-"Myocardial infarction (acute coronary syndrome)",
-"Essential hypertension",
-"Asthma",
-"Chronic obstructive pulmonary disease (COPD)",
-"Community-acquired pneumonia",
-"Obstructive sleep apnea",
-"Gastroesophageal reflux disease (GERD)",
-"Acute appendicitis",
-"Acute pancreatitis",
-"Peptic ulcer disease",
-"Ischemic stroke",
-"Alzheimer disease",
-"Acute cystitis (lower urinary tract infection)",
-"Superficial candidiasis (oral thrush / vulvovaginal candidiasis)",
-"Acute gastroenteritis",
-"Impetigo",
-"Psoriasis",
-"Atopic dermatitis (eczema)",
-"Rheumatoid arthritis",
-"Gout",
-"Nephrolithiasis (kidney stones)",
-"Benign prostatic hyperplasia (BPH)",
-"Iron deficiency anemia",
-"Croup (laryngotracheobronchitis)",
-"RSV bronchiolitis",
-"Febrile seizure",
-"Acute cholecystitis",
-"Anaphylaxis",
-"Enterobiasis (pinworm infection)",
-"Bacterial conjunctivitis",
-"Acute otitis media",
-"Acute pyelonephritis",
-"Carpal tunnel syndrome",
-"Acute pharyngitis",
-"Hordeolum (stye)",
-"Contact dermatitis",
-"Plantar fasciitis",
-"Acute rhinosinusitis",
-"Otitis externa (swimmer's ear)",
-"Urticaria (hives)",
-"Scabies",
-"Vitamin B12 deficiency",
-"Pernicious anemia",
-"Common wart (verruca vulgaris)",
-"Acute bronchitis",
-"Infective endocarditis",
-"Acute pericarditis",
-"Pulmonary embolism",
-"Tension pneumothorax",
-"Pneumothorax",
-"Crohn disease",
-"Ulcerative colitis",
-"Celiac disease",
-"Adrenal crisis",
-"Primary hyperparathyroidism",
-"Wernicke-Korsakoff syndrome",
-"HIV infection / AIDS",
-"Melanoma",
-"Systemic lupus erythematosus (SLE)",
-"Ankylosing spondylitis",
-"Reactive arthritis",
-"Hodgkin lymphoma",
-"Immune thrombocytopenia (ITP)",
-"Hypertrophic pyloric stenosis",
-"Intussusception",
-"Diabetic ketoacidosis (DKA)",
-"Acute angle-closure glaucoma",
-"Peritonsillar abscess",
-"Benign paroxysmal positional vertigo (BPPV)",
-"Hashimoto thyroiditis",
-"Budd-Chiari syndrome",
-"Behcet disease",
-"Hand, foot, and mouth disease",
-"Myasthenia gravis",
-"Guillain-Barre syndrome",
-"Pheochromocytoma",
-"Normal pressure hydrocephalus",
-"Amyotrophic lateral sclerosis (ALS)",
-"Cardiac tamponade",
-"Idiopathic pulmonary fibrosis",
-"Interstitial pulmonary fibrosis",
-"Sarcoidosis",
-"Primary sclerosing cholangitis",
-"Wilson disease",
-"Granulomatosis with polyangiitis (GPA)",
-"Systemic sclerosis (scleroderma)",
-"Multiple myeloma",
-"Neuroleptic malignant syndrome",
-"Necrotizing enterocolitis",
-"Thyroid storm",
-"Erdheim-Chester disease",
-"Acute rheumatic fever",
-"Polyarteritis nodosa (PAN)",
-"Hepatic encephalopathy",
-"Alport syndrome",
-"Fabry disease",
-"MELAS syndrome",
-"Tuberous sclerosis complex",
-"Neurofibromatosis type 1",
-"Sturge-Weber syndrome",
-"Vascular Ehlers-Danlos syndrome",
-"DiGeorge syndrome (22q11.2 deletion)",
-"Erythropoietic protoporphyria",
-"Ataxia-telangiectasia",
-"Paroxysmal nocturnal hemoglobinuria (PNH)",
-"Hereditary hemochromatosis",
-"Wiskott-Aldrich syndrome",
-"Phenylketonuria (PKU)",
-"Alkaptonuria",
-"Maple syrup urine disease (MSUD)",
-"Menkes disease",
-"Tay-Sachs disease",
-"Gaucher disease",
-"Hurler syndrome (MPS I)",
-"Glycogen storage disease type I (von Gierke)",
-"Lesch-Nyhan syndrome",
-"Pityriasis versicolor",
-"Susac syndrome",
-"Allergic conjunctivitis",
-"Cryptococcal meningitis",
-"Hepatorenal syndrome",
-"Glycogen storage disease type III (Cori disease)",
-"Acute bacterial meningitis",
-"Meningitis (overview)",
-"Viral meningitis",
-"Heart failure with reduced ejection fraction (HFrEF)",
-"Acute decompensated heart failure (pulmonary edema)",
-"Hyperosmolar hyperglycemic state (HHS)",
-"Myxedema coma",
-"Acute diverticulitis",
-"Irritable bowel syndrome (IBS)",
-"Infectious mononucleosis (EBV)",
-"Lung cancer",
-"Hepatocellular carcinoma",
-"Acute glomerulonephritis",
-"Pierre Robin sequence",
-"Constipation",
-"Dyspepsia",
-"Acute mechanical low back pain",
-"Dysmenorrhea",
-"Calcium channel blocker adverse effects",
-"Tumor lysis syndrome",
-"Superior vena cava syndrome",
-"Toxic epidermal necrolysis",
-"Urosepsis (sepsis from urinary source)",
-"Typhoid fever",
-"Thrombotic thrombocytopenic purpura",
-"Septic arthritis",
-"Slipped capital femoral epiphysis",
-"Von Hippel-Lindau syndrome",
-"Hereditary coproporphyria",
-"Sanfilippo syndrome (MPS III)",
-"CARASIL",
-"Gerstmann-Straussler-Scheinker syndrome",
-"Esophageal atresia with tracheoesophageal fistula",
-"Birt-Hogg-Dube syndrome",
-"Congenital diaphragmatic hernia",
-"Lambert-Eaton myasthenic syndrome",
-"Primary biliary cholangitis",
-"POEMS syndrome",
-"Multiple sclerosis",
-"Porphyria cutanea tarda",
-"MERRF syndrome",
-"Langerhans cell histiocytosis",
-"Familial Mediterranean fever",
-"Congenital lobar emphysema",
-"Alstrom syndrome",
-"Dry eye disease",
-"Acne vulgaris",
-"Hemorrhoids",
-"Aphthous ulcer",
-"Aortic dissection",
-"Cauda equina syndrome",
-"Cerebral venous sinus thrombosis",
-"Creutzfeldt-Jakob disease",
-"Disseminated intravascular coagulation",
-"Miller Fisher syndrome",
-"Ingrown toenail",
-"Molluscum contagiosum",
-"Neurofibromatosis type 2",
-"Osgood-Schlatter disease",
-"Pancreatic cancer",
-"Hereditary hemorrhagic telangiectasia",
-"Osteomyelitis",
-"Acute intermittent porphyria",
-"Breast cancer",
-"Bronchiectasis",
-"Achalasia",
-"Hepatitis A",
-"Hepatitis B",
-"CADASIL",
-"Allergic rhinitis",
-"Alpha-1 antitrypsin deficiency",
-"Anti-NMDA receptor encephalitis",
-"Antiphospholipid syndrome",
-"Aplastic anemia",
-"Balo concentric sclerosis",
-"Beckwith-Wiedemann syndrome",
-"Hereditary angioedema",
-"Alexander disease",
-"Myotonic dystrophy",
-"Essential tremor",
-"Sjogren syndrome",
-"Renal artery stenosis",
-"Heerfordt syndrome",
-"Epilepsy",
-"Fibromuscular dysplasia",
-"Hemophilia A",
-"Primary myelofibrosis",
-"Farber disease",
-"Melasma",
-"Omphalocele",
-"Peutz-Jeghers syndrome",
-"Classic galactosemia",
-"Schnitzler syndrome",
-"Osteoarthritis",
-"Infantile colic",
-"Erythema toxicum neonatorum",
-"Diaper dermatitis",
-"Hirschsprung disease",
-"Head lice (pediculosis capitis)",
-"Zellweger syndrome",
-"Vitiligo",
-"Neonatal respiratory distress syndrome",
-"Infantile epileptic spasms syndrome",
-"Onychomycosis (fungal nail infection)",
-"Stauffer syndrome (nephrogenic hepatic dysfunction)",
-"Eosinophilic granulomatosis with polyangiitis (Churg-Strauss)",
-"Canavan disease",
-"Chalazion",
-"Charcot-Marie-Tooth disease",
-"Choanal atresia",
-"Congenital hypothyroidism",
-"Dermatomyositis",
-"Gastroschisis",
-"Friedreich ataxia",
-"Hemophagocytic lymphohistiocytosis",
-"Herpangina",
-"Corn (clavus)",
-"Lysosomal acid lipase deficiency",
-"Nursemaid's elbow",
-"Perioral dermatitis",
-"Whipple disease",
-"Syringomyelia",
-"IgA vasculitis (Henoch-Schonlein purpura)",
-"Psoriatic arthritis",
-"Primary Hypothyroidism",
-"Acute bacterial prostatitis",
-"Acute cholangitis",
-"Hyperkalemia",
-"Deep vein thrombosis",
-"Acute limb ischemia",
-"Clostridioides difficile colitis",
-"Proliferative diabetic retinopathy",
-"Viral encephalitis (non-HSV)",
-"Lemierre syndrome",
-"Esophageal variceal bleeding",
-"Vascular dementia",
-"Scarlet fever",
-"Vasovagal syncope",
-"Acute colonic pseudo-obstruction (Ogilvie syndrome)",
-"Sudden sensorineural hearing loss",
-"Lumbar disc herniation with radiculopathy",
-"Choledocholithiasis",
-"Costochondritis",
-"Parvovirus B19 infection",
-"Pneumocystis pneumonia (PCP)",
-"Renal artery dissection",
-"Horseshoe kidney",
-"Alcoholic Cirrhosis",
-"Common Cold (Acute Nasopharyngitis)",
-"Rosacea",
-"Prerenal Acute Kidney Injury (Prerenal AKI)",
-"Minimal Change Disease",
-"Major Depressive Disorder",
-"Generalized Anxiety Disorder",
-"Panic Disorder",
-"Polycystic Ovary Syndrome (PCOS)",
-"Uterine Leiomyomas (Fibroids)",
-"Pelvic Inflammatory Disease (PID)",
-"Emphysematous Cystitis",
-"Opioid Overdose",
-"Condyloma Acuminata (Genital Warts)",
-"Anterior Cruciate Ligament (ACL) Tear",
-"Meniscal Tear",
-"Primary Open-Angle Glaucoma",
-"Herpetic Whitlow",
-"Ankle Sprain",
-"Seborrheic Dermatitis",
-"Actinic Keratosis",
-"Aortic Stenosis",
-"Coarctation of the Aorta",
-"Cystic Fibrosis",
-"Cluster Headache",
-"Secondary Syphilis",
-"Dengue Fever",
-"Necrotizing Fasciitis",
-"Alopecia Areata",
-"Polymyalgia Rheumatica",
-"Intrinsic (Intrarenal) Acute Kidney Injury (AKI)",
-"Polycystic Kidney Disease",
-"Lactose Intolerance",
-"Renal Cell Carcinoma",
-"Testicular Torsion",
-"Sickle Cell Disease",
-"Schizophrenia",
-"Bipolar I Disorder",
-"Obsessive-Compulsive Disorder (OCD)",
-"Post-Traumatic Stress Disorder (PTSD)",
-"Anorexia Nervosa",
-"Preeclampsia",
-"Ectopic Pregnancy",
-"Endometriosis",
-"Placental Abruption",
-"Small Bowel Obstruction",
-"Inguinal hernia",
-"Splenic Laceration (Trauma)",
-"Perforated Peptic Ulcer",
-"Acetaminophen Toxicity",
-"Carbon Monoxide Poisoning",
-"Heat Stroke",
-"Retinal Detachment",
-"Age-Related Macular Degeneration",
-"Chemical Ocular Burn",
-"Acute Epiglottitis",
-"Rotator Cuff Tear",
-"Achilles Tendon Rupture",
-"Lateral Epicondylitis (Tennis Elbow)",
-"Multiple Endocrine Neoplasia Type 1 (MEN 1)",
-"Pulmonary Arterial Hypertension",
-"Nasal Polyposis",
-"Progressive Multifocal Leukoencephalopathy (PML)",
-"Neurosyphilis",
-"C3 Glomerulopathy (Dense Deposit Disease)",
-"Hemolytic Uremic Syndrome (HUS)",
-"Delirium Tremens",
-"Amniotic Fluid Embolism",
-"Gestational Trophoblastic Disease (Molar Pregnancy – hydatidiform mole)",
-"Congenital Toxoplasmosis",
-"Esophageal Perforation (Boerhaave Syndrome)",
-"Abetalipoproteinemia (Bassen-Kornzweig Syndrome)",
-"Tricyclic Antidepressant Overdose",
-"Salicylate Toxicity",
-"Central Retinal Artery Occlusion",
-"Temporal Arteritis (Giant Cell Arteritis)",
-"Ludwig Angina",
-"Acute Compartment Syndrome",
-"Central Diabetes Insipidus",
-"Spontaneous Bacterial Peritonitis",
-"Invasive Pulmonary Aspergillosis",
-"Botulism",
-"Takayasu Arteritis",
-"Mixed Connective Tissue Disease (MCTD)",
-"Acute Respiratory Distress Syndrome (ARDS)",
-"Legionnaires Disease",
-"Psittacosis",
-"Brucellosis",
-"Q Fever",
-"Tularemia",
-"Anthrax (Inhalational)",
-"Plague (Bubonic/Pneumonic)",
-"Melioidosis",
-"Chagas Disease",
-"Visceral Leishmaniasis (Kala-Azar)",
-"Cholangiocarcinoma",
-"Acute Liver Failure (Fulminant Hepatic Failure)",
-"Hypertrophic Cardiomyopathy",
-"Restrictive Cardiomyopathy",
-"Myocarditis",
-"Multiple Endocrine Neoplasia Type 2A (MEN 2A)",
-"Multiple Endocrine Neoplasia Type 2B (MEN 2B)",
-"Fatal Familial Insomnia",
-"Stiff-Person Syndrome",
-"Bickerstaff Brainstem Encephalitis",
-"Subacute Sclerosing Panencephalitis (SSPE)",
-"Huntington Disease",
-"Dunbars Syndrome (Median Arcuate Ligament Syndrome / MALS)",
-"Osteogenesis Imperfecta (Type II / Perinatal Lethal)",
-"Prader-Willi Syndrome",
-"Williams Syndrome",
-"Xeroderma Pigmentosum",
-"Epidermolysis Bullosa Simplex",
-"Epidermolysis Bullosa Dystrophica (Recessive Dystrophic Epidermolysis Bullosa)",
-"Netherton Syndrome",
-"Incontinentia Pigmenti (Bloch-Sulzberger Syndrome)",
-"Rothmund-Thomson Syndrome",
-"Kindler Syndrome",
-"Pachyonychia Congenita",
-"Olmsted Syndrome",
-"Darier Disease (Keratosis Follicularis)",
-"Hailey-Hailey Disease (Familial Benign Pemphigus)",
-"Congenital Erythropoietic Porphyria (Günther Disease)",
-"Wolfram-like Mitochondrial Encephalopathy",
-"Cockayne Syndrome",
-"Trichothiodystrophy",
-"Nijmegen Breakage Syndrome",
-"Werner Syndrome (Adult Progeria)",
-"Hutchinson-Gilford Progeria Syndrome",
-"Aarskog-Scott Syndrome (Faciodigital Syndrome)",
-"Pseudohypoparathyroidism Type 1A (Albright Hereditary Osteodystrophy)",
-"McCune-Albright Syndrome",
-"Bartter Syndrome",
-"Gitelman Syndrome",
-"Liddle Syndrome",
-"Dent Disease",
-"Dubin-Johnson Syndrome",
-"Rotor Syndrome",
-"Crigler-Najjar Syndrome Type 1",
-"Pyruvate Kinase Deficiency",
-"Glucose-6-Phosphate Dehydrogenase (G6PD) Deficiency",
-"Chediak-Higashi Syndrome",
-"Chronic Granulomatous Disease (CGD)",
-"Leukocyte Adhesion Deficiency Type 1 (LAD-1)",
-"Severe Combined Immunodeficiency (SCID)",
-"Hyper-IgE Syndrome (Job Syndrome)",
-"Autoimmune Polyendocrinopathy-Candidiasis-Ectodermal Dystrophy (APECED)",
-"Homocystinuria",
-"Aicardi-Goutières Syndrome",
-"Rett Syndrome",
-"Glycogen Storage Disease Type V (McArdle Disease)",
-"Blau Syndrome",
-"Smith-Magenis Syndrome",
-"Cogan Syndrome",
-"Acute Superior Mesenteric Vein Thrombosis",
-"Acute Pertussis (Whooping Cough)",
-"Giardiasis",
-"Pseudogout (Calcium Pyrophosphate Dihydrate Deposition)",
-"Polycythemia Vera",
-"Insulinoma",
-"Anti-LGI1 Encephalitis",
-"PAPA Syndrome (Pyogenic Arthritis, Pyoderma Gangrenosum, and Acne)",
-"Erythrasma",
-"Cyclosporiasis",
-"Calcific Tendonitis",
-"Subclavian Steal Syndrome",
-"VIPoma (Verner-Morrison Syndrome)",
-"Essential Thrombocythemia",
-"Isovaleric Acidemia",
-"Relapsing Polychondritis",
-"Murphy sign",
-"McBurney point tenderness",
-"Rovsing sign",
-"Psoas sign",
-"Obturator sign",
-"Cullen sign",
-"Grey Turner sign",
-"Kehr sign",
-"Kernig sign",
-"Brudzinski sign",
-"Chvostek sign",
-"Trousseau sign",
-"Romberg sign",
-"Lhermitte sign",
-"Hoffmann sign",
-"Tinel sign",
-"Phalen sign",
-"Finkelstein test",
-"Homans sign",
-"Battle sign",
-"Kussmaul breathing",
-"Cheyne-Stokes respiration",
-"Kussmaul sign",
-"Beck triad",
-"Virchow node",
-"Sister Mary Joseph nodule",
-"Courvoisier sign",
-"Caput medusae",
-"Spider angioma",
-"Palmar erythema",
-"Asterixis",
-"Clubbing",
-"Splinter hemorrhages",
-"Janeway lesions",
-"Osler nodes",
-"Roth spots",
-"Argyll Robertson pupil",
-"Marcus Gunn pupil",
-"Nystagmus",
-"Papilledema",
-"Cherry-red spot",
-"Kayser-Fleischer rings",
-"Arcus senilis",
-"Xanthelasma",
-"Café-au-lait spots",
-"Ash-leaf spots",
-"Lisch nodules",
-"Auspitz sign",
-"Nikolsky sign",
-"Koebner phenomenon",
-"Darier sign",
-"Dermatographism",
-"Heliotrope rash",
-"Gottron papules",
-"Malar rash",
-"Target lesions",
-"Erythema nodosum",
-"Erythema marginatum",
-"Erythema multiforme",
-"Pyoderma gangrenosum",
-"Acanthosis nigricans",
-"Hirsutism",
-"Gynecomastia",
-"Galactorrhea",
-"Exophthalmos",
-"Goiter",
-"Moon face",
-"Buffalo hump",
-"Purple striae",
-"Hyperpigmentation",
-"Cyanosis",
-"Pallor",
-"Petechiae",
-"Purpura",
-"Ecchymosis",
-"Edema",
-"Ascites",
-"Hepatomegaly",
-"Splenomegaly",
-"Lymphadenopathy",
-"Hemoptysis",
-"Hematemesis",
-"Melena",
-"Hematochezia",
-"Hematuria",
-"Proteinuria",
-"Polyuria",
-"Polydipsia",
-"Nocturia",
-"Dysuria",
-"Oliguria",
-"Anuria",
-"Dysphagia",
-"Odynophagia",
-"Dyspnea",
-"Orthopnea",
-"Paroxysmal nocturnal dyspnea",
-"Wheezing",
-"Stridor",
-"Crackles",
-"Pleural rub",
-"Chest pain",
-"Palpitations",
-"Syncope",
-"Vertigo",
-"Tinnitus",
-"Hearing loss",
-"Seizure",
-"Tremor",
-"Ataxia",
-"Aphasia",
-"Dysarthria",
-"Apraxia",
-"Agnosia",
-"Neglect",
-"Hemiplegia",
-"Paraplegia",
-"Quadriplegia",
-"Hemianopia",
-"Scotoma",
-"Photophobia",
-"Blurred vision",
-"Anosmia",
-"Dysgeusia",
-"Fatigue",
-"Fever",
-"Night sweats",
-"Weight loss",
-"Anorexia",
-"Nausea",
-"Vomiting",
-"Diarrhea",
-"Abdominal distension",
-"Pruritus",
-"Alopecia",
-"Insomnia",
-"Hypersomnia",
-"Confusion",
-"Delirium",
-"Dementia",
-"Hallucinations",
-"Delusions",
-"Anhedonia",
-"Mania",
-"Catatonia",
-"Clonus",
-"Spasticity",
-"Rigidity",
-"Fasciculations",
-"Myoclonus",
-"Chorea",
-"Athetosis",
-"Dystonia",
-"Tics",
-"Bradykinesia",
-"Hyperreflexia",
-"Areflexia",
-"Trismus",
-"Opisthotonus",
-"Risus sardonicus",
-"Cogwheel rigidity",
-"Pill-rolling tremor",
-"Intention tremor",
-"Waddling gait",
-"Trendelenburg gait",
-"Antalgic gait",
-"Shuffling gait",
-"Ataxic gait",
-"Hemiplegic gait",
-"Ape hand",
-"Winged scapula",
-"Swan neck deformity",
-"Boutonniere deformity",
-"Ulnar deviation",
-"Heberden nodes",
-"Bouchard nodes",
-"Dupuytren contracture",
-"Trigger finger",
-"De Quervain tenosynovitis",
-"Ganglion cyst",
-"Bunion (hallux valgus)",
-"Flat feet (pes planus)",
-"Clubfoot",
-"Genu valgum",
-"Genu varum",
-"Scoliosis",
-"Kyphosis",
-"Lordosis",
-"Torticollis",
-"Frozen shoulder",
-"Shoulder dislocation",
-"Hip dislocation",
-"Clavicle fracture",
-"Scaphoid fracture",
-"Hip fracture",
-"Pelvic fracture",
-"Rib fracture",
-"Compression fracture",
-"Stress fracture",
-"Spondylolisthesis",
-"Spinal stenosis",
-"Sciatica",
-"Whiplash injury",
-"Concussion",
-"Epidural hematoma",
-"Subarachnoid hemorrhage",
-"Intracerebral hemorrhage",
-"Transient ischemic attack",
-"Brain abscess",
-"Hydrocephalus",
-"Cerebral palsy",
-"Spina bifida",
-"Anencephaly",
-"Microcephaly",
-"Macrocephaly",
-"Cleft lip",
-"Cleft palate",
-"Tongue-tie",
-"Strabismus",
-"Amblyopia",
-"Myopia",
-"Hyperopia",
-"Astigmatism",
-"Presbyopia",
-"Conjunctivitis",
-"Keratitis",
-"Uveitis",
-"Scleritis",
-"Episcleritis",
-"Blepharitis",
-"Subconjunctival hemorrhage",
-"Color blindness",
-"Night blindness",
-"Glaucoma",
-"Retinitis pigmentosa",
-"Retinoblastoma",
-"Otosclerosis",
-"Meniere disease",
-"Labyrinthitis",
-"Mastoiditis",
-"Cholesteatoma",
-"Tonsillitis",
-"Laryngitis",
-"Epistaxis",
-"Deviated septum",
-"Sialolithiasis",
-"Mumps",
-"Rubella",
-"Fifth disease",
-"Shingles",
-"Smallpox",
-"Polio",
-"Diphtheria",
-"Cholera",
-"Leprosy",
-"Syphilis",
-"Gonorrhea",
-"Chlamydia",
-"Trichomoniasis",
-"Bacterial vaginosis",
-"Toxoplasmosis",
-"Cryptosporidiosis",
-"Amoebiasis",
-"Ascariasis",
-"Schistosomiasis",
-"Filariasis",
-"Elephantiasis",
-"Trichinosis",
-"Toxocariasis",
-"Hydatid disease",
-"Cysticercosis",
-"Zika virus infection",
-"Chikungunya",
-"Ebola virus disease",
-"Lassa fever",
-"Hantavirus pulmonary syndrome",
-"Influenza",
-"COVID-19",
-"SARS",
-"MERS",
-"Cellulitis",
-"Erysipelas",
-"Abscess",
-"Folliculitis",
-"Furuncle",
-"Carbuncle",
-"Paronychia",
-"Pilonidal cyst",
-"Sebaceous cyst",
-"Lipoma",
-"Keloid",
-"Skin tag",
-"Seborrheic keratosis",
-"Basal cell carcinoma",
-"Squamous cell carcinoma",
-"Kaposi sarcoma",
-"Pemphigus vulgaris",
-"Bullous pemphigoid",
-"Dermatitis herpetiformis",
-"Lichen planus",
-"Pityriasis rosea",
-"Hidradenitis suppurativa",
-"Sunburn",
-"Burn",
-"Heat exhaustion",
-"Hypothermia",
-"Drowning",
-"Electrical injury",
-"Snakebite",
-"Bee sting allergy",
-"Altitude sickness",
-"Decompression sickness",
-"Motion sickness",
-"Jet lag",
-"Dehydration",
-"Malnutrition",
-"Kwashiorkor",
-"Marasmus",
-"Scurvy",
-"Rickets",
-"Osteomalacia",
-"Beriberi",
-"Pellagra",
-"Obesity",
-"Osteoporosis",
-"Paget disease of bone",
-"Hypoglycemia",
-"Hyperglycemia",
-"Hyponatremia",
-"Hypernatremia",
-"Hypokalemia",
-"Hypocalcemia",
-"Hypercalcemia",
-"Hypomagnesemia",
-"Metabolic acidosis",
-"Metabolic alkalosis",
-"Respiratory acidosis",
-"Respiratory alkalosis",
-"Acromegaly",
-"Gigantism",
-"Dwarfism",
-"Hyperprolactinemia",
-"Prolactinoma",
-"SIADH",
-"Conn syndrome",
-"Hypoparathyroidism",
-"Thyroid cancer",
-"Thyroiditis",
-"Klinefelter syndrome",
-"Edwards syndrome",
-"Patau syndrome",
-"Fragile X syndrome",
-"Cri-du-chat syndrome",
-"Noonan syndrome",
-"Ehlers-Danlos syndrome",
-"Achondroplasia",
-"Duchenne muscular dystrophy",
-"Becker muscular dystrophy",
-"Spinal muscular atrophy",
-"Thalassemia",
-"Hereditary spherocytosis",
-"Von Willebrand disease",
-"Factor V Leiden",
-"Polycythemia",
-"Neutropenia",
-"Thrombocytopenia",
-"Agranulocytosis",
-"Mesothelioma",
-"Asbestosis",
-"Silicosis",
-"Pneumoconiosis",
-"Pleural effusion",
-"Empyema",
-"Lung abscess",
-"Atelectasis",
-"Cor pulmonale",
-"Hiatal hernia",
-"Barrett esophagus",
-"Esophagitis",
-"Gastritis",
-"Gastroparesis",
-"Gastric cancer",
-"Colorectal cancer",
-"Esophageal cancer",
-"Anal fissure",
-"Anal fistula",
-"Volvulus",
-"Diverticulosis",
-"Appendiceal abscess",
-"Fatty liver disease",
-"Hepatitis C",
-"Hepatitis D",
-"Hepatitis E",
-"Autoimmune hepatitis",
-"Portal hypertension",
-"Liver abscess",
-"Chronic pancreatitis",
-"Pancreatic pseudocyst",
-"Kidney cyst",
-"Nephrotic syndrome",
-"Nephritic syndrome",
-"Chronic kidney disease",
-"Hydronephrosis",
-"Urinary retention",
-"Urinary incontinence",
-"Bladder cancer",
-"Prostate cancer",
-"Testicular cancer",
-"Varicocele",
-"Hydrocele",
-"Cryptorchidism",
-"Hypospadias",
-"Phimosis",
-"Erectile dysfunction",
-"Infertility",
-"Ovarian cyst",
-"Ovarian torsion",
-"Ovarian cancer",
-"Cervical cancer",
-"Endometrial cancer",
-"Menopause",
-"Amenorrhea",
-"Menorrhagia",
-"Premenstrual syndrome",
-"Mastitis",
-"Fibroadenoma",
-"Placenta previa",
-"Gestational hypertension",
-"Eclampsia",
-"HELLP syndrome",
-"Hyperemesis gravidarum",
-"Miscarriage",
-"Postpartum hemorrhage",
-"Postpartum depression",
-"Coronary artery disease",
-"Angina pectoris",
-"Heart failure",
-"Mitral regurgitation",
-"Mitral stenosis",
-"Mitral valve prolapse",
-"Aortic regurgitation",
-"Tricuspid regurgitation",
-"Atrial septal defect",
-"Ventricular septal defect",
-"Patent ductus arteriosus",
-"Tetralogy of Fallot",
-"Transposition of the great arteries",
-"Aortic aneurysm",
-"Peripheral artery disease",
-"Varicose veins",
-"Superficial thrombophlebitis",
-"Lymphedema",
-"Vasculitis",
-"Autism spectrum disorder",
-"ADHD",
-"Dyslexia",
-"Tourette syndrome",
-"Narcolepsy",
-"Restless legs syndrome",
-"Sleepwalking",
-"Bulimia nervosa",
-"Binge eating disorder",
-"Social anxiety disorder",
-"Specific phobia",
-"Agoraphobia",
-"Borderline personality disorder",
-"Alcohol use disorder",
-"Alcohol withdrawal",
-"Opioid withdrawal",
-"Serotonin syndrome",
-"Lead poisoning",
-"Mercury poisoning",
-"Arsenic poisoning",
-"Organophosphate poisoning",
-"Cyanide poisoning",
-"Methanol poisoning",
-"Digoxin toxicity",
-"Lithium toxicity",
-"Iron overdose",
-"Food poisoning",
-"Sepsis",
-"Septic shock",
-"Hypovolemic shock",
-"Cardiogenic shock",
-"Anaphylactic shock",
-"Brain death",
-"Coma",
-"Locked-in syndrome",
-"Persistent vegetative state",
-"Sudden infant death syndrome",
-"Shaken baby syndrome",
-"Failure to thrive",
-"Teething",
-"Cradle cap",
-"Hand eczema",
-"Chilblains",
-"Trench foot",
-"Halitosis",
-"Dental caries",
-"Gingivitis",
-"Periodontitis",
-"Tooth abscess",
-"Temporomandibular joint disorder",
-"Sinusitis",
-"Snoring",
-"Hiccups",
-"Bruxism"
+ {
+  "label": "Myocardial infarction",
+  "aliases": [
+   "MI",
+   "Heart attack"
+  ]
+ },
+ {
+  "label": "Essential hypertension",
+  "aliases": [
+   "Primary hypertension"
+  ]
+ },
+ {
+  "label": "Asthma",
+  "aliases": []
+ },
+ {
+  "label": "Chronic obstructive pulmonary disease",
+  "aliases": [
+   "COPD"
+  ]
+ },
+ {
+  "label": "Community-acquired pneumonia",
+  "aliases": [
+   "CAP"
+  ]
+ },
+ {
+  "label": "Obstructive sleep apnea",
+  "aliases": [
+   "OSA"
+  ]
+ },
+ {
+  "label": "Gastroesophageal reflux disease",
+  "aliases": [
+   "GERD",
+   "Acid reflux"
+  ]
+ },
+ {
+  "label": "Acute appendicitis",
+  "aliases": [
+   "Appendicitis"
+  ]
+ },
+ {
+  "label": "Acute pancreatitis",
+  "aliases": []
+ },
+ {
+  "label": "Peptic ulcer disease",
+  "aliases": [
+   "PUD",
+   "Peptic ulcer"
+  ]
+ },
+ {
+  "label": "Ischemic stroke",
+  "aliases": [
+   "Ischemic cerebrovascular accident"
+  ]
+ },
+ {
+  "label": "Alzheimer disease",
+  "aliases": []
+ },
+ {
+  "label": "Acute cystitis",
+  "aliases": [
+   "Bladder infection"
+  ]
+ },
+ {
+  "label": "Superficial candidiasis",
+  "aliases": []
+ },
+ {
+  "label": "Acute gastroenteritis",
+  "aliases": [
+   "Stomach flu"
+  ]
+ },
+ {
+  "label": "Impetigo",
+  "aliases": []
+ },
+ {
+  "label": "Psoriasis",
+  "aliases": []
+ },
+ {
+  "label": "Atopic dermatitis",
+  "aliases": [
+   "Eczema",
+   "Atopic eczema"
+  ]
+ },
+ {
+  "label": "Rheumatoid arthritis",
+  "aliases": [
+   "RA"
+  ]
+ },
+ {
+  "label": "Gout",
+  "aliases": [
+   "Gouty arthritis"
+  ]
+ },
+ {
+  "label": "Nephrolithiasis",
+  "aliases": [
+   "Kidney stones",
+   "Renal calculi"
+  ]
+ },
+ {
+  "label": "Benign prostatic hyperplasia",
+  "aliases": [
+   "BPH",
+   "Enlarged prostate"
+  ]
+ },
+ {
+  "label": "Iron deficiency anemia",
+  "aliases": [
+   "IDA"
+  ]
+ },
+ {
+  "label": "Croup",
+  "aliases": [
+   "Laryngotracheobronchitis"
+  ]
+ },
+ {
+  "label": "RSV bronchiolitis",
+  "aliases": []
+ },
+ {
+  "label": "Febrile seizure",
+  "aliases": [
+   "Febrile convulsion"
+  ]
+ },
+ {
+  "label": "Acute cholecystitis",
+  "aliases": [
+   "Cholecystitis"
+  ]
+ },
+ {
+  "label": "Anaphylaxis",
+  "aliases": []
+ },
+ {
+  "label": "Enterobiasis",
+  "aliases": [
+   "Pinworm infection",
+   "Pinworms"
+  ]
+ },
+ {
+  "label": "Bacterial conjunctivitis",
+  "aliases": []
+ },
+ {
+  "label": "Acute otitis media",
+  "aliases": [
+   "AOM",
+   "Middle ear infection"
+  ]
+ },
+ {
+  "label": "Acute pyelonephritis",
+  "aliases": [
+   "Pyelonephritis",
+   "Kidney infection"
+  ]
+ },
+ {
+  "label": "Carpal tunnel syndrome",
+  "aliases": [
+   "CTS"
+  ]
+ },
+ {
+  "label": "Acute pharyngitis",
+  "aliases": [
+   "Pharyngitis"
+  ]
+ },
+ {
+  "label": "Hordeolum",
+  "aliases": [
+   "Stye"
+  ]
+ },
+ {
+  "label": "Contact dermatitis",
+  "aliases": []
+ },
+ {
+  "label": "Plantar fasciitis",
+  "aliases": []
+ },
+ {
+  "label": "Acute rhinosinusitis",
+  "aliases": [
+   "Acute sinusitis"
+  ]
+ },
+ {
+  "label": "Otitis externa",
+  "aliases": [
+   "Swimmer's ear"
+  ]
+ },
+ {
+  "label": "Urticaria",
+  "aliases": [
+   "Hives"
+  ]
+ },
+ {
+  "label": "Scabies",
+  "aliases": []
+ },
+ {
+  "label": "Vitamin B12 deficiency",
+  "aliases": [
+   "B12 deficiency",
+   "Cobalamin deficiency"
+  ]
+ },
+ {
+  "label": "Pernicious anemia",
+  "aliases": []
+ },
+ {
+  "label": "Common wart",
+  "aliases": [
+   "Verruca vulgaris"
+  ]
+ },
+ {
+  "label": "Acute bronchitis",
+  "aliases": [
+   "Chest cold"
+  ]
+ },
+ {
+  "label": "Infective endocarditis",
+  "aliases": [
+   "IE"
+  ]
+ },
+ {
+  "label": "Acute pericarditis",
+  "aliases": [
+   "Pericarditis"
+  ]
+ },
+ {
+  "label": "Pulmonary embolism",
+  "aliases": [
+   "PE"
+  ]
+ },
+ {
+  "label": "Tension pneumothorax",
+  "aliases": []
+ },
+ {
+  "label": "Pneumothorax",
+  "aliases": [
+   "Collapsed lung"
+  ]
+ },
+ {
+  "label": "Crohn disease",
+  "aliases": [
+   "Regional enteritis"
+  ]
+ },
+ {
+  "label": "Ulcerative colitis",
+  "aliases": [
+   "UC"
+  ]
+ },
+ {
+  "label": "Celiac disease",
+  "aliases": [
+   "Gluten-sensitive enteropathy",
+   "Celiac sprue"
+  ]
+ },
+ {
+  "label": "Adrenal crisis",
+  "aliases": [
+   "Addisonian crisis",
+   "Acute adrenal insufficiency"
+  ]
+ },
+ {
+  "label": "Primary hyperparathyroidism",
+  "aliases": [
+   "Primary HPT"
+  ]
+ },
+ {
+  "label": "Wernicke-Korsakoff syndrome",
+  "aliases": []
+ },
+ {
+  "label": "HIV infection / AIDS",
+  "aliases": [
+   "HIV",
+   "AIDS"
+  ]
+ },
+ {
+  "label": "Melanoma",
+  "aliases": [
+   "Malignant melanoma"
+  ]
+ },
+ {
+  "label": "Systemic lupus erythematosus",
+  "aliases": [
+   "SLE",
+   "Lupus"
+  ]
+ },
+ {
+  "label": "Ankylosing spondylitis",
+  "aliases": [
+   "AS"
+  ]
+ },
+ {
+  "label": "Reactive arthritis",
+  "aliases": [
+   "Reiter syndrome"
+  ]
+ },
+ {
+  "label": "Hodgkin lymphoma",
+  "aliases": [
+   "Hodgkin disease"
+  ]
+ },
+ {
+  "label": "Immune thrombocytopenia",
+  "aliases": [
+   "ITP",
+   "Idiopathic thrombocytopenic purpura"
+  ]
+ },
+ {
+  "label": "Hypertrophic pyloric stenosis",
+  "aliases": [
+   "Pyloric stenosis"
+  ]
+ },
+ {
+  "label": "Intussusception",
+  "aliases": []
+ },
+ {
+  "label": "Diabetic ketoacidosis",
+  "aliases": [
+   "DKA"
+  ]
+ },
+ {
+  "label": "Acute angle-closure glaucoma",
+  "aliases": [
+   "Acute angle-closure crisis",
+   "Acute glaucoma"
+  ]
+ },
+ {
+  "label": "Peritonsillar abscess",
+  "aliases": [
+   "Quinsy",
+   "PTA"
+  ]
+ },
+ {
+  "label": "Benign paroxysmal positional vertigo",
+  "aliases": [
+   "BPPV"
+  ]
+ },
+ {
+  "label": "Hashimoto thyroiditis",
+  "aliases": [
+   "Chronic lymphocytic thyroiditis"
+  ]
+ },
+ {
+  "label": "Budd-Chiari syndrome",
+  "aliases": [
+   "Hepatic venous outflow obstruction"
+  ]
+ },
+ {
+  "label": "Behcet disease",
+  "aliases": [
+   "Behcet syndrome"
+  ]
+ },
+ {
+  "label": "Hand, foot, and mouth disease",
+  "aliases": [
+   "HFMD"
+  ]
+ },
+ {
+  "label": "Myasthenia gravis",
+  "aliases": [
+   "MG"
+  ]
+ },
+ {
+  "label": "Guillain-Barre syndrome",
+  "aliases": [
+   "GBS"
+  ]
+ },
+ {
+  "label": "Pheochromocytoma",
+  "aliases": []
+ },
+ {
+  "label": "Normal pressure hydrocephalus",
+  "aliases": [
+   "NPH"
+  ]
+ },
+ {
+  "label": "Amyotrophic lateral sclerosis",
+  "aliases": [
+   "ALS",
+   "Lou Gehrig disease"
+  ]
+ },
+ {
+  "label": "Cardiac tamponade",
+  "aliases": [
+   "Pericardial tamponade"
+  ]
+ },
+ {
+  "label": "Idiopathic pulmonary fibrosis",
+  "aliases": [
+   "IPF"
+  ]
+ },
+ {
+  "label": "Interstitial pulmonary fibrosis",
+  "aliases": [
+   "Pulmonary fibrosis"
+  ]
+ },
+ {
+  "label": "Sarcoidosis",
+  "aliases": []
+ },
+ {
+  "label": "Primary sclerosing cholangitis",
+  "aliases": [
+   "PSC"
+  ]
+ },
+ {
+  "label": "Wilson disease",
+  "aliases": [
+   "Hepatolenticular degeneration"
+  ]
+ },
+ {
+  "label": "Granulomatosis with polyangiitis",
+  "aliases": [
+   "GPA",
+   "Wegener granulomatosis"
+  ]
+ },
+ {
+  "label": "Systemic sclerosis",
+  "aliases": [
+   "Scleroderma",
+   "SSc"
+  ]
+ },
+ {
+  "label": "Multiple myeloma",
+  "aliases": [
+   "Myeloma",
+   "Plasma cell myeloma"
+  ]
+ },
+ {
+  "label": "Neuroleptic malignant syndrome",
+  "aliases": [
+   "NMS"
+  ]
+ },
+ {
+  "label": "Necrotizing enterocolitis",
+  "aliases": [
+   "NEC"
+  ]
+ },
+ {
+  "label": "Thyroid storm",
+  "aliases": [
+   "Thyrotoxic crisis"
+  ]
+ },
+ {
+  "label": "Erdheim-Chester disease",
+  "aliases": [
+   "ECD"
+  ]
+ },
+ {
+  "label": "Acute rheumatic fever",
+  "aliases": [
+   "Rheumatic fever",
+   "ARF"
+  ]
+ },
+ {
+  "label": "Polyarteritis nodosa",
+  "aliases": [
+   "PAN"
+  ]
+ },
+ {
+  "label": "Hepatic encephalopathy",
+  "aliases": [
+   "Portosystemic encephalopathy"
+  ]
+ },
+ {
+  "label": "Alport syndrome",
+  "aliases": [
+   "Hereditary nephritis"
+  ]
+ },
+ {
+  "label": "Fabry disease",
+  "aliases": [
+   "Anderson-Fabry disease",
+   "Alpha-galactosidase A deficiency"
+  ]
+ },
+ {
+  "label": "MELAS syndrome",
+  "aliases": [
+   "MELAS"
+  ]
+ },
+ {
+  "label": "Tuberous sclerosis complex",
+  "aliases": [
+   "TSC",
+   "Tuberous sclerosis"
+  ]
+ },
+ {
+  "label": "Neurofibromatosis type 1",
+  "aliases": [
+   "NF1",
+   "Von Recklinghausen disease"
+  ]
+ },
+ {
+  "label": "Sturge-Weber syndrome",
+  "aliases": [
+   "Encephalotrigeminal angiomatosis"
+  ]
+ },
+ {
+  "label": "Vascular Ehlers-Danlos syndrome",
+  "aliases": [
+   "vEDS",
+   "Ehlers-Danlos syndrome type IV"
+  ]
+ },
+ {
+  "label": "DiGeorge syndrome",
+  "aliases": [
+   "22q11.2 deletion syndrome",
+   "Velocardiofacial syndrome"
+  ]
+ },
+ {
+  "label": "Erythropoietic protoporphyria",
+  "aliases": [
+   "EPP"
+  ]
+ },
+ {
+  "label": "Ataxia-telangiectasia",
+  "aliases": [
+   "Louis-Bar syndrome"
+  ]
+ },
+ {
+  "label": "Paroxysmal nocturnal hemoglobinuria",
+  "aliases": [
+   "PNH"
+  ]
+ },
+ {
+  "label": "Hereditary hemochromatosis",
+  "aliases": [
+   "HFE hemochromatosis",
+   "Hemochromatosis"
+  ]
+ },
+ {
+  "label": "Wiskott-Aldrich syndrome",
+  "aliases": [
+   "WAS"
+  ]
+ },
+ {
+  "label": "Phenylketonuria",
+  "aliases": [
+   "PKU"
+  ]
+ },
+ {
+  "label": "Alkaptonuria",
+  "aliases": [
+   "Black urine disease"
+  ]
+ },
+ {
+  "label": "Maple syrup urine disease",
+  "aliases": [
+   "MSUD",
+   "Branched-chain ketoaciduria"
+  ]
+ },
+ {
+  "label": "Menkes disease",
+  "aliases": [
+   "Kinky hair disease"
+  ]
+ },
+ {
+  "label": "Tay-Sachs disease",
+  "aliases": [
+   "Hexosaminidase A deficiency"
+  ]
+ },
+ {
+  "label": "Gaucher disease",
+  "aliases": [
+   "Glucocerebrosidase deficiency"
+  ]
+ },
+ {
+  "label": "Hurler syndrome",
+  "aliases": [
+   "MPS I",
+   "Mucopolysaccharidosis type I"
+  ]
+ },
+ {
+  "label": "Glycogen storage disease type I",
+  "aliases": [
+   "Von Gierke disease",
+   "GSD I"
+  ]
+ },
+ {
+  "label": "Lesch-Nyhan syndrome",
+  "aliases": [
+   "HGPRT deficiency"
+  ]
+ },
+ {
+  "label": "Pityriasis versicolor",
+  "aliases": [
+   "Tinea versicolor"
+  ]
+ },
+ {
+  "label": "Susac syndrome",
+  "aliases": []
+ },
+ {
+  "label": "Allergic conjunctivitis",
+  "aliases": [
+   "Hay fever conjunctivitis"
+  ]
+ },
+ {
+  "label": "Cryptococcal meningitis",
+  "aliases": []
+ },
+ {
+  "label": "Hepatorenal syndrome",
+  "aliases": [
+   "HRS"
+  ]
+ },
+ {
+  "label": "Glycogen storage disease type III",
+  "aliases": [
+   "Cori disease",
+   "GSD III"
+  ]
+ },
+ {
+  "label": "Acute bacterial meningitis",
+  "aliases": [
+   "Bacterial meningitis"
+  ]
+ },
+ {
+  "label": "Meningitis",
+  "aliases": []
+ },
+ {
+  "label": "Viral meningitis",
+  "aliases": [
+   "Aseptic meningitis"
+  ]
+ },
+ {
+  "label": "Heart failure with reduced ejection fraction",
+  "aliases": [
+   "HFrEF",
+   "Systolic heart failure"
+  ]
+ },
+ {
+  "label": "Acute decompensated heart failure",
+  "aliases": [
+   "ADHF"
+  ]
+ },
+ {
+  "label": "Hyperosmolar hyperglycemic state",
+  "aliases": [
+   "HHS",
+   "Hyperosmolar hyperglycemic nonketotic syndrome"
+  ]
+ },
+ {
+  "label": "Myxedema coma",
+  "aliases": []
+ },
+ {
+  "label": "Acute diverticulitis",
+  "aliases": [
+   "Diverticulitis"
+  ]
+ },
+ {
+  "label": "Irritable bowel syndrome",
+  "aliases": [
+   "IBS"
+  ]
+ },
+ {
+  "label": "Infectious mononucleosis",
+  "aliases": [
+   "Mono",
+   "Glandular fever"
+  ]
+ },
+ {
+  "label": "Lung cancer",
+  "aliases": [
+   "Bronchogenic carcinoma"
+  ]
+ },
+ {
+  "label": "Hepatocellular carcinoma",
+  "aliases": [
+   "HCC",
+   "Hepatoma"
+  ]
+ },
+ {
+  "label": "Acute glomerulonephritis",
+  "aliases": [
+   "Acute nephritic syndrome"
+  ]
+ },
+ {
+  "label": "Pierre Robin sequence",
+  "aliases": [
+   "Pierre Robin syndrome"
+  ]
+ },
+ {
+  "label": "Constipation",
+  "aliases": []
+ },
+ {
+  "label": "Dyspepsia",
+  "aliases": [
+   "Indigestion"
+  ]
+ },
+ {
+  "label": "Acute mechanical low back pain",
+  "aliases": [
+   "Mechanical low back pain",
+   "Lumbar strain"
+  ]
+ },
+ {
+  "label": "Dysmenorrhea",
+  "aliases": [
+   "Menstrual cramps",
+   "Period pain"
+  ]
+ },
+ {
+  "label": "Calcium channel blocker adverse effects",
+  "aliases": []
+ },
+ {
+  "label": "Tumor lysis syndrome",
+  "aliases": [
+   "TLS"
+  ]
+ },
+ {
+  "label": "Superior vena cava syndrome",
+  "aliases": [
+   "SVC syndrome",
+   "SVC obstruction"
+  ]
+ },
+ {
+  "label": "Toxic epidermal necrolysis",
+  "aliases": [
+   "TEN",
+   "Lyell syndrome"
+  ]
+ },
+ {
+  "label": "Urosepsis",
+  "aliases": []
+ },
+ {
+  "label": "Typhoid fever",
+  "aliases": [
+   "Typhoid"
+  ]
+ },
+ {
+  "label": "Thrombotic thrombocytopenic purpura",
+  "aliases": [
+   "TTP"
+  ]
+ },
+ {
+  "label": "Septic arthritis",
+  "aliases": [
+   "Infectious arthritis",
+   "Bacterial arthritis"
+  ]
+ },
+ {
+  "label": "Slipped capital femoral epiphysis",
+  "aliases": [
+   "SCFE"
+  ]
+ },
+ {
+  "label": "Von Hippel-Lindau syndrome",
+  "aliases": [
+   "VHL",
+   "Von Hippel-Lindau disease"
+  ]
+ },
+ {
+  "label": "Hereditary coproporphyria",
+  "aliases": [
+   "HCP"
+  ]
+ },
+ {
+  "label": "Sanfilippo syndrome",
+  "aliases": [
+   "MPS III",
+   "Mucopolysaccharidosis type III"
+  ]
+ },
+ {
+  "label": "CARASIL",
+  "aliases": []
+ },
+ {
+  "label": "Gerstmann-Straussler-Scheinker syndrome",
+  "aliases": [
+   "GSS"
+  ]
+ },
+ {
+  "label": "Esophageal atresia with tracheoesophageal fistula",
+  "aliases": [
+   "EA/TEF",
+   "TEF"
+  ]
+ },
+ {
+  "label": "Birt-Hogg-Dube syndrome",
+  "aliases": [
+   "BHD syndrome"
+  ]
+ },
+ {
+  "label": "Congenital diaphragmatic hernia",
+  "aliases": [
+   "CDH"
+  ]
+ },
+ {
+  "label": "Lambert-Eaton myasthenic syndrome",
+  "aliases": [
+   "LEMS",
+   "Lambert-Eaton syndrome"
+  ]
+ },
+ {
+  "label": "Primary biliary cholangitis",
+  "aliases": [
+   "PBC",
+   "Primary biliary cirrhosis"
+  ]
+ },
+ {
+  "label": "POEMS syndrome",
+  "aliases": [
+   "Crow-Fukase syndrome"
+  ]
+ },
+ {
+  "label": "Multiple sclerosis",
+  "aliases": [
+   "MS"
+  ]
+ },
+ {
+  "label": "Porphyria cutanea tarda",
+  "aliases": [
+   "PCT"
+  ]
+ },
+ {
+  "label": "MERRF syndrome",
+  "aliases": [
+   "MERRF"
+  ]
+ },
+ {
+  "label": "Langerhans cell histiocytosis",
+  "aliases": [
+   "LCH",
+   "Histiocytosis X"
+  ]
+ },
+ {
+  "label": "Familial Mediterranean fever",
+  "aliases": [
+   "FMF"
+  ]
+ },
+ {
+  "label": "Congenital lobar emphysema",
+  "aliases": [
+   "Congenital lobar overinflation"
+  ]
+ },
+ {
+  "label": "Alstrom syndrome",
+  "aliases": []
+ },
+ {
+  "label": "Dry eye disease",
+  "aliases": [
+   "Dry eye syndrome",
+   "Keratoconjunctivitis sicca"
+  ]
+ },
+ {
+  "label": "Acne vulgaris",
+  "aliases": [
+   "Acne"
+  ]
+ },
+ {
+  "label": "Hemorrhoids",
+  "aliases": [
+   "Piles"
+  ]
+ },
+ {
+  "label": "Aphthous ulcer",
+  "aliases": [
+   "Canker sore",
+   "Aphthous stomatitis"
+  ]
+ },
+ {
+  "label": "Aortic dissection",
+  "aliases": []
+ },
+ {
+  "label": "Cauda equina syndrome",
+  "aliases": []
+ },
+ {
+  "label": "Cerebral venous sinus thrombosis",
+  "aliases": [
+   "CVST",
+   "Cerebral venous thrombosis"
+  ]
+ },
+ {
+  "label": "Creutzfeldt-Jakob disease",
+  "aliases": [
+   "CJD"
+  ]
+ },
+ {
+  "label": "Disseminated intravascular coagulation",
+  "aliases": [
+   "DIC",
+   "Consumptive coagulopathy"
+  ]
+ },
+ {
+  "label": "Miller Fisher syndrome",
+  "aliases": [
+   "Fisher syndrome"
+  ]
+ },
+ {
+  "label": "Ingrown toenail",
+  "aliases": [
+   "Onychocryptosis",
+   "Ingrown nail"
+  ]
+ },
+ {
+  "label": "Molluscum contagiosum",
+  "aliases": []
+ },
+ {
+  "label": "Neurofibromatosis type 2",
+  "aliases": [
+   "NF2"
+  ]
+ },
+ {
+  "label": "Osgood-Schlatter disease",
+  "aliases": []
+ },
+ {
+  "label": "Pancreatic cancer",
+  "aliases": [
+   "Pancreatic adenocarcinoma"
+  ]
+ },
+ {
+  "label": "Hereditary hemorrhagic telangiectasia",
+  "aliases": [
+   "HHT",
+   "Osler-Weber-Rendu syndrome"
+  ]
+ },
+ {
+  "label": "Osteomyelitis",
+  "aliases": [
+   "Bone infection"
+  ]
+ },
+ {
+  "label": "Acute intermittent porphyria",
+  "aliases": [
+   "AIP"
+  ]
+ },
+ {
+  "label": "Breast cancer",
+  "aliases": [
+   "Breast carcinoma"
+  ]
+ },
+ {
+  "label": "Bronchiectasis",
+  "aliases": []
+ },
+ {
+  "label": "Achalasia",
+  "aliases": [
+   "Esophageal achalasia"
+  ]
+ },
+ {
+  "label": "Hepatitis A",
+  "aliases": [
+   "HAV"
+  ]
+ },
+ {
+  "label": "Hepatitis B",
+  "aliases": [
+   "HBV"
+  ]
+ },
+ {
+  "label": "CADASIL",
+  "aliases": []
+ },
+ {
+  "label": "Allergic rhinitis",
+  "aliases": [
+   "Hay fever"
+  ]
+ },
+ {
+  "label": "Alpha-1 antitrypsin deficiency",
+  "aliases": [
+   "AATD",
+   "A1AT deficiency"
+  ]
+ },
+ {
+  "label": "Anti-NMDA receptor encephalitis",
+  "aliases": [
+   "NMDA receptor encephalitis"
+  ]
+ },
+ {
+  "label": "Antiphospholipid syndrome",
+  "aliases": [
+   "APS",
+   "Hughes syndrome"
+  ]
+ },
+ {
+  "label": "Aplastic anemia",
+  "aliases": []
+ },
+ {
+  "label": "Balo concentric sclerosis",
+  "aliases": [
+   "Balo disease"
+  ]
+ },
+ {
+  "label": "Beckwith-Wiedemann syndrome",
+  "aliases": [
+   "BWS"
+  ]
+ },
+ {
+  "label": "Hereditary angioedema",
+  "aliases": [
+   "HAE"
+  ]
+ },
+ {
+  "label": "Alexander disease",
+  "aliases": []
+ },
+ {
+  "label": "Myotonic dystrophy",
+  "aliases": [
+   "DM1",
+   "Steinert disease"
+  ]
+ },
+ {
+  "label": "Essential tremor",
+  "aliases": [
+   "Benign essential tremor"
+  ]
+ },
+ {
+  "label": "Sjogren syndrome",
+  "aliases": [
+   "Sicca syndrome"
+  ]
+ },
+ {
+  "label": "Renal artery stenosis",
+  "aliases": [
+   "RAS"
+  ]
+ },
+ {
+  "label": "Heerfordt syndrome",
+  "aliases": [
+   "Uveoparotid fever"
+  ]
+ },
+ {
+  "label": "Epilepsy",
+  "aliases": [
+   "Seizure disorder"
+  ]
+ },
+ {
+  "label": "Fibromuscular dysplasia",
+  "aliases": [
+   "FMD"
+  ]
+ },
+ {
+  "label": "Hemophilia A",
+  "aliases": [
+   "Factor VIII deficiency",
+   "Classic hemophilia"
+  ]
+ },
+ {
+  "label": "Primary myelofibrosis",
+  "aliases": [
+   "Myelofibrosis"
+  ]
+ },
+ {
+  "label": "Farber disease",
+  "aliases": [
+   "Farber lipogranulomatosis",
+   "Acid ceramidase deficiency"
+  ]
+ },
+ {
+  "label": "Melasma",
+  "aliases": [
+   "Chloasma"
+  ]
+ },
+ {
+  "label": "Omphalocele",
+  "aliases": [
+   "Exomphalos"
+  ]
+ },
+ {
+  "label": "Peutz-Jeghers syndrome",
+  "aliases": [
+   "PJS"
+  ]
+ },
+ {
+  "label": "Classic galactosemia",
+  "aliases": [
+   "GALT deficiency"
+  ]
+ },
+ {
+  "label": "Schnitzler syndrome",
+  "aliases": []
+ },
+ {
+  "label": "Osteoarthritis",
+  "aliases": [
+   "OA",
+   "Degenerative joint disease"
+  ]
+ },
+ {
+  "label": "Infantile colic",
+  "aliases": [
+   "Colic"
+  ]
+ },
+ {
+  "label": "Erythema toxicum neonatorum",
+  "aliases": [
+   "Erythema toxicum"
+  ]
+ },
+ {
+  "label": "Diaper dermatitis",
+  "aliases": [
+   "Diaper rash",
+   "Nappy rash"
+  ]
+ },
+ {
+  "label": "Hirschsprung disease",
+  "aliases": [
+   "Congenital aganglionic megacolon"
+  ]
+ },
+ {
+  "label": "Head lice",
+  "aliases": [
+   "Pediculosis capitis"
+  ]
+ },
+ {
+  "label": "Zellweger syndrome",
+  "aliases": [
+   "Cerebrohepatorenal syndrome"
+  ]
+ },
+ {
+  "label": "Vitiligo",
+  "aliases": []
+ },
+ {
+  "label": "Neonatal respiratory distress syndrome",
+  "aliases": [
+   "Hyaline membrane disease",
+   "Infant respiratory distress syndrome"
+  ]
+ },
+ {
+  "label": "Infantile epileptic spasms syndrome",
+  "aliases": [
+   "Infantile spasms",
+   "West syndrome"
+  ]
+ },
+ {
+  "label": "Onychomycosis",
+  "aliases": [
+   "Fungal nail infection",
+   "Tinea unguium"
+  ]
+ },
+ {
+  "label": "Stauffer syndrome",
+  "aliases": []
+ },
+ {
+  "label": "Eosinophilic granulomatosis with polyangiitis",
+  "aliases": [
+   "EGPA",
+   "Churg-Strauss syndrome"
+  ]
+ },
+ {
+  "label": "Canavan disease",
+  "aliases": []
+ },
+ {
+  "label": "Chalazion",
+  "aliases": []
+ },
+ {
+  "label": "Charcot-Marie-Tooth disease",
+  "aliases": [
+   "CMT",
+   "Hereditary motor and sensory neuropathy"
+  ]
+ },
+ {
+  "label": "Choanal atresia",
+  "aliases": []
+ },
+ {
+  "label": "Congenital hypothyroidism",
+  "aliases": []
+ },
+ {
+  "label": "Dermatomyositis",
+  "aliases": []
+ },
+ {
+  "label": "Gastroschisis",
+  "aliases": []
+ },
+ {
+  "label": "Friedreich ataxia",
+  "aliases": []
+ },
+ {
+  "label": "Hemophagocytic lymphohistiocytosis",
+  "aliases": [
+   "HLH"
+  ]
+ },
+ {
+  "label": "Herpangina",
+  "aliases": []
+ },
+ {
+  "label": "Corn",
+  "aliases": [
+   "Clavus"
+  ]
+ },
+ {
+  "label": "Lysosomal acid lipase deficiency",
+  "aliases": [
+   "LAL deficiency"
+  ]
+ },
+ {
+  "label": "Nursemaid's elbow",
+  "aliases": [
+   "Pulled elbow",
+   "Radial head subluxation"
+  ]
+ },
+ {
+  "label": "Perioral dermatitis",
+  "aliases": [
+   "Periorificial dermatitis"
+  ]
+ },
+ {
+  "label": "Whipple disease",
+  "aliases": []
+ },
+ {
+  "label": "Syringomyelia",
+  "aliases": []
+ },
+ {
+  "label": "IgA vasculitis",
+  "aliases": [
+   "Henoch-Schonlein purpura",
+   "HSP"
+  ]
+ },
+ {
+  "label": "Psoriatic arthritis",
+  "aliases": [
+   "PsA"
+  ]
+ },
+ {
+  "label": "Primary Hypothyroidism",
+  "aliases": []
+ },
+ {
+  "label": "Acute bacterial prostatitis",
+  "aliases": []
+ },
+ {
+  "label": "Acute cholangitis",
+  "aliases": [
+   "Ascending cholangitis"
+  ]
+ },
+ {
+  "label": "Hyperkalemia",
+  "aliases": []
+ },
+ {
+  "label": "Deep vein thrombosis",
+  "aliases": [
+   "DVT"
+  ]
+ },
+ {
+  "label": "Acute limb ischemia",
+  "aliases": [
+   "ALI"
+  ]
+ },
+ {
+  "label": "Clostridioides difficile colitis",
+  "aliases": [
+   "C. diff colitis",
+   "C. difficile infection"
+  ]
+ },
+ {
+  "label": "Proliferative diabetic retinopathy",
+  "aliases": [
+   "PDR"
+  ]
+ },
+ {
+  "label": "Viral encephalitis",
+  "aliases": []
+ },
+ {
+  "label": "Lemierre syndrome",
+  "aliases": [
+   "Postanginal sepsis",
+   "Necrobacillosis"
+  ]
+ },
+ {
+  "label": "Esophageal variceal bleeding",
+  "aliases": [
+   "Variceal bleeding",
+   "Variceal hemorrhage"
+  ]
+ },
+ {
+  "label": "Vascular dementia",
+  "aliases": [
+   "Multi-infarct dementia"
+  ]
+ },
+ {
+  "label": "Scarlet fever",
+  "aliases": [
+   "Scarlatina"
+  ]
+ },
+ {
+  "label": "Vasovagal syncope",
+  "aliases": [
+   "Neurocardiogenic syncope"
+  ]
+ },
+ {
+  "label": "Acute colonic pseudo-obstruction",
+  "aliases": [
+   "Ogilvie syndrome"
+  ]
+ },
+ {
+  "label": "Sudden sensorineural hearing loss",
+  "aliases": [
+   "SSNHL",
+   "Sudden deafness"
+  ]
+ },
+ {
+  "label": "Lumbar disc herniation with radiculopathy",
+  "aliases": [
+   "Herniated disc"
+  ]
+ },
+ {
+  "label": "Choledocholithiasis",
+  "aliases": [
+   "Common bile duct stones"
+  ]
+ },
+ {
+  "label": "Costochondritis",
+  "aliases": []
+ },
+ {
+  "label": "Parvovirus B19 infection",
+  "aliases": []
+ },
+ {
+  "label": "Pneumocystis pneumonia",
+  "aliases": [
+   "PCP",
+   "PJP"
+  ]
+ },
+ {
+  "label": "Renal artery dissection",
+  "aliases": []
+ },
+ {
+  "label": "Horseshoe kidney",
+  "aliases": []
+ },
+ {
+  "label": "Alcoholic Cirrhosis",
+  "aliases": [
+   "Alcohol-related Cirrhosis"
+  ]
+ },
+ {
+  "label": "Common Cold",
+  "aliases": [
+   "Cold",
+   "Acute Nasopharyngitis"
+  ]
+ },
+ {
+  "label": "Rosacea",
+  "aliases": []
+ },
+ {
+  "label": "Prerenal Acute Kidney Injury",
+  "aliases": [
+   "Prerenal AKI",
+   "Prerenal Azotemia"
+  ]
+ },
+ {
+  "label": "Minimal Change Disease",
+  "aliases": [
+   "MCD",
+   "Lipoid Nephrosis"
+  ]
+ },
+ {
+  "label": "Major Depressive Disorder",
+  "aliases": [
+   "MDD",
+   "Clinical Depression"
+  ]
+ },
+ {
+  "label": "Generalized Anxiety Disorder",
+  "aliases": [
+   "GAD"
+  ]
+ },
+ {
+  "label": "Panic Disorder",
+  "aliases": []
+ },
+ {
+  "label": "Polycystic Ovary Syndrome",
+  "aliases": [
+   "PCOS"
+  ]
+ },
+ {
+  "label": "Uterine Leiomyomas",
+  "aliases": [
+   "Fibroids",
+   "Uterine Fibroids"
+  ]
+ },
+ {
+  "label": "Pelvic Inflammatory Disease",
+  "aliases": [
+   "PID"
+  ]
+ },
+ {
+  "label": "Emphysematous Cystitis",
+  "aliases": []
+ },
+ {
+  "label": "Opioid Overdose",
+  "aliases": [
+   "Opioid Toxicity"
+  ]
+ },
+ {
+  "label": "Condyloma Acuminata",
+  "aliases": [
+   "Genital Warts",
+   "Anogenital Warts"
+  ]
+ },
+ {
+  "label": "Anterior Cruciate Ligament Tear",
+  "aliases": [
+   "ACL Tear",
+   "ACL Rupture"
+  ]
+ },
+ {
+  "label": "Meniscal Tear",
+  "aliases": [
+   "Torn Meniscus",
+   "Meniscus Tear"
+  ]
+ },
+ {
+  "label": "Primary Open-Angle Glaucoma",
+  "aliases": [
+   "POAG",
+   "Chronic Simple Glaucoma"
+  ]
+ },
+ {
+  "label": "Herpetic Whitlow",
+  "aliases": []
+ },
+ {
+  "label": "Ankle Sprain",
+  "aliases": [
+   "Sprained Ankle"
+  ]
+ },
+ {
+  "label": "Seborrheic Dermatitis",
+  "aliases": [
+   "Seborrheic Eczema"
+  ]
+ },
+ {
+  "label": "Actinic Keratosis",
+  "aliases": [
+   "Solar Keratosis",
+   "AK"
+  ]
+ },
+ {
+  "label": "Aortic Stenosis",
+  "aliases": [
+   "AS"
+  ]
+ },
+ {
+  "label": "Coarctation of the Aorta",
+  "aliases": [
+   "Aortic Coarctation",
+   "CoA"
+  ]
+ },
+ {
+  "label": "Cystic Fibrosis",
+  "aliases": [
+   "CF",
+   "Mucoviscidosis"
+  ]
+ },
+ {
+  "label": "Cluster Headache",
+  "aliases": []
+ },
+ {
+  "label": "Secondary Syphilis",
+  "aliases": []
+ },
+ {
+  "label": "Dengue Fever",
+  "aliases": [
+   "Dengue",
+   "Breakbone Fever"
+  ]
+ },
+ {
+  "label": "Necrotizing Fasciitis",
+  "aliases": [
+   "Flesh-eating Disease",
+   "NF"
+  ]
+ },
+ {
+  "label": "Alopecia Areata",
+  "aliases": []
+ },
+ {
+  "label": "Polymyalgia Rheumatica",
+  "aliases": [
+   "PMR"
+  ]
+ },
+ {
+  "label": "Intrinsic Acute Kidney Injury",
+  "aliases": [
+   "Intrinsic AKI",
+   "Intrarenal Acute Kidney Injury"
+  ]
+ },
+ {
+  "label": "Polycystic Kidney Disease",
+  "aliases": [
+   "PKD"
+  ]
+ },
+ {
+  "label": "Lactose Intolerance",
+  "aliases": [
+   "Lactase Deficiency"
+  ]
+ },
+ {
+  "label": "Renal Cell Carcinoma",
+  "aliases": [
+   "RCC",
+   "Hypernephroma"
+  ]
+ },
+ {
+  "label": "Testicular Torsion",
+  "aliases": []
+ },
+ {
+  "label": "Sickle Cell Disease",
+  "aliases": [
+   "SCD"
+  ]
+ },
+ {
+  "label": "Schizophrenia",
+  "aliases": []
+ },
+ {
+  "label": "Bipolar I Disorder",
+  "aliases": [
+   "Bipolar I"
+  ]
+ },
+ {
+  "label": "Obsessive-Compulsive Disorder",
+  "aliases": [
+   "OCD"
+  ]
+ },
+ {
+  "label": "Post-Traumatic Stress Disorder",
+  "aliases": [
+   "PTSD"
+  ]
+ },
+ {
+  "label": "Anorexia Nervosa",
+  "aliases": []
+ },
+ {
+  "label": "Preeclampsia",
+  "aliases": [
+   "Toxemia of pregnancy"
+  ]
+ },
+ {
+  "label": "Ectopic Pregnancy",
+  "aliases": [
+   "Extrauterine Pregnancy"
+  ]
+ },
+ {
+  "label": "Endometriosis",
+  "aliases": []
+ },
+ {
+  "label": "Placental Abruption",
+  "aliases": [
+   "Abruptio Placentae"
+  ]
+ },
+ {
+  "label": "Small Bowel Obstruction",
+  "aliases": [
+   "SBO"
+  ]
+ },
+ {
+  "label": "Inguinal hernia",
+  "aliases": []
+ },
+ {
+  "label": "Splenic Laceration",
+  "aliases": [
+   "Splenic Rupture"
+  ]
+ },
+ {
+  "label": "Perforated Peptic Ulcer",
+  "aliases": []
+ },
+ {
+  "label": "Acetaminophen Toxicity",
+  "aliases": [
+   "Paracetamol Overdose",
+   "Acetaminophen Overdose"
+  ]
+ },
+ {
+  "label": "Carbon Monoxide Poisoning",
+  "aliases": [
+   "CO Poisoning"
+  ]
+ },
+ {
+  "label": "Heat Stroke",
+  "aliases": [
+   "Heatstroke",
+   "Sunstroke"
+  ]
+ },
+ {
+  "label": "Retinal Detachment",
+  "aliases": []
+ },
+ {
+  "label": "Age-Related Macular Degeneration",
+  "aliases": [
+   "AMD",
+   "Macular Degeneration"
+  ]
+ },
+ {
+  "label": "Chemical Ocular Burn",
+  "aliases": [
+   "Chemical Eye Burn",
+   "Chemical Eye Injury"
+  ]
+ },
+ {
+  "label": "Acute Epiglottitis",
+  "aliases": [
+   "Epiglottitis",
+   "Supraglottitis"
+  ]
+ },
+ {
+  "label": "Rotator Cuff Tear",
+  "aliases": []
+ },
+ {
+  "label": "Achilles Tendon Rupture",
+  "aliases": [
+   "Achilles Rupture"
+  ]
+ },
+ {
+  "label": "Lateral Epicondylitis",
+  "aliases": [
+   "Tennis Elbow"
+  ]
+ },
+ {
+  "label": "Multiple Endocrine Neoplasia Type 1",
+  "aliases": [
+   "MEN1",
+   "Wermer Syndrome"
+  ]
+ },
+ {
+  "label": "Pulmonary Arterial Hypertension",
+  "aliases": [
+   "PAH"
+  ]
+ },
+ {
+  "label": "Nasal Polyposis",
+  "aliases": [
+   "Nasal Polyps"
+  ]
+ },
+ {
+  "label": "Progressive Multifocal Leukoencephalopathy",
+  "aliases": [
+   "PML"
+  ]
+ },
+ {
+  "label": "Neurosyphilis",
+  "aliases": []
+ },
+ {
+  "label": "C3 Glomerulopathy",
+  "aliases": [
+   "C3G"
+  ]
+ },
+ {
+  "label": "Hemolytic Uremic Syndrome",
+  "aliases": [
+   "HUS"
+  ]
+ },
+ {
+  "label": "Delirium Tremens",
+  "aliases": [
+   "DTs"
+  ]
+ },
+ {
+  "label": "Amniotic Fluid Embolism",
+  "aliases": [
+   "AFE"
+  ]
+ },
+ {
+  "label": "Gestational Trophoblastic Disease",
+  "aliases": [
+   "GTD"
+  ]
+ },
+ {
+  "label": "Congenital Toxoplasmosis",
+  "aliases": []
+ },
+ {
+  "label": "Esophageal Perforation",
+  "aliases": []
+ },
+ {
+  "label": "Abetalipoproteinemia",
+  "aliases": [
+   "Bassen-Kornzweig syndrome"
+  ]
+ },
+ {
+  "label": "Tricyclic Antidepressant Overdose",
+  "aliases": [
+   "TCA Overdose",
+   "TCA Toxicity"
+  ]
+ },
+ {
+  "label": "Salicylate Toxicity",
+  "aliases": [
+   "Aspirin Overdose",
+   "Salicylate Poisoning"
+  ]
+ },
+ {
+  "label": "Central Retinal Artery Occlusion",
+  "aliases": [
+   "CRAO"
+  ]
+ },
+ {
+  "label": "Temporal Arteritis",
+  "aliases": [
+   "Giant Cell Arteritis",
+   "GCA"
+  ]
+ },
+ {
+  "label": "Ludwig Angina",
+  "aliases": []
+ },
+ {
+  "label": "Acute Compartment Syndrome",
+  "aliases": []
+ },
+ {
+  "label": "Central Diabetes Insipidus",
+  "aliases": [
+   "Neurogenic Diabetes Insipidus",
+   "Central DI"
+  ]
+ },
+ {
+  "label": "Spontaneous Bacterial Peritonitis",
+  "aliases": [
+   "SBP"
+  ]
+ },
+ {
+  "label": "Invasive Pulmonary Aspergillosis",
+  "aliases": [
+   "IPA"
+  ]
+ },
+ {
+  "label": "Botulism",
+  "aliases": []
+ },
+ {
+  "label": "Takayasu Arteritis",
+  "aliases": [
+   "Pulseless Disease"
+  ]
+ },
+ {
+  "label": "Mixed Connective Tissue Disease",
+  "aliases": [
+   "MCTD",
+   "Sharp Syndrome"
+  ]
+ },
+ {
+  "label": "Acute Respiratory Distress Syndrome",
+  "aliases": [
+   "ARDS"
+  ]
+ },
+ {
+  "label": "Legionnaires Disease",
+  "aliases": [
+   "Legionella Pneumonia"
+  ]
+ },
+ {
+  "label": "Psittacosis",
+  "aliases": [
+   "Parrot fever",
+   "Ornithosis"
+  ]
+ },
+ {
+  "label": "Brucellosis",
+  "aliases": [
+   "Malta fever",
+   "Undulant fever"
+  ]
+ },
+ {
+  "label": "Q Fever",
+  "aliases": [
+   "Coxiellosis"
+  ]
+ },
+ {
+  "label": "Tularemia",
+  "aliases": [
+   "Rabbit fever"
+  ]
+ },
+ {
+  "label": "Anthrax",
+  "aliases": []
+ },
+ {
+  "label": "Plague",
+  "aliases": []
+ },
+ {
+  "label": "Melioidosis",
+  "aliases": [
+   "Whitmore disease"
+  ]
+ },
+ {
+  "label": "Chagas Disease",
+  "aliases": [
+   "American Trypanosomiasis"
+  ]
+ },
+ {
+  "label": "Visceral Leishmaniasis",
+  "aliases": [
+   "Kala-azar"
+  ]
+ },
+ {
+  "label": "Cholangiocarcinoma",
+  "aliases": [
+   "Bile duct cancer"
+  ]
+ },
+ {
+  "label": "Acute Liver Failure",
+  "aliases": [
+   "Fulminant Hepatic Failure",
+   "ALF"
+  ]
+ },
+ {
+  "label": "Hypertrophic Cardiomyopathy",
+  "aliases": [
+   "HCM"
+  ]
+ },
+ {
+  "label": "Restrictive Cardiomyopathy",
+  "aliases": [
+   "RCM"
+  ]
+ },
+ {
+  "label": "Myocarditis",
+  "aliases": []
+ },
+ {
+  "label": "Multiple Endocrine Neoplasia Type 2A",
+  "aliases": [
+   "MEN2A",
+   "Sipple Syndrome"
+  ]
+ },
+ {
+  "label": "Multiple Endocrine Neoplasia Type 2B",
+  "aliases": [
+   "MEN2B"
+  ]
+ },
+ {
+  "label": "Fatal Familial Insomnia",
+  "aliases": [
+   "FFI"
+  ]
+ },
+ {
+  "label": "Stiff-Person Syndrome",
+  "aliases": [
+   "Stiff-man Syndrome",
+   "SPS"
+  ]
+ },
+ {
+  "label": "Bickerstaff Brainstem Encephalitis",
+  "aliases": []
+ },
+ {
+  "label": "Subacute Sclerosing Panencephalitis",
+  "aliases": [
+   "SSPE",
+   "Dawson Disease"
+  ]
+ },
+ {
+  "label": "Huntington Disease",
+  "aliases": [
+   "Huntington Chorea",
+   "HD"
+  ]
+ },
+ {
+  "label": "Dunbars Syndrome",
+  "aliases": [
+   "Median Arcuate Ligament Syndrome",
+   "MALS"
+  ]
+ },
+ {
+  "label": "Osteogenesis Imperfecta",
+  "aliases": [
+   "Brittle Bone Disease",
+   "OI"
+  ]
+ },
+ {
+  "label": "Prader-Willi Syndrome",
+  "aliases": [
+   "PWS"
+  ]
+ },
+ {
+  "label": "Williams Syndrome",
+  "aliases": [
+   "Williams-Beuren Syndrome"
+  ]
+ },
+ {
+  "label": "Xeroderma Pigmentosum",
+  "aliases": [
+   "XP"
+  ]
+ },
+ {
+  "label": "Epidermolysis Bullosa Simplex",
+  "aliases": [
+   "EBS"
+  ]
+ },
+ {
+  "label": "Epidermolysis Bullosa Dystrophica",
+  "aliases": [
+   "Dystrophic Epidermolysis Bullosa",
+   "DEB"
+  ]
+ },
+ {
+  "label": "Netherton Syndrome",
+  "aliases": []
+ },
+ {
+  "label": "Incontinentia Pigmenti",
+  "aliases": [
+   "Bloch-Sulzberger Syndrome"
+  ]
+ },
+ {
+  "label": "Rothmund-Thomson Syndrome",
+  "aliases": [
+   "Poikiloderma Congenitale"
+  ]
+ },
+ {
+  "label": "Kindler Syndrome",
+  "aliases": []
+ },
+ {
+  "label": "Pachyonychia Congenita",
+  "aliases": []
+ },
+ {
+  "label": "Olmsted Syndrome",
+  "aliases": []
+ },
+ {
+  "label": "Darier Disease",
+  "aliases": [
+   "Keratosis Follicularis",
+   "Darier-White Disease"
+  ]
+ },
+ {
+  "label": "Hailey-Hailey Disease",
+  "aliases": [
+   "Familial Benign Pemphigus",
+   "Familial Benign Chronic Pemphigus"
+  ]
+ },
+ {
+  "label": "Congenital Erythropoietic Porphyria",
+  "aliases": [
+   "Günther Disease",
+   "CEP"
+  ]
+ },
+ {
+  "label": "Wolfram-like Mitochondrial Encephalopathy",
+  "aliases": []
+ },
+ {
+  "label": "Cockayne Syndrome",
+  "aliases": []
+ },
+ {
+  "label": "Trichothiodystrophy",
+  "aliases": [
+   "TTD"
+  ]
+ },
+ {
+  "label": "Nijmegen Breakage Syndrome",
+  "aliases": [
+   "NBS"
+  ]
+ },
+ {
+  "label": "Werner Syndrome",
+  "aliases": [
+   "Adult Progeria"
+  ]
+ },
+ {
+  "label": "Hutchinson-Gilford Progeria Syndrome",
+  "aliases": [
+   "Progeria",
+   "HGPS"
+  ]
+ },
+ {
+  "label": "Aarskog-Scott Syndrome",
+  "aliases": [
+   "Aarskog Syndrome",
+   "Faciogenital Dysplasia"
+  ]
+ },
+ {
+  "label": "Pseudohypoparathyroidism Type 1A",
+  "aliases": [
+   "PHP1A"
+  ]
+ },
+ {
+  "label": "McCune-Albright Syndrome",
+  "aliases": []
+ },
+ {
+  "label": "Bartter Syndrome",
+  "aliases": []
+ },
+ {
+  "label": "Gitelman Syndrome",
+  "aliases": []
+ },
+ {
+  "label": "Liddle Syndrome",
+  "aliases": []
+ },
+ {
+  "label": "Dent Disease",
+  "aliases": []
+ },
+ {
+  "label": "Dubin-Johnson Syndrome",
+  "aliases": []
+ },
+ {
+  "label": "Rotor Syndrome",
+  "aliases": []
+ },
+ {
+  "label": "Crigler-Najjar Syndrome Type 1",
+  "aliases": [
+   "Crigler-Najjar Type I"
+  ]
+ },
+ {
+  "label": "Pyruvate Kinase Deficiency",
+  "aliases": [
+   "PK Deficiency"
+  ]
+ },
+ {
+  "label": "Glucose-6-Phosphate Dehydrogenase Deficiency",
+  "aliases": [
+   "G6PD Deficiency"
+  ]
+ },
+ {
+  "label": "Chediak-Higashi Syndrome",
+  "aliases": []
+ },
+ {
+  "label": "Chronic Granulomatous Disease",
+  "aliases": [
+   "CGD"
+  ]
+ },
+ {
+  "label": "Leukocyte Adhesion Deficiency Type 1",
+  "aliases": [
+   "LAD1",
+   "LAD-1"
+  ]
+ },
+ {
+  "label": "Severe Combined Immunodeficiency",
+  "aliases": [
+   "SCID",
+   "Bubble Boy Disease"
+  ]
+ },
+ {
+  "label": "Hyper-IgE Syndrome",
+  "aliases": [
+   "Job Syndrome",
+   "HIES"
+  ]
+ },
+ {
+  "label": "Autoimmune Polyendocrinopathy-Candidiasis-Ectodermal Dystrophy",
+  "aliases": [
+   "APECED",
+   "APS-1"
+  ]
+ },
+ {
+  "label": "Homocystinuria",
+  "aliases": []
+ },
+ {
+  "label": "Aicardi-Goutières Syndrome",
+  "aliases": [
+   "AGS"
+  ]
+ },
+ {
+  "label": "Rett Syndrome",
+  "aliases": []
+ },
+ {
+  "label": "Glycogen Storage Disease Type V",
+  "aliases": [
+   "McArdle Disease",
+   "GSD V"
+  ]
+ },
+ {
+  "label": "Blau Syndrome",
+  "aliases": []
+ },
+ {
+  "label": "Smith-Magenis Syndrome",
+  "aliases": [
+   "SMS"
+  ]
+ },
+ {
+  "label": "Cogan Syndrome",
+  "aliases": []
+ },
+ {
+  "label": "Acute Superior Mesenteric Vein Thrombosis",
+  "aliases": [
+   "SMV Thrombosis"
+  ]
+ },
+ {
+  "label": "Acute Pertussis",
+  "aliases": [
+   "Whooping Cough",
+   "Pertussis"
+  ]
+ },
+ {
+  "label": "Giardiasis",
+  "aliases": [
+   "Beaver fever"
+  ]
+ },
+ {
+  "label": "Pseudogout",
+  "aliases": [
+   "CPPD",
+   "Calcium pyrophosphate deposition disease"
+  ]
+ },
+ {
+  "label": "Polycythemia Vera",
+  "aliases": [
+   "PV"
+  ]
+ },
+ {
+  "label": "Insulinoma",
+  "aliases": []
+ },
+ {
+  "label": "Anti-LGI1 Encephalitis",
+  "aliases": [
+   "LGI1 Encephalitis"
+  ]
+ },
+ {
+  "label": "PAPA Syndrome",
+  "aliases": [
+   "Pyogenic Arthritis, Pyoderma Gangrenosum and Acne Syndrome"
+  ]
+ },
+ {
+  "label": "Erythrasma",
+  "aliases": []
+ },
+ {
+  "label": "Cyclosporiasis",
+  "aliases": []
+ },
+ {
+  "label": "Calcific Tendonitis",
+  "aliases": [
+   "Calcific Tendinopathy"
+  ]
+ },
+ {
+  "label": "Subclavian Steal Syndrome",
+  "aliases": [
+   "Subclavian Steal"
+  ]
+ },
+ {
+  "label": "VIPoma",
+  "aliases": [
+   "Verner-Morrison syndrome",
+   "WDHA syndrome"
+  ]
+ },
+ {
+  "label": "Essential Thrombocythemia",
+  "aliases": [
+   "ET",
+   "Essential Thrombocytosis"
+  ]
+ },
+ {
+  "label": "Isovaleric Acidemia",
+  "aliases": [
+   "IVA"
+  ]
+ },
+ {
+  "label": "Relapsing Polychondritis",
+  "aliases": []
+ },
+ {
+  "label": "Murphy sign",
+  "aliases": []
+ },
+ {
+  "label": "McBurney point tenderness",
+  "aliases": [
+   "McBurney sign"
+  ]
+ },
+ {
+  "label": "Rovsing sign",
+  "aliases": []
+ },
+ {
+  "label": "Psoas sign",
+  "aliases": []
+ },
+ {
+  "label": "Obturator sign",
+  "aliases": []
+ },
+ {
+  "label": "Cullen sign",
+  "aliases": []
+ },
+ {
+  "label": "Grey Turner sign",
+  "aliases": []
+ },
+ {
+  "label": "Kehr sign",
+  "aliases": []
+ },
+ {
+  "label": "Kernig sign",
+  "aliases": []
+ },
+ {
+  "label": "Brudzinski sign",
+  "aliases": []
+ },
+ {
+  "label": "Chvostek sign",
+  "aliases": []
+ },
+ {
+  "label": "Trousseau sign",
+  "aliases": []
+ },
+ {
+  "label": "Romberg sign",
+  "aliases": [
+   "Romberg test"
+  ]
+ },
+ {
+  "label": "Lhermitte sign",
+  "aliases": [
+   "Barber chair phenomenon"
+  ]
+ },
+ {
+  "label": "Hoffmann sign",
+  "aliases": []
+ },
+ {
+  "label": "Tinel sign",
+  "aliases": []
+ },
+ {
+  "label": "Phalen sign",
+  "aliases": [
+   "Phalen test",
+   "Phalen maneuver"
+  ]
+ },
+ {
+  "label": "Finkelstein test",
+  "aliases": []
+ },
+ {
+  "label": "Homans sign",
+  "aliases": []
+ },
+ {
+  "label": "Battle sign",
+  "aliases": [
+   "Mastoid ecchymosis"
+  ]
+ },
+ {
+  "label": "Kussmaul breathing",
+  "aliases": [
+   "Kussmaul respiration"
+  ]
+ },
+ {
+  "label": "Cheyne-Stokes respiration",
+  "aliases": [
+   "Cheyne-Stokes breathing"
+  ]
+ },
+ {
+  "label": "Kussmaul sign",
+  "aliases": []
+ },
+ {
+  "label": "Beck triad",
+  "aliases": []
+ },
+ {
+  "label": "Virchow node",
+  "aliases": [
+   "Troisier sign"
+  ]
+ },
+ {
+  "label": "Sister Mary Joseph nodule",
+  "aliases": [
+   "Sister Mary Joseph node"
+  ]
+ },
+ {
+  "label": "Courvoisier sign",
+  "aliases": [
+   "Courvoisier law"
+  ]
+ },
+ {
+  "label": "Caput medusae",
+  "aliases": []
+ },
+ {
+  "label": "Spider angioma",
+  "aliases": [
+   "Spider nevus",
+   "Spider telangiectasia"
+  ]
+ },
+ {
+  "label": "Palmar erythema",
+  "aliases": [
+   "Liver palms"
+  ]
+ },
+ {
+  "label": "Asterixis",
+  "aliases": [
+   "Flapping tremor",
+   "Liver flap"
+  ]
+ },
+ {
+  "label": "Clubbing",
+  "aliases": [
+   "Digital clubbing",
+   "Finger clubbing"
+  ]
+ },
+ {
+  "label": "Splinter hemorrhages",
+  "aliases": []
+ },
+ {
+  "label": "Janeway lesions",
+  "aliases": []
+ },
+ {
+  "label": "Osler nodes",
+  "aliases": []
+ },
+ {
+  "label": "Roth spots",
+  "aliases": []
+ },
+ {
+  "label": "Argyll Robertson pupil",
+  "aliases": []
+ },
+ {
+  "label": "Marcus Gunn pupil",
+  "aliases": [
+   "RAPD",
+   "Relative afferent pupillary defect"
+  ]
+ },
+ {
+  "label": "Nystagmus",
+  "aliases": []
+ },
+ {
+  "label": "Papilledema",
+  "aliases": [
+   "Papilloedema"
+  ]
+ },
+ {
+  "label": "Cherry-red spot",
+  "aliases": []
+ },
+ {
+  "label": "Kayser-Fleischer rings",
+  "aliases": [
+   "KF rings"
+  ]
+ },
+ {
+  "label": "Arcus senilis",
+  "aliases": [
+   "Corneal arcus",
+   "Arcus"
+  ]
+ },
+ {
+  "label": "Xanthelasma",
+  "aliases": [
+   "Xanthelasma palpebrarum"
+  ]
+ },
+ {
+  "label": "Café-au-lait spots",
+  "aliases": [
+   "Cafe-au-lait macules"
+  ]
+ },
+ {
+  "label": "Ash-leaf spots",
+  "aliases": [
+   "Ash-leaf macules"
+  ]
+ },
+ {
+  "label": "Lisch nodules",
+  "aliases": [
+   "Iris hamartomas"
+  ]
+ },
+ {
+  "label": "Auspitz sign",
+  "aliases": []
+ },
+ {
+  "label": "Nikolsky sign",
+  "aliases": []
+ },
+ {
+  "label": "Koebner phenomenon",
+  "aliases": [
+   "Isomorphic response"
+  ]
+ },
+ {
+  "label": "Darier sign",
+  "aliases": []
+ },
+ {
+  "label": "Dermatographism",
+  "aliases": [
+   "Dermographism",
+   "Skin writing"
+  ]
+ },
+ {
+  "label": "Heliotrope rash",
+  "aliases": []
+ },
+ {
+  "label": "Gottron papules",
+  "aliases": []
+ },
+ {
+  "label": "Malar rash",
+  "aliases": [
+   "Butterfly rash"
+  ]
+ },
+ {
+  "label": "Target lesions",
+  "aliases": []
+ },
+ {
+  "label": "Erythema nodosum",
+  "aliases": []
+ },
+ {
+  "label": "Erythema marginatum",
+  "aliases": []
+ },
+ {
+  "label": "Erythema multiforme",
+  "aliases": []
+ },
+ {
+  "label": "Pyoderma gangrenosum",
+  "aliases": []
+ },
+ {
+  "label": "Acanthosis nigricans",
+  "aliases": []
+ },
+ {
+  "label": "Hirsutism",
+  "aliases": []
+ },
+ {
+  "label": "Gynecomastia",
+  "aliases": [
+   "Gynaecomastia"
+  ]
+ },
+ {
+  "label": "Galactorrhea",
+  "aliases": [
+   "Galactorrhoea"
+  ]
+ },
+ {
+  "label": "Exophthalmos",
+  "aliases": [
+   "Proptosis"
+  ]
+ },
+ {
+  "label": "Goiter",
+  "aliases": [
+   "Goitre"
+  ]
+ },
+ {
+  "label": "Moon face",
+  "aliases": [
+   "Moon facies"
+  ]
+ },
+ {
+  "label": "Buffalo hump",
+  "aliases": [
+   "Dorsocervical fat pad"
+  ]
+ },
+ {
+  "label": "Purple striae",
+  "aliases": [
+   "Violaceous striae"
+  ]
+ },
+ {
+  "label": "Hyperpigmentation",
+  "aliases": []
+ },
+ {
+  "label": "Cyanosis",
+  "aliases": []
+ },
+ {
+  "label": "Pallor",
+  "aliases": []
+ },
+ {
+  "label": "Petechiae",
+  "aliases": []
+ },
+ {
+  "label": "Purpura",
+  "aliases": []
+ },
+ {
+  "label": "Ecchymosis",
+  "aliases": [
+   "Bruise",
+   "Bruising"
+  ]
+ },
+ {
+  "label": "Edema",
+  "aliases": [
+   "Oedema"
+  ]
+ },
+ {
+  "label": "Ascites",
+  "aliases": []
+ },
+ {
+  "label": "Hepatomegaly",
+  "aliases": [
+   "Enlarged liver"
+  ]
+ },
+ {
+  "label": "Splenomegaly",
+  "aliases": [
+   "Enlarged spleen"
+  ]
+ },
+ {
+  "label": "Lymphadenopathy",
+  "aliases": [
+   "Swollen lymph nodes",
+   "Adenopathy"
+  ]
+ },
+ {
+  "label": "Hemoptysis",
+  "aliases": [
+   "Coughing blood",
+   "Haemoptysis"
+  ]
+ },
+ {
+  "label": "Hematemesis",
+  "aliases": [
+   "Vomiting blood",
+   "Haematemesis"
+  ]
+ },
+ {
+  "label": "Melena",
+  "aliases": [
+   "Melaena",
+   "Tarry stools"
+  ]
+ },
+ {
+  "label": "Hematochezia",
+  "aliases": [
+   "Rectal bleeding",
+   "Haematochezia"
+  ]
+ },
+ {
+  "label": "Hematuria",
+  "aliases": [
+   "Blood in urine",
+   "Haematuria"
+  ]
+ },
+ {
+  "label": "Proteinuria",
+  "aliases": []
+ },
+ {
+  "label": "Polyuria",
+  "aliases": []
+ },
+ {
+  "label": "Polydipsia",
+  "aliases": [
+   "Excessive thirst"
+  ]
+ },
+ {
+  "label": "Nocturia",
+  "aliases": []
+ },
+ {
+  "label": "Dysuria",
+  "aliases": [
+   "Painful urination"
+  ]
+ },
+ {
+  "label": "Oliguria",
+  "aliases": []
+ },
+ {
+  "label": "Anuria",
+  "aliases": []
+ },
+ {
+  "label": "Dysphagia",
+  "aliases": [
+   "Difficulty swallowing"
+  ]
+ },
+ {
+  "label": "Odynophagia",
+  "aliases": [
+   "Painful swallowing"
+  ]
+ },
+ {
+  "label": "Dyspnea",
+  "aliases": [
+   "Shortness of breath",
+   "SOB"
+  ]
+ },
+ {
+  "label": "Orthopnea",
+  "aliases": [
+   "Orthopnoea"
+  ]
+ },
+ {
+  "label": "Paroxysmal nocturnal dyspnea",
+  "aliases": [
+   "PND"
+  ]
+ },
+ {
+  "label": "Wheezing",
+  "aliases": [
+   "Wheeze"
+  ]
+ },
+ {
+  "label": "Stridor",
+  "aliases": []
+ },
+ {
+  "label": "Crackles",
+  "aliases": [
+   "Rales",
+   "Crepitations"
+  ]
+ },
+ {
+  "label": "Pleural rub",
+  "aliases": [
+   "Pleural friction rub"
+  ]
+ },
+ {
+  "label": "Chest pain",
+  "aliases": []
+ },
+ {
+  "label": "Palpitations",
+  "aliases": []
+ },
+ {
+  "label": "Syncope",
+  "aliases": [
+   "Fainting",
+   "Faint"
+  ]
+ },
+ {
+  "label": "Vertigo",
+  "aliases": []
+ },
+ {
+  "label": "Tinnitus",
+  "aliases": [
+   "Ringing in the ears"
+  ]
+ },
+ {
+  "label": "Hearing loss",
+  "aliases": [
+   "Deafness"
+  ]
+ },
+ {
+  "label": "Seizure",
+  "aliases": [
+   "Convulsion",
+   "Fit"
+  ]
+ },
+ {
+  "label": "Tremor",
+  "aliases": []
+ },
+ {
+  "label": "Ataxia",
+  "aliases": []
+ },
+ {
+  "label": "Aphasia",
+  "aliases": [
+   "Dysphasia"
+  ]
+ },
+ {
+  "label": "Dysarthria",
+  "aliases": []
+ },
+ {
+  "label": "Apraxia",
+  "aliases": [
+   "Dyspraxia"
+  ]
+ },
+ {
+  "label": "Agnosia",
+  "aliases": []
+ },
+ {
+  "label": "Neglect",
+  "aliases": [
+   "Hemineglect",
+   "Hemispatial neglect"
+  ]
+ },
+ {
+  "label": "Hemiplegia",
+  "aliases": []
+ },
+ {
+  "label": "Paraplegia",
+  "aliases": []
+ },
+ {
+  "label": "Quadriplegia",
+  "aliases": [
+   "Tetraplegia"
+  ]
+ },
+ {
+  "label": "Hemianopia",
+  "aliases": [
+   "Hemianopsia"
+  ]
+ },
+ {
+  "label": "Scotoma",
+  "aliases": []
+ },
+ {
+  "label": "Photophobia",
+  "aliases": [
+   "Light sensitivity"
+  ]
+ },
+ {
+  "label": "Blurred vision",
+  "aliases": [
+   "Blurry vision"
+  ]
+ },
+ {
+  "label": "Anosmia",
+  "aliases": [
+   "Loss of smell"
+  ]
+ },
+ {
+  "label": "Dysgeusia",
+  "aliases": [
+   "Altered taste"
+  ]
+ },
+ {
+  "label": "Fatigue",
+  "aliases": [
+   "Tiredness"
+  ]
+ },
+ {
+  "label": "Fever",
+  "aliases": [
+   "Pyrexia"
+  ]
+ },
+ {
+  "label": "Night sweats",
+  "aliases": [
+   "Nocturnal hyperhidrosis"
+  ]
+ },
+ {
+  "label": "Weight loss",
+  "aliases": []
+ },
+ {
+  "label": "Anorexia",
+  "aliases": [
+   "Loss of appetite"
+  ]
+ },
+ {
+  "label": "Nausea",
+  "aliases": []
+ },
+ {
+  "label": "Vomiting",
+  "aliases": [
+   "Emesis"
+  ]
+ },
+ {
+  "label": "Diarrhea",
+  "aliases": [
+   "Loose stools"
+  ]
+ },
+ {
+  "label": "Abdominal distension",
+  "aliases": []
+ },
+ {
+  "label": "Pruritus",
+  "aliases": [
+   "Itching",
+   "Itch"
+  ]
+ },
+ {
+  "label": "Alopecia",
+  "aliases": [
+   "Hair loss"
+  ]
+ },
+ {
+  "label": "Insomnia",
+  "aliases": [
+   "Sleeplessness"
+  ]
+ },
+ {
+  "label": "Hypersomnia",
+  "aliases": [
+   "Hypersomnolence"
+  ]
+ },
+ {
+  "label": "Confusion",
+  "aliases": []
+ },
+ {
+  "label": "Delirium",
+  "aliases": [
+   "Acute confusional state"
+  ]
+ },
+ {
+  "label": "Dementia",
+  "aliases": [
+   "Major neurocognitive disorder"
+  ]
+ },
+ {
+  "label": "Hallucinations",
+  "aliases": []
+ },
+ {
+  "label": "Delusions",
+  "aliases": []
+ },
+ {
+  "label": "Anhedonia",
+  "aliases": []
+ },
+ {
+  "label": "Mania",
+  "aliases": []
+ },
+ {
+  "label": "Catatonia",
+  "aliases": []
+ },
+ {
+  "label": "Clonus",
+  "aliases": []
+ },
+ {
+  "label": "Spasticity",
+  "aliases": []
+ },
+ {
+  "label": "Rigidity",
+  "aliases": []
+ },
+ {
+  "label": "Fasciculations",
+  "aliases": [
+   "Muscle twitching"
+  ]
+ },
+ {
+  "label": "Myoclonus",
+  "aliases": []
+ },
+ {
+  "label": "Chorea",
+  "aliases": []
+ },
+ {
+  "label": "Athetosis",
+  "aliases": []
+ },
+ {
+  "label": "Dystonia",
+  "aliases": []
+ },
+ {
+  "label": "Tics",
+  "aliases": []
+ },
+ {
+  "label": "Bradykinesia",
+  "aliases": []
+ },
+ {
+  "label": "Hyperreflexia",
+  "aliases": []
+ },
+ {
+  "label": "Areflexia",
+  "aliases": []
+ },
+ {
+  "label": "Trismus",
+  "aliases": [
+   "Lockjaw"
+  ]
+ },
+ {
+  "label": "Opisthotonus",
+  "aliases": [
+   "Opisthotonos"
+  ]
+ },
+ {
+  "label": "Risus sardonicus",
+  "aliases": []
+ },
+ {
+  "label": "Cogwheel rigidity",
+  "aliases": [
+   "Cogwheeling"
+  ]
+ },
+ {
+  "label": "Pill-rolling tremor",
+  "aliases": []
+ },
+ {
+  "label": "Intention tremor",
+  "aliases": []
+ },
+ {
+  "label": "Waddling gait",
+  "aliases": []
+ },
+ {
+  "label": "Trendelenburg gait",
+  "aliases": []
+ },
+ {
+  "label": "Antalgic gait",
+  "aliases": []
+ },
+ {
+  "label": "Shuffling gait",
+  "aliases": []
+ },
+ {
+  "label": "Ataxic gait",
+  "aliases": []
+ },
+ {
+  "label": "Hemiplegic gait",
+  "aliases": [
+   "Circumduction gait"
+  ]
+ },
+ {
+  "label": "Ape hand",
+  "aliases": [
+   "Simian hand"
+  ]
+ },
+ {
+  "label": "Winged scapula",
+  "aliases": [
+   "Scapular winging",
+   "Scapula alata"
+  ]
+ },
+ {
+  "label": "Swan neck deformity",
+  "aliases": []
+ },
+ {
+  "label": "Boutonniere deformity",
+  "aliases": [
+   "Buttonhole deformity"
+  ]
+ },
+ {
+  "label": "Ulnar deviation",
+  "aliases": [
+   "Ulnar drift"
+  ]
+ },
+ {
+  "label": "Heberden nodes",
+  "aliases": []
+ },
+ {
+  "label": "Bouchard nodes",
+  "aliases": []
+ },
+ {
+  "label": "Dupuytren contracture",
+  "aliases": [
+   "Dupuytren disease"
+  ]
+ },
+ {
+  "label": "Trigger finger",
+  "aliases": []
+ },
+ {
+  "label": "De Quervain tenosynovitis",
+  "aliases": [
+   "De Quervain syndrome",
+   "De Quervain disease"
+  ]
+ },
+ {
+  "label": "Ganglion cyst",
+  "aliases": [
+   "Ganglion"
+  ]
+ },
+ {
+  "label": "Bunion",
+  "aliases": [
+   "Hallux valgus"
+  ]
+ },
+ {
+  "label": "Flat feet",
+  "aliases": [
+   "Pes planus",
+   "Fallen arches"
+  ]
+ },
+ {
+  "label": "Clubfoot",
+  "aliases": [
+   "Talipes equinovarus",
+   "CTEV"
+  ]
+ },
+ {
+  "label": "Genu valgum",
+  "aliases": [
+   "Knock knees"
+  ]
+ },
+ {
+  "label": "Genu varum",
+  "aliases": [
+   "Bow legs"
+  ]
+ },
+ {
+  "label": "Scoliosis",
+  "aliases": []
+ },
+ {
+  "label": "Kyphosis",
+  "aliases": [
+   "Hunchback"
+  ]
+ },
+ {
+  "label": "Lordosis",
+  "aliases": [
+   "Swayback"
+  ]
+ },
+ {
+  "label": "Torticollis",
+  "aliases": [
+   "Wry neck"
+  ]
+ },
+ {
+  "label": "Frozen shoulder",
+  "aliases": [
+   "Adhesive capsulitis"
+  ]
+ },
+ {
+  "label": "Shoulder dislocation",
+  "aliases": []
+ },
+ {
+  "label": "Hip dislocation",
+  "aliases": []
+ },
+ {
+  "label": "Clavicle fracture",
+  "aliases": [
+   "Broken collarbone",
+   "Collarbone fracture"
+  ]
+ },
+ {
+  "label": "Scaphoid fracture",
+  "aliases": []
+ },
+ {
+  "label": "Hip fracture",
+  "aliases": [
+   "Broken hip"
+  ]
+ },
+ {
+  "label": "Pelvic fracture",
+  "aliases": [
+   "Broken pelvis"
+  ]
+ },
+ {
+  "label": "Rib fracture",
+  "aliases": [
+   "Broken rib"
+  ]
+ },
+ {
+  "label": "Compression fracture",
+  "aliases": [
+   "Vertebral compression fracture"
+  ]
+ },
+ {
+  "label": "Stress fracture",
+  "aliases": [
+   "Fatigue fracture"
+  ]
+ },
+ {
+  "label": "Spondylolisthesis",
+  "aliases": []
+ },
+ {
+  "label": "Spinal stenosis",
+  "aliases": []
+ },
+ {
+  "label": "Sciatica",
+  "aliases": []
+ },
+ {
+  "label": "Whiplash injury",
+  "aliases": [
+   "Whiplash"
+  ]
+ },
+ {
+  "label": "Concussion",
+  "aliases": [
+   "Mild traumatic brain injury"
+  ]
+ },
+ {
+  "label": "Epidural hematoma",
+  "aliases": [
+   "Extradural hematoma",
+   "EDH"
+  ]
+ },
+ {
+  "label": "Subarachnoid hemorrhage",
+  "aliases": [
+   "SAH"
+  ]
+ },
+ {
+  "label": "Intracerebral hemorrhage",
+  "aliases": [
+   "ICH",
+   "Intraparenchymal hemorrhage"
+  ]
+ },
+ {
+  "label": "Transient ischemic attack",
+  "aliases": [
+   "TIA",
+   "Mini-stroke"
+  ]
+ },
+ {
+  "label": "Brain abscess",
+  "aliases": [
+   "Cerebral abscess"
+  ]
+ },
+ {
+  "label": "Hydrocephalus",
+  "aliases": [
+   "Water on the brain"
+  ]
+ },
+ {
+  "label": "Cerebral palsy",
+  "aliases": [
+   "CP"
+  ]
+ },
+ {
+  "label": "Spina bifida",
+  "aliases": []
+ },
+ {
+  "label": "Anencephaly",
+  "aliases": []
+ },
+ {
+  "label": "Microcephaly",
+  "aliases": []
+ },
+ {
+  "label": "Macrocephaly",
+  "aliases": []
+ },
+ {
+  "label": "Cleft lip",
+  "aliases": [
+   "Harelip"
+  ]
+ },
+ {
+  "label": "Cleft palate",
+  "aliases": [
+   "Palatoschisis"
+  ]
+ },
+ {
+  "label": "Tongue-tie",
+  "aliases": [
+   "Ankyloglossia"
+  ]
+ },
+ {
+  "label": "Strabismus",
+  "aliases": [
+   "Squint",
+   "Crossed eyes"
+  ]
+ },
+ {
+  "label": "Amblyopia",
+  "aliases": [
+   "Lazy eye"
+  ]
+ },
+ {
+  "label": "Myopia",
+  "aliases": [
+   "Nearsightedness",
+   "Short-sightedness"
+  ]
+ },
+ {
+  "label": "Hyperopia",
+  "aliases": [
+   "Farsightedness",
+   "Hypermetropia"
+  ]
+ },
+ {
+  "label": "Astigmatism",
+  "aliases": []
+ },
+ {
+  "label": "Presbyopia",
+  "aliases": []
+ },
+ {
+  "label": "Conjunctivitis",
+  "aliases": [
+   "Pink eye"
+  ]
+ },
+ {
+  "label": "Keratitis",
+  "aliases": []
+ },
+ {
+  "label": "Uveitis",
+  "aliases": []
+ },
+ {
+  "label": "Scleritis",
+  "aliases": []
+ },
+ {
+  "label": "Episcleritis",
+  "aliases": []
+ },
+ {
+  "label": "Blepharitis",
+  "aliases": []
+ },
+ {
+  "label": "Subconjunctival hemorrhage",
+  "aliases": []
+ },
+ {
+  "label": "Color blindness",
+  "aliases": [
+   "Color vision deficiency",
+   "Colour blindness"
+  ]
+ },
+ {
+  "label": "Night blindness",
+  "aliases": [
+   "Nyctalopia"
+  ]
+ },
+ {
+  "label": "Glaucoma",
+  "aliases": []
+ },
+ {
+  "label": "Retinitis pigmentosa",
+  "aliases": [
+   "RP"
+  ]
+ },
+ {
+  "label": "Retinoblastoma",
+  "aliases": []
+ },
+ {
+  "label": "Otosclerosis",
+  "aliases": []
+ },
+ {
+  "label": "Meniere disease",
+  "aliases": []
+ },
+ {
+  "label": "Labyrinthitis",
+  "aliases": []
+ },
+ {
+  "label": "Mastoiditis",
+  "aliases": []
+ },
+ {
+  "label": "Cholesteatoma",
+  "aliases": []
+ },
+ {
+  "label": "Tonsillitis",
+  "aliases": []
+ },
+ {
+  "label": "Laryngitis",
+  "aliases": []
+ },
+ {
+  "label": "Epistaxis",
+  "aliases": [
+   "Nosebleed"
+  ]
+ },
+ {
+  "label": "Deviated septum",
+  "aliases": [
+   "Septal deviation"
+  ]
+ },
+ {
+  "label": "Sialolithiasis",
+  "aliases": [
+   "Salivary stones"
+  ]
+ },
+ {
+  "label": "Mumps",
+  "aliases": [
+   "Epidemic parotitis"
+  ]
+ },
+ {
+  "label": "Rubella",
+  "aliases": [
+   "German measles"
+  ]
+ },
+ {
+  "label": "Fifth disease",
+  "aliases": [
+   "Erythema infectiosum",
+   "Slapped cheek syndrome"
+  ]
+ },
+ {
+  "label": "Shingles",
+  "aliases": [
+   "Herpes zoster",
+   "Zoster"
+  ]
+ },
+ {
+  "label": "Smallpox",
+  "aliases": [
+   "Variola"
+  ]
+ },
+ {
+  "label": "Polio",
+  "aliases": [
+   "Poliomyelitis"
+  ]
+ },
+ {
+  "label": "Diphtheria",
+  "aliases": []
+ },
+ {
+  "label": "Cholera",
+  "aliases": []
+ },
+ {
+  "label": "Leprosy",
+  "aliases": [
+   "Hansen disease"
+  ]
+ },
+ {
+  "label": "Syphilis",
+  "aliases": []
+ },
+ {
+  "label": "Gonorrhea",
+  "aliases": [
+   "Gonorrhoea"
+  ]
+ },
+ {
+  "label": "Chlamydia",
+  "aliases": []
+ },
+ {
+  "label": "Trichomoniasis",
+  "aliases": [
+   "Trich"
+  ]
+ },
+ {
+  "label": "Bacterial vaginosis",
+  "aliases": [
+   "BV"
+  ]
+ },
+ {
+  "label": "Toxoplasmosis",
+  "aliases": []
+ },
+ {
+  "label": "Cryptosporidiosis",
+  "aliases": []
+ },
+ {
+  "label": "Amoebiasis",
+  "aliases": [
+   "Amebiasis"
+  ]
+ },
+ {
+  "label": "Ascariasis",
+  "aliases": [
+   "Roundworm infection"
+  ]
+ },
+ {
+  "label": "Schistosomiasis",
+  "aliases": [
+   "Bilharzia"
+  ]
+ },
+ {
+  "label": "Filariasis",
+  "aliases": []
+ },
+ {
+  "label": "Elephantiasis",
+  "aliases": []
+ },
+ {
+  "label": "Trichinosis",
+  "aliases": [
+   "Trichinellosis"
+  ]
+ },
+ {
+  "label": "Toxocariasis",
+  "aliases": []
+ },
+ {
+  "label": "Hydatid disease",
+  "aliases": [
+   "Echinococcosis",
+   "Hydatidosis"
+  ]
+ },
+ {
+  "label": "Cysticercosis",
+  "aliases": []
+ },
+ {
+  "label": "Zika virus infection",
+  "aliases": [
+   "Zika",
+   "Zika fever"
+  ]
+ },
+ {
+  "label": "Chikungunya",
+  "aliases": []
+ },
+ {
+  "label": "Ebola virus disease",
+  "aliases": [
+   "Ebola",
+   "Ebola hemorrhagic fever"
+  ]
+ },
+ {
+  "label": "Lassa fever",
+  "aliases": []
+ },
+ {
+  "label": "Hantavirus pulmonary syndrome",
+  "aliases": [
+   "HPS",
+   "Hantavirus cardiopulmonary syndrome"
+  ]
+ },
+ {
+  "label": "Influenza",
+  "aliases": [
+   "Flu"
+  ]
+ },
+ {
+  "label": "COVID-19",
+  "aliases": [
+   "COVID",
+   "Coronavirus disease 2019"
+  ]
+ },
+ {
+  "label": "SARS",
+  "aliases": [
+   "Severe acute respiratory syndrome"
+  ]
+ },
+ {
+  "label": "MERS",
+  "aliases": [
+   "Middle East respiratory syndrome"
+  ]
+ },
+ {
+  "label": "Cellulitis",
+  "aliases": []
+ },
+ {
+  "label": "Erysipelas",
+  "aliases": []
+ },
+ {
+  "label": "Abscess",
+  "aliases": []
+ },
+ {
+  "label": "Folliculitis",
+  "aliases": []
+ },
+ {
+  "label": "Furuncle",
+  "aliases": [
+   "Boil"
+  ]
+ },
+ {
+  "label": "Carbuncle",
+  "aliases": []
+ },
+ {
+  "label": "Paronychia",
+  "aliases": []
+ },
+ {
+  "label": "Pilonidal cyst",
+  "aliases": [
+   "Pilonidal sinus",
+   "Pilonidal disease"
+  ]
+ },
+ {
+  "label": "Sebaceous cyst",
+  "aliases": [
+   "Epidermoid cyst"
+  ]
+ },
+ {
+  "label": "Lipoma",
+  "aliases": []
+ },
+ {
+  "label": "Keloid",
+  "aliases": []
+ },
+ {
+  "label": "Skin tag",
+  "aliases": [
+   "Acrochordon"
+  ]
+ },
+ {
+  "label": "Seborrheic keratosis",
+  "aliases": []
+ },
+ {
+  "label": "Basal cell carcinoma",
+  "aliases": [
+   "BCC",
+   "Rodent ulcer"
+  ]
+ },
+ {
+  "label": "Squamous cell carcinoma",
+  "aliases": [
+   "SCC"
+  ]
+ },
+ {
+  "label": "Kaposi sarcoma",
+  "aliases": []
+ },
+ {
+  "label": "Pemphigus vulgaris",
+  "aliases": []
+ },
+ {
+  "label": "Bullous pemphigoid",
+  "aliases": []
+ },
+ {
+  "label": "Dermatitis herpetiformis",
+  "aliases": [
+   "Duhring disease"
+  ]
+ },
+ {
+  "label": "Lichen planus",
+  "aliases": []
+ },
+ {
+  "label": "Pityriasis rosea",
+  "aliases": []
+ },
+ {
+  "label": "Hidradenitis suppurativa",
+  "aliases": [
+   "Acne inversa"
+  ]
+ },
+ {
+  "label": "Sunburn",
+  "aliases": []
+ },
+ {
+  "label": "Burn",
+  "aliases": []
+ },
+ {
+  "label": "Heat exhaustion",
+  "aliases": []
+ },
+ {
+  "label": "Hypothermia",
+  "aliases": []
+ },
+ {
+  "label": "Drowning",
+  "aliases": []
+ },
+ {
+  "label": "Electrical injury",
+  "aliases": [
+   "Electric shock"
+  ]
+ },
+ {
+  "label": "Snakebite",
+  "aliases": [
+   "Snake envenomation"
+  ]
+ },
+ {
+  "label": "Bee sting allergy",
+  "aliases": []
+ },
+ {
+  "label": "Altitude sickness",
+  "aliases": [
+   "Acute mountain sickness",
+   "AMS"
+  ]
+ },
+ {
+  "label": "Decompression sickness",
+  "aliases": [
+   "The bends",
+   "Caisson disease"
+  ]
+ },
+ {
+  "label": "Motion sickness",
+  "aliases": [
+   "Travel sickness"
+  ]
+ },
+ {
+  "label": "Jet lag",
+  "aliases": []
+ },
+ {
+  "label": "Dehydration",
+  "aliases": []
+ },
+ {
+  "label": "Malnutrition",
+  "aliases": []
+ },
+ {
+  "label": "Kwashiorkor",
+  "aliases": []
+ },
+ {
+  "label": "Marasmus",
+  "aliases": []
+ },
+ {
+  "label": "Scurvy",
+  "aliases": [
+   "Vitamin C deficiency"
+  ]
+ },
+ {
+  "label": "Rickets",
+  "aliases": []
+ },
+ {
+  "label": "Osteomalacia",
+  "aliases": []
+ },
+ {
+  "label": "Beriberi",
+  "aliases": []
+ },
+ {
+  "label": "Pellagra",
+  "aliases": [
+   "Niacin deficiency"
+  ]
+ },
+ {
+  "label": "Obesity",
+  "aliases": []
+ },
+ {
+  "label": "Osteoporosis",
+  "aliases": []
+ },
+ {
+  "label": "Paget disease of bone",
+  "aliases": [
+   "Osteitis deformans"
+  ]
+ },
+ {
+  "label": "Hypoglycemia",
+  "aliases": [
+   "Low blood sugar",
+   "Hypoglycaemia"
+  ]
+ },
+ {
+  "label": "Hyperglycemia",
+  "aliases": [
+   "High blood sugar",
+   "Hyperglycaemia"
+  ]
+ },
+ {
+  "label": "Hyponatremia",
+  "aliases": [
+   "Low sodium"
+  ]
+ },
+ {
+  "label": "Hypernatremia",
+  "aliases": [
+   "Hypernatraemia"
+  ]
+ },
+ {
+  "label": "Hypokalemia",
+  "aliases": [
+   "Hypokalaemia"
+  ]
+ },
+ {
+  "label": "Hypocalcemia",
+  "aliases": [
+   "Low calcium"
+  ]
+ },
+ {
+  "label": "Hypercalcemia",
+  "aliases": [
+   "Hypercalcaemia"
+  ]
+ },
+ {
+  "label": "Hypomagnesemia",
+  "aliases": [
+   "Hypomagnesaemia"
+  ]
+ },
+ {
+  "label": "Metabolic acidosis",
+  "aliases": []
+ },
+ {
+  "label": "Metabolic alkalosis",
+  "aliases": []
+ },
+ {
+  "label": "Respiratory acidosis",
+  "aliases": []
+ },
+ {
+  "label": "Respiratory alkalosis",
+  "aliases": []
+ },
+ {
+  "label": "Acromegaly",
+  "aliases": []
+ },
+ {
+  "label": "Gigantism",
+  "aliases": []
+ },
+ {
+  "label": "Dwarfism",
+  "aliases": []
+ },
+ {
+  "label": "Hyperprolactinemia",
+  "aliases": [
+   "Hyperprolactinaemia"
+  ]
+ },
+ {
+  "label": "Prolactinoma",
+  "aliases": [
+   "Lactotroph adenoma"
+  ]
+ },
+ {
+  "label": "SIADH",
+  "aliases": [
+   "Syndrome of inappropriate antidiuretic hormone secretion"
+  ]
+ },
+ {
+  "label": "Conn syndrome",
+  "aliases": []
+ },
+ {
+  "label": "Hypoparathyroidism",
+  "aliases": []
+ },
+ {
+  "label": "Thyroid cancer",
+  "aliases": [
+   "Thyroid carcinoma"
+  ]
+ },
+ {
+  "label": "Thyroiditis",
+  "aliases": []
+ },
+ {
+  "label": "Klinefelter syndrome",
+  "aliases": [
+   "XXY syndrome",
+   "47,XXY"
+  ]
+ },
+ {
+  "label": "Edwards syndrome",
+  "aliases": [
+   "Trisomy 18"
+  ]
+ },
+ {
+  "label": "Patau syndrome",
+  "aliases": [
+   "Trisomy 13"
+  ]
+ },
+ {
+  "label": "Fragile X syndrome",
+  "aliases": []
+ },
+ {
+  "label": "Cri-du-chat syndrome",
+  "aliases": [
+   "5p deletion syndrome",
+   "5p minus syndrome"
+  ]
+ },
+ {
+  "label": "Noonan syndrome",
+  "aliases": []
+ },
+ {
+  "label": "Ehlers-Danlos syndrome",
+  "aliases": [
+   "EDS"
+  ]
+ },
+ {
+  "label": "Achondroplasia",
+  "aliases": []
+ },
+ {
+  "label": "Duchenne muscular dystrophy",
+  "aliases": [
+   "DMD"
+  ]
+ },
+ {
+  "label": "Becker muscular dystrophy",
+  "aliases": [
+   "BMD"
+  ]
+ },
+ {
+  "label": "Spinal muscular atrophy",
+  "aliases": [
+   "SMA"
+  ]
+ },
+ {
+  "label": "Thalassemia",
+  "aliases": [
+   "Thalassaemia"
+  ]
+ },
+ {
+  "label": "Hereditary spherocytosis",
+  "aliases": [
+   "HS"
+  ]
+ },
+ {
+  "label": "Von Willebrand disease",
+  "aliases": [
+   "VWD"
+  ]
+ },
+ {
+  "label": "Factor V Leiden",
+  "aliases": []
+ },
+ {
+  "label": "Polycythemia",
+  "aliases": [
+   "Polycythaemia",
+   "Erythrocytosis"
+  ]
+ },
+ {
+  "label": "Neutropenia",
+  "aliases": []
+ },
+ {
+  "label": "Thrombocytopenia",
+  "aliases": [
+   "Low platelet count"
+  ]
+ },
+ {
+  "label": "Agranulocytosis",
+  "aliases": []
+ },
+ {
+  "label": "Mesothelioma",
+  "aliases": []
+ },
+ {
+  "label": "Asbestosis",
+  "aliases": []
+ },
+ {
+  "label": "Silicosis",
+  "aliases": []
+ },
+ {
+  "label": "Pneumoconiosis",
+  "aliases": []
+ },
+ {
+  "label": "Pleural effusion",
+  "aliases": []
+ },
+ {
+  "label": "Empyema",
+  "aliases": []
+ },
+ {
+  "label": "Lung abscess",
+  "aliases": [
+   "Pulmonary abscess"
+  ]
+ },
+ {
+  "label": "Atelectasis",
+  "aliases": []
+ },
+ {
+  "label": "Cor pulmonale",
+  "aliases": [
+   "Pulmonary heart disease"
+  ]
+ },
+ {
+  "label": "Hiatal hernia",
+  "aliases": [
+   "Hiatus hernia"
+  ]
+ },
+ {
+  "label": "Barrett esophagus",
+  "aliases": [
+   "Columnar-lined esophagus"
+  ]
+ },
+ {
+  "label": "Esophagitis",
+  "aliases": [
+   "Oesophagitis"
+  ]
+ },
+ {
+  "label": "Gastritis",
+  "aliases": []
+ },
+ {
+  "label": "Gastroparesis",
+  "aliases": [
+   "Delayed gastric emptying"
+  ]
+ },
+ {
+  "label": "Gastric cancer",
+  "aliases": [
+   "Stomach cancer"
+  ]
+ },
+ {
+  "label": "Colorectal cancer",
+  "aliases": [
+   "Bowel cancer",
+   "CRC"
+  ]
+ },
+ {
+  "label": "Esophageal cancer",
+  "aliases": [
+   "Oesophageal cancer"
+  ]
+ },
+ {
+  "label": "Anal fissure",
+  "aliases": []
+ },
+ {
+  "label": "Anal fistula",
+  "aliases": [
+   "Fistula-in-ano"
+  ]
+ },
+ {
+  "label": "Volvulus",
+  "aliases": []
+ },
+ {
+  "label": "Diverticulosis",
+  "aliases": []
+ },
+ {
+  "label": "Appendiceal abscess",
+  "aliases": [
+   "Appendix abscess"
+  ]
+ },
+ {
+  "label": "Fatty liver disease",
+  "aliases": [
+   "Fatty liver",
+   "Hepatic steatosis"
+  ]
+ },
+ {
+  "label": "Hepatitis C",
+  "aliases": [
+   "Hep C",
+   "HCV"
+  ]
+ },
+ {
+  "label": "Hepatitis D",
+  "aliases": [
+   "Hep D",
+   "Delta Hepatitis"
+  ]
+ },
+ {
+  "label": "Hepatitis E",
+  "aliases": [
+   "Hep E",
+   "HEV"
+  ]
+ },
+ {
+  "label": "Autoimmune hepatitis",
+  "aliases": [
+   "AIH"
+  ]
+ },
+ {
+  "label": "Portal hypertension",
+  "aliases": []
+ },
+ {
+  "label": "Liver abscess",
+  "aliases": [
+   "Hepatic abscess"
+  ]
+ },
+ {
+  "label": "Chronic pancreatitis",
+  "aliases": []
+ },
+ {
+  "label": "Pancreatic pseudocyst",
+  "aliases": []
+ },
+ {
+  "label": "Kidney cyst",
+  "aliases": [
+   "Renal cyst"
+  ]
+ },
+ {
+  "label": "Nephrotic syndrome",
+  "aliases": []
+ },
+ {
+  "label": "Nephritic syndrome",
+  "aliases": []
+ },
+ {
+  "label": "Chronic kidney disease",
+  "aliases": [
+   "CKD",
+   "Chronic renal failure"
+  ]
+ },
+ {
+  "label": "Hydronephrosis",
+  "aliases": []
+ },
+ {
+  "label": "Urinary retention",
+  "aliases": []
+ },
+ {
+  "label": "Urinary incontinence",
+  "aliases": []
+ },
+ {
+  "label": "Bladder cancer",
+  "aliases": []
+ },
+ {
+  "label": "Prostate cancer",
+  "aliases": []
+ },
+ {
+  "label": "Testicular cancer",
+  "aliases": []
+ },
+ {
+  "label": "Varicocele",
+  "aliases": []
+ },
+ {
+  "label": "Hydrocele",
+  "aliases": []
+ },
+ {
+  "label": "Cryptorchidism",
+  "aliases": [
+   "Undescended testicle",
+   "Undescended testis"
+  ]
+ },
+ {
+  "label": "Hypospadias",
+  "aliases": []
+ },
+ {
+  "label": "Phimosis",
+  "aliases": []
+ },
+ {
+  "label": "Erectile dysfunction",
+  "aliases": [
+   "ED",
+   "Impotence"
+  ]
+ },
+ {
+  "label": "Infertility",
+  "aliases": []
+ },
+ {
+  "label": "Ovarian cyst",
+  "aliases": []
+ },
+ {
+  "label": "Ovarian torsion",
+  "aliases": []
+ },
+ {
+  "label": "Ovarian cancer",
+  "aliases": []
+ },
+ {
+  "label": "Cervical cancer",
+  "aliases": []
+ },
+ {
+  "label": "Endometrial cancer",
+  "aliases": []
+ },
+ {
+  "label": "Menopause",
+  "aliases": []
+ },
+ {
+  "label": "Amenorrhea",
+  "aliases": [
+   "Absent periods"
+  ]
+ },
+ {
+  "label": "Menorrhagia",
+  "aliases": [
+   "Heavy menstrual bleeding"
+  ]
+ },
+ {
+  "label": "Premenstrual syndrome",
+  "aliases": [
+   "PMS"
+  ]
+ },
+ {
+  "label": "Mastitis",
+  "aliases": []
+ },
+ {
+  "label": "Fibroadenoma",
+  "aliases": []
+ },
+ {
+  "label": "Placenta previa",
+  "aliases": [
+   "Placenta praevia"
+  ]
+ },
+ {
+  "label": "Gestational hypertension",
+  "aliases": [
+   "Pregnancy-induced hypertension"
+  ]
+ },
+ {
+  "label": "Eclampsia",
+  "aliases": []
+ },
+ {
+  "label": "HELLP syndrome",
+  "aliases": []
+ },
+ {
+  "label": "Hyperemesis gravidarum",
+  "aliases": []
+ },
+ {
+  "label": "Miscarriage",
+  "aliases": [
+   "Spontaneous abortion"
+  ]
+ },
+ {
+  "label": "Postpartum hemorrhage",
+  "aliases": [
+   "PPH"
+  ]
+ },
+ {
+  "label": "Postpartum depression",
+  "aliases": [
+   "Postnatal depression",
+   "PPD"
+  ]
+ },
+ {
+  "label": "Coronary artery disease",
+  "aliases": [
+   "CAD",
+   "Coronary heart disease"
+  ]
+ },
+ {
+  "label": "Angina pectoris",
+  "aliases": [
+   "Angina"
+  ]
+ },
+ {
+  "label": "Heart failure",
+  "aliases": [
+   "Congestive heart failure",
+   "CHF"
+  ]
+ },
+ {
+  "label": "Mitral regurgitation",
+  "aliases": [
+   "Mitral insufficiency",
+   "MR"
+  ]
+ },
+ {
+  "label": "Mitral stenosis",
+  "aliases": []
+ },
+ {
+  "label": "Mitral valve prolapse",
+  "aliases": [
+   "MVP"
+  ]
+ },
+ {
+  "label": "Aortic regurgitation",
+  "aliases": [
+   "Aortic insufficiency",
+   "AR"
+  ]
+ },
+ {
+  "label": "Tricuspid regurgitation",
+  "aliases": [
+   "Tricuspid insufficiency"
+  ]
+ },
+ {
+  "label": "Atrial septal defect",
+  "aliases": [
+   "ASD"
+  ]
+ },
+ {
+  "label": "Ventricular septal defect",
+  "aliases": [
+   "VSD"
+  ]
+ },
+ {
+  "label": "Patent ductus arteriosus",
+  "aliases": [
+   "PDA"
+  ]
+ },
+ {
+  "label": "Tetralogy of Fallot",
+  "aliases": [
+   "TOF"
+  ]
+ },
+ {
+  "label": "Transposition of the great arteries",
+  "aliases": [
+   "TGA"
+  ]
+ },
+ {
+  "label": "Aortic aneurysm",
+  "aliases": []
+ },
+ {
+  "label": "Peripheral artery disease",
+  "aliases": [
+   "PAD",
+   "Peripheral arterial disease"
+  ]
+ },
+ {
+  "label": "Varicose veins",
+  "aliases": []
+ },
+ {
+  "label": "Superficial thrombophlebitis",
+  "aliases": [
+   "Superficial vein thrombosis"
+  ]
+ },
+ {
+  "label": "Lymphedema",
+  "aliases": [
+   "Lymphoedema"
+  ]
+ },
+ {
+  "label": "Vasculitis",
+  "aliases": []
+ },
+ {
+  "label": "Autism spectrum disorder",
+  "aliases": [
+   "Autism",
+   "ASD"
+  ]
+ },
+ {
+  "label": "ADHD",
+  "aliases": [
+   "Attention deficit hyperactivity disorder"
+  ]
+ },
+ {
+  "label": "Dyslexia",
+  "aliases": []
+ },
+ {
+  "label": "Tourette syndrome",
+  "aliases": []
+ },
+ {
+  "label": "Narcolepsy",
+  "aliases": []
+ },
+ {
+  "label": "Restless legs syndrome",
+  "aliases": [
+   "RLS",
+   "Willis-Ekbom disease"
+  ]
+ },
+ {
+  "label": "Sleepwalking",
+  "aliases": [
+   "Somnambulism"
+  ]
+ },
+ {
+  "label": "Bulimia nervosa",
+  "aliases": [
+   "Bulimia"
+  ]
+ },
+ {
+  "label": "Binge eating disorder",
+  "aliases": [
+   "BED"
+  ]
+ },
+ {
+  "label": "Social anxiety disorder",
+  "aliases": [
+   "Social phobia"
+  ]
+ },
+ {
+  "label": "Specific phobia",
+  "aliases": []
+ },
+ {
+  "label": "Agoraphobia",
+  "aliases": []
+ },
+ {
+  "label": "Borderline personality disorder",
+  "aliases": [
+   "BPD",
+   "Emotionally unstable personality disorder"
+  ]
+ },
+ {
+  "label": "Alcohol use disorder",
+  "aliases": [
+   "Alcoholism",
+   "AUD"
+  ]
+ },
+ {
+  "label": "Alcohol withdrawal",
+  "aliases": []
+ },
+ {
+  "label": "Opioid withdrawal",
+  "aliases": []
+ },
+ {
+  "label": "Serotonin syndrome",
+  "aliases": [
+   "Serotonin toxicity"
+  ]
+ },
+ {
+  "label": "Lead poisoning",
+  "aliases": [
+   "Plumbism"
+  ]
+ },
+ {
+  "label": "Mercury poisoning",
+  "aliases": []
+ },
+ {
+  "label": "Arsenic poisoning",
+  "aliases": []
+ },
+ {
+  "label": "Organophosphate poisoning",
+  "aliases": []
+ },
+ {
+  "label": "Cyanide poisoning",
+  "aliases": []
+ },
+ {
+  "label": "Methanol poisoning",
+  "aliases": []
+ },
+ {
+  "label": "Digoxin toxicity",
+  "aliases": [
+   "Digitalis toxicity"
+  ]
+ },
+ {
+  "label": "Lithium toxicity",
+  "aliases": []
+ },
+ {
+  "label": "Iron overdose",
+  "aliases": [
+   "Iron poisoning"
+  ]
+ },
+ {
+  "label": "Food poisoning",
+  "aliases": []
+ },
+ {
+  "label": "Sepsis",
+  "aliases": []
+ },
+ {
+  "label": "Septic shock",
+  "aliases": []
+ },
+ {
+  "label": "Hypovolemic shock",
+  "aliases": []
+ },
+ {
+  "label": "Cardiogenic shock",
+  "aliases": []
+ },
+ {
+  "label": "Anaphylactic shock",
+  "aliases": []
+ },
+ {
+  "label": "Brain death",
+  "aliases": []
+ },
+ {
+  "label": "Coma",
+  "aliases": []
+ },
+ {
+  "label": "Locked-in syndrome",
+  "aliases": []
+ },
+ {
+  "label": "Persistent vegetative state",
+  "aliases": []
+ },
+ {
+  "label": "Sudden infant death syndrome",
+  "aliases": [
+   "SIDS",
+   "Cot death"
+  ]
+ },
+ {
+  "label": "Shaken baby syndrome",
+  "aliases": [
+   "Abusive head trauma"
+  ]
+ },
+ {
+  "label": "Failure to thrive",
+  "aliases": [
+   "FTT"
+  ]
+ },
+ {
+  "label": "Teething",
+  "aliases": []
+ },
+ {
+  "label": "Cradle cap",
+  "aliases": [
+   "Infantile seborrheic dermatitis"
+  ]
+ },
+ {
+  "label": "Hand eczema",
+  "aliases": [
+   "Hand dermatitis"
+  ]
+ },
+ {
+  "label": "Chilblains",
+  "aliases": [
+   "Pernio"
+  ]
+ },
+ {
+  "label": "Trench foot",
+  "aliases": [
+   "Immersion foot"
+  ]
+ },
+ {
+  "label": "Halitosis",
+  "aliases": [
+   "Bad breath"
+  ]
+ },
+ {
+  "label": "Dental caries",
+  "aliases": [
+   "Tooth decay",
+   "Cavities"
+  ]
+ },
+ {
+  "label": "Gingivitis",
+  "aliases": []
+ },
+ {
+  "label": "Periodontitis",
+  "aliases": []
+ },
+ {
+  "label": "Tooth abscess",
+  "aliases": [
+   "Dental abscess"
+  ]
+ },
+ {
+  "label": "Temporomandibular joint disorder",
+  "aliases": [
+   "TMD",
+   "TMJ disorder"
+  ]
+ },
+ {
+  "label": "Sinusitis",
+  "aliases": [
+   "Rhinosinusitis"
+  ]
+ },
+ {
+  "label": "Snoring",
+  "aliases": []
+ },
+ {
+  "label": "Hiccups",
+  "aliases": [
+   "Singultus"
+  ]
+ },
+ {
+  "label": "Bruxism",
+  "aliases": [
+   "Teeth grinding"
+  ]
+ }
 ]

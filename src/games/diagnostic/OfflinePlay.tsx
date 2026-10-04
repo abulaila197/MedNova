@@ -10,7 +10,7 @@ import type { PlayProps } from '../shell/types';
 import { GameScreen } from '../shell/ui';
 import { CaseBoard, pointsLine } from './CaseBoard';
 import type { Difficulty } from './core';
-import { caseById, guessById, poolFor } from './data';
+import { caseById, guessName, poolFor } from './data';
 import {
   currentCase, currentSeat, dpTieBreak, offlineRows, snapshotOffline, startOffline, stepOffline, timeLeft,
   type OfflineEvent, type OfflineRun,
@@ -76,7 +76,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
           itemId: r.caseId,
           answerKey: c.canonical_id,
           outcome: r.outcome,
-          answersGiven: r.wrong.map((id) => guessById.get(id)?.label ?? id),
+          answersGiven: r.wrong.map((id) => guessName(id)),
           timeMs: r.timeMs,
           hintsUsed: 0,
           revealsUsed: r.reveals,

@@ -5,7 +5,7 @@ import { recordItem } from '../shell/flow';
 import type { PlayProps } from '../shell/types';
 import { usePauseHide } from '../engine/usePauseHide';
 import { DP } from './core';
-import { caseById, guessById, poolFor } from './data';
+import { caseById, guessName, poolFor } from './data';
 import type { Difficulty } from './core';
 import { snapshot, startRun, step, type SoloEvent, type SoloRun } from './solo';
 
@@ -55,7 +55,7 @@ export function useSoloRun({ play, onFinish }: Pick<PlayProps, 'play' | 'onFinis
           itemId: r.caseId,
           answerKey: c.canonical_id,
           outcome: r.outcome,
-          answersGiven: r.wrong.map((id) => guessById.get(id)?.label ?? id),
+          answersGiven: r.wrong.map((id) => guessName(id)),
           timeMs: r.timeMs,
           hintsUsed: r.hint ? 1 : 0,
           revealsUsed: r.reveals,

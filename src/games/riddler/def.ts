@@ -1,6 +1,6 @@
 import type { GameDef } from '../shell/types';
 import { RD } from './core';
-import { RIDDLES, riddleById } from './data';
+import { RIDDLES, riddleById, riddleName } from './data';
 import { OfflinePlay } from './OfflinePlay';
 import { SoloPlay } from './SoloPlay';
 
@@ -70,7 +70,7 @@ export const riddler: GameDef = {
   // RD9, RD10: Solo pays the EXP each level earned this session; RD12: Offline earns none.
   exp: (_score, items) => items.reduce((a, i) => a + (Number(i.gameData.exp) || 0), 0),
   expCap: (_settings, mode) => (mode === 'offline' ? 0 : RIDDLES.length * 3 * RD.expPerStar),
-  itemLabel: (item) => riddleById.get(item.itemId)?.answer ?? item.itemId,
+  itemLabel: (item) => { const r = riddleById.get(item.itemId); return r ? riddleName(r) : item.itemId; },
   itemNoun: 'level',
   itemsTitle: 'Pictures',
   summary: (play, items) => {

@@ -14,7 +14,7 @@ import { PauseMenu } from '../shell/PauseMenu';
 import type { PlayProps } from '../shell/types';
 import { Btn, GameScreen, Ghost, Kick } from '../shell/ui';
 import { RD, levelExp, levelTime, livesLeft, snapshotLevel, startLevel, stepLevel, type Level, type LevelEvent } from './core';
-import { RIDDLES, answerLabel, feedsLearn, riddleById } from './data';
+import { RIDDLES, answerLabel, feedsLearn, riddleById, riddleName } from './data';
 import { RiddleBoard } from './RiddleBoard';
 
 /** One finished level attempt in this session. */
@@ -209,7 +209,7 @@ function ResultCard({ done, level, onNext, onRetry, onGrid }: { done: Done; leve
         <Kick color={tone}>{done.solved ? `Solved in ${Math.ceil(level.timeMs / 1000)} s` : 'Missed'}</Kick>
         {done.solved ? <Stars n={done.stars} size={14} /> : null}
       </View>
-      <Text style={[s.ans, { color: t.white }]}>{r.answer}</Text>
+      <Text style={[s.ans, { color: t.white }]}>{riddleName(r)}</Text>
       <Text style={[s.def, { color: t.mute }]} numberOfLines={3}>{r.definition}</Text>
       <Text style={[s.exp, { color: t.soft }]}>{expLine}</Text>
       <View style={s.row}>
