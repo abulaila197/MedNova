@@ -7,7 +7,7 @@ export const GAMES: Game[] = [
   { key: 'nova-crossword', lead: 'Nova', em: 'Crossword', desc: 'Fill the grid with diseases, drugs and signs.' },
   { key: 'nova-medicordle', lead: 'Nova', em: 'Medicordle', desc: 'Guess the hidden medical term in six tries.' },
   { key: 'the-silent-artist', lead: 'The Silent', em: 'Artist', desc: 'Draw the diagnosis without words while friends guess.' },
-  { key: 'the-riddler', lead: 'The', em: 'Riddler', desc: 'Crack clinical riddles hidden in a few short lines.' },
+  { key: 'the-riddler', lead: 'The', em: 'Riddler', desc: 'Picture riddles that spell out a condition or sign.' },
   { key: 'the-streak-master', lead: 'The Streak', em: 'Master', desc: 'Answer in a row and keep your streak alive.' },
   { key: 'case-files-unsolved', lead: 'Case Files:', em: 'Unsolved', desc: 'Open the file, follow the clues and close the case.' },
 ];

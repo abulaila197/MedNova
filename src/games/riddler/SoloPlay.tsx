@@ -230,6 +230,19 @@ function ResultCard({ done, level, onNext, onRetry, onGrid }: { done: Done; leve
   );
 }
 
+/** Stars printed on the paper tiles of the level board: gold when earned, a clear outline when not. */
+const PAPER_STAR = { on: '#e09a12', off: '#c9c1b2' };
+
+function PaperStars({ n }: { n: number }) {
+  return (
+    <View style={s.pStars} accessibilityLabel={`${n} of 3 stars`}>
+      {[0, 1, 2].map((i) => (
+        <Text key={i} style={[s.pStar, { color: i < n ? PAPER_STAR.on : PAPER_STAR.off }]}>{i < n ? '★' : '☆'}</Text>
+      ))}
+    </View>
+  );
+}
+
 function Stars({ n, size }: { n: number; size: number }) {
   const t = useTheme();
   return (
@@ -271,7 +284,7 @@ function LevelGrid({ best, session, onOpen, onFinish }: { best: (id: string) => 
               accessibilityLabel={`Level ${i + 1}, ${b ? `${b} of 3 stars` : 'not solved'}`}>
               <View style={[s.pin, { backgroundColor: b ? t.accent : '#b9b2a4' }]} />
               <Text style={s.tileN}>{i + 1}</Text>
-              <Stars n={b} size={8.5} />
+              <PaperStars n={b} />
             </Pressable>
           );
         })}
@@ -291,11 +304,13 @@ const s = StyleSheet.create({
   link: { fontFamily: F.bodySemi, fontSize: u(11) },
   gTop: { flexDirection: 'row', alignItems: 'center', gap: u(10) },
   gTitle: { fontFamily: F.display, fontSize: u(24), lineHeight: u(28) },
-  board: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: u(9), borderWidth: 1, borderRadius: u(16), paddingVertical: u(16), paddingHorizontal: u(8) },
+  board: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: u(8), borderWidth: 1, borderRadius: u(16), paddingVertical: u(14), paddingHorizontal: u(4) },
   tile: {
-    width: u(50), height: u(52), backgroundColor: '#fbfaf6', borderRadius: u(3), alignItems: 'center', justifyContent: 'center', gap: u(2), borderWidth: 1, borderColor: 'transparent',
+    width: u(52), height: u(60), backgroundColor: '#fbfaf6', borderRadius: u(3), alignItems: 'center', justifyContent: 'center', gap: u(2), borderWidth: 1, borderColor: 'transparent',
     shadowColor: '#000', shadowOpacity: 0.28, shadowRadius: u(5), shadowOffset: { width: 0, height: u(3) }, elevation: 3,
   },
   pin: { position: 'absolute', top: u(4), width: u(6), height: u(6), borderRadius: u(3) },
-  tileN: { fontFamily: F.display, fontSize: u(16), lineHeight: u(19), color: '#2b2f45', marginTop: u(5) },
+  tileN: { fontFamily: F.display, fontSize: u(17), lineHeight: u(20), color: '#2b2f45', marginTop: u(6) },
+  pStars: { flexDirection: 'row', gap: u(1) },
+  pStar: { fontSize: u(13.5), lineHeight: u(16), textShadowColor: 'rgba(0,0,0,0.12)', textShadowRadius: u(1), textShadowOffset: { width: 0, height: u(0.5) } },
 });
