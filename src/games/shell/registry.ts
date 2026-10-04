@@ -1,5 +1,6 @@
 import { diagnosticPursuit } from '../diagnostic/def';
 import { novaMedicordle } from '../medicordle/def';
+import { riddler } from '../riddler/def';
 import { streakMaster } from '../streak/def';
 import type { GameDef } from './types';
 
@@ -8,6 +9,7 @@ const GAMES: Record<string, GameDef> = {
   [diagnosticPursuit.key]: diagnosticPursuit,
   [novaMedicordle.key]: novaMedicordle,
   [streakMaster.key]: streakMaster,
+  [riddler.key]: riddler,
 };
 
 export function gameDef(key: string): GameDef | null {
