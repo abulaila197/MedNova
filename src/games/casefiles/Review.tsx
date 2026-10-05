@@ -3,6 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { u } from '@/theme/scale';
 
 import { CF, scoreRun, type CaseDef, type Run } from './core';
+import { caseNo } from './data';
 import { Btn, Card, CaseTitle, Kicker, NR, NoirScreen, Stamp, T } from './noir';
 
 /**
@@ -22,7 +23,7 @@ export function Review({ def, run, replay, onDone, doneLabel = 'See results' }: 
   return (
     <NoirScreen scroll>
       <View style={{ gap: u(2) }}>
-        <Kicker>{`Case review · ${def.id}`}</Kicker>
+        <Kicker>{`Case review · ${caseNo(def.id)}`}</Kicker>
         <CaseTitle title={def.title} />
       </View>
       <Stamp word={sc.stamp} />

@@ -12,7 +12,7 @@ import { teamsOf } from '../shell/teams';
 import type { PlayProps } from '../shell/types';
 import { CaseBoard } from './CaseBoard';
 import { scoreRun, type RunEvent } from './core';
-import { CASES, PLAYED_KEY, caseById, dossierOf, type Played } from './data';
+import { CASES, PLAYED_KEY, caseById, caseLabel, dossierOf, type Played } from './data';
 import { Btn, Card, CaseTitle, Kicker, NR, NoirScreen, Stamp, T, clock } from './noir';
 import { currentSeat, finishedLines, rankOffline, ready, removeSeat, snapshotOffline, startOffline, stepOffline, type OfflineRun } from './offline';
 
@@ -110,7 +110,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
     if (discharge)
       return (
         <NoirScreen scroll>
-          <Kicker>{`${def.id} · follow-up and discharge`}</Kicker>
+          <Kicker>{`${caseLabel(def.id)} · follow-up and discharge`}</Kicker>
           <CaseTitle title={def.title} />
           <Card style={{ gap: u(10) }}>
             <T size={11} color={NR.red} style={{ letterSpacing: 2 }}>{`THE DIAGNOSIS: ${def.final.toUpperCase()}`}</T>
@@ -165,7 +165,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
             <T size={34} color={colorOf(seat)}>{nameOf(seat)}</T>
           </View>
           <Card style={{ gap: u(4) }}>
-            <T size={10} color={NR.cardSoft} style={{ letterSpacing: 1.5 }}>{def.id}</T>
+            <T size={10} color={NR.cardSoft} style={{ letterSpacing: 1.5 }}>{caseLabel(def.id)}</T>
             <T size={18} color={NR.cardInk}>{def.title}</T>
             <T size={12} color={NR.cardSoft}>The same case for everyone. Results stay sealed until the last player closes it.</T>
           </Card>
@@ -190,7 +190,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
         def={def}
         run={o.run}
         sealed
-        kicker={`${nameOf(currentSeat(o))} · ${def.id}`}
+        kicker={`${nameOf(currentSeat(o))} · ${caseLabel(def.id)}`}
         onEvent={dispatch}
         onPause={() => dispatch({ type: 'PAUSE', now: Date.now() })}
       />

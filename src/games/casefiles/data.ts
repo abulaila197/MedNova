@@ -6,6 +6,10 @@ import diagnosesJson from './data/diagnoses.json';
 /** The 100 cases, cleaned at import (IM1, CF2) with plain diagnosis names (build/case-files/build.py). */
 export const CASES = casesJson as CaseDef[];
 export const caseById = new Map(CASES.map((c) => [c.id, c]));
+/** What players see instead of the old database id: the case's place in order, three figures (Yazan, 2026-10-05). */
+const caseNos = new Map(CASES.map((c, i) => [c.id, String(i + 1).padStart(3, '0')]));
+export const caseNo = (id: string) => caseNos.get(id) ?? id;
+export const caseLabel = (id: string) => `Case file - ${caseNo(id)}`;
 
 /** Case Files' own diagnosis master list (CF4): case names plus look-alikes, NL1 names, dossier links. */
 export type Diagnosis = Named & { id: string; dossier?: string };

@@ -6,7 +6,7 @@ import { u } from '@/theme/scale';
 
 import { searchNames } from '../shell/names';
 import { CF, completed, elapsed, invFile, scoreRun, status, type CaseDef, type FileId, type Run, type RunEvent } from './core';
-import { DIAG_INDEX, diagName } from './data';
+import { DIAG_INDEX, caseLabel, diagName } from './data';
 import { Btn, Card, CaseTitle, Kicker, NR, NoirScreen, PauseBtn, Stamp, T, clock } from './noir';
 import { PinBoard } from './PinBoard';
 
@@ -158,7 +158,7 @@ function FileReader({ def, run, file, onEvent, onBack }: { def: CaseDef; run: Ru
       <Animated.View entering={FadeInDown.duration(220)} style={{ gap: u(12) }}>
         <View style={s.top}>
           <View style={{ flex: 1 }}>
-            <Kicker>{`${def.id} · confidential`}</Kicker>
+            <Kicker>{`${caseLabel(def.id)} · confidential`}</Kicker>
             <T size={22}>{title}</T>
           </View>
         </View>

@@ -10,7 +10,7 @@ import { PauseMenu } from '../shell/PauseMenu';
 import type { PlayProps } from '../shell/types';
 import { CaseBoard } from './CaseBoard';
 import { scoreRun, snapshot, startRun, stepRun, type CaseDef, type Run, type RunEvent } from './core';
-import { CASES, PLAYED_KEY, caseById, dossierOf, type Played } from './data';
+import { CASES, PLAYED_KEY, caseById, caseLabel, dossierOf, type Played } from './data';
 import { Btn, Kicker, NR, NoirScreen, Stamp, T } from './noir';
 import { Review } from './Review';
 
@@ -95,7 +95,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
         def={def}
         run={state.run}
         sealed={false}
-        kicker={`Case file · ${def.id}`}
+        kicker={caseLabel(def.id)}
         onEvent={dispatch}
         onPause={() => dispatch({ type: 'PAUSE', now: Date.now() })}
       />
@@ -123,7 +123,7 @@ function Library({ played, onPick }: { played: Played; onPick: (id: string) => v
             <View key={c.id} style={{ gap: u(6) }}>
             <Pressable onPress={() => setPick(c.id)} accessibilityRole="button" accessibilityState={{ selected: on }} accessibilityLabel={`${c.title}${stamp ? `, ${stamp.toLowerCase()}` : ''}`} style={[s.row, on ? s.on : null]}>
               <View style={{ flex: 1 }}>
-                <T size={10} color={NR.cardSoft} style={{ letterSpacing: 1.5 }}>{c.id}</T>
+                <T size={10} color={NR.cardSoft} style={{ letterSpacing: 1.5 }}>{caseLabel(c.id)}</T>
                 <T size={14} color={NR.cardInk}>{c.title}</T>
               </View>
               {stamp ? <Stamp word={stamp} size={10} /> : null}
