@@ -1,10 +1,10 @@
-// The Silent Artist Solo practice (SA2): draw alone against a 60 s clock, no score. At the reveal the
-// player answers "Did you know it?"; Next draws a new disease, Retry the same one on a clean board.
+// The Silent Artist Solo practice (SA2): draw alone against a 60 s clock, nothing asked and nothing gained.
+// At the reveal Next draws a new disease, Retry the same one on a clean board.
 // The session's diseases are listed on the end results with their dossier links (RS1). Nothing feeds Learn (SA1).
 import { SA, hashSeed, pickWords, remember, type Word } from './core';
 
 export type SoloPhase = 'drawing' | 'reveal' | 'paused' | 'done';
-export type SoloEntry = { wordId: string; knew: boolean | null; timeMs: number };
+export type SoloEntry = { wordId: string; timeMs: number };
 
 export type SoloRun = {
   phase: SoloPhase;
@@ -25,7 +25,6 @@ export type SoloRun = {
 export type SoloEvent =
   | { type: 'TICK'; now: number }
   | { type: 'REVEAL'; now: number }
-  | { type: 'KNEW'; knew: boolean }
   | { type: 'NEXT'; now: number }
   | { type: 'RETRY'; now: number }
   | { type: 'FINISH' }
@@ -47,7 +46,7 @@ export function startSolo(pool: readonly Word[], p: { seed: string; fields: stri
   return draw(base, pool, p.now);
 }
 
-const reveal = (r: SoloRun, now: number): SoloRun => ({ ...r, phase: 'reveal', elapsedMs: Math.min(r.turnMs, soloElapsed(r, now)), runningSince: null, done: [...r.done, { wordId: r.wordId, knew: null, timeMs: Math.min(r.turnMs, soloElapsed(r, now)) }] });
+const reveal = (r: SoloRun, now: number): SoloRun => ({ ...r, phase: 'reveal', elapsedMs: Math.min(r.turnMs, soloElapsed(r, now)), runningSince: null, done: [...r.done, { wordId: r.wordId, timeMs: Math.min(r.turnMs, soloElapsed(r, now)) }] });
 
 export function stepSolo(r: SoloRun, e: SoloEvent, pool: readonly Word[]): SoloRun {
   switch (e.type) {
@@ -55,12 +54,6 @@ export function stepSolo(r: SoloRun, e: SoloEvent, pool: readonly Word[]): SoloR
       return r.phase === 'drawing' && soloLeft(r, e.now) <= 0 ? reveal(r, e.now) : r;
     case 'REVEAL':
       return r.phase === 'drawing' ? reveal(r, e.now) : r;
-    case 'KNEW': {
-      if (r.phase !== 'reveal' || !r.done.length) return r;
-      const done = r.done.slice();
-      done[done.length - 1] = { ...done[done.length - 1], knew: e.knew };
-      return { ...r, done };
-    }
     case 'NEXT':
       return r.phase === 'reveal' ? draw(r, pool, e.now) : r;
     case 'RETRY':

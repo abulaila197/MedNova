@@ -16,9 +16,8 @@ import { FitBoard } from './Stage';
 
 /** Saved for resume: a drawing turn is saved paused (rule 10). The board itself starts clean again. */
 const snapshot = (r: SoloRun, now: number) => (r.phase === 'drawing' ? stepSolo(r, { type: 'PAUSE', now }, WORDS) : r);
-const knownCount = (r: SoloRun) => r.done.filter((d) => d.knew).length;
 
-/** Solo practice (SA2): pick fields, draw against 60 s, "Did you know it?", then Next, Retry or Finish. */
+/** Solo practice (SA2): pick fields, draw against 60 s, then Next, Retry or Finish. Nothing asked, nothing gained. */
 export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   const fonts = useSlateFonts();
   const [run, setRun] = useState<SoloRun | null>((play.resume as SoloRun | null) ?? null);
@@ -34,7 +33,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
     (next: SoloRun) => {
       ref.current = next;
       setRun(next);
-      engine.recorder.bookmark(play.id, snapshot(next, Date.now()), knownCount(next));
+      engine.recorder.bookmark(play.id, snapshot(next, Date.now()), next.done.length);
       engine.kv.set(RECENT_KEY, next.recent);
     },
     [play.id],
@@ -59,18 +58,18 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
           seat: 0,
           itemId: d.wordId,
           answerKey: w?.dossier ?? null,
-          outcome: d.knew == null ? 'skipped' : d.knew ? 'right' : 'wrong',
+          outcome: 'skipped',
           answersGiven: [],
           timeMs: d.timeMs,
           hintsUsed: 0,
           revealsUsed: 0,
           points: 0,
           feedsLearn: false, // SA1
-          gameData: { knew: d.knew, field: w?.field },
+          gameData: { field: w?.field },
         });
       }
       set(next);
-      if (next.phase === 'done') onFinish(knownCount(next));
+      if (next.phase === 'done') onFinish(next.done.length);
     },
     [play, set, onFinish],
   );
@@ -91,17 +90,18 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
 
   if (!run)
     return (
-      <SlateScreen scroll>
+      <SlateScreen>
         <Kicker>Practice sketch</Kicker>
-        <ChalkTitle size={28}>What do you want to draw?</ChalkTitle>
-        <Note>Pick one field or several. Leave them all off to draw from every field.</Note>
+        <ChalkTitle size={22}>What do you want to draw?</ChalkTitle>
+        <Note style={{ fontSize: u(12.5), lineHeight: u(16) }}>Pick one field or several, or keep all fields.</Note>
         <View style={s.chips}>
-          <ChalkChip label="All fields" on={!fields.length} onPress={() => setFields([])} />
+          <ChalkChip small label="All fields" on={!fields.length} onPress={() => setFields([])} />
           {FIELDS.map((f) => (
-            <ChalkChip key={f} label={f} on={fields.includes(f)} onPress={() => setFields(fields.includes(f) ? fields.filter((x) => x !== f) : [...fields, f])} />
+            <ChalkChip small key={f} label={f} on={fields.includes(f)} onPress={() => setFields(fields.includes(f) ? fields.filter((x) => x !== f) : [...fields, f])} />
           ))}
         </View>
-        <ChalkBtn label="Start drawing" onPress={begin} style={{ marginTop: u(6) }} />
+        <View style={{ flex: 1 }} />
+        <ChalkBtn label="Start drawing" onPress={begin} />
       </SlateScreen>
     );
 
@@ -142,18 +142,11 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
           </View>
         </>
       ) : (
-        <Panel style={{ gap: u(8), paddingVertical: u(10) }}>
-          <Text style={s.ask}>Did you know it?</Text>
-          <View style={s.row}>
-            <ChalkChip big label="Yes, I knew it" on={last?.knew === true} onPress={() => dispatch({ type: 'KNEW', knew: true })} />
-            <ChalkChip big label="Not really" on={last?.knew === false} onPress={() => dispatch({ type: 'KNEW', knew: false })} />
-          </View>
-          <View style={s.row}>
-            <ChalkBtn ghost label="Retry" onPress={() => dispatch({ type: 'RETRY', now: Date.now() })} style={{ flex: 1 }} />
-            <ChalkBtn ghost label="Finish" onPress={() => dispatch({ type: 'FINISH' })} style={{ flex: 1 }} />
-            <ChalkBtn label="Next" onPress={() => dispatch({ type: 'NEXT', now: Date.now() })} style={{ flex: 1.3 }} />
-          </View>
-        </Panel>
+        <View style={s.row}>
+          <ChalkBtn ghost label="Retry" onPress={() => dispatch({ type: 'RETRY', now: Date.now() })} style={{ flex: 1 }} />
+          <ChalkBtn ghost label="Finish" onPress={() => dispatch({ type: 'FINISH' })} style={{ flex: 1 }} />
+          <ChalkBtn label="Next" onPress={() => dispatch({ type: 'NEXT', now: Date.now() })} style={{ flex: 1.3 }} />
+        </View>
       )}
       <PauseMenu open={paused} mode="solo" onResume={() => dispatch({ type: 'RESUME', now: Date.now() })} onQuit={onQuit} />
     </SlateScreen>
@@ -161,10 +154,9 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
 }
 
 const s = StyleSheet.create({
-  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: u(7) },
+  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: u(5) },
   word: { alignItems: 'center', paddingVertical: u(8) },
   wordT: { fontFamily: SL.head, fontSize: u(21), lineHeight: u(25), color: SL.yellow, textAlign: 'center' },
   field: { fontFamily: SL.body, fontSize: u(13), color: SL.soft },
   row: { flexDirection: 'row', gap: u(8), flexWrap: 'wrap' },
-  ask: { fontFamily: SL.head, fontSize: u(18), color: SL.chalk },
 });

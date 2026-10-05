@@ -46,6 +46,8 @@ export type GameDef = {
   itemNoun?: string;
   /** Heading for the item list on results (default "Cases"). */
   itemsTitle?: string;
+  /** Results list shows only the names and dossier links (no right/wrong mark, no points), e.g. practice modes. */
+  plainItems?: (play: Play) => boolean;
   /** Replaces the Points and Solved figures on results when the game counts differently; null keeps the default. */
   summary?: (play: Play, items: PlayItem[]) => { value: string; label: string }[] | null;
   /** Modes that offer team play (TM1); the host turns it on in setup. Team score is the average unless 'sum'. */

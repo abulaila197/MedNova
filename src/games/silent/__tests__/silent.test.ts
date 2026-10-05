@@ -98,13 +98,12 @@ test('offline teams: the team scores the guess; time up gives the next team one 
   assert.deepEqual(recap.map((x) => x.text), ["P0's drawing was guessed in 45s", "P1's drawing was stolen by Rose", 'Cyan takes the lead']);
 });
 
-test('solo (SA2): 60 s, reveal, did you know it, retry keeps the disease, finish', () => {
+test('solo (SA2): 60 s, reveal, retry keeps the disease, next, finish', () => {
   let r = startSolo(POOL, { seed: 'x', fields: ['Neurology'], now: 0 });
   const first = r.wordId;
   assert.equal(soloLeft(r, 20_000), 40_000);
   r = stepSolo(r, { type: 'TICK', now: 60_000 }, POOL);
-  r = stepSolo(r, { type: 'KNEW', knew: true }, POOL);
-  assert.deepEqual(r.done, [{ wordId: first, knew: true, timeMs: 60_000 }]);
+  assert.deepEqual(r.done, [{ wordId: first, timeMs: 60_000 }]);
   r = stepSolo(r, { type: 'RETRY', now: 0 }, POOL);
   assert.deepEqual([r.phase, r.wordId, r.done.length], ['drawing', first, 0]);
   r = stepSolo(stepSolo(r, { type: 'REVEAL', now: 5_000 }, POOL), { type: 'NEXT', now: 0 }, POOL);

@@ -29,6 +29,7 @@ export function Results({ def, play, items }: { def: GameDef; play: Play; items:
   const nameOf = new Map(play.seats.map((x) => [x.seat, x.name]));
   const colorOf = new Map(play.seats.map((x) => [x.seat, x.color]));
   const teams = teamsOf(play);
+  const plain = def.plainItems?.(play) ?? false;
   const teamRows = teams && play.standings.length > 1 ? teamStandings(play.standings, play.seats, teams, def.teamScore) : null;
   return (
     <GameScreen>
@@ -78,7 +79,7 @@ export function Results({ def, play, items }: { def: GameDef; play: Play; items:
         <Kick>{def.itemsTitle ?? 'Cases'}</Kick>
         {items.map((i) => (
           <View key={i.id} style={s.row}>
-            <Text style={[s.mark, { color: i.outcome === 'right' ? t.accent : t.rose }]}>{MARK[i.outcome]}</Text>
+            {plain ? null : <Text style={[s.mark, { color: i.outcome === 'right' ? t.accent : t.rose }]}>{MARK[i.outcome]}</Text>}
             <Text style={[s.item, { color: t.fg }]} numberOfLines={1}>
               {multi ? `${nameOf.get(i.seat) ?? 'Nobody'} · ` : ''}
               {def.itemLabel?.(i) ?? i.itemId}
@@ -89,7 +90,7 @@ export function Results({ def, play, items }: { def: GameDef; play: Play; items:
                 <Text style={[s.link, { color: t.accent }]}>Dossier ›</Text>
               </Pressable>
             ) : null}
-            <Text style={[s.pts, { color: t.soft }]}>{i.points}</Text>
+            {plain ? null : <Text style={[s.pts, { color: t.soft }]}>{i.points}</Text>}
           </View>
         ))}
         {items.some((i) => i.feedsLearn && i.outcome !== 'right') ? <Body>{multi ? 'Your missed cases are waiting in Today\'s review.' : 'Missed cases are waiting in Today\'s review.'}</Body> : null}

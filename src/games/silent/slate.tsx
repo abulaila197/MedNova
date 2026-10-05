@@ -184,11 +184,11 @@ export function TopRow({ kicker, title, color = SL.chalk, right }: { kicker: str
 }
 
 /** A chalk chip: fields in Solo, players on "Who got it?". `on` fills it with chalk. */
-export function ChalkChip({ label, on, dot, onPress, big }: { label: string; on?: boolean; dot?: string; onPress: () => void; big?: boolean }) {
+export function ChalkChip({ label, on, dot, onPress, big, small }: { label: string; on?: boolean; dot?: string; onPress: () => void; big?: boolean; small?: boolean }) {
   return (
-    <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={label} accessibilityState={{ selected: !!on }} style={({ pressed }) => [s.chip, big && s.chipBig, on && { backgroundColor: SL.chalk, borderStyle: 'solid', borderColor: SL.chalk }, pressed && { opacity: 0.8 }]}>
+    <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={label} accessibilityState={{ selected: !!on }} style={({ pressed }) => [s.chip, big && s.chipBig, small && s.chipSmall, on && { backgroundColor: SL.chalk, borderStyle: 'solid', borderColor: SL.chalk }, pressed && { opacity: 0.8 }]}>
       {dot ? <View style={[s.dot, { backgroundColor: dot }]} /> : null}
-      <Text style={[s.chipT, big && { fontSize: u(17) }, { color: on ? '#1d2b22' : SL.chalk }]} numberOfLines={1}>
+      <Text style={[s.chipT, big && { fontSize: u(17) }, small && { fontSize: u(11.5) }, { color: on ? '#1d2b22' : SL.chalk }]} numberOfLines={1}>
         {label}
       </Text>
     </Pressable>
@@ -254,6 +254,7 @@ const s = StyleSheet.create({
   topRight: { flexDirection: 'row', alignItems: 'center', gap: u(8) },
   chip: { flexDirection: 'row', alignItems: 'center', gap: u(6), borderWidth: 1.5, borderStyle: 'dashed', borderColor: SL.line, borderRadius: u(20), paddingVertical: u(6), paddingHorizontal: u(12) },
   chipBig: { paddingVertical: u(11), paddingHorizontal: u(16), borderRadius: u(14) },
+  chipSmall: { paddingVertical: u(3), paddingHorizontal: u(8), borderWidth: 1 },
   chipT: { fontFamily: SL.body, fontSize: u(14) },
   dot: { width: u(8), height: u(8), borderRadius: u(4) },
   scoreRow: { flexDirection: 'row', alignItems: 'center', gap: u(8) },

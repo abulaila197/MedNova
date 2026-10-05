@@ -33,8 +33,8 @@ export const silentArtist: GameDef = {
       howTo: [
         'Pick the fields you want, or keep them all.',
         'You see a disease and have 60 s to draw it on the slate.',
-        'Then say if you knew it. Next gives you a new disease, Retry the same one on a clean board.',
-        'Your diseases are listed at the end with their dossiers. Nothing goes to Learn.',
+        'Then Next gives you a new disease, and Retry the same one on a clean board.',
+        'It is practice only: no score, no EXP, nothing goes to Learn. Your diseases are listed at the end with their dossiers.',
       ],
     },
     {
@@ -70,6 +70,8 @@ export const silentArtist: GameDef = {
     return w ? wordName(w) : item.itemId;
   },
   itemNoun: 'disease',
+  // SA2: Solo is practice only, so its list has no right/wrong marks or points.
+  plainItems: (play) => play.mode === 'solo',
   itemsTitle: 'Diseases',
   summary: (play, items) => {
     if (play.mode === 'offline') {
@@ -79,9 +81,6 @@ export const silentArtist: GameDef = {
         { value: `${got}/${items.length}`, label: 'Guessed' },
       ];
     }
-    return [
-      { value: String(items.length), label: 'Drawn' },
-      { value: `${items.filter((i) => i.outcome === 'right').length}/${items.length}`, label: 'You knew' },
-    ];
+    return [{ value: String(items.length), label: 'Drawn' }];
   },
 };
