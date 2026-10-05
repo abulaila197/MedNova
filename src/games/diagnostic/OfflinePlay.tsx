@@ -12,7 +12,7 @@ import { CaseBoard, pointsLine } from './CaseBoard';
 import type { Difficulty } from './core';
 import { caseById, guessName, poolFor } from './data';
 import {
-  currentCase, currentSeat, dpTieBreak, offlineRows, snapshotOffline, startOffline, stepOffline, timeLeft,
+  currentCase, currentSeat, dpTieBreak, offlineRecap, offlineRows, snapshotOffline, startOffline, stepOffline, timeLeft,
   type OfflineEvent, type OfflineRun,
 } from './offline';
 
@@ -157,7 +157,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
       onSkip={() => dispatch({ type: 'SKIP', now: Date.now() })}
       onReveal={() => dispatch({ type: 'REVEAL' })}>
       {run.phase === 'handoff' ? (
-        <Curtain name={who?.name ?? `Player ${seat + 1}`} color={who?.color} sub={`${roundText} · 90 seconds`} board={board} onReady={() => dispatch({ type: 'READY', now: Date.now() })} />
+        <Curtain name={who?.name ?? `Player ${seat + 1}`} color={who?.color} sub={`${roundText} · 90 seconds`} board={board} recap={offlineRecap(run, seat, play)} onReady={() => dispatch({ type: 'READY', now: Date.now() })} />
       ) : null}
       <PauseMenu
         open={paused}

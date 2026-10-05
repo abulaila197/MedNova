@@ -1,7 +1,9 @@
 // Nova Medicordle Offline Multiplayer (pass and play): NM8, NM9, NM12-NM14, NM16, NM25.
 // One shared board per word. Players take turns guessing; whoever guesses the word wins it; most words wins.
 // Rows round up to full laps; each lap's order is random and nobody plays twice in a row. No hints, no EXP.
-import { MAX_ROWS, nextLap, offlineRows, type Style } from './core';
+import { closeThreshold, greenColumns, isClose, MAX_ROWS, nextLap, offlineRows, type Style } from './core';
+import type { Play } from '../engine/types';
+import { event, finishRecap, lastIndexOf, leadLine, sides, type RecapLine } from '../shell/recap';
 import type { Row } from '../engine/standings';
 
 /** One turn on the board. `word` is null when the turn timed out (the row is used, the turn passes). */
@@ -136,3 +138,41 @@ export function offlineStandings(r: OfflineRun, names: Record<number, string>): 
 
 export const ROWS_NOTE = (players: number) => `${offlineRows(players)} rows, ${offlineRows(players) / players} each`;
 export { MAX_ROWS };
+
+/**
+ * OF1: what happened since `seat` last guessed: a "close" line when a guess brings the shared board to two-thirds
+ * of the letters green (NM11), who won each word that ended (no letters shown), then a lead change in words won.
+ */
+export function offlineRecap(r: OfflineRun, seat: number, play: Pick<Play, 'seats' | 'settings'>, answerOf: (wordId: string) => string): RecapLine[] {
+  const words = [...r.results.map((x) => ({ wordId: x.wordId, turns: x.turns, ended: true, winner: x.winner })), ...(r.results.length === r.index ? [{ wordId: r.wordIds[r.index], turns: r.turns, ended: false, winner: null }] : [])];
+  const flat = words.flatMap((w, wi) => w.turns.map((t, ti) => ({ seat: t.seat, wi, ti })));
+  const last = lastIndexOf(flat, seat);
+  const seatOf = new Map(play.seats.map((x) => [x.seat, x]));
+  const events: RecapLine[] = [];
+  let at = 0;
+  words.forEach((w, wi) => {
+    const answer = answerOf(w.wordId);
+    w.turns.forEach((t, ti) => {
+      const idx = at + ti;
+      if (idx <= last || t.word == null || t.word === answer) return;
+      const upto = w.turns.slice(0, ti + 1).filter((x) => x.word != null).map((x) => x.word as string);
+      const green = greenColumns(upto, answer).size;
+      if (green >= closeThreshold(answer.length) && !isClose(upto.slice(0, -1), answer))
+        events.push(event(`nm-close-${wi}`, t.seat, seatOf.get(t.seat), `made it close · ${green} of ${answer.length} green`));
+    });
+    at += w.turns.length;
+    if (w.ended && at - 1 > last)
+      events.push(
+        w.winner != null
+          ? event(`nm-won-${wi}`, w.winner, seatOf.get(w.winner), `won word ${wi + 1} on row ${w.turns.length}`)
+          : { key: `nm-none-${wi}`, text: `Nobody got word ${wi + 1}` },
+      );
+  });
+  if (!events.length) return [];
+  // TMG-NM: the whole team wins the word, so team scores add up.
+  const endAt: number[] = [];
+  words.reduce((n, w) => (w.ended && endAt.push(n + w.turns.length - 1), n + w.turns.length), 0);
+  const scores = (n: number) => r.seats.filter((s) => !r.removed.includes(s)).map((s) => ({ seat: s, score: r.results.slice(0, n).filter((x) => x.winner === s).length }));
+  const before = endAt.filter((e) => e <= last).length;
+  return finishRecap(events, leadLine(sides(scores(before), play, 'sum'), sides(scores(r.results.length), play, 'sum')));
+}

@@ -7,7 +7,8 @@ import { F } from '@/theme/tokens';
 
 import { engine, rank } from '../engine';
 import { usePauseHide } from '../engine/usePauseHide';
-import { Curtain } from '../shell/Curtain';
+import { Curtain, Recap } from '../shell/Curtain';
+import type { RecapLine } from '../shell/recap';
 import { recordItem } from '../shell/flow';
 import { PauseMenu } from '../shell/PauseMenu';
 import { teamLap, teamsOf } from '../shell/teams';
@@ -16,7 +17,7 @@ import { Btn, GameScreen } from '../shell/ui';
 import { lengthCheck, type Style } from './core';
 import { isWord, poolFor, wordById } from './data';
 import {
-  currentSeat, offlineStandings, showDefinition, snapshotOffline, startOffline, stepOffline, turnLeft,
+  currentSeat, offlineRecap, offlineStandings, showDefinition, snapshotOffline, startOffline, stepOffline, turnLeft,
   type OfflineEvent, type OfflineRun,
 } from './offline';
 import { DoneCard } from './SoloPlay';
@@ -114,6 +115,8 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   const lastWord = run.index + 1 >= run.wordIds.length;
   const left = turnLeft(run, now);
   const secs = run.turnMs / 1000;
+  // OF1: the hand-off shows what happened since this player last guessed (no letters).
+  const recap = phase === 'ready' ? offlineRecap(run, seat, play, (id) => wordById.get(id)!.word) : [];
 
   const submit = (g: string) => {
     const bad = lengthCheck(g, style, w.word.length);
@@ -153,7 +156,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
             primary={{ label: lastWord ? 'See results' : 'Next word', onPress: () => dispatch({ type: 'NEXT' }) }}
           />
         ) : phase === 'ready' && run.turns.length > 0 ? (
-          <TurnCard name={who?.name ?? ''} color={who?.color ?? t.accent} secs={secs} onReady={() => dispatch({ type: 'READY', now: Date.now() })} />
+          <TurnCard name={who?.name ?? ''} color={who?.color ?? t.accent} secs={secs} recap={recap} onReady={() => dispatch({ type: 'READY', now: Date.now() })} />
         ) : undefined
       }>
       {run.phase === 'ready' && run.turns.length === 0 ? (
@@ -163,6 +166,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
           color={who?.color}
           sub={`Word ${run.index + 1} of ${run.wordIds.length} · ${secs} s per guess`}
           board={board}
+          recap={recap}
           onReady={() => dispatch({ type: 'READY', now: Date.now() })}
         />
       ) : null}
@@ -183,13 +187,14 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
 }
 
 /** Between guesses: whose turn, in their colour, and "I'm ready" to start their clock. */
-function TurnCard({ name, color, secs, onReady }: { name: string; color: string; secs: number; onReady: () => void }) {
+function TurnCard({ name, color, secs, recap, onReady }: { name: string; color: string; secs: number; recap: RecapLine[]; onReady: () => void }) {
   const t = useTheme();
   return (
     <View style={s.card}>
       <Text style={[s.k, { color: t.dim }]}>PASS THE PHONE TO</Text>
       <Text style={[s.name, { color }]}>{name}</Text>
       <Text style={[s.sub, { color: t.mute }]}>{`${secs} seconds for this guess`}</Text>
+      {recap.length ? <View style={s.recap}><Recap lines={recap} /></View> : null}
       <Btn label="I'm ready" onPress={onReady} style={{ alignSelf: 'stretch', marginTop: u(6) }} />
     </View>
   );
@@ -197,6 +202,7 @@ function TurnCard({ name, color, secs, onReady }: { name: string; color: string;
 
 const s = StyleSheet.create({
   card: { alignItems: 'center', gap: u(3), paddingTop: u(2) },
+  recap: { alignSelf: 'stretch', marginTop: u(6) },
   k: { fontFamily: F.mono, fontSize: u(8), letterSpacing: u(1.4) },
   name: { fontFamily: F.display, fontSize: u(24), lineHeight: u(27) },
   sub: { fontFamily: F.body, fontSize: u(10.5) },

@@ -3,6 +3,8 @@
 // the phone owner's misses still go to Learn. Turn order is shuffled once, or teams alternate (TM5).
 import { shuffle, startRound, stepRound, snapshotRound, type PlayerRound, type Rng, type Round, type RoundEvent } from './core';
 import type { Row } from '../engine/standings';
+import type { Play } from '../engine/types';
+import { event, finishRecap, lastIndexOf, leadLine, sides, type RecapLine } from '../shell/recap';
 
 export const POOL_SIZE = 120; // as coded
 export const COUNTDOWN_MS = 3000; // "Get ready" before each round (as coded)
@@ -116,4 +118,15 @@ export function offlineRows(r: OfflineRun, names: Record<number, string>): (Row 
       const x = r.results.find((y) => y.seat === seat);
       return { seat, name: names[seat] ?? `Player ${seat + 1}`, score: x?.score ?? 0, timeMs: 0, maxStreak: x?.maxStreak ?? 0, correct: x?.correct ?? 0 };
     });
+}
+
+/** OF1: what happened since `seat` last played: each finished round's score and best streak, then a lead change. */
+export function offlineRecap(r: OfflineRun, seat: number, play: Pick<Play, 'seats' | 'settings'>): RecapLine[] {
+  const last = lastIndexOf(r.results, seat);
+  const since = r.results.slice(last + 1);
+  if (!since.length) return [];
+  const seatOf = new Map(play.seats.map((x) => [x.seat, x]));
+  const events = since.map((x, i) => event(`sm-${last + 1 + i}`, x.seat, seatOf.get(x.seat), `scored ${x.score} · best streak ${x.maxStreak}`));
+  const scores = (rs: Finished[]) => r.order.map((s) => ({ seat: s, score: rs.filter((x) => x.seat === s).reduce((a, x) => a + x.score, 0) }));
+  return finishRecap(events, leadLine(sides(scores(r.results.slice(0, last + 1)), play), sides(scores(r.results), play)));
 }

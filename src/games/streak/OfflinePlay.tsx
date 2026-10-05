@@ -18,7 +18,7 @@ import { mixQueue, shuffle, startRound, streakTieBreak, timeLeft, type Style } f
 import { answerOf, idsOf, poolFor, questionById } from './data';
 import { HeatBoard } from './HeatBoard';
 import {
-  POOL_SIZE, currentSeat, offlineRows, snapshotOffline, startOffline, stepOffline,
+  POOL_SIZE, currentSeat, offlineRecap, offlineRows, snapshotOffline, startOffline, stepOffline,
   type OfflineEvent, type OfflineRun,
 } from './offline';
 import { OverCard } from './SoloPlay';
@@ -145,7 +145,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
         ) : undefined
       }>
       {run.phase === 'handoff' ? (
-        <Curtain name={who?.name ?? `Player ${seat + 1}`} color={who?.color} sub={`Turn ${turnNo} of ${run.order.length - run.removed.length} · ${run.lengthSec} s round`} board={board} onReady={() => dispatch({ type: 'READY', now: Date.now() })} />
+        <Curtain name={who?.name ?? `Player ${seat + 1}`} color={who?.color} sub={`Turn ${turnNo} of ${run.order.length - run.removed.length} · ${run.lengthSec} s round`} board={board} recap={offlineRecap(run, seat, play)} onReady={() => dispatch({ type: 'READY', now: Date.now() })} />
       ) : null}
       {run.phase === 'countdown' && run.countdownUntil != null ? (
         <Animated.View entering={FadeIn.duration(160)} exiting={FadeOut.duration(160)} style={[StyleSheet.absoluteFill, s.cd, { backgroundColor: t.sky }]}>

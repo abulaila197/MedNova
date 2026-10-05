@@ -16,7 +16,7 @@ import { Btn, GameScreen, Kick } from '../shell/ui';
 import { clock, shuffle } from './core';
 import { RIDDLES, answerLabel, feedsLearn, riddleById, riddleName } from './data';
 import {
-  currentPhoto, currentSeat, lockLeft, offlineRows, previousLine, riddlerTieBreak, snapshotOffline, startOffline, stepOffline, turnLeft,
+  currentPhoto, currentSeat, lockLeft, offlineRecap, offlineRows, riddlerTieBreak, snapshotOffline, startOffline, stepOffline, turnLeft,
   type OfflineEvent, type OfflineRun,
 } from './offline';
 import { RiddleBoard } from './RiddleBoard';
@@ -118,7 +118,6 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   const r = riddleById.get(currentPhoto(run))!;
   const turnNo = run.order.slice(0, run.turn + 1).filter((x) => !run.removed.includes(x)).length;
   const players = run.order.length - run.removed.length;
-  const prevLine = previousLine(run, names, clock);
   const playing = run.phase === 'playing' || (paused && run.before === 'playing');
 
   return (
@@ -140,8 +139,9 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
         <Curtain
           name={who?.name ?? `Player ${seat + 1}`}
           color={who?.color}
-          sub={prevLine ?? `Picture ${run.index + 1} of ${run.photos.length} · ${run.turnMs / 1000} s turn`}
+          sub={`Picture ${run.index + 1} of ${run.photos.length} · ${run.turnMs / 1000} s turn`}
           board={board}
+          recap={offlineRecap(run, seat, play, clock)}
           onReady={() => dispatch({ type: 'READY', now: Date.now() })}
         />
       ) : null}

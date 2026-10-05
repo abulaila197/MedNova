@@ -3,6 +3,8 @@
 // Unlimited guesses with a 5 s lock after each wrong one; a turn ends on a right pick or time out.
 // Per picture: fastest solver 100, then 80, 65..., plus a time bonus up to 50; time out = 0. No hint, no EXP.
 import type { Row } from '../engine/standings';
+import type { Play } from '../engine/types';
+import { event, finishRecap, lastIndexOf, leadLine, sides, type RecapLine } from '../shell/recap';
 
 export const LOCK_MS = 5_000;
 export const RANK_POINTS = [100, 80, 65, 50, 40, 30];
@@ -160,3 +162,27 @@ export function offlineRows(r: OfflineRun, names: Record<number, string>): Offli
 }
 
 export const riddlerTieBreak = (a: { wrong: number }, b: { wrong: number }) => a.wrong - b.wrong;
+
+/**
+ * OF1: what happened since `seat` last played: each solve or time-out (no answers), "everyone else has
+ * solved this picture" (RD8's "Only you left"), then a lead change from the pictures scored since.
+ */
+export function offlineRecap(r: OfflineRun, seat: number, play: Pick<Play, 'seats' | 'settings'>, clock: (ms: number) => string): RecapLine[] {
+  const current = r.results.length === r.index ? r.turns : [];
+  const flat = [
+    ...r.results.flatMap((p, photo) => p.scores.map((x) => ({ seat: x.seat, solved: x.solved, timeMs: x.timeMs, photo }))),
+    ...current.map((x) => ({ seat: x.seat, solved: x.solved, timeMs: x.timeMs, photo: r.index })),
+  ];
+  const last = lastIndexOf(flat, seat);
+  const seatOf = new Map(play.seats.map((x) => [x.seat, x]));
+  const events: RecapLine[] = flat.slice(last + 1).map((x, i) => event(`rd-${last + 1 + i}`, x.seat, seatOf.get(x.seat), x.solved ? `solved it in ${clock(x.timeMs)}` : 'ran out of time'));
+  const others = r.order.filter((s) => s !== seat && !r.removed.includes(s));
+  if (current.length && !current.some((x) => x.seat === seat) && others.every((s) => current.some((x) => x.seat === s && x.solved)))
+    events.push({ key: `rd-left-${r.index}`, text: 'Everyone else has solved this picture' });
+  if (!events.length) return [];
+  // A picture counts once its last turn is played; compare the table when this player last finished with now.
+  const doneAt = r.results.map((_, photo) => flat.map((x) => x.photo).lastIndexOf(photo));
+  const scores = (n: number) => r.order.filter((s) => !r.removed.includes(s)).map((s) => ({ seat: s, score: r.results.slice(0, n).flatMap((p) => p.scores).filter((x) => x.seat === s).reduce((a, x) => a + x.points, 0) }));
+  const before = doneAt.filter((at) => at <= last).length;
+  return finishRecap(events, leadLine(sides(scores(before), play), sides(scores(r.results.length), play)));
+}

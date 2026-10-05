@@ -1,5 +1,7 @@
 // Diagnostic Pursuit Offline Multiplayer (pass and play), decisions DPO1-DPO7:
 // 2-6 players, each gets their own case every round, 90 s per turn, Solo's scoring and guess rules, no hint.
+import type { Play } from '../engine/types';
+import { event, finishRecap, lastIndexOf, leadLine, sides, type RecapLine } from '../shell/recap';
 import { cluePoints, guess, newAttempt, reveal, speedBonus, type Attempt } from './core';
 import type { Row } from '../engine/standings';
 
@@ -157,3 +159,16 @@ export function offlineRows(r: OfflineRun, names: Record<number, string>): (Row 
 
 /** Ties as coded: more speed bonus, then fewer wrong guesses. */
 export const dpTieBreak = (a: { speed: number; wrong: number }, b: { speed: number; wrong: number }) => b.speed - a.speed || a.wrong - b.wrong;
+
+/** OF1: what happened since `seat` last played: each solved or missed case with its points, then a lead change. */
+export function offlineRecap(r: OfflineRun, seat: number, play: Pick<Play, 'seats' | 'settings'>): RecapLine[] {
+  const last = lastIndexOf(r.results, seat);
+  const since = r.results.slice(last + 1);
+  if (!since.length) return [];
+  const seatOf = new Map(play.seats.map((x) => [x.seat, x]));
+  const events = since.map((x, i) =>
+    event(`dp-${last + 1 + i}`, x.seat, seatOf.get(x.seat), x.outcome === 'right' ? `solved the case · +${x.points}` : x.outcome === 'timed_out' ? 'ran out of time' : 'missed the case'),
+  );
+  const scores = (rs: TurnResult[]) => r.order.map((s) => ({ seat: s, score: rs.filter((x) => x.seat === s).reduce((a, x) => a + x.points, 0) }));
+  return finishRecap(events, leadLine(sides(scores(r.results.slice(0, last + 1)), play), sides(scores(r.results), play)));
+}
