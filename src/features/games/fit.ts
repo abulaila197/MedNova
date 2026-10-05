@@ -7,6 +7,9 @@ export const BODY_TOP = 72; // the shell's content area starts here
 export const SHIFT = 20; // decision 63: ring, planets, dots and art anchor sit 20px lower
 export const DOTS_TOP = 398 + SHIFT; // screen y of the swipe dots
 export const ART_B = DOTS_TOP + 66; // bottom of the art box (fitArc: dots top + 66)
+// 2026-10-05: the ring's fill is gone, so each drawing moves down and fades just above the nav bar.
+export const ART_END = 540;
+const DROP = ART_END - ART_B;
 const ART_T = 150;
 export const RING_R = 520;
 export const RING_CY = 908 + SHIFT; // circle centre, body coords
@@ -52,21 +55,21 @@ export function fitArt(key: string, mode: Mode): ArtFit {
   const sd = Math.min(W / (d[1] - d[0]), ((B - ART_T) * AR_D) / (d[3] - d[2])) * 0.98 * z;
   const ILd = W + 4 - d[1] * sd;
   const ITd = B - (d[3] * sd) / AR_D;
-  if (mode === 'dark') return { x: ILd, y: ITd, w: sd, h: sd / AR_D };
+  if (mode === 'dark') return { x: ILd, y: ITd + DROP, w: sd, h: sd / AR_D };
   const [a, l] = ANC[key];
   const cx = ILd + ((a[0] + a[1]) / 2) * sd;
   const cy = ITd + (((a[2] + a[3]) / 2) * sd) / AR_D;
   const aw = (a[1] - a[0]) * sd;
   const ah = ((a[3] - a[2]) * sd) / AR_D;
   const s = Math.sqrt((aw / (l[1] - l[0])) * ((ah * AR_L) / (l[3] - l[2])));
-  return { x: cx - ((l[0] + l[1]) / 2) * s, y: cy - (((l[2] + l[3]) / 2) * s) / AR_L, w: s, h: s / AR_L };
+  return { x: cx - ((l[0] + l[1]) / 2) * s, y: cy - (((l[2] + l[3]) / 2) * s) / AR_L + DROP, w: s, h: s / AR_L };
 }
 
 const ramp = (v: number, a: number, b: number) => Math.min(1, Math.max(0, (v - a) / (b - a)));
 
 /** Alpha stops (offset 0..1, alpha) of the vertical and horizontal parts of the arc mask. */
 export function maskStops(f: ArtFit) {
-  const B = ART_B;
+  const B = ART_END;
   const vert = (y: number) => {
     const p = y / B;
     const base = p < 0.26 ? 0 : p < 0.46 ? (p - 0.26) / 0.2 : p <= 0.82 ? 1 : Math.max(0, (1 - p) / 0.18);

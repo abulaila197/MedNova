@@ -6,7 +6,7 @@ import { GAME_PHOTOS } from '@/data/games';
 import { u } from '@/theme/scale';
 import type { Mode } from '@/theme/tokens';
 
-import { ART_B, BODY_TOP, fitArt, maskStops, W } from './fit';
+import { ART_B, ART_END, BODY_TOP, fitArt, maskStops, W } from './fit';
 
 // CSS saturate(.78), and for The Streak Master saturate(.78) brightness(.72) contrast(1.06) (light only).
 function satMatrix(s: number, k = 1, o = 0) {
@@ -27,7 +27,7 @@ export const GameArt = memo(function GameArt({ k, mode }: { k: string; mode: Mod
   const f = fitArt(k, mode);
   const st = maskStops(f);
   const id = `${mode}-${k}`;
-  const H = ART_B - BODY_TOP;
+  const H = ART_END - BODY_TOP;
   const src = GAME_PHOTOS[mode][k as keyof (typeof GAME_PHOTOS)['dark']];
   const streak = k === 'the-streak-master';
   // Native: SVG colour matrix. Web: the exact CSS filter (SVG filters there run in linearRGB).
@@ -42,20 +42,20 @@ export const GameArt = memo(function GameArt({ k, mode }: { k: string; mode: Mod
           <Stop offset="0.52" stopColor="#fff" stopOpacity={0} />
           <Stop offset="0.74" stopColor="#fff" stopOpacity={1} />
         </RadialGradient>
-        <LinearGradient id={`lv-${id}`} x1="0" y1="0" x2="0" y2={ART_B} gradientUnits="userSpaceOnUse">
+        <LinearGradient id={`lv-${id}`} x1="0" y1="0" x2="0" y2={ART_END} gradientUnits="userSpaceOnUse">
           {st.v.map(([o, a], i) => <Stop key={i} offset={o} stopColor="#fff" stopOpacity={a} />)}
         </LinearGradient>
         <LinearGradient id={`lh-${id}`} x1="0" y1="0" x2={W} y2="0" gradientUnits="userSpaceOnUse">
           {st.h.map(([o, a], i) => <Stop key={i} offset={o} stopColor="#fff" stopOpacity={a} />)}
         </LinearGradient>
-        <Mask id={`m1-${id}`} maskUnits="userSpaceOnUse" x="0" y="0" width={W} height={ART_B}>
-          <Rect x="0" y="0" width={W} height={ART_B} fill={`url(#rg-${id})`} />
+        <Mask id={`m1-${id}`} maskUnits="userSpaceOnUse" x="0" y="0" width={W} height={ART_END}>
+          <Rect x="0" y="0" width={W} height={ART_END} fill={`url(#rg-${id})`} />
         </Mask>
-        <Mask id={`m2-${id}`} maskUnits="userSpaceOnUse" x="0" y="0" width={W} height={ART_B}>
-          <Rect x="0" y="0" width={W} height={ART_B} fill={`url(#lv-${id})`} />
+        <Mask id={`m2-${id}`} maskUnits="userSpaceOnUse" x="0" y="0" width={W} height={ART_END}>
+          <Rect x="0" y="0" width={W} height={ART_END} fill={`url(#lv-${id})`} />
         </Mask>
-        <Mask id={`m3-${id}`} maskUnits="userSpaceOnUse" x="0" y="0" width={W} height={ART_B}>
-          <Rect x="0" y="0" width={W} height={ART_B} fill={`url(#lh-${id})`} />
+        <Mask id={`m3-${id}`} maskUnits="userSpaceOnUse" x="0" y="0" width={W} height={ART_END}>
+          <Rect x="0" y="0" width={W} height={ART_END} fill={`url(#lh-${id})`} />
         </Mask>
         {filt ? (
           <Filter id={`f-${id}`} x="0" y="0" width="100%" height="100%">

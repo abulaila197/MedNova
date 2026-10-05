@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, View } from 'react-native';
 import Animated, { type SharedValue, useAnimatedStyle } from 'react-native-reanimated';
-import { Circle, Defs, RadialGradient, Stop, Svg } from 'react-native-svg';
+import { Circle, Defs, LinearGradient, Stop, Svg } from 'react-native-svg';
 
 import { GAMES } from '@/data/games';
 import { u } from '@/theme/scale';
@@ -10,25 +10,24 @@ import { BODY_TOP, DOTS_TOP, RING_CX, RING_CY, RING_R, W } from './fit';
 import { wrapOff } from './Planet';
 
 const RING = {
-  dark: { solid: '#10132a', c1: '#8f75ff', o1: 0.38, c3: 'rgb(21,25,51)', stroke: 'rgba(201,184,255,0.5)' },
-  light: { solid: '#f3efe6', c1: '#e9bf4f', o1: 0.4, c3: 'rgb(251,249,244)', stroke: 'rgba(184,116,31,0.5)' },
+  dark: { line: '#e6deff' },
+  light: { line: '#9a5a12' },
 };
 const H = 615 - BODY_TOP;
 
-/** The big circle horizon the planets sit on. */
+/** The big circle horizon the planets sit on: only a hairline that fades toward both edges, so the page background shows below it. */
 export function Ring({ mode, top }: { mode: Mode; top: number }) {
   const c = RING[mode];
   return (
     <Svg width={u(W)} height={u(H)} viewBox={`0 0 ${W} ${H}`} style={[s.ring, { top }]} pointerEvents="none">
       <Defs>
-        <RadialGradient id={`hz-${mode}`} cx={RING_CX} cy={RING_CY - RING_R} r={2 * RING_R} gradientUnits="userSpaceOnUse">
-          <Stop offset="0" stopColor={c.c1} stopOpacity={c.o1} />
-          <Stop offset="0.22" stopColor={c.c3} stopOpacity={0.55} />
-          <Stop offset="1" stopColor={c.c3} stopOpacity={0.55} />
-        </RadialGradient>
+        <LinearGradient id={`ln-${mode}`} x1="0" y1="0" x2={W} y2="0" gradientUnits="userSpaceOnUse">
+          <Stop offset="0" stopColor={c.line} stopOpacity={0} />
+          <Stop offset="0.5" stopColor={c.line} stopOpacity={0.95} />
+          <Stop offset="1" stopColor={c.line} stopOpacity={0} />
+        </LinearGradient>
       </Defs>
-      <Circle cx={RING_CX} cy={RING_CY} r={RING_R} fill={c.solid} />
-      <Circle cx={RING_CX} cy={RING_CY} r={RING_R} fill={`url(#hz-${mode})`} stroke={c.stroke} strokeWidth={1.1} />
+      <Circle cx={RING_CX} cy={RING_CY} r={RING_R} fill="none" stroke={`url(#ln-${mode})`} strokeWidth={2} />
     </Svg>
   );
 }
