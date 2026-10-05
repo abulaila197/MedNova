@@ -1,0 +1,4430 @@
+[
+{
+"id": "abdominal-aortic-aneurysm",
+"label": "Abdominal aortic aneurysm",
+"aliases": [
+"AAA"
+]
+},
+{
+"id": "acalculous-cholecystitis",
+"label": "Acalculous cholecystitis",
+"aliases": [
+"Acute acalculous cholecystitis"
+]
+},
+{
+"id": "achilles-tendon-rupture",
+"label": "Achilles tendon rupture",
+"aliases": [
+"Ruptured achilles tendon"
+],
+"dossier": "achilles-tendon-rupture"
+},
+{
+"id": "acid-sphingomyelinase-deficiency",
+"label": "Acid sphingomyelinase deficiency",
+"aliases": [
+"ASMD",
+"Niemann-Pick disease type A/B"
+]
+},
+{
+"id": "acquired-cystic-kidney-disease",
+"label": "Acquired cystic kidney disease",
+"aliases": [
+"ACKD"
+]
+},
+{
+"id": "acute-angle-closure-glaucoma",
+"label": "Acute angle-closure glaucoma",
+"aliases": [
+"AACG",
+"Acute closed-angle glaucoma"
+],
+"dossier": "acute-angle-closure-glaucoma"
+},
+{
+"id": "acute-anterior-uveitis",
+"label": "Acute anterior uveitis"
+},
+{
+"id": "acute-appendicitis",
+"label": "Acute appendicitis",
+"aliases": [
+"Appendicitis"
+],
+"dossier": "acute-appendicitis"
+},
+{
+"id": "acute-asthma-exacerbation",
+"label": "Acute asthma exacerbation",
+"dossier": "asthma"
+},
+{
+"id": "acute-bacterial-prostatitis",
+"label": "Acute bacterial prostatitis",
+"aliases": [
+"ABP"
+],
+"dossier": "acute-bacterial-prostatitis"
+},
+{
+"id": "acute-bacterial-sinusitis",
+"label": "Acute bacterial sinusitis",
+"dossier": "acute-rhinosinusitis"
+},
+{
+"id": "acute-cerebellar-hemorrhage",
+"label": "Acute cerebellar hemorrhage"
+},
+{
+"id": "acute-chest-syndrome",
+"label": "Acute chest syndrome"
+},
+{
+"id": "acute-cholangitis",
+"label": "Acute cholangitis",
+"aliases": [
+"Ascending cholangitis"
+],
+"dossier": "acute-cholangitis"
+},
+{
+"id": "acute-cholecystitis",
+"label": "Acute cholecystitis",
+"dossier": "acute-cholecystitis"
+},
+{
+"id": "acute-compartment-syndrome",
+"label": "Acute compartment syndrome",
+"dossier": "acute-compartment-syndrome"
+},
+{
+"id": "acute-coronary-syndrome",
+"label": "Acute coronary syndrome",
+"aliases": [
+"ACS"
+],
+"dossier": "myocardial-infarction-acute-coronary-syndrome"
+},
+{
+"id": "acute-diverticulitis",
+"label": "Acute diverticulitis",
+"aliases": [
+"Diverticulitis"
+],
+"dossier": "acute-diverticulitis"
+},
+{
+"id": "acute-dystonic-reaction",
+"label": "Acute dystonic reaction"
+},
+{
+"id": "acute-eosinophilic-pneumonia",
+"label": "Acute eosinophilic pneumonia",
+"aliases": [
+"AEP"
+]
+},
+{
+"id": "acute-epiglottitis",
+"label": "Acute epiglottitis",
+"aliases": [
+"Epiglottitis",
+"Supraglottitis"
+],
+"dossier": "acute-epiglottitis"
+},
+{
+"id": "acute-exacerbation-of-copd",
+"label": "Acute exacerbation of COPD",
+"aliases": [
+"COPD exacerbation"
+],
+"dossier": "chronic-obstructive-pulmonary-disease-copd"
+},
+{
+"id": "acute-fatty-liver-of-pregnancy",
+"label": "Acute fatty liver of pregnancy",
+"aliases": [
+"AFLP"
+]
+},
+{
+"id": "acute-gout",
+"label": "Acute gout",
+"dossier": "gout"
+},
+{
+"id": "acute-heart-failure",
+"label": "Acute heart failure"
+},
+{
+"id": "acute-hiv-infection",
+"label": "Acute HIV infection"
+},
+{
+"id": "acute-inferior-myocardial-infarction",
+"label": "Acute inferior myocardial infarction",
+"dossier": "myocardial-infarction-acute-coronary-syndrome"
+},
+{
+"id": "acute-intermittent-porphyria",
+"label": "Acute intermittent porphyria",
+"dossier": "acute-intermittent-porphyria"
+},
+{
+"id": "acute-interstitial-nephritis",
+"label": "Acute interstitial nephritis",
+"aliases": [
+"AIN",
+"Acute tubulointerstitial nephritis"
+]
+},
+{
+"id": "acute-ischemic-stroke",
+"label": "Acute ischemic stroke",
+"dossier": "ischemic-stroke"
+},
+{
+"id": "acute-leukemia",
+"label": "Acute leukemia",
+"dossier": "leukemia-overview"
+},
+{
+"id": "acute-limb-ischemia",
+"label": "Acute limb ischemia",
+"aliases": [
+"ALI"
+],
+"dossier": "acute-limb-ischemia"
+},
+{
+"id": "acute-liver-failure",
+"label": "Acute liver failure",
+"aliases": [
+"Fulminant hepatic failure",
+"ALF"
+],
+"dossier": "acute-liver-failure-fulminant-hepatic-failure"
+},
+{
+"id": "acute-lymphoblastic-leukemia",
+"label": "Acute lymphoblastic leukemia",
+"aliases": [
+"ALL",
+"Acute lymphocytic leukemia"
+],
+"dossier": "acute-lymphoblastic-leukemia"
+},
+{
+"id": "acute-mastoiditis",
+"label": "Acute mastoiditis"
+},
+{
+"id": "acute-myeloid-leukemia",
+"label": "Acute myeloid leukemia",
+"aliases": [
+"AML",
+"Acute myelogenous leukemia"
+],
+"dossier": "acute-myeloid-leukemia"
+},
+{
+"id": "acute-otitis-media",
+"label": "Acute otitis media",
+"aliases": [
+"AOM",
+"Middle ear infection"
+],
+"dossier": "acute-otitis-media"
+},
+{
+"id": "acute-pancreatitis",
+"label": "Acute pancreatitis",
+"dossier": "acute-pancreatitis"
+},
+{
+"id": "acute-pericarditis",
+"label": "Acute pericarditis",
+"dossier": "acute-pericarditis"
+},
+{
+"id": "acute-pulmonary-embolism",
+"label": "Acute pulmonary embolism",
+"dossier": "pulmonary-embolism"
+},
+{
+"id": "acute-pyelonephritis",
+"label": "Acute pyelonephritis",
+"aliases": [
+"Kidney infection"
+],
+"dossier": "acute-pyelonephritis"
+},
+{
+"id": "acute-respiratory-distress-syndrome",
+"label": "Acute respiratory distress syndrome",
+"aliases": [
+"ARDS"
+],
+"dossier": "acute-respiratory-distress-syndrome-ards"
+},
+{
+"id": "acute-severe-asthma-exacerbation",
+"label": "Acute severe asthma exacerbation",
+"dossier": "asthma"
+},
+{
+"id": "acute-sinusitis",
+"label": "Acute sinusitis",
+"aliases": [
+"Acute rhinosinusitis",
+"Sinus infection"
+],
+"dossier": "acute-rhinosinusitis"
+},
+{
+"id": "acute-superior-mesenteric-vein-thrombosis",
+"label": "Acute superior mesenteric vein thrombosis",
+"aliases": [
+"Superior mesenteric vein thrombosis",
+"SMV thrombosis"
+],
+"dossier": "acute-superior-mesenteric-vein-thrombosis"
+},
+{
+"id": "acute-uncomplicated-appendicitis",
+"label": "Acute uncomplicated appendicitis",
+"dossier": "acute-appendicitis"
+},
+{
+"id": "acute-uncomplicated-cystitis",
+"label": "Acute uncomplicated cystitis",
+"aliases": [
+"Bladder infection"
+],
+"dossier": "acute-cystitis-lower-urinary-tract-infection"
+},
+{
+"id": "acute-urinary-retention-due-to-bph",
+"label": "Acute urinary retention due to BPH",
+"aliases": [
+"Urinary retention from an enlarged prostate"
+],
+"dossier": "benign-prostatic-hyperplasia-bph"
+},
+{
+"id": "acute-viral-bronchitis",
+"label": "Acute viral bronchitis",
+"aliases": [
+"Acute bronchitis",
+"Chest cold"
+],
+"dossier": "acute-bronchitis"
+},
+{
+"id": "acute-viral-gastroenteritis",
+"label": "Acute viral gastroenteritis",
+"aliases": [
+"Viral gastroenteritis",
+"Stomach flu"
+],
+"dossier": "acute-gastroenteritis"
+},
+{
+"id": "addisonian-crisis",
+"label": "Addisonian crisis",
+"aliases": [
+"Acute adrenal insufficiency"
+],
+"dossier": "addison-disease"
+},
+{
+"id": "adenovirus-infection",
+"label": "Adenovirus infection"
+},
+{
+"id": "adjustment-disorder",
+"label": "Adjustment disorder"
+},
+{
+"id": "adverse-drug-reaction",
+"label": "Adverse drug reaction"
+},
+{
+"id": "age-related-macular-degeneration",
+"label": "Age-related macular degeneration",
+"aliases": [
+"AMD",
+"Macular degeneration"
+],
+"dossier": "age-related-macular-degeneration"
+},
+{
+"id": "age-related-memory-changes",
+"label": "Age-related memory changes"
+},
+{
+"id": "alcohol-intoxication",
+"label": "Alcohol intoxication"
+},
+{
+"id": "alcohol-withdrawal",
+"label": "Alcohol withdrawal",
+"aliases": [
+"Alcohol withdrawal syndrome"
+]
+},
+{
+"id": "alcoholic-cirrhosis",
+"label": "Alcoholic cirrhosis",
+"aliases": [
+"Alcohol-related cirrhosis",
+"Laennec cirrhosis"
+],
+"dossier": "alcoholic-cirrhosis"
+},
+{
+"id": "alcoholic-hallucinosis",
+"label": "Alcoholic hallucinosis"
+},
+{
+"id": "alcoholic-hepatitis",
+"label": "Alcoholic hepatitis"
+},
+{
+"id": "alcoholic-ketoacidosis",
+"label": "Alcoholic ketoacidosis"
+},
+{
+"id": "allergic-bronchopulmonary-aspergillosis",
+"label": "Allergic bronchopulmonary aspergillosis",
+"aliases": [
+"ABPA"
+]
+},
+{
+"id": "allergic-conjunctivitis",
+"label": "Allergic conjunctivitis",
+"dossier": "allergic-conjunctivitis"
+},
+{
+"id": "allergic-drug-reaction",
+"label": "Allergic drug reaction"
+},
+{
+"id": "allergic-fungal-rhinosinusitis",
+"label": "Allergic fungal rhinosinusitis",
+"aliases": [
+"AFRS"
+]
+},
+{
+"id": "allergic-reaction",
+"label": "Allergic reaction"
+},
+{
+"id": "alpha-1-antitrypsin-deficiency",
+"label": "Alpha-1 antitrypsin deficiency",
+"aliases": [
+"AATD",
+"A1AT deficiency"
+],
+"dossier": "alpha-1-antitrypsin-deficiency"
+},
+{
+"id": "alzheimers-disease",
+"label": "Alzheimer's disease",
+"dossier": "alzheimer-disease"
+},
+{
+"id": "amebic-liver-abscess",
+"label": "Amebic liver abscess"
+},
+{
+"id": "amniotic-fluid-embolism",
+"label": "Amniotic fluid embolism",
+"aliases": [
+"AFE",
+"Anaphylactoid syndrome of pregnancy"
+],
+"dossier": "amniotic-fluid-embolism"
+},
+{
+"id": "amyotrophic-lateral-sclerosis",
+"label": "Amyotrophic lateral sclerosis",
+"aliases": [
+"ALS",
+"Lou gehrig disease"
+],
+"dossier": "amyotrophic-lateral-sclerosis-als"
+},
+{
+"id": "anaphylaxis",
+"label": "Anaphylaxis",
+"aliases": [
+"Anaphylactic reaction"
+],
+"dossier": "anaphylaxis"
+},
+{
+"id": "anemia",
+"label": "Anemia"
+},
+{
+"id": "anemia-of-chronic-disease",
+"label": "Anemia of chronic disease",
+"aliases": [
+"ACD",
+"Anemia of inflammation"
+]
+},
+{
+"id": "angioedema",
+"label": "Angioedema"
+},
+{
+"id": "ankle-sprain",
+"label": "Ankle sprain",
+"aliases": [
+"Sprained ankle"
+],
+"dossier": "ankle-sprain"
+},
+{
+"id": "anterior-cruciate-ligament-tear",
+"label": "Anterior cruciate ligament tear",
+"aliases": [
+"ACL tear",
+"ACL rupture"
+],
+"dossier": "anterior-cruciate-ligament-acl-tear"
+},
+{
+"id": "anti-caspr2-encephalitis",
+"label": "Anti-CASPR2 encephalitis"
+},
+{
+"id": "anti-lgi1-encephalitis",
+"label": "Anti-LGI1 encephalitis",
+"aliases": [
+"LGI1 encephalitis"
+],
+"dossier": "anti-lgi1-encephalitis"
+},
+{
+"id": "anxiety-disorder",
+"label": "Anxiety disorder"
+},
+{
+"id": "aortic-dissection",
+"label": "Aortic dissection",
+"dossier": "aortic-dissection"
+},
+{
+"id": "aortic-regurgitation",
+"label": "Aortic regurgitation",
+"aliases": [
+"AR",
+"Aortic insufficiency"
+]
+},
+{
+"id": "aortic-stenosis",
+"label": "Aortic stenosis",
+"aliases": [
+"AS"
+],
+"dossier": "aortic-stenosis"
+},
+{
+"id": "aplastic-anemia",
+"label": "Aplastic anemia",
+"dossier": "aplastic-anemia"
+},
+{
+"id": "asthma",
+"label": "Asthma",
+"aliases": [
+"Bronchial asthma"
+],
+"dossier": "asthma"
+},
+{
+"id": "ataxia-with-vitamin-e-deficiency",
+"label": "Ataxia with vitamin E deficiency"
+},
+{
+"id": "atopic-dermatitis",
+"label": "Atopic dermatitis",
+"aliases": [
+"Atopic eczema"
+],
+"dossier": "atopic-dermatitis-eczema"
+},
+{
+"id": "atrial-fibrillation",
+"label": "Atrial fibrillation",
+"aliases": [
+"AF",
+"AFib"
+],
+"dossier": "atrial-fibrillation"
+},
+{
+"id": "atrial-fibrillation-with-rapid-ventricular-response",
+"label": "Atrial fibrillation with rapid ventricular response",
+"aliases": [
+"AF with RVR"
+],
+"dossier": "atrial-fibrillation"
+},
+{
+"id": "atrial-flutter",
+"label": "Atrial flutter"
+},
+{
+"id": "attention-deficit-hyperactivity-disorder",
+"label": "Attention-deficit/hyperactivity disorder",
+"aliases": [
+"ADHD"
+]
+},
+{
+"id": "atypical-hemolytic-uremic-syndrome",
+"label": "Atypical hemolytic uremic syndrome",
+"aliases": [
+"aHUS"
+]
+},
+{
+"id": "autism-spectrum-disorder",
+"label": "Autism spectrum disorder",
+"aliases": [
+"Autism",
+"ASD"
+]
+},
+{
+"id": "autoimmune-encephalitis",
+"label": "Autoimmune encephalitis"
+},
+{
+"id": "autoimmune-hepatitis",
+"label": "Autoimmune hepatitis",
+"aliases": [
+"AIH"
+]
+},
+{
+"id": "autoimmune-inner-ear-disease",
+"label": "Autoimmune inner ear disease",
+"aliases": [
+"AIED"
+]
+},
+{
+"id": "autoimmune-lymphoproliferative-syndrome",
+"label": "Autoimmune lymphoproliferative syndrome",
+"aliases": [
+"ALPS"
+]
+},
+{
+"id": "autoimmune-pancreatitis",
+"label": "Autoimmune pancreatitis",
+"aliases": [
+"AIP"
+]
+},
+{
+"id": "autoimmune-polyendocrinopathy-candidiasis-ectodermal-dystrophy",
+"label": "Autoimmune polyendocrinopathy-candidiasis-ectodermal dystrophy",
+"aliases": [
+"APECED",
+"Autoimmune polyglandular syndrome type 1"
+],
+"dossier": "autoimmune-polyendocrinopathy-candidiasis-ectodermal-dystrophy-apeced"
+},
+{
+"id": "autosomal-dominant-optic-atrophy",
+"label": "Autosomal dominant optic atrophy",
+"aliases": [
+"Kjer optic atrophy"
+]
+},
+{
+"id": "autosomal-recessive-polycystic-kidney-disease",
+"label": "Autosomal recessive polycystic kidney disease",
+"aliases": [
+"ARPKD"
+]
+},
+{
+"id": "bacterial-conjunctivitis",
+"label": "Bacterial conjunctivitis",
+"dossier": "bacterial-conjunctivitis"
+},
+{
+"id": "bacterial-keratitis",
+"label": "Bacterial keratitis"
+},
+{
+"id": "bacterial-meningitis",
+"label": "Bacterial meningitis",
+"dossier": "acute-bacterial-meningitis"
+},
+{
+"id": "bacterial-pharyngitis",
+"label": "Bacterial pharyngitis",
+"dossier": "acute-pharyngitis"
+},
+{
+"id": "bacterial-tonsillitis",
+"label": "Bacterial tonsillitis",
+"dossier": "acute-pharyngitis"
+},
+{
+"id": "bacterial-tracheitis",
+"label": "Bacterial tracheitis",
+"aliases": [
+"Membranous croup"
+]
+},
+{
+"id": "bacterial-vaginosis",
+"label": "Bacterial vaginosis",
+"aliases": [
+"BV"
+]
+},
+{
+"id": "baker-cyst",
+"label": "Baker cyst",
+"aliases": [
+"Popliteal cyst"
+],
+"dossier": "baker-cyst"
+},
+{
+"id": "bells-palsy",
+"label": "Bell's palsy",
+"aliases": [
+"Idiopathic facial nerve palsy"
+],
+"dossier": "bell-palsy"
+},
+{
+"id": "benign-hereditary-chorea",
+"label": "Benign hereditary chorea"
+},
+{
+"id": "benign-paroxysmal-positional-vertigo",
+"label": "Benign paroxysmal positional vertigo",
+"aliases": [
+"BPPV"
+],
+"dossier": "benign-paroxysmal-positional-vertigo-bppv"
+},
+{
+"id": "benign-prostatic-hyperplasia",
+"label": "Benign prostatic hyperplasia",
+"aliases": [
+"BPH",
+"Enlarged prostate"
+],
+"dossier": "benign-prostatic-hyperplasia-bph"
+},
+{
+"id": "benign-recurrent-intrahepatic-cholestasis",
+"label": "Benign recurrent intrahepatic cholestasis"
+},
+{
+"id": "benzodiazepine-overdose",
+"label": "Benzodiazepine overdose"
+},
+{
+"id": "bickerstaff-brainstem-encephalitis",
+"label": "Bickerstaff brainstem encephalitis",
+"aliases": [
+"Bickerstaff encephalitis"
+],
+"dossier": "bickerstaff-brainstem-encephalitis"
+},
+{
+"id": "biliary-colic",
+"label": "Biliary colic",
+"aliases": [
+"Gallbladder attack"
+],
+"dossier": "cholelithiasis-gallstones-biliary-colic"
+},
+{
+"id": "binge-eating-disorder",
+"label": "Binge-eating disorder",
+"aliases": [
+"BED"
+]
+},
+{
+"id": "biotinidase-deficiency",
+"label": "Biotinidase deficiency"
+},
+{
+"id": "bipolar-i-disorder",
+"label": "Bipolar I disorder",
+"aliases": [
+"Bipolar 1 disorder",
+"Bipolar disorder type I"
+],
+"dossier": "bipolar-i-disorder"
+},
+{
+"id": "black-widow-spider-bite",
+"label": "Black widow spider bite",
+"aliases": [
+"Latrodectism"
+]
+},
+{
+"id": "bladder-cancer",
+"label": "Bladder cancer"
+},
+{
+"id": "blocked-milk-duct",
+"label": "Blocked milk duct"
+},
+{
+"id": "blunt-cardiac-injury",
+"label": "Blunt cardiac injury",
+"aliases": [
+"Myocardial contusion",
+"Cardiac contusion"
+]
+},
+{
+"id": "body-dysmorphic-disorder",
+"label": "Body dysmorphic disorder",
+"aliases": [
+"BDD",
+"Dysmorphophobia"
+]
+},
+{
+"id": "boerhaave-syndrome",
+"label": "Boerhaave syndrome",
+"aliases": [
+"Esophageal rupture"
+],
+"dossier": "esophageal-perforation-boerhaave-syndrome"
+},
+{
+"id": "borderline-personality-disorder",
+"label": "Borderline personality disorder",
+"aliases": [
+"BPD",
+"Emotionally unstable personality disorder"
+]
+},
+{
+"id": "bowel-obstruction",
+"label": "Bowel obstruction"
+},
+{
+"id": "brain-abscess",
+"label": "Brain abscess",
+"aliases": [
+"Cerebral abscess"
+]
+},
+{
+"id": "branchial-cleft-cyst",
+"label": "Branchial cleft cyst"
+},
+{
+"id": "breast-abscess",
+"label": "Breast abscess"
+},
+{
+"id": "bronchial-carcinoid-tumor",
+"label": "Bronchial carcinoid tumor",
+"aliases": [
+"Pulmonary carcinoid",
+"Lung carcinoid"
+]
+},
+{
+"id": "bronchiolitis",
+"label": "Bronchiolitis",
+"dossier": "rsv-bronchiolitis"
+},
+{
+"id": "bronchiolitis-obliterans",
+"label": "Bronchiolitis obliterans",
+"aliases": [
+"Obliterative bronchiolitis",
+"Constrictive bronchiolitis"
+]
+},
+{
+"id": "calcium-channel-blocker-overdose",
+"label": "Calcium channel blocker overdose"
+},
+{
+"id": "carbon-monoxide-poisoning",
+"label": "Carbon monoxide poisoning",
+"aliases": [
+"CO poisoning"
+],
+"dossier": "carbon-monoxide-poisoning"
+},
+{
+"id": "cardiac-tamponade",
+"label": "Cardiac tamponade",
+"aliases": [
+"Pericardial tamponade"
+],
+"dossier": "cardiac-tamponade"
+},
+{
+"id": "cardiogenic-pulmonary-edema",
+"label": "Cardiogenic pulmonary edema"
+},
+{
+"id": "carnitine-palmitoyltransferase-ii-deficiency",
+"label": "Carnitine palmitoyltransferase II deficiency",
+"aliases": [
+"CPT II deficiency"
+]
+},
+{
+"id": "carpal-tunnel-syndrome",
+"label": "Carpal tunnel syndrome",
+"aliases": [
+"CTS",
+"Median neuropathy at the wrist"
+],
+"dossier": "carpal-tunnel-syndrome"
+},
+{
+"id": "cauda-equina-syndrome",
+"label": "Cauda equina syndrome",
+"dossier": "cauda-equina-syndrome"
+},
+{
+"id": "caustic-esophageal-injury",
+"label": "Caustic esophageal injury"
+},
+{
+"id": "cdkl5-deficiency-disorder",
+"label": "CDKL5 deficiency disorder"
+},
+{
+"id": "cellulitis",
+"label": "Cellulitis"
+},
+{
+"id": "central-retinal-artery-occlusion",
+"label": "Central retinal artery occlusion",
+"aliases": [
+"CRAO"
+],
+"dossier": "central-retinal-artery-occlusion"
+},
+{
+"id": "central-retinal-vein-occlusion",
+"label": "Central retinal vein occlusion",
+"aliases": [
+"CRVO"
+]
+},
+{
+"id": "cerebellar-stroke",
+"label": "Cerebellar stroke"
+},
+{
+"id": "cerebellar-tumor",
+"label": "Cerebellar tumor"
+},
+{
+"id": "cervical-radiculopathy",
+"label": "Cervical radiculopathy"
+},
+{
+"id": "cervical-spine-injury",
+"label": "Cervical spine injury"
+},
+{
+"id": "charcot-foot",
+"label": "Charcot foot"
+},
+{
+"id": "chickenpox",
+"label": "Chickenpox",
+"aliases": [
+"Varicella"
+],
+"dossier": "varicella-chickenpox"
+},
+{
+"id": "childhood-absence-epilepsy",
+"label": "Childhood absence epilepsy",
+"aliases": [
+"CAE",
+"Pyknolepsy"
+]
+},
+{
+"id": "chlamydial-conjunctivitis",
+"label": "Chlamydial conjunctivitis",
+"aliases": [
+"Inclusion conjunctivitis"
+]
+},
+{
+"id": "choledocholithiasis",
+"label": "Choledocholithiasis",
+"aliases": [
+"Common bile duct stones",
+"CBD stones"
+],
+"dossier": "choledocholithiasis"
+},
+{
+"id": "chorioamnionitis",
+"label": "Chorioamnionitis"
+},
+{
+"id": "chronic-eosinophilic-pneumonia",
+"label": "Chronic eosinophilic pneumonia"
+},
+{
+"id": "chronic-hypertension",
+"label": "Chronic hypertension"
+},
+{
+"id": "chronic-inflammatory-demyelinating-polyneuropathy",
+"label": "Chronic inflammatory demyelinating polyneuropathy",
+"aliases": [
+"CIDP"
+]
+},
+{
+"id": "chronic-kidney-disease",
+"label": "Chronic kidney disease",
+"aliases": [
+"CKD"
+]
+},
+{
+"id": "chronic-lymphocytic-leukemia",
+"label": "Chronic lymphocytic leukemia",
+"aliases": [
+"CLL"
+],
+"dossier": "chronic-lymphocytic-leukemia-cll"
+},
+{
+"id": "chronic-mesenteric-ischemia",
+"label": "Chronic mesenteric ischemia",
+"aliases": [
+"Intestinal angina",
+"CMI"
+]
+},
+{
+"id": "chronic-myeloid-leukemia",
+"label": "Chronic myeloid leukemia",
+"aliases": [
+"CML",
+"Chronic myelogenous leukemia"
+],
+"dossier": "chronic-myeloid-leukemia-cml"
+},
+{
+"id": "chronic-neutrophilic-leukemia",
+"label": "Chronic neutrophilic leukemia",
+"aliases": [
+"CNL"
+]
+},
+{
+"id": "chronic-obstructive-pulmonary-disease",
+"label": "Chronic obstructive pulmonary disease",
+"aliases": [
+"COPD"
+],
+"dossier": "chronic-obstructive-pulmonary-disease-copd"
+},
+{
+"id": "chronic-pancreatitis",
+"label": "Chronic pancreatitis"
+},
+{
+"id": "chronic-recurrent-multifocal-osteomyelitis",
+"label": "Chronic recurrent multifocal osteomyelitis",
+"aliases": [
+"CRMO",
+"CNO"
+]
+},
+{
+"id": "chronic-thromboembolic-pulmonary-hypertension",
+"label": "Chronic thromboembolic pulmonary hypertension",
+"aliases": [
+"CTEPH"
+]
+},
+{
+"id": "chronic-venous-insufficiency",
+"label": "Chronic venous insufficiency"
+},
+{
+"id": "chylomicron-retention-disease",
+"label": "Chylomicron retention disease",
+"aliases": [
+"Anderson disease"
+]
+},
+{
+"id": "cluster-headache",
+"label": "Cluster headache",
+"dossier": "cluster-headache"
+},
+{
+"id": "colorectal-cancer",
+"label": "Colorectal cancer"
+},
+{
+"id": "common-cold",
+"label": "Common cold",
+"aliases": [
+"Acute nasopharyngitis",
+"Coryza"
+],
+"dossier": "common-cold-acute-nasopharyngitis"
+},
+{
+"id": "common-variable-immunodeficiency",
+"label": "Common variable immunodeficiency",
+"aliases": [
+"CVID"
+]
+},
+{
+"id": "community-acquired-pneumonia",
+"label": "Community-acquired pneumonia",
+"aliases": [
+"CAP"
+],
+"dossier": "community-acquired-pneumonia"
+},
+{
+"id": "community-acquired-pneumonia-with-sepsis",
+"label": "Community-acquired pneumonia with sepsis",
+"dossier": "community-acquired-pneumonia"
+},
+{
+"id": "concussion",
+"label": "Concussion"
+},
+{
+"id": "condylomata-acuminata",
+"label": "Condylomata acuminata",
+"aliases": [
+"Genital warts",
+"Anogenital warts"
+],
+"dossier": "condyloma-acuminata-genital-warts"
+},
+{
+"id": "congenital-contractural-arachnodactyly",
+"label": "Congenital contractural arachnodactyly",
+"aliases": [
+"Beals syndrome"
+]
+},
+{
+"id": "congenital-erythropoietic-porphyria",
+"label": "Congenital erythropoietic porphyria",
+"aliases": [
+"Günther disease",
+"CEP"
+],
+"dossier": "congenital-erythropoietic-porphyria-gunther-disease"
+},
+{
+"id": "congenital-heart-disease",
+"label": "Congenital heart disease"
+},
+{
+"id": "congenital-hypothyroidism",
+"label": "Congenital hypothyroidism",
+"dossier": "congenital-hypothyroidism"
+},
+{
+"id": "congenital-rubella-syndrome",
+"label": "Congenital rubella syndrome"
+},
+{
+"id": "congenital-syphilis",
+"label": "Congenital syphilis"
+},
+{
+"id": "congenital-toxoplasmosis",
+"label": "Congenital toxoplasmosis",
+"dossier": "congenital-toxoplasmosis"
+},
+{
+"id": "congestive-heart-failure",
+"label": "Congestive heart failure",
+"aliases": [
+"CHF"
+]
+},
+{
+"id": "constrictive-pericarditis",
+"label": "Constrictive pericarditis"
+},
+{
+"id": "contact-dermatitis",
+"label": "Contact dermatitis",
+"dossier": "contact-dermatitis"
+},
+{
+"id": "contrast-induced-nephropathy",
+"label": "Contrast-induced nephropathy",
+"aliases": [
+"CIN",
+"Contrast-induced AKI"
+]
+},
+{
+"id": "conus-medullaris-syndrome",
+"label": "Conus medullaris syndrome"
+},
+{
+"id": "corneal-abrasion",
+"label": "Corneal abrasion"
+},
+{
+"id": "costochondritis",
+"label": "Costochondritis",
+"dossier": "costochondritis"
+},
+{
+"id": "covid-19",
+"label": "COVID-19",
+"aliases": [
+"COVID",
+"Coronavirus disease 2019"
+]
+},
+{
+"id": "cows-milk-protein-allergy",
+"label": "Cow's milk protein allergy"
+},
+{
+"id": "crohns-disease",
+"label": "Crohn's disease",
+"aliases": [
+"Regional enteritis"
+],
+"dossier": "crohn-disease"
+},
+{
+"id": "croup",
+"label": "Croup",
+"aliases": [
+"Laryngotracheobronchitis"
+],
+"dossier": "croup-laryngotracheobronchitis"
+},
+{
+"id": "cryptococcal-meningitis",
+"label": "Cryptococcal meningitis",
+"aliases": [
+"Cryptococcal meningoencephalitis"
+],
+"dossier": "cryptococcal-meningitis"
+},
+{
+"id": "cryptogenic-organizing-pneumonia",
+"label": "Cryptogenic organizing pneumonia",
+"aliases": [
+"COP",
+"BOOP"
+]
+},
+{
+"id": "cutaneous-squamous-cell-carcinoma",
+"label": "Cutaneous squamous cell carcinoma",
+"aliases": [
+"cSCC"
+]
+},
+{
+"id": "cyclothymic-disorder",
+"label": "Cyclothymic disorder",
+"aliases": [
+"Cyclothymia"
+]
+},
+{
+"id": "cytomegalovirus-infection",
+"label": "Cytomegalovirus infection"
+},
+{
+"id": "cytomegalovirus-retinitis",
+"label": "Cytomegalovirus retinitis",
+"aliases": [
+"CMV retinitis"
+]
+},
+{
+"id": "decompensated-cirrhosis",
+"label": "Decompensated cirrhosis"
+},
+{
+"id": "decompensated-congestive-heart-failure",
+"label": "Decompensated congestive heart failure",
+"dossier": "acute-decompensated-heart-failure-pulmonary-edema"
+},
+{
+"id": "deep-vein-thrombosis",
+"label": "Deep vein thrombosis",
+"aliases": [
+"DVT"
+],
+"dossier": "deep-vein-thrombosis"
+},
+{
+"id": "deficiency-of-the-interleukin-1-receptor-antagonist",
+"label": "Deficiency of the interleukin-1 receptor antagonist",
+"aliases": [
+"DIRA"
+]
+},
+{
+"id": "delirium",
+"label": "Delirium"
+},
+{
+"id": "delirium-tremens",
+"label": "Delirium tremens",
+"aliases": [
+"DTs",
+"Alcohol withdrawal delirium"
+],
+"dossier": "delirium-tremens"
+},
+{
+"id": "delusional-disorder",
+"label": "Delusional disorder"
+},
+{
+"id": "dementia",
+"label": "Dementia"
+},
+{
+"id": "dengue-fever",
+"label": "Dengue fever",
+"aliases": [
+"Dengue",
+"Breakbone fever"
+],
+"dossier": "dengue-fever"
+},
+{
+"id": "dental-abscess",
+"label": "Dental abscess"
+},
+{
+"id": "depression",
+"label": "Depression"
+},
+{
+"id": "dermatitis-herpetiformis",
+"label": "Dermatitis herpetiformis",
+"aliases": [
+"Duhring disease",
+"DH"
+]
+},
+{
+"id": "diabetic-foot-osteomyelitis",
+"label": "Diabetic foot osteomyelitis",
+"dossier": "osteomyelitis"
+},
+{
+"id": "diabetic-ketoacidosis",
+"label": "Diabetic ketoacidosis",
+"aliases": [
+"DKA"
+],
+"dossier": "diabetic-ketoacidosis-dka"
+},
+{
+"id": "diabetic-nephropathy",
+"label": "Diabetic nephropathy",
+"aliases": [
+"Diabetic kidney disease",
+"Kimmelstiel-Wilson disease"
+]
+},
+{
+"id": "diabetic-peripheral-neuropathy",
+"label": "Diabetic peripheral neuropathy",
+"aliases": [
+"DPN",
+"Diabetic polyneuropathy"
+]
+},
+{
+"id": "diaphragmatic-rupture",
+"label": "Diaphragmatic rupture"
+},
+{
+"id": "diffuse-alveolar-hemorrhage",
+"label": "Diffuse alveolar hemorrhage",
+"aliases": [
+"DAH"
+]
+},
+{
+"id": "diffuse-idiopathic-skeletal-hyperostosis",
+"label": "Diffuse idiopathic skeletal hyperostosis",
+"aliases": [
+"DISH",
+"Forestier disease"
+]
+},
+{
+"id": "diffuse-large-b-cell-lymphoma",
+"label": "Diffuse large B-cell lymphoma",
+"aliases": [
+"DLBCL"
+]
+},
+{
+"id": "dilated-cardiomyopathy",
+"label": "Dilated cardiomyopathy",
+"aliases": [
+"DCM"
+]
+},
+{
+"id": "discoid-lupus-erythematosus",
+"label": "Discoid lupus erythematosus",
+"aliases": [
+"DLE"
+]
+},
+{
+"id": "distal-biceps-tendon-rupture",
+"label": "Distal biceps tendon rupture"
+},
+{
+"id": "distal-renal-tubular-acidosis",
+"label": "Distal renal tubular acidosis",
+"aliases": [
+"dRTA",
+"Type 1 RTA"
+]
+},
+{
+"id": "drug-induced-lupus",
+"label": "Drug-induced lupus",
+"aliases": [
+"DIL"
+]
+},
+{
+"id": "drug-induced-parkinsonism",
+"label": "Drug-induced parkinsonism",
+"aliases": [
+"DIP"
+]
+},
+{
+"id": "drug-overdose",
+"label": "Drug overdose"
+},
+{
+"id": "drug-reaction-with-eosinophilia-and-systemic-symptoms",
+"label": "Drug reaction with eosinophilia and systemic symptoms",
+"aliases": [
+"DRESS",
+"DIHS"
+]
+},
+{
+"id": "dyskinetic-cerebral-palsy",
+"label": "Dyskinetic cerebral palsy",
+"aliases": [
+"Athetoid cerebral palsy"
+]
+},
+{
+"id": "ear-canal-foreign-body",
+"label": "Ear canal foreign body"
+},
+{
+"id": "ear-canal-tumor",
+"label": "Ear canal tumor"
+},
+{
+"id": "ectopic-acth-syndrome",
+"label": "Ectopic ACTH syndrome"
+},
+{
+"id": "ectopic-pregnancy",
+"label": "Ectopic pregnancy",
+"aliases": [
+"Extrauterine pregnancy"
+],
+"dossier": "ectopic-pregnancy"
+},
+{
+"id": "eczema-herpeticum",
+"label": "Eczema herpeticum"
+},
+{
+"id": "electrolyte-imbalance",
+"label": "Electrolyte imbalance"
+},
+{
+"id": "embolic-acute-limb-ischemia",
+"label": "Embolic acute limb ischemia",
+"dossier": "acute-limb-ischemia"
+},
+{
+"id": "emphysematous-cystitis",
+"label": "Emphysematous cystitis",
+"dossier": "emphysematous-cystitis"
+},
+{
+"id": "emphysematous-pyelonephritis",
+"label": "Emphysematous pyelonephritis",
+"aliases": [
+"EPN"
+]
+},
+{
+"id": "enterobiasis",
+"label": "Enterobiasis",
+"aliases": [
+"Pinworm infection",
+"Pinworms"
+],
+"dossier": "enterobiasis-pinworm-infection"
+},
+{
+"id": "enteropathic-arthritis",
+"label": "Enteropathic arthritis",
+"aliases": [
+"IBD-associated arthritis"
+]
+},
+{
+"id": "eosinophilic-fasciitis",
+"label": "Eosinophilic fasciitis",
+"aliases": [
+"Shulman syndrome"
+]
+},
+{
+"id": "epidermolysis-bullosa-simplex",
+"label": "Epidermolysis bullosa simplex",
+"aliases": [
+"EBS"
+],
+"dossier": "epidermolysis-bullosa-simplex"
+},
+{
+"id": "epididymo-orchitis",
+"label": "Epididymo-orchitis"
+},
+{
+"id": "epidural-hematoma",
+"label": "Epidural hematoma",
+"aliases": [
+"EDH",
+"Extradural hematoma"
+]
+},
+{
+"id": "epilepsy",
+"label": "Epilepsy",
+"dossier": "epilepsy"
+},
+{
+"id": "epithelial-ovarian-cancer",
+"label": "Epithelial ovarian cancer"
+},
+{
+"id": "erysipelas",
+"label": "Erysipelas"
+},
+{
+"id": "esophageal-perforation",
+"label": "Esophageal perforation",
+"dossier": "esophageal-perforation-boerhaave-syndrome"
+},
+{
+"id": "essential-hypertension",
+"label": "Essential hypertension",
+"aliases": [
+"Primary hypertension"
+],
+"dossier": "essential-hypertension"
+},
+{
+"id": "essential-thrombocythemia",
+"label": "Essential thrombocythemia",
+"aliases": [
+"ET",
+"Essential thrombocytosis"
+],
+"dossier": "essential-thrombocythemia"
+},
+{
+"id": "essential-tremor",
+"label": "Essential tremor",
+"aliases": [
+"Benign essential tremor"
+],
+"dossier": "essential-tremor"
+},
+{
+"id": "exacerbation-of-chronic-lung-disease",
+"label": "Exacerbation of chronic lung disease"
+},
+{
+"id": "exocrine-pancreatic-insufficiency",
+"label": "Exocrine pancreatic insufficiency",
+"aliases": [
+"EPI",
+"Pancreatic exocrine insufficiency"
+]
+},
+{
+"id": "eye-foreign-body",
+"label": "Eye foreign body"
+},
+{
+"id": "facial-nerve-tumor",
+"label": "Facial nerve tumor"
+},
+{
+"id": "factitious-disorder",
+"label": "Factitious disorder"
+},
+{
+"id": "factitious-hypoglycemia",
+"label": "Factitious hypoglycemia"
+},
+{
+"id": "familial-hyperkalemic-hypertension",
+"label": "Familial hyperkalemic hypertension",
+"aliases": [
+"Gordon syndrome",
+"Pseudohypoaldosteronism type 2"
+]
+},
+{
+"id": "familial-mediterranean-fever",
+"label": "Familial Mediterranean fever",
+"aliases": [
+"FMF"
+],
+"dossier": "familial-mediterranean-fever"
+},
+{
+"id": "fanconi-anemia",
+"label": "Fanconi anemia",
+"dossier": "fanconi-anemia"
+},
+{
+"id": "febrile-infection-related-epilepsy-syndrome",
+"label": "Febrile infection-related epilepsy syndrome",
+"aliases": [
+"FIRES"
+]
+},
+{
+"id": "febrile-seizure",
+"label": "Febrile seizure",
+"aliases": [
+"Febrile convulsion"
+],
+"dossier": "febrile-seizure"
+},
+{
+"id": "feed-intolerance",
+"label": "Feed intolerance"
+},
+{
+"id": "femoral-hernia",
+"label": "Femoral hernia"
+},
+{
+"id": "fetal-alcohol-syndrome",
+"label": "Fetal alcohol syndrome",
+"aliases": [
+"FAS"
+]
+},
+{
+"id": "folate-deficiency-anemia",
+"label": "Folate deficiency anemia"
+},
+{
+"id": "follicular-thyroid-carcinoma",
+"label": "Follicular thyroid carcinoma",
+"aliases": [
+"FTC",
+"Follicular thyroid cancer"
+]
+},
+{
+"id": "foreign-body-aspiration",
+"label": "Foreign body aspiration"
+},
+{
+"id": "fournier-gangrene",
+"label": "Fournier gangrene"
+},
+{
+"id": "frontotemporal-dementia",
+"label": "Frontotemporal dementia",
+"aliases": [
+"FTD"
+]
+},
+{
+"id": "fructose-1-6-bisphosphatase-deficiency",
+"label": "Fructose-1,6-bisphosphatase deficiency"
+},
+{
+"id": "functional-dyspepsia",
+"label": "Functional dyspepsia",
+"aliases": [
+"Non-ulcer dyspepsia",
+"FD"
+]
+},
+{
+"id": "functional-neurological-symptom-disorder",
+"label": "Functional neurological symptom disorder",
+"aliases": [
+"Conversion disorder",
+"FND"
+]
+},
+{
+"id": "gallstone-disease",
+"label": "Gallstone disease"
+},
+{
+"id": "gallstone-ileus",
+"label": "Gallstone ileus"
+},
+{
+"id": "ganglion-cyst",
+"label": "Ganglion cyst"
+},
+{
+"id": "gas-gangrene",
+"label": "Gas gangrene",
+"aliases": [
+"Clostridial myonecrosis"
+]
+},
+{
+"id": "gastritis",
+"label": "Gastritis"
+},
+{
+"id": "gastroenteritis",
+"label": "Gastroenteritis"
+},
+{
+"id": "gastroesophageal-reflux-disease",
+"label": "Gastroesophageal reflux disease",
+"aliases": [
+"GERD"
+],
+"dossier": "gastroesophageal-reflux-disease-gerd"
+},
+{
+"id": "generalized-anxiety-disorder",
+"label": "Generalized anxiety disorder",
+"aliases": [
+"GAD"
+],
+"dossier": "generalized-anxiety-disorder"
+},
+{
+"id": "genital-herpes",
+"label": "Genital herpes",
+"aliases": [
+"Herpes genitalis"
+]
+},
+{
+"id": "gestational-diabetes-mellitus",
+"label": "Gestational diabetes mellitus",
+"aliases": [
+"GDM",
+"Gestational diabetes"
+],
+"dossier": "gestational-diabetes-mellitus"
+},
+{
+"id": "giant-cell-tumor-of-bone",
+"label": "Giant cell tumor of bone",
+"aliases": [
+"Osteoclastoma"
+]
+},
+{
+"id": "glucose-6-phosphate-dehydrogenase-deficiency",
+"label": "Glucose-6-phosphate dehydrogenase deficiency",
+"aliases": [
+"G6PD deficiency"
+],
+"dossier": "glucose-6-phosphate-dehydrogenase-g6pd-deficiency"
+},
+{
+"id": "gout",
+"label": "Gout",
+"aliases": [
+"Gouty arthritis"
+],
+"dossier": "gout"
+},
+{
+"id": "granulosa-cell-tumor",
+"label": "Granulosa cell tumor"
+},
+{
+"id": "guillain-barre-syndrome",
+"label": "Guillain-Barré syndrome",
+"aliases": [
+"GBS"
+],
+"dossier": "guillain-barre-syndrome"
+},
+{
+"id": "hand-foot-and-mouth-disease",
+"label": "Hand-foot-and-mouth disease",
+"aliases": [
+"HFMD"
+],
+"dossier": "hand-foot-and-mouth-disease"
+},
+{
+"id": "hantavirus-pulmonary-syndrome",
+"label": "Hantavirus pulmonary syndrome",
+"aliases": [
+"HPS",
+"Hantavirus cardiopulmonary syndrome"
+]
+},
+{
+"id": "hashimoto-encephalopathy",
+"label": "Hashimoto encephalopathy",
+"aliases": [
+"SREAT"
+]
+},
+{
+"id": "heart-failure",
+"label": "Heart failure"
+},
+{
+"id": "heat-stroke",
+"label": "Heat stroke",
+"aliases": [
+"Heatstroke",
+"Sunstroke"
+],
+"dossier": "heat-stroke"
+},
+{
+"id": "helicobacter-pylori-gastritis",
+"label": "Helicobacter pylori gastritis",
+"aliases": [
+"H. pylori gastritis"
+]
+},
+{
+"id": "hematoma",
+"label": "Hematoma"
+},
+{
+"id": "hemiplegic-migraine",
+"label": "Hemiplegic migraine"
+},
+{
+"id": "hemolytic-disease-of-the-newborn",
+"label": "Hemolytic disease of the newborn",
+"aliases": [
+"Erythroblastosis fetalis",
+"HDFN"
+]
+},
+{
+"id": "hemolytic-jaundice",
+"label": "Hemolytic jaundice"
+},
+{
+"id": "hemolytic-uremic-syndrome",
+"label": "Hemolytic uremic syndrome",
+"aliases": [
+"HUS"
+],
+"dossier": "hemolytic-uremic-syndrome-hus"
+},
+{
+"id": "hemorrhagic-fever-with-renal-syndrome",
+"label": "Hemorrhagic fever with renal syndrome",
+"aliases": [
+"HFRS"
+]
+},
+{
+"id": "hemorrhagic-ovarian-cyst",
+"label": "Hemorrhagic ovarian cyst"
+},
+{
+"id": "henoch-schonlein-purpura",
+"label": "Henoch-Schönlein purpura",
+"aliases": [
+"IgA vasculitis"
+],
+"dossier": "iga-vasculitis-henoch-schonlein-purpura"
+},
+{
+"id": "heparin-induced-thrombocytopenia",
+"label": "Heparin-induced thrombocytopenia",
+"aliases": [
+"HIT"
+]
+},
+{
+"id": "hepatic-encephalopathy",
+"label": "Hepatic encephalopathy",
+"aliases": [
+"Portosystemic encephalopathy"
+],
+"dossier": "hepatic-encephalopathy"
+},
+{
+"id": "hepatitis-a",
+"label": "Hepatitis A",
+"aliases": [
+"Hep A"
+],
+"dossier": "hepatitis-a"
+},
+{
+"id": "hepatitis-c",
+"label": "Hepatitis C",
+"aliases": [
+"Hep C"
+]
+},
+{
+"id": "hepatitis-e",
+"label": "Hepatitis E",
+"aliases": [
+"Hep E"
+]
+},
+{
+"id": "hereditary-angioedema",
+"label": "Hereditary angioedema",
+"aliases": [
+"HAE"
+],
+"dossier": "hereditary-angioedema"
+},
+{
+"id": "hereditary-fructose-intolerance",
+"label": "Hereditary fructose intolerance",
+"aliases": [
+"HFI",
+"Aldolase B deficiency"
+]
+},
+{
+"id": "herpangina",
+"label": "Herpangina",
+"dossier": "herpangina"
+},
+{
+"id": "herpes-simplex",
+"label": "Herpes simplex",
+"dossier": "herpes-simplex"
+},
+{
+"id": "herpes-simplex-encephalitis",
+"label": "Herpes simplex encephalitis",
+"aliases": [
+"HSV encephalitis",
+"HSE"
+]
+},
+{
+"id": "herpes-simplex-keratitis",
+"label": "Herpes simplex keratitis",
+"aliases": [
+"HSV keratitis"
+]
+},
+{
+"id": "herpes-zoster",
+"label": "Herpes zoster",
+"aliases": [
+"Shingles"
+]
+},
+{
+"id": "herpes-zoster-ophthalmicus",
+"label": "Herpes zoster ophthalmicus"
+},
+{
+"id": "herpetic-gingivostomatitis",
+"label": "Herpetic gingivostomatitis"
+},
+{
+"id": "herpetic-whitlow",
+"label": "Herpetic whitlow",
+"dossier": "herpetic-whitlow"
+},
+{
+"id": "hip-osteoarthritis",
+"label": "Hip osteoarthritis"
+},
+{
+"id": "holocarboxylase-synthetase-deficiency",
+"label": "Holocarboxylase synthetase deficiency"
+},
+{
+"id": "hordeolum",
+"label": "Hordeolum",
+"aliases": [
+"Stye"
+],
+"dossier": "hordeolum-stye"
+},
+{
+"id": "hospital-acquired-pneumonia",
+"label": "Hospital-acquired pneumonia",
+"aliases": [
+"HAP",
+"Nosocomial pneumonia"
+]
+},
+{
+"id": "hyperosmolar-hyperglycemic-state",
+"label": "Hyperosmolar hyperglycemic state",
+"aliases": [
+"HHS"
+],
+"dossier": "hyperosmolar-hyperglycemic-state-hhs"
+},
+{
+"id": "hypertensive-emergency",
+"label": "Hypertensive emergency"
+},
+{
+"id": "hypertensive-retinopathy",
+"label": "Hypertensive retinopathy"
+},
+{
+"id": "hyperthyroidism",
+"label": "Hyperthyroidism"
+},
+{
+"id": "hypertrophic-cardiomyopathy",
+"label": "Hypertrophic cardiomyopathy",
+"aliases": [
+"HCM"
+],
+"dossier": "hypertrophic-cardiomyopathy"
+},
+{
+"id": "hypoglycemia",
+"label": "Hypoglycemia"
+},
+{
+"id": "hypokalemic-periodic-paralysis",
+"label": "Hypokalemic periodic paralysis"
+},
+{
+"id": "hypothermia",
+"label": "Hypothermia"
+},
+{
+"id": "hypothyroidism",
+"label": "Hypothyroidism"
+},
+{
+"id": "idiopathic-hirsutism",
+"label": "Idiopathic hirsutism"
+},
+{
+"id": "idiopathic-intracranial-hypertension",
+"label": "Idiopathic intracranial hypertension",
+"aliases": [
+"IIH",
+"Pseudotumor cerebri"
+]
+},
+{
+"id": "idiopathic-pulmonary-fibrosis",
+"label": "Idiopathic pulmonary fibrosis",
+"aliases": [
+"IPF",
+"Cryptogenic fibrosing alveolitis"
+],
+"dossier": "idiopathic-pulmonary-fibrosis"
+},
+{
+"id": "idiopathic-systemic-capillary-leak-syndrome",
+"label": "Idiopathic systemic capillary leak syndrome",
+"aliases": [
+"Clarkson disease",
+"ISCLS"
+]
+},
+{
+"id": "iga-nephropathy",
+"label": "IgA nephropathy",
+"aliases": [
+"IgAN",
+"Berger disease"
+]
+},
+{
+"id": "igg4-related-disease",
+"label": "IgG4-related disease",
+"aliases": [
+"IgG4-RD"
+]
+},
+{
+"id": "illness-anxiety-disorder",
+"label": "Illness anxiety disorder",
+"aliases": [
+"Hypochondriasis",
+"Health anxiety"
+]
+},
+{
+"id": "immune-thrombocytopenia",
+"label": "Immune thrombocytopenia",
+"aliases": [
+"Idiopathic thrombocytopenic purpura"
+],
+"dossier": "immune-thrombocytopenia-itp"
+},
+{
+"id": "immune-thrombocytopenic-purpura",
+"label": "Immune thrombocytopenic purpura",
+"aliases": [
+"ITP"
+]
+},
+{
+"id": "impetigo",
+"label": "Impetigo",
+"aliases": [
+"Impetigo contagiosa"
+],
+"dossier": "impetigo"
+},
+{
+"id": "incarcerated-inguinal-hernia",
+"label": "Incarcerated inguinal hernia",
+"dossier": "inguinal-hernia"
+},
+{
+"id": "incisional-hernia",
+"label": "Incisional hernia"
+},
+{
+"id": "inclusion-body-myositis",
+"label": "Inclusion body myositis",
+"aliases": [
+"IBM"
+]
+},
+{
+"id": "incomplete-miscarriage",
+"label": "Incomplete miscarriage"
+},
+{
+"id": "incomplete-reducible-inguinal-hernia",
+"label": "Incomplete reducible inguinal hernia",
+"dossier": "inguinal-hernia"
+},
+{
+"id": "infectious-mononucleosis",
+"label": "Infectious mononucleosis",
+"aliases": [
+"Glandular fever"
+],
+"dossier": "infectious-mononucleosis-ebv"
+},
+{
+"id": "infective-endocarditis",
+"label": "Infective endocarditis",
+"aliases": [
+"IE",
+"Bacterial endocarditis"
+],
+"dossier": "infective-endocarditis"
+},
+{
+"id": "inflammatory-breast-cancer",
+"label": "Inflammatory breast cancer"
+},
+{
+"id": "influenza",
+"label": "Influenza",
+"aliases": [
+"Flu"
+]
+},
+{
+"id": "insect-bite-reaction",
+"label": "Insect bite reaction"
+},
+{
+"id": "insulin-autoimmune-syndrome",
+"label": "Insulin autoimmune syndrome",
+"aliases": [
+"Hirata disease",
+"IAS"
+]
+},
+{
+"id": "interstitial-cystitis",
+"label": "Interstitial cystitis",
+"aliases": [
+"Bladder pain syndrome",
+"IC"
+]
+},
+{
+"id": "intestinal-tuberculosis",
+"label": "Intestinal tuberculosis"
+},
+{
+"id": "intracerebral-hemorrhage",
+"label": "Intracerebral hemorrhage",
+"aliases": [
+"ICH",
+"Cerebral hemorrhage"
+]
+},
+{
+"id": "intracranial-hemorrhage",
+"label": "Intracranial hemorrhage"
+},
+{
+"id": "intrinsic-acute-kidney-injury",
+"label": "Intrinsic acute kidney injury",
+"aliases": [
+"Intrinsic AKI",
+"Intrarenal acute kidney injury"
+],
+"dossier": "intrinsic-intrarenal-acute-kidney-injury-aki"
+},
+{
+"id": "invasive-candidiasis",
+"label": "Invasive candidiasis"
+},
+{
+"id": "invasive-pulmonary-aspergillosis",
+"label": "Invasive pulmonary aspergillosis",
+"aliases": [
+"IPA"
+],
+"dossier": "invasive-pulmonary-aspergillosis"
+},
+{
+"id": "iron-deficiency-anemia",
+"label": "Iron deficiency anemia",
+"aliases": [
+"IDA",
+"Iron deficiency anaemia"
+],
+"dossier": "iron-deficiency-anemia"
+},
+{
+"id": "irritable-bowel-syndrome",
+"label": "Irritable bowel syndrome",
+"aliases": [
+"IBS"
+],
+"dossier": "irritable-bowel-syndrome-ibs"
+},
+{
+"id": "ischemic-colitis",
+"label": "Ischemic colitis",
+"aliases": [
+"Colonic ischemia"
+]
+},
+{
+"id": "ischemic-hepatitis",
+"label": "Ischemic hepatitis",
+"aliases": [
+"Shock liver",
+"Hypoxic hepatitis"
+]
+},
+{
+"id": "ischemic-optic-neuropathy",
+"label": "Ischemic optic neuropathy"
+},
+{
+"id": "ischemic-stroke",
+"label": "Ischemic stroke",
+"aliases": [
+"Cerebral infarction"
+],
+"dossier": "ischemic-stroke"
+},
+{
+"id": "isopropyl-alcohol-poisoning",
+"label": "Isopropyl alcohol poisoning"
+},
+{
+"id": "juvenile-idiopathic-arthritis",
+"label": "Juvenile idiopathic arthritis",
+"aliases": [
+"JIA"
+]
+},
+{
+"id": "juvenile-myoclonic-epilepsy",
+"label": "Juvenile myoclonic epilepsy",
+"aliases": [
+"JME",
+"Janz syndrome"
+]
+},
+{
+"id": "kawasaki-disease",
+"label": "Kawasaki disease",
+"aliases": [
+"Mucocutaneous lymph node syndrome",
+"Kawasaki syndrome"
+],
+"dossier": "kawasaki-disease"
+},
+{
+"id": "keratitis",
+"label": "Keratitis"
+},
+{
+"id": "kidney-failure",
+"label": "Kidney failure"
+},
+{
+"id": "kidney-injury",
+"label": "Kidney injury"
+},
+{
+"id": "lactose-intolerance",
+"label": "Lactose intolerance",
+"aliases": [
+"Lactase deficiency"
+],
+"dossier": "lactose-intolerance"
+},
+{
+"id": "langerhans-cell-histiocytosis",
+"label": "Langerhans cell histiocytosis",
+"aliases": [
+"LCH",
+"Histiocytosis X"
+],
+"dossier": "langerhans-cell-histiocytosis"
+},
+{
+"id": "large-bowel-obstruction",
+"label": "Large bowel obstruction",
+"aliases": [
+"LBO"
+]
+},
+{
+"id": "latent-autoimmune-diabetes-in-adults",
+"label": "Latent autoimmune diabetes in adults",
+"aliases": [
+"LADA",
+"Type 1.5 diabetes"
+]
+},
+{
+"id": "lead-poisoning",
+"label": "Lead poisoning"
+},
+{
+"id": "leber-hereditary-optic-neuropathy",
+"label": "Leber hereditary optic neuropathy",
+"aliases": [
+"LHON"
+]
+},
+{
+"id": "leukocyte-adhesion-deficiency-type-1",
+"label": "Leukocyte adhesion deficiency type 1",
+"aliases": [
+"LAD-1"
+],
+"dossier": "leukocyte-adhesion-deficiency-type-1-lad-1"
+},
+{
+"id": "leukocyte-adhesion-deficiency-type-2",
+"label": "Leukocyte adhesion deficiency type 2",
+"aliases": [
+"LAD-2"
+]
+},
+{
+"id": "liver-cancer",
+"label": "Liver cancer"
+},
+{
+"id": "ludwigs-angina",
+"label": "Ludwig's angina",
+"dossier": "ludwig-angina"
+},
+{
+"id": "lung-abscess",
+"label": "Lung abscess",
+"aliases": [
+"Pulmonary abscess"
+]
+},
+{
+"id": "lung-adenocarcinoma",
+"label": "Lung adenocarcinoma",
+"aliases": [
+"Adenocarcinoma of the lung"
+]
+},
+{
+"id": "lupus-nephritis",
+"label": "Lupus nephritis",
+"aliases": [
+"LN"
+]
+},
+{
+"id": "lyme-disease",
+"label": "Lyme disease",
+"aliases": [
+"Lyme borreliosis"
+],
+"dossier": "lyme-disease"
+},
+{
+"id": "lymphadenitis",
+"label": "Lymphadenitis"
+},
+{
+"id": "major-depressive-disorder",
+"label": "Major depressive disorder",
+"aliases": [
+"MDD",
+"Major depression"
+],
+"dossier": "major-depressive-disorder"
+},
+{
+"id": "malaria",
+"label": "Malaria",
+"dossier": "malaria"
+},
+{
+"id": "malignant-otitis-externa",
+"label": "Malignant otitis externa",
+"aliases": [
+"Necrotizing otitis externa"
+]
+},
+{
+"id": "malignant-pleural-mesothelioma",
+"label": "Malignant pleural mesothelioma",
+"aliases": [
+"MPM",
+"Pleural mesothelioma"
+]
+},
+{
+"id": "mallory-weiss-tear",
+"label": "Mallory-Weiss tear"
+},
+{
+"id": "mantle-cell-lymphoma",
+"label": "Mantle cell lymphoma",
+"aliases": [
+"MCL"
+]
+},
+{
+"id": "massive-pulmonary-embolism",
+"label": "Massive pulmonary embolism"
+},
+{
+"id": "mastitis",
+"label": "Mastitis"
+},
+{
+"id": "measles",
+"label": "Measles",
+"aliases": [
+"Rubeola"
+],
+"dossier": "measles-rubeola"
+},
+{
+"id": "mechanical-back-pain",
+"label": "Mechanical back pain"
+},
+{
+"id": "medium-chain-acyl-coa-dehydrogenase-deficiency",
+"label": "Medium-chain acyl-CoA dehydrogenase deficiency",
+"aliases": [
+"MCAD deficiency",
+"MCADD"
+]
+},
+{
+"id": "membranous-nephropathy",
+"label": "Membranous nephropathy",
+"aliases": [
+"Membranous glomerulonephritis",
+"MN"
+]
+},
+{
+"id": "menieres-disease",
+"label": "Ménière's disease"
+},
+{
+"id": "meningitis",
+"label": "Meningitis",
+"dossier": "meningitis-overview"
+},
+{
+"id": "meningococcal-septicemia",
+"label": "Meningococcal septicemia"
+},
+{
+"id": "meniscal-tear",
+"label": "Meniscal tear",
+"aliases": [
+"Meniscus tear",
+"Torn meniscus"
+],
+"dossier": "meniscal-tear"
+},
+{
+"id": "merkel-cell-carcinoma",
+"label": "Merkel cell carcinoma",
+"aliases": [
+"MCC"
+]
+},
+{
+"id": "mesenteric-adenitis",
+"label": "Mesenteric adenitis"
+},
+{
+"id": "metastatic-spinal-cord-compression",
+"label": "Metastatic spinal cord compression",
+"aliases": [
+"MSCC",
+"Malignant spinal cord compression"
+]
+},
+{
+"id": "methanol-poisoning",
+"label": "Methanol poisoning"
+},
+{
+"id": "microscopic-colitis",
+"label": "Microscopic colitis"
+},
+{
+"id": "migraine",
+"label": "Migraine",
+"dossier": "migraine"
+},
+{
+"id": "migraine-with-aura",
+"label": "Migraine with aura",
+"dossier": "migraine"
+},
+{
+"id": "milk-alkali-syndrome",
+"label": "Milk-alkali syndrome",
+"aliases": [
+"Calcium-alkali syndrome",
+"Burnett syndrome"
+]
+},
+{
+"id": "minimal-change-disease",
+"label": "Minimal change disease",
+"aliases": [
+"MCD",
+"Minimal change nephropathy"
+],
+"dossier": "minimal-change-disease"
+},
+{
+"id": "mixed-connective-tissue-disease",
+"label": "Mixed connective tissue disease",
+"aliases": [
+"MCTD",
+"Sharp syndrome"
+],
+"dossier": "mixed-connective-tissue-disease-mctd"
+},
+{
+"id": "monoclonal-b-cell-lymphocytosis",
+"label": "Monoclonal B-cell lymphocytosis",
+"aliases": [
+"MBL"
+]
+},
+{
+"id": "multiple-endocrine-neoplasia-type-1",
+"label": "Multiple endocrine neoplasia type 1",
+"aliases": [
+"MEN 1",
+"Wermer syndrome"
+],
+"dossier": "multiple-endocrine-neoplasia-type-1-men-1"
+},
+{
+"id": "multiple-endocrine-neoplasia-type-2a",
+"label": "Multiple endocrine neoplasia type 2A",
+"aliases": [
+"MEN 2A",
+"Sipple syndrome"
+],
+"dossier": "multiple-endocrine-neoplasia-type-2a-men-2a"
+},
+{
+"id": "multiple-endocrine-neoplasia-type-2b",
+"label": "Multiple endocrine neoplasia type 2B",
+"aliases": [
+"MEN 2B",
+"Multiple endocrine neoplasia type 3"
+],
+"dossier": "multiple-endocrine-neoplasia-type-2b-men-2b"
+},
+{
+"id": "multiple-endocrine-neoplasia-type-4",
+"label": "Multiple endocrine neoplasia type 4",
+"aliases": [
+"MEN4"
+]
+},
+{
+"id": "multiple-myeloma",
+"label": "Multiple myeloma",
+"aliases": [
+"Myeloma",
+"Plasma cell myeloma"
+],
+"dossier": "multiple-myeloma"
+},
+{
+"id": "multiple-sclerosis",
+"label": "Multiple sclerosis",
+"aliases": [
+"MS"
+],
+"dossier": "multiple-sclerosis"
+},
+{
+"id": "multisystem-inflammatory-syndrome-in-children",
+"label": "Multisystem inflammatory syndrome in children",
+"aliases": [
+"MIS-C",
+"PIMS-TS"
+]
+},
+{
+"id": "muscle-strain",
+"label": "Muscle strain"
+},
+{
+"id": "musculoskeletal-chest-pain",
+"label": "Musculoskeletal chest pain"
+},
+{
+"id": "myasthenia-gravis",
+"label": "Myasthenia gravis",
+"dossier": "myasthenia-gravis"
+},
+{
+"id": "myasthenic-crisis",
+"label": "Myasthenic crisis",
+"aliases": [
+"Myasthenia gravis crisis"
+],
+"dossier": "myasthenia-gravis"
+},
+{
+"id": "mycoplasma-pneumonia",
+"label": "Mycoplasma pneumonia",
+"aliases": [
+"Walking pneumonia"
+]
+},
+{
+"id": "myeloperoxidase-deficiency",
+"label": "Myeloperoxidase deficiency"
+},
+{
+"id": "myoadenylate-deaminase-deficiency",
+"label": "Myoadenylate deaminase deficiency",
+"aliases": [
+"AMP deaminase deficiency"
+]
+},
+{
+"id": "myocardial-infarction",
+"label": "Myocardial infarction",
+"aliases": [
+"MI",
+"Heart attack"
+],
+"dossier": "myocardial-infarction-acute-coronary-syndrome"
+},
+{
+"id": "myxedema-coma",
+"label": "Myxedema coma",
+"aliases": [
+"Myxedema crisis"
+],
+"dossier": "myxedema-coma"
+},
+{
+"id": "necrotizing-enterocolitis",
+"label": "Necrotizing enterocolitis",
+"aliases": [
+"NEC"
+],
+"dossier": "necrotizing-enterocolitis"
+},
+{
+"id": "necrotizing-fasciitis",
+"label": "Necrotizing fasciitis",
+"aliases": [
+"Flesh-eating disease"
+],
+"dossier": "necrotizing-fasciitis"
+},
+{
+"id": "neonatal-respiratory-distress-syndrome",
+"label": "Neonatal respiratory distress syndrome",
+"aliases": [
+"Hyaline membrane disease",
+"NRDS"
+],
+"dossier": "neonatal-respiratory-distress-syndrome"
+},
+{
+"id": "neonatal-sepsis",
+"label": "Neonatal sepsis"
+},
+{
+"id": "neovascular-glaucoma",
+"label": "Neovascular glaucoma"
+},
+{
+"id": "nephrolithiasis",
+"label": "Nephrolithiasis",
+"aliases": [
+"Kidney stones",
+"Renal calculi"
+],
+"dossier": "nephrolithiasis-kidney-stones"
+},
+{
+"id": "nephrotic-syndrome",
+"label": "Nephrotic syndrome"
+},
+{
+"id": "nerve-injury",
+"label": "Nerve injury"
+},
+{
+"id": "neurogenic-bladder",
+"label": "Neurogenic bladder"
+},
+{
+"id": "neuroleptic-malignant-syndrome",
+"label": "Neuroleptic malignant syndrome",
+"aliases": [
+"NMS"
+],
+"dossier": "neuroleptic-malignant-syndrome"
+},
+{
+"id": "nonalcoholic-fatty-liver-disease",
+"label": "Nonalcoholic fatty liver disease",
+"aliases": [
+"NAFLD",
+"MASLD"
+]
+},
+{
+"id": "nonarteritic-anterior-ischemic-optic-neuropathy",
+"label": "Nonarteritic anterior ischemic optic neuropathy",
+"aliases": [
+"NAION"
+]
+},
+{
+"id": "nonbacterial-thrombotic-endocarditis",
+"label": "Nonbacterial thrombotic endocarditis",
+"aliases": [
+"NBTE",
+"Marantic endocarditis"
+]
+},
+{
+"id": "nonocclusive-mesenteric-ischemia",
+"label": "Nonocclusive mesenteric ischemia",
+"aliases": [
+"NOMI"
+]
+},
+{
+"id": "nonspecific-interstitial-pneumonia",
+"label": "Nonspecific interstitial pneumonia",
+"aliases": [
+"NSIP"
+]
+},
+{
+"id": "normal-postpartum-changes",
+"label": "Normal postpartum changes"
+},
+{
+"id": "normal-pressure-hydrocephalus",
+"label": "Normal pressure hydrocephalus",
+"aliases": [
+"NPH"
+],
+"dossier": "normal-pressure-hydrocephalus"
+},
+{
+"id": "normal-tension-glaucoma",
+"label": "Normal-tension glaucoma",
+"aliases": [
+"NTG",
+"Low-tension glaucoma"
+]
+},
+{
+"id": "nummular-eczema",
+"label": "Nummular eczema",
+"aliases": [
+"Discoid eczema",
+"Nummular dermatitis"
+]
+},
+{
+"id": "obsessive-compulsive-disorder",
+"label": "Obsessive-compulsive disorder",
+"aliases": [
+"OCD"
+],
+"dossier": "obsessive-compulsive-disorder-ocd"
+},
+{
+"id": "obsessive-compulsive-personality-disorder",
+"label": "Obsessive-compulsive personality disorder",
+"aliases": [
+"OCPD"
+]
+},
+{
+"id": "obstructive-sleep-apnea",
+"label": "Obstructive sleep apnea",
+"aliases": [
+"OSA",
+"Obstructive sleep apnoea"
+],
+"dossier": "obstructive-sleep-apnea"
+},
+{
+"id": "obturator-hernia",
+"label": "Obturator hernia"
+},
+{
+"id": "omental-infarction",
+"label": "Omental infarction"
+},
+{
+"id": "open-pneumothorax",
+"label": "Open pneumothorax",
+"aliases": [
+"Sucking chest wound"
+]
+},
+{
+"id": "opioid-overdose",
+"label": "Opioid overdose",
+"aliases": [
+"Opioid toxicity",
+"Opioid poisoning"
+],
+"dossier": "opioid-overdose"
+},
+{
+"id": "opioid-withdrawal",
+"label": "Opioid withdrawal"
+},
+{
+"id": "optic-nerve-compression",
+"label": "Optic nerve compression"
+},
+{
+"id": "oral-herpes-simplex",
+"label": "Oral herpes simplex",
+"aliases": [
+"Cold sore",
+"Herpes labialis"
+],
+"dossier": "herpes-simplex"
+},
+{
+"id": "orbital-cellulitis",
+"label": "Orbital cellulitis",
+"aliases": [
+"Postseptal cellulitis"
+]
+},
+{
+"id": "organophosphate-poisoning",
+"label": "Organophosphate poisoning"
+},
+{
+"id": "ornithine-transcarbamylase-deficiency",
+"label": "Ornithine transcarbamylase deficiency",
+"aliases": [
+"OTC deficiency"
+]
+},
+{
+"id": "osteoarthritis",
+"label": "Osteoarthritis",
+"aliases": [
+"OA",
+"Degenerative joint disease"
+],
+"dossier": "osteoarthritis"
+},
+{
+"id": "osteomyelitis",
+"label": "Osteomyelitis",
+"dossier": "osteomyelitis"
+},
+{
+"id": "otitis-externa",
+"label": "Otitis externa",
+"aliases": [
+"Swimmer's ear",
+"External otitis"
+],
+"dossier": "otitis-externa-swimmers-ear"
+},
+{
+"id": "otitis-media-with-effusion",
+"label": "Otitis media with effusion",
+"aliases": [
+"OME",
+"Glue ear"
+]
+},
+{
+"id": "otomycosis",
+"label": "Otomycosis",
+"aliases": [
+"Fungal otitis externa"
+]
+},
+{
+"id": "ovarian-cyst",
+"label": "Ovarian cyst"
+},
+{
+"id": "ovarian-hyperstimulation-syndrome",
+"label": "Ovarian hyperstimulation syndrome",
+"aliases": [
+"OHSS"
+]
+},
+{
+"id": "ovarian-torsion",
+"label": "Ovarian torsion"
+},
+{
+"id": "overfeeding",
+"label": "Overfeeding"
+},
+{
+"id": "ovulation-pain",
+"label": "Ovulation pain"
+},
+{
+"id": "pancoast-tumor",
+"label": "Pancoast tumor",
+"aliases": [
+"Superior sulcus tumor"
+]
+},
+{
+"id": "pancreatic-adenocarcinoma",
+"label": "Pancreatic adenocarcinoma",
+"aliases": [
+"PDAC",
+"Pancreatic ductal adenocarcinoma"
+]
+},
+{
+"id": "pancreatic-cancer",
+"label": "Pancreatic cancer",
+"dossier": "pancreatic-cancer"
+},
+{
+"id": "pancreatic-pseudocyst",
+"label": "Pancreatic pseudocyst"
+},
+{
+"id": "panic-attack",
+"label": "Panic attack"
+},
+{
+"id": "panic-disorder",
+"label": "Panic disorder",
+"dossier": "panic-disorder"
+},
+{
+"id": "papillary-thyroid-carcinoma",
+"label": "Papillary thyroid carcinoma",
+"aliases": [
+"PTC",
+"Papillary thyroid cancer"
+]
+},
+{
+"id": "paraneoplastic-cerebellar-degeneration",
+"label": "Paraneoplastic cerebellar degeneration",
+"aliases": [
+"PCD"
+]
+},
+{
+"id": "parkinsons-disease",
+"label": "Parkinson's disease",
+"dossier": "parkinson-disease"
+},
+{
+"id": "paroxysmal-cold-hemoglobinuria",
+"label": "Paroxysmal cold hemoglobinuria",
+"aliases": [
+"PCH",
+"Donath-Landsteiner hemolytic anemia"
+]
+},
+{
+"id": "paroxysmal-nocturnal-hemoglobinuria",
+"label": "Paroxysmal nocturnal hemoglobinuria",
+"aliases": [
+"PNH"
+],
+"dossier": "paroxysmal-nocturnal-hemoglobinuria-pnh"
+},
+{
+"id": "paroxysmal-supraventricular-tachycardia",
+"label": "Paroxysmal supraventricular tachycardia",
+"aliases": [
+"PSVT"
+]
+},
+{
+"id": "patellofemoral-pain-syndrome",
+"label": "Patellofemoral pain syndrome",
+"aliases": [
+"Runner's knee",
+"PFPS"
+]
+},
+{
+"id": "pelvic-inflammatory-disease",
+"label": "Pelvic inflammatory disease",
+"aliases": [
+"PID"
+],
+"dossier": "pelvic-inflammatory-disease-pid"
+},
+{
+"id": "peptic-ulcer-disease",
+"label": "Peptic ulcer disease",
+"aliases": [
+"PUD",
+"Peptic ulcer"
+],
+"dossier": "peptic-ulcer-disease"
+},
+{
+"id": "perforated-peptic-ulcer",
+"label": "Perforated peptic ulcer",
+"dossier": "perforated-peptic-ulcer"
+},
+{
+"id": "pericardial-effusion",
+"label": "Pericardial effusion"
+},
+{
+"id": "periorbital-cellulitis",
+"label": "Periorbital cellulitis"
+},
+{
+"id": "peripartum-cardiomyopathy",
+"label": "Peripartum cardiomyopathy",
+"aliases": [
+"PPCM"
+]
+},
+{
+"id": "peripheral-arterial-disease",
+"label": "Peripheral arterial disease"
+},
+{
+"id": "peritonsillar-abscess",
+"label": "Peritonsillar abscess",
+"aliases": [
+"Quinsy"
+],
+"dossier": "peritonsillar-abscess"
+},
+{
+"id": "persistent-depressive-disorder",
+"label": "Persistent depressive disorder",
+"aliases": [
+"Dysthymia",
+"PDD"
+]
+},
+{
+"id": "placenta-previa",
+"label": "Placenta previa"
+},
+{
+"id": "placental-abruption",
+"label": "Placental abruption",
+"aliases": [
+"Abruptio placentae"
+],
+"dossier": "placental-abruption"
+},
+{
+"id": "plantar-fasciitis",
+"label": "Plantar fasciitis",
+"aliases": [
+"Plantar fasciopathy"
+],
+"dossier": "plantar-fasciitis"
+},
+{
+"id": "pneumocystis-pneumonia",
+"label": "Pneumocystis pneumonia",
+"aliases": [
+"PCP",
+"PJP"
+],
+"dossier": "pneumocystis-pneumonia-pcp"
+},
+{
+"id": "pneumothorax",
+"label": "Pneumothorax",
+"dossier": "pneumothorax"
+},
+{
+"id": "polycystic-kidney-disease",
+"label": "Polycystic kidney disease",
+"aliases": [
+"PKD"
+],
+"dossier": "polycystic-kidney-disease"
+},
+{
+"id": "polycystic-ovary-syndrome",
+"label": "Polycystic ovary syndrome",
+"aliases": [
+"PCOS",
+"Stein-Leventhal syndrome"
+],
+"dossier": "polycystic-ovary-syndrome-pcos"
+},
+{
+"id": "pontiac-fever",
+"label": "Pontiac fever"
+},
+{
+"id": "portal-vein-thrombosis",
+"label": "Portal vein thrombosis",
+"aliases": [
+"PVT"
+]
+},
+{
+"id": "post-fracture-pain",
+"label": "Post-fracture pain"
+},
+{
+"id": "post-streptococcal-glomerulonephritis",
+"label": "Post-streptococcal glomerulonephritis",
+"dossier": "acute-glomerulonephritis"
+},
+{
+"id": "post-traumatic-headache",
+"label": "Post-traumatic headache"
+},
+{
+"id": "post-traumatic-stress-disorder",
+"label": "Post-traumatic stress disorder",
+"aliases": [
+"PTSD"
+],
+"dossier": "post-traumatic-stress-disorder-ptsd"
+},
+{
+"id": "posterior-circulation-stroke",
+"label": "Posterior circulation stroke"
+},
+{
+"id": "posterior-cruciate-ligament-tear",
+"label": "Posterior cruciate ligament tear",
+"aliases": [
+"PCL tear"
+]
+},
+{
+"id": "posterior-reversible-encephalopathy-syndrome",
+"label": "Posterior reversible encephalopathy syndrome",
+"aliases": [
+"PRES"
+]
+},
+{
+"id": "posterior-vitreous-detachment",
+"label": "Posterior vitreous detachment",
+"aliases": [
+"PVD"
+]
+},
+{
+"id": "postpartum-depression",
+"label": "Postpartum depression",
+"aliases": [
+"PPD",
+"Postnatal depression"
+]
+},
+{
+"id": "postpartum-endometritis",
+"label": "Postpartum endometritis",
+"aliases": [
+"Puerperal endometritis"
+]
+},
+{
+"id": "postpartum-psychosis",
+"label": "Postpartum psychosis",
+"aliases": [
+"Puerperal psychosis"
+]
+},
+{
+"id": "postpartum-thyroiditis",
+"label": "Postpartum thyroiditis",
+"aliases": [
+"PPT"
+]
+},
+{
+"id": "postrenal-acute-kidney-injury",
+"label": "Postrenal acute kidney injury",
+"aliases": [
+"Obstructive acute kidney injury",
+"Postrenal AKI"
+]
+},
+{
+"id": "preeclampsia",
+"label": "Preeclampsia",
+"aliases": [
+"Pre-eclampsia",
+"Toxemia of pregnancy"
+],
+"dossier": "preeclampsia"
+},
+{
+"id": "premature-ovarian-insufficiency",
+"label": "Premature ovarian insufficiency",
+"aliases": [
+"POI",
+"Premature ovarian failure"
+]
+},
+{
+"id": "prerenal-acute-kidney-injury",
+"label": "Prerenal acute kidney injury",
+"aliases": [
+"Prerenal AKI",
+"Prerenal azotemia"
+],
+"dossier": "prerenal-acute-kidney-injury-prerenal-aki"
+},
+{
+"id": "preterm-labor",
+"label": "Preterm labor"
+},
+{
+"id": "primary-biliary-cholangitis",
+"label": "Primary biliary cholangitis",
+"aliases": [
+"PBC",
+"Primary biliary cirrhosis"
+],
+"dossier": "primary-biliary-cholangitis"
+},
+{
+"id": "primary-lateral-sclerosis",
+"label": "Primary lateral sclerosis",
+"aliases": [
+"PLS"
+]
+},
+{
+"id": "primary-open-angle-glaucoma",
+"label": "Primary open-angle glaucoma",
+"aliases": [
+"POAG"
+],
+"dossier": "primary-open-angle-glaucoma"
+},
+{
+"id": "primary-psychiatric-disorder",
+"label": "Primary psychiatric disorder"
+},
+{
+"id": "primary-sclerosing-cholangitis",
+"label": "Primary sclerosing cholangitis",
+"aliases": [
+"PSC"
+],
+"dossier": "primary-sclerosing-cholangitis"
+},
+{
+"id": "progressive-supranuclear-palsy",
+"label": "Progressive supranuclear palsy",
+"aliases": [
+"PSP",
+"Steele-richardson-olszewski syndrome"
+]
+},
+{
+"id": "prostate-cancer",
+"label": "Prostate cancer"
+},
+{
+"id": "proximal-renal-tubular-acidosis",
+"label": "Proximal renal tubular acidosis",
+"aliases": [
+"Type 2 RTA",
+"Proximal RTA"
+]
+},
+{
+"id": "pseudoexfoliation-glaucoma",
+"label": "Pseudoexfoliation glaucoma",
+"aliases": [
+"Exfoliation glaucoma"
+]
+},
+{
+"id": "pseudogout",
+"label": "Pseudogout",
+"aliases": [
+"Acute CPP crystal arthritis"
+],
+"dossier": "pseudogout-calcium-pyrophosphate-dihydrate-deposition"
+},
+{
+"id": "psoriasis",
+"label": "Psoriasis",
+"dossier": "psoriasis"
+},
+{
+"id": "psoriatic-arthritis",
+"label": "Psoriatic arthritis",
+"aliases": [
+"PsA"
+],
+"dossier": "psoriatic-arthritis"
+},
+{
+"id": "psychogenic-nonepileptic-seizures",
+"label": "Psychogenic nonepileptic seizures",
+"aliases": [
+"PNES",
+"Pseudoseizures"
+]
+},
+{
+"id": "pulmonary-alveolar-proteinosis",
+"label": "Pulmonary alveolar proteinosis",
+"aliases": [
+"PAP"
+]
+},
+{
+"id": "pulmonary-arterial-hypertension",
+"label": "Pulmonary arterial hypertension",
+"aliases": [
+"PAH"
+],
+"dossier": "pulmonary-arterial-hypertension"
+},
+{
+"id": "pulmonary-arteriovenous-malformation",
+"label": "Pulmonary arteriovenous malformation",
+"aliases": [
+"PAVM"
+]
+},
+{
+"id": "pulmonary-embolism",
+"label": "Pulmonary embolism",
+"aliases": [
+"PE",
+"Pulmonary thromboembolism"
+],
+"dossier": "pulmonary-embolism"
+},
+{
+"id": "pulmonary-langerhans-cell-histiocytosis",
+"label": "Pulmonary Langerhans cell histiocytosis",
+"aliases": [
+"PLCH"
+]
+},
+{
+"id": "pyloric-stenosis",
+"label": "Pyloric stenosis",
+"aliases": [
+"Hypertrophic pyloric stenosis"
+],
+"dossier": "hypertrophic-pyloric-stenosis"
+},
+{
+"id": "pyogenic-liver-abscess",
+"label": "Pyogenic liver abscess",
+"aliases": [
+"PLA"
+]
+},
+{
+"id": "pyruvate-dehydrogenase-complex-deficiency",
+"label": "Pyruvate dehydrogenase complex deficiency",
+"aliases": [
+"PDH deficiency"
+]
+},
+{
+"id": "pyruvate-kinase-deficiency",
+"label": "Pyruvate kinase deficiency",
+"aliases": [
+"PK deficiency"
+],
+"dossier": "pyruvate-kinase-deficiency"
+},
+{
+"id": "q-fever",
+"label": "Q fever",
+"aliases": [
+"Coxiellosis"
+],
+"dossier": "q-fever"
+},
+{
+"id": "ramsay-hunt-syndrome",
+"label": "Ramsay Hunt syndrome",
+"aliases": [
+"Herpes zoster oticus"
+]
+},
+{
+"id": "rat-bite-fever",
+"label": "Rat-bite fever"
+},
+{
+"id": "reactive-arthritis",
+"label": "Reactive arthritis",
+"aliases": [
+"Reiter syndrome"
+],
+"dossier": "reactive-arthritis"
+},
+{
+"id": "reactive-thrombocytosis",
+"label": "Reactive thrombocytosis",
+"aliases": [
+"Secondary thrombocytosis"
+]
+},
+{
+"id": "renal-artery-stenosis",
+"label": "Renal artery stenosis",
+"aliases": [
+"RAS"
+],
+"dossier": "renal-artery-stenosis"
+},
+{
+"id": "renal-cell-carcinoma",
+"label": "Renal cell carcinoma",
+"aliases": [
+"RCC",
+"Hypernephroma"
+],
+"dossier": "renal-cell-carcinoma"
+},
+{
+"id": "renal-colic",
+"label": "Renal colic"
+},
+{
+"id": "renal-oncocytoma",
+"label": "Renal oncocytoma"
+},
+{
+"id": "renal-vein-thrombosis",
+"label": "Renal vein thrombosis",
+"aliases": [
+"RVT"
+]
+},
+{
+"id": "respiratory-syncytial-virus-bronchiolitis",
+"label": "Respiratory syncytial virus bronchiolitis",
+"aliases": [
+"RSV bronchiolitis"
+],
+"dossier": "rsv-bronchiolitis"
+},
+{
+"id": "restrictive-cardiomyopathy",
+"label": "Restrictive cardiomyopathy",
+"aliases": [
+"RCM"
+],
+"dossier": "restrictive-cardiomyopathy"
+},
+{
+"id": "retinal-detachment",
+"label": "Retinal detachment",
+"dossier": "retinal-detachment"
+},
+{
+"id": "retropharyngeal-abscess",
+"label": "Retropharyngeal abscess"
+},
+{
+"id": "rheumatic-fever",
+"label": "Rheumatic fever",
+"aliases": [
+"Acute rheumatic fever",
+"ARF"
+],
+"dossier": "acute-rheumatic-fever"
+},
+{
+"id": "rheumatic-heart-disease",
+"label": "Rheumatic heart disease",
+"aliases": [
+"RHD"
+]
+},
+{
+"id": "rheumatoid-arthritis",
+"label": "Rheumatoid arthritis",
+"aliases": [
+"RA"
+],
+"dossier": "rheumatoid-arthritis"
+},
+{
+"id": "rib-fracture",
+"label": "Rib fracture"
+},
+{
+"id": "rocky-mountain-spotted-fever",
+"label": "Rocky Mountain spotted fever",
+"aliases": [
+"RMSF"
+],
+"dossier": "rocky-mountain-spotted-fever"
+},
+{
+"id": "rosacea",
+"label": "Rosacea",
+"aliases": [
+"Acne rosacea"
+],
+"dossier": "rosacea"
+},
+{
+"id": "rotator-cuff-tear",
+"label": "Rotator cuff tear",
+"aliases": [
+"Torn rotator cuff"
+],
+"dossier": "rotator-cuff-tear"
+},
+{
+"id": "rubella",
+"label": "Rubella"
+},
+{
+"id": "ruptured-abdominal-aortic-aneurysm",
+"label": "Ruptured abdominal aortic aneurysm",
+"aliases": [
+"Ruptured AAA"
+]
+},
+{
+"id": "ruptured-bakers-cyst",
+"label": "Ruptured Baker's cyst"
+},
+{
+"id": "ruptured-corpus-luteal-cyst",
+"label": "Ruptured corpus luteal cyst"
+},
+{
+"id": "ruptured-ectopic-pregnancy",
+"label": "Ruptured ectopic pregnancy",
+"dossier": "ectopic-pregnancy"
+},
+{
+"id": "ruptured-ovarian-cyst",
+"label": "Ruptured ovarian cyst"
+},
+{
+"id": "scabies",
+"label": "Scabies",
+"dossier": "scabies"
+},
+{
+"id": "scarlet-fever",
+"label": "Scarlet fever",
+"aliases": [
+"Scarlatina"
+],
+"dossier": "scarlet-fever"
+},
+{
+"id": "schizophreniform-disorder",
+"label": "Schizophreniform disorder"
+},
+{
+"id": "sciatica",
+"label": "Sciatica"
+},
+{
+"id": "scombroid-poisoning",
+"label": "Scombroid poisoning"
+},
+{
+"id": "seborrheic-dermatitis",
+"label": "Seborrheic dermatitis",
+"aliases": [
+"Seborrheic eczema"
+],
+"dossier": "seborrheic-dermatitis"
+},
+{
+"id": "secondary-adrenal-insufficiency",
+"label": "Secondary adrenal insufficiency"
+},
+{
+"id": "secondary-bacterial-peritonitis",
+"label": "Secondary bacterial peritonitis"
+},
+{
+"id": "seizure",
+"label": "Seizure"
+},
+{
+"id": "selective-iga-deficiency",
+"label": "Selective IgA deficiency",
+"aliases": [
+"IgA deficiency",
+"SIgAD"
+]
+},
+{
+"id": "sepsis",
+"label": "Sepsis"
+},
+{
+"id": "septic-arthritis",
+"label": "Septic arthritis",
+"dossier": "septic-arthritis"
+},
+{
+"id": "serotonin-syndrome",
+"label": "Serotonin syndrome",
+"aliases": [
+"Serotonin toxicity"
+]
+},
+{
+"id": "severe-combined-immunodeficiency",
+"label": "Severe combined immunodeficiency",
+"aliases": [
+"SCID"
+],
+"dossier": "severe-combined-immunodeficiency-scid"
+},
+{
+"id": "severe-congenital-neutropenia",
+"label": "Severe congenital neutropenia"
+},
+{
+"id": "sexually-transmitted-infection",
+"label": "Sexually transmitted infection"
+},
+{
+"id": "sickle-cell-disease",
+"label": "Sickle cell disease",
+"aliases": [
+"SCD"
+],
+"dossier": "sickle-cell-disease"
+},
+{
+"id": "sickle-cell-vaso-occlusive-crisis",
+"label": "Sickle cell vaso-occlusive crisis",
+"dossier": "sickle-cell-disease"
+},
+{
+"id": "simple-renal-cyst",
+"label": "Simple renal cyst"
+},
+{
+"id": "skin-cancer",
+"label": "Skin cancer"
+},
+{
+"id": "skull-fracture",
+"label": "Skull fracture"
+},
+{
+"id": "small-bowel-obstruction",
+"label": "Small bowel obstruction",
+"aliases": [
+"SBO",
+"Small intestinal obstruction"
+],
+"dossier": "small-bowel-obstruction"
+},
+{
+"id": "small-cell-lung-cancer",
+"label": "Small cell lung cancer",
+"aliases": [
+"SCLC",
+"Oat cell carcinoma"
+]
+},
+{
+"id": "small-intestinal-bacterial-overgrowth",
+"label": "Small intestinal bacterial overgrowth",
+"aliases": [
+"SIBO"
+]
+},
+{
+"id": "soft-tissue-bruising",
+"label": "Soft tissue bruising"
+},
+{
+"id": "spinal-and-bulbar-muscular-atrophy",
+"label": "Spinal and bulbar muscular atrophy",
+"aliases": [
+"Kennedy disease",
+"SBMA"
+]
+},
+{
+"id": "spinal-cord-compression",
+"label": "Spinal cord compression"
+},
+{
+"id": "spinal-muscular-atrophy",
+"label": "Spinal muscular atrophy",
+"aliases": [
+"SMA"
+]
+},
+{
+"id": "splenic-abscess",
+"label": "Splenic abscess"
+},
+{
+"id": "splenic-rupture",
+"label": "Splenic rupture",
+"aliases": [
+"Splenic laceration",
+"Ruptured spleen"
+],
+"dossier": "splenic-laceration-trauma"
+},
+{
+"id": "spontaneous-abortion",
+"label": "Spontaneous abortion",
+"aliases": [
+"Miscarriage"
+]
+},
+{
+"id": "spontaneous-bacterial-peritonitis",
+"label": "Spontaneous bacterial peritonitis",
+"aliases": [
+"SBP"
+],
+"dossier": "spontaneous-bacterial-peritonitis"
+},
+{
+"id": "spontaneous-intestinal-perforation",
+"label": "Spontaneous intestinal perforation"
+},
+{
+"id": "stable-angina",
+"label": "Stable angina",
+"aliases": [
+"Stable angina pectoris"
+]
+},
+{
+"id": "staphylococcal-food-poisoning",
+"label": "Staphylococcal food poisoning"
+},
+{
+"id": "staphylococcal-scalded-skin-syndrome",
+"label": "Staphylococcal scalded skin syndrome",
+"aliases": [
+"SSSS",
+"Ritter disease"
+]
+},
+{
+"id": "stasis-dermatitis",
+"label": "Stasis dermatitis",
+"aliases": [
+"Venous eczema",
+"Gravitational eczema"
+]
+},
+{
+"id": "streptococcal-pharyngitis",
+"label": "Streptococcal pharyngitis",
+"aliases": [
+"Strep throat"
+],
+"dossier": "acute-pharyngitis"
+},
+{
+"id": "stroke",
+"label": "Stroke"
+},
+{
+"id": "subarachnoid-hemorrhage",
+"label": "Subarachnoid hemorrhage",
+"aliases": [
+"SAH"
+]
+},
+{
+"id": "subdural-hematoma",
+"label": "Subdural hematoma",
+"aliases": [
+"SDH",
+"Subdural hemorrhage"
+],
+"dossier": "subdural-hematoma"
+},
+{
+"id": "sulfite-oxidase-deficiency",
+"label": "Sulfite oxidase deficiency"
+},
+{
+"id": "superficial-candidiasis",
+"label": "Superficial candidiasis",
+"dossier": "superficial-candidiasis-oral-thrush-vulvovaginal-candidiasis"
+},
+{
+"id": "superficial-thrombophlebitis",
+"label": "Superficial thrombophlebitis"
+},
+{
+"id": "superior-mesenteric-artery-syndrome",
+"label": "Superior mesenteric artery syndrome",
+"aliases": [
+"SMA syndrome",
+"Wilkie syndrome"
+]
+},
+{
+"id": "supraventricular-tachycardia",
+"label": "Supraventricular tachycardia",
+"aliases": [
+"SVT"
+],
+"dossier": "supraventricular-tachycardia-svt"
+},
+{
+"id": "systemic-lupus-erythematosus",
+"label": "Systemic lupus erythematosus",
+"aliases": [
+"SLE",
+"Lupus"
+],
+"dossier": "systemic-lupus-erythematosus-sle"
+},
+{
+"id": "systemic-sclerosis",
+"label": "Systemic sclerosis",
+"aliases": [
+"Scleroderma",
+"SSc"
+],
+"dossier": "systemic-sclerosis-scleroderma"
+},
+{
+"id": "t-cell-large-granular-lymphocytic-leukemia",
+"label": "T-cell large granular lymphocytic leukemia",
+"aliases": [
+"T-LGL leukemia"
+],
+"dossier": "t-cell-large-granular-lymphocytic-leukemia"
+},
+{
+"id": "teething",
+"label": "Teething"
+},
+{
+"id": "temporomandibular-joint-dysfunction",
+"label": "Temporomandibular joint dysfunction"
+},
+{
+"id": "tension-pneumothorax",
+"label": "Tension pneumothorax",
+"dossier": "tension-pneumothorax"
+},
+{
+"id": "tension-type-headache",
+"label": "Tension-type headache",
+"aliases": [
+"TTH",
+"Tension headache"
+]
+},
+{
+"id": "testicular-cancer",
+"label": "Testicular cancer"
+},
+{
+"id": "testicular-torsion",
+"label": "Testicular torsion",
+"aliases": [
+"Torsion of the testis",
+"Spermatic cord torsion"
+],
+"dossier": "testicular-torsion"
+},
+{
+"id": "thiamine-responsive-megaloblastic-anemia-syndrome",
+"label": "Thiamine-responsive megaloblastic anemia syndrome",
+"aliases": [
+"Rogers syndrome"
+]
+},
+{
+"id": "threatened-miscarriage",
+"label": "Threatened miscarriage"
+},
+{
+"id": "thrombotic-thrombocytopenic-purpura",
+"label": "Thrombotic thrombocytopenic purpura",
+"aliases": [
+"TTP"
+],
+"dossier": "thrombotic-thrombocytopenic-purpura"
+},
+{
+"id": "thyroid-eye-disease",
+"label": "Thyroid eye disease",
+"aliases": [
+"Graves ophthalmopathy",
+"Graves orbitopathy"
+]
+},
+{
+"id": "thyroid-storm",
+"label": "Thyroid storm",
+"aliases": [
+"Thyrotoxic crisis"
+],
+"dossier": "thyroid-storm"
+},
+{
+"id": "thyrotoxicosis",
+"label": "Thyrotoxicosis"
+},
+{
+"id": "tibial-stress-fracture",
+"label": "Tibial stress fracture"
+},
+{
+"id": "tick-paralysis",
+"label": "Tick paralysis"
+},
+{
+"id": "tight-cast",
+"label": "Tight cast"
+},
+{
+"id": "tinea-corporis",
+"label": "Tinea corporis",
+"aliases": [
+"Ringworm"
+],
+"dossier": "tinea-corporis-ringworm"
+},
+{
+"id": "tinea-cruris",
+"label": "Tinea cruris",
+"aliases": [
+"Jock itch"
+],
+"dossier": "tinea-cruris"
+},
+{
+"id": "todds-paralysis",
+"label": "Todd's paralysis",
+"aliases": [
+"Postictal paralysis",
+"Todd paresis"
+]
+},
+{
+"id": "torsion-of-testicular-appendage",
+"label": "Torsion of testicular appendage"
+},
+{
+"id": "torsion-of-the-appendix-testis",
+"label": "Torsion of the appendix testis"
+},
+{
+"id": "toxic-epidermal-necrolysis",
+"label": "Toxic epidermal necrolysis",
+"aliases": [
+"TEN",
+"Lyell syndrome"
+],
+"dossier": "toxic-epidermal-necrolysis"
+},
+{
+"id": "toxic-megacolon",
+"label": "Toxic megacolon"
+},
+{
+"id": "toxic-shock-syndrome",
+"label": "Toxic shock syndrome",
+"aliases": [
+"TSS"
+]
+},
+{
+"id": "toxic-thyroid-adenoma",
+"label": "Toxic thyroid adenoma",
+"aliases": [
+"Toxic adenoma",
+"Toxic nodule"
+]
+},
+{
+"id": "transfusion-related-acute-lung-injury",
+"label": "Transfusion-related acute lung injury",
+"aliases": [
+"TRALI"
+]
+},
+{
+"id": "transient-global-amnesia",
+"label": "Transient global amnesia",
+"aliases": [
+"TGA"
+]
+},
+{
+"id": "transient-ischemic-attack",
+"label": "Transient ischemic attack",
+"aliases": [
+"TIA"
+]
+},
+{
+"id": "transient-synovitis-of-the-hip",
+"label": "Transient synovitis of the hip",
+"aliases": [
+"Toxic synovitis"
+]
+},
+{
+"id": "transverse-myelitis",
+"label": "Transverse myelitis",
+"aliases": [
+"TM"
+]
+},
+{
+"id": "traumatic-diaphragmatic-rupture",
+"label": "Traumatic diaphragmatic rupture",
+"aliases": [
+"Traumatic diaphragmatic hernia"
+]
+},
+{
+"id": "traumatic-hyphema",
+"label": "Traumatic hyphema"
+},
+{
+"id": "traumatic-injury",
+"label": "Traumatic injury"
+},
+{
+"id": "travelers-diarrhea",
+"label": "Traveler's diarrhea"
+},
+{
+"id": "tricyclic-antidepressant-overdose",
+"label": "Tricyclic antidepressant overdose",
+"aliases": [
+"TCA overdose",
+"Tricyclic antidepressant toxicity"
+],
+"dossier": "tricyclic-antidepressant-overdose"
+},
+{
+"id": "trigeminal-neuralgia",
+"label": "Trigeminal neuralgia",
+"aliases": [
+"Tic douloureux",
+"TN"
+]
+},
+{
+"id": "tuberculosis",
+"label": "Tuberculosis",
+"aliases": [
+"TB"
+],
+"dossier": "tuberculosis"
+},
+{
+"id": "tuberculous-meningitis",
+"label": "Tuberculous meningitis",
+"aliases": [
+"TBM"
+]
+},
+{
+"id": "tuberous-sclerosis-complex",
+"label": "Tuberous sclerosis complex",
+"aliases": [
+"Tuberous sclerosis",
+"TSC"
+],
+"dossier": "tuberous-sclerosis-complex"
+},
+{
+"id": "tubo-ovarian-abscess",
+"label": "Tubo-ovarian abscess"
+},
+{
+"id": "type-1-diabetes-mellitus",
+"label": "Type 1 diabetes mellitus",
+"aliases": [
+"T1DM",
+"Type 1 diabetes"
+],
+"dossier": "type-1-diabetes-mellitus"
+},
+{
+"id": "type-2-diabetes-mellitus",
+"label": "Type 2 diabetes mellitus",
+"aliases": [
+"T2DM",
+"Type 2 diabetes"
+],
+"dossier": "type-2-diabetes-mellitus"
+},
+{
+"id": "typhoid-fever",
+"label": "Typhoid fever",
+"aliases": [
+"Typhoid"
+],
+"dossier": "typhoid-fever"
+},
+{
+"id": "ulcerative-colitis",
+"label": "Ulcerative colitis",
+"aliases": [
+"UC"
+],
+"dossier": "ulcerative-colitis"
+},
+{
+"id": "uncomplicated-urinary-tract-infection",
+"label": "Uncomplicated urinary tract infection",
+"aliases": [
+"Cystitis"
+],
+"dossier": "acute-cystitis-lower-urinary-tract-infection"
+},
+{
+"id": "unstable-angina",
+"label": "Unstable angina"
+},
+{
+"id": "urethral-stricture",
+"label": "Urethral stricture"
+},
+{
+"id": "urinary-tract-infection",
+"label": "Urinary tract infection",
+"aliases": [
+"UTI"
+],
+"dossier": "acute-cystitis-lower-urinary-tract-infection"
+},
+{
+"id": "urticaria",
+"label": "Urticaria",
+"aliases": [
+"Hives"
+],
+"dossier": "urticaria-hives"
+},
+{
+"id": "uterine-leiomyomas",
+"label": "Uterine leiomyomas",
+"aliases": [
+"Uterine fibroids",
+"Fibroids"
+],
+"dossier": "uterine-leiomyomas-fibroids"
+},
+{
+"id": "uterine-leiomyosarcoma",
+"label": "Uterine leiomyosarcoma"
+},
+{
+"id": "uterine-rupture",
+"label": "Uterine rupture"
+},
+{
+"id": "vaginal-candidiasis",
+"label": "Vaginal candidiasis"
+},
+{
+"id": "variegate-porphyria",
+"label": "Variegate porphyria"
+},
+{
+"id": "vascular-dementia",
+"label": "Vascular dementia",
+"aliases": [
+"VaD"
+],
+"dossier": "vascular-dementia"
+},
+{
+"id": "vascular-ehlers-danlos-syndrome",
+"label": "Vascular Ehlers-Danlos syndrome",
+"aliases": [
+"vEDS",
+"Ehlers-Danlos syndrome type IV"
+],
+"dossier": "vascular-ehlers-danlos-syndrome"
+},
+{
+"id": "vascular-parkinsonism",
+"label": "Vascular parkinsonism"
+},
+{
+"id": "vascular-ring",
+"label": "Vascular ring"
+},
+{
+"id": "vasovagal-syncope",
+"label": "Vasovagal syncope",
+"aliases": [
+"Neurocardiogenic syncope"
+],
+"dossier": "vasovagal-syncope"
+},
+{
+"id": "ventricular-septal-defect",
+"label": "Ventricular septal defect",
+"aliases": [
+"VSD"
+]
+},
+{
+"id": "ventricular-tachycardia",
+"label": "Ventricular tachycardia",
+"aliases": [
+"VT",
+"V-tach"
+]
+},
+{
+"id": "vertebral-fracture",
+"label": "Vertebral fracture"
+},
+{
+"id": "vestibular-migraine",
+"label": "Vestibular migraine"
+},
+{
+"id": "vestibular-neuritis",
+"label": "Vestibular neuritis"
+},
+{
+"id": "viral-arthritis",
+"label": "Viral arthritis"
+},
+{
+"id": "viral-conjunctivitis",
+"label": "Viral conjunctivitis"
+},
+{
+"id": "viral-encephalitis",
+"label": "Viral encephalitis",
+"dossier": "viral-encephalitis-non-hsv"
+},
+{
+"id": "viral-exanthem",
+"label": "Viral exanthem"
+},
+{
+"id": "viral-hepatitis",
+"label": "Viral hepatitis"
+},
+{
+"id": "viral-induced-wheeze",
+"label": "Viral-induced wheeze"
+},
+{
+"id": "viral-infection",
+"label": "Viral infection"
+},
+{
+"id": "viral-meningitis",
+"label": "Viral meningitis",
+"dossier": "viral-meningitis"
+},
+{
+"id": "viral-pharyngitis",
+"label": "Viral pharyngitis",
+"dossier": "acute-pharyngitis"
+},
+{
+"id": "viral-upper-respiratory-infection",
+"label": "Viral upper respiratory infection"
+},
+{
+"id": "vitamin-b12-deficiency-anemia",
+"label": "Vitamin B12 deficiency anemia",
+"aliases": [
+"B12 deficiency anemia",
+"Cobalamin deficiency anemia"
+],
+"dossier": "vitamin-b12-deficiency"
+},
+{
+"id": "vitreous-hemorrhage",
+"label": "Vitreous hemorrhage"
+},
+{
+"id": "warm-autoimmune-hemolytic-anemia",
+"label": "Warm autoimmune hemolytic anemia",
+"aliases": [
+"Warm AIHA"
+]
+},
+{
+"id": "wernickes-encephalopathy",
+"label": "Wernicke's encephalopathy",
+"dossier": "wernicke-korsakoff-syndrome"
+},
+{
+"id": "whooping-cough",
+"label": "Whooping cough",
+"aliases": [
+"Pertussis"
+],
+"dossier": "acute-pertussis-whooping-cough"
+},
+{
+"id": "wolfram-like-mitochondrial-encephalopathy",
+"label": "Wolfram-like mitochondrial encephalopathy",
+"dossier": "wolfram-like-mitochondrial-encephalopathy"
+},
+{
+"id": "xanthogranulomatous-pyelonephritis",
+"label": "Xanthogranulomatous pyelonephritis",
+"aliases": [
+"XGP"
+]
+}
+]

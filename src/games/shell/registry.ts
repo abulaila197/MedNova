@@ -1,3 +1,4 @@
+import { caseFiles } from '../casefiles/def';
 import { diagnosticPursuit } from '../diagnostic/def';
 import { novaMedicordle } from '../medicordle/def';
 import { riddler } from '../riddler/def';
@@ -12,6 +13,7 @@ const GAMES: Record<string, GameDef> = {
   [streakMaster.key]: streakMaster,
   [riddler.key]: riddler,
   [silentArtist.key]: silentArtist,
+  [caseFiles.key]: caseFiles,
 };
 
 export function gameDef(key: string): GameDef | null {
