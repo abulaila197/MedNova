@@ -5,6 +5,7 @@ import { novaMedicordle } from '../medicordle/def';
 import { riddler } from '../riddler/def';
 import { silentArtist } from '../silent/def';
 import { streakMaster } from '../streak/def';
+import { wheelsOfChaos } from '../wheels/def';
 import type { GameDef } from './types';
 
 /** Games that run on the shared engine. The rest keep the placeholder sheet until they are ported. */
@@ -16,6 +17,7 @@ const GAMES: Record<string, GameDef> = {
   [silentArtist.key]: silentArtist,
   [caseFiles.key]: caseFiles,
   [novaCrossword.key]: novaCrossword,
+  [wheelsOfChaos.key]: wheelsOfChaos,
 };
 
 export function gameDef(key: string): GameDef | null {

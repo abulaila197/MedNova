@@ -5,7 +5,7 @@
 // after Boss Round 3 wins (equal top scores draw). Ported from game.py, with WC2 to WC5.
 import {
   shuffle, spinField, startTurn, stepTurn, turnPoints,
-  type Bank, type FieldKey, type QResult, type Question, type Rng, type Target, type Turn, type TurnEvent,
+  type Bank, type FieldKey, type Mix, type QResult, type Question, type Rng, type Target, type Turn, type TurnEvent,
 } from './core';
 import { deal, mirrorSwap, playable, react, startChain, targetsFor, TOWER_DAMAGE, type Attack, type Card, type Chain, type Play, type Reaction } from './cards';
 
@@ -105,6 +105,7 @@ export type Phase = 'initiation' | 'reaction' | 'redemptionOffer' | 'turn' | 're
 export type OfflineGame = {
   seats: number;
   target: Target;
+  mix: Mix;
   active: number[];
   hands: Card[][];
   scores: number[];
@@ -146,9 +147,9 @@ export type OfflineEvent =
   | { type: 'RESUME'; now: number }
   | { type: 'REMOVE'; seat: number };
 
-export function startOffline(seats: number, target: Target, bank: FullBank, rng: Rng): OfflineGame {
+export function startOffline(seats: number, target: Target, bank: FullBank, rng: Rng, mix: Mix = 'mixed'): OfflineGame {
   const g: OfflineGame = {
-    seats, target, active: Array.from({ length: seats }, (_, i) => i), hands: deal(seats, rng), scores: Array(seats).fill(0),
+    seats, target, mix, active: Array.from({ length: seats }, (_, i) => i), hands: deal(seats, rng), scores: Array(seats).fill(0),
     cycle: 0, round: 0, roundsPlayed: 0, order: [], phase: 'initiation', init: { at: 0, plays: 0 }, attacks: [], chain: null,
     skipped: [], sun: [], star: [], turnAt: 0, turn: null, redemption: null, boss: null, worldCycle: null, seen: [], answers: [], log: [], result: null,
   };
@@ -244,7 +245,7 @@ function startSeatTurn(g: OfflineGame, bank: FullBank, rng: Rng, step: number): 
 }
 
 function playTurn(g: OfflineGame, seat: number, bank: FullBank, rng: Rng): OfflineGame {
-  const turn = startTurn(bank, g.seen, rng, { star: g.star.includes(seat), sun: g.sun.includes(seat) });
+  const turn = startTurn(bank, g.seen, rng, { star: g.star.includes(seat), sun: g.sun.includes(seat), mix: g.mix });
   return { ...g, phase: 'turn', turn, seen: turn.seen };
 }
 
@@ -255,7 +256,7 @@ function endRound(g: OfflineGame, bank: FullBank, rng: Rng): OfflineGame {
 }
 
 function startBoss(g: OfflineGame, bank: FullBank, rng: Rng): OfflineGame {
-  const field = spinField(rng);
+  const field = spinField(rng, g.mix);
   const sets = bank.boss.filter((b) => b.field === field);
   const pick = (sets.length ? sets : bank.boss)[Math.floor(rng() * (sets.length || bank.boss.length))];
   const items = shuffle(pick.items, rng).slice(0, BOSS_ITEMS);
@@ -378,7 +379,7 @@ export function stepOffline(g: OfflineGame, e: OfflineEvent, bank: FullBank, rng
       if (g.phase !== 'redemptionOffer') return g;
       const seat = g.order[g.turnAt];
       if (!e.use) return playTurn(g, seat, bank, rng);
-      const field = spinField(rng);
+      const field = spinField(rng, g.mix);
       const redemption: Redemption = { seat, field, items: redemptionItems(bank, field, rng), index: 0, right: 0, answers: [], phase: 'reveal', until: null, pausedAt: null };
       return { ...g, phase: 'redemption', worldCycle: g.cycle, redemption };
     }

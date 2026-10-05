@@ -4,7 +4,7 @@ import { test } from 'node:test';
 
 import { deal, mirrorSwap, playable, react, reactions, startChain, type Card } from '../cards';
 import {
-  judge, soloExp, spinCombo, startSolo, startTurn, stepSolo, stepTurn, turnPoints, STAR_WINDOW_MS, STYLES,
+  judge, soloExp, spinCombo, spinField, FIELDS, startSolo, startTurn, stepSolo, stepTurn, turnPoints, STAR_WINDOW_MS, STYLES,
   type Answer, type Question, type Rng, type Turn,
 } from '../core';
 import { actor, canRedeem, startOffline, stepOffline, BOSS_BONUS, type OfflineGame } from '../offline';
@@ -68,6 +68,21 @@ test('wheels: counts weigh 40/35/25 and the same style+field pair re-spins once'
   const fixed = () => 0;
   const c = spinCombo(null, fixed);
   assert.deepEqual(spinCombo(c, fixed), c);
+});
+
+test('QS1: Clinical or Basic spins only that group of fields; Mixed spins both', () => {
+  const rng = seeded(11);
+  const group = (k: string) => FIELDS.find((f) => f.key === k)!.group;
+  for (let i = 0; i < 300; i++) {
+    assert.equal(group(spinField(rng, 'clinical')), 'clinical');
+    assert.equal(group(spinField(rng, 'basic')), 'basic');
+  }
+  const mixed = new Set(Array.from({ length: 300 }, () => group(spinField(rng))));
+  assert.equal(mixed.size, 2);
+  const run = startSolo(bank, 50, [], rng, 'clinical');
+  assert.equal(group(run.turn!.combo.field), 'clinical');
+  const g = startOffline(3, 50, bank, rng, 'basic');
+  assert.equal(g.mix, 'basic');
 });
 
 test('a turn asks Count questions, scores by style and the Sun doubles it', () => {

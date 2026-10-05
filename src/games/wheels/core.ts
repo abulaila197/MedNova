@@ -40,6 +40,16 @@ export const COUNT_WEIGHTS: [number, number][] = [[1, 0.4], [2, 0.35], [3, 0.25]
 /** Wheel 3: the 6 basic fields share half, the 4 clinical fields share the other half. */
 export const FIELD_WEIGHTS: [FieldKey, number][] = FIELDS.map((f) => [f.key, f.group === 'basic' ? 0.5 / 6 : 0.5 / 4]);
 
+/** QS1: the setup's question type. Clinical or Basic spins only that group's fields; Mixed keeps the half-and-half wheel. */
+export type Mix = 'mixed' | 'clinical' | 'basic';
+export const MIXES: { value: Mix; label: string }[] = [
+  { value: 'mixed', label: 'Mixed' },
+  { value: 'clinical', label: 'Clinical' },
+  { value: 'basic', label: 'Basic science' },
+];
+export const fieldWeights = (mix: Mix = 'mixed'): [FieldKey, number][] =>
+  mix === 'mixed' ? FIELD_WEIGHTS : FIELDS.filter((f) => f.group === mix).map((f) => [f.key, 1]);
+
 export const TARGETS = [50, 100] as const;
 export type Target = (typeof TARGETS)[number];
 export const FEEDBACK_MS = { right: 1100, wrong: 1800 }; // as coded
@@ -107,14 +117,14 @@ function weighted<T>(items: [T, number][], rng: Rng): T {
 
 export const spinCount = (rng: Rng) => weighted(COUNT_WEIGHTS, rng);
 export const spinStyle = (rng: Rng) => STYLE_KEYS[Math.floor(rng() * STYLE_KEYS.length)];
-export const spinField = (rng: Rng) => weighted(FIELD_WEIGHTS, rng);
+export const spinField = (rng: Rng, mix: Mix = 'mixed') => weighted(fieldWeights(mix), rng);
 
 export type Combo = { style: Style; field: FieldKey };
 
 /** Style then Field; the same pair as the turn's previous question re-spins once (spec 3.4). */
-export function spinCombo(prev: Combo | null, rng: Rng): Combo {
-  let c = { style: spinStyle(rng), field: spinField(rng) };
-  if (prev && c.style === prev.style && c.field === prev.field) c = { style: spinStyle(rng), field: spinField(rng) };
+export function spinCombo(prev: Combo | null, rng: Rng, mix: Mix = 'mixed'): Combo {
+  let c = { style: spinStyle(rng), field: spinField(rng, mix) };
+  if (prev && c.style === prev.style && c.field === prev.field) c = { style: spinStyle(rng), field: spinField(rng, mix) };
   return c;
 }
 
@@ -145,6 +155,7 @@ export type Turn = {
   star: 'pending' | 'used' | 'none';
   /** The Sun doubles the turn's points. */
   sun: boolean;
+  mix: Mix;
   results: QResult[];
   seen: string[];
   pausedAt: number | null;
@@ -159,13 +170,14 @@ export type TurnEvent =
   | { type: 'PAUSE'; now: number }
   | { type: 'RESUME'; now: number };
 
-export function startTurn(bank: Bank, seen: readonly string[], rng: Rng, opts: { star?: boolean; sun?: boolean } = {}): Turn {
+export function startTurn(bank: Bank, seen: readonly string[], rng: Rng, opts: { star?: boolean; sun?: boolean; mix?: Mix } = {}): Turn {
+  const mix = opts.mix ?? 'mixed';
   const count = spinCount(rng);
-  const combo = spinCombo(null, rng);
+  const combo = spinCombo(null, rng, mix);
   const question = pickQuestion(bank, combo.style, combo.field, seen, rng);
   return {
     count, k: 0, combo, question, phase: 'reveal', until: null,
-    star: opts.star ? 'pending' : 'none', sun: !!opts.sun, results: [], seen: [...seen, question.id], pausedAt: null,
+    star: opts.star ? 'pending' : 'none', sun: !!opts.sun, mix, results: [], seen: [...seen, question.id], pausedAt: null,
   };
 }
 
@@ -183,7 +195,7 @@ function answer(t: Turn, a: Answer, now: number): Turn {
 
 function nextQuestion(t: Turn, bank: Bank, rng: Rng): Turn {
   if (t.k + 1 >= t.count) return { ...t, phase: 'over', until: null };
-  const combo = spinCombo(t.combo, rng);
+  const combo = spinCombo(t.combo, rng, t.mix);
   const question = pickQuestion(bank, combo.style, combo.field, t.seen, rng);
   return { ...t, k: t.k + 1, combo, question, phase: 'reveal', until: null, seen: [...t.seen, question.id] };
 }
@@ -205,7 +217,7 @@ export function stepTurn(t: Turn, e: TurnEvent, bank: Bank, rng: Rng): Turn {
       return ask(t, e.now);
     case 'STAR': {
       if (t.phase !== 'star') return t;
-      const field = spinField(rng);
+      const field = spinField(rng, t.mix);
       const combo = { style: t.combo.style, field };
       const question = pickQuestion(bank, combo.style, field, t.seen.slice(0, -1), rng);
       return { ...t, combo, question, phase: 'reveal', star: 'used', until: null, seen: [...t.seen.slice(0, -1), question.id] };
@@ -230,6 +242,7 @@ export const timeLeft = (t: Turn, now: number) => (t.until == null ? 0 : Math.ma
 
 export type SoloRun = {
   target: Target;
+  mix: Mix;
   score: number;
   turnNo: number;
   turn: Turn | null;
@@ -241,9 +254,9 @@ export type SoloRun = {
 
 export type SoloEvent = TurnEvent | { type: 'NEXT' } | { type: 'END' };
 
-export function startSolo(bank: Bank, target: Target, seen: readonly string[], rng: Rng): SoloRun {
-  const turn = startTurn(bank, seen, rng);
-  return { target, score: 0, turnNo: 1, turn, phase: 'turn', history: [], seen: turn.seen };
+export function startSolo(bank: Bank, target: Target, seen: readonly string[], rng: Rng, mix: Mix = 'mixed'): SoloRun {
+  const turn = startTurn(bank, seen, rng, { mix });
+  return { target, mix, score: 0, turnNo: 1, turn, phase: 'turn', history: [], seen: turn.seen };
 }
 
 export function stepSolo(s: SoloRun, e: SoloEvent, bank: Bank, rng: Rng): SoloRun {
@@ -251,7 +264,7 @@ export function stepSolo(s: SoloRun, e: SoloEvent, bank: Bank, rng: Rng): SoloRu
   if (e.type === 'END') return { ...s, phase: 'done', turn: s.turn };
   if (e.type === 'NEXT') {
     if (s.phase !== 'turnOver') return s;
-    const turn = startTurn(bank, s.seen, rng);
+    const turn = startTurn(bank, s.seen, rng, { mix: s.mix });
     return { ...s, turnNo: s.turnNo + 1, turn, phase: 'turn', seen: turn.seen };
   }
   if (s.phase !== 'turn' || !s.turn) return s;
