@@ -1,11 +1,11 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import { router } from 'expo-router';
+import { useRef } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated, { type SharedValue, useAnimatedStyle } from 'react-native-reanimated';
 
 import { type Game, GAMES } from '@/data/games';
-import { gameDef } from '@/games/shell/registry';
-import { useApp, useTheme } from '@/state/app';
+import { useLoading } from '@/features/loading/store';
+import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
@@ -18,6 +18,13 @@ const DESC = { dark: '#c9cde8', light: '#5f5a50' };
 /** One game: the drawing in the lower right and the text block top left. Slides with the swipe. */
 export function GamePage({ game, j, pos, active }: { game: Game; j: number; pos: SharedValue<number>; active: boolean }) {
   const t = useTheme();
+  const play = useRef<View>(null);
+  // Play opens the game's loading page; the doors split the page at the button's middle.
+  const onPlay = () => {
+    const btn = play.current;
+    if (!btn) return useLoading.getState().start(game.key, 0, j);
+    btn.measureInWindow((_x, y, _w, h) => useLoading.getState().start(game.key, y + h / 2, j));
+  };
   const slide = useAnimatedStyle(() => {
     const off = wrapOff(j - pos.value);
     return { transform: [{ translateX: off * u(W) }], opacity: Math.abs(off) > 1.5 ? 0 : 1 };
@@ -32,7 +39,7 @@ export function GamePage({ game, j, pos, active }: { game: Game; j: number; pos:
         </Text>
         <Text style={[s.sub, { color: t.soft }]}>{game.sub}</Text>
         <Text style={[s.desc, { color: DESC[t.mode] }]}>{game.desc}</Text>
-        <Pressable onPress={() => (gameDef(game.key) ? router.push(`/play/${game.key}`) : useApp.getState().setPlaying(`${game.lead} ${game.em}`))} style={s.goWrap} accessibilityRole="button" accessibilityLabel={`Play ${game.lead} ${game.em}`}>
+        <Pressable ref={play} onPress={onPlay} style={s.goWrap} accessibilityRole="button" accessibilityLabel={`Play ${game.lead} ${game.em}`}>
           <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.go}>
             <Text style={[s.goT, { color: t.onGrad }]}>Play</Text>
           </LinearGradient>

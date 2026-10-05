@@ -6,6 +6,7 @@ import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from '
 import { Menu } from '@/components/Menu';
 import { PlaySheet } from '@/components/PlaySheet';
 import { ReportSheet } from '@/components/ReportSheet';
+import { LoadingHost } from '@/features/loading/LoadingHost';
 import { useApp, useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 
@@ -31,6 +32,7 @@ export default function AppLayout() {
         <Stack screenOptions={{ headerShown: false, animation: 'fade', contentStyle: { backgroundColor: t.sky } }} />
         {open ? <Pressable style={s.catch} onPress={() => setMenu(false)} accessibilityLabel="Close menu" /> : null}
       </Animated.View>
+      <LoadingHost />
       <ReportSheet />
       <PlaySheet />
     </View>
