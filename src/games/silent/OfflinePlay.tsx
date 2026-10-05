@@ -17,12 +17,13 @@ import {
   buildPlan, currentTurn, elapsed, offlineRecap, offlineRows, snapshotOffline, startOffline, stealTeamOf, stepOffline, timeLeft,
   type OfflineEvent, type OfflineRun, type TurnRecord,
 } from './offline';
-import { ChalkBtn, ChalkChip, ChalkTimer, ChalkTitle, Frame, HintCard, Kicker, Ledge, Note, Panel, PauseBtn, Peek, SL, Scores, SlateScreen, TopRow, clock, useSlateFonts } from './slate';
+import { ChalkBtn, ChalkChip, ChalkTimer, ChalkTitle, Frame, HintCard, Kicker, Ledge, Note, Panel, PauseBtn, Peek, SL, Scores, SlateScreen, TopRow, clock, useRoom, useSlateFonts } from './slate';
 import { ActingCard, FitBoard } from './Stage';
 
 /** Offline (SA3-SA6, TMG-SA): pass the phone, secret pick, draw or act, "Who got it?", steal, reveal. */
 export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   const fonts = useSlateFonts();
+  const R = useRoom();
   const turnMs = (Number(play.settings.turn) || 90) * 1000;
   const performs = Number(play.settings.performs) || 1;
   const [run, setRun] = useState<OfflineRun | null>(null);
@@ -125,7 +126,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
 
   const turn = currentTurn(run);
   const who = seatOf.get(turn.seat);
-  const color = team(turn.team)?.color ?? who?.color ?? SL.chalk;
+  const color = team(turn.team)?.color ?? who?.color ?? R.ink;
   const paused = run.phase === 'paused';
   const phase = paused ? run.before! : run.phase;
   const live = run.plan.filter((p, i) => i <= run.index && !run.removed.includes(p.seat)).length;
@@ -183,16 +184,16 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
     return (
       <SlateScreen scroll>
         <Kicker>{kick}</Kicker>
-        <ChalkTitle size={18} color={SL.soft}>It was</ChalkTitle>
-        <ChalkTitle size={27} color={SL.yellow}>{w ? wordName(w) : ''}</ChalkTitle>
+        <ChalkTitle size={18} color={R.soft}>It was</ChalkTitle>
+        <ChalkTitle size={27} color={R.mark}>{w ? wordName(w) : ''}</ChalkTitle>
         <Note style={{ marginTop: -u(6) }}>{w?.field}</Note>
         {t.kind === 'drawing' && drawing.current.length ? (
           <Frame style={{ width: '62%', alignSelf: 'center' }}>
-            <Board color={SL.chalk} width={SL.sizes[0]} erase={false} bg={SL.board} enabled={false} initial={drawing.current} ratio={shape.current} />
+            <Board color={SL.chalk} width={SL.sizes[0]} erase={false} bg={R.board} enabled={false} initial={drawing.current} ratio={shape.current} />
           </Frame>
         ) : null}
         <Panel>
-          <Text style={s.result}>{outcomeLine(t, nameOf, teamName)}</Text>
+          <Text style={[s.result, { color: R.ink }]}>{outcomeLine(t, nameOf, teamName)}</Text>
         </Panel>
         <Panel style={{ paddingVertical: u(10) }}>
           <Kicker>Scores</Kicker>
@@ -210,7 +211,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   const steal = stealTeamOf(run, turn.team);
   const acting = run.kind === 'acting';
   const title = phase === 'whoGot' ? 'Who got it?' : phase === 'stealing' ? `${steal != null ? teamName(steal) : 'Next team'} can steal` : `${nameOf(turn.seat)} is ${acting ? 'acting' : 'drawing'}`;
-  const titleColor = phase === 'stealing' ? (team(steal)?.color ?? SL.chalk) : phase === 'whoGot' ? SL.chalk : color;
+  const titleColor = phase === 'stealing' ? (team(steal)?.color ?? R.ink) : phase === 'whoGot' ? R.ink : color;
   const timer = phase === 'performing' ? <ChalkTimer leftMs={left} totalMs={run.turnMs} /> : phase === 'stealing' ? <ChalkTimer leftMs={left} totalMs={15_000} /> : null;
 
   return (
@@ -257,6 +258,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
 
 /** The secret pick (SA4, SA5): choose draw or act, hold to see the 3 diseases, tap one. */
 function Pick({ run, paused, onKind, onPick }: { run: OfflineRun; paused: boolean; onKind: (k: Kind) => void; onPick: (id: string) => void }) {
+  const R = useRoom();
   const [show, setShow] = useState(false);
   const open = show && !paused;
   return (
@@ -270,20 +272,20 @@ function Pick({ run, paused, onKind, onPick }: { run: OfflineRun; paused: boolea
         {run.options.map((id, i) => {
           const w = wordById.get(id)!;
           return (
-            <Pressable key={id} onPress={() => onPick(id)} style={({ pressed }) => [s.option, pressed && { opacity: 0.8 }]} accessibilityRole="button" accessibilityLabel={open ? `Pick ${w.name}` : `Pick number ${i + 1}`}>
+            <Pressable key={id} onPress={() => onPick(id)} style={({ pressed }) => [s.option, { backgroundColor: R.board }, pressed && { opacity: 0.8 }]} accessibilityRole="button" accessibilityLabel={open ? `Pick ${w.name}` : `Pick number ${i + 1}`}>
               <Text style={s.optNo}>{i + 1}</Text>
               <View style={{ flex: 1 }}>
-                <Text style={[s.optT, !open && { color: SL.dim, letterSpacing: u(4) }]} numberOfLines={2}>
+                <Text style={[s.optT, !open && { color: R.boardDim, letterSpacing: u(4) }]} numberOfLines={2}>
                   {open ? w.name : '· · · · ·'}
                 </Text>
-                {open ? <Text style={s.optF} numberOfLines={1}>{[...w.aliases, w.field].join(' · ')}</Text> : null}
+                {open ? <Text style={[s.optF, { color: R.boardSoft }]} numberOfLines={1}>{[...w.aliases, w.field].join(' · ')}</Text> : null}
               </View>
             </Pressable>
           );
         })}
       </View>
-      <Pressable onPressIn={() => setShow(true)} onPressOut={() => setShow(false)} style={[s.hold, open && { borderColor: SL.yellow }]} accessibilityRole="button" accessibilityLabel="Hold to see your diseases">
-        <Text style={[s.holdT, open && { color: SL.yellow }]}>{open ? 'Tap one while holding' : 'Hold here to see them'}</Text>
+      <Pressable onPressIn={() => setShow(true)} onPressOut={() => setShow(false)} style={[s.hold, { borderColor: open ? R.mark : R.line }]} accessibilityRole="button" accessibilityLabel="Hold to see your diseases">
+        <Text style={[s.holdT, { color: open ? R.mark : R.ink }]}>{open ? 'Tap one while holding' : 'Hold here to see them'}</Text>
       </Pressable>
     </>
   );
@@ -300,11 +302,11 @@ const s = StyleSheet.create({
   row: { flexDirection: 'row', gap: u(8), alignItems: 'stretch' },
   act: { flex: 1, paddingHorizontal: u(8) },
   wrap: { flexDirection: 'row', flexWrap: 'wrap', gap: u(8) },
-  result: { fontFamily: SL.body, fontSize: u(16), lineHeight: u(21), color: SL.chalk },
-  option: { flexDirection: 'row', alignItems: 'center', gap: u(12), backgroundColor: SL.board, borderWidth: SL.frameW * 0.6, borderColor: SL.frame, borderRadius: u(4), paddingVertical: u(12), paddingHorizontal: u(14), minHeight: u(62) },
+  result: { fontFamily: SL.body, fontSize: u(16), lineHeight: u(21) },
+  option: { flexDirection: 'row', alignItems: 'center', gap: u(12), borderWidth: SL.frameW * 0.6, borderColor: SL.frame, borderRadius: u(4), paddingVertical: u(12), paddingHorizontal: u(14), minHeight: u(62) },
   optNo: { fontFamily: SL.head, fontSize: u(24), color: SL.yellow, width: u(18) },
   optT: { fontFamily: SL.head, fontSize: u(18), lineHeight: u(21), color: SL.chalk },
-  optF: { fontFamily: SL.body, fontSize: u(12.5), color: SL.soft },
-  hold: { borderWidth: 1.5, borderStyle: 'dashed', borderColor: SL.line, borderRadius: u(14), paddingVertical: u(16), alignItems: 'center' },
-  holdT: { fontFamily: SL.head, fontSize: u(17), color: SL.chalk },
+  optF: { fontFamily: SL.body, fontSize: u(12.5) },
+  hold: { borderWidth: 1.5, borderStyle: 'dashed', borderRadius: u(14), paddingVertical: u(16), alignItems: 'center' },
+  holdT: { fontFamily: SL.head, fontSize: u(17) },
 });

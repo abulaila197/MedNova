@@ -10,7 +10,7 @@ import { PauseMenu } from '../shell/PauseMenu';
 import type { PlayProps } from '../shell/types';
 import type { BoardHandle } from './Board';
 import { FIELDS, RECENT_KEY, WORDS, wordById } from './data';
-import { ChalkBtn, ChalkChip, ChalkTimer, ChalkTitle, Kicker, Ledge, Note, PauseBtn, Panel, SL, SlateScreen, TopRow, useSlateFonts } from './slate';
+import { ChalkBtn, ChalkChip, ChalkTimer, ChalkTitle, Kicker, Ledge, Note, PauseBtn, Panel, SL, SlateScreen, TopRow, useRoom, useSlateFonts } from './slate';
 import { soloLeft, startSolo, stepSolo, type SoloEvent, type SoloRun } from './solo';
 import { FitBoard } from './Stage';
 
@@ -20,6 +20,7 @@ const snapshot = (r: SoloRun, now: number) => (r.phase === 'drawing' ? stepSolo(
 /** Solo practice (SA2): pick fields, draw against 60 s, then Next, Retry or Finish. Nothing asked, nothing gained. */
 export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   const fonts = useSlateFonts();
+  const R = useRoom();
   const [run, setRun] = useState<SoloRun | null>((play.resume as SoloRun | null) ?? null);
   const ref = useRef<SoloRun | null>(run);
   const [now, setNow] = useState(Date.now());
@@ -127,10 +128,10 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
         }
       />
       <Panel style={s.word}>
-        <Text style={s.wordT} numberOfLines={2} adjustsFontSizeToFit>
+        <Text style={[s.wordT, { color: R.mark }]} numberOfLines={2} adjustsFontSizeToFit>
           {paused ? '· · ·' : w.name}
         </Text>
-        <Text style={s.field} numberOfLines={1}>{paused ? ' ' : [w.aliases.length ? w.aliases.join(', ') : null, w.field].filter(Boolean).join(' · ')}</Text>
+        <Text style={[s.field, { color: R.soft }]} numberOfLines={1}>{paused ? ' ' : [w.aliases.length ? w.aliases.join(', ') : null, w.field].filter(Boolean).join(' · ')}</Text>
       </Panel>
       <FitBoard boardKey={run.board} boardRef={board} ink={ink} size={size} erase={erase} enabled={phase === 'drawing'} paused={paused} />
       {phase === 'drawing' ? (
@@ -156,7 +157,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
 const s = StyleSheet.create({
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: u(5) },
   word: { alignItems: 'center', paddingVertical: u(8) },
-  wordT: { fontFamily: SL.head, fontSize: u(21), lineHeight: u(25), color: SL.yellow, textAlign: 'center' },
-  field: { fontFamily: SL.body, fontSize: u(13), color: SL.soft },
+  wordT: { fontFamily: SL.head, fontSize: u(21), lineHeight: u(25), textAlign: 'center' },
+  field: { fontFamily: SL.body, fontSize: u(13) },
   row: { flexDirection: 'row', gap: u(8), flexWrap: 'wrap' },
 });

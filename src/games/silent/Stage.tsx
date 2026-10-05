@@ -5,7 +5,7 @@ import Svg, { Circle, Path } from 'react-native-svg';
 import { u } from '@/theme/scale';
 
 import { Board, type BoardHandle, type Stroke } from './Board';
-import { ChalkTitle, Frame, Note, PausedCover, SL } from './slate';
+import { ChalkTitle, Frame, Note, PausedCover, SL, useRoom } from './slate';
 
 /**
  * The framed board sized to the free space. The shape is fixed the first time it is measured for a turn
@@ -15,6 +15,7 @@ export function FitBoard({ boardKey, boardRef, shapeRef, ink, size, erase, enabl
   const [area, setArea] = useState<{ w: number; h: number } | null>(null);
   const [shape, setShape] = useState<{ key: string | number; ratio: number } | null>(null);
   const fw = SL.frameW * 2;
+  const room = useRoom();
   let ratio = shape?.key === boardKey ? shape.ratio : null;
   if (area && ratio == null) {
     ratio = Math.max(0.6, Math.min(1.5, (area.h - fw) / Math.max(1, area.w - fw)));
@@ -28,7 +29,7 @@ export function FitBoard({ boardKey, boardRef, shapeRef, ink, size, erase, enabl
     <View style={s.fill} onLayout={(e) => setArea({ w: e.nativeEvent.layout.width, h: e.nativeEvent.layout.height })}>
       {area && ratio ? (
         <Frame style={{ width }}>
-          <Board key={boardKey} ref={boardRef} color={SL.inks[ink]} width={SL.sizes[size]} erase={erase} bg={SL.board} enabled={enabled && !paused} initial={initial} ratio={ratio} />
+          <Board key={boardKey} ref={boardRef} color={SL.inks[ink]} width={SL.sizes[size]} erase={erase} bg={room.board} enabled={enabled && !paused} initial={initial} ratio={ratio} />
           {paused ? <PausedCover /> : null}
         </Frame>
       ) : null}
@@ -39,6 +40,7 @@ export function FitBoard({ boardKey, boardRef, shapeRef, ink, size, erase, enabl
 /** Acting turn (SA4): no board, a chalk mime in the frame and the house rules. */
 export function ActingCard({ children, paused }: { children?: ReactNode; paused?: boolean }) {
   const c = SL.chalk;
+  const room = useRoom();
   return (
     <View style={s.fill}>
       <Frame style={[s.act]}>
@@ -47,10 +49,10 @@ export function ActingCard({ children, paused }: { children?: ReactNode; paused?
           <Path d="M42 26 L42 60 M42 36 L20 22 M42 36 L66 24 M42 60 L26 90 M42 60 L58 90" stroke={c} strokeWidth={3} strokeLinecap="round" fill="none" />
           <Path d="M36 15 l3 0 M45 15 l3 0 M38 21 q4 2 8 0" stroke={c} strokeWidth={1.6} strokeLinecap="round" fill="none" />
         </Svg>
-        <ChalkTitle size={26} style={{ textAlign: 'center' }}>
+        <ChalkTitle size={26} color={SL.chalk} style={{ textAlign: 'center' }}>
           Act it out
         </ChalkTitle>
-        <Note style={{ textAlign: 'center', maxWidth: u(210) }}>No sounds, no words, no mouthing letters, no pointing at things in the room.</Note>
+        <Note style={{ textAlign: 'center', maxWidth: u(210), color: room.boardSoft }}>No sounds, no words, no mouthing letters, no pointing at things in the room.</Note>
         {children}
         {paused ? <PausedCover /> : null}
       </Frame>
