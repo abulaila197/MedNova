@@ -2,6 +2,7 @@ import type { GameDef } from '../shell/types';
 import { CF } from './core';
 import { CASES, caseById } from './data';
 import { OfflinePlay } from './OfflinePlay';
+import { caseFilesScreens, INK, INK_TEAMS } from './screens';
 import { SoloPlay } from './SoloPlay';
 
 /** Case Files on the shared shell (CF1-CF10, TMG-CF): Solo library and Offline; Online waits for the shared online layer. */
@@ -23,7 +24,7 @@ export const caseFiles: GameDef = {
     },
     {
       mode: 'offline',
-      title: 'Pass the phone',
+      title: 'Same case, sealed',
       blurb: 'Everyone works the same case alone, in turn. Sealed until the last one closes it.',
       howTo: [
         'Add 2 to 6 players, or split them into teams.',
@@ -46,6 +47,9 @@ export const caseFiles: GameDef = {
   teamScore: 'average',
   playersNote: () => 'Player 1 is you, the phone owner: a wrong first diagnosis of yours goes to Learn. Pass the phone earns no EXP.',
   Play: { solo: SoloPlay, offline: OfflinePlay },
+  // RS3: one look of its own, so its shell screens are drawn in the Evidence board look too.
+  palette: { seats: INK, teams: INK_TEAMS },
+  screens: caseFilesScreens,
   // CF6: a Solo case pays its points the first time only; Offline pays nothing.
   exp: (_score, items) => items.reduce((a, i) => a + (Number(i.gameData.exp) || 0), 0),
   expCap: (_settings, mode) => (mode === 'offline' ? 0 : 3 * CF.points.ddRight + CF.points.provisional + CF.points.timeMax),

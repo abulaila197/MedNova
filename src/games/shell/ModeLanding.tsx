@@ -1,8 +1,5 @@
-import { router } from 'expo-router';
-import { useCallback, useState } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
-import { useFocusEffect } from 'expo-router';
 
 import { Back } from '@/features/learn/Back';
 import { GAME_PHOTOS, GAMES } from '@/data/games';
@@ -10,11 +7,9 @@ import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
-import { engine } from '../engine';
-import type { Mode, Play } from '../engine/types';
-import { trialsLeft } from './flow';
-import { useSession } from './session';
+import type { Mode } from '../engine/types';
 import type { GameDef } from './types';
+import { useLanding } from './useShellPages';
 import { Body, Btn, Card, GameScreen, Ghost, Kick, Title } from './ui';
 
 export const MODE_NAME: Record<Mode, string> = { solo: 'Solo', offline: 'Offline Multiplayer', online: 'Online Multiplayer' };
@@ -23,33 +18,7 @@ export const MODE_NAME: Record<Mode, string> = { solo: 'Solo', offline: 'Offline
 export function ModeLanding({ def }: { def: GameDef }) {
   const t = useTheme();
   const g = GAMES.find((x) => x.key === def.key)!;
-  const signedIn = !!useSession((s) => s.userId);
-  const [open, setOpen] = useState<Mode | null>(null);
-  const [resume, setResume] = useState<Partial<Record<Mode, Play | null>>>({});
-  const [left, setLeft] = useState<Partial<Record<Mode, number | null>>>({});
-
-  useFocusEffect(
-    useCallback(() => {
-      let live = true;
-      (async () => {
-        const r: typeof resume = {};
-        const l: typeof left = {};
-        for (const m of def.modes) {
-          r[m.mode] = await engine.recorder.resumable(def.key, m.mode);
-          l[m.mode] = await trialsLeft(def.key, m.mode);
-        }
-        if (live) (setResume(r), setLeft(l));
-      })();
-      return () => {
-        live = false;
-      };
-    }, [def, signedIn]),
-  );
-
-  const go = async (mode: Mode) => {
-    if (await engine.gate.mustSignIn(def.key, mode, signedIn)) router.push(`/play/${def.key}/gate?mode=${mode}`);
-    else router.push(`/play/${def.key}/setup?mode=${mode}`);
-  };
+  const { open, setOpen, resume, left, go, resumePlay, resumeLabel } = useLanding(def);
 
   const photo = GAME_PHOTOS[t.mode][def.key as keyof (typeof GAME_PHOTOS)['dark']];
   return (
@@ -93,7 +62,7 @@ export function ModeLanding({ def }: { def: GameDef }) {
               : null}
             {m.soon ? null : (
               <View style={s.btns}>
-                {bm ? <Btn label={`Resume ${def.itemNoun ?? 'case'} ${(bm.resume as { index?: number } | null)?.index != null ? (bm.resume as { index: number }).index + 1 : ''}`.trim()} onPress={() => router.push(`/play/${def.key}/run?play=${bm.id}`)} style={{ flex: 1 }} /> : null}
+                {bm ? <Btn label={resumeLabel(bm)} onPress={() => resumePlay(bm)} style={{ flex: 1 }} /> : null}
                 {bm ? <Ghost label="New game" onPress={() => go(m.mode)} style={{ flex: 1 }} /> : <Btn label="Play" onPress={() => go(m.mode)} style={{ flex: 1 }} />}
               </View>
             )}

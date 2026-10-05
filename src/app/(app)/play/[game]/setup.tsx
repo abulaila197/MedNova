@@ -19,5 +19,6 @@ export default function SetupPage() {
   }, [from]);
   if (!def) return <Redirect href="/games" />;
   if (prefill === undefined) return null;
-  return <Setup def={def} mode={mode} prefill={prefill ?? undefined} prefillSeats={seats} />;
+  const S = def.screens?.Setup ?? Setup;
+  return <S def={def} mode={mode} prefill={prefill ?? undefined} prefillSeats={seats} />;
 }

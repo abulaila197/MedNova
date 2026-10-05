@@ -6,9 +6,9 @@ import { u } from '@/theme/scale';
 import { engine } from '../engine';
 import { usePauseHide } from '../engine/usePauseHide';
 import { recordItem } from '../shell/flow';
-import { PauseMenu } from '../shell/PauseMenu';
 import type { PlayProps } from '../shell/types';
 import { CaseBoard } from './CaseBoard';
+import { CasePause } from './screens';
 import { scoreRun, snapshot, startRun, stepRun, type CaseDef, type Run, type RunEvent } from './core';
 import { CASES, PLAYED_KEY, caseById, caseLabel, dossierOf, type Played } from './data';
 import { Btn, Kicker, NR, NoirScreen, Stamp, T } from './noir';
@@ -99,7 +99,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
         onEvent={dispatch}
         onPause={() => dispatch({ type: 'PAUSE', now: Date.now() })}
       />
-      <PauseMenu open={state.run.phase === 'paused'} mode="solo" onResume={() => dispatch({ type: 'RESUME', now: Date.now() })} onQuit={onQuit} />
+      <CasePause open={state.run.phase === 'paused'} mode="solo" onResume={() => dispatch({ type: 'RESUME', now: Date.now() })} onQuit={onQuit} />
     </>
   );
 }

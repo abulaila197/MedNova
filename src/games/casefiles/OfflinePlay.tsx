@@ -7,10 +7,10 @@ import { u } from '@/theme/scale';
 import { engine } from '../engine';
 import { usePauseHide } from '../engine/usePauseHide';
 import { recordItem } from '../shell/flow';
-import { PauseMenu } from '../shell/PauseMenu';
 import { teamsOf } from '../shell/teams';
 import type { PlayProps } from '../shell/types';
 import { CaseBoard } from './CaseBoard';
+import { CasePause } from './screens';
 import { scoreRun, type RunEvent } from './core';
 import { CASES, PLAYED_KEY, caseById, caseLabel, dossierOf, type Played } from './data';
 import { Btn, Card, CaseTitle, Kicker, NR, NoirScreen, Stamp, T, clock } from './noir';
@@ -90,7 +90,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   if (!o) return <NoirScreen>{null}</NoirScreen>;
   const def = caseById.get(o.caseId)!;
   const menu = (
-    <PauseMenu
+    <CasePause
       open={o.run?.phase === 'paused'}
       mode="offline"
       seats={play.seats.map((x) => ({ ...x, removed: x.removed || !o.order.includes(x.seat) }))}

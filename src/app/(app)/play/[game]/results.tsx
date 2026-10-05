@@ -15,5 +15,6 @@ export default function ResultsPage() {
   if (!def) return <Redirect href="/games" />;
   if (!data) return null;
   if (!data.play) return <Redirect href="/games" />;
-  return <Results def={def} play={data.play} items={data.items} />;
+  const Rs = def.screens?.Results ?? Results;
+  return <Rs def={def} play={data.play} items={data.items} />;
 }

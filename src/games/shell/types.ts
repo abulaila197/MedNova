@@ -1,6 +1,6 @@
 import type { ComponentType } from 'react';
 
-import type { GameKey, Mode, Play, PlayItem, Standing } from '../engine/types';
+import type { GameKey, Mode, Play, PlayItem, Seat, Standing } from '../engine/types';
 
 /** One mode card on a game's landing page. */
 export type ModeDef = {
@@ -55,4 +55,15 @@ export type GameDef = {
   teamScore?: 'average' | 'sum';
   /** Note under the players list in setup (default: the phone owner earns EXP and Learn entries). */
   playersNote?: (players: number) => string;
+  /** The game's own player and team colours (and team names), when the app's would clash with its look. */
+  palette?: { seats: string[]; teams: { name: string; color: string }[] };
+  /** RS3: a game with one look of its own draws the shared screens itself; the logic stays in the shell hooks. */
+  screens?: OwnScreens;
+};
+
+export type OwnScreens = {
+  Landing?: ComponentType<{ def: GameDef }>;
+  Gate?: ComponentType<{ def: GameDef; mode: Mode }>;
+  Setup?: ComponentType<{ def: GameDef; mode: Mode; prefill?: Record<string, unknown>; prefillSeats?: Seat[] }>;
+  Results?: ComponentType<{ def: GameDef; play: Play; items: PlayItem[] }>;
 };

@@ -1,4 +1,3 @@
-import { router } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { GAMES } from '@/data/games';
@@ -7,9 +6,8 @@ import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import type { Play, PlayItem } from '../engine/types';
-import { startPlay } from './flow';
-import { teamsOf, teamStandings } from './teams';
 import type { GameDef } from './types';
+import { useResults } from './useShellPages';
 import { Body, Btn, Card, GameScreen, Ghost, Kick, Title } from './ui';
 
 const MARK: Record<PlayItem['outcome'], string> = { right: '✓', wrong: '✕', skipped: '–', timed_out: '⏱' };
@@ -18,19 +16,7 @@ const MARK: Record<PlayItem['outcome'], string> = { right: '✓', wrong: '✕', 
 export function Results({ def, play, items }: { def: GameDef; play: Play; items: PlayItem[] }) {
   const t = useTheme();
   const g = GAMES.find((x) => x.key === def.key)!;
-  const rematch = async () => {
-    const next = await startPlay(def.key, play.mode, play.settings, play.seats.filter((x) => !x.removed));
-    router.replace(`/play/${def.key}/run?play=${next.id}`);
-  };
-  // One phone: the top numbers are the phone owner's (seat 0); every player's cases are listed by name.
-  const multi = play.seats.length > 1;
-  const mine = multi ? items.filter((i) => i.seat === 0) : items;
-  const right = mine.filter((i) => i.outcome === 'right').length;
-  const nameOf = new Map(play.seats.map((x) => [x.seat, x.name]));
-  const colorOf = new Map(play.seats.map((x) => [x.seat, x.color]));
-  const teams = teamsOf(play);
-  const plain = def.plainItems?.(play) ?? false;
-  const teamRows = teams && play.standings.length > 1 ? teamStandings(play.standings, play.seats, teams, def.teamScore) : null;
+  const { multi, nameOf, colorOf, teamRows, plain, stats, missed, rematch, changeSettings, backToGames, openDossier } = useResults(def, play, items);
   return (
     <GameScreen>
       <View style={{ gap: u(6) }}>
@@ -38,10 +24,7 @@ export function Results({ def, play, items }: { def: GameDef; play: Play; items:
         <Title lead="Game" em="over" />
       </View>
       <Card style={s.top}>
-        {(def.summary?.(play, items) ?? [
-          { value: String(play.score), label: multi ? 'Your points' : 'Points' },
-          { value: `${right}/${mine.length}`, label: 'Solved' },
-        ]).map((x) => (
+        {stats.map((x) => (
           <View key={x.label} style={s.stat}>
             <Text style={[s.big, { color: t.white }]}>{x.value}</Text>
             <Kick>{x.label}</Kick>
@@ -86,20 +69,20 @@ export function Results({ def, play, items }: { def: GameDef; play: Play; items:
             </Text>
             {/* RS1: dossier links only here, once the game has ended. */}
             {i.answerKey ? (
-              <Pressable onPress={() => router.push(`/learn/dossier?id=${i.answerKey}`)} hitSlop={u(6)} accessibilityRole="link" accessibilityLabel={`Open the dossier for ${def.itemLabel?.(i) ?? i.itemId}`}>
+              <Pressable onPress={() => openDossier(i.answerKey!)} hitSlop={u(6)} accessibilityRole="link" accessibilityLabel={`Open the dossier for ${def.itemLabel?.(i) ?? i.itemId}`}>
                 <Text style={[s.link, { color: t.accent }]}>Dossier ›</Text>
               </Pressable>
             ) : null}
             {plain ? null : <Text style={[s.pts, { color: t.soft }]}>{i.points}</Text>}
           </View>
         ))}
-        {items.some((i) => i.feedsLearn && i.outcome !== 'right') ? <Body>{multi ? 'Your missed cases are waiting in Today\'s review.' : 'Missed cases are waiting in Today\'s review.'}</Body> : null}
+        {missed ? <Body>{multi ? 'Your missed cases are waiting in Today\'s review.' : 'Missed cases are waiting in Today\'s review.'}</Body> : null}
       </Card>
       <View style={{ flexDirection: 'row', gap: u(8) }}>
         <Btn label="Rematch" onPress={rematch} style={{ flex: 1 }} />
-        <Ghost label="Change settings" onPress={() => router.replace(`/play/${def.key}/setup?mode=${play.mode}&from=${play.id}`)} style={{ flex: 1 }} />
+        <Ghost label="Change settings" onPress={changeSettings} style={{ flex: 1 }} />
       </View>
-      <Ghost label="Back to games" onPress={() => router.replace('/games')} />
+      <Ghost label="Back to games" onPress={backToGames} />
     </GameScreen>
   );
 }

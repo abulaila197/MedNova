@@ -1,5 +1,3 @@
-import { router } from 'expo-router';
-import { useState } from 'react';
 import { Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
 import { Back } from '@/features/learn/Back';
@@ -9,50 +7,19 @@ import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import type { Mode, Seat } from '../engine/types';
-import { startPlay } from './flow';
-import { presetTeam, type Team } from './teams';
+import type { Team } from './teams';
 import type { GameDef } from './types';
+import { useSetup } from './useSetup';
 import { Btn, Card, Chips, GameScreen, Title } from './ui';
 
-/** Player colours for one-phone games (decision DPO1: name + colour). */
-export const SEAT_COLORS = ['#6fd6ff', '#a48bff', '#ff7aa8', '#f5b041', '#34d399', '#ff8a5b'];
+export { SEAT_COLORS } from './useSetup';
 
 /** Shared setup: the game's options as chips. Rule 9: they lock when the game starts. `prefill` comes from "Change settings". */
 export function Setup({ def, mode, prefill, prefillSeats }: { def: GameDef; mode: Mode; prefill?: Record<string, unknown>; prefillSeats?: Seat[] }) {
   const t = useTheme();
   const g = GAMES.find((x) => x.key === def.key)!;
-  const opts = def.setup[mode] ?? [];
-  const [vals, setVals] = useState<Record<string, string | number>>(() =>
-    Object.fromEntries(opts.map((o) => [o.key, (prefill?.[o.key] as string | number | undefined) ?? o.initial])),
-  );
-  const [busy, setBusy] = useState(false);
-  const range = def.players?.[mode];
-  const [seats, setSeats] = useState<Seat[]>(() =>
-    prefillSeats?.length
-      ? prefillSeats.map((x, i) => ({ seat: i, name: x.name, color: x.color ?? SEAT_COLORS[i], team: x.team }))
-      : Array.from({ length: range?.min ?? 1 }, (_, i) => ({ seat: i, name: i === 0 ? 'You' : `Player ${i + 1}`, color: SEAT_COLORS[i] })),
-  );
-
-  // TM1: optional teams, set by the host here. Players take their team's colour.
-  const canTeam = !!range && !!def.teams?.[mode];
-  const [teams, setTeams] = useState<Team[] | null>(() => {
-    const t = prefill?.teams as Team[] | undefined;
-    return canTeam && Array.isArray(t) && t.length >= 2 ? t : null;
-  });
-  const emptyTeam = teams?.find((tm) => !seats.some((x) => x.team === tm.id));
-
-  const start = async () => {
-    setBusy(true);
-    const named = range
-      ? seats.map((x, i) => {
-          const tm = teams?.find((y) => y.id === x.team);
-          return { seat: i, name: x.name.trim() || `Player ${i + 1}`, color: tm?.color ?? x.color, ...(tm ? { team: tm.id } : null) };
-        })
-      : undefined;
-    const settings = teams ? { ...vals, teams: teams.map((x) => ({ ...x, name: x.name.trim() || presetTeam(x.id).name })) } : vals;
-    const play = await startPlay(def.key, mode, settings, named);
-    router.replace(`/play/${def.key}/run?play=${play.id}`);
-  };
+  const st = useSetup(def, mode, prefill, prefillSeats);
+  const { opts, vals, setVals, range, seats, teams, canTeam, emptyTeam, busy, start } = st;
 
   // Compact on purpose: every game's setup fits one phone screen without scrolling (Yazan, 2026-10-05).
   return (
@@ -61,7 +28,7 @@ export function Setup({ def, mode, prefill, prefillSeats }: { def: GameDef; mode
       <Title lead={g.lead} em={g.em} size={21} />
       {canTeam || opts.length ? (
         <Card style={s.card}>
-          {canTeam ? <Teams teams={teams} setTeams={setTeams} seats={seats} setSeats={setSeats} /> : null}
+          {canTeam ? <Teams st={st} /> : null}
           {opts.map((o, i) => (
             <View key={o.key} style={[s.opt, (canTeam || i > 0) && { borderTopWidth: 1, borderTopColor: t.panelLine, paddingTop: u(8) }]}>
               <View style={s.line}>
@@ -74,7 +41,7 @@ export function Setup({ def, mode, prefill, prefillSeats }: { def: GameDef; mode
           ))}
         </Card>
       ) : null}
-      {range ? <Players seats={seats} setSeats={setSeats} min={range.min} max={range.max} note={def.playersNote?.(seats.length)} teams={teams} /> : null}
+      {range ? <Players st={st} min={range.min} max={range.max} note={def.playersNote?.(seats.length)} teams={teams} /> : null}
       <Text style={[s.small, { color: t.dim, textAlign: 'center' }]}>
         {emptyTeam ? `${emptyTeam.name} has no players yet.` : 'Settings lock once the game starts.'}
       </Text>
@@ -83,13 +50,12 @@ export function Setup({ def, mode, prefill, prefillSeats }: { def: GameDef; mode
   );
 }
 
+type SetupState = ReturnType<typeof useSetup>;
+
 /** Players for a one-phone game: a name and a colour each. Player 1 is the phone owner (DPO6). */
-function Players({ seats, setSeats, min, max, note, teams }: { seats: Seat[]; setSeats: (f: (p: Seat[]) => Seat[]) => void; min: number; max: number; note?: string; teams: Team[] | null }) {
+function Players({ st, min, max, note, teams }: { st: SetupState; min: number; max: number; note?: string; teams: Team[] | null }) {
   const t = useTheme();
-  const set = (i: number, patch: Partial<Seat>) => setSeats((p) => p.map((x, j) => (j === i ? { ...x, ...patch } : x)));
-  const add = () =>
-    setSeats((p) => [...p, { seat: p.length, name: `Player ${p.length + 1}`, color: SEAT_COLORS.find((c) => !p.some((x) => x.color === c)), team: teams ? teams[p.length % teams.length].id : undefined }]);
-  const remove = (i: number) => setSeats((p) => p.filter((_, j) => j !== i).map((x, j) => ({ ...x, seat: j })));
+  const { seats, setSeat: set, addSeat: add, removeSeat: remove, colors } = st;
   return (
     <Card style={s.card}>
       <View style={s.head}>
@@ -142,7 +108,7 @@ function Players({ seats, setSeats, min, max, note, teams }: { seats: Seat[]; se
           </View>
           {teams ? (teams.length > 3 ? teamDots : null) : (
             <View style={s.sw}>
-              {SEAT_COLORS.map((c) => {
+              {colors.map((c) => {
                 const taken = seats.some((o, j) => j !== i && o.color === c);
                 const on = x.color === c;
                 return (
@@ -170,27 +136,16 @@ function Players({ seats, setSeats, min, max, note, teams }: { seats: Seat[]; se
 }
 
 /** TM1-TM4: teams on or off, how many, and their names (preset colour each; the host can rename). */
-function Teams({ teams, setTeams, seats, setSeats}: { teams: Team[] | null; setTeams: (t: Team[] | null) => void; seats: Seat[]; setSeats: (f: (p: Seat[]) => Seat[]) => void }) {
+function Teams({ st }: { st: SetupState }) {
   const t = useTheme();
+  const { teams, teamCount, renameTeam, teamChoices: choices, preset } = st;
   const count = teams?.length ?? 0;
-  const max = Math.min(6, seats.length);
-  const make = (n: number) => {
-    const next = Array.from({ length: n }, (_, i) => teams?.[i] ?? presetTeam(i));
-    setTeams(next);
-    // Everyone gets a team: keep a valid pick, otherwise deal players round the teams in order.
-    setSeats((p) => p.map((x, i) => ({ ...x, team: x.team != null && x.team < n ? x.team : i % n })));
-  };
-  const off = () => {
-    setTeams(null);
-    setSeats((p) => p.map(({ team: _t, ...x }) => x));
-  };
-  const choices = [{ value: 0, label: 'Off' }, ...Array.from({ length: Math.max(0, max - 1) }, (_, i) => ({ value: i + 2, label: String(i + 2) }))];
   return (
     <View style={s.opt}>
       <View style={s.line}>
         <Text style={[s.lbl, s.side, { color: t.white }]}>Teams</Text>
         <View style={{ flex: 1 }}>
-          <Chips choices={choices} value={count} onChange={(v) => (v ? make(Number(v)) : off())} />
+          <Chips choices={choices} value={count} onChange={(v) => teamCount(Number(v))} />
         </View>
       </View>
       {teams ? (
@@ -200,9 +155,9 @@ function Teams({ teams, setTeams, seats, setSeats}: { teams: Team[] | null; setT
               <View style={[s.tdot, { backgroundColor: tm.color, marginRight: u(6) }]} />
               <TextInput
                 value={tm.name}
-                onChangeText={(v) => setTeams(teams.map((y, j) => (j === i ? { ...y, name: v } : y)))}
+                onChangeText={(v) => renameTeam(i, v)}
                 maxLength={16}
-                placeholder={presetTeam(tm.id).name}
+                placeholder={preset(tm.id).name}
                 placeholderTextColor={t.dim}
                 style={[s.pname, { color: t.fg }]}
                 accessibilityLabel={`Team ${i + 1} name`}
