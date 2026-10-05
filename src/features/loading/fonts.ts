@@ -32,7 +32,11 @@ const FILES: Record<string, number> = {
 };
 
 export async function loadFontsFor(key: string) {
-  const want = LOAD[key]?.fonts ?? [];
+  await loadFonts(LOAD[key]?.fonts ?? []);
+}
+
+/** Loads any of the fonts above by name (games reuse their loading page's fonts). */
+export async function loadFonts(want: string[]) {
   const map = Object.fromEntries(want.filter((f) => !Font.isLoaded(f)).map((f) => [f, FILES[f]]));
   if (Object.keys(map).length) await Font.loadAsync(map);
 }

@@ -7,17 +7,20 @@ import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
-/** A game page: the app sky and the game header (GH1), no dock, content scrolls with a gap under the header. */
-export function GameScreen({ children, scroll = true, top }: { children: ReactNode; scroll?: boolean; top?: ReactNode }) {
+/**
+ * A game page: the app sky and the game header (GH1), no dock, content scrolls with a gap under the header.
+ * A game with its own design language passes its own background as `under` (no app glow) and body spacing.
+ */
+export function GameScreen({ children, scroll = true, top, under, bodyStyle }: { children: ReactNode; scroll?: boolean; top?: ReactNode; under?: ReactNode; bodyStyle?: StyleProp<ViewStyle> }) {
   return (
-    <Screen dock={false} glow={1} game>
+    <Screen dock={false} glow={under ? -1 : 1} game under={under}>
       {top}
       {scroll ? (
-        <ScrollView contentContainerStyle={s.body} showsVerticalScrollIndicator={false}>
+        <ScrollView contentContainerStyle={[s.body, bodyStyle]} showsVerticalScrollIndicator={false}>
           {children}
         </ScrollView>
       ) : (
-        <View style={[s.body, { flex: 1 }]}>{children}</View>
+        <View style={[s.body, bodyStyle, { flex: 1 }]}>{children}</View>
       )}
     </Screen>
   );

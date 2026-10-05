@@ -1,0 +1,2216 @@
+[
+ {
+  "id": "w001",
+  "name": "Myocardial infarction",
+  "field": "Cardiology",
+  "aliases": [
+   "Heart attack",
+   "MI"
+  ],
+  "dossier": "myocardial-infarction-acute-coronary-syndrome"
+ },
+ {
+  "id": "w002",
+  "name": "Heart failure",
+  "field": "Cardiology",
+  "aliases": [
+   "Congestive heart failure",
+   "CHF"
+  ]
+ },
+ {
+  "id": "w003",
+  "name": "Angina pectoris",
+  "field": "Cardiology",
+  "aliases": [
+   "Angina"
+  ]
+ },
+ {
+  "id": "w004",
+  "name": "Hypertension",
+  "field": "Cardiology",
+  "aliases": [
+   "High blood pressure"
+  ]
+ },
+ {
+  "id": "w005",
+  "name": "Hypotension",
+  "field": "Cardiology",
+  "aliases": [
+   "Low blood pressure"
+  ]
+ },
+ {
+  "id": "w006",
+  "name": "Atrial fibrillation",
+  "field": "Cardiology",
+  "aliases": [
+   "AFib",
+   "AF"
+  ],
+  "dossier": "atrial-fibrillation"
+ },
+ {
+  "id": "w007",
+  "name": "Cardiac arrest",
+  "field": "Cardiology",
+  "aliases": []
+ },
+ {
+  "id": "w008",
+  "name": "Aortic aneurysm",
+  "field": "Cardiology",
+  "aliases": []
+ },
+ {
+  "id": "w009",
+  "name": "Aortic dissection",
+  "field": "Cardiology",
+  "aliases": [],
+  "dossier": "aortic-dissection"
+ },
+ {
+  "id": "w010",
+  "name": "Atherosclerosis",
+  "field": "Cardiology",
+  "aliases": []
+ },
+ {
+  "id": "w011",
+  "name": "Rheumatic fever",
+  "field": "Cardiology",
+  "aliases": [],
+  "dossier": "acute-rheumatic-fever"
+ },
+ {
+  "id": "w012",
+  "name": "Heart block",
+  "field": "Cardiology",
+  "aliases": []
+ },
+ {
+  "id": "w013",
+  "name": "Cardiogenic shock",
+  "field": "Cardiology",
+  "aliases": []
+ },
+ {
+  "id": "w014",
+  "name": "Coronary artery disease",
+  "field": "Cardiology",
+  "aliases": [
+   "CAD",
+   "Coronary heart disease"
+  ]
+ },
+ {
+  "id": "w015",
+  "name": "Pulmonary hypertension",
+  "field": "Cardiology",
+  "aliases": []
+ },
+ {
+  "id": "w016",
+  "name": "Ventricular fibrillation",
+  "field": "Cardiology",
+  "aliases": [
+   "VFib",
+   "VF"
+  ]
+ },
+ {
+  "id": "w017",
+  "name": "Hypertensive crisis",
+  "field": "Cardiology",
+  "aliases": []
+ },
+ {
+  "id": "w018",
+  "name": "Deep vein thrombosis",
+  "field": "Vascular surgery",
+  "aliases": [
+   "DVT"
+  ],
+  "dossier": "deep-vein-thrombosis"
+ },
+ {
+  "id": "w019",
+  "name": "Peripheral artery disease",
+  "field": "Vascular surgery",
+  "aliases": [
+   "PAD",
+   "Peripheral arterial disease"
+  ]
+ },
+ {
+  "id": "w020",
+  "name": "Varicose veins",
+  "field": "Vascular surgery",
+  "aliases": []
+ },
+ {
+  "id": "w021",
+  "name": "Raynaud's disease",
+  "field": "Vascular surgery",
+  "aliases": [],
+  "dossier": "raynaud-phenomenon"
+ },
+ {
+  "id": "w022",
+  "name": "Lymphedema",
+  "field": "Vascular surgery",
+  "aliases": []
+ },
+ {
+  "id": "w023",
+  "name": "Gangrene",
+  "field": "Vascular surgery",
+  "aliases": [],
+  "dossier": "gangrene"
+ },
+ {
+  "id": "w024",
+  "name": "Asthma",
+  "field": "Pulmonology",
+  "aliases": [],
+  "dossier": "asthma"
+ },
+ {
+  "id": "w025",
+  "name": "Pneumonia",
+  "field": "Pulmonology",
+  "aliases": []
+ },
+ {
+  "id": "w026",
+  "name": "Bronchitis",
+  "field": "Pulmonology",
+  "aliases": []
+ },
+ {
+  "id": "w027",
+  "name": "Chronic obstructive pulmonary disease",
+  "field": "Pulmonology",
+  "aliases": [
+   "COPD"
+  ],
+  "dossier": "chronic-obstructive-pulmonary-disease-copd"
+ },
+ {
+  "id": "w028",
+  "name": "Emphysema",
+  "field": "Pulmonology",
+  "aliases": []
+ },
+ {
+  "id": "w029",
+  "name": "Tuberculosis",
+  "field": "Pulmonology",
+  "aliases": [
+   "TB"
+  ],
+  "dossier": "tuberculosis"
+ },
+ {
+  "id": "w030",
+  "name": "Pneumothorax",
+  "field": "Pulmonology",
+  "aliases": [
+   "Collapsed lung"
+  ],
+  "dossier": "pneumothorax"
+ },
+ {
+  "id": "w031",
+  "name": "Cystic fibrosis",
+  "field": "Pulmonology",
+  "aliases": [],
+  "dossier": "cystic-fibrosis"
+ },
+ {
+  "id": "w032",
+  "name": "Pulmonary embolism",
+  "field": "Pulmonology",
+  "aliases": [],
+  "dossier": "pulmonary-embolism"
+ },
+ {
+  "id": "w033",
+  "name": "Pulmonary edema",
+  "field": "Pulmonology",
+  "aliases": []
+ },
+ {
+  "id": "w034",
+  "name": "Influenza",
+  "field": "Pulmonology",
+  "aliases": [
+   "Flu"
+  ]
+ },
+ {
+  "id": "w035",
+  "name": "COVID-19",
+  "field": "Pulmonology",
+  "aliases": [
+   "COVID",
+   "Coronavirus"
+  ]
+ },
+ {
+  "id": "w036",
+  "name": "Croup",
+  "field": "Pulmonology",
+  "aliases": [],
+  "dossier": "croup-laryngotracheobronchitis"
+ },
+ {
+  "id": "w037",
+  "name": "Swine flu",
+  "field": "Pulmonology",
+  "aliases": [
+   "H1N1"
+  ]
+ },
+ {
+  "id": "w038",
+  "name": "Avian influenza",
+  "field": "Pulmonology",
+  "aliases": [
+   "Bird flu"
+  ]
+ },
+ {
+  "id": "w039",
+  "name": "Asbestosis",
+  "field": "Pulmonology",
+  "aliases": []
+ },
+ {
+  "id": "w040",
+  "name": "Silicosis",
+  "field": "Pulmonology",
+  "aliases": []
+ },
+ {
+  "id": "w041",
+  "name": "Pleurisy",
+  "field": "Pulmonology",
+  "aliases": [
+   "Pleuritis"
+  ]
+ },
+ {
+  "id": "w042",
+  "name": "Gastroesophageal reflux disease",
+  "field": "Gastroenterology",
+  "aliases": [
+   "GERD",
+   "Acid reflux"
+  ],
+  "dossier": "gastroesophageal-reflux-disease-gerd"
+ },
+ {
+  "id": "w043",
+  "name": "Gastritis",
+  "field": "Gastroenterology",
+  "aliases": []
+ },
+ {
+  "id": "w044",
+  "name": "Peptic ulcer disease",
+  "field": "Gastroenterology",
+  "aliases": [
+   "Stomach ulcer",
+   "PUD"
+  ],
+  "dossier": "peptic-ulcer-disease"
+ },
+ {
+  "id": "w045",
+  "name": "Appendicitis",
+  "field": "Gastroenterology",
+  "aliases": []
+ },
+ {
+  "id": "w046",
+  "name": "Gallstones",
+  "field": "Gastroenterology",
+  "aliases": [
+   "Cholelithiasis"
+  ],
+  "dossier": "cholelithiasis-gallstones-biliary-colic"
+ },
+ {
+  "id": "w047",
+  "name": "Pancreatitis",
+  "field": "Gastroenterology",
+  "aliases": []
+ },
+ {
+  "id": "w048",
+  "name": "Irritable bowel syndrome",
+  "field": "Gastroenterology",
+  "aliases": [
+   "IBS"
+  ],
+  "dossier": "irritable-bowel-syndrome-ibs"
+ },
+ {
+  "id": "w049",
+  "name": "Ulcerative colitis",
+  "field": "Gastroenterology",
+  "aliases": [],
+  "dossier": "ulcerative-colitis"
+ },
+ {
+  "id": "w050",
+  "name": "Crohn's disease",
+  "field": "Gastroenterology",
+  "aliases": [],
+  "dossier": "crohn-disease"
+ },
+ {
+  "id": "w051",
+  "name": "Celiac disease",
+  "field": "Gastroenterology",
+  "aliases": [],
+  "dossier": "celiac-disease"
+ },
+ {
+  "id": "w052",
+  "name": "Diverticulitis",
+  "field": "Gastroenterology",
+  "aliases": [],
+  "dossier": "acute-diverticulitis"
+ },
+ {
+  "id": "w053",
+  "name": "Hemorrhoids",
+  "field": "Gastroenterology",
+  "aliases": [
+   "Piles"
+  ],
+  "dossier": "hemorrhoids"
+ },
+ {
+  "id": "w054",
+  "name": "Inguinal hernia",
+  "field": "Gastroenterology",
+  "aliases": [],
+  "dossier": "inguinal-hernia"
+ },
+ {
+  "id": "w055",
+  "name": "Hiatal hernia",
+  "field": "Gastroenterology",
+  "aliases": []
+ },
+ {
+  "id": "w056",
+  "name": "Umbilical hernia",
+  "field": "Gastroenterology",
+  "aliases": []
+ },
+ {
+  "id": "w057",
+  "name": "Intestinal obstruction",
+  "field": "Gastroenterology",
+  "aliases": []
+ },
+ {
+  "id": "w058",
+  "name": "Gastroenteritis",
+  "field": "Gastroenterology",
+  "aliases": [
+   "Stomach flu"
+  ]
+ },
+ {
+  "id": "w059",
+  "name": "Peritonitis",
+  "field": "Gastroenterology",
+  "aliases": []
+ },
+ {
+  "id": "w060",
+  "name": "Anal fissure",
+  "field": "Gastroenterology",
+  "aliases": []
+ },
+ {
+  "id": "w061",
+  "name": "Lactose intolerance",
+  "field": "Gastroenterology",
+  "aliases": [],
+  "dossier": "lactose-intolerance"
+ },
+ {
+  "id": "w062",
+  "name": "Hepatitis A",
+  "field": "Hepatology",
+  "aliases": [],
+  "dossier": "hepatitis-a"
+ },
+ {
+  "id": "w063",
+  "name": "Hepatitis B",
+  "field": "Hepatology",
+  "aliases": [],
+  "dossier": "hepatitis-b"
+ },
+ {
+  "id": "w064",
+  "name": "Hepatitis C",
+  "field": "Hepatology",
+  "aliases": []
+ },
+ {
+  "id": "w065",
+  "name": "Cirrhosis",
+  "field": "Hepatology",
+  "aliases": []
+ },
+ {
+  "id": "w066",
+  "name": "Fatty liver disease",
+  "field": "Hepatology",
+  "aliases": []
+ },
+ {
+  "id": "w067",
+  "name": "Liver failure",
+  "field": "Hepatology",
+  "aliases": []
+ },
+ {
+  "id": "w068",
+  "name": "Stroke",
+  "field": "Neurology",
+  "aliases": [
+   "CVA",
+   "Cerebrovascular accident"
+  ]
+ },
+ {
+  "id": "w069",
+  "name": "Epilepsy",
+  "field": "Neurology",
+  "aliases": [
+   "Seizure disorder"
+  ],
+  "dossier": "epilepsy"
+ },
+ {
+  "id": "w070",
+  "name": "Migraine",
+  "field": "Neurology",
+  "aliases": [],
+  "dossier": "migraine"
+ },
+ {
+  "id": "w071",
+  "name": "Meningitis",
+  "field": "Neurology",
+  "aliases": [],
+  "dossier": "meningitis-overview"
+ },
+ {
+  "id": "w072",
+  "name": "Encephalitis",
+  "field": "Neurology",
+  "aliases": []
+ },
+ {
+  "id": "w073",
+  "name": "Multiple sclerosis",
+  "field": "Neurology",
+  "aliases": [
+   "MS"
+  ],
+  "dossier": "multiple-sclerosis"
+ },
+ {
+  "id": "w074",
+  "name": "Dementia",
+  "field": "Neurology",
+  "aliases": []
+ },
+ {
+  "id": "w075",
+  "name": "Concussion",
+  "field": "Neurology",
+  "aliases": []
+ },
+ {
+  "id": "w076",
+  "name": "Cerebral palsy",
+  "field": "Neurology",
+  "aliases": [
+   "CP"
+  ]
+ },
+ {
+  "id": "w077",
+  "name": "Sciatica",
+  "field": "Neurology",
+  "aliases": []
+ },
+ {
+  "id": "w078",
+  "name": "Carpal tunnel syndrome",
+  "field": "Neurology",
+  "aliases": [
+   "CTS"
+  ],
+  "dossier": "carpal-tunnel-syndrome"
+ },
+ {
+  "id": "w079",
+  "name": "Restless legs syndrome",
+  "field": "Neurology",
+  "aliases": [
+   "RLS"
+  ]
+ },
+ {
+  "id": "w080",
+  "name": "Bell's palsy",
+  "field": "Neurology",
+  "aliases": [],
+  "dossier": "bell-palsy"
+ },
+ {
+  "id": "w081",
+  "name": "Parkinson's disease",
+  "field": "Neurology",
+  "aliases": [
+   "Parkinson's"
+  ],
+  "dossier": "parkinson-disease"
+ },
+ {
+  "id": "w082",
+  "name": "Alzheimer's disease",
+  "field": "Neurology",
+  "aliases": [
+   "Alzheimer's"
+  ],
+  "dossier": "alzheimer-disease"
+ },
+ {
+  "id": "w083",
+  "name": "Tourette syndrome",
+  "field": "Neurology",
+  "aliases": [
+   "Tourette's"
+  ]
+ },
+ {
+  "id": "w084",
+  "name": "Huntington's disease",
+  "field": "Neurology",
+  "aliases": [],
+  "dossier": "huntington-disease"
+ },
+ {
+  "id": "w085",
+  "name": "Hydrocephalus",
+  "field": "Neurology",
+  "aliases": []
+ },
+ {
+  "id": "w086",
+  "name": "Amyotrophic lateral sclerosis",
+  "field": "Neurology",
+  "aliases": [
+   "ALS",
+   "Lou Gehrig's disease"
+  ],
+  "dossier": "amyotrophic-lateral-sclerosis-als"
+ },
+ {
+  "id": "w087",
+  "name": "Essential tremor",
+  "field": "Neurology",
+  "aliases": [],
+  "dossier": "essential-tremor"
+ },
+ {
+  "id": "w088",
+  "name": "Cluster headache",
+  "field": "Neurology",
+  "aliases": [],
+  "dossier": "cluster-headache"
+ },
+ {
+  "id": "w089",
+  "name": "Peripheral neuropathy",
+  "field": "Neurology",
+  "aliases": []
+ },
+ {
+  "id": "w090",
+  "name": "Aphasia",
+  "field": "Neurology",
+  "aliases": []
+ },
+ {
+  "id": "w091",
+  "name": "Cerebral aneurysm",
+  "field": "Neurology",
+  "aliases": [
+   "Brain aneurysm"
+  ]
+ },
+ {
+  "id": "w092",
+  "name": "Insomnia",
+  "field": "Sleep medicine",
+  "aliases": []
+ },
+ {
+  "id": "w093",
+  "name": "Narcolepsy",
+  "field": "Sleep medicine",
+  "aliases": []
+ },
+ {
+  "id": "w094",
+  "name": "Sleep apnea",
+  "field": "Sleep medicine",
+  "aliases": []
+ },
+ {
+  "id": "w095",
+  "name": "Sleepwalking",
+  "field": "Sleep medicine",
+  "aliases": [
+   "Somnambulism"
+  ]
+ },
+ {
+  "id": "w096",
+  "name": "Osteoporosis",
+  "field": "Orthopedics",
+  "aliases": []
+ },
+ {
+  "id": "w097",
+  "name": "Osteoarthritis",
+  "field": "Orthopedics",
+  "aliases": [],
+  "dossier": "osteoarthritis"
+ },
+ {
+  "id": "w098",
+  "name": "Scoliosis",
+  "field": "Orthopedics",
+  "aliases": []
+ },
+ {
+  "id": "w099",
+  "name": "Kyphosis",
+  "field": "Orthopedics",
+  "aliases": [
+   "Hunchback"
+  ]
+ },
+ {
+  "id": "w100",
+  "name": "Tendonitis",
+  "field": "Orthopedics",
+  "aliases": []
+ },
+ {
+  "id": "w101",
+  "name": "Tennis elbow",
+  "field": "Orthopedics",
+  "aliases": [
+   "Lateral epicondylitis"
+  ],
+  "dossier": "lateral-epicondylitis-tennis-elbow"
+ },
+ {
+  "id": "w102",
+  "name": "Golfer's elbow",
+  "field": "Orthopedics",
+  "aliases": [
+   "Medial epicondylitis"
+  ]
+ },
+ {
+  "id": "w103",
+  "name": "Frozen shoulder",
+  "field": "Orthopedics",
+  "aliases": [
+   "Adhesive capsulitis"
+  ]
+ },
+ {
+  "id": "w104",
+  "name": "Rotator cuff tear",
+  "field": "Orthopedics",
+  "aliases": [],
+  "dossier": "rotator-cuff-tear"
+ },
+ {
+  "id": "w105",
+  "name": "Herniated disc",
+  "field": "Orthopedics",
+  "aliases": [
+   "Slipped disc",
+   "Disc herniation"
+  ]
+ },
+ {
+  "id": "w106",
+  "name": "Clubfoot",
+  "field": "Orthopedics",
+  "aliases": [
+   "Talipes equinovarus"
+  ]
+ },
+ {
+  "id": "w107",
+  "name": "Plantar fasciitis",
+  "field": "Orthopedics",
+  "aliases": [],
+  "dossier": "plantar-fasciitis"
+ },
+ {
+  "id": "w108",
+  "name": "Trigger finger",
+  "field": "Orthopedics",
+  "aliases": []
+ },
+ {
+  "id": "w109",
+  "name": "Meniscus tear",
+  "field": "Orthopedics",
+  "aliases": []
+ },
+ {
+  "id": "w110",
+  "name": "Achilles tendon rupture",
+  "field": "Orthopedics",
+  "aliases": [],
+  "dossier": "achilles-tendon-rupture"
+ },
+ {
+  "id": "w111",
+  "name": "Ankle sprain",
+  "field": "Sports medicine",
+  "aliases": [
+   "Sprained ankle"
+  ],
+  "dossier": "ankle-sprain"
+ },
+ {
+  "id": "w112",
+  "name": "Shoulder dislocation",
+  "field": "Sports medicine",
+  "aliases": [
+   "Dislocated shoulder"
+  ]
+ },
+ {
+  "id": "w113",
+  "name": "Anterior cruciate ligament tear",
+  "field": "Sports medicine",
+  "aliases": [
+   "ACL tear",
+   "Torn ACL"
+  ],
+  "dossier": "anterior-cruciate-ligament-acl-tear"
+ },
+ {
+  "id": "w114",
+  "name": "Rheumatoid arthritis",
+  "field": "Rheumatology",
+  "aliases": [
+   "RA"
+  ],
+  "dossier": "rheumatoid-arthritis"
+ },
+ {
+  "id": "w115",
+  "name": "Gout",
+  "field": "Rheumatology",
+  "aliases": [],
+  "dossier": "gout"
+ },
+ {
+  "id": "w116",
+  "name": "Lupus",
+  "field": "Rheumatology",
+  "aliases": [
+   "Systemic lupus erythematosus",
+   "SLE"
+  ],
+  "dossier": "systemic-lupus-erythematosus-sle"
+ },
+ {
+  "id": "w117",
+  "name": "Fibromyalgia",
+  "field": "Rheumatology",
+  "aliases": []
+ },
+ {
+  "id": "w118",
+  "name": "Psoriatic arthritis",
+  "field": "Rheumatology",
+  "aliases": [],
+  "dossier": "psoriatic-arthritis"
+ },
+ {
+  "id": "w119",
+  "name": "Acne",
+  "field": "Dermatology",
+  "aliases": [
+   "Acne vulgaris"
+  ],
+  "dossier": "acne-vulgaris"
+ },
+ {
+  "id": "w120",
+  "name": "Eczema",
+  "field": "Dermatology",
+  "aliases": [
+   "Atopic dermatitis"
+  ],
+  "dossier": "atopic-dermatitis-eczema"
+ },
+ {
+  "id": "w121",
+  "name": "Psoriasis",
+  "field": "Dermatology",
+  "aliases": [],
+  "dossier": "psoriasis"
+ },
+ {
+  "id": "w122",
+  "name": "Urticaria",
+  "field": "Dermatology",
+  "aliases": [
+   "Hives"
+  ],
+  "dossier": "urticaria-hives"
+ },
+ {
+  "id": "w123",
+  "name": "Measles",
+  "field": "Dermatology",
+  "aliases": [
+   "Rubeola"
+  ],
+  "dossier": "measles-rubeola"
+ },
+ {
+  "id": "w124",
+  "name": "Shingles",
+  "field": "Dermatology",
+  "aliases": [
+   "Herpes zoster"
+  ]
+ },
+ {
+  "id": "w125",
+  "name": "Ringworm",
+  "field": "Dermatology",
+  "aliases": [
+   "Tinea corporis"
+  ],
+  "dossier": "tinea-corporis-ringworm"
+ },
+ {
+  "id": "w126",
+  "name": "Athlete's foot",
+  "field": "Dermatology",
+  "aliases": [
+   "Tinea pedis"
+  ],
+  "dossier": "athletes-foot-tinea-pedis"
+ },
+ {
+  "id": "w127",
+  "name": "Warts",
+  "field": "Dermatology",
+  "aliases": []
+ },
+ {
+  "id": "w128",
+  "name": "Sunburn",
+  "field": "Dermatology",
+  "aliases": []
+ },
+ {
+  "id": "w129",
+  "name": "Vitiligo",
+  "field": "Dermatology",
+  "aliases": [],
+  "dossier": "vitiligo"
+ },
+ {
+  "id": "w130",
+  "name": "Pressure ulcer",
+  "field": "Dermatology",
+  "aliases": [
+   "Bedsores",
+   "Pressure sore"
+  ]
+ },
+ {
+  "id": "w131",
+  "name": "Frostbite",
+  "field": "Dermatology",
+  "aliases": [],
+  "dossier": "frostbite"
+ },
+ {
+  "id": "w132",
+  "name": "Alopecia",
+  "field": "Dermatology",
+  "aliases": [
+   "Hair loss"
+  ]
+ },
+ {
+  "id": "w133",
+  "name": "Hyperhidrosis",
+  "field": "Dermatology",
+  "aliases": [
+   "Excessive sweating"
+  ]
+ },
+ {
+  "id": "w134",
+  "name": "Cellulitis",
+  "field": "Dermatology",
+  "aliases": []
+ },
+ {
+  "id": "w135",
+  "name": "Keloid",
+  "field": "Dermatology",
+  "aliases": []
+ },
+ {
+  "id": "w136",
+  "name": "Contact dermatitis",
+  "field": "Dermatology",
+  "aliases": [],
+  "dossier": "contact-dermatitis"
+ },
+ {
+  "id": "w137",
+  "name": "Rosacea",
+  "field": "Dermatology",
+  "aliases": [],
+  "dossier": "rosacea"
+ },
+ {
+  "id": "w138",
+  "name": "Abscess",
+  "field": "Dermatology",
+  "aliases": []
+ },
+ {
+  "id": "w139",
+  "name": "Ingrown toenail",
+  "field": "Dermatology",
+  "aliases": [],
+  "dossier": "ingrown-toenail"
+ },
+ {
+  "id": "w140",
+  "name": "Chickenpox",
+  "field": "Infectious diseases",
+  "aliases": [
+   "Varicella"
+  ],
+  "dossier": "varicella-chickenpox"
+ },
+ {
+  "id": "w141",
+  "name": "Monkeypox",
+  "field": "Infectious diseases",
+  "aliases": [
+   "Mpox"
+  ],
+  "dossier": "mpox-monkeypox"
+ },
+ {
+  "id": "w142",
+  "name": "Yellow fever",
+  "field": "Infectious diseases",
+  "aliases": [],
+  "dossier": "yellow-fever"
+ },
+ {
+  "id": "w143",
+  "name": "Mononucleosis",
+  "field": "Infectious diseases",
+  "aliases": [
+   "Mono",
+   "Kissing disease"
+  ]
+ },
+ {
+  "id": "w144",
+  "name": "AIDS",
+  "field": "Infectious diseases",
+  "aliases": [
+   "Acquired immunodeficiency syndrome",
+   "HIV/AIDS"
+  ]
+ },
+ {
+  "id": "w145",
+  "name": "Rabies",
+  "field": "Infectious diseases",
+  "aliases": [],
+  "dossier": "rabies"
+ },
+ {
+  "id": "w146",
+  "name": "Malaria",
+  "field": "Infectious diseases",
+  "aliases": [],
+  "dossier": "malaria"
+ },
+ {
+  "id": "w147",
+  "name": "Cholera",
+  "field": "Infectious diseases",
+  "aliases": []
+ },
+ {
+  "id": "w148",
+  "name": "Tapeworm",
+  "field": "Parasitology",
+  "aliases": [
+   "Taeniasis"
+  ]
+ },
+ {
+  "id": "w149",
+  "name": "Pinworms",
+  "field": "Parasitology",
+  "aliases": [
+   "Enterobiasis",
+   "Threadworm"
+  ],
+  "dossier": "enterobiasis-pinworm-infection"
+ },
+ {
+  "id": "w150",
+  "name": "Hookworm",
+  "field": "Parasitology",
+  "aliases": []
+ },
+ {
+  "id": "w151",
+  "name": "Roundworm",
+  "field": "Parasitology",
+  "aliases": [
+   "Ascariasis"
+  ]
+ },
+ {
+  "id": "w152",
+  "name": "Whipworm",
+  "field": "Parasitology",
+  "aliases": [
+   "Trichuriasis"
+  ]
+ },
+ {
+  "id": "w153",
+  "name": "Guinea worm disease",
+  "field": "Parasitology",
+  "aliases": [
+   "Dracunculiasis"
+  ]
+ },
+ {
+  "id": "w154",
+  "name": "Elephantiasis",
+  "field": "Parasitology",
+  "aliases": [
+   "Lymphatic filariasis"
+  ]
+ },
+ {
+  "id": "w155",
+  "name": "River blindness",
+  "field": "Parasitology",
+  "aliases": [
+   "Onchocerciasis"
+  ]
+ },
+ {
+  "id": "w156",
+  "name": "Trichinosis",
+  "field": "Parasitology",
+  "aliases": [
+   "Trichinellosis"
+  ]
+ },
+ {
+  "id": "w157",
+  "name": "Head lice",
+  "field": "Parasitology",
+  "aliases": [
+   "Pediculosis capitis"
+  ],
+  "dossier": "head-lice-pediculosis-capitis"
+ },
+ {
+  "id": "w158",
+  "name": "Body lice",
+  "field": "Parasitology",
+  "aliases": [
+   "Pediculosis corporis"
+  ]
+ },
+ {
+  "id": "w159",
+  "name": "Pubic lice",
+  "field": "Parasitology",
+  "aliases": [
+   "Crabs",
+   "Pthiriasis"
+  ]
+ },
+ {
+  "id": "w160",
+  "name": "Scabies",
+  "field": "Parasitology",
+  "aliases": [],
+  "dossier": "scabies"
+ },
+ {
+  "id": "w161",
+  "name": "Otitis media",
+  "field": "ENT",
+  "aliases": [
+   "Middle ear infection"
+  ]
+ },
+ {
+  "id": "w162",
+  "name": "Otitis externa",
+  "field": "ENT",
+  "aliases": [
+   "Swimmer's ear"
+  ],
+  "dossier": "otitis-externa-swimmers-ear"
+ },
+ {
+  "id": "w163",
+  "name": "Sinusitis",
+  "field": "ENT",
+  "aliases": [
+   "Sinus infection"
+  ]
+ },
+ {
+  "id": "w164",
+  "name": "Tonsillitis",
+  "field": "ENT",
+  "aliases": []
+ },
+ {
+  "id": "w165",
+  "name": "Pharyngitis",
+  "field": "ENT",
+  "aliases": [
+   "Sore throat"
+  ]
+ },
+ {
+  "id": "w166",
+  "name": "Laryngitis",
+  "field": "ENT",
+  "aliases": []
+ },
+ {
+  "id": "w167",
+  "name": "Allergic rhinitis",
+  "field": "ENT",
+  "aliases": [
+   "Hay fever"
+  ],
+  "dossier": "allergic-rhinitis"
+ },
+ {
+  "id": "w168",
+  "name": "Deviated septum",
+  "field": "ENT",
+  "aliases": []
+ },
+ {
+  "id": "w169",
+  "name": "Nasal polyps",
+  "field": "ENT",
+  "aliases": []
+ },
+ {
+  "id": "w170",
+  "name": "Motion sickness",
+  "field": "ENT",
+  "aliases": []
+ },
+ {
+  "id": "w171",
+  "name": "Meniere's disease",
+  "field": "ENT",
+  "aliases": []
+ },
+ {
+  "id": "w172",
+  "name": "Dental caries",
+  "field": "Dentistry",
+  "aliases": [
+   "Tooth decay",
+   "Cavities"
+  ]
+ },
+ {
+  "id": "w173",
+  "name": "Gingivitis",
+  "field": "Dentistry",
+  "aliases": []
+ },
+ {
+  "id": "w174",
+  "name": "Periodontitis",
+  "field": "Dentistry",
+  "aliases": [
+   "Periodontal disease"
+  ]
+ },
+ {
+  "id": "w175",
+  "name": "Dental abscess",
+  "field": "Dentistry",
+  "aliases": [
+   "Tooth abscess"
+  ]
+ },
+ {
+  "id": "w176",
+  "name": "Bruxism",
+  "field": "Dentistry",
+  "aliases": [
+   "Teeth grinding"
+  ]
+ },
+ {
+  "id": "w177",
+  "name": "Malocclusion",
+  "field": "Dentistry",
+  "aliases": []
+ },
+ {
+  "id": "w178",
+  "name": "Halitosis",
+  "field": "Dentistry",
+  "aliases": [
+   "Bad breath"
+  ]
+ },
+ {
+  "id": "w179",
+  "name": "Oral candidiasis",
+  "field": "Dentistry",
+  "aliases": [
+   "Oral thrush"
+  ],
+  "dossier": "superficial-candidiasis-oral-thrush-vulvovaginal-candidiasis"
+ },
+ {
+  "id": "w180",
+  "name": "Temporomandibular disorder",
+  "field": "Dentistry",
+  "aliases": [
+   "TMJ disorder",
+   "TMD"
+  ]
+ },
+ {
+  "id": "w181",
+  "name": "Cataract",
+  "field": "Ophthalmology",
+  "aliases": [],
+  "dossier": "cataract"
+ },
+ {
+  "id": "w182",
+  "name": "Glaucoma",
+  "field": "Ophthalmology",
+  "aliases": []
+ },
+ {
+  "id": "w183",
+  "name": "Conjunctivitis",
+  "field": "Ophthalmology",
+  "aliases": [
+   "Pink eye"
+  ]
+ },
+ {
+  "id": "w184",
+  "name": "Myopia",
+  "field": "Ophthalmology",
+  "aliases": [
+   "Nearsightedness",
+   "Short-sightedness"
+  ]
+ },
+ {
+  "id": "w185",
+  "name": "Hyperopia",
+  "field": "Ophthalmology",
+  "aliases": [
+   "Farsightedness",
+   "Long-sightedness"
+  ]
+ },
+ {
+  "id": "w186",
+  "name": "Astigmatism",
+  "field": "Ophthalmology",
+  "aliases": []
+ },
+ {
+  "id": "w187",
+  "name": "Strabismus",
+  "field": "Ophthalmology",
+  "aliases": [
+   "Crossed eyes",
+   "Squint"
+  ]
+ },
+ {
+  "id": "w188",
+  "name": "Amblyopia",
+  "field": "Ophthalmology",
+  "aliases": [
+   "Lazy eye"
+  ]
+ },
+ {
+  "id": "w189",
+  "name": "Nystagmus",
+  "field": "Ophthalmology",
+  "aliases": []
+ },
+ {
+  "id": "w190",
+  "name": "Ptosis",
+  "field": "Ophthalmology",
+  "aliases": [
+   "Drooping eyelid"
+  ]
+ },
+ {
+  "id": "w191",
+  "name": "Presbyopia",
+  "field": "Ophthalmology",
+  "aliases": []
+ },
+ {
+  "id": "w192",
+  "name": "Retinal detachment",
+  "field": "Ophthalmology",
+  "aliases": [],
+  "dossier": "retinal-detachment"
+ },
+ {
+  "id": "w193",
+  "name": "Macular degeneration",
+  "field": "Ophthalmology",
+  "aliases": [
+   "AMD"
+  ]
+ },
+ {
+  "id": "w194",
+  "name": "Diabetic retinopathy",
+  "field": "Ophthalmology",
+  "aliases": []
+ },
+ {
+  "id": "w195",
+  "name": "Type 1 diabetes",
+  "field": "Endocrinology",
+  "aliases": [
+   "T1DM",
+   "Juvenile diabetes"
+  ]
+ },
+ {
+  "id": "w196",
+  "name": "Type 2 diabetes",
+  "field": "Endocrinology",
+  "aliases": [
+   "T2DM"
+  ]
+ },
+ {
+  "id": "w197",
+  "name": "Hypoglycemia",
+  "field": "Endocrinology",
+  "aliases": [
+   "Low blood sugar"
+  ]
+ },
+ {
+  "id": "w198",
+  "name": "Hyperthyroidism",
+  "field": "Endocrinology",
+  "aliases": []
+ },
+ {
+  "id": "w199",
+  "name": "Hypothyroidism",
+  "field": "Endocrinology",
+  "aliases": []
+ },
+ {
+  "id": "w200",
+  "name": "Goiter",
+  "field": "Endocrinology",
+  "aliases": []
+ },
+ {
+  "id": "w201",
+  "name": "Obesity",
+  "field": "Endocrinology",
+  "aliases": []
+ },
+ {
+  "id": "w202",
+  "name": "Gigantism",
+  "field": "Endocrinology",
+  "aliases": []
+ },
+ {
+  "id": "w203",
+  "name": "Dwarfism",
+  "field": "Endocrinology",
+  "aliases": []
+ },
+ {
+  "id": "w204",
+  "name": "Graves' disease",
+  "field": "Endocrinology",
+  "aliases": [],
+  "dossier": "graves-disease"
+ },
+ {
+  "id": "w205",
+  "name": "Hypercholesterolemia",
+  "field": "Endocrinology",
+  "aliases": [
+   "High cholesterol"
+  ]
+ },
+ {
+  "id": "w206",
+  "name": "Metabolic syndrome",
+  "field": "Endocrinology",
+  "aliases": []
+ },
+ {
+  "id": "w207",
+  "name": "Diabetic ketoacidosis",
+  "field": "Endocrinology",
+  "aliases": [
+   "DKA"
+  ],
+  "dossier": "diabetic-ketoacidosis-dka"
+ },
+ {
+  "id": "w208",
+  "name": "Cushing's syndrome",
+  "field": "Endocrinology",
+  "aliases": [],
+  "dossier": "cushing-syndrome"
+ },
+ {
+  "id": "w209",
+  "name": "Addison's disease",
+  "field": "Endocrinology",
+  "aliases": [],
+  "dossier": "addison-disease"
+ },
+ {
+  "id": "w210",
+  "name": "Scurvy",
+  "field": "Nutrition",
+  "aliases": []
+ },
+ {
+  "id": "w211",
+  "name": "Rickets",
+  "field": "Nutrition",
+  "aliases": []
+ },
+ {
+  "id": "w212",
+  "name": "Malnutrition",
+  "field": "Nutrition",
+  "aliases": []
+ },
+ {
+  "id": "w213",
+  "name": "Kwashiorkor",
+  "field": "Nutrition",
+  "aliases": []
+ },
+ {
+  "id": "w214",
+  "name": "Nephrolithiasis",
+  "field": "Nephrology & Urology",
+  "aliases": [
+   "Kidney stones"
+  ],
+  "dossier": "nephrolithiasis-kidney-stones"
+ },
+ {
+  "id": "w215",
+  "name": "Cystitis",
+  "field": "Nephrology & Urology",
+  "aliases": [
+   "Bladder infection"
+  ]
+ },
+ {
+  "id": "w216",
+  "name": "Pyelonephritis",
+  "field": "Nephrology & Urology",
+  "aliases": [
+   "Kidney infection"
+  ]
+ },
+ {
+  "id": "w217",
+  "name": "Chronic kidney disease",
+  "field": "Nephrology & Urology",
+  "aliases": [
+   "CKD"
+  ]
+ },
+ {
+  "id": "w218",
+  "name": "Acute kidney injury",
+  "field": "Nephrology & Urology",
+  "aliases": [
+   "AKI"
+  ]
+ },
+ {
+  "id": "w219",
+  "name": "Urinary tract infection",
+  "field": "Nephrology & Urology",
+  "aliases": [
+   "UTI"
+  ]
+ },
+ {
+  "id": "w220",
+  "name": "Benign prostatic hyperplasia",
+  "field": "Nephrology & Urology",
+  "aliases": [
+   "BPH",
+   "Enlarged prostate"
+  ],
+  "dossier": "benign-prostatic-hyperplasia-bph"
+ },
+ {
+  "id": "w221",
+  "name": "Prostatitis",
+  "field": "Nephrology & Urology",
+  "aliases": []
+ },
+ {
+  "id": "w222",
+  "name": "Testicular torsion",
+  "field": "Nephrology & Urology",
+  "aliases": [],
+  "dossier": "testicular-torsion"
+ },
+ {
+  "id": "w223",
+  "name": "Erectile dysfunction",
+  "field": "Nephrology & Urology",
+  "aliases": []
+ },
+ {
+  "id": "w224",
+  "name": "Nephrotic syndrome",
+  "field": "Nephrology & Urology",
+  "aliases": []
+ },
+ {
+  "id": "w225",
+  "name": "Preeclampsia",
+  "field": "OB/GYN",
+  "aliases": [],
+  "dossier": "preeclampsia"
+ },
+ {
+  "id": "w226",
+  "name": "Eclampsia",
+  "field": "OB/GYN",
+  "aliases": []
+ },
+ {
+  "id": "w227",
+  "name": "Gestational diabetes",
+  "field": "OB/GYN",
+  "aliases": []
+ },
+ {
+  "id": "w228",
+  "name": "Miscarriage",
+  "field": "OB/GYN",
+  "aliases": [
+   "Spontaneous abortion"
+  ]
+ },
+ {
+  "id": "w229",
+  "name": "Ectopic pregnancy",
+  "field": "OB/GYN",
+  "aliases": [],
+  "dossier": "ectopic-pregnancy"
+ },
+ {
+  "id": "w230",
+  "name": "Breech presentation",
+  "field": "OB/GYN",
+  "aliases": [
+   "Breech birth"
+  ]
+ },
+ {
+  "id": "w231",
+  "name": "Postpartum depression",
+  "field": "OB/GYN",
+  "aliases": [
+   "PPD",
+   "Postnatal depression"
+  ]
+ },
+ {
+  "id": "w232",
+  "name": "Mastitis",
+  "field": "OB/GYN",
+  "aliases": []
+ },
+ {
+  "id": "w233",
+  "name": "Endometriosis",
+  "field": "OB/GYN",
+  "aliases": [],
+  "dossier": "endometriosis"
+ },
+ {
+  "id": "w234",
+  "name": "Uterine fibroids",
+  "field": "OB/GYN",
+  "aliases": [
+   "Fibroids",
+   "Leiomyoma"
+  ],
+  "dossier": "uterine-leiomyomas-fibroids"
+ },
+ {
+  "id": "w235",
+  "name": "Polycystic ovary syndrome",
+  "field": "OB/GYN",
+  "aliases": [
+   "PCOS"
+  ],
+  "dossier": "polycystic-ovary-syndrome-pcos"
+ },
+ {
+  "id": "w236",
+  "name": "Menopause",
+  "field": "OB/GYN",
+  "aliases": []
+ },
+ {
+  "id": "w237",
+  "name": "Ovarian cyst",
+  "field": "OB/GYN",
+  "aliases": []
+ },
+ {
+  "id": "w238",
+  "name": "Vaginal candidiasis",
+  "field": "OB/GYN",
+  "aliases": [
+   "Yeast infection",
+   "Vaginal thrush"
+  ]
+ },
+ {
+  "id": "w239",
+  "name": "Pelvic inflammatory disease",
+  "field": "OB/GYN",
+  "aliases": [
+   "PID"
+  ],
+  "dossier": "pelvic-inflammatory-disease-pid"
+ },
+ {
+  "id": "w240",
+  "name": "Infertility",
+  "field": "OB/GYN",
+  "aliases": []
+ },
+ {
+  "id": "w241",
+  "name": "Down syndrome",
+  "field": "Pediatrics & Genetics",
+  "aliases": [
+   "Trisomy 21"
+  ],
+  "dossier": "down-syndrome-trisomy-21"
+ },
+ {
+  "id": "w242",
+  "name": "Marfan syndrome",
+  "field": "Pediatrics & Genetics",
+  "aliases": [],
+  "dossier": "marfan-syndrome"
+ },
+ {
+  "id": "w243",
+  "name": "Cleft lip",
+  "field": "Pediatrics & Genetics",
+  "aliases": []
+ },
+ {
+  "id": "w244",
+  "name": "Cleft palate",
+  "field": "Pediatrics & Genetics",
+  "aliases": []
+ },
+ {
+  "id": "w245",
+  "name": "Spina bifida",
+  "field": "Pediatrics & Genetics",
+  "aliases": []
+ },
+ {
+  "id": "w246",
+  "name": "Neonatal jaundice",
+  "field": "Pediatrics & Genetics",
+  "aliases": [
+   "Newborn jaundice"
+  ],
+  "dossier": "neonatal-jaundice-physiological"
+ },
+ {
+  "id": "w247",
+  "name": "Hand-foot-and-mouth disease",
+  "field": "Pediatrics & Genetics",
+  "aliases": [
+   "HFMD"
+  ],
+  "dossier": "hand-foot-and-mouth-disease"
+ },
+ {
+  "id": "w248",
+  "name": "Cradle cap",
+  "field": "Pediatrics & Genetics",
+  "aliases": []
+ },
+ {
+  "id": "w249",
+  "name": "Sudden infant death syndrome",
+  "field": "Pediatrics & Genetics",
+  "aliases": [
+   "SIDS"
+  ]
+ },
+ {
+  "id": "w250",
+  "name": "Fetal alcohol syndrome",
+  "field": "Pediatrics & Genetics",
+  "aliases": [
+   "FAS"
+  ]
+ },
+ {
+  "id": "w251",
+  "name": "Polydactyly",
+  "field": "Pediatrics & Genetics",
+  "aliases": []
+ },
+ {
+  "id": "w252",
+  "name": "Syndactyly",
+  "field": "Pediatrics & Genetics",
+  "aliases": []
+ },
+ {
+  "id": "w253",
+  "name": "Hip dysplasia",
+  "field": "Pediatrics & Genetics",
+  "aliases": [
+   "Developmental dysplasia of the hip",
+   "DDH"
+  ]
+ },
+ {
+  "id": "w254",
+  "name": "Depression",
+  "field": "Psychiatry",
+  "aliases": [
+   "Major depressive disorder",
+   "MDD"
+  ],
+  "dossier": "major-depressive-disorder"
+ },
+ {
+  "id": "w255",
+  "name": "Panic disorder",
+  "field": "Psychiatry",
+  "aliases": [],
+  "dossier": "panic-disorder"
+ },
+ {
+  "id": "w256",
+  "name": "Bipolar disorder",
+  "field": "Psychiatry",
+  "aliases": [
+   "Manic depression"
+  ]
+ },
+ {
+  "id": "w257",
+  "name": "Schizophrenia",
+  "field": "Psychiatry",
+  "aliases": [],
+  "dossier": "schizophrenia"
+ },
+ {
+  "id": "w258",
+  "name": "Obsessive-compulsive disorder",
+  "field": "Psychiatry",
+  "aliases": [
+   "OCD"
+  ],
+  "dossier": "obsessive-compulsive-disorder-ocd"
+ },
+ {
+  "id": "w259",
+  "name": "Post-traumatic stress disorder",
+  "field": "Psychiatry",
+  "aliases": [
+   "PTSD"
+  ],
+  "dossier": "post-traumatic-stress-disorder-ptsd"
+ },
+ {
+  "id": "w260",
+  "name": "Attention deficit hyperactivity disorder",
+  "field": "Psychiatry",
+  "aliases": [
+   "ADHD"
+  ]
+ },
+ {
+  "id": "w261",
+  "name": "Autism",
+  "field": "Psychiatry",
+  "aliases": [
+   "Autism spectrum disorder",
+   "ASD"
+  ]
+ },
+ {
+  "id": "w262",
+  "name": "Social anxiety disorder",
+  "field": "Psychiatry",
+  "aliases": [
+   "Social phobia"
+  ]
+ },
+ {
+  "id": "w263",
+  "name": "Generalized anxiety disorder",
+  "field": "Psychiatry",
+  "aliases": [
+   "GAD"
+  ],
+  "dossier": "generalized-anxiety-disorder"
+ },
+ {
+  "id": "w264",
+  "name": "Hypochondriasis",
+  "field": "Psychiatry",
+  "aliases": [
+   "Hypochondria",
+   "Illness anxiety disorder"
+  ]
+ },
+ {
+  "id": "w265",
+  "name": "Agoraphobia",
+  "field": "Psychiatry",
+  "aliases": []
+ },
+ {
+  "id": "w266",
+  "name": "Claustrophobia",
+  "field": "Psychiatry",
+  "aliases": []
+ },
+ {
+  "id": "w267",
+  "name": "Arachnophobia",
+  "field": "Psychiatry",
+  "aliases": []
+ },
+ {
+  "id": "w268",
+  "name": "Acrophobia",
+  "field": "Psychiatry",
+  "aliases": []
+ },
+ {
+  "id": "w269",
+  "name": "Kleptomania",
+  "field": "Psychiatry",
+  "aliases": []
+ },
+ {
+  "id": "w270",
+  "name": "Pyromania",
+  "field": "Psychiatry",
+  "aliases": []
+ },
+ {
+  "id": "w271",
+  "name": "Alcohol use disorder",
+  "field": "Psychiatry",
+  "aliases": [
+   "Alcoholism"
+  ]
+ },
+ {
+  "id": "w272",
+  "name": "Gambling disorder",
+  "field": "Psychiatry",
+  "aliases": [
+   "Gambling addiction"
+  ]
+ },
+ {
+  "id": "w273",
+  "name": "Dissociative identity disorder",
+  "field": "Psychiatry",
+  "aliases": [
+   "Multiple personality disorder",
+   "DID"
+  ]
+ },
+ {
+  "id": "w274",
+  "name": "Delirium tremens",
+  "field": "Psychiatry",
+  "aliases": [
+   "DTs"
+  ],
+  "dossier": "delirium-tremens"
+ },
+ {
+  "id": "w275",
+  "name": "Seasonal affective disorder",
+  "field": "Psychiatry",
+  "aliases": [
+   "SAD"
+  ]
+ },
+ {
+  "id": "w276",
+  "name": "Narcissistic personality disorder",
+  "field": "Psychiatry",
+  "aliases": [
+   "NPD"
+  ]
+ },
+ {
+  "id": "w277",
+  "name": "Delirium",
+  "field": "Psychiatry",
+  "aliases": []
+ },
+ {
+  "id": "w278",
+  "name": "Anemia",
+  "field": "Hematology",
+  "aliases": []
+ },
+ {
+  "id": "w279",
+  "name": "Sickle cell disease",
+  "field": "Hematology",
+  "aliases": [
+   "Sickle cell anemia"
+  ],
+  "dossier": "sickle-cell-disease"
+ },
+ {
+  "id": "w280",
+  "name": "Hemophilia",
+  "field": "Hematology",
+  "aliases": []
+ },
+ {
+  "id": "w281",
+  "name": "Iron deficiency anemia",
+  "field": "Hematology",
+  "aliases": [],
+  "dossier": "iron-deficiency-anemia"
+ },
+ {
+  "id": "w282",
+  "name": "Aplastic anemia",
+  "field": "Hematology",
+  "aliases": [],
+  "dossier": "aplastic-anemia"
+ },
+ {
+  "id": "w283",
+  "name": "Pernicious anemia",
+  "field": "Hematology",
+  "aliases": [],
+  "dossier": "pernicious-anemia"
+ },
+ {
+  "id": "w284",
+  "name": "Leukemia",
+  "field": "Oncology",
+  "aliases": [],
+  "dossier": "leukemia-overview"
+ },
+ {
+  "id": "w285",
+  "name": "Lymphoma",
+  "field": "Oncology",
+  "aliases": []
+ },
+ {
+  "id": "w286",
+  "name": "Melanoma",
+  "field": "Oncology",
+  "aliases": [],
+  "dossier": "melanoma"
+ },
+ {
+  "id": "w287",
+  "name": "Glioblastoma",
+  "field": "Oncology",
+  "aliases": [
+   "GBM"
+  ]
+ },
+ {
+  "id": "w288",
+  "name": "Osteosarcoma",
+  "field": "Oncology",
+  "aliases": []
+ },
+ {
+  "id": "w289",
+  "name": "Mesothelioma",
+  "field": "Oncology",
+  "aliases": []
+ },
+ {
+  "id": "w290",
+  "name": "Anaphylaxis",
+  "field": "Immunology",
+  "aliases": [],
+  "dossier": "anaphylaxis"
+ },
+ {
+  "id": "w291",
+  "name": "Angioedema",
+  "field": "Immunology",
+  "aliases": []
+ },
+ {
+  "id": "w292",
+  "name": "Heat stroke",
+  "field": "Emergency medicine",
+  "aliases": [
+   "Sunstroke"
+  ],
+  "dossier": "heat-stroke"
+ },
+ {
+  "id": "w293",
+  "name": "Heat exhaustion",
+  "field": "Emergency medicine",
+  "aliases": []
+ },
+ {
+  "id": "w294",
+  "name": "Hypothermia",
+  "field": "Emergency medicine",
+  "aliases": []
+ },
+ {
+  "id": "w295",
+  "name": "Carbon monoxide poisoning",
+  "field": "Emergency medicine",
+  "aliases": [
+   "CO poisoning"
+  ],
+  "dossier": "carbon-monoxide-poisoning"
+ },
+ {
+  "id": "w296",
+  "name": "Lead poisoning",
+  "field": "Emergency medicine",
+  "aliases": []
+ },
+ {
+  "id": "w297",
+  "name": "Alcohol poisoning",
+  "field": "Emergency medicine",
+  "aliases": []
+ },
+ {
+  "id": "w298",
+  "name": "Decompression sickness",
+  "field": "Emergency medicine",
+  "aliases": [
+   "The bends"
+  ]
+ },
+ {
+  "id": "w299",
+  "name": "Hypovolemic shock",
+  "field": "Emergency medicine",
+  "aliases": []
+ },
+ {
+  "id": "w300",
+  "name": "Anaphylactic shock",
+  "field": "Emergency medicine",
+  "aliases": []
+ }
+]
