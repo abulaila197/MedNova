@@ -1,4 +1,5 @@
 import { caseFiles } from '../casefiles/def';
+import { novaCrossword } from '../crossword/def';
 import { diagnosticPursuit } from '../diagnostic/def';
 import { novaMedicordle } from '../medicordle/def';
 import { riddler } from '../riddler/def';
@@ -14,6 +15,7 @@ const GAMES: Record<string, GameDef> = {
   [riddler.key]: riddler,
   [silentArtist.key]: silentArtist,
   [caseFiles.key]: caseFiles,
+  [novaCrossword.key]: novaCrossword,
 };
 
 export function gameDef(key: string): GameDef | null {
