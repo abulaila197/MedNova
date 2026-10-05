@@ -2,6 +2,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import Animated, { type SharedValue, useAnimatedStyle } from 'react-native-reanimated';
 import { Circle, Defs, RadialGradient, Stop, Svg } from 'react-native-svg';
 
+import { GAMES } from '@/data/games';
 import { u } from '@/theme/scale';
 import type { Mode } from '@/theme/tokens';
 
@@ -44,11 +45,11 @@ function Dot({ j, pos, onPick }: { j: number; pos: SharedValue<number>; onPick: 
   );
 }
 
-/** The 8 swipe dots (active one is a 14px pill). */
+/** One swipe dot per game (active one is a 14px pill). */
 export function Dots({ pos, onPick }: { pos: SharedValue<number>; onPick: (j: number) => void }) {
   return (
     <View style={s.dots}>
-      {Array.from({ length: 8 }, (_, j) => (
+      {Array.from({ length: GAMES.length }, (_, j) => (
         <Dot key={j} j={j} pos={pos} onPick={onPick} />
       ))}
     </View>

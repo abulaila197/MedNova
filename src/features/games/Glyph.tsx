@@ -5,6 +5,8 @@ import type { Mode } from '@/theme/tokens';
 // The raised game symbols on the ring planets (24-unit icons, gradient stroke, three drop shadows).
 type Prim = { p?: string; c?: [number, number, number]; r?: [number, number, number, number, number]; fill?: boolean; noStroke?: boolean };
 const GLY: Record<string, Prim[]> = {
+  'trust-me-not': [{ c: [12, 12, 8] }, { c: [9.3, 10, 0.9], fill: true }, { c: [14.7, 10, 0.9], fill: true }, { p: 'M8.5 13.8a4 4 0 0 0 7 0' }, { p: 'M12 4l-1.2 3.4 1.8 1.6-1 2.4' }],
+  'the-conqueror': [{ p: 'M6 20V11h2.4v2h2.4v-2h2.4v2h2.4v-2H18v9z' }, { p: 'M12 11V3.5' }, { p: 'M12 4l5.5 2-5.5 2z', fill: true }],
   'the-diagnostic-pursuit': [{ p: 'M4 15a8 8 0 1 1 16 0' }, { p: 'M12 15l4-5' }, { c: [12, 15, 1.2] }],
   'the-wheels-of-chaos': [{ c: [12, 12, 8] }, { p: 'M12 4v16M4 12h16M6.3 6.3l11.4 11.4M17.7 6.3L6.3 17.7' }, { c: [12, 12, 2] }],
   'nova-crossword': [{ r: [4, 4, 16, 16, 1.5] }, { p: 'M9.3 4v16M14.7 4v16M4 9.3h16M4 14.7h16' }, { p: 'M4.5 4.5h4.5v4.5H4.5zM15 15h4.5v4.5H15z', fill: true, noStroke: true }],

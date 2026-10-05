@@ -15,17 +15,21 @@ export const RING_CX = W / 2;
 type Box = [number, number, number, number];
 const BB: Record<Mode, Record<string, Box>> = {
   dark: {
+    'trust-me-not': [0.48, 1, 0.64, 1], 'the-conqueror': [0.36, 1, 0.6, 1],
     'case-files-unsolved': [0.3, 1, 0.4, 1], 'nova-crossword': [0.4, 1, 0.58, 0.97], 'nova-medicordle': [0.2, 1, 0.52, 0.97], 'the-diagnostic-pursuit': [0.25, 1, 0.64, 1],
     'the-riddler': [0.3, 1, 0.55, 1], 'the-silent-artist': [0.35, 1, 0.58, 1], 'the-streak-master': [0.45, 1, 0.58, 0.98], 'the-wheels-of-chaos': [0.3, 1, 0.58, 0.97],
   },
   light: {
+    'trust-me-not': [0.48, 1, 0.64, 1], 'the-conqueror': [0.36, 1, 0.6, 1],
     'case-files-unsolved': [0, 1, 0.35, 1], 'nova-crossword': [0.15, 1, 0.58, 0.98], 'nova-medicordle': [0.1, 1, 0.48, 0.97], 'the-diagnostic-pursuit': [0.25, 1, 0.65, 1],
     'the-riddler': [0.25, 1, 0.55, 0.98], 'the-silent-artist': [0.2, 1, 0.58, 1], 'the-streak-master': [0.5, 0.95, 0.6, 1], 'the-wheels-of-chaos': [0.25, 1, 0.52, 0.98],
   },
 };
-const ZM: Record<string, number> = { 'nova-crossword': 0.86, 'the-silent-artist': 0.86 };
+const ZM: Record<string, number> = { 'nova-crossword': 0.86, 'the-silent-artist': 0.86, 'trust-me-not': 0.8, 'the-conqueror': 0.8 };
 // Matching anchors: [dark drawing box, light drawing box] so each light drawing lands where the dark one is.
 const ANC: Record<string, [Box, Box]> = {
+  'trust-me-not': [[0.55, 0.97, 0.69, 0.99], [0.54, 0.97, 0.69, 0.99]],
+  'the-conqueror': [[0.4, 0.99, 0.62, 0.99], [0.39, 0.99, 0.62, 0.99]],
   'case-files-unsolved': [[0.71, 0.97, 0.75, 0.845], [0.68, 0.95, 0.75, 0.845]],
   'nova-crossword': [[0.53, 0.99, 0.6, 0.82], [0.44, 0.98, 0.6, 0.845]],
   'nova-medicordle': [[0.5, 1, 0.54, 0.8], [0.5, 0.96, 0.53, 0.83]],
@@ -78,7 +82,8 @@ export function maskStops(f: ArtFit) {
 }
 
 /** Ring slots by offset from the selected game: angle (deg) and diameter, as in the prototype. */
-export const SLOT_OFF = [-4, -3, -2, -1, 0, 1, 2, 3, 4];
-export const SLOT_ANGLE = [-35, -26, -17, -8, 0, 8, 17, 26, 35];
-export const SLOT_SIZE = [22, 22, 29, 35, 48, 35, 29, 22, 22];
-export const SLOT_OPACITY = [0, 0.75, 1, 1, 1, 1, 1, 0.75, 0];
+// Offsets -5..5 so 10 games wrap; only -3..3 are visible, exactly as with 8.
+export const SLOT_OFF = [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5];
+export const SLOT_ANGLE = [-44, -35, -26, -17, -8, 0, 8, 17, 26, 35, 44];
+export const SLOT_SIZE = [22, 22, 22, 29, 35, 48, 35, 29, 22, 22, 22];
+export const SLOT_OPACITY = [0, 0, 0.75, 1, 1, 1, 1, 1, 0.75, 0, 0];

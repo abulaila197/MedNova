@@ -3,7 +3,7 @@ import { router } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated, { type SharedValue, useAnimatedStyle } from 'react-native-reanimated';
 
-import type { Game } from '@/data/games';
+import { type Game, GAMES } from '@/data/games';
 import { gameDef } from '@/games/shell/registry';
 import { useApp, useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
@@ -26,10 +26,11 @@ export function GamePage({ game, j, pos, active }: { game: Game; j: number; pos:
     <Animated.View style={[StyleSheet.absoluteFill, slide]} pointerEvents={active ? 'box-none' : 'none'} accessibilityElementsHidden={!active} importantForAccessibility={active ? 'auto' : 'no-hide-descendants'}>
       <GameArt k={game.key} mode={t.mode} />
       <View style={s.info}>
-        <Text style={[s.kick, { color: t.soft }]}>{`0${j + 1} / 08`}</Text>
+        <Text style={[s.kick, { color: t.soft }]}>{`${String(j + 1).padStart(2, '0')} / ${String(GAMES.length).padStart(2, '0')}`}</Text>
         <Text style={[s.ttl, { color: t.white }]}>
           {game.lead} <Text style={{ color: t.accent, fontFamily: F.displayItalic }}>{game.em}</Text>
         </Text>
+        <Text style={[s.sub, { color: t.soft }]}>{game.sub}</Text>
         <Text style={[s.desc, { color: DESC[t.mode] }]}>{game.desc}</Text>
         <Pressable onPress={() => (gameDef(game.key) ? router.push(`/play/${game.key}`) : useApp.getState().setPlaying(`${game.lead} ${game.em}`))} style={s.goWrap} accessibilityRole="button" accessibilityLabel={`Play ${game.lead} ${game.em}`}>
           <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.go}>
@@ -45,7 +46,8 @@ const s = StyleSheet.create({
   info: { position: 'absolute', left: u(16), right: u(16), top: u(40) },
   kick: { fontFamily: F.mono, fontSize: u(8.5), lineHeight: u(12), letterSpacing: u(1.7), textTransform: 'uppercase' },
   ttl: { marginTop: u(7), fontFamily: F.display, fontSize: u(32), lineHeight: u(28.8), letterSpacing: u(-0.64) },
-  desc: { marginTop: u(7 + 6), marginBottom: u(2), maxWidth: u(190), fontFamily: F.body, fontSize: u(11), lineHeight: u(15.95) },
+  sub: { marginTop: u(8), fontFamily: F.displayItalic, fontSize: u(13), lineHeight: u(17) },
+  desc: { marginTop: u(7), marginBottom: u(2), maxWidth: u(190), fontFamily: F.body, fontSize: u(11), lineHeight: u(15.95) },
   goWrap: { marginTop: u(7), alignSelf: 'flex-start' },
   go: { borderRadius: u(14), paddingVertical: u(9), paddingHorizontal: u(18) },
   goT: { fontFamily: F.bodyBold, fontSize: u(12), lineHeight: u(15), textAlign: 'center' },

@@ -2,6 +2,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import Animated, { interpolate, type SharedValue, useAnimatedStyle } from 'react-native-reanimated';
 import { Circle, Defs, RadialGradient, Stop, Svg } from 'react-native-svg';
 
+import { GAMES } from '@/data/games';
 import { u } from '@/theme/scale';
 import type { Mode } from '@/theme/tokens';
 
@@ -23,17 +24,20 @@ const PAL = {
 const rgb = (c: number[]) => `rgb(${c[0]},${c[1]},${c[2]})`;
 const P = 40; // room around the planet for its shadow and glow
 
-/** Wrap a ring offset into [-4, 4). */
+const N = GAMES.length;
+const HALF = N / 2;
+
+/** Wrap a ring offset into [-N/2, N/2). */
 export function wrapOff(v: number) {
   'worklet';
-  return ((((v + 4) % 8) + 8) % 8) - 4;
+  return ((((v + HALF) % N) + N) % N) - HALF;
 }
 
 /** One glyph planet on the ring; it rides along the curve as the selected game changes. */
 export function Planet({ k, j, pos, sel, mode, onPress }: { k: string; j: number; pos: SharedValue<number>; sel: number; mode: Mode; onPress: () => void }) {
   const p = PAL[mode];
-  const off0 = ((((j - sel + 4) % 8) + 8) % 8) - 4;
-  const d = SLOT_SIZE[off0 + 4]; // settled diameter
+  const off0 = wrapOff(j - sel);
+  const d = SLOT_SIZE[off0 + 5]; // settled diameter
   const isSel = off0 === 0;
   const id = `${mode}-${k}`;
 
