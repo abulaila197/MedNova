@@ -16,6 +16,8 @@ const SPIN_MS = 70;
 const STOP = { count: 700, style: 1100, field: 1500, go: 2300 };
 const LETTERS = 'ABCD';
 const PAIR_INK = ['#79c9b6', '#b98ad8', '#e8c46a', '#e0828f', '#8fb4e8', '#d9a07a'];
+/** A paired Matching box: the pair's colour on the edge, with a soft glow in the same colour. */
+const glow = (c: string) => ({ borderColor: c, shadowColor: c, shadowOpacity: 0.75, shadowRadius: u(7), shadowOffset: { width: 0, height: 0 } });
 const qWord = (n: number) => `${n} Question${n > 1 ? 's' : ''}`;
 
 /** Spins the reels that change for this question, stops them one by one, then tells the turn to go on. */
@@ -210,7 +212,7 @@ function Answers({ q, given, onAnswer }: { q: Question; given: Answer | undefine
                 const set = got[i] != null && got[i] !== -1;
                 const mark: Mark = done ? (got[i] === i ? 'right' : 'wrong') : 'none';
                 return (
-                  <Pressable key={i} disabled={done} onPress={() => setLeft(left === i ? null : i)} accessibilityRole="button" accessibilityState={{ selected: left === i }} accessibilityLabel={l} style={[s.cell, left === i ? { borderColor: VV.gold, backgroundColor: '#5c0c18' } : null, markColor(mark) ? { borderColor: markColor(mark)! } : null]}>
+                  <Pressable key={i} disabled={done} onPress={() => setLeft(left === i ? null : i)} accessibilityRole="button" accessibilityState={{ selected: left === i }} accessibilityLabel={l} style={[s.cell, set ? glow(ink(i)) : null, left === i ? { borderColor: VV.gold, backgroundColor: '#5c0c18' } : null, markColor(mark) ? { borderColor: markColor(mark)! } : null]}>
                     {set ? <Gem c={ink(i)} size={7} /> : null}
                     <T f={BODY_B} size={12} color={VV.ink} style={{ flex: 1 }}>{l}</T>
                   </Pressable>
@@ -231,7 +233,7 @@ function Answers({ q, given, onAnswer }: { q: Question; given: Answer | undefine
                     }}
                     accessibilityRole="button"
                     accessibilityLabel={q.pairs[ri][1]}
-                    style={[s.cell, owner >= 0 ? { borderColor: ink(owner) } : null]}>
+                    style={[s.cell, owner >= 0 ? glow(ink(owner)) : null]}>
                     {owner >= 0 ? <Gem c={ink(owner)} size={7} /> : null}
                     <T f={BODY} size={12} color={VV.ink} style={{ flex: 1 }}>{q.pairs[ri][1]}</T>
                   </Pressable>
