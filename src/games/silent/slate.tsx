@@ -1,29 +1,30 @@
-import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useState, type ReactNode } from 'react';
-import { Pressable, StyleSheet, Text, View, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
+import { Pressable, StyleSheet, Text, View, useWindowDimensions, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Circle } from 'react-native-svg';
 
+import { Glow } from '@/components/Glow';
+import { Grain } from '@/components/Grain';
 import { loadFonts } from '@/features/loading/fonts';
 import { u } from '@/theme/scale';
+import { THEMES } from '@/theme/tokens';
 
 import { GameScreen } from '../shell/ui';
 import type { HintView } from './core';
 
-// The Silent Artist's own design language (SA9): "Classroom slate". A green chalkboard in a worn wooden
-// frame, chalk sticks on the ledge as colours, chalk lettering. Nothing here comes from the app's look or
-// another game's; only the game header is shared. One look in both app themes, like the loading page.
+// The Silent Artist's own design language (SA9): "Classroom slate". A navy chalkboard in a worn wooden
+// frame, chalk sticks on the ledge as colours, chalk lettering. The room is the app's Nebula sky and glow
+// (SA10, Yazan 2026-10-05), always dark, in both app themes.
 
 export const SL = {
-  page: ['#1a2e26', '#0e1a15'] as [string, string],
-  board: '#22392f',
-  boardDeep: '#1b3027',
+  board: '#10153a',
+  boardDeep: '#0b0f2a',
   frame: '#6e4b2c',
   frameDark: '#4d331d',
   frameW: 9,
   chalk: '#f1eedf',
-  soft: '#b9c4b4',
-  dim: '#7f8f84',
+  soft: '#b6bdd8',
+  dim: '#7d86a6',
   yellow: '#f2df8a',
   pink: '#f3a6b6',
   blue: '#9fd3ef',
@@ -31,7 +32,7 @@ export const SL = {
   inks: ['#f4f1e6', '#f2df8a', '#f3a6b6', '#9fd3ef'],
   inkNames: ['White chalk', 'Yellow chalk', 'Pink chalk', 'Blue chalk'],
   sizes: [9, 20] as [number, number],
-  card: 'rgba(15,28,22,0.78)',
+  card: 'rgba(12,16,40,0.8)',
   line: 'rgba(241,238,223,0.35)',
   head: 'CabinSketch_700Bold',
   headLight: 'CabinSketch_400Regular',
@@ -51,8 +52,15 @@ export function useSlateFonts() {
 /** A Silent Artist page: the game header over the dark slate room. `scroll` for long pages (pick, reveal). */
 export function SlateScreen({ children, scroll = false }: { children: ReactNode; scroll?: boolean }) {
   const ins = useSafeAreaInsets();
+  const { width, height } = useWindowDimensions();
+  const room = (
+    <View style={[StyleSheet.absoluteFill, { backgroundColor: THEMES.dark.sky }]} pointerEvents="none">
+      <Glow delay={1} w={width} h={height} mode="dark" />
+      <Grain />
+    </View>
+  );
   return (
-    <GameScreen scroll={scroll} under={<LinearGradient colors={SL.page} style={StyleSheet.absoluteFill} />} bodyStyle={[s.body, { paddingBottom: u(14) + ins.bottom }]}>
+    <GameScreen scroll={scroll} under={room} bodyStyle={[s.body, { paddingBottom: u(14) + ins.bottom }]}>
       {children}
     </GameScreen>
   );

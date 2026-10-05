@@ -4,6 +4,7 @@ import Animated, { Easing, interpolate, useAnimatedStyle, useSharedValue, withRe
 import Svg, { Defs, Ellipse, RadialGradient, Stop } from 'react-native-svg';
 
 import { useTheme } from '@/state/app';
+import { THEMES, type Mode } from '@/theme/tokens';
 import { u } from '@/theme/scale';
 
 // The glow drifts around the screen edges on its own (56s loop) and never
@@ -22,8 +23,12 @@ const E = [
 const BLUR = 34;
 const BOX = 520;
 
-export function Glow({ delay = 0, w, h }: { delay?: number; w: number; h: number }) {
-  const t = useTheme();
+/** `mode` pins the glow to one theme (a game whose room stays dark in light mode). */
+export function Glow({ delay = 0, w, h, mode }: { delay?: number; w: number; h: number; mode?: Mode }) {
+  const app = useTheme();
+  const t = mode ? THEMES[mode] : app;
+  // Own gradient ids when pinned, so the page's own glow (also on screen, under) never lends its colours on web.
+  const gid = mode ? `gl-${mode}-` : 'gl';
   const p = useSharedValue((((-delay * 1000) % LOOP) + LOOP) % LOOP / LOOP);
   useEffect(() => {
     const start = p.value;
@@ -52,7 +57,7 @@ export function Glow({ delay = 0, w, h }: { delay?: number; w: number; h: number
         <Svg width={u(BOX)} height={u(BOX)} viewBox={`${-BOX / 2} ${-BOX / 2} ${BOX} ${BOX}`}>
           <Defs>
             {t.glow.map((c, j) => (
-              <RadialGradient key={j} id={`gl${j}`} cx="0.5" cy="0.5" r="0.5">
+              <RadialGradient key={j} id={`${gid}${j}`} cx="0.5" cy="0.5" r="0.5">
                 <Stop offset="0" stopColor={c} stopOpacity={0.95} />
                 <Stop offset="0.45" stopColor={c} stopOpacity={0.7} />
                 <Stop offset="0.75" stopColor={c} stopOpacity={0.25} />
@@ -61,7 +66,7 @@ export function Glow({ delay = 0, w, h }: { delay?: number; w: number; h: number
             ))}
           </Defs>
           {E.map((e, j) => (
-            <Ellipse key={j} cx={e.cx} cy={e.cy} rx={e.rx + BLUR * 1.6} ry={e.ry + BLUR * 1.6} fill={`url(#gl${j})`} />
+            <Ellipse key={j} cx={e.cx} cy={e.cy} rx={e.rx + BLUR * 1.6} ry={e.ry + BLUR * 1.6} fill={`url(#${gid}${j})`} />
           ))}
         </Svg>
       </Animated.View>
