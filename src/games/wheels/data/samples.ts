@@ -58,4 +58,18 @@ const boss: BossSet[] = [
     ['COPD', 'Asthma', 'Uncomplicated pneumonia', 'Chronic bronchitis', 'Hypertension', 'Hypothyroidism', 'Iron deficiency anaemia', 'Psoriasis', 'Gout', 'Rheumatoid arthritis', 'Pulmonary embolism', 'Type 2 diabetes', 'Heart failure', 'Osteoarthritis', 'Migraine']),
 ];
 
-export const SAMPLE_BANK: FullBank = { questions, boss };
+// Redemption's own set (WC13): easy to medium true/false.
+const redemption: Question[] = [
+  { id: 'red-1', style: 'tf', field: 'physiology', difficulty: 'easy', prompt: 'Red blood cells carry oxygen bound to haemoglobin.', answer: true },
+  { id: 'red-2', style: 'tf', field: 'anatomy', difficulty: 'easy', prompt: 'The femur is the longest bone in the body.', answer: true },
+  { id: 'red-3', style: 'tf', field: 'pharmacology', difficulty: 'easy', prompt: 'Paracetamol is an opioid.', answer: false },
+  { id: 'red-4', style: 'tf', field: 'microbiology', difficulty: 'easy', prompt: 'Tuberculosis is caused by a virus.', answer: false },
+  { id: 'red-5', style: 'tf', field: 'medicine', difficulty: 'medium', prompt: 'A raised troponin points to heart muscle injury.', answer: true },
+  { id: 'red-6', style: 'tf', field: 'surgery', difficulty: 'medium', prompt: 'A strangulated hernia is a surgical emergency.', answer: true },
+  { id: 'red-7', style: 'tf', field: 'pediatrics', difficulty: 'easy', prompt: 'Measles is prevented by the MMR vaccine.', answer: true },
+  { id: 'red-8', style: 'tf', field: 'obgyn', difficulty: 'easy', prompt: 'A normal pregnancy lasts about 40 weeks from the last period.', answer: true },
+  { id: 'red-9', style: 'tf', field: 'biochemistry', difficulty: 'medium', prompt: 'Glycolysis happens in the mitochondria.', answer: false },
+  { id: 'red-10', style: 'tf', field: 'pathology', difficulty: 'medium', prompt: 'A benign tumour spreads to distant organs.', answer: false },
+];
+
+export const SAMPLE_BANK: FullBank = { questions, boss, redemption };

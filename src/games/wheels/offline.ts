@@ -22,7 +22,8 @@ export const REDEMPTION_ITEMS = 10;
 export const REDEMPTION_MS = 20_000;
 
 export type BossSet = { id: string; field: FieldKey; category: string; items: { label: string; fits: boolean }[] };
-export type FullBank = Bank & { boss: BossSet[] };
+/** Redemption has its own true/false set, apart from the normal-turn bank (WC13). */
+export type FullBank = Bank & { boss: BossSet[]; redemption: Question[] };
 
 // ---------------------------------------------------------------- Redemption (spec 6, WC3)
 
@@ -39,8 +40,8 @@ export type Redemption = {
 };
 
 /** 10 true/false from one field, easy to medium; the pool repeats while the bank is still small. */
-function redemptionItems(bank: Bank, field: FieldKey, rng: Rng): Question[] {
-  const tf = bank.questions.filter((q) => q.style === 'tf');
+function redemptionItems(bank: FullBank, field: FieldKey, rng: Rng): Question[] {
+  const tf = bank.redemption.filter((q) => q.style === 'tf');
   const easy = tf.filter((q) => q.difficulty === 'easy' || q.difficulty === 'medium');
   const pools = [easy.filter((q) => q.field === field), tf.filter((q) => q.field === field), easy, tf];
   const pool = pools.find((p) => p.length) ?? [];
