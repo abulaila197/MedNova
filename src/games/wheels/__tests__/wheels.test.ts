@@ -8,7 +8,7 @@ import {
   judge, soloExp, spinCombo, spinField, FIELDS, startSolo, startTurn, stepSolo, stepTurn, turnPoints, STAR_WINDOW_MS, STYLES, STYLE_KEYS,
   type Answer, type Question, type Rng, type Turn,
 } from '../core';
-import { actor, canRedeem, startOffline, stepOffline, BOSS_BONUS, BOSS_ITEMS, REDEMPTION_ITEMS, type FullBank, type OfflineGame } from '../offline';
+import { actor, canRedeem, startOffline, stepOffline, BOSS_BONUS, BOSS_ITEMS, REDEMPTION_ITEMS, redemptionItems, type FullBank, type OfflineGame } from '../offline';
 import { SAMPLE_BANK as bank } from '../data/samples';
 
 function seeded(seed: number): Rng {
@@ -310,4 +310,22 @@ test('WC10: the real bank covers every style in every field, with Redemption and
     assert.ok(full.boss.some((b) => b.field === f.key && b.items.length === BOSS_ITEMS), `${f.key} boss`);
   }
   assert.equal(new Set([...full.questions, ...full.redemption].map((q) => q.id)).size, full.questions.length + full.redemption.length);
+});
+
+test('WC19: Redemption plays one written round in order, unplayed rounds first, never the last one again', () => {
+  const full = JSON.parse(readFileSync('src/games/wheels/data/bank.json', 'utf8')) as FullBank;
+  const rng = seeded(7);
+  const used: number[] = [];
+  for (let i = 0; i < 10; i++) {
+    const { items, round } = redemptionItems(full, 'surgery', rng, used);
+    assert.equal(items.length, REDEMPTION_ITEMS);
+    assert.ok(items.every((q) => q.field === 'surgery' && q.round === round));
+    assert.ok(!used.includes(round!));
+    used.push(round!);
+  }
+  for (let i = 0; i < 20; i++) {
+    const { round } = redemptionItems(full, 'surgery', rng, used);
+    assert.notEqual(round, used[used.length - 1]);
+    used.push(round!);
+  }
 });

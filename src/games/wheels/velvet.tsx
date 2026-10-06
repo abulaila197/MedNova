@@ -98,9 +98,9 @@ export const Panel = ({ children, style, inner }: { children: ReactNode; style?:
 );
 
 /** Cream playbill paper in a brass frame. */
-export const Bill = ({ children, style }: { children: ReactNode; style?: StyleProp<ViewStyle> }) => (
+export const Bill = ({ children, style, tight }: { children: ReactNode; style?: StyleProp<ViewStyle>; tight?: boolean }) => (
   <Brass r={8} style={style} inner={{ backgroundColor: VV.paper }}>
-    <View style={{ paddingHorizontal: u(16), paddingVertical: u(14), gap: u(10) }}>{children}</View>
+    <View style={tight ? { paddingHorizontal: u(15), paddingVertical: u(11), gap: u(6) } : { paddingHorizontal: u(16), paddingVertical: u(14), gap: u(10) }}>{children}</View>
   </Brass>
 );
 
@@ -150,11 +150,11 @@ export const Gem = ({ c, size = 11 }: { c?: string; size?: number }) => (
 export const Rule = ({ c = VV.line }: { c?: string }) => <View style={{ height: 1, backgroundColor: c }} />;
 
 /** A round token (target, question type): crimson when picked. On paper by default. */
-export function Token({ label, sub, on, onPress, dark }: { label: string; sub?: string; on?: boolean; onPress: () => void; dark?: boolean }) {
+export function Token({ label, sub, on, onPress, dark, small }: { label: string; sub?: string; on?: boolean; onPress: () => void; dark?: boolean; small?: boolean }) {
   const base = dark ? VV.ink : VV.paperInk;
   return (
-    <Pressable onPress={onPress} accessibilityRole="radio" accessibilityState={{ selected: on }} accessibilityLabel={label} style={[s.token, { borderColor: on ? VV.redInk : dark ? VV.line : 'rgba(42,26,18,0.4)' }, on ? { backgroundColor: VV.redInk } : null]}>
-      <T f={CB} size={sub ? 15 : 12.5} color={on ? VV.gold : base} style={{ textAlign: 'center' }}>{label}</T>
+    <Pressable onPress={onPress} accessibilityRole="radio" accessibilityState={{ selected: on }} accessibilityLabel={label} style={[s.token, small ? { minWidth: u(52), paddingVertical: u(3), paddingHorizontal: u(9) } : null, { borderColor: on ? VV.redInk : dark ? VV.line : 'rgba(42,26,18,0.4)' }, on ? { backgroundColor: VV.redInk } : null]}>
+      <T f={CB} size={sub ? (small ? 13.5 : 15) : small ? 12 : 12.5} color={on ? VV.gold : base} style={{ textAlign: 'center' }}>{label}</T>
       {sub ? <T f={CM} size={8} color={on ? VV.gold : dark ? VV.dim : VV.paperSoft} style={{ letterSpacing: u(1) }}>{sub}</T> : null}
     </Pressable>
   );

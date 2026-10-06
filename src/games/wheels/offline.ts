@@ -39,15 +39,27 @@ export type Redemption = {
   pausedAt: number | null;
 };
 
-/** 10 true/false from one field, easy to medium; the pool repeats while the bank is still small. */
-function redemptionItems(bank: FullBank, field: FieldKey, rng: Rng): Question[] {
+/**
+ * WC19: one of Yazan's written rounds of 10 for the field, in his order; rounds not yet played this game come
+ * first, and the last one played never repeats straight away. A bank without rounds draws 10 easy to medium.
+ */
+export function redemptionItems(bank: FullBank, field: FieldKey, rng: Rng, used: readonly number[] = []): { items: Question[]; round: number | null } {
   const tf = bank.redemption.filter((q) => q.style === 'tf');
+  const mine = tf.filter((q) => q.field === field && q.round != null);
+  const rounds = [...new Set(mine.map((q) => q.round!))];
+  if (rounds.length) {
+    const fresh = rounds.filter((r) => !used.includes(r));
+    const last = used[used.length - 1];
+    const from = fresh.length ? fresh : rounds.length > 1 ? rounds.filter((r) => r !== last) : rounds;
+    const round = from[Math.floor(rng() * from.length)];
+    return { items: mine.filter((q) => q.round === round).slice(0, REDEMPTION_ITEMS), round };
+  }
   const easy = tf.filter((q) => q.difficulty === 'easy' || q.difficulty === 'medium');
   const pools = [easy.filter((q) => q.field === field), tf.filter((q) => q.field === field), easy, tf];
   const pool = pools.find((p) => p.length) ?? [];
   const out: Question[] = [];
   while (pool.length && out.length < REDEMPTION_ITEMS) out.push(...shuffle(pool, rng));
-  return out.slice(0, REDEMPTION_ITEMS);
+  return { items: out.slice(0, REDEMPTION_ITEMS), round: null };
 }
 
 export type RedemptionEvent = { type: 'GO'; now: number } | { type: 'ANSWER'; value: boolean; now: number } | { type: 'TICK'; now: number };
@@ -128,6 +140,8 @@ export type OfflineGame = {
   boss: Boss | null;
   /** WC2: the cycle The World was last used in. */
   worldCycle: number | null;
+  /** WC19: Redemption rounds played this game, per field, in order. */
+  redRounds?: Partial<Record<FieldKey, number[]>>;
   seen: string[];
   answers: { seat: number; r: QResult }[];
   log: Log[];
@@ -380,8 +394,11 @@ export function stepOffline(g: OfflineGame, e: OfflineEvent, bank: FullBank, rng
       const seat = g.order[g.turnAt];
       if (!e.use) return playTurn(g, seat, bank, rng);
       const field = spinField(rng, g.mix);
-      const redemption: Redemption = { seat, field, items: redemptionItems(bank, field, rng), index: 0, right: 0, answers: [], phase: 'reveal', until: null, pausedAt: null };
-      return { ...g, phase: 'redemption', worldCycle: g.cycle, redemption };
+      const used = g.redRounds?.[field] ?? [];
+      const { items, round } = redemptionItems(bank, field, rng, used);
+      const redemption: Redemption = { seat, field, items, index: 0, right: 0, answers: [], phase: 'reveal', until: null, pausedAt: null };
+      const redRounds = round == null ? g.redRounds : { ...g.redRounds, [field]: [...used, round] };
+      return { ...g, phase: 'redemption', worldCycle: g.cycle, redemption, redRounds };
     }
     case 'TURN': {
       if (g.phase !== 'turn' || !g.turn) return g;

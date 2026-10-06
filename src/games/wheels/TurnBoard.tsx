@@ -2,7 +2,7 @@
 // own style with the bulb timer, and the right/wrong moment. Used by Solo and Pass the phone.
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View, type LayoutChangeEvent } from 'react-native';
 
 import { u } from '@/theme/scale';
 
@@ -114,22 +114,33 @@ function Tray({ cards }: { cards: Card[] }) {
 type Mark = 'right' | 'wrong' | 'none';
 const markColor = (m: Mark) => (m === 'right' ? VV.right : m === 'wrong' ? VV.wrong : null);
 
-function Option({ letter, text, mark = 'none', on, onPress, disabled }: { letter?: string; text: string; mark?: Mark; on?: boolean; onPress?: () => void; disabled?: boolean }) {
+function Option({ letter, text, mark = 'none', on, onPress, disabled, cross, fill }: { letter?: string; text: string; mark?: Mark; on?: boolean; onPress?: () => void; disabled?: boolean; cross?: boolean; fill?: boolean }) {
   const c = markColor(mark);
   return (
-    <Pressable onPress={onPress} disabled={disabled} accessibilityRole="button" accessibilityState={{ selected: on }} accessibilityLabel={text}>
-      <Brass r={12} inner={{ backgroundColor: on ? '#5c0c18' : VV.panel, borderWidth: c ? 2 : 0, borderColor: c ?? 'transparent' }}>
+    <Pressable onPress={onPress} disabled={disabled} accessibilityRole="button" accessibilityState={{ selected: on }} accessibilityLabel={text} style={fill ? { flex: 1 } : null}>
+      <Brass r={12} style={fill ? { flex: 1 } : null} inner={[{ backgroundColor: on ? '#5c0c18' : VV.panel, borderWidth: c ? 2 : 0, borderColor: c ?? 'transparent' }, fill ? { flex: 1, justifyContent: 'center' } : null]}>
+        {cross ? <T f={CB} size={11} color={VV.ink} style={s.cross}>✕</T> : null}
         <View style={s.opt}>
           {letter ? (
             <View style={[s.letter, c ? { backgroundColor: c } : null]}>
-              <T f={CB} size={14} color={c ? VV.paperInk : VV.redInk}>{mark === 'right' ? '✓' : mark === 'wrong' ? '✕' : letter}</T>
+              <T f={CB} size={13} color={c ? VV.paperInk : VV.redInk}>{mark === 'right' ? '✓' : mark === 'wrong' ? '✕' : letter}</T>
             </View>
           ) : null}
-          <T f={BODY} size={14.5} color={VV.ink} style={{ flex: 1 }}>{text}</T>
+          <T f={BODY} size={14} color={VV.ink} style={{ flex: 1 }}>{text}</T>
         </View>
       </Brass>
     </Pressable>
   );
+}
+
+/** Every box in a grid takes the tallest box's height (E), so sizes never shift before or after a pick. */
+function useTallest() {
+  const [h, setH] = useState(0);
+  const onLayout = (e: LayoutChangeEvent) => {
+    const v = e.nativeEvent.layout.height;
+    if (v > h + 0.5) setH(v);
+  };
+  return { minHeight: h || undefined, onLayout };
 }
 
 /** A tiny stable shuffle so the matching column is mixed the same way every render. */
@@ -151,13 +162,14 @@ function Answers({ q, given, onAnswer }: { q: Question; given: Answer | undefine
   const [left, setLeft] = useState<number | null>(null);
   const [pairs, setPairs] = useState<(number | null)[]>(() => (q.style === 'match' ? q.pairs.map(() => null) : []));
   const order = useMemo(() => (q.style === 'match' ? mixed(q.pairs.length, q.id) : []), [q]);
+  const tall = useTallest();
 
   switch (q.style) {
     case 'mcq':
     case 'riddle':
     case 'reverse':
       return (
-        <View style={{ gap: u(8) }}>
+        <View style={{ gap: u(6) }}>
           {q.choices.map((c, i) => (
             <Option key={i} letter={LETTERS[i]} text={c} disabled={done} onPress={() => onAnswer(i)} mark={done ? (i === q.answer ? 'right' : i === given ? 'wrong' : 'none') : 'none'} />
           ))}
@@ -165,7 +177,7 @@ function Answers({ q, given, onAnswer }: { q: Question; given: Answer | undefine
       );
     case 'lie':
       return (
-        <View style={{ gap: u(8) }}>
+        <View style={{ gap: u(6) }}>
           {q.statements.map((c, i) => (
             <Option key={i} letter={LETTERS[i]} text={c} disabled={done} onPress={() => onAnswer(i)} mark={done ? (i === q.lie ? 'right' : i === given ? 'wrong' : 'none') : 'none'} />
           ))}
@@ -185,13 +197,13 @@ function Answers({ q, given, onAnswer }: { q: Question; given: Answer | undefine
       const chosen = done ? ((given as number[] | null) ?? []) : picks;
       return (
         <View style={{ gap: u(8) }}>
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: u(8) }}>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: u(6) }}>
             {q.items.map((c, i) => {
               const on = chosen.includes(i);
               const mark: Mark = done ? (q.out.includes(i as 0) ? 'right' : on ? 'wrong' : 'none') : 'none';
               return (
-                <View key={i} style={{ width: '48%', flexGrow: 1 }}>
-                  <Option text={on && !done ? `✕  ${c}` : c} on={on && !done} mark={mark} disabled={done} onPress={() => setPicks((p) => (p.includes(i) ? p.filter((x) => x !== i) : p.length < 2 ? [...p, i] : p))} />
+                <View key={i} onLayout={tall.onLayout} style={{ width: '48%', flexGrow: 1, minHeight: tall.minHeight }}>
+                  <Option fill cross={on && !done} text={c} on={on && !done} mark={mark} disabled={done} onPress={() => setPicks((p) => (p.includes(i) ? p.filter((x) => x !== i) : p.length < 2 ? [...p, i] : p))} />
                 </View>
               );
             })}
@@ -206,40 +218,35 @@ function Answers({ q, given, onAnswer }: { q: Question; given: Answer | undefine
       const ink = (li: number) => PAIR_INK[li % PAIR_INK.length];
       return (
         <View style={{ gap: u(8) }}>
-          <View style={{ flexDirection: 'row', gap: u(8) }}>
-            <View style={{ flex: 1, gap: u(6) }}>
-              {q.pairs.map(([l], i) => {
-                const set = got[i] != null && got[i] !== -1;
-                const mark: Mark = done ? (got[i] === i ? 'right' : 'wrong') : 'none';
-                return (
-                  <Pressable key={i} disabled={done} onPress={() => setLeft(left === i ? null : i)} accessibilityRole="button" accessibilityState={{ selected: left === i }} accessibilityLabel={l} style={[s.cell, set ? glow(ink(i)) : null, left === i ? { borderColor: VV.gold, backgroundColor: '#5c0c18' } : null, markColor(mark) ? { borderColor: markColor(mark)! } : null]}>
+          {/* D: one row per left item, so each A box and the B box beside it share a height. */}
+          <View style={{ gap: u(5) }}>
+            {q.pairs.map(([l], i) => {
+              const set = got[i] != null && got[i] !== -1;
+              const mark: Mark = done ? (got[i] === i ? 'right' : 'wrong') : 'none';
+              const ri = order[i];
+              const owner = got.findIndex((x) => x === ri);
+              return (
+                <View key={i} style={{ flexDirection: 'row', gap: u(8) }}>
+                  <Pressable disabled={done} onPress={() => setLeft(left === i ? null : i)} accessibilityRole="button" accessibilityState={{ selected: left === i }} accessibilityLabel={l} style={[s.cell, { flex: 1 }, set ? glow(ink(i)) : null, left === i ? { borderColor: VV.gold, backgroundColor: '#5c0c18' } : null, markColor(mark) ? { borderColor: markColor(mark)! } : null]}>
                     {set ? <Gem c={ink(i)} size={7} /> : null}
                     <T f={BODY_B} size={12} color={VV.ink} style={{ flex: 1 }}>{l}</T>
                   </Pressable>
-                );
-              })}
-            </View>
-            <View style={{ flex: 1, gap: u(6) }}>
-              {order.map((ri) => {
-                const owner = got.findIndex((x) => x === ri);
-                return (
                   <Pressable
-                    key={ri}
                     disabled={done || left == null}
                     onPress={() => {
                       if (left == null) return;
-                      setPairs((p) => p.map((x, i) => (i === left ? ri : x === ri ? null : x)));
+                      setPairs((p) => p.map((x, j) => (j === left ? ri : x === ri ? null : x)));
                       setLeft(null);
                     }}
                     accessibilityRole="button"
                     accessibilityLabel={q.pairs[ri][1]}
-                    style={[s.cell, owner >= 0 ? glow(ink(owner)) : null]}>
+                    style={[s.cell, { flex: 1 }, owner >= 0 ? glow(ink(owner)) : null]}>
                     {owner >= 0 ? <Gem c={ink(owner)} size={7} /> : null}
                     <T f={BODY} size={12} color={VV.ink} style={{ flex: 1 }}>{q.pairs[ri][1]}</T>
                   </Pressable>
-                );
-              })}
-            </View>
+                </View>
+              );
+            })}
           </View>
           {done ? null : (
             <>
@@ -318,7 +325,7 @@ export function TurnBoard({ turn, now, kicker, title, strip, tray = [], footer, 
 
   const left = turn.phase === 'question' ? timeLeft(turn, now) : 0;
   return (
-    <View style={{ flex: 1, gap: u(10) }}>
+    <View style={{ flex: 1, gap: u(8) }}>
       <View style={s.top}>
         <View style={{ flex: 1 }}>
           <Bulbs frac={turn.phase === 'question' ? left / (st.seconds * 1000) : 0} />
@@ -330,12 +337,12 @@ export function TurnBoard({ turn, now, kicker, title, strip, tray = [], footer, 
         <T f={CM} size={12} color={VV.soft}>{`${st.name} · ${st.points} pt${st.points > 1 ? 's' : ''}${turn.sun ? ' ×2' : ''}`}</T>
       </View>
       {strip ? <ScoreStrip strip={strip} /> : null}
-      <Brass r={14} inner={{ backgroundColor: VV.panel, padding: u(14), gap: u(7) }}>
+      <Brass r={14} inner={{ backgroundColor: VV.panel, paddingHorizontal: u(13), paddingVertical: u(10), gap: u(4) }}>
         <View style={s.spread}>
           <T f={CM} size={11} color={VV.right} style={{ letterSpacing: u(1.4) }}>{fieldName(q.field).toUpperCase()}</T>
           {promptLead[q.style] ? <T f={CM} size={10.5} color={VV.dim}>{promptLead[q.style]}</T> : null}
         </View>
-        <T f={BODY_B} size={q.prompt.length > 110 ? 15 : 16.5} color={VV.ink} style={{ lineHeight: u(22) }}>{q.prompt}</T>
+        <T f={BODY_B} size={q.prompt.length > 110 ? 14.5 : 15.5} color={VV.ink} style={{ lineHeight: u(20.5) }}>{q.prompt}</T>
       </Brass>
       <Answers key={`${turn.k}:${q.id}`} q={q} given={result ? result.answer : undefined} onAnswer={(a) => onEvent({ type: 'ANSWER', answer: a, now: Date.now() })} />
       {result ? (
@@ -359,7 +366,8 @@ const s = StyleSheet.create({
   spread: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', columnGap: u(10) },
   reel: { height: u(54), paddingHorizontal: u(24), alignItems: 'center', justifyContent: 'center' },
   pip: { position: 'absolute', top: '50%', marginTop: -u(9), fontSize: u(13), color: VV.redInk },
-  opt: { flexDirection: 'row', alignItems: 'center', gap: u(12), paddingVertical: u(9), paddingHorizontal: u(13) },
-  letter: { width: u(28), height: u(28), borderRadius: u(14), backgroundColor: VV.cream, alignItems: 'center', justifyContent: 'center' },
+  opt: { flexDirection: 'row', alignItems: 'center', gap: u(10), paddingVertical: u(6.5), paddingHorizontal: u(12) },
+  cross: { position: 'absolute', top: u(3), right: u(7), zIndex: 1 },
+  letter: { width: u(24), height: u(24), borderRadius: u(12), backgroundColor: VV.cream, alignItems: 'center', justifyContent: 'center' },
   cell: { flexDirection: 'row', alignItems: 'center', gap: u(7), minHeight: u(40), paddingHorizontal: u(10), paddingVertical: u(6), borderRadius: u(10), borderWidth: 1.5, borderColor: 'rgba(216,178,106,0.45)', backgroundColor: VV.panel },
 });

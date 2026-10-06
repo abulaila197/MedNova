@@ -115,19 +115,19 @@ function Setup({ def, mode, prefill, prefillSeats }: { def: GameDef; mode: Mode;
         <Kicker>{MODE_NAME[mode]}</Kicker>
         <Title text="Tonight's Bill" />
       </View>
-      <Bill>
+      <Bill tight>
         <View style={{ alignItems: 'center', gap: u(1) }}>
           <T f={CM} size={10} color={VV.paperSoft} style={{ letterSpacing: u(2.4) }}>THE WHEELS OF CHAOS PRESENTS</T>
           <T f={CD} size={17} color={VV.redInk}>Spin of Fate</T>
           <T f={CM} size={11} color={VV.paperSoft}>★  ★  ★</T>
         </View>
         {opts.map((o) => (
-          <View key={o.key} style={{ gap: u(8) }}>
+          <View key={o.key} style={{ gap: u(5) }}>
             <Rule c={PAPER_RULE} />
             <T f={CB} size={12} color={VV.paperInk} style={{ letterSpacing: u(1.2) }}>{o.label.toUpperCase()}</T>
-            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: u(8) }}>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: u(6) }}>
               {o.choices.map((c) => (
-                <Token key={String(c.value)} label={c.label} sub={c.note} on={vals[o.key] === c.value} onPress={() => setVals((p) => ({ ...p, [o.key]: c.value }))} />
+                <Token small key={String(c.value)} label={c.label} sub={c.note} on={vals[o.key] === c.value} onPress={() => setVals((p) => ({ ...p, [o.key]: c.value }))} />
               ))}
             </View>
           </View>
@@ -175,7 +175,7 @@ function Setup({ def, mode, prefill, prefillSeats }: { def: GameDef; mode: Mode;
                 ) : null}
               </View>
             ))}
-            <T size={11} color={VV.paperSoft} style={{ marginTop: u(2), lineHeight: u(15) }}>{def.playersNote?.(seats.length) ?? ''}</T>
+            <T size={11} color={VV.paperSoft} style={{ lineHeight: u(15) }}>{def.playersNote?.(seats.length) ?? ''}</T>
           </>
         ) : null}
       </Bill>
@@ -258,21 +258,21 @@ function Results({ def, play, items }: { def: GameDef; play: Play; items: PlayIt
         <Title text="Curtain Call" size={28} />
       </View>
       <Brass r={14}>
-        <LinearGradient colors={['#8e1a2c', '#5c0c18']} style={{ paddingVertical: u(16), paddingHorizontal: u(14), alignItems: 'center', gap: u(3) }}>
+        <LinearGradient colors={['#8e1a2c', '#5c0c18']} style={{ paddingVertical: u(11), paddingHorizontal: u(14), alignItems: 'center', gap: u(2) }}>
           <T f={CM} size={10.5} color={VV.cream} style={{ letterSpacing: u(2.4) }}>{`FIRST TO ${target}`}</T>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: u(10), marginTop: u(2) }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: u(10) }}>
             <T f={CD} size={14} color={VV.gold}>★</T>
-            <T f={CD} size={30} color={VV.gold}>{headline}</T>
+            <T f={CD} size={26} color={VV.gold}>{headline}</T>
             <T f={CD} size={14} color={VV.gold}>★</T>
           </View>
           <T f={CB} size={13} color={VV.cream} style={{ textAlign: 'center' }}>{sub}</T>
         </LinearGradient>
       </Brass>
-      <Panel>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-around', paddingBottom: u(4) }}>
+      <Panel inner={{ paddingVertical: u(11), gap: u(6) }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
           {stats.map((x) => (
             <View key={x.label} style={{ alignItems: 'center' }}>
-              <T f={CD} size={22} color={x.label === 'EXP' ? VV.gold : VV.ink}>{x.value}</T>
+              <T f={CD} size={20} color={x.label === 'EXP' ? VV.gold : VV.ink}>{x.value}</T>
               <T f={CM} size={9.5} color={VV.dim} style={{ letterSpacing: u(1.4) }}>{x.label.toUpperCase()}</T>
             </View>
           ))}
@@ -316,9 +316,11 @@ function Results({ def, play, items }: { def: GameDef; play: Play; items: PlayIt
         })}
         <T size={11} color={VV.dim}>The Wheels of Chaos doesn’t send anything to Learn.</T>
       </Panel>
-      <Btn label="Rematch" onPress={rematch} />
-      <Btn label="Change settings" ghost onPress={changeSettings} />
-      <Btn label="Back to games" ghost onPress={backToGames} />
+      <View style={{ gap: u(7) }}>
+        <Btn label="Rematch" onPress={rematch} />
+        <Btn label="Change settings" ghost onPress={changeSettings} />
+        <Btn label="Back to games" ghost onPress={backToGames} />
+      </View>
     </VelvetScreen>
   );
 }

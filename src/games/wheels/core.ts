@@ -57,7 +57,8 @@ export const STAR_WINDOW_MS = 3000; // WC5
 
 // ---------------------------------------------------------------- questions
 
-type Base = { id: string; field: FieldKey; difficulty: Difficulty; prompt: string };
+/** round: a Redemption question's written round of 10 (WC19). */
+type Base = { id: string; field: FieldKey; difficulty: Difficulty; prompt: string; round?: number };
 export type Question =
   | (Base & { style: 'mcq' | 'riddle' | 'reverse'; choices: string[]; answer: number })
   | (Base & { style: 'tf'; answer: boolean })
