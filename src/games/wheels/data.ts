@@ -1,9 +1,9 @@
 import type { Question } from './core';
-import { SAMPLE_BANK } from './data/samples';
+import bankJson from './data/bank.json';
 import type { FullBank } from './offline';
 
-/** The Wheels bank. Sample questions until Yazan's own bank arrives (WC10). */
-export const BANK: FullBank = SAMPLE_BANK;
+/** Yazan's Wheels bank (WC10): 10 fields, 7 styles, 100 Redemption true/false and 8+ Boss sets per field. */
+export const BANK = bankJson as unknown as FullBank;
 
 export const questionById = new Map<string, Question>([...BANK.questions, ...BANK.redemption].map((q) => [q.id, q]));
 

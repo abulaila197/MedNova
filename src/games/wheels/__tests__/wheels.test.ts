@@ -1,13 +1,14 @@
 /// <reference types="node" />
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
 
 import { deal, mirrorSwap, playable, react, reactions, startChain, type Card } from '../cards';
 import {
-  judge, soloExp, spinCombo, spinField, FIELDS, startSolo, startTurn, stepSolo, stepTurn, turnPoints, STAR_WINDOW_MS, STYLES,
+  judge, soloExp, spinCombo, spinField, FIELDS, startSolo, startTurn, stepSolo, stepTurn, turnPoints, STAR_WINDOW_MS, STYLES, STYLE_KEYS,
   type Answer, type Question, type Rng, type Turn,
 } from '../core';
-import { actor, canRedeem, startOffline, stepOffline, BOSS_BONUS, type OfflineGame } from '../offline';
+import { actor, canRedeem, startOffline, stepOffline, BOSS_BONUS, BOSS_ITEMS, REDEMPTION_ITEMS, type FullBank, type OfflineGame } from '../offline';
 import { SAMPLE_BANK as bank } from '../data/samples';
 
 function seeded(seed: number): Rng {
@@ -299,4 +300,14 @@ test('Offline: a Moon removes the turn; the last player left wins', () => {
   g = stepOffline(g, { type: 'REMOVE', seat: 2 }, bank, rng);
   assert.equal(g.phase, 'done');
   assert.deepEqual(g.result!.winners, [1]);
+});
+
+test('WC10: the real bank covers every style in every field, with Redemption and Boss sets per field', () => {
+  const full = JSON.parse(readFileSync('src/games/wheels/data/bank.json', 'utf8')) as FullBank;
+  for (const f of FIELDS) {
+    for (const st of STYLE_KEYS) assert.ok(full.questions.some((q) => q.field === f.key && q.style === st), `${f.key} ${st}`);
+    assert.ok(full.redemption.filter((q) => q.field === f.key).length >= REDEMPTION_ITEMS, `${f.key} redemption`);
+    assert.ok(full.boss.some((b) => b.field === f.key && b.items.length === BOSS_ITEMS), `${f.key} boss`);
+  }
+  assert.equal(new Set([...full.questions, ...full.redemption].map((q) => q.id)).size, full.questions.length + full.redemption.length);
 });

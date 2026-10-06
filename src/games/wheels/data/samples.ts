@@ -1,4 +1,4 @@
-// Sample questions to build and test on until Yazan's own Wheels bank arrives (WC10).
+// Sample questions the engine tests run on. The game itself plays from bank.json (WC10).
 import type { Question } from '../core';
 import type { BossSet, FullBank } from '../offline';
 
