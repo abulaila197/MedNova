@@ -229,7 +229,7 @@ function Answers({ q, given, onAnswer }: { q: Question; given: Answer | undefine
                 <View key={i} style={{ flexDirection: 'row', gap: u(8) }}>
                   <Pressable disabled={done} onPress={() => setLeft(left === i ? null : i)} accessibilityRole="button" accessibilityState={{ selected: left === i }} accessibilityLabel={l} style={[s.cell, { flex: 1 }, set ? glow(ink(i)) : null, left === i ? { borderColor: VV.gold, backgroundColor: '#5c0c18' } : null, markColor(mark) ? { borderColor: markColor(mark)! } : null]}>
                     {set ? <Gem c={ink(i)} size={7} /> : null}
-                    <T f={BODY_B} size={12} color={VV.ink} style={{ flex: 1 }}>{l}</T>
+                    <T f={BODY_B} size={10.5} color={VV.ink} style={{ flex: 1 }}>{l}</T>
                   </Pressable>
                   <Pressable
                     disabled={done || left == null}
@@ -242,7 +242,7 @@ function Answers({ q, given, onAnswer }: { q: Question; given: Answer | undefine
                     accessibilityLabel={q.pairs[ri][1]}
                     style={[s.cell, { flex: 1 }, owner >= 0 ? glow(ink(owner)) : null]}>
                     {owner >= 0 ? <Gem c={ink(owner)} size={7} /> : null}
-                    <T f={BODY} size={12} color={VV.ink} style={{ flex: 1 }}>{q.pairs[ri][1]}</T>
+                    <T f={BODY} size={10.5} color={VV.ink} style={{ flex: 1 }}>{q.pairs[ri][1]}</T>
                   </Pressable>
                 </View>
               );
