@@ -123,6 +123,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   return (
     <RiddleBoard
       riddle={r}
+      turnKey={`${run.index}:${run.turn}`}
       kicker={over ? `Picture ${run.index + 1} of ${run.photos.length}` : `Picture ${run.index + 1} of ${run.photos.length} · turn ${turnNo} of ${players}`}
       title={over ? { text: 'Everyone has played' } : { text: who?.name ?? `Player ${seat + 1}`, color: who?.color }}
       clockMs={playing ? turnLeft(run, now) : run.turnMs}

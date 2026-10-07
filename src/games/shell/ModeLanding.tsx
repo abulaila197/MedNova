@@ -25,11 +25,14 @@ export function ModeLanding({ def }: { def: GameDef }) {
     <GameScreen
       top={
         // Stand-in art: the game photo, faded and feathered. Each game's own landing art replaces it later.
-        <View style={s.art} pointerEvents="none">
-          <Image source={photo} style={[StyleSheet.absoluteFill, { opacity: 0.5 }]} resizeMode="cover" />
-          <LinearGradient colors={[t.sky, 'transparent']} start={{ x: 0, y: 0.5 }} end={{ x: 0.7, y: 0.5 }} style={StyleSheet.absoluteFill} />
-          <LinearGradient colors={['transparent', t.sky]} start={{ x: 0.5, y: 0.35 }} end={{ x: 0.5, y: 1 }} style={StyleSheet.absoluteFill} />
-        </View>
+        // Dark only: on the light sky its feathered edges showed as a colour crack.
+        t.mode === 'dark' ? (
+          <View style={s.art} pointerEvents="none">
+            <Image source={photo} style={[StyleSheet.absoluteFill, { opacity: 0.5 }]} resizeMode="cover" />
+            <LinearGradient colors={[t.sky, 'transparent']} start={{ x: 0, y: 0.5 }} end={{ x: 0.7, y: 0.5 }} style={StyleSheet.absoluteFill} />
+            <LinearGradient colors={['transparent', t.sky]} start={{ x: 0.5, y: 0.35 }} end={{ x: 0.5, y: 1 }} style={StyleSheet.absoluteFill} />
+          </View>
+        ) : undefined
       }>
       <Back label="Games" fallback="/games" />
       <View style={{ gap: u(6), marginBottom: u(4) }}>

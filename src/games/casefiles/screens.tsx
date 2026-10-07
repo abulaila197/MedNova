@@ -29,7 +29,7 @@ const MODE_NAME: Record<Mode, string> = { solo: 'Solo', offline: 'Pass the phone
 function Sheet({ children, tilt = 0, style, dense }: { children: ReactNode; tilt?: number; style?: StyleProp<ViewStyle>; dense?: boolean }) {
   return (
     <View style={[{ transform: [{ rotate: `${tilt}deg` }] }, style]}>
-      <View style={[sh.sheet, dense ? { gap: u(6), paddingTop: u(14), paddingBottom: u(11) } : null]}>{children}</View>
+      <View style={[sh.sheet, dense ? { gap: u(4), paddingTop: u(12), paddingBottom: u(9) } : null]}>{children}</View>
       <View style={sh.pin} />
     </View>
   );
@@ -207,7 +207,7 @@ function Setup({ def, mode, prefill, prefillSeats }: { def: GameDef; mode: Mode;
   };
   return (
     <NoirScreen scroll>
-      <View style={{ gap: u(9) }}>
+      <View style={{ gap: u(7) }}>
         <View style={{ gap: u(2) }}>
           <BackLink label="Case Files" to={`/play/${def.key}`} />
           <Kicker>{MODE_NAME[mode]}</Kicker>
@@ -219,7 +219,7 @@ function Setup({ def, mode, prefill, prefillSeats }: { def: GameDef; mode: Mode;
             <Ink size={11} color={PAPER.soft}>{range ? `Form CF-${range.max}` : 'Form CF-1'}</Ink>
           </View>
           {opts.map((o) => (
-            <View key={o.key} style={{ gap: u(5) }}>
+            <View key={o.key} style={{ gap: u(3) }}>
               <Ink size={12} color={PAPER.soft}>{o.label}</Ink>
               <View style={sh.boxes}>
                 {o.choices.map((c) => (
@@ -310,7 +310,7 @@ function Setup({ def, mode, prefill, prefillSeats }: { def: GameDef; mode: Mode;
                   </View>
                 );
               })}
-              <Ink size={11} color={PAPER.soft} style={{ marginTop: u(4) }}>
+              <Ink size={11} color={PAPER.soft}>
                 {`${teams ? 'Tap a square by each investigator to pick their team.' : 'Tap a diamond to change an investigator’s ink.'} ${def.playersNote?.(seats.length) ?? ''}`.trim()}
               </Ink>
             </>
@@ -467,12 +467,12 @@ const sh = StyleSheet.create({
   pbtn: { borderRadius: u(6), borderWidth: 1.5, borderColor: NR.red, backgroundColor: NR.red, paddingVertical: u(11), alignItems: 'center' },
   rbtn: { borderRadius: u(12), borderWidth: 1.5, borderColor: NR.red, backgroundColor: NR.redSoft, alignItems: 'center', justifyContent: 'center', paddingVertical: u(12), paddingHorizontal: u(10) },
   spread: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', columnGap: u(10) },
-  boxes: { flexDirection: 'row', gap: u(14), flexWrap: 'wrap' },
+  boxes: { flexDirection: 'row', columnGap: u(14), rowGap: u(6), flexWrap: 'wrap' },
   box: { width: u(15), height: u(15), borderWidth: 1.5, borderColor: PAPER.ink, alignItems: 'center', justifyContent: 'center' },
   x: { color: NR.red, fontSize: u(13), lineHeight: u(14), fontWeight: '700' },
   field: { flex: 1, flexDirection: 'row', alignItems: 'flex-end', gap: u(6), borderBottomWidth: 1, borderBottomColor: PAPER.rule, paddingBottom: u(3) },
   input: { fontFamily: NR.type, fontSize: u(13), color: PAPER.ink, padding: 0, minWidth: 0, ...(Platform.OS === 'web' ? ({ outlineStyle: 'none' } as object) : null) },
-  tnames: { flexDirection: 'row', flexWrap: 'wrap', columnGap: u(12), rowGap: u(8) },
+  tnames: { flexDirection: 'row', flexWrap: 'wrap', columnGap: u(12), rowGap: u(5) },
   tname: { flexBasis: '45%', flexGrow: 1, flexDirection: 'row' },
   seat: { flexDirection: 'row', alignItems: 'flex-end', gap: u(10) },
   tag: { width: u(8), height: u(8), borderRadius: u(1), transform: [{ rotate: '45deg' }], marginBottom: u(4) },

@@ -34,6 +34,8 @@ export function fitPicture(w: number, h: number, maxW: number, maxH: number) {
 
 export type BoardProps = {
   riddle: Riddle;
+  /** A new value empties the answer box (a new player's turn or a new picture). */
+  turnKey?: string;
   /** Small line above the title: "Level 13 of 86", "Picture 2 of 5". */
   kicker: string;
   title: { text: string; color?: string };
@@ -145,7 +147,7 @@ export function RiddleBoard(p: BoardProps) {
         {p.dock ? (
           <Animated.View entering={FadeInDown.duration(260)}>{p.dock}</Animated.View>
         ) : (
-          <AnswerBox wrong={p.wrong} wrongSeq={p.wrongSeq} locked={!!p.lockMs} disabled={!!p.hidden} onGuess={p.onGuess} />
+          <AnswerBox key={`${p.riddle.id}:${p.turnKey ?? ''}`} wrong={p.wrong} wrongSeq={p.wrongSeq} locked={!!p.lockMs} disabled={!!p.hidden} onGuess={p.onGuess} />
         )}
       </KeyboardAvoidingView>
       {p.children}

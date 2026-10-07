@@ -212,17 +212,17 @@ function Helpers({ onHelper, usable, disabled }: { onHelper: (k: HelperKind) => 
     const off = disabled || !usable(kind);
     const price = HELPER_PRICE[kind];
     return (
-      <Pressable onPress={() => onHelper(kind)} disabled={off} style={[s.hb, { backgroundColor: bg, borderColor: line, opacity: off ? 0.45 : 1 }]} accessibilityRole="button" accessibilityLabel={`${label}, ${price} token${price > 1 ? 's' : ''}`}>
-        <Text style={[s.hbT, { color: fg }]} numberOfLines={1}>{label}</Text>
-        <Text style={[s.hbP, { color: fg }]}>{`${price} token${price > 1 ? 's' : ''}`}</Text>
+      <Pressable onPress={() => onHelper(kind)} disabled={off} style={[s.hb, { backgroundColor: bg, borderColor: line }]} accessibilityRole="button" accessibilityLabel={`${label}, ${price} token${price > 1 ? 's' : ''}`}>
+        <Text style={[s.hbT, { color: fg, opacity: off ? 0.45 : 1 }]} numberOfLines={1}>{label}</Text>
+        <Text style={[s.hbP, { color: fg, opacity: off ? 0.34 : 0.75 }]}>{`${price} token${price > 1 ? 's' : ''}`}</Text>
       </Pressable>
     );
   };
   return (
     <View style={s.hrow}>
-      <H kind="remove" label="✂ Remove 2" bg={lt ? 'rgba(6,182,212,0.1)' : 'rgba(14,116,144,0.15)'} line="rgba(34,211,238,0.35)" fg={lt ? '#0e7490' : '#67e8f9'} />
-      <H kind="skip" label="⏭ Skip" bg={lt ? 'rgba(239,68,68,0.1)' : 'rgba(127,29,29,0.24)'} line="rgba(248,113,113,0.42)" fg={lt ? '#c2364a' : '#fda4af'} />
-      <H kind="time" label="⏱ +10 s" bg={lt ? 'rgba(168,85,247,0.1)' : 'rgba(109,40,217,0.16)'} line="rgba(167,139,250,0.34)" fg={lt ? '#7c3aed' : '#d8b4fe'} />
+      <H kind="remove" label="✂ Remove 2" bg={lt ? '#e2f2f1' : '#142741'} line={lt ? '#9fe7f0' : '#19637e'} fg={lt ? '#0e7490' : '#67e8f9'} />
+      <H kind="skip" label="⏭ Skip" bg={lt ? '#fae7e2' : '#2e1a2e'} line={lt ? '#f9b5b3' : '#833f4a'} fg={lt ? '#c2364a' : '#fda4af'} />
+      <H kind="time" label="⏱ +10 s" bg={lt ? '#f3e9f4' : '#231b4e'} line={lt ? '#d9c9f6' : '#504188'} fg={lt ? '#7c3aed' : '#d8b4fe'} />
     </View>
   );
 }

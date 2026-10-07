@@ -249,18 +249,18 @@ function Actions({ canReveal, hint, onSkip, onReveal }: { canReveal: boolean; hi
   const t = useTheme();
   const lt = t.mode === 'light';
   const B = ({ label, flex, bg, line, fg, onPress, disabled }: { label: string; flex: number; bg: string; line: string; fg: string; onPress: () => void; disabled?: boolean }) => (
-    <Pressable onPress={onPress} disabled={disabled} style={[s.b3, { flex, backgroundColor: bg, borderColor: line, opacity: disabled ? 0.45 : 1 }]} accessibilityRole="button" accessibilityLabel={label}>
-      <Text style={[s.b3T, { color: fg }]} numberOfLines={1}>
+    <Pressable onPress={onPress} disabled={disabled} style={[s.b3, { flex, backgroundColor: bg, borderColor: line }]} accessibilityRole="button" accessibilityLabel={label}>
+      <Text style={[s.b3T, { color: fg, opacity: disabled ? 0.45 : 1 }]} numberOfLines={1}>
         {label}
       </Text>
     </Pressable>
   );
   return (
     <View style={s.row3}>
-      <B label="⏭ Skip" flex={0.8} onPress={onSkip} bg={lt ? 'rgba(239,68,68,0.1)' : 'rgba(127,29,29,0.24)'} line="rgba(248,113,113,0.42)" fg={lt ? '#c2364a' : '#fda4af'} />
-      <B label="🔍 Reveal a Clue" flex={1.3} onPress={onReveal} disabled={!canReveal} bg={lt ? 'rgba(6,182,212,0.1)' : 'rgba(14,116,144,0.15)'} line="rgba(34,211,238,0.35)" fg={lt ? '#0e7490' : '#67e8f9'} />
+      <B label="⏭ Skip" flex={0.8} onPress={onSkip} bg={lt ? '#fae7e2' : '#2e1a2e'} line={lt ? '#f9b5b3' : '#833f4a'} fg={lt ? '#c2364a' : '#fda4af'} />
+      <B label="🔍 Reveal a Clue" flex={1.3} onPress={onReveal} disabled={!canReveal} bg={lt ? '#e2f2f1' : '#142741'} line={lt ? '#9fe7f0' : '#19637e'} fg={lt ? '#0e7490' : '#67e8f9'} />
       {hint ? (
-        <B label={hint.granted ? '💡 Hint used' : '💡 Hint'} flex={1} onPress={hint.onHint} disabled={hint.granted} bg={lt ? 'rgba(168,85,247,0.1)' : 'rgba(109,40,217,0.16)'} line="rgba(167,139,250,0.34)" fg={lt ? '#7c3aed' : '#d8b4fe'} />
+        <B label={hint.granted ? '💡 Hint used' : '💡 Hint'} flex={1} onPress={hint.onHint} disabled={hint.granted} bg={lt ? '#f3e9f4' : '#231b4e'} line={lt ? '#d9c9f6' : '#504188'} fg={lt ? '#7c3aed' : '#d8b4fe'} />
       ) : null}
     </View>
   );
