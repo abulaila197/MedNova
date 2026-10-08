@@ -128,7 +128,7 @@ export const LOAD: Record<string, LoadCfg> = {
     sub: { f: 'CormorantGaramond_600SemiBold_Italic', s: 19, c: '#5a3a1e' },
     tip: { f: 'CormorantGaramond_600SemiBold_Italic', s: 16, c: '#4a3018', bg: 'rgba(246,234,208,0.82)', b: 'rgba(90,58,30,0.28)' },
     bar: { t: 'march', c: '#5a3a1e', flag: '#8e1c1c' },
-    tag: { t: ALL, side: 'left', c: '#f5e6c8', bg: 'rgba(40,22,8,0.55)', b: 'rgba(245,230,200,0.3)' },
+    tag: { t: 'Online · 2-6 players', side: 'left', c: '#f5e6c8', bg: 'rgba(40,22,8,0.55)', b: 'rgba(245,230,200,0.3)' },
     glows: [
       { x: 0.92, y: 0.845, r: 40, c: 'rgba(255,200,110,0.8)', a: 'flicker' },
       { x: 0.85, y: 0.82, r: 160, c: 'rgba(255,180,90,0.16)', a: 'flicker' },
