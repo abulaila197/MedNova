@@ -61,8 +61,8 @@ function playSolo(g: ReturnType<typeof game>) {
   }
 }
 
-test('bank: 4,400 clean items in 8 styles', () => {
-  assert.equal(list.length, 4400);
+test('bank: 4,390 clean items in 8 styles (10 skipped, CQ18)', () => {
+  assert.equal(list.length, 4390);
   const raw = JSON.stringify(list);
   assert.ok(!/fuck/i.test(raw));
   for (const q of bank.byStyle.mcq) {
