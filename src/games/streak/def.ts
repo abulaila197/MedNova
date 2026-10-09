@@ -2,6 +2,7 @@ import type { GameDef } from '../shell/types';
 import { maxScore, soloExp } from './core';
 import { questionById } from './data';
 import { OfflinePlay } from './OfflinePlay';
+import { OnlinePlay } from './OnlinePlay';
 import { SoloPlay } from './SoloPlay';
 
 const STYLE = {
@@ -15,6 +16,28 @@ const STYLE = {
   initial: 'mixed',
 };
 
+// SM7: online rooms pick 10, 15 or 20 questions and 10, 15 or 20 s per question.
+const QUESTIONS_N = {
+  key: 'questions',
+  label: 'How many',
+  choices: [
+    { value: 10, label: '10', note: 'quick' },
+    { value: 15, label: '15' },
+    { value: 20, label: '20', note: 'long' },
+  ],
+  initial: 15,
+};
+const QTIME = {
+  key: 'qtime',
+  label: 'Time per question',
+  choices: [
+    { value: 10, label: '10 s' },
+    { value: 15, label: '15 s' },
+    { value: 20, label: '20 s' },
+  ],
+  initial: 15,
+};
+
 const LENGTH = {
   key: 'length',
   label: 'Round length',
@@ -26,7 +49,7 @@ const LENGTH = {
   initial: 60,
 };
 
-/** The Streak Master on the shared shell (SM1-SM13): Solo and Offline; Online comes with the shared online layer. */
+/** The Streak Master on the shared shell (SM1-SM13): Solo, Offline and Online. */
 export const streakMaster: GameDef = {
   key: 'the-streak-master',
   modes: [
@@ -57,18 +80,23 @@ export const streakMaster: GameDef = {
       mode: 'online',
       title: 'Same questions, race live',
       blurb: 'Answer first and keep your streak for bonus points.',
-      howTo: ['Everyone gets the same question at once.', 'Faster right answers score more, plus a streak bonus.'],
-      soon: true,
+      howTo: [
+        'Everyone gets the same question with the same choices at once. One pick each, no helpers.',
+        'Right answers score by order: 100, 80, 65 and so on, plus 10 for each answer in your streak after the first (up to 50).',
+        'A wrong pick or no answer drops your streak to 0. Ties go to the longest streak, then most right answers.',
+        'You earn half your score as EXP, like Solo. Missed questions wait for you in Today\'s review.',
+      ],
     },
   ],
-  setup: { solo: [STYLE, LENGTH], offline: [STYLE, LENGTH] },
+  setup: { solo: [STYLE, LENGTH], offline: [STYLE, LENGTH], online: [STYLE, QUESTIONS_N, QTIME] },
   players: { offline: { min: 2, max: 6 } },
-  teams: { offline: true },
+  teams: { offline: true, online: true },
   playersNote: () => 'Player 1 is you, the phone owner. Offline earns no EXP; only your missed questions go to Learn.',
   Play: { solo: SoloPlay, offline: OfflinePlay },
-  // SM12: Solo EXP is half the score; SM13: Offline earns none.
+  Online: OnlinePlay,
+  // SM12 + SM15: Solo and Online EXP is half the score; SM13: Offline earns none.
   exp: (score) => soloExp(score),
-  expCap: (settings, mode) => (mode === 'offline' ? 0 : soloExp(maxScore(Number(settings.length) || 60))),
+  expCap: (settings, mode) => (mode === 'offline' ? 0 : mode === 'online' ? soloExp(150 * (Number(settings.questions) || 15)) : soloExp(maxScore(Number(settings.length) || 60))),
   itemLabel: (item) => {
     const q = questionById.get(item.itemId);
     return q ? q.choices[q.answer] : item.itemId;

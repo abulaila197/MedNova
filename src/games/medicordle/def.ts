@@ -2,6 +2,7 @@ import type { GameDef } from '../shell/types';
 import { offlineRows } from './core';
 import { wordById } from './data';
 import { OfflinePlay } from './OfflinePlay';
+import { OnlinePlay } from './OnlinePlay';
 import { SoloPlay } from './SoloPlay';
 
 const STYLE = {
@@ -14,7 +15,7 @@ const STYLE = {
   initial: 'classic',
 };
 
-/** Nova Medicordle on the shared shell (NM1-NM25): Solo and Offline Multiplayer; Online comes with the shared online layer. */
+/** Nova Medicordle on the shared shell (NM1-NM25): Solo, Offline and Online Multiplayer. */
 export const novaMedicordle: GameDef = {
   key: 'nova-medicordle',
   modes: [
@@ -46,8 +47,12 @@ export const novaMedicordle: GameDef = {
       mode: 'online',
       title: 'Same word, race live',
       blurb: 'Everyone plays the same word on their own board.',
-      howTo: ['Solve faster and in fewer guesses to score more.', 'You see when someone solves it, or gets close.', 'No hints online.'],
-      soon: true,
+      howTo: [
+        'Everyone gets the same word at the same time and guesses on their own board, six tries each.',
+        'First solver scores 100, then 80, 65 and so on, plus 10 for each guess left.',
+        'You see when someone solves it or gets close. No letter hints online; the definition appears on your last guess.',
+        'EXP works like Solo: 12 for a first-guess solve, down to 2 on the sixth. Teams score their players\' average.',
+      ],
     },
   ],
   setup: {
@@ -86,16 +91,41 @@ export const novaMedicordle: GameDef = {
         initial: 20,
       },
     ],
+    // NM15: style, 3, 5 or 10 words, and 60, 90 or 120 s per word.
+    online: [
+      STYLE,
+      {
+        key: 'words',
+        label: 'Words',
+        choices: [
+          { value: 3, label: '3', note: 'quick' },
+          { value: 5, label: '5' },
+          { value: 10, label: '10', note: 'long' },
+        ],
+        initial: 5,
+      },
+      {
+        key: 'wordtime',
+        label: 'Time per word',
+        choices: [
+          { value: 60, label: '60 s' },
+          { value: 90, label: '90 s' },
+          { value: 120, label: '120 s' },
+        ],
+        initial: 90,
+      },
+    ],
   },
   players: { offline: { min: 2, max: 6 } },
-  // TMG-NM: the guesser's whole team wins the word, so a team scores its words (not an average).
-  teams: { offline: true },
-  teamScore: 'sum',
+  // TMG-NM: offline, the guesser's whole team wins the word, so a team scores its words; NM27: online is the average.
+  teams: { offline: true, online: true },
+  teamScore: { offline: 'sum', online: 'average' },
   playersNote: (n) => `Player 1 is you, the phone owner. With ${n} players the board has ${offlineRows(n)} rows, ${offlineRows(n) / n} guesses each.`,
   Play: { solo: SoloPlay, offline: OfflinePlay },
+  Online: OnlinePlay,
   // NM22: Solo EXP per word is stored on each item; NM25: Offline earns none.
   exp: (_score, items) => items.reduce((a, i) => a + (Number(i.gameData.exp) || 0), 0),
-  expCap: (settings) => (settings.word === 'daily' ? 24 : settings.word === 'endless' ? 12 * 150 : 0),
+  expCap: (settings, mode) => (mode === 'online' ? 12 * (Number(settings.words) || 5) : settings.word === 'daily' ? 24 : settings.word === 'endless' ? 12 * 150 : 0),
   itemLabel: (item) => wordById.get(item.itemId)?.word ?? item.itemId,
   itemNoun: 'word',
   itemsTitle: 'Words',

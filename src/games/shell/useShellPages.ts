@@ -8,7 +8,7 @@ import type { Mode, Play, PlayItem } from '../engine/types';
 import { startPlay, trialsLeft } from './flow';
 import { useSession } from './session';
 import { teamsOf, teamStandings } from './teams';
-import type { GameDef } from './types';
+import { teamScoreOf, type GameDef } from './types';
 
 /** Mode landing logic: resumable plays, free plays left, the open How to play card, and Play (with the trial gate). */
 export function useLanding(def: GameDef) {
@@ -58,7 +58,7 @@ export function useResults(def: GameDef, play: Play, items: PlayItem[]) {
   const colorOf = new Map(play.seats.map((x) => [x.seat, x.color]));
   const teams = teamsOf(play);
   const plain = def.plainItems?.(play) ?? false;
-  const teamRows = teams && play.standings.length > 1 ? teamStandings(play.standings, play.seats, teams, def.teamScore) : null;
+  const teamRows = teams && play.standings.length > 1 ? teamStandings(play.standings, play.seats, teams, teamScoreOf(def, play.mode)) : null;
   const stats = def.summary?.(play, items) ?? [
     { value: String(play.score), label: multi ? 'Your points' : 'Points' },
     { value: `${right}/${mine.length}`, label: 'Solved' },

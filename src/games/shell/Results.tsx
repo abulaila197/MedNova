@@ -11,7 +11,7 @@ import { RoomTalk } from '@/online/Talk';
 
 import { Face } from './Face';
 import { useSession } from './session';
-import type { GameDef } from './types';
+import { teamScoreOf, type GameDef } from './types';
 import { useResults } from './useShellPages';
 import { Body, Btn, Card, GameScreen, Ghost, Kick, Title } from './ui';
 
@@ -53,7 +53,7 @@ export function Results({ def, play, items }: { def: GameDef; play: Play; items:
               <Text style={[s.pts, { color: t.soft }]}>{r.score}</Text>
             </View>
           ))}
-          <Body>{def.teamScore === 'sum' ? 'A team scores every word its players won.' : 'A team scores its players\' average.'}</Body>
+          <Body>{teamScoreOf(def, play.mode) === 'sum' ? 'A team scores every word its players won.' : 'A team scores its players\' average.'}</Body>
         </Card>
       ) : null}
       {play.standings.length > 1 ? (

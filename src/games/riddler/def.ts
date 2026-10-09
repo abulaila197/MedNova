@@ -2,6 +2,7 @@ import type { GameDef } from '../shell/types';
 import { RD } from './core';
 import { RIDDLES, riddleById, riddleName } from './data';
 import { OfflinePlay } from './OfflinePlay';
+import { OnlinePlay } from './OnlinePlay';
 import { SoloPlay } from './SoloPlay';
 
 const PHOTOS = {
@@ -27,7 +28,7 @@ const TURN = {
   initial: 90,
 };
 
-/** The Riddler on the shared shell (RD1-RD17): Solo and Offline; Online comes with the shared online layer. */
+/** The Riddler on the shared shell (RD1-RD17): Solo, Offline and Online (RD7, RD8, RD18). */
 export const riddler: GameDef = {
   key: 'the-riddler',
   modes: [
@@ -58,23 +59,28 @@ export const riddler: GameDef = {
       mode: 'online',
       title: 'Race the same picture',
       blurb: 'Everyone sees the picture at once. Solve it first.',
-      howTo: ['Everyone gets the same picture at the same time, 90 s to solve.', 'Faster solves score more.'],
-      soon: true,
+      howTo: [
+        'Everyone gets the same picture at the same time, with 90 s to solve it.',
+        'Guess as often as you like, but a wrong guess locks you for 5 s.',
+        'First solver scores 100, then 80, 65 and so on, plus up to 50 for time left.',
+        'EXP works like Solo: stars by time and wrong guesses, 4 EXP a star. Missed conditions go to Today\'s review.',
+      ],
     },
   ],
-  setup: { solo: [], offline: [PHOTOS, TURN] },
+  setup: { solo: [], offline: [PHOTOS, TURN], online: [PHOTOS] },
   players: { offline: { min: 2, max: 6 } },
-  teams: { offline: true },
+  teams: { offline: true, online: true },
   playersNote: () => 'Player 1 is you, the phone owner. Offline earns no EXP; only your unsolved condition pictures go to Learn.',
   Play: { solo: SoloPlay, offline: OfflinePlay },
+  Online: OnlinePlay,
   // RD9, RD10: Solo pays the EXP each level earned this session; RD12: Offline earns none.
   exp: (_score, items) => items.reduce((a, i) => a + (Number(i.gameData.exp) || 0), 0),
-  expCap: (_settings, mode) => (mode === 'offline' ? 0 : RIDDLES.length * 3 * RD.expPerStar),
+  expCap: (settings, mode) => (mode === 'offline' ? 0 : (mode === 'online' ? Number(settings.photos) || 5 : RIDDLES.length) * 3 * RD.expPerStar),
   itemLabel: (item) => { const r = riddleById.get(item.itemId); return r ? riddleName(r) : item.itemId; },
   itemNoun: 'level',
   itemsTitle: 'Pictures',
   summary: (play, items) => {
-    if (play.mode === 'offline') {
+    if (play.mode !== 'solo') {
       const mine = items.filter((i) => i.seat === 0);
       return [
         { value: String(mine.reduce((a, i) => a + i.points, 0)), label: 'Your points' },

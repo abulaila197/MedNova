@@ -55,9 +55,9 @@ export type GameDef = {
   plainItems?: (play: Play) => boolean;
   /** Replaces the Points and Solved figures on results when the game counts differently; null keeps the default. */
   summary?: (play: Play, items: PlayItem[]) => { value: string; label: string }[] | null;
-  /** Modes that offer team play (TM1); the host turns it on in setup. Team score is the average unless 'sum'. */
+  /** Modes that offer team play (TM1); the host turns it on in setup. Team score is the average unless 'sum' (per mode allowed). */
   teams?: Partial<Record<Mode, true>>;
-  teamScore?: 'average' | 'sum';
+  teamScore?: TeamScore | Partial<Record<Mode, TeamScore>>;
   /** Note under the players list in setup (default: the phone owner earns EXP and Learn entries). */
   playersNote?: (players: number) => string;
   /** The game's own player and team colours (and team names), when the app's would clash with its look. */
@@ -72,3 +72,8 @@ export type OwnScreens = {
   Setup?: ComponentType<{ def: GameDef; mode: Mode; prefill?: Record<string, unknown>; prefillSeats?: Seat[] }>;
   Results?: ComponentType<{ def: GameDef; play: Play; items: PlayItem[] }>;
 };
+
+type TeamScore = 'average' | 'sum';
+/** How a team scores in this mode: its players' average unless the game says 'sum'. */
+export const teamScoreOf = (def: GameDef, mode: Mode): TeamScore =>
+  (typeof def.teamScore === 'object' ? def.teamScore[mode] : def.teamScore) ?? 'average';
