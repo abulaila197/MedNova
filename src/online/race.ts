@@ -37,6 +37,8 @@ export type RacePlayer = {
   revived?: boolean;
   /** Case Files: the stage they have reached (CF9). */
   stage?: string | null;
+  /** The Silent Artist: drawing this turn. */
+  drawer?: boolean;
 };
 
 export type RaceMine = {
@@ -50,13 +52,14 @@ export type RaceMine = {
   points: number;
 };
 
-export type RaceItemResult = { index: number; item: number; solved_ms: number | null; rank: number | null; points: number; wrong: string[]; guesses: string[]; pick: number | null };
+export type RaceItemResult = { index: number; item: number; solved_ms: number | null; rank: number | null; points: number; wrong: string[]; guesses: string[]; pick: number | null; drawer?: boolean };
 
 export type RaceState = {
   now: number;
   room_id: string;
   game: string;
-  phase: 'countdown' | 'case' | 'reveal' | 'done';
+  /** 'pick' is The Silent Artist's 10 s choice before each drawing. */
+  phase: 'countdown' | 'pick' | 'case' | 'reveal' | 'done';
   phase_started_at: number;
   phase_ends_at: number;
   index: number;
@@ -72,6 +75,19 @@ export type RaceState = {
   /** Crossword: every claimed word in claim order, and my wrong answers per word. */
   claims?: { word_id: string; user_id: string; at_ms: number; auto: boolean }[] | null;
   tried?: Record<string, string[]> | null;
+  /** The Silent Artist: this turn's drawer, the drawer's options, the hints the room may see, the board version. */
+  sa?: {
+    drawer: string;
+    options: number[] | null;
+    words: number | null;
+    field: string | null;
+    mask: string | null;
+    stage: number;
+    field_at: number | null;
+    version: number;
+    reports: number;
+    reported: boolean;
+  } | null;
 };
 
 /**

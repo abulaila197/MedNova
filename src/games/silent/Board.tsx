@@ -40,7 +40,7 @@ const Done = memo(function Done({ strokes, bg }: { strokes: Stroke[]; bg: string
  * `color`/`width`/`erase` are the current tool; `bg` is the board colour (the eraser paints with it).
  * `enabled` false makes the board read-only (e.g. while paused). `ratio` is height / width.
  */
-export function Board({ ref, color, width, erase, bg, enabled = true, ratio = 4 / 3, initial, onChange, children, style }: { ref?: Ref<BoardHandle>; color: string; width: number; erase: boolean; bg: string; enabled?: boolean; ratio?: number; initial?: Stroke[]; onChange?: (n: number) => void; children?: React.ReactNode; style?: StyleProp<ViewStyle> }) {
+export function Board({ ref, color, width, erase, bg, enabled = true, ratio = 4 / 3, initial, onChange, onLive, children, style }: { ref?: Ref<BoardHandle>; color: string; width: number; erase: boolean; bg: string; enabled?: boolean; ratio?: number; initial?: Stroke[]; onChange?: (n: number) => void; onLive?: (s: Stroke | null) => void; children?: React.ReactNode; style?: StyleProp<ViewStyle> }) {
   const [strokes, setStrokes] = useState<Stroke[]>(initial ?? []);
   const [live, setLive] = useState<Stroke | null>(null);
   const size = useRef(1);
@@ -68,6 +68,7 @@ export function Board({ ref, color, width, erase, bg, enabled = true, ratio = 4 
     .onBegin((e) => {
       cur.current = { color, width, erase, pts: at(e.x, e.y) };
       setLive({ ...cur.current });
+      onLive?.(cur.current);
     })
     .onUpdate((e) => {
       const s = cur.current;
@@ -78,11 +79,13 @@ export function Board({ ref, color, width, erase, bg, enabled = true, ratio = 4 
       if (Math.abs(x - lx) + Math.abs(y - ly) < 2) return;
       s.pts.push(x, y);
       setLive({ ...s, pts: s.pts.slice() });
+      onLive?.(s);
     })
     .onFinalize(() => {
       const s = cur.current;
       cur.current = null;
       setLive(null);
+      onLive?.(null);
       if (s) commit([...all.current, s]);
     });
 
@@ -98,6 +101,19 @@ export function Board({ ref, color, width, erase, bg, enabled = true, ratio = 4 
         </Svg>
       </View>
     </GestureDetector>
+  );
+}
+
+/** A read-only board for watchers (online): the drawer's finished strokes plus the stroke being drawn right now. */
+export function Sketch({ strokes, live, bg, ratio, children, style }: { strokes: Stroke[]; live?: Stroke | null; bg: string; ratio: number; children?: React.ReactNode; style?: StyleProp<ViewStyle> }) {
+  return (
+    <View style={[s.board, { aspectRatio: 1 / ratio, backgroundColor: bg }, style]}>
+      {children}
+      <Svg style={StyleSheet.absoluteFill} viewBox={`0 0 ${UNITS} ${UNITS * ratio}`} preserveAspectRatio="none">
+        <Done strokes={strokes} bg={bg} />
+        {live && live.pts.length >= 2 ? <Path d={strokePath(live.pts)} stroke={live.erase ? bg : live.color} strokeWidth={live.width} strokeLinecap="round" strokeLinejoin="round" fill="none" /> : null}
+      </Svg>
+    </View>
   );
 }
 
