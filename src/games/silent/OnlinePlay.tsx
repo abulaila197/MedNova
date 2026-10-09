@@ -160,7 +160,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
             </View>
           </>
         ) : (
-          <Panel style={{ paddingVertical: u(12), gap: u(8) }}>
+          <Panel style={{ paddingVertical: u(12), gap: u(8), marginRight: u(34) }}>
             <Note>{`Get ready to guess. ${drawer?.name ?? 'The artist'} draws, you type what it is. Faster is worth more.`}</Note>
             <Scores rows={scoreRows} />
           </Panel>
@@ -186,7 +186,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
             <Sketch strokes={strokes.list} bg={R.board} ratio={RATIO} />
           </Frame>
         ) : null}
-        <Panel style={{ paddingVertical: u(10) }}>
+        <Panel style={{ paddingVertical: u(10), marginRight: u(34) }}>
           <Kicker>Scores</Kicker>
           <Scores rows={scoreRows} />
         </Panel>
@@ -335,7 +335,7 @@ function ReportBtn({ sa, matchId, load }: { sa: NonNullable<RaceState['sa']>; ma
 const s = StyleSheet.create({
   fill: { flex: 1, alignItems: 'center', justifyContent: 'center', minHeight: u(120) },
   row: { flexDirection: 'row', gap: u(8), alignItems: 'stretch' },
-  input: { flex: 1, borderWidth: 1.5, borderRadius: u(12), paddingHorizontal: u(12), paddingVertical: u(10), fontFamily: SL.body, fontSize: u(17) },
+  input: { flex: 1, minWidth: 0, width: 0, borderWidth: 1.5, borderRadius: u(12), paddingHorizontal: u(12), paddingVertical: u(10), fontFamily: SL.body, fontSize: u(17) },
   option: { flexDirection: 'row', alignItems: 'center', gap: u(12), borderWidth: SL.frameW * 0.6, borderColor: SL.frame, borderRadius: u(4), paddingVertical: u(12), paddingHorizontal: u(14), minHeight: u(62) },
   optNo: { fontFamily: SL.head, fontSize: u(24), color: SL.yellow, width: u(18) },
   optT: { fontFamily: SL.head, fontSize: u(18), lineHeight: u(21), color: SL.chalk },

@@ -74,6 +74,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   const toItems = useMemo(() => itemsOf(me), [me]);
   const { st, load, server, playing, notice, setNotice, leave } = useRace(def, roomId, matchId, me, toItems);
   const [menu, setMenu] = useState(false);
+  const [typing, setTyping] = useState(false);
   const { alert, push } = useAlerts();
   const seen = useRef<{ claims: Set<string>; leader: string | null; out: Set<string> } | null>(null);
 
@@ -151,10 +152,10 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
 
   return (
     <GameScreen scroll={false} bodyStyle={{ paddingTop: u(12), paddingHorizontal: u(16), gap: u(10) }}>
-      <AppTopBar kicker={`${left} ${left === 1 ? 'word' : 'words'} left`} title="Race the grid" sub={sub} hearts={hearts} score={mine?.score ?? 0} onPause={() => setMenu(true)} />
+      <AppTopBar kicker={`${left} ${left === 1 ? 'word' : 'words'} left`} title="The race" sub={sub} hearts={hearts} score={mine?.score ?? 0} onPause={() => setMenu(true)} />
       {board}
       {!reveal && playing && !out && !menu ? (
-        <Race puzzle={p} matchId={matchId} solved={solved} claims={claims} tried={st.tried ?? {}} hearts={hearts} width={W} load={load} claimerOf={(id) => byUser.get(claimsList.find((c) => c.word_id === id)?.user_id ?? '')?.name} />
+        <Race onTyping={setTyping} puzzle={p} matchId={matchId} solved={solved} claims={claims} tried={st.tried ?? {}} hearts={hearts} width={W} load={load} claimerOf={(id) => byUser.get(claimsList.find((c) => c.word_id === id)?.user_id ?? '')?.name} />
       ) : (
         <>
           <AppGrid puzzle={p} solved={solved} claims={claims} width={W - u(32)} />
@@ -197,15 +198,16 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
       ) : null}
       {notice ? <Text style={[s.tip, { color: t.mute, textAlign: 'center' }]}>{notice}</Text> : null}
       <AlertPill alert={alert} />
-      <RoomTalk room={roomId} me={talker} />
+      {/* The talk button would sit on the keyboard while a word is open. */}
+      {typing && !reveal && playing && !out ? null : <RoomTalk room={roomId} me={talker} />}
       <PauseMenu open={menu} mode="online" onResume={() => setMenu(false)} onQuit={leave} />
     </GameScreen>
   );
 }
 
 /** Your side of the race: zoom, open any unclaimed word, answer it. A word someone else claims closes on you. */
-function Race({ puzzle, matchId, solved, claims, tried, hearts, width, load, claimerOf }: {
-  puzzle: PuzzleDef; matchId: string; solved: string[]; claims: Record<string, string>; tried: Record<string, string[]>; hearts: number; width: number;
+function Race({ onTyping, puzzle, matchId, solved, claims, tried, hearts, width, load, claimerOf }: {
+  onTyping: (open: boolean) => void; puzzle: PuzzleDef; matchId: string; solved: string[]; claims: Record<string, string>; tried: Record<string, string[]>; hearts: number; width: number;
   load: () => Promise<void>; claimerOf: (wordId: string) => string | undefined;
 }) {
   const t = useTheme();
@@ -284,6 +286,11 @@ function Race({ puzzle, matchId, solved, claims, tried, hearts, width, load, cla
     setTyped(next);
     if (isFilled(slots, next)) submit(next);
   };
+
+  useEffect(() => {
+    onTyping(word != null);
+    return () => onTyping(false);
+  }, [word, onTyping]);
 
   const sel = word ? idx.wordById.get(word)! : null;
   return (
