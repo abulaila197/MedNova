@@ -8,6 +8,8 @@ import { Platform, Pressable, StyleSheet, TextInput, View } from 'react-native';
 import { u } from '@/theme/scale';
 
 import type { Mode, Play, PlayItem, Seat } from '../engine/types';
+import { CHARACTERS } from '../shell/characters';
+import { Face } from '../shell/Face';
 import type { GameDef } from '../shell/types';
 import { useSetup } from '../shell/useSetup';
 import { useLanding, useResults } from '../shell/useShellPages';
@@ -107,7 +109,7 @@ function Gate({ def, mode }: { def: GameDef; mode: Mode }) {
 // ---------------------------------------------------------------- setup: tonight's bill
 
 function Setup({ def, mode, prefill, prefillSeats }: { def: GameDef; mode: Mode; prefill?: Record<string, unknown>; prefillSeats?: Seat[] }) {
-  const { opts, vals, setVals, range, seats, colors, setSeat, addSeat, removeSeat, busy, start } = useSetup(def, mode, prefill, prefillSeats);
+  const { opts, vals, setVals, range, seats, setSeat, pickCharacter, addSeat, removeSeat, busy, start } = useSetup(def, mode, prefill, prefillSeats);
   return (
     <VelvetScreen scroll>
       <View style={{ gap: u(3) }}>
@@ -144,7 +146,8 @@ function Setup({ def, mode, prefill, prefillSeats }: { def: GameDef; mode: Mode;
               ) : null}
             </View>
             {seats.map((x, i) => (
-              <View key={i} style={{ flexDirection: 'row', alignItems: 'flex-end', gap: u(10) }}>
+              <View key={i} style={{ gap: u(5) }}>
+              <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: u(10) }}>
                 <T f={CB} size={14} color={VV.redInk} style={{ width: u(26) }}>{ROMAN[i]}</T>
                 <View style={s.line}>
                   <TextInput
@@ -156,23 +159,26 @@ function Setup({ def, mode, prefill, prefillSeats }: { def: GameDef; mode: Mode;
                     style={s.input}
                     accessibilityLabel={`Player ${i + 1} name`}
                   />
-                  <View style={{ flexDirection: 'row', gap: u(7), alignItems: 'center' }}>
-                    {colors.map((g) => {
-                      const on = x.color === g;
-                      const taken = seats.some((o, j) => j !== i && o.color === g);
-                      return (
-                        <Pressable key={g} disabled={taken} onPress={() => setSeat(i, { color: g })} hitSlop={u(4)} accessibilityRole="button" accessibilityState={{ selected: on, disabled: taken }} accessibilityLabel={`Gem ${g} for player ${i + 1}`} style={{ opacity: on ? 1 : taken ? 0.18 : 0.55 }}>
-                          <Gem c={g} size={on ? 11 : 8} />
-                        </Pressable>
-                      );
-                    })}
-                  </View>
+                  <Gem c={x.color ?? VV.redInk} size={11} />
                 </View>
                 {seats.length > range.min ? (
                   <Pressable onPress={() => removeSeat(i)} hitSlop={u(6)} accessibilityRole="button" accessibilityLabel={`Remove player ${i + 1}`}>
                     <T size={12} color={VV.paperSoft} style={{ paddingBottom: u(4) }}>✕</T>
                   </Pressable>
                 ) : null}
+              </View>
+              {/* AV1: the 9 characters, the chosen one ringed in stage red. */}
+              <View style={s.faces}>
+                {CHARACTERS.map((c) => {
+                  const on = x.character === c.slug;
+                  const taken = seats.some((o, j) => j !== i && o.character === c.slug);
+                  return (
+                    <Pressable key={c.slug} disabled={taken} onPress={() => pickCharacter(i, c.slug)} hitSlop={u(1)} accessibilityRole="button" accessibilityState={{ selected: on, disabled: taken }} accessibilityLabel={`${c.name} for player ${i + 1}`} style={[s.face, { opacity: on ? 1 : taken ? 0.18 : 0.55, borderColor: on ? VV.redInk : 'transparent' }]}>
+                      <Face slug={c.slug} size={u(16)} />
+                    </Pressable>
+                  );
+                })}
+              </View>
               </View>
             ))}
             <T size={11} color={VV.paperSoft} style={{ lineHeight: u(15) }}>{def.playersNote?.(seats.length) ?? ''}</T>
@@ -330,6 +336,8 @@ export const wheelsScreens = { Landing, Gate, Setup, Results };
 const s = StyleSheet.create({
   spread: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', columnGap: u(10) },
   line: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: u(8), borderBottomWidth: 1, borderBottomColor: 'rgba(42,26,18,0.25)', paddingBottom: u(4) },
+  faces: { flexDirection: 'row', flexWrap: 'wrap', gap: u(2), paddingLeft: u(20) },
+  face: { padding: 1, borderRadius: u(12), borderWidth: 1.5 },
   input: { flex: 1, minWidth: 0, fontFamily: CB, fontSize: u(15), color: VV.paperInk, padding: 0, ...(Platform.OS === 'web' ? ({ outlineStyle: 'none' } as object) : null) },
   cord: { width: 2, height: u(26), backgroundColor: '#b8893f' },
   row: { flexDirection: 'row', alignItems: 'center', gap: u(9) },

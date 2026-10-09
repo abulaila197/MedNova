@@ -60,7 +60,7 @@ export const wheelsOfChaos: GameDef = {
   ],
   setup: { solo: [TARGET, MIX], offline: [TARGET, MIX] },
   players: { offline: { min: 2, max: 4 } },
-  playersNote: () => '2 to 4 players, each with a gem colour. Player I is you, the phone owner. Pass the phone earns no EXP.',
+  playersNote: () => '2 to 4 players, each with a character. Player I is you, the phone owner. Pass the phone earns no EXP.',
   Play: { solo: SoloPlay, offline: OfflinePlay },
   // WC11: Solo EXP is half the points; Offline earns none.
   exp: (score) => soloExp(score),

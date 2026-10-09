@@ -10,6 +10,8 @@ import { Platform, Pressable, StyleSheet, Text, TextInput, View, type StyleProp,
 import { u } from '@/theme/scale';
 
 import type { Mode, Play, PlayItem, Seat } from '../engine/types';
+import { CHARACTERS } from '../shell/characters';
+import { Face } from '../shell/Face';
 import type { GameDef } from '../shell/types';
 import { useSetup } from '../shell/useSetup';
 import { useLanding, useResults } from '../shell/useShellPages';
@@ -196,15 +198,7 @@ function Gate({ def, mode }: { def: GameDef; mode: Mode }) {
 /** The intake form: teams as typed tick boxes, investigators on typed lines, team marks as ink squares. */
 function Setup({ def, mode, prefill, prefillSeats }: { def: GameDef; mode: Mode; prefill?: Record<string, unknown>; prefillSeats?: Seat[] }) {
   const st = useSetup(def, mode, prefill, prefillSeats);
-  const { opts, vals, setVals, range, seats, colors, setSeat, addSeat, removeSeat, canTeam, teams, teamCount, renameTeam, teamChoices, preset, emptyTeam, busy, start } = st;
-  // Without teams, tapping an investigator's diamond moves them to the next free ink.
-  const nextInk = (i: number) => {
-    const at = colors.indexOf(seats[i].color ?? colors[0]);
-    for (let k = 1; k <= colors.length; k++) {
-      const c = colors[(at + k) % colors.length];
-      if (!seats.some((o, j) => j !== i && o.color === c)) return setSeat(i, { color: c });
-    }
-  };
+  const { opts, vals, setVals, range, seats, setSeat, pickCharacter, addSeat, removeSeat, canTeam, teams, teamCount, renameTeam, teamChoices, preset, emptyTeam, busy, start } = st;
   return (
     <NoirScreen scroll>
       <View style={{ gap: u(7) }}>
@@ -271,9 +265,10 @@ function Setup({ def, mode, prefill, prefillSeats }: { def: GameDef; mode: Mode;
               {seats.map((x, i) => {
                 const tm = teams?.find((y) => y.id === x.team);
                 return (
-                  <View key={i} style={sh.seat}>
+                  <View key={i} style={{ gap: u(4) }}>
+                  <View style={sh.seat}>
                     <Ink size={12} color={PAPER.soft} style={{ width: u(20) }}>{String(i + 1).padStart(2, '0')}</Ink>
-                    <Field tag={tm?.color ?? x.color} onTag={teams ? undefined : () => nextInk(i)} tagLabel={`Change ink for investigator ${i + 1}`}>
+                    <Field tag={tm?.color ?? x.color}>
                       <TextInput
                         value={x.name}
                         onChangeText={(v) => setSeat(i, { name: v })}
@@ -308,10 +303,32 @@ function Setup({ def, mode, prefill, prefillSeats }: { def: GameDef; mode: Mode;
                       </Pressable>
                     ) : null}
                   </View>
+                  {/* AV1: the 9 characters as small photos clipped to the form; the chosen one is circled in ink. */}
+                  <View style={sh.faces}>
+                    {CHARACTERS.map((c) => {
+                      const taken = seats.some((o, j) => j !== i && o.character === c.slug);
+                      const on = x.character === c.slug;
+                      return (
+                        <Pressable
+                          key={c.slug}
+                          disabled={taken}
+                          onPress={() => pickCharacter(i, c.slug)}
+                          hitSlop={u(1)}
+                          style={[sh.face, { opacity: on ? 1 : taken ? 0.18 : 0.6, borderColor: on ? PAPER.ink : 'transparent' }]}
+                          accessibilityRole="button"
+                          accessibilityState={{ selected: on, disabled: taken }}
+                          accessibilityLabel={`${c.name} for investigator ${i + 1}`}
+                        >
+                          <Face slug={c.slug} size={u(16)} />
+                        </Pressable>
+                      );
+                    })}
+                  </View>
+                  </View>
                 );
               })}
               <Ink size={11} color={PAPER.soft}>
-                {`${teams ? 'Tap a square by each investigator to pick their team.' : 'Tap a diamond to change an investigator’s ink.'} ${def.playersNote?.(seats.length) ?? ''}`.trim()}
+                {`${teams ? 'Tap a square by each investigator to pick their team.' : 'Tap a photo to pick an investigator’s character.'} ${def.playersNote?.(seats.length) ?? ''}`.trim()}
               </Ink>
             </>
           ) : (
@@ -477,6 +494,8 @@ const sh = StyleSheet.create({
   seat: { flexDirection: 'row', alignItems: 'flex-end', gap: u(10) },
   tag: { width: u(8), height: u(8), borderRadius: u(1), transform: [{ rotate: '45deg' }], marginBottom: u(4) },
   mark: { width: u(14), height: u(14), borderWidth: 1.5 },
+  faces: { flexDirection: 'row', flexWrap: 'wrap', gap: u(2), paddingLeft: u(16) },
+  face: { padding: 1, borderRadius: u(12), borderWidth: 1.5 },
   chip: { flexDirection: 'row', alignItems: 'center', gap: u(6), borderWidth: 1.5, borderRadius: u(4), paddingVertical: u(6), paddingHorizontal: u(10) },
   row: { flexDirection: 'row', alignItems: 'center', gap: u(8) },
   paused: { alignSelf: 'flex-start', borderWidth: 3, borderColor: NR.red, paddingHorizontal: u(10), transform: [{ rotate: '-5deg' }], marginBottom: u(4) },

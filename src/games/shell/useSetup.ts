@@ -3,15 +3,15 @@ import { useState } from 'react';
 
 import type { Mode, Seat } from '../engine/types';
 import { startPlay } from './flow';
+import { characterOf, CHARACTERS, freeCharacter } from './characters';
 import { presetTeam, type Team } from './teams';
 import type { GameDef } from './types';
 
-/** Player colours for one-phone games (decision DPO1: name + colour). */
+/** Player colours before characters (DPO1). Kept for older saved plays; new seats take their character's ring (AV3). */
 export const SEAT_COLORS = ['#6fd6ff', '#a48bff', '#ff7aa8', '#f5b041', '#34d399', '#ff8a5b'];
 
 /** Everything a setup page does, apart from how it looks: option values, players, teams and Start (rule 9). */
 export function useSetup(def: GameDef, mode: Mode, prefill?: Record<string, unknown>, prefillSeats?: Seat[]) {
-  const colors = def.palette?.seats ?? SEAT_COLORS;
   const preset = (id: number): Team => (def.palette ? { id, ...def.palette.teams[id % def.palette.teams.length] } : presetTeam(id));
   const opts = def.setup[mode] ?? [];
   const [vals, setVals] = useState<Record<string, string | number>>(() =>
@@ -19,11 +19,16 @@ export function useSetup(def: GameDef, mode: Mode, prefill?: Record<string, unkn
   );
   const [busy, setBusy] = useState(false);
   const range = def.players?.[mode];
-  const [seats, setSeats] = useState<Seat[]>(() =>
-    prefillSeats?.length
-      ? prefillSeats.map((x, i) => ({ seat: i, name: x.name, color: x.color ?? colors[i], team: x.team }))
-      : Array.from({ length: range?.min ?? 1 }, (_, i) => ({ seat: i, name: i === 0 ? 'You' : `Player ${i + 1}`, color: colors[i] })),
-  );
+  // AV1 + AV3: every player picks one of the 9 characters; their colour is its ring.
+  const [seats, setSeats] = useState<Seat[]>(() => {
+    if (!prefillSeats?.length) return Array.from({ length: range?.min ?? 1 }, (_, i) => ({ seat: i, name: i === 0 ? 'You' : `Player ${i + 1}`, character: CHARACTERS[i].slug, color: CHARACTERS[i].ring }));
+    const out: Seat[] = [];
+    prefillSeats.forEach((x, i) => {
+      const ch = characterOf(x.character) && !out.some((o) => o.character === x.character) ? characterOf(x.character)! : freeCharacter(out.map((o) => o.character));
+      out.push({ seat: i, name: x.name, character: ch.slug, color: ch.ring, team: x.team });
+    });
+    return out;
+  });
 
   // TM1: optional teams, set by the host here. Players take their team's colour.
   const canTeam = !!range && !!def.teams?.[mode];
@@ -34,8 +39,15 @@ export function useSetup(def: GameDef, mode: Mode, prefill?: Record<string, unkn
   const emptyTeam = teams?.find((tm) => !seats.some((x) => x.team === tm.id));
 
   const setSeat = (i: number, patch: Partial<Seat>) => setSeats((p) => p.map((x, j) => (j === i ? { ...x, ...patch } : x)));
+  const pickCharacter = (i: number, slug: string) => {
+    const ch = characterOf(slug);
+    if (ch && !seats.some((o, j) => j !== i && o.character === slug)) setSeat(i, { character: ch.slug, color: ch.ring });
+  };
   const addSeat = () =>
-    setSeats((p) => [...p, { seat: p.length, name: `Player ${p.length + 1}`, color: colors.find((c) => !p.some((x) => x.color === c)), team: teams ? teams[p.length % teams.length].id : undefined }]);
+    setSeats((p) => {
+      const ch = freeCharacter(p.map((x) => x.character));
+      return [...p, { seat: p.length, name: `Player ${p.length + 1}`, character: ch.slug, color: ch.ring, team: teams ? teams[p.length % teams.length].id : undefined }];
+    });
   const removeSeat = (i: number) => setSeats((p) => p.filter((_, j) => j !== i).map((x, j) => ({ ...x, seat: j })));
 
   /** TM1-TM4: n teams (keeping valid picks, else dealing players round the teams), or 0 for off. */
@@ -56,7 +68,7 @@ export function useSetup(def: GameDef, mode: Mode, prefill?: Record<string, unkn
     const named = range
       ? seats.map((x, i) => {
           const tm = teams?.find((y) => y.id === x.team);
-          return { seat: i, name: x.name.trim() || `Player ${i + 1}`, color: tm?.color ?? x.color, ...(tm ? { team: tm.id } : null) };
+          return { seat: i, name: x.name.trim() || `Player ${i + 1}`, color: tm?.color ?? x.color, character: x.character, ...(tm ? { team: tm.id } : null) };
         })
       : undefined;
     const settings = teams ? { ...vals, teams: teams.map((x) => ({ ...x, name: x.name.trim() || preset(x.id).name })) } : vals;
@@ -64,5 +76,5 @@ export function useSetup(def: GameDef, mode: Mode, prefill?: Record<string, unkn
     router.replace(`/play/${def.key}/run?play=${play.id}`);
   };
 
-  return { opts, vals, setVals, range, seats, colors, setSeat, addSeat, removeSeat, canTeam, teams, teamCount, renameTeam, teamChoices, preset, emptyTeam, busy, start };
+  return { opts, vals, setVals, range, seats, setSeat, pickCharacter, addSeat, removeSeat, canTeam, teams, teamCount, renameTeam, teamChoices, preset, emptyTeam, busy, start };
 }

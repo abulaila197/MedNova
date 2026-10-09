@@ -17,7 +17,7 @@ export type PlayStatus = 'in_progress' | 'finished';
 export type Outcome = 'right' | 'wrong' | 'skipped' | 'timed_out';
 
 /** `team` is the team id when the host turned teams on (TM1-TM6). */
-export type Seat = { seat: number; name: string; color?: string; removed?: boolean; team?: number };
+export type Seat = { seat: number; name: string; color?: string; character?: string; removed?: boolean; team?: number };
 
 export type Standing = { seat: number; name: string; score: number; timeMs: number; rank: number };
 

@@ -7,6 +7,8 @@ import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import type { Mode, Seat } from '../engine/types';
+import { CHARACTERS } from './characters';
+import { Face } from './Face';
 import type { Team } from './teams';
 import type { GameDef } from './types';
 import { useSetup } from './useSetup';
@@ -52,10 +54,10 @@ export function Setup({ def, mode, prefill, prefillSeats }: { def: GameDef; mode
 
 type SetupState = ReturnType<typeof useSetup>;
 
-/** Players for a one-phone game: a name and a colour each. Player 1 is the phone owner (DPO6). */
+/** Players for a one-phone game: a name and a character each (AV1). Player 1 is the phone owner (DPO6). */
 function Players({ st, min, max, note, teams }: { st: SetupState; min: number; max: number; note?: string; teams: Team[] | null }) {
   const t = useTheme();
-  const { seats, setSeat: set, addSeat: add, removeSeat: remove, colors } = st;
+  const { seats, setSeat: set, addSeat: add, removeSeat: remove, pickCharacter } = st;
   return (
     <Card style={s.card}>
       <View style={s.head}>
@@ -70,7 +72,7 @@ function Players({ st, min, max, note, teams }: { st: SetupState; min: number; m
       {seats.map((x, i) => {
         // Team dots sit inside the name box for up to 3 teams, under it for more.
         const teamDots = teams ? (
-          <View style={teams.length <= 3 ? s.tin : s.sw}>
+          <View style={teams.length <= 3 ? s.tin : s.tsw}>
             {teams.map((tm) => {
               const on = x.team === tm.id;
               return (
@@ -106,26 +108,27 @@ function Players({ st, min, max, note, teams }: { st: SetupState; min: number; m
               </Pressable>
             ) : null}
           </View>
-          {teams ? (teams.length > 3 ? teamDots : null) : (
-            <View style={s.sw}>
-              {colors.map((c) => {
-                const taken = seats.some((o, j) => j !== i && o.color === c);
-                const on = x.color === c;
-                return (
-                  <Pressable
-                    key={c}
-                    disabled={taken}
-                    onPress={() => set(i, { color: c })}
-                    hitSlop={u(2)}
-                    style={[s.swb, { backgroundColor: c, opacity: taken ? 0.2 : 1, borderColor: on ? t.white : 'transparent' }]}
-                    accessibilityRole="button"
-                    accessibilityState={{ selected: on, disabled: taken }}
-                    accessibilityLabel={`Colour ${c} for player ${i + 1}`}
-                  />
-                );
-              })}
-            </View>
-          )}
+          <View style={s.sw}>
+            {CHARACTERS.map((c) => {
+              const taken = seats.some((o, j) => j !== i && o.character === c.slug);
+              const on = x.character === c.slug;
+              return (
+                <Pressable
+                  key={c.slug}
+                  disabled={taken}
+                  onPress={() => pickCharacter(i, c.slug)}
+                  hitSlop={u(1)}
+                  style={[s.face, { opacity: taken ? 0.2 : 1, borderColor: on ? t.white : 'transparent' }]}
+                  accessibilityRole="button"
+                  accessibilityState={{ selected: on, disabled: taken }}
+                  accessibilityLabel={`${c.name} for player ${i + 1}`}
+                >
+                  <Face slug={c.slug} size={u(15.5)} />
+                </Pressable>
+              );
+            })}
+          </View>
+          {teams && teams.length > 3 ? teamDots : null}
         </View>
         );
       })}
@@ -190,6 +193,7 @@ const s = StyleSheet.create({
   pin: { flexDirection: 'row', alignItems: 'center', borderWidth: 1.5, borderRadius: u(10), paddingHorizontal: u(9) },
   pname: { flex: 1, minWidth: 0, fontFamily: F.bodySemi, fontSize: u(11), paddingVertical: u(4.5), ...(Platform.OS === 'web' ? ({ outlineStyle: 'none' } as object) : null) },
   px: { fontFamily: F.bodyBold, fontSize: u(10) },
-  sw: { flexDirection: 'row', gap: u(5), paddingLeft: u(2) },
-  swb: { width: u(14), height: u(14), borderRadius: u(7), borderWidth: 2 },
+  sw: { flexDirection: 'row', flexWrap: 'wrap', gap: u(2), paddingLeft: u(1) },
+  face: { padding: 1, borderRadius: u(12), borderWidth: 2 },
+  tsw: { flexDirection: 'row', gap: u(5), paddingLeft: u(2) },
 });
