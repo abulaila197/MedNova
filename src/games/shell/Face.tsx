@@ -16,5 +16,5 @@ const FACES: Record<string, number> = {
 
 /** A character's round face (its ring is drawn into the picture). */
 export function Face({ slug, size }: { slug: string; size: number }) {
-  return <Image source={FACES[slug]} style={{ width: size, height: size, borderRadius: size / 2 }} contentFit="contain" accessibilityLabel={characterOf(slug)?.name} />;
+  return <Image source={FACES[slug] ?? FACES.yara} style={{ width: size, height: size, borderRadius: size / 2 }} contentFit="contain" accessibilityLabel={characterOf(slug)?.name} />;
 }

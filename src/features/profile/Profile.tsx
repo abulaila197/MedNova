@@ -1,12 +1,11 @@
-import { LinearGradient } from 'expo-linear-gradient';
 import { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import Svg, { Defs, LinearGradient as SvgLinear, Path, Stop } from 'react-native-svg';
 
 import { LevelBadge, useBalance } from '@/components/LevelBadge';
-import { Moon } from '@/components/Moon';
 import { Display } from '@/components/Txt';
 import { Fade, useSvgId } from '@/features/community/fx';
+import { FriendsSection } from '@/features/profile/Friends';
 import { PlanetSystem } from '@/features/profile/PlanetSystem';
 import { deleteAccount, useAccount } from '@/state/account';
 import { useTheme } from '@/state/app';
@@ -15,8 +14,8 @@ import { F, type Theme } from '@/theme/tokens';
 
 // Page colours from the locked preview (d-/l-profile).
 const C = {
-  dark: { tide: ['#a48bff', '#6fd6ff'], ring: 'rgba(201,184,255,0.3)', online: '#7be0a8' },
-  light: { tide: ['#e9bf4f', '#e5833a'], ring: 'rgba(184,116,31,0.3)', online: '#5e9e6a' },
+  dark: { tide: ['#a48bff', '#6fd6ff'] },
+  light: { tide: ['#e9bf4f', '#e5833a'] },
 };
 
 // Tide lines: accuracy over time per game (points from the preview's 100 x 26 viewBox).
@@ -29,13 +28,6 @@ const TIDES: { name: string; acc: number; pts: number[] }[] = [
   { name: 'The Silent Artist', acc: 69, pts: [13.3, 16.1, 12.2, 15.3, 11.7, 12.5, 11.4, 12.2, 13.0] },
   { name: 'The Wheels of Chaos', acc: 73, pts: [10.7, 12.5, 10.4, 16.6, 13.3, 10.9, 15.1, 16.9, 17.2] },
   { name: 'Nova Crossword', acc: 61, pts: [17.7, 19.2, 17.2, 15.1, 20.0, 19.8, 13.5, 15.9, 19.5] },
-];
-
-const FRIENDS = [
-  { name: 'Lina', f: 0.9, when: 'ONLINE', on: true },
-  { name: 'Omar', f: 0.6, when: '2H AGO', on: false },
-  { name: 'Sara', f: 0.35, when: 'YESTERDAY', on: false },
-  { name: 'Rami', f: 0.15, when: '3 DAYS AGO', on: false },
 ];
 
 const TW = 96; // sparkline width (design px)
@@ -57,10 +49,9 @@ function Tide({ t, pts }: { t: Theme; pts: number[] }) {
   );
 }
 
-/** Profile: your planet with the game moons, name, three numbers, tide lines per game and the friends moon list. */
+/** Profile: your planet with the game moons, name, three numbers, tide lines per game and your friends (FR1-FR4). */
 export function Profile() {
   const t = useTheme();
-  const p = C[t.mode];
   const line = { borderColor: t.panelLine };
   const profile = useAccount((a) => a.profile);
   const lv = useBalance();
@@ -98,29 +89,7 @@ export function Profile() {
             <Text style={[s.tdN, { color: t.fg }]}>{g.acc}%</Text>
           </View>
         ))}
-        <Text style={[s.sh2, { color: t.kick }]}>FRIENDS</Text>
-        {FRIENDS.map((fr) => (
-          <View key={fr.name} style={[s.fr, line]}>
-            <View style={[s.ring, { borderColor: p.ring }]}>
-              <Moon size={u(22)} f={fr.f} glow={false} />
-            </View>
-            <View style={s.frT}>
-              <Text style={[s.frB, { color: t.fg }]}>{fr.name}</Text>
-              <Text style={[s.frS, { color: fr.on ? p.online : t.mute }]}>{fr.when}</Text>
-            </View>
-            {fr.on ? (
-              <Pressable accessibilityRole="button" accessibilityLabel={`Challenge ${fr.name}`}>
-                <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.ch}>
-                  <Text style={[s.chT, { color: t.onGrad }]}>Challenge</Text>
-                </LinearGradient>
-              </Pressable>
-            ) : (
-              <Pressable style={[s.ch, s.ghost, line]} accessibilityRole="button" accessibilityLabel={`Challenge ${fr.name}`}>
-                <Text style={[s.ghT, { color: t.mute }]}>Challenge</Text>
-              </Pressable>
-            )}
-          </View>
-        ))}
+        <FriendsSection t={t} />
         {profile ? <DeleteAccount t={t} /> : null}
       </ScrollView>
     </Fade>
@@ -186,13 +155,7 @@ const s = StyleSheet.create({
   td: { flexDirection: 'row', alignItems: 'center', gap: u(8), paddingVertical: u(7), minHeight: u(40) },
   tdB: { width: u(104), fontFamily: F.display, fontSize: u(12.5), lineHeight: u(14.375) },
   tdN: { width: u(34), textAlign: 'right', fontFamily: F.display, fontSize: u(16), lineHeight: u(20) },
-  fr: { flexDirection: 'row', alignItems: 'center', gap: u(10), paddingVertical: u(9), borderBottomWidth: 1 },
-  ring: { width: u(26), height: u(26), borderRadius: u(13), borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
-  frT: { flex: 1 },
-  frB: { fontFamily: F.display, fontSize: u(17), lineHeight: u(17) },
-  frS: { marginTop: u(3), fontFamily: F.mono, fontSize: u(7.5), lineHeight: u(10), letterSpacing: u(1.05) },
   ch: { height: u(23), paddingHorizontal: u(10), borderRadius: u(10), justifyContent: 'center' },
   ghost: { height: u(25), borderWidth: 1 },
-  chT: { fontFamily: F.bodyBold, fontSize: u(9.5) },
   ghT: { fontFamily: F.bodySemi, fontSize: u(9.5) },
 });

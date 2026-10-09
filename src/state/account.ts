@@ -5,6 +5,7 @@ import { engine } from '@/games/engine';
 import { useSession } from '@/games/shell/session';
 import { supabase } from '@/lib/supabase';
 import { syncAccount } from '@/lib/sync';
+import { startPresence, stopPresence } from '@/state/friends';
 
 export type Profile = { id: string; username: string; display_name: string; avatar: string; friend_code: string };
 
@@ -26,7 +27,8 @@ function apply(session: Session | null) {
   if (id) {
     void loadProfile(id);
     syncAccount(id).catch(() => {}); // retried on the next sign-in, finish or app start
-  }
+    startPresence();
+  } else stopPresence();
 }
 
 let started = false;

@@ -7,6 +7,7 @@ import { Menu } from '@/components/Menu';
 import { PlaySheet } from '@/components/PlaySheet';
 import { ReportSheet } from '@/components/ReportSheet';
 import { LoadingHost } from '@/features/loading/LoadingHost';
+import { FriendSheets } from '@/features/profile/FriendSheets';
 import { useApp, useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 
@@ -35,6 +36,7 @@ export default function AppLayout() {
       <LoadingHost />
       <ReportSheet />
       <PlaySheet />
+      <FriendSheets />
     </View>
   );
 }
