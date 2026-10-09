@@ -1,4 +1,5 @@
 import { caseFiles } from '../casefiles/def';
+import { conqueror } from '../conqueror/def';
 import { novaCrossword } from '../crossword/def';
 import { diagnosticPursuit } from '../diagnostic/def';
 import { novaMedicordle } from '../medicordle/def';
@@ -18,6 +19,7 @@ const GAMES: Record<string, GameDef> = {
   [caseFiles.key]: caseFiles,
   [novaCrossword.key]: novaCrossword,
   [wheelsOfChaos.key]: wheelsOfChaos,
+  [conqueror.key]: conqueror,
 };
 
 export function gameDef(key: string): GameDef | null {

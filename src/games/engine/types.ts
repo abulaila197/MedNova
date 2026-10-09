@@ -8,7 +8,8 @@ export type GameKey =
   | 'the-silent-artist'
   | 'the-riddler'
   | 'the-streak-master'
-  | 'case-files-unsolved';
+  | 'case-files-unsolved'
+  | 'the-conqueror';
 
 export type Mode = 'solo' | 'offline' | 'online';
 
