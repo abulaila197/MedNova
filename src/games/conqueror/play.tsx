@@ -5,8 +5,10 @@ import { Pressable, ScrollView, StyleSheet, TextInput, useWindowDimensions, View
 
 import { AT, Btn, CardTile, CG, CGB, CGI, Chip, CZ, CZM, Kicker, PieceIcon, ROMAN, Rule, T, Top, v } from './atlas';
 import { MapChart } from './AtlasMap';
-import type { SoloStyle } from './bank';
-import { BALANCE, CARDS, landsOf, type CardType, type SoloTurn, type VersusStyle } from './core';
+import type { Named, SoloStyle } from './bank';
+import { indexNames } from '../shell/names';
+import { BALANCE, CARDS, landsOf, suggest, type CardType, type SoloTurn, type VersusStyle } from './core';
+import NAMES from './data/names.json';
 import type { AtlasMap } from './map';
 import { colorOf, landViews, Players, stageLine, type Act } from './pages';
 import { SECRET, type Hold, type MatchView, type SoloView } from './view';
@@ -25,6 +27,46 @@ export const VERSUS: Record<VersusStyle, { name: string; rule: string }> = {
   standing: { name: 'Last one standing', rule: 'Two hearts each. A wrong answer, or the slowest right one, costs a heart.' },
   clue: { name: 'Clue ladder', rule: 'A new clue every 8 seconds. Guess early for more points; a wrong guess costs 5.' },
 };
+
+// Type-ahead (his code: 4 letters, up to 3 names). The names come from every Category rush list in the same field,
+// or every Clue ladder answer, so a suggestion never gives away what is in the current list.
+const NAME_LISTS = NAMES as { rush: Record<string, Named[]>; clue: Named[] };
+const rushIndexes = new Map<string, ReturnType<typeof indexNames<Named>>>();
+const rushIndexOf = (field: string) => {
+  if (!rushIndexes.has(field)) rushIndexes.set(field, indexNames(NAME_LISTS.rush[field] ?? []));
+  return rushIndexes.get(field)!;
+};
+let clueIdx: ReturnType<typeof indexNames<Named>> | null = null;
+const clueIndexOf = () => (clueIdx ??= indexNames(NAME_LISTS.clue));
+
+/** A typed answer with up to 3 suggested names under it; tapping a name sends it. */
+function NameField({ index, placeholder, button, onSend, skip = [] }: { index: ReturnType<typeof indexNames<Named>>; placeholder: string; button: string; onSend: (text: string) => void; skip?: string[] }) {
+  const [text, setText] = useState('');
+  const sugs = useMemo(() => suggest(index, text).filter((n) => !skip.includes(n.label)), [index, text, skip]);
+  const send = (t: string) => {
+    if (!t.trim()) return;
+    onSend(t.trim());
+    setText('');
+  };
+  return (
+    <View style={{ gap: v(8) }}>
+      <View style={{ flexDirection: 'row', gap: v(8), alignItems: 'center' }}>
+        <TextInput value={text} onChangeText={setText} onSubmitEditing={() => send(text)} returnKeyType="send" blurOnSubmit={false} autoCorrect={false} placeholder={placeholder} placeholderTextColor={AT.dim} style={[s.input, { flex: 1 }]} accessibilityLabel={placeholder} />
+        <Btn label={button} style={{ flex: 0, minWidth: v(80) }} onPress={() => send(text)} />
+      </View>
+      {sugs.length ? (
+        <View style={{ gap: v(6) }}>
+          {sugs.map((n) => (
+            <Pressable key={n.label} onPress={() => send(n.label)} accessibilityRole="button" accessibilityLabel={n.label} style={({ pressed }) => [s.sug, pressed ? { opacity: 0.75 } : null]}>
+              <T f={CGB} size={16} color={AT.ink} lines={1}>{n.label}</T>
+              {n.aliases?.length ? <T f={CGI} size={13} color={AT.inkSoft} lines={1} style={{ flexShrink: 1 }}>{n.aliases.join(', ')}</T> : null}
+            </Pressable>
+          ))}
+        </View>
+      ) : null}
+    </View>
+  );
+}
 
 // ---------------------------------------------------------------- solo tile
 
@@ -227,14 +269,8 @@ function Closest({ m, me, act, elapsed }: P) {
 
 function Rush({ m, me, act, elapsed }: P) {
   const vs = m.versus;
-  const [text, setText] = useState('');
   if (vs?.style !== 'rush') return null;
   const mine = vs.found[me] ?? [];
-  const send = () => {
-    if (!text.trim()) return;
-    act({ type: 'rush', text: text.trim(), ms: elapsed });
-    setText('');
-  };
   return (
     <>
       <Paper>
@@ -242,10 +278,7 @@ function Rush({ m, me, act, elapsed }: P) {
         <T f={CG} size={18} color={AT.ink} style={{ lineHeight: v(23) }}>{vs.q.prompt}</T>
         <T f={CGI} size={13.5} color={AT.inkSoft}>{`${m.rushTotal ?? '?'} answers in the list`}</T>
       </Paper>
-      <View style={{ flexDirection: 'row', gap: v(8), alignItems: 'center' }}>
-        <TextInput value={text} onChangeText={setText} onSubmitEditing={send} returnKeyType="send" blurOnSubmit={false} autoCorrect={false} placeholder="Type an answer" placeholderTextColor={AT.dim} style={[s.input, { flex: 1 }]} accessibilityLabel="Type an answer" />
-        <Btn label="Send" style={{ flex: 0, minWidth: v(80) }} onPress={send} />
-      </View>
+      <NameField index={rushIndexOf(vs.q.field)} placeholder="Type an answer" button="Send" skip={mine.map((f) => f.label)} onSend={(text) => act({ type: 'rush', text, ms: elapsed })} />
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: v(6) }}>
         {mine.map((f) => (
           <View key={f.label} style={s.found}>
@@ -298,15 +331,13 @@ function Standing({ m, me, act, elapsed }: P) {
 function Clue({ m, me, act, elapsed }: P) {
   const vs = m.versus;
   const [tab, setTab] = useState(0);
-  const [text, setText] = useState('');
   if (vs?.style !== 'clue') return null;
   const shown = Math.min(4, 1 + Math.floor(elapsed / (BALANCE.CLUE_INTERVAL_SECONDS * 1000)));
   const solved = vs.solved[me] ?? vs.qs.map(() => null);
   const q = vs.qs[tab];
-  const send = () => {
-    if (!text.trim() || solved[tab] != null) return;
-    act({ type: 'clue', mystery: tab, text: text.trim(), clue: shown, ms: elapsed });
-    setText('');
+  const send = (text: string) => {
+    if (solved[tab] != null) return;
+    act({ type: 'clue', mystery: tab, text, clue: shown, ms: elapsed });
   };
   return (
     <>
@@ -327,10 +358,7 @@ function Clue({ m, me, act, elapsed }: P) {
         {shown < 4 ? <T f={CGI} size={13} color={AT.inkSoft}>Next clue soon…</T> : null}
       </Paper>
       {solved[tab] != null ? <Waiting text={`Solved on clue ${solved[tab]}.`} /> : (
-        <View style={{ flexDirection: 'row', gap: v(8), alignItems: 'center' }}>
-          <TextInput value={text} onChangeText={setText} onSubmitEditing={send} returnKeyType="send" autoCorrect={false} placeholder="Your guess" placeholderTextColor={AT.dim} style={[s.input, { flex: 1 }]} accessibilityLabel="Your guess" />
-          <Btn label="Guess" style={{ flex: 0, minWidth: v(80) }} onPress={send} />
-        </View>
+        <NameField index={clueIndexOf()} placeholder="Your guess" button="Guess" onSend={send} />
       )}
       {(vs.wrong[me] ?? 0) > 0 ? <T f={CGI} size={14} color={AT.wrong}>{`${vs.wrong[me]} wrong guess${vs.wrong[me] > 1 ? 'es' : ''} (−${vs.wrong[me] * BALANCE.CLUE_WRONG_PENALTY})`}</T> : null}
     </>
@@ -631,6 +659,7 @@ const s = StyleSheet.create({
   pill: { paddingVertical: v(7), paddingHorizontal: v(12), borderRadius: v(20), borderWidth: 1, borderColor: 'rgba(243,230,198,0.35)' },
   pillOn: { backgroundColor: AT.red, borderColor: AT.cream },
   input: { minHeight: v(46), borderRadius: v(6), borderWidth: 1.5, borderColor: 'rgba(243,230,198,0.45)', paddingHorizontal: v(12), color: AT.cream, fontFamily: CGB, fontSize: v(18), flex: 1 },
+  sug: { flexDirection: 'row', alignItems: 'baseline', gap: v(8), paddingVertical: v(9), paddingHorizontal: v(12), borderRadius: v(6), backgroundColor: AT.paper, borderWidth: 1, borderColor: '#5a3a1e' },
   found: { paddingVertical: v(4), paddingHorizontal: v(10), borderRadius: v(14), backgroundColor: AT.paper },
   tab: { flex: 1, paddingVertical: v(8), borderRadius: v(6), borderWidth: 1, borderColor: 'rgba(243,230,198,0.3)', alignItems: 'center' },
   tabOn: { backgroundColor: AT.red, borderColor: AT.cream },

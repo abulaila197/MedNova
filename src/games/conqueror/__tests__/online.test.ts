@@ -166,3 +166,9 @@ test('map: every player count gets 3 lands each, ids in the engine\'s order, eac
       });
     }
 });
+
+test('type-ahead names: every rush answer and clue answer in the bank is in the phone\'s names list', () => {
+  const names = JSON.parse(readFileSync('src/games/conqueror/data/names.json', 'utf8')) as { rush: Record<string, { label: string }[]>; clue: { label: string }[] };
+  for (const q of bank.byStyle.rush) for (const a of q.answers) assert.ok(names.rush[q.field]?.some((n) => n.label === a.label), a.label);
+  for (const q of bank.byStyle.clue) assert.ok(names.clue.some((n) => n.label === q.answer.label), q.answer.label);
+});
