@@ -1507,7 +1507,7 @@ function springSnare(g: Game, p: Player, trigger: Snare['trigger']) {
     player(g, sn.by).jewels += k;
     sn.status = 'sprung';
     g.heat++;
-    log(g, 'snare-sprung', { by: sn.by, to: p.id, n: k });
+    log(g, 'snare-sprung', { by: sn.by, to: p.id, n: k, secret: true });
   }
 }
 
