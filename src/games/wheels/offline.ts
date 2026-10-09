@@ -282,7 +282,7 @@ function startBoss(g: OfflineGame, bank: FullBank, rng: Rng): OfflineGame {
 }
 
 /** Highest Boss points share +20, split evenly and rounded down (spec 5.2). */
-function closeBoss(g: OfflineGame): OfflineGame {
+export function closeBoss(g: OfflineGame): OfflineGame {
   const b = g.boss!;
   const seats = b.order.filter((s) => g.active.includes(s));
   const points: Record<number, number> = {};

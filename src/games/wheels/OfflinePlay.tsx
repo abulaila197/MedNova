@@ -22,9 +22,9 @@ import { WheelsPause } from './screens';
 import { TurnBoard, type Strip } from './TurnBoard';
 import { Bill, Btn, Bulbs, CardArt, CB, CD, Chip, CM, Gem, Kicker, Panel, PauseBtn, ROMAN, Rule, T, VelvetScreen, VV } from './velvet';
 
-type Seats = Map<number, { name: string; color?: string }>;
+export type Seats = Map<number, { name: string; color?: string }>;
 const snapshot = (g: OfflineGame, now: number) => stepOffline(g, { type: 'PAUSE', now }, BANK, Math.random);
-const actName = (g: OfflineGame) => `Act ${ROMAN[g.cycle]} · Round ${g.round + 1} of ${CYCLES[g.cycle]}`;
+export const actName = (g: OfflineGame) => `Act ${ROMAN[g.cycle]} · Round ${g.round + 1} of ${CYCLES[g.cycle]}`;
 
 export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   const target = (Number(play.settings.target) || 50) as Target;
@@ -169,7 +169,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
 
 // ---------------------------------------------------------------- shared bits
 
-function Top({ kicker, title, onPause }: { kicker: string; title: string; onPause?: () => void }) {
+export function Top({ kicker, title, onPause }: { kicker: string; title: string; onPause?: () => void }) {
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: u(12) }}>
       <View style={{ gap: u(2), flex: 1 }}>
@@ -181,7 +181,7 @@ function Top({ kicker, title, onPause }: { kicker: string; title: string; onPaus
   );
 }
 
-function Board({ board, extra }: { board: Strip; extra?: Record<number, string> }) {
+export function Board({ board, extra }: { board: Strip; extra?: Record<number, string> }) {
   return (
     <Panel>
       {board.map((p, i) => (
@@ -200,7 +200,7 @@ function Board({ board, extra }: { board: Strip; extra?: Record<number, string> 
 const cardName = (c: Card) => CARD_INFO[c].name;
 
 /** OF1: one line per public event since this player last held the phone. Hands stay secret. */
-function recapLine(l: Log, n: (s: number) => string): string | null {
+export function recapLine(l: Log, n: (s: number) => string): string | null {
   switch (l.k) {
     case 'play':
       if (l.card === 'mirror') return `${n(l.seat)} used The Mirror on ${n(l.target!)}`;
@@ -260,7 +260,7 @@ function Curtain({ g, seat, seats, board, since, onReady }: { g: OfflineGame; se
 
 // ---------------------------------------------------------------- card window (Initiation)
 
-function CardWindow({ g, seat, seats, board, onPlay, onPass, onPause }: { g: OfflineGame; seat: number; seats: Seats; board: Strip; onPlay: (p: CardPlay) => void; onPass: () => void; onPause: () => void }) {
+export function CardWindow({ g, seat, seats, board, onPlay, onPass, onPause }: { g: OfflineGame; seat: number; seats: Seats; board: Strip; onPlay: (p: CardPlay) => void; onPass: () => void; onPause: () => void }) {
   const hand = g.hands[seat];
   const can = playable(g.hands, seat, g.active);
   const [pick, setPick] = useState<Card | null>(can[0] ?? null);
@@ -332,7 +332,7 @@ function CardWindow({ g, seat, seats, board, onPlay, onPass, onPause }: { g: Off
 
 // ---------------------------------------------------------------- reaction chain
 
-function ReactWindow({ g, seats, onReact, onPause }: { g: OfflineGame; seats: Seats; onReact: (c: Reaction | null, to?: number) => void; onPause: () => void }) {
+export function ReactWindow({ g, seats, onReact, onPause }: { g: OfflineGame; seats: Seats; onReact: (c: Reaction | null, to?: number) => void; onPause: () => void }) {
   const c = g.chain!;
   const n = (s: number) => seats.get(s)?.name ?? `Player ${s + 1}`;
   const legal = reactions(c, g.active);
@@ -376,7 +376,7 @@ function ReactWindow({ g, seats, onReact, onPause }: { g: OfflineGame; seats: Se
 
 // ---------------------------------------------------------------- Redemption (WC3, WC13, WC15)
 
-function RedemptionOffer({ seat, seats, onPick, onPause }: { seat: number; seats: Seats; onPick: (use: boolean) => void; onPause: () => void }) {
+export function RedemptionOffer({ seat, seats, onPick, onPause }: { seat: number; seats: Seats; onPick: (use: boolean) => void; onPause: () => void }) {
   return (
     <View style={{ flex: 1, gap: u(14) }}>
       <Top kicker={`The World · ${seats.get(seat)?.name ?? ''}`} title="A second chance" onPause={onPause} />
@@ -394,7 +394,7 @@ function RedemptionOffer({ seat, seats, onPick, onPause }: { seat: number; seats
   );
 }
 
-function RedemptionBoard({ g, now, seats, onEvent, onPause, hidden }: { g: OfflineGame; now: number; seats: Seats; onEvent: (e: { type: 'GO'; now: number } | { type: 'ANSWER'; value: boolean; now: number }) => void; onPause: () => void; hidden?: boolean }) {
+export function RedemptionBoard({ g, now, seats, onEvent, onPause, hidden, watch }: { g: OfflineGame; now: number; seats: Seats; onEvent: (e: { type: 'GO'; now: number } | { type: 'ANSWER'; value: boolean; now: number }) => void; onPause?: () => void; hidden?: boolean; watch?: boolean }) {
   const r = g.redemption!;
   if (hidden) return null;
   const sun = g.sun.includes(r.seat);
@@ -407,7 +407,7 @@ function RedemptionBoard({ g, now, seats, onEvent, onPause, hidden }: { g: Offli
           <T size={13} color={VV.paperSoft} style={{ textAlign: 'center' }}>{`True or false, as fast as you can. Each right call is +1${sun ? ', doubled by The Sun' : ''}. A wrong call costs nothing but time.`}</T>
         </Bill>
         <View style={{ flex: 1 }} />
-        <Btn label="Begin" onPress={() => onEvent({ type: 'GO', now: Date.now() })} />
+        {watch ? null : <Btn label="Begin" onPress={() => onEvent({ type: 'GO', now: Date.now() })} />}
       </View>
     );
   const q = r.items[Math.min(r.index, r.items.length - 1)];
@@ -418,7 +418,7 @@ function RedemptionBoard({ g, now, seats, onEvent, onPause, hidden }: { g: Offli
         <View style={{ flex: 1 }}>
           <Bulbs frac={left / REDEMPTION_MS} />
         </View>
-        <PauseBtn onPress={onPause} />
+        {onPause ? <PauseBtn onPress={onPause} /> : null}
       </View>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
         <T f={CM} size={12} color={VV.brass} style={{ letterSpacing: u(1) }}>{`CALL ${Math.min(r.index + 1, r.items.length)} OF ${r.items.length}`}</T>
@@ -428,7 +428,7 @@ function RedemptionBoard({ g, now, seats, onEvent, onPause, hidden }: { g: Offli
         <T f="InterTight_600SemiBold" size={17} style={{ textAlign: 'center', lineHeight: u(23) }}>{q.prompt}</T>
       </Panel>
       <View style={{ flex: 1 }} />
-      <View style={{ flexDirection: 'row', gap: u(10) }}>
+      <View style={{ flexDirection: 'row', gap: u(10), opacity: watch ? 0.4 : 1 }} pointerEvents={watch ? 'none' : 'auto'}>
         <Btn label="False" ghost onPress={() => onEvent({ type: 'ANSWER', value: false, now: Date.now() })} style={{ flex: 1 }} />
         <Btn label="True" onPress={() => onEvent({ type: 'ANSWER', value: true, now: Date.now() })} style={{ flex: 1 }} />
       </View>
@@ -438,7 +438,7 @@ function RedemptionBoard({ g, now, seats, onEvent, onPause, hidden }: { g: Offli
 
 // ---------------------------------------------------------------- between turns
 
-function TurnOver({ g, seat, seats, board, onNext }: { g: OfflineGame; seat: number; seats: Seats; board: Strip; onNext: () => void }) {
+export function TurnOver({ g, seat, seats, board, onNext }: { g: OfflineGame; seat: number; seats: Seats; board: Strip; onNext?: () => void }) {
   const last = [...g.log].reverse().find((l) => (l.k === 'turn' || l.k === 'redemption') && l.seat === seat);
   const pts = last && (last.k === 'turn' || last.k === 'redemption') ? last.points : 0;
   const results = g.turn && last?.k === 'turn' ? g.turn.results : [];
@@ -463,7 +463,7 @@ function TurnOver({ g, seat, seats, board, onNext }: { g: OfflineGame; seat: num
         </Panel>
       ) : null}
       <Board board={board} />
-      <Btn label="Pass the phone" onPress={onNext} />
+      {onNext ? <Btn label="Pass the phone" onPress={onNext} /> : null}
     </View>
   );
 }
@@ -534,7 +534,7 @@ function BossBoard({ g, seat, now, seats, onEvent, onPause, hidden }: { g: Offli
   );
 }
 
-function BossOver({ g, seats, board, onNext }: { g: OfflineGame; seats: Seats; board: Strip; onNext: () => void }) {
+export function BossOver({ g, seats, board, onNext }: { g: OfflineGame; seats: Seats; board: Strip; onNext?: () => void }) {
   const l = [...g.log].reverse().find((x) => x.k === 'boss');
   const n = (s: number) => seats.get(s)?.name ?? `Player ${s + 1}`;
   if (!l || l.k !== 'boss') return null;
@@ -545,7 +545,7 @@ function BossOver({ g, seats, board, onNext }: { g: OfflineGame; seats: Seats; b
       <Top kicker={`Act ${ROMAN[g.cycle]} · Boss Round`} title={`${l.winners.map(n).join(' and ')} +${l.bonus}`} />
       <T size={13} color={VV.soft}>{l.winners.length > 1 ? `A tie at the top: they share the ${BOSS_BONUS}.` : `Best swiper takes the ${BOSS_BONUS}.`}</T>
       <Board board={board.map((p) => ({ ...p, me: l.winners.includes(p.seat) }))} extra={extra} />
-      <Btn label={last ? 'Final curtain' : `On to Act ${ROMAN[g.cycle + 1]}`} onPress={onNext} />
+      {onNext ? <Btn label={last ? 'Final curtain' : `On to Act ${ROMAN[g.cycle + 1]}`} onPress={onNext} /> : null}
     </View>
   );
 }

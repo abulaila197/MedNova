@@ -213,7 +213,7 @@ export function WheelsPause({ open, mode, seats, keep = [], onResume, onQuit, on
               <View style={{ paddingVertical: u(18), paddingHorizontal: u(16), alignItems: 'center', gap: u(4) }}>
                 <T f={CM} size={10.5} color={VV.soft} style={{ letterSpacing: u(2.4) }}>THE WHEELS STAND STILL</T>
                 <T f={CD} size={28} color={VV.gold}>Intermission</T>
-                <T size={12.5} color={VV.soft} style={{ textAlign: 'center' }}>The question is hidden while you pause.</T>
+                <T size={12.5} color={VV.soft} style={{ textAlign: 'center' }}>{mode === 'online' ? 'The show goes on for the others while this is open.' : 'The question is hidden while you pause.'}</T>
               </View>
             </Brass>
           </View>
@@ -229,7 +229,7 @@ export function WheelsPause({ open, mode, seats, keep = [], onResume, onQuit, on
           ) : null}
           <View style={{ gap: u(10), marginTop: u(6) }}>
             <Btn label="Resume the show" onPress={onResume} />
-            <Btn label={mode === 'solo' ? 'Leave and save my place' : 'End game'} ghost onPress={onQuit} />
+            <Btn label={mode === 'solo' ? 'Leave and save my place' : mode === 'online' ? 'Leave the game' : 'End game'} ghost onPress={onQuit} />
           </View>
         </View>
       </VelvetScreen>

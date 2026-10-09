@@ -264,7 +264,7 @@ const promptLead: Partial<Record<Question['style'], string>> = { reverse: 'Here 
 
 // ---------------------------------------------------------------- the board
 
-export function TurnBoard({ turn, now, kicker, title, strip, tray = [], footer, onEvent, onPause, hidden }: {
+export function TurnBoard({ turn, now, kicker, title, strip, tray = [], footer, onEvent, onPause, hidden, watch }: {
   turn: Turn;
   now: number;
   kicker: string;
@@ -275,8 +275,10 @@ export function TurnBoard({ turn, now, kicker, title, strip, tray = [], footer, 
   onEvent: (e: TurnEvent) => void;
   onPause: () => void;
   hidden?: boolean;
+  /** Online: someone else's turn, shown live but nothing can be tapped. */
+  watch?: boolean;
 }) {
-  const reels = useReels(turn, () => onEvent({ type: 'GO', now: Date.now() }), hidden);
+  const reels = useReels(turn, () => !watch && onEvent({ type: 'GO', now: Date.now() }), hidden);
   const q = turn.question;
   const st = STYLES[q.style];
   const asking = turn.phase === 'question' || turn.phase === 'feedback';
@@ -310,10 +312,14 @@ export function TurnBoard({ turn, now, kicker, title, strip, tray = [], footer, 
               </View>
             </View>
             <Bulbs frac={starLeft / STAR_WINDOW_MS} />
-            <View style={{ flexDirection: 'row', gap: u(10) }}>
-              <Btn label="Keep it" ghost onPress={() => onEvent({ type: 'KEEP', now: Date.now() })} style={{ flex: 1 }} />
-              <Btn label="Re-spin" onPress={() => onEvent({ type: 'STAR', now: Date.now() })} style={{ flex: 1 }} />
-            </View>
+            {watch ? (
+              <T size={12} color={VV.dim} style={{ textAlign: 'center' }}>Deciding…</T>
+            ) : (
+              <View style={{ flexDirection: 'row', gap: u(10) }}>
+                <Btn label="Keep it" ghost onPress={() => onEvent({ type: 'KEEP', now: Date.now() })} style={{ flex: 1 }} />
+                <Btn label="Re-spin" onPress={() => onEvent({ type: 'STAR', now: Date.now() })} style={{ flex: 1 }} />
+              </View>
+            )}
           </Brass>
         ) : null}
         <View style={{ flex: 1 }} />
@@ -344,7 +350,9 @@ export function TurnBoard({ turn, now, kicker, title, strip, tray = [], footer, 
         </View>
         <T f={BODY_B} size={q.prompt.length > 110 ? 14.5 : 15.5} color={VV.ink} style={{ lineHeight: u(20.5) }}>{q.prompt}</T>
       </Brass>
-      <Answers key={`${turn.k}:${q.id}`} q={q} given={result ? result.answer : undefined} onAnswer={(a) => onEvent({ type: 'ANSWER', answer: a, now: Date.now() })} />
+      <View pointerEvents={watch ? 'none' : 'auto'}>
+        <Answers key={`${turn.k}:${q.id}`} q={q} given={result ? result.answer : undefined} onAnswer={(a) => onEvent({ type: 'ANSWER', answer: a, now: Date.now() })} />
+      </View>
       {result ? (
         <View style={{ alignItems: 'center', gap: u(2) }}>
           <T f={CD} size={20} color={result.right ? VV.right : VV.wrong}>{result.right ? `Bravo! +${result.points * (turn.sun ? 2 : 1)}` : result.answer == null ? 'Time is up' : 'Not this time'}</T>

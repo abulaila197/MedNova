@@ -1,7 +1,9 @@
 import type { GameDef } from '../shell/types';
 import { MIXES, soloExp, STYLES } from './core';
 import { answerLabel, questionById } from './data';
+import { BOSS_BONUS } from './offline';
 import { OfflinePlay } from './OfflinePlay';
+import { OnlinePlay } from './OnlinePlay';
 import { wheelsScreens } from './screens';
 import { SoloPlay } from './SoloPlay';
 import { GEMS } from './velvet';
@@ -22,7 +24,7 @@ const MIX = { key: 'mix', label: 'Questions', choices: MIXES, initial: 'mixed' }
 /** The biggest single turn: three Matching questions (3 points each). Solo has no Sun. */
 const BEST_TURN = 3 * Math.max(...Object.values(STYLES).map((s) => s.points));
 
-/** The Wheels of Chaos on the shared shell (WC1-WC17): Solo and Pass the phone; Online waits for the shared online layer. */
+/** The Wheels of Chaos on the shared shell (WC1-WC23): Solo, Pass the phone and Online. */
 export const wheelsOfChaos: GameDef = {
   key: 'the-wheels-of-chaos',
   modes: [
@@ -53,18 +55,25 @@ export const wheelsOfChaos: GameDef = {
     {
       mode: 'online',
       title: 'Live on stage',
-      blurb: 'The full game with 2 to 4 players on their own phones.',
-      howTo: ['Everyone plays live from their own phone.', 'Card plays and Boss Round winners show up as alerts.'],
-      soon: true,
+      blurb: 'The full show for 2 to 4 players, each on their own phone.',
+      howTo: [
+        'The host picks a target of 50 or 100 points and the question type. 2 to 4 players, no teams.',
+        'Players take turns while the whole room watches. Your cards stay secret on your own phone.',
+        'A card aimed at you gives you 15 seconds to answer it, or it lands.',
+        'The Boss Round is played by everyone at once, each on their own phone.',
+        'Card plays and Boss Round winners show up as alerts. You earn half your points as EXP.',
+      ],
     },
   ],
-  setup: { solo: [TARGET, MIX], offline: [TARGET, MIX] },
-  players: { offline: { min: 2, max: 4 } },
+  setup: { solo: [TARGET, MIX], offline: [TARGET, MIX], online: [TARGET, MIX] },
+  players: { offline: { min: 2, max: 4 }, online: { min: 2, max: 4 } },
   playersNote: () => '2 to 4 players, each with a character. Player I is you, the phone owner. Pass the phone earns no EXP.',
   Play: { solo: SoloPlay, offline: OfflinePlay },
-  // WC11: Solo EXP is half the points; Offline earns none.
+  Online: OnlinePlay,
+  // WC11: Solo and Online EXP is half the points; Offline earns none. Online can add a Sun-doubled turn and a Boss bonus.
   exp: (score) => soloExp(score),
-  expCap: (settings, mode) => (mode === 'offline' ? 0 : soloExp((Number(settings.target) || 50) + BEST_TURN)),
+  expCap: (settings, mode) =>
+    mode === 'offline' ? 0 : soloExp((Number(settings.target) || 50) + (mode === 'online' ? 2 * BEST_TURN + BOSS_BONUS : BEST_TURN)),
   itemLabel: (item) => {
     const q = questionById.get(item.itemId);
     return q ? answerLabel(q) : item.itemId;

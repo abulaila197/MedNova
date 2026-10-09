@@ -48,6 +48,8 @@ const spaced = (code: string) => `${code.slice(0, 3)} ${code.slice(3)}`;
 
 /** ON16 (locked): the room lobby. Leave, How to play, the code, a live status line, character tiles, settings, Start or I'm ready. */
 export function Lobby({ def, roomId }: { def: GameDef; roomId: string }) {
+  // The room's seats: the game's online limit, 6 at most (WC22: Wheels holds 4).
+  const cap = Math.min(6, def.players?.online?.max ?? 6);
   const { state, error, reload } = useRoom(roomId);
   const [sheet, setSheet] = useState<'how' | 'settings' | 'talk' | { seat: Seat } | null>(null);
   const [copied, setCopied] = useState(false);
@@ -203,7 +205,7 @@ export function Lobby({ def, roomId }: { def: GameDef; roomId: string }) {
       <View style={s.stl}>
         <View style={[s.sd, { backgroundColor: allReady ? G.ok : G.amber }]} />
         <Text style={[s.stlT, { color: G.mute }]}>{status}</Text>
-        <Text style={[s.stlN, { color: G.fg }]}>{`${players.length} / 6`}</Text>
+        <Text style={[s.stlN, { color: G.fg }]}>{`${players.length} / ${cap}`}</Text>
       </View>
 
       {teams >= 2 ? (
@@ -224,7 +226,7 @@ export function Lobby({ def, roomId }: { def: GameDef; roomId: string }) {
       ) : (
         <View style={s.tiles}>
           {players.map(tile)}
-          {empties(Math.max(0, 6 - players.length))}
+          {empties(Math.max(0, cap - players.length))}
         </View>
       )}
       {watching.length ? <Text style={[s.small, { color: G.dim }]}>{`Watching: ${watching.map((p) => p.name).join(', ')} · they get a seat at the rematch`}</Text> : null}
