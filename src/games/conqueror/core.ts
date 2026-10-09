@@ -163,6 +163,8 @@ export type Match = {
   used: string[];
   log: string[];
   winner: string | null;
+  /** The last solo round's tiles, kept for the tally screen. */
+  lastSolo?: Record<string, SoloTurn>;
 };
 
 export type Action =
@@ -447,6 +449,7 @@ function scoreSolo(p: Player, turn: SoloTurn, answers: SoloAnswers) {
 const soloDone = (m: Match) => active(m).filter((x) => x.connected).every((x) => m.solo[x.id] && (m.solo[x.id].card || m.solo[x.id].result));
 
 function endSolo(m: Match, ctx: Ctx, used: Set<string>) {
+  m.lastSolo = m.solo;
   if (m.round === 1) {
     m.round = 2;
     m.solo = {};

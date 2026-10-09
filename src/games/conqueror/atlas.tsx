@@ -152,11 +152,16 @@ export const Rule = () => <View style={{ height: 1, backgroundColor: AT.line }} 
 /** An action card on cream paper with a red inner rule. */
 export function CardTile({ card, w = 62, on, onPress, dim }: { card: CardType; w?: number; on?: boolean; onPress?: () => void; dim?: boolean }) {
   const info = CARDS[card];
+  // Text grows with the tile (the big card on a card tile's reveal).
+  const k = w / 62;
+  // Long single-word names (Reinforcements, Earthquake) shrink to fit on one line.
+  const longest = Math.max(...info.name.split(' ').map((x) => x.length));
+  const nameSize = Math.min(10.5 * k, (w - 16) / (longest * 0.74));
   const body = (
     <View style={[s.card, { width: v(w), height: v(w * 1.04), opacity: dim ? 0.45 : 1 }, on ? { transform: [{ translateY: -v(6) }], borderColor: AT.red, borderWidth: 1.5 } : null]}>
       <View style={s.cardRule} pointerEvents="none" />
-      <T f={CZ} size={10.5} color={AT.red} style={{ lineHeight: v(12), textAlign: 'center' }}>{info.name}</T>
-      <T f={CGI} size={10.5} color={AT.ink} style={{ lineHeight: v(11.5), textAlign: 'center' }} lines={3}>{SHORT[card]}</T>
+      <T f={CZ} size={nameSize} color={AT.red} style={{ lineHeight: v(nameSize * 1.15), textAlign: 'center' }} lines={info.name.includes(' ') ? 2 : 1}>{info.name}</T>
+      <T f={CGI} size={k * 10.5} color={AT.ink} style={{ lineHeight: v(k * 11.5), textAlign: 'center' }} lines={3}>{SHORT[card]}</T>
     </View>
   );
   return onPress ? <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={info.name} accessibilityState={{ selected: on }}>{body}</Pressable> : body;

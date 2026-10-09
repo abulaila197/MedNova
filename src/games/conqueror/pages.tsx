@@ -158,7 +158,7 @@ export function MovesPage({ m, me, map, seconds, act }: PageProps) {
           </T>
         </View>
         <View style={{ flexDirection: 'row', gap: v(6), marginLeft: 'auto' }}>
-          {p.cards.slice(0, 3).map((c, i) => <CardTile key={`${c}${i}`} card={c} />)}
+          {p.cards.slice(0, 3).map((c, i) => <CardTile key={`${c}${i}`} card={c} w={68} />)}
         </View>
       </View>
       {draft?.to ? (
