@@ -15,24 +15,11 @@ import { F } from '@/theme/tokens';
 
 import { leaveRoom, rematchRoom, removePlayer, setCharacter, setReady, setTeam, startMatch, updateRoom, type RoomState, type Seat } from './api';
 import { settingsLine } from './format';
+import { G } from './grey';
+import { TalkBubble, TalkPanel } from './Talk';
+import { toggleMute, useTalk, useTalkFeed } from './talk';
 import { useRoom } from './useRoom';
 
-/** ON15: one simple mid-grey look for every online screen, the same in light and dark mode. */
-export const G = {
-  page: '#2b2e33',
-  panel: '#35383e',
-  raised: '#3c3f46',
-  line: 'rgba(255,255,255,0.08)',
-  fg: '#eceef2',
-  mute: '#a4a8b1',
-  dim: '#7d818a',
-  acc: '#6fd6ff',
-  ok: '#5fd39b',
-  amber: '#f5b041',
-  btn: '#eceef2',
-  btnOff: '#4a4e55',
-  onBtn: '#1e2024',
-};
 
 /** A page in the online look: dark header (pinned), grey room behind. */
 export function GreyScreen({ children, scroll = true, over }: { children: React.ReactNode; scroll?: boolean; over?: React.ReactNode }) {
@@ -53,6 +40,8 @@ export function GBtn({ label, onPress, off, style }: { label: string; onPress?: 
   );
 }
 
+export { G };
+
 const TONE = { bg: G.raised, line: G.line };
 
 const spaced = (code: string) => `${code.slice(0, 3)} ${code.slice(3)}`;
@@ -60,7 +49,7 @@ const spaced = (code: string) => `${code.slice(0, 3)} ${code.slice(3)}`;
 /** ON16 (locked): the room lobby. Leave, How to play, the code, a live status line, character tiles, settings, Start or I'm ready. */
 export function Lobby({ def, roomId }: { def: GameDef; roomId: string }) {
   const { state, error, reload } = useRoom(roomId);
-  const [sheet, setSheet] = useState<'how' | 'settings' | { seat: Seat } | null>(null);
+  const [sheet, setSheet] = useState<'how' | 'settings' | 'talk' | { seat: Seat } | null>(null);
   const [copied, setCopied] = useState(false);
   const [busy, setBusy] = useState(false);
   const went = useRef(false);
@@ -72,6 +61,10 @@ export function Lobby({ def, roomId }: { def: GameDef; roomId: string }) {
   const mine = state?.players.find((p) => p.user_id === me);
   const host = room?.host === me;
   const teams = Number(room?.settings.teams) || 0;
+  // ON12: stickers and voice lines in the lobby; a sticker pops over its sender's tile.
+  useTalkFeed(roomId, me ?? null);
+  const pops = useTalk((x) => x.pops);
+  const muted = useTalk((x) => x.muted[roomId]) ?? [];
 
   // The match has begun: everyone in the room (spectators too, ON19) moves to the live screen.
   useEffect(() => {
@@ -135,21 +128,26 @@ export function Lobby({ def, roomId }: { def: GameDef; roomId: string }) {
   const tile = (p: Seat) => {
     const isHost = p.user_id === room.host;
     const label = isHost ? '♛ Host' : p.ready ? '✓ Ready' : 'Not ready';
-    const tap = p.user_id === me || host;
+    const said = pops.find((m) => m.user_id === p.user_id);
     return (
       <Pressable
         key={p.user_id}
-        disabled={!tap}
         onPress={() => setSheet({ seat: p })}
         style={[s.tile, teams >= 2 && s.tileTight]}
-        accessibilityRole={tap ? 'button' : undefined}
-        accessibilityLabel={`${p.name}, ${label}`}>
+        accessibilityRole="button"
+        accessibilityLabel={`${p.name}, ${label}${muted.includes(p.user_id) ? ', muted' : ''}`}>
         <View style={s.ring}>
           <Face slug={p.character} size={u(38)} />
         </View>
         <Text style={[s.tn, { color: G.fg }]} numberOfLines={1}>{p.user_id === me ? 'You' : p.name}</Text>
         <Text style={[s.tl, { color: p.ready && !isHost ? G.ok : G.mute }, p.ready && !isHost && { fontFamily: F.bodySemi }]}>{label}</Text>
         {host && !isHost ? <Text style={[s.rm, { color: G.dim }]}>✕</Text> : null}
+        {muted.includes(p.user_id) ? <Text style={[s.mu, { color: G.dim }]}>🔇</Text> : null}
+        {said ? (
+          <View style={s.bub}>
+            <TalkBubble m={said} size={50} />
+          </View>
+        ) : null}
       </Pressable>
     );
   };
@@ -165,6 +163,9 @@ export function Lobby({ def, roomId }: { def: GameDef; roomId: string }) {
     <>
       <Sheet tone={TONE} open={sheet === 'how'} onClose={() => setSheet(null)}>
         <HowTo def={def} />
+      </Sheet>
+      <Sheet tone={TONE} open={sheet === 'talk'} onClose={() => setSheet(null)}>
+        {sheet === 'talk' && mine ? <TalkPanel room={roomId} me={{ id: mine.user_id, name: mine.name, face: mine.character }} onSent={() => setSheet(null)} /> : null}
       </Sheet>
       <Sheet tone={TONE} open={sheet === 'settings'} onClose={() => setSheet(null)}>
         {sheet === 'settings' ? <RoomSettings def={def} state={state} onDone={() => (setSheet(null), reload())} /> : null}
@@ -247,24 +248,31 @@ export function Lobby({ def, roomId }: { def: GameDef; roomId: string }) {
             ? 'You are the host. Start lights up when everyone is ready.'
             : 'The host starts the match once everyone is ready.'}
       </Text>
-      {room.status === 'finished' ? (
-        <GBtn label="Back to lobby" onPress={() => rematchRoom(room.id).then(reload).catch(() => {})} />
-      ) : host ? (
-        <GBtn
-          label={busy ? 'Starting…' : allReady ? 'Start' : players.length < 2 ? 'Start · needs 2 players' : `Start · ${players.length - notReady.length} of ${players.length} ready`}
-          off={!allReady || busy}
-          onPress={async () => {
-            setBusy(true);
-            await startMatch(room.id).catch(() => {});
-            await reload();
-            setBusy(false);
-          }}
-        />
-      ) : mine?.state === 'spectator' ? (
-        <GBtn label="Watching this match" off />
-      ) : (
-        <GBtn label={mine?.ready ? 'Not ready yet' : 'I’m ready'} onPress={() => setReady(room.id, !mine?.ready).then(reload).catch(() => {})} style={mine?.ready ? s.ghost : undefined} />
-      )}
+      <View style={s.lbar}>
+        <Pressable onPress={() => setSheet('talk')} style={s.talk} accessibilityRole="button" accessibilityLabel="Talk: stickers and voice">
+          <Face slug={mine?.character ?? 'yara'} size={u(20)} />
+          <Text style={[s.talkT, { color: G.fg }]}>Talk</Text>
+        </Pressable>
+        {room.status === 'finished' ? (
+          <GBtn style={s.grow} label="Back to lobby" onPress={() => rematchRoom(room.id).then(reload).catch(() => {})} />
+        ) : host ? (
+          <GBtn
+            style={s.grow}
+            label={busy ? 'Starting…' : allReady ? 'Start' : players.length < 2 ? 'Start · needs 2 players' : `Start · ${players.length - notReady.length} of ${players.length} ready`}
+            off={!allReady || busy}
+            onPress={async () => {
+              setBusy(true);
+              await startMatch(room.id).catch(() => {});
+              await reload();
+              setBusy(false);
+            }}
+          />
+        ) : mine?.state === 'spectator' ? (
+          <GBtn style={s.grow} label="Watching this match" off />
+        ) : (
+          <GBtn label={mine?.ready ? 'Not ready yet' : 'I’m ready'} onPress={() => setReady(room.id, !mine?.ready).then(reload).catch(() => {})} style={[s.grow, mine?.ready ? s.ghost : null]} />
+        )}
+      </View>
 
     </GreyScreen>
   );
@@ -371,12 +379,23 @@ function SeatSheet({ state, seat, teams, onDone }: { state: RoomState; seat: Sea
           </View>
         </>
       ) : null}
+      {!self ? <MuteRow room={state.room.id} seat={seat} /> : null}
       {host && !self && state.room.status === 'lobby' ? (
         <Pressable onPress={() => removePlayer(state.room.id, seat.user_id).then(onDone).catch(onDone)} style={s.remove} accessibilityRole="button">
           <Text style={[s.removeT]}>{`Remove ${seat.name} from the room`}</Text>
         </Pressable>
       ) : null}
     </>
+  );
+}
+
+/** ON12: mute a player on your phone only; their stickers and voice stop popping for you. */
+function MuteRow({ room, seat }: { room: string; seat: Seat }) {
+  const on = (useTalk((x) => x.muted[room]) ?? []).includes(seat.user_id);
+  return (
+    <Pressable onPress={() => toggleMute(room, seat.user_id)} style={[s.remove, { borderColor: G.line }]} accessibilityRole="button">
+      <Text style={[s.removeT, { color: G.fg }]}>{on ? `Unmute ${seat.name}` : `Mute ${seat.name} (only for you)`}</Text>
+    </Pressable>
   );
 }
 
@@ -414,6 +433,12 @@ const s = StyleSheet.create({
   sum: { flexDirection: 'row', alignItems: 'center', backgroundColor: G.panel, borderWidth: 1, borderColor: G.line, borderRadius: u(13), paddingVertical: u(9), paddingHorizontal: u(11) },
   sumT: { fontFamily: F.bodySemi, fontSize: u(11) },
   note: { fontFamily: F.body, fontSize: u(10), textAlign: 'center', marginTop: 'auto' },
+  lbar: { flexDirection: 'row', alignItems: 'center', gap: u(8) },
+  talk: { flexDirection: 'row', alignItems: 'center', gap: u(6), borderWidth: 1, borderColor: G.line, backgroundColor: G.panel, borderRadius: u(12), paddingVertical: u(6), paddingLeft: u(6), paddingRight: u(11) },
+  talkT: { fontFamily: F.bodySemi, fontSize: u(11.5) },
+  grow: { flex: 1 },
+  mu: { position: 'absolute', top: u(6), left: u(8), fontSize: u(9) },
+  bub: { position: 'absolute', top: u(-26), right: u(-8), zIndex: 3 },
   btn: { borderRadius: u(12), paddingVertical: u(11), alignItems: 'center' },
   btnT: { fontFamily: F.bodyBold, fontSize: u(12) },
   ghost: { backgroundColor: G.panel, borderWidth: 1, borderColor: G.line },

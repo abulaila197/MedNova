@@ -13,7 +13,7 @@ import { F } from '@/theme/tokens';
 
 import { settingsLine } from './format';
 import { acceptInvite, markBannered, useInvites } from './invites';
-import { G } from './Lobby';
+import { G } from './grey';
 
 const SHOW_MS = 10_000;
 

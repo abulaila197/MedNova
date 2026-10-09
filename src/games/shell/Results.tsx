@@ -7,7 +7,10 @@ import { F } from '@/theme/tokens';
 
 import { levelUpLine } from '../engine/levels';
 import type { Play, PlayItem } from '../engine/types';
+import { RoomTalk } from '@/online/Talk';
+
 import { Face } from './Face';
+import { useSession } from './session';
 import type { GameDef } from './types';
 import { useResults } from './useShellPages';
 import { Body, Btn, Card, GameScreen, Ghost, Kick, Title } from './ui';
@@ -21,8 +24,11 @@ export function Results({ def, play, items }: { def: GameDef; play: Play; items:
   const { multi, nameOf, colorOf, teamRows, plain, stats, missed, rematch, changeSettings, backToGames, openDossier } = useResults(def, play, items);
   const lvl = levelUpLine(play.levelUp);
   const faceOf = new Map(play.seats.map((x) => [x.seat, x.character]));
+  // ON22: online results keep the floating talk button.
+  const uid = useSession((x) => x.userId);
+  const room = play.mode === 'online' ? (play.settings.room as string | undefined) : undefined;
   return (
-    <GameScreen>
+    <GameScreen top={room && uid ? <RoomTalk room={room} me={{ id: uid, name: 'You', face: play.seats[0]?.character ?? 'yara' }} /> : undefined}>
       <View style={{ gap: u(6) }}>
         <Kick>{`${g.lead} ${g.em}`}</Kick>
         <Title lead="Game" em="over" />

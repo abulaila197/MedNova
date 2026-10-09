@@ -7,7 +7,7 @@ import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
-import { G } from './Lobby';
+import { G } from './grey';
 
 /** ON8 / DPN7: a pill slides in under the header for a big moment ("Sara solved it, 2nd"), then fades after 2 s. */
 export function useAlerts() {

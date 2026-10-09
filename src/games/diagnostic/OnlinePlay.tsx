@@ -5,6 +5,7 @@ import { StyleSheet, View } from 'react-native';
 import { call, leaveRoom } from '@/online/api';
 import { finishOnline, playForMatch } from '@/online/finish';
 import { AlertPill, Countdown, nth, useAlerts } from '@/online/live';
+import { RoomTalk } from '@/online/Talk';
 import { characterOf } from '../shell/characters';
 import { PauseMenu } from '../shell/PauseMenu';
 import { presetTeam } from '../shell/teams';
@@ -178,6 +179,9 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   }
 
   const c = caseById.get(String(st.case_number))!;
+  const mine = st.players.find((p) => p.user_id === me);
+  // Spectators talk too (ON12); their face comes from their seat in the room.
+  const talker = { id: me, name: mine?.name ?? 'You', face: mine?.character ?? 'yara' };
   const elapsed = Math.max(0, server - st.phase_started_at);
   const reveal = st.phase === 'reveal';
   const solved = st.me?.solved_ms != null;
@@ -233,6 +237,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
       onSkip={() => {}}
       onReveal={() => {}}>
       <AlertPill alert={alert} />
+      {talker ? <RoomTalk room={roomId} me={talker} /> : null}
       <PauseMenu open={menu} mode="online" onResume={() => setMenu(false)} onQuit={leave} />
     </CaseBoard>
   );
