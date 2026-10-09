@@ -1,6 +1,8 @@
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
 
+import { leaveRoom, rematchRoom } from '@/online/api';
+
 import { engine } from '../engine';
 import type { Mode, Play, PlayItem } from '../engine/types';
 import { startPlay, trialsLeft } from './flow';
@@ -62,12 +64,22 @@ export function useResults(def: GameDef, play: Play, items: PlayItem[]) {
     { value: `${right}/${mine.length}`, label: 'Solved' },
   ];
   const missed = items.some((i) => i.feedsLearn && i.outcome !== 'right');
+  // ON25: online Rematch and Change settings both go back to the same room's lobby (the host changes settings there).
+  const room = play.mode === 'online' ? (play.settings.room as string | undefined) : undefined;
   const rematch = async () => {
+    if (room) {
+      await rematchRoom(room).catch(() => {});
+      router.replace(`/play/${def.key}/lobby?room=${room}`);
+      return;
+    }
     const next = await startPlay(def.key, play.mode, play.settings, play.seats.filter((x) => !x.removed));
     router.replace(`/play/${def.key}/run?play=${next.id}`);
   };
-  const changeSettings = () => router.replace(`/play/${def.key}/setup?mode=${play.mode}&from=${play.id}`);
-  const backToGames = () => router.replace('/games');
+  const changeSettings = () => (room ? rematch() : router.replace(`/play/${def.key}/setup?mode=${play.mode}&from=${play.id}`));
+  const backToGames = () => {
+    if (room) leaveRoom(room).catch(() => {});
+    router.replace('/games');
+  };
   const openDossier = (key: string) => router.push(`/learn/dossier?id=${key}`);
   return { multi, mine, right, nameOf, colorOf, teams, teamRows, plain, stats, missed, rematch, changeSettings, backToGames, openDossier };
 }

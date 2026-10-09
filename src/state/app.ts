@@ -1,3 +1,4 @@
+import { createContext, useContext } from 'react';
 import { create } from 'zustand';
 
 import { defaultKV } from '@/games/engine/storage';
@@ -36,4 +37,11 @@ void kv.get<Mode>(MODE_KEY).then((m) => {
   if (m === 'light' || m === 'dark') useApp.setState({ mode: m });
 });
 
-export const useTheme = () => THEMES[useApp((s) => s.mode)];
+/** A page that keeps one look in both modes (the grey online lobby, ON15) pins its own mode here. */
+export const ModePin = createContext<Mode | null>(null);
+
+export const useTheme = () => {
+  const pin = useContext(ModePin);
+  const mode = useApp((s) => s.mode);
+  return THEMES[pin ?? mode];
+};

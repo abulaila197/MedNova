@@ -7,6 +7,7 @@ import { F } from '@/theme/tokens';
 
 import { levelUpLine } from '../engine/levels';
 import type { Play, PlayItem } from '../engine/types';
+import { Face } from './Face';
 import type { GameDef } from './types';
 import { useResults } from './useShellPages';
 import { Body, Btn, Card, GameScreen, Ghost, Kick, Title } from './ui';
@@ -19,6 +20,7 @@ export function Results({ def, play, items }: { def: GameDef; play: Play; items:
   const g = GAMES.find((x) => x.key === def.key)!;
   const { multi, nameOf, colorOf, teamRows, plain, stats, missed, rematch, changeSettings, backToGames, openDossier } = useResults(def, play, items);
   const lvl = levelUpLine(play.levelUp);
+  const faceOf = new Map(play.seats.map((x) => [x.seat, x.character]));
   return (
     <GameScreen>
       <View style={{ gap: u(6) }}>
@@ -54,7 +56,12 @@ export function Results({ def, play, items }: { def: GameDef; play: Play; items:
           {play.standings.map((r) => (
             <View key={r.seat} style={s.row}>
               <Text style={[s.rank, { color: t.dim }]}>{r.rank}</Text>
-              {colorOf.get(r.seat) ? <View style={[s.dot, { backgroundColor: colorOf.get(r.seat) }]} /> : null}
+              {/* ON21: online standings show each player's face. */}
+              {play.mode === 'online' && faceOf.get(r.seat) ? (
+                <Face slug={faceOf.get(r.seat)!} size={u(18)} />
+              ) : colorOf.get(r.seat) ? (
+                <View style={[s.dot, { backgroundColor: colorOf.get(r.seat) }]} />
+              ) : null}
               <Text style={[s.item, { color: t.fg }]}>{r.name}</Text>
               <Text style={[s.pts, { color: t.soft }]}>{r.score}</Text>
             </View>

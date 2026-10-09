@@ -6,7 +6,7 @@ import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 
 /** Bottom sheet over a dimmed page (used by Report and Play). */
-export function Sheet({ open, onClose, children }: { open: boolean; onClose: () => void; children: ReactNode }) {
+export function Sheet({ open, onClose, children, tone }: { open: boolean; onClose: () => void; children: ReactNode; tone?: { bg: string; line: string } }) {
   const t = useTheme();
   if (!open) return null;
   return (
@@ -17,7 +17,7 @@ export function Sheet({ open, onClose, children }: { open: boolean; onClose: () 
       <Animated.View
         entering={SlideInDown.duration(380)}
         exiting={SlideOutDown.duration(250)}
-        style={[s.sheet, { backgroundColor: t.panel, borderColor: t.panelLine, shadowColor: t.mode === 'light' ? 'rgba(60,50,30,0.5)' : '#000' }]}>
+        style={[s.sheet, { backgroundColor: tone?.bg ?? t.panel, borderColor: tone?.line ?? t.panelLine, shadowColor: t.mode === 'light' ? 'rgba(60,50,30,0.5)' : '#000' }]}>
         <View style={[s.grab, { backgroundColor: t.mode === 'light' ? 'rgba(40,36,28,0.15)' : 'rgba(255,255,255,0.2)' }]} />
         {children}
       </Animated.View>

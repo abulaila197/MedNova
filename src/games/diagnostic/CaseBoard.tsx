@@ -33,7 +33,7 @@ export const clock = (ms: number) => {
 export const amber = (t: Theme) => (t.mode === 'light' ? '#b45309' : '#f59e0b');
 const alpha = (hex: string, a: number) => hex + Math.round(a * 255).toString(16).padStart(2, '0');
 
-export type BoardResult = { outcome: 'right' | 'wrong' | 'skipped' | 'timed_out'; points: number; line: string; nextLabel: string; onNext: () => void };
+export type BoardResult = { outcome: 'right' | 'wrong' | 'skipped' | 'timed_out'; points: number; line: string; nextLabel: string; onNext?: () => void };
 
 export type BoardProps = {
   /** Remounts the answer box for each new case or turn. */
@@ -50,6 +50,8 @@ export type BoardProps = {
   clock: { label: string; ms: number; warn?: boolean };
   wrongSeq: number;
   clueSeq: number;
+  /** false hides Skip and Reveal (Online: clues come on the clock for everyone, DPN1). */
+  actions?: boolean;
   /** Omit to hide the Hint button (Offline Multiplayer, DPO5). */
   hint?: { granted: boolean; onHint: () => void };
   result: BoardResult | null;
@@ -123,7 +125,7 @@ export function CaseBoard(p: BoardProps) {
 
         {playing ? (
           <View style={[s.bottom, focused && s.bottomFocus]}>
-            {focused ? null : <Actions canReveal={p.attempt.cluesShown < DP.clueCount} hint={p.hint} onSkip={p.onSkip} onReveal={p.onReveal} />}
+            {focused || p.actions === false ? null : <Actions canReveal={p.attempt.cluesShown < DP.clueCount} hint={p.hint} onSkip={p.onSkip} onReveal={p.onReveal} />}
             <AnswerBox
               key={p.turnKey}
               wrong={p.attempt.wrong}
@@ -366,7 +368,7 @@ function ResultCard({ r, c }: { r: BoardResult; c: DPCase }) {
       <Text style={[s.resD, { color: t.white }]}>{guessById.has(c.answer_id) ? guessName(c.answer_id) : c.disease}</Text>
       <Text style={[s.resF, { color: t.mute }]}>{c.fields.join(' · ')}</Text>
       <Text style={[s.resL, { color: t.soft }]}>{r.line}</Text>
-      <Btn label={r.nextLabel} onPress={r.onNext} style={{ marginTop: u(4) }} />
+      {r.onNext ? <Btn label={r.nextLabel} onPress={r.onNext} style={{ marginTop: u(4) }} /> : <Text style={[s.resN, { color: t.dim }]}>{r.nextLabel}</Text>}
     </Animated.View>
   );
 }
@@ -424,5 +426,6 @@ const s = StyleSheet.create({
   res: { borderWidth: 1, borderRadius: u(14), padding: u(13), gap: u(4) },
   resD: { fontFamily: F.display, fontSize: u(20), lineHeight: u(23) },
   resF: { fontFamily: F.bodyMedium, fontSize: u(10.5) },
+  resN: { fontFamily: F.bodySemi, fontSize: u(10.5), textAlign: 'center', marginTop: u(6) },
   resL: { fontFamily: F.body, fontSize: u(11.5), lineHeight: u(16), marginTop: u(2) },
 });

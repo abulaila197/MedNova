@@ -1,6 +1,6 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { create } from 'zustand';
 
@@ -8,6 +8,8 @@ import { LevelBadge } from '@/components/LevelBadge';
 import { Face } from '@/games/shell/Face';
 import { useAccount } from '@/state/account';
 import { useTheme } from '@/state/app';
+import { mss } from '@/online/format';
+import { acceptInvite, challenge, useInvites } from '@/online/invites';
 import { type Friend, respondFriend, seenLabel, unblockUser, useFriends } from '@/state/friends';
 import { u } from '@/theme/scale';
 import { F, type Theme } from '@/theme/tokens';
@@ -26,6 +28,14 @@ export function FriendsSection({ t }: { t: Theme }) {
   const { list, blocked } = useFriends();
   const [busy, setBusy] = useState<string | null>(null);
   const [showBlocked, setShowBlocked] = useState(false);
+  const invites = useInvites((x) => x.list);
+  // Ticks the "time left" on challenges once a second while any are open.
+  const [, setTick] = useState(0);
+  useEffect(() => {
+    if (!invites.length) return;
+    const id = setInterval(() => setTick((n) => n + 1), 1000);
+    return () => clearInterval(id);
+  }, [invites.length]);
   const line = { borderColor: t.panelLine };
   const incoming = list.filter((f) => f.kind === 'incoming');
   const friends = list.filter((f) => f.kind !== 'incoming');
@@ -81,19 +91,32 @@ export function FriendsSection({ t }: { t: Theme }) {
       <Text style={[s.sub, { color: t.mute }]}>{`YOUR FRIENDS · ${friends.filter((f) => f.kind === 'friend').length}`}</Text>
       {friends.length === 0 ? <Text style={[s.note, { color: t.mute }]}>No friends yet. Share your friend pass to add some.</Text> : null}
       {friends.map((f) => {
-        const when = f.kind === 'outgoing' ? 'REQUEST SENT' : seenLabel(f.last_seen);
+        const inv = invites.find((x) => x.from_user === f.id);
+        const when = inv ? `CHALLENGED YOU · ${mss(Date.parse(inv.expires_at) - Date.now())} LEFT` : f.kind === 'outgoing' ? 'REQUEST SENT' : seenLabel(f.last_seen);
         return (
           <View key={f.id} style={[s.fr, line]}>
             <Ring t={t} f={f} />
             <Pressable style={s.frT} onPress={() => openMenu(f)} accessibilityRole="button" accessibilityHint="Remove or block">
               <Name t={t} f={f} />
-              <Text style={[s.frS, { color: when === 'ONLINE' ? ONLINE[t.mode] : t.mute }]}>{when}</Text>
+              <Text style={[s.frS, { color: inv ? t.accent : when === 'ONLINE' ? ONLINE[t.mode] : t.mute }]}>{when}</Text>
             </Pressable>
-            {f.kind === 'friend' ? (
-              // Challenge opens a room once rooms exist (wire-later.md).
-              <View style={[s.ch, s.ghost, line, { opacity: 0.45 }]} accessibilityLabel={`Challenge ${f.display_name}, coming with rooms`}>
-                <Text style={[s.ghT, { color: t.mute }]}>Challenge</Text>
-              </View>
+            {inv ? (
+              // ON24: a challenge waits here for 10 minutes after its banner.
+              <Pressable onPress={() => acceptInvite(inv)} accessibilityRole="button" accessibilityLabel={`Join ${f.display_name}'s challenge`}>
+                <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.ch}>
+                  <Text style={[s.chT, { color: t.onGrad }]}>Join</Text>
+                </LinearGradient>
+              </Pressable>
+            ) : f.kind === 'friend' ? (
+              // ON24: opens a private room for The Diagnostic Pursuit (the only online game so far) and invites them.
+              <Pressable
+                disabled={busy === f.id}
+                onPress={() => act(f.id, async () => void (await challenge(f.id, 'the-diagnostic-pursuit', { difficulty: 'Medium', cases: 5, teams: 0 })))}
+                style={[s.ch, s.ghost, line, busy === f.id && { opacity: 0.5 }]}
+                accessibilityRole="button"
+                accessibilityLabel={`Challenge ${f.display_name}`}>
+                <Text style={[s.ghT, { color: t.fg }]}>Challenge</Text>
+              </Pressable>
             ) : null}
           </View>
         );

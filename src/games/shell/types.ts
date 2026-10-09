@@ -29,6 +29,9 @@ export type PlayProps = {
   onQuit: () => void;
 };
 
+/** A live online match screen (ON17): the room and match ids; the server referees. */
+export type OnlineProps = { def: GameDef; roomId: string; matchId: string; me: string };
+
 /** Everything the shared shell needs to host a game. */
 export type GameDef = {
   key: GameKey;
@@ -37,6 +40,8 @@ export type GameDef = {
   /** Modes that take named players in setup (one phone). Seat 0 is the phone owner. */
   players?: Partial<Record<Mode, { min: number; max: number }>>;
   Play: Partial<Record<Mode, ComponentType<PlayProps>>>;
+  /** The live online match screen; Join/Create and the lobby are shared (ON16, ON20). */
+  Online?: ComponentType<OnlineProps>;
   /** EXP for a finished play, and the per-play sanity cap (rule 6). */
   exp: (score: number, items: PlayItem[]) => number;
   expCap: (settings: Record<string, unknown>, mode?: Play['mode']) => number;

@@ -8,6 +8,7 @@ import { PlaySheet } from '@/components/PlaySheet';
 import { ReportSheet } from '@/components/ReportSheet';
 import { LoadingHost } from '@/features/loading/LoadingHost';
 import { FriendSheets } from '@/features/profile/FriendSheets';
+import { InviteBanner } from '@/online/InviteBanner';
 import { useApp, useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 
@@ -37,6 +38,7 @@ export default function AppLayout() {
       <ReportSheet />
       <PlaySheet />
       <FriendSheets />
+      <InviteBanner />
     </View>
   );
 }

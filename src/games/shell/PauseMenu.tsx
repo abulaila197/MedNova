@@ -18,7 +18,7 @@ export function PauseMenu({ open, mode, seats, keep = [], onResume, onQuit, onRe
   const active = (seats ?? []).filter((x) => !x.removed);
   return (
     <Sheet open={open} onClose={onResume}>
-      <Kick>Paused</Kick>
+      <Kick>{mode === 'online' ? 'Match menu' : 'Paused'}</Kick>
       {mode === 'offline' && onRemove && active.length > 2 ? (
         <View style={{ gap: u(6) }}>
           <Text style={[s.lbl, { color: t.mute }]}>Tap a player to remove them. Their turns are skipped.</Text>
@@ -31,8 +31,9 @@ export function PauseMenu({ open, mode, seats, keep = [], onResume, onQuit, onRe
           </View>
         </View>
       ) : null}
-      <Btn label="Resume" onPress={onResume} />
-      <Ghost label={mode === 'solo' ? 'Leave and save my place' : 'End game'} onPress={onQuit} danger={mode !== 'solo'} />
+      {mode === 'online' ? <Text style={[s.lbl, { color: t.mute }]}>The match keeps running. If you leave, you drop out and rank last.</Text> : null}
+      <Btn label={mode === 'online' ? 'Back to the case' : 'Resume'} onPress={onResume} />
+      <Ghost label={mode === 'solo' ? 'Leave and save my place' : mode === 'online' ? 'Leave match' : 'End game'} onPress={onQuit} danger={mode !== 'solo'} />
     </Sheet>
   );
 }
