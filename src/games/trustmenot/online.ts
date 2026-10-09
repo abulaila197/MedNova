@@ -18,6 +18,8 @@ export const PICK_MS = 20000;
 export const BID_MS = 20000;
 /** Phones answer one question after another; this covers the network between them. */
 export const GRACE_MS = 1500;
+/** Time to read an obstacle or a sealed mission before a round's first question. */
+export const NOTES_MS = 8000;
 /** The stand-in for a disconnected player (§10): careful, never betrays. */
 export const CAREFUL_BOT = { skill: 0.6, betrays: false };
 
@@ -49,7 +51,7 @@ function playMs(g: Game): number {
   const lv = living(g);
   let ms = 0;
   for (let q = 0; q < r.questions.length; q++) ms += Math.max(R.MIN_TIMER_MS, ...lv.map((p) => timeLimitMs(g, p.id, q)));
-  return ms + GRACE_MS;
+  return ms + GRACE_MS + NOTES_MS;
 }
 
 export function phaseMs(g: Game): number | null {

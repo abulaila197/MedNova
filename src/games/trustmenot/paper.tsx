@@ -97,9 +97,9 @@ export function PaperScreen({ month, children, scroll = false, onPause }: { mont
 }
 
 const ps = StyleSheet.create({
-  // A small paper tab low on the right edge, clear of the strip and every sheet's buttons.
+  // A small paper tab high on the right edge, above the sheets so it never covers a button.
   pause: {
-    position: 'absolute', right: 0, bottom: p(96), width: p(22), height: p(30), borderTopLeftRadius: p(4), borderBottomLeftRadius: p(4),
+    position: 'absolute', right: 0, top: p(2), width: p(18), height: p(24), borderTopLeftRadius: p(4), borderBottomLeftRadius: p(4),
     backgroundColor: TM.paper, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: p(3),
     shadowColor: '#000', shadowOpacity: 0.35, shadowRadius: 3, shadowOffset: { width: -1, height: 1 },
   },
