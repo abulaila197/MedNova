@@ -1,5 +1,6 @@
 import type { GameDef } from '../shell/types';
 import { OnlinePlay } from './OnlinePlay';
+import { TMN_SEATS } from './seats';
 
 // QS1: the host picks Mixed (default), Clinical science or Basic science.
 const FIELD = {
@@ -34,7 +35,7 @@ export const trustMeNot: GameDef = {
   players: { online: { min: 3, max: 6 } },
   Play: {},
   Online: OnlinePlay,
-  palette: { seats: ['#d9a441', '#6fb0a6', '#c0614a', '#9a8fd0', '#d98aa8', '#8fb36a'], teams: [] },
+  palette: { seats: TMN_SEATS, teams: [] },
   // EXP and Learn come from the engine's reveal (rule book) once the online referee is built.
   exp: () => 0,
   expCap: () => 0,

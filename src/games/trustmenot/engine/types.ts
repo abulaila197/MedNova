@@ -1,7 +1,8 @@
 // Trust Me Not engine types. The whole game is one plain JSON object so the server can store it,
 // send each phone its own view, and replay it from the seed.
 
-export type Field = 'basic' | 'clinical';
+/** The question mix the host picked (QS1). */
+export type Field = 'mixed' | 'basic' | 'clinical';
 export type PlayerId = string;
 
 export type EffectId =

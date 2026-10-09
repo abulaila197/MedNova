@@ -5,7 +5,7 @@
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { StyleSheet, Text, View, type LayoutChangeEvent, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
+import { Pressable, StyleSheet, Text, View, type LayoutChangeEvent, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
 import Svg, { Circle, ClipPath, Defs, Path, RadialGradient, Rect, Stop } from 'react-native-svg';
 
 import { loadFonts } from '@/features/loading/fonts';
@@ -79,16 +79,32 @@ function Village({ month }: { month: number }) {
 }
 
 /** A Trust Me Not page: the game header over the month's village, always with the dark header. */
-export function PaperScreen({ month, children, scroll = false }: { month: number; children: ReactNode; scroll?: boolean }) {
+export function PaperScreen({ month, children, scroll = false, onPause }: { month: number; children: ReactNode; scroll?: boolean; onPause?: () => void }) {
   const ok = usePaperFonts();
   return (
     <ModePin.Provider value="dark">
       <GameScreen scroll={scroll} under={<Village month={month} />} bodyStyle={{ padding: 0, gap: 0 }}>
         {ok ? children : null}
+        {ok && onPause ? (
+          <Pressable onPress={onPause} accessibilityRole="button" accessibilityLabel="Pause" hitSlop={10} style={ps.pause}>
+            <View style={ps.bar} />
+            <View style={ps.bar} />
+          </Pressable>
+        ) : null}
       </GameScreen>
     </ModePin.Provider>
   );
 }
+
+const ps = StyleSheet.create({
+  // A small paper tab low on the right edge, clear of the strip and every sheet's buttons.
+  pause: {
+    position: 'absolute', right: 0, bottom: p(96), width: p(22), height: p(30), borderTopLeftRadius: p(4), borderBottomLeftRadius: p(4),
+    backgroundColor: TM.paper, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: p(3),
+    shadowColor: '#000', shadowOpacity: 0.35, shadowRadius: 3, shadowOffset: { width: -1, height: 1 },
+  },
+  bar: { width: p(2.5), height: p(10), backgroundColor: TM.ink },
+});
 
 // ---------------------------------------------------------------- torn paper
 
