@@ -9,7 +9,7 @@ import Svg, { Path } from 'react-native-svg';
 
 import { stickerById } from '@/online/stickers';
 import { sendTalk, useTalk, useTalkFeed, type TalkMsg } from '@/online/talk';
-import { voiceById } from '@/online/voice';
+import { TMN_VOICE, VOICE } from '@/online/voice';
 
 import { rules, type EffectId, type ItemId, type MealId, type WildId } from './engine';
 import { Icon } from './icons';
@@ -66,7 +66,8 @@ const TRIGGER = { help: 'help request', gift: 'gift', buy: 'purchase' } as const
 const MEAL_HEAL: Record<MealId, string> = { scraps: '+5', basic: '+15', feast: '+30', skip: 'x1.5 drain' };
 const MEAL_WANT: Record<MealId, string> = { scraps: 'Scraps', basic: 'a Basic meal', feast: 'a Feast', skip: 'nothing' };
 /** Voice lines offered in the Gap chat (the shared set, ON28). */
-const GAP_VOICE = ['help-me', 'thank-you', 'sorry', 'hurry-up', 'nice-one', 'good-luck'];
+/** All 12 shared voice lines plus Trust Me Not's own 3 (Yazan, 2026-10-09). */
+const GAP_VOICE = [...VOICE, ...TMN_VOICE];
 
 // ---------------------------------------------------------------- small parts
 
@@ -822,7 +823,7 @@ function ChatTab({ props, log }: { props: PageProps; log: TalkMsg[] }) {
           {log.map((m) => {
             const mine = m.user_id === v.me;
             const st = m.kind === 'sticker' ? stickerById.get(m.item) : null;
-            const line = m.kind === 'voice' ? voiceById.get(m.item)?.line : null;
+            const line = m.kind === 'voice' ? GAP_VOICE.find((x) => x.id === m.item)?.line : null;
             return (
               <View key={m.id} style={[s.msg, mine ? { alignSelf: 'flex-end' } : null]}>
                 <T f={CRIMB} size={10.5} color={colorOf(v, m.user_id)} style={{ lineHeight: p(13) }}>{mine ? 'You' : nameOf(v, m.user_id) === 'Someone' ? m.name : nameOf(v, m.user_id)}</T>
@@ -849,7 +850,7 @@ function ChatTab({ props, log }: { props: PageProps; log: TalkMsg[] }) {
         </View>
       ) : (
         <View style={[{ flexDirection: 'row', flexWrap: 'wrap', gap: p(6) }, cooling ? { opacity: 0.45 } : null]}>
-          {GAP_VOICE.map((id) => voiceById.get(id)).filter((x) => !!x).map((x) => (
+          {GAP_VOICE.map((x) => (
             <Pressable key={x.id} disabled={cooling} onPress={() => sendTalk(roomId, { id: v.me, name: me.name, face: '' }, 'voice', x.id)}
               accessibilityRole="button" accessibilityLabel={`Say: ${x.line}`} style={s.vl}>
               <Speaker color={TM.red} />

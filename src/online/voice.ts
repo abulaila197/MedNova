@@ -13,4 +13,10 @@ export const VOICE: { id: string; line: string; src: number }[] = [
   { id: 'ready', line: "Ready!", src: require('../../assets/voice/ready.m4a') },
   { id: 'help-me', line: "Help me!", src: require('../../assets/voice/help-me.m4a') },
 ];
-export const voiceById = new Map(VOICE.map((v) => [v.id, v]));
+/** Lines only Trust Me Not offers, in the same voice (Yazan, 2026-10-09: the 12 shared lines plus these 3). */
+export const TMN_VOICE: typeof VOICE = [
+  { id: 'trust-me', line: "Trust me!", src: require('../../assets/trustmenot/voice/trust-me.m4a') },
+  { id: 'liar', line: "Liar!", src: require('../../assets/trustmenot/voice/liar.m4a') },
+  { id: 'not-me', line: "Not me!", src: require('../../assets/trustmenot/voice/not-me.m4a') },
+];
+export const voiceById = new Map([...VOICE, ...TMN_VOICE].map((v) => [v.id, v]));
