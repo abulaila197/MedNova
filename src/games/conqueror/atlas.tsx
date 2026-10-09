@@ -155,8 +155,8 @@ export function CardTile({ card, w = 62, on, onPress, dim }: { card: CardType; w
   const body = (
     <View style={[s.card, { width: v(w), height: v(w * 1.04), opacity: dim ? 0.45 : 1 }, on ? { transform: [{ translateY: -v(6) }], borderColor: AT.red, borderWidth: 1.5 } : null]}>
       <View style={s.cardRule} pointerEvents="none" />
-      <T f={CZ} size={10.5} color={AT.red} style={{ lineHeight: v(12) }}>{info.name}</T>
-      <T f={CGI} size={10.5} color={AT.ink} style={{ lineHeight: v(11) }} lines={3}>{SHORT[card]}</T>
+      <T f={CZ} size={10.5} color={AT.red} style={{ lineHeight: v(12), textAlign: 'center' }}>{info.name}</T>
+      <T f={CGI} size={10.5} color={AT.ink} style={{ lineHeight: v(11.5), textAlign: 'center' }} lines={3}>{SHORT[card]}</T>
     </View>
   );
   return onPress ? <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={info.name} accessibilityState={{ selected: on }}>{body}</Pressable> : body;
@@ -239,6 +239,6 @@ const s = StyleSheet.create({
   chip: { flexDirection: 'row', alignItems: 'center', gap: v(5), paddingLeft: v(5), paddingRight: v(9), paddingVertical: v(2), borderRadius: v(20), backgroundColor: AT.chip, borderWidth: 1, borderColor: 'rgba(243,230,198,0.16)' },
   go: { paddingVertical: v(13), borderRadius: v(6), backgroundColor: AT.red, alignItems: 'center', shadowColor: '#4a0a0a', shadowOpacity: 1, shadowRadius: 0, shadowOffset: { width: 0, height: v(3) }, elevation: 2 },
   ghost: { paddingVertical: v(12), borderRadius: v(6), borderWidth: 1.5, borderColor: 'rgba(243,230,198,0.5)', alignItems: 'center' },
-  card: { borderRadius: v(5), backgroundColor: AT.paper, borderWidth: 1, borderColor: '#5a3a1e', padding: v(6), justifyContent: 'flex-end', gap: v(1) },
+  card: { borderRadius: v(5), backgroundColor: AT.paper, borderWidth: 1, borderColor: '#5a3a1e', paddingHorizontal: v(5), paddingVertical: v(6), justifyContent: 'center', alignItems: 'center', gap: v(2) },
   cardRule: { position: 'absolute', left: v(3), right: v(3), top: v(3), bottom: v(3), borderWidth: 1, borderColor: 'rgba(142,28,28,0.45)', borderRadius: v(3) },
 });
