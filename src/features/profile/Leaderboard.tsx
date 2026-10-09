@@ -2,6 +2,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import Svg, { Circle, Defs, RadialGradient, Stop } from 'react-native-svg';
 
+import { LevelBadge, useBalance } from '@/components/LevelBadge';
 import { Fade, useSvgId } from '@/features/community/fx';
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
@@ -29,13 +30,14 @@ const HALO = '201,184,255'; // star glow colour (both modes in the preview)
 
 // Top three as stars. cx = star centre x, top = star top (screen design px), d = star diameter, a = glow alpha.
 const TOP3 = [
-  { word: 'First', name: 'Lina', pts: '2,940', cx: 141, top: 139, d: 20, a: 0.9, blur: 32, spread: 7 },
-  { word: 'Second', name: 'Omar', pts: '2,710', cx: 62, top: 192, d: 14, a: 0.65, blur: 22, spread: 5 },
-  { word: 'Third', name: 'Sara', pts: '2,455', cx: 221.5, top: 211, d: 11, a: 0.45, blur: 18, spread: 4 },
+  { word: 'First', name: 'Lina', level: 24, pts: '2,940', cx: 141, top: 139, d: 20, a: 0.9, blur: 32, spread: 7 },
+  { word: 'Second', name: 'Omar', level: 21, pts: '2,710', cx: 62, top: 192, d: 14, a: 0.65, blur: 22, spread: 5 },
+  { word: 'Third', name: 'Sara', level: 18, pts: '2,455', cx: 221.5, top: 211, d: 11, a: 0.45, blur: 18, spread: 4 },
 ];
+// Stand-in players until the board is wired (wire-later.md); levels come from the server then (LV3).
 const ROWS = [
-  ['04', 'Rami', '2,180'],
-  ['05', 'Noor', '2,030'],
+  { n: '04', name: 'Rami', level: 16, pts: '2,180' },
+  { n: '05', name: 'Noor', level: 15, pts: '2,030' },
 ];
 const TOP = 72; // content area top (design px)
 
@@ -66,6 +68,7 @@ export function Leaderboard() {
   const t = useTheme();
   const p = C[t.mode];
   const pill = [s.pill, { backgroundColor: t.panel, borderColor: t.panelLine }];
+  const me = useBalance();
   return (
     <Fade stops={[[0, 1], [0.86, 1], [0.99, 0], [1, 0]]} style={s.area}>
       <ScrollView style={s.fill} contentContainerStyle={s.c} showsVerticalScrollIndicator={false}>
@@ -94,15 +97,21 @@ export function Leaderboard() {
                   <View style={{ width: u(r.d), height: u(r.d), borderRadius: u(r.d / 2), backgroundColor: p.star }} />
                 </View>
                 <Text style={[s.word, { color: p.rank }]}>{r.word}</Text>
-                <Text style={[s.name, { color: t.fg }]}>{r.name}</Text>
+                <View style={s.nmRow}>
+                  <Text style={[s.name, { color: t.fg }]}>{r.name}</Text>
+                  <LevelBadge level={r.level} size={u(15)} />
+                </View>
                 <Text style={[s.pts, { color: t.mute }]}>{r.pts}</Text>
               </View>
             ))}
           </View>
-          {ROWS.map(([n, name, pts], i) => (
+          {ROWS.map(({ n, name, level, pts }, i) => (
             <View key={n} style={[s.r, { borderColor: t.panelLine }, i === 0 && s.first]}>
               <Text style={[s.rN, { color: t.kick }]}>{n}</Text>
-              <Text style={[s.rB, { color: t.fg }]}>{name}</Text>
+              <View style={s.rNm}>
+                <Text style={[s.rB, { color: t.fg }]}>{name}</Text>
+                <LevelBadge level={level} size={u(15)} />
+              </View>
               <Text style={[s.rS, { color: t.mute }]}>{pts}</Text>
             </View>
           ))}
@@ -110,7 +119,10 @@ export function Leaderboard() {
         <View style={[s.pin, { backgroundColor: t.panel, borderColor: p.pinLine, boxShadow: p.pinShadow(u(1)) }]}>
           <Text style={[s.pinN, { color: p.rank }]}>14</Text>
           <View style={s.pinB}>
-            <Text style={[s.you, { color: t.fg }]}>You</Text>
+            <View style={s.nmRow}>
+              <Text style={[s.you, { color: t.fg }]}>You</Text>
+              <LevelBadge level={me.level} progress={me.into / me.need} size={u(15)} />
+            </View>
             <Text style={[s.sub, { color: t.mute }]}>15 POINTS TO PASS TALA</Text>
             <View style={[s.prog, { backgroundColor: p.prog }]}>
               <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={s.progI} />
@@ -142,7 +154,9 @@ const s = StyleSheet.create({
   r: { flexDirection: 'row', alignItems: 'center', gap: u(12), paddingVertical: u(8), height: u(36), borderBottomWidth: 1 },
   first: { borderTopWidth: 1, height: u(37) },
   rN: { width: u(16), fontFamily: F.mono, fontSize: u(8.5), lineHeight: u(12) },
-  rB: { flex: 1, fontFamily: F.display, fontSize: u(16), lineHeight: u(16) },
+  nmRow: { flexDirection: 'row', alignItems: 'center', gap: u(5) },
+  rNm: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: u(6) },
+  rB: { fontFamily: F.display, fontSize: u(16), lineHeight: u(16) },
   rS: { fontFamily: F.display, fontSize: u(15), lineHeight: u(19) },
   pin: { marginTop: u(10), marginHorizontal: u(14), height: u(66), flexDirection: 'row', alignItems: 'center', gap: u(12), paddingHorizontal: u(14), borderRadius: u(18), borderWidth: 1 },
   pinN: { fontFamily: F.mono, fontSize: u(8.5), lineHeight: u(12) },

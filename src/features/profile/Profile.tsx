@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import Svg, { Defs, LinearGradient as SvgLinear, Path, Stop } from 'react-native-svg';
 
+import { LevelBadge, useBalance } from '@/components/LevelBadge';
 import { Moon } from '@/components/Moon';
 import { Display } from '@/components/Txt';
 import { Fade, useSvgId } from '@/features/community/fx';
@@ -62,14 +63,19 @@ export function Profile() {
   const p = C[t.mode];
   const line = { borderColor: t.panelLine };
   const profile = useAccount((a) => a.profile);
+  const lv = useBalance();
   return (
     <Fade stops={[[0, 0], [0.04, 1], [0.9, 1], [1, 0]]} style={s.area}>
       <ScrollView style={s.fill} contentContainerStyle={s.pf} showsVerticalScrollIndicator={false}>
         <PlanetSystem />
         <View style={s.idn}>
-          <Display em={profile?.display_name ?? 'Yazan'} italic style={[s.h2, { color: t.fg }]}>
-            {'Dr. '}
-          </Display>
+          <View style={s.nm}>
+            <Display em={profile?.display_name ?? 'Yazan'} italic style={[s.h2, { color: t.fg }]}>
+              {'Dr. '}
+            </Display>
+            {/* LV3: your level beside your name, the ring filling toward the next level. */}
+            <LevelBadge level={lv.level} progress={lv.into / lv.need} size={u(21)} />
+          </View>
           <Text style={[s.role, { color: t.mute }]}>{profile ? `@${profile.username.toUpperCase()}` : 'INTERNAL MEDICINE · RESIDENT'}</Text>
         </View>
         <View style={[s.nums, line]}>
@@ -165,6 +171,7 @@ const s = StyleSheet.create({
   fill: { flex: 1 },
   pf: { paddingTop: u(23), paddingHorizontal: u(16), paddingBottom: u(110), gap: u(6) },
   idn: { marginTop: u(2), alignItems: 'center' },
+  nm: { flexDirection: 'row', alignItems: 'center', gap: u(7) },
   h2: { fontSize: u(30), lineHeight: u(30), height: u(30), overflow: 'visible', textAlign: 'center' },
   del: { marginTop: u(26), alignItems: 'center', gap: u(10) },
   delL: { fontFamily: F.body, fontSize: u(9.5), textDecorationLine: 'underline' },

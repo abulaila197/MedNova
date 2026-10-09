@@ -1,32 +1,15 @@
 import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
-import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { MenuIcon } from '@/components/Icons';
+import { useBalance } from '@/components/LevelBadge';
 import { PulseStar, TokenCoin } from '@/components/PulseStar';
-import { engine } from '@/games/engine';
 import { useSession } from '@/games/shell/session';
 import { useApp, useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
-
-/** Tokens and level progress for the coin, refreshed while the header is on screen (the wallet lives on the phone, rule 6). */
-function useTokens() {
-  const [b, setB] = useState({ exp: 0, tokens: 0, level: 1, into: 0, need: 60 });
-  useEffect(() => {
-    let live = true;
-    const load = () => engine.wallet.balance().then((x) => live && setB((p) => (p.exp === x.exp && p.tokens === x.tokens ? p : x)));
-    load();
-    const id = setInterval(load, 1500);
-    return () => {
-      live = false;
-      clearInterval(id);
-    };
-  }, []);
-  return b;
-}
 
 /**
  * Locked header (decisions 59-60): see-through bar with blur and a lit bottom edge.
@@ -77,7 +60,7 @@ export function Header({ variant = 'app' }: { variant?: 'app' | 'game' }) {
 /** Token count + coin; display only until the wallet sheet is built after the games (GH4). */
 function Coin({ light }: { light: boolean }) {
   const t = useTheme();
-  const { tokens, level, into, need } = useTokens();
+  const { tokens, level, into, need } = useBalance();
   return (
     <View style={gs.coin} accessible accessibilityLabel={`${tokens} tokens. Level ${level}, ${into} of ${need} EXP to level ${level + 1}`}>
       <Text style={[gs.coinT, { color: t.fg }]}>{tokens}</Text>
