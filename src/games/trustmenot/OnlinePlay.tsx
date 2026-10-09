@@ -15,8 +15,16 @@ import { LifelineNote, RoundFlow } from './pages-round';
 import { OpeningPage } from './pages';
 import { PaperScreen } from './paper';
 import type { PageProps } from './props';
+import { rules } from './engine';
+import { play, useHeartbeat, useSeasonLoop } from './sound';
 
 type TState = { now: number; phase: 'countdown' | 'case' | 'done'; due: number | null; state: TmnEnvelope | null };
+
+const COIN = new Set(['SELL', 'BUY_FOOD', 'BUY_ITEM', 'GIFT', 'LEND', 'REPAY', 'BID', 'PAY_WOLVES', 'DOCTOR_CHIP', 'LAST_SUPPER']);
+const STAMP = new Set(['VOTE', 'ACCUSE', 'STARS', 'PICK', 'RUMOR']);
+/** Betrayals make no sound (rule book §12). */
+const SILENT = new Set(['SKIM', 'STEAL', 'FOG', 'SUPPLIER_SKIM', 'COLD_SHOULDER', 'tick']);
+const fxFor = (t: string) => (SILENT.has(t) ? null : COIN.has(t) ? 'coin' : STAMP.has(t) ? 'stamp' : 'tap');
 
 /** Month 12's Gap opens with 30 silent seconds for the Last Supper. */
 const SUPPER_MS = 30000;
@@ -68,13 +76,32 @@ export function OnlinePlay({ matchId, roomId, me }: OnlineProps) {
   }, [st, server, me, send]);
 
   const env = st?.state;
+  // Sound: the season's ambience, the heartbeat at low health, a calendar page torn at each month, a toll at a death.
+  const v0 = env?.view;
+  const mine = v0?.players.find((x) => x.id === me);
+  useSeasonLoop(rules.seasonOf(v0?.month ?? 1));
+  useHeartbeat(mine?.health ?? 100, mine?.alive ?? false);
+  const monthKey = v0 ? `${v0.month}|${v0.phase}` : '';
+  const alive = v0?.players.filter((x) => x.alive).length ?? 0;
+  const seen = useRef({ monthKey: '', alive: 0 });
+  useEffect(() => {
+    if (!monthKey) return;
+    if (monthKey !== seen.current.monthKey && monthKey.endsWith('|opening')) play('calendar-tear');
+    if (seen.current.alive && alive < seen.current.alive) play('death');
+    seen.current = { monthKey, alive };
+  }, [monthKey, alive]);
+
   if (!env) return <PaperScreen month={1}>{null}</PaperScreen>;
   const v = env.view;
   const props: PageProps = {
     env,
     now: server,
     seconds: env.deadline ? Math.max(0, (env.deadline - server) / 1000) : 0,
-    act: (a) => send(a),
+    act: (a) => {
+      const fx = fxFor(a.type);
+      if (fx) play(fx);
+      send(a);
+    },
     roomId,
   };
   if (paused)

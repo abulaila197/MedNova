@@ -36,7 +36,8 @@ export const trustMeNot: GameDef = {
   Play: {},
   Online: OnlinePlay,
   palette: { seats: TMN_SEATS, teams: [] },
-  // EXP and Learn come from the engine's reveal (rule book) once the online referee is built.
-  exp: () => 0,
-  expCap: () => 0,
+  // EXP comes from the engine's reveal (rule book §11: 2 per right solo answer, 20 for surviving, 10 per award); the
+  // results page passes it in the finish settings as `exp`.
+  exp: (_s, _i, settings) => Math.max(0, Math.round(Number(settings?.exp ?? 0))),
+  expCap: () => 250,
 };
