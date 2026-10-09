@@ -21,7 +21,10 @@ export default function SetupPage() {
   if (!def) return <Redirect href="/games" />;
   if (prefill === undefined) return null;
   // ON20 + ON27: online gets Join/Create in the game's own setup look.
-  if (mode === 'online') return <OnlineSetup def={def} prefill={prefill ?? undefined} />;
+  if (mode === 'online') {
+    const O = def.screens?.OnlineSetup ?? OnlineSetup;
+    return <O def={def} prefill={prefill ?? undefined} />;
+  }
   const S = def.screens?.Setup ?? Setup;
   return <S def={def} mode={mode} prefill={prefill ?? undefined} prefillSeats={seats} />;
 }

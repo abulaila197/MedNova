@@ -7,5 +7,6 @@ export default function LobbyPage() {
   const { game, room } = useLocalSearchParams<{ game: string; room: string }>();
   const def = gameDef(game);
   if (!def || !room) return <Redirect href="/games" />;
-  return <Lobby def={def} roomId={room} />;
+  const L = def.screens?.Lobby ?? Lobby;
+  return <L def={def} roomId={room} />;
 }

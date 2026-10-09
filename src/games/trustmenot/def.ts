@@ -1,5 +1,6 @@
 import type { GameDef } from '../shell/types';
 import { OnlinePlay } from './OnlinePlay';
+import { TMN_SCREENS } from './screens';
 import { TMN_SEATS } from './seats';
 
 // QS1: the host picks Mixed (default), Clinical science or Basic science.
@@ -36,6 +37,7 @@ export const trustMeNot: GameDef = {
   Play: {},
   Online: OnlinePlay,
   palette: { seats: TMN_SEATS, teams: [] },
+  screens: TMN_SCREENS,
   // EXP comes from the engine's reveal (rule book §11: 2 per right solo answer, 20 for surviving, 10 per award); the
   // results page passes it in the finish settings as `exp`.
   exp: (_s, _i, settings) => Math.max(0, Math.round(Number(settings?.exp ?? 0))),

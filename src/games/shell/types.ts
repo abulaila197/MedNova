@@ -71,6 +71,10 @@ export type OwnScreens = {
   Gate?: ComponentType<{ def: GameDef; mode: Mode }>;
   Setup?: ComponentType<{ def: GameDef; mode: Mode; prefill?: Record<string, unknown>; prefillSeats?: Seat[] }>;
   Results?: ComponentType<{ def: GameDef; play: Play; items: PlayItem[] }>;
+  /** Online Join/Create (default: the shared OnlineSetup); the room calls stay in src/online/api. */
+  OnlineSetup?: ComponentType<{ def: GameDef; prefill?: Record<string, unknown> }>;
+  /** The room lobby (default: the shared Lobby); the room state comes from src/online/useRoom. */
+  Lobby?: ComponentType<{ def: GameDef; roomId: string }>;
 };
 
 type TeamScore = 'average' | 'sum';
