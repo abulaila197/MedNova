@@ -91,7 +91,8 @@ export type Player = {
   /** CQ12: full stages in a row spent disconnected. */
   awayStages: number;
   awayThisStage: boolean;
-  stats: { attempted: number; correct: number; captured: number };
+  /** `right` counts every right answer in solo, versus and duels (EXP, Scholar's share). */
+  stats: { attempted: number; correct: number; captured: number; right: number };
 };
 
 export type Land = { id: string; name: string; owner: string | null; capital: boolean; troops: number; shielded: boolean; trapped: boolean; hidden: boolean };
@@ -218,7 +219,7 @@ export function startMatch(list: { id: string; name: string; color: string }[], 
   for (const p of list) {
     players[p.id] = {
       ...p, reserve: 0, cards: [], ally: null, out: false, connected: true, awayStages: 0, awayThisStage: false,
-      stats: { attempted: 0, correct: 0, captured: 0 },
+      stats: { attempted: 0, correct: 0, captured: 0, right: 0 },
     };
     addLand(p.id, `${p.name}'s Capital`, true);
     addLand(p.id, `${p.name}'s Outpost 1`, false);
@@ -318,6 +319,7 @@ function reduce(m: Match, a: Action, ctx: Ctx, used: Set<string>): boolean {
       const found = (v.found[a.player] ??= []);
       if (!hit || found.some((f) => f.label === hit.label)) return false;
       found.push({ label: hit.label, ms: a.ms });
+      p!.stats.right++;
       return true;
     }
     case 'standing': {
@@ -334,6 +336,7 @@ function reduce(m: Match, a: Action, ctx: Ctx, used: Set<string>): boolean {
       if (solved[a.mystery] !== null) return false;
       if (typedMatches(a.text, v.qs[a.mystery].answer)) {
         solved[a.mystery] = a.clue;
+        p!.stats.right++;
         v.ms[a.player] = (v.ms[a.player] ?? 0) + a.ms;
       } else v.wrong[a.player] = (v.wrong[a.player] ?? 0) + 1;
       if (active(m).filter((x) => x.connected).every((x) => v.solved[x.id]?.every((s) => s !== null))) finishVersus(m);
@@ -387,7 +390,9 @@ function reduce(m: Match, a: Action, ctx: Ctx, used: Set<string>): boolean {
       if (m.phase !== 'duel' || !d || (a.player !== d.p1 && a.player !== d.p2)) return false;
       const answers = a.player === d.p1 ? d.a1 : d.a2;
       if (answers.length >= d.questions.length) return false;
-      answers.push({ right: a.answer === d.questions[answers.length].answer, ms: a.ms });
+      const ok = a.answer === d.questions[answers.length].answer;
+      answers.push({ right: ok, ms: a.ms });
+      if (ok) p!.stats.right++;
       if (d.a1.length >= d.questions.length && d.a2.length >= d.questions.length) finishDuel(m, ctx, used);
       return true;
     }
@@ -443,6 +448,7 @@ function scoreSolo(p: Player, turn: SoloTurn, answers: SoloAnswers) {
   p.reserve += points * BALANCE.TROOPS_PER_POINT - penalty;
   p.stats.attempted += total;
   p.stats.correct += correct;
+  p.stats.right += correct;
   turn.result = { correct, total, points, penalty };
 }
 
@@ -497,6 +503,7 @@ function nextStanding(m: Match) {
     const ans = v.answers[id];
     if (ans && ans.picks.length === q.answers.length && ans.picks.every((x, i) => x === q.answers[i])) {
       right.push({ id, ms: ans.ms });
+      m.players[id].stats.right++;
       v.ms[id] = (v.ms[id] ?? 0) + ans.ms;
     } else v.hearts[id]--;
   }
@@ -559,6 +566,17 @@ export function clueScore(v: Extract<Versus, { style: 'clue' }>, id: string) {
 
 function finishVersus(m: Match) {
   const ranking = versusRanking(m);
+  // Closest number: the closest guess on an item (ties share it) counts as a right answer.
+  const v = m.versus;
+  if (v?.style === 'closest')
+    v.items.forEach((q, i) => {
+      const dist = (id: string) => {
+        const g = v.guesses[id]?.[i];
+        return g ? Math.abs(g.value - q.answer) : Infinity;
+      };
+      const best = Math.min(...active(m).map((x) => dist(x.id)));
+      if (best !== Infinity) for (const x of active(m)) if (dist(x.id) === best) x.stats.right++;
+    });
   const points: Record<string, number> = {};
   BALANCE.VERSUS_PAYOUT.forEach((pts, i) => {
     const id = ranking[i];

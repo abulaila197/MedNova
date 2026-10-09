@@ -116,7 +116,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   }, [server, st, seat, tick]);
   const elapsed = st?.state ? Math.max(0, server - st.state.started) : 0;
 
-  // The end: the final places become an ordinary play on this phone (ON21). No EXP until it is decided.
+  // The end: the final places become an ordinary play on this phone (ON21), paying EXP for my right answers.
   const finishing = useRef(false);
   useEffect(() => {
     if (!st || st.phase !== 'done' || !m || finishing.current || !m.players[me]) return;
@@ -126,7 +126,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
       const local = [me, ...m.order.filter((id) => id !== me)];
       const seats = local.map((id, i) => ({ seat: i, name: id === me ? 'You' : m.players[id].name, character: st.players.find((x) => x.user_id === id)?.character, color: KINGDOMS[m.order.indexOf(id) % KINGDOMS.length] }));
       const stand = local.map((id, i) => ({ seat: i, name: seats[i].name, score: m.landOrder.filter((l) => m.lands[l].owner === id).length, timeMs: 0, rank: order.indexOf(id) + 1 })).sort((a, b) => a.rank - b.rank);
-      const id = await finishOnline(def, matchId, { settings: { ...st.settings, room: roomId, match: matchId }, seats, standings: stand, score: stand.find((x) => x.seat === 0)?.score ?? 0, items: [] });
+      const id = await finishOnline(def, matchId, { settings: { ...st.settings, room: roomId, match: matchId, right: m.players[me].stats.right ?? 0 }, seats, standings: stand, score: stand.find((x) => x.seat === 0)?.score ?? 0, items: [] });
       router.replace(`/play/${def.key}/results?play=${id}`);
     })();
   }, [st, m, me, def, roomId, matchId]);

@@ -30,7 +30,7 @@ export async function recordItem(play: Play, item: Omit<PlayItem, 'id' | 'at' | 
 /** Ends the play, then pays EXP on the phone at once (rule 6). */
 export async function finishPlay(def: GameDef, play: Play, score: number, standings?: Standing[]) {
   const items = await engine.recorder.itemsOf(play.id);
-  const exp = Math.max(0, Math.min(def.exp(score, items), def.expCap(play.settings, play.mode)));
+  const exp = Math.max(0, Math.min(def.exp(score, items, play.settings), def.expCap(play.settings, play.mode)));
   await engine.recorder.finish(play.id, { score, standings, expEarned: exp });
   const paid = await engine.wallet.earn(play.id, exp, def.expCap(play.settings, play.mode));
   if (paid.levelsGained > 0) await engine.recorder.noteLevelUp(play.id, paid.level, paid.levelsGained);

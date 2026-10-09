@@ -108,6 +108,8 @@ test('online: a whole match plays to the end with every phone playing', () => {
     assert.equal(o.m.phase, 'over', `seed ${seed}`);
     assert.ok(o.m.winner);
     for (const ph of ['solo_pick', 'solo_play', 'versus', 'gap_cards', 'gap_moves']) assert.ok(phases.has(ph), ph);
+    // Scholar's share: busy players answer right, so every one of them has right answers to be paid for.
+    for (const p of Object.values(o.m.players)) assert.ok(p.stats.right >= p.stats.correct && p.stats.right > 0, p.id);
   }
 });
 

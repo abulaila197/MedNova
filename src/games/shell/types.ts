@@ -43,7 +43,7 @@ export type GameDef = {
   /** The live online match screen; Join/Create and the lobby are shared (ON16, ON20). */
   Online?: ComponentType<OnlineProps>;
   /** EXP for a finished play, and the per-play sanity cap (rule 6). */
-  exp: (score: number, items: PlayItem[]) => number;
+  exp: (score: number, items: PlayItem[], settings?: Record<string, unknown>) => number;
   expCap: (settings: Record<string, unknown>, mode?: Play['mode']) => number;
   /** One line per item on the results page. */
   itemLabel?: (item: PlayItem) => string;
