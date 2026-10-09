@@ -6,6 +6,7 @@ import { novaMedicordle } from '../medicordle/def';
 import { riddler } from '../riddler/def';
 import { silentArtist } from '../silent/def';
 import { streakMaster } from '../streak/def';
+import { trustMeNot } from '../trustmenot/def';
 import { wheelsOfChaos } from '../wheels/def';
 import type { GameDef } from './types';
 
@@ -20,6 +21,7 @@ const GAMES: Record<string, GameDef> = {
   [novaCrossword.key]: novaCrossword,
   [wheelsOfChaos.key]: wheelsOfChaos,
   [conqueror.key]: conqueror,
+  [trustMeNot.key]: trustMeNot,
 };
 
 export function gameDef(key: string): GameDef | null {

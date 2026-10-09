@@ -28,6 +28,9 @@ const FILES: Record<string, number> = {
   Archivo_900Black: require('@expo-google-fonts/archivo/900Black/Archivo_900Black.ttf'),
   AbrilFatface_400Regular: require('@expo-google-fonts/abril-fatface/400Regular/AbrilFatface_400Regular.ttf'),
   LibreBaskerville_400Regular: require('@expo-google-fonts/libre-baskerville/400Regular/LibreBaskerville_400Regular.ttf'),
+  CrimsonPro_400Regular: require('@expo-google-fonts/crimson-pro/400Regular/CrimsonPro_400Regular.ttf'),
+  CrimsonPro_400Regular_Italic: require('@expo-google-fonts/crimson-pro/400Regular_Italic/CrimsonPro_400Regular_Italic.ttf'),
+  CrimsonPro_600SemiBold: require('@expo-google-fonts/crimson-pro/600SemiBold/CrimsonPro_600SemiBold.ttf'),
   LibreBaskerville_400Regular_Italic: require('@expo-google-fonts/libre-baskerville/400Regular_Italic/LibreBaskerville_400Regular_Italic.ttf'),
 };
 

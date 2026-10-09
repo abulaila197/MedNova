@@ -9,7 +9,8 @@ export type GameKey =
   | 'the-riddler'
   | 'the-streak-master'
   | 'case-files-unsolved'
-  | 'the-conqueror';
+  | 'the-conqueror'
+  | 'trust-me-not';
 
 export type Mode = 'solo' | 'offline' | 'online';
 
