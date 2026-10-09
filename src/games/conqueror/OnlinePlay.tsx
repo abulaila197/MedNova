@@ -14,7 +14,7 @@ import { RoomTalk } from '@/online/Talk';
 import { u } from '@/theme/scale';
 
 import type { OnlineProps } from '../shell/types';
-import { AT, AtlasScreen, CGI, KINGDOMS, T } from './atlas';
+import { AT, AtlasPause, AtlasScreen, CGI, KINGDOMS, PauseCtx, T } from './atlas';
 import { standings } from './core';
 import { makeMap, seedOf } from './map';
 import { BoardPage, MovesPage, type Act } from './pages';
@@ -81,6 +81,19 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
     },
     [matchId, load],
   );
+  /** A nudge when a clock has run out, so the referee moves the war on (the countdown's end deals the first board). */
+  const lastTick = useRef(0);
+  const tick = useCallback(async () => {
+    if (Date.now() - lastTick.current < 1200) return;
+    lastTick.current = Date.now();
+    try {
+      await supabase.functions.invoke('conqueror', { body: { m: matchId, action: { type: 'tick' } } });
+    } catch {
+      // The next poll tries again.
+    } finally {
+      load();
+    }
+  }, [matchId, load]);
 
   const m = st?.state?.m ?? null;
   const players = m?.order.length ?? 0;
@@ -93,6 +106,14 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   const mm = st?.state?.m;
   const answering = !!mm && !mm.players[me]?.out && (mm.phase === 'solo_play' || mm.phase === 'versus' || (mm.phase === 'duel' && [mm.duels[mm.duelIndex]?.p1, mm.duels[mm.duelIndex]?.p2].includes(me)));
   const hold = st?.state?.holds.find((h) => h.until > server) ?? null;
+
+  // The first phone in the seating nudges as soon as a clock runs out, the others a moment later in case it went quiet.
+  const seat = Math.max(0, st?.players.findIndex((p) => p.user_id === me) ?? 0);
+  useEffect(() => {
+    if (!st || st.phase === 'done') return;
+    const due = st.state ? st.state.deadline : st.phase_ends_at;
+    if (due != null && server >= due + seat * 1500) tick();
+  }, [server, st, seat, tick]);
   const elapsed = st?.state ? Math.max(0, server - st.state.started) : 0;
 
   // The end: the final places become an ordinary play on this phone (ON21). No EXP until it is decided.
@@ -112,7 +133,12 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   useEffect(() => {
     playForMatch(matchId).then((id) => id && st?.phase === 'done' && router.replace(`/play/${def.key}/results?play=${id}`));
   }, [matchId, st?.phase, def.key]);
-  void leaveRoom;
+  const [menu, setMenu] = useState(false);
+  const pause = useCallback(() => setMenu(true), []);
+  const leave = useCallback(async () => {
+    await leaveRoom(roomId).catch(() => {});
+    router.replace(`/play/${def.key}`);
+  }, [roomId, def.key]);
 
   const extras = (
     <>
@@ -152,10 +178,13 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   else body = <MovesPage {...props} />;
 
   return (
-    <AtlasScreen scroll={!hold && (m.phase === 'solo_play' || m.phase === 'gap_cards')}>
-      {body}
-      {extras}
-    </AtlasScreen>
+    <PauseCtx.Provider value={pause}>
+      <AtlasScreen scroll={!hold && (m.phase === 'solo_play' || m.phase === 'gap_cards')}>
+        {body}
+        {extras}
+      </AtlasScreen>
+      <AtlasPause open={menu} onResume={() => setMenu(false)} onLeave={leave} />
+    </PauseCtx.Provider>
   );
 }
 

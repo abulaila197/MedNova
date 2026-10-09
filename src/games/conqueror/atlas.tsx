@@ -4,7 +4,7 @@
 // game header is shared.
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useEffect, useState, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import { Pressable, StyleSheet, Text, View, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Defs, Ellipse, G, LinearGradient as SvgGradient, Path, Stop, Text as SvgText } from 'react-native-svg';
@@ -107,6 +107,55 @@ export function Top({ kicker, title, line, seconds, right }: { kicker: string; t
       </View>
       {right}
       {seconds != null ? <Seal text={clock(seconds)} hot={seconds <= 5} /> : null}
+      <PauseBtn />
+    </View>
+  );
+}
+
+/** Opens the pause page; every page top shows the button when the match gives one. */
+export const PauseCtx = createContext<(() => void) | null>(null);
+
+/** Two ink bars in a small parchment square. */
+function PauseBtn() {
+  const open = useContext(PauseCtx);
+  if (!open) return null;
+  return (
+    <Pressable onPress={open} hitSlop={v(8)} accessibilityRole="button" accessibilityLabel="Pause" style={({ pressed }) => [s.pause, pressed ? { opacity: 0.75 } : null]}>
+      <View style={s.bar} />
+      <View style={s.bar} />
+    </Pressable>
+  );
+}
+
+/**
+ * The Conqueror's own pause page: a field tent over the chart. Online the war goes on for the others, and a player
+ * who stays away is played by the court (CQ12) and removed after 2 stages away.
+ */
+export function AtlasPause({ open, onResume, onLeave }: { open: boolean; onResume: () => void; onLeave: () => void }) {
+  if (!open) return null;
+  return (
+    <View style={[StyleSheet.absoluteFill, { zIndex: 20 }]}>
+      <AtlasScreen>
+        <View style={{ flex: 1, justifyContent: 'center', gap: v(18) }}>
+          <View style={s.tent}>
+            <View style={s.tentRule} pointerEvents="none" />
+            <Kicker color={AT.inkSoft}>The war goes on</Kicker>
+            <T f={CZ} size={30} color={AT.ink} style={{ lineHeight: v(36) }}>Field Tent</T>
+            <View style={{ width: v(44), height: 1, backgroundColor: 'rgba(142,28,28,0.55)', marginVertical: v(4) }} />
+            <T f={CGI} size={16} color={AT.inkSoft} style={{ textAlign: 'center', lineHeight: v(20) }}>
+              The others keep playing while this is open. If you stay away, the court plays your turns, and after 2 stages away your kingdom falls.
+            </T>
+          </View>
+          <View style={{ gap: v(10) }}>
+            <View style={{ flexDirection: 'row' }}>
+              <Btn label="Back to the war" onPress={onResume} />
+            </View>
+            <View style={{ flexDirection: 'row' }}>
+              <Btn label="Leave the war" ghost onPress={onLeave} />
+            </View>
+          </View>
+        </View>
+      </AtlasScreen>
     </View>
   );
 }
@@ -245,5 +294,9 @@ const s = StyleSheet.create({
   go: { paddingVertical: v(13), borderRadius: v(6), backgroundColor: AT.red, alignItems: 'center', shadowColor: '#4a0a0a', shadowOpacity: 1, shadowRadius: 0, shadowOffset: { width: 0, height: v(3) }, elevation: 2 },
   ghost: { paddingVertical: v(12), borderRadius: v(6), borderWidth: 1.5, borderColor: 'rgba(243,230,198,0.5)', alignItems: 'center' },
   card: { borderRadius: v(5), backgroundColor: AT.paper, borderWidth: 1, borderColor: '#5a3a1e', paddingHorizontal: v(5), paddingVertical: v(6), justifyContent: 'center', alignItems: 'center', gap: v(2) },
+  pause: { width: v(34), height: v(34), borderRadius: v(6), borderWidth: 1.5, borderColor: 'rgba(243,230,198,0.45)', backgroundColor: 'rgba(30,20,12,0.45)', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: v(5), marginTop: v(10) },
+  bar: { width: v(3.5), height: v(13), borderRadius: v(1), backgroundColor: AT.cream },
+  tent: { backgroundColor: AT.paper, borderRadius: v(6), paddingVertical: v(26), paddingHorizontal: v(22), alignItems: 'center', gap: v(4), borderWidth: 1, borderColor: '#5a3a1e', shadowColor: '#000', shadowOpacity: 0.45, shadowRadius: v(10), shadowOffset: { width: 0, height: v(4) }, elevation: 4 },
+  tentRule: { position: 'absolute', left: v(6), right: v(6), top: v(6), bottom: v(6), borderWidth: 1, borderColor: 'rgba(142,28,28,0.45)', borderRadius: v(4) },
   cardRule: { position: 'absolute', left: v(3), right: v(3), top: v(3), bottom: v(3), borderWidth: 1, borderColor: 'rgba(142,28,28,0.45)', borderRadius: v(3) },
 });
