@@ -1,5 +1,6 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, usePathname } from 'expo-router';
+import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Platform } from 'react-native';
@@ -25,6 +26,11 @@ export function Menu() {
   const { setMenu, mode, setMode } = useApp();
   const ins = useSafeAreaInsets();
   const profile = useAccount((a) => a.profile);
+  const [outErr, setOutErr] = useState(false);
+  const out = () => {
+    setOutErr(false);
+    signOut().catch(() => setOutErr(true));
+  };
   const top = (Platform.OS === 'web' ? u(30) : ins.top) + u(14);
   const go = (to: string) => {
     setMenu(false);
@@ -42,9 +48,10 @@ export function Menu() {
             <>
               <Text style={[s.guest, { color: t.white }]} numberOfLines={1}>{`Dr. ${profile.display_name}`}</Text>
               <Text style={[s.small, { color: t.mute }]}>{`@${profile.username}`}</Text>
-              <Pressable onPress={() => void signOut()}>
+              <Pressable onPress={out}>
                 <Text style={[s.keep, { color: t.accent, borderBottomColor: t.accent }]}>Sign out</Text>
               </Pressable>
+              {outErr ? <Text style={[s.small, { color: t.red }]}>Connect to the internet first, so your progress is saved.</Text> : null}
             </>
           ) : (
             <>

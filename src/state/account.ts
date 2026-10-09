@@ -1,6 +1,7 @@
 import type { Session } from '@supabase/supabase-js';
 import { create } from 'zustand';
 
+import { engine } from '@/games/engine';
 import { useSession } from '@/games/shell/session';
 import { supabase } from '@/lib/supabase';
 import { syncAccount } from '@/lib/sync';
@@ -37,11 +38,22 @@ export function startAccount() {
   supabase.auth.onAuthStateChange((_e, session) => apply(session));
 }
 
-export const signOut = () => supabase.auth.signOut();
+/** What the account keeps on the server; cleared from the phone on sign-out (SO1: clean slate). */
+const ACCOUNT_KEYS = ['plays', 'play_items', 'wallet'];
+const clearPhone = () => Promise.all(ACCOUNT_KEYS.map((k) => engine.kv.remove(k)));
+
+/** SO1: upload first, then sign out and clear the phone back to a fresh guest. Offline, it refuses so nothing is lost. */
+export async function signOut() {
+  const id = useSession.getState().userId;
+  if (id) await syncAccount(id); // throws when offline; the caller shows the message
+  await supabase.auth.signOut();
+  await clearPhone();
+}
 
 /** Delete my account: the server removes the login and every row it owns; the phone goes back to guest. */
 export async function deleteAccount() {
   const { error } = await supabase.functions.invoke('delete-account', { method: 'POST' });
   if (error) throw error;
   await supabase.auth.signOut({ scope: 'local' });
+  await clearPhone();
 }
