@@ -49,7 +49,8 @@ export function useSeasonLoop(season: number) {
         p = createAudioPlayer(SEASONS[season]);
         p.loop = true;
         p.volume = 0.25;
-        p.play();
+        // Browsers refuse sound until the first tap; the loop then simply stays quiet.
+        (p.play() as unknown as Promise<void> | undefined)?.catch?.(() => {});
       } catch {
         p = null;
       }

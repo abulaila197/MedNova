@@ -32,7 +32,10 @@ function heatWhy(g: Game): string[] {
   }
   const r = g.round;
   if (r?.done && (r.id === 'gate' || r.id === 'buried' || r.id === 'signal' || r.id === 'wager') && r.outcome.hit === false) out.push('the camp missed its target');
-  return out;
+  // The same reason twice reads as one line with a count: "2 refused help requests".
+  const counts = new Map<string, number>();
+  for (const w of out) counts.set(w, (counts.get(w) ?? 0) + 1);
+  return [...counts].map(([w, n]) => (n > 1 && w.endsWith('request') ? `${n} ${w.slice(2)}s` : w));
 }
 
 /** The whole year, for the final reveal: stashes by season, work for the wallet, every vote, every epilogue. */
