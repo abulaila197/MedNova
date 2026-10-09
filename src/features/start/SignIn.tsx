@@ -1,11 +1,12 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Path } from 'react-native-svg';
 
 import { TopInset } from '@/components/StatusMock';
+import { supabase } from '@/lib/supabase';
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
@@ -88,7 +89,21 @@ function Google() {
   );
 }
 
-/** Sign in / create account. Follows the app mode: Nebula, or Warm Stone in light mode. */
+type Step = 'form' | 'code' | 'forgot' | 'reset';
+
+/** Turns Supabase's messages into short, plain lines. */
+function plain(msg: string) {
+  const m = msg.toLowerCase();
+  if (m.includes('invalid login')) return 'That email and password do not match.';
+  if (m.includes('already registered')) return 'That email already has an account. Sign in instead.';
+  if (m.includes('expired') || m.includes('invalid') && m.includes('token')) return 'That code is wrong or has expired. Send a new one.';
+  if (m.includes('password') && m.includes('characters')) return 'Use at least 6 characters for your password.';
+  if (m.includes('rate limit') || m.includes('security purposes')) return 'Too many tries. Wait a minute, then try again.';
+  if (m.includes('network') || m.includes('fetch')) return 'No connection. Check your internet and try again.';
+  return msg;
+}
+
+/** Sign in / create account (AU1: email + password, 6-digit email code). Follows the app mode: Nebula, or Warm Stone in light mode. */
 export function SignIn() {
   const t = useTheme();
   const lt = t.mode === 'light';
@@ -96,18 +111,262 @@ export function SignIn() {
   const { width: w, height: h } = useWindowDimensions();
   const ins = useSafeAreaInsets();
   const [tab, setTab] = useState<'in' | 'up'>('in');
+  const [step, setStep] = useState<Step>('form');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('');
+  const [code, setCode] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [note, setNote] = useState<{ text: string; bad: boolean } | null>(null);
   const enter = () => router.replace('/games');
   const legal = () => router.push('/privacy');
+
+  const act = async (job: () => Promise<void>) => {
+    setBusy(true);
+    setNote(null);
+    try {
+      await job();
+    } catch (e) {
+      setNote({ text: plain(e instanceof Error ? e.message : String(e)), bad: true });
+    } finally {
+      setBusy(false);
+    }
+  };
+  const mail = () => email.trim().toLowerCase();
+
+  const signIn = () =>
+    act(async () => {
+      const { error } = await supabase.auth.signInWithPassword({ email: mail(), password });
+      if (error && error.message.toLowerCase().includes('not confirmed')) {
+        await supabase.auth.resend({ type: 'signup', email: mail() });
+        setStep('code');
+        setNote({ text: 'Confirm your email first. We sent you a new code.', bad: false });
+        return;
+      }
+      if (error) throw error;
+      enter();
+    });
+
+  const signUp = () =>
+    act(async () => {
+      const name = username.trim();
+      if (!/^[A-Za-z0-9_]{3,16}$/.test(name)) throw new Error('Usernames use 3 to 16 letters, numbers or _.');
+      const free = await supabase.rpc('username_available', { name });
+      if (free.error) throw free.error;
+      if (!free.data) throw new Error('That username is taken. Try another.');
+      const { data, error } = await supabase.auth.signUp({ email: mail(), password, options: { data: { username: name, display_name: name } } });
+      if (error) throw error;
+      if (data.session) return enter(); // email confirmation switched off on the server
+      setStep('code');
+      setNote({ text: `We sent a 6-digit code to ${mail()}.`, bad: false });
+    });
+
+  const confirm = () =>
+    act(async () => {
+      const { error } = await supabase.auth.verifyOtp({ email: mail(), token: code.trim(), type: 'signup' });
+      if (error) throw error;
+      enter();
+    });
+
+  const sendReset = () =>
+    act(async () => {
+      const { error } = await supabase.auth.resetPasswordForEmail(mail());
+      if (error) throw error;
+      setStep('reset');
+      setCode('');
+      setPassword('');
+      setNote({ text: `We sent a 6-digit code to ${mail()}.`, bad: false });
+    });
+
+  const reset = () =>
+    act(async () => {
+      const v = await supabase.auth.verifyOtp({ email: mail(), token: code.trim(), type: 'recovery' });
+      if (v.error) throw v.error;
+      const u2 = await supabase.auth.updateUser({ password });
+      if (u2.error) throw u2.error;
+      enter();
+    });
+
+  const resend = () =>
+    act(async () => {
+      const { error } = step === 'reset' ? await supabase.auth.resetPasswordForEmail(mail()) : await supabase.auth.resend({ type: 'signup', email: mail() });
+      if (error) throw error;
+      setNote({ text: 'A new code is on its way.', bad: false });
+    });
+
+  const back = () => {
+    setStep('form');
+    setCode('');
+    setNote(null);
+  };
 
   const tabBtn = (key: 'in' | 'up', label: string) => {
     const on = tab === key;
     return (
-      <Pressable key={key} onPress={() => setTab(key)} style={s.tab} accessibilityRole="tab" accessibilityState={{ selected: on }}>
+      <Pressable
+        key={key}
+        onPress={() => {
+          setTab(key);
+          setNote(null);
+        }}
+        style={s.tab}
+        accessibilityRole="tab"
+        accessibilityState={{ selected: on }}>
         {on ? <LinearGradient colors={c.tabOn} start={TAB.start} end={TAB.end} style={[StyleSheet.absoluteFill, { borderRadius: u(9) }]} /> : null}
         <Text style={[s.tabTxt, { color: on ? c.tabOnTxt : c.tabOff }]}>{label}</Text>
       </Pressable>
     );
   };
+  const inStyle = [s.in, { backgroundColor: c.inBg, borderColor: c.inEdge, color: c.inValue }];
+  const field = (label: string, input: ReactNode) => (
+    <>
+      <Text style={[s.lbl, { color: c.lbl }]}>{label}</Text>
+      <View>{input}</View>
+    </>
+  );
+  const primary = (label: string, onPress: () => void) => (
+    <Pressable onPress={onPress} disabled={busy} accessibilityRole="button" style={[s.pri, busy && { opacity: 0.6 }]}>
+      <LinearGradient colors={c.pri} start={PRI.start} end={PRI.end} style={[StyleSheet.absoluteFill, { borderRadius: u(12) }]} />
+      <Text style={[s.priTxt, { color: c.priTxt }]}>{busy ? 'One moment…' : label}</Text>
+    </Pressable>
+  );
+  const link = (label: string, onPress: () => void) => (
+    <Pressable onPress={onPress} accessibilityRole="button" style={s.guest}>
+      <Text style={[s.guestTxt, { color: c.link }]}>{label}</Text>
+      <View style={[s.guestLine, { backgroundColor: c.linkLine }]} />
+    </Pressable>
+  );
+  const emailIn = (
+    <TextInput
+      value={email}
+      onChangeText={setEmail}
+      placeholder="you@example.com"
+      placeholderTextColor={c.inTxt}
+      autoCapitalize="none"
+      autoComplete="email"
+      keyboardType="email-address"
+      style={inStyle}
+      accessibilityLabel="Email address"
+    />
+  );
+  const passIn = (placeholder: string, auto: 'current-password' | 'new-password') => (
+    <TextInput
+      value={password}
+      onChangeText={setPassword}
+      placeholder={placeholder}
+      placeholderTextColor={c.inTxt}
+      secureTextEntry
+      autoComplete={auto}
+      style={inStyle}
+      accessibilityLabel="Password"
+    />
+  );
+  const codeIn = (
+    <TextInput
+      value={code}
+      onChangeText={(v) => setCode(v.replace(/\D/g, '').slice(0, 6))}
+      placeholder="6-digit code"
+      placeholderTextColor={c.inTxt}
+      keyboardType="number-pad"
+      autoComplete="one-time-code"
+      textContentType="oneTimeCode"
+      maxLength={6}
+      style={[inStyle, s.code]}
+      accessibilityLabel="6-digit code"
+    />
+  );
+  const noteLine = note ? <Text style={[s.note, { color: note.bad ? (lt ? '#c0392b' : '#ff8a8a') : c.lbl }]}>{note.text}</Text> : null;
+
+  let body: ReactNode;
+  if (step === 'code') {
+    body = (
+      <>
+        <Text style={[s.h3, { color: c.h3 }]}>Check your email</Text>
+        {noteLine}
+        {field('CODE', codeIn)}
+        {primary('Confirm', confirm)}
+        {link('Send a new code', resend)}
+        {link('Back', back)}
+      </>
+    );
+  } else if (step === 'forgot') {
+    body = (
+      <>
+        <Text style={[s.h3, { color: c.h3 }]}>Reset your password</Text>
+        {noteLine}
+        {field('EMAIL ADDRESS', emailIn)}
+        {primary('Send code', sendReset)}
+        {link('Back', back)}
+      </>
+    );
+  } else if (step === 'reset') {
+    body = (
+      <>
+        <Text style={[s.h3, { color: c.h3 }]}>Choose a new password</Text>
+        {noteLine}
+        {field('CODE', codeIn)}
+        {field('NEW PASSWORD', passIn('At least 6 characters', 'new-password'))}
+        {primary('Save and sign in', reset)}
+        {link('Send a new code', resend)}
+        {link('Back', back)}
+      </>
+    );
+  } else {
+    body = (
+      <>
+        <View style={[s.tabs, { backgroundColor: c.tabs }]} accessibilityRole="tablist">
+          {tabBtn('in', 'Sign In')}
+          {tabBtn('up', 'Create Account')}
+        </View>
+        <Text style={[s.h3, { color: c.h3 }]}>{tab === 'in' ? 'Welcome back' : 'Create your account'}</Text>
+        {tab === 'up'
+          ? field(
+              'USERNAME',
+              <TextInput
+                value={username}
+                onChangeText={setUsername}
+                placeholder="3 to 16 letters or numbers"
+                placeholderTextColor={c.inTxt}
+                autoCapitalize="none"
+                autoCorrect={false}
+                maxLength={16}
+                style={inStyle}
+                accessibilityLabel="Username"
+              />,
+            )
+          : null}
+        {field('EMAIL ADDRESS', emailIn)}
+        {field('PASSWORD', passIn(tab === 'in' ? 'Enter your password' : 'At least 6 characters', tab === 'in' ? 'current-password' : 'new-password'))}
+        {noteLine}
+        {primary(tab === 'in' ? 'Sign In' : 'Create Account', tab === 'in' ? signIn : signUp)}
+        {tab === 'in' ? link('Forgot password?', () => (setStep('forgot'), setNote(null))) : null}
+        <View style={s.or}>
+          <View style={[s.orLine, { backgroundColor: c.orLine }]} />
+          <Text style={[s.orTxt, { color: c.or }]}>OR</Text>
+          <View style={[s.orLine, { backgroundColor: c.orLine }]} />
+        </View>
+        <Pressable
+          onPress={() => setNote({ text: 'Google sign-in is coming soon. Use your email for now.', bad: false })}
+          accessibilityRole="button"
+          style={[s.ggl, { backgroundColor: c.ggl, opacity: 0.6 }, c.gglEdge ? { borderWidth: 1, borderColor: c.gglEdge, height: u(33) } : null]}>
+          <Google />
+          <Text style={s.gglTxt}>Continue with Google · soon</Text>
+        </Pressable>
+        {link('Continue as guest', enter)}
+        <Text style={[s.agree, { color: c.agree }]}>
+          By continuing you agree to the{' '}
+          <Text style={{ color: c.link }} onPress={legal} accessibilityRole="link">
+            Privacy Policy
+          </Text>{' '}
+          and{' '}
+          <Text style={{ color: c.link }} onPress={legal} accessibilityRole="link">
+            Terms
+          </Text>
+          .
+        </Text>
+      </>
+    );
+  }
 
   return (
     <View style={[s.root, { backgroundColor: lt ? '#e7e2d8' : '#070a1c' }]}>
@@ -126,63 +385,7 @@ export function SignIn() {
 
         <View style={[s.card, { borderColor: c.cardEdge, boxShadow: c.cardShadow }]}>
           <LinearGradient colors={c.cardGrad} style={[StyleSheet.absoluteFill, { borderRadius: u(21) }]} />
-          <View style={[s.tabs, { backgroundColor: c.tabs }]} accessibilityRole="tablist">
-            {tabBtn('in', 'Sign In')}
-            {tabBtn('up', 'Create Account')}
-          </View>
-          <Text style={[s.h3, { color: c.h3 }]}>{tab === 'in' ? 'Welcome back' : 'Create your account'}</Text>
-          <Text style={[s.lbl, { color: c.lbl }]}>EMAIL ADDRESS</Text>
-          <View>
-          <TextInput
-            placeholder="you@example.com"
-            placeholderTextColor={c.inTxt}
-            autoCapitalize="none"
-            autoComplete="email"
-            keyboardType="email-address"
-            style={[s.in, { backgroundColor: c.inBg, borderColor: c.inEdge, color: c.inValue }]}
-          />
-          </View>
-          <Text style={[s.lbl, { color: c.lbl }]}>PASSWORD</Text>
-          <View>
-          <TextInput
-            placeholder="Enter your password"
-            placeholderTextColor={c.inTxt}
-            secureTextEntry
-            autoComplete={tab === 'in' ? 'current-password' : 'new-password'}
-            style={[s.in, { backgroundColor: c.inBg, borderColor: c.inEdge, color: c.inValue }]}
-          />
-          </View>
-          <Pressable onPress={enter} accessibilityRole="button" style={s.pri}>
-            <LinearGradient colors={c.pri} start={PRI.start} end={PRI.end} style={[StyleSheet.absoluteFill, { borderRadius: u(12) }]} />
-            <Text style={[s.priTxt, { color: c.priTxt }]}>Sign In</Text>
-          </Pressable>
-          <View style={s.or}>
-            <View style={[s.orLine, { backgroundColor: c.orLine }]} />
-            <Text style={[s.orTxt, { color: c.or }]}>OR</Text>
-            <View style={[s.orLine, { backgroundColor: c.orLine }]} />
-          </View>
-          <Pressable
-            onPress={enter}
-            accessibilityRole="button"
-            style={[s.ggl, { backgroundColor: c.ggl }, c.gglEdge ? { borderWidth: 1, borderColor: c.gglEdge, height: u(33) } : null]}>
-            <Google />
-            <Text style={s.gglTxt}>Continue with Google</Text>
-          </Pressable>
-          <Pressable onPress={enter} accessibilityRole="button" style={s.guest}>
-            <Text style={[s.guestTxt, { color: c.link }]}>Continue as guest</Text>
-            <View style={[s.guestLine, { backgroundColor: c.linkLine }]} />
-          </Pressable>
-          <Text style={[s.agree, { color: c.agree }]}>
-            By continuing you agree to the{' '}
-            <Text style={{ color: c.link }} onPress={legal} accessibilityRole="link">
-              Privacy Policy
-            </Text>{' '}
-            and{' '}
-            <Text style={{ color: c.link }} onPress={legal} accessibilityRole="link">
-              Terms
-            </Text>
-            .
-          </Text>
+          {body}
         </View>
       </ScrollView>
     </View>
@@ -221,4 +424,6 @@ const s = StyleSheet.create({
   guestTxt: { fontFamily: F.body, fontSize: u(10.5), lineHeight: u(13) },
   guestLine: { position: 'absolute', left: 0, right: 0, top: u(13.4), height: Math.max(1, u(0.8)) },
   agree: { fontFamily: F.body, fontSize: u(8), lineHeight: u(10), textAlign: 'center' },
+  note: { fontFamily: F.body, fontSize: u(9), lineHeight: u(12) },
+  code: { fontFamily: F.mono, fontSize: u(14), letterSpacing: u(6), textAlign: 'center' },
 });

@@ -1,4 +1,5 @@
 import { LinearGradient } from 'expo-linear-gradient';
+import { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import Svg, { Defs, LinearGradient as SvgLinear, Path, Stop } from 'react-native-svg';
 
@@ -6,6 +7,7 @@ import { Moon } from '@/components/Moon';
 import { Display } from '@/components/Txt';
 import { Fade, useSvgId } from '@/features/community/fx';
 import { PlanetSystem } from '@/features/profile/PlanetSystem';
+import { deleteAccount, useAccount } from '@/state/account';
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F, type Theme } from '@/theme/tokens';
@@ -59,15 +61,16 @@ export function Profile() {
   const t = useTheme();
   const p = C[t.mode];
   const line = { borderColor: t.panelLine };
+  const profile = useAccount((a) => a.profile);
   return (
     <Fade stops={[[0, 0], [0.04, 1], [0.9, 1], [1, 0]]} style={s.area}>
       <ScrollView style={s.fill} contentContainerStyle={s.pf} showsVerticalScrollIndicator={false}>
         <PlanetSystem />
         <View style={s.idn}>
-          <Display em="Yazan" italic style={[s.h2, { color: t.fg }]}>
+          <Display em={profile?.display_name ?? 'Yazan'} italic style={[s.h2, { color: t.fg }]}>
             {'Dr. '}
           </Display>
-          <Text style={[s.role, { color: t.mute }]}>INTERNAL MEDICINE · RESIDENT</Text>
+          <Text style={[s.role, { color: t.mute }]}>{profile ? `@${profile.username.toUpperCase()}` : 'INTERNAL MEDICINE · RESIDENT'}</Text>
         </View>
         <View style={[s.nums, line]}>
           {[
@@ -112,8 +115,48 @@ export function Profile() {
             )}
           </View>
         ))}
+        {profile ? <DeleteAccount t={t} /> : null}
       </ScrollView>
     </Fade>
+  );
+}
+
+/** Delete my account (store rule): a two-tap confirm inside the page, then the phone goes back to guest. */
+function DeleteAccount({ t }: { t: Theme }) {
+  const [ask, setAsk] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+  const go = async () => {
+    setBusy(true);
+    setErr(null);
+    try {
+      await deleteAccount();
+    } catch {
+      setErr('Could not delete right now. Check your connection and try again.');
+      setBusy(false);
+    }
+  };
+  return (
+    <View style={s.del}>
+      {ask ? (
+        <>
+          <Text style={[s.delQ, { color: t.fg }]}>Delete your account? Your EXP, tokens, misses and cards on the server are removed for good.</Text>
+          <View style={s.delRow}>
+            <Pressable onPress={() => setAsk(false)} style={[s.ch, s.ghost, { borderColor: t.panelLine }]} accessibilityRole="button">
+              <Text style={[s.ghT, { color: t.mute }]}>Keep it</Text>
+            </Pressable>
+            <Pressable onPress={go} disabled={busy} style={[s.ch, s.ghost, { borderColor: t.red }]} accessibilityRole="button">
+              <Text style={[s.ghT, { color: t.red }]}>{busy ? 'Deleting…' : 'Delete'}</Text>
+            </Pressable>
+          </View>
+          {err ? <Text style={[s.delQ, { color: t.red }]}>{err}</Text> : null}
+        </>
+      ) : (
+        <Pressable onPress={() => setAsk(true)} accessibilityRole="button">
+          <Text style={[s.delL, { color: t.mute }]}>Delete my account</Text>
+        </Pressable>
+      )}
+    </View>
   );
 }
 
@@ -123,6 +166,10 @@ const s = StyleSheet.create({
   pf: { paddingTop: u(23), paddingHorizontal: u(16), paddingBottom: u(110), gap: u(6) },
   idn: { marginTop: u(2), alignItems: 'center' },
   h2: { fontSize: u(30), lineHeight: u(30), height: u(30), overflow: 'visible', textAlign: 'center' },
+  del: { marginTop: u(26), alignItems: 'center', gap: u(10) },
+  delL: { fontFamily: F.body, fontSize: u(9.5), textDecorationLine: 'underline' },
+  delQ: { fontFamily: F.body, fontSize: u(9.5), lineHeight: u(13), textAlign: 'center' },
+  delRow: { flexDirection: 'row', gap: u(10) },
   role: { marginTop: u(5), fontFamily: F.mono, fontSize: u(8.5), lineHeight: u(12), letterSpacing: u(1.53) },
   nums: { flexDirection: 'row', justifyContent: 'space-around', marginTop: u(14), marginBottom: u(10), paddingVertical: u(10), borderTopWidth: 1, borderBottomWidth: 1 },
   num: { alignItems: 'center', height: u(46) },

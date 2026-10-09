@@ -7,6 +7,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { MenuIcon } from '@/components/Icons';
 import { PulseStar, TokenCoin } from '@/components/PulseStar';
 import { engine, EXP_PER_TOKEN } from '@/games/engine';
+import { useSession } from '@/games/shell/session';
 import { useApp, useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
@@ -38,6 +39,7 @@ export function Header({ variant = 'app' }: { variant?: 'app' | 'game' }) {
   const lt = t.mode === 'light';
   const setMenu = useApp((s) => s.setMenu);
   const setReport = useApp((s) => s.setReport);
+  const signedIn = !!useSession((st) => st.userId);
   return (
     <View style={[z.bar, { shadowColor: lt ? 'rgba(80,60,20,0.35)' : '#000' }]}>
       <BlurView intensity={20} tint={lt ? 'light' : 'dark'} style={StyleSheet.absoluteFill} />
@@ -59,11 +61,13 @@ export function Header({ variant = 'app' }: { variant?: 'app' | 'game' }) {
         <Pressable onPress={() => setReport(true)} style={[z.rp, { backgroundColor: t.red }]} accessibilityLabel="Report a problem">
           <Text style={z.rpT}>!</Text>
         </Pressable>
-        <Pressable onPress={() => router.push('/auth')} accessibilityLabel="Sign in">
-          <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={z.si}>
-            <Text style={[z.siT, { color: t.onGrad }]}>Sign in</Text>
-          </LinearGradient>
-        </Pressable>
+        {signedIn ? null : (
+          <Pressable onPress={() => router.push('/auth')} accessibilityLabel="Sign in">
+            <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={z.si}>
+              <Text style={[z.siT, { color: t.onGrad }]}>Sign in</Text>
+            </LinearGradient>
+          </Pressable>
+        )}
         {g ? <Coin light={lt} /> : null}
       </View>
     </View>

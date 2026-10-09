@@ -5,6 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Platform } from 'react-native';
 
 import { Moon } from '@/components/Moon';
+import { signOut, useAccount } from '@/state/account';
 import { useApp, useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
@@ -23,6 +24,7 @@ export function Menu() {
   const path = usePathname();
   const { setMenu, mode, setMode } = useApp();
   const ins = useSafeAreaInsets();
+  const profile = useAccount((a) => a.profile);
   const top = (Platform.OS === 'web' ? u(30) : ins.top) + u(14);
   const go = (to: string) => {
     setMenu(false);
@@ -36,11 +38,23 @@ export function Menu() {
       <Pressable style={s.moonc} onPress={() => go('/profile')}>
         <Moon size={u(50)} f={0.3} />
         <View style={{ flex: 1 }}>
-          <Text style={[s.guest, { color: t.white }]}>Guest doctor</Text>
-          <Text style={[s.small, { color: t.mute }]}>3 cases played</Text>
-          <Pressable onPress={() => go('/auth')}>
-            <Text style={[s.keep, { color: t.accent, borderBottomColor: t.accent }]}>Sign in to keep it</Text>
-          </Pressable>
+          {profile ? (
+            <>
+              <Text style={[s.guest, { color: t.white }]} numberOfLines={1}>{`Dr. ${profile.display_name}`}</Text>
+              <Text style={[s.small, { color: t.mute }]}>{`@${profile.username}`}</Text>
+              <Pressable onPress={() => void signOut()}>
+                <Text style={[s.keep, { color: t.accent, borderBottomColor: t.accent }]}>Sign out</Text>
+              </Pressable>
+            </>
+          ) : (
+            <>
+              <Text style={[s.guest, { color: t.white }]}>Guest doctor</Text>
+              <Text style={[s.small, { color: t.mute }]}>3 cases played</Text>
+              <Pressable onPress={() => go('/auth')}>
+                <Text style={[s.keep, { color: t.accent, borderBottomColor: t.accent }]}>Sign in to keep it</Text>
+              </Pressable>
+            </>
+          )}
         </View>
       </Pressable>
       <View style={s.items}>

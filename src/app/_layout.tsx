@@ -1,3 +1,4 @@
+import '@/lib/storage-install';
 import { Fraunces_600SemiBold, Fraunces_600SemiBold_Italic } from '@expo-google-fonts/fraunces';
 import { InterTight_400Regular, InterTight_500Medium, InterTight_600SemiBold, InterTight_700Bold } from '@expo-google-fonts/inter-tight';
 import { JetBrainsMono_500Medium } from '@expo-google-fonts/jetbrains-mono';
@@ -8,9 +9,11 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
+import { startAccount } from '@/state/account';
 import { useApp } from '@/state/app';
 
 SplashScreen.preventAutoHideAsync();
+startAccount();
 
 export default function RootLayout() {
   const mode = useApp((s) => s.mode);

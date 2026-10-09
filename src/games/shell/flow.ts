@@ -1,6 +1,8 @@
 // The shared play flow every game uses, so the general rules never differ between games.
 import { engine, GUEST_TRIALS, TRIAL_MODES } from '../engine';
 import type { GameKey, Mode, Play, PlayItem, Seat, Standing } from '../engine/types';
+import { syncAccount } from '@/lib/sync';
+
 import { useSession } from './session';
 import type { GameDef } from './types';
 
@@ -31,5 +33,7 @@ export async function finishPlay(def: GameDef, play: Play, score: number, standi
   const exp = Math.max(0, Math.min(def.exp(score, items), def.expCap(play.settings, play.mode)));
   await engine.recorder.finish(play.id, { score, standings, expEarned: exp });
   const paid = await engine.wallet.earn(play.id, exp, def.expCap(play.settings, play.mode));
+  const uid = useSession.getState().userId;
+  if (uid) syncAccount(uid).catch(() => {}); // offline is fine: it uploads next time
   return { exp: paid, items };
 }

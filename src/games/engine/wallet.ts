@@ -63,6 +63,28 @@ export function createWallet(kv: KV) {
       });
     },
 
+    unsynced() {
+      return run(async () => (await ledger()).filter((e) => !e.synced));
+    },
+
+    markSynced(ids: string[]) {
+      return run(async () => {
+        const set = new Set(ids);
+        await kv.set(KEY, (await ledger()).map((e) => (set.has(e.id) ? { ...e, synced: true } : e)));
+      });
+    },
+
+    /** Adds the account's entries this phone does not have yet, so the balance matches on every phone. */
+    mergeRemote(remote: LedgerEntry[]) {
+      return run(async () => {
+        const all = await ledger();
+        const have = new Set(all.map((e) => e.id));
+        const add = remote.filter((e) => !have.has(e.id)).map((e) => ({ ...e, synced: true }));
+        if (add.length) await kv.set(KEY, [...all, ...add].sort((a, b) => a.at - b.at));
+        return add.length;
+      });
+    },
+
     refund(receiptId: string) {
       return run(async () => {
         const all = await ledger();

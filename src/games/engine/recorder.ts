@@ -93,6 +93,8 @@ export function createRecorder(kv: KV) {
         const row: PlayItem = { ...item, id: newId('item'), at: item.at ?? Date.now() };
         all.push(row);
         await kv.set(ITEMS, all);
+        const p = (await plays()).find((x) => x.id === item.playId);
+        if (p?.synced) await savePlay({ ...p, synced: false }); // the new item still needs uploading
         return row;
       });
     },
@@ -115,6 +117,7 @@ export function createRecorder(kv: KV) {
           standings: a.standings ?? [],
           expEarned: a.expEarned,
           resume: null,
+          synced: false,
         });
       });
     },
@@ -143,6 +146,37 @@ export function createRecorder(kv: KV) {
         for (const p of all) if (p.userId == null) ((p.userId = userId), (p.synced = false), n++);
         await kv.set(PLAYS, all);
         return n;
+      });
+    },
+
+    /** Plays of this account that still need uploading, with their items. */
+    unsynced(userId: string) {
+      return run(async () => {
+        const ps = (await plays()).filter((p) => p.userId === userId && !p.synced);
+        const ids = new Set(ps.map((p) => p.id));
+        return { plays: ps, items: (await items()).filter((i) => ids.has(i.playId)) };
+      });
+    },
+
+    markSynced(ids: string[]) {
+      return run(async () => {
+        const set = new Set(ids);
+        await kv.set(PLAYS, (await plays()).map((p) => (set.has(p.id) ? { ...p, synced: true } : p)));
+      });
+    },
+
+    /** Adds plays and items from the account that this phone does not have yet (a new phone, or a reinstall). */
+    mergeRemote(remote: { plays: Play[]; items: PlayItem[] }) {
+      return run(async () => {
+        const ps = await plays();
+        const have = new Set(ps.map((p) => p.id));
+        const add = remote.plays.filter((p) => !have.has(p.id));
+        if (add.length) await kv.set(PLAYS, [...ps, ...add.map((p) => ({ ...p, synced: true }))]);
+        const its = await items();
+        const haveI = new Set(its.map((i) => i.id));
+        const addI = remote.items.filter((i) => !haveI.has(i.id));
+        if (addI.length) await kv.set(ITEMS, [...its, ...addI]);
+        return add.length;
       });
     },
 
