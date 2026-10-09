@@ -7,6 +7,7 @@ import { Platform, Pressable, StyleSheet, TextInput, View } from 'react-native';
 
 import { u } from '@/theme/scale';
 
+import { levelUpLine } from '../engine/levels';
 import type { Mode, Play, PlayItem, Seat } from '../engine/types';
 import { CHARACTERS } from '../shell/characters';
 import { Face } from '../shell/Face';
@@ -283,6 +284,9 @@ function Results({ def, play, items }: { def: GameDef; play: Play; items: PlayIt
             </View>
           ))}
         </View>
+        {play.levelUp ? (
+          <T f={CD} size={13} color={VV.gold} style={{ textAlign: 'center', letterSpacing: u(1.2) }}>{`★  ${levelUpLine(play.levelUp)}  ★`}</T>
+        ) : null}
         {play.standings.length > 1 ? (
           <>
             <Rule />

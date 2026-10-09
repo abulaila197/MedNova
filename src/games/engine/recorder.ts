@@ -122,6 +122,15 @@ export function createRecorder(kv: KV) {
       });
     },
 
+    /** Notes the level this play's EXP reached, for the results line (LV1). */
+    noteLevelUp(id: string, level: number, tokens: number) {
+      return run(async () => {
+        const p = (await plays()).find((x) => x.id === id);
+        if (!p) return null;
+        return savePlay({ ...p, levelUp: { level, tokens } });
+      });
+    },
+
     /** The bookmarked play the mode card offers as "Resume case N". */
     resumable(game: GameKey, mode: Mode) {
       return run(async () => {

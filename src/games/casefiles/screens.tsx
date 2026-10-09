@@ -9,6 +9,7 @@ import { Platform, Pressable, StyleSheet, Text, TextInput, View, type StyleProp,
 
 import { u } from '@/theme/scale';
 
+import { levelUpLine } from '../engine/levels';
 import type { Mode, Play, PlayItem, Seat } from '../engine/types';
 import { CHARACTERS } from '../shell/characters';
 import { Face } from '../shell/Face';
@@ -417,6 +418,9 @@ function Results({ def, play, items }: { def: GameDef; play: Play; items: PlayIt
               </View>
             ))}
           </View>
+          {play.levelUp ? (
+            <Ink size={12} color={NR.red} style={{ textAlign: 'center', letterSpacing: 2 }}>{levelUpLine(play.levelUp)!.toUpperCase()}</Ink>
+          ) : null}
           {teamRows ? (
             <>
               <Rule />

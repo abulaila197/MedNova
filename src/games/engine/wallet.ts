@@ -1,13 +1,13 @@
-// Shared EXP wallet (rules 3, 6, 18): 200 EXP = 1 token, earned on the phone at once,
-// synced later, with a per-play sanity cap. Token refunds when a paid hint could not be shown.
+// Shared EXP wallet (rules 6, 18, LV1): EXP raises the player's level and each level up gives
+// 1 token, earned on the phone at once, synced later, with a per-play sanity cap.
+// Token refunds when a paid hint could not be shown.
+import { levelOf } from './levels';
 import { serial, type KV } from './storage';
 import { newId } from './ids';
 
-export const EXP_PER_TOKEN = 200;
-
 export type LedgerEntry = {
   id: string;
-  kind: 'exp' | 'spend' | 'refund' | 'convert';
+  kind: 'exp' | 'spend' | 'refund' | 'convert'; // 'convert' = old 200-EXP tokens, no longer written or counted
   exp: number;
   tokens: number;
   reason: string;
@@ -27,12 +27,17 @@ export function createWallet(kv: KV) {
     await kv.set(KEY, all);
     return row;
   };
+  /**
+   * Total EXP ever earned (spending never lowers it), the level it gives, and tokens on hand.
+   * Level tokens are worked out from the level (1 per level up), not stored, so two phones merging
+   * their ledgers can never pay the same level twice.
+   */
   const balance = async () => {
     const all = await ledger();
-    return {
-      exp: all.reduce((s, e) => s + e.exp, 0),
-      tokens: all.reduce((s, e) => s + e.tokens, 0),
-    };
+    const exp = all.reduce((s, e) => s + (e.kind === 'exp' ? e.exp : 0), 0);
+    const lv = levelOf(exp);
+    const used = all.reduce((s, e) => s + (e.kind === 'spend' || e.kind === 'refund' ? e.tokens : 0), 0);
+    return { exp, tokens: lv.level - 1 + used, ...lv };
   };
 
   const run = serial();
@@ -40,17 +45,16 @@ export function createWallet(kv: KV) {
     balance,
     ledger,
 
-    /** Adds EXP for a finished play, clamped to the game's per-play cap, then converts every full 200 EXP into a token. */
+    /** Adds EXP for a finished play, clamped to the game's per-play cap, then pays 1 token for each new level (LV1). */
     earn(playId: string, exp: number, cap: number) {
       return run(async () => {
         const all = await ledger();
-        if (all.some((e) => e.kind === 'exp' && e.playId === playId)) return 0; // once per play
+        const from = (await balance()).level;
+        if (all.some((e) => e.kind === 'exp' && e.playId === playId)) return { amount: 0, level: from, levelsGained: 0 }; // once per play
         const amount = Math.max(0, Math.min(Math.round(exp), cap));
         if (amount > 0) await add({ kind: 'exp', exp: amount, tokens: 0, reason: 'play', playId });
-        const b = await balance();
-        const tokens = Math.floor(b.exp / EXP_PER_TOKEN);
-        if (tokens > 0) await add({ kind: 'convert', exp: -tokens * EXP_PER_TOKEN, tokens, reason: 'convert' });
-        return amount;
+        const { level } = await balance();
+        return { amount, level, levelsGained: level - from };
       });
     },
 

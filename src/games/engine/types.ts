@@ -37,6 +37,8 @@ export type Play = {
   standings: Standing[];
   pauses: number; // app went to the background (rule 4)
   expEarned: number;
+  /** The level reached when this play's EXP caused a level up (LV1); shown on results. */
+  levelUp?: { level: number; tokens: number };
   /** Game-owned snapshot so a bookmarked play can resume at the exact case and clock (rules 7, 10). */
   resume: unknown;
   synced: boolean;

@@ -4,7 +4,8 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { memoryKV } from '../storage';
 import { createRecorder } from '../recorder';
-import { createWallet, EXP_PER_TOKEN } from '../wallet';
+import { createWallet } from '../wallet';
+import { levelOf, stepTo } from '../levels';
 import { createGate, GUEST_TRIALS } from '../gate';
 import { createPicker } from '../picker';
 import { rank } from '../standings';
@@ -60,27 +61,42 @@ test('recorder: removeSeat keeps the row, claimGuestPlays moves guest plays', as
   assert.equal(await r.claimGuestPlays('u1'), 0);
 });
 
-test('wallet: earn once per play, cap, auto-convert at 200 EXP', async () => {
+test('levels: capped climb (LV2)', () => {
+  assert.deepEqual([2, 3, 4, 13, 14, 30].map(stepTo), [60, 80, 100, 280, 300, 300]);
+  assert.deepEqual(levelOf(0), { level: 1, into: 0, need: 60 });
+  assert.deepEqual(levelOf(59), { level: 1, into: 59, need: 60 });
+  assert.deepEqual(levelOf(60), { level: 2, into: 0, need: 80 });
+  assert.equal(levelOf(1260).level, 10);
+  assert.equal(levelOf(1259).level, 9);
+});
+
+test('wallet: earn once per play, cap, one token per level up (LV1)', async () => {
   const w = createWallet(memoryKV());
-  assert.equal(await w.earn('p1', 150, 100), 100);
-  assert.equal(await w.earn('p1', 150, 100), 0, 'second earn for same play ignored');
-  assert.equal(await w.earn('p2', 130, 1000), 130);
-  const b = await w.balance();
-  assert.equal(b.tokens, 1);
-  assert.equal(b.exp, 230 - EXP_PER_TOKEN);
-  assert.equal(await w.earn('p3', -50, 100), 0);
+  assert.deepEqual(await w.earn('p1', 150, 100), { amount: 100, level: 2, levelsGained: 1 });
+  assert.equal((await w.earn('p1', 150, 100)).amount, 0, 'second earn for same play ignored');
+  assert.deepEqual(await w.earn('p2', 130, 1000), { amount: 130, level: 3, levelsGained: 1 });
+  let b = await w.balance();
+  assert.equal(b.exp, 230);
+  assert.equal(b.tokens, 2);
+  assert.equal(b.into, 230 - 140);
+  assert.deepEqual(await w.earn('p3', 1000, 1000), { amount: 1000, level: 9, levelsGained: 6 });
+  b = await w.balance();
+  assert.equal(b.tokens, 8);
+  await w.spend(3, 'hint');
+  assert.equal((await w.balance()).exp, 1230, 'spending never lowers EXP');
+  assert.equal((await w.earn('p4', -50, 100)).amount, 0);
 });
 
 test('wallet: spend needs tokens, refund once', async () => {
   const w = createWallet(memoryKV());
   assert.equal(await w.spend(1, 'hint'), null);
-  await w.earn('p1', 400, 1000);
+  await w.earn('p1', 400, 1000); // level 5 = 4 tokens
   const rc = await w.spend(1, 'hint', 'p1');
   assert.ok(rc);
-  assert.equal((await w.balance()).tokens, 1);
+  assert.equal((await w.balance()).tokens, 3);
   assert.equal(await w.refund(rc!), true);
   assert.equal(await w.refund(rc!), false);
-  assert.equal((await w.balance()).tokens, 2);
+  assert.equal((await w.balance()).tokens, 4);
 });
 
 test('gate: 3 trials per game shared by solo and offline, idempotent per play, signed-in never gated', async () => {

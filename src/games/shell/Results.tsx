@@ -5,6 +5,7 @@ import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
+import { levelUpLine } from '../engine/levels';
 import type { Play, PlayItem } from '../engine/types';
 import type { GameDef } from './types';
 import { useResults } from './useShellPages';
@@ -17,6 +18,7 @@ export function Results({ def, play, items }: { def: GameDef; play: Play; items:
   const t = useTheme();
   const g = GAMES.find((x) => x.key === def.key)!;
   const { multi, nameOf, colorOf, teamRows, plain, stats, missed, rematch, changeSettings, backToGames, openDossier } = useResults(def, play, items);
+  const lvl = levelUpLine(play.levelUp);
   return (
     <GameScreen>
       <View style={{ gap: u(6) }}>
@@ -30,6 +32,7 @@ export function Results({ def, play, items }: { def: GameDef; play: Play; items:
             <Kick>{x.label}</Kick>
           </View>
         )).flatMap((el, i) => (i === 0 ? [el, <ExpStat key="exp" exp={play.expEarned} />] : [el]))}
+        {lvl ? <Text style={[s.lvl, { color: t.accent }]}>{lvl}</Text> : null}
       </Card>
       {teamRows ? (
         <Card>
@@ -98,7 +101,8 @@ function ExpStat({ exp }: { exp: number }) {
 }
 
 const s = StyleSheet.create({
-  top: { flexDirection: 'row', justifyContent: 'space-around' },
+  top: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-around' },
+  lvl: { width: '100%', textAlign: 'center', marginTop: u(4), fontFamily: F.display, fontStyle: 'italic', fontSize: u(14) },
   stat: { alignItems: 'center', gap: u(2) },
   big: { fontFamily: F.display, fontSize: u(26), lineHeight: u(30) },
   row: { flexDirection: 'row', alignItems: 'center', gap: u(8) },

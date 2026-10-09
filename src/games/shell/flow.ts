@@ -33,7 +33,8 @@ export async function finishPlay(def: GameDef, play: Play, score: number, standi
   const exp = Math.max(0, Math.min(def.exp(score, items), def.expCap(play.settings, play.mode)));
   await engine.recorder.finish(play.id, { score, standings, expEarned: exp });
   const paid = await engine.wallet.earn(play.id, exp, def.expCap(play.settings, play.mode));
+  if (paid.levelsGained > 0) await engine.recorder.noteLevelUp(play.id, paid.level, paid.levelsGained);
   const uid = useSession.getState().userId;
   if (uid) syncAccount(uid).catch(() => {}); // offline is fine: it uploads next time
-  return { exp: paid, items };
+  return { exp: paid.amount, levelUp: paid.levelsGained > 0 ? paid.level : null, items };
 }

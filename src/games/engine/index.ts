@@ -8,6 +8,7 @@ export * from './types';
 export * from './storage';
 export * from './recorder';
 export * from './wallet';
+export * from './levels';
 export * from './gate';
 export * from './picker';
 export * from './standings';

@@ -6,15 +6,15 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { MenuIcon } from '@/components/Icons';
 import { PulseStar, TokenCoin } from '@/components/PulseStar';
-import { engine, EXP_PER_TOKEN } from '@/games/engine';
+import { engine } from '@/games/engine';
 import { useSession } from '@/games/shell/session';
 import { useApp, useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
-/** Token balance for the coin, refreshed while the header is on screen (the wallet lives on the phone, rule 6). */
+/** Tokens and level progress for the coin, refreshed while the header is on screen (the wallet lives on the phone, rule 6). */
 function useTokens() {
-  const [b, setB] = useState({ exp: 0, tokens: 0 });
+  const [b, setB] = useState({ exp: 0, tokens: 0, level: 1, into: 0, need: 60 });
   useEffect(() => {
     let live = true;
     const load = () => engine.wallet.balance().then((x) => live && setB((p) => (p.exp === x.exp && p.tokens === x.tokens ? p : x)));
@@ -77,11 +77,11 @@ export function Header({ variant = 'app' }: { variant?: 'app' | 'game' }) {
 /** Token count + coin; display only until the wallet sheet is built after the games (GH4). */
 function Coin({ light }: { light: boolean }) {
   const t = useTheme();
-  const { exp, tokens } = useTokens();
+  const { tokens, level, into, need } = useTokens();
   return (
-    <View style={gs.coin} accessible accessibilityLabel={`${tokens} tokens, ${exp} of ${EXP_PER_TOKEN} EXP toward the next token`}>
+    <View style={gs.coin} accessible accessibilityLabel={`${tokens} tokens. Level ${level}, ${into} of ${need} EXP to level ${level + 1}`}>
       <Text style={[gs.coinT, { color: t.fg }]}>{tokens}</Text>
-      <TokenCoin size={u(17)} progress={exp / EXP_PER_TOKEN} light={light} track={light ? 'rgba(29,34,48,0.12)' : 'rgba(255,255,255,0.12)'} />
+      <TokenCoin size={u(17)} progress={into / need} light={light} track={light ? 'rgba(29,34,48,0.12)' : 'rgba(255,255,255,0.12)'} />
     </View>
   );
 }
