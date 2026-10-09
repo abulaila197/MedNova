@@ -246,8 +246,10 @@ function Turn({ puzzle, run, claims, width, onEvent }: { puzzle: PuzzleDef; run:
   );
 }
 
-/** CW5: at 0 hearts, one token revive per player per match, paid by the phone owner; otherwise out. */
-function ReviveCard({ playId, name, onRevive, onDecline }: { playId: string; name: string; onRevive: () => void; onDecline: () => void }) {
+/** CW5 / CW6: at 0 hearts, one token revive per player per match (Offline: paid by the phone owner); otherwise out. */
+export function ReviveCard({ playId, name, text, payer = 'The phone owner', decline = 'No revive, leave the game', onRevive, onDecline }: {
+  playId: string; name: string; text?: string; payer?: string; decline?: string; onRevive: () => void | Promise<void>; onDecline: () => void;
+}) {
   const t = useTheme();
   const [note, setNote] = useState<string | null>(null);
   const busy = useRef(false);
@@ -256,16 +258,16 @@ function ReviveCard({ playId, name, onRevive, onDecline }: { playId: string; nam
     busy.current = true;
     const receipt = await engine.wallet.spend(CW.revivePrice, 'crossword_revive', playId);
     busy.current = false;
-    if (!receipt) return setNote('The phone owner needs 1 token. 200 EXP makes 1 token.');
-    onRevive();
+    if (!receipt) return setNote(`${payer} needs 1 token. 200 EXP makes 1 token.`);
+    await onRevive();
   };
   return (
     <View style={[s.card, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
       <Kick color={t.mode === 'light' ? '#d4504c' : '#ff6b7d'}>Out of hearts</Kick>
       <Text style={[s.big, { color: t.white }]}>{name}</Text>
-      <Text style={[s.line, { color: t.mute }]}>{note ?? `No hearts left. One revive per player: ${CW.revivePrice} token from the phone owner gives ${CW.reviveHearts} heart. Words claimed so far stay claimed.`}</Text>
+      <Text style={[s.line, { color: t.mute }]}>{note ?? text ?? `No hearts left. One revive per player: ${CW.revivePrice} token from the phone owner gives ${CW.reviveHearts} heart. Words claimed so far stay claimed.`}</Text>
       <Btn label={`Revive · ${CW.revivePrice} token`} onPress={revive} style={{ marginTop: u(4) }} />
-      <Ghost label="No revive, leave the game" onPress={onDecline} />
+      <Ghost label={decline} onPress={onDecline} />
     </View>
   );
 }

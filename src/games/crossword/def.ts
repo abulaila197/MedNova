@@ -2,9 +2,10 @@ import type { GameDef } from '../shell/types';
 import { CW } from './core';
 import { PUZZLES, wordById } from './data';
 import { OfflinePlay } from './OfflinePlay';
+import { OnlinePlay } from './OnlinePlay';
 import { SoloPlay } from './SoloPlay';
 
-/** Nova Crossword on the shared shell (CW1-CW9): Solo and Offline; Online comes with the shared online layer. */
+/** Nova Crossword on the shared shell (CW1-CW12): Solo, Offline and Online Multiplayer. */
 export const novaCrossword: GameDef = {
   key: 'nova-crossword',
   modes: [
@@ -36,25 +37,47 @@ export const novaCrossword: GameDef = {
       mode: 'online',
       title: 'Race the same grid',
       blurb: 'Everyone plays the same grid live. First right answer claims the word.',
-      howTo: ['Claim words before the others do.', 'Most letters owned wins.', 'One token revive per match.'],
-      soon: true,
+      howTo: [
+        'Everyone gets the same random grid at the same time. The first right answer claims the word and its letters.',
+        `A wrong answer costs one of your ${CW.hearts} hearts; trying the same wrong answer again costs nothing. No hints online.`,
+        'At 0 hearts you get one revive per match for 1 token, or you watch the rest.',
+        'The race ends when every word is claimed, everyone is out, or the host\'s time runs out. Most letters owned wins.',
+        `EXP by place: 1st earns 3 stars, 2nd 2, everyone else who claimed a word 1. Each star is ${CW.expPerStar} EXP. Teams score their players' average.`,
+      ],
     },
   ],
-  setup: { solo: [], offline: [] },
+  setup: {
+    solo: [],
+    offline: [],
+    // CW11: the host's time limit.
+    online: [
+      {
+        key: 'timelimit',
+        label: 'Time limit',
+        choices: [
+          { value: 5, label: '5 min', note: 'quick' },
+          { value: 10, label: '10 min' },
+          { value: 15, label: '15 min', note: 'long' },
+        ],
+        initial: 10,
+      },
+    ],
+  },
   players: { offline: { min: 2, max: 6 } },
   // TMG-CW: each player keeps their own hearts and words; a team scores its players' average.
-  teams: { offline: true },
+  teams: { offline: true, online: true },
   teamScore: 'average',
   playersNote: () => 'Player 1 is you, the phone owner, and pays for revives. Offline earns no EXP.',
   Play: { solo: SoloPlay, offline: OfflinePlay },
-  // CW9: Solo pays the EXP each puzzle earned this session (stored on its first word); Offline earns none.
+  Online: OnlinePlay,
+  // CW9: Solo pays the EXP each puzzle earned this session (stored on its first word); Offline earns none; CW12: Online up to 3 stars.
   exp: (_score, items) => items.reduce((a, i) => a + (Number(i.gameData.exp) || 0), 0),
-  expCap: (_settings, mode) => (mode === 'offline' ? 0 : PUZZLES.length * 3 * CW.expPerStar),
+  expCap: (_settings, mode) => (mode === 'offline' ? 0 : mode === 'online' ? 3 * CW.expPerStar : PUZZLES.length * 3 * CW.expPerStar),
   itemLabel: (item) => wordById.get(item.itemId)?.answer ?? item.itemId,
   itemNoun: 'puzzle',
   itemsTitle: 'Words',
   summary: (play, items) => {
-    if (play.mode === 'offline') {
+    if (play.mode === 'offline' || play.mode === 'online') {
       const mine = items.filter((i) => i.seat === 0 && i.outcome === 'right');
       return [
         { value: String(mine.reduce((a, i) => a + i.points, 0)), label: 'Your points' },

@@ -32,6 +32,9 @@ export type RacePlayer = {
   greens: number | null;
   /** Streak Master: their pick, sent only once the question has ended. */
   pick?: number | null;
+  /** Crossword: hearts left and whether the one revive is spent. */
+  hearts?: number;
+  revived?: boolean;
 };
 
 export type RaceMine = {
@@ -64,6 +67,9 @@ export type RaceState = {
   players: RacePlayer[];
   me: RaceMine | null;
   my_items: RaceItemResult[] | null;
+  /** Crossword: every claimed word in claim order, and my wrong answers per word. */
+  claims?: { word_id: string; user_id: string; at_ms: number; auto: boolean }[] | null;
+  tried?: Record<string, string[]> | null;
 };
 
 /**
