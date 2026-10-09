@@ -4,7 +4,6 @@ import { call } from '@/online/api';
 import { AlertPill, Countdown, nth, useAlerts } from '@/online/live';
 import { settingsLine } from '@/online/format';
 import { seededOrder, useRace, type RaceState } from '@/online/race';
-import { RaceReveal } from '@/online/RaceReveal';
 import { RoomTalk } from '@/online/Talk';
 import { characterOf } from '../shell/characters';
 import { PauseMenu } from '../shell/PauseMenu';
@@ -85,28 +84,21 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   const nextIn = Math.max(0, Math.ceil((st.phase_ends_at - server) / 1000));
   const waiting = st.players.filter((p) => p.user_id !== me && !p.dropped && !p.done).length;
 
-  // HeatBoard reads a Solo round; online fills one from the server's state.
+  // HeatBoard reads a Solo round; online fills one from the server's state. Your pick stays "locked in" until the
+  // question ends, then right and wrong show for everyone at once with each player's face on their answer (Yazan).
+  const faces: Record<number, string[]> = {};
+  if (reveal) for (const p of st.players) if (p.pick != null) (faces[p.pick] ??= []).push(p.character);
   const round = {
     order: seededOrder(`${matchId}:${st.index}`, q.choices.length),
     removed: [],
-    phase: mine != null || reveal ? 'feedback' : 'playing',
+    phase: reveal ? 'feedback' : 'playing',
     before: null,
     streak: me_?.streak ?? 0,
     maxStreak: me_?.best_streak ?? 0,
     score: me_?.score ?? 0,
-    feedback: mine != null ? { picked: mine, right, points: st.me?.points ?? 0, untilMs: 0 } : reveal ? { picked: -1, right: false, points: 0, untilMs: 0 } : null,
+    feedback: reveal ? { picked: mine ?? -1, right, points: st.me?.points ?? 0, untilMs: 0 } : null,
   } as unknown as Round;
-
-  const dock = reveal ? (
-    <RaceReveal
-      label={`Question ${st.index + 1} of ${st.total}`}
-      answer={q.choices[q.answer]}
-      players={st.players}
-      me={me}
-      how={(p) => (p.solved ? nth(p.item_rank ?? 1) : 'missed')}
-      next={st.phase === 'done' ? 'Adding up the scores…' : `${last ? 'Results' : 'Next question'} in ${nextIn} s`}
-    />
-  ) : undefined;
+  const result = !reveal ? null : st.phase === 'done' ? 'Adding up the scores…' : `${right ? `${nth(st.me?.rank ?? 1)} right · +${st.me?.points ?? 0}` : mine == null ? 'No answer' : 'Wrong'} · ${last ? 'Results' : 'next question'} in ${nextIn} s`;
 
   return (
     <HeatBoard
@@ -127,8 +119,9 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
         }
       }}
       onPause={() => setMenu(true)}
-      notice={notice ?? (!playing ? 'You’re watching. You get a seat at the rematch.' : mine != null && !reveal ? (waiting ? `Waiting for ${waiting} more` : 'Everyone has answered') : null)}
-      dock={dock}>
+      locked={reveal ? null : mine}
+      faces={reveal ? faces : undefined}
+      notice={notice ?? result ?? (!playing ? 'You’re watching. You get a seat at the rematch.' : mine != null ? (waiting ? `Locked in. Waiting for ${waiting} more` : 'Locked in') : null)}>
       <AlertPill alert={alert} />
       <RoomTalk room={roomId} me={talker} />
       <PauseMenu open={menu} mode="online" onResume={() => setMenu(false)} onQuit={leave} />

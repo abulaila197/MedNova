@@ -9,6 +9,7 @@ import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
+import { Face } from '../shell/Face';
 import { GameScreen, RoundBtn } from '../shell/ui';
 import { HELPER_PRICE, type HelperKind, type Question, type Round } from './core';
 
@@ -42,6 +43,10 @@ export type BoardProps = {
   notice?: string | null;
   /** Replaces the options: time up, turn over. */
   dock?: ReactNode;
+  /** Online: your pick, locked in until the question ends (no right or wrong yet). */
+  locked?: number | null;
+  /** Online, once the question ends: who picked each choice (character slugs by choice index). */
+  faces?: Record<number, string[]>;
   children?: ReactNode;
 };
 
@@ -93,7 +98,7 @@ export function HeatBoard(p: BoardProps) {
                 <View style={s.grid}>
                   {p.round.order.map((ci) => {
                     const gone = p.round.removed.includes(ci);
-                    const state = !showing || !fb ? 'idle' : ci === p.q.answer ? 'good' : ci === fb.picked ? 'bad' : 'idle';
+                    const state = showing && fb ? (ci === p.q.answer ? 'good' : ci === fb.picked ? 'bad' : 'idle') : p.locked === ci ? 'locked' : 'idle';
                     return (
                       <Option
                         key={`${p.q.id}:${ci}`}
@@ -101,7 +106,8 @@ export function HeatBoard(p: BoardProps) {
                         state={state}
                         late={state === 'good' && !fb?.right}
                         gone={gone}
-                        live={p.round.phase === 'playing' && !gone}
+                        faces={p.faces?.[ci]}
+                        live={p.round.phase === 'playing' && !gone && p.locked == null}
                         onPress={() => p.onAnswer(ci)}
                         hc={hc}
                       />
@@ -165,7 +171,7 @@ function Fuse({ frac, cool, hot, track, burning }: { frac: number; cool: string;
   );
 }
 
-function Option({ label, state, late, gone, live, onPress, hc }: { label: string; state: 'idle' | 'good' | 'bad'; late: boolean; gone: boolean; live: boolean; onPress: () => void; hc: ReturnType<typeof heatColors> }) {
+function Option({ label, state, late, gone, live, faces, onPress, hc }: { label: string; state: 'idle' | 'good' | 'bad' | 'locked'; late: boolean; gone: boolean; live: boolean; faces?: string[]; onPress: () => void; hc: ReturnType<typeof heatColors> }) {
   const t = useTheme();
   const x = useSharedValue(0);
   const glow = useSharedValue(0);
@@ -187,12 +193,23 @@ function Option({ label, state, late, gone, live, onPress, hc }: { label: string
           s.opt,
           { backgroundColor: t.panel, borderColor: t.panelLine, opacity: gone ? 0.28 : 1 },
           tint ? { borderColor: tint, borderWidth: 1.5, backgroundColor: t.mode === 'dark' ? mix(tint, '#151933', 0.2) : mix(tint, '#fbf9f4', 0.16) } : null,
+          state === 'locked' ? { borderColor: t.accent, borderWidth: 1.5 } : null,
         ]}
         accessibilityRole="button"
         accessibilityState={{ disabled: !live }}
         accessibilityLabel={gone ? `${label}, removed` : label}>
-        <Text style={[s.optT, { color: t.fg, fontFamily: tint ? F.bodyBold : F.body, textDecorationLine: gone ? 'line-through' : 'none' }]}>{label}</Text>
+        <Text style={[s.optT, { color: t.fg, fontFamily: tint || state === 'locked' ? F.bodyBold : F.body, textDecorationLine: gone ? 'line-through' : 'none' }]}>{label}</Text>
       </Pressable>
+      {faces?.length ? (
+        // Online: the faces of everyone who picked this answer, on its top corner.
+        <Animated.View entering={FadeIn.duration(220)} style={s.faces} pointerEvents="none">
+          {faces.slice(0, 6).map((f, i) => (
+            <View key={i} style={[s.faceRing, { borderColor: t.panel, marginLeft: i ? -u(5) : 0 }]}>
+              <Face slug={f} size={u(17)} />
+            </View>
+          ))}
+        </Animated.View>
+      ) : null}
     </Animated.View>
   );
 }
@@ -249,6 +266,8 @@ const s = StyleSheet.create({
   halo: { position: 'absolute', left: -u(2), right: -u(2), top: -u(2), bottom: -u(2), borderRadius: u(13), shadowOpacity: 0.9, shadowRadius: u(10), shadowOffset: { width: 0, height: 0 } },
   opt: { minHeight: u(42), borderRadius: u(11), borderWidth: 1, paddingHorizontal: u(8), paddingVertical: u(8), justifyContent: 'center' },
   optT: { fontSize: u(10.5), lineHeight: u(13.5) },
+  faces: { position: 'absolute', top: -u(8), right: u(4), flexDirection: 'row' },
+  faceRing: { borderWidth: 1.5, borderRadius: u(10) },
   expl: { fontFamily: F.body, fontSize: u(10), lineHeight: u(14) },
   hide: { borderRadius: u(14), borderWidth: 1, padding: u(18), alignItems: 'center' },
   hideT: { fontFamily: F.body, fontSize: u(11) },

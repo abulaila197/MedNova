@@ -30,6 +30,8 @@ export type RacePlayer = {
   tries: number;
   /** Medicordle: most green tiles in one of their rows (NM11). */
   greens: number | null;
+  /** Streak Master: their pick, sent only once the question has ended. */
+  pick?: number | null;
 };
 
 export type RaceMine = {
