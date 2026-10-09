@@ -35,6 +35,8 @@ export type RacePlayer = {
   /** Crossword: hearts left and whether the one revive is spent. */
   hearts?: number;
   revived?: boolean;
+  /** Case Files: the stage they have reached (CF9). */
+  stage?: string | null;
 };
 
 export type RaceMine = {

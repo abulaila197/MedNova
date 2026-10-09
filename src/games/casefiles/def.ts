@@ -2,10 +2,11 @@ import type { GameDef } from '../shell/types';
 import { CF } from './core';
 import { CASES, caseById } from './data';
 import { OfflinePlay } from './OfflinePlay';
+import { OnlinePlay } from './OnlinePlay';
 import { caseFilesScreens, INK, INK_TEAMS } from './screens';
 import { SoloPlay } from './SoloPlay';
 
-/** Case Files on the shared shell (CF1-CF10, TMG-CF): Solo library and Offline; Online waits for the shared online layer. */
+/** Case Files on the shared shell (CF1-CF12, TMG-CF): Solo library, Offline and Online Multiplayer. */
 export const caseFiles: GameDef = {
   key: 'case-files-unsolved',
   modes: [
@@ -37,16 +38,37 @@ export const caseFiles: GameDef = {
       mode: 'online',
       title: 'Race the case',
       blurb: 'The same case at the same time, with live progress.',
-      howTo: ['Everyone works the same case at once.', 'You see who has reached which stage, never their answers.'],
-      soon: true,
+      howTo: [
+        'Everyone gets the same random case at the same time and works it alone, against the host\'s time limit.',
+        'You see when someone reaches a new stage or solves it, never their answers or points.',
+        'Scoring is the same as Solo, and the case\'s points are your EXP. A tie goes to the faster finish.',
+        'Everything stays sealed until everyone closes the case or time runs out. With teams, the team score is its players’ average.',
+      ],
     },
   ],
-  setup: { solo: [], offline: [] },
+  setup: {
+    solo: [],
+    offline: [],
+    // CF12: the host's time limit.
+    online: [
+      {
+        key: 'timelimit',
+        label: 'Time limit',
+        choices: [
+          { value: 5, label: '5 min', note: 'quick' },
+          { value: 10, label: '10 min' },
+          { value: 15, label: '15 min', note: 'long' },
+        ],
+        initial: 10,
+      },
+    ],
+  },
   players: { offline: { min: 2, max: 6 } },
-  teams: { offline: true },
+  teams: { offline: true, online: true },
   teamScore: 'average',
   playersNote: () => 'Player 1 is you, the phone owner: a wrong first diagnosis of yours goes to Learn. Pass the phone earns no EXP.',
   Play: { solo: SoloPlay, offline: OfflinePlay },
+  Online: OnlinePlay,
   // RS3: one look of its own, so its shell screens are drawn in the Evidence board look too.
   palette: { seats: INK, teams: INK_TEAMS },
   screens: caseFilesScreens,
