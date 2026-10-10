@@ -1,7 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { useState, type ReactNode } from 'react';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Text, TextInput } from '@/components/AppText';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Path } from 'react-native-svg';
@@ -114,6 +114,8 @@ export function SignIn() {
   const c = lt ? C.light : C.dark;
   const { width: w, height: h } = useScreen();
   const ins = useSafeAreaInsets();
+  // Matches TopInset, so the space under the card equals the space above the title.
+  const topGap = Platform.OS === 'web' ? u(30) : ins.top;
   const [tab, setTab] = useState<'in' | 'up'>('in');
   const [step, setStep] = useState<Step>('form');
   const [email, setEmail] = useState('');
@@ -123,6 +125,13 @@ export function SignIn() {
   const [busy, setBusy] = useState(false);
   const [note, setNote] = useState<{ text: string; bad: boolean } | null>(null);
   const [agreed, setAgreed] = useState(false);
+  // The page sits at one height for every tab and step: placed so the tallest (Create Account) has equal space
+  // above the title and under the card. Until that tab is measured, it is guessed from the Sign In height.
+  const [viewH, setViewH] = useState(0);
+  const [inH, setInH] = useState(0);
+  const [upH, setUpH] = useState(0);
+  const tall = upH || (inH ? inH + u(80) : 0);
+  const padTop = tall && viewH ? Math.max(u(14), (viewH - tall - topGap) / 2) : u(14);
   const enter = () => router.replace('/games');
   const legal = () => router.push('/privacy');
   const terms = () => router.push({ pathname: '/privacy', params: { doc: 'terms' } });
@@ -416,17 +425,26 @@ export function SignIn() {
       <TopInset />
       <ScrollView
         style={{ flex: 1 }}
-        contentContainerStyle={{ flexGrow: 1, paddingTop: u(14), paddingBottom: u(22) + ins.bottom, paddingHorizontal: u(18) }}
+        onLayout={(e) => setViewH(e.nativeEvent.layout.height)}
+        contentContainerStyle={{ flexGrow: 1, paddingTop: padTop, paddingBottom: u(14) + ins.bottom, paddingHorizontal: u(18) }}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}>
-        <View style={s.head}>
-          <Text style={[s.welcome, { color: c.welcome }]}>Welcome to</Text>
-          <Text style={[s.brand, { color: c.accent }]}>MedNova</Text>
-        </View>
+        <View
+          onLayout={(e) => {
+            if (step !== 'form') return;
+            const hh = e.nativeEvent.layout.height;
+            if (tab === 'up') setUpH((v) => Math.max(v, hh));
+            else setInH((v) => Math.max(v, hh));
+          }}>
+          <View>
+            <Text style={[s.welcome, { color: c.welcome }]}>Welcome to</Text>
+            <Text style={[s.brand, { color: c.accent }]}>MedNova</Text>
+          </View>
 
-        <View style={[s.card, { borderColor: c.cardEdge, boxShadow: c.cardShadow }]}>
-          <LinearGradient colors={c.cardGrad} style={[StyleSheet.absoluteFill, { borderRadius: u(21) }]} />
-          {body}
+          <View style={[s.card, { borderColor: c.cardEdge, boxShadow: c.cardShadow }]}>
+            <LinearGradient colors={c.cardGrad} style={[StyleSheet.absoluteFill, { borderRadius: u(21) }]} />
+            {body}
+          </View>
         </View>
       </ScrollView>
     </View>
@@ -435,10 +453,9 @@ export function SignIn() {
 
 const s = StyleSheet.create({
   root: { flex: 1, overflow: 'hidden' },
-  head: { paddingTop: u(30) },
-  welcome: { fontFamily: F.display, fontSize: u(21), lineHeight: u(20.58), letterSpacing: u(-1.2), alignSelf: 'flex-start' },
+    welcome: { fontFamily: F.display, fontSize: u(21), lineHeight: u(20.58), letterSpacing: u(-1.2), alignSelf: 'flex-start' },
   brand: { fontFamily: F.display, fontSize: u(52), lineHeight: u(50.96), letterSpacing: u(-1.2), alignSelf: 'center', marginTop: u(2) },
-  card: { marginTop: u(36), borderWidth: 1, borderRadius: u(22), padding: u(14), gap: u(8) },
+  card: { marginTop: u(28), borderWidth: 1, borderRadius: u(22), padding: u(14), gap: u(8) },
   tabs: { flexDirection: 'row', padding: u(3), borderRadius: u(12) },
   tab: { flex: 1, height: u(27), borderRadius: u(9), alignItems: 'center', justifyContent: 'center' },
   tabTxt: { fontFamily: F.bodySemi, fontSize: u(10.5) },
