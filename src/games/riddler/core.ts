@@ -106,16 +106,3 @@ export function search(list: readonly Answer[], raw: string, skip: readonly stri
   return searchNames(index, raw, { min: RD.minQuery, max: RD.maxSuggestions, skip: (a) => skip.includes(a.id) });
 }
 
-export function shuffle<T>(a: readonly T[], rng: () => number = Math.random): T[] {
-  const out = [...a];
-  for (let i = out.length - 1; i > 0; i--) {
-    const j = Math.floor(rng() * (i + 1));
-    [out[i], out[j]] = [out[j], out[i]];
-  }
-  return out;
-}
-
-export const clock = (ms: number) => {
-  const s = Math.max(0, Math.ceil(ms / 1000));
-  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
-};

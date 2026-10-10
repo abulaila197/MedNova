@@ -22,6 +22,7 @@ import { AppGrid, AppPopup, AppTopBar } from './AppLook';
 import { CW, buildSlots, composeAnswer, indexOf, isFilled, lockedCells, placeLetter, removeSlot, type CellPos, type PuzzleDef, type Typed } from './core';
 import { PUZZLES, clueText } from './data';
 import { ReviveCard } from './OfflinePlay';
+import { clock } from '@/games/engine/clock';
 
 const puzzleOf = (n: number) => PUZZLES[n - 1];
 
@@ -58,11 +59,6 @@ function itemsOf(me: string) {
     });
   };
 }
-
-const clock = (ms: number) => {
-  const s = Math.max(0, Math.ceil(ms / 1000));
-  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
-};
 
 /**
  * Nova Crossword Online (CW6, CW7, CW10-CW12): everyone races the same random grid. The first right answer claims the
@@ -135,7 +131,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   const canRevive = playing && out && !mine?.revived && !st.me?.done;
   const wordsOf = (id: string) => claimsList.filter((c) => c.user_id === id).length;
   const nextIn = Math.max(0, Math.ceil((st.phase_ends_at - server) / 1000));
-  const sub = reveal ? (left ? 'Time up' : 'Grid complete') : `${clock(st.phase_ends_at - server)} left · ${mine?.revived ? 'revive used' : 'first right answer claims it'}`;
+  const sub = reveal ? (left ? 'Time up' : 'Grid complete') : `${clock(st.phase_ends_at - server, { down: true })} left · ${mine?.revived ? 'revive used' : 'first right answer claims it'}`;
 
   const board = (
     <View style={s.lead}>

@@ -18,6 +18,7 @@ import { CRIM, CRIMB, CRIMI, FELL, FELLI, p, Paper, Portrait, T, TM } from './pa
 import { Strip } from './pages';
 import type { PageProps } from './props';
 import { EFFECT, ITEM, MEAL } from './text';
+import { clock } from '@/games/engine/clock';
 
 type Player = TmnView['players'][number];
 type Act = PageProps['act'];
@@ -25,11 +26,6 @@ type Act = PageProps['act'];
 const SOFT = 'rgba(42,31,22,0.06)';
 const shadow = { textShadowColor: 'rgba(0,0,0,0.85)', textShadowRadius: 4, textShadowOffset: { width: 0, height: 1 } };
 
-/** Seconds as m:ss, the Gap's clock. */
-const mmss = (s: number) => {
-  const t = Math.max(0, Math.ceil(s));
-  return `${Math.floor(t / 60)}:${String(t % 60).padStart(2, '0')}`;
-};
 const jewelsFor = (coins: number) => Math.ceil(coins / rules.JEWEL_COINS);
 const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
 const nameOf = (v: TmnView, id: string | null | undefined) => (id === v.me ? 'You' : v.players.find((x) => x.id === id)?.name ?? 'Someone');
@@ -181,7 +177,7 @@ function Kicker({ title, props, light }: { title: string; props: PageProps; ligh
     <View style={s.gtop}>
       <T f={FELL} size={10} color={light ? TM.cream : TM.ink} style={[s.caps, { flex: 1 }, light ? shadow : null]} lines={1}>{title}</T>
       {props.env.view.ghost ? null : <Done env={props.env} act={props.act} light={light} />}
-      <T f={FELL} size={15} color={light ? '#e0806a' : TM.red} style={[{ marginLeft: p(10) }, light ? shadow : null]}>{mmss(props.seconds)}</T>
+      <T f={FELL} size={15} color={light ? '#e0806a' : TM.red} style={[{ marginLeft: p(10) }, light ? shadow : null]}>{clock(props.seconds * 1000, { down: true })}</T>
     </View>
   );
 }

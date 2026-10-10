@@ -190,7 +190,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
       title={`Case ${st.case_index + 1}`}
       sub={`of ${st.total}`}
       slim={`Case ${st.case_index + 1} of ${st.total}`}
-      clock={{ label: 'Time left', ms: left, warn: !reveal && left <= 15_000 }}
+      clock={{ label: 'Time left', down: true, ms: left, warn: !reveal && left <= 15_000 }}
       wrongSeq={wrongSeq}
       clueSeq={clues}
       actions={false}

@@ -15,7 +15,7 @@ import type { OnlineProps } from '../shell/types';
 import { CaseBoard } from './CaseBoard';
 import { scoreRun, stageOf, startRun, stepRun, type Run, type RunEvent } from './core';
 import { CASES, caseLabel, dossierOf } from './data';
-import { Card, CaseTitle, Kicker, NR, NoirScreen, Stamp, T, clock } from './noir';
+import { Card, CaseTitle, Kicker, NR, NoirScreen, Stamp, T, caseClock } from './noir';
 import { CasePause } from './screens';
 
 const caseOf = (n: number) => CASES[n - 1];
@@ -154,7 +154,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
                   <T size={14} lines={1} style={{ flexShrink: 1 }}>{p.user_id === me ? 'You' : p.name}</T>
                   <Stamp word={p.solved ? 'SOLVED' : 'CLOSED'} size={8} />
                 </View>
-                <T size={11} color={NR.soft}>{p.done ? `finished in ${clock(p.solve_ms)}` : 'ran out of time'}</T>
+                <T size={11} color={NR.soft}>{p.done ? `finished in ${caseClock(p.solve_ms)}` : 'ran out of time'}</T>
               </View>
               <T size={18} color={NR.red} style={{ minWidth: u(30), textAlign: 'right' }}>{String(p.score)}</T>
             </Animated.View>
@@ -173,13 +173,13 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
       <NoirScreen>
         <View style={{ flex: 1, justifyContent: 'center', gap: u(16) }}>
           <View style={{ gap: u(4) }}>
-            <Kicker>{`${caseLabel(c.id)} · ${clock(left)} left`}</Kicker>
+            <Kicker>{`${caseLabel(c.id)} · ${caseClock(left, true)} left`}</Kicker>
             <CaseTitle title={playing ? 'Case closed. Sealed.' : 'You’re watching'} />
             <T size={12.5} color={NR.soft}>{playing ? 'Your stamp and points stay sealed until everyone closes the case or time runs out.' : 'You get a seat at the rematch.'}</T>
           </View>
           <View style={s.recap}>
             {others.map((p) => (
-              <T key={p.user_id} size={12.5} color={NR.soft}>{`— ${p.name}: ${p.done ? `finished in ${clock(p.solve_ms)}` : `at ${p.stage ?? 'History'}`}`}</T>
+              <T key={p.user_id} size={12.5} color={NR.soft}>{`— ${p.name}: ${p.done ? `finished in ${caseClock(p.solve_ms)}` : `at ${p.stage ?? 'History'}`}`}</T>
             ))}
           </View>
         </View>
@@ -190,7 +190,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
 
   return (
     <>
-      <CaseBoard def={c} run={run} sealed kicker={`${clock(left)} left · ${caseLabel(c.id)}`} onEvent={dispatch} onPause={() => setMenu(true)} />
+      <CaseBoard def={c} run={run} sealed kicker={`${caseClock(left, true)} left · ${caseLabel(c.id)}`} onEvent={dispatch} onPause={() => setMenu(true)} />
       {notice ? (
         <View style={s.notice} pointerEvents="none">
           <T size={12} color={NR.white}>{notice}</T>

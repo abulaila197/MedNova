@@ -8,7 +8,7 @@ import { create } from 'zustand';
 import { LevelBadge } from '@/components/LevelBadge';
 import { Face } from '@/games/shell/Face';
 import { useAccount } from '@/state/account';
-import { mss } from '@/online/format';
+import { clock } from '@/games/engine/clock';
 import { acceptInvite, challenge, useInvites } from '@/online/invites';
 import { type Friend, respondFriend, seenLabel, unblockUser, useFriends } from '@/state/friends';
 import { u } from '@/theme/scale';
@@ -92,7 +92,7 @@ export function FriendsSection({ t }: { t: Theme }) {
       {friends.length === 0 ? <Text style={[s.note, { color: t.mute }]}>No friends yet. Share your friend pass to add some.</Text> : null}
       {friends.map((f) => {
         const inv = invites.find((x) => x.from_user === f.id);
-        const when = inv ? `CHALLENGED YOU · ${mss(Date.parse(inv.expires_at) - Date.now())} LEFT` : f.kind === 'outgoing' ? 'REQUEST SENT' : seenLabel(f.last_seen);
+        const when = inv ? `CHALLENGED YOU · ${clock(Date.parse(inv.expires_at) - Date.now(), { down: true })} LEFT` : f.kind === 'outgoing' ? 'REQUEST SENT' : seenLabel(f.last_seen);
         return (
           <View key={f.id} style={[s.fr, line]}>
             <Ring t={t} f={f} />

@@ -4,10 +4,11 @@
 // played here as turn-based swipes. Reaching the target ends the game at once; otherwise the best score
 // after Boss Round 3 wins (equal top scores draw). Ported from game.py, with WC2 to WC5.
 import {
-  shuffle, spinField, startTurn, stepTurn, turnPoints,
+  spinField, startTurn, stepTurn, turnPoints,
   type Bank, type FieldKey, type Mix, type QResult, type Question, type Rng, type Target, type Turn, type TurnEvent,
 } from './core';
 import { deal, mirrorSwap, playable, react, startChain, targetsFor, TOWER_DAMAGE, type Attack, type Card, type Chain, type Play, type Reaction } from './cards';
+import { shuffle } from '../engine/random';
 
 export const CYCLES = [3, 2, 2];
 export const MAX_PLAYS = 2; // per seat per Initiation (spec 8.1)

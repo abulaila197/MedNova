@@ -18,6 +18,7 @@ import { CRIM, CRIMB, CRIMI, FELL, FELLI, p, Paper, Portrait, T, TM } from './pa
 import { ROUND_NAME, Strip } from './pages';
 import type { PageProps } from './props';
 import { EFFECT, ITEM, MEAL, question } from './text';
+import { clock } from '@/games/engine/clock';
 
 type View_ = PageProps['env']['view'];
 type Pl = View_['players'][number];
@@ -45,7 +46,6 @@ const MISSION: Record<MissionId, { name: string; what: string }> = {
 /** Missions carried out in the Gap after the month they were dealt. */
 const GAP_MISSIONS: MissionId[] = ['skim', 'steal', 'cold-shoulder'];
 
-const clock = (s: number) => `${Math.floor(Math.max(0, s) / 60)}:${String(Math.floor(Math.max(0, s) % 60)).padStart(2, '0')}`;
 const pct = (n: number) => `${Math.round(n)}%`;
 const nameOf = (v: View_, id: PlayerId | null | undefined, you = 'You') => (id === v.me ? you : (v.players.find((x) => x.id === id)?.name ?? ''));
 const plural = (n: number, w: string) => `${n} ${w}${n === 1 ? '' : 's'}`;
@@ -335,7 +335,7 @@ export function InquisitionPage({ env, act, seconds }: PageProps) {
           <T size={10.5}><T f={CRIMB} size={10.5} color={TM.red}>Wrong  </T>everyone who voted for them pays 1 jewel</T>
         </View>
         <Btn label={picked ? `Accuse ${picked.name}` : 'Pick someone to accuse'} disabled={!picked} onPress={() => picked && act({ type: 'ACCUSE', target: picked.id })} />
-        <T size={11} style={{ textAlign: 'center', opacity: 0.75 }}>{`Votes close in ${clock(seconds)}`}</T>
+        <T size={11} style={{ textAlign: 'center', opacity: 0.75 }}>{`Votes close in ${clock(seconds * 1000, { down: true })}`}</T>
       </TopSheet>
     </View>
   );
@@ -446,7 +446,7 @@ export function LastSupperPage({ env, act, now }: PageProps) {
           <Btn label={picked ? `Give ${picked.name} 1 jewel` : 'Pick a seat'} size={12} disabled={!picked} onPress={() => picked && act({ type: 'LAST_SUPPER', to: picked.id })} style={{ flex: 1 }} />
           <Btn label="Give nothing" kind="red" size={12} onPress={() => act({ type: 'LAST_SUPPER', to: null })} style={{ flex: 1 }} />
         </View>
-        <T size={11} style={{ textAlign: 'center', opacity: 0.75 }}>{clock(left)}</T>
+        <T size={11} style={{ textAlign: 'center', opacity: 0.75 }}>{clock(left * 1000, { down: true })}</T>
       </TopSheet>
     </View>
   );

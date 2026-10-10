@@ -1,6 +1,7 @@
 // Case Files Offline (pass the phone), CF8, CF10, TMG-CF: every player plays the whole same case alone, in the
 // order they were added. Results stay sealed (no stamp, no score, no discharge) until everyone has finished.
 import { scoreRun, snapshot, startRun, stepRun, type CaseDef, type Run, type RunEvent, type Score } from './core';
+import { clock } from '../engine/clock';
 
 export type OfflinePhase = 'handoff' | 'playing' | 'done';
 
@@ -58,11 +59,6 @@ export const snapshotOffline = (def: CaseDef, o: OfflineRun, now: number): Offli
 export function finishedLines(o: OfflineRun, names: (seat: number) => string) {
   return o.done.map((d) => `${names(d.seat)} finished the case in ${clock(d.run.finalMs ?? d.run.elapsedMs)}`);
 }
-
-export const clock = (ms: number) => {
-  const s = Math.floor(Math.max(0, ms) / 1000);
-  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
-};
 
 export type Ranked = { seat: number; score: Score; timeMs: number; rank: number };
 

@@ -8,6 +8,13 @@ export const call = async <T>(fn: string, args?: Record<string, unknown>) => {
   return data as T;
 };
 
+/** One request to an edge function (the referees of Conqueror, Wheels and Trust Me Not, account removal). */
+export const invoke = async <T = unknown>(fn: string, body?: Record<string, unknown>) => {
+  const { data, error } = await supabase.functions.invoke(fn, { method: 'POST', body });
+  if (error) throw error;
+  return data as T;
+};
+
 export type JoinResult = { result: 'joined' | 'spectating' | 'full' | 'closed' | 'not_found' | 'removed'; room_id?: string };
 
 export type PublicRoom = { id: string; code: string; host_name: string; host_avatar: string | null; host_level: number; players: number; settings: Record<string, unknown> };

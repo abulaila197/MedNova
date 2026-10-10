@@ -1,6 +1,8 @@
 // The Conqueror question bank: Yazan's 4,400 questions (10 fields x 440) in 8 styles, and drawing them.
 // Built from the clean copy by build/conqueror-bank.py. The right answer sits first in most source items,
 // so every draw shuffles the options.
+import { shuffle } from '../engine/random';
+
 
 export type Rng = () => number;
 
@@ -60,15 +62,6 @@ export function makeBank(list: readonly BankQ[]): Bank {
 }
 
 export const inMix = (field: FieldKey, mix: Mix) => mix === 'mixed' || FIELDS.find((f) => f.key === field)?.group === mix;
-
-export function shuffle<T>(list: readonly T[], rng: Rng): T[] {
-  const a = [...list];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(rng() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
 
 /** MCQ with its options shuffled and the answer index moved with them. */
 export function shuffleMcq(q: McqQ, rng: Rng): McqQ {

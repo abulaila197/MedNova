@@ -2,6 +2,8 @@
 // The Nth right answer in a row scores N; a wrong answer resets the streak to 0. After each answer the
 // result shows briefly with the clock stopped. Helpers (Solo only): remove 2 wrong, skip (keeps the
 // streak, scores 0), +10 s. Pure: (round, event) => round; time comes from event timestamps.
+import { shuffle } from '../engine/random';
+
 
 export type Kind = 'clinical' | 'basic';
 export type Style = Kind | 'mixed';
@@ -69,15 +71,6 @@ export type RoundEvent =
   | { type: 'HELPER'; kind: HelperKind; now: number };
 
 export type Rng = () => number;
-
-export function shuffle<T>(xs: T[], rng: Rng = Math.random): T[] {
-  const a = [...xs];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(rng() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
 
 const orderFor = (rng: Rng) => shuffle([0, 1, 2, 3, 4, 5], rng);
 

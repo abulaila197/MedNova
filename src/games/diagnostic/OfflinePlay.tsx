@@ -15,15 +15,7 @@ import {
   currentCase, currentSeat, dpTieBreak, offlineRecap, offlineRows, snapshotOffline, startOffline, stepOffline, timeLeft,
   type OfflineEvent, type OfflineRun,
 } from './offline';
-
-const shuffle = <T,>(xs: T[]) => {
-  const a = [...xs];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-};
+import { shuffle } from '../engine/random';
 
 /** Offline Multiplayer (pass and play): own case per player each round, 90 s turns, no hint (DPO1-DPO7). */
 export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
@@ -137,7 +129,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
       titleColor={who?.color}
       sub={roundText}
       slim={`${who?.name ?? ''} · ${roundText}`}
-      clock={{ label: 'Time left', ms: over ? Math.max(0, 90_000 - (r?.timeMs ?? 0)) : left, warn: !over && left <= 15_000 }}
+      clock={{ label: 'Time left', down: true, ms: over ? Math.max(0, 90_000 - (r?.timeMs ?? 0)) : left, warn: !over && left <= 15_000 }}
       wrongSeq={run.wrongSeq}
       clueSeq={run.clueSeq}
       result={

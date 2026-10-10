@@ -1,10 +1,11 @@
 // The Streak Master Offline (pass and play, SM5, SM13): each player plays their own timed round, one
 // after another, on their own shuffle of one shared pool (watching doesn't help). No helpers, no EXP;
 // the phone owner's misses still go to Learn. Turn order is shuffled once, or teams alternate (TM5).
-import { shuffle, startRound, stepRound, snapshotRound, type PlayerRound, type Rng, type Round, type RoundEvent } from './core';
+import { startRound, stepRound, snapshotRound, type PlayerRound, type Rng, type Round, type RoundEvent } from './core';
 import type { Row } from '../engine/standings';
 import type { Play } from '../engine/types';
 import { event, finishRecap, lastIndexOf, leadLine, sides, type RecapLine } from '../shell/recap';
+import { shuffle } from '../engine/random';
 
 export const POOL_SIZE = 120; // as coded
 export const COUNTDOWN_MS = 3000; // "Get ready" before each round (as coded)

@@ -9,7 +9,8 @@ import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import { GameScreen, Kick, RoundBtn } from '../shell/ui';
-import { RD, clock, search, type Riddle } from './core';
+import { clock } from '@/games/engine/clock';
+import { RD, search, type Riddle } from './core';
 import { fullName } from '../shell/names';
 import { ANSWERS, answerLabel, imageOf } from './data';
 
@@ -114,7 +115,7 @@ export function RiddleBoard(p: BoardProps) {
               <Text style={[s.barK, { color: p.lockMs ? bad : t.dim }]}>{p.lockMs ? `LOCKED ${Math.ceil(p.lockMs / 1000)} S` : 'UNLIMITED GUESSES'}</Text>
             )}
             <Text style={[s.clock, { color: warn ? bad : t.white }]} accessibilityLabel={p.countdown ? `${Math.ceil(p.clockMs / 1000)} seconds left` : `Time ${clock(p.clockMs)}`}>
-              {clock(p.clockMs)}
+              {clock(p.clockMs, { down: p.countdown })}
             </Text>
           </View>
         </View>

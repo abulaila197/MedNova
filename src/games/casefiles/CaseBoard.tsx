@@ -8,7 +8,7 @@ import { u } from '@/theme/scale';
 import { searchNames } from '../shell/names';
 import { CF, completed, elapsed, invFile, scoreRun, status, type CaseDef, type FileId, type Run, type RunEvent } from './core';
 import { DIAG_INDEX, caseLabel, diagName } from './data';
-import { Btn, Card, CaseTitle, Kicker, NR, NoirScreen, PauseBtn, Stamp, T, clock } from './noir';
+import { Btn, Card, CaseTitle, Kicker, NR, NoirScreen, PauseBtn, Stamp, T, caseClock } from './noir';
 import { PinBoard } from './PinBoard';
 
 type View_ = { at: 'board' } | { at: 'file'; file: FileId } | { at: 'pick'; kind: 'dd' | 'filter' | 'provisional' | 'redemption' } | { at: 'verdict'; kind: 'provisional' | 'redemption' };
@@ -116,7 +116,7 @@ export function CaseBoard({ def, run, sealed, kicker, onEvent, onPause }: { def:
     <NoirScreen>
       <View style={s.top}>
         <View style={{ flex: 1 }}>
-          <Kicker>{`${kicker} · ${clock(elapsed(run, now))}`}</Kicker>
+          <Kicker>{`${kicker} · ${caseClock(elapsed(run, now))}`}</Kicker>
           <CaseTitle title={def.title} size={19} />
         </View>
         <PauseBtn onPress={onPause} />

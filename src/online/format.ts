@@ -12,9 +12,3 @@ export function settingsLine(def: GameDef | null | undefined, settings: Record<s
   if (def?.teams?.online) parts.push(teams >= 2 ? `${teams} teams` : 'Teams off');
   return parts.join(' · ');
 }
-
-/** Seconds as m:ss, e.g. 9:41. */
-export const mss = (ms: number) => {
-  const s = Math.max(0, Math.ceil(ms / 1000));
-  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
-};

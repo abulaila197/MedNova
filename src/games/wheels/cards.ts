@@ -2,7 +2,8 @@
 // and the reaction chain against a Tower or Moon, as a step-by-step machine the screen can drive.
 // Ported from cards.py and reactions.py, with fixes: Magician needs a third player, Mirror swap gives a
 // random card and can't target an empty hand, and the chain never asks a seat with nothing to play.
-import { shuffle, type Rng } from './core';
+import { shuffle } from '../engine/random';
+import { type Rng } from './core';
 
 export type Card = 'star' | 'sun' | 'tower' | 'magician' | 'moon' | 'hermit' | 'mirror' | 'world';
 export const CARDS: Card[] = ['star', 'sun', 'tower', 'magician', 'moon', 'hermit', 'mirror', 'world'];

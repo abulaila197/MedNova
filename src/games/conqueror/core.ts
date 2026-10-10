@@ -4,9 +4,10 @@
 
 import { indexNames, nameKey, nameKeys, searchNames, type NameIndex } from '../shell/names';
 import {
-  draw, shuffle, SOLO_STYLES, TILE_ITEMS,
+  draw, SOLO_STYLES, TILE_ITEMS,
   type Bank, type ClosestQ, type ClueQ, type Mix, type Named, type Rng, type RushQ, type SoloQ, type SoloStyle, type StandingQ, type TfQ,
 } from './bank';
+import { shuffle } from '../engine/random';
 
 export const BALANCE = {
   BOARD_PICK_SECONDS: 10,

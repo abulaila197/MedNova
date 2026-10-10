@@ -15,7 +15,7 @@ import { PauseMenu } from '../shell/PauseMenu';
 import { teamLap, teamsOf } from '../shell/teams';
 import type { PlayProps } from '../shell/types';
 import { GameScreen, Kick } from '../shell/ui';
-import { mixQueue, shuffle, startRound, streakTieBreak, timeLeft, type Style } from './core';
+import { mixQueue, startRound, streakTieBreak, timeLeft, type Style } from './core';
 import { answerOf, idsOf, poolFor, questionById } from './data';
 import { HeatBoard } from './HeatBoard';
 import {
@@ -23,6 +23,7 @@ import {
   type OfflineEvent, type OfflineRun,
 } from './offline';
 import { OverCard } from './SoloPlay';
+import { shuffle } from '../engine/random';
 
 /** Offline (SM5, SM13): each player's own timed round in turn, no helpers, no EXP; the owner's misses go to Learn. */
 export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {

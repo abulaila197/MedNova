@@ -13,6 +13,7 @@ import { F } from '@/theme/tokens';
 import { Face } from '../shell/Face';
 import { GameScreen, RoundBtn } from '../shell/ui';
 import { HELPER_PRICE, type HelperKind, type Question, type Round } from './core';
+import { clock } from '@/games/engine/clock';
 
 // The Streak Master's own design language (SM10): "Heat column".
 // The streak fills a heat tube on the left, segment by segment; the round clock is a burning fuse with
@@ -51,11 +52,6 @@ export type BoardProps = {
   children?: ReactNode;
 };
 
-const clock = (ms: number) => {
-  const s = Math.ceil(ms / 1000);
-  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
-};
-
 export function HeatBoard(p: BoardProps) {
   const t = useTheme();
   const hc = heatColors(t.mode);
@@ -82,7 +78,7 @@ export function HeatBoard(p: BoardProps) {
           <View style={s.top}>
             <Text style={[s.field, { color: t.accent }]} numberOfLines={1}>{p.hidden ? '' : p.q.field.toUpperCase()}</Text>
             <View style={s.right}>
-              <Text style={[s.clock, { color: warn ? hc.bad : t.white }]} accessibilityLabel={`${Math.ceil(p.leftMs / 1000)} seconds left`}>{clock(p.leftMs)}</Text>
+              <Text style={[s.clock, { color: warn ? hc.bad : t.white }]} accessibilityLabel={`${Math.ceil(p.leftMs / 1000)} seconds left`}>{clock(p.leftMs, { down: true })}</Text>
               <RoundBtn label="Pause" glyph="❚❚" onPress={p.onPause} />
             </View>
           </View>

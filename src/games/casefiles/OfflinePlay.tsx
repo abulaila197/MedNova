@@ -13,7 +13,7 @@ import { CaseBoard } from './CaseBoard';
 import { CasePause } from './screens';
 import { scoreRun, type RunEvent } from './core';
 import { CASES, PLAYED_KEY, caseById, caseLabel, dossierOf, type Played } from './data';
-import { Btn, Card, CaseTitle, Kicker, NR, NoirScreen, Stamp, T, clock } from './noir';
+import { Btn, Card, CaseTitle, Kicker, NR, NoirScreen, Stamp, T, caseClock } from './noir';
 import { currentSeat, finishedLines, rankOffline, ready, removeSeat, snapshotOffline, startOffline, stepOffline, type OfflineRun } from './offline';
 
 /** A case none of this phone's Solo plays has opened if there is one, else any (as coded, phone owner only). */
@@ -141,7 +141,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
                   <T size={14} lines={1} style={{ flexShrink: 1 }}>{nameOf(r.seat)}</T>
                   <Stamp word={r.score.stamp} size={8} />
                 </View>
-                <T size={11} color={NR.soft}>{`${clock(r.timeMs)} · differential +${r.score.dd} · time +${r.score.time}`}</T>
+                <T size={11} color={NR.soft}>{`${caseClock(r.timeMs)} · differential +${r.score.dd} · time +${r.score.time}`}</T>
               </View>
               <T size={18} color={NR.red} style={{ minWidth: u(30), textAlign: 'right' }}>{r.score.total}</T>
             </Animated.View>

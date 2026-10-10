@@ -5,8 +5,7 @@ import { router } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { View } from 'react-native';
 
-import { supabase } from '@/lib/supabase';
-import { leaveRoom } from '@/online/api';
+import { invoke, leaveRoom } from '@/online/api';
 import { finishOnline, playForMatch } from '@/online/finish';
 import { settingsLine } from '@/online/format';
 import { AlertPill, Countdown, useAlerts } from '@/online/live';
@@ -45,8 +44,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
       if (busy.current) return;
       busy.current = true;
       try {
-        const { error } = await supabase.functions.invoke('conqueror', { body: { m: matchId, action } });
-        if (error) throw error;
+        await invoke('conqueror', { m: matchId, action });
       } catch {
         setNotice('Couldn’t send that. Check your connection.');
       } finally {
@@ -62,7 +60,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
     if (Date.now() - lastTick.current < 1200) return;
     lastTick.current = Date.now();
     try {
-      await supabase.functions.invoke('conqueror', { body: { m: matchId, action: { type: 'tick' } } });
+      await invoke('conqueror', { m: matchId, action: { type: 'tick' } });
     } catch {
       // The next poll tries again.
     } finally {

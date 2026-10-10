@@ -1,7 +1,7 @@
 import { AppState } from 'react-native';
 import { create } from 'zustand';
 
-import { supabase } from '@/lib/supabase';
+import { call } from '@/online/api';
 
 /** A friend or a request (FR1-FR4). `kind`: friend, incoming (they asked you) or outgoing (you asked them). */
 export type Friend = {
@@ -20,12 +20,6 @@ export type RequestResult = 'sent' | 'accepted' | 'already' | 'pending' | 'self'
 
 type State = { list: Friend[]; blocked: Blocked[]; loaded: boolean };
 export const useFriends = create<State>(() => ({ list: [], blocked: [], loaded: false }));
-
-const call = async <T>(fn: string, args?: Record<string, unknown>) => {
-  const { data, error } = await supabase.rpc(fn, args);
-  if (error) throw error;
-  return data as T;
-};
 
 /** Reloads friends, requests and blocked players from the server. */
 export async function loadFriends() {

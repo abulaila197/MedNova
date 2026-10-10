@@ -8,6 +8,7 @@ import { loadFonts } from '@/features/loading/fonts';
 import { u } from '@/theme/scale';
 
 import { GameScreen } from '../shell/ui';
+import { clock } from '@/games/engine/clock';
 
 // Case Files' own design language: "Evidence board". Creamy police folders pinned to a felt board, joined by
 // red strings, in a grey room lit from the top-left, typewriter type throughout. It carries on from the game's loading page (rain,
@@ -130,10 +131,8 @@ export function Stamp({ word, size = 30 }: { word: 'SOLVED' | 'CLOSED'; size?: n
   );
 }
 
-export const clock = (ms: number) => {
-  const sec = Math.floor(Math.max(0, ms) / 1000);
-  return `${String(Math.floor(sec / 60)).padStart(2, '0')}:${String(sec % 60).padStart(2, '0')}`;
-};
+/** The Evidence board's typed clock: 00:42. */
+export const caseClock = (ms: number, down = false) => clock(ms, { pad: true, down });
 
 export const s = StyleSheet.create({
   body: { paddingTop: u(14), paddingHorizontal: u(16), gap: u(12) },

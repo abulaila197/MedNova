@@ -12,6 +12,7 @@ import { fullName } from '../shell/names';
 import { Btn, GameScreen, Kick, RoundBtn } from '../shell/ui';
 import { DP, cluePoints, search, type Attempt, type DPCase, type GuessEntry } from './core';
 import { INDEX, guessById, guessName } from './data';
+import { clock } from '@/games/engine/clock';
 
 // The Diagnostic Pursuit case screen (v2, DP10-DP13), shared by Solo and Offline Multiplayer:
 // old clue-card style in MedNova colours, Focus mode while typing.
@@ -27,10 +28,6 @@ const DIFF_COLOR: Record<string, [string, string]> = {
   Extreme: ['#c084fc', '#7e22ce'],
 };
 
-export const clock = (ms: number) => {
-  const sec = Math.floor(ms / 1000);
-  return `${String(Math.floor(sec / 60)).padStart(2, '0')}:${String(sec % 60).padStart(2, '0')}`;
-};
 export const amber = (t: Theme) => (t.mode === 'light' ? '#b45309' : '#f59e0b');
 const alpha = (hex: string, a: number) => hex + Math.round(a * 255).toString(16).padStart(2, '0');
 
@@ -48,7 +45,8 @@ export type BoardProps = {
   sub: string;
   /** Slim line in Focus mode, e.g. "Case 2 of 5". */
   slim: string;
-  clock: { label: string; ms: number; warn?: boolean };
+  /** `down`: a countdown (Time left) rather than time taken. */
+  clock: { label: string; ms: number; warn?: boolean; down?: boolean };
   wrongSeq: number;
   clueSeq: number;
   /** false hides Skip and Reveal (Online: clues come on the clock for everyone, DPN1). */
@@ -160,7 +158,7 @@ function TopBar(p: BoardProps) {
         <RoundBtn label="Pause" glyph="❚❚" onPress={p.onPause} />
       </View>
       <View style={[s.stats, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
-        <Stat label={p.clock.label} value={clock(p.clock.ms)} color={p.clock.warn ? t.rose : amber(t)} />
+        <Stat label={p.clock.label} value={clock(p.clock.ms, { pad: true, down: p.clock.down })} color={p.clock.warn ? t.rose : amber(t)} />
         <Stat label={p.result ? 'Scored' : 'Worth now'} value={String(worth)} />
         <Stat label="Clues" value={`${p.attempt.cluesShown} / ${DP.clueCount}`} />
       </View>
@@ -195,7 +193,7 @@ function SlimBar(p: BoardProps) {
       <Text style={[s.slimT, { color: t.soft }]}>
         {p.slim}
         {dot}
-        <Text style={{ color: p.clock.warn ? t.rose : amber(t) }}>{clock(p.clock.ms)}</Text>
+        <Text style={{ color: p.clock.warn ? t.rose : amber(t) }}>{clock(p.clock.ms, { pad: true, down: p.clock.down })}</Text>
         {dot}
         {cluePoints(p.attempt.cluesShown)} pts{dot}
         {p.attempt.cluesShown} / {DP.clueCount}
@@ -377,7 +375,7 @@ function ResultCard({ r, c }: { r: BoardResult; c: DPCase }) {
 /** "75 points: 60 for 3 clues + 15 speed, in 00:51" */
 export function pointsLine(o: { outcome: BoardResult['outcome']; points: number; cluePoints: number; speedBonus: number; cluesShown: number; timeMs: number }, miss: string) {
   return o.outcome === 'right'
-    ? `${o.points} points: ${o.cluePoints} for ${o.cluesShown} ${o.cluesShown === 1 ? 'clue' : 'clues'} + ${o.speedBonus} speed, in ${clock(o.timeMs)}`
+    ? `${o.points} points: ${o.cluePoints} for ${o.cluesShown} ${o.cluesShown === 1 ? 'clue' : 'clues'} + ${o.speedBonus} speed, in ${clock(o.timeMs, { pad: true })}`
     : miss;
 }
 

@@ -6,8 +6,7 @@ import { router } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { PanResponder, View } from 'react-native';
 
-import { supabase } from '@/lib/supabase';
-import { call, leaveRoom } from '@/online/api';
+import { call, invoke, leaveRoom } from '@/online/api';
 import { finishOnline, playForMatch } from '@/online/finish';
 import { settingsLine } from '@/online/format';
 import { AlertPill, Countdown, useAlerts } from '@/online/live';
@@ -76,9 +75,8 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
         busy.current = true;
       }
       try {
-        const { data, error } = await supabase.functions.invoke('wheels', { body: { m: matchId, v: BANK_V, move } });
-        if (error) throw error;
-        if ((data as { result?: string })?.result === 'bank') setOldBank(true);
+        const data = await invoke<{ result?: string } | null>('wheels', { m: matchId, v: BANK_V, move });
+        if (data?.result === 'bank') setOldBank(true);
       } catch {
         if (move.type !== 'TICK') setNotice('Couldn’t send that. Check your connection.');
       } finally {

@@ -129,15 +129,6 @@ export function spinCombo(prev: Combo | null, rng: Rng, mix: Mix = 'mixed'): Com
   return c;
 }
 
-export function shuffle<T>(xs: readonly T[], rng: Rng): T[] {
-  const a = [...xs];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(rng() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
-
 // ---------------------------------------------------------------- one turn
 
 export type QResult = { id: string; style: Style; field: FieldKey; right: boolean; points: number; answer: Answer };

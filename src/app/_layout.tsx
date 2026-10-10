@@ -13,7 +13,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Intro } from '@/features/start/Intro';
 import { startAccount } from '@/state/account';
 import { useApp } from '@/state/app';
-import { bootStart, endIntro, useStart } from '@/state/start';
+import { bootStart, endIntro, useStart, useStartReady } from '@/state/start';
 import { View } from 'react-native';
 import { FRAME_W, useScreen } from '@/theme/scale';
 import { THEMES } from '@/theme/tokens';
@@ -26,7 +26,7 @@ bootStart();
 
 export default function RootLayout() {
   const mode = useApp((s) => s.mode);
-  const ready = useStart((s) => s.ready);
+  const ready = useStartReady();
   const intro = useStart((s) => s.intro);
   const { width, height } = useScreen();
   const [loaded] = useFonts({

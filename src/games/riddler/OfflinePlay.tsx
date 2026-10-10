@@ -14,7 +14,8 @@ import { PauseMenu } from '../shell/PauseMenu';
 import { teamLap, teamsOf } from '../shell/teams';
 import type { PlayProps } from '../shell/types';
 import { Btn, GameScreen, Kick } from '../shell/ui';
-import { clock, shuffle } from './core';
+import { clock } from '@/games/engine/clock';
+import { shuffle } from '../engine/random';
 import { RIDDLES, answerLabel, feedsLearn, riddleById, riddleName } from './data';
 import {
   currentPhoto, currentSeat, lockLeft, offlineRecap, offlineRows, riddlerTieBreak, snapshotOffline, startOffline, stepOffline, turnLeft,

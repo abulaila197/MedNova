@@ -3,7 +3,7 @@
 // are judged, rivals' cards, reserves, orders and hidden troop counts stay secret (Spy, CQ14, opens reserves and
 // played cards), and the numbers on the board don't say what hides behind them.
 import type { MatchQ, OrderQ, SoloQ } from './bank';
-import { shuffle } from './bank';
+import { shuffle } from '../engine/random';
 import { spyView, type Match, type Player, type SoloTurn, type VersusStyle } from './core';
 
 /** A short screen between phases (online.ts): intro, solo tally, versus intro and results, battle report. */

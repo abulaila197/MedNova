@@ -5,6 +5,7 @@ import { engine } from '@/games/engine';
 import { useSession } from '@/games/shell/session';
 import { supabase } from '@/lib/supabase';
 import { syncAccount } from '@/lib/sync';
+import { invoke } from '@/online/api';
 import { startInvites, stopInvites } from '@/online/invites';
 import { startPresence, stopPresence } from '@/state/friends';
 
@@ -22,7 +23,7 @@ async function loadProfile(userId: string) {
 
 function apply(session: Session | null) {
   const id = session?.user.id ?? null;
-  if (useSession.getState().userId === id) return;
+  if (useSession.getState().known && useSession.getState().userId === id) return;
   useSession.getState().setUser(id);
   useAccount.setState({ email: session?.user.email ?? null, profile: id ? useAccount.getState().profile : null });
   if (id) {
@@ -41,7 +42,10 @@ let started = false;
 export function startAccount() {
   if (started) return;
   started = true;
-  void supabase.auth.getSession().then(({ data }) => apply(data.session));
+  void supabase.auth
+    .getSession()
+    .then(({ data }) => apply(data.session))
+    .catch(() => apply(null));
   supabase.auth.onAuthStateChange((_e, session) => apply(session));
 }
 
@@ -59,8 +63,7 @@ export async function signOut() {
 
 /** Delete my account: the server removes the login and every row it owns; the phone goes back to guest. */
 export async function deleteAccount() {
-  const { error } = await supabase.functions.invoke('delete-account', { method: 'POST' });
-  if (error) throw error;
+  await invoke('delete-account');
   await supabase.auth.signOut({ scope: 'local' });
   await clearPhone();
 }

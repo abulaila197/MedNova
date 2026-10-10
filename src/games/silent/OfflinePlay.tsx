@@ -18,8 +18,9 @@ import {
   buildPlan, currentTurn, elapsed, offlineRecap, offlineRows, snapshotOffline, startOffline, stealTeamOf, stepOffline, timeLeft,
   type OfflineEvent, type OfflineRun, type TurnRecord,
 } from './offline';
-import { ChalkBtn, ChalkChip, ChalkTimer, ChalkTitle, Frame, HintCard, Kicker, Ledge, Note, Panel, PauseBtn, Peek, SL, Scores, SlateScreen, TopRow, clock, useRoom, useSlateFonts } from './slate';
+import { ChalkBtn, ChalkChip, ChalkTimer, ChalkTitle, Frame, HintCard, Kicker, Ledge, Note, Panel, PauseBtn, Peek, SL, Scores, SlateScreen, TopRow, useRoom, useSlateFonts } from './slate';
 import { ActingCard, FitBoard } from './Stage';
+import { clock } from '@/games/engine/clock';
 
 /** Offline (SA3-SA6, TMG-SA): pass the phone, secret pick, draw or act, "Who got it?", steal, reveal. */
 export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {

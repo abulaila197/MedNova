@@ -258,11 +258,6 @@ export function PausedCover() {
   );
 }
 
-export const clock = (ms: number) => {
-  const t = Math.round(ms / 1000);
-  return `${Math.floor(t / 60)}:${String(t % 60).padStart(2, '0')}`;
-};
-
 const s = StyleSheet.create({
   body: { paddingHorizontal: u(14), paddingTop: u(12), gap: u(10) },
   kick: { fontFamily: SL.body, fontSize: u(11), letterSpacing: u(1.2) },

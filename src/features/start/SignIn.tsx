@@ -8,6 +8,7 @@ import Svg, { Path } from 'react-native-svg';
 
 import { TopInset } from '@/components/TopInset';
 import { supabase } from '@/lib/supabase';
+import { call } from '@/online/api';
 import { useTheme } from '@/state/app';
 import { u, useScreen } from '@/theme/scale';
 import { F } from '@/theme/tokens';
@@ -150,9 +151,8 @@ export function SignIn() {
     act(async () => {
       const name = username.trim();
       if (!/^[A-Za-z0-9_]{3,16}$/.test(name)) throw new Error('Usernames use 3 to 16 letters, numbers or _.');
-      const free = await supabase.rpc('username_available', { name });
-      if (free.error) throw free.error;
-      if (!free.data) throw new Error('That username is taken. Try another.');
+      const free = await call<boolean>('username_available', { name });
+      if (!free) throw new Error('That username is taken. Try another.');
       const { data, error } = await supabase.auth.signUp({ email: mail(), password, options: { data: { username: name, display_name: name } } });
       if (error) throw error;
       if (data.session) return enter(); // email confirmation switched off on the server

@@ -4,8 +4,7 @@
 import { router } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { leaveRoom } from '@/online/api';
-import { supabase } from '@/lib/supabase';
+import { invoke, leaveRoom } from '@/online/api';
 
 import type { OnlineProps } from '../shell/types';
 import type { TmnEnvelope } from './online';
@@ -38,7 +37,7 @@ export function OnlinePlay({ matchId, roomId, me }: OnlineProps) {
 
   const send = useCallback(
     async (action: { type: string; [k: string]: unknown } | null) => {
-      await supabase.functions.invoke('trust-me-not', { body: { m: matchId, action } }).catch(() => {});
+      await invoke('trust-me-not', { m: matchId, action }).catch(() => {});
       load();
     },
     [matchId, load],

@@ -18,6 +18,7 @@ export const v = (n: number) => u((n * 282) / 360);
 
 import { GameScreen } from '../shell/ui';
 import { CARDS, type CardType } from './core';
+import { clock } from '@/games/engine/clock';
 
 export const AT = {
   bg: '#3a2b1e',
@@ -105,7 +106,7 @@ export function Top({ kicker, title, line, seconds, right }: { kicker: string; t
         {line ? <T f={CGI} size={15} style={{ lineHeight: v(18) }}>{line}</T> : null}
       </View>
       {right}
-      {seconds != null ? <Seal text={clock(seconds)} hot={seconds <= 5} /> : null}
+      {seconds != null ? <Seal text={clock(seconds * 1000, { down: true })} hot={seconds <= 5} /> : null}
       <PauseBtn />
     </View>
   );
@@ -159,7 +160,6 @@ export function AtlasPause({ open, onResume, onLeave }: { open: boolean; onResum
   );
 }
 
-export const clock = (s: number) => `${Math.floor(Math.max(0, s) / 60)}:${String(Math.max(0, Math.ceil(s)) % 60).padStart(2, '0')}`;
 
 /** A red wax seal (the clock, or a badge). */
 export function Seal({ text, hot, size = 54 }: { text: string; hot?: boolean; size?: number }) {
