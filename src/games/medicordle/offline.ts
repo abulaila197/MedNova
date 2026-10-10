@@ -136,7 +136,6 @@ export function offlineStandings(r: OfflineRun, names: Record<number, string>): 
   }));
 }
 
-export const ROWS_NOTE = (players: number) => `${offlineRows(players)} rows, ${offlineRows(players) / players} each`;
 export { MAX_ROWS };
 
 /**

@@ -15,7 +15,6 @@ import type { GameDef } from './types';
 import { useSetup } from './useSetup';
 import { Btn, Card, Chips, GameScreen, Title } from './ui';
 
-export { SEAT_COLORS } from './useSetup';
 
 /** Shared setup: the game's options as chips. Rule 9: they lock when the game starts. `prefill` comes from "Change settings". */
 export function Setup({ def, mode, prefill, prefillSeats }: { def: GameDef; mode: Mode; prefill?: Record<string, unknown>; prefillSeats?: Seat[] }) {

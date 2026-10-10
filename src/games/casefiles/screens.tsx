@@ -117,7 +117,7 @@ function BoardCorner() {
 // ---------------------------------------------------------------- landing
 
 function Landing({ def }: { def: GameDef }) {
-  const { open, setOpen, resume, left, go, resumePlay, resumeLabel } = useLanding(def);
+  const { open, setOpen, resume, go, resumePlay, resumeLabel, note } = useLanding(def);
   return (
     <NoirScreen scroll>
       <BoardCorner />
@@ -130,36 +130,30 @@ function Landing({ def }: { def: GameDef }) {
         </View>
         {def.modes.map((m, i) => {
           const bm = resume[m.mode];
-          const l = left[m.mode];
           const isOpen = open === m.mode;
-          const note = m.soon ? 'Coming soon' : l == null ? '' : m.mode === 'online' ? 'Sign in to play' : `${l} of 3 free plays left`;
           return (
-            <Sheet key={m.mode} tilt={i % 2 ? 0.6 : -0.5} style={m.soon ? { opacity: 0.6 } : undefined}>
+            <Sheet key={m.mode} tilt={i % 2 ? 0.6 : -0.5}>
               <View style={sh.spread}>
                 <Ink size={11} color={NR.red} style={{ letterSpacing: 2 }}>{MODE_NAME[m.mode].toUpperCase()}</Ink>
-                <Ink size={10.5} color={PAPER.soft}>{note}</Ink>
+                <Ink size={10.5} color={PAPER.soft}>{note(m.mode)}</Ink>
               </View>
               <Ink size={19}>{m.title}</Ink>
               <Ink size={12.5} color={PAPER.soft}>{m.blurb}</Ink>
-              {m.soon ? null : (
-                <>
-                  <Pressable onPress={() => setOpen(isOpen ? null : m.mode)} accessibilityRole="button" accessibilityState={{ expanded: isOpen }} style={{ alignSelf: 'flex-start' }}>
-                    <Ink size={12.5} style={{ textDecorationLine: 'underline' }}>{isOpen ? 'Hide how to play' : 'How to play'}</Ink>
-                  </Pressable>
-                  {isOpen
-                    ? m.howTo.map((step, j) => (
-                        <View key={j} style={{ flexDirection: 'row', gap: u(8) }}>
-                          <Ink size={12} color={NR.red}>{String(j + 1).padStart(2, '0')}</Ink>
-                          <Ink size={12} style={{ flex: 1 }}>{step}</Ink>
-                        </View>
-                      ))
-                    : null}
-                  <View style={{ flexDirection: 'row', gap: u(8), marginTop: u(4) }}>
-                    {bm ? <PaperBtn label={resumeLabel(bm)} onPress={() => resumePlay(bm)} style={{ flex: 1 }} /> : null}
-                    <PaperBtn label={bm ? 'New game' : 'Play'} ghost={!!bm} onPress={() => go(m.mode)} style={{ flex: 1 }} />
-                  </View>
-                </>
-              )}
+              <Pressable onPress={() => setOpen(isOpen ? null : m.mode)} accessibilityRole="button" accessibilityState={{ expanded: isOpen }} style={{ alignSelf: 'flex-start' }}>
+                <Ink size={12.5} style={{ textDecorationLine: 'underline' }}>{isOpen ? 'Hide how to play' : 'How to play'}</Ink>
+              </Pressable>
+              {isOpen
+                ? m.howTo.map((step, j) => (
+                    <View key={j} style={{ flexDirection: 'row', gap: u(8) }}>
+                      <Ink size={12} color={NR.red}>{String(j + 1).padStart(2, '0')}</Ink>
+                      <Ink size={12} style={{ flex: 1 }}>{step}</Ink>
+                    </View>
+                  ))
+                : null}
+              <View style={{ flexDirection: 'row', gap: u(8), marginTop: u(4) }}>
+                {bm ? <PaperBtn label={resumeLabel(bm)} onPress={() => resumePlay(bm)} style={{ flex: 1 }} /> : null}
+                <PaperBtn label={bm ? 'New game' : 'Play'} ghost={!!bm} onPress={() => go(m.mode)} style={{ flex: 1 }} />
+              </View>
             </Sheet>
           );
         })}

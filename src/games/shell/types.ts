@@ -9,8 +9,6 @@ export type ModeDef = {
   blurb: string;
   /** Short "How to play" steps shown when the card opens. */
   howTo: string[];
-  /** Not built yet: the card shows "Coming soon" and cannot start. */
-  soon?: boolean;
 };
 
 /** A setup choice rendered as tappable chips (rule 9: locked once the game starts). */

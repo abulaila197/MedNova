@@ -6,7 +6,7 @@ import Animated, { cancelAnimation, Easing, useAnimatedStyle, useSharedValue, wi
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { scheduleOnRN } from 'react-native-worklets';
 
-import { TopInset } from '@/components/StatusMock';
+import { TopInset } from '@/components/TopInset';
 import { Intro } from '@/features/start/Intro';
 import { NAVY } from '@/features/start/Sky';
 import { useSlides } from '@/features/start/Slides';
@@ -77,7 +77,7 @@ export default function Onboarding() {
         <Animated.View style={[{ flexDirection: 'row', width: w * 3, height: h }, row]}>{slides}</Animated.View>
       </GestureDetector>
       <View pointerEvents="none" style={s.status}>
-        <TopInset color="rgba(238,240,255,0.85)" />
+        <TopInset />
       </View>
       {intro ? <Intro w={w} h={h} onDone={() => setIntro(false)} /> : null}
     </View>

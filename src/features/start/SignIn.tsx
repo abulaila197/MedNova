@@ -6,7 +6,7 @@ import { Text, TextInput } from '@/components/AppText';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Path } from 'react-native-svg';
 
-import { TopInset } from '@/components/StatusMock';
+import { TopInset } from '@/components/TopInset';
 import { supabase } from '@/lib/supabase';
 import { useTheme } from '@/state/app';
 import { u, useScreen } from '@/theme/scale';
@@ -18,7 +18,6 @@ import { Sky, Stars } from './Sky';
 // Sign-in colours from the prototype (d-auth / l-auth: `.auth` and `.auth.lite`).
 const C = {
   dark: {
-    status: 'rgba(238,240,255,0.85)',
     welcome: '#f8fbff',
     accent: '#6fd6ff',
     cardGrad: ['#10153a', '#0b0f2c'] as const,
@@ -45,7 +44,6 @@ const C = {
     agree: '#9aa0c4',
   },
   light: {
-    status: 'rgba(42,38,32,0.85)',
     welcome: '#2a2620',
     accent: '#e5833a',
     cardGrad: ['#fbf9f4', '#fbf9f4'] as const,
@@ -373,7 +371,7 @@ export function SignIn() {
     <View style={[s.root, { backgroundColor: lt ? '#e7e2d8' : '#070a1c' }]}>
       <Sky w={w} h={h} light={lt} />
       {lt ? null : <Stars si={0} hd={h / u(1)} />}
-      <TopInset color={c.status} />
+      <TopInset />
       <ScrollView
         style={{ flex: 1 }}
         contentContainerStyle={{ flexGrow: 1, paddingTop: u(14), paddingBottom: u(22) + ins.bottom, paddingHorizontal: u(18) }}

@@ -65,7 +65,7 @@ for mode in ['dark', 'light']:
             m, o = sat_matrix(0.78, 0.72 * 1.06, 0.5 * (1 - 1.06)) if k == 'the-streak-master' else sat_matrix(0.78)
             rgb = np.clip(rgb @ m.T + o, 0, 1)
 
-        # the three masks of GameArt.tsx, multiplied
+        # the three fade masks (arc, vertical, horizontal), multiplied: the phone used to draw these live
         d = np.hypot((X + 0.1 * W) / (1.4 * W), (Y + 0.04 * ART_B) / (0.92 * ART_B))
         m1 = ramp(d, 0.52, 0.74)
         p = Y / END

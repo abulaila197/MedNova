@@ -7,8 +7,6 @@ import { characterOf, CHARACTERS, freeCharacter } from './characters';
 import { presetTeam, type Team } from './teams';
 import type { GameDef } from './types';
 
-/** Player colours before characters (DPO1). Kept for older saved plays; new seats take their character's ring (AV3). */
-export const SEAT_COLORS = ['#6fd6ff', '#a48bff', '#ff7aa8', '#f5b041', '#34d399', '#ff8a5b'];
 
 /** Everything a setup page does, apart from how it looks: option values, players, teams and Start (rule 9). */
 export function useSetup(def: GameDef, mode: Mode, prefill?: Record<string, unknown>, prefillSeats?: Seat[]) {

@@ -8,7 +8,7 @@ import { AT, Btn, CardTile, CG, CGB, CGI, Chip, CZ, CZM, Kicker, PieceIcon, ROMA
 import { MapChart } from './AtlasMap';
 import type { Named, SoloStyle } from './bank';
 import { indexNames } from '../shell/names';
-import { BALANCE, CARDS, landsOf, suggest, type CardType, type SoloTurn, type VersusStyle } from './core';
+import { BALANCE, CARDS, suggest, type CardType, type SoloTurn, type VersusStyle } from './core';
 import NAMES from './data/names.json';
 import type { AtlasMap } from './map';
 import { colorOf, landViews, Players, stageLine, type Act } from './pages';
@@ -650,7 +650,6 @@ export function Waiting({ text }: { text: string }) {
   );
 }
 
-export const landsHeld = (m: MatchView, id: string) => landsOf(m, id).length;
 export { SECRET };
 
 const s = StyleSheet.create({

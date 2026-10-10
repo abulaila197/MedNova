@@ -8,7 +8,6 @@ import { create } from 'zustand';
 import { LevelBadge } from '@/components/LevelBadge';
 import { Face } from '@/games/shell/Face';
 import { useAccount } from '@/state/account';
-import { useTheme } from '@/state/app';
 import { mss } from '@/online/format';
 import { acceptInvite, challenge, useInvites } from '@/online/invites';
 import { type Friend, respondFriend, seenLabel, unblockUser, useFriends } from '@/state/friends';

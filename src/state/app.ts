@@ -12,25 +12,21 @@ type AppState = {
   mode: Mode;
   menuOpen: boolean;
   reportOpen: boolean;
-  playing: string | null;
   setMode: (m: Mode) => void;
   setMenu: (open: boolean) => void;
   setReport: (open: boolean) => void;
-  setPlaying: (name: string | null) => void;
 };
 
 export const useApp = create<AppState>((set) => ({
   mode: 'dark',
   menuOpen: false,
   reportOpen: false,
-  playing: null,
   setMode: (mode) => {
     set({ mode });
     void kv.set(MODE_KEY, mode);
   },
   setMenu: (menuOpen) => set({ menuOpen }),
   setReport: (reportOpen) => set({ reportOpen }),
-  setPlaying: (playing) => set({ playing }),
 }));
 
 void kv.get<Mode>(MODE_KEY).then((m) => {

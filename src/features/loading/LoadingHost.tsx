@@ -4,9 +4,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withDelay, withSequence, withTiming } from 'react-native-reanimated';
 
-import { GAMES } from '@/data/games';
 import { gameDef } from '@/games/shell/registry';
-import { useApp } from '@/state/app';
 
 import { LOAD, wipeColor } from './configs';
 import { loadFontsFor } from './fonts';
@@ -85,8 +83,6 @@ function Run({ run }: { run: LoadRun }) {
   // Way out: the bar becomes a line that grows out to both edges, rises to the top and sweeps the next screen in.
   const wipe = () => {
     setStage('out');
-    const def = gameDef(run.key);
-    const g0 = GAMES.find((x) => x.key === run.key)!;
     const go = (x0: number, w: number, y0: number) => {
       line.l.value = x0;
       line.w.value = w;
@@ -98,12 +94,8 @@ function Run({ run }: { run: LoadRun }) {
       // on the JavaScript side (it opens underneath while the page still covers everything) can't stall it.
       line.y.value = withSequence(withDelay(300, withTiming(0, { duration: 350, easing: IN_OUT })), withTiming(H + 4, { duration: 1000, easing: IN_OUT }));
       clip.value = withDelay(650, withTiming(H + 4, { duration: 1000, easing: IN_OUT }));
-      if (def) router.push(`/play/${run.key}`);
-      setTimeout(() => {
-        useLoading.getState().end();
-        // Games not built yet keep the old "game screen" note on the Games page.
-        if (!def) useApp.getState().setPlaying(`${g0.lead} ${g0.em}`);
-      }, 1680);
+      router.push(`/play/${run.key}`);
+      setTimeout(() => useLoading.getState().end(), 1680);
     };
     if (!bar.current || !host.current) return go(0, W, H / 2);
     host.current.measureInWindow((hx, hy) =>

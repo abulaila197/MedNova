@@ -25,7 +25,6 @@ export const REMOVE_COUNT = 2;
 export const ADD_MS = 10_000;
 /** Result shows this long with the clock stopped (as coded); a miss stays longer so the right answer can be read. */
 export const FEEDBACK_MS = { right: 1000, wrong: 1700 };
-export const LENGTHS = [60, 90, 120];
 
 export type Answer = {
   qId: string;

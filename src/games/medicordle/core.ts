@@ -12,7 +12,6 @@ export type Mark = 'ok' | 'near' | 'off' | 'missing';
 export const MAX_ROWS = 6;
 export const CLASSIC_LEN = 6;
 export const CUSTOM_MIN = 7;
-export const CUSTOM_MAX = 15;
 
 /** NM23: up to two letter hints per Custom word, 1 token then 2 tokens. */
 export const HINT_COSTS = [1, 2];
@@ -151,8 +150,6 @@ const EPOCH = Date.UTC(2026, 9, 1);
 export function dayNumber(d: Date): number {
   return Math.floor((Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) - EPOCH) / 86_400_000);
 }
-
-export const dayKey = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 
 /** Small seeded generator, so every phone shuffles the bank the same way. */
 export function seeded(seed: number) {

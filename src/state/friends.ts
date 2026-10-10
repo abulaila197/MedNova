@@ -76,7 +76,6 @@ export function seenLabel(lastSeen: string | null, now = Date.now()) {
   if (d < 30) return `${d} DAYS AGO`;
   return 'A WHILE AGO';
 }
-export const isOnline = (lastSeen: string | null) => seenLabel(lastSeen) === 'ONLINE';
 
 let beat: ReturnType<typeof setInterval> | null = null;
 let sub: { remove: () => void } | null = null;

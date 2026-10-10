@@ -54,7 +54,6 @@ export const joinRoom = (code: string, wanted?: string) => call<JoinResult>('joi
 export const joinRoomId = (r: string, wanted?: string) => call<JoinResult>('join_room_id', { r, wanted: wanted ?? null });
 export const leaveRoom = (r: string) => call<void>('leave_room', { r });
 export const roomState = (r: string) => call<RoomState>('room_state', { r });
-export const myRoom = () => call<string | null>('my_room');
 export const setCharacter = (r: string, slug: string) => call<void>('set_character', { r, slug });
 export const setReady = (r: string, on: boolean) => call<void>('set_ready', { r, on_: on });
 export const updateRoom = (r: string, settings: Record<string, unknown>, isPublic: boolean) => call<void>('update_room', { r, settings, is_public: isPublic });

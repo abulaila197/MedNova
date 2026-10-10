@@ -32,7 +32,7 @@ function BackLink({ label, to }: { label: string; to: string }) {
 // ---------------------------------------------------------------- landing
 
 function Landing({ def }: { def: GameDef }) {
-  const { open, setOpen, resume, left, go, resumePlay, resumeLabel } = useLanding(def);
+  const { open, setOpen, resume, go, resumePlay, resumeLabel, note } = useLanding(def);
   return (
     <VelvetScreen scroll>
       <View style={{ gap: u(3) }}>
@@ -43,37 +43,31 @@ function Landing({ def }: { def: GameDef }) {
       </View>
       {def.modes.map((m) => {
         const bm = resume[m.mode];
-        const l = left[m.mode];
         const isOpen = open === m.mode;
-        const note = m.soon ? 'Coming soon' : l == null ? '' : m.mode === 'online' ? 'Sign in to play' : `${l} of 3 free plays left`;
         return (
-          <View key={m.mode} style={m.soon ? { opacity: 0.6 } : undefined}>
+          <View key={m.mode}>
             <Bill>
               <View style={s.spread}>
                 <T f={CB} size={11} color={VV.redInk} style={{ letterSpacing: u(2) }}>{MODE_NAME[m.mode].toUpperCase()}</T>
-                <T f={CM} size={10.5} color={VV.paperSoft}>{note}</T>
+                <T f={CM} size={10.5} color={VV.paperSoft}>{note(m.mode)}</T>
               </View>
               <T f={CD} size={18} color={VV.paperInk}>{m.title}</T>
               <T size={12.5} color={VV.paperSoft}>{m.blurb}</T>
-              {m.soon ? null : (
-                <>
-                  <Pressable onPress={() => setOpen(isOpen ? null : m.mode)} accessibilityRole="button" accessibilityState={{ expanded: isOpen }} style={{ alignSelf: 'flex-start' }}>
-                    <T f={CB} size={12} color={VV.paperInk} style={{ textDecorationLine: 'underline' }}>{isOpen ? 'Hide how to play' : 'How to play'}</T>
-                  </Pressable>
-                  {isOpen
-                    ? m.howTo.map((step, j) => (
-                        <View key={j} style={{ flexDirection: 'row', gap: u(8) }}>
-                          <T f={CB} size={12.5} color={VV.redInk} style={{ width: u(26) }}>{ROMAN[j] ?? String(j + 1)}</T>
-                          <T size={12} color={VV.paperInk} style={{ flex: 1 }}>{step}</T>
-                        </View>
-                      ))
-                    : null}
-                  <View style={{ flexDirection: 'row', gap: u(8), marginTop: u(4) }}>
-                    {bm ? <Btn label={resumeLabel(bm)} onPress={() => resumePlay(bm)} style={{ flex: 1 }} /> : null}
-                    {bm ? <Btn label="New game" paper onPress={() => go(m.mode)} style={{ flex: 1 }} /> : <Btn label="Play" onPress={() => go(m.mode)} style={{ flex: 1 }} />}
-                  </View>
-                </>
-              )}
+              <Pressable onPress={() => setOpen(isOpen ? null : m.mode)} accessibilityRole="button" accessibilityState={{ expanded: isOpen }} style={{ alignSelf: 'flex-start' }}>
+                <T f={CB} size={12} color={VV.paperInk} style={{ textDecorationLine: 'underline' }}>{isOpen ? 'Hide how to play' : 'How to play'}</T>
+              </Pressable>
+              {isOpen
+                ? m.howTo.map((step, j) => (
+                    <View key={j} style={{ flexDirection: 'row', gap: u(8) }}>
+                      <T f={CB} size={12.5} color={VV.redInk} style={{ width: u(26) }}>{ROMAN[j] ?? String(j + 1)}</T>
+                      <T size={12} color={VV.paperInk} style={{ flex: 1 }}>{step}</T>
+                    </View>
+                  ))
+                : null}
+              <View style={{ flexDirection: 'row', gap: u(8), marginTop: u(4) }}>
+                {bm ? <Btn label={resumeLabel(bm)} onPress={() => resumePlay(bm)} style={{ flex: 1 }} /> : null}
+                {bm ? <Btn label="New game" paper onPress={() => go(m.mode)} style={{ flex: 1 }} /> : <Btn label="Play" onPress={() => go(m.mode)} style={{ flex: 1 }} />}
+              </View>
             </Bill>
           </View>
         );

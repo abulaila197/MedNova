@@ -6,7 +6,7 @@ import { Dock, type Tab } from '@/components/Dock';
 import { Glow } from '@/components/Glow';
 import { Grain } from '@/components/Grain';
 import { Header } from '@/components/Header';
-import { TopInset } from '@/components/StatusMock';
+import { TopInset } from '@/components/TopInset';
 import { useTheme } from '@/state/app';
 import { useScreen } from '@/theme/scale';
 
@@ -25,7 +25,7 @@ export function Screen({ children, tab = null, glow = 0, header = true, dock = t
       <Glow delay={glow} w={width} h={height} />
       <Grain />
       {under}
-      <TopInset color={t.fg} />
+      <TopInset />
       {header ? <Header variant={game ? 'game' : 'app'} /> : null}
       <View style={[s.body, { paddingBottom: bottom }]}>{children}</View>
       {dock ? <Dock active={tab} /> : null}

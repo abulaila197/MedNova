@@ -1,6 +1,6 @@
 // Case Files Offline (pass the phone), CF8, CF10, TMG-CF: every player plays the whole same case alone, in the
 // order they were added. Results stay sealed (no stamp, no score, no discharge) until everyone has finished.
-import { CF, scoreRun, snapshot, startRun, stepRun, type CaseDef, type Run, type RunEvent, type Score } from './core';
+import { scoreRun, snapshot, startRun, stepRun, type CaseDef, type Run, type RunEvent, type Score } from './core';
 
 export type OfflinePhase = 'handoff' | 'playing' | 'done';
 
@@ -76,6 +76,3 @@ export function rankOffline(def: CaseDef, o: OfflineRun): Ranked[] {
   });
   return rows;
 }
-
-/** The highest a case can score: every differential right, the provisional, the full time bonus. */
-export const maxPoints = (def: CaseDef) => def.dd2.length * CF.points.ddRight + CF.points.provisional + CF.points.timeMax;

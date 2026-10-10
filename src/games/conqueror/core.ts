@@ -252,7 +252,6 @@ export function typedMatches(text: string, n: Named) {
 
 /** Type-ahead chips after 4 letters, up to 3, drawn from a whole style's answers so they don't give the round away. */
 export const suggest = (index: NameIndex<Named>, text: string) => searchNames(index, text, { min: BALANCE.SUGGEST_MIN_LETTERS, max: BALANCE.SUGGEST_MAX });
-export const rushIndex = (bank: Bank, field: string) => indexNames(bank.byStyle.rush.filter((q) => q.field === field).flatMap((q) => q.answers));
 export const clueIndex = (bank: Bank) => indexNames(bank.byStyle.clue.map((q) => q.answer));
 
 // ---------------------------------------------------------------- reducer

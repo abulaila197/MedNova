@@ -65,25 +65,6 @@ export function fitArt(key: string, mode: Mode): ArtFit {
   return { x: cx - ((l[0] + l[1]) / 2) * s, y: cy - (((l[2] + l[3]) / 2) * s) / AR_L + DROP, w: s, h: s / AR_L };
 }
 
-const ramp = (v: number, a: number, b: number) => Math.min(1, Math.max(0, (v - a) / (b - a)));
-
-/** Alpha stops (offset 0..1, alpha) of the vertical and horizontal parts of the arc mask. */
-export function maskStops(f: ArtFit) {
-  const B = ART_END;
-  const vert = (y: number) => {
-    const p = y / B;
-    const base = p < 0.26 ? 0 : p < 0.46 ? (p - 0.26) / 0.2 : p <= 0.82 ? 1 : Math.max(0, (1 - p) / 0.18);
-    return base * ramp(y, f.y, f.y + 40) * (1 - ramp(y, f.y + f.h - 40, f.y + f.h));
-  };
-  const hor = (x: number) => ramp(x, f.x, f.x + 40) * (1 - ramp(x, f.x + f.w - 40, f.x + f.w));
-  const sample = (fn: (v: number) => number, len: number, step: number) => {
-    const out: [number, number][] = [];
-    for (let v = 0; v <= len + 0.001; v += step) out.push([v / len, Math.round(fn(v) * 1000) / 1000]);
-    return out.filter((s, i, arr) => i === 0 || i === arr.length - 1 || !(arr[i - 1][1] === s[1] && arr[i + 1][1] === s[1]));
-  };
-  return { v: sample(vert, B, 4), h: sample(hor, W, 3) };
-}
-
 /** Ring slots by offset from the selected game: angle (deg) and diameter, as in the prototype. */
 // Offsets -5..5 so 10 games wrap; only -3..3 are visible, exactly as with 8.
 export const SLOT_OFF = [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5];

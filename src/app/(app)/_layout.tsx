@@ -4,7 +4,6 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 import { Menu } from '@/components/Menu';
-import { PlaySheet } from '@/components/PlaySheet';
 import { ReportSheet } from '@/components/ReportSheet';
 import { LoadingHost } from '@/features/loading/LoadingHost';
 import { pageCard } from '@/features/loading/snapshot';
@@ -37,7 +36,6 @@ export default function AppLayout() {
       </Animated.View>
       <LoadingHost />
       <ReportSheet />
-      <PlaySheet />
       <FriendSheets />
       <InviteBanner />
     </View>

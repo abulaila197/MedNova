@@ -20,7 +20,7 @@ export const MODE_NAME: Record<Mode, string> = { solo: 'Solo', offline: 'Offline
 export function ModeLanding({ def }: { def: GameDef }) {
   const t = useTheme();
   const g = GAMES.find((x) => x.key === def.key)!;
-  const { open, setOpen, resume, left, go, resumePlay, resumeLabel } = useLanding(def);
+  const { open, setOpen, resume, go, resumePlay, resumeLabel, note } = useLanding(def);
 
   const photo = GAME_PHOTOS[t.mode][def.key as keyof (typeof GAME_PHOTOS)['dark']];
   return (
@@ -44,13 +44,12 @@ export function ModeLanding({ def }: { def: GameDef }) {
       </View>
       {def.modes.map((m) => {
         const bm = resume[m.mode];
-        const l = left[m.mode];
         const isOpen = open === m.mode;
         return (
-          <Card key={m.mode} style={m.soon ? { opacity: 0.55 } : undefined}>
+          <Card key={m.mode}>
             <View style={s.row}>
               <Kick color={t.accent}>{MODE_NAME[m.mode]}</Kick>
-              {m.soon ? <Kick>Coming soon</Kick> : l === undefined || l === null ? null : <Kick>{m.mode === 'online' ? 'Sign in to play' : `${l} of 3 free plays left`}</Kick>}
+              {note(m.mode) ? <Kick>{note(m.mode)}</Kick> : null}
             </View>
             <Text style={[s.h, { color: t.white }]}>{m.title}</Text>
             <Body>{m.blurb}</Body>
@@ -65,12 +64,10 @@ export function ModeLanding({ def }: { def: GameDef }) {
                   </View>
                 ))
               : null}
-            {m.soon ? null : (
-              <View style={s.btns}>
+            <View style={s.btns}>
                 {bm ? <Btn label={resumeLabel(bm)} onPress={() => resumePlay(bm)} style={{ flex: 1 }} /> : null}
                 {bm ? <Ghost label="New game" onPress={() => go(m.mode)} style={{ flex: 1 }} /> : <Btn label="Play" onPress={() => go(m.mode)} style={{ flex: 1 }} />}
               </View>
-            )}
           </Card>
         );
       })}

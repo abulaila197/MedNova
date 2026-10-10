@@ -8,7 +8,7 @@ import { Text } from '@/components/AppText';
 import { u } from '@/theme/scale';
 
 import type { Card } from './cards';
-import { FIELDS, STAR_WINDOW_MS, STYLE_KEYS, STYLES, fieldName, judge, timeLeft, type Answer, type Question, type Turn, type TurnEvent } from './core';
+import { FIELDS, STAR_WINDOW_MS, STYLE_KEYS, STYLES, fieldName, timeLeft, type Answer, type Question, type Turn, type TurnEvent } from './core';
 import { Brass, Btn, BODY, BODY_B, Bulbs, CardArt, CB, CD, CM, Gem, Kicker, PauseBtn, T, VV } from './velvet';
 
 export type Strip = { seat: number; name: string; color?: string; score: number; me?: boolean }[];
@@ -366,9 +366,6 @@ export function TurnBoard({ turn, now, kicker, title, strip, tray = [], footer, 
     </View>
   );
 }
-
-/** For tests and recaps: was a stored answer right? */
-export const isRight = (q: Question, a: Answer) => judge(q, a);
 
 const s = StyleSheet.create({
   top: { flexDirection: 'row', alignItems: 'center', gap: u(12) },

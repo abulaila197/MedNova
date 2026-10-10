@@ -1,5 +1,5 @@
 // Tiny key-value port. Everything is saved on the phone first (offline-first);
-// syncing to Supabase comes after the pilot works.
+// src/lib/sync.ts copies plays up to Supabase.
 
 export interface KV {
   get<T>(key: string): Promise<T | null>;

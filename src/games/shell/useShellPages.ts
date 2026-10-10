@@ -45,7 +45,12 @@ export function useLanding(def: GameDef) {
     const i = (p.resume as { index?: number } | null)?.index;
     return `Resume ${def.itemNoun ?? 'case'} ${i != null ? i + 1 : ''}`.trim();
   };
-  return { open, setOpen, resume, left, go, resumePlay, resumeLabel };
+  /** The small note on a mode card: free plays left for a guest, or that online needs an account. */
+  const note = (mode: Mode) => {
+    const l = left[mode];
+    return l == null ? '' : mode === 'online' ? 'Sign in to play' : `${l} of 3 free plays left`;
+  };
+  return { open, setOpen, resume, go, resumePlay, resumeLabel, note };
 }
 
 /** Results logic: the phone owner's numbers, team and player tables, and the Rematch / Change settings / Back actions (rule 14). */
