@@ -1,12 +1,20 @@
 import { create } from 'zustand';
 
-/** A loading page run: which game, where its Play button sat (window y) and which Games page was showing. */
-export type LoadRun = { key: string; y: number; at: number; id: number };
+import { snapPage } from './snapshot';
 
-export const useLoading = create<{ run: LoadRun | null; start: (key: string, y: number, at: number) => void; end: () => void }>((set, get) => ({
+/** A loading page run: which game, where its Play button sat (window y) and the picture the doors are cut from. */
+export type LoadRun = { key: string; y: number; shot: string | null; id: number };
+
+type Loading = { run: LoadRun | null; busy: boolean; start: (key: string, y: number) => void; end: () => void };
+
+export const useLoading = create<Loading>((set, get) => ({
   run: null,
-  start: (key, y, at) => {
-    if (!get().run) set({ run: { key, y, at, id: Date.now() } });
+  busy: false,
+  start: (key, y) => {
+    if (get().run || get().busy) return;
+    set({ busy: true });
+    // The doors are a picture of the page at the tap, so they look exactly like it and cost nothing to move.
+    void snapPage().then((shot) => set({ run: { key, y, shot, id: Date.now() }, busy: false }));
   },
   end: () => set({ run: null }),
 }));

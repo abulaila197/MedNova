@@ -5,9 +5,8 @@
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { Platform, Pressable, StyleSheet, View, type LayoutChangeEvent, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
+import { Pressable, StyleSheet, View, type LayoutChangeEvent, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
 import { Text } from '@/components/AppText';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Circle, ClipPath, Defs, Path, RadialGradient, Rect, Stop } from 'react-native-svg';
 
 import { loadFonts } from '@/features/loading/fonts';
@@ -83,10 +82,9 @@ function Village({ month }: { month: number }) {
 /** A Trust Me Not page: the game header over the month's village, always with the dark header. */
 export function PaperScreen({ month, children, scroll = false, onPause }: { month: number; children: ReactNode; scroll?: boolean; onPause?: () => void }) {
   const ok = usePaperFonts();
-  const ins = useSafeAreaInsets();
   return (
     <ModePin.Provider value="dark">
-      <GameScreen scroll={scroll} under={<Village month={month} />} bodyStyle={{ padding: 0, gap: 0, paddingBottom: Platform.OS === 'web' ? 0 : ins.bottom }}>
+      <GameScreen scroll={scroll} under={<Village month={month} />} bodyStyle={{ padding: 0, gap: 0 }}>
         {ok ? children : null}
         {ok && onPause ? (
           <Pressable onPress={onPause} accessibilityRole="button" accessibilityLabel="Pause" hitSlop={10} style={ps.pause}>

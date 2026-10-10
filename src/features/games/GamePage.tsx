@@ -23,8 +23,8 @@ export function GamePage({ game, j, pos, active }: { game: Game; j: number; pos:
   // Play opens the game's loading page; the doors split the page at the button's middle.
   const onPlay = () => {
     const btn = play.current;
-    if (!btn) return useLoading.getState().start(game.key, 0, j);
-    btn.measureInWindow((_x, y, _w, h) => useLoading.getState().start(game.key, y + h / 2, j));
+    if (!btn) return useLoading.getState().start(game.key, 0);
+    btn.measureInWindow((_x, y, _w, h) => useLoading.getState().start(game.key, y + h / 2));
   };
   const slide = useAnimatedStyle(() => {
     const off = wrapOff(j - pos.value);

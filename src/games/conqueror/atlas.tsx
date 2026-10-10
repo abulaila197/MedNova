@@ -7,7 +7,6 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import { Pressable, StyleSheet, View, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
 import { Text } from '@/components/AppText';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Defs, Ellipse, G, LinearGradient as SvgGradient, Path, Stop, Text as SvgText } from 'react-native-svg';
 
 import { loadFonts } from '@/features/loading/fonts';
@@ -78,11 +77,10 @@ export function Room() {
 
 /** A Conqueror page: the game header over the sepia room, always in the dark header. */
 export function AtlasScreen({ children, scroll = false }: { children: ReactNode; scroll?: boolean }) {
-  const ins = useSafeAreaInsets();
   const ok = useAtlasFonts();
   return (
     <ModePin.Provider value="dark">
-      <GameScreen scroll={scroll} under={<Room />} bodyStyle={{ paddingTop: v(12), paddingHorizontal: v(14), paddingBottom: v(14) + ins.bottom, gap: v(11) }}>
+      <GameScreen scroll={scroll} under={<Room />} bodyStyle={{ paddingTop: v(12), paddingHorizontal: v(14), paddingBottom: v(14), gap: v(11) }}>
         {ok ? children : null}
       </GameScreen>
     </ModePin.Provider>

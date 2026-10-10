@@ -25,7 +25,7 @@ import { ONLINE_MS, type Move, type OnlineWheels } from './online';
 import { WheelsPause } from './screens';
 import { TurnBoard, type Strip } from './TurnBoard';
 import { Bill, Btn, Bulbs, CardArt, CD, CM, GEMS, Panel, PauseBtn, ROMAN, Rule, T, VelvetScreen, VV } from './velvet';
-import { keepSame, oneAtATime } from '@/online/poll';
+import { useMatchState } from '@/online/useMatchState';
 
 /** Every phone in a game must carry the same bank; the server checks this. */
 const BANK_V = bankVersion(BANK);
@@ -60,39 +60,13 @@ function hydrate(g: OfflineGame): OfflineGame {
 const WAITS: Partial<Record<OfflineGame['phase'], number>> = { initiation: ONLINE_MS.init, reaction: ONLINE_MS.react, redemptionOffer: ONLINE_MS.offer };
 
 export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
-  const [st, setSt] = useState<WState | null>(null);
-  const [now, setNow] = useState(Date.now());
-  const [notice, setNotice] = useState<string | null>(null);
+  const { st, load, server, notice, setNotice } = useMatchState<WState>('wc_state', matchId, { tickMs: 200 });
   const [oldBank, setOldBank] = useState(false);
   const [menu, setMenu] = useState(false);
-  const offset = useRef(0);
   const lastTick = useRef(0);
   const busy = useRef(false);
   const finishing = useRef(false);
   const { alert, push } = useAlerts();
-
-  const load = useCallback(async () => {
-    try {
-      const s = await call<WState>('wc_state', { m: matchId });
-      offset.current = s.now - Date.now();
-      setSt((prev) => keepSame(prev, s));
-    } catch {
-      setNotice('Reconnecting…');
-    }
-  }, [matchId]);
-
-  useEffect(() => {
-    load();
-    const poll = setInterval(oneAtATime(load), 1000);
-    const tick = setInterval(() => setNow(Date.now()), 200);
-    return () => (clearInterval(poll), clearInterval(tick));
-  }, [load]);
-
-  useEffect(() => {
-    if (!notice) return;
-    const id = setTimeout(() => setNotice(null), 2200);
-    return () => clearTimeout(id);
-  }, [notice]);
 
   /** One request to the referee: my move, or a nudge when a wait has run out. */
   const send = useCallback(
@@ -120,7 +94,6 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
     send({ type: 'TICK' });
   }, [send]);
 
-  const server = now + offset.current;
   const g = useMemo(() => (st?.state ? hydrate(st.state.g) : null), [st?.version, st?.state]); // eslint-disable-line react-hooks/exhaustive-deps
   const mySeat = st?.me ?? null;
   const playing = mySeat != null;

@@ -2,7 +2,6 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useState, type ReactNode } from 'react';
 import { Pressable, StyleSheet, View, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
 import { Text } from '@/components/AppText';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Defs, RadialGradient, Rect, Stop } from 'react-native-svg';
 
 import { loadFonts } from '@/features/loading/fonts';
@@ -67,10 +66,9 @@ function Room() {
 
 /** A Case Files page: the game header over the dark office. */
 export function NoirScreen({ children, scroll = false }: { children: ReactNode; scroll?: boolean }) {
-  const ins = useSafeAreaInsets();
   const fonts = useNoirFonts();
   return (
-    <GameScreen scroll={scroll} under={<Room />} bodyStyle={[s.body, { paddingBottom: u(14) + ins.bottom }]}>
+    <GameScreen scroll={scroll} under={<Room />} bodyStyle={[s.body, { paddingBottom: u(14) }]}>
       {fonts ? children : null}
     </GameScreen>
   );

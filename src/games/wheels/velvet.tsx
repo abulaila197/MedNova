@@ -6,7 +6,6 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useState, type ReactNode } from 'react';
 import { Pressable, StyleSheet, View, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
 import { Text } from '@/components/AppText';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { loadFonts } from '@/features/loading/fonts';
 import { u } from '@/theme/scale';
@@ -77,10 +76,9 @@ export function Velvet({ dark = 0 }: { dark?: number }) {
 
 /** A Wheels page: the game header over the velvet stage. */
 export function VelvetScreen({ children, scroll = false, dark = 0 }: { children: ReactNode; scroll?: boolean; dark?: number }) {
-  const ins = useSafeAreaInsets();
   const ok = useVelvetFonts();
   return (
-    <GameScreen scroll={scroll} under={<Velvet dark={dark} />} bodyStyle={{ paddingTop: u(12), paddingHorizontal: u(16), paddingBottom: u(16) + ins.bottom, gap: u(12) }}>
+    <GameScreen scroll={scroll} under={<Velvet dark={dark} />} bodyStyle={{ paddingTop: u(12), paddingHorizontal: u(16), paddingBottom: u(16), gap: u(12) }}>
       {ok ? children : null}
     </GameScreen>
   );

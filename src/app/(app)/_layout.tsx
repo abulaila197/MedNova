@@ -1,12 +1,13 @@
 import { Stack } from 'expo-router';
 import { useEffect } from 'react';
-import { Platform, Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 import { Menu } from '@/components/Menu';
 import { PlaySheet } from '@/components/PlaySheet';
 import { ReportSheet } from '@/components/ReportSheet';
 import { LoadingHost } from '@/features/loading/LoadingHost';
+import { pageCard } from '@/features/loading/snapshot';
 import { FriendSheets } from '@/features/profile/FriendSheets';
 import { InviteBanner } from '@/online/InviteBanner';
 import { useApp, useTheme } from '@/state/app';
@@ -24,22 +25,13 @@ export default function AppLayout() {
   useEffect(() => {
     p.value = withTiming(open ? 1 : 0, { duration: 450, easing: Easing.bezier(0.3, 0.7, 0.2, 1) });
   }, [open, p]);
-  // Android redraws a 3D-tilted, round-clipped page every frame, which stutters and tears; there the
-  // page slides and shrinks flat instead. iOS keeps the locked tilt.
-  const flat = Platform.OS === 'android';
-  const card = useAnimatedStyle(() =>
-    flat
-      ? { transform: [{ translateX: width * 0.66 * p.value }, { scale: 1 - 0.2 * p.value }] }
-      : {
-          borderRadius: u(34) * p.value,
-          shadowOpacity: 0.85 * p.value,
-          transform: [{ perspective: 700 }, { translateX: width * 0.66 * p.value }, { rotateY: `${-22 * p.value}deg` }, { scale: 1 - 0.2 * p.value }],
-        },
-  );
+  // The page slides and shrinks flat (Yazan, 2026-10-10): a 3D-tilted, round-clipped page is redrawn
+  // every frame on phones, which stutters and tears.
+  const card = useAnimatedStyle(() => ({ transform: [{ translateX: width * 0.66 * p.value }, { scale: 1 - 0.2 * p.value }] }));
   return (
     <View style={{ flex: 1, backgroundColor: t.sky }}>
       <Menu />
-      <Animated.View style={[s.card, { transformOrigin: 'left center' }, flat && open && { borderRadius: u(34) }, card]} renderToHardwareTextureAndroid={open}>
+      <Animated.View ref={pageCard} collapsable={false} style={[s.card, { transformOrigin: 'left center' }, open && { borderRadius: u(34) }, card]} renderToHardwareTextureAndroid={open}>
         <Stack screenOptions={{ headerShown: false, animation: 'fade', contentStyle: { backgroundColor: t.sky } }} />
         {open ? <Pressable style={s.catch} onPress={() => setMenu(false)} accessibilityLabel="Close menu" /> : null}
       </Animated.View>

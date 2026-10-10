@@ -4,7 +4,7 @@
 import { router } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { call, leaveRoom } from '@/online/api';
+import { leaveRoom } from '@/online/api';
 import { supabase } from '@/lib/supabase';
 
 import type { OnlineProps } from '../shell/types';
@@ -17,7 +17,7 @@ import { PaperScreen } from './paper';
 import type { PageProps } from './props';
 import { rules } from './engine';
 import { play, useHeartbeat, useSeasonLoop } from './sound';
-import { keepSame, oneAtATime } from '@/online/poll';
+import { useMatchState } from '@/online/useMatchState';
 
 type TState = { now: number; phase: 'countdown' | 'case' | 'done'; due: number | null; state: TmnEnvelope | null };
 
@@ -31,22 +31,10 @@ const fxFor = (t: string) => (SILENT.has(t) ? null : COIN.has(t) ? 'coin' : STAM
 const SUPPER_MS = 30000;
 
 export function OnlinePlay({ matchId, roomId, me }: OnlineProps) {
-  const [st, setSt] = useState<TState | null>(null);
-  const [now, setNow] = useState(Date.now());
+  const { st, load, server } = useMatchState<TState>('tmn_state', matchId, { quiet: true });
   const [paused, setPaused] = useState(false);
   const [lifelineSeen, setLifelineSeen] = useState<number | null>(null);
-  const offset = useRef(0);
   const lastTick = useRef(0);
-
-  const load = useCallback(async () => {
-    try {
-      const s = await call<TState>('tmn_state', { m: matchId });
-      offset.current = s.now - Date.now();
-      setSt((prev) => keepSame(prev, s));
-    } catch {
-      // The next poll tries again.
-    }
-  }, [matchId]);
 
   const send = useCallback(
     async (action: { type: string; [k: string]: unknown } | null) => {
@@ -56,15 +44,7 @@ export function OnlinePlay({ matchId, roomId, me }: OnlineProps) {
     [matchId, load],
   );
 
-  useEffect(() => {
-    load();
-    const poll = setInterval(oneAtATime(load), 1000);
-    const tick = setInterval(() => setNow(Date.now()), 250);
-    return () => (clearInterval(poll), clearInterval(tick));
-  }, [load]);
-
   // Nudge the referee when the clock has run out (or the year has not started); seats take turns so phones don't pile up.
-  const server = now + offset.current;
   useEffect(() => {
     if (!st || st.phase === 'done') return;
     const due = st.state ? st.due : null;

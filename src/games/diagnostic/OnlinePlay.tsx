@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { call, leaveRoom } from '@/online/api';
@@ -15,7 +15,7 @@ import { settingsLine } from '@/online/format';
 import { CaseBoard } from './CaseBoard';
 import { DP, type Attempt } from './core';
 import { caseById, guessName } from './data';
-import { keepSame, oneAtATime } from '@/online/poll';
+import { useMatchState } from '@/online/useMatchState';
 
 type P = {
   user_id: string;
@@ -54,34 +54,13 @@ const CASE_MS = 60_000;
  * this screen asks it for the state every second, sends guesses, and shows the result. No Skip, Reveal or Hint online.
  */
 export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
-  const [st, setSt] = useState<DPState | null>(null);
-  const [now, setNow] = useState(Date.now());
+  const { st, load, server, notice, setNotice } = useMatchState<DPState>('dp_state', matchId);
   const [wrongSeq, setWrongSeq] = useState(0);
   const [menu, setMenu] = useState(false);
-  const [notice, setNotice] = useState<string | null>(null);
-  const offset = useRef(0);
   const seen = useRef<{ key: string; solved: Set<string>; alone: boolean }>({ key: '', solved: new Set(), alone: false });
   const finishing = useRef(false);
   const { alert, push } = useAlerts();
 
-  const load = useCallback(async () => {
-    try {
-      const s = await call<DPState>('dp_state', { m: matchId });
-      offset.current = s.now - Date.now();
-      setSt((prev) => keepSame(prev, s));
-    } catch {
-      setNotice('Reconnecting…');
-    }
-  }, [matchId]);
-
-  useEffect(() => {
-    load();
-    const poll = setInterval(oneAtATime(load), 1000);
-    const tick = setInterval(() => setNow(Date.now()), 250);
-    return () => (clearInterval(poll), clearInterval(tick));
-  }, [load]);
-
-  const server = now + offset.current;
   const playing = useMemo(() => st?.players.some((p) => p.user_id === me) ?? false, [st, me]);
 
   // DPN7 alerts: someone else solved ("Sara solved it, 2nd"), and "Only you left".
@@ -146,12 +125,6 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   useEffect(() => {
     playForMatch(matchId).then((id) => id && st?.phase === 'done' && router.replace(`/play/${def.key}/results?play=${id}`));
   }, [matchId, st?.phase, def.key]);
-
-  useEffect(() => {
-    if (!notice) return;
-    const id = setTimeout(() => setNotice(null), 2200);
-    return () => clearTimeout(id);
-  }, [notice]);
 
   const leave = async () => {
     await leaveRoom(roomId).catch(() => {});

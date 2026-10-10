@@ -1,10 +1,10 @@
+import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withDelay, withSequence, withTiming } from 'react-native-reanimated';
 
 import { GAMES } from '@/data/games';
-import { GamesScreen } from '@/features/games/GamesScreen';
 import { gameDef } from '@/games/shell/registry';
 import { useApp } from '@/state/app';
 
@@ -133,19 +133,19 @@ function Run({ run }: { run: LoadRun }) {
           </Animated.View>
         </Animated.View>
       </Animated.View>
-      {stage === 'doors' ? (
+      {stage === 'doors' && run.shot ? (
         <View style={StyleSheet.absoluteFill} pointerEvents="none">
           {split === null ? (
-            <GamesCopy at={run.at} w={W} h={H} />
+            <Shot uri={run.shot} w={W} h={H} />
           ) : (
             <>
               <Animated.View style={[s.door, { top: y, height: H - y }, botDoor]}>
-                <View style={{ position: 'absolute', top: -y, width: W, height: H }}>
-                  <GamesCopy at={run.at} w={W} h={H} />
+                <View style={{ position: 'absolute', top: -y }}>
+                  <Shot uri={run.shot} w={W} h={H} />
                 </View>
               </Animated.View>
               <Animated.View style={[s.door, s.shadow, { top: 0, height: y }, topDoor]}>
-                <GamesCopy at={run.at} w={W} h={H} />
+                <Shot uri={run.shot} w={W} h={H} />
               </Animated.View>
             </>
           )}
@@ -156,16 +156,9 @@ function Run({ run }: { run: LoadRun }) {
   );
 }
 
-/**
- * A still copy of the Games page on the tapped game: the doors are made of it. Only the tapped
- * game and the visible planets are drawn, and the copy is kept as one GPU picture while it moves.
- */
-function GamesCopy({ at, w, h }: { at: number; w: number; h: number }) {
-  return (
-    <View style={{ width: w, height: h }} renderToHardwareTextureAndroid shouldRasterizeIOS>
-      <GamesScreen at={at} still />
-    </View>
-  );
+/** The page as it was at the tap: the doors are cut from this picture. */
+function Shot({ uri, w, h }: { uri: string; w: number; h: number }) {
+  return <Image source={{ uri }} style={{ width: w, height: h }} contentFit="fill" transition={0} />;
 }
 
 const s = StyleSheet.create({

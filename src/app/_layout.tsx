@@ -15,7 +15,7 @@ import { startAccount } from '@/state/account';
 import { useApp } from '@/state/app';
 import { bootStart, endIntro, useStart } from '@/state/start';
 import { View } from 'react-native';
-import { COLUMN_W, useScreen } from '@/theme/scale';
+import { FRAME_W, useScreen } from '@/theme/scale';
 import { THEMES } from '@/theme/tokens';
 
 export { CrashScreen as ErrorBoundary } from '@/components/CrashScreen';
@@ -45,8 +45,8 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1, alignItems: 'center', backgroundColor: THEMES[mode].sky }}>
       <StatusBar style={mode === 'dark' ? 'light' : 'dark'} />
-      {/* phones: the full screen; tablets: a centred column (SZ2) */}
-      <View style={{ flex: 1, width: COLUMN_W, overflow: 'hidden' }}>
+      {/* the app frame: the full screen, or a centred column (see theme/scale.ts) */}
+      <View style={{ flex: 1, width: FRAME_W, overflow: 'hidden' }}>
       <Stack screenOptions={{ headerShown: false, animation: 'fade', contentStyle: { backgroundColor: '#05050d' } }} />
       {/* returning players: the intro plays over the first page (Games or sign-in) and bursts into it */}
       {intro ? <Intro w={width} h={height} onDone={endIntro} /> : null}

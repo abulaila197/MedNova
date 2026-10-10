@@ -6,7 +6,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { View } from 'react-native';
 
 import { supabase } from '@/lib/supabase';
-import { call, leaveRoom } from '@/online/api';
+import { leaveRoom } from '@/online/api';
 import { finishOnline, playForMatch } from '@/online/finish';
 import { settingsLine } from '@/online/format';
 import { AlertPill, Countdown, useAlerts } from '@/online/live';
@@ -20,7 +20,7 @@ import { makeMap, seedOf } from './map';
 import { BoardPage, MovesPage, type Act } from './pages';
 import { CardsPage, DuelPage, HoldPage, OutBanner, SoloPage, VersusPage, type Hold } from './play';
 import type { MatchView } from './view';
-import { keepSame, oneAtATime } from '@/online/poll';
+import { useMatchState } from '@/online/useMatchState';
 
 type CPlayer = { user_id: string; name: string; character: string; dropped: boolean; rank: number | null };
 type CState = {
@@ -36,35 +36,9 @@ type CState = {
 };
 
 export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
-  const [st, setSt] = useState<CState | null>(null);
-  const [now, setNow] = useState(Date.now());
-  const [notice, setNotice] = useState<string | null>(null);
-  const offset = useRef(0);
+  const { st, load, server, notice, setNotice } = useMatchState<CState>('cq_state', matchId);
   const busy = useRef(false);
   const { alert } = useAlerts();
-
-  const load = useCallback(async () => {
-    try {
-      const s = await call<CState>('cq_state', { m: matchId });
-      offset.current = s.now - Date.now();
-      setSt((prev) => keepSame(prev, s));
-    } catch {
-      setNotice('Reconnecting…');
-    }
-  }, [matchId]);
-
-  useEffect(() => {
-    load();
-    const poll = setInterval(oneAtATime(load), 1000);
-    const tick = setInterval(() => setNow(Date.now()), 250);
-    return () => (clearInterval(poll), clearInterval(tick));
-  }, [load]);
-
-  useEffect(() => {
-    if (!notice) return;
-    const id = setTimeout(() => setNotice(null), 2200);
-    return () => clearTimeout(id);
-  }, [notice]);
 
   const act: Act = useCallback(
     async (action) => {
@@ -99,7 +73,6 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   const m = st?.state?.m ?? null;
   const players = m?.order.length ?? 0;
   const map = useMemo(() => (players ? makeMap(seedOf(matchId), players) : null), [matchId, players]);
-  const server = now + offset.current;
   const deadline = st?.state?.deadline ?? null;
   const seconds = deadline ? Math.max(0, (deadline - server) / 1000) : null;
   const meTalk = st?.players.find((p) => p.user_id === me);

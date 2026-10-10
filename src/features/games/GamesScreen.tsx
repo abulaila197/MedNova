@@ -17,18 +17,15 @@ const N = GAMES.length;
 const mod = (v: number) => ((v % N) + N) % N;
 const EASE = Easing.bezier(0.3, 0.7, 0.2, 1);
 
-/**
- * Locked Games page (decision 63): swipe through the games; the planet ring and dots follow.
- * `at` opens it on one game (the loading doors draw a copy of the page split at Play).
- */
-export function GamesScreen({ at = 0, still = false }: { at?: number; still?: boolean }) {
+/** Locked Games page (decision 63): swipe through the games; the planet ring and dots follow. */
+export function GamesScreen() {
   const t = useTheme();
   const ins = useSafeAreaInsets();
   // The horizon is drawn under the header and dock (as in the prototype, where the dock covers it).
   const bodyTop = (Platform.OS === 'web' ? u(30) : ins.top) + u(42);
-  const pos = useSharedValue(at); // unbounded page position; game = pos mod N
+  const pos = useSharedValue(0); // unbounded page position; game = pos mod N
   const start = useSharedValue(0);
-  const [sel, setSel] = useState(at);
+  const [sel, setSel] = useState(0);
 
   const go = useCallback(
     (target: number) => {
@@ -48,7 +45,6 @@ export function GamesScreen({ at = 0, still = false }: { at?: number; still?: bo
 
   // The swipe runs on the UI thread; only the settled page goes back to React.
   const pan = Gesture.Pan()
-    .enabled(!still)
     .activeOffsetX([-10, 10])
     .failOffsetY([-14, 14])
     .onStart(() => {
@@ -72,11 +68,11 @@ export function GamesScreen({ at = 0, still = false }: { at?: number; still?: bo
       <GestureDetector gesture={pan}>
         <View style={s.fill}>
           {/* only the shown game and its neighbours are mounted; the rest are off screen anyway */}
-          {GAMES.map((g, j) => (Math.abs(wrapOff(j - sel)) <= (still ? 0 : 2) ? <GamePage key={g.key} game={g} j={j} pos={pos} active={j === sel} /> : null))}
+          {GAMES.map((g, j) => (Math.abs(wrapOff(j - sel)) <= 2 ? <GamePage key={g.key} game={g} j={j} pos={pos} active={j === sel} /> : null))}
           <Dots pos={pos} onPick={jump} />
-          {GAMES.map((g, j) =>
-            !still || Math.abs(wrapOff(j - sel)) <= 3 ? <Planet key={g.key} k={g.key} j={j} pos={pos} sel={sel} mode={t.mode} onPress={() => jump(j)} /> : null,
-          )}
+          {GAMES.map((g, j) => (
+            <Planet key={g.key} k={g.key} j={j} pos={pos} sel={sel} mode={t.mode} onPress={() => jump(j)} />
+          ))}
         </View>
       </GestureDetector>
     </Screen>

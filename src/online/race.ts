@@ -1,14 +1,14 @@
 import { router } from 'expo-router';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 
 import type { PlayItem } from '@/games/engine/types';
 import { characterOf } from '@/games/shell/characters';
 import { presetTeam } from '@/games/shell/teams';
 import type { GameDef } from '@/games/shell/types';
 
-import { call, leaveRoom } from './api';
+import { leaveRoom } from './api';
 import { finishOnline, playForMatch } from './finish';
-import { keepSame, oneAtATime } from '@/online/poll';
+import { useMatchState } from './useMatchState';
 
 /** One player in a race match (Riddler, Medicordle, Streak Master online). */
 export type RacePlayer = {
@@ -96,36 +96,10 @@ export type RaceState = {
  * Also turns the finished match into a local play and opens the results (ON21).
  */
 export function useRace(def: GameDef, roomId: string, matchId: string, me: string, toItems: (st: RaceState) => Omit<PlayItem, 'id' | 'at' | 'playId'>[]) {
-  const [st, setSt] = useState<RaceState | null>(null);
-  const [now, setNow] = useState(Date.now());
-  const [notice, setNotice] = useState<string | null>(null);
-  const offset = useRef(0);
+  const { st, load, server, notice, setNotice } = useMatchState<RaceState>('race_state', matchId);
   const finishing = useRef(false);
   const items = useRef(toItems);
   items.current = toItems;
-
-  const load = useCallback(async () => {
-    try {
-      const s = await call<RaceState>('race_state', { m: matchId });
-      offset.current = s.now - Date.now();
-      setSt((prev) => keepSame(prev, s));
-    } catch {
-      setNotice('Reconnecting…');
-    }
-  }, [matchId]);
-
-  useEffect(() => {
-    load();
-    const poll = setInterval(oneAtATime(load), 1000);
-    const tick = setInterval(() => setNow(Date.now()), 250);
-    return () => (clearInterval(poll), clearInterval(tick));
-  }, [load]);
-
-  useEffect(() => {
-    if (!notice) return;
-    const id = setTimeout(() => setNotice(null), 2200);
-    return () => clearTimeout(id);
-  }, [notice]);
 
   const playing = useMemo(() => st?.players.some((p) => p.user_id === me) ?? false, [st, me]);
 
@@ -160,7 +134,6 @@ export function useRace(def: GameDef, roomId: string, matchId: string, me: strin
     router.replace(`/play/${def.key}`);
   }, [roomId, def.key]);
 
-  const server = now + offset.current;
   return { st, load, server, playing, notice, setNotice, leave };
 }
 

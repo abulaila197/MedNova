@@ -1,7 +1,6 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { Pressable, StyleSheet, View, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
 import { Text } from '@/components/AppText';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Circle } from 'react-native-svg';
 
 import { Glow } from '@/components/Glow';
@@ -64,7 +63,6 @@ export function useSlateFonts() {
 
 /** A Silent Artist page: the game header over the dark slate room. `scroll` for long pages (pick, reveal). */
 export function SlateScreen({ children, scroll = false }: { children: ReactNode; scroll?: boolean }) {
-  const ins = useSafeAreaInsets();
   const { width, height } = useScreen();
   const mode = useApp((st) => st.mode);
   const room = (
@@ -74,7 +72,7 @@ export function SlateScreen({ children, scroll = false }: { children: ReactNode;
     </View>
   );
   return (
-    <GameScreen scroll={scroll} under={room} bodyStyle={[s.body, { paddingBottom: u(14) + ins.bottom }]}>
+    <GameScreen scroll={scroll} under={room} bodyStyle={[s.body, { paddingBottom: u(14) }]}>
       {children}
     </GameScreen>
   );
