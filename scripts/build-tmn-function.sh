@@ -1,6 +1,6 @@
 #!/bin/sh
 # Builds the Trust Me Not online referee into one minified file to deploy as the 'trust-me-not' edge function
-# (verify_jwt on). The question bank it needs (ids and right choices) is bundled in.
+# (verify_jwt on). The question bank it needs (ids and right choices) is read from table tmn_keys at run time.
 set -e
 cd "$(dirname "$0")/.."
 OUT=supabase/functions/trust-me-not

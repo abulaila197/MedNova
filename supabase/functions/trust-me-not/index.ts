@@ -1,7 +1,7 @@
 // Trust Me Not online referee (rule book §10). Runs the same engine as the tests: saves the whole year in tmn_games
 // and each player's own view in tmn_views; phones read only their view with tmn_state. The question bank needed here
 // is ids and right choices only (bank.json, built by scripts/build-tmn-questions.mjs); phones hold the text. It is read
-// from the app's repository at a fixed commit (as The Conqueror does), which keeps the deployed bundle small.
+// from table tmn_keys (one row per bank version, like wc_keys), which keeps the deployed bundle small.
 // Bundled with scripts/build-tmn-function.sh.
 import { createClient } from 'npm:@supabase/supabase-js@2';
 
@@ -18,14 +18,14 @@ const cors = {
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { ...cors, 'Content-Type': 'application/json' } });
 /** Spectators read the view saved under this id. */
 const WATCHER = '00000000-0000-0000-0000-000000000000';
-/** The commit bank.json is read from; change it when the bank changes (after that commit is pushed). */
-const TMN_BANK = 'e433dc0';
+/** The tmn_keys row to read: first 12 hex of bank.json's sha256. When the bank changes, insert a new row and bump this. */
+const TMN_BANK = '809c3c285e16';
 let bank: BankRow[] | null = null;
 async function loadBank() {
   if (bank) return bank;
-  const res = await fetch(`https://raw.githubusercontent.com/abulaila197/MedNova/${TMN_BANK}/supabase/functions/trust-me-not/bank.json`);
-  if (!res.ok) throw new Error(`bank ${res.status}`);
-  return (bank = (await res.json()) as BankRow[]);
+  const { data, error } = await admin.from('tmn_keys').select('rows').eq('v', TMN_BANK).maybeSingle();
+  if (error || !data) throw new Error(`bank ${error?.message ?? 'missing'}`);
+  return (bank = data.rows as BankRow[]);
 }
 
 type Loaded = {
