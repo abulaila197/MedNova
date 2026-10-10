@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 
@@ -11,9 +11,10 @@ import { PauseMenu } from '../shell/PauseMenu';
 import type { PlayProps } from '../shell/types';
 import type { BoardHandle } from './Board';
 import { FIELDS, RECENT_KEY, WORDS, wordById } from './data';
-import { ChalkBtn, ChalkChip, ChalkTimer, ChalkTitle, Kicker, Ledge, Note, PauseBtn, Panel, SL, SlateScreen, TopRow, useRoom, useSlateFonts } from './slate';
+import { ChalkBtn, ChalkChip, ChalkTimer, ChalkTitle, Kicker, Ledge, Note, PauseBtn, Panel, SL, SlateScreen, TopRow, useSlateRoom, useSlateFonts } from './slate';
 import { soloLeft, startSolo, stepSolo, type SoloEvent, type SoloRun } from './solo';
 import { FitBoard } from './Stage';
+import { useTicker } from '../engine/useTicker';
 
 /** Saved for resume: a drawing turn is saved paused (rule 10). The board itself starts clean again. */
 const snapshot = (r: SoloRun, now: number) => (r.phase === 'drawing' ? stepSolo(r, { type: 'PAUSE', now }, WORDS) : r);
@@ -21,10 +22,9 @@ const snapshot = (r: SoloRun, now: number) => (r.phase === 'drawing' ? stepSolo(
 /** Solo practice (SA2): pick fields, draw against 60 s, then Next, Retry or Finish. Nothing asked, nothing gained. */
 export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   const fonts = useSlateFonts();
-  const R = useRoom();
+  const R = useSlateRoom();
   const [run, setRun] = useState<SoloRun | null>((play.resume as SoloRun | null) ?? null);
   const ref = useRef<SoloRun | null>(run);
-  const [now, setNow] = useState(Date.now());
   const [fields, setFields] = useState<string[]>([]);
   const board = useRef<BoardHandle>(null);
   const [ink, setInk] = useState(0);
@@ -76,15 +76,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
     [play, set, onFinish],
   );
 
-  useEffect(() => {
-    if (run?.phase !== 'drawing') return;
-    const id = setInterval(() => {
-      const n = Date.now();
-      setNow(n);
-      dispatch({ type: 'TICK', now: n });
-    }, 200);
-    return () => clearInterval(id);
-  }, [run?.phase, dispatch]);
+  const now = useTicker(run?.phase === 'drawing', 200, (n) => dispatch({ type: 'TICK', now: n }));
 
   usePauseHide(() => dispatch({ type: 'PAUSE', now: Date.now() }));
 

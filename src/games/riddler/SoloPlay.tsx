@@ -17,6 +17,7 @@ import { Btn, GameScreen, Ghost, Kick } from '../shell/ui';
 import { RD, levelExp, levelTime, livesLeft, snapshotLevel, startLevel, stepLevel, type Level, type LevelEvent } from './core';
 import { RIDDLES, answerLabel, feedsLearn, riddleById, riddleName } from './data';
 import { RiddleBoard } from './RiddleBoard';
+import { useTicker } from '../engine/useTicker';
 
 /** One finished level attempt in this session. */
 type Done = { riddleId: string; solved: boolean; stars: number; exp: number };
@@ -33,7 +34,6 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   const [session, setSession] = useState<Done[]>(saved?.session ?? []);
   const sessionRef = useRef<Done[]>(saved?.session ?? []);
   const [stored, setStored] = useState<Record<string, number>>({});
-  const [now, setNow] = useState(Date.now());
   const [notice, setNotice] = useState<string | null>(null);
   const [wrongSeq, setWrongSeq] = useState(0);
   const paying = useRef(false);
@@ -106,11 +106,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   );
 
   // The stopwatch display.
-  useEffect(() => {
-    if (level?.phase !== 'playing') return;
-    const id = setInterval(() => setNow(Date.now()), 250);
-    return () => clearInterval(id);
-  }, [level?.phase]);
+  const now = useTicker(level?.phase === 'playing', 250);
 
   usePauseHide(() => dispatch({ type: 'PAUSE', now: Date.now() }));
 

@@ -18,19 +18,19 @@ import {
   buildPlan, currentTurn, elapsed, offlineRecap, offlineRows, snapshotOffline, startOffline, stealTeamOf, stepOffline, timeLeft,
   type OfflineEvent, type OfflineRun, type TurnRecord,
 } from './offline';
-import { ChalkBtn, ChalkChip, ChalkTimer, ChalkTitle, Frame, HintCard, Kicker, Ledge, Note, Panel, PauseBtn, Peek, SL, Scores, SlateScreen, TopRow, useRoom, useSlateFonts } from './slate';
+import { ChalkBtn, ChalkChip, ChalkTimer, ChalkTitle, Frame, HintCard, Kicker, Ledge, Note, Panel, PauseBtn, Peek, SL, Scores, SlateScreen, TopRow, useSlateRoom, useSlateFonts } from './slate';
 import { ActingCard, FitBoard } from './Stage';
 import { clock } from '@/games/engine/clock';
+import { useTicker } from '../engine/useTicker';
 
 /** Offline (SA3-SA6, TMG-SA): pass the phone, secret pick, draw or act, "Who got it?", steal, reveal. */
 export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   const fonts = useSlateFonts();
-  const R = useRoom();
+  const R = useSlateRoom();
   const turnMs = (Number(play.settings.turn) || 90) * 1000;
   const performs = Number(play.settings.performs) || 1;
   const [run, setRun] = useState<OfflineRun | null>(null);
   const ref = useRef<OfflineRun | null>(null);
-  const [now, setNow] = useState(Date.now());
   const board = useRef<BoardHandle>(null);
   const drawing = useRef<Stroke[]>([]);
   const shape = useRef(1);
@@ -105,15 +105,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   );
 
   const timed = run?.phase === 'picking' || run?.phase === 'performing' || run?.phase === 'stealing';
-  useEffect(() => {
-    if (!timed) return;
-    const id = setInterval(() => {
-      const n = Date.now();
-      setNow(n);
-      dispatch({ type: 'TICK', now: n });
-    }, 200);
-    return () => clearInterval(id);
-  }, [timed, dispatch]);
+  const now = useTicker(timed, 200, (n) => dispatch({ type: 'TICK', now: n }));
 
   // A new turn starts with white chalk on a clean board.
   useEffect(() => {
@@ -260,7 +252,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
 
 /** The secret pick (SA4, SA5): choose draw or act, hold to see the 3 diseases, tap one. */
 function Pick({ run, paused, onKind, onPick }: { run: OfflineRun; paused: boolean; onKind: (k: Kind) => void; onPick: (id: string) => void }) {
-  const R = useRoom();
+  const R = useSlateRoom();
   const [show, setShow] = useState(false);
   const open = show && !paused;
   return (

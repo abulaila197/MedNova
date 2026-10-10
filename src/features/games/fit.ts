@@ -2,6 +2,7 @@
 // Port of fitArc (prototype fit.js) with the dots moved 20px lower (decision 63).
 import type { Mode } from '@/theme/tokens';
 
+// The design width again (theme/scale's DESIGN_W): scripts/bake-game-art.py runs this file in plain Node, so it can't import the app.
 export const W = 282;
 export const BODY_TOP = 72; // the shell's content area starts here
 export const SHIFT = 20; // decision 63: ring, planets, dots and art anchor sit 20px lower

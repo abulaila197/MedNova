@@ -1,7 +1,7 @@
 import { Platform, Pressable, StyleSheet, View } from 'react-native';
 import { Text, TextInput } from '@/components/AppText';
 
-import { Back } from '@/features/learn/Back';
+import { Back } from '@/components/Back';
 import { GAMES } from '@/data/games';
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';

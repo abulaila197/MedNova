@@ -11,19 +11,24 @@ import { useTheme } from '@/state/app';
 import { useScreen } from '@/theme/scale';
 
 /**
- * A page of the app: sky, drifting glow, grain, header, content, docked nav.
+ * A page of the app: sky, drifting glow, grain, header, content, docked nav. `glow` is the drift's head start in
+ * seconds (so pages don't all glow alike), or false when the page draws its own opaque background.
  * The one owner of the screen edges: the header keeps clear of the status bar, and the bottom keeps
  * clear of the phone's system buttons (the dock does it when shown, the content does it otherwise).
  */
-export function Screen({ children, tab = null, glow = 0, header = true, dock = true, under, game = false }: { children: ReactNode; tab?: Tab; glow?: number; header?: boolean; dock?: boolean; under?: ReactNode; game?: boolean }) {
+export function Screen({ children, tab = null, glow = 0, header = true, dock = true, under, game = false }: { children: ReactNode; tab?: Tab; glow?: number | false; header?: boolean; dock?: boolean; under?: ReactNode; game?: boolean }) {
   const t = useTheme();
   const { width, height } = useScreen();
   const ins = useSafeAreaInsets();
   const bottom = dock || Platform.OS === 'web' ? 0 : ins.bottom;
   return (
     <View style={[s.root, { backgroundColor: t.sky }]}>
-      <Glow delay={glow} w={width} h={height} />
-      <Grain />
+      {glow === false ? null : (
+        <>
+          <Glow delay={glow} w={width} h={height} />
+          <Grain />
+        </>
+      )}
       {under}
       <TopInset />
       {header ? <Header variant={game ? 'game' : 'app'} /> : null}

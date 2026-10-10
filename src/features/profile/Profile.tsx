@@ -5,7 +5,8 @@ import Svg, { Defs, LinearGradient as SvgLinear, Path, Stop } from 'react-native
 
 import { LevelBadge, useBalance } from '@/components/LevelBadge';
 import { Display } from '@/components/Txt';
-import { Fade, useSvgId } from '@/features/community/fx';
+import { Fade } from '@/components/Fade';
+import { useSvgId } from '@/components/svgId';
 import { FriendsSection } from '@/features/profile/Friends';
 import { PlanetSystem } from '@/features/profile/PlanetSystem';
 import { deleteAccount, useAccount } from '@/state/account';

@@ -7,7 +7,7 @@ import Animated, { interpolateColor, useAnimatedScrollHandler, useAnimatedStyle,
 
 import { Screen } from '@/components/Screen';
 import { BASIC_SHELF, CLINICAL_SHELVES, DOSSIER_TOTAL, MY_CASES, REVIEW } from '@/features/learn/data';
-import { Fade } from '@/features/learn/Fade';
+import { Fade } from '@/components/Fade';
 import { FlipCard } from '@/features/learn/FlipCard';
 import { useLearnColors } from '@/features/learn/palette';
 import { Shelf } from '@/features/learn/Shelf';

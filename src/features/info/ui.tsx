@@ -8,7 +8,7 @@ import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
-import { Fade } from './Fade';
+import { Fade } from '@/components/Fade';
 
 /** Colours of the info pages (info.css / v2 light swaps), for the active mode. */
 export function useInfo() {

@@ -4,7 +4,8 @@ import { Text } from '@/components/AppText';
 import Svg, { Circle, Defs, RadialGradient, Stop } from 'react-native-svg';
 
 import { LevelBadge, useBalance } from '@/components/LevelBadge';
-import { Fade, useSvgId } from '@/features/community/fx';
+import { Fade } from '@/components/Fade';
+import { useSvgId } from '@/components/svgId';
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';

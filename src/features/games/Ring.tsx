@@ -3,7 +3,7 @@ import Animated, { type SharedValue, useAnimatedStyle } from 'react-native-reani
 import { Circle, Defs, LinearGradient, Stop, Svg } from 'react-native-svg';
 
 import { GAMES } from '@/data/games';
-import { u } from '@/theme/scale';
+import { DESIGN_H, u } from '@/theme/scale';
 import type { Mode } from '@/theme/tokens';
 
 import { BODY_TOP, DOTS_TOP, RING_CX, RING_CY, RING_R, W } from './fit';
@@ -13,7 +13,7 @@ const RING = {
   dark: { line: '#e6deff' },
   light: { line: '#9a5a12' },
 };
-const H = 615 - BODY_TOP;
+const H = DESIGN_H - BODY_TOP;
 
 /** The big circle horizon the planets sit on: only a hairline that fades toward both edges, so the page background shows below it. */
 export function Ring({ mode, top }: { mode: Mode; top: number }) {

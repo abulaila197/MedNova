@@ -23,6 +23,7 @@ import {
 } from './offline';
 import { DoneCard } from './SoloPlay';
 import { SlideTable, TurnClock } from './Slides';
+import { useTicker } from '../engine/useTicker';
 
 const STYLE_NAME: Record<Style, string> = { classic: 'Classic', custom: 'Custom' };
 
@@ -32,7 +33,6 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   const style = (play.settings.style as Style) ?? 'classic';
   const [run, setRun] = useState<OfflineRun | null>(null);
   const runRef = useRef<OfflineRun | null>(null);
-  const [now, setNow] = useState(Date.now());
   const seatOf = useMemo(() => new Map(play.seats.map((x) => [x.seat, x])), [play.seats]);
   const names = useMemo(() => Object.fromEntries(play.seats.map((x) => [x.seat, x.name])), [play.seats]);
 
@@ -92,15 +92,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   );
 
   // The turn clock (NM9): time out passes the turn.
-  useEffect(() => {
-    if (run?.phase !== 'playing') return;
-    const id = setInterval(() => {
-      const n = Date.now();
-      setNow(n);
-      dispatch({ type: 'TICK', now: n });
-    }, 200);
-    return () => clearInterval(id);
-  }, [run?.phase, dispatch]);
+  const now = useTicker(run?.phase === 'playing', 200, (n) => dispatch({ type: 'TICK', now: n }));
 
   usePauseHide(() => dispatch({ type: 'PAUSE', now: Date.now() }));
 

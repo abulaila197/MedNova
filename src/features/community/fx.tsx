@@ -1,55 +1,10 @@
-import MaskedView from '@react-native-masked-view/masked-view';
-import { LinearGradient } from 'expo-linear-gradient';
-import { useEffect, useId, useRef, type ReactNode } from 'react';
-import { Image, type ImageSourcePropType, Platform, View, type ViewStyle } from 'react-native';
+import type { ReactNode } from 'react';
+import { Image, type ImageSourcePropType, View, type ViewStyle } from 'react-native';
 import Svg, { Defs, G, Image as SvgImage, LinearGradient as LinearGradientSvg, Mask, RadialGradient, Rect, Stop } from 'react-native-svg';
 
+import { useSvgId } from '@/components/svgId';
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
-
-/** Unique, url()-safe id for SVG defs. */
-export function useSvgId(prefix: string) {
-  return prefix + useId().replace(/[^a-zA-Z0-9]/g, '');
-}
-
-/**
- * Vertical alpha fade over any content (CSS `mask-image: linear-gradient(...)`).
- * `stops` are [offset 0..1, alpha 0..1] pairs from top to bottom.
- * Web uses a real CSS mask; native uses MaskedView with a gradient.
- */
-export function Fade({ stops, style, children }: { stops: [number, number][]; style?: ViewStyle; children: ReactNode }) {
-  const ref = useRef<View>(null);
-  const css = `linear-gradient(${stops.map(([o, a]) => `rgba(0,0,0,${a}) ${(o * 100).toFixed(2)}%`).join(', ')})`;
-  useEffect(() => {
-    if (Platform.OS !== 'web') return;
-    const el = ref.current as unknown as HTMLElement | null;
-    if (el && el.style) {
-      el.style.setProperty('mask-image', css);
-      el.style.setProperty('-webkit-mask-image', css);
-    }
-  }, [css]);
-  if (Platform.OS === 'web') {
-    return (
-      <View ref={ref} style={style}>
-        {children}
-      </View>
-    );
-  }
-  return (
-    <MaskedView
-      style={style}
-      maskElement={
-        <LinearGradient
-          style={{ flex: 1 }}
-          colors={stops.map(([, a]) => `rgba(0,0,0,${a})`) as unknown as [string, string, ...string[]]}
-          locations={stops.map(([o]) => o) as unknown as [number, number, ...number[]]}
-        />
-      }
-    >
-      {children}
-    </MaskedView>
-  );
-}
 
 /** Where a photo sits inside its box, in design px (x/y = box-relative top-left of the image). */
 export type Place = { x: number; y: number; w: number; h: number };

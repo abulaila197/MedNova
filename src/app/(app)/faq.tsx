@@ -6,7 +6,7 @@ import Svg, { Circle, Line } from 'react-native-svg';
 
 import { Screen } from '@/components/Screen';
 import { CHAPTERS, SCORING, type Faq } from '@/features/info/content';
-import { Fade } from '@/features/info/Fade';
+import { Fade } from '@/components/Fade';
 import { InfoScroll, Kicker, Rich, s as ui, useInfo } from '@/features/info/ui';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';

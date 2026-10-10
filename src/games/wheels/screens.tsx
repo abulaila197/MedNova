@@ -10,6 +10,7 @@ import { u } from '@/theme/scale';
 
 import { levelUpLine } from '../engine/levels';
 import type { Mode, Play, PlayItem, Seat } from '../engine/types';
+import { removableSeats, type PauseProps } from '../shell/PauseMenu';
 import { CHARACTERS } from '../shell/characters';
 import { Face } from '../shell/Face';
 import type { GameDef } from '../shell/types';
@@ -190,10 +191,9 @@ function Setup({ def, mode, prefill, prefillSeats }: { def: GameDef; mode: Mode;
 // ---------------------------------------------------------------- pause: intermission
 
 /** Pause + hide: a brass placard over the closed curtain. Same props as the shared PauseMenu. */
-export function WheelsPause({ open, mode, seats, keep = [], onResume, onQuit, onRemove }: { open: boolean; mode: Mode; seats?: Seat[]; keep?: number[]; onResume: () => void; onQuit: () => void; onRemove?: (seat: number) => void }) {
+export function WheelsPause({ open, mode, seats, keep, onResume, onQuit, onRemove }: PauseProps) {
   if (!open) return null;
-  const active = (seats ?? []).filter((x) => !x.removed);
-  const removable = mode === 'offline' && onRemove && active.length > 2 ? active.filter((x) => !keep.includes(x.seat)) : [];
+  const removable = removableSeats({ mode, seats, keep, onRemove });
   return (
     // A whole page over the game, so the question is hidden and the game header stays.
     <View style={[StyleSheet.absoluteFill, { zIndex: 20 }]}>

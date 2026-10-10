@@ -18,6 +18,7 @@ import {
 } from './core';
 import { answerOf, idsOf, poolFor, questionById } from './data';
 import { HeatBoard } from './HeatBoard';
+import { useTicker } from '../engine/useTicker';
 
 /** Solo bookmark: the round plus what the screen needs to resume (rules 7, 10). */
 type SoloSave = { round: Round; style: Style; lengthSec: number };
@@ -30,7 +31,6 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   const [round, setRound] = useState<Round | null>(null);
   const ref = useRef<Round | null>(null);
   const paying = useRef(false);
-  const [now, setNow] = useState(Date.now());
   const [notice, setNotice] = useState<string | null>(null);
   const [best, setBest] = useState<{ old: number; isNew: boolean } | null>(null);
 
@@ -94,15 +94,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   );
 
   // The clock: ticks while a question runs or a result shows.
-  useEffect(() => {
-    if (round?.phase !== 'playing' && round?.phase !== 'feedback') return;
-    const id = setInterval(() => {
-      const n = Date.now();
-      setNow(n);
-      dispatch({ type: 'TICK', now: n });
-    }, 150);
-    return () => clearInterval(id);
-  }, [round?.phase, dispatch]);
+  const now = useTicker(round?.phase === 'playing' || round?.phase === 'feedback', 150, (n) => dispatch({ type: 'TICK', now: n }));
 
   usePauseHide(() => dispatch({ type: 'PAUSE', now: Date.now() }));
 

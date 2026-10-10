@@ -1,7 +1,7 @@
 import { router } from 'expo-router';
 import { View } from 'react-native';
 
-import { Back } from '@/features/learn/Back';
+import { Back } from '@/components/Back';
 import { GAMES } from '@/data/games';
 import { u } from '@/theme/scale';
 

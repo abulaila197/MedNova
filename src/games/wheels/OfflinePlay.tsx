@@ -21,6 +21,7 @@ import {
 import { WheelsPause } from './screens';
 import { TurnBoard, type Strip } from './TurnBoard';
 import { Bill, Btn, Bulbs, CardArt, CB, CD, Chip, CM, Gem, Kicker, Panel, PauseBtn, ROMAN, Rule, T, VelvetScreen, VV } from './velvet';
+import { useTicker } from '../engine/useTicker';
 
 export type Seats = Map<number, { name: string; color?: string }>;
 const snapshot = (g: OfflineGame, now: number) => stepOffline(g, { type: 'PAUSE', now }, BANK, Math.random);
@@ -31,7 +32,6 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   const mix = (play.settings.mix as Mix) ?? 'mixed';
   const [g, setG] = useState<OfflineGame | null>(null);
   const ref = useRef<OfflineGame | null>(null);
-  const [now, setNow] = useState(Date.now());
   const [paused, setPaused] = useState(false);
   // Who has the phone, and where in the log each player last took it (for the recap).
   const [holder, setHolder] = useState<number | null>(null);
@@ -91,19 +91,13 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   );
 
   const timed = !!g && !paused && (g.turn?.until != null || g.redemption?.until != null || g.boss?.until != null);
-  useEffect(() => {
-    if (!timed) return;
-    const id = setInterval(() => {
-      const n = Date.now();
-      setNow(n);
-      const cur = ref.current;
-      if (!cur) return;
-      if (cur.phase === 'turn') dispatch({ type: 'TURN', e: { type: 'TICK', now: n } });
-      else if (cur.phase === 'redemption') dispatch({ type: 'RED', e: { type: 'TICK', now: n } });
-      else if (cur.phase === 'boss') dispatch({ type: 'BOSS', e: { type: 'TICK', now: n } });
-    }, 150);
-    return () => clearInterval(id);
-  }, [timed, dispatch]);
+  const now = useTicker(timed, 150, (n) => {
+    const cur = ref.current;
+    if (!cur) return;
+    if (cur.phase === 'turn') dispatch({ type: 'TURN', e: { type: 'TICK', now: n } });
+    else if (cur.phase === 'redemption') dispatch({ type: 'RED', e: { type: 'TICK', now: n } });
+    else if (cur.phase === 'boss') dispatch({ type: 'BOSS', e: { type: 'TICK', now: n } });
+  });
 
   const pause = () => {
     setPaused(true);

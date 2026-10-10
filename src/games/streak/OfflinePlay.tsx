@@ -24,6 +24,7 @@ import {
 } from './offline';
 import { OverCard } from './SoloPlay';
 import { shuffle } from '../engine/random';
+import { useTicker } from '../engine/useTicker';
 
 /** Offline (SM5, SM13): each player's own timed round in turn, no helpers, no EXP; the owner's misses go to Learn. */
 export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
@@ -32,7 +33,6 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   const lengthSec = Number(play.settings.length) || 60;
   const [run, setRun] = useState<OfflineRun | null>(null);
   const ref = useRef<OfflineRun | null>(null);
-  const [now, setNow] = useState(Date.now());
   const seatOf = useMemo(() => new Map(play.seats.map((x) => [x.seat, x])), [play.seats]);
   const names = useMemo(() => Object.fromEntries(play.seats.map((x) => [x.seat, x.name])), [play.seats]);
 
@@ -103,17 +103,8 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
     [play, style, onFinish, names],
   );
 
-  useEffect(() => {
-    const phase = run?.phase;
-    const feedback = run?.round?.phase === 'feedback';
-    if (phase !== 'countdown' && phase !== 'playing' && !feedback) return;
-    const id = setInterval(() => {
-      const n = Date.now();
-      setNow(n);
-      dispatch({ type: 'TICK', now: n });
-    }, 150);
-    return () => clearInterval(id);
-  }, [run?.phase, run?.round?.phase, dispatch]);
+  // The clock: ticks through the hand-off countdown, a question, or a result showing.
+  const now = useTicker(run?.phase === 'countdown' || run?.phase === 'playing' || run?.round?.phase === 'feedback', 150, (n) => dispatch({ type: 'TICK', now: n }));
 
   usePauseHide(() => dispatch({ type: 'PAUSE', now: Date.now() }));
 

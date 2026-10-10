@@ -5,7 +5,7 @@ import Svg, { Circle, Path } from 'react-native-svg';
 import { u } from '@/theme/scale';
 
 import { Board, type BoardHandle, type Stroke } from './Board';
-import { ChalkTitle, Frame, Note, PausedCover, SL, useRoom } from './slate';
+import { ChalkTitle, Frame, Note, PausedCover, SL, useSlateRoom } from './slate';
 
 /**
  * The framed board sized to the free space. The shape is fixed the first time it is measured for a turn
@@ -15,7 +15,7 @@ export function FitBoard({ boardKey, boardRef, shapeRef, ink, size, erase, enabl
   const [area, setArea] = useState<{ w: number; h: number } | null>(null);
   const [shape, setShape] = useState<{ key: string | number; ratio: number } | null>(null);
   const fw = SL.frameW * 2;
-  const room = useRoom();
+  const room = useSlateRoom();
   let ratio = shape?.key === boardKey ? shape.ratio : null;
   if (area && ratio == null) {
     ratio = Math.max(0.6, Math.min(1.5, (area.h - fw) / Math.max(1, area.w - fw)));
@@ -40,7 +40,7 @@ export function FitBoard({ boardKey, boardRef, shapeRef, ink, size, erase, enabl
 /** Acting turn (SA4): no board, a chalk mime in the frame and the house rules. */
 export function ActingCard({ children, paused }: { children?: ReactNode; paused?: boolean }) {
   const c = SL.chalk;
-  const room = useRoom();
+  const room = useSlateRoom();
   return (
     <View style={s.fill}>
       <Frame style={[s.act]}>

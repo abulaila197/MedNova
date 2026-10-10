@@ -4,7 +4,8 @@ import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 import Svg, { Path } from 'react-native-svg';
 
-import { Empty, Fade } from '@/features/community/fx';
+import { Fade } from '@/components/Fade';
+import { Empty } from '@/features/community/fx';
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F, type Theme } from '@/theme/tokens';

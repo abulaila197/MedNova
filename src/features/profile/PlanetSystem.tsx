@@ -1,7 +1,8 @@
 import { StyleSheet, View } from 'react-native';
 import Svg, { Circle, Defs, Ellipse, RadialGradient, Stop } from 'react-native-svg';
 
-import { Feather, useSvgId } from '@/features/community/fx';
+import { useSvgId } from '@/components/svgId';
+import { Feather } from '@/features/community/fx';
 import { Glyph } from '@/features/games/Glyph';
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';

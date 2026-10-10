@@ -10,11 +10,12 @@ import { F } from '@/theme/tokens';
 
 /**
  * A game page: the app sky and the game header (GH1), no dock, content scrolls with a gap under the header.
- * A game with its own design language passes its own background as `under` (no app glow) and body spacing.
+ * A game with its own design language passes its own (opaque) background as `under` and body spacing; the app's
+ * glow and grain are then not drawn at all, rather than drifting unseen underneath.
  */
 export function GameScreen({ children, scroll = true, top, under, bodyStyle }: { children: ReactNode; scroll?: boolean; top?: ReactNode; under?: ReactNode; bodyStyle?: StyleProp<ViewStyle> }) {
   return (
-    <Screen dock={false} glow={under ? -1 : 1} game under={under}>
+    <Screen dock={false} glow={under ? false : 1} game under={under}>
       {top}
       {scroll ? (
         <ScrollView contentContainerStyle={[s.body, bodyStyle]} showsVerticalScrollIndicator={false}>

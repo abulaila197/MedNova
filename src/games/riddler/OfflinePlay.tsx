@@ -22,6 +22,7 @@ import {
   type OfflineEvent, type OfflineRun,
 } from './offline';
 import { RiddleBoard } from './RiddleBoard';
+import { useTicker } from '../engine/useTicker';
 
 /** Offline (RD5, RD6, RD12, TMG-RD): the same picture for everyone in turn, then a reveal; no hint, no EXP. */
 export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
@@ -29,7 +30,6 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   const turnMs = (Number(play.settings.turn) || 90) * 1000;
   const [run, setRun] = useState<OfflineRun | null>(null);
   const ref = useRef<OfflineRun | null>(null);
-  const [now, setNow] = useState(Date.now());
   const seatOf = useMemo(() => new Map(play.seats.map((x) => [x.seat, x])), [play.seats]);
   const names = useMemo(() => Object.fromEntries(play.seats.map((x) => [x.seat, x.name])), [play.seats]);
 
@@ -97,15 +97,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
     [play, onFinish, names],
   );
 
-  useEffect(() => {
-    if (run?.phase !== 'playing') return;
-    const id = setInterval(() => {
-      const n = Date.now();
-      setNow(n);
-      dispatch({ type: 'TICK', now: n });
-    }, 200);
-    return () => clearInterval(id);
-  }, [run?.phase, dispatch]);
+  const now = useTicker(run?.phase === 'playing', 200, (n) => dispatch({ type: 'TICK', now: n }));
 
   usePauseHide(() => dispatch({ type: 'PAUSE', now: Date.now() }));
 

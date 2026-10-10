@@ -1,11 +1,10 @@
-import { router, useFocusEffect } from 'expo-router';
-import { useCallback, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { Platform, Pressable, StyleSheet, View } from 'react-native';
 import { Text, TextInput } from '@/components/AppText';
 
 import { LevelBadge } from '@/components/LevelBadge';
 import { GAMES } from '@/data/games';
-import { Back } from '@/features/learn/Back';
+import { Back } from '@/components/Back';
 import { Face } from '@/games/shell/Face';
 import type { GameDef } from '@/games/shell/types';
 import { Btn, Card, Chips, GameScreen, Title } from '@/games/shell/ui';
@@ -14,7 +13,8 @@ import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F, type Theme } from '@/theme/tokens';
 
-import { createRoom, JOIN_SAY, joinRoom, joinRoomId, listPublicRooms, type JoinResult, type PublicRoom } from './api';
+import { createRoom, JOIN_SAY, joinRoom, joinRoomId } from './api';
+import { lobbyOf, useJoin, useOpenRooms } from './useJoin';
 import { settingsLine } from './format';
 
 type Tab = 'join' | 'create';
@@ -63,47 +63,18 @@ function Stub({ t, on, k, title, note, onPress }: { t: Theme; on: boolean; k: st
   );
 }
 
-const lobbyOf = (def: GameDef, id: string) => router.replace(`/play/${def.key}/lobby?room=${id}`);
-
 function Join({ def }: { def: GameDef }) {
   const t = useTheme();
-  const avatar = useAccount((a) => a.profile?.avatar);
   const [code, setCode] = useState('');
-  const [msg, setMsg] = useState<string | null>(null);
-  const [busy, setBusy] = useState(false);
-  const [rooms, setRooms] = useState<PublicRoom[] | null>(null);
+  const { rooms, refresh } = useOpenRooms(def);
+  const { msg, setMsg, busy, go } = useJoin(def);
   const input = useRef<TextInput>(null);
 
-  const refresh = useCallback(() => {
-    listPublicRooms(def.key).then(setRooms).catch(() => setRooms([]));
-  }, [def.key]);
-  useFocusEffect(
-    useCallback(() => {
-      refresh();
-      const id = setInterval(refresh, 8000);
-      return () => clearInterval(id);
-    }, [refresh]),
-  );
-
-  const done = (r: JoinResult) => {
-    if ((r.result === 'joined' || r.result === 'spectating') && r.room_id) lobbyOf(def, r.room_id);
-    else setMsg(JOIN_SAY[r.result] ?? JOIN_SAY.error);
-  };
-  const go = async (fn: () => Promise<JoinResult>) => {
-    setBusy(true);
-    setMsg(null);
-    try {
-      done(await fn());
-    } catch {
-      setMsg(JOIN_SAY.error);
-    }
-    setBusy(false);
-  };
   const type = (v: string) => {
     const c = v.replace(/\D/g, '').slice(0, 6);
     setCode(c);
     setMsg(null);
-    if (c.length === 6) go(() => joinRoom(c, avatar));
+    if (c.length === 6) go((a) => joinRoom(c, a));
   };
 
   return (
@@ -147,7 +118,7 @@ function Join({ def }: { def: GameDef }) {
             <Text style={[s.rs, { color: t.mute }]} numberOfLines={1}>{settingsLine(def, r.settings)}</Text>
           </View>
           <Text style={[s.cnt, { color: t.mute }]}>{`${r.players} / 6`}</Text>
-          <Btn label="Join" onPress={() => go(() => joinRoomId(r.id, avatar))} disabled={busy} style={s.jb} />
+          <Btn label="Join" onPress={() => go((a) => joinRoomId(r.id, a))} disabled={busy} style={s.jb} />
         </View>
       ))}
     </>

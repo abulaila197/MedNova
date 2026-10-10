@@ -11,7 +11,7 @@ import { GamePage } from './GamePage';
 import { Dots, Ring } from './Ring';
 import { Planet, wrapOff } from './Planet';
 import { useTheme } from '@/state/app';
-import { u } from '@/theme/scale';
+import { DESIGN_W, u } from '@/theme/scale';
 
 const N = GAMES.length;
 const mod = (v: number) => ((v % N) + N) % N;
@@ -52,7 +52,7 @@ export function GamesScreen() {
       start.value = pos.value;
     })
     .onUpdate((e) => {
-      pos.value = start.value - e.translationX / u(282);
+      pos.value = start.value - e.translationX / u(DESIGN_W);
     })
     .onEnd((e) => {
       const base = Math.round(start.value);

@@ -2,13 +2,14 @@
 // 2026-10-07, preview pages 1 to 5): landing, sign-in notice, find or start a camp, and the lobby ("The camp is
 // gathering"). Same logic as the shared screens: useLanding for Play, the room calls in src/online/api, the room
 // state from useRoom.
-import { router, useFocusEffect } from 'expo-router';
-import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { router } from 'expo-router';
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Platform, Pressable, ScrollView, Share, StyleSheet, View } from 'react-native';
 import { TextInput } from '@/components/AppText';
 import Svg, { Line } from 'react-native-svg';
 
-import { createRoom, JOIN_SAY, joinRoom, joinRoomId, leaveRoom, listPublicRooms, rematchRoom, setReady, startMatch, updateRoom, type JoinResult, type PublicRoom } from '@/online/api';
+import { createRoom, JOIN_SAY, joinRoom, joinRoomId, leaveRoom, rematchRoom, setReady, startMatch, updateRoom } from '@/online/api';
+import { lobbyOf, useJoin, useOpenRooms } from '@/online/useJoin';
 import { useRoom } from '@/online/useRoom';
 import { useAccount } from '@/state/account';
 
@@ -175,7 +176,6 @@ const TABS: { key: Tab; label: string; title: string }[] = [
   { key: 'start', label: 'Start a camp', title: 'Start a camp' },
 ];
 
-const lobbyOf = (def: GameDef, id: string) => router.replace(`/play/${def.key}/lobby?room=${id}`);
 
 /** Online setup: the shared Join and Create (ON20), as three ledger tabs. */
 function OnlineSetup({ def, prefill }: { def: GameDef; prefill?: Record<string, unknown> }) {
@@ -203,39 +203,9 @@ function OnlineSetup({ def, prefill }: { def: GameDef; prefill?: Record<string, 
   );
 }
 
-/** A join attempt: on success go to the lobby, otherwise say why (JOIN_SAY). */
-function useJoin(def: GameDef) {
-  const avatar = useAccount((a) => a.profile?.avatar);
-  const [msg, setMsg] = useState<string | null>(null);
-  const [busy, setBusy] = useState(false);
-  const go = async (fn: (avatar?: string) => Promise<JoinResult>) => {
-    setBusy(true);
-    setMsg(null);
-    try {
-      const r = await fn(avatar);
-      if ((r.result === 'joined' || r.result === 'spectating') && r.room_id) lobbyOf(def, r.room_id);
-      else setMsg(JOIN_SAY[r.result] ?? JOIN_SAY.error);
-    } catch {
-      setMsg(JOIN_SAY.error);
-    }
-    setBusy(false);
-  };
-  return { msg, setMsg, busy, go };
-}
-
 function OpenCamps({ def }: { def: GameDef }) {
-  const [rooms, setRooms] = useState<PublicRoom[] | null>(null);
+  const { rooms } = useOpenRooms(def);
   const { msg, busy, go } = useJoin(def);
-  const refresh = useCallback(() => {
-    listPublicRooms(def.key).then(setRooms).catch(() => setRooms([]));
-  }, [def.key]);
-  useFocusEffect(
-    useCallback(() => {
-      refresh();
-      const id = setInterval(refresh, 8000);
-      return () => clearInterval(id);
-    }, [refresh]),
-  );
   return (
     <View>
       {rooms && !rooms.length ? (

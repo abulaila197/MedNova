@@ -48,7 +48,7 @@ const ROOMS = {
   },
 };
 export type Room = (typeof ROOMS)['dark'];
-export const useRoom = (): Room => ROOMS[useApp((st) => st.mode)];
+export const useSlateRoom = (): Room => ROOMS[useApp((st) => st.mode)];
 
 export const SLATE_FONTS = ['CabinSketch_700Bold', 'CabinSketch_400Regular', 'PatrickHand_400Regular'];
 
@@ -79,31 +79,31 @@ export function SlateScreen({ children, scroll = false }: { children: ReactNode;
 }
 
 export function Kicker({ children, color }: { children: ReactNode; color?: string }) {
-  const R = useRoom();
+  const R = useSlateRoom();
   color ??= R.soft;
   return <Text style={[s.kick, { color }]}>{typeof children === 'string' ? children.toUpperCase() : children}</Text>;
 }
 
 export function ChalkTitle({ children, size = 26, color, style }: { children: ReactNode; size?: number; color?: string; style?: StyleProp<TextStyle> }) {
-  const R = useRoom();
+  const R = useSlateRoom();
   color ??= R.ink;
   return <Text style={[{ fontFamily: SL.head, fontSize: u(size), lineHeight: u(size * 1.15), color }, style]}>{children}</Text>;
 }
 
 export function Note({ children, style }: { children: ReactNode; style?: StyleProp<TextStyle> }) {
-  return <Text style={[s.note, { color: useRoom().soft }, style]}>{children}</Text>;
+  return <Text style={[s.note, { color: useSlateRoom().soft }, style]}>{children}</Text>;
 }
 
 /** A small slate panel with a dashed chalk border. */
 export function Panel({ children, style }: { children: ReactNode; style?: StyleProp<ViewStyle> }) {
-  const R = useRoom();
+  const R = useSlateRoom();
   return <View style={[s.panel, { backgroundColor: R.card, borderColor: R.line }, style]}>{children}</View>;
 }
 
 /** The big board in its wooden frame, with the soft inner shadow of a real slate. */
 export function Frame({ children, style }: { children: ReactNode; style?: StyleProp<ViewStyle> }) {
   return (
-    <View style={[s.frame, { backgroundColor: useRoom().board }, style]}>
+    <View style={[s.frame, { backgroundColor: useSlateRoom().board }, style]}>
       {children}
       <View pointerEvents="none" style={[StyleSheet.absoluteFill, { boxShadow: 'inset 0 0 28px rgba(0,0,0,0.45)' }]} />
     </View>
@@ -112,7 +112,7 @@ export function Frame({ children, style }: { children: ReactNode; style?: StyleP
 
 /** Chalk-yellow main button; `ghost` is the chalk-outline one. */
 export function ChalkBtn({ label, onPress, ghost, disabled, style, color }: { label: string; onPress?: () => void; ghost?: boolean; disabled?: boolean; style?: StyleProp<ViewStyle>; color?: string }) {
-  const R = useRoom();
+  const R = useSlateRoom();
   return (
     <Pressable onPress={onPress} disabled={disabled} accessibilityRole="button" accessibilityLabel={label} style={({ pressed }) => [s.btn, ghost ? { borderWidth: 1.5, borderColor: R.line, borderStyle: 'dashed' } : { backgroundColor: color ?? R.btn }, { opacity: disabled ? 0.4 : pressed ? 0.85 : 1 }, style]}>
       <Text style={[s.btnT, { color: ghost ? R.ink : color ? '#1d2b22' : R.btnText }]}>{label}</Text>
@@ -126,7 +126,7 @@ export function ChalkTimer({ leftMs, totalMs, size = 46 }: { leftMs: number; tot
   const r = d / 2 - u(3);
   const c = 2 * Math.PI * r;
   const frac = Math.max(0, Math.min(1, leftMs / totalMs));
-  const R = useRoom();
+  const R = useSlateRoom();
   const col = leftMs <= 10_000 ? R.alarm : R.ink;
   return (
     <View style={{ width: d, height: d }} accessibilityRole="timer" accessibilityLabel={`${Math.ceil(leftMs / 1000)} seconds left`}>
@@ -141,7 +141,7 @@ export function ChalkTimer({ leftMs, totalMs, size = 46 }: { leftMs: number; tot
 
 /** The hint ladder for the room (SA5): word count, field, then the blanks filling in. */
 export function HintCard({ hint }: { hint: HintView }) {
-  const ink = { color: useRoom().ink };
+  const ink = { color: useSlateRoom().ink };
   return (
     <Panel>
       <View style={s.hintRow}>
@@ -178,7 +178,7 @@ export function Ledge({ ink, size, erase, onInk, onSize, onErase, onUndo, onClea
 /** "Hold to peek": the performer sees the disease again only while holding. */
 export function Peek({ word }: { word: string }) {
   const [on, setOn] = useState(false);
-  const R = useRoom();
+  const R = useSlateRoom();
   return (
     <Pressable onPressIn={() => setOn(true)} onPressOut={() => setOn(false)} style={[s.peek, { borderColor: R.line }]} accessibilityRole="button" accessibilityLabel="Hold to see the disease">
       <Text style={[s.peekT, { color: on ? R.mark : R.soft }]} numberOfLines={1} adjustsFontSizeToFit>
@@ -190,7 +190,7 @@ export function Peek({ word }: { word: string }) {
 
 /** The chalk-outlined pause button that sits by the timer. */
 export function PauseBtn({ onPress }: { onPress: () => void }) {
-  const R = useRoom();
+  const R = useSlateRoom();
   return (
     <Pressable onPress={onPress} hitSlop={u(8)} style={[s.pause, { borderColor: R.line }]} accessibilityRole="button" accessibilityLabel="Pause">
       <Text style={[s.pauseT, { color: R.ink }]}>❚❚</Text>
@@ -215,7 +215,7 @@ export function TopRow({ kicker, title, color, right }: { kicker: string; title:
 
 /** A chalk chip: fields in Solo, players on "Who got it?". `on` fills it with chalk. */
 export function ChalkChip({ label, on, dot, onPress, big, small }: { label: string; on?: boolean; dot?: string; onPress: () => void; big?: boolean; small?: boolean }) {
-  const R = useRoom();
+  const R = useSlateRoom();
   return (
     <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={label} accessibilityState={{ selected: !!on }} style={({ pressed }) => [s.chip, { borderColor: R.line }, big && s.chipBig, small && s.chipSmall, on && { backgroundColor: R.ink, borderStyle: 'solid', borderColor: R.ink }, pressed && { opacity: 0.8 }]}>
       {dot ? <View style={[s.dot, { backgroundColor: dot }]} /> : null}
@@ -228,7 +228,7 @@ export function ChalkChip({ label, on, dot, onPress, big, small }: { label: stri
 
 /** Chalk scoreboard rows, highest first. */
 export function Scores({ rows }: { rows: { key: string | number; name: string; score: number; color?: string; mark?: string }[] }) {
-  const R = useRoom();
+  const R = useSlateRoom();
   return (
     <View style={{ gap: u(5) }}>
       {rows.map((r, i) => (
@@ -248,7 +248,7 @@ export function Scores({ rows }: { rows: { key: string | number; name: string; s
 
 /** Covers the board while paused, so nobody studies the drawing (rule: pause + hide). */
 export function PausedCover() {
-  const R = useRoom();
+  const R = useSlateRoom();
   return (
     <View style={[StyleSheet.absoluteFill, s.cover, { backgroundColor: R.boardDeep }]}>
       <ChalkTitle size={24} color={R.boardSoft}>

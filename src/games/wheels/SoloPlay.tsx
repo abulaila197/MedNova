@@ -12,6 +12,7 @@ import { BANK } from './data';
 import { WheelsPause } from './screens';
 import { TurnBoard } from './TurnBoard';
 import { Btn, CB, CD, Kicker, Panel, Rule, T, VelvetScreen, VV } from './velvet';
+import { useTicker } from '../engine/useTicker';
 
 /** The saved run has its clock stopped, so resuming later picks up with the same time left (rules 7, 10). */
 const snapshot = (r: SoloRun, now: number): SoloRun => (r.turn && r.turn.pausedAt == null ? { ...r, turn: { ...r.turn, pausedAt: now } } : r);
@@ -22,7 +23,6 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   const mix = (play.settings.mix as Mix) ?? 'mixed';
   const [run, setRun] = useState<SoloRun | null>(null);
   const ref = useRef<SoloRun | null>(null);
-  const [now, setNow] = useState(Date.now());
   const [paused, setPaused] = useState(false);
 
   useEffect(() => {
@@ -66,15 +66,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
 
   // The clock: ticks while a timer runs (Star window, question, the right/wrong moment).
   const timed = run?.phase === 'turn' && run.turn?.until != null && !paused;
-  useEffect(() => {
-    if (!timed) return;
-    const id = setInterval(() => {
-      const n = Date.now();
-      setNow(n);
-      dispatch({ type: 'TICK', now: n });
-    }, 150);
-    return () => clearInterval(id);
-  }, [timed, dispatch]);
+  const now = useTicker(timed, 150, (n) => dispatch({ type: 'TICK', now: n }));
 
   const pause = () => {
     setPaused(true);

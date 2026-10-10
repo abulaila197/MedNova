@@ -9,23 +9,32 @@ import { F } from '@/theme/tokens';
 import type { Mode, Seat } from '../engine/types';
 import { Btn, Ghost, Kick } from './ui';
 
+/** What every game's pause menu takes (the shared one below, or a game's own look). */
+export type PauseProps = { open: boolean; mode: Mode; seats?: Seat[]; keep?: number[]; onResume: () => void; onQuit: () => void; onRemove?: (seat: number) => void };
+
+/** Rule 17: on one phone a player can be removed while more than 2 are left; `keep` (e.g. the phone owner) never can. */
+export function removableSeats({ mode, seats, keep = [], onRemove }: Pick<PauseProps, 'mode' | 'seats' | 'keep' | 'onRemove'>) {
+  const active = (seats ?? []).filter((x) => !x.removed);
+  return mode === 'offline' && onRemove && active.length > 2 ? active.filter((x) => !keep.includes(x.seat)) : [];
+}
+
 /**
  * Shared pause menu. The game hides its case while this is open (pause + hide).
  * Solo: quitting bookmarks the play (rule 7). One phone: tap a player to remove them (rule 17).
  * Settings are not here on purpose (rule 9).
  */
-export function PauseMenu({ open, mode, seats, keep = [], onResume, onQuit, onRemove }: { open: boolean; mode: Mode; seats?: Seat[]; keep?: number[]; onResume: () => void; onQuit: () => void; onRemove?: (seat: number) => void }) {
+export function PauseMenu({ open, mode, seats, keep, onResume, onQuit, onRemove }: PauseProps) {
   const t = useTheme();
-  const active = (seats ?? []).filter((x) => !x.removed);
+  const removable = removableSeats({ mode, seats, keep, onRemove });
   return (
     <Sheet open={open} onClose={onResume}>
       <Kick>{mode === 'online' ? 'Match menu' : 'Paused'}</Kick>
-      {mode === 'offline' && onRemove && active.length > 2 ? (
+      {removable.length ? (
         <View style={{ gap: u(6) }}>
           <Text style={[s.lbl, { color: t.mute }]}>Tap a player to remove them. Their turns are skipped.</Text>
           <View style={s.seats}>
-            {active.filter((x) => !keep.includes(x.seat)).map((x) => (
-              <Pressable key={x.seat} onPress={() => onRemove(x.seat)} style={[s.seat, { borderColor: t.chipLine, backgroundColor: t.chip }]} accessibilityRole="button" accessibilityLabel={`Remove ${x.name}`}>
+            {removable.map((x) => (
+              <Pressable key={x.seat} onPress={() => onRemove!(x.seat)} style={[s.seat, { borderColor: t.chipLine, backgroundColor: t.chip }]} accessibilityRole="button" accessibilityLabel={`Remove ${x.name}`}>
                 <Text style={[s.seatT, { color: t.fg }]}>{x.name} ✕</Text>
               </Pressable>
             ))}

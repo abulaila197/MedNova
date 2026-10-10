@@ -11,10 +11,10 @@ import Svg, { Defs, Ellipse, G, LinearGradient as SvgGradient, Path, Stop, Text 
 
 import { loadFonts } from '@/features/loading/fonts';
 import { ModePin } from '@/state/app';
-import { u } from '@/theme/scale';
+import { DESIGN_W, u } from '@/theme/scale';
 
 /** Sizes here are in the approved preview's pixels (a 360px phone); the app's design width is 282px. */
-export const v = (n: number) => u((n * 282) / 360);
+export const v = (n: number) => u((n * DESIGN_W) / 360);
 
 import { GameScreen } from '../shell/ui';
 import { CARDS, type CardType } from './core';

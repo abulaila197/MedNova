@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef } from 'react';
 import { Animated, Easing, StyleSheet, View } from 'react-native';
 import Svg, { Defs, RadialGradient, Rect, Stop } from 'react-native-svg';
 
-import { u } from '@/theme/scale';
+import { DESIGN_W, u } from '@/theme/scale';
 
 // Nebula sky of the start flow: three soft radial washes over deep navy (prototype `.screen`).
 export const NAVY = '#070a1c';
@@ -66,7 +66,7 @@ export function Stars({ si, hd }: { si: number; hd: number }) {
     const rnd = () => (s = (s * 9301 + 49297) % 233280) / 233280;
     const out: { key: string; c: number; ph: number; stars: { x: number; y: number; r: number }[] }[] = [];
     for (let k = 0; k < 70; k++) {
-      const x = rnd() * 282;
+      const x = rnd() * DESIGN_W;
       const y = rnd() * hd;
       const r = rnd() * 1.1 + 0.2;
       const p = rnd() * 6.28;

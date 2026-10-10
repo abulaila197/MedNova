@@ -5,7 +5,7 @@ import { Text } from '@/components/AppText';
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 import { Screen } from '@/components/Screen';
-import { Back } from '@/features/learn/Back';
+import { Back } from '@/components/Back';
 import { DOSSIER, type Field } from '@/features/learn/data';
 import { useLearnColors } from '@/features/learn/palette';
 import { VText } from '@/features/learn/VText';

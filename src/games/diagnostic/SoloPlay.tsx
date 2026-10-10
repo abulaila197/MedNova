@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import { PauseMenu } from '../shell/PauseMenu';
 import type { PlayProps } from '../shell/types';
@@ -6,18 +6,14 @@ import { GameScreen } from '../shell/ui';
 import { CaseBoard, pointsLine } from './CaseBoard';
 import { elapsed } from './solo';
 import { useSoloRun } from './useSoloRun';
+import { useTicker } from '../engine/useTicker';
 
 /** Solo: a set of cases on the shared case screen, with the paid Hint. */
 export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   const { run, current, dispatch, hint, notice, clearNotice } = useSoloRun({ play, onFinish });
-  const [now, setNow] = useState(Date.now());
 
   // Clock tick while a case is running.
-  useEffect(() => {
-    if (run?.phase !== 'playing') return;
-    const id = setInterval(() => setNow(Date.now()), 250);
-    return () => clearInterval(id);
-  }, [run?.phase]);
+  const now = useTicker(run?.phase === 'playing', 250);
 
   useEffect(() => {
     if (!notice) return;

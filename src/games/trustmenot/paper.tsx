@@ -11,12 +11,12 @@ import Svg, { Circle, ClipPath, Defs, Path, RadialGradient, Rect, Stop } from 'r
 
 import { loadFonts } from '@/features/loading/fonts';
 import { ModePin } from '@/state/app';
-import { u } from '@/theme/scale';
+import { DESIGN_W, u } from '@/theme/scale';
 
 import { GameScreen } from '../shell/ui';
 
 /** Sizes here are in the locked preview's pixels (a 300px phone); the app's design width is 282px. */
-export const p = (n: number) => u((n * 282) / 300);
+export const p = (n: number) => u((n * DESIGN_W) / 300);
 
 export const TM = {
   ink: '#2a1f16',

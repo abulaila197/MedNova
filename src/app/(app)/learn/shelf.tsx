@@ -4,9 +4,9 @@ import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 
 import { Screen } from '@/components/Screen';
-import { Back } from '@/features/learn/Back';
+import { Back } from '@/components/Back';
 import { NEUROLOGY, type Disease } from '@/features/learn/data';
-import { Fade } from '@/features/learn/Fade';
+import { Fade } from '@/components/Fade';
 import { useLearnColors } from '@/features/learn/palette';
 import { Toggle } from '@/features/learn/Toggle';
 import { useTheme } from '@/state/app';

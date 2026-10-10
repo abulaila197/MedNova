@@ -19,7 +19,7 @@ import { Board, Sketch, type BoardHandle, type Stroke } from './Board';
 import { SA } from './core';
 import { WORDS, wordName } from './data';
 import { buildAnswerIndex, guessCandidates } from './guess';
-import { ChalkBtn, ChalkTimer, ChalkTitle, Frame, HintCard, Kicker, Ledge, Note, Panel, PauseBtn, SL, Scores, SlateScreen, TopRow, useRoom } from './slate';
+import { ChalkBtn, ChalkTimer, ChalkTitle, Frame, HintCard, Kicker, Ledge, Note, Panel, PauseBtn, SL, Scores, SlateScreen, TopRow, useSlateRoom } from './slate';
 
 /** Everyone sees the same board shape online, so a drawing lands in the same place on every phone. */
 const RATIO = 1.1;
@@ -53,7 +53,7 @@ function itemsOf(st: RaceState) {
  * Strokes go live over a Realtime broadcast, and the whole board is saved on the server so late phones catch up.
  */
 export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
-  const R = useRoom();
+  const R = useSlateRoom();
   const { st, load, server, playing, notice, setNotice, leave } = useRace(def, roomId, matchId, me, itemsOf);
   const [menu, setMenu] = useState(false);
   const { alert, push } = useAlerts();
@@ -227,7 +227,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
 
 /** The drawer's board and chalk ledge. Each finished line saves the board; the line being drawn goes out live. */
 function DrawSide({ turn, matchId, channel }: { turn: number; matchId: string; channel: React.RefObject<RealtimeChannel | null> }) {
-  const R = useRoom();
+  const R = useSlateRoom();
   const board = useRef<BoardHandle>(null);
   const [ink, setInk] = useState(0);
   const [size, setSize] = useState(0);
@@ -271,7 +271,7 @@ function DrawSide({ turn, matchId, channel }: { turn: number; matchId: string; c
 
 /** Type a guess. The phone runs the coded matcher over the word list; the server says right, close or not. */
 function GuessBox({ solved, points, rank, matchId, load }: { solved: boolean; points: number; rank: number | null; matchId: string; load: () => Promise<void> }) {
-  const R = useRoom();
+  const R = useSlateRoom();
   const [text, setText] = useState('');
   const [line, setLine] = useState<string | null>(null);
   const busy = useRef(false);
@@ -320,7 +320,7 @@ function GuessBox({ solved, points, rank, matchId, load }: { solved: boolean; po
 
 /** SA7: two reports from different players cancel the drawer's points for this turn. */
 function ReportBtn({ sa, matchId, load }: { sa: NonNullable<RaceState['sa']>; matchId: string; load: () => Promise<void> }) {
-  const R = useRoom();
+  const R = useSlateRoom();
   return (
     <Pressable
       disabled={sa.reported}

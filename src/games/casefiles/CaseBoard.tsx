@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Text, TextInput } from '@/components/AppText';
 import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
@@ -10,6 +10,7 @@ import { CF, completed, elapsed, invFile, scoreRun, status, type CaseDef, type F
 import { DIAG_INDEX, caseLabel, diagName } from './data';
 import { Btn, Card, CaseTitle, Kicker, NR, NoirScreen, PauseBtn, Stamp, T, caseClock } from './noir';
 import { PinBoard } from './PinBoard';
+import { useTicker } from '../engine/useTicker';
 
 type View_ = { at: 'board' } | { at: 'file'; file: FileId } | { at: 'pick'; kind: 'dd' | 'filter' | 'provisional' | 'redemption' } | { at: 'verdict'; kind: 'provisional' | 'redemption' };
 
@@ -22,14 +23,9 @@ const STAGES = ['History', 'Exam', 'Tests', 'Treatment'] as const;
  */
 export function CaseBoard({ def, run, sealed, kicker, onEvent, onPause }: { def: CaseDef; run: Run; sealed: boolean; kicker: string; onEvent: (e: RunEvent) => void; onPause: () => void }) {
   const [view, setView] = useState<View_>({ at: 'board' });
-  const [now, setNow] = useState(Date.now());
   const st = status(def, run, sealed);
   const ticking = run.runningSince != null && run.phase === 'board';
-  useEffect(() => {
-    if (!ticking) return;
-    const id = setInterval(() => setNow(Date.now()), 500);
-    return () => clearInterval(id);
-  }, [ticking]);
+  const now = useTicker(ticking, 500);
 
   const files = useMemo(
     () => [

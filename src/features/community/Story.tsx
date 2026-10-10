@@ -2,7 +2,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 
-import { Empty, Fade } from '@/features/community/fx';
+import { Fade } from '@/components/Fade';
+import { Empty } from '@/features/community/fx';
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F, type Theme } from '@/theme/tokens';

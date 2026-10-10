@@ -16,12 +16,12 @@ import {
   type OfflineEvent, type OfflineRun,
 } from './offline';
 import { shuffle } from '../engine/random';
+import { useTicker } from '../engine/useTicker';
 
 /** Offline Multiplayer (pass and play): own case per player each round, 90 s turns, no hint (DPO1-DPO7). */
 export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   const [run, setRun] = useState<OfflineRun | null>(null);
   const runRef = useRef<OfflineRun | null>(null);
-  const [now, setNow] = useState(Date.now());
   const seatOf = useMemo(() => new Map(play.seats.map((x) => [x.seat, x])), [play.seats]);
   const names = useMemo(() => Object.fromEntries(play.seats.map((x) => [x.seat, x.name])), [play.seats]);
 
@@ -91,15 +91,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   );
 
   // Clock tick while a turn runs; the turn ends at 90 s (DPO3).
-  useEffect(() => {
-    if (run?.phase !== 'playing') return;
-    const id = setInterval(() => {
-      const t = Date.now();
-      setNow(t);
-      dispatch({ type: 'TICK', now: t });
-    }, 250);
-    return () => clearInterval(id);
-  }, [run?.phase, dispatch]);
+  const now = useTicker(run?.phase === 'playing', 250, (n) => dispatch({ type: 'TICK', now: n }));
 
   // Rule 4: leaving the app pauses and hides the case.
   usePauseHide(() => dispatch({ type: 'PAUSE', now: Date.now() }));
