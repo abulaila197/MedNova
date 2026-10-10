@@ -74,7 +74,7 @@ const C = {
 };
 
 // Google and Apple sign-in are shown but not live yet: a tap says they are coming. Before a store build, either wire
-// them or hide them, since stores reject buttons that do nothing.
+// them or hide them, since stores reject buttons that do nothing. Sign In tab only: they also create the account.
 const SHOW_SOCIAL = true;
 
 const TAB = cssAngle(100, 105, 27);
@@ -137,13 +137,14 @@ export function SignIn() {
   const [busy, setBusy] = useState(false);
   const [note, setNote] = useState<{ text: string; bad: boolean } | null>(null);
   const [agreed, setAgreed] = useState(false);
-  // The page sits at one height for every tab and step: placed so the tallest (Create Account) has equal space
-  // above the title and under the card. Until that tab is measured, it is guessed from the Sign In height.
+  // The page sits at one height for every tab and step: placed so the tallest tab (Sign In, with Google and Apple)
+  // has equal space above the title and under the card.
   const [viewH, setViewH] = useState(0);
   const [inH, setInH] = useState(0);
   const [upH, setUpH] = useState(0);
-  const tall = upH || (inH ? inH + u(80) : 0);
-  const padTop = tall && viewH ? Math.max(u(14), (viewH - tall - topGap) / 2) : u(14);
+  const tall = Math.max(inH, upH);
+  const padBottom = u(14) + ins.bottom;
+  const padTop = tall && viewH ? Math.max(u(4), (viewH - tall - topGap) / 2) : u(14);
   const enter = () => router.replace('/games');
   const legal = () => router.push('/privacy');
   const terms = () => router.push({ pathname: '/privacy', params: { doc: 'terms' } });
@@ -397,7 +398,7 @@ export function SignIn() {
         {noteLine}
         {primary(tab === 'in' ? 'Sign In' : 'Create Account', tab === 'in' ? signIn : signUp, tab === 'up' && !agreed)}
         {tab === 'in' ? link('Forgot password?', () => (setStep('forgot'), setNote(null))) : null}
-        {SHOW_SOCIAL ? (
+        {SHOW_SOCIAL && tab === 'in' ? (
           <>
             <View style={s.or}>
               <View style={[s.orLine, { backgroundColor: c.orLine }]} />
@@ -445,25 +446,23 @@ export function SignIn() {
       <ScrollView
         style={{ flex: 1 }}
         onLayout={(e) => setViewH(e.nativeEvent.layout.height)}
-        contentContainerStyle={{ flexGrow: 1, paddingTop: padTop, paddingBottom: u(14) + ins.bottom, paddingHorizontal: u(18) }}
+        onContentSizeChange={(_, ch) => {
+          if (step !== 'form') return;
+          const hh = ch - padTop - padBottom;
+          if (tab === 'up') setUpH((v) => Math.max(v, hh));
+          else setInH((v) => Math.max(v, hh));
+        }}
+        contentContainerStyle={{ paddingTop: padTop, paddingBottom: padBottom, paddingHorizontal: u(18) }}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}>
-        <View
-          onLayout={(e) => {
-            if (step !== 'form') return;
-            const hh = e.nativeEvent.layout.height;
-            if (tab === 'up') setUpH((v) => Math.max(v, hh));
-            else setInH((v) => Math.max(v, hh));
-          }}>
-          <View>
-            <Text style={[s.welcome, { color: c.welcome }]}>Welcome to</Text>
-            <Text style={[s.brand, { color: c.accent }]}>MedNova</Text>
-          </View>
+        <View>
+          <Text style={[s.welcome, { color: c.welcome }]}>Welcome to</Text>
+          <Text style={[s.brand, { color: c.accent }]}>MedNova</Text>
+        </View>
 
-          <View style={[s.card, { borderColor: c.cardEdge, boxShadow: c.cardShadow }]}>
-            <LinearGradient colors={c.cardGrad} style={[StyleSheet.absoluteFill, { borderRadius: u(21) }]} />
-            {body}
-          </View>
+        <View style={[s.card, { borderColor: c.cardEdge, boxShadow: c.cardShadow }]}>
+          <LinearGradient colors={c.cardGrad} style={[StyleSheet.absoluteFill, { borderRadius: u(21) }]} />
+          {body}
         </View>
       </ScrollView>
     </View>
