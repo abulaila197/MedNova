@@ -9,7 +9,7 @@ import { dueOf, startOnline, stepOnline, type OnlineConqueror, type PhoneAction 
 import { envelopeFor } from '../../../src/games/conqueror/view';
 
 declare const Deno: { env: { get(k: string): string | undefined }; serve(h: (req: Request) => Promise<Response>): void };
-/** The commit the bank comes from (set by the build script). */
+/** The cq_bank row to read: the commit that last changed bank.json (set by the build script). */
 declare const CQ_BANK: string;
 
 const admin = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!, { auth: { persistSession: false } });
@@ -21,19 +21,14 @@ const json = (body: unknown, status = 200) => new Response(JSON.stringify(body),
 /** Spectators read the view saved under this id: every secret hidden. */
 const WATCHER = '00000000-0000-0000-0000-000000000000';
 
-// The bank lives in the database. The first run for a new bank version copies it in from the app's repository at
-// that exact commit, so it is the same file the app was built and tested with.
+// The bank lives in the database (cq_bank, one row per bank version, keyed by the commit that last changed
+// bank.json). Load a new row before deploying a function built for a new bank version.
 let bank: Bank | null = null;
 async function loadBank(): Promise<Bank | null> {
   if (bank) return bank;
   const { data } = await admin.from('cq_bank').select('items').eq('v', CQ_BANK).maybeSingle();
-  let items = (data?.items ?? null) as BankQ[] | null;
-  if (!items) {
-    const res = await fetch(`https://raw.githubusercontent.com/abulaila197/MedNova/${CQ_BANK}/src/games/conqueror/data/bank.json`);
-    if (!res.ok) return null;
-    items = (await res.json()) as BankQ[];
-    await admin.from('cq_bank').upsert({ v: CQ_BANK, items });
-  }
+  const items = (data?.items ?? null) as BankQ[] | null;
+  if (!items) return null;
   bank = makeBank(items);
   return bank;
 }
