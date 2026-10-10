@@ -42,6 +42,8 @@ export default function DossierPage() {
             {DOSSIER.fields.map((f, i) => (
               <Pane key={f.key} f={f} on={i === on} />
             ))}
+            {/* Inside the folder's empty foot: below it the Games button covers the page. */}
+            <Text style={[s.dmT, s.note, { color: c.mute }]}>{DISCLAIMER}</Text>
           </View>
           <View style={s.ftabs}>
             {DOSSIER.fields.map((f, i) => {
@@ -63,7 +65,6 @@ export default function DossierPage() {
             })}
           </View>
         </View>
-        <Text style={[s.dmT, s.note, { color: c.mute }]}>{DISCLAIMER}</Text>
       </View>
     </Screen>
   );
@@ -93,7 +94,7 @@ const s = StyleSheet.create({
   dm: { flexDirection: 'row', alignItems: 'center', gap: u(6) },
   sw: { width: u(16), height: u(6), borderRadius: u(2), borderWidth: 1 },
   dmT: { fontFamily: F.body, fontSize: u(10), lineHeight: u(12) },
-  note: { marginTop: u(4), fontSize: u(9) },
+  note: { position: 'absolute', left: u(16), right: u(12), bottom: u(12), fontSize: u(8.5) },
   fold: { flexDirection: 'row', marginTop: u(6), height: u(322) },
   fcard: {
     flex: 1,
