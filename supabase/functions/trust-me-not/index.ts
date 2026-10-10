@@ -1,12 +1,12 @@
 // Trust Me Not online referee (rule book §10). Runs the same engine as the tests: saves the whole year in tmn_games
 // and each player's own view in tmn_views; phones read only their view with tmn_state. The question bank needed here
-// is ids and right choices only (bank.json, built by scripts/build-tmn-questions.mjs); phones hold the text.
+// is ids and right choices only (bank.json, built by scripts/build-tmn-questions.mjs); phones hold the text. It is read
+// from the app's repository at a fixed commit (as The Conqueror does), which keeps the deployed bundle small.
 // Bundled with scripts/build-tmn-function.sh.
 import { createClient } from 'npm:@supabase/supabase-js@2';
 
 import { dueOf, envelopeFor, finalOrder, startOnline, stepOnline, watcherEnvelope, type BankRow, type OnlineTmn, type PhoneAction } from '../../../src/games/trustmenot/online';
 import { TMN_SEATS as SEATS } from '../../../src/games/trustmenot/seats';
-import bank from './bank.json';
 
 declare const Deno: { env: { get(k: string): string | undefined }; serve(h: (req: Request) => Promise<Response>): void };
 
@@ -18,6 +18,15 @@ const cors = {
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { ...cors, 'Content-Type': 'application/json' } });
 /** Spectators read the view saved under this id. */
 const WATCHER = '00000000-0000-0000-0000-000000000000';
+/** The commit bank.json is read from; change it when the bank changes (after that commit is pushed). */
+const TMN_BANK = 'e433dc0';
+let bank: BankRow[] | null = null;
+async function loadBank() {
+  if (bank) return bank;
+  const res = await fetch(`https://raw.githubusercontent.com/abulaila197/MedNova/${TMN_BANK}/supabase/functions/trust-me-not/bank.json`);
+  if (!res.ok) throw new Error(`bank ${res.status}`);
+  return (bank = (await res.json()) as BankRow[]);
+}
 
 type Loaded = {
   member: boolean;
@@ -56,7 +65,7 @@ Deno.serve(async (req) => {
       const mix = String(L.match.settings.mix);
       const field = mix === 'basic' || mix === 'clinical' ? mix : 'mixed';
       const players = L.seats.map((id, i) => ({ id, name: L.names[id] ?? 'Player', color: SEATS[i % SEATS.length] }));
-      o = startOnline(players, field, bank as BankRow[], (Math.random() * 2 ** 31) | 0, now);
+      o = startOnline(players, field, await loadBank(), (Math.random() * 2 ** 31) | 0, now);
     }
     const next = stepOnline(o, action, who.user.id, L.away ?? [], now);
     if (next === L.state) return json({ result: 'same' });
