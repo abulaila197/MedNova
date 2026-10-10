@@ -1035,7 +1035,11 @@
    "Mechanical back pain",
    "Vertebral fracture"
   ],
-  "dd2": [],
+  "dd2": [
+   [
+    "Renal colic"
+   ]
+  ],
   "final": "Ruptured abdominal aortic aneurysm"
  },
  {
@@ -3540,7 +3544,7 @@
       "lines": [
        "CSF white cell count: raised, predominantly lymphocytes",
        "CSF protein: mildly raised",
-       "A specific viral genetic test on the fluid: positive for the herpes simplex virus"
+       "A specific viral genetic test on the fluid: positive"
       ]
      }
     ]
@@ -3660,19 +3664,19 @@
      {
       "title": "Eye Examination Report",
       "lines": [
-       "A retinal tear identified with associated detachment of the retina in the upper portion of the right eye, threatening to extend toward the central area of vision if left untreated"
+       "A tear in the peripheral retina with the retina lifted away from the back of the eye in the upper portion of the right eye, threatening to extend toward the central area of vision if left untreated"
       ]
      }
     ]
    },
    {
     "title": "Imaging",
-    "body": "An ultrasound scan of the eye was also performed to fully map the extent of the detachment:",
+    "body": "An ultrasound scan of the eye was also performed to fully map the extent of the problem:",
     "reports": [
      {
       "title": "Imaging Report",
       "lines": [
-       "Confirmed the area of retinal detachment",
+       "Mapped the extent of the abnormality seen on examination",
        "Ruled out any bleeding within the eye that might have obscured the view during direct examination"
       ]
      }
@@ -3898,7 +3902,7 @@
   "title": "A Gasp at the End of the Cough",
   "personal": "Baby Ivy Chen, 6 weeks, Female, 55 cm, 4.8 kg, infant. Admitted to the pediatric ward.",
   "incident": "For the past week Ivy has had a mild runny nose and occasional cough that her parents assumed was an ordinary baby cold. Over the past two days, though, the cough has changed character dramatically, coming in sudden, intense bursts that leave her red-faced and struggling, followed on a few occasions by a high-pitched gasping sound as she finally manages to draw breath back in. Twice today, after a coughing fit, she briefly stopped breathing altogether for a few seconds before starting again on her own, which terrified her parents into bringing her straight in.",
-  "background": "Born full term, too young yet for her first scheduled whooping cough vaccination, her mother did not receive the vaccine during this pregnancy, no other significant medical history, older sibling at home had a \"cold\" with a lingering cough for the past few weeks that never resolved fully.",
+  "background": "Born full term, too young yet for her first scheduled routine vaccinations, her mother did not receive the recommended vaccines during this pregnancy, no other significant medical history, older sibling at home had a \"cold\" with a lingering cough for the past few weeks that never resolved fully.",
   "exam": [
    {
     "title": "General",
@@ -3921,7 +3925,7 @@
      {
       "title": "Laboratory Report",
       "lines": [
-       "A specific genetic test on the nasopharyngeal swab: positive for the bacterium responsible for whooping cough"
+       "Organism-specific PCR on the nasopharyngeal swab: positive"
       ]
      }
     ]
@@ -4432,7 +4436,7 @@
      {
       "title": "Laboratory Report",
       "lines": [
-       "Combined respiratory viral swab: positive for influenza, negative for the virus responsible for COVID-19"
+       "Combined respiratory viral PCR panel: positive for one of the viruses on the panel; SARS-CoV-2 negative"
       ]
      }
     ]
@@ -4557,8 +4561,8 @@
      {
       "title": "Laboratory Report",
       "lines": [
-       "Measles-specific antibody testing: positive",
-       "Throat swab: positive for measles virus on genetic testing"
+       "Virus-specific IgM antibody testing: positive",
+       "Throat swab: positive on viral PCR testing"
       ]
      }
     ]
@@ -4683,7 +4687,7 @@
      {
       "title": "Ear Examination Report",
       "lines": [
-       "A bulging, inflamed eardrum on the right consistent with acute middle ear infection; left ear normal"
+       "A bulging, red, poorly mobile eardrum on the right; left ear normal"
       ]
      }
     ]
@@ -6273,7 +6277,7 @@
      {
       "title": "Laboratory Report",
       "lines": [
-       "Rapid strep test: positive for the bacterium responsible for bacterial tonsillitis"
+       "Rapid strep test: positive"
       ]
      }
     ]
@@ -6409,7 +6413,7 @@
      {
       "title": "Laboratory Report",
       "lines": [
-       "Swab from a vesicle: confirmed the virus responsible for chickenpox and shingles"
+       "Swab from a vesicle: viral PCR positive, confirming the clinical impression"
       ]
      }
     ]

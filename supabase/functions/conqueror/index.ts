@@ -9,7 +9,7 @@ import { dueOf, startOnline, stepOnline, type OnlineConqueror, type PhoneAction 
 import { envelopeFor } from '../../../src/games/conqueror/view';
 
 declare const Deno: { env: { get(k: string): string | undefined }; serve(h: (req: Request) => Promise<Response>): void };
-/** The cq_bank row to read: the commit that last changed bank.json (set by the build script). */
+/** The cq_bank row to read: first 12 hex of bank.json's sha256 (set by the build script). */
 declare const CQ_BANK: string;
 
 const admin = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!, { auth: { persistSession: false } });
@@ -21,8 +21,8 @@ const json = (body: unknown, status = 200) => new Response(JSON.stringify(body),
 /** Spectators read the view saved under this id: every secret hidden. */
 const WATCHER = '00000000-0000-0000-0000-000000000000';
 
-// The bank lives in the database (cq_bank, one row per bank version, keyed by the commit that last changed
-// bank.json). Load a new row before deploying a function built for a new bank version.
+// The bank lives in the database (cq_bank, one row per bank version, keyed by the first 12 hex of bank.json's
+// sha256). Load a new row before deploying a function built for a new bank version.
 let bank: Bank | null = null;
 async function loadBank(): Promise<Bank | null> {
   if (bank) return bank;

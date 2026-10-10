@@ -16,11 +16,15 @@ const at = (s: string, i: number) => ALPHA.indexOf(s[i]);
 
 export type Keys = { v: string; q: string; r: string; b: string };
 
-/** Changes whenever questions are added, removed or reordered. */
+/** Changes whenever a question, call or Boss item is added, removed, reordered, reworded or re-keyed, so a phone
+ *  whose bank text or answers differ from the server's keys never joins. */
 export function bankVersion(bank: FullBank): string {
   let h = 2166136261;
-  for (const id of [...bank.questions, ...bank.redemption].map((q) => q.id).concat(bank.boss.map((b) => b.id)))
-    for (const c of id) h = Math.imul(h ^ c.charCodeAt(0), 16777619);
+  const k = keyBody(bank);
+  const parts = [...bank.questions, ...bank.redemption].flatMap((q) => [q.id, q.prompt])
+    .concat(bank.boss.map((b) => b.id), k.q, k.r, k.b);
+  for (const part of parts)
+    for (const c of part) h = Math.imul(h ^ c.charCodeAt(0), 16777619);
   return `${bank.questions.length}.${bank.redemption.length}.${bank.boss.length}.${(h >>> 0).toString(36)}`;
 }
 
@@ -36,13 +40,16 @@ function answerCode(q: Question): number {
   }
 }
 
-export function encodeKeys(bank: FullBank): Keys {
+function keyBody(bank: FullBank): Omit<Keys, 'v'> {
   return {
-    v: bankVersion(bank),
     q: bank.questions.map((q) => ch(STYLE_KEYS.indexOf(q.style) * 10 + fieldIx(q.field)) + ch(answerCode(q))).join(''),
     r: bank.redemption.map((q) => ch(fieldIx(q.field)) + ch((q.round ?? -1) + 1) + ch(DIFFS.indexOf(q.difficulty) * 2 + (q.style === 'tf' && q.answer ? 1 : 0))).join(''),
     b: bank.boss.map((s) => ch(fieldIx(s.field)) + s.items.map((i) => (i.fits ? '1' : '0')).join('')).join(','),
   };
+}
+
+export function encodeKeys(bank: FullBank): Keys {
+  return { v: bankVersion(bank), ...keyBody(bank) };
 }
 
 /** A bank the engine can run on: ids are bank places, prompts are empty, Boss labels are item places. */

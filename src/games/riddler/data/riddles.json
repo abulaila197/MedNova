@@ -928,7 +928,7 @@
   "aliases": [
    "TB"
   ],
-  "definition": "An airborne infection caused by Mycobacterium tuberculosis, classically affecting the lungs with chronic cough, fever, weight loss, and night sweats.",
+  "definition": "An airborne infection caused by an acid-fast bacillus, classically affecting the lungs with chronic cough, fever, weight loss, and night sweats.",
   "dossier": "tuberculosis",
   "w": 1024,
   "h": 271,
@@ -1087,7 +1087,7 @@
   "aliases": [
    "Double vision"
   ],
-  "definition": "Seeing two images of a single object instead of one; binocular diplopia suggests eye misalignment, as in cranial nerve palsy or myasthenia gravis.",
+  "definition": "Seeing two images of a single object instead of one; when it disappears on covering either eye, it suggests eye misalignment, as in cranial nerve palsy or myasthenia gravis.",
   "dossier": null,
   "w": 296,
   "h": 225,

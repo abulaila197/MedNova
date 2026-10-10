@@ -339,9 +339,7 @@
  },
  {
   "label": "Ankylosing spondylitis",
-  "aliases": [
-   "AS"
-  ]
+  "aliases": []
  },
  {
   "label": "Reactive arthritis",
@@ -3356,9 +3354,7 @@
  },
  {
   "label": "Trismus",
-  "aliases": [
-   "Lockjaw"
-  ]
+  "aliases": []
  },
  {
   "label": "Opisthotonus",
@@ -4833,9 +4829,7 @@
  },
  {
   "label": "Atrial septal defect",
-  "aliases": [
-   "ASD"
-  ]
+  "aliases": []
  },
  {
   "label": "Ventricular septal defect",
