@@ -39,7 +39,7 @@ const C = {
     priTxt: '#0b0b26',
     or: '#9aa0c4',
     orLine: 'rgba(255,255,255,0.12)',
-    ggl: '#f4f3ff',
+    ggl: '#ffffff',
     gglEdge: null as string | null,
     link: '#6fd6ff',
     linkLine: 'rgba(111,214,255,0.4)',
@@ -73,11 +73,23 @@ const C = {
   },
 };
 
-// Google sign-in is not live yet: the button stays hidden until it works (store rule on placeholder features).
-const SHOW_GOOGLE = false;
+// Google and Apple sign-in are shown but not live yet: a tap says they are coming. Before a store build, either wire
+// them or hide them, since stores reject buttons that do nothing.
+const SHOW_SOCIAL = true;
 
 const TAB = cssAngle(100, 105, 27);
 const PRI = cssAngle(100, 216, 35);
+
+function Apple() {
+  return (
+    <Svg width={u(12)} height={u(12)} viewBox="0 0 24 24">
+      <Path
+        fill="#ffffff"
+        d="M16.365 1.43c0 1.14-.493 2.27-1.177 3.08-.744.9-1.99 1.57-2.987 1.57-.12 0-.23-.02-.3-.03-.01-.06-.04-.22-.04-.39 0-1.15.572-2.27 1.206-2.98.804-.94 2.142-1.64 3.248-1.68.03.13.05.28.05.43zm4.565 15.71c-.03.07-.463 1.58-1.518 3.12-.945 1.34-1.94 2.71-3.43 2.71-1.517 0-1.9-.88-3.63-.88-1.698 0-2.302.91-3.67.91-1.377 0-2.332-1.26-3.428-2.8-1.287-1.82-2.323-4.63-2.323-7.28 0-4.28 2.797-6.55 5.552-6.55 1.448 0 2.675.95 3.6.95.865 0 2.222-1.01 3.902-1.01.613 0 2.886.06 4.374 2.19-.13.09-2.383 1.37-2.383 4.19 0 3.26 2.854 4.42 2.955 4.45z"
+      />
+    </Svg>
+  );
+}
 
 function Google() {
   return (
@@ -385,7 +397,7 @@ export function SignIn() {
         {noteLine}
         {primary(tab === 'in' ? 'Sign In' : 'Create Account', tab === 'in' ? signIn : signUp, tab === 'up' && !agreed)}
         {tab === 'in' ? link('Forgot password?', () => (setStep('forgot'), setNote(null))) : null}
-        {SHOW_GOOGLE ? (
+        {SHOW_SOCIAL ? (
           <>
             <View style={s.or}>
               <View style={[s.orLine, { backgroundColor: c.orLine }]} />
@@ -395,9 +407,16 @@ export function SignIn() {
             <Pressable
               onPress={() => setNote({ text: 'Google sign-in is coming soon. Use your email for now.', bad: false })}
               accessibilityRole="button"
-              style={[s.ggl, { backgroundColor: c.ggl, opacity: 0.6 }, c.gglEdge ? { borderWidth: 1, borderColor: c.gglEdge, height: u(33) } : null]}>
+              style={[s.ggl, { backgroundColor: c.ggl }, c.gglEdge ? { borderWidth: 1, borderColor: c.gglEdge } : null]}>
               <Google />
-              <Text style={s.gglTxt}>Continue with Google · soon</Text>
+              <Text style={s.gglTxt}>Continue with Google</Text>
+            </Pressable>
+            <Pressable
+              onPress={() => setNote({ text: 'Apple sign-in is coming soon. Use your email for now.', bad: false })}
+              accessibilityRole="button"
+              style={[s.ggl, { backgroundColor: '#000000' }, lt ? null : { borderWidth: 1, borderColor: 'rgba(255,255,255,0.18)' }]}>
+              <Apple />
+              <Text style={[s.gglTxt, { color: '#ffffff' }]}>Continue with Apple</Text>
             </Pressable>
           </>
         ) : null}
