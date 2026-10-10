@@ -408,14 +408,14 @@ export function SignIn() {
             <Pressable
               onPress={() => setNote({ text: 'Google sign-in is coming soon. Use your email for now.', bad: false })}
               accessibilityRole="button"
-              style={[s.ggl, { backgroundColor: c.ggl }, c.gglEdge ? { borderWidth: 1, borderColor: c.gglEdge } : null]}>
+              style={[s.ggl, { backgroundColor: c.ggl, borderColor: c.gglEdge ?? c.ggl }]}>
               <Google />
               <Text style={s.gglTxt}>Continue with Google</Text>
             </Pressable>
             <Pressable
               onPress={() => setNote({ text: 'Apple sign-in is coming soon. Use your email for now.', bad: false })}
               accessibilityRole="button"
-              style={[s.ggl, { backgroundColor: '#000000' }, lt ? null : { borderWidth: 1, borderColor: 'rgba(255,255,255,0.18)' }]}>
+              style={[s.ggl, { backgroundColor: '#000000', borderColor: '#000000' }]}>
               <Apple />
               <Text style={[s.gglTxt, { color: '#ffffff' }]}>Continue with Apple</Text>
             </Pressable>
@@ -494,7 +494,7 @@ const s = StyleSheet.create({
   or: { flexDirection: 'row', alignItems: 'center', gap: u(8), height: u(10) },
   orLine: { flex: 1, height: 1 },
   orTxt: { fontFamily: F.mono, fontSize: u(7.5), letterSpacing: u(1.5) },
-  ggl: { height: u(31), borderRadius: u(12), flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: u(7) },
+  ggl: { height: u(31), borderRadius: u(12), borderWidth: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: u(7) },
   gglTxt: { fontFamily: F.bodySemi, fontSize: u(10.5), color: '#16162b' },
   guest: { alignSelf: 'center', height: u(13), justifyContent: 'center' },
   guestTxt: { fontFamily: F.body, fontSize: u(10.5), lineHeight: u(13) },
