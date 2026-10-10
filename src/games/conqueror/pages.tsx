@@ -1,13 +1,14 @@
 // The Conqueror's match pages in the Ink Atlas look. Each page draws one phase of the match from the server's
 // state and sends only this player's actions.
 import { useMemo, useState } from 'react';
-import { Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 
 import { AT, Btn, CardTile, v, Chip, CZ, CZM, CG, CGI, KINGDOMS, PieceIcon, ROMAN, Rule, T, Top } from './atlas';
 import { MapChart, troopLabel, type Arrow, type LandView } from './AtlasMap';
 import { BALANCE, CARDS, landsOf, maxMoves, type CardType, type Match, type Move } from './core';
 import type { AtlasMap } from './map';
+import { useScreen } from '@/theme/scale';
 
 export type Act = (a: Record<string, unknown>) => void;
 type PageProps = { m: Match; me: string; map: AtlasMap; seconds: number | null; act: Act };
@@ -97,7 +98,7 @@ export function BoardPage({ m, me, seconds, act }: PageProps) {
 type Draft = { from: string | null; to: string | null };
 
 export function MovesPage({ m, me, map, seconds, act }: PageProps) {
-  const { width } = useWindowDimensions();
+  const { width } = useScreen();
   const p = m.players[me];
   const sent = m.gap.moves[me];
   const [moves, setMoves] = useState<Move[]>([]);

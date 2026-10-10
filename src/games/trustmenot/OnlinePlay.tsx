@@ -17,6 +17,7 @@ import { PaperScreen } from './paper';
 import type { PageProps } from './props';
 import { rules } from './engine';
 import { play, useHeartbeat, useSeasonLoop } from './sound';
+import { keepSame, oneAtATime } from '@/online/poll';
 
 type TState = { now: number; phase: 'countdown' | 'case' | 'done'; due: number | null; state: TmnEnvelope | null };
 
@@ -41,7 +42,7 @@ export function OnlinePlay({ matchId, roomId, me }: OnlineProps) {
     try {
       const s = await call<TState>('tmn_state', { m: matchId });
       offset.current = s.now - Date.now();
-      setSt(s);
+      setSt((prev) => keepSame(prev, s));
     } catch {
       // The next poll tries again.
     }
@@ -57,7 +58,7 @@ export function OnlinePlay({ matchId, roomId, me }: OnlineProps) {
 
   useEffect(() => {
     load();
-    const poll = setInterval(load, 1000);
+    const poll = setInterval(oneAtATime(load), 1000);
     const tick = setInterval(() => setNow(Date.now()), 250);
     return () => (clearInterval(poll), clearInterval(tick));
   }, [load]);
@@ -119,7 +120,9 @@ export function OnlinePlay({ matchId, roomId, me }: OnlineProps) {
     );
 
   let page;
-  if (v.phase === 'opening') page = <OpeningPage month={v.month} />;
+  // A watcher (or a removed player) has no seat: the pages below all read "my" seat, so they get the calendar page.
+  if (!v.players.some((x) => x.id === v.me)) page = <OpeningPage month={v.month} />;
+  else if (v.phase === 'opening') page = <OpeningPage month={v.month} />;
   else if (v.phase === 'gap1') {
     if (v.ghost) page = <GhostPage {...props} />;
     else if (v.lifeline && lifelineSeen !== v.month) page = <LifelineNote {...props} onDone={() => setLifelineSeen(v.month)} />;

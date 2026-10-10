@@ -3,7 +3,8 @@
 // the shared screens (useLanding, useSetup, useResults); approved by Yazan on 2026-10-05.
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
-import { Platform, Pressable, StyleSheet, TextInput, View } from 'react-native';
+import { Platform, Pressable, StyleSheet, View } from 'react-native';
+import { TextInput } from '@/components/AppText';
 
 import { u } from '@/theme/scale';
 

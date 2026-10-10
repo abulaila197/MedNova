@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Platform, Share, StyleSheet, Text, View } from 'react-native';
+import { Platform, Share, StyleSheet, View } from 'react-native';
+import { Text } from '@/components/AppText';
 
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';

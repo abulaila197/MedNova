@@ -1,5 +1,6 @@
 import { router, type Href } from 'expo-router';
-import { Pressable, StyleSheet, Text } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
+import { Text } from '@/components/AppText';
 
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';

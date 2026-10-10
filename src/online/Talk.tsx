@@ -1,11 +1,12 @@
 import { Image } from 'expo-image';
 import { useEffect, useState } from 'react';
-import { Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
+import { Text } from '@/components/AppText';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, { FadeIn, FadeOut, ZoomIn, runOnJS, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 
 import { Face } from '@/games/shell/Face';
-import { u } from '@/theme/scale';
+import { u, useScreen } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import { G } from './grey';
@@ -99,7 +100,7 @@ const BTN = 46;
  * tap one to mute that player on your phone.
  */
 export function FloatingTalk({ room, me }: { room: string; me: Me }) {
-  const { width, height } = useWindowDimensions();
+  const { width, height } = useScreen();
   const size = u(BTN);
   const edge = u(10);
   const x = useSharedValue(width - size - edge);

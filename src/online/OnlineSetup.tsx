@@ -1,6 +1,7 @@
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useRef, useState } from 'react';
-import { Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Platform, Pressable, StyleSheet, View } from 'react-native';
+import { Text, TextInput } from '@/components/AppText';
 
 import { LevelBadge } from '@/components/LevelBadge';
 import { GAMES } from '@/data/games';

@@ -4,7 +4,8 @@
 // state from useRoom.
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { Platform, Pressable, ScrollView, Share, StyleSheet, TextInput, View } from 'react-native';
+import { Platform, Pressable, ScrollView, Share, StyleSheet, View } from 'react-native';
+import { TextInput } from '@/components/AppText';
 import Svg, { Line } from 'react-native-svg';
 
 import { createRoom, JOIN_SAY, joinRoom, joinRoomId, leaveRoom, listPublicRooms, rematchRoom, setReady, startMatch, updateRoom, type JoinResult, type PublicRoom } from '@/online/api';

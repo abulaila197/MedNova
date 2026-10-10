@@ -1,7 +1,8 @@
 import * as Clipboard from 'expo-clipboard';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useRef, useState } from 'react';
-import { Pressable, Share, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Pressable, Share, StyleSheet, View } from 'react-native';
+import { Text, TextInput } from '@/components/AppText';
 
 import { useBalance } from '@/components/LevelBadge';
 import { Sheet } from '@/components/Sheet';

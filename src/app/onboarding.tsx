@@ -1,22 +1,24 @@
 import { router } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { Platform, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, { cancelAnimation, Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { scheduleOnRN } from 'react-native-worklets';
 
 import { TopInset } from '@/components/StatusMock';
 import { Intro } from '@/features/start/Intro';
 import { NAVY } from '@/features/start/Sky';
 import { useSlides } from '@/features/start/Slides';
-import { u } from '@/theme/scale';
+import { markOnboarded } from '@/state/start';
+import { u, useScreen } from '@/theme/scale';
 
 const LAST = 2;
 const EASE = Easing.bezier(0.25, 0.1, 0.25, 1);
 
 /** Intro, then three swipeable onboarding slides. Always dark. */
 export default function Onboarding() {
-  const { width: w, height: h } = useWindowDimensions();
+  const { width: w, height: h } = useScreen();
   const ins = useSafeAreaInsets();
   const [intro, setIntro] = useState(true);
   const pos = useSharedValue(0);
@@ -25,7 +27,10 @@ export default function Onboarding() {
   const padTop = (Platform.OS === 'web' ? u(30) : ins.top) + u(14);
   const padBottom = u(22) + ins.bottom;
 
-  const toAuth = useCallback(() => router.replace('/auth'), []);
+  const toAuth = useCallback(() => {
+    markOnboarded();
+    router.replace('/auth');
+  }, []);
   const go = useCallback(
     (i: number) => {
       if (i > LAST) return toAuth();
@@ -36,8 +41,8 @@ export default function Onboarding() {
   );
   const next = useCallback(() => go(Math.round(pos.value) + 1), [go, pos]);
 
+  // The swipe runs on the UI thread; only leaving for sign-in goes back to React.
   const pan = Gesture.Pan()
-    .runOnJS(true)
     .enabled(!intro)
     .activeOffsetX([-10, 10])
     .failOffsetY([-14, 14])
@@ -57,10 +62,10 @@ export default function Onboarding() {
       if (Math.abs(moved) > 0.16 || Math.abs(e.velocityX) > 400) target = base + (moved > 0 ? 1 : -1);
       if (target > LAST) {
         pos.value = withTiming(LAST, { duration: 200, easing: EASE });
-        toAuth();
+        scheduleOnRN(toAuth);
         return;
       }
-      go(target);
+      pos.value = withTiming(Math.max(0, target), { duration: 380, easing: EASE });
     });
 
   const row = useAnimatedStyle(() => ({ transform: [{ translateX: -Math.min(pos.value, LAST + 0.3) * w }] }));

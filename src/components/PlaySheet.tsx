@@ -1,5 +1,6 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import { Pressable, StyleSheet, Text } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
+import { Text } from '@/components/AppText';
 
 import { Sheet } from '@/components/Sheet';
 import { useApp, useTheme } from '@/state/app';

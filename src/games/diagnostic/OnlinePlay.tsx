@@ -15,6 +15,7 @@ import { settingsLine } from '@/online/format';
 import { CaseBoard } from './CaseBoard';
 import { DP, type Attempt } from './core';
 import { caseById, guessName } from './data';
+import { keepSame, oneAtATime } from '@/online/poll';
 
 type P = {
   user_id: string;
@@ -67,7 +68,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
     try {
       const s = await call<DPState>('dp_state', { m: matchId });
       offset.current = s.now - Date.now();
-      setSt(s);
+      setSt((prev) => keepSame(prev, s));
     } catch {
       setNotice('Reconnecting…');
     }
@@ -75,7 +76,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
 
   useEffect(() => {
     load();
-    const poll = setInterval(load, 1000);
+    const poll = setInterval(oneAtATime(load), 1000);
     const tick = setInterval(() => setNow(Date.now()), 250);
     return () => (clearInterval(poll), clearInterval(tick));
   }, [load]);

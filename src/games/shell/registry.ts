@@ -1,29 +1,32 @@
-import { caseFiles } from '../casefiles/def';
-import { conqueror } from '../conqueror/def';
-import { novaCrossword } from '../crossword/def';
-import { diagnosticPursuit } from '../diagnostic/def';
-import { novaMedicordle } from '../medicordle/def';
-import { riddler } from '../riddler/def';
-import { silentArtist } from '../silent/def';
-import { streakMaster } from '../streak/def';
-import { trustMeNot } from '../trustmenot/def';
-import { wheelsOfChaos } from '../wheels/def';
 import type { GameDef } from './types';
 
-/** Games that run on the shared engine. The rest keep the placeholder sheet until they are ported. */
-const GAMES: Record<string, GameDef> = {
-  [diagnosticPursuit.key]: diagnosticPursuit,
-  [novaMedicordle.key]: novaMedicordle,
-  [streakMaster.key]: streakMaster,
-  [riddler.key]: riddler,
-  [silentArtist.key]: silentArtist,
-  [caseFiles.key]: caseFiles,
-  [novaCrossword.key]: novaCrossword,
-  [wheelsOfChaos.key]: wheelsOfChaos,
-  [conqueror.key]: conqueror,
-  [trustMeNot.key]: trustMeNot,
+/*
+ * Games that run on the shared engine. Each game's definition pulls in its whole question bank
+ * (about 3 MB of data across the ten), so a game is only loaded the first time it is asked for,
+ * not when the app starts. (The loading page asks for it early, while its bar runs.)
+ */
+/* eslint-disable @typescript-eslint/no-require-imports */
+const LOAD: Record<string, () => GameDef> = {
+  'the-diagnostic-pursuit': () => require('../diagnostic/def').diagnosticPursuit,
+  'nova-medicordle': () => require('../medicordle/def').novaMedicordle,
+  'the-streak-master': () => require('../streak/def').streakMaster,
+  'the-riddler': () => require('../riddler/def').riddler,
+  'the-silent-artist': () => require('../silent/def').silentArtist,
+  'case-files-unsolved': () => require('../casefiles/def').caseFiles,
+  'nova-crossword': () => require('../crossword/def').novaCrossword,
+  'the-wheels-of-chaos': () => require('../wheels/def').wheelsOfChaos,
+  'the-conqueror': () => require('../conqueror/def').conqueror,
+  'trust-me-not': () => require('../trustmenot/def').trustMeNot,
 };
 
+const loaded = new Map<string, GameDef>();
+
 export function gameDef(key: string): GameDef | null {
-  return GAMES[key] ?? null;
+  const hit = loaded.get(key);
+  if (hit) return hit;
+  const load = LOAD[key];
+  if (!load) return null;
+  const def = load();
+  loaded.set(key, def);
+  return def;
 }

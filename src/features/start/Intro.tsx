@@ -1,31 +1,37 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { Image } from 'expo-image';
+import { memo, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import Svg, { ClipPath, Defs, FeGaussianBlur, Filter, G, LinearGradient, Path, RadialGradient, Rect, Stop } from 'react-native-svg';
+import Animated, { Easing, useAnimatedProps, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import Svg, { ClipPath, Defs, G, LinearGradient, Path, RadialGradient, Rect, Stop } from 'react-native-svg';
+import { scheduleOnRN } from 'react-native-worklets';
 
 import { ECG, STAR } from '@/components/PulseStar';
 import { u } from '@/theme/scale';
 
-import { bezier, EASE, EASE_IN_OUT, prog, track } from './ease';
 import { NAVY } from './Sky';
 import { Wordmark } from './Wordmark';
 
 /*
- * The MedNova intro, frame for frame from the approved prototype (build_proto.py ICSS + OBJS):
- *   0s     star pops in, heartbeat cut + spark run through it (0.5s), it beats (1.3s)
- *   1.95s  the lockup slides so star + wordmark sit centred
- *   2.15s  the Lottie wordmark writes itself in
- *   5.4s   handover: wordmark fades, star glides to the centre, drops 10% and bursts into light
- *   8.1s   done, slide 1 is revealed
+ * The MedNova intro, the approved prototype's story played in about 3 s (Yazan, 2026-10-10):
+ *   0s     star pops in, heartbeat cut + spark run through it, it beats (0.85s)
+ *   0.75s  the lockup slides so star + wordmark sit centred
+ *   0.8s   the Lottie wordmark writes itself in (2.4x speed)
+ *   2.1s   handover: wordmark fades, star glides to the centre, drops 10% and bursts into light
+ *   3.0s   done, the page below is revealed
+ * Every frame runs on the UI thread (Reanimated), and the star's soft glow is a ready-made
+ * image, so the phone never re-renders React or re-blurs anything while it plays.
  */
-export const T_LOTTIE = 2.15;
-export const T_HAND = 5.4;
-export const T_DONE = 8.1;
+export const T_LOTTIE = 0.8;
+export const T_DONE = 3.0;
+const LOTTIE_SPEED = 2.4;
 
-const POP = bezier(0.2, 0.9, 0.3, 1.25);
-const CUT = bezier(0.6, 0, 0.3, 1);
-const SPARK2 = bezier(0.5, 0, 0.4, 1);
-const SLIDE = bezier(0.65, 0, 0.25, 1);
-const EASE_OUT = bezier(0, 0, 0.58, 1);
+const POP = Easing.bezierFn(0.2, 0.9, 0.3, 1.25);
+const CUT = Easing.bezierFn(0.6, 0, 0.3, 1);
+const SPARK2 = Easing.bezierFn(0.5, 0, 0.4, 1);
+const SLIDE = Easing.bezierFn(0.65, 0, 0.25, 1);
+const EASE = Easing.bezierFn(0.25, 0.1, 0.25, 1);
+const EASE_OUT = Easing.bezierFn(0, 0, 0.58, 1);
+const EASE_IN_OUT = Easing.bezierFn(0.42, 0, 0.58, 1);
 
 // The heartbeat path is drawn with pathLength=1000 in the prototype. react-native-svg has no
 // pathLength, so dash values are scaled by the real length of the path.
@@ -38,65 +44,56 @@ const WM_H = 36;
 const GAP = 6;
 const SHIFT = (WM_W + GAP) / 2;
 
-const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
+// The star's viewBox (120 100 784 824) fitted into the SYM square, and the glow image's box in it.
+const VB = { x: 120, y: 100, w: 784, h: 824 };
+const GLOW = { x: -180, y: -200, w: 1384, h: 1424 }; // assets/images/intro/star-glow.png, blur 38 baked in
 
-function frameAt(t: number, h: number) {
-  // pop (0..0.5s) then one heartbeat (1.3s, 0.75s)
-  const pp = prog(t, 0, 0.5);
-  let popS = track(pp, [[0, 0], [0.6, 1.14], [1, 1]], POP);
-  const popR = track(pp, [[0, -35], [0.6, 4], [1, 0]], POP);
-  const popO = clamp01(track(pp, [[0, 0], [0.6, 1]], POP));
-  if (t >= 1.3) popS = track(prog(t, 1.3, 0.75), [[0, 1], [0.18, 1.09], [0.36, 0.98], [0.54, 1.04], [1, 1]], EASE_IN_OUT);
-
-  // glow: in, flare with the beat, then breathe
-  let glow = track(pp, [[0, 0], [1, 0.55]], EASE_OUT);
-  if (t >= 1.3) glow = track(prog(t, 1.3, 0.75), [[0, 0.55], [0.2, 1], [1, 0.55]], EASE_OUT);
-  if (t >= 2.4) glow = track(((t - 2.4) % 4) / 4, [[0, 0.55], [0.5, 0.8], [1, 0.55]], EASE_IN_OUT);
-
-  // heartbeat cut and the spark that runs along it
-  const cut = 1000 * (1 - CUT(prog(t, 0.5, 0.8)));
-  let sOff: number;
-  let sOp: number;
-  if (t < 4.2) {
-    const q = prog(t, 0.5, 0.8);
-    sOff = 70 - 1070 * CUT(q);
-    sOp = track(q, [[0, 1], [0.9, 1], [1, 0]], CUT);
-  } else {
-    const q = ((t - 4.2) % 1.6) / 1.6;
-    sOff = 70 - 1070 * SPARK2(q);
-    sOp = track(q, [[0, 0.9], [0.85, 0.9], [1, 0]], SPARK2);
-  }
-
-  const shift = u(SHIFT) * (1 - SLIDE(prog(t, 1.95, 0.7)));
-
-  // handover, keyframe progress of the 6.5s animation started at -1.56s
-  const hk = (t - (T_HAND - 1.56)) / 6.5;
-  const on = t >= T_HAND;
-  const dx = u(SHIFT);
-  const dy = h * 0.1;
-  return {
-    popS,
-    popR,
-    popO,
-    glow,
-    cut,
-    sOff,
-    sOp,
-    shift,
-    hx: on ? track(hk, [[0.24, 0], [0.31, dx]], EASE) : 0,
-    hy: on ? track(hk, [[0.31, 0], [0.39, dy]], EASE) : 0,
-    hs: on ? track(hk, [[0.31, 1], [0.39, 1.3], [0.46, 3]], EASE) : 1,
-    ho: on ? track(hk, [[0.39, 1], [0.46, 0]], EASE) : 1,
-    wmO: on ? track(hk, [[0.24, 1], [0.32, 0]], EASE) : 1,
-    bg: on ? track(hk, [[0.38, 1], [0.5, 0]], EASE) : 1,
-    fxO: on ? track(hk, [[0.38, 0], [0.46, 1], [0.64, 0]], EASE) : 0,
-    fxS: on ? track(hk, [[0.38, 0.3], [0.46, 1.2], [0.64, 1.8]], EASE) : 0.3,
-  };
+function prog(t: number, delay: number, dur: number) {
+  'worklet';
+  return Math.min(1, Math.max(0, (t - delay) / dur));
 }
 
-function Star({ glow, cut, sOff, sOp }: { glow: number; cut: number; sOff: number; sOp: number }) {
+/** A CSS keyframe track: [progress, value] stops, the easing applied per segment. */
+function track(p: number, stops: number[][], ease: (x: number) => number) {
+  'worklet';
+  if (p <= stops[0][0]) return stops[0][1];
+  for (let i = 0; i < stops.length - 1; i++) {
+    const a = stops[i][0];
+    const b = stops[i + 1][0];
+    if (p < b) return stops[i][1] + (stops[i + 1][1] - stops[i][1]) * ease((p - a) / (b - a));
+  }
+  return stops[stops.length - 1][1];
+}
+
+function glowAt(t: number) {
+  'worklet';
+  if (t >= 1.5) return track(((t - 1.5) % 1.6) / 1.6, [[0, 0.55], [0.5, 0.8], [1, 0.55]], EASE_IN_OUT);
+  if (t >= 0.85) return track(prog(t, 0.85, 0.45), [[0, 0.55], [0.2, 1], [1, 0.55]], EASE_OUT);
+  return track(prog(t, 0, 0.35), [[0, 0], [1, 0.55]], EASE_OUT);
+}
+
+const APath = Animated.createAnimatedComponent(Path);
+
+/** The static parts of the star; only the heartbeat cut and the spark move. */
+const Star = memo(function Star({ t }: { t: ReturnType<typeof useSharedValue<number>> }) {
+  const cut = useAnimatedProps(() => ({ strokeDashoffset: 1000 * (1 - CUT(prog(t.value, 0.3, 0.55))) * k }));
+  const spark = useAnimatedProps(() => {
+    const v = t.value;
+    let off: number;
+    let op: number;
+    if (v < 1.6) {
+      const q = prog(v, 0.3, 0.55);
+      off = 70 - 1070 * CUT(q);
+      op = track(q, [[0, 1], [0.9, 1], [1, 0]], CUT);
+    } else {
+      const q = prog(v, 1.6, 0.6);
+      off = 70 - 1070 * SPARK2(q);
+      op = track(q, [[0, 0.9], [0.85, 0.9], [1, 0]], SPARK2);
+    }
+    return { strokeDashoffset: off * k, opacity: op };
+  });
   return (
-    <Svg width={u(SYM)} height={u(SYM)} viewBox="120 100 784 824" style={{ overflow: 'visible' }}>
+    <Svg width={u(SYM)} height={u(SYM)} viewBox={`${VB.x} ${VB.y} ${VB.w} ${VB.h}`} style={{ overflow: 'visible' }}>
       <Defs>
         <LinearGradient id="inF" x1="0.15" y1="0.1" x2="0.85" y2="0.95">
           <Stop offset="0" stopColor="#d8f6ff" />
@@ -107,51 +104,26 @@ function Star({ glow, cut, sOff, sOp }: { glow: number; cut: number; sOff: numbe
           <Stop offset="0" stopColor="#fff" stopOpacity="0.55" />
           <Stop offset="1" stopColor="#fff" stopOpacity="0" />
         </RadialGradient>
-        <Filter id="inG" x="-60%" y="-60%" width="220%" height="220%">
-          <FeGaussianBlur stdDeviation="38" />
-        </Filter>
-        <Filter id="inS" x="-20%" y="-20%" width="140%" height="140%">
-          <FeGaussianBlur stdDeviation="5" />
-        </Filter>
         <ClipPath id="inC">
           <Path d={STAR} />
         </ClipPath>
       </Defs>
-      <Path d={STAR} fill="#6fd6ff" opacity={glow} filter="url(#inG)" />
       <Path d={STAR} fill="url(#inF)" />
       <Path d={STAR} fill="url(#inH)" />
       <Path d="M160 503 L405 405 L512 138 L619 405" fill="none" stroke="#fff" strokeOpacity={0.7} strokeWidth={5} strokeLinejoin="round" clipPath="url(#inC)" />
       <G clipPath="url(#inC)">
-        <Path
-          d={ECG}
-          fill="none"
-          stroke={NAVY}
-          strokeWidth={17}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeDasharray={[1000 * k, 1000 * k]}
-          strokeDashoffset={cut * k}
-        />
-        {sOp > 0.001 ? (
-          <Path
-            d={ECG}
-            fill="none"
-            stroke="#fff"
-            strokeWidth={12}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeDasharray={[70 * k, 1100 * k]}
-            strokeDashoffset={sOff * k}
-            opacity={sOp}
-            filter="url(#inS)"
-          />
-        ) : null}
+        <APath d={ECG} fill="none" stroke={NAVY} strokeWidth={17} strokeLinecap="round" strokeLinejoin="round" strokeDasharray={[1000 * k, 1000 * k]} animatedProps={cut} />
+        {/* the spark: a soft wide stroke under a bright core stands in for the old live blur */}
+        <G>
+          <APath d={ECG} fill="none" stroke="#fff" strokeOpacity={0.35} strokeWidth={24} strokeLinecap="round" strokeLinejoin="round" strokeDasharray={[70 * k, 1100 * k]} animatedProps={spark} />
+          <APath d={ECG} fill="none" stroke="#fff" strokeWidth={11} strokeLinecap="round" strokeLinejoin="round" strokeDasharray={[70 * k, 1100 * k]} animatedProps={spark} />
+        </G>
       </G>
     </Svg>
   );
-}
+});
 
-/** Background of the logo stage and the light burst of the handover. */
+/** Background of the logo stage. */
 function Backdrop({ w, h }: { w: number; h: number }) {
   return (
     <Svg width={w} height={h} style={StyleSheet.absoluteFill}>
@@ -167,6 +139,7 @@ function Backdrop({ w, h }: { w: number; h: number }) {
   );
 }
 
+/** The light burst of the handover. */
 function Burst({ w, h }: { w: number; h: number }) {
   // radial-gradient(circle at 50% 60%, ...) : a circle out to the farthest corner
   const r = Math.hypot(w / 2, h * 0.6);
@@ -187,48 +160,80 @@ function Burst({ w, h }: { w: number; h: number }) {
 
 /** Full-screen intro overlay. Calls onDone once the handover has revealed the page below. */
 export function Intro({ w, h, onDone }: { w: number; h: number; onDone: () => void }) {
-  const [t, setT] = useState(0);
-  const done = useRef(onDone);
-  done.current = onDone;
+  const t = useSharedValue(0);
+  const [play, setPlay] = useState(false);
   useEffect(() => {
-    let raf = 0;
-    const t0 = Date.now();
-    const step = () => {
-      const s = (Date.now() - t0) / 1000;
-      if (s >= T_DONE) {
-        done.current();
-        return;
-      }
-      setT(s);
-      raf = requestAnimationFrame(step);
+    t.value = withTiming(T_DONE, { duration: T_DONE * 1000, easing: Easing.linear }, (fin) => {
+      if (fin) scheduleOnRN(onDone);
+    });
+    const id = setTimeout(() => setPlay(true), T_LOTTIE * 1000);
+    return () => clearTimeout(id);
+    // onDone is read once; the intro runs a single time per mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [t]);
+
+  const dx = u(SHIFT);
+  const dy = h * 0.1;
+  const sym = u(SYM);
+  // glow image placement inside the star box (viewBox fitted with "meet")
+  const kk = sym / VB.h;
+  const offX = (sym - VB.w * kk) / 2;
+  const glowBox = { left: offX + (GLOW.x - VB.x) * kk, top: (GLOW.y - VB.y) * kk, width: GLOW.w * kk, height: GLOW.h * kk };
+
+  const stage = useAnimatedStyle(() => ({ opacity: 1 - EASE(prog(t.value, 2.45, 0.3)) }));
+  const lockup = useAnimatedStyle(() => ({ transform: [{ translateX: dx * (1 - SLIDE(prog(t.value, 0.75, 0.45))) }] }));
+  const hand = useAnimatedStyle(() => {
+    const v = t.value;
+    const s1 = EASE(prog(v, 2.3, 0.2));
+    const s2 = EASE(prog(v, 2.5, 0.2));
+    return {
+      opacity: 1 - s2,
+      transform: [{ translateX: dx * EASE(prog(v, 2.1, 0.2)) }, { translateY: dy * s1 }, { scale: v < 2.5 ? 1 + 0.3 * s1 : 1.3 + 1.7 * s2 }],
     };
-    raf = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(raf);
-  }, []);
-  const f = frameAt(t, h);
-  const play = t >= T_LOTTIE;
+  });
+  const pop = useAnimatedStyle(() => {
+    const v = t.value;
+    const pp = prog(v, 0, 0.35);
+    const s = v >= 0.85 ? track(prog(v, 0.85, 0.45), [[0, 1], [0.18, 1.09], [0.36, 0.98], [0.54, 1.04], [1, 1]], EASE_IN_OUT) : track(pp, [[0, 0], [0.6, 1.14], [1, 1]], POP);
+    return {
+      opacity: Math.min(1, Math.max(0, track(pp, [[0, 0], [0.6, 1]], POP))),
+      transform: [{ scale: s }, { rotate: `${track(pp, [[0, -35], [0.6, 4], [1, 0]], POP)}deg` }],
+    };
+  });
+  const glow = useAnimatedStyle(() => ({ opacity: glowAt(t.value) }));
+  const wm = useAnimatedStyle(() => ({ opacity: 1 - EASE(prog(t.value, 2.1, 0.18)) }));
+  const fx = useAnimatedStyle(() => {
+    const v = t.value;
+    const a = EASE(prog(v, 2.45, 0.2));
+    const b = EASE(prog(v, 2.65, 0.3));
+    return { opacity: v < 2.65 ? a : 1 - b, transform: [{ scale: v < 2.65 ? 0.3 + 0.9 * a : 1.2 + 0.6 * b }] };
+  });
+
   const backdrop = useMemo(() => <Backdrop w={w} h={h} />, [w, h]);
   const burst = useMemo(() => <Burst w={w} h={h} />, [w, h]);
   return (
     <View style={[StyleSheet.absoluteFill, { zIndex: 60 }]}>
-      <View style={[StyleSheet.absoluteFill, { opacity: f.bg }]}>
+      <Animated.View style={[StyleSheet.absoluteFill, stage]}>
         {backdrop}
         <View style={[StyleSheet.absoluteFill, { alignItems: 'center', justifyContent: 'center' }]}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: u(GAP), transform: [{ translateX: f.shift }] }}>
-            <View style={{ width: u(SYM), height: u(SYM), opacity: f.ho, transform: [{ translateX: f.hx }, { translateY: f.hy }, { scale: f.hs }] }}>
-              <View style={{ flex: 1, opacity: f.popO, transform: [{ scale: f.popS }, { rotate: `${f.popR}deg` }] }}>
-                <Star glow={f.glow} cut={f.cut} sOff={f.sOff} sOp={f.sOp} />
-              </View>
-            </View>
-            <View style={{ opacity: f.wmO }}>
-              <Wordmark width={u(WM_W)} height={u(WM_H)} play={play} />
-            </View>
-          </View>
+          <Animated.View style={[{ flexDirection: 'row', alignItems: 'center', gap: u(GAP) }, lockup]}>
+            <Animated.View style={[{ width: sym, height: sym }, hand]}>
+              <Animated.View style={[{ flex: 1 }, pop]}>
+                <Animated.View style={[{ position: 'absolute', ...glowBox }, glow]} pointerEvents="none">
+                  <Image source={require('@/assets/images/intro/star-glow.png')} style={{ width: '100%', height: '100%' }} contentFit="fill" transition={0} />
+                </Animated.View>
+                <Star t={t} />
+              </Animated.View>
+            </Animated.View>
+            <Animated.View style={wm}>
+              <Wordmark width={u(WM_W)} height={u(WM_H)} play={play} speed={LOTTIE_SPEED} />
+            </Animated.View>
+          </Animated.View>
         </View>
-      </View>
-      <View pointerEvents="none" style={[StyleSheet.absoluteFill, { opacity: f.fxO, transform: [{ scale: f.fxS }] }]}>
+      </Animated.View>
+      <Animated.View pointerEvents="none" style={[StyleSheet.absoluteFill, fx]}>
         {burst}
-      </View>
+      </Animated.View>
     </View>
   );
 }

@@ -25,6 +25,7 @@ import { ONLINE_MS, type Move, type OnlineWheels } from './online';
 import { WheelsPause } from './screens';
 import { TurnBoard, type Strip } from './TurnBoard';
 import { Bill, Btn, Bulbs, CardArt, CD, CM, GEMS, Panel, PauseBtn, ROMAN, Rule, T, VelvetScreen, VV } from './velvet';
+import { keepSame, oneAtATime } from '@/online/poll';
 
 /** Every phone in a game must carry the same bank; the server checks this. */
 const BANK_V = bankVersion(BANK);
@@ -74,7 +75,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
     try {
       const s = await call<WState>('wc_state', { m: matchId });
       offset.current = s.now - Date.now();
-      setSt(s);
+      setSt((prev) => keepSame(prev, s));
     } catch {
       setNotice('Reconnecting…');
     }
@@ -82,7 +83,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
 
   useEffect(() => {
     load();
-    const poll = setInterval(load, 1000);
+    const poll = setInterval(oneAtATime(load), 1000);
     const tick = setInterval(() => setNow(Date.now()), 200);
     return () => (clearInterval(poll), clearInterval(tick));
   }, [load]);

@@ -44,7 +44,9 @@ export async function play(fx: Fx, volume = 1) {
 export function useSeasonLoop(season: number) {
   useEffect(() => {
     let p: AudioPlayer | null = null;
+    let gone = false; // left the page (or the season changed) before the sound was ready
     audioMode().then(() => {
+      if (gone) return;
       try {
         p = createAudioPlayer(SEASONS[season]);
         p.loop = true;
@@ -56,6 +58,7 @@ export function useSeasonLoop(season: number) {
       }
     });
     return () => {
+      gone = true;
       try {
         p?.pause();
         p?.remove();

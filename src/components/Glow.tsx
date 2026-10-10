@@ -53,7 +53,8 @@ export function Glow({ delay = 0, w, h, mode }: { delay?: number; w: number; h: 
   });
   return (
     <View pointerEvents="none" style={[StyleSheet.absoluteFill, { overflow: 'hidden' }]}>
-      <Animated.View style={[{ position: 'absolute', left: 0, top: 0, width: u(BOX), height: u(BOX) }, st]}>
+      {/* cached as a GPU picture: it only moves, so the gradients are never redrawn */}
+      <Animated.View style={[{ position: 'absolute', left: 0, top: 0, width: u(BOX), height: u(BOX) }, st]} renderToHardwareTextureAndroid shouldRasterizeIOS>
         <Svg width={u(BOX)} height={u(BOX)} viewBox={`${-BOX / 2} ${-BOX / 2} ${BOX} ${BOX}`}>
           <Defs>
             {t.glow.map((c, j) => (

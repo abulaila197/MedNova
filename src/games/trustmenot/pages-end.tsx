@@ -3,7 +3,8 @@
 // Supper, the seven-part final reveal, the epilogue cards, the results and the pause page.
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
-import { Pressable, ScrollView, StyleSheet, TextInput, View, type StyleProp, type ViewStyle } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
+import { TextInput } from '@/components/AppText';
 import Svg, { Ellipse, Path } from 'react-native-svg';
 
 import { leaveRoom, rematchRoom } from '@/online/api';

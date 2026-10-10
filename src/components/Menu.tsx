@@ -1,7 +1,8 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, usePathname } from 'expo-router';
 import { useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
+import { Text } from '@/components/AppText';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Platform } from 'react-native';
 
@@ -23,7 +24,9 @@ const ITEMS = [
 export function Menu() {
   const t = useTheme();
   const path = usePathname();
-  const { setMenu, mode, setMode } = useApp();
+  const setMenu = useApp((a) => a.setMenu);
+  const mode = useApp((a) => a.mode);
+  const setMode = useApp((a) => a.setMode);
   const ins = useSafeAreaInsets();
   const profile = useAccount((a) => a.profile);
   const [outErr, setOutErr] = useState(false);

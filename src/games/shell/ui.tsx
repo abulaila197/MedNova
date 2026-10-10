@@ -1,6 +1,8 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import type { ReactNode } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View, type StyleProp, type ViewStyle } from 'react-native';
+import { Platform, Pressable, ScrollView, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Text } from '@/components/AppText';
 
 import { Screen } from '@/components/Screen';
 import { useTheme } from '@/state/app';
@@ -12,15 +14,19 @@ import { F } from '@/theme/tokens';
  * A game with its own design language passes its own background as `under` (no app glow) and body spacing.
  */
 export function GameScreen({ children, scroll = true, top, under, bodyStyle }: { children: ReactNode; scroll?: boolean; top?: ReactNode; under?: ReactNode; bodyStyle?: StyleProp<ViewStyle> }) {
+  // Game pages have no dock, so they keep their own room above the phone's system buttons.
+  // A game that sets its own bottom padding (with the inset) overrides this.
+  const ins = useSafeAreaInsets();
+  const safe = { paddingBottom: u(28) + (Platform.OS === 'web' ? 0 : ins.bottom) };
   return (
     <Screen dock={false} glow={under ? -1 : 1} game under={under}>
       {top}
       {scroll ? (
-        <ScrollView contentContainerStyle={[s.body, bodyStyle]} showsVerticalScrollIndicator={false}>
+        <ScrollView contentContainerStyle={[s.body, safe, bodyStyle]} showsVerticalScrollIndicator={false}>
           {children}
         </ScrollView>
       ) : (
-        <View style={[s.body, bodyStyle, { flex: 1 }]}>{children}</View>
+        <View style={[s.body, safe, bodyStyle, { flex: 1 }]}>{children}</View>
       )}
     </Screen>
   );

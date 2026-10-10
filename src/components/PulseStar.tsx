@@ -1,14 +1,16 @@
+import { useId } from 'react';
 import Svg, { Circle, ClipPath, Defs, FeGaussianBlur, Filter, G, LinearGradient, Path, RadialGradient, Stop } from 'react-native-svg';
 
 export const STAR = 'M512 138 L619 405 L865 503 L865 520 L619 620 L512 885 L405 620 L160 520 L160 503 L405 405Z';
 export const ECG =
   'M150 511 H388 Q398 511 404 499 L410 482 Q414 470 420 482 L432 506 Q436 514 446 514 H457 Q462 514 465 522 L476 548 L497 357 Q500 345 503 357 L526 640 L548 520 Q550 513 558 513 H586 Q594 513 598 504 L613 478 Q622 462 632 478 L648 506 Q652 513 660 513 H875';
 
-let seq = 0;
+// Ids come from useId, so they stay the same across re-renders and the SVG isn't rebuilt each time.
+const useKey = (prefix: string) => prefix + useId().replace(/[^a-zA-Z0-9]/g, '');
 
 /** The Pulse star, still version (header, menu). */
 export function PulseStar({ width, height, light = false, glow = 0.5 }: { width: number; height: number; light?: boolean; glow?: number }) {
-  const k = `ps${++seq}`;
+  const k = useKey('ps');
   const c = light ? ['#fff1d6', '#f0a24a', '#d9772c', '#e5833a'] : ['#d8f6ff', '#6fd6ff', '#3aa6dc', '#6fd6ff'];
   return (
     <Svg width={width} height={height} viewBox="120 100 784 824" style={{ overflow: 'visible' }}>

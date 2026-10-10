@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Pressable, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
+import { Text } from '@/components/AppText';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { call } from '@/online/api';
@@ -9,7 +10,7 @@ import { useRace, type RacePlayer, type RaceState } from '@/online/race';
 import { RaceReveal } from '@/online/RaceReveal';
 import { RoomTalk } from '@/online/Talk';
 import { useTheme } from '@/state/app';
-import { u } from '@/theme/scale';
+import { u, useScreen } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import { characterOf } from '../shell/characters';
@@ -69,7 +70,7 @@ const clock = (ms: number) => {
  */
 export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   const t = useTheme();
-  const { width } = useWindowDimensions();
+  const { width } = useScreen();
   const W = Math.min(width, 430);
   const toItems = useMemo(() => itemsOf(me), [me]);
   const { st, load, server, playing, notice, setNotice, leave } = useRace(def, roomId, matchId, me, toItems);

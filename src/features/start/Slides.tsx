@@ -1,6 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { useMemo, type ReactNode } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
+import { Text } from '@/components/AppText';
 import Svg, { Defs, Image as SvgImage, LinearGradient as SvgLinear, Mask, RadialGradient, Rect, Stop } from 'react-native-svg';
 
 import { u } from '@/theme/scale';
@@ -190,7 +191,8 @@ export type SlideProps = {
 function Frame({ si, w, h, padTop, padBottom, children }: Omit<SlideProps, 'onNext' | 'onSkip'> & { children: ReactNode }) {
   const hd = h / u(1);
   return (
-    <View style={{ width: w, height: h, overflow: 'hidden', backgroundColor: NAVY }}>
+    // cached as one GPU picture, so a swipe moves it without redrawing the photo, masks and stars
+    <View style={{ width: w, height: h, overflow: 'hidden', backgroundColor: NAVY }} renderToHardwareTextureAndroid shouldRasterizeIOS>
       <Sky w={w} h={h} />
       <Scene si={si} w={w} h={h} padTop={padTop} padBottom={padBottom} />
       <Stars si={si} hd={hd} />

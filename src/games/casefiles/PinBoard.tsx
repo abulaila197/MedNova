@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Image, Pressable, StyleSheet, View } from 'react-native';
+import { Image } from 'expo-image';
+import { Pressable, StyleSheet, View } from 'react-native';
 import Svg, { Circle, Defs, Ellipse, G, Line, Path, RadialGradient, Rect, Stop } from 'react-native-svg';
 
 import { u } from '@/theme/scale';
@@ -65,7 +66,7 @@ export function PinBoard({ def, run, sealed, onOpen }: { def: CaseDef; run: Run;
   const done = completed(run);
   return (
     <View style={s.frame}>
-      <Image source={BOARD} resizeMode="stretch" style={[StyleSheet.absoluteFill, { width: '100%', height: '100%' }]} accessibilityIgnoresInvertColors />
+      <Image source={BOARD} contentFit="fill" style={[StyleSheet.absoluteFill, { width: '100%', height: '100%' }]} />
       <View style={s.felt} onLayout={(e) => setBox({ w: e.nativeEvent.layout.width, h: e.nativeEvent.layout.height })}>
         {box ? (
           <>
@@ -102,7 +103,7 @@ export function PinBoard({ def, run, sealed, onOpen }: { def: CaseDef; run: Run;
                   accessibilityLabel={`${p.label}, ${tag}`}
                   style={[s.card, { left: at(p).x - w / 2, top: at(p).y - h / 2, width: w, height: h, transform: [{ rotate: `${p.r}deg` }] }]}
                 >
-                  <Image source={f.src} resizeMode="contain" style={{ width: '100%', height: '100%' }} />
+                  <Image source={f.src} contentFit="contain" style={{ width: '100%', height: '100%' }} />
                   {!live ? <Lock /> : null}
                   <View style={s.label}>
                     <View style={s.strip}>

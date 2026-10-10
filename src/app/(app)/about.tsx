@@ -1,4 +1,6 @@
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { Image } from 'expo-image';
+import { StyleSheet, View } from 'react-native';
+import { Text } from '@/components/AppText';
 
 import { Screen } from '@/components/Screen';
 import { AboutRail } from '@/features/info/AboutRail';
@@ -15,7 +17,7 @@ export default function Page() {
   const c = useInfo();
   const progress = useSharedValue(0);
   return (
-    <Screen tab={null} glow={21} under={<Image source={DAWN[c.t.mode]} resizeMode="cover" style={s.dawn} />}>
+    <Screen tab={null} glow={21} under={<Image source={DAWN[c.t.mode]} contentFit="cover" style={s.dawn} />}>
       <InfoScroll scrollY={progress} over={<AboutRail progress={progress} />}>
         <Kicker>About MedNova</Kicker>
         <Rich text={'Medicine becomes\na *puzzle.*'} style={ui.H} />

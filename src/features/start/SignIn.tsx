@@ -1,14 +1,15 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { useState, type ReactNode } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, TextInput, useWindowDimensions, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Text, TextInput } from '@/components/AppText';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Path } from 'react-native-svg';
 
 import { TopInset } from '@/components/StatusMock';
 import { supabase } from '@/lib/supabase';
 import { useTheme } from '@/state/app';
-import { u } from '@/theme/scale';
+import { u, useScreen } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import { cssAngle } from './ease';
@@ -108,7 +109,7 @@ export function SignIn() {
   const t = useTheme();
   const lt = t.mode === 'light';
   const c = lt ? C.light : C.dark;
-  const { width: w, height: h } = useWindowDimensions();
+  const { width: w, height: h } = useScreen();
   const ins = useSafeAreaInsets();
   const [tab, setTab] = useState<'in' | 'up'>('in');
   const [step, setStep] = useState<Step>('form');

@@ -1,7 +1,7 @@
 import { router } from 'expo-router';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { StyleSheet, useWindowDimensions, View } from 'react-native';
-import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import { StyleSheet, View } from 'react-native';
+import Animated, { Easing, useAnimatedStyle, useSharedValue, withDelay, withSequence, withTiming } from 'react-native-reanimated';
 
 import { GAMES } from '@/data/games';
 import { GamesScreen } from '@/features/games/GamesScreen';
@@ -12,6 +12,7 @@ import { LOAD, wipeColor } from './configs';
 import { loadFontsFor } from './fonts';
 import { LoadingPage } from './LoadingPage';
 import { type LoadRun, useLoading } from './store';
+import { useScreen } from '@/theme/scale';
 
 /** Locked timings (2026-10-05): doors 0.9 s in, 5 s loading, bar wipe out about 1.5 s. */
 export const LOAD_MS = 5000;
@@ -29,7 +30,7 @@ export function LoadingHost() {
 }
 
 function Run({ run }: { run: LoadRun }) {
-  const { width: W, height: H } = useWindowDimensions();
+  const { width: W, height: H } = useScreen();
   const g = LOAD[run.key];
   const tip = useMemo(() => g.tips[Math.floor(Math.random() * g.tips.length)], [g]);
   const [stage, setStage] = useState<'doors' | 'load' | 'out'>('doors');
@@ -68,6 +69,8 @@ function Run({ run }: { run: LoadRun }) {
           setTimeout(() => {
             setStage('load');
             p.value = withTiming(1, { duration: LOAD_MS, easing: Easing.linear });
+            // read the game's question bank now, while the bar runs, not when the game opens
+            setTimeout(() => gameDef(run.key), 400);
           }, 60 + SETTLE_MS + 20),
           setTimeout(() => wipe(), 60 + SETTLE_MS + 20 + LOAD_MS + 250),
         );
@@ -91,13 +94,11 @@ function Run({ run }: { run: LoadRun }) {
       line.o.value = 1;
       line.l.value = withTiming(0, { duration: 300, easing: OUT });
       line.w.value = withTiming(W, { duration: 300, easing: OUT });
-      // The next screen opens underneath while the page still covers everything.
+      // The whole sweep is handed to the animation engine up front, so the next screen mounting
+      // on the JavaScript side (it opens underneath while the page still covers everything) can't stall it.
+      line.y.value = withSequence(withDelay(300, withTiming(0, { duration: 350, easing: IN_OUT })), withTiming(H + 4, { duration: 1000, easing: IN_OUT }));
+      clip.value = withDelay(650, withTiming(H + 4, { duration: 1000, easing: IN_OUT }));
       if (def) router.push(`/play/${run.key}`);
-      setTimeout(() => (line.y.value = withTiming(0, { duration: 350, easing: IN_OUT })), 300);
-      setTimeout(() => {
-        line.y.value = withTiming(H + 4, { duration: 1000, easing: IN_OUT });
-        clip.value = withTiming(H + 4, { duration: 1000, easing: IN_OUT });
-      }, 650);
       setTimeout(() => {
         useLoading.getState().end();
         // Games not built yet keep the old "game screen" note on the Games page.
@@ -111,9 +112,13 @@ function Run({ run }: { run: LoadRun }) {
   };
 
   const settleSt = useAnimatedStyle(() => ({ transform: [{ scale: settle.value }] }));
-  const outer = useAnimatedStyle(() => ({ top: clip.value }));
-  const inner = useAnimatedStyle(() => ({ top: -clip.value }));
-  const lineSt = useAnimatedStyle(() => ({ left: line.l.value, width: line.w.value, top: line.y.value - 1.5, opacity: line.o.value }));
+  // moved with transforms, not top/left/width, so nothing is laid out again on each frame
+  const outer = useAnimatedStyle(() => ({ transform: [{ translateY: clip.value }] }));
+  const inner = useAnimatedStyle(() => ({ transform: [{ translateY: -clip.value }] }));
+  const lineSt = useAnimatedStyle(() => ({
+    opacity: line.o.value,
+    transform: [{ translateX: line.l.value }, { translateY: line.y.value - 1.5 }, { scaleX: Math.max(0.001, line.w.value / W) }],
+  }));
   const y = split ?? 0;
   const topDoor = useAnimatedStyle(() => ({ transform: [{ translateY: -y * door.value }] }));
   const botDoor = useAnimatedStyle(() => ({ transform: [{ translateY: (H - y) * door.value }] }));
@@ -146,25 +151,28 @@ function Run({ run }: { run: LoadRun }) {
           )}
         </View>
       ) : null}
-      {stage === 'out' ? <Animated.View pointerEvents="none" style={[s.line, { backgroundColor: col, boxShadow: `0 0 12px ${col}, 0 0 30px ${col}` }, lineSt]} /> : null}
+      {stage === 'out' ? <Animated.View pointerEvents="none" style={[s.line, { width: W, transformOrigin: 'left center', backgroundColor: col, boxShadow: `0 0 12px ${col}, 0 0 30px ${col}` }, lineSt]} /> : null}
     </View>
   );
 }
 
-/** A still copy of the Games page on the tapped game: the doors are made of it. */
+/**
+ * A still copy of the Games page on the tapped game: the doors are made of it. Only the tapped
+ * game and the visible planets are drawn, and the copy is kept as one GPU picture while it moves.
+ */
 function GamesCopy({ at, w, h }: { at: number; w: number; h: number }) {
   return (
-    <View style={{ width: w, height: h }}>
-      <GamesScreen at={at} />
+    <View style={{ width: w, height: h }} renderToHardwareTextureAndroid shouldRasterizeIOS>
+      <GamesScreen at={at} still />
     </View>
   );
 }
 
 const s = StyleSheet.create({
   host: { zIndex: 20 },
-  clip: { position: 'absolute', left: 0, right: 0, bottom: 0, overflow: 'hidden' },
+  clip: { position: 'absolute', left: 0, right: 0, top: 0, bottom: 0, overflow: 'hidden' },
   page: { position: 'absolute', left: 0 },
   door: { position: 'absolute', left: 0, right: 0, overflow: 'hidden' },
   shadow: { boxShadow: '0 8px 20px rgba(0,0,0,0.5)' },
-  line: { position: 'absolute', height: 3 },
+  line: { position: 'absolute', left: 0, top: 0, height: 3 },
 });

@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Linking, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Linking, Pressable, StyleSheet, View } from 'react-native';
+import { Text, TextInput } from '@/components/AppText';
 
 import { Screen } from '@/components/Screen';
 import { CONTACT_EMAIL, INTENTS } from '@/features/info/content';

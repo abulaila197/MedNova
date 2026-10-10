@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { Image, KeyboardAvoidingView, Platform, Pressable, StyleSheet, Text, TextInput, View, type LayoutChangeEvent } from 'react-native';
+import { Image } from 'expo-image';
+import { KeyboardAvoidingView, Platform, Pressable, StyleSheet, View, type LayoutChangeEvent } from 'react-native';
+import { Text, TextInput } from '@/components/AppText';
 import Animated, { FadeIn, FadeInDown, useAnimatedStyle, useSharedValue, withSequence, withTiming } from 'react-native-reanimated';
 
 import { useTheme } from '@/state/app';
@@ -94,7 +96,7 @@ export function RiddleBoard(p: BoardProps) {
                     <Text style={s.coverT}>Paused</Text>
                   </View>
                 ) : (
-                  <Image source={imageOf(p.riddle.id)} style={pic} resizeMode="contain" accessibilityLabel={`Rebus picture, level ${p.riddle.id.slice(2)}`} />
+                  <Image source={imageOf(p.riddle.id)} style={pic} contentFit="contain" accessibilityLabel={`Rebus picture, level ${p.riddle.id.slice(2)}`} />
                 )}
                 <Text style={s.cap} numberOfLines={1}>{prompt}</Text>
               </View>

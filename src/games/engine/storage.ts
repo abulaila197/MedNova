@@ -23,26 +23,36 @@ export function memoryKV(): KV {
   };
 }
 
-/** Uses localStorage when it exists (web preview), else memory. A native SQLite adapter plugs in here at the data step. */
+// Values already read or written stay parsed in memory (shared by every defaultKV), so the saved
+// plays and the wallet, which grow with use, aren't re-read and re-parsed on every answer and every
+// coin refresh. Writes still go straight to storage.
+const parsed = new Map<string, unknown>();
+
+/** Uses localStorage when it exists (web preview, and phones via expo-sqlite), else memory. */
 export function defaultKV(): KV {
   const ls = (globalThis as { localStorage?: Storage }).localStorage;
   if (!ls) return memoryKV();
   const p = 'mednova:';
   return {
     async get<T>(k: string) {
+      if (parsed.has(p + k)) return parsed.get(p + k) as T;
       try {
         const v = ls.getItem(p + k);
-        return v == null ? null : (JSON.parse(v) as T);
+        const val = v == null ? null : (JSON.parse(v) as T);
+        parsed.set(p + k, val);
+        return val;
       } catch {
         return null;
       }
     },
     async set(k, v) {
+      parsed.set(p + k, v);
       try {
         ls.setItem(p + k, JSON.stringify(v));
       } catch {}
     },
     async remove(k) {
+      parsed.delete(p + k);
       try {
         ls.removeItem(p + k);
       } catch {}

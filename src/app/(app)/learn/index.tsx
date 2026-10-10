@@ -1,6 +1,7 @@
 import { router } from 'expo-router';
 import { useRef, useState, type ReactNode } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Text } from '@/components/AppText';
 import { LinearGradient } from 'expo-linear-gradient';
 import Animated, { interpolateColor, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue, type SharedValue } from 'react-native-reanimated';
 
@@ -13,7 +14,7 @@ import { Shelf } from '@/features/learn/Shelf';
 import { PageTitle } from '@/features/learn/Title';
 import { Toggle } from '@/features/learn/Toggle';
 import { useTheme } from '@/state/app';
-import { u } from '@/theme/scale';
+import { u, useScreen } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 const NAMES = ['Review', 'Dossiers', 'My cases'];
@@ -22,7 +23,7 @@ const BASIC_H = [142, 134];
 
 /** Learn: three pages swiped sideways (Today's review, Disease dossiers, My cases) under a fixed row of page names. */
 export default function Learn() {
-  const { width: W } = useWindowDimensions();
+  const { width: W } = useScreen();
   const x = useSharedValue(0);
   const pager = useRef<Animated.ScrollView>(null);
   const onScroll = useAnimatedScrollHandler((e) => {

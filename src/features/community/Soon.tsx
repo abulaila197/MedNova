@@ -1,4 +1,5 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
+import { Text } from '@/components/AppText';
 
 import { cover, Feather } from '@/features/community/fx';
 import { useTheme } from '@/state/app';

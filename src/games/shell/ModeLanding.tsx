@@ -1,5 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Image } from 'expo-image';
+import { Pressable, StyleSheet, View } from 'react-native';
+import { Text } from '@/components/AppText';
 
 import { Back } from '@/features/learn/Back';
 import { GAME_PHOTOS, GAMES } from '@/data/games';
@@ -28,7 +30,7 @@ export function ModeLanding({ def }: { def: GameDef }) {
         // Dark only: on the light sky its feathered edges showed as a colour crack.
         t.mode === 'dark' ? (
           <View style={s.art} pointerEvents="none">
-            <Image source={photo} style={[StyleSheet.absoluteFill, { opacity: 0.5 }]} resizeMode="cover" />
+            <Image source={photo} style={[StyleSheet.absoluteFill, { opacity: 0.5 }]} contentFit="cover" />
             <LinearGradient colors={[t.sky, 'transparent']} start={{ x: 0, y: 0.5 }} end={{ x: 0.7, y: 0.5 }} style={StyleSheet.absoluteFill} />
             <LinearGradient colors={['transparent', t.sky]} start={{ x: 0.5, y: 0.35 }} end={{ x: 0.5, y: 1 }} style={StyleSheet.absoluteFill} />
           </View>

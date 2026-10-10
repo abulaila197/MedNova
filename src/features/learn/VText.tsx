@@ -1,4 +1,5 @@
-import { Text, View, type TextStyle } from 'react-native';
+import { View, type TextStyle } from 'react-native';
+import { Text } from '@/components/AppText';
 
 /**
  * Text set vertically in a box of known size (CSS writing-mode: vertical-rl).

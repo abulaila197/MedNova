@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Pressable, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
+import { Text } from '@/components/AppText';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { useTheme } from '@/state/app';
-import { u } from '@/theme/scale';
+import { u, useScreen } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import { engine, rank } from '../engine';
@@ -24,7 +25,7 @@ const FLASH_MS = 1100;
 /** Offline (CW5, OF1, TMG-CW): one shared grid, one word per turn, pass the phone. No hints, no EXP. */
 export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   const t = useTheme();
-  const { width } = useWindowDimensions();
+  const { width } = useScreen();
   const W = Math.min(width, 430);
   const [run, setRun] = useState<OfflineRun | null>(null);
   const ref = useRef<OfflineRun | null>(null);

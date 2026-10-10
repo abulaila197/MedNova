@@ -213,7 +213,7 @@ function frame(f: number, uid: string) {
   );
 }
 
-export const Wordmark = memo(function Wordmark({ width, height, play }: { width: number; height: number; play: boolean }) {
+export const Wordmark = memo(function Wordmark({ width, height, play, speed = 1 }: { width: number; height: number; play: boolean; speed?: number }) {
   const uid = `wm${useId().replace(/[^a-zA-Z0-9]/g, '')}`;
   const [f, setF] = useState(0);
   const last = DATA.op - 1;
@@ -222,13 +222,13 @@ export const Wordmark = memo(function Wordmark({ width, height, play }: { width:
     let raf = 0;
     const t0 = performance.now();
     const step = (now: number) => {
-      const nf = Math.min(last, ((now - t0) / 1000) * DATA.fr);
+      const nf = Math.min(last, ((now - t0) / 1000) * DATA.fr * speed);
       setF(nf);
       if (nf < last) raf = requestAnimationFrame(step);
     };
     raf = requestAnimationFrame(step);
     return () => cancelAnimationFrame(raf);
-  }, [play, last]);
+  }, [play, last, speed]);
   const content = useMemo(() => frame(f, uid), [f, uid]);
   return (
     <View style={{ width, height }}>

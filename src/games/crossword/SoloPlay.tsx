@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Pressable, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
+import { Text } from '@/components/AppText';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { useTheme } from '@/state/app';
-import { u } from '@/theme/scale';
+import { u, useScreen } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import { engine } from '../engine';
@@ -175,7 +176,7 @@ function Puzzle({ puzzle, run, playId, paused, onEvent, onPause, dock, children 
   puzzle: PuzzleDef; run: SoloRun; playId: string; paused: boolean; onEvent: (e: SoloEvent) => void; onPause: () => void; dock: React.ReactNode; children?: React.ReactNode;
 }) {
   const t = useTheme();
-  const { width } = useWindowDimensions();
+  const { width } = useScreen();
   const W = Math.min(width, 430);
   const idx = indexOf(puzzle);
   const [zoom, setZoom] = useState<CellPos | null>(null);

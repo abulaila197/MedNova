@@ -1,4 +1,5 @@
-import { Platform, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Platform, Pressable, StyleSheet, View } from 'react-native';
+import { Text, TextInput } from '@/components/AppText';
 
 import { Back } from '@/features/learn/Back';
 import { GAMES } from '@/data/games';

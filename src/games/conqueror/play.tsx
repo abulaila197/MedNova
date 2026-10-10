@@ -1,7 +1,8 @@
 // The Conqueror's question, versus, card, duel and report pages in the Ink Atlas look. Each page draws the
 // player's own view of the match (view.ts) and sends only their own actions; the server judges everything.
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, TextInput, useWindowDimensions, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { TextInput } from '@/components/AppText';
 
 import { AT, Btn, CardTile, CG, CGB, CGI, Chip, CZ, CZM, Kicker, PieceIcon, ROMAN, Rule, T, Top, v } from './atlas';
 import { MapChart } from './AtlasMap';
@@ -12,6 +13,7 @@ import NAMES from './data/names.json';
 import type { AtlasMap } from './map';
 import { colorOf, landViews, Players, stageLine, type Act } from './pages';
 import { SECRET, type Hold, type MatchView, type SoloView } from './view';
+import { useScreen } from '@/theme/scale';
 
 export type { Hold };
 
@@ -397,7 +399,7 @@ const GAP_CARDS: CardType[] = ['double_attack', 'shield', 'spy', 'trap', 'ambush
 const ON_OWN_LAND: CardType[] = ['shield', 'trap', 'revolution'];
 
 export function CardsPage({ m, me, map, seconds, act }: P) {
-  const { width } = useWindowDimensions();
+  const { width } = useScreen();
   const p = m.players[me];
   const [pick, setPick] = useState<number | null>(null);
   const [land, setLand] = useState<string | null>(null);
@@ -496,7 +498,7 @@ export function CardsPage({ m, me, map, seconds, act }: P) {
 // ---------------------------------------------------------------- Breaking Duel
 
 export function DuelPage({ m, me, map, seconds, act, elapsed }: P) {
-  const { width } = useWindowDimensions();
+  const { width } = useScreen();
   const d = m.duels[m.duelIndex];
   const mine = d && (d.p1 === me || d.p2 === me);
   const answers = d ? (d.p1 === me ? d.a1 : d.a2) : [];
@@ -544,7 +546,7 @@ export function DuelPage({ m, me, map, seconds, act, elapsed }: P) {
 // ---------------------------------------------------------------- holds: start, results, battle report
 
 export function HoldPage({ m, me, map, hold, seconds }: { m: MatchView; me: string; map: AtlasMap; hold: Hold; seconds: number }) {
-  const { width } = useWindowDimensions();
+  const { width } = useScreen();
   const views = useMemo(() => landViews(m, me), [m, me]);
   if (hold.kind === 'start')
     return (

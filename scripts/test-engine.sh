@@ -7,3 +7,5 @@ npx tsc --outDir "$OUT" --module commonjs --moduleResolution node10 --ignoreDepr
   src/games/engine/__tests__/*.test.ts src/games/diagnostic/__tests__/*.test.ts src/games/medicordle/__tests__/*.test.ts src/games/streak/__tests__/*.test.ts src/games/riddler/__tests__/*.test.ts src/games/silent/__tests__/*.test.ts src/games/casefiles/__tests__/*.test.ts src/games/crossword/__tests__/*.test.ts src/games/wheels/__tests__/*.test.ts src/games/conqueror/__tests__/*.test.ts src/games/trustmenot/engine/__tests__/*.test.ts src/games/trustmenot/__tests__/*.test.ts src/components/__tests__/*.test.ts
 node --test $(find "$OUT" -name "*.test.js")
 rm -rf "$OUT"
+# UI-thread code must only call worklets (a plain call crashes the phone, not the web preview).
+node scripts/check-worklets.mjs

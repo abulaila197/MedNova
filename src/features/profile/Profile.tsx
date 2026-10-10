@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Text } from '@/components/AppText';
 import Svg, { Defs, LinearGradient as SvgLinear, Path, Stop } from 'react-native-svg';
 
 import { LevelBadge, useBalance } from '@/components/LevelBadge';

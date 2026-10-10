@@ -2,7 +2,8 @@
 // own style with the bulb timer, and the right/wrong moment. Used by Solo and Pass the phone.
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { Pressable, StyleSheet, Text, View, type LayoutChangeEvent } from 'react-native';
+import { Pressable, StyleSheet, View, type LayoutChangeEvent } from 'react-native';
+import { Text } from '@/components/AppText';
 
 import { u } from '@/theme/scale';
 

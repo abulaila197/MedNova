@@ -1,4 +1,5 @@
-import { Text, type TextProps, type TextStyle } from 'react-native';
+import { type TextProps, type TextStyle } from 'react-native';
+import { Text } from '@/components/AppText';
 
 import { useTheme } from '@/state/app';
 import { F } from '@/theme/tokens';

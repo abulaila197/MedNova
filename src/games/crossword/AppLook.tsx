@@ -1,7 +1,9 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useState, type ReactNode } from 'react';
 import Animated, { useAnimatedStyle, useSharedValue, withSequence, withTiming } from 'react-native-reanimated';
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Image } from 'expo-image';
+import { Pressable, StyleSheet, View } from 'react-native';
+import { Text } from '@/components/AppText';
 import Svg, { Path, Polyline } from 'react-native-svg';
 
 import { useTheme } from '@/state/app';
@@ -166,7 +168,7 @@ export function AppPopup({ word, slots, typed, tokens, width, notice, shake = 0,
       </View>
       {word.question.kind === 'image' ? (
         <View style={[s.photo, { borderColor: c.line }]}>
-          <Image source={IMAGES[word.question.imageKey]} resizeMode="contain" style={{ width: '100%', height: '100%' }} />
+          <Image source={IMAGES[word.question.imageKey]} contentFit="contain" style={{ width: '100%', height: '100%' }} />
         </View>
       ) : (
         <Text style={[s.clue, { color: t.fg }]}>{word.question.text}</Text>

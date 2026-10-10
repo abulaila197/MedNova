@@ -20,6 +20,7 @@ import { makeMap, seedOf } from './map';
 import { BoardPage, MovesPage, type Act } from './pages';
 import { CardsPage, DuelPage, HoldPage, OutBanner, SoloPage, VersusPage, type Hold } from './play';
 import type { MatchView } from './view';
+import { keepSame, oneAtATime } from '@/online/poll';
 
 type CPlayer = { user_id: string; name: string; character: string; dropped: boolean; rank: number | null };
 type CState = {
@@ -46,7 +47,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
     try {
       const s = await call<CState>('cq_state', { m: matchId });
       offset.current = s.now - Date.now();
-      setSt(s);
+      setSt((prev) => keepSame(prev, s));
     } catch {
       setNotice('Reconnecting…');
     }
@@ -54,7 +55,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
 
   useEffect(() => {
     load();
-    const poll = setInterval(load, 1000);
+    const poll = setInterval(oneAtATime(load), 1000);
     const tick = setInterval(() => setNow(Date.now()), 250);
     return () => (clearInterval(poll), clearInterval(tick));
   }, [load]);
