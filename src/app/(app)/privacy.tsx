@@ -1,3 +1,4 @@
+import { useLocalSearchParams } from 'expo-router';
 import { useRef, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
@@ -15,7 +16,8 @@ type Doc = keyof typeof DOCS;
 /** Privacy & Terms, locked "P2 Plain words": each section opens with one plain serif line, the legal text below in small type. */
 export default function Page() {
   const c = useInfo();
-  const [doc, setDoc] = useState<Doc>('Privacy');
+  const { doc: start } = useLocalSearchParams<{ doc?: string }>();
+  const [doc, setDoc] = useState<Doc>(start === 'terms' ? 'Terms' : 'Privacy');
   const ref = useRef<Animated.ScrollView | null>(null);
   const choose = (d: Doc) => {
     setDoc(d);

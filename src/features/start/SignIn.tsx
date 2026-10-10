@@ -7,6 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Path } from 'react-native-svg';
 
 import { TopInset } from '@/components/TopInset';
+import { DISCLAIMER } from '@/features/info/content';
 import { supabase } from '@/lib/supabase';
 import { call } from '@/online/api';
 import { useTheme } from '@/state/app';
@@ -72,6 +73,9 @@ const C = {
   },
 };
 
+// Google sign-in is not live yet: the button stays hidden until it works (store rule on placeholder features).
+const SHOW_GOOGLE = false;
+
 const TAB = cssAngle(100, 105, 27);
 const PRI = cssAngle(100, 216, 35);
 
@@ -118,8 +122,10 @@ export function SignIn() {
   const [code, setCode] = useState('');
   const [busy, setBusy] = useState(false);
   const [note, setNote] = useState<{ text: string; bad: boolean } | null>(null);
+  const [agreed, setAgreed] = useState(false);
   const enter = () => router.replace('/games');
   const legal = () => router.push('/privacy');
+  const terms = () => router.push({ pathname: '/privacy', params: { doc: 'terms' } });
 
   const act = async (job: () => Promise<void>) => {
     setBusy(true);
@@ -149,6 +155,7 @@ export function SignIn() {
 
   const signUp = () =>
     act(async () => {
+      if (!agreed) throw new Error('Tick the box to confirm you are 16 or older and agree to the Terms.');
       const name = username.trim();
       if (!/^[A-Za-z0-9_]{3,16}$/.test(name)) throw new Error('Usernames use 3 to 16 letters, numbers or _.');
       const free = await call<boolean>('username_available', { name });
@@ -223,8 +230,8 @@ export function SignIn() {
       <View>{input}</View>
     </>
   );
-  const primary = (label: string, onPress: () => void) => (
-    <Pressable onPress={onPress} disabled={busy} accessibilityRole="button" style={[s.pri, busy && { opacity: 0.6 }]}>
+  const primary = (label: string, onPress: () => void, off = false) => (
+    <Pressable onPress={onPress} disabled={busy || off} accessibilityRole="button" accessibilityState={{ disabled: busy || off }} style={[s.pri, (busy || off) && { opacity: 0.6 }]}>
       <LinearGradient colors={c.pri} start={PRI.start} end={PRI.end} style={[StyleSheet.absoluteFill, { borderRadius: u(12) }]} />
       <Text style={[s.priTxt, { color: c.priTxt }]}>{busy ? 'One moment…' : label}</Text>
     </Pressable>
@@ -336,33 +343,68 @@ export function SignIn() {
           : null}
         {field('EMAIL ADDRESS', emailIn)}
         {field('PASSWORD', passIn(tab === 'in' ? 'Enter your password' : 'At least 6 characters', tab === 'in' ? 'current-password' : 'new-password'))}
+        {tab === 'up' ? (
+          <Pressable
+            onPress={() => setAgreed((v) => !v)}
+            style={s.tick}
+            accessibilityRole="checkbox"
+            accessibilityState={{ checked: agreed }}
+            accessibilityLabel="I am 16 or older and agree to the Terms and Privacy Policy">
+            <View style={[s.box, { backgroundColor: c.inBg, borderColor: agreed ? c.accent : c.inEdge }]}>
+              {agreed ? (
+                <>
+                  <LinearGradient colors={c.pri} start={PRI.start} end={PRI.end} style={[StyleSheet.absoluteFill, { borderRadius: u(3) }]} />
+                  <Svg width={u(9)} height={u(9)} viewBox="0 0 12 12">
+                    <Path d="M2.5 6.3l2.3 2.3 4.7-5" stroke={c.priTxt} strokeWidth={1.8} fill="none" strokeLinecap="round" strokeLinejoin="round" />
+                  </Svg>
+                </>
+              ) : null}
+            </View>
+            <Text style={[s.agree, s.tickTxt, { color: c.lbl }]}>
+              I am 16 or older and agree to the{' '}
+              <Text style={{ color: c.link }} onPress={terms} accessibilityRole="link">
+                Terms
+              </Text>{' '}
+              and{' '}
+              <Text style={{ color: c.link }} onPress={legal} accessibilityRole="link">
+                Privacy Policy
+              </Text>
+              .
+            </Text>
+          </Pressable>
+        ) : null}
         {noteLine}
-        {primary(tab === 'in' ? 'Sign In' : 'Create Account', tab === 'in' ? signIn : signUp)}
+        {primary(tab === 'in' ? 'Sign In' : 'Create Account', tab === 'in' ? signIn : signUp, tab === 'up' && !agreed)}
         {tab === 'in' ? link('Forgot password?', () => (setStep('forgot'), setNote(null))) : null}
-        <View style={s.or}>
-          <View style={[s.orLine, { backgroundColor: c.orLine }]} />
-          <Text style={[s.orTxt, { color: c.or }]}>OR</Text>
-          <View style={[s.orLine, { backgroundColor: c.orLine }]} />
-        </View>
-        <Pressable
-          onPress={() => setNote({ text: 'Google sign-in is coming soon. Use your email for now.', bad: false })}
-          accessibilityRole="button"
-          style={[s.ggl, { backgroundColor: c.ggl, opacity: 0.6 }, c.gglEdge ? { borderWidth: 1, borderColor: c.gglEdge, height: u(33) } : null]}>
-          <Google />
-          <Text style={s.gglTxt}>Continue with Google · soon</Text>
-        </Pressable>
+        {SHOW_GOOGLE ? (
+          <>
+            <View style={s.or}>
+              <View style={[s.orLine, { backgroundColor: c.orLine }]} />
+              <Text style={[s.orTxt, { color: c.or }]}>OR</Text>
+              <View style={[s.orLine, { backgroundColor: c.orLine }]} />
+            </View>
+            <Pressable
+              onPress={() => setNote({ text: 'Google sign-in is coming soon. Use your email for now.', bad: false })}
+              accessibilityRole="button"
+              style={[s.ggl, { backgroundColor: c.ggl, opacity: 0.6 }, c.gglEdge ? { borderWidth: 1, borderColor: c.gglEdge, height: u(33) } : null]}>
+              <Google />
+              <Text style={s.gglTxt}>Continue with Google · soon</Text>
+            </Pressable>
+          </>
+        ) : null}
         {link('Continue as guest', enter)}
         <Text style={[s.agree, { color: c.agree }]}>
-          By continuing you agree to the{' '}
+          {tab === 'up' ? 'Continuing as a guest means you agree to the' : 'By continuing you agree to the'}{' '}
           <Text style={{ color: c.link }} onPress={legal} accessibilityRole="link">
             Privacy Policy
           </Text>{' '}
           and{' '}
-          <Text style={{ color: c.link }} onPress={legal} accessibilityRole="link">
+          <Text style={{ color: c.link }} onPress={terms} accessibilityRole="link">
             Terms
           </Text>
           .
         </Text>
+        <Text style={[s.agree, { color: c.agree }]}>{DISCLAIMER}</Text>
       </>
     );
   }
@@ -423,6 +465,9 @@ const s = StyleSheet.create({
   guestTxt: { fontFamily: F.body, fontSize: u(10.5), lineHeight: u(13) },
   guestLine: { position: 'absolute', left: 0, right: 0, top: u(13.4), height: Math.max(1, u(0.8)) },
   agree: { fontFamily: F.body, fontSize: u(8), lineHeight: u(10), textAlign: 'center' },
+  tick: { flexDirection: 'row', alignItems: 'center', gap: u(8), marginTop: u(2) },
+  box: { width: u(14), height: u(14), borderRadius: u(4), borderWidth: 1, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
+  tickTxt: { flex: 1, fontSize: u(9), lineHeight: u(12), textAlign: 'left' },
   note: { fontFamily: F.body, fontSize: u(9), lineHeight: u(12) },
   code: { fontFamily: F.mono, fontSize: u(14), letterSpacing: u(6), textAlign: 'center' },
 });

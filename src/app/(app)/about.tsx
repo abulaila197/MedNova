@@ -4,7 +4,7 @@ import { Text } from '@/components/AppText';
 
 import { Screen } from '@/components/Screen';
 import { AboutRail } from '@/features/info/AboutRail';
-import { ABOUT_GAMES, HABITS } from '@/features/info/content';
+import { ABOUT_GAMES, DISCLAIMER, HABITS } from '@/features/info/content';
 import { InfoScroll, Kicker, Rich, s as ui, useInfo } from '@/features/info/ui';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
@@ -40,6 +40,8 @@ export default function Page() {
           <Rich text={'A growing *diagnostic universe.*'} style={ui.h4} />
           <Text style={[ui.p, { color: c.mute }]}>More cases. More ways to practise. Better feedback. MedNova is being built to grow without losing the clarity, credibility and discipline of clinical medicine.</Text>
         </View>
+
+        <Text style={[ui.p, s.note, { color: c.mute }]}>{DISCLAIMER}</Text>
       </InfoScroll>
     </Screen>
   );
@@ -61,6 +63,7 @@ function List({ items }: { items: string[] }) {
 }
 
 const s = StyleSheet.create({
+  note: { marginTop: u(20), fontSize: u(9), lineHeight: u(13) },
   dawn: { ...StyleSheet.absoluteFill, width: '100%', height: '100%', opacity: 0.95 },
   list: { marginTop: u(6), gap: u(6) },
   row: { flexDirection: 'row', alignItems: 'baseline', gap: u(10), height: u(19) },

@@ -6,6 +6,7 @@ import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from '
 
 import { Screen } from '@/components/Screen';
 import { Back } from '@/components/Back';
+import { DISCLAIMER } from '@/features/info/content';
 import { DOSSIER, type Field } from '@/features/learn/data';
 import { useLearnColors } from '@/features/learn/palette';
 import { VText } from '@/features/learn/VText';
@@ -62,6 +63,7 @@ export default function DossierPage() {
             })}
           </View>
         </View>
+        <Text style={[s.dmT, s.note, { color: c.mute }]}>{DISCLAIMER}</Text>
       </View>
     </Screen>
   );
@@ -91,6 +93,7 @@ const s = StyleSheet.create({
   dm: { flexDirection: 'row', alignItems: 'center', gap: u(6) },
   sw: { width: u(16), height: u(6), borderRadius: u(2), borderWidth: 1 },
   dmT: { fontFamily: F.body, fontSize: u(10), lineHeight: u(12) },
+  note: { marginTop: u(4), fontSize: u(9) },
   fold: { flexDirection: 'row', marginTop: u(6), height: u(322) },
   fcard: {
     flex: 1,
