@@ -56,6 +56,46 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   const [menu, setMenu] = useState(false);
   const { alert, push } = useAlerts();
   const seen = useRef<Map<string, { stage: string; solved: boolean }> | null>(null);
+  // Reports not yet acknowledged by the server, sent in order; a failed one is retried (timer and each poll).
+  const pending = useRef<{ report: Record<string, unknown>; tries: number }[]>([]);
+  const sending = useRef(false);
+  const retry = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const flush = useCallback(async () => {
+    if (sending.current) return;
+    sending.current = true;
+    let sent = false;
+    while (pending.current.length) {
+      const head = pending.current[0];
+      try {
+        await call('cf_step', { m: matchId, ...head.report });
+        pending.current.shift();
+        sent = true;
+      } catch {
+        head.tries += 1;
+        if (head.tries === 1) setNotice('Couldn’t send that. Trying again…');
+        if (head.tries >= 10) {
+          pending.current.shift(); // the server keeps refusing it: give up on this one
+          setNotice('Couldn’t send that. Check your connection.');
+          continue;
+        }
+        if (retry.current) clearTimeout(retry.current);
+        retry.current = setTimeout(() => void flush(), 2000);
+        break;
+      }
+    }
+    sending.current = false;
+    if (sent) load();
+  }, [matchId, load, setNotice]);
+
+  // Retry on each poll while the case is open; once it closes nothing more can be scored.
+  useEffect(() => {
+    if (st && st.phase !== 'case' && st.phase !== 'countdown') pending.current = [];
+    else if (pending.current.length) void flush();
+  }, [st, flush]);
+  useEffect(() => () => {
+    if (retry.current) clearTimeout(retry.current);
+  }, []);
 
   const teams = Number(st?.settings.teams) || 0;
   const colorOf = (p: RacePlayer | undefined) => (!p ? NR.red : teams >= 2 && p.team != null ? presetTeam(p.team).color : (characterOf(p.character)?.ring ?? NR.red));
@@ -103,12 +143,11 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
         redemption: !prev.redemption && next.redemption ? next.redemption.id : null,
       };
       if (report.stage !== stageOf(prev) || report.filtered || report.provisional || report.redemption) {
-        call('cf_step', { m: matchId, ...report })
-          .then(load)
-          .catch(() => setNotice('Couldn’t send that. Check your connection.'));
+        pending.current.push({ report, tries: 0 });
+        void flush();
       }
     },
-    [st?.item, matchId, load, setNotice],
+    [st?.item, flush],
   );
 
   if (!st) return <NoirScreen>{null}</NoirScreen>;

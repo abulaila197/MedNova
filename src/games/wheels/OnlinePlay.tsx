@@ -67,24 +67,37 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   const finishing = useRef(false);
   const { alert, push } = useAlerts();
 
+  /** Moves made while another is in flight wait here and go next, in order (the referee drops any that no longer fit). */
+  const waiting = useRef<Move[]>([]);
+
   /** One request to the referee: my move, or a nudge when a wait has run out. */
   const send = useCallback(
     async (move: Move) => {
       if (move.type !== 'TICK') {
-        if (busy.current) return;
+        if (busy.current) {
+          if (waiting.current.length < 3) waiting.current.push(move);
+          return;
+        }
         busy.current = true;
       }
-      try {
-        const data = await invoke<{ result?: string } | null>('wheels', { m: matchId, v: BANK_V, move });
-        if (data?.result === 'bank') setOldBank(true);
-      } catch {
-        if (move.type !== 'TICK') setNotice('Couldn’t send that. Check your connection.');
-      } finally {
-        if (move.type !== 'TICK') busy.current = false;
-        load();
+      let next: Move | undefined = move;
+      while (next) {
+        const m: Move = next;
+        try {
+          const data = await invoke<{ result?: string } | null>('wheels', { m: matchId, v: BANK_V, move: m });
+          if (data?.result === 'bank') setOldBank(true);
+        } catch {
+          if (m.type !== 'TICK') {
+            setNotice('Couldn’t send that. Check your connection.');
+            waiting.current = []; // later moves were made on top of this one: drop them too
+          }
+        }
+        next = m.type !== 'TICK' ? waiting.current.shift() : undefined;
       }
+      if (move.type !== 'TICK') busy.current = false;
+      load();
     },
-    [matchId, load],
+    [matchId, load, setNotice],
   );
   const tick = useCallback(() => {
     if (Date.now() - lastTick.current < 1200) return;
@@ -320,6 +333,14 @@ function OnlineBoss({ g, seat, st, server, seatName, matchId, onDone, onPause }:
   const [mine, setMine] = useState<boolean[]>(st.my_swipes ?? []);
   const mineRef = useRef(mine);
   const queue = useRef<Promise<unknown>>(Promise.resolve());
+  const [lost, setLost] = useState(false);
+  const [pending, setPending] = useState(0);
+  // How many of my swipes the server has (from the poll), so a resend whose answer got lost isn't sent twice.
+  const serverHas = useRef(0);
+  const myServer = st.my_swipes?.length ?? 0;
+  useEffect(() => {
+    serverHas.current = myServer;
+  }, [myServer]);
   const key = `${g.cycle}`;
   useEffect(() => {
     mineRef.current = st.my_swipes ?? [];
@@ -335,8 +356,22 @@ function OnlineBoss({ g, seat, st, server, seatName, matchId, onDone, onPause }:
       const i = cur.length;
       mineRef.current = [...cur, fits];
       setMine(mineRef.current);
-      // Sent one by one, in order, so the server keeps them in the same order as my deck.
-      queue.current = queue.current.then(() => call('wc_swipe', { m: matchId, i, fits }).catch(() => {}));
+      // Sent one by one, in order, so the server keeps them in the same order as my deck. Swipes made while one is
+      // in flight wait in the queue; a failed send is retried (0.5, 1, 2, 4 s) before the next one goes.
+      setPending((n) => n + 1);
+      queue.current = queue.current.then(async () => {
+        for (let a = 0; a < 5; a++) {
+          if (serverHas.current > i) return setPending((n) => n - 1);
+          try {
+            await call('wc_swipe', { m: matchId, i, fits });
+            return setPending((n) => n - 1);
+          } catch {
+            if (a < 4) await new Promise((r) => setTimeout(r, 500 * 2 ** a));
+          }
+        }
+        setPending((n) => n - 1);
+        setLost(true);
+      });
     },
     [deck.length, matchId],
   );
@@ -371,7 +406,15 @@ function OnlineBoss({ g, seat, st, server, seatName, matchId, onDone, onPause }:
           <T size={12} color={VV.paperSoft} style={{ textAlign: 'center' }}>{`Same items for everyone, each in their own order. Highest score wins +${BOSS_BONUS}.`}</T>
         </Bill>
         {startsIn != null ? <T f={CD} size={30} color={VV.gold} style={{ textAlign: 'center' }}>{String(startsIn)}</T> : null}
-        {done && seat != null ? <T size={13} color={VV.soft} style={{ textAlign: 'center' }}>{`${bossPoints({ ...b, swipes: { [seat]: mine } }, seat)} points. Waiting for the others.`}</T> : null}
+        {done && seat != null ? (
+          <T size={13} color={VV.soft} style={{ textAlign: 'center' }}>
+            {lost
+              ? 'Some swipes didn’t reach the server, so your score may be lower than shown.'
+              : pending > 0
+                ? 'Sending your swipes…'
+                : `${bossPoints({ ...b, swipes: { [seat]: mine } }, seat)} points. Waiting for the others.`}
+          </T>
+        ) : null}
         {b.phase === 'playing' ? (
           <Panel>
             {others.map((s) => (

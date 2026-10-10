@@ -98,9 +98,11 @@ function Run({ run }: { run: LoadRun }) {
       setTimeout(() => useLoading.getState().end(), 1680);
     };
     if (!bar.current || !host.current) return go(0, W, H / 2);
-    host.current.measureInWindow((hx, hy) =>
-      bar.current!.measureInWindow((x, y, w, h) => go(x - (hx || 0), w, y - (hy || 0) + h / 2)),
-    );
+    host.current.measureInWindow((hx, hy) => {
+      // the bar can unmount between the two measures
+      if (!bar.current) return go(0, W, H / 2);
+      bar.current.measureInWindow((x, y, w, h) => go(x - (hx || 0), w, y - (hy || 0) + h / 2));
+    });
   };
 
   const settleSt = useAnimatedStyle(() => ({ transform: [{ scale: settle.value }] }));

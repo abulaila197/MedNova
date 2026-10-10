@@ -790,7 +790,7 @@ function teamAnswer(g: Game, r: RoundRun, q: number): boolean {
   return Number(entries[0][0]) === r.questions[q].answer;
 }
 
-function recordAnswers(g: Game, r: RoundRun, solo: boolean) {
+function recordAnswers(g: Game, r: RoundRun, solo: boolean, learn: boolean) {
   for (const p of living(g)) {
     const own = r.answers[p.id] ?? [];
     own.forEach((a, q) => {
@@ -803,7 +803,7 @@ function recordAnswers(g: Game, r: RoundRun, solo: boolean) {
         if (ok) p.solo.right++;
         else {
           p.solo.wrong++;
-          p.solo.missed.push(r.questions[q].id);
+          if (learn) p.solo.missed.push(r.questions[q].id);
         }
       }
     });
@@ -823,8 +823,8 @@ const timeOf = (r: RoundRun, id: PlayerId) => (r.answers[id] ?? []).reduce((s, a
 function resolveRound(g: Game, r: RoundRun) {
   const lv = living(g);
   const mode = R.ROUNDS[r.id].mode;
-  const solo = mode === 'solo' || mode === 'solo-competitive' || mode === 'linked';
-  if (mode !== 'pairs') recordAnswers(g, r, solo);
+  const solo = R.countsAsSolo(mode); // §7.3: EXP counts solo rounds (Chain of Trust is solo, linked)
+  if (mode !== 'pairs') recordAnswers(g, r, solo, R.feedsLearn(mode));
   const o = r.outcome;
   switch (r.id) {
     case 'granary': {

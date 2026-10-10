@@ -41,6 +41,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
     let live = true;
     (async () => {
       let r = play.resume as OfflineRun | null;
+      if (r && ![...r.pool, ...(r.round?.queue ?? [])].every((id) => questionById.has(id))) r = null; // a question left the bank since: start fresh
       if (!r) {
         const seats = play.seats.filter((x) => !x.removed);
         const teams = teamsOf(play);
@@ -104,7 +105,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   );
 
   // The clock: ticks through the hand-off countdown, a question, or a result showing.
-  const now = useTicker(run?.phase === 'countdown' || run?.phase === 'playing' || run?.round?.phase === 'feedback', 150, (n) => dispatch({ type: 'TICK', now: n }));
+  const now = useTicker(run?.phase === 'countdown' || run?.phase === 'playing' || run?.round?.phase === 'feedback', 150, (n) => dispatch({ type: 'TICK', now: n }), { fine: true });
 
   usePauseHide(() => dispatch({ type: 'PAUSE', now: Date.now() }));
 

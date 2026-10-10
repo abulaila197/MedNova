@@ -1,5 +1,5 @@
 import type { GameDef } from '../shell/types';
-import { maxScore, soloExp } from './core';
+import { expForRight, SM_EXP } from './core';
 import { questionById } from './data';
 import { OfflinePlay } from './OfflinePlay';
 import { OnlinePlay } from './OnlinePlay';
@@ -62,7 +62,7 @@ export const streakMaster: GameDef = {
         'Each question has six choices. The 1st right answer in a row scores 1, the 2nd scores 2, and so on.',
         'A wrong answer turns red, shows the right one in green, and drops your streak to 0.',
         'Helpers cost tokens: Remove 2 wrong (1), Skip and keep your streak (3), +10 seconds (1).',
-        'You earn half your score as EXP. Missed questions wait for you in Today\'s review.',
+        'You earn 2 EXP per right answer, up to 60 a round. Missed questions wait for you in Today\'s review.',
       ],
     },
     {
@@ -84,7 +84,7 @@ export const streakMaster: GameDef = {
         'Everyone gets the same question with the same choices at once. One pick each, no helpers.',
         'Right answers score by order: 100, 80, 65 and so on, plus 10 for each answer in your streak after the first (up to 50).',
         'A wrong pick or no answer drops your streak to 0. Ties go to the longest streak, then most right answers.',
-        'You earn half your score as EXP, like Solo. Missed questions wait for you in Today\'s review.',
+        'You earn 2 EXP per right answer, up to 60, like Solo. Missed questions wait for you in Today\'s review.',
       ],
     },
   ],
@@ -94,9 +94,9 @@ export const streakMaster: GameDef = {
   playersNote: () => 'Player 1 is you, the phone owner. Offline earns no EXP; only your missed questions go to Learn.',
   Play: { solo: SoloPlay, offline: OfflinePlay },
   Online: OnlinePlay,
-  // SM12 + SM15: Solo and Online EXP is half the score; SM13: Offline earns none.
-  exp: (score) => soloExp(score),
-  expCap: (settings, mode) => (mode === 'offline' ? 0 : mode === 'online' ? soloExp(150 * (Number(settings.questions) || 15)) : soloExp(maxScore(Number(settings.length) || 60))),
+  // SM16: Solo and Online EXP is 2 per right answer, at most 60 (the streak score itself is unchanged); SM13: Offline earns none.
+  exp: (_score, items) => expForRight(items.filter((i) => i.seat === 0 && i.outcome === 'right').length),
+  expCap: (_settings, mode) => (mode === 'offline' ? 0 : SM_EXP.cap),
   itemLabel: (item) => {
     const q = questionById.get(item.itemId);
     return q ? q.choices[q.answer] : item.itemId;

@@ -23,7 +23,11 @@ const snapshot = (r: SoloRun, now: number) => (r.phase === 'drawing' ? stepSolo(
 export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   const fonts = useSlateFonts();
   const R = useSlateRoom();
-  const [run, setRun] = useState<SoloRun | null>((play.resume as SoloRun | null) ?? null);
+  // A bookmark whose word has left the list since starts fresh.
+  const [run, setRun] = useState<SoloRun | null>(() => {
+    const saved = play.resume as SoloRun | null;
+    return saved && wordById.has(saved.wordId) ? saved : null;
+  });
   const ref = useRef<SoloRun | null>(run);
   const [fields, setFields] = useState<string[]>([]);
   const board = useRef<BoardHandle>(null);
@@ -76,7 +80,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
     [play, set, onFinish],
   );
 
-  const now = useTicker(run?.phase === 'drawing', 200, (n) => dispatch({ type: 'TICK', now: n }));
+  const now = useTicker(run?.phase === 'drawing', 200, (n) => dispatch({ type: 'TICK', now: n }), { fine: true });
 
   usePauseHide(() => dispatch({ type: 'PAUSE', now: Date.now() }));
 

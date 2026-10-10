@@ -4,7 +4,7 @@ import { test } from 'node:test';
 
 import { rank } from '../../engine/standings';
 import {
-  bumpStreak, closeThreshold, dailyWord, dayNumber, inList, isClose, keyStates, lengthCheck, liveStreak, nextLap, offlineRows,
+  bumpStreak, closeThreshold, dailyOpen, dailyWord, dayNumber, inList, isClose, keyStates, lengthCheck, liveStreak, nextLap, offlineRows,
   pickHint, score, seeded, shareText, soloExp,
 } from '../core';
 import { currentSeat, guessesOf, offlineStandings, startOffline, stepOffline, turnLeft } from '../offline';
@@ -213,4 +213,13 @@ test('offline: removing a player skips their turns; at least 2 stay', () => {
   const before = r;
   r = stepOffline(r, { type: 'REMOVE', seat: next }, rng);
   assert.equal(r, before);
+});
+
+test('daily date guard: no daily before the latest one, none while the clock reads earlier than its start', () => {
+  assert.equal(dailyOpen(null, 10, 1_000), true);
+  const last = { day: 10, at: 5_000_000 };
+  assert.equal(dailyOpen(last, 10, 6_000_000), false); // same day: already started
+  assert.equal(dailyOpen(last, 9, 6_000_000), false); // date moved back
+  assert.equal(dailyOpen(last, 11, 4_000_000), false); // clock went backwards
+  assert.equal(dailyOpen(last, 11, 5_000_001), true); // the next day
 });

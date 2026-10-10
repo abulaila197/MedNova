@@ -13,8 +13,8 @@ import { PauseMenu } from '../shell/PauseMenu';
 import type { PlayProps } from '../shell/types';
 import { Btn, GameScreen, Ghost } from '../shell/ui';
 import {
-  bumpStreak, dailyWord, dayNumber, HINT_COSTS, lengthCheck, liveStreak, MAX_ROWS, pickHint, score, shareText,
-  type Streak, type Style,
+  bumpStreak, dailyOpen, dailyWord, dayNumber, HINT_COSTS, lengthCheck, liveStreak, MAX_ROWS, pickHint, score, shareText,
+  type DailyLast, type Streak, type Style,
 } from './core';
 import { isWord, poolFor, wordById } from './data';
 import { SlideStack, SlideTable } from './Slides';
@@ -22,10 +22,14 @@ import { showDefinition, snapshotSolo, startSolo, stepSolo, type SoloEvent, type
 
 const streakKey = (style: Style) => `medicordle:streak:${style}`;
 const dailyKey = (style: Style, day: number) => `medicordle:daily:${style}:${day}`;
+const lastKey = (style: Style) => `medicordle:daily:last:${style}`;
 const STYLE_NAME: Record<Style, string> = { classic: 'Classic', custom: 'Custom' };
 
-/** What a finished daily word keeps, so the day can't be replayed and the share card still works. */
-type DailyDone = { wordId: string; guesses: string[]; solved: boolean };
+/**
+ * The daily lock, written when the daily word starts so the day can't be replayed: while unfinished it keeps the run
+ * (a new game continues the same word); once finished, what the share card needs. Older saves have no `finished`.
+ */
+type DailyDone = { wordId: string; guesses: string[]; solved: boolean; finished?: boolean; run?: SoloRun };
 
 /** Solo: today's word or an endless queue, on the Specimen slides board. */
 export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
@@ -37,7 +41,10 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   const [done, setDone] = useState<DailyDone | null>(null);
   const [streak, setStreak] = useState<Streak>({ current: 0, best: 0, lastDay: null });
   const [notice, setNotice] = useState<string | null>(null);
-  const today = dayNumber(new Date());
+  /** Set when the phone date reads earlier than the latest daily: the day of that daily. */
+  const [locked, setLocked] = useState<number | null>(null);
+  // Frozen for the whole game, so a daily that crosses midnight keeps its word.
+  const [today] = useState(() => dayNumber(new Date()));
 
   // Start: resume the bookmark, or today's word, or an endless queue (unseen first, rule 15).
   useEffect(() => {
@@ -45,15 +52,29 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
     (async () => {
       const st = (await engine.kv.get<Streak>(streakKey(style))) ?? { current: 0, best: 0, lastDay: null };
       let r = play.resume as SoloRun | null;
+      if (r && !r.wordIds.every((id) => wordById.has(id))) r = null; // a word left the list since: start fresh
       if (!r && kind === 'daily') {
-        const prev = await engine.kv.get<DailyDone>(dailyKey(style, today));
-        if (prev) {
+        const kept = await engine.kv.get<DailyDone>(dailyKey(style, today));
+        const prev = kept && wordById.has(kept.wordId) ? kept : null; // today's word left the list since: drop it
+        if (prev && prev.finished === false && prev.run) r = prev.run; // started earlier today: same word, same board
+        else if (prev) {
           // NM6: one daily word per style; today's is already played.
           await engine.recorder.discard(play.id);
           if (live) (setStreak(st), setDone(prev));
           return;
+        } else {
+          const now = Date.now();
+          const last = (await engine.kv.get<DailyLast>(lastKey(style))) ?? (st.lastDay != null ? { day: st.lastDay, at: 0 } : null);
+          if (!dailyOpen(last, today, now)) {
+            // The phone date went back: no daily before the latest one played, at most one per real day.
+            await engine.recorder.discard(play.id);
+            if (live) (setStreak(st), setLocked(last!.day));
+            return;
+          }
+          r = startSolo('daily', style, [dailyWord(poolFor(style), style, today).id], today, now);
+          await engine.kv.set(lastKey(style), { day: today, at: now } satisfies DailyLast);
+          await engine.kv.set(dailyKey(style, today), { wordId: r.wordIds[0], guesses: [], solved: false, finished: false, run: snapshotSolo(r, now) } satisfies DailyDone);
         }
-        r = startSolo('daily', style, [dailyWord(poolFor(style), style, today).id], today, Date.now());
       }
       if (!r) {
         const pool = poolFor(style).map((w) => w.id);
@@ -79,6 +100,10 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
       runRef.current = next;
       setRun(next);
       engine.recorder.bookmark(play.id, snapshotSolo(next, Date.now()), next.score);
+      if (next.kind === 'daily' && next.day != null && next.results.length === 0 && (next.guesses !== prev.guesses || next.hints !== prev.hints)) {
+        // Keep the daily lock's board current, so a new game continues this word instead of restarting it.
+        engine.kv.set(dailyKey(style, next.day), { wordId: next.wordIds[0], guesses: next.guesses, solved: false, finished: false, run: snapshotSolo(next, Date.now()) } satisfies DailyDone);
+      }
       if (next.results.length > prev.results.length) {
         const r = next.results[next.results.length - 1];
         const w = wordById.get(r.wordId)!;
@@ -98,7 +123,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
         });
         if (next.kind === 'daily' && next.day != null) {
           const day = next.day;
-          engine.kv.set(dailyKey(style, day), { wordId: r.wordId, guesses: r.guesses, solved: r.solved } satisfies DailyDone);
+          engine.kv.set(dailyKey(style, day), { wordId: r.wordId, guesses: r.guesses, solved: r.solved, finished: true } satisfies DailyDone);
           engine.kv.get<Streak>(streakKey(style)).then((old) => {
             const s = bumpStreak(old ?? { current: 0, best: 0, lastDay: null }, day, r.solved);
             engine.kv.set(streakKey(style), s);
@@ -123,7 +148,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
     const cost = HINT_COSTS[r.hints];
     const index = r.index;
     const receipt = await engine.wallet.spend(cost, 'medicordle_hint', play.id);
-    if (!receipt) return setNotice(`You need ${cost} token${cost > 1 ? 's' : ''}. 200 EXP makes 1 token.`);
+    if (!receipt) return setNotice(`You need ${cost} token${cost > 1 ? 's' : ''}. Each level up gives 1 token.`);
     const cur = runRef.current;
     if (!cur || cur.index !== index || cur.phase !== 'playing') {
       await engine.wallet.refund(receipt);
@@ -157,6 +182,19 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
 
   const no = (day: number | null) => (day != null ? `NO. ${day + 1}` : 'ENDLESS');
   const titleFor = (day: number) => `Nova Medicordle No. ${day + 1} · ${STYLE_NAME[style]}`;
+
+  // The phone date reads earlier than the latest daily: no daily until that day has passed.
+  if (locked != null) {
+    return (
+      <GameScreen scroll={false}>
+        <DoneCard
+          line="Daily word locked"
+          sub={`Your phone's date is before your last daily (No. ${locked + 1}). The next one opens the day after it.`}
+          primary={{ label: 'Back', onPress: onQuit }}
+        />
+      </GameScreen>
+    );
+  }
 
   // Today's word is already done: show it with the share card.
   if (done) {

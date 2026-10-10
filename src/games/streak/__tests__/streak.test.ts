@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
 import { teamLap, teamStandings } from '../../shell/teams';
-import { FEEDBACK_MS, maxScore, mixQueue, soloExp, startRound, stepRound, timeLeft, type Round } from '../core';
+import { expForRight, FEEDBACK_MS, mixQueue, startRound, stepRound, timeLeft, type Round } from '../core';
 import { currentSeat, offlineRows, startOffline, stepOffline, COUNTDOWN_MS } from '../offline';
 
 // Every question's right choice is index 0; the display order doesn't matter to the reducer.
@@ -75,9 +75,11 @@ test('pause stops the clock, even mid-feedback', () => {
   assert.equal(r.feedback?.untilMs, 200_500);
 });
 
-test('Solo EXP (SM12) is half the score; mixed is about half and half', () => {
-  assert.equal(soloExp(55), 27);
-  assert.ok(maxScore(60) > 1000);
+test('EXP (SM16) is 2 per right answer, at most 60; mixed is about half and half', () => {
+  assert.equal(expForRight(0), 0);
+  assert.equal(expForRight(7), 14);
+  assert.equal(expForRight(30), 60);
+  assert.equal(expForRight(48), 60);
   let n = 0;
   const rng = () => ((n = (n * 9301 + 49297) % 233280) / 233280);
   const q = mixQueue(seq(500).map((x) => `c${x}`), seq(500).map((x) => `b${x}`), rng);

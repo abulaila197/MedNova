@@ -22,7 +22,7 @@ import {
   type OfflineEvent, type OfflineRun,
 } from './offline';
 import { RiddleBoard } from './RiddleBoard';
-import { useTicker } from '../engine/useTicker';
+import { second, useTicker } from '../engine/useTicker';
 
 /** Offline (RD5, RD6, RD12, TMG-RD): the same picture for everyone in turn, then a reveal; no hint, no EXP. */
 export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
@@ -38,6 +38,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
     let live = true;
     (async () => {
       let r = play.resume as OfflineRun | null;
+      if (r && !r.photos.every((id) => riddleById.has(id))) r = null; // a picture left the bank since: start fresh
       if (!r) {
         const seats = play.seats.filter((x) => !x.removed);
         const teams = teamsOf(play);
@@ -97,7 +98,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
     [play, onFinish, names],
   );
 
-  const now = useTicker(run?.phase === 'playing', 200, (n) => dispatch({ type: 'TICK', now: n }));
+  const now = useTicker(run?.phase === 'playing', 200, (n) => dispatch({ type: 'TICK', now: n }), { shown: (n) => run && `${second(turnLeft(run, n))}:${second(lockLeft(run, n))}` });
 
   usePauseHide(() => dispatch({ type: 'PAUSE', now: Date.now() }));
 

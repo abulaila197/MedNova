@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Image } from 'expo-image';
-import { KeyboardAvoidingView, Platform, Pressable, StyleSheet, View, type LayoutChangeEvent } from 'react-native';
+import { Platform, Pressable, StyleSheet, View, type LayoutChangeEvent } from 'react-native';
 import { Text, TextInput } from '@/components/AppText';
 import Animated, { FadeIn, FadeInDown, useAnimatedStyle, useSharedValue, withSequence, withTiming } from 'react-native-reanimated';
 
@@ -8,6 +8,7 @@ import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
+import { KeyboardLift } from '../shell/KeyboardLift';
 import { GameScreen, Kick, RoundBtn } from '../shell/ui';
 import { clock } from '@/games/engine/clock';
 import { RD, search, type Riddle } from './core';
@@ -78,7 +79,7 @@ export function RiddleBoard(p: BoardProps) {
 
   return (
     <GameScreen scroll={false}>
-      <KeyboardAvoidingView style={s.fill} behavior={Platform.OS === 'web' ? undefined : 'padding'}>
+      <KeyboardLift style={s.fill}>
         <View style={s.top}>
           <View style={{ flex: 1 }}>
             <Kick>{p.kicker}</Kick>
@@ -152,7 +153,7 @@ export function RiddleBoard(p: BoardProps) {
         ) : (
           <AnswerBox key={`${p.riddle.id}:${p.turnKey ?? ''}`} wrong={p.wrong} wrongSeq={p.wrongSeq} locked={!!p.lockMs} disabled={!!p.hidden} onGuess={p.onGuess} />
         )}
-      </KeyboardAvoidingView>
+      </KeyboardLift>
       {p.children}
     </GameScreen>
   );

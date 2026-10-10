@@ -16,7 +16,7 @@ import {
   type OfflineEvent, type OfflineRun,
 } from './offline';
 import { shuffle } from '../engine/random';
-import { useTicker } from '../engine/useTicker';
+import { second, useTicker } from '../engine/useTicker';
 
 /** Offline Multiplayer (pass and play): own case per player each round, 90 s turns, no hint (DPO1-DPO7). */
 export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
@@ -30,6 +30,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
     let live = true;
     (async () => {
       let r = play.resume as OfflineRun | null;
+      if (r && !Object.values(r.cases).every((id) => caseById.has(id))) r = null; // a case left the bank since: start fresh
       if (!r) {
         const seats = play.seats.filter((x) => !x.removed);
         const rounds = Number(play.settings.cases) || 3;
@@ -91,7 +92,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   );
 
   // Clock tick while a turn runs; the turn ends at 90 s (DPO3).
-  const now = useTicker(run?.phase === 'playing', 250, (n) => dispatch({ type: 'TICK', now: n }));
+  const now = useTicker(run?.phase === 'playing', 250, (n) => dispatch({ type: 'TICK', now: n }), { shown: (n) => run && second(timeLeft(run, n)) });
 
   // Rule 4: leaving the app pauses and hides the case.
   usePauseHide(() => dispatch({ type: 'PAUSE', now: Date.now() }));

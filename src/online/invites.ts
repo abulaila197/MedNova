@@ -5,6 +5,7 @@ import { create } from 'zustand';
 import { useAccount } from '@/state/account';
 
 import { challengeFriend, JOIN_SAY, myInvites, respondInvite, type Invite } from './api';
+import { keepIfSame } from './same';
 
 /** ON24: open challenges to you. `bannered` = already shown as the top banner once (Later keeps them on Friends). */
 type State = { list: Invite[]; bannered: string[]; say: string | null };
@@ -12,7 +13,8 @@ export const useInvites = create<State>(() => ({ list: [], bannered: [], say: nu
 
 export async function loadInvites() {
   const list = await myInvites();
-  useInvites.setState({ list: list ?? [] });
+  // An unchanged list keeps the same array, so the banner and Friends don't redraw every 15 s.
+  useInvites.setState((s) => ({ list: keepIfSame(s.list, list ?? []) }));
 }
 
 let beat: ReturnType<typeof setInterval> | null = null;

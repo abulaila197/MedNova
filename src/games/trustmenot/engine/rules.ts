@@ -95,6 +95,10 @@ export const ROUNDS: Record<RoundId, { mode: RoundMode; questions: number; secon
   wager: { mode: 'team-target', questions: 5, seconds: 15 },
   chain: { mode: 'linked', questions: 1, seconds: 10 },
 };
+/** §7.3: EXP counts solo rounds only; Chain of Trust is a solo round (linked), so a right answer there still pays. */
+export const countsAsSolo = (mode: RoundMode) => mode === 'solo' || mode === 'solo-competitive' || mode === 'linked';
+/** The Learn feed takes solo misses, but not Chain of Trust ('linked'): there a wrong answer is the goal, not a miss. */
+export const feedsLearn = (mode: RoundMode) => mode === 'solo' || mode === 'solo-competitive';
 export const OPENING_COIN: RoundId[] = ['granary', 'forager'];
 export const OPENING_JEWEL: RoundId[] = ['mine', 'prospector'];
 export const DAMAGE_CONTROL: RoundId[] = ['jar', 'purse', 'cavein', 'pickpocket'];

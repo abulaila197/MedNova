@@ -166,14 +166,9 @@ export function snapshotRound(r: Round, now: number): Round {
   return r.phase === 'playing' || r.phase === 'feedback' ? stepRound(r, { type: 'PAUSE', now }, () => -1) : r;
 }
 
-/** SM12: Solo EXP is half the round's score, rounded down. */
-export const soloExp = (score: number) => Math.floor(score / 2);
-
-/** The most a round could score if every answer were right at one a second: the EXP sanity cap. */
-export const maxScore = (lengthSec: number) => {
-  const n = lengthSec + 60; // +10 s helpers
-  return (n * (n + 1)) / 2;
-};
+/** SM16 (replaces SM12 + SM15): EXP is 2 per right answer, at most 60 per round, Solo and Online alike. */
+export const SM_EXP = { perRight: 2, cap: 60 } as const;
+export const expForRight = (right: number) => Math.min(SM_EXP.cap, Math.max(0, right) * SM_EXP.perRight);
 
 /**
  * Questions for a style. Mixed is about half clinical, half basic per question (as coded),

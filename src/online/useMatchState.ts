@@ -1,4 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useEffectEvent, useRef, useState, useSyncExternalStore } from 'react';
+
+import { timeStore } from '@/games/engine/timeStore';
 
 import { call } from './api';
 import { keepIfSame } from './same';
@@ -14,12 +16,18 @@ const NOTICE_MS = 2200;
  * poll while the previous one is still waiting, so a slow network never piles requests up), keeps
  * the previous object when nothing changed (so the screen doesn't redraw for nothing), ticks a
  * clock for countdowns and works out the server time from it. `notice` is a short message line that
- * clears itself; `quiet` games show no "Reconnecting" note.
+ * clears itself; `quiet` games show no "Reconnecting" note. The clock redraws the screen on every tick only
+ * when `shown` is left out; with it, only when what it returns (e.g. the whole seconds left) changes.
  */
-export function useMatchState<T extends Stamped>(rpc: string, matchId: string, opts: { tickMs?: number; quiet?: boolean } = {}) {
+export function useMatchState<T extends Stamped>(
+  rpc: string,
+  matchId: string,
+  opts: { tickMs?: number; quiet?: boolean; shown?: (server: number, st: T | null) => unknown } = {},
+) {
   const { tickMs = 250, quiet = false } = opts;
   const [st, setSt] = useState<T | null>(null);
-  const [now, setNow] = useState(Date.now());
+  const [clock] = useState(timeStore);
+  const now = useSyncExternalStore(clock.subscribe, clock.get, clock.get);
   const [notice, setNotice] = useState<string | null>(null);
   const offset = useRef(0);
   const busy = useRef(false);
@@ -34,6 +42,8 @@ export function useMatchState<T extends Stamped>(rpc: string, matchId: string, o
     }
   }, [rpc, matchId, quiet]);
 
+  const tick = useEffectEvent((n: number) => clock.set(n, opts.shown ? opts.shown(n + offset.current, st) : n));
+
   useEffect(() => {
     const poll = () => {
       if (busy.current) return;
@@ -42,7 +52,7 @@ export function useMatchState<T extends Stamped>(rpc: string, matchId: string, o
     };
     poll();
     const p = setInterval(poll, POLL_MS);
-    const t = setInterval(() => setNow(Date.now()), tickMs);
+    const t = setInterval(() => tick(Date.now()), tickMs);
     return () => {
       clearInterval(p);
       clearInterval(t);

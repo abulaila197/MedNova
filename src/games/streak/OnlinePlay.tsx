@@ -40,7 +40,7 @@ function itemsOf(st: RaceState) {
 }
 
 /**
- * The Streak Master Online (SM6-SM8, SM14, SM15): everyone gets the same question with the same shuffled choices,
+ * The Streak Master Online (SM6-SM8, SM14, SM16): everyone gets the same question with the same shuffled choices,
  * one pick each, no helpers. Right answers score 100, 80, 65... by arrival plus a streak bonus up to 50.
  */
 export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {

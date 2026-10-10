@@ -16,9 +16,13 @@ import { Review } from './Review';
 
 type SoloState = { caseId: string; run: Run; replay: boolean };
 
-/** Solo (CF6): pick any case from the library, play it through; replays are free but earn no EXP. */
+/** Solo (CF6): pick any case from the library, play it through; replays (any case opened before) are free but earn no EXP. */
 export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
-  const [state, setState] = useState<SoloState | null>((play.resume as SoloState | null) ?? null);
+  // A bookmark whose case has left the library since starts fresh.
+  const [state, setState] = useState<SoloState | null>(() => {
+    const saved = play.resume as SoloState | null;
+    return saved && caseById.has(saved.caseId) ? saved : null;
+  });
   const ref = useRef(state);
   const [played, setPlayed] = useState<Played>({});
   const [review, setReview] = useState(false);
@@ -66,9 +70,13 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
       feedsLearn: run.provisional?.correct === false, // CF5: a wrong first diagnosis, even if redeemed
       gameData: { exp: replay ? 0 : sc.total, replay, stamp: sc.stamp, dd: run.dd, filtered: run.filtered, ddRight: sc.ddRight, ddWrong: sc.ddWrong, final: def.final },
     });
-    const next = { ...played, [def.id]: played[def.id] === 'SOLVED' ? 'SOLVED' : sc.stamp } as Played;
-    setPlayed(next);
-    engine.kv.set(PLAYED_KEY, next);
+    // Read the stored list (this callback can hold an old `played`), so other cases' stamps are kept.
+    engine.kv.get<Played>(PLAYED_KEY).then((cur) => {
+      const old = cur ?? {};
+      const next = { ...old, [def.id]: old[def.id] === 'SOLVED' ? 'SOLVED' : sc.stamp } as Played;
+      setPlayed(next);
+      engine.kv.set(PLAYED_KEY, next);
+    });
     setReview(true);
   };
 
@@ -78,9 +86,17 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
     return (
       <Library
         played={played}
-        onPick={(id) => {
-          const s0 = { caseId: id, run: startRun(id, Date.now()), replay: played[id] != null };
-          save(s0);
+        onPick={async (id) => {
+          // CF6: the case counts as played once it is opened, so reading it, quitting and picking it again earns no EXP.
+          // A resumed case keeps the replay flag it opened with, so it still pays once.
+          const now = (await engine.kv.get<Played>(PLAYED_KEY)) ?? {};
+          const s0 = { caseId: id, run: startRun(id, Date.now()), replay: now[id] != null };
+          save(s0); // bookmark first, so a crash between the two still resumes as a first play
+          if (!now[id]) {
+            const next: Played = { ...now, [id]: 'CLOSED' };
+            setPlayed(next);
+            await engine.kv.set(PLAYED_KEY, next);
+          }
         }}
       />
     );

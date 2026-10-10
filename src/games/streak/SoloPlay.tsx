@@ -24,7 +24,7 @@ import { useTicker } from '../engine/useTicker';
 type SoloSave = { round: Round; style: Style; lengthSec: number };
 const bestKey = (style: Style, len: number) => `streak:best:${style}:${len}`;
 
-/** Solo (SM3, SM4, SM11, SM12): one timed round, helpers for tokens, EXP = half the score, misses go to Learn. */
+/** Solo (SM3, SM4, SM11, SM16): one timed round, helpers for tokens, EXP = 2 per right answer up to 60 (SM16), misses go to Learn. */
 export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   const style = (play.settings.style as Style) ?? 'mixed';
   const lengthSec = Number(play.settings.length) || 60;
@@ -39,6 +39,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
     let live = true;
     (async () => {
       let r = (play.resume as SoloSave | null)?.round ?? null;
+      if (r && !r.queue.every((id) => questionById.has(id))) r = null; // a question left the bank since: start fresh
       if (!r) {
         const pick = (ids: string[]) => engine.picker.pick(play.game, ids, ids.length);
         const queue = style === 'mixed' ? mixQueue(await pick(idsOf('clinical')), await pick(idsOf('basic'))) : await pick(poolFor(style));
@@ -94,7 +95,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   );
 
   // The clock: ticks while a question runs or a result shows.
-  const now = useTicker(round?.phase === 'playing' || round?.phase === 'feedback', 150, (n) => dispatch({ type: 'TICK', now: n }));
+  const now = useTicker(round?.phase === 'playing' || round?.phase === 'feedback', 150, (n) => dispatch({ type: 'TICK', now: n }), { fine: true });
 
   usePauseHide(() => dispatch({ type: 'PAUSE', now: Date.now() }));
 
@@ -114,7 +115,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
       const at = r.index;
       const receipt = await engine.wallet.spend(price, `streak_${kind}`, play.id);
       paying.current = false;
-      if (!receipt) return setNotice(`You need ${price} token${price > 1 ? 's' : ''}. 200 EXP makes 1 token.`);
+      if (!receipt) return setNotice(`You need ${price} token${price > 1 ? 's' : ''}. Each level up gives 1 token.`);
       const cur = ref.current;
       if (!cur || cur.index !== at || !helperUsable(cur, kind)) {
         await engine.wallet.refund(receipt);

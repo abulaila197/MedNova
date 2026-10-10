@@ -7,6 +7,7 @@ import { TextInput } from '@/components/AppText';
 import { AT, Btn, CardTile, CG, CGB, CGI, Chip, CZ, CZM, Kicker, PieceIcon, ROMAN, Rule, T, Top, v } from './atlas';
 import { MapChart } from './AtlasMap';
 import type { Named, SoloStyle } from './bank';
+import { KeyboardLift } from '../shell/KeyboardLift';
 import { indexNames } from '../shell/names';
 import { BALANCE, CARDS, suggest, type CardType, type SoloTurn, type VersusStyle } from './core';
 import NAMES from './data/names.json';
@@ -235,11 +236,12 @@ export function VersusPage(props: P) {
   const { m, seconds } = props;
   const vs = m.versus;
   if (!vs) return null;
+  // Typed answers (Closest, Rush, Clue): the page lifts over the keyboard; same gap as the page body when it is closed.
   return (
-    <>
+    <KeyboardLift style={{ flex: 1, gap: v(11) }}>
       <Top kicker={`${stageLine(m)} · Versus`} title={VERSUS[vs.style].name} line={VERSUS[vs.style].rule} seconds={seconds} />
       {vs.style === 'closest' ? <Closest {...props} /> : vs.style === 'rush' ? <Rush {...props} /> : vs.style === 'standing' ? <Standing {...props} /> : <Clue {...props} />}
-    </>
+    </KeyboardLift>
   );
 }
 

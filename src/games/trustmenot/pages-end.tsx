@@ -2,7 +2,7 @@
 // 30-45): the ledger with its heat bar and my mission, trust stars, death, the Inquisition, a ghost's Gap, the Last
 // Supper, the seven-part final reveal, the epilogue cards, the results and the pause page.
 import { router, useLocalSearchParams } from 'expo-router';
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode, type Ref } from 'react';
 import { Pressable, ScrollView, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 import { TextInput } from '@/components/AppText';
 import Svg, { Ellipse, Path } from 'react-native-svg';
@@ -10,6 +10,7 @@ import Svg, { Ellipse, Path } from 'react-native-svg';
 import { leaveRoom, rematchRoom } from '@/online/api';
 import { finishOnline } from '@/online/finish';
 
+import { KeyboardLift } from '../shell/KeyboardLift';
 import { gameDef } from '../shell/registry';
 import type { Mission, MissionId, PlayerId } from './engine';
 import { rules } from './engine';
@@ -107,8 +108,8 @@ function Sil({ color, size, dead }: { color: string; size: number; dead?: boolea
 }
 
 /** A sheet under the strip (the "top" sheets of the preview). */
-const TopSheet = ({ seed, children, gap = 7 }: { seed: string; children: ReactNode; gap?: number }) => (
-  <ScrollView style={{ position: 'absolute', left: 0, right: 0, top: p(70), bottom: 0 }} contentContainerStyle={{ paddingHorizontal: p(12), paddingBottom: p(16) }} showsVerticalScrollIndicator={false}>
+const TopSheet = ({ seed, children, gap = 7, ref }: { seed: string; children: ReactNode; gap?: number; ref?: Ref<ScrollView> }) => (
+  <ScrollView ref={ref} keyboardShouldPersistTaps="handled" style={{ position: 'absolute', left: 0, right: 0, top: p(70), bottom: 0 }} contentContainerStyle={{ paddingHorizontal: p(12), paddingBottom: p(16) }} showsVerticalScrollIndicator={false}>
     <Paper seed={seed}>
       <View style={{ gap: p(gap) }}>{children}</View>
     </Paper>
@@ -356,10 +357,12 @@ export function GhostPage({ env, act }: PageProps) {
   const mission = w ? (v.missions.find((m) => m.holder === w.id && m.status === 'active') ?? null) : null;
   const screen = w ? [`${pct(w.health)}`, plural(w.jewels ?? 0, 'jewel'), ...w.effects.map((e) => EFFECT[e.id].name), w.bag?.length ? `${plural(w.bag.length, 'item')} in the bag` : ''].filter(Boolean).join(' · ') : '';
   const target = living.find((q) => q.id === to);
+  const sheet = useRef<ScrollView>(null);
+  // The whisper box: the sheet shrinks above the keyboard and scrolls the box and its Send button into view.
   return (
-    <View style={{ flex: 1 }}>
+    <KeyboardLift behavior="height">
       <Strip players={v.players} me={v.me} />
-      <TopSheet seed={`ghost${v.month}`}>
+      <TopSheet seed={`ghost${v.month}`} ref={sheet}>
         <K red>{`You died in month ${self.diedMonth ?? v.month}`}</K>
         <Title>You are a Ghost</Title>
         <Sec>Watching</Sec>
@@ -394,7 +397,7 @@ export function GhostPage({ env, act }: PageProps) {
               })}
             </View>
             <TextInput value={text} onChangeText={setText} maxLength={140} multiline placeholder="Write one private whisper…" placeholderTextColor="rgba(42,31,22,0.45)"
-              style={s.inp} accessibilityLabel="Whisper" />
+              style={s.inp} accessibilityLabel="Whisper" onFocus={() => setTimeout(() => sheet.current?.scrollToEnd({ animated: true }), 350)} />
             <Btn label={target ? `Send whisper to ${target.name}` : 'Send whisper'} disabled={!target || !text.trim()} onPress={() => target && act({ type: 'WHISPER', to: target.id, text: text.trim() })} />
           </>
         )}
@@ -402,7 +405,7 @@ export function GhostPage({ env, act }: PageProps) {
         <Sec>Tie vote</Sec>
         <T size={11.5} style={{ lineHeight: p(15.5) }}>If a supply request ties in step 2, the Ghosts decide it. Your vote counts only then.</T>
       </TopSheet>
-    </View>
+    </KeyboardLift>
   );
 }
 

@@ -20,7 +20,8 @@ export function useSoloRun({ play, onFinish }: Pick<PlayProps, 'play' | 'onFinis
     let live = true;
     (async () => {
       const saved = play.resume as SoloRun | null;
-      let r = saved;
+      // A case that has left the bank since starts the run fresh.
+      let r = saved && saved.caseIds.every((id) => caseById.has(id)) ? saved : null;
       if (!r) {
         const ids = await engine.picker.pick(play.game, poolFor(play.settings.difficulty as Difficulty), Number(play.settings.cases) || 5);
         r = startRun(ids, Date.now());
@@ -78,7 +79,7 @@ export function useSoloRun({ play, onFinish }: Pick<PlayProps, 'play' | 'onFinis
     if (!r || r.hint || r.phase !== 'playing') return;
     const index = r.index;
     const receipt = await engine.wallet.spend(DP.hintTokenCost, 'diagnostic_hint', play.id);
-    if (!receipt) return setNotice('You need 1 token for a hint. Earn tokens from EXP: 200 EXP makes 1 token.');
+    if (!receipt) return setNotice('You need 1 token for a hint. Each level up gives 1 token.');
     const cur = runRef.current;
     if (!cur || cur.index !== index || (cur.phase !== 'playing' && cur.phase !== 'paused')) {
       await engine.wallet.refund(receipt);

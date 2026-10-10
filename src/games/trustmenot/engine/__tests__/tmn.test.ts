@@ -160,3 +160,15 @@ test('the same seed and actions replay to the same game', () => {
   assert.deepEqual(a, b);
 });
 
+
+test('§7.3: Chain of Trust answers count for EXP (a solo round) but never feed Learn', () => {
+  assert.equal(R.ROUNDS.chain.mode, 'linked');
+  assert.equal(R.countsAsSolo(R.ROUNDS.chain.mode), true);
+  assert.equal(R.feedsLearn(R.ROUNDS.chain.mode), false);
+  for (const id of ['pickpocket', 'lean', 'hero'] as const) {
+    assert.equal(R.countsAsSolo(R.ROUNDS[id].mode), true);
+    assert.equal(R.feedsLearn(R.ROUNDS[id].mode), true);
+  }
+  assert.equal(R.countsAsSolo(R.ROUNDS.hands.mode), false);
+  assert.equal(R.feedsLearn(R.ROUNDS.hands.mode), false);
+});

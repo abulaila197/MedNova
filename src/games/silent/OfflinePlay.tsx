@@ -49,6 +49,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
     let live = true;
     (async () => {
       let r = play.resume as OfflineRun | null;
+      if (r && ![...r.options, ...(r.wordId ? [r.wordId] : [])].every((id) => wordById.has(id))) r = null; // a word left the list since: start fresh
       if (!r) {
         const seats = play.seats.filter((x) => !x.removed);
         const recent = (await engine.kv.get<string[]>(RECENT_KEY)) ?? [];
@@ -105,7 +106,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   );
 
   const timed = run?.phase === 'picking' || run?.phase === 'performing' || run?.phase === 'stealing';
-  const now = useTicker(timed, 200, (n) => dispatch({ type: 'TICK', now: n }));
+  const now = useTicker(timed, 200, (n) => dispatch({ type: 'TICK', now: n }), { fine: true });
 
   // A new turn starts with white chalk on a clean board.
   useEffect(() => {

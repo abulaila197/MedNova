@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
-import { levelExp, search, startLevel, starsFor, stepLevel, type Answer } from '../core';
+import { levelExp, retryCap, search, startLevel, starsFor, stepLevel, type Answer } from '../core';
 import { LOCK_MS, currentSeat, lockLeft, offlineRows, previousLine, scorePhoto, startOffline, stepOffline } from '../offline';
 import { fullName } from '../../shell/names';
 
@@ -98,4 +98,15 @@ test('offline: removing the player on turn drops their turn and hands to the nex
   assert.deepEqual([r.phase, currentSeat(r)], ['handoff', 2]);
   r = stepOffline(r, { type: 'REMOVE', seat: 2 });
   assert.equal(r.removed.length, 1, 'at least 2 players stay');
+});
+
+test('a retry after a miss in the same session pays at most 1 star', () => {
+  const session = [{ riddleId: 'r-001', solved: false }, { riddleId: 'r-002', solved: true }];
+  assert.equal(retryCap(session, 'r-001'), 1);
+  assert.equal(retryCap(session, 'r-002'), 3);
+  assert.equal(retryCap([], 'r-001'), 3);
+  const fast = guess(startLevel('r-001', 0, retryCap(session, 'r-001')), 'r-001', 5_000);
+  assert.equal(fast.stars, 1);
+  assert.equal(levelExp(fast.stars, 0), 4);
+  assert.equal(guess(startLevel('r-001', 0), 'r-001', 5_000).stars, 3);
 });

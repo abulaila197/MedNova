@@ -182,5 +182,15 @@ export function bumpStreak(s: Streak, day: number, solved: boolean): Streak {
   const current = solved ? (s.lastDay === day - 1 ? s.current + 1 : 1) : 0;
   return { current, best: Math.max(s.best, current), lastDay: day };
 }
+/** The latest daily started on this phone (per style): its day and the phone time it started. */
+export type DailyLast = { day: number; at: number };
+/**
+ * Phone-date guard for a new daily word: only a day after the latest daily already started, and never while the
+ * phone clock reads earlier than that start (the clock went backwards), so at most one daily per real day.
+ */
+export function dailyOpen(last: DailyLast | null, today: number, now: number): boolean {
+  if (!last) return true;
+  return today > last.day && now >= last.at;
+}
 /** What the label shows today: yesterday's streak still counts until today is played. */
 export const liveStreak = (s: Streak, day: number) => (s.lastDay != null && day - s.lastDay <= 1 ? s.current : 0);

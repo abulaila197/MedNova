@@ -12,6 +12,7 @@ import { RoomTalk } from '@/online/Talk';
 import { u } from '@/theme/scale';
 
 import { characterOf } from '../shell/characters';
+import { KeyboardLift } from '../shell/KeyboardLift';
 import { PauseMenu } from '../shell/PauseMenu';
 import { presetTeam } from '../shell/teams';
 import type { OnlineProps } from '../shell/types';
@@ -211,15 +212,18 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
 
   return (
     <SlateScreen>
-      <TopRow kicker={kick} title={`${drawer?.name ?? 'Someone'} is drawing`} color={colorOf(drawer)} right={<><ChalkTimer leftMs={left} totalMs={turnMs} /><PauseBtn onPress={pause} /></>} />
-      <HintCard hint={{ words: sa.words ?? 1, field: sa.field, mask: sa.mask }} />
-      <View style={s.fill}>
-        <Frame style={{ width: '100%', maxWidth: u(330) }}>
-          <Sketch strokes={strokes.turn === st.index ? strokes.list : []} live={live} bg={R.board} ratio={RATIO} />
-        </Frame>
-      </View>
-      {playing ? <GuessBox key={st.index} solved={st.me?.solved_ms != null} points={st.me?.points ?? 0} rank={st.me?.rank ?? null} matchId={matchId} load={load} /> : <Note style={{ textAlign: 'center' }}>You’re watching. You get a seat at the rematch.</Note>}
-      {playing ? <ReportBtn sa={sa} matchId={matchId} load={load} /> : null}
+      {/* The guess box sits at the bottom: lift it over the keyboard (the board shrinks, minHeight keeps a bit). */}
+      <KeyboardLift style={s.lift}>
+        <TopRow kicker={kick} title={`${drawer?.name ?? 'Someone'} is drawing`} color={colorOf(drawer)} right={<><ChalkTimer leftMs={left} totalMs={turnMs} /><PauseBtn onPress={pause} /></>} />
+        <HintCard hint={{ words: sa.words ?? 1, field: sa.field, mask: sa.mask }} />
+        <View style={s.fill}>
+          <Frame style={{ width: '100%', maxWidth: u(330) }}>
+            <Sketch strokes={strokes.turn === st.index ? strokes.list : []} live={live} bg={R.board} ratio={RATIO} />
+          </Frame>
+        </View>
+        {playing ? <GuessBox key={st.index} solved={st.me?.solved_ms != null} points={st.me?.points ?? 0} rank={st.me?.rank ?? null} matchId={matchId} load={load} /> : <Note style={{ textAlign: 'center' }}>You’re watching. You get a seat at the rematch.</Note>}
+        {playing ? <ReportBtn sa={sa} matchId={matchId} load={load} /> : null}
+      </KeyboardLift>
       {extras}
     </SlateScreen>
   );
@@ -335,6 +339,8 @@ function ReportBtn({ sa, matchId, load }: { sa: NonNullable<RaceState['sa']>; ma
 
 const s = StyleSheet.create({
   fill: { flex: 1, alignItems: 'center', justifyContent: 'center', minHeight: u(120) },
+  /** Same gap as the slate body, so the page looks unchanged with the keyboard closed. */
+  lift: { flex: 1, gap: u(10) },
   row: { flexDirection: 'row', gap: u(8), alignItems: 'stretch' },
   input: { flex: 1, minWidth: 0, width: 0, borderWidth: 1.5, borderRadius: u(12), paddingHorizontal: u(12), paddingVertical: u(10), fontFamily: SL.body, fontSize: u(17) },
   option: { flexDirection: 'row', alignItems: 'center', gap: u(12), borderWidth: SL.frameW * 0.6, borderColor: SL.frame, borderRadius: u(4), paddingVertical: u(12), paddingHorizontal: u(14), minHeight: u(62) },

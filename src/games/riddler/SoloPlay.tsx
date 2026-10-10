@@ -14,10 +14,10 @@ import { recordItem } from '../shell/flow';
 import { PauseMenu } from '../shell/PauseMenu';
 import type { PlayProps } from '../shell/types';
 import { Btn, GameScreen, Ghost, Kick } from '../shell/ui';
-import { RD, levelExp, levelTime, livesLeft, snapshotLevel, startLevel, stepLevel, type Level, type LevelEvent } from './core';
+import { RD, levelExp, levelTime, livesLeft, retryCap, snapshotLevel, startLevel, stepLevel, type Level, type LevelEvent } from './core';
 import { RIDDLES, answerLabel, feedsLearn, riddleById, riddleName } from './data';
 import { RiddleBoard } from './RiddleBoard';
-import { useTicker } from '../engine/useTicker';
+import { second, useTicker } from '../engine/useTicker';
 
 /** One finished level attempt in this session. */
 type Done = { riddleId: string; solved: boolean; stars: number; exp: number };
@@ -29,10 +29,13 @@ const BEST_KEY = 'riddler:best';
 /** Solo (RD3, RD4, RD9-RD11, RD15, RD16): the level grid, one level at a time, a result card, then session results. */
 export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   const saved = play.resume as SoloSave | null;
-  const [level, setLevel] = useState<Level | null>(saved?.level ?? null);
-  const ref = useRef<Level | null>(saved?.level ?? null);
-  const [session, setSession] = useState<Done[]>(saved?.session ?? []);
-  const sessionRef = useRef<Done[]>(saved?.session ?? []);
+  // Riddles that have left the bank since drop out of the bookmark (an open one goes back to the grid).
+  const savedLevel = saved?.level && riddleById.has(saved.level.riddleId) ? saved.level : null;
+  const savedSession = (saved?.session ?? []).filter((d) => riddleById.has(d.riddleId));
+  const [level, setLevel] = useState<Level | null>(savedLevel);
+  const ref = useRef<Level | null>(savedLevel);
+  const [session, setSession] = useState<Done[]>(savedSession);
+  const sessionRef = useRef<Done[]>(savedSession);
   const [stored, setStored] = useState<Record<string, number>>({});
   const [notice, setNotice] = useState<string | null>(null);
   const [wrongSeq, setWrongSeq] = useState(0);
@@ -58,7 +61,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
 
   const open = useCallback(
     (id: string) => {
-      const l = startLevel(id, Date.now());
+      const l = startLevel(id, Date.now(), retryCap(sessionRef.current, id));
       ref.current = l;
       setLevel(l);
       setNotice(null);
@@ -106,7 +109,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   );
 
   // The stopwatch display.
-  const now = useTicker(level?.phase === 'playing', 250);
+  const now = useTicker(level?.phase === 'playing', 250, undefined, { shown: (n) => level && second(levelTime(level, n)) });
 
   usePauseHide(() => dispatch({ type: 'PAUSE', now: Date.now() }));
 
@@ -123,7 +126,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
     paying.current = true;
     const receipt = await engine.wallet.spend(RD.hintPrice, 'riddler_hint', play.id);
     paying.current = false;
-    if (!receipt) return setNotice('You need 1 token. 200 EXP makes 1 token.');
+    if (!receipt) return setNotice('You need 1 token. Each level up gives 1 token.');
     const cur = ref.current;
     if (!cur || cur.riddleId !== l.riddleId || cur.phase !== 'playing') {
       await engine.wallet.refund(receipt);
@@ -150,6 +153,10 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
     await engine.kv.set(BEST_KEY, best);
     onFinish(list.reduce((a, d) => a + d.exp, 0));
   };
+
+  /** Pause-menu Quit: with levels finished this session, leave through the session results (RD16) so the bests and
+   * EXP are saved and a later "New game" can't wipe them; with none, keep the bookmark to resume the open level. */
+  const quit = () => (sessionRef.current.length ? finish() : onQuit());
 
   if (!level) return <LevelGrid best={(id) => bestOf(id, session)} session={session} onOpen={open} onFinish={finish} />;
 
@@ -184,7 +191,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
           />
         ) : undefined
       }>
-      <PauseMenu open={level.phase === 'paused'} mode="solo" onResume={() => dispatch({ type: 'RESUME', now: Date.now() })} onQuit={onQuit} />
+      <PauseMenu open={level.phase === 'paused'} mode="solo" onResume={() => dispatch({ type: 'RESUME', now: Date.now() })} onQuit={quit} />
     </RiddleBoard>
   );
 }
@@ -200,6 +207,7 @@ function ResultCard({ done, level, onNext, onRetry, onGrid }: { done: Done; leve
     : done.exp
       ? `+${done.exp} EXP${done.exp < done.stars * RD.expPerStar ? ' for your new star' + (done.exp > RD.expPerStar ? 's' : '') : ''}`
       : 'No new stars, so no EXP. Beat your best to earn more.';
+  const capLine = done.solved && level.maxStars === 1 ? ' A retry after a miss earns 1 star at most.' : '';
   return (
     <View style={[s.card, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
       <View style={s.cardTop}>
@@ -208,7 +216,7 @@ function ResultCard({ done, level, onNext, onRetry, onGrid }: { done: Done; leve
       </View>
       <Text style={[s.ans, { color: t.white }]}>{riddleName(r)}</Text>
       <Text style={[s.def, { color: t.mute }]} numberOfLines={3}>{r.definition}</Text>
-      <Text style={[s.exp, { color: t.soft }]}>{expLine}</Text>
+      <Text style={[s.exp, { color: t.soft }]}>{expLine + capLine}</Text>
       <View style={s.row}>
         <Ghost label="Retry" onPress={onRetry} style={{ flex: 1 }} />
         <Btn label="Next level" onPress={onNext} style={{ flex: 1.4 }} />

@@ -66,7 +66,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
 
   // The clock: ticks while a timer runs (Star window, question, the right/wrong moment).
   const timed = run?.phase === 'turn' && run.turn?.until != null && !paused;
-  const now = useTicker(timed, 150, (n) => dispatch({ type: 'TICK', now: n }));
+  const now = useTicker(timed, 150, (n) => dispatch({ type: 'TICK', now: n }), { fine: true });
 
   const pause = () => {
     setPaused(true);

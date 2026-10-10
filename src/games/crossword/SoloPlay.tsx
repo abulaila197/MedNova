@@ -29,8 +29,10 @@ const BEST_KEY = 'crossword:best';
 /** Solo (CW1-CW4, CW8, CW9): the level map, one puzzle at a time with tap to zoom, a result card, then session results. */
 export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   const saved = play.resume as SoloSave | null;
-  const [run, setRun] = useState<SoloRun | null>(saved?.run ?? null);
-  const ref = useRef<SoloRun | null>(saved?.run ?? null);
+  // An open puzzle that has left the levels since goes back to the map.
+  const savedRun = saved?.run && puzzleById.has(saved.run.puzzleId) ? saved.run : null;
+  const [run, setRun] = useState<SoloRun | null>(savedRun);
+  const ref = useRef<SoloRun | null>(savedRun);
   const [session, setSession] = useState<Done[]>(saved?.session ?? []);
   const sessionRef = useRef<Done[]>(saved?.session ?? []);
   const [stored, setStored] = useState<Record<number, number>>({});
@@ -111,6 +113,10 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
     onFinish(list.reduce((a, d) => a + d.exp, 0));
   };
 
+  /** Pause-menu Quit: with puzzles finished this session, leave through the session results so the bests and EXP are
+   * saved and a later "New game" can't wipe them; with none, keep the bookmark to resume the open puzzle. */
+  const quit = () => (sessionRef.current.length ? finish() : onQuit());
+
   if (!run) {
     return (
       <GameScreen bodyStyle={{ paddingTop: u(12), paddingHorizontal: u(16), gap: u(10) }}>
@@ -141,7 +147,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
           <ResultCard done={last} canNext={canNext} onNext={() => open(nextLevel)} onRetry={() => open(p.level)} onMap={toMap} />
         ) : null
       }>
-      <PauseMenu open={paused} mode="solo" onResume={() => setPaused(false)} onQuit={onQuit} />
+      <PauseMenu open={paused} mode="solo" onResume={() => setPaused(false)} onQuit={quit} />
     </Puzzle>
   );
 }
@@ -187,6 +193,11 @@ function Puzzle({ puzzle, run, playId, paused, onEvent, onPause, dock, children 
   const [tokens, setTokens] = useState(0);
   const paying = useRef(false);
   const playing = run.phase === 'playing';
+  // The newest run and open word, read after an await (the render's own values are stale by then).
+  const live = useRef({ run, word });
+  useEffect(() => {
+    live.current = { run, word };
+  });
 
   useEffect(() => {
     engine.wallet.balance().then((b) => setTokens(b.tokens));
@@ -248,8 +259,9 @@ function Puzzle({ puzzle, run, playId, paused, onEvent, onPause, dock, children 
     paying.current = true;
     const receipt = await engine.wallet.spend(CW.hintPrice, 'crossword_hint', playId);
     paying.current = false;
-    if (!receipt) return setNotice('You need 1 token. 200 EXP makes 1 token.');
-    if (run.solved.includes(word)) {
+    if (!receipt) return setNotice('You need 1 token. Each level up gives 1 token.');
+    const now = live.current;
+    if (now.word !== word || now.run.phase !== 'playing' || now.run.solved.includes(word)) {
       await engine.wallet.refund(receipt);
       return setNotice('Hint refunded.');
     }
@@ -295,20 +307,26 @@ function OutCard({ playId, onRevive, onReplay, onEnd }: { playId: string; onRevi
   const t = useTheme();
   const [note, setNote] = useState<string | null>(null);
   const busy = useRef(false);
+  const [sending, setSending] = useState(false);
   const revive = async () => {
     if (busy.current) return;
     busy.current = true;
-    const receipt = await engine.wallet.spend(CW.revivePrice, 'crossword_revive', playId);
-    busy.current = false;
-    if (!receipt) return setNote('You need 1 token. 200 EXP makes 1 token.');
-    onRevive();
+    setSending(true);
+    try {
+      const receipt = await engine.wallet.spend(CW.revivePrice, 'crossword_revive', playId);
+      if (!receipt) return setNote('You need 1 token. Each level up gives 1 token.');
+      onRevive();
+    } finally {
+      busy.current = false;
+      setSending(false);
+    }
   };
   return (
     <View style={[s.card, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
       <Kick color={t.mode === 'light' ? '#d4504c' : '#ff6b7d'}>Out of hearts</Kick>
       <Text style={[s.big, { color: t.white }]}>Keep going?</Text>
       <Text style={[s.line, { color: t.mute }]}>{note ?? `${CW.revivePrice} token gives you ${CW.reviveHearts} heart. Words you solved stay solved.`}</Text>
-      <Btn label={`Revive · ${CW.revivePrice} token`} onPress={revive} style={{ marginTop: u(4) }} />
+      <Btn label={`Revive · ${CW.revivePrice} token`} onPress={revive} disabled={sending} style={{ marginTop: u(4) }} />
       <View style={s.row}>
         <Ghost label="Replay" onPress={onReplay} style={{ flex: 1 }} />
         <Ghost label="End puzzle" onPress={onEnd} style={{ flex: 1 }} />

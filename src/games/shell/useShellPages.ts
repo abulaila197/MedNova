@@ -71,16 +71,28 @@ export function useResults(def: GameDef, play: Play, items: PlayItem[]) {
   const missed = items.some((i) => i.feedsLearn && i.outcome !== 'right');
   // ON25: online Rematch and Change settings both go back to the same room's lobby (the host changes settings there).
   const room = play.mode === 'online' ? (play.settings.room as string | undefined) : undefined;
+  const signedIn = !!useSession((s) => s.userId);
+  /** The same trial gate as Play: a guest out of free plays goes to sign-in instead of a new game. */
+  const gated = async () => {
+    if (!(await engine.gate.mustSignIn(def.key, play.mode, signedIn))) return false;
+    router.replace(`/play/${def.key}/gate?mode=${play.mode}`);
+    return true;
+  };
   const rematch = async () => {
     if (room) {
       await rematchRoom(room).catch(() => {});
       router.replace(`/play/${def.key}/lobby?room=${room}`);
       return;
     }
+    if (await gated()) return;
     const next = await startPlay(def.key, play.mode, play.settings, play.seats.filter((x) => !x.removed));
     router.replace(`/play/${def.key}/run?play=${next.id}`);
   };
-  const changeSettings = () => (room ? rematch() : router.replace(`/play/${def.key}/setup?mode=${play.mode}&from=${play.id}`));
+  const changeSettings = async () => {
+    if (room) return rematch();
+    if (await gated()) return;
+    router.replace(`/play/${def.key}/setup?mode=${play.mode}&from=${play.id}`);
+  };
   const backToGames = () => {
     if (room) leaveRoom(room).catch(() => {});
     router.replace('/games');

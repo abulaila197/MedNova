@@ -1,5 +1,6 @@
+import { useIsFocused } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { AppState, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 import Svg, { Circle } from 'react-native-svg';
 
@@ -7,19 +8,33 @@ import { engine } from '@/games/engine';
 import { useTheme } from '@/state/app';
 import { F } from '@/theme/tokens';
 
-/** Your EXP, tokens and level progress, refreshed while on screen (the wallet lives on the phone, rule 6). */
+/**
+ * Your EXP, tokens and level progress, refreshed while on screen (the wallet lives on the phone, rule 6). Pages lower
+ * in the stack and the app in the background stop checking; they read it again when they come back.
+ */
 export function useBalance() {
   const [b, setB] = useState({ exp: 0, tokens: 0, level: 1, into: 0, need: 60 });
+  const focused = useIsFocused();
   useEffect(() => {
+    if (!focused) return;
     let live = true;
+    let id: ReturnType<typeof setInterval> | null = null;
     const load = () => engine.wallet.balance().then((x) => live && setB((p) => (p.exp === x.exp && p.tokens === x.tokens ? p : x)));
-    load();
-    const id = setInterval(load, 1500);
+    const run = (on: boolean) => {
+      if (id) clearInterval(id);
+      id = null;
+      if (!on) return;
+      load();
+      id = setInterval(load, 1500);
+    };
+    run(AppState.currentState !== 'background');
+    const sub = AppState.addEventListener('change', (s) => run(s === 'active'));
     return () => {
       live = false;
-      clearInterval(id);
+      run(false);
+      sub.remove();
     };
-  }, []);
+  }, [focused]);
   return b;
 }
 

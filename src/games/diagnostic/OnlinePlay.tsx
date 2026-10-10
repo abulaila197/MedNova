@@ -13,6 +13,7 @@ import type { OnlineProps } from '../shell/types';
 import { Btn, GameScreen, Kick } from '../shell/ui';
 import { settingsLine } from '@/online/format';
 import { CaseBoard } from './CaseBoard';
+import { second } from '../engine/timeStore';
 import { DP, type Attempt } from './core';
 import { caseById, guessName } from './data';
 import { useMatchState } from '@/online/useMatchState';
@@ -54,7 +55,7 @@ const CASE_MS = 60_000;
  * this screen asks it for the state every second, sends guesses, and shows the result. No Skip, Reveal or Hint online.
  */
 export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
-  const { st, load, server, notice, setNotice } = useMatchState<DPState>('dp_state', matchId);
+  const { st, load, server, notice, setNotice } = useMatchState<DPState>('dp_state', matchId, { shown: (sv, s) => s && `${second(s.phase_ends_at - sv)}:${second(sv - s.phase_started_at)}:${second((s.me?.locked_until ?? 0) - sv)}` });
   const [wrongSeq, setWrongSeq] = useState(0);
   const [menu, setMenu] = useState(false);
   const seen = useRef<{ key: string; solved: Set<string>; alone: boolean }>({ key: '', solved: new Set(), alone: false });

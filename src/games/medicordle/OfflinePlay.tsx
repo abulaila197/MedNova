@@ -23,7 +23,7 @@ import {
 } from './offline';
 import { DoneCard } from './SoloPlay';
 import { SlideTable, TurnClock } from './Slides';
-import { useTicker } from '../engine/useTicker';
+import { second, useTicker } from '../engine/useTicker';
 
 const STYLE_NAME: Record<Style, string> = { classic: 'Classic', custom: 'Custom' };
 
@@ -40,6 +40,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
     let live = true;
     (async () => {
       let r = play.resume as OfflineRun | null;
+      if (r && !r.wordIds.every((id) => wordById.has(id))) r = null; // a word left the list since: start fresh
       if (!r) {
         const live = play.seats.filter((x) => !x.removed);
         const seats = live.map((x) => x.seat);
@@ -92,7 +93,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   );
 
   // The turn clock (NM9): time out passes the turn.
-  const now = useTicker(run?.phase === 'playing', 200, (n) => dispatch({ type: 'TICK', now: n }));
+  const now = useTicker(run?.phase === 'playing', 200, (n) => dispatch({ type: 'TICK', now: n }), { shown: (n) => run && second(turnLeft(run, n)) });
 
   usePauseHide(() => dispatch({ type: 'PAUSE', now: Date.now() }));
 

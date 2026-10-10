@@ -27,7 +27,11 @@ function pickCase(played: Played, seed: string) {
 
 /** Offline (CF8, CF10, TMG-CF): the same case for everyone, played alone in turn, sealed until all finish. */
 export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
-  const [o, setO] = useState<OfflineRun | null>((play.resume as OfflineRun | null) ?? null);
+  // A bookmark whose case has left the library since starts fresh.
+  const [o, setO] = useState<OfflineRun | null>(() => {
+    const saved = play.resume as OfflineRun | null;
+    return saved && caseById.has(saved.caseId) ? saved : null;
+  });
   const ref = useRef(o);
   const [discharge, setDischarge] = useState(false);
   const teams = useMemo(() => teamsOf(play), [play]);

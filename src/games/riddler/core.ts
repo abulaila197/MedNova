@@ -45,6 +45,8 @@ export type Level = {
   hintUsed: boolean;
   timeMs: number;
   stars: number;
+  /** A retry after a miss in the same session pays as already failed: at most 1 star (missing = 3). */
+  maxStars?: number;
 };
 
 export type LevelEvent =
@@ -53,9 +55,13 @@ export type LevelEvent =
   | { type: 'PAUSE'; now: number }
   | { type: 'RESUME'; now: number };
 
-export function startLevel(riddleId: string, now: number): Level {
-  return { riddleId, phase: 'playing', elapsedMs: 0, runningSince: now, wrong: [], hintUsed: false, timeMs: 0, stars: 0 };
+export function startLevel(riddleId: string, now: number, maxStars = 3): Level {
+  return { riddleId, phase: 'playing', elapsedMs: 0, runningSince: now, wrong: [], hintUsed: false, timeMs: 0, stars: 0, maxStars };
 }
+
+/** The star cap for a level opened now: 1 when this session already missed it (its answer was shown), else 3. */
+export const retryCap = (session: readonly { riddleId: string; solved: boolean }[], riddleId: string) =>
+  session.some((d) => d.riddleId === riddleId && !d.solved) ? 1 : 3;
 
 export const levelTime = (l: Level, now: number) => l.elapsedMs + (l.runningSince == null ? 0 : Math.max(0, now - l.runningSince));
 export const livesLeft = (l: Level) => RD.lives - l.wrong.length;
@@ -75,7 +81,7 @@ export function stepLevel(l: Level, e: LevelEvent): Level {
       if (l.phase !== 'playing' || l.wrong.includes(e.answerId)) return l;
       const t = levelTime(l, e.now);
       if (e.answerId === l.riddleId) {
-        return { ...l, phase: 'solved', elapsedMs: t, runningSince: null, timeMs: t, stars: starsFor(t, l.wrong.length, l.hintUsed) };
+        return { ...l, phase: 'solved', elapsedMs: t, runningSince: null, timeMs: t, stars: Math.min(l.maxStars ?? 3, starsFor(t, l.wrong.length, l.hintUsed)) };
       }
       const wrong = [...l.wrong, e.answerId];
       if (wrong.length >= RD.lives) return { ...l, wrong, phase: 'failed', elapsedMs: t, runningSince: null, timeMs: t, stars: 0 };

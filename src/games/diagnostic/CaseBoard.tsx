@@ -1,6 +1,6 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { Keyboard, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Keyboard, Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Text, TextInput } from '@/components/AppText';
 import Animated, { FadeIn, FadeInDown, useAnimatedStyle, useSharedValue, withSequence, withTiming } from 'react-native-reanimated';
 
@@ -9,6 +9,7 @@ import { u } from '@/theme/scale';
 import { F, type Theme } from '@/theme/tokens';
 
 import { fullName } from '../shell/names';
+import { KeyboardLift } from '../shell/KeyboardLift';
 import { Btn, GameScreen, Kick, RoundBtn } from '../shell/ui';
 import { DP, cluePoints, search, type Attempt, type DPCase, type GuessEntry } from './core';
 import { INDEX, guessById, guessName } from './data';
@@ -88,7 +89,7 @@ export function CaseBoard(p: BoardProps) {
 
   return (
     <GameScreen scroll={false}>
-      <KeyboardAvoidingView style={s.fill} behavior={Platform.OS === 'web' ? undefined : 'padding'}>
+      <KeyboardLift style={s.fill}>
         {focused ? <SlimBar {...p} /> : <TopBar {...p} />}
 
         {p.phase === 'paused' ? (
@@ -136,7 +137,7 @@ export function CaseBoard(p: BoardProps) {
             />
           </View>
         ) : null}
-      </KeyboardAvoidingView>
+      </KeyboardLift>
       {p.children}
     </GameScreen>
   );

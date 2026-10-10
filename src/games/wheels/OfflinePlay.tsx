@@ -97,7 +97,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
     if (cur.phase === 'turn') dispatch({ type: 'TURN', e: { type: 'TICK', now: n } });
     else if (cur.phase === 'redemption') dispatch({ type: 'RED', e: { type: 'TICK', now: n } });
     else if (cur.phase === 'boss') dispatch({ type: 'BOSS', e: { type: 'TICK', now: n } });
-  });
+  }, { fine: true });
 
   const pause = () => {
     setPaused(true);

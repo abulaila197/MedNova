@@ -1,4 +1,6 @@
-import { Dimensions, useWindowDimensions } from 'react-native';
+import { Dimensions, Platform, useWindowDimensions } from 'react-native';
+
+import { frameFit } from './fit';
 
 /*
  * Responsive sizing for the whole app.
@@ -11,23 +13,20 @@ import { Dimensions, useWindowDimensions } from 'react-native';
  *   - When that leaves only a sliver at the sides (under 3% of the width), the frame fills the width
  *     instead; the few pixels of extra height are absorbed by each page's flexible space.
  *   - Otherwise (tablets, short phones) the app is a centred column on the page colour (SZ2).
+ *   - On Android the height is the whole screen: the window leaves out the navigation bar the app draws under.
  *   - On taller phones the extra height goes to each page's flexible space, never to stretching.
  *
  * Sizes in code are written in design px and passed through u(). The factor is fixed at launch, so
  * the phone's system bar sliding in or out moves page edges (flex) but never rescales the design.
  */
-export const DESIGN_W = 282;
-export const DESIGN_H = 615;
-const SLIVER = 0.03;
+export { DESIGN_H, DESIGN_W } from './fit';
 
-const win = Dimensions.get('window');
-const fit = Math.min(win.width / DESIGN_W, win.height / DESIGN_H);
-const fillsWidth = DESIGN_W * fit >= win.width * (1 - SLIVER);
+const frame = frameFit(Dimensions.get('window'), Dimensions.get('screen'), Platform.OS === 'android');
 
 /** Design px to screen px. */
-export const K = fillsWidth ? win.width / DESIGN_W : fit;
+export const K = frame.K;
 /** Width of the app frame: the whole screen, or the centred column. */
-export const FRAME_W = Math.min(win.width, DESIGN_W * K);
+export const FRAME_W = frame.frameW;
 
 /** Design px to screen px. A worklet, so animated styles and gestures can call it on the UI thread. */
 export const u = (n: number) => {

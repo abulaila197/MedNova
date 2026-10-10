@@ -39,6 +39,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
     let live = true;
     (async () => {
       let r = play.resume as OfflineRun | null;
+      if (r && !puzzleById.has(r.puzzleId)) r = null; // the puzzle left the levels since: start fresh
       if (!r) {
         const seats = play.seats.filter((x) => !x.removed);
         const teams = teamsOf(play);
@@ -254,20 +255,32 @@ export function ReviveCard({ playId, name, text, payer = 'The phone owner', decl
   const t = useTheme();
   const [note, setNote] = useState<string | null>(null);
   const busy = useRef(false);
+  const [sending, setSending] = useState(false);
+  /** The button stays off until the revive lands; a failed revive refunds the token (rule 18). */
   const revive = async () => {
     if (busy.current) return;
     busy.current = true;
-    const receipt = await engine.wallet.spend(CW.revivePrice, 'crossword_revive', playId);
-    busy.current = false;
-    if (!receipt) return setNote(`${payer} needs 1 token. 200 EXP makes 1 token.`);
-    await onRevive();
+    setSending(true);
+    try {
+      const receipt = await engine.wallet.spend(CW.revivePrice, 'crossword_revive', playId);
+      if (!receipt) return setNote(`${payer} needs 1 token. Each level up gives 1 token.`);
+      try {
+        await onRevive();
+      } catch {
+        await engine.wallet.refund(receipt);
+        setNote('Couldn’t revive. Your token was refunded. Try again.');
+      }
+    } finally {
+      busy.current = false;
+      setSending(false);
+    }
   };
   return (
     <View style={[s.card, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
       <Kick color={t.mode === 'light' ? '#d4504c' : '#ff6b7d'}>Out of hearts</Kick>
       <Text style={[s.big, { color: t.white }]}>{name}</Text>
       <Text style={[s.line, { color: t.mute }]}>{note ?? text ?? `No hearts left. One revive per player: ${CW.revivePrice} token from the phone owner gives ${CW.reviveHearts} heart. Words claimed so far stay claimed.`}</Text>
-      <Btn label={`Revive · ${CW.revivePrice} token`} onPress={revive} style={{ marginTop: u(4) }} />
+      <Btn label={`Revive · ${CW.revivePrice} token`} onPress={revive} disabled={sending} style={{ marginTop: u(4) }} />
       <Ghost label={decline} onPress={onDecline} />
     </View>
   );

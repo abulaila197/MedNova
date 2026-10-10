@@ -10,7 +10,7 @@ import { CF, completed, elapsed, invFile, scoreRun, status, type CaseDef, type F
 import { DIAG_INDEX, caseLabel, diagName } from './data';
 import { Btn, Card, CaseTitle, Kicker, NR, NoirScreen, PauseBtn, Stamp, T, caseClock } from './noir';
 import { PinBoard } from './PinBoard';
-import { useTicker } from '../engine/useTicker';
+import { second, useTicker } from '../engine/useTicker';
 
 type View_ = { at: 'board' } | { at: 'file'; file: FileId } | { at: 'pick'; kind: 'dd' | 'filter' | 'provisional' | 'redemption' } | { at: 'verdict'; kind: 'provisional' | 'redemption' };
 
@@ -25,7 +25,7 @@ export function CaseBoard({ def, run, sealed, kicker, onEvent, onPause }: { def:
   const [view, setView] = useState<View_>({ at: 'board' });
   const st = status(def, run, sealed);
   const ticking = run.runningSince != null && run.phase === 'board';
-  const now = useTicker(ticking, 500);
+  const now = useTicker(ticking, 500, undefined, { shown: (n) => second(elapsed(run, n)) });
 
   const files = useMemo(
     () => [

@@ -1,6 +1,7 @@
 import { router } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 
+import { second } from '@/games/engine/timeStore';
 import type { PlayItem } from '@/games/engine/types';
 import { characterOf } from '@/games/shell/characters';
 import { presetTeam } from '@/games/shell/teams';
@@ -91,12 +92,18 @@ export type RaceState = {
   } | null;
 };
 
+// These draw their clock smoothly (the Streak fuse, the chalk ring), so they redraw on every tick.
+const SMOOTH = new Set(['the-streak-master', 'the-silent-artist']);
+
+/** What a race screen shows of the clock: whole seconds to the phase's end and to my lock's end. */
+const shownOf = (server: number, st: RaceState | null) => (st ? `${second(st.phase_ends_at - server)}:${st.me?.locked_until ? second(st.me.locked_until - server) : ''}` : null);
+
 /**
  * Polls race_state every second (the server referees, ON17) and keeps a clock in server time.
  * Also turns the finished match into a local play and opens the results (ON21).
  */
 export function useRace(def: GameDef, roomId: string, matchId: string, me: string, toItems: (st: RaceState) => Omit<PlayItem, 'id' | 'at' | 'playId'>[]) {
-  const { st, load, server, notice, setNotice } = useMatchState<RaceState>('race_state', matchId);
+  const { st, load, server, notice, setNotice } = useMatchState<RaceState>('race_state', matchId, { shown: SMOOTH.has(def.key) ? undefined : shownOf });
   const finishing = useRef(false);
   const items = useRef(toItems);
   items.current = toItems;

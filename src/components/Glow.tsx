@@ -1,6 +1,7 @@
+import { useIsFocused } from 'expo-router';
 import { useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
-import Animated, { Easing, interpolate, useAnimatedStyle, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
+import Animated, { cancelAnimation, Easing, interpolate, useAnimatedStyle, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
 import Svg, { Defs, Ellipse, RadialGradient, Stop } from 'react-native-svg';
 
 import { useTheme } from '@/state/app';
@@ -22,6 +23,8 @@ const E = [
 ];
 const BLUR = 34;
 const BOX = 520;
+// Drawn at half size and scaled up: a soft blur looks the same, and the cached picture takes a quarter of the memory.
+const HALF = BOX / 2;
 
 /** `mode` pins the glow to one theme (a game whose room stays dark in light mode). */
 export function Glow({ delay = 0, w, h, mode }: { delay?: number; w: number; h: number; mode?: Mode }) {
@@ -30,13 +33,18 @@ export function Glow({ delay = 0, w, h, mode }: { delay?: number; w: number; h: 
   // Own gradient ids when pinned, so the page's own glow (also on screen, under) never lends its colours on web.
   const gid = mode ? `gl-${mode}-` : 'gl';
   const p = useSharedValue((((-delay * 1000) % LOOP) + LOOP) % LOOP / LOOP);
+  // Pages lower in the stack keep their glow still and pick it up where it stopped when they come back.
+  const focused = useIsFocused();
   useEffect(() => {
+    if (!focused) return;
     const start = p.value;
-    p.value = withTiming(1, { duration: (1 - start) * LOOP, easing: Easing.linear }, () => {
+    p.value = withTiming(1, { duration: (1 - start) * LOOP, easing: Easing.linear }, (done) => {
+      if (!done) return;
       p.value = 0;
       p.value = withRepeat(withTiming(1, { duration: LOOP, easing: Easing.linear }), -1, false);
     });
-  }, [p]);
+    return () => cancelAnimation(p);
+  }, [p, focused]);
   const st = useAnimatedStyle(() => {
     // ease-in-out between keyframes, like the CSS original
     const i = Math.min(7, Math.floor(p.value * 8));
@@ -45,17 +53,18 @@ export function Glow({ delay = 0, w, h, mode }: { delay?: number; w: number; h: 
     const q = (T[i] + e * 0.125);
     return {
       transform: [
-        { translateX: interpolate(q, T, X) * w - u(BOX) / 2 },
-        { translateY: interpolate(q, T, Y) * h - u(BOX) / 2 },
+        { translateX: interpolate(q, T, X) * w - u(HALF) / 2 },
+        { translateY: interpolate(q, T, Y) * h - u(HALF) / 2 },
         { rotate: `${interpolate(q, T, R)}deg` },
+        { scale: BOX / HALF },
       ],
     };
   });
   return (
     <View pointerEvents="none" style={[StyleSheet.absoluteFill, { overflow: 'hidden' }]}>
       {/* cached as a GPU picture: it only moves, so the gradients are never redrawn */}
-      <Animated.View style={[{ position: 'absolute', left: 0, top: 0, width: u(BOX), height: u(BOX) }, st]} renderToHardwareTextureAndroid shouldRasterizeIOS>
-        <Svg width={u(BOX)} height={u(BOX)} viewBox={`${-BOX / 2} ${-BOX / 2} ${BOX} ${BOX}`}>
+      <Animated.View style={[{ position: 'absolute', left: 0, top: 0, width: u(HALF), height: u(HALF) }, st]} renderToHardwareTextureAndroid shouldRasterizeIOS>
+        <Svg width={u(HALF)} height={u(HALF)} viewBox={`${-BOX / 2} ${-BOX / 2} ${BOX} ${BOX}`}>
           <Defs>
             {t.glow.map((c, j) => (
               <RadialGradient key={j} id={`${gid}${j}`} cx="0.5" cy="0.5" r="0.5">

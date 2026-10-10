@@ -179,12 +179,9 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
             text={`No hearts left. One revive per match: ${CW.revivePrice} token gives ${CW.reviveHearts} heart. Your claimed words stay yours.`}
             decline="No revive, watch the rest"
             onRevive={async () => {
-              try {
-                await call('cw_revive', { m: matchId });
-                await load();
-              } catch {
-                setNotice('Couldn’t revive. Try again.');
-              }
+              // A failed request throws, so the card refunds the token and says so.
+              await call('cw_revive', { m: matchId });
+              await load().catch(() => {});
             }}
             onDecline={async () => {
               await call('cw_decline', { m: matchId }).catch(() => {});
