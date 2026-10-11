@@ -223,3 +223,13 @@ test('daily date guard: no daily before the latest one, none while the clock rea
   assert.equal(dailyOpen(last, 11, 4_000_000), false); // clock went backwards
   assert.equal(dailyOpen(last, 11, 5_000_001), true); // the next day
 });
+
+test('endless (NM30): a word that already paid EXP pays nothing again', () => {
+  let r = startSolo('endless', 'classic', ['w1', 'w2'], null, 0, ['w1']);
+  r = stepSolo(r, { type: 'GUESS', word: 'SEPSIS', answer: 'SEPSIS', now: 1 });
+  assert.equal(r.results[0].exp, 0);
+  r = stepSolo(r, { type: 'NEXT', now: 2 });
+  r = stepSolo(r, { type: 'GUESS', word: 'ANEMIA', answer: 'ANEMIA', now: 3 });
+  assert.ok(r.results[1].exp > 0);
+  assert.deepEqual(r.paid, ['w1', 'w2']);
+});

@@ -1,5 +1,6 @@
 // The Riddler Offline (pass and play), RD5, RD6, RD12, TMG-RD:
-// everyone plays the same picture in turn behind the hand-off; order shuffled once per match (or teams alternate).
+// everyone plays the same picture in turn behind the hand-off; order shuffled once per match (or teams alternate),
+// and the first player moves one seat with each new picture so everyone takes turns going last (RD19).
 // Unlimited guesses with a 5 s lock after each wrong one; a turn ends on a right pick or time out.
 // Per picture: fastest solver 100, then 80, 65..., plus a time bonus up to 50; time out = 0. No hint, no EXP.
 import type { Row } from '../engine/standings';
@@ -51,7 +52,9 @@ export function startOffline(order: number[], photos: string[], turnMs: number):
   };
 }
 
-export const currentSeat = (r: OfflineRun) => r.order[r.turn];
+/** The seat playing turn `t` of the current picture: the lap starts one seat later on each picture (RD19). */
+export const seatAt = (r: OfflineRun, t: number) => r.order[(t + r.index) % r.order.length];
+export const currentSeat = (r: OfflineRun) => seatAt(r, r.turn);
 export const currentPhoto = (r: OfflineRun) => r.photos[Math.min(r.index, r.photos.length - 1)];
 export const turnElapsed = (r: OfflineRun, now: number) => Math.min(r.turnMs, r.elapsedMs + (r.runningSince == null ? 0 : Math.max(0, now - r.runningSince)));
 export const turnLeft = (r: OfflineRun, now: number) => r.turnMs - turnElapsed(r, now);
@@ -61,7 +64,7 @@ export const lockLeft = (r: OfflineRun, now: number) => Math.max(0, r.lockUntil 
 /** First seat at or after `from` that is still playing, or order.length. */
 function nextTurn(r: OfflineRun, from: number) {
   let t = from;
-  while (t < r.order.length && r.removed.includes(r.order[t])) t++;
+  while (t < r.order.length && r.removed.includes(seatAt(r, t))) t++;
   return t;
 }
 
@@ -111,7 +114,8 @@ export function stepOffline(r: OfflineRun, e: OfflineEvent): OfflineRun {
     case 'NEXT': {
       if (r.phase !== 'photoOver') return r;
       if (r.index + 1 >= r.photos.length) return { ...r, phase: 'done' };
-      return { ...r, index: r.index + 1, turn: nextTurn(r, 0), turns: [], phase: 'handoff' };
+      const next = { ...r, index: r.index + 1, turns: [], phase: 'handoff' as const };
+      return { ...next, turn: nextTurn(next, 0) };
     }
     case 'REMOVE': {
       // Rule 17: a removed player's turns are skipped; at least 2 stay. A turn they were playing is dropped.

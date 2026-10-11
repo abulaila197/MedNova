@@ -1,5 +1,5 @@
 // Nova Medicordle Solo: a daily word or an endless queue (NM5-NM7), 6 tries, free definition on the last try,
-// letter hints in Custom only (NM3, NM23), EXP by guesses used (NM22). The clock is for stats; it pauses and hides (rule 4).
+// letter hints in Custom only (NM3, NM23), EXP by guesses used (NM22); in Endless each word pays EXP once for life (NM30). The clock is for stats; it pauses and hides (rule 4).
 import { MAX_ROWS, soloExp, type Style } from './core';
 
 export type WordResult = {
@@ -32,6 +32,8 @@ export type SoloRun = {
   score: number;
   /** Bumps on each played guess so the newest row plays its reveal. */
   rowSeq: number;
+  /** Endless: words that already paid EXP, ever (NM30). Older saves have none. */
+  paid?: string[];
 };
 
 export type SoloEvent =
@@ -42,10 +44,10 @@ export type SoloEvent =
   | { type: 'NEXT'; now: number; more?: string[] }
   | { type: 'FINISH' };
 
-export function startSolo(kind: SoloRun['kind'], style: Style, wordIds: string[], day: number | null, now: number): SoloRun {
+export function startSolo(kind: SoloRun['kind'], style: Style, wordIds: string[], day: number | null, now: number, paid: string[] = []): SoloRun {
   return {
     kind, style, day, wordIds, index: 0, guesses: [], revealed: [], hints: 0, phase: 'playing', before: null,
-    elapsedMs: 0, runningSince: now, results: [], score: 0, rowSeq: 0,
+    elapsedMs: 0, runningSince: now, results: [], score: 0, rowSeq: 0, paid,
   };
 }
 
@@ -68,11 +70,14 @@ export function stepSolo(r: SoloRun, e: SoloEvent): SoloRun {
       const solved = e.word === e.answer;
       if (!solved && guesses.length < MAX_ROWS) return { ...r, guesses, rowSeq: r.rowSeq + 1 };
       const timeMs = soloElapsed(r, e.now);
-      const exp = soloExp(solved ? guesses.length : null, r.kind === 'daily');
-      const res: WordResult = { wordId: r.wordIds[r.index], solved, guesses, timeMs, hints: r.hints, exp };
+      const wordId = r.wordIds[r.index];
+      const paidBefore = r.kind === 'endless' && (r.paid ?? []).includes(wordId);
+      const exp = paidBefore ? 0 : soloExp(solved ? guesses.length : null, r.kind === 'daily');
+      const res: WordResult = { wordId, solved, guesses, timeMs, hints: r.hints, exp };
       return {
         ...r, guesses, rowSeq: r.rowSeq + 1, phase: 'wordOver', elapsedMs: timeMs, runningSince: null,
         results: [...r.results, res], score: r.score + exp,
+        ...(r.kind === 'endless' && exp > 0 ? { paid: [...(r.paid ?? []), wordId] } : null),
       };
     }
     case 'HINT_GRANTED':

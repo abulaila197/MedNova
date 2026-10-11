@@ -367,3 +367,21 @@ test('win: last empire standing, or after stage 6 most lands then troops', () =>
   assert.equal(h.m.stage, BALANCE.MAX_STAGES);
   assert.equal(h.m.winner, standings(h.m)[0].id);
 });
+
+test('versus payout (CQ22): nobody right means no payout, whatever the seat', () => {
+  const g = toVersus(2, 'rush');
+  const base = Object.fromEntries(g.m.order.map((id) => [id, g.m.players[id].reserve]));
+  g.go({ type: 'timeout' });
+  assert.equal(g.m.phase, 'gap_cards');
+  assert.deepEqual(g.m.lastVersus!.points, {});
+  for (const id of g.m.order) assert.equal(g.m.players[id].reserve, base[id]);
+});
+
+test('versus payout (CQ22): only players with a right answer are paid; 2nd with nothing gets nothing', () => {
+  const g = toVersus(2, 'rush');
+  const v = g.m.versus!;
+  const answers = v.style === 'rush' ? v.q.answers : [];
+  g.go({ type: 'rush', player: 'p2', text: answers[0].label, ms: 1000 });
+  g.go({ type: 'timeout' });
+  assert.deepEqual(g.m.lastVersus!.points, { p2: 5 });
+});

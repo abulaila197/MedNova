@@ -23,6 +23,7 @@ import { showDefinition, snapshotSolo, startSolo, stepSolo, type SoloEvent, type
 const streakKey = (style: Style) => `medicordle:streak:${style}`;
 const dailyKey = (style: Style, day: number) => `medicordle:daily:${style}:${day}`;
 const lastKey = (style: Style) => `medicordle:daily:last:${style}`;
+const PAID_KEY = 'medicordle:endless:paid'; // NM30: Endless words that already paid EXP
 const STYLE_NAME: Record<Style, string> = { classic: 'Classic', custom: 'Custom' };
 
 /**
@@ -78,7 +79,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
       }
       if (!r) {
         const pool = poolFor(style).map((w) => w.id);
-        r = startSolo('endless', style, await engine.picker.pick(play.game, pool, pool.length), null, Date.now());
+        r = startSolo('endless', style, await engine.picker.pick(play.game, pool, pool.length), null, Date.now(), (await engine.kv.get<string[]>(PAID_KEY)) ?? []);
       }
       if (live) {
         runRef.current = r;
@@ -108,6 +109,9 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
         const r = next.results[next.results.length - 1];
         const w = wordById.get(r.wordId)!;
         engine.picker.markSeen(play.game, r.wordId);
+        if (next.kind === 'endless' && r.exp > 0) {
+          engine.kv.get<string[]>(PAID_KEY).then((old) => engine.kv.set(PAID_KEY, [...new Set([...(old ?? []), r.wordId])]));
+        }
         recordItem(play, {
           seat: 0,
           itemId: r.wordId,
@@ -267,7 +271,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
         r ? (
           <DoneCard
             line={r.solved ? `Solved on guess ${r.guesses.length}` : `The word was ${w.word}`}
-            sub={r.exp ? `+${r.exp} EXP${run.kind === 'daily' ? ' · daily words earn double' : ''}` : 'No EXP this time.'}
+            sub={r.exp ? `+${r.exp} EXP${run.kind === 'daily' ? ' · daily words earn double' : ''}` : r.solved && run.kind === 'endless' ? 'No EXP: this word already paid before.' : 'No EXP this time.'}
             primary={
               run.kind === 'daily'
                 ? { label: 'See results', onPress: () => dispatch({ type: 'NEXT', now: Date.now() }) }

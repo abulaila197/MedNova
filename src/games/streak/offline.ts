@@ -1,13 +1,12 @@
 // The Streak Master Offline (pass and play, SM5, SM13): each player plays their own timed round, one
-// after another, on their own shuffle of one shared pool (watching doesn't help). No helpers, no EXP;
+// after another, on their own questions: no one plays a question another player already played (watching doesn't help). No helpers, no EXP;
 // the phone owner's misses still go to Learn. Turn order is shuffled once, or teams alternate (TM5).
 import { startRound, stepRound, snapshotRound, type PlayerRound, type Rng, type Round, type RoundEvent } from './core';
 import type { Row } from '../engine/standings';
 import type { Play } from '../engine/types';
 import { event, finishRecap, lastIndexOf, leadLine, sides, type RecapLine } from '../shell/recap';
-import { shuffle } from '../engine/random';
 
-export const POOL_SIZE = 120; // as coded
+export const POOL_SIZE = 120; // questions per player (as coded)
 export const COUNTDOWN_MS = 3000; // "Get ready" before each round (as coded)
 
 export type OfflinePhase = 'handoff' | 'countdown' | 'playing' | 'paused' | 'turnOver' | 'done';
@@ -17,7 +16,8 @@ export type Finished = PlayerRound & { answers: Round['answers'] };
 export type OfflineRun = {
   order: number[];
   turn: number;
-  pool: string[];
+  /** Each turn's own questions, by turn index (SM5: no question is shared between players). */
+  pools: string[][];
   lengthSec: number;
   round: Round | null;
   countdownUntil: number | null;
@@ -36,8 +36,14 @@ export type OfflineEvent =
   | { type: 'NEXT' }
   | { type: 'REMOVE'; seat: number };
 
+/** Deals `pool` into one disjoint slice per turn, round-robin, so a mixed pool stays mixed in every slice. */
+export function dealPools(pool: string[], players: number): string[][] {
+  const size = Math.floor(pool.length / Math.max(1, players));
+  return Array.from({ length: players }, (_, i) => Array.from({ length: size }, (_, k) => pool[i + k * players]));
+}
+
 export function startOffline(order: number[], pool: string[], lengthSec: number): OfflineRun {
-  return { order, turn: 0, pool, lengthSec, round: null, countdownUntil: null, phase: 'handoff', before: null, removed: [], results: [] };
+  return { order, turn: 0, pools: dealPools(pool, order.length), lengthSec, round: null, countdownUntil: null, phase: 'handoff', before: null, removed: [], results: [] };
 }
 
 export const currentSeat = (r: OfflineRun) => r.order[r.turn];
@@ -64,8 +70,7 @@ export function stepOffline(r: OfflineRun, e: OfflineEvent, answerOf: (id: strin
       return r.phase === 'handoff' ? { ...r, phase: 'countdown', countdownUntil: e.now + COUNTDOWN_MS } : r;
     case 'TICK': {
       if (r.phase === 'countdown' && r.countdownUntil != null && e.now >= r.countdownUntil) {
-        // Own shuffle of the shared pool for this player.
-        return { ...r, phase: 'playing', countdownUntil: null, round: startRound(shuffle(r.pool, rng), r.lengthSec, e.now, rng) };
+        return { ...r, phase: 'playing', countdownUntil: null, round: startRound(r.pools[r.turn], r.lengthSec, e.now, rng) };
       }
       if (r.phase !== 'playing' || !r.round) return r;
       const round = stepRound(r.round, e, answerOf, rng);

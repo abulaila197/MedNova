@@ -18,7 +18,7 @@ import { clock } from '@/games/engine/clock';
 import { shuffle } from '../engine/random';
 import { RIDDLES, answerLabel, feedsLearn, riddleById, riddleName } from './data';
 import {
-  currentPhoto, currentSeat, lockLeft, offlineRecap, offlineRows, riddlerTieBreak, snapshotOffline, startOffline, stepOffline, turnLeft,
+  currentPhoto, currentSeat, lockLeft, seatAt, offlineRecap, offlineRows, riddlerTieBreak, snapshotOffline, startOffline, stepOffline, turnLeft,
   type OfflineEvent, type OfflineRun,
 } from './offline';
 import { RiddleBoard } from './RiddleBoard';
@@ -111,7 +111,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   const rows = offlineRows(run, names);
   const board = rows.map((x) => ({ seat: x.seat, name: x.name, score: x.score, color: seatOf.get(x.seat)?.color })).sort((a, b) => b.score - a.score);
   const r = riddleById.get(currentPhoto(run))!;
-  const turnNo = run.order.slice(0, run.turn + 1).filter((x) => !run.removed.includes(x)).length;
+  const turnNo = run.order.slice(0, run.turn + 1).filter((_, t) => !run.removed.includes(seatAt(run, t))).length;
   const players = run.order.length - run.removed.length;
   const playing = run.phase === 'playing' || (paused && run.before === 'playing');
 

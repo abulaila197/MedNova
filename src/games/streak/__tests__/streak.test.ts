@@ -4,7 +4,7 @@ import { test } from 'node:test';
 
 import { teamLap, teamStandings } from '../../shell/teams';
 import { expForRight, FEEDBACK_MS, mixQueue, startRound, stepRound, timeLeft, type Round } from '../core';
-import { currentSeat, offlineRows, startOffline, stepOffline, COUNTDOWN_MS } from '../offline';
+import { currentSeat, dealPools, offlineRows, startOffline, stepOffline, COUNTDOWN_MS } from '../offline';
 
 // Every question's right choice is index 0; the display order doesn't matter to the reducer.
 const ans = () => 0;
@@ -111,6 +111,17 @@ test('offline (SM5): each player plays their own round in turn, then standings',
   assert.equal(r.phase, 'done');
   const rows = offlineRows(r, { 0: 'You', 1: 'Sara' });
   assert.deepEqual(rows.map((x) => [x.seat, x.score]), [[1, 1], [0, 0]]);
+});
+
+test('offline (SM5): each player gets their own questions, none shared', () => {
+  const pools = dealPools(seq(30).map((x) => `q${x}`), 4);
+  assert.deepEqual(pools.map((p) => p.length), [7, 7, 7, 7]);
+  assert.equal(new Set(pools.flat()).size, 28);
+  let r = startOffline([2, 0], seq(10), 60);
+  r = stepOffline(r, { type: 'READY', now: 0 }, ans, fixed);
+  r = stepOffline(r, { type: 'TICK', now: COUNTDOWN_MS }, ans, fixed);
+  assert.deepEqual(r.round?.queue, r.pools[0]);
+  assert.ok(r.pools[0].every((id) => !r.pools[1].includes(id)));
 });
 
 test('offline: removing the player on turn skips to the next; at least 2 stay', () => {

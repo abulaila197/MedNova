@@ -36,20 +36,21 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   const seatOf = useMemo(() => new Map(play.seats.map((x) => [x.seat, x])), [play.seats]);
   const names = useMemo(() => Object.fromEntries(play.seats.map((x) => [x.seat, x.name])), [play.seats]);
 
-  // Start: one shared pool (as coded), turn order shuffled once, or teams alternate (TM5).
+  // Start: SM5 own questions per player, dealt from one pick; turn order shuffled once, or teams alternate (TM5).
   useEffect(() => {
     let live = true;
     (async () => {
       let r = play.resume as OfflineRun | null;
-      if (r && ![...r.pool, ...(r.round?.queue ?? [])].every((id) => questionById.has(id))) r = null; // a question left the bank since: start fresh
+      if (r && !(r.pools ?? [[' ']]).flat().every((id) => questionById.has(id))) r = null; // saved before own pools, or a question left the bank since: start fresh
       if (!r) {
         const seats = play.seats.filter((x) => !x.removed);
         const teams = teamsOf(play);
         const order = teams ? teamLap(seats, teams) : shuffle(seats.map((x) => x.seat));
+        const want = POOL_SIZE * order.length;
         const pool =
           style === 'mixed'
-            ? mixQueue(await engine.picker.pick(play.game, idsOf('clinical'), POOL_SIZE / 2), await engine.picker.pick(play.game, idsOf('basic'), POOL_SIZE / 2))
-            : await engine.picker.pick(play.game, poolFor(style), POOL_SIZE);
+            ? mixQueue(await engine.picker.pick(play.game, idsOf('clinical'), want / 2), await engine.picker.pick(play.game, idsOf('basic'), want / 2))
+            : await engine.picker.pick(play.game, poolFor(style), want);
         r = startOffline(order, pool, lengthSec);
         engine.recorder.bookmark(play.id, r, 0);
       }
@@ -118,7 +119,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   const board = rows.map((x) => ({ seat: x.seat, name: x.name, score: x.score, color: seatOf.get(x.seat)?.color })).sort((a, b) => b.score - a.score);
   const left = run.order.slice(run.turn + 1).filter((x) => !run.removed.includes(x));
   // Before a round starts there is no question yet: show the pool's first one under the curtain (never readable).
-  const round = run.round ?? startRound(run.pool, run.lengthSec, now);
+  const round = run.round ?? startRound(run.pools[Math.min(run.turn, run.pools.length - 1)], run.lengthSec, now);
   const q = questionById.get(round.queue[Math.min(round.index, round.queue.length - 1)])!;
   const turnOver = run.phase === 'turnOver' || (paused && run.before === 'turnOver');
   const turnNo = run.order.slice(0, run.turn + 1).filter((x) => !run.removed.includes(x)).length;

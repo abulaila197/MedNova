@@ -172,3 +172,12 @@ test('§7.3: Chain of Trust answers count for EXP (a solo round) but never feed 
   assert.equal(R.countsAsSolo(R.ROUNDS.hands.mode), false);
   assert.equal(R.feedsLearn(R.ROUNDS.hands.mode), false);
 });
+
+test('awards: ties go to the faster player, not the seat; Best Doctor needs half the most answers', () => {
+  const g = createGame(setup(3));
+  const [a, b, c] = g.players;
+  a.answered = 10; a.correct = [8, 0]; a.totalMs = 50_000;
+  b.answered = 10; b.correct = [8, 0]; b.totalMs = 40_000;
+  c.answered = 2; c.correct = [2, 0]; c.totalMs = 1_000; // 100% on too few answers
+  assert.equal(awards(g)['best-doctor'], b.id);
+});

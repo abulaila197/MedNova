@@ -518,7 +518,7 @@ function nextStanding(m: Match) {
   v.answers = {};
 }
 
-/** Ranks the versus round (best first). Ties keep seat order. */
+/** Ranks the versus round (best first). Ties go to the faster player (CQ22); only identical results keep seat order. */
 export function versusRanking(m: Match): string[] {
   const v = m.versus!;
   const ids = active(m).map((x) => x.id);
@@ -534,6 +534,7 @@ export function versusRanking(m: Match): string[] {
       // Closest guess wins each item (ties share it); then the smaller total miss, relative to the answer.
       const wins: Record<string, number> = {};
       const miss: Record<string, number> = {};
+      const ms = (id: string) => (v.guesses[id] ?? []).reduce((a, g) => a + (g?.ms ?? 0), 0);
       v.items.forEach((q, i) => {
         const dist = (id: string) => {
           const g = v.guesses[id]?.[i];
@@ -545,7 +546,7 @@ export function versusRanking(m: Match): string[] {
           miss[id] = (miss[id] ?? 0) + Math.min(dist(id), 1e9);
         }
       });
-      return by((id) => [wins[id] ?? 0, -(miss[id] ?? 0)]);
+      return by((id) => [wins[id] ?? 0, -(miss[id] ?? 0), -ms(id)]);
     }
     case 'rush':
       return by((id) => {
@@ -556,6 +557,27 @@ export function versusRanking(m: Match): string[] {
       return by((id) => [v.hearts[id] ?? 0, v.outAt[id] ?? 99, -(v.ms[id] ?? 0)]);
     case 'clue':
       return by((id) => [clueScore(v, id), -(v.ms[id] ?? 0)]);
+  }
+}
+
+/** CQ22: whether a player got anything right this versus round; a player who didn't is never paid. */
+export function versusScored(v: Versus, id: string): boolean {
+  switch (v.style) {
+    case 'closest':
+      return v.items.some((q, i) => {
+        const dist = (x: string) => {
+          const g = v.guesses[x]?.[i];
+          return g ? Math.abs(g.value - q.answer) : Infinity;
+        };
+        const best = Math.min(...Object.keys(v.guesses).map(dist));
+        return best !== Infinity && dist(id) === best;
+      });
+    case 'rush':
+      return (v.found[id] ?? []).length > 0;
+    case 'standing':
+      return v.ms[id] !== undefined; // set on each right answer
+    case 'clue':
+      return clueScore(v, id) > 0;
   }
 }
 
@@ -578,8 +600,9 @@ function finishVersus(m: Match) {
       if (best !== Infinity) for (const x of active(m)) if (dist(x.id) === best) x.stats.right++;
     });
   const points: Record<string, number> = {};
+  const paid = ranking.filter((id) => versusScored(m.versus!, id)); // CQ22: no payout for nothing right
   BALANCE.VERSUS_PAYOUT.forEach((pts, i) => {
-    const id = ranking[i];
+    const id = paid[i];
     if (!id) return;
     points[id] = pts;
     m.players[id].reserve += pts * BALANCE.TROOPS_PER_POINT;

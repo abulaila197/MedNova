@@ -24,13 +24,14 @@ const betrayals = (g: Game, id: PlayerId) => g.missions.filter((m) => m.holder =
 const accusedRightly = (g: Game, id: PlayerId) => g.log.some((l) => l.kind === 'inquisition' && l.to === id && l.text === 'right');
 const accuracy = (p: Player) => (p.answered ? p.correct.reduce((s, x) => s + x, 0) / p.answered : 0);
 
-function best<T>(items: T[], score: (t: T) => number | null, lowest = false): T | null {
-  let out: T | null = null, top = 0;
-  for (const t of items) {
-    const s = score(t);
+/** The player with the best score; ties go to the faster total answer time (§11, rule 13), never the seat. */
+function best(players: Player[], score: (p: Player) => number | null, lowest = false): Player | null {
+  let out: Player | null = null, top = 0;
+  for (const p of players) {
+    const s = score(p);
     if (s === null) continue;
-    if (out === null || (lowest ? s < top : s > top)) {
-      out = t;
+    if (out === null || (lowest ? s < top : s > top) || (s === top && p.totalMs < out.totalMs)) {
+      out = p;
       top = s;
     }
   }
@@ -60,7 +61,9 @@ export function awards(g: Game): Partial<Record<AwardId, PlayerId>> {
     return avg(good) - avg(bad);
   });
   if (reader) out['best-reader-of-the-room'] = reader.id;
-  const doctor = best(ps, (p) => (p.answered ? accuracy(p) : null));
+  // Best Doctor needs at least half as many answers as the most anyone gave, so an early death at 5/5 can't win it.
+  const most = Math.max(0, ...ps.map((p) => p.answered));
+  const doctor = best(ps, (p) => (p.answered && p.answered * 2 >= most ? accuracy(p) : null));
   if (doctor) out['best-doctor'] = doctor.id;
   const ghost = best(ps, (p) => {
     const n = p.whispers.filter((w) => w.believed).length;

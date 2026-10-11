@@ -84,7 +84,8 @@ test('offline: same picture in turn, 5 s lock after a wrong guess, hand-off line
   r = stepOffline(r, { type: 'TICK', now: 71_000 });
   assert.equal(r.phase, 'photoOver');
   r = stepOffline(r, { type: 'NEXT' });
-  assert.deepEqual([r.phase, r.index, currentSeat(r)], ['handoff', 1, 1]);
+  // RD19: the next picture starts one seat later, so the player who went last goes first.
+  assert.deepEqual([r.phase, r.index, currentSeat(r)], ['handoff', 1, 0]);
   const rows = offlineRows(r, { 0: 'Me', 1: 'Omar' });
   assert.deepEqual(rows.map((x) => [x.seat, x.score]), [[1, 144], [0, 0]]);
 });
@@ -109,4 +110,21 @@ test('a retry after a miss in the same session pays at most 1 star', () => {
   assert.equal(fast.stars, 1);
   assert.equal(levelExp(fast.stars, 0), 4);
   assert.equal(guess(startLevel('r-001', 0), 'r-001', 5_000).stars, 3);
+});
+
+test('offline (RD19): the first player moves one seat each picture', () => {
+  let r = startOffline([2, 0, 1], ['r-001', 'r-002', 'r-003'], 60_000);
+  const lap = () => {
+    const seats: number[] = [];
+    while (r.phase === 'handoff') {
+      seats.push(currentSeat(r));
+      r = stepOffline(r, { type: 'READY', now: 0 });
+      r = stepOffline(r, { type: 'TICK', now: 61_000 });
+    }
+    r = stepOffline(r, { type: 'NEXT' });
+    return seats;
+  };
+  assert.deepEqual(lap(), [2, 0, 1]);
+  assert.deepEqual(lap(), [0, 1, 2]);
+  assert.deepEqual(lap(), [1, 2, 0]);
 });
