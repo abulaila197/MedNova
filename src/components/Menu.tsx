@@ -29,6 +29,8 @@ export function Menu() {
   const setMode = useApp((a) => a.setMode);
   const ins = useSafeAreaInsets();
   const profile = useAccount((a) => a.profile);
+  const isAdmin = useAccount((a) => a.isAdmin);
+  const items = isAdmin ? [...ITEMS, ['Admin', '/admin'] as const] : ITEMS;
   const [outErr, setOutErr] = useState(false);
   const out = () => {
     setOutErr(false);
@@ -68,7 +70,7 @@ export function Menu() {
         </View>
       </Pressable>
       <View style={s.items}>
-        {ITEMS.map(([label, to], i) => {
+        {items.map(([label, to], i) => {
           const on = path === to;
           return (
             <Pressable key={to} onPress={() => go(to)} style={[s.r, { borderBottomColor: t.panelLine }, i === 0 && { borderTopWidth: 1, borderTopColor: t.panelLine }]}>

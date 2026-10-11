@@ -16,14 +16,18 @@ type AccountState = {
   email: string | null;
   /** The saved session arrived only after the first page had opened as a guest (a slow, offline launch). */
   restored: boolean;
+  /** Yazan's account (AD1): shows the hidden Admin page. The server checks again on every admin call. */
+  isAdmin: boolean;
 };
 
 /** The signed-in player's profile (AU1). Guests have none. */
-export const useAccount = create<AccountState>(() => ({ profile: null, email: null, restored: false }));
+export const useAccount = create<AccountState>(() => ({ profile: null, email: null, restored: false, isAdmin: false }));
 
 async function loadProfile(userId: string) {
   const { data } = await supabase.from('profiles').select('id,username,display_name,avatar,friend_code').eq('id', userId).maybeSingle();
   useAccount.setState({ profile: (data as Profile | null) ?? null });
+  const admin = await supabase.rpc('is_admin');
+  useAccount.setState({ isAdmin: admin.data === true });
 }
 
 function apply(id: string | null, email: string | null) {
@@ -32,7 +36,7 @@ function apply(id: string | null, email: string | null) {
     return;
   }
   useSession.getState().setUser(id);
-  useAccount.setState({ email, profile: id ? useAccount.getState().profile : null, restored: false });
+  useAccount.setState({ email, profile: id ? useAccount.getState().profile : null, restored: false, isAdmin: false });
   if (id) {
     void loadProfile(id);
     syncAccount(id).catch(() => {}); // retried on the next sign-in, finish or app start

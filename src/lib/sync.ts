@@ -64,25 +64,27 @@ async function run(userId: string) {
     await engine.recorder.markSynced(plays.map((p) => p.id));
   }
 
+  // The server checks each wallet row (EC1) and refuses any that break the rules; those leave the phone.
   const ledger = await engine.wallet.unsynced();
   if (ledger.length) {
-    const { error } = await supabase.from('wallet_ledger').upsert(
-      ledger.map((e) => ({ id: e.id, user_id: userId, kind: e.kind, exp: e.exp, tokens: e.tokens, reason: e.reason, play_id: e.playId ?? null, at: iso(e.at) })),
-      { onConflict: 'id', ignoreDuplicates: true },
-    );
+    const { data, error } = await supabase.rpc('wallet_sync', {
+      entries: ledger.map((e) => ({ id: e.id, kind: e.kind, exp: e.exp, tokens: e.tokens, reason: e.reason, play_id: e.playId ?? null, at: iso(e.at) })),
+    });
     if (error) throw error;
-    await engine.wallet.markSynced(ledger.map((e) => e.id));
+    const refused: string[] = (data as { refused?: string[] } | null)?.refused ?? [];
+    await engine.wallet.drop(refused);
+    await engine.wallet.markSynced(ledger.map((e) => e.id).filter((id) => !refused.includes(id)));
   }
 
   // Bring down what other phones saved.
   const [w, p, it] = await Promise.all([
-    supabase.from('wallet_ledger').select('id,kind,exp,tokens,reason,play_id,at').order('at').limit(5000),
+    supabase.from('wallet_ledger').select('id,kind,exp,tokens,reason,play_id,note,at').order('at').limit(5000),
     supabase.from('plays').select('*').eq('status', 'finished').order('started_at', { ascending: false }).limit(1000),
     supabase.from('play_items').select('*').order('at', { ascending: false }).limit(5000),
   ]);
   if (w.data)
     await engine.wallet.mergeRemote(
-      w.data.map((e): LedgerEntry => ({ id: e.id, kind: e.kind, exp: e.exp, tokens: e.tokens, reason: e.reason, playId: e.play_id ?? undefined, at: ms(e.at)!, synced: true })),
+      w.data.map((e): LedgerEntry => ({ id: e.id, kind: e.kind, exp: e.exp, tokens: e.tokens, reason: e.reason, playId: e.play_id ?? undefined, note: e.note ?? undefined, at: ms(e.at)!, synced: true })),
     );
   if (p.data && it.data)
     await engine.recorder.mergeRemote({

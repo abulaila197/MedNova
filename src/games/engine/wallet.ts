@@ -1,17 +1,19 @@
-// Shared EXP wallet (rules 6, 18, LV1): EXP raises the player's level and each level up gives
-// 1 token, earned on the phone at once, synced later, with a per-play sanity cap.
-// Token refunds when a paid hint could not be shown.
-import { levelOf } from './levels';
+// Shared EXP wallet (rules 6, 18, LV1, LV5): EXP raises the player's level and each level up gives
+// 1 token (every 5th level 3 more), earned on the phone at once, synced later, with a per-play sanity cap.
+// Token refunds when a paid hint could not be shown. The server checks every row (EC1) and adds admin
+// grants; tokens can dip below 0 when two phones spent the same tokens offline, paid back by later levels (OW1).
+import { levelOf, levelTokens } from './levels';
 import { serial, type KV } from './storage';
 import { newId } from './ids';
 
 export type LedgerEntry = {
   id: string;
-  kind: 'exp' | 'spend' | 'refund' | 'convert'; // 'convert' = old 200-EXP tokens, no longer written or counted
+  kind: 'exp' | 'spend' | 'refund' | 'grant' | 'convert'; // 'grant' = admin tokens (AD1); 'convert' = old 200-EXP tokens, not counted
   exp: number;
   tokens: number;
   reason: string;
   playId?: string;
+  note?: string;
   at: number;
   synced: boolean;
 };
@@ -29,15 +31,15 @@ export function createWallet(kv: KV) {
   };
   /**
    * Total EXP ever earned (spending never lowers it), the level it gives, and tokens on hand.
-   * Level tokens are worked out from the level (1 per level up), not stored, so two phones merging
+   * Level tokens are worked out from the level (LV1, LV5), not stored, so two phones merging
    * their ledgers can never pay the same level twice.
    */
   const balance = async () => {
     const all = await ledger();
     const exp = all.reduce((s, e) => s + (e.kind === 'exp' ? e.exp : 0), 0);
     const lv = levelOf(exp);
-    const used = all.reduce((s, e) => s + (e.kind === 'spend' || e.kind === 'refund' ? e.tokens : 0), 0);
-    return { exp, tokens: lv.level - 1 + used, ...lv };
+    const used = all.reduce((s, e) => s + (e.kind === 'spend' || e.kind === 'refund' || e.kind === 'grant' ? e.tokens : 0), 0);
+    return { exp, tokens: levelTokens(lv.level) + used, ...lv };
   };
 
   const run = serial();
@@ -45,16 +47,16 @@ export function createWallet(kv: KV) {
     balance,
     ledger,
 
-    /** Adds EXP for a finished play, clamped to the game's per-play cap, then pays 1 token for each new level (LV1). */
+    /** Adds EXP for a finished play, clamped to the game's per-play cap; the new levels pay their tokens (LV1, LV5). */
     earn(playId: string, exp: number, cap: number) {
       return run(async () => {
         const all = await ledger();
         const from = (await balance()).level;
-        if (all.some((e) => e.kind === 'exp' && e.playId === playId)) return { amount: 0, level: from, levelsGained: 0 }; // once per play
+        if (all.some((e) => e.kind === 'exp' && e.playId === playId)) return { amount: 0, level: from, levelsGained: 0, tokensGained: 0 }; // once per play
         const amount = Math.max(0, Math.min(Math.round(exp), cap));
         if (amount > 0) await add({ kind: 'exp', exp: amount, tokens: 0, reason: 'play', playId });
         const { level } = await balance();
-        return { amount, level, levelsGained: level - from };
+        return { amount, level, levelsGained: level - from, tokensGained: levelTokens(level) - levelTokens(from) };
       });
     },
 
@@ -75,6 +77,15 @@ export function createWallet(kv: KV) {
       return run(async () => {
         const set = new Set(ids);
         await kv.set(KEY, (await ledger()).map((e) => (set.has(e.id) ? { ...e, synced: true } : e)));
+      });
+    },
+
+    /** Removes rows the server refused (EC1), so they stop counting on this phone. */
+    drop(ids: string[]) {
+      return run(async () => {
+        if (!ids.length) return;
+        const set = new Set(ids);
+        await kv.set(KEY, (await ledger()).filter((e) => !set.has(e.id)));
       });
     },
 

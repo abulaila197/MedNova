@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import { memoryKV } from '../storage';
 import { createRecorder } from '../recorder';
 import { createWallet } from '../wallet';
-import { levelOf, stepTo } from '../levels';
+import { levelOf, levelTokens, stepTo } from '../levels';
 import { createGate, GUEST_TRIALS } from '../gate';
 import { createPicker } from '../picker';
 import { rank } from '../standings';
@@ -61,8 +61,11 @@ test('recorder: removeSeat keeps the row, claimGuestPlays moves guest plays', as
   assert.equal(await r.claimGuestPlays('u1'), 0);
 });
 
-test('levels: capped climb (LV2)', () => {
-  assert.deepEqual([2, 3, 4, 13, 14, 30].map(stepTo), [60, 80, 100, 280, 300, 300]);
+test('levels: climb (LV2), then 6% more per level after 10 (LV4); tokens with the 5th-level prize (LV5)', () => {
+  assert.deepEqual([2, 3, 4, 10, 11, 12].map(stepTo), [60, 80, 100, 220, 233, 247]);
+  assert.equal(levelOf(4334).level, 20);
+  assert.equal(levelOf(4333).level, 19);
+  assert.deepEqual([1, 2, 4, 5, 10, 11].map(levelTokens), [0, 1, 3, 7, 15, 16]);
   assert.deepEqual(levelOf(0), { level: 1, into: 0, need: 60 });
   assert.deepEqual(levelOf(59), { level: 1, into: 59, need: 60 });
   assert.deepEqual(levelOf(60), { level: 2, into: 0, need: 80 });
@@ -70,18 +73,18 @@ test('levels: capped climb (LV2)', () => {
   assert.equal(levelOf(1259).level, 9);
 });
 
-test('wallet: earn once per play, cap, one token per level up (LV1)', async () => {
+test('wallet: earn once per play, cap, tokens per level up (LV1, LV5)', async () => {
   const w = createWallet(memoryKV());
-  assert.deepEqual(await w.earn('p1', 150, 100), { amount: 100, level: 2, levelsGained: 1 });
+  assert.deepEqual(await w.earn('p1', 150, 100), { amount: 100, level: 2, levelsGained: 1, tokensGained: 1 });
   assert.equal((await w.earn('p1', 150, 100)).amount, 0, 'second earn for same play ignored');
-  assert.deepEqual(await w.earn('p2', 130, 1000), { amount: 130, level: 3, levelsGained: 1 });
+  assert.deepEqual(await w.earn('p2', 130, 1000), { amount: 130, level: 3, levelsGained: 1, tokensGained: 1 });
   let b = await w.balance();
   assert.equal(b.exp, 230);
   assert.equal(b.tokens, 2);
   assert.equal(b.into, 230 - 140);
-  assert.deepEqual(await w.earn('p3', 1000, 1000), { amount: 1000, level: 9, levelsGained: 6 });
+  assert.deepEqual(await w.earn('p3', 1000, 1000), { amount: 1000, level: 9, levelsGained: 6, tokensGained: 9 }); // level 5 adds 3
   b = await w.balance();
-  assert.equal(b.tokens, 8);
+  assert.equal(b.tokens, 11);
   await w.spend(3, 'hint');
   assert.equal((await w.balance()).exp, 1230, 'spending never lowers EXP');
   assert.equal((await w.earn('p4', -50, 100)).amount, 0);
@@ -90,13 +93,28 @@ test('wallet: earn once per play, cap, one token per level up (LV1)', async () =
 test('wallet: spend needs tokens, refund once', async () => {
   const w = createWallet(memoryKV());
   assert.equal(await w.spend(1, 'hint'), null);
-  await w.earn('p1', 400, 1000); // level 5 = 4 tokens
+  await w.earn('p1', 400, 1000); // level 5 = 4 level tokens + the 3-token prize
   const rc = await w.spend(1, 'hint', 'p1');
   assert.ok(rc);
-  assert.equal((await w.balance()).tokens, 3);
+  assert.equal((await w.balance()).tokens, 6);
   assert.equal(await w.refund(rc!), true);
   assert.equal(await w.refund(rc!), false);
-  assert.equal((await w.balance()).tokens, 4);
+  assert.equal((await w.balance()).tokens, 7);
+});
+
+test('wallet: admin grants count, refused rows drop, merged overspend can go below 0 (EC1, AD1, OW1)', async () => {
+  const w = createWallet(memoryKV());
+  await w.earn('p1', 60, 100); // level 2 = 1 token
+  const rc = await w.spend(1, 'hint', 'p1');
+  await w.mergeRemote([
+    { id: 'g1', kind: 'grant', exp: 0, tokens: 5, reason: 'admin', note: 'thanks', at: 1, synced: true },
+    { id: 'w-other', kind: 'spend', exp: 0, tokens: -6, reason: 'hint', at: 2, synced: true },
+  ]);
+  assert.equal((await w.balance()).tokens, -1, 'owed back from later levels');
+  assert.equal(await w.spend(1, 'hint'), null, 'no spending while owing');
+  await w.drop([rc!]);
+  assert.equal((await w.balance()).tokens, 0);
+  assert.equal((await w.unsynced()).some((e) => e.id === rc), false);
 });
 
 test('gate: 3 trials per game shared by solo and offline, idempotent per play, signed-in never gated', async () => {
