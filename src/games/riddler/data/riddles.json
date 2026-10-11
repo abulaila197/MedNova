@@ -5,7 +5,7 @@
   "answer": "Forearm fracture",
   "aliases": [],
   "definition": "A break of the radius, ulna, or both, often after a fall on an outstretched hand, causing pain, swelling, and deformity between the elbow and wrist.",
-  "dossier": null,
+  "dossier": "forearm-fracture",
   "w": 294,
   "h": 407,
   "file": "r-001.jpg"
@@ -320,7 +320,7 @@
    "Vancomycin infusion reaction"
   ],
   "definition": "An infusion-related reaction to rapid vancomycin administration causing flushing and itching of the face, neck, and upper torso.",
-  "dossier": null,
+  "dossier": "red-man-syndrome",
   "w": 1027,
   "h": 1158,
   "file": "r-026.jpg"
@@ -751,7 +751,7 @@
    "Supracondylar humerus fracture"
   ],
   "definition": "A fracture of the distal humerus just above the elbow, common in children after a fall on an outstretched arm, with risk to the brachial artery and nerves.",
-  "dossier": null,
+  "dossier": "supracondylar-humerus-fracture",
   "w": 300,
   "h": 266,
   "file": "r-060.jpg"

@@ -4,7 +4,8 @@
 "label": "Abdominal aortic aneurysm",
 "aliases": [
 "AAA"
-]
+],
+"dossier": "abdominal-aortic-aneurysm"
 },
 {
 "id": "acalculous-cholecystitis",
@@ -77,7 +78,8 @@
 },
 {
 "id": "acute-cerebellar-hemorrhage",
-"label": "Acute cerebellar hemorrhage"
+"label": "Acute cerebellar hemorrhage",
+"dossier": "intracerebral-hemorrhage"
 },
 {
 "id": "acute-chest-syndrome",
@@ -221,7 +223,8 @@
 },
 {
 "id": "acute-mastoiditis",
-"label": "Acute mastoiditis"
+"label": "Acute mastoiditis",
+"dossier": "acute-mastoiditis"
 },
 {
 "id": "acute-myeloid-leukemia",
@@ -393,7 +396,8 @@
 },
 {
 "id": "alcoholic-hepatitis",
-"label": "Alcoholic hepatitis"
+"label": "Alcoholic hepatitis",
+"dossier": "alcoholic-hepatitis"
 },
 {
 "id": "alcoholic-ketoacidosis",
@@ -846,7 +850,8 @@
 },
 {
 "id": "breast-abscess",
-"label": "Breast abscess"
+"label": "Breast abscess",
+"dossier": "breast-abscess"
 },
 {
 "id": "bronchial-carcinoid-tumor",
@@ -924,7 +929,8 @@
 },
 {
 "id": "cellulitis",
-"label": "Cellulitis"
+"label": "Cellulitis",
+"dossier": "cellulitis"
 },
 {
 "id": "central-retinal-artery-occlusion",
@@ -1129,7 +1135,8 @@
 },
 {
 "id": "concussion",
-"label": "Concussion"
+"label": "Concussion",
+"dossier": "concussion"
 },
 {
 "id": "condylomata-acuminata",
@@ -1692,7 +1699,8 @@
 },
 {
 "id": "foreign-body-aspiration",
-"label": "Foreign body aspiration"
+"label": "Foreign body aspiration",
+"dossier": "foreign-body-aspiration"
 },
 {
 "id": "fournier-gangrene",
@@ -1978,7 +1986,8 @@
 "aliases": [
 "HSV encephalitis",
 "HSE"
-]
+],
+"dossier": "herpes-simplex-encephalitis"
 },
 {
 "id": "herpes-simplex-keratitis",
@@ -1992,11 +2001,13 @@
 "label": "Herpes zoster",
 "aliases": [
 "Shingles"
-]
+],
+"dossier": "herpes-zoster"
 },
 {
 "id": "herpes-zoster-ophthalmicus",
-"label": "Herpes zoster ophthalmicus"
+"label": "Herpes zoster ophthalmicus",
+"dossier": "herpes-zoster"
 },
 {
 "id": "herpetic-gingivostomatitis",
@@ -2041,7 +2052,8 @@
 },
 {
 "id": "hypertensive-emergency",
-"label": "Hypertensive emergency"
+"label": "Hypertensive emergency",
+"dossier": "hypertensive-emergency"
 },
 {
 "id": "hypertensive-retinopathy",
@@ -2061,7 +2073,8 @@
 },
 {
 "id": "hypoglycemia",
-"label": "Hypoglycemia"
+"label": "Hypoglycemia",
+"dossier": "hypoglycemia"
 },
 {
 "id": "hypokalemic-periodic-paralysis",
@@ -2201,7 +2214,8 @@
 "label": "Influenza",
 "aliases": [
 "Flu"
-]
+],
+"dossier": "influenza"
 },
 {
 "id": "insect-bite-reaction",
@@ -2463,7 +2477,8 @@
 "label": "Malignant otitis externa",
 "aliases": [
 "Necrotizing otitis externa"
-]
+],
+"dossier": "malignant-otitis-externa"
 },
 {
 "id": "malignant-pleural-mesothelioma",
@@ -2988,7 +3003,8 @@
 },
 {
 "id": "ovarian-torsion",
-"label": "Ovarian torsion"
+"label": "Ovarian torsion",
+"dossier": "ovarian-torsion"
 },
 {
 "id": "overfeeding",
@@ -3117,7 +3133,8 @@
 "label": "Peripartum cardiomyopathy",
 "aliases": [
 "PPCM"
-]
+],
+"dossier": "peripartum-cardiomyopathy"
 },
 {
 "id": "peripheral-arterial-disease",
@@ -3626,7 +3643,8 @@
 "label": "Ruptured abdominal aortic aneurysm",
 "aliases": [
 "Ruptured AAA"
-]
+],
+"dossier": "abdominal-aortic-aneurysm"
 },
 {
 "id": "ruptured-bakers-cyst",
@@ -3634,7 +3652,8 @@
 },
 {
 "id": "ruptured-corpus-luteal-cyst",
-"label": "Ruptured corpus luteal cyst"
+"label": "Ruptured corpus luteal cyst",
+"dossier": "ruptured-corpus-luteum-cyst"
 },
 {
 "id": "ruptured-ectopic-pregnancy",
@@ -4079,7 +4098,8 @@
 "label": "Toxic shock syndrome",
 "aliases": [
 "TSS"
-]
+],
+"dossier": "toxic-shock-syndrome"
 },
 {
 "id": "toxic-thyroid-adenoma",
@@ -4158,7 +4178,8 @@
 "aliases": [
 "Tic douloureux",
 "TN"
-]
+],
+"dossier": "trigeminal-neuralgia"
 },
 {
 "id": "tuberculosis",
