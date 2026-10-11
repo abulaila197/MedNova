@@ -1,6 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { Pressable, StyleSheet, View } from 'react-native';
 import Animated, { FadeIn, FadeOut, Keyframe, ZoomIn, ZoomOut } from 'react-native-reanimated';
+import Svg, { Path } from 'react-native-svg';
 
 import { Text } from '@/components/AppText';
 import { TokenCoin } from '@/components/PulseStar';
@@ -161,8 +162,8 @@ function Blister({ t, d, w, h, st, wide, popped }: CellP) {
   const big = prize >= 3 && !wide;
   const today = st === 'today';
   const done = st === 'done';
-  const capW = wide ? w * 0.6 : big ? w * 0.74 : w * 0.6;
-  const capH = wide ? h * 0.26 : big ? h * 0.28 : h * 0.22;
+  const capW = big ? w * 0.74 : w * 0.6;
+  const capH = big ? h * 0.28 : h * 0.22;
   const half = lt ? ['#e5833a', '#ffffff'] : ['#6fd6ff', '#eef0ff'];
   return (
     <View
@@ -189,6 +190,11 @@ function Blister({ t, d, w, h, st, wide, popped }: CellP) {
         <Animated.Text entering={FadeIn.duration(250)} style={[s.num, { color: t.dim, opacity: 0.6 }]}>
           {d}
         </Animated.Text>
+      ) : wide ? (
+        <Animated.View exiting={ZoomOut.duration(260)} style={s.month}>
+          <Envelope size={h * 0.5} t={t} />
+          <Text style={[s.amtBig, { color: today ? t.accent : t.fg }]}>Day 30 · +10</Text>
+        </Animated.View>
       ) : (
         <Animated.View exiting={ZoomOut.duration(260)} style={s.dose}>
           <View style={s.capArea}>
@@ -199,14 +205,12 @@ function Blister({ t, d, w, h, st, wide, popped }: CellP) {
                   width: capW,
                   height: capH,
                   borderRadius: capH / 2,
-                  transform: [{ rotate: wide ? '0deg' : '-28deg' }],
+                  transform: [{ rotate: '-28deg' }],
                 },
                 lt && { borderWidth: 0.6, borderColor: 'rgba(40,36,28,0.25)' },
               ]}
             >
-              {wide ? (
-                <LinearGradient colors={['#f6d77a', '#d9a23a']} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} style={StyleSheet.absoluteFill} />
-              ) : big ? (
+              {big ? (
                 <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />
               ) : (
                 <>
@@ -217,9 +221,7 @@ function Blister({ t, d, w, h, st, wide, popped }: CellP) {
               <View style={[s.shine, { borderRadius: capH / 2 }]} />
             </View>
           </View>
-          <Text style={[s.amt, { color: today ? t.accent : big || wide ? t.fg : t.soft }, (big || wide) && { fontFamily: F.bodyBold }]}>
-            {wide ? 'Day 30 · +10' : `+${prize}`}
-          </Text>
+          <Text style={[s.amt, { color: today ? t.accent : big ? t.fg : t.soft }, big && { fontFamily: F.bodyBold }]}>{`+${prize}`}</Text>
         </Animated.View>
       )}
       {popped ? (
@@ -231,7 +233,21 @@ function Blister({ t, d, w, h, st, wide, popped }: CellP) {
   );
 }
 
+/** Sealed envelope for the month-end prize (cream paper, wax in the accent colour), from look A. */
+function Envelope({ size, t }: { size: number; t: Theme }) {
+  const lt = t.mode === 'light';
+  return (
+    <Svg width={size * 1.4} height={size} viewBox="0 0 28 20">
+      <Path d="M1.5 2.5h25v15h-25z" fill={lt ? '#fbf3e2' : '#efe6d2'} stroke={lt ? 'rgba(40,36,28,0.3)' : 'rgba(0,0,0,0.25)'} strokeWidth={0.6} />
+      <Path d="M1.5 2.5l12.5 9 12.5-9" fill="none" stroke={lt ? 'rgba(40,36,28,0.35)' : 'rgba(0,0,0,0.3)'} strokeWidth={0.7} />
+      <Path d="M14 9.2a2.6 2.6 0 1 1 0 5.2a2.6 2.6 0 1 1 0-5.2z" fill={t.accent} />
+    </Svg>
+  );
+}
+
 const s = StyleSheet.create({
+  month: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: u(8) },
+  amtBig: { fontFamily: F.bodyBold, fontSize: u(11) },
   wrap: { zIndex: 30, alignItems: 'center', justifyContent: 'center' },
   card: {
     borderRadius: u(26),
