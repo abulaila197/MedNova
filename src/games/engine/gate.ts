@@ -39,6 +39,13 @@ export function createGate(kv: KV, today: () => string = () => localDay()) {
     used(game: GameKey) {
       return run(async () => ((await guest())[game] ?? []).length);
     },
+    /** Guest tries still free across these games (one per game, GUEST_TRIALS each). */
+    guestLeft(games: GameKey[]) {
+      return run(async () => {
+        const g = await guest();
+        return games.reduce((n, k) => n + Math.max(0, GUEST_TRIALS - (g[k] ?? []).length), 0);
+      });
+    },
     /** True when a guest must sign in before setup. */
     mustSignIn(game: GameKey, mode: Mode, signedIn: boolean) {
       return run(async () => {

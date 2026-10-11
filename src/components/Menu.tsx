@@ -7,7 +7,10 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Platform } from 'react-native';
 
 import { Moon } from '@/components/Moon';
+import { GAMES } from '@/data/games';
 import { loadAchievements } from '@/features/achievements/useAchievements';
+import { engine } from '@/games/engine';
+import type { GameKey } from '@/games/engine';
 import { signOut, useAccount } from '@/state/account';
 import { useApp, useTheme } from '@/state/app';
 import { useFriends } from '@/state/friends';
@@ -45,6 +48,12 @@ export function Menu() {
       .then((rows) => setWaiting(rows.some((r) => r.paid < r.reached)))
       .catch(() => {});
   }, [open, profile, friends]);
+  // Guests: free tries left, one per game (T23).
+  const [tries, setTries] = useState<number | null>(null);
+  useEffect(() => {
+    if (!open || profile) return;
+    engine.gate.guestLeft(GAMES.map((g) => g.key as GameKey)).then(setTries, () => {});
+  }, [open, profile]);
   const out = () => {
     setOutErr(false);
     signOut().catch(() => setOutErr(true));
@@ -74,7 +83,9 @@ export function Menu() {
           ) : (
             <>
               <Text style={[s.guest, { color: t.white }]}>Guest doctor</Text>
-              <Text style={[s.small, { color: t.mute }]}>3 cases played</Text>
+              <Text style={[s.small, { color: t.mute }]}>
+                {tries == null ? ' ' : tries === 0 ? 'No free tries left' : `${tries} of ${GAMES.length} free tries left`}
+              </Text>
               <Pressable onPress={() => go('/auth')}>
                 <Text style={[s.keep, { color: t.accent, borderBottomColor: t.accent }]}>Sign in to keep it</Text>
               </Pressable>

@@ -3,6 +3,7 @@
 import { engine } from '@/games/engine';
 import type { LedgerEntry, Play, PlayItem } from '@/games/engine';
 
+import { PROGRESS_KEYS, mergeProgress, sameProgress } from './progress';
 import { supabase } from './supabase';
 
 const iso = (ms: number | null) => (ms == null ? null : new Date(ms).toISOString());
@@ -76,6 +77,8 @@ async function run(userId: string) {
     await engine.wallet.markSynced(ledger.map((e) => e.id).filter((id) => !refused.includes(id)));
   }
 
+  await syncProgress(userId);
+
   // Bring down what other phones saved.
   const [w, p, it] = await Promise.all([
     supabase.from('wallet_ledger').select('id,kind,exp,tokens,reason,play_id,note,at').order('at').limit(5000),
@@ -127,4 +130,23 @@ async function run(userId: string) {
         }),
       ),
     });
+}
+
+/** Stars, bests and stamps: merge this phone with the account (best wins), then save the result on both. */
+async function syncProgress(userId: string) {
+  const { data, error } = await supabase.from('player_progress').select('key,value');
+  if (error) throw error;
+  const remote = new Map((data ?? []).map((r: { key: string; value: unknown }) => [r.key, r.value]));
+  const up: { user_id: string; key: string; value: unknown; updated_at: string }[] = [];
+  for (const key of PROGRESS_KEYS) {
+    const local = await engine.kv.get<unknown>(key);
+    const merged = mergeProgress(key, local, remote.get(key));
+    if (!Object.keys(merged).length) continue;
+    if (!sameProgress(merged, local)) await engine.kv.set(key, merged);
+    if (!sameProgress(merged, remote.get(key))) up.push({ user_id: userId, key, value: merged, updated_at: new Date().toISOString() });
+  }
+  if (up.length) {
+    const r = await supabase.from('player_progress').upsert(up);
+    if (r.error) throw r.error;
+  }
 }

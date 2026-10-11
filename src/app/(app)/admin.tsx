@@ -11,6 +11,9 @@ import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 type Player = { id: string; username: string; display_name: string; tokens: number };
+type Report = { id: string; kind: string; body: string; context: { chips?: string[]; path?: string }; status: 'new' | 'done'; created_at: string; username: string | null };
+
+const when = (iso: string) => new Date(iso).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
 
 /**
  * Hidden Admin page (AD1): only in the menu for Yazan's account, and every call is checked again on the server.
@@ -25,6 +28,23 @@ export default function Page() {
   const [amount, setAmount] = useState('');
   const [note, setNote] = useState('');
   const [msg, setMsg] = useState<{ text: string; bad?: boolean } | null>(null);
+  const [show, setShow] = useState<'new' | 'all'>('new');
+  const [reports, setReports] = useState<Report[] | null>(null);
+  const [repErr, setRepErr] = useState(false);
+  useEffect(() => {
+    if (!isAdmin) return;
+    setReports(null);
+    supabase.rpc('admin_reports', { show }).then(({ data, error }) => {
+      setRepErr(!!error);
+      setReports((data as Report[]) ?? []);
+    });
+  }, [isAdmin, show]);
+  const mark = async (r: Report) => {
+    const status = r.status === 'new' ? 'done' : 'new';
+    const { error } = await supabase.rpc('admin_report_status', { report: r.id, status });
+    if (error) return setRepErr(true);
+    setReports((list) => (list ?? []).flatMap((x) => (x.id !== r.id ? [x] : show === 'new' ? [] : [{ ...x, status }])));
+  };
 
   useEffect(() => {
     if (!isAdmin) return;
@@ -90,6 +110,30 @@ export default function Page() {
         <TextInput value={note} onChangeText={setNote} placeholder="Note (why), saved with the grant" placeholderTextColor={c.mute} maxLength={200} style={[field, s.gapS]} />
         <GradBtn label="Give tokens" onPress={give} style={s.gap} />
         {msg ? <Text style={[ui.p, { color: msg.bad ? c.t.red : c.fg }]}>{msg.text}</Text> : null}
+
+        <Text style={[ui.H, s.H, s.gapL, { color: c.fg }]}>Reports</Text>
+        <Text style={[ui.p, { color: c.mute }]}>Sent from the red ! by players and guests, newest first.</Text>
+        <View style={[s.tabs, s.gapS]}>
+          {(['new', 'all'] as const).map((k) => (
+            <Pressable key={k} onPress={() => setShow(k)} accessibilityRole="tab" accessibilityState={{ selected: show === k }}>
+              <Text style={[s.tab, { color: show === k ? c.t.accent : c.mute }]}>{k === 'new' ? 'New' : 'All'}</Text>
+            </Pressable>
+          ))}
+        </View>
+        {repErr ? <Text style={[s.small, { color: c.t.red }]}>Could not load reports. Check the connection.</Text> : null}
+        {reports && !reports.length ? <Text style={[s.small, s.gapS, { color: c.mute }]}>{show === 'new' ? 'No new reports.' : 'No reports yet.'}</Text> : null}
+        <View style={s.list}>
+          {(reports ?? []).map((r) => (
+            <View key={r.id} style={[s.rep, { borderColor: c.line, opacity: r.status === 'done' ? 0.55 : 1 }]}>
+              <Text style={[s.small, { color: c.mute }]}>{`${r.kind.toUpperCase()} · ${when(r.created_at)} · ${r.username ? '@' + r.username : 'Guest'}`}</Text>
+              {r.context?.chips?.length ? <Text style={[s.small, { color: c.fg }]}>{r.context.chips.join(' · ')}</Text> : null}
+              <Text style={[s.body, { color: c.fg }]}>{r.body || '(no text)'}</Text>
+              <Pressable onPress={() => mark(r)} accessibilityRole="button">
+                <Text style={[s.small, { color: c.t.accent }]}>{r.status === 'new' ? 'Mark done' : 'Mark new'}</Text>
+              </Pressable>
+            </View>
+          ))}
+        </View>
       </InfoScroll>
     </Screen>
   );
@@ -99,6 +143,11 @@ const s = StyleSheet.create({
   H: { fontFamily: F.display },
   gap: { marginTop: u(16) },
   gapS: { marginTop: u(8) },
+  gapL: { marginTop: u(32) },
+  tabs: { flexDirection: 'row', gap: u(14) },
+  tab: { fontFamily: F.display, fontSize: u(14) },
+  rep: { borderWidth: 1, borderRadius: u(14), paddingVertical: u(10), paddingHorizontal: u(12), gap: u(4) },
+  body: { fontFamily: F.body, fontSize: u(11), lineHeight: u(15) },
   in: { borderWidth: 1, borderRadius: u(14), paddingHorizontal: u(12), height: u(38), fontFamily: F.body, fontSize: u(11) },
   list: { gap: u(6), marginTop: u(8) },
   row: { flexDirection: 'row', alignItems: 'center', gap: u(10), borderWidth: 1, borderRadius: u(14), paddingVertical: u(8), paddingHorizontal: u(12) },
