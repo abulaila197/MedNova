@@ -6,12 +6,19 @@ import { syncAccount } from '@/lib/sync';
 import { useSession } from './session';
 import type { GameDef } from './types';
 
-/** Free plays left for a guest (shared by Solo and Offline Multiplayer); 0 for Online; null when signed in. */
+/** Free plays left: a guest's one try per game (0 for Online), or a signed-in player's plays left today (TR1). */
 export async function trialsLeft(game: GameKey, mode: Mode) {
-  if (useSession.getState().userId) return null;
+  if (useSession.getState().userId) return (await engine.gate.allowance(game)).left;
   if (!TRIAL_MODES.includes(mode)) return 0;
-  return Math.max(0, GUEST_TRIALS - (await engine.gate.used(game, mode)));
+  return Math.max(0, GUEST_TRIALS - (await engine.gate.used(game)));
 }
+
+/** Medicordle's Daily word never uses a free play (TR3). */
+export const alwaysFree = (play: Pick<Play, 'game' | 'mode' | 'settings'>) =>
+  play.game === 'nova-medicordle' && play.mode === 'solo' && play.settings.word !== 'endless';
+
+/** Counts a play against the free plays once (TR2: at its first answer; online: when the match ends). */
+export const countPlay = (play: Play) => engine.gate.countPlay(play.game, play.id, !!play.userId, alwaysFree(play));
 
 /** Rule 9: settings are frozen here. Starting a new game drops the old bookmark for that mode (rule 7). */
 export async function startPlay(game: GameKey, mode: Mode, settings: Record<string, unknown>, seats?: Seat[]) {
@@ -20,10 +27,10 @@ export async function startPlay(game: GameKey, mode: Mode, settings: Record<stri
   return engine.recorder.start({ game, mode, settings, seats, userId: useSession.getState().userId });
 }
 
-/** Records one answered item. The first one counts the guest trial (rule 20). */
+/** Records one answered item. The first one counts the free play (TR2). */
 export async function recordItem(play: Play, item: Omit<PlayItem, 'id' | 'at' | 'playId'>) {
   const row = await engine.recorder.recordItem({ ...item, playId: play.id });
-  if (!play.userId) await engine.gate.countPlay(play.game, play.mode, play.id);
+  await countPlay(play);
   return row;
 }
 

@@ -117,20 +117,31 @@ test('wallet: admin grants count, refused rows drop, merged overspend can go bel
   assert.equal((await w.unsynced()).some((e) => e.id === rc), false);
 });
 
-test('gate: 3 trials per game shared by solo and offline, idempotent per play, signed-in never gated', async () => {
-  const g = createGate(memoryKV());
-  await g.countPlay('nova-crossword', 'solo', 'p0');
-  await g.countPlay('nova-crossword', 'solo', 'p0');
-  await g.countPlay('nova-crossword', 'offline', 'p1');
-  assert.equal(await g.mustSignIn('nova-crossword', 'solo', false), false);
-  await g.countPlay('nova-crossword', 'solo', 'p2');
-  assert.equal(await g.used('nova-crossword', 'offline'), GUEST_TRIALS);
+test('gate: a guest gets 1 try per game for every mode, idempotent per play; online needs sign-in (T23)', async () => {
+  const g = createGate(memoryKV(), () => '2026-10-11');
+  await g.countPlay('nova-crossword', 'p0', false);
+  await g.countPlay('nova-crossword', 'p0', false);
+  assert.equal(await g.used('nova-crossword'), GUEST_TRIALS);
   assert.equal(await g.mustSignIn('nova-crossword', 'solo', false), true);
-  assert.equal(await g.mustSignIn('nova-crossword', 'offline', false), true, 'solo and offline share the 3');
+  assert.equal(await g.mustSignIn('nova-crossword', 'offline', false), true, 'solo and offline share the one try');
   assert.equal(await g.mustSignIn('nova-crossword', 'solo', true), false);
   assert.equal(await g.mustSignIn('the-riddler', 'solo', false), false, 'games counted apart');
   assert.equal(await g.mustSignIn('the-riddler', 'online', false), true, 'online always needs sign-in');
-  assert.equal(await g.mustSignIn('the-riddler', 'online', true), false);
+});
+
+test('gate: signed in gets 3 free plays per game per day, bought plays add one, a new day resets (TR1-TR3)', async () => {
+  let day = '2026-10-11';
+  const g = createGate(memoryKV(), () => day);
+  for (const id of ['a', 'b', 'c', 'c']) await g.countPlay('the-riddler', id, true);
+  await g.countPlay('the-riddler', 'daily', true, true);
+  assert.deepEqual(await g.allowance('the-riddler'), { used: 3, free: 3, extra: 0, left: 0 });
+  assert.equal((await g.allowance('nova-crossword')).left, 3, 'each game has its own 3');
+  await g.addPlay('the-riddler');
+  assert.equal((await g.allowance('the-riddler')).left, 1);
+  await g.countPlay('the-riddler', 'd', true);
+  assert.equal((await g.allowance('the-riddler')).left, 0);
+  day = '2026-10-12';
+  assert.deepEqual(await g.allowance('the-riddler'), { used: 0, free: 3, extra: 0, left: 3 });
 });
 
 test('picker: unseen first, then reshuffle when the bank runs out', async () => {

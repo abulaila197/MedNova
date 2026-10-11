@@ -1,6 +1,7 @@
 import { router, usePathname } from 'expo-router';
 import { useEffect, useState } from 'react';
 
+import { localDay } from '@/games/engine/gate';
 import { defaultKV } from '@/games/engine/storage';
 import { useSession } from '@/games/shell/session';
 import { supabase } from '@/lib/supabase';
@@ -11,12 +12,6 @@ import { DailyPopup } from './DailyPopup';
 
 const kv = defaultKV();
 const GUEST_SEEN = 'daily:guest_seen';
-
-/** The phone's own date (DL3), e.g. "2026-10-11". */
-export function localDate(now = new Date()) {
-  const p = (n: number) => String(n).padStart(2, '0');
-  return `${now.getFullYear()}-${p(now.getMonth() + 1)}-${p(now.getDate())}`;
-}
 
 type Open = { day: number; collected: boolean };
 
@@ -36,7 +31,7 @@ export function DailyHost() {
 
   useEffect(() => {
     if (!known || intro || path !== '/games') return;
-    const today = localDate();
+    const today = localDay();
     const key = `${userId ?? 'guest'}:${today}`;
     if (checked === key) return;
     setChecked(key);
@@ -61,7 +56,7 @@ export function DailyHost() {
     setBusy(true);
     setError(null);
     const { data, error: e } = await supabase.rpc('daily_claim', {
-      local_date: localDate(),
+      local_date: localDay(),
     });
     setBusy(false);
     const r = data as { ok: boolean; day?: number; why?: string } | null;

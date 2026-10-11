@@ -1,41 +1,83 @@
-// Guest trial gate (rules 19-20, revised 2026-10-03): 3 free plays per game, shared by Solo and
-// Offline Multiplayer together, then sign-in before setup. A play counts once its first case is answered.
+// Free plays (T23, TR1-TR5). Guests: 1 try per game, ever, in Solo or Pass the phone (Online needs an account).
+// Signed in: 3 free plays per game per day, shared by its modes; after that a play is bought with an ad or
+// 3 tokens, or unlimited with the subscription. A play counts at its first answer (TR2); Medicordle's Daily word
+// never counts (TR3). The day is the phone's own date.
 import { serial, type KV } from './storage';
 import type { GameKey, Mode } from './types';
 
-export const GUEST_TRIALS = 3;
-const KEY = 'guest_trials';
+export const GUEST_TRIALS = 1;
+export const FREE_DAILY = 3;
+export const PLAY_PRICE = 3;
+const GUEST_KEY = 'guest_trials';
+const DAY_KEY = 'free_plays';
 
-type Counted = Record<string, string[]>; // game -> play ids that counted
-
-/** Modes that draw on the shared free plays. Online Multiplayer always needs sign-in (no free plays). */
+/** Modes a guest may try. Online Multiplayer always needs sign-in. */
 export const TRIAL_MODES: Mode[] = ['solo', 'offline'];
 
-export function createGate(kv: KV) {
-  const load = async () => (await kv.get<Counted>(KEY)) ?? {};
-  const k = (g: GameKey, _m?: Mode) => g;
+type Counted = Record<string, string[]>; // game -> play ids that counted
+/** One day of a signed-in player's plays: which counted, and how many extra plays were bought. */
+type Day = { date: string; plays: Counted; extra: Record<string, number> };
+
+export type Allowance = { used: number; free: number; extra: number; left: number };
+
+/** The phone's own date, e.g. "2026-10-11" (also the daily prize day, DL3). */
+export function localDay(now = new Date()) {
+  const p = (n: number) => String(n).padStart(2, '0');
+  return `${now.getFullYear()}-${p(now.getMonth() + 1)}-${p(now.getDate())}`;
+}
+
+export function createGate(kv: KV, today: () => string = () => localDay()) {
+  const guest = async () => (await kv.get<Counted>(GUEST_KEY)) ?? {};
+  const day = async (): Promise<Day> => {
+    const d = await kv.get<Day>(DAY_KEY);
+    const date = today();
+    return d?.date === date ? d : { date, plays: {}, extra: {} };
+  };
   const run = serial();
   return {
-    used(game: GameKey, mode: Mode) {
-      return run(async () => {
-        return ((await load())[k(game, mode)] ?? []).length;
-      });
+    /** Guest tries used for a game (all modes together). */
+    used(game: GameKey) {
+      return run(async () => ((await guest())[game] ?? []).length);
     },
     /** True when a guest must sign in before setup. */
     mustSignIn(game: GameKey, mode: Mode, signedIn: boolean) {
       return run(async () => {
         if (signedIn) return false;
         if (!TRIAL_MODES.includes(mode)) return true;
-        return ((await load())[k(game, mode)] ?? []).length >= GUEST_TRIALS;
+        return ((await guest())[game] ?? []).length >= GUEST_TRIALS;
       });
     },
-    /** Call when the first case of a guest play is answered. Idempotent per play. */
-    countPlay(game: GameKey, mode: Mode, playId: string) {
+    /** Today's free and bought plays for a signed-in player. */
+    allowance(game: GameKey) {
       return run(async () => {
-        const all = await load();
-        const list = all[k(game, mode)] ?? [];
-        if (!list.includes(playId)) all[k(game, mode)] = [...list, playId];
-        await kv.set(KEY, all);
+        const d = await day();
+        const used = (d.plays[game] ?? []).length;
+        const extra = d.extra[game] ?? 0;
+        return { used, free: FREE_DAILY, extra, left: Math.max(0, FREE_DAILY + extra - used) } satisfies Allowance;
+      });
+    },
+    /** One more play today, bought with an ad or tokens. */
+    addPlay(game: GameKey) {
+      return run(async () => {
+        const d = await day();
+        d.extra[game] = (d.extra[game] ?? 0) + 1;
+        await kv.set(DAY_KEY, d);
+      });
+    },
+    /** Call at a play's first answer. Idempotent per play; `free` plays (Medicordle Daily) never count. */
+    countPlay(game: GameKey, playId: string, signedIn: boolean, free = false) {
+      return run(async () => {
+        if (free) return;
+        if (!signedIn) {
+          const all = await guest();
+          const list = all[game] ?? [];
+          if (!list.includes(playId)) all[game] = [...list, playId];
+          return kv.set(GUEST_KEY, all);
+        }
+        const d = await day();
+        const list = d.plays[game] ?? [];
+        if (!list.includes(playId)) d.plays[game] = [...list, playId];
+        await kv.set(DAY_KEY, d);
       });
     },
   };

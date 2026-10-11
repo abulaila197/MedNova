@@ -1,11 +1,12 @@
 import { router, useFocusEffect } from 'expo-router';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
+import { needPlay } from '@/features/freeplays/paywall';
 import { leaveRoom, rematchRoom } from '@/online/api';
 
-import { engine } from '../engine';
+import { engine, FREE_DAILY } from '../engine';
 import type { Mode, Play, PlayItem } from '../engine/types';
-import { startPlay, trialsLeft } from './flow';
+import { alwaysFree, startPlay, trialsLeft } from './flow';
 import { useSession } from './session';
 import { teamsOf, teamStandings } from './teams';
 import { teamScoreOf, type GameDef } from './types';
@@ -17,27 +18,30 @@ export function useLanding(def: GameDef) {
   const [resume, setResume] = useState<Partial<Record<Mode, Play | null>>>({});
   const [left, setLeft] = useState<Partial<Record<Mode, number | null>>>({});
 
-  useFocusEffect(
-    useCallback(() => {
-      let live = true;
-      (async () => {
-        const r: typeof resume = {};
-        const l: typeof left = {};
-        for (const m of def.modes) {
-          r[m.mode] = await engine.recorder.resumable(def.key, m.mode);
-          l[m.mode] = await trialsLeft(def.key, m.mode);
-        }
-        if (live) (setResume(r), setLeft(l));
-      })();
-      return () => {
-        live = false;
-      };
-    }, [def, signedIn]),
-  );
+  const load = useCallback(() => {
+    let live = true;
+    (async () => {
+      const r: typeof resume = {};
+      const l: typeof left = {};
+      for (const m of def.modes) {
+        r[m.mode] = await engine.recorder.resumable(def.key, m.mode);
+        l[m.mode] = await trialsLeft(def.key, m.mode);
+      }
+      if (live) (setResume(r), setLeft(l));
+    })();
+    return () => {
+      live = false;
+    };
+  }, [def, signedIn]);
+  useFocusEffect(load);
+  // Signing in or out while the page is open changes the free plays at once (focus alone would miss it).
+  useEffect(load, [load]);
 
   const go = async (mode: Mode) => {
-    if (await engine.gate.mustSignIn(def.key, mode, signedIn)) router.push(`/play/${def.key}/gate?mode=${mode}`);
-    else router.push(`/play/${def.key}/setup?mode=${mode}`);
+    if (await engine.gate.mustSignIn(def.key, mode, signedIn)) return router.push(`/play/${def.key}/gate?mode=${mode}`);
+    // Out of today's free plays: the sheet asks first (TR1). Medicordle Solo asks at setup, where Daily stays free (TR3).
+    if (!(def.key === 'nova-medicordle' && mode === 'solo') && !(await needPlay(def.key))) return;
+    router.push(`/play/${def.key}/setup?mode=${mode}`);
   };
   const resumePlay = (p: Play) => router.push(`/play/${def.key}/run?play=${p.id}`);
   /** "Resume case 3": the bookmark's item number when it has one. */
@@ -45,10 +49,12 @@ export function useLanding(def: GameDef) {
     const i = (p.resume as { index?: number } | null)?.index;
     return `Resume ${def.itemNoun ?? 'case'} ${i != null ? i + 1 : ''}`.trim();
   };
-  /** The small note on a mode card: free plays left for a guest, or that online needs an account. */
+  /** The small note on a mode card: today's free plays left, a guest's one try, or that online needs an account. */
   const note = (mode: Mode) => {
     const l = left[mode];
-    return l == null ? '' : mode === 'online' ? 'Sign in to play' : `${l} of 3 free plays left`;
+    if (l == null) return '';
+    if (signedIn) return l > FREE_DAILY ? `${l} plays left today` : `${l}/${FREE_DAILY} free today`;
+    return mode === 'online' ? 'Sign in to play' : l > 0 ? '1 free try' : 'Free try used';
   };
   return { open, setOpen, resume, go, resumePlay, resumeLabel, note };
 }
@@ -78,7 +84,10 @@ export function useResults(def: GameDef, play: Play, items: PlayItem[]) {
     router.replace(`/play/${def.key}/gate?mode=${play.mode}`);
     return true;
   };
+  /** Signed in and out of today's free plays: the sheet asks first (TR1). */
+  const paid = async () => alwaysFree(play) || needPlay(def.key);
   const rematch = async () => {
+    if (!(await paid())) return;
     if (room) {
       await rematchRoom(room).catch(() => {});
       router.replace(`/play/${def.key}/lobby?room=${room}`);
@@ -91,6 +100,7 @@ export function useResults(def: GameDef, play: Play, items: PlayItem[]) {
   const changeSettings = async () => {
     if (room) return rematch();
     if (await gated()) return;
+    if (!(def.key === 'nova-medicordle' && play.mode === 'solo') && !(await paid())) return;
     router.replace(`/play/${def.key}/setup?mode=${play.mode}&from=${play.id}`);
   };
   const backToGames = () => {

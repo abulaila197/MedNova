@@ -22,7 +22,7 @@ export function TrialGate({ game, mode }: { game: string; mode: Mode }) {
         <Body>
           {online
             ? 'Online Multiplayer needs an account so other players see your name and your results are kept.'
-            : 'You have played your 3 free Solo and Offline Multiplayer games. Sign in to keep going. Your misses, points and EXP from these games come with you.'}
+            : 'You have used your free try of this game. Sign in for 3 free plays of every game each day. Your misses, points and EXP from your tries come with you.'}
         </Body>
         <View style={{ gap: u(8), marginTop: u(4) }}>
           <Btn label="Sign in" onPress={() => router.push('/auth')} />

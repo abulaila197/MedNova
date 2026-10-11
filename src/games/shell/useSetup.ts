@@ -1,8 +1,10 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
 
+import { needPlay } from '@/features/freeplays/paywall';
+
 import type { Mode, Seat } from '../engine/types';
-import { startPlay } from './flow';
+import { alwaysFree, startPlay } from './flow';
 import { characterOf, CHARACTERS, freeCharacter } from './characters';
 import { presetTeam, type Team } from './teams';
 import type { GameDef } from './types';
@@ -62,6 +64,8 @@ export function useSetup(def: GameDef, mode: Mode, prefill?: Record<string, unkn
   const teamChoices = [{ value: 0, label: 'Off' }, ...Array.from({ length: Math.max(0, Math.min(6, seats.length) - 1) }, (_, i) => ({ value: i + 2, label: String(i + 2) }))];
 
   const start = async () => {
+    // Medicordle Solo asks here, not on the mode card: the Daily word is always free (TR3).
+    if (mode === 'solo' && def.key === 'nova-medicordle' && !alwaysFree({ game: def.key, mode, settings: vals }) && !(await needPlay(def.key))) return;
     setBusy(true);
     const named = range
       ? seats.map((x, i) => {

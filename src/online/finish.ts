@@ -1,6 +1,6 @@
 import { defaultKV } from '@/games/engine/storage';
 import type { PlayItem, Seat, Standing } from '@/games/engine/types';
-import { finishPlay, recordItem, startPlay } from '@/games/shell/flow';
+import { countPlay, finishPlay, recordItem, startPlay } from '@/games/shell/flow';
 import type { GameDef } from '@/games/shell/types';
 
 const kv = defaultKV();
@@ -21,6 +21,7 @@ export async function finishOnline(
   if (done) return done;
   const play = await startPlay(def.key, 'online', a.settings, a.seats);
   await kv.set(`online:${match}`, play.id);
+  await countPlay(play); // every player uses one of their own free plays (TR4)
   for (const it of a.items) await recordItem(play, it);
   await finishPlay(def, play, a.score, a.standings);
   return play.id;
