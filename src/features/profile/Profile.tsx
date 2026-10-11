@@ -14,34 +14,26 @@ import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F, type Theme } from '@/theme/tokens';
 
+import { useProfileStats } from './stats';
+
 // Page colours from the locked preview (d-/l-profile).
 const C = {
   dark: { tide: ['#a48bff', '#6fd6ff'] },
   light: { tide: ['#e9bf4f', '#e5833a'] },
 };
 
-// Tide lines: accuracy over time per game (points from the preview's 100 x 26 viewBox).
-const TIDES: { name: string; acc: number; pts: number[] }[] = [
-  { name: 'The Diagnostic Pursuit', acc: 82, pts: [7.8, 11.7, 8.6, 7.5, 11.4, 14.6, 12.7, 10.7, 10.9] },
-  { name: 'Nova Medicordle', acc: 71, pts: [16.6, 13.0, 10.7, 11.2, 11.4, 17.2, 15.6, 16.9, 13.8] },
-  { name: 'The Streak Master', acc: 64, pts: [12.5, 12.5, 19.2, 19.0, 19.0, 16.6, 12.7, 18.2, 13.5] },
-  { name: 'The Riddler', acc: 77, pts: [14.3, 11.4, 11.7, 15.1, 13.3, 11.2, 12.2, 10.9, 11.4] },
-  { name: 'Case Files: Unsolved', acc: 58, pts: [19.2, 18.7, 20.3, 15.1, 17.9, 17.2, 20.0, 20.5, 20.5] },
-  { name: 'The Silent Artist', acc: 69, pts: [13.3, 16.1, 12.2, 15.3, 11.7, 12.5, 11.4, 12.2, 13.0] },
-  { name: 'The Wheels of Chaos', acc: 73, pts: [10.7, 12.5, 10.4, 16.6, 13.3, 10.9, 15.1, 16.9, 17.2] },
-  { name: 'Nova Crossword', acc: 61, pts: [17.7, 19.2, 17.2, 15.1, 20.0, 19.8, 13.5, 15.9, 19.5] },
-];
-
 const TW = 96; // sparkline width (design px)
 
 function Tide({ t, pts }: { t: Theme; pts: number[] }) {
   const id = useSvgId('tg');
   const c = C[t.mode].tide;
-  const d = 'M' + pts.map((y, i) => `${((i * 12.5 * TW) / 100).toFixed(2)},${y}`).join(' L');
+  // Accuracy 0-1 drawn top (all right) to bottom (all wrong); one game draws a flat line.
+  const ys = (pts.length > 1 ? pts : [pts[0] ?? 0, pts[0] ?? 0]).map((a) => 24 - a * 22);
+  const d = 'M' + ys.map((y, i) => `${((i * TW) / (ys.length - 1)).toFixed(2)},${y.toFixed(1)}`).join(' L');
   return (
     <Svg width={u(TW)} height={u(26)} viewBox={`0 0 ${TW} 26`}>
       <Defs>
-        <SvgLinear id={id} x1="0" y1="0" x2="1" y2="0">
+        <SvgLinear id={id} x1="0" y1="0" x2={TW} y2="0" gradientUnits="userSpaceOnUse">
           <Stop offset="0" stopColor={c[0]} stopOpacity={0.3} />
           <Stop offset="1" stopColor={c[1]} />
         </SvgLinear>
@@ -57,25 +49,27 @@ export function Profile() {
   const line = { borderColor: t.panelLine };
   const profile = useAccount((a) => a.profile);
   const lv = useBalance();
+  const st = useProfileStats();
+  const pct = (a: number | null | undefined) => (a == null ? '–' : `${Math.round(a * 100)}%`);
   return (
     <Fade stops={[[0, 0], [0.04, 1], [0.9, 1], [1, 0]]} style={s.area}>
       <ScrollView style={s.fill} contentContainerStyle={s.pf} showsVerticalScrollIndicator={false}>
         <PlanetSystem />
         <View style={s.idn}>
           <View style={s.nm}>
-            <Display em={profile?.display_name ?? 'Yazan'} italic style={[s.h2, { color: t.fg }]}>
+            <Display em={profile?.display_name ?? 'Guest'} italic style={[s.h2, { color: t.fg }]}>
               {'Dr. '}
             </Display>
             {/* LV3: your level beside your name, the ring filling toward the next level. */}
             <LevelBadge level={lv.level} progress={lv.into / lv.need} size={u(21)} />
           </View>
-          <Text style={[s.role, { color: t.mute }]}>{profile ? `@${profile.username.toUpperCase()}` : 'INTERNAL MEDICINE · RESIDENT'}</Text>
+          <Text style={[s.role, { color: t.mute }]}>{profile ? `@${profile.username.toUpperCase()}` : 'SIGN IN TO SAVE YOUR PROGRESS'}</Text>
         </View>
         <View style={[s.nums, line]}>
           {[
-            ['142', 'SOLVED'],
-            ['74%', 'ACCURACY'],
-            ['12', 'BEST STREAK'],
+            [String(st?.finished ?? 0), 'SOLVED'],
+            [pct(st?.acc), 'ACCURACY'],
+            [String(st?.bestDays ?? 0), 'BEST STREAK'],
           ].map(([n, l]) => (
             <View key={l} style={s.num}>
               <Text style={[s.numB, { color: t.fg }]}>{n}</Text>
@@ -84,11 +78,12 @@ export function Profile() {
           ))}
         </View>
         <Text style={[s.sh2, { color: t.kick }]}>BY GAME</Text>
-        {TIDES.map((g) => (
-          <View key={g.name} style={s.td}>
+        {st && !st.games.length ? <Text style={[s.none, { color: t.mute }]}>Play a game to see your lines.</Text> : null}
+        {st?.games.map((g) => (
+          <View key={g.key} style={s.td}>
             <Text style={[s.tdB, { color: t.fg }]}>{g.name}</Text>
-            <Tide t={t} pts={g.pts} />
-            <Text style={[s.tdN, { color: t.fg }]}>{g.acc}%</Text>
+            <Tide t={t} pts={g.line} />
+            <Text style={[s.tdN, { color: t.fg }]} numberOfLines={1}>{pct(g.acc)}</Text>
           </View>
         ))}
         <FriendsSection t={t} />
@@ -156,7 +151,8 @@ const s = StyleSheet.create({
   sh2: { marginTop: u(10), marginBottom: u(2), fontFamily: F.mono, fontSize: u(8.5), lineHeight: u(12), letterSpacing: u(1.7) },
   td: { flexDirection: 'row', alignItems: 'center', gap: u(8), paddingVertical: u(7), minHeight: u(40) },
   tdB: { width: u(104), fontFamily: F.display, fontSize: u(12.5), lineHeight: u(14.375) },
-  tdN: { width: u(34), textAlign: 'right', fontFamily: F.display, fontSize: u(16), lineHeight: u(20) },
+  none: { fontFamily: F.body, fontSize: u(11), lineHeight: u(15), paddingVertical: u(7) },
+  tdN: { width: u(50), textAlign: 'right', fontFamily: F.display, fontSize: u(16), lineHeight: u(20) },
   ch: { height: u(23), paddingHorizontal: u(10), borderRadius: u(10), justifyContent: 'center' },
   ghost: { height: u(25), borderWidth: 1 },
   ghT: { fontFamily: F.bodySemi, fontSize: u(9.5) },
