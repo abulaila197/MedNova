@@ -23,6 +23,8 @@ const E = [
 ];
 const BLUR = 34;
 const BOX = 520;
+// Much softer than the locked preview (Yazan, 2026-10-11: it hurt his eyes).
+const STRENGTH = 0.3;
 // Drawn at half size and scaled up: a soft blur looks the same, and the cached picture takes a quarter of the memory.
 const HALF = BOX / 2;
 
@@ -61,7 +63,7 @@ export function Glow({ delay = 0, w, h, mode }: { delay?: number; w: number; h: 
     };
   });
   return (
-    <View pointerEvents="none" style={[StyleSheet.absoluteFill, { overflow: 'hidden' }]}>
+    <View pointerEvents="none" style={[StyleSheet.absoluteFill, { overflow: 'hidden', opacity: STRENGTH }]}>
       {/* cached as a GPU picture: it only moves, so the gradients are never redrawn */}
       <Animated.View style={[{ position: 'absolute', left: 0, top: 0, width: u(HALF), height: u(HALF) }, st]} renderToHardwareTextureAndroid shouldRasterizeIOS>
         <Svg width={u(HALF)} height={u(HALF)} viewBox={`${-BOX / 2} ${-BOX / 2} ${BOX} ${BOX}`}>
