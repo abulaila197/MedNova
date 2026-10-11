@@ -19,7 +19,9 @@ import { F } from '@/theme/tokens';
 
 const ITEMS = [
   ['Leaderboard', '/leaderboard'],
+  ['Friends', '/friends'],
   ['Achievements', '/achievements'],
+  ['My cards', '/cards'],
   ['Store', '/store'],
   ['Contact', '/contact'],
   ['About', '/about'],
@@ -136,7 +138,7 @@ const s = StyleSheet.create({
   items: { flex: 1, justifyContent: 'center' },
   r: { flexDirection: 'row', alignItems: 'baseline', gap: u(12), paddingVertical: u(9), borderBottomWidth: 1 },
   no: { fontFamily: F.mono, fontSize: u(8.5), letterSpacing: u(1.275), width: u(13) },
-  lbl: { fontSize: u(21), lineHeight: u(21), flex: 1 },
+  lbl: { fontSize: u(16), lineHeight: u(18), flex: 1 },
   dot: { width: u(7), height: u(7), borderRadius: u(4), alignSelf: 'center' },
   theme: { flexDirection: 'row', alignSelf: 'flex-start', borderWidth: 1, borderRadius: 999, padding: u(3) },
   opt: { paddingVertical: u(5), paddingHorizontal: u(11), borderRadius: 999 },

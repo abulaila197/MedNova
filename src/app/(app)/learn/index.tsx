@@ -183,7 +183,7 @@ function CasesPage() {
   return (
     <ScrollPage>
       <PageTitle first="My" em="cases" small={`${MY_CASES.length}`} />
-      <Pressable style={[s.newc, { borderColor: c.newcLine, backgroundColor: c.newcBg }]} accessibilityRole="button">
+      <Pressable onPress={() => router.push('/learn/new-case' as never)} style={[s.newc, { borderColor: c.newcLine, backgroundColor: c.newcBg }]} accessibilityRole="button">
         <Text style={[s.newcT, { color: t.accent }]}>+ Write a new case</Text>
       </Pressable>
       <View>
@@ -193,7 +193,13 @@ function CasesPage() {
               <Text style={[s.csB, { color: t.fg }]}>{k.title}</Text>
               <Text style={[s.csA, { color: c.mute }]}>{k.area}</Text>
             </View>
-            <Text style={[s.csE, { color: t.accent }]}>{k.state.toUpperCase()}</Text>
+            {k.state === 'Approved' ? (
+              <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.play}>
+                <Text style={[s.playT, { color: t.onGrad }]}>Play</Text>
+              </LinearGradient>
+            ) : (
+              <Text style={[s.csE, { color: k.state === 'Private note' ? c.mute : t.accent }]}>{k.state.toUpperCase()}</Text>
+            )}
           </View>
         ))}
       </View>
@@ -256,6 +262,8 @@ const s = StyleSheet.create({
     paddingHorizontal: u(2),
   },
   csL: { flexShrink: 1, gap: u(3) },
+  play: { marginLeft: 'auto', height: u(24), paddingHorizontal: u(14), borderRadius: 999, justifyContent: 'center' },
+  playT: { fontFamily: F.bodyBold, fontSize: u(10) },
   csB: { fontFamily: F.display, fontSize: u(15), lineHeight: u(18) },
   csA: { fontFamily: F.body, fontSize: u(10), lineHeight: u(12) },
   csE: {
