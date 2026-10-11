@@ -18,7 +18,7 @@ export function TrialGate({ game, mode }: { game: string; mode: Mode }) {
       <Back label={g ? `${g.lead} ${g.em}` : 'Games'} fallback={`/play/${game}`} />
       <Card style={{ marginTop: u(24), gap: u(10) }}>
         <Kick>{online ? 'Online Multiplayer' : 'Free plays used'}</Kick>
-        <Title lead={online ? 'Sign in to' : 'Keep'} em={online ? 'race' : 'playing'} size={26} />
+        <Title lead="Sign in to" em={online ? 'race' : 'play more'} size={26} />
         <Body>
           {online
             ? 'Online Multiplayer needs an account so other players see your name and your results are kept.'
