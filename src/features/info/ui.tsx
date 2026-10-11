@@ -30,7 +30,6 @@ export function useInfo() {
     openLine: lt ? 'rgba(233,191,79,0.45)' : 'rgba(164,139,255,0.45)',
     // open "−" sign: reference is lilac #c9b8ff on dark, so the accent is used there (standing rule)
     openSign: lt ? '#c98a1e' : t.accent,
-    neg: '#e07a85',
     pillOnText: lt ? '#fbf9f4' : '#070a1c',
   };
 }

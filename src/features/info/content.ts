@@ -1,6 +1,6 @@
 // Text of the info pages. The first screen of each page is the locked preview word for word;
-// everything below it comes from the old MedPuzz pages (FAQ, Privacy Policy, Terms & Conditions,
-// About, Contact) with the app renamed to MedNova and the games renamed to the 8 new names.
+// the FAQ was rewritten for the live app; About and Contact still come from the old MedPuzz pages,
+// with the app and games renamed.
 import { GAMES } from '@/data/games';
 
 export const HABITS = ['Observation', 'Reasoning', 'Pattern recognition', 'Prioritisation', 'Clinical judgment'];
@@ -14,7 +14,7 @@ export const INTENTS = [
   { key: 'collaborate', hint: 'Teaching, cases, development or partnership…' },
 ];
 
-// ---------- FAQ ("Chapters, revised")
+// ---------- FAQ ("Chapters, revised"), rewritten 2026-10-11 for the 10 live games (Yazan approved)
 export type Faq = { q: string; a: string; scoring?: boolean };
 export type Chapter = { n: string; chip: string; title: string; tag: string; items: Faq[] };
 
@@ -28,9 +28,9 @@ export const CHAPTERS: Chapter[] = [
     title: 'Getting started',
     tag: 'Foundation',
     items: [
-      { q: 'What is MedNova?', a: 'MedNova is an educational medical reasoning game built around clinical cases. It lets you practice interpreting clues, making diagnoses, reviewing missed cases, and tracking game performance.' },
-      { q: 'What game modes are available?', a: `MedNova includes ${listed}. Each mode uses a different reasoning or gameplay structure.` },
-      { q: 'Can I use MedNova as a guest?', a: 'Yes. Continue as Guest is available alongside account creation and Google sign-in. Guest access is intended for using the game without creating a registered account, while account-based access can support persistent user information and progress.' },
+      { q: 'What is MedNova?', a: 'MedNova teaches medicine through games. You read clues, name diseases, answer questions and solve picture riddles, and the cases you miss come back later in your Learning Space. It is for education only, not medical advice, and every patient in it is fictional.' },
+      { q: 'Which games are there?', a: `${GAMES.length === 10 ? 'Ten' : GAMES.length}: ${listed}.` },
+      { q: 'Do I need an account?', a: 'No. As a guest you can try every game once. A free account gives you 3 free plays of each mode every day. After those, keep playing by watching an ad or paying 3 tokens per play, or subscribe for $0.99 to play without limits, with no ads and no tokens.' },
     ],
   },
   {
@@ -39,61 +39,64 @@ export const CHAPTERS: Chapter[] = [
     title: 'Games',
     tag: 'Gameplay',
     items: [
-      { q: 'How does Case Files: Unsolved scoring work?', a: 'The earlier you diagnose, the more you score.', scoring: true },
-      { q: 'What happens when I answer incorrectly?', a: 'In Case Files: Unsolved, an incorrect diagnosis on an intermediate clue automatically reveals the next clue. In Solo and Local, you can still choose when to reveal a clue, while Next Case is used to continue after the case result. Online uses automatic 10-second clue windows and automatic case progression. In the timed modes, wrong answers apply the penalties specific to that mode.' },
-      { q: 'How does The Diagnostic Pursuit work?', a: 'The Diagnostic Pursuit starts with a 3-minute timer. Correct answers add time based on the number of clues left. Revealing a clue or using a hint costs time, wrong answers apply the mode rules, and Skip / Give Up reveals all remaining clues and counts the case as a miss. The difficulty adapts upward with correct diagnoses and can step backward after two wrong answers at the same level. The run ends at 0 seconds or after 20 correct diagnoses.' },
-      { q: 'How does The Streak Master work?', a: 'The Streak Master starts with a 3-minute timer. Correct answers add streak points based on the clue number: clue 1 = +5, clue 2 = +4, clue 3 = +3, clue 4 = +2, clue 5 = +1. A wrong answer costs 5 seconds; on clues 1–4 the streak is preserved and the next clue is not revealed automatically; a final-clue wrong answer resets the streak. Skip / Give Up reveals all clues, resets the streak, and moves to the next case. The game ends at 0 seconds or after 20 correct diagnoses.' },
+      { q: 'How does The Diagnostic Pursuit score?', a: 'Clues arrive one by one. Name the disease on an earlier clue to score more, plus up to 20 points for speed. A wrong guess shows the next clue.', scoring: true },
+      { q: 'How does Case Files work?', a: 'Work a case from history to discharge: pick your differentials, read the investigations, then make your diagnosis. Each case pays once; replaying it is free but earns no EXP.' },
+      { q: 'How does Nova Medicordle work?', a: "Guess the medical word in six tries. Green is the right letter in the right place, yellow is in the word but elsewhere, grey is not in the word. Play today's word, which earns double, or keep going in Endless." },
+      { q: 'How does The Streak Master work?', a: 'Answer as many questions as you can before the clock runs out. Every right answer in a row is worth one point more than the last, and a wrong answer resets your streak.' },
+      { q: 'How do The Riddler and Nova Crossword work?', a: 'The Riddler shows a picture rebus that you read as a condition or sign. Nova Crossword is a medical crossword. Both are played level by level, and stars open the next level.' },
+      { q: 'What are The Wheels of Chaos, The Silent Artist, The Conqueror and Trust Me Not?', a: 'The Wheels of Chaos spins three wheels that pick your question. The Silent Artist is drawing or acting a disease while the room guesses. The Conqueror is answering to raise troops and take lands. Trust Me Not is surviving a year of famine as one camp, with a traitor or two among you.' },
     ],
   },
   {
     n: '03',
-    chip: 'Accounts',
-    title: 'Accounts',
-    tag: 'Identity',
+    chip: 'Together',
+    title: 'Playing together',
+    tag: 'Multiplayer',
     items: [
-      { q: 'What account options are available?', a: 'You can use guest access, create an account through the available registration flow, or choose Google sign-in. Account-backed access can support persistent information and progress.' },
-      { q: 'What does Google sign-in do?', a: 'Google sign-in provides an alternative authentication route. MedNova does not need or request your Google password.' },
+      { q: 'How do I play with friends?', a: 'Most games have Pass the phone, where you take turns on one phone, and Online, where everyone plays live on their own phone. The Conqueror and Trust Me Not are online only. Many games also let the host split players into teams.' },
+      { q: 'Who wins a tie?', a: 'The faster player.' },
     ],
   },
   {
     n: '04',
-    chip: 'Learning',
-    title: 'Learning Space',
-    tag: 'Review',
+    chip: 'EXP',
+    title: 'EXP and tokens',
+    tag: 'Progress',
     items: [
-      { q: 'When does a case enter Learning Space?', a: 'A case is added to Learning Space when you miss the final clue or use Skip / Give Up. Earlier wrong guesses do not add the case by themselves, and solving a case correctly after earlier wrong guesses does not add it. Timeout does not add a case.' },
-      { q: 'Can I review cases I missed?', a: 'Yes. Learning Space is designed to help you revisit missed cases and reinforce the diagnostic reasoning behind them.' },
+      { q: 'How do I earn EXP?', a: 'By playing Solo and Online. Each game pays for what you get right; for example, Medicordle gives up to 12 EXP a word and The Streak Master 2 EXP per right answer. Pass the phone and The Silent Artist are for fun and earn no EXP.' },
+      { q: 'What are levels and tokens?', a: 'EXP raises your level, and each new level gives you 1 token. Tokens pay for extras such as letter hints in Medicordle and a revive in Nova Crossword.' },
     ],
   },
   {
     n: '05',
-    chip: 'Multiplayer',
-    title: 'Multiplayer',
-    tag: 'Competition',
+    chip: 'Learning',
+    title: 'Learning Space',
+    tag: 'Review',
     items: [
-      { q: 'How does multiplayer work?', a: 'In Case Files: Unsolved multiplayer, Player 1 completes the selected cases first, then Player 2 completes the same cases in the same order. Each case receives a clue-count score, and the lower total score wins.' },
-      { q: 'How are leaderboard results calculated?', a: 'Leaderboard rankings are separated by game mode and can be filtered by difficulty. Case Files: Unsolved uses the lower total clue score as the better result. The Diagnostic Pursuit prioritizes cases solved and then remaining time. The Streak Master prioritizes the highest streak and then remaining time.' },
+      { q: 'What goes into Learning Space?', a: "What you miss: unsolved Diagnostic Pursuit cases, a wrong first diagnosis in Case Files, missed questions in The Streak Master and Trust Me Not, missed Crossword words and unsolved Riddler conditions. Medicordle, The Silent Artist and The Wheels of Chaos add nothing. In Pass the phone, only the phone owner's misses go in." },
+      { q: 'How do I review them?', a: "Today's review shows each missed disease as a flip card with one dossier field on the back. Disease dossiers hold the full file for every disease." },
     ],
   },
   {
     n: '06',
-    chip: 'Technical',
-    title: 'Technical',
-    tag: 'Troubleshooting',
+    chip: 'Help',
+    title: 'Help',
+    tag: 'Support',
     items: [
-      { q: 'What statistics can MedNova track?', a: "Game statistics can include cases played or solved, scores, accuracy, streaks, remaining time, selected game mode and difficulty, and leaderboard-related results. Account-backed versions may associate these results with the player's account so progress can persist." },
-      { q: 'What should I do if a game or case is not working correctly?', a: 'Use the Report flow and include the game or case affected, what you expected to happen, what happened instead, and any useful reproduction details. This gives the team enough context to investigate the problem.' },
+      { q: "Something isn't working. What do I do?", a: 'Tap the red ! button at the top of any page and tell us what happened, in which game and on which case or question.' },
+      { q: 'Where do the cases come from?', a: 'They are written for MedNova to teach reasoning. If you think a fact is wrong, report it with the red ! button.' },
     ],
   },
 ];
 
+/** The Diagnostic Pursuit clue points (DP: 100, 80, 60, 40, 20, 10; speed bonus on top). */
 export const SCORING = [
   { k: 'CLUE 1', v: '100' },
   { k: '2', v: '80' },
   { k: '3', v: '60' },
   { k: '4', v: '40' },
   { k: '5', v: '20' },
-  { k: 'NONE', v: '−30', neg: true },
+  { k: '6', v: '10' },
 ];
 
 // ---------- Privacy & Terms ("Plain words")

@@ -110,7 +110,7 @@ function Card({ f, open, onPress }: { f: Faq; open: boolean; onPress: () => void
               {SCORING.map((x) => (
                 <View key={x.k} style={[s.scCell, { backgroundColor: c.surf2 }]}>
                   <Text style={[s.scK, { color: c.mute }]}>{x.k}</Text>
-                  <Text style={[s.scV, { color: x.neg ? c.neg : c.fg }]}>{x.v}</Text>
+                  <Text style={[s.scV, { color: c.fg }]}>{x.v}</Text>
                 </View>
               ))}
             </View>
