@@ -1,19 +1,22 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, usePathname } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Platform } from 'react-native';
 
 import { Moon } from '@/components/Moon';
+import { loadAchievements } from '@/features/achievements/useAchievements';
 import { signOut, useAccount } from '@/state/account';
 import { useApp, useTheme } from '@/state/app';
+import { useFriends } from '@/state/friends';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 const ITEMS = [
   ['Leaderboard', '/leaderboard'],
+  ['Achievements', '/achievements'],
   ['Contact', '/contact'],
   ['About', '/about'],
   ['FAQ', '/faq'],
@@ -32,6 +35,16 @@ export function Menu() {
   const isAdmin = useAccount((a) => a.isAdmin);
   const items = isAdmin ? [...ITEMS, ['Admin', '/admin'] as const] : ITEMS;
   const [outErr, setOutErr] = useState(false);
+  // AC6: a dot on Achievements while a reached tier waits to be collected (signed in only).
+  const open = useApp((a) => a.menuOpen);
+  const friends = useFriends((f) => f.list);
+  const [waiting, setWaiting] = useState(false);
+  useEffect(() => {
+    if (!open || !profile) return setWaiting(false);
+    loadAchievements(friends.map((f) => f.id), profile.id)
+      .then((rows) => setWaiting(rows.some((r) => r.paid < r.reached)))
+      .catch(() => {});
+  }, [open, profile, friends]);
   const out = () => {
     setOutErr(false);
     signOut().catch(() => setOutErr(true));
@@ -76,6 +89,7 @@ export function Menu() {
             <Pressable key={to} onPress={() => go(to)} style={[s.r, { borderBottomColor: t.panelLine }, i === 0 && { borderTopWidth: 1, borderTopColor: t.panelLine }]}>
               <Text style={[s.no, { color: t.kick }]}>0{i + 1}</Text>
               <Text style={[s.lbl, { color: on ? t.accent : t.white, fontFamily: on ? F.displayItalic : F.display }]}>{label}</Text>
+              {waiting && to === '/achievements' ? <View style={[s.dot, { backgroundColor: t.accent }]} accessibilityLabel="Tokens waiting" /> : null}
             </Pressable>
           );
         })}
@@ -111,6 +125,7 @@ const s = StyleSheet.create({
   r: { flexDirection: 'row', alignItems: 'baseline', gap: u(12), paddingVertical: u(9), borderBottomWidth: 1 },
   no: { fontFamily: F.mono, fontSize: u(8.5), letterSpacing: u(1.275), width: u(13) },
   lbl: { fontSize: u(21), lineHeight: u(21), flex: 1 },
+  dot: { width: u(7), height: u(7), borderRadius: u(4), alignSelf: 'center' },
   theme: { flexDirection: 'row', alignSelf: 'flex-start', borderWidth: 1, borderRadius: 999, padding: u(3) },
   opt: { paddingVertical: u(5), paddingHorizontal: u(11), borderRadius: 999 },
   optT: { fontFamily: F.bodySemi, fontSize: u(9.5) },
