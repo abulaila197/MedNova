@@ -534,7 +534,7 @@ function useFinish(env: PageProps['env'], roomId: string) {
     finishing.current = true;
     const order = placesOf(v, rv);
     const local = [v.me, ...v.players.map((q) => q.id).filter((id) => id !== v.me)];
-    const seats = local.map((id, i) => ({ seat: i, name: id === v.me ? 'You' : (v.players.find((q) => q.id === id)?.name ?? ''), color: v.players.find((q) => q.id === id)?.color }));
+    const seats = local.map((id, i) => ({ seat: i, userId: id, name: id === v.me ? 'You' : (v.players.find((q) => q.id === id)?.name ?? ''), color: v.players.find((q) => q.id === id)?.color }));
     const score = (id: PlayerId) => Math.round(rv.ranking.find((r) => r.id === id)?.score ?? 0);
     const standings = local.map((id, i) => ({ seat: i, name: seats[i].name, score: score(id), timeMs: 0, rank: order.indexOf(id) + 1 })).sort((a, b) => a.rank - b.rank);
     const items = rv.missed.map((id) => {

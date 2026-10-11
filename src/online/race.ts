@@ -119,7 +119,7 @@ export function useRace(def: GameDef, roomId: string, matchId: string, me: strin
       const teams = Number(st.settings.teams) || 0;
       const seats = order.map((p, i) => {
         const tm = teams >= 2 && p.team != null ? presetTeam(p.team) : null;
-        return { seat: i, name: p.user_id === me ? 'You' : p.name, character: p.character, color: tm?.color ?? characterOf(p.character)?.ring, ...(tm ? { team: tm.id } : null) };
+        return { seat: i, name: p.user_id === me ? 'You' : p.name, userId: p.user_id, character: p.character, color: tm?.color ?? characterOf(p.character)?.ring, ...(tm ? { team: tm.id } : null) };
       });
       const standings = st.players
         .map((p) => ({ seat: seatOf.get(p.user_id)!, name: p.user_id === me ? 'You' : p.name, score: p.score, timeMs: p.solve_ms, rank: p.rank ?? st.players.length }))

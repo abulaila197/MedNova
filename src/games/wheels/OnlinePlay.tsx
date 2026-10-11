@@ -156,7 +156,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
       const order = [mySeat!, ...seatsOf.map((_, i) => i).filter((i) => i !== mySeat)];
       const local = new Map(order.map((s, i) => [s, i]));
       const byId = new Map(st.players.map((p) => [p.user_id, p]));
-      const seats = order.map((s, i) => ({ seat: i, name: s === mySeat ? 'You' : (byId.get(seatsOf[s])?.name ?? `Player ${s + 1}`), character: byId.get(seatsOf[s])?.character, color: GEMS[s % GEMS.length] }));
+      const seats = order.map((s, i) => ({ seat: i, userId: seatsOf[s], name: s === mySeat ? 'You' : (byId.get(seatsOf[s])?.name ?? `Player ${s + 1}`), character: byId.get(seatsOf[s])?.character, color: GEMS[s % GEMS.length] }));
       const standings = order
         .map((s) => {
           const p = byId.get(seatsOf[s]);

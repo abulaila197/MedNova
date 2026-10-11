@@ -96,7 +96,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
     (async () => {
       const order = standings(m).map((p) => p.id);
       const local = [me, ...m.order.filter((id) => id !== me)];
-      const seats = local.map((id, i) => ({ seat: i, name: id === me ? 'You' : m.players[id].name, character: st.players.find((x) => x.user_id === id)?.character, color: KINGDOMS[m.order.indexOf(id) % KINGDOMS.length] }));
+      const seats = local.map((id, i) => ({ seat: i, userId: id, name: id === me ? 'You' : m.players[id].name, character: st.players.find((x) => x.user_id === id)?.character, color: KINGDOMS[m.order.indexOf(id) % KINGDOMS.length] }));
       const stand = local.map((id, i) => ({ seat: i, name: seats[i].name, score: m.landOrder.filter((l) => m.lands[l].owner === id).length, timeMs: 0, rank: order.indexOf(id) + 1 })).sort((a, b) => a.rank - b.rank);
       const id = await finishOnline(def, matchId, { settings: { ...st.settings, room: roomId, match: matchId, right: m.players[me].stats.right ?? 0 }, seats, standings: stand, score: stand.find((x) => x.seat === 0)?.score ?? 0, items: [] });
       router.replace(`/play/${def.key}/results?play=${id}`);

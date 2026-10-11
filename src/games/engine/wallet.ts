@@ -8,7 +8,7 @@ import { newId } from './ids';
 
 export type LedgerEntry = {
   id: string;
-  kind: 'exp' | 'spend' | 'refund' | 'grant' | 'convert'; // 'grant' = admin tokens (AD1); 'convert' = old 200-EXP tokens, not counted
+  kind: 'exp' | 'spend' | 'refund' | 'grant' | 'daily' | 'achievement' | 'convert'; // grant = admin (AD1), daily = DL1, achievement = AC1; 'convert' = old 200-EXP tokens, not counted
   exp: number;
   tokens: number;
   reason: string;
@@ -38,7 +38,7 @@ export function createWallet(kv: KV) {
     const all = await ledger();
     const exp = all.reduce((s, e) => s + (e.kind === 'exp' ? e.exp : 0), 0);
     const lv = levelOf(exp);
-    const used = all.reduce((s, e) => s + (e.kind === 'spend' || e.kind === 'refund' || e.kind === 'grant' ? e.tokens : 0), 0);
+    const used = all.reduce((s, e) => s + (e.kind === 'exp' || e.kind === 'convert' ? 0 : e.tokens), 0);
     return { exp, tokens: levelTokens(lv.level) + used, ...lv };
   };
 

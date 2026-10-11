@@ -9,6 +9,7 @@ import { LoadingHost } from '@/features/loading/LoadingHost';
 import { pageCard } from '@/features/loading/snapshot';
 import { FriendSheets } from '@/features/profile/FriendSheets';
 import { InviteBanner } from '@/online/InviteBanner';
+import { DailyHost } from '@/features/daily/DailyHost';
 import { useApp, useTheme } from '@/state/app';
 import { u, useScreen } from '@/theme/scale';
 
@@ -38,6 +39,7 @@ export default function AppLayout() {
       <ReportSheet />
       <FriendSheets />
       <InviteBanner />
+      <DailyHost />
     </View>
   );
 }
