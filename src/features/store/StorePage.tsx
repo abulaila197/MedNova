@@ -1,6 +1,6 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import { Text } from '@/components/AppText';
 import { TokenCoin } from '@/components/PulseStar';
@@ -14,7 +14,7 @@ import { F } from '@/theme/tokens';
 import { PACKS, SUBSCRIPTION, type Pack } from './catalog';
 
 /** The Store (MN3-MN8): token packs and the monthly subscription. Two looks while Yazan picks: A Pharmacy shelf, B Price board. */
-export function StorePage({ look }: { look: 'a' | 'b' }) {
+export function StorePage({ look }: { look: 'a' | 'b' | 'c' | 'd' }) {
   const c = useInfo();
   const [tokens, setTokens] = useState<number | null>(null);
   useEffect(() => {
@@ -36,10 +36,79 @@ export function StorePage({ look }: { look: 'a' | 'b' }) {
             {' tokens'}
           </Text>
         </View>
-        {look === 'a' ? <Shelf t={c.t} /> : <Board t={c.t} />}
+        {look === 'a' ? <Shelf t={c.t} /> : look === 'b' ? <Board t={c.t} /> : <Rows t={c.t} big={look === 'd'} />}
         <Text style={[s.foot, { color: c.mute }]}>Paid through the App Store or Google Play. Tokens and the subscription stay on your account.</Text>
       </InfoScroll>
     </Screen>
+  );
+}
+
+/* ---------- Looks C and D: app-store rows (subscription banner, packs swipe sideways) ---------- */
+
+function Rows({ t, big }: { t: Theme; big: boolean }) {
+  const [page, setPage] = useState(0);
+  const cardW = big ? u(250) : u(124);
+  const gap = u(10);
+  return (
+    <>
+      <Pressable accessibilityRole="button" style={{ marginTop: u(16) }}>
+        <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.3 }} end={{ x: 1, y: 0.7 }} style={s.sub}>
+          <View style={{ flex: 1 }}>
+            <Text style={[s.mono, { color: t.onGrad, opacity: 0.7 }]}>MONTHLY</Text>
+            <Text style={[s.subH, { color: t.onGrad }]}>MedNova Unlimited</Text>
+            <Text style={[s.subP, { color: t.onGrad }]}>{SUBSCRIPTION.perks.join(' · ')}</Text>
+          </View>
+          <View style={[s.subBtn, { backgroundColor: t.onGrad }]}>
+            <Text style={[s.subBtnT, { color: t.gradB }]}>{SUBSCRIPTION.price}</Text>
+            <Text style={[s.subBtnS, { color: t.gradB }]}>a month</Text>
+          </View>
+        </LinearGradient>
+      </Pressable>
+      <View style={{ height: u(14) }} />
+      <Kicker inSec>Token packs</Kicker>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={s.rowScroll}
+        contentContainerStyle={{ paddingHorizontal: u(18), gap, paddingTop: u(6), paddingBottom: u(4) }}
+        snapToInterval={cardW + gap}
+        decelerationRate="fast"
+        onScroll={(e) => setPage(Math.round(e.nativeEvent.contentOffset.x / (cardW + gap)))}
+        scrollEventThrottle={32}
+      >
+        {PACKS.map((p, i) => (
+          <PackCard key={p.id} t={t} p={p} i={i} w={cardW} big={big} />
+        ))}
+      </ScrollView>
+      {big ? (
+        <View style={s.dots}>
+          {PACKS.map((p, i) => (
+            <View key={p.id} style={[s.dot, { backgroundColor: i === page ? t.accent : t.panelLine }, i === page && s.dotOn]} />
+          ))}
+        </View>
+      ) : null}
+    </>
+  );
+}
+
+function PackCard({ t, p, i, w, big }: { t: Theme; p: Pack; i: number; w: number; big: boolean }) {
+  const coin = big ? u(28) : u(22);
+  const step = coin * 0.45;
+  return (
+    <Pressable accessibilityRole="button" accessibilityLabel={`${p.tokens} tokens for ${p.price}`} style={[s.card, big && s.cardBig, { width: w, backgroundColor: t.panel, borderColor: t.panelLine }]}>
+      <View style={[s.pile, { height: coin, width: coin + step * i }]}>
+        {Array.from({ length: i + 1 }, (_, k) => (
+          <View key={k} style={{ position: 'absolute', left: step * k, top: 0 }}>
+            <TokenCoin size={coin} progress={0} light={t.mode === 'light'} track="transparent" />
+          </View>
+        ))}
+      </View>
+      <Text style={[big ? s.cNBig : s.cN, { color: t.fg }]}>{p.tokens}</Text>
+      <Text style={[s.cU, { color: t.mute }]}>tokens</Text>
+      <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={[s.cBtn, big && s.cBtnBig]}>
+        <Text style={[s.cBtnT, { color: t.onGrad }]}>{p.price}</Text>
+      </LinearGradient>
+    </Pressable>
   );
 }
 
@@ -192,6 +261,27 @@ const s = StyleSheet.create({
   balT: { fontFamily: F.body, fontSize: u(11.5) },
   foot: { fontFamily: F.body, fontSize: u(9.5), lineHeight: u(14), marginTop: u(22), textAlign: 'center', paddingHorizontal: u(10) },
   mono: { fontFamily: F.mono, fontSize: u(7.5), letterSpacing: u(1.3) },
+
+  // C/D: app-store rows
+  sub: { flexDirection: 'row', alignItems: 'center', gap: u(10), borderRadius: u(18), paddingVertical: u(12), paddingHorizontal: u(14) },
+  subH: { fontFamily: F.display, fontSize: u(17), lineHeight: u(21), marginTop: u(1) },
+  subP: { fontFamily: F.bodyMedium, fontSize: u(10), marginTop: u(3), opacity: 0.85 },
+  subBtn: { borderRadius: u(14), paddingHorizontal: u(12), paddingVertical: u(8), alignItems: 'center' },
+  subBtnT: { fontFamily: F.bodyBold, fontSize: u(14) },
+  subBtnS: { fontFamily: F.body, fontSize: u(8.5) },
+  rowScroll: { marginHorizontal: -u(18) },
+  card: { borderWidth: 1, borderRadius: u(18), padding: u(12), alignItems: 'center' },
+  cardBig: { paddingVertical: u(14), paddingHorizontal: u(16) },
+  pile: { marginBottom: u(6) },
+  cN: { fontFamily: F.display, fontSize: u(24), lineHeight: u(28) },
+  cNBig: { fontFamily: F.display, fontSize: u(32), lineHeight: u(36) },
+  cU: { fontFamily: F.body, fontSize: u(10) },
+  cBtn: { alignSelf: 'stretch', height: u(30), borderRadius: 999, alignItems: 'center', justifyContent: 'center', marginTop: u(10) },
+  cBtnBig: { height: u(36), marginTop: u(12) },
+  cBtnT: { fontFamily: F.bodyBold, fontSize: u(12) },
+  dots: { flexDirection: 'row', justifyContent: 'center', gap: u(6), marginTop: u(12) },
+  dot: { width: u(6), height: u(6), borderRadius: u(3) },
+  dotOn: { width: u(16) },
 
   // A: prescription slip
   slipWrap: { marginTop: u(22), transform: [{ rotate: '-1.2deg' }] },
