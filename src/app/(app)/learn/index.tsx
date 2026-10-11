@@ -10,7 +10,8 @@ import { BASIC_SHELF, CLINICAL_SHELVES, DOSSIER_TOTAL, MY_CASES, REVIEW } from '
 import { Fade } from '@/components/Fade';
 import { FlipCard } from '@/features/learn/FlipCard';
 import { useLearnColors } from '@/features/learn/palette';
-import { Shelf } from '@/features/learn/Shelf';
+import { BookShelf, useBookLook } from '@/features/learn/BookShelf';
+import { BOOKS } from '@/features/learn/books';
 import { PageTitle } from '@/features/learn/Title';
 import { Toggle } from '@/features/learn/Toggle';
 import { useTheme } from '@/state/app';
@@ -122,21 +123,16 @@ function ScrollPage({ children }: { children: ReactNode }) {
 function DossiersPage() {
   const t = useTheme();
   const c = useLearnColors(t.mode);
-  const [mine, setMine] = useState(0);
+  const look = useBookLook((x) => x.look);
   const open = () => router.push('/learn/shelf');
   return (
     <ScrollPage>
-      <PageTitle first="Disease" em="dossiers" small={`${DOSSIER_TOTAL}`} />
+      <PageTitle first="Disease" em="dossiers" small={`${BOOKS.reduce((n, b) => n + b.total, 0)}`} />
       <View style={[s.srch, { backgroundColor: c.srchBg, borderColor: c.srchLine }]}>
-        <Text style={[s.srchT, { color: c.srchText }]}>Search a disease</Text>
+        <Text style={[s.srchT, { color: c.srchText }]}>Search your misses</Text>
       </View>
-      <Toggle options={[{ label: 'My misses' }, { label: 'All' }]} value={mine} onChange={setMine} />
-      {CLINICAL_SHELVES.map((row, i) => (
-        <Shelf key={i} spines={row} heights={CLINICAL_H} onOpen={open} />
-      ))}
-      <View style={s.bs}>
-        <Shelf spines={BASIC_SHELF} heights={BASIC_H} onOpen={open} />
-      </View>
+      <BookShelf books={BOOKS.slice(0, 8)} look={look} onOpen={open} />
+      <BookShelf books={BOOKS.slice(8)} look={look} onOpen={open} />
     </ScrollPage>
   );
 }
