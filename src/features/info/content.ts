@@ -30,7 +30,7 @@ export const CHAPTERS: Chapter[] = [
     items: [
       { q: 'What is MedNova?', a: 'MedNova teaches medicine through games. You read clues, name diseases, answer questions and solve picture riddles, and the cases you miss come back later in your Learning Space. It is for education only, not medical advice, and every patient in it is fictional.' },
       { q: 'Which games are there?', a: `${GAMES.length === 10 ? 'Ten' : GAMES.length}: ${listed}.` },
-      { q: 'Do I need an account?', a: 'No. As a guest you can try every game once. A free account gives you 3 free plays of each game every day, shared by its modes, and the Medicordle Daily word is always free. After those, keep playing by watching an ad or paying 3 tokens per play, or subscribe for $0.99 to play without limits, with no ads and no tokens.' },
+      { q: 'Do I need an account?', a: 'No. As a guest you can try every game once. A free account gives you 3 free plays of each game every day, shared by its modes, and the Medicordle Daily word is always free. After those, keep playing by watching an ad or paying 3 tokens per play, or subscribe for $2.99 a month to play without limits, with no ads and no tokens.' },
     ],
   },
   {

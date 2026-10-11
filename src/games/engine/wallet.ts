@@ -8,7 +8,7 @@ import { newId } from './ids';
 
 export type LedgerEntry = {
   id: string;
-  kind: 'exp' | 'spend' | 'refund' | 'grant' | 'daily' | 'achievement' | 'convert'; // grant = admin (AD1), daily = DL1, achievement = AC1; 'convert' = old 200-EXP tokens, not counted
+  kind: 'exp' | 'spend' | 'refund' | 'grant' | 'daily' | 'achievement' | 'purchase' | 'convert'; // grant = admin (AD1), daily = DL1, achievement = AC1, purchase = Store pack (MN4); 'convert' = old 200-EXP tokens, not counted
   exp: number;
   tokens: number;
   reason: string;

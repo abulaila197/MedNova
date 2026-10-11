@@ -20,6 +20,7 @@ import { F } from '@/theme/tokens';
 const ITEMS = [
   ['Leaderboard', '/leaderboard'],
   ['Achievements', '/achievements'],
+  ['Store', '/store'],
   ['Contact', '/contact'],
   ['About', '/about'],
   ['FAQ', '/faq'],

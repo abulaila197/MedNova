@@ -52,7 +52,7 @@ test('the game header (GH1-GH3): smaller parts, token coin last on the right, no
 
 test('the token coin is drawn only in PulseStar.tsx, from the Pulse star outline', () => {
   assert.deepEqual(where(/export function TokenCoin/), ['src/components/PulseStar.tsx']);
-  assert.deepEqual(where(/<TokenCoin /), ['src/components/Header.tsx', 'src/features/daily/DailyPopup.tsx']); // the daily pop-up reuses it (DL1)
+  assert.deepEqual(where(/<TokenCoin /), ['src/components/Header.tsx', 'src/features/daily/DailyPopup.tsx', 'src/features/store/StorePage.tsx']); // the daily pop-up (DL1) and the Store (MN7) reuse it
   const ps = code.find((f) => f.path === 'src/components/PulseStar.tsx')!.text;
   assert.match(ps, /starAt\(12, 12, 5\.6\)/);
 });

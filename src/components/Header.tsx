@@ -58,15 +58,15 @@ export function Header({ variant = 'app' }: { variant?: 'app' | 'game' }) {
   );
 }
 
-/** Token count + coin; display only until the wallet sheet is built after the games (GH4). */
+/** Token count + coin; tapping it opens the Store (MN7). */
 function Coin({ light }: { light: boolean }) {
   const t = useTheme();
   const { tokens, level, into, need } = useBalance();
   return (
-    <View style={gs.coin} accessible accessibilityLabel={`${tokens} tokens. Level ${level}, ${into} of ${need} EXP to level ${level + 1}`}>
+    <Pressable onPress={() => router.navigate('/store')} style={gs.coin} accessibilityRole="button" accessibilityLabel={`${tokens} tokens. Level ${level}, ${into} of ${need} EXP to level ${level + 1}. Open the Store`}>
       <Text style={[gs.coinT, { color: t.fg }]}>{tokens}</Text>
       <TokenCoin size={u(17)} progress={into / need} light={light} track={light ? 'rgba(29,34,48,0.12)' : 'rgba(255,255,255,0.12)'} />
-    </View>
+    </Pressable>
   );
 }
 

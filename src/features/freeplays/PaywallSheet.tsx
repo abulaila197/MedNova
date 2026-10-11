@@ -11,7 +11,8 @@ import { u } from '@/theme/scale';
 import type { Theme } from '@/theme/tokens';
 import { F } from '@/theme/tokens';
 
-import { ADS_LIVE, cancelPaywall, payWithAd, payWithTokens, SUBSCRIPTION_LIVE, usePaywall } from './paywall';
+import { ADS_LIVE, cancelPaywall, payWithAd, payWithTokens, subscribeFromPaywall, usePaywall } from './paywall';
+import { SUBSCRIPTION } from '@/features/store/catalog';
 
 type Choice = { key: string; label: string; sub: string; on?: () => void; off?: boolean };
 
@@ -36,7 +37,7 @@ export function PaywallSheet() {
       sub: tokens == null ? '' : short ? `Not enough: you have ${tokens}` : `You have ${tokens}`,
       on: async () => setShort(!(await payWithTokens())),
     },
-    { key: 'sub', label: 'Subscribe for $0.99', sub: SUBSCRIPTION_LIVE ? 'Unlimited plays, no ads, no tokens' : 'Unlimited, no ads, no tokens · coming soon', off: !SUBSCRIPTION_LIVE },
+    { key: 'sub', label: `Subscribe for ${SUBSCRIPTION.price} a month`, sub: 'Unlimited plays, no ads, no tokens', on: subscribeFromPaywall },
   ];
   return (
     <View style={[StyleSheet.absoluteFill, { zIndex: 40 }]}>

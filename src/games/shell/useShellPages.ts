@@ -7,6 +7,7 @@ import { leaveRoom, rematchRoom } from '@/online/api';
 import { engine, FREE_DAILY } from '../engine';
 import type { Mode, Play, PlayItem } from '../engine/types';
 import { alwaysFree, startPlay, trialsLeft } from './flow';
+import { isSubscribed } from '@/features/store/billing';
 import { useSession } from './session';
 import { teamsOf, teamStandings } from './teams';
 import { teamScoreOf, type GameDef } from './types';
@@ -53,6 +54,7 @@ export function useLanding(def: GameDef) {
   const note = (mode: Mode) => {
     const l = left[mode];
     if (l == null) return '';
+    if (signedIn && isSubscribed()) return 'Unlimited plays';
     if (signedIn) return l > FREE_DAILY ? `${l} plays left today` : `${l}/${FREE_DAILY} free today`;
     return mode === 'online' ? 'Sign in to play' : l > 0 ? '1 free try' : 'Free try used';
   };

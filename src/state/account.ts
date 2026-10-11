@@ -6,6 +6,7 @@ import { useSession } from '@/games/shell/session';
 import { supabase } from '@/lib/supabase';
 import { PROGRESS_KEYS } from '@/lib/progress';
 import { syncAccount } from '@/lib/sync';
+import { loadSubscription } from '@/features/store/billing';
 import { invoke } from '@/online/api';
 import { startInvites, stopInvites } from '@/online/invites';
 import { startPresence, stopPresence } from '@/state/friends';
@@ -38,6 +39,7 @@ function apply(id: string | null, email: string | null) {
   }
   useSession.getState().setUser(id);
   useAccount.setState({ email, profile: id ? useAccount.getState().profile : null, restored: false, isAdmin: false });
+  void loadSubscription(id);
   if (id) {
     void loadProfile(id);
     syncAccount(id).catch(() => {}); // retried on the next sign-in, finish or app start
@@ -94,7 +96,7 @@ export function startAccount() {
 }
 
 /** What the account keeps on the server; cleared from the phone on sign-out (SO1: clean slate). */
-const ACCOUNT_KEYS = ['plays', 'play_items', 'wallet', ...PROGRESS_KEYS];
+const ACCOUNT_KEYS = ['plays', 'play_items', 'wallet', 'subscription', ...PROGRESS_KEYS];
 const clearPhone = () => Promise.all(ACCOUNT_KEYS.map((k) => engine.kv.remove(k)));
 
 /** SO1: upload first, then sign out and clear the phone back to a fresh guest. Offline, it refuses so nothing is lost. */
