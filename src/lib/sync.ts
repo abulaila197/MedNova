@@ -3,7 +3,7 @@
 import { engine } from '@/games/engine';
 import type { LedgerEntry, Play, PlayItem } from '@/games/engine';
 
-import { PROGRESS_KEYS, mergeProgress, sameProgress } from './progress';
+import { emptyProgress, PROGRESS_KEYS, mergeProgress, sameProgress } from './progress';
 import { supabase } from './supabase';
 
 const iso = (ms: number | null) => (ms == null ? null : new Date(ms).toISOString());
@@ -141,7 +141,7 @@ async function syncProgress(userId: string) {
   for (const key of PROGRESS_KEYS) {
     const local = await engine.kv.get<unknown>(key);
     const merged = mergeProgress(key, local, remote.get(key));
-    if (!Object.keys(merged).length) continue;
+    if (emptyProgress(merged)) continue;
     if (!sameProgress(merged, local)) await engine.kv.set(key, merged);
     if (!sameProgress(merged, remote.get(key))) up.push({ user_id: userId, key, value: merged, updated_at: new Date().toISOString() });
   }

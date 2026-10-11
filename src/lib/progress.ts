@@ -1,11 +1,16 @@
-// Game progress kept on the account (player_progress): Crossword stars, Riddler bests and Case Files stamps.
-// Two phones may each hold some of it, so syncing merges them and the better result always wins.
+// Progress kept on the account (player_progress): Crossword stars, Riddler bests, Case Files stamps, Streak bests and
+// Learn review. Two phones may each hold some of it, so syncing merges them and the better result always wins.
 
-export const PROGRESS_KEYS = ['crossword:best', 'riddler:best', 'casefiles:played'] as const;
+export const PROGRESS_KEYS = [
+  'crossword:best', 'riddler:best', 'casefiles:played', 'streak:best', 'learn:review', 'learn:opened',
+] as const;
 export type ProgressKey = (typeof PROGRESS_KEYS)[number];
 type Map = Record<string, unknown>;
 
-/** Best stars per level: the higher number wins. */
+const obj = (v: unknown) => (v && typeof v === 'object' && !Array.isArray(v) ? v : {}) as Map;
+const strs = (v: unknown) => (Array.isArray(v) ? v.filter((x): x is string => typeof x === 'string') : []);
+
+/** Best per level or per Streak style and length: the higher number wins. */
 function maxMerge(a: Map, b: Map) {
   const out: Record<string, number> = {};
   for (const [k, v] of [...Object.entries(a), ...Object.entries(b)]) if (typeof v === 'number') out[k] = Math.max(out[k] ?? v, v);
@@ -20,14 +25,32 @@ function stampMerge(a: Map, b: Map) {
   return out;
 }
 
-export function mergeProgress(key: ProgressKey, local: unknown, remote: unknown) {
-  const a = (local && typeof local === 'object' ? local : {}) as Map;
-  const b = (remote && typeof remote === 'object' ? remote : {}) as Map;
-  return key === 'casefiles:played' ? stampMerge(a, b) : maxMerge(a, b);
+/** Today's review: the latest Got it per card wins; cards sent back with Again stay at the end (this phone's order first). */
+function reviewMerge(a: Map, b: Map) {
+  const later = strs(a.later);
+  for (const k of strs(b.later)) if (!later.includes(k)) later.push(k);
+  return { done: maxMerge(obj(a.done), obj(b.done)), later };
 }
 
-/** Same content regardless of key order. */
+export function mergeProgress(key: ProgressKey, local: unknown, remote: unknown): unknown {
+  if (key === 'learn:opened') return [...new Set([...strs(local), ...strs(remote)])].sort();
+  const a = obj(local);
+  const b = obj(remote);
+  if (key === 'casefiles:played') return stampMerge(a, b);
+  if (key === 'learn:review') return reviewMerge(a, b);
+  return maxMerge(a, b);
+}
+
+/** Nothing worth saving yet. */
+export function emptyProgress(v: unknown) {
+  if (Array.isArray(v)) return !v.length;
+  const m = obj(v);
+  return 'done' in m ? !Object.keys(obj(m.done)).length && !strs(m.later).length : !Object.keys(m).length;
+}
+
+/** Same content regardless of object key order (array order counts). */
 export function sameProgress(a: unknown, b: unknown) {
-  const norm = (v: unknown) => JSON.stringify(Object.entries((v ?? {}) as Map).sort(([x], [y]) => x.localeCompare(y)));
-  return norm(a) === norm(b);
+  const norm = (v: unknown): unknown =>
+    Array.isArray(v) ? v.map(norm) : v && typeof v === 'object' ? Object.entries(v).sort(([x], [y]) => x.localeCompare(y)).map(([k, x]) => [k, norm(x)]) : v ?? null;
+  return JSON.stringify(norm(a ?? {})) === JSON.stringify(norm(b ?? {}));
 }

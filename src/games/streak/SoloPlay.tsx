@@ -22,7 +22,21 @@ import { useTicker } from '../engine/useTicker';
 
 /** Solo bookmark: the round plus what the screen needs to resume (rules 7, 10). */
 type SoloSave = { round: Round; style: Style; lengthSec: number };
-const bestKey = (style: Style, len: number) => `streak:best:${style}:${len}`;
+/** Best scores per style and length, in one map so they can sync to the account ('streak:best'). */
+const BEST_KEY = 'streak:best';
+const oldBestKey = (style: Style, len: number) => `streak:best:${style}:${len}`;
+
+/** Saves a new best and returns the old one. Bests saved before the shared map are folded in once. */
+async function recordBest(style: Style, len: number, score: number) {
+  const map = (await engine.kv.get<Record<string, number>>(BEST_KEY)) ?? {};
+  const slot = `${style}:${len}`;
+  const legacy = await engine.kv.get<number>(oldBestKey(style, len));
+  if (legacy != null) await engine.kv.remove(oldBestKey(style, len));
+  const old = Math.max(map[slot] ?? 0, legacy ?? 0);
+  const isNew = score > old;
+  if (isNew || legacy != null) await engine.kv.set(BEST_KEY, { ...map, [slot]: Math.max(old, score) });
+  return { old, isNew };
+}
 
 /** Solo (SM3, SM4, SM11, SM16): one timed round, helpers for tokens, EXP = 2 per right answer up to 60 (SM16), misses go to Learn. */
 export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
@@ -84,11 +98,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
         });
       }
       if (next.phase === 'over' && prev.phase !== 'over') {
-        engine.kv.get<number>(bestKey(style, lengthSec)).then((old) => {
-          const isNew = next.score > (old ?? 0);
-          if (isNew) engine.kv.set(bestKey(style, lengthSec), next.score);
-          setBest({ old: old ?? 0, isNew });
-        });
+        recordBest(style, lengthSec, next.score).then(setBest);
       }
     },
     [play, style, lengthSec],
