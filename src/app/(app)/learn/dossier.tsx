@@ -1,4 +1,5 @@
 import { LinearGradient } from 'expo-linear-gradient';
+import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
@@ -7,7 +8,8 @@ import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from '
 import { Screen } from '@/components/Screen';
 import { Back } from '@/components/Back';
 import { DISCLAIMER } from '@/features/info/content';
-import { DOSSIER, type Field } from '@/features/learn/data';
+import { DOSSIERS, FIELDS, bookOf, noteOpened, titleOf } from '@/features/learn/library';
+import { useLearn } from '@/features/learn/useLearn';
 import { useLearnColors } from '@/features/learn/palette';
 import { VText } from '@/features/learn/VText';
 import { useTheme } from '@/state/app';
@@ -17,36 +19,60 @@ import { F } from '@/theme/tokens';
 // Folder tab heights from the locked preview (they size to their labels).
 const TAB_H = [69, 51, 51, 79, 56];
 
-/** A disease dossier: a folder card whose five tabs on the right switch the field. */
+/** A disease dossier (?id=canonical id): a folder card whose five tabs on the right switch the field. */
 export default function DossierPage() {
   const t = useTheme();
   const c = useLearnColors(t.mode);
   const [on, setOn] = useState(0);
+  const { id } = useLocalSearchParams<{ id?: string }>();
+  const d = id ? DOSSIERS.get(id) : undefined;
+  const book = d ? bookOf(d.id) : undefined;
+  const { data } = useLearn();
+  const n = d ? (data?.missed.get(d.id)?.count ?? 0) : 0;
+  useEffect(() => {
+    if (d) void noteOpened(d.id);
+  }, [d]);
+  if (!d) {
+    return (
+      <Screen tab="learn" glow={6}>
+        <View style={s.dpb}>
+          <Back label="Dossiers" fallback="/learn" />
+          <Text style={[s.dmT, { color: c.mute }]}>This dossier is not in the library.</Text>
+        </View>
+      </Screen>
+    );
+  }
+  const title = titleOf(d.name);
+  const fields = FIELDS.map((f) => ({ ...f, text: d[f.key] }));
   return (
     <Screen tab="learn" glow={6}>
       <View style={s.dpb}>
         <View style={s.dtop}>
-          <Back label={DOSSIER.shelf} fallback="/learn/shelf" />
-          <Text style={[s.ms, { color: c.miss }]}>{DOSSIER.status.toUpperCase()}</Text>
+          <Back label={book?.spine ?? 'Dossiers'} fallback={book ? `/learn/shelf?book=${book.key}` : '/learn'} />
+          {n ? <Text style={[s.ms, { color: c.miss }]}>{(n === 1 ? 'Missed once' : n === 2 ? 'Missed twice' : `Missed ${n} times`).toUpperCase()}</Text> : null}
         </View>
         <Text style={[s.dt, { color: t.fg }]}>
-          {DOSSIER.first} <Text style={{ color: t.accent, fontFamily: F.displayItalic }}>{DOSSIER.em}</Text>
+          {title.first ? `${title.first} ` : ''}
+          <Text style={{ color: t.accent, fontFamily: F.displayItalic }}>{title.em}</Text>
         </Text>
         <View style={s.dm}>
           <View style={[s.sw, { backgroundColor: c.swatch, borderColor: c.swatchLine }]} />
-          <Text style={[s.dmT, { color: c.mute }]}>{DOSSIER.meta}</Text>
+          <Text style={[s.dmT, { color: c.mute }]} numberOfLines={1}>
+            {book ? book.name : 'Dossier'}
+            {d.name !== `${title.first} ${title.em}`.trim() ? ` · ${d.name}` : ''}
+          </Text>
         </View>
         <View style={s.fold}>
           <View style={[s.fcard, { borderColor: c.cardLine, boxShadow: c.cardShadow }]}>
             <LinearGradient colors={[c.fcardA, c.fcardB]} style={[StyleSheet.absoluteFill, s.fbg]} />
-            {DOSSIER.fields.map((f, i) => (
+            {fields.map((f, i) => (
               <Pane key={f.key} f={f} on={i === on} />
             ))}
             {/* Inside the folder's empty foot: below it the Games button covers the page. */}
             <Text style={[s.dmT, s.note, { color: c.mute }]}>{DISCLAIMER}</Text>
           </View>
           <View style={s.ftabs}>
-            {DOSSIER.fields.map((f, i) => {
+            {fields.map((f, i) => {
               const sel = i === on;
               return (
                 <Pressable
@@ -71,7 +97,7 @@ export default function DossierPage() {
 }
 
 /** One field of the folder: fades and settles into place when its tab is chosen. */
-function Pane({ f, on }: { f: Field; on: boolean }) {
+function Pane({ f, on }: { f: { key: string; label: string; text: string }; on: boolean }) {
   const t = useTheme();
   const p = useSharedValue(on ? 1 : 0);
   useEffect(() => {

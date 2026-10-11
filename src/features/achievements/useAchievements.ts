@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { engine } from '@/games/engine';
 import { useSession } from '@/games/shell/session';
+import { learnCounts } from '@/features/learn/library';
 import { supabase } from '@/lib/supabase';
 import { syncAccount } from '@/lib/sync';
 import { useFriends } from '@/state/friends';
@@ -31,11 +32,12 @@ const paidTiers = (ledger: { kind: string; reason: string }[]) => {
 
 /** Everything the counters need, read from the phone. */
 export async function loadAchievements(friendIds: string[], me?: string): Promise<AchRow[]> {
-  const [{ plays, items }, ledger, bal, best] = await Promise.all([
+  const [{ plays, items }, ledger, bal, best, learn] = await Promise.all([
     engine.recorder.all(),
     engine.wallet.ledger(),
     engine.wallet.balance(),
     engine.kv.get<Record<number, number>>('crossword:best'),
+    learnCounts(),
   ]);
   const counts = achievementProgress({
     plays,
@@ -44,8 +46,8 @@ export async function loadAchievements(friendIds: string[], me?: string): Promis
     friendIds,
     prizeDays: ledger.filter((e) => e.kind === 'daily').length,
     level: bal.level,
-    reviewCards: 0, // Learn review is look-only until real data (stage 6)
-    dossiersOpened: 0,
+    reviewCards: learn.reviewCards,
+    dossiersOpened: learn.dossiersOpened,
     crosswordThreeStars: Object.values(best ?? {}).filter((s) => s === 3).length,
   });
   const paid = paidTiers(ledger);
