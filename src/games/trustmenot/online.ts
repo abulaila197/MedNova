@@ -2,7 +2,7 @@
 // the clocks (opening, the two Gap steps, each round stage, the ledger), the careful bot that stands in for a
 // disconnected player, and each phone's own envelope. The same code runs in the 'trust-me-not' edge function.
 import {
-  allSkipped, awards, botActions, createGame, epilogue, exp, gapSeconds, learnFeed, living, ranking, rules as R, starsFor,
+  allSkipped, awards, botActions, createGame, epilogue, exp, gapSeconds, learnFeed, learnKeys, living, ranking, rules as R, starsFor,
   step, timeLimitMs, viewFor, type Action, type Field, type Game, type PlayerId, type QuestionPools,
 } from './engine';
 import { extrasFor } from './extras';
@@ -230,6 +230,7 @@ export function envelopeFor(o: OnlineTmn, me: PlayerId) {
           epilogue: epilogue(g, me),
           exp: exp(g, me),
           missed: learnFeed(g, me),
+          keys: learnKeys(g, me),
           stars: Object.fromEntries(g.players.map((p) => [p.id, starsFor(g, p.id)])),
           missions: g.missions,
           log: g.log,

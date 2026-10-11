@@ -83,6 +83,9 @@ export function exp(g: Game, id: PlayerId): number {
 /** Misses for the Learn feed: solo rounds only (§7.3). */
 export const learnFeed = (g: Game, id: PlayerId) => g.players.find((p) => p.id === id)?.solo.missed ?? [];
 
+/** The right choice of each of those misses, only now that the year is over. */
+export const learnKeys = (g: Game, id: PlayerId) => g.players.find((p) => p.id === id)?.solo.keys ?? {};
+
 /**
  * Epilogue line (writing file §1): the first rule that fits picks the line number (1-40), with the
  * values its placeholders need. The app holds the 40 texts.

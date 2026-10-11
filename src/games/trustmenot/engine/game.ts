@@ -803,7 +803,10 @@ function recordAnswers(g: Game, r: RoundRun, solo: boolean, learn: boolean) {
         if (ok) p.solo.right++;
         else {
           p.solo.wrong++;
-          if (learn) p.solo.missed.push(r.questions[q].id);
+          if (learn) {
+            p.solo.missed.push(r.questions[q].id);
+            (p.solo.keys ??= {})[r.questions[q].id] = r.questions[q].answer;
+          }
         }
       }
     });

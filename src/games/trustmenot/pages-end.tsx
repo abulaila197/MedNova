@@ -542,7 +542,7 @@ function useFinish(env: PageProps['env'], roomId: string) {
       return {
         seat: 0, itemId: id, answerKey: q.dossier ?? null, outcome: 'wrong' as const, answersGiven: [], timeMs: 0, hintsUsed: 0, revealsUsed: 0, points: 0,
         feedsLearn: true, // §7.3: misses in solo rounds go to Today's review
-        gameData: { topic: q.topic, room: roomId, match },
+        gameData: { topic: q.topic, room: roomId, match, right: rv.keys?.[id] },
       };
     });
     finishOnline(def, match, { settings: { room: roomId, match, exp: rv.exp }, seats, standings, score: score(v.me), items }).catch(() => {

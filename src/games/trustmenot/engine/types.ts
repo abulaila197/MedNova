@@ -66,7 +66,8 @@ export type Player = {
   correct: number[];
   answered: number;
   totalMs: number;
-  solo: { right: number; wrong: number; missed: string[] };
+  /** keys: the right choice of each missed question, sent at the reveal so Today's review can show the answer. */
+  solo: { right: number; wrong: number; missed: string[]; keys?: Record<string, number> };
   stars: Record<PlayerId, number>;
   whispers: { month: number; to: PlayerId; text: string; believed?: boolean }[];
   ghostTieBreaks: number;
