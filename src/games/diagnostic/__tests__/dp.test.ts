@@ -66,12 +66,13 @@ test('snapshot saves a paused run at the exact clock', () => {
   assert.equal(elapsed(back, 503_000), 15_000);
 });
 
-test('search: prefix, alias, min 2 letters, max 5', () => {
+test('search: prefix, alias, min 3 letters, max 5', () => {
   const idx = buildIndex([
     { id: 'mi', label: 'Myocardial Infarction', aliases: ['MI', 'Heart attack'], answer: true, canonical_id: 'x' },
     { id: 'my', label: 'Myasthenia Gravis', aliases: [], answer: false, canonical_id: null },
   ]);
-  assert.deepEqual(search(idx, 'm'), []);
-  assert.deepEqual(search(idx, 'my').map((e) => e.id), ['my', 'mi']);
+  assert.deepEqual(search(idx, 'my'), []);
+  assert.deepEqual(search(idx, 'mya').map((e) => e.id), ['my']);
+  assert.deepEqual(search(idx, 'myo').map((e) => e.id), ['mi']);
   assert.deepEqual(search(idx, 'heart').map((e) => e.id), ['mi']);
 });

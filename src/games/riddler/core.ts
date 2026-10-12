@@ -29,7 +29,7 @@ export const RD = {
   expPerStar: 4,
   hintPrice: 1, // as coded: 1 token shows the definition
   /** Answer box (as coded): suggestions from 2 letters, up to 5. */
-  minQuery: 2,
+  minQuery: 3,
   maxSuggestions: 5,
 };
 

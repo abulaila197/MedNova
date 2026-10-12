@@ -217,7 +217,7 @@ function Picker({ kind, initial, onCancel, onSubmit }: { kind: keyof typeof PICK
   const p = PICK[kind];
   const [q, setQ] = useState('');
   const [chosen, setChosen] = useState<string[]>(initial);
-  const hits = useMemo(() => searchNames(DIAG_INDEX, q, { min: 2, max: 7, skip: (d) => chosen.includes(d.label) }), [q, chosen]);
+  const hits = useMemo(() => searchNames(DIAG_INDEX, q, { min: 3, max: 7, skip: (d) => chosen.includes(d.label) }), [q, chosen]);
   const full = chosen.length >= p.max;
   const add = (label: string) => {
     if (p.max === 1) setChosen([label]);
@@ -259,7 +259,7 @@ function Picker({ kind, initial, onCancel, onSubmit }: { kind: keyof typeof PICK
             <T size={13.5}>{diagName(d.label)}</T>
           </Pressable>
         ))}
-        {q.trim().length >= 2 && !hits.length ? <T size={12} color={NR.dim}>No diagnosis by that name.</T> : null}
+        {q.trim().length >= 3 && !hits.length ? <T size={12} color={NR.dim}>No diagnosis by that name.</T> : null}
       </ScrollView>
       <View style={{ flexDirection: 'row', gap: u(8) }}>
         <Btn ghost label="Back" onPress={onCancel} style={{ flex: 1 }} />

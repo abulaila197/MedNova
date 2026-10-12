@@ -12,7 +12,7 @@ export const DP = {
   fullBonusUntilMs: 30_000,
   zeroBonusAtMs: 120_000,
   hintTokenCost: 1,
-  search: { minQueryLength: 2, maxSuggestions: 5 },
+  search: { minQueryLength: 3, maxSuggestions: 5 },
 };
 
 export type Difficulty = 'Easy' | 'Medium' | 'Hard' | 'Extreme';
