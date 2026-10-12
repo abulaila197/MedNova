@@ -150,7 +150,7 @@ test('achievements: offline games, inputs, and house call with friends only', ()
 test('achievements: every key has a count and tiers follow the goals', () => {
   const r = achievementProgress(base());
   assert.deepEqual(Object.keys(r).sort(), ACHIEVEMENTS.map((a) => a.key).sort());
-  assert.equal(ACHIEVEMENTS.length, 22);
+  assert.equal(ACHIEVEMENTS.length, 23);
   assert.equal(tiersReached('hot_streak', 9), 0);
   assert.equal(tiersReached('hot_streak', 10), 1);
   assert.equal(tiersReached('hot_streak', 34), 2);
@@ -170,4 +170,7 @@ test('achievements: invites, challenges and written cases come from the server; 
   assert.equal(achievementProgress(base({ plays: [practice], items: [item(practice)] })).first_rounds, 0);
   assert.deepEqual(tierTokens('case_writer'), [3, 4, 5]);
   assert.deepEqual(tierTokens('recruiter'), [1, 3, 5]);
+  assert.deepEqual(tierTokens('ad_watcher'), [5, 10, 20]);
+  assert.equal(achievementProgress(base({ social: { ad_watcher: 50 } })).ad_watcher, 50);
+  assert.equal(tiersReached('ad_watcher', 50), 2);
 });

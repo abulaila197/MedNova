@@ -20,6 +20,7 @@ export type AchKey =
   | 'recruiter'
   | 'challenger'
   | 'case_writer'
+  | 'ad_watcher'
   | 'pass_stethoscope'
   | 'back_to_basics'
   | 'dossier_reader'
@@ -44,6 +45,7 @@ export const ACHIEVEMENTS: readonly { key: AchKey; name: string; what: string; g
   { key: 'recruiter', name: 'Recruiter', what: 'Invite friends who join', goals: [3, 10, 30] },
   { key: 'challenger', name: 'Challenger', what: 'Challenge friends', goals: [10, 20, 30] },
   { key: 'case_writer', name: 'Case Writer', what: 'Write your own cases', goals: [5, 10, 20] },
+  { key: 'ad_watcher', name: 'Commercial Break', what: 'Watch ads', goals: [20, 50, 100] },
   { key: 'pass_stethoscope', name: 'Pass the Stethoscope', what: 'Finish pass-the-phone games', goals: [10, 50, 200] },
   { key: 'back_to_basics', name: 'Back to Basics', what: 'Clear review cards', goals: [20, 200, 1000] },
   { key: 'dossier_reader', name: 'Dossier Reader', what: 'Open dossiers', goals: [50, 200, 511] },
@@ -55,11 +57,11 @@ export const ACHIEVEMENTS: readonly { key: AchKey; name: string; what: string; g
 /** Tokens paid for bronze, silver and gold. */
 export const TIER_TOKENS = [1, 3, 5] as const;
 
-/** Case Writer pays 3/4/5 (AC9); every other achievement pays TIER_TOKENS. */
-export const tierTokens = (key: AchKey): readonly number[] => (key === 'case_writer' ? [3, 4, 5] : TIER_TOKENS);
+/** Case Writer pays 3/4/5 (AC9) and Commercial Break 5/10/20; every other achievement pays TIER_TOKENS. */
+export const tierTokens = (key: AchKey): readonly number[] => (key === 'case_writer' ? [3, 4, 5] : key === 'ad_watcher' ? [5, 10, 20] : TIER_TOKENS);
 
-/** Counts only the server knows (invites redeemed, challenges sent, cases written). */
-export type SocialCounts = Partial<Record<'recruiter' | 'challenger' | 'case_writer', number>>;
+/** Counts only the server knows (invites redeemed, challenges sent, cases written, ads watched). */
+export type SocialCounts = Partial<Record<'recruiter' | 'challenger' | 'case_writer' | 'ad_watcher', number>>;
 
 export type AchInputs = {
   plays: Play[];
@@ -141,6 +143,7 @@ export function achievementProgress(i: AchInputs): Record<AchKey, number> {
     recruiter: i.social?.recruiter ?? 0,
     challenger: i.social?.challenger ?? 0,
     case_writer: i.social?.case_writer ?? 0,
+    ad_watcher: i.social?.ad_watcher ?? 0,
     pass_stethoscope: plays.filter((p) => p.mode === 'offline').length,
     back_to_basics: i.reviewCards,
     dossier_reader: i.dossiersOpened,

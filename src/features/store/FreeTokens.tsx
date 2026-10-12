@@ -8,6 +8,7 @@ import { create } from 'zustand';
 
 import { Text } from '@/components/AppText';
 import { Sheet } from '@/components/Sheet';
+import { ADS_LIVE } from '@/features/freeplays/paywall';
 import { Kicker } from '@/features/info/ui';
 import { useSession } from '@/games/shell/session';
 import { syncAccount } from '@/lib/sync';
@@ -90,6 +91,13 @@ const I: Record<string, Icon> = {
       <Path d="M14.5 6v12" strokeDasharray="1.6 2" />
     </Svg>
   ),
+  ad: ({ size, color }) => (
+    <Svg width={size} height={size} viewBox="0 0 24 24" stroke={color} {...stroke}>
+      <Rect x="3" y="5" width="18" height="12" rx="2.5" />
+      <Path d="M10.5 8.8v4.4l3.8-2.2z" />
+      <Path d="M8 20h8" />
+    </Svg>
+  ),
   globe: ({ size, color }) => (
     <Svg width={size} height={size} viewBox="0 0 24 24" stroke={color} {...stroke}>
       <Circle cx="12" cy="12" r="8.5" />
@@ -113,7 +121,11 @@ const WAYS: Way[] = [
   { key: 'invite', label: 'Invite a friend with your code', tokens: 10, each: true, act: 'My code', icon: I.invite },
 ];
 
-type FreeStatus = { done: string[]; ambassador: 'pending' | 'approved' | 'rejected' | null; invites: number; invite_tokens: number; redeemed: boolean; downloads: number | null; goal: number };
+/** Store ads (1 token each, 5 a day, Yazan 2026-10-12; separate from play-again ads, which give a play and no tokens; the server's ad_watched holds the same numbers). Locked "Coming soon" until ads are live. */
+const AD_WAY: Way = { key: 'ad', label: 'Watch an ad', tokens: 1, each: true, act: 'Watch', icon: I.ad };
+const AD_CAP = 5;
+
+type FreeStatus = { ads_today?: number; done: string[]; ambassador: 'pending' | 'approved' | 'rejected' | null; invites: number; invite_tokens: number; redeemed: boolean; downloads: number | null; goal: number };
 type Sheet = 'story' | 'feedback' | 'ambassador' | null;
 
 /** What this player already collected, and which sheet is open (drawn by the Store page above its scroll). */
@@ -178,6 +190,16 @@ export function FreeTokens({ t }: { t: Theme }) {
     if (w.key === 'ambassador' && st?.ambassador === 'pending') return;
     useFree.setState({ sheet: w.key as Sheet });
   };
+  // ADS_LIVE: show the rewarded ad first and stop here unless it was watched to the end.
+  const watchAd = async () => {
+    if (busy || !ADS_LIVE) return;
+    setBusy('ad');
+    try {
+      await call('ad_watched', { source: 'store' });
+      await settle();
+    } catch {}
+    setBusy(null);
+  };
   const label = (w: Way) => (w.key === 'story' ? `${w.label} · ${stories} of 5` : w.key === 'invite' && st ? `${w.label} · ${st.invite_tokens} of 150` : w.label);
   const act = (w: Way) => (!signedIn ? 'Sign in' : w.key === 'ambassador' && st?.ambassador === 'pending' ? 'In review' : w.act);
   return (
@@ -186,6 +208,7 @@ export function FreeTokens({ t }: { t: Theme }) {
       <Kicker inSec>Free tokens</Kicker>
       <Row>
         <Global t={t} st={st} signedIn={signedIn} />
+        <WayCard t={t} w={AD_WAY} label={ADS_LIVE && st ? `${AD_WAY.label} · ${st.ads_today ?? 0} of ${AD_CAP} today` : AD_WAY.label} act={signedIn ? AD_WAY.act : 'Sign in'} done={(st?.ads_today ?? 0) >= AD_CAP} locked={!ADS_LIVE} busy={busy === 'ad'} onPress={() => (signedIn ? watchAd() : router.navigate('/auth'))} />
         {WAYS.map((w) => (
           <WayCard key={w.key} t={t} w={w} label={label(w)} act={act(w)} done={isDone(w)} busy={busy === w.key} onPress={() => tap(w)} />
         ))}
@@ -202,17 +225,17 @@ function Row({ children }: { children: ReactNode }) {
   );
 }
 
-function WayCard({ t, w, label, act, done, busy, onPress }: { t: Theme; w: Way; label: string; act: string; done: boolean; busy: boolean; onPress: () => void }) {
+function WayCard({ t, w, label, act, done, locked, busy, onPress }: { t: Theme; w: Way; label: string; act: string; done: boolean; locked?: boolean; busy: boolean; onPress: () => void }) {
   return (
-    <Pressable onPress={done ? undefined : onPress} accessibilityRole="button" accessibilityLabel={`${w.label}, ${w.tokens} tokens`} style={[s.card, { backgroundColor: t.panel, borderColor: t.panelLine }, busy && { opacity: 0.6 }]}>
+    <Pressable onPress={done || locked ? undefined : onPress} accessibilityRole="button" accessibilityLabel={`${w.label}, ${w.tokens} tokens`} style={[s.card, { backgroundColor: t.panel, borderColor: t.panelLine }, busy && { opacity: 0.6 }]}>
       <View style={[s.ic, { backgroundColor: t.mode === 'light' ? 'rgba(229,131,58,0.1)' : 'rgba(111,214,255,0.1)' }]}>{w.icon({ size: u(17), color: t.accent })}</View>
       <Text style={[s.cN, { color: t.fg }]}>{`+${w.tokens}`}</Text>
       <Text style={[s.cU, { color: t.mute }]} numberOfLines={2}>
         {w.each ? `${label} · each` : label}
       </Text>
-      {done ? (
+      {done || locked ? (
         <View style={[s.cBtn, s.ghost, { borderColor: t.panelLine }]}>
-          <Text style={[s.cBtnT, { color: t.mute }]}>Collected ✓</Text>
+          <Text style={[s.cBtnT, { color: t.mute }]}>{locked ? 'Coming soon' : w.each ? 'Back tomorrow' : 'Collected ✓'}</Text>
         </View>
       ) : (
         <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={s.cBtn}>

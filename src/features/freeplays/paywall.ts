@@ -7,6 +7,7 @@ import { engine, PLAY_PRICE } from '@/games/engine';
 import type { GameKey } from '@/games/engine/types';
 import { useSession } from '@/games/shell/session';
 import { isSubscribed } from '@/features/store/billing';
+import { call } from '@/online/api';
 
 /** Ads go live once the store accounts exist (EC2); until then 'Watch an ad' gives the play free (TR5). */
 export const ADS_LIVE = false;
@@ -33,6 +34,8 @@ export async function payWithAd() {
   const a = usePaywall.getState().ask;
   if (!a) return;
   // ADS_LIVE: show the rewarded ad here and stop if it was not watched to the end.
+  // Real ads count toward the Ad Watcher achievement; the free stand-in does not.
+  if (ADS_LIVE) await call('ad_watched', { source: 'play' }).catch(() => {});
   await engine.gate.addPlay(a.game);
   close(true);
 }

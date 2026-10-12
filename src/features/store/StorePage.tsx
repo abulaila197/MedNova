@@ -1,6 +1,6 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import { router } from 'expo-router';
-import { useState } from 'react';
+import { router, useFocusEffect } from 'expo-router';
+import { useCallback, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import { Text } from '@/components/AppText';
@@ -13,7 +13,7 @@ import { u } from '@/theme/scale';
 import type { Theme } from '@/theme/tokens';
 import { F } from '@/theme/tokens';
 
-import { FreeSheets, FreeTokens } from './FreeTokens';
+import { FreeSheets, FreeTokens, useFree } from './FreeTokens';
 import { buy, restore, useSubscription, type BuyResult } from './billing';
 import { PACKS, SUBSCRIPTION, type Pack } from './catalog';
 
@@ -34,6 +34,8 @@ export function StorePage() {
   const signedIn = !!useSession((x) => x.userId);
   const { tokens } = useBalance();
   const until = useSubscription((x) => x.until);
+  // A writing sheet never stays open over another page (the Store stays mounted under the stack).
+  useFocusEffect(useCallback(() => () => useFree.setState({ sheet: null }), []));
   const subscribed = (until ?? 0) > Date.now();
   const [busy, setBusy] = useState<string | null>(null);
   const [said, setSaid] = useState('');
