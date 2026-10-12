@@ -106,7 +106,8 @@ export const diagnosticPursuit: GameDef = {
   Online: OnlinePlay,
   // DP4: EXP = points ÷ 10, each case counted up to the Solo most (120 points = 12 EXP), online too (DPN3: race bonuses
   // still rank players, they don't add EXP).
-  exp: (_score, items) => Math.floor(items.reduce((a, i) => a + Math.min(Number(i.points) || 0, MAX_CASE_POINTS), 0) / 10),
+  // Playing your own case is practice: no EXP (Yazan 2026-10-12).
+  exp: (_score, items, settings) => (settings?.custom ? 0 : Math.floor(items.reduce((a, i) => a + Math.min(Number(i.points) || 0, MAX_CASE_POINTS), 0) / 10)),
   // DPO6 (revised): Offline earns no EXP, like Medicordle; the owner's misses still feed Learn.
   expCap: (settings, mode) => (mode === 'offline' ? 0 : Math.floor((Number(settings.cases) || 5) * MAX_CASE_POINTS / 10)),
   itemLabel: (item) => {

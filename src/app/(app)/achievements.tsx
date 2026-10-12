@@ -5,7 +5,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 import { Screen } from '@/components/Screen';
 import { type AchRow, useAchievements } from '@/features/achievements/useAchievements';
-import { TIER_TOKENS } from '@/features/achievements/progress';
+import { tierTokens } from '@/features/achievements/progress';
 import { InfoScroll, Kicker, s as ui, useInfo } from '@/features/info/ui';
 import type { Theme } from '@/theme/tokens';
 import { u } from '@/theme/scale';
@@ -57,7 +57,7 @@ function CollectPill({ r, t, busy, onCollect, small = false }: Omit<RowP, 'canCo
   return (
     <Pressable onPress={busy ? undefined : onCollect} accessibilityRole="button" style={busy && { opacity: 0.6 }}>
       <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={[s.pill, small && s.pillS]}>
-        <Text style={[s.pillT, { color: t.onGrad }]}>{`Collect +${TIER_TOKENS[r.paid]}`}</Text>
+        <Text style={[s.pillT, { color: t.onGrad }]}>{`Collect +${tierTokens(r.key)[r.paid]}`}</Text>
       </LinearGradient>
     </Pressable>
   );

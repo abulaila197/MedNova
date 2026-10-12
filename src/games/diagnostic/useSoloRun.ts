@@ -23,7 +23,9 @@ export function useSoloRun({ play, onFinish }: Pick<PlayProps, 'play' | 'onFinis
       // A case that has left the bank since starts the run fresh.
       let r = saved && saved.caseIds.every((id) => caseById.has(id)) ? saved : null;
       if (!r) {
-        const ids = await engine.picker.pick(play.game, poolFor(play.settings.difficulty as Difficulty), Number(play.settings.cases) || 5);
+        // Your own approved case (practice: one case, no EXP, no free play, not fed to Learn).
+        const custom = typeof play.settings.custom === 'string' && caseById.has(play.settings.custom) ? play.settings.custom : null;
+        const ids = custom ? [custom] : await engine.picker.pick(play.game, poolFor(play.settings.difficulty as Difficulty), Number(play.settings.cases) || 5);
         r = startRun(ids, Date.now());
       }
       if (live) {
@@ -50,7 +52,7 @@ export function useSoloRun({ play, onFinish }: Pick<PlayProps, 'play' | 'onFinis
       if (next.results.length > prev.results.length) {
         const r = next.results[next.results.length - 1];
         const c = caseById.get(r.caseId)!;
-        engine.picker.markSeen(play.game, r.caseId);
+        if (!play.settings.custom) engine.picker.markSeen(play.game, r.caseId);
         recordItem(play, {
           seat: 0,
           itemId: r.caseId,
@@ -61,7 +63,7 @@ export function useSoloRun({ play, onFinish }: Pick<PlayProps, 'play' | 'onFinis
           hintsUsed: r.hint ? 1 : 0,
           revealsUsed: r.reveals,
           points: r.points,
-          feedsLearn: r.outcome !== 'right',
+          feedsLearn: r.outcome !== 'right' && !play.settings.custom,
           gameData: { cluesShown: r.cluesShown, cluePoints: r.cluePoints, speedBonus: r.speedBonus, difficulty: c.difficulty },
         });
       }

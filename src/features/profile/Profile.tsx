@@ -7,7 +7,7 @@ import { LevelBadge, useBalance } from '@/components/LevelBadge';
 import { Display } from '@/components/Txt';
 import { Fade } from '@/components/Fade';
 import { useSvgId } from '@/components/svgId';
-import { FriendsSection } from '@/features/profile/Friends';
+import { FriendCount } from '@/features/profile/Friends';
 import { PlanetSystem } from '@/features/profile/PlanetSystem';
 import { deleteAccount, useAccount } from '@/state/account';
 import { useTheme } from '@/state/app';
@@ -86,7 +86,7 @@ export function Profile() {
             <Text style={[s.tdN, { color: t.fg }]} numberOfLines={1}>{pct(g.acc)}</Text>
           </View>
         ))}
-        <FriendsSection t={t} />
+        <FriendCount t={t} />
         {profile ? <DeleteAccount t={t} /> : null}
       </ScrollView>
     </Fade>

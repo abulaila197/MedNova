@@ -1,5 +1,5 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import { router, useLocalSearchParams } from 'expo-router';
+import { router } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
@@ -13,7 +13,7 @@ import { u } from '@/theme/scale';
 import type { Theme } from '@/theme/tokens';
 import { F } from '@/theme/tokens';
 
-import { FreeTokens, StorySheet } from './FreeTokens';
+import { FreeSheets, FreeTokens } from './FreeTokens';
 import { buy, restore, useSubscription, type BuyResult } from './billing';
 import { PACKS, SUBSCRIPTION, type Pack } from './catalog';
 
@@ -27,7 +27,7 @@ const SAY: Record<BuyResult, string> = {
 
 const dateOf = (ms: number) => new Date(ms).toLocaleDateString(undefined, { day: 'numeric', month: 'short' });
 
-/** The Store (MN3-MN8, look C "Small cards"): the monthly subscription as a banner, the token packs in a sideways row. */
+/** The Store (MN3-MN8, look C "Small cards"): the monthly subscription as a banner, the free tokens row, then the token packs. */
 export function StorePage() {
   const c = useInfo();
   const t = c.t;
@@ -37,7 +37,6 @@ export function StorePage() {
   const subscribed = (until ?? 0) > Date.now();
   const [busy, setBusy] = useState<string | null>(null);
   const [said, setSaid] = useState('');
-  const look = useLocalSearchParams<{ look?: string }>().look === 'b' ? 'b' : 'a';
 
   const run = async (id: string, act: () => Promise<BuyResult>) => {
     if (!signedIn) return router.navigate('/auth'); // MN8: guests sign in first
@@ -104,6 +103,8 @@ export function StorePage() {
           </LinearGradient>
         </Pressable>
 
+        <FreeTokens t={t} />
+
         <View style={{ height: u(14) }} />
         <Kicker inSec>Token packs</Kicker>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={s.rowScroll} contentContainerStyle={s.row} snapToInterval={CARD + GAP} decelerationRate="fast">
@@ -111,14 +112,13 @@ export function StorePage() {
             <PackCard key={p.id} t={t} p={p} i={i} busy={busy === p.id} onBuy={() => run(p.id, () => buy(p.id))} />
           ))}
         </ScrollView>
-        <FreeTokens t={t} look={look} />
 
         <Pressable onPress={() => run('restore', restore)} style={s.restore} accessibilityRole="button">
           <Text style={[s.restoreT, { color: t.accent }]}>Restore purchases</Text>
         </Pressable>
         <Text style={[s.foot, { color: c.mute }]}>Paid through the App Store or Google Play. Tokens and the subscription stay on your account.</Text>
       </InfoScroll>
-      <StorySheet t={t} />
+      <FreeSheets t={t} />
     </Screen>
   );
 }

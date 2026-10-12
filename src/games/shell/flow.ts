@@ -13,9 +13,9 @@ export async function trialsLeft(game: GameKey, mode: Mode) {
   return Math.max(0, GUEST_TRIALS - (await engine.gate.used(game)));
 }
 
-/** Medicordle's Daily word never uses a free play (TR3). */
+/** Medicordle's Daily word never uses a free play (TR3), nor does playing your own custom case (practice). */
 export const alwaysFree = (play: Pick<Play, 'game' | 'mode' | 'settings'>) =>
-  play.game === 'nova-medicordle' && play.mode === 'solo' && play.settings.word !== 'endless';
+  (play.game === 'nova-medicordle' && play.mode === 'solo' && play.settings.word !== 'endless') || !!play.settings.custom;
 
 /** Counts a play against the free plays once (TR2: at its first answer; online: when the match ends). */
 export const countPlay = (play: Play) => engine.gate.countPlay(play.game, play.id, !!play.userId, alwaysFree(play));

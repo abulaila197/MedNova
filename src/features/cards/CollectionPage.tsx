@@ -1,33 +1,56 @@
-import { useLocalSearchParams } from 'expo-router';
-import { useState } from 'react';
-import { Modal, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { router, useFocusEffect } from 'expo-router';
+import { useCallback, useState } from 'react';
+import { Modal, Pressable, StyleSheet, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming, runOnJS } from 'react-native-reanimated';
-import { create } from 'zustand';
 
 import { Text } from '@/components/AppText';
+import { Congrats } from '@/components/Congrats';
 import { Screen } from '@/components/Screen';
+import { useSession } from '@/games/shell/session';
 import { InfoScroll, Kicker, s as ui, useInfo } from '@/features/info/ui';
-import { u, useScreen } from '@/theme/scale';
+import { u } from '@/theme/scale';
 import type { Theme } from '@/theme/tokens';
 import { F } from '@/theme/tokens';
 
-import { DECK, type HuntCard } from './deck';
+import { DECK, HUNT_PRIZE, type HuntCard } from './deck';
+import { loadHunt, redeemHuntPrize, useHunt } from './hunt';
 import { CardBack, RATIO, Sleeve } from './Sleeve';
-
-/** Cards found so far (preview: a sample hand until the hunt is wired to the account). */
-export const useHunt = create<{ found: string[] }>(() => ({ found: ['bolt', 'iris', 'atlas', 'nova', 'yara'] }));
 
 /** My card collection: every card in a glass saver; found ones open (front, then flip for the clue), locked ones are dimmed. */
 export function CollectionPage() {
   const c = useInfo();
   const t = c.t;
-  const look = useLocalSearchParams<{ look?: string }>().look === 'b' ? 'b' : 'a';
-  const found = useHunt((h) => h.found);
+  const signedIn = !!useSession((x) => x.userId);
+  const status = useHunt((h) => h.status);
+  const found = status?.found ?? [];
   const [open, setOpen] = useState<number | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [won, setWon] = useState(false);
+  const [err, setErr] = useState('');
+  useFocusEffect(
+    useCallback(() => {
+      loadHunt().catch(() => setErr('Could not load your cards. Check your connection.'));
+    }, [signedIn]),
+  );
+  const redeem = async () => {
+    if (busy) return;
+    setBusy(true);
+    setErr('');
+    try {
+      const r = await redeemHuntPrize();
+      if (r.ok) setWon(true);
+      else if (r.why !== 'done') setErr('Not redeemed yet. Try again in a moment.');
+    } catch {
+      setErr('Not redeemed. Check your connection and try again.');
+    }
+    setBusy(false);
+  };
+  const canRedeem = found.length === 9 && status?.prize === false;
   return (
     <Screen tab={null} glow={13}>
-      <InfoScroll contentStyle={look === 'b' ? { paddingHorizontal: 0 } : undefined}>
-        <View style={look === 'b' ? { paddingHorizontal: u(18) } : undefined}>
+      <InfoScroll>
+        <View>
           <Kicker>Treasure hunt</Kicker>
           <Text style={[ui.H, { color: c.fg, fontFamily: F.display }]}>
             {'My card '}
@@ -42,15 +65,32 @@ export function CollectionPage() {
             </View>
           </View>
           <Text style={[s.hint, { color: c.mute }]}>Tap a card to read it, then flip it for the clue.</Text>
+          {!signedIn ? (
+            <Pressable onPress={() => router.navigate('/auth')} style={[s.note, { borderColor: c.line, backgroundColor: c.surf }]} accessibilityRole="button">
+              <Text style={[s.noteT, { color: c.fg }]}>Sign in to find your first card and start the hunt.</Text>
+              <Text style={[s.noteA, { color: t.accent }]}>Sign in</Text>
+            </Pressable>
+          ) : null}
+          {canRedeem ? (
+            <Pressable onPress={redeem} accessibilityRole="button" style={[{ marginTop: u(12) }, busy && { opacity: 0.6 }]}>
+              <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.prize}>
+                <Text style={[s.prizeT, { color: t.onGrad }]}>{`All nine found. Redeem ${HUNT_PRIZE} tokens`}</Text>
+              </LinearGradient>
+            </Pressable>
+          ) : status?.prize ? (
+            <Text style={[s.hint, { color: t.accent, marginTop: u(8) }]}>{`Hunt complete. ${HUNT_PRIZE} tokens collected.`}</Text>
+          ) : null}
+          {err ? <Text style={[s.hint, { color: t.red, marginTop: u(8) }]}>{err}</Text> : null}
         </View>
-        {look === 'a' ? <Binder t={t} found={found} onOpen={setOpen} /> : <Showcase t={t} found={found} onOpen={setOpen} />}
+        <Binder t={t} found={found} onOpen={setOpen} />
       </InfoScroll>
       <Viewer t={t} i={open} onClose={() => setOpen(null)} />
+      <Congrats open={won} tokens={HUNT_PRIZE} title="The hunt is complete" line="Nine cards, nine missions, one weary medic. Your tokens are in your wallet." onClose={() => setWon(false)} />
     </Screen>
   );
 }
 
-/** Look A, "Binder page": all nine savers on one page, three by three. */
+/** Binder page (locked look A): all nine savers on one page, three by three. */
 function Binder({ t, found, onOpen }: { t: Theme; found: string[]; onOpen: (i: number) => void }) {
   const w = Math.floor((u(246) - u(10) * 2 - u(16) - 4) / 3);
   return (
@@ -64,47 +104,6 @@ function Binder({ t, found, onOpen }: { t: Theme; found: string[]; onOpen: (i: n
           </Pressable>
         );
       })}
-    </View>
-  );
-}
-
-/** Look B, "Showcase": one big saver at a time in a sideways row, with a strip of all nine underneath. */
-function Showcase({ t, found, onOpen }: { t: Theme; found: string[]; onOpen: (i: number) => void }) {
-  const { width } = useScreen();
-  const w = u(158);
-  const gap = u(16);
-  const side = (width - w) / 2;
-  const [at, setAt] = useState(0);
-  const k = DECK[at];
-  const has = found.includes(k.key);
-  return (
-    <View style={{ marginTop: u(14) }}>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        snapToInterval={w + gap}
-        decelerationRate="fast"
-        contentContainerStyle={{ paddingHorizontal: side, gap, paddingVertical: u(10) }}
-        onScroll={(e) => setAt(Math.max(0, Math.min(8, Math.round(e.nativeEvent.contentOffset.x / (w + gap)))))}
-        scrollEventThrottle={32}>
-        {DECK.map((d, i) => (
-          <Pressable key={d.key} disabled={!found.includes(d.key)} onPress={() => onOpen(i)} accessibilityRole="button" style={{ opacity: i === at ? 1 : 0.55, transform: [{ scale: i === at ? 1 : 0.9 }] }}>
-            <Sleeve t={t} card={d} w={w} locked={!found.includes(d.key)} />
-          </Pressable>
-        ))}
-      </ScrollView>
-      <View style={s.cap}>
-        <Text style={[s.capN, { color: has ? t.fg : t.mute }]}>{has ? k.name : 'Locked'}</Text>
-        <Text style={[s.capS, { color: t.mode === 'light' ? '#c98a1e' : '#e9b44c' }]}>{'★'.repeat(k.stars)}</Text>
-        <Text style={[s.capM, { color: t.mute }]}>{has ? 'FOUND · TAP TO OPEN' : 'FOLLOW THE CLUES TO FIND IT'}</Text>
-      </View>
-      <View style={s.strip}>
-        {DECK.map((d, i) => (
-          <View key={d.key} style={[s.mini, { borderColor: i === at ? t.accent : t.panelLine, backgroundColor: found.includes(d.key) ? (t.mode === 'light' ? 'rgba(229,131,58,0.15)' : 'rgba(111,214,255,0.14)') : 'transparent' }]}>
-            <Text style={[s.miniT, { color: found.includes(d.key) ? t.fg : t.mute }]}>{i + 1}</Text>
-          </View>
-        ))}
-      </View>
     </View>
   );
 }
@@ -161,15 +160,13 @@ const s = StyleSheet.create({
   pips: { flexDirection: 'row', gap: u(4) },
   pip: { width: u(10), height: u(4), borderRadius: u(2) },
   hint: { fontFamily: F.body, fontSize: u(10.5), lineHeight: u(15), marginTop: u(4) },
+  note: { marginTop: u(12), borderWidth: 1, borderRadius: u(14), padding: u(12), gap: u(4) },
+  noteT: { fontFamily: F.bodyMedium, fontSize: u(11), lineHeight: u(15) },
+  noteA: { fontFamily: F.bodyBold, fontSize: u(11) },
+  prize: { height: u(38), borderRadius: 999, alignItems: 'center', justifyContent: 'center' },
+  prizeT: { fontFamily: F.bodyBold, fontSize: u(11.5) },
   binder: { marginTop: u(14), borderWidth: 1, borderRadius: u(20), padding: u(10), flexDirection: 'row', flexWrap: 'wrap', columnGap: u(8), rowGap: u(10) },
   bName: { fontFamily: F.mono, fontSize: u(7.5), letterSpacing: u(1), marginTop: u(5), textTransform: 'uppercase' },
-  cap: { alignItems: 'center', marginTop: u(4), gap: u(2) },
-  capN: { fontFamily: F.display, fontSize: u(20), lineHeight: u(24) },
-  capS: { fontSize: u(12), letterSpacing: u(2) },
-  capM: { fontFamily: F.mono, fontSize: u(7.5), letterSpacing: u(1.3), marginTop: u(2) },
-  strip: { flexDirection: 'row', justifyContent: 'center', gap: u(5), marginTop: u(14) },
-  mini: { width: u(20), height: u(28), borderRadius: u(5), borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
-  miniT: { fontFamily: F.mono, fontSize: u(8) },
   view: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   flipT: { fontFamily: F.bodyMedium, fontSize: u(11), marginTop: u(16) },
   close: { marginTop: u(10), paddingHorizontal: u(18), paddingVertical: u(8), borderRadius: 999, borderWidth: 1, borderColor: 'rgba(255,255,255,0.3)' },

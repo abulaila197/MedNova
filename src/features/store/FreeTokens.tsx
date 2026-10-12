@@ -1,7 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
-import { useState, type ReactNode } from 'react';
-import { Modal, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { useEffect, useState, type ReactNode } from 'react';
+import { Linking, Modal, Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import Svg, { Circle, Path, Rect } from 'react-native-svg';
 
 import { create } from 'zustand';
@@ -9,12 +9,17 @@ import { create } from 'zustand';
 import { Text } from '@/components/AppText';
 import { Sheet } from '@/components/Sheet';
 import { Kicker } from '@/features/info/ui';
+import { useSession } from '@/games/shell/session';
+import { syncAccount } from '@/lib/sync';
+import { call } from '@/online/api';
 import { u } from '@/theme/scale';
 import type { Theme } from '@/theme/tokens';
 import { F } from '@/theme/tokens';
 
+import { LINKS } from './links';
+
 type Icon = (p: { size: number; color: string }) => ReactNode;
-type Way = { key: string; label: string; tokens: number; each?: boolean; act: string; icon: Icon; group: 'follow' | 'look' | 'tell' };
+type Way = { key: string; label: string; tokens: number; each?: boolean; act: string; icon: Icon };
 
 const stroke = { fill: 'none', strokeWidth: 1.7, strokeLinecap: 'round', strokeLinejoin: 'round' } as const;
 const I: Record<string, Icon> = {
@@ -93,59 +98,98 @@ const I: Record<string, Icon> = {
   ),
 };
 
-// Amounts decided 2026-10-11 (each once per account).
+// Amounts decided 2026-10-11 (each once per account); the server pays (free_claim and friends).
 const WAYS: Way[] = [
-  { key: 'tiktok', label: 'Follow us on TikTok', tokens: 3, act: 'Follow', icon: I.tiktok, group: 'follow' },
-  { key: 'instagram', label: 'Follow us on Instagram', tokens: 3, act: 'Follow', icon: I.instagram, group: 'follow' },
-  { key: 'facebook', label: 'Follow us on Facebook', tokens: 3, act: 'Follow', icon: I.facebook, group: 'follow' },
-  { key: 'youtube', label: 'Subscribe on YouTube', tokens: 3, act: 'Subscribe', icon: I.youtube, group: 'follow' },
-  { key: 'channel', label: 'Join our Instagram channel', tokens: 3, act: 'Join', icon: I.channel, group: 'follow' },
-  { key: 'community', label: 'Visit the Community page', tokens: 2, act: 'Visit', icon: I.community, group: 'look' },
-  { key: 'listing', label: 'Visit us on the App Store', tokens: 3, act: 'Visit', icon: I.listing, group: 'look' },
-  { key: 'feedback', label: 'Send us your feedback', tokens: 10, act: 'Write', icon: I.feedback, group: 'tell' },
-  { key: 'story', label: 'Share your story · 2 of 5', tokens: 5, each: true, act: 'Write', icon: I.story, group: 'tell' },
-  { key: 'ambassador', label: 'Ambassador video', tokens: 50, act: 'Apply', icon: I.video, group: 'tell' },
-  { key: 'invite', label: 'Invite a friend with your code', tokens: 10, each: true, act: 'My code', icon: I.invite, group: 'tell' },
+  { key: 'tiktok', label: 'Follow us on TikTok', tokens: 3, act: 'Follow', icon: I.tiktok },
+  { key: 'instagram', label: 'Follow us on Instagram', tokens: 3, act: 'Follow', icon: I.instagram },
+  { key: 'facebook', label: 'Follow us on Facebook', tokens: 3, act: 'Follow', icon: I.facebook },
+  { key: 'youtube', label: 'Subscribe on YouTube', tokens: 3, act: 'Subscribe', icon: I.youtube },
+  { key: 'channel', label: 'Join our Instagram channel', tokens: 3, act: 'Join', icon: I.channel },
+  { key: 'community', label: 'Visit the Community page', tokens: 2, act: 'Visit', icon: I.community },
+  { key: 'listing', label: Platform.OS === 'android' ? 'Visit us on Google Play' : 'Visit us on the App Store', tokens: 3, act: 'Visit', icon: I.listing },
+  { key: 'feedback', label: 'Send us your feedback', tokens: 10, act: 'Write', icon: I.feedback },
+  { key: 'story', label: 'Share your story', tokens: 5, each: true, act: 'Write', icon: I.story },
+  { key: 'ambassador', label: 'Ambassador video', tokens: 50, act: 'Apply', icon: I.video },
+  { key: 'invite', label: 'Invite a friend with your code', tokens: 10, each: true, act: 'My code', icon: I.invite },
 ];
 
-/** Whether the story sheet is open (drawn by the Store page above its scroll, so it covers the page). */
-export const useStory = create<{ open: boolean }>(() => ({ open: false }));
+type FreeStatus = { done: string[]; ambassador: 'pending' | 'approved' | 'rejected' | null; invites: number; invite_tokens: number; redeemed: boolean; downloads: number | null; goal: number };
+type Sheet = 'story' | 'feedback' | 'ambassador' | null;
+
+/** What this player already collected, and which sheet is open (drawn by the Store page above its scroll). */
+export const useFree = create<{ status: FreeStatus | null; sheet: Sheet }>(() => ({ status: null, sheet: null }));
+
+export async function loadFree() {
+  if (!useSession.getState().userId) return useFree.setState({ status: null });
+  useFree.setState({ status: await call<FreeStatus>('free_status') });
+}
+
+/** After the server paid: bring the new wallet rows to the phone, then refresh what's collected. */
+async function settle() {
+  const uid = useSession.getState().userId;
+  if (uid) await syncAccount(uid).catch(() => {});
+  await loadFree().catch(() => {});
+}
 
 const CARD = u(124);
 const GAP = u(10);
 const GOLD = ['#f7dd8b', '#d39a2c', '#f3cf6c'] as const;
+const SOCIAL = ['tiktok', 'instagram', 'facebook', 'youtube', 'channel'] as const;
 
-/** Free tokens (preview): boxes shaped like the token packs; the global mission first, same size with a gold frame. */
-export function FreeTokens({ t, look }: { t: Theme; look: 'a' | 'b' }) {
-  const [done] = useState<string[]>(['instagram', 'community']); // preview: two already collected
-  const tap = (w: Way) => (w.key === 'story' ? useStory.setState({ open: true }) : w.key === 'invite' ? router.navigate('/friends' as never) : undefined);
-  const box = (w: Way) => <WayCard key={w.key} t={t} w={w} done={done.includes(w.key)} onPress={() => tap(w)} />;
+/** Free tokens (locked look A, one row): pack-shaped boxes, the gold global mission first. Sits between the subscription and the packs. */
+export function FreeTokens({ t }: { t: Theme }) {
+  const signedIn = !!useSession((x) => x.userId);
+  const st = useFree((x) => x.status);
+  const [busy, setBusy] = useState<string | null>(null);
+  useEffect(() => {
+    loadFree().catch(() => {});
+  }, [signedIn]);
+  const done = new Set(st?.done ?? []);
+  const stories = [0, 1, 2, 3, 4].filter((i) => done.has(`free:story:${i}`)).length;
+  const isDone = (w: Way) =>
+    w.key === 'story' ? stories === 5 : w.key === 'ambassador' ? st?.ambassador === 'approved' : w.key === 'invite' ? false : done.has(`free:${w.key}`);
+
+  const claim = async (key: string) => {
+    setBusy(key);
+    try {
+      await call('free_claim', { way: key });
+      await settle();
+    } catch {
+      // stays open; the next tap tries again
+    }
+    setBusy(null);
+  };
+  const tap = (w: Way) => {
+    if (!signedIn) return router.navigate('/auth');
+    if (busy) return;
+    if ((SOCIAL as readonly string[]).includes(w.key)) {
+      Linking.openURL(LINKS[w.key as (typeof SOCIAL)[number]]).catch(() => {});
+      return claim(w.key);
+    }
+    if (w.key === 'listing') {
+      Linking.openURL(Platform.OS === 'android' ? LINKS.listingAndroid : LINKS.listing).catch(() => {});
+      return claim('listing');
+    }
+    if (w.key === 'community') {
+      claim('community');
+      return router.navigate('/community' as never);
+    }
+    if (w.key === 'invite') return router.navigate('/friends' as never);
+    if (w.key === 'ambassador' && st?.ambassador === 'pending') return;
+    useFree.setState({ sheet: w.key as Sheet });
+  };
+  const label = (w: Way) => (w.key === 'story' ? `${w.label} · ${stories} of 5` : w.key === 'invite' && st ? `${w.label} · ${st.invite_tokens} of 150` : w.label);
+  const act = (w: Way) => (!signedIn ? 'Sign in' : w.key === 'ambassador' && st?.ambassador === 'pending' ? 'In review' : w.act);
   return (
     <>
       <View style={{ height: u(14) }} />
       <Kicker inSec>Free tokens</Kicker>
-      {look === 'a' ? (
-        <Row>
-          <Global t={t} />
-          {WAYS.map(box)}
-        </Row>
-      ) : (
-        <>
-          <Row>
-            <Global t={t} />
-            <View style={s.gNote}>
-              <Text style={[s.gNoteH, { color: t.fg }]}>One goal for everyone</Text>
-              <Text style={[s.gNoteT, { color: t.mute }]}>When MedNova reaches 100,000 downloads on both stores, every player gets 200 tokens. Share it to get there faster.</Text>
-            </View>
-          </Row>
-          <Kicker inSec>Follow us</Kicker>
-          <Row>{WAYS.filter((w) => w.group === 'follow').map(box)}</Row>
-          <Kicker inSec>Look around</Kicker>
-          <Row>{WAYS.filter((w) => w.group === 'look').map(box)}</Row>
-          <Kicker inSec>Tell us, show us</Kicker>
-          <Row>{WAYS.filter((w) => w.group === 'tell').map(box)}</Row>
-        </>
-      )}
+      <Row>
+        <Global t={t} st={st} signedIn={signedIn} />
+        {WAYS.map((w) => (
+          <WayCard key={w.key} t={t} w={w} label={label(w)} act={act(w)} done={isDone(w)} busy={busy === w.key} onPress={() => tap(w)} />
+        ))}
+      </Row>
     </>
   );
 }
@@ -158,13 +202,13 @@ function Row({ children }: { children: ReactNode }) {
   );
 }
 
-function WayCard({ t, w, done, onPress }: { t: Theme; w: Way; done: boolean; onPress: () => void }) {
+function WayCard({ t, w, label, act, done, busy, onPress }: { t: Theme; w: Way; label: string; act: string; done: boolean; busy: boolean; onPress: () => void }) {
   return (
-    <Pressable onPress={done ? undefined : onPress} accessibilityRole="button" accessibilityLabel={`${w.label}, ${w.tokens} tokens`} style={[s.card, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
+    <Pressable onPress={done ? undefined : onPress} accessibilityRole="button" accessibilityLabel={`${w.label}, ${w.tokens} tokens`} style={[s.card, { backgroundColor: t.panel, borderColor: t.panelLine }, busy && { opacity: 0.6 }]}>
       <View style={[s.ic, { backgroundColor: t.mode === 'light' ? 'rgba(229,131,58,0.1)' : 'rgba(111,214,255,0.1)' }]}>{w.icon({ size: u(17), color: t.accent })}</View>
       <Text style={[s.cN, { color: t.fg }]}>{`+${w.tokens}`}</Text>
       <Text style={[s.cU, { color: t.mute }]} numberOfLines={2}>
-        {w.each ? `${w.label} · each` : w.label}
+        {w.each ? `${label} · each` : label}
       </Text>
       {done ? (
         <View style={[s.cBtn, s.ghost, { borderColor: t.panelLine }]}>
@@ -172,71 +216,163 @@ function WayCard({ t, w, done, onPress }: { t: Theme; w: Way; done: boolean; onP
         </View>
       ) : (
         <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={s.cBtn}>
-          <Text style={[s.cBtnT, { color: t.onGrad }]}>{w.act}</Text>
+          <Text style={[s.cBtnT, { color: t.onGrad }]}>{act}</Text>
         </LinearGradient>
       )}
     </Pressable>
   );
 }
 
-/** The global mission: the same box, in a gold frame, with the live download bar. */
-function Global({ t }: { t: Theme }) {
-  const now = 23400;
+/** The global mission: the same box, in a gold frame, with the download bar. When it's reached, players who were here collect 200. */
+function Global({ t, st, signedIn }: { t: Theme; st: FreeStatus | null; signedIn: boolean }) {
   const lt = t.mode === 'light';
+  const goal = st?.goal ?? 100000;
+  const now = Math.min(goal, st?.downloads ?? 0);
+  const reached = now >= goal;
+  const got = st?.done.includes('free:global');
+  const [busy, setBusy] = useState(false);
+  const collect = async () => {
+    if (!signedIn) return router.navigate('/auth');
+    setBusy(true);
+    try {
+      await call('global_claim');
+      await settle();
+    } catch {}
+    setBusy(false);
+  };
   return (
     <LinearGradient colors={GOLD} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={s.gold}>
-      <View style={[s.card, s.goldIn, { backgroundColor: lt ? '#fffaf0' : '#1a1830' }]}>
+      <Pressable disabled={!reached || got || busy} onPress={collect} style={[s.card, s.goldIn, { backgroundColor: lt ? '#fffaf0' : '#1a1830' }]} accessibilityLabel={`Global mission: ${now} of ${goal} downloads`}>
         <Text style={[s.gKick, { color: lt ? '#b07a12' : '#f3cf6c' }]}>GLOBAL MISSION</Text>
         <Text style={[s.cN, { color: t.fg }]}>+200</Text>
         <Text style={[s.cU, { color: t.mute }]} numberOfLines={2}>
-          for everyone at 100k downloads
+          {got ? 'Collected. Thank you!' : reached ? 'We made it! Tap to collect' : 'for everyone at 100k downloads'}
         </Text>
         <View style={[s.bar, { backgroundColor: lt ? 'rgba(176,122,18,0.15)' : 'rgba(243,207,108,0.15)' }]}>
-          <LinearGradient colors={GOLD} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={{ width: `${(now / 100000) * 100}%`, height: '100%', borderRadius: 999 }} />
+          <LinearGradient colors={GOLD} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={{ width: `${Math.max(2, (now / goal) * 100)}%`, height: '100%', borderRadius: 999 }} />
         </View>
-        <Text style={[s.gNum, { color: lt ? '#8a5f0c' : '#f3cf6c' }]}>23,400 / 100,000</Text>
-      </View>
+        <Text style={[s.gNum, { color: lt ? '#8a5f0c' : '#f3cf6c' }]}>{`${now.toLocaleString('en-US')} / ${goal.toLocaleString('en-US')}`}</Text>
+      </Pressable>
     </LinearGradient>
   );
 }
 
-const PROMPTS = ['Why you chose medicine', 'A burnout story', 'Your hardest phase in college', 'The moment that kept you going', 'Your funniest moment'];
+export const PROMPTS = ['Why you chose medicine', 'A burnout story', 'Your hardest phase in college', 'The moment that kept you going', 'Your funniest moment'];
+const SAY: Record<string, string> = { short: 'Write at least 20 characters.', done: 'Already sent.', missing: 'Fill in every field.', 'too many': 'That is enough for today. Try tomorrow.' };
 
-/** Share your story: five prompts, each paid once on send (5 tokens), saved to Supabase and shown on Admin. */
-export function StorySheet({ t }: { t: Theme }) {
-  const open = useStory((x) => x.open);
-  const onClose = () => useStory.setState({ open: false });
-  const [p, setP] = useState(2);
-  const [credit, setCredit] = useState(false);
-  const sent = [0, 4];
-  if (!open) return null;
+/** The three writing sheets of the free ways: story (5 tokens each prompt), feedback (10, first time) and Ambassador (50 after approval). */
+export function FreeSheets({ t }: { t: Theme }) {
+  const sheet = useFree((x) => x.sheet);
+  const close = () => useFree.setState({ sheet: null });
+  if (!sheet) return null;
   return (
-    <Modal transparent visible onRequestClose={onClose}>
-    <Sheet open={open} onClose={onClose}>
-      <Text style={[s.shH, { color: t.fg }]}>
-        {'Share your '}
-        <Text style={{ color: t.accent, fontFamily: F.displayItalic }}>story</Text>
-      </Text>
+    <Modal transparent visible onRequestClose={close}>
+      <Sheet open onClose={close}>
+        {sheet === 'story' ? <StoryForm t={t} onDone={close} /> : sheet === 'feedback' ? <FeedbackForm t={t} onDone={close} /> : <AmbassadorForm t={t} onDone={close} />}
+      </Sheet>
+    </Modal>
+  );
+}
+
+/** Sends one form; shows the server's answer under it. */
+function useSend(onDone: () => void) {
+  const [busy, setBusy] = useState(false);
+  const [msg, setMsg] = useState('');
+  const send = async (fn: string, args: Record<string, unknown>) => {
+    if (busy) return;
+    setBusy(true);
+    setMsg('');
+    try {
+      const r = await call<{ ok: boolean; why?: string }>(fn, args);
+      if (r.ok) {
+        await settle();
+        onDone();
+      } else setMsg(SAY[r.why ?? ''] ?? 'Not sent. Try again.');
+    } catch {
+      setMsg('Not sent. Check your connection and try again.');
+    }
+    setBusy(false);
+  };
+  return { busy, msg, send };
+}
+
+function StoryForm({ t, onDone }: { t: Theme; onDone: () => void }) {
+  const done = new Set(useFree((x) => x.status?.done) ?? []);
+  const sent = [0, 1, 2, 3, 4].filter((i) => done.has(`free:story:${i}`));
+  const [p, setP] = useState([0, 1, 2, 3, 4].find((i) => !sent.includes(i)) ?? 0);
+  const [body, setBody] = useState('');
+  const [credit, setCredit] = useState(false);
+  const { busy, msg, send } = useSend(onDone);
+  return (
+    <>
+      <Title t={t} a="Share your " b="story" />
       <View style={s.chips}>
         {PROMPTS.map((x, i) => (
-          <Pressable key={x} disabled={sent.includes(i)} onPress={() => setP(i)} style={[s.chip, { borderColor: i === p ? t.accent : t.panelLine, backgroundColor: i === p ? (t.mode === 'light' ? 'rgba(229,131,58,0.1)' : 'rgba(111,214,255,0.1)') : 'transparent', opacity: sent.includes(i) ? 0.5 : 1 }]}>
+          <Pressable key={x} disabled={sent.includes(i)} onPress={() => setP(i)} style={[s.chip, { borderColor: i === p ? t.accent : t.panelLine, backgroundColor: i === p ? tint(t) : 'transparent', opacity: sent.includes(i) ? 0.5 : 1 }]}>
             <Text style={[s.chipT, { color: i === p ? t.fg : t.mute }]}>{sent.includes(i) ? `${x} ✓` : x}</Text>
           </Pressable>
         ))}
       </View>
-      <TextInput multiline placeholder="Tell it your way..." placeholderTextColor={t.mute} style={[s.area, { color: t.fg, borderColor: t.panelLine, backgroundColor: t.panel2 }]} />
+      <TextInput multiline value={body} onChangeText={setBody} maxLength={4000} placeholder="Tell it your way..." placeholderTextColor={t.mute} style={[s.area, { color: t.fg, borderColor: t.panelLine, backgroundColor: t.panel2 }]} />
       <Pressable onPress={() => setCredit((v) => !v)} style={s.tick} accessibilityRole="checkbox" accessibilityState={{ checked: credit }}>
         <View style={[s.box, { borderColor: credit ? t.accent : t.mute, backgroundColor: credit ? t.accent : 'transparent' }]}>{credit ? <Text style={[s.boxT, { color: t.onGrad }]}>✓</Text> : null}</View>
         <Text style={[s.tickT, { color: t.fg }]}>Credit me with my in-game name</Text>
       </Pressable>
       <Text style={[s.note, { color: t.mute }]}>Keep it clean: adult (18+) content can get your account blocked. By sharing, you agree MedNova may post your story on our pages, without your name unless you tick Credit me.</Text>
-      <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={s.send}>
-        <Text style={[s.cBtnT, { color: t.onGrad, fontSize: u(12) }]}>Send · +5 tokens</Text>
-      </LinearGradient>
-    </Sheet>
-    </Modal>
+      {msg ? <Text style={[s.note, { color: t.red }]}>{msg}</Text> : null}
+      <Send t={t} label="Send · +5 tokens" busy={busy || sent.includes(p)} onPress={() => send('submit_story', { prompt: p, body, credit })} />
+    </>
   );
 }
+
+function FeedbackForm({ t, onDone }: { t: Theme; onDone: () => void }) {
+  const paid = (useFree((x) => x.status?.done) ?? []).includes('free:feedback');
+  const [body, setBody] = useState('');
+  const { busy, msg, send } = useSend(onDone);
+  return (
+    <>
+      <Title t={t} a="Tell us what you " b="think" />
+      <Text style={[s.note, { color: t.mute }]}>What you love, what bugs you, what you wish MedNova had. We read every word.</Text>
+      <TextInput multiline value={body} onChangeText={setBody} maxLength={2000} placeholder="Your feedback..." placeholderTextColor={t.mute} style={[s.area, { color: t.fg, borderColor: t.panelLine, backgroundColor: t.panel2 }]} />
+      {msg ? <Text style={[s.note, { color: t.red }]}>{msg}</Text> : null}
+      <Send t={t} label={paid ? 'Send' : 'Send · +10 tokens'} busy={busy} onPress={() => send('submit_feedback', { body })} />
+    </>
+  );
+}
+
+function AmbassadorForm({ t, onDone }: { t: Theme; onDone: () => void }) {
+  const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
+  const [url, setUrl] = useState('');
+  const { busy, msg, send } = useSend(onDone);
+  const input = [s.input, { color: t.fg, borderColor: t.panelLine, backgroundColor: t.panel2 }];
+  return (
+    <>
+      <Title t={t} a="Become an " b="ambassador" />
+      <Text style={[s.note, { color: t.mute }]}>Post a video of you playing MedNova on your account (100+ followers) and mention us. Send the link here; once we check it, 50 tokens land in your wallet within a week.</Text>
+      <TextInput value={url} onChangeText={setUrl} autoCapitalize="none" keyboardType="url" placeholder="Link to your video" placeholderTextColor={t.mute} style={input} />
+      <TextInput value={email} onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address" placeholder="Your email" placeholderTextColor={t.mute} style={input} />
+      <TextInput value={name} onChangeText={setName} placeholder="Your in-game name" placeholderTextColor={t.mute} style={input} />
+      {msg ? <Text style={[s.note, { color: t.red }]}>{msg}</Text> : null}
+      <Send t={t} label="Send for review" busy={busy} onPress={() => send('submit_ambassador', { email, game_name: name, video_url: url })} />
+    </>
+  );
+}
+
+const tint = (t: Theme) => (t.mode === 'light' ? 'rgba(229,131,58,0.1)' : 'rgba(111,214,255,0.1)');
+const Title = ({ t, a, b }: { t: Theme; a: string; b: string }) => (
+  <Text style={[s.shH, { color: t.fg }]}>
+    {a}
+    <Text style={{ color: t.accent, fontFamily: F.displayItalic }}>{b}</Text>
+  </Text>
+);
+const Send = ({ t, label, busy, onPress }: { t: Theme; label: string; busy: boolean; onPress: () => void }) => (
+  <Pressable disabled={busy} onPress={onPress} accessibilityRole="button" style={busy && { opacity: 0.6 }}>
+    <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={s.send}>
+      <Text style={[s.cBtnT, { color: t.onGrad, fontSize: u(12) }]}>{label}</Text>
+    </LinearGradient>
+  </Pressable>
+);
 
 const s = StyleSheet.create({
   rowScroll: { marginHorizontal: -u(18) },
@@ -253,14 +389,12 @@ const s = StyleSheet.create({
   gKick: { fontFamily: F.mono, fontSize: u(6.5), letterSpacing: u(1.2), height: u(30), lineHeight: u(30), marginBottom: u(4) },
   bar: { alignSelf: 'stretch', height: u(6), borderRadius: 999, overflow: 'hidden', marginTop: u(10) },
   gNum: { fontFamily: F.mono, fontSize: u(7.5), marginTop: u(5) },
-  gNote: { width: u(112), justifyContent: 'center', gap: u(4) },
-  gNoteH: { fontFamily: F.display, fontSize: u(15), lineHeight: u(18) },
-  gNoteT: { fontFamily: F.body, fontSize: u(10), lineHeight: u(14) },
   shH: { fontFamily: F.display, fontSize: u(22), lineHeight: u(26) },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: u(6) },
   chip: { borderWidth: 1, borderRadius: 999, paddingHorizontal: u(10), paddingVertical: u(5) },
   chipT: { fontFamily: F.bodyMedium, fontSize: u(9.5) },
   area: { height: u(96), borderWidth: 1, borderRadius: u(14), padding: u(10), fontFamily: F.body, fontSize: u(11), textAlignVertical: 'top' },
+  input: { height: u(34), borderWidth: 1, borderRadius: u(12), paddingHorizontal: u(12), fontFamily: F.body, fontSize: u(11) },
   tick: { flexDirection: 'row', alignItems: 'center', gap: u(8) },
   box: { width: u(16), height: u(16), borderRadius: u(5), borderWidth: 1.5, alignItems: 'center', justifyContent: 'center' },
   boxT: { fontSize: u(10), fontFamily: F.bodyBold },

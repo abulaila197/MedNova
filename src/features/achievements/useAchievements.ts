@@ -7,7 +7,7 @@ import { supabase } from '@/lib/supabase';
 import { syncAccount } from '@/lib/sync';
 import { useFriends } from '@/state/friends';
 
-import { ACHIEVEMENTS, achievementProgress, tiersReached, TIER_TOKENS, type AchKey } from './progress';
+import { ACHIEVEMENTS, achievementProgress, tiersReached, tierTokens, type AchKey, type SocialCounts } from './progress';
 
 export type AchRow = (typeof ACHIEVEMENTS)[number] & {
   count: number;
@@ -32,12 +32,14 @@ const paidTiers = (ledger: { kind: string; reason: string }[]) => {
 
 /** Everything the counters need, read from the phone. */
 export async function loadAchievements(friendIds: string[], me?: string): Promise<AchRow[]> {
-  const [{ plays, items }, ledger, bal, best, learn] = await Promise.all([
+  const [{ plays, items }, ledger, bal, best, learn, social] = await Promise.all([
     engine.recorder.all(),
     engine.wallet.ledger(),
     engine.wallet.balance(),
     engine.kv.get<Record<number, number>>('crossword:best'),
     learnCounts(),
+    // Invites, challenges and written cases live on the server; offline or signed out they read 0.
+    me ? supabase.rpc('social_counts').then(({ data }) => (data as SocialCounts | null) ?? {}, () => ({})) : Promise.resolve({} as SocialCounts),
   ]);
   const counts = achievementProgress({
     plays,
@@ -49,6 +51,7 @@ export async function loadAchievements(friendIds: string[], me?: string): Promis
     reviewCards: learn.reviewCards,
     dossiersOpened: learn.dossiersOpened,
     crosswordThreeStars: Object.values(best ?? {}).filter((s) => s === 3).length,
+    social,
   });
   const paid = paidTiers(ledger);
   return ACHIEVEMENTS.map((a) => {
@@ -90,6 +93,6 @@ export function useAchievements() {
   };
 
   const waiting = rows?.reduce((n, r) => n + Math.max(0, r.reached - r.paid), 0) ?? 0;
-  const tokensWaiting = rows?.reduce((n, r) => n + TIER_TOKENS.slice(r.paid, r.reached).reduce((a, b) => a + b, 0), 0) ?? 0;
+  const tokensWaiting = rows?.reduce((n, r) => n + tierTokens(r.key).slice(r.paid, r.reached).reduce((a, b) => a + b, 0), 0) ?? 0;
   return { rows, signedIn: !!userId, busy, error, collect, waiting, tokensWaiting };
 }

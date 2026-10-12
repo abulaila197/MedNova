@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { Linking, Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { Text, TextInput } from '@/components/AppText';
 
 import { Screen } from '@/components/Screen';
-import { CONTACT_EMAIL, INTENTS } from '@/features/info/content';
+import { INTENTS } from '@/features/info/content';
 import { GradBtn, InfoScroll, Kicker, s as ui, useInfo } from '@/features/info/ui';
+import { call } from '@/online/api';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
@@ -14,11 +15,21 @@ export default function Page() {
   const [pick, setPick] = useState(1); // the preview shows "report a bug"
   const [msg, setMsg] = useState('');
   const it = INTENTS[pick];
-  const send = () => {
-    const subject = encodeURIComponent(`MedNova: I want to ${it.key}`);
-    const body = encodeURIComponent(msg);
-    Linking.openURL(`mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`).catch(() => {});
-    setMsg('');
+  const [said, setSaid] = useState<{ ok: boolean; text: string } | null>(null);
+  const [busy, setBusy] = useState(false);
+  // Saved to Supabase and listed on the Admin page (Yazan 2026-10-11: Supabase only, no email app).
+  const send = async () => {
+    if (busy) return;
+    if (msg.trim().length < 2) return setSaid({ ok: false, text: 'Write your message first.' });
+    setBusy(true);
+    try {
+      await call('submit_contact', { kind: it.key, body: msg });
+      setMsg('');
+      setSaid({ ok: true, text: 'Sent. Thank you, we read every message.' });
+    } catch {
+      setSaid({ ok: false, text: 'Not sent. Check your connection and try again.' });
+    }
+    setBusy(false);
   };
   return (
     <Screen tab={null} glow={21}>
@@ -53,7 +64,8 @@ export default function Page() {
           textAlignVertical="top"
           style={[s.ta, { backgroundColor: c.surf, borderColor: c.line, color: c.fg }]}
         />
-        <GradBtn label="Send" onPress={send} style={s.send} />
+        {said ? <Text style={[s.said, { color: said.ok ? c.t.accent : c.t.red }]}>{said.text}</Text> : null}
+        <GradBtn label={busy ? 'Sending...' : 'Send'} onPress={send} style={s.send} />
       </InfoScroll>
     </Screen>
   );
@@ -65,6 +77,7 @@ const s = StyleSheet.create({
   // .blank: italic accent with a 2px underline that sits 4px under the line box
   blank: { alignSelf: 'flex-start', borderBottomWidth: u(2), paddingBottom: u(4), marginBottom: u(-6) },
   blankT: { marginTop: 0, fontFamily: F.displayItalic },
+  said: { fontFamily: F.bodyMedium, fontSize: u(10.5), marginTop: u(8) },
   opts: { flexDirection: 'row', flexWrap: 'wrap', gap: u(6), marginTop: u(12) },
   opt: { borderWidth: 1, borderRadius: 999, paddingVertical: u(5), paddingHorizontal: u(10) },
   optT: { fontFamily: F.body, fontSize: u(9.5), lineHeight: u(11.5) },

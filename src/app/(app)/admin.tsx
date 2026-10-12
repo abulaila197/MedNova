@@ -4,6 +4,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { Text, TextInput } from '@/components/AppText';
 
 import { Screen } from '@/components/Screen';
+import { Downloads, Inbox } from '@/features/admin/Inbox';
 import { GradBtn, InfoScroll, Kicker, s as ui, useInfo } from '@/features/info/ui';
 import { supabase } from '@/lib/supabase';
 import { useAccount } from '@/state/account';
@@ -134,6 +135,8 @@ export default function Page() {
             </View>
           ))}
         </View>
+        <Inbox c={c} />
+        <Downloads c={c} />
       </InfoScroll>
     </Screen>
   );

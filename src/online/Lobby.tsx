@@ -14,7 +14,8 @@ import { ModePin } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
-import { leaveRoom, rematchRoom, removePlayer, setCharacter, setReady, setTeam, startMatch, updateRoom, type RoomState, type Seat } from './api';
+import { loadFriends, useFriends } from '@/state/friends';
+import { call, leaveRoom, rematchRoom, removePlayer, setCharacter, setReady, setTeam, startMatch, updateRoom, type RoomState, type Seat } from './api';
 import { settingsLine } from './format';
 import { G } from './grey';
 import { TalkBubble, TalkPanel } from './Talk';
@@ -382,6 +383,7 @@ function SeatSheet({ state, seat, teams, onDone }: { state: RoomState; seat: Sea
           </View>
         </>
       ) : null}
+      {!self ? <FriendRow seat={seat} /> : null}
       {!self ? <MuteRow room={state.room.id} seat={seat} /> : null}
       {host && !self && state.room.status === 'lobby' ? (
         <Pressable onPress={() => removePlayer(state.room.id, seat.user_id).then(onDone).catch(onDone)} style={s.remove} accessibilityRole="button">
@@ -389,6 +391,29 @@ function SeatSheet({ state, seat, teams, onDone }: { state: RoomState; seat: Sea
         </Pressable>
       ) : null}
     </>
+  );
+}
+
+/** Tap a player in the lobby to send a friend request (Yazan 2026-10-11); already friends or sent shows as text. */
+function FriendRow({ seat }: { seat: Seat }) {
+  const rel = useFriends((f) => f.list.find((x) => x.id === seat.user_id)?.kind);
+  const [state, setState] = useState<'idle' | 'busy' | 'sent' | 'failed'>('idle');
+  const send = async () => {
+    setState('busy');
+    try {
+      await call('request_friend_id', { other: seat.user_id });
+      await loadFriends();
+      setState('sent');
+    } catch {
+      setState('failed');
+    }
+  };
+  if (rel === 'friend') return <Text style={[s.k, { color: G.mute, textAlign: 'center' }]}>YOU ARE FRIENDS</Text>;
+  if (rel === 'outgoing' || state === 'sent') return <Text style={[s.k, { color: G.mute, textAlign: 'center' }]}>FRIEND REQUEST SENT</Text>;
+  return (
+    <Pressable disabled={state === 'busy'} onPress={send} style={[s.remove, { borderColor: G.line }]} accessibilityRole="button">
+      <Text style={[s.removeT, { color: G.fg }]}>{rel === 'incoming' ? `Accept ${seat.name}'s friend request` : state === 'failed' ? 'Not sent. Tap to try again' : `Add ${seat.name} as a friend`}</Text>
+    </Pressable>
   );
 }
 

@@ -22,8 +22,11 @@ const openMenu = (friend: Friend) => useFriendSheet.setState({ open: 'menu', fri
 
 const ONLINE = { dark: '#7be0a8', light: '#5e9e6a' };
 
-/** Profile, Friends (FR1-FR4): Add friend, requests with Accept and ✕, then friends with face, level and Online / last seen. */
-export function FriendsSection({ t }: { t: Theme }) {
+/**
+ * Friends (FR1-FR4): requests with Accept and ✕, then friends with face, level and Online / last seen.
+ * The Friends page shows one tab at a time (`only`); Profile shows just the count (FriendCount).
+ */
+export function FriendsSection({ t, only }: { t: Theme; only?: 'friends' | 'requests' }) {
   const profile = useAccount((a) => a.profile);
   const { list, blocked } = useFriends();
   const [busy, setBusy] = useState<string | null>(null);
@@ -62,16 +65,21 @@ export function FriendsSection({ t }: { t: Theme }) {
     );
   }
 
+  const showReq = only !== 'friends';
+  const showFr = only !== 'requests';
   return (
     <>
-      <View style={s.head}>
-        <Text style={[s.sh2, { color: t.kick }]}>FRIENDS</Text>
-        <Pressable onPress={() => openAdd()} hitSlop={u(8)} accessibilityRole="button">
-          <Text style={[s.add, { color: t.accent }]}>+ Add friend</Text>
-        </Pressable>
-      </View>
-      {incoming.length ? <Text style={[s.sub, { color: t.mute }]}>{`REQUESTS · ${incoming.length}`}</Text> : null}
-      {incoming.map((f) => (
+      {only ? null : (
+        <View style={s.head}>
+          <Text style={[s.sh2, { color: t.kick }]}>FRIENDS</Text>
+          <Pressable onPress={() => openAdd()} hitSlop={u(8)} accessibilityRole="button">
+            <Text style={[s.add, { color: t.accent }]}>+ Add friend</Text>
+          </Pressable>
+        </View>
+      )}
+      {only === 'requests' && !incoming.length ? <Text style={[s.note, { color: t.mute }]}>No requests right now.</Text> : null}
+      {showReq && incoming.length && !only ? <Text style={[s.sub, { color: t.mute }]}>{`REQUESTS · ${incoming.length}`}</Text> : null}
+      {(showReq ? incoming : []).map((f) => (
         <View key={f.id} style={[s.fr, line]}>
           <Ring t={t} f={f} />
           <View style={s.frT}>
@@ -88,9 +96,9 @@ export function FriendsSection({ t }: { t: Theme }) {
           </Pressable>
         </View>
       ))}
-      <Text style={[s.sub, { color: t.mute }]}>{`YOUR FRIENDS · ${friends.filter((f) => f.kind === 'friend').length}`}</Text>
-      {friends.length === 0 ? <Text style={[s.note, { color: t.mute }]}>No friends yet. Share your friend pass to add some.</Text> : null}
-      {friends.map((f) => {
+      {showFr && !only ? <Text style={[s.sub, { color: t.mute }]}>{`YOUR FRIENDS · ${friends.filter((f) => f.kind === 'friend').length}`}</Text> : null}
+      {showFr && friends.length === 0 ? <Text style={[s.note, { color: t.mute }]}>No friends yet. Find players or share your invite code.</Text> : null}
+      {(showFr ? friends : []).map((f) => {
         const inv = invites.find((x) => x.from_user === f.id);
         const when = inv ? `CHALLENGED YOU · ${clock(Date.parse(inv.expires_at) - Date.now(), { down: true })} LEFT` : f.kind === 'outgoing' ? 'REQUEST SENT' : seenLabel(f.last_seen);
         return (
@@ -121,8 +129,8 @@ export function FriendsSection({ t }: { t: Theme }) {
           </View>
         );
       })}
-      {friends.length ? <Text style={[s.tip, { color: t.mute }]}>Tap a friend’s name to remove or block.</Text> : null}
-      {blocked.length ? (
+      {showFr && friends.length ? <Text style={[s.tip, { color: t.mute }]}>Tap a friend’s name to remove or block.</Text> : null}
+      {showFr && blocked.length ? (
         <View style={s.blk}>
           <Pressable onPress={() => setShowBlocked((v) => !v)} accessibilityRole="button">
             <Text style={[s.tip, { color: t.mute, textDecorationLine: 'underline' }]}>{`Blocked players (${blocked.length})`}</Text>
@@ -141,6 +149,24 @@ export function FriendsSection({ t }: { t: Theme }) {
         </View>
       ) : null}
     </>
+  );
+}
+
+/** Profile keeps only the count; the list lives on the Friends page (Yazan 2026-10-11). */
+export function FriendCount({ t }: { t: Theme }) {
+  const profile = useAccount((a) => a.profile);
+  const { list } = useFriends();
+  const n = list.filter((f) => f.kind === 'friend').length;
+  const req = list.filter((f) => f.kind === 'incoming').length;
+  return (
+    <Pressable onPress={() => router.navigate((profile ? '/friends' : '/auth') as never)} style={[s.fr, { borderColor: t.panelLine, marginTop: u(10) }]} accessibilityRole="link">
+      <View style={s.frT}>
+        <Text style={[s.sh2, { color: t.kick, marginTop: 0 }]}>FRIENDS</Text>
+        <Text style={[s.frB, { color: t.fg }]}>{profile ? `${n} friend${n === 1 ? '' : 's'}` : 'Sign in to add friends'}</Text>
+        {req ? <Text style={[s.frS, { color: t.accent }]}>{`${req} REQUEST${req === 1 ? '' : 'S'} WAITING`}</Text> : null}
+      </View>
+      <Text style={[s.add, { color: t.accent }]}>Open ›</Text>
+    </Pressable>
   );
 }
 

@@ -1,12 +1,14 @@
-import { router } from 'expo-router';
-import { useRef, useState, type ReactNode } from 'react';
+import { router, useFocusEffect } from 'expo-router';
+import { useCallback, useRef, useState, type ReactNode } from 'react';
 import { Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { Text } from '@/components/AppText';
 import { LinearGradient } from 'expo-linear-gradient';
 import Animated, { interpolateColor, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue, type SharedValue } from 'react-native-reanimated';
 
 import { Screen } from '@/components/Screen';
-import { MY_CASES } from '@/features/learn/data';
+import { customId, loadCases, useCases, type CustomCase } from '@/features/learn/cases';
+import { startPlay } from '@/games/shell/flow';
+import { useSession } from '@/games/shell/session';
 import { Fade } from '@/components/Fade';
 import { FlipCard } from '@/features/learn/FlipCard';
 import { useLearnColors } from '@/features/learn/palette';
@@ -177,28 +179,50 @@ function DossiersPage({ missed }: { missed: Map<string, { count: number; last: n
   );
 }
 
+const STATE = { waiting: 'Waiting for approval', declined: 'Private note' } as const;
+
+/** Approved cases open straight into a Diagnostic Pursuit practice round (no EXP, no free play used). */
+async function playCase(k: CustomCase) {
+  const play = await startPlay('the-diagnostic-pursuit', 'solo', { difficulty: 'Medium', cases: 1, custom: customId(k.id) });
+  router.push(`/play/the-diagnostic-pursuit/run?play=${play.id}` as never);
+}
+
 function CasesPage() {
   const t = useTheme();
   const c = useLearnColors(t.mode);
+  const signedIn = !!useSession((x) => x.userId);
+  const list = useCases((x) => x.list);
+  const [err, setErr] = useState('');
+  useFocusEffect(
+    useCallback(() => {
+      setErr('');
+      loadCases().catch(() => setErr('Could not load your cases. Check your connection.'));
+    }, [signedIn]),
+  );
+  const cases = list ?? [];
   return (
     <ScrollPage>
-      <PageTitle first="My" em="cases" small={`${MY_CASES.length}`} />
-      <Pressable onPress={() => router.push('/learn/new-case' as never)} style={[s.newc, { borderColor: c.newcLine, backgroundColor: c.newcBg }]} accessibilityRole="button">
-        <Text style={[s.newcT, { color: t.accent }]}>+ Write a new case</Text>
+      <PageTitle first="My" em="cases" small={`${cases.length}`} />
+      <Pressable onPress={() => router.push((signedIn ? '/learn/new-case' : '/auth') as never)} style={[s.newc, { borderColor: c.newcLine, backgroundColor: c.newcBg }]} accessibilityRole="button">
+        <Text style={[s.newcT, { color: t.accent }]}>{signedIn ? '+ Write a new case' : 'Sign in to write your own cases'}</Text>
       </Pressable>
+      {err ? <Text style={[s.csA, { color: t.red }]}>{err}</Text> : null}
+      {signedIn && list && !cases.length ? <Text style={[s.csA, { color: c.mute }]}>No cases yet. Write one and it stays here as a private note.</Text> : null}
       <View>
-        {MY_CASES.map((k, i) => (
-          <View key={k.title} style={[s.cs, i < MY_CASES.length - 1 && { borderBottomWidth: 1, borderBottomColor: c.rowLine }]}>
+        {cases.map((k, i) => (
+          <View key={k.id} style={[s.cs, i < cases.length - 1 && { borderBottomWidth: 1, borderBottomColor: c.rowLine }]}>
             <View style={s.csL}>
-              <Text style={[s.csB, { color: t.fg }]}>{k.title}</Text>
-              <Text style={[s.csA, { color: c.mute }]}>{k.area}</Text>
+              <Text style={[s.csB, { color: t.fg }]}>{k.diagnosis}</Text>
+              <Text style={[s.csA, { color: c.mute }]}>{`${k.field ?? 'Case'} · ${k.gender[0]}, ${k.age}`}</Text>
             </View>
-            {k.state === 'Approved' ? (
-              <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.play}>
-                <Text style={[s.playT, { color: t.onGrad }]}>Play</Text>
-              </LinearGradient>
+            {k.status === 'approved' && k.answer_id ? (
+              <Pressable onPress={() => playCase(k).catch(() => setErr('Could not start the case. Try again.'))} accessibilityRole="button" accessibilityLabel={`Play ${k.diagnosis}`}>
+                <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.play}>
+                  <Text style={[s.playT, { color: t.onGrad }]}>Play</Text>
+                </LinearGradient>
+              </Pressable>
             ) : (
-              <Text style={[s.csE, { color: k.state === 'Private note' ? c.mute : t.accent }]}>{k.state.toUpperCase()}</Text>
+              <Text style={[s.csE, { color: k.status === 'declined' ? c.mute : t.accent }]}>{STATE[k.status === 'declined' ? 'declined' : 'waiting'].toUpperCase()}</Text>
             )}
           </View>
         ))}

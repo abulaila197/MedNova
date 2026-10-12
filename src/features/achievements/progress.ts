@@ -17,6 +17,9 @@ export type AchKey =
   | 'most_trusted'
   | 'team_player'
   | 'house_call'
+  | 'recruiter'
+  | 'challenger'
+  | 'case_writer'
   | 'pass_stethoscope'
   | 'back_to_basics'
   | 'dossier_reader'
@@ -38,6 +41,9 @@ export const ACHIEVEMENTS: readonly { key: AchKey; name: string; what: string; g
   { key: 'most_trusted', name: 'Most Trusted', what: 'Win Trust Me Not', goals: [1, 10, 50] },
   { key: 'team_player', name: 'Team Player', what: 'Win team matches', goals: [1, 10, 50] },
   { key: 'house_call', name: 'House Call', what: 'Play online with friends', goals: [1, 20, 100] },
+  { key: 'recruiter', name: 'Recruiter', what: 'Invite friends who join', goals: [3, 10, 30] },
+  { key: 'challenger', name: 'Challenger', what: 'Challenge friends', goals: [10, 20, 30] },
+  { key: 'case_writer', name: 'Case Writer', what: 'Write your own cases', goals: [5, 10, 20] },
   { key: 'pass_stethoscope', name: 'Pass the Stethoscope', what: 'Finish pass-the-phone games', goals: [10, 50, 200] },
   { key: 'back_to_basics', name: 'Back to Basics', what: 'Clear review cards', goals: [20, 200, 1000] },
   { key: 'dossier_reader', name: 'Dossier Reader', what: 'Open dossiers', goals: [50, 200, 511] },
@@ -48,6 +54,12 @@ export const ACHIEVEMENTS: readonly { key: AchKey; name: string; what: string; g
 
 /** Tokens paid for bronze, silver and gold. */
 export const TIER_TOKENS = [1, 3, 5] as const;
+
+/** Case Writer pays 3/4/5 (AC9); every other achievement pays TIER_TOKENS. */
+export const tierTokens = (key: AchKey): readonly number[] => (key === 'case_writer' ? [3, 4, 5] : TIER_TOKENS);
+
+/** Counts only the server knows (invites redeemed, challenges sent, cases written). */
+export type SocialCounts = Partial<Record<'recruiter' | 'challenger' | 'case_writer', number>>;
 
 export type AchInputs = {
   plays: Play[];
@@ -61,6 +73,7 @@ export type AchInputs = {
   dossiersOpened: number;
   /** Levels with 3 stars in the saved crossword bests ('crossword:best'), which outlive discarded plays. */
   crosswordThreeStars?: number;
+  social?: SocialCounts;
 };
 
 const GAMES: GameKey[] = [
@@ -91,7 +104,8 @@ function rowsUsed(i: PlayItem, p: Play) {
 
 export function achievementProgress(i: AchInputs): Record<AchKey, number> {
   // Only finished plays: an unfinished bookmark is dropped (with its items) when a new game starts.
-  const plays = i.plays.filter((p) => p.status === 'finished' && (!i.me || p.userId == null || p.userId === i.me));
+  // Playing your own custom case is practice and never counts.
+  const plays = i.plays.filter((p) => p.status === 'finished' && !p.settings?.custom && (!i.me || p.userId == null || p.userId === i.me));
   const byId = new Map(plays.map((p) => [p.id, p]));
   const mine = i.items.filter((x) => x.seat === OWNER && byId.has(x.playId)).map((x) => ({ x, p: byId.get(x.playId)! }));
   const of = (g: GameKey) => mine.filter((m) => m.p.game === g);
@@ -124,6 +138,9 @@ export function achievementProgress(i: AchInputs): Record<AchKey, number> {
     most_trusted: plays.filter((p) => p.game === 'trust-me-not' && won(p)).length,
     team_player: plays.filter(teamWon).length,
     house_call: plays.filter((p) => p.mode === 'online' && p.seats.some((s) => s.seat !== OWNER && s.userId && friends.has(s.userId))).length,
+    recruiter: i.social?.recruiter ?? 0,
+    challenger: i.social?.challenger ?? 0,
+    case_writer: i.social?.case_writer ?? 0,
     pass_stethoscope: plays.filter((p) => p.mode === 'offline').length,
     back_to_basics: i.reviewCards,
     dossier_reader: i.dossiersOpened,
