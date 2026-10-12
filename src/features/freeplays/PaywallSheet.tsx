@@ -11,7 +11,7 @@ import { u } from '@/theme/scale';
 import type { Theme } from '@/theme/tokens';
 import { F } from '@/theme/tokens';
 
-import { ADS_LIVE, cancelPaywall, payWithAd, payWithTokens, subscribeFromPaywall, usePaywall } from './paywall';
+import { ADS_LIVE, cancelPaywall, payWithAd, payWithTokens, PLAY_AD_CAP, playAdsLeft, subscribeFromPaywall, usePaywall } from './paywall';
 import { SUBSCRIPTION } from '@/features/store/catalog';
 
 type Choice = { key: string; label: string; sub: string; on?: () => void; off?: boolean };
@@ -22,15 +22,25 @@ export function PaywallSheet() {
   const ask = usePaywall((s) => s.ask);
   const [tokens, setTokens] = useState<number | null>(null);
   const [short, setShort] = useState(false);
+  const [adsLeft, setAdsLeft] = useState<number | null>(null);
   useEffect(() => {
     setShort(false);
     if (ask) engine.wallet.balance().then((b) => setTokens(b.tokens));
+    if (ask) playAdsLeft().then(setAdsLeft);
   }, [ask]);
   if (!ask) return null;
   const g = GAMES.find((x) => x.key === ask.game);
   const title = g ? `${g.lead} ${g.em}`.trim() : 'this game';
   const choices: Choice[] = [
-    { key: 'ad', label: 'Watch an ad', sub: ADS_LIVE ? 'One short ad, one more play' : 'Free for now, while ads are off', on: () => void payWithAd() },
+    {
+      key: 'ad',
+      label: 'Watch an ad',
+      sub: adsLeft === 0 ? `No ads left today (${PLAY_AD_CAP} a day)` : `${ADS_LIVE ? 'One short ad, one more play' : 'Free for now, while ads are off'}${adsLeft == null ? '' : ` · ${adsLeft} of ${PLAY_AD_CAP} left today`}`,
+      off: adsLeft === 0,
+      on: async () => {
+        if (!(await payWithAd())) setAdsLeft(await playAdsLeft());
+      },
+    },
     {
       key: 'tokens',
       label: `Pay ${PLAY_PRICE} tokens`,
@@ -77,7 +87,7 @@ function Vials({ t, title, choices }: { t: Theme; title: string; choices: Choice
       <View style={{ gap: u(8), marginTop: u(6) }}>
         {choices.map((c, i) =>
           i === 0 ? (
-            <Pressable key={c.key} onPress={c.on} accessibilityRole="button">
+            <Pressable key={c.key} onPress={c.off ? undefined : c.on} accessibilityRole="button" accessibilityState={{ disabled: !!c.off }} style={c.off && { opacity: 0.5 }}>
               <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={s.btn}>
                 <Text style={[s.btnT, { color: t.onGrad }]}>{c.label}</Text>
                 <Text style={[s.btnS, { color: t.onGrad }]}>{c.sub}</Text>

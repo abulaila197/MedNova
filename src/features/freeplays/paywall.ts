@@ -29,15 +29,33 @@ const close = (ok: boolean) => {
   a?.done(ok);
 };
 
-/** 'Watch an ad': a free stand-in until ads are live. */
+/** Play-again ads: 5 a day in total across all games (Yazan 2026-10-12); Store token ads have their own 5. */
+export const PLAY_AD_CAP = 5;
+const AD_KEY = 'ads:play';
+const today = () => new Date().toISOString().slice(0, 10);
+
+/** Play-again ads left today on this phone (the server holds the same cap once ads are live). */
+export async function playAdsLeft() {
+  const d = await engine.kv.get<{ date: string; n: number }>(AD_KEY);
+  return PLAY_AD_CAP - (d?.date === today() ? d.n : 0);
+}
+
+/** 'Watch an ad': one more play, never tokens. A free stand-in until ads are live. */
 export async function payWithAd() {
   const a = usePaywall.getState().ask;
-  if (!a) return;
+  if (!a) return false;
+  const left = await playAdsLeft();
+  if (left <= 0) return false;
   // ADS_LIVE: show the rewarded ad here and stop if it was not watched to the end.
-  // Real ads count toward the Ad Watcher achievement; the free stand-in does not.
-  if (ADS_LIVE) await call('ad_watched', { source: 'play' }).catch(() => {});
+  // Real ads count toward the Commercial Break achievement; the free stand-in does not.
+  if (ADS_LIVE) {
+    const r = await call<{ ok: boolean }>('ad_watched', { source: 'play' }).catch(() => ({ ok: true }));
+    if (!r.ok) return false;
+  }
+  await engine.kv.set(AD_KEY, { date: today(), n: PLAY_AD_CAP - left + 1 });
   await engine.gate.addPlay(a.game);
   close(true);
+  return true;
 }
 
 /** 'Pay 3 tokens'. False when the wallet is short. */

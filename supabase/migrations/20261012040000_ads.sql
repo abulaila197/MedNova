@@ -1,5 +1,5 @@
 -- Ads (AD-1..): every watched ad is one row (play-again ads on the out-of-free-plays sheet, and Store token ads).
--- Store ads pay 1 token each, up to 5 a day; play-again ads give a play, never tokens. Achievement "Ad Watcher" counts both kinds: 20/50/100, paying 5/10/20.
+-- Store ads pay 1 token each, up to 5 a day; play-again ads give a play, never tokens, also 5 a day across all games. Achievement "Ad Watcher" counts both kinds: 20/50/100, paying 5/10/20.
 -- Nova's card mission now needs one Store ad too (14 solo free ways). The app only calls ad_watched once ads are live.
 create table if not exists public.ad_views (
   id uuid primary key default gen_random_uuid(),
@@ -17,10 +17,9 @@ begin
   if uid is null then raise exception 'not signed in'; end if;
   if source not in ('play', 'store') then raise exception 'source'; end if;
   perform pg_advisory_xact_lock(hashtext('free:' || uid::text));
-  if source = 'store' then
-    select count(*) into today from public.ad_views a where a.user_id = uid and a.source = 'store' and a.at >= date_trunc('day', now());
-    if today >= cap then return jsonb_build_object('ok', false, 'why', 'cap'); end if;
-  end if;
+  -- Each kind has its own 5 a day: play-again ads (all games together) and Store token ads.
+  select count(*) into today from public.ad_views a where a.user_id = uid and a.source = ad_watched.source and a.at >= date_trunc('day', now());
+  if today >= cap then return jsonb_build_object('ok', false, 'why', 'cap'); end if;
   insert into public.ad_views (user_id, source) values (uid, ad_watched.source);
   if source = 'store' then
     perform public.pay_free(uid, 'free', per, 'free:ad:' || to_char(now(), 'YYYY-MM-DD') || ':' || (today + 1), 'Watched an ad');
