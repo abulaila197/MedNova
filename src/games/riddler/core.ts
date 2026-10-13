@@ -47,13 +47,17 @@ export type Level = {
   stars: number;
   /** A retry after a miss in the same session pays as already failed: at most 1 star (missing = 3). */
   maxStars?: number;
+  /** Second chances bought in this level (Yazan 2026-10-13): each gives the 3 lives back. */
+  revived?: number;
 };
 
 export type LevelEvent =
   | { type: 'GUESS'; answerId: string; now: number }
   | { type: 'HINT' }
   | { type: 'PAUSE'; now: number }
-  | { type: 'RESUME'; now: number };
+  | { type: 'RESUME'; now: number }
+  /** Second chance, paid first: a level lost on lives goes on with 3 new lives, worth 1 star at most. */
+  | { type: 'REVIVE'; now: number };
 
 export function startLevel(riddleId: string, now: number, maxStars = 3): Level {
   return { riddleId, phase: 'playing', elapsedMs: 0, runningSince: now, wrong: [], hintUsed: false, timeMs: 0, stars: 0, maxStars };
@@ -64,7 +68,7 @@ export const retryCap = (session: readonly { riddleId: string; solved: boolean }
   session.some((d) => d.riddleId === riddleId && !d.solved) ? 1 : 3;
 
 export const levelTime = (l: Level, now: number) => l.elapsedMs + (l.runningSince == null ? 0 : Math.max(0, now - l.runningSince));
-export const livesLeft = (l: Level) => RD.lives - l.wrong.length;
+export const livesLeft = (l: Level) => RD.lives * (1 + (l.revived ?? 0)) - l.wrong.length;
 
 /** RD4, with the hint capping the level at 2 stars. */
 export function starsFor(timeMs: number, wrong: number, hintUsed: boolean) {
@@ -84,9 +88,11 @@ export function stepLevel(l: Level, e: LevelEvent): Level {
         return { ...l, phase: 'solved', elapsedMs: t, runningSince: null, timeMs: t, stars: Math.min(l.maxStars ?? 3, starsFor(t, l.wrong.length, l.hintUsed)) };
       }
       const wrong = [...l.wrong, e.answerId];
-      if (wrong.length >= RD.lives) return { ...l, wrong, phase: 'failed', elapsedMs: t, runningSince: null, timeMs: t, stars: 0 };
+      if (wrong.length >= RD.lives * (1 + (l.revived ?? 0))) return { ...l, wrong, phase: 'failed', elapsedMs: t, runningSince: null, timeMs: t, stars: 0 };
       return { ...l, wrong };
     }
+    case 'REVIVE':
+      return l.phase === 'failed' ? { ...l, phase: 'playing', runningSince: e.now, revived: (l.revived ?? 0) + 1, maxStars: 1 } : l;
     case 'HINT':
       return l.phase === 'playing' && !l.hintUsed ? { ...l, hintUsed: true } : l;
     case 'PAUSE':

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
+import { spendTokens, whySay } from '@/features/style/useStyle';
 
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
@@ -9,6 +10,7 @@ import { F } from '@/theme/tokens';
 import { engine } from '../engine';
 import { usePauseHide } from '../engine/usePauseHide';
 import { recordItem } from '../shell/flow';
+import { useSession } from '../shell/session';
 import { PauseMenu } from '../shell/PauseMenu';
 import type { PlayProps } from '../shell/types';
 import { Btn, GameScreen } from '../shell/ui';
@@ -38,6 +40,8 @@ async function recordBest(style: Style, len: number, score: number) {
   return { old, isNew };
 }
 
+const SECOND_PRICE = [5, 10, 20];
+
 /** Solo (SM3, SM4, SM11, SM16): one timed round, helpers for tokens, EXP = 2 per right answer up to 60 (SM16), misses go to Learn. */
 export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   const style = (play.settings.style as Style) ?? 'mixed';
@@ -47,6 +51,8 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   const paying = useRef(false);
   const [notice, setNotice] = useState<string | null>(null);
   const [best, setBest] = useState<{ old: number; isNew: boolean } | null>(null);
+  const [kept, setKept] = useState(0);
+  const signedIn = useSession((x) => !!x.userId);
 
   // Start: resume the bookmark, or a fresh queue, unseen first (rule 15). Mixed is about half and half.
   useEffect(() => {
@@ -137,6 +143,17 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
     [dispatch, play.id],
   );
 
+  /** Second chance (Yazan 2026-10-13): a broken streak of 3 or more comes back for 5, then 10, then 20 tokens, up to 3 times a run. */
+  const keep = useCallback(async () => {
+    if (paying.current || kept >= 3) return;
+    paying.current = true;
+    const res = await spendTokens('second', play.id);
+    paying.current = false;
+    if (!res.ok) return setNotice(whySay(res));
+    dispatch({ type: 'KEEP' });
+    setKept((k) => k + 1);
+  }, [dispatch, kept, play.id]);
+
   if (!round) return <GameScreen scroll={false}>{null}</GameScreen>;
   const q = questionById.get(round.queue[Math.min(round.index, round.queue.length - 1)])!;
   const paused = round.phase === 'paused';
@@ -154,6 +171,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
       helpers={{ onHelper: helper, usable: (k) => helperUsable(round, k) }}
       hidden={paused}
       notice={notice}
+      offer={signedIn && !over && !paused && kept < 3 && (round.lost ?? 0) >= 3 ? { label: `Keep your streak of ${round.lost} · ${SECOND_PRICE[kept]} tokens`, onPress: () => void keep() } : null}
       dock={over ? <OverCard round={round} best={best} onNext={() => onFinish(round.score)} /> : undefined}>
       <PauseMenu open={paused} mode="solo" onResume={() => dispatch({ type: 'RESUME', now: Date.now() })} onQuit={onQuit} />
     </HeatBoard>

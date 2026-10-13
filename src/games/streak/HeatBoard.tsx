@@ -48,6 +48,8 @@ export type BoardProps = {
   /** Covers the question while paused (rule 4). */
   hidden?: boolean;
   notice?: string | null;
+  /** A paid offer under the board (Solo's second chance). */
+  offer?: { label: string; onPress: () => void } | null;
   /** Replaces the options: time up, turn over. */
   dock?: ReactNode;
   /** Online: your pick, locked in until the question ends (no right or wrong yet). */
@@ -124,6 +126,13 @@ export function HeatBoard(p: BoardProps) {
           )}
 
           <View style={{ flex: 1 }} />
+          {p.offer && !p.dock ? (
+            <Animated.View entering={FadeIn}>
+              <Pressable onPress={p.offer.onPress} style={[s.offer, { borderColor: t.accent }]} accessibilityRole="button">
+                <Text style={[s.offerT, { color: t.accent }]}>{p.offer.label}</Text>
+              </Pressable>
+            </Animated.View>
+          ) : null}
           {p.notice ? (
             <Animated.Text entering={FadeIn} style={[s.notice, { color: t.soft }]}>{p.notice}</Animated.Text>
           ) : null}
@@ -292,6 +301,8 @@ const s = StyleSheet.create({
   hide: { borderRadius: u(14), borderWidth: 1, padding: u(18), alignItems: 'center' },
   hideT: { fontFamily: F.body, fontSize: u(11) },
   notice: { fontFamily: F.bodySemi, fontSize: u(10.5), textAlign: 'center' },
+  offer: { alignSelf: 'center', borderWidth: 1, borderRadius: 999, paddingHorizontal: u(14), height: u(30), justifyContent: 'center' },
+  offerT: { fontFamily: F.bodyBold, fontSize: u(11) },
   hrow: { flexDirection: 'row', gap: u(5) },
   hb: { flex: 1, borderWidth: 1, borderRadius: u(10), paddingVertical: u(10), paddingHorizontal: u(3), alignItems: 'center', gap: u(1) },
   hbT: { fontFamily: F.bodyBold, fontSize: u(10.5), lineHeight: u(13) },

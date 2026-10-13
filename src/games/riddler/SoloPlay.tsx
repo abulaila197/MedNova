@@ -4,6 +4,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 import Animated, { FadeIn } from 'react-native-reanimated';
 
+import { spendTokens, whySay } from '@/features/style/useStyle';
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
@@ -11,6 +12,7 @@ import { F } from '@/theme/tokens';
 import { engine } from '../engine';
 import { usePauseHide } from '../engine/usePauseHide';
 import { recordItem } from '../shell/flow';
+import { useSession } from '../shell/session';
 import { PauseMenu } from '../shell/PauseMenu';
 import type { PlayProps } from '../shell/types';
 import { Btn, GameScreen, Ghost, Kick } from '../shell/ui';
@@ -25,6 +27,7 @@ type Done = { riddleId: string; solved: boolean; stars: number; exp: number };
 type SoloSave = { level: Level | null; session: Done[]; index?: number };
 
 const BEST_KEY = 'riddler:best';
+const SECOND_PRICE = [5, 10, 20];
 
 /** Solo (RD3, RD4, RD9-RD11, RD15, RD16): the level grid, one level at a time, a result card, then session results. */
 export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
@@ -80,6 +83,12 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
       setLevel(next);
       if (next.wrong.length > prev.wrong.length) setWrongSeq((x) => x + 1);
       let list = sessionRef.current;
+      // A second chance takes the miss back off the session list; the level's real end is recorded later.
+      if (prev.phase === 'failed' && next.phase === 'playing') {
+        list = list.slice(0, -1);
+        sessionRef.current = list;
+        setSession(list);
+      }
       if ((next.phase === 'solved' || next.phase === 'failed') && prev.phase === 'playing') {
         const r = riddleById.get(next.riddleId)!;
         const solved = next.phase === 'solved';
@@ -100,7 +109,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
           points: next.stars,
           // RD1: only a failed condition riddle goes to Learn; signs and symptoms are not saved.
           feedsLearn: !solved && feedsLearn(r),
-          gameData: { stars: next.stars, exp, wrong: next.wrong.length, kind: r.kind },
+          gameData: { stars: next.stars, exp, wrong: next.wrong.length, kind: r.kind, revived: next.revived ?? 0 },
         });
       }
       save(next, list);
@@ -134,6 +143,18 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
     }
     dispatch({ type: 'HINT' });
   }, [dispatch, play.id]);
+
+  /** Second chance (Yazan 2026-10-13): 3 lives back for 5, then 10, then 20 tokens, up to 3 times a level. */
+  const revive = useCallback(async () => {
+    const l = ref.current;
+    if (!l || paying.current || l.phase !== 'failed' || (l.revived ?? 0) >= 3) return;
+    paying.current = true;
+    const res = await spendTokens('second', `${play.id}:${l.riddleId}`);
+    paying.current = false;
+    if (!res.ok) return setNotice(whySay(res));
+    dispatch({ type: 'REVIVE', now: Date.now() });
+  }, [dispatch, play.id]);
+  const signedIn = useSession((x) => !!x.userId);
 
   const toGrid = () => {
     ref.current = null;
@@ -188,6 +209,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
             onNext={() => open(nextId)}
             onRetry={() => open(r.id)}
             onGrid={toGrid}
+            revive={signedIn && level.phase === 'failed' && (level.revived ?? 0) < 3 ? { price: SECOND_PRICE[level.revived ?? 0], onPress: () => void revive() } : null}
           />
         ) : undefined
       }>
@@ -197,7 +219,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
 }
 
 /** RD11: the answer, stars and EXP, with Next level, Retry and a dossier link where the answer has one. */
-function ResultCard({ done, level, onNext, onRetry, onGrid }: { done: Done; level: Level; onNext: () => void; onRetry: () => void; onGrid: () => void }) {
+function ResultCard({ done, level, onNext, onRetry, onGrid, revive }: { done: Done; level: Level; onNext: () => void; onRetry: () => void; onGrid: () => void; revive?: { price: number; onPress: () => void } | null }) {
   const t = useTheme();
   const lt = t.mode === 'light';
   const r = riddleById.get(done.riddleId)!;
@@ -207,25 +229,41 @@ function ResultCard({ done, level, onNext, onRetry, onGrid }: { done: Done; leve
     : done.exp
       ? `+${done.exp} EXP${done.exp < done.stars * RD.expPerStar ? ' for your new star' + (done.exp > RD.expPerStar ? 's' : '') : ''}`
       : 'No new stars, so no EXP. Beat your best to earn more.';
-  const capLine = done.solved && level.maxStars === 1 ? ' A retry after a miss earns 1 star at most.' : '';
+  const capLine = done.solved && level.revived ? ' A second chance earns 1 star at most.' : done.solved && level.maxStars === 1 ? ' A retry after a miss earns 1 star at most.' : '';
+  // With a second chance on offer the answer stays hidden until you give up on it.
+  const [gaveUp, setGaveUp] = useState(false);
+  const hide = !!revive && !gaveUp;
   return (
     <View style={[s.card, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
       <View style={s.cardTop}>
         <Kick color={tone}>{done.solved ? `Solved in ${Math.ceil(level.timeMs / 1000)} s` : 'Missed'}</Kick>
         {done.solved ? <Stars n={done.stars} size={14} /> : null}
       </View>
-      <Text style={[s.ans, { color: t.white }]}>{riddleName(r)}</Text>
-      <Text style={[s.def, { color: t.mute }]} numberOfLines={3}>{r.definition}</Text>
-      <Text style={[s.exp, { color: t.soft }]}>{expLine + capLine}</Text>
-      <View style={s.row}>
-        <Ghost label="Retry" onPress={onRetry} style={{ flex: 1 }} />
-        <Btn label="Next level" onPress={onNext} style={{ flex: 1.4 }} />
-      </View>
+      {hide ? (
+        <Text style={[s.ans, { color: t.white }]}>Out of lives</Text>
+      ) : (
+        <>
+          <Text style={[s.ans, { color: t.white }]}>{riddleName(r)}</Text>
+          <Text style={[s.def, { color: t.mute }]} numberOfLines={3}>{r.definition}</Text>
+        </>
+      )}
+      <Text style={[s.exp, { color: t.soft }]}>{hide ? 'Keep going with 3 new lives, worth 1 star at most.' : expLine + capLine}</Text>
+      {hide && revive ? (
+        <View style={s.row}>
+          <Ghost label="Show the answer" onPress={() => setGaveUp(true)} style={{ flex: 1 }} />
+          <Btn label={`3 lives back · ${revive.price} tokens`} onPress={revive.onPress} style={{ flex: 1.4 }} />
+        </View>
+      ) : (
+        <View style={s.row}>
+          <Ghost label="Retry" onPress={onRetry} style={{ flex: 1 }} />
+          <Btn label="Next level" onPress={onNext} style={{ flex: 1.4 }} />
+        </View>
+      )}
       <View style={s.links}>
         <Pressable onPress={onGrid} hitSlop={u(6)} accessibilityRole="button" accessibilityLabel="All levels">
           <Text style={[s.link, { color: t.mute }]}>All levels</Text>
         </Pressable>
-        {r.dossier ? (
+        {r.dossier && !hide ? (
           <Pressable onPress={() => router.push(`/learn/dossier?id=${r.dossier}`)} hitSlop={u(6)} accessibilityRole="link" accessibilityLabel={`Open the dossier for ${r.answer}`}>
             <Text style={[s.link, { color: t.accent }]}>Open the dossier ›</Text>
           </Pressable>

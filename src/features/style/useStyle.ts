@@ -49,11 +49,23 @@ type Status = {
   gifts: Gift[];
 };
 
+// The weekly deal, worked out the same way as the server's style_deal (so guests see it too).
+const WEEK0 = Date.UTC(2026, 9, 10);
+const WEEK = 7 * 86400000;
+const DEAL_FRAMES = ['bronze', 'silver', 'gold', 'platinum', 'stethoscope', 'helix', 'neuron', 'pulse', 'laurel', 'aurora', 'nova'];
+const DEAL_TITLES = ['intern', 'night_owl', 'coffee_powered', 'resident', 'differential_hunter', 'ward_whisperer', 'chief_resident',
+  'the_diagnostician', 'pager_legend', 'attending', 'consultant', 'riddle_master', 'head_of_department', 'professor'];
+function guestDeal() {
+  const w = Math.floor((Date.now() - WEEK0) / WEEK);
+  const at = (n: number, m: number) => ((n % m) + m) % m;
+  return { deal: [`frame:${DEAL_FRAMES[at(w * 7, 11)]}`, `title:${DEAL_TITLES[at(w * 5, 14)]}`], dealEnds: WEEK0 + (w + 1) * WEEK };
+}
+
 /** Reads your own items, look, the weekly deal and unseen gifts. */
 export async function loadStyle() {
   const userId = useSession.getState().userId;
   if (!userId) {
-    useStyle.setState({ owned: ['frame:normal', 'title:medical_student'], worn: PLAIN, gifts: [], loaded: true });
+    useStyle.setState({ owned: ['frame:normal', 'title:medical_student'], worn: PLAIN, gifts: [], loaded: true, ...guestDeal() });
     return;
   }
   const { data } = await supabase.rpc('style_status');

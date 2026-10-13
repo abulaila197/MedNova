@@ -152,3 +152,15 @@ test('teams (TM5): teams alternate, players in order; uneven teams finish the la
   assert.deepEqual(sum.map((x) => [x.name, x.score]), [['Team Cyan', 12], ['Team Violet', 12]]);
   assert.deepEqual(sum.map((x) => x.rank), [1, 1]);
 });
+
+test('second chance: a broken streak comes back once, until the next answer', () => {
+  let r = startRound(seq(10), 60, 0, fixed);
+  for (const at of [1000, 4000, 7000]) r = answer(r, 0, at);
+  r = answer(r, 2, 10_000);
+  assert.deepEqual([r.streak, r.lost], [0, 3]);
+  r = stepRound(r, { type: 'KEEP' }, ans, fixed);
+  assert.deepEqual([r.streak, r.lost], [3, 0]);
+  assert.equal(stepRound(r, { type: 'KEEP' }, ans, fixed), r);
+  r = answer(r, 0, 13_000);
+  assert.deepEqual([r.streak, r.score], [4, 10]);
+});

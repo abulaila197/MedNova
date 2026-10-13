@@ -179,7 +179,7 @@ export function StylePage() {
         )}
 
         {tab === 'effects' ? <Glow t={t} busy={busy} act={act} glow={worn.glow} /> : null}
-        <View style={{ height: u(90) }} />
+        <View style={{ height: u(120) }} />
       </InfoScroll>
 
       {/* What you can do with the item you tapped. */}
@@ -354,9 +354,9 @@ const s = StyleSheet.create({
   rS: { fontFamily: F.body, fontSize: u(9.5), marginTop: u(2) },
   stk: { flexDirection: 'row', gap: u(3), marginTop: u(4) },
   glow: { flexDirection: 'row', alignItems: 'center', padding: u(12), gap: u(10) },
-  bar: { position: 'absolute', left: u(14), right: u(14), bottom: u(18), borderWidth: 1, borderRadius: u(18), paddingVertical: u(10), paddingHorizontal: u(14), flexDirection: 'row', alignItems: 'center', gap: u(8) },
-  barN: { flex: 1, fontFamily: F.display, fontSize: u(15) },
-  barBtns: { flexDirection: 'row', alignItems: 'center', gap: u(6) },
+  bar: { position: 'absolute', left: u(14), right: u(14), bottom: u(18), borderWidth: 1, borderRadius: u(18), paddingVertical: u(10), paddingHorizontal: u(14), gap: u(8) },
+  barN: { fontFamily: F.display, fontSize: u(15) },
+  barBtns: { flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', gap: u(6) },
   barS: { fontFamily: F.bodyMedium, fontSize: u(10.5) },
   big: { flexDirection: 'row', alignItems: 'center', gap: u(4), height: u(32), borderRadius: 999, paddingHorizontal: u(14) },
   bigT: { fontFamily: F.bodyBold, fontSize: u(11.5) },

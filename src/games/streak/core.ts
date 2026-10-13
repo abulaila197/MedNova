@@ -58,6 +58,8 @@ export type Round = {
   maxStreak: number;
   score: number;
   feedback: { picked: number; right: boolean; points: number; untilMs: number } | null;
+  /** The streak the last wrong answer broke, until the next answer (a second chance can give it back). */
+  lost?: number;
   answers: Answer[];
   helpers: Record<HelperKind, number>;
   endReason: 'time' | 'questions' | null;
@@ -68,7 +70,9 @@ export type RoundEvent =
   | { type: 'TICK'; now: number }
   | { type: 'PAUSE'; now: number }
   | { type: 'RESUME'; now: number }
-  | { type: 'HELPER'; kind: HelperKind; now: number };
+  | { type: 'HELPER'; kind: HelperKind; now: number }
+  /** Second chance (paid first, Yazan 2026-10-13): the streak the last wrong answer broke comes back. */
+  | { type: 'KEEP' };
 
 export type Rng = () => number;
 
@@ -114,7 +118,7 @@ export function stepRound(r: Round, e: RoundEvent, answerOf: (id: string) => num
       const remainingMs = timeLeft(r, e.now);
       const answer: Answer = { qId: currentId(r), picked: e.choice, outcome: right ? 'right' : 'wrong', points, streak, timeMs: usedMs(r, e.now) - r.shownAtMs };
       return {
-        ...r, phase: 'feedback', remainingMs, runningSince: null, streak, maxStreak: Math.max(r.maxStreak, streak), score: r.score + points,
+        ...r, phase: 'feedback', remainingMs, runningSince: null, streak, maxStreak: Math.max(r.maxStreak, streak), score: r.score + points, lost: right ? 0 : r.streak,
         feedback: { picked: e.choice, right, points, untilMs: e.now + (right ? FEEDBACK_MS.right : FEEDBACK_MS.wrong) },
         answers: [...r.answers, answer],
       };
@@ -137,6 +141,10 @@ export function stepRound(r: Round, e: RoundEvent, answerOf: (id: string) => num
       if (r.phase !== 'paused') return r;
       if (r.before === 'feedback' && r.feedback) return { ...r, phase: 'feedback', before: null, feedback: { ...r.feedback, untilMs: e.now + Math.max(0, r.feedback.untilMs) } };
       return { ...r, phase: 'playing', before: null, runningSince: e.now };
+    }
+    case 'KEEP': {
+      if (!r.lost || r.phase === 'over') return r;
+      return { ...r, streak: r.lost, lost: 0 };
     }
     case 'HELPER': {
       // Paid before this event arrives (the screen spends the tokens first, then refunds if this does nothing).

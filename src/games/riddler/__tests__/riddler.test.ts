@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
-import { levelExp, retryCap, search, startLevel, starsFor, stepLevel, type Answer } from '../core';
+import { levelExp, livesLeft, retryCap, search, startLevel, starsFor, stepLevel, type Answer } from '../core';
 import { LOCK_MS, currentSeat, lockLeft, offlineRows, previousLine, scorePhoto, startOffline, stepOffline } from '../offline';
 import { fullName } from '../../shell/names';
 
@@ -128,4 +128,13 @@ test('offline (RD19): the first player moves one seat each picture', () => {
   assert.deepEqual(lap(), [2, 0, 1]);
   assert.deepEqual(lap(), [0, 1, 2]);
   assert.deepEqual(lap(), [1, 2, 0]);
+});
+
+test('second chance: a failed level goes on with 3 new lives, worth 1 star at most', () => {
+  let l = startLevel('r-001', 0);
+  for (const id of ['r-002', 'r-003', 'r-004']) l = guess(l, id, 1000);
+  l = stepLevel(l, { type: 'REVIVE', now: 2000 });
+  assert.deepEqual([l.phase, l.revived, livesLeft(l)], ['playing', 1, 3]);
+  l = guess(l, 'r-001', 3000);
+  assert.deepEqual([l.phase, l.stars], ['solved', 1]);
 });
