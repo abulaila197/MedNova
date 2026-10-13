@@ -1,6 +1,7 @@
 import type { RealtimeChannel } from '@supabase/supabase-js';
 import { useEffect, useRef, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
+import Animated, { FadeInDown, LinearTransition } from 'react-native-reanimated';
 import { Text, TextInput } from '@/components/AppText';
 
 import { supabase } from '@/lib/supabase';
@@ -12,6 +13,7 @@ import { RoomTalk } from '@/online/Talk';
 import { u } from '@/theme/scale';
 
 import { characterOf } from '../shell/characters';
+import { Face } from '../shell/Face';
 import { KeyboardLift } from '../shell/KeyboardLift';
 import { PauseMenu } from '../shell/PauseMenu';
 import { presetTeam } from '../shell/teams';
@@ -205,7 +207,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
     return (
       <SlateScreen>
         <TopRow kicker={`${kick} · you’re drawing`} title={w ? w.name : ''} color={R.mark} right={<><ClockChalkTimer clock={clock} leftAt={leftAt} totalMs={turnMs} /><PauseBtn onPress={pause} /></>} />
-        <DrawSide turn={st.index} matchId={matchId} channel={channel} />
+        <DrawSide turn={st.index} matchId={matchId} channel={channel} wrong={<WrongGuesses list={sa.guesses} players={st.players} />} />
         <Note style={{ textAlign: 'center' }}>{`${st.players.filter((p) => p.solved).length} of ${st.players.filter((p) => !p.dropped && !p.drawer).length} guessed it · no letters or numbers on the board`}</Note>
         {extras}
       </SlateScreen>
@@ -221,6 +223,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
         <View style={s.fill}>
           <Frame style={{ width: '100%', maxWidth: u(330) }}>
             <Sketch strokes={strokes.turn === st.index ? strokes.list : []} live={live} bg={R.board} ratio={RATIO} />
+            <WrongGuesses list={sa.guesses} players={st.players} />
           </Frame>
         </View>
         {playing ? <GuessBox key={st.index} solved={st.me?.solved_ms != null} points={st.me?.points ?? 0} rank={st.me?.rank ?? null} matchId={matchId} load={load} /> : <Note style={{ textAlign: 'center' }}>You’re watching. You get a seat at the rematch.</Note>}
@@ -232,7 +235,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
 }
 
 /** The drawer's board and chalk ledge. Each finished line saves the board; the line being drawn goes out live. */
-function DrawSide({ turn, matchId, channel }: { turn: number; matchId: string; channel: React.RefObject<RealtimeChannel | null> }) {
+function DrawSide({ turn, matchId, channel, wrong }: { turn: number; matchId: string; channel: React.RefObject<RealtimeChannel | null>; wrong: React.ReactNode }) {
   const R = useSlateRoom();
   const board = useRef<BoardHandle>(null);
   const [ink, setInk] = useState(0);
@@ -265,10 +268,29 @@ function DrawSide({ turn, matchId, channel }: { turn: number; matchId: string; c
       <View style={s.fill}>
         <Frame style={{ width: '100%', maxWidth: u(330) }}>
           <Board key={turn} ref={board} color={SL.inks[ink]} width={SL.sizes[size]} erase={erase} bg={R.board} ratio={RATIO} onChange={save} onLive={onLive} />
+          {wrong}
         </Frame>
       </View>
       <Ledge ink={ink} size={size} erase={erase} onInk={(i) => (setInk(i), setErase(false))} onSize={() => setSize(size ? 0 : 1)} onErase={() => setErase(!erase)} onUndo={() => board.current?.undo()} onClear={() => board.current?.clear()} />
     </>
+  );
+}
+
+/**
+ * The guesses box (P20): a see-through chat in the board's top-left corner with the face and text of the latest 4
+ * wrong guesses; each new one pushes the oldest off the top. It never takes a touch, so the artist draws under it.
+ */
+function WrongGuesses({ list, players }: { list: NonNullable<RaceState['sa']>['guesses']; players: RacePlayer[] }) {
+  if (!list?.length) return null;
+  return (
+    <View pointerEvents="none" style={s.wrong}>
+      {list.map((x) => (
+        <Animated.View key={x.i} entering={FadeInDown.duration(180)} layout={LinearTransition.duration(180)} style={s.wrongRow}>
+          <Face slug={players.find((p) => p.user_id === x.u)?.character ?? 'yara'} size={u(18)} />
+          <Text style={s.wrongT} numberOfLines={1}>{x.g}</Text>
+        </Animated.View>
+      ))}
+    </View>
   );
 }
 
@@ -347,4 +369,7 @@ const s = StyleSheet.create({
   optF: { fontFamily: SL.body, fontSize: u(12.5) },
   report: { alignSelf: 'center', paddingVertical: u(4), marginRight: u(34) },
   reportT: { fontFamily: SL.body, fontSize: u(13) },
+  wrong: { position: 'absolute', top: u(6), left: u(6), maxWidth: '58%', gap: u(4), alignItems: 'flex-start' },
+  wrongRow: { flexDirection: 'row', alignItems: 'center', gap: u(5), maxWidth: '100%', paddingLeft: u(3), paddingRight: u(9), paddingVertical: u(2), borderRadius: u(12), backgroundColor: 'rgba(255,255,255,0.08)', borderWidth: 1, borderColor: 'rgba(255,255,255,0.12)' },
+  wrongT: { flexShrink: 1, fontFamily: SL.body, fontSize: u(12.5), color: SL.chalk },
 });

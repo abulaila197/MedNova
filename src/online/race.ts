@@ -89,6 +89,8 @@ export type RaceState = {
     version: number;
     reports: number;
     reported: boolean;
+    /** The guesses box (P20): the latest 4 wrong guesses of this turn, oldest first (near misses never show). */
+    guesses?: { u: string; g: string; i: number }[] | null;
   } | null;
 };
 

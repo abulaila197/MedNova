@@ -61,7 +61,7 @@ Deno.serve(async (req) => {
   const word = B.byId.get(wid as string);
   if (!word) return json({ result: 'over' });
   const verdict = evaluateGuess(guess, word, B.index);
-  const { data: res, error: e2 } = await admin.rpc('sa_judge', { m: body.m, u: who.user.id, wid, verdict });
+  const { data: res, error: e2 } = await admin.rpc('sa_judge_g', { m: body.m, u: who.user.id, wid, verdict, g: guess });
   if (e2) return json({ result: 'error', message: e2.message }, 500);
   return json({ result: res });
 });
