@@ -37,7 +37,7 @@ const SHOWN = 6; // the hand holds at most this many; the + opens the rest
  * A Community shelf (Yazan, 2026-10-13): a row of overlapping photos ending in a +. The + (or any photo) opens
  * `to`: the wallpaper viewer for Nova Wallpapers, Still rising for Nova merch.
  */
-export function Shelf({ lead, em, note, photos, to }: { lead: string; em: string; note: string; photos: ImageSourcePropType[]; to: Href }) {
+export function Shelf({ lead, em, note, photos, to }: { lead: string; em: string; note?: string; photos: ImageSourcePropType[]; to: Href }) {
   const t = useTheme();
   const open = tapped(() => router.push(to));
   const hand = photos.slice(0, SHOWN);
@@ -47,7 +47,7 @@ export function Shelf({ lead, em, note, photos, to }: { lead: string; em: string
     <Pressable onPress={open} style={[s.card, { backgroundColor: t.panel, borderColor: t.panelLine }]} accessibilityRole="button" accessibilityLabel={`${lead} ${em}, open`}>
       <View style={s.top}>
         <Text style={[s.kick, { color: t.kick }]}>{`${lead} ${em}`.toUpperCase()}</Text>
-        <Text style={[s.note, { color: t.mute }]}>{note}</Text>
+        {note ? <Text style={[s.note, { color: t.mute }]}>{note}</Text> : null}
       </View>
       <Text style={[s.title, { color: t.white }]}>
         {lead} <Text style={{ fontFamily: F.displayItalic, color: t.accent }}>{em}</Text>

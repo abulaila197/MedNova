@@ -14,7 +14,7 @@ import { F } from '@/theme/tokens';
 
 const two = (x: number) => String(x).padStart(2, '0');
 
-function WallPost({ src, i, n }: { src: ImageSourcePropType; i: number; n: number }) {
+function WallPost({ src, i }: { src: ImageSourcePropType; i: number }) {
   const t = useTheme();
   const [liked, setLiked] = useState(false);
   const [saved, setSaved] = useState<SaveResult | 'saving' | null>(null);
@@ -29,7 +29,6 @@ function WallPost({ src, i, n }: { src: ImageSourcePropType; i: number; n: numbe
       <View style={s.by}>
         <PulseStar width={u(18)} height={u(18)} light={t.mode === 'light'} glow={0.3} />
         <Text style={[s.who, { color: t.fg }]}>MedNova</Text>
-        <Text style={[s.no, { color: t.kick }]}>{`${two(i + 1)} / ${two(n)}`}</Text>
       </View>
       {/* The frame sets the shape; a bare Image takes the file's own height on web. */}
       <View style={s.photo}>
@@ -63,7 +62,7 @@ export function Wallpapers() {
           </Text>
         </View>
         {WALLPAPERS.map((src, i) => (
-          <WallPost key={i} src={src} i={i} n={WALLPAPERS.length} />
+          <WallPost key={i} src={src} i={i} />
         ))}
       </ScrollView>
     </Fade>
@@ -78,7 +77,6 @@ const s = StyleSheet.create({
   post: { borderRadius: u(18), borderWidth: 1, overflow: 'hidden' },
   by: { flexDirection: 'row', alignItems: 'center', gap: u(7), paddingHorizontal: u(12), paddingVertical: u(9) },
   who: { fontFamily: F.bodySemi, fontSize: u(11.5), flex: 1 },
-  no: { fontFamily: F.mono, fontSize: u(8.5), letterSpacing: u(1.2) },
   photo: { width: '100%', aspectRatio: 768 / 1376 }, // Yazan's wallpapers are phone-shaped; show them whole
   fill: { width: '100%', height: '100%' },
   acts: { flexDirection: 'row', gap: u(8), padding: u(10) },

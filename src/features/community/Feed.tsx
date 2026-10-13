@@ -32,7 +32,7 @@ export function Feed() {
             {PAGE.lead} <Text style={{ fontFamily: F.displayItalic, color: t.accent }}>{PAGE.em}</Text>
           </Text>
         </View>
-        <Shelf lead="Nova" em="Wallpapers" note={`${WALLPAPERS.length} wallpapers`} photos={WALLPAPERS} to="/community/wallpapers" />
+        <Shelf lead="Nova" em="Wallpapers" photos={WALLPAPERS} to="/community/wallpapers" />
         <Post kick="OUR VISION" lead="Medicine," em="reimagined as wonder" body={VISION} />
         <Shelf lead="Nova" em="merch" note="Soon in the store" photos={MERCH} to="/community/soon" />
         <Post kick="BEHIND MEDNOVA" lead="Built slowly," em="with care" body={BUILD} />
