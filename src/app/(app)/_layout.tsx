@@ -47,6 +47,6 @@ export default function AppLayout() {
 }
 
 const s = StyleSheet.create({
-  card: { ...StyleSheet.absoluteFill, overflow: 'hidden', zIndex: 2, shadowColor: '#000', shadowOffset: { width: -30, height: 30 }, shadowRadius: 35 },
-  catch: { ...StyleSheet.absoluteFill, backgroundColor: 'rgba(8,10,25,0.25)' },
+  card: { ...StyleSheet.absoluteFill, overflow: 'hidden', zIndex: 2, shadowColor: '#000', shadowOffset: { width: -12, height: 12 }, shadowRadius: 24, shadowOpacity: 0.1 },
+  catch: { ...StyleSheet.absoluteFill, backgroundColor: 'rgba(8,10,25,0.04)' },
 });
