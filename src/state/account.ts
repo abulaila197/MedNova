@@ -1,7 +1,7 @@
 import type { Session } from '@supabase/supabase-js';
 import { create } from 'zustand';
 
-import { engine } from '@/games/engine';
+import { engine, RECORDER_KEYS } from '@/games/engine';
 import { useSession } from '@/games/shell/session';
 import { supabase } from '@/lib/supabase';
 import { PROGRESS_KEYS } from '@/lib/progress';
@@ -96,7 +96,7 @@ export function startAccount() {
 }
 
 /** What the account keeps on the server; cleared from the phone on sign-out (SO1: clean slate). */
-const ACCOUNT_KEYS = ['plays', 'play_items', 'wallet', 'subscription', ...PROGRESS_KEYS];
+const ACCOUNT_KEYS = [...RECORDER_KEYS, 'wallet', 'subscription', ...PROGRESS_KEYS];
 const clearPhone = () => Promise.all(ACCOUNT_KEYS.map((k) => engine.kv.remove(k)));
 
 /** SO1: upload first, then sign out and clear the phone back to a fresh guest. Offline, it refuses so nothing is lost. */

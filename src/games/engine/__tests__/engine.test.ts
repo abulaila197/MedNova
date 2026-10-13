@@ -51,6 +51,27 @@ test('recorder: parallel writes do not overwrite each other', async () => {
   assert.equal((await r.itemsOf(p.id)).length, 20);
 });
 
+test('recorder: answers only rewrite the games in progress; ending a play moves it into the history', async () => {
+  const kv = memoryKV();
+  const r = createRecorder(kv);
+  const old = await r.start({ game: 'the-riddler', mode: 'solo', settings: {} });
+  await r.recordItem(item(old.id));
+  await r.finish(old.id, { score: 1, expEarned: 0 });
+  const p = await r.start({ game: 'the-riddler', mode: 'solo', settings: {} });
+  await r.recordItem(item(p.id, { itemId: 'c2' }));
+  assert.equal((await kv.get<unknown[]>('plays'))?.length, 1, 'the history holds only the ended play');
+  assert.equal((await kv.get<unknown[]>('play_items'))?.length, 1);
+  assert.equal((await kv.get<unknown[]>('play_items_open'))?.length, 1);
+  await r.finish(p.id, { score: 2, expEarned: 0 });
+  assert.equal((await kv.get<unknown[]>('plays_open'))?.length, 0);
+  assert.equal((await kv.get<unknown[]>('play_items_open'))?.length, 0);
+  const all = await r.all();
+  assert.equal(all.plays.length, 2);
+  assert.equal(all.items.length, 2);
+  await r.markSynced([old.id, p.id]);
+  assert.ok((await r.all()).plays.every((x) => x.synced));
+});
+
 test('recorder: removeSeat keeps the row, claimGuestPlays moves guest plays', async () => {
   const r = createRecorder(memoryKV());
   const p = await r.start({ game: 'the-riddler', mode: 'offline', settings: {}, seats: [{ seat: 0, name: 'A' }, { seat: 1, name: 'B' }] });

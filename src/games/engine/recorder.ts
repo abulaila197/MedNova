@@ -1,11 +1,17 @@
 // Play recorder: plays + play_items on the phone, with bookmark/resume.
 // Rule 7: quitting solo bookmarks the play. Rule 10: an app kill resumes at the exact case and clock.
+// Plays still going (and their items) live under their own small keys, so a bookmark or an answer rewrites only
+// the games in progress; the history of ended plays is rewritten once when a play ends, not on every step.
 import { serial, type KV } from './storage';
 import type { GameKey, Mode, Play, PlayItem, Seat, Standing } from './types';
 import { newId } from './ids';
 
 const PLAYS = 'plays';
 const ITEMS = 'play_items';
+const OPEN = 'plays_open';
+const OPEN_ITEMS = 'play_items_open';
+/** Every key the recorder writes (sign-out clears them). */
+export const RECORDER_KEYS = [PLAYS, ITEMS, OPEN, OPEN_ITEMS];
 
 export type StartArgs = {
   game: GameKey;
@@ -18,15 +24,49 @@ export type StartArgs = {
 };
 
 export function createRecorder(kv: KV) {
-  const plays = async () => (await kv.get<Play[]>(PLAYS)) ?? [];
-  const items = async () => (await kv.get<PlayItem[]>(ITEMS)) ?? [];
+  const list = async <T>(k: string) => (await kv.get<T[]>(k)) ?? [];
+  const plays = async () => [...(await list<Play>(PLAYS)), ...(await list<Play>(OPEN))];
+  const items = async () => [...(await list<PlayItem>(ITEMS)), ...(await list<PlayItem>(OPEN_ITEMS))];
+  const put = <T extends { id: string }>(all: T[], row: T) => {
+    const i = all.findIndex((x) => x.id === row.id);
+    if (i >= 0) all[i] = row;
+    else all.push(row);
+    return all;
+  };
+  /** A play in progress goes under OPEN; once it ends it moves, with its items, into the history. */
   const savePlay = async (p: Play) => {
-    const all = await plays();
-    const i = all.findIndex((x) => x.id === p.id);
-    if (i >= 0) all[i] = p;
-    else all.push(p);
-    await kv.set(PLAYS, all);
+    const done = await list<Play>(PLAYS);
+    const open = await list<Play>(OPEN);
+    if (p.status === 'in_progress') {
+      await kv.set(OPEN, put(open, p));
+      if (done.some((x) => x.id === p.id)) await kv.set(PLAYS, done.filter((x) => x.id !== p.id));
+      return p;
+    }
+    if (open.some((x) => x.id === p.id)) await kv.set(OPEN, open.filter((x) => x.id !== p.id));
+    await kv.set(PLAYS, put(done, p));
+    const openItems = await list<PlayItem>(OPEN_ITEMS);
+    const mine = openItems.filter((i) => i.playId === p.id);
+    if (mine.length) {
+      await kv.set(ITEMS, [...(await list<PlayItem>(ITEMS)), ...mine]);
+      await kv.set(OPEN_ITEMS, openItems.filter((i) => i.playId !== p.id));
+    }
     return p;
+  };
+  /** Changes every saved play that `edit` returns a new value for, writing only the keys that changed. */
+  const editPlays = async (edit: (p: Play) => Play | null) => {
+    let n = 0;
+    for (const k of [PLAYS, OPEN]) {
+      let changed = false;
+      const next = (await list<Play>(k)).map((p) => {
+        const e = edit(p);
+        if (!e) return p;
+        changed = true;
+        n++;
+        return e;
+      });
+      if (changed) await kv.set(k, next);
+    }
+    return n;
   };
 
   const run = serial();
@@ -89,10 +129,10 @@ export function createRecorder(kv: KV) {
 
     recordItem(item: Omit<PlayItem, 'id' | 'at'> & { at?: number }) {
       return run(async () => {
-        const all = await items();
         const row: PlayItem = { ...item, id: newId('item'), at: item.at ?? Date.now() };
-        all.push(row);
-        await kv.set(ITEMS, all);
+        const live = (await list<Play>(OPEN)).some((x) => x.id === item.playId);
+        const key = live ? OPEN_ITEMS : ITEMS;
+        await kv.set(key, [...(await list<PlayItem>(key)), row]);
         const p = (await plays()).find((x) => x.id === item.playId);
         if (p?.synced) await savePlay({ ...p, synced: false }); // the new item still needs uploading
         return row;
@@ -142,19 +182,21 @@ export function createRecorder(kv: KV) {
     /** Starting a new game drops the old bookmark for that mode. */
     discard(id: string) {
       return run(async () => {
-        await kv.set(PLAYS, (await plays()).filter((p) => p.id !== id));
-        await kv.set(ITEMS, (await items()).filter((i) => i.playId !== id));
+        for (const k of [PLAYS, OPEN]) {
+          const all = await list<Play>(k);
+          if (all.some((p) => p.id === id)) await kv.set(k, all.filter((p) => p.id !== id));
+        }
+        for (const k of [ITEMS, OPEN_ITEMS]) {
+          const all = await list<PlayItem>(k);
+          if (all.some((i) => i.playId === id)) await kv.set(k, all.filter((i) => i.playId !== id));
+        }
       });
     },
 
     /** Rule 19: guest plays move to the account on first sign-in. */
     claimGuestPlays(userId: string) {
       return run(async () => {
-        const all = await plays();
-        let n = 0;
-        for (const p of all) if (p.userId == null) ((p.userId = userId), (p.synced = false), n++);
-        await kv.set(PLAYS, all);
-        return n;
+        return editPlays((p) => (p.userId == null ? { ...p, userId, synced: false } : null));
       });
     },
 
@@ -170,21 +212,22 @@ export function createRecorder(kv: KV) {
     markSynced(ids: string[]) {
       return run(async () => {
         const set = new Set(ids);
-        await kv.set(PLAYS, (await plays()).map((p) => (set.has(p.id) ? { ...p, synced: true } : p)));
+        await editPlays((p) => (set.has(p.id) && !p.synced ? { ...p, synced: true } : null));
       });
     },
 
     /** Adds plays and items from the account that this phone does not have yet (a new phone, or a reinstall). */
     mergeRemote(remote: { plays: Play[]; items: PlayItem[] }) {
       return run(async () => {
-        const ps = await plays();
-        const have = new Set(ps.map((p) => p.id));
-        const add = remote.plays.filter((p) => !have.has(p.id));
-        if (add.length) await kv.set(PLAYS, [...ps, ...add.map((p) => ({ ...p, synced: true }))]);
-        const its = await items();
-        const haveI = new Set(its.map((i) => i.id));
+        const have = new Set((await plays()).map((p) => p.id));
+        const add = remote.plays.filter((p) => !have.has(p.id)).map((p) => ({ ...p, synced: true }));
+        const addDone = add.filter((p) => p.status !== 'in_progress');
+        const addOpen = add.filter((p) => p.status === 'in_progress');
+        if (addDone.length) await kv.set(PLAYS, [...(await list<Play>(PLAYS)), ...addDone]);
+        if (addOpen.length) await kv.set(OPEN, [...(await list<Play>(OPEN)), ...addOpen]);
+        const haveI = new Set((await items()).map((i) => i.id));
         const addI = remote.items.filter((i) => !haveI.has(i.id));
-        if (addI.length) await kv.set(ITEMS, [...its, ...addI]);
+        if (addI.length) await kv.set(ITEMS, [...(await list<PlayItem>(ITEMS)), ...addI]);
         return add.length;
       });
     },
