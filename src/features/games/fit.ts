@@ -6,7 +6,7 @@ import type { Mode } from '@/theme/tokens';
 export const W = 282;
 export const BODY_TOP = 72; // the shell's content area starts here
 export const SHIFT = 20; // decision 63: ring, planets, dots and art anchor sit 20px lower
-export const ARC_DROP = 12; // 2026-10-13: ring, planets and dots only (not the art) sit this much lower, close to the nav
+export const ARC_DROP = 18; // 2026-10-13: ring, planets and dots only (not the art) sit this much lower, close to the nav
 export const DOTS_TOP = 398 + SHIFT; // screen y of the swipe dots
 export const ART_B = DOTS_TOP + 66; // bottom of the art box (fitArc: dots top + 66)
 // 2026-10-05: the ring's fill is gone, so each drawing moves down and fades just above the nav bar.
