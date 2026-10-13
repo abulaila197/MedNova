@@ -22,6 +22,8 @@ import { THEMES } from '@/theme/tokens';
 export { CrashScreen as ErrorBoundary } from '@/components/CrashScreen';
 
 SplashScreen.preventAutoHideAsync();
+// The splash is plain intro navy (Yazan 2026-10-13), so a short fade hands over to the intro unseen.
+SplashScreen.setOptions({ fade: true, duration: 300 });
 startAccount();
 bootStart();
 
