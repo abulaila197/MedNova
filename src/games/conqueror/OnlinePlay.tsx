@@ -20,6 +20,7 @@ import { BoardPage, MovesPage, type Act } from './pages';
 import { CardsPage, DuelPage, HoldPage, OutBanner, SoloPage, VersusPage, type Hold } from './play';
 import type { MatchView } from './view';
 import { useMatchState } from '@/online/useMatchState';
+import { conquerorShown } from './shown';
 
 type CPlayer = { user_id: string; name: string; character: string; dropped: boolean; rank: number | null };
 type CState = {
@@ -35,7 +36,8 @@ type CState = {
 };
 
 export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
-  const { st, load, server, notice, setNotice } = useMatchState<CState>('cq_state', matchId);
+  // The screen redraws when what it shows of the clock changes (conquerorShown), not on every 250 ms tick.
+  const { st, load, server, serverNow, notice, setNotice } = useMatchState<CState>('cq_state', matchId, { shown: conquerorShown });
   const busy = useRef(false);
   const { alert } = useAlerts();
 
@@ -87,6 +89,9 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
     if (due != null && server >= due + seat * 1500) tick();
   }, [server, st, seat, tick]);
   const elapsed = st?.state ? Math.max(0, server - st.state.started) : 0;
+  // An answer's time is read at the moment of the tap, on the same server-time base as `elapsed`.
+  const started = st?.state?.started ?? null;
+  const msNow = useCallback(() => (started == null ? 0 : Math.max(0, serverNow() - started)), [serverNow, started]);
 
   // The end: the final places become an ordinary play on this phone (ON21), paying EXP for my right answers.
   const finishing = useRef(false);
@@ -136,7 +141,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
     );
   }
 
-  const props = { m, me, map, seconds, act, elapsed };
+  const props = { m, me, map, seconds, act, elapsed, msNow };
   const out = m.players[me]?.out;
   let body: React.ReactNode;
   if (hold) body = <HoldPage m={m} me={me} map={map} hold={hold} seconds={Math.max(0, (hold.until - server) / 1000)} />;

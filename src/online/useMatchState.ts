@@ -18,7 +18,8 @@ const NOTICE_MS = 2200;
  * clock for countdowns and works out the server time from it. `notice` is a short message line that
  * clears itself; `quiet` games show no "Reconnecting" note. The clock redraws the screen on every tick only
  * when `shown` is left out; with it, only when what it returns (e.g. the whole seconds left) changes.
- * `clock` (in server time) lets one small widget follow every tick with useClock while the screen does not.
+ * `clock` (in server time) lets one small widget follow every tick with useClock while the screen does not;
+ * `serverNow()` reads the server time at the moment it is called (e.g. a tap).
  */
 export function useMatchState<T extends Stamped>(
   rpc: string,
@@ -71,5 +72,8 @@ export function useMatchState<T extends Stamped>(
     return () => clearTimeout(id);
   }, [notice]);
 
-  return { st, load, server, clock: clock as Clock, notice, setNotice };
+  /** The server time right now (not the last tick's): for timing a tap. Call it from handlers and effects only. */
+  const serverNow = useCallback(() => Date.now() + offset.current, []);
+
+  return { st, load, server, clock: clock as Clock, serverNow, notice, setNotice };
 }

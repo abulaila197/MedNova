@@ -13,13 +13,15 @@ import { BALANCE, CARDS, suggest, type CardType, type SoloTurn, type VersusStyle
 import NAMES from './data/names.json';
 import type { AtlasMap } from './map';
 import { colorOf, landViews, Players, stageLine, type Act } from './pages';
+import { cluesShown } from './shown';
 import { SECRET, type Hold, type MatchView, type SoloView } from './view';
 import { useScreen } from '@/theme/scale';
 
 export type { Hold };
 
 
-type P = { m: MatchView; me: string; map: AtlasMap; seconds: number | null; act: Act; elapsed: number };
+/** `elapsed` is the stage time as last drawn (what the page shows); `msNow()` is the stage time at this moment, for a tap. */
+type P = { m: MatchView; me: string; map: AtlasMap; seconds: number | null; act: Act; elapsed: number; msNow: () => number };
 
 const nameOf = (m: MatchView, id: string) => (id === m.me ? 'You' : m.players[id]?.name ?? 'Player');
 const fmt = (n: number) => n.toLocaleString('en-US');
@@ -248,7 +250,7 @@ export function VersusPage(props: P) {
   );
 }
 
-function Closest({ m, me, act, elapsed }: P) {
+function Closest({ m, me, act, msNow }: P) {
   const vs = m.versus;
   const [text, setText] = useState('');
   if (vs?.style !== 'closest') return null;
@@ -268,13 +270,13 @@ function Closest({ m, me, act, elapsed }: P) {
         {q.unit ? <T f={CGB} size={17} color={AT.soft}>{q.unit}</T> : null}
       </View>
       <View style={{ flexDirection: 'row' }}>
-        <Btn label="Seal guess" disabled={!text || Number.isNaN(n)} onPress={() => (act({ type: 'closest', item: at, value: n, ms: elapsed }), setText(''))} />
+        <Btn label="Seal guess" disabled={!text || Number.isNaN(n)} onPress={() => (act({ type: 'closest', item: at, value: n, ms: msNow() }), setText(''))} />
       </View>
     </>
   );
 }
 
-function Rush({ m, me, act, elapsed }: P) {
+function Rush({ m, me, act, msNow }: P) {
   const vs = m.versus;
   if (vs?.style !== 'rush') return null;
   const mine = vs.found[me] ?? [];
@@ -285,7 +287,7 @@ function Rush({ m, me, act, elapsed }: P) {
         <T f={CG} size={18} color={AT.ink} style={{ lineHeight: v(23) }}>{vs.q.prompt}</T>
         <T f={CGI} size={13.5} color={AT.inkSoft}>{`${m.rushTotal ?? '?'} answers in the list`}</T>
       </Paper>
-      <NameField index={rushIndexOf(vs.q.field)} placeholder="Type an answer" button="Send" skip={mine.map((f) => f.label)} onSend={(text) => act({ type: 'rush', text, ms: elapsed })} />
+      <NameField index={rushIndexOf(vs.q.field)} placeholder="Type an answer" button="Send" skip={mine.map((f) => f.label)} onSend={(text) => act({ type: 'rush', text, ms: msNow() })} />
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: v(6) }}>
         {mine.map((f) => (
           <View key={f.label} style={s.found}>
@@ -299,7 +301,7 @@ function Rush({ m, me, act, elapsed }: P) {
   );
 }
 
-function Standing({ m, me, act, elapsed }: P) {
+function Standing({ m, me, act, msNow }: P) {
   const vs = m.versus;
   const [sel, setSel] = useState<number[]>([]);
   const index = vs?.style === 'standing' ? vs.index : -1;
@@ -333,23 +335,23 @@ function Standing({ m, me, act, elapsed }: P) {
       <View style={{ flex: 1 }} />
       {!alive ? <Waiting text="You are out of hearts. Watching the rest…" /> : sent ? <Waiting text="Answer sealed. Waiting for the others…" /> : (
         <View style={{ flexDirection: 'row' }}>
-          <Btn label="Seal answer" disabled={!sel.length} onPress={() => act({ type: 'standing', picks: sel, ms: elapsed })} />
+          <Btn label="Seal answer" disabled={!sel.length} onPress={() => act({ type: 'standing', picks: sel, ms: msNow() })} />
         </View>
       )}
     </>
   );
 }
 
-function Clue({ m, me, act, elapsed }: P) {
+function Clue({ m, me, act, elapsed, msNow }: P) {
   const vs = m.versus;
   const [tab, setTab] = useState(0);
   if (vs?.style !== 'clue') return null;
-  const shown = Math.min(4, 1 + Math.floor(elapsed / (BALANCE.CLUE_INTERVAL_SECONDS * 1000)));
+  const shown = cluesShown(elapsed);
   const solved = vs.solved[me] ?? vs.qs.map(() => null);
   const q = vs.qs[tab];
   const send = (text: string) => {
     if (solved[tab] != null) return;
-    act({ type: 'clue', mystery: tab, text, clue: shown, ms: elapsed });
+    act({ type: 'clue', mystery: tab, text, clue: shown, ms: msNow() });
   };
   return (
     <>
@@ -507,16 +509,17 @@ export function CardsPage({ m, me, map, seconds, act }: P) {
 
 // ---------------------------------------------------------------- Breaking Duel
 
-export function DuelPage({ m, me, map, seconds, act, elapsed }: P) {
+export function DuelPage({ m, me, map, seconds, act, msNow }: P) {
   const { width } = useScreen();
   const d = m.duels[m.duelIndex];
   const mine = d && (d.p1 === me || d.p2 === me);
   const answers = d ? (d.p1 === me ? d.a1 : d.a2) : [];
-  const started = useRef(elapsed);
+  // Each duel question's time runs from when it shows to the tap (the server keeps this number, clamped).
+  const started = useRef(0);
   const at = answers.length;
   useEffect(() => {
-    started.current = elapsed;
-  }, [at]); // eslint-disable-line react-hooks/exhaustive-deps
+    started.current = msNow();
+  }, [at, msNow]);
   const views = useMemo(() => landViews(m, me), [m, me]);
   if (!d) return null;
   const land = m.lands[d.land];
@@ -542,8 +545,8 @@ export function DuelPage({ m, me, map, seconds, act, elapsed }: P) {
             <T f={CG} size={17} color={AT.ink} style={{ lineHeight: v(22) }}>{q.prompt}</T>
           </Paper>
           <View style={{ flexDirection: 'row', gap: v(10) }}>
-            <Btn ghost label="False" onPress={() => act({ type: 'duel', answer: false, ms: elapsed - started.current })} />
-            <Btn label="True" onPress={() => act({ type: 'duel', answer: true, ms: elapsed - started.current })} />
+            <Btn ghost label="False" onPress={() => act({ type: 'duel', answer: false, ms: msNow() - started.current })} />
+            <Btn label="True" onPress={() => act({ type: 'duel', answer: true, ms: msNow() - started.current })} />
           </View>
         </>
       ) : (
