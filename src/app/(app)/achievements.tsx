@@ -148,7 +148,8 @@ const s = StyleSheet.create({
   pillS: { paddingHorizontal: u(9), height: u(22) },
   pillT: { fontFamily: F.bodyBold, fontSize: u(9.5) },
   log: { marginTop: u(18), borderWidth: 1, borderRadius: u(18), paddingLeft: u(14), paddingRight: u(12), overflow: 'hidden' },
-  margin: { position: 'absolute', left: u(54), top: 0, bottom: 0, width: 1, opacity: 0.35 },
+  // Halfway between the tier boxes (right edge 34) and the text (starts at 56).
+  margin: { position: 'absolute', left: u(45), top: 0, bottom: 0, width: 1, opacity: 0.35 },
   line: { flexDirection: 'row', alignItems: 'center', gap: u(14), paddingVertical: u(11), borderBottomWidth: 1 },
   tiers: { width: u(28), gap: u(3), alignItems: 'center' },
   box: { width: u(12), height: u(12), borderRadius: u(3), borderWidth: 1, alignItems: 'center', justifyContent: 'center' },

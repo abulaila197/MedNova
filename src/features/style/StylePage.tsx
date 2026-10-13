@@ -21,7 +21,7 @@ import type { Theme } from '@/theme/tokens';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
-import { costOf, EFFECTS, FRAMES, type Item, PACK_PRICE, PLATINUM_TITLES, titleName, TITLES } from './catalog';
+import { costOf, DEAL_OFF, EFFECTS, FRAMES, type Item, PACK_PRICE, PLATINUM_TITLES, titleName, TITLES } from './catalog';
 import { Framed, type FrameKey } from './Frame';
 import { titleColor } from './PlayerTitle';
 import { buyItem, loadStyle, spendTokens, useStyle, wear, whySay } from './useStyle';
@@ -109,10 +109,10 @@ export function StylePage() {
           </View>
         </View>
 
-        {/* This week's deal: one frame and one title at 30% off. */}
+        {/* This week's deal: one frame and one title at DEAL_OFF% off. */}
         {deal.length ? (
           <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.3 }} end={{ x: 1, y: 0.7 }} style={s.deal}>
-            <Text style={[s.dealK, { color: t.onGrad }]}>{`THIS WEEK · 30% OFF · ENDS IN ${left(dealEnds).toUpperCase()}`}</Text>
+            <Text style={[s.dealK, { color: t.onGrad }]}>{`THIS WEEK · ${DEAL_OFF}% OFF · ENDS IN ${left(dealEnds).toUpperCase()}`}</Text>
             <Text style={[s.dealT, { color: t.onGrad }]}>
               {[FRAMES, TITLES].map((l, i) => {
                 const it = l.find((x) => x.id === deal[i]);

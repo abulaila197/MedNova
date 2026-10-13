@@ -48,7 +48,8 @@ export async function loadRounds(force = false) {
   const userId = useSession.getState().userId;
   if (userId) await syncAccount(userId).catch(() => {});
   const { data } = await supabase.rpc('rounds_status');
-  if (data) useRoundsStore.setState({ r: data as Rounds });
+  const r = data as Rounds | null;
+  if (r?.this && Array.isArray(r.parts)) useRoundsStore.setState({ r });
 }
 
 export const doneOf = (r: Rounds | null) => {

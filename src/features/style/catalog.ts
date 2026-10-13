@@ -59,4 +59,6 @@ export const titleName = (key?: string | null) =>
 export const isPlatinumTitle = (key?: string | null) => !!key?.startsWith('p:');
 
 /** The price this week (30% off for the weekly deal, rounded like the server). */
-export const costOf = (item: Item, deal: string[]) => (item.price == null ? null : deal.includes(item.id) ? Math.round(item.price * 0.7) : item.price);
+/** The weekly deal's discount (Yazan 2026-10-13: 15%, was 30%). Same as the server's style_cost. */
+export const DEAL_OFF = 15;
+export const costOf = (item: Item, deal: string[]) => (item.price == null ? null : deal.includes(item.id) ? Math.round((item.price * (100 - DEAL_OFF)) / 100) : item.price);

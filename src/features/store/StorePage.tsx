@@ -9,7 +9,7 @@ import { TokenCoin } from '@/components/PulseStar';
 import { Screen } from '@/components/Screen';
 import { InfoScroll, Kicker, s as ui, useInfo } from '@/features/info/ui';
 import { useSession } from '@/games/shell/session';
-import { FRAMES, TITLES } from '@/features/style/catalog';
+import { DEAL_OFF, FRAMES, TITLES } from '@/features/style/catalog';
 import { Framed, type FrameKey } from '@/features/style/Frame';
 import { loadStyle, useStyle } from '@/features/style/useStyle';
 import { useAccount } from '@/state/account';
@@ -147,7 +147,7 @@ function StyleRow({ t }: { t: Theme }) {
       <Framed slug={avatar} size={u(46)} frame={(FRAMES.find((x) => x.id === deal[0])?.key ?? 'gold') as FrameKey} still />
       <View style={{ flex: 1 }}>
         <Text style={[s.styleH, { color: t.fg }]}>Frames, titles and effects</Text>
-        <Text style={[s.styleS, { color: names.length ? t.accent : t.mute }]}>{names.length ? `30% off this week: ${names.join(' and ')}` : 'Dress your name for every room'}</Text>
+        <Text style={[s.styleS, { color: names.length ? t.accent : t.mute }]}>{names.length ? `${DEAL_OFF}% off this week: ${names.join(' and ')}` : 'Dress your name for every room'}</Text>
       </View>
       <Text style={[s.styleS, { color: t.accent }]}>Open ›</Text>
     </Pressable>
