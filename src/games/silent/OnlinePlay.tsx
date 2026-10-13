@@ -286,7 +286,7 @@ function WrongGuesses({ list, players }: { list: NonNullable<RaceState['sa']>['g
     <View pointerEvents="none" style={s.wrong}>
       {list.map((x) => (
         <Animated.View key={x.i} entering={FadeInDown.duration(180)} layout={LinearTransition.duration(180)} style={s.wrongRow}>
-          <Face slug={players.find((p) => p.user_id === x.u)?.character ?? 'yara'} size={u(18)} />
+          <Face slug={players.find((p) => p.user_id === x.u)?.character ?? 'yara'} size={u(11)} />
           <Text style={s.wrongT} numberOfLines={1}>{x.g}</Text>
         </Animated.View>
       ))}
@@ -369,7 +369,7 @@ const s = StyleSheet.create({
   optF: { fontFamily: SL.body, fontSize: u(12.5) },
   report: { alignSelf: 'center', paddingVertical: u(4), marginRight: u(34) },
   reportT: { fontFamily: SL.body, fontSize: u(13) },
-  wrong: { position: 'absolute', top: u(6), left: u(6), maxWidth: '58%', gap: u(4), alignItems: 'flex-start' },
-  wrongRow: { flexDirection: 'row', alignItems: 'center', gap: u(5), maxWidth: '100%', paddingLeft: u(3), paddingRight: u(9), paddingVertical: u(2), borderRadius: u(12), backgroundColor: 'rgba(255,255,255,0.08)', borderWidth: 1, borderColor: 'rgba(255,255,255,0.12)' },
-  wrongT: { flexShrink: 1, fontFamily: SL.body, fontSize: u(12.5), color: SL.chalk },
+  wrong: { position: 'absolute', top: u(5), left: u(5), maxWidth: '45%', gap: u(2.5), alignItems: 'flex-start' },
+  wrongRow: { flexDirection: 'row', alignItems: 'center', gap: u(3), maxWidth: '100%', paddingLeft: u(1.5), paddingRight: u(5), paddingVertical: u(1), borderRadius: u(8), backgroundColor: 'rgba(255,255,255,0.08)', borderWidth: 1, borderColor: 'rgba(255,255,255,0.12)' },
+  wrongT: { flexShrink: 1, fontFamily: SL.body, fontSize: u(9), lineHeight: u(11), color: SL.chalk },
 });
