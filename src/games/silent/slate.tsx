@@ -10,6 +10,7 @@ import { useApp } from '@/state/app';
 import { u, useScreen } from '@/theme/scale';
 import { THEMES } from '@/theme/tokens';
 
+import { useClock, type Clock } from '../engine/useTicker';
 import { GameScreen } from '../shell/ui';
 import type { HintView } from './core';
 
@@ -137,6 +138,15 @@ export function ChalkTimer({ leftMs, totalMs, size = 46 }: { leftMs: number; tot
       <Text style={[StyleSheet.absoluteFill, s.timeIn, { color: col, lineHeight: d, fontSize: u(size * 0.37) }]}>{Math.ceil(leftMs / 1000)}</Text>
     </View>
   );
+}
+
+/**
+ * ChalkTimer that follows its clock on every tick by itself (`leftAt` turns the clock's time into ms left), so the
+ * screen around it redraws only when something else on it changes.
+ */
+export function ClockChalkTimer({ clock, leftAt, totalMs }: { clock: Clock; leftAt: (now: number) => number; totalMs: number }) {
+  const now = useClock(clock);
+  return <ChalkTimer leftMs={leftAt(now)} totalMs={totalMs} />;
 }
 
 /** The hint ladder for the room (SA5): word count, field, then the blanks filling in. */

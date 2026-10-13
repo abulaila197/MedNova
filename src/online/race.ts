@@ -92,8 +92,9 @@ export type RaceState = {
   } | null;
 };
 
-// These draw their clock smoothly (the Streak fuse, the chalk ring), so they redraw on every tick.
-const SMOOTH = new Set(['the-streak-master', 'the-silent-artist']);
+// The Streak fuse is drawn smoothly across the screen, so it redraws on every tick. (The Silent Artist's chalk ring
+// follows `clock` in its own small widget instead.)
+const SMOOTH = new Set(['the-streak-master']);
 
 /** What a race screen shows of the clock: whole seconds to the phase's end and to my lock's end. */
 const shownOf = (server: number, st: RaceState | null) => (st ? `${second(st.phase_ends_at - server)}:${st.me?.locked_until ? second(st.me.locked_until - server) : ''}` : null);
@@ -103,10 +104,12 @@ const shownOf = (server: number, st: RaceState | null) => (st ? `${second(st.pha
  * Also turns the finished match into a local play and opens the results (ON21).
  */
 export function useRace(def: GameDef, roomId: string, matchId: string, me: string, toItems: (st: RaceState) => Omit<PlayItem, 'id' | 'at' | 'playId'>[]) {
-  const { st, load, server, notice, setNotice } = useMatchState<RaceState>('race_state', matchId, { shown: SMOOTH.has(def.key) ? undefined : shownOf });
+  const { st, load, server, clock, notice, setNotice } = useMatchState<RaceState>('race_state', matchId, { shown: SMOOTH.has(def.key) ? undefined : shownOf });
   const finishing = useRef(false);
   const items = useRef(toItems);
-  items.current = toItems;
+  useEffect(() => {
+    items.current = toItems;
+  });
 
   const playing = useMemo(() => st?.players.some((p) => p.user_id === me) ?? false, [st, me]);
 
@@ -141,7 +144,7 @@ export function useRace(def: GameDef, roomId: string, matchId: string, me: strin
     router.replace(`/play/${def.key}`);
   }, [roomId, def.key]);
 
-  return { st, load, server, playing, notice, setNotice, leave };
+  return { st, load, server, clock, playing, notice, setNotice, leave };
 }
 
 /** The same shuffle on every phone for one question of one match (Streak Master options). */

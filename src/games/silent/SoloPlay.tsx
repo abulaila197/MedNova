@@ -9,26 +9,37 @@ import { usePauseHide } from '../engine/usePauseHide';
 import { recordItem } from '../shell/flow';
 import { PauseMenu } from '../shell/PauseMenu';
 import type { PlayProps } from '../shell/types';
-import type { BoardHandle } from './Board';
+import type { BoardHandle, Stroke } from './Board';
 import { FIELDS, RECENT_KEY, WORDS, wordById } from './data';
-import { ChalkBtn, ChalkChip, ChalkTimer, ChalkTitle, Kicker, Ledge, Note, PauseBtn, Panel, SL, SlateScreen, TopRow, useSlateRoom, useSlateFonts } from './slate';
+import { ChalkBtn, ChalkChip, ChalkTitle, ClockChalkTimer, Kicker, Ledge, Note, PauseBtn, Panel, SL, SlateScreen, TopRow, useSlateRoom, useSlateFonts } from './slate';
 import { soloLeft, startSolo, stepSolo, type SoloEvent, type SoloRun } from './solo';
 import { FitBoard } from './Stage';
-import { useTicker } from '../engine/useTicker';
+import { useTickerClock } from '../engine/useTicker';
 
-/** Saved for resume: a drawing turn is saved paused (rule 10). The board itself starts clean again. */
-const snapshot = (r: SoloRun, now: number) => (r.phase === 'drawing' ? stepSolo(r, { type: 'PAUSE', now }, WORDS) : r);
+/** The lines on the board, saved with the bookmark so an app kill mid-drawing comes back to the same drawing. */
+type Sketch = { board: number; strokes: Stroke[] };
+type Saved = SoloRun & { sketch?: Sketch };
+
+/** Saved for resume: a drawing turn is saved paused (rule 10), with the drawing so far. */
+const snapshot = (r: SoloRun, now: number, sketch: Sketch | null): Saved => {
+  const run = r.phase === 'drawing' ? stepSolo(r, { type: 'PAUSE', now }, WORDS) : r;
+  return sketch && sketch.board === r.board ? { ...run, sketch } : run;
+};
 
 /** Solo practice (SA2): pick fields, draw against 60 s, then Next, Retry or Finish. Nothing asked, nothing gained. */
 export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   const fonts = useSlateFonts();
   const R = useSlateRoom();
   // A bookmark whose word has left the list since starts fresh.
-  const [run, setRun] = useState<SoloRun | null>(() => {
-    const saved = play.resume as SoloRun | null;
-    return saved && wordById.has(saved.wordId) ? saved : null;
+  const [resumed] = useState(() => {
+    const saved = play.resume as Saved | null;
+    if (!saved || !wordById.has(saved.wordId)) return null;
+    const { sketch = null, ...r } = saved;
+    return { run: r as SoloRun, sketch };
   });
+  const [run, setRun] = useState<SoloRun | null>(resumed?.run ?? null);
   const ref = useRef<SoloRun | null>(run);
+  const sketch = useRef<Sketch | null>(resumed?.sketch ?? null);
   const [fields, setFields] = useState<string[]>([]);
   const board = useRef<BoardHandle>(null);
   const [ink, setInk] = useState(0);
@@ -39,7 +50,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
     (next: SoloRun) => {
       ref.current = next;
       setRun(next);
-      engine.recorder.bookmark(play.id, snapshot(next, Date.now()), next.done.length);
+      engine.recorder.bookmark(play.id, snapshot(next, Date.now(), sketch.current), next.done.length);
       engine.kv.set(RECENT_KEY, next.recent);
     },
     [play.id],
@@ -80,7 +91,19 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
     [play, set, onFinish],
   );
 
-  const now = useTicker(run?.phase === 'drawing', 200, (n) => dispatch({ type: 'TICK', now: n }), { fine: true });
+  // Each finished line, Undo or Clear updates the bookmark's drawing.
+  const onStrokes = useCallback(
+    (strokes: Stroke[]) => {
+      const r = ref.current;
+      if (!r) return;
+      sketch.current = { board: r.board, strokes };
+      engine.recorder.bookmark(play.id, snapshot(r, Date.now(), sketch.current));
+    },
+    [play.id],
+  );
+
+  // The screen shows no time of its own: only the chalk ring follows the clock (on every tick, by itself).
+  const [, clock] = useTickerClock(run?.phase === 'drawing', 200, (n) => dispatch({ type: 'TICK', now: n }), { shown: () => 0 });
 
   usePauseHide(() => dispatch({ type: 'PAUSE', now: Date.now() }));
 
@@ -108,7 +131,6 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   const paused = run.phase === 'paused';
   const phase = paused ? run.before : run.phase;
   const w = wordById.get(run.wordId)!;
-  const left = phase === 'drawing' ? soloLeft(run, now) : 0;
   const last = run.done[run.done.length - 1];
   const pause = () => dispatch({ type: 'PAUSE', now: Date.now() });
 
@@ -119,7 +141,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
         title={phase === 'reveal' ? (last && last.timeMs >= run.turnMs ? "Time's up" : 'Done') : 'Draw this'}
         right={
           <>
-            {phase === 'drawing' ? <ChalkTimer leftMs={left} totalMs={run.turnMs} /> : null}
+            {phase === 'drawing' ? <ClockChalkTimer clock={clock} leftAt={(n) => soloLeft(run, n)} totalMs={run.turnMs} /> : null}
             <PauseBtn onPress={pause} />
           </>
         }
@@ -130,7 +152,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
         </Text>
         <Text style={[s.field, { color: R.soft }]} numberOfLines={1}>{paused ? ' ' : [w.aliases.length ? w.aliases.join(', ') : null, w.field].filter(Boolean).join(' · ')}</Text>
       </Panel>
-      <FitBoard boardKey={run.board} boardRef={board} ink={ink} size={size} erase={erase} enabled={phase === 'drawing'} paused={paused} />
+      <FitBoard boardKey={run.board} boardRef={board} ink={ink} size={size} erase={erase} enabled={phase === 'drawing'} paused={paused} initial={resumed?.sketch?.board === run.board ? resumed.sketch.strokes : undefined} onStrokes={onStrokes} />
       {phase === 'drawing' ? (
         <>
           <Ledge ink={ink} size={size} erase={erase} onInk={(i) => (setInk(i), setErase(false))} onSize={() => setSize(size ? 0 : 1)} onErase={() => setErase(!erase)} onUndo={() => board.current?.undo()} onClear={() => board.current?.clear()} />

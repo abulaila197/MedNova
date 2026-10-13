@@ -11,7 +11,7 @@ import { ChalkTitle, Frame, Note, PausedCover, SL, useSlateRoom } from './slate'
  * The framed board sized to the free space. The shape is fixed the first time it is measured for a turn
  * (`boardKey`), so the drawing never stretches when the controls under it change (who got it, steal).
  */
-export function FitBoard({ boardKey, boardRef, shapeRef, ink, size, erase, enabled, initial, paused }: { boardKey: string | number; boardRef?: Ref<BoardHandle>; shapeRef?: MutableRefObject<number>; ink: number; size: number; erase: boolean; enabled: boolean; initial?: Stroke[]; paused?: boolean }) {
+export function FitBoard({ boardKey, boardRef, shapeRef, ink, size, erase, enabled, initial, onStrokes, paused }: { boardKey: string | number; boardRef?: Ref<BoardHandle>; shapeRef?: MutableRefObject<number>; ink: number; size: number; erase: boolean; enabled: boolean; initial?: Stroke[]; onStrokes?: (all: Stroke[]) => void; paused?: boolean }) {
   const [area, setArea] = useState<{ w: number; h: number } | null>(null);
   const [shape, setShape] = useState<{ key: string | number; ratio: number } | null>(null);
   const fw = SL.frameW * 2;
@@ -29,7 +29,7 @@ export function FitBoard({ boardKey, boardRef, shapeRef, ink, size, erase, enabl
     <View style={s.fill} onLayout={(e) => setArea({ w: e.nativeEvent.layout.width, h: e.nativeEvent.layout.height })}>
       {area && ratio ? (
         <Frame style={{ width }}>
-          <Board key={boardKey} ref={boardRef} color={SL.inks[ink]} width={SL.sizes[size]} erase={erase} bg={room.board} enabled={enabled && !paused} initial={initial} ratio={ratio} />
+          <Board key={boardKey} ref={boardRef} color={SL.inks[ink]} width={SL.sizes[size]} erase={erase} bg={room.board} enabled={enabled && !paused} initial={initial} onStrokes={onStrokes} ratio={ratio} />
           {paused ? <PausedCover /> : null}
         </Frame>
       ) : null}

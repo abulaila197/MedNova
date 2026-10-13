@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useEffectEvent, useRef, useState, useSyncExternalStore } from 'react';
 
-import { timeStore } from '@/games/engine/timeStore';
+import { timeStore, type Clock } from '@/games/engine/timeStore';
 
 import { call } from './api';
 import { keepIfSame } from './same';
@@ -18,6 +18,7 @@ const NOTICE_MS = 2200;
  * clock for countdowns and works out the server time from it. `notice` is a short message line that
  * clears itself; `quiet` games show no "Reconnecting" note. The clock redraws the screen on every tick only
  * when `shown` is left out; with it, only when what it returns (e.g. the whole seconds left) changes.
+ * `clock` (in server time) lets one small widget follow every tick with useClock while the screen does not.
  */
 export function useMatchState<T extends Stamped>(
   rpc: string,
@@ -27,7 +28,8 @@ export function useMatchState<T extends Stamped>(
   const { tickMs = 250, quiet = false } = opts;
   const [st, setSt] = useState<T | null>(null);
   const [clock] = useState(timeStore);
-  const now = useSyncExternalStore(clock.subscribe, clock.get, clock.get);
+  // The clock keeps server time (the phone's time plus the offset read from the last answer).
+  const server = useSyncExternalStore(clock.subscribe, clock.get, clock.get);
   const [notice, setNotice] = useState<string | null>(null);
   const offset = useRef(0);
   const busy = useRef(false);
@@ -36,13 +38,17 @@ export function useMatchState<T extends Stamped>(
     try {
       const s = await call<T>(rpc, { m: matchId });
       offset.current = s.now - Date.now();
+      clock.put(Date.now() + offset.current);
       setSt((prev) => keepIfSame(prev, s));
     } catch {
       if (!quiet) setNotice('Reconnecting…');
     }
-  }, [rpc, matchId, quiet]);
+  }, [rpc, matchId, quiet, clock]);
 
-  const tick = useEffectEvent((n: number) => clock.set(n, opts.shown ? opts.shown(n + offset.current, st) : n));
+  const tick = useEffectEvent((n: number) => {
+    const sv = n + offset.current;
+    clock.set(sv, opts.shown ? opts.shown(sv, st) : sv);
+  });
 
   useEffect(() => {
     const poll = () => {
@@ -65,5 +71,5 @@ export function useMatchState<T extends Stamped>(
     return () => clearTimeout(id);
   }, [notice]);
 
-  return { st, load, server: now + offset.current, notice, setNotice };
+  return { st, load, server, clock: clock as Clock, notice, setNotice };
 }

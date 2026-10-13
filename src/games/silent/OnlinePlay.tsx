@@ -1,5 +1,5 @@
 import type { RealtimeChannel } from '@supabase/supabase-js';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Text, TextInput } from '@/components/AppText';
 
@@ -16,10 +16,10 @@ import { KeyboardLift } from '../shell/KeyboardLift';
 import { PauseMenu } from '../shell/PauseMenu';
 import { presetTeam } from '../shell/teams';
 import type { OnlineProps } from '../shell/types';
-import { Board, Sketch, type BoardHandle, type Stroke } from './Board';
+import { Board, Sketch, liveStroke, type BoardHandle, type Stroke } from './Board';
 import { SA } from './core';
 import { WORDS, wordName } from './data';
-import { ChalkBtn, ChalkTimer, ChalkTitle, Frame, HintCard, Kicker, Ledge, Note, Panel, PauseBtn, SL, Scores, SlateScreen, TopRow, useSlateRoom } from './slate';
+import { ChalkBtn, ChalkTitle, ClockChalkTimer, Frame, HintCard, Kicker, Ledge, Note, Panel, PauseBtn, SL, Scores, SlateScreen, TopRow, useSlateRoom } from './slate';
 
 /** Everyone sees the same board shape online, so a drawing lands in the same place on every phone. */
 const RATIO = 1.1;
@@ -53,11 +53,12 @@ function itemsOf(st: RaceState) {
  */
 export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   const R = useSlateRoom();
-  const { st, load, server, playing, notice, setNotice, leave } = useRace(def, roomId, matchId, me, itemsOf);
+  const { st, load, server, clock, playing, notice, setNotice, leave } = useRace(def, roomId, matchId, me, itemsOf);
   const [menu, setMenu] = useState(false);
   const { alert, push } = useAlerts();
   const [strokes, setStrokes] = useState<{ turn: number; version: number; list: Stroke[] }>({ turn: -1, version: -1, list: [] });
-  const [live, setLive] = useState<Stroke | null>(null);
+  // The line being drawn right now: only the board's live line follows it, not this whole screen.
+  const [live] = useState(liveStroke);
   const channel = useRef<RealtimeChannel | null>(null);
   const seen = useRef<{ turn: number; solved: Set<string>; stage: number }>({ turn: -1, solved: new Set(), stage: 0 });
 
@@ -67,11 +68,11 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   // Live strokes from the drawer (the stroke being drawn, and the board after each line).
   useEffect(() => {
     const ch = supabase.channel(`sa-${matchId}`, { config: { broadcast: { self: false } } });
-    ch.on('broadcast', { event: 'live' }, ({ payload }) => setLive((payload?.s as Stroke | null) ?? null))
+    ch.on('broadcast', { event: 'live' }, ({ payload }) => live.set((payload?.s as Stroke | null) ?? null))
       .on('broadcast', { event: 'board' }, ({ payload }) => {
         const p = payload as { turn: number; version: number; list: Stroke[] };
         setStrokes((cur) => (p.turn > cur.turn || (p.turn === cur.turn && p.version > cur.version) ? p : cur));
-        setLive(null);
+        live.set(null);
       })
       .subscribe();
     channel.current = ch;
@@ -79,7 +80,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
       channel.current = null;
       supabase.removeChannel(ch);
     };
-  }, [matchId]);
+  }, [matchId, live]);
 
   // Catch up from the saved board when the server's version moves past ours (missed broadcasts, a reconnect).
   const sa = st?.sa;
@@ -122,6 +123,9 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   const drawing = sa.drawer === me;
   const turnMs = (Number(st.settings.turn) || 90) * 1000;
   const left = Math.max(0, st.phase_ends_at - server);
+  // The chalk ring follows the clock on every tick by itself; the screen redraws once a second.
+  const ends = st.phase_ends_at;
+  const leftAt = (sv: number) => Math.max(0, ends - sv);
   const kick = `Turn ${st.index + 1} of ${st.total}`;
   const pause = () => setMenu(true);
   const extras = (
@@ -140,7 +144,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   if (st.phase === 'pick') {
     return (
       <SlateScreen scroll>
-        <TopRow kicker={kick} title={drawing ? 'Pick what to draw' : `${drawer?.name ?? 'Someone'} is choosing`} color={colorOf(drawer)} right={<><ChalkTimer leftMs={left} totalMs={SA.pickMs} /><PauseBtn onPress={pause} /></>} />
+        <TopRow kicker={kick} title={drawing ? 'Pick what to draw' : `${drawer?.name ?? 'Someone'} is choosing`} color={colorOf(drawer)} right={<><ClockChalkTimer clock={clock} leftAt={leftAt} totalMs={SA.pickMs} /><PauseBtn onPress={pause} /></>} />
         {drawing ? (
           <>
             <Note>Only you can see these. If time runs out, one is picked for you.</Note>
@@ -200,7 +204,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   if (drawing) {
     return (
       <SlateScreen>
-        <TopRow kicker={`${kick} · you’re drawing`} title={w ? w.name : ''} color={R.mark} right={<><ChalkTimer leftMs={left} totalMs={turnMs} /><PauseBtn onPress={pause} /></>} />
+        <TopRow kicker={`${kick} · you’re drawing`} title={w ? w.name : ''} color={R.mark} right={<><ClockChalkTimer clock={clock} leftAt={leftAt} totalMs={turnMs} /><PauseBtn onPress={pause} /></>} />
         <DrawSide turn={st.index} matchId={matchId} channel={channel} />
         <Note style={{ textAlign: 'center' }}>{`${st.players.filter((p) => p.solved).length} of ${st.players.filter((p) => !p.dropped && !p.drawer).length} guessed it · no letters or numbers on the board`}</Note>
         {extras}
@@ -212,7 +216,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
     <SlateScreen>
       {/* The guess box sits at the bottom: lift it over the keyboard (the board shrinks, minHeight keeps a bit). */}
       <KeyboardLift style={s.lift}>
-        <TopRow kicker={kick} title={`${drawer?.name ?? 'Someone'} is drawing`} color={colorOf(drawer)} right={<><ChalkTimer leftMs={left} totalMs={turnMs} /><PauseBtn onPress={pause} /></>} />
+        <TopRow kicker={kick} title={`${drawer?.name ?? 'Someone'} is drawing`} color={colorOf(drawer)} right={<><ClockChalkTimer clock={clock} leftAt={leftAt} totalMs={turnMs} /><PauseBtn onPress={pause} /></>} />
         <HintCard hint={{ words: sa.words ?? 1, field: sa.field, mask: sa.mask }} />
         <View style={s.fill}>
           <Frame style={{ width: '100%', maxWidth: u(330) }}>
@@ -238,26 +242,23 @@ function DrawSide({ turn, matchId, channel }: { turn: number; matchId: string; c
   const version = useRef(0);
   const saving = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const save = useCallback(() => {
+  const save = () => {
     const list = (board.current?.strokes() ?? []).map((x) => ({ ...x, pts: x.pts.map((p) => Math.round(p)) }));
     version.current += 1;
     const v = version.current;
     channel.current?.send({ type: 'broadcast', event: 'board', payload: { turn, version: v, list } });
     if (saving.current) clearTimeout(saving.current);
     saving.current = setTimeout(() => call('sa_draw', { m: matchId, strokes: list }).catch(() => {}), 250);
-  }, [turn, matchId, channel]);
+  };
 
   useEffect(() => () => void (saving.current && clearTimeout(saving.current)), []);
 
-  const onLive = useMemo(
-    () => (x: Stroke | null) => {
-      const t = Date.now();
-      if (x && t - lastLive.current < 80) return;
-      lastLive.current = t;
-      channel.current?.send({ type: 'broadcast', event: 'live', payload: { s: x && { ...x, pts: x.pts.map((p) => Math.round(p)) } } });
-    },
-    [channel],
-  );
+  const onLive = (x: Stroke | null) => {
+    const t = Date.now();
+    if (x && t - lastLive.current < 80) return;
+    lastLive.current = t;
+    channel.current?.send({ type: 'broadcast', event: 'live', payload: { s: x && { ...x, pts: x.pts.map((p) => Math.round(p)) } } });
+  };
 
   return (
     <>

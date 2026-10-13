@@ -18,10 +18,15 @@ import {
   buildPlan, currentTurn, elapsed, offlineRecap, offlineRows, snapshotOffline, startOffline, stealTeamOf, stepOffline, timeLeft,
   type OfflineEvent, type OfflineRun, type TurnRecord,
 } from './offline';
-import { ChalkBtn, ChalkChip, ChalkTimer, ChalkTitle, Frame, HintCard, Kicker, Ledge, Note, Panel, PauseBtn, Peek, SL, Scores, SlateScreen, TopRow, useSlateRoom, useSlateFonts } from './slate';
+import { ChalkBtn, ChalkChip, ChalkTitle, ClockChalkTimer, Frame, HintCard, Kicker, Ledge, Note, Panel, PauseBtn, Peek, SL, Scores, SlateScreen, TopRow, useSlateRoom, useSlateFonts } from './slate';
 import { ActingCard, FitBoard } from './Stage';
 import { clock } from '@/games/engine/clock';
-import { useTicker } from '../engine/useTicker';
+import { useTickerClock } from '../engine/useTicker';
+
+/** The lines on the current turn's board (and its shape), kept for the reveal and saved with the bookmark (rule 10). */
+type Sketch = { index: number; strokes: Stroke[]; ratio: number };
+type Saved = OfflineRun & { sketch?: Sketch };
+const save = (r: OfflineRun, sketch: Sketch | null): Saved => (sketch && sketch.index === r.index ? { ...r, sketch } : r);
 
 /** Offline (SA3-SA6, TMG-SA): pass the phone, secret pick, draw or act, "Who got it?", steal, reveal. */
 export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
@@ -32,8 +37,11 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   const [run, setRun] = useState<OfflineRun | null>(null);
   const ref = useRef<OfflineRun | null>(null);
   const board = useRef<BoardHandle>(null);
-  const drawing = useRef<Stroke[]>([]);
   const shape = useRef(1);
+  // The drawing of the turn on the board (the reveal shows it), and the one an app kill left behind.
+  const [sketch, setSketch] = useState<Sketch | null>(null);
+  const sketchRef = useRef<Sketch | null>(null);
+  const [restored, setRestored] = useState<Sketch | null>(null);
   const [ink, setInk] = useState(0);
   const [size, setSize] = useState(0);
   const [erase, setErase] = useState(false);
@@ -48,8 +56,15 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   useEffect(() => {
     let live = true;
     (async () => {
-      let r = play.resume as OfflineRun | null;
-      if (r && ![...r.options, ...(r.wordId ? [r.wordId] : [])].every((id) => wordById.has(id))) r = null; // a word left the list since: start fresh
+      const saved = play.resume as Saved | null;
+      let back: Sketch | null = null;
+      let r: OfflineRun | null = null;
+      if (saved) {
+        const { sketch: k = null, ...rest } = saved;
+        r = rest as OfflineRun;
+        back = k;
+      }
+      if (r && ![...r.options, ...(r.wordId ? [r.wordId] : [])].every((id) => wordById.has(id))) r = back = null; // a word left the list since: start fresh
       if (!r) {
         const seats = play.seats.filter((x) => !x.removed);
         const recent = (await engine.kv.get<string[]>(RECENT_KEY)) ?? [];
@@ -58,7 +73,10 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
       }
       if (live) {
         ref.current = r;
+        sketchRef.current = back;
         setRun(r);
+        setSketch(back);
+        setRestored(back);
       }
     })();
     return () => {
@@ -70,15 +88,13 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
     (e: OfflineEvent) => {
       const prev = ref.current;
       if (!prev) return;
-      // Keep the drawing for the reveal before the board goes away.
-      if (board.current && (prev.phase === 'performing' || prev.phase === 'stealing' || prev.phase === 'whoGot')) drawing.current = board.current.strokes();
       const next = stepOffline(prev, e, WORDS);
       if (next === prev) return;
       ref.current = next;
       setRun(next);
       const rows = offlineRows(next, names, teamOf);
       const owner = rows.find((x) => x.seat === 0)?.score ?? 0;
-      engine.recorder.bookmark(play.id, snapshotOffline(next, Date.now(), WORDS), owner);
+      engine.recorder.bookmark(play.id, save(snapshotOffline(next, Date.now(), WORDS), sketchRef.current), owner);
       if (next.turns.length > prev.turns.length) {
         const t = next.turns[next.turns.length - 1];
         if (t.wordId) {
@@ -105,15 +121,37 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
     [play, onFinish, names, teamOf],
   );
 
+  // Each finished line, Undo or Clear: kept for the reveal, and the bookmark keeps the drawing too.
+  const onStrokes = useCallback(
+    (strokes: Stroke[]) => {
+      const r = ref.current;
+      if (!r) return;
+      const k = { index: r.index, strokes, ratio: shape.current };
+      sketchRef.current = k;
+      setSketch(k);
+      engine.recorder.bookmark(play.id, save(snapshotOffline(r, Date.now(), WORDS), k));
+    },
+    [play.id],
+  );
+
   const timed = run?.phase === 'picking' || run?.phase === 'performing' || run?.phase === 'stealing';
-  const now = useTicker(timed, 200, (n) => dispatch({ type: 'TICK', now: n }), { fine: true });
+  // The chalk ring follows the clock on every tick by itself; the screen redraws only when the hints it shows change.
+  const [now, ticks] = useTickerClock(timed, 200, (n) => dispatch({ type: 'TICK', now: n }), {
+    shown: (n) => {
+      const r = ref.current;
+      const w = r?.phase === 'performing' && r.hints ? wordById.get(r.wordId ?? '') : undefined;
+      return w && r?.hints ? JSON.stringify(hintView(w, r.hints, elapsed(r, n))) : 0;
+    },
+  });
 
   // A new turn starts with white chalk on a clean board.
-  useEffect(() => {
+  const [toolTurn, setToolTurn] = useState(run?.index);
+  if (toolTurn !== run?.index) {
+    setToolTurn(run?.index);
     setInk(0);
     setSize(0);
     setErase(false);
-  }, [run?.index]);
+  }
 
   usePauseHide(() => dispatch({ type: 'PAUSE', now: Date.now() }));
 
@@ -127,7 +165,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   const live = run.plan.filter((p, i) => i <= run.index && !run.removed.includes(p.seat)).length;
   const total = run.plan.filter((p) => !run.removed.includes(p.seat)).length;
   const kick = `Turn ${live} of ${total}${turn.team != null ? ` · ${teamName(turn.team)}` : ''}`;
-  const left = timeLeft(run, now);
+  const leftAt = (n: number) => timeLeft(run, n);
   const pause = () => dispatch({ type: 'PAUSE', now: Date.now() });
   const rows = offlineRows(run, names, teamOf);
   const scoreRows = teams
@@ -166,7 +204,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   if (phase === 'picking')
     return (
       <SlateScreen scroll>
-        <TopRow kicker={kick} title={`${nameOf(turn.seat)}, pick one`} color={color} right={<><ChalkTimer leftMs={left} totalMs={10_000} /><PauseBtn onPress={pause} /></>} />
+        <TopRow kicker={kick} title={`${nameOf(turn.seat)}, pick one`} color={color} right={<><ClockChalkTimer clock={ticks} leftAt={leftAt} totalMs={10_000} /><PauseBtn onPress={pause} /></>} />
         <Pick run={run} paused={paused} onKind={(kind) => dispatch({ type: 'KIND', kind })} onPick={(wordId) => dispatch({ type: 'PICK', wordId, now: Date.now() })} />
         {menu}
       </SlateScreen>
@@ -182,9 +220,9 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
         <ChalkTitle size={18} color={R.soft}>It was</ChalkTitle>
         <ChalkTitle size={27} color={R.mark}>{w ? wordName(w) : ''}</ChalkTitle>
         <Note style={{ marginTop: -u(6) }}>{w?.field}</Note>
-        {t.kind === 'drawing' && drawing.current.length ? (
+        {t.kind === 'drawing' && sketch?.index === run.index && sketch.strokes.length ? (
           <Frame style={{ width: '62%', alignSelf: 'center' }}>
-            <Board color={SL.chalk} width={SL.sizes[0]} erase={false} bg={R.board} enabled={false} initial={drawing.current} ratio={shape.current} />
+            <Board color={SL.chalk} width={SL.sizes[0]} erase={false} bg={R.board} enabled={false} initial={sketch.strokes} ratio={sketch.ratio} />
           </Frame>
         ) : null}
         <Panel>
@@ -207,7 +245,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   const acting = run.kind === 'acting';
   const title = phase === 'whoGot' ? 'Who got it?' : phase === 'stealing' ? `${steal != null ? teamName(steal) : 'Next team'} can steal` : `${nameOf(turn.seat)} is ${acting ? 'acting' : 'drawing'}`;
   const titleColor = phase === 'stealing' ? (team(steal)?.color ?? R.ink) : phase === 'whoGot' ? R.ink : color;
-  const timer = phase === 'performing' ? <ChalkTimer leftMs={left} totalMs={run.turnMs} /> : phase === 'stealing' ? <ChalkTimer leftMs={left} totalMs={15_000} /> : null;
+  const timer = phase === 'performing' ? <ClockChalkTimer clock={ticks} leftAt={leftAt} totalMs={run.turnMs} /> : phase === 'stealing' ? <ClockChalkTimer clock={ticks} leftAt={leftAt} totalMs={15_000} /> : null;
 
   return (
     <SlateScreen>
@@ -216,7 +254,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
       {acting ? (
         <ActingCard paused={paused} />
       ) : (
-        <FitBoard boardKey={run.index} boardRef={board} shapeRef={shape} ink={ink} size={size} erase={erase} enabled={phase === 'performing'} paused={paused} />
+        <FitBoard boardKey={run.index} boardRef={board} shapeRef={shape} ink={ink} size={size} erase={erase} enabled={phase === 'performing'} paused={paused} initial={restored?.index === run.index ? restored.strokes : undefined} onStrokes={onStrokes} />
       )}
       {phase === 'performing' ? (
         <>

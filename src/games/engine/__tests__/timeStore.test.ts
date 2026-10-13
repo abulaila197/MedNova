@@ -27,3 +27,22 @@ test('timeStore: second() changes whenever a countdown (ceil) or stopwatch (floo
     assert.equal(second(ms) !== second(next), shownChanges, `at ${ms}`);
   }
 });
+
+test('timeStore: watch wakes a smooth clock widget on every tick; put records without waking', () => {
+  const st = timeStore(0);
+  let screen = 0;
+  let widget = 0;
+  st.subscribe(() => screen++);
+  const off = st.watch(() => widget++);
+  st.set(150, 0);
+  st.set(300, 0);
+  st.set(1100, 1);
+  assert.equal(widget, 3);
+  assert.equal(screen, 2);
+  st.put(5000);
+  assert.equal(st.get(), 5000);
+  assert.equal(widget, 3);
+  off();
+  st.set(5150, 5);
+  assert.equal(widget, 3);
+});
