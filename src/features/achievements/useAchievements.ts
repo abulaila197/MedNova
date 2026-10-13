@@ -7,16 +7,28 @@ import { supabase } from '@/lib/supabase';
 import { syncAccount } from '@/lib/sync';
 import { useFriends } from '@/state/friends';
 
-import { ACHIEVEMENTS, achievementProgress, tiersReached, tierTokens, type AchKey, type SocialCounts } from './progress';
+import { ACHIEVEMENTS, achievementProgress, tiersReached, tierTokens, tourStepOf, type AchKey, type SocialCounts } from './progress';
+
+const TOUR = 'tour:visited';
+
+/** Records a page for "Get to Know MedNova" (called on every page change). */
+export async function markVisited(path: string) {
+  const k = tourStepOf(path);
+  if (!k) return;
+  const had = (await engine.kv.get<string[]>(TOUR)) ?? [];
+  if (!had.includes(k)) await engine.kv.set(TOUR, [...had, k]);
+}
 
 export type AchRow = (typeof ACHIEVEMENTS)[number] & {
   count: number;
-  /** Tiers reached (0-3). */
+  /** Tiers reached (0-4). */
   reached: number;
-  /** Tiers already paid (0-3). */
+  /** Tiers already paid (0-4). */
   paid: number;
-  /** The goal for the next tier, or null after gold. */
+  /** The goal for the next tier, or null after the last one. */
   next: number | null;
+  /** Pages visited, for the step-set achievement. */
+  steps?: string[];
 };
 
 /** Tiers paid on the account: one 'achievement' wallet row per tier, reason "ach:key:tier" (AC6). */
@@ -32,7 +44,7 @@ const paidTiers = (ledger: { kind: string; reason: string }[]) => {
 
 /** Everything the counters need, read from the phone. */
 export async function loadAchievements(friendIds: string[], me?: string): Promise<AchRow[]> {
-  const [{ plays, items }, ledger, bal, best, learn, social] = await Promise.all([
+  const [{ plays, items }, ledger, bal, best, learn, social, tour] = await Promise.all([
     engine.recorder.all(),
     engine.wallet.ledger(),
     engine.wallet.balance(),
@@ -40,6 +52,7 @@ export async function loadAchievements(friendIds: string[], me?: string): Promis
     learnCounts(),
     // Invites, challenges and written cases live on the server; offline or signed out they read 0.
     me ? supabase.rpc('social_counts').then(({ data }) => (data as SocialCounts | null) ?? {}, () => ({})) : Promise.resolve({} as SocialCounts),
+    engine.kv.get<string[]>(TOUR),
   ]);
   const counts = achievementProgress({
     plays,
@@ -52,12 +65,13 @@ export async function loadAchievements(friendIds: string[], me?: string): Promis
     dossiersOpened: learn.dossiersOpened,
     crosswordThreeStars: Object.values(best ?? {}).filter((s) => s === 3).length,
     social,
+    tour: tour ?? [],
   });
   const paid = paidTiers(ledger);
   return ACHIEVEMENTS.map((a) => {
     const count = counts[a.key];
     const reached = tiersReached(a.key, count);
-    return { ...a, count, reached, paid: paid.get(a.key) ?? 0, next: reached < 3 ? a.goals[reached] : null };
+    return { ...a, count, reached, paid: paid.get(a.key) ?? 0, next: reached < a.goals.length ? a.goals[reached] : null, steps: a.key === 'app_tour' ? (tour ?? []) : undefined };
   });
 }
 
@@ -83,7 +97,7 @@ export function useAchievements() {
     setBusy(key);
     setError(null);
     // The server pays tiers in order, re-counting what it can see.
-    const { data, error: e } = await supabase.rpc('achievement_claim', { key, tier: row.paid + 1 });
+    const { data, error: e } = await supabase.rpc('achievement_collect', { key, tier: row.paid + 1, steps: row.steps ?? null });
     setBusy(null);
     const r = data as { ok: boolean; why?: string } | null;
     if (e || !r) return setError('Could not reach MedNova. Check your connection and try again.');

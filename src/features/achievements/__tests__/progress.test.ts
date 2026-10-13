@@ -150,12 +150,14 @@ test('achievements: offline games, inputs, and house call with friends only', ()
 test('achievements: every key has a count and tiers follow the goals', () => {
   const r = achievementProgress(base());
   assert.deepEqual(Object.keys(r).sort(), ACHIEVEMENTS.map((a) => a.key).sort());
-  assert.equal(ACHIEVEMENTS.length, 23);
+  assert.equal(ACHIEVEMENTS.length, 27);
   assert.equal(tiersReached('hot_streak', 9), 0);
   assert.equal(tiersReached('hot_streak', 10), 1);
   assert.equal(tiersReached('hot_streak', 34), 2);
   assert.equal(tiersReached('hot_streak', 35), 3);
-  assert.equal(tiersReached('first_rounds', 1000), 3);
+  assert.equal(tiersReached('first_rounds', 1000), 4);
+  assert.equal(tiersReached('full_marks', 31), 3, 'no Platinum when Gold is the whole set');
+  assert.equal(tiersReached('grand_rounds', 26), 4);
   assert.equal(tiersReached('residency', 179), 0);
 });
 
@@ -168,9 +170,11 @@ test('achievements: invites, challenges and written cases come from the server; 
   assert.equal(achievementProgress(base()).recruiter, 0);
   const practice = play('the-diagnostic-pursuit', 'solo', { settings: { custom: 'c:x' } });
   assert.equal(achievementProgress(base({ plays: [practice], items: [item(practice)] })).first_rounds, 0);
-  assert.deepEqual(tierTokens('case_writer'), [3, 4, 5]);
-  assert.deepEqual(tierTokens('recruiter'), [1, 3, 5]);
-  assert.deepEqual(tierTokens('ad_watcher'), [5, 10, 20]);
+  // Platinum pays Bronze + Silver + Gold (Yazan 2026-10-13).
+  assert.deepEqual(tierTokens('case_writer'), [3, 4, 5, 12]);
+  assert.deepEqual(tierTokens('recruiter'), [1, 3, 5, 9]);
+  assert.deepEqual(tierTokens('ad_watcher'), [5, 10, 20, 35]);
+  assert.deepEqual(tierTokens('app_tour'), [5]);
   assert.equal(achievementProgress(base({ social: { ad_watcher: 50 } })).ad_watcher, 50);
   assert.equal(tiersReached('ad_watcher', 50), 2);
 });

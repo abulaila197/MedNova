@@ -12,6 +12,8 @@ import { InviteBanner } from '@/online/InviteBanner';
 import { DailyHost } from '@/features/daily/DailyHost';
 import { WelcomeHost } from '@/features/welcome/WelcomeHost';
 import { StyleHost } from '@/features/style/StyleHost';
+import { RoundsHost } from '@/features/rounds/RoundsHost';
+import { markVisited } from '@/features/achievements/useAchievements';
 import { PaywallSheet } from '@/features/freeplays/PaywallSheet';
 import { cancelPaywall } from '@/features/freeplays/paywall';
 import { useStopSoundsOnLeave } from '@/lib/sound';
@@ -38,6 +40,10 @@ export default function AppLayout() {
     useApp.getState().setReport(false);
     closeFriendSheet();
   }, [path]);
+  // "Get to Know MedNova": each page outside the games counts once.
+  useEffect(() => {
+    void markVisited(path);
+  }, [path]);
   useEffect(() => {
     p.value = withTiming(open ? 1 : 0, { duration: 450, easing: Easing.bezier(0.3, 0.7, 0.2, 1) });
   }, [open, p]);
@@ -59,6 +65,7 @@ export default function AppLayout() {
       <DailyHost />
       <PaywallSheet />
       <StyleHost />
+      <RoundsHost />
     </View>
   );
 }

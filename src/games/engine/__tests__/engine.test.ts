@@ -155,14 +155,26 @@ test('gate: signed in gets 3 free plays per game per day, bought plays add one, 
   const g = createGate(memoryKV(), () => day);
   for (const id of ['a', 'b', 'c', 'c']) await g.countPlay('the-riddler', id, true);
   await g.countPlay('the-riddler', 'daily', true, true);
-  assert.deepEqual(await g.allowance('the-riddler'), { used: 3, free: 3, extra: 0, left: 0 });
+  assert.deepEqual(await g.allowance('the-riddler'), { used: 3, free: 3, extra: 0, left: 0, boost: 0 });
   assert.equal((await g.allowance('nova-crossword')).left, 3, 'each game has its own 3');
   await g.addPlay('the-riddler');
   assert.equal((await g.allowance('the-riddler')).left, 1);
   await g.countPlay('the-riddler', 'd', true);
   assert.equal((await g.allowance('the-riddler')).left, 0);
   day = '2026-10-12';
-  assert.deepEqual(await g.allowance('the-riddler'), { used: 0, free: 3, extra: 0, left: 3 });
+  assert.deepEqual(await g.allowance('the-riddler'), { used: 0, free: 3, extra: 0, left: 3, boost: 0 });
+});
+
+test('gate: Grand Rounds booster plays come after the free ones, only for that game, and end with the week', async () => {
+  const g = createGate(memoryKV(), () => '2026-10-13');
+  await g.addBoost('the-riddler', 0, 10);
+  for (const id of ['a', 'b', 'c']) await g.countPlay('the-riddler', id, true);
+  assert.deepEqual(await g.allowance('the-riddler'), { used: 3, free: 3, extra: 0, left: 10, boost: 10 });
+  await g.countPlay('the-riddler', 'd', true);
+  assert.deepEqual(await g.allowance('the-riddler'), { used: 4, free: 3, extra: 1, left: 9, boost: 9 });
+  assert.equal((await g.allowance('nova-crossword')).boost, 0);
+  await g.expireBoost(1);
+  assert.equal((await g.allowance('the-riddler')).left, 0);
 });
 
 test('picker: unseen first, then reshuffle when the bank runs out', async () => {

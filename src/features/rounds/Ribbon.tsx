@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { router, useFocusEffect } from 'expo-router';
+import { useCallback, useEffect, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import Svg, { Circle, Defs, LinearGradient, Path, Stop } from 'react-native-svg';
@@ -11,10 +12,7 @@ import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
-// Sample week data until the server part exists.
-const WEEK = { name: 'Diagnostic Pursuit', left: '3d 14h', prize: 30, parts: [{ k: 'Solo', n: 6, of: 10 }, { k: 'Online', n: 9, of: 20 }, { k: 'Pass', n: 3, of: 15 }] };
-const TOTAL = WEEK.parts.reduce((a, p) => a + p.of, 0);
-const DONE = WEEK.parts.reduce((a, p) => a + p.n, 0) / TOTAL;
+import { doneOf, loadRounds, PART_NAME, timeLeft, useRoundsStore, weekName, type Rounds } from './useRounds';
 
 /**
  * Grand Rounds on the Games page (Yazan 2026-10-13): a small round button on the right under the header; tapping it
@@ -23,16 +21,36 @@ const DONE = WEEK.parts.reduce((a, p) => a + p.n, 0) / TOTAL;
 export function RoundsButton() {
   const t = useTheme();
   const [open, setOpen] = useState(false);
+  const r = useRoundsStore((x) => x.r);
   const toggle = tapped(() => setOpen((o) => !o));
+  useEffect(() => {
+    void loadRounds();
+  }, []);
+  // Leaving the Games page closes the pop-up and re-reads the week on return.
+  useFocusEffect(
+    useCallback(() => {
+      void loadRounds();
+      return () => setOpen(false);
+    }, []),
+  );
+  if (!r) return null;
   return (
     <>
       {open ? <Pressable style={StyleSheet.absoluteFill} onPress={toggle} accessibilityLabel="Close Grand Rounds" /> : null}
       <Pressable onPress={toggle} style={[s.btn, { backgroundColor: t.panel, borderColor: t.panelLine }]} accessibilityRole="button" accessibilityLabel="Grand Rounds this week" accessibilityState={{ expanded: open }}>
-        <Ring />
+        <Ring done={doneOf(r)} />
       </Pressable>
       {open ? (
         <Animated.View entering={FadeIn.duration(160)} exiting={FadeOut.duration(120)} style={[s.pop, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
-          <Beat />
+          <Pressable
+            onPress={() => {
+              setOpen(false);
+              router.navigate('/rounds' as never);
+            }}
+            accessibilityRole="link"
+            accessibilityLabel="Open Grand Rounds">
+            <Beat r={r} />
+          </Pressable>
         </Animated.View>
       ) : null}
     </>
@@ -40,7 +58,7 @@ export function RoundsButton() {
 }
 
 /** The button face: a tiny heartbeat inside a ring that fills with the week's progress. */
-function Ring() {
+function Ring({ done }: { done: number }) {
   const t = useTheme();
   const id = useSvgId('rr');
   const r = 13;
@@ -54,38 +72,40 @@ function Ring() {
         </LinearGradient>
       </Defs>
       <Circle cx={15} cy={15} r={r} fill="none" stroke={t.chipLine} strokeWidth={1.6} />
-      <Circle cx={15} cy={15} r={r} fill="none" stroke={`url(#${id})`} strokeWidth={1.8} strokeDasharray={`${c * DONE} ${c}`} strokeLinecap="round" transform="rotate(-90 15 15)" />
+      <Circle cx={15} cy={15} r={r} fill="none" stroke={`url(#${id})`} strokeWidth={1.8} strokeDasharray={`${c * done} ${c}`} strokeLinecap="round" transform="rotate(-90 15 15)" />
       <Path d="M7.5,15.5 L11,15.5 L12.6,12.5 L14.4,19.5 L16.4,9.5 L18.2,15.5 L22.5,15.5" stroke={t.accent} strokeWidth={1.5} fill="none" strokeLinejoin="round" strokeLinecap="round" />
     </Svg>
   );
 }
 
-/** Look B: a heartbeat line that lights up as you play; each beat is one sub-mode. */
-function Beat() {
+/** Look B: a heartbeat line that lights up as you play; each beat is one sub-mode (or the one mode of a mode week). */
+export function Beat({ r, more = true }: { r: Rounds; more?: boolean }) {
   const t = useTheme();
   const id = useSvgId('rb');
   const W = 250;
+  const TOTAL = r.parts.reduce((a, p) => a + p.of, 0);
+  const DONE = doneOf(r);
   let x = 0;
   let d = 'M0,9';
   const marks: { x: number; label: string }[] = [];
-  for (const p of WEEK.parts) {
+  for (const p of r.parts) {
     const w = (p.of / TOTAL) * W;
     const m = x + w / 2;
     d += ` L${m - 7},9 L${m - 4},6 L${m - 2},9 L${m},1 L${m + 2},15 L${m + 4},9 L${x + w},9`;
-    marks.push({ x: m, label: `${p.k} ${p.n}/${p.of}` });
+    marks.push({ x: m, label: `${r.this.kind === 'mode' ? 'Wins' : PART_NAME[p.k]} ${p.n ?? 0}/${p.of}` });
     x += w;
   }
   return (
     <View style={s.beat}>
       <View style={s.row}>
         <Text style={[s.beatT, { color: t.white }]}>
-          Grand Rounds <Text style={{ fontFamily: F.displayItalic, color: t.accent }}>{WEEK.name}</Text>
+          Grand Rounds <Text style={{ fontFamily: F.displayItalic, color: t.accent }}>{weekName(r.this)}</Text>
         </Text>
       </View>
       <View style={s.row}>
-        <Text style={[s.left, { color: t.mute, flex: 1 }]}>{`${WEEK.left} LEFT`}</Text>
+        <Text style={[s.left, { color: t.mute, flex: 1 }]}>{r.claimed ? 'DONE THIS WEEK' : `${timeLeft(r.ends).toUpperCase()} LEFT${more ? ' · TAP FOR MORE' : ''}`}</Text>
         <View style={s.prize}>
-          <Text style={[s.prizeT, { color: t.fg }]}>{WEEK.prize}</Text>
+          <Text style={[s.prizeT, { color: t.fg }]}>{r.prize}</Text>
           <TokenCoin size={u(10)} progress={1} light={t.mode === 'light'} track="transparent" />
         </View>
       </View>

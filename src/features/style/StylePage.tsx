@@ -1,6 +1,6 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import { router, useLocalSearchParams } from 'expo-router';
-import { useEffect, useMemo, useState } from 'react';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Image } from 'expo-image';
 
@@ -50,7 +50,8 @@ export function StylePage() {
   const c = useInfo();
   const t = c.t;
   const params = useLocalSearchParams<{ tab?: Tab }>();
-  const [tab, setTab] = useState<Tab>(params.tab ?? 'frames');
+  const [chosen, setTab] = useState<Tab | null>(null);
+  const tab = chosen ?? params.tab ?? 'frames';
   const signedIn = !!useSession((x) => x.userId);
   const profile = useAccount((a) => a.profile);
   const { tokens } = useBalance();
@@ -64,9 +65,8 @@ export function StylePage() {
   useEffect(() => {
     void loadStyle();
   }, [signedIn]);
-  useEffect(() => {
-    if (params.tab) setTab(params.tab);
-  }, [params.tab]);
+  // Coming back from Profile's buttons opens the tab they asked for.
+  useFocusEffect(useCallback(() => setTab(null), []));
 
   const has = (id: string) => owned.includes(id);
   const frame = (pick?.id.startsWith('frame:') ? pick.key : worn.frame) as FrameKey;
@@ -170,7 +170,7 @@ export function StylePage() {
                   <Text style={[s.rN, { color: tab === 'titles' ? titleColor(t.mode, it.key, c.fg) : c.fg, fontFamily: tab === 'titles' ? F.displayItalic : F.bodySemi }]}>{it.name}</Text>
                   {tab === 'effects' ? <Text style={[s.rS, { color: c.mute }]}>{(it as (typeof EFFECTS)[number]).what}</Text> : null}
                   {tab === 'stickers' ? <Stickers slug={it.key} /> : null}
-                  {it.price == null ? <Text style={[s.rS, { color: c.mute }]}>Earned at this achievement's Platinum tier</Text> : null}
+                  {it.price == null ? <Text style={[s.rS, { color: c.mute }]}>{'Earned at this achievement\u2019s Platinum tier'}</Text> : null}
                 </View>
                 <Price t={t} it={it} deal={deal} owned={has(it.id)} wearing={wearing(it)} />
               </Pressable>
@@ -292,7 +292,6 @@ function GiftSheet({ open, item, onClose, onSent }: { open: boolean; item: Item 
   const deal = useStyle((x) => x.deal);
   useEffect(() => {
     if (open) loadFriends().catch(() => {});
-    setErr('');
   }, [open]);
   if (!item) return null;
   return (
@@ -306,6 +305,7 @@ function GiftSheet({ open, item, onClose, onSent }: { open: boolean; item: Item 
             key={f.id}
             disabled={!!busy}
             onPress={async () => {
+              setErr('');
               setBusy(f.id);
               const r = await buyItem(item.id, f.id);
               setBusy(null);
