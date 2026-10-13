@@ -16,7 +16,8 @@ import { F, type Theme } from '@/theme/tokens';
 
 import { Name, openReport, useFriendSheet } from './Friends';
 
-const close = () => useFriendSheet.setState({ open: null, friend: null, code: '', target: null });
+export const closeFriendSheet = () => useFriendSheet.setState({ open: null, friend: null, code: '', target: null });
+const close = closeFriendSheet;
 const ALLOWED = /[^A-HJ-NP-Z2-9]/g; // friend codes skip 0, O, 1 and I
 
 const SAY: Record<RequestResult | 'error', string> = {

@@ -1,3 +1,6 @@
+import { router, useIsFocused } from 'expo-router';
+import { useCallback, useEffect, useRef } from 'react';
+
 import { defaultKV } from '@/games/engine/storage';
 import type { PlayItem, Seat, Standing } from '@/games/engine/types';
 import { countPlay, finishPlay, recordItem, startPlay } from '@/games/shell/flow';
@@ -25,4 +28,31 @@ export async function finishOnline(
   for (const it of a.items) await recordItem(play, it);
   await finishPlay(def, play, a.score, a.standings);
   return play.id;
+}
+
+/**
+ * Opens a finished match's results, but only while the match is on screen: covered by another page (the Store,
+ * the menu) it waits until the player comes back, and once they left it never pulls them back (Yazan, 2026-10-13).
+ * Also sends a reopened, already finished match straight to its results. Returns `show(playId)` for the finish.
+ */
+export function useShowResults(game: string, matchId: string, done: boolean) {
+  const focused = useIsFocused();
+  const shown = useRef(focused);
+  useEffect(() => {
+    shown.current = focused;
+    return () => {
+      shown.current = false;
+    };
+  }, [focused]);
+  useEffect(() => {
+    if (!done || !focused) return;
+    let live = true;
+    playForMatch(matchId).then((id) => live && id && router.replace(`/play/${game}/results?play=${id}`));
+    return () => {
+      live = false;
+    };
+  }, [done, focused, matchId, game]);
+  return useCallback((id: string) => {
+    if (shown.current) router.replace(`/play/${game}/results?play=${id}`);
+  }, [game]);
 }

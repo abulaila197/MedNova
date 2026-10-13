@@ -8,7 +8,7 @@ import { presetTeam } from '@/games/shell/teams';
 import type { GameDef } from '@/games/shell/types';
 
 import { leaveRoom } from './api';
-import { finishOnline, playForMatch } from './finish';
+import { finishOnline, useShowResults } from './finish';
 import { useMatchState } from './useMatchState';
 
 /** One player in a race match (Riddler, Medicordle, Streak Master online). */
@@ -107,6 +107,7 @@ const shownOf = (server: number, st: RaceState | null) => (st ? `${second(st.pha
  */
 export function useRace(def: GameDef, roomId: string, matchId: string, me: string, toItems: (st: RaceState) => Omit<PlayItem, 'id' | 'at' | 'playId'>[]) {
   const { st, load, server, clock, notice, setNotice } = useMatchState<RaceState>('race_state', matchId, { shown: shownOf });
+  const showResults = useShowResults(def.key, matchId, st?.phase === 'done');
   const finishing = useRef(false);
   const items = useRef(toItems);
   useEffect(() => {
@@ -132,14 +133,10 @@ export function useRace(def: GameDef, roomId: string, matchId: string, me: strin
       const mine = st.players.find((p) => p.user_id === me)!;
       const settings = { ...st.settings, room: roomId, match: matchId, teams: teams >= 2 ? Array.from({ length: teams }, (_, i) => presetTeam(i)) : undefined };
       const id = await finishOnline(def, matchId, { settings, seats, standings, score: mine.score, items: items.current(st) });
-      router.replace(`/play/${def.key}/results?play=${id}`);
+      showResults(id);
     })();
-  }, [st, playing, me, def, roomId, matchId]);
+  }, [st, playing, me, def, roomId, matchId, showResults]);
 
-  // Already finished on this phone (reopened): straight to the results.
-  useEffect(() => {
-    playForMatch(matchId).then((id) => id && st?.phase === 'done' && router.replace(`/play/${def.key}/results?play=${id}`));
-  }, [matchId, st?.phase, def.key]);
 
   const leave = useCallback(async () => {
     await leaveRoom(roomId).catch(() => {});

@@ -2,7 +2,9 @@
 // the menu silences every sound in the app, Trust Me Not included. Right and wrong never play online before the
 // answer is shown to everyone: callers play them at the reveal, not at the guess.
 import { createAudioPlayer, setAudioModeAsync, type AudioPlayer } from 'expo-audio';
+import { usePathname } from 'expo-router';
 import { useEffect, useRef } from 'react';
+import { AppState } from 'react-native';
 import { create } from 'zustand';
 
 import { defaultKV } from '@/games/engine/storage';
@@ -43,9 +45,30 @@ export const audioMode = () => (ready ??= setAudioModeAsync({ playsInSilentMode:
 const players: Partial<Record<Sound, AudioPlayer>> = {};
 let lastTap = 0;
 
+// Every player in the app (these sounds, Trust Me Not, voice lines) is tracked, so leaving a game or the app
+// silences whatever is still ringing (Yazan, 2026-10-13: nothing keeps playing after you exit).
+const live = new Set<AudioPlayer>();
+export const track = (p: AudioPlayer) => (live.add(p), p);
+export const untrack = (p: AudioPlayer) => void live.delete(p);
+/** Stops every sound now. Loops that belong to a page still open start again on their own (useSeasonLoop). */
+export function stopAll() {
+  for (const p of live) {
+    try {
+      p.pause();
+    } catch {
+      // Already gone.
+    }
+  }
+}
+/** Sound plays only while the app is on screen; going to the background stops what is playing. */
+export const awake = () => AppState.currentState === 'active' || AppState.currentState == null;
+AppState.addEventListener('change', (st) => {
+  if (st !== 'active') stopAll();
+});
+
 /** Plays one sound from the start. Never throws: a phone without sound just stays quiet. */
 export async function sfx(name: Sound) {
-  if (useSound.getState().muted) return;
+  if (useSound.getState().muted || !awake()) return;
   if (name === 'tap') {
     // A burst of taps (double tap, a tap that also opens a page) plays once.
     const now = Date.now();
@@ -54,7 +77,7 @@ export async function sfx(name: Sound) {
   }
   try {
     await audioMode();
-    const p = (players[name] ??= createAudioPlayer(FX[name]));
+    const p = (players[name] ??= track(createAudioPlayer(FX[name])));
     p.volume = VOLUME[name];
     await p.seekTo(0);
     (p.play() as unknown as Promise<void> | undefined)?.catch?.(() => {});
@@ -84,6 +107,20 @@ export function useRevealSound(key: string | null, right: Verdict | null) {
   useEffect(() => {
     if (key == null || right == null || played.current === key) return;
     played.current = key;
-    void sfxVerdict(right);
+    if (gameOnScreen()) void sfxVerdict(right);
   }, [key, right]);
 }
+
+/** Leaving a game (any page outside /play) stops whatever it was still playing. Mounted once, in the app layout. */
+export function useStopSoundsOnLeave() {
+  const path = usePathname();
+  const inGame = path.startsWith('/play/');
+  useEffect(() => {
+    gameShown = inGame;
+    if (!inGame) stopAll();
+  }, [inGame]);
+}
+
+let gameShown = false;
+/** A game is the page on screen. A game waiting under the Store or the menu's pages makes no sound. */
+export const gameOnScreen = () => gameShown;

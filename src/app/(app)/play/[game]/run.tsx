@@ -1,5 +1,5 @@
 import { Redirect, router, useLocalSearchParams } from 'expo-router';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { engine, type Play, type Standing } from '@/games/engine';
 import { finishPlay } from '@/games/shell/flow';
@@ -14,11 +14,19 @@ export default function Run() {
     engine.recorder.get(playId).then(setPlay);
   }, [playId]);
 
+  // Quitting while the finish is still saving leaves for good: the results never pull the player back.
+  const here = useRef(true);
+  useEffect(() => {
+    here.current = true;
+    return () => {
+      here.current = false;
+    };
+  }, []);
   const onFinish = useCallback(
     async (score: number, standings?: Standing[]) => {
       if (!def || !play) return;
       await finishPlay(def, play, score, standings);
-      router.replace(`/play/${game}/results?play=${play.id}`);
+      if (here.current) router.replace(`/play/${game}/results?play=${play.id}`);
     },
     [def, play, game],
   );

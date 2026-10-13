@@ -1,5 +1,5 @@
-import { Stack } from 'expo-router';
-import { useEffect } from 'react';
+import { Stack, usePathname } from 'expo-router';
+import { useEffect, useRef } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
@@ -7,11 +7,13 @@ import { Menu } from '@/components/Menu';
 import { ReportSheet } from '@/components/ReportSheet';
 import { LoadingHost } from '@/features/loading/LoadingHost';
 import { pageCard } from '@/features/loading/snapshot';
-import { FriendSheets } from '@/features/profile/FriendSheets';
+import { closeFriendSheet, FriendSheets } from '@/features/profile/FriendSheets';
 import { InviteBanner } from '@/online/InviteBanner';
 import { DailyHost } from '@/features/daily/DailyHost';
 import { WelcomeHost } from '@/features/welcome/WelcomeHost';
 import { PaywallSheet } from '@/features/freeplays/PaywallSheet';
+import { cancelPaywall } from '@/features/freeplays/paywall';
+import { useStopSoundsOnLeave } from '@/lib/sound';
 import { useApp, useTheme } from '@/state/app';
 import { u, useScreen } from '@/theme/scale';
 
@@ -24,6 +26,17 @@ export default function AppLayout() {
   const open = useApp((s) => s.menuOpen);
   const setMenu = useApp((s) => s.setMenu);
   const p = useSharedValue(0);
+  useStopSoundsOnLeave();
+  // A sheet belongs to the page it opened on: going to another page (Android back included) closes it.
+  const path = usePathname();
+  const was = useRef(path);
+  useEffect(() => {
+    if (was.current === path) return;
+    was.current = path;
+    cancelPaywall();
+    useApp.getState().setReport(false);
+    closeFriendSheet();
+  }, [path]);
   useEffect(() => {
     p.value = withTiming(open ? 1 : 0, { duration: 450, easing: Easing.bezier(0.3, 0.7, 0.2, 1) });
   }, [open, p]);

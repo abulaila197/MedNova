@@ -58,20 +58,23 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
     };
   }, [play]);
 
+  // The answer lands after its result shows (FLASH_MS); a game left in that moment is not changed afterwards.
+  const alive = useRef(true);
+  useEffect(() => {
+    alive.current = true;
+    return () => {
+      alive.current = false;
+    };
+  }, []);
   const dispatch = useCallback(
     (e: OfflineEvent) => {
       const prev = ref.current;
-      if (!prev) return;
+      if (!prev || !alive.current) return;
       const p = puzzleById.get(prev.puzzleId)!;
       const next = stepOffline(p, prev, e);
       if (next === prev) return;
       ref.current = next;
       setRun(next);
-      // Each answered word sounds as it is judged (the batch recorded at the end stays quiet).
-      if (next.turns.length > prev.turns.length) {
-        const tn = next.turns[next.turns.length - 1];
-        if (tn.wordId) void sfxVerdict(tn.right);
-      }
       engine.recorder.bookmark(play.id, next, next.players[0]?.score ?? 0);
       if (next.phase === 'done' && prev.phase !== 'done') {
         engine.picker.markSeen(play.game, p.id);
@@ -198,6 +201,7 @@ function Turn({ puzzle, run, claims, width, onEvent }: { puzzle: PuzzleDef; run:
     // Show the result for a moment, then the phone passes on.
     const w = word;
     setFlash(out);
+    void sfxVerdict(out !== 'wrong'); // as the result shows (the batch recorded at the end stays quiet)
     if (out === 'wrong') {
       setShake((x) => x + 1);
       setNotice(me.hearts <= 1 ? 'Not this one. That was your last heart.' : 'Not this one. One heart lost.');

@@ -7,7 +7,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { PanResponder, View } from 'react-native';
 
 import { call, invoke, leaveRoom } from '@/online/api';
-import { finishOnline, playForMatch } from '@/online/finish';
+import { finishOnline, useShowResults } from '@/online/finish';
 import { settingsLine } from '@/online/format';
 import { AlertPill, Countdown, useAlerts } from '@/online/live';
 import { RoomTalk } from '@/online/Talk';
@@ -87,6 +87,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   const [menu, setMenu] = useState(false);
   const lastTick = useRef(0);
   const busy = useRef(false);
+  const showResults = useShowResults(def.key, matchId, st?.phase === 'done');
   const finishing = useRef(false);
   const { alert, push } = useAlerts();
 
@@ -193,14 +194,10 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
         answersGiven: [], timeMs: 0, hintsUsed: 0, revealsUsed: 0, points: r.points, feedsLearn: false, gameData: { style: r.style, field: r.field },
       }));
       const id = await finishOnline(def, matchId, { settings: { ...st.settings, room: roomId, match: matchId }, seats, standings, score, items });
-      router.replace(`/play/${def.key}/results?play=${id}`);
+      showResults(id);
     })();
-  }, [st, playing, mySeat, me, def, roomId, matchId]);
+  }, [st, playing, mySeat, me, def, roomId, matchId, showResults]);
 
-  // Already finished on this phone (reopened): straight to the results.
-  useEffect(() => {
-    playForMatch(matchId).then((id) => id && st?.phase === 'done' && router.replace(`/play/${def.key}/results?play=${id}`));
-  }, [matchId, st?.phase, def.key]);
 
   const leave = useCallback(async () => {
     await leaveRoom(roomId).catch(() => {});

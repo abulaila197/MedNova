@@ -4,6 +4,8 @@ import { useCallback, useEffect, useRef } from 'react';
 import { AppState } from 'react-native';
 import { create } from 'zustand';
 
+import { awake, track } from '@/lib/sound';
+
 import { call } from './api';
 import { voiceById } from './voice';
 
@@ -36,7 +38,7 @@ const players = new Map<string, AudioPlayer>();
 let modeSet = false;
 export async function playVoice(id: string) {
   const v = voiceById.get(id);
-  if (!v) return;
+  if (!v || !awake()) return; // no voice lines while the app is in the background
   try {
     if (!modeSet) {
       modeSet = true;
@@ -44,7 +46,7 @@ export async function playVoice(id: string) {
     }
     let p = players.get(id);
     if (!p) {
-      p = createAudioPlayer(v.src);
+      p = track(createAudioPlayer(v.src));
       players.set(id, p);
     }
     await p.seekTo(0);
