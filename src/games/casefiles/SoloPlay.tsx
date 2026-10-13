@@ -41,6 +41,34 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
     [play.id],
   );
 
+  const finishCase = useCallback(
+    (def: CaseDef, run: Run, replay: boolean) => {
+      const sc = scoreRun(def, run);
+      recordItem(play, {
+        seat: 0,
+        itemId: def.id,
+        answerKey: dossierOf(def.final),
+        outcome: sc.solved ? 'right' : 'wrong',
+        answersGiven: [run.provisional?.id, run.redemption?.id].filter((x): x is string => !!x),
+        timeMs: run.finalMs ?? run.elapsedMs,
+        hintsUsed: 0,
+        revealsUsed: 0,
+        points: sc.total,
+        feedsLearn: run.provisional?.correct === false, // CF5: a wrong first diagnosis, even if redeemed
+        gameData: { exp: replay ? 0 : sc.total, replay, stamp: sc.stamp, dd: run.dd, filtered: run.filtered, ddRight: sc.ddRight, ddWrong: sc.ddWrong, final: def.final },
+      });
+      // Read the stored list (this callback can hold an old `played`), so other cases' stamps are kept.
+      engine.kv.get<Played>(PLAYED_KEY).then((cur) => {
+        const old = cur ?? {};
+        const next = { ...old, [def.id]: old[def.id] === 'SOLVED' ? 'SOLVED' : sc.stamp } as Played;
+        setPlayed(next);
+        engine.kv.set(PLAYED_KEY, next);
+      });
+      setReview(true);
+    },
+    [play],
+  );
+
   const dispatch = useCallback(
     (e: RunEvent) => {
       const cur = ref.current;
@@ -51,34 +79,8 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
       save({ ...cur, run });
       if (run.phase === 'done' && cur.run.phase !== 'done') finishCase(def, run, cur.replay);
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [save],
+    [save, finishCase],
   );
-
-  const finishCase = (def: CaseDef, run: Run, replay: boolean) => {
-    const sc = scoreRun(def, run);
-    recordItem(play, {
-      seat: 0,
-      itemId: def.id,
-      answerKey: dossierOf(def.final),
-      outcome: sc.solved ? 'right' : 'wrong',
-      answersGiven: [run.provisional?.id, run.redemption?.id].filter((x): x is string => !!x),
-      timeMs: run.finalMs ?? run.elapsedMs,
-      hintsUsed: 0,
-      revealsUsed: 0,
-      points: sc.total,
-      feedsLearn: run.provisional?.correct === false, // CF5: a wrong first diagnosis, even if redeemed
-      gameData: { exp: replay ? 0 : sc.total, replay, stamp: sc.stamp, dd: run.dd, filtered: run.filtered, ddRight: sc.ddRight, ddWrong: sc.ddWrong, final: def.final },
-    });
-    // Read the stored list (this callback can hold an old `played`), so other cases' stamps are kept.
-    engine.kv.get<Played>(PLAYED_KEY).then((cur) => {
-      const old = cur ?? {};
-      const next = { ...old, [def.id]: old[def.id] === 'SOLVED' ? 'SOLVED' : sc.stamp } as Played;
-      setPlayed(next);
-      engine.kv.set(PLAYED_KEY, next);
-    });
-    setReview(true);
-  };
 
   usePauseHide(() => dispatch({ type: 'PAUSE', now: Date.now() }));
 

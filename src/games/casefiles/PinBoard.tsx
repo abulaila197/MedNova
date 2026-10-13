@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { memo, useState } from 'react';
 import { Image } from 'expo-image';
 import { Pressable, StyleSheet, View } from 'react-native';
 import Svg, { Circle, Defs, Ellipse, G, Line, Path, RadialGradient, Rect, Stop } from 'react-native-svg';
@@ -56,7 +56,8 @@ const FOLDER = {
   personal: { src: require('@/assets/casefiles/folder-personal.png'), ratio: 248 / 360 },
 };
 
-export function PinBoard({ def, run, sealed, onOpen }: { def: CaseDef; run: Run; sealed: boolean; onOpen: (f: FileId) => void }) {
+/** Redraws only when the case, the run or the handler changes (not on the board's clock ticks). */
+export const PinBoard = memo(function PinBoard({ def, run, sealed, onOpen }: { def: CaseDef; run: Run; sealed: boolean; onOpen: (f: FileId) => void }) {
   const [box, setBox] = useState<{ w: number; h: number } | null>(null);
   const st = status(def, run, sealed);
   const opened = new Set(run.opened);
@@ -123,7 +124,7 @@ export function PinBoard({ def, run, sealed, onOpen }: { def: CaseDef; run: Run;
       </View>
     </View>
   );
-}
+});
 
 /** Pin size against its 24 x 26 drawing. */
 const PIN = 0.65;

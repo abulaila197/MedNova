@@ -61,7 +61,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   const sending = useRef(false);
   const retry = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const flush = useCallback(async () => {
+  const flush = useCallback(async function flushReports(): Promise<void> {
     if (sending.current) return;
     sending.current = true;
     let sent = false;
@@ -80,7 +80,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
           continue;
         }
         if (retry.current) clearTimeout(retry.current);
-        retry.current = setTimeout(() => void flush(), 2000);
+        retry.current = setTimeout(() => void flushReports(), 2000);
         break;
       }
     }
@@ -126,11 +126,12 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
     seen.current = now;
   }, [st, me, push]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  const item = st?.item;
   const dispatch = useCallback(
     (e: RunEvent) => {
       const prev = runRef.current;
-      if (!prev || !st?.item) return;
-      const c = caseOf(st.item);
+      if (!prev || !item) return;
+      const c = caseOf(item);
       const next = stepRun(c, prev, e, true);
       if (next === prev) return;
       runRef.current = next;
@@ -147,7 +148,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
         void flush();
       }
     },
-    [st?.item, flush],
+    [item, flush],
   );
 
   if (!st) return <NoirScreen>{null}</NoirScreen>;

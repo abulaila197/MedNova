@@ -26,6 +26,13 @@ type SoloSave = { run: SoloRun | null; session: Done[] };
 
 const BEST_KEY = 'crossword:best';
 
+/** Best stars per level: the saved bests plus a session's results (CW9). */
+function bestsOf(stored: Record<number, number>, list: Done[]) {
+  const b: Record<number, number> = { ...stored };
+  for (const d of list) b[d.level] = Math.max(b[d.level] ?? 0, d.stars);
+  return b;
+}
+
 /** Solo (CW1-CW4, CW8, CW9): the level map, one puzzle at a time with tap to zoom, a result card, then session results. */
 export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   const saved = play.resume as SoloSave | null;
@@ -45,14 +52,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   }, []);
 
   /** Best stars per level: saved bests plus this session's results (CW9). */
-  const bestMap = useCallback(
-    (list: Done[] = sessionRef.current) => {
-      const b: Record<number, number> = { ...stored };
-      for (const d of list) b[d.level] = Math.max(b[d.level] ?? 0, d.stars);
-      return b;
-    },
-    [stored],
-  );
+  const bestMap = useCallback((list: Done[]) => bestsOf(stored, list), [stored]);
 
   const save = useCallback(
     (r: SoloRun | null, list: Done[]) => engine.recorder.bookmark(play.id, { run: r, session: list } satisfies SoloSave, list.reduce((a, d) => a + d.stars, 0)),
@@ -85,7 +85,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
       let list = sessionRef.current;
       if (next.phase === 'done' && prev.phase !== 'done') {
         const stars = soloStars(p, next);
-        const exp = levelExp(stars, bestMap()[p.level] ?? 0);
+        const exp = levelExp(stars, bestMap(sessionRef.current)[p.level] ?? 0);
         list = [...list, { level: p.level, stars, exp, solved: next.solved.length, total: p.words.length, left: next.left }];
         sessionRef.current = list;
         setSession(list);
@@ -203,9 +203,12 @@ function Puzzle({ puzzle, run, playId, paused, onEvent, onPause, dock, children 
     engine.wallet.balance().then((b) => setTokens(b.tokens));
   }, [run.hints, run.revives]);
 
-  useEffect(() => {
+  // The puzzle ended: close the open word.
+  const [wasPlaying, setWasPlaying] = useState(playing);
+  if (wasPlaying !== playing) {
+    setWasPlaying(playing);
     if (!playing) setWord(null);
-  }, [playing]);
+  }
 
   const locked = lockedCells(idx, run.solved, run.revealed);
   const slots = word ? buildSlots(idx, word, locked) : [];

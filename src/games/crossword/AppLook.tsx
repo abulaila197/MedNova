@@ -1,5 +1,5 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import { useEffect, useState, type ReactNode } from 'react';
+import { memo, useEffect, useState, type ReactNode } from 'react';
 import Animated, { useAnimatedStyle, useSharedValue, withSequence, withTiming } from 'react-native-reanimated';
 import { Image } from 'expo-image';
 import { Pressable, StyleSheet, View } from 'react-native';
@@ -65,7 +65,7 @@ export const ZOOM = 2.2;
  * The grid of glass tiles. `zoom` is the square the view is zoomed onto (null = whole grid); `claims` colours a
  * solved word by who claimed it (Offline). Taps on squares go to `onCell`, taps on the gaps to `onBlank`.
  */
-export function AppGrid({ puzzle, solved, revealed = [], selected, width, zoom = null, claims, onCell, onBlank }: {
+export const AppGrid = memo(function AppGrid({ puzzle, solved, revealed = [], selected, width, zoom = null, claims, onCell, onBlank }: {
   puzzle: PuzzleDef; solved: string[]; revealed?: string[]; selected?: string | null; width: number; zoom?: CellPos | null;
   claims?: Record<string, string>; onCell?: (cell: CellPos) => void; onBlank?: (cell: CellPos) => void;
 }) {
@@ -138,7 +138,7 @@ export function AppGrid({ puzzle, solved, revealed = [], selected, width, zoom =
       </View>
     </View>
   );
-}
+});
 
 /** The answer card: a specimen-note style card with the clue, glass slots and Medicordle's glass keys. */
 export function AppPopup({ word, slots, typed, tokens, width, notice, shake = 0, foot, onKey, onSlot, onHint, onClose }: {
