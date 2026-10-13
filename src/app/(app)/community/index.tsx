@@ -1,12 +1,12 @@
 import { Screen } from '@/components/Screen';
-import { Soon } from '@/features/community/Soon';
+import { Feed } from '@/features/community/Feed';
 
-// The Community tab shows Still rising until there is real community content.
-// The feed (community/feed) and story (community/story) pages are kept but not linked.
+// The Community tab opens the feed (Yazan, 2026-10-13): Nova Wallpapers and Nova merch on top. Still rising moved to
+// community/soon (Nova merch's +); the wallpapers open the story page.
 export default function Page() {
   return (
     <Screen tab='community' glow={14}>
-      <Soon />
+      <Feed />
     </Screen>
   );
 }

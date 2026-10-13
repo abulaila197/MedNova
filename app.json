@@ -40,6 +40,18 @@
           "recordAudioAndroid": false,
           "enableBackgroundPlayback": false
         }
+      ],
+      "expo-asset",
+      [
+        "expo-media-library",
+        {
+          "photosPermission": "MedNova only saves the wallpapers you choose to your photos.",
+          "savePhotosPermission": "MedNova saves the wallpapers you choose to your photos.",
+          "isAccessMediaLocationEnabled": false,
+          "granularPermissions": [
+            "photo"
+          ]
+        }
       ]
     ],
     "experiments": {

@@ -6,7 +6,7 @@ import { GAMES } from '@/data/games';
 import { DESIGN_H, u } from '@/theme/scale';
 import type { Mode } from '@/theme/tokens';
 
-import { BODY_TOP, DOTS_TOP, RING_CX, RING_CY, RING_R, W } from './fit';
+import { ARC_DROP, BODY_TOP, DOTS_TOP, RING_CX, RING_CY, RING_R, W } from './fit';
 import { wrapOff } from './Planet';
 
 const RING = {
@@ -57,6 +57,6 @@ export function Dots({ pos, onPick }: { pos: SharedValue<number>; onPick: (j: nu
 
 const s = StyleSheet.create({
   ring: { position: 'absolute', left: 0 },
-  dots: { position: 'absolute', left: 0, right: 0, top: u(DOTS_TOP - BODY_TOP), height: u(4), flexDirection: 'row', justifyContent: 'center', gap: u(4) },
+  dots: { position: 'absolute', left: 0, right: 0, top: u(DOTS_TOP + ARC_DROP - BODY_TOP), height: u(4), flexDirection: 'row', justifyContent: 'center', gap: u(4) },
   dot: { height: u(4), borderRadius: u(4) },
 });
