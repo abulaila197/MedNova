@@ -42,5 +42,14 @@ export function useClock(clock: Clock) {
   return useSyncExternalStore(clock.watch, clock.get, clock.get);
 }
 
+/**
+ * What a component draws from a clock (a whole second, which question is on): read on every tick, but the
+ * component redraws only when it changes. `select` must return a plain value (a number, string or boolean).
+ */
+export function useClockValue<V>(clock: Clock, select: (now: number) => V): V {
+  const read = () => select(clock.get());
+  return useSyncExternalStore(clock.watch, read, read);
+}
+
 export { second } from './timeStore';
 export type { Clock } from './timeStore';

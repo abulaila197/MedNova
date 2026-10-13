@@ -1,15 +1,20 @@
 // The one contract every Trust Me Not page takes: the phone's own envelope from the server, the clock, and a way to
 // send an action. Pages never see anything the server did not put in this player's envelope.
+import type { Clock } from '../engine/timeStore';
 import type { TmnEnvelope } from './online';
 
 export type PageProps = {
   env: TmnEnvelope;
-  /** Seconds left on the current phase's clock (server time). */
-  seconds: number;
-  /** Server time now, in ms. */
-  now: number;
+  /**
+   * The server clock (ms). A page draws what it shows of the time with useClockValue (it redraws only when that
+   * changes) and a smooth ring with useClock; a handler reads `clock.get()`, the time of the latest tick.
+   */
+  clock: Clock;
   /** Sends an engine action without the player (e.g. { type: 'SELL', jewels: 1 }), or { type: 'ready' }. */
   act: (a: { type: string; [k: string]: unknown }) => void;
   /** The match room (for chat and voice lines). */
   roomId: string;
 };
+
+/** Seconds left on the current phase's clock at server time `now`. */
+export const secondsLeft = (env: TmnEnvelope, now: number) => (env.deadline ? Math.max(0, (env.deadline - now) / 1000) : 0);

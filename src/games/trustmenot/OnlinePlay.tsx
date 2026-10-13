@@ -7,7 +7,6 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { invoke, leaveRoom } from '@/online/api';
 
 import type { OnlineProps } from '../shell/types';
-import type { TmnEnvelope } from './online';
 import { GapPage, VotesPage } from './pages-gap';
 import { GhostPage, InquisitionPage, LastSupperPage, LedgerFlow, RevealFlow, TmnPause } from './pages-end';
 import { LifelineNote, RoundFlow } from './pages-round';
@@ -17,8 +16,8 @@ import type { PageProps } from './props';
 import { rules } from './engine';
 import { play, useHeartbeat, useSeasonLoop } from './sound';
 import { useMatchState } from '@/online/useMatchState';
+import { nudgeDue, SUPPER_MS, tmnShown, type TState } from './shown';
 
-type TState = { now: number; phase: 'countdown' | 'case' | 'done'; due: number | null; state: TmnEnvelope | null };
 
 const COIN = new Set(['SELL', 'BUY_FOOD', 'BUY_ITEM', 'GIFT', 'LEND', 'REPAY', 'BID', 'PAY_WOLVES', 'DOCTOR_CHIP', 'LAST_SUPPER']);
 const STAMP = new Set(['VOTE', 'ACCUSE', 'STARS', 'PICK', 'RUMOR']);
@@ -26,11 +25,9 @@ const STAMP = new Set(['VOTE', 'ACCUSE', 'STARS', 'PICK', 'RUMOR']);
 const SILENT = new Set(['SKIM', 'STEAL', 'FOG', 'SUPPLIER_SKIM', 'COLD_SHOULDER', 'tick']);
 const fxFor = (t: string) => (SILENT.has(t) ? null : COIN.has(t) ? 'coin' : STAMP.has(t) ? 'stamp' : 'tap');
 
-/** Month 12's Gap opens with 30 silent seconds for the Last Supper. */
-const SUPPER_MS = 30000;
 
 export function OnlinePlay({ matchId, roomId, me }: OnlineProps) {
-  const { st, load, server } = useMatchState<TState>('tmn_state', matchId, { quiet: true });
+  const { st, load, server, clock } = useMatchState<TState>('tmn_state', matchId, { quiet: true, shown: (sv, s) => tmnShown(sv, s, me) });
   const [paused, setPaused] = useState(false);
   const [lifelineSeen, setLifelineSeen] = useState<number | null>(null);
   const lastTick = useRef(0);
@@ -46,10 +43,7 @@ export function OnlinePlay({ matchId, roomId, me }: OnlineProps) {
   // Nudge the referee when the clock has run out (or the year has not started); seats take turns so phones don't pile up.
   useEffect(() => {
     if (!st || st.phase === 'done') return;
-    const due = st.state ? st.due : null;
-    const seat = Math.max(0, (st.state?.view.players.findIndex((x) => x.id === me) ?? 0));
-    const ready = st.state ? due != null && server >= due + seat * 1500 : st.phase === 'case' || st.phase === 'countdown';
-    if (ready && server - lastTick.current > 1200) {
+    if (nudgeDue(st, server, me) && server - lastTick.current > 1200) {
       lastTick.current = server;
       send({ type: 'tick' });
     }
@@ -75,8 +69,7 @@ export function OnlinePlay({ matchId, roomId, me }: OnlineProps) {
   const v = env.view;
   const props: PageProps = {
     env,
-    now: server,
-    seconds: env.deadline ? Math.max(0, (env.deadline - server) / 1000) : 0,
+    clock,
     act: (a) => {
       const fx = fxFor(a.type);
       if (fx) play(fx);

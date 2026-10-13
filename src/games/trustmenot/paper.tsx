@@ -13,6 +13,7 @@ import { loadFonts } from '@/features/loading/fonts';
 import { ModePin } from '@/state/app';
 import { DESIGN_W, u } from '@/theme/scale';
 
+import { useClock, useClockValue, type Clock } from '../engine/useTicker';
 import { GameScreen } from '../shell/ui';
 
 /** Sizes here are in the locked preview's pixels (a 300px phone); the app's design width is 282px. */
@@ -208,8 +209,14 @@ export function Portrait({ color, health, ghost, size = 34 }: { color: string; h
   );
 }
 
-/** The question clock: a thin red ring that empties, with the seconds inside. */
-export function RingClock({ seconds, total }: { seconds: number; total: number }) {
+/** Text drawn from the clock (a countdown): it redraws by itself when the text changes, not the page around it. */
+export function LiveT({ clock, text, ...rest }: Omit<Parameters<typeof T>[0], 'children'> & { clock: Clock; text: (now: number) => string }) {
+  return <T {...rest}>{useClockValue(clock, text)}</T>;
+}
+
+/** The question clock: a thin red ring that empties, with the seconds inside. It follows every tick by itself. */
+export function RingClock({ clock, left: leftAt, total }: { clock: Clock; left: (now: number) => number; total: number }) {
+  const seconds = leftAt(useClock(clock));
   const c = 2 * Math.PI * 17;
   const left = Math.max(0, Math.min(1, seconds / Math.max(1, total)));
   return (

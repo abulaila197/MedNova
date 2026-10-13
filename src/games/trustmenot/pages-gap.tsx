@@ -14,9 +14,9 @@ import { TMN_VOICE, VOICE } from '@/online/voice';
 import { rules, type EffectId, type ItemId, type MealId, type WildId } from './engine';
 import { Icon } from './icons';
 import type { TmnView } from './online';
-import { CRIM, CRIMB, CRIMI, FELL, FELLI, p, Paper, Portrait, T, TM } from './paper';
+import { CRIM, CRIMB, CRIMI, FELL, FELLI, LiveT, p, Paper, Portrait, T, TM } from './paper';
 import { Strip } from './pages';
-import type { PageProps } from './props';
+import { secondsLeft, type PageProps } from './props';
 import { EFFECT, ITEM, MEAL } from './text';
 import { clock } from '@/games/engine/clock';
 
@@ -177,7 +177,7 @@ function Kicker({ title, props, light }: { title: string; props: PageProps; ligh
     <View style={s.gtop}>
       <T f={FELL} size={10} color={light ? TM.cream : TM.ink} style={[s.caps, { flex: 1 }, light ? shadow : null]} lines={1}>{title}</T>
       {props.env.view.ghost ? null : <Done env={props.env} act={props.act} light={light} />}
-      <T f={FELL} size={15} color={light ? '#e0806a' : TM.red} style={[{ marginLeft: p(10) }, light ? shadow : null]}>{clock(props.seconds * 1000, { down: true })}</T>
+      <LiveT clock={props.clock} text={(now) => clock(secondsLeft(props.env, now) * 1000, { down: true })} f={FELL} size={15} color={light ? '#e0806a' : TM.red} style={[{ marginLeft: p(10) }, light ? shadow : null]} />
     </View>
   );
 }

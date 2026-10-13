@@ -1,7 +1,7 @@
 // Trust Me Not: the round, in the all-paper look (locked 2026-10-07, preview pages 18-29). The obstacle dealt to me
 // and my sealed mission come first, then the round's own stages: Hero / Supplier votes, Wager bids, then the
 // questions one after another, each on its own clock. Every page sends only this player's own actions.
-import { Fragment, useEffect, useEffectEvent, useReducer, useState, type ReactNode } from 'react';
+import { Fragment, useEffect, useEffectEvent, useLayoutEffect, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import Svg, { Circle, Defs, Line, LinearGradient, Path, Polygon, RadialGradient, Rect, Stop } from 'react-native-svg';
 
@@ -9,8 +9,10 @@ import type { EffectId, MissionId } from './engine';
 import { rules } from './engine';
 import { Icon } from './icons';
 import { ROUND_NAME, type StripPlayer } from './pages';
-import { CRIM, CRIMB, CRIMI, FELL, IvBag, Jar, p, Paper, Portrait, RingClock, T, TM } from './paper';
-import type { PageProps } from './props';
+import { CRIM, CRIMB, CRIMI, FELL, IvBag, Jar, LiveT, p, Paper, Portrait, RingClock, T, TM } from './paper';
+import { secondsLeft, type PageProps } from './props';
+import { finishClock, keyedStore, secondsOn, settleClock, startClock, turnPhase, type QClock } from './qclock';
+import { useClockValue, type Clock } from '../engine/useTicker';
 import { EFFECT, ITEM, question } from './text';
 
 type View_ = PageProps['env']['view'];
@@ -46,10 +48,11 @@ const MISSION: Record<MissionId, { name: string; text: (t: string) => string; re
 // ---------------------------------------------------------------- local memory
 
 /** Survives a remount (the pause page swaps the round out): when my notes were done, and each round's question clock. */
-const NOTES: Record<string, { step: number; doneAt: number | null }> = {};
-type Clock = { q: number; since: number; sent: Record<number, true> };
-const CLOCKS: Record<string, Clock> = {};
-const SEEN_AT: Record<string, number> = {};
+type Notes = { step: number; doneAt: number | null };
+const NOTES = keyedStore<Notes>();
+const NO_NOTES: Notes = { step: 0, doneAt: null };
+const CLOCKS = keyedStore<QClock>();
+const SEEN_AT = keyedStore<number>();
 
 const nameOf = (v: View_, id: string | null | undefined) => (id === v.me ? 'you' : v.players.find((x) => x.id === id)?.name ?? 'someone');
 const colorOf = (v: View_, id: string | null | undefined) => v.players.find((x) => x.id === id)?.color ?? TM.ink;
@@ -57,37 +60,32 @@ const LETTER = 'ABC';
 
 /**
  * My questions one after another: which one I'm on, when it started and the seconds left. A question whose clock runs
- * out calls onTimeout and moves on; after a reload I resume at the first question not done.
+ * out calls onTimeout and moves on; after a reload I resume at the first question not done. The clock is set up and
+ * moved on in a layout effect (before the screen shows) and by finish(); the page redraws only when the question
+ * changes or its clock runs out, while the ring follows the clock by itself.
  */
-function useQuestions(key: string, n: number, done: (q: number) => boolean, limit: (q: number) => number, startAt: number, now: number) {
-  // The clocks live outside React on purpose (they survive the page remounting mid-round) and are advanced while
-  // rendering, so this hook stays out of the React Compiler's memoisation.
-  'use no memo';
-  const [, bump] = useReducer((x: number) => x + 1, 0);
-  /* eslint-disable react-hooks/immutability -- the per-match question clock (CLOCKS) is advanced while rendering on purpose; see 'use no memo' above */
-  let c = CLOCKS[key];
-  if (!c) {
-    let first = 0;
-    while (first < n && done(first)) first++;
-    c = CLOCKS[key] = { q: first, since: first === 0 ? Math.min(now, startAt) : now, sent: {} };
-  }
-  while (c.q < n && (done(c.q) || c.sent[c.q])) {
-    c.q++;
-    c.since = now;
-  }
-  /* eslint-enable react-hooks/immutability */
-  const clock = c;
-  const left = clock.q < n ? Math.max(0, (limit(clock.q) - (now - clock.since)) / 1000) : 0;
+function useQuestions(key: string, n: number, done: (q: number) => boolean, limit: (q: number) => number, startAt: number, clock: Clock) {
+  const stored = useSyncExternalStore(CLOCKS.subscribe, () => CLOCKS.get(key), () => CLOCKS.get(key));
+  // Which questions the server holds as done, as a plain value the effect can follow.
+  const doneMask = Array.from({ length: n }, (_, q) => (done(q) ? '1' : '0')).join('');
+  useLayoutEffect(() => {
+    const isDone = (q: number) => doneMask[q] === '1';
+    const now = clock.get();
+    const cur = CLOCKS.get(key) ?? startClock(n, isDone, now, startAt);
+    CLOCKS.set(key, settleClock(cur, n, isDone, now));
+  }, [key, n, doneMask, startAt, clock, stored]);
+  // Until the effect above has stored it (the first draw), the same clock it will store stands in.
+  const c = stored ?? startClock(n, (q) => doneMask[q] === '1', clock.get(), startAt);
+  const lim = c.q < n ? limit(c.q) : 0;
+  const left = (now: number) => secondsOn(c, n, lim, now);
+  const expired = useClockValue(clock, (now) => c.q < n && left(now) <= 0);
   /** Marks question q sent and moves on; returns the ms it took. */
   const finish = (q: number) => {
-    const ms = Math.max(0, Math.min(limit(q), now - clock.since));
-    clock.sent[q] = true;
-    clock.q = q + 1;
-    clock.since = now;
-    bump();
+    const { clock: next, ms } = finishClock(CLOCKS.get(key) ?? c, q, limit(q), clock.get());
+    CLOCKS.set(key, next);
     return ms;
   };
-  return { q: clock.q, left, expired: clock.q < n && left <= 0, finish };
+  return { q: c.q, left, expired, finish };
 }
 
 /** Which question a watcher sees: the camp's clock run from the stage start. */
@@ -104,14 +102,11 @@ function scheduleIndex(r: Round, started: number, now: number) {
 
 /** The whole round phase: obstacle dealt, sealed mission, then the round's own stages and questions. */
 export function RoundFlow(props: PageProps) {
-  // The notes step lives outside React (NOTES) and is read while rendering: kept out of the compiler's memoisation.
-  'use no memo';
-  const { env, now } = props;
+  const { env, clock } = props;
   const v = env.view;
   const x = env.extras.round;
   const notesKey = `${v.month}`;
-  const notes = (NOTES[notesKey] ??= { step: 0, doneAt: null });
-  const [, bump] = useReducer((n: number) => n + 1, 0);
+  const notes = useSyncExternalStore(NOTES.subscribe, () => NOTES.get(notesKey) ?? NO_NOTES, () => NOTES.get(notesKey) ?? NO_NOTES);
 
   if (v.ghost) return <GhostSheet {...props} />;
 
@@ -120,9 +115,9 @@ export function RoundFlow(props: PageProps) {
   const mission = v.missions.find((m) => m.holder === v.me && m.month === v.month && m.status === 'active');
   const count = dealt.length + (mission ? 1 : 0);
   const next = () => {
-    notes.step++;
-    if (notes.step >= count) notes.doneAt = now;
-    bump();
+    const cur = NOTES.get(notesKey) ?? NO_NOTES;
+    const step = cur.step + 1;
+    NOTES.set(notesKey, { step, doneAt: step >= count ? clock.get() : cur.doneAt });
   };
   const list: ReactNode[] = [
     ...dealt.map((d, i) => <ObstacleNote key={`o${i}`} v={v} x={x} effect={d.effect} onSeen={() => next()} />),
@@ -183,14 +178,14 @@ function Sheet({ v, seed, children }: { v: View_; seed: string; children: ReactN
 }
 
 /** Round name, a small line under it, and the question clock. */
-function Head({ title, sub, seconds, limit }: { title: string; sub: string; seconds?: number; limit?: number }) {
+function Head({ title, sub, clock, left, limit }: { title: string; sub: string; clock?: Clock; left?: (now: number) => number; limit?: number }) {
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', minHeight: p(40) }}>
       <View style={{ flex: 1 }}>
         <T f={FELL} size={19} style={{ lineHeight: p(21) }}>{title}</T>
         <T size={10.5} style={{ opacity: 0.75 }}>{sub}</T>
       </View>
-      {seconds != null && limit != null ? <RingClock seconds={seconds} total={limit} /> : null}
+      {clock && left && limit != null ? <RingClock clock={clock} left={left} total={limit} /> : null}
     </View>
   );
 }
@@ -372,7 +367,7 @@ function RiskPanel({ risk, team }: { risk: NonNullable<Extras['risk']>; team: bo
 type SheetProps = PageProps & { r: Round; startAt: number };
 
 /** One question at a time with its own clock: normal rounds, effects on screen, damage control, Hands, the guesser. */
-function AnswerSheet({ env, now, act, r, startAt }: SheetProps) {
+function AnswerSheet({ env, clock: time, act, r, startAt }: SheetProps) {
   const v = env.view;
   const x = env.extras.round;
   const me = v.players.find((pl) => pl.id === v.me)!;
@@ -384,12 +379,14 @@ function AnswerSheet({ env, now, act, r, startAt }: SheetProps) {
   const myKey = handsFor.length ? `${v.me}>${handsFor[0]}` : v.me;
   const mine = (r.myAnswers as Record<string, ({ choice: number | null; ms: number } | null)[]>)[myKey] ?? [];
   const limit = (q: number) => r.questions[q]?.limitMs ?? 10000;
-  const clock = useQuestions(`${v.month}:${r.id}:${env.started}`, n, (q) => !!mine[q], limit, startAt, now);
+  const clock = useQuestions(`${v.month}:${r.id}:${env.started}`, n, (q) => !!mine[q], limit, startAt, time);
   const q = clock.q;
   const [taps, setTaps] = useState<{ q: number; t: number[] }>({ q: -1, t: [0, 0, 0] });
   const fx = me.effects.map((e) => e.id);
   const frozen = fx.includes('frostbitten');
-  const fever = fx.includes('feverish') ? Math.floor(now / 450) : null;
+  // Feverish: the question wobbles, so only then does the sheet follow the clock (every 450 ms).
+  const feverish = fx.includes('feverish');
+  const fever = useClockValue(time, (now) => (feverish ? Math.floor(now / 450) : null));
 
   const send = (qi: number, choice: number | null) => {
     const ms = clock.finish(qi);
@@ -449,7 +446,7 @@ function AnswerSheet({ env, now, act, r, startAt }: SheetProps) {
   return (
     <Sheet v={v} seed={`round${r.id}${q}`}>
       <EffectRow effects={fx} />
-      <Head title={roundName} sub={sub} seconds={clock.left} limit={limit(q) / 1000} />
+      <Head title={roundName} sub={sub} clock={time} left={clock.left} limit={limit(q) / 1000} />
       {env.camp && mode === 'team-target' ? <CampBar camp={env.camp} /> : null}
       {x.risk ? <RiskPanel risk={x.risk} team={mode === 'team-vote'} /> : null}
       {whisperedBy ? (
@@ -535,7 +532,7 @@ const Round_ = ({ label, onPress }: { label: string; onPress: () => void }) => (
 // ---------------------------------------------------------------- the Whisperer
 
 /** I whisper: I see the answer and light one choice for my guesser (I may lie). */
-function WhisperSheet({ env, now, act, r, startAt }: SheetProps) {
+function WhisperSheet({ env, clock: time, act, r, startAt }: SheetProps) {
   const v = env.view;
   const x = env.extras.round;
   const n = r.questions.length;
@@ -544,7 +541,7 @@ function WhisperSheet({ env, now, act, r, startAt }: SheetProps) {
   const signals = x.whisper?.signals ?? [];
   const limit = (q: number) => r.questions[q]?.limitMs ?? 10000;
   const key = `${v.month}:${r.id}:${env.started}`;
-  const clock = useQuestions(key, n, (q) => signals[q] != null, limit, startAt, now);
+  const clock = useQuestions(key, n, (q) => signals[q] != null, limit, startAt, time);
   const q = clock.q;
   const [sel, setSel] = useState<{ q: number; c: number } | null>(null);
   // A question I did not light in time just passes; my guesser answers without a light.
@@ -568,7 +565,7 @@ function WhisperSheet({ env, now, act, r, startAt }: SheetProps) {
   const c = sel && sel.q === q ? sel.c : null;
   return (
     <Sheet v={v} seed={`whisper${q}`}>
-      <Head title="The Whisperer" sub={`you whisper to ${who} · question ${q + 1} of ${n}`} seconds={clock.left} limit={limit(q) / 1000} />
+      <Head title="The Whisperer" sub={`you whisper to ${who} · question ${q + 1} of ${n}`} clock={time} left={clock.left} limit={limit(q) / 1000} />
       <PairLine color={colorOf(v, guessers[0])}>{`You know the answer. Light one choice for ${who}. You may lie.`}</PairLine>
       <T f={FELL} size={16} style={{ lineHeight: p(21), marginTop: p(2) }}>{qt.q}</T>
       <Choices choices={qt.choices} st={{ lit: c, answer: x.whisper?.answers[q] ?? null }} onPick={(i) => setSel({ q, c: i })} />
@@ -588,10 +585,12 @@ function WhisperSheet({ env, now, act, r, startAt }: SheetProps) {
 // ---------------------------------------------------------------- watching
 
 /** Someone else answers (my Hands partner, the Hero, the Supplier): I watch the camp's clock. */
-function WatchSheet({ env, now, r }: PageProps & { r: Round }) {
+function WatchSheet({ env, clock, r }: PageProps & { r: Round }) {
   const v = env.view;
   const me = v.players.find((pl) => pl.id === v.me)!;
-  const at = scheduleIndex(r, env.started, now);
+  // The sheet redraws when the question changes; the ring follows the clock by itself.
+  const at = { q: useClockValue(clock, (now) => scheduleIndex(r, env.started, now).q) };
+  const left = (now: number) => scheduleIndex(r, env.started, now).left;
   const n = r.questions.length;
   let sub = '';
   let line = '';
@@ -613,7 +612,7 @@ function WatchSheet({ env, now, r }: PageProps & { r: Round }) {
   const qt = at.q < n ? question(r.questions[at.q].id) : null;
   return (
     <Sheet v={v} seed={`watch${r.id}`}>
-      <Head title={ROUND_NAME[r.id]} sub={qt ? `${sub} · question ${at.q + 1} of ${n}` : sub} seconds={qt ? at.left : undefined} limit={qt ? r.questions[at.q].limitMs / 1000 : undefined} />
+      <Head title={ROUND_NAME[r.id]} sub={qt ? `${sub} · question ${at.q + 1} of ${n}` : sub} clock={clock} left={qt ? left : undefined} limit={qt ? r.questions[at.q].limitMs / 1000 : undefined} />
       <PairLine color={color}>{line}</PairLine>
       {qt ? (
         <>
@@ -629,17 +628,20 @@ function WatchSheet({ env, now, r }: PageProps & { r: Round }) {
 }
 
 /** Ghosts watch the round read-only, the right answers marked. */
-function GhostSheet({ env, now }: PageProps) {
+function GhostSheet({ env, clock }: PageProps) {
   const v = env.view;
   const r = v.round;
+  // The sheet redraws when the question changes; the ring follows the clock by itself.
+  const q = useClockValue(clock, (now) => (r && r.stage === 'play' ? scheduleIndex(r, env.started, now).q : -1));
   if (!r) return null;
   const n = r.questions.length;
-  const at = r.stage === 'play' ? scheduleIndex(r, env.started, now) : { q: n, left: 0 };
+  const at = { q: r.stage === 'play' ? q : n };
+  const left = (now: number) => (r.stage === 'play' ? scheduleIndex(r, env.started, now).left : 0);
   const qt = at.q < n ? question(r.questions[at.q].id) : null;
   const what = r.stage === 'pick' ? 'the camp is voting' : r.stage === 'bid' ? 'bids are being sealed' : qt ? `question ${at.q + 1} of ${n}` : 'the answers are in';
   return (
     <Sheet v={v} seed={`ghost${r.id}`}>
-      <Head title={ROUND_NAME[r.id]} sub={`You are a Ghost: watching · ${what}`} seconds={qt ? at.left : undefined} limit={qt ? r.questions[at.q].limitMs / 1000 : undefined} />
+      <Head title={ROUND_NAME[r.id]} sub={`You are a Ghost: watching · ${what}`} clock={clock} left={qt ? left : undefined} limit={qt ? r.questions[at.q].limitMs / 1000 : undefined} />
       {env.camp && rules.ROUNDS[r.id].mode === 'team-target' ? <CampBar camp={env.camp} /> : null}
       {qt ? (
         <>
@@ -655,8 +657,9 @@ function GhostSheet({ env, now }: PageProps) {
 // ---------------------------------------------------------------- Hero / Supplier vote
 
 /** The camp votes one living player to answer alone (tie: the top scorer of the round before). */
-function PickPage({ env, seconds, act, r }: PageProps & { r: Round }) {
+function PickPage({ env, clock, act, r }: PageProps & { r: Round }) {
   const v = env.view;
+  const secs = useClockValue(clock, (now) => Math.ceil(secondsLeft(env, now)));
   const x = env.extras.round;
   const [sel, setSel] = useState<string | null>(null);
   const hero = r.id === 'hero';
@@ -668,7 +671,7 @@ function PickPage({ env, seconds, act, r }: PageProps & { r: Round }) {
   const role = hero ? 'Hero' : 'Supplier';
   return (
     <Sheet v={v} seed={`pick${r.id}`}>
-      <Head title={ROUND_NAME[r.id]} sub={`vote a ${role} · closes in 0:${String(Math.ceil(seconds)).padStart(2, '0')}`} />
+      <Head title={ROUND_NAME[r.id]} sub={`vote a ${role} · closes in 0:${String(secs).padStart(2, '0')}`} />
       <T size={12.5} style={{ lineHeight: p(17.5), opacity: 0.85 }}>{text}</T>
       <View style={{ gap: p(6) }}>
         {living.map((pl) => {
@@ -695,7 +698,7 @@ function PickPage({ env, seconds, act, r }: PageProps & { r: Round }) {
 // ---------------------------------------------------------------- The Wager
 
 /** A secret bid of my own jewels; only the pot's total is shown. */
-function WagerBid({ env, seconds, act, r }: PageProps & { r: Round }) {
+function WagerBid({ env, clock, act, r }: PageProps & { r: Round }) {
   const v = env.view;
   const me = v.players.find((pl) => pl.id === v.me)!;
   const max = (me.jewels ?? 0) + r.myBid;
@@ -703,7 +706,6 @@ function WagerBid({ env, seconds, act, r }: PageProps & { r: Round }) {
   const b = Math.min(max, bid ?? r.myBid);
   // Sealed once the server holds this very bid (a bid of 0 counts once I pressed Seal).
   const sealed = r.myBid === b && (bid != null || r.myBid > 0);
-  const secs = Math.ceil(seconds);
   return (
     <View style={{ flex: 1 }}>
       <MarkStrip players={v.players} me={v.me} />
@@ -740,7 +742,7 @@ function WagerBid({ env, seconds, act, r }: PageProps & { r: Round }) {
               </T>
             </View>
             <Cta label={sealed ? `Sealed: ${b} jewels` : 'Seal my bid'} disabled={sealed} onPress={() => (setBid(b), act({ type: 'BID', jewels: b }))} />
-            <Note center>{`Bids close in 0:${String(secs).padStart(2, '0')}`}</Note>
+            <LiveT clock={clock} text={(now) => `Bids close in 0:${String(Math.ceil(secondsLeft(env, now))).padStart(2, '0')}`} size={11} style={{ lineHeight: p(14.9), opacity: 0.75, textAlign: 'center' }} />
           </View>
         </Paper>
       </View>
@@ -751,9 +753,7 @@ function WagerBid({ env, seconds, act, r }: PageProps & { r: Round }) {
 // ---------------------------------------------------------------- Chain of Trust
 
 /** One link each, in the chain's order: only my question (my place in the chain) is mine to answer. */
-function ChainSheet({ env, now, act, r, startAt }: SheetProps) {
-  // SEEN_AT and CLOCKS live outside React and are written while rendering: kept out of the compiler's memoisation.
-  'use no memo';
+function ChainSheet({ env, clock, act, r, startAt }: SheetProps) {
   const v = env.view;
   const x = env.extras.round;
   const chain = x.chain;
@@ -763,20 +763,28 @@ function ChainSheet({ env, now, act, r, startAt }: SheetProps) {
   const key = `${v.month}:chain:${env.started}`;
   // My turn starts when every link before me has answered, or when their clocks would have run out.
   const ready = links.slice(0, Math.max(0, k)).every((l) => l != null);
-  // eslint-disable-next-line react-hooks/immutability -- my turn's start is remembered outside React (SEEN_AT) while rendering, on purpose
-  if (ready && SEEN_AT[key] == null) SEEN_AT[key] = Math.max(now, startAt);
+  const seenAt = useSyncExternalStore(SEEN_AT.subscribe, () => SEEN_AT.get(key), () => SEEN_AT.get(key));
+  const sent = useSyncExternalStore(CLOCKS.subscribe, () => !!CLOCKS.get(key)?.sent[k], () => !!CLOCKS.get(key)?.sent[k]);
+  // The moment I saw my turn come is remembered outside React (it survives a remount), before the screen shows.
+  useLayoutEffect(() => {
+    if (ready && SEEN_AT.get(key) == null) SEEN_AT.set(key, Math.max(clock.get(), startAt));
+  }, [ready, key, startAt, clock]);
   const byClock = Math.max(startAt, env.started) + r.questions.slice(0, Math.max(0, k)).reduce((s_, q) => s_ + q.limitMs, 0);
-  const turnAt = Math.min(SEEN_AT[key] ?? Infinity, byClock);
+  // Until the effect above has stored it (the first draw), the same moment it will store stands in.
+  const turnAt = Math.min(seenAt ?? (ready ? Math.max(clock.get(), startAt) : Infinity), byClock);
   const myLimit = r.questions[k]?.limitMs ?? 10000;
-  const answered = links[k] != null || !!CLOCKS[key]?.sent[k];
-  const myTurn = k >= 0 && now >= turnAt && !answered;
-  const left = myTurn ? Math.max(0, (myLimit - (now - turnAt)) / 1000) : 0;
+  const answered = links[k] != null || sent;
+  // The sheet redraws when my turn starts or its clock runs out; the ring follows the clock by itself.
+  const phase = useClockValue(clock, (now) => (k >= 0 && !answered ? turnPhase(now, turnAt, myLimit) : 0));
+  const myTurn = phase > 0;
+  const left = (now: number) => Math.max(0, (myLimit - (now - turnAt)) / 1000);
   const [picked, setPicked] = useState<number | null>(null);
   const send = (choice: number | null) => {
-    (CLOCKS[key] ??= { q: k, since: turnAt, sent: {} }).sent[k] = true;
-    act({ type: 'ANSWER', q: k, choice, ms: choice === null ? myLimit : Math.min(myLimit, now - turnAt) });
+    const prev = CLOCKS.get(key);
+    CLOCKS.set(key, { q: prev?.q ?? k, since: prev?.since ?? turnAt, sent: { ...prev?.sent, [k]: true } });
+    act({ type: 'ANSWER', q: k, choice, ms: choice === null ? myLimit : Math.min(myLimit, clock.get() - turnAt) });
   };
-  const late = myTurn && left <= 0;
+  const late = phase === 2;
   const timeOut = useEffectEvent(() => send(null));
   useEffect(() => {
     if (late) timeOut();
@@ -795,7 +803,7 @@ function ChainSheet({ env, now, act, r, startAt }: SheetProps) {
   const qt = k >= 0 ? question(r.questions[k].id) : null;
   return (
     <Sheet v={v} seed="chain">
-      <Head title={ROUND_NAME.chain} sub={`month ${v.month} · ${sub}`} seconds={myTurn ? left : undefined} limit={myTurn ? myLimit / 1000 : undefined} />
+      <Head title={ROUND_NAME.chain} sub={`month ${v.month} · ${sub}`} clock={clock} left={myTurn ? left : undefined} limit={myTurn ? myLimit / 1000 : undefined} />
       <View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
         {order.map((id, i) => {
           const pl = v.players.find((y) => y.id === id)!;

@@ -15,9 +15,9 @@ import { gameDef } from '../shell/registry';
 import type { Mission, MissionId, PlayerId } from './engine';
 import { rules } from './engine';
 import { Icon } from './icons';
-import { CRIM, CRIMB, CRIMI, FELL, FELLI, p, Paper, Portrait, T, TM } from './paper';
+import { CRIM, CRIMB, CRIMI, FELL, FELLI, LiveT, p, Paper, Portrait, T, TM } from './paper';
 import { ROUND_NAME, Strip } from './pages';
-import type { PageProps } from './props';
+import { secondsLeft, type PageProps } from './props';
 import { EFFECT, ITEM, MEAL, question } from './text';
 import { clock } from '@/games/engine/clock';
 
@@ -299,7 +299,7 @@ function StarsPage({ env, act }: Pick<PageProps, 'env' | 'act'>) {
 // ---------------------------------------------------------------- inquisition
 
 /** Gap step 2 when the Inquisition is open and I have not accused yet. */
-export function InquisitionPage({ env, act, seconds }: PageProps) {
+export function InquisitionPage({ env, act, clock: time }: PageProps) {
   const v = env.view;
   const suspects = v.players.filter((q) => q.alive && q.id !== v.me);
   const [pick, setPick] = useState<string | null>(null);
@@ -336,7 +336,7 @@ export function InquisitionPage({ env, act, seconds }: PageProps) {
           <T size={10.5}><T f={CRIMB} size={10.5} color={TM.red}>Wrong  </T>everyone who voted for them pays 1 jewel</T>
         </View>
         <Btn label={picked ? `Accuse ${picked.name}` : 'Pick someone to accuse'} disabled={!picked} onPress={() => picked && act({ type: 'ACCUSE', target: picked.id })} />
-        <T size={11} style={{ textAlign: 'center', opacity: 0.75 }}>{`Votes close in ${clock(seconds * 1000, { down: true })}`}</T>
+        <LiveT clock={time} text={(now) => `Votes close in ${clock(secondsLeft(env, now) * 1000, { down: true })}`} size={11} style={{ textAlign: 'center', opacity: 0.75 }} />
       </TopSheet>
     </View>
   );
@@ -412,12 +412,11 @@ export function GhostPage({ env, act }: PageProps) {
 // ---------------------------------------------------------------- last supper
 
 /** Month 12's first 30 seconds of the Gap: give one person 1 jewel, or nothing. */
-export function LastSupperPage({ env, act, now }: PageProps) {
+export function LastSupperPage({ env, act, clock: time }: PageProps) {
   const v = env.view;
   const seats = v.players.filter((q) => q.alive);
   const [pick, setPick] = useState<string | null>(null);
   const picked = seats.find((q) => q.id === pick);
-  const left = Math.max(0, 30 - (now - env.started) / 1000);
   return (
     <View style={{ flex: 1 }}>
       <Strip players={v.players} me={v.me} />
@@ -449,7 +448,7 @@ export function LastSupperPage({ env, act, now }: PageProps) {
           <Btn label={picked ? `Give ${picked.name} 1 jewel` : 'Pick a seat'} size={12} disabled={!picked} onPress={() => picked && act({ type: 'LAST_SUPPER', to: picked.id })} style={{ flex: 1 }} />
           <Btn label="Give nothing" kind="red" size={12} onPress={() => act({ type: 'LAST_SUPPER', to: null })} style={{ flex: 1 }} />
         </View>
-        <T size={11} style={{ textAlign: 'center', opacity: 0.75 }}>{clock(left * 1000, { down: true })}</T>
+        <LiveT clock={time} text={(now) => clock(Math.max(0, 30 - (now - env.started) / 1000) * 1000, { down: true })} size={11} style={{ textAlign: 'center', opacity: 0.75 }} />
       </TopSheet>
     </View>
   );
