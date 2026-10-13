@@ -28,7 +28,10 @@ export function useLanding(def: GameDef) {
         r[m.mode] = await engine.recorder.resumable(def.key, m.mode);
         l[m.mode] = await trialsLeft(def.key, m.mode);
       }
-      if (live) (setResume(r), setLeft(l));
+      if (live) {
+        setResume(r);
+        setLeft(l);
+      }
     })();
     return () => {
       live = false;

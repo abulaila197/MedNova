@@ -47,7 +47,8 @@ export function NewCase() {
     setMsg('');
     try {
       await saveCase({ diagnosis: guessName(answer!), answer_id: answer, field: field == null ? null : FIELDS[field], gender: GENDERS[gender!], age: a, presentation, history, exam, investigation, findings: findings.filter((x) => x.trim()) });
-      router.canGoBack() ? router.back() : router.replace('/learn');
+      if (router.canGoBack()) router.back();
+      else router.replace('/learn');
     } catch {
       setMsg('Not saved. Check your connection and try again.');
     }
@@ -113,7 +114,7 @@ export function NewCase() {
             <Text style={[s.saveT, { color: t.onGrad }]}>{signedIn ? 'Save to My cases' : 'Sign in to save'}</Text>
           </LinearGradient>
         </Pressable>
-        <Text style={[s.foot, { color: t.mute }]}>Saved as a private note. Once it's approved you can play it yourself as practice.</Text>
+        <Text style={[s.foot, { color: t.mute }]}>Saved as a private note. Once it’s approved you can play it yourself as practice.</Text>
       </InfoScroll>
     </Screen>
   );

@@ -614,7 +614,7 @@ function finishVersus(m: Match) {
 
 // ---------------------------------------------------------------- the Gap: cards and alliances
 
-function useCard(p: Player, card: CardType) {
+function spendCard(p: Player, card: CardType) {
   const i = p.cards.indexOf(card);
   if (i < 0) return false;
   p.cards.splice(i, 1);
@@ -669,7 +669,7 @@ function playCard(m: Match, p: Player, a: Extract<Action, { type: 'card' }>): bo
     case 'spy':
       break;
   }
-  useCard(p, a.card);
+  spendCard(p, a.card);
   m.gap.cards.push({ by: p.id, card: a.card, land: a.land, player: a.target });
   return true;
 }
@@ -704,7 +704,7 @@ function validMoves(m: Match, p: Player, moves: Move[]): Move[] | null {
     if (mv.from === mv.to) return null;
     if (to.owner && to.owner !== p.id && to.owner === p.ally) return null;
   }
-  for (const mv of moves) if (mv.reinforce) useCard(p, 'reinforcements');
+  for (const mv of moves) if (mv.reinforce) spendCard(p, 'reinforcements');
   return moves.map((x) => ({ ...x }));
 }
 

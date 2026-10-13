@@ -11,14 +11,14 @@ import Svg, { Defs, Ellipse, G, LinearGradient as SvgGradient, Path, Stop, Text 
 
 import { loadFonts } from '@/features/loading/fonts';
 import { ModePin } from '@/state/app';
+import { clock } from '@/games/engine/clock';
 import { DESIGN_W, u } from '@/theme/scale';
-
-/** Sizes here are in the approved preview's pixels (a 360px phone); the app's design width is 282px. */
-export const v = (n: number) => u((n * DESIGN_W) / 360);
 
 import { GameScreen } from '../shell/ui';
 import { CARDS, type CardType } from './core';
-import { clock } from '@/games/engine/clock';
+
+/** Sizes here are in the approved preview's pixels (a 360px phone); the app's design width is 282px. */
+export const v = (n: number) => u((n * DESIGN_W) / 360);
 
 export const AT = {
   bg: '#3a2b1e',

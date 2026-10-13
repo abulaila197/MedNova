@@ -1,5 +1,5 @@
 // Generated from assets/riddler (Yazan's rebus pictures, RD13). Do not edit by hand.
-/* eslint-disable */
+
 export const IMAGES: Record<string, number> = {
   'r-001': require('@/assets/riddler/r-001.jpg'),
   'r-002': require('@/assets/riddler/r-002.png'),

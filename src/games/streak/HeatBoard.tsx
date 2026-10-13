@@ -218,25 +218,26 @@ function mix(a: string, b: string, k: number) {
   return `rgb(${x.map((v, i) => Math.round(v * k + y[i] * (1 - k))).join(',')})`;
 }
 
+/** One helper button with its price under it. */
+function HelperBtn({ kind, label, bg, line, fg, off, onPress }: { kind: HelperKind; label: string; bg: string; line: string; fg: string; off: boolean; onPress: () => void }) {
+  const price = HELPER_PRICE[kind];
+  return (
+    <Pressable onPress={onPress} disabled={off} style={[s.hb, { backgroundColor: bg, borderColor: line }]} accessibilityRole="button" accessibilityLabel={`${label}, ${price} token${price > 1 ? 's' : ''}`}>
+      <Text style={[s.hbT, { color: fg, opacity: off ? 0.45 : 1 }]} numberOfLines={1}>{label}</Text>
+      <Text style={[s.hbP, { color: fg, opacity: off ? 0.34 : 0.75 }]}>{`${price} token${price > 1 ? 's' : ''}`}</Text>
+    </Pressable>
+  );
+}
+
 /** Solo helpers in the Diagnostic Pursuit button style (Yazan, 2026-10-04): bigger, coloured, price under each. */
 function Helpers({ onHelper, usable, disabled }: { onHelper: (k: HelperKind) => void; usable: (k: HelperKind) => boolean; disabled: boolean }) {
   const t = useTheme();
   const lt = t.mode === 'light';
-  const H = ({ kind, label, bg, line, fg }: { kind: HelperKind; label: string; bg: string; line: string; fg: string }) => {
-    const off = disabled || !usable(kind);
-    const price = HELPER_PRICE[kind];
-    return (
-      <Pressable onPress={() => onHelper(kind)} disabled={off} style={[s.hb, { backgroundColor: bg, borderColor: line }]} accessibilityRole="button" accessibilityLabel={`${label}, ${price} token${price > 1 ? 's' : ''}`}>
-        <Text style={[s.hbT, { color: fg, opacity: off ? 0.45 : 1 }]} numberOfLines={1}>{label}</Text>
-        <Text style={[s.hbP, { color: fg, opacity: off ? 0.34 : 0.75 }]}>{`${price} token${price > 1 ? 's' : ''}`}</Text>
-      </Pressable>
-    );
-  };
   return (
     <View style={s.hrow}>
-      <H kind="remove" label="✂ Remove 2" bg={lt ? '#e2f2f1' : '#142741'} line={lt ? '#9fe7f0' : '#19637e'} fg={lt ? '#0e7490' : '#67e8f9'} />
-      <H kind="skip" label="⏭ Skip" bg={lt ? '#fae7e2' : '#2e1a2e'} line={lt ? '#f9b5b3' : '#833f4a'} fg={lt ? '#c2364a' : '#fda4af'} />
-      <H kind="time" label="⏱ +10 s" bg={lt ? '#f3e9f4' : '#231b4e'} line={lt ? '#d9c9f6' : '#504188'} fg={lt ? '#7c3aed' : '#d8b4fe'} />
+      <HelperBtn kind="remove" off={disabled || !usable('remove')} onPress={() => onHelper('remove')} label="✂ Remove 2" bg={lt ? '#e2f2f1' : '#142741'} line={lt ? '#9fe7f0' : '#19637e'} fg={lt ? '#0e7490' : '#67e8f9'} />
+      <HelperBtn kind="skip" off={disabled || !usable('skip')} onPress={() => onHelper('skip')} label="⏭ Skip" bg={lt ? '#fae7e2' : '#2e1a2e'} line={lt ? '#f9b5b3' : '#833f4a'} fg={lt ? '#c2364a' : '#fda4af'} />
+      <HelperBtn kind="time" off={disabled || !usable('time')} onPress={() => onHelper('time')} label="⏱ +10 s" bg={lt ? '#f3e9f4' : '#231b4e'} line={lt ? '#d9c9f6' : '#504188'} fg={lt ? '#7c3aed' : '#d8b4fe'} />
     </View>
   );
 }

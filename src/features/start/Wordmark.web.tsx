@@ -13,7 +13,6 @@ import { bezier } from './ease';
  * It reads the same assets/motion/mednova-wordmark.json, so web and native play the same file.
  */
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 type J = any;
 const DATA: J = require('@/assets/motion/mednova-wordmark.json');
 

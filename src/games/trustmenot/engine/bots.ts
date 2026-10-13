@@ -122,7 +122,7 @@ export function botActions(g: Game, id: PlayerId, style: BotStyle, seed: number)
     } else {
       if (rd.id === 'supplier' && rd.chosen === id && style.betrays) out.push({ type: 'SUPPLIER_SKIM', player: id, share: 0.2 });
       if (rd.id === 'whisperer') {
-        for (const pr of rd.pairs.filter((x) => x.b === id))
+        for (let n = rd.pairs.filter((x) => x.b === id).length; n > 0; n--)
           rd.questions.forEach((q, i) => out.push({ type: 'SIGNAL', player: id, q: i, choice: sabotage ? wrongOf(q.answer) : q.answer }));
       }
       rd.questions.forEach((q, i) => {

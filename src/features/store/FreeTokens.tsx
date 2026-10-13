@@ -126,10 +126,10 @@ const AD_WAY: Way = { key: 'ad', label: 'Watch an ad', tokens: 1, each: true, ac
 const AD_CAP = 5;
 
 type FreeStatus = { ads_today?: number; done: string[]; ambassador: 'pending' | 'approved' | 'rejected' | null; invites: number; invite_tokens: number; redeemed: boolean; downloads: number | null; goal: number };
-type Sheet = 'story' | 'feedback' | 'ambassador' | null;
+type OpenSheet = 'story' | 'feedback' | 'ambassador' | null;
 
 /** What this player already collected, and which sheet is open (drawn by the Store page above its scroll). */
-export const useFree = create<{ status: FreeStatus | null; sheet: Sheet }>(() => ({ status: null, sheet: null }));
+export const useFree = create<{ status: FreeStatus | null; sheet: OpenSheet }>(() => ({ status: null, sheet: null }));
 
 export async function loadFree() {
   if (!useSession.getState().userId) return useFree.setState({ status: null });
@@ -188,7 +188,7 @@ export function FreeTokens({ t }: { t: Theme }) {
     }
     if (w.key === 'invite') return router.navigate('/friends' as never);
     if (w.key === 'ambassador' && st?.ambassador === 'pending') return;
-    useFree.setState({ sheet: w.key as Sheet });
+    useFree.setState({ sheet: w.key as OpenSheet });
   };
   // ADS_LIVE: show the rewarded ad first and stop here unless it was watched to the end.
   const watchAd = async () => {

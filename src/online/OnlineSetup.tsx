@@ -147,12 +147,6 @@ function Create({ def, prefill }: { def: GameDef; prefill?: Record<string, unkno
       setBusy(false);
     }
   };
-  const Line = ({ label, children, first }: { label: string; children: React.ReactNode; first?: boolean }) => (
-    <View style={[s.line, !first && { borderTopWidth: 1, borderTopColor: t.panelLine, paddingTop: u(8) }]}>
-      <Text style={[s.lbl, { color: t.white }]}>{label}</Text>
-      <View style={{ flex: 1 }}>{children}</View>
-    </View>
-  );
   return (
     <>
       <Card style={s.card}>
@@ -175,6 +169,17 @@ function Create({ def, prefill }: { def: GameDef; prefill?: Record<string, unkno
       </Text>
       <Btn label={busy ? 'Opening room…' : 'Create room'} onPress={create} disabled={busy} />
     </>
+  );
+}
+
+/** One settings row: its label on the left, the choices on the right. */
+function Line({ label, children, first }: { label: string; children: React.ReactNode; first?: boolean }) {
+  const t = useTheme();
+  return (
+    <View style={[s.line, !first && { borderTopWidth: 1, borderTopColor: t.panelLine, paddingTop: u(8) }]}>
+      <Text style={[s.lbl, { color: t.white }]}>{label}</Text>
+      <View style={{ flex: 1 }}>{children}</View>
+    </View>
   );
 }
 

@@ -69,7 +69,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   const { width } = useScreen();
   const W = Math.min(width, 430);
   const toItems = useMemo(() => itemsOf(me), [me]);
-  const { st, load, server, playing, notice, setNotice, leave } = useRace(def, roomId, matchId, me, toItems);
+  const { st, load, server, playing, notice, leave } = useRace(def, roomId, matchId, me, toItems);
   const [menu, setMenu] = useState(false);
   const [typing, setTyping] = useState(false);
   const { alert, push } = useAlerts();

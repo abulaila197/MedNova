@@ -44,7 +44,6 @@ function useReels(turn: Turn, onGo: () => void, paused?: boolean) {
       }
     }, SPIN_MS);
     return () => clearInterval(id);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key, turn.phase, paused]);
   useEffect(() => {
     prev.current = { k: turn.k, style: turn.combo.style };

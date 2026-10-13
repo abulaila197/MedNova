@@ -61,7 +61,10 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
         else if (prev) {
           // NM6: one daily word per style; today's is already played.
           await engine.recorder.discard(play.id);
-          if (live) (setStreak(st), setDone(prev));
+          if (live) {
+            setStreak(st);
+            setDone(prev);
+          }
           return;
         } else {
           const now = Date.now();
@@ -69,7 +72,10 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
           if (!dailyOpen(last, today, now)) {
             // The phone date went back: no daily before the latest one played, at most one per real day.
             await engine.recorder.discard(play.id);
-            if (live) (setStreak(st), setLocked(last!.day));
+            if (live) {
+              setStreak(st);
+              setLocked(last!.day);
+            }
             return;
           }
           r = startSolo('daily', style, [dailyWord(poolFor(style), style, today).id], today, now);

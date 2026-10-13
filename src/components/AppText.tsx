@@ -9,10 +9,12 @@ export const MAX_FONT_SCALE = 1.15;
 export function Text(props: TextProps & { ref?: React.Ref<RNText> }) {
   return <RNText maxFontSizeMultiplier={MAX_FONT_SCALE} {...props} />;
 }
+// eslint-disable-next-line @typescript-eslint/no-redeclare -- the type that goes with the component, as in react-native
 export type Text = RNText;
 
 /** react-native TextInput with the text-size cap. */
 export function TextInput(props: TextInputProps & { ref?: React.Ref<RNTextInput> }) {
   return <RNTextInput maxFontSizeMultiplier={MAX_FONT_SCALE} {...props} />;
 }
+// eslint-disable-next-line @typescript-eslint/no-redeclare -- the type that goes with the component, as in react-native
 export type TextInput = RNTextInput;
