@@ -83,7 +83,6 @@ export const TOUR_STEPS: readonly { key: string; name: string; path: string }[] 
   { key: 'about', name: 'About', path: '/about' },
   { key: 'contact', name: 'Contact', path: '/contact' },
   { key: 'privacy', name: 'Privacy', path: '/privacy' },
-  { key: 'licences', name: 'Licences', path: '/licences' },
 ];
 
 /** The tour step a page path counts for, if any. */
