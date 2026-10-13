@@ -1138,7 +1138,7 @@
       "lines": [
        "White cell count: raised",
        "CRP and ESR: both markedly elevated",
-       "Platelets: elevated (a pattern that tends to appear a little later in this kind of illness)",
+       "Platelets: elevated",
        "Throat swab: negative for the bacterium responsible for scarlet fever"
       ]
      }
@@ -1212,7 +1212,7 @@
     ]
    },
    {
-    "title": "Laboratory (further hormone testing)",
+    "title": "Laboratory",
     "body": "Additional blood was sent to pin down exactly where the problem was originating:",
     "reports": [
      {
@@ -2691,7 +2691,7 @@
     ]
    },
    {
-    "title": "Laboratory (excluding an alternative cause)",
+    "title": "Laboratory",
     "body": "Blood was also sent looking specifically for the bacterium responsible for the other serious possibility being considered:",
     "reports": [
      {
@@ -2756,7 +2756,7 @@
     ]
    },
    {
-    "title": "Laboratory (excluding the alternative, checking severity)",
+    "title": "Laboratory",
     "body": "",
     "reports": [
      {
@@ -3276,7 +3276,7 @@
     ]
    },
    {
-    "title": "Laboratory (specific testing)",
+    "title": "Laboratory",
     "body": "",
     "reports": [
      {
@@ -5076,7 +5076,7 @@
     ]
    },
    {
-    "title": "Laboratory (checking liver involvement)",
+    "title": "Laboratory",
     "body": "",
     "reports": [
      {
