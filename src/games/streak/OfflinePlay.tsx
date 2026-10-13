@@ -24,7 +24,7 @@ import {
 } from './offline';
 import { OverCard } from './SoloPlay';
 import { shuffle } from '../engine/random';
-import { useTicker } from '../engine/useTicker';
+import { useTickerClock } from '../engine/useTicker';
 
 /** Offline (SM5, SM13): each player's own timed round in turn, no helpers, no EXP; the owner's misses go to Learn. */
 export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
@@ -106,7 +106,13 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   );
 
   // The clock: ticks through the hand-off countdown, a question, or a result showing.
-  const now = useTicker(run?.phase === 'countdown' || run?.phase === 'playing' || run?.round?.phase === 'feedback', 150, (n) => dispatch({ type: 'TICK', now: n }), { fine: true });
+  // The clock text and the fuse follow every tick by themselves; the screen redraws for the hand-off countdown's digit.
+  const [now, ticks] = useTickerClock(run?.phase === 'countdown' || run?.phase === 'playing' || run?.round?.phase === 'feedback', 150, (n) => dispatch({ type: 'TICK', now: n }), {
+    shown: (n) => {
+      const r = ref.current;
+      return r?.phase === 'countdown' && r.countdownUntil != null ? Math.max(1, Math.ceil((r.countdownUntil - n) / 1000)) : 0;
+    },
+  });
 
   usePauseHide(() => dispatch({ type: 'PAUSE', now: Date.now() }));
 
@@ -128,7 +134,8 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
     <HeatBoard
       q={q}
       round={round}
-      leftMs={run.round ? timeLeft(run.round, now) : run.lengthSec * 1000}
+      ticks={ticks}
+      leftAt={(n) => (run.round ? timeLeft(run.round, n) : run.lengthSec * 1000)}
       totalMs={run.lengthSec * 1000}
       who={{ name: who?.name ?? `Player ${seat + 1}`, color: who?.color }}
       onAnswer={(choice) => dispatch({ type: 'ROUND', e: { type: 'ANSWER', choice, now: Date.now() } })}

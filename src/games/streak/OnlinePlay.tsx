@@ -44,7 +44,7 @@ function itemsOf(st: RaceState) {
  * one pick each, no helpers. Right answers score 100, 80, 65... by arrival plus a streak bonus up to 50.
  */
 export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
-  const { st, load, server, playing, notice, setNotice, leave } = useRace(def, roomId, matchId, me, itemsOf);
+  const { st, load, server, clock, playing, notice, setNotice, leave } = useRace(def, roomId, matchId, me, itemsOf);
   const [menu, setMenu] = useState(false);
   const [picked, setPicked] = useState<{ index: number; choice: number } | null>(null);
   const { alert, push } = useAlerts();
@@ -77,7 +77,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   const talker = { id: me, name: me_?.name ?? 'You', face: me_?.character ?? 'yara' };
   const reveal = st.phase !== 'case';
   const qMs = (Number(st.settings.qtime) || 15) * 1000;
-  const left = reveal ? 0 : Math.max(0, st.phase_ends_at - server);
+  const ends = st.phase_ends_at;
   const mine = st.me?.pick ?? (picked?.index === st.index ? picked.choice : null);
   const right = mine != null && mine === q.answer;
   const last = st.index + 1 >= st.total;
@@ -104,7 +104,8 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
     <HeatBoard
       q={q}
       round={round}
-      leftMs={left}
+      ticks={clock}
+      leftAt={(sv) => (reveal ? 0 : Math.max(0, ends - sv))}
       totalMs={qMs}
       who={{ name: `Question ${st.index + 1} of ${st.total}` }}
       onAnswer={async (choice) => {

@@ -14,6 +14,7 @@ import { Face } from '../shell/Face';
 import { GameScreen, RoundBtn } from '../shell/ui';
 import { HELPER_PRICE, type HelperKind, type Question, type Round } from './core';
 import { clock } from '@/games/engine/clock';
+import { useClock, type Clock } from '@/games/engine/useTicker';
 
 // The Streak Master's own design language (SM10): "Heat column".
 // The streak fills a heat tube on the left, segment by segment; the round clock is a burning fuse with
@@ -31,8 +32,12 @@ export function heatColors(mode: 'dark' | 'light') {
 export type BoardProps = {
   q: Question;
   round: Round;
-  /** Clock left now, and the whole round length (with +10 s helpers), for the fuse. */
-  leftMs: number;
+  /**
+   * The clock the round runs on, the time left at a given time on it, and the whole round length (with +10 s
+   * helpers), for the clock text and the fuse. Only those two follow the clock; the board does not redraw with it.
+   */
+  ticks: Clock;
+  leftAt: (now: number) => number;
   totalMs: number;
   /** A line above the field, e.g. the player's name in Offline. */
   who?: { name: string; color?: string };
@@ -58,7 +63,7 @@ export function HeatBoard(p: BoardProps) {
   const fb = p.round.feedback;
   const showing = p.round.phase === 'feedback' || (p.round.phase === 'paused' && p.round.before === 'feedback');
   const lit = Math.min(p.round.streak, SEGMENTS);
-  const warn = p.leftMs <= 10_000 && p.round.phase !== 'over';
+  const over = p.round.phase === 'over';
 
   return (
     <GameScreen scroll={false}>
@@ -78,11 +83,11 @@ export function HeatBoard(p: BoardProps) {
           <View style={s.top}>
             <Text style={[s.field, { color: t.accent }]} numberOfLines={1}>{p.hidden ? '' : p.q.field.toUpperCase()}</Text>
             <View style={s.right}>
-              <Text style={[s.clock, { color: warn ? hc.bad : t.white }]} accessibilityLabel={`${Math.ceil(p.leftMs / 1000)} seconds left`}>{clock(p.leftMs, { down: true })}</Text>
+              <ClockText ticks={p.ticks} leftAt={p.leftAt} over={over} bad={hc.bad} white={t.white} />
               <RoundBtn label="Pause" glyph="❚❚" onPress={p.onPause} />
             </View>
           </View>
-          <Fuse frac={p.totalMs ? p.leftMs / p.totalMs : 0} cool={t.accent} hot={hc.hot} track={t.line} burning={p.round.phase === 'playing'} />
+          <LiveFuse ticks={p.ticks} leftAt={p.leftAt} totalMs={p.totalMs} cool={t.accent} hot={hc.hot} track={t.line} burning={p.round.phase === 'playing'} />
 
           {p.hidden ? (
             <View style={[s.hide, { borderColor: t.panelLine, backgroundColor: t.panel }]}>
@@ -150,6 +155,23 @@ function Seg({ hot, cool, fresh }: { on: true; hot: string; cool: string; fresh:
       <LinearGradient colors={[hot, cool]} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }} style={StyleSheet.absoluteFill} />
     </Animated.View>
   );
+}
+
+/** The round clock's text, following the clock by itself (red in the last 10 s). */
+function ClockText({ ticks, leftAt, over, bad, white }: { ticks: Clock; leftAt: (now: number) => number; over: boolean; bad: string; white: string }) {
+  const leftMs = leftAt(useClock(ticks));
+  const warn = leftMs <= 10_000 && !over;
+  return (
+    <Text style={[s.clock, { color: warn ? bad : white }]} accessibilityLabel={`${Math.ceil(leftMs / 1000)} seconds left`}>
+      {clock(leftMs, { down: true })}
+    </Text>
+  );
+}
+
+/** The fuse, redrawn on every tick of the clock by itself, so the board around it doesn't redraw with it. */
+function LiveFuse({ ticks, leftAt, totalMs, ...rest }: { ticks: Clock; leftAt: (now: number) => number; totalMs: number; cool: string; hot: string; track: string; burning: boolean }) {
+  const leftMs = leftAt(useClock(ticks));
+  return <Fuse frac={totalMs ? leftMs / totalMs : 0} {...rest} />;
 }
 
 /** The burning fuse: how much of the round is left, with a spark at the end. */

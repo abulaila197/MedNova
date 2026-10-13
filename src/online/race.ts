@@ -92,11 +92,11 @@ export type RaceState = {
   } | null;
 };
 
-// The Streak fuse is drawn smoothly across the screen, so it redraws on every tick. (The Silent Artist's chalk ring
-// follows `clock` in its own small widget instead.)
-const SMOOTH = new Set(['the-streak-master']);
 
-/** What a race screen shows of the clock: whole seconds to the phase's end and to my lock's end. */
+/**
+ * What a race screen shows of the clock: whole seconds to the phase's end and to my lock's end. Smooth clocks (the
+ * Streak fuse, the Silent Artist's chalk ring) follow `clock` in their own small widgets.
+ */
 const shownOf = (server: number, st: RaceState | null) => (st ? `${second(st.phase_ends_at - server)}:${st.me?.locked_until ? second(st.me.locked_until - server) : ''}` : null);
 
 /**
@@ -104,7 +104,7 @@ const shownOf = (server: number, st: RaceState | null) => (st ? `${second(st.pha
  * Also turns the finished match into a local play and opens the results (ON21).
  */
 export function useRace(def: GameDef, roomId: string, matchId: string, me: string, toItems: (st: RaceState) => Omit<PlayItem, 'id' | 'at' | 'playId'>[]) {
-  const { st, load, server, clock, notice, setNotice } = useMatchState<RaceState>('race_state', matchId, { shown: SMOOTH.has(def.key) ? undefined : shownOf });
+  const { st, load, server, clock, notice, setNotice } = useMatchState<RaceState>('race_state', matchId, { shown: shownOf });
   const finishing = useRef(false);
   const items = useRef(toItems);
   useEffect(() => {

@@ -18,7 +18,7 @@ import {
 } from './core';
 import { answerOf, idsOf, poolFor, questionById } from './data';
 import { HeatBoard } from './HeatBoard';
-import { useTicker } from '../engine/useTicker';
+import { useTickerClock } from '../engine/useTicker';
 
 /** Solo bookmark: the round plus what the screen needs to resume (rules 7, 10). */
 type SoloSave = { round: Round; style: Style; lengthSec: number };
@@ -105,7 +105,8 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   );
 
   // The clock: ticks while a question runs or a result shows.
-  const now = useTicker(round?.phase === 'playing' || round?.phase === 'feedback', 150, (n) => dispatch({ type: 'TICK', now: n }), { fine: true });
+  // Only the clock text and the fuse follow every tick; the board itself shows no time.
+  const [, ticks] = useTickerClock(round?.phase === 'playing' || round?.phase === 'feedback', 150, (n) => dispatch({ type: 'TICK', now: n }), { shown: () => 0 });
 
   usePauseHide(() => dispatch({ type: 'PAUSE', now: Date.now() }));
 
@@ -145,7 +146,8 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
     <HeatBoard
       q={q}
       round={round}
-      leftMs={timeLeft(round, now)}
+      ticks={ticks}
+      leftAt={(n) => timeLeft(round, n)}
       totalMs={round.lengthMs + round.helpers.time * ADD_MS}
       onAnswer={(choice) => !paying.current && dispatch({ type: 'ANSWER', choice, now: Date.now() })}
       onPause={() => dispatch({ type: 'PAUSE', now: Date.now() })}
