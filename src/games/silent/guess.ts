@@ -1,6 +1,6 @@
 // The Silent Artist online guess matcher (SA7, SA8), copied as coded from games-src/code/the-silent-artist
-// (src/game/guessMatching.ts). Only the types are local. guessCandidates at the end is new: the phone runs the
-// matcher against every word and sends the server the ids it would be right or close for.
+// (src/game/guessMatching.ts). Only the types are local. The 'silent-artist' edge function bundles this file and
+// judges online guesses with it (scripts/build-silent-artist-function.sh: rebuild and redeploy after a change).
 import type { Word } from './core';
 
 type DiseaseWord = Pick<Word, 'id' | 'name' | 'aliases'>;
@@ -195,16 +195,4 @@ export function evaluateGuess(
   }
 
   return 'wrong';
-}
-
-/** Every word this guess would be right for, and every word it would be close for (online guessing). */
-export function guessCandidates(guess: string, words: readonly DiseaseWord[], index: AnswerIndex = buildAnswerIndex(words)) {
-  const correct: string[] = [];
-  const close: string[] = [];
-  for (const w of words) {
-    const r = evaluateGuess(guess, w, index);
-    if (r === 'correct') correct.push(w.id);
-    else if (r === 'close') close.push(w.id);
-  }
-  return { correct, close };
 }

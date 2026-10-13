@@ -4,7 +4,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { Text, TextInput } from '@/components/AppText';
 
 import { supabase } from '@/lib/supabase';
-import { call } from '@/online/api';
+import { call, invoke } from '@/online/api';
 import { AlertPill, Countdown, nth, useAlerts } from '@/online/live';
 import { settingsLine } from '@/online/format';
 import { useRace, type RacePlayer, type RaceState } from '@/online/race';
@@ -19,13 +19,11 @@ import type { OnlineProps } from '../shell/types';
 import { Board, Sketch, type BoardHandle, type Stroke } from './Board';
 import { SA } from './core';
 import { WORDS, wordName } from './data';
-import { buildAnswerIndex, guessCandidates } from './guess';
 import { ChalkBtn, ChalkTimer, ChalkTitle, Frame, HintCard, Kicker, Ledge, Note, Panel, PauseBtn, SL, Scores, SlateScreen, TopRow, useSlateRoom } from './slate';
 
 /** Everyone sees the same board shape online, so a drawing lands in the same place on every phone. */
 const RATIO = 1.1;
 const wordOf = (n: number | null | undefined) => (n ? WORDS[n - 1] : undefined);
-const INDEX = buildAnswerIndex(WORDS);
 
 /** Each turn is one item: what you drew, or what you guessed. SA1: no Learn and no EXP; the dossier links still show (RS1). */
 function itemsOf(st: RaceState) {
@@ -273,7 +271,7 @@ function DrawSide({ turn, matchId, channel }: { turn: number; matchId: string; c
   );
 }
 
-/** Type a guess. The phone runs the coded matcher over the word list; the server says right, close or not. */
+/** Type a guess. The server runs the coded matcher on it and says right, close or not. */
 function GuessBox({ solved, points, rank, matchId, load }: { solved: boolean; points: number; rank: number | null; matchId: string; load: () => Promise<void> }) {
   const R = useSlateRoom();
   const [text, setText] = useState('');
@@ -283,9 +281,8 @@ function GuessBox({ solved, points, rank, matchId, load }: { solved: boolean; po
     const g = text.trim();
     if (!g || busy.current) return;
     busy.current = true;
-    const { correct, close } = guessCandidates(g, WORDS, INDEX);
     try {
-      const res = await call<string>('sa_guess', { m: matchId, correct, close });
+      const { result: res } = await invoke<{ result: string }>('silent-artist', { m: matchId, guess: g });
       setLine(res === 'correct' ? null : res === 'close' ? `“${g}” is so close!` : res === 'wrong' ? `Not “${g}”` : null);
       setText('');
       await load();

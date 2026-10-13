@@ -114,7 +114,7 @@ test('solo (SA2): 60 s, reveal, retry keeps the disease, next, finish', () => {
 });
 
 test('online guess matcher (as coded): aliases and typos count, look-alikes are only close', async () => {
-  const { buildAnswerIndex, evaluateGuess, guessCandidates } = await import('../guess');
+  const { buildAnswerIndex, evaluateGuess } = await import('../guess');
   const words: Word[] = [
     { id: 'mi', name: 'Myocardial infarction', field: 'Cardiology', aliases: ['Heart attack', 'MI'] },
     { id: 'htn', name: 'Hypertension', field: 'Cardiology', aliases: ['High blood pressure'] },
@@ -128,5 +128,5 @@ test('online guess matcher (as coded): aliases and typos count, look-alikes are 
   assert.equal(evaluateGuess('hypotension', words[1], index), 'close');
   assert.equal(evaluateGuess('hyprtension', words[1], index), 'close');
   assert.equal(evaluateGuess('hepatitis c', words[3], index), 'close');
-  assert.deepEqual(guessCandidates('hypertention', words, index), { correct: ['htn'], close: [] });
+  assert.equal(evaluateGuess('hypertention', words[1], index), 'correct');
 });
