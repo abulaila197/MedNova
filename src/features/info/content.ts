@@ -280,7 +280,8 @@ export const TERMS: Section[] = [
     plain: 'What you share with others is *your responsibility.*',
     legal: [
       { p: 'Your username, the drawings you make in Silent Artist and the stickers and voice lines you send in online rooms are seen by other players. You are responsible for them. Do not use content that is offensive, hateful, sexual, violent, harassing, misleading, or that includes real patient information or other people\'s personal data.' },
-      { p: 'MedNova has zero tolerance for objectionable content or abusive users. You can block any player and report any drawing. We review reports and may remove content, change a username, or suspend or close an account that breaks these rules.' },
+      { p: 'Stories and custom cases you share must be your own or shared with permission, medically responsible, and free of anything that could identify a real patient.' },
+      { p: 'MedNova has zero tolerance for objectionable content or abusive users. You can block any player and report any player, drawing, story or case. We review reports and may remove content, change a username, or suspend or close an account that breaks these rules.' },
     ],
   },
   {
@@ -293,7 +294,7 @@ export const TERMS: Section[] = [
           'Do not attempt to interfere with the operation or security of MedNova.',
           'Do not manipulate scores, leaderboards, timers, wallets, or account systems through unauthorized methods.',
           'Do not harass, threaten, or impersonate other players.',
-          'Do not share objectionable, unlawful, or privacy-invasive content in usernames, drawings, or rooms.',
+          'Do not share objectionable, unlawful, or privacy-invasive content in usernames, drawings, stories, cases, or rooms.',
         ],
       },
     ],
@@ -307,8 +308,8 @@ export const TERMS: Section[] = [
   {
     n: '09',
     k: 'Intellectual property',
-    plain: "MedNova's games and art *belong to MedNova.*",
-    legal: [{ p: "MedNova's software, branding, interface, cases and platform content are protected by applicable intellectual-property laws. Its graphics are original or used under public-domain or CC0 licences. Except where expressly permitted, you may not copy, redistribute, reverse engineer, or commercially exploit protected MedNova materials." }],
+    plain: "MedNova's games and content *belong to MedNova.*",
+    legal: [{ p: "MedNova's software, branding, games, cases and written content belong to MedNova and are protected by intellectual-property laws. Artwork was made for MedNova, including with AI image tools. Fonts and open-source software are used under their own licences, listed in About. Except where expressly permitted, you may not copy, redistribute, reverse engineer or commercially exploit MedNova materials." }],
   },
   {
     n: '10',

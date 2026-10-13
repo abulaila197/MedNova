@@ -5,7 +5,7 @@ import { engine, RECORDER_KEYS } from '@/games/engine';
 import { useSession } from '@/games/shell/session';
 import { supabase } from '@/lib/supabase';
 import { PROGRESS_KEYS } from '@/lib/progress';
-import { syncAccount } from '@/lib/sync';
+import { holdUnsynced, syncAccount } from '@/lib/sync';
 import { loadSubscription } from '@/features/store/billing';
 import { invoke } from '@/online/api';
 import { startInvites, stopInvites } from '@/online/invites';
@@ -99,11 +99,16 @@ export function startAccount() {
 const ACCOUNT_KEYS = [...RECORDER_KEYS, 'wallet', 'subscription', ...PROGRESS_KEYS];
 const clearPhone = () => Promise.all(ACCOUNT_KEYS.map((k) => engine.kv.remove(k)));
 
-/** SO1: upload first, then sign out and clear the phone back to a fresh guest. Offline, it refuses so nothing is lost. */
+/**
+ * SO1: upload first, then sign out and clear the phone back to a fresh guest.
+ * SO2: offline, the same happens at once; what could not upload is held for this account and goes up at its next sign-in here.
+ */
 export async function signOut() {
   const id = useSession.getState().userId;
-  if (id) await syncAccount(id); // throws when offline; the caller shows the message
-  await supabase.auth.signOut();
+  let online = true;
+  if (id) await syncAccount(id).catch(() => (online = false));
+  if (id && !online) await holdUnsynced(id);
+  await supabase.auth.signOut({ scope: online ? 'global' : 'local' });
   await clearPhone();
 }
 

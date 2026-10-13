@@ -17,62 +17,116 @@ export function syncAccount(userId: string) {
   return running;
 }
 
+/** What an offline sign-out holds back for the account (SO2): rows not yet uploaded, plus stars and bests. */
+type Held = { plays: Play[]; items: PlayItem[]; ledger: LedgerEntry[]; progress: Record<string, unknown> };
+const heldKey = (userId: string) => `held:${userId}`;
+
+async function uploadPlays(userId: string, plays: Play[], items: PlayItem[]) {
+  if (!plays.length) return;
+  const { error } = await supabase.from('plays').upsert(
+    plays.map((p) => ({
+      id: p.id,
+      user_id: userId,
+      game: p.game,
+      mode: p.mode,
+      submode: p.submode ?? null,
+      settings: p.settings,
+      started_at: iso(p.startedAt),
+      ended_at: iso(p.endedAt),
+      status: p.status,
+      score: p.score,
+      seats: p.seats,
+      standings: p.standings,
+      exp_earned: p.expEarned,
+    })),
+  );
+  if (error) throw error;
+  if (!items.length) return;
+  const r = await supabase.from('play_items').upsert(
+    items.map((i) => ({
+      id: i.id,
+      play_id: i.playId,
+      user_id: userId,
+      seat: i.seat,
+      item_id: i.itemId,
+      answer_key: i.answerKey,
+      outcome: i.outcome,
+      answers_given: i.answersGiven,
+      time_ms: i.timeMs,
+      hints_used: i.hintsUsed,
+      reveals_used: i.revealsUsed,
+      points: i.points,
+      feeds_learn: i.feedsLearn,
+      game_data: i.gameData,
+      at: iso(i.at),
+    })),
+  );
+  if (r.error) throw r.error;
+}
+
+/** The server checks each wallet row (EC1) and returns the ids it refused. */
+async function uploadLedger(ledger: LedgerEntry[]): Promise<string[]> {
+  if (!ledger.length) return [];
+  const { data, error } = await supabase.rpc('wallet_sync', {
+    entries: ledger.map((e) => ({ id: e.id, kind: e.kind, exp: e.exp, tokens: e.tokens, reason: e.reason, play_id: e.playId ?? null, at: iso(e.at) })),
+  });
+  if (error) throw error;
+  return (data as { refused?: string[] } | null)?.refused ?? [];
+}
+
+/**
+ * SO2 (Yazan 2026-10-13): signing out offline still leaves a fresh guest phone. What the account had not uploaded
+ * is kept apart under its own key, out of the guest's reach, and goes up the next time that account signs in here.
+ */
+export async function holdUnsynced(userId: string) {
+  const { plays, items } = await engine.recorder.unsynced(userId);
+  const ledger = await engine.wallet.unsynced();
+  const progress: Record<string, unknown> = {};
+  for (const key of PROGRESS_KEYS) {
+    const v = await engine.kv.get<unknown>(key);
+    if (!emptyProgress(v)) progress[key] = v;
+  }
+  const before = await engine.kv.get<Held>(heldKey(userId));
+  // A second offline sign-out before the first upload adds to the pile.
+  await engine.kv.set(heldKey(userId), {
+    plays: [...(before?.plays ?? []), ...plays],
+    items: [...(before?.items ?? []), ...items],
+    ledger: [...(before?.ledger ?? []), ...ledger],
+    progress: Object.fromEntries(PROGRESS_KEYS.map((k) => [k, mergeProgress(k, before?.progress[k], progress[k])]).filter(([, v]) => !emptyProgress(v))),
+  } satisfies Held);
+}
+
+async function uploadHeld(userId: string) {
+  const held = await engine.kv.get<Held>(heldKey(userId));
+  if (!held) return;
+  await uploadPlays(userId, held.plays, held.items);
+  await uploadLedger(held.ledger);
+  const keys = PROGRESS_KEYS.filter((k) => k in held.progress);
+  if (keys.length) {
+    const { data, error } = await supabase.from('player_progress').select('key,value').in('key', keys);
+    if (error) throw error;
+    const remote = new Map((data ?? []).map((r: { key: string; value: unknown }) => [r.key, r.value]));
+    const up = keys.map((key) => ({ user_id: userId, key, value: mergeProgress(key, held.progress[key], remote.get(key)), updated_at: new Date().toISOString() }));
+    const r = await supabase.from('player_progress').upsert(up);
+    if (r.error) throw r.error;
+  }
+  await engine.kv.remove(heldKey(userId));
+}
+
 async function run(userId: string) {
+  await uploadHeld(userId);
   await engine.recorder.claimGuestPlays(userId);
 
   const { plays, items } = await engine.recorder.unsynced(userId);
   if (plays.length) {
-    const { error } = await supabase.from('plays').upsert(
-      plays.map((p) => ({
-        id: p.id,
-        user_id: userId,
-        game: p.game,
-        mode: p.mode,
-        submode: p.submode ?? null,
-        settings: p.settings,
-        started_at: iso(p.startedAt),
-        ended_at: iso(p.endedAt),
-        status: p.status,
-        score: p.score,
-        seats: p.seats,
-        standings: p.standings,
-        exp_earned: p.expEarned,
-      })),
-    );
-    if (error) throw error;
-    if (items.length) {
-      const r = await supabase.from('play_items').upsert(
-        items.map((i) => ({
-          id: i.id,
-          play_id: i.playId,
-          user_id: userId,
-          seat: i.seat,
-          item_id: i.itemId,
-          answer_key: i.answerKey,
-          outcome: i.outcome,
-          answers_given: i.answersGiven,
-          time_ms: i.timeMs,
-          hints_used: i.hintsUsed,
-          reveals_used: i.revealsUsed,
-          points: i.points,
-          feeds_learn: i.feedsLearn,
-          game_data: i.gameData,
-          at: iso(i.at),
-        })),
-      );
-      if (r.error) throw r.error;
-    }
+    await uploadPlays(userId, plays, items);
     await engine.recorder.markSynced(plays.map((p) => p.id));
   }
 
-  // The server checks each wallet row (EC1) and refuses any that break the rules; those leave the phone.
+  // Refused wallet rows leave the phone.
   const ledger = await engine.wallet.unsynced();
   if (ledger.length) {
-    const { data, error } = await supabase.rpc('wallet_sync', {
-      entries: ledger.map((e) => ({ id: e.id, kind: e.kind, exp: e.exp, tokens: e.tokens, reason: e.reason, play_id: e.playId ?? null, at: iso(e.at) })),
-    });
-    if (error) throw error;
-    const refused: string[] = (data as { refused?: string[] } | null)?.refused ?? [];
+    const refused = await uploadLedger(ledger);
     await engine.wallet.drop(refused);
     await engine.wallet.markSynced(ledger.map((e) => e.id).filter((id) => !refused.includes(id)));
   }

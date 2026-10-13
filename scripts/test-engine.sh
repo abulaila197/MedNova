@@ -3,7 +3,7 @@
 set -e
 OUT=$(mktemp -d)
 npx tsc --outDir "$OUT" --module commonjs --moduleResolution node10 --ignoreDeprecations 6.0 --target es2022 --strict \
-  --skipLibCheck --esModuleInterop --types node --ignoreConfig \
+  --skipLibCheck --esModuleInterop --resolveJsonModule --types node --ignoreConfig \
   $(find src -path "*/__tests__/*.test.ts")
 node --test $(find "$OUT" -name "*.test.js")
 rm -rf "$OUT"

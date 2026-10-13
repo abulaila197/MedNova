@@ -14,6 +14,7 @@ import { useTheme } from '@/state/app';
 import { u, useScreen } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
+import { nameIsClean } from '@/lib/names';
 import { cssAngle } from './ease';
 import { Sky, Stars } from './Sky';
 
@@ -180,6 +181,7 @@ export function SignIn() {
       if (!agreed) throw new Error('Tick the box to confirm you are 16 or older and agree to the Terms.');
       const name = username.trim();
       if (!/^[A-Za-z0-9_]{3,16}$/.test(name)) throw new Error('Usernames use 3 to 16 letters, numbers or _.');
+      if (!nameIsClean(name)) throw new Error('That username is not allowed. Try another.');
       const free = await call<boolean>('username_available', { name });
       if (!free) throw new Error('That username is taken. Try another.');
       const { data, error } = await supabase.auth.signUp({ email: mail(), password, options: { data: { username: name, display_name: name } } });
