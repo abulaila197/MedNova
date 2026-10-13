@@ -8,7 +8,6 @@ import { Display } from '@/components/Txt';
 import { Fade } from '@/components/Fade';
 import { useSvgId } from '@/components/svgId';
 import { FriendCount } from '@/features/profile/Friends';
-import { PlanetSystem } from '@/features/profile/PlanetSystem';
 import { Face } from '@/games/shell/Face';
 import { deleteAccount, useAccount } from '@/state/account';
 import { useTheme } from '@/state/app';
@@ -17,6 +16,8 @@ import { u } from '@/theme/scale';
 import { F, type Theme } from '@/theme/tokens';
 
 import { useProfileStats } from './stats';
+import { Framed } from '@/features/style/Frame';
+
 
 // Page colours from the locked preview (d-/l-profile).
 const C = {
@@ -45,7 +46,7 @@ function Tide({ t, pts }: { t: Theme; pts: number[] }) {
   );
 }
 
-/** Profile: your planet with the game moons, name, three numbers, tide lines per game and your friends (FR1-FR4). */
+/** Profile: your framed face, name, title, three numbers, tide lines per game and your friends (FR1-FR4). */
 export function Profile() {
   const t = useTheme();
   const line = { borderColor: t.panelLine };
@@ -56,7 +57,10 @@ export function Profile() {
   return (
     <Fade stops={[[0, 0], [0.04, 1], [0.9, 1], [1, 0]]} style={s.area}>
       <ScrollView style={s.fill} contentContainerStyle={s.pf} showsVerticalScrollIndicator={false}>
-        <PlanetSystem />
+        {/* Your framed face where the planet was (Yazan 2026-10-13: on the planet spot, orbit and moons removed). */}
+        <View style={s.me}>
+          <Framed slug={profile?.avatar ?? 'yara'} size={u(124)} frame="laurel" />
+        </View>
         <View style={s.idn}>
           <View style={s.nm}>
             <Display em={profile?.display_name ?? 'Guest'} italic style={[s.h2, { color: t.fg }]}>
@@ -65,7 +69,15 @@ export function Profile() {
             {/* LV3: your level beside your name, the ring filling toward the next level. */}
             <LevelBadge level={lv.level} progress={lv.into / lv.need} size={u(21)} />
           </View>
+          <Text style={[s.title, { color: t.accent }]}>Chief Resident</Text>
           <Text style={[s.role, { color: t.mute }]}>{profile ? `@${profile.username.toUpperCase()}` : 'SIGN IN TO SAVE YOUR PROGRESS'}</Text>
+          <View style={s.style}>
+            {['Change frame', 'Change title'].map((l) => (
+              <Pressable key={l} style={[s.stBtn, { backgroundColor: t.chip, borderColor: t.chipLine }]} accessibilityRole="button">
+                <Text style={[s.stT, { color: t.fg }]}>{l}</Text>
+              </Pressable>
+            ))}
+          </View>
         </View>
         <View style={[s.nums, line]}>
           {[
@@ -177,7 +189,12 @@ const s = StyleSheet.create({
   area: { flex: 1 },
   fill: { flex: 1 },
   pf: { paddingTop: u(23), paddingHorizontal: u(16), paddingBottom: u(110), gap: u(6) },
+  me: { alignItems: 'center', paddingTop: u(18), paddingBottom: u(8) },
   idn: { marginTop: u(2), alignItems: 'center' },
+  title: { marginTop: u(2), fontFamily: F.displayItalic, fontSize: u(12.5) },
+  style: { flexDirection: 'row', gap: u(8), marginTop: u(10) },
+  stBtn: { borderWidth: 1, borderRadius: 999, paddingHorizontal: u(12), paddingVertical: u(6) },
+  stT: { fontFamily: F.bodySemi, fontSize: u(10.5) },
   nm: { flexDirection: 'row', alignItems: 'center', gap: u(7) },
   h2: { fontSize: u(30), lineHeight: u(30), height: u(30), overflow: 'visible', textAlign: 'center' },
   del: { marginTop: u(26), alignItems: 'center', gap: u(10) },
