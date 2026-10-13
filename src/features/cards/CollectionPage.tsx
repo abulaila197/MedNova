@@ -31,6 +31,7 @@ export function CollectionPage() {
   useFocusEffect(
     useCallback(() => {
       loadHunt().catch(() => setErr('Could not load your cards. Check your connection.'));
+      // eslint-disable-next-line react-hooks/exhaustive-deps -- signedIn only re-runs the load when the account changes while the page is open
     }, [signedIn]),
   );
   const redeem = async () => {
@@ -117,11 +118,11 @@ function Viewer({ t, i, onClose }: { t: Theme; i: number | null; onClose: () => 
   if (i === null) return null;
   const card = DECK[i] as HuntCard;
   const flip = () => {
-    sx.value = withTiming(0, { duration: 160 }, (ok) => {
+    sx.set(withTiming(0, { duration: 160 }, (ok) => {
       if (!ok) return;
       runOnJS(setBack)(!back);
       sx.value = withTiming(1, { duration: 160 });
-    });
+    }));
   };
   const close = () => {
     setBack(false);

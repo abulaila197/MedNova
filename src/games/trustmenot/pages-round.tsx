@@ -1,7 +1,7 @@
 // Trust Me Not: the round, in the all-paper look (locked 2026-10-07, preview pages 18-29). The obstacle dealt to me
 // and my sealed mission come first, then the round's own stages: Hero / Supplier votes, Wager bids, then the
 // questions one after another, each on its own clock. Every page sends only this player's own actions.
-import { Fragment, useEffect, useReducer, useState, type ReactNode } from 'react';
+import { Fragment, useEffect, useEffectEvent, useReducer, useState, type ReactNode } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import Svg, { Circle, Defs, Line, LinearGradient, Path, Polygon, RadialGradient, Rect, Stop } from 'react-native-svg';
 
@@ -60,7 +60,11 @@ const LETTER = 'ABC';
  * out calls onTimeout and moves on; after a reload I resume at the first question not done.
  */
 function useQuestions(key: string, n: number, done: (q: number) => boolean, limit: (q: number) => number, startAt: number, now: number) {
+  // The clocks live outside React on purpose (they survive the page remounting mid-round) and are advanced while
+  // rendering, so this hook stays out of the React Compiler's memoisation.
+  'use no memo';
   const [, bump] = useReducer((x: number) => x + 1, 0);
+  /* eslint-disable react-hooks/immutability -- the per-match question clock (CLOCKS) is advanced while rendering on purpose; see 'use no memo' above */
   let c = CLOCKS[key];
   if (!c) {
     let first = 0;
@@ -71,6 +75,7 @@ function useQuestions(key: string, n: number, done: (q: number) => boolean, limi
     c.q++;
     c.since = now;
   }
+  /* eslint-enable react-hooks/immutability */
   const clock = c;
   const left = clock.q < n ? Math.max(0, (limit(clock.q) - (now - clock.since)) / 1000) : 0;
   /** Marks question q sent and moves on; returns the ms it took. */
@@ -99,6 +104,8 @@ function scheduleIndex(r: Round, started: number, now: number) {
 
 /** The whole round phase: obstacle dealt, sealed mission, then the round's own stages and questions. */
 export function RoundFlow(props: PageProps) {
+  // The notes step lives outside React (NOTES) and is read while rendering: kept out of the compiler's memoisation.
+  'use no memo';
   const { env, now } = props;
   const v = env.view;
   const x = env.extras.round;
@@ -111,15 +118,16 @@ export function RoundFlow(props: PageProps) {
   // My notes in order: each obstacle dealt to me, then the mission dealt to me this month.
   const dealt = v.dealt.filter((d) => d.player === v.me);
   const mission = v.missions.find((m) => m.holder === v.me && m.month === v.month && m.status === 'active');
+  const count = dealt.length + (mission ? 1 : 0);
+  const next = () => {
+    notes.step++;
+    if (notes.step >= count) notes.doneAt = now;
+    bump();
+  };
   const list: ReactNode[] = [
     ...dealt.map((d, i) => <ObstacleNote key={`o${i}`} v={v} x={x} effect={d.effect} onSeen={() => next()} />),
     ...(mission ? [<MissionNote key="m" v={v} mission={mission} onDone={() => next()} />] : []),
   ];
-  function next() {
-    notes.step++;
-    if (notes.step >= list.length) notes.doneAt = now;
-    bump();
-  }
   if (notes.step < list.length) return list[notes.step];
 
   const r = v.round;
@@ -388,8 +396,9 @@ function AnswerSheet({ env, now, act, r, startAt }: SheetProps) {
     act({ type: 'ANSWER', q: qi, choice, ms: choice === null ? limit(qi) : ms });
   };
   // A question whose clock ran out counts as no answer, and the next one starts.
+  const expire = useEffectEvent(() => send(q, null));
   useEffect(() => {
-    if (clock.expired) send(q, null);
+    if (clock.expired) expire();
   }, [clock.expired, q]);
 
   const roundName = ROUND_NAME[r.id];
@@ -539,8 +548,9 @@ function WhisperSheet({ env, now, act, r, startAt }: SheetProps) {
   const q = clock.q;
   const [sel, setSel] = useState<{ q: number; c: number } | null>(null);
   // A question I did not light in time just passes; my guesser answers without a light.
+  const pass = useEffectEvent(() => clock.finish(q));
   useEffect(() => {
-    if (clock.expired) clock.finish(q);
+    if (clock.expired) pass();
   }, [clock.expired, q]);
   const me = v.players.find((pl) => pl.id === v.me)!;
 
@@ -742,6 +752,8 @@ function WagerBid({ env, seconds, act, r }: PageProps & { r: Round }) {
 
 /** One link each, in the chain's order: only my question (my place in the chain) is mine to answer. */
 function ChainSheet({ env, now, act, r, startAt }: SheetProps) {
+  // SEEN_AT and CLOCKS live outside React and are written while rendering: kept out of the compiler's memoisation.
+  'use no memo';
   const v = env.view;
   const x = env.extras.round;
   const chain = x.chain;
@@ -751,6 +763,7 @@ function ChainSheet({ env, now, act, r, startAt }: SheetProps) {
   const key = `${v.month}:chain:${env.started}`;
   // My turn starts when every link before me has answered, or when their clocks would have run out.
   const ready = links.slice(0, Math.max(0, k)).every((l) => l != null);
+  // eslint-disable-next-line react-hooks/immutability -- my turn's start is remembered outside React (SEEN_AT) while rendering, on purpose
   if (ready && SEEN_AT[key] == null) SEEN_AT[key] = Math.max(now, startAt);
   const byClock = Math.max(startAt, env.started) + r.questions.slice(0, Math.max(0, k)).reduce((s_, q) => s_ + q.limitMs, 0);
   const turnAt = Math.min(SEEN_AT[key] ?? Infinity, byClock);
@@ -764,8 +777,9 @@ function ChainSheet({ env, now, act, r, startAt }: SheetProps) {
     act({ type: 'ANSWER', q: k, choice, ms: choice === null ? myLimit : Math.min(myLimit, now - turnAt) });
   };
   const late = myTurn && left <= 0;
+  const timeOut = useEffectEvent(() => send(null));
   useEffect(() => {
-    if (late) send(null);
+    if (late) timeOut();
   }, [late]);
 
   const current = links.findIndex((l) => l == null);

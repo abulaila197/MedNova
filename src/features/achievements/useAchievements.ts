@@ -74,8 +74,8 @@ export function useAchievements() {
   }, [friends, userId]);
 
   useEffect(() => {
-    void reload();
-  }, [reload]);
+    loadAchievements(friends.map((f) => f.id), userId ?? undefined).then(setRows);
+  }, [friends, userId]);
 
   const collect = async (key: AchKey) => {
     const row = rows?.find((r) => r.key === key);

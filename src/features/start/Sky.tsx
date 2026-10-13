@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Animated, Easing, StyleSheet, View } from 'react-native';
 import Svg, { Defs, RadialGradient, Rect, Stop } from 'react-native-svg';
 
@@ -60,7 +60,7 @@ export function Sky({ w, h, light = false }: { w: number; h: number; light?: boo
  * Stars are grouped by speed and phase so a single looping clock drives them.
  */
 export function Stars({ si, hd }: { si: number; hd: number }) {
-  const clock = useRef(new Animated.Value(0)).current;
+  const [clock] = useState(() => new Animated.Value(0));
   const groups = useMemo(() => {
     let s = 11 + si * 17;
     const rnd = () => (s = (s * 9301 + 49297) % 233280) / 233280;

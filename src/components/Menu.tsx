@@ -44,8 +44,9 @@ export function Menu() {
   const open = useApp((a) => a.menuOpen);
   const friends = useFriends((f) => f.list);
   const [waiting, setWaiting] = useState(false);
+  if ((!open || !profile) && waiting) setWaiting(false);
   useEffect(() => {
-    if (!open || !profile) return setWaiting(false);
+    if (!open || !profile) return;
     loadAchievements(friends.map((f) => f.id), profile.id)
       .then((rows) => setWaiting(rows.some((r) => r.paid < r.reached)))
       .catch(() => {});

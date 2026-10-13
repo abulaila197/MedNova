@@ -52,7 +52,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
         load();
       }
     },
-    [matchId, load],
+    [matchId, load, setNotice],
   );
   /** A nudge when a clock has run out, so the referee moves the war on (the countdown's end deals the first board). */
   const lastTick = useRef(0);

@@ -1,5 +1,5 @@
 import { router, usePathname } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { localDay } from '@/games/engine/gate';
 import { defaultKV } from '@/games/engine/storage';
@@ -25,7 +25,7 @@ export function DailyHost() {
   const userId = useSession((s) => s.userId);
   const known = useSession((s) => s.known);
   const [open, setOpen] = useState<Open | null>(null);
-  const [checked, setChecked] = useState<string | null>(null); // `${user}:${date}` already looked at
+  const checked = useRef<string | null>(null); // `${user}:${date}` already looked at
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -33,8 +33,8 @@ export function DailyHost() {
     if (!known || intro || path !== '/games') return;
     const today = localDay();
     const key = `${userId ?? 'guest'}:${today}`;
-    if (checked === key) return;
-    setChecked(key);
+    if (checked.current === key) return;
+    checked.current = key;
     void (async () => {
       if (!userId) {
         if ((await kv.get<string>(GUEST_SEEN).catch(() => null)) === today) return;
@@ -48,7 +48,7 @@ export function DailyHost() {
       if (st.last_date === today) return;
       setOpen({ day: st.next_day, collected: false });
     })();
-  }, [known, intro, path, userId, checked]);
+  }, [known, intro, path, userId]);
 
   if (!open) return null;
 

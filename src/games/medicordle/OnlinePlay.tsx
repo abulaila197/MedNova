@@ -75,7 +75,12 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
 
   // The guess shows at once; it leaves the pending slot when the server's board has it.
   const sent = st?.me?.guesses.length ?? 0;
-  useEffect(() => setPending(null), [sent, st?.index]);
+  const board = `${sent}|${st?.index}`;
+  const [boardSeen, setBoardSeen] = useState(board);
+  if (boardSeen !== board) {
+    setBoardSeen(board);
+    setPending(null);
+  }
 
   if (!st) return <GameScreen scroll={false}>{null}</GameScreen>;
   if (st.phase === 'countdown' || st.item == null) {

@@ -29,7 +29,7 @@ export function GamesScreen() {
 
   const go = useCallback(
     (target: number) => {
-      pos.value = withTiming(target, { duration: 380, easing: EASE });
+      pos.set(withTiming(target, { duration: 380, easing: EASE }));
       setSel(mod(target));
     },
     [pos],
@@ -52,14 +52,14 @@ export function GamesScreen() {
       start.value = pos.value;
     })
     .onUpdate((e) => {
-      pos.value = start.value - e.translationX / u(DESIGN_W);
+      pos.set(start.value - e.translationX / u(DESIGN_W));
     })
     .onEnd((e) => {
       const base = Math.round(start.value);
       const moved = pos.value - base;
       let target = Math.round(pos.value);
       if (Math.abs(moved) > 0.18 || Math.abs(e.velocityX) > 400) target = base + (moved > 0 ? 1 : -1);
-      pos.value = withTiming(target, { duration: 380, easing: EASE });
+      pos.set(withTiming(target, { duration: 380, easing: EASE }));
       scheduleOnRN(pick, target);
     });
 

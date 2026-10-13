@@ -197,6 +197,7 @@ function CasesPage() {
     useCallback(() => {
       setErr('');
       loadCases().catch(() => setErr('Could not load your cases. Check your connection.'));
+      // eslint-disable-next-line react-hooks/exhaustive-deps -- signedIn only re-runs the load when the account changes while the page is open
     }, [signedIn]),
   );
   const cases = list ?? [];

@@ -32,9 +32,15 @@ export default function Page() {
   const [show, setShow] = useState<'new' | 'all'>('new');
   const [reports, setReports] = useState<Report[] | null>(null);
   const [repErr, setRepErr] = useState(false);
+  // A new list (or admin rights) starts from "loading" again.
+  const repFor = `${isAdmin}:${show}`;
+  const [repShown, setRepShown] = useState(repFor);
+  if (repShown !== repFor) {
+    setRepShown(repFor);
+    if (isAdmin) setReports(null);
+  }
   useEffect(() => {
     if (!isAdmin) return;
-    setReports(null);
     supabase.rpc('admin_reports', { show }).then(({ data, error }) => {
       setRepErr(!!error);
       setReports((data as Report[]) ?? []);
@@ -47,17 +53,18 @@ export default function Page() {
     setReports((list) => (list ?? []).flatMap((x) => (x.id !== r.id ? [x] : show === 'new' ? [] : [{ ...x, status }])));
   };
 
+  // An empty search clears the results at once; a name is looked up after a short pause in typing.
+  const name = q.trim().replace(/^@/, '');
+  if (isAdmin && !name && found.length) setFound([]);
   useEffect(() => {
-    if (!isAdmin) return;
-    const name = q.trim().replace(/^@/, '');
-    if (!name) return setFound([]);
+    if (!isAdmin || !name) return;
     const id = setTimeout(async () => {
       const { data, error } = await supabase.rpc('admin_find_players', { q: name });
       if (error) setMsg({ text: 'Could not search. Check the connection.', bad: true });
       else setFound((data as Player[]) ?? []);
     }, 300);
     return () => clearTimeout(id);
-  }, [q, isAdmin]);
+  }, [name, isAdmin]);
 
   if (!isAdmin) return <Redirect href="/games" />;
 

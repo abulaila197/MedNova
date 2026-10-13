@@ -30,9 +30,15 @@ export function Inbox({ c }: { c: C }) {
   const [items, setItems] = useState<Item[] | null>(null);
   const [err, setErr] = useState(false);
   const kind = KINDS.find((k) => k.key === what)!;
-  useEffect(() => {
+  // Another list starts from "loading" again.
+  const list = `${what}:${show}`;
+  const [shownList, setShownList] = useState(list);
+  if (shownList !== list) {
+    setShownList(list);
     setItems(null);
     setErr(false);
+  }
+  useEffect(() => {
     call<Item[]>('admin_inbox', { what, show })
       .then((r) => setItems(r ?? []))
       .catch(() => (setErr(true), setItems([])));

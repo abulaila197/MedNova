@@ -128,8 +128,11 @@ function Find({ t }: { t: Theme }) {
   const [q, setQ] = useState('');
   const [rows, setRows] = useState<Found[] | null>(null);
   const [sent, setSent] = useState<string[]>([]);
+  // Under 2 letters there is nothing to look up: clear the list at once.
+  const short = q.trim().length < 2;
+  if (short && rows !== null) setRows(null);
   useEffect(() => {
-    if (q.trim().length < 2) return setRows(null);
+    if (short) return;
     let live = true;
     const id = setTimeout(() => {
       call<Found[]>('find_players', { q })
@@ -140,7 +143,7 @@ function Find({ t }: { t: Theme }) {
       live = false;
       clearTimeout(id);
     };
-  }, [q]);
+  }, [q, short]);
   const add = async (id: string) => {
     setSent((x) => [...x, id]);
     try {

@@ -46,7 +46,10 @@ export default function RootLayout() {
   const path = usePathname();
   const params = useGlobalSearchParams();
   const here = useRef('');
-  here.current = path + (Object.keys(params).length ? `?${new URLSearchParams(params as Record<string, string>)}` : '');
+  const url = path + (Object.keys(params).length ? `?${new URLSearchParams(params as Record<string, string>)}` : '');
+  useEffect(() => {
+    here.current = url;
+  }, [url]);
   useEffect(() => watchResize(() => here.current), []);
   if (!loaded || !ready) return null;
   return (

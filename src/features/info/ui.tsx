@@ -67,7 +67,7 @@ export const FADE_FROM = 0.78;
 /** Scrolling page body that dissolves before the dock. `over` is drawn inside the fade but does not scroll. */
 export function InfoScroll({ children, scrollY, over, scrollRef, contentStyle }: { children: ReactNode; scrollY?: SharedValue<number>; over?: ReactNode; scrollRef?: React.RefObject<Animated.ScrollView | null>; contentStyle?: StyleProp<ViewStyle> }) {
   const onScroll = useAnimatedScrollHandler((e) => {
-    if (scrollY) scrollY.value = e.contentOffset.y / Math.max(1, e.contentSize.height - e.layoutMeasurement.height);
+    if (scrollY) scrollY.set(e.contentOffset.y / Math.max(1, e.contentSize.height - e.layoutMeasurement.height));
   });
   return (
     <Fade from={FADE_FROM} style={s.pg}>

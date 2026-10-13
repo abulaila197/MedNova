@@ -57,9 +57,14 @@ export function ReportSheet() {
   const [state, setState] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
   const path = usePathname();
   const params = useGlobalSearchParams();
+  // Each opening starts a fresh report.
+  const [wasOpen, setWasOpen] = useState(reportOpen);
+  if (wasOpen !== reportOpen) {
+    setWasOpen(reportOpen);
+    if (reportOpen) setState('idle');
+  }
   useEffect(() => {
     if (!reportOpen) return;
-    setState('idle');
     contextOf(path, params).then(setCtx, () => setCtx({ chips: [], data: { path } }));
     // Only when the sheet opens: the page under it doesn't change while it is open.
     // eslint-disable-next-line react-hooks/exhaustive-deps

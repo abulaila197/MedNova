@@ -36,6 +36,7 @@ export function useLanding(def: GameDef) {
     return () => {
       live = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- signedIn makes a new load (run by the effect below) when the account changes
   }, [def, signedIn]);
   useFocusEffect(load);
   // Signing in or out while the page is open changes the free plays at once (focus alone would miss it).

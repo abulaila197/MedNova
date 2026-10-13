@@ -84,13 +84,16 @@ export function SoloPage({ m, me, seconds, act }: P) {
   const [joker, setJoker] = useState(false);
   const qs = (turn?.questions ?? []) as SoloView[];
   const key = qs.map((q) => q.id).join();
-  useEffect(() => {
+  // A new set of questions starts from the first one with nothing picked.
+  const [shownKey, setShownKey] = useState(key);
+  if (shownKey !== key) {
+    setShownKey(key);
     setIx(0);
     setPicks([]);
     setOrder([]);
     setPairs([]);
     setLeft(null);
-  }, [key]);
+  }
 
   const head = <Top kicker={`${stageLine(m)} · Solo round ${ROMAN[m.round - 1]}`} title={turn?.card ? 'A card!' : turn?.style ? STYLE_NAME[turn.style] : 'Your number'} line={turn ? `Number ${turn.tile}` : undefined} seconds={seconds} />;
   if (!turn) return <>{head}<Waiting text="You sit this round out." /></>;
@@ -300,7 +303,12 @@ function Standing({ m, me, act, elapsed }: P) {
   const vs = m.versus;
   const [sel, setSel] = useState<number[]>([]);
   const index = vs?.style === 'standing' ? vs.index : -1;
-  useEffect(() => setSel([]), [index]);
+  // Each new question starts with nothing selected.
+  const [selFor, setSelFor] = useState(index);
+  if (selFor !== index) {
+    setSelFor(index);
+    setSel([]);
+  }
   if (vs?.style !== 'standing') return null;
   const q = vs.qs[vs.index];
   const alive = (vs.hearts[me] ?? 0) > 0;

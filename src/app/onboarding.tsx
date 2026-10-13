@@ -35,7 +35,7 @@ export default function Onboarding() {
     (i: number) => {
       if (i > LAST) return toAuth();
       const n = Math.max(0, i);
-      pos.value = withTiming(n, { duration: 380, easing: EASE });
+      pos.set(withTiming(n, { duration: 380, easing: EASE }));
     },
     [pos, toAuth],
   );
@@ -53,7 +53,7 @@ export default function Onboarding() {
     .onUpdate((e) => {
       // a little resistance past the first slide; past the last one the swipe leads to sign-in
       const p = start.value - e.translationX / w;
-      pos.value = p < 0 ? p * 0.3 : p;
+      pos.set(p < 0 ? p * 0.3 : p);
     })
     .onEnd((e) => {
       const base = Math.round(start.value);
@@ -61,11 +61,11 @@ export default function Onboarding() {
       let target = Math.round(pos.value);
       if (Math.abs(moved) > 0.16 || Math.abs(e.velocityX) > 400) target = base + (moved > 0 ? 1 : -1);
       if (target > LAST) {
-        pos.value = withTiming(LAST, { duration: 200, easing: EASE });
+        pos.set(withTiming(LAST, { duration: 200, easing: EASE }));
         scheduleOnRN(toAuth);
         return;
       }
-      pos.value = withTiming(Math.max(0, target), { duration: 380, easing: EASE });
+      pos.set(withTiming(Math.max(0, target), { duration: 380, easing: EASE }));
     });
 
   const row = useAnimatedStyle(() => ({ transform: [{ translateX: -Math.min(pos.value, LAST + 0.3) * w }] }));

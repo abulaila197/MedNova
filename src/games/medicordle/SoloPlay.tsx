@@ -143,7 +143,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
       }
       if (next.phase === 'done' && prev.phase !== 'done') onFinish(next.score);
     },
-    [play, style, onFinish],
+    [play, style, kind, onFinish],
   );
 
   usePauseHide(() => dispatch({ type: 'PAUSE', now: Date.now() }));

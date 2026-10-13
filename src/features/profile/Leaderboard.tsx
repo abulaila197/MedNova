@@ -57,9 +57,15 @@ const gameName = (k: string | null) => (k ? (GAMES.find((g) => g.key === k) ?? {
 /** The board from the server (RL3): reloads when a filter changes; null while loading, 'error' if it failed. */
 function useBoard(period: Period, scope: 'everyone' | 'friends', game: string | null, userId: string | null) {
   const [board, setBoard] = useState<Board | null | 'error'>(null);
+  // A new filter shows "loading" again until its board arrives.
+  const filter = `${period}|${scope}|${game}|${userId}`;
+  const [shown, setShown] = useState(filter);
+  if (shown !== filter) {
+    setShown(filter);
+    setBoard(null);
+  }
   useEffect(() => {
     let live = true;
-    setBoard(null);
     supabase.rpc('leaderboard', { period, scope, game }).then(({ data, error }) => live && setBoard(error || !data ? 'error' : (data as Board)));
     return () => {
       live = false;

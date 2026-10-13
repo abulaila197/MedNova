@@ -63,7 +63,12 @@ export function SlideTable(p: TableProps) {
   const keys = useMemo(() => keyStates(guesses, p.answer), [guesses, p.answer]);
 
   // A new row or a new word clears what was typed.
-  useEffect(() => setInput(''), [p.played.length, p.answer]);
+  const row = `${p.played.length}|${p.answer}`;
+  const [typedFor, setTypedFor] = useState(row);
+  if (typedFor !== row) {
+    setTypedFor(row);
+    setInput('');
+  }
   useEffect(() => {
     if (!toast) return;
     const id = setTimeout(() => setToast(null), 1600);
