@@ -9,7 +9,12 @@ export function usePauseHide(onPause: () => void, onResume?: () => void) {
   const pause = useEffectEvent(() => onPause());
   useEffect(() => {
     const sub = AppState.addEventListener('change', (s) => {
-      if (s === 'active' || hiddenRef.current) return;
+      // Back in the app: arm again, so every later trip away pauses too (Yazan 2026-10-13).
+      if (s === 'active') {
+        hiddenRef.current = false;
+        return;
+      }
+      if (hiddenRef.current) return;
       hiddenRef.current = true;
       setHidden(true);
       pause();
