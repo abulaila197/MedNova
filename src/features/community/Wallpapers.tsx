@@ -31,7 +31,10 @@ function WallPost({ src, i, n }: { src: ImageSourcePropType; i: number; n: numbe
         <Text style={[s.who, { color: t.fg }]}>MedNova</Text>
         <Text style={[s.no, { color: t.kick }]}>{`${two(i + 1)} / ${two(n)}`}</Text>
       </View>
-      <Image source={src} style={s.photo} resizeMode="cover" accessibilityLabel={`Wallpaper ${i + 1}`} />
+      {/* The frame sets the shape; a bare Image takes the file's own height on web. */}
+      <View style={s.photo}>
+        <Image source={src} style={s.fill} resizeMode="cover" accessibilityLabel={`Wallpaper ${i + 1}`} />
+      </View>
       <View style={s.acts}>
         <Pressable onPress={tapped(() => setLiked(!liked))} style={[s.act, { borderColor: liked ? t.accent : t.chipLine, backgroundColor: t.chip }]} accessibilityRole="button" accessibilityState={{ selected: liked }} accessibilityLabel={liked ? 'Unlike' : 'Like'}>
           <Text style={[s.ico, { color: liked ? t.accent : t.mute }]}>{liked ? '♥' : '♡'}</Text>
@@ -76,7 +79,8 @@ const s = StyleSheet.create({
   by: { flexDirection: 'row', alignItems: 'center', gap: u(7), paddingHorizontal: u(12), paddingVertical: u(9) },
   who: { fontFamily: F.bodySemi, fontSize: u(11.5), flex: 1 },
   no: { fontFamily: F.mono, fontSize: u(8.5), letterSpacing: u(1.2) },
-  photo: { width: '100%', aspectRatio: 4 / 5 },
+  photo: { width: '100%', aspectRatio: 768 / 1376 }, // Yazan's wallpapers are phone-shaped; show them whole
+  fill: { width: '100%', height: '100%' },
   acts: { flexDirection: 'row', gap: u(8), padding: u(10) },
   act: { flexDirection: 'row', alignItems: 'center', gap: u(6), borderWidth: 1, borderRadius: 999, paddingHorizontal: u(12), paddingVertical: u(6) },
   ico: { fontSize: u(13) },
