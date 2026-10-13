@@ -11,7 +11,7 @@ import { GameScreen } from '../shell/ui';
 import { clock } from '@/games/engine/clock';
 
 // Case Files' own design language: "Evidence board". Creamy police folders pinned to a felt board, joined by
-// red strings, in a grey room lit from the top-left, typewriter type throughout. It carries on from the game's loading page (rain,
+// red strings, in a grey room lit from the top-left, Barlow Condensed type throughout (was a typewriter face until 2026-10-13). It carries on from the game's loading page (rain,
 // dark room, red thread). Nothing here comes from the app's look or another game's; only the game header is
 // shared. One look in both app themes, like the loading page.
 
@@ -28,12 +28,12 @@ export const NR = {
   redSoft: 'rgba(200,35,47,0.18)',
   green: '#7fb48a',
   panel: 'rgba(255,255,255,0.04)',
-  type: 'SpecialElite_400Regular',
+  type: 'BarlowCondensed_500Medium',
 };
-export const NOIR_FONTS = ['SpecialElite_400Regular'];
+export const NOIR_FONTS = ['BarlowCondensed_500Medium'];
 
 let fontsReady = false;
-/** Loads the typewriter face once; pages render after it. */
+/** Loads the case-file face (Barlow Condensed, Yazan 2026-10-13) once; pages render after it. */
 export function useNoirFonts() {
   const [ok, setOk] = useState(fontsReady);
   useEffect(() => {

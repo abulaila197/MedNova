@@ -5,6 +5,7 @@
   "dependencies": {
     "@expo-google-fonts/abril-fatface": "^0.4.1",
     "@expo-google-fonts/archivo": "^0.4.2",
+    "@expo-google-fonts/barlow-condensed": "^0.4.1",
     "@expo-google-fonts/bebas-neue": "^0.4.1",
     "@expo-google-fonts/cabin-sketch": "^0.4.1",
     "@expo-google-fonts/cinzel": "^0.4.2",

@@ -63,7 +63,7 @@ const Ink = ({ children, size = 13, color = PAPER.ink, style, lines }: { childre
   <T size={size} color={color} style={style} lines={lines}>{children}</T>
 );
 
-/** "‹ Games" in typewriter type: back, or to `to` when the page was opened directly. */
+/** "‹ Games" in the case-file type: back, or to `to` when the page was opened directly. */
 function BackLink({ label, to }: { label: string; to: string }) {
   return (
     <Pressable onPress={() => (router.canGoBack() ? router.back() : router.replace(to as never))} hitSlop={u(8)} accessibilityRole="link" accessibilityLabel={`Back to ${label}`} style={{ alignSelf: 'flex-start' }}>

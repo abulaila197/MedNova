@@ -6,6 +6,7 @@ import { LOAD } from './configs';
 
 const FILES: Record<string, number> = {
   SpecialElite_400Regular: require('@expo-google-fonts/special-elite/400Regular/SpecialElite_400Regular.ttf'),
+  BarlowCondensed_500Medium: require('@expo-google-fonts/barlow-condensed/500Medium/BarlowCondensed_500Medium.ttf'),
   BebasNeue_400Regular: require('@expo-google-fonts/bebas-neue/400Regular/BebasNeue_400Regular.ttf'),
   CabinSketch_400Regular: require('@expo-google-fonts/cabin-sketch/400Regular/CabinSketch_400Regular.ttf'),
   CabinSketch_700Bold: require('@expo-google-fonts/cabin-sketch/700Bold/CabinSketch_700Bold.ttf'),
