@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 import Svg, { Defs, LinearGradient as SvgLinear, Path, Stop } from 'react-native-svg';
@@ -9,8 +9,10 @@ import { Fade } from '@/components/Fade';
 import { useSvgId } from '@/components/svgId';
 import { FriendCount } from '@/features/profile/Friends';
 import { PlanetSystem } from '@/features/profile/PlanetSystem';
+import { Face } from '@/games/shell/Face';
 import { deleteAccount, useAccount } from '@/state/account';
 import { useTheme } from '@/state/app';
+import { loadFriends, unblockUser, useFriends } from '@/state/friends';
 import { u } from '@/theme/scale';
 import { F, type Theme } from '@/theme/tokens';
 
@@ -87,9 +89,48 @@ export function Profile() {
           </View>
         ))}
         <FriendCount t={t} />
+        {profile ? <Blocked t={t} /> : null}
         {profile ? <DeleteAccount t={t} /> : null}
       </ScrollView>
     </Fade>
+  );
+}
+
+/** Blocked players card (moved here from the Settings page, Yazan 2026-10-13). */
+function Blocked({ t }: { t: Theme }) {
+  const blocked = useFriends((f) => f.blocked);
+  const [busy, setBusy] = useState<string | null>(null);
+  useEffect(() => {
+    loadFriends().catch(() => {});
+  }, []);
+  return (
+    <>
+      <Text style={[s.sh2, { color: t.kick }]}>BLOCKED PLAYERS</Text>
+      <View style={[s.blk, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
+        {blocked.length ? (
+          blocked.map((b) => (
+            <View key={b.id} style={s.blkRow}>
+              <Face slug={b.avatar} size={u(22)} />
+              <Text style={[s.blkN, { color: t.fg }]} numberOfLines={1}>{b.display_name}</Text>
+              <Pressable
+                disabled={busy === b.id}
+                onPress={async () => {
+                  setBusy(b.id);
+                  await unblockUser(b.id).catch(() => {});
+                  setBusy(null);
+                }}
+                style={[s.ch, s.ghost, { borderColor: t.panelLine }]}
+                accessibilityRole="button"
+                accessibilityLabel={`Unblock ${b.display_name}`}>
+                <Text style={[s.ghT, { color: t.mute }]}>Unblock</Text>
+              </Pressable>
+            </View>
+          ))
+        ) : (
+          <Text style={[s.none, { color: t.mute, paddingVertical: 0 }]}>You haven’t blocked anyone.</Text>
+        )}
+      </View>
+    </>
   );
 }
 
@@ -156,4 +197,7 @@ const s = StyleSheet.create({
   ch: { height: u(23), paddingHorizontal: u(10), borderRadius: u(10), justifyContent: 'center' },
   ghost: { height: u(25), borderWidth: 1 },
   ghT: { fontFamily: F.bodySemi, fontSize: u(9.5) },
+  blk: { borderWidth: 1, borderRadius: u(14), padding: u(12), gap: u(8), marginTop: u(4) },
+  blkRow: { flexDirection: 'row', alignItems: 'center', gap: u(9) },
+  blkN: { flex: 1, fontFamily: F.bodySemi, fontSize: u(11.5) },
 });
