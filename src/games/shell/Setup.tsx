@@ -23,9 +23,19 @@ export function Setup({ def, mode, prefill, prefillSeats }: { def: GameDef; mode
   const st = useSetup(def, mode, prefill, prefillSeats);
   const { opts, vals, setVals, range, seats, teams, canTeam, emptyTeam, busy, start } = st;
 
-  // Compact on purpose: every game's setup fits one phone screen without scrolling (Yazan, 2026-10-05).
+  // Compact on purpose: every game's setup fits one phone screen without scrolling (Yazan, 2026-10-05). With many
+  // players the list scrolls, and Start stays on screen under it.
   return (
-    <GameScreen bodyStyle={{ paddingTop: u(10), gap: u(10) }}>
+    <GameScreen
+      bodyStyle={{ paddingTop: u(10), gap: u(10) }}
+      bottom={
+        <>
+          <Text style={[s.small, { color: t.dim, textAlign: 'center' }]}>
+            {emptyTeam ? `${emptyTeam.name} has no players yet.` : 'Settings lock once the game starts.'}
+          </Text>
+          <Btn label="Start" onPress={start} disabled={busy || !!emptyTeam} />
+        </>
+      }>
       <Back label={`${g.lead} ${g.em}`} fallback={`/play/${def.key}`} />
       <Title lead={g.lead} em={g.em} size={21} />
       {canTeam || opts.length ? (
@@ -44,10 +54,6 @@ export function Setup({ def, mode, prefill, prefillSeats }: { def: GameDef; mode
         </Card>
       ) : null}
       {range ? <Players st={st} min={range.min} max={range.max} note={def.playersNote?.(seats.length)} teams={teams} /> : null}
-      <Text style={[s.small, { color: t.dim, textAlign: 'center' }]}>
-        {emptyTeam ? `${emptyTeam.name} has no players yet.` : 'Settings lock once the game starts.'}
-      </Text>
-      <Btn label="Start" onPress={start} disabled={busy || !!emptyTeam} />
     </GameScreen>
   );
 }

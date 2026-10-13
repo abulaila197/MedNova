@@ -13,14 +13,18 @@ import { F } from '@/theme/tokens';
  * A game with its own design language passes its own (opaque) background as `under` and body spacing; the app's
  * glow and grain are then not drawn at all, rather than drifting unseen underneath.
  */
-export function GameScreen({ children, scroll = true, top, under, bodyStyle }: { children: ReactNode; scroll?: boolean; top?: ReactNode; under?: ReactNode; bodyStyle?: StyleProp<ViewStyle> }) {
+/** `bottom` stays on screen under the scrolling body: right after the content when it fits, pinned when it doesn't. */
+export function GameScreen({ children, scroll = true, top, under, bodyStyle, bottom }: { children: ReactNode; scroll?: boolean; top?: ReactNode; under?: ReactNode; bodyStyle?: StyleProp<ViewStyle>; bottom?: ReactNode }) {
   return (
     <Screen dock={false} glow={under ? false : 1} game under={under}>
       {top}
       {scroll ? (
-        <ScrollView contentContainerStyle={[s.body, bodyStyle]} showsVerticalScrollIndicator={false}>
-          {children}
-        </ScrollView>
+        <>
+          <ScrollView style={bottom ? s.shrink : null} contentContainerStyle={[s.body, bodyStyle, bottom ? { paddingBottom: 0 } : null]} showsVerticalScrollIndicator={false}>
+            {children}
+          </ScrollView>
+          {bottom ? <View style={[s.body, bodyStyle, { paddingTop: u(10) }]}>{bottom}</View> : null}
+        </>
       ) : (
         <View style={[s.body, bodyStyle, { flex: 1 }]}>{children}</View>
       )}
@@ -108,6 +112,7 @@ export function RoundBtn({ label, glyph, onPress }: { label: string; glyph: stri
 
 export const s = StyleSheet.create({
   body: { paddingHorizontal: u(16), paddingTop: u(16), paddingBottom: u(28), gap: u(12) },
+  shrink: { flexGrow: 0, flexShrink: 1 },
   kick: { fontFamily: F.mono, fontSize: u(8.5), lineHeight: u(12), letterSpacing: u(1.7), textTransform: 'uppercase' },
   ttl: { fontFamily: F.display, letterSpacing: u(-0.5) },
   body2: { fontFamily: F.body, fontSize: u(11.5), lineHeight: u(17) },

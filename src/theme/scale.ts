@@ -17,7 +17,8 @@ import { frameFit } from './fit';
  *   - On taller phones the extra height goes to each page's flexible space, never to stretching.
  *
  * Sizes in code are written in design px and passed through u(). The factor is fixed at launch, so
- * the phone's system bar sliding in or out moves page edges (flex) but never rescales the design.
+ * the phone's system bar sliding in or out moves page edges (flex) but never rescales the design. A real window
+ * size change (split screen, a foldable opening) reloads the app on the same page (state/resize.ts).
  */
 export { DESIGN_H, DESIGN_W } from './fit';
 

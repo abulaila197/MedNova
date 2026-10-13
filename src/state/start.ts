@@ -3,6 +3,8 @@ import { create } from 'zustand';
 import { defaultKV } from '@/games/engine/storage';
 import { useSession } from '@/games/shell/session';
 
+import { takeReloadRoute } from './resize';
+
 // Where the app opens (Yazan, 2026-10-10):
 //   first time            -> intro + onboarding slides -> sign-in
 //   seen onboarding, signed in -> intro -> Games page
@@ -17,9 +19,11 @@ type Start = {
   onboarded: boolean;
   /** the returning-user intro is still playing over the first page */
   intro: boolean;
+  /** after a screen-size reload: the page to reopen, with no intro */
+  back: string | null;
 };
 
-export const useStart = create<Start>(() => ({ seenRead: false, onboarded: false, intro: false }));
+export const useStart = create<Start>(() => ({ seenRead: false, onboarded: false, intro: false, back: null }));
 
 /** The first page can be picked once both the slides flag and the saved session are known. */
 export const useStartReady = () => {
@@ -33,18 +37,20 @@ let booted = false;
 export function bootStart() {
   if (booted) return;
   booted = true;
-  void kv
-    .get<boolean>(SEEN)
-    .catch(() => null)
-    .then((s) => {
-      const onboarded = s === true;
-      useStart.setState({ seenRead: true, onboarded, intro: onboarded });
-    });
+  void Promise.all([kv.get<boolean>(SEEN).catch(() => null), takeReloadRoute()]).then(([s, back]) => {
+    const onboarded = s === true;
+    useStart.setState({ seenRead: true, onboarded, intro: onboarded && !back, back: onboarded ? back : null });
+  });
 }
 
 /** The first page after launch. */
 export function firstRoute() {
-  if (!useStart.getState().onboarded) return '/onboarding' as const;
+  const { onboarded, back } = useStart.getState();
+  if (!onboarded) return '/onboarding' as const;
+  if (back) {
+    useStart.setState({ back: null });
+    return back as '/games';
+  }
   return useSession.getState().userId ? ('/games' as const) : ('/auth' as const);
 }
 
