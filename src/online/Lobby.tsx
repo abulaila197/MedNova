@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Pressable, Share, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 
+import { LevelBadge } from '@/components/LevelBadge';
 import { Sheet } from '@/components/Sheet';
 import { CHARACTERS } from '@/games/shell/characters';
 import { Face } from '@/games/shell/Face';
@@ -140,8 +141,14 @@ export function Lobby({ def, roomId }: { def: GameDef; roomId: string }) {
         style={[s.tile, teams >= 2 && s.tileTight]}
         accessibilityRole="button"
         accessibilityLabel={`${p.name}, ${label}${muted.includes(p.user_id) ? ', muted' : ''}`}>
-        <View style={s.ring}>
-          <Face slug={p.character} size={u(38)} />
+        <View>
+          <View style={s.ring}>
+            <Face slug={p.character} size={u(38)} />
+          </View>
+          {/* The player's level on the corner of their face (Yazan, 2026-10-13). */}
+          <View style={s.lvl}>
+            <LevelBadge level={p.level} size={u(16)} edge={G.panel} />
+          </View>
         </View>
         <Text style={[s.tn, { color: G.fg }]} numberOfLines={1}>{p.user_id === me ? 'You' : p.name}</Text>
         <Text style={[s.tl, { color: p.ready && !isHost ? G.ok : G.mute }, p.ready && !isHost && { fontFamily: F.bodySemi }]}>{label}</Text>
@@ -450,6 +457,7 @@ const s = StyleSheet.create({
   tileTight: { paddingTop: u(8), paddingBottom: u(7) },
   ring: { borderRadius: u(22), borderWidth: u(2.5), borderColor: G.panel, boxShadow: `0px 0px 0px 1px ${G.line}` },
   tn: { fontFamily: F.bodySemi, fontSize: u(11), marginTop: u(3) },
+  lvl: { position: 'absolute', right: -u(5), bottom: -u(3) },
   tl: { fontFamily: F.body, fontSize: u(9) },
   rm: { position: 'absolute', top: u(6), right: u(8), fontFamily: F.bodyBold, fontSize: u(9) },
   empty: { backgroundColor: 'transparent', borderStyle: 'dashed', borderColor: 'rgba(255,255,255,0.14)', justifyContent: 'center', minHeight: u(86) },
