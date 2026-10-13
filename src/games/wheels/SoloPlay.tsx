@@ -13,6 +13,7 @@ import { WheelsPause } from './screens';
 import { TurnBoard } from './TurnBoard';
 import { Btn, CB, CD, Kicker, Panel, Rule, T, VelvetScreen, VV } from './velvet';
 import { useTicker } from '../engine/useTicker';
+import { turnShown } from './shown';
 
 /** The saved run has its clock stopped, so resuming later picks up with the same time left (rules 7, 10). */
 const snapshot = (r: SoloRun, now: number): SoloRun => (r.turn && r.turn.pausedAt == null ? { ...r, turn: { ...r.turn, pausedAt: now } } : r);
@@ -21,20 +22,19 @@ const snapshot = (r: SoloRun, now: number): SoloRun => (r.turn && r.turn.pausedA
 export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   const target = (Number(play.settings.target) || 50) as Target;
   const mix = (play.settings.mix as Mix) ?? 'mixed';
-  const [run, setRun] = useState<SoloRun | null>(null);
-  const ref = useRef<SoloRun | null>(null);
+  // The saved run (its clock started again), or a new one.
+  const [first] = useState(() => {
+    const saved = (play.resume as { run?: SoloRun } | null)?.run ?? null;
+    if (saved) return { run: saved.turn?.pausedAt != null ? stepSolo(saved, { type: 'RESUME', now: Date.now() }, BANK, Math.random) : saved, fresh: false };
+    return { run: startSolo(BANK, target, [], Math.random, mix), fresh: true };
+  });
+  const [run, setRun] = useState<SoloRun>(first.run);
+  const ref = useRef<SoloRun>(first.run);
   const [paused, setPaused] = useState(false);
 
   useEffect(() => {
-    let r = (play.resume as { run?: SoloRun } | null)?.run ?? null;
-    if (r?.turn?.pausedAt != null) r = stepSolo(r, { type: 'RESUME', now: Date.now() }, BANK, Math.random);
-    if (!r) {
-      r = startSolo(BANK, target, [], Math.random, mix);
-      engine.recorder.bookmark(play.id, { run: snapshot(r, Date.now()) }, 0);
-    }
-    ref.current = r;
-    setRun(r);
-  }, [play, target, mix]);
+    if (first.fresh) engine.recorder.bookmark(play.id, { run: snapshot(first.run, Date.now()) }, 0);
+  }, [first, play.id]);
 
   const record = useCallback(
     (rs: QResult[]) => {
@@ -66,7 +66,8 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
 
   // The clock: ticks while a timer runs (Star window, question, the right/wrong moment).
   const timed = run?.phase === 'turn' && run.turn?.until != null && !paused;
-  const now = useTicker(timed, 150, (n) => dispatch({ type: 'TICK', now: n }), { fine: true });
+  // The screen redraws when the bulbs it shows change, not on every tick.
+  const now = useTicker(timed, 150, (n) => dispatch({ type: 'TICK', now: n }), { shown: (n) => turnShown(ref.current?.turn, n) });
 
   const pause = () => {
     setPaused(true);

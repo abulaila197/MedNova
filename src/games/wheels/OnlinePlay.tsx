@@ -11,11 +11,12 @@ import { finishOnline, playForMatch } from '@/online/finish';
 import { settingsLine } from '@/online/format';
 import { AlertPill, Countdown, useAlerts } from '@/online/live';
 import { RoomTalk } from '@/online/Talk';
+import { useStableCallback } from '@/lib/useStableCallback';
 import { u } from '@/theme/scale';
 
 import type { OnlineProps } from '../shell/types';
 import { CARD_INFO, type Card } from './cards';
-import { fieldName, type Answer, type QResult, type TurnEvent } from './core';
+import { fieldName, type Answer, type QResult, type Question, type TurnEvent } from './core';
 import { BANK } from './data';
 import { bankVersion } from './keys';
 import { actor, bossPoints, BOSS_BONUS, BOSS_MS, BOSS_RIGHT, BOSS_WRONG, type OfflineGame } from './offline';
@@ -23,7 +24,8 @@ import { actName, Board, BossOver, CardWindow, ReactWindow, recapLine, Redemptio
 import { ONLINE_MS, type Move, type OnlineWheels } from './online';
 import { WheelsPause } from './screens';
 import { TurnBoard, type Strip } from './TurnBoard';
-import { Bill, Btn, Bulbs, CardArt, CD, CM, GEMS, Panel, PauseBtn, ROMAN, Rule, T, VelvetScreen, VV } from './velvet';
+import { gameShown } from './shown';
+import { Bill, Btn, Bulbs, bulbsLit, CardArt, CD, CM, GEMS, Panel, PauseBtn, ROMAN, Rule, T, VelvetScreen, VV } from './velvet';
 import { useMatchState } from '@/online/useMatchState';
 
 /** Every phone in a game must carry the same bank; the server checks this. */
@@ -58,8 +60,28 @@ function hydrate(g: OfflineGame): OfflineGame {
 
 const WAITS: Partial<Record<OfflineGame['phase'], number>> = { initiation: ONLINE_MS.init, reaction: ONLINE_MS.react, redemptionOffer: ONLINE_MS.offer };
 
+const styleOf = (q: Question) => (BANK.questions[Number(q.id)] ?? q).style;
+
+/**
+ * Everything this screen shows of the clock (bulbs, whole seconds) and the moments it asks the server to move on.
+ * The screen redraws when this changes instead of on every 200 ms tick; nothing on it moves in between.
+ */
+function shownOf(sv: number, st: WState | null) {
+  if (!st) return null;
+  // Once a wait has run out, every tick counts again: the screen keeps nudging the server until it moves on.
+  if (!st.state) return sv >= st.phase_ends_at ? sv : `c${Math.max(1, Math.ceil((st.phase_ends_at - sv) / 1000))}`;
+  const o = st.state;
+  const g = o.g;
+  const wait = WAITS[g.phase];
+  const waitLeft = wait && o.deadline ? Math.max(0, o.deadline - sv) : null;
+  const b = g.boss;
+  const boss = b ? `${b.until != null ? bulbsLit(Math.max(0, b.until - sv) / BOSS_MS) : 0}:${b.phase === 'ready' && o.deadline ? Math.ceil((o.deadline - sv) / 1000) : ''}` : '';
+  if (st.due != null && sv >= st.due) return sv;
+  return `${waitLeft == null ? '' : `${bulbsLit(waitLeft / wait!)}:${Math.ceil(waitLeft / 1000)}`}|${gameShown({ ...g, boss: null }, sv, styleOf)}|${boss}`;
+}
+
 export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
-  const { st, load, server, notice, setNotice } = useMatchState<WState>('wc_state', matchId, { tickMs: 200 });
+  const { st, load, server, notice, setNotice } = useMatchState<WState>('wc_state', matchId, { tickMs: 200, shown: shownOf });
   const [oldBank, setOldBank] = useState(false);
   const [menu, setMenu] = useState(false);
   const lastTick = useRef(0);
@@ -375,17 +397,16 @@ function OnlineBoss({ g, seat, st, server, seatName, matchId, onDone, onPause }:
     },
     [deck.length, matchId],
   );
-  const swipeRef = useRef(swipe);
-  swipeRef.current = swipe;
+  const latestSwipe = useStableCallback(swipe);
   const pan = useMemo(
     () =>
       PanResponder.create({
         onMoveShouldSetPanResponder: (_, d) => Math.abs(d.dx) > 12,
         onPanResponderRelease: (_, d) => {
-          if (Math.abs(d.dx) > 60) swipeRef.current(d.dx > 0);
+          if (Math.abs(d.dx) > 60) latestSwipe(d.dx > 0);
         },
       }),
-    [],
+    [latestSwipe],
   );
   // When I finish my deck, the round can close early once everyone has.
   useEffect(() => {

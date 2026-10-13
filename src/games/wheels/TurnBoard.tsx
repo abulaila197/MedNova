@@ -1,7 +1,7 @@
 // One player's turn on the Velvet stage: the three slot reels, the Star window (WC5), then each question in its
 // own style with the bulb timer, and the right/wrong moment. Used by Solo and Pass the phone.
 import { LinearGradient } from 'expo-linear-gradient';
-import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { memo, useEffect, useEffectEvent, useMemo, useState, type ReactNode } from 'react';
 import { Pressable, StyleSheet, View, type LayoutChangeEvent } from 'react-native';
 import { Text } from '@/components/AppText';
 
@@ -21,45 +21,51 @@ const PAIR_INK = ['#79c9b6', '#b98ad8', '#e8c46a', '#e0828f', '#8fb4e8', '#d9a07
 const glow = (c: string) => ({ borderColor: c, shadowColor: c, shadowOpacity: 0.75, shadowRadius: u(7), shadowOffset: { width: 0, height: 0 } });
 const qWord = (n: number) => `${n} Question${n > 1 ? 's' : ''}`;
 
-/** Spins the reels that change for this question, stops them one by one, then tells the turn to go on. */
-function useReels(turn: Turn, onGo: () => void, paused?: boolean) {
-  const key = `${turn.k}:${turn.question.id}:${turn.star}`;
-  const prev = useRef<{ k: number; style: string } | null>(null);
-  // A Star re-spin keeps the count and style; a later question keeps the count.
-  const spinCount = turn.k === 0 && !(turn.star === 'used' && prev.current?.k === 0);
-  const spinStyle = !(turn.star === 'used' && turn.k === 0 && prev.current?.k === 0 && prev.current.style === turn.combo.style);
+/**
+ * The three reels and the banner. Spins the reels that change for this question (every SPIN_MS, in this small part
+ * of the board only), stops them one by one, then tells the turn to go on. Mounted again for each spin (`key`) and
+ * after a pause (the board is hidden), so the spin starts from 0 as before.
+ */
+function Reels({ turn, onGo }: { turn: Turn; onGo: () => void }) {
+  // A Star re-spin keeps the count and style (the Star only re-spins the field); a later question keeps the count.
+  const respin = turn.star === 'used' && turn.k === 0;
+  const spinCount = turn.k === 0 && !respin;
+  const spinStyle = !respin;
+  const spinning = turn.phase === 'reveal';
   const [t, setT] = useState(0);
-  const go = useRef(onGo);
-  go.current = onGo;
+  const go = useEffectEvent(onGo);
   useEffect(() => {
-    if (turn.phase !== 'reveal' || paused) return;
+    if (!spinning) return;
     const start = Date.now();
-    setT(0);
     const id = setInterval(() => {
       const e = Date.now() - start;
       setT(e);
       if (e >= STOP.go) {
         clearInterval(id);
-        go.current();
+        go();
       }
     }, SPIN_MS);
     return () => clearInterval(id);
-  }, [key, turn.phase, paused]);
-  useEffect(() => {
-    prev.current = { k: turn.k, style: turn.combo.style };
-  }, [turn.k, turn.combo.style]);
-  const spinning = turn.phase === 'reveal';
+  }, [spinning]);
   const tick = Math.floor(t / SPIN_MS);
-  return {
-    count: spinning && spinCount && t < STOP.count ? String(1 + (tick % 3)) : String(turn.count),
-    style: spinning && spinStyle && t < STOP.style ? STYLES[STYLE_KEYS[tick % STYLE_KEYS.length]].name : STYLES[turn.combo.style].name,
-    field: spinning && t < STOP.field ? FIELDS[(tick * 3) % FIELDS.length].name : fieldName(turn.combo.field),
-    settled: !spinning || t >= STOP.field,
-  };
+  const count = spinning && spinCount && t < STOP.count ? String(1 + (tick % 3)) : String(turn.count);
+  const style = spinning && spinStyle && t < STOP.style ? STYLES[STYLE_KEYS[tick % STYLE_KEYS.length]].name : STYLES[turn.combo.style].name;
+  const field = spinning && t < STOP.field ? FIELDS[(tick * 3) % FIELDS.length].name : fieldName(turn.combo.field);
+  const settled = !spinning || t >= STOP.field;
+  const st = STYLES[turn.question.style];
+  return (
+    <>
+      <Reel label="COUNT" value={count} spinning={spinning && !settled} />
+      <Reel label="STYLE" value={style} spinning={spinning && !settled} />
+      <Reel label="FIELD" value={field} spinning={spinning && !settled} />
+      <View style={{ height: u(2) }} />
+      {settled ? <Banner parts={[turn.k ? `Question ${turn.k + 1} of ${turn.count}` : qWord(turn.count), st.name, fieldName(turn.combo.field)]} /> : null}
+    </>
+  );
 }
 
-/** One slot reel: the landed value in crimson between two faded neighbours. */
-function Reel({ label, value, spinning }: { label: string; value: string; spinning: boolean }) {
+/** One slot reel: the landed value in crimson between two faded neighbours. Redraws only when its value changes. */
+const Reel = memo(function Reel({ label, value, spinning }: { label: string; value: string; spinning: boolean }) {
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: u(10) }}>
       <T f={CM} size={11.5} color={VV.brass} style={{ width: u(52), letterSpacing: u(1) }}>{label}</T>
@@ -72,7 +78,7 @@ function Reel({ label, value, spinning }: { label: string; value: string; spinni
       </Brass>
     </View>
   );
-}
+});
 
 function Banner({ parts }: { parts: string[] }) {
   return (
@@ -283,7 +289,6 @@ export function TurnBoard({ turn, now, kicker, title, strip, tray = [], footer, 
   /** Online: someone else's turn, shown live but nothing can be tapped. */
   watch?: boolean;
 }) {
-  const reels = useReels(turn, () => !watch && onEvent({ type: 'GO', now: Date.now() }), hidden);
   const q = turn.question;
   const st = STYLES[q.style];
   const asking = turn.phase === 'question' || turn.phase === 'feedback';
@@ -302,11 +307,7 @@ export function TurnBoard({ turn, now, kicker, title, strip, tray = [], footer, 
           </View>
           <PauseBtn onPress={onPause} />
         </View>
-        <Reel label="COUNT" value={reels.count} spinning={turn.phase === 'reveal' && !reels.settled} />
-        <Reel label="STYLE" value={reels.style} spinning={turn.phase === 'reveal' && !reels.settled} />
-        <Reel label="FIELD" value={reels.field} spinning={turn.phase === 'reveal' && !reels.settled} />
-        <View style={{ height: u(2) }} />
-        {reels.settled ? <Banner parts={[turn.k ? `Question ${turn.k + 1} of ${turn.count}` : qWord(turn.count), st.name, fieldName(turn.combo.field)]} /> : null}
+        <Reels key={`${turn.k}:${q.id}:${turn.star}`} turn={turn} onGo={() => !watch && onEvent({ type: 'GO', now: Date.now() })} />
         {turn.phase === 'star' ? (
           <Brass r={14} inner={{ backgroundColor: VV.panel, padding: u(12), gap: u(9) }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: u(12) }}>

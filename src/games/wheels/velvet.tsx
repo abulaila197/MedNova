@@ -160,11 +160,16 @@ export function Token({ label, sub, on, onPress, dark, small }: { label: string;
 }
 
 /** The bulb timer: 20 lights that go out as time runs down. */
+const BULBS = 20;
+
+/** How many bulbs are lit at `frac` of the time left: the only thing the bulb timer shows of the clock. */
+export const bulbsLit = (frac: number) => Array.from({ length: BULBS }, (_, i) => i / BULBS < frac).filter(Boolean).length;
+
 export function Bulbs({ frac }: { frac: number }) {
   return (
     <View style={{ flexDirection: 'row', gap: u(3) }}>
-      {Array.from({ length: 20 }, (_, i) => {
-        const lit = i / 20 < frac;
+      {Array.from({ length: BULBS }, (_, i) => {
+        const lit = i / BULBS < frac;
         return <View key={i} style={{ flex: 1, height: u(7), borderRadius: u(4), backgroundColor: lit ? '#ffd27a' : 'rgba(216,178,106,0.2)', shadowColor: '#ffbf4a', shadowOpacity: lit ? 0.8 : 0, shadowRadius: u(4) }} />;
       })}
     </View>

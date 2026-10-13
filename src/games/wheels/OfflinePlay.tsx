@@ -4,6 +4,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { PanResponder, View } from 'react-native';
 
+import { useStableCallback } from '@/lib/useStableCallback';
 import { u } from '@/theme/scale';
 
 import { engine, rank } from '../engine';
@@ -22,6 +23,7 @@ import { WheelsPause } from './screens';
 import { TurnBoard, type Strip } from './TurnBoard';
 import { Bill, Btn, Bulbs, CardArt, CB, CD, Chip, CM, Gem, Kicker, Panel, PauseBtn, ROMAN, Rule, T, VelvetScreen, VV } from './velvet';
 import { useTicker } from '../engine/useTicker';
+import { gameShown } from './shown';
 
 export type Seats = Map<number, { name: string; color?: string }>;
 const snapshot = (g: OfflineGame, now: number) => stepOffline(g, { type: 'PAUSE', now }, BANK, Math.random);
@@ -30,25 +32,24 @@ export const actName = (g: OfflineGame) => `Act ${ROMAN[g.cycle]} · Round ${g.r
 export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   const target = (Number(play.settings.target) || 50) as Target;
   const mix = (play.settings.mix as Mix) ?? 'mixed';
-  const [g, setG] = useState<OfflineGame | null>(null);
-  const ref = useRef<OfflineGame | null>(null);
+  // The saved game (its clocks started again), or a new one.
+  const [first] = useState(() => {
+    const saved = play.resume as OfflineGame | null;
+    if (saved) return { g: stepOffline(saved, { type: 'RESUME', now: Date.now() }, BANK, Math.random), fresh: false };
+    return { g: startOffline(play.seats.length, target, BANK, Math.random, mix), fresh: true };
+  });
+  const [g, setG] = useState<OfflineGame>(first.g);
+  const ref = useRef<OfflineGame>(first.g);
   const [paused, setPaused] = useState(false);
   // Who has the phone, and where in the log each player last took it (for the recap).
   const [holder, setHolder] = useState<number | null>(null);
-  const seen = useRef<Record<number, number>>({});
+  const [seen, setSeen] = useState<Record<number, number>>({});
   const seats: Seats = useMemo(() => new Map(play.seats.map((x) => [x.seat, { name: x.name, color: x.color }])), [play.seats]);
   const name = (s: number) => seats.get(s)?.name ?? `Player ${s + 1}`;
 
   useEffect(() => {
-    let s = play.resume as OfflineGame | null;
-    if (s) s = stepOffline(s, { type: 'RESUME', now: Date.now() }, BANK, Math.random);
-    else {
-      s = startOffline(play.seats.length, target, BANK, Math.random, mix);
-      engine.recorder.bookmark(play.id, snapshot(s, Date.now()), 0);
-    }
-    ref.current = s;
-    setG(s);
-  }, [play, target, mix]);
+    if (first.fresh) engine.recorder.bookmark(play.id, snapshot(first.g, Date.now()), 0);
+  }, [first, play.id]);
 
   const record = useCallback(
     (seat: number, rs: QResult[]) => {
@@ -97,7 +98,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
     if (cur.phase === 'turn') dispatch({ type: 'TURN', e: { type: 'TICK', now: n } });
     else if (cur.phase === 'redemption') dispatch({ type: 'RED', e: { type: 'TICK', now: n } });
     else if (cur.phase === 'boss') dispatch({ type: 'BOSS', e: { type: 'TICK', now: n } });
-  }, { fine: true });
+  }, { shown: (n) => gameShown(ref.current, n) }); // redraws when the bulbs change, not on every tick
 
   const pause = () => {
     setPaused(true);
@@ -114,12 +115,12 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   const board: Strip = g.active.map((s) => ({ seat: s, name: name(s), color: seats.get(s)?.color, score: g.scores[s], me: s === who })).sort((a, b) => b.score - a.score);
   const ready = () => {
     if (who == null) return;
-    seen.current[who] = g.log.length;
+    setSeen((x) => ({ ...x, [who]: g.log.length }));
     setHolder(who);
   };
 
   let body: React.ReactNode;
-  if (who != null && who !== holder) body = <Curtain g={g} seat={who} seats={seats} board={board} since={seen.current[who] ?? 0} onReady={ready} />;
+  if (who != null && who !== holder) body = <Curtain g={g} seat={who} seats={seats} board={board} since={seen[who] ?? 0} onReady={ready} />;
   else if (g.phase === 'initiation' && who != null) body = <CardWindow g={g} seat={who} seats={seats} board={board} onPlay={(p) => dispatch({ type: 'PLAY', play: p })} onPass={() => dispatch({ type: 'PASS' })} onPause={pause} />;
   else if (g.phase === 'reaction' && g.chain) body = <ReactWindow g={g} seats={seats} onReact={(choice, to) => dispatch({ type: 'REACT', choice, to })} onPause={pause} />;
   else if (g.phase === 'redemptionOffer' && who != null) body = <RedemptionOffer seat={who} seats={seats} onPick={(use) => dispatch({ type: 'REDEEM', use })} onPause={pause} />;
@@ -260,12 +261,15 @@ export function CardWindow({ g, seat, seats, board, onPlay, onPass, onPause }: {
   const [pick, setPick] = useState<Card | null>(can[0] ?? null);
   const [to, setTo] = useState<number | null>(null);
   const [give, setGive] = useState<Card | null>(null);
-  useEffect(() => {
+  // A new hand or another card played: start the choice again.
+  const deal = `${hand.join(',')}|${g.init.plays}`;
+  const [dealt, setDealt] = useState(deal);
+  if (dealt !== deal) {
+    setDealt(deal);
     setPick(can[0] ?? null);
     setTo(null);
     setGive(null);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hand.join(','), g.init.plays]);
+  }
   const targets = pick ? targetsFor(g.hands, seat, pick, g.active) : [];
   const needsTarget = pick === 'tower' || pick === 'moon' || pick === 'mirror';
   const gives = pick === 'mirror' ? hand.filter((c) => c !== 'mirror') : [];
@@ -466,17 +470,16 @@ export function TurnOver({ g, seat, seats, board, onNext }: { g: OfflineGame; se
 
 function BossBoard({ g, seat, now, seats, onEvent, onPause, hidden }: { g: OfflineGame; seat: number; now: number; seats: Seats; onEvent: (e: { type: 'GO'; now: number } | { type: 'SWIPE'; fits: boolean; now: number }) => void; onPause: () => void; hidden?: boolean }) {
   const b = g.boss!;
-  const swipe = useRef(onEvent);
-  swipe.current = onEvent;
+  const swipe = useStableCallback((fits: boolean) => onEvent({ type: 'SWIPE', fits, now: Date.now() }));
   const pan = useMemo(
     () =>
       PanResponder.create({
         onMoveShouldSetPanResponder: (_, d) => Math.abs(d.dx) > 12,
         onPanResponderRelease: (_, d) => {
-          if (Math.abs(d.dx) > 60) swipe.current({ type: 'SWIPE', fits: d.dx > 0, now: Date.now() });
+          if (Math.abs(d.dx) > 60) swipe(d.dx > 0);
         },
       }),
-    [],
+    [swipe],
   );
   if (hidden) return null;
   const n = seats.get(seat)?.name ?? '';
