@@ -104,8 +104,8 @@ export const SCORING = [
 export type Legal = { b?: string; p: string } | { li: string[] };
 export type Section = { n: string; k: string; plain: string; legal: Legal[] };
 
-export const CONTACT_EMAIL = 'amoriameen.71@gmail.com';
-const CONTACT = `${CONTACT_EMAIL} or +20 101 078 3851`;
+export const CONTACT_EMAIL = 'Support.novagames@gmail.com';
+const CONTACT = CONTACT_EMAIL;
 
 export const PRIVACY: Section[] = [
   {

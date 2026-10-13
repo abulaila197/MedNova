@@ -3,7 +3,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { Text, TextInput } from '@/components/AppText';
 
 import { Screen } from '@/components/Screen';
-import { INTENTS } from '@/features/info/content';
+import { CONTACT_EMAIL, INTENTS } from '@/features/info/content';
 import { GradBtn, InfoScroll, Kicker, s as ui, useInfo } from '@/features/info/ui';
 import { call } from '@/online/api';
 import { u } from '@/theme/scale';
@@ -66,6 +66,7 @@ export default function Page() {
         />
         {said ? <Text style={[s.said, { color: said.ok ? c.t.accent : c.t.red }]}>{said.text}</Text> : null}
         <GradBtn label={busy ? 'Sending...' : 'Send'} onPress={send} style={s.send} />
+        <Text style={[s.mail, { color: c.mute }]} selectable>{`Or write to ${CONTACT_EMAIL}`}</Text>
       </InfoScroll>
     </Screen>
   );
@@ -78,6 +79,7 @@ const s = StyleSheet.create({
   blank: { alignSelf: 'flex-start', borderBottomWidth: u(2), paddingBottom: u(4), marginBottom: u(-6) },
   blankT: { marginTop: 0, fontFamily: F.displayItalic },
   said: { fontFamily: F.bodyMedium, fontSize: u(10.5), marginTop: u(8) },
+  mail: { fontFamily: F.body, fontSize: u(10), marginTop: u(12), textAlign: 'center' },
   opts: { flexDirection: 'row', flexWrap: 'wrap', gap: u(6), marginTop: u(12) },
   opt: { borderWidth: 1, borderRadius: 999, paddingVertical: u(5), paddingHorizontal: u(10) },
   optT: { fontFamily: F.body, fontSize: u(9.5), lineHeight: u(11.5) },
