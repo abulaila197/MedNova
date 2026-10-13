@@ -6,6 +6,7 @@ import { Text, TextInput } from '@/components/AppText';
 
 import { useBalance } from '@/components/LevelBadge';
 import { Sheet } from '@/components/Sheet';
+import { supabase } from '@/lib/supabase';
 import { Face } from '@/games/shell/Face';
 import { useAccount } from '@/state/account';
 import { useTheme } from '@/state/app';
@@ -13,9 +14,9 @@ import { blockUser, removeFriend, type RequestResult, requestFriend, seenLabel }
 import { u } from '@/theme/scale';
 import { F, type Theme } from '@/theme/tokens';
 
-import { Name, useFriendSheet } from './Friends';
+import { Name, openReport, useFriendSheet } from './Friends';
 
-const close = () => useFriendSheet.setState({ open: null, friend: null, code: '' });
+const close = () => useFriendSheet.setState({ open: null, friend: null, code: '', target: null });
 const ALLOWED = /[^A-HJ-NP-Z2-9]/g; // friend codes skip 0, O, 1 and I
 
 const SAY: Record<RequestResult | 'error', string> = {
@@ -34,7 +35,7 @@ export function FriendSheets() {
   const open = useFriendSheet((x) => x.open);
   return (
     <Sheet open={!!open} onClose={close}>
-      {open === 'add' ? <AddFriend /> : open === 'menu' ? <FriendMenu /> : null}
+      {open === 'add' ? <AddFriend /> : open === 'menu' ? <FriendMenu /> : open === 'report' ? <ReportPlayer /> : null}
     </Sheet>
   );
 }
@@ -171,7 +172,66 @@ function FriendMenu() {
         <Act t={t} title="Remove friend" note={`Takes ${f.display_name} off both lists. They can send a new request later.`} onPress={() => run(() => removeFriend(f.id))} disabled={busy} />
       )}
       <Act t={t} red title={`Block ${f.display_name}`} note="Also stops their requests and challenges. Undo any time under Blocked players on your Profile." onPress={() => run(() => blockUser(f.id))} disabled={busy} />
+      <Act t={t} title={`Report ${f.display_name}`} note="Tell us what happened. Reports are private." onPress={() => openReport({ id: f.id, name: f.display_name, avatar: f.avatar })} disabled={busy} />
       {err ? <Text style={[s.msg, { color: t.red }]}>Couldn’t reach the server. Check your connection.</Text> : null}
+      <Pressable onPress={close} accessibilityRole="button">
+        <Text style={[s.cancel, { color: t.mute }]}>Cancel</Text>
+      </Pressable>
+    </>
+  );
+}
+
+const REASONS = ['Rude name', 'Abusive chat', 'Cheating', 'Other'] as const;
+
+/** Report a player (Session 4, look "Reason chips"): pick a reason, add a note if you like, Send. Goes to the Admin reports. */
+function ReportPlayer() {
+  const t = useTheme();
+  const p = useFriendSheet((x) => x.target);
+  const [why, setWhy] = useState<(typeof REASONS)[number] | null>(null);
+  const [note, setNote] = useState('');
+  const [state, setState] = useState<'idle' | 'busy' | 'sent' | 'error'>('idle');
+  if (!p) return null;
+  const send = async () => {
+    if (!why) return;
+    setState('busy');
+    const { error } = await supabase.rpc('report_player', { target: p.id, reason: why, note: note.trim() });
+    setState(error ? 'error' : 'sent');
+  };
+  const line = { borderColor: t.panelLine };
+  if (state === 'sent')
+    return (
+      <>
+        <Text style={[s.idN, { color: t.fg, textAlign: 'center' }]}>Thanks, we got it.</Text>
+        <Text style={[s.msg, { color: t.mute }]}>{`We’ll look into it. ${p.name} isn’t told who reported them.`}</Text>
+        <Pressable onPress={close} accessibilityRole="button">
+          <Text style={[s.cancel, { color: t.mute }]}>Close</Text>
+        </Pressable>
+      </>
+    );
+  return (
+    <>
+      <View style={s.mh}>
+        <Face slug={p.avatar} size={u(34)} />
+        <Text style={[s.idN, { color: t.fg }]}>{`Report ${p.name}`}</Text>
+      </View>
+      <Text style={[s.k, { color: t.kick }]}>WHAT HAPPENED?</Text>
+      <View style={s.chips}>
+        {REASONS.map((r) => {
+          const on = why === r;
+          return (
+            <Pressable key={r} onPress={() => setWhy(r)} style={[s.chip, line, on && { borderColor: t.accent, backgroundColor: t.chip }]} accessibilityRole="button" accessibilityState={{ selected: on }}>
+              <Text style={[s.chipT, { color: on ? t.fg : t.mute }]}>{r}</Text>
+            </Pressable>
+          );
+        })}
+      </View>
+      <TextInput value={note} onChangeText={setNote} placeholder="Add a note (optional)" placeholderTextColor={t.mute} maxLength={500} multiline style={[s.note, line, { color: t.fg }]} />
+      {state === 'error' ? <Text style={[s.msg, { color: t.red }]}>Couldn’t send. Check your connection.</Text> : null}
+      <Pressable onPress={send} disabled={!why || state === 'busy'} accessibilityRole="button">
+        <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={[s.btn, !why && { opacity: 0.45 }]}>
+          <Text style={[s.btnT, { color: t.onGrad }]}>{state === 'busy' ? 'Sending…' : 'Send report'}</Text>
+        </LinearGradient>
+      </Pressable>
       <Pressable onPress={close} accessibilityRole="button">
         <Text style={[s.cancel, { color: t.mute }]}>Cancel</Text>
       </Pressable>
@@ -216,4 +276,8 @@ const s = StyleSheet.create({
   actT: { fontFamily: F.bodySemi, fontSize: u(12) },
   actS: { marginTop: u(2), fontFamily: F.body, fontSize: u(9.5), lineHeight: u(13) },
   cancel: { textAlign: 'center', fontFamily: F.bodySemi, fontSize: u(11), paddingTop: u(2) },
+  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: u(6) },
+  chip: { borderWidth: 1, borderRadius: 999, paddingVertical: u(6), paddingHorizontal: u(11) },
+  chipT: { fontFamily: F.bodySemi, fontSize: u(10) },
+  note: { borderWidth: 1, borderRadius: u(12), minHeight: u(52), padding: u(10), fontFamily: F.body, fontSize: u(10.5), textAlignVertical: 'top' },
 });

@@ -1,4 +1,5 @@
 import { Image } from 'expo-image';
+import { Link } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 
@@ -42,6 +43,9 @@ export default function Page() {
         </View>
 
         <Text style={[ui.p, s.note, { color: c.mute }]}>{DISCLAIMER}</Text>
+        <Link href="/licences" style={[s.lic, { color: c.mute }]}>
+          Open-source licences
+        </Link>
       </InfoScroll>
     </Screen>
   );
@@ -64,6 +68,7 @@ function List({ items }: { items: string[] }) {
 
 const s = StyleSheet.create({
   note: { marginTop: u(20), fontSize: u(9), lineHeight: u(13) },
+  lic: { marginTop: u(14), alignSelf: 'flex-start', fontFamily: F.body, fontSize: u(9.5), textDecorationLine: 'underline' },
   dawn: { ...StyleSheet.absoluteFill, width: '100%', height: '100%', opacity: 0.95 },
   list: { marginTop: u(6), gap: u(6) },
   row: { flexDirection: 'row', alignItems: 'baseline', gap: u(10), height: u(19) },

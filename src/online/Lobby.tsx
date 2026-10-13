@@ -16,6 +16,7 @@ import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import { loadFriends, useFriends } from '@/state/friends';
+import { openReport } from '@/features/profile/Friends';
 import { call, leaveRoom, rematchRoom, removePlayer, setCharacter, setReady, setTeam, startMatch, updateRoom, type RoomState, type Seat } from './api';
 import { settingsLine } from './format';
 import { G } from './grey';
@@ -392,6 +393,17 @@ function SeatSheet({ state, seat, teams, onDone }: { state: RoomState; seat: Sea
       ) : null}
       {!self ? <FriendRow seat={seat} /> : null}
       {!self ? <MuteRow room={state.room.id} seat={seat} /> : null}
+      {!self ? (
+        <Pressable
+          onPress={() => {
+            onDone();
+            openReport({ id: seat.user_id, name: seat.name, avatar: seat.character });
+          }}
+          style={[s.remove, { borderColor: G.line }]}
+          accessibilityRole="button">
+          <Text style={[s.removeT, { color: G.fg }]}>{`Report ${seat.name}`}</Text>
+        </Pressable>
+      ) : null}
       {host && !self && state.room.status === 'lobby' ? (
         <Pressable onPress={() => removePlayer(state.room.id, seat.user_id).then(onDone).catch(onDone)} style={s.remove} accessibilityRole="button">
           <Text style={[s.removeT]}>{`Remove ${seat.name} from the room`}</Text>

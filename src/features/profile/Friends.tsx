@@ -15,10 +15,13 @@ import { u } from '@/theme/scale';
 import { F, type Theme } from '@/theme/tokens';
 
 /** Which friends sheet is open (drawn by FriendSheets at the app layout so it covers the dock). */
-type SheetState = { open: null | 'add' | 'menu'; friend: Friend | null; code: string };
-export const useFriendSheet = create<SheetState>(() => ({ open: null, friend: null, code: '' }));
-export const openAdd = (code = '') => useFriendSheet.setState({ open: 'add', friend: null, code });
-const openMenu = (friend: Friend) => useFriendSheet.setState({ open: 'menu', friend, code: '' });
+/** A player to report: from the friends list or an online lobby. */
+export type ReportTarget = { id: string; name: string; avatar: string };
+type SheetState = { open: null | 'add' | 'menu' | 'report'; friend: Friend | null; code: string; target: ReportTarget | null };
+export const useFriendSheet = create<SheetState>(() => ({ open: null, friend: null, code: '', target: null }));
+export const openAdd = (code = '') => useFriendSheet.setState({ open: 'add', friend: null, code, target: null });
+const openMenu = (friend: Friend) => useFriendSheet.setState({ open: 'menu', friend, code: '', target: null });
+export const openReport = (target: ReportTarget) => useFriendSheet.setState({ open: 'report', friend: null, code: '', target });
 
 const ONLINE = { dark: '#7be0a8', light: '#5e9e6a' };
 
@@ -103,7 +106,7 @@ export function FriendsSection({ t, only }: { t: Theme; only?: 'friends' | 'requ
         return (
           <View key={f.id} style={[s.fr, line]}>
             <Ring t={t} f={f} />
-            <Pressable style={s.frT} onPress={() => openMenu(f)} accessibilityRole="button" accessibilityHint="Remove or block">
+            <Pressable style={s.frT} onPress={() => openMenu(f)} accessibilityRole="button" accessibilityHint="Remove, block or report">
               <Name t={t} f={f} />
               <Text style={[s.frS, { color: inv ? t.accent : when === 'ONLINE' ? ONLINE[t.mode] : t.mute }]}>{when}</Text>
             </Pressable>
