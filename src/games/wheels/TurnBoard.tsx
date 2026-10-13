@@ -217,20 +217,25 @@ function Answers({ q, given, onAnswer }: { q: Question; given: Answer | undefine
       const got = done ? ((given as number[] | null) ?? q.pairs.map(() => -1)) : pairs;
       const allSet = pairs.every((x) => x != null);
       const ink = (li: number) => PAIR_INK[li % PAIR_INK.length];
+      // Long pairs shrink the text and give the answers more width, so six long rows still fit the stage.
+      const chars = q.pairs.reduce((n, [a, b]) => n + a.length + b.length, 0);
+      const fs = chars > 420 ? 8.5 : chars > 300 ? 9.5 : 10.5;
+      const cell = chars > 300 ? s.cellTight : null;
       return (
         <View style={{ gap: u(8) }}>
           {/* D: one row per left item, so each A box and the B box beside it share a height. */}
-          <View style={{ gap: u(5) }}>
+          <View style={{ gap: u(cell ? 4 : 5) }}>
             {q.pairs.map(([l], i) => {
               const set = got[i] != null && got[i] !== -1;
               const mark: Mark = done ? (got[i] === i ? 'right' : 'wrong') : 'none';
-              const ri = order[i];
-              const owner = got.findIndex((x) => x === ri);
+              // Once answered, each row shows its true partner; the left box says if the pick was right.
+              const ri = done ? i : order[i];
+              const owner = done ? -1 : got.findIndex((x) => x === ri);
               return (
                 <View key={i} style={{ flexDirection: 'row', gap: u(8) }}>
-                  <Pressable disabled={done} onPress={() => setLeft(left === i ? null : i)} accessibilityRole="button" accessibilityState={{ selected: left === i }} accessibilityLabel={l} style={[s.cell, { flex: 1 }, set ? glow(ink(i)) : null, left === i ? { borderColor: VV.gold, backgroundColor: '#5c0c18' } : null, markColor(mark) ? { borderColor: markColor(mark)! } : null]}>
+                  <Pressable disabled={done} onPress={() => setLeft(left === i ? null : i)} accessibilityRole="button" accessibilityState={{ selected: left === i }} accessibilityLabel={l} style={[s.cell, cell, { flex: chars > 300 ? 0.8 : 1 }, set ? glow(ink(i)) : null, left === i ? { borderColor: VV.gold, backgroundColor: '#5c0c18' } : null, markColor(mark) ? { borderColor: markColor(mark)! } : null]}>
                     {set ? <Gem c={ink(i)} size={7} /> : null}
-                    <T f={BODY_B} size={10.5} color={VV.ink} style={{ flex: 1 }}>{l}</T>
+                    <T f={BODY_B} size={fs} color={VV.ink} style={{ flex: 1 }}>{l}</T>
                   </Pressable>
                   <Pressable
                     disabled={done || left == null}
@@ -241,9 +246,9 @@ function Answers({ q, given, onAnswer }: { q: Question; given: Answer | undefine
                     }}
                     accessibilityRole="button"
                     accessibilityLabel={q.pairs[ri][1]}
-                    style={[s.cell, { flex: 1 }, owner >= 0 ? glow(ink(owner)) : null]}>
+                    style={[s.cell, cell, { flex: chars > 300 ? 1.2 : 1 }, owner >= 0 ? glow(ink(owner)) : null]}>
                     {owner >= 0 ? <Gem c={ink(owner)} size={7} /> : null}
-                    <T f={BODY} size={10.5} color={VV.ink} style={{ flex: 1 }}>{q.pairs[ri][1]}</T>
+                    <T f={BODY} size={fs} color={VV.ink} style={{ flex: 1 }}>{q.pairs[ri][1]}</T>
                   </Pressable>
                 </View>
               );
@@ -357,7 +362,6 @@ export function TurnBoard({ turn, now, kicker, title, strip, tray = [], footer, 
       {result ? (
         <View style={{ alignItems: 'center', gap: u(2) }}>
           <T f={CD} size={20} color={result.right ? VV.right : VV.wrong}>{result.right ? `Bravo! +${result.points * (turn.sun ? 2 : 1)}` : result.answer == null ? 'Time is up' : 'Not this time'}</T>
-          {!result.right && q.style === 'match' ? <T size={11.5} color={VV.soft} style={{ textAlign: 'center' }}>{q.pairs.map(([a, b]) => `${a}: ${b}`).join(' · ')}</T> : null}
         </View>
       ) : null}
       <View style={{ flex: 1 }} />
@@ -375,5 +379,6 @@ const s = StyleSheet.create({
   opt: { flexDirection: 'row', alignItems: 'center', gap: u(10), paddingVertical: u(6.5), paddingHorizontal: u(12) },
   cross: { position: 'absolute', top: u(3), right: u(7), zIndex: 1 },
   letter: { width: u(24), height: u(24), borderRadius: u(12), backgroundColor: VV.cream, alignItems: 'center', justifyContent: 'center' },
+  cellTight: { minHeight: u(28), paddingHorizontal: u(8), paddingVertical: u(3), gap: u(5) },
   cell: { flexDirection: 'row', alignItems: 'center', gap: u(7), minHeight: u(40), paddingHorizontal: u(10), paddingVertical: u(6), borderRadius: u(10), borderWidth: 1.5, borderColor: 'rgba(216,178,106,0.45)', backgroundColor: VV.panel },
 });

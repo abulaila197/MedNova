@@ -134,7 +134,7 @@ export const LOAD: Record<string, LoadCfg> = {
       { x: 0.85, y: 0.82, r: 160, c: 'rgba(255,180,90,0.16)', a: 'flicker' },
     ],
     parts: ['motes'],
-    tips: ['Every right answer claims new land.', 'Your rivals want your land too.', 'The last empire standing wins.'],
+    tips: ['Every right answer adds troops to your reserve.', 'Your rivals want your land too.', 'The last empire standing wins.'],
     fonts: ['Cinzel_500Medium', 'Cinzel_700Bold', 'CormorantGaramond_600SemiBold_Italic'],
   },
   'case-files-unsolved': {
