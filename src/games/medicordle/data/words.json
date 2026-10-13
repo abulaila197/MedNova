@@ -823,7 +823,7 @@
   "style": "custom",
   "word": "CELLULITIS",
   "definition": "Spreading bacterial infection of the dermis and subcutaneous tissue.",
-  "dossier": null
+  "dossier": "cellulitis"
  },
  {
   "id": "custom-019",
@@ -1341,7 +1341,7 @@
   "style": "custom",
   "word": "INFLUENZA",
   "definition": "Acute viral respiratory illness with fever and body aches.",
-  "dossier": null
+  "dossier": "influenza"
  },
  {
   "id": "custom-093",

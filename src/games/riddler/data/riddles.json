@@ -293,7 +293,7 @@
    "Icterus"
   ],
   "definition": "Yellow discoloration of skin and sclera caused by elevated bilirubin, with the pattern helping localize the cause.",
-  "dossier": null,
+  "dossier": "jaundice",
   "w": 1024,
   "h": 205,
   "file": "r-024.png"
@@ -445,7 +445,7 @@
   "answer": "Koplik spots",
   "aliases": [],
   "definition": "Tiny bluish-white lesions on the buccal mucosa that are a classic early finding of measles.",
-  "dossier": null,
+  "dossier": "koplik-spots",
   "w": 1600,
   "h": 891,
   "file": "r-036.jpg"

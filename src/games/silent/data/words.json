@@ -248,7 +248,8 @@
   "field": "Pulmonology",
   "aliases": [
    "Flu"
-  ]
+  ],
+  "dossier": "influenza"
  },
  {
   "id": "w035",
@@ -542,7 +543,8 @@
   "id": "w075",
   "name": "Concussion",
   "field": "Neurology",
-  "aliases": []
+  "aliases": [],
+  "dossier": "concussion"
  },
  {
   "id": "w076",
@@ -914,7 +916,8 @@
   "field": "Dermatology",
   "aliases": [
    "Herpes zoster"
-  ]
+  ],
+  "dossier": "herpes-zoster"
  },
  {
   "id": "w125",
@@ -989,7 +992,8 @@
   "id": "w134",
   "name": "Cellulitis",
   "field": "Dermatology",
-  "aliases": []
+  "aliases": [],
+  "dossier": "cellulitis"
  },
  {
   "id": "w135",
@@ -1065,7 +1069,8 @@
   "aliases": [
    "Acquired immunodeficiency syndrome",
    "HIV/AIDS"
-  ]
+  ],
+  "dossier": "hiv-infection-aids"
  },
  {
   "id": "w145",
@@ -1467,7 +1472,8 @@
   "field": "Endocrinology",
   "aliases": [
    "Low blood sugar"
-  ]
+  ],
+  "dossier": "hypoglycemia"
  },
  {
   "id": "w198",

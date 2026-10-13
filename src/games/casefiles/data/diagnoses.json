@@ -2153,7 +2153,8 @@
 "label": "Immune thrombocytopenic purpura",
 "aliases": [
 "ITP"
-]
+],
+"dossier": "immune-thrombocytopenia-itp"
 },
 {
 "id": "impetigo",
@@ -2247,7 +2248,8 @@
 "aliases": [
 "ICH",
 "Cerebral hemorrhage"
-]
+],
+"dossier": "intracerebral-hemorrhage"
 },
 {
 "id": "intracranial-hemorrhage",
