@@ -14,7 +14,7 @@ import type { Theme } from '@/theme/tokens';
 import { F } from '@/theme/tokens';
 
 import { FreeSheets, FreeTokens, useFree } from './FreeTokens';
-import { buy, restore, useSubscription, type BuyResult } from './billing';
+import { buy, restore, useIsSubscribed, useSubscription, type BuyResult } from './billing';
 import { PACKS, SUBSCRIPTION, type Pack } from './catalog';
 
 const SAY: Record<BuyResult, string> = {
@@ -36,7 +36,7 @@ export function StorePage() {
   const until = useSubscription((x) => x.until);
   // A writing sheet never stays open over another page (the Store stays mounted under the stack).
   useFocusEffect(useCallback(() => () => useFree.setState({ sheet: null }), []));
-  const subscribed = (until ?? 0) > Date.now();
+  const subscribed = useIsSubscribed();
   const [busy, setBusy] = useState<string | null>(null);
   const [said, setSaid] = useState('');
 

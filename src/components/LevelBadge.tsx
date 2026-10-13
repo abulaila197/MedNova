@@ -1,41 +1,19 @@
-import { useIsFocused } from 'expo-router';
-import { useEffect, useState } from 'react';
-import { AppState, StyleSheet, View } from 'react-native';
+import { useEffect } from 'react';
+import { StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 import Svg, { Circle } from 'react-native-svg';
 
-import { engine } from '@/games/engine';
 import { useTheme } from '@/state/app';
+import { useBalanceStore, watchBalance } from '@/state/balance';
 import { F } from '@/theme/tokens';
 
 /**
- * Your EXP, tokens and level progress, refreshed while on screen (the wallet lives on the phone, rule 6). Pages lower
- * in the stack and the app in the background stop checking; they read it again when they come back.
+ * Your EXP, tokens and level progress (the wallet lives on the phone, rule 6). One shared store, read again only
+ * when the wallet changes, so headers and pages no longer poll it.
  */
 export function useBalance() {
-  const [b, setB] = useState({ exp: 0, tokens: 0, level: 1, into: 0, need: 60 });
-  const focused = useIsFocused();
-  useEffect(() => {
-    if (!focused) return;
-    let live = true;
-    let id: ReturnType<typeof setInterval> | null = null;
-    const load = () => engine.wallet.balance().then((x) => live && setB((p) => (p.exp === x.exp && p.tokens === x.tokens ? p : x)));
-    const run = (on: boolean) => {
-      if (id) clearInterval(id);
-      id = null;
-      if (!on) return;
-      load();
-      id = setInterval(load, 1500);
-    };
-    run(AppState.currentState !== 'background');
-    const sub = AppState.addEventListener('change', (s) => run(s === 'active'));
-    return () => {
-      live = false;
-      run(false);
-      sub.remove();
-    };
-  }, [focused]);
-  return b;
+  useEffect(watchBalance, []);
+  return useBalanceStore();
 }
 
 /**

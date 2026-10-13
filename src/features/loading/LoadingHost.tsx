@@ -1,6 +1,6 @@
 import { Image } from 'expo-image';
 import { router } from 'expo-router';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withDelay, withSequence, withTiming } from 'react-native-reanimated';
 
@@ -30,7 +30,7 @@ export function LoadingHost() {
 function Run({ run }: { run: LoadRun }) {
   const { width: W, height: H } = useScreen();
   const g = LOAD[run.key];
-  const tip = useMemo(() => g.tips[Math.floor(Math.random() * g.tips.length)], [g]);
+  const [tip] = useState(() => g.tips[Math.floor(Math.random() * g.tips.length)]);
   const [stage, setStage] = useState<'doors' | 'load' | 'out'>('doors');
   const [split, setSplit] = useState<number | null>(null);
   const host = useRef<View>(null);
@@ -40,7 +40,35 @@ function Run({ run }: { run: LoadRun }) {
   const door = useSharedValue(0);
   const settle = useSharedValue(1.06);
   const clip = useSharedValue(0);
-  const line = { l: useSharedValue(0), w: useSharedValue(0), y: useSharedValue(0), o: useSharedValue(0) };
+  const lineL = useSharedValue(0);
+  const lineW = useSharedValue(0);
+  const lineY = useSharedValue(0);
+  const lineO = useSharedValue(0);
+
+  // Way out: the bar becomes a line that grows out to both edges, rises to the top and sweeps the next screen in.
+  const wipe = () => {
+    setStage('out');
+    const go = (x0: number, w: number, y0: number) => {
+      lineL.value = x0;
+      lineW.value = w;
+      lineY.value = y0;
+      lineO.value = 1;
+      lineL.value = withTiming(0, { duration: 300, easing: OUT });
+      lineW.value = withTiming(W, { duration: 300, easing: OUT });
+      // The whole sweep is handed to the animation engine up front, so the next screen mounting
+      // on the JavaScript side (it opens underneath while the page still covers everything) can't stall it.
+      lineY.value = withSequence(withDelay(300, withTiming(0, { duration: 350, easing: IN_OUT })), withTiming(H + 4, { duration: 1000, easing: IN_OUT }));
+      clip.value = withDelay(650, withTiming(H + 4, { duration: 1000, easing: IN_OUT }));
+      router.push(`/play/${run.key}`);
+      setTimeout(() => useLoading.getState().end(), 1680);
+    };
+    if (!bar.current || !host.current) return go(0, W, H / 2);
+    host.current.measureInWindow((hx, hy) => {
+      // the bar can unmount between the two measures
+      if (!bar.current) return go(0, W, H / 2);
+      bar.current.measureInWindow((x, y, w, h) => go(x - (hx || 0), w, y - (hy || 0) + h / 2));
+    });
+  };
 
   // Way in: load this game's fonts, find the split line, then open the doors.
   useEffect(() => {
@@ -80,38 +108,13 @@ function Run({ run }: { run: LoadRun }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Way out: the bar becomes a line that grows out to both edges, rises to the top and sweeps the next screen in.
-  const wipe = () => {
-    setStage('out');
-    const go = (x0: number, w: number, y0: number) => {
-      line.l.value = x0;
-      line.w.value = w;
-      line.y.value = y0;
-      line.o.value = 1;
-      line.l.value = withTiming(0, { duration: 300, easing: OUT });
-      line.w.value = withTiming(W, { duration: 300, easing: OUT });
-      // The whole sweep is handed to the animation engine up front, so the next screen mounting
-      // on the JavaScript side (it opens underneath while the page still covers everything) can't stall it.
-      line.y.value = withSequence(withDelay(300, withTiming(0, { duration: 350, easing: IN_OUT })), withTiming(H + 4, { duration: 1000, easing: IN_OUT }));
-      clip.value = withDelay(650, withTiming(H + 4, { duration: 1000, easing: IN_OUT }));
-      router.push(`/play/${run.key}`);
-      setTimeout(() => useLoading.getState().end(), 1680);
-    };
-    if (!bar.current || !host.current) return go(0, W, H / 2);
-    host.current.measureInWindow((hx, hy) => {
-      // the bar can unmount between the two measures
-      if (!bar.current) return go(0, W, H / 2);
-      bar.current.measureInWindow((x, y, w, h) => go(x - (hx || 0), w, y - (hy || 0) + h / 2));
-    });
-  };
-
   const settleSt = useAnimatedStyle(() => ({ transform: [{ scale: settle.value }] }));
   // moved with transforms, not top/left/width, so nothing is laid out again on each frame
   const outer = useAnimatedStyle(() => ({ transform: [{ translateY: clip.value }] }));
   const inner = useAnimatedStyle(() => ({ transform: [{ translateY: -clip.value }] }));
   const lineSt = useAnimatedStyle(() => ({
-    opacity: line.o.value,
-    transform: [{ translateX: line.l.value }, { translateY: line.y.value - 1.5 }, { scaleX: Math.max(0.001, line.w.value / W) }],
+    opacity: lineO.value,
+    transform: [{ translateX: lineL.value }, { translateY: lineY.value - 1.5 }, { scaleX: Math.max(0.001, lineW.value / W) }],
   }));
   const y = split ?? 0;
   const topDoor = useAnimatedStyle(() => ({ transform: [{ translateY: -y * door.value }] }));

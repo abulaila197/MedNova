@@ -23,8 +23,13 @@ export function PaywallSheet() {
   const [tokens, setTokens] = useState<number | null>(null);
   const [short, setShort] = useState(false);
   const [adsLeft, setAdsLeft] = useState<number | null>(null);
-  useEffect(() => {
+  // A new ask starts without the "not enough tokens" line.
+  const [shownAsk, setShownAsk] = useState(ask);
+  if (shownAsk !== ask) {
+    setShownAsk(ask);
     setShort(false);
+  }
+  useEffect(() => {
     if (ask) engine.wallet.balance().then((b) => setTokens(b.tokens));
     if (ask) playAdsLeft().then(setAdsLeft);
   }, [ask]);

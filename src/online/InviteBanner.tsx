@@ -1,6 +1,6 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { usePathname } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Platform, Pressable, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 import Animated, { Easing, SlideInUp, SlideOutUp, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
@@ -13,6 +13,7 @@ import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import { settingsLine } from './format';
+import type { Invite } from './api';
 import { acceptInvite, markBannered, useInvites } from './invites';
 import { G } from './grey';
 
@@ -29,24 +30,24 @@ export function InviteBanner() {
   const bannered = useInvites((s) => s.bannered);
   const inv = list.find((x) => !bannered.includes(x.id));
   const busy = /\/(live|run|lobby)$/.test(path);
-  const bar = useSharedValue(1);
-  const [shown, setShown] = useState<string | null>(null);
+  if (!inv || busy) return null;
+  const top = (Platform.OS === 'web' ? u(30) : ins.top) + u(48);
+  return <Banner key={inv.id} inv={inv} top={top} />;
+}
 
+/** One challenge's banner: its bar runs out over SHOW_MS (started again if the invite changes), then it moves to Friends. */
+function Banner({ inv, top }: { inv: Invite; top: number }) {
+  const bar = useSharedValue(1);
   useEffect(() => {
-    if (!inv || busy) return;
-    setShown(inv.id);
     bar.value = 1;
     bar.value = withTiming(0, { duration: SHOW_MS, easing: Easing.linear });
     const id = setTimeout(() => markBannered(inv.id), SHOW_MS);
     return () => clearTimeout(id);
-  }, [inv, busy, bar]);
+  }, [inv, bar]);
   const run = useAnimatedStyle(() => ({ width: `${bar.value * 100}%` }));
-
-  if (!inv || busy || shown !== inv.id) return null;
   const g = GAMES.find((x) => x.key === inv.game);
-  const top = (Platform.OS === 'web' ? u(30) : ins.top) + u(48);
   return (
-    <Animated.View key={inv.id} entering={SlideInUp.duration(320)} exiting={SlideOutUp.duration(240)} style={[s.wrap, { top }]}>
+    <Animated.View entering={SlideInUp.duration(320)} exiting={SlideOutUp.duration(240)} style={[s.wrap, { top }]}>
       <Face slug={inv.avatar} size={u(32)} />
       <View style={s.t}>
         <Text style={s.n} numberOfLines={1}>{`${inv.display_name} challenges you`}</Text>

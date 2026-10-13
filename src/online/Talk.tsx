@@ -19,6 +19,8 @@ export type Me = { id: string; name: string; face: string };
 /** Ticks while you wait out the 3 s between sends, so the tray greys out and comes back. */
 function useCooling() {
   const nextAt = useTalk((s) => s.nextAt);
+  const cooling = useTalk((s) => Date.now() < s.nextAt);
+  // Redraw when the cooldown runs out.
   const [, set] = useState(0);
   useEffect(() => {
     const left = nextAt - Date.now();
@@ -26,7 +28,7 @@ function useCooling() {
     const id = setTimeout(() => set((n) => n + 1), left + 30);
     return () => clearTimeout(id);
   }, [nextAt]);
-  return Date.now() < nextAt;
+  return cooling;
 }
 
 /** The Talk tray (ON12, locked lobby preview): your character's stickers, picture only, and the shared voice lines. */

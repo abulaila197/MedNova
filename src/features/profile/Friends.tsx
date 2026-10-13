@@ -1,12 +1,13 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 import { create } from 'zustand';
 
 import { LevelBadge } from '@/components/LevelBadge';
 import { Face } from '@/games/shell/Face';
+import { useSecond } from '@/lib/useSecond';
 import { useAccount } from '@/state/account';
 import { clock } from '@/games/engine/clock';
 import { acceptInvite, challenge, useInvites } from '@/online/invites';
@@ -31,16 +32,11 @@ const ONLINE = { dark: '#7be0a8', light: '#5e9e6a' };
  */
 export function FriendsSection({ t, only }: { t: Theme; only?: 'friends' | 'requests' }) {
   const profile = useAccount((a) => a.profile);
-  const { list } = useFriends();
+  const list = useFriends((x) => x.list);
   const [busy, setBusy] = useState<string | null>(null);
   const invites = useInvites((x) => x.list);
   // Ticks the "time left" on challenges once a second while any are open.
-  const [, setTick] = useState(0);
-  useEffect(() => {
-    if (!invites.length) return;
-    const id = setInterval(() => setTick((n) => n + 1), 1000);
-    return () => clearInterval(id);
-  }, [invites.length]);
+  const now = useSecond(invites.length > 0);
   const line = { borderColor: t.panelLine };
   const incoming = list.filter((f) => f.kind === 'incoming');
   const friends = list.filter((f) => f.kind !== 'incoming');
@@ -102,7 +98,7 @@ export function FriendsSection({ t, only }: { t: Theme; only?: 'friends' | 'requ
       {showFr && friends.length === 0 ? <Text style={[s.note, { color: t.mute }]}>No friends yet. Find players or share your invite code.</Text> : null}
       {(showFr ? friends : []).map((f) => {
         const inv = invites.find((x) => x.from_user === f.id);
-        const when = inv ? `CHALLENGED YOU · ${clock(Date.parse(inv.expires_at) - Date.now(), { down: true })} LEFT` : f.kind === 'outgoing' ? 'REQUEST SENT' : seenLabel(f.last_seen);
+        const when = inv ? `CHALLENGED YOU · ${clock(Date.parse(inv.expires_at) - now, { down: true })} LEFT` : f.kind === 'outgoing' ? 'REQUEST SENT' : seenLabel(f.last_seen, invites.length ? now : undefined);
         return (
           <View key={f.id} style={[s.fr, line]}>
             <Ring t={t} f={f} />
@@ -139,7 +135,7 @@ export function FriendsSection({ t, only }: { t: Theme; only?: 'friends' | 'requ
 /** Profile keeps only the count; the list lives on the Friends page (Yazan 2026-10-11). */
 export function FriendCount({ t }: { t: Theme }) {
   const profile = useAccount((a) => a.profile);
-  const { list } = useFriends();
+  const list = useFriends((x) => x.list);
   const n = list.filter((f) => f.kind === 'friend').length;
   const req = list.filter((f) => f.kind === 'incoming').length;
   return (
