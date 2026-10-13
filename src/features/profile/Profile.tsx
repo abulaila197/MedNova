@@ -1,3 +1,4 @@
+import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
@@ -16,7 +17,10 @@ import { u } from '@/theme/scale';
 import { F, type Theme } from '@/theme/tokens';
 
 import { useProfileStats } from './stats';
+import { titleName } from '@/features/style/catalog';
 import { Framed } from '@/features/style/Frame';
+import { titleColor } from '@/features/style/PlayerTitle';
+import { loadStyle, useStyle } from '@/features/style/useStyle';
 
 
 // Page colours from the locked preview (d-/l-profile).
@@ -53,13 +57,17 @@ export function Profile() {
   const profile = useAccount((a) => a.profile);
   const lv = useBalance();
   const st = useProfileStats();
+  const look = useStyle((x) => x.worn);
+  useEffect(() => {
+    void loadStyle();
+  }, [profile?.id]);
   const pct = (a: number | null | undefined) => (a == null ? '–' : `${Math.round(a * 100)}%`);
   return (
     <Fade stops={[[0, 0], [0.04, 1], [0.9, 1], [1, 0]]} style={s.area}>
       <ScrollView style={s.fill} contentContainerStyle={s.pf} showsVerticalScrollIndicator={false}>
         {/* Your framed face where the planet was (Yazan 2026-10-13: on the planet spot, orbit and moons removed). */}
         <View style={s.me}>
-          <Framed slug={profile?.avatar ?? 'yara'} size={u(124)} frame="laurel" />
+          <Framed slug={profile?.avatar ?? 'yara'} size={u(124)} frame={look.frame} />
         </View>
         <View style={s.idn}>
           <View style={s.nm}>
@@ -69,11 +77,11 @@ export function Profile() {
             {/* LV3: your level beside your name, the ring filling toward the next level. */}
             <LevelBadge level={lv.level} progress={lv.into / lv.need} size={u(21)} />
           </View>
-          <Text style={[s.title, { color: t.accent }]}>Chief Resident</Text>
+          <Text style={[s.title, { color: titleColor(t.mode, look.title, t.accent) }]}>{titleName(look.title)}</Text>
           <Text style={[s.role, { color: t.mute }]}>{profile ? `@${profile.username.toUpperCase()}` : 'SIGN IN TO SAVE YOUR PROGRESS'}</Text>
           <View style={s.style}>
-            {['Change frame', 'Change title'].map((l) => (
-              <Pressable key={l} style={[s.stBtn, { backgroundColor: t.chip, borderColor: t.chipLine }]} accessibilityRole="button">
+            {[['Change frame', 'frames'], ['Change title', 'titles']].map(([l, tab]) => (
+              <Pressable key={l} onPress={() => router.navigate(`/style?tab=${tab}` as never)} style={[s.stBtn, { backgroundColor: t.chip, borderColor: t.chipLine }]} accessibilityRole="button">
                 <Text style={[s.stT, { color: t.fg }]}>{l}</Text>
               </Pressable>
             ))}

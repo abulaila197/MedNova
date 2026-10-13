@@ -17,6 +17,9 @@ import type { GameDef } from '../shell/types';
 import { useSetup } from '../shell/useSetup';
 import { useLanding, useResults } from '../shell/useShellPages';
 import { AddPill } from '@/features/friends/AddAfterMatch';
+import { PlayerTitle, winnerAccount } from '@/features/style/PlayerTitle';
+import { WinEffect } from '@/features/style/WinEffect';
+import { useSession } from '../shell/session';
 import { fieldName, STYLES, type FieldKey, type Style } from './core';
 import { Bill, Brass, Btn, CB, CD, Chip, CM, Gem, Kicker, Panel, ROMAN, Rule, T, Title, Token, VelvetScreen, VV } from './velvet';
 
@@ -240,6 +243,7 @@ const MARK: Record<PlayItem['outcome'], string> = { right: '✓', wrong: '✕', 
 function Results({ def, play, items }: { def: GameDef; play: Play; items: PlayItem[] }) {
   const { multi, mine, right, nameOf, colorOf, rematch, changeSettings, backToGames, openDossier } = useResults(def, play, items);
   const seatOf = new Map(play.seats.map((x) => [x.seat, x]));
+  const winner = winnerAccount(play, useSession((x) => x.userId));
   const target = Number(play.settings.target) || 50;
   const top = play.standings.filter((r) => r.rank === 1);
   const headline = multi ? (top.length === 1 ? top[0].name : 'A draw') : String(play.score);
@@ -257,6 +261,7 @@ function Results({ def, play, items }: { def: GameDef; play: Play; items: PlayIt
   ];
   return (
     <VelvetScreen scroll>
+      {play.mode === 'online' && winner ? <WinEffect userId={winner} /> : null}
       <View style={{ gap: u(3) }}>
         <Kicker>{MODE_NAME[play.mode]}</Kicker>
         <Title text="Curtain Call" size={28} />
@@ -270,6 +275,8 @@ function Results({ def, play, items }: { def: GameDef; play: Play; items: PlayIt
             <T f={CD} size={14} color={VV.gold}>★</T>
           </View>
           <T f={CB} size={13} color={VV.cream} style={{ textAlign: 'center' }}>{sub}</T>
+          {/* The winner's title (Yazan 2026-10-13). */}
+          {winner ? <PlayerTitle userId={winner} size={12} accent={VV.gold} mode="dark" /> : null}
         </LinearGradient>
       </Brass>
       <Panel inner={{ paddingVertical: u(11), gap: u(6) }}>

@@ -6,6 +6,8 @@ import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, { FadeIn, FadeOut, ZoomIn, runOnJS, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 
 import { Face } from '@/games/shell/Face';
+import { PlayerFace } from '@/features/style/Frame';
+import { useStyle } from '@/features/style/useStyle';
 import { u, useScreen } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
@@ -35,6 +37,11 @@ function useCooling() {
 export function TalkPanel({ room, me, onSent }: { room: string; me: Me; onSent?: () => void }) {
   const [tab, setTab] = useState<'sticker' | 'voice'>('sticker');
   const cooling = useCooling();
+  // Bought sticker packs (Yazan 2026-10-13): other characters' stickers, picked by face above the grid.
+  const owned = useStyle((x) => x.owned);
+  const sets = [me.face, ...owned.filter((i) => i.startsWith('pack:')).map((i) => i.slice(5)).filter((k) => k !== me.face && STICKERS[k])];
+  const [set, setSet] = useState(me.face);
+  const shown = sets.includes(set) ? set : me.face;
   const send = async (kind: TalkMsg['kind'], item: string) => {
     const r = await sendTalk(room, me, kind, item);
     if (r === 'sent') onSent?.();
@@ -50,7 +57,16 @@ export function TalkPanel({ room, me, onSent }: { room: string; me: Me; onSent?:
       </View>
       {tab === 'sticker' ? (
         <View style={[s.sg, cooling && s.cool]}>
-          {(STICKERS[me.face] ?? []).map((x) => (
+          {sets.length > 1 ? (
+            <View style={s.sets}>
+              {sets.map((k) => (
+                <Pressable key={k} onPress={() => setSet(k)} style={[s.setB, k === shown && s.setOn]} accessibilityRole="tab" accessibilityState={{ selected: k === shown }} accessibilityLabel={`${k} stickers`}>
+                  <Face slug={k} size={u(20)} />
+                </Pressable>
+              ))}
+            </View>
+          ) : null}
+          {(STICKERS[shown] ?? []).map((x) => (
             <Pressable key={x.id} disabled={cooling} onPress={() => send('sticker', x.id)} style={s.sItem} accessibilityRole="button" accessibilityLabel={`Send sticker: ${x.label}`}>
               <Image source={x.src} style={s.sImg} contentFit="contain" />
             </Pressable>
@@ -164,7 +180,7 @@ export function FloatingTalk({ room, me }: { room: string; me: Me }) {
         ) : null}
         <GestureDetector gesture={Gesture.Exclusive(pan, tap)}>
           <View style={[s.fbtn, { width: size, height: size, borderRadius: size / 2 }]} accessibilityRole="button" accessibilityLabel="Talk: stickers and voice">
-            <Face slug={me.face} size={size - u(8)} />
+            <PlayerFace slug={me.face} size={size - u(8)} userId={me.id} still />
           </View>
         </GestureDetector>
       </Animated.View>
@@ -185,6 +201,9 @@ const s = StyleSheet.create({
   tabT: { fontFamily: F.bodySemi, fontSize: u(10.5) },
   sg: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', rowGap: u(6) },
   sItem: { width: '23%', aspectRatio: 1, alignItems: 'center', justifyContent: 'center' },
+  sets: { width: '100%', flexDirection: 'row', gap: u(6), marginBottom: u(2) },
+  setB: { padding: u(2), borderRadius: 999, borderWidth: 1, borderColor: 'transparent', opacity: 0.55 },
+  setOn: { borderColor: G.acc, opacity: 1 },
   sImg: { width: '100%', height: '100%' },
   vg: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', rowGap: u(6) },
   vl: { width: '48.5%', flexDirection: 'row', alignItems: 'center', gap: u(6), borderWidth: 1, borderColor: G.line, backgroundColor: G.panel, borderRadius: u(10), paddingVertical: u(7), paddingHorizontal: u(9) },

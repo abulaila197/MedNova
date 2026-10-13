@@ -6,7 +6,7 @@ import { Text } from '@/components/AppText';
 import { create } from 'zustand';
 
 import { LevelBadge } from '@/components/LevelBadge';
-import { Face } from '@/games/shell/Face';
+import { PlayerFace } from '@/features/style/Frame';
 import { useSecond } from '@/lib/useSecond';
 import { useAccount } from '@/state/account';
 import { clock } from '@/games/engine/clock';
@@ -150,10 +150,10 @@ export function FriendCount({ t }: { t: Theme }) {
   );
 }
 
-export function Ring({ t, f }: { t: Theme; f: { avatar: string } }) {
+export function Ring({ t, f }: { t: Theme; f: { avatar: string; id?: string } }) {
   return (
     <View style={[s.ring, { borderColor: t.mode === 'light' ? 'rgba(184,116,31,0.3)' : 'rgba(201,184,255,0.3)' }]}>
-      <Face slug={f.avatar} size={u(20)} />
+      <PlayerFace slug={f.avatar} size={u(20)} userId={f.id} still />
     </View>
   );
 }

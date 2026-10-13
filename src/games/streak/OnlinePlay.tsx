@@ -69,7 +69,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   if (st.phase === 'countdown' || st.item == null) {
     return (
       <GameScreen scroll={false}>
-        <Countdown ms={st.phase_ends_at - server} faces={st.players.map((p) => p.character)} line={settingsLine(def, st.settings)} />
+        <Countdown ms={st.phase_ends_at - server} faces={st.players.map((p) => p.character)} ids={st.players.map((p) => p.user_id)} line={settingsLine(def, st.settings)} />
       </GameScreen>
     );
   }

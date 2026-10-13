@@ -8,6 +8,8 @@ import { LevelBadge } from '@/components/LevelBadge';
 import { Sheet } from '@/components/Sheet';
 import { CHARACTERS } from '@/games/shell/characters';
 import { Face } from '@/games/shell/Face';
+import { PlayerFace } from '@/features/style/Frame';
+import { PlayerTitle } from '@/features/style/PlayerTitle';
 import { presetTeam } from '@/games/shell/teams';
 import type { GameDef } from '@/games/shell/types';
 import { GameScreen } from '@/games/shell/ui';
@@ -144,7 +146,7 @@ export function Lobby({ def, roomId }: { def: GameDef; roomId: string }) {
         accessibilityLabel={`${p.name}, ${label}${muted.includes(p.user_id) ? ', muted' : ''}`}>
         <View>
           <View style={s.ring}>
-            <Face slug={p.character} size={u(38)} />
+            <PlayerFace slug={p.character} size={u(38)} userId={p.user_id} />
           </View>
           {/* The player's level on the corner of their face (Yazan, 2026-10-13). */}
           <View style={s.lvl}>
@@ -152,6 +154,7 @@ export function Lobby({ def, roomId }: { def: GameDef; roomId: string }) {
           </View>
         </View>
         <Text style={[s.tn, { color: G.fg }]} numberOfLines={1}>{p.user_id === me ? 'You' : p.name}</Text>
+        <PlayerTitle userId={p.user_id} size={8.5} accent={G.acc} mode="dark" style={s.tt} />
         <Text style={[s.tl, { color: p.ready && !isHost ? G.ok : G.mute }, p.ready && !isHost && { fontFamily: F.bodySemi }]}>{label}</Text>
         {host && !isHost ? <Text style={[s.rm, { color: G.dim }]}>✕</Text> : null}
         {muted.includes(p.user_id) ? <Text style={[s.mu, { color: G.dim }]}>🔇</Text> : null}
@@ -262,7 +265,7 @@ export function Lobby({ def, roomId }: { def: GameDef; roomId: string }) {
       </Text>
       <View style={s.lbar}>
         <Pressable onPress={() => setSheet('talk')} style={s.talk} accessibilityRole="button" accessibilityLabel="Talk: stickers and voice">
-          <Face slug={mine?.character ?? 'yara'} size={u(20)} />
+          <PlayerFace slug={mine?.character ?? 'yara'} size={u(20)} userId={mine?.user_id} still />
           <Text style={[s.talkT, { color: G.fg }]}>Talk</Text>
         </Pressable>
         {room.status === 'finished' ? (
@@ -349,8 +352,11 @@ function SeatSheet({ state, seat, teams, onDone }: { state: RoomState; seat: Sea
   return (
     <>
       <View style={s.ssh}>
-        <Face slug={seat.character} size={u(32)} />
-        <Text style={[s.h, { color: G.fg, fontSize: u(18) }]}>{self ? 'You' : seat.name}</Text>
+        <PlayerFace slug={seat.character} size={u(44)} userId={seat.user_id} />
+        <View style={{ flexShrink: 1 }}>
+          <Text style={[s.h, { color: G.fg, fontSize: u(18) }]}>{self ? 'You' : seat.name}</Text>
+          <PlayerTitle userId={seat.user_id} size={11} accent={G.acc} mode="dark" />
+        </View>
       </View>
       {self ? (
         <>
@@ -471,6 +477,7 @@ const s = StyleSheet.create({
   tn: { fontFamily: F.bodySemi, fontSize: u(11), marginTop: u(3) },
   lvl: { position: 'absolute', right: -u(5), bottom: -u(3) },
   tl: { fontFamily: F.body, fontSize: u(9) },
+  tt: { maxWidth: '100%', marginTop: u(-1), marginBottom: u(1) },
   rm: { position: 'absolute', top: u(6), right: u(8), fontFamily: F.bodyBold, fontSize: u(9) },
   empty: { backgroundColor: 'transparent', borderStyle: 'dashed', borderColor: 'rgba(255,255,255,0.14)', justifyContent: 'center', minHeight: u(86) },
   plus: { fontFamily: F.body, fontSize: u(18), lineHeight: u(20) },

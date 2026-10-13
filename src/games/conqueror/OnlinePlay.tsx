@@ -133,7 +133,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   if (!m || !map) {
     return (
       <AtlasScreen>
-        {st.phase === 'done' ? null : <Countdown ms={Math.max(0, st.phase_ends_at - server)} faces={st.players.map((p) => p.character)} line={settingsLine(def, st.settings)} />}
+        {st.phase === 'done' ? null : <Countdown ms={Math.max(0, st.phase_ends_at - server)} faces={st.players.map((p) => p.character)} ids={st.players.map((p) => p.user_id)} line={settingsLine(def, st.settings)} />}
         {extras}
       </AtlasScreen>
     );

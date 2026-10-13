@@ -7,7 +7,8 @@ import { Text, TextInput } from '@/components/AppText';
 import { useBalance } from '@/components/LevelBadge';
 import { Sheet } from '@/components/Sheet';
 import { supabase } from '@/lib/supabase';
-import { Face } from '@/games/shell/Face';
+import { PlayerFace } from '@/features/style/Frame';
+import { PlayerTitle } from '@/features/style/PlayerTitle';
 import { useAccount } from '@/state/account';
 import { useTheme } from '@/state/app';
 import { blockUser, removeFriend, type RequestResult, requestFriend, seenLabel } from '@/state/friends';
@@ -82,7 +83,7 @@ function AddFriend() {
         <View style={[s.slot, { backgroundColor: lt ? '#c9b994' : '#9aa3c9' }]} />
         <View style={s.idr}>
           <View style={s.face}>
-            <Face slug={profile.avatar} size={u(40)} />
+            <PlayerFace slug={profile.avatar} size={u(40)} userId={profile.id} still />
           </View>
           <View style={{ flex: 1 }}>
             <Text style={[s.idN, { color: ink }]} numberOfLines={1}>{`Dr. ${profile.display_name}`}</Text>
@@ -161,9 +162,10 @@ function FriendMenu() {
   return (
     <>
       <View style={s.mh}>
-        <Face slug={f.avatar} size={u(34)} />
+        <PlayerFace slug={f.avatar} size={u(46)} userId={f.id} />
         <View>
           <Name t={t} f={f} size={19} />
+          <PlayerTitle userId={f.id} size={11} />
           <Text style={[s.mhS, { color: when === 'ONLINE' ? (t.mode === 'light' ? '#5e9e6a' : '#7be0a8') : t.mute }]}>{when}</Text>
         </View>
       </View>
@@ -212,7 +214,7 @@ function ReportPlayer() {
   return (
     <>
       <View style={s.mh}>
-        <Face slug={p.avatar} size={u(34)} />
+        <PlayerFace slug={p.avatar} size={u(34)} userId={p.id} still />
         <Text style={[s.idN, { color: t.fg }]}>{`Report ${p.name}`}</Text>
       </View>
       <Text style={[s.k, { color: t.kick }]}>WHAT HAPPENED?</Text>

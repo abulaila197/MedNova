@@ -11,6 +11,7 @@ import { closeFriendSheet, FriendSheets } from '@/features/profile/FriendSheets'
 import { InviteBanner } from '@/online/InviteBanner';
 import { DailyHost } from '@/features/daily/DailyHost';
 import { WelcomeHost } from '@/features/welcome/WelcomeHost';
+import { StyleHost } from '@/features/style/StyleHost';
 import { PaywallSheet } from '@/features/freeplays/PaywallSheet';
 import { cancelPaywall } from '@/features/freeplays/paywall';
 import { useStopSoundsOnLeave } from '@/lib/sound';
@@ -57,6 +58,7 @@ export default function AppLayout() {
       <WelcomeHost />
       <DailyHost />
       <PaywallSheet />
+      <StyleHost />
     </View>
   );
 }

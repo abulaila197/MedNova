@@ -11,7 +11,9 @@ import type { Play, PlayItem } from '../engine/types';
 import { AddPill } from '@/features/friends/AddAfterMatch';
 import { RoomTalk } from '@/online/Talk';
 
-import { Face } from './Face';
+import { PlayerFace } from '@/features/style/Frame';
+import { PlayerTitle, winnerAccount } from '@/features/style/PlayerTitle';
+import { WinEffect } from '@/features/style/WinEffect';
 import { useSession } from './session';
 import { teamScoreOf, type GameDef } from './types';
 import { useResults } from './useShellPages';
@@ -29,9 +31,17 @@ export function Results({ def, play, items }: { def: GameDef; play: Play; items:
   const seatOf = new Map(play.seats.map((x) => [x.seat, x]));
   // ON22: online results keep the floating talk button.
   const uid = useSession((x) => x.userId);
+  const winner = winnerAccount(play, uid);
   const room = play.mode === 'online' ? (play.settings.room as string | undefined) : undefined;
   return (
-    <GameScreen top={room && uid ? <RoomTalk room={room} me={{ id: uid, name: 'You', face: play.seats[0]?.character ?? 'yara' }} /> : undefined}>
+    <GameScreen
+      top={
+        <>
+          {room && uid ? <RoomTalk room={room} me={{ id: uid, name: 'You', face: play.seats[0]?.character ?? 'yara' }} /> : null}
+          {/* A bought win effect plays once, over the page, for everyone when its owner wins online. */}
+          {play.mode === 'online' && winner ? <WinEffect userId={winner} /> : null}
+        </>
+      }>
       <View style={{ gap: u(6) }}>
         <Kick>{`${g.lead} ${g.em}`}</Kick>
         <Title lead="Game" em="over" />
@@ -67,11 +77,19 @@ export function Results({ def, play, items }: { def: GameDef; play: Play; items:
               <Text style={[s.rank, { color: t.dim }]}>{r.rank}</Text>
               {/* ON21: online standings show each player's face. */}
               {play.mode === 'online' && faceOf.get(r.seat) ? (
-                <Face slug={faceOf.get(r.seat)!} size={u(18)} />
+                <PlayerFace slug={faceOf.get(r.seat)!} size={u(18)} userId={seatOf.get(r.seat)?.userId} still />
               ) : colorOf.get(r.seat) ? (
                 <View style={[s.dot, { backgroundColor: colorOf.get(r.seat) }]} />
               ) : null}
-              <Text style={[s.item, { color: t.fg }]}>{r.name}</Text>
+              {/* The winner's line carries their title (Yazan 2026-10-13). */}
+              {r.rank === 1 && winner ? (
+                <View style={s.item}>
+                  <Text style={{ color: t.fg, fontFamily: F.body, fontSize: u(11.5) }}>{r.name}</Text>
+                  <PlayerTitle userId={winner} size={10} />
+                </View>
+              ) : (
+                <Text style={[s.item, { color: t.fg }]}>{r.name}</Text>
+              )}
               {/* Add a player you just met (Yazan, 2026-10-13: in the standings). */}
               {play.mode === 'online' && r.seat > 0 && seatOf.get(r.seat)?.userId ? <AddPill userId={seatOf.get(r.seat)!.userId!} name={r.name} /> : null}
               <Text style={[s.pts, { color: t.soft }]}>{r.score}</Text>

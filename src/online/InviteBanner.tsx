@@ -7,7 +7,7 @@ import Animated, { Easing, SlideInUp, SlideOutUp, useAnimatedStyle, useSharedVal
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { GAMES } from '@/data/games';
-import { Face } from '@/games/shell/Face';
+import { PlayerFace } from '@/features/style/Frame';
 import { gameDef } from '@/games/shell/registry';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
@@ -48,7 +48,7 @@ function Banner({ inv, top }: { inv: Invite; top: number }) {
   const g = GAMES.find((x) => x.key === inv.game);
   return (
     <Animated.View entering={SlideInUp.duration(320)} exiting={SlideOutUp.duration(240)} style={[s.wrap, { top }]}>
-      <Face slug={inv.avatar} size={u(32)} />
+      <PlayerFace slug={inv.avatar} size={u(32)} userId={inv.from_user} still />
       <View style={s.t}>
         <Text style={s.n} numberOfLines={1}>{`${inv.display_name} challenges you`}</Text>
         <Text style={s.d} numberOfLines={1}>{[g ? `${g.lead} ${g.em}` : null, settingsLine(gameDef(inv.game), inv.settings)].filter(Boolean).join(' · ')}</Text>

@@ -19,6 +19,9 @@ import type { GameDef } from '../shell/types';
 import { useSetup } from '../shell/useSetup';
 import { useLanding, useResults } from '../shell/useShellPages';
 import { AddPill } from '@/features/friends/AddAfterMatch';
+import { PlayerTitle, winnerAccount } from '@/features/style/PlayerTitle';
+import { WinEffect } from '@/features/style/WinEffect';
+import { useSession } from '../shell/session';
 import { caseById, caseLabel } from './data';
 import { CaseTitle, Kicker, NoirScreen, NR, T } from './noir';
 
@@ -388,10 +391,12 @@ const MARK: Record<PlayItem['outcome'], string> = { right: '✓', wrong: '✕', 
 function Results({ def, play, items }: { def: GameDef; play: Play; items: PlayItem[] }) {
   const { multi, nameOf, colorOf, teamRows, stats, missed, rematch, changeSettings, backToGames, openDossier } = useResults(def, play, items);
   const seatOf = new Map(play.seats.map((x) => [x.seat, x]));
+  const winner = winnerAccount(play, useSession((x) => x.userId));
   const c = items[0] ? caseById.get(items[0].itemId) : undefined;
   const top = stats.flatMap((x, i) => (i === 0 ? [x, { value: `+${play.expEarned}`, label: 'EXP' }] : [x]));
   return (
     <NoirScreen scroll>
+      {play.mode === 'online' && winner ? <WinEffect userId={winner} /> : null}
       <View style={{ gap: u(12) }}>
         <View style={{ gap: u(4) }}>
           <Kicker>{`Case Files · ${MODE_NAME[play.mode]}`}</Kicker>
@@ -441,7 +446,11 @@ function Results({ def, play, items }: { def: GameDef; play: Play; items: PlayIt
                 <View key={r.seat} style={sh.row}>
                   <Ink size={12} color={PAPER.soft} style={{ width: u(16) }}>{r.rank}</Ink>
                   <View style={[sh.tag, { backgroundColor: colorOf.get(r.seat) ?? PAPER.ink, marginBottom: 0 }]} />
-                  <Ink size={13.5} style={{ flex: 1 }}>{r.name}</Ink>
+                  <View style={{ flex: 1 }}>
+                    <Ink size={13.5}>{r.name}</Ink>
+                    {/* The winner's title (Yazan 2026-10-13). */}
+                    {r.rank === 1 && winner ? <PlayerTitle userId={winner} size={10.5} accent={NR.red} mode="light" /> : null}
+                  </View>
                   {play.mode === 'online' && r.seat > 0 && seatOf.get(r.seat)?.userId ? <AddPill userId={seatOf.get(r.seat)!.userId!} name={r.name} ink={PAPER.ink} dim={PAPER.soft} /> : null}
                   <Ink size={13.5}>{String(r.score)}</Ink>
                 </View>

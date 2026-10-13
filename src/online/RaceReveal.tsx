@@ -1,7 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 
-import { Face } from '@/games/shell/Face';
+import { PlayerFace } from '@/features/style/Frame';
 import { Kick } from '@/games/shell/ui';
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
@@ -23,7 +23,7 @@ export function RaceReveal({ label, answer, players, me, how, next }: { label: s
       <View style={{ gap: u(5) }}>
         {rows.map((p) => (
           <View key={p.user_id} style={s.row}>
-            <Face slug={p.character} size={u(20)} />
+            <PlayerFace slug={p.character} size={u(20)} userId={p.user_id} still />
             <Text style={[s.who, { color: t.fg }]} numberOfLines={1}>{p.user_id === me ? 'You' : p.name}</Text>
             <Text style={[s.how, { color: t.mute }]}>{how(p)}</Text>
             <Text style={[s.pts, { color: p.item_points ? t.white : t.dim }]}>{p.item_points ? `+${p.item_points}` : '0'}</Text>

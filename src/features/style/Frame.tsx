@@ -1,10 +1,11 @@
 import { useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
-import Animated, { Easing, useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from 'react-native-reanimated';
+import Animated, { Easing, useAnimatedStyle, useReducedMotion, useSharedValue, withRepeat, withSequence, withTiming } from 'react-native-reanimated';
 import Svg, { Circle, Defs, Ellipse, G, LinearGradient, Path, Stop } from 'react-native-svg';
 
 import { useSvgId } from '@/components/svgId';
 import { AuroraBase, AuroraMoving, AuroraSparkles, HelixBase, LaurelGlow, NovaBase, NovaMoving, PulseBase, PulseMoving } from '@/features/style/Ornate';
+import { useLook, wantLooks } from '@/features/style/useStyle';
 import { Face } from '@/games/shell/Face';
 import { useTheme } from '@/state/app';
 
@@ -208,9 +209,13 @@ function Moving({ k, id }: { k: FrameKey; id: string }) {
   }
 }
 
-/** A character face inside a profile frame. `size` is the whole framed box. */
-export function Framed({ slug, size, frame }: { slug: string; size: number; frame: FrameKey }) {
+/**
+ * A character face inside a profile frame. `size` is the whole framed box. Frames move only on big faces
+ * (Profile, results, lobby seats, player card): `still` keeps them still in lists, and Reduce Motion always does.
+ */
+export function Framed({ slug, size, frame, still = false }: { slug: string; size: number; frame: FrameKey; still?: boolean }) {
   const t = useTheme();
+  const reduce = useReducedMotion();
   const id = useSvgId('fr');
   const id2 = useSvgId('fm');
   const f = size * FACE;
@@ -222,9 +227,22 @@ export function Framed({ slug, size, frame }: { slug: string; size: number; fram
       <Svg width={size} height={size} viewBox={`0 0 ${V} ${V}`} style={StyleSheet.absoluteFill} pointerEvents="none">
         <Base k={frame} id={id} line={t.panelLine} />
       </Svg>
-      <Moving k={frame} id={id2} />
+      {still || reduce ? null : <Moving k={frame} id={id2} />}
     </View>
   );
+}
+
+/**
+ * A player's face with the frame they wear. The Normal frame keeps the plain face at full size (so lists don't
+ * change); any other frame draws round it inside the same box. Faces under 18 px stay plain: a frame would be a smudge.
+ */
+export function PlayerFace({ slug, size, userId, still = false }: { slug: string; size: number; userId?: string | null; still?: boolean }) {
+  useEffect(() => {
+    if (userId) wantLooks([userId]);
+  }, [userId]);
+  const look = useLook(userId);
+  if (look.frame === 'normal' || size < 18) return <Face slug={slug} size={size} />;
+  return <Framed slug={slug} size={size} frame={look.frame} still={still} />;
 }
 
 const s = StyleSheet.create({ face: { position: 'absolute' } });

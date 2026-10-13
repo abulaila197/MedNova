@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 import Animated, { FadeIn, FadeOut, SlideInUp } from 'react-native-reanimated';
 
-import { Face } from '@/games/shell/Face';
+import { PlayerFace } from '@/features/style/Frame';
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
@@ -36,14 +36,14 @@ export function AlertPill({ alert }: { alert: { id: number; text: string; color:
 }
 
 /** ON16: the 3-2-1 before the first case, with everyone's faces, in the online grey. */
-export function Countdown({ ms, faces, line }: { ms: number; faces: string[]; line: string }) {
+export function Countdown({ ms, faces, ids, line }: { ms: number; faces: string[]; ids?: string[]; line: string }) {
   return (
     <Animated.View entering={FadeIn.duration(200)} style={[StyleSheet.absoluteFill, s.cd]}>
       <Text style={[s.cdK, { color: G.mute }]}>MATCH STARTING</Text>
       <Text style={[s.cdN, { color: G.fg }]}>{Math.max(1, Math.ceil(ms / 1000))}</Text>
       <View style={s.cdF}>
         {faces.map((f, i) => (
-          <Face key={i} slug={f} size={u(28)} />
+          <PlayerFace key={i} slug={f} size={u(28)} userId={ids?.[i]} still />
         ))}
       </View>
       <Text style={[s.cdL, { color: G.mute }]}>{line}</Text>

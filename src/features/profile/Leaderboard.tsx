@@ -3,6 +3,7 @@ import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
+import { useStyle, wantLooks } from '@/features/style/useStyle';
 import Svg, { Circle, Defs, RadialGradient, Stop } from 'react-native-svg';
 
 import { LevelBadge, useBalance } from '@/components/LevelBadge';
@@ -66,7 +67,12 @@ function useBoard(period: Period, scope: 'everyone' | 'friends', game: string | 
   }
   useEffect(() => {
     let live = true;
-    supabase.rpc('leaderboard', { period, scope, game }).then(({ data, error }) => live && setBoard(error || !data ? 'error' : (data as Board)));
+    supabase.rpc('leaderboard', { period, scope, game }).then(({ data, error }) => {
+      if (!live) return;
+      setBoard(error || !data ? 'error' : (data as Board));
+      // Bought name glow (Yazan 2026-10-13): ask for the shown players' looks.
+      if (data) wantLooks((data as Board).rows.map((r) => r.id));
+    });
     return () => {
       live = false;
     };
@@ -101,6 +107,8 @@ function StarGlow({ r, blur, spread, a }: { r: number; blur: number; spread: num
 /** Leaderboard: scope and filters, the top three as stars, places 4 to 50 and your pinned row. */
 export function Leaderboard() {
   const t = useTheme();
+  const looks = useStyle((x) => x.looks);
+  const glowOf = (id: string) => (looks[id]?.glow ? { textShadowColor: t.accent, textShadowRadius: u(9), textShadowOffset: { width: 0, height: 0 } } : null);
   const p = C[t.mode];
   const pill = [s.pill, { backgroundColor: t.panel, borderColor: t.panelLine }];
   const me = useBalance();
@@ -181,7 +189,7 @@ export function Leaderboard() {
                     </View>
                     <Text style={[s.word, { color: p.rank }]}>{r.word}</Text>
                     <View style={s.nmRow}>
-                      <Text style={[s.name, { color: t.fg }]} numberOfLines={1}>
+                      <Text style={[s.name, { color: t.fg }, glowOf(who.id)]} numberOfLines={1}>
                         {who.id === userId ? 'You' : who.name}
                       </Text>
                       <LevelBadge level={who.level} size={u(15)} />
@@ -195,7 +203,7 @@ export function Leaderboard() {
               <View key={r.id} style={[s.r, { borderColor: t.panelLine }, i === 0 && s.first]}>
                 <Text style={[s.rN, { color: t.kick }]}>{String(r.rank).padStart(2, '0')}</Text>
                 <View style={s.rNm}>
-                  <Text style={[s.rB, { color: r.id === userId ? t.accent : t.fg }]} numberOfLines={1}>
+                  <Text style={[s.rB, { color: r.id === userId ? t.accent : t.fg }, glowOf(r.id)]} numberOfLines={1}>
                     {r.id === userId ? 'You' : r.name}
                   </Text>
                   <LevelBadge level={r.level} size={u(15)} />

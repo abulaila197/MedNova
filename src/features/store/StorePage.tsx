@@ -1,6 +1,6 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useFocusEffect } from 'expo-router';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import { Text } from '@/components/AppText';
@@ -9,6 +9,10 @@ import { TokenCoin } from '@/components/PulseStar';
 import { Screen } from '@/components/Screen';
 import { InfoScroll, Kicker, s as ui, useInfo } from '@/features/info/ui';
 import { useSession } from '@/games/shell/session';
+import { FRAMES, TITLES } from '@/features/style/catalog';
+import { Framed, type FrameKey } from '@/features/style/Frame';
+import { loadStyle, useStyle } from '@/features/style/useStyle';
+import { useAccount } from '@/state/account';
 import { u } from '@/theme/scale';
 import type { Theme } from '@/theme/tokens';
 import { F } from '@/theme/tokens';
@@ -107,6 +111,11 @@ export function StorePage() {
 
         <FreeTokens t={t} />
 
+        {/* Style shop (Yazan 2026-10-13): frames, titles, win effects and stickers, bought with tokens. */}
+        <View style={{ height: u(14) }} />
+        <Kicker inSec>Style</Kicker>
+        <StyleRow t={t} />
+
         <View style={{ height: u(14) }} />
         <Kicker inSec>Token packs</Kicker>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={s.rowScroll} contentContainerStyle={s.row} snapToInterval={CARD + GAP} decelerationRate="fast">
@@ -122,6 +131,26 @@ export function StorePage() {
       </InfoScroll>
       <FreeSheets t={t} />
     </Screen>
+  );
+}
+
+/** The way into the Style shop, with this week's deal on it. */
+function StyleRow({ t }: { t: Theme }) {
+  const deal = useStyle((x) => x.deal);
+  const avatar = useAccount((a) => a.profile?.avatar ?? 'yara');
+  useEffect(() => {
+    void loadStyle();
+  }, []);
+  const names = [FRAMES.find((x) => x.id === deal[0])?.name, TITLES.find((x) => x.id === deal[1])?.name].filter(Boolean);
+  return (
+    <Pressable onPress={() => router.navigate('/style' as never)} style={[s.style, { backgroundColor: t.panel, borderColor: t.panelLine }]} accessibilityRole="link">
+      <Framed slug={avatar} size={u(46)} frame={(FRAMES.find((x) => x.id === deal[0])?.key ?? 'gold') as FrameKey} still />
+      <View style={{ flex: 1 }}>
+        <Text style={[s.styleH, { color: t.fg }]}>Frames, titles and effects</Text>
+        <Text style={[s.styleS, { color: names.length ? t.accent : t.mute }]}>{names.length ? `30% off this week: ${names.join(' and ')}` : 'Dress your name for every room'}</Text>
+      </View>
+      <Text style={[s.styleS, { color: t.accent }]}>Open ›</Text>
+    </Pressable>
   );
 }
 
@@ -171,6 +200,9 @@ const s = StyleSheet.create({
   cBtnT: { fontFamily: F.bodyBold, fontSize: u(12) },
   said: { fontFamily: F.bodyMedium, fontSize: u(11), lineHeight: u(15), marginTop: u(12), borderWidth: 1, borderRadius: u(12), paddingVertical: u(8), paddingHorizontal: u(12), overflow: 'hidden' },
   restore: { alignSelf: 'center', marginTop: u(14), padding: u(4) },
+  style: { flexDirection: 'row', alignItems: 'center', gap: u(12), borderWidth: 1, borderRadius: u(18), padding: u(12), marginTop: u(6) },
+  styleH: { fontFamily: F.display, fontSize: u(15) },
+  styleS: { fontFamily: F.bodyMedium, fontSize: u(10), marginTop: u(2) },
   restoreT: { fontFamily: F.bodyMedium, fontSize: u(11) },
   foot: { fontFamily: F.body, fontSize: u(9.5), lineHeight: u(14), marginTop: u(8), textAlign: 'center', paddingHorizontal: u(10) },
 });
