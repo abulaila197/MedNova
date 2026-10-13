@@ -5,6 +5,7 @@ import { Circle, Defs, RadialGradient, Stop, Svg } from 'react-native-svg';
 import { GAMES } from '@/data/games';
 import { u } from '@/theme/scale';
 import type { Mode } from '@/theme/tokens';
+import { tapped } from '@/lib/sound';
 
 import { RING_CX, RING_CY, RING_R, SLOT_ANGLE, SLOT_OFF, SLOT_OPACITY, SLOT_SIZE } from './fit';
 import { Glyph } from './Glyph';
@@ -120,7 +121,7 @@ export function Planet({ k, j, pos, sel, mode, onPress }: { k: string; j: number
       <View style={s.center} pointerEvents="none">
         <Glyph k={k} mode={mode} px={gpx} id={id} />
       </View>
-      <Pressable style={[StyleSheet.absoluteFill, s.round]} onPress={onPress} hitSlop={u(4)} accessibilityRole="button" accessibilityLabel={`Show game ${j + 1}`} />
+      <Pressable style={[StyleSheet.absoluteFill, s.round]} onPress={tapped(onPress)} hitSlop={u(4)} accessibilityRole="button" accessibilityLabel={`Show game ${j + 1}`} />
     </Animated.View>
   );
 }

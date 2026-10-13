@@ -9,6 +9,7 @@ import { useLoading } from '@/features/loading/store';
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
+import { sfx } from '@/lib/sound';
 
 import { W } from './fit';
 import { GameArt } from './GameArt';
@@ -44,7 +45,10 @@ export function GamePage({ game, j, pos, active }: { game: Game; j: number; pos:
         </Text>
         <Text style={[s.sub, { color: t.soft }]}>{game.sub}</Text>
         <Text style={[s.desc, { color: DESC[t.mode] }, DESC_W[game.key] ? { maxWidth: u(DESC_W[game.key]) } : null, t.mode === 'light' ? HALO : null]}>{game.desc}</Text>
-        <Pressable ref={play} onPress={onPlay} style={s.goWrap} accessibilityRole="button" accessibilityLabel={`Play ${game.lead} ${game.em}`}>
+        <Pressable ref={play} onPress={() => {
+            void sfx('tap');
+            onPlay();
+          }} style={s.goWrap} accessibilityRole="button" accessibilityLabel={`Play ${game.lead} ${game.em}`}>
           <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.go}>
             <Text style={[s.goT, { color: t.onGrad }]}>Play</Text>
           </LinearGradient>

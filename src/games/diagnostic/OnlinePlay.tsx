@@ -17,6 +17,7 @@ import { second } from '../engine/timeStore';
 import { DP, type Attempt } from './core';
 import { caseById, guessName } from './data';
 import { useMatchState } from '@/online/useMatchState';
+import { useRevealSound } from '@/lib/sound';
 
 type P = {
   user_id: string;
@@ -132,6 +133,9 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
     router.replace(`/play/${def.key}`);
   };
 
+  const myRow = st?.players.find((p) => p.user_id === me && !p.dropped);
+  // Right or wrong only once the case's answer shows for everyone.
+  useRevealSound(st && myRow && st.case_number != null && (st.phase === 'reveal' || st.phase === 'done') ? `${st.case_index}` : null, myRow ? myRow.solved : null);
   if (!st) return <GameScreen scroll={false}>{null}</GameScreen>;
 
   if (st.phase === 'countdown' || st.case_number == null) {

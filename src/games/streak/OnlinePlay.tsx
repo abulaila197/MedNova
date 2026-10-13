@@ -5,6 +5,7 @@ import { AlertPill, Countdown, nth, useAlerts } from '@/online/live';
 import { settingsLine } from '@/online/format';
 import { seededOrder, useRace, type RaceState } from '@/online/race';
 import { RoomTalk } from '@/online/Talk';
+import { useRaceRevealSound } from '@/online/raceSound';
 import { characterOf } from '../shell/characters';
 import { PauseMenu } from '../shell/PauseMenu';
 import type { OnlineProps } from '../shell/types';
@@ -63,6 +64,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
     }
   }, [st, me, push]);
 
+  useRaceRevealSound(st, me);
   if (!st) return <GameScreen scroll={false}>{null}</GameScreen>;
   if (st.phase === 'countdown' || st.item == null) {
     return (

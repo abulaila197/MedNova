@@ -5,11 +5,12 @@ import { Text } from '@/components/AppText';
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
+import { tapped } from '@/lib/sound';
 
 /** "‹ Dossiers" style back link: goes back, or to `fallback` when the page was opened directly. */
 export function Back({ label, fallback }: { label: string; fallback: Href }) {
   const t = useTheme();
-  const go = () => (router.canGoBack() ? router.back() : router.replace(fallback));
+  const go = tapped(() => (router.canGoBack() ? router.back() : router.replace(fallback)));
   return (
     <Pressable onPress={go} hitSlop={u(8)} accessibilityRole="link" accessibilityLabel={`Back to ${label}`}>
       <Text style={[s.bk, { color: t.accent }]}>‹ {label}</Text>

@@ -11,6 +11,7 @@ import { settingsLine } from '@/online/format';
 import { useRace, type RacePlayer, type RaceState } from '@/online/race';
 import { RoomTalk } from '@/online/Talk';
 import { u } from '@/theme/scale';
+import { useRaceRevealSound } from '@/online/raceSound';
 
 import { characterOf } from '../shell/characters';
 import { Face } from '../shell/Face';
@@ -110,6 +111,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
     }
   }, [st, sa, me, push]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  useRaceRevealSound(st, me);
   if (!st) return <SlateScreen>{null}</SlateScreen>;
   if (st.phase === 'countdown' || !sa) {
     return (

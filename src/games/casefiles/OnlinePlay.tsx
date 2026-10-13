@@ -8,6 +8,7 @@ import { settingsLine } from '@/online/format';
 import { useRace, type RacePlayer, type RaceState } from '@/online/race';
 import { RoomTalk } from '@/online/Talk';
 import { u } from '@/theme/scale';
+import { useRaceRevealSound } from '@/online/raceSound';
 
 import { characterOf } from '../shell/characters';
 import { presetTeam } from '../shell/teams';
@@ -151,6 +152,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
     [item, flush],
   );
 
+  useRaceRevealSound(st, me);
   if (!st) return <NoirScreen>{null}</NoirScreen>;
   if (st.phase === 'countdown' || st.item == null) {
     return (

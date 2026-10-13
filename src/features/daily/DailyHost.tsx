@@ -8,6 +8,7 @@ import { supabase } from '@/lib/supabase';
 import { syncAccount } from '@/lib/sync';
 import { useStart } from '@/state/start';
 
+import { useWelcome } from '../welcome/WelcomeHost';
 import { DailyPopup } from './DailyPopup';
 
 const kv = defaultKV();
@@ -24,13 +25,15 @@ export function DailyHost() {
   const intro = useStart((s) => s.intro);
   const userId = useSession((s) => s.userId);
   const known = useSession((s) => s.known);
+  // The welcome tour comes first on the very first open (Yazan, 2026-10-13).
+  const welcomed = useWelcome((s) => s.state === 'done');
   const [open, setOpen] = useState<Open | null>(null);
   const checked = useRef<string | null>(null); // `${user}:${date}` already looked at
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!known || intro || path !== '/games') return;
+    if (!known || intro || !welcomed || path !== '/games') return;
     const today = localDay();
     const key = `${userId ?? 'guest'}:${today}`;
     if (checked.current === key) return;
@@ -48,7 +51,7 @@ export function DailyHost() {
       if (st.last_date === today) return;
       setOpen({ day: st.next_day, collected: false });
     })();
-  }, [known, intro, path, userId]);
+  }, [known, intro, welcomed, path, userId]);
 
   if (!open) return null;
 

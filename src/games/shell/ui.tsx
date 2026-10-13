@@ -7,6 +7,7 @@ import { Screen } from '@/components/Screen';
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
+import { tapped } from '@/lib/sound';
 
 /**
  * A game page: the app sky and the game header (GH1), no dock, content scrolls with a gap under the header.
@@ -55,7 +56,7 @@ export function Body({ children, style }: { children: ReactNode; style?: StylePr
 export function Btn({ label, onPress, disabled, style }: { label: string; onPress?: () => void; disabled?: boolean; style?: StyleProp<ViewStyle> }) {
   const t = useTheme();
   return (
-    <Pressable onPress={onPress} disabled={disabled} style={[{ opacity: disabled ? 0.45 : 1 }, style]} accessibilityRole="button" accessibilityLabel={label}>
+    <Pressable onPress={tapped(onPress)} disabled={disabled} style={[{ opacity: disabled ? 0.45 : 1 }, style]} accessibilityRole="button" accessibilityLabel={label}>
       <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.btn}>
         <Text style={[s.btnT, { color: t.onGrad }]}>{label}</Text>
       </LinearGradient>
@@ -66,7 +67,7 @@ export function Btn({ label, onPress, disabled, style }: { label: string; onPres
 export function Ghost({ label, onPress, style, danger }: { label: string; onPress?: () => void; style?: StyleProp<ViewStyle>; danger?: boolean }) {
   const t = useTheme();
   return (
-    <Pressable onPress={onPress} style={[s.ghost, { borderColor: t.chipLine, backgroundColor: t.chip }, style]} accessibilityRole="button" accessibilityLabel={label}>
+    <Pressable onPress={tapped(onPress)} style={[s.ghost, { borderColor: t.chipLine, backgroundColor: t.chip }, style]} accessibilityRole="button" accessibilityLabel={label}>
       <Text style={[s.ghostT, { color: danger ? t.rose : t.fg }]}>{label}</Text>
     </Pressable>
   );
@@ -87,7 +88,7 @@ export function Chips<V extends string | number>({ choices, value, onChange }: {
         return (
           <Pressable
             key={String(c.value)}
-            onPress={() => onChange(c.value)}
+            onPress={tapped(() => onChange(c.value))}
             style={[s.chip, { borderColor: on ? t.accent : t.chipLine, backgroundColor: on ? t.tabOn : t.chip }]}
             accessibilityRole="button"
             accessibilityState={{ selected: on }}>
@@ -104,7 +105,7 @@ export function Chips<V extends string | number>({ choices, value, onChange }: {
 export function RoundBtn({ label, glyph, onPress }: { label: string; glyph: string; onPress: () => void }) {
   const t = useTheme();
   return (
-    <Pressable onPress={onPress} hitSlop={u(8)} style={[s.round, { backgroundColor: t.chip, borderColor: t.chipLine }]} accessibilityRole="button" accessibilityLabel={label}>
+    <Pressable onPress={tapped(onPress)} hitSlop={u(8)} style={[s.round, { backgroundColor: t.chip, borderColor: t.chipLine }]} accessibilityRole="button" accessibilityLabel={label}>
       <Text style={[s.roundT, { color: t.fg }]}>{glyph}</Text>
     </Pressable>
   );

@@ -16,6 +16,7 @@ import { colorOf, landViews, Players, stageLine, type Act } from './pages';
 import { cluesShown } from './shown';
 import { SECRET, type Hold, type MatchView, type SoloView } from './view';
 import { useScreen } from '@/theme/scale';
+import { useRevealSound } from '@/lib/sound';
 
 export type { Hold };
 
@@ -224,6 +225,8 @@ export function SoloPage({ m, me, seconds, act }: P) {
 
 export function SoloResultCard({ turn }: { turn: SoloTurn }) {
   const r = turn.result;
+  // The tile is judged by the server and shown to me: right when it won troops, wrong when it did not.
+  useRevealSound(r ? `${r.correct}/${r.total}/${r.points}/${r.penalty ?? 0}` : null, r ? r.points > 0 : null);
   if (!r) return null;
   const good = r.points > 0;
   return (

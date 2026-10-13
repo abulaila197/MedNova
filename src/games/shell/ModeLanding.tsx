@@ -8,6 +8,7 @@ import { GAME_PHOTOS, GAMES } from '@/data/games';
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
+import { tapped } from '@/lib/sound';
 
 import type { Mode } from '../engine/types';
 import type { GameDef } from './types';
@@ -53,7 +54,7 @@ export function ModeLanding({ def }: { def: GameDef }) {
             </View>
             <Text style={[s.h, { color: t.white }]}>{m.title}</Text>
             <Body>{m.blurb}</Body>
-            <Pressable onPress={() => setOpen(isOpen ? null : m.mode)} accessibilityRole="button" accessibilityState={{ expanded: isOpen }}>
+            <Pressable onPress={tapped(() => setOpen(isOpen ? null : m.mode))} accessibilityRole="button" accessibilityState={{ expanded: isOpen }}>
               <Text style={[s.how, { color: t.accent }]}>{isOpen ? 'Hide how to play' : 'How to play'}</Text>
             </Pressable>
             {isOpen

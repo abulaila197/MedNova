@@ -1,7 +1,9 @@
 // Trust Me Not sound (rule book §12): short effects, a season ambience loop, and a heartbeat that speeds up as
 // health drops. Silence at betrayals: nothing plays for a mission or a Snare. Sounds made with new-games/tmn-sound.
-import { createAudioPlayer, setAudioModeAsync, type AudioPlayer } from 'expo-audio';
+import { createAudioPlayer, type AudioPlayer } from 'expo-audio';
 import { useEffect } from 'react';
+
+import { audioMode, useSound } from '@/lib/sound';
 
 const FX = {
   tap: require('@/assets/trustmenot/sound/tap.mp3'),
@@ -23,12 +25,11 @@ const SEASONS = [
 ];
 export type Fx = keyof typeof FX;
 
-let ready: Promise<void> | null = null;
 const players: Partial<Record<Fx, AudioPlayer>> = {};
-const audioMode = () => (ready ??= setAudioModeAsync({ playsInSilentMode: true, interruptionMode: 'mixWithOthers' }).catch(() => {}));
 
 /** Plays one effect from the start. Never throws: a phone without sound just stays quiet. */
 export async function play(fx: Fx, volume = 1) {
+  if (useSound.getState().muted) return; // the menu's sound switch
   try {
     await audioMode();
     const p = (players[fx] ??= createAudioPlayer(FX[fx]));
@@ -42,7 +43,9 @@ export async function play(fx: Fx, volume = 1) {
 
 /** The season's ambience, quietly looping while the game is open. */
 export function useSeasonLoop(season: number) {
+  const muted = useSound((m) => m.muted);
   useEffect(() => {
+    if (muted) return;
     let p: AudioPlayer | null = null;
     let gone = false; // left the page (or the season changed) before the sound was ready
     audioMode().then(() => {
@@ -66,7 +69,7 @@ export function useSeasonLoop(season: number) {
         // Already gone.
       }
     };
-  }, [season]);
+  }, [season, muted]);
 }
 
 /** Below half health the heartbeat starts, and beats faster the closer to zero. Ghosts hear nothing. */

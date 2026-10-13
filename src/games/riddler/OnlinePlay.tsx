@@ -6,6 +6,7 @@ import { settingsLine } from '@/online/format';
 import { useRace, type RaceState } from '@/online/race';
 import { RaceReveal } from '@/online/RaceReveal';
 import { RoomTalk } from '@/online/Talk';
+import { useRaceRevealSound } from '@/online/raceSound';
 import { characterOf } from '../shell/characters';
 import { PauseMenu } from '../shell/PauseMenu';
 import type { OnlineProps } from '../shell/types';
@@ -69,6 +70,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
     }
   }, [st, me, playing, push]);
 
+  useRaceRevealSound(st, me);
   if (!st) return <GameScreen scroll={false}>{null}</GameScreen>;
   if (st.phase === 'countdown' || st.item == null) {
     return (

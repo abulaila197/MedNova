@@ -27,6 +27,7 @@ import { TurnBoard, type Strip } from './TurnBoard';
 import { gameShown } from './shown';
 import { Bill, Btn, Bulbs, bulbsLit, CardArt, CD, CM, GEMS, Panel, PauseBtn, ROMAN, Rule, T, VelvetScreen, VV } from './velvet';
 import { useMatchState } from '@/online/useMatchState';
+import { useRevealSound } from '@/lib/sound';
 
 /** Every phone in a game must carry the same bank; the server checks this. */
 const BANK_V = bankVersion(BANK);
@@ -205,6 +206,10 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
     await leaveRoom(roomId).catch(() => {});
     router.replace(`/play/${def.key}`);
   }, [roomId, def.key]);
+
+  // My answer's right or wrong, as the feedback shows it to everyone.
+  const fb = g?.phase === 'turn' && who === mySeat && g.turn?.phase === 'feedback' ? g.turn.results[g.turn.k] : undefined;
+  useRevealSound(fb ? `${g!.turn!.count}:${g!.turn!.k}:${fb.id}` : null, fb ? (fb.right ? true : fb.answer == null ? 'timeup' : false) : null);
 
   const meTalk = st?.players.find((p) => p.user_id === me);
   // The talk button steps aside while I answer or swipe, so it never covers a choice (as in Crossword).

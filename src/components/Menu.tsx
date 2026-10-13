@@ -9,6 +9,7 @@ import { Moon } from '@/components/Moon';
 import { GAMES } from '@/data/games';
 import { loadAchievements } from '@/features/achievements/useAchievements';
 import { engine } from '@/games/engine';
+import { sfx, tapped, useSound } from '@/lib/sound';
 import type { GameKey } from '@/games/engine';
 import { signOut, useAccount } from '@/state/account';
 import { useApp, useTheme } from '@/state/app';
@@ -36,6 +37,8 @@ export function Menu() {
   const mode = useApp((a) => a.mode);
   const setMode = useApp((a) => a.setMode);
   const ins = useSafeAreaInsets();
+  const muted = useSound((m) => m.muted);
+  const setMuted = useSound((m) => m.setMuted);
   const profile = useAccount((a) => a.profile);
   const isAdmin = useAccount((a) => a.isAdmin);
   const items = isAdmin ? [...ITEMS, ['Admin', '/admin'] as const] : ITEMS;
@@ -62,13 +65,13 @@ export function Menu() {
     signOut().catch(() => setOutErr(true));
   };
   const top = (Platform.OS === 'web' ? u(30) : ins.top) + u(14);
-  const go = (to: string) => {
+  const go = tapped((to: string) => {
     setMenu(false);
     router.navigate(to as never);
-  };
+  });
   return (
     <View style={[s.col, { top }]}>
-      <Pressable onPress={() => setMenu(false)} style={[s.close, { backgroundColor: t.panel, borderColor: t.panelLine }]} accessibilityLabel="Close menu">
+      <Pressable onPress={tapped(() => setMenu(false))} style={[s.close, { backgroundColor: t.panel, borderColor: t.panelLine }]} accessibilityLabel="Close menu">
         <Text style={{ color: t.mute, fontSize: u(15) }}>×</Text>
       </Pressable>
       <Pressable style={s.moonc} onPress={() => go('/profile')}>
@@ -108,20 +111,40 @@ export function Menu() {
           );
         })}
       </View>
-      <View style={[s.theme, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
-        {(['dark', 'light'] as const).map((m) => (
-          <Pressable key={m} onPress={() => setMode(m)} accessibilityRole="button" accessibilityState={{ selected: mode === m }}>
-            {mode === m ? (
-              <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={s.opt}>
-                <Text style={[s.optT, { color: t.onGrad }]}>{m === 'dark' ? 'Dark' : 'Light'}</Text>
-              </LinearGradient>
-            ) : (
-              <View style={s.opt}>
-                <Text style={[s.optT, { color: t.mute }]}>{m === 'dark' ? 'Dark' : 'Light'}</Text>
-              </View>
-            )}
-          </Pressable>
-        ))}
+      <View style={s.pills}>
+        <View style={[s.theme, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
+          {([['dark', 'Dark'], ['light', 'Light']] as const).map(([key, label]) => (
+            <Pressable key={label} onPress={tapped(() => setMode(key))} accessibilityRole="button" accessibilityState={{ selected: mode === key }}>
+              {mode === key ? (
+                <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={s.opt}>
+                  <Text style={[s.optT, { color: t.onGrad }]}>{label}</Text>
+                </LinearGradient>
+              ) : (
+                <View style={s.opt}>
+                  <Text style={[s.optT, { color: t.mute }]}>{label}</Text>
+                </View>
+              )}
+            </Pressable>
+          ))}
+        </View>
+        <View style={[s.theme, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
+          {([[false, 'Sound'], [true, 'Mute']] as const).map(([key, label]) => (
+            <Pressable key={label} onPress={() => {
+              setMuted(key);
+              if (!key) void sfx('tap');
+            }} accessibilityRole="button" accessibilityState={{ selected: muted === key }}>
+              {muted === key ? (
+                <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={s.opt}>
+                  <Text style={[s.optT, { color: t.onGrad }]}>{label}</Text>
+                </LinearGradient>
+              ) : (
+                <View style={s.opt}>
+                  <Text style={[s.optT, { color: t.mute }]}>{label}</Text>
+                </View>
+              )}
+            </Pressable>
+          ))}
+        </View>
       </View>
       <Text style={[s.ver, { color: t.mute }]}>MEDNOVA · V0.1</Text>
     </View>
@@ -140,6 +163,7 @@ const s = StyleSheet.create({
   no: { fontFamily: F.mono, fontSize: u(8.5), letterSpacing: u(1.275), width: u(13) },
   lbl: { fontSize: u(14.5), lineHeight: u(16.5), flex: 1 },
   dot: { width: u(7), height: u(7), borderRadius: u(4), alignSelf: 'center' },
+  pills: { flexDirection: 'row', flexWrap: 'wrap', gap: u(8) },
   theme: { flexDirection: 'row', alignSelf: 'flex-start', borderWidth: 1, borderRadius: 999, padding: u(3) },
   opt: { paddingVertical: u(5), paddingHorizontal: u(11), borderRadius: 999 },
   optT: { fontFamily: F.bodySemi, fontSize: u(9.5) },

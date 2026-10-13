@@ -9,6 +9,7 @@ import { CommunityIcon, GamesIcon, LearnIcon } from '@/components/Icons';
 import { useTheme } from '@/state/app';
 import { DESIGN_W, u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
+import { tapped } from '@/lib/sound';
 
 export type Tab = 'learn' | 'games' | 'community' | null;
 
@@ -18,7 +19,7 @@ export function Dock({ active }: { active: Tab }) {
   const lt = t.mode === 'light';
   const ins = useSafeAreaInsets();
   const bottom = Platform.OS === 'web' ? u(16) : Math.max(ins.bottom, u(10));
-  const go = (r: Tab) => r && router.navigate(`/${r}`);
+  const go = tapped((r: Tab) => r && router.navigate(`/${r}`));
   const tab = (key: Exclude<Tab, null>, label: string, Icon: typeof LearnIcon) => {
     const on = active === key;
     const g = key === 'games';

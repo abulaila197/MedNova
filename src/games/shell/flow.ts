@@ -1,6 +1,7 @@
 // The shared play flow every game uses, so the general rules never differ between games.
 import { engine, GUEST_TRIALS, TRIAL_MODES } from '../engine';
 import type { GameKey, Mode, Play, PlayItem, Seat, Standing } from '../engine/types';
+import { sfxVerdict } from '@/lib/sound';
 import { syncAccount } from '@/lib/sync';
 
 import { useSession } from './session';
@@ -27,8 +28,13 @@ export async function startPlay(game: GameKey, mode: Mode, settings: Record<stri
   return engine.recorder.start({ game, mode, settings, seats, userId: useSession.getState().userId });
 }
 
-/** Records one answered item. The first one counts the free play (TR2). */
-export async function recordItem(play: Play, item: Omit<PlayItem, 'id' | 'at' | 'playId'>) {
+/**
+ * Records one answered item. The first one counts the free play (TR2). Solo and Offline give the right, wrong or
+ * time-up sound here, as the answer shows; `quiet` is for games that record a batch at the end and sound each answer
+ * themselves. Online never sounds here: its items arrive at the end, and its reveal plays the sound (useRevealSound).
+ */
+export async function recordItem(play: Play, item: Omit<PlayItem, 'id' | 'at' | 'playId'>, quiet = false) {
+  if (!quiet && play.mode !== 'online' && item.outcome !== 'skipped') void sfxVerdict(item.outcome === 'timed_out' ? 'timeup' : item.outcome === 'right');
   const row = await engine.recorder.recordItem({ ...item, playId: play.id });
   await countPlay(play);
   return row;

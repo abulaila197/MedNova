@@ -6,6 +6,7 @@ import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useTheme } from '@/state/app';
 import { u, useScreen } from '@/theme/scale';
 import { F } from '@/theme/tokens';
+import { sfxVerdict } from '@/lib/sound';
 
 import { engine, rank } from '../engine';
 import { Curtain } from '../shell/Curtain';
@@ -66,6 +67,11 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
       if (next === prev) return;
       ref.current = next;
       setRun(next);
+      // Each answered word sounds as it is judged (the batch recorded at the end stays quiet).
+      if (next.turns.length > prev.turns.length) {
+        const tn = next.turns[next.turns.length - 1];
+        if (tn.wordId) void sfxVerdict(tn.right);
+      }
       engine.recorder.bookmark(play.id, next, next.players[0]?.score ?? 0);
       if (next.phase === 'done' && prev.phase !== 'done') {
         engine.picker.markSeen(play.game, p.id);
@@ -144,7 +150,7 @@ function recordWords(play: PlayProps['play'], p: PuzzleDef, r: OfflineRun) {
       points: by != null ? w.answer.length : 0,
       feedsLearn: false,
       gameData: { level: p.level, answer: w.answer, clue: clueText(w), category: w.category },
-    });
+    }, true);
   }
 }
 

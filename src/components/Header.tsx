@@ -11,6 +11,7 @@ import { useSession } from '@/games/shell/session';
 import { useApp, useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
+import { tapped } from '@/lib/sound';
 
 /**
  * Locked header (decisions 59-60): see-through bar with blur and a lit bottom edge.
@@ -31,7 +32,7 @@ export function Header({ variant = 'app' }: { variant?: 'app' | 'game' }) {
       <View style={[z.edge, { backgroundColor: t.headerEdge }]} />
       {lt ? <View style={[z.edge, { bottom: -1, backgroundColor: 'rgba(29,34,48,0.12)' }]} /> : null}
       <View style={z.row}>
-        <Pressable onPress={() => setMenu(true)} style={[z.mb, { backgroundColor: t.chip, borderColor: t.chipLine }]} accessibilityLabel="Open menu">
+        <Pressable onPress={tapped(() => setMenu(true))} style={[z.mb, { backgroundColor: t.chip, borderColor: t.chipLine }]} accessibilityLabel="Open menu">
           <MenuIcon size={u(g ? 12 : 14)} color={t.menuBtn} />
         </Pressable>
         <View style={z.lk}>
@@ -42,11 +43,11 @@ export function Header({ variant = 'app' }: { variant?: 'app' | 'game' }) {
         </View>
       </View>
       <View style={z.row}>
-        <Pressable onPress={() => setReport(true)} style={[z.rp, { backgroundColor: t.red }]} accessibilityLabel="Report a problem">
+        <Pressable onPress={tapped(() => setReport(true))} style={[z.rp, { backgroundColor: t.red }]} accessibilityLabel="Report a problem">
           <Text style={z.rpT}>!</Text>
         </Pressable>
         {signedIn ? null : (
-          <Pressable onPress={() => router.push('/auth')} accessibilityLabel="Sign in">
+          <Pressable onPress={tapped(() => router.push('/auth'))} accessibilityLabel="Sign in">
             <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={z.si}>
               <Text style={[z.siT, { color: t.onGrad }]}>Sign in</Text>
             </LinearGradient>
@@ -63,7 +64,7 @@ function Coin({ light }: { light: boolean }) {
   const t = useTheme();
   const { tokens, level, into, need } = useBalance();
   return (
-    <Pressable onPress={() => router.navigate('/store')} style={gs.coin} accessibilityRole="button" accessibilityLabel={`${tokens} tokens. Level ${level}, ${into} of ${need} EXP to level ${level + 1}. Open the Store`}>
+    <Pressable onPress={tapped(() => router.navigate('/store'))} style={gs.coin} accessibilityRole="button" accessibilityLabel={`${tokens} tokens. Level ${level}, ${into} of ${need} EXP to level ${level + 1}. Open the Store`}>
       <Text style={[gs.coinT, { color: t.fg }]}>{tokens}</Text>
       <TokenCoin size={u(17)} progress={into / need} light={light} track={light ? 'rgba(29,34,48,0.12)' : 'rgba(255,255,255,0.12)'} />
     </Pressable>

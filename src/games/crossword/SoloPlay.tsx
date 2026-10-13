@@ -6,6 +6,7 @@ import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useTheme } from '@/state/app';
 import { u, useScreen } from '@/theme/scale';
 import { F } from '@/theme/tokens';
+import { sfxVerdict } from '@/lib/sound';
 
 import { engine } from '../engine';
 import { recordItem } from '../shell/flow';
@@ -82,6 +83,9 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
       if (next === prev) return;
       ref.current = next;
       setRun(next);
+      // Each word sounds as it is judged: right when it is solved, wrong when a guess costs a heart.
+      if (next.solved.length > prev.solved.length) void sfxVerdict(true);
+      else if (next.hearts < prev.hearts) void sfxVerdict(false);
       let list = sessionRef.current;
       if (next.phase === 'done' && prev.phase !== 'done') {
         const stars = soloStars(p, next);
@@ -170,7 +174,7 @@ function recordWords(play: PlayProps['play'], p: PuzzleDef, r: SoloRun, exp: num
       feedsLearn: !ok,
       // The puzzle's EXP rides on its first word so the shell can add it up once.
       gameData: { level: p.level, answer: w.answer, clue: clueText(w), category: w.category, exp: i === 0 ? exp : 0, stars: i === 0 ? soloStars(p, r) : 0 },
-    });
+    }, true); // already sounded word by word
   });
 }
 

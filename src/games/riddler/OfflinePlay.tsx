@@ -15,6 +15,7 @@ import { teamLap, teamsOf } from '../shell/teams';
 import type { PlayProps } from '../shell/types';
 import { Btn, GameScreen, Kick } from '../shell/ui';
 import { clock } from '@/games/engine/clock';
+import { sfxVerdict } from '@/lib/sound';
 import { shuffle } from '../engine/random';
 import { RIDDLES, answerLabel, feedsLearn, riddleById, riddleName } from './data';
 import {
@@ -68,6 +69,8 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
       const rows = offlineRows(next, names);
       const owner = rows.find((x) => x.seat === 0)?.score ?? 0;
       engine.recorder.bookmark(play.id, snapshotOffline(next, Date.now()), owner);
+      // Each player's turn sounds as it ends: right when solved, time up otherwise.
+      if (next.turns.length > prev.turns.length) void sfxVerdict(next.turns[next.turns.length - 1].solved || 'timeup');
       // Each picture is one item per player once it is scored. Only the phone owner's unsolved condition pictures go to Learn (RD5).
       if (next.results.length > prev.results.length) {
         const res = next.results[next.results.length - 1];
@@ -87,7 +90,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
             points: sc.points,
             feedsLearn: sc.seat === 0 && !sc.solved && feedsLearn(r),
             gameData: { rank: sc.rank, rankPoints: sc.rankPoints, timeBonus: sc.timeBonus, wrong: sc.wrong, kind: r.kind },
-          });
+          }, true); // each turn already sounded
         }
       }
       if (next.phase === 'done' && prev.phase !== 'done') {
