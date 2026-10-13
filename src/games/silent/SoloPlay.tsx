@@ -137,7 +137,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   return (
     <SlateScreen>
       <TopRow
-        kicker={`Practice · disease ${run.used.length}`}
+        kicker={`Practice · word ${run.used.length}`}
         title={phase === 'reveal' ? (last && last.timeMs >= run.turnMs ? "Time's up" : 'Done') : 'Draw this'}
         right={
           <>

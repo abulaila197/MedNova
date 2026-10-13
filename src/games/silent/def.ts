@@ -1,6 +1,6 @@
 import type { GameDef } from '../shell/types';
 import { SA } from './core';
-import { WORDS, wordById, wordName } from './data';
+import { isBasic, MIXES, WORDS, wordById, wordName } from './data';
 import { OfflinePlay } from './OfflinePlay';
 import { OnlinePlay } from './OnlinePlay';
 import { SoloPlay } from './SoloPlay';
@@ -10,6 +10,14 @@ const TURN = {
   label: 'Time per turn',
   choices: SA.turnChoices.map((v) => ({ value: v, label: `${v} s` })),
   initial: 90,
+};
+
+// QS1: Mixed (default), Clinical or Basic science words.
+const MIX = {
+  key: 'mix',
+  label: 'Words',
+  choices: MIXES.map((m) => ({ ...m, note: `${m.value === 'mixed' ? WORDS.length : WORDS.filter((w) => isBasic(w) === (m.value === 'basic')).length} words` })),
+  initial: 'mixed',
 };
 
 const PERFORMS = {
@@ -30,21 +38,21 @@ export const silentArtist: GameDef = {
     {
       mode: 'solo',
       title: 'Practice sketch',
-      blurb: `Draw ${WORDS.length} diseases alone against the clock. No score.`,
+      blurb: `Draw ${WORDS.length} diseases and basic science words alone against the clock. No score.`,
       howTo: [
         'Pick the fields you want, or keep them all.',
-        'You see a disease and have 60 s to draw it on the slate.',
-        'Then Next gives you a new disease, and Retry the same one on a clean board.',
-        'It is practice only: no score, no EXP, nothing goes to Learn. Your diseases are listed at the end with their dossiers.',
+        'You see a word and have 60 s to draw it on the slate.',
+        'Then Next gives you a new word, and Retry the same one on a clean board.',
+        'It is practice only: no score, no EXP, nothing goes to Learn. Your words are listed at the end with their dossiers.',
       ],
     },
     {
       mode: 'offline',
       title: 'Pass the phone',
-      blurb: 'One draws or acts a secret disease, the room shouts guesses.',
+      blurb: 'One draws or acts a secret word, the room shouts guesses.',
       howTo: [
-        'Add 2 to 6 players, or split them into teams. Pick the time per turn and how many turns each.',
-        'The performer holds to see 3 secret diseases, picks one in 10 s, and chooses to draw it or act it out.',
+        'Add 2 to 6 players, or split them into teams. Pick the words, the time per turn and how many turns each.',
+        'The performer holds to see 3 secret words, picks one in 10 s, and chooses to draw it or act it out.',
         'The room guesses out loud while the phone shows hints: word count, then the field, then letters.',
         'Got it? The performer names who guessed. Faster guesses score more, and the performer gets half.',
         'With teams, the performing team scores. On time up the next team gets one 15 s steal worth 10.',
@@ -55,7 +63,7 @@ export const silentArtist: GameDef = {
       title: 'Draw for the room',
       blurb: 'One draws, everyone types guesses live.',
       howTo: [
-        'Players take turns to draw. The artist picks 1 of 3 secret diseases in 10 s and draws it live.',
+        'Players take turns to draw. The artist picks 1 of 3 secret words in 10 s and draws it live.',
         'Everyone else types guesses. Small typos count; a near miss tells only you it is close.',
         'Hints arrive as the clock runs: the word count, then the field, then letters.',
         'Faster guesses score 20 to 125. The artist earns the average of everyone\'s points, +20 if all got it.',
@@ -63,8 +71,8 @@ export const silentArtist: GameDef = {
       ],
     },
   ],
-  // SA5 + SA12: the host picks the turn time and 1, 2 or 3 draws each.
-  setup: { solo: [], offline: [TURN, PERFORMS], online: [TURN, { ...PERFORMS, label: 'Draws each' }] },
+  // QS1 + SA5 + SA12: the host picks the words, the turn time and 1, 2 or 3 draws each.
+  setup: { solo: [], offline: [MIX, TURN, PERFORMS], online: [MIX, TURN, { ...PERFORMS, label: 'Draws each' }] },
   players: { offline: { min: 2, max: 6 } },
   teams: { offline: true, online: true },
   playersNote: () => 'Player 1 is you, the phone owner. The Silent Artist earns no EXP and sends nothing to Learn.',
@@ -77,10 +85,10 @@ export const silentArtist: GameDef = {
     const w = wordById.get(item.itemId);
     return w ? wordName(w) : item.itemId;
   },
-  itemNoun: 'disease',
+  itemNoun: 'word',
   // SA2: Solo is practice only, so its list has no right/wrong marks or points.
   plainItems: (play) => play.mode === 'solo',
-  itemsTitle: 'Diseases',
+  itemsTitle: 'Words',
   summary: (play, items) => {
     if (play.mode === 'online') {
       const guessed = items.filter((i) => i.gameData.kind === 'guessed');

@@ -1,6 +1,6 @@
 // The Silent Artist online guess check (SA7, SA8). The phone sends the typed guess; this runs the same coded
 // matcher as Solo and Pass the phone against the turn's word, so a phone can't claim a right answer. The words
-// and aliases come from sa_words (kept equal to src/games/silent/data/words.json).
+// and aliases come from sa_words (kept equal to src/games/silent/data/words.json + words-basic.json).
 // Bundled with scripts/build-silent-artist-function.sh.
 import { createClient } from 'npm:@supabase/supabase-js@2';
 
@@ -48,6 +48,15 @@ Deno.serve(async (req) => {
     B = await loadBank();
   } catch (e) {
     return json({ result: 'error', message: String(e) }, 500);
+  }
+  // A word added to sa_words after this copy loaded the list: load it again once.
+  if (!B.byId.has(wid as string)) {
+    bank = null;
+    try {
+      B = await loadBank();
+    } catch (e) {
+      return json({ result: 'error', message: String(e) }, 500);
+    }
   }
   const word = B.byId.get(wid as string);
   if (!word) return json({ result: 'over' });

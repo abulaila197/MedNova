@@ -130,3 +130,14 @@ test('online guess matcher (as coded): aliases and typos count, look-alikes are 
   assert.equal(evaluateGuess('hepatitis c', words[3], index), 'close');
   assert.equal(evaluateGuess('hypertention', words[1], index), 'correct');
 });
+
+test('word list (QS1): 300 diseases then 200 basic science words, every name and other name guesses right', async () => {
+  const { WORDS, wordsFor } = await import('../data');
+  const { buildAnswerIndex, evaluateGuess } = await import('../guess');
+  assert.equal(WORDS.length, 500);
+  assert.equal(wordsFor('clinical').length, 300);
+  assert.equal(wordsFor('basic').length, 200);
+  assert.ok(wordsFor('basic').every((w) => w.id.startsWith('b')));
+  const index = buildAnswerIndex(WORDS);
+  for (const w of WORDS) for (const n of [w.name, ...w.aliases]) assert.equal(evaluateGuess(n, w, index), 'correct', `${w.id} ${n}`);
+});

@@ -13,7 +13,7 @@ import { teamsOf } from '../shell/teams';
 import type { PlayProps } from '../shell/types';
 import { Board, type BoardHandle, type Stroke } from './Board';
 import { hintView, type Kind } from './core';
-import { RECENT_KEY, WORDS, wordById, wordName } from './data';
+import { RECENT_KEY, WORDS, wordById, wordName, wordsFor } from './data';
 import {
   buildPlan, currentTurn, elapsed, offlineRecap, offlineRows, snapshotOffline, startOffline, stealTeamOf, stepOffline, timeLeft,
   type OfflineEvent, type OfflineRun, type TurnRecord,
@@ -34,6 +34,8 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   const R = useSlateRoom();
   const turnMs = (Number(play.settings.turn) || 90) * 1000;
   const performs = Number(play.settings.performs) || 1;
+  // QS1: the 3 secret options come only from the host's pick (Mixed, Clinical or Basic science).
+  const pool = useMemo(() => wordsFor(play.settings.mix), [play.settings.mix]);
   const [run, setRun] = useState<OfflineRun | null>(null);
   const ref = useRef<OfflineRun | null>(null);
   const board = useRef<BoardHandle>(null);
@@ -88,7 +90,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
     (e: OfflineEvent) => {
       const prev = ref.current;
       if (!prev) return;
-      const next = stepOffline(prev, e, WORDS);
+      const next = stepOffline(prev, e, pool);
       if (next === prev) return;
       ref.current = next;
       setRun(next);
@@ -118,7 +120,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
       }
       if (next.phase === 'done' && prev.phase !== 'done') onFinish(owner, rank(rows));
     },
-    [play, onFinish, names, teamOf],
+    [play, onFinish, names, teamOf, pool],
   );
 
   // Each finished line, Undo or Clear: kept for the reveal, and the bookmark keeps the drawing too.
@@ -317,7 +319,7 @@ function Pick({ run, paused, onKind, onPick }: { run: OfflineRun; paused: boolea
           );
         })}
       </View>
-      <Pressable onPressIn={() => setShow(true)} onPressOut={() => setShow(false)} style={[s.hold, { borderColor: open ? R.mark : R.line }]} accessibilityRole="button" accessibilityLabel="Hold to see your diseases">
+      <Pressable onPressIn={() => setShow(true)} onPressOut={() => setShow(false)} style={[s.hold, { borderColor: open ? R.mark : R.line }]} accessibilityRole="button" accessibilityLabel="Hold to see your words">
         <Text style={[s.holdT, { color: open ? R.mark : R.ink }]}>{open ? 'Tap one while holding' : 'Hold here to see them'}</Text>
       </Pressable>
     </>

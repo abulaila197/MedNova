@@ -190,7 +190,7 @@ export function Peek({ word }: { word: string }) {
   const [on, setOn] = useState(false);
   const R = useSlateRoom();
   return (
-    <Pressable onPressIn={() => setOn(true)} onPressOut={() => setOn(false)} style={[s.peek, { borderColor: R.line }]} accessibilityRole="button" accessibilityLabel="Hold to see the disease">
+    <Pressable onPressIn={() => setOn(true)} onPressOut={() => setOn(false)} style={[s.peek, { borderColor: R.line }]} accessibilityRole="button" accessibilityLabel="Hold to see the word">
       <Text style={[s.peekT, { color: on ? R.mark : R.soft }]} numberOfLines={1} adjustsFontSizeToFit>
         {on ? word : 'Hold to peek'}
       </Text>

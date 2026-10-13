@@ -1,0 +1,1412 @@
+[
+ {
+  "id": "b001",
+  "name": "Femur",
+  "field": "Anatomy",
+  "aliases": [
+   "Thigh bone"
+  ]
+ },
+ {
+  "id": "b002",
+  "name": "Skull",
+  "field": "Anatomy",
+  "aliases": [
+   "Cranium"
+  ]
+ },
+ {
+  "id": "b003",
+  "name": "Rib cage",
+  "field": "Anatomy",
+  "aliases": [
+   "Ribs"
+  ]
+ },
+ {
+  "id": "b004",
+  "name": "Spine",
+  "field": "Anatomy",
+  "aliases": [
+   "Backbone"
+  ]
+ },
+ {
+  "id": "b005",
+  "name": "Pelvis",
+  "field": "Anatomy",
+  "aliases": []
+ },
+ {
+  "id": "b006",
+  "name": "Scapula",
+  "field": "Anatomy",
+  "aliases": [
+   "Shoulder blade"
+  ]
+ },
+ {
+  "id": "b007",
+  "name": "Patella",
+  "field": "Anatomy",
+  "aliases": [
+   "Kneecap"
+  ]
+ },
+ {
+  "id": "b008",
+  "name": "Clavicle",
+  "field": "Anatomy",
+  "aliases": [
+   "Collarbone"
+  ]
+ },
+ {
+  "id": "b009",
+  "name": "Diaphragm",
+  "field": "Anatomy",
+  "aliases": []
+ },
+ {
+  "id": "b010",
+  "name": "Aorta",
+  "field": "Anatomy",
+  "aliases": []
+ },
+ {
+  "id": "b011",
+  "name": "Trachea",
+  "field": "Anatomy",
+  "aliases": [
+   "Windpipe"
+  ]
+ },
+ {
+  "id": "b012",
+  "name": "Larynx",
+  "field": "Anatomy",
+  "aliases": [
+   "Voice box"
+  ]
+ },
+ {
+  "id": "b013",
+  "name": "Brain",
+  "field": "Anatomy",
+  "aliases": []
+ },
+ {
+  "id": "b014",
+  "name": "Stomach",
+  "field": "Anatomy",
+  "aliases": []
+ },
+ {
+  "id": "b015",
+  "name": "Small intestine",
+  "field": "Anatomy",
+  "aliases": []
+ },
+ {
+  "id": "b016",
+  "name": "Appendix",
+  "field": "Anatomy",
+  "aliases": []
+ },
+ {
+  "id": "b017",
+  "name": "Kidney",
+  "field": "Anatomy",
+  "aliases": []
+ },
+ {
+  "id": "b018",
+  "name": "Bladder",
+  "field": "Anatomy",
+  "aliases": [
+   "Urinary bladder"
+  ]
+ },
+ {
+  "id": "b019",
+  "name": "Lungs",
+  "field": "Anatomy",
+  "aliases": [
+   "Lung"
+  ]
+ },
+ {
+  "id": "b020",
+  "name": "Cochlea",
+  "field": "Anatomy",
+  "aliases": []
+ },
+ {
+  "id": "b021",
+  "name": "Heartbeat",
+  "field": "Physiology",
+  "aliases": [
+   "Pulse"
+  ]
+ },
+ {
+  "id": "b022",
+  "name": "Breathing",
+  "field": "Physiology",
+  "aliases": [
+   "Respiration"
+  ]
+ },
+ {
+  "id": "b023",
+  "name": "Knee reflex",
+  "field": "Physiology",
+  "aliases": [
+   "Knee jerk"
+  ]
+ },
+ {
+  "id": "b024",
+  "name": "Blood pressure",
+  "field": "Physiology",
+  "aliases": [
+   "BP"
+  ]
+ },
+ {
+  "id": "b025",
+  "name": "Sweating",
+  "field": "Physiology",
+  "aliases": [
+   "Perspiration"
+  ]
+ },
+ {
+  "id": "b026",
+  "name": "Swallowing",
+  "field": "Physiology",
+  "aliases": []
+ },
+ {
+  "id": "b027",
+  "name": "Hiccups",
+  "field": "Physiology",
+  "aliases": [
+   "Hiccup"
+  ]
+ },
+ {
+  "id": "b028",
+  "name": "Shivering",
+  "field": "Physiology",
+  "aliases": []
+ },
+ {
+  "id": "b029",
+  "name": "Sneezing",
+  "field": "Physiology",
+  "aliases": [
+   "Sneeze"
+  ]
+ },
+ {
+  "id": "b030",
+  "name": "Coughing",
+  "field": "Physiology",
+  "aliases": [
+   "Cough"
+  ]
+ },
+ {
+  "id": "b031",
+  "name": "Yawning",
+  "field": "Physiology",
+  "aliases": [
+   "Yawn"
+  ]
+ },
+ {
+  "id": "b032",
+  "name": "Blinking",
+  "field": "Physiology",
+  "aliases": [
+   "Blink"
+  ]
+ },
+ {
+  "id": "b033",
+  "name": "Peristalsis",
+  "field": "Physiology",
+  "aliases": []
+ },
+ {
+  "id": "b034",
+  "name": "Heart valve",
+  "field": "Physiology",
+  "aliases": []
+ },
+ {
+  "id": "b035",
+  "name": "Dilated pupil",
+  "field": "Physiology",
+  "aliases": [
+   "Pupil dilation"
+  ]
+ },
+ {
+  "id": "b036",
+  "name": "Synapse",
+  "field": "Physiology",
+  "aliases": []
+ },
+ {
+  "id": "b037",
+  "name": "Muscle contraction",
+  "field": "Physiology",
+  "aliases": [
+   "Flexing"
+  ]
+ },
+ {
+  "id": "b038",
+  "name": "Goosebumps",
+  "field": "Physiology",
+  "aliases": []
+ },
+ {
+  "id": "b039",
+  "name": "Ovulation",
+  "field": "Physiology",
+  "aliases": []
+ },
+ {
+  "id": "b040",
+  "name": "Circadian rhythm",
+  "field": "Physiology",
+  "aliases": [
+   "Body clock"
+  ]
+ },
+ {
+  "id": "b041",
+  "name": "Bacteria",
+  "field": "Microbiology",
+  "aliases": [
+   "Bacterium"
+  ]
+ },
+ {
+  "id": "b042",
+  "name": "Virus",
+  "field": "Microbiology",
+  "aliases": []
+ },
+ {
+  "id": "b043",
+  "name": "Bacteriophage",
+  "field": "Microbiology",
+  "aliases": [
+   "Phage"
+  ]
+ },
+ {
+  "id": "b044",
+  "name": "Mushroom",
+  "field": "Microbiology",
+  "aliases": [
+   "Fungus"
+  ]
+ },
+ {
+  "id": "b045",
+  "name": "Yeast",
+  "field": "Microbiology",
+  "aliases": []
+ },
+ {
+  "id": "b046",
+  "name": "Mold",
+  "field": "Microbiology",
+  "aliases": [
+   "Mould"
+  ]
+ },
+ {
+  "id": "b047",
+  "name": "Petri dish",
+  "field": "Microbiology",
+  "aliases": []
+ },
+ {
+  "id": "b048",
+  "name": "Microscope",
+  "field": "Microbiology",
+  "aliases": []
+ },
+ {
+  "id": "b049",
+  "name": "Flagellum",
+  "field": "Microbiology",
+  "aliases": []
+ },
+ {
+  "id": "b050",
+  "name": "Hand washing",
+  "field": "Microbiology",
+  "aliases": [
+   "Washing hands"
+  ]
+ },
+ {
+  "id": "b051",
+  "name": "Cocci",
+  "field": "Microbiology",
+  "aliases": [
+   "Coccus"
+  ]
+ },
+ {
+  "id": "b052",
+  "name": "Bacilli",
+  "field": "Microbiology",
+  "aliases": [
+   "Bacillus"
+  ]
+ },
+ {
+  "id": "b053",
+  "name": "Spirochete",
+  "field": "Microbiology",
+  "aliases": []
+ },
+ {
+  "id": "b054",
+  "name": "Face mask",
+  "field": "Microbiology",
+  "aliases": [
+   "Mask"
+  ]
+ },
+ {
+  "id": "b055",
+  "name": "Test tube",
+  "field": "Microbiology",
+  "aliases": []
+ },
+ {
+  "id": "b056",
+  "name": "Antibody",
+  "field": "Microbiology",
+  "aliases": [
+   "Immunoglobulin"
+  ]
+ },
+ {
+  "id": "b057",
+  "name": "Vaccine",
+  "field": "Microbiology",
+  "aliases": []
+ },
+ {
+  "id": "b058",
+  "name": "Mosquito",
+  "field": "Microbiology",
+  "aliases": []
+ },
+ {
+  "id": "b059",
+  "name": "Tick",
+  "field": "Microbiology",
+  "aliases": []
+ },
+ {
+  "id": "b060",
+  "name": "Louse",
+  "field": "Microbiology",
+  "aliases": [
+   "Lice"
+  ]
+ },
+ {
+  "id": "b061",
+  "name": "Tumor",
+  "field": "Pathology",
+  "aliases": [
+   "Tumour"
+  ]
+ },
+ {
+  "id": "b062",
+  "name": "Blood clot",
+  "field": "Pathology",
+  "aliases": [
+   "Thrombus"
+  ]
+ },
+ {
+  "id": "b063",
+  "name": "Bruise",
+  "field": "Pathology",
+  "aliases": []
+ },
+ {
+  "id": "b064",
+  "name": "Blister",
+  "field": "Pathology",
+  "aliases": []
+ },
+ {
+  "id": "b065",
+  "name": "Cyst",
+  "field": "Pathology",
+  "aliases": []
+ },
+ {
+  "id": "b066",
+  "name": "Scar",
+  "field": "Pathology",
+  "aliases": []
+ },
+ {
+  "id": "b067",
+  "name": "Wound",
+  "field": "Pathology",
+  "aliases": [
+   "Cut"
+  ]
+ },
+ {
+  "id": "b068",
+  "name": "Swelling",
+  "field": "Pathology",
+  "aliases": []
+ },
+ {
+  "id": "b069",
+  "name": "Ulcer",
+  "field": "Pathology",
+  "aliases": []
+ },
+ {
+  "id": "b070",
+  "name": "Kidney stone",
+  "field": "Pathology",
+  "aliases": []
+ },
+ {
+  "id": "b071",
+  "name": "Pus",
+  "field": "Pathology",
+  "aliases": []
+ },
+ {
+  "id": "b072",
+  "name": "Polyp",
+  "field": "Pathology",
+  "aliases": []
+ },
+ {
+  "id": "b073",
+  "name": "Gallstone",
+  "field": "Pathology",
+  "aliases": []
+ },
+ {
+  "id": "b074",
+  "name": "Fracture",
+  "field": "Pathology",
+  "aliases": [
+   "Broken bone"
+  ]
+ },
+ {
+  "id": "b075",
+  "name": "Plaque",
+  "field": "Pathology",
+  "aliases": [
+   "Atheroma"
+  ]
+ },
+ {
+  "id": "b076",
+  "name": "Aneurysm",
+  "field": "Pathology",
+  "aliases": []
+ },
+ {
+  "id": "b077",
+  "name": "Biopsy",
+  "field": "Pathology",
+  "aliases": []
+ },
+ {
+  "id": "b078",
+  "name": "Autopsy",
+  "field": "Pathology",
+  "aliases": [
+   "Post-mortem"
+  ]
+ },
+ {
+  "id": "b079",
+  "name": "Microscope slide",
+  "field": "Pathology",
+  "aliases": [
+   "Slide"
+  ]
+ },
+ {
+  "id": "b080",
+  "name": "Hernia",
+  "field": "Pathology",
+  "aliases": []
+ },
+ {
+  "id": "b081",
+  "name": "Pill",
+  "field": "Pharmacology",
+  "aliases": [
+   "Tablet"
+  ]
+ },
+ {
+  "id": "b082",
+  "name": "Capsule",
+  "field": "Pharmacology",
+  "aliases": []
+ },
+ {
+  "id": "b083",
+  "name": "Syringe",
+  "field": "Pharmacology",
+  "aliases": []
+ },
+ {
+  "id": "b084",
+  "name": "Injection",
+  "field": "Pharmacology",
+  "aliases": [
+   "Shot"
+  ]
+ },
+ {
+  "id": "b085",
+  "name": "IV drip",
+  "field": "Pharmacology",
+  "aliases": [
+   "Drip"
+  ]
+ },
+ {
+  "id": "b086",
+  "name": "Inhaler",
+  "field": "Pharmacology",
+  "aliases": [
+   "Puffer"
+  ]
+ },
+ {
+  "id": "b087",
+  "name": "Eye drops",
+  "field": "Pharmacology",
+  "aliases": []
+ },
+ {
+  "id": "b088",
+  "name": "Ointment",
+  "field": "Pharmacology",
+  "aliases": [
+   "Cream"
+  ]
+ },
+ {
+  "id": "b089",
+  "name": "Patch",
+  "field": "Pharmacology",
+  "aliases": [
+   "Skin patch"
+  ]
+ },
+ {
+  "id": "b090",
+  "name": "Pharmacy",
+  "field": "Pharmacology",
+  "aliases": [
+   "Drugstore"
+  ]
+ },
+ {
+  "id": "b091",
+  "name": "Cough syrup",
+  "field": "Pharmacology",
+  "aliases": [
+   "Syrup"
+  ]
+ },
+ {
+  "id": "b092",
+  "name": "Mortar and pestle",
+  "field": "Pharmacology",
+  "aliases": []
+ },
+ {
+  "id": "b093",
+  "name": "Insulin pen",
+  "field": "Pharmacology",
+  "aliases": []
+ },
+ {
+  "id": "b094",
+  "name": "Nasal spray",
+  "field": "Pharmacology",
+  "aliases": []
+ },
+ {
+  "id": "b095",
+  "name": "Dropper",
+  "field": "Pharmacology",
+  "aliases": []
+ },
+ {
+  "id": "b096",
+  "name": "Poison",
+  "field": "Pharmacology",
+  "aliases": []
+ },
+ {
+  "id": "b097",
+  "name": "Lozenge",
+  "field": "Pharmacology",
+  "aliases": [
+   "Throat lozenge"
+  ]
+ },
+ {
+  "id": "b098",
+  "name": "Pill bottle",
+  "field": "Pharmacology",
+  "aliases": []
+ },
+ {
+  "id": "b099",
+  "name": "Prescription",
+  "field": "Pharmacology",
+  "aliases": []
+ },
+ {
+  "id": "b100",
+  "name": "Suppository",
+  "field": "Pharmacology",
+  "aliases": []
+ },
+ {
+  "id": "b101",
+  "name": "DNA",
+  "field": "Biochemistry",
+  "aliases": [
+   "Double helix"
+  ]
+ },
+ {
+  "id": "b102",
+  "name": "Chromosome",
+  "field": "Biochemistry",
+  "aliases": []
+ },
+ {
+  "id": "b103",
+  "name": "Cell",
+  "field": "Biochemistry",
+  "aliases": []
+ },
+ {
+  "id": "b104",
+  "name": "Mitochondria",
+  "field": "Biochemistry",
+  "aliases": [
+   "Mitochondrion"
+  ]
+ },
+ {
+  "id": "b105",
+  "name": "Nucleus",
+  "field": "Biochemistry",
+  "aliases": []
+ },
+ {
+  "id": "b106",
+  "name": "Cell membrane",
+  "field": "Biochemistry",
+  "aliases": []
+ },
+ {
+  "id": "b107",
+  "name": "Ribosome",
+  "field": "Biochemistry",
+  "aliases": []
+ },
+ {
+  "id": "b108",
+  "name": "Golgi apparatus",
+  "field": "Biochemistry",
+  "aliases": [
+   "Golgi"
+  ]
+ },
+ {
+  "id": "b109",
+  "name": "Cell division",
+  "field": "Biochemistry",
+  "aliases": [
+   "Mitosis"
+  ]
+ },
+ {
+  "id": "b110",
+  "name": "Red blood cell",
+  "field": "Biochemistry",
+  "aliases": [
+   "RBC"
+  ]
+ },
+ {
+  "id": "b111",
+  "name": "White blood cell",
+  "field": "Biochemistry",
+  "aliases": [
+   "WBC"
+  ]
+ },
+ {
+  "id": "b112",
+  "name": "Platelet",
+  "field": "Biochemistry",
+  "aliases": []
+ },
+ {
+  "id": "b113",
+  "name": "Neuron",
+  "field": "Biochemistry",
+  "aliases": [
+   "Nerve cell"
+  ]
+ },
+ {
+  "id": "b114",
+  "name": "Sperm cell",
+  "field": "Biochemistry",
+  "aliases": [
+   "Sperm"
+  ]
+ },
+ {
+  "id": "b115",
+  "name": "Egg cell",
+  "field": "Biochemistry",
+  "aliases": [
+   "Ovum"
+  ]
+ },
+ {
+  "id": "b116",
+  "name": "Enzyme",
+  "field": "Biochemistry",
+  "aliases": []
+ },
+ {
+  "id": "b117",
+  "name": "Fat cell",
+  "field": "Biochemistry",
+  "aliases": []
+ },
+ {
+  "id": "b118",
+  "name": "Glucose",
+  "field": "Biochemistry",
+  "aliases": []
+ },
+ {
+  "id": "b119",
+  "name": "Hemoglobin",
+  "field": "Biochemistry",
+  "aliases": [
+   "Haemoglobin"
+  ]
+ },
+ {
+  "id": "b120",
+  "name": "Muscle fiber",
+  "field": "Biochemistry",
+  "aliases": [
+   "Muscle fibre"
+  ]
+ },
+ {
+  "id": "b121",
+  "name": "Heart",
+  "field": "Anatomy",
+  "aliases": []
+ },
+ {
+  "id": "b122",
+  "name": "Liver",
+  "field": "Anatomy",
+  "aliases": []
+ },
+ {
+  "id": "b123",
+  "name": "Pancreas",
+  "field": "Anatomy",
+  "aliases": []
+ },
+ {
+  "id": "b124",
+  "name": "Spleen",
+  "field": "Anatomy",
+  "aliases": []
+ },
+ {
+  "id": "b125",
+  "name": "Gallbladder",
+  "field": "Anatomy",
+  "aliases": []
+ },
+ {
+  "id": "b126",
+  "name": "Esophagus",
+  "field": "Anatomy",
+  "aliases": [
+   "Oesophagus",
+   "Gullet"
+  ]
+ },
+ {
+  "id": "b127",
+  "name": "Colon",
+  "field": "Anatomy",
+  "aliases": [
+   "Large intestine"
+  ]
+ },
+ {
+  "id": "b128",
+  "name": "Thyroid gland",
+  "field": "Anatomy",
+  "aliases": [
+   "Thyroid"
+  ]
+ },
+ {
+  "id": "b129",
+  "name": "Eyeball",
+  "field": "Anatomy",
+  "aliases": [
+   "Eye"
+  ]
+ },
+ {
+  "id": "b130",
+  "name": "Tooth",
+  "field": "Anatomy",
+  "aliases": [
+   "Teeth"
+  ]
+ },
+ {
+  "id": "b131",
+  "name": "Tongue",
+  "field": "Anatomy",
+  "aliases": []
+ },
+ {
+  "id": "b132",
+  "name": "Mandible",
+  "field": "Anatomy",
+  "aliases": [
+   "Jawbone"
+  ]
+ },
+ {
+  "id": "b133",
+  "name": "Uterus",
+  "field": "Anatomy",
+  "aliases": [
+   "Womb"
+  ]
+ },
+ {
+  "id": "b134",
+  "name": "Ovary",
+  "field": "Anatomy",
+  "aliases": [
+   "Ovaries"
+  ]
+ },
+ {
+  "id": "b135",
+  "name": "Digestion",
+  "field": "Physiology",
+  "aliases": []
+ },
+ {
+  "id": "b136",
+  "name": "Urination",
+  "field": "Physiology",
+  "aliases": [
+   "Peeing"
+  ]
+ },
+ {
+  "id": "b137",
+  "name": "Circulation",
+  "field": "Physiology",
+  "aliases": [
+   "Blood flow"
+  ]
+ },
+ {
+  "id": "b138",
+  "name": "Hearing",
+  "field": "Physiology",
+  "aliases": []
+ },
+ {
+  "id": "b139",
+  "name": "Smelling",
+  "field": "Physiology",
+  "aliases": [
+   "Smell"
+  ]
+ },
+ {
+  "id": "b140",
+  "name": "Tasting",
+  "field": "Physiology",
+  "aliases": [
+   "Taste"
+  ]
+ },
+ {
+  "id": "b141",
+  "name": "Vision",
+  "field": "Physiology",
+  "aliases": [
+   "Sight"
+  ]
+ },
+ {
+  "id": "b142",
+  "name": "Sleep",
+  "field": "Physiology",
+  "aliases": [
+   "Sleeping"
+  ]
+ },
+ {
+  "id": "b143",
+  "name": "Crying",
+  "field": "Physiology",
+  "aliases": [
+   "Tears"
+  ]
+ },
+ {
+  "id": "b144",
+  "name": "Pregnancy",
+  "field": "Physiology",
+  "aliases": []
+ },
+ {
+  "id": "b145",
+  "name": "Breastfeeding",
+  "field": "Physiology",
+  "aliases": [
+   "Lactation"
+  ]
+ },
+ {
+  "id": "b146",
+  "name": "Fertilization",
+  "field": "Physiology",
+  "aliases": [
+   "Fertilisation"
+  ]
+ },
+ {
+  "id": "b147",
+  "name": "Chewing",
+  "field": "Physiology",
+  "aliases": [
+   "Mastication"
+  ]
+ },
+ {
+  "id": "b148",
+  "name": "Flea",
+  "field": "Microbiology",
+  "aliases": []
+ },
+ {
+  "id": "b149",
+  "name": "Bedbug",
+  "field": "Microbiology",
+  "aliases": []
+ },
+ {
+  "id": "b150",
+  "name": "Amoeba",
+  "field": "Microbiology",
+  "aliases": [
+   "Ameba"
+  ]
+ },
+ {
+  "id": "b151",
+  "name": "Leech",
+  "field": "Microbiology",
+  "aliases": []
+ },
+ {
+  "id": "b152",
+  "name": "Spore",
+  "field": "Microbiology",
+  "aliases": [
+   "Spores"
+  ]
+ },
+ {
+  "id": "b153",
+  "name": "Gloves",
+  "field": "Microbiology",
+  "aliases": [
+   "Glove"
+  ]
+ },
+ {
+  "id": "b154",
+  "name": "Hand sanitizer",
+  "field": "Microbiology",
+  "aliases": [
+   "Sanitizer"
+  ]
+ },
+ {
+  "id": "b155",
+  "name": "Housefly",
+  "field": "Microbiology",
+  "aliases": [
+   "Fly"
+  ]
+ },
+ {
+  "id": "b156",
+  "name": "Rat",
+  "field": "Microbiology",
+  "aliases": []
+ },
+ {
+  "id": "b157",
+  "name": "Snail",
+  "field": "Microbiology",
+  "aliases": []
+ },
+ {
+  "id": "b158",
+  "name": "Lab coat",
+  "field": "Microbiology",
+  "aliases": []
+ },
+ {
+  "id": "b159",
+  "name": "Cotton swab",
+  "field": "Microbiology",
+  "aliases": [
+   "Swab"
+  ]
+ },
+ {
+  "id": "b160",
+  "name": "Biohazard symbol",
+  "field": "Microbiology",
+  "aliases": [
+   "Biohazard"
+  ]
+ },
+ {
+  "id": "b161",
+  "name": "Rash",
+  "field": "Pathology",
+  "aliases": []
+ },
+ {
+  "id": "b162",
+  "name": "Wart",
+  "field": "Pathology",
+  "aliases": [
+   "Verruca"
+  ]
+ },
+ {
+  "id": "b163",
+  "name": "Mole",
+  "field": "Pathology",
+  "aliases": [
+   "Nevus"
+  ]
+ },
+ {
+  "id": "b164",
+  "name": "Burn",
+  "field": "Pathology",
+  "aliases": []
+ },
+ {
+  "id": "b165",
+  "name": "Bleeding",
+  "field": "Pathology",
+  "aliases": [
+   "Hemorrhage",
+   "Haemorrhage"
+  ]
+ },
+ {
+  "id": "b166",
+  "name": "Scab",
+  "field": "Pathology",
+  "aliases": []
+ },
+ {
+  "id": "b167",
+  "name": "Bunion",
+  "field": "Pathology",
+  "aliases": []
+ },
+ {
+  "id": "b168",
+  "name": "Callus",
+  "field": "Pathology",
+  "aliases": []
+ },
+ {
+  "id": "b169",
+  "name": "Splinter",
+  "field": "Pathology",
+  "aliases": []
+ },
+ {
+  "id": "b170",
+  "name": "Dislocation",
+  "field": "Pathology",
+  "aliases": []
+ },
+ {
+  "id": "b171",
+  "name": "Amputation",
+  "field": "Pathology",
+  "aliases": []
+ },
+ {
+  "id": "b172",
+  "name": "Stitches",
+  "field": "Pathology",
+  "aliases": [
+   "Sutures"
+  ]
+ },
+ {
+  "id": "b173",
+  "name": "Inflammation",
+  "field": "Pathology",
+  "aliases": []
+ },
+ {
+  "id": "b174",
+  "name": "Vial",
+  "field": "Pharmacology",
+  "aliases": []
+ },
+ {
+  "id": "b175",
+  "name": "Ampoule",
+  "field": "Pharmacology",
+  "aliases": [
+   "Ampule"
+  ]
+ },
+ {
+  "id": "b176",
+  "name": "Bandage",
+  "field": "Pharmacology",
+  "aliases": []
+ },
+ {
+  "id": "b177",
+  "name": "Adhesive bandage",
+  "field": "Pharmacology",
+  "aliases": [
+   "Plaster"
+  ]
+ },
+ {
+  "id": "b178",
+  "name": "Pillbox",
+  "field": "Pharmacology",
+  "aliases": [
+   "Pill organizer"
+  ]
+ },
+ {
+  "id": "b179",
+  "name": "Nebulizer",
+  "field": "Pharmacology",
+  "aliases": [
+   "Nebuliser"
+  ]
+ },
+ {
+  "id": "b180",
+  "name": "Fizzy tablet",
+  "field": "Pharmacology",
+  "aliases": [
+   "Effervescent tablet"
+  ]
+ },
+ {
+  "id": "b181",
+  "name": "Adrenaline pen",
+  "field": "Pharmacology",
+  "aliases": [
+   "Epinephrine pen"
+  ]
+ },
+ {
+  "id": "b182",
+  "name": "Anesthesia",
+  "field": "Pharmacology",
+  "aliases": [
+   "Anaesthesia"
+  ]
+ },
+ {
+  "id": "b183",
+  "name": "Cannula",
+  "field": "Pharmacology",
+  "aliases": []
+ },
+ {
+  "id": "b184",
+  "name": "Herbal remedy",
+  "field": "Pharmacology",
+  "aliases": [
+   "Herbs"
+  ]
+ },
+ {
+  "id": "b185",
+  "name": "Oxygen mask",
+  "field": "Pharmacology",
+  "aliases": []
+ },
+ {
+  "id": "b186",
+  "name": "Medicine cup",
+  "field": "Pharmacology",
+  "aliases": []
+ },
+ {
+  "id": "b187",
+  "name": "Pill cutter",
+  "field": "Pharmacology",
+  "aliases": [
+   "Pill splitter"
+  ]
+ },
+ {
+  "id": "b188",
+  "name": "Protein",
+  "field": "Biochemistry",
+  "aliases": []
+ },
+ {
+  "id": "b189",
+  "name": "Atom",
+  "field": "Biochemistry",
+  "aliases": []
+ },
+ {
+  "id": "b190",
+  "name": "Molecule",
+  "field": "Biochemistry",
+  "aliases": []
+ },
+ {
+  "id": "b191",
+  "name": "Lysosome",
+  "field": "Biochemistry",
+  "aliases": []
+ },
+ {
+  "id": "b192",
+  "name": "Endoplasmic reticulum",
+  "field": "Biochemistry",
+  "aliases": [
+   "ER"
+  ]
+ },
+ {
+  "id": "b193",
+  "name": "Cytoplasm",
+  "field": "Biochemistry",
+  "aliases": []
+ },
+ {
+  "id": "b194",
+  "name": "Cilia",
+  "field": "Biochemistry",
+  "aliases": [
+   "Cilium"
+  ]
+ },
+ {
+  "id": "b195",
+  "name": "Stem cell",
+  "field": "Biochemistry",
+  "aliases": []
+ },
+ {
+  "id": "b196",
+  "name": "Gene",
+  "field": "Biochemistry",
+  "aliases": [
+   "Genes"
+  ]
+ },
+ {
+  "id": "b197",
+  "name": "Ion channel",
+  "field": "Biochemistry",
+  "aliases": []
+ },
+ {
+  "id": "b198",
+  "name": "Skin cell",
+  "field": "Biochemistry",
+  "aliases": []
+ },
+ {
+  "id": "b199",
+  "name": "Vitamin",
+  "field": "Biochemistry",
+  "aliases": [
+   "Vitamins"
+  ]
+ },
+ {
+  "id": "b200",
+  "name": "Sugar",
+  "field": "Biochemistry",
+  "aliases": [
+   "Sucrose"
+  ]
+ }
+]
