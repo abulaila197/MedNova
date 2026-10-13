@@ -10,6 +10,7 @@ import { GAMES } from '@/data/games';
 import { GamePage } from './GamePage';
 import { Dots, Ring } from './Ring';
 import { Planet, wrapOff } from './Planet';
+import { RoundsButton } from '@/features/rounds/Ribbon';
 import { useTheme } from '@/state/app';
 import { DESIGN_W, u } from '@/theme/scale';
 
@@ -73,6 +74,7 @@ export function GamesScreen() {
           {GAMES.map((g, j) => (
             <Planet key={g.key} k={g.key} j={j} pos={pos} sel={sel} mode={t.mode} onPress={() => jump(j)} />
           ))}
+          <RoundsButton />
         </View>
       </GestureDetector>
     </Screen>
