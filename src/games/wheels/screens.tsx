@@ -17,7 +17,7 @@ import type { GameDef } from '../shell/types';
 import { useSetup } from '../shell/useSetup';
 import { useLanding, useResults } from '../shell/useShellPages';
 import { AddPill } from '@/features/friends/AddAfterMatch';
-import { PlayerTitle, winnerAccount } from '@/features/style/PlayerTitle';
+import { effectWinner, PlayerTitle, winnerAccount } from '@/features/style/PlayerTitle';
 import { WinEffect } from '@/features/style/WinEffect';
 import { useSession } from '../shell/session';
 import { fieldName, STYLES, type FieldKey, type Style } from './core';
@@ -243,7 +243,9 @@ const MARK: Record<PlayItem['outcome'], string> = { right: '✓', wrong: '✕', 
 function Results({ def, play, items }: { def: GameDef; play: Play; items: PlayItem[] }) {
   const { multi, mine, right, nameOf, colorOf, rematch, changeSettings, backToGames, openDossier } = useResults(def, play, items);
   const seatOf = new Map(play.seats.map((x) => [x.seat, x]));
-  const winner = winnerAccount(play, useSession((x) => x.userId));
+  const me = useSession((x) => x.userId);
+  const winner = winnerAccount(play, me);
+  const fx = effectWinner(play, me);
   const target = Number(play.settings.target) || 50;
   const top = play.standings.filter((r) => r.rank === 1);
   const headline = multi ? (top.length === 1 ? top[0].name : 'A draw') : String(play.score);
@@ -261,7 +263,7 @@ function Results({ def, play, items }: { def: GameDef; play: Play; items: PlayIt
   ];
   return (
     <VelvetScreen scroll>
-      {play.mode === 'online' && winner ? <WinEffect userId={winner} /> : null}
+      {fx ? <WinEffect userId={fx} /> : null}
       <View style={{ gap: u(3) }}>
         <Kicker>{MODE_NAME[play.mode]}</Kicker>
         <Title text="Curtain Call" size={28} />

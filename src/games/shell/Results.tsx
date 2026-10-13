@@ -12,7 +12,7 @@ import { AddPill } from '@/features/friends/AddAfterMatch';
 import { RoomTalk } from '@/online/Talk';
 
 import { PlayerFace } from '@/features/style/Frame';
-import { PlayerTitle, winnerAccount } from '@/features/style/PlayerTitle';
+import { effectWinner, PlayerTitle, winnerAccount } from '@/features/style/PlayerTitle';
 import { WinEffect } from '@/features/style/WinEffect';
 import { useSession } from './session';
 import { teamScoreOf, type GameDef } from './types';
@@ -32,14 +32,15 @@ export function Results({ def, play, items }: { def: GameDef; play: Play; items:
   // ON22: online results keep the floating talk button.
   const uid = useSession((x) => x.userId);
   const winner = winnerAccount(play, uid);
+  const fx = effectWinner(play, uid);
   const room = play.mode === 'online' ? (play.settings.room as string | undefined) : undefined;
   return (
     <GameScreen
       top={
         <>
           {room && uid ? <RoomTalk room={room} me={{ id: uid, name: 'You', face: play.seats[0]?.character ?? 'yara' }} /> : null}
-          {/* A bought win effect plays once, over the page, for everyone when its owner wins online. */}
-          {play.mode === 'online' && winner ? <WinEffect userId={winner} /> : null}
+          {/* A bought win effect plays once over fresh results: online for everyone, Solo and Pass the phone for you. */}
+          {fx ? <WinEffect userId={fx} /> : null}
         </>
       }>
       <View style={{ gap: u(6) }}>

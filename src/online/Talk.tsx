@@ -5,6 +5,8 @@ import { Text } from '@/components/AppText';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, { FadeIn, FadeOut, ZoomIn, runOnJS, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 
+import { router } from 'expo-router';
+
 import { Face } from '@/games/shell/Face';
 import { PlayerFace } from '@/features/style/Frame';
 import { useStyle } from '@/features/style/useStyle';
@@ -13,6 +15,7 @@ import { F } from '@/theme/tokens';
 
 import { G } from './grey';
 import { stickerById, STICKERS } from './stickers';
+import { TEXT_PACKS } from './textStickers';
 import { sendTalk, toggleMute, useTalk, useTalkFeed, type TalkMsg } from './talk';
 import { VOICE, voiceById } from './voice';
 
@@ -35,13 +38,13 @@ function useCooling() {
 
 /** The Talk tray (ON12, locked lobby preview): your character's stickers, picture only, and the shared voice lines. */
 export function TalkPanel({ room, me, onSent }: { room: string; me: Me; onSent?: () => void }) {
-  const [tab, setTab] = useState<'sticker' | 'voice'>('sticker');
+  const [tab, setTab] = useState<'sticker' | 'special' | 'voice'>('sticker');
   const cooling = useCooling();
-  // Bought sticker packs (Yazan 2026-10-13): other characters' stickers, picked by face above the grid.
+  // Bought text packs (Yazan 2026-10-13) sit in their own "Special" tab; your character's stickers stay free.
   const owned = useStyle((x) => x.owned);
-  const sets = [me.face, ...owned.filter((i) => i.startsWith('pack:')).map((i) => i.slice(5)).filter((k) => k !== me.face && STICKERS[k])];
-  const [set, setSet] = useState(me.face);
-  const shown = sets.includes(set) ? set : me.face;
+  const packs = TEXT_PACKS.filter((p) => owned.includes(`pack:${p.key}`));
+  const [pk, setPk] = useState<string | null>(null);
+  const pack = packs.find((p) => p.key === pk) ?? packs[0];
   const send = async (kind: TalkMsg['kind'], item: string) => {
     const r = await sendTalk(room, me, kind, item);
     if (r === 'sent') onSent?.();
@@ -49,29 +52,44 @@ export function TalkPanel({ room, me, onSent }: { room: string; me: Me; onSent?:
   return (
     <View style={s.panel}>
       <View style={s.tabs}>
-        {(['sticker', 'voice'] as const).map((k) => (
+        {(['sticker', 'special', 'voice'] as const).map((k) => (
           <Pressable key={k} onPress={() => setTab(k)} style={[s.tab, tab === k && s.tabOn]} accessibilityRole="tab" accessibilityState={{ selected: tab === k }}>
-            <Text style={[s.tabT, { color: tab === k ? G.onBtn : G.mute }]}>{k === 'sticker' ? 'Stickers' : 'Voice'}</Text>
+            <Text style={[s.tabT, { color: tab === k ? G.onBtn : G.mute }]}>{k === 'sticker' ? 'Stickers' : k === 'special' ? 'Special' : 'Voice'}</Text>
           </Pressable>
         ))}
       </View>
       {tab === 'sticker' ? (
         <View style={[s.sg, cooling && s.cool]}>
-          {sets.length > 1 ? (
-            <View style={s.sets}>
-              {sets.map((k) => (
-                <Pressable key={k} onPress={() => setSet(k)} style={[s.setB, k === shown && s.setOn]} accessibilityRole="tab" accessibilityState={{ selected: k === shown }} accessibilityLabel={`${k} stickers`}>
-                  <Face slug={k} size={u(20)} />
-                </Pressable>
-              ))}
-            </View>
-          ) : null}
-          {(STICKERS[shown] ?? []).map((x) => (
+          {(STICKERS[me.face] ?? []).map((x) => (
             <Pressable key={x.id} disabled={cooling} onPress={() => send('sticker', x.id)} style={s.sItem} accessibilityRole="button" accessibilityLabel={`Send sticker: ${x.label}`}>
               <Image source={x.src} style={s.sImg} contentFit="contain" />
             </Pressable>
           ))}
         </View>
+      ) : tab === 'special' ? (
+        pack ? (
+          <View style={[s.sg, cooling && s.cool]}>
+            {packs.length > 1 ? (
+              <View style={s.sets}>
+                {packs.map((p) => (
+                  <Pressable key={p.key} onPress={() => setPk(p.key)} style={[s.pk, p.key === pack.key && s.pkOn]} accessibilityRole="tab" accessibilityState={{ selected: p.key === pack.key }}>
+                    <Text style={[s.pkT, { color: p.key === pack.key ? G.fg : G.mute }]}>{p.name}</Text>
+                  </Pressable>
+                ))}
+              </View>
+            ) : null}
+            {pack.stickers.map((x) => (
+              <Pressable key={x.id} disabled={cooling} onPress={() => send('sticker', x.id)} style={s.wItem} accessibilityRole="button" accessibilityLabel={`Send sticker: ${x.label}`}>
+                <Image source={x.src} style={s.sImg} contentFit="contain" />
+              </Pressable>
+            ))}
+          </View>
+        ) : (
+          <Pressable onPress={() => router.navigate('/style?tab=stickers' as never)} style={s.empty} accessibilityRole="link">
+            <Text style={s.emptyT}>No special stickers yet.</Text>
+            <Text style={[s.emptyT, { color: G.acc }]}>Get text packs in the Style shop ›</Text>
+          </Pressable>
+        )
       ) : (
         <View style={[s.vg, cooling && s.cool]}>
           {VOICE.map((v) => (
@@ -94,7 +112,7 @@ export function TalkBubble({ m, face, size = 60 }: { m: TalkMsg; face?: boolean;
   return (
     <Animated.View entering={ZoomIn.springify().damping(14)} exiting={FadeOut.duration(250)} style={s.bub} pointerEvents="none">
       {st ? (
-        <Image source={st.src} style={{ width: u(size), height: u(size) }} contentFit="contain" accessibilityLabel={`${m.name}: ${st.label}`} />
+        <Image source={st.src} style={{ width: u(st.wide ? size * 1.7 : size), height: u(size) }} contentFit="contain" accessibilityLabel={`${m.name}: ${st.label}`} />
       ) : v ? (
         <View style={s.vb}>
           <Text style={s.vbI}>🔊</Text>
@@ -202,8 +220,12 @@ const s = StyleSheet.create({
   sg: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', rowGap: u(6) },
   sItem: { width: '23%', aspectRatio: 1, alignItems: 'center', justifyContent: 'center' },
   sets: { width: '100%', flexDirection: 'row', gap: u(6), marginBottom: u(2) },
-  setB: { padding: u(2), borderRadius: 999, borderWidth: 1, borderColor: 'transparent', opacity: 0.55 },
-  setOn: { borderColor: G.acc, opacity: 1 },
+  wItem: { width: '48.5%', aspectRatio: 1.7, alignItems: 'center', justifyContent: 'center' },
+  pk: { borderRadius: 999, borderWidth: 1, borderColor: G.line, paddingHorizontal: u(8), paddingVertical: u(3) },
+  pkOn: { borderColor: G.acc },
+  pkT: { fontFamily: F.bodySemi, fontSize: u(9.5) },
+  empty: { alignItems: 'center', gap: u(3), paddingVertical: u(16) },
+  emptyT: { fontFamily: F.bodySemi, fontSize: u(10.5), color: G.mute },
   sImg: { width: '100%', height: '100%' },
   vg: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', rowGap: u(6) },
   vl: { width: '48.5%', flexDirection: 'row', alignItems: 'center', gap: u(6), borderWidth: 1, borderColor: G.line, backgroundColor: G.panel, borderRadius: u(10), paddingVertical: u(7), paddingHorizontal: u(9) },

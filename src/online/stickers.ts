@@ -1,4 +1,6 @@
 // Generated from characters/cut/manifest.json: each character's stickers (picture only, ON12). Labels are for screen readers.
+import { TEXT_PACKS } from './textStickers';
+
 export const STICKERS: Record<string, { id: string; src: number; label: string }[]> = {
   yazan: [
     { id: 'yazan-01', src: require('../../assets/stickers/yazan-01.png'), label: "Hi there" },
@@ -92,4 +94,8 @@ export const STICKERS: Record<string, { id: string; src: number; label: string }
     { id: 'pip-08', src: require('../../assets/stickers/pip-08.png'), label: "Got it" },
   ],
 };
-export const stickerById = new Map(Object.values(STICKERS).flat().map((s) => [s.id, s]));
+/** Every sticker by id: characters' (free) and the bought text packs (wide). */
+export const stickerById = new Map<string, { id: string; src: number; label: string; wide?: boolean }>([
+  ...Object.values(STICKERS).flat().map((s) => [s.id, s] as const),
+  ...TEXT_PACKS.flatMap((p) => p.stickers.map((s) => [s.id, { ...s, wide: true }] as const)),
+]);

@@ -19,7 +19,7 @@ import type { GameDef } from '../shell/types';
 import { useSetup } from '../shell/useSetup';
 import { useLanding, useResults } from '../shell/useShellPages';
 import { AddPill } from '@/features/friends/AddAfterMatch';
-import { PlayerTitle, winnerAccount } from '@/features/style/PlayerTitle';
+import { effectWinner, PlayerTitle, winnerAccount } from '@/features/style/PlayerTitle';
 import { WinEffect } from '@/features/style/WinEffect';
 import { useSession } from '../shell/session';
 import { caseById, caseLabel } from './data';
@@ -391,12 +391,14 @@ const MARK: Record<PlayItem['outcome'], string> = { right: '✓', wrong: '✕', 
 function Results({ def, play, items }: { def: GameDef; play: Play; items: PlayItem[] }) {
   const { multi, nameOf, colorOf, teamRows, stats, missed, rematch, changeSettings, backToGames, openDossier } = useResults(def, play, items);
   const seatOf = new Map(play.seats.map((x) => [x.seat, x]));
-  const winner = winnerAccount(play, useSession((x) => x.userId));
+  const me = useSession((x) => x.userId);
+  const winner = winnerAccount(play, me);
+  const fx = effectWinner(play, me);
   const c = items[0] ? caseById.get(items[0].itemId) : undefined;
   const top = stats.flatMap((x, i) => (i === 0 ? [x, { value: `+${play.expEarned}`, label: 'EXP' }] : [x]));
   return (
     <NoirScreen scroll>
-      {play.mode === 'online' && winner ? <WinEffect userId={winner} /> : null}
+      {fx ? <WinEffect userId={fx} /> : null}
       <View style={{ gap: u(12) }}>
         <View style={{ gap: u(4) }}>
           <Kicker>{`Case Files · ${MODE_NAME[play.mode]}`}</Kicker>

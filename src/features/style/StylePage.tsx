@@ -11,10 +11,9 @@ import { TokenCoin } from '@/components/PulseStar';
 import { Screen } from '@/components/Screen';
 import { Sheet } from '@/components/Sheet';
 import { InfoScroll, Kicker, s as ui, useInfo } from '@/features/info/ui';
-import { CHARACTERS } from '@/games/shell/characters';
 import { Face } from '@/games/shell/Face';
 import { useSession } from '@/games/shell/session';
-import { STICKERS } from '@/online/stickers';
+import { TEXT_PACKS, textPackOf } from '@/online/textStickers';
 import { useAccount } from '@/state/account';
 import { loadFriends, useFriends } from '@/state/friends';
 import type { Theme } from '@/theme/tokens';
@@ -35,7 +34,8 @@ const TABS: { k: Tab; label: string }[] = [
   { k: 'stickers', label: 'Stickers' },
 ];
 
-const PACKS: Item[] = CHARACTERS.map((c) => ({ id: `pack:${c.slug}`, key: c.slug, name: `${c.name}'s stickers`, price: PACK_PRICE }));
+// Text sticker packs (Yazan 2026-10-13); character stickers are free and not sold.
+const PACKS: Item[] = TEXT_PACKS.map((p) => ({ id: `pack:${p.key}`, key: p.key, name: p.name, price: PACK_PRICE }));
 
 const left = (ms: number) => {
   const h = Math.max(0, Math.floor((ms - Date.now()) / 3600000));
@@ -109,6 +109,15 @@ export function StylePage() {
           </View>
         </View>
 
+        {/* A tapped sticker pack shows all its stickers. */}
+        {pick?.id.startsWith('pack:') ? (
+          <View style={[s.packAll, { backgroundColor: c.surf, borderColor: c.line }]}>
+            {(textPackOf(pick.key)?.stickers ?? []).map((x) => (
+              <Image key={x.id} source={x.src} style={s.packImg} contentFit="contain" accessibilityLabel={x.label} />
+            ))}
+          </View>
+        ) : null}
+
         {/* This week's deal: one frame and one title at DEAL_OFF% off. */}
         {deal.length ? (
           <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.3 }} end={{ x: 1, y: 0.7 }} style={s.deal}>
@@ -165,7 +174,6 @@ export function StylePage() {
                 accessibilityRole="button"
                 accessibilityState={{ selected: pick?.id === it.id }}>
                 {tab === 'effects' ? <EffectSign kind={(it as (typeof EFFECTS)[number]).key} size={u(30)} /> : null}
-                {tab === 'stickers' ? <Face slug={it.key} size={u(30)} /> : null}
                 <View style={{ flex: 1 }}>
                   <Text style={[s.rN, { color: tab === 'titles' ? titleColor(t.mode, it.key, c.fg) : c.fg, fontFamily: tab === 'titles' ? F.displayItalic : F.bodySemi }]}>{it.name}</Text>
                   {tab === 'effects' ? <Text style={[s.rS, { color: c.mute }]}>{(it as (typeof EFFECTS)[number]).what}</Text> : null}
@@ -242,8 +250,8 @@ function Price({ t, it, deal, owned, wearing }: { t: Theme; it: Item; deal: stri
 function Stickers({ slug }: { slug: string }) {
   return (
     <View style={s.stk}>
-      {(STICKERS[slug] ?? []).slice(0, 5).map((x) => (
-        <Image key={x.id} source={x.src} style={{ width: u(20), height: u(20) }} contentFit="contain" accessibilityLabel={x.label} />
+      {(textPackOf(slug)?.stickers ?? []).slice(0, 4).map((x) => (
+        <Image key={x.id} source={x.src} style={{ width: u(40), height: u(24) }} contentFit="contain" accessibilityLabel={x.label} />
       ))}
     </View>
   );
@@ -353,6 +361,8 @@ const s = StyleSheet.create({
   rN: { fontSize: u(13) },
   rS: { fontFamily: F.body, fontSize: u(9.5), marginTop: u(2) },
   stk: { flexDirection: 'row', gap: u(3), marginTop: u(4) },
+  packAll: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', rowGap: u(6), borderWidth: 1, borderRadius: u(18), padding: u(12), marginTop: u(10) },
+  packImg: { width: '23.5%', aspectRatio: 1.5 },
   glow: { flexDirection: 'row', alignItems: 'center', padding: u(12), gap: u(10) },
   bar: { position: 'absolute', left: u(14), right: u(14), bottom: u(18), borderWidth: 1, borderRadius: u(18), paddingVertical: u(10), paddingHorizontal: u(14), gap: u(8) },
   barN: { fontFamily: F.display, fontSize: u(15) },

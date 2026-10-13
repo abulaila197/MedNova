@@ -50,7 +50,7 @@ export const EFFECTS: (Item & { key: EffectKey; what: string })[] = [
   { id: 'effect:supernova', key: 'supernova', name: 'Supernova', price: 300, what: 'The Pulse star bursts into light' },
 ];
 
-/** Reaction packs: another character's stickers for online rooms (your own character's are free). */
+/** Text sticker packs for online rooms (your character's stickers stay free). */
 export const PACK_PRICE = 60;
 
 export const titleName = (key?: string | null) =>

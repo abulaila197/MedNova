@@ -38,3 +38,17 @@ export function winnerAccount(play: { mode: string; standings: { seat: number; r
   const seat = top[0].seat;
   return (play.mode === 'online' ? play.seats.find((x) => x.seat === seat)?.userId : seat === 0 ? me : null) ?? null;
 }
+
+/**
+ * Whose win effect plays on these results (Yazan 2026-10-13: Online, Solo and Pass the phone), only as the game
+ * just ended so reopening old results stays quiet. Online: the sole winner. Pass the phone: you, when your seat
+ * (the phone owner) is the sole winner. Solo: you, after any game that scored.
+ */
+export function effectWinner(
+  play: { mode: string; score: number; endedAt: number | null; standings: { seat: number; rank: number }[]; seats: { seat: number; userId?: string | null }[] },
+  me: string | null,
+) {
+  if (!play.endedAt || Date.now() - play.endedAt > 60_000) return null;
+  if (play.mode === 'solo') return play.score > 0 ? me : null;
+  return winnerAccount(play, me);
+}
