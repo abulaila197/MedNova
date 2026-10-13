@@ -8,6 +8,7 @@ import { F } from '@/theme/tokens';
 
 import { levelUpLine } from '../engine/levels';
 import type { Play, PlayItem } from '../engine/types';
+import { AddPill } from '@/features/friends/AddAfterMatch';
 import { RoomTalk } from '@/online/Talk';
 
 import { Face } from './Face';
@@ -25,6 +26,7 @@ export function Results({ def, play, items }: { def: GameDef; play: Play; items:
   const { multi, nameOf, colorOf, teamRows, plain, stats, missed, rematch, changeSettings, backToGames, openDossier } = useResults(def, play, items);
   const lvl = levelUpLine(play.levelUp);
   const faceOf = new Map(play.seats.map((x) => [x.seat, x.character]));
+  const seatOf = new Map(play.seats.map((x) => [x.seat, x]));
   // ON22: online results keep the floating talk button.
   const uid = useSession((x) => x.userId);
   const room = play.mode === 'online' ? (play.settings.room as string | undefined) : undefined;
@@ -70,11 +72,14 @@ export function Results({ def, play, items }: { def: GameDef; play: Play; items:
                 <View style={[s.dot, { backgroundColor: colorOf.get(r.seat) }]} />
               ) : null}
               <Text style={[s.item, { color: t.fg }]}>{r.name}</Text>
+              {/* Add a player you just met (Yazan, 2026-10-13: in the standings). */}
+              {play.mode === 'online' && r.seat > 0 && seatOf.get(r.seat)?.userId ? <AddPill userId={seatOf.get(r.seat)!.userId!} name={r.name} /> : null}
               <Text style={[s.pts, { color: t.soft }]}>{r.score}</Text>
             </View>
           ))}
         </Card>
       ) : null}
+
       <Card>
         <Kick>{def.itemsTitle ?? 'Cases'}</Kick>
         {items.map((i) => (

@@ -18,6 +18,7 @@ import { Face } from '../shell/Face';
 import type { GameDef } from '../shell/types';
 import { useSetup } from '../shell/useSetup';
 import { useLanding, useResults } from '../shell/useShellPages';
+import { AddPill } from '@/features/friends/AddAfterMatch';
 import { caseById, caseLabel } from './data';
 import { CaseTitle, Kicker, NoirScreen, NR, T } from './noir';
 
@@ -386,6 +387,7 @@ const MARK: Record<PlayItem['outcome'], string> = { right: '✓', wrong: '✕', 
 /** The final report: a typed sheet with a CLOSED stamp (rule 14 buttons below it). */
 function Results({ def, play, items }: { def: GameDef; play: Play; items: PlayItem[] }) {
   const { multi, nameOf, colorOf, teamRows, stats, missed, rematch, changeSettings, backToGames, openDossier } = useResults(def, play, items);
+  const seatOf = new Map(play.seats.map((x) => [x.seat, x]));
   const c = items[0] ? caseById.get(items[0].itemId) : undefined;
   const top = stats.flatMap((x, i) => (i === 0 ? [x, { value: `+${play.expEarned}`, label: 'EXP' }] : [x]));
   return (
@@ -440,6 +442,7 @@ function Results({ def, play, items }: { def: GameDef; play: Play; items: PlayIt
                   <Ink size={12} color={PAPER.soft} style={{ width: u(16) }}>{r.rank}</Ink>
                   <View style={[sh.tag, { backgroundColor: colorOf.get(r.seat) ?? PAPER.ink, marginBottom: 0 }]} />
                   <Ink size={13.5} style={{ flex: 1 }}>{r.name}</Ink>
+                  {play.mode === 'online' && r.seat > 0 && seatOf.get(r.seat)?.userId ? <AddPill userId={seatOf.get(r.seat)!.userId!} name={r.name} ink={PAPER.ink} dim={PAPER.soft} /> : null}
                   <Ink size={13.5}>{String(r.score)}</Ink>
                 </View>
               ))}

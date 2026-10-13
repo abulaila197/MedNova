@@ -22,6 +22,7 @@ const ITEMS = [
   ['Achievements', '/achievements'],
   ['My cards', '/cards'],
   ['Store', '/store'],
+  ['Settings', '/settings'],
   ['Contact', '/contact'],
   ['About', '/about'],
   ['FAQ', '/faq'],

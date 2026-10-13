@@ -16,6 +16,7 @@ import { Face } from '../shell/Face';
 import type { GameDef } from '../shell/types';
 import { useSetup } from '../shell/useSetup';
 import { useLanding, useResults } from '../shell/useShellPages';
+import { AddPill } from '@/features/friends/AddAfterMatch';
 import { fieldName, STYLES, type FieldKey, type Style } from './core';
 import { Bill, Brass, Btn, CB, CD, Chip, CM, Gem, Kicker, Panel, ROMAN, Rule, T, Title, Token, VelvetScreen, VV } from './velvet';
 
@@ -238,6 +239,7 @@ const MARK: Record<PlayItem['outcome'], string> = { right: '✓', wrong: '✕', 
 
 function Results({ def, play, items }: { def: GameDef; play: Play; items: PlayItem[] }) {
   const { multi, mine, right, nameOf, colorOf, rematch, changeSettings, backToGames, openDossier } = useResults(def, play, items);
+  const seatOf = new Map(play.seats.map((x) => [x.seat, x]));
   const target = Number(play.settings.target) || 50;
   const top = play.standings.filter((r) => r.rank === 1);
   const headline = multi ? (top.length === 1 ? top[0].name : 'A draw') : String(play.score);
@@ -291,6 +293,7 @@ function Results({ def, play, items }: { def: GameDef; play: Play; items: PlayIt
                 <T f={CB} size={14} color={VV.dim} style={{ width: u(26) }}>{ROMAN[r.rank - 1] ?? String(r.rank)}</T>
                 <Gem c={colorOf.get(r.seat)} size={9} />
                 <T f={CB} size={15} color={r.rank === 1 ? VV.gold : VV.ink} style={{ flex: 1 }}>{r.name}</T>
+                {play.mode === 'online' && r.seat > 0 && seatOf.get(r.seat)?.userId ? <AddPill userId={seatOf.get(r.seat)!.userId!} name={r.name} ink={VV.gold} dim={VV.dim} font={CB} /> : null}
                 <T f={CD} size={16} color={VV.brass}>{String(r.score)}</T>
               </View>
             ))}

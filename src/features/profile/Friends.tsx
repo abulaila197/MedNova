@@ -10,7 +10,7 @@ import { Face } from '@/games/shell/Face';
 import { useAccount } from '@/state/account';
 import { clock } from '@/games/engine/clock';
 import { acceptInvite, challenge, useInvites } from '@/online/invites';
-import { type Friend, respondFriend, seenLabel, unblockUser, useFriends } from '@/state/friends';
+import { type Friend, respondFriend, seenLabel, useFriends } from '@/state/friends';
 import { u } from '@/theme/scale';
 import { F, type Theme } from '@/theme/tokens';
 
@@ -28,9 +28,8 @@ const ONLINE = { dark: '#7be0a8', light: '#5e9e6a' };
  */
 export function FriendsSection({ t, only }: { t: Theme; only?: 'friends' | 'requests' }) {
   const profile = useAccount((a) => a.profile);
-  const { list, blocked } = useFriends();
+  const { list } = useFriends();
   const [busy, setBusy] = useState<string | null>(null);
-  const [showBlocked, setShowBlocked] = useState(false);
   const invites = useInvites((x) => x.list);
   // Ticks the "time left" on challenges once a second while any are open.
   const [, setTick] = useState(0);
@@ -130,24 +129,6 @@ export function FriendsSection({ t, only }: { t: Theme; only?: 'friends' | 'requ
         );
       })}
       {showFr && friends.length ? <Text style={[s.tip, { color: t.mute }]}>Tap a friend’s name to remove or block.</Text> : null}
-      {showFr && blocked.length ? (
-        <View style={s.blk}>
-          <Pressable onPress={() => setShowBlocked((v) => !v)} accessibilityRole="button">
-            <Text style={[s.tip, { color: t.mute, textDecorationLine: 'underline' }]}>{`Blocked players (${blocked.length})`}</Text>
-          </Pressable>
-          {showBlocked
-            ? blocked.map((b) => (
-                <View key={b.id} style={[s.fr, line]}>
-                  <Face slug={b.avatar} size={u(20)} />
-                  <Text style={[s.frB, { color: t.fg, flex: 1 }]}>{b.display_name}</Text>
-                  <Pressable disabled={busy === b.id} onPress={() => act(b.id, () => unblockUser(b.id))} style={[s.ch, s.ghost, line]} accessibilityRole="button">
-                    <Text style={[s.ghT, { color: t.mute }]}>Unblock</Text>
-                  </Pressable>
-                </View>
-              ))
-            : null}
-        </View>
-      ) : null}
     </>
   );
 }
