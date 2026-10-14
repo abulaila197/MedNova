@@ -10,7 +10,7 @@ import { LOAD } from '@/features/loading/configs';
 import { MODE_NAME } from '../shell/ModeLanding';
 import type { GameDef, OwnScreens } from '../shell/types';
 import { useLanding } from '../shell/useShellPages';
-import { AT, AtlasScreen, Btn, CG, CGI, CZ, Kicker, Room, T, v } from './atlas';
+import { AT, AtlasScreen, Btn, CG, CGI, CZ, Kicker, Parchment, Room, T, v } from './atlas';
 
 function Backdrop({ def }: { def: GameDef }) {
   const art = LOAD[def.key];
@@ -47,6 +47,7 @@ function Landing({ def }: { def: GameDef }) {
         const isOpen = open === m.mode;
         return (
           <View key={m.mode} style={s.sheet}>
+            <Parchment />
             <View style={s.rule} pointerEvents="none" />
             <View style={s.row}>
               <Kicker color={AT.red}>{MODE_NAME[m.mode]}</Kicker>

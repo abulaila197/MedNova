@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { TextInput } from '@/components/AppText';
 
-import { AT, Btn, CardTile, CG, CGB, CGI, Chip, CZ, CZM, Kicker, PieceIcon, ROMAN, Rule, T, Top, v } from './atlas';
+import { AT, Btn, CardTile, CG, CGB, CGI, Chip, CZ, CZM, Kicker, Parchment, PieceIcon, ROMAN, Rule, T, Top, v } from './atlas';
 import { MapChart } from './AtlasMap';
 import type { Named, SoloStyle } from './bank';
 import { KeyboardLift } from '../shell/KeyboardLift';
@@ -567,7 +567,7 @@ export function HoldPage({ m, me, map, hold, seconds }: { m: MatchView; me: stri
   if (hold.kind === 'start')
     return (
       <>
-        <Top kicker="The Last Empire" title="Your kingdom" line="A castle for your capital, two pawns for your outposts. Lose the castle and you fall." seconds={seconds} />
+        <Top kicker="The Last Empire" title="Your kingdom" line="A crowned piece for your capital, two castles for your outposts. Lose the capital and you fall." seconds={seconds} />
         <Players m={m} me={me} />
         <MapChart map={map} lands={views} width={width - v(28)} />
         <T f={CGI} size={16} color={AT.soft} style={{ textAlign: 'center' }}>{`${BALANCE.MAX_STAGES} stages. Most lands at the end wins.`}</T>
@@ -633,7 +633,12 @@ export function OutBanner({ m, me }: { m: MatchView; me: string }) {
 // ---------------------------------------------------------------- bits
 
 function Paper({ children }: { children: React.ReactNode }) {
-  return <View style={s.paper}>{children}</View>;
+  return (
+    <View style={s.paper}>
+      <Parchment />
+      {children}
+    </View>
+  );
 }
 
 function Option({ label, mark, on, onPress, small }: { label: string; mark?: string; on?: boolean; onPress: () => void; small?: boolean }) {

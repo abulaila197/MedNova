@@ -1,11 +1,11 @@
 // The chart itself (CQ20-CQ21): sea with coastal ripple lines, a parchment continent, watercolour kingdoms that
 // follow whoever holds each land now, ink borders, mountains, a compass rose, and a chess piece on every land
-// (a castle on a capital, a pawn on an outpost) with its troops underneath. Lands can be tapped.
+// (Yazan's crowned piece on a capital, a castle on every other land) with its troops underneath. Lands can be tapped.
 import { memo, useMemo } from 'react';
 import { View } from 'react-native';
 import Svg, { Circle, ClipPath, Defs, G, Image as SvgImage, Path, Rect, Text as SvgText } from 'react-native-svg';
 
-import { AT, CZ, KINGDOMS, Piece, shade } from './atlas';
+import { AT, Capital, CZ, KINGDOMS, Piece, shade } from './atlas';
 import { MAP_H, MAP_W, type AtlasMap } from './map';
 
 export type LandView = { seat: number | null; troops: string | null; capital: boolean; shielded?: boolean; trapped?: boolean };
@@ -116,7 +116,11 @@ function AtlasMapView({ map, lands, width, selected, targets, arrows = [], onLan
           const color = v?.seat == null ? '#8a8172' : KINGDOMS[v.seat % KINGDOMS.length];
           return (
             <G key={`p${l.id}`} pointerEvents="none">
-              <Piece kind={v?.capital ? 'rook' : 'pawn'} color={color} x={l.spot[0]} y={l.spot[1] + 6} label={v?.troops ?? undefined} id={`g${l.id}`} />
+              {v?.capital && v.seat != null ? (
+                <Capital seat={v.seat} x={l.spot[0]} y={l.spot[1] + 6} label={v.troops ?? undefined} />
+              ) : (
+                <Piece kind="rook" color={color} x={l.spot[0]} y={l.spot[1] + 6} label={v?.troops ?? undefined} id={`g${l.id}`} />
+              )}
               {v?.shielded ? <Path d={`M${l.spot[0] + 9} ${l.spot[1] - 14}h7v4c0 3-3.5 5-3.5 5s-3.5-2-3.5-5Z`} fill={AT.paper} stroke={AT.ink} strokeWidth={0.8} /> : null}
               {v?.trapped ? <Path d={`M${l.spot[0] - 16} ${l.spot[1] - 6}l3-6 3 6 3-6 3 6`} fill="none" stroke={AT.red} strokeWidth={1.3} /> : null}
               {selected === l.id ? <Circle cx={l.spot[0]} cy={l.spot[1] + 7} r={13} fill="none" stroke={AT.red} strokeWidth={1.6} strokeDasharray="3 2" /> : null}

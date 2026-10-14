@@ -7,7 +7,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import { Pressable, StyleSheet, View, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
 import { Text } from '@/components/AppText';
-import Svg, { Defs, Ellipse, G, LinearGradient as SvgGradient, Path, Stop, Text as SvgText } from 'react-native-svg';
+import Svg, { Defs, Ellipse, G, Image as SvgImage, LinearGradient as SvgGradient, Path, Stop, Text as SvgText } from 'react-native-svg';
 
 import { loadFonts } from '@/features/loading/fonts';
 import { ModePin } from '@/state/app';
@@ -138,6 +138,7 @@ export function AtlasPause({ open, onResume, onLeave }: { open: boolean; onResum
       <AtlasScreen>
         <View style={{ flex: 1, justifyContent: 'center', gap: v(18) }}>
           <View style={s.tent}>
+            <Parchment />
             <View style={s.tentRule} pointerEvents="none" />
             <Kicker color={AT.inkSoft}>The war goes on</Kicker>
             <T f={CZ} size={30} color={AT.ink} style={{ lineHeight: v(36) }}>Field Tent</T>
@@ -207,6 +208,7 @@ export function CardTile({ card, w = 62, on, onPress, dim }: { card: CardType; w
   const nameSize = Math.min(10.5 * k, (w - 16) / (longest * 0.74));
   const body = (
     <View style={[s.card, { width: v(w), height: v(w * 1.04), opacity: dim ? 0.45 : 1 }, on ? { transform: [{ translateY: -v(6) }], borderColor: AT.red, borderWidth: 1.5 } : null]}>
+      <Parchment radius={5} />
       <View style={s.cardRule} pointerEvents="none" />
       <T f={CZ} size={nameSize} color={AT.red} style={{ lineHeight: v(nameSize * 1.15), textAlign: 'center' }} lines={info.name.includes(' ') ? 2 : 1}>{info.name}</T>
       <T f={CGI} size={k * 10.5} color={AT.ink} style={{ lineHeight: v(k * 11.5), textAlign: 'center' }} lines={3}>{SHORT[card]}</T>
@@ -277,6 +279,37 @@ export function Piece({ kind, color, x, y, s: sc = 0.84, label, id }: { kind: 'r
       ) : null}
     </G>
   );
+}
+
+/** Yazan's crowned capital piece (2026-10-14), one picture per kingdom colour, standing with its base centre at (x, y). */
+const CAPITALS = [
+  require('@/assets/conqueror/capital-0.png'),
+  require('@/assets/conqueror/capital-1.png'),
+  require('@/assets/conqueror/capital-2.png'),
+  require('@/assets/conqueror/capital-3.png'),
+  require('@/assets/conqueror/capital-4.png'),
+  require('@/assets/conqueror/capital-5.png'),
+];
+export function Capital({ seat, x, y, label }: { seat: number; x: number; y: number; label?: string }) {
+  const h = 38, w = (h * 70) / 150;
+  const lw = label ? 6 + 5.2 * label.length : 0;
+  return (
+    <G>
+      <Ellipse cx={x} cy={y + 1} rx={10.5} ry={3} fill="#1a0e05" opacity={0.35} />
+      <SvgImage href={CAPITALS[seat % CAPITALS.length]} x={x - w / 2} y={y - h + 1.5} width={w} height={h} />
+      {label ? (
+        <G transform={`translate(${x} ${y + 5})`}>
+          <Path d={`M${-lw / 2} 0h${lw}l-2 4.5 2 4.5h${-lw}l2-4.5Z`} fill={AT.paper} stroke="#5a3a1e" strokeWidth={0.7} />
+          <SvgText y={7} textAnchor="middle" fontFamily={CZ} fontSize={7.2} fill={AT.ink}>{label}</SvgText>
+        </G>
+      ) : null}
+    </G>
+  );
+}
+
+/** Yazan's parchment (2026-10-14) laid behind a paper surface; the surface keeps its cream colour underneath. */
+export function Parchment({ radius = 6 }: { radius?: number }) {
+  return <Image source={require('@/assets/conqueror/parchment.jpg')} style={[StyleSheet.absoluteFill, { borderRadius: v(radius) }]} contentFit="cover" pointerEvents="none" />;
 }
 
 /** A lone piece as a small icon (board tiles, chips). */
