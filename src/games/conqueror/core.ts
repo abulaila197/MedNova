@@ -164,10 +164,15 @@ export type Match = {
   duelIndex: number;
   used: string[];
   log: string[];
+  /** Every march of the last Gap, for the battle motion (view.ts decides what each phone may see). */
+  marches?: March[];
   winner: string | null;
   /** The last solo round's tiles, kept for the tally screen. */
   lastSolo?: Record<string, SoloTurn>;
 };
+
+/** One order as it landed: reinforced its own land, took the land, failed (held or shielded), or went to a duel. */
+export type March = { by: string; from: string | null; to: string; kind: 'add' | 'won' | 'held' | 'duel'; was: string | null; troops: number };
 
 export type Action =
   | { type: 'timeout' }
@@ -734,7 +739,7 @@ function eliminate(m: Match, id: string, reason: 'capital' | 'away') {
 
 /** All moves land at once (his combatResolver): own lands are reinforced, then each attacked land is fought for. */
 function battle(m: Match, ctx: Ctx, used: Set<string>) {
-  const moves: { by: string; to: string; troops: number }[] = [];
+  const moves: { by: string; from: string | null; to: string; troops: number }[] = [];
   for (const p of active(m)) {
     const list = m.gap.moves[p.id] ?? (p.connected ? [] : botMoves(m, p.id));
     for (const mv of list) {
@@ -744,9 +749,14 @@ function battle(m: Match, ctx: Ctx, used: Set<string>) {
       if (troops <= 0) continue;
       if (src) src.troops -= troops;
       else p.reserve -= troops;
-      moves.push({ by: p.id, to: mv.to, troops: mv.reinforce ? Math.ceil((troops * 1.5) / 1000) * 1000 : troops });
+      moves.push({ by: p.id, from: mv.from, to: mv.to, troops: mv.reinforce ? Math.ceil((troops * 1.5) / 1000) * 1000 : troops });
     }
   }
+  const marches: March[] = moves.map((mv) => ({ ...mv, kind: m.lands[mv.to].owner === mv.by ? 'add' : 'held', was: m.lands[mv.to].owner }));
+  const landed = (landId: string, kind: March['kind'], by?: string) => {
+    for (const x of marches) if (x.to === landId && x.kind !== 'add' && (by == null || x.by === by)) x.kind = kind;
+  };
+  m.marches = marches;
   const attacks = new Map<string, { by: string; troops: number }[]>();
   for (const mv of moves) {
     const to = m.lands[mv.to];
@@ -773,6 +783,7 @@ function battle(m: Match, ctx: Ctx, used: Set<string>) {
       continue;
     }
     if (attackers.length === 1) {
+      landed(landId, 'won', attackers[0].by);
       capture(m, landId, attackers[0].by, attackers[0].troops - land.troops);
       continue;
     }
@@ -782,6 +793,7 @@ function battle(m: Match, ctx: Ctx, used: Set<string>) {
       .map((x) => ({ by: x.by, troops: Math.max(0, x.troops - Math.round(garrison * (x.troops / total))) }))
       .sort((x, y) => y.troops - x.troops);
     for (const x of left.slice(2)) m.players[x.by].reserve += x.troops;
+    landed(landId, 'duel');
     duels.push({
       land: landId, p1: left[0].by, p2: left[1].by, t1: left[0].troops, t2: left[1].troops,
       questions: draw(ctx.bank, 'tf', BALANCE.DUEL_QUESTIONS, m.mix, used, ctx.rng), a1: [], a2: [],
@@ -821,6 +833,7 @@ function finishDuel(m: Match, ctx: Ctx, used: Set<string>) {
   const w = duelWinner(d, ctx.rng);
   const [winner, loser, wt, lt] = w === 1 ? [d.p1, d.p2, d.t1, d.t2] : [d.p2, d.p1, d.t2, d.t1];
   if (!m.players[loser].out) m.players[loser].reserve += Math.max(0, lt - wt);
+  for (const x of m.marches ?? []) if (x.to === d.land && x.kind === 'duel') x.kind = x.by === winner && !m.players[winner].out ? 'won' : 'held';
   if (!m.players[winner].out) capture(m, d.land, winner, wt);
   else m.players[loser].reserve += wt; // the winner fell earlier in this Gap: the land stays as it was
   m.duelIndex++;

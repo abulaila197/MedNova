@@ -4,7 +4,7 @@
 // played cards), and the numbers on the board don't say what hides behind them.
 import type { MatchQ, OrderQ, SoloQ } from './bank';
 import { shuffle } from '../engine/random';
-import { spyView, type Match, type Player, type SoloTurn, type VersusStyle } from './core';
+import { spyView, type March, type Match, type Player, type SoloTurn, type VersusStyle } from './core';
 
 /** A short screen between phases (online.ts): intro, solo tally, versus intro and results, battle report. */
 export type Hold = {
@@ -12,11 +12,33 @@ export type Hold = {
   until: number;
   /** What happened, for the battle report. */
   log?: string[];
+  /** The marches the battle motion plays (all of them on the server; each phone gets marchesFor its player). */
+  marches?: MarchView[];
   /** My judged tile, for the solo result (filled in per player by the view). */
   solo?: SoloTurn | null;
   /** The versus style coming up. */
   style?: VersusStyle;
 };
+
+/** A march as one phone sees it: `by` null is a rival's failed attack, shown only as a clash at the land. */
+export type MarchView = Omit<March, 'by' | 'troops'> & { by: string | null; troops?: number };
+
+/**
+ * Keep secret (Yazan 2026-10-14): my own marches play in full, every capture and duel plays, a rival's failed
+ * attack shows only a clash at the land (no attacker, no arrow), and rivals' reinforcements stay hidden. Troop
+ * numbers only travel with my own marches.
+ */
+export function marchesFor(list: March[], me: string): MarchView[] {
+  const out: MarchView[] = [];
+  for (const x of list) {
+    if (x.by === me) out.push(x);
+    else if (x.kind === 'won' || x.kind === 'duel') out.push({ by: x.by, from: x.from, to: x.to, kind: x.kind, was: x.was });
+  }
+  for (const x of list)
+    if (x.by !== me && x.kind === 'held' && !out.some((y) => y.to === x.to && y.kind !== 'add'))
+      out.push({ by: null, from: null, to: x.to, kind: 'held', was: x.was });
+  return out;
+}
 
 /** Shown in place of a secret number. */
 export const SECRET = -1;
@@ -99,6 +121,7 @@ export function viewFor(m: Match, me: string): MatchView {
     ...m,
     me,
     spy,
+    marches: undefined,
     rushTotal,
     players,
     lands,
@@ -124,6 +147,6 @@ export function envelopeFor<O extends { m: Match; deadline: number | null; start
     m,
     deadline: o.deadline,
     started: o.started,
-    holds: o.holds.map((h) => (h.kind === 'soloResult' ? { ...h, solo: m.lastSolo?.[me] ?? null } : h)),
+    holds: o.holds.map((h) => (h.kind === 'soloResult' ? { ...h, solo: m.lastSolo?.[me] ?? null } : h.marches ? { ...h, marches: marchesFor(h.marches as March[], me) } : h)),
   };
 }

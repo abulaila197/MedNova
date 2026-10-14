@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
 
+import { marchesFor, viewFor } from '../view';
 import { draw, makeBank, SOLO_STYLES, type BankQ, type McqQ, type Rng, type StandingQ } from '../bank';
 import {
   active, BALANCE, botMoves, CARD_TYPES, clueIndex, landsOf, makeBoard, maxMoves, pickVersusStyle, soloPoints, spyView, standings,
@@ -384,4 +385,25 @@ test('versus payout (CQ22): only players with a right answer are paid; 2nd with 
   g.go({ type: 'rush', player: 'p2', text: answers[0].label, ms: 1000 });
   g.go({ type: 'timeout' });
   assert.deepEqual(g.m.lastVersus!.points, { p2: 5 });
+});
+
+test('battle motion (Keep secret): marches are recorded, and each phone sees only what it may', () => {
+  const g = inMoves(3);
+  const o2 = outpostOf(g.m, 'p2');
+  const o3 = outpostOf(g.m, 'p3');
+  const o1 = outpostOf(g.m, 'p1');
+  g.go({ type: 'moves', player: 'p1', moves: [{ from: null, to: o2, troops: 10000 }, { from: capitalOf(g.m, 'p1'), to: o3, troops: 15000 }] });
+  g.go({ type: 'moves', player: 'p2', moves: [{ from: null, to: o2, troops: 2000 }] });
+  g.go({ type: 'moves', player: 'p3', moves: [{ from: null, to: o1, troops: 1000 }] });
+  const all = g.m.marches!;
+  assert.deepEqual(all.map((x) => [x.by, x.to, x.kind]), [['p1', o2, 'held'], ['p1', o3, 'won'], ['p2', o2, 'add'], ['p3', o1, 'held']]);
+  assert.equal(all.find((x) => x.to === o3)!.was, 'p3');
+  // p1 sees both own marches and only a clash at its own land; p2's reinforcement stays hidden.
+  const p1 = marchesFor(all, 'p1');
+  assert.deepEqual(p1.map((x) => [x.by, x.to, x.kind]), [['p1', o2, 'held'], ['p1', o3, 'won'], [null, o1, 'held']]);
+  // p2 sees its reinforcement, p1's capture (no troops), and no attacker at its outpost (p1's own attack there failed).
+  const p2 = marchesFor(all, 'p2');
+  assert.deepEqual(p2.map((x) => [x.by, x.to, x.kind]), [['p1', o3, 'won'], ['p2', o2, 'add'], [null, o2, 'held'], [null, o1, 'held']]);
+  assert.equal(p2.find((x) => x.to === o3)!.troops, undefined);
+  assert.equal(viewFor(g.m, 'p2').marches, undefined);
 });

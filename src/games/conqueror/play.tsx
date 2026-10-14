@@ -6,13 +6,14 @@ import { TextInput } from '@/components/AppText';
 
 import { AT, Btn, CardTile, CG, CGB, CGI, Chip, CZ, CZM, Kicker, Parchment, PieceIcon, ROMAN, Rule, T, Top, v } from './atlas';
 import { MapChart } from './AtlasMap';
+import { BattleMap } from './BattleMotion';
 import type { Named, SoloStyle } from './bank';
 import { KeyboardLift } from '../shell/KeyboardLift';
 import { indexNames } from '../shell/names';
 import { BALANCE, CARDS, suggest, type CardType, type SoloTurn, type VersusStyle } from './core';
 import NAMES from './data/names.json';
 import type { AtlasMap } from './map';
-import { colorOf, landViews, Players, stageLine, type Act } from './pages';
+import { colorOf, landViews, Players, seatOf, stageLine, type Act } from './pages';
 import { cluesShown } from './shown';
 import { SECRET, type Hold, type MatchView, type SoloView } from './view';
 import { useScreen } from '@/theme/scale';
@@ -610,7 +611,7 @@ export function HoldPage({ m, me, map, hold, seconds }: { m: MatchView; me: stri
     <>
       <Top kicker={stageLine(m)} title="The battle" line="All orders landed at once" seconds={seconds} />
       <Players m={m} me={me} />
-      <MapChart map={map} lands={views} width={width - v(28)} />
+      <BattleMap map={map} lands={views} width={width - v(28)} marches={hold.marches ?? []} seatOf={(id) => seatOf(m, id)} />
       <View style={{ gap: v(4) }}>
         {(hold.log ?? []).length ? (hold.log ?? []).map((l, i) => <T key={i} f={CG} size={15}>{l.replace(new RegExp(`\\b${m.players[me].name}'s\\b`, 'g'), 'Your').replace(new RegExp(`^${m.players[me].name}\\b`), 'You')}</T>) : <T f={CGI} size={15} color={AT.soft}>No land changed hands.</T>}
       </View>

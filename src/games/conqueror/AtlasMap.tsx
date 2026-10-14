@@ -23,9 +23,11 @@ type Props = {
   targets?: string[];
   arrows?: Arrow[];
   onLand?: (id: string) => void;
+  /** Lands whose piece the battle motion is drawing for now. */
+  hide?: string[];
 };
 
-function AtlasMapView({ map, lands, width, selected, targets, arrows = [], onLand }: Props) {
+function AtlasMapView({ map, lands, width, selected, targets, arrows = [], onLand, hide }: Props) {
   const height = (width * MAP_H) / MAP_W;
   const spot = useMemo(() => Object.fromEntries(map.lands.map((l) => [l.id, l.spot])), [map]);
   const seatOf = (id: string) => lands[id]?.seat ?? null;
@@ -112,6 +114,7 @@ function AtlasMapView({ map, lands, width, selected, targets, arrows = [], onLan
           );
         })}
         {order.map((l) => {
+          if (hide?.includes(l.id)) return null;
           const v = lands[l.id];
           const color = v?.seat == null ? '#8a8172' : KINGDOMS[v.seat % KINGDOMS.length];
           return (

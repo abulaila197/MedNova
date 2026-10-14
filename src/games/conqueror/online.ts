@@ -57,7 +57,10 @@ function holdsFor(prev: Match, next: Match, now: number): Hold[] {
   };
   if ((prev.phase === 'gap_moves' || prev.phase === 'duel') && next.phase !== prev.phase) {
     const log = next.log.slice(prev.log.length).filter((l) => !/^Stage \d+$/.test(l));
-    add({ kind: 'battle', log }, HOLD_MS.battle);
+    // After the duels, only the duelled lands play again.
+    const duelled = prev.phase === 'duel' ? new Set(prev.duels.map((d) => d.land)) : null;
+    const marches = (next.marches ?? []).filter((x) => !duelled || duelled.has(x.to)).map((x) => ({ ...x }));
+    add({ kind: 'battle', log, marches }, HOLD_MS.battle);
   }
   if (prev.phase === 'solo_play' && next.phase !== 'solo_play') add({ kind: 'soloResult' }, HOLD_MS.soloResult);
   if (prev.phase === 'versus' && next.phase !== 'versus') add({ kind: 'versusResult' }, HOLD_MS.versusResult);
