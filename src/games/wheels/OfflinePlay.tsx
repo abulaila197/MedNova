@@ -289,7 +289,7 @@ export function CardWindow({ g, seat, seats, board, onPlay, onPass, onPause }: {
       <Board board={board} />
       <View style={{ flexDirection: 'row', justifyContent: 'center', gap: u(18), paddingTop: u(12) }}>
         {hand.map((c) => (
-          <CardArt key={c} card={c} w={u(92)} on={pick === c} dim={!can.includes(c)} onPress={can.includes(c) ? () => (setPick(c), setTo(null), setGive(null)) : undefined} />
+          <CardArt key={c} card={c} w={u(70)} on={pick === c} dim={!can.includes(c)} onPress={can.includes(c) ? () => (setPick(c), setTo(null), setGive(null)) : undefined} />
         ))}
       </View>
       {pick ? (
