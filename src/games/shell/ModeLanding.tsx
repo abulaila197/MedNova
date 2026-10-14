@@ -1,10 +1,10 @@
-import { LinearGradient } from 'expo-linear-gradient';
-import { Image } from 'expo-image';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 
 import { Back } from '@/components/Back';
-import { GAME_PHOTOS, GAMES } from '@/data/games';
+import { FeatherArt } from '@/components/FeatherArt';
+import { GAMES } from '@/data/games';
+import { LOAD } from '@/features/loading/configs';
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
@@ -17,24 +17,26 @@ import { Body, Btn, Card, GameScreen, Ghost, Kick, Title } from './ui';
 
 export const MODE_NAME: Record<Mode, string> = { solo: 'Solo', offline: 'Offline Multiplayer', online: 'Online Multiplayer' };
 
-/** Structural landing: title, then a card per mode with How to play. Each game's own artwork comes later. */
+/** The app-look landing: title, then a card per mode with How to play, over the game's loading art. */
 export function ModeLanding({ def }: { def: GameDef }) {
   const t = useTheme();
   const g = GAMES.find((x) => x.key === def.key)!;
   const { open, setOpen, resume, go, resumePlay, resumeLabel, note } = useLanding(def);
 
-  const photo = GAME_PHOTOS[t.mode][def.key as keyof (typeof GAME_PHOTOS)['dark']];
+  const art = LOAD[def.key];
   return (
     <GameScreen
       top={
-        // Stand-in art: the game photo, faded and feathered. Each game's own landing art replaces it later.
-        // Dark only: on the light sky its feathered edges showed as a colour crack.
-        t.mode === 'dark' ? (
-          <View style={s.art} pointerEvents="none">
-            <Image source={photo} style={[StyleSheet.absoluteFill, { opacity: 0.5 }]} contentFit="cover" />
-            <LinearGradient colors={[t.sky, 'transparent']} start={{ x: 0, y: 0.5 }} end={{ x: 0.7, y: 0.5 }} style={StyleSheet.absoluteFill} />
-            <LinearGradient colors={['transparent', t.sky]} start={{ x: 0.5, y: 0.35 }} end={{ x: 0.5, y: 1 }} style={StyleSheet.absoluteFill} />
-          </View>
+        // The game's loading-page art as a quiet backdrop behind the title (Yazan 2026-10-14), in its own colours,
+        // dissolving into the page with real transparency so no edge can show.
+        art ? (
+          <FeatherArt
+            source={art.photo}
+            position={art.fo}
+            opacity={t.mode === 'dark' ? 0.34 : 0.2}
+            edges={{ bottom: 0.65 }}
+            style={s.art}
+          />
         ) : undefined
       }>
       <Back label="Games" fallback="/games" />
@@ -77,7 +79,7 @@ export function ModeLanding({ def }: { def: GameDef }) {
 }
 
 const s = StyleSheet.create({
-  art: { position: 'absolute', right: u(-30), top: u(0), width: u(230), height: u(200) },
+  art: { position: 'absolute', left: 0, right: 0, top: 0, height: u(330) },
   row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   h: { fontFamily: F.display, fontSize: u(19), lineHeight: u(22) },
   how: { fontFamily: F.bodySemi, fontSize: u(11), lineHeight: u(14) },

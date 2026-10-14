@@ -77,11 +77,11 @@ export function Room() {
 }
 
 /** A Conqueror page: the game header over the sepia room, always in the dark header. */
-export function AtlasScreen({ children, scroll = false }: { children: ReactNode; scroll?: boolean }) {
+export function AtlasScreen({ children, scroll = false, under }: { children: ReactNode; scroll?: boolean; under?: ReactNode }) {
   const ok = useAtlasFonts();
   return (
     <ModePin.Provider value="dark">
-      <GameScreen scroll={scroll} under={<Room />} bodyStyle={{ paddingTop: v(12), paddingHorizontal: v(14), paddingBottom: v(14), gap: v(11) }}>
+      <GameScreen scroll={scroll} under={under ?? <Room />} bodyStyle={{ paddingTop: v(12), paddingHorizontal: v(14), paddingBottom: v(14), gap: v(11) }}>
         {ok ? children : null}
       </GameScreen>
     </ModePin.Provider>

@@ -2,6 +2,7 @@ import type { GameDef } from '../shell/types';
 import { MIXES } from './bank';
 import { KINGDOMS } from './atlas';
 import { OnlinePlay } from './OnlinePlay';
+import { conquerorScreens } from './screens';
 
 // CQ11 / QS1: Mixed, Clinical or Basic science, Mixed first and picked by default.
 /** EXP for each right answer. */
@@ -31,6 +32,7 @@ export const conqueror: GameDef = {
   Play: {},
   Online: OnlinePlay,
   palette: { seats: KINGDOMS, teams: [] },
+  screens: conquerorScreens,
   // Scholar's share (Yazan 2026-10-09): EXP for every right answer in solo, versus and duels, so a fallen kingdom
   // still earns. The count rides in the play's settings from the end of the war.
   exp: (_score, _items, settings) => CQ_EXP_PER_RIGHT * Math.max(0, Number(settings?.right) || 0),

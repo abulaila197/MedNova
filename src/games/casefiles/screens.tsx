@@ -1,12 +1,11 @@
 // Case Files' own versions of the shared screens (rule RS3): mode landing, sign-in gate, setup, pause and
 // results, drawn as typed sheets pinned to the Evidence board. Same logic as the shared screens (useLanding,
 // useSetup, useResults); only the look is the game's own. Approved by Yazan on 2026-10-05.
-import { Image } from 'expo-image';
-import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import type { ReactNode } from 'react';
 import { Platform, Pressable, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 import { Text, TextInput } from '@/components/AppText';
+import { FeatherArt } from '@/components/FeatherArt';
 
 import { u } from '@/theme/scale';
 
@@ -111,11 +110,7 @@ const Label = ({ children }: { children: string }) => (
 function BoardCorner() {
   // The felt board peeks in at the top right, feathered into the room.
   return (
-    <View style={sh.corner} pointerEvents="none">
-      <Image source={require('@/assets/casefiles/board.jpg')} style={[StyleSheet.absoluteFill, { opacity: 0.55 }]} contentFit="cover" />
-      <LinearGradient colors={['#2e2e2d', 'rgba(46,46,45,0)']} start={{ x: 0, y: 0.5 }} end={{ x: 0.75, y: 0.5 }} style={StyleSheet.absoluteFill} />
-      <LinearGradient colors={['rgba(46,46,45,0)', '#2c2c2b']} start={{ x: 0.5, y: 0.3 }} end={{ x: 0.5, y: 1 }} style={StyleSheet.absoluteFill} />
-    </View>
+    <FeatherArt source={require('@/assets/casefiles/board.jpg')} opacity={0.55} edges={{ left: 0.75, bottom: 0.7 }} style={sh.corner} />
   );
 }
 

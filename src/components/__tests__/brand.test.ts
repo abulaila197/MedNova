@@ -67,3 +67,21 @@ test('every game page uses the game header; the rest of the app keeps the app he
   const gamePages = code.filter((f) => f.path.startsWith('src/games/') || f.path.startsWith('src/app/(app)/play/'));
   assert.deepEqual(gamePages.filter((f) => /<Screen\b/.test(f.text)).map((f) => f.path), ['src/games/shell/ui.tsx']);
 });
+
+// The faded-box line (Yazan 2026-10-14, after it came back on the landings): art must never be "faded" by painting a
+// gradient from a solid page colour to clear over it. The page behind has glow and grain, so the painted colour never
+// matches it and the box edge shows as a hard line. Fade art with FeatherArt (real transparency masks) instead.
+test('art is never faded by a gradient painted in a solid colour (use FeatherArt)', () => {
+  const clear = /^(?:'transparent'|'rgba\([^)]*,\s*0\)'|'#[0-9a-f]{6}00')$/i;
+  const solid = /^(?:t\.(?:sky|bg|page|card|ground)|'#[0-9a-f]{6}'|'rgba\([^)]*,\s*1\)')$/i;
+  const bad = code
+    .filter((f) => /<Image\b/.test(f.text) && /from 'expo-linear-gradient'/.test(f.text))
+    .flatMap((f) =>
+      [...f.text.matchAll(/<LinearGradient\b[^>]*?colors=\{\[([^\]]*)\]/gs)]
+        .map((m) => m[1].match(/'[^']*'|[\w.]+/g) ?? [])
+        .filter((stops) => stops.some((x) => clear.test(x)) && stops.some((x) => solid.test(x)))
+        .map(() => f.path),
+    );
+  assert.deepEqual(bad, []);
+  assert.match(code.find((f) => f.path === 'src/components/FeatherArt.tsx')!.text, /<Fade stops=\{down\}/);
+});
