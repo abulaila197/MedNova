@@ -1,11 +1,10 @@
-import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { Platform, Pressable, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Grain } from '@/components/Grain';
+import { Backdrop } from '@/components/Backdrop';
 import { CommunityIcon, GamesIcon, LearnIcon } from '@/components/Icons';
 import { useTheme } from '@/state/app';
 import { DESIGN_W, u } from '@/theme/scale';
@@ -19,8 +18,8 @@ export type Tab = 'learn' | 'games' | 'community' | null;
 const H = Platform.OS === 'web' ? 46 : 40;
 
 /**
- * Docked nav (decision 46, slimmed 2026-10-13): edge to edge, hairline dividers, the header's see-through material
- * (the same navy in dark, a shade lighter in light), brand type, raised Games box.
+ * Docked nav (decision 46, slimmed 2026-10-13; redesign 2026-10-17): edge to edge, shows the page's own navy backdrop
+ * (no bar colour of its own), hairline top edge and dividers, brand type, raised Games box.
  */
 export function Dock({ active }: { active: Tab }) {
   const t = useTheme();
@@ -51,13 +50,10 @@ export function Dock({ active }: { active: Tab }) {
     );
   };
   return (
-    <View style={[s.dock, { paddingBottom: bottom, height: u(H) + bottom, borderTopColor: t.headerEdge, shadowColor: lt ? 'rgba(80,60,20,0.3)' : 'rgba(0,0,0,0.7)' }]}>
-      <BlurView intensity={20} tint={lt ? 'light' : 'dark'} style={StyleSheet.absoluteFill} />
-      <LinearGradient colors={[t.headerTop, t.headerBottom]} style={StyleSheet.absoluteFill} />
+    <View style={[s.dock, { paddingBottom: bottom, height: u(H) + bottom, borderTopColor: t.headerEdge }]}>
+      <View style={[StyleSheet.absoluteFill, { overflow: 'hidden' }]}><Backdrop anchor="bottom" /></View>
       {/* Light mode: a shade lighter than the header. Dark mode: the header's own navy (Yazan 2026-10-13). */}
       {lt ? <View style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(255,255,255,0.18)' }]} /> : null}
-      <Grain opacity={lt ? 0.05 : 0.03} />
-      <View style={[s.lit, { backgroundColor: t.dockLit }]} />
       {[1, 2].map((i) => (
         <LinearGradient
           key={i}
@@ -82,12 +78,7 @@ const s = StyleSheet.create({
     gap: u(8),
     borderTopWidth: 1,
     overflow: 'visible',
-    shadowOffset: { width: 0, height: u(-8) },
-    shadowOpacity: 1,
-    shadowRadius: u(10),
-    elevation: 12,
   },
-  lit: { position: 'absolute', left: 0, right: 0, top: 0, height: 1, opacity: 1 },
   div: { position: 'absolute', width: 1 },
   // Centred so the gap above the icon equals the gap below the name (the Games box rises out of the bar).
   tab: { flex: 1, marginTop: u(3), height: u(H - 6), borderRadius: u(12), alignItems: 'center', justifyContent: 'center', gap: u(2) },

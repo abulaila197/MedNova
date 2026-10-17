@@ -3,8 +3,7 @@ import { Pressable, StyleSheet, View, type StyleProp, type TextStyle, type ViewS
 import { Text } from '@/components/AppText';
 import Svg, { Circle } from 'react-native-svg';
 
-import { Glow } from '@/components/Glow';
-import { Grain } from '@/components/Grain';
+import { Backdrop } from '@/components/Backdrop';
 import { loadFonts } from '@/features/loading/fonts';
 import { useApp } from '@/state/app';
 import { u, useScreen } from '@/theme/scale';
@@ -64,14 +63,7 @@ export function useSlateFonts() {
 
 /** A Silent Artist page: the game header over the dark slate room. `scroll` for long pages (pick, reveal). */
 export function SlateScreen({ children, scroll = false }: { children: ReactNode; scroll?: boolean }) {
-  const { width, height } = useScreen();
-  const mode = useApp((st) => st.mode);
-  const room = (
-    <View style={[StyleSheet.absoluteFill, { backgroundColor: THEMES[mode].sky }]} pointerEvents="none">
-      <Glow delay={1} w={width} h={height} mode={mode} />
-      <Grain />
-    </View>
-  );
+  const room = <Backdrop />;
   return (
     <GameScreen scroll={scroll} under={room} bodyStyle={[s.body, { paddingBottom: u(14) }]}>
       {children}

@@ -1,9 +1,11 @@
 export type Mode = 'dark' | 'light';
 
 // Nebula (dark) and Warm Stone (light), taken from the locked previews.
+// Bright navy (redesign stage 1, option B, Yazan 2026-10-17): reads as navy, never black.
+const NAVY = { sky: '#13234f', card: '#1b2c63', card2: '#172758', panel: '#1d2e66', panel2: '#18285a' };
 const dark = {
   mode: 'dark' as Mode,
-  sky: '#05050d',
+  sky: NAVY.sky,
   fg: '#eef0ff',
   white: '#ffffff',
   soft: '#c3c7e4',
@@ -19,8 +21,8 @@ const dark = {
   hair: 'rgba(255,255,255,0.14)',
   chip: 'rgba(255,255,255,0.05)',
   chipLine: 'rgba(255,255,255,0.09)',
-  card: '#10153a',
-  card2: '#0b0f2c',
+  card: NAVY.card,
+  card2: NAVY.card2,
   glow: ['rgba(143,117,255,0.6)', 'rgba(79,170,255,0.45)', 'rgba(225,230,255,0.5)'],
   grainOpacity: 0.08,
   headerTop: 'rgba(18,22,52,0.42)',
@@ -35,8 +37,8 @@ const dark = {
   tabOff: '#9aa0c4',
   gamesGlow: 'rgba(120,130,255,0.8)',
   menuBtn: '#dfe3ff',
-  panel: '#151933',
-  panel2: '#10132a',
+  panel: NAVY.panel,
+  panel2: NAVY.panel2,
   panelLine: 'rgba(255,255,255,0.09)',
   kick: '#4fc8ff',
   moonShade: 'rgba(9,11,30,0.9)',

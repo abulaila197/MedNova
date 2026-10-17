@@ -1,4 +1,3 @@
-import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { Pressable, StyleSheet, View } from 'react-native';
@@ -14,7 +13,8 @@ import { F } from '@/theme/tokens';
 import { tapped } from '@/lib/sound';
 
 /**
- * Locked header (decisions 59-60): see-through bar with blur and a lit bottom edge.
+ * Header (decisions 59-60; redesign 2026-10-17): no bar of its own, it shows the page's navy backdrop (drawn by
+ * Screen) and runs up to the top edge, with a hairline bottom edge.
  * `game` is the game-page version (GH1-GH3): the same parts made smaller, plus the token coin at the far right.
  */
 export function Header({ variant = 'app' }: { variant?: 'app' | 'game' }) {
@@ -26,9 +26,7 @@ export function Header({ variant = 'app' }: { variant?: 'app' | 'game' }) {
   const setReport = useApp((s) => s.setReport);
   const signedIn = !!useSession((st) => st.userId);
   return (
-    <View style={[z.bar, { shadowColor: lt ? 'rgba(80,60,20,0.35)' : '#000' }]}>
-      <BlurView intensity={20} tint={lt ? 'light' : 'dark'} style={StyleSheet.absoluteFill} />
-      <LinearGradient colors={[t.headerTop, t.headerBottom]} style={StyleSheet.absoluteFill} />
+    <View style={z.bar}>
       <View style={[z.edge, { backgroundColor: t.headerEdge }]} />
       {lt ? <View style={[z.edge, { bottom: -1, backgroundColor: 'rgba(29,34,48,0.12)' }]} /> : null}
       <View style={z.row}>
@@ -79,9 +77,6 @@ const s = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     zIndex: 5,
-    shadowOffset: { width: 0, height: u(6) },
-    shadowOpacity: 0.7,
-    shadowRadius: u(7),
   },
   edge: { position: 'absolute', left: 0, right: 0, bottom: 0, height: 1 },
   row: { flexDirection: 'row', alignItems: 'center', gap: u(8) },
