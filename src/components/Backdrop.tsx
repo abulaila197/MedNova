@@ -5,14 +5,14 @@ import { Grain } from '@/components/Grain';
 import { useTheme } from '@/state/app';
 import { useScreen } from '@/theme/scale';
 
-// The page background (redesign stage 1, Yazan 2026-10-17): bright navy with the glow baked in and still, in the
+// The page background (redesign stage 1, Yazan 2026-10-17): deep navy with the glow baked in and still, in the
 // top-right and bottom-left corners. The header and dock show this same picture, so they run on from the page.
 const SPOTS = [
   { x: 1.02, y: -0.02, rx: 0.95, ry: 0.32, rot: -32, c: 'rgba(120,110,255,0.55)' },
   { x: 0.92, y: 0.04, rx: 0.5, ry: 0.14, rot: -32, c: 'rgba(110,200,255,0.5)' },
   { x: -0.05, y: 1.02, rx: 0.85, ry: 0.28, rot: -28, c: 'rgba(90,140,255,0.42)' },
 ];
-const STRENGTH = 0.7;
+const STRENGTH = 0.55;
 
 /** Full-screen background, pinned to the screen's top (pages, header) or bottom (the dock). */
 export function Backdrop({ anchor = 'top' }: { anchor?: 'top' | 'bottom' }) {
