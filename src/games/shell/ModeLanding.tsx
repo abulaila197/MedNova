@@ -33,7 +33,7 @@ export function ModeLanding({ def }: { def: GameDef }) {
           <FeatherArt
             source={art.photo}
             position={art.fo}
-            opacity={t.mode === 'dark' ? 0.34 : 0.2}
+            opacity={0.34}
             edges={{ bottom: 0.65 }}
             style={s.art}
           />

@@ -1,6 +1,6 @@
 import type { Mode } from '@/theme/tokens';
 
-// Learn-only colours, taken from the locked previews (d-/l- learn, shelf, dossier).
+// Learn-only colours, taken from the locked previews (d- learn, shelf, dossier).
 const dark = {
   mute: '#9aa0c4',
   nameOff: 'rgba(200,206,240,0.35)',
@@ -52,56 +52,5 @@ const dark = {
   swatchLine: 'rgba(255,255,255,0.09)',
 };
 
-const light: typeof dark = {
-  mute: '#7a7264',
-  nameOff: 'rgba(29,34,48,0.35)',
-  track: 'rgba(29,34,48,0.1)',
-  cardA: '#fbf9f4',
-  cardB: '#f1ece2',
-  cardLine: 'rgba(184,116,31,0.22)',
-  cardShadow: '0px 18px 36px -22px rgba(80,60,20,0.45)',
-  strong: '#2a2620',
-  dotOff: 'rgba(29,34,48,0.15)',
-  againLine: 'rgba(29,34,48,0.18)',
-  againText: '#1d2230',
-  gotA: '#e9bf4f',
-  gotB: '#e5833a',
-  gotText: '#2a1a06',
-  srchBg: '#f6f3ec',
-  srchLine: 'rgba(29,34,48,0.1)',
-  srchText: '#8a8274',
-  tgBg: 'rgba(29,34,48,0.06)',
-  tgOn: 'rgba(229,131,58,0.18)',
-  tgOnText: '#2a2620',
-  spineA: '#fbf9f4',
-  spineB: '#ece6da',
-  spineSheen: ['rgba(255,255,255,0.6)', 'rgba(255,255,255,0)', 'rgba(80,60,20,0.12)'],
-  spineLine: 'rgba(29,34,48,0.1)',
-  spineShadow: 'inset 0px 1px 0px #ffffff, 0px 6px 12px -8px rgba(80,60,20,0.4)',
-  spineColors: ['#e5833a', '#e9bf4f', '#5fe0a8', '#ffb86b', '#ff7aa8', '#c98a1e'],
-  barTrack: 'rgba(29,34,48,0.1)',
-  sledgeA: '#c9b99c',
-  sledgeB: '#a8977a',
-  sledgeShadow: '0px 8px 16px -8px rgba(80,60,20,0.5)',
-  newcLine: 'rgba(229,131,58,0.45)',
-  newcBg: 'rgba(229,131,58,0.08)',
-  rowLine: 'rgba(29,34,48,0.1)',
-  letterLine: 'rgba(229,131,58,0.25)',
-  itemLine: 'rgba(29,34,48,0.08)',
-  itemText: '#1d2230',
-  dotPlain: 'rgba(29,34,48,0.15)',
-  rail: '#8a8274',
-  miss: '#ff7aa8',
-  fcardA: '#fbf9f4',
-  fcardB: '#f1ece2',
-  tabOn: '#fbf9f4',
-  tabOnLine: 'rgba(184,116,31,0.22)',
-  tabOff: '#ece7dc',
-  tabOffLine: 'rgba(29,34,48,0.08)',
-  tabOffText: '#8a8274',
-  swatch: '#e7e3da',
-  swatchLine: 'rgba(40,36,28,0.13)',
-};
-
-export const LEARN = { dark, light };
+export const LEARN = { dark };
 export const useLearnColors = (mode: Mode) => LEARN[mode];

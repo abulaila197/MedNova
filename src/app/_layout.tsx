@@ -12,7 +12,6 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { Intro } from '@/features/start/Intro';
 import { startAccount } from '@/state/account';
-import { useApp } from '@/state/app';
 import { watchResize } from '@/state/resize';
 import { bootStart, endIntro, useStart, useStartReady } from '@/state/start';
 import { View } from 'react-native';
@@ -28,7 +27,6 @@ startAccount();
 bootStart();
 
 export default function RootLayout() {
-  const mode = useApp((s) => s.mode);
   const ready = useStartReady();
   const intro = useStart((s) => s.intro);
   const { width, height } = useScreen();
@@ -55,8 +53,8 @@ export default function RootLayout() {
   useEffect(() => watchResize(() => here.current), []);
   if (!loaded || !ready) return null;
   return (
-    <GestureHandlerRootView style={{ flex: 1, alignItems: 'center', backgroundColor: THEMES[mode].sky }}>
-      <StatusBar style={mode === 'dark' ? 'light' : 'dark'} />
+    <GestureHandlerRootView style={{ flex: 1, alignItems: 'center', backgroundColor: THEMES.dark.sky }}>
+      <StatusBar style="light" />
       {/* the app frame: the full screen, or a centred column (see theme/scale.ts) */}
       <View style={{ flex: 1, width: FRAME_W, overflow: 'hidden' }}>
       <Stack screenOptions={{ headerShown: false, animation: 'fade', contentStyle: { backgroundColor: '#05050d' } }} />

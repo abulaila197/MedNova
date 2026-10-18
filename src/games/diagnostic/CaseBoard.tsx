@@ -21,15 +21,14 @@ import { clock } from '@/games/engine/clock';
 /** Clue edge colours in order, as in the old screen: blue, amber, purple, cyan, pink, green. */
 const CLUE = ['#007AFF', '#f59e0b', '#a855f7', '#06b6d4', '#ec4899', '#10b981'];
 const CLUE_NUM_DARK = ['#3b9bff', '#f59e0b', '#b77cf8', '#22d3ee', '#f472b6', '#34d399'];
-const CLUE_NUM_LIGHT = ['#0062cc', '#b45309', '#7c3aed', '#0e7490', '#be185d', '#047857'];
-const DIFF_COLOR: Record<string, [string, string]> = {
-  Easy: ['#34d399', '#047857'],
-  Medium: ['#f59e0b', '#b45309'],
-  Hard: ['#fb7185', '#be123c'],
-  Extreme: ['#c084fc', '#7e22ce'],
+const DIFF_COLOR: Record<string, string> = {
+  Easy: '#34d399',
+  Medium: '#f59e0b',
+  Hard: '#fb7185',
+  Extreme: '#c084fc',
 };
 
-export const amber = (t: Theme) => (t.mode === 'light' ? '#b45309' : '#f59e0b');
+export const amber = (t: Theme) => '#f59e0b';
 const alpha = (hex: string, a: number) => hex + Math.round(a * 255).toString(16).padStart(2, '0');
 
 export type BoardResult = { outcome: 'right' | 'wrong' | 'skipped' | 'timed_out'; points: number; line: string; nextLabel: string; onNext?: () => void };
@@ -145,9 +144,7 @@ export function CaseBoard(p: BoardProps) {
 
 function TopBar(p: BoardProps) {
   const t = useTheme();
-  const lt = t.mode === 'light';
-  const dc = DIFF_COLOR[p.c.difficulty] ?? DIFF_COLOR.Medium;
-  const col = lt ? dc[1] : dc[0];
+  const col = DIFF_COLOR[p.c.difficulty] ?? DIFF_COLOR.Medium;
   const worth = p.result ? p.result.points : cluePoints(p.attempt.cluesShown);
   return (
     <View style={s.top}>
@@ -155,7 +152,7 @@ function TopBar(p: BoardProps) {
         <Text style={[s.ct, { color: p.titleColor ?? t.white }]} numberOfLines={1}>
           {p.title} <Text style={[s.of, { color: t.mute }]}>{p.sub}</Text>
         </Text>
-        <Text style={[s.diff, { color: col, borderColor: alpha(dc[0], 0.55), backgroundColor: alpha(dc[0], 0.12) }]}>{p.c.difficulty}</Text>
+        <Text style={[s.diff, { color: col, borderColor: alpha(col, 0.55), backgroundColor: alpha(col, 0.12) }]}>{p.c.difficulty}</Text>
         <RoundBtn label="Pause" glyph="❚❚" onPress={p.onPause} />
       </View>
       <View style={[s.stats, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
@@ -206,10 +203,9 @@ function SlimBar(p: BoardProps) {
 /** A numbered clue card with a coloured left edge (DP10: number only). */
 function Clue({ i, text }: { i: number; text: string }) {
   const t = useTheme();
-  const nums = t.mode === 'light' ? CLUE_NUM_LIGHT : CLUE_NUM_DARK;
   return (
-    <View style={[s.cl, { borderLeftColor: CLUE[i], backgroundColor: alpha(CLUE[i], t.mode === 'light' ? 0.09 : 0.12) }]}>
-      <Text style={[s.cn, { color: nums[i] }]}>{i + 1}</Text>
+    <View style={[s.cl, { borderLeftColor: CLUE[i], backgroundColor: alpha(CLUE[i], 0.12) }]}>
+      <Text style={[s.cn, { color: CLUE_NUM_DARK[i] }]}>{i + 1}</Text>
       <Text style={[s.clT, { color: t.fg }]}>{text}</Text>
     </View>
   );
@@ -218,9 +214,9 @@ function Clue({ i, text }: { i: number; text: string }) {
 /** Paid hint: every listed medical field (DP7). */
 function FieldHint({ c }: { c: DPCase }) {
   const t = useTheme();
-  const purple = t.mode === 'light' ? '#7c3aed' : '#d8b4fe';
+  const purple = '#d8b4fe';
   return (
-    <Animated.View entering={FadeIn} style={[s.hint, { borderColor: alpha('#a78bfa', 0.4), backgroundColor: alpha('#6d28d9', t.mode === 'light' ? 0.08 : 0.16) }]}>
+    <Animated.View entering={FadeIn} style={[s.hint, { borderColor: alpha('#a78bfa', 0.4), backgroundColor: alpha('#6d28d9', 0.16) }]}>
       <Text style={[s.hintK, { color: purple }]}>💡 Hint · Medical field</Text>
       <Text style={[s.hintT, { color: t.fg }]}>{c.fields.join(' · ')}</Text>
     </Animated.View>
@@ -257,14 +253,12 @@ const ActionBtn = ({ label, flex, bg, line, fg, onPress, disabled }: { label: st
 
 /** Skip, Reveal a Clue and (Solo only) Hint in one row, old-screen colours. */
 function Actions({ canReveal, hint, onSkip, onReveal }: { canReveal: boolean; hint?: BoardProps['hint']; onSkip: () => void; onReveal: () => void }) {
-  const t = useTheme();
-  const lt = t.mode === 'light';
   return (
     <View style={s.row3}>
-      <ActionBtn label="⏭ Skip" flex={0.8} onPress={onSkip} bg={lt ? '#fae7e2' : '#2e1a2e'} line={lt ? '#f9b5b3' : '#833f4a'} fg={lt ? '#c2364a' : '#fda4af'} />
-      <ActionBtn label="🔍 Reveal a Clue" flex={1.3} onPress={onReveal} disabled={!canReveal} bg={lt ? '#e2f2f1' : '#142741'} line={lt ? '#9fe7f0' : '#19637e'} fg={lt ? '#0e7490' : '#67e8f9'} />
+      <ActionBtn label="⏭ Skip" flex={0.8} onPress={onSkip} bg="#2e1a2e" line="#833f4a" fg="#fda4af" />
+      <ActionBtn label="🔍 Reveal a Clue" flex={1.3} onPress={onReveal} disabled={!canReveal} bg="#142741" line="#19637e" fg="#67e8f9" />
       {hint ? (
-        <ActionBtn label={hint.granted ? '💡 Hint used' : '💡 Hint'} flex={1} onPress={hint.onHint} disabled={hint.granted} bg={lt ? '#f3e9f4' : '#231b4e'} line={lt ? '#d9c9f6' : '#504188'} fg={lt ? '#7c3aed' : '#d8b4fe'} />
+        <ActionBtn label={hint.granted ? '💡 Hint used' : '💡 Hint'} flex={1} onPress={hint.onHint} disabled={hint.granted} bg="#231b4e" line="#504188" fg="#d8b4fe" />
       ) : null}
     </View>
   );
@@ -361,8 +355,7 @@ function AnswerBox({ wrong, wrongSeq, focused, onFocus, onBlur, onGuess }: { wro
 /** Shown when a case or turn closes: answer, fields, how the points were made, then the next step. */
 function ResultCard({ r, c }: { r: BoardResult; c: DPCase }) {
   const t = useTheme();
-  const lt = t.mode === 'light';
-  const tone = r.outcome === 'right' ? (lt ? '#047857' : '#34d399') : r.outcome === 'skipped' ? amber(t) : t.rose;
+  const tone = r.outcome === 'right' ? '#34d399' : r.outcome === 'skipped' ? amber(t) : t.rose;
   const word = { right: 'Solved', wrong: 'Missed', skipped: 'Skipped', timed_out: 'Time up' }[r.outcome];
   return (
     <Animated.View entering={FadeInDown.duration(280)} style={[s.res, { backgroundColor: t.panel, borderColor: alpha(tone, 0.6) }]}>

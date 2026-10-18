@@ -26,7 +26,6 @@ import { loadStyle, useStyle } from '@/features/style/useStyle';
 // Page colours from the locked preview (d-/l-profile).
 const C = {
   dark: { tide: ['#a48bff', '#6fd6ff'] },
-  light: { tide: ['#e9bf4f', '#e5833a'] },
 };
 
 const TW = 96; // sparkline width (design px)

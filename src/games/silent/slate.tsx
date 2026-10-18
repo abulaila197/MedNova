@@ -5,9 +5,7 @@ import Svg, { Circle } from 'react-native-svg';
 
 import { Backdrop } from '@/components/Backdrop';
 import { loadFonts } from '@/features/loading/fonts';
-import { useApp } from '@/state/app';
-import { u, useScreen } from '@/theme/scale';
-import { THEMES } from '@/theme/tokens';
+import { u } from '@/theme/scale';
 
 import { useClock, type Clock } from '../engine/useTicker';
 import { GameScreen } from '../shell/ui';
@@ -15,9 +13,9 @@ import type { HintView } from './core';
 
 // The Silent Artist's own design language (SA9): "Classroom slate". A chalkboard in a worn wooden frame,
 // chalk sticks on the ledge as colours, chalk lettering. The room follows the app (SA10, SA11, Yazan 2026-10-05):
-// the Nebula sky and a navy slate in dark mode, the Warm Stone sky and a dark slate board in light mode.
+// the Nebula sky and a navy slate.
 
-/** Colours that stay the same in both themes: the wood, the chalk on the board, fonts. */
+/** Fixed colours: the wood, the chalk on the board, fonts. */
 export const SL = {
   frame: '#6e4b2c',
   frameDark: '#4d331d',
@@ -41,14 +39,9 @@ const ROOMS = {
     ink: '#f1eedf', soft: '#b6bdd8', dim: '#7d86a6', mark: '#f2df8a', alarm: '#f3a6b6',
     card: 'rgba(12,16,40,0.8)', line: 'rgba(241,238,223,0.35)', btn: '#f2df8a', btnText: '#1d2b22', onInk: '#1d2b22',
   },
-  light: {
-    board: '#262b38', boardDeep: '#1d212c', boardSoft: '#b9bdc8', boardDim: '#8a8f9c',
-    ink: '#1d2230', soft: '#6f695f', dim: '#9a9385', mark: '#c4602a', alarm: '#c8445a',
-    card: 'rgba(250,247,241,0.92)', line: 'rgba(29,34,48,0.3)', btn: '#262b38', btnText: '#f1eedf', onInk: '#f6f2ea',
-  },
 };
 export type Room = (typeof ROOMS)['dark'];
-export const useSlateRoom = (): Room => ROOMS[useApp((st) => st.mode)];
+export const useSlateRoom = (): Room => ROOMS.dark;
 
 export const SLATE_FONTS = ['CabinSketch_700Bold', 'CabinSketch_400Regular', 'PatrickHand_400Regular'];
 

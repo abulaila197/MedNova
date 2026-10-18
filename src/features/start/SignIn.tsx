@@ -10,7 +10,6 @@ import { TopInset } from '@/components/TopInset';
 import { DISCLAIMER } from '@/features/info/content';
 import { supabase } from '@/lib/supabase';
 import { call } from '@/online/api';
-import { useTheme } from '@/state/app';
 import { u, useScreen } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
@@ -45,32 +44,6 @@ const C = {
     link: '#6fd6ff',
     linkLine: 'rgba(111,214,255,0.4)',
     agree: '#9aa0c4',
-  },
-  light: {
-    welcome: '#2a2620',
-    accent: '#e5833a',
-    cardGrad: ['#fbf9f4', '#fbf9f4'] as const,
-    cardEdge: '#dcd6c8',
-    cardShadow: `0px ${u(24)}px ${u(50)}px ${u(-24)}px rgba(60,50,30,0.45), 0px 0px 0px 1px rgba(40,36,28,0.04)`,
-    tabs: '#efebe2',
-    tabOff: '#7a7264',
-    tabOn: ['#e9bf4f', '#e5833a'] as const,
-    tabOnTxt: '#2a1a06',
-    h3: '#2a2620',
-    lbl: '#7a7264',
-    inBg: '#f3efe6',
-    inEdge: '#e2dccf',
-    inTxt: '#9a9282',
-    inValue: '#2a2620',
-    pri: ['#e9bf4f', '#e5833a'] as const,
-    priTxt: '#2a1a06',
-    or: '#9a9282',
-    orLine: '#e2dccf',
-    ggl: '#ffffff',
-    gglEdge: '#e2dccf' as string | null,
-    link: '#b8741f',
-    linkLine: 'rgba(184,116,31,0.4)',
-    agree: '#8a8274',
   },
 };
 
@@ -120,11 +93,9 @@ function plain(msg: string) {
   return msg;
 }
 
-/** Sign in / create account (AU1: email + password, 6-digit email code). Follows the app mode: Nebula, or Warm Stone in light mode. */
+/** Sign in / create account (AU1: email + password, 6-digit email code). Nebula look. */
 export function SignIn() {
-  const t = useTheme();
-  const lt = t.mode === 'light';
-  const c = lt ? C.light : C.dark;
+  const c = C.dark;
   const { width: w, height: h } = useScreen();
   const ins = useSafeAreaInsets();
   // Matches TopInset, so the space under the card equals the space above the title.
@@ -305,7 +276,7 @@ export function SignIn() {
       accessibilityLabel="6-digit code"
     />
   );
-  const noteLine = note ? <Text style={[s.note, { color: note.bad ? (lt ? '#c0392b' : '#ff8a8a') : c.lbl }]}>{note.text}</Text> : null;
+  const noteLine = note ? <Text style={[s.note, { color: note.bad ? '#ff8a8a' : c.lbl }]}>{note.text}</Text> : null;
 
   let body: ReactNode;
   if (step === 'code') {
@@ -441,9 +412,9 @@ export function SignIn() {
   }
 
   return (
-    <View style={[s.root, { backgroundColor: lt ? '#e7e2d8' : '#070a1c' }]}>
-      <Sky w={w} h={h} light={lt} />
-      {lt ? null : <Stars si={0} hd={h / u(1)} />}
+    <View style={[s.root, { backgroundColor: '#070a1c' }]}>
+      <Sky w={w} h={h} />
+      <Stars si={0} hd={h / u(1)} />
       <TopInset />
       <ScrollView
         style={{ flex: 1 }}

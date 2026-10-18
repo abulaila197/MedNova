@@ -14,21 +14,16 @@ const DARK: Wash[] = [
   { at: [0, 0.5], r: [0.9, 0.5], color: '#0f4a7a', alpha: 1, end: 0.6 },
   { at: [1, 1], r: [0.8, 0.4], color: '#5a1f6e', alpha: 1, end: 0.6 },
 ];
-const LIGHT: Wash[] = [
-  { at: [0.9, 0], r: [0.9, 0.45], color: '#e9bf4f', alpha: 0.32, end: 0.6 },
-  { at: [0, 1], r: [0.8, 0.4], color: '#e5833a', alpha: 0.18, end: 0.6 },
-];
-
 let seq = 0;
 
 /** CSS radial-gradient(rx% ry% at x% y%, color, transparent end%) layers over a base colour. */
-export function Sky({ w, h, light = false }: { w: number; h: number; light?: boolean }) {
+export function Sky({ w, h }: { w: number; h: number }) {
   const id = useMemo(() => `sky${++seq}`, []);
-  const washes = light ? LIGHT : DARK;
+  const washes = DARK;
   // CSS paints the first layer on top, so draw them in reverse.
   const order = [...washes].reverse();
   return (
-    <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: light ? '#e7e2d8' : NAVY }]}>
+    <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: NAVY }]}>
       <Svg width={w} height={h} style={StyleSheet.absoluteFill}>
         <Defs>
           {order.map((g, i) => (

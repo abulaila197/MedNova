@@ -23,10 +23,8 @@ import { useClock, type Clock } from '@/games/engine/useTicker';
 
 const SEGMENTS = 10;
 
-export function heatColors(mode: 'dark' | 'light') {
-  return mode === 'dark'
-    ? { good: '#3fc58a', bad: '#ff5c6c', hot: '#a48bff', segOff: '#10132a' }
-    : { good: '#2f9e6c', bad: '#d4504c', hot: '#e9bf4f', segOff: '#f1ede4' };
+export function heatColors() {
+  return { good: '#3fc58a', bad: '#ff5c6c', hot: '#a48bff', segOff: '#10132a' };
 }
 
 export type BoardProps = {
@@ -61,7 +59,7 @@ export type BoardProps = {
 
 export function HeatBoard(p: BoardProps) {
   const t = useTheme();
-  const hc = heatColors(t.mode);
+  const hc = heatColors();
   const fb = p.round.feedback;
   const showing = p.round.phase === 'feedback' || (p.round.phase === 'paused' && p.round.before === 'feedback');
   const lit = Math.min(p.round.streak, SEGMENTS);
@@ -220,7 +218,7 @@ function Option({ label, state, late, gone, live, faces, onPress, hc }: { label:
         style={[
           s.opt,
           { backgroundColor: t.panel, borderColor: t.panelLine, opacity: gone ? 0.28 : 1 },
-          tint ? { borderColor: tint, borderWidth: 1.5, backgroundColor: t.mode === 'dark' ? mix(tint, '#151933', 0.2) : mix(tint, '#fbf9f4', 0.16) } : null,
+          tint ? { borderColor: tint, borderWidth: 1.5, backgroundColor: mix(tint, '#151933', 0.2) } : null,
           state === 'locked' ? { borderColor: t.accent, borderWidth: 1.5 } : null,
         ]}
         accessibilityRole="button"
@@ -262,13 +260,11 @@ function HelperBtn({ kind, label, bg, line, fg, off, onPress }: { kind: HelperKi
 
 /** Solo helpers in the Diagnostic Pursuit button style (Yazan, 2026-10-04): bigger, coloured, price under each. */
 function Helpers({ onHelper, usable, disabled }: { onHelper: (k: HelperKind) => void; usable: (k: HelperKind) => boolean; disabled: boolean }) {
-  const t = useTheme();
-  const lt = t.mode === 'light';
   return (
     <View style={s.hrow}>
-      <HelperBtn kind="remove" off={disabled || !usable('remove')} onPress={() => onHelper('remove')} label="✂ Remove 2" bg={lt ? '#e2f2f1' : '#142741'} line={lt ? '#9fe7f0' : '#19637e'} fg={lt ? '#0e7490' : '#67e8f9'} />
-      <HelperBtn kind="skip" off={disabled || !usable('skip')} onPress={() => onHelper('skip')} label="⏭ Skip" bg={lt ? '#fae7e2' : '#2e1a2e'} line={lt ? '#f9b5b3' : '#833f4a'} fg={lt ? '#c2364a' : '#fda4af'} />
-      <HelperBtn kind="time" off={disabled || !usable('time')} onPress={() => onHelper('time')} label="⏱ +10 s" bg={lt ? '#f3e9f4' : '#231b4e'} line={lt ? '#d9c9f6' : '#504188'} fg={lt ? '#7c3aed' : '#d8b4fe'} />
+      <HelperBtn kind="remove" off={disabled || !usable('remove')} onPress={() => onHelper('remove')} label="✂ Remove 2" bg="#142741" line="#19637e" fg="#67e8f9" />
+      <HelperBtn kind="skip" off={disabled || !usable('skip')} onPress={() => onHelper('skip')} label="⏭ Skip" bg="#2e1a2e" line="#833f4a" fg="#fda4af" />
+      <HelperBtn kind="time" off={disabled || !usable('time')} onPress={() => onHelper('time')} label="⏱ +10 s" bg="#231b4e" line="#504188" fg="#d8b4fe" />
     </View>
   );
 }

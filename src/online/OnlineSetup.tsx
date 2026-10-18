@@ -21,7 +21,7 @@ type Tab = 'join' | 'create';
 
 /**
  * ON20 + ON27: the online setup page. Two ticket-stub tabs (Yazan's pick): Join (6-digit code + this game's open rooms)
- * and Create (the game's options + Public/Private). It wears the game's own setup look, so app-look games follow dark/light.
+ * and Create (the game's options + Public/Private). It wears the game's own setup look, so app-look games wear the app look.
  */
 export function OnlineSetup({ def, prefill }: { def: GameDef; prefill?: Record<string, unknown> }) {
   const t = useTheme();
@@ -48,7 +48,7 @@ function Stub({ t, on, k, title, note, onPress }: { t: Theme; on: boolean; k: st
       style={[
         s.stub,
         on
-          ? { backgroundColor: t.panel, borderColor: t.accent, borderStyle: 'solid', boxShadow: t.mode === 'light' ? '0px 8px 16px rgba(60,50,30,0.16)' : '0px 10px 20px rgba(0,0,0,0.4)' }
+          ? { backgroundColor: t.panel, borderColor: t.accent, borderStyle: 'solid', boxShadow: '0px 10px 20px rgba(0,0,0,0.4)' }
           : { backgroundColor: t.chip, borderColor: t.chipLine, borderStyle: 'dashed', opacity: 0.62, transform: [{ translateY: u(3) }] },
       ]}
       accessibilityRole="tab"

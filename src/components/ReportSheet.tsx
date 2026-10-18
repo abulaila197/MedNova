@@ -78,10 +78,9 @@ export function ReportSheet() {
     setText('');
     setTimeout(() => setReport(false), 1200);
   };
-  const lt = t.mode === 'light';
   return (
     <Sheet open={reportOpen} onClose={() => setReport(false)}>
-      <Text style={[s.k, { color: lt ? '#c4505d' : '#e07a85' }]}>REPORT</Text>
+      <Text style={[s.k, { color: '#e07a85' }]}>REPORT</Text>
       <Display em="wrong?" italic style={s.h}>
         What looks{' '}
       </Display>
@@ -99,7 +98,7 @@ export function ReportSheet() {
             <Pressable
               key={k}
               onPress={() => setKind(i)}
-              style={[s.opt, { borderColor: on ? (lt ? 'rgba(233,191,79,0.7)' : 'rgba(111,214,255,0.7)') : t.panelLine, backgroundColor: on ? (lt ? 'rgba(233,191,79,0.12)' : 'rgba(111,214,255,0.12)') : 'transparent' }]}>
+              style={[s.opt, { borderColor: on ? 'rgba(111,214,255,0.7)' : t.panelLine, backgroundColor: on ? 'rgba(111,214,255,0.12)' : 'transparent' }]}>
               <Text style={[s.optT, { color: on ? t.fg : t.mute }]}>{k}</Text>
             </Pressable>
           );

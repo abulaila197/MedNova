@@ -10,27 +10,25 @@ import { F } from '@/theme/tokens';
 
 import { Fade } from '@/components/Fade';
 
-/** Colours of the info pages (info.css / v2 light swaps), for the active mode. */
+/** Colours of the info pages (info.css). */
 export function useInfo() {
   const t = useTheme();
-  const lt = t.mode === 'light';
   return {
     t,
-    lt,
     fg: t.fg,
     kick: t.kick,
     mute: t.mute,
     surf: t.panel,
     surf2: t.panel2,
     line: t.panelLine,
-    // selected chip (contact) and FAQ area/card borders: lilac on dark, gold on light
-    chipOnLine: lt ? 'rgba(233,191,79,0.7)' : 'rgba(164,139,255,0.7)',
-    chipOnFill: lt ? 'rgba(233,191,79,0.12)' : 'rgba(143,117,255,0.12)',
-    areaOnLine: lt ? 'rgba(233,191,79,0.6)' : 'rgba(164,139,255,0.6)',
-    openLine: lt ? 'rgba(233,191,79,0.45)' : 'rgba(164,139,255,0.45)',
+    // selected chip (contact) and FAQ area/card borders: lilac
+    chipOnLine: 'rgba(164,139,255,0.7)',
+    chipOnFill: 'rgba(143,117,255,0.12)',
+    areaOnLine: 'rgba(164,139,255,0.6)',
+    openLine: 'rgba(164,139,255,0.45)',
     // open "−" sign: reference is lilac #c9b8ff on dark, so the accent is used there (standing rule)
-    openSign: lt ? '#c98a1e' : t.accent,
-    pillOnText: lt ? '#fbf9f4' : '#070a1c',
+    openSign: t.accent,
+    pillOnText: '#070a1c',
   };
 }
 
@@ -41,7 +39,7 @@ export function Kicker({ children, inSec = false, style }: { children: ReactNode
   return inSec ? <View style={s.kLine}>{k}</View> : k;
 }
 
-/** Text with one accent part: "lead *accent* tail" (accent is italic, cyan on dark, orange on light). */
+/** Text with one accent part: "lead *accent* tail" (accent is italic, cyan). */
 export function Rich({ text, style, italic = true }: { text: string; style?: StyleProp<TextStyle>; italic?: boolean }) {
   const t = useTheme();
   const parts = text.split('*');

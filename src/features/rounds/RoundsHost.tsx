@@ -64,7 +64,7 @@ export function RoundsHost() {
           style={[{ alignSelf: 'stretch', marginTop: u(12) }, busy && { opacity: 0.6 }]}>
           <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={s.btn}>
             <Text style={[s.btnT, { color: t.onGrad }]}>{`Collect ${r.prize}`}</Text>
-            <TokenCoin size={u(13)} progress={0} light={t.mode === 'light'} track="transparent" />
+            <TokenCoin size={u(13)} progress={0} track="transparent" />
           </LinearGradient>
         </Pressable>
       </View>

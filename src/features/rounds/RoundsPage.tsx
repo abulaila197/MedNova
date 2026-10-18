@@ -135,7 +135,7 @@ export function RoundsPage() {
           <View style={[s.foot, { borderColor: c.line }]}>
             <View style={s.prize}>
               <Text style={[s.prizeN, { color: c.fg }]}>{r.prize}</Text>
-              <TokenCoin size={u(15)} progress={1} light={c.lt} track="transparent" />
+              <TokenCoin size={u(15)} progress={1} track="transparent" />
               <Text style={[s.prizeS, { color: c.mute }]}>+ a stamp</Text>
             </View>
             <Text style={[s.left, { color: c.mute }]}>{`${timeLeft(r.ends).toUpperCase()} LEFT`}</Text>
@@ -198,7 +198,7 @@ function Btn({ t, label, onPress, busy, coin, small }: { t: Theme; label: string
     <Pressable onPress={onPress} disabled={busy} accessibilityRole="button" style={[!small && { marginTop: u(12) }, busy && { opacity: 0.6 }]}>
       <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={[s.btn, small && s.btnS]}>
         <Text style={[s.btnT, { color: t.onGrad }]}>{label}</Text>
-        {coin ? <TokenCoin size={u(11)} progress={0} light={t.mode === 'light'} track="transparent" /> : null}
+        {coin ? <TokenCoin size={u(11)} progress={0} track="transparent" /> : null}
       </LinearGradient>
     </Pressable>
   );

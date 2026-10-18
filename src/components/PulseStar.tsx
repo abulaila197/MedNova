@@ -9,9 +9,9 @@ export const ECG =
 const useKey = (prefix: string) => prefix + useId().replace(/[^a-zA-Z0-9]/g, '');
 
 /** The Pulse star, still version (header, menu). */
-export function PulseStar({ width, height, light = false, glow = 0.5 }: { width: number; height: number; light?: boolean; glow?: number }) {
+export function PulseStar({ width, height, glow = 0.5 }: { width: number; height: number; glow?: number }) {
   const k = useKey('ps');
-  const c = light ? ['#fff1d6', '#f0a24a', '#d9772c', '#e5833a'] : ['#d8f6ff', '#6fd6ff', '#3aa6dc', '#6fd6ff'];
+  const c = ['#d8f6ff', '#6fd6ff', '#3aa6dc', '#6fd6ff'];
   return (
     <Svg width={width} height={height} viewBox="120 100 784 824" style={{ overflow: 'visible' }}>
       <Defs>
@@ -58,9 +58,9 @@ const C = 2 * Math.PI * 10.6;
  * Token coin for the game header (GH3, "Minted"): an accent-gradient coin with the Pulse star punched through,
  * inside a thin ring that fills toward the next token. `size` is the whole coin + ring diameter.
  */
-export function TokenCoin({ size, progress, light = false, track }: { size: number; progress: number; light?: boolean; track: string }) {
+export function TokenCoin({ size, progress, track }: { size: number; progress: number; track: string }) {
   const k = `tc${++coinSeq}`;
-  const c = light ? ['#fff1d6', '#f0a24a', '#c9692a', '#e5833a'] : ['#e9fbff', '#6fd6ff', '#2f8fc4', '#6fd6ff'];
+  const c = ['#e9fbff', '#6fd6ff', '#2f8fc4', '#6fd6ff'];
   const disc = 'M12 4.2a7.8 7.8 0 1 1 0 15.6a7.8 7.8 0 1 1 0-15.6Z';
   const p = Math.max(0, Math.min(1, progress));
   return (

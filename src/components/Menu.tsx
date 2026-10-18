@@ -34,8 +34,6 @@ export function Menu() {
   const t = useTheme();
   const path = usePathname();
   const setMenu = useApp((a) => a.setMenu);
-  const mode = useApp((a) => a.mode);
-  const setMode = useApp((a) => a.setMode);
   const ins = useSafeAreaInsets();
   const muted = useSound((m) => m.muted);
   const setMuted = useSound((m) => m.setMuted);
@@ -112,21 +110,6 @@ export function Menu() {
         })}
       </View>
       <View style={s.pills}>
-        <View style={[s.theme, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
-          {([['dark', 'Dark'], ['light', 'Light']] as const).map(([key, label]) => (
-            <Pressable key={label} onPress={tapped(() => setMode(key))} accessibilityRole="button" accessibilityState={{ selected: mode === key }}>
-              {mode === key ? (
-                <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={s.opt}>
-                  <Text style={[s.optT, { color: t.onGrad }]}>{label}</Text>
-                </LinearGradient>
-              ) : (
-                <View style={s.opt}>
-                  <Text style={[s.optT, { color: t.mute }]}>{label}</Text>
-                </View>
-              )}
-            </Pressable>
-          ))}
-        </View>
         <View style={[s.theme, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
           {([[false, 'Sound'], [true, 'Mute']] as const).map(([key, label]) => (
             <Pressable key={label} onPress={() => {

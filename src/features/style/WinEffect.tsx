@@ -176,7 +176,7 @@ function Supernova() {
   const cy = height / 2;
   return (
     <Animated.View style={[StyleSheet.absoluteFill, s.mid, layer]}>
-      <Animated.View style={[StyleSheet.absoluteFill, { backgroundColor: t.mode === 'light' ? '#fff3d6' : '#d9f3ff' }, flash]} />
+      <Animated.View style={[StyleSheet.absoluteFill, { backgroundColor: '#d9f3ff' }, flash]} />
       <Svg width={width} height={height} style={StyleSheet.absoluteFill}>
         {rays.map((a, i) => (
           <APath
@@ -191,7 +191,7 @@ function Supernova() {
         ))}
       </Svg>
       <Animated.View style={star}>
-        <PulseStar width={u(130)} height={u(130)} light={t.mode === 'light'} glow={1} />
+        <PulseStar width={u(130)} height={u(130)} glow={1} />
       </Animated.View>
     </Animated.View>
   );
@@ -208,7 +208,7 @@ const s = StyleSheet.create({
 /** A tiny still sign for each effect in the shop list. */
 export function EffectSign({ kind, size }: { kind: EffectKey; size: number }) {
   const t = useTheme();
-  if (kind === 'supernova') return <PulseStar width={size} height={size} light={t.mode === 'light'} glow={0.6} />;
+  if (kind === 'supernova') return <PulseStar width={size} height={size} glow={0.6} />;
   return (
     <Svg width={size} height={size} viewBox="0 0 40 40">
       {kind === 'confetti'

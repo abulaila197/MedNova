@@ -65,8 +65,7 @@ export type BoardProps = {
 
 export function RiddleBoard(p: BoardProps) {
   const t = useTheme();
-  const lt = t.mode === 'light';
-  const bad = lt ? '#d4504c' : '#ff5c6c';
+  const bad = '#ff5c6c';
   const [stage, setStage] = useState<{ w: number; h: number } | null>(null);
   const onStage = (e: LayoutChangeEvent) => setStage({ w: e.nativeEvent.layout.width, h: e.nativeEvent.layout.height });
   const barH = u(26);
@@ -109,7 +108,7 @@ export function RiddleBoard(p: BoardProps) {
               <View style={s.lamps} accessibilityLabel={`${p.lives} of ${RD.lives} lives left`}>
                 <Text style={[s.barK, { color: t.dim }]}>LIVES</Text>
                 {Array.from({ length: RD.lives }, (_, i) => (
-                  <View key={i} style={[s.lamp, i < p.lives! ? { backgroundColor: t.accent, shadowColor: t.accent } : { backgroundColor: lt ? '#d3ccbf' : '#2a3050', shadowOpacity: 0 }]} />
+                  <View key={i} style={[s.lamp, i < p.lives! ? { backgroundColor: t.accent, shadowColor: t.accent } : { backgroundColor: '#2a3050', shadowOpacity: 0 }]} />
                 ))}
               </View>
             ) : (

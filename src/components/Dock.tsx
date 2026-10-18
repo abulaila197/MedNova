@@ -23,7 +23,6 @@ const H = Platform.OS === 'web' ? 46 : 40;
  */
 export function Dock({ active }: { active: Tab }) {
   const t = useTheme();
-  const lt = t.mode === 'light';
   const ins = useSafeAreaInsets();
   const bottom = Platform.OS === 'web' ? u(8) : Math.max(ins.bottom, u(8));
   const go = tapped((r: Tab) => r && router.navigate(`/${r}`));
@@ -52,8 +51,7 @@ export function Dock({ active }: { active: Tab }) {
   return (
     <View style={[s.dock, { paddingBottom: bottom, height: u(H) + bottom, borderTopColor: t.headerEdge }]}>
       <View style={[StyleSheet.absoluteFill, { overflow: 'hidden' }]}><Backdrop anchor="bottom" /></View>
-      {/* Light mode: a shade lighter than the header. Dark mode: the header's own navy (Yazan 2026-10-13). */}
-      {lt ? <View style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(255,255,255,0.18)' }]} /> : null}
+      {/* The header's own navy (Yazan 2026-10-13). */}
       {[1, 2].map((i) => (
         <LinearGradient
           key={i}

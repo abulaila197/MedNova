@@ -26,15 +26,8 @@ const C = {
     pinShadow: (k: number) => `0px ${12 * k}px ${30 * k}px ${-14 * k}px rgba(143,117,255,0.8)`,
     prog: 'rgba(255,255,255,0.1)',
   },
-  light: {
-    star: '#e5833a',
-    rank: '#c98a1e',
-    pinLine: 'rgba(233,191,79,0.55)',
-    pinShadow: (k: number) => `0px ${12 * k}px ${30 * k}px ${-14 * k}px rgba(233,191,79,0.8)`,
-    prog: 'rgba(255,255,255,0.1)',
-  },
 };
-const HALO = '201,184,255'; // star glow colour (both modes in the preview)
+const HALO = '201,184,255'; // star glow colour
 
 // Top three as stars. cx = star centre x, top = star top (screen design px), d = star diameter, a = glow alpha.
 const TOP3 = [

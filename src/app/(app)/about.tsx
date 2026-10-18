@@ -11,7 +11,7 @@ import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 import { useSharedValue } from 'react-native-reanimated';
 
-const DAWN = { dark: require('@/assets/art/dawn-dark.jpg'), light: require('@/assets/art/dawn-light.jpg') };
+const DAWN = { dark: require('@/assets/art/dawn-dark.jpg') };
 
 /** About MedNova, locked "A1 Night to dawn": the dawn horizon behind, a rail that tracks the scroll. */
 export default function Page() {

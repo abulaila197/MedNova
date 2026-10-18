@@ -22,7 +22,6 @@ export function useBalance() {
  */
 export function LevelBadge({ level, progress = 0, size, edge }: { level: number; progress?: number; size: number; edge?: string }) {
   const t = useTheme();
-  const light = t.mode === 'light';
   const sw = Math.max(1.5, size * 0.09);
   const r = (size - sw) / 2;
   const len = 2 * Math.PI * r;
@@ -33,7 +32,7 @@ export function LevelBadge({ level, progress = 0, size, edge }: { level: number;
       accessibilityLabel={`Level ${level}`}
     >
       <Svg width={size} height={size} style={StyleSheet.absoluteFill}>
-        <Circle cx={size / 2} cy={size / 2} r={r} fill={light ? '#fbf9f4' : '#141a3f'} stroke={light ? 'rgba(29,34,48,0.14)' : 'rgba(255,255,255,0.16)'} strokeWidth={sw} />
+        <Circle cx={size / 2} cy={size / 2} r={r} fill="#141a3f" stroke="rgba(255,255,255,0.16)" strokeWidth={sw} />
         {p > 0 ? (
           <Circle
             cx={size / 2}

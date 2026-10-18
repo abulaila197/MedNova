@@ -14,11 +14,11 @@ export function Congrats({ open, tokens, title, line, onClose }: { open: boolean
   if (!open) return null;
   return (
     <Modal transparent visible animationType="fade" onRequestClose={onClose}>
-      <Pressable style={[StyleSheet.absoluteFill, { backgroundColor: t.mode === 'light' ? 'rgba(40,34,24,0.6)' : 'rgba(3,4,12,0.78)' }]} onPress={onClose} accessibilityLabel="Close" />
+      <Pressable style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(3,4,12,0.78)' }]} onPress={onClose} accessibilityLabel="Close" />
       <View style={s.mid} pointerEvents="box-none">
         <Animated.View entering={ZoomIn.springify().damping(14)} style={[s.card, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
-          <View style={[s.halo, { backgroundColor: t.mode === 'light' ? 'rgba(233,191,79,0.25)' : 'rgba(111,214,255,0.16)' }]}>
-            <TokenCoin size={u(58)} progress={0} light={t.mode === 'light'} track="transparent" />
+          <View style={[s.halo, { backgroundColor: 'rgba(111,214,255,0.16)' }]}>
+            <TokenCoin size={u(58)} progress={0} track="transparent" />
           </View>
           <Text style={[s.kick, { color: t.kick }]}>CONGRATULATIONS</Text>
           <Text style={[s.h, { color: t.fg }]}>{title}</Text>

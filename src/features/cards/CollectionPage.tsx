@@ -95,7 +95,7 @@ export function CollectionPage() {
 function Binder({ t, found, onOpen }: { t: Theme; found: string[]; onOpen: (i: number) => void }) {
   const w = Math.floor((u(246) - u(10) * 2 - u(16) - 4) / 3);
   return (
-    <View style={[s.binder, { backgroundColor: t.mode === 'light' ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.03)', borderColor: t.panelLine }]}>
+    <View style={[s.binder, { backgroundColor: 'rgba(255,255,255,0.03)', borderColor: t.panelLine }]}>
       {DECK.map((k, i) => {
         const has = found.includes(k.key);
         return (
@@ -130,7 +130,7 @@ function Viewer({ t, i, onClose }: { t: Theme; i: number | null; onClose: () => 
   };
   return (
     <Modal transparent visible animationType="fade" onRequestClose={close}>
-      <Pressable style={[StyleSheet.absoluteFill, { backgroundColor: t.mode === 'light' ? 'rgba(40,34,24,0.72)' : 'rgba(3,4,12,0.86)' }]} onPress={close} accessibilityLabel="Close" />
+      <Pressable style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(3,4,12,0.86)' }]} onPress={close} accessibilityLabel="Close" />
       <View style={s.view} pointerEvents="box-none">
         <Pressable onPress={flip} accessibilityRole="button" accessibilityLabel={back ? 'Show the front' : 'Flip for the clue'}>
           <Animated.View style={anim}>{back ? <BackInSleeve t={t} card={card} i={i} w={w} /> : <Sleeve t={t} card={card} w={w} locked={false} />}</Animated.View>
@@ -147,7 +147,7 @@ function Viewer({ t, i, onClose }: { t: Theme; i: number | null; onClose: () => 
 function BackInSleeve({ t, card, i, w }: { t: Theme; card: HuntCard; i: number; w: number }) {
   const pad = Math.max(3, w * 0.045);
   return (
-    <View style={{ width: w, borderRadius: w * 0.07, padding: pad, backgroundColor: t.mode === 'light' ? 'rgba(255,255,255,0.45)' : 'rgba(190,205,255,0.07)', borderWidth: 1, borderColor: t.mode === 'light' ? 'rgba(255,255,255,0.8)' : 'rgba(200,215,255,0.22)' }}>
+    <View style={{ width: w, borderRadius: w * 0.07, padding: pad, backgroundColor: 'rgba(190,205,255,0.07)', borderWidth: 1, borderColor: 'rgba(200,215,255,0.22)' }}>
       <View style={{ height: (w - pad * 2) * RATIO }}>
         <CardBack card={card} w={w - pad * 2} i={i} />
       </View>

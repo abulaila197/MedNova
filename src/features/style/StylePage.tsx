@@ -103,7 +103,7 @@ export function StylePage() {
             </Display>
             <Text style={[s.meT, { color: titleColor(t.mode, title, t.accent) }]}>{titleName(title)}</Text>
             <View style={s.bal}>
-              <TokenCoin size={u(13)} progress={0} light={c.lt} track="transparent" />
+              <TokenCoin size={u(13)} progress={0} track="transparent" />
               <Text style={[s.balT, { color: c.mute }]}>{signedIn ? `${tokens} tokens` : 'Sign in to buy'}</Text>
             </View>
           </View>
@@ -242,7 +242,7 @@ function Price({ t, it, deal, owned, wearing }: { t: Theme; it: Item; deal: stri
     <View style={s.price}>
       {now !== it.price ? <Text style={[s.pT, s.was, { color: t.mute }]}>{it.price}</Text> : null}
       <Text style={[s.pT, { color: now !== it.price ? t.accent : t.fg }]}>{now}</Text>
-      <TokenCoin size={u(9)} progress={0} light={t.mode === 'light'} track="transparent" />
+      <TokenCoin size={u(9)} progress={0} track="transparent" />
     </View>
   );
 }
@@ -276,7 +276,7 @@ function Big({ t, label, onPress, busy, coin }: { t: Theme; label: string; onPre
     <Pressable onPress={onPress} disabled={busy} accessibilityRole="button" style={busy && { opacity: 0.6 }}>
       <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={s.big}>
         <Text style={[s.bigT, { color: t.onGrad }]}>{label}</Text>
-        {coin ? <TokenCoin size={u(11)} progress={0} light={t.mode === 'light'} track="transparent" /> : null}
+        {coin ? <TokenCoin size={u(11)} progress={0} track="transparent" /> : null}
       </LinearGradient>
     </Pressable>
   );

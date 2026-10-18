@@ -19,22 +19,6 @@ const dark = {
   keyText: '#eef0ff',
   ghost: 'rgba(238,240,255,0.32)',
 };
-const light: typeof dark = {
-  ok: '#2f9e6c',
-  near: '#d39a2c',
-  off: '#c4beb3',
-  offText: '#6f695f',
-  onTile: '#ffffff',
-  glass: 'rgba(255,255,255,0.55)',
-  glassTop: 'rgba(255,255,255,0.6)',
-  fadeTop: 'rgba(255,255,255,0.38)',
-  sheen: 'rgba(255,255,255,0.7)',
-  line: 'rgba(29,34,48,0.12)',
-  boxA: '#f6f2ea',
-  boxB: '#efe9de',
-  key: 'rgba(255,255,255,0.6)',
-  keyText: '#1d2230',
-  ghost: 'rgba(29,34,48,0.3)',
-};
-export const slideColors = (m: Mode) => (m === 'dark' ? dark : light);
+const SLIDES: Record<Mode, typeof dark> = { dark };
+export const slideColors = (m: Mode) => SLIDES[m];
 export type SlideColors = typeof dark;

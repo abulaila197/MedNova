@@ -15,9 +15,7 @@ import { W } from './fit';
 import { GameArt } from './GameArt';
 import { wrapOff } from './Planet';
 
-const DESC = { dark: '#c9cde8', light: '#5f5a50' };
-/** Light mode: a soft halo in the page colour keeps the description off the art behind it. */
-const HALO = { textShadowColor: 'rgba(231,226,216,0.95)', textShadowRadius: u(8), textShadowOffset: { width: 0, height: 0 } };
+const DESC = { dark: '#c9cde8' };
 /** Cards whose art reaches up beside the text get a narrower description. */
 const DESC_W: Record<string, number> = { 'case-files-unsolved': 165 };
 
@@ -44,7 +42,7 @@ export function GamePage({ game, j, pos, active }: { game: Game; j: number; pos:
           {game.lead} <Text style={{ color: t.accent, fontFamily: F.displayItalic }}>{game.em}</Text>
         </Text>
         <Text style={[s.sub, { color: t.soft }]}>{game.sub}</Text>
-        <Text style={[s.desc, { color: DESC[t.mode] }, DESC_W[game.key] ? { maxWidth: u(DESC_W[game.key]) } : null, t.mode === 'light' ? HALO : null]}>{game.desc}</Text>
+        <Text style={[s.desc, { color: DESC[t.mode] }, DESC_W[game.key] ? { maxWidth: u(DESC_W[game.key]) } : null]}>{game.desc}</Text>
         <Pressable ref={play} onPress={() => {
             void sfx('tap');
             onPlay();

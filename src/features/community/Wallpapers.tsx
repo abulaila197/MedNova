@@ -27,7 +27,7 @@ function WallPost({ src, i }: { src: ImageSourcePropType; i: number }) {
   return (
     <View style={[s.post, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
       <View style={s.by}>
-        <PulseStar width={u(18)} height={u(18)} light={t.mode === 'light'} glow={0.3} />
+        <PulseStar width={u(18)} height={u(18)} glow={0.3} />
         <Text style={[s.who, { color: t.fg }]}>MedNova</Text>
       </View>
       {/* The frame sets the shape; a bare Image takes the file's own height on web. */}

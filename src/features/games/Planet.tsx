@@ -16,11 +16,6 @@ const PAL = {
     inset: [0, 0, 0, 0.5], insetSel: [0, 0, 0, 0.4], drop: { c: [0, 0, 0, 0.9], blur: 18, spread: 6 },
     halo: [143, 117, 255],
   },
-  light: {
-    bg: ['#ffffff', '#f2ece0', '#d9cfbb'], mid: 0.55, edge: 'rgba(40,36,28,0.12)',
-    inset: [120, 95, 40, 0.18], insetSel: [0, 0, 0, 0.4], drop: { c: [80, 60, 20, 0.45], blur: 16, spread: 8 },
-    halo: [233, 191, 79],
-  },
 };
 const rgb = (c: number[]) => `rgb(${c[0]},${c[1]},${c[2]})`;
 const P = 40; // room around the planet for its shadow and glow

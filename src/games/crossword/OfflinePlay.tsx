@@ -287,7 +287,7 @@ export function ReviveCard({ playId, name, text, payer = 'The phone owner', decl
   };
   return (
     <View style={[s.card, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
-      <Kick color={t.mode === 'light' ? '#d4504c' : '#ff6b7d'}>Out of hearts</Kick>
+      <Kick color="#ff6b7d">Out of hearts</Kick>
       <Text style={[s.big, { color: t.white }]}>{name}</Text>
       <Text style={[s.line, { color: t.mute }]}>{note ?? text ?? `No hearts left. One revive per player: ${CW.revivePrice} token from the phone owner gives ${CW.reviveHearts} heart. Words claimed so far stay claimed.`}</Text>
       <Btn label={`Revive · ${CW.revivePrice} token`} onPress={revive} disabled={sending} style={{ marginTop: u(4) }} />

@@ -10,7 +10,6 @@ import { Text } from '@/components/AppText';
 import Svg, { Circle, ClipPath, Defs, Path, RadialGradient, Rect, Stop } from 'react-native-svg';
 
 import { loadFonts } from '@/features/loading/fonts';
-import { ModePin } from '@/state/app';
 import { DESIGN_W, u } from '@/theme/scale';
 
 import { useClock, useClockValue, type Clock } from '../engine/useTicker';
@@ -84,7 +83,7 @@ function Village({ month }: { month: number }) {
 export function PaperScreen({ month, children, scroll = false, onPause }: { month: number; children: ReactNode; scroll?: boolean; onPause?: () => void }) {
   const ok = usePaperFonts();
   return (
-    <ModePin.Provider value="dark">
+    <>
       <GameScreen scroll={scroll} under={<Village month={month} />} bodyStyle={{ padding: 0, gap: 0 }}>
         {ok ? children : null}
         {ok && onPause ? (
@@ -94,7 +93,7 @@ export function PaperScreen({ month, children, scroll = false, onPause }: { mont
           </Pressable>
         ) : null}
       </GameScreen>
-    </ModePin.Provider>
+    </>
   );
 }
 

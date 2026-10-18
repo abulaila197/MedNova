@@ -64,7 +64,7 @@ export function StorePage() {
         </Text>
         {signedIn ? (
           <View style={s.bal}>
-            <TokenCoin size={u(18)} progress={0} light={c.lt} track="transparent" />
+            <TokenCoin size={u(18)} progress={0} track="transparent" />
             <Text style={[s.balT, { color: c.mute }]}>
               {'You have '}
               <Text style={[s.balT, { color: c.fg, fontFamily: F.bodyBold }]}>{tokens}</Text>
@@ -166,7 +166,7 @@ function PackCard({ t, p, i, busy, onBuy }: { t: Theme; p: Pack; i: number; busy
       <View style={[s.pile, { height: coin, width: coin + step * i }]}>
         {Array.from({ length: i + 1 }, (_, k) => (
           <View key={k} style={{ position: 'absolute', left: step * k, top: 0 }}>
-            <TokenCoin size={coin} progress={0} light={t.mode === 'light'} track="transparent" />
+            <TokenCoin size={coin} progress={0} track="transparent" />
           </View>
         ))}
       </View>

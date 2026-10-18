@@ -34,7 +34,6 @@ function Shapes({ k, paint }: { k: string; paint: string }) {
 
 const SH = {
   dark: { top: '#ffffff', bot: '#7f8fe8', s1: 'rgba(0,0,0,0.65)', s1y: 1.2, s2: 'rgba(255,255,255,0.35)', s3: 'rgba(0,0,0,0.5)' },
-  light: { top: '#fff3c8', bot: '#b06a14', s1: 'rgba(120,80,20,0.45)', s1y: 1, s2: '#ffffff', s3: 'rgba(120,80,20,0.3)' },
 };
 
 /** `px` = rendered glyph size in device px; shadows are given in px like the CSS drop-shadows. */

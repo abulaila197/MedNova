@@ -22,20 +22,18 @@ export function Header({ variant = 'app' }: { variant?: 'app' | 'game' }) {
   const t = useTheme();
   const g = variant === 'game';
   const z = g ? gs : s;
-  const lt = t.mode === 'light';
   const setMenu = useApp((s) => s.setMenu);
   const setReport = useApp((s) => s.setReport);
   const signedIn = !!useSession((st) => st.userId);
   return (
     <View style={z.bar}>
       <View style={[z.edge, { backgroundColor: t.headerEdge }]} />
-      {lt ? <View style={[z.edge, { bottom: -1, backgroundColor: 'rgba(29,34,48,0.12)' }]} /> : null}
       <View style={z.row}>
         <Pressable onPress={tapped(() => setMenu(true))} style={[z.mb, { backgroundColor: t.chip, borderColor: t.chipLine }]} accessibilityLabel="Open menu">
           <MenuIcon size={u(g ? 12 : 14)} color={t.menuBtn} />
         </Pressable>
         <View style={z.lk}>
-          <PulseStar width={u(g ? 16 : 20)} height={u(g ? 17 : 21)} light={lt} />
+          <PulseStar width={u(g ? 16 : 20)} height={u(g ? 17 : 21)} />
           <BrandName height={u(g ? 10.5 : 13)} color={t.white} accent={t.accent} />
         </View>
       </View>
@@ -50,20 +48,20 @@ export function Header({ variant = 'app' }: { variant?: 'app' | 'game' }) {
             </LinearGradient>
           </Pressable>
         )}
-        {g ? <Coin light={lt} /> : null}
+        {g ? <Coin /> : null}
       </View>
     </View>
   );
 }
 
 /** Token count + coin; tapping it opens the Store (MN7). */
-function Coin({ light }: { light: boolean }) {
+function Coin() {
   const t = useTheme();
   const { tokens, level, into, need } = useBalance();
   return (
     <Pressable onPress={tapped(() => router.navigate('/store'))} style={gs.coin} accessibilityRole="button" accessibilityLabel={`${tokens} tokens. Level ${level}, ${into} of ${need} EXP to level ${level + 1}. Open the Store`}>
       <Text style={[gs.coinT, { color: t.fg }]}>{tokens}</Text>
-      <TokenCoin size={u(17)} progress={into / need} light={light} track={light ? 'rgba(29,34,48,0.12)' : 'rgba(255,255,255,0.12)'} />
+      <TokenCoin size={u(17)} progress={into / need} track="rgba(255,255,255,0.12)" />
     </Pressable>
   );
 }

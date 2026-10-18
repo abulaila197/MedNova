@@ -8,7 +8,6 @@ import { F } from '@/theme/tokens';
 
 const ART = {
   dark: require('@/assets/art/rising-dark.jpg'),
-  light: require('@/assets/art/rising-light.jpg'),
 };
 
 // .soonart: 282 x 230, background cover at 50% 62%, mask radial-gradient(70% 62% at 50% 55%, #000 45%, transparent 85%)

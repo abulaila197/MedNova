@@ -120,7 +120,7 @@ export function NewCase() {
   );
 }
 
-const ph = (t: Theme) => (t.mode === 'light' ? 'rgba(107,106,102,0.6)' : 'rgba(154,160,196,0.55)');
+const ph = (t: Theme) => 'rgba(154,160,196,0.55)';
 const inp = (t: Theme) => [s.in, { color: t.fg, borderColor: t.panelLine, backgroundColor: t.panel2 }];
 
 function Box({ t, n, title, children }: { t: Theme; n: string; title: string; children: ReactNode }) {
@@ -150,7 +150,7 @@ function Chips({ t, items, on, onPick }: { t: Theme; items: string[]; on: number
   return (
     <View style={s.chips}>
       {items.map((x, i) => (
-        <Pressable key={x} onPress={() => onPick(i)} accessibilityRole="button" accessibilityState={{ selected: i === on }} style={[s.chip, { borderColor: i === on ? t.accent : t.panelLine, backgroundColor: i === on ? (t.mode === 'light' ? 'rgba(229,131,58,0.1)' : 'rgba(111,214,255,0.1)') : 'transparent' }]}>
+        <Pressable key={x} onPress={() => onPick(i)} accessibilityRole="button" accessibilityState={{ selected: i === on }} style={[s.chip, { borderColor: i === on ? t.accent : t.panelLine, backgroundColor: i === on ? 'rgba(111,214,255,0.1)' : 'transparent' }]}>
           <Text style={[s.chipT, { color: i === on ? t.fg : t.mute }]}>{x}</Text>
         </Pressable>
       ))}

@@ -228,7 +228,7 @@ function Row({ children }: { children: ReactNode }) {
 function WayCard({ t, w, label, act, done, locked, busy, onPress }: { t: Theme; w: Way; label: string; act: string; done: boolean; locked?: boolean; busy: boolean; onPress: () => void }) {
   return (
     <Pressable onPress={done || locked ? undefined : onPress} accessibilityRole="button" accessibilityLabel={`${w.label}, ${w.tokens} tokens`} style={[s.card, { backgroundColor: t.panel, borderColor: t.panelLine }, busy && { opacity: 0.6 }]}>
-      <View style={[s.ic, { backgroundColor: t.mode === 'light' ? 'rgba(229,131,58,0.1)' : 'rgba(111,214,255,0.1)' }]}>{w.icon({ size: u(17), color: t.accent })}</View>
+      <View style={[s.ic, { backgroundColor: 'rgba(111,214,255,0.1)' }]}>{w.icon({ size: u(17), color: t.accent })}</View>
       <Text style={[s.cN, { color: t.fg }]}>{`+${w.tokens}`}</Text>
       <Text style={[s.cU, { color: t.mute }]} numberOfLines={2}>
         {w.each ? `${label} · each` : label}
@@ -248,7 +248,6 @@ function WayCard({ t, w, label, act, done, locked, busy, onPress }: { t: Theme; 
 
 /** The global mission: the same box, in a gold frame, with the download bar. When it's reached, players who were here collect 200. */
 function Global({ t, st, signedIn }: { t: Theme; st: FreeStatus | null; signedIn: boolean }) {
-  const lt = t.mode === 'light';
   const goal = st?.goal ?? 100000;
   const now = Math.min(goal, st?.downloads ?? 0);
   const reached = now >= goal;
@@ -265,16 +264,16 @@ function Global({ t, st, signedIn }: { t: Theme; st: FreeStatus | null; signedIn
   };
   return (
     <LinearGradient colors={GOLD} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={s.gold}>
-      <Pressable disabled={!reached || got || busy} onPress={collect} style={[s.card, s.goldIn, { backgroundColor: lt ? '#fffaf0' : '#1a1830' }]} accessibilityLabel={`Global mission: ${now} of ${goal} downloads`}>
-        <Text style={[s.gKick, { color: lt ? '#b07a12' : '#f3cf6c' }]}>GLOBAL MISSION</Text>
+      <Pressable disabled={!reached || got || busy} onPress={collect} style={[s.card, s.goldIn, { backgroundColor: '#1a1830' }]} accessibilityLabel={`Global mission: ${now} of ${goal} downloads`}>
+        <Text style={[s.gKick, { color: '#f3cf6c' }]}>GLOBAL MISSION</Text>
         <Text style={[s.cN, { color: t.fg }]}>+200</Text>
         <Text style={[s.cU, { color: t.mute }]} numberOfLines={2}>
           {got ? 'Collected. Thank you!' : reached ? 'We made it! Tap to collect' : 'for everyone at 100k downloads'}
         </Text>
-        <View style={[s.bar, { backgroundColor: lt ? 'rgba(176,122,18,0.15)' : 'rgba(243,207,108,0.15)' }]}>
+        <View style={[s.bar, { backgroundColor: 'rgba(243,207,108,0.15)' }]}>
           <LinearGradient colors={GOLD} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={{ width: `${Math.max(2, (now / goal) * 100)}%`, height: '100%', borderRadius: 999 }} />
         </View>
-        <Text style={[s.gNum, { color: lt ? '#8a5f0c' : '#f3cf6c' }]}>{`${now.toLocaleString('en-US')} / ${goal.toLocaleString('en-US')}`}</Text>
+        <Text style={[s.gNum, { color: '#f3cf6c' }]}>{`${now.toLocaleString('en-US')} / ${goal.toLocaleString('en-US')}`}</Text>
       </Pressable>
     </LinearGradient>
   );
@@ -382,7 +381,7 @@ function AmbassadorForm({ t, onDone }: { t: Theme; onDone: () => void }) {
   );
 }
 
-const tint = (t: Theme) => (t.mode === 'light' ? 'rgba(229,131,58,0.1)' : 'rgba(111,214,255,0.1)');
+const tint = (t: Theme) => 'rgba(111,214,255,0.1)';
 const Title = ({ t, a, b }: { t: Theme; a: string; b: string }) => (
   <Text style={[s.shH, { color: t.fg }]}>
     {a}

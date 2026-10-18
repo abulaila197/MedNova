@@ -13,7 +13,6 @@ import { PlayerTitle } from '@/features/style/PlayerTitle';
 import { presetTeam } from '@/games/shell/teams';
 import type { GameDef } from '@/games/shell/types';
 import { GameScreen } from '@/games/shell/ui';
-import { ModePin } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
@@ -30,11 +29,11 @@ import { useRoom } from './useRoom';
 /** A page in the online look: dark header (pinned), grey room behind. */
 export function GreyScreen({ children, scroll = true, over }: { children: React.ReactNode; scroll?: boolean; over?: React.ReactNode }) {
   return (
-    <ModePin.Provider value="dark">
+    <>
       <GameScreen scroll={scroll} top={over} under={<View style={[StyleSheet.absoluteFill, { backgroundColor: G.page }]} />} bodyStyle={{ paddingTop: u(12), gap: u(11) }}>
         {children}
       </GameScreen>
-    </ModePin.Provider>
+    </>
   );
 }
 
@@ -296,7 +295,7 @@ export function Lobby({ def, roomId }: { def: GameDef; roomId: string }) {
 function HowTo({ def }: { def: GameDef }) {
   const steps = def.modes.find((m) => m.mode === 'online')?.howTo ?? [];
   return (
-    <ModePin.Provider value="dark">
+    <>
       <Text style={[s.k, { color: G.mute }]}>HOW TO PLAY ONLINE</Text>
       {steps.map((x, i) => (
         <View key={i} style={s.step}>
@@ -304,7 +303,7 @@ function HowTo({ def }: { def: GameDef }) {
           <Text style={[s.stepT, { color: G.fg }]}>{x}</Text>
         </View>
       ))}
-    </ModePin.Provider>
+    </>
   );
 }
 

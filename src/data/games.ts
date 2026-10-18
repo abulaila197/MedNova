@@ -28,16 +28,4 @@ export const GAME_PHOTOS = {
     'the-streak-master': require('@/assets/games/dark/the-streak-master.jpg'),
     'case-files-unsolved': require('@/assets/games/dark/case-files-unsolved.jpg'),
   },
-  light: {
-    'trust-me-not': require('@/assets/games/light/trust-me-not.jpg'),
-    'the-conqueror': require('@/assets/games/light/the-conqueror.jpg'),
-    'the-diagnostic-pursuit': require('@/assets/games/light/the-diagnostic-pursuit.jpg'),
-    'the-wheels-of-chaos': require('@/assets/games/light/the-wheels-of-chaos.jpg'),
-    'nova-crossword': require('@/assets/games/light/nova-crossword.jpg'),
-    'nova-medicordle': require('@/assets/games/light/nova-medicordle.jpg'),
-    'the-silent-artist': require('@/assets/games/light/the-silent-artist.jpg'),
-    'the-riddler': require('@/assets/games/light/the-riddler.jpg'),
-    'the-streak-master': require('@/assets/games/light/the-streak-master.jpg'),
-    'case-files-unsolved': require('@/assets/games/light/case-files-unsolved.jpg'),
-  },
 } as const;

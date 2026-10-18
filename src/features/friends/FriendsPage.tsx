@@ -50,7 +50,7 @@ export function FriendsPage() {
           </Pressable>
         ) : (
           <>
-            <View style={[s.tabs, { backgroundColor: t.mode === 'light' ? 'rgba(29,34,48,0.05)' : 'rgba(255,255,255,0.05)' }]}>
+            <View style={[s.tabs, { backgroundColor: 'rgba(255,255,255,0.05)' }]}>
               {names.map((n, i) => (
                 <Pressable key={n} onPress={() => setTab(i)} style={[s.tab, i === tab && { backgroundColor: t.panel, borderColor: t.panelLine, borderWidth: 1 }]} accessibilityRole="tab" accessibilityState={{ selected: i === tab }}>
                   <Text style={[s.tabT, { color: i === tab ? t.fg : t.mute }]}>{n}</Text>

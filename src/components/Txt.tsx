@@ -4,7 +4,7 @@ import { Text } from '@/components/AppText';
 import { useTheme } from '@/state/app';
 import { F } from '@/theme/tokens';
 
-/** Display line where the part in `em` is the accent word (cyan on dark, orange on light). */
+/** Display line where the part in `em` is the accent word (cyan). */
 export function Display({ children, em, italic = false, style, emStyle, ...rest }: TextProps & { em?: string; italic?: boolean; emStyle?: TextStyle }) {
   const t = useTheme();
   return (

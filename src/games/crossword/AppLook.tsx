@@ -14,8 +14,8 @@ import { slideColors } from '../medicordle/palette';
 import { cellKey, CW, indexOf, lockedCells, QWERTY_ROWS, type CellPos, type PuzzleDef, type Slot, type Typed, type WordDef } from './core';
 import { IMAGES } from './data/images';
 
-// Nova Crossword's look (Yazan picked D, 2026-10-05): the app's own look in dark and light, built like Nova Medicordle's slides:
-// glass tiles with a soft top sheen on a navy (or warm stone) board, Fraunces titles, Inter Tight text.
+// Nova Crossword's look (Yazan picked D, 2026-10-05): the app's own look, built like Nova Medicordle's slides:
+// glass tiles with a soft top sheen on a navy board, Fraunces titles, Inter Tight text.
 // Solved words glow green, hint letters sit on blue tiles (Yazan 2026-10-05), the chosen word is edged in the accent.
 
 const HEART = 'M10 17.5 C4 13 1.5 10 1.5 6.6 C1.5 4 3.5 2 6 2 C7.6 2 9 2.9 10 4.2 C11 2.9 12.4 2 14 2 C16.5 2 18.5 4 18.5 6.6 C18.5 10 16 13 10 17.5 Z';
@@ -57,7 +57,6 @@ export function AppTopBar({ kicker, title = 'Nova Crossword', titleColor, sub, h
 }
 
 const HINT_DARK = '#5b8cff';
-const HINT_LIGHT = '#4a72d9';
 /** Tap to zoom (Yazan 2026-10-05): the first tap zooms into that part of the grid so a square is finger-sized. */
 export const ZOOM = 2.2;
 
@@ -108,7 +107,7 @@ export const AppGrid = memo(function AppGrid({ puzzle, solved, revealed = [], se
       const ok = done.has(k);
       const hint = !ok && shown.has(k);
       const claim = ok && claims ? claims[ids.find((id) => solvedSet.has(id))!] : undefined;
-      const bg = ok ? (claim ?? c.ok) : hint ? (t.mode === 'dark' ? HINT_DARK : HINT_LIGHT) : null;
+      const bg = ok ? (claim ?? c.ok) : hint ? HINT_DARK : null;
       const picked = sel.has(k);
       cells.push(
         <Pressable
@@ -159,7 +158,7 @@ export function AppPopup({ word, slots, typed, tokens, width, notice, shake = 0,
   const slotW = Math.min(u(34), Math.floor((inner - (n - 1) * u(4)) / n));
   const keyW = Math.floor((inner - 9 * u(4)) / 10);
   return (
-    <View style={[s.sheet, { backgroundColor: t.mode === 'dark' ? '#0c1130' : '#f7f3ec', borderColor: c.line }]}>
+    <View style={[s.sheet, { backgroundColor: '#0c1130', borderColor: c.line }]}>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
         <Text style={[s.kick, { color: t.accent }]}>{`${word.direction === 'across' ? 'ACROSS' : 'DOWN'}  ·  ${word.category.toUpperCase()}`}</Text>
         <Pressable onPress={onClose} hitSlop={u(10)} accessibilityRole="button" accessibilityLabel="Close" style={[s.close, { borderColor: c.line, backgroundColor: c.key }]}>
@@ -251,7 +250,7 @@ export function AppLevelMap({ best, count = 31, action, onOpen }: { best: Record
                 const bg = st === 3 ? c.ok : st ? c.near : null;
                 return (
                   <Pressable key={l} disabled={!on} onPress={() => onOpen?.(l)} accessibilityRole="button" accessibilityLabel={on ? `Puzzle ${l}, ${st} of 3 stars` : `Puzzle ${l}, locked`} style={{ alignItems: 'center', gap: u(4) }}>
-                    <View style={[s.tile, { position: 'relative', width: box, height: box, borderRadius: u(8), backgroundColor: t.mode === 'dark' ? '#121839' : '#f3eee5', borderColor: now ? t.accent : c.line, borderWidth: now ? 1.5 : 1 }, bg ? { boxShadow: `0 0 ${u(12)}px ${bg}55` } : null]}>
+                    <View style={[s.tile, { position: 'relative', width: box, height: box, borderRadius: u(8), backgroundColor: '#121839', borderColor: now ? t.accent : c.line, borderWidth: now ? 1.5 : 1 }, bg ? { boxShadow: `0 0 ${u(12)}px ${bg}55` } : null]}>
                       {bg ? <View style={[StyleSheet.absoluteFill, { backgroundColor: bg }]} /> : null}
                       <LinearGradient colors={[c.fadeTop, 'transparent']} style={[s.top, { height: '50%' }]} pointerEvents="none" />
                       <Text style={{ fontFamily: F.bodyBold, fontSize: u(17), color: bg ? c.onTile : on ? t.fg : t.dim }}>{on ? l : '·'}</Text>

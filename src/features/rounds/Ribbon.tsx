@@ -106,7 +106,7 @@ export function Beat({ r, more = true }: { r: Rounds; more?: boolean }) {
         <Text style={[s.left, { color: t.mute, flex: 1 }]}>{r.claimed ? 'DONE THIS WEEK' : `${timeLeft(r.ends).toUpperCase()} LEFT${more ? ' · TAP FOR MORE' : ''}`}</Text>
         <View style={s.prize}>
           <Text style={[s.prizeT, { color: t.fg }]}>{r.prize}</Text>
-          <TokenCoin size={u(10)} progress={1} light={t.mode === 'light'} track="transparent" />
+          <TokenCoin size={u(10)} progress={1} track="transparent" />
         </View>
       </View>
       <Svg width="100%" height={u(18)} viewBox={`0 0 ${W} 16`} preserveAspectRatio="none">

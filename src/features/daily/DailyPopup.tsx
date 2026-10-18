@@ -35,7 +35,6 @@ const COLS = 7;
 export function DailyPopup({ day, collected, signedIn, busy, error, onCollect, onSignIn, onClose }: Props) {
   const t = useTheme();
   const { width } = useScreen();
-  const lt = t.mode === 'light';
   const cardW = Math.min(width - u(32), u(340));
   const inner = cardW - u(36);
   const gap = u(5);
@@ -52,7 +51,7 @@ export function DailyPopup({ day, collected, signedIn, busy, error, onCollect, o
           style={[
             StyleSheet.absoluteFill,
             {
-              backgroundColor: lt ? 'rgba(40,34,24,0.35)' : 'rgba(5,6,16,0.6)',
+              backgroundColor: 'rgba(5,6,16,0.6)',
             },
           ]}
           onPress={onClose}
@@ -68,7 +67,7 @@ export function DailyPopup({ day, collected, signedIn, busy, error, onCollect, o
             width: cardW,
             backgroundColor: t.panel2,
             borderColor: t.panelLine,
-            shadowColor: lt ? 'rgba(60,50,30,0.45)' : '#000',
+            shadowColor: '#000',
           },
         ]}
       >
@@ -85,7 +84,7 @@ export function DailyPopup({ day, collected, signedIn, busy, error, onCollect, o
 
         <View style={[s.grid, s.pack, { borderColor: t.panelLine }]}>
           <LinearGradient
-            colors={lt ? ['#f4f1ea', '#e3ded3', '#f2efe8'] : ['#20264a', '#151a36', '#1d2244']}
+            colors={['#20264a', '#151a36', '#1d2244']}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={[StyleSheet.absoluteFill, { borderRadius: u(16) }]}
@@ -117,7 +116,7 @@ export function DailyPopup({ day, collected, signedIn, busy, error, onCollect, o
               style={[s.btnWrap, busy && { opacity: 0.6 }]}
             >
               <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={s.btn}>
-                <TokenCoin size={u(16)} progress={0} light={lt} track="transparent" />
+                <TokenCoin size={u(16)} progress={0} track="transparent" />
                 <Text style={[s.btnT, { color: t.onGrad }]}>{`Collect ${prize} token${prize === 1 ? '' : 's'}`}</Text>
               </LinearGradient>
             </Pressable>
@@ -157,14 +156,13 @@ type CellP = {
 
 /** One blister: the capsule sits low in its bubble, away from the top edge; taken doses leave it empty and dashed. */
 function Blister({ t, d, w, h, st, wide, popped }: CellP) {
-  const lt = t.mode === 'light';
   const prize = dayPrize(d);
   const big = prize >= 3 && !wide;
   const today = st === 'today';
   const done = st === 'done';
   const capW = big ? w * 0.74 : w * 0.6;
   const capH = big ? h * 0.28 : h * 0.22;
-  const half = lt ? ['#e5833a', '#ffffff'] : ['#6fd6ff', '#eef0ff'];
+  const half = ['#6fd6ff', '#eef0ff'];
   return (
     <View
       style={[
@@ -172,8 +170,8 @@ function Blister({ t, d, w, h, st, wide, popped }: CellP) {
         {
           width: w,
           height: h,
-          borderColor: lt ? 'rgba(40,36,28,0.16)' : 'rgba(255,255,255,0.12)',
-          backgroundColor: lt ? 'rgba(255,255,255,0.55)' : 'rgba(255,255,255,0.04)',
+          borderColor: 'rgba(255,255,255,0.12)',
+          backgroundColor: 'rgba(255,255,255,0.04)',
         },
         done && { borderStyle: 'dashed', backgroundColor: 'transparent' },
         today && {
@@ -207,7 +205,6 @@ function Blister({ t, d, w, h, st, wide, popped }: CellP) {
                   borderRadius: capH / 2,
                   transform: [{ rotate: '-28deg' }],
                 },
-                lt && { borderWidth: 0.6, borderColor: 'rgba(40,36,28,0.25)' },
               ]}
             >
               {big ? (
@@ -226,7 +223,7 @@ function Blister({ t, d, w, h, st, wide, popped }: CellP) {
       )}
       {popped ? (
         <Animated.View entering={fly} style={[s.fly, { opacity: 0 }]} pointerEvents="none">
-          <TokenCoin size={u(18)} progress={0} light={lt} track="transparent" />
+          <TokenCoin size={u(18)} progress={0} track="transparent" />
         </Animated.View>
       ) : null}
     </View>
@@ -235,11 +232,10 @@ function Blister({ t, d, w, h, st, wide, popped }: CellP) {
 
 /** Sealed envelope for the month-end prize (cream paper, wax in the accent colour), from look A. */
 function Envelope({ size, t }: { size: number; t: Theme }) {
-  const lt = t.mode === 'light';
   return (
     <Svg width={size * 1.4} height={size} viewBox="0 0 28 20">
-      <Path d="M1.5 2.5h25v15h-25z" fill={lt ? '#fbf3e2' : '#efe6d2'} stroke={lt ? 'rgba(40,36,28,0.3)' : 'rgba(0,0,0,0.25)'} strokeWidth={0.6} />
-      <Path d="M1.5 2.5l12.5 9 12.5-9" fill="none" stroke={lt ? 'rgba(40,36,28,0.35)' : 'rgba(0,0,0,0.3)'} strokeWidth={0.7} />
+      <Path d="M1.5 2.5h25v15h-25z" fill="#efe6d2" stroke="rgba(0,0,0,0.25)" strokeWidth={0.6} />
+      <Path d="M1.5 2.5l12.5 9 12.5-9" fill="none" stroke="rgba(0,0,0,0.3)" strokeWidth={0.7} />
       <Path d="M14 9.2a2.6 2.6 0 1 1 0 5.2a2.6 2.6 0 1 1 0-5.2z" fill={t.accent} />
     </Svg>
   );

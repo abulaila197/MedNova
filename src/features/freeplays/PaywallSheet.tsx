@@ -57,7 +57,7 @@ export function PaywallSheet() {
   return (
     <View style={[StyleSheet.absoluteFill, { zIndex: 40 }]}>
       <Animated.View entering={FadeIn.duration(220)} exiting={FadeOut.duration(180)} style={StyleSheet.absoluteFill}>
-        <Pressable style={[StyleSheet.absoluteFill, { backgroundColor: t.mode === 'light' ? 'rgba(40,34,24,0.35)' : 'rgba(5,6,16,0.6)' }]} onPress={cancelPaywall} accessibilityLabel="Close" />
+        <Pressable style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(5,6,16,0.6)' }]} onPress={cancelPaywall} accessibilityLabel="Close" />
       </Animated.View>
       <Animated.View entering={SlideInDown.duration(360)} style={s.dock}>
         <Vials t={t} title={title} choices={choices} />
@@ -68,10 +68,9 @@ export function PaywallSheet() {
 
 /** Empty vials: today's three free plays as three empty vials, then the choices as buttons. */
 function Vials({ t, title, choices }: { t: Theme; title: string; choices: Choice[] }) {
-  const lt = t.mode === 'light';
   return (
     <View style={[s.panel, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
-      <View style={[s.grab, { backgroundColor: lt ? 'rgba(40,36,28,0.15)' : 'rgba(255,255,255,0.2)' }]} />
+      <View style={[s.grab, { backgroundColor: 'rgba(255,255,255,0.2)' }]} />
       <Text style={[s.mono, { color: t.kick, alignSelf: 'center' }]}>{title.toUpperCase()}</Text>
       <Text style={[s.vT, { color: t.fg }]}>
         {"Today's doses are "}
@@ -80,10 +79,10 @@ function Vials({ t, title, choices }: { t: Theme; title: string; choices: Choice
       <View style={s.vials}>
         {[0, 1, 2].map((i) => (
           <View key={i} style={s.vial}>
-            <View style={[s.cap, { backgroundColor: lt ? '#c9c2b4' : '#3a4170' }]} />
-            <View style={[s.tube, { borderColor: lt ? 'rgba(40,36,28,0.3)' : 'rgba(255,255,255,0.25)', backgroundColor: lt ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.03)' }]}>
+            <View style={[s.cap, { backgroundColor: '#3a4170' }]} />
+            <View style={[s.tube, { borderColor: 'rgba(255,255,255,0.25)', backgroundColor: 'rgba(255,255,255,0.03)' }]}>
               <View style={[s.residue, { backgroundColor: t.accent }]} />
-              <View style={[s.gloss, { backgroundColor: lt ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.12)' }]} />
+              <View style={[s.gloss, { backgroundColor: 'rgba(255,255,255,0.12)' }]} />
             </View>
           </View>
         ))}

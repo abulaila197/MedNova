@@ -330,7 +330,7 @@ function OutCard({ playId, onRevive, onReplay, onEnd }: { playId: string; onRevi
   };
   return (
     <View style={[s.card, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
-      <Kick color={t.mode === 'light' ? '#d4504c' : '#ff6b7d'}>Out of hearts</Kick>
+      <Kick color="#ff6b7d">Out of hearts</Kick>
       <Text style={[s.big, { color: t.white }]}>Keep going?</Text>
       <Text style={[s.line, { color: t.mute }]}>{note ?? `${CW.revivePrice} token gives you ${CW.reviveHearts} heart. Words you solved stay solved.`}</Text>
       <Btn label={`Revive · ${CW.revivePrice} token`} onPress={revive} disabled={sending} style={{ marginTop: u(4) }} />
@@ -356,7 +356,7 @@ function ResultCard({ done, canNext, onNext, onRetry, onMap }: { done: Done; can
         <Kick color={done.stars ? t.accent : t.mute}>{`Puzzle ${done.level} · ${done.solved} of ${done.total} words`}</Kick>
         <Text style={{ fontSize: u(15), letterSpacing: u(1) }} accessibilityLabel={`${done.stars} of 3 stars`}>
           {[0, 1, 2].map((i) => (
-            <Text key={i} style={{ color: i < done.stars ? t.accent : t.mode === 'light' ? '#d3ccbf' : '#2a3050' }}>★</Text>
+            <Text key={i} style={{ color: i < done.stars ? t.accent : '#2a3050' }}>★</Text>
           ))}
         </Text>
       </View>

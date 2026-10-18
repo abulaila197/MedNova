@@ -176,7 +176,7 @@ function Kicker({ title, props, light }: { title: string; props: PageProps; ligh
   return (
     <View style={s.gtop}>
       <T f={FELL} size={10} color={light ? TM.cream : TM.ink} style={[s.caps, { flex: 1 }, light ? shadow : null]} lines={1}>{title}</T>
-      {props.env.view.ghost ? null : <Done env={props.env} act={props.act} light={light} />}
+      {props.env.view.ghost ? null : <Done env={props.env} act={props.act} />}
       <LiveT clock={props.clock} text={(now) => clock(secondsLeft(props.env, now) * 1000, { down: true })} f={FELL} size={15} color={light ? '#e0806a' : TM.red} style={[{ marginLeft: p(10) }, light ? shadow : null]} />
     </View>
   );

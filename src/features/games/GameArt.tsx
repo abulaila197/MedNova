@@ -6,7 +6,7 @@ import type { Mode } from '@/theme/tokens';
 
 import { ART_END, BODY_TOP, W } from './fit';
 
-// Each drawing with its arc fade (and the light-mode colour tweak) is baked into one transparent
+// Each drawing with its arc fade is baked into one transparent
 // image by scripts/bake-game-art.py, so the phone draws a plain picture instead of three stacked
 // SVG masks per page. Re-run the script after changing a drawing or the geometry in fit.ts.
 const BAKED = {
@@ -21,18 +21,6 @@ const BAKED = {
     'the-riddler': require('@/assets/games/baked/dark/the-riddler.webp'),
     'the-streak-master': require('@/assets/games/baked/dark/the-streak-master.webp'),
     'case-files-unsolved': require('@/assets/games/baked/dark/case-files-unsolved.webp'),
-  },
-  light: {
-    'trust-me-not': require('@/assets/games/baked/light/trust-me-not.webp'),
-    'the-conqueror': require('@/assets/games/baked/light/the-conqueror.webp'),
-    'the-diagnostic-pursuit': require('@/assets/games/baked/light/the-diagnostic-pursuit.webp'),
-    'the-wheels-of-chaos': require('@/assets/games/baked/light/the-wheels-of-chaos.webp'),
-    'nova-crossword': require('@/assets/games/baked/light/nova-crossword.webp'),
-    'nova-medicordle': require('@/assets/games/baked/light/nova-medicordle.webp'),
-    'the-silent-artist': require('@/assets/games/baked/light/the-silent-artist.webp'),
-    'the-riddler': require('@/assets/games/baked/light/the-riddler.webp'),
-    'the-streak-master': require('@/assets/games/baked/light/the-streak-master.webp'),
-    'case-files-unsolved': require('@/assets/games/baked/light/case-files-unsolved.webp'),
   },
 } as const;
 

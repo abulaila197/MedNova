@@ -18,7 +18,7 @@ export function Post({ kick, lead, em, body }: { kick: string; lead: string; em:
   return (
     <View style={[s.card, { backgroundColor: t.panel2, borderColor: t.panelLine }]}>
       <View style={s.from}>
-        <PulseStar width={u(18)} height={u(18)} light={t.mode === 'light'} glow={0.3} />
+        <PulseStar width={u(18)} height={u(18)} glow={0.3} />
         <Text style={[s.who, { color: t.fg }]}>The MedNova team</Text>
         <Text style={[s.kick, { color: t.kick }]}>{kick}</Text>
       </View>

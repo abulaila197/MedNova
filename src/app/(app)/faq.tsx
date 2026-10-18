@@ -133,9 +133,8 @@ function SearchGlyph({ color }: { color: string }) {
 
 /** .fq-orb: a faint ring off the right edge with a dashed ring inside it (behind the header). */
 function Orb() {
-  const c = useInfo();
-  const ring = c.lt ? 'rgba(229,131,58,0.14)' : 'rgba(111,214,255,0.14)';
-  const dash = c.lt ? 'rgba(184,116,31,0.14)' : 'rgba(201,184,255,0.14)';
+  const ring = 'rgba(111,214,255,0.14)';
+  const dash = 'rgba(201,184,255,0.14)';
   return (
     <View pointerEvents="none" style={s.orb}>
       <Svg width="100%" height="100%" viewBox="0 0 240 240">

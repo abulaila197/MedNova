@@ -38,7 +38,7 @@ export function Kick({ children, color }: { children: ReactNode; color?: string 
   return <Text style={[s.kick, { color: color ?? t.soft }]}>{children}</Text>;
 }
 
-/** Title with the last word in the accent colour (cyan dark, orange light). */
+/** Title with the last word in the accent colour (cyan). */
 export function Title({ lead, em, size = 30 }: { lead: string; em: string; size?: number }) {
   const t = useTheme();
   return (

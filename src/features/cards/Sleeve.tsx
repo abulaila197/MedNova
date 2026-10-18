@@ -11,11 +11,9 @@ import type { HuntCard } from './deck';
 
 export const RATIO = 860 / 480;
 
-/** Glass colours of the card saver, per mode. */
+/** Glass colours of the card saver. */
 export const glass = (t: Theme) =>
-  t.mode === 'light'
-    ? { edge: 'rgba(255,255,255,0.95)', line: 'rgba(60,50,30,0.22)', fill: 'rgba(255,255,255,0.45)', sheen: 'rgba(255,255,255,0.7)', lip: 'rgba(60,50,30,0.18)', shadow: 'rgba(80,60,30,0.25)' }
-    : { edge: 'rgba(255,255,255,0.32)', line: 'rgba(200,215,255,0.22)', fill: 'rgba(190,205,255,0.07)', sheen: 'rgba(255,255,255,0.22)', lip: 'rgba(255,255,255,0.28)', shadow: 'rgba(0,0,0,0.55)' };
+  ({ edge: 'rgba(255,255,255,0.32)', line: 'rgba(200,215,255,0.22)', fill: 'rgba(190,205,255,0.07)', sheen: 'rgba(255,255,255,0.22)', lip: 'rgba(255,255,255,0.28)', shadow: 'rgba(0,0,0,0.55)' });
 
 /**
  * A card in its glass saver (a toploader): clear rim, the card inside, a diagonal sheen and the open lip at the top.
@@ -28,9 +26,9 @@ export function Sleeve({ t, card, w, locked, style }: { t: Theme; card: HuntCard
   const r = w * 0.07;
   return (
     <View style={[{ width: w, borderRadius: r, padding: pad, backgroundColor: g.fill, borderWidth: 1, borderColor: g.line, shadowColor: g.shadow, shadowOpacity: 1, shadowRadius: w * 0.08, shadowOffset: { width: 0, height: w * 0.04 } }, style]}>
-      <View style={{ width: inner, height: inner * RATIO, borderRadius: r * 0.7, overflow: 'hidden', backgroundColor: t.mode === 'light' ? '#d9d2c4' : '#0b0f2c' }}>
-        <Image source={card.art} style={[StyleSheet.absoluteFill, { width: inner, height: inner * RATIO }, locked && { opacity: t.mode === 'light' ? 0.22 : 0.16 }]} resizeMode="cover" />
-        {locked ? <View style={[StyleSheet.absoluteFill, { backgroundColor: t.mode === 'light' ? 'rgba(231,226,216,0.45)' : 'rgba(5,6,16,0.35)' }]} /> : null}
+      <View style={{ width: inner, height: inner * RATIO, borderRadius: r * 0.7, overflow: 'hidden', backgroundColor: '#0b0f2c' }}>
+        <Image source={card.art} style={[StyleSheet.absoluteFill, { width: inner, height: inner * RATIO }, locked && { opacity: 0.16 }]} resizeMode="cover" />
+        {locked ? <View style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(5,6,16,0.35)' }]} /> : null}
       </View>
       {/* sheen across the plastic */}
       <LinearGradient pointerEvents="none" colors={['rgba(255,255,255,0)', g.sheen, 'rgba(255,255,255,0)']} locations={[0.18, 0.32, 0.46]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={[StyleSheet.absoluteFill, { borderRadius: r }]} />
@@ -39,7 +37,7 @@ export function Sleeve({ t, card, w, locked, style }: { t: Theme; card: HuntCard
       <View pointerEvents="none" style={[StyleSheet.absoluteFill, { borderRadius: r, borderWidth: 1, borderColor: g.edge, opacity: 0.6 }]} />
       {locked ? (
         <View pointerEvents="none" style={[StyleSheet.absoluteFill, s.mid]}>
-          <Lock size={w * 0.2} color={t.mode === 'light' ? 'rgba(29,34,48,0.55)' : 'rgba(220,225,255,0.6)'} />
+          <Lock size={w * 0.2} color="rgba(220,225,255,0.6)" />
         </View>
       ) : null}
     </View>
@@ -56,7 +54,7 @@ export function Lock({ size, color }: { size: number; color: string }) {
   );
 }
 
-/** The back of every card: navy with a gold frame, the Pulse star, and the clue. The same in both modes (it's a printed card). */
+/** The back of every card: navy with a gold frame, the Pulse star, and the clue (it's a printed card). */
 export function CardBack({ card, w, i }: { card: HuntCard; w: number; i: number }) {
   const h = w * RATIO;
   const last = card.key === 'omar';

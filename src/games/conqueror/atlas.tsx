@@ -10,7 +10,6 @@ import { Text } from '@/components/AppText';
 import Svg, { Defs, Ellipse, G, Image as SvgImage, LinearGradient as SvgGradient, Path, Stop, Text as SvgText } from 'react-native-svg';
 
 import { loadFonts } from '@/features/loading/fonts';
-import { ModePin } from '@/state/app';
 import { clock } from '@/games/engine/clock';
 import { DESIGN_W, u } from '@/theme/scale';
 
@@ -80,11 +79,11 @@ export function Room() {
 export function AtlasScreen({ children, scroll = false, under }: { children: ReactNode; scroll?: boolean; under?: ReactNode }) {
   const ok = useAtlasFonts();
   return (
-    <ModePin.Provider value="dark">
+    <>
       <GameScreen scroll={scroll} under={under ?? <Room />} bodyStyle={{ paddingTop: v(12), paddingHorizontal: v(14), paddingBottom: v(14), gap: v(11) }}>
         {ok ? children : null}
       </GameScreen>
-    </ModePin.Provider>
+    </>
   );
 }
 

@@ -1,4 +1,4 @@
-/** ON15: one simple mid-grey look for every online screen, the same in light and dark mode. */
+/** ON15: one simple mid-grey look for every online screen. */
 export const G = {
   page: '#2b2e33',
   panel: '#35383e',

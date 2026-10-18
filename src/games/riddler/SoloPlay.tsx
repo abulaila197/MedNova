@@ -221,9 +221,8 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
 /** RD11: the answer, stars and EXP, with Next level, Retry and a dossier link where the answer has one. */
 function ResultCard({ done, level, onNext, onRetry, onGrid, revive }: { done: Done; level: Level; onNext: () => void; onRetry: () => void; onGrid: () => void; revive?: { price: number; onPress: () => void } | null }) {
   const t = useTheme();
-  const lt = t.mode === 'light';
   const r = riddleById.get(done.riddleId)!;
-  const tone = done.solved ? (lt ? '#2f9e6c' : '#3fc58a') : lt ? '#d4504c' : '#ff5c6c';
+  const tone = done.solved ? '#3fc58a' : '#ff5c6c';
   const expLine = !done.solved
     ? 'Out of lives. No EXP this time.'
     : done.exp
@@ -291,7 +290,7 @@ function Stars({ n, size }: { n: number; size: number }) {
   return (
     <Text style={{ fontSize: u(size), letterSpacing: u(1) }} accessibilityLabel={`${n} of 3 stars`}>
       {[0, 1, 2].map((i) => (
-        <Text key={i} style={{ color: i < n ? t.accent : t.mode === 'light' ? '#d3ccbf' : '#2a3050' }}>★</Text>
+        <Text key={i} style={{ color: i < n ? t.accent : '#2a3050' }}>★</Text>
       ))}
     </Text>
   );

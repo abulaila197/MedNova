@@ -1,6 +1,6 @@
-export type Mode = 'dark' | 'light';
+export type Mode = 'dark';
 
-// Nebula (dark) and Warm Stone (light), taken from the locked previews.
+// The one theme (light mode removed, Yazan 2026-10-17): deep navy Nebula.
 // Deep navy (redesign stage 1, option A, Yazan 2026-10-17): reads as navy, never black.
 const NAVY = { sky: '#0d1738', card: '#24346c', card2: '#1f2e62', panel: '#26376f', panel2: '#213166' };
 const dark = {
@@ -44,48 +44,7 @@ const dark = {
   moonShade: 'rgba(9,11,30,0.9)',
 };
 
-const light: typeof dark = {
-  mode: 'light',
-  sky: '#e7e2d8',
-  fg: '#1d2230',
-  white: '#1d2230',
-  soft: '#4a4943',
-  mute: '#6b6a66',
-  dim: '#7a7264',
-  accent: '#e5833a',
-  gradA: '#e9bf4f',
-  gradB: '#e5833a',
-  onGrad: '#1d1406',
-  red: '#d4504c',
-  rose: '#d9466b',
-  line: 'rgba(29,34,48,0.08)',
-  hair: 'rgba(29,34,48,0.12)',
-  chip: '#f6f3ec',
-  chipLine: 'rgba(29,34,48,0.12)',
-  card: '#fbf9f4',
-  card2: '#f1ece2',
-  glow: ['rgba(240,190,95,0.6)', 'rgba(255,214,150,0.65)', 'rgba(255,250,235,0.95)'],
-  grainOpacity: 0.12,
-  headerTop: 'rgba(243,239,231,0.55)',
-  headerBottom: 'rgba(230,225,214,0.6)',
-  headerEdge: 'rgba(29,34,48,0.12)',
-  dockTop: '#fdfcf9',
-  dockBottom: '#f2eee5',
-  dockEdge: 'rgba(40,36,28,0.1)',
-  dockLit: '#ffffff',
-  dockDivider: 'rgba(40,36,28,0.16)',
-  tabOn: 'rgba(29,34,48,0.07)',
-  tabOff: '#6b6a66',
-  gamesGlow: 'rgba(229,131,58,0.75)',
-  menuBtn: '#1d2230',
-  panel: '#fbf9f4',
-  panel2: '#f1ede4',
-  panelLine: 'rgba(40,36,28,0.13)',
-  kick: '#b8741f',
-  moonShade: 'rgba(70,60,48,0.55)',
-};
-
-export const THEMES = { dark, light };
+export const THEMES = { dark };
 export type Theme = typeof dark;
 
 export const F = {

@@ -30,8 +30,6 @@ function useTyping(text: string, done: boolean) {
  * types out. Next hands over to the next character; the last one closes it and the daily reward follows.
  */
 export function WelcomeTour({ onClose }: { onClose: () => void }) {
-  const t = useTheme();
-  const lt = t.mode === 'light';
   const [i, setI] = useState(0);
   const [full, setFull] = useState(false);
   const stop = TOUR[i];
@@ -46,7 +44,7 @@ export function WelcomeTour({ onClose }: { onClose: () => void }) {
   };
   return (
     <View style={[StyleSheet.absoluteFill, { zIndex: 30 }]}>
-      <Animated.View entering={FadeIn.duration(250)} exiting={FadeOut.duration(200)} style={[StyleSheet.absoluteFill, { backgroundColor: lt ? 'rgba(40,34,24,0.3)' : 'rgba(4,5,14,0.55)' }]} />
+      <Animated.View entering={FadeIn.duration(250)} exiting={FadeOut.duration(200)} style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(4,5,14,0.55)' }]} />
       <Transmission i={i} shown={shown} typed={typed} last={last} onNext={next} onSkip={onClose} />
     </View>
   );

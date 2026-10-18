@@ -24,7 +24,7 @@ export const openAdd = (code = '') => useFriendSheet.setState({ open: 'add', fri
 const openMenu = (friend: Friend) => useFriendSheet.setState({ open: 'menu', friend, code: '', target: null });
 export const openReport = (target: ReportTarget) => useFriendSheet.setState({ open: 'report', friend: null, code: '', target });
 
-const ONLINE = { dark: '#7be0a8', light: '#5e9e6a' };
+const ONLINE = { dark: '#7be0a8' };
 
 /**
  * Friends (FR1-FR4): requests with Accept and ✕, then friends with face, level and Online / last seen.
@@ -152,7 +152,7 @@ export function FriendCount({ t }: { t: Theme }) {
 
 export function Ring({ t, f }: { t: Theme; f: { avatar: string; id?: string } }) {
   return (
-    <View style={[s.ring, { borderColor: t.mode === 'light' ? 'rgba(184,116,31,0.3)' : 'rgba(201,184,255,0.3)' }]}>
+    <View style={[s.ring, { borderColor: 'rgba(201,184,255,0.3)' }]}>
       <PlayerFace slug={f.avatar} size={u(20)} userId={f.id} still />
     </View>
   );

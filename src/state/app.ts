@@ -1,43 +1,20 @@
-import { createContext, useContext } from 'react';
 import { create } from 'zustand';
 
-import { defaultKV } from '@/games/engine/storage';
-import { THEMES, type Mode } from '@/theme/tokens';
-
-// The picked theme is kept on the phone so it survives a reload or restart.
-const kv = defaultKV();
-const MODE_KEY = 'theme';
+import { THEMES } from '@/theme/tokens';
 
 type AppState = {
-  mode: Mode;
   menuOpen: boolean;
   reportOpen: boolean;
-  setMode: (m: Mode) => void;
   setMenu: (open: boolean) => void;
   setReport: (open: boolean) => void;
 };
 
 export const useApp = create<AppState>((set) => ({
-  mode: 'dark',
   menuOpen: false,
   reportOpen: false,
-  setMode: (mode) => {
-    set({ mode });
-    void kv.set(MODE_KEY, mode);
-  },
   setMenu: (menuOpen) => set({ menuOpen }),
   setReport: (reportOpen) => set({ reportOpen }),
 }));
 
-void kv.get<Mode>(MODE_KEY).then((m) => {
-  if (m === 'light' || m === 'dark') useApp.setState({ mode: m });
-});
-
-/** A page that keeps one look in both modes (the grey online lobby, ON15) pins its own mode here. */
-export const ModePin = createContext<Mode | null>(null);
-
-export const useTheme = () => {
-  const pin = useContext(ModePin);
-  const mode = useApp((s) => s.mode);
-  return THEMES[pin ?? mode];
-};
+/** The app has one theme (dark only). Kept as a hook so screens read it the same way as before. */
+export const useTheme = () => THEMES.dark;

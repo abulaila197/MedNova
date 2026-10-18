@@ -11,7 +11,6 @@ import { wrapOff } from './Planet';
 
 const RING = {
   dark: { line: '#e6deff' },
-  light: { line: '#9a5a12' },
 };
 const H = DESIGN_H - BODY_TOP;
 

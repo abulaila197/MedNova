@@ -4,19 +4,17 @@ import Animated, { useAnimatedStyle, useSharedValue, type SharedValue } from 're
 
 import { u } from '@/theme/scale';
 
-import { useInfo } from './ui';
 
 /**
  * The thin rail on the right of About (.rail): how far the sun has risen.
  * The dot starts where the reference shows it (38% down) and travels to the bottom as you scroll.
  */
 export function AboutRail({ progress }: { progress: SharedValue<number> }) {
-  const c = useInfo();
   const h = useSharedValue(0);
   const dot = useAnimatedStyle(() => ({ transform: [{ translateY: h.value * (0.38 + 0.62 * Math.min(1, Math.max(0, progress.value))) - u(4) }] }));
   return (
     <View pointerEvents="none" style={s.rail} onLayout={(e) => (h.value = e.nativeEvent.layout.height)}>
-      <LinearGradient colors={c.lt ? ['rgb(207,200,186)', 'rgba(229,131,58,0.7)'] : ['#1c2142', 'rgba(255,196,150,0.6)']} style={s.line} />
+      <LinearGradient colors={['#1c2142', 'rgba(255,196,150,0.6)']} style={s.line} />
       <Animated.View style={[s.dot, dot]} />
     </View>
   );
