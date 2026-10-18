@@ -1,3 +1,5 @@
+// Must run before createClient reads localStorage below (PB1).
+import '@/lib/storage-install';
 import { createClient } from '@supabase/supabase-js';
 import { AppState, Platform } from 'react-native';
 
