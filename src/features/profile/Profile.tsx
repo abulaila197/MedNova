@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 import Svg, { Defs, LinearGradient as SvgLinear, Path, Stop } from 'react-native-svg';
@@ -64,6 +64,8 @@ export function Profile() {
     void loadStyle();
   }, [profile?.id]);
   const [pick, setPick] = useState(false);
+  const [wearErr, setWearErr] = useState<string | null>(null);
+  const wearing = useRef(false);
   const mechs = useStyle(useShallow((x) => x.owned.filter((k) => k.startsWith('mech:')).map((k) => k.slice(5))));
   // The server checks a robot is yours before you can wear it (set_avatar).
   const wearCharacter = async (slug: string) => {
@@ -72,11 +74,18 @@ export function Profile() {
       router.navigate('/auth');
       return;
     }
-    const { data } = await supabase.rpc('set_avatar', { slug });
+    if (wearing.current) return;
+    wearing.current = true;
+    setWearErr(null);
+    const { data, error } = await supabase.rpc('set_avatar', { slug });
+    wearing.current = false;
     if ((data as { ok?: boolean } | null)?.ok) {
       useAccount.setState({ profile: { ...profile, avatar: slug } });
       setPick(false);
+      return;
     }
+    // Say why instead of leaving the sheet open with no answer (AP12f).
+    setWearErr(error || !data ? 'Could not reach MedNova. Check your connection and try again.' : 'That character isn’t yours yet.');
   };
   const pct = (a: number | null | undefined) => (a == null ? '–' : `${Math.round(a * 100)}%`);
   return (
@@ -134,7 +143,17 @@ export function Profile() {
         {profile ? <DeleteAccount t={t} /> : null}
       </ScrollView>
     </Fade>
-    <CharacterPicker open={pick} onClose={() => setPick(false)} wearing={profile?.avatar ?? 'yara'} owned={mechs} onWear={wearCharacter} />
+    <CharacterPicker
+      open={pick}
+      onClose={() => {
+        setPick(false);
+        setWearErr(null);
+      }}
+      wearing={profile?.avatar ?? 'yara'}
+      owned={mechs}
+      onWear={wearCharacter}
+      error={wearErr}
+    />
     </>
   );
 }

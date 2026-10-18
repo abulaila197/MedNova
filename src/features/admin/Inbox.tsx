@@ -39,9 +39,13 @@ export function Inbox({ c }: { c: C }) {
     setErr(false);
   }
   useEffect(() => {
+    let live = true; // an older tab's slow answer must not replace this one (AP12e)
     call<Item[]>('admin_inbox', { what, show })
-      .then((r) => setItems(r ?? []))
-      .catch(() => (setErr(true), setItems([])));
+      .then((r) => live && setItems(r ?? []))
+      .catch(() => live && (setErr(true), setItems([])));
+    return () => {
+      live = false;
+    };
   }, [what, show]);
   const decide = async (it: Item, ok: boolean) => {
     try {

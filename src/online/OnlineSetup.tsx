@@ -117,7 +117,7 @@ function Join({ def }: { def: GameDef }) {
             </View>
             <Text style={[s.rs, { color: t.mute }]} numberOfLines={1}>{settingsLine(def, r.settings)}</Text>
           </View>
-          <Text style={[s.cnt, { color: t.mute }]}>{`${r.players} / 6`}</Text>
+          <Text style={[s.cnt, { color: t.mute }]}>{`${r.players} / ${Math.min(6, def.players?.online?.max ?? 6)}`}</Text>
           <Btn label="Join" onPress={() => go((a) => joinRoomId(r.id, a))} disabled={busy} style={s.jb} />
         </View>
       ))}

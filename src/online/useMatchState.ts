@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useEffectEvent, useRef, useState, useSyncExternalStore } from 'react';
+import { AppState } from 'react-native';
 
 import { timeStore, type Clock } from '@/games/engine/timeStore';
 
@@ -52,17 +53,20 @@ export function useMatchState<T extends Stamped>(
   });
 
   useEffect(() => {
+    // In the background no polls and no clock ticks (the seat is kept by live.tsx's room_ping); one poll on return (AP9).
     const poll = () => {
-      if (busy.current) return;
+      if (busy.current || AppState.currentState !== 'active') return;
       busy.current = true;
       load().finally(() => (busy.current = false));
     };
     poll();
     const p = setInterval(poll, POLL_MS);
-    const t = setInterval(() => tick(Date.now()), tickMs);
+    const t = setInterval(() => AppState.currentState === 'active' && tick(Date.now()), tickMs);
+    const back = AppState.addEventListener('change', (a) => a === 'active' && poll());
     return () => {
       clearInterval(p);
       clearInterval(t);
+      back.remove();
     };
   }, [load, tickMs]);
 

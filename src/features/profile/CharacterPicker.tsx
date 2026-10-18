@@ -54,7 +54,7 @@ function Pick({ size, on, children }: { size: number; on: boolean; children: Rea
 }
 
 /** Choose your character (Yazan 2026-10-18): the free Original pack, then the Nova Mechs you won from chests. */
-export function CharacterPicker({ open, onClose, wearing, owned, onWear }: { open: boolean; onClose: () => void; wearing: string; owned: string[]; onWear?: (slug: string) => void }) {
+export function CharacterPicker({ open, onClose, wearing, owned, onWear, error }: { open: boolean; onClose: () => void; wearing: string; owned: string[]; onWear?: (slug: string) => void; error?: string | null }) {
   const t = useTheme();
   // Your pick while the sheet is open; closing it forgets the pick.
   const [picked, setSel] = useState<string | null>(null);
@@ -118,6 +118,7 @@ export function CharacterPicker({ open, onClose, wearing, owned, onWear }: { ope
         <Text style={[s.note, { color: t.mute }]}>Locked robots come from daily chests.</Text>
       </ScrollView>
 
+      {error ? <Text style={[s.note, { color: t.mute, marginTop: u(8) }]}>{error}</Text> : null}
       <Pressable onPress={() => onWear?.(sel)} disabled={sel === wearing} style={[{ marginTop: u(12) }, sel === wearing && { opacity: 0.5 }]} accessibilityRole="button">
         <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.btn}>
           <Text style={[s.btnT, { color: t.onGrad }]}>{sel === wearing ? 'Wearing now' : `Wear ${mech?.name ?? orig?.name}`}</Text>

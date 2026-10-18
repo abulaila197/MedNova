@@ -260,6 +260,14 @@ export function OwnLobby({ kit, def, roomId }: { kit: RoomKit; def: GameDef; roo
   const [sheet, setSheet] = useState<LobbySheet>(null);
   const [copied, setCopied] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [startFail, setStartFail] = useState(false);
+  const failTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const flashStartFail = () => {
+    setStartFail(true);
+    if (failTimer.current) clearTimeout(failTimer.current);
+    failTimer.current = setTimeout(() => setStartFail(false), 2500);
+  };
+  useEffect(() => () => void (failTimer.current && clearTimeout(failTimer.current)), []);
   const went = useRef(false);
   const room = state?.room;
   const me = state?.me;
@@ -460,11 +468,12 @@ export function OwnLobby({ kit, def, roomId }: { kit: RoomKit; def: GameDef; roo
               <kit.Btn label="Back to lobby" onPress={() => rematchRoom(room.id).then(reload).catch(() => {})} />
             ) : host ? (
               <kit.Btn
-                label={busy ? 'Starting…' : allReady ? w.start : players.length < 2 ? 'Needs 2 players' : `${players.length - notReady.length} of ${players.length} ready`}
+                label={busy ? 'Starting…' : startFail ? 'Couldn’t start. Try again' : allReady ? w.start : players.length < 2 ? 'Needs 2 players' : `${players.length - notReady.length} of ${players.length} ready`}
                 off={!allReady || busy}
                 onPress={async () => {
                   setBusy(true);
-                  await startMatch(room.id).catch(() => {});
+                  // A refused start (someone left or un-readied) says so on the button instead of failing silently (AP12g).
+                  await startMatch(room.id).catch(() => flashStartFail());
                   await reload();
                   setBusy(false);
                 }}

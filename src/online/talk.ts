@@ -78,8 +78,11 @@ export async function sendTalk(room: string, me: { id: string; name: string; fac
 /** Fetches new talk for a room every 1.5 s while the page is open; skips what was said before you arrived. */
 export function useTalkFeed(room: string | undefined, me: string | null) {
   const last = useRef<number | null>(null);
+  const loading = useRef(false);
   const load = useCallback(async () => {
-    if (!room || AppState.currentState !== 'active') return;
+    // One fetch at a time: two overlapping calls with the same `after` would pop and voice a line twice (AP10d).
+    if (!room || loading.current || AppState.currentState !== 'active') return;
+    loading.current = true;
     try {
       const rows = await call<TalkMsg[]>('room_talk', { r: room, after: last.current ?? 0 });
       const first = last.current == null;
@@ -93,6 +96,8 @@ export function useTalkFeed(room: string | undefined, me: string | null) {
       }
     } catch {
       // try again next tick
+    } finally {
+      loading.current = false;
     }
   }, [room, me]);
   useFocusEffect(
