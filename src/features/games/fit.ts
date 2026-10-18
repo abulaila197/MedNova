@@ -5,7 +5,7 @@
 export const W = 282;
 export const BODY_TOP = 72; // the shell's content area starts here
 export const SHIFT = 20; // decision 63: ring, planets, dots and art anchor sit 20px lower
-export const ARC_DROP = 32; // 2026-10-13: ring, planets and dots only (not the art) sit this much lower, close to the nav
+export const ARC_DROP = 46; // 2026-10-13: ring, planets and dots only (not the art) sit this much lower, close to the nav
 export const DOTS_TOP = 398 + SHIFT; // screen y of the swipe dots
 export const ART_B = DOTS_TOP + 66; // bottom of the art box (fitArc: dots top + 66)
 // 2026-10-05: the ring's fill is gone, so each drawing moves down and fades just above the nav bar.
@@ -42,5 +42,8 @@ export function fitArt(key: string): ArtFit {
 // Offsets -5..5 so 10 games wrap; only -3..3 are visible, exactly as with 8.
 export const SLOT_OFF = [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5];
 export const SLOT_ANGLE = [-44, -35, -26, -17, -8, 0, 8, 17, 26, 35, 44];
-export const SLOT_SIZE = [22, 22, 22, 29, 35, 48, 35, 29, 22, 22, 22];
+// 2026-10-18: planets 60% smaller (Yazan)
+export const SLOT_SIZE = [9, 9, 9, 12, 14, 19, 14, 12, 9, 9, 9];
+/** Body y of the swipe dots: just above the selected planet (Yazan 2026-10-18). */
+export const DOTS_Y = RING_CY - RING_R - 2 - SLOT_SIZE[5] / 2 - 12;
 export const SLOT_OPACITY = [0, 0, 0.75, 1, 1, 1, 1, 1, 0.75, 0, 0];
