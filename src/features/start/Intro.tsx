@@ -5,6 +5,7 @@ import Animated, { Easing, useAnimatedProps, useAnimatedStyle, useSharedValue, w
 import Svg, { ClipPath, Defs, G, LinearGradient, Path, RadialGradient, Rect, Stop } from 'react-native-svg';
 import { scheduleOnRN } from 'react-native-worklets';
 
+import { Backdrop as AppBackdrop } from '@/components/Backdrop';
 import { ECG, STAR } from '@/components/PulseStar';
 import { u } from '@/theme/scale';
 
@@ -123,20 +124,9 @@ const Star = memo(function Star({ t }: { t: ReturnType<typeof useSharedValue<num
   );
 });
 
-/** Background of the logo stage. */
-function Backdrop({ w, h }: { w: number; h: number }) {
-  return (
-    <Svg width={w} height={h} style={StyleSheet.absoluteFill}>
-      <Defs>
-        <RadialGradient id="inBg" gradientUnits="userSpaceOnUse" cx={0} cy={0} r={1} gradientTransform={`translate(${w / 2} ${h / 2}) scale(${0.7 * w} ${0.5 * h})`}>
-          <Stop offset={0} stopColor="#0f1840" />
-          <Stop offset={0.7} stopColor={NAVY} />
-          <Stop offset={1} stopColor={NAVY} />
-        </RadialGradient>
-      </Defs>
-      <Rect x={0} y={0} width={w} height={h} fill="url(#inBg)" />
-    </Svg>
-  );
+/** Background of the logo stage: the app's own still navy backdrop (Yazan 2026-10-18), so the intro opens onto the same sky. */
+function Backdrop(_: { w: number; h: number }) {
+  return <AppBackdrop />;
 }
 
 /** The light burst of the handover. */

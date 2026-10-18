@@ -3,6 +3,7 @@ import { router } from 'expo-router';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 
+import { BrandName } from '@/components/BrandName';
 import { MenuIcon } from '@/components/Icons';
 import { useBalance } from '@/components/LevelBadge';
 import { PulseStar, TokenCoin } from '@/components/PulseStar';
@@ -35,9 +36,7 @@ export function Header({ variant = 'app' }: { variant?: 'app' | 'game' }) {
         </Pressable>
         <View style={z.lk}>
           <PulseStar width={u(g ? 16 : 20)} height={u(g ? 17 : 21)} light={lt} />
-          <Text style={[z.wmk, { color: t.white }]}>
-            Med<Text style={{ color: t.accent }}>Nova</Text>
-          </Text>
+          <BrandName height={u(g ? 10.5 : 13)} color={t.white} accent={t.accent} />
         </View>
       </View>
       <View style={z.row}>
@@ -81,8 +80,7 @@ const s = StyleSheet.create({
   edge: { position: 'absolute', left: 0, right: 0, bottom: 0, height: 1 },
   row: { flexDirection: 'row', alignItems: 'center', gap: u(8) },
   mb: { width: u(26), height: u(26), borderRadius: u(9), borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
-  lk: { flexDirection: 'row', alignItems: 'center', gap: u(5) },
-  wmk: { fontFamily: F.display, fontSize: u(17), letterSpacing: u(-0.17) },
+  lk: { flexDirection: 'row', alignItems: 'center', gap: u(6) },
   rp: { width: u(20), height: u(20), borderRadius: u(10), alignItems: 'center', justifyContent: 'center' },
   rpT: { color: '#fff', fontFamily: F.bodyBold, fontSize: u(11), lineHeight: u(13) },
   si: { paddingVertical: u(5), paddingHorizontal: u(10), borderRadius: 999 },
@@ -95,7 +93,6 @@ const gs = StyleSheet.create({
   bar: { ...s.bar, height: u(36), paddingHorizontal: u(12) },
   row: { ...s.row, gap: u(7) },
   mb: { ...s.mb, width: u(22), height: u(22), borderRadius: u(8) },
-  wmk: { ...s.wmk, fontSize: u(14), letterSpacing: u(-0.14) },
   rp: { ...s.rp, width: u(17), height: u(17), borderRadius: u(8.5) },
   rpT: { ...s.rpT, fontSize: u(9.5), lineHeight: u(11) },
   si: { ...s.si, paddingVertical: u(4), paddingHorizontal: u(9) },

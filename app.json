@@ -28,7 +28,10 @@
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#070a1c"
+          "backgroundColor": "#000000",
+          "image": "./assets/images/splash-nova.png",
+          "imageWidth": 260,
+          "resizeMode": "contain"
         }
       ],
       "expo-sqlite",
