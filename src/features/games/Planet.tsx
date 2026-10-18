@@ -56,9 +56,9 @@ export function Planet({ k, j, pos, sel, mode, onPress }: { k: string; j: number
   const sg = p.drop.blur / 2;
   const dropPeak = p.drop.c[3] * (1 - Math.exp(-(rs * rs) / (2 * sg * sg)));
   const dropR = rs + 2 * sg;
-  // selected halo: 0 0 0 5px (.3) + 0 0 34px (.75)
-  const gR = d / 2 + 34;
-  const gPeak = 0.75 * (1 - Math.exp(-((d / 2) ** 2) / (2 * 17 * 17)));
+  // selected halo (Yazan 2026-10-18: spread 70% smaller, half as strong): 0 0 0 5px (.15) + 0 0 10px (.375)
+  const gR = d / 2 + 10;
+  const gPeak = 0.375 * (1 - Math.exp(-((d / 2) ** 2) / (2 * 5 * 5)));
   // inset shadow -4px -6px 10px
   const ins = isSel ? p.insetSel : p.inset;
   const r = d / 2;
@@ -86,12 +86,12 @@ export function Planet({ k, j, pos, sel, mode, onPress }: { k: string; j: number
           <Defs>
             <RadialGradient id={`gl-${id}`} cx={r} cy={r} r={gR} gradientUnits="userSpaceOnUse">
               <Stop offset="0" stopColor={rgb(p.halo)} stopOpacity={gPeak} />
-              <Stop offset={r / gR} stopColor={rgb(p.halo)} stopOpacity={0.375} />
+              <Stop offset={r / gR} stopColor={rgb(p.halo)} stopOpacity={0.19} />
               <Stop offset="1" stopColor={rgb(p.halo)} stopOpacity={0} />
             </RadialGradient>
           </Defs>
           <Circle cx={r} cy={r} r={gR} fill={`url(#gl-${id})`} />
-          <Circle cx={r} cy={r} r={r + 2.5} fill="none" stroke={rgb(p.halo)} strokeOpacity={0.3} strokeWidth={5} />
+          <Circle cx={r} cy={r} r={r + 2.5} fill="none" stroke={rgb(p.halo)} strokeOpacity={0.15} strokeWidth={5} />
         </Svg>
       </Animated.View>
       <Svg width="100%" height="100%" viewBox={`0 0 ${d} ${d}`} style={StyleSheet.absoluteFill}>

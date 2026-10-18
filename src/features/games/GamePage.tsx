@@ -4,7 +4,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 import Animated, { type SharedValue, useAnimatedStyle } from 'react-native-reanimated';
 
-import { type Game, GAMES } from '@/data/games';
+import type { Game } from '@/data/games';
 import { useLoading } from '@/features/loading/store';
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
@@ -37,7 +37,6 @@ export function GamePage({ game, j, pos, active }: { game: Game; j: number; pos:
     <Animated.View style={[StyleSheet.absoluteFill, slide]} pointerEvents={active ? 'box-none' : 'none'} accessibilityElementsHidden={!active} importantForAccessibility={active ? 'auto' : 'no-hide-descendants'}>
       <GameArt k={game.key} mode={t.mode} />
       <View style={s.info}>
-        <Text style={[s.kick, { color: t.soft }]}>{`${String(j + 1).padStart(2, '0')} / ${String(GAMES.length).padStart(2, '0')}`}</Text>
         <Text style={[s.ttl, { color: t.white }]}>
           {game.lead} <Text style={{ color: t.accent, fontFamily: F.displayItalic }}>{game.em}</Text>
         </Text>
@@ -57,9 +56,8 @@ export function GamePage({ game, j, pos, active }: { game: Game; j: number; pos:
 }
 
 const s = StyleSheet.create({
-  info: { position: 'absolute', left: u(16), right: u(16), top: u(40) },
-  kick: { fontFamily: F.mono, fontSize: u(8.5), lineHeight: u(12), letterSpacing: u(1.7), textTransform: 'uppercase' },
-  ttl: { marginTop: u(7), fontFamily: F.display, fontSize: u(32), lineHeight: u(28.8), letterSpacing: u(-0.64) },
+  info: { position: 'absolute', left: u(16), right: u(16), top: u(22) },
+  ttl: { fontFamily: F.display, fontSize: u(32), lineHeight: u(28.8), letterSpacing: u(-0.64) },
   sub: { marginTop: u(8), fontFamily: F.displayItalic, fontSize: u(13), lineHeight: u(17) },
   desc: { marginTop: u(7), marginBottom: u(2), maxWidth: u(190), fontFamily: F.body, fontSize: u(11), lineHeight: u(15.95) },
   goWrap: { marginTop: u(7), alignSelf: 'flex-start' },
