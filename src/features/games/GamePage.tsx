@@ -56,7 +56,7 @@ export function GamePage({ game, j, pos, active }: { game: Game; j: number; pos:
 }
 
 const s = StyleSheet.create({
-  info: { position: 'absolute', left: u(16), right: u(16), top: u(59) },
+  info: { position: 'absolute', left: u(16), right: u(16), top: u(22) },
   ttl: { fontFamily: F.display, fontSize: u(32), lineHeight: u(28.8), letterSpacing: u(-0.64) },
   sub: { marginTop: u(8), fontFamily: F.displayItalic, fontSize: u(13), lineHeight: u(17) },
   desc: { marginTop: u(7), marginBottom: u(2), maxWidth: u(190), fontFamily: F.body, fontSize: u(11), lineHeight: u(15.95) },
