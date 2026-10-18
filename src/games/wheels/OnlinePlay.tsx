@@ -10,6 +10,7 @@ import { call, invoke, leaveRoom } from '@/online/api';
 import { finishOnline, useShowResults } from '@/online/finish';
 import { settingsLine } from '@/online/format';
 import { AlertPill, Countdown, useAlerts } from '@/online/live';
+import { RoomLookProvider } from '@/online/look';
 import { RoomTalk } from '@/online/Talk';
 import { useStableCallback } from '@/lib/useStableCallback';
 import { u } from '@/theme/scale';
@@ -22,7 +23,7 @@ import { bankVersion } from './keys';
 import { actor, bossPoints, BOSS_BONUS, BOSS_MS, BOSS_RIGHT, BOSS_WRONG, type OfflineGame } from './offline';
 import { actName, Board, BossOver, CardWindow, ReactWindow, recapLine, RedemptionBoard, RedemptionOffer, Top, TurnOver, type Seats } from './OfflinePlay';
 import { ONLINE_MS, type Move, type OnlineWheels } from './online';
-import { WheelsPause } from './screens';
+import { WheelsPause, VELVET_KIT } from './screens';
 import { TurnBoard, type Strip } from './TurnBoard';
 import { gameShown } from './shown';
 import { Bill, Btn, Bulbs, bulbsLit, CardArt, CD, CM, GEMS, Panel, PauseBtn, ROMAN, Rule, T, VelvetScreen, VV } from './velvet';
@@ -214,7 +215,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   const extras = (
     <>
       <AlertPill alert={alert} />
-      {answering ? null : <RoomTalk room={roomId} me={{ id: me, name: meTalk?.name ?? 'You', face: meTalk?.character ?? 'yara' }} />}
+      {answering ? null : <RoomLookProvider value={VELVET_KIT.look}><RoomTalk room={roomId} me={{ id: me, name: meTalk?.name ?? 'You', face: meTalk?.character ?? 'yara' }} /></RoomLookProvider>}
       {notice || oldBank ? (
         <View style={{ position: 'absolute', bottom: u(90), left: u(16), right: u(16), alignItems: 'center' }} pointerEvents="none">
           <View style={{ backgroundColor: 'rgba(0,0,0,0.65)', borderRadius: u(10), padding: u(8) }}>

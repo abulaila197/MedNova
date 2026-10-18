@@ -1,26 +1,15 @@
 // The Conqueror's own landing page (Yazan 2026-10-14): the same texts as the shared landing, drawn in the Ink Atlas
-// look over the game's loading-page art, like Trust Me Not, Wheels and Case Files.
+// look over the game's loading-page art, like Trust Me Not, Wheels and Case Files. The pages after it are in ./rooms.
 import { router } from 'expo-router';
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { FeatherArt } from '@/components/FeatherArt';
 import { GAMES } from '@/data/games';
-import { LOAD } from '@/features/loading/configs';
 
 import { MODE_NAME } from '../shell/ModeLanding';
 import type { GameDef, OwnScreens } from '../shell/types';
 import { useLanding } from '../shell/useShellPages';
-import { AT, AtlasScreen, Btn, CG, CGI, CZ, Kicker, Parchment, Room, T, v } from './atlas';
-
-function Backdrop({ def }: { def: GameDef }) {
-  const art = LOAD[def.key];
-  return (
-    <>
-      <Room />
-      {art ? <FeatherArt source={art.photo} position={art.fo} opacity={0.6} edges={{ bottom: 0.55 }} style={s.art} /> : null}
-    </>
-  );
-}
+import { AT, AtlasScreen, Btn, CG, CGI, CZ, Kicker, Parchment, T, v } from './atlas';
+import { Backdrop, Gate, Lobby, OnlineSetup, Results } from './rooms';
 
 function BackLink() {
   return (
@@ -77,10 +66,9 @@ function Landing({ def }: { def: GameDef }) {
   );
 }
 
-export const conquerorScreens: OwnScreens = { Landing };
+export const conquerorScreens: OwnScreens = { Landing, Gate, OnlineSetup, Lobby, Results };
 
 const s = StyleSheet.create({
-  art: { position: 'absolute', left: 0, right: 0, top: 0, height: '62%' },
   sheet: {
     backgroundColor: AT.paper,
     borderRadius: v(6),

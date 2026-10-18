@@ -14,6 +14,7 @@ import { u, useScreen } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import { G } from './grey';
+import { useRoomLook } from './look';
 import { stickerById, STICKERS } from './stickers';
 import { TEXT_PACKS } from './textStickers';
 import { sendTalk, toggleMute, useTalk, useTalkFeed, type TalkMsg } from './talk';
@@ -38,6 +39,7 @@ function useCooling() {
 
 /** The Talk tray (ON12, locked lobby preview): your character's stickers, picture only, and the shared voice lines. */
 export function TalkPanel({ room, me, onSent }: { room: string; me: Me; onSent?: () => void }) {
+  const L = useRoomLook();
   const [tab, setTab] = useState<'sticker' | 'special' | 'voice'>('sticker');
   const cooling = useCooling();
   // Bought text packs (Yazan 2026-10-13) sit in their own "Special" tab; your character's stickers stay free.
@@ -53,8 +55,8 @@ export function TalkPanel({ room, me, onSent }: { room: string; me: Me; onSent?:
     <View style={s.panel}>
       <View style={s.tabs}>
         {(['sticker', 'special', 'voice'] as const).map((k) => (
-          <Pressable key={k} onPress={() => setTab(k)} style={[s.tab, tab === k && s.tabOn]} accessibilityRole="tab" accessibilityState={{ selected: tab === k }}>
-            <Text style={[s.tabT, { color: tab === k ? G.onBtn : G.mute }]}>{k === 'sticker' ? 'Stickers' : k === 'special' ? 'Special' : 'Voice'}</Text>
+          <Pressable key={k} onPress={() => setTab(k)} style={[s.tab, { borderColor: L.line }, tab === k && { backgroundColor: L.btn, borderColor: 'transparent' }]} accessibilityRole="tab" accessibilityState={{ selected: tab === k }}>
+            <Text style={[s.tabT, { color: tab === k ? L.onBtn : L.mute, fontFamily: L.semi }]}>{k === 'sticker' ? 'Stickers' : k === 'special' ? 'Special' : 'Voice'}</Text>
           </Pressable>
         ))}
       </View>
@@ -72,8 +74,8 @@ export function TalkPanel({ room, me, onSent }: { room: string; me: Me; onSent?:
             {packs.length > 1 ? (
               <View style={s.sets}>
                 {packs.map((p) => (
-                  <Pressable key={p.key} onPress={() => setPk(p.key)} style={[s.pk, p.key === pack.key && s.pkOn]} accessibilityRole="tab" accessibilityState={{ selected: p.key === pack.key }}>
-                    <Text style={[s.pkT, { color: p.key === pack.key ? G.fg : G.mute }]}>{p.name}</Text>
+                  <Pressable key={p.key} onPress={() => setPk(p.key)} style={[s.pk, { borderColor: p.key === pack.key ? L.acc : L.line }]} accessibilityRole="tab" accessibilityState={{ selected: p.key === pack.key }}>
+                    <Text style={[s.pkT, { color: p.key === pack.key ? L.fg : L.mute, fontFamily: L.semi }]}>{p.name}</Text>
                   </Pressable>
                 ))}
               </View>
@@ -86,21 +88,21 @@ export function TalkPanel({ room, me, onSent }: { room: string; me: Me; onSent?:
           </View>
         ) : (
           <Pressable onPress={() => router.navigate('/style?tab=stickers' as never)} style={s.empty} accessibilityRole="link">
-            <Text style={s.emptyT}>No special stickers yet.</Text>
-            <Text style={[s.emptyT, { color: G.acc }]}>Get text packs in the Style shop ›</Text>
+            <Text style={[s.emptyT, { color: L.mute, fontFamily: L.semi }]}>No special stickers yet.</Text>
+            <Text style={[s.emptyT, { color: L.acc, fontFamily: L.semi }]}>Get text packs in the Style shop ›</Text>
           </Pressable>
         )
       ) : (
         <View style={[s.vg, cooling && s.cool]}>
           {VOICE.map((v) => (
-            <Pressable key={v.id} disabled={cooling} onPress={() => send('voice', v.id)} style={s.vl} accessibilityRole="button" accessibilityLabel={`Say: ${v.line}`}>
-              <Text style={s.vlI}>▶</Text>
-              <Text style={s.vlT} numberOfLines={1}>{v.line}</Text>
+            <Pressable key={v.id} disabled={cooling} onPress={() => send('voice', v.id)} style={[s.vl, { borderColor: L.line, backgroundColor: L.panel }]} accessibilityRole="button" accessibilityLabel={`Say: ${v.line}`}>
+              <Text style={[s.vlI, { color: L.mute }]}>▶</Text>
+              <Text style={[s.vlT, { color: L.fg, fontFamily: L.semi }]} numberOfLines={1}>{v.line}</Text>
             </Pressable>
           ))}
         </View>
       )}
-      <Text style={s.small}>{cooling ? 'One message every 3 seconds.' : tab === 'voice' ? 'Everyone hears the same voice.' : 'Tap a sticker to send it.'}</Text>
+      <Text style={[s.small, { color: L.dim, fontFamily: L.body }]}>{cooling ? 'One message every 3 seconds.' : tab === 'voice' ? 'Everyone hears the same voice.' : 'Tap a sticker to send it.'}</Text>
     </View>
   );
 }
@@ -109,18 +111,19 @@ export function TalkPanel({ room, me, onSent }: { room: string; me: Me; onSent?:
 export function TalkBubble({ m, face, size = 60 }: { m: TalkMsg; face?: boolean; size?: number }) {
   const st = m.kind === 'sticker' ? stickerById.get(m.item) : null;
   const v = m.kind === 'voice' ? voiceById.get(m.item) : null;
+  const L = useRoomLook();
   return (
     <Animated.View entering={ZoomIn.springify().damping(14)} exiting={FadeOut.duration(250)} style={s.bub} pointerEvents="none">
       {st ? (
         <Image source={st.src} style={{ width: u(st.wide ? size * 1.7 : size), height: u(size) }} contentFit="contain" accessibilityLabel={`${m.name}: ${st.label}`} />
       ) : v ? (
-        <View style={s.vb}>
+        <View style={[s.vb, { backgroundColor: L.raised }]}>
           <Text style={s.vbI}>🔊</Text>
-          <Text style={s.vbT} numberOfLines={1}>{v.line}</Text>
+          <Text style={[s.vbT, { color: L.fg, fontFamily: L.semi }]} numberOfLines={1}>{v.line}</Text>
         </View>
       ) : null}
       {face ? (
-        <View style={s.bf}>
+        <View style={[s.bf, { borderColor: L.page }]}>
           <Face slug={m.face} size={u(18)} />
         </View>
       ) : null}
@@ -137,6 +140,7 @@ const BTN = 46;
  */
 export function FloatingTalk({ room, me }: { room: string; me: Me }) {
   const { width, height } = useScreen();
+  const L = useRoomLook();
   const size = u(BTN);
   const edge = u(10);
   const x = useSharedValue(width - size - edge);
@@ -192,18 +196,18 @@ export function FloatingTalk({ room, me }: { room: string; me: Me }) {
           ))}
         </View>
         {open ? (
-          <Animated.View entering={FadeIn.duration(160)} style={[s.fan, side === 'right' ? { right: 0 } : { left: 0 }]}>
+          <Animated.View entering={FadeIn.duration(160)} style={[s.fan, { backgroundColor: L.raised, borderColor: L.line }, side === 'right' ? { right: 0 } : { left: 0 }]}>
             <TalkPanel room={room} me={me} onSent={() => setOpen(false)} />
           </Animated.View>
         ) : null}
         <GestureDetector gesture={Gesture.Exclusive(pan, tap)}>
-          <View style={[s.fbtn, { width: size, height: size, borderRadius: size / 2 }]} accessibilityRole="button" accessibilityLabel="Talk: stickers and voice">
+          <View style={[s.fbtn, { backgroundColor: L.raised, width: size, height: size, borderRadius: size / 2 }]} accessibilityRole="button" accessibilityLabel="Talk: stickers and voice">
             <PlayerFace slug={me.face} size={size - u(8)} userId={me.id} still />
           </View>
         </GestureDetector>
       </Animated.View>
       {note ? (
-        <Animated.Text entering={FadeIn} exiting={FadeOut} style={s.note}>
+        <Animated.Text entering={FadeIn} exiting={FadeOut} style={[s.note, { color: L.fg, backgroundColor: L.raised, fontFamily: L.semi }]}>
           {note}
         </Animated.Text>
       ) : null}
@@ -214,15 +218,13 @@ export function FloatingTalk({ room, me }: { room: string; me: Me }) {
 const s = StyleSheet.create({
   panel: { gap: u(9) },
   tabs: { flexDirection: 'row', gap: u(6) },
-  tab: { flex: 1, alignItems: 'center', paddingVertical: u(6), borderRadius: u(9), borderWidth: 1, borderColor: G.line },
-  tabOn: { backgroundColor: G.btn, borderColor: 'transparent' },
+  tab: { flex: 1, alignItems: 'center', paddingVertical: u(6), borderRadius: u(9), borderWidth: 1, borderColor: 'transparent' },
   tabT: { fontFamily: F.bodySemi, fontSize: u(10.5) },
   sg: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', rowGap: u(6) },
   sItem: { width: '23%', aspectRatio: 1, alignItems: 'center', justifyContent: 'center' },
   sets: { width: '100%', flexDirection: 'row', gap: u(6), marginBottom: u(2) },
   wItem: { width: '48.5%', aspectRatio: 1.7, alignItems: 'center', justifyContent: 'center' },
   pk: { borderRadius: 999, borderWidth: 1, borderColor: G.line, paddingHorizontal: u(8), paddingVertical: u(3) },
-  pkOn: { borderColor: G.acc },
   pkT: { fontFamily: F.bodySemi, fontSize: u(9.5) },
   empty: { alignItems: 'center', gap: u(3), paddingVertical: u(16) },
   emptyT: { fontFamily: F.bodySemi, fontSize: u(10.5), color: G.mute },

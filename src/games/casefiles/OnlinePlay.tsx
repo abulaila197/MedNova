@@ -6,6 +6,7 @@ import { call } from '@/online/api';
 import { AlertPill, Countdown, useAlerts } from '@/online/live';
 import { settingsLine } from '@/online/format';
 import { useRace, type RacePlayer, type RaceState } from '@/online/race';
+import { RoomLookProvider } from '@/online/look';
 import { RoomTalk } from '@/online/Talk';
 import { u } from '@/theme/scale';
 import { useRaceRevealSound } from '@/online/raceSound';
@@ -17,7 +18,7 @@ import { CaseBoard } from './CaseBoard';
 import { scoreRun, stageOf, startRun, stepRun, type Run, type RunEvent } from './core';
 import { CASES, caseLabel, dossierOf } from './data';
 import { Card, CaseTitle, Kicker, NR, NoirScreen, Stamp, T, caseClock } from './noir';
-import { CasePause } from './screens';
+import { CasePause, NOIR_KIT } from './screens';
 
 const caseOf = (n: number) => CASES[n - 1];
 
@@ -169,7 +170,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   const extras = (
     <>
       <AlertPill alert={alert} />
-      <RoomTalk room={roomId} me={talker} />
+      <RoomLookProvider value={NOIR_KIT.look}><RoomTalk room={roomId} me={talker} /></RoomLookProvider>
     </>
   );
 

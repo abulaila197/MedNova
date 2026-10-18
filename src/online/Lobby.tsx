@@ -23,6 +23,7 @@ import { settingsLine } from './format';
 import { G } from './grey';
 import { TalkBubble, TalkPanel } from './Talk';
 import { toggleMute, useTalk, useTalkFeed } from './talk';
+import { GREY_LOOK, useRoomLook } from './look';
 import { useRoom } from './useRoom';
 
 
@@ -38,16 +39,15 @@ export function GreyScreen({ children, scroll = true, over }: { children: React.
 }
 
 export function GBtn({ label, onPress, off, style }: { label: string; onPress?: () => void; off?: boolean; style?: object }) {
+  const L = useRoomLook();
   return (
-    <Pressable onPress={onPress} disabled={off} style={[s.btn, { backgroundColor: off ? G.btnOff : G.btn }, style]} accessibilityRole="button" accessibilityLabel={label}>
-      <Text style={[s.btnT, { color: off ? '#b9bcc3' : G.onBtn }]}>{label}</Text>
+    <Pressable onPress={onPress} disabled={off} style={[s.btn, { backgroundColor: off ? L.btnOff : L.btn }, style]} accessibilityRole="button" accessibilityLabel={label}>
+      <Text style={[s.btnT, { color: off ? '#b9bcc3' : L.onBtn, fontFamily: L === GREY_LOOK ? F.bodyBold : L.semi }]}>{label}</Text>
     </Pressable>
   );
 }
 
 export { G };
-
-const TONE = { bg: G.raised, line: G.line };
 
 const spaced = (code: string) => `${code.slice(0, 3)} ${code.slice(3)}`;
 
@@ -56,7 +56,7 @@ export function Lobby({ def, roomId }: { def: GameDef; roomId: string }) {
   // The room's seats: the game's online limit, 6 at most (WC22: Wheels holds 4).
   const cap = Math.min(6, def.players?.online?.max ?? 6);
   const { state, error, reload } = useRoom(roomId);
-  const [sheet, setSheet] = useState<'how' | 'settings' | 'talk' | { seat: Seat } | null>(null);
+  const [sheet, setSheet] = useState<LobbySheet>(null);
   const [copied, setCopied] = useState(false);
   const [busy, setBusy] = useState(false);
   const went = useRef(false);
@@ -173,22 +173,8 @@ export function Lobby({ def, roomId }: { def: GameDef; roomId: string }) {
       </Pressable>
     ));
 
-  const over = (
-    <>
-      <Sheet tone={TONE} open={sheet === 'how'} onClose={() => setSheet(null)}>
-        <HowTo def={def} />
-      </Sheet>
-      <Sheet tone={TONE} open={sheet === 'talk'} onClose={() => setSheet(null)}>
-        {sheet === 'talk' && mine ? <TalkPanel room={roomId} me={{ id: mine.user_id, name: mine.name, face: mine.character }} onSent={() => setSheet(null)} /> : null}
-      </Sheet>
-      <Sheet tone={TONE} open={sheet === 'settings'} onClose={() => setSheet(null)}>
-        {sheet === 'settings' ? <RoomSettings def={def} state={state} onDone={() => (setSheet(null), reload())} /> : null}
-      </Sheet>
-      <Sheet tone={TONE} open={!!sheet && typeof sheet === 'object'} onClose={() => setSheet(null)}>
-        {sheet && typeof sheet === 'object' ? <SeatSheet state={state} seat={sheet.seat} teams={teams} onDone={() => (setSheet(null), reload())} /> : null}
-      </Sheet>
-    </>
-  );
+  const over = <LobbySheets def={def} state={state} sheet={sheet} setSheet={setSheet} reload={reload} />;
+
 
   return (
     <GreyScreen over={over}>
@@ -292,15 +278,44 @@ export function Lobby({ def, roomId }: { def: GameDef; roomId: string }) {
   );
 }
 
+export type LobbySheet = 'how' | 'settings' | 'talk' | { seat: Seat } | null;
+
+/** The lobby's pop-up sheets: How to play, Talk, the host's room settings, and a player's seat. */
+export function LobbySheets({ def, state, sheet, setSheet, reload }: { def: GameDef; state: RoomState; sheet: LobbySheet; setSheet: (x: LobbySheet) => void; reload: () => void }) {
+  const L = useRoomLook();
+  const TONE = { bg: L.raised, line: L.line };
+  const roomId = state.room.id;
+  const mine = state.players.find((p) => p.user_id === state.me);
+  const teams = Number(state.room.settings.teams) || 0;
+  return (
+    <>
+      <Sheet tone={TONE} open={sheet === 'how'} onClose={() => setSheet(null)}>
+        <HowTo def={def} />
+      </Sheet>
+      <Sheet tone={TONE} open={sheet === 'talk'} onClose={() => setSheet(null)}>
+        {sheet === 'talk' && mine ? <TalkPanel room={roomId} me={{ id: mine.user_id, name: mine.name, face: mine.character }} onSent={() => setSheet(null)} /> : null}
+      </Sheet>
+      <Sheet tone={TONE} open={sheet === 'settings'} onClose={() => setSheet(null)}>
+        {sheet === 'settings' ? <RoomSettings def={def} state={state} onDone={() => (setSheet(null), reload())} /> : null}
+      </Sheet>
+      <Sheet tone={TONE} open={!!sheet && typeof sheet === 'object'} onClose={() => setSheet(null)}>
+        {sheet && typeof sheet === 'object' ? <SeatSheet state={state} seat={sheet.seat} teams={teams} onDone={() => (setSheet(null), reload())} /> : null}
+      </Sheet>
+    </>
+  
+  );
+}
+
 function HowTo({ def }: { def: GameDef }) {
+  const L = useRoomLook();
   const steps = def.modes.find((m) => m.mode === 'online')?.howTo ?? [];
   return (
     <>
-      <Text style={[s.k, { color: G.mute }]}>HOW TO PLAY ONLINE</Text>
+      <Text style={[s.k, { fontFamily: L.semi, color: L.mute }]}>HOW TO PLAY ONLINE</Text>
       {steps.map((x, i) => (
         <View key={i} style={s.step}>
-          <Text style={[s.stepN, { color: G.dim }]}>{i + 1}</Text>
-          <Text style={[s.stepT, { color: G.fg }]}>{x}</Text>
+          <Text style={[s.stepN, { fontFamily: L.mono, color: L.dim }]}>{i + 1}</Text>
+          <Text style={[s.stepT, { fontFamily: L.body, color: L.fg }]}>{x}</Text>
         </View>
       ))}
     </>
@@ -309,6 +324,7 @@ function HowTo({ def }: { def: GameDef }) {
 
 /** Host only: the same options as Create, plus Public or Private. Changing them un-readies the others. */
 function RoomSettings({ def, state, onDone }: { def: GameDef; state: RoomState; onDone: () => void }) {
+  const L = useRoomLook();
   const opts = def.setup.online ?? [];
   const [vals, setVals] = useState<Record<string, unknown>>(() => ({ ...state.room.settings }));
   const [pub, setPub] = useState(state.room.is_public);
@@ -321,23 +337,23 @@ function RoomSettings({ def, state, onDone }: { def: GameDef; state: RoomState; 
   ];
   return (
     <>
-      <Text style={[s.k, { color: G.mute }]}>ROOM SETTINGS</Text>
+      <Text style={[s.k, { fontFamily: L.semi, color: L.mute }]}>ROOM SETTINGS</Text>
       {rows.map((r) => (
         <View key={r.key} style={s.optRow}>
-          <Text style={[s.optL, { color: G.fg }]}>{r.label}</Text>
+          <Text style={[s.optL, { fontFamily: L.semi, color: L.fg }]}>{r.label}</Text>
           <View style={s.chips}>
             {r.choices.map((c) => {
               const on = c.value === r.value;
               return (
-                <Pressable key={String(c.value)} onPress={() => r.set(c.value)} style={[s.chip, on && { backgroundColor: G.btn, borderColor: 'transparent' }]} accessibilityRole="button" accessibilityState={{ selected: on }}>
-                  <Text style={[s.chipT, { color: on ? G.onBtn : G.mute }]}>{c.label}</Text>
+                <Pressable key={String(c.value)} onPress={() => r.set(c.value)} style={[s.chip, on && { backgroundColor: L.btn, borderColor: 'transparent' }]} accessibilityRole="button" accessibilityState={{ selected: on }}>
+                  <Text style={[s.chipT, { fontFamily: L.semi, color: on ? L.onBtn : L.mute }]}>{c.label}</Text>
                 </Pressable>
               );
             })}
           </View>
         </View>
       ))}
-      <Text style={[s.small, { color: G.dim }]}>Saving asks everyone to tap Ready again.</Text>
+      <Text style={[s.small, { fontFamily: L.body, color: L.dim }]}>Saving asks everyone to tap Ready again.</Text>
       <GBtn label="Save" onPress={() => updateRoom(state.room.id, vals, pub).then(onDone).catch(onDone)} />
     </>
   );
@@ -345,6 +361,7 @@ function RoomSettings({ def, state, onDone }: { def: GameDef; state: RoomState; 
 
 /** Tap a tile: your own picks a free character (ON10); the host also moves players between teams or removes them (ON11). */
 function SeatSheet({ state, seat, teams, onDone }: { state: RoomState; seat: Seat; teams: number; onDone: () => void }) {
+  const L = useRoomLook();
   const self = seat.user_id === state.me;
   const host = state.room.host === state.me;
   const taken = state.players.filter((p) => p.user_id !== seat.user_id && p.state === 'in').map((p) => p.character);
@@ -353,13 +370,13 @@ function SeatSheet({ state, seat, teams, onDone }: { state: RoomState; seat: Sea
       <View style={s.ssh}>
         <PlayerFace slug={seat.character} size={u(44)} userId={seat.user_id} />
         <View style={{ flexShrink: 1 }}>
-          <Text style={[s.h, { color: G.fg, fontSize: u(18) }]}>{self ? 'You' : seat.name}</Text>
-          <PlayerTitle userId={seat.user_id} size={11} accent={G.acc} mode="dark" />
+          <Text style={[s.h, { fontFamily: L.head, color: L.fg, fontSize: u(18) }]}>{self ? 'You' : seat.name}</Text>
+          <PlayerTitle userId={seat.user_id} size={11} accent={L.acc} mode="dark" />
         </View>
       </View>
       {self ? (
         <>
-          <Text style={[s.k, { color: G.mute }]}>YOUR CHARACTER</Text>
+          <Text style={[s.k, { fontFamily: L.semi, color: L.mute }]}>YOUR CHARACTER</Text>
           <View style={s.faces}>
             {CHARACTERS.map((c) => {
               const used = taken.includes(c.slug);
@@ -369,7 +386,7 @@ function SeatSheet({ state, seat, teams, onDone }: { state: RoomState; seat: Sea
                   key={c.slug}
                   disabled={used}
                   onPress={() => setCharacter(state.room.id, c.slug).then(onDone).catch(onDone)}
-                  style={[s.face, { opacity: used ? 0.22 : 1, borderColor: on ? G.fg : 'transparent' }]}
+                  style={[s.face, { opacity: used ? 0.22 : 1, borderColor: on ? L.fg : 'transparent' }]}
                   accessibilityRole="button"
                   accessibilityState={{ selected: on, disabled: used }}
                   accessibilityLabel={c.name}>
@@ -382,14 +399,14 @@ function SeatSheet({ state, seat, teams, onDone }: { state: RoomState; seat: Sea
       ) : null}
       {host && teams >= 2 && state.room.status === 'lobby' ? (
         <>
-          <Text style={[s.k, { color: G.mute }]}>TEAM</Text>
+          <Text style={[s.k, { fontFamily: L.semi, color: L.mute }]}>TEAM</Text>
           <View style={s.chips}>
             {Array.from({ length: teams }, (_, i) => {
               const tm = presetTeam(i);
               const on = seat.team === i;
               return (
-                <Pressable key={i} onPress={() => setTeam(state.room.id, seat.user_id, i).then(onDone).catch(onDone)} style={[s.chip, { borderColor: on ? tm.color : G.line }]} accessibilityRole="button" accessibilityState={{ selected: on }}>
-                  <Text style={[s.chipT, { color: on ? tm.color : G.mute }]}>{tm.name}</Text>
+                <Pressable key={i} onPress={() => setTeam(state.room.id, seat.user_id, i).then(onDone).catch(onDone)} style={[s.chip, { borderColor: on ? tm.color : L.line }]} accessibilityRole="button" accessibilityState={{ selected: on }}>
+                  <Text style={[s.chipT, { fontFamily: L.semi, color: on ? tm.color : L.mute }]}>{tm.name}</Text>
                 </Pressable>
               );
             })}
@@ -404,14 +421,14 @@ function SeatSheet({ state, seat, teams, onDone }: { state: RoomState; seat: Sea
             onDone();
             openReport({ id: seat.user_id, name: seat.name, avatar: seat.character });
           }}
-          style={[s.remove, { borderColor: G.line }]}
+          style={[s.remove, { borderColor: L.line }]}
           accessibilityRole="button">
-          <Text style={[s.removeT, { color: G.fg }]}>{`Report ${seat.name}`}</Text>
+          <Text style={[s.removeT, { fontFamily: L.semi, color: L.fg }]}>{`Report ${seat.name}`}</Text>
         </Pressable>
       ) : null}
       {host && !self && state.room.status === 'lobby' ? (
         <Pressable onPress={() => removePlayer(state.room.id, seat.user_id).then(onDone).catch(onDone)} style={s.remove} accessibilityRole="button">
-          <Text style={[s.removeT]}>{`Remove ${seat.name} from the room`}</Text>
+          <Text style={[s.removeT, { fontFamily: L.semi }]}>{`Remove ${seat.name} from the room`}</Text>
         </Pressable>
       ) : null}
     </>
@@ -420,6 +437,7 @@ function SeatSheet({ state, seat, teams, onDone }: { state: RoomState; seat: Sea
 
 /** Tap a player in the lobby to send a friend request (Yazan 2026-10-11); already friends or sent shows as text. */
 function FriendRow({ seat }: { seat: Seat }) {
+  const L = useRoomLook();
   const rel = useFriends((f) => f.list.find((x) => x.id === seat.user_id)?.kind);
   const [state, setState] = useState<'idle' | 'busy' | 'sent' | 'failed'>('idle');
   const send = async () => {
@@ -432,21 +450,22 @@ function FriendRow({ seat }: { seat: Seat }) {
       setState('failed');
     }
   };
-  if (rel === 'friend') return <Text style={[s.k, { color: G.mute, textAlign: 'center' }]}>YOU ARE FRIENDS</Text>;
-  if (rel === 'outgoing' || state === 'sent') return <Text style={[s.k, { color: G.mute, textAlign: 'center' }]}>FRIEND REQUEST SENT</Text>;
+  if (rel === 'friend') return <Text style={[s.k, { fontFamily: L.semi, color: L.mute, textAlign: 'center' }]}>YOU ARE FRIENDS</Text>;
+  if (rel === 'outgoing' || state === 'sent') return <Text style={[s.k, { fontFamily: L.semi, color: L.mute, textAlign: 'center' }]}>FRIEND REQUEST SENT</Text>;
   return (
-    <Pressable disabled={state === 'busy'} onPress={send} style={[s.remove, { borderColor: G.line }]} accessibilityRole="button">
-      <Text style={[s.removeT, { color: G.fg }]}>{rel === 'incoming' ? `Accept ${seat.name}'s friend request` : state === 'failed' ? 'Not sent. Tap to try again' : `Add ${seat.name} as a friend`}</Text>
+    <Pressable disabled={state === 'busy'} onPress={send} style={[s.remove, { borderColor: L.line }]} accessibilityRole="button">
+      <Text style={[s.removeT, { fontFamily: L.semi, color: L.fg }]}>{rel === 'incoming' ? `Accept ${seat.name}'s friend request` : state === 'failed' ? 'Not sent. Tap to try again' : `Add ${seat.name} as a friend`}</Text>
     </Pressable>
   );
 }
 
 /** ON12: mute a player on your phone only; their stickers and voice stop popping for you. */
 function MuteRow({ room, seat }: { room: string; seat: Seat }) {
+  const L = useRoomLook();
   const on = (useTalk((x) => x.muted[room]) ?? []).includes(seat.user_id);
   return (
-    <Pressable onPress={() => toggleMute(room, seat.user_id)} style={[s.remove, { borderColor: G.line }]} accessibilityRole="button">
-      <Text style={[s.removeT, { color: G.fg }]}>{on ? `Unmute ${seat.name}` : `Mute ${seat.name} (only for you)`}</Text>
+    <Pressable onPress={() => toggleMute(room, seat.user_id)} style={[s.remove, { borderColor: L.line }]} accessibilityRole="button">
+      <Text style={[s.removeT, { fontFamily: L.semi, color: L.fg }]}>{on ? `Unmute ${seat.name}` : `Mute ${seat.name} (only for you)`}</Text>
     </Pressable>
   );
 }

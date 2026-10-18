@@ -75,10 +75,10 @@ export function Velvet({ dark = 0 }: { dark?: number }) {
 }
 
 /** A Wheels page: the game header over the velvet stage. */
-export function VelvetScreen({ children, scroll = false, dark = 0 }: { children: ReactNode; scroll?: boolean; dark?: number }) {
+export function VelvetScreen({ children, scroll = false, dark = 0, top }: { children: ReactNode; scroll?: boolean; dark?: number; top?: ReactNode }) {
   const ok = useVelvetFonts();
   return (
-    <GameScreen scroll={scroll} under={<Velvet dark={dark} />} bodyStyle={{ paddingTop: u(12), paddingHorizontal: u(16), paddingBottom: u(16), gap: u(12) }}>
+    <GameScreen scroll={scroll} under={<Velvet dark={dark} />} top={ok ? top : null} bodyStyle={{ paddingTop: u(12), paddingHorizontal: u(16), paddingBottom: u(16), gap: u(12) }}>
       {ok ? children : null}
     </GameScreen>
   );

@@ -66,10 +66,10 @@ function Room() {
 }
 
 /** A Case Files page: the game header over the dark office. */
-export function NoirScreen({ children, scroll = false }: { children: ReactNode; scroll?: boolean }) {
+export function NoirScreen({ children, scroll = false, top }: { children: ReactNode; scroll?: boolean; top?: ReactNode }) {
   const fonts = useNoirFonts();
   return (
-    <GameScreen scroll={scroll} under={<Room />} bodyStyle={[s.body, { paddingBottom: u(14) }]}>
+    <GameScreen scroll={scroll} under={<Room />} top={fonts ? top : null} bodyStyle={[s.body, { paddingBottom: u(14) }]}>
       {fonts ? children : null}
     </GameScreen>
   );

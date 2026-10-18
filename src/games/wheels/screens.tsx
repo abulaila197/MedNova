@@ -23,7 +23,8 @@ import { WinShake } from '@/features/style/WinShake';
 import { ToneSticker } from '../shell/ResultTone';
 import { useSession } from '../shell/session';
 import { fieldName, STYLES, type FieldKey, type Style } from './core';
-import { Bill, Brass, Btn, CB, CD, Chip, CM, Gem, Kicker, Panel, ROMAN, Rule, T, Title, Token, VelvetScreen, VV } from './velvet';
+import { OwnLobby, OwnOnlineSetup, type RoomKit } from '@/online/OwnRoom';
+import { BODY, BODY_B, Bill, Brass, Btn, CB, CD, Chip, CM, Gem, GEMS, Kicker, Panel, ROMAN, Rule, T, Title, Token, VelvetScreen, VV } from './velvet';
 
 const MODE_NAME: Record<Mode, string> = { solo: 'Solo', offline: 'Pass the phone', online: 'Online' };
 const PAPER_RULE = 'rgba(42,26,18,0.18)';
@@ -348,7 +349,51 @@ function Results({ def, play, items }: { def: GameDef; play: Play; items: PlayIt
   );
 }
 
-export const wheelsScreens = { Landing, Gate, Setup, Results };
+// ---------------------------------------------------------------- online: find or host a show, backstage
+
+/** The online pages on the Velvet stage (Yazan 2026-10-18): playbills in brass frames over the curtain. */
+export const VELVET_KIT: RoomKit = {
+  look: { page: '#14030a', panel: 'rgba(28,6,10,0.78)', raised: '#2a0a12', line: VV.line, fg: VV.ink, mute: VV.soft, dim: VV.dim, acc: VV.brass, ok: VV.right, amber: VV.gold, btn: '#8e1a2c', btnOff: '#3a1a20', onBtn: VV.gold, body: BODY, semi: BODY_B, mono: CB, head: CB },
+  Screen: ({ children, top }) => (
+    <VelvetScreen scroll top={top}>
+      {children}
+    </VelvetScreen>
+  ),
+  Paper: ({ children, style }) => <Bill style={style}>{children}</Bill>,
+  Btn: ({ label, onPress, ghost, off, onPaper, style }) => <Btn label={label} onPress={onPress} ghost={ghost && !onPaper} paper={ghost && onPaper} disabled={off} style={style} />,
+  Title: ({ text }) => <Title text={text} size={26} />,
+  Mark: ({ color }) => <Gem c={color} size={10} />,
+  f: { head: CB, body: BODY, kick: CM, num: CB },
+  z: u,
+  room: { fg: VV.ink, soft: VV.soft, dim: VV.dim, acc: VV.brass },
+  paper: { fg: VV.paperInk, soft: VV.paperSoft, acc: VV.redInk, rule: PAPER_RULE, onAcc: VV.gold },
+  ok: '#2f7a66',
+  wait: '#b8862a',
+  seat: (i) => GEMS[i % GEMS.length],
+  words: {
+    game: 'The Wheels of Chaos',
+    setup: 'Find a show',
+    find: 'Join a show',
+    findNote: 'a ticket code or an open show',
+    host: 'Host a show',
+    hostNote: 'your own bill',
+    code: 'Ticket code',
+    open: 'Shows tonight',
+    none: 'No shows open right now. Host one yourself.',
+    create: 'Open the box office',
+    lobby: 'Backstage',
+    players: 'The cast',
+    invite: 'Empty seat · invite',
+    start: 'Raise the curtain',
+    leave: 'Leave backstage',
+    gone: 'This show has closed',
+  },
+};
+
+const OnlineSetup = ({ def, prefill }: { def: GameDef; prefill?: Record<string, unknown> }) => <OwnOnlineSetup kit={VELVET_KIT} def={def} prefill={prefill} />;
+const Lobby = ({ def, roomId }: { def: GameDef; roomId: string }) => <OwnLobby kit={VELVET_KIT} def={def} roomId={roomId} />;
+
+export const wheelsScreens = { Landing, Gate, Setup, Results, OnlineSetup, Lobby };
 
 const s = StyleSheet.create({
   spread: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', columnGap: u(10) },

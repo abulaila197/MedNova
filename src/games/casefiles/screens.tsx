@@ -23,6 +23,7 @@ import { WinEffect } from '@/features/style/WinEffect';
 import { WinShake } from '@/features/style/WinShake';
 import { ToneSticker } from '../shell/ResultTone';
 import { useSession } from '../shell/session';
+import { OwnLobby, OwnOnlineSetup, type RoomKit } from '@/online/OwnRoom';
 import { caseById, caseLabel } from './data';
 import { CaseTitle, Kicker, NoirScreen, NR, T } from './noir';
 
@@ -490,7 +491,60 @@ function Results({ def, play, items }: { def: GameDef; play: Play; items: PlayIt
   );
 }
 
-export const caseFilesScreens = { Landing, Gate, Setup, Results };
+// ---------------------------------------------------------------- online: join or open a case, the briefing room
+
+/** The online pages in the Evidence board look (Yazan 2026-10-18): pinned report sheets in the grey room. */
+export const NOIR_KIT: RoomKit = {
+  look: { page: '#232322', panel: 'rgba(255,255,255,0.05)', raised: '#2d2d2c', line: 'rgba(255,255,255,0.12)', fg: NR.white, mute: NR.soft, dim: NR.dim, acc: '#e0525c', ok: NR.green, amber: '#b8862a', btn: NR.red, btnOff: '#4a4a48', onBtn: '#f6efe2', body: NR.type, semi: NR.type, mono: NR.type, head: NR.type },
+  Screen: ({ children, top }) => (
+    <NoirScreen scroll top={top}>
+      <BoardCorner />
+      {children}
+    </NoirScreen>
+  ),
+  Paper: ({ children, style }) => <Sheet style={style}>{children}</Sheet>,
+  Btn: ({ label, onPress, ghost, off, onPaper, style }) =>
+    onPaper ? (
+      <View style={[{ opacity: off ? 0.4 : 1 }, style]} pointerEvents={off ? 'none' : 'auto'}>
+        <PaperBtn label={label} ghost={ghost} onPress={onPress ?? (() => {})} />
+      </View>
+    ) : (
+      <RoomBtn label={label} ghost={ghost} disabled={off} onPress={onPress ?? (() => {})} style={style} />
+    ),
+  Title: ({ text }) => <CaseTitle title={text} size={28} />,
+  Mark: ({ color }) => <View style={[sh.tag, { backgroundColor: color, marginBottom: 0 }]} />,
+  f: { head: NR.type, body: NR.type, kick: NR.type, num: NR.type },
+  z: u,
+  k: 1.05,
+  room: { fg: NR.white, soft: NR.soft, dim: NR.dim, acc: '#e0525c' },
+  paper: { fg: PAPER.ink, soft: PAPER.soft, acc: NR.red, rule: PAPER.rule, onAcc: '#f6efe2' },
+  ok: '#3f7a4a',
+  wait: '#b8862a',
+  seat: (i) => INK[i % INK.length],
+  words: {
+    game: 'Case Files',
+    setup: 'Join the investigation',
+    find: 'Join a case',
+    findNote: 'a case number or an open case',
+    host: 'Open a case',
+    hostNote: 'your own rules',
+    code: 'Case number',
+    open: 'Open cases',
+    none: 'No open cases right now. Open one yourself.',
+    create: 'Open the case',
+    lobby: 'Briefing room',
+    players: 'Investigators',
+    invite: 'Empty desk · invite',
+    start: 'Start the case',
+    leave: 'Leave the briefing',
+    gone: 'This case was closed',
+  },
+};
+
+const OnlineSetup = ({ def, prefill }: { def: GameDef; prefill?: Record<string, unknown> }) => <OwnOnlineSetup kit={NOIR_KIT} def={def} prefill={prefill} />;
+const Lobby = ({ def, roomId }: { def: GameDef; roomId: string }) => <OwnLobby kit={NOIR_KIT} def={def} roomId={roomId} />;
+
+export const caseFilesScreens = { Landing, Gate, Setup, Results, OnlineSetup, Lobby };
 
 const sh = StyleSheet.create({
   sheet: { backgroundColor: PAPER.bg, borderRadius: u(4), paddingHorizontal: u(16), paddingTop: u(18), paddingBottom: u(14), gap: u(8), shadowColor: '#000', shadowOpacity: 0.45, shadowRadius: u(10), shadowOffset: { width: 0, height: u(5) } },

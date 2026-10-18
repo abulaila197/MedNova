@@ -9,10 +9,12 @@ import { invoke, leaveRoom } from '@/online/api';
 import { finishOnline, useShowResults } from '@/online/finish';
 import { settingsLine } from '@/online/format';
 import { AlertPill, Countdown, useAlerts } from '@/online/live';
+import { RoomLookProvider } from '@/online/look';
 import { RoomTalk } from '@/online/Talk';
 import { u } from '@/theme/scale';
 
 import type { OnlineProps } from '../shell/types';
+import { ATLAS_KIT } from './rooms';
 import { AT, AtlasPause, AtlasScreen, CGI, KINGDOMS, PauseCtx, T } from './atlas';
 import { standings } from './core';
 import { makeMap, seedOf } from './map';
@@ -118,7 +120,11 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   const extras = (
     <>
       <AlertPill alert={alert} />
-      {answering ? null : <RoomTalk room={roomId} me={{ id: me, name: meTalk?.name ?? 'You', face: meTalk?.character ?? 'yara' }} />}
+      {answering ? null : (
+        <RoomLookProvider value={ATLAS_KIT.look}>
+          <RoomTalk room={roomId} me={{ id: me, name: meTalk?.name ?? 'You', face: meTalk?.character ?? 'yara' }} />
+        </RoomLookProvider>
+      )}
       {notice ? (
         <View style={{ position: 'absolute', bottom: u(90), left: u(16), right: u(16), alignItems: 'center' }} pointerEvents="none">
           <View style={{ backgroundColor: 'rgba(0,0,0,0.65)', borderRadius: u(10), padding: u(8) }}>
