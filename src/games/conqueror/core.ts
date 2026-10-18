@@ -88,6 +88,8 @@ export type Player = {
   out: boolean;
   outOrder?: number;
   outReason?: 'capital' | 'away';
+  /** The stage they were knocked out in (older saves lack it). */
+  outStage?: number;
   connected: boolean;
   /** CQ12: full stages in a row spent disconnected. */
   awayStages: number;
@@ -140,6 +142,9 @@ export type Duel = {
   p2: string;
   t1: number;
   t2: number;
+  /** Troops each side actually sent, before Reinforcements: the most a loser ever gets back (older saves lack it). */
+  r1?: number;
+  r2?: number;
   questions: TfQ[];
   a1: { right: boolean; ms: number }[];
   a2: { right: boolean; ms: number }[];
@@ -249,11 +254,66 @@ function editDistance(a: string, b: string) {
   return dp[a.length][b.length];
 }
 
-/** His tolerance: 1 typo for names under 6 letters, 2 otherwise; only the main name and its 2 other names count (NL1). */
+const ROMAN = new Set(['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x', 'xi', 'xii']);
+const digitsOf = (k: string) => (k.match(/\d/g) ?? []).join('');
+/** The parts a typo may never change: single letters and roman numerals ("Vitamin A", "Complex II"). */
+const marksOf = (k: string) => k.split(' ').filter((w) => (w.length === 1 && /[a-z]/.test(w)) || ROMAN.has(w)).join(' ');
+
+/**
+ * How close a typed key is to one name key: 0 = exact (spaces ignored), else the edits within his tolerance
+ * (1 typo for names under 6 letters, 2 otherwise), Infinity = no match. Digits, single letters and roman numerals
+ * must match exactly, so "Vitamin D" is never a typo of "Vitamin A" nor "HPV 18" of "HPV 16".
+ */
+function rawCloseness(k: string, t: string) {
+  if (k === t || k.replace(/ /g, '') === t.replace(/ /g, '')) return 0;
+  if (digitsOf(k) !== digitsOf(t) || marksOf(k) !== marksOf(t)) return Infinity;
+  return editDistance(k, t);
+}
+function closeness(k: string, t: string) {
+  const d = rawCloseness(k, t);
+  return d <= (t.length < 6 ? 1 : 2) ? d : Infinity;
+}
+const distanceTo = (k: string, n: Named) => Math.min(...nameKeys(n).map((t) => closeness(k, t)));
+const sameName = (a: Named, b: Named) => {
+  const ka = nameKeys(a);
+  return nameKeys(b).some((k) => ka.includes(k));
+};
+
+/** His tolerance with the guards above; only the main name and its 2 other names count (NL1). */
 export function typedMatches(text: string, n: Named) {
   const k = nameKey(text);
-  if (!k) return false;
-  return nameKeys(n).some((t) => k === t || editDistance(k, t) <= (t.length < 6 ? 1 : 2));
+  return !!k && distanceTo(k, n) !== Infinity;
+}
+
+/**
+ * Which of `names` a typed answer means: an exact hit first; else the one closest typo. A typo just as close to
+ * another of `names`, or to any other name in `others` (the rest of the bank), counts for none, and typing another
+ * bank name exactly is never a typo ("Facial nerve" is not "Radial nerve").
+ */
+export function typedPick<T extends Named>(text: string, names: readonly T[], others: readonly Named[] = []): T | null {
+  const k = nameKey(text);
+  if (!k) return null;
+  const scored = names.map((n) => ({ n, d: distanceTo(k, n) })).filter((x) => x.d !== Infinity).sort((a, b) => a.d - b.d);
+  if (!scored.length) return null;
+  const best = scored[0];
+  if (best.d === 0) return best.n;
+  if (scored.length > 1 && scored[1].d <= best.d && !sameName(scored[1].n, best.n)) return null;
+  for (const o of others) {
+    if (sameName(o, best.n) || names.includes(o as T)) continue;
+    if (nameKeys(o).some((t) => Math.abs(t.length - k.length) <= best.d + 2 && rawCloseness(k, t) <= best.d)) return null;
+  }
+  return best.n;
+}
+
+/** Every typed-answer name in the bank (rush lists and clue answers), for typedPick's "closer to another name" guard. */
+const bankNames = new WeakMap<Bank, Named[]>();
+export function namesOf(bank: Bank): Named[] {
+  let list = bankNames.get(bank);
+  if (!list) {
+    list = [...bank.byStyle.rush.flatMap((q) => q.answers), ...bank.byStyle.clue.map((q) => q.answer)];
+    bankNames.set(bank, list);
+  }
+  return list;
 }
 
 /** Type-ahead chips after 4 letters, up to 3, drawn from a whole style's answers so they don't give the round away. */
@@ -280,8 +340,13 @@ function reduce(m: Match, a: Action, ctx: Ctx, used: Set<string>): boolean {
   if ('player' in a && (!p || (p.out && a.type !== 'connection'))) return false;
   switch (a.type) {
     case 'connection': {
+      if (p!.connected === a.connected) return false;
       p!.connected = a.connected;
       if (a.connected) p!.awayThisStage = false;
+      // CQ12: away from the very start counts stage 1 too (stage ends only ever set this flag).
+      else if (m.stage === 1 && m.round === 1 && m.phase === 'solo_pick' && !Object.keys(m.solo).length) p!.awayThisStage = true;
+      // The player everyone was waiting for left: move on now instead of waiting for the clock.
+      if (!a.connected) settleWaiting(m, ctx, used);
       return true;
     }
     case 'timeout':
@@ -291,7 +356,10 @@ function reduce(m: Match, a: Action, ctx: Ctx, used: Set<string>): boolean {
       const tile = m.board.find((t) => t.n === a.tile);
       if (!tile || tile.by) return false;
       takeTile(m, a.player, tile, ctx, used);
-      if (active(m).filter((x) => x.connected).every((x) => m.solo[x.id])) m.phase = 'solo_play';
+      if (active(m).filter((x) => x.connected).every((x) => m.solo[x.id])) {
+        m.phase = 'solo_play';
+        if (soloDone(m)) endSolo(m, ctx, used); // every tile was a card: nothing to answer
+      }
       return true;
     }
     case 'joker': {
@@ -320,7 +388,7 @@ function reduce(m: Match, a: Action, ctx: Ctx, used: Set<string>): boolean {
     case 'rush': {
       const v = m.versus;
       if (m.phase !== 'versus' || v?.style !== 'rush') return false;
-      const hit = v.q.answers.find((n) => typedMatches(a.text, n));
+      const hit = typedPick(a.text, v.q.answers, namesOf(ctx.bank));
       const found = (v.found[a.player] ??= []);
       if (!hit || found.some((f) => f.label === hit.label)) return false;
       found.push({ label: hit.label, ms: a.ms });
@@ -339,7 +407,7 @@ function reduce(m: Match, a: Action, ctx: Ctx, used: Set<string>): boolean {
       if (m.phase !== 'versus' || v?.style !== 'clue' || a.mystery < 0 || a.mystery >= v.qs.length || a.clue < 1 || a.clue > 4) return false;
       const solved = (v.solved[a.player] ??= v.qs.map(() => null));
       if (solved[a.mystery] !== null) return false;
-      if (typedMatches(a.text, v.qs[a.mystery].answer)) {
+      if (typedPick(a.text, [v.qs[a.mystery].answer], namesOf(ctx.bank))) {
         solved[a.mystery] = a.clue;
         p!.stats.right++;
         v.ms[a.player] = (v.ms[a.player] ?? 0) + a.ms;
@@ -457,7 +525,49 @@ function scoreSolo(p: Player, turn: SoloTurn, answers: SoloAnswers) {
   turn.result = { correct, total, points, penalty };
 }
 
-const soloDone = (m: Match) => active(m).filter((x) => x.connected).every((x) => m.solo[x.id] && (m.solo[x.id].card || m.solo[x.id].result));
+/** Everyone connected has finished their tile; a player with no tile (away during the pick) can't play this round. */
+const soloDone = (m: Match) =>
+  active(m)
+    .filter((x) => x.connected)
+    .every((x) => (m.solo[x.id] ? !!(m.solo[x.id].card || m.solo[x.id].result) : m.phase === 'solo_play'));
+
+/**
+ * After a disconnect: the same "everyone connected is done" checks the actions run, so the rest don't wait out the
+ * clock for a player who left. Never with nobody connected (the clocks carry an empty table).
+ */
+function settleWaiting(m: Match, ctx: Ctx, used: Set<string>) {
+  const here = active(m).filter((x) => x.connected);
+  if (!here.length) return;
+  const v = m.versus;
+  switch (m.phase) {
+    case 'solo_pick':
+      if (here.every((x) => m.solo[x.id])) {
+        m.phase = 'solo_play';
+        if (soloDone(m)) endSolo(m, ctx, used);
+      }
+      return;
+    case 'solo_play':
+      if (soloDone(m)) endSolo(m, ctx, used);
+      return;
+    case 'versus':
+      if (v?.style === 'closest' && here.every((x) => v.guesses[x.id]?.every(Boolean))) finishVersus(m);
+      else if (v?.style === 'clue' && here.every((x) => v.solved[x.id]?.every((s) => s !== null))) finishVersus(m);
+      else if (v?.style === 'standing') {
+        const living = here.filter((x) => v.hearts[x.id] > 0);
+        if (living.length && living.every((x) => v.answers[x.id])) nextStanding(m);
+      }
+      return;
+    case 'gap_cards':
+    case 'gap_moves':
+      if (here.every((x) => m.gap.ready.includes(x.id))) {
+        if (m.phase === 'gap_cards') toMoves(m);
+        else battle(m, ctx, used);
+      }
+      return;
+    default:
+      return;
+  }
+}
 
 function endSolo(m: Match, ctx: Ctx, used: Set<string>) {
   m.lastSolo = m.solo;
@@ -729,6 +839,7 @@ function eliminate(m: Match, id: string, reason: 'capital' | 'away') {
   p.out = true;
   p.outReason = reason;
   p.outOrder = Object.values(m.players).filter((x) => x.out).length;
+  p.outStage = m.stage;
   p.reserve = 0;
   p.cards = [];
   if (p.ally && m.players[p.ally]) m.players[p.ally].ally = null;
@@ -739,7 +850,8 @@ function eliminate(m: Match, id: string, reason: 'capital' | 'away') {
 
 /** All moves land at once (his combatResolver): own lands are reinforced, then each attacked land is fought for. */
 function battle(m: Match, ctx: Ctx, used: Set<string>) {
-  const moves: { by: string; from: string | null; to: string; troops: number }[] = [];
+  // `raw` = troops that left home; `troops` = what fights (+50% with Reinforcements). Troops going home never exceed `raw`.
+  const moves: { by: string; from: string | null; to: string; troops: number; raw: number }[] = [];
   for (const p of active(m)) {
     const list = m.gap.moves[p.id] ?? (p.connected ? [] : botMoves(m, p.id));
     for (const mv of list) {
@@ -749,25 +861,28 @@ function battle(m: Match, ctx: Ctx, used: Set<string>) {
       if (troops <= 0) continue;
       if (src) src.troops -= troops;
       else p.reserve -= troops;
-      moves.push({ by: p.id, from: mv.from, to: mv.to, troops: mv.reinforce ? Math.ceil((troops * 1.5) / 1000) * 1000 : troops });
+      moves.push({ by: p.id, from: mv.from, to: mv.to, troops: mv.reinforce ? Math.ceil((troops * 1.5) / 1000) * 1000 : troops, raw: troops });
     }
   }
-  const marches: March[] = moves.map((mv) => ({ ...mv, kind: m.lands[mv.to].owner === mv.by ? 'add' : 'held', was: m.lands[mv.to].owner }));
+  const marches: March[] = moves.map(({ raw: _raw, ...mv }) => ({ ...mv, kind: m.lands[mv.to].owner === mv.by ? 'add' : 'held', was: m.lands[mv.to].owner }));
   const landed = (landId: string, kind: March['kind'], by?: string) => {
     for (const x of marches) if (x.to === landId && x.kind !== 'add' && (by == null || x.by === by)) x.kind = kind;
   };
   m.marches = marches;
-  const attacks = new Map<string, { by: string; troops: number }[]>();
+  const attacks = new Map<string, { by: string; troops: number; raw: number }[]>();
   for (const mv of moves) {
     const to = m.lands[mv.to];
     if (to.owner === mv.by) to.troops += mv.troops;
-    else attacks.set(mv.to, [...(attacks.get(mv.to) ?? []), { by: mv.by, troops: mv.troops }]);
+    else attacks.set(mv.to, [...(attacks.get(mv.to) ?? []), { by: mv.by, troops: mv.troops, raw: mv.raw }]);
   }
+  const home = (x: { by: string; troops: number; raw: number }) => {
+    if (!m.players[x.by].out) m.players[x.by].reserve += Math.max(0, Math.min(x.troops, x.raw));
+  };
   const duels: Duel[] = [];
   for (const [landId, attackers] of attacks) {
     const land = m.lands[landId];
     if (land.shielded) {
-      for (const x of attackers) m.players[x.by].reserve += x.troops;
+      for (const x of attackers) home(x);
       m.log.push(`${land.name} was shielded`);
       continue;
     }
@@ -790,26 +905,39 @@ function battle(m: Match, ctx: Ctx, used: Set<string>) {
     // Several attackers overwhelm the land: losses split by size, the top 2 duel, the rest go home.
     const garrison = land.troops;
     const left = attackers
-      .map((x) => ({ by: x.by, troops: Math.max(0, x.troops - Math.round(garrison * (x.troops / total))) }))
+      .map((x) => ({ by: x.by, raw: x.raw, troops: Math.max(0, x.troops - Math.round(garrison * (x.troops / total))) }))
       .sort((x, y) => y.troops - x.troops);
-    for (const x of left.slice(2)) m.players[x.by].reserve += x.troops;
+    for (const x of left.slice(2)) home(x);
     landed(landId, 'duel');
     duels.push({
-      land: landId, p1: left[0].by, p2: left[1].by, t1: left[0].troops, t2: left[1].troops,
+      land: landId, p1: left[0].by, p2: left[1].by, t1: left[0].troops, t2: left[1].troops, r1: left[0].raw, r2: left[1].raw,
       questions: draw(ctx.bank, 'tf', BALANCE.DUEL_QUESTIONS, m.mix, used, ctx.rng), a1: [], a2: [],
     });
     m.log.push(`Breaking Duel at ${land.name}`);
   }
   m.duels = duels;
   m.duelIndex = 0;
-  if (duels.length) m.phase = 'duel';
-  else endStage(m, ctx);
+  m.phase = 'duel';
+  nextDuel(m, ctx);
+}
+
+/** Skips duels a duelist can no longer fight (knocked out earlier in this Gap), then ends the stage after the last one. */
+function nextDuel(m: Match, ctx: Ctx) {
+  for (let d = m.duels[m.duelIndex]; d && (m.players[d.p1].out || m.players[d.p2].out); d = m.duels[m.duelIndex]) {
+    // Nothing to fight for: the duelist still in takes the land with their own troops; fallen troops vanish.
+    const [alive, troops] = !m.players[d.p1].out ? [d.p1, d.t1] : !m.players[d.p2].out ? [d.p2, d.t2] : [null, 0];
+    for (const x of m.marches ?? []) if (x.to === d.land && x.kind === 'duel') x.kind = x.by === alive ? 'won' : 'held';
+    if (alive) capture(m, d.land, alive, troops);
+    m.duelIndex++;
+  }
+  if (m.duelIndex >= m.duels.length) endStage(m, ctx);
 }
 
 function capture(m: Match, landId: string, by: string, troops: number) {
   const land = m.lands[landId];
   const before = land.owner;
-  land.owner = by;
+  // An attacker knocked out earlier in this same battle still breaks the land, but it goes neutral (CQ10).
+  land.owner = m.players[by].out ? null : by;
   land.troops = troops;
   land.hidden = false;
   m.players[by].stats.captured++;
@@ -831,13 +959,18 @@ export function duelWinner(d: Duel, rng: Rng): 1 | 2 {
 function finishDuel(m: Match, ctx: Ctx, used: Set<string>) {
   const d = m.duels[m.duelIndex];
   const w = duelWinner(d, ctx.rng);
-  const [winner, loser, wt, lt] = w === 1 ? [d.p1, d.p2, d.t1, d.t2] : [d.p2, d.p1, d.t2, d.t1];
-  if (!m.players[loser].out) m.players[loser].reserve += Math.max(0, lt - wt);
-  for (const x of m.marches ?? []) if (x.to === d.land && x.kind === 'duel') x.kind = x.by === winner && !m.players[winner].out ? 'won' : 'held';
-  if (!m.players[winner].out) capture(m, d.land, winner, wt);
-  else m.players[loser].reserve += wt; // the winner fell earlier in this Gap: the land stays as it was
+  const [winner, loser, wt, lt, lraw] = w === 1 ? [d.p1, d.p2, d.t1, d.t2, d.r2 ?? d.t2] : [d.p2, d.p1, d.t2, d.t1, d.r1 ?? d.t1];
+  // The land goes to the winner; if the winner fell earlier in this Gap, the loser takes it with their own troops
+  // and the fallen troops vanish (Yazan, 2026-10-14). Both fallen: the land stays as it was.
+  const taker = !m.players[winner].out ? winner : !m.players[loser].out ? loser : null;
+  for (const x of m.marches ?? []) if (x.to === d.land && x.kind === 'duel') x.kind = x.by === taker ? 'won' : 'held';
+  if (taker === winner) {
+    // The loser's surplus goes home, never more than they sent (Reinforcements troops don't come back).
+    if (!m.players[loser].out) m.players[loser].reserve += Math.max(0, Math.min(lt - wt, lraw));
+    capture(m, d.land, winner, wt);
+  } else if (taker === loser) capture(m, d.land, loser, lt);
   m.duelIndex++;
-  if (m.duelIndex >= m.duels.length) endStage(m, ctx);
+  nextDuel(m, ctx);
   void used;
 }
 
@@ -848,10 +981,16 @@ export function compareStanding(m: Match, a: Player, b: Player) {
   return landsOf(m, b.id).length - landsOf(m, a.id).length || totalTroops(m, b.id) - totalTroops(m, a.id) || accuracy(b) - accuracy(a);
 }
 
+/** Among the eliminated, who placed better: out in a later stage, then a fallen capital before a removal for being away, then out later. */
+const compareOut = (a: Player, b: Player) =>
+  (b.outStage ?? 0) - (a.outStage ?? 0) ||
+  (a.outReason === 'away' ? 1 : 0) - (b.outReason === 'away' ? 1 : 0) ||
+  (b.outOrder ?? 0) - (a.outOrder ?? 0);
+
 /** Final places: players still in by CQ10, then the eliminated, last out first. */
 export function standings(m: Match): Player[] {
   const inGame = active(m).sort((a, b) => compareStanding(m, a, b));
-  const out = m.order.map((id) => m.players[id]).filter((p) => p.out).sort((a, b) => (b.outOrder ?? 0) - (a.outOrder ?? 0));
+  const out = m.order.map((id) => m.players[id]).filter((p) => p.out).sort(compareOut);
   return [...inGame, ...out];
 }
 
@@ -886,7 +1025,7 @@ function endStage(m: Match, ctx: Ctx) {
 
 /** Everyone fell in the same Gap (his edge case): the last one eliminated wins. */
 function lastCapitalTaker(m: Match) {
-  return [...m.order].sort((a, b) => (m.players[b].outOrder ?? 0) - (m.players[a].outOrder ?? 0))[0];
+  return [...m.order].sort((a, b) => compareOut(m.players[a], m.players[b]))[0];
 }
 
 // ---------------------------------------------------------------- timeouts
