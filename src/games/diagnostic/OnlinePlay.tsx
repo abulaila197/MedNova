@@ -5,7 +5,7 @@ import { StyleSheet, View } from 'react-native';
 import { call, leaveRoom } from '@/online/api';
 import { finishOnline, useShowResults } from '@/online/finish';
 import { AlertPill, Countdown, nth, useAlerts } from '@/online/live';
-import { RoomTalk } from '@/online/Talk';
+import { RoomTalk } from '@/online/TalkBar';
 import { playerColour } from '../shell/characters';
 import { PauseMenu } from '../shell/PauseMenu';
 import { presetTeam } from '../shell/teams';

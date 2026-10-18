@@ -20,7 +20,7 @@ import { shareText } from '@/lib/share';
 import { call, leaveRoom, rematchRoom, removePlayer, setReady, setTeam, startMatch, updateRoom, type RoomState, type Seat } from './api';
 import { settingsLine } from './format';
 import { G } from './grey';
-import { TalkBubble, TalkPanel } from './Talk';
+import { TalkBubble, TalkPanel } from './TalkBar';
 import { toggleMute, useTalk, useTalkFeed } from './talk';
 import { GREY_LOOK, useRoomLook } from './look';
 import { useRoom } from './useRoom';

@@ -11,7 +11,7 @@ import { finishOnline, useShowResults } from '@/online/finish';
 import { settingsLine } from '@/online/format';
 import { AlertPill, Countdown, useAlerts } from '@/online/live';
 import { RoomLookProvider } from '@/online/look';
-import { RoomTalk } from '@/online/Talk';
+import { RoomTalk } from '@/online/TalkBar';
 import { useStableCallback } from '@/lib/useStableCallback';
 import { u } from '@/theme/scale';
 

@@ -8,7 +8,7 @@ import { AlertPill, Countdown, useAlerts } from '@/online/live';
 import { settingsLine } from '@/online/format';
 import { useRace, type RacePlayer, type RaceState } from '@/online/race';
 import { RaceReveal } from '@/online/RaceReveal';
-import { RoomTalk } from '@/online/Talk';
+import { RoomTalk } from '@/online/TalkBar';
 import { useTheme } from '@/state/app';
 import { u, useScreen } from '@/theme/scale';
 import { F } from '@/theme/tokens';

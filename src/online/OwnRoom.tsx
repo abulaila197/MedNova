@@ -18,7 +18,7 @@ import { settingsLine } from './format';
 import { LobbySheets, type LobbySheet } from './Lobby';
 import { RoomLookProvider, type RoomLook } from './look';
 import { useTalk, useTalkFeed } from './talk';
-import { TalkBubble } from './Talk';
+import { TalkBubble } from './TalkBar';
 import { lobbyOf, useJoin, useOpenRooms } from './useJoin';
 import { useRoom } from './useRoom';
 

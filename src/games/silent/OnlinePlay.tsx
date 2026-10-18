@@ -9,7 +9,7 @@ import { call, invoke } from '@/online/api';
 import { AlertPill, Countdown, nth, useAlerts } from '@/online/live';
 import { settingsLine } from '@/online/format';
 import { useRace, type RacePlayer, type RaceState } from '@/online/race';
-import { RoomTalk } from '@/online/Talk';
+import { RoomTalk } from '@/online/TalkBar';
 import { u } from '@/theme/scale';
 import { useRaceRevealSound } from '@/online/raceSound';
 
