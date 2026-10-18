@@ -17,7 +17,7 @@ export const CHESTS: Record<ChestKind, { name: string; art: ImageSource; items: 
   wooden: { name: 'Wooden chest', art: require('../../../assets/chests/chest-wooden.webp'), items: 1, from: 'Challenge 1', odds: { common: 70, uncommon: 24, rare: 5, epic: 1 } },
   golden: { name: 'Golden chest', art: require('../../../assets/chests/chest-golden.webp'), items: 2, from: 'Challenge 2', odds: { common: 50, uncommon: 30, rare: 14, epic: 5, legendary: 1 } },
   diamond: { name: 'Diamond chest', art: require('../../../assets/chests/chest-diamond.webp'), items: 3, from: 'Challenge 3', odds: { common: 30, uncommon: 32, rare: 22, epic: 12, legendary: 4 } },
-  epic: { name: 'Epic chest', art: require('../../../assets/chests/chest-epic.webp'), items: 3, from: '5 days in a row', odds: { rare: 45, epic: 35, legendary: 20 } },
+  epic: { name: 'Epic chest', art: require('../../../assets/chests/chest-epic.webp'), items: 3, from: '5 days in a row', odds: { rare: 50, epic: 40, legendary: 10 } },
 };
 export const CHEST_ORDER: ChestKind[] = ['wooden', 'golden', 'diamond', 'epic'];
 
