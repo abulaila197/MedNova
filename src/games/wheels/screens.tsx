@@ -19,6 +19,7 @@ import { useLanding, useResults } from '../shell/useShellPages';
 import { AddPill } from '@/features/friends/AddAfterMatch';
 import { effectWinner, PlayerTitle, winnerAccount } from '@/features/style/PlayerTitle';
 import { WinEffect } from '@/features/style/WinEffect';
+import { WinShake } from '@/features/style/WinShake';
 import { useSession } from '../shell/session';
 import { fieldName, STYLES, type FieldKey, type Style } from './core';
 import { Bill, Brass, Btn, CB, CD, Chip, CM, Gem, Kicker, Panel, ROMAN, Rule, T, Title, Token, VelvetScreen, VV } from './velvet';
@@ -262,6 +263,7 @@ function Results({ def, play, items }: { def: GameDef; play: Play; items: PlayIt
     { value: `${right}/${mine.length}`, label: 'Right' },
   ];
   return (
+    <WinShake>
     <VelvetScreen scroll>
       {fx ? <WinEffect userId={fx} /> : null}
       <View style={{ gap: u(3) }}>
@@ -339,6 +341,7 @@ function Results({ def, play, items }: { def: GameDef; play: Play; items: PlayIt
         <Btn label="Back to games" ghost onPress={backToGames} />
       </View>
     </VelvetScreen>
+    </WinShake>
   );
 }
 

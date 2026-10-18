@@ -40,14 +40,21 @@ export const PLATINUM_TITLES: Item[] = ACHIEVEMENTS.filter((a) => a.goals.length
   price: null,
 }));
 
-export type EffectKey = 'confetti' | 'pulse_wave' | 'signed_off' | 'supernova';
+export type EffectKey = 'confetti' | 'trophy' | 'medal' | 'pulse_wave' | 'too_easy' | 'mic_drop' | 'flatline' | 'spotlight';
 
-/** Win effects: everyone in an online room sees yours when you win. */
+/**
+ * Win effects: everyone in an online room sees yours when you win. Yazan 2026-10-18: celebrations first, the four
+ * taunts cost the most.
+ */
 export const EFFECTS: (Item & { key: EffectKey; what: string })[] = [
   { id: 'effect:confetti', key: 'confetti', name: 'Confetti', price: 80, what: 'A burst of paper confetti' },
-  { id: 'effect:pulse_wave', key: 'pulse_wave', name: 'Pulse Wave', price: 150, what: 'A heartbeat ripples across the screen' },
-  { id: 'effect:signed_off', key: 'signed_off', name: 'Signed Off', price: 200, what: 'A red "Discharged" stamp lands' },
-  { id: 'effect:supernova', key: 'supernova', name: 'Supernova', price: 300, what: 'The Pulse star bursts into light' },
+  { id: 'effect:trophy', key: 'trophy', name: 'Trophy', price: 120, what: 'A gold trophy pops up' },
+  { id: 'effect:medal', key: 'medal', name: 'Medal', price: 150, what: 'A gold medal drops in and swings' },
+  { id: 'effect:pulse_wave', key: 'pulse_wave', name: 'Pulse Wave', price: 200, what: 'A bold heartbeat shakes the screen' },
+  { id: 'effect:too_easy', key: 'too_easy', name: 'Too Easy', price: 250, what: 'A red stamp slams down on everyone' },
+  { id: 'effect:mic_drop', key: 'mic_drop', name: 'Mic Drop', price: 300, what: 'You drop the mic. Nothing more to say' },
+  { id: 'effect:flatline', key: 'flatline', name: 'Flatline', price: 350, what: "Everyone else's line goes flat" },
+  { id: 'effect:spotlight', key: 'spotlight', name: 'Spotlight', price: 400, what: 'Lights out for them, a spotlight for you' },
 ];
 
 /** Text sticker packs for online rooms (your character's stickers stay free). */

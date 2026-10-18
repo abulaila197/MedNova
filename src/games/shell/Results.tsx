@@ -14,6 +14,7 @@ import { RoomTalk } from '@/online/Talk';
 import { PlayerFace } from '@/features/style/Frame';
 import { effectWinner, PlayerTitle, winnerAccount } from '@/features/style/PlayerTitle';
 import { WinEffect } from '@/features/style/WinEffect';
+import { WinShake } from '@/features/style/WinShake';
 import { useSession } from './session';
 import { teamScoreOf, type GameDef } from './types';
 import { useResults } from './useShellPages';
@@ -35,6 +36,7 @@ export function Results({ def, play, items }: { def: GameDef; play: Play; items:
   const fx = effectWinner(play, uid);
   const room = play.mode === 'online' ? (play.settings.room as string | undefined) : undefined;
   return (
+    <WinShake>
     <GameScreen
       top={
         <>
@@ -125,6 +127,7 @@ export function Results({ def, play, items }: { def: GameDef; play: Play; items:
       </View>
       <Ghost label="Back to games" onPress={backToGames} />
     </GameScreen>
+    </WinShake>
   );
 }
 
