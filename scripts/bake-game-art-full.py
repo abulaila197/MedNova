@@ -19,21 +19,21 @@ W, SH, TOP, END = 282, 615, 72, 540  # design screen, body top, art end (src/fea
 SCALE = 3
 NUDGE = 0.7  # 0 = keep the left edge, 1 = keep the right edge, when the picture is wider than the screen
 UP = 30  # the scene sits this much higher than the picture's own place (2026-10-18: lifted, more overlap)
-CLEAR = 466  # screen y where the art is fully gone, a clear gap above the planets on the arc
+CLEAR = 540  # screen y where the art is fully gone: the tall scenes now run down to the arc
 
 # Scene band in picture px (of 1376): fade in over [a, b] at the top and out over [c, d] at the bottom.
 # a/d sit on (or just inside) any hard band edge, so no straight line survives.
-BAND = {
-    'nova-crossword': (380, 520, 1130, 1260),
-    'nova-medicordle': (330, 440, 1020, 1150),
-    'the-conqueror': (400, 540, 950, 1070),
-    'the-streak-master': (470, 600, 1110, 1240),
-    'the-wheels-of-chaos': (480, 620, 1030, 1150),
-    'the-riddler': (304, 440, 950, 1068),
-    'case-files-unsolved': (304, 450, 950, 1068),
-    'trust-me-not': (420, 540, 1090, 1230),
-    'the-diagnostic-pursuit': (406, 510, 880, 972),
-    'the-silent-artist': (474, 590, 950, 1068),
+BAND = {  # tall pictures (Yazan 2026-10-18 v2): scenes run from under the title down to the arc
+    'the-wheels-of-chaos': (60, 260, 1150, 1300),
+    'case-files-unsolved': (150, 330, 1150, 1300),
+    'nova-crossword': (220, 380, 1150, 1300),
+    'nova-medicordle': (300, 440, 1150, 1300),
+    'the-streak-master': (150, 320, 1150, 1300),
+    'trust-me-not': (200, 360, 1150, 1300),
+    'the-conqueror': (302, 440, 1150, 1300),
+    'the-riddler': (60, 240, 1150, 1300),
+    'the-silent-artist': (302, 440, 1150, 1300),
+    'the-diagnostic-pursuit': (172, 330, 1150, 1300),
 }
 
 
