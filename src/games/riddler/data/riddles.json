@@ -65,7 +65,7 @@
   "aliases": [
    "Varicella"
   ],
-  "definition": "A varicella-zoster infection causing crops of itchy vesicles in different stages of healing.",
+  "definition": "A herpesvirus infection causing crops of itchy vesicles in different stages of healing.",
   "dossier": "varicella-chickenpox",
   "w": 1024,
   "h": 242,
@@ -79,7 +79,7 @@
    "Christmas Disease",
    "Factor IX Deficiency"
   ],
-  "definition": "An X-linked coagulation disorder caused by factor IX deficiency, producing deep bleeding and hemarthroses.",
+  "definition": "An X-linked coagulation disorder caused by lack of a vitamin K-dependent clotting factor, producing deep bleeding and hemarthroses.",
   "dossier": "hemophilia-b-christmas-disease",
   "w": 1024,
   "h": 230,
@@ -686,7 +686,7 @@
   "aliases": [
    "Primary adrenal insufficiency"
   ],
-  "definition": "Primary adrenal insufficiency causing low cortisol and aldosterone, often with hyperpigmentation, hypotension, and electrolyte abnormalities.",
+  "definition": "Destruction of the adrenal cortex causing low cortisol and aldosterone, often with hyperpigmentation, hypotension, and electrolyte abnormalities.",
   "dossier": "addison-disease",
   "w": 2048,
   "h": 684,
@@ -968,7 +968,7 @@
    "Monosomy X",
    "45,X"
   ],
-  "definition": "A monosomy X disorder associated with short stature, gonadal dysgenesis, and characteristic features such as webbed neck.",
+  "definition": "A sex chromosome disorder with one X missing, associated with short stature, gonadal dysgenesis, and characteristic features such as webbed neck.",
   "dossier": "turner-syndrome",
   "w": 1024,
   "h": 225,

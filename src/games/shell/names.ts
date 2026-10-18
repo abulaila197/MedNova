@@ -34,25 +34,33 @@ export type NameIndex<T extends Named> = { entry: T; main: string; keys: string[
 export const indexNames = <T extends Named>(list: readonly T[]): NameIndex<T> => list.map((entry) => ({ entry, main: nameKey(entry.label), keys: nameKeys(entry) }));
 
 /**
- * Type-ahead over a master list: nothing until `min` letters, then up to `max` matches.
- * Order: main name starts with it, another name starts with it, a word starts with it, then all words found.
+ * Type-ahead over a master list: nothing until `min` letters (a name typed in full shows from 2, so short other names
+ * like MI or TB can be typed), then up to `max` matches.
+ * Order: a name typed in full, main name starts with it, another name starts with it, a word starts with it, then all words found.
  */
-export function searchNames<T extends Named>(index: NameIndex<T>, raw: string, opts: { min: number; max: number; skip?: (e: T) => boolean }): T[] {
+export function searchNames<T extends Named>(index: NameIndex<T>, raw: string, opts: { min: number; max: number; skip?: (e: T) => boolean; exactShort?: boolean }): T[] {
   const q = nameKey(raw);
-  if (q.replace(/\s/g, '').length < opts.min) return [];
+  const short = q.replace(/\s/g, '').length < opts.min;
+  if (short && (opts.exactShort === false || q.replace(/\s/g, '').length < 2)) return [];
   const tokens = q.split(' ');
   const hits: { e: NameIndex<T>[number]; s: number }[] = [];
   for (const e of index) {
     if (opts.skip?.(e.entry)) continue;
-    const s = e.main.startsWith(q)
+    if (short) {
+      if (e.keys.includes(q)) hits.push({ e, s: 0 });
+      continue;
+    }
+    const s = e.keys.includes(q)
       ? 0
-      : e.keys.some((k) => k.startsWith(q))
+      : e.main.startsWith(q)
         ? 1
-        : e.keys.some((k) => (' ' + k).includes(' ' + q))
+        : e.keys.some((k) => k.startsWith(q))
           ? 2
-          : e.keys.some((k) => tokens.every((t) => k.includes(t)))
+          : e.keys.some((k) => (' ' + k).includes(' ' + q))
             ? 3
-            : -1;
+            : e.keys.some((k) => tokens.every((t) => k.includes(t)))
+              ? 4
+              : -1;
     if (s >= 0) hits.push({ e, s });
   }
   hits.sort((a, b) => a.s - b.s || a.e.main.length - b.e.main.length || a.e.main.localeCompare(b.e.main));

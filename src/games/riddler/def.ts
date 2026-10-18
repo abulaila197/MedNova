@@ -38,7 +38,7 @@ export const riddler: GameDef = {
       blurb: `${RIDDLES.length} picture riddles. Read the rebus, name the condition or sign.`,
       howTo: [
         'Pick any level. Each one is a picture puzzle that spells out a medical condition, sign or symptom.',
-        'Type 2 letters or more, then tap your answer. You have 3 lives per level.',
+        'Type 3 letters or more, then tap your answer. You have 3 lives per level.',
         '3 stars: solved in 30 s with no wrong guess. 2 stars: 60 s and at most 1 wrong. Any other solve: 1 star.',
         'Stuck? Show the definition for 1 token. It caps that level at 2 stars.',
         'Each star is worth 4 EXP. Replays only pay for stars above your best. Missed conditions go to Today\'s review.',

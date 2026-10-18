@@ -317,7 +317,7 @@ export function namesOf(bank: Bank): Named[] {
 }
 
 /** Type-ahead chips after 4 letters, up to 3, drawn from a whole style's answers so they don't give the round away. */
-export const suggest = (index: NameIndex<Named>, text: string) => searchNames(index, text, { min: BALANCE.SUGGEST_MIN_LETTERS, max: BALANCE.SUGGEST_MAX });
+export const suggest = (index: NameIndex<Named>, text: string) => searchNames(index, text, { min: BALANCE.SUGGEST_MIN_LETTERS, max: BALANCE.SUGGEST_MAX, exactShort: false });
 export const clueIndex = (bank: Bank) => indexNames(bank.byStyle.clue.map((q) => q.answer));
 
 // ---------------------------------------------------------------- reducer

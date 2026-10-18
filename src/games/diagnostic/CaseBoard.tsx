@@ -264,7 +264,7 @@ function Actions({ canReveal, hint, onSkip, onReveal }: { canReveal: boolean; hi
   );
 }
 
-/** Type-ahead answer box: 2+ letters, up to 5 suggestions above the field, Submit takes a picked suggestion. */
+/** Type-ahead answer box: 3+ letters (a short name typed in full from 2), up to 5 suggestions above the field, Submit takes a picked suggestion. */
 function AnswerBox({ wrong, wrongSeq, focused, onFocus, onBlur, onGuess }: { wrong: string[]; wrongSeq: number; focused: boolean; onFocus: () => void; onBlur: () => void; onGuess: (g: GuessEntry) => void }) {
   const t = useTheme();
   const [text, setText] = useState('');

@@ -75,4 +75,7 @@ test('search: prefix, alias, min 3 letters, max 5', () => {
   assert.deepEqual(search(idx, 'mya').map((e) => e.id), ['my']);
   assert.deepEqual(search(idx, 'myo').map((e) => e.id), ['mi']);
   assert.deepEqual(search(idx, 'heart').map((e) => e.id), ['mi']);
+  // GA3: a 2-letter other name typed in full shows, and an exact name ranks first.
+  assert.deepEqual(search(idx, 'MI').map((e) => e.id), ['mi']);
+  assert.deepEqual(search(idx, 'm'), []);
 });

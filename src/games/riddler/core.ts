@@ -28,7 +28,7 @@ export const RD = {
   /** RD9: 4 EXP per star. */
   expPerStar: 4,
   hintPrice: 1, // as coded: 1 token shows the definition
-  /** Answer box (as coded): suggestions from 2 letters, up to 5. */
+  /** Answer box: suggestions from 3 letters (a short other name like TB typed in full shows from 2), up to 5. */
   minQuery: 3,
   maxSuggestions: 5,
 };
@@ -111,7 +111,7 @@ export type Answer = Named & { id: string };
 
 const indexes = new WeakMap<readonly Answer[], NameIndex<Answer>>();
 
-/** Nothing until 2 letters; then up to 5: main name prefix, other name prefix, word prefix, then all words. */
+/** Nothing until 3 letters (a short name typed in full shows from 2); then up to 5: main name prefix, other name prefix, word prefix, then all words. */
 export function search(list: readonly Answer[], raw: string, skip: readonly string[] = []): Answer[] {
   let index = indexes.get(list);
   if (!index) indexes.set(list, (index = indexNames(list)));

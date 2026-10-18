@@ -158,7 +158,7 @@ export function RiddleBoard(p: BoardProps) {
   );
 }
 
-/** As coded: 2+ letters, up to 5 suggestions above the field; tapping one answers. */
+/** 3+ letters (a short name typed in full from 2), up to 5 suggestions above the field; tapping one answers. */
 function AnswerBox({ wrong, wrongSeq, locked, disabled, onGuess }: { wrong: string[]; wrongSeq: number; locked: boolean; disabled: boolean; onGuess: (id: string) => void }) {
   const t = useTheme();
   const [text, setText] = useState('');
@@ -205,7 +205,7 @@ function AnswerBox({ wrong, wrongSeq, locked, disabled, onGuess }: { wrong: stri
           onChangeText={setText}
           onSubmitEditing={() => exact && pick(exact.id)}
           editable={!locked && !disabled}
-          placeholder={locked ? 'Wait for the lock…' : 'Type 2+ letters, then tap your answer'}
+          placeholder={locked ? 'Wait for the lock…' : 'Type 3+ letters, then tap your answer'}
           placeholderTextColor={t.dim}
           autoCorrect={false}
           autoCapitalize="none"
