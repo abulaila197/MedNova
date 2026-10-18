@@ -12,8 +12,7 @@ import { u } from '@/theme/scale';
 import { levelUpLine } from '../engine/levels';
 import type { Mode, Play, PlayItem, Seat } from '../engine/types';
 import { removableSeats, type PauseProps } from '../shell/PauseMenu';
-import { CHARACTERS } from '../shell/characters';
-import { Face } from '../shell/Face';
+import { SEAT_COLOURS } from '../shell/characters';
 import type { GameDef } from '../shell/types';
 import { useSetup } from '../shell/useSetup';
 import { useLanding, useResults } from '../shell/useShellPages';
@@ -197,7 +196,7 @@ function Gate({ def, mode }: { def: GameDef; mode: Mode }) {
 /** The intake form: teams as typed tick boxes, investigators on typed lines, team marks as ink squares. */
 function Setup({ def, mode, prefill, prefillSeats }: { def: GameDef; mode: Mode; prefill?: Record<string, unknown>; prefillSeats?: Seat[] }) {
   const st = useSetup(def, mode, prefill, prefillSeats);
-  const { opts, vals, setVals, range, seats, setSeat, pickCharacter, addSeat, removeSeat, canTeam, teams, teamCount, renameTeam, teamChoices, preset, emptyTeam, busy, start } = st;
+  const { opts, vals, setVals, range, seats, setSeat, pickColour, addSeat, removeSeat, canTeam, teams, teamCount, renameTeam, teamChoices, preset, emptyTeam, busy, start } = st;
   return (
     <NoirScreen scroll>
       <View style={{ gap: u(7) }}>
@@ -302,23 +301,23 @@ function Setup({ def, mode, prefill, prefillSeats }: { def: GameDef; mode: Mode;
                       </Pressable>
                     ) : null}
                   </View>
-                  {/* AV1: the 9 characters as small photos clipped to the form; the chosen one is circled in ink. */}
+                  {/* The 8 player colours as ink dots on the form; the chosen one is circled in ink. */}
                   <View style={sh.faces}>
-                    {CHARACTERS.map((c) => {
-                      const taken = seats.some((o, j) => j !== i && o.character === c.slug);
-                      const on = x.character === c.slug;
+                    {SEAT_COLOURS.map((c) => {
+                      const taken = seats.some((o, j) => j !== i && o.color === c.color);
+                      const on = x.color === c.color;
                       return (
                         <Pressable
-                          key={c.slug}
+                          key={c.color}
                           disabled={taken}
-                          onPress={() => pickCharacter(i, c.slug)}
+                          onPress={() => pickColour(i, c.color)}
                           hitSlop={u(1)}
                           style={[sh.face, { opacity: on ? 1 : taken ? 0.18 : 0.6, borderColor: on ? PAPER.ink : 'transparent' }]}
                           accessibilityRole="button"
                           accessibilityState={{ selected: on, disabled: taken }}
                           accessibilityLabel={`${c.name} for investigator ${i + 1}`}
                         >
-                          <Face slug={c.slug} size={u(16)} />
+                          <View style={{ width: u(16), height: u(16), borderRadius: u(8), backgroundColor: c.color }} />
                         </Pressable>
                       );
                     })}
@@ -327,7 +326,7 @@ function Setup({ def, mode, prefill, prefillSeats }: { def: GameDef; mode: Mode;
                 );
               })}
               <Ink size={11} color={PAPER.soft}>
-                {`${teams ? 'Tap a square by each investigator to pick their team.' : 'Tap a photo to pick an investigator’s character.'} ${def.playersNote?.(seats.length) ?? ''}`.trim()}
+                {`${teams ? 'Tap a square by each investigator to pick their team.' : 'Tap a dot to pick an investigator’s colour.'} ${def.playersNote?.(seats.length) ?? ''}`.trim()}
               </Ink>
             </>
           ) : (

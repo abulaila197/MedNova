@@ -1,11 +1,12 @@
 import { router, useFocusEffect } from 'expo-router';
-import { useCallback, useRef, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
 import { Text } from '@/components/AppText';
 import { LinearGradient } from 'expo-linear-gradient';
 import Animated, { interpolateColor, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue, type SharedValue } from 'react-native-reanimated';
 
 import { Screen } from '@/components/Screen';
+import { loadChallenges, logChallenge, useChests } from '@/features/chests/useChests';
 import { customId, loadCases, useCases, type CustomCase } from '@/features/learn/cases';
 import { startPlay } from '@/games/shell/flow';
 import { useSession } from '@/games/shell/session';
@@ -81,6 +82,15 @@ function ReviewPage({ pile, reload }: { pile: Card[] | null; reload: () => Promi
   const card = pile?.[0];
   const total = Math.max(start, pile?.length ?? 0);
   const done = total - (pile?.length ?? 0);
+  // Challenge 3 asks for an empty review pile; it counts once the pile is empty while that challenge is on.
+  const wantsReview = useChests((x) => x.c?.step === 3 && x.c.tasks[2]?.some((k) => k.k === 'review' && k.n < k.of));
+  const empty = pile?.length === 0;
+  useEffect(() => {
+    void loadChallenges();
+  }, []);
+  useEffect(() => {
+    if (empty && wantsReview) logChallenge('review');
+  }, [empty, wantsReview]);
   const act = async (fn: (c: Card) => Promise<void>) => {
     if (!card) return;
     setStart(total);

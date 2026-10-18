@@ -1,14 +1,19 @@
+import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { Modal, Pressable, StyleSheet, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming, runOnJS } from 'react-native-reanimated';
+import Svg, { Path, Rect } from 'react-native-svg';
+import { useShallow } from 'zustand/react/shallow';
 
 import { Text } from '@/components/AppText';
 import { Congrats } from '@/components/Congrats';
 import { Screen } from '@/components/Screen';
 import { useSession } from '@/games/shell/session';
+import { MECHS, MECHS_PRIZE } from '@/features/chests/data';
 import { InfoScroll, Kicker, s as ui, useInfo } from '@/features/info/ui';
+import { loadStyle, useStyle } from '@/features/style/useStyle';
 import { u } from '@/theme/scale';
 import type { Theme } from '@/theme/tokens';
 import { F } from '@/theme/tokens';
@@ -25,11 +30,14 @@ export function CollectionPage() {
   const status = useHunt((h) => h.status);
   const found = status?.found ?? [];
   const [open, setOpen] = useState<number | null>(null);
+  const [mech, setMech] = useState<number | null>(null);
+  const mechs = useStyle(useShallow((x) => x.owned.filter((k) => k.startsWith('mech:')).map((k) => k.slice(5))));
   const [busy, setBusy] = useState(false);
   const [won, setWon] = useState(false);
   const [err, setErr] = useState('');
   useFocusEffect(
     useCallback(() => {
+      void loadStyle();
       loadHunt().catch(() => setErr('Could not load your cards. Check your connection.'));
       // eslint-disable-next-line react-hooks/exhaustive-deps -- signedIn only re-runs the load when the account changes while the page is open
     }, [signedIn]),
@@ -84,7 +92,9 @@ export function CollectionPage() {
           {err ? <Text style={[s.hint, { color: t.red, marginTop: u(8) }]}>{err}</Text> : null}
         </View>
         <Binder t={t} found={found} onOpen={setOpen} />
+        <Mechs t={t} owned={mechs} onOpen={setMech} />
       </InfoScroll>
+      <MechViewer i={mech} onClose={() => setMech(null)} />
       <Viewer t={t} i={open} onClose={() => setOpen(null)} />
       <Congrats open={won} tokens={HUNT_PRIZE} title="The hunt is complete" line="Nine cards, nine missions, one weary medic. Your tokens are in your wallet." onClose={() => setWon(false)} />
     </Screen>
@@ -106,6 +116,73 @@ function Binder({ t, found, onOpen }: { t: Theme; found: string[]; onOpen: (i: n
         );
       })}
     </View>
+  );
+}
+
+/** Nova Mechs (Yazan 2026-10-18): front-only cards won from daily chests; all 8 pay a one-off prize. */
+function Mechs({ t, owned, onOpen }: { t: Theme; owned: string[]; onOpen: (i: number) => void }) {
+  const w = Math.floor((u(246) - u(10) * 2 - u(16) - 4) / 3);
+  const n = MECHS.filter((m) => owned.includes(m.key)).length;
+  return (
+    <View style={{ marginTop: u(22) }}>
+      <Kicker>Daily chests</Kicker>
+      <Text style={[ui.H, { color: t.fg, fontFamily: F.display }]}>
+        {'Nova '}
+        <Text style={[ui.H, { color: t.accent, fontFamily: F.displayItalic }]}>Mechs</Text>
+      </Text>
+      <View style={s.count}>
+        <Text style={[s.countT, { color: t.fg }]}>{`${n} of ${MECHS.length} won`}</Text>
+        <View style={s.pips}>
+          {MECHS.map((m) => (
+            <View key={m.key} style={[s.pip, { backgroundColor: owned.includes(m.key) ? t.accent : t.panelLine }]} />
+          ))}
+        </View>
+      </View>
+      <Text style={[s.hint, { color: t.mute }]}>{n === MECHS.length ? `All eight won. ${MECHS_PRIZE} tokens collected.` : `Robots drop from daily chests. Win all eight for ${MECHS_PRIZE} tokens.`}</Text>
+      <View style={[s.binder, { backgroundColor: 'rgba(255,255,255,0.03)', borderColor: t.panelLine }]}>
+        {MECHS.map((m, i) => {
+          const has = owned.includes(m.key);
+          return (
+            <Pressable key={m.key} disabled={!has} onPress={() => onOpen(i)} style={{ width: w, alignItems: 'center' }} accessibilityRole="button" accessibilityLabel={has ? `Open ${m.name}` : 'Locked robot'}>
+              <View style={[s.mSleeve, { width: w, borderRadius: w * 0.07 }]}>
+                <Image source={m.card} style={[{ width: w - 6, height: (w - 6) * MECH_RATIO, borderRadius: w * 0.05 }, !has && { opacity: 0.12 }]} contentFit="cover" />
+                {!has ? (
+                  <View style={[StyleSheet.absoluteFill, s.lock]}>
+                    <Svg width={u(12)} height={u(12)} viewBox="0 0 24 24">
+                      <Rect x={5} y={10.5} width={14} height={10} rx={2} fill={t.fg} />
+                      <Path d="M8 10.5 V8 a4 4 0 0 1 8 0 V10.5" stroke={t.fg} strokeWidth={2.2} fill="none" />
+                    </Svg>
+                  </View>
+                ) : null}
+              </View>
+              <Text style={[s.bName, { color: has ? t.fg : t.mute }]}>{has ? m.name : '★'.repeat(m.stars)}</Text>
+            </Pressable>
+          );
+        })}
+      </View>
+    </View>
+  );
+}
+
+const MECH_RATIO = 860 / 480;
+
+function MechViewer({ i, onClose }: { i: number | null; onClose: () => void }) {
+  if (i === null) return null;
+  const m = MECHS[i];
+  const w = u(196);
+  return (
+    <Modal transparent visible animationType="fade" onRequestClose={onClose}>
+      <Pressable style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(3,4,12,0.86)' }]} onPress={onClose} accessibilityLabel="Close" />
+      <View style={s.view} pointerEvents="box-none">
+        <View style={[s.mSleeve, { width: w, borderRadius: w * 0.07 }]}>
+          <Image source={m.card} style={{ width: w - 6, height: (w - 6) * MECH_RATIO, borderRadius: w * 0.05 }} contentFit="cover" />
+        </View>
+        <Text style={[s.flipT, { color: 'rgba(240,242,255,0.75)' }]}>{`${m.name}, ${m.title}`}</Text>
+        <Pressable onPress={onClose} style={s.close} accessibilityRole="button">
+          <Text style={s.closeT}>Close</Text>
+        </Pressable>
+      </View>
+    </Modal>
   );
 }
 
@@ -168,6 +245,8 @@ const s = StyleSheet.create({
   prizeT: { fontFamily: F.bodyBold, fontSize: u(11.5) },
   binder: { marginTop: u(14), borderWidth: 1, borderRadius: u(20), padding: u(10), flexDirection: 'row', flexWrap: 'wrap', columnGap: u(8), rowGap: u(10) },
   bName: { fontFamily: F.mono, fontSize: u(7.5), letterSpacing: u(1), marginTop: u(5), textTransform: 'uppercase' },
+  lock: { alignItems: 'center', justifyContent: 'center' },
+  mSleeve: { padding: 3, backgroundColor: 'rgba(190,205,255,0.07)', borderWidth: 1, borderColor: 'rgba(200,215,255,0.22)' },
   view: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   flipT: { fontFamily: F.bodyMedium, fontSize: u(11), marginTop: u(16) },
   close: { marginTop: u(10), paddingHorizontal: u(18), paddingVertical: u(8), borderRadius: 999, borderWidth: 1, borderColor: 'rgba(255,255,255,0.3)' },

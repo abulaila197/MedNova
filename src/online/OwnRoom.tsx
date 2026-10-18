@@ -1,7 +1,7 @@
 import * as Clipboard from 'expo-clipboard';
 import { router } from 'expo-router';
 import { useEffect, useMemo, useRef, useState, type ComponentType, type ReactNode } from 'react';
-import { Platform, Pressable, Share, StyleSheet, View, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
+import { Platform, Pressable, StyleSheet, View, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
 import { Text, TextInput } from '@/components/AppText';
 
 import { LevelBadge } from '@/components/LevelBadge';
@@ -11,6 +11,7 @@ import { Face } from '@/games/shell/Face';
 import { presetTeam } from '@/games/shell/teams';
 import type { GameDef } from '@/games/shell/types';
 import { useAccount } from '@/state/account';
+import { shareText } from '@/lib/share';
 
 import { createRoom, JOIN_SAY, joinRoom, joinRoomId, leaveRoom, rematchRoom, setReady, setTeam, startMatch, type Seat } from './api';
 import { settingsLine } from './format';
@@ -320,7 +321,7 @@ export function OwnLobby({ kit, def, roomId }: { kit: RoomKit; def: GameDef; roo
     );
   }
 
-  const share = () => Share.share({ message: `Join my ${w.game} room on MedNova. ${w.code}: ${spaced(room.code)}` }).catch(() => {});
+  const share = () => shareText(`Join my ${w.game} room on MedNova. ${w.code}: ${spaced(room.code)}`);
   const allReady = players.length >= 2 && players.every((p) => p.ready);
   const notReady = players.filter((p) => !p.ready);
   const status =

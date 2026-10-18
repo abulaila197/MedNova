@@ -1,0 +1,92 @@
+import { router, useFocusEffect } from 'expo-router';
+import { useCallback } from 'react';
+import { Pressable, StyleSheet, View } from 'react-native';
+import Svg, { Circle, G, Path } from 'react-native-svg';
+
+import { Text } from '@/components/AppText';
+import { useTheme } from '@/state/app';
+import { u } from '@/theme/scale';
+import { F } from '@/theme/tokens';
+
+import { chestCount, loadChallenges, useChests } from './useChests';
+
+/** The chest button under Grand Rounds on the Games page; the badge counts unopened chests. */
+export function ChestButton() {
+  const t = useTheme();
+  const count = useChests((x) => chestCount(x.c));
+  useFocusEffect(
+    useCallback(() => {
+      void loadChallenges();
+    }, []),
+  );
+  const line = {
+    stroke: t.accent,
+    strokeWidth: 2.4,
+    fill: 'none',
+    strokeLinejoin: 'round' as const,
+    strokeLinecap: 'round' as const,
+  };
+  return (
+    <Pressable
+      onPress={() => router.navigate('/chests' as never)}
+      style={[s.btn, { backgroundColor: t.panel, borderColor: t.panelLine }]}
+      accessibilityRole='button'
+      accessibilityLabel={`Chests, ${count} to open`}
+    >
+      {/* Same face as the Grand Rounds button: a faint ring at the same size, the chest inside. */}
+      <Svg width={u(30)} height={u(30)} viewBox='0 0 30 30'>
+        <Circle
+          cx={15}
+          cy={15}
+          r={13}
+          fill='none'
+          stroke={t.chipLine}
+          strokeWidth={1.6}
+        />
+        <G transform='translate(7.5 7.5) scale(0.625)'>
+          <Path
+            d='M4 10 C4 6.5 6.5 4.5 12 4.5 C17.5 4.5 20 6.5 20 10 Z'
+            {...line}
+          />
+          <Path
+            d='M4 10 H20 V18.5 A1 1 0 0 1 19 19.5 H5 A1 1 0 0 1 4 18.5 Z'
+            {...line}
+          />
+          <Path d='M10.5 9 H13.5 V13 H10.5 Z' {...line} />
+        </G>
+      </Svg>
+      {count > 0 ? (
+        <View style={[s.badge, { backgroundColor: t.red, borderColor: t.sky }]}>
+          <Text style={s.badgeT}>{count}</Text>
+        </View>
+      ) : null}
+    </Pressable>
+  );
+}
+
+const s = StyleSheet.create({
+  btn: {
+    position: 'absolute',
+    right: u(16),
+    top: u(50),
+    width: u(34),
+    height: u(34),
+    borderRadius: u(17),
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  badge: {
+    position: 'absolute',
+    right: u(-3),
+    top: u(-3),
+    minWidth: u(14),
+    height: u(14),
+    borderRadius: u(7),
+    borderWidth: 1.5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: u(3),
+  },
+  badgeT: { color: '#fff', fontFamily: F.bodyBold, fontSize: u(7.5) },
+});

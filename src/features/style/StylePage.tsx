@@ -35,7 +35,9 @@ const TABS: { k: Tab; label: string }[] = [
 ];
 
 // Text sticker packs (Yazan 2026-10-13); character stickers are free and not sold.
-const PACKS: Item[] = TEXT_PACKS.map((p) => ({ id: `pack:${p.key}`, key: p.key, name: p.name, price: PACK_PRICE }));
+// The 3 daily chest packs are shown but never sold (Yazan 2026-10-18).
+const PACKS: Item[] = TEXT_PACKS.map((p) => ({ id: `pack:${p.key}`, key: p.key, name: p.name, price: p.chest ? null : PACK_PRICE }));
+const fromChest = (id: string) => !!textPackOf(id.replace(/^pack:/, ''))?.chest;
 
 const left = (ms: number) => {
   const h = Math.max(0, Math.floor((ms - Date.now()) / 3600000));
@@ -178,7 +180,7 @@ export function StylePage() {
                   <Text style={[s.rN, { color: tab === 'titles' ? titleColor(t.mode, it.key, c.fg) : c.fg, fontFamily: tab === 'titles' ? F.displayItalic : F.bodySemi }]}>{it.name}</Text>
                   {tab === 'effects' ? <Text style={[s.rS, { color: c.mute }]}>{(it as (typeof EFFECTS)[number]).what}</Text> : null}
                   {tab === 'stickers' ? <Stickers slug={it.key} /> : null}
-                  {it.price == null ? <Text style={[s.rS, { color: c.mute }]}>{'Earned at this achievement\u2019s Platinum tier'}</Text> : null}
+                  {it.price == null ? <Text style={[s.rS, { color: c.mute }]}>{fromChest(it.id) ? 'From daily chests' : 'Earned at this achievement\u2019s Platinum tier'}</Text> : null}
                 </View>
                 <Price t={t} it={it} deal={deal} owned={has(it.id)} wearing={wearing(it)} />
               </Pressable>
@@ -210,7 +212,7 @@ export function StylePage() {
                 <Big t={t} label="Wear" busy={busy} onPress={() => act(() => wear({ [pick.id.split(':')[0]]: pick.id.slice(pick.id.indexOf(':') + 1) }), 'Done. Everyone sees it now.')} />
               )
             ) : pick.price == null ? (
-              <Text style={[s.barS, { color: c.mute }]}>Earned, not sold</Text>
+              <Text style={[s.barS, { color: c.mute }]}>{fromChest(pick.id) ? 'From daily chests' : 'Earned, not sold'}</Text>
             ) : (
               <Big t={t} label={`Buy · ${costOf(pick, deal)}`} busy={busy} onPress={() => act(() => buyItem(pick.id), 'Bought. Tap Wear to put it on.')} />
             )}

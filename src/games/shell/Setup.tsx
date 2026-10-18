@@ -8,8 +8,7 @@ import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import type { Mode, Seat } from '../engine/types';
-import { CHARACTERS } from './characters';
-import { Face } from './Face';
+import { SEAT_COLOURS } from './characters';
 import type { Team } from './teams';
 import type { GameDef } from './types';
 import { useSetup } from './useSetup';
@@ -60,10 +59,10 @@ export function Setup({ def, mode, prefill, prefillSeats }: { def: GameDef; mode
 
 type SetupState = ReturnType<typeof useSetup>;
 
-/** Players for a one-phone game: a name and a character each (AV1). Player 1 is the phone owner (DPO6). */
+/** Players for a one-phone game: a name and a colour each. Player 1 is the phone owner (DPO6). */
 function Players({ st, min, max, note, teams }: { st: SetupState; min: number; max: number; note?: string; teams: Team[] | null }) {
   const t = useTheme();
-  const { seats, setSeat: set, addSeat: add, removeSeat: remove, pickCharacter } = st;
+  const { seats, setSeat: set, addSeat: add, removeSeat: remove, pickColour } = st;
   return (
     <Card style={s.card}>
       <View style={s.head}>
@@ -115,21 +114,21 @@ function Players({ st, min, max, note, teams }: { st: SetupState; min: number; m
             ) : null}
           </View>
           <View style={s.sw}>
-            {CHARACTERS.map((c) => {
-              const taken = seats.some((o, j) => j !== i && o.character === c.slug);
-              const on = x.character === c.slug;
+            {SEAT_COLOURS.map((c) => {
+              const taken = seats.some((o, j) => j !== i && o.color === c.color);
+              const on = x.color === c.color;
               return (
                 <Pressable
-                  key={c.slug}
+                  key={c.color}
                   disabled={taken}
-                  onPress={() => pickCharacter(i, c.slug)}
+                  onPress={() => pickColour(i, c.color)}
                   hitSlop={u(1)}
                   style={[s.face, { opacity: taken ? 0.2 : 1, borderColor: on ? t.white : 'transparent' }]}
                   accessibilityRole="button"
                   accessibilityState={{ selected: on, disabled: taken }}
                   accessibilityLabel={`${c.name} for player ${i + 1}`}
                 >
-                  <Face slug={c.slug} size={u(15.5)} />
+                  <View style={{ width: u(15.5), height: u(15.5), borderRadius: u(7.75), backgroundColor: c.color }} />
                 </Pressable>
               );
             })}

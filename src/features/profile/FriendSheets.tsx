@@ -1,7 +1,7 @@
 import * as Clipboard from 'expo-clipboard';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useRef, useState } from 'react';
-import { Pressable, Share, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { Text, TextInput } from '@/components/AppText';
 
 import { useBalance } from '@/components/LevelBadge';
@@ -14,6 +14,7 @@ import { useTheme } from '@/state/app';
 import { blockUser, removeFriend, type RequestResult, requestFriend, seenLabel } from '@/state/friends';
 import { u } from '@/theme/scale';
 import { F, type Theme } from '@/theme/tokens';
+import { shareText } from '@/lib/share';
 
 import { Name, openReport, useFriendSheet } from './Friends';
 
@@ -103,7 +104,7 @@ function AddFriend() {
         </Pressable>
         <Pressable
           style={[s.gh, { borderColor: t.panelLine }]}
-          onPress={() => Share.share({ message: `Add me on MedNova: ${link}\nOr type my friend code: ${mine}` }).catch(() => {})}
+          onPress={() => shareText(`Add me on MedNova: ${link}\nOr type my friend code: ${mine}`)}
           accessibilityRole="button">
           <Text style={[s.ghT, { color: t.fg }]}>Share link</Text>
         </Pressable>

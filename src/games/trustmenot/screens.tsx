@@ -4,7 +4,7 @@
 // state from useRoom.
 import { router } from 'expo-router';
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { Platform, Pressable, ScrollView, Share, StyleSheet, View } from 'react-native';
+import { Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { TextInput } from '@/components/AppText';
 import Svg, { Line } from 'react-native-svg';
 
@@ -12,6 +12,7 @@ import { createRoom, JOIN_SAY, joinRoom, joinRoomId, leaveRoom, rematchRoom, set
 import { lobbyOf, useJoin, useOpenRooms } from '@/online/useJoin';
 import { useRoom } from '@/online/useRoom';
 import { useAccount } from '@/state/account';
+import { shareText } from '@/lib/share';
 
 import type { Mode } from '../engine/types';
 import { useSession } from '../shell/session';
@@ -365,7 +366,7 @@ function Lobby({ def, roomId }: { def: GameDef; roomId: string }) {
 
   const q = questionsOf(def);
   const mix = (room.settings.mix as string | undefined) ?? q?.initial ?? 'mixed';
-  const share = () => Share.share({ message: `Join my camp in Trust Me Not on MedNova. Camp code: ${room.code}` }).catch(() => {});
+  const share = () => shareText(`Join my camp in Trust Me Not on MedNova. Camp code: ${room.code}`);
   const setMix = (v: string | number) => updateRoom(room.id, { ...room.settings, mix: v }, room.is_public).then(reload).catch(() => {});
   const start = async () => {
     setBusy(true);

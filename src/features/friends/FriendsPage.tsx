@@ -1,7 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Pressable, Share, StyleSheet, TextInput, View } from 'react-native';
+import { Pressable, StyleSheet, TextInput, View } from 'react-native';
 
 import { Text } from '@/components/AppText';
 import { Congrats } from '@/components/Congrats';
@@ -17,6 +17,7 @@ import { type Friend, loadFriends, useFriends } from '@/state/friends';
 import { u } from '@/theme/scale';
 import type { Theme } from '@/theme/tokens';
 import { F } from '@/theme/tokens';
+import { shareText } from '@/lib/share';
 
 type Found = Omit<Friend, 'kind' | 'last_seen'> & { kind: Friend['kind'] | 'none' };
 
@@ -70,7 +71,7 @@ export function FriendsPage() {
 /** Your invite code (= friend code): a new player redeems it and you both get 10 tokens, up to 150 for you. */
 function Strip({ t, code }: { t: Theme; code: string }) {
   const earned = useFree((x) => x.status?.invite_tokens ?? 0);
-  const share = () => Share.share({ message: `Join me on MedNova, the medical games app. Enter my invite code ${code} on the Friends page and we both get 10 tokens.` }).catch(() => {});
+  const share = () => shareText(`Join me on MedNova, the medical games app. Enter my invite code ${code} on the Friends page and we both get 10 tokens.`);
   return (
     <View style={[s.strip, { borderColor: t.panelLine, backgroundColor: t.panel }]}>
       <View>

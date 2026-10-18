@@ -11,8 +11,7 @@ import { u } from '@/theme/scale';
 import { levelUpLine } from '../engine/levels';
 import type { Mode, Play, PlayItem, Seat } from '../engine/types';
 import { removableSeats, type PauseProps } from '../shell/PauseMenu';
-import { CHARACTERS } from '../shell/characters';
-import { Face } from '../shell/Face';
+import { SEAT_COLOURS } from '../shell/characters';
 import type { GameDef } from '../shell/types';
 import { useSetup } from '../shell/useSetup';
 import { useLanding, useResults } from '../shell/useShellPages';
@@ -113,7 +112,7 @@ function Gate({ def, mode }: { def: GameDef; mode: Mode }) {
 // ---------------------------------------------------------------- setup: tonight's bill
 
 function Setup({ def, mode, prefill, prefillSeats }: { def: GameDef; mode: Mode; prefill?: Record<string, unknown>; prefillSeats?: Seat[] }) {
-  const { opts, vals, setVals, range, seats, setSeat, pickCharacter, addSeat, removeSeat, busy, start } = useSetup(def, mode, prefill, prefillSeats);
+  const { opts, vals, setVals, range, seats, setSeat, pickColour, addSeat, removeSeat, busy, start } = useSetup(def, mode, prefill, prefillSeats);
   return (
     <VelvetScreen scroll>
       <View style={{ gap: u(3) }}>
@@ -171,14 +170,14 @@ function Setup({ def, mode, prefill, prefillSeats }: { def: GameDef; mode: Mode;
                   </Pressable>
                 ) : null}
               </View>
-              {/* AV1: the 9 characters, the chosen one ringed in stage red. */}
+              {/* The 8 player colours, the chosen one ringed in stage red. */}
               <View style={s.faces}>
-                {CHARACTERS.map((c) => {
-                  const on = x.character === c.slug;
-                  const taken = seats.some((o, j) => j !== i && o.character === c.slug);
+                {SEAT_COLOURS.map((c) => {
+                  const on = x.color === c.color;
+                  const taken = seats.some((o, j) => j !== i && o.color === c.color);
                   return (
-                    <Pressable key={c.slug} disabled={taken} onPress={() => pickCharacter(i, c.slug)} hitSlop={u(1)} accessibilityRole="button" accessibilityState={{ selected: on, disabled: taken }} accessibilityLabel={`${c.name} for player ${i + 1}`} style={[s.face, { opacity: on ? 1 : taken ? 0.18 : 0.55, borderColor: on ? VV.redInk : 'transparent' }]}>
-                      <Face slug={c.slug} size={u(16)} />
+                    <Pressable key={c.color} disabled={taken} onPress={() => pickColour(i, c.color)} hitSlop={u(1)} accessibilityRole="button" accessibilityState={{ selected: on, disabled: taken }} accessibilityLabel={`${c.name} for player ${i + 1}`} style={[s.face, { opacity: on ? 1 : taken ? 0.18 : 0.55, borderColor: on ? VV.redInk : 'transparent' }]}>
+                      <View style={{ width: u(16), height: u(16), borderRadius: u(8), backgroundColor: c.color }} />
                     </Pressable>
                   );
                 })}

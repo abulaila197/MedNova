@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 import Svg, { Defs, LinearGradient as SvgLinear, Path, Stop } from 'react-native-svg';
+import { useShallow } from 'zustand/react/shallow';
 
 import { LevelBadge, useBalance } from '@/components/LevelBadge';
 import { Display } from '@/components/Txt';
@@ -10,12 +11,14 @@ import { Fade } from '@/components/Fade';
 import { useSvgId } from '@/components/svgId';
 import { FriendCount } from '@/features/profile/Friends';
 import { Face } from '@/games/shell/Face';
+import { supabase } from '@/lib/supabase';
 import { deleteAccount, useAccount } from '@/state/account';
 import { useTheme } from '@/state/app';
 import { loadFriends, unblockUser, useFriends } from '@/state/friends';
 import { u } from '@/theme/scale';
 import { F, type Theme } from '@/theme/tokens';
 
+import { CharacterPicker } from './CharacterPicker';
 import { useProfileStats } from './stats';
 import { titleName } from '@/features/style/catalog';
 import { Framed } from '@/features/style/Frame';
@@ -60,8 +63,24 @@ export function Profile() {
   useEffect(() => {
     void loadStyle();
   }, [profile?.id]);
+  const [pick, setPick] = useState(false);
+  const mechs = useStyle(useShallow((x) => x.owned.filter((k) => k.startsWith('mech:')).map((k) => k.slice(5))));
+  // The server checks a robot is yours before you can wear it (set_avatar).
+  const wearCharacter = async (slug: string) => {
+    if (!profile) {
+      setPick(false);
+      router.navigate('/auth');
+      return;
+    }
+    const { data } = await supabase.rpc('set_avatar', { slug });
+    if ((data as { ok?: boolean } | null)?.ok) {
+      useAccount.setState({ profile: { ...profile, avatar: slug } });
+      setPick(false);
+    }
+  };
   const pct = (a: number | null | undefined) => (a == null ? '–' : `${Math.round(a * 100)}%`);
   return (
+    <>
     <Fade stops={[[0, 0], [0.04, 1], [0.9, 1], [1, 0]]} style={s.area}>
       <ScrollView style={s.fill} contentContainerStyle={s.pf} showsVerticalScrollIndicator={false}>
         {/* Your framed face where the planet was (Yazan 2026-10-13: on the planet spot, orbit and moons removed). */}
@@ -79,6 +98,9 @@ export function Profile() {
           <Text style={[s.title, { color: titleColor(t.mode, look.title, t.accent) }]}>{titleName(look.title)}</Text>
           <Text style={[s.role, { color: t.mute }]}>{profile ? `@${profile.username.toUpperCase()}` : 'SIGN IN TO SAVE YOUR PROGRESS'}</Text>
           <View style={s.style}>
+            <Pressable onPress={() => setPick(true)} style={[s.stBtn, { backgroundColor: t.chip, borderColor: t.chipLine }]} accessibilityRole="button">
+              <Text style={[s.stT, { color: t.fg }]}>Change character</Text>
+            </Pressable>
             {[['Change frame', 'frames'], ['Change title', 'titles']].map(([l, tab]) => (
               <Pressable key={l} onPress={() => router.navigate(`/style?tab=${tab}` as never)} style={[s.stBtn, { backgroundColor: t.chip, borderColor: t.chipLine }]} accessibilityRole="button">
                 <Text style={[s.stT, { color: t.fg }]}>{l}</Text>
@@ -112,6 +134,8 @@ export function Profile() {
         {profile ? <DeleteAccount t={t} /> : null}
       </ScrollView>
     </Fade>
+    <CharacterPicker open={pick} onClose={() => setPick(false)} wearing={profile?.avatar ?? 'yara'} owned={mechs} onWear={wearCharacter} />
+    </>
   );
 }
 
@@ -199,7 +223,7 @@ const s = StyleSheet.create({
   me: { alignItems: 'center', paddingTop: u(18), paddingBottom: u(8) },
   idn: { marginTop: u(2), alignItems: 'center' },
   title: { marginTop: u(2), fontFamily: F.displayItalic, fontSize: u(12.5) },
-  style: { flexDirection: 'row', gap: u(8), marginTop: u(10) },
+  style: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: u(8), marginTop: u(10) },
   stBtn: { borderWidth: 1, borderRadius: 999, paddingHorizontal: u(12), paddingVertical: u(6) },
   stT: { fontFamily: F.bodySemi, fontSize: u(10.5) },
   nm: { flexDirection: 'row', alignItems: 'center', gap: u(7) },
