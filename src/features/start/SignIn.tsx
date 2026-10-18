@@ -8,6 +8,7 @@ import Svg, { Path } from 'react-native-svg';
 
 import { TopInset } from '@/components/TopInset';
 import { DISCLAIMER } from '@/features/info/content';
+import { takeAddCode } from '@/features/profile/pendingAdd';
 import { supabase } from '@/lib/supabase';
 import { call } from '@/online/api';
 import { u, useScreen } from '@/theme/scale';
@@ -117,7 +118,16 @@ export function SignIn() {
   const tall = Math.max(inH, upH);
   const padBottom = u(14) + ins.bottom;
   const padTop = tall && viewH ? Math.max(u(4), (viewH - tall - topGap) / 2) : u(14);
-  const enter = () => router.replace('/games');
+  // After signing in: a friend link opened as a guest goes on to Add friend; a sign-in opened from a page goes back
+  // to that page (no second Games page under it); a first launch (nothing behind) goes to Games (AP10e, AP10g).
+  const enter = () => {
+    const add = takeAddCode();
+    if (add) return router.replace(`/add/${add}`);
+    if (router.canGoBack()) return router.back();
+    router.replace('/games');
+  };
+  // Recovery: once the code is used the player is signed in, so a retry after a refused password skips it (AP7).
+  const [recovered, setRecovered] = useState(false);
   const legal = () => router.push('/privacy');
   const terms = () => router.push({ pathname: '/privacy', params: { doc: 'terms' } });
 
@@ -158,6 +168,9 @@ export function SignIn() {
       const { data, error } = await supabase.auth.signUp({ email: mail(), password, options: { data: { username: name, display_name: name } } });
       if (error) throw error;
       if (data.session) return enter(); // email confirmation switched off on the server
+      // With confirmations on, an email that already has an account gets no error and no email, just a user with no
+      // identities (anti-enumeration). Don't wait for a code that never comes (AP7).
+      if (data.user && !data.user.identities?.length) throw new Error('already registered');
       setStep('code');
       setNote({ text: `We sent a 6-digit code to ${mail()}.`, bad: false });
     });
@@ -171,6 +184,7 @@ export function SignIn() {
 
   const sendReset = () =>
     act(async () => {
+      setRecovered(false);
       const { error } = await supabase.auth.resetPasswordForEmail(mail());
       if (error) throw error;
       setStep('reset');
@@ -181,8 +195,13 @@ export function SignIn() {
 
   const reset = () =>
     act(async () => {
-      const v = await supabase.auth.verifyOtp({ email: mail(), token: code.trim(), type: 'recovery' });
-      if (v.error) throw v.error;
+      // Check the new password before the one-time code is spent (AP7).
+      if (password.length < 6) throw new Error('password should be at least 6 characters');
+      if (!recovered) {
+        const v = await supabase.auth.verifyOtp({ email: mail(), token: code.trim(), type: 'recovery' });
+        if (v.error) throw v.error;
+        setRecovered(true);
+      }
       const u2 = await supabase.auth.updateUser({ password });
       if (u2.error) throw u2.error;
       enter();
