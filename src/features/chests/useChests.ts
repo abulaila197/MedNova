@@ -8,6 +8,7 @@ import { syncAccount } from '@/lib/sync';
 import { loadStyle } from '@/features/style/useStyle';
 
 import type { ChestKind, Rarity } from './data';
+import { onAccountSwitch } from '@/state/accountSwitch';
 
 export type TaskKey = 'games' | 'ads' | 'shares' | 'review';
 export type Task = { k: TaskKey; n: number; of: number };
@@ -32,6 +33,7 @@ const NONE: Record<ChestKind, number> = { wooden: 0, golden: 0, diamond: 0, epic
 
 type State = { c: Challenges | null; at: number };
 export const useChests = create<State>(() => ({ c: null, at: 0 }));
+onAccountSwitch(() => useChests.setState({ c: null, at: 0 }));
 
 export const chestsOwned = (c: Challenges | null) => (c ? c.chests : NONE);
 export const chestCount = (c: Challenges | null) => Object.values(chestsOwned(c)).reduce((a, n) => a + n, 0);

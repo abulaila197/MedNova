@@ -18,6 +18,7 @@ import type { Theme } from '@/theme/tokens';
 import { F } from '@/theme/tokens';
 
 import { LINKS } from './links';
+import { onAccountSwitch } from '@/state/accountSwitch';
 
 type Icon = (p: { size: number; color: string }) => ReactNode;
 type Way = { key: string; label: string; tokens: number; each?: boolean; act: string; icon: Icon };
@@ -130,6 +131,7 @@ type OpenSheet = 'story' | 'feedback' | 'ambassador' | null;
 
 /** What this player already collected, and which sheet is open (drawn by the Store page above its scroll). */
 export const useFree = create<{ status: FreeStatus | null; sheet: OpenSheet }>(() => ({ status: null, sheet: null }));
+onAccountSwitch(() => useFree.setState({ status: null, sheet: null }));
 
 export async function loadFree() {
   if (!useSession.getState().userId) return useFree.setState({ status: null });

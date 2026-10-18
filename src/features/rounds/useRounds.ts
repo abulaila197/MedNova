@@ -5,6 +5,7 @@ import { GAMES } from '@/data/games';
 import { useSession } from '@/games/shell/session';
 import { supabase } from '@/lib/supabase';
 import { syncAccount } from '@/lib/sync';
+import { onAccountSwitch } from '@/state/accountSwitch';
 
 export type Week = { kind: 'game'; slot: number; game: string } | { kind: 'mode'; slot: number; mode: 'online' | 'solo' | 'offline' };
 export type Part = { k: 'solo' | 'online' | 'offline'; n?: number; of: number };
@@ -40,6 +41,7 @@ export const timeLeft = (ends: number) => {
 
 type State = { r: Rounds | null; at: number };
 export const useRoundsStore = create<State>(() => ({ r: null, at: 0 }));
+onAccountSwitch(() => useRoundsStore.setState({ r: null, at: 0 }));
 
 /** Reads this week's state (guests see the goal with no progress). Cheap: skips if read in the last 20 s unless forced. */
 export async function loadRounds(force = false) {

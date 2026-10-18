@@ -102,7 +102,9 @@ export function wantLooks(ids: (string | null | undefined)[]) {
     asking = new Set();
     timer = null;
     if (!useSession.getState().userId) return;
-    const { data } = await supabase.rpc('style_of', { ids: batch });
+    const { data, error } = await supabase.rpc('style_of', { ids: batch });
+    // A failed read caches nothing, so these players are asked again next time instead of showing plain all session.
+    if (error) return;
     const got = (data as Record<string, Look> | null) ?? {};
     useStyle.setState((s) => ({ looks: { ...s.looks, ...Object.fromEntries(batch.map((id) => [id, got[id] ?? PLAIN])) } }));
   }, 60);
