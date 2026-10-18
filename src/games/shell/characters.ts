@@ -4,13 +4,13 @@ export type Character = { slug: string; name: string; ring: string };
 export const CHARACTERS: Character[] = [
   { slug: 'yazan', name: 'Yazan', ring: '#d21f45' },
   { slug: 'yara', name: 'Yara', ring: '#f3c110' },
-  { slug: 'omar', name: 'Omar', ring: '#14a576' },
+  { slug: 'omar', name: 'Omar', ring: '#8b5c3a' },
   { slug: 'layla', name: 'Layla', ring: '#f58a2c' },
   { slug: 'atlas', name: 'Atlas', ring: '#8a5ae0' },
   { slug: 'nova', name: 'Nova', ring: '#3aa9e4' },
   { slug: 'bolt', name: 'Bolt', ring: '#e23f88' },
   { slug: 'iris', name: 'Iris', ring: '#7cc72a' },
-  { slug: 'pip', name: 'Pip', ring: '#4f47cc' },
+  { slug: 'pip', name: 'Pip', ring: '#12969a' },
 ];
 
 /** The 8 Nova Mechs (Yazan 2026-10-18): profile pictures won from daily chests; the ring is the rim on each face. */
