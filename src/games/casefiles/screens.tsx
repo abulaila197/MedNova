@@ -21,6 +21,7 @@ import { AddPill } from '@/features/friends/AddAfterMatch';
 import { effectWinner, PlayerTitle, winnerAccount } from '@/features/style/PlayerTitle';
 import { WinEffect } from '@/features/style/WinEffect';
 import { WinShake } from '@/features/style/WinShake';
+import { ToneSticker } from '../shell/ResultTone';
 import { useSession } from '../shell/session';
 import { caseById, caseLabel } from './data';
 import { CaseTitle, Kicker, NoirScreen, NR, T } from './noir';
@@ -397,10 +398,12 @@ function Results({ def, play, items }: { def: GameDef; play: Play; items: PlayIt
     <NoirScreen scroll>
       {fx ? <WinEffect userId={fx} /> : null}
       <View style={{ gap: u(12) }}>
-        <View style={{ gap: u(4) }}>
-          <Kicker>{`Case Files · ${MODE_NAME[play.mode]}`}</Kicker>
-          <CaseTitle title="Case closed" size={28} />
-        </View>
+        <ToneSticker play={play} items={items} uid={me}>
+          <View style={{ gap: u(4) }}>
+            <Kicker>{`Case Files · ${MODE_NAME[play.mode]}`}</Kicker>
+            <CaseTitle title="Case closed" size={28} />
+          </View>
+        </ToneSticker>
         <Sheet tilt={-0.3}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
             <View style={{ gap: u(2), flex: 1 }}>

@@ -20,6 +20,7 @@ import { AddPill } from '@/features/friends/AddAfterMatch';
 import { effectWinner, PlayerTitle, winnerAccount } from '@/features/style/PlayerTitle';
 import { WinEffect } from '@/features/style/WinEffect';
 import { WinShake } from '@/features/style/WinShake';
+import { ToneSticker } from '../shell/ResultTone';
 import { useSession } from '../shell/session';
 import { fieldName, STYLES, type FieldKey, type Style } from './core';
 import { Bill, Brass, Btn, CB, CD, Chip, CM, Gem, Kicker, Panel, ROMAN, Rule, T, Title, Token, VelvetScreen, VV } from './velvet';
@@ -266,10 +267,12 @@ function Results({ def, play, items }: { def: GameDef; play: Play; items: PlayIt
     <WinShake>
     <VelvetScreen scroll>
       {fx ? <WinEffect userId={fx} /> : null}
-      <View style={{ gap: u(3) }}>
-        <Kicker>{MODE_NAME[play.mode]}</Kicker>
-        <Title text="Curtain Call" size={28} />
-      </View>
+      <ToneSticker play={play} items={items} uid={me}>
+        <View style={{ gap: u(3) }}>
+          <Kicker>{MODE_NAME[play.mode]}</Kicker>
+          <Title text="Curtain Call" size={28} />
+        </View>
+      </ToneSticker>
       <Brass r={14}>
         <LinearGradient colors={['#8e1a2c', '#5c0c18']} style={{ paddingVertical: u(11), paddingHorizontal: u(14), alignItems: 'center', gap: u(2) }}>
           <T f={CM} size={10.5} color={VV.cream} style={{ letterSpacing: u(2.4) }}>{`FIRST TO ${target}`}</T>

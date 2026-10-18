@@ -1,4 +1,5 @@
 import { Image } from 'expo-image';
+import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { Text } from '@/components/AppText';
@@ -77,6 +78,26 @@ export function ResultTone({ play, items, uid }: { play: Play; items: PlayItem[]
         <Text style={[s.head, { color: t.white }]}>{head}</Text>
         <Text style={[s.sub, { color: t.soft }]}>{sub}</Text>
       </View>
+    </View>
+  );
+}
+
+/**
+ * Own-look results pages (Case Files, Wheels): only Omar's sticker, beside their own title and tucked behind their
+ * first card the same way (Yazan 2026-10-18).
+ */
+export function ToneSticker({ play, items, uid, children }: { play: Play; items: PlayItem[]; uid: string | null; children: ReactNode }) {
+  const tone = play.mode === 'offline' ? 'mid' : toneOf(play, items, uid);
+  const st = STICKER[tone];
+  return (
+    <View style={s.row}>
+      <Image
+        source={st.src}
+        style={[s.sticker, { width: u(st.w * SCALE), height: u(st.h * SCALE), bottom: -u(GAP + TUCK) }]}
+        contentFit="contain"
+        accessibilityIgnoresInvertColors
+      />
+      <View style={{ paddingRight: u(80) }}>{children}</View>
     </View>
   );
 }
