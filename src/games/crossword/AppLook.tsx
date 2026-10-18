@@ -15,7 +15,7 @@ import { cellKey, CW, indexOf, lockedCells, QWERTY_ROWS, type CellPos, type Puzz
 import { IMAGES } from './data/images';
 
 // Nova Crossword's look (Yazan picked D, 2026-10-05): the app's own look, built like Nova Medicordle's slides:
-// glass tiles with a soft top sheen on a navy board, Fraunces titles, Inter Tight text.
+// glass tiles with a soft top sheen on a navy board, Gabarito titles, Inter Tight text.
 // Solved words glow green, hint letters sit on blue tiles (Yazan 2026-10-05), the chosen word is edged in the accent.
 
 const HEART = 'M10 17.5 C4 13 1.5 10 1.5 6.6 C1.5 4 3.5 2 6 2 C7.6 2 9 2.9 10 4.2 C11 2.9 12.4 2 14 2 C16.5 2 18.5 4 18.5 6.6 C18.5 10 16 13 10 17.5 Z';
@@ -29,7 +29,7 @@ function Icon({ d, on, color, off, size }: { d: string; on: boolean; color: stri
   );
 }
 
-/** Title strip like Medicordle's slide label: accent end strip, kicker, Fraunces title, hearts and stars (Solo) or a score (Offline). */
+/** Title strip like Medicordle's slide label: accent end strip, kicker, Gabarito title, hearts and stars (Solo) or a score (Offline). */
 export function AppTopBar({ kicker, title = 'Nova Crossword', titleColor, sub, hearts, stars, score, onPause }: {
   kicker: string; title?: string; titleColor?: string; sub: string; hearts: number; stars?: number; score?: number; onPause?: () => void;
 }) {

@@ -1,5 +1,5 @@
 import '@/lib/storage-install';
-import { Fraunces_600SemiBold, Fraunces_600SemiBold_Italic } from '@expo-google-fonts/fraunces';
+import { Gabarito_700Bold } from '@expo-google-fonts/gabarito';
 import { InterTight_400Regular, InterTight_500Medium, InterTight_600SemiBold, InterTight_700Bold } from '@expo-google-fonts/inter-tight';
 import { JetBrainsMono_500Medium } from '@expo-google-fonts/jetbrains-mono';
 import { useFonts } from 'expo-font';
@@ -31,8 +31,7 @@ export default function RootLayout() {
   const intro = useStart((s) => s.intro);
   const { width, height } = useScreen();
   const [loaded] = useFonts({
-    Fraunces_600SemiBold,
-    Fraunces_600SemiBold_Italic,
+    Gabarito_700Bold,
     InterTight_400Regular,
     InterTight_500Medium,
     InterTight_600SemiBold,

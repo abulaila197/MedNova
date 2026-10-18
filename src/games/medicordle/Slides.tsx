@@ -145,7 +145,7 @@ export function SlideTable(p: TableProps) {
   );
 }
 
-/** Title as a slide label: frosted end strip in the accent, number in mono, title in Fraunces. */
+/** Title as a slide label: frosted end strip in the accent, number in mono, title in Gabarito. */
 export function SlideLabel({ no, title, sub, right, onPause }: TableProps['label'] & { onPause: () => void }) {
   const t = useTheme();
   const c = slideColors(t.mode);

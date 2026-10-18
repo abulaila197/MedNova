@@ -143,7 +143,7 @@ export function RoundsPage() {
           {!signedIn ? (
             <Btn t={t} label="Sign in to take part" onPress={() => router.navigate('/auth')} />
           ) : r.claimed ? (
-            <Text style={[s.done, { color: t.accent }]}>Done this week. See you next week.</Text>
+            <Text style={[s.done, { color: t.accent }]}>You’re done for this week. See you next week!</Text>
           ) : complete ? (
             <Btn t={t} label={`Collect ${r.prize} tokens`} busy={busy} onPress={collect} />
           ) : null}

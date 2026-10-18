@@ -25,9 +25,9 @@ export default function Page() {
     try {
       await call('submit_contact', { kind: it.key, body: msg });
       setMsg('');
-      setSaid({ ok: true, text: 'Sent. Thank you, we read every message.' });
+      setSaid({ ok: true, text: 'Sent! Thanks, we read every message.' });
     } catch {
-      setSaid({ ok: false, text: 'Not sent. Check your connection and try again.' });
+      setSaid({ ok: false, text: 'Couldn’t send that. Check your connection and try again.' });
     }
     setBusy(false);
   };

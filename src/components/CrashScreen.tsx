@@ -22,8 +22,8 @@ export function CrashScreen({ error, retry }: ErrorBoundaryProps) {
   };
   return (
     <View style={s.root}>
-      <Text style={s.ttl}>Something went wrong</Text>
-      <Text style={s.sub}>This page hit a problem. A screenshot of this message helps us fix it.</Text>
+      <Text style={s.ttl}>Oops, something went wrong</Text>
+      <Text style={s.sub}>This page ran into a problem. Send us a screenshot of this and we’ll fix it.</Text>
       <ScrollView style={s.box} contentContainerStyle={{ padding: u(10) }}>
         <Text style={s.err} selectable>
           {String(error?.message ?? error)}

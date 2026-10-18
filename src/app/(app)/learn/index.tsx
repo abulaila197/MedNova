@@ -110,8 +110,8 @@ function ReviewPage({ pile, reload }: { pile: Card[] | null; reload: () => Promi
         </>
       ) : pile ? (
         <View style={[s.empty, { borderColor: c.cardLine }]}>
-          <Text style={[s.emptyH, { color: t.fg }]}>Nothing to review</Text>
-          <Text style={[s.emptyT, { color: c.mute }]}>Questions and diseases you miss in the games land here as cards.</Text>
+          <Text style={[s.emptyH, { color: t.fg }]}>All caught up</Text>
+          <Text style={[s.emptyT, { color: c.mute }]}>Anything you miss in a game shows up here as a card, so you can go over it.</Text>
         </View>
       ) : null}
     </View>

@@ -116,8 +116,8 @@ export function ReportSheet() {
         <Pressable onPress={send} disabled={state === 'sending' || state === 'sent'} style={[s.btn, { backgroundColor: t.red, opacity: state === 'sending' ? 0.6 : 1 }]}>
           <Text style={s.btnT}>{state === 'sending' ? 'Sending…' : state === 'sent' ? 'Sent' : 'Send report'}</Text>
         </Pressable>
-        {state === 'sent' ? <Text style={[s.msg, { color: t.fg }]}>Thank you. We’ll look into it.</Text> : null}
-        {state === 'error' ? <Text style={[s.msg, { color: t.red }]}>Not sent. Check your connection and try again.</Text> : null}
+        {state === 'sent' ? <Text style={[s.msg, { color: t.fg }]}>Thanks! We’ll look into it.</Text> : null}
+        {state === 'error' ? <Text style={[s.msg, { color: t.red }]}>Couldn’t send that. Check your connection and try again.</Text> : null}
       </View>
     </Sheet>
   );

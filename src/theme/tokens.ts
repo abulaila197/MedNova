@@ -43,8 +43,9 @@ export const THEMES = { dark };
 export type Theme = typeof dark;
 
 export const F = {
-  display: 'Fraunces_600SemiBold',
-  displayItalic: 'Fraunces_600SemiBold_Italic',
+  display: 'Gabarito_700Bold',
+  // Gabarito has no italic: emphasis words keep the same face and lean on the accent colour.
+  displayItalic: 'Gabarito_700Bold',
   body: 'InterTight_400Regular',
   bodyMedium: 'InterTight_500Medium',
   bodySemi: 'InterTight_600SemiBold',

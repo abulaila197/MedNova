@@ -72,14 +72,14 @@ export function DailyPopup({ day, collected, signedIn, busy, error, onCollect, o
         ]}
       >
         <View style={s.top}>
-          <Text style={[s.kick, { color: t.kick }]}>{`MONTHLY PACK · DOSE ${day} OF 30`}</Text>
+          <Text style={[s.kick, { color: t.kick }]}>{`DAY ${day} OF 30`}</Text>
           <Pressable onPress={onClose} hitSlop={10} accessibilityLabel="Close">
             <Text style={{ color: t.mute, fontSize: u(15) }}>×</Text>
           </Pressable>
         </View>
         <Text style={[s.title, { color: t.fg }]}>
           {"Today's "}
-          <Text style={[s.title, { color: t.accent, fontFamily: F.displayItalic }]}>dose</Text>
+          <Text style={[s.title, { color: t.accent, fontFamily: F.displayItalic }]}>reward</Text>
         </Text>
 
         <View style={[s.grid, s.pack, { borderColor: t.panelLine }]}>
@@ -106,7 +106,7 @@ export function DailyPopup({ day, collected, signedIn, busy, error, onCollect, o
         {signedIn ? (
           collected ? (
             <Animated.View entering={FadeIn.duration(300).delay(250)}>
-              <Text style={[s.note, { color: t.soft }]}>{`+${prize} collected. Tomorrow's dose pays ${nextPrize}.`}</Text>
+              <Text style={[s.note, { color: t.soft }]}>{`+${prize} added! Come back tomorrow for ${nextPrize} more.`}</Text>
             </Animated.View>
           ) : (
             <Pressable
@@ -130,7 +130,7 @@ export function DailyPopup({ day, collected, signedIn, busy, error, onCollect, o
         )}
         {error ? <Text style={[s.small, { color: t.red }]}>{error}</Text> : null}
         <Text style={[s.small, { color: t.mute }]}>
-          {signedIn ? 'Missed a day? Your pack just waits for you.' : 'Daily doses are saved on your account.'}
+          {signedIn ? 'Missed a day? No problem, you pick up where you left off.' : 'Your rewards are saved to your account.'}
         </Text>
       </Animated.View>
     </View>

@@ -73,8 +73,8 @@ function Vials({ t, title, choices }: { t: Theme; title: string; choices: Choice
       <View style={[s.grab, { backgroundColor: 'rgba(255,255,255,0.2)' }]} />
       <Text style={[s.mono, { color: t.kick, alignSelf: 'center' }]}>{title.toUpperCase()}</Text>
       <Text style={[s.vT, { color: t.fg }]}>
-        {"Today's doses are "}
-        <Text style={[s.vT, { color: t.accent, fontFamily: F.displayItalic }]}>empty</Text>
+        {'Out of free plays '}
+        <Text style={[s.vT, { color: t.accent, fontFamily: F.displayItalic }]}>for today</Text>
       </Text>
       <View style={s.vials}>
         {[0, 1, 2].map((i) => (
@@ -87,7 +87,7 @@ function Vials({ t, title, choices }: { t: Theme; title: string; choices: Choice
           </View>
         ))}
       </View>
-      <Text style={[s.refill, { color: t.mute }]}>Refills at midnight with 3 free plays</Text>
+      <Text style={[s.refill, { color: t.mute }]}>3 new free plays at midnight</Text>
       <View style={{ gap: u(8), marginTop: u(6) }}>
         {choices.map((c, i) =>
           i === 0 ? (

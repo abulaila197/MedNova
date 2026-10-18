@@ -99,7 +99,7 @@ export function Profile() {
           ))}
         </View>
         <Text style={[s.sh2, { color: t.kick }]}>BY GAME</Text>
-        {st && !st.games.length ? <Text style={[s.none, { color: t.mute }]}>Play a game to see your lines.</Text> : null}
+        {st && !st.games.length ? <Text style={[s.none, { color: t.mute }]}>Play a game and your progress shows up here.</Text> : null}
         {st?.games.map((g) => (
           <View key={g.key} style={s.td}>
             <Text style={[s.tdB, { color: t.fg }]}>{g.name}</Text>

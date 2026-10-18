@@ -65,7 +65,7 @@ export function DailyHost() {
     const r = data as { ok: boolean; day?: number; why?: string } | null;
     if (e || !r) return setError('Could not reach MedNova. Check your connection and try again.');
     if (!r.ok)
-      return setError(r.why === 'done' ? "Today's dose is already collected." : "Your phone's date looks wrong, so today's dose can't be paid.");
+      return setError(r.why === 'done' ? "You've already grabbed today's reward." : "Your phone's date looks off, so today's reward can't be given. Check your date settings.");
     setOpen({ day: r.day ?? open.day, collected: true });
     if (userId) syncAccount(userId).catch(() => {}); // brings the new tokens down to the wallet
   };
