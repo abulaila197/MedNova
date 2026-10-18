@@ -994,6 +994,17 @@ export function standings(m: Match): Player[] {
   return [...inGame, ...out];
 }
 
+/** Final place of each player (1 = first): players still in who tie on lands, troops and accuracy share a place. */
+export function places(m: Match): Record<string, number> {
+  const list = standings(m);
+  const out: Record<string, number> = {};
+  list.forEach((p, i) => {
+    const prev = list[i - 1];
+    out[p.id] = prev && !p.out && !prev.out && compareStanding(m, prev, p) === 0 ? out[prev.id] : i + 1;
+  });
+  return out;
+}
+
 function endStage(m: Match, ctx: Ctx) {
   // CQ12: a player away for the whole stage counts it; 2 in a row and they are removed.
   for (const p of active(m)) {
