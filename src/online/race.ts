@@ -114,28 +114,46 @@ export function useRace(def: GameDef, roomId: string, matchId: string, me: strin
     items.current = toItems;
   });
 
-  const playing = useMemo(() => st?.players.some((p) => p.user_id === me) ?? false, [st, me]);
+  // Seated = has a seat in this match (their play is saved at the end). Playing = seated and not dropped by the server
+  // for being away over a minute (rule 11): a dropped player's answers are ignored, so their board turns to watching.
+  const seated = useMemo(() => st?.players.some((p) => p.user_id === me) ?? false, [st, me]);
+  const dropped = useMemo(() => st?.players.some((p) => p.user_id === me && p.dropped) ?? false, [st, me]);
+  const playing = seated && !dropped;
+  const watchSub = dropped ? 'You were away for over a minute, so you’re out of this match.' : 'You get a seat at the rematch.';
+  const watchLine = dropped ? 'You were away for over a minute, so you’re watching now.' : `You’re watching. ${watchSub}`;
+  const doneLine = seated ? 'Adding up the scores…' : 'Match over. Back to the room…';
+
+  // A spectator has no play to save at the end: back to the room for the rematch they were promised (DEF-007).
+  useEffect(() => {
+    if (st?.phase !== 'done' || seated) return;
+    const id = setTimeout(() => router.replace(`/play/${def.key}/lobby?room=${roomId}`), 3000);
+    return () => clearTimeout(id);
+  }, [st?.phase, seated, def.key, roomId]);
 
   useEffect(() => {
-    if (!st || st.phase !== 'done' || !playing || finishing.current) return;
+    if (!st || st.phase !== 'done' || !seated || finishing.current) return;
     finishing.current = true;
     (async () => {
-      const order = [...st.players.filter((p) => p.user_id === me), ...st.players.filter((p) => p.user_id !== me)];
-      const seatOf = new Map(order.map((p, i) => [p.user_id, i]));
-      const teams = Number(st.settings.teams) || 0;
-      const seats = order.map((p, i) => {
-        const tm = teams >= 2 && p.team != null ? presetTeam(p.team) : null;
-        return { seat: i, name: p.user_id === me ? 'You' : p.name, userId: p.user_id, character: p.character, color: tm?.color ?? playerColour(st.players, p.user_id), ...(tm ? { team: tm.id } : null) };
-      });
-      const standings = st.players
-        .map((p) => ({ seat: seatOf.get(p.user_id)!, name: p.user_id === me ? 'You' : p.name, score: p.score, timeMs: p.solve_ms, rank: p.rank ?? st.players.length }))
-        .sort((a, b) => a.rank - b.rank);
-      const mine = st.players.find((p) => p.user_id === me)!;
-      const settings = { ...st.settings, room: roomId, match: matchId, teams: teams >= 2 ? Array.from({ length: teams }, (_, i) => presetTeam(i)) : undefined };
-      const id = await finishOnline(def, matchId, { settings, seats, standings, score: mine.score, items: items.current(st) });
-      showResults(id);
+      try {
+        const order = [...st.players.filter((p) => p.user_id === me), ...st.players.filter((p) => p.user_id !== me)];
+        const seatOf = new Map(order.map((p, i) => [p.user_id, i]));
+        const teams = Number(st.settings.teams) || 0;
+        const seats = order.map((p, i) => {
+          const tm = teams >= 2 && p.team != null ? presetTeam(p.team) : null;
+          return { seat: i, name: p.user_id === me ? 'You' : p.name, userId: p.user_id, character: p.character, color: tm?.color ?? playerColour(st.players, p.user_id), ...(tm ? { team: tm.id } : null) };
+        });
+        const standings = st.players
+          .map((p) => ({ seat: seatOf.get(p.user_id)!, name: p.user_id === me ? 'You' : p.name, score: p.score, timeMs: p.solve_ms, rank: p.rank ?? st.players.length }))
+          .sort((a, b) => a.rank - b.rank);
+        const mine = st.players.find((p) => p.user_id === me)!;
+        const settings = { ...st.settings, room: roomId, match: matchId, teams: teams >= 2 ? Array.from({ length: teams }, (_, i) => presetTeam(i)) : undefined };
+        const id = await finishOnline(def, matchId, { settings, seats, standings, score: mine.score, items: items.current(st) });
+        showResults(id);
+      } catch {
+        finishing.current = false; // the next poll tries again instead of leaving "Adding up the scores…" for good
+      }
     })();
-  }, [st, playing, me, def, roomId, matchId, showResults]);
+  }, [st, seated, me, def, roomId, matchId, showResults]);
 
 
   const leave = useCallback(async () => {
@@ -143,7 +161,7 @@ export function useRace(def: GameDef, roomId: string, matchId: string, me: strin
     router.replace(`/play/${def.key}`);
   }, [roomId, def.key]);
 
-  return { st, load, server, clock, playing, notice, setNotice, leave };
+  return { st, load, server, clock, playing, seated, dropped, watchLine, watchSub, doneLine, notice, setNotice, leave };
 }
 
 /** The same shuffle on every phone for one question of one match (Streak Master options). */

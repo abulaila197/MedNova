@@ -53,7 +53,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
       },
     ];
   }, []);
-  const { st, load, server, playing, notice, setNotice, leave } = useRace(def, roomId, matchId, me, toItems);
+  const { st, load, server, playing, watchSub, doneLine, notice, setNotice, leave } = useRace(def, roomId, matchId, me, toItems);
   const [run, setRun] = useState<Run | null>(null);
   const [menu, setMenu] = useState(false);
   const { alert, push } = useAlerts();
@@ -203,7 +203,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
             </Animated.View>
           ))}
         </View>
-        <T size={12} color={NR.soft} style={{ textAlign: 'center' }}>{st.phase === 'done' ? 'Adding up the scores…' : `Results in ${Math.max(0, Math.ceil(left / 1000))} s`}</T>
+        <T size={12} color={NR.soft} style={{ textAlign: 'center' }}>{st.phase === 'done' ? doneLine : `Results in ${Math.max(0, Math.ceil(left / 1000))} s`}</T>
         {extras}
       </NoirScreen>
     );
@@ -218,7 +218,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
           <View style={{ gap: u(4) }}>
             <Kicker>{`${caseLabel(c.id)} · ${caseClock(left, true)} left`}</Kicker>
             <CaseTitle title={playing ? 'Case closed. Sealed.' : 'You’re watching'} />
-            <T size={12.5} color={NR.soft}>{playing ? 'Your stamp and points stay sealed until everyone closes the case or time runs out.' : 'You get a seat at the rematch.'}</T>
+            <T size={12.5} color={NR.soft}>{playing ? 'Your stamp and points stay sealed until everyone closes the case or time runs out.' : watchSub}</T>
           </View>
           <View style={s.recap}>
             {others.map((p) => (

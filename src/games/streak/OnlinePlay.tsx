@@ -20,7 +20,8 @@ const MILESTONES = [5, 10, 15];
 
 function itemsOf(st: RaceState) {
   let run = 0;
-  return (st.my_items ?? []).map((m) => {
+  // An item this app build doesn't have (the server's list is newer) is left out instead of failing the finish (X2).
+  return (st.my_items ?? []).filter((m) => !!questionOf(m.item)).map((m) => {
     const q = questionOf(m.item);
     const right = m.solved_ms != null;
     run = right ? run + 1 : 0;
@@ -45,7 +46,7 @@ function itemsOf(st: RaceState) {
  * one pick each, no helpers. Right answers score 100, 80, 65... by arrival plus a streak bonus up to 50.
  */
 export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
-  const { st, load, server, clock, playing, notice, setNotice, leave } = useRace(def, roomId, matchId, me, itemsOf);
+  const { st, load, server, clock, playing, watchLine, doneLine, notice, setNotice, leave } = useRace(def, roomId, matchId, me, itemsOf);
   const [menu, setMenu] = useState(false);
   const [picked, setPicked] = useState<{ index: number; choice: number } | null>(null);
   const { alert, push } = useAlerts();
@@ -100,7 +101,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
     score: me_?.score ?? 0,
     feedback: reveal ? { picked: mine ?? -1, right, points: st.me?.points ?? 0, untilMs: 0 } : null,
   } as unknown as Round;
-  const result = !reveal ? null : st.phase === 'done' ? 'Adding up the scores…' : `${right ? `${nth(st.me?.rank ?? 1)} right · +${st.me?.points ?? 0}` : mine == null ? 'No answer' : 'Wrong'} · ${last ? 'Results' : 'next question'} in ${nextIn} s`;
+  const result = !reveal ? null : st.phase === 'done' ? doneLine : `${right ? `${nth(st.me?.rank ?? 1)} right · +${st.me?.points ?? 0}` : mine == null ? 'No answer' : 'Wrong'} · ${last ? 'Results' : 'next question'} in ${nextIn} s`;
 
   return (
     <HeatBoard
@@ -114,7 +115,12 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
         if (!playing || mine != null) return;
         setPicked({ index: st.index, choice });
         try {
-          await call('sm_pick', { m: matchId, choice });
+          const r = await call<{ outcome?: string }>('sm_pick', { m: matchId, choice });
+          // Not stored (the question ended, or I was dropped for being away): don't show "Locked in".
+          if (r?.outcome === 'ignored_finished' || r?.outcome === 'rejected') {
+            setPicked(null);
+            setNotice('That answer came too late.');
+          }
           await load();
         } catch {
           setPicked(null);
@@ -124,7 +130,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
       onPause={() => setMenu(true)}
       locked={reveal ? null : mine}
       faces={reveal ? faces : undefined}
-      notice={notice ?? result ?? (!playing ? 'You’re watching. You get a seat at the rematch.' : mine != null ? (waiting ? `Locked in. Waiting for ${waiting} more` : 'Locked in') : null)}>
+      notice={notice ?? result ?? (!playing ? watchLine : mine != null ? (waiting ? `Locked in. Waiting for ${waiting} more` : 'Locked in') : null)}>
       <AlertPill alert={alert} />
       <RoomTalk room={roomId} me={talker} />
       <PauseMenu open={menu} mode="online" onResume={() => setMenu(false)} onQuit={leave} />
