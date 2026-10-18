@@ -15,6 +15,7 @@ import { PlayerFace } from '@/features/style/Frame';
 import { effectWinner, PlayerTitle, winnerAccount } from '@/features/style/PlayerTitle';
 import { WinEffect } from '@/features/style/WinEffect';
 import { WinShake } from '@/features/style/WinShake';
+import { ResultTone } from './ResultTone';
 import { useSession } from './session';
 import { teamScoreOf, type GameDef } from './types';
 import { useResults } from './useShellPages';
@@ -49,6 +50,7 @@ export function Results({ def, play, items }: { def: GameDef; play: Play; items:
         <Kick>{`${g.lead} ${g.em}`}</Kick>
         <Title lead="Game" em="over" />
       </View>
+      <ResultTone play={play} items={items} uid={uid} />
       <Card style={s.top}>
         {stats.map((x) => (
           <View key={x.label} style={s.stat}>
