@@ -11,6 +11,7 @@ import { u } from '@/theme/scale';
 import type { Theme } from '@/theme/tokens';
 import { F } from '@/theme/tokens';
 
+import { useBack } from '@/lib/useBack';
 import { ADS_LIVE, cancelPaywall, payWithAd, payWithTokens, PLAY_AD_CAP, playAdsLeft, subscribeFromPaywall, usePaywall } from './paywall';
 import { SUBSCRIPTION } from '@/features/store/catalog';
 
@@ -33,6 +34,8 @@ export function PaywallSheet() {
     if (ask) engine.wallet.balance().then((b) => setTokens(b.tokens));
     if (ask) playAdsLeft().then(setAdsLeft);
   }, [ask]);
+  // Android back = Not now (PB3).
+  useBack(!!ask, cancelPaywall);
   if (!ask) return null;
   const g = GAMES.find((x) => x.key === ask.game);
   const title = g ? `${g.lead} ${g.em}`.trim() : 'this game';

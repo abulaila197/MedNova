@@ -3,6 +3,7 @@ import { Platform, Pressable, StyleSheet, View } from 'react-native';
 import Animated, { FadeIn, FadeOut, SlideInDown, SlideOutDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { useBack } from '@/lib/useBack';
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 
@@ -10,6 +11,8 @@ import { u } from '@/theme/scale';
 export function Sheet({ open, onClose, children, tone }: { open: boolean; onClose: () => void; children: ReactNode; tone?: { bg: string; line: string } }) {
   const t = useTheme();
   const ins = useSafeAreaInsets();
+  // Android back closes the sheet instead of leaving the page under it.
+  useBack(open, onClose);
   if (!open) return null;
   return (
     <View style={[StyleSheet.absoluteFill, { zIndex: 20 }]}>

@@ -10,6 +10,7 @@ import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 import { tapped } from '@/lib/sound';
+import { useBack } from '@/lib/useBack';
 
 import { TOUR } from './tour';
 
@@ -30,6 +31,8 @@ function useTyping(text: string, done: boolean) {
  * types out. Next hands over to the next character; the last one closes it and the daily reward follows.
  */
 export function WelcomeTour({ onClose }: { onClose: () => void }) {
+  // Android back skips the tour, like its close button (PB3).
+  useBack(true, onClose);
   const [i, setI] = useState(0);
   const [full, setFull] = useState(false);
   const stop = TOUR[i];
