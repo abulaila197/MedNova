@@ -1212,16 +1212,21 @@ function act(g: Game, a: Exclude<Action, { type: 'ADVANCE' | 'DISCONNECT' | 'REC
     case 'BUY_FOOD': {
       if (!inGap1 || !alive || p.meal || has(p, 'lost')) return false;
       if (g.requests.some((r) => r.month === g.month && r.by === p.id && r.meal)) return false;
+      if (!Object.prototype.hasOwnProperty.call(R.MEALS, a.meal)) return false;
       const cost = mealPrice(g, a.meal);
       if (a.meal === 'skip' || cost === 0) {
         p.meal = 'skip';
         return true;
       }
-      springSnare(g, p, 'buy');
+      // The Snare springs on the purchase itself, after it is paid, so it can never undo the purchase.
       if (a.pay === 'jewels') {
         if (!payWithJewels(g, p, cost)) return false;
         p.meal = a.meal;
-      } else g.requests.push({ id: newId(g, 'r'), month: g.month, kind: 'supply', by: p.id, meal: a.meal, cost, votes: {}, status: 'open' });
+        springSnare(g, p, 'buy');
+        return true;
+      }
+      springSnare(g, p, 'buy');
+      g.requests.push({ id: newId(g, 'r'), month: g.month, kind: 'supply', by: p.id, meal: a.meal, cost, votes: {}, status: 'open' });
       return true;
     }
     case 'BUY_ITEM': {
@@ -1238,12 +1243,13 @@ function act(g: Game, a: Exclude<Action, { type: 'ADVANCE' | 'DISCONNECT' | 'REC
         log(g, 'snare-set', { by: p.id, to: a.target, text: a.trigger, secret: true });
         return true;
       }
-      springSnare(g, p, 'buy');
       if (a.pay === 'jewels') {
         if (!payWithJewels(g, p, cost)) return false;
         stock.left--;
         giveItem(g, p, a.item);
+        springSnare(g, p, 'buy');
       } else {
+        springSnare(g, p, 'buy');
         stock.left--;
         g.requests.push({ id: newId(g, 'r'), month: g.month, kind: 'supply', by: p.id, item: a.item, cost, votes: {}, status: 'open' });
       }
@@ -1282,9 +1288,10 @@ function act(g: Game, a: Exclude<Action, { type: 'ADVANCE' | 'DISCONNECT' | 'REC
       if (!to.alive || a.jewels < 0 || a.jewels + extra > p.jewels) return false;
       if (a.item && !p.bag.includes(a.item)) return false;
       if (a.jewels === 0 && !a.item) return false;
-      springSnare(g, p, 'gift');
       p.jewels -= a.jewels + extra;
       if (a.item) p.bag.splice(p.bag.indexOf(a.item), 1);
+      // After the gift left the bag: the Snare takes only what is left, never below 0 (DEF-038).
+      springSnare(g, p, 'gift');
       g.gifts.push({ id: newId(g, 'g'), month: g.month, from: p.id, to: a.to, jewels: a.jewels, item: a.item, poisoned: !!a.poisoned, shown: !!a.shown, status: 'pending' });
       return true;
     }
@@ -1459,6 +1466,8 @@ function act(g: Game, a: Exclude<Action, { type: 'ADVANCE' | 'DISCONNECT' | 'REC
       const r = g.round;
       const i = p.bag.indexOf(a.item);
       if (g.phase !== 'round' || !r || !alive || i < 0) return false;
+      // Only the two round helpers can be used here (DEF-037), on one of this round's questions.
+      if ((a.item !== 'pocket-guide' && a.item !== 'stethoscope') || !Number.isInteger(a.q) || a.q < 0 || a.q >= r.questions.length) return false;
       const h = (r.helpers[p.id] ??= {});
       if (a.item === 'pocket-guide') {
         if (h.guide !== undefined) return false;

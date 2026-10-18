@@ -87,7 +87,14 @@ export function ResultTone({ play, items, uid }: { play: Play; items: PlayItem[]
  * first card the same way (Yazan 2026-10-18).
  */
 export function ToneSticker({ play, items, uid, children }: { play: Play; items: PlayItem[]; uid: string | null; children: ReactNode }) {
-  const tone = play.mode === 'offline' ? 'mid' : toneOf(play, items, uid);
+  return <StickerRow tone={play.mode === 'offline' ? 'mid' : toneOf(play, items, uid)}>{children}</StickerRow>;
+}
+
+/** Tone from a place among rivals, for results pages that have no saved play yet (Trust Me Not). */
+export const toneOfPlace = (place: number, worst: number): Tone => (place === 1 ? 'win' : place === worst ? 'last' : 'mid');
+
+/** Omar's sticker for a tone, beside `children` and tucked behind the card that follows 12 units below. */
+export function StickerRow({ tone, children }: { tone: Tone; children: ReactNode }) {
   const st = STICKER[tone];
   return (
     <View style={s.row}>

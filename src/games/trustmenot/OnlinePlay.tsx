@@ -3,6 +3,7 @@
 // page for the current phase. Every page is in the all-paper look (locked 2026-10-07).
 import { router } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { Pressable, View } from 'react-native';
 
 import { invoke, leaveRoom } from '@/online/api';
 
@@ -11,7 +12,7 @@ import { GapPage, VotesPage } from './pages-gap';
 import { GhostPage, InquisitionPage, LastSupperPage, LedgerFlow, RevealFlow, TmnPause } from './pages-end';
 import { LifelineNote, RoundFlow } from './pages-round';
 import { OpeningPage } from './pages';
-import { PaperScreen } from './paper';
+import { CRIMI, FELL, p as pp, PaperScreen, T, TM } from './paper';
 import type { PageProps } from './props';
 import { rules } from './engine';
 import { play, useHeartbeat, useSeasonLoop } from './sound';
@@ -27,17 +28,33 @@ const fxFor = (t: string) => (SILENT.has(t) ? null : COIN.has(t) ? 'coin' : STAM
 
 
 export function OnlinePlay({ matchId, roomId, me }: OnlineProps) {
-  const { st, load, server, clock } = useMatchState<TState>('tmn_state', matchId, { quiet: true, shown: (sv, s) => tmnShown(sv, s, me) });
+  const { st, load, server, clock, notice, setNotice } = useMatchState<TState>('tmn_state', matchId, { quiet: true, shown: (sv, s) => tmnShown(sv, s, me) });
   const [paused, setPaused] = useState(false);
   const [lifelineSeen, setLifelineSeen] = useState<number | null>(null);
   const lastTick = useRef(0);
 
+  /**
+   * One action to the referee. A 409 means the server's 4 tries all clashed with other phones and nothing was saved,
+   * so it is sent again (twice at most); any other failure is shown, never dropped in silence (DEF-042, GB10).
+   */
   const send = useCallback(
     async (action: { type: string; [k: string]: unknown } | null) => {
-      await invoke('trust-me-not', { m: matchId, action }).catch(() => {});
+      let ok = false;
+      for (let attempt = 0; attempt < 3 && !ok; attempt++) {
+        try {
+          await invoke('trust-me-not', { m: matchId, action });
+          ok = true;
+        } catch (e) {
+          const status = (e as { context?: { status?: number } })?.context?.status;
+          if (status !== 409 || attempt === 2) break;
+          await new Promise((r) => setTimeout(r, 250 + Math.random() * 500));
+        }
+      }
+      if (!ok && action && action.type !== 'tick') setNotice('Couldn’t send that. Check your connection and try again.');
       load();
+      return ok;
     },
-    [matchId, load],
+    [matchId, load, setNotice],
   );
 
   // Nudge the referee when the clock has run out (or the year has not started); seats take turns so phones don't pile up.
@@ -71,9 +88,11 @@ export function OnlinePlay({ matchId, roomId, me }: OnlineProps) {
     env,
     clock,
     act: (a) => {
+      // The sound plays once the referee took the action, so a lost one never sounds accepted.
       const fx = fxFor(a.type);
-      if (fx) play(fx);
-      send(a);
+      send(a).then((ok) => {
+        if (ok && fx) play(fx);
+      });
     },
     roomId,
   };
@@ -93,7 +112,7 @@ export function OnlinePlay({ matchId, roomId, me }: OnlineProps) {
 
   let page;
   // A watcher (or a removed player) has no seat: the pages below all read "my" seat, so they get the calendar page.
-  if (!v.players.some((x) => x.id === v.me)) page = <OpeningPage month={v.month} />;
+  if (!v.players.some((x) => x.id === v.me)) page = st?.phase === 'done' ? <WatcherEnd onBack={() => router.replace(`/play/trust-me-not/lobby?room=${roomId}`)} /> : <OpeningPage month={v.month} />;
   else if (v.phase === 'opening') page = <OpeningPage month={v.month} />;
   else if (v.phase === 'gap1') {
     if (v.ghost) page = <GhostPage {...props} />;
@@ -107,6 +126,25 @@ export function OnlinePlay({ matchId, roomId, me }: OnlineProps) {
   return (
     <PaperScreen month={v.month} onPause={() => setPaused(true)}>
       {page}
+      {notice ? (
+        <View pointerEvents="none" style={{ position: 'absolute', left: pp(16), right: pp(16), bottom: pp(70), alignItems: 'center' }}>
+          <View style={{ backgroundColor: TM.paper, borderColor: TM.red, borderWidth: 1, paddingHorizontal: pp(10), paddingVertical: pp(6) }}>
+            <T f={CRIMI} size={13} color={TM.red}>{notice}</T>
+          </View>
+        </View>
+      ) : null}
     </PaperScreen>
+  );
+}
+
+/** A watcher at the end of the year: the camp is over, and the way back to the room for the rematch (DEF-007). */
+function WatcherEnd({ onBack }: { onBack: () => void }) {
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: pp(14) }}>
+      <T f={FELL} size={22}>The year is over.</T>
+      <Pressable onPress={onBack} accessibilityRole="button" style={{ borderColor: TM.ink, borderWidth: 1, paddingHorizontal: pp(16), paddingVertical: pp(8) }}>
+        <T f={FELL} size={15}>Back to the room</T>
+      </Pressable>
+    </View>
   );
 }

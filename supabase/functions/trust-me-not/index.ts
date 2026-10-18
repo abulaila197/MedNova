@@ -81,7 +81,7 @@ Deno.serve(async (req) => {
       due: dueOf(next),
       views,
       scores: L.seats.map((id) => ranks.find((r) => r.id === id)?.score ?? 0),
-      ranks: over ? L.seats.map((id) => ranks.findIndex((r) => r.id === id) + 1) : null,
+      ranks: over ? L.seats.map((id) => ranks.find((r) => r.id === id)?.place ?? L.seats.length) : null,
       gone: L.seats.filter((id) => g.players.find((p) => p.id === id)?.fled),
       ph: over ? 'done' : 'case',
     });

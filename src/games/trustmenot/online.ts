@@ -31,6 +31,8 @@ export type OnlineTmn = {
   key: string;
   /** Players who pressed Continue on the opening or the ledger. */
   ready: PlayerId[];
+  /** Server time each player's last answer of this stage arrived (older saves lack it): bounds the next answer's time. */
+  heard?: Record<PlayerId, number>;
 };
 
 export function poolsFor(bank: BankRow[], field: Field): QuestionPools {
@@ -113,7 +115,7 @@ function settle(o: OnlineTmn, now: number): OnlineTmn {
       let g = s.g;
       for (const p of g.players) if (p.disconnectedSince != null) g = playBot(g, p.id);
       const ms = phaseMs(g);
-      s = { g, key, ready: [], started: now, deadline: ms == null ? null : now + ms };
+      s = { g, key, ready: [], started: now, deadline: ms == null ? null : now + ms, heard: {} };
       continue;
     }
     if (s.g.phase === 'over' || !finishedEarly(s)) break;
@@ -147,15 +149,26 @@ const PHONE_TYPES = new Set([
   'SKIM', 'STEAL', 'WHISPER', 'RUMOR', 'LAST_SUPPER', 'DOCTOR_CHIP', 'PAY_WOLVES', 'VOTE', 'ACCUSE', 'COLD_SHOULDER',
   'ANSWER', 'SIGNAL', 'PICK', 'BID', 'SUPPLIER_SKIM', 'FOG', 'USE_ITEM', 'STARS', 'BELIEVED', 'QUIT',
 ]);
-const NUMBERS = ['jewels', 'coins', 'q', 'choice', 'share', 'card', 'whisperMonth', 'ms'];
+/** Whole numbers only: no half jewels or coins, no question 1.5 (DEF-037). */
+const WHOLE = ['jewels', 'coins', 'q', 'choice', 'share', 'card', 'whisperMonth'];
 
-/** The phone's action with its sender; numbers made numbers, text kept short, answer times kept inside the clock. */
-function stamp(g: Game, a: PhoneAction, me: PlayerId): Action | null {
+/**
+ * The phone's action with its sender; numbers made whole numbers, text kept short, answer times kept inside the clock.
+ * An answer's time can't be shorter than the server saw since that player's previous answer (less the network's
+ * grace), so a phone can't claim 0 ms to win ties (§10: ties are the server's, never the phone clock's).
+ */
+function stamp(o: OnlineTmn, a: PhoneAction, me: PlayerId, now: number): Action | null {
+  const g = o.g;
   if (!PHONE_TYPES.has(a.type)) return null;
   const out: Record<string, unknown> = { ...a, player: me };
-  for (const k of NUMBERS) if (k in out && out[k] !== null) out[k] = Number(out[k]) || 0;
+  for (const k of WHOLE) if (k in out && out[k] !== null) out[k] = Math.trunc(Number(out[k])) || 0;
+  if ('ms' in out) out.ms = Math.max(0, Number(out.ms) || 0);
   if (typeof out.text === 'string') out.text = out.text.slice(0, 140);
-  if (a.type === 'ANSWER' && g.round) out.ms = Math.min(timeLimitMs(g, me, Number(out.q)), Math.max(0, Number(out.ms) || 0));
+  if (a.type === 'ANSWER' && g.round) {
+    const since = o.heard?.[me];
+    const floor = since != null && g.round.id !== 'chain' ? now - since - GRACE_MS : 0;
+    out.ms = Math.min(timeLimitMs(g, me, Number(out.q)), Math.max(floor, Number(out.ms) || 0));
+  }
   if (a.type === 'STARS' && (typeof out.ratings !== 'object' || !out.ratings)) return null;
   return out as Action;
 }
@@ -179,9 +192,10 @@ export function stepOnline(o: OnlineTmn, a: PhoneAction | null, me: PlayerId | n
     if (a.type === 'ready') {
       if ((s.g.phase === 'opening' || s.g.phase === 'ledger') && !s.ready.includes(me)) s = settle({ ...s, ready: [...s.ready, me] }, now);
     } else {
-      const act = stamp(s.g, a, me);
+      const act = stamp(s, a, me, now);
       const next = act ? step(s.g, act) : s.g;
       if (next !== s.g) {
+        if (act?.type === 'ANSWER') s = { ...s, heard: { ...s.heard, [me]: now } };
         // A stethoscope adds 10 seconds to one question, so the round clock waits for it.
         const extra = act?.type === 'USE_ITEM' && act.item === 'stethoscope' && s.deadline != null ? R.STETHOSCOPE_MS : 0;
         s = settle({ ...s, g: next, deadline: s.deadline == null ? null : s.deadline + extra }, now);
@@ -191,10 +205,16 @@ export function stepOnline(o: OnlineTmn, a: PhoneAction | null, me: PlayerId | n
   return catchUp(s, now);
 }
 
-/** Places for the room's results: survivors by score, then ghosts, the last to fall first. */
-export function finalOrder(g: Game): { id: PlayerId; score: number }[] {
+/** Places for the room's results: survivors by score, then ghosts, the last to fall first (same month = same place). */
+export function finalOrder(g: Game): { id: PlayerId; score: number; place: number }[] {
   const dead = g.players.filter((p) => !p.alive).sort((a, b) => (b.diedMonth ?? 0) - (a.diedMonth ?? 0));
-  return [...ranking(g), ...dead.map((p) => ({ id: p.id, score: 0 }))];
+  const live = ranking(g).map((r, i) => ({ id: r.id, score: r.score, place: i + 1 }));
+  const out = [...live];
+  dead.forEach((p, i) => {
+    const prev = dead[i - 1];
+    out.push({ id: p.id, score: 0, place: prev && prev.diedMonth === p.diedMonth ? out[out.length - 1].place : live.length + i + 1 });
+  });
+  return out;
 }
 
 /** The next moment the server must step in. */
