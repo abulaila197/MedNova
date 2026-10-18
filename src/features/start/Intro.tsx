@@ -9,7 +9,7 @@ import { Backdrop as AppBackdrop } from '@/components/Backdrop';
 import { ECG, STAR } from '@/components/PulseStar';
 import { u } from '@/theme/scale';
 
-import { NAVY } from './Sky';
+import { THEMES } from '@/theme/tokens';
 import { Wordmark } from './Wordmark';
 
 /*
@@ -113,7 +113,7 @@ const Star = memo(function Star({ t }: { t: ReturnType<typeof useSharedValue<num
       <Path d={STAR} fill="url(#inH)" />
       <Path d="M160 503 L405 405 L512 138 L619 405" fill="none" stroke="#fff" strokeOpacity={0.7} strokeWidth={5} strokeLinejoin="round" clipPath="url(#inC)" />
       <G clipPath="url(#inC)">
-        <APath d={ECG} fill="none" stroke={NAVY} strokeWidth={17} strokeLinecap="round" strokeLinejoin="round" strokeDasharray={[1000 * k, 1000 * k]} animatedProps={cut} />
+        <APath d={ECG} fill="none" stroke={THEMES.dark.sky} strokeWidth={17} strokeLinecap="round" strokeLinejoin="round" strokeDasharray={[1000 * k, 1000 * k]} animatedProps={cut} />
         {/* the spark: a soft wide stroke under a bright core stands in for the old live blur */}
         <G>
           <APath d={ECG} fill="none" stroke="#fff" strokeOpacity={0.35} strokeWidth={24} strokeLinecap="round" strokeLinejoin="round" strokeDasharray={[70 * k, 1100 * k]} animatedProps={spark} />

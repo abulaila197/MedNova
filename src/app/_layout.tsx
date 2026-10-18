@@ -57,7 +57,7 @@ export default function RootLayout() {
       <StatusBar style="light" />
       {/* the app frame: the full screen, or a centred column (see theme/scale.ts) */}
       <View style={{ flex: 1, width: FRAME_W, overflow: 'hidden' }}>
-      <Stack screenOptions={{ headerShown: false, animation: 'fade', contentStyle: { backgroundColor: '#05050d' } }} />
+      <Stack screenOptions={{ headerShown: false, animation: 'fade', contentStyle: { backgroundColor: THEMES.dark.sky } }} />
       {/* returning players: the intro plays over the first page (Games or sign-in) and bursts into it */}
       {intro ? <Intro w={width} h={height} onDone={endIntro} /> : null}
       </View>

@@ -1,5 +1,6 @@
 import { StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
+import { Backdrop } from '@/components/Backdrop';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { useTheme } from '@/state/app';
@@ -17,7 +18,9 @@ import { Btn, Kick } from './ui';
 export function Curtain({ name, color, sub, board, recap, onReady }: { name: string; color?: string; sub?: string; board: (Pick<Standing, 'seat' | 'name' | 'score'> & { color?: string })[]; recap?: RecapLine[]; onReady: () => void }) {
   const t = useTheme();
   return (
-    <Animated.View entering={FadeIn.duration(220)} exiting={FadeOut.duration(180)} style={[StyleSheet.absoluteFill, s.root, { backgroundColor: t.sky }]}>
+    <Animated.View entering={FadeIn.duration(220)} exiting={FadeOut.duration(180)} style={[StyleSheet.absoluteFill, s.root, { backgroundColor: t.sky, overflow: 'hidden' }]}>
+      {/* the page's still backdrop, lined up with the screen bottom so it runs on from the header above */}
+      <Backdrop anchor="bottom" />
       <Kick>Pass the phone to</Kick>
       <Text style={[s.name, { color: color ?? t.accent }]}>{name}</Text>
       {sub ? <Kick>{sub}</Kick> : null}

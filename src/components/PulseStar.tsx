@@ -36,7 +36,7 @@ export function PulseStar({ width, height, glow = 0.5 }: { width: number; height
       <Path d={STAR} fill={`url(#h${k})`} />
       <Path d="M160 503 L405 405 L512 138 L619 405" fill="none" stroke="#fff" strokeOpacity={0.7} strokeWidth={5} strokeLinejoin="round" clipPath={`url(#c${k})`} />
       <G clipPath={`url(#c${k})`}>
-        <Path d={ECG} fill="none" stroke="#070a1c" strokeWidth={17} strokeLinecap="round" strokeLinejoin="round" />
+        <Path d={ECG} fill="none" stroke="#0d1738" strokeWidth={17} strokeLinecap="round" strokeLinejoin="round" />
       </G>
     </Svg>
   );

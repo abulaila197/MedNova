@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { StyleSheet } from 'react-native';
+import { Backdrop } from '@/components/Backdrop';
 import { Text } from '@/components/AppText';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
@@ -150,7 +151,8 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
         <Curtain name={who?.name ?? `Player ${seat + 1}`} color={who?.color} sub={`Turn ${turnNo} of ${run.order.length - run.removed.length} · ${run.lengthSec} s round`} board={board} recap={offlineRecap(run, seat, play)} onReady={() => dispatch({ type: 'READY', now: Date.now() })} />
       ) : null}
       {run.phase === 'countdown' && run.countdownUntil != null ? (
-        <Animated.View entering={FadeIn.duration(160)} exiting={FadeOut.duration(160)} style={[StyleSheet.absoluteFill, s.cd, { backgroundColor: t.sky }]}>
+        <Animated.View entering={FadeIn.duration(160)} exiting={FadeOut.duration(160)} style={[StyleSheet.absoluteFill, s.cd, { backgroundColor: t.sky, overflow: 'hidden' }]}>
+          <Backdrop anchor="bottom" />
           <Kick>Get ready</Kick>
           <Text style={[s.cdN, { color: who?.color ?? t.accent }]}>{Math.max(1, Math.ceil((run.countdownUntil - now) / 1000))}</Text>
           <Text style={[s.cdS, { color: t.mute }]}>{`${who?.name ?? ''}, your round starts`}</Text>
