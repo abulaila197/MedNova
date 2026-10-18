@@ -58,7 +58,7 @@ export const EFFECTS: (Item & { key: EffectKey; what: string })[] = [
 ];
 
 /** Text sticker packs for online rooms (your character's stickers stay free). */
-export const PACK_PRICE = 60;
+export const PACK_PRICE = 30;
 
 export const titleName = (key?: string | null) =>
   [...TITLES, ...PLATINUM_TITLES].find((x) => x.key === key)?.name ?? 'Medical Student';
