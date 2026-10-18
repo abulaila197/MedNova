@@ -93,7 +93,7 @@ export const STICKERS: Record<string, { id: string; src: number; label: string }
     { id: 'pip-07', src: require('../../assets/stickers/pip-07.png'), label: "What?!" },
     { id: 'pip-08', src: require('../../assets/stickers/pip-08.png'), label: "Got it" },
   ],
-  // Nova Mechs (Yazan 2026-10-18): owning a robot unlocks its 8 stickers.
+  // Nova Mechs (Yazan 2026-10-18): wearing a robot gives you its 8 stickers.
   sprocket: [
     { id: 'sprocket-01', src: require('../../assets/stickers/sprocket-01.png'), label: "Sprocket sticker 1" },
     { id: 'sprocket-02', src: require('../../assets/stickers/sprocket-02.png'), label: "Sprocket sticker 2" },
@@ -176,7 +176,6 @@ export const STICKERS: Record<string, { id: string; src: number; label: string }
   ],
 };
 
-export const MECH_STICKERS = ['sprocket', 'kit', 'vex', 'bulwark', 'echo', 'aurora', 'cortex', 'titan'];
 /** Every sticker by id: characters' (free) and the bought text packs (wide). */
 export const stickerById = new Map<string, { id: string; src: number; label: string; wide?: boolean }>([
   ...Object.values(STICKERS).flat().map((s) => [s.id, s] as const),

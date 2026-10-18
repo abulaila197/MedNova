@@ -6,8 +6,6 @@ import { Text } from '@/components/AppText';
 
 import { LevelBadge } from '@/components/LevelBadge';
 import { Sheet } from '@/components/Sheet';
-import { CHARACTERS } from '@/games/shell/characters';
-import { Face } from '@/games/shell/Face';
 import { PlayerFace } from '@/features/style/Frame';
 import { PlayerTitle } from '@/features/style/PlayerTitle';
 import { presetTeam } from '@/games/shell/teams';
@@ -19,7 +17,7 @@ import { F } from '@/theme/tokens';
 import { loadFriends, useFriends } from '@/state/friends';
 import { openReport } from '@/features/profile/Friends';
 import { shareText } from '@/lib/share';
-import { call, leaveRoom, rematchRoom, removePlayer, setCharacter, setReady, setTeam, startMatch, updateRoom, type RoomState, type Seat } from './api';
+import { call, leaveRoom, rematchRoom, removePlayer, setReady, setTeam, startMatch, updateRoom, type RoomState, type Seat } from './api';
 import { settingsLine } from './format';
 import { G } from './grey';
 import { TalkBubble, TalkPanel } from './Talk';
@@ -360,12 +358,11 @@ function RoomSettings({ def, state, onDone }: { def: GameDef; state: RoomState; 
   );
 }
 
-/** Tap a tile: your own picks a free character (ON10); the host also moves players between teams or removes them (ON11). */
+/** Tap a tile: the host also moves players between teams or removes them (ON11). */
 function SeatSheet({ state, seat, teams, onDone }: { state: RoomState; seat: Seat; teams: number; onDone: () => void }) {
   const L = useRoomLook();
   const self = seat.user_id === state.me;
   const host = state.room.host === state.me;
-  const taken = state.players.filter((p) => p.user_id !== seat.user_id && p.state === 'in').map((p) => p.character);
   return (
     <>
       <View style={s.ssh}>
@@ -375,29 +372,8 @@ function SeatSheet({ state, seat, teams, onDone }: { state: RoomState; seat: Sea
           <PlayerTitle userId={seat.user_id} size={11} accent={L.acc} mode="dark" />
         </View>
       </View>
-      {self ? (
-        <>
-          <Text style={[s.k, { fontFamily: L.semi, color: L.mute }]}>YOUR CHARACTER</Text>
-          <View style={s.faces}>
-            {CHARACTERS.map((c) => {
-              const used = taken.includes(c.slug);
-              const on = c.slug === seat.character;
-              return (
-                <Pressable
-                  key={c.slug}
-                  disabled={used}
-                  onPress={() => setCharacter(state.room.id, c.slug).then(onDone).catch(onDone)}
-                  style={[s.face, { opacity: used ? 0.22 : 1, borderColor: on ? L.fg : 'transparent' }]}
-                  accessibilityRole="button"
-                  accessibilityState={{ selected: on, disabled: used }}
-                  accessibilityLabel={c.name}>
-                  <Face slug={c.slug} size={u(28)} />
-                </Pressable>
-              );
-            })}
-          </View>
-        </>
-      ) : null}
+      {/* Your room character is your profile character (Yazan 2026-10-18); others may share it. */}
+      {self ? <Text style={[s.small, { fontFamily: L.body, color: L.mute, textAlign: 'left' }]}>Your character comes from your profile. Change it there.</Text> : null}
       {host && teams >= 2 && state.room.status === 'lobby' ? (
         <>
           <Text style={[s.k, { fontFamily: L.semi, color: L.mute }]}>TEAM</Text>
@@ -525,8 +501,6 @@ const s = StyleSheet.create({
   chip: { borderWidth: 1, borderColor: G.line, borderRadius: 999, paddingVertical: u(5), paddingHorizontal: u(10) },
   chipT: { fontFamily: F.bodySemi, fontSize: u(10) },
   ssh: { flexDirection: 'row', alignItems: 'center', gap: u(9) },
-  faces: { flexDirection: 'row', flexWrap: 'wrap', gap: u(4) },
-  face: { padding: 1, borderRadius: u(16), borderWidth: 2 },
   remove: { borderWidth: 1, borderColor: 'rgba(199,54,70,0.5)', borderRadius: u(12), paddingVertical: u(10), alignItems: 'center' },
   removeT: { fontFamily: F.bodySemi, fontSize: u(11), color: '#ff7a88' },
 });

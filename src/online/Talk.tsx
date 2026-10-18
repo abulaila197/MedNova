@@ -7,7 +7,6 @@ import Animated, { FadeIn, FadeOut, ZoomIn, runOnJS, useAnimatedStyle, useShared
 
 import { router } from 'expo-router';
 
-import { characterOf } from '@/games/shell/characters';
 import { Face } from '@/games/shell/Face';
 import { PlayerFace } from '@/features/style/Frame';
 import { useStyle } from '@/features/style/useStyle';
@@ -16,7 +15,7 @@ import { F } from '@/theme/tokens';
 
 import { G } from './grey';
 import { useRoomLook } from './look';
-import { MECH_STICKERS, stickerById, STICKERS } from './stickers';
+import { stickerById, STICKERS } from './stickers';
 import { TEXT_PACKS } from './textStickers';
 import { sendTalk, toggleMute, useTalk, useTalkFeed, type TalkMsg } from './talk';
 import { VOICE, voiceById } from './voice';
@@ -45,11 +44,8 @@ export function TalkPanel({ room, me, onSent }: { room: string; me: Me; onSent?:
   const cooling = useCooling();
   // Bought text packs (Yazan 2026-10-13) sit in their own "Special" tab; your character's stickers stay free.
   const owned = useStyle((x) => x.owned);
-  // Robots you own (but aren't wearing) bring their 8 stickers here too (Yazan 2026-10-18).
-  const packs = [
-    ...TEXT_PACKS.filter((p) => owned.includes(`pack:${p.key}`)).map((p) => ({ ...p, wide: true })),
-    ...MECH_STICKERS.filter((k) => k !== me.face && owned.includes(`mech:${k}`)).map((k) => ({ key: k, name: characterOf(k)?.name ?? k, stickers: STICKERS[k], wide: false })),
-  ];
+  // Only your profile character's stickers in the first tab; Special holds the non-character packs you own.
+  const packs = TEXT_PACKS.filter((p) => owned.includes(`pack:${p.key}`));
   const [pk, setPk] = useState<string | null>(null);
   const pack = packs.find((p) => p.key === pk) ?? packs[0];
   const send = async (kind: TalkMsg['kind'], item: string) => {
@@ -86,7 +82,7 @@ export function TalkPanel({ room, me, onSent }: { room: string; me: Me; onSent?:
               </View>
             ) : null}
             {pack.stickers.map((x) => (
-              <Pressable key={x.id} disabled={cooling} onPress={() => send('sticker', x.id)} style={pack.wide ? s.wItem : s.sItem} accessibilityRole="button" accessibilityLabel={`Send sticker: ${x.label}`}>
+              <Pressable key={x.id} disabled={cooling} onPress={() => send('sticker', x.id)} style={s.wItem} accessibilityRole="button" accessibilityLabel={`Send sticker: ${x.label}`}>
                 <Image source={x.src} style={s.sImg} contentFit="contain" />
               </Pressable>
             ))}
@@ -94,7 +90,7 @@ export function TalkPanel({ room, me, onSent }: { room: string; me: Me; onSent?:
         ) : (
           <Pressable onPress={() => router.navigate('/style?tab=stickers' as never)} style={s.empty} accessibilityRole="link">
             <Text style={[s.emptyT, { color: L.mute, fontFamily: L.semi }]}>No special stickers yet.</Text>
-            <Text style={[s.emptyT, { color: L.acc, fontFamily: L.semi }]}>Get packs in the Style shop, or win robots from chests ›</Text>
+            <Text style={[s.emptyT, { color: L.acc, fontFamily: L.semi }]}>Get packs in the Style shop or daily chests ›</Text>
           </Pressable>
         )
       ) : (
