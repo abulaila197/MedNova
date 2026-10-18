@@ -6,7 +6,7 @@ import { call, leaveRoom } from '@/online/api';
 import { finishOnline, useShowResults } from '@/online/finish';
 import { AlertPill, Countdown, nth, useAlerts } from '@/online/live';
 import { RoomTalk } from '@/online/Talk';
-import { characterOf } from '../shell/characters';
+import { playerColour } from '../shell/characters';
 import { PauseMenu } from '../shell/PauseMenu';
 import { presetTeam } from '../shell/teams';
 import type { OnlineProps } from '../shell/types';
@@ -74,7 +74,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
     for (const p of st.players) {
       if (p.solved && !seen.current.solved.has(p.user_id)) {
         seen.current.solved.add(p.user_id);
-        if (p.user_id !== me) push(`${p.name} solved it, ${nth(p.case_rank ?? 1)}`, characterOf(p.character)?.ring ?? '#6fd6ff');
+        if (p.user_id !== me) push(`${p.name} solved it, ${nth(p.case_rank ?? 1)}`, playerColour(st.players, p.user_id));
       }
     }
     const left = st.players.filter((p) => !p.dropped && !p.solved);
@@ -93,9 +93,8 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
       const seatOf = new Map(order.map((p, i) => [p.user_id, i]));
       const teams = Number(st.settings.teams) || 0;
       const seats = order.map((p, i) => {
-        const ch = characterOf(p.character);
         const tm = teams >= 2 && p.team != null ? presetTeam(p.team) : null;
-        return { seat: i, name: p.user_id === me ? 'You' : p.name, userId: p.user_id, character: p.character, color: tm?.color ?? ch?.ring, ...(tm ? { team: tm.id } : null) };
+        return { seat: i, name: p.user_id === me ? 'You' : p.name, userId: p.user_id, character: p.character, color: tm?.color ?? playerColour(st.players, p.user_id), ...(tm ? { team: tm.id } : null) };
       });
       const standings = st.players
         .map((p) => ({ seat: seatOf.get(p.user_id)!, name: p.user_id === me ? 'You' : p.name, score: p.score, timeMs: p.solve_ms, rank: p.rank ?? st.players.length }))

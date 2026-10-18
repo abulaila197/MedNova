@@ -13,7 +13,7 @@ import { useTheme } from '@/state/app';
 import { u, useScreen } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
-import { characterOf } from '../shell/characters';
+import { playerColour } from '../shell/characters';
 import { PauseMenu } from '../shell/PauseMenu';
 import { presetTeam } from '../shell/teams';
 import type { OnlineProps } from '../shell/types';
@@ -76,7 +76,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   const seen = useRef<{ claims: Set<string>; leader: string | null; out: Set<string> } | null>(null);
 
   const teams = Number(st?.settings.teams) || 0;
-  const colorOf = (p: RacePlayer | undefined) => (!p ? t.accent : teams >= 2 && p.team != null ? presetTeam(p.team).color : (characterOf(p.character)?.ring ?? t.accent));
+  const colorOf = (p: RacePlayer | undefined) => (!p ? t.accent : teams >= 2 && p.team != null ? presetTeam(p.team).color : playerColour(st?.players ?? [], p.user_id));
 
   // CW7 alerts: "Sara claimed ANEMIA", "Omar takes the lead", "Lina is out of hearts".
   useEffect(() => {

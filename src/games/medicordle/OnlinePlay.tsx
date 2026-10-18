@@ -7,7 +7,7 @@ import { useRace, type RaceState } from '@/online/race';
 import { RaceReveal } from '@/online/RaceReveal';
 import { RoomTalk } from '@/online/Talk';
 import { useRaceRevealSound } from '@/online/raceSound';
-import { characterOf } from '../shell/characters';
+import { playerColour } from '../shell/characters';
 import { PauseMenu } from '../shell/PauseMenu';
 import type { OnlineProps } from '../shell/types';
 import { GameScreen } from '../shell/ui';
@@ -62,7 +62,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
     const need = closeAt(wordOf(st.item).word.length);
     for (const p of st.players) {
       if (p.user_id === me) continue;
-      const color = characterOf(p.character)?.ring ?? '#6fd6ff';
+      const color = playerColour(st.players, p.user_id);
       if (p.solved && !seen.current.solved.has(p.user_id)) {
         seen.current.solved.add(p.user_id);
         seen.current.close.add(p.user_id);

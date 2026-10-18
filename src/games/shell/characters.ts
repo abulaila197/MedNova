@@ -1,16 +1,16 @@
-/** The 9 player characters (AV1). A player's colour is their character's ring colour (AV3). */
+/** The 9 Original pack characters. Several players may share one; colours are given out separately (Yazan 2026-10-18). */
 export type Character = { slug: string; name: string; ring: string };
 
 export const CHARACTERS: Character[] = [
   { slug: 'yazan', name: 'Yazan', ring: '#d21f45' },
   { slug: 'yara', name: 'Yara', ring: '#f3c110' },
-  { slug: 'omar', name: 'Omar', ring: '#8b5c3a' },
+  { slug: 'omar', name: 'Omar', ring: '#14a576' },
   { slug: 'layla', name: 'Layla', ring: '#f58a2c' },
   { slug: 'atlas', name: 'Atlas', ring: '#8a5ae0' },
   { slug: 'nova', name: 'Nova', ring: '#3aa9e4' },
   { slug: 'bolt', name: 'Bolt', ring: '#e23f88' },
   { slug: 'iris', name: 'Iris', ring: '#7cc72a' },
-  { slug: 'pip', name: 'Pip', ring: '#12969a' },
+  { slug: 'pip', name: 'Pip', ring: '#4f47cc' },
 ];
 
 /** The 8 Nova Mechs (Yazan 2026-10-18): profile pictures won from daily chests; the ring is the rim on each face. */
@@ -44,3 +44,9 @@ export const SEAT_COLOURS: { name: string; color: string }[] = [
 
 /** The first colour nobody in `taken` has picked. */
 export const freeColour = (taken: (string | undefined)[]) => (SEAT_COLOURS.find((c) => !taken.includes(c.color)) ?? SEAT_COLOURS[0]).color;
+
+/** An online player's colour: one of the 8, never shared in a room, the same on every phone (by account id order). */
+export function playerColour(players: { user_id: string }[], userId: string) {
+  const i = players.map((p) => p.user_id).sort().indexOf(userId);
+  return SEAT_COLOURS[Math.max(0, i) % SEAT_COLOURS.length].color;
+}

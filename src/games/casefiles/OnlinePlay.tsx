@@ -11,7 +11,7 @@ import { RoomTalk } from '@/online/Talk';
 import { u } from '@/theme/scale';
 import { useRaceRevealSound } from '@/online/raceSound';
 
-import { characterOf } from '../shell/characters';
+import { playerColour } from '../shell/characters';
 import { presetTeam } from '../shell/teams';
 import type { OnlineProps } from '../shell/types';
 import { CaseBoard } from './CaseBoard';
@@ -100,7 +100,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   }, []);
 
   const teams = Number(st?.settings.teams) || 0;
-  const colorOf = (p: RacePlayer | undefined) => (!p ? NR.red : teams >= 2 && p.team != null ? presetTeam(p.team).color : (characterOf(p.character)?.ring ?? NR.red));
+  const colorOf = (p: RacePlayer | undefined) => (!p ? NR.red : teams >= 2 && p.team != null ? presetTeam(p.team).color : playerColour(st?.players ?? [], p.user_id));
 
   // The case opens for everyone at once.
   useEffect(() => {

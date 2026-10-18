@@ -13,7 +13,7 @@ import { RoomTalk } from '@/online/Talk';
 import { u } from '@/theme/scale';
 import { useRaceRevealSound } from '@/online/raceSound';
 
-import { characterOf } from '../shell/characters';
+import { playerColour } from '../shell/characters';
 import { Face } from '../shell/Face';
 import { KeyboardLift } from '../shell/KeyboardLift';
 import { PauseMenu } from '../shell/PauseMenu';
@@ -66,7 +66,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   const seen = useRef<{ turn: number; solved: Set<string>; stage: number }>({ turn: -1, solved: new Set(), stage: 0 });
 
   const teams = Number(st?.settings.teams) || 0;
-  const colorOf = (p: RacePlayer | undefined) => (!p ? R.soft : teams >= 2 && p.team != null ? presetTeam(p.team).color : (characterOf(p.character)?.ring ?? R.soft));
+  const colorOf = (p: RacePlayer | undefined) => (!p ? R.soft : teams >= 2 && p.team != null ? presetTeam(p.team).color : playerColour(st?.players ?? [], p.user_id));
 
   // Live strokes from the drawer (the stroke being drawn, and the board after each line).
   useEffect(() => {

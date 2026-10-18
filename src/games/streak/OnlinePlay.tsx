@@ -6,7 +6,7 @@ import { settingsLine } from '@/online/format';
 import { seededOrder, useRace, type RaceState } from '@/online/race';
 import { RoomTalk } from '@/online/Talk';
 import { useRaceRevealSound } from '@/online/raceSound';
-import { characterOf } from '../shell/characters';
+import { playerColour } from '../shell/characters';
 import { PauseMenu } from '../shell/PauseMenu';
 import type { OnlineProps } from '../shell/types';
 import { GameScreen } from '../shell/ui';
@@ -58,7 +58,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
       const before = streaks.current.get(p.user_id) ?? 0;
       streaks.current.set(p.user_id, p.streak);
       if (p.user_id === me || p.streak === before) continue;
-      const color = characterOf(p.character)?.ring ?? '#6fd6ff';
+      const color = playerColour(st.players, p.user_id);
       if (p.streak > before && MILESTONES.includes(p.streak)) push(`${p.name} is on a ${p.streak} streak`, color);
       else if (p.streak === 0 && before >= 3) push(`${p.name}'s ${before} streak broke`, '#f5b041');
     }

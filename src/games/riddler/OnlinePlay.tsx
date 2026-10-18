@@ -7,7 +7,7 @@ import { useRace, type RaceState } from '@/online/race';
 import { RaceReveal } from '@/online/RaceReveal';
 import { RoomTalk } from '@/online/Talk';
 import { useRaceRevealSound } from '@/online/raceSound';
-import { characterOf } from '../shell/characters';
+import { playerColour } from '../shell/characters';
 import { PauseMenu } from '../shell/PauseMenu';
 import type { OnlineProps } from '../shell/types';
 import { GameScreen } from '../shell/ui';
@@ -60,7 +60,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
     for (const p of st.players) {
       if (p.solved && !seen.current.solved.has(p.user_id)) {
         seen.current.solved.add(p.user_id);
-        if (p.user_id !== me) push(`${p.name} solved it, ${nth(p.item_rank ?? 1)}`, characterOf(p.character)?.ring ?? '#6fd6ff');
+        if (p.user_id !== me) push(`${p.name} solved it, ${nth(p.item_rank ?? 1)}`, playerColour(st.players, p.user_id));
       }
     }
     const left = st.players.filter((p) => !p.dropped && !p.solved);
