@@ -9,7 +9,7 @@ export const ARC_DROP = 46; // 2026-10-13: ring, planets and dots only (not the 
 export const DOTS_TOP = 398 + SHIFT; // screen y of the swipe dots
 export const ART_B = DOTS_TOP + 66; // bottom of the art box (fitArc: dots top + 66)
 // 2026-10-05: the ring's fill is gone, so each drawing moves down and fades just above the nav bar.
-export const ART_END = 540;
+export const ART_END = 580; // 2026-10-18: art runs on under the arc to the dock
 const DROP = ART_END - ART_B;
 const ART_T = 150;
 export const RING_R = 520;
