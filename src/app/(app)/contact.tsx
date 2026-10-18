@@ -8,6 +8,7 @@ import { GradBtn, InfoScroll, Kicker, s as ui, useInfo } from '@/features/info/u
 import { call } from '@/online/api';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
+import { deviceId } from '@/lib/device';
 
 /** Contact, locked "C1 I want to ___": one sentence instead of a form. Tap the blank to cycle, or pick a chip. */
 export default function Page() {
@@ -23,11 +24,13 @@ export default function Page() {
     if (msg.trim().length < 2) return setSaid({ ok: false, text: 'Write your message first.' });
     setBusy(true);
     try {
-      await call('submit_contact', { kind: it.key, body: msg });
+      await call('submit_contact', { kind: it.key, body: msg, device: await deviceId() });
       setMsg('');
       setSaid({ ok: true, text: 'Sent! Thanks, we read every message.' });
-    } catch {
-      setSaid({ ok: false, text: 'Couldn’t send that. Check your connection and try again.' });
+    } catch (e) {
+      // The server caps messages per day (guests: 3 per device); say so instead of blaming the connection.
+      const limit = String((e as { message?: string })?.message ?? '').includes('too many');
+      setSaid({ ok: false, text: limit ? 'That’s the limit for today. Try again tomorrow.' : 'Couldn’t send that. Check your connection and try again.' });
     }
     setBusy(false);
   };

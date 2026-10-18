@@ -11,6 +11,7 @@ import { supabase } from '@/lib/supabase';
 import { useApp, useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
+import { deviceId } from '@/lib/device';
 
 const KINDS = ['Medical content', 'Game', 'Technical', 'Other'];
 
@@ -54,7 +55,7 @@ export function ReportSheet() {
   const [kind, setKind] = useState(0);
   const [text, setText] = useState('');
   const [ctx, setCtx] = useState<Ctx>({ chips: [], data: {} });
-  const [state, setState] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
+  const [state, setState] = useState<'idle' | 'sending' | 'sent' | 'error' | 'limit'>('idle');
   const path = usePathname();
   const params = useGlobalSearchParams();
   // Each opening starts a fresh report.
@@ -72,8 +73,9 @@ export function ReportSheet() {
   const send = async () => {
     if (state === 'sending') return;
     setState('sending');
-    const { error } = await supabase.rpc('submit_report', { kind: KINDS[kind], body: text.trim(), context: { ...ctx.data, chips: ctx.chips, theme: t.mode } });
-    if (error) return setState('error');
+    const device = await deviceId();
+    const { error } = await supabase.rpc('submit_report', { kind: KINDS[kind], body: text.trim(), context: { ...ctx.data, chips: ctx.chips, theme: t.mode }, device });
+    if (error) return setState(error.message?.includes('too many') ? 'limit' : 'error');
     setState('sent');
     setText('');
     setTimeout(() => setReport(false), 1200);
@@ -118,6 +120,7 @@ export function ReportSheet() {
         </Pressable>
         {state === 'sent' ? <Text style={[s.msg, { color: t.fg }]}>Thanks! We’ll look into it.</Text> : null}
         {state === 'error' ? <Text style={[s.msg, { color: t.red }]}>Couldn’t send that. Check your connection and try again.</Text> : null}
+        {state === 'limit' ? <Text style={[s.msg, { color: t.red }]}>That’s the limit for today. Try again tomorrow.</Text> : null}
       </View>
     </Sheet>
   );
