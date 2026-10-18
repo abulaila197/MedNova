@@ -49,8 +49,10 @@ export function NewCase() {
       await saveCase({ diagnosis: guessName(answer!), answer_id: answer, field: field == null ? null : FIELDS[field], gender: GENDERS[gender!], age: a, presentation, history, exam, investigation, findings: findings.filter((x) => x.trim()) });
       if (router.canGoBack()) router.back();
       else router.replace('/learn');
-    } catch {
-      setMsg('Not saved. Check your connection and try again.');
+    } catch (e) {
+      // The server allows 20 new cases a day; say that instead of blaming the connection (AP12d).
+      const many = String((e as { message?: string })?.message ?? '').includes('too many');
+      setMsg(many ? 'That’s 20 cases today, the most for one day. Try again tomorrow.' : 'Not saved. Check your connection and try again.');
     }
     setBusy(false);
   };

@@ -31,9 +31,10 @@ export type OpenResult = { ok: true; items: Won[]; prize: number } | { ok: false
 
 const NONE: Record<ChestKind, number> = { wooden: 0, golden: 0, diamond: 0, epic: 0 };
 
-type State = { c: Challenges | null; at: number };
-export const useChests = create<State>(() => ({ c: null, at: 0 }));
-onAccountSwitch(() => useChests.setState({ c: null, at: 0 }));
+/** `failed`: the last read did not reach the server (offline), so the page can say so instead of showing zeros (AP8). */
+type State = { c: Challenges | null; at: number; failed: boolean };
+export const useChests = create<State>(() => ({ c: null, at: 0, failed: false }));
+onAccountSwitch(() => useChests.setState({ c: null, at: 0, failed: false }));
 
 export const chestsOwned = (c: Challenges | null) => (c ? c.chests : NONE);
 export const chestCount = (c: Challenges | null) => Object.values(chestsOwned(c)).reduce((a, n) => a + n, 0);
@@ -46,7 +47,8 @@ export async function loadChallenges(force = false) {
   if (userId) await syncAccount(userId).catch(() => {});
   const { data } = await supabase.rpc('challenges_status', { tz_min: -new Date().getTimezoneOffset() });
   const c = data as Challenges | null;
-  if (c && Array.isArray(c.tasks)) useChests.setState({ c });
+  if (c && Array.isArray(c.tasks)) useChests.setState({ c, failed: false });
+  else useChests.setState({ failed: true });
 }
 
 /** Opens one chest. Tokens and duplicates are paid on the server. */

@@ -57,7 +57,8 @@ export async function loadCases() {
   useCases.setState({ list });
 }
 
+/** Saves a new case. Once the server took it, a failed list reload doesn't count as "not saved" (AP12d). */
 export async function saveCase(c: NewCase) {
   await call('save_case', { c });
-  await loadCases();
+  await loadCases().catch(() => {});
 }

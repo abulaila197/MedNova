@@ -70,6 +70,7 @@ export function RoundsPage() {
   const c = useInfo();
   const t = c.t;
   const r = useRoundsStore((x) => x.r);
+  const failed = useRoundsStore((x) => x.failed);
   const signedIn = !!useSession((x) => x.userId);
   const [busy, setBusy] = useState(false);
   const lock = useLock();
@@ -79,7 +80,18 @@ export function RoundsPage() {
       void loadRounds(true);
     }, []),
   );
-  if (!r) return <Screen tab={null} glow={21}>{null}</Screen>;
+  // Offline before the week was ever read: say so instead of an empty page (AP8).
+  if (!r)
+    return (
+      <Screen tab={null} glow={21}>
+        {failed ? (
+          <InfoScroll>
+            <Kicker>Grand Rounds</Kicker>
+            <Text style={[ui.p, { color: c.mute }]}>Can’t reach MedNova right now. Check your connection and try again.</Text>
+          </InfoScroll>
+        ) : null}
+      </Screen>
+    );
   const complete = isComplete(r);
   const cycleStart = r.week - (((r.week % 13) + 13) % 13);
   const stamped = new Set(r.stamps);

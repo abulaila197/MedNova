@@ -30,6 +30,7 @@ export async function redeemHuntPrize() {
   const r = await call<{ ok: boolean; why?: string; tokens?: number }>('hunt_prize');
   const uid = useSession.getState().userId;
   if (uid) await syncAccount(uid).catch(() => {});
-  await loadHunt();
+  // Paid already: a failed reload must not turn the Congrats into "Not redeemed" (AP12d).
+  await loadHunt().catch(() => {});
   return r;
 }

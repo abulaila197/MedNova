@@ -21,6 +21,8 @@ export type ChallengesView = {
   resetIn: string;
   /** Not signed in: nothing counts yet. */
   guest?: boolean;
+  /** Today's challenges could not be read (no connection). */
+  offline?: boolean;
   onShare?: () => void;
 };
 
@@ -100,6 +102,7 @@ export function ChallengesPage({ v }: { v: ChallengesView }) {
           );
         })}
         {v.guest ? <Text style={[s.foot, { color: t.accent }]}>Sign in to start counting your challenges.</Text> : null}
+        {v.offline ? <Text style={[s.foot, { color: t.accent }]}>Can’t reach MedNova right now, so your progress isn’t shown. Check your connection.</Text> : null}
         <Text style={[s.foot, { color: c.mute }]}>A share counts when you pick an app to send the link to. An ad counts when you watch it to the end.</Text>
       </InfoScroll>
     </Screen>
