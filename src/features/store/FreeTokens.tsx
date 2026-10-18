@@ -1,12 +1,12 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { useEffect, useState, type ReactNode } from 'react';
-import { Linking, Modal, Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { Linking, Modal, Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import Svg, { Circle, Path, Rect } from 'react-native-svg';
 
 import { create } from 'zustand';
 
-import { Text } from '@/components/AppText';
+import { Text, TextInput } from '@/components/AppText';
 import { Sheet } from '@/components/Sheet';
 import { ADS_LIVE } from '@/features/freeplays/paywall';
 import { Kicker } from '@/features/info/ui';

@@ -1,5 +1,6 @@
 import { useId } from 'react';
 import Svg, { Circle, ClipPath, Defs, FeGaussianBlur, Filter, G, LinearGradient, Path, RadialGradient, Stop } from 'react-native-svg';
+import { useSvgId } from './svgId';
 
 export const STAR = 'M512 138 L619 405 L865 503 L865 520 L619 620 L512 885 L405 620 L160 520 L160 503 L405 405Z';
 export const ECG =
@@ -51,7 +52,6 @@ export function starAt(cx: number, cy: number, r: number) {
   return d + 'Z';
 }
 
-let coinSeq = 0;
 const C = 2 * Math.PI * 10.6;
 
 /**
@@ -59,7 +59,7 @@ const C = 2 * Math.PI * 10.6;
  * inside a thin ring that fills toward the next token. `size` is the whole coin + ring diameter.
  */
 export function TokenCoin({ size, progress, track }: { size: number; progress: number; track: string }) {
-  const k = `tc${++coinSeq}`;
+  const k = useSvgId('tc'); // stable per coin, not a new gradient id every render (PB13c)
   const c = ['#e9fbff', '#6fd6ff', '#2f8fc4', '#6fd6ff'];
   const disc = 'M12 4.2a7.8 7.8 0 1 1 0 15.6a7.8 7.8 0 1 1 0-15.6Z';
   const p = Math.max(0, Math.min(1, progress));

@@ -30,7 +30,7 @@ export default function RootLayout() {
   const ready = useStartReady();
   const intro = useStart((s) => s.intro);
   const { width, height } = useScreen();
-  const [loaded] = useFonts({
+  const [fontsLoaded, fontError] = useFonts({
     Gabarito_700Bold,
     InterTight_400Regular,
     InterTight_500Medium,
@@ -38,6 +38,8 @@ export default function RootLayout() {
     InterTight_700Bold,
     JetBrainsMono_500Medium,
   });
+  // A font that fails to load falls back to the system font instead of keeping the splash up for good (PB13a).
+  const loaded = fontsLoaded || !!fontError;
   useEffect(() => {
     if (loaded && ready) SplashScreen.hideAsync();
   }, [loaded, ready]);

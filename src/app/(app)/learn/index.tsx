@@ -1,7 +1,7 @@
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
-import { Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
-import { Text } from '@/components/AppText';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Text, TextInput, MAX_FONT_SCALE } from '@/components/AppText';
 import { LinearGradient } from 'expo-linear-gradient';
 import Animated, { interpolateColor, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue, type SharedValue } from 'react-native-reanimated';
 
@@ -68,7 +68,7 @@ function PageName({ i, label, x, W, onPress }: { i: number; label: string; x: Sh
   }));
   return (
     <Pressable onPress={onPress} accessibilityRole="tab" hitSlop={u(6)}>
-      <Animated.Text style={[s.name, st]}>{label}</Animated.Text>
+      <Animated.Text maxFontSizeMultiplier={MAX_FONT_SCALE} style={[s.name, st]}>{label}</Animated.Text>
     </Pressable>
   );
 }

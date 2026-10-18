@@ -3,7 +3,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import Animated, { FadeIn, FadeOut, Keyframe, ZoomIn, ZoomOut } from 'react-native-reanimated';
 import Svg, { Path } from 'react-native-svg';
 
-import { Text } from '@/components/AppText';
+import { Text, MAX_FONT_SCALE } from '@/components/AppText';
 import { TokenCoin } from '@/components/PulseStar';
 import { useTheme } from '@/state/app';
 import { u, useScreen } from '@/theme/scale';
@@ -185,7 +185,7 @@ function Blister({ t, d, w, h, st, wide, popped }: CellP) {
       ]}
     >
       {done ? (
-        <Animated.Text entering={FadeIn.duration(250)} style={[s.num, { color: t.dim, opacity: 0.6 }]}>
+        <Animated.Text maxFontSizeMultiplier={MAX_FONT_SCALE} entering={FadeIn.duration(250)} style={[s.num, { color: t.dim, opacity: 0.6 }]}>
           {d}
         </Animated.Text>
       ) : wide ? (

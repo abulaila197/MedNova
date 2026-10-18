@@ -1,7 +1,7 @@
 import { Image } from 'expo-image';
 import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
-import { Text } from '@/components/AppText';
+import { Text, MAX_FONT_SCALE } from '@/components/AppText';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, { FadeIn, FadeOut, ZoomIn, runOnJS, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 
@@ -208,7 +208,7 @@ export function FloatingTalk({ room, me }: { room: string; me: Me }) {
         </GestureDetector>
       </Animated.View>
       {note ? (
-        <Animated.Text entering={FadeIn} exiting={FadeOut} style={[s.note, { color: L.fg, backgroundColor: L.raised, fontFamily: L.semi }]}>
+        <Animated.Text maxFontSizeMultiplier={MAX_FONT_SCALE} entering={FadeIn} exiting={FadeOut} style={[s.note, { color: L.fg, backgroundColor: L.raised, fontFamily: L.semi }]}>
           {note}
         </Animated.Text>
       ) : null}

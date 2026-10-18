@@ -1,9 +1,9 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Pressable, StyleSheet, TextInput, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
-import { Text } from '@/components/AppText';
+import { Text, TextInput } from '@/components/AppText';
 import { Congrats } from '@/components/Congrats';
 import { Screen } from '@/components/Screen';
 import { loadFree, useFree } from '@/features/store/FreeTokens';
