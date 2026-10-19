@@ -5,6 +5,7 @@ import type { DPCase } from '@/games/diagnostic/core';
 import { useSession } from '@/games/shell/session';
 import { supabase } from '@/lib/supabase';
 import { call } from '@/online/api';
+import { onAccountSwitch } from '@/state/accountSwitch';
 
 /** A case the player wrote (custom_cases): private until approved, then only its maker plays it. */
 export type CustomCase = {
@@ -26,6 +27,7 @@ export type CustomCase = {
 export type NewCase = Omit<CustomCase, 'id' | 'status' | 'created_at'>;
 
 export const useCases = create<{ list: CustomCase[] | null }>(() => ({ list: null }));
+onAccountSwitch(() => useCases.setState({ list: null }));
 
 /** Diagnostic Pursuit id of a custom case ("c:" + uuid), so the solo game can play it. */
 export const customId = (id: string) => `c:${id}`;
@@ -55,7 +57,8 @@ export async function loadCases() {
   useCases.setState({ list });
 }
 
+/** Saves a new case. Once the server took it, a failed list reload doesn't count as "not saved" (AP12d). */
 export async function saveCase(c: NewCase) {
   await call('save_case', { c });
-  await loadCases();
+  await loadCases().catch(() => {});
 }

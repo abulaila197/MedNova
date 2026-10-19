@@ -9,7 +9,7 @@ import { F } from '@/theme/tokens';
 import { levelUpLine } from '../engine/levels';
 import type { Play, PlayItem } from '../engine/types';
 import { AddPill } from '@/features/friends/AddAfterMatch';
-import { RoomTalk } from '@/online/Talk';
+import { RoomTalk } from '@/online/TalkBar';
 
 import { PlayerFace } from '@/features/style/Frame';
 import { effectWinner, PlayerTitle, winnerAccount } from '@/features/style/PlayerTitle';

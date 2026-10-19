@@ -6,10 +6,12 @@ import { useAccount } from '@/state/account';
 
 import { challengeFriend, JOIN_SAY, myInvites, respondInvite, type Invite } from './api';
 import { keepIfSame } from './same';
+import { onAccountSwitch } from '@/state/accountSwitch';
 
 /** ON24: open challenges to you. `bannered` = already shown as the top banner once (Later keeps them on Friends). */
 type State = { list: Invite[]; bannered: string[]; say: string | null };
 export const useInvites = create<State>(() => ({ list: [], bannered: [], say: null }));
+onAccountSwitch(() => useInvites.setState({ list: [], bannered: [], say: null }));
 
 export async function loadInvites() {
   const list = await myInvites();

@@ -40,8 +40,9 @@ export function FeatherArt({
   ];
   return (
     <View style={style} pointerEvents="none">
-      <Fade stops={down} style={StyleSheet.absoluteFill}>
-        <Fade stops={across} horizontal style={StyleSheet.absoluteFill}>
+      {/* A direction with no feather gets no mask: each MaskedView is an extra layer and mask bitmap (PB6). */}
+      <Fade stops={down} off={!top && !bottom} style={StyleSheet.absoluteFill}>
+        <Fade stops={across} horizontal off={!left && !right} style={StyleSheet.absoluteFill}>
           <Image source={source} style={[StyleSheet.absoluteFill, { opacity }]} contentFit="cover" contentPosition={position as never} />
         </Fade>
       </Fade>

@@ -17,6 +17,7 @@ import { markVisited } from '@/features/achievements/useAchievements';
 import { PaywallSheet } from '@/features/freeplays/PaywallSheet';
 import { cancelPaywall } from '@/features/freeplays/paywall';
 import { useStopSoundsOnLeave } from '@/lib/sound';
+import { useBack } from '@/lib/useBack';
 import { useApp, useTheme } from '@/state/app';
 import { u, useScreen } from '@/theme/scale';
 
@@ -30,6 +31,8 @@ export default function AppLayout() {
   const setMenu = useApp((s) => s.setMenu);
   const p = useSharedValue(0);
   useStopSoundsOnLeave();
+  // Android back closes the open menu first (PB3).
+  useBack(open, () => setMenu(false));
   // A sheet belongs to the page it opened on: going to another page (Android back included) closes it.
   const path = usePathname();
   const was = useRef(path);

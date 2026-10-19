@@ -2,6 +2,7 @@ import { AppState } from 'react-native';
 import { create } from 'zustand';
 
 import { call } from '@/online/api';
+import { onAccountSwitch } from '@/state/accountSwitch';
 
 /** A friend or a request (FR1-FR4). `kind`: friend, incoming (they asked you) or outgoing (you asked them). */
 export type Friend = {
@@ -20,6 +21,7 @@ export type RequestResult = 'sent' | 'accepted' | 'already' | 'pending' | 'self'
 
 type State = { list: Friend[]; blocked: Blocked[]; loaded: boolean };
 export const useFriends = create<State>(() => ({ list: [], blocked: [], loaded: false }));
+onAccountSwitch(() => useFriends.setState({ list: [], blocked: [], loaded: false }));
 
 /** Reloads friends, requests and blocked players from the server. */
 export async function loadFriends() {

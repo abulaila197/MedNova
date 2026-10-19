@@ -7,7 +7,7 @@ import { AlertPill, Countdown, useAlerts } from '@/online/live';
 import { settingsLine } from '@/online/format';
 import { useRace, type RacePlayer, type RaceState } from '@/online/race';
 import { RoomLookProvider } from '@/online/look';
-import { RoomTalk } from '@/online/Talk';
+import { RoomTalk } from '@/online/TalkBar';
 import { u } from '@/theme/scale';
 import { useRaceRevealSound } from '@/online/raceSound';
 

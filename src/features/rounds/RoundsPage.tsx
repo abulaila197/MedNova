@@ -19,6 +19,7 @@ import { F } from '@/theme/tokens';
 
 import { Beat } from './Ribbon';
 import { claimRounds, isComplete, loadRounds, PART_NAME, timeLeft, useRoundsStore, weekGoal, weekName, type Week } from './useRounds';
+import { useLock } from '@/lib/useLock';
 
 /** A mode week's stamp sign: a phone for Pass, a single figure for Solo, linked dots for Online. */
 function ModeSign({ mode, px, color }: { mode: 'online' | 'solo' | 'offline'; px: number; color: string }) {
@@ -69,34 +70,52 @@ export function RoundsPage() {
   const c = useInfo();
   const t = c.t;
   const r = useRoundsStore((x) => x.r);
+  const failed = useRoundsStore((x) => x.failed);
   const signedIn = !!useSession((x) => x.userId);
   const [busy, setBusy] = useState(false);
+  const lock = useLock();
   const [said, setSaid] = useState('');
   useFocusEffect(
     useCallback(() => {
       void loadRounds(true);
     }, []),
   );
-  if (!r) return <Screen tab={null} glow={21}>{null}</Screen>;
+  // Offline before the week was ever read: say so instead of an empty page (AP8).
+  if (!r)
+    return (
+      <Screen tab={null} glow={21}>
+        {failed ? (
+          <InfoScroll>
+            <Kicker>Grand Rounds</Kicker>
+            <Text style={[ui.p, { color: c.mute }]}>Can’t reach MedNova right now. Check your connection and try again.</Text>
+          </InfoScroll>
+        ) : null}
+      </Screen>
+    );
   const complete = isComplete(r);
   const cycleStart = r.week - (((r.week % 13) + 13) % 13);
   const stamped = new Set(r.stamps);
 
-  const collect = async () => {
-    setBusy(true);
-    const x = await claimRounds();
-    setBusy(false);
-    setSaid(x.ok ? `Week done. ${x.tokens ?? r.prize} tokens and a stamp are yours.` : 'Not saved yet: your plays are still reaching your account. Try again in a moment.');
-  };
+  const collect = () =>
+    lock(async () => {
+      setBusy(true);
+      const x = await claimRounds();
+      setBusy(false);
+      setSaid(x.ok ? `Week done. ${x.tokens ?? r.prize} tokens and a stamp are yours.` : 'Not saved yet: your plays are still reaching your account. Try again in a moment.');
+    });
   const boost = async () => {
     if (!signedIn) return router.navigate('/auth');
-    if (r.this.kind !== 'game') return;
-    setBusy(true);
-    const x = await spendTokens('booster', r.this.game);
-    if (x.ok) await engine.gate.addBoost(r.this.game as GameKey, r.week, 10);
-    setBusy(false);
-    setSaid(x.ok ? '10 more plays of this week’s game are ready.' : whySay(x));
-    void loadRounds(true);
+    const w = r.this;
+    if (w.kind !== 'game') return;
+    // One booster per tap: the server charges 24 again for a second spend (DEF-094).
+    await lock(async () => {
+      setBusy(true);
+      const x = await spendTokens('booster', w.game);
+      if (x.ok) await engine.gate.addBoost(w.game as GameKey, r.week, 10);
+      setBusy(false);
+      setSaid(x.ok ? '10 more plays of this week’s game are ready.' : whySay(x));
+      void loadRounds(true);
+    });
   };
 
   return (

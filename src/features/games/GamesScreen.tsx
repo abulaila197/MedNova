@@ -69,8 +69,8 @@ export function GamesScreen() {
     <Screen tab="games" glow={0} under={<Ring mode={t.mode} top={bodyTop} />}>
       <GestureDetector gesture={pan}>
         <View style={s.fill}>
-          {/* only the shown game and its neighbours are mounted; the rest are off screen anyway */}
-          {GAMES.map((g, j) => (Math.abs(wrapOff(j - sel)) <= 2 ? <GamePage key={g.key} game={g} j={j} pos={pos} active={j === sel} /> : null))}
+          {/* only the shown game and its two neighbours are mounted (3 decoded arts, not 5: PB4) */}
+          {GAMES.map((g, j) => (Math.abs(wrapOff(j - sel)) <= 1 ? <GamePage key={g.key} game={g} j={j} pos={pos} active={j === sel} /> : null))}
           <Dots pos={pos} onPick={jump} />
           {GAMES.map((g, j) => (
             <Planet key={g.key} k={g.key} j={j} pos={pos} sel={sel} mode={t.mode} onPress={() => jump(j)} />

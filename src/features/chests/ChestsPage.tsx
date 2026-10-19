@@ -1,7 +1,7 @@
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import Animated, { FadeInDown, useAnimatedStyle, useSharedValue, withSequence, withTiming, Easing } from 'react-native-reanimated';
 
@@ -45,6 +45,7 @@ export function ChestsPage({ v }: { v: ChestsView }) {
   const [prize, setPrize] = useState(0);
   const [busy, setBusy] = useState(false);
   const [failed, setFailed] = useState(false);
+  const opening = useRef(false);
 
   // The Light opening (Yazan 2026-10-18): the chest shakes, the lid pops with a glow, then the items slide in.
   const shake = useSharedValue(0);
@@ -55,12 +56,15 @@ export function ChestsPage({ v }: { v: ChestsView }) {
   const glowSt = useAnimatedStyle(() => ({ opacity: pop.value, transform: [{ scale: 0.6 + pop.value * 0.6 }] }));
 
   const openIt = async () => {
-    if (busy || !n) return;
+    // A ref holds from the first tap; state alone lets a same-frame second tap open a second chest (AP10a).
+    if (busy || opening.current || !n) return;
+    opening.current = true;
     setBusy(true);
     setFailed(false);
     shake.set(withSequence(...[-7, 7, -6, 6, -4, 4, 0].map((d) => withTiming(d, { duration: 70 }))));
     const [r] = await Promise.all([v.open(sel), new Promise((res) => setTimeout(res, 500))]);
     if (!r.ok) {
+      opening.current = false;
       setBusy(false);
       setFailed(true);
       return;
@@ -69,6 +73,7 @@ export function ChestsPage({ v }: { v: ChestsView }) {
     setTimeout(() => {
       setWon(r.items.map((w) => ({ item: ITEMS.find((i) => i.key === w.key) ?? ITEMS[0], dupe: w.dupe, tokens: w.tokens })));
       setPrize(r.prize);
+      opening.current = false;
       setBusy(false);
     }, 420);
   };

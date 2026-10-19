@@ -4,7 +4,7 @@ import { call } from '@/online/api';
 import { AlertPill, Countdown, nth, useAlerts } from '@/online/live';
 import { settingsLine } from '@/online/format';
 import { seededOrder, useRace, type RaceState } from '@/online/race';
-import { RoomTalk } from '@/online/Talk';
+import { RoomTalk } from '@/online/TalkBar';
 import { useRaceRevealSound } from '@/online/raceSound';
 import { playerColour } from '../shell/characters';
 import { PauseMenu } from '../shell/PauseMenu';

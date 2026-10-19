@@ -1,11 +1,13 @@
 import { router, usePathname } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
+import { AppState } from 'react-native';
 
 import { localDay } from '@/games/engine/gate';
 import { defaultKV } from '@/games/engine/storage';
 import { useSession } from '@/games/shell/session';
 import { supabase } from '@/lib/supabase';
 import { syncAccount } from '@/lib/sync';
+import { useBack } from '@/lib/useBack';
 import { useStart } from '@/state/start';
 
 import { useWelcome } from '../welcome/WelcomeHost';
@@ -31,6 +33,20 @@ export function DailyHost() {
   const checked = useRef<string | null>(null); // `${user}:${date}` already looked at
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const claiming = useRef(false);
+  // Looks again when the app comes back to the front and at the phone's midnight, so a Games page left open
+  // over midnight still gets the new day's pop-up (AP12a).
+  const [wake, setWake] = useState(0);
+  useEffect(() => {
+    const sub = AppState.addEventListener('change', (st) => st === 'active' && setWake((n) => n + 1));
+    const now = new Date();
+    const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 5).getTime() - now.getTime();
+    const id = setTimeout(() => setWake((n) => n + 1), midnight);
+    return () => {
+      sub.remove();
+      clearTimeout(id);
+    };
+  }, [wake]);
 
   useEffect(() => {
     if (!known || intro || !welcomed || path !== '/games') return;
@@ -46,22 +62,30 @@ export function DailyHost() {
         return;
       }
       const { data, error: e } = await supabase.rpc('daily_status');
-      if (e || !data) return; // offline: try again on the next open
+      if (e || !data) {
+        if (checked.current === key) checked.current = null; // offline: try again on the next visit
+        return;
+      }
       const st = data as { next_day: number; last_date: string | null };
       if (st.last_date === today) return;
       setOpen({ day: st.next_day, collected: false });
     })();
-  }, [known, intro, welcomed, path, userId]);
+  }, [known, intro, welcomed, path, userId, wake]);
 
+  // Android back closes the pop-up (PB3).
+  useBack(!!open, () => setOpen(null));
   if (!open) return null;
 
   const collect = async () => {
+    if (claiming.current) return; // a double tap claims once (AP10a)
+    claiming.current = true;
     setBusy(true);
     setError(null);
     const { data, error: e } = await supabase.rpc('daily_claim', {
       local_date: localDay(),
     });
     setBusy(false);
+    claiming.current = false;
     const r = data as { ok: boolean; day?: number; why?: string } | null;
     if (e || !r) return setError('Could not reach MedNova. Check your connection and try again.');
     if (!r.ok)

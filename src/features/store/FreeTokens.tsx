@@ -1,12 +1,12 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { useEffect, useState, type ReactNode } from 'react';
-import { Linking, Modal, Platform, Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { Linking, Modal, Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import Svg, { Circle, Path, Rect } from 'react-native-svg';
 
 import { create } from 'zustand';
 
-import { Text } from '@/components/AppText';
+import { Text, TextInput } from '@/components/AppText';
 import { Sheet } from '@/components/Sheet';
 import { ADS_LIVE } from '@/features/freeplays/paywall';
 import { Kicker } from '@/features/info/ui';
@@ -18,6 +18,7 @@ import type { Theme } from '@/theme/tokens';
 import { F } from '@/theme/tokens';
 
 import { LINKS } from './links';
+import { onAccountSwitch } from '@/state/accountSwitch';
 
 type Icon = (p: { size: number; color: string }) => ReactNode;
 type Way = { key: string; label: string; tokens: number; each?: boolean; act: string; icon: Icon };
@@ -130,6 +131,7 @@ type OpenSheet = 'story' | 'feedback' | 'ambassador' | null;
 
 /** What this player already collected, and which sheet is open (drawn by the Store page above its scroll). */
 export const useFree = create<{ status: FreeStatus | null; sheet: OpenSheet }>(() => ({ status: null, sheet: null }));
+onAccountSwitch(() => useFree.setState({ status: null, sheet: null }));
 
 export async function loadFree() {
   if (!useSession.getState().userId) return useFree.setState({ status: null });
@@ -289,7 +291,8 @@ export function FreeSheets({ t }: { t: Theme }) {
   if (!sheet) return null;
   return (
     <Modal transparent visible onRequestClose={close}>
-      <Sheet open onClose={close}>
+      {/* Android Modal windows resize for the keyboard themselves; iOS needs the lift (PB10). */}
+      <Sheet open onClose={close} lift={Platform.OS === 'ios'}>
         {sheet === 'story' ? <StoryForm t={t} onDone={close} /> : sheet === 'feedback' ? <FeedbackForm t={t} onDone={close} /> : <AmbassadorForm t={t} onDone={close} />}
       </Sheet>
     </Modal>

@@ -32,7 +32,11 @@ const close = (ok: boolean) => {
 /** Play-again ads: 5 a day in total across all games (Yazan 2026-10-12); Store token ads have their own 5. */
 export const PLAY_AD_CAP = 5;
 const AD_KEY = 'ads:play';
-const today = () => new Date().toISOString().slice(0, 10);
+// The phone's own date, like the free plays (gate.ts) and the sheet's "3 new free plays at midnight" (AP10c).
+const today = () => {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+};
 
 /** Play-again ads left today on this phone (the server holds the same cap once ads are live). */
 export async function playAdsLeft() {
@@ -40,8 +44,20 @@ export async function playAdsLeft() {
   return PLAY_AD_CAP - (d?.date === today() ? d.n : 0);
 }
 
+// One payment at a time: a fast double tap must not spend twice or count two ads for one play (DEF-094).
+let paying = false;
+const once = <A extends unknown[]>(job: (...a: A) => Promise<boolean>) => async (...a: A) => {
+  if (paying) return true; // the first tap is still working; don't show "not enough" for the second
+  paying = true;
+  try {
+    return await job(...a);
+  } finally {
+    paying = false;
+  }
+};
+
 /** 'Watch an ad': one more play, never tokens. A free stand-in until ads are live. */
-export async function payWithAd() {
+export const payWithAd = once(async () => {
   const a = usePaywall.getState().ask;
   if (!a) return false;
   const left = await playAdsLeft();
@@ -56,10 +72,10 @@ export async function payWithAd() {
   await engine.gate.addPlay(a.game);
   close(true);
   return true;
-}
+});
 
 /** 'Pay 3 tokens'. False when the wallet is short. */
-export async function payWithTokens() {
+export const payWithTokens = once(async () => {
   const a = usePaywall.getState().ask;
   if (!a) return false;
   const receipt = await engine.wallet.spend(PLAY_PRICE, `free_play_${a.game}`);
@@ -67,7 +83,7 @@ export async function payWithTokens() {
   await engine.gate.addPlay(a.game);
   close(true);
   return true;
-}
+});
 
 export const cancelPaywall = () => close(false);
 

@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef } from 'react';
 import { AppState } from 'react-native';
 import { create } from 'zustand';
 
-import { awake, track } from '@/lib/sound';
+import { awake, track, untrack } from '@/lib/sound';
 
 import { call } from './api';
 import { voiceById } from './voice';
@@ -57,6 +57,18 @@ export async function playVoice(id: string) {
   }
 }
 
+/** Frees the voice-line players when a room's talk feed closes, so up to 15 native players don't stay alive (PB13d). */
+function releaseVoices() {
+  for (const p of players.values()) {
+    untrack(p);
+    try {
+      p.pause();
+      p.remove();
+    } catch {}
+  }
+  players.clear();
+}
+
 const pop = (m: TalkMsg) => {
   useTalk.setState((s) => ({ pops: [...s.pops.filter((x) => x.user_id !== m.user_id), m] }));
   setTimeout(() => useTalk.setState((s) => ({ pops: s.pops.filter((x) => x.id !== m.id) })), POP_MS);
@@ -78,8 +90,11 @@ export async function sendTalk(room: string, me: { id: string; name: string; fac
 /** Fetches new talk for a room every 1.5 s while the page is open; skips what was said before you arrived. */
 export function useTalkFeed(room: string | undefined, me: string | null) {
   const last = useRef<number | null>(null);
+  const loading = useRef(false);
   const load = useCallback(async () => {
-    if (!room || AppState.currentState !== 'active') return;
+    // One fetch at a time: two overlapping calls with the same `after` would pop and voice a line twice (AP10d).
+    if (!room || loading.current || AppState.currentState !== 'active') return;
+    loading.current = true;
     try {
       const rows = await call<TalkMsg[]>('room_talk', { r: room, after: last.current ?? 0 });
       const first = last.current == null;
@@ -93,6 +108,8 @@ export function useTalkFeed(room: string | undefined, me: string | null) {
       }
     } catch {
       // try again next tick
+    } finally {
+      loading.current = false;
     }
   }, [room, me]);
   useFocusEffect(
@@ -102,5 +119,11 @@ export function useTalkFeed(room: string | undefined, me: string | null) {
       return () => clearInterval(id);
     }, [load]),
   );
-  useEffect(() => () => useTalk.setState({ pops: [] }), [room]);
+  useEffect(
+    () => () => {
+      useTalk.setState({ pops: [] });
+      releaseVoices();
+    },
+    [room],
+  );
 }

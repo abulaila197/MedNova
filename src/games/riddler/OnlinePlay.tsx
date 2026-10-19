@@ -5,7 +5,7 @@ import { AlertPill, Countdown, nth, useAlerts } from '@/online/live';
 import { settingsLine } from '@/online/format';
 import { useRace, type RaceState } from '@/online/race';
 import { RaceReveal } from '@/online/RaceReveal';
-import { RoomTalk } from '@/online/Talk';
+import { RoomTalk } from '@/online/TalkBar';
 import { useRaceRevealSound } from '@/online/raceSound';
 import { playerColour } from '../shell/characters';
 import { PauseMenu } from '../shell/PauseMenu';

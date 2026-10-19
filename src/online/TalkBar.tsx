@@ -1,8 +1,9 @@
 import { Image } from 'expo-image';
 import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
-import { Text } from '@/components/AppText';
+import { Text, MAX_FONT_SCALE } from '@/components/AppText';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated, { FadeIn, FadeOut, ZoomIn, runOnJS, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 
 import { router } from 'expo-router';
@@ -148,6 +149,11 @@ export function FloatingTalk({ room, me }: { room: string; me: Me }) {
   const y = useSharedValue(height * 0.6);
   const sx = useSharedValue(0);
   const sy = useSharedValue(0);
+  // The overlay starts under the game header, so its own height (not the window's) bounds the drag: the button
+  // can no longer be dragged below the bottom edge and lost (DEF-081).
+  const ins = useSafeAreaInsets();
+  const boxH = useSharedValue(height);
+  const bottomGap = Math.max(u(20), ins.bottom);
   const [side, setSide] = useState<'left' | 'right'>('right');
   const [open, setOpen] = useState(false);
   const [note, setNote] = useState<string | null>(null);
@@ -167,7 +173,7 @@ export function FloatingTalk({ room, me }: { room: string; me: Me }) {
     })
     .onUpdate((e) => {
       x.value = sx.value + e.translationX;
-      y.value = Math.min(height - size - u(20), Math.max(u(70), sy.value + e.translationY));
+      y.value = Math.min(boxH.value - size - bottomGap, Math.max(u(70), sy.value + e.translationY));
     })
     .onEnd(() => {
       const right = x.value + size / 2 > width / 2;
@@ -185,7 +191,14 @@ export function FloatingTalk({ room, me }: { room: string; me: Me }) {
   const toSide = side === 'right' ? { right: size + u(8) } : { left: size + u(8) };
 
   return (
-    <View style={[StyleSheet.absoluteFill, { zIndex: 25 }]} pointerEvents="box-none">
+    <View
+      style={[StyleSheet.absoluteFill, { zIndex: 25 }]}
+      pointerEvents="box-none"
+      onLayout={(e) => {
+        const hh = e.nativeEvent.layout.height;
+        boxH.set(hh);
+        if (y.get() > hh - size - bottomGap) y.set(Math.max(u(70), hh - size - bottomGap));
+      }}>
       {open ? <Pressable style={StyleSheet.absoluteFill} onPress={() => setOpen(false)} accessibilityLabel="Close talk" /> : null}
       <Animated.View style={[s.anchor, { width: size, height: size }, btn]} pointerEvents="box-none">
         {/* Pops and the fan open toward the middle of the screen. */}
@@ -208,7 +221,7 @@ export function FloatingTalk({ room, me }: { room: string; me: Me }) {
         </GestureDetector>
       </Animated.View>
       {note ? (
-        <Animated.Text entering={FadeIn} exiting={FadeOut} style={[s.note, { color: L.fg, backgroundColor: L.raised, fontFamily: L.semi }]}>
+        <Animated.Text maxFontSizeMultiplier={MAX_FONT_SCALE} entering={FadeIn} exiting={FadeOut} style={[s.note, { color: L.fg, backgroundColor: L.raised, fontFamily: L.semi }]}>
           {note}
         </Animated.Text>
       ) : null}

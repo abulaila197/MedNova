@@ -192,9 +192,10 @@ function Frame({ si, w, h, padTop, padBottom, children }: Omit<SlideProps, 'onNe
   const hd = h / u(1);
   return (
     <View style={{ width: w, height: h, overflow: 'hidden', backgroundColor: NAVY }}>
-      {/* The still sky and photo are cached as one GPU picture, so a swipe moves them without redrawing. The twinkling
-          stars sit above it, outside the cache: their opacity changes every frame and would redraw the cache (A6). */}
-      <View style={StyleSheet.absoluteFill} renderToHardwareTextureAndroid shouldRasterizeIOS>
+      {/* Only the still art is cached as one GPU picture, so a swipe moves it without redrawing the photo and
+          masks. The twinkling stars sit outside it: their opacity changes every frame and would redraw the cache
+          each frame (DEF-071). Same order and place, so nothing looks different. */}
+      <View pointerEvents="none" style={StyleSheet.absoluteFill} renderToHardwareTextureAndroid shouldRasterizeIOS>
         <Sky w={w} h={h} />
         <Scene si={si} w={w} h={h} padTop={padTop} padBottom={padBottom} />
       </View>

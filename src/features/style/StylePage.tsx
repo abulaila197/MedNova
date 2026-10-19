@@ -25,6 +25,7 @@ import { Framed, type FrameKey } from './Frame';
 import { titleColor } from './PlayerTitle';
 import { buyItem, loadStyle, spendTokens, useStyle, wear, whySay } from './useStyle';
 import { EffectSign, WinEffect } from './WinEffect';
+import { useLock } from '@/lib/useLock';
 
 export type Tab = 'frames' | 'titles' | 'effects' | 'stickers';
 const TABS: { k: Tab; label: string }[] = [
@@ -60,6 +61,7 @@ export function StylePage() {
   const { owned, worn, deal, dealEnds } = useStyle();
   const [pick, setPick] = useState<Item | null>(null);
   const [busy, setBusy] = useState(false);
+  const lock = useLock();
   const [said, setSaid] = useState('');
   const [gift, setGift] = useState(false);
   const [trying, setTrying] = useState<Item | null>(null);
@@ -76,11 +78,13 @@ export function StylePage() {
 
   const act = async (fn: () => Promise<{ ok: boolean; why?: string; need?: number }>, done: string) => {
     if (!signedIn) return router.navigate('/auth');
-    setBusy(true);
-    setSaid('');
-    const r = await fn();
-    setBusy(false);
-    setSaid(r.ok ? done : whySay(r as { why: string; need?: number }));
+    await lock(async () => {
+      setBusy(true);
+      setSaid('');
+      const r = await fn();
+      setBusy(false);
+      setSaid(r.ok ? done : whySay(r as { why: string; need?: number }));
+    });
   };
 
   const list = tab === 'frames' ? FRAMES : tab === 'titles' ? [...TITLES, ...PLATINUM_TITLES] : tab === 'effects' ? EFFECTS : PACKS;
@@ -298,6 +302,7 @@ function GiftSheet({ open, item, onClose, onSent }: { open: boolean; item: Item 
   const friends = useFriends((f) => f.list);
   const mates = useMemo(() => friends.filter((f) => f.kind === 'friend'), [friends]);
   const [busy, setBusy] = useState<string | null>(null);
+  const lock = useLock();
   const [err, setErr] = useState('');
   const deal = useStyle((x) => x.deal);
   useEffect(() => {
@@ -314,16 +319,18 @@ function GiftSheet({ open, item, onClose, onSent }: { open: boolean; item: Item 
           <Pressable
             key={f.id}
             disabled={!!busy}
-            onPress={async () => {
-              setErr('');
-              setBusy(f.id);
-              const r = await buyItem(item.id, f.id);
-              setBusy(null);
-              if (r.ok) {
-                onClose();
-                onSent(f.display_name);
-              } else setErr(r.why === 'owned' ? `${f.display_name} already has it.` : whySay(r));
-            }}
+            onPress={() =>
+              lock(async () => {
+                setErr('');
+                setBusy(f.id);
+                const r = await buyItem(item.id, f.id);
+                setBusy(null);
+                if (r.ok) {
+                  onClose();
+                  onSent(f.display_name);
+                } else setErr(r.why === 'owned' ? `${f.display_name} already has it.` : whySay(r));
+              })
+            }
             style={[s.gRow, { borderColor: c.line }, busy === f.id && { opacity: 0.6 }]}
             accessibilityRole="button">
             <Face slug={f.avatar} size={u(26)} />

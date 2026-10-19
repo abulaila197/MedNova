@@ -14,6 +14,7 @@ import { F } from '@/theme/tokens';
 
 import { Beat } from './Ribbon';
 import { claimRounds, isComplete, loadRounds, useRoundsStore, weekName } from './useRounds';
+import { useLock } from '@/lib/useLock';
 
 const kv = defaultKV();
 const SHOWN = 'rounds:popped';
@@ -25,6 +26,8 @@ export function RoundsHost() {
   const r = useRoundsStore((s) => s.r);
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const lock = useLock();
   useEffect(() => {
     void loadRounds(true);
   }, [userId]);
@@ -38,6 +41,7 @@ export function RoundsHost() {
   }, [r, userId]);
   const close = () => {
     setOpen(false);
+    setFailed(false);
     if (r) void kv.set(SHOWN, r.week);
   };
   if (!r) return null;
@@ -54,12 +58,17 @@ export function RoundsHost() {
         </View>
         <Pressable
           disabled={busy}
-          onPress={async () => {
-            setBusy(true);
-            await claimRounds();
-            setBusy(false);
-            close();
-          }}
+          onPress={() =>
+            lock(async () => {
+              setBusy(true);
+              setFailed(false);
+              const x = await claimRounds();
+              setBusy(false);
+              // Offline the prize isn't collected: say so and stay open (it can also be collected on the Grand Rounds page) (AP8).
+              if (!x.ok && x.why === 'offline') return setFailed(true);
+              close();
+            })
+          }
           accessibilityRole="button"
           style={[{ alignSelf: 'stretch', marginTop: u(12) }, busy && { opacity: 0.6 }]}>
           <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={s.btn}>
@@ -67,6 +76,7 @@ export function RoundsHost() {
             <TokenCoin size={u(13)} progress={0} track="transparent" />
           </LinearGradient>
         </Pressable>
+        {failed ? <Text style={[s.fail, { color: t.mute }]}>Could not reach MedNova. Try again in a moment.</Text> : null}
       </View>
     </Sheet>
   );
@@ -78,4 +88,5 @@ const s = StyleSheet.create({
   h: { fontFamily: F.display, fontSize: u(21), lineHeight: u(26), textAlign: 'center' },
   btn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: u(5), height: u(42), borderRadius: 999 },
   btnT: { fontFamily: F.bodyBold, fontSize: u(13) },
+  fail: { fontFamily: F.bodyMedium, fontSize: u(11), textAlign: 'center', marginTop: u(6) },
 });

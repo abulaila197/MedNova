@@ -20,10 +20,11 @@ import { shareText } from '@/lib/share';
 import { call, leaveRoom, rematchRoom, removePlayer, setReady, setTeam, startMatch, updateRoom, type RoomState, type Seat } from './api';
 import { settingsLine } from './format';
 import { G } from './grey';
-import { TalkBubble, TalkPanel } from './Talk';
+import { TalkBubble, TalkPanel } from './TalkBar';
 import { toggleMute, useTalk, useTalkFeed } from './talk';
 import { GREY_LOOK, useRoomLook } from './look';
 import { useRoom } from './useRoom';
+import { GAMES } from '@/data/games';
 
 
 /** A page in the online look: dark header (pinned), grey room behind. */
@@ -58,6 +59,14 @@ export function Lobby({ def, roomId }: { def: GameDef; roomId: string }) {
   const [sheet, setSheet] = useState<LobbySheet>(null);
   const [copied, setCopied] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [startFail, setStartFail] = useState(false);
+  const failTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const flashStartFail = () => {
+    setStartFail(true);
+    if (failTimer.current) clearTimeout(failTimer.current);
+    failTimer.current = setTimeout(() => setStartFail(false), 2500);
+  };
+  useEffect(() => () => void (failTimer.current && clearTimeout(failTimer.current)), []);
   const went = useRef(false);
 
   const room = state?.room;
@@ -117,7 +126,9 @@ export function Lobby({ def, roomId }: { def: GameDef; roomId: string }) {
     );
   }
 
-  const share = () => shareText(`Join my MedNova room for ${def.key === 'the-diagnostic-pursuit' ? 'The Diagnostic Pursuit' : 'a game'}. Room code: ${spaced(room.code)}`);
+  // Names the game for every lobby, not only The Diagnostic Pursuit (AP10b).
+  const g = GAMES.find((x) => x.key === def.key);
+  const share = () => shareText(`Join my MedNova room for ${g ? `${g.lead} ${g.em}`.trim() : 'a game'}. Room code: ${spaced(room.code)}`);
   const allReady = players.length >= 2 && players.every((p) => p.ready);
   const notReady = players.filter((p) => !p.ready);
   const status =
@@ -257,11 +268,12 @@ export function Lobby({ def, roomId }: { def: GameDef; roomId: string }) {
         ) : host ? (
           <GBtn
             style={s.grow}
-            label={busy ? 'Starting…' : allReady ? 'Start' : players.length < 2 ? 'Start · needs 2 players' : `Start · ${players.length - notReady.length} of ${players.length} ready`}
+            label={busy ? 'Starting…' : startFail ? 'Couldn’t start. Try again' : allReady ? 'Start' : players.length < 2 ? 'Start · needs 2 players' : `Start · ${players.length - notReady.length} of ${players.length} ready`}
             off={!allReady || busy}
             onPress={async () => {
               setBusy(true);
-              await startMatch(room.id).catch(() => {});
+              // A refused start (someone left or un-readied) says so on the button instead of failing silently (AP12g).
+              await startMatch(room.id).catch(() => flashStartFail());
               await reload();
               setBusy(false);
             }}

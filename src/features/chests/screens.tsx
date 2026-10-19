@@ -9,6 +9,7 @@ import { shareText } from '@/lib/share';
 import { ChallengesPage, type Task as TaskView } from './ChallengesPage';
 import { ChestsPage } from './ChestsPage';
 import { chestsOwned, loadChallenges, openChest, useChests, type Challenges, type Task } from './useChests';
+import { useSecond } from '@/lib/useSecond';
 
 const ROW: Record<Task['k'], (of: number) => { label: string; say: string }> = {
   games: (of) => ({ label: 'Play games', say: `play ${of} games` }),
@@ -38,8 +39,8 @@ function todayLine(c: Challenges | null) {
   return c.tasks[c.step - 1].map((x) => (x.k === 'review' ? `review ${x.n >= x.of ? 'done' : 'to finish'}` : `${x.n} of ${x.of} ${UNIT[x.k]}`)).join(', ');
 }
 
-function resetIn(ms: number) {
-  const left = Math.max(0, ms - Date.now());
+function resetIn(ms: number, now: number) {
+  const left = Math.max(0, ms - now);
   const h = Math.floor(left / 3600000);
   const m = Math.floor((left % 3600000) / 60000);
   return h ? `${h} h ${m} min` : `${m} min`;
@@ -57,6 +58,9 @@ const shareApp = () => shareText(`Learn medicine through games with me on MedNov
 export function ChallengesScreen() {
   useLoad();
   const c = useChests((x) => x.c);
+  const failed = useChests((x) => x.failed);
+  // The "new challenges in" line ticks instead of keeping the time it was first drawn at (AP12b).
+  const now = useSecond(!!c);
   const tasks = (c?.tasks ?? EMPTY).map((list) => list.map((x): TaskView => ({ ...ROW[x.k](x.of), n: x.n, of: x.of, share: x.k === 'shares' }))) as [TaskView[], TaskView[], TaskView[]];
   return (
     <ChallengesPage
@@ -64,8 +68,9 @@ export function ChallengesScreen() {
         step: c?.step ?? 1,
         tasks,
         streak: c?.streak ?? 0,
-        resetIn: c ? resetIn(c.resets) : '',
+        resetIn: c ? resetIn(c.resets, now) : '',
         guest: c ? !c.signed_in : false,
+        offline: !c && failed,
         onShare: shareApp,
       }}
     />

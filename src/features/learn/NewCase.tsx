@@ -1,10 +1,10 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { useMemo, useState, type ReactNode } from 'react';
-import { Pressable, StyleSheet, TextInput, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Back } from '@/components/Back';
-import { Text } from '@/components/AppText';
+import { Text, TextInput } from '@/components/AppText';
 import { Screen } from '@/components/Screen';
 import { InfoScroll, Kicker, s as ui, useInfo } from '@/features/info/ui';
 import { search } from '@/games/diagnostic/core';
@@ -49,8 +49,10 @@ export function NewCase() {
       await saveCase({ diagnosis: guessName(answer!), answer_id: answer, field: field == null ? null : FIELDS[field], gender: GENDERS[gender!], age: a, presentation, history, exam, investigation, findings: findings.filter((x) => x.trim()) });
       if (router.canGoBack()) router.back();
       else router.replace('/learn');
-    } catch {
-      setMsg('Not saved. Check your connection and try again.');
+    } catch (e) {
+      // The server allows 20 new cases a day; say that instead of blaming the connection (AP12d).
+      const many = String((e as { message?: string })?.message ?? '').includes('too many');
+      setMsg(many ? 'That’s 20 cases today, the most for one day. Try again tomorrow.' : 'Not saved. Check your connection and try again.');
     }
     setBusy(false);
   };

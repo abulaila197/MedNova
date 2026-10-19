@@ -147,13 +147,20 @@ export function useRace(def: GameDef, roomId: string, matchId: string, me: strin
           .sort((a, b) => a.rank - b.rank);
         const mine = st.players.find((p) => p.user_id === me)!;
         const settings = { ...st.settings, room: roomId, match: matchId, teams: teams >= 2 ? Array.from({ length: teams }, (_, i) => presetTeam(i)) : undefined };
-        const id = await finishOnline(def, matchId, { settings, seats, standings, score: mine.score, items: items.current(st) });
+        // An item the bundle doesn't know (server bank newer than the app) must not leave the player on
+        // "Adding up the scores…" for good: the results open without the answer list instead.
+        let list: Omit<PlayItem, 'id' | 'at' | 'playId'>[] = [];
+        try {
+          list = items.current(st);
+        } catch {}
+        const id = await finishOnline(def, matchId, { settings, seats, standings, score: mine.score, items: list });
         showResults(id);
       } catch {
         finishing.current = false; // the next poll tries again instead of leaving "Adding up the scores…" for good
+        setNotice('Couldn’t save the results. Trying again…');
       }
     })();
-  }, [st, seated, me, def, roomId, matchId, showResults]);
+  }, [st, seated, me, def, roomId, matchId, showResults, setNotice]);
 
 
   const leave = useCallback(async () => {

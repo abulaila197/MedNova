@@ -1,5 +1,5 @@
 import { Redirect } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Text, TextInput } from '@/components/AppText';
 
@@ -27,6 +27,7 @@ export default function Page() {
   const [found, setFound] = useState<Player[]>([]);
   const [pick, setPick] = useState<Player | null>(null);
   const [amount, setAmount] = useState('');
+  const giving = useRef(false);
   const [note, setNote] = useState('');
   const [msg, setMsg] = useState<{ text: string; bad?: boolean } | null>(null);
   const [show, setShow] = useState<'new' | 'all'>('new');
@@ -58,12 +59,17 @@ export default function Page() {
   if (isAdmin && !name && found.length) setFound([]);
   useEffect(() => {
     if (!isAdmin || !name) return;
+    let live = true; // a slow answer for an older search must not replace a newer list (AP12e)
     const id = setTimeout(async () => {
       const { data, error } = await supabase.rpc('admin_find_players', { q: name });
+      if (!live) return;
       if (error) setMsg({ text: 'Could not search. Check the connection.', bad: true });
       else setFound((data as Player[]) ?? []);
     }, 300);
-    return () => clearTimeout(id);
+    return () => {
+      live = false;
+      clearTimeout(id);
+    };
   }, [name, isAdmin]);
 
   if (!isAdmin) return <Redirect href="/games" />;
@@ -71,8 +77,12 @@ export default function Page() {
   const n = Math.trunc(Number(amount));
   const give = async () => {
     if (!pick || !n) return setMsg({ text: 'Pick a player and type a number of tokens.', bad: true });
+    // Each call is a new grant on the server, so a double tap would give twice (AP12e).
+    if (giving.current) return;
+    giving.current = true;
     setMsg(null);
     const { data, error } = await supabase.rpc('admin_grant_tokens', { target: pick.id, amount: n, note });
+    giving.current = false;
     if (error) return setMsg({ text: 'Not saved. Amounts go from -1,000 to 5,000.', bad: true });
     const tokens = Number((data as { tokens?: number } | null)?.tokens ?? pick.tokens + n);
     setPick({ ...pick, tokens });
