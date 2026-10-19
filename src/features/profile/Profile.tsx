@@ -225,7 +225,7 @@ function DeleteAccount({ t }: { t: Theme }) {
               <Text style={[s.ghT, { color: t.red }]}>{busy ? 'Deleting…' : 'Delete'}</Text>
             </Pressable>
           </View>
-          {err ? <Text style={[s.delQ, { color: t.red }]}>{err}</Text> : null}
+          {err ? <Text style={[s.delQ, { color: t.error }]}>{err}</Text> : null}
         </>
       ) : (
         <Pressable onPress={() => setAsk(true)} hitSlop={u(10)} accessibilityRole="button">

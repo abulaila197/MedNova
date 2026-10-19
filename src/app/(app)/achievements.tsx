@@ -45,7 +45,7 @@ export default function Page() {
             <Text style={[s.guestA, { color: c.t.accent }]}>Sign in</Text>
           </Pressable>
         ) : null}
-        {error ? <Text style={[ui.p, { color: c.t.red }]}>{error}</Text> : null}
+        {error ? <Text style={[ui.p, { color: c.t.error }]}>{error}</Text> : null}
         {/* This week's Grand Rounds, changing every week like the Games page button (Yazan 2026-10-13). */}
         <RoundsEntry />
         <View style={[s.log, { backgroundColor: c.surf, borderColor: c.line }]}>

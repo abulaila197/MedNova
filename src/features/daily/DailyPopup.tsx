@@ -128,7 +128,7 @@ export function DailyPopup({ day, collected, signedIn, busy, error, onCollect, o
             </LinearGradient>
           </Pressable>
         )}
-        {error ? <Text style={[s.small, { color: t.red }]}>{error}</Text> : null}
+        {error ? <Text style={[s.small, { color: t.error }]}>{error}</Text> : null}
         <Text style={[s.small, { color: t.mute }]}>
           {signedIn ? 'Missed a day? No problem, you pick up where you left off.' : 'Your rewards are saved to your account.'}
         </Text>

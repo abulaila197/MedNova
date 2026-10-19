@@ -176,7 +176,7 @@ function FriendMenu() {
       )}
       <Act t={t} red title={`Block ${f.display_name}`} note="Also stops their requests and challenges. Undo any time under Blocked players on your Profile." onPress={() => run(() => blockUser(f.id))} disabled={busy} />
       <Act t={t} title={`Report ${f.display_name}`} note="Tell us what happened. Reports are private." onPress={() => openReport({ id: f.id, name: f.display_name, avatar: f.avatar })} disabled={busy} />
-      {err ? <Text style={[s.msg, { color: t.red }]}>Couldn’t reach the server. Check your connection.</Text> : null}
+      {err ? <Text style={[s.msg, { color: t.error }]}>Couldn’t reach the server. Check your connection.</Text> : null}
       <Pressable onPress={close} accessibilityRole="button">
         <Text style={[s.cancel, { color: t.mute }]}>Cancel</Text>
       </Pressable>
@@ -229,7 +229,7 @@ function ReportPlayer() {
         })}
       </View>
       <TextInput value={note} onChangeText={setNote} placeholder="Add a note (optional)" placeholderTextColor={t.mute} maxLength={500} multiline style={[s.note, line, { color: t.fg }]} />
-      {state === 'error' ? <Text style={[s.msg, { color: t.red }]}>Couldn’t send. Check your connection.</Text> : null}
+      {state === 'error' ? <Text style={[s.msg, { color: t.error }]}>Couldn’t send. Check your connection.</Text> : null}
       <Pressable onPress={send} disabled={!why || state === 'busy'} accessibilityRole="button">
         <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={[s.btn, !why && { opacity: 0.45 }]}>
           <Text style={[s.btnT, { color: t.onGrad }]}>{state === 'busy' ? 'Sending…' : 'Send report'}</Text>
@@ -243,7 +243,7 @@ function ReportPlayer() {
 }
 
 function Act({ t, title, note, red, onPress, disabled }: { t: Theme; title: string; note: string; red?: boolean; onPress: () => void; disabled?: boolean }) {
-  const c = red ? '#ff7a88' : t.fg;
+  const c = red ? t.error : t.fg;
   return (
     <Pressable onPress={onPress} disabled={disabled} style={[s.act, { borderColor: red ? 'rgba(199,54,70,0.5)' : t.panelLine }]} accessibilityRole="button">
       <Text style={[s.actT, { color: c }]}>{title}</Text>

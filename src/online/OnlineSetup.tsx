@@ -98,7 +98,7 @@ function Join({ def }: { def: GameDef }) {
             accessibilityLabel="Type a room code"
           />
         </Pressable>
-        {msg ? <Text style={[s.msg, { color: t.rose }]}>{msg}</Text> : null}
+        {msg ? <Text style={[s.msg, { color: t.error }]}>{msg}</Text> : null}
       </Card>
       <View style={s.lh}>
         <Text style={[s.k, { color: t.mute }]}>{`OPEN ROOMS · ${rooms?.length ?? 0}`}</Text>
@@ -164,7 +164,7 @@ function Create({ def, prefill }: { def: GameDef; prefill?: Record<string, unkno
           <Chips choices={[{ value: 1, label: 'Public', note: 'listed' }, { value: 0, label: 'Private', note: 'code only' }]} value={pub ? 1 : 0} onChange={(v) => setPub(v === 1)} />
         </Line>
       </Card>
-      <Text style={[s.note, { color: err ? t.rose : t.dim }]}>
+      <Text style={[s.note, { color: err ? t.error : t.dim }]}>
         {err ? JOIN_SAY.error : teams ? 'You put players in teams in the lobby.' : 'You can still change these in the lobby.'}
       </Text>
       <Btn label={busy ? 'Opening room…' : 'Create room'} onPress={create} disabled={busy} />

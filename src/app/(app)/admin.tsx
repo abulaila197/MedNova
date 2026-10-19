@@ -127,7 +127,7 @@ export default function Page() {
         <TextInput value={amount} onChangeText={setAmount} placeholder="Tokens (use - to take back)" placeholderTextColor={c.mute} keyboardType="numbers-and-punctuation" style={[field, s.gapS]} />
         <TextInput value={note} onChangeText={setNote} placeholder="Note (why), saved with the grant" placeholderTextColor={c.mute} maxLength={200} style={[field, s.gapS]} />
         <GradBtn label="Give tokens" onPress={give} style={s.gap} />
-        {msg ? <Text style={[ui.p, { color: msg.bad ? c.t.red : c.fg }]}>{msg.text}</Text> : null}
+        {msg ? <Text style={[ui.p, { color: msg.bad ? c.t.error : c.fg }]}>{msg.text}</Text> : null}
 
         <Text style={[ui.H, s.H, s.gapL, { color: c.fg }]}>Reports</Text>
         <Text style={[ui.p, { color: c.mute }]}>Sent from the red ! by players and guests, newest first.</Text>
@@ -138,7 +138,7 @@ export default function Page() {
             </Pressable>
           ))}
         </View>
-        {repErr ? <Text style={[s.small, { color: c.t.red }]}>Could not load reports. Check the connection.</Text> : null}
+        {repErr ? <Text style={[s.small, { color: c.t.error }]}>Could not load reports. Check the connection.</Text> : null}
         {reports && !reports.length ? <Text style={[s.small, s.gapS, { color: c.mute }]}>{show === 'new' ? 'No new reports.' : 'No reports yet.'}</Text> : null}
         <View style={s.list}>
           {(reports ?? []).map((r) => (

@@ -119,8 +119,8 @@ export function ReportSheet() {
           <Text style={s.btnT}>{state === 'sending' ? 'Sending…' : state === 'sent' ? 'Sent' : 'Send report'}</Text>
         </Pressable>
         {state === 'sent' ? <Text style={[s.msg, { color: t.fg }]}>Thanks! We’ll look into it.</Text> : null}
-        {state === 'error' ? <Text style={[s.msg, { color: t.red }]}>Couldn’t send that. Check your connection and try again.</Text> : null}
-        {state === 'limit' ? <Text style={[s.msg, { color: t.red }]}>That’s the limit for today. Try again tomorrow.</Text> : null}
+        {state === 'error' ? <Text style={[s.msg, { color: t.error }]}>Couldn’t send that. Check your connection and try again.</Text> : null}
+        {state === 'limit' ? <Text style={[s.msg, { color: t.error }]}>That’s the limit for today. Try again tomorrow.</Text> : null}
       </View>
     </Sheet>
   );

@@ -217,7 +217,7 @@ function CasesPage() {
       <Pressable onPress={() => router.push((signedIn ? '/learn/new-case' : '/auth') as never)} style={[s.newc, { borderColor: c.newcLine, backgroundColor: c.newcBg }]} accessibilityRole="button">
         <Text style={[s.newcT, { color: t.accent }]}>{signedIn ? '+ Write a new case' : 'Sign in to write your own cases'}</Text>
       </Pressable>
-      {err ? <Text style={[s.csA, { color: t.red }]}>{err}</Text> : null}
+      {err ? <Text style={[s.csA, { color: t.error }]}>{err}</Text> : null}
       {signedIn && list && !cases.length ? <Text style={[s.csA, { color: c.mute }]}>No cases yet. Write one and it stays here as a private note.</Text> : null}
       <View>
         {cases.map((k, i) => (

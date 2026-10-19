@@ -902,15 +902,12 @@ function ResultsPage({ env, rv, order, roomId }: { env: PageProps['env']; rv: Re
   return (
     <ScrollView style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', paddingHorizontal: p(12), paddingVertical: p(14) }} showsVerticalScrollIndicator={false}>
       <View style={{ gap: u(12) }}>
-        {/* Omar reacts to the place, beside the title and tucked behind the sheet, as on every other results page. */}
-        <StickerRow tone={toneOfPlace(place, worst)}>
-          <View style={{ gap: p(2) }}>
-            <T f={CRIMI} size={12} color={TM.cream} style={shade}>Trust Me Not · your year</T>
-            <T f={FELL} size={22} color={TM.cream} style={[shade, { lineHeight: p(26) }]}>{self.alive ? 'You survived' : `You died in month ${self.diedMonth ?? 12}`}</T>
-          </View>
-        </StickerRow>
+        {/* Omar reacts to the place above the sheet, tucked behind it; the kicker and title stay on the paper (Yazan 2026-10-19). */}
+        <StickerRow tone={toneOfPlace(place, worst)}>{null}</StickerRow>
         <Paper seed="results">
           <View style={{ gap: p(8) }}>
+            <K>Trust Me Not · your year</K>
+            <Title>{self.alive ? 'You survived' : `You died in month ${self.diedMonth ?? 12}`}</Title>
             <View style={s.xp}>
               <T size={12.5}>Your place</T>
               <T f={FELL} size={15}>{`${ORD(place)} of ${v.players.length}`}</T>

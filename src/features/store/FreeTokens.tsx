@@ -344,7 +344,7 @@ function StoryForm({ t, onDone }: { t: Theme; onDone: () => void }) {
         <Text style={[s.tickT, { color: t.fg }]}>Credit me with my in-game name</Text>
       </Pressable>
       <Text style={[s.note, { color: t.mute }]}>Keep it clean: adult (18+) content can get your account blocked. By sharing, you agree MedNova may post your story on our pages, without your name unless you tick Credit me.</Text>
-      {msg ? <Text style={[s.note, { color: t.red }]}>{msg}</Text> : null}
+      {msg ? <Text style={[s.note, { color: t.error }]}>{msg}</Text> : null}
       <Send t={t} label="Send · +5 tokens" busy={busy || sent.includes(p)} onPress={() => send('submit_story', { prompt: p, body, credit })} />
     </>
   );
@@ -359,7 +359,7 @@ function FeedbackForm({ t, onDone }: { t: Theme; onDone: () => void }) {
       <Title t={t} a="Tell us what you " b="think" />
       <Text style={[s.note, { color: t.mute }]}>What you love, what bugs you, what you wish MedNova had. We read every word.</Text>
       <TextInput multiline value={body} onChangeText={setBody} maxLength={2000} placeholder="Your feedback..." placeholderTextColor={t.mute} style={[s.area, { color: t.fg, borderColor: t.panelLine, backgroundColor: t.panel2 }]} />
-      {msg ? <Text style={[s.note, { color: t.red }]}>{msg}</Text> : null}
+      {msg ? <Text style={[s.note, { color: t.error }]}>{msg}</Text> : null}
       <Send t={t} label={paid ? 'Send' : 'Send · +10 tokens'} busy={busy} onPress={() => send('submit_feedback', { body })} />
     </>
   );
@@ -378,7 +378,7 @@ function AmbassadorForm({ t, onDone }: { t: Theme; onDone: () => void }) {
       <TextInput value={url} onChangeText={setUrl} autoCapitalize="none" keyboardType="url" placeholder="Link to your video" placeholderTextColor={t.mute} style={input} />
       <TextInput value={email} onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address" placeholder="Your email" placeholderTextColor={t.mute} style={input} />
       <TextInput value={name} onChangeText={setName} placeholder="Your in-game name" placeholderTextColor={t.mute} style={input} />
-      {msg ? <Text style={[s.note, { color: t.red }]}>{msg}</Text> : null}
+      {msg ? <Text style={[s.note, { color: t.error }]}>{msg}</Text> : null}
       <Send t={t} label="Send for review" busy={busy} onPress={() => send('submit_ambassador', { email, game_name: name, video_url: url })} />
     </>
   );

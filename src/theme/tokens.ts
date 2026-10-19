@@ -16,6 +16,8 @@ const dark = {
   gradB: '#6fd6ff',
   onGrad: '#0b0b26',
   red: '#c73646',
+  // Error message text: lighter than the red button fill so it reads on navy (Yazan 2026-10-19).
+  error: '#ff7a88',
   rose: '#ff7aa8',
   line: 'rgba(255,255,255,0.08)',
   hair: 'rgba(255,255,255,0.14)',

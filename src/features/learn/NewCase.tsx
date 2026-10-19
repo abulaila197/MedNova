@@ -110,7 +110,7 @@ export function NewCase() {
             </Pressable>
           ) : null}
         </Box>
-        {msg ? <Text style={[s.msg, { color: t.red }]}>{msg}</Text> : null}
+        {msg ? <Text style={[s.msg, { color: t.error }]}>{msg}</Text> : null}
         <Pressable disabled={busy} onPress={save} accessibilityRole="button" style={busy && { opacity: 0.6 }}>
           <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.save}>
             <Text style={[s.saveT, { color: t.onGrad }]}>{signedIn ? 'Save to My cases' : 'Sign in to save'}</Text>

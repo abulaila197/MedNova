@@ -118,7 +118,7 @@ function Redeem({ t }: { t: Theme }) {
         <TextInput value={code} onChangeText={(v) => setCode(v.toUpperCase())} placeholder="Enter code" placeholderTextColor={t.mute} autoCapitalize="characters" autoCorrect={false} maxLength={12} style={[s.input, { flex: 1, minWidth: 0, width: 0, color: t.fg, borderColor: t.panelLine, backgroundColor: t.panel2 }]} />
         <Ghost t={t} label={busy ? '...' : 'Redeem'} onPress={go} />
       </View>
-      {msg ? <Text style={[s.msg, { color: t.red }]}>{msg}</Text> : null}
+      {msg ? <Text style={[s.msg, { color: t.error }]}>{msg}</Text> : null}
       <Congrats open={won} tokens={10} title="Welcome aboard" line="Your friend's code worked. They get 10 tokens too." onClose={() => setWon(false)} />
     </View>
   );

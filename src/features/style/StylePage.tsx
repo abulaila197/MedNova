@@ -313,7 +313,7 @@ function GiftSheet({ open, item, onClose, onSent }: { open: boolean; item: Item 
     <Sheet open={open} onClose={onClose}>
       <Text style={[s.gH, { color: c.fg }]}>{`Gift ${item.name}`}</Text>
       <Text style={[s.rS, { color: c.mute, marginBottom: u(8) }]}>{`${costOf(item, deal)} tokens from you. It's theirs to keep.`}</Text>
-      {err ? <Text style={[s.rS, { color: c.t.red }]}>{err}</Text> : null}
+      {err ? <Text style={[s.rS, { color: c.t.error }]}>{err}</Text> : null}
       {mates.length ? (
         mates.map((f) => (
           <Pressable

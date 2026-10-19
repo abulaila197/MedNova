@@ -13,7 +13,7 @@ import { takeAddCode } from '@/features/profile/pendingAdd';
 import { supabase } from '@/lib/supabase';
 import { call } from '@/online/api';
 import { u, useScreen } from '@/theme/scale';
-import { F } from '@/theme/tokens';
+import { F, THEMES } from '@/theme/tokens';
 
 import { nameIsClean } from '@/lib/names';
 import { cssAngle } from './ease';
@@ -298,7 +298,7 @@ export function SignIn() {
       accessibilityLabel="6-digit code"
     />
   );
-  const noteLine = note ? <Text style={[s.note, { color: note.bad ? '#ff8a8a' : c.lbl }]}>{note.text}</Text> : null;
+  const noteLine = note ? <Text style={[s.note, { color: note.bad ? THEMES.dark.error : c.lbl }]}>{note.text}</Text> : null;
 
   let body: ReactNode;
   if (step === 'code') {

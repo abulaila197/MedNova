@@ -75,7 +75,7 @@ export function Inbox({ c }: { c: C }) {
           </Pressable>
         ))}
       </View>
-      {err ? <Text style={[s.small, { color: c.t.red }]}>Could not load or save. Check the connection.</Text> : null}
+      {err ? <Text style={[s.small, { color: c.t.error }]}>Could not load or save. Check the connection.</Text> : null}
       {items && !items.length ? <Text style={[s.small, s.gapS, { color: c.mute }]}>{show === 'open' ? 'Nothing waiting.' : 'Nothing yet.'}</Text> : null}
       <View style={s.list}>
         {(items ?? []).map((it) => {

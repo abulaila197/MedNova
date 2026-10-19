@@ -82,7 +82,7 @@ export function Menu() {
               <Pressable onPress={out}>
                 <Text style={[s.keep, { color: t.accent, borderBottomColor: t.accent }]}>Sign out</Text>
               </Pressable>
-              {outErr ? <Text style={[s.small, { color: t.red }]}>Couldn’t sign out. Please try again.</Text> : null}
+              {outErr ? <Text style={[s.small, { color: t.error }]}>Couldn’t sign out. Please try again.</Text> : null}
             </>
           ) : (
             <>

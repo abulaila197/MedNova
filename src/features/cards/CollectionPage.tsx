@@ -89,7 +89,7 @@ export function CollectionPage() {
           ) : status?.prize ? (
             <Text style={[s.hint, { color: t.accent, marginTop: u(8) }]}>{`Hunt complete. ${HUNT_PRIZE} tokens collected.`}</Text>
           ) : null}
-          {err ? <Text style={[s.hint, { color: t.red, marginTop: u(8) }]}>{err}</Text> : null}
+          {err ? <Text style={[s.hint, { color: t.error, marginTop: u(8) }]}>{err}</Text> : null}
         </View>
         <Binder t={t} found={found} onOpen={setOpen} />
         <Mechs t={t} owned={mechs} onOpen={setMech} />

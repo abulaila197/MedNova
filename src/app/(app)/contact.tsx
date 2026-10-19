@@ -67,7 +67,7 @@ export default function Page() {
           textAlignVertical="top"
           style={[s.ta, { backgroundColor: c.surf, borderColor: c.line, color: c.fg }]}
         />
-        {said ? <Text style={[s.said, { color: said.ok ? c.t.accent : c.t.red }]}>{said.text}</Text> : null}
+        {said ? <Text style={[s.said, { color: said.ok ? c.t.accent : c.t.error }]}>{said.text}</Text> : null}
         <GradBtn label={busy ? 'Sending...' : 'Send'} onPress={send} style={s.send} />
         <Text style={[s.mail, { color: c.mute }]} selectable>{`Or write to ${CONTACT_EMAIL}`}</Text>
       </InfoScroll>

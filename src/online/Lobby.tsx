@@ -12,7 +12,7 @@ import { presetTeam } from '@/games/shell/teams';
 import type { GameDef } from '@/games/shell/types';
 import { GameScreen } from '@/games/shell/ui';
 import { u } from '@/theme/scale';
-import { F } from '@/theme/tokens';
+import { F, THEMES } from '@/theme/tokens';
 
 import { loadFriends, useFriends } from '@/state/friends';
 import { openReport } from '@/features/profile/Friends';
@@ -514,5 +514,5 @@ const s = StyleSheet.create({
   chipT: { fontFamily: F.bodySemi, fontSize: u(10) },
   ssh: { flexDirection: 'row', alignItems: 'center', gap: u(9) },
   remove: { borderWidth: 1, borderColor: 'rgba(199,54,70,0.5)', borderRadius: u(12), paddingVertical: u(10), alignItems: 'center' },
-  removeT: { fontFamily: F.bodySemi, fontSize: u(11), color: '#ff7a88' },
+  removeT: { fontFamily: F.bodySemi, fontSize: u(11), color: THEMES.dark.error },
 });
