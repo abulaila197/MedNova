@@ -65,7 +65,8 @@
   "dd1": [
    "Acute appendicitis",
    "Ectopic pregnancy",
-   "Ruptured ovarian cyst or Ovarian torsion",
+   "Ruptured ovarian cyst",
+   "Ovarian torsion",
    "Pelvic inflammatory disease",
    "Mesenteric adenitis"
   ],
@@ -140,8 +141,10 @@
   "discharge": "Maya's recovery over the following two days was steady and uncomplicated. Before she left, the team spent time talking with her about what had happened, what it might mean for future pregnancies given the surgery to one of her tubes, and the importance of an early scan the next time she thinks she might be pregnant.",
   "dd1": [
    "Ruptured ectopic pregnancy",
-   "Ruptured ovarian cyst or Ovarian torsion",
-   "Threatened miscarriage or Incomplete miscarriage",
+   "Ruptured ovarian cyst",
+   "Ovarian torsion",
+   "Threatened miscarriage",
+   "Incomplete miscarriage",
    "Acute appendicitis",
    "Pelvic inflammatory disease"
   ],
@@ -358,7 +361,8 @@
   "discharge": "He completed the rest of his antibiotic course in hospital, and before going home a hearing test was arranged, since this kind of infection can occasionally leave that particular after-effect. His parents left with a plan to catch up on the remaining scheduled vaccinations and a follow-up appointment to check on his development.",
   "dd1": [
    "Bacterial meningitis",
-   "Viral meningitis or Viral encephalitis",
+   "Viral meningitis",
+   "Viral encephalitis",
    "Febrile seizure",
    "Urinary tract infection",
    "Sepsis"
@@ -1685,7 +1689,8 @@
    "Delirium",
    "Dementia",
    "Stroke",
-   "Drug overdose or Adverse drug reaction"
+   "Drug overdose",
+   "Adverse drug reaction"
   ],
   "dd2": [
    [
@@ -2070,7 +2075,8 @@
    "Acute angle-closure glaucoma",
    "Migraine with aura",
    "Acute anterior uveitis",
-   "Corneal abrasion or Keratitis",
+   "Corneal abrasion",
+   "Keratitis",
    "Gastroenteritis"
   ],
   "dd2": [
@@ -3427,7 +3433,8 @@
   "discharge": "He was discharged to continue his recovery with physiotherapy and close urology follow-up given the bladder symptoms, with the team explaining honestly that some symptoms might take months to improve fully, or in a minority of cases might not resolve completely, while remaining encouraged by his early progress.",
   "dd1": [
    "Cauda equina syndrome",
-   "Mechanical back pain or Sciatica",
+   "Mechanical back pain",
+   "Sciatica",
    "Spinal cord compression",
    "Urinary tract infection",
    "Conus medullaris syndrome"
@@ -3627,7 +3634,8 @@
    "Acute pulmonary embolism",
    "Normal postpartum changes",
    "Anemia",
-   "Panic attack or Anxiety disorder"
+   "Panic attack",
+   "Anxiety disorder"
   ],
   "dd2": [
    [
@@ -5221,8 +5229,10 @@
   "dd1": [
    "Iron deficiency anemia",
    "Anemia of chronic disease",
-   "Vitamin B12 deficiency anemia or Folate deficiency anemia",
-   "Hypothyroidism or Hyperthyroidism",
+   "Vitamin B12 deficiency anemia",
+   "Folate deficiency anemia",
+   "Hypothyroidism",
+   "Hyperthyroidism",
    "Depression"
   ],
   "dd2": [
@@ -5287,7 +5297,8 @@
    "Stroke",
    "Seizure",
    "Alcohol intoxication",
-   "Diabetic ketoacidosis or Hyperosmolar hyperglycemic state"
+   "Diabetic ketoacidosis",
+   "Hyperosmolar hyperglycemic state"
   ],
   "dd2": [
    [
@@ -5991,7 +6002,8 @@
    "Acute ischemic stroke",
    "Subarachnoid hemorrhage",
    "Acute coronary syndrome",
-   "Panic attack or Anxiety disorder"
+   "Panic attack",
+   "Anxiety disorder"
   ],
   "dd2": [
    [

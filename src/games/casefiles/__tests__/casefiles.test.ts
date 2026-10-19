@@ -99,3 +99,12 @@ test('offline (CF8, CF10): same case in turn, sealed discharge, finished lines w
   const r = rankOffline(CASE, o);
   assert.deepEqual(r.map((x) => [x.seat, x.rank]), [[1, 1], [0, 2]]);
 });
+
+test('every first-list name is one disease from the master list (compound answers split, 2026-10-18)', async () => {
+  const cases = (await import('../data/cases.json')).default as CaseDef[];
+  const labels = new Set(((await import('../data/diagnoses.json')).default as { label: string }[]).map((d) => d.label));
+  for (const c of cases) {
+    for (const x of c.dd1) assert.ok(labels.has(x) && !/ or /.test(x), `${c.id}: ${x}`);
+    assert.equal(new Set(c.dd1).size, c.dd1.length, `${c.id}: duplicate first-list name`);
+  }
+});
