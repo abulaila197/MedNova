@@ -1,8 +1,11 @@
+import { Image } from 'expo-image';
 import { useEffect, useMemo, useState } from 'react';
 import { Animated, Easing, StyleSheet, View } from 'react-native';
 import Svg, { Defs, RadialGradient, Rect, Stop } from 'react-native-svg';
 
 import { DESIGN_W, u } from '@/theme/scale';
+
+import { BAKED, BAKED_ART } from './baked';
 
 // Nebula sky of the start flow: three soft radial washes over deep navy (prototype `.screen`).
 export const NAVY = '#070a1c';
@@ -18,6 +21,20 @@ let seq = 0;
 
 /** CSS radial-gradient(rx% ry% at x% y%, color, transparent end%) layers over a base colour. */
 export function Sky({ w, h }: { w: number; h: number }) {
+  if (BAKED_ART) return <BakedSky />;
+  return <LiveSky w={w} h={h} />;
+}
+
+/** The same sky as one still picture: every wash is a fraction of the width and height, so stretching it is exact. */
+function BakedSky() {
+  return (
+    <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: NAVY }]}>
+      <Image source={BAKED.sky} style={StyleSheet.absoluteFill} contentFit="fill" transition={0} accessibilityIgnoresInvertColors />
+    </View>
+  );
+}
+
+function LiveSky({ w, h }: { w: number; h: number }) {
   const id = useMemo(() => `sky${++seq}`, []);
   const washes = DARK;
   // CSS paints the first layer on top, so draw them in reverse.

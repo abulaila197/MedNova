@@ -1,3 +1,4 @@
+import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useMemo, type ReactNode } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
@@ -7,6 +8,7 @@ import Svg, { Defs, Image as SvgImage, LinearGradient as SvgLinear, Mask, Radial
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
+import { BAKED, BAKED_ART } from './baked';
 import { cssAngle } from './ease';
 import { NAVY, Sky, Stars } from './Sky';
 
@@ -71,6 +73,16 @@ function Scene({ si, w, h, padTop, padBottom }: { si: number; w: number; h: numb
   const ih = iw * IMG_RATIO;
   const x = (d.pos ? d.pos[0] * cw : (w - iw) * 0.5) + u(d.shift ?? 0);
   const y = d.pos ? d.pos[1] * ch : h - ih;
+  if (BAKED_ART) {
+    // Same picture from still images: the photo (slide 3 with its top fade already in its alpha) and the veil,
+    // a full-height gradient stretched to the screen.
+    return (
+      <View pointerEvents="none" style={StyleSheet.absoluteFill}>
+        <Image source={d.fade === 'top' ? BAKED.communityFade : d.src} style={{ position: 'absolute', left: x, top: y, width: iw, height: ih }} contentFit="fill" transition={0} accessibilityIgnoresInvertColors />
+        <Image source={BAKED.veils[si]} style={StyleSheet.absoluteFill} contentFit="fill" transition={0} accessibilityIgnoresInvertColors />
+      </View>
+    );
+  }
   const id = `ob${si}`;
   const soft = u(26);
   return (

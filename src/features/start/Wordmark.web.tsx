@@ -1,6 +1,7 @@
 import { memo, useEffect, useId, useMemo, useState, type ReactNode } from 'react';
 import { View } from 'react-native';
 
+import { BAKED, BAKED_ART } from './baked';
 import { bezier } from './ease';
 
 /*
@@ -14,7 +15,9 @@ import { bezier } from './ease';
  */
 
 type J = any;
-const DATA: J = require('@/assets/motion/mednova-wordmark.json');
+// Same switch as native: the baked file draws the glow as a pre-blurred image layer (ty 2) instead of a live blur.
+const DATA: J = BAKED_ART ? BAKED.wordmark : require('@/assets/motion/mednova-wordmark.json');
+const ASSETS = new Map<string, J>((DATA.assets ?? []).map((a: J) => [a.id, a]));
 
 const arr = (v: J): number[] => (Array.isArray(v) ? v : [v]);
 const n0 = (v: J): number => (Array.isArray(v) ? v[0] : v);
@@ -173,7 +176,10 @@ function layer(L: J, f: number, key: string, defs: ReactNode[]): ReactNode {
     );
     filter = `url(#${fid})`;
   }
-  const inner = (L.shapes || []).map((g: J, i: number) => (g.ty === 'gr' ? group(g.it, f, `${key}_${i}`, defs) : null));
+  const img = L.ty === 2 ? ASSETS.get(L.refId) : null;
+  const inner = img
+    ? [<image key={`${key}_img`} href={img.p} width={img.w} height={img.h} preserveAspectRatio="none" />]
+    : (L.shapes || []).map((g: J, i: number) => (g.ty === 'gr' ? group(g.it, f, `${key}_${i}`, defs) : null));
   return (
     <g key={key} transform={x.tr} opacity={x.o}>
       {filter ? <g filter={filter}>{inner}</g> : inner}
