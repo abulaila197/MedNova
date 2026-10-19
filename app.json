@@ -75,6 +75,12 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "41a99931-ac9e-4ed3-bcf7-0e541ef2ed0e"
+      }
+    },
+    "owner": "mednova"
   }
 }
