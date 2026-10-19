@@ -368,6 +368,10 @@ function TooEasy() {
         {dots.map((d, i) => (
           <Ink key={i} T={T} a={d.a} sz={d.sz} k={k} />
         ))}
+      </View>
+      {/* The stamp sits in a real box centred on the same line: inside the 0-high anchor its words didn't draw on
+          Android, so only the red frame showed (2026-10-19). */}
+      <View style={[s.box, { top: height * 0.44 - 150 * k, height: 300 * k }]} pointerEvents="none">
         <Animated.View
           style={[
             s.stamp,
@@ -830,6 +834,7 @@ const PLAY: Record<string, () => React.JSX.Element> = {
 
 const s = StyleSheet.create({
   abs: { position: 'absolute' },
+  box: { position: 'absolute', left: 0, right: 0, alignItems: 'center', justifyContent: 'center' },
   at: {
     position: 'absolute',
     left: 0,
