@@ -123,7 +123,7 @@ export function SignIn() {
   const [upH, setUpH] = useState(0);
   const tall = Math.max(inH, upH);
   const padBottom = u(14) + ins.bottom;
-  const padTop = tall && viewH ? Math.max(u(4), (viewH - tall - topGap) / 2 - u(3)) : u(14);
+  const padTop = tall && viewH ? Math.max(u(4), (viewH - tall - topGap) / 2 - u(4)) : u(14);
   // After signing in: a friend link opened as a guest goes on to Add friend; a sign-in opened from a page goes back
   // to that page (no second Games page under it); a first launch (nothing behind) goes to Games (AP10e, AP10g).
   const enter = () => {
@@ -482,7 +482,7 @@ const s = StyleSheet.create({
   welcome: { fontFamily: F.display, fontSize: u(18), lineHeight: u(17.6), letterSpacing: u(-1.2), alignSelf: 'flex-start' },
   brand: { fontFamily: F.display, fontSize: u(44), lineHeight: u(43.1), letterSpacing: u(-1.2), alignSelf: 'center', marginTop: u(2) },
   // the card at full width, its heights 90% of the approved size, sitting a little higher (Yazan, 2026-10-19)
-  card: { marginTop: u(0), borderWidth: 1, borderRadius: k(22), paddingVertical: k(14), paddingHorizontal: u(14), gap: k(8) },
+  card: { marginTop: u(14), borderWidth: 1, borderRadius: k(22), paddingVertical: k(14), paddingHorizontal: u(14), gap: k(8) },
   tabs: { flexDirection: 'row', padding: k(3), borderRadius: k(12) },
   tab: { flex: 1, height: k(27), borderRadius: k(9), alignItems: 'center', justifyContent: 'center' },
   tabTxt: { fontFamily: F.bodySemi, fontSize: k(10.5) },
