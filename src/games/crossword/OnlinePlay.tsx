@@ -23,6 +23,7 @@ import { CW, buildSlots, composeAnswer, indexOf, isFilled, lockedCells, placeLet
 import { PUZZLES, clueText } from './data';
 import { ReviveCard } from './OfflinePlay';
 import { clock } from '@/games/engine/clock';
+import { useBackPause } from '@/online/backPause';
 
 const puzzleOf = (n: number) => PUZZLES[n - 1];
 
@@ -71,6 +72,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   const toItems = useMemo(() => itemsOf(me), [me]);
   const { st, load, server, playing, watchLine, doneLine, notice, leave } = useRace(def, roomId, matchId, me, toItems);
   const [menu, setMenu] = useState(false);
+  useBackPause(menu, setMenu);
   const [typing, setTyping] = useState(false);
   const { alert, push } = useAlerts();
   const seen = useRef<{ claims: Set<string>; leader: string | null; out: Set<string> } | null>(null);

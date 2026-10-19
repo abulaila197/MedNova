@@ -18,6 +18,7 @@ import { DP, type Attempt } from './core';
 import { caseById, guessName } from './data';
 import { useMatchState } from '@/online/useMatchState';
 import { useRevealSound } from '@/lib/sound';
+import { useBackPause } from '@/online/backPause';
 
 type P = {
   user_id: string;
@@ -59,6 +60,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   const { st, load, server, notice, setNotice } = useMatchState<DPState>('dp_state', matchId, { shown: (sv, s) => s && `${second(s.phase_ends_at - sv)}:${second(sv - s.phase_started_at)}:${second((s.me?.locked_until ?? 0) - sv)}` });
   const [wrongSeq, setWrongSeq] = useState(0);
   const [menu, setMenu] = useState(false);
+  useBackPause(menu, setMenu);
   const seen = useRef<{ key: string; solved: Set<string>; alone: boolean }>({ key: '', solved: new Set(), alone: false });
   const showResults = useShowResults(def.key, matchId, st?.phase === 'done');
   const finishing = useRef(false);

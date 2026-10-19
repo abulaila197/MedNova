@@ -12,6 +12,7 @@ import { useRace, type RacePlayer, type RaceState } from '@/online/race';
 import { RoomTalk } from '@/online/TalkBar';
 import { u } from '@/theme/scale';
 import { useRaceRevealSound } from '@/online/raceSound';
+import { useBackPause } from '@/online/backPause';
 
 import { playerColour } from '../shell/characters';
 import { Face } from '../shell/Face';
@@ -59,6 +60,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   const R = useSlateRoom();
   const { st, load, server, clock, playing, watchLine, doneLine, notice, setNotice, leave } = useRace(def, roomId, matchId, me, itemsOf);
   const [menu, setMenu] = useState(false);
+  useBackPause(menu, setMenu);
   const { alert, push } = useAlerts();
   const [strokes, setStrokes] = useState<{ turn: number; version: number; list: Stroke[] }>({ turn: -1, version: -1, list: [] });
   // The line being drawn right now: only the board's live line follows it, not this whole screen.

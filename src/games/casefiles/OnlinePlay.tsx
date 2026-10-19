@@ -10,6 +10,7 @@ import { RoomLookProvider } from '@/online/look';
 import { RoomTalk } from '@/online/TalkBar';
 import { u } from '@/theme/scale';
 import { useRaceRevealSound } from '@/online/raceSound';
+import { useBackPause } from '@/online/backPause';
 
 import { engine } from '../engine';
 import { playerColour } from '../shell/characters';
@@ -57,6 +58,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   const { st, load, server, playing, watchSub, doneLine, notice, setNotice, leave } = useRace(def, roomId, matchId, me, toItems);
   const [run, setRun] = useState<Run | null>(null);
   const [menu, setMenu] = useState(false);
+  useBackPause(menu, setMenu);
   const { alert, push } = useAlerts();
   const seen = useRef<Map<string, { stage: string; solved: boolean }> | null>(null);
   // Reports not yet acknowledged by the server, sent in order; a failed one is retried (timer and each poll).

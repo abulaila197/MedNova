@@ -7,6 +7,7 @@ import { useRace, type RaceState } from '@/online/race';
 import { RaceReveal } from '@/online/RaceReveal';
 import { RoomTalk } from '@/online/TalkBar';
 import { useRaceRevealSound } from '@/online/raceSound';
+import { useBackPause } from '@/online/backPause';
 import { playerColour } from '../shell/characters';
 import { PauseMenu } from '../shell/PauseMenu';
 import type { OnlineProps } from '../shell/types';
@@ -51,6 +52,7 @@ function itemsOf(st: RaceState) {
 export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   const { st, load, server, playing, watchSub, doneLine, notice, setNotice, leave } = useRace(def, roomId, matchId, me, itemsOf);
   const [menu, setMenu] = useState(false);
+  useBackPause(menu, setMenu);
   const [pending, setPending] = useState<string | null>(null);
   const { alert, push } = useAlerts();
   const seen = useRef<{ key: string; solved: Set<string>; close: Set<string> }>({ key: '', solved: new Set(), close: new Set() });

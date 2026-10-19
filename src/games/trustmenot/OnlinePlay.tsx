@@ -17,6 +17,7 @@ import type { PageProps } from './props';
 import { rules } from './engine';
 import { play, useHeartbeat, useSeasonLoop } from './sound';
 import { useMatchState } from '@/online/useMatchState';
+import { useBackPause } from '@/online/backPause';
 import { nudgeDue, SUPPER_MS, tmnShown, type TState } from './shown';
 
 
@@ -30,6 +31,7 @@ const fxFor = (t: string) => (SILENT.has(t) ? null : COIN.has(t) ? 'coin' : STAM
 export function OnlinePlay({ matchId, roomId, me }: OnlineProps) {
   const { st, load, server, clock, notice, setNotice } = useMatchState<TState>('tmn_state', matchId, { quiet: true, shown: (sv, s) => tmnShown(sv, s, me) });
   const [paused, setPaused] = useState(false);
+  useBackPause(paused, setPaused);
   const [lifelineSeen, setLifelineSeen] = useState<number | null>(null);
   const lastTick = useRef(0);
 

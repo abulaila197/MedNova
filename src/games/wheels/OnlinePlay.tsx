@@ -29,6 +29,7 @@ import { gameShown } from './shown';
 import { Bill, Btn, Bulbs, bulbsLit, CardArt, CD, CM, GEMS, Panel, PauseBtn, ROMAN, Rule, T, VelvetScreen, VV } from './velvet';
 import { useMatchState } from '@/online/useMatchState';
 import { useRevealSound } from '@/lib/sound';
+import { useBackPause } from '@/online/backPause';
 
 /** Every phone in a game must carry the same bank; the server checks this. */
 const BANK_V = bankVersion(BANK);
@@ -86,6 +87,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   const { st, load, server, notice, setNotice } = useMatchState<WState>('wc_state', matchId, { tickMs: 200, shown: shownOf });
   const [oldBank, setOldBank] = useState(false);
   const [menu, setMenu] = useState(false);
+  useBackPause(menu, setMenu);
   const lastTick = useRef(0);
   const busy = useRef(false);
   const showResults = useShowResults(def.key, matchId, st?.phase === 'done');

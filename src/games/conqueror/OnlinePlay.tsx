@@ -22,6 +22,7 @@ import { BoardPage, MovesPage, type Act } from './pages';
 import { CardsPage, DuelPage, HoldPage, OutBanner, SoloPage, VersusPage, type Hold } from './play';
 import type { MatchView } from './view';
 import { useMatchState } from '@/online/useMatchState';
+import { useBackPause } from '@/online/backPause';
 import { conquerorShown } from './shown';
 
 type CPlayer = { user_id: string; name: string; character: string; dropped: boolean; rank: number | null };
@@ -115,6 +116,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
     })();
   }, [st, m, me, def, roomId, matchId, showResults]);
   const [menu, setMenu] = useState(false);
+  useBackPause(menu, setMenu);
   const pause = useCallback(() => setMenu(true), []);
   const leave = useCallback(async () => {
     await leaveRoom(roomId).catch(() => {});
