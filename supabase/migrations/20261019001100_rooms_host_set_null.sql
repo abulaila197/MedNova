@@ -33,7 +33,6 @@ end $$;
 
 revoke all on function public.rooms_rehost() from public, anon, authenticated;
 
-drop trigger if exists rooms_rehost on public.rooms;
 create trigger rooms_rehost
   before update of host on public.rooms
   for each row

@@ -13,10 +13,8 @@ begin
   return new;
 end $$;
 
-drop trigger if exists plays_touch_updated_at on public.plays;
 create trigger plays_touch_updated_at before insert or update on public.plays
   for each row execute function public.touch_updated_at();
-drop trigger if exists play_items_touch_updated_at on public.play_items;
 create trigger play_items_touch_updated_at before insert or update on public.play_items
   for each row execute function public.touch_updated_at();
 

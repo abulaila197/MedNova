@@ -8,5 +8,3 @@ returns integer language sql immutable set search_path to '' as $function$
   select public.wallet_level(greatest(0, coalesce(total, 0))::bigint);
 $function$;
 
--- my_level (old curve, token formula ignoring level prizes and other token kinds) is not called by the app.
-drop function if exists public.my_level();

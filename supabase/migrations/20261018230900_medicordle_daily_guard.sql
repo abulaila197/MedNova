@@ -35,7 +35,6 @@ begin
   return new;
 end $function$;
 
-drop trigger if exists wallet_medicordle_daily_guard on public.wallet_ledger;
 create trigger wallet_medicordle_daily_guard
   before insert on public.wallet_ledger
   for each row execute function public.wallet_medicordle_daily_guard();

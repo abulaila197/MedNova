@@ -32,5 +32,4 @@ begin
 end $function$;
 
 alter table public.rooms drop constraint if exists rooms_code_key;
-drop index if exists public.rooms_code_key;
 create unique index if not exists rooms_open_code_key on public.rooms (code) where status <> 'closed';
