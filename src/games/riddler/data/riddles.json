@@ -458,7 +458,7 @@
    "Dysrhythmia"
   ],
   "definition": "An abnormality of heart rate or rhythm, which may be too fast, too slow, or irregular, due to disturbed impulse formation or conduction.",
-  "dossier": null,
+  "dossier": "arrhythmia",
   "w": 298,
   "h": 347,
   "file": "r-037.jpg"
@@ -903,7 +903,7 @@
   "answer": "Monoplegia",
   "aliases": [],
   "definition": "Paralysis of a single limb, often from a cortical lesion or a peripheral nerve or plexus injury.",
-  "dossier": null,
+  "dossier": "monoplegia",
   "w": 774,
   "h": 550,
   "file": "r-072.jpg"

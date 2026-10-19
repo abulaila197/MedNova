@@ -4795,5 +4795,23 @@
 "cli": "Flushing, itching and red rash of the face, neck and upper body during or soon after the infusion, sometimes with low blood pressure and chest discomfort.",
 "inv": "Clinical diagnosis linked to infusion timing; distinguish from anaphylaxis, which has wheeze, swelling or severe hypotension.",
 "tre": "Stop or slow the infusion and give an antihistamine; restart more slowly (over at least 1-2 hours); it does not prevent future use of vancomycin."
+},
+{
+"id": "arrhythmia",
+"name": "Arrhythmia (dysrhythmia)",
+"epi": "Very common at all ages and rising steeply with age; atrial fibrillation is the most frequent sustained arrhythmia, while benign ectopic beats and sinus arrhythmia are common in healthy people.",
+"eti": "Disturbed impulse formation (abnormal automaticity, triggered activity) or conduction (re-entry, block), often from ischemic or structural heart disease, electrolyte imbalance, thyroid disease, drugs, stimulants or inherited channelopathies.",
+"cli": "Palpitations, dizziness, breathlessness, chest discomfort, presyncope or syncope; may be silent, and dangerous ventricular rhythms can cause cardiac arrest or sudden death.",
+"inv": "12-lead ECG during symptoms, with ambulatory (Holter or event) monitoring for intermittent episodes; electrolytes, thyroid function and echocardiography look for causes, and electrophysiology study maps selected rhythms.",
+"tre": "Unstable patients need immediate cardioversion or defibrillation (or pacing for bradycardia); otherwise correct the cause and use rate or rhythm control drugs, catheter ablation, pacemakers or ICDs, with anticoagulation in atrial fibrillation by stroke risk."
+},
+{
+"id": "monoplegia",
+"name": "Monoplegia",
+"epi": "Uncommon pattern of weakness seen at any age; in children it is most often a form of cerebral palsy, and in adults it follows stroke, trauma or nerve injury.",
+"eti": "A focal lesion of the motor cortex (stroke, tumor, abscess, demyelination) or of the brachial or lumbosacral plexus, nerve roots or peripheral nerves; also cerebral palsy, spinal cord lesions and functional neurological disorder.",
+"cli": "Paralysis or marked weakness of one limb; upper motor neuron causes give spasticity and brisk reflexes, while plexus or nerve causes give flaccid weakness, wasting, reduced reflexes and sensory loss in that territory.",
+"inv": "Careful neurological examination to localize the lesion; MRI of the brain or spine for central causes, nerve conduction studies and electromyography for plexus or nerve injury, and plexus imaging when needed.",
+"tre": "Treat the underlying cause (acute stroke care, decompression, surgery for nerve injury); physiotherapy, occupational therapy, splints and spasticity management support recovery of function."
 }
 ]
