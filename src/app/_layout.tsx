@@ -6,10 +6,11 @@ import { useFonts } from 'expo-font';
 import { Stack, useGlobalSearchParams, usePathname } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
+import { BootSplash } from '@/features/start/BootSplash';
 import { Intro } from '@/features/start/Intro';
 import { startAccount } from '@/state/account';
 import { watchResize } from '@/state/resize';
@@ -21,8 +22,10 @@ import { THEMES } from '@/theme/tokens';
 export { CrashScreen as ErrorBoundary } from '@/components/CrashScreen';
 
 SplashScreen.preventAutoHideAsync();
-// The splash is plain intro navy (Yazan 2026-10-13), so a short fade hands over to the intro unseen.
-SplashScreen.setOptions({ fade: true, duration: 300 });
+// The phone's own splash is plain black and hands over at once to the app's NOVA splash (BootSplash).
+SplashScreen.setOptions({ fade: false });
+/** How long the NOVA splash stays up at least, so it is seen even when the app starts fast. */
+const SPLASH_MIN_MS = 1200;
 startAccount();
 bootStart();
 
@@ -40,9 +43,12 @@ export default function RootLayout() {
   });
   // A font that fails to load falls back to the system font instead of keeping the splash up for good (PB13a).
   const loaded = fontsLoaded || !!fontError;
+  const [minDone, setMinDone] = useState(false);
   useEffect(() => {
-    if (loaded && ready) SplashScreen.hideAsync();
-  }, [loaded, ready]);
+    const id = setTimeout(() => setMinDone(true), SPLASH_MIN_MS);
+    return () => clearTimeout(id);
+  }, []);
+  const go = loaded && ready && minDone;
   // A real window size change reloads the app on the same page (state/resize.ts).
   const path = usePathname();
   const params = useGlobalSearchParams();
@@ -52,16 +58,20 @@ export default function RootLayout() {
     here.current = url;
   }, [url]);
   useEffect(() => watchResize(() => here.current), []);
-  if (!loaded || !ready) return null;
   return (
-    <GestureHandlerRootView style={{ flex: 1, alignItems: 'center', backgroundColor: THEMES.dark.sky }}>
+    <GestureHandlerRootView style={{ flex: 1, alignItems: 'center', backgroundColor: go ? THEMES.dark.sky : '#000000' }}>
       <StatusBar style="light" />
+      {go ? (
+        <>
       {/* the app frame: the full screen, or a centred column (see theme/scale.ts) */}
       <View style={{ flex: 1, width: FRAME_W, overflow: 'hidden' }}>
       <Stack screenOptions={{ headerShown: false, animation: 'fade', contentStyle: { backgroundColor: THEMES.dark.sky } }} />
       {/* returning players: the intro plays over the first page (Games or sign-in) and bursts into it */}
       {intro ? <Intro w={width} h={height} onDone={endIntro} /> : null}
       </View>
+        </>
+      ) : null}
+      <BootSplash hide={go} />
     </GestureHandlerRootView>
   );
 }

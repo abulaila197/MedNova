@@ -64,7 +64,7 @@ function Ring({ done }: { done: number }) {
   const r = 13;
   const c = 2 * Math.PI * r;
   return (
-    <Svg width={u(30)} height={u(30)} viewBox="0 0 30 30">
+    <Svg width={u(24)} height={u(24)} viewBox="0 0 30 30">
       <Defs>
         <LinearGradient id={id} x1="0" y1="0" x2="30" y2="30" gradientUnits="userSpaceOnUse">
           <Stop offset="0" stopColor={t.gradA} />
@@ -133,8 +133,8 @@ export function Beat({ r, more = true }: { r: Rounds; more?: boolean }) {
 }
 
 const s = StyleSheet.create({
-  btn: { position: 'absolute', right: u(16), top: u(8), width: u(34), height: u(34), borderRadius: u(17), borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
-  pop: { position: 'absolute', left: u(16), right: u(16), top: u(48), borderRadius: u(14), borderWidth: 1, paddingHorizontal: u(12), paddingTop: u(10), paddingBottom: u(8) },
+  btn: { position: 'absolute', right: u(16), top: u(8), width: u(27), height: u(27), borderRadius: u(13.5), borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
+  pop: { position: 'absolute', left: u(16), right: u(16), top: u(41), borderRadius: u(14), borderWidth: 1, paddingHorizontal: u(12), paddingTop: u(10), paddingBottom: u(8) },
   beat: { gap: u(3) },
   row: { flexDirection: 'row', alignItems: 'center', gap: u(6) },
   beatT: { flex: 1, fontFamily: F.display, fontSize: u(11) },

@@ -20,7 +20,7 @@ const DESC = { dark: '#c9cde8' };
 const DESC_W: Record<string, number> = { 'case-files-unsolved': 165 };
 
 /** One game: the drawing in the lower right and the text block top left. Slides with the swipe. */
-export function GamePage({ game, j, pos, active }: { game: Game; j: number; pos: SharedValue<number>; active: boolean }) {
+export function GamePage({ game, j, pos, active, lift }: { game: Game; j: number; pos: SharedValue<number>; active: boolean; lift: number }) {
   const t = useTheme();
   const play = useRef<View>(null);
   // Play opens the game's loading page; the doors split the page at the button's middle.
@@ -35,7 +35,7 @@ export function GamePage({ game, j, pos, active }: { game: Game; j: number; pos:
   });
   return (
     <Animated.View style={[StyleSheet.absoluteFill, slide]} pointerEvents={active ? 'box-none' : 'none'} accessibilityElementsHidden={!active} importantForAccessibility={active ? 'auto' : 'no-hide-descendants'}>
-      <GameArt k={game.key} mode={t.mode} />
+      <GameArt k={game.key} mode={t.mode} lift={lift} />
       <View style={s.info}>
         <Text style={[s.ttl, { color: t.white }]}>
           {game.lead} <Text style={{ color: t.accent, fontFamily: F.displayItalic }}>{game.em}</Text>
@@ -57,7 +57,8 @@ export function GamePage({ game, j, pos, active }: { game: Game; j: number; pos:
 
 const s = StyleSheet.create({
   info: { position: 'absolute', left: u(16), right: u(16), top: u(36) },
-  ttl: { fontFamily: F.display, fontSize: u(32), lineHeight: u(28.8), letterSpacing: u(-0.64) },
+  // the title wraps before the Grand Rounds and chest buttons on the right (2026-10-19)
+  ttl: { maxWidth: u(W - 32 - 35), fontFamily: F.display, fontSize: u(32), lineHeight: u(28.8), letterSpacing: u(-0.64) },
   sub: { marginTop: u(8), fontFamily: F.displayItalic, fontSize: u(13), lineHeight: u(17) },
   desc: { marginTop: u(7), marginBottom: u(2), maxWidth: u(190), fontFamily: F.body, fontSize: u(11), lineHeight: u(15.95) },
   goWrap: { marginTop: u(7), alignSelf: 'flex-start' },

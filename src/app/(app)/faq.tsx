@@ -16,8 +16,9 @@ const SEARCH = 'search';
 /** FAQ, locked "Chapters, revised": numbered areas (search first), a section tag, one card per question with +/−. */
 export default function Page() {
   const c = useInfo();
-  const [area, setArea] = useState('02');
-  const [open, setOpen] = useState<Record<string, boolean>>({ [CHAPTERS[1].items[0].q]: true });
+  // Opens on the first chapter with every question closed (Yazan, 2026-10-19).
+  const [area, setArea] = useState(CHAPTERS[0].n);
+  const [open, setOpen] = useState<Record<string, boolean>>({});
   const [query, setQuery] = useState('');
   const toggle = (q: string) => setOpen((o) => ({ ...o, [q]: !o[q] }));
   const ch = CHAPTERS.find((x) => x.n === area);

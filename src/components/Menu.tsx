@@ -1,7 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, usePathname } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Platform, Pressable, StyleSheet, View } from 'react-native';
+import { Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -68,7 +68,8 @@ export function Menu() {
     router.navigate(to as never);
   });
   return (
-    <View style={[s.col, { top }]}>
+    // Keeps clear of the phone's own buttons at the bottom (2026-10-19: the version line sat under them).
+    <View style={[s.col, { top, bottom: u(22) + (Platform.OS === 'web' ? 0 : ins.bottom) }]}>
       <Pressable onPress={tapped(() => setMenu(false))} style={[s.close, { backgroundColor: t.panel, borderColor: t.panelLine }]} accessibilityLabel="Close menu">
         <Text style={{ color: t.mute, fontSize: u(15) }}>×</Text>
       </Pressable>
@@ -97,18 +98,19 @@ export function Menu() {
           )}
         </View>
       </Pressable>
-      <View style={s.items}>
+      {/* The list scrolls if it can't fit, so it never runs over the profile or the Sound switch (2026-10-19). */}
+      <ScrollView style={s.items} contentContainerStyle={s.itemsIn} showsVerticalScrollIndicator={false}>
         {items.map(([label, to], i) => {
           const on = path === to;
           return (
             <Pressable key={to} onPress={() => go(to)} style={[s.r, { borderBottomColor: t.panelLine }, i === 0 && { borderTopWidth: 1, borderTopColor: t.panelLine }]}>
-              <Text style={[s.no, { color: t.kick }]}>0{i + 1}</Text>
+              <Text style={[s.no, { color: t.kick }]} numberOfLines={1}>{String(i + 1).padStart(2, '0')}</Text>
               <Text style={[s.lbl, { color: on ? t.accent : t.white, fontFamily: on ? F.displayItalic : F.display }]}>{label}</Text>
               {waiting && to === '/achievements' ? <View style={[s.dot, { backgroundColor: t.accent }]} accessibilityLabel="Tokens waiting" /> : null}
             </Pressable>
           );
         })}
-      </View>
+      </ScrollView>
       <View style={s.pills}>
         <View style={[s.theme, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
           {([[false, 'Sound'], [true, 'Mute']] as const).map(([key, label]) => (
@@ -141,9 +143,10 @@ const s = StyleSheet.create({
   guest: { fontFamily: F.display, fontSize: u(18), lineHeight: u(18) },
   small: { fontFamily: F.body, fontSize: u(9), marginTop: u(3) },
   keep: { fontFamily: F.bodySemi, fontSize: u(9.5), marginTop: u(7), alignSelf: 'flex-start', borderBottomWidth: 1 },
-  items: { flex: 1, justifyContent: 'center' },
+  items: { flex: 1, marginVertical: u(10) },
+  itemsIn: { flexGrow: 1, justifyContent: 'center' },
   r: { flexDirection: 'row', alignItems: 'baseline', gap: u(12), paddingVertical: u(9), borderBottomWidth: 1 },
-  no: { fontFamily: F.mono, fontSize: u(8.5), letterSpacing: u(1.275), width: u(13) },
+  no: { fontFamily: F.mono, fontSize: u(8.5), letterSpacing: u(1.275), width: u(16) },
   lbl: { fontSize: u(14.5), lineHeight: u(16.5), flex: 1 },
   dot: { width: u(7), height: u(7), borderRadius: u(4), alignSelf: 'center' },
   pills: { flexDirection: 'row', flexWrap: 'wrap', gap: u(8) },

@@ -5,11 +5,16 @@
 export const W = 282;
 export const BODY_TOP = 72; // the shell's content area starts here
 export const SHIFT = 20; // decision 63: ring, planets, dots and art anchor sit 20px lower
-export const ARC_DROP = 46; // 2026-10-13: ring, planets and dots only (not the art) sit this much lower, close to the nav
+export const ARC_DROP = 34; // 2026-10-13: ring, planets and dots only (not the art) sit this much lower, close to the nav;
+// 2026-10-19: 12px back up so the chosen planet clears the raised Games button (Yazan)
 export const DOTS_TOP = 398 + SHIFT; // screen y of the swipe dots
 export const ART_B = DOTS_TOP + 66; // bottom of the art box (fitArc: dots top + 66)
 // 2026-10-05: the ring's fill is gone, so each drawing moves down and fades just above the nav bar.
 export const ART_END = 580; // 2026-10-18: art runs on under the arc to the dock
+// Height of the page body the geometry was drawn for: the design dock is a 46px row + 8px home line.
+// On a phone whose system buttons make the dock taller (or a status bar that makes the header taller),
+// the ring, planets, dots and art lift by the difference, so they keep their gap above the dock (2026-10-19).
+export const FILL_H = 615 - BODY_TOP - 54;
 const DROP = ART_END - ART_B;
 const ART_T = 150;
 export const RING_R = 520;

@@ -25,12 +25,12 @@ const BAKED = {
 } as const;
 
 /** The game drawing, lower right, fading in along the big curve (prototype `.np.arc`). Drawn in body coordinates. */
-export const GameArt = memo(function GameArt({ k, mode }: { k: string; mode: Mode }) {
+export const GameArt = memo(function GameArt({ k, mode, lift }: { k: string; mode: Mode; lift: number }) {
   const src = BAKED[mode][k as keyof (typeof BAKED)['dark']];
   return (
     <Image
       source={src}
-      style={{ position: 'absolute', left: 0, top: 0, width: u(W), height: u(ART_END - BODY_TOP) }}
+      style={{ position: 'absolute', left: 0, top: -lift, width: u(W), height: u(ART_END - BODY_TOP) }}
       contentFit="fill"
       transition={0}
       cachePolicy="memory-disk"

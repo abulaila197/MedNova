@@ -29,12 +29,7 @@ const SPOTS = [
   },
 ];
 const STRENGTH = 0.55;
-/** Each spot's gradient baked on a circle (scripts/bake-backdrop/bake.py), stretched and turned like the SVG ellipse. */
-const GLOWS = [
-  require("@/assets/images/backdrop/glow-1.png"),
-  require("@/assets/images/backdrop/glow-2.png"),
-  require("@/assets/images/backdrop/glow-3.png"),
-];
+const PAGE = require("@/assets/images/backdrop/page.png");
 
 /** Full-screen background, pinned to the screen's top (pages, header) or bottom (the dock). */
 export function Backdrop({ anchor = "top" }: { anchor?: "top" | "bottom" }) {
@@ -50,23 +45,9 @@ export function Backdrop({ anchor = "top" }: { anchor?: "top" | "bottom" }) {
       ]}
     >
       {BAKED_ART ? (
-        SPOTS.map((p, i) => (
-          <Image
-            key={i}
-            source={GLOWS[i]}
-            contentFit="fill"
-            transition={0}
-            accessibilityIgnoresInvertColors
-            style={{
-              position: "absolute",
-              left: p.x * w - p.rx * w,
-              top: p.y * h - p.ry * h,
-              width: 2 * p.rx * w,
-              height: 2 * p.ry * h,
-              transform: [{ rotate: `${p.rot}deg` }],
-            }}
-          />
-        ))
+        // The navy and all three glows in one opaque picture (scripts/bake-backdrop/bake-page.py), stretched to the
+        // screen: one plain image per backdrop instead of three big rotated see-through ones (2026-10-19, lag).
+        <Image source={PAGE} contentFit="fill" transition={0} accessibilityIgnoresInvertColors style={StyleSheet.absoluteFill} />
       ) : (
         <Svg width={w} height={h} style={StyleSheet.absoluteFill}>
           <Defs>

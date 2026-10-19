@@ -13,7 +13,8 @@ import { THEMES } from '@/theme/tokens';
 import { Wordmark } from './Wordmark';
 
 /*
- * The MedNova intro, the approved prototype's story played in about 3 s (Yazan, 2026-10-10):
+ * The MedNova intro, the approved prototype's story. The times below are story time; it plays PACE times slower,
+ * about 6 s (Yazan, 2026-10-19; it was squeezed into 3 s on 2026-10-10):
  *   0s     star pops in, heartbeat cut + spark run through it, it beats (0.85s)
  *   0.75s  the lockup slides so star + wordmark sit centred
  *   0.8s   the Lottie wordmark writes itself in (2.4x speed)
@@ -24,7 +25,10 @@ import { Wordmark } from './Wordmark';
  */
 export const T_LOTTIE = 0.8;
 export const T_DONE = 3.0;
-const LOTTIE_SPEED = 2.4;
+/** Real seconds per story second. */
+const PACE = 2;
+/** The wordmark writes in at 1.2x its own speed (it ran at 2.4x in the 3 s version). */
+const LOTTIE_SPEED = 2.4 / PACE;
 
 const POP = Easing.bezierFn(0.2, 0.9, 0.3, 1.25);
 const CUT = Easing.bezierFn(0.6, 0, 0.3, 1);
@@ -153,10 +157,10 @@ export function Intro({ w, h, onDone }: { w: number; h: number; onDone: () => vo
   const t = useSharedValue(0);
   const [play, setPlay] = useState(false);
   useEffect(() => {
-    t.value = withTiming(T_DONE, { duration: T_DONE * 1000, easing: Easing.linear }, (fin) => {
+    t.value = withTiming(T_DONE, { duration: T_DONE * PACE * 1000, easing: Easing.linear }, (fin) => {
       if (fin) scheduleOnRN(onDone);
     });
-    const id = setTimeout(() => setPlay(true), T_LOTTIE * 1000);
+    const id = setTimeout(() => setPlay(true), T_LOTTIE * PACE * 1000);
     return () => clearTimeout(id);
     // onDone is read once; the intro runs a single time per mount
     // eslint-disable-next-line react-hooks/exhaustive-deps

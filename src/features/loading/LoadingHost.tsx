@@ -12,7 +12,7 @@ import { LoadingPage } from './LoadingPage';
 import { type LoadRun, useLoading } from './store';
 import { useScreen } from '@/theme/scale';
 
-/** Locked timings (2026-10-05): doors 0.9 s in, 5 s loading, bar wipe out about 1.5 s. */
+/** Locked timings (2026-10-05): doors 0.9 s in, 5 s loading, bar wipe out (slowed to about 2 s on 2026-10-19). */
 export const LOAD_MS = 5000;
 const DOORS_MS = 900;
 const SETTLE_MS = 1100;
@@ -20,6 +20,13 @@ const DOORS = Easing.bezier(0.6, 0, 0.2, 1);
 const SETTLE = Easing.bezier(0.2, 0.7, 0.2, 1);
 const IN_OUT = Easing.inOut(Easing.cubic);
 const OUT = Easing.out(Easing.cubic);
+// Way out (2026-10-19, Yazan: it ran too fast): the line grows out from the bar's ends, rises, then sweeps.
+const GROW_MS = 450;
+const RISE_MS = 450;
+const SWEEP_MS = 1100;
+// The game screen is opened this long before the way out, underneath the still-covering loading page, so
+// building it can't stall the line.
+const OPEN_EARLY_MS = 700;
 
 /** Sits above the app pages: plays a game's loading page between its Play button and the next screen. */
 export function LoadingHost() {
@@ -33,6 +40,10 @@ function Run({ run }: { run: LoadRun }) {
   const [tip] = useState(() => g.tips[Math.floor(Math.random() * g.tips.length)]);
   const [stage, setStage] = useState<'doors' | 'load' | 'out'>('doors');
   const [split, setSplit] = useState<number | null>(null);
+  // Nothing shows until both door pictures are decoded: before, the loading page flashed through for a moment.
+  const [doorsLoaded, setDoorsLoaded] = useState(0);
+  const shown = split !== null && (!run.shot || doorsLoaded >= 2);
+  const doorLoaded = () => setDoorsLoaded((n) => n + 1);
   const host = useRef<View>(null);
   const bar = useRef<View>(null);
 
@@ -53,27 +64,26 @@ function Run({ run }: { run: LoadRun }) {
       lineW.value = w;
       lineY.value = y0;
       lineO.value = 1;
-      lineL.value = withTiming(0, { duration: 300, easing: OUT });
-      lineW.value = withTiming(W, { duration: 300, easing: OUT });
-      // The whole sweep is handed to the animation engine up front, so the next screen mounting
-      // on the JavaScript side (it opens underneath while the page still covers everything) can't stall it.
-      lineY.value = withSequence(withDelay(300, withTiming(0, { duration: 350, easing: IN_OUT })), withTiming(H + 4, { duration: 1000, easing: IN_OUT }));
-      clip.value = withDelay(650, withTiming(H + 4, { duration: 1000, easing: IN_OUT }));
-      router.push(`/play/${run.key}`);
-      setTimeout(() => useLoading.getState().end(), 1680);
+      lineL.value = withTiming(0, { duration: GROW_MS, easing: OUT });
+      lineW.value = withTiming(W, { duration: GROW_MS, easing: OUT });
+      // The whole sweep is handed to the animation engine up front, so nothing on the JavaScript side can stall it.
+      lineY.value = withSequence(withDelay(GROW_MS, withTiming(0, { duration: RISE_MS, easing: IN_OUT })), withTiming(H + 4, { duration: SWEEP_MS, easing: IN_OUT }));
+      clip.value = withDelay(GROW_MS + RISE_MS, withTiming(H + 4, { duration: SWEEP_MS, easing: IN_OUT }));
+      setTimeout(() => useLoading.getState().end(), GROW_MS + RISE_MS + SWEEP_MS + 80);
     };
+    // Measured against the loading page itself (measureInWindow often came back empty on Android, so the line
+    // started mid-screen at full width instead of from the bar).
     if (!bar.current || !host.current) return go(0, W, H / 2);
-    host.current.measureInWindow((hx, hy) => {
-      // the bar can unmount between the two measures
-      if (!bar.current) return go(0, W, H / 2);
-      bar.current.measureInWindow((x, y, w, h) => go(x - (hx || 0), w, y - (hy || 0) + h / 2));
-    });
+    bar.current.measureLayout(
+      host.current,
+      (x, y, w, h) => (w > 0 ? go(x, w, y + h / 2) : go(0, W, H / 2)),
+      () => go(0, W, H / 2),
+    );
   };
 
   // Way in: load this game's fonts, find the split line, then open the doors.
   useEffect(() => {
     let live = true;
-    const timers: ReturnType<typeof setTimeout>[] = [];
     loadFontsFor(run.key)
       .catch(() => {})
       .then(
@@ -87,26 +97,34 @@ function Run({ run }: { run: LoadRun }) {
         if (!live) return;
         const y = Math.max(1, Math.min(H - 1, Math.round(run.y - hy)));
         setSplit(y);
-        timers.push(
-          setTimeout(() => {
-            door.value = withTiming(1, { duration: DOORS_MS, easing: DOORS });
-            settle.value = withTiming(1, { duration: SETTLE_MS, easing: SETTLE });
-          }, 60),
-          setTimeout(() => {
-            setStage('load');
-            p.value = withTiming(1, { duration: LOAD_MS, easing: Easing.linear });
-            // read the game's question bank now, while the bar runs, not when the game opens
-            setTimeout(() => gameDef(run.key), 400);
-          }, 60 + SETTLE_MS + 20),
-          setTimeout(() => wipe(), 60 + SETTLE_MS + 20 + LOAD_MS + 250),
-        );
       });
     return () => {
       live = false;
-      timers.forEach(clearTimeout);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Doors open once they are on screen with their pictures ready.
+  useEffect(() => {
+    if (!shown) return;
+    const timers: ReturnType<typeof setTimeout>[] = [];
+    timers.push(
+      setTimeout(() => {
+        door.value = withTiming(1, { duration: DOORS_MS, easing: DOORS });
+        settle.value = withTiming(1, { duration: SETTLE_MS, easing: SETTLE });
+      }, 60),
+      setTimeout(() => {
+        setStage('load');
+        p.value = withTiming(1, { duration: LOAD_MS, easing: Easing.linear });
+        // read the game's question bank now, while the bar runs, not when the game opens
+        setTimeout(() => gameDef(run.key), 400);
+      }, 60 + SETTLE_MS + 20),
+      setTimeout(() => router.push(`/play/${run.key}`), 60 + SETTLE_MS + 20 + LOAD_MS + 250 - OPEN_EARLY_MS),
+      setTimeout(() => wipe(), 60 + SETTLE_MS + 20 + LOAD_MS + 250),
+    );
+    return () => timers.forEach(clearTimeout);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shown]);
 
   const settleSt = useAnimatedStyle(() => ({ transform: [{ scale: settle.value }] }));
   // moved with transforms, not top/left/width, so nothing is laid out again on each frame
@@ -122,7 +140,7 @@ function Run({ run }: { run: LoadRun }) {
   const col = wipeColor(g);
 
   return (
-    <View ref={host} collapsable={false} style={[StyleSheet.absoluteFill, s.host]}>
+    <View ref={host} collapsable={false} style={[StyleSheet.absoluteFill, s.host, { opacity: shown ? 1 : 0 }]}>
       <Animated.View style={[s.clip, outer]}>
         <Animated.View style={[s.page, { width: W, height: H }, inner]}>
           <Animated.View style={[StyleSheet.absoluteFill, settleSt]}>
@@ -132,17 +150,15 @@ function Run({ run }: { run: LoadRun }) {
       </Animated.View>
       {stage === 'doors' && run.shot ? (
         <View style={StyleSheet.absoluteFill} pointerEvents="none">
-          {split === null ? (
-            <Shot uri={run.shot} w={W} h={H} />
-          ) : (
+          {split === null ? null : (
             <>
               <Animated.View style={[s.door, { top: y, height: H - y }, botDoor]}>
                 <View style={{ position: 'absolute', top: -y }}>
-                  <Shot uri={run.shot} w={W} h={H} />
+                  <Shot uri={run.shot} w={W} h={H} onLoad={doorLoaded} />
                 </View>
               </Animated.View>
               <Animated.View style={[s.door, s.shadow, { top: 0, height: y }, topDoor]}>
-                <Shot uri={run.shot} w={W} h={H} />
+                <Shot uri={run.shot} w={W} h={H} onLoad={doorLoaded} />
               </Animated.View>
             </>
           )}
@@ -154,8 +170,8 @@ function Run({ run }: { run: LoadRun }) {
 }
 
 /** The page as it was at the tap: the doors are cut from this picture. */
-function Shot({ uri, w, h }: { uri: string; w: number; h: number }) {
-  return <Image source={{ uri }} style={{ width: w, height: h }} contentFit="fill" transition={0} />;
+function Shot({ uri, w, h, onLoad }: { uri: string; w: number; h: number; onLoad: () => void }) {
+  return <Image source={{ uri }} style={{ width: w, height: h }} contentFit="fill" transition={0} onLoad={onLoad} onError={onLoad} />;
 }
 
 const s = StyleSheet.create({

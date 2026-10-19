@@ -68,8 +68,10 @@ export function Planet({ k, j, pos, sel, mode, onPress }: { k: string; j: number
   const gpx = u(0.58 * (d - 2 * bw));
 
   return (
-    <Animated.View style={[s.planet, { width: u(d), height: u(d) }, box]}>
-      <Animated.View style={[s.pad, { left: u(-P), top: u(-P), width: u(d + 2 * P), height: u(d + 2 * P) }, dropA]} pointerEvents="none">
+    // Each planet and its two glow layers keep a ready-made picture (hardware texture), so a swipe only moves
+    // and fades pictures instead of redrawing 40 vector drawings every frame (2026-10-19, swipe lag).
+    <Animated.View style={[s.planet, { width: u(d), height: u(d) }, box]} renderToHardwareTextureAndroid>
+      <Animated.View style={[s.pad, { left: u(-P), top: u(-P), width: u(d + 2 * P), height: u(d + 2 * P) }, dropA]} pointerEvents="none" renderToHardwareTextureAndroid>
         <Svg width="100%" height="100%" viewBox={`${-P} ${-P} ${d + 2 * P} ${d + 2 * P}`}>
           <Defs>
             <RadialGradient id={`dr-${id}`} cx={r} cy={r + 8} r={dropR} gradientUnits="userSpaceOnUse">
@@ -81,7 +83,7 @@ export function Planet({ k, j, pos, sel, mode, onPress }: { k: string; j: number
           <Circle cx={r} cy={r + 8} r={dropR} fill={`url(#dr-${id})`} />
         </Svg>
       </Animated.View>
-      <Animated.View style={[s.pad, { left: u(-P), top: u(-P), width: u(d + 2 * P), height: u(d + 2 * P) }, selA]} pointerEvents="none">
+      <Animated.View style={[s.pad, { left: u(-P), top: u(-P), width: u(d + 2 * P), height: u(d + 2 * P) }, selA]} pointerEvents="none" renderToHardwareTextureAndroid>
         <Svg width="100%" height="100%" viewBox={`${-P} ${-P} ${d + 2 * P} ${d + 2 * P}`}>
           <Defs>
             <RadialGradient id={`gl-${id}`} cx={r} cy={r} r={gR} gradientUnits="userSpaceOnUse">

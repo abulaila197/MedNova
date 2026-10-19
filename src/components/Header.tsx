@@ -13,6 +13,11 @@ import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 import { tapped } from '@/lib/sound';
 
+/** The header and everything in it at 80% of the approved size (Yazan, 2026-10-19). */
+const h = (n: number) => u(n * 0.8);
+/** Header bar height (app version), for pages that place things under it. */
+export const HEADER_H = h(42);
+
 /**
  * Header (decisions 59-60; redesign 2026-10-17): no bar of its own, it shows the page's navy backdrop (drawn by
  * Screen) and runs up to the top edge, with a hairline bottom edge.
@@ -29,20 +34,20 @@ export function Header({ variant = 'app' }: { variant?: 'app' | 'game' }) {
     <View style={z.bar}>
       <View style={[z.edge, { backgroundColor: t.headerEdge }]} />
       <View style={z.row}>
-        <Pressable onPress={tapped(() => setMenu(true))} hitSlop={u(10)} style={[z.mb, { backgroundColor: t.chip, borderColor: t.chipLine }]} accessibilityLabel="Open menu">
-          <MenuIcon size={u(g ? 12 : 14)} color={t.menuBtn} />
+        <Pressable onPress={tapped(() => setMenu(true))} hitSlop={h(10)} style={[z.mb, { backgroundColor: t.chip, borderColor: t.chipLine }]} accessibilityLabel="Open menu">
+          <MenuIcon size={h(g ? 12 : 14)} color={t.menuBtn} />
         </Pressable>
         <View style={z.lk}>
-          <PulseStar width={u(g ? 16 : 20)} height={u(g ? 17 : 21)} />
-          <BrandName height={u(g ? 10.5 : 13)} color={t.white} accent={t.accent} />
+          <PulseStar width={h(g ? 16 : 20)} height={h(g ? 17 : 21)} />
+          <BrandName height={h(g ? 10.5 : 13)} color={t.white} accent={t.accent} />
         </View>
       </View>
       <View style={z.row}>
-        <Pressable onPress={tapped(() => setReport(true))} hitSlop={u(10)} style={[z.rp, { backgroundColor: t.red }]} accessibilityLabel="Report a problem">
+        <Pressable onPress={tapped(() => setReport(true))} hitSlop={h(10)} style={[z.rp, { backgroundColor: t.red }]} accessibilityLabel="Report a problem">
           <Text style={z.rpT}>!</Text>
         </Pressable>
         {signedIn ? null : (
-          <Pressable onPress={tapped(() => router.push('/auth'))} hitSlop={u(8)} accessibilityLabel="Sign in">
+          <Pressable onPress={tapped(() => router.push('/auth'))} hitSlop={h(8)} accessibilityLabel="Sign in">
             <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={z.si}>
               <Text style={[z.siT, { color: t.onGrad }]}>Sign in</Text>
             </LinearGradient>
@@ -61,40 +66,40 @@ function Coin() {
   return (
     <Pressable onPress={tapped(() => router.navigate('/store'))} style={gs.coin} accessibilityRole="button" accessibilityLabel={`${tokens} tokens. Level ${level}, ${into} of ${need} EXP to level ${level + 1}. Open the Store`}>
       <Text style={[gs.coinT, { color: t.fg }]}>{tokens}</Text>
-      <TokenCoin size={u(17)} progress={into / need} track="rgba(255,255,255,0.12)" />
+      <TokenCoin size={h(17)} progress={into / need} track="rgba(255,255,255,0.12)" />
     </Pressable>
   );
 }
 
 const s = StyleSheet.create({
   bar: {
-    height: u(42),
-    paddingHorizontal: u(14),
+    height: h(42),
+    paddingHorizontal: h(14),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     zIndex: 5,
   },
   edge: { position: 'absolute', left: 0, right: 0, bottom: 0, height: 1 },
-  row: { flexDirection: 'row', alignItems: 'center', gap: u(8) },
-  mb: { width: u(26), height: u(26), borderRadius: u(9), borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
-  lk: { flexDirection: 'row', alignItems: 'center', gap: u(6) },
-  rp: { width: u(20), height: u(20), borderRadius: u(10), alignItems: 'center', justifyContent: 'center' },
-  rpT: { color: '#fff', fontFamily: F.bodyBold, fontSize: u(11), lineHeight: u(13) },
-  si: { paddingVertical: u(5), paddingHorizontal: u(10), borderRadius: 999 },
-  siT: { fontFamily: F.bodySemi, fontSize: u(10) },
+  row: { flexDirection: 'row', alignItems: 'center', gap: h(8) },
+  mb: { width: h(26), height: h(26), borderRadius: h(9), borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
+  lk: { flexDirection: 'row', alignItems: 'center', gap: h(6) },
+  rp: { width: h(20), height: h(20), borderRadius: h(10), alignItems: 'center', justifyContent: 'center' },
+  rpT: { color: '#fff', fontFamily: F.bodyBold, fontSize: h(11), lineHeight: h(13) },
+  si: { paddingVertical: h(5), paddingHorizontal: h(10), borderRadius: 999 },
+  siT: { fontFamily: F.bodySemi, fontSize: h(10) },
 });
 
 /** Game header: everything about a fifth smaller; the coin with its ring is no wider than the report button. */
 const gs = StyleSheet.create({
   ...s,
-  bar: { ...s.bar, height: u(36), paddingHorizontal: u(12) },
-  row: { ...s.row, gap: u(7) },
-  mb: { ...s.mb, width: u(22), height: u(22), borderRadius: u(8) },
-  rp: { ...s.rp, width: u(17), height: u(17), borderRadius: u(8.5) },
-  rpT: { ...s.rpT, fontSize: u(9.5), lineHeight: u(11) },
-  si: { ...s.si, paddingVertical: u(4), paddingHorizontal: u(9) },
-  siT: { ...s.siT, fontSize: u(9) },
-  coin: { flexDirection: 'row', alignItems: 'center', gap: u(3) },
-  coinT: { fontFamily: F.bodyBold, fontSize: u(11), lineHeight: u(13), fontVariant: ['tabular-nums'] },
+  bar: { ...s.bar, height: h(36), paddingHorizontal: h(12) },
+  row: { ...s.row, gap: h(7) },
+  mb: { ...s.mb, width: h(22), height: h(22), borderRadius: h(8) },
+  rp: { ...s.rp, width: h(17), height: h(17), borderRadius: h(8.5) },
+  rpT: { ...s.rpT, fontSize: h(9.5), lineHeight: h(11) },
+  si: { ...s.si, paddingVertical: h(4), paddingHorizontal: h(9) },
+  siT: { ...s.siT, fontSize: h(9) },
+  coin: { flexDirection: 'row', alignItems: 'center', gap: h(3) },
+  coinT: { fontFamily: F.bodyBold, fontSize: h(11), lineHeight: h(13), fontVariant: ['tabular-nums'] },
 });

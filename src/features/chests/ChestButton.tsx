@@ -34,7 +34,7 @@ export function ChestButton() {
       accessibilityLabel={`Chests, ${count} to open`}
     >
       {/* Same face as the Grand Rounds button: a faint ring at the same size, the chest inside. */}
-      <Svg width={u(30)} height={u(30)} viewBox='0 0 30 30'>
+      <Svg width={u(24)} height={u(24)} viewBox='0 0 30 30'>
         <Circle
           cx={15}
           cy={15}
@@ -68,10 +68,10 @@ const s = StyleSheet.create({
   btn: {
     position: 'absolute',
     right: u(16),
-    top: u(50),
-    width: u(34),
-    height: u(34),
-    borderRadius: u(17),
+    top: u(43), // 2026-10-19: both ribbon buttons 80% of their size (Yazan)
+    width: u(27),
+    height: u(27),
+    borderRadius: u(13.5),
     borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',

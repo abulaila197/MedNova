@@ -43,12 +43,9 @@
         "expo-splash-screen",
         {
           "backgroundColor": "#000000",
-          "image": "./assets/images/splash-nova.png",
-          "imageWidth": 260,
-          "resizeMode": "contain",
-          "android": {
-            "imageWidth": 180
-          }
+          "image": "./assets/images/splash-blank.png",
+          "imageWidth": 8,
+          "resizeMode": "contain"
         }
       ],
       "expo-sqlite",
