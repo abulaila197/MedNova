@@ -291,7 +291,8 @@ export function FreeSheets({ t }: { t: Theme }) {
   if (!sheet) return null;
   return (
     <Modal transparent visible onRequestClose={close}>
-      <Sheet open onClose={close}>
+      {/* Android Modal windows resize for the keyboard themselves; iOS needs the lift (PB10). */}
+      <Sheet open onClose={close} lift={Platform.OS === 'ios'}>
         {sheet === 'story' ? <StoryForm t={t} onDone={close} /> : sheet === 'feedback' ? <FeedbackForm t={t} onDone={close} /> : <AmbassadorForm t={t} onDone={close} />}
       </Sheet>
     </Modal>

@@ -1,6 +1,6 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import type { ReactNode } from 'react';
-import { Pressable, StyleSheet, View, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
+import { Platform, Pressable, StyleSheet, View, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
 import { Text } from '@/components/AppText';
 import Animated, { useAnimatedScrollHandler, type SharedValue } from 'react-native-reanimated';
 
@@ -9,6 +9,7 @@ import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import { Fade } from '@/components/Fade';
+import { KeyboardLift } from '@/games/shell/KeyboardLift';
 
 /** Colours of the info pages (info.css). */
 export function useInfo() {
@@ -62,6 +63,8 @@ export function Rich({ text, style, italic = true }: { text: string; style?: Sty
 // from 78% of its height (y=444.5) to the dock, exactly like `.fade`.
 export const FADE_FROM = 0.78;
 
+const Lift = ({ children }: { children: ReactNode }) => (Platform.OS === 'android' ? <KeyboardLift>{children}</KeyboardLift> : <>{children}</>);
+
 /** Scrolling page body that dissolves before the dock. `over` is drawn inside the fade but does not scroll. */
 export function InfoScroll({ children, scrollY, over, scrollRef, contentStyle }: { children: ReactNode; scrollY?: SharedValue<number>; over?: ReactNode; scrollRef?: React.RefObject<Animated.ScrollView | null>; contentStyle?: StyleProp<ViewStyle> }) {
   const onScroll = useAnimatedScrollHandler((e) => {
@@ -69,6 +72,9 @@ export function InfoScroll({ children, scrollY, over, scrollRef, contentStyle }:
   });
   return (
     <Fade from={FADE_FROM} style={s.pg}>
+      {/* Keyboard (PB10): iOS insets the scroll view; Android (edge-to-edge, no window resize) shrinks it with
+          KeyboardLift, and Android's ScrollView then keeps the focused text box in view. */}
+      <Lift>
       <Animated.ScrollView
         ref={scrollRef}
         style={s.fill}
@@ -77,9 +83,11 @@ export function InfoScroll({ children, scrollY, over, scrollRef, contentStyle }:
         scrollEventThrottle={16}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
+        automaticallyAdjustKeyboardInsets
       >
         {children}
       </Animated.ScrollView>
+      </Lift>
       {over}
     </Fade>
   );

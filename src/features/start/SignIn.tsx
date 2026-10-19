@@ -8,6 +8,7 @@ import Svg, { Path } from 'react-native-svg';
 
 import { TopInset } from '@/components/TopInset';
 import { DISCLAIMER } from '@/features/info/content';
+import { KeyboardLift } from '@/games/shell/KeyboardLift';
 import { takeAddCode } from '@/features/profile/pendingAdd';
 import { supabase } from '@/lib/supabase';
 import { call } from '@/online/api';
@@ -93,6 +94,8 @@ function plain(msg: string) {
   if (m.includes('network') || m.includes('fetch')) return 'No connection. Check your internet and try again.';
   return msg;
 }
+
+const SignInLift = ({ children }: { children: ReactNode }) => (Platform.OS === 'android' ? <KeyboardLift>{children}</KeyboardLift> : <>{children}</>);
 
 /** Sign in / create account (AU1: email + password, 6-digit email code). Nebula look. */
 export function SignIn() {
@@ -435,8 +438,11 @@ export function SignIn() {
       <Sky w={w} h={h} />
       <Stars si={0} hd={h / u(1)} />
       <TopInset />
+      {/* Keyboard (PB10): iOS insets the scroll view; Android shrinks it (KeyboardLift) so the focused box stays in view. */}
+      <SignInLift>
       <ScrollView
         style={{ flex: 1 }}
+        automaticallyAdjustKeyboardInsets
         onLayout={(e) => setViewH(e.nativeEvent.layout.height)}
         onContentSizeChange={(_, ch) => {
           if (step !== 'form') return;
@@ -457,6 +463,7 @@ export function SignIn() {
           {body}
         </View>
       </ScrollView>
+      </SignInLift>
     </View>
   );
 }
