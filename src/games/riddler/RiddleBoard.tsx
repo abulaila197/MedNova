@@ -122,11 +122,20 @@ export function RiddleBoard(p: BoardProps) {
 
         {p.wrong.length ? (
           <View style={s.notes}>
-            {p.wrong.map((id, i) => (
-              <Animated.View key={id} entering={FadeIn.duration(200)} style={[s.sticky, { transform: [{ rotate: `${i % 2 ? -2 : 1.6}deg` }] }]}>
-                <Text style={s.stickyT}>{answerLabel(id)}</Text>
-              </Animated.View>
-            ))}
+            {/* Only the latest notes, so a long turn of wrong guesses never pushes the answer box off the screen (GA14). */}
+            {p.wrong.length > MAX_NOTES ? (
+              <View style={s.sticky}>
+                <Text style={s.stickyT}>{`+${p.wrong.length - MAX_NOTES} more`}</Text>
+              </View>
+            ) : null}
+            {p.wrong.slice(-MAX_NOTES).map((id) => {
+              const i = p.wrong.indexOf(id);
+              return (
+                <Animated.View key={id} entering={FadeIn.duration(200)} style={[s.sticky, { transform: [{ rotate: `${i % 2 ? -2 : 1.6}deg` }] }]}>
+                  <Text style={s.stickyT}>{answerLabel(id)}</Text>
+                </Animated.View>
+              );
+            })}
           </View>
         ) : null}
 
@@ -157,6 +166,9 @@ export function RiddleBoard(p: BoardProps) {
     </GameScreen>
   );
 }
+
+/** Wrong-guess notes shown at once; older ones fold into "+N more". */
+const MAX_NOTES = 5;
 
 /** 3+ letters (a short name typed in full from 2), up to 5 suggestions above the field; tapping one answers. */
 function AnswerBox({ wrong, wrongSeq, locked, disabled, onGuess }: { wrong: string[]; wrongSeq: number; locked: boolean; disabled: boolean; onGuess: (id: string) => void }) {

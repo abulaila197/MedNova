@@ -58,10 +58,11 @@ export function toneOf(play: Play, items: PlayItem[], uid: string | null): Tone 
   return rank === 1 ? 'win' : rank === worst ? 'last' : 'mid';
 }
 
-export function ResultTone({ play, items, uid }: { play: Play; items: PlayItem[]; uid: string | null }) {
+export function ResultTone({ play, items, uid, plain }: { play: Play; items: PlayItem[]; uid: string | null; plain?: boolean }) {
   const t = useTheme();
   const pass = play.mode === 'offline';
-  const tone = pass ? 'mid' : toneOf(play, items, uid);
+  // A practice mode with no right or wrong (Silent Artist Solo) gets the calm line, never last-place teasing (GA13).
+  const tone = pass || (plain && play.mode === 'solo') ? 'mid' : toneOf(play, items, uid);
   // The same play always shows the same line.
   const n = [...play.id].reduce((a, c) => a + c.charCodeAt(0), 0);
   const [head, sub] = pass ? PASS : LINES[tone][n % LINES[tone].length];
