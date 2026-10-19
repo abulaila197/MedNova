@@ -113,6 +113,28 @@ async function uploadHeld(userId: string) {
   await engine.kv.remove(heldKey(userId));
 }
 
+// AP6: the wallet pull is incremental. It reads rows by the server's upload time from where the last pull stopped
+// (with a small overlap; rows already on the phone are skipped), oldest first, so a long history arrives over a
+// few syncs instead of the newest rows never arriving past the old 5,000-row cap. The cursor belongs to one account
+// and is cleared with the wallet on sign-out (state/account.ts), so a fresh wallet always gets a full pull.
+export const LEDGER_CURSOR = 'sync:ledger';
+const OVERLAP_MS = 5 * 60_000;
+type Cursor = { user: string; at: string };
+
+async function pullLedger(userId: string) {
+  const c = await engine.kv.get<Cursor>(LEDGER_CURSOR);
+  let q = supabase.from('wallet_ledger').select('id,kind,exp,tokens,reason,play_id,note,at,uploaded_at');
+  if (c?.user === userId) q = q.gt('uploaded_at', new Date(Date.parse(c.at) - OVERLAP_MS).toISOString());
+  return q.order('uploaded_at').limit(5000);
+}
+
+async function saveLedgerCursor(userId: string, rows: { uploaded_at: string }[]) {
+  const last = rows[rows.length - 1]?.uploaded_at;
+  const c = await engine.kv.get<Cursor>(LEDGER_CURSOR);
+  if (last) await engine.kv.set(LEDGER_CURSOR, { user: userId, at: last });
+  else if (c?.user !== userId) await engine.kv.set(LEDGER_CURSOR, { user: userId, at: new Date(0).toISOString() });
+}
+
 async function run(userId: string) {
   await uploadHeld(userId);
   await engine.recorder.claimGuestPlays(userId);
@@ -135,14 +157,16 @@ async function run(userId: string) {
 
   // Bring down what other phones saved.
   const [w, p, it] = await Promise.all([
-    supabase.from('wallet_ledger').select('id,kind,exp,tokens,reason,play_id,note,at').order('at').limit(5000),
+    pullLedger(userId),
     supabase.from('plays').select('*').eq('status', 'finished').order('started_at', { ascending: false }).limit(1000),
     supabase.from('play_items').select('*').order('at', { ascending: false }).limit(5000),
   ]);
-  if (w.data)
+  if (w.data) {
     await engine.wallet.mergeRemote(
       w.data.map((e): LedgerEntry => ({ id: e.id, kind: e.kind, exp: e.exp, tokens: e.tokens, reason: e.reason, playId: e.play_id ?? undefined, note: e.note ?? undefined, at: ms(e.at)!, synced: true })),
     );
+    await saveLedgerCursor(userId, w.data);
+  }
   if (p.data && it.data)
     await engine.recorder.mergeRemote({
       plays: p.data.map(
