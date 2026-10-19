@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
-import { spendTokens, whySay } from '@/features/style/useStyle';
+import { refundSecond, spendTokens, whySay } from '@/features/style/useStyle';
 
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
@@ -162,6 +162,9 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
     const used = res.cost != null && SECOND_PRICE.includes(res.cost) ? SECOND_PRICE.indexOf(res.cost) + 1 : kept + 1;
     keptRef.current = used;
     setKept(used);
+    const cur = ref.current;
+    // The round ended while the purchase was on its way: the streak can't come back, so the tokens do.
+    if (!cur || cur.phase === 'over' || !cur.lost) return setNotice((await refundSecond(res.id)) ? 'Second chance refunded.' : 'The round ended first.');
     dispatch({ type: 'KEEP' });
   }, [dispatch, kept, play.id]);
 

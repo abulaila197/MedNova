@@ -4,7 +4,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 import Animated, { FadeIn } from 'react-native-reanimated';
 
-import { spendTokens, whySay } from '@/features/style/useStyle';
+import { refundSecond, spendTokens, whySay } from '@/features/style/useStyle';
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
@@ -160,6 +160,9 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
     secondsRef.current = { ...secondsRef.current, [l.riddleId]: used };
     setSeconds(secondsRef.current);
     if (!res.ok) return setNotice(whySay(res));
+    const cur = ref.current;
+    // Left the level (or it changed) while the purchase was on its way: the tokens come back instead.
+    if (!cur || cur.riddleId !== l.riddleId || cur.phase !== 'failed') return setNotice((await refundSecond(res.id)) ? 'Second chance refunded.' : 'The level was closed first.');
     dispatch({ type: 'REVIVE', now: Date.now() });
   }, [dispatch, play.id]);
   const signedIn = useSession((x) => !!x.userId);

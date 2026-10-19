@@ -149,14 +149,24 @@ export async function wear(p: { frame?: string; title?: string; effect?: string 
 }
 
 /** Other token spends: name glow, a second chance in a run, the Grand Rounds booster. */
-export async function spendTokens(what: 'glow' | 'second' | 'booster', ref?: string): Promise<ShopResult & { cost?: number }> {
+export async function spendTokens(what: 'glow' | 'second' | 'booster', ref?: string): Promise<ShopResult & { cost?: number; id?: string }> {
   const userId = useSession.getState().userId;
   if (!userId) return { ok: false, why: 'signin' };
   await syncAccount(userId).catch(() => {});
   const { data, error } = await supabase.rpc('token_spend', { what, ref: ref ?? null });
   if (error || !data) return { ok: false, why: 'offline' };
   await after();
-  return data as ShopResult & { cost?: number };
+  return data as ShopResult & { cost?: number; id?: string };
+}
+
+/** A second chance bought for a round or level that ended while the purchase was on its way: the server gives that
+ *  one purchase back (once, within 2 minutes) and allows no more second chances there (token_second_refund). */
+export async function refundSecond(spendId: string | undefined) {
+  if (!spendId) return false;
+  const { data, error } = await supabase.rpc('token_second_refund', { spend_id: spendId });
+  if (error || !(data as { ok?: boolean } | null)?.ok) return false;
+  await after();
+  return true;
 }
 
 export async function giftsSeen() {
