@@ -3,6 +3,8 @@
 
 export const PROGRESS_KEYS = [
   'crossword:best', 'riddler:best', 'casefiles:played', 'streak:best', 'learn:review', 'learn:opened',
+  // GA5: needs migration 20261019000200 (player_progress_key_check) applied first.
+  'medicordle:endless:paid', 'medicordle:streak:classic', 'medicordle:streak:custom',
 ] as const;
 export type ProgressKey = (typeof PROGRESS_KEYS)[number];
 type Map = Record<string, unknown>;
@@ -32,10 +34,22 @@ function reviewMerge(a: Map, b: Map) {
   return { done: maxMerge(obj(a.done), obj(b.done)), later };
 }
 
+/** Medicordle Daily streak: the side that played the later day keeps its current run (the same day: the longer
+ *  run); the best is the higher of both. */
+function streakMerge(a: Map, b: Map) {
+  const day = (m: Map) => (typeof m.lastDay === 'number' ? m.lastDay : -1);
+  const num = (v: unknown) => (typeof v === 'number' ? v : 0);
+  if (!Object.keys(a).length || !Object.keys(b).length) return Object.keys(a).length ? a : b;
+  const pick = day(a) !== day(b) ? (day(a) > day(b) ? a : b) : num(a.current) >= num(b.current) ? a : b;
+  return { current: num(pick.current), best: Math.max(num(a.best), num(b.best), num(pick.current)), lastDay: day(pick) < 0 ? null : day(pick) };
+}
+
 export function mergeProgress(key: ProgressKey, local: unknown, remote: unknown): unknown {
-  if (key === 'learn:opened') return [...new Set([...strs(local), ...strs(remote)])].sort();
+  // Opened Learn cards and Endless words that already paid EXP: either phone's list counts.
+  if (key === 'learn:opened' || key === 'medicordle:endless:paid') return [...new Set([...strs(local), ...strs(remote)])].sort();
   const a = obj(local);
   const b = obj(remote);
+  if (key === 'medicordle:streak:classic' || key === 'medicordle:streak:custom') return streakMerge(a, b);
   if (key === 'casefiles:played') return stampMerge(a, b);
   if (key === 'learn:review') return reviewMerge(a, b);
   return maxMerge(a, b);

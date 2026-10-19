@@ -32,3 +32,11 @@ test('learn review: latest Got it wins, Again cards from both phones stay at the
   assert.equal(emptyProgress([]), true);
   assert.equal(sameProgress({ done: { a: 1, b: 2 }, later: [] }, { later: [], done: { b: 2, a: 1 } }), true);
 });
+
+test('Medicordle: paid Endless words union, streak keeps the later day and the higher best (GA5)', () => {
+  assert.deepEqual(mergeProgress('medicordle:endless:paid', ['b', 'a'], ['c', 'a']), ['a', 'b', 'c']);
+  const k = 'medicordle:streak:classic';
+  assert.deepEqual(mergeProgress(k, { current: 2, best: 9, lastDay: 10 }, { current: 5, best: 5, lastDay: 12 }), { current: 5, best: 9, lastDay: 12 });
+  assert.deepEqual(mergeProgress(k, { current: 3, best: 3, lastDay: 12 }, { current: 1, best: 4, lastDay: 12 }), { current: 3, best: 4, lastDay: 12 });
+  assert.deepEqual(mergeProgress(k, undefined, { current: 1, best: 4, lastDay: 7 }), { current: 1, best: 4, lastDay: 7 });
+});
