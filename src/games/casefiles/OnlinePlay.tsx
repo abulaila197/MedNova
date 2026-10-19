@@ -11,6 +11,7 @@ import { RoomTalk } from '@/online/Talk';
 import { u } from '@/theme/scale';
 import { useRaceRevealSound } from '@/online/raceSound';
 
+import { engine } from '../engine';
 import { playerColour } from '../shell/characters';
 import { presetTeam } from '../shell/teams';
 import type { OnlineProps } from '../shell/types';
@@ -102,13 +103,38 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   const teams = Number(st?.settings.teams) || 0;
   const colorOf = (p: RacePlayer | undefined) => (!p ? NR.red : teams >= 2 && p.team != null ? presetTeam(p.team).color : playerColour(st?.players ?? [], p.user_id));
 
-  // The case opens for everyone at once.
+  // The case opens for everyone at once. GB4: the run is bookmarked per match, so a killed app or a remount picks up
+  // the same board (the stopwatch kept running, as the server's clock did) and re-sends its answers; the server keeps
+  // only the first of each, so a repeat changes nothing.
+  const runKey = `cf-online:${matchId}`;
+  const opening = useRef(false);
   useEffect(() => {
-    if (!st || st.phase !== 'case' || st.item == null || runRef.current) return;
-    const r = startRun(caseOf(st.item).id, Date.now());
-    runRef.current = r;
-    setRun(r);
-  }, [st]);
+    if (!st || st.phase !== 'case' || st.item == null || runRef.current || opening.current) return;
+    opening.current = true;
+    const id = caseOf(st.item).id;
+    void (async () => {
+      let saved: Run | null = null;
+      try {
+        saved = await engine.kv.get<Run>(runKey);
+      } catch {
+        saved = null;
+      }
+      if (runRef.current) return;
+      const r = saved && saved.caseId === id ? saved : startRun(id, Date.now());
+      runRef.current = r;
+      setRun(r);
+      if (r === saved) {
+        pending.current.push({
+          report: { stage: stageOf(r), filtered: r.filtered, provisional: r.provisional?.id ?? null, redemption: r.redemption?.id ?? null },
+          tries: 0,
+        });
+        void flush();
+      } else void engine.kv.set(runKey, r).catch(() => {});
+    })();
+  }, [st, runKey, flush]);
+  useEffect(() => {
+    if (st && st.phase !== 'case' && st.phase !== 'countdown') void engine.kv.remove(runKey).catch(() => {});
+  }, [st?.phase, runKey]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // CF9 alerts: "Sara reached Investigations", "Omar solved it".
   useEffect(() => {
@@ -138,6 +164,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
       if (next === prev) return;
       runRef.current = next;
       setRun(next);
+      void engine.kv.set(runKey, next).catch(() => {});
       // Report what changed: the stage, the narrowed list (scored once), the provisional, the last call.
       const report = {
         stage: stageOf(next),
@@ -150,7 +177,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
         void flush();
       }
     },
-    [item, flush],
+    [item, flush, runKey],
   );
 
   useRaceRevealSound(st, me);
