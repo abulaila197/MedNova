@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
-import Animated, { Easing, useAnimatedStyle, useReducedMotion, useSharedValue, withRepeat, withSequence, withTiming } from 'react-native-reanimated';
+import Animated, { cancelAnimation, Easing, useAnimatedStyle, useReducedMotion, useSharedValue, withRepeat, withSequence, withTiming } from 'react-native-reanimated';
 import Svg, { Circle, Defs, Ellipse, G, LinearGradient, Path, Stop } from 'react-native-svg';
 
 import { useSvgId } from '@/components/svgId';
@@ -27,19 +27,28 @@ const METAL: Record<'bronze' | 'silver' | 'gold' | 'platinum', string[]> = {
 
 const pt = (r: number, a: number) => [C + r * Math.cos(a), C + r * Math.sin(a)] as const;
 
+// Each loop runs only for the frame that shows it, and stops when switched off (X7).
 function useSpin(ms: number, on = true) {
   const r = useSharedValue(0);
   useEffect(() => {
     if (on) r.value = withRepeat(withTiming(360, { duration: ms, easing: Easing.linear }), -1, false);
+    else {
+      cancelAnimation(r);
+      r.value = 0;
+    }
   }, [ms, on, r]);
   return useAnimatedStyle(() => ({ transform: [{ rotate: `${r.value}deg` }] }));
 }
 
-function useBreath(ms: number) {
+function useBreath(ms: number, on = true) {
   const o = useSharedValue(0.35);
   useEffect(() => {
-    o.value = withRepeat(withSequence(withTiming(1, { duration: ms }), withTiming(0.35, { duration: ms })), -1, false);
-  }, [ms, o]);
+    if (on) o.value = withRepeat(withSequence(withTiming(1, { duration: ms }), withTiming(0.35, { duration: ms })), -1, false);
+    else {
+      cancelAnimation(o);
+      o.value = 0.35;
+    }
+  }, [ms, on, o]);
   return useAnimatedStyle(() => ({ opacity: o.value }));
 }
 
@@ -171,8 +180,8 @@ function Base({ k, id, line }: { k: FrameKey; id: string; line: string }) {
 function Moving({ k, id }: { k: FrameKey; id: string }) {
   const spinFast = useSpin(3600, k === 'pulse');
   const spinMid = useSpin(9000, k === 'nova' || k === 'platinum');
-  const spinSlow = useSpin(24000, k === 'helix' || k === 'aurora');
-  const breath = useBreath(1100);
+  const spinSlow = useSpin(24000, k === 'aurora');
+  const breath = useBreath(1100, k === 'aurora' || k === 'neuron');
   const spinGlow = useSpin(6000, k === 'laurel' || k === 'helix');
   const layer = (style: object, svg: React.ReactNode) => <Animated.View pointerEvents="none" style={[StyleSheet.absoluteFill, style]}>{svg}</Animated.View>;
   switch (k) {

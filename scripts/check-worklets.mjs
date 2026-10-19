@@ -4,11 +4,12 @@
 // Run: node scripts/check-worklets.mjs
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { parse } from '@babel/parser';
 import traverseMod from '@babel/traverse';
 
 const traverse = traverseMod.default ?? traverseMod;
-const ROOT = new URL('..', import.meta.url).pathname;
+const ROOT = fileURLToPath(new URL('..', import.meta.url)); // a real path on Windows and with spaces (X9)
 const files = [];
 (function walk(d) {
   for (const f of readdirSync(d)) {

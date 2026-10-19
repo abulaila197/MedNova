@@ -33,8 +33,11 @@ export async function loadProfileStats(): Promise<ProfileStats> {
   const { plays, items } = await engine.recorder.all();
   const done = plays.filter((p) => p.status === 'finished').sort((a, b) => a.startedAt - b.startedAt);
   const tally = new Map<string, { right: number; all: number }>();
+  // Trust Me Not records only its misses (for Today's review), not every answer, so its items are not an answer
+  // record: counting them showed 0% for TMN and pulled the overall accuracy down (DEF-087).
+  const missesOnly = new Set(plays.filter((p) => p.game === 'trust-me-not').map((p) => p.id));
   for (const it of items) {
-    if (it.seat !== 0 || it.outcome === 'skipped') continue;
+    if (it.seat !== 0 || it.outcome === 'skipped' || missesOnly.has(it.playId)) continue;
     const t = tally.get(it.playId) ?? { right: 0, all: 0 };
     t.all++;
     if (it.outcome === 'right') t.right++;

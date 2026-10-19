@@ -4,10 +4,11 @@
 // with no start-up cost. Run: node scripts/build-medicordle-guesses.mjs
 import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import wordsTxt from 'word-list';
 
-const root = join(dirname(new URL(import.meta.url).pathname), '..');
+const root = join(dirname(fileURLToPath(import.meta.url)), '..'); // a real path on Windows and with spaces (X9)
 const data = join(root, 'src/games/medicordle/data');
 
 const english = readFileSync(wordsTxt, 'utf8').split('\n');

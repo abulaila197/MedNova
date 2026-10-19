@@ -1,7 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View, ScrollView } from 'react-native';
 import { Text } from '@/components/AppText';
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
@@ -107,12 +107,17 @@ function Pane({ f, on }: { f: { key: string; label: string; text: string }; on: 
   return (
     <Animated.View style={[s.fp, st]} pointerEvents={on ? 'auto' : 'none'}>
       <Text style={[s.cf, { color: t.accent }]}>{f.label.toUpperCase()}</Text>
-      <Text style={[s.p, { color: t.fg }]}>{f.text}</Text>
+      {/* Long fields scroll inside the folder and stop above the disclaimer instead of running over it (DEF-104). */}
+      <ScrollView style={s.fill} contentContainerStyle={s.pScroll} nestedScrollEnabled showsVerticalScrollIndicator={false}>
+        <Text style={[s.p, { color: t.fg }]}>{f.text}</Text>
+      </ScrollView>
     </Animated.View>
   );
 }
 
 const s = StyleSheet.create({
+  fill: { flex: 1 },
+  pScroll: { paddingBottom: u(22) },
   dpb: { flex: 1, paddingTop: u(14), paddingHorizontal: u(14), gap: u(8) },
   dtop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   ms: { fontFamily: F.mono, fontSize: u(8.5), lineHeight: u(12), letterSpacing: u(1.02) },
