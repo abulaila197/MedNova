@@ -50,7 +50,7 @@ export function Results({ def, play, items }: { def: GameDef; play: Play; items:
         <Kick>{`${g.lead} ${g.em}`}</Kick>
         <Title lead="Game" em="over" />
       </View>
-      <ResultTone play={play} items={items} uid={uid} />
+      <ResultTone play={play} items={items} uid={uid} plain={plain} />
       <Card style={s.top}>
         {stats.map((x) => (
           <View key={x.label} style={s.stat}>

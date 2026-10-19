@@ -10,7 +10,7 @@ import type { Mode, Seat } from '../engine/types';
 import { Btn, Ghost, Kick } from './ui';
 
 /** What every game's pause menu takes (the shared one below, or a game's own look). */
-export type PauseProps = { open: boolean; mode: Mode; seats?: Seat[]; keep?: number[]; onResume: () => void; onQuit: () => void; onRemove?: (seat: number) => void };
+export type PauseProps = { open: boolean; mode: Mode; seats?: Seat[]; keep?: number[]; onResume: () => void; onQuit: () => void; onRemove?: (seat: number) => void; onFinish?: () => void };
 
 /** Rule 17: on one phone a player can be removed while more than 2 are left; `keep` (e.g. the phone owner) never can. */
 export function removableSeats({ mode, seats, keep = [], onRemove }: Pick<PauseProps, 'mode' | 'seats' | 'keep' | 'onRemove'>) {
@@ -23,7 +23,7 @@ export function removableSeats({ mode, seats, keep = [], onRemove }: Pick<PauseP
  * Solo: quitting bookmarks the play (rule 7). One phone: tap a player to remove them (rule 17).
  * Settings are not here on purpose (rule 9).
  */
-export function PauseMenu({ open, mode, seats, keep, onResume, onQuit, onRemove }: PauseProps) {
+export function PauseMenu({ open, mode, seats, keep, onResume, onQuit, onRemove, onFinish }: PauseProps) {
   const t = useTheme();
   const removable = removableSeats({ mode, seats, keep, onRemove });
   return (
@@ -43,6 +43,8 @@ export function PauseMenu({ open, mode, seats, keep, onResume, onQuit, onRemove 
       ) : null}
       {mode === 'online' ? <Text style={[s.lbl, { color: t.mute }]}>The match keeps running. If you leave, you drop out and rank last.</Text> : null}
       <Btn label={mode === 'online' ? 'Back to the case' : 'Resume'} onPress={onResume} />
+      {/* A game with no other end (Crossword Pass the phone) can finish here and keep its results. */}
+      {onFinish ? <Ghost label="Finish and see results" onPress={onFinish} /> : null}
       <Ghost label={mode === 'solo' ? 'Leave and save my place' : mode === 'online' ? 'Leave match' : 'End game'} onPress={onQuit} danger={mode !== 'solo'} />
     </Sheet>
   );

@@ -15,8 +15,8 @@ import { u } from '@/theme/scale';
 
 import type { OnlineProps } from '../shell/types';
 import { ATLAS_KIT } from './rooms';
-import { AT, AtlasPause, AtlasScreen, CGI, KINGDOMS, PauseCtx, T } from './atlas';
-import { standings } from './core';
+import { AT, AtlasPause, AtlasScreen, Btn, CGI, KINGDOMS, PauseCtx, T } from './atlas';
+import { places } from './core';
 import { makeMap, seedOf } from './map';
 import { BoardPage, MovesPage, type Act } from './pages';
 import { CardsPage, DuelPage, HoldPage, OutBanner, SoloPage, VersusPage, type Hold } from './play';
@@ -102,12 +102,16 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
     if (!st || st.phase !== 'done' || !m || finishing.current || !m.players[me]) return;
     finishing.current = true;
     (async () => {
-      const order = standings(m).map((p) => p.id);
-      const local = [me, ...m.order.filter((id) => id !== me)];
-      const seats = local.map((id, i) => ({ seat: i, userId: id, name: id === me ? 'You' : m.players[id].name, character: st.players.find((x) => x.user_id === id)?.character, color: KINGDOMS[m.order.indexOf(id) % KINGDOMS.length] }));
-      const stand = local.map((id, i) => ({ seat: i, name: seats[i].name, score: m.landOrder.filter((l) => m.lands[l].owner === id).length, timeMs: 0, rank: order.indexOf(id) + 1 })).sort((a, b) => a.rank - b.rank);
-      const id = await finishOnline(def, matchId, { settings: { ...st.settings, room: roomId, match: matchId, right: m.players[me].stats.right ?? 0 }, seats, standings: stand, score: stand.find((x) => x.seat === 0)?.score ?? 0, items: [] });
-      showResults(id);
+      try {
+        const place = places(m);
+        const local = [me, ...m.order.filter((id) => id !== me)];
+        const seats = local.map((id, i) => ({ seat: i, userId: id, name: id === me ? 'You' : m.players[id].name, character: st.players.find((x) => x.user_id === id)?.character, color: KINGDOMS[m.order.indexOf(id) % KINGDOMS.length] }));
+        const stand = local.map((id, i) => ({ seat: i, name: seats[i].name, score: m.landOrder.filter((l) => m.lands[l].owner === id).length, timeMs: 0, rank: place[id] })).sort((a, b) => a.rank - b.rank);
+        const id = await finishOnline(def, matchId, { settings: { ...st.settings, room: roomId, match: matchId, right: m.players[me].stats.right ?? 0 }, seats, standings: stand, score: stand.find((x) => x.seat === 0)?.score ?? 0, items: [] });
+        showResults(id);
+      } catch {
+        finishing.current = false; // the next poll tries again
+      }
     })();
   }, [st, m, me, def, roomId, matchId, showResults]);
   const [menu, setMenu] = useState(false);
@@ -146,10 +150,18 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   }
 
   const props = { m, me, map, seconds, act, elapsed, msNow };
-  const out = m.players[me]?.out;
+  // A spectator has no seat in the war: they watch like a fallen player (DEF-006).
+  const seated = !!m.players[me];
+  const out = !seated || m.players[me].out;
   let body: React.ReactNode;
   if (hold) body = <HoldPage m={m} me={me} map={map} hold={hold} seconds={Math.max(0, (hold.until - server) / 1000)} />;
-  else if (m.phase === 'over') body = <T f={CGI} size={18} color={AT.gold} style={{ textAlign: 'center', marginTop: u(140) }}>The war is over…</T>;
+  else if (m.phase === 'over')
+    body = (
+      <View style={{ alignItems: 'center', gap: u(16), marginTop: u(140) }}>
+        <T f={CGI} size={18} color={AT.gold} style={{ textAlign: 'center' }}>{seated ? 'The war is over…' : 'The war is over.'}</T>
+        {seated ? null : <Btn label="Back to the room" onPress={() => router.replace(`/play/${def.key}/lobby?room=${roomId}`)} />}
+      </View>
+    );
   else if (m.phase === 'duel') body = <DuelPage {...props} />;
   else if (out) body = <><OutBanner m={m} me={me} /><MovesWatch {...props} /></>;
   else if (m.phase === 'solo_pick') body = <BoardPage {...props} />;

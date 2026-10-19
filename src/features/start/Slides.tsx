@@ -191,10 +191,13 @@ export type SlideProps = {
 function Frame({ si, w, h, padTop, padBottom, children }: Omit<SlideProps, 'onNext' | 'onSkip'> & { children: ReactNode }) {
   const hd = h / u(1);
   return (
-    // cached as one GPU picture, so a swipe moves it without redrawing the photo, masks and stars
-    <View style={{ width: w, height: h, overflow: 'hidden', backgroundColor: NAVY }} renderToHardwareTextureAndroid shouldRasterizeIOS>
-      <Sky w={w} h={h} />
-      <Scene si={si} w={w} h={h} padTop={padTop} padBottom={padBottom} />
+    <View style={{ width: w, height: h, overflow: 'hidden', backgroundColor: NAVY }}>
+      {/* The still sky and photo are cached as one GPU picture, so a swipe moves them without redrawing. The twinkling
+          stars sit above it, outside the cache: their opacity changes every frame and would redraw the cache (A6). */}
+      <View style={StyleSheet.absoluteFill} renderToHardwareTextureAndroid shouldRasterizeIOS>
+        <Sky w={w} h={h} />
+        <Scene si={si} w={w} h={h} padTop={padTop} padBottom={padBottom} />
+      </View>
       <Stars si={si} hd={hd} />
       <View style={{ flex: 1, paddingTop: padTop, paddingBottom: padBottom, paddingHorizontal: u(18), gap: u(14) }}>{children}</View>
     </View>

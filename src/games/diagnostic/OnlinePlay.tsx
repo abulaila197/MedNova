@@ -64,7 +64,10 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   const finishing = useRef(false);
   const { alert, push } = useAlerts();
 
-  const playing = useMemo(() => st?.players.some((p) => p.user_id === me) ?? false, [st, me]);
+  // Seated = has a seat (the play is saved at the end); playing = seated and not dropped for being away (GA1).
+  const seated = useMemo(() => st?.players.some((p) => p.user_id === me) ?? false, [st, me]);
+  const dropped = useMemo(() => st?.players.some((p) => p.user_id === me && p.dropped) ?? false, [st, me]);
+  const playing = seated && !dropped;
 
   // DPN7 alerts: someone else solved ("Sara solved it, 2nd"), and "Only you left".
   useEffect(() => {
@@ -86,42 +89,46 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
 
   // The match ended: it becomes an ordinary play on this phone, then the results page (ON21).
   useEffect(() => {
-    if (!st || st.phase !== 'done' || !playing || finishing.current) return;
+    if (!st || st.phase !== 'done' || !seated || finishing.current) return;
     finishing.current = true;
     (async () => {
-      const order = [...st.players.filter((p) => p.user_id === me), ...st.players.filter((p) => p.user_id !== me)];
-      const seatOf = new Map(order.map((p, i) => [p.user_id, i]));
-      const teams = Number(st.settings.teams) || 0;
-      const seats = order.map((p, i) => {
-        const tm = teams >= 2 && p.team != null ? presetTeam(p.team) : null;
-        return { seat: i, name: p.user_id === me ? 'You' : p.name, userId: p.user_id, character: p.character, color: tm?.color ?? playerColour(st.players, p.user_id), ...(tm ? { team: tm.id } : null) };
-      });
-      const standings = st.players
-        .map((p) => ({ seat: seatOf.get(p.user_id)!, name: p.user_id === me ? 'You' : p.name, score: p.score, timeMs: p.solve_ms, rank: p.rank ?? st.players.length }))
-        .sort((a, b) => a.rank - b.rank);
-      const mine = st.players.find((p) => p.user_id === me)!;
-      const items = (st.my_cases ?? []).map((m) => {
-        const c = caseById.get(String(m.case_number))!;
-        const right = m.solved_ms != null;
-        return {
-          seat: 0,
-          itemId: String(m.case_number),
-          answerKey: c?.canonical_id ?? null,
-          outcome: right ? ('right' as const) : ('timed_out' as const),
-          answersGiven: (m.wrong ?? []).map((id) => guessName(id)),
-          timeMs: m.solved_ms ?? CASE_MS,
-          hintsUsed: 0,
-          revealsUsed: 0,
-          points: m.points,
-          feedsLearn: !right, // DPN5: your own unsolved online cases go to Learn
-          gameData: { cluesShown: m.clues, caseRank: m.rank, difficulty: c?.difficulty, room: roomId, match: matchId },
-        };
-      });
-      const settings = { ...st.settings, room: roomId, match: matchId, teams: teams >= 2 ? Array.from({ length: teams }, (_, i) => presetTeam(i)) : undefined };
-      const id = await finishOnline(def, matchId, { settings, seats, standings, score: mine.score, items });
-      showResults(id);
+      try {
+        const order = [...st.players.filter((p) => p.user_id === me), ...st.players.filter((p) => p.user_id !== me)];
+        const seatOf = new Map(order.map((p, i) => [p.user_id, i]));
+        const teams = Number(st.settings.teams) || 0;
+        const seats = order.map((p, i) => {
+          const tm = teams >= 2 && p.team != null ? presetTeam(p.team) : null;
+          return { seat: i, name: p.user_id === me ? 'You' : p.name, userId: p.user_id, character: p.character, color: tm?.color ?? playerColour(st.players, p.user_id), ...(tm ? { team: tm.id } : null) };
+        });
+        const standings = st.players
+          .map((p) => ({ seat: seatOf.get(p.user_id)!, name: p.user_id === me ? 'You' : p.name, score: p.score, timeMs: p.solve_ms, rank: p.rank ?? st.players.length }))
+          .sort((a, b) => a.rank - b.rank);
+        const mine = st.players.find((p) => p.user_id === me)!;
+        const items = (st.my_cases ?? []).map((m) => {
+          const c = caseById.get(String(m.case_number))!;
+          const right = m.solved_ms != null;
+          return {
+            seat: 0,
+            itemId: String(m.case_number),
+            answerKey: c?.canonical_id ?? null,
+            outcome: right ? ('right' as const) : ('timed_out' as const),
+            answersGiven: (m.wrong ?? []).map((id) => guessName(id)),
+            timeMs: m.solved_ms ?? CASE_MS,
+            hintsUsed: 0,
+            revealsUsed: 0,
+            points: m.points,
+            feedsLearn: !right, // DPN5: your own unsolved online cases go to Learn
+            gameData: { cluesShown: m.clues, caseRank: m.rank, difficulty: c?.difficulty, room: roomId, match: matchId },
+          };
+        });
+        const settings = { ...st.settings, room: roomId, match: matchId, teams: teams >= 2 ? Array.from({ length: teams }, (_, i) => presetTeam(i)) : undefined };
+        const id = await finishOnline(def, matchId, { settings, seats, standings, score: mine.score, items });
+        showResults(id);
+      } catch {
+        finishing.current = false; // the next poll tries again
+      }
     })();
-  }, [st, playing, me, def, roomId, matchId, showResults]);
+  }, [st, seated, me, def, roomId, matchId, showResults]);
 
   // Already finished on this phone (reopened): go straight to the results.
 
@@ -147,8 +154,8 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
     return (
       <GameScreen>
         <View style={s.done}>
-          <Kick>{playing ? 'Adding up the scores…' : 'Match over'}</Kick>
-          {playing ? null : <Btn label="Back to the room" onPress={() => router.replace(`/play/${def.key}/lobby?room=${roomId}`)} />}
+          <Kick>{seated ? 'Adding up the scores…' : 'Match over'}</Kick>
+          {seated ? null : <Btn label="Back to the room" onPress={() => router.replace(`/play/${def.key}/lobby?room=${roomId}`)} />}
         </View>
       </GameScreen>
     );
@@ -197,7 +204,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
       clueSeq={clues}
       actions={false}
       result={result}
-      notice={notice ?? (!playing ? 'You’re watching. You get a seat at the rematch.' : lockLeft > 0 ? `Wrong. Locked for ${Math.ceil(lockLeft / 1000)} s.` : null)}
+      notice={notice ?? (!playing ? (dropped ? 'You were away for over a minute, so you’re watching now.' : 'You’re watching. You get a seat at the rematch.') : lockLeft > 0 ? `Wrong. Locked for ${Math.ceil(lockLeft / 1000)} s.` : null)}
       pausedNote=""
       onPause={() => setMenu(true)}
       onGuess={async (g) => {
@@ -205,6 +212,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
         try {
           const r = await call<{ outcome: string }>('dp_guess', { m: matchId, answer: g.id });
           if (r.outcome === 'wrong') setWrongSeq((x) => x + 1);
+          else if (r.outcome === 'ignored_finished') setNotice('That guess came too late.');
           await load();
         } catch {
           setNotice('Couldn’t send that. Try again.');

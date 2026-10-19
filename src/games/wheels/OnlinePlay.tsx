@@ -177,25 +177,29 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
     if (!st || st.phase !== 'done' || !playing || finishing.current || !st.state || !st.seats) return;
     finishing.current = true;
     (async () => {
-      const seatsOf = st.seats!;
-      const order = [mySeat!, ...seatsOf.map((_, i) => i).filter((i) => i !== mySeat)];
-      const local = new Map(order.map((s, i) => [s, i]));
-      const byId = new Map(st.players.map((p) => [p.user_id, p]));
-      const seats = order.map((s, i) => ({ seat: i, userId: seatsOf[s], name: s === mySeat ? 'You' : (byId.get(seatsOf[s])?.name ?? `Player ${s + 1}`), character: byId.get(seatsOf[s])?.character, color: GEMS[s % GEMS.length] }));
-      const standings = order
-        .map((s) => {
-          const p = byId.get(seatsOf[s]);
-          return { seat: local.get(s)!, name: seats[local.get(s)!].name, score: p?.score ?? 0, timeMs: 0, rank: p?.rank ?? order.length };
-        })
-        .sort((a, b) => a.rank - b.rank);
-      const score = byId.get(me)?.score ?? 0;
-      const mine = st.state!.g.answers.filter((a) => a.seat === mySeat).map((a) => a.r);
-      const items = mine.map((r: QResult) => ({
-        seat: 0, itemId: BANK.questions[Number(r.id)]?.id ?? r.id, answerKey: null, outcome: r.right ? ('right' as const) : r.answer == null ? ('timed_out' as const) : ('wrong' as const),
-        answersGiven: [], timeMs: 0, hintsUsed: 0, revealsUsed: 0, points: r.points, feedsLearn: false, gameData: { style: r.style, field: r.field },
-      }));
-      const id = await finishOnline(def, matchId, { settings: { ...st.settings, room: roomId, match: matchId }, seats, standings, score, items });
-      showResults(id);
+      try {
+        const seatsOf = st.seats!;
+        const order = [mySeat!, ...seatsOf.map((_, i) => i).filter((i) => i !== mySeat)];
+        const local = new Map(order.map((s, i) => [s, i]));
+        const byId = new Map(st.players.map((p) => [p.user_id, p]));
+        const seats = order.map((s, i) => ({ seat: i, userId: seatsOf[s], name: s === mySeat ? 'You' : (byId.get(seatsOf[s])?.name ?? `Player ${s + 1}`), character: byId.get(seatsOf[s])?.character, color: GEMS[s % GEMS.length] }));
+        const standings = order
+          .map((s) => {
+            const p = byId.get(seatsOf[s]);
+            return { seat: local.get(s)!, name: seats[local.get(s)!].name, score: p?.score ?? 0, timeMs: 0, rank: p?.rank ?? order.length };
+          })
+          .sort((a, b) => a.rank - b.rank);
+        const score = byId.get(me)?.score ?? 0;
+        const mine = st.state!.g.answers.filter((a) => a.seat === mySeat).map((a) => a.r);
+        const items = mine.map((r: QResult) => ({
+          seat: 0, itemId: BANK.questions[Number(r.id)]?.id ?? r.id, answerKey: null, outcome: r.right ? ('right' as const) : r.answer == null ? ('timed_out' as const) : ('wrong' as const),
+          answersGiven: [], timeMs: 0, hintsUsed: 0, revealsUsed: 0, points: r.points, feedsLearn: false, gameData: { style: r.style, field: r.field },
+        }));
+        const id = await finishOnline(def, matchId, { settings: { ...st.settings, room: roomId, match: matchId }, seats, standings, score, items });
+        showResults(id);
+      } catch {
+        finishing.current = false; // the next poll tries again
+      }
     })();
   }, [st, playing, mySeat, me, def, roomId, matchId, showResults]);
 
@@ -246,7 +250,14 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   const waitBar = wait && o.deadline ? <WaitBar left={Math.max(0, o.deadline - server)} total={wait} mine={mine} /> : null;
 
   let body: React.ReactNode = null;
-  if (g.phase === 'done') body = <T f={CD} size={22} color={VV.gold} style={{ textAlign: 'center', marginTop: u(120) }}>Final curtain…</T>;
+  if (g.phase === 'done')
+    body = (
+      <View style={{ alignItems: 'center', gap: u(16), marginTop: u(120) }}>
+        <T f={CD} size={22} color={VV.gold} style={{ textAlign: 'center' }}>{playing ? 'Final curtain…' : 'Final curtain.'}</T>
+        {/* A spectator has no results page to go to: back to the room for the rematch (X1). */}
+        {playing ? null : <Btn label="Back to the room" onPress={() => router.replace(`/play/${def.key}/lobby?room=${roomId}`)} />}
+      </View>
+    );
   else if (g.phase === 'initiation' && who != null)
     body = mine ? (
       <CardWindow g={g} seat={who} seats={seats} board={board} onPlay={(p) => send({ type: 'PLAY', play: p })} onPass={() => send({ type: 'PASS' })} onPause={pause} />

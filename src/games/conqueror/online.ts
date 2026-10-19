@@ -118,7 +118,14 @@ function stamp(o: OnlineConqueror, a: PhoneAction, me: string, now: number): Act
     case 'respond': return { type: 'respond', from: String(a.from), to: me, accept: !!a.accept };
     case 'ready': return { type: 'ready', player: me };
     case 'moves': return Array.isArray(a.moves) ? { type: 'moves', player: me, moves: (a.moves as never[]).slice(0, 4) } : null;
-    case 'duel': return { type: 'duel', player: me, answer: !!a.answer, ms: clamp(a.ms, BALANCE.DUEL_SECONDS * 1000) };
+    case 'duel': {
+      // Measured by the server like every other style (CQ9 ties go to the faster side): the time since this
+      // player's previous answer in this duel, never the phone's own count.
+      const d = o.m.duels[o.m.duelIndex];
+      const mine = !d ? [] : d.p1 === me ? d.a1 : d.p2 === me ? d.a2 : [];
+      const before = mine.reduce((t, x) => t + x.ms, 0);
+      return { type: 'duel', player: me, answer: !!a.answer, ms: clamp(elapsed - before, BALANCE.DUEL_SECONDS * 1000) };
+    }
     default: return null;
   }
 }
@@ -133,7 +140,11 @@ export function stepOnline(o: OnlineConqueror, a: PhoneAction | null, me: string
   for (const id of Object.keys(s.m.players)) {
     const gone = away.includes(id);
     const p = s.m.players[id];
-    if (!p.out && p.connected === gone) s = { ...s, m: step(s.m, { type: 'connection', player: id, connected: !gone }, ctx) };
+    if (!p.out && p.connected === gone) {
+      // A disconnect can end a wait (everyone else is done), so the clock and holds follow like any other step.
+      const next = step(s.m, { type: 'connection', player: id, connected: !gone }, ctx);
+      if (next !== s.m) s = settle({ ...s, m: next }, s.m, now);
+    }
   }
   if (a && me && a.type !== 'tick') {
     s = catchUp(s, now - GRACE_MS, bank, rng);

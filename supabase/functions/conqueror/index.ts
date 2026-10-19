@@ -4,7 +4,7 @@
 import { createClient } from 'npm:@supabase/supabase-js@2';
 
 import { makeBank, type Bank, type BankQ, type Mix } from '../../../src/games/conqueror/bank';
-import { standings } from '../../../src/games/conqueror/core';
+import { places } from '../../../src/games/conqueror/core';
 import { dueOf, startOnline, stepOnline, type OnlineConqueror, type PhoneAction } from '../../../src/games/conqueror/online';
 import { envelopeFor } from '../../../src/games/conqueror/view';
 
@@ -78,7 +78,7 @@ Deno.serve(async (req) => {
     const over = m.phase === 'over';
     const views: Record<string, unknown> = { [WATCHER]: envelopeFor(next, '') };
     for (const id of L.seats) views[id] = envelopeFor(next, id);
-    const order = standings(m).map((p) => p.id);
+    const place = places(m);
     const { data: ok, error: e2 } = await admin.rpc('cq_save', {
       m: body.m,
       ver: L.version,
@@ -86,7 +86,7 @@ Deno.serve(async (req) => {
       due: dueOf(next),
       views,
       scores: L.seats.map((id) => m.landOrder.filter((l) => m.lands[l].owner === id).length),
-      ranks: over ? L.seats.map((id) => order.indexOf(id) + 1) : null,
+      ranks: over ? L.seats.map((id) => place[id]) : null,
       gone: L.seats.filter((id) => m.players[id]?.outReason === 'away'),
       ph: over ? 'done' : 'case',
     });

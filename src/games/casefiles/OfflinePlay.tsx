@@ -13,7 +13,7 @@ import { CaseBoard } from './CaseBoard';
 import { CasePause } from './screens';
 import { scoreRun, type RunEvent } from './core';
 import { CASES, PLAYED_KEY, caseById, caseLabel, dossierOf, type Played } from './data';
-import { Btn, Card, CaseTitle, Kicker, NR, NoirScreen, Stamp, T, caseClock } from './noir';
+import { Btn, Card, CaseTitle, Kicker, NR, NoirScreen, PauseBtn, Stamp, T, caseClock } from './noir';
 import { currentSeat, finishedLines, rankOffline, ready, removeSeat, snapshotOffline, startOffline, stepOffline, type OfflineRun } from './offline';
 
 /** A case none of this phone's Solo plays has opened if there is one, else any (as coded, phone owner only). */
@@ -34,6 +34,8 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   });
   const ref = useRef(o);
   const [discharge, setDischarge] = useState(false);
+  /** GB9: the pause menu opened from the hand-off screen (no case clock runs there). */
+  const [handMenu, setHandMenu] = useState(false);
   const teams = useMemo(() => teamsOf(play), [play]);
   const seatOf = useMemo(() => new Map(play.seats.map((x) => [x.seat, x])), [play.seats]);
   const nameOf = useCallback((seat: number) => seatOf.get(seat)?.name ?? `Player ${seat + 1}`, [seatOf]);
@@ -95,14 +97,18 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   const def = caseById.get(o.caseId)!;
   const menu = (
     <CasePause
-      open={o.run?.phase === 'paused'}
+      open={o.run?.phase === 'paused' || (handMenu && (o.phase === 'handoff' || !o.run))}
       mode="offline"
       seats={play.seats.map((x) => ({ ...x, removed: x.removed || !o.order.includes(x.seat) }))}
       keep={[0]}
-      onResume={() => dispatch({ type: 'RESUME', now: Date.now() })}
+      onResume={() => {
+        setHandMenu(false);
+        dispatch({ type: 'RESUME', now: Date.now() });
+      }}
       onQuit={onQuit}
       onRemove={(x) => {
         engine.recorder.removeSeat(play.id, x);
+        setHandMenu(false);
         save(removeSeat(o, x));
       }}
     />
@@ -164,7 +170,10 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
       <NoirScreen>
         <View style={{ flex: 1, justifyContent: 'center', gap: u(16) }}>
           <View style={{ gap: u(4) }}>
-            <Kicker>{`Player ${o.turn + 1} of ${o.order.length}`}</Kicker>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Kicker>{`Player ${o.turn + 1} of ${o.order.length}`}</Kicker>
+              <PauseBtn onPress={() => setHandMenu(true)} />
+            </View>
             <T size={14} color={NR.soft}>Pass the phone to</T>
             <T size={34} color={colorOf(seat)}>{nameOf(seat)}</T>
           </View>

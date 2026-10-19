@@ -142,7 +142,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
       onSkip={() => dispatch({ type: 'SKIP', now: Date.now() })}
       onReveal={() => dispatch({ type: 'REVEAL' })}>
       {run.phase === 'handoff' ? (
-        <Curtain name={who?.name ?? `Player ${seat + 1}`} color={who?.color} sub={`${roundText} · 90 seconds`} board={board} recap={offlineRecap(run, seat, play)} onReady={() => dispatch({ type: 'READY', now: Date.now() })} />
+        <Curtain name={who?.name ?? `Player ${seat + 1}`} color={who?.color} sub={`${roundText} · 90 seconds`} board={board} recap={offlineRecap(run, seat, play)} onReady={() => dispatch({ type: 'READY', now: Date.now() })} onPause={() => dispatch({ type: 'PAUSE', now: Date.now() })} />
       ) : null}
       <PauseMenu
         open={paused}

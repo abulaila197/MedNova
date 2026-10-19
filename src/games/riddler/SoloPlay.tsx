@@ -24,7 +24,7 @@ import { second, useTicker } from '../engine/useTicker';
 /** One finished level attempt in this session. */
 type Done = { riddleId: string; solved: boolean; stars: number; exp: number };
 /** Solo bookmark (rules 7, 10): the open level at its exact clock, and the session so far. */
-type SoloSave = { level: Level | null; session: Done[]; index?: number };
+type SoloSave = { level: Level | null; session: Done[]; index?: number; seconds?: Record<string, number> };
 
 const BEST_KEY = 'riddler:best';
 const SECOND_PRICE = [5, 10, 20];
@@ -43,6 +43,10 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   const [notice, setNotice] = useState<string | null>(null);
   const [wrongSeq, setWrongSeq] = useState(0);
   const paying = useRef(false);
+  // Second chances bought per riddle this play: the server prices them per play and riddle (5, 10, 20, then no more),
+  // also across a Retry or a later visit, so the button follows this count, corrected by what was charged (GA2).
+  const [seconds, setSeconds] = useState<Record<string, number>>(saved?.seconds ?? {});
+  const secondsRef = useRef(seconds);
 
   useEffect(() => {
     engine.kv.get<Record<string, number>>(BEST_KEY).then((b) => setStored(b ?? {}));
@@ -57,7 +61,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   const save = useCallback(
     (l: Level | null, list: Done[]) => {
       const idx = l ? RIDDLES.findIndex((r) => r.id === l.riddleId) : undefined;
-      engine.recorder.bookmark(play.id, { level: l ? snapshotLevel(l, Date.now()) : null, session: list, index: idx } satisfies SoloSave, list.reduce((a, d) => a + d.stars, 0));
+      engine.recorder.bookmark(play.id, { level: l ? snapshotLevel(l, Date.now()) : null, session: list, index: idx, seconds: secondsRef.current } satisfies SoloSave, list.reduce((a, d) => a + d.stars, 0));
     },
     [play.id],
   );
@@ -147,10 +151,14 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   /** Second chance (Yazan 2026-10-13): 3 lives back for 5, then 10, then 20 tokens, up to 3 times a level. */
   const revive = useCallback(async () => {
     const l = ref.current;
-    if (!l || paying.current || l.phase !== 'failed' || (l.revived ?? 0) >= 3) return;
+    if (!l || paying.current || l.phase !== 'failed' || Math.max(secondsRef.current[l.riddleId] ?? 0, l.revived ?? 0) >= 3) return;
     paying.current = true;
     const res = await spendTokens('second', `${play.id}:${l.riddleId}`);
     paying.current = false;
+    const had = Math.max(secondsRef.current[l.riddleId] ?? 0, l.revived ?? 0);
+    const used = !res.ok ? (res.why === 'max' ? 3 : had) : res.cost != null && SECOND_PRICE.includes(res.cost) ? SECOND_PRICE.indexOf(res.cost) + 1 : had + 1;
+    secondsRef.current = { ...secondsRef.current, [l.riddleId]: used };
+    setSeconds(secondsRef.current);
     if (!res.ok) return setNotice(whySay(res));
     dispatch({ type: 'REVIVE', now: Date.now() });
   }, [dispatch, play.id]);
@@ -209,7 +217,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
             onNext={() => open(nextId)}
             onRetry={() => open(r.id)}
             onGrid={toGrid}
-            revive={signedIn && level.phase === 'failed' && (level.revived ?? 0) < 3 ? { price: SECOND_PRICE[level.revived ?? 0], onPress: () => void revive() } : null}
+            revive={signedIn && level.phase === 'failed' && Math.max(seconds[level.riddleId] ?? 0, level.revived ?? 0) < 3 ? { price: SECOND_PRICE[Math.max(seconds[level.riddleId] ?? 0, level.revived ?? 0)], onPress: () => void revive() } : null}
           />
         ) : undefined
       }>

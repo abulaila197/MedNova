@@ -73,3 +73,30 @@ test('envelopes: my jewels only, other jewels hidden; watchers see no jewels at 
   assert.equal(v.players.find((p) => p.id === 'b')!.jewels, undefined);
   assert.ok(!JSON.stringify(watcherEnvelope(o)).includes('jewels'));
 });
+
+test('half jewels are made whole, and only the round helpers can be used as items (DEF-037)', () => {
+  const o = stepOnline(startOnline(seats, 'mixed', bank, 5, T0), null, null, [], T0 + OPENING_MS + 1);
+  const at = T0 + OPENING_MS + 500;
+  const sold = stepOnline(o, { type: 'SELL', jewels: 1.5 }, 'a', [], at);
+  assert.equal(sold.g.players.find((p) => p.id === 'a')!.jewels, 5);
+  assert.ok(Number.isInteger(sold.g.wallet));
+});
+
+test('a Snare on a gift never leaves the giver below 0 jewels (DEF-038)', () => {
+  let o = stepOnline(startOnline(seats, 'mixed', bank, 5, T0), null, null, [], T0 + OPENING_MS + 1);
+  const g = structuredClone(o.g);
+  const a = g.players.find((p) => p.id === 'a')!;
+  a.jewels = 3;
+  g.snares.push({ id: 's-test', month: g.month, by: 'b', target: 'a', trigger: 'gift', status: 'set' });
+  o = { ...o, g };
+  o = stepOnline(o, { type: 'GIFT', to: 'c', jewels: 3 }, 'a', [], T0 + OPENING_MS + 600);
+  assert.equal(o.g.players.find((p) => p.id === 'a')!.jewels, 0);
+});
+
+test('dead players who fell in the same month share a place (DEF-088)', () => {
+  const o = startOnline(seats, 'mixed', bank, 5, T0);
+  const g = structuredClone(o.g);
+  for (const id of ['c', 'd']) Object.assign(g.players.find((p) => p.id === id)!, { alive: false, diedMonth: 4 });
+  const places = finalOrder(g).map((x) => x.place);
+  assert.deepEqual(places, [1, 2, 3, 3]);
+});

@@ -36,7 +36,9 @@ export type OfflineEvent =
   | { type: 'CLOSE' }
   | { type: 'REVIVE' }
   | { type: 'DECLINE' }
-  | { type: 'REMOVE'; seat: number };
+  | { type: 'REMOVE'; seat: number }
+  /** GA10: the group ends the game now with what is claimed; words nobody got go to the phone owner as usual. */
+  | { type: 'FINISH' };
 
 const live = (r: Pick<OfflineRun, 'seats' | 'removed' | 'players'>) => r.seats.filter((s) => !r.removed.includes(s) && !r.players[s].out);
 
@@ -100,6 +102,8 @@ export function stepOffline(p: PuzzleDef, r: OfflineRun, e: OfflineEvent, rng: (
       if (seat !== e.seat) return { ...next, lap: next.lap.filter((s) => s !== e.seat) };
       return nextTurn(p, next, rng);
     }
+    case 'FINISH':
+      return r.phase === 'done' ? r : { ...r, phase: 'done' };
   }
 }
 

@@ -22,7 +22,8 @@ const closeAt = (len: number) => Math.ceil((2 * len) / 3);
 
 function itemsOf(st: RaceState) {
   const style = (st.settings.style as Style) ?? 'classic';
-  return (st.my_items ?? []).map((m) => {
+  // An item this app build doesn't have (the server's list is newer) is left out instead of failing the finish (X2).
+  return (st.my_items ?? []).filter((m) => !!wordOf(m.item)).map((m) => {
     const w = wordOf(m.item);
     const right = m.solved_ms != null;
     const used = (m.guesses ?? []).length;
@@ -48,7 +49,7 @@ function itemsOf(st: RaceState) {
  * six guesses, no letter hints. 100, 80, 65... by solve order plus 10 for each guess left. The server checks every guess.
  */
 export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
-  const { st, load, server, playing, notice, setNotice, leave } = useRace(def, roomId, matchId, me, itemsOf);
+  const { st, load, server, playing, watchSub, doneLine, notice, setNotice, leave } = useRace(def, roomId, matchId, me, itemsOf);
   const [menu, setMenu] = useState(false);
   const [pending, setPending] = useState<string | null>(null);
   const { alert, push } = useAlerts();
@@ -116,7 +117,14 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
     if (!isWord(g)) return 'Not in word list';
     setPending(g);
     call<{ outcome: string }>('nm_guess', { m: matchId, word: g })
-      .then(() => load())
+      .then((r) => {
+        // The server ignored it (the word ended, or I was dropped for being away): nothing will land, so free the slot.
+        if (r?.outcome === 'ignored_finished' || r?.outcome === 'rejected') {
+          setPending(null);
+          setNotice('That guess came too late.');
+        }
+        load();
+      })
       .catch(() => {
         setPending(null);
         setNotice('Couldn’t send that. Try again.');
@@ -131,10 +139,10 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
       players={st.players}
       me={me}
       how={(p) => (p.solved ? `${nth(p.item_rank ?? 1)} · ${p.tries} ${p.tries === 1 ? 'try' : 'tries'}` : 'missed')}
-      next={st.phase === 'done' ? 'Adding up the scores…' : `${last ? 'Results' : 'Next word'} in ${nextIn} s`}
+      next={st.phase === 'done' ? doneLine : `${last ? 'Results' : 'Next word'} in ${nextIn} s`}
     />
   ) : !playing ? (
-    <RaceReveal label="You’re watching" answer="You get a seat at the rematch." players={st.players.filter((p) => p.solved)} me={me} how={(p) => `${p.tries} tries`} next="" />
+    <RaceReveal label="You’re watching" answer={watchSub} players={st.players.filter((p) => p.solved)} me={me} how={(p) => `${p.tries} tries`} next="" />
   ) : solved || out ? (
     <RaceReveal
       label={solved ? `Solved, ${nth(st.me!.rank ?? 1)} · +${st.me!.points}` : 'Out of guesses'}

@@ -75,19 +75,25 @@ export function useSoloRun({ play, onFinish }: Pick<PlayProps, 'play' | 'onFinis
   // Rule 4: leaving the app pauses and hides the case.
   usePauseHide(() => dispatch({ type: 'PAUSE', now: Date.now() }));
 
-  /** Hint costs 1 token; refunded if the case closed before it could show (rule 18). */
+  /** Hint costs 1 token; refunded if the case closed before it could show (rule 18). One payment at a time (A2). */
+  const paying = useRef(false);
   const hint = useCallback(async () => {
     const r = runRef.current;
-    if (!r || r.hint || r.phase !== 'playing') return;
-    const index = r.index;
-    const receipt = await engine.wallet.spend(DP.hintTokenCost, 'diagnostic_hint', play.id);
-    if (!receipt) return setNotice('You need 1 token for a hint. Each level up gives 1 token.');
-    const cur = runRef.current;
-    if (!cur || cur.index !== index || (cur.phase !== 'playing' && cur.phase !== 'paused')) {
-      await engine.wallet.refund(receipt);
-      return setNotice('Hint refunded.');
+    if (!r || r.hint || r.phase !== 'playing' || paying.current) return;
+    paying.current = true;
+    try {
+      const index = r.index;
+      const receipt = await engine.wallet.spend(DP.hintTokenCost, 'diagnostic_hint', play.id);
+      if (!receipt) return setNotice('You need 1 token for a hint. Each level up gives 1 token.');
+      const cur = runRef.current;
+      if (!cur || cur.index !== index || cur.hint || (cur.phase !== 'playing' && cur.phase !== 'paused')) {
+        await engine.wallet.refund(receipt);
+        return setNotice('Hint refunded.');
+      }
+      dispatch({ type: 'HINT_GRANTED' });
+    } finally {
+      paying.current = false;
     }
-    dispatch({ type: 'HINT_GRANTED' });
   }, [dispatch, play.id]);
 
   const current = run ? caseById.get(run.caseIds[run.index]) ?? null : null;

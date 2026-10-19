@@ -58,10 +58,11 @@ export function toneOf(play: Play, items: PlayItem[], uid: string | null): Tone 
   return rank === 1 ? 'win' : rank === worst ? 'last' : 'mid';
 }
 
-export function ResultTone({ play, items, uid }: { play: Play; items: PlayItem[]; uid: string | null }) {
+export function ResultTone({ play, items, uid, plain }: { play: Play; items: PlayItem[]; uid: string | null; plain?: boolean }) {
   const t = useTheme();
   const pass = play.mode === 'offline';
-  const tone = pass ? 'mid' : toneOf(play, items, uid);
+  // A practice mode with no right or wrong (Silent Artist Solo) gets the calm line, never last-place teasing (GA13).
+  const tone = pass || (plain && play.mode === 'solo') ? 'mid' : toneOf(play, items, uid);
   // The same play always shows the same line.
   const n = [...play.id].reduce((a, c) => a + c.charCodeAt(0), 0);
   const [head, sub] = pass ? PASS : LINES[tone][n % LINES[tone].length];
@@ -87,7 +88,14 @@ export function ResultTone({ play, items, uid }: { play: Play; items: PlayItem[]
  * first card the same way (Yazan 2026-10-18).
  */
 export function ToneSticker({ play, items, uid, children }: { play: Play; items: PlayItem[]; uid: string | null; children: ReactNode }) {
-  const tone = play.mode === 'offline' ? 'mid' : toneOf(play, items, uid);
+  return <StickerRow tone={play.mode === 'offline' ? 'mid' : toneOf(play, items, uid)}>{children}</StickerRow>;
+}
+
+/** Tone from a place among rivals, for results pages that have no saved play yet (Trust Me Not). */
+export const toneOfPlace = (place: number, worst: number): Tone => (place === 1 ? 'win' : place === worst ? 'last' : 'mid');
+
+/** Omar's sticker for a tone, beside `children` and tucked behind the card that follows 12 units below. */
+export function StickerRow({ tone, children }: { tone: Tone; children: ReactNode }) {
   const st = STICKER[tone];
   return (
     <View style={s.row}>

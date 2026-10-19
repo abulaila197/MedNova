@@ -9,18 +9,24 @@ import { F } from '@/theme/tokens';
 
 import type { Standing } from '../engine/types';
 import type { RecapLine } from './recap';
-import { Btn, Kick } from './ui';
+import { Btn, Kick, RoundBtn } from './ui';
 
 /**
  * Rule 16: pass-the-phone curtain. Full cover, next player's name, scoreboard only (no answers), then "I'm ready".
  * OF1: offline modes have no live alerts, so `recap` lists what happened since this player's last turn.
  */
-export function Curtain({ name, color, sub, board, recap, onReady }: { name: string; color?: string; sub?: string; board: (Pick<Standing, 'seat' | 'name' | 'score'> & { color?: string })[]; recap?: RecapLine[]; onReady: () => void }) {
+export function Curtain({ name, color, sub, board, recap, onReady, onPause }: { name: string; color?: string; sub?: string; board: (Pick<Standing, 'seat' | 'name' | 'score'> & { color?: string })[]; recap?: RecapLine[]; onReady: () => void; onPause?: () => void }) {
   const t = useTheme();
   return (
     <Animated.View entering={FadeIn.duration(220)} exiting={FadeOut.duration(180)} style={[StyleSheet.absoluteFill, s.root, { backgroundColor: t.sky, overflow: 'hidden' }]}>
       {/* the page's still backdrop, lined up with the screen bottom so it runs on from the header above */}
       <Backdrop anchor="bottom" />
+      {/* The same pause as the board's, so an absent player can be removed or the game ended before their clock starts. */}
+      {onPause ? (
+        <View style={s.pause}>
+          <RoundBtn label="Pause" glyph="❚❚" onPress={onPause} />
+        </View>
+      ) : null}
       <Kick>Pass the phone to</Kick>
       <Text style={[s.name, { color: color ?? t.accent }]}>{name}</Text>
       {sub ? <Kick>{sub}</Kick> : null}
@@ -60,6 +66,7 @@ export function Recap({ lines }: { lines: RecapLine[] }) {
 const s = StyleSheet.create({
   root: { zIndex: 30, alignItems: 'center', justifyContent: 'center', padding: u(24), gap: u(14) },
   name: { fontFamily: F.display, fontSize: u(34), lineHeight: u(36) },
+  pause: { position: 'absolute', top: u(16), right: u(16) },
   board: { alignSelf: 'stretch', borderRadius: u(16), borderWidth: 1, padding: u(12), gap: u(6) },
   row: { flexDirection: 'row', justifyContent: 'space-between' },
   who2: { flexDirection: 'row', alignItems: 'center', gap: u(6) },

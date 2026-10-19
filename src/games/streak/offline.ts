@@ -97,11 +97,12 @@ export function stepOffline(r: OfflineRun, e: OfflineEvent, answerOf: (id: strin
     case 'NEXT':
       return r.phase === 'turnOver' ? advance(r, r.turn + 1) : r;
     case 'REMOVE': {
-      // Rule 17: a removed player's turn is skipped; at least 2 players stay. A round they were playing is dropped.
+      // Rule 17: a removed player's turn is skipped; at least 2 players stay. A round they were playing is dropped, but
+      // a round they finished keeps its score in the standings (GA9, as DP keeps finished turns).
       const left = r.order.filter((s) => !r.removed.includes(s));
       if (r.removed.includes(e.seat) || left.length <= 2 || r.phase === 'done') return r;
       const removed = [...r.removed, e.seat];
-      const results = r.results.filter((x) => x.seat !== e.seat);
+      const results = r.results;
       const theirs = currentSeat(r) === e.seat && r.phase !== 'turnOver' && !(r.phase === 'paused' && r.before === 'turnOver');
       const next = { ...r, removed, results };
       if (!theirs) return next;
@@ -119,7 +120,7 @@ export function snapshotOffline(r: OfflineRun, now: number): OfflineRun {
 /** Standings: score; every round is the same length, so ties go to longest streak, then most right (as coded). */
 export function offlineRows(r: OfflineRun, names: Record<number, string>): (Row & PlayerRound)[] {
   return r.order
-    .filter((seat) => !r.removed.includes(seat))
+    .filter((seat) => !r.removed.includes(seat) || r.results.some((y) => y.seat === seat))
     .map((seat) => {
       const x = r.results.find((y) => y.seat === seat);
       return { seat, name: names[seat] ?? `Player ${seat + 1}`, score: x?.score ?? 0, timeMs: 0, maxStreak: x?.maxStreak ?? 0, correct: x?.correct ?? 0 };

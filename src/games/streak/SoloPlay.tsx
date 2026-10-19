@@ -23,7 +23,7 @@ import { HeatBoard } from './HeatBoard';
 import { useTickerClock } from '../engine/useTicker';
 
 /** Solo bookmark: the round plus what the screen needs to resume (rules 7, 10). */
-type SoloSave = { round: Round; style: Style; lengthSec: number };
+type SoloSave = { round: Round; style: Style; lengthSec: number; kept?: number };
 /** Best scores per style and length, in one map so they can sync to the account ('streak:best'). */
 const BEST_KEY = 'streak:best';
 const oldBestKey = (style: Style, len: number) => `streak:best:${style}:${len}`;
@@ -51,7 +51,10 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   const paying = useRef(false);
   const [notice, setNotice] = useState<string | null>(null);
   const [best, setBest] = useState<{ old: number; isNew: boolean } | null>(null);
-  const [kept, setKept] = useState(0);
+  // Second chances bought this run: the server prices each one by how many came before (5, 10, 20), so the count is
+  // bookmarked with the run and corrected from what the server charged (GA2).
+  const [kept, setKept] = useState(() => (play.resume as SoloSave | null)?.kept ?? 0);
+  const keptRef = useRef(kept);
   const signedIn = useSession((x) => !!x.userId);
 
   // Start: resume the bookmark, or a fresh queue, unseen first (rule 15). Mixed is about half and half.
@@ -84,7 +87,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
       if (next === prev) return;
       ref.current = next;
       setRound(next);
-      engine.recorder.bookmark(play.id, { round: snapshotRound(next, Date.now()), style, lengthSec } satisfies SoloSave, next.score);
+      engine.recorder.bookmark(play.id, { round: snapshotRound(next, Date.now()), style, lengthSec, kept: keptRef.current } satisfies SoloSave, next.score);
       // Each answered or skipped question is one item. Wrong answers go to Learn (SM1); skips are not misses.
       for (const a of next.answers.slice(prev.answers.length)) {
         const q = questionById.get(a.qId)!;
@@ -149,9 +152,17 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
     paying.current = true;
     const res = await spendTokens('second', play.id);
     paying.current = false;
-    if (!res.ok) return setNotice(whySay(res));
+    if (!res.ok) {
+      if (res.why === 'max') {
+        keptRef.current = 3;
+        setKept(3);
+      }
+      return setNotice(whySay(res));
+    }
+    const used = res.cost != null && SECOND_PRICE.includes(res.cost) ? SECOND_PRICE.indexOf(res.cost) + 1 : kept + 1;
+    keptRef.current = used;
+    setKept(used);
     dispatch({ type: 'KEEP' });
-    setKept((k) => k + 1);
   }, [dispatch, kept, play.id]);
 
   if (!round) return <GameScreen scroll={false}>{null}</GameScreen>;

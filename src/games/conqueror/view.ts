@@ -76,13 +76,13 @@ function soloQuestion(q: SoloQ, judged: boolean, salt: string): SoloView {
   }
   switch (q.style) {
     case 'mcq':
-      return { ...q, answer: SECRET };
+      return { ...q, answer: SECRET, explanation: undefined };
     case 'tf':
       return { ...q, answer: false, explanation: undefined };
     case 'order':
-      return { ...q, items: [], shown: shuffle(q.items, seeded(salt)) };
+      return { ...q, items: [], shown: shuffle(q.items, seeded(salt)), explanation: undefined };
     case 'match':
-      return { ...q, pairs: q.pairs.map(([l]) => [l, ''] as [string, string]), shown: shuffle(q.pairs.map((p) => p[1]), seeded(salt)) };
+      return { ...q, pairs: q.pairs.map(([l]) => [l, ''] as [string, string]), shown: shuffle(q.pairs.map((p) => p[1]), seeded(salt)), explanation: undefined };
   }
 }
 
@@ -105,18 +105,21 @@ export function viewFor(m: Match, me: string): MatchView {
   );
   const v = m.versus;
   let versus = v;
+  // GB7: an explanation states the answer, so it leaves the server only once its question is judged.
+  const open = m.phase === 'versus';
+  const hide = <Q extends { explanation?: string }>(q: Q, judged = !open): Q => (judged ? q : { ...q, explanation: undefined });
   let rushTotal: number | undefined;
-  if (v?.style === 'closest') versus = { ...v, items: v.items.map((q) => ({ ...q, answer: SECRET })), guesses: { [me]: v.guesses[me] ?? [] } };
+  if (v?.style === 'closest') versus = { ...v, items: v.items.map((q) => hide({ ...q, answer: SECRET })), guesses: { [me]: v.guesses[me] ?? [] } };
   else if (v?.style === 'rush') {
     rushTotal = v.q.answers.length;
-    versus = { ...v, q: { ...v.q, answers: [] }, found: Object.fromEntries(Object.entries(v.found).map(([id, f]) => [id, id === me ? f : f.map((x) => ({ label: '', ms: x.ms }))])) };
+    versus = { ...v, q: hide({ ...v.q, answers: [] }), found: Object.fromEntries(Object.entries(v.found).map(([id, f]) => [id, id === me ? f : f.map((x) => ({ label: '', ms: x.ms }))])) };
   } else if (v?.style === 'standing')
     versus = {
       ...v,
-      qs: v.qs.map((q, i) => (i < v.index ? q : i === v.index ? { ...q, answers: [] } : { ...q, prompt: '', options: [], answers: [] })),
+      qs: v.qs.map((q, i) => (i < v.index ? q : i === v.index ? hide({ ...q, answers: [] }) : { ...q, prompt: '', options: [], answers: [], explanation: undefined })),
       answers: Object.fromEntries(Object.entries(v.answers).map(([id, a]) => [id, id === me ? a : { picks: [], ms: 0 }])),
     };
-  else if (v?.style === 'clue') versus = { ...v, qs: v.qs.map((q) => ({ ...q, answer: { label: '' } })) };
+  else if (v?.style === 'clue') versus = { ...v, qs: v.qs.map((q) => hide({ ...q, answer: { label: '' } })) };
   return {
     ...m,
     me,
@@ -134,7 +137,7 @@ export function viewFor(m: Match, me: string): MatchView {
       moves: Object.fromEntries(Object.entries(m.gap.moves).filter(([id]) => id === me)),
       ready: m.gap.ready,
     },
-    duels: m.duels.map((d, i) => (i < m.duelIndex ? d : { ...d, questions: d.questions.map((q) => ({ ...q, answer: false })) })),
+    duels: m.duels.map((d, i) => (i < m.duelIndex ? d : { ...d, questions: d.questions.map((q) => ({ ...q, answer: false, explanation: undefined })) })),
     lastSolo: m.lastSolo?.[me] ? { [me]: soloTurn(m.lastSolo[me], true, 'last') } : {},
     used: [],
   };

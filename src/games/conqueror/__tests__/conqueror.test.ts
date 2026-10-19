@@ -7,7 +7,7 @@ import { marchesFor, viewFor } from '../view';
 import { draw, makeBank, SOLO_STYLES, type BankQ, type McqQ, type Rng, type StandingQ } from '../bank';
 import {
   active, BALANCE, botMoves, CARD_TYPES, clueIndex, landsOf, makeBoard, maxMoves, pickVersusStyle, soloPoints, spyView, standings,
-  startMatch, step, suggest, typedMatches, type Action, type Match, type SoloAnswers,
+  namesOf, startMatch, step, suggest, typedMatches, typedPick, type Action, type Match, type SoloAnswers,
 } from '../core';
 
 const list = JSON.parse(readFileSync('src/games/conqueror/data/bank.json', 'utf8')) as BankQ[];
@@ -406,4 +406,113 @@ test('battle motion (Keep secret): marches are recorded, and each phone sees onl
   assert.deepEqual(p2.map((x) => [x.by, x.to, x.kind]), [['p1', o3, 'won'], ['p2', o2, 'add'], [null, o2, 'held'], [null, o1, 'held']]);
   assert.equal(p2.find((x) => x.to === o3)!.troops, undefined);
   assert.equal(viewFor(g.m, 'p2').marches, undefined);
+});
+
+test('typed answers (GB1): an exact name always wins; typos never change a letter, number or numeral, nor land closer to another name', () => {
+  const pool = namesOf(bank);
+  const vit = [{ label: 'Vitamin A' }, { label: 'Vitamin D' }, { label: 'Vitamin E' }, { label: 'Vitamin K' }];
+  assert.equal(typedPick('Vitamin D', vit, pool)?.label, 'Vitamin D');
+  assert.equal(typedPick('vitamn k', vit, pool)?.label, 'Vitamin K');
+  const hpv = [{ label: 'HPV 16' }, { label: 'HPV 18' }];
+  assert.equal(typedPick('HPV 18', hpv, pool)?.label, 'HPV 18');
+  assert.equal(typedPick('HPV 31', hpv, pool), null);
+  assert.equal(typedPick('Facial Nerve', [{ label: 'Radial Nerve' }], [{ label: 'Facial Nerve' }]), null);
+  assert.equal(typedPick('Radal nerve', [{ label: 'Radial Nerve' }], pool)?.label, 'Radial Nerve');
+  assert.equal(typedPick('Complex II', [{ label: 'Complex III' }], pool), null);
+  // A perfect player gets every answer of every rush list (apart from lists naming the same thing twice).
+  for (const q of bank.byStyle.rush) {
+    const found = new Set(q.answers.map((a) => typedPick(a.label, q.answers, pool)?.label));
+    const distinct = new Set(q.answers.map((a) => a.label)).size;
+    assert.ok(found.size >= distinct - 2, q.id);
+  }
+});
+
+test('Breaking Duel loser never gets back Reinforcements troops; a shield bounce refunds only what was sent (DEF-023, X11)', () => {
+  const g = inMoves(3, 10000);
+  const o2 = outpostOf(g.m, 'p2');
+  g.m.players.p1.cards = ['reinforcements'];
+  g.m.lands[o2].shielded = true;
+  g.go({ type: 'moves', player: 'p1', moves: [{ from: null, to: o2, troops: 10000, reinforce: true }] });
+  g.go({ type: 'moves', player: 'p2', moves: [] });
+  g.go({ type: 'moves', player: 'p3', moves: [] });
+  assert.equal(g.m.players.p1.reserve, 10000);
+
+  const h = inMoves(3, 10000);
+  const o3 = outpostOf(h.m, 'p3');
+  h.m.lands[o3].troops = 0;
+  h.m.players.p1.cards = ['reinforcements'];
+  h.go({ type: 'moves', player: 'p1', moves: [{ from: null, to: o3, troops: 10000, reinforce: true }] });
+  h.go({ type: 'moves', player: 'p2', moves: [{ from: null, to: o3, troops: 4000 }] });
+  h.go({ type: 'moves', player: 'p3', moves: [] });
+  assert.equal(h.m.phase, 'duel');
+  const d = h.m.duels[0];
+  for (const q of d.questions) {
+    h.go({ type: 'duel', player: 'p1', answer: !q.answer, ms: 1000 });
+    h.go({ type: 'duel', player: 'p2', answer: q.answer, ms: 1000 });
+  }
+  assert.equal(h.m.lands[o3].owner, 'p2');
+  assert.equal(h.m.players.p1.reserve, 10000, 'at most the 10,000 sent comes back');
+});
+
+test('Breaking Duel whose winner already fell: the loser takes the land with their own troops (DEF-024)', () => {
+  const g = inMoves(3, 10000);
+  const o3 = outpostOf(g.m, 'p3');
+  g.m.lands[o3].troops = 0;
+  g.go({ type: 'moves', player: 'p1', moves: [{ from: null, to: o3, troops: 8000 }] });
+  g.go({ type: 'moves', player: 'p2', moves: [{ from: null, to: o3, troops: 5000 }] });
+  g.go({ type: 'moves', player: 'p3', moves: [] });
+  assert.equal(g.m.phase, 'duel');
+  // p1 falls in this Gap (its capital is taken elsewhere), then "wins" the duel on time.
+  g.m.players.p1.out = true;
+  const d = g.m.duels[0];
+  for (const q of d.questions) g.go({ type: 'duel', player: 'p2', answer: !q.answer, ms: 6000 });
+  g.go({ type: 'timeout' });
+  assert.equal(g.m.lands[o3].owner, 'p2');
+  assert.equal(g.m.lands[o3].troops, 5000);
+  assert.equal(g.m.players.p2.reserve, 5000, 'nothing of the fallen army is added');
+});
+
+test('a solo pick where every tile is a card ends the round at once (DEF-021)', () => {
+  const g = game(2);
+  for (const p of active(g.m)) {
+    const tile = g.m.board.find((t) => !t.by && t.kind === 'card')!;
+    g.go({ type: 'pick', player: p.id, tile: tile.n });
+  }
+  assert.equal(g.m.phase, 'solo_pick');
+  assert.equal(g.m.round, 2);
+});
+
+test('the last player still to act leaving ends the wait (E2); away from the very start counts stage 1 (DEF-026)', () => {
+  const g = game(3);
+  g.go({ type: 'connection', player: 'p3', connected: false });
+  assert.ok(g.m.players.p3.awayThisStage);
+  const h = game(3);
+  for (const id of ['p1', 'p2']) h.go({ type: 'pick', player: id, tile: h.m.board.find((t) => !t.by && t.kind === 'question')!.n });
+  assert.equal(h.m.phase, 'solo_pick');
+  h.go({ type: 'connection', player: 'p3', connected: false });
+  assert.equal(h.m.phase, 'solo_play');
+});
+
+test('a player removed for being away is placed below those whose capitals fell in the same stage (DEF-025)', () => {
+  const g = inMoves(3, 40000);
+  g.m.players.p3.awayStages = 1;
+  g.m.players.p3.awayThisStage = true;
+  g.go({ type: 'connection', player: 'p3', connected: false });
+  g.go({ type: 'moves', player: 'p1', moves: [{ from: null, to: capitalOf(g.m, 'p2'), troops: 40000 }] });
+  g.go({ type: 'moves', player: 'p2', moves: [{ from: null, to: capitalOf(g.m, 'p1'), troops: 40000 }] });
+  assert.equal(g.m.phase, 'over');
+  assert.notEqual(g.m.winner, 'p3');
+  assert.equal(standings(g.m)[2].id, 'p3');
+});
+
+test('views carry no explanation for a question not yet judged (GB7)', () => {
+  const g = game(2);
+  for (const p of active(g.m)) g.go({ type: 'pick', player: p.id, tile: g.m.board.find((t) => !t.by && t.kind === 'question')!.n });
+  const mine = viewFor(g.m, 'p1').solo.p1;
+  assert.ok(mine.questions.length > 0);
+  assert.ok(mine.questions.every((q) => q.explanation === undefined));
+  const v = toVersus(2, 'clue');
+  assert.ok(viewFor(v.m, 'p1').versus!.style === 'clue');
+  const qs = (viewFor(v.m, 'p1').versus as { qs: { explanation?: string }[] }).qs;
+  assert.ok(qs.every((q) => q.explanation === undefined));
 });

@@ -148,24 +148,34 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
 
   usePauseHide(() => dispatch({ type: 'PAUSE', now: Date.now() }));
 
-  /** NM23: up to two hints per Custom word, 1 then 2 tokens; refunded if the word ended first (rule 18). */
+  /**
+   * NM23: up to two hints per Custom word, 1 then 2 tokens; refunded if the word ended first (rule 18). One payment at
+   * a time, so a double tap can't pay twice or buy the second hint by accident (A2).
+   */
+  const paying = useRef(false);
   const hint = useCallback(async () => {
     const r = runRef.current;
-    if (!r || r.style !== 'custom' || r.phase !== 'playing' || r.hints >= HINT_COSTS.length) return;
+    if (!r || r.style !== 'custom' || r.phase !== 'playing' || r.hints >= HINT_COSTS.length || paying.current) return;
     const answer = wordById.get(r.wordIds[r.index])!.word;
     const pick = pickHint(answer, r.guesses, r.revealed);
     if (!pick) return setNotice('Every letter is already showing.');
-    const cost = HINT_COSTS[r.hints];
-    const index = r.index;
-    const receipt = await engine.wallet.spend(cost, 'medicordle_hint', play.id);
-    if (!receipt) return setNotice(`You need ${cost} token${cost > 1 ? 's' : ''}. Each level up gives 1 token.`);
-    const cur = runRef.current;
-    if (!cur || cur.index !== index || cur.phase !== 'playing') {
-      await engine.wallet.refund(receipt);
-      return setNotice('Hint refunded.');
+    paying.current = true;
+    try {
+      const cost = HINT_COSTS[r.hints];
+      const index = r.index;
+      const hints = r.hints;
+      const receipt = await engine.wallet.spend(cost, 'medicordle_hint', play.id);
+      if (!receipt) return setNotice(`You need ${cost} token${cost > 1 ? 's' : ''}. Each level up gives 1 token.`);
+      const cur = runRef.current;
+      if (!cur || cur.index !== index || cur.hints !== hints || cur.phase !== 'playing') {
+        await engine.wallet.refund(receipt);
+        return setNotice('Hint refunded.');
+      }
+      dispatch({ type: 'HINT_GRANTED', columns: pick.columns });
+      setNotice(`Letter ${pick.letter} revealed.`);
+    } finally {
+      paying.current = false;
     }
-    dispatch({ type: 'HINT_GRANTED', columns: pick.columns });
-    setNotice(`Letter ${pick.letter} revealed.`);
   }, [dispatch, play.id]);
 
   useEffect(() => {

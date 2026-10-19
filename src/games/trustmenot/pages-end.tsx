@@ -11,6 +11,8 @@ import { leaveRoom, rematchRoom } from '@/online/api';
 import { finishOnline } from '@/online/finish';
 
 import { KeyboardLift } from '../shell/KeyboardLift';
+import { StickerRow, toneOfPlace } from '../shell/ResultTone';
+import { u } from '@/theme/scale';
 import { gameDef } from '../shell/registry';
 import type { Mission, MissionId, PlayerId } from './engine';
 import { rules } from './engine';
@@ -518,6 +520,18 @@ function placesOf(v: View_, rv: Reveal) {
   return [...rv.ranking.map((r) => r.id), ...dead.map((q) => q.id)];
 }
 
+/** Each player's place in that order (1 = first); the dead who fell in the same month share a place, never by seat (DEF-088). */
+function placeMap(v: View_, order: PlayerId[]): Record<PlayerId, number> {
+  const out: Record<PlayerId, number> = {};
+  const died = (id: PlayerId) => v.players.find((q) => q.id === id)?.diedMonth;
+  const dead = (id: PlayerId) => v.players.find((q) => q.id === id)?.alive === false;
+  order.forEach((id, i) => {
+    const prev = order[i - 1];
+    out[id] = prev && dead(id) && dead(prev) && died(id) === died(prev) ? out[prev] : i + 1;
+  });
+  return out;
+}
+
 /**
  * The year becomes an ordinary play on this phone (as every online game does) as soon as the reveal opens, so
  * leaving early still pays: EXP from the reveal, and the misses in solo rounds feed Today's review.
@@ -535,7 +549,8 @@ function useFinish(env: PageProps['env'], roomId: string) {
     const local = [v.me, ...v.players.map((q) => q.id).filter((id) => id !== v.me)];
     const seats = local.map((id, i) => ({ seat: i, userId: id, name: id === v.me ? 'You' : (v.players.find((q) => q.id === id)?.name ?? ''), color: v.players.find((q) => q.id === id)?.color }));
     const score = (id: PlayerId) => Math.round(rv.ranking.find((r) => r.id === id)?.score ?? 0);
-    const standings = local.map((id, i) => ({ seat: i, name: seats[i].name, score: score(id), timeMs: 0, rank: order.indexOf(id) + 1 })).sort((a, b) => a.rank - b.rank);
+    const place = placeMap(v, order);
+    const standings = local.map((id, i) => ({ seat: i, name: seats[i].name, score: score(id), timeMs: 0, rank: place[id] ?? order.length })).sort((a, b) => a.rank - b.rank);
     const items = rv.missed.map((id) => {
       const q = question(id);
       return {
@@ -873,7 +888,8 @@ function ResultsPage({ env, rv, order, roomId }: { env: PageProps['env']; rv: Re
   const self = v.players.find((q) => q.id === v.me)!;
   const solo = env.extras.end.soloRight;
   const won = AWARDS.filter((a) => (rv.awards as Record<string, string | undefined>)[a.id] === v.me);
-  const place = order.indexOf(v.me) + 1;
+  const places = placeMap(v, order);
+  const place = places[v.me] ?? order.length;
   const misses = rv.missed.map((id) => ({ id, ...question(id) }));
 
 
@@ -882,54 +898,66 @@ function ResultsPage({ env, rv, order, roomId }: { env: PageProps['env']; rv: Re
     ...(self.alive ? [['Survived the year', `+${rules.EXP.survival}`] as [string, string]] : []),
     ...won.map((a) => [`Award: ${a.label}`, `+${rules.EXP.perAward}`] as [string, string]),
   ];
+  const worst = Math.max(...Object.values(places));
   return (
-    <MidSheet seed="results" gap={8}>
-      <K>Trust Me Not · your year</K>
-      <Title>{self.alive ? 'You survived' : `You died in month ${self.diedMonth ?? 12}`}</Title>
-      <View style={s.xp}>
-        <T size={12.5}>Your place</T>
-        <T f={FELL} size={15}>{`${ORD(place)} of ${v.players.length}`}</T>
-      </View>
-      {lines.map(([a, b]) => (
-        <View key={a} style={s.xp}>
-          <T size={12.5}>{a}</T>
-          <T f={FELL} size={15}>{b}</T>
-        </View>
-      ))}
-      <View style={[s.xp, { alignItems: 'center' }]}>
-        <T size={12.5}>EXP earned</T>
-        <T f={FELL} size={20} color={TM.red}>{`+${rv.exp}`}</T>
-      </View>
-      <Sec>Missed in solo rounds</Sec>
-      {misses.length ? (
-        misses.slice(0, 4).map((m, i) => (
-          <View key={`${m.id}${i}`} style={{ flexDirection: 'row', alignItems: 'baseline', gap: p(8) }}>
-            <T size={12} color={TM.red}>✕</T>
-            <T size={12} style={{ flex: 1 }} lines={1}>{m.topic || m.q}</T>
-            {m.dossier ? (
-              <Pressable onPress={() => router.push(`/learn/dossier?id=${m.dossier}`)} accessibilityRole="link" accessibilityLabel={`Open the dossier for ${m.topic}`} hitSlop={6}>
-                <T f={FELL} size={12.5} color={TM.red} style={{ textDecorationLine: 'underline' }}>Dossier ›</T>
-              </Pressable>
-            ) : null}
+    <ScrollView style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', paddingHorizontal: p(12), paddingVertical: p(14) }} showsVerticalScrollIndicator={false}>
+      <View style={{ gap: u(12) }}>
+        {/* Omar reacts to the place, beside the title and tucked behind the sheet, as on every other results page. */}
+        <StickerRow tone={toneOfPlace(place, worst)}>
+          <View style={{ gap: p(2) }}>
+            <T f={CRIMI} size={12} color={TM.cream} style={shade}>Trust Me Not · your year</T>
+            <T f={FELL} size={22} color={TM.cream} style={[shade, { lineHeight: p(26) }]}>{self.alive ? 'You survived' : `You died in month ${self.diedMonth ?? 12}`}</T>
           </View>
-        ))
-      ) : (
-        <T size={12} style={{ opacity: 0.8 }}>Nothing missed. Every solo answer was right.</T>
-      )}
-      <T size={11} style={{ opacity: 0.75 }}>
-        {misses.length > 4 ? `${misses.length - 4} more misses are waiting in Today’s review.` : misses.length ? 'Your misses are waiting in Today’s review.' : 'Today’s review has nothing new from this year.'}
-      </T>
-      <View style={{ flexDirection: 'row', gap: p(8) }}>
-        <Btn label="New camp, same people" style={{ flex: 1 }} onPress={async () => {
-          await rematchRoom(roomId).catch(() => {});
-          router.replace(`/play/trust-me-not/lobby?room=${roomId}`);
-        }} />
-        <Btn label="Back to games" kind="line" style={{ flex: 1 }} onPress={() => {
-          leaveRoom(roomId).catch(() => {});
-          router.replace('/games');
-        }} />
+        </StickerRow>
+        <Paper seed="results">
+          <View style={{ gap: p(8) }}>
+            <View style={s.xp}>
+              <T size={12.5}>Your place</T>
+              <T f={FELL} size={15}>{`${ORD(place)} of ${v.players.length}`}</T>
+            </View>
+            {lines.map(([a, b]) => (
+              <View key={a} style={s.xp}>
+                <T size={12.5}>{a}</T>
+                <T f={FELL} size={15}>{b}</T>
+              </View>
+            ))}
+            <View style={[s.xp, { alignItems: 'center' }]}>
+              <T size={12.5}>EXP earned</T>
+              <T f={FELL} size={20} color={TM.red}>{`+${rv.exp}`}</T>
+            </View>
+            <Sec>Missed in solo rounds</Sec>
+            {misses.length ? (
+              misses.slice(0, 4).map((m, i) => (
+                <View key={`${m.id}${i}`} style={{ flexDirection: 'row', alignItems: 'baseline', gap: p(8) }}>
+                  <T size={12} color={TM.red}>✕</T>
+                  <T size={12} style={{ flex: 1 }} lines={1}>{m.topic || m.q}</T>
+                  {m.dossier ? (
+                    <Pressable onPress={() => router.push(`/learn/dossier?id=${m.dossier}`)} accessibilityRole="link" accessibilityLabel={`Open the dossier for ${m.topic}`} hitSlop={6}>
+                      <T f={FELL} size={12.5} color={TM.red} style={{ textDecorationLine: 'underline' }}>Dossier ›</T>
+                    </Pressable>
+                  ) : null}
+                </View>
+              ))
+            ) : (
+              <T size={12} style={{ opacity: 0.8 }}>Nothing missed. Every solo answer was right.</T>
+            )}
+            <T size={11} style={{ opacity: 0.75 }}>
+              {misses.length > 4 ? `${misses.length - 4} more misses are waiting in Today’s review.` : misses.length ? 'Your misses are waiting in Today’s review.' : 'Today’s review has nothing new from this year.'}
+            </T>
+            <View style={{ flexDirection: 'row', gap: p(8) }}>
+              <Btn label="New camp, same people" style={{ flex: 1 }} onPress={async () => {
+                await rematchRoom(roomId).catch(() => {});
+                router.replace(`/play/trust-me-not/lobby?room=${roomId}`);
+              }} />
+              <Btn label="Back to games" kind="line" style={{ flex: 1 }} onPress={() => {
+                leaveRoom(roomId).catch(() => {});
+                router.replace('/games');
+              }} />
+            </View>
+          </View>
+        </Paper>
       </View>
-    </MidSheet>
+    </ScrollView>
   );
 }
 

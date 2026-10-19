@@ -22,7 +22,8 @@ const riddleOf = (n: number) => RIDDLES[n - 1];
 const expFor = (solvedMs: number | null, wrong: number) => (solvedMs == null ? 0 : RD.expPerStar * starsFor(solvedMs, wrong, false));
 
 function itemsOf(st: RaceState) {
-  return (st.my_items ?? []).map((m) => {
+  // An item this app build doesn't have (the server's list is newer) is left out instead of failing the finish (X2).
+  return (st.my_items ?? []).filter((m) => !!riddleOf(m.item)).map((m) => {
     const r = riddleOf(m.item);
     const right = m.solved_ms != null;
     return {
@@ -46,7 +47,7 @@ function itemsOf(st: RaceState) {
  * a wrong one. 100, 80, 65... by solve order plus up to 50 for time left. The server referees every guess.
  */
 export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
-  const { st, load, server, playing, notice, setNotice, leave } = useRace(def, roomId, matchId, me, itemsOf);
+  const { st, load, server, playing, watchSub, doneLine, notice, setNotice, leave } = useRace(def, roomId, matchId, me, itemsOf);
   const [menu, setMenu] = useState(false);
   const [wrongSeq, setWrongSeq] = useState(0);
   const { alert, push } = useAlerts();
@@ -98,12 +99,12 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
       players={st.players}
       me={me}
       how={(p) => (p.solved ? nth(p.item_rank ?? 1) : 'time up')}
-      next={st.phase === 'done' ? 'Adding up the scores…' : `${last ? 'Results' : 'Next picture'} in ${nextIn} s`}
+      next={st.phase === 'done' ? doneLine : `${last ? 'Results' : 'Next picture'} in ${nextIn} s`}
     />
   ) : solved || !playing ? (
     <RaceReveal
       label={playing ? `Solved, ${nth(st.me!.rank ?? 1)}` : 'You’re watching'}
-      answer={playing ? riddleName(r) : 'You get a seat at the rematch.'}
+      answer={playing ? riddleName(r) : watchSub}
       players={st.players.filter((p) => p.solved)}
       me={me}
       how={(p) => nth(p.item_rank ?? 1)}
@@ -128,6 +129,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
         try {
           const res = await call<{ outcome: string }>('rd_guess', { m: matchId, answer: id });
           if (res.outcome === 'wrong') setWrongSeq((x) => x + 1);
+          else if (res.outcome === 'ignored_finished') setNotice('That answer came too late.');
           await load();
         } catch {
           setNotice('Couldn’t send that. Try again.');

@@ -30,8 +30,9 @@ const wordOf = (n: number | null | undefined) => (n ? WORDS[n - 1] : undefined);
 
 /** Each turn is one item: what you drew, or what you guessed. SA1: no Learn and no EXP; the dossier links still show (RS1). */
 function itemsOf(st: RaceState) {
-  return (st.my_items ?? []).map((m) => {
-    const w = wordOf(m.item)!;
+  // An item this app build doesn't have (the server's list is newer) is left out instead of failing the finish (X2).
+  return (st.my_items ?? []).filter((m) => !!wordOf(m.item)).map((m) => {
+    const w = wordOf(m.item)!; // kept by the filter above
     const right = m.drawer ? m.points > 0 : m.solved_ms != null;
     return {
       seat: 0,
@@ -56,7 +57,7 @@ function itemsOf(st: RaceState) {
  */
 export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   const R = useSlateRoom();
-  const { st, load, server, clock, playing, notice, setNotice, leave } = useRace(def, roomId, matchId, me, itemsOf);
+  const { st, load, server, clock, playing, watchLine, doneLine, notice, setNotice, leave } = useRace(def, roomId, matchId, me, itemsOf);
   const [menu, setMenu] = useState(false);
   const { alert, push } = useAlerts();
   const [strokes, setStrokes] = useState<{ turn: number; version: number; list: Stroke[] }>({ turn: -1, version: -1, list: [] });
@@ -153,7 +154,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
           <>
             <Note>Only you can see these. If time runs out, one is picked for you.</Note>
             <View style={{ gap: u(8) }}>
-              {(sa.options ?? []).map((n, i) => {
+              {(sa.options ?? []).filter((n) => !!wordOf(n)).map((n, i) => {
                 const w = wordOf(n)!;
                 return (
                   <Pressable key={n} onPress={() => call('sa_pick', { m: matchId, w: n }).then(load).catch(() => setNotice('Couldn’t pick. Try again.'))} style={({ pressed }) => [s.option, { backgroundColor: R.board }, pressed && { opacity: 0.8 }]} accessibilityRole="button" accessibilityLabel={`Draw ${w.name}`}>
@@ -199,7 +200,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
           <Scores rows={scoreRows} />
         </Panel>
         {!drawing && playing && st.phase === 'reveal' ? <ReportBtn sa={sa} matchId={matchId} load={load} /> : null}
-        <Note style={{ textAlign: 'center' }}>{st.phase === 'done' ? 'Adding up the scores…' : `${last ? 'Results' : 'Next turn'} in ${Math.ceil(left / 1000)} s`}</Note>
+        <Note style={{ textAlign: 'center' }}>{st.phase === 'done' ? doneLine : `${last ? 'Results' : 'Next turn'} in ${Math.ceil(left / 1000)} s`}</Note>
         {extras}
       </SlateScreen>
     );
@@ -228,7 +229,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
             <WrongGuesses list={sa.guesses} players={st.players} />
           </Frame>
         </View>
-        {playing ? <GuessBox key={st.index} solved={st.me?.solved_ms != null} points={st.me?.points ?? 0} rank={st.me?.rank ?? null} matchId={matchId} load={load} /> : <Note style={{ textAlign: 'center' }}>You’re watching. You get a seat at the rematch.</Note>}
+        {playing ? <GuessBox key={st.index} solved={st.me?.solved_ms != null} points={st.me?.points ?? 0} rank={st.me?.rank ?? null} matchId={matchId} load={load} /> : <Note style={{ textAlign: 'center' }}>{watchLine}</Note>}
         {playing ? <ReportBtn sa={sa} matchId={matchId} load={load} /> : null}
       </KeyboardLift>
       {extras}

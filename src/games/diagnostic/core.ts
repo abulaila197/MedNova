@@ -83,5 +83,5 @@ export type Indexed = NameIndex<GuessEntry>;
 
 export const buildIndex = (list: readonly GuessEntry[]): Indexed => indexNames(list);
 
-/** Nothing until 2 letters; then up to 5 matches: main name prefix, other name prefix, word prefix, then all words. */
+/** Nothing until 3 letters (a short name typed in full shows from 2); then up to 5 matches: main name prefix, other name prefix, word prefix, then all words. */
 export const search = (index: Indexed, raw: string): GuessEntry[] => searchNames(index, raw, { min: DP.search.minQueryLength, max: DP.search.maxSuggestions });

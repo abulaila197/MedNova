@@ -518,7 +518,7 @@ export function DuelPage({ m, me, map, seconds, act, msNow }: P) {
   const d = m.duels[m.duelIndex];
   const mine = d && (d.p1 === me || d.p2 === me);
   const answers = d ? (d.p1 === me ? d.a1 : d.a2) : [];
-  // Each duel question's time runs from when it shows to the tap (the server keeps this number, clamped).
+  // Each duel question's time runs from when it shows to the tap (sent along, but the server measures its own).
   const started = useRef(0);
   const at = answers.length;
   useEffect(() => {
@@ -584,10 +584,12 @@ export function HoldPage({ m, me, map, hold, seconds }: { m: MatchView; me: stri
             <T f={CGI} size={16} color={AT.soft}>A card for your hand.</T>
           </View>
         ) : hold.solo ? <SoloResultCard turn={hold.solo} /> : <Waiting text="You sat this round out." />}
-        <View style={s.box}>
-          <Kicker>Your reserve</Kicker>
-          <T f={CZ} size={22}>{fmt(m.players[me].reserve)}</T>
-        </View>
+        {m.players[me] ? (
+          <View style={s.box}>
+            <Kicker>Your reserve</Kicker>
+            <T f={CZ} size={22}>{fmt(m.players[me].reserve)}</T>
+          </View>
+        ) : null}
       </>
     );
   if (hold.kind === 'versusIntro' && hold.style)
@@ -613,15 +615,24 @@ export function HoldPage({ m, me, map, hold, seconds }: { m: MatchView; me: stri
       <Players m={m} me={me} />
       <BattleMap map={map} lands={views} width={width - v(28)} marches={hold.marches ?? []} seatOf={(id) => seatOf(m, id)} />
       <View style={{ gap: v(4) }}>
-        {(hold.log ?? []).length ? (hold.log ?? []).map((l, i) => <T key={i} f={CG} size={15}>{l.replace(new RegExp(`\\b${m.players[me].name}'s\\b`, 'g'), 'Your').replace(new RegExp(`^${m.players[me].name}\\b`), 'You')}</T>) : <T f={CGI} size={15} color={AT.soft}>No land changed hands.</T>}
+        {(hold.log ?? []).length ? (hold.log ?? []).map((l, i) => <T key={i} f={CG} size={15}>{yours(l, m.players[me]?.name)}</T>) : <T f={CGI} size={15} color={AT.soft}>No land changed hands.</T>}
       </View>
     </>
   );
 }
 
 /** A spectator line once my capital has fallen. */
+/** A battle line as I read it: my name becomes You / Your (a spectator has no name in the war). */
+const yours = (line: string, name?: string) => (name ? line.replace(new RegExp(`\\b${name}'s\\b`, 'g'), 'Your').replace(new RegExp(`^${name}\\b`), 'You') : line);
+
 export function OutBanner({ m, me }: { m: MatchView; me: string }) {
   const p = m.players[me];
+  if (!p)
+    return (
+      <View style={s.box}>
+        <T f={CGI} size={14} color={AT.soft}>You are watching the war.</T>
+      </View>
+    );
   if (!p.out) return null;
   return (
     <View style={[s.box, { borderColor: AT.red }]}>

@@ -69,7 +69,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   const { width } = useScreen();
   const W = Math.min(width, 430);
   const toItems = useMemo(() => itemsOf(me), [me]);
-  const { st, load, server, playing, notice, leave } = useRace(def, roomId, matchId, me, toItems);
+  const { st, load, server, playing, watchLine, doneLine, notice, leave } = useRace(def, roomId, matchId, me, toItems);
   const [menu, setMenu] = useState(false);
   const [typing, setTyping] = useState(false);
   const { alert, push } = useAlerts();
@@ -156,7 +156,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
       ) : (
         <>
           <AppGrid puzzle={p} solved={solved} claims={claims} width={W - u(32)} />
-          {!reveal ? <Text style={[s.tip, { color: t.mute }]}>{!playing ? 'You’re watching. You get a seat at the rematch.' : out && !canRevive ? 'Out of hearts. You’re watching the rest of the race.' : ' '}</Text> : null}
+          {!reveal ? <Text style={[s.tip, { color: t.mute }]}>{!playing ? watchLine : out && !canRevive ? 'Out of hearts. You’re watching the rest of the race.' : ' '}</Text> : null}
         </>
       )}
       {reveal ? (
@@ -167,7 +167,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
             players={st.players}
             me={me}
             how={(x) => `${wordsOf(x.user_id)} ${wordsOf(x.user_id) === 1 ? 'word' : 'words'}`}
-            next={st.phase === 'done' ? 'Adding up the scores…' : `Results in ${nextIn} s`}
+            next={st.phase === 'done' ? doneLine : `Results in ${nextIn} s`}
           />
         </Animated.View>
       ) : canRevive && !menu ? (
@@ -179,9 +179,12 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
             text={`No hearts left. One revive per match: ${CW.revivePrice} token gives ${CW.reviveHearts} heart. Your claimed words stay yours.`}
             decline="No revive, watch the rest"
             onRevive={async () => {
-              // A failed request throws, so the card refunds the token and says so.
+              // A failed request throws, so the card refunds the token and says so. The server doesn't yet check that the
+              // race is still on (GA12), so a revive that lands after the race ended throws too and is refunded.
               await call('cw_revive', { m: matchId });
+              const now = await call<RaceState>('race_state', { m: matchId }).catch(() => null);
               await load().catch(() => {});
+              if (now && now.phase !== 'case') throw new Error('over');
             }}
             onDecline={async () => {
               await call('cw_decline', { m: matchId }).catch(() => {});

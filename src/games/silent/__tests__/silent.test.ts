@@ -89,6 +89,9 @@ test('offline teams: the team scores the guess; time up gives the next team one 
   r = step(r, { type: 'PICK', wordId: r.options[0], now: 0 });
   r = step(r, { type: 'TICK', now: 90_000 });
   assert.equal(r.phase, 'stealing');
+  // DEF-056: the 15 s steal clock runs from the moment time ran out, and a steal nobody makes ends as a miss.
+  assert.equal(step(r, { type: 'TICK', now: 100_000 }).phase, 'stealing');
+  assert.equal(step(r, { type: 'TICK', now: 105_000 }).turns.at(-1)?.outcome, 'missed');
   r = step(r, { type: 'STEAL', success: true });
   assert.deepEqual([r.turns[1].outcome, r.turns[1].stealTeam, r.teamScores[2]], ['stolen', 2, 10]);
   const rows = offlineRows(r, {}, (s) => seats[s].team);
