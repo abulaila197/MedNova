@@ -70,7 +70,16 @@
           "granularPermissions": []
         }
       ],
-      "./plugins/withAndroidGameAndSaveOnly"
+      "./plugins/withAndroidGameAndSaveOnly",
+      "./plugins/withPhoneArchsOnly",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "useLegacyPackaging": true
+          }
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

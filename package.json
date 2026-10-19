@@ -27,6 +27,7 @@
     "expo-asset": "~57.0.18",
     "expo-audio": "~57.0.5",
     "expo-blur": "~57.0.3",
+    "expo-build-properties": "~57.0.22",
     "expo-clipboard": "~57.0.2",
     "expo-constants": "~57.0.20",
     "expo-device": "~57.0.2",
@@ -64,8 +65,8 @@
   },
   "scripts": {
     "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
     "web": "expo start --web",
     "lint": "expo lint",
     "test:engine": "sh ./scripts/test-engine.sh"
