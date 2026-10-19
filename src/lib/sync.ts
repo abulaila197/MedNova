@@ -118,21 +118,40 @@ async function uploadHeld(userId: string) {
 // few syncs instead of the newest rows never arriving past the old 5,000-row cap. The cursor belongs to one account
 // and is cleared with the wallet on sign-out (state/account.ts), so a fresh wallet always gets a full pull.
 export const LEDGER_CURSOR = 'sync:ledger';
+/** AP6: plays and their answers come down the same way, by the server's updated_at (set on every insert and update,
+ *  migration 20261019000300), so a play that finishes after its first upload still arrives. */
+export const PLAYS_CURSOR = 'sync:plays';
+export const ITEMS_CURSOR = 'sync:items';
 const OVERLAP_MS = 5 * 60_000;
 type Cursor = { user: string; at: string };
+type LedgerRow = { id: string; kind: LedgerEntry['kind']; exp: number; tokens: number; reason: string; play_id: string | null; note: string | null; at: string; uploaded_at: string };
+type PlayRow = {
+  id: string; game: Play['game']; mode: Play['mode']; submode: string | null; settings: Play['settings']; started_at: string; ended_at: string | null;
+  status: Play['status']; score: Play['score']; seats: Play['seats']; standings: Play['standings']; exp_earned: number; updated_at: string;
+};
+type ItemRow = {
+  id: string; play_id: string; seat: number; item_id: string; answer_key: PlayItem['answerKey']; outcome: PlayItem['outcome']; answers_given: PlayItem['answersGiven'];
+  time_ms: number; hints_used: number; reveals_used: number; points: number; feeds_learn: boolean; game_data: PlayItem['gameData']; at: string; updated_at: string;
+};
 
-async function pullLedger(userId: string) {
-  const c = await engine.kv.get<Cursor>(LEDGER_CURSOR);
-  let q = supabase.from('wallet_ledger').select('id,kind,exp,tokens,reason,play_id,note,at,uploaded_at');
-  if (c?.user === userId) q = q.gt('uploaded_at', new Date(Date.parse(c.at) - OVERLAP_MS).toISOString());
-  return q.order('uploaded_at').limit(5000);
+/** Rows of `table` changed since this account's cursor (with the overlap), oldest first. */
+async function pullSince<T>(userId: string, key: string, table: string, cols: string, by: string, limit: number, finishedOnly = false) {
+  const c = await engine.kv.get<Cursor>(key);
+  let q = supabase.from(table).select(cols);
+  if (finishedOnly) q = q.eq('status', 'finished');
+  if (c?.user === userId) q = q.gt(by, new Date(Date.parse(c.at) - OVERLAP_MS).toISOString());
+  const r = await q.order(by).limit(limit);
+  return { data: r.data as T[] | null, error: r.error };
 }
 
-async function saveLedgerCursor(userId: string, rows: { uploaded_at: string }[]) {
-  const last = rows[rows.length - 1]?.uploaded_at;
-  const c = await engine.kv.get<Cursor>(LEDGER_CURSOR);
-  if (last) await engine.kv.set(LEDGER_CURSOR, { user: userId, at: last });
-  else if (c?.user !== userId) await engine.kv.set(LEDGER_CURSOR, { user: userId, at: new Date(0).toISOString() });
+const pullLedger = (userId: string) =>
+  pullSince<LedgerRow>(userId, LEDGER_CURSOR, 'wallet_ledger', 'id,kind,exp,tokens,reason,play_id,note,at,uploaded_at', 'uploaded_at', 5000);
+
+/** Moves the cursor to the last row pulled; a first empty pull still marks the account as fully read. */
+async function saveCursor(userId: string, key: string, last: string | undefined) {
+  const c = await engine.kv.get<Cursor>(key);
+  if (last) await engine.kv.set(key, { user: userId, at: last });
+  else if (c?.user !== userId) await engine.kv.set(key, { user: userId, at: new Date(0).toISOString() });
 }
 
 async function run(userId: string) {
@@ -158,16 +177,16 @@ async function run(userId: string) {
   // Bring down what other phones saved.
   const [w, p, it] = await Promise.all([
     pullLedger(userId),
-    supabase.from('plays').select('*').eq('status', 'finished').order('started_at', { ascending: false }).limit(1000),
-    supabase.from('play_items').select('*').order('at', { ascending: false }).limit(5000),
+    pullSince<PlayRow>(userId, PLAYS_CURSOR, 'plays', '*', 'updated_at', 1000, true),
+    pullSince<ItemRow>(userId, ITEMS_CURSOR, 'play_items', '*', 'updated_at', 5000),
   ]);
   if (w.data) {
     await engine.wallet.mergeRemote(
       w.data.map((e): LedgerEntry => ({ id: e.id, kind: e.kind, exp: e.exp, tokens: e.tokens, reason: e.reason, playId: e.play_id ?? undefined, note: e.note ?? undefined, at: ms(e.at)!, synced: true })),
     );
-    await saveLedgerCursor(userId, w.data);
+    await saveCursor(userId, LEDGER_CURSOR, w.data[w.data.length - 1]?.uploaded_at);
   }
-  if (p.data && it.data)
+  if (p.data && it.data) {
     await engine.recorder.mergeRemote({
       plays: p.data.map(
         (r): Play => ({
@@ -208,6 +227,9 @@ async function run(userId: string) {
         }),
       ),
     });
+    await saveCursor(userId, PLAYS_CURSOR, p.data[p.data.length - 1]?.updated_at);
+    await saveCursor(userId, ITEMS_CURSOR, it.data[it.data.length - 1]?.updated_at);
+  }
 }
 
 /** Stars, bests and stamps: merge this phone with the account (best wins), then save the result on both. */

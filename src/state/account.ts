@@ -6,7 +6,7 @@ import { engine, RECORDER_KEYS } from '@/games/engine';
 import { useSession } from '@/games/shell/session';
 import { supabase } from '@/lib/supabase';
 import { PROGRESS_KEYS } from '@/lib/progress';
-import { holdUnsynced, LEDGER_CURSOR, syncAccount } from '@/lib/sync';
+import { holdUnsynced, ITEMS_CURSOR, LEDGER_CURSOR, PLAYS_CURSOR, syncAccount } from '@/lib/sync';
 import { loadSubscription } from '@/features/store/billing';
 import { invoke } from '@/online/api';
 import { startInvites, stopInvites } from '@/online/invites';
@@ -136,7 +136,7 @@ export function startAccount() {
 }
 
 /** What the account keeps on the server; cleared from the phone on sign-out (SO1: clean slate). */
-const ACCOUNT_KEYS = [...RECORDER_KEYS, 'wallet', LEDGER_CURSOR, 'subscription', ...PROGRESS_KEYS];
+const ACCOUNT_KEYS = [...RECORDER_KEYS, 'wallet', LEDGER_CURSOR, PLAYS_CURSOR, ITEMS_CURSOR, 'subscription', ...PROGRESS_KEYS];
 
 // Per-account keys that live only on this phone (AP4). They are not on the server, so instead of being lost they
 // are put aside for the account on sign-out and given back when that account signs in here again. The next
