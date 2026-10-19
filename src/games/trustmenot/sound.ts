@@ -43,6 +43,27 @@ export async function play(fx: Fx, volume = 1) {
   }
 }
 
+/** Frees the cached effect players when the game closes, so up to 10 native players don't stay alive (PB13d). */
+function releaseFx() {
+  for (const k of Object.keys(players) as Fx[]) {
+    const p = players[k];
+    delete players[k];
+    if (!p) continue;
+    untrack(p);
+    try {
+      p.pause();
+      p.remove();
+    } catch {
+      // Already gone.
+    }
+  }
+}
+
+/** Keeps the effect players for as long as the game is open; the next game makes them again on first use. */
+export function useFxPlayers() {
+  useEffect(() => releaseFx, []);
+}
+
 /** The season's ambience, quietly looping while the game is open. */
 export function useSeasonLoop(season: number) {
   const muted = useSound((m) => m.muted);

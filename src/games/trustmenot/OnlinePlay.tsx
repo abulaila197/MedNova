@@ -15,7 +15,7 @@ import { OpeningPage } from './pages';
 import { CRIMI, FELL, p as pp, PaperScreen, T, TM } from './paper';
 import type { PageProps } from './props';
 import { rules } from './engine';
-import { play, useHeartbeat, useSeasonLoop } from './sound';
+import { play, useFxPlayers, useHeartbeat, useSeasonLoop } from './sound';
 import { useMatchState } from '@/online/useMatchState';
 import { useBackPause } from '@/online/backPause';
 import { nudgeDue, SUPPER_MS, tmnShown, type TState } from './shown';
@@ -73,6 +73,7 @@ export function OnlinePlay({ matchId, roomId, me }: OnlineProps) {
   const v0 = env?.view;
   const mine = v0?.players.find((x) => x.id === me);
   useSeasonLoop(rules.seasonOf(v0?.month ?? 1));
+  useFxPlayers();
   useHeartbeat(mine?.health ?? 100, mine?.alive ?? false);
   const monthKey = v0 ? `${v0.month}|${v0.phase}` : '';
   const alive = v0?.players.filter((x) => x.alive).length ?? 0;

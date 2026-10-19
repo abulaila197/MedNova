@@ -1,7 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Keyboard, Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
-import { Text, TextInput } from '@/components/AppText';
+import { MAX_FONT_SCALE, Text, TextInput } from '@/components/AppText';
 import Animated, { FadeIn, FadeInDown, useAnimatedStyle, useSharedValue, withSequence, withTiming } from 'react-native-reanimated';
 
 import { useTheme } from '@/state/app';
@@ -117,7 +117,7 @@ export function CaseBoard(p: BoardProps) {
         )}
 
         {p.notice ? (
-          <Animated.Text entering={FadeIn} style={[s.notice, { color: t.soft, backgroundColor: t.panel, borderColor: t.panelLine }]}>
+          <Animated.Text maxFontSizeMultiplier={MAX_FONT_SCALE} entering={FadeIn} style={[s.notice, { color: t.soft, backgroundColor: t.panel, borderColor: t.panelLine }]}>
             {p.notice}
           </Animated.Text>
         ) : null}
