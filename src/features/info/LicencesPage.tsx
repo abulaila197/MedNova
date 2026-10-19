@@ -30,6 +30,7 @@ export function LicencesPage() {
         <Kicker>Open-source licences</Kicker>
         <Rich text={'Built on *open source.*'} style={ui.H} />
         <Text style={[ui.p, { color: c.mute }]}>{`MedNova uses ${PKGS.length} open-source packages and ${FONTS.length} font families. Tap a licence to see who made them and read its full text.`}</Text>
+        <Text style={[ui.p, { color: c.mute }]}>The Trophy win effect animation is from LottieFiles, used under its free Lottie Simple License.</Text>
         <View style={ui.xsec}>
           <Group title="Fonts · SIL Open Font License 1.1" rows={FONTS.map((p) => p.f!)} text={TEXTS['OFL-1.1']} />
           {GROUPS.map(([l, list]) => (
