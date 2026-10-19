@@ -179,9 +179,12 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
             text={`No hearts left. One revive per match: ${CW.revivePrice} token gives ${CW.reviveHearts} heart. Your claimed words stay yours.`}
             decline="No revive, watch the rest"
             onRevive={async () => {
-              // A failed request throws, so the card refunds the token and says so.
+              // A failed request throws, so the card refunds the token and says so. The server doesn't yet check that the
+              // race is still on (GA12), so a revive that lands after the race ended throws too and is refunded.
               await call('cw_revive', { m: matchId });
+              const now = await call<RaceState>('race_state', { m: matchId }).catch(() => null);
               await load().catch(() => {});
+              if (now && now.phase !== 'case') throw new Error('over');
             }}
             onDecline={async () => {
               await call('cw_decline', { m: matchId }).catch(() => {});

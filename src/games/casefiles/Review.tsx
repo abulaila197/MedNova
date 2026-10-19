@@ -46,12 +46,16 @@ export function Review({ def, run, replay, onDone, doneLabel = 'See results' }: 
       </View>
       <View style={s.box}>
         <Kicker>Your narrowed list</Kicker>
-        {(run.filtered ?? []).map((x) => (
-          <T key={x} size={13} color={free(x) ? NR.soft : hit(x) ? NR.green : NR.red}>
-            {free(x) ? '·' : hit(x) ? `+${CF.points.ddRight}` : `-${CF.points.ddWrong}`}  {x}
-            {x === def.final ? '  (the diagnosis, not scored here)' : free(x) ? '  (another name for the diagnosis, not scored)' : ''}
-          </T>
-        ))}
+        {(run.filtered ?? []).map((x, i, list) => {
+          // A slot counts once (GB5): a second name of a slot already listed scores nothing, as the total does.
+          const again = hit(x) && list.slice(0, i).some((y) => def.dd2.some((slot) => slot.includes(x) && slot.includes(y)));
+          return (
+            <T key={x} size={13} color={free(x) || again ? NR.soft : hit(x) ? NR.green : NR.red}>
+              {free(x) || again ? '·' : hit(x) ? `+${CF.points.ddRight}` : `-${CF.points.ddWrong}`}  {x}
+              {x === def.final ? '  (the diagnosis, not scored here)' : free(x) ? '  (another name for the diagnosis, not scored)' : again ? '  (same slot as a name above, counted once)' : ''}
+            </T>
+          );
+        })}
       </View>
       <View style={s.box}>
         <Kicker>The narrowed list in the file</Kicker>
