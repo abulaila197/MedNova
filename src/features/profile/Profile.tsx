@@ -98,7 +98,8 @@ export function Profile() {
         </View>
         <View style={s.idn}>
           <View style={s.nm}>
-            <Display em={profile?.display_name ?? 'Guest'} italic style={[s.h2, { color: t.fg }]}>
+            {/* Long names shrink to fit one line instead of wrapping onto the title lines (LV8). */}
+            <Display em={profile?.display_name ?? 'Guest'} italic numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.55} style={[s.h2, { color: t.fg, flexShrink: 1 }]}>
               {'Dr. '}
             </Display>
             {/* LV3: your level beside your name, the ring filling toward the next level. */}
@@ -227,7 +228,7 @@ function DeleteAccount({ t }: { t: Theme }) {
           {err ? <Text style={[s.delQ, { color: t.red }]}>{err}</Text> : null}
         </>
       ) : (
-        <Pressable onPress={() => setAsk(true)} accessibilityRole="button">
+        <Pressable onPress={() => setAsk(true)} hitSlop={u(10)} accessibilityRole="button">
           <Text style={[s.delL, { color: t.mute }]}>Delete my account</Text>
         </Pressable>
       )}

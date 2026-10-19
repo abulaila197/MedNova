@@ -33,7 +33,7 @@ export const GameArt = memo(function GameArt({ k, mode }: { k: string; mode: Mod
       style={{ position: 'absolute', left: 0, top: 0, width: u(W), height: u(ART_END - BODY_TOP) }}
       contentFit="fill"
       transition={0}
-      cachePolicy="memory"
+      cachePolicy="memory-disk"
       pointerEvents="none"
       accessible={false}
     />

@@ -14,18 +14,3 @@ export const GAMES: Game[] = [
   { key: 'the-streak-master', lead: 'The Streak', em: 'Master', sub: 'One Miss Away', desc: 'Answer in a row and keep your streak alive.' },
   { key: 'nova-crossword', lead: 'Nova', em: 'Crossword', sub: "The Clinician's Grid", desc: 'Fill the grid with diseases, drugs and signs.' },
 ];
-
-export const GAME_PHOTOS = {
-  dark: {
-    'trust-me-not': require('@/assets/games/dark/trust-me-not.jpg'),
-    'the-conqueror': require('@/assets/games/dark/the-conqueror.jpg'),
-    'the-diagnostic-pursuit': require('@/assets/games/dark/the-diagnostic-pursuit.jpg'),
-    'the-wheels-of-chaos': require('@/assets/games/dark/the-wheels-of-chaos.jpg'),
-    'nova-crossword': require('@/assets/games/dark/nova-crossword.jpg'),
-    'nova-medicordle': require('@/assets/games/dark/nova-medicordle.jpg'),
-    'the-silent-artist': require('@/assets/games/dark/the-silent-artist.jpg'),
-    'the-riddler': require('@/assets/games/dark/the-riddler.jpg'),
-    'the-streak-master': require('@/assets/games/dark/the-streak-master.jpg'),
-    'case-files-unsolved': require('@/assets/games/dark/case-files-unsolved.jpg'),
-  },
-} as const;

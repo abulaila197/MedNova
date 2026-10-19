@@ -124,7 +124,7 @@ export function StorePage() {
           ))}
         </ScrollView>
 
-        <Pressable onPress={() => run('restore', restore)} style={s.restore} accessibilityRole="button">
+        <Pressable onPress={() => run('restore', restore)} hitSlop={u(10)} style={s.restore} accessibilityRole="button">
           <Text style={[s.restoreT, { color: t.accent }]}>Restore purchases</Text>
         </Pressable>
         <Text style={[s.foot, { color: c.mute }]}>Paid through the App Store or Google Play. Tokens and the subscription stay on your account.</Text>

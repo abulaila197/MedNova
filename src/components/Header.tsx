@@ -29,7 +29,7 @@ export function Header({ variant = 'app' }: { variant?: 'app' | 'game' }) {
     <View style={z.bar}>
       <View style={[z.edge, { backgroundColor: t.headerEdge }]} />
       <View style={z.row}>
-        <Pressable onPress={tapped(() => setMenu(true))} style={[z.mb, { backgroundColor: t.chip, borderColor: t.chipLine }]} accessibilityLabel="Open menu">
+        <Pressable onPress={tapped(() => setMenu(true))} hitSlop={u(10)} style={[z.mb, { backgroundColor: t.chip, borderColor: t.chipLine }]} accessibilityLabel="Open menu">
           <MenuIcon size={u(g ? 12 : 14)} color={t.menuBtn} />
         </Pressable>
         <View style={z.lk}>
@@ -38,11 +38,11 @@ export function Header({ variant = 'app' }: { variant?: 'app' | 'game' }) {
         </View>
       </View>
       <View style={z.row}>
-        <Pressable onPress={tapped(() => setReport(true))} style={[z.rp, { backgroundColor: t.red }]} accessibilityLabel="Report a problem">
+        <Pressable onPress={tapped(() => setReport(true))} hitSlop={u(10)} style={[z.rp, { backgroundColor: t.red }]} accessibilityLabel="Report a problem">
           <Text style={z.rpT}>!</Text>
         </Pressable>
         {signedIn ? null : (
-          <Pressable onPress={tapped(() => router.push('/auth'))} accessibilityLabel="Sign in">
+          <Pressable onPress={tapped(() => router.push('/auth'))} hitSlop={u(8)} accessibilityLabel="Sign in">
             <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={z.si}>
               <Text style={[z.siT, { color: t.onGrad }]}>Sign in</Text>
             </LinearGradient>

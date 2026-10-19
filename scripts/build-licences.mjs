@@ -48,6 +48,8 @@ function walk(name, from) {
 
 const pkg = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8'));
 for (const d of Object.keys(pkg.dependencies)) walk(d, root);
+// Dev packages whose data ships inside the app: the Medicordle guess list is built from word-list (LV13).
+for (const d of ['word-list']) walk(d, root);
 const list = [...seen.values()].sort((a, b) => a.n.localeCompare(b.n));
 fs.writeFileSync(path.join(root, 'src/features/info/licences.json'), JSON.stringify({ packages: list, texts }));
 console.log(`${list.length} packages, ${Object.keys(texts).length} licence texts`);
