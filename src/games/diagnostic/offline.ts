@@ -32,7 +32,7 @@ export type OfflineRun = {
   round: number;
   turn: number;
   phase: OfflinePhase;
-  before: 'playing' | 'turnOver' | null;
+  before: 'playing' | 'turnOver' | 'handoff' | null;
   attempt: Attempt;
   elapsedMs: number;
   runningSince: number | null;
@@ -124,9 +124,11 @@ export function stepOffline(r: OfflineRun, e: OfflineEvent): OfflineRun {
     case 'PAUSE':
       if (r.phase === 'playing') return { ...r, phase: 'paused', before: 'playing', elapsedMs: turnElapsed(r, e.now), runningSince: null };
       if (r.phase === 'turnOver') return { ...r, phase: 'paused', before: 'turnOver' };
+      if (r.phase === 'handoff') return { ...r, phase: 'paused', before: 'handoff' }; // GA8: remove or end at the curtain
       return r;
     case 'RESUME':
       if (r.phase !== 'paused') return r;
+      if (r.before === 'handoff') return { ...r, phase: 'handoff', before: null };
       return r.before === 'turnOver' ? { ...r, phase: 'turnOver', before: null } : { ...r, phase: 'playing', before: null, runningSince: e.now };
     case 'NEXT':
       return r.phase === 'turnOver' ? advance(r) : r;

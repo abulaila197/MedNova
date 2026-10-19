@@ -118,12 +118,13 @@ export function stepOffline(r: OfflineRun, e: OfflineEvent): OfflineRun {
       return { ...next, turn: nextTurn(next, 0) };
     }
     case 'REMOVE': {
-      // Rule 17: a removed player's turns are skipped; at least 2 stay. A turn they were playing is dropped.
+      // Rule 17: a removed player's turns are skipped; at least 2 stay. A turn they were playing is dropped; turns they
+      // finished keep their scores in the standings (GA9, as DP keeps finished turns).
       const left = r.order.filter((s) => !r.removed.includes(s));
       if (r.removed.includes(e.seat) || left.length <= 2 || r.phase === 'done') return r;
       const removed = [...r.removed, e.seat];
       const over = r.phase === 'photoOver' || (r.phase === 'paused' && r.before === 'photoOver');
-      const next: OfflineRun = { ...r, removed, turns: r.turns.filter((t) => t.seat !== e.seat) };
+      const next: OfflineRun = { ...r, removed };
       if (over || currentSeat(r) !== e.seat) return next;
       const dropped = { ...next, elapsedMs: 0, runningSince: null, lockUntil: 0, wrong: [] as string[] };
       const t = nextTurn(dropped, r.turn + 1);
@@ -152,7 +153,7 @@ export type OfflineRow = Row & { wrong: number };
 /** Standings: total points, then less total time used, then fewest wrong guesses (as coded). */
 export function offlineRows(r: OfflineRun, names: Record<number, string>): OfflineRow[] {
   return r.order
-    .filter((seat) => !r.removed.includes(seat))
+    .filter((seat) => !r.removed.includes(seat) || r.results.some((p) => p.scores.some((x) => x.seat === seat)))
     .map((seat) => {
       const mine = r.results.flatMap((p) => p.scores.filter((x) => x.seat === seat));
       return {

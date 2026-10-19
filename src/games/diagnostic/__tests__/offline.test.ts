@@ -61,6 +61,18 @@ test('offline: removing the player on turn skips them; the owner and the last tw
   assert.equal(stepOffline(r, { type: 'REMOVE', seat: 2, now: 4 }), r);
 });
 
+test('offline (GA8): the curtain can pause; removing the absent player there passes to the next', () => {
+  let r = startOffline([0, 1, 2], 2, ids);
+  r = stepOffline(r, { type: 'READY', now: 0 });
+  r = stepOffline(r, { type: 'SKIP', now: 1 });
+  r = stepOffline(r, { type: 'NEXT', now: 2 });
+  r = stepOffline(r, { type: 'PAUSE', now: 3 });
+  assert.equal(r.phase, 'paused');
+  assert.equal(stepOffline(r, { type: 'RESUME', now: 4 }).phase, 'handoff');
+  r = stepOffline(r, { type: 'REMOVE', seat: 1, now: 5 });
+  assert.deepEqual([currentSeat(r), r.phase], [2, 'handoff']);
+});
+
 test('offline ties: total time first (rule 13), then more speed bonus, then fewer wrong guesses', () => {
   const rows = [
     { seat: 0, name: 'A', score: 100, timeMs: 50_000, speed: 10, wrong: 2 },

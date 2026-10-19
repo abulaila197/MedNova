@@ -128,6 +128,10 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
         keep={[0]}
         onResume={() => setPaused(false)}
         onQuit={onQuit}
+        onFinish={() => {
+          setPaused(false);
+          dispatch({ type: 'FINISH' });
+        }}
         onRemove={(x) => {
           engine.recorder.removeSeat(play.id, x);
           dispatch({ type: 'REMOVE', seat: x });
