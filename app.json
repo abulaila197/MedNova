@@ -8,9 +8,11 @@
     "scheme": "mednova",
     "userInterfaceStyle": "dark",
     "ios": {
-      "icon": "./assets/images/icon.png"
+      "icon": "./assets/images/icon.png",
+      "bundleIdentifier": "com.novagames.mednova"
     },
     "android": {
+      "package": "com.novagames.mednova",
       "adaptiveIcon": {
         "backgroundColor": "#070a1c",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
