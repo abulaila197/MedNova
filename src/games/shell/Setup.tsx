@@ -138,7 +138,7 @@ function Players({ st, min, max, note, teams }: { st: SetupState; min: number; m
         );
       })}
       </View>
-      <Text style={[s.small, { color: t.mute }]}>{note ?? 'Player 1 is you, the phone owner. Offline earns no EXP; only your missed cases go to Learn.'}</Text>
+      <Text style={[s.small, { color: t.mute }]}>{note ?? 'Player 1 is you, the phone owner. Pass the phone earns no EXP; only your missed cases go to Learn.'}</Text>
     </Card>
   );
 }

@@ -91,8 +91,9 @@ export function Beat({ r, more = true }: { r: Rounds; more?: boolean }) {
   for (const p of r.parts) {
     const w = (p.of / TOTAL) * W;
     const m = x + w / 2;
+    // The beat labels are 50 units wide, too narrow for 'Pass the phone': the ribbon keeps the short 'Pass'.
     d += ` L${m - 7},9 L${m - 4},6 L${m - 2},9 L${m},1 L${m + 2},15 L${m + 4},9 L${x + w},9`;
-    marks.push({ x: m, label: `${r.this.kind === 'mode' ? 'Wins' : PART_NAME[p.k]} ${p.n ?? 0}/${p.of}` });
+    marks.push({ x: m, label: `${r.this.kind === 'mode' ? 'Wins' : p.k === 'offline' ? 'Pass' : PART_NAME[p.k]} ${p.n ?? 0}/${p.of}` });
     x += w;
   }
   return (

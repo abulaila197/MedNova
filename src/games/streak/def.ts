@@ -91,7 +91,7 @@ export const streakMaster: GameDef = {
   setup: { solo: [STYLE, LENGTH], offline: [STYLE, LENGTH], online: [STYLE, QUESTIONS_N, QTIME] },
   players: { offline: { min: 2, max: 6 } },
   teams: { offline: true, online: true },
-  playersNote: () => 'Player 1 is you, the phone owner. Offline earns no EXP; only your missed questions go to Learn.',
+  playersNote: () => 'Player 1 is you, the phone owner. Pass the phone earns no EXP; only your missed questions go to Learn.',
   Play: { solo: SoloPlay, offline: OfflinePlay },
   Online: OnlinePlay,
   // SM16: Solo and Online EXP is 2 per right answer, at most 60 (the streak score itself is unchanged); SM13: Offline earns none.

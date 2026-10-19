@@ -67,7 +67,7 @@ export const novaCrossword: GameDef = {
   // TMG-CW: each player keeps their own hearts and words; a team scores its players' average.
   teams: { offline: true, online: true },
   teamScore: 'average',
-  playersNote: () => 'Player 1 is you, the phone owner, and pays for revives. Offline earns no EXP.',
+  playersNote: () => 'Player 1 is you, the phone owner, and pays for revives. Pass the phone earns no EXP.',
   Play: { solo: SoloPlay, offline: OfflinePlay },
   Online: OnlinePlay,
   // CW9: Solo pays the EXP each puzzle earned this session (stored on its first word); Offline earns none; CW12: Online up to 3 stars.

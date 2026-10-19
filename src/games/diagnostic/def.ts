@@ -22,7 +22,7 @@ export const diagnosticPursuit: GameDef = {
     },
     {
       mode: 'offline',
-      title: 'Pass and play',
+      title: 'Pass the phone',
       blurb: 'Take turns on one phone. Everyone gets their own case.',
       howTo: [
         'Add 2 to 6 players. Player 1 is you, the phone owner.',

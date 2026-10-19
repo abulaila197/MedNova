@@ -31,7 +31,7 @@ export type LoadCfg = {
   fonts: string[];
 };
 
-const ALL = 'Solo · Offline · Online';
+const ALL = 'Solo · Pass the phone · Online';
 
 export const LOAD: Record<string, LoadCfg> = {
   'the-diagnostic-pursuit': {
@@ -65,7 +65,7 @@ export const LOAD: Record<string, LoadCfg> = {
     tag: { t: ALL, side: 'left', c: '#efece0', bg: 'rgba(20,40,32,0.45)', b: 'rgba(240,236,224,0.35)' },
     glows: [{ x: 0.42, y: 0.55, r: 150, c: 'rgba(255,255,245,0.10)', a: 'pulse' }],
     parts: ['chalk'],
-    tips: ['No words, no letters. Only the drawing talks.', 'In Offline you can draw it or act it out.', 'Team play: the other team gets 15 s to steal.'],
+    tips: ['No words, no letters. Only the drawing talks.', 'In Pass the phone you can draw it or act it out.', 'Team play: the other team gets 15 s to steal.'],
     fonts: ['CabinSketch_400Regular', 'CabinSketch_700Bold', 'PatrickHand_400Regular'],
   },
   'trust-me-not': {

@@ -70,7 +70,7 @@ export const riddler: GameDef = {
   setup: { solo: [], offline: [PHOTOS, TURN], online: [PHOTOS] },
   players: { offline: { min: 2, max: 6 } },
   teams: { offline: true, online: true },
-  playersNote: () => 'Player 1 is you, the phone owner. Offline earns no EXP; only your unsolved condition pictures go to Learn.',
+  playersNote: () => 'Player 1 is you, the phone owner. Pass the phone earns no EXP; only your unsolved condition pictures go to Learn.',
   Play: { solo: SoloPlay, offline: OfflinePlay },
   Online: OnlinePlay,
   // RD9, RD10: Solo pays the EXP each level earned this session; RD12: Offline earns none.

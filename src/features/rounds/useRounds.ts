@@ -22,7 +22,7 @@ export type Rounds = {
   boosted: number;
 };
 
-export const PART_NAME: Record<Part['k'], string> = { solo: 'Solo', online: 'Online', offline: 'Pass' };
+export const PART_NAME: Record<Part['k'], string> = { solo: 'Solo', online: 'Online', offline: 'Pass the phone' };
 const MODE_WEEK: Record<string, string> = { online: 'Online week', solo: 'Solo week', offline: 'Pass the phone week' };
 
 /** "Diagnostic Pursuit", or "Online week" for the three mode weeks. */
