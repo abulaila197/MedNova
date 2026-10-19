@@ -1,7 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, type ReactNode } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
-import { Text } from '@/components/AppText';
+import { MAX_FONT_SCALE, Text } from '@/components/AppText';
 import Animated, {
   FadeIn, FadeInDown, useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming,
 } from 'react-native-reanimated';
@@ -118,7 +118,7 @@ export function HeatBoard(p: BoardProps) {
                 </View>
               )}
               {showing && fb && !fb.right && p.q.explanation ? (
-                <Animated.Text entering={FadeIn.delay(350)} style={[s.expl, { color: t.mute }]}>{p.q.explanation}</Animated.Text>
+                <Animated.Text maxFontSizeMultiplier={MAX_FONT_SCALE} entering={FadeIn.delay(350)} style={[s.expl, { color: t.mute }]}>{p.q.explanation}</Animated.Text>
               ) : null}
             </Animated.View>
           )}
@@ -132,7 +132,7 @@ export function HeatBoard(p: BoardProps) {
             </Animated.View>
           ) : null}
           {p.notice ? (
-            <Animated.Text entering={FadeIn} style={[s.notice, { color: t.soft }]}>{p.notice}</Animated.Text>
+            <Animated.Text maxFontSizeMultiplier={MAX_FONT_SCALE} entering={FadeIn} style={[s.notice, { color: t.soft }]}>{p.notice}</Animated.Text>
           ) : null}
           {p.dock ? (
             // Time up and turn over sit in the middle of the screen (Yazan, 2026-10-04).

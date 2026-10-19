@@ -11,6 +11,8 @@ import Animated, { Easing, useAnimatedProps, useAnimatedStyle, useReducedMotion,
 import Svg, { Circle, ClipPath, Defs, G, Image as SvgImage, Path, Rect } from 'react-native-svg';
 import { scheduleOnRN } from 'react-native-worklets';
 
+import { MAX_FONT_SCALE } from '@/components/AppText';
+
 import { AT, Capital, KINGDOMS, Piece, PAWN, shade } from './atlas';
 import { MapChart, type LandView } from './AtlasMap';
 import { MAP_H, MAP_W, type AtlasMap } from './map';
@@ -193,7 +195,7 @@ function Bubble({ t, k, at: p, color, label }: { t: SharedValue<number>; k: numb
         <Circle r={10} fill="none" stroke={AT.cream} strokeOpacity={0.5} strokeWidth={0.8} strokeDasharray="1.5 1.5" />
       </Svg>
       <View style={[StyleSheet.absoluteFill, { alignItems: 'center', justifyContent: 'center' }]}>
-        <Animated.Text style={{ color: AT.cream, fontFamily: 'Cinzel_700Bold', fontSize: 7.5 * k }}>{label}</Animated.Text>
+        <Animated.Text maxFontSizeMultiplier={MAX_FONT_SCALE} style={{ color: AT.cream, fontFamily: 'Cinzel_700Bold', fontSize: 7.5 * k }}>{label}</Animated.Text>
       </View>
     </Animated.View>
   );
