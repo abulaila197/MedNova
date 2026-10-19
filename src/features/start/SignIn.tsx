@@ -19,8 +19,8 @@ import { nameIsClean } from '@/lib/names';
 import { cssAngle } from './ease';
 import { Sky, Stars } from './Sky';
 
-/** Sign-in card sizes: 80% of the approved design (Yazan, 2026-10-19). */
-const k = (n: number) => u(n * 0.8);
+/** Sign-in card heights and text: 90% of the approved design; widths stay full size (Yazan, 2026-10-19). */
+const k = (n: number) => u(n * 0.9);
 
 // Sign-in colours from the prototype (d-auth / l-auth: `.auth` and `.auth.lite`).
 const C = {
@@ -302,6 +302,8 @@ export function SignIn() {
     />
   );
   const noteLine = note ? <Text style={[s.note, { color: note.bad ? THEMES.dark.error : c.lbl }]}>{note.text}</Text> : null;
+  // Code emails can land in spam (Yazan, 2026-10-19), so the code steps say where else to look.
+  const spamHint = <Text style={[s.note, { color: c.lbl }]}>Can’t find it? Check your Spam or Junk folder too.</Text>;
 
   let body: ReactNode;
   if (step === 'code') {
@@ -309,6 +311,7 @@ export function SignIn() {
       <>
         <Text style={[s.h3, { color: c.h3 }]}>Check your email</Text>
         {noteLine}
+        {spamHint}
         {field('CODE', codeIn)}
         {primary('Confirm', confirm)}
         {link('Send a new code', resend)}
@@ -330,6 +333,7 @@ export function SignIn() {
       <>
         <Text style={[s.h3, { color: c.h3 }]}>Choose a new password</Text>
         {noteLine}
+        {spamHint}
         {field('CODE', codeIn)}
         {field('NEW PASSWORD', passIn('At least 6 characters', 'new-password'))}
         {primary('Save and sign in', reset)}
@@ -473,12 +477,12 @@ export function SignIn() {
 
 const s = StyleSheet.create({
   root: { flex: 1, overflow: 'hidden' },
-  // 2026-10-19: smaller title, set a little lower (Yazan)
-  head: { marginTop: u(14) },
+  // 2026-10-19: smaller title, set a touch lower than the original (Yazan)
+  head: { marginTop: u(6) },
   welcome: { fontFamily: F.display, fontSize: u(18), lineHeight: u(17.6), letterSpacing: u(-1.2), alignSelf: 'flex-start' },
   brand: { fontFamily: F.display, fontSize: u(44), lineHeight: u(43.1), letterSpacing: u(-1.2), alignSelf: 'center', marginTop: u(2) },
-  // the card and everything in it at 80% of the approved size (Yazan, 2026-10-19)
-  card: { marginTop: u(24), marginHorizontal: u(24.6), borderWidth: 1, borderRadius: k(22), padding: k(14), gap: k(8) },
+  // the card at full width, its heights 90% of the approved size, sitting a little higher (Yazan, 2026-10-19)
+  card: { marginTop: u(6), borderWidth: 1, borderRadius: k(22), paddingVertical: k(14), paddingHorizontal: u(14), gap: k(8) },
   tabs: { flexDirection: 'row', padding: k(3), borderRadius: k(12) },
   tab: { flex: 1, height: k(27), borderRadius: k(9), alignItems: 'center', justifyContent: 'center' },
   tabTxt: { fontFamily: F.bodySemi, fontSize: k(10.5) },
@@ -488,7 +492,7 @@ const s = StyleSheet.create({
     height: k(33),
     borderRadius: k(11),
     borderWidth: 1,
-    paddingHorizontal: k(11),
+    paddingHorizontal: u(11),
     paddingVertical: 0,
     fontFamily: F.body,
     fontSize: k(10.5),

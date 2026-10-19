@@ -1,5 +1,6 @@
+import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Image, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
+import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 import Svg, { Path, Rect } from 'react-native-svg';
 
 import { Text } from '@/components/AppText';
@@ -27,7 +28,8 @@ export function Sleeve({ t, card, w, locked, style }: { t: Theme; card: HuntCard
   return (
     <View style={[{ width: w, borderRadius: r, padding: pad, backgroundColor: g.fill, borderWidth: 1, borderColor: g.line, shadowColor: g.shadow, shadowOpacity: 1, shadowRadius: w * 0.08, shadowOffset: { width: 0, height: w * 0.04 } }, style]}>
       <View style={{ width: inner, height: inner * RATIO, borderRadius: r * 0.7, overflow: 'hidden', backgroundColor: '#0b0f2c' }}>
-        <Image source={card.art} style={[StyleSheet.absoluteFill, { width: inner, height: inner * RATIO }, locked && { opacity: 0.16 }]} resizeMode="cover" />
+        {/* expo-image (2026-10-19): with the plain Image, some locked cards on Android stayed empty instead of dimmed */}
+        <Image source={card.art} style={[StyleSheet.absoluteFill, { width: inner, height: inner * RATIO }, locked && { opacity: 0.16 }]} contentFit="cover" transition={0} cachePolicy="memory" />
         {locked ? <View style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(5,6,16,0.35)' }]} /> : null}
       </View>
       {/* sheen across the plastic */}
