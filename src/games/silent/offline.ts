@@ -138,10 +138,11 @@ function record(r: OfflineRun, rec: Omit<TurnRecord, 'seat' | 'team' | 'wordId' 
   return { ...r, turns: [...r.turns, turn], scores, teamScores, phase: 'reveal', elapsedMs: 0, runningSince: null, before: null };
 }
 
-function timeUp(r: OfflineRun): OfflineRun {
+/** The turn's clock ran out (or the team gave up) at `now`: the next team's 15 s steal starts running then (DEF-056). */
+function timeUp(r: OfflineRun, now: number): OfflineRun {
   const t = currentTurn(r);
   const steal = stealTeamOf(r, t.team);
-  if (steal != null) return { ...r, phase: 'stealing', elapsedMs: 0, runningSince: null, gotAt: r.turnMs };
+  if (steal != null) return { ...r, phase: 'stealing', elapsedMs: 0, runningSince: now, gotAt: r.turnMs };
   return record(r, { outcome: 'missed', atMs: r.turnMs, guesser: null, stealTeam: null, points: 0, performerPoints: 0 });
 }
 
@@ -161,12 +162,12 @@ export function stepOffline(r: OfflineRun, e: OfflineEvent, pool: readonly Word[
     case 'TICK': {
       if (!timed(r.phase) || timeLeft(r, e.now) > 0) return r;
       if (r.phase === 'picking') return withPlan(beginPerforming(r, r.options[0], e.now), pool);
-      if (r.phase === 'performing') return timeUp(r);
+      if (r.phase === 'performing') return timeUp(r, e.now);
       // A steal that runs out is a miss.
       return record(r, { outcome: 'missed', atMs: r.turnMs, guesser: null, stealTeam: null, points: 0, performerPoints: 0 });
     }
     case 'GIVE_UP':
-      return r.phase === 'performing' ? timeUp({ ...r, elapsedMs: elapsed(r, e.now), runningSince: null }) : r;
+      return r.phase === 'performing' ? timeUp({ ...r, elapsedMs: elapsed(r, e.now), runningSince: null }, e.now) : r;
     case 'GOT_IT': {
       if (r.phase !== 'performing' || !r.hints) return r;
       const at = Math.min(r.turnMs, elapsed(r, e.now));
