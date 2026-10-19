@@ -504,3 +504,15 @@ test('a player removed for being away is placed below those whose capitals fell 
   assert.notEqual(g.m.winner, 'p3');
   assert.equal(standings(g.m)[2].id, 'p3');
 });
+
+test('views carry no explanation for a question not yet judged (GB7)', () => {
+  const g = game(2);
+  for (const p of active(g.m)) g.go({ type: 'pick', player: p.id, tile: g.m.board.find((t) => !t.by && t.kind === 'question')!.n });
+  const mine = viewFor(g.m, 'p1').solo.p1;
+  assert.ok(mine.questions.length > 0);
+  assert.ok(mine.questions.every((q) => q.explanation === undefined));
+  const v = toVersus(2, 'clue');
+  assert.ok(viewFor(v.m, 'p1').versus!.style === 'clue');
+  const qs = (viewFor(v.m, 'p1').versus as { qs: { explanation?: string }[] }).qs;
+  assert.ok(qs.every((q) => q.explanation === undefined));
+});
