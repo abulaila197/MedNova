@@ -227,7 +227,8 @@ export function signOut() {
     if (id) await syncAccount(id).catch(() => (online = false));
     await cleaning;
     if (id) await leavePhone(id, !online);
-    await supabase.auth.signOut({ scope: online ? 'global' : 'local' });
+    // This phone only: other phones signed in to the same account stay signed in (Yazan 2026-10-19).
+    await supabase.auth.signOut({ scope: 'local' });
     await clearPhone();
   })().finally(() => (signingOut = null));
   return signingOut;
