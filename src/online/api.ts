@@ -36,7 +36,8 @@ export type RoomState = {
   result: 'ok' | 'not_member';
   now: number;
   me: string;
-  room: { id: string; code: string; game: GameKey; host: string; is_public: boolean; settings: Record<string, unknown>; status: RoomStatus; match_id: string | null; closes_at: number };
+  // room.host is null only on a room that closed after its host deleted their account (rooms_rehost trigger).
+  room: { id: string; code: string; game: GameKey; host: string | null; is_public: boolean; settings: Record<string, unknown>; status: RoomStatus; match_id: string | null; closes_at: number };
   players: Seat[];
 };
 
