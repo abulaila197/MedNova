@@ -17,9 +17,8 @@ export const ART_END = 580; // 2026-10-18: art runs on under the arc to the dock
 export const FILL_H = 615 - BODY_TOP - 54;
 const DROP = ART_END - ART_B;
 const ART_T = 150;
-export const RING_R = 520;
-export const RING_CY = 908 + SHIFT + ARC_DROP; // circle centre, body coords
-export const RING_CX = W / 2;
+// 2026-10-19: the planet ring is gone (Yazan); the swipe dots sit where the chosen planet's centre was, in body coords.
+export const DOTS_Y = 908 + SHIFT + ARC_DROP - 520 - 2;
 
 type Box = [number, number, number, number];
 const BB: Record<string, Box> = {
@@ -42,11 +41,3 @@ export function fitArt(key: string): ArtFit {
   const ITd = B - (d[3] * sd) / AR_D;
   return { x: ILd, y: ITd + DROP, w: sd, h: sd / AR_D };
 }
-
-/** Ring slots by offset from the selected game: angle (deg) and diameter, as in the prototype. */
-// Offsets -5..5 so 10 games wrap; only -3..3 are visible, exactly as with 8.
-export const SLOT_OFF = [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5];
-export const SLOT_ANGLE = [-44, -35, -26, -17, -8, 0, 8, 17, 26, 35, 44];
-// 2026-10-18: planets 25% smaller (Yazan)
-export const SLOT_SIZE = [17, 17, 17, 22, 26, 36, 26, 22, 17, 17, 17];
-export const SLOT_OPACITY = [0, 0, 0.75, 1, 1, 1, 1, 1, 0.75, 0, 0];

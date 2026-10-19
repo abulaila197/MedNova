@@ -4,7 +4,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 import Animated, { type SharedValue, useAnimatedStyle } from 'react-native-reanimated';
 
-import type { Game } from '@/data/games';
+import { type Game, GAMES } from '@/data/games';
 import { useLoading } from '@/features/loading/store';
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
@@ -13,7 +13,7 @@ import { sfx } from '@/lib/sound';
 
 import { W } from './fit';
 import { GameArt } from './GameArt';
-import { wrapOff } from './Planet';
+import { wrapOff } from './Dots';
 
 const DESC = { dark: '#c9cde8' };
 /** Cards whose art reaches up beside the text get a narrower description. */
@@ -37,6 +37,7 @@ export function GamePage({ game, j, pos, active, lift }: { game: Game; j: number
     <Animated.View style={[StyleSheet.absoluteFill, slide]} pointerEvents={active ? 'box-none' : 'none'} accessibilityElementsHidden={!active} importantForAccessibility={active ? 'auto' : 'no-hide-descendants'}>
       <GameArt k={game.key} mode={t.mode} lift={lift} />
       <View style={s.info}>
+        <Text style={[s.kick, { color: t.accent }]}>{`${String(j + 1).padStart(2, '0')} / ${String(GAMES.length).padStart(2, '0')}`}</Text>
         <Text style={[s.ttl, { color: t.white }]}>
           {game.lead} <Text style={{ color: t.accent, fontFamily: F.displayItalic }}>{game.em}</Text>
         </Text>
@@ -56,8 +57,10 @@ export function GamePage({ game, j, pos, active, lift }: { game: Game; j: number
 }
 
 const s = StyleSheet.create({
-  info: { position: 'absolute', left: u(16), right: u(16), top: u(36) },
+  info: { position: 'absolute', left: u(16), right: u(16), top: u(22) },
   // the title wraps before the Grand Rounds and chest buttons on the right (2026-10-19)
+  // the game counter is back above the title, in the title's cyan (2026-10-19)
+  kick: { marginBottom: u(6), fontFamily: F.display, fontSize: u(11), lineHeight: u(13), letterSpacing: u(1.2) },
   ttl: { maxWidth: u(W - 32 - 35), fontFamily: F.display, fontSize: u(32), lineHeight: u(28.8), letterSpacing: u(-0.64) },
   sub: { marginTop: u(8), fontFamily: F.displayItalic, fontSize: u(13), lineHeight: u(17) },
   desc: { marginTop: u(7), marginBottom: u(2), maxWidth: u(190), fontFamily: F.body, fontSize: u(11), lineHeight: u(15.95) },

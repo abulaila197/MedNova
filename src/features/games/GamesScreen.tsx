@@ -1,16 +1,13 @@
 import { useCallback, useState } from 'react';
-import { Platform, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { cancelAnimation, Easing, useSharedValue, withTiming } from 'react-native-reanimated';
 import { scheduleOnRN } from 'react-native-worklets';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { HEADER_H } from '@/components/Header';
 import { Screen } from '@/components/Screen';
 import { GAMES } from '@/data/games';
 import { GamePage } from './GamePage';
-import { Dots, Ring } from './Ring';
-import { Planet, wrapOff } from './Planet';
+import { Dots, wrapOff } from './Dots';
 import { ChestButton } from '@/features/chests/ChestButton';
 import { RoundsButton } from '@/features/rounds/Ribbon';
 import { useTheme } from '@/state/app';
@@ -22,12 +19,9 @@ const N = GAMES.length;
 const mod = (v: number) => ((v % N) + N) % N;
 const EASE = Easing.bezier(0.3, 0.7, 0.2, 1);
 
-/** Locked Games page (decision 63): swipe through the games; the planet ring and dots follow. */
+/** Locked Games page (decision 63): swipe through the games; the dots follow. */
 export function GamesScreen() {
   const t = useTheme();
-  const ins = useSafeAreaInsets();
-  // The horizon is drawn under the header and dock (as in the prototype, where the dock covers it).
-  const bodyTop = (Platform.OS === 'web' ? u(30) : ins.top) + HEADER_H;
   const pos = useSharedValue(0); // unbounded page position; game = pos mod N
   const start = useSharedValue(0);
   const [sel, setSel] = useState(0);
@@ -70,17 +64,14 @@ export function GamesScreen() {
     });
 
   return (
-    <Screen tab="games" glow={0} under={<Ring mode={t.mode} top={bodyTop - lift} />}>
+    <Screen tab="games" glow={0}>
       <GestureDetector gesture={pan}>
         <View style={s.fill} onLayout={(e) => setLift(Math.round(u(FILL_H) - e.nativeEvent.layout.height))}>
           {/* the shown game and two on each side are mounted, so the next page's art is already decoded when a swipe
               lands (2026-10-19, was one each side: building it as the slide ended froze the page) */}
           {GAMES.map((g, j) => (Math.abs(wrapOff(j - sel)) <= 2 ? <GamePage key={g.key} game={g} j={j} pos={pos} active={j === sel} lift={lift} /> : null))}
           <View style={[StyleSheet.absoluteFill, { transform: [{ translateY: -lift }] }]} pointerEvents="box-none">
-            <Dots pos={pos} onPick={jump} />
-            {GAMES.map((g, j) => (
-              <Planet key={g.key} k={g.key} j={j} pos={pos} sel={sel} mode={t.mode} onPress={() => jump(j)} />
-            ))}
+            <Dots pos={pos} onPick={jump} accent={t.accent} />
           </View>
           <ChestButton />
           <RoundsButton />

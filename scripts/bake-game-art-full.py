@@ -7,7 +7,8 @@ It is laid over the 282 x 615 design screen like CSS cover (nudged right), cut t
   - a big curve clears the upper left so the title stays readable, and the scene's upper left
     tucks under the text's lower right (decision: "tucked, bigger"),
   - the art is gone before the planets on the arc, so a gap stays between them,
-  - wherever the picture is just its own navy sky it turns clear, so no box edge shows.
+  - wherever the picture is just its own navy sky it turns clear, so no box edge shows,
+  - the left and right screen edges fade softly (2026-10-19).
 Run: python3 scripts/bake-game-art-full.py   (needs Pillow, numpy)
 """
 import os
@@ -18,7 +19,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 W, SH, TOP, END = 282, 615, 72, 580  # design screen, body top, art end (src/features/games/fit.ts)
 SCALE = 3
 NUDGE = 0.7  # 0 = keep the left edge, 1 = keep the right edge, when the picture is wider than the screen
-PLANET_Y = 524  # screen y of the middle planet's centre on the arc (fit.ts: BODY_TOP + RING_CY - RING_R - 2)
+PLANET_Y = 524  # screen y of the swipe dots, where the middle planet sat before the arc was removed (fit.ts: BODY_TOP + DOTS_Y)
 TEXT_DROP = 14  # the title block sits this much lower than when the curve was tuned (2026-10-18)
 CLEAR = 580  # screen y where the window ends; it sits under the dock
 
@@ -71,7 +72,9 @@ for k, (a, b, c, d) in BAND.items():
     # the picture's own navy sky melts away, so no tinted box is left where it meets the app navy
     sky = np.median(np.asarray(src)[:20].reshape(-1, 3), axis=0) / 255
     key = smooth(np.linalg.norm(rgb - sky, axis=2), 0.04, 0.17)
-    alpha = band * curve * nav * key
+    # 2026-10-19 (Yazan): a soft fade at the screen's left and right edges, so no hard edge shows beside the next page
+    sides = smooth(X, 0, 16) * (1 - smooth(X, W - 16, W))
+    alpha = band * curve * nav * key * sides
     img = Image.fromarray(np.round(np.dstack([rgb, alpha]) * 255).astype(np.uint8), 'RGBA')
     dst = os.path.join(ROOT, 'assets/games/baked/dark', f'{k}.webp')
     img.save(dst, 'WEBP', quality=88, method=6)
