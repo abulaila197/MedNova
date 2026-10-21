@@ -53,7 +53,10 @@ export function ChestsScreen() {
   return <ChestsPage v={{ owned: chestsOwned(c), have, today: { step: c?.step ?? 1, line: todayLine(c), streak: c?.streak ?? 0 }, open: openChest }} />;
 }
 
-const shareApp = () => shareText(`Learn medicine through games with me on MedNova: ${Platform.OS === 'android' ? LINKS.listingAndroid : LINKS.listing}`);
+const shareApp = () => {
+  const link = Platform.OS === 'android' ? LINKS.listingAndroid : LINKS.listing;
+  return shareText(link ? `Learn medicine through games with me on MedNova: ${link}` : 'Learn medicine through games with me on MedNova!');
+};
 
 export function ChallengesScreen() {
   useLoad();

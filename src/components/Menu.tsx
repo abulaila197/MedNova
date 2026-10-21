@@ -18,6 +18,7 @@ import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 const ITEMS = [
+  ['My Profile', '/profile'], // first item (Yazan 2026-10-21); the moon button still opens it too
   ['Leaderboard', '/leaderboard'],
   ['Friends', '/friends'],
   ['Achievements', '/achievements'],

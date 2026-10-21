@@ -92,6 +92,7 @@ export function StorePage() {
               <Text style={[s.mono, { color: t.onGrad, opacity: 0.7 }]}>MONTHLY</Text>
               <Text style={[s.subH, { color: t.onGrad }]}>MedNova Unlimited</Text>
               <Text style={[s.subP, { color: t.onGrad }]}>{SUBSCRIPTION.perks.join(' · ')}</Text>
+              <Text style={[s.subP, { color: t.onGrad, fontFamily: F.bodyBold }]}>{`+${SUBSCRIPTION.bonus} tokens on your first month, once`}</Text>
             </View>
             <View style={[s.subBtn, { backgroundColor: t.onGrad }]}>
               {subscribed ? (
@@ -156,6 +157,7 @@ function StyleRow({ t }: { t: Theme }) {
 
 const CARD = u(124);
 const GAP = u(10);
+const WAS = '#e5534b'; // the old amount, struck through in red
 
 /** One pack: a small pile of coins (more coins, bigger pack), the count and the price. */
 function PackCard({ t, p, i, busy, onBuy }: { t: Theme; p: Pack; i: number; busy: boolean; onBuy: () => void }) {
@@ -170,6 +172,7 @@ function PackCard({ t, p, i, busy, onBuy }: { t: Theme; p: Pack; i: number; busy
           </View>
         ))}
       </View>
+      <Text style={[s.was, { color: WAS }]}>{p.was}</Text>
       <Text style={[s.cN, { color: t.fg }]}>{p.tokens}</Text>
       <Text style={[s.cU, { color: t.mute }]}>tokens</Text>
       <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={s.cBtn}>
@@ -195,6 +198,7 @@ const s = StyleSheet.create({
   card: { width: CARD, borderWidth: 1, borderRadius: u(18), padding: u(12), alignItems: 'center' },
   pile: { marginBottom: u(6) },
   cN: { fontFamily: F.display, fontSize: u(24), lineHeight: u(28) },
+  was: { fontFamily: F.bodyBold, fontSize: u(12), lineHeight: u(14), textDecorationLine: 'line-through', textDecorationColor: WAS },
   cU: { fontFamily: F.body, fontSize: u(10) },
   cBtn: { alignSelf: 'stretch', height: u(30), borderRadius: 999, alignItems: 'center', justifyContent: 'center', marginTop: u(10) },
   cBtnT: { fontFamily: F.bodyBold, fontSize: u(12) },

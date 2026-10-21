@@ -8,7 +8,8 @@ import { syncAccount } from '@/lib/sync';
 import { onAccountSwitch } from '@/state/accountSwitch';
 
 export type Week = { kind: 'game'; slot: number; game: string } | { kind: 'mode'; slot: number; mode: 'online' | 'solo' | 'offline' };
-export type Part = { k: 'solo' | 'online' | 'offline'; n?: number; of: number };
+// 'local' = Solo or Pass the phone together (Yazan 2026-10-21).
+export type Part = { k: 'solo' | 'online' | 'offline' | 'local'; n?: number; of: number };
 
 export type Rounds = {
   week: number;
@@ -22,7 +23,7 @@ export type Rounds = {
   boosted: number;
 };
 
-export const PART_NAME: Record<Part['k'], string> = { solo: 'Solo', online: 'Online', offline: 'Pass the phone' };
+export const PART_NAME: Record<Part['k'], string> = { solo: 'Solo', online: 'Online', offline: 'Pass the phone', local: 'Solo or Pass the phone' };
 const MODE_WEEK: Record<string, string> = { online: 'Online week', solo: 'Solo week', offline: 'Pass the phone week' };
 
 /** "Diagnostic Pursuit", or "Online week" for the three mode weeks. */

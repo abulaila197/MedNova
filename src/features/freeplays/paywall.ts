@@ -29,8 +29,8 @@ const close = (ok: boolean) => {
   a?.done(ok);
 };
 
-/** Play-again ads: 5 a day in total across all games (Yazan 2026-10-12); Store token ads have their own 5. */
-export const PLAY_AD_CAP = 5;
+/** Play-again ads: 20 a day in total across all games (Yazan 2026-10-21, was 5); Store token ads have their own 5. */
+export const PLAY_AD_CAP = 20;
 const AD_KEY = 'ads:play';
 // The phone's own date, like the free plays (gate.ts) and the sheet's "3 new free plays at midnight" (AP10c).
 const today = () => {

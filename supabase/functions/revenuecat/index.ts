@@ -9,8 +9,9 @@ declare const Deno: { env: { get(k: string): string | undefined }; serve(h: (req
 const admin = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!, { auth: { persistSession: false } });
 
 /** Mirrors PACKS in src/features/store/catalog.ts (MN4). */
-const PACK_TOKENS: Record<string, number> = { tokens_30: 30, tokens_100: 100, tokens_250: 250, tokens_500: 500 };
+const PACK_TOKENS: Record<string, number> = { tokens_50: 50, tokens_200: 200, tokens_500: 500, tokens_1000: 1000 };
 const SUBSCRIPTION = 'unlimited_monthly';
+const SUB_BONUS = 500; // once per account, on the first subscription (Yazan 2026-10-21)
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 type Event = {
@@ -57,6 +58,14 @@ Deno.serve(async (req) => {
       updated_at: new Date().toISOString(),
     });
     if (error) return new Response(error.message, { status: 500 });
+    if (e.type === 'INITIAL_PURCHASE') {
+      // The fixed row id makes the bonus once per account, even if they subscribe again later.
+      const { error: b } = await admin.from('wallet_ledger').upsert(
+        { id: `subbonus${e.app_user_id.replace(/-/g, '')}`, user_id: e.app_user_id, kind: 'purchase', exp: 0, tokens: SUB_BONUS, reason: 'sub:bonus', at: new Date().toISOString() },
+        { onConflict: 'id', ignoreDuplicates: true },
+      );
+      if (b) return new Response(b.message, { status: 500 });
+    }
     return ok();
   }
   return ok('ignored');

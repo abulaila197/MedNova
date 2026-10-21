@@ -1,10 +1,11 @@
-// Where the free token ways send players. PLACEHOLDERS until Yazan sends the real links (2026-10-12).
-export const LINKS = {
-  tiktok: 'https://www.tiktok.com/@mednova',
-  instagram: 'https://www.instagram.com/mednova',
-  facebook: 'https://www.facebook.com/mednova',
-  youtube: 'https://www.youtube.com/@mednova',
-  channel: 'https://www.instagram.com/channel/mednova',
-  listing: 'https://apps.apple.com/app/mednova',
-  listingAndroid: 'https://play.google.com/store/apps/details?id=com.mednova.app',
-} as const;
+// Where the free token ways send players. Empty until Yazan sends the real links: the old placeholders pointed at
+// other people's accounts (2026-10-21). A way with no link shows "Coming soon" and pays nothing.
+export const LINKS: Record<'tiktok' | 'instagram' | 'facebook' | 'youtube' | 'channel' | 'listing' | 'listingAndroid', string> = {
+  tiktok: '',
+  instagram: '',
+  facebook: '',
+  youtube: '',
+  channel: '',
+  listing: '',
+  listingAndroid: '',
+};

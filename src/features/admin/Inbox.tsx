@@ -19,7 +19,7 @@ const KINDS: { key: What; label: string; open: string; note: string }[] = [
   { key: 'contact', label: 'Contact', open: 'new', note: 'Messages from the Contact page.' },
   { key: 'feedback', label: 'Feedback', open: 'new', note: 'Feedback from the Store free tokens row.' },
   { key: 'stories', label: 'Stories', open: 'new', note: 'Stories are anonymous unless the player ticked "Credit me".' },
-  { key: 'ambassador', label: 'Ambassador', open: 'pending', note: 'Approving a video pays the player 50 tokens once.' },
+  { key: 'ambassador', label: 'Ambassador', open: 'pending', note: 'Approving a video pays the player 200 tokens once.' },
   { key: 'cases', label: 'Cases', open: 'waiting', note: 'Approved cases become playable, only by their maker, as practice.' },
 ];
 

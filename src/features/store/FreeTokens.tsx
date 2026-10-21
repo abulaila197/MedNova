@@ -118,7 +118,7 @@ const WAYS: Way[] = [
   { key: 'listing', label: Platform.OS === 'android' ? 'Visit us on Google Play' : 'Visit us on the App Store', tokens: 3, act: 'Visit', icon: I.listing },
   { key: 'feedback', label: 'Send us your feedback', tokens: 10, act: 'Write', icon: I.feedback },
   { key: 'story', label: 'Share your story', tokens: 5, each: true, act: 'Write', icon: I.story },
-  { key: 'ambassador', label: 'Ambassador video', tokens: 50, act: 'Apply', icon: I.video },
+  { key: 'ambassador', label: 'Ambassador video', tokens: 200, act: 'Apply', icon: I.video },
   { key: 'invite', label: 'Invite a friend with your code', tokens: 10, each: true, act: 'My code', icon: I.invite },
 ];
 
@@ -202,6 +202,9 @@ export function FreeTokens({ t }: { t: Theme }) {
     } catch {}
     setBusy(null);
   };
+  // Social and store-listing ways wait for their real links.
+  const noLink = (w: Way) =>
+    (SOCIAL as readonly string[]).includes(w.key) ? !LINKS[w.key as (typeof SOCIAL)[number]] : w.key === 'listing' && !(Platform.OS === 'android' ? LINKS.listingAndroid : LINKS.listing);
   const label = (w: Way) => (w.key === 'story' ? `${w.label} · ${stories} of 5` : w.key === 'invite' && st ? `${w.label} · ${st.invite_tokens} of 150` : w.label);
   const act = (w: Way) => (!signedIn ? 'Sign in' : w.key === 'ambassador' && st?.ambassador === 'pending' ? 'In review' : w.act);
   return (
@@ -212,7 +215,7 @@ export function FreeTokens({ t }: { t: Theme }) {
         <Global t={t} st={st} signedIn={signedIn} />
         <WayCard t={t} w={AD_WAY} label={ADS_LIVE && st ? `${AD_WAY.label} · ${st.ads_today ?? 0} of ${AD_CAP} today` : AD_WAY.label} act={signedIn ? AD_WAY.act : 'Sign in'} done={(st?.ads_today ?? 0) >= AD_CAP} locked={!ADS_LIVE} busy={busy === 'ad'} onPress={() => (signedIn ? watchAd() : router.navigate('/auth'))} />
         {WAYS.map((w) => (
-          <WayCard key={w.key} t={t} w={w} label={label(w)} act={act(w)} done={isDone(w)} busy={busy === w.key} onPress={() => tap(w)} />
+          <WayCard key={w.key} t={t} w={w} label={label(w)} act={act(w)} done={isDone(w)} locked={noLink(w)} busy={busy === w.key} onPress={() => tap(w)} />
         ))}
       </Row>
     </>
@@ -284,7 +287,7 @@ function Global({ t, st, signedIn }: { t: Theme; st: FreeStatus | null; signedIn
 export const PROMPTS = ['Why you chose medicine', 'A burnout story', 'Your hardest phase in college', 'The moment that kept you going', 'Your funniest moment'];
 const SAY: Record<string, string> = { short: 'Write at least 20 characters.', done: 'Already sent.', missing: 'Fill in every field.', 'too many': 'That is enough for today. Try tomorrow.' };
 
-/** The three writing sheets of the free ways: story (5 tokens each prompt), feedback (10, first time) and Ambassador (50 after approval). */
+/** The three writing sheets of the free ways: story (5 tokens each prompt), feedback (10, first time) and Ambassador (200 after approval). */
 export function FreeSheets({ t }: { t: Theme }) {
   const sheet = useFree((x) => x.sheet);
   const close = () => useFree.setState({ sheet: null });
@@ -374,7 +377,7 @@ function AmbassadorForm({ t, onDone }: { t: Theme; onDone: () => void }) {
   return (
     <>
       <Title t={t} a="Become an " b="ambassador" />
-      <Text style={[s.note, { color: t.mute }]}>Post a video of you playing MedNova on your account (100+ followers) and mention us. Send the link here; once we check it, 50 tokens land in your wallet within a week.</Text>
+      <Text style={[s.note, { color: t.mute }]}>Post a video of you playing MedNova on your account (100+ followers) and mention us. Send the link here; once we check it, 200 tokens land in your wallet within a week.</Text>
       <TextInput value={url} onChangeText={setUrl} autoCapitalize="none" keyboardType="url" placeholder="Link to your video" placeholderTextColor={t.mute} style={input} />
       <TextInput value={email} onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address" placeholder="Your email" placeholderTextColor={t.mute} style={input} />
       <TextInput value={name} onChangeText={setName} placeholder="Your in-game name" placeholderTextColor={t.mute} style={input} />
