@@ -206,7 +206,7 @@ export function FreeTokens({ t }: { t: Theme }) {
   const noLink = (w: Way) =>
     (SOCIAL as readonly string[]).includes(w.key) ? !LINKS[w.key as (typeof SOCIAL)[number]] : w.key === 'listing' && !(Platform.OS === 'android' ? LINKS.listingAndroid : LINKS.listing);
   const label = (w: Way) => (w.key === 'story' ? `${w.label} · ${stories} of 5` : w.key === 'invite' && st ? `${w.label} · ${st.invite_tokens} of 150` : w.label);
-  const act = (w: Way) => (!signedIn ? 'Sign in' : w.key === 'ambassador' && st?.ambassador === 'pending' ? 'Pending' : w.act);
+  const act = (w: Way) => (!signedIn ? 'Sign in' : w.key === 'ambassador' && st?.ambassador === 'pending' ? 'In review' : w.act);
   return (
     <>
       <View style={{ height: u(14) }} />
