@@ -14,6 +14,8 @@ test('fit: Android counts the navigation bar the window leaves out, so phones fi
   assert.equal(s21.frameW, 360);
   const big = frameFit({ width: 412, height: 867 }, { width: 412, height: 915 }, true);
   assert.equal(big.frameW, 412);
+  // Galaxy Note 10+ (412x869 screen): the fit leaves 3.3% at the sides, so it fills the width (2026-10-21).
+  assert.equal(frameFit({ width: 412, height: 821 }, { width: 412, height: 869 }, true).frameW, 412);
   // The same window on iOS (whole screen already) keeps the column, as before.
   assert.ok(frameFit({ width: 360, height: 752 }, { width: 360, height: 752 }, false).frameW < 360);
 });

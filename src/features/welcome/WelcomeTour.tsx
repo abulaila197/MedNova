@@ -12,7 +12,7 @@ import { F } from '@/theme/tokens';
 import { tapped } from '@/lib/sound';
 import { useBack } from '@/lib/useBack';
 
-import { TOUR } from './tour';
+import { TOUR, type Stop } from './tour';
 
 /** Types a line out letter by letter; a tap on the panel finishes it at once. */
 function useTyping(text: string, done: boolean) {
@@ -30,15 +30,16 @@ function useTyping(text: string, done: boolean) {
  * The welcome tour as a space chat (Yazan, 2026-10-13): the speaking character's face appears and their message
  * types out. Next hands over to the next character; the last one closes it and the daily reward follows.
  */
-export function WelcomeTour({ onClose }: { onClose: () => void }) {
+// Also the help pop-ups of single pages (Yazan 2026-10-21): the same panel with that page's own stops.
+export function WelcomeTour({ onClose, stops = TOUR, lastLabel = 'Daily reward', skipLabel = 'Skip tour' }: { onClose: () => void; stops?: Stop[]; lastLabel?: string; skipLabel?: string }) {
   // Android back skips the tour, like its close button (PB3).
   useBack(true, onClose);
   const [i, setI] = useState(0);
   const [full, setFull] = useState(false);
-  const stop = TOUR[i];
+  const stop = stops[i];
   const shown = useTyping(stop.text, full);
   const typed = shown >= stop.text.length;
-  const last = i === TOUR.length - 1;
+  const last = i === stops.length - 1;
   const next = () => {
     if (!typed) return setFull(true);
     if (last) return onClose();
@@ -48,12 +49,12 @@ export function WelcomeTour({ onClose }: { onClose: () => void }) {
   return (
     <View style={[StyleSheet.absoluteFill, { zIndex: 30 }]}>
       <Animated.View entering={FadeIn.duration(250)} exiting={FadeOut.duration(200)} style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(4,5,14,0.55)' }]} />
-      <Transmission i={i} shown={shown} typed={typed} last={last} onNext={next} onSkip={onClose} />
+      <Transmission stops={stops} lastLabel={lastLabel} skipLabel={skipLabel} i={i} shown={shown} typed={typed} last={last} onNext={next} onSkip={onClose} />
     </View>
   );
 }
 
-type BodyProps = { i: number; shown: number; typed: boolean; last: boolean; onNext: () => void; onSkip: () => void };
+type BodyProps = { stops: Stop[]; lastLabel: string; skipLabel: string; i: number; shown: number; typed: boolean; last: boolean; onNext: () => void; onSkip: () => void };
 
 function NextBtn({ label, onPress }: { label: string; onPress: () => void }) {
   const t = useTheme();
@@ -67,9 +68,9 @@ function NextBtn({ label, onPress }: { label: string; onPress: () => void }) {
 }
 
 /** "Incoming transmission" (Yazan's pick, 2026-10-13): a comms panel low on the screen; the face pops into a signal ring. */
-function Transmission({ i, shown, typed, last, onNext, onSkip }: BodyProps) {
+function Transmission({ stops, lastLabel, skipLabel, i, shown, typed, last, onNext, onSkip }: BodyProps) {
   const t = useTheme();
-  const stop = TOUR[i];
+  const stop = stops[i];
   const c = characterOf(stop.who);
   const ring = c?.ring ?? t.accent;
   return (
@@ -79,7 +80,7 @@ function Transmission({ i, shown, typed, last, onNext, onSkip }: BodyProps) {
           <View style={[s.live, { backgroundColor: ring }]} />
           <Text style={[s.kick, { color: t.kick }]}>{`INCOMING · ${(c?.name ?? 'Nova').toUpperCase()}`}</Text>
           <View style={{ flex: 1 }} />
-          <Text style={[s.kick, { color: t.mute }]}>{`${i + 1} / ${TOUR.length}`}</Text>
+          <Text style={[s.kick, { color: t.mute }]}>{`${i + 1} / ${stops.length}`}</Text>
         </View>
         <Pressable onPress={onNext} style={s.row} accessibilityRole="button" accessibilityLabel={stop.text}>
           <View style={s.portrait}>
@@ -99,21 +100,21 @@ function Transmission({ i, shown, typed, last, onNext, onSkip }: BodyProps) {
         </Pressable>
         <View style={s.foot}>
           <Pressable onPress={onSkip} hitSlop={10} accessibilityRole="button">
-            <Text style={[s.skip, { color: t.mute }]}>Skip tour</Text>
+            <Text style={[s.skip, { color: t.mute }]}>{skipLabel}</Text>
           </Pressable>
-          <Dots i={i} color={ring} />
-          <NextBtn label={last ? 'Daily reward' : 'Next'} onPress={onNext} />
+          <Dots n={stops.length} i={i} color={ring} />
+          <NextBtn label={last ? lastLabel : 'Next'} onPress={onNext} />
         </View>
       </Animated.View>
     </View>
   );
 }
 
-function Dots({ i, color }: { i: number; color: string }) {
+function Dots({ n, i, color }: { n: number; i: number; color: string }) {
   const t = useTheme();
   return (
     <View style={s.dots}>
-      {TOUR.map((_, k) => (
+      {Array.from({ length: n }, (_, k) => (
         <View key={k} style={[s.dot, { backgroundColor: k === i ? color : t.hair, width: k === i ? u(12) : u(4) }]} />
       ))}
     </View>

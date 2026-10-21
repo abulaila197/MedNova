@@ -11,8 +11,10 @@ import { closeFriendSheet, FriendSheets } from '@/features/profile/FriendSheets'
 import { InviteBanner } from '@/online/InviteBanner';
 import { DailyHost } from '@/features/daily/DailyHost';
 import { WelcomeHost } from '@/features/welcome/WelcomeHost';
+import { HelpHost } from '@/features/welcome/HelpHost';
 import { StyleHost } from '@/features/style/StyleHost';
 import { RoundsHost } from '@/features/rounds/RoundsHost';
+import { CardHost } from '@/features/cards/CardHost';
 import { markVisited } from '@/features/achievements/useAchievements';
 import { PaywallSheet } from '@/features/freeplays/PaywallSheet';
 import { cancelPaywall } from '@/features/freeplays/paywall';
@@ -65,10 +67,12 @@ export default function AppLayout() {
       <FriendSheets />
       <InviteBanner />
       <WelcomeHost />
+      <HelpHost />
       <DailyHost />
       <PaywallSheet />
       <StyleHost />
       <RoundsHost />
+      <CardHost />
     </View>
   );
 }

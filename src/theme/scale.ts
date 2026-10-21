@@ -10,7 +10,7 @@ import { frameFit } from './fit';
  * the proportions of the design on every device, and nothing can slide onto anything else:
  *
  *   - The factor is the largest that fits the screen both ways (width and height).
- *   - When that leaves only a sliver at the sides (under 3% of the width), the frame fills the width
+ *   - When that leaves only a sliver at the sides (under 4% of the width), the frame fills the width
  *     instead; the few pixels of extra height are absorbed by each page's flexible space.
  *   - Otherwise (tablets, short phones) the app is a centred column on the page colour (SZ2).
  *   - On Android the height is the whole screen: the window leaves out the navigation bar the app draws under.

@@ -8,6 +8,7 @@ import { useSession } from '@/games/shell/session';
 import { supabase } from '@/lib/supabase';
 import { syncAccount } from '@/lib/sync';
 import { useBack } from '@/lib/useBack';
+import { usePopups } from '@/state/popups';
 import { useStart } from '@/state/start';
 
 import { useWelcome } from '../welcome/WelcomeHost';
@@ -71,6 +72,9 @@ export function DailyHost() {
       setOpen({ day: st.next_day, collected: false });
     })();
   }, [known, intro, welcomed, path, userId, wake]);
+
+  // The found-card pop-up waits while this one is up.
+  useEffect(() => usePopups.setState({ daily: !!open }), [open]);
 
   // Android back closes the pop-up (PB3).
   useBack(!!open, () => setOpen(null));

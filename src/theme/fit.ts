@@ -1,7 +1,8 @@
 /** Every approved design is drawn on this frame (see scale.ts). */
 export const DESIGN_W = 282;
 export const DESIGN_H = 615;
-const SLIVER = 0.03;
+// 4% (was 3%): a Galaxy Note 10+ fit left 3.3%, two thin bars at the sides (Yazan 2026-10-21).
+const SLIVER = 0.04;
 /** Shortest side of a tablet, in dp. */
 const TABLET = 600;
 /** More than this between the screen and the window is a real smaller window (split screen), not system bars. */
