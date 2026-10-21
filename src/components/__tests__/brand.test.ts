@@ -43,9 +43,9 @@ test('the game header (GH1-GH3): smaller parts, token coin last on the right, no
   assert.match(h, /variant = 'app'/);
   assert.match(h, /const z = g \? gs : s;/);
   // the coin comes after Sign in, i.e. it is the right-most item
-  assert.ok(h.indexOf('{g ? <Coin') > h.indexOf('>Sign in<'), 'coin must be the last item on the right');
+  assert.ok(h.indexOf('<Coin g={g}') > h.indexOf('>Sign in<'), 'coin must be the last item on the right');
   const rp = h.match(/rp: \{ \.\.\.s\.rp, width: [uh]\((\d+(?:\.\d+)?)\)/);
-  const coin = h.match(/<TokenCoin size=\{[uh]\((\d+(?:\.\d+)?)\)\}/);
+  const coin = h.match(/<TokenCoin size=\{[uh]\(g \? (\d+(?:\.\d+)?) :/); // the game header's size
   assert.ok(rp && coin, 'game report button and coin sizes must be readable');
   assert.ok(Number(coin![1]) <= Number(rp![1]), 'coin + EXP ring must not exceed the report button');
 });

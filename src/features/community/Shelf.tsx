@@ -1,5 +1,6 @@
 import { router, type Href } from 'expo-router';
-import { Image, type ImageSourcePropType, Pressable, StyleSheet, View } from 'react-native';
+import { Image } from 'expo-image';
+import { type ImageSourcePropType, Pressable, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 
 import { tapped } from '@/lib/sound';
@@ -64,7 +65,7 @@ export function Shelf({ lead, em, note, photos, to }: { lead: string; em: string
                 s.photo,
                 { left: u(i * step), top: u(6 + lift), borderColor: t.panel, transform: [{ rotate: `${tilt}deg` }], zIndex: i },
               ]}>
-              <Image source={src} style={s.img} resizeMode="cover" />
+              <Image source={src} style={s.img} contentFit="cover" transition={0} cachePolicy="memory" />
             </View>
           );
         })}

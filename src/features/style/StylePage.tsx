@@ -119,7 +119,10 @@ export function StylePage() {
         {pick?.id.startsWith('pack:') ? (
           <View style={[s.packAll, { backgroundColor: c.surf, borderColor: c.line }]}>
             {(textPackOf(pick.key)?.stickers ?? []).map((x) => (
-              <Image key={x.id} source={x.src} style={s.packImg} contentFit="contain" accessibilityLabel={x.label} />
+              // The box holds the size; Android drew nothing when the image itself carried the % width (2026-10-21).
+              <View key={x.id} style={s.packImg}>
+                <Image source={x.src} style={s.fill} contentFit="contain" transition={0} accessibilityLabel={x.label} />
+              </View>
             ))}
           </View>
         ) : null}
@@ -161,7 +164,8 @@ export function StylePage() {
 
         {tab === 'frames' ? (
           <View style={s.grid}>
-            {FRAMES.map((it) => (
+            {/* fillers keep the last row's cells in their columns */}
+            {[...FRAMES, ...Array.from({ length: (3 - (FRAMES.length % 3)) % 3 }, () => null)].map((it, i) => !it ? <View key={`gap${i}`} style={s.cellGap} /> : (
               <Cell key={it.id} t={t} on={pick?.id === it.id} onPress={() => setPick(it)}>
                 {/* Still in the grid; the one you tap moves in the card above. */}
                 <Framed slug={profile?.avatar ?? 'yara'} size={u(62)} frame={it.key} still />
@@ -359,8 +363,10 @@ const s = StyleSheet.create({
   tab: { borderWidth: 1, borderRadius: 999, paddingHorizontal: u(12), height: u(28), justifyContent: 'center' },
   tabT: { fontFamily: F.bodySemi, fontSize: u(10.5) },
   said: { fontFamily: F.bodyMedium, fontSize: u(11), lineHeight: u(15), marginTop: u(10), borderWidth: 1, borderRadius: u(12), paddingVertical: u(8), paddingHorizontal: u(12), overflow: 'hidden' },
-  grid: { flexDirection: 'row', flexWrap: 'wrap', gap: u(8), marginTop: u(12) },
-  cell: { width: '31.5%', borderWidth: 1, borderRadius: u(16), paddingVertical: u(10), alignItems: 'center', gap: u(3) },
+  // three columns that fill the width: space-between, because a fixed gap plus % widths wrapped to two (2026-10-21)
+  grid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', rowGap: u(8), marginTop: u(12) },
+  cellGap: { width: '32%' },
+  cell: { width: '32%', borderWidth: 1, borderRadius: u(16), paddingVertical: u(10), alignItems: 'center', gap: u(3) },
   cN: { fontFamily: F.bodySemi, fontSize: u(10.5), marginTop: u(2) },
   price: { flexDirection: 'row', alignItems: 'center', gap: u(3) },
   pT: { fontFamily: F.mono, fontSize: u(8.5), letterSpacing: u(0.8) },
@@ -372,6 +378,7 @@ const s = StyleSheet.create({
   stk: { flexDirection: 'row', gap: u(3), marginTop: u(4) },
   packAll: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', rowGap: u(6), borderWidth: 1, borderRadius: u(18), padding: u(12), marginTop: u(10) },
   packImg: { width: '23.5%', aspectRatio: 1.5 },
+  fill: { width: '100%', height: '100%' },
   glow: { flexDirection: 'row', alignItems: 'center', padding: u(12), gap: u(10) },
   bar: { position: 'absolute', left: u(14), right: u(14), bottom: u(18), borderWidth: 1, borderRadius: u(18), paddingVertical: u(10), paddingHorizontal: u(14), gap: u(8) },
   barN: { fontFamily: F.display, fontSize: u(15) },

@@ -53,20 +53,21 @@ export function Header({ variant = 'app' }: { variant?: 'app' | 'game' }) {
             </LinearGradient>
           </Pressable>
         )}
-        {g ? <Coin /> : null}
+        {/* every header shows the tokens next to the report button (Yazan 2026-10-21); guests keep Sign in there */}
+        {g || signedIn ? <Coin g={g} /> : null}
       </View>
     </View>
   );
 }
 
 /** Token count + coin; tapping it opens the Store (MN7). */
-function Coin() {
+function Coin({ g }: { g: boolean }) {
   const t = useTheme();
   const { tokens, level, into, need } = useBalance();
   return (
-    <Pressable onPress={tapped(() => router.navigate('/store'))} style={gs.coin} accessibilityRole="button" accessibilityLabel={`${tokens} tokens. Level ${level}, ${into} of ${need} EXP to level ${level + 1}. Open the Store`}>
-      <Text style={[gs.coinT, { color: t.fg }]}>{tokens}</Text>
-      <TokenCoin size={h(17)} progress={into / need} track="rgba(255,255,255,0.12)" />
+    <Pressable onPress={tapped(() => router.navigate('/store'))} style={(g ? gs : s).coin} accessibilityRole="button" accessibilityLabel={`${tokens} tokens. Level ${level}, ${into} of ${need} EXP to level ${level + 1}. Open the Store`}>
+      <Text style={[(g ? gs : s).coinT, { color: t.fg }]}>{tokens}</Text>
+      <TokenCoin size={h(g ? 17 : 20)} progress={into / need} track="rgba(255,255,255,0.12)" />
     </Pressable>
   );
 }
@@ -88,6 +89,8 @@ const s = StyleSheet.create({
   rpT: { color: '#fff', fontFamily: F.bodyBold, fontSize: h(11), lineHeight: h(13) },
   si: { paddingVertical: h(5), paddingHorizontal: h(10), borderRadius: 999 },
   siT: { fontFamily: F.bodySemi, fontSize: h(10) },
+  coin: { flexDirection: 'row', alignItems: 'center', gap: h(4) },
+  coinT: { fontFamily: F.bodyBold, fontSize: h(12.5), lineHeight: h(15), fontVariant: ['tabular-nums'] },
 });
 
 /** Game header: everything about a fifth smaller; the coin with its ring is no wider than the report button. */

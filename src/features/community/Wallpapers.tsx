@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Image, type ImageSourcePropType, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Image } from 'expo-image';
+import { type ImageSourcePropType, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 
 import { Back } from '@/components/Back';
@@ -32,7 +33,7 @@ function WallPost({ src, i }: { src: ImageSourcePropType; i: number }) {
       </View>
       {/* The frame sets the shape; a bare Image takes the file's own height on web. */}
       <View style={s.photo}>
-        <Image source={src} style={s.fill} resizeMode="cover" accessibilityLabel={`Wallpaper ${i + 1}`} />
+        <Image source={src} style={s.fill} contentFit="cover" transition={0} cachePolicy="memory" accessibilityLabel={`Wallpaper ${i + 1}`} />
       </View>
       <View style={s.acts}>
         <Pressable onPress={tapped(() => setLiked(!liked))} style={[s.act, { borderColor: liked ? t.accent : t.chipLine, backgroundColor: t.chip }]} accessibilityRole="button" accessibilityState={{ selected: liked }} accessibilityLabel={liked ? 'Unlike' : 'Like'}>

@@ -98,8 +98,9 @@ export function Profile() {
         </View>
         <View style={s.idn}>
           <View style={s.nm}>
-            {/* Long names shrink to fit one line instead of wrapping onto the title lines (LV8). */}
-            <Display em={profile?.display_name ?? 'Guest'} italic numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.55} style={[s.h2, { color: t.fg, flexShrink: 1 }]}>
+            {/* Long names shrink to fit one line instead of wrapping onto the title lines (LV8). Sized from the name's
+                length: Android's adjustsFontSizeToFit shrank short names to a few pixels (2026-10-21). */}
+            <Display em={profile?.display_name ?? 'Guest'} italic numberOfLines={1} style={[s.h2, nameSize(`Dr. ${profile?.display_name ?? 'Guest'}`), { color: t.fg, flexShrink: 1 }]}>
               {'Dr. '}
             </Display>
             {/* LV3: your level beside your name, the ring filling toward the next level. */}
@@ -235,6 +236,12 @@ function DeleteAccount({ t }: { t: Theme }) {
     </View>
   );
 }
+
+/** About 0.56 em per letter in the display face; 200 design px of room beside the level badge; never under 55%. */
+const nameSize = (name: string) => {
+  const px = Math.max(16.5, Math.min(30, 200 / (name.length * 0.56)));
+  return { fontSize: u(px) };
+};
 
 const s = StyleSheet.create({
   area: { flex: 1 },
