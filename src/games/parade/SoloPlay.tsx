@@ -134,7 +134,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
 }
 
 /** The parade is over: points and how many were fully right, then results. */
-export function OverCard({ round, title, onNext, next = 'See results' }: { round: Round; title?: string; onNext: () => void; next?: string }) {
+export function OverCard({ round, title, note, onNext, next = 'See results' }: { round: Round; title?: string; note?: string; onNext: () => void; next?: string }) {
   const t = useTheme();
   const right = round.answers.filter((a) => a.outcome === 'right').length;
   return (
@@ -142,6 +142,7 @@ export function OverCard({ round, title, onNext, next = 'See results' }: { round
       <Text style={[s.k, { color: t.dim }]}>PARADE OVER</Text>
       <Text style={[s.line, { color: t.white }]}>{title ?? `${round.score} points`}</Text>
       <Text style={[s.sub, { color: t.mute }]}>{`${right} fully right of ${round.queue.length}`}</Text>
+      {note ? <Text style={[s.sub, { color: t.dim }]}>{note}</Text> : null}
       <Btn label={next} onPress={onNext} style={{ alignSelf: 'stretch', marginTop: u(6) }} />
     </View>
   );

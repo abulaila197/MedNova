@@ -85,13 +85,14 @@ export function ParadeBoard(p: BoardProps) {
               shown={showing ? mine?.response ?? null : undefined}
               faces={p.faces}
               onAnswer={p.onAnswer}
+              held={!!mine?.held}
               after={
                 showing && fb ? (
                   <Animated.View entering={FadeIn.delay(250)} style={s.after}>
-                    <Text style={[s.pts, { color: fb.right ? PC.good : fb.points ? t.accent : PC.bad }]}>
-                      {p.verdict ?? (mine?.outcome === 'skipped' ? 'Skipped' : fb.right ? `Right · +${fb.points}` : fb.points ? `Part right · +${fb.points}` : mine?.response ? 'Wrong' : "Time's up")}
+                    <Text style={[s.pts, { color: mine?.held ? t.accent : fb.right ? PC.good : fb.points ? t.accent : PC.bad }]}>
+                      {p.verdict ?? (mine?.held ? 'Locked in. The nearest guess wins at the end.' : mine?.outcome === 'skipped' ? 'Skipped' : fb.right ? `Right · +${fb.points}` : fb.points ? `Part right · +${fb.points}` : mine?.response ? 'Wrong' : "Time's up")}
                     </Text>
-                    {!fb.right && p.q.explain ? <Text maxFontSizeMultiplier={MAX_FONT_SCALE} style={[s.expl, { color: t.mute }]}>{p.q.explain}</Text> : null}
+                    {!fb.right && !mine?.held && p.q.explain ? <Text maxFontSizeMultiplier={MAX_FONT_SCALE} style={[s.expl, { color: t.mute }]}>{p.q.explain}</Text> : null}
                   </Animated.View>
                 ) : null
               }
@@ -127,6 +128,8 @@ type AnswerProps = {
   onAnswer: (r: Response) => void;
   /** The result line, shown under the answer area once the question ends. */
   after?: ReactNode;
+  /** Pass the phone: a Closest number guess waits for the others, so the answer stays hidden (QP6). */
+  held?: boolean;
 };
 
 /** The answer area for one question type. */
@@ -333,7 +336,7 @@ function Closest(p: AnswerProps & { q: Q<'closest'>; head: ReactNode }) {
         />
         {p.q.unit ? <Text style={[s.unit, { color: t.mute }]}>{p.q.unit}</Text> : null}
       </View>
-      {done ? <Text style={[s.big, { color: PC.good, textAlign: 'center' }]}>{`Answer: ${answerText(p.q)}`}</Text> : null}
+      {done && !p.held ? <Text style={[s.big, { color: PC.good, textAlign: 'center' }]}>{`Answer: ${answerText(p.q)}`}</Text> : null}
     </Scroll>
   );
 }

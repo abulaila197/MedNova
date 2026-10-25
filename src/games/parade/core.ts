@@ -107,7 +107,8 @@ export const ADD_MS = 10_000;
 /** QP9 (Yazan 2026-10-25): no Remove 2 in The Quiz Parade. */
 export const REMOVE_ON = false;
 
-export type Answer = { qId: string; response: Response | null; outcome: 'right' | 'wrong' | 'skipped'; points: number; timeMs: number };
+/** `held`: a Closest number guess in Pass the phone, scored after every player has answered (QP6). */
+export type Answer = { qId: string; response: Response | null; outcome: 'right' | 'wrong' | 'skipped'; points: number; timeMs: number; held?: boolean };
 
 export type RoundPhase = 'playing' | 'feedback' | 'paused' | 'over';
 
@@ -129,6 +130,8 @@ export type Round = {
   feedback: { points: number; right: boolean; untilMs: number } | null;
   answers: Answer[];
   helpers: Record<HelperKind, number>;
+  /** Pass the phone: Closest number goes to the nearest guess, so it scores nothing during the turn (QP6). */
+  nearest?: boolean;
 };
 
 export type RoundEvent =
@@ -146,10 +149,10 @@ const fresh = (r: Round, index: number, now: number, bank: Bank, rng: () => numb
   return { ...r, index, layout: q ? layoutFor(q, rng) : [], removed: [], remainingMs: limitMs, limitMs, runningSince: now, phase: 'playing', feedback: null };
 };
 
-export function startRound(queue: string[], now: number, bank: Bank, rng: () => number = Math.random): Round {
+export function startRound(queue: string[], now: number, bank: Bank, rng: () => number = Math.random, nearest = false): Round {
   const r: Round = {
     queue, index: 0, layout: [], removed: [], remainingMs: 0, runningSince: null, limitMs: 0, phase: 'over', before: null,
-    score: 0, feedback: null, answers: [], helpers: { remove: 0, skip: 0, time: 0 },
+    score: 0, feedback: null, answers: [], helpers: { remove: 0, skip: 0, time: 0 }, ...(nearest ? { nearest } : {}),
   };
   return queue.length ? fresh(r, 0, now, bank, rng) : r;
 }
@@ -159,11 +162,12 @@ export const currentId = (r: Round) => r.queue[r.index];
 
 function settle(r: Round, response: Response | null, outcome: Answer['outcome'] | null, now: number, bank: Bank): Round {
   const q = bank(currentId(r));
-  const g = q && outcome !== 'skipped' ? grade(q, response) : { points: 0, right: false };
-  const answer: Answer = { qId: currentId(r), response, outcome: outcome ?? (g.right ? 'right' : 'wrong'), points: g.points, timeMs: r.limitMs - timeLeft(r, now) };
+  const held = !!r.nearest && q?.style === 'closest' && response != null;
+  const g = q && outcome !== 'skipped' && !held ? grade(q, response) : { points: 0, right: false };
+  const answer: Answer = { qId: currentId(r), response, outcome: outcome ?? (g.right ? 'right' : 'wrong'), points: g.points, timeMs: r.limitMs - timeLeft(r, now), ...(held ? { held } : {}) };
   return {
     ...r, phase: 'feedback', remainingMs: timeLeft(r, now), runningSince: null, score: r.score + g.points, answers: [...r.answers, answer],
-    feedback: { points: g.points, right: g.right, untilMs: now + (g.right ? FEEDBACK_MS.right : FEEDBACK_MS.wrong) },
+    feedback: { points: g.points, right: g.right, untilMs: now + (g.right || held ? FEEDBACK_MS.right : FEEDBACK_MS.wrong) },
   };
 }
 
