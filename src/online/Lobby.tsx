@@ -129,12 +129,14 @@ export function Lobby({ def, roomId }: { def: GameDef; roomId: string }) {
   // Names the game for every lobby, not only The Diagnostic Pursuit (AP10b).
   const g = GAMES.find((x) => x.key === def.key);
   const share = () => shareText(`Join my MedNova room for ${g ? `${g.lead} ${g.em}`.trim() : 'a game'}. Room code: ${spaced(room.code)}`);
-  const allReady = players.length >= 2 && players.every((p) => p.ready);
+  // Most games start at 2; a game can ask for more (Imposter needs 3).
+  const need = Math.max(2, def.players?.online?.min ?? 2);
+  const allReady = players.length >= need && players.every((p) => p.ready);
   const notReady = players.filter((p) => !p.ready);
   const status =
     room.status === 'finished'
       ? 'Last match finished'
-      : players.length < 2
+      : players.length < need
         ? 'Waiting for players'
         : allReady
           ? 'Everyone is ready'
@@ -268,7 +270,7 @@ export function Lobby({ def, roomId }: { def: GameDef; roomId: string }) {
         ) : host ? (
           <GBtn
             style={s.grow}
-            label={busy ? 'Starting…' : startFail ? 'Couldn’t start. Try again' : allReady ? 'Start' : players.length < 2 ? 'Start · needs 2 players' : `Start · ${players.length - notReady.length} of ${players.length} ready`}
+            label={busy ? 'Starting…' : startFail ? 'Couldn’t start. Try again' : allReady ? 'Start' : players.length < need ? `Start · needs ${need} players` : `Start · ${players.length - notReady.length} of ${players.length} ready`}
             off={!allReady || busy}
             onPress={async () => {
               setBusy(true);
