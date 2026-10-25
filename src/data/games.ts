@@ -5,7 +5,8 @@ export type Game = { key: string; lead: string; em: string; sub: string; desc: s
 export const GAMES: Game[] = [
   { key: 'the-diagnostic-pursuit', lead: 'The Diagnostic', em: 'Pursuit', sub: 'The Road to Diagnosis', desc: 'Race the clock to the right diagnosis, one clue at a time.' },
   { key: 'the-silent-artist', lead: 'The Silent', em: 'Artist', sub: 'Chalk and Silence', desc: 'Draw the diagnosis without words while friends guess.' },
-  { key: 'trust-me-not', lead: 'Trust Me', em: 'Not', sub: 'The Year of Hunger', desc: 'Survive a year of famine together, if you can trust each other.' },
+  // Trust Me Not was cancelled (Yazan 2026-10-24); its code and database stay, it just isn't listed.
+  { key: 'the-quiz-parade', lead: 'The Quiz', em: 'Parade', sub: 'March of Minds', desc: 'Seven kinds of question, one after another. Harder ones score more.' },
   { key: 'the-wheels-of-chaos', lead: 'The Wheels of', em: 'Chaos', sub: 'Spin of Fate', desc: 'Spin the wheel and take on whatever case it lands on.' },
   { key: 'the-riddler', lead: 'The', em: 'Riddler', sub: 'Puzzles in Plain Sight', desc: 'Picture riddles that spell out a condition or sign.' },
   { key: 'the-conqueror', lead: 'The', em: 'Conqueror', sub: 'The Last Empire', desc: "Answer right to seize land and take over your rivals' territory." },

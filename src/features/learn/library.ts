@@ -6,6 +6,8 @@ import type { GameKey, PlayItem } from '@/games/engine/types';
 import { IMAGES } from '@/games/crossword/data/images';
 import { wordById } from '@/games/crossword/data';
 import { questionById } from '@/games/streak/data';
+import { answerText as paradeAnswer } from '@/games/parade/core';
+import { questionById as paradeById } from '@/games/parade/data';
 import { question as tmnQuestion } from '@/games/trustmenot/text';
 
 import dossiersJson from './data/dossiers.json';
@@ -74,6 +76,13 @@ function qaOf(game: string, item: PlayItem): Omit<Extract<Card, { kind: 'qa' }>,
   if (game === 'the-streak-master') {
     const q = questionById.get(item.itemId);
     return q ? { q: q.stem, choices: q.choices, answer: q.choices[q.answer] ?? null } : null;
+  }
+  if (game === 'the-quiz-parade') {
+    const q = paradeById.get(item.itemId);
+    if (!q) return null;
+    const choices = q.style === 'mcq' || q.style === 'reverse' ? q.choices : q.style === 'tf' ? ['True', 'False'] : [];
+    const ask = q.style === 'reverse' ? `Which question is this the answer to: ${q.prompt}` : q.prompt;
+    return { q: ask, choices, answer: paradeAnswer(q) };
   }
   if (game === 'nova-crossword') {
     const w = wordById.get(item.itemId);

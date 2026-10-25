@@ -59,21 +59,17 @@ test('QP2: each question has its own timer; time up counts as no answer, then th
   assert.equal(r.phase, 'over');
 });
 
-test('pause keeps the clock; helpers: skip, +10 s, Remove 2 only on MCQ', () => {
+test('pause keeps the clock; helpers: skip and +10 s, Remove 2 off (QP9)', () => {
   let r = startRound(['m', 't'], 0, bank, fixed);
   r = stepRound(r, { type: 'PAUSE', now: 5000 }, bank, fixed);
   assert.equal(timeLeft(r, 99_000), 20_000);
   r = stepRound(r, { type: 'RESUME', now: 100_000 }, bank, fixed);
-  r = stepRound(r, { type: 'HELPER', kind: 'remove', now: 101_000 }, bank, fixed);
-  assert.equal(r.removed.length, 2);
-  assert.ok(!r.removed.includes(2));
-  assert.equal(stepRound(r, { type: 'ANSWER', response: { style: 'mcq', pick: r.removed[0] }, now: 101_500 }, bank, fixed), r);
+  assert.equal(stepRound(r, { type: 'HELPER', kind: 'remove', now: 101_000 }, bank, fixed), r);
   r = stepRound(r, { type: 'HELPER', kind: 'time', now: 102_000 }, bank, fixed);
   assert.equal(timeLeft(r, 102_000), 28_000);
   r = stepRound(r, { type: 'HELPER', kind: 'skip', now: 103_000 }, bank, fixed);
   assert.equal(r.answers[0].outcome, 'skipped');
   r = stepRound(r, { type: 'TICK', now: 110_000 }, bank, fixed);
-  assert.equal(stepRound(r, { type: 'HELPER', kind: 'remove', now: 110_500 }, bank, fixed), r); // True/False: nothing to remove
 });
 
 test('Mixed takes about half of each and stops at the asked count', () => {

@@ -104,6 +104,8 @@ export function layoutFor(q: Question, rng: () => number = Math.random): number[
 export type HelperKind = 'remove' | 'skip' | 'time';
 export const HELPER_PRICE: Record<HelperKind, number> = { remove: 1, skip: 3, time: 1 };
 export const ADD_MS = 10_000;
+/** QP9 (Yazan 2026-10-25): no Remove 2 in The Quiz Parade. */
+export const REMOVE_ON = false;
 
 export type Answer = { qId: string; response: Response | null; outcome: 'right' | 'wrong' | 'skipped'; points: number; timeMs: number };
 
@@ -202,10 +204,11 @@ export function stepRound(r: Round, e: RoundEvent, bank: Bank, rng: () => number
   }
 }
 
-/** Whether a helper would do anything right now, so the screen doesn't charge for nothing. Remove 2 only fits MCQ and Reverse. */
+/** Whether a helper would do anything right now, so the screen doesn't charge for nothing. QP9: Solo offers only Skip and +10 s; Remove 2 stays switched off. */
 export function helperUsable(r: Round, kind: HelperKind, bank: Bank) {
   if (r.phase !== 'playing') return false;
   if (kind !== 'remove') return true;
+  if (!REMOVE_ON) return false;
   const q = bank(currentId(r));
   return !!q && (q.style === 'mcq' || q.style === 'reverse') && q.choices.length > 2 && r.removed.length === 0;
 }

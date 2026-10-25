@@ -10,7 +10,8 @@ export type GameKey =
   | 'the-streak-master'
   | 'case-files-unsolved'
   | 'the-conqueror'
-  | 'trust-me-not';
+  | 'trust-me-not'
+  | 'the-quiz-parade';
 
 export type Mode = 'solo' | 'offline' | 'online';
 

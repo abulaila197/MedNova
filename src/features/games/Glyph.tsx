@@ -15,6 +15,8 @@ const GLY: Record<string, Prim[]> = {
   'the-riddler': [{ p: 'M9 9a3 3 0 1 1 4.5 2.6c-.9.5-1.5 1.2-1.5 2.4' }, { c: [12, 17.5, 0.9], fill: true }, { c: [12, 12, 9] }],
   'the-streak-master': [{ c: [11, 13, 7] }, { c: [11, 13, 3.5] }, { c: [11, 13, 0.8], fill: true }, { p: 'M11 13l9-9M16.5 4H20v3.5' }],
   'case-files-unsolved': [{ c: [10, 10, 5.5] }, { p: 'M14 14l6 6' }],
+  // a parade drum
+  'the-quiz-parade': [{ r: [5, 9, 14, 10, 2] }, { p: 'M5 12h14M8 9l2 10M14 9l2 10' }, { p: 'M7 3l4 5M17 3l-4 5' }],
 };
 
 function Shapes({ k, paint }: { k: string; paint: string }) {
