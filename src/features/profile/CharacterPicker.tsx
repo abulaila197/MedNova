@@ -12,7 +12,7 @@ import { Face } from '@/games/shell/Face';
 import { CHARACTERS } from '@/games/shell/characters';
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
-import { F } from '@/theme/tokens';
+import { F, type Theme } from '@/theme/tokens';
 
 const ORIG = u(37);
 const MECH = u(46);
@@ -54,7 +54,7 @@ function Pick({ size, on, children }: { size: number; on: boolean; children: Rea
 }
 
 /** Choose your character (Yazan 2026-10-18): the free Original pack, then the Nova Mechs you won from chests. */
-export function CharacterPicker({ open, onClose, wearing, owned, onWear, error }: { open: boolean; onClose: () => void; wearing: string; owned: string[]; onWear?: (slug: string) => void; error?: string | null }) {
+export function CharacterPicker({ open, onClose, wearing, owned, found, onWear, error }: { open: boolean; onClose: () => void; wearing: string; owned: string[]; found: string[]; onWear?: (slug: string) => void; error?: string | null }) {
   const t = useTheme();
   // Your pick while the sheet is open; closing it forgets the pick.
   const [picked, setSel] = useState<string | null>(null);
@@ -82,15 +82,22 @@ export function CharacterPicker({ open, onClose, wearing, owned, onWear, error }
           </View>
         </View>
 
-        <Text style={[s.k, { color: t.kick }]}>ORIGINAL PACK · FREE</Text>
+        {/* List #39: the Original pack opens card by card in the treasure hunt; the 1-star ones (Bolt, Iris) are open to everyone. */}
+        <Text style={[s.k, { color: t.kick }]}>{`ORIGINAL PACK · ${CHARACTERS.filter((c) => origOpen(c.slug, found)).length} OF ${CHARACTERS.length}`}</Text>
         <View style={s.grid}>
-          {CHARACTERS.map((c) => (
-            <Pressable key={c.slug} onPress={() => setSel(c.slug)} accessibilityRole="button" accessibilityLabel={c.name} accessibilityState={{ selected: sel === c.slug }}>
-              <Pick size={ORIG} on={sel === c.slug}>
-                <Face slug={c.slug} size={ORIG} />
-              </Pick>
-            </Pressable>
-          ))}
+          {CHARACTERS.map((c) => {
+            const has = origOpen(c.slug, found);
+            return (
+              <Pressable key={c.slug} disabled={!has} onPress={() => setSel(c.slug)} accessibilityRole="button" accessibilityLabel={has ? c.name : `${c.name}, locked`} accessibilityState={{ selected: sel === c.slug, disabled: !has }}>
+                <Pick size={ORIG} on={sel === c.slug}>
+                  <View style={!has && { opacity: 0.3 }}>
+                    <Face slug={c.slug} size={ORIG} />
+                  </View>
+                  {!has ? <Lock t={t} /> : null}
+                </Pick>
+              </Pressable>
+            );
+          })}
         </View>
 
         <Text style={[s.k, { color: t.kick }]}>{`NOVA MECHS · ${owned.length} OF ${MECHS.length}`}</Text>
@@ -101,21 +108,14 @@ export function CharacterPicker({ open, onClose, wearing, owned, onWear, error }
               <Pressable key={m.key} disabled={!has} onPress={() => setSel(m.key)} style={s.mCell} accessibilityRole="button" accessibilityLabel={has ? m.name : `${m.name}, locked`} accessibilityState={{ selected: sel === m.key, disabled: !has }}>
                 <Pick size={MECH} on={sel === m.key}>
                   <Image source={m.face} style={[{ width: MECH, height: MECH }, !has && { opacity: 0.3 }]} contentFit="contain" />
-                  {!has ? (
-                    <View style={[StyleSheet.absoluteFill, s.lock]}>
-                      <Svg width={u(14)} height={u(14)} viewBox="0 0 24 24">
-                        <Rect x={5} y={10.5} width={14} height={10} rx={2} fill={t.fg} />
-                        <Path d="M8 10.5 V8 a4 4 0 0 1 8 0 V10.5" stroke={t.fg} strokeWidth={2.2} fill="none" />
-                      </Svg>
-                    </View>
-                  ) : null}
+                  {!has ? <Lock t={t} /> : null}
                 </Pick>
                 <Text style={[s.mStars, { opacity: has ? 1 : 0.45 }]}>{'★'.repeat(m.stars)}</Text>
               </Pressable>
             );
           })}
         </View>
-        <Text style={[s.note, { color: t.mute }]}>Locked robots come from daily chests.</Text>
+        <Text style={[s.note, { color: t.mute }]}>Locked characters come from the treasure hunt, robots from daily chests.</Text>
       </ScrollView>
 
       {error ? <Text style={[s.note, { color: t.mute, marginTop: u(8) }]}>{error}</Text> : null}
@@ -125,6 +125,21 @@ export function CharacterPicker({ open, onClose, wearing, owned, onWear, error }
         </LinearGradient>
       </Pressable>
     </Sheet>
+  );
+}
+
+/** The Original pack characters open to everyone; the rest come from the treasure hunt. */
+export const FREE_ORIGINALS = ['bolt', 'iris'];
+const origOpen = (slug: string, found: string[]) => FREE_ORIGINALS.includes(slug) || found.includes(slug);
+
+function Lock({ t }: { t: Theme }) {
+  return (
+    <View style={[StyleSheet.absoluteFill, s.lock]}>
+      <Svg width={u(14)} height={u(14)} viewBox="0 0 24 24">
+        <Rect x={5} y={10.5} width={14} height={10} rx={2} fill={t.fg} />
+        <Path d="M8 10.5 V8 a4 4 0 0 1 8 0 V10.5" stroke={t.fg} strokeWidth={2.2} fill="none" />
+      </Svg>
+    </View>
   );
 }
 

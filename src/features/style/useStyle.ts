@@ -10,7 +10,7 @@ import type { FrameKey } from './Frame';
 import type { EffectKey } from './catalog';
 
 /** What a player wears, as others see it. */
-export type Look = { frame: FrameKey; title: string; effect: EffectKey | null; glow: boolean };
+export type Look = { frame: FrameKey; title: string; effect: EffectKey | null; glow: boolean; glowUntil?: number | null };
 
 export const PLAIN: Look = { frame: 'normal', title: 'medical_student', effect: null, glow: false };
 
@@ -77,6 +77,7 @@ export async function loadStyle() {
     title: w?.title ?? 'medical_student',
     effect: (w?.effect as EffectKey | null) ?? null,
     glow: !!w?.glow_until && Date.parse(w.glow_until) > Date.now(),
+    glowUntil: w?.glow_until ? Date.parse(w.glow_until) : null,
   };
   useStyle.setState((s) => ({
     owned: st.owned,

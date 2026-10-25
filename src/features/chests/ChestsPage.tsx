@@ -11,7 +11,9 @@ import { InfoScroll, Kicker, s as ui, useInfo } from '@/features/info/ui';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
-import { CHEST_ORDER, CHESTS, chestItems, ITEMS, MECHS_PRIZE, RARITY, RARITY_ORDER, type ChestKind, type Item } from './data';
+import { MechViewer } from '@/features/cards/CollectionPage';
+
+import { CHEST_ORDER, CHESTS, chestItems, ITEMS, MECHS, MECHS_PRIZE, RARITY, RARITY_ORDER, type ChestKind, type Item } from './data';
 import type { OpenResult } from './useChests';
 import { ItemTile } from './Tiles';
 
@@ -44,6 +46,7 @@ export function ChestsPage({ v }: { v: ChestsView }) {
   const [won, setWon] = useState<Won | null>(null);
   const [prize, setPrize] = useState(0);
   const [busy, setBusy] = useState(false);
+  const [card, setCard] = useState<number | null>(null);
   const [failed, setFailed] = useState(false);
   const opening = useRef(false);
 
@@ -114,7 +117,13 @@ export function ChestsPage({ v }: { v: ChestsView }) {
                 <Text style={[s.wonK, { color: c.kick }]}>YOU GOT</Text>
                 {won.map(({ item, dupe, tokens }, i) => (
                   <Animated.View key={`${item.key}${i}`} entering={FadeInDown.delay(i * 140).duration(320)} style={s.wonRow}>
-                    <ItemTile item={item} size={u(46)} />
+                    {item.kind === 'mech' ? (
+                      <Pressable onPress={() => setCard(MECHS.findIndex((m) => `mech:${m.key}` === item.key))} accessibilityRole="button" accessibilityLabel={`See ${item.name}'s card`}>
+                        <ItemTile item={item} size={u(46)} />
+                      </Pressable>
+                    ) : (
+                      <ItemTile item={item} size={u(46)} />
+                    )}
                     <View style={{ flex: 1 }}>
                       <Text style={[s.wonN, { color: c.fg }]} numberOfLines={1}>
                         {item.name}
@@ -147,9 +156,15 @@ export function ChestsPage({ v }: { v: ChestsView }) {
           <View style={s.right}>
             <Text style={[s.inK, { color: c.kick }]}>INSIDE</Text>
             <View style={s.grid}>
-              {items.map((i) => (
-                <ItemTile key={i.key} item={i} size={TILE} owned={v.have.includes(i.key)} />
-              ))}
+              {items.map((i) =>
+                i.kind === 'mech' ? (
+                  <Pressable key={i.key} onPress={() => setCard(MECHS.findIndex((m) => `mech:${m.key}` === i.key))} accessibilityRole="button" accessibilityLabel={`See ${i.name}'s card`}>
+                    <ItemTile item={i} size={TILE} owned={v.have.includes(i.key)} />
+                  </Pressable>
+                ) : (
+                  <ItemTile key={i.key} item={i} size={TILE} owned={v.have.includes(i.key)} />
+                ),
+              )}
             </View>
           </View>
         </View>
@@ -163,7 +178,7 @@ export function ChestsPage({ v }: { v: ChestsView }) {
             </View>
           ))}
         </View>
-        {sel === 'epic' ? <Text style={[s.note, { color: c.mute }]}>At least one Rare or better. The only chest with 5-star robots.</Text> : null}
+        {sel === 'epic' ? <Text style={[s.note, { color: c.mute }]}>At least one Rare or better, with the best odds for 5-star robots.</Text> : null}
 
         <Pressable onPress={() => router.navigate('/challenges' as never)} style={[s.link, { backgroundColor: c.surf, borderColor: c.line }]} accessibilityRole="link" accessibilityLabel="Open daily challenges">
           <View style={{ flex: 1 }}>
@@ -177,6 +192,7 @@ export function ChestsPage({ v }: { v: ChestsView }) {
           </View>
         </Pressable>
       </InfoScroll>
+      <MechViewer i={card} onClose={() => setCard(null)} />
     </Screen>
   );
 }

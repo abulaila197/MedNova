@@ -166,7 +166,8 @@ function Mechs({ t, owned, onOpen }: { t: Theme; owned: string[]; onOpen: (i: nu
 
 const MECH_RATIO = 860 / 480;
 
-function MechViewer({ i, onClose }: { i: number | null; onClose: () => void }) {
+/** One robot's card, big (also opened from the chest page's items, list #87). */
+export function MechViewer({ i, onClose }: { i: number | null; onClose: () => void }) {
   if (i === null) return null;
   const m = MECHS[i];
   const w = u(196);

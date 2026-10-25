@@ -196,7 +196,7 @@ export function StylePage() {
           </View>
         )}
 
-        {tab === 'effects' ? <Glow t={t} busy={busy} act={act} glow={worn.glow} /> : null}
+        {tab === 'effects' ? <Glow t={t} busy={busy} act={act} glow={worn.glow} until={worn.glowUntil ?? null} /> : null}
         <View style={{ height: u(120) }} />
       </InfoScroll>
 
@@ -267,16 +267,17 @@ function Stickers({ slug }: { slug: string }) {
   );
 }
 
-/** Leaderboard name glow for a week (50 tokens). */
-function Glow({ t, busy, act, glow }: { t: Theme; busy: boolean; act: (fn: () => Promise<{ ok: boolean }>, done: string) => void; glow: boolean }) {
+/** Leaderboard name glow for a week (50 tokens). While it glows, the row shows the days left in total (list #30). */
+function Glow({ t, busy, act, glow, until }: { t: Theme; busy: boolean; act: (fn: () => Promise<{ ok: boolean }>, done: string) => void; glow: boolean; until: number | null }) {
   const c = useInfo();
+  const days = glow && until ? Math.ceil((until - Date.now()) / 86400000) : 0;
   return (
     <View style={[s.list, s.glow, { borderColor: c.line, backgroundColor: c.surf }]}>
       <View style={{ flex: 1 }}>
         <Text style={[s.rN, { color: c.fg, textShadowColor: t.accent, textShadowRadius: u(8) }]}>Name glow</Text>
-        <Text style={[s.rS, { color: c.mute }]}>{glow ? 'Your name glows on the leaderboard. Buying again adds a week.' : 'Your name glows on the leaderboard for 7 days'}</Text>
+        <Text style={[s.rS, { color: c.mute }]}>{days ? `Glowing for ${days} more ${days === 1 ? 'day' : 'days'}. Buying again adds 7 days.` : 'Your name glows on the leaderboard for 7 days'}</Text>
       </View>
-      <Big t={t} label="50" coin busy={busy} onPress={() => act(() => spendTokens('glow'), 'Your name glows for 7 days.')} />
+      <Big t={t} label="50" coin busy={busy} onPress={() => act(() => spendTokens('glow'), days ? `7 days added. ${days + 7} days in total.` : 'Your name glows for 7 days.')} />
     </View>
   );
 }

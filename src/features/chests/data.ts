@@ -17,7 +17,7 @@ export const CHESTS: Record<ChestKind, { name: string; art: ImageSource; items: 
   wooden: { name: 'Wooden chest', art: require('../../../assets/chests/chest-wooden.webp'), items: 1, from: 'Challenge 1', odds: { common: 70, uncommon: 24, rare: 5, epic: 1 } },
   golden: { name: 'Golden chest', art: require('../../../assets/chests/chest-golden.webp'), items: 2, from: 'Challenge 2', odds: { common: 50, uncommon: 30, rare: 14, epic: 5, legendary: 1 } },
   diamond: { name: 'Diamond chest', art: require('../../../assets/chests/chest-diamond.webp'), items: 3, from: 'Challenge 3', odds: { common: 30, uncommon: 32, rare: 22, epic: 12, legendary: 4 } },
-  epic: { name: 'Epic chest', art: require('../../../assets/chests/chest-epic.webp'), items: 3, from: '5 days in a row', odds: { rare: 50, epic: 40, legendary: 10 } },
+  epic: { name: 'Epic chest', art: require('../../../assets/chests/chest-epic.webp'), items: 3, from: '5 days in a row', odds: { rare: 40, epic: 35, legendary: 25 } },
 };
 export const CHEST_ORDER: ChestKind[] = ['wooden', 'golden', 'diamond', 'epic'];
 
@@ -58,8 +58,8 @@ export const ITEMS: Item[] = [
   { key: 'effect:mic_drop', kind: 'effect', name: 'Mic Drop', rarity: 'legendary', dupe: 70 },
 ];
 
-/** What this chest can drop: rarities it rolls, minus 5-star robots outside the epic chest. */
+/** What this chest can drop: rarities it rolls, minus 5-star robots in the wooden and golden chests (diamond gets them, list #28). */
 export function chestItems(k: ChestKind): Item[] {
   const odds = CHESTS[k].odds;
-  return ITEMS.filter((i) => (odds[i.rarity] ?? 0) > 0 && !(k !== 'epic' && i.kind === 'mech' && i.stars === 5));
+  return ITEMS.filter((i) => (odds[i.rarity] ?? 0) > 0 && !((k === 'wooden' || k === 'golden') && i.kind === 'mech' && i.stars === 5));
 }

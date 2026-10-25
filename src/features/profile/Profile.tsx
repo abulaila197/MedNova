@@ -20,6 +20,9 @@ import { F, type Theme } from '@/theme/tokens';
 
 import { ChangeName } from './ChangeName';
 import { CharacterPicker } from './CharacterPicker';
+import { loadHunt, useHunt } from '@/features/cards/hunt';
+
+const EMPTY: string[] = [];
 import { useProfileStats } from './stats';
 import { titleName } from '@/features/style/catalog';
 import { Framed } from '@/features/style/Frame';
@@ -68,6 +71,7 @@ export function Profile() {
   const [rename, setRename] = useState(false);
   const [wearErr, setWearErr] = useState<string | null>(null);
   const wearing = useRef(false);
+  const huntFound = useHunt((h) => h.status?.found ?? EMPTY);
   const mechs = useStyle(useShallow((x) => x.owned.filter((k) => k.startsWith('mech:')).map((k) => k.slice(5))));
   // The server checks a robot is yours before you can wear it (set_avatar).
   const wearCharacter = async (slug: string) => {
@@ -96,7 +100,7 @@ export function Profile() {
       <ScrollView style={s.fill} contentContainerStyle={s.pf} showsVerticalScrollIndicator={false}>
         {/* Your framed face where the planet was (Yazan 2026-10-13: on the planet spot, orbit and moons removed). */}
         <View style={s.me}>
-          <Framed slug={profile?.avatar ?? 'yara'} size={u(124)} frame={look.frame} />
+          <Framed slug={profile?.avatar ?? 'bolt'} size={u(124)} frame={look.frame} />
         </View>
         <View style={s.idn}>
           <View style={s.nm}>
@@ -117,7 +121,12 @@ export function Profile() {
                 <Text style={[s.stT, { color: t.fg }]}>Change name</Text>
               </Pressable>
             ) : null}
-            <Pressable onPress={() => setPick(true)} style={[s.stBtn, { backgroundColor: t.chip, borderColor: t.chipLine }]} accessibilityRole="button">
+            <Pressable
+              onPress={() => {
+                void loadHunt();
+                setPick(true);
+              }}
+              style={[s.stBtn, { backgroundColor: t.chip, borderColor: t.chipLine }]} accessibilityRole="button">
               <Text style={[s.stT, { color: t.fg }]}>Change character</Text>
             </Pressable>
             {[['Change frame', 'frames'], ['Change title', 'titles']].map(([l, tab]) => (
@@ -160,8 +169,9 @@ export function Profile() {
         setPick(false);
         setWearErr(null);
       }}
-      wearing={profile?.avatar ?? 'yara'}
+      wearing={profile?.avatar ?? 'bolt'}
       owned={mechs}
+      found={huntFound}
       onWear={wearCharacter}
       error={wearErr}
     />
