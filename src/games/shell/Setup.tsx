@@ -12,6 +12,11 @@ import { SEAT_COLOURS } from './characters';
 import type { Team } from './teams';
 import type { GameDef } from './types';
 import { useSetup } from './useSetup';
+import { useSession } from './session';
+import { alwaysFree } from './flow';
+import { perUnit, setupPrices } from '@/features/sparks/costs';
+import { useSparks } from '@/features/sparks/sparks';
+import { useIsSubscribed } from '@/features/store/billing';
 import { Btn, Card, Chips, GameScreen, Title } from './ui';
 
 
@@ -21,6 +26,15 @@ export function Setup({ def, mode, prefill, prefillSeats }: { def: GameDef; mode
   const g = GAMES.find((x) => x.key === def.key)!;
   const st = useSetup(def, mode, prefill, prefillSeats);
   const { opts, vals, setVals, range, seats, teams, canTeam, emptyTeam, busy, start } = st;
+  // Signed in without the subscription, every choice that changes the cost shows its Sparks (#36).
+  const signedIn = !!useSession((x) => x.userId);
+  const subscribed = useIsSubscribed();
+  const priced = signedIn && !subscribed;
+  const have = useSparks((x) => x.value);
+  const free = alwaysFree({ game: def.key, mode, settings: vals });
+  const { cost, per } = setupPrices(def.key, mode, vals, opts);
+  const showCost = priced && !free && cost > 0;
+  const each = perUnit(def.key, mode, vals) ? (def.key === 'the-riddler' ? ' a level' : ' a word') : '';
 
   // Compact on purpose: every game's setup fits one phone screen without scrolling (Yazan, 2026-10-05). With many
   // players the list scrolls, and Start stays on screen under it.
@@ -30,7 +44,7 @@ export function Setup({ def, mode, prefill, prefillSeats }: { def: GameDef; mode
       bottom={
         <>
           <Text style={[s.small, { color: t.dim, textAlign: 'center' }]}>
-            {emptyTeam ? `${emptyTeam.name} has no players yet.` : 'Settings lock once the game starts.'}
+            {emptyTeam ? `${emptyTeam.name} has no players yet.` : showCost ? `${each ? 'Costs' : 'This game costs'} ${cost} Sparks${each} · you have ${have}` : 'Settings lock once the game starts.'}
           </Text>
           <Btn label="Start" onPress={start} disabled={busy || !!emptyTeam} />
         </>
@@ -45,7 +59,7 @@ export function Setup({ def, mode, prefill, prefillSeats }: { def: GameDef; mode
               <View style={s.line}>
                 <Text style={[s.lbl, s.side, { color: t.white }]}>{o.label}</Text>
                 <View style={{ flex: 1 }}>
-                  <Chips choices={o.choices} value={vals[o.key]} onChange={(v) => setVals((p) => ({ ...p, [o.key]: v }))} />
+                  <Chips choices={o.choices} value={vals[o.key]} onChange={(v) => setVals((p) => ({ ...p, [o.key]: v }))} sparks={showCost && per[o.key] ? per[o.key] : undefined} />
                 </View>
               </View>
             </View>

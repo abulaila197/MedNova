@@ -65,7 +65,8 @@ Deno.serve(async (req) => {
     if (!bank) return json({ result: 'bank' });
     if (!o) {
       if (now < L.match.ends_ms) return json({ result: 'wait' });
-      const target = Number(L.match.settings.target) === 100 ? 100 : 50;
+      const t = Number(L.match.settings.target);
+      const target = t === 100 || t === 25 ? t : 50;
       const mix = (['mixed', 'clinical', 'basic'].includes(String(L.match.settings.mix)) ? L.match.settings.mix : 'mixed') as Mix;
       o = startOnline(L.seats.length, target, mix, body.v, bank, Math.random, now);
     }

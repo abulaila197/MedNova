@@ -12,6 +12,7 @@ const TARGET = {
   key: 'target',
   label: 'First to',
   choices: [
+    { value: 25, label: '25', note: 'POINTS' },
     { value: 50, label: '50', note: 'POINTS' },
     { value: 100, label: '100', note: 'POINTS' },
   ],

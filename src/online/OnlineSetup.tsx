@@ -13,8 +13,9 @@ import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F, type Theme } from '@/theme/tokens';
 
-import { sparksCost } from '@/features/sparks/costs';
-import { needSparks } from '@/features/sparks/sparks';
+import { setupPrices, sparksCost } from '@/features/sparks/costs';
+import { needSparks, useSparks } from '@/features/sparks/sparks';
+import { useIsSubscribed } from '@/features/store/billing';
 
 import { createRoom, JOIN_SAY, joinRoom, joinRoomId } from './api';
 import { lobbyOf, useJoin, useOpenRooms } from './useJoin';
@@ -139,6 +140,11 @@ function Create({ def, prefill }: { def: GameDef; prefill?: Record<string, unkno
   const [pub, setPub] = useState(true);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState(false);
+  // Every choice that changes the cost shows its Sparks, as on the Solo setup page (#36).
+  const subscribed = useIsSubscribed();
+  const have = useSparks((x) => x.value);
+  const { cost, per } = setupPrices(def.key, 'online', { ...vals, teams }, opts);
+  const priced = !subscribed && cost > 0;
   const create = async () => {
     // Each player pays for themselves (TR4); the host checks at Create, players at I'm ready.
     if (!(await needSparks(sparksCost(def.key, 'online', { ...vals, teams })))) return;
@@ -157,7 +163,7 @@ function Create({ def, prefill }: { def: GameDef; prefill?: Record<string, unkno
       <Card style={s.card}>
         {opts.map((o, i) => (
           <Line key={o.key} label={o.label} first={i === 0}>
-            <Chips choices={o.choices} value={vals[o.key]} onChange={(v) => setVals((p) => ({ ...p, [o.key]: v }))} />
+            <Chips choices={o.choices} value={vals[o.key]} onChange={(v) => setVals((p) => ({ ...p, [o.key]: v }))} sparks={priced && per[o.key] ? per[o.key] : undefined} />
           </Line>
         ))}
         {def.teams?.online ? (
@@ -170,7 +176,7 @@ function Create({ def, prefill }: { def: GameDef; prefill?: Record<string, unkno
         </Line>
       </Card>
       <Text style={[s.note, { color: err ? t.error : t.dim }]}>
-        {err ? JOIN_SAY.error : teams ? 'You put players in teams in the lobby.' : 'You can still change these in the lobby.'}
+        {err ? JOIN_SAY.error : priced ? `This game costs ${cost} Sparks · you have ${have}` : teams ? 'You put players in teams in the lobby.' : 'You can still change these in the lobby.'}
       </Text>
       <Btn label={busy ? 'Opening room…' : 'Create room'} onPress={create} disabled={busy} />
     </>

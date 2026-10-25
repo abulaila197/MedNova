@@ -16,16 +16,16 @@ const STYLE = {
   initial: 'mixed',
 };
 
-// SM7: online rooms pick 10, 15 or 20 questions and 10, 15 or 20 s per question.
+// SM7: online rooms pick 5, 10 or 15 questions (Yazan 2026-10-25, was 10/15/20) and 10, 15 or 20 s per question.
 const QUESTIONS_N = {
   key: 'questions',
   label: 'How many',
   choices: [
-    { value: 10, label: '10', note: 'quick' },
-    { value: 15, label: '15' },
-    { value: 20, label: '20', note: 'long' },
+    { value: 5, label: '5', note: 'quick' },
+    { value: 10, label: '10' },
+    { value: 15, label: '15', note: 'long' },
   ],
-  initial: 15,
+  initial: 10,
 };
 const QTIME = {
   key: 'qtime',

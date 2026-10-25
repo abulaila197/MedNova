@@ -8,6 +8,7 @@ import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 import { tapped } from '@/lib/sound';
+import { Bolt } from '@/features/sparks/Bolt';
 
 /**
  * A game page: the app sky and the game header (GH1), no dock, content scrolls with a gap under the header.
@@ -79,7 +80,12 @@ export function Card({ children, style }: { children: ReactNode; style?: StylePr
 }
 
 /** Tappable choice chips (setup options). */
-export function Chips<V extends string | number>({ choices, value, onChange }: { choices: { value: V; label: string; note?: string }[]; value: V; onChange: (v: V) => void }) {
+// The Sparks gold (header bar, Recharge sheet): bright on the chosen chip, softer on the others.
+const SPARK_ON = '#ffd166';
+const SPARK_OFF = 'rgba(255,209,102,0.7)';
+
+/** Setup choices as chips; `sparks` gives a choice's Sparks cost, shown under it (#36). */
+export function Chips<V extends string | number>({ choices, value, onChange, sparks }: { choices: { value: V; label: string; note?: string }[]; value: V; onChange: (v: V) => void; sparks?: (v: V) => number | null }) {
   const t = useTheme();
   return (
     <View style={s.chips}>
@@ -94,6 +100,12 @@ export function Chips<V extends string | number>({ choices, value, onChange }: {
             accessibilityState={{ selected: on }}>
             <Text style={[s.chipT, { color: on ? t.accent : t.fg }]}>{c.label}</Text>
             {c.note ? <Text style={[s.chipN, { color: t.dim }]}>{c.note}</Text> : null}
+            {sparks?.(c.value) != null ? (
+              <View style={s.chipSp}>
+                {sparks(c.value) ? <Bolt size={u(8.5)} color={on ? SPARK_ON : SPARK_OFF} /> : null}
+                <Text style={[s.chipS, { color: on ? SPARK_ON : SPARK_OFF }]}>{sparks(c.value) || 'Free'}</Text>
+              </View>
+            ) : null}
           </Pressable>
         );
       })}
@@ -126,6 +138,8 @@ export const s = StyleSheet.create({
   chip: { borderRadius: u(10), borderWidth: 1, paddingVertical: u(5), paddingHorizontal: u(10), minWidth: u(44), alignItems: 'center' },
   chipT: { fontFamily: F.bodySemi, fontSize: u(10.5), lineHeight: u(13) },
   chipN: { fontFamily: F.body, fontSize: u(8), lineHeight: u(10) },
+  chipSp: { flexDirection: 'row', alignItems: 'center', gap: u(1.5), marginTop: u(1) },
+  chipS: { fontFamily: F.bodyBold, fontSize: u(8.5), lineHeight: u(11), fontVariant: ['tabular-nums'] },
   round: { width: u(28), height: u(28), borderRadius: u(10), borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
   roundT: { fontFamily: F.bodyBold, fontSize: u(11), lineHeight: u(13) },
 });

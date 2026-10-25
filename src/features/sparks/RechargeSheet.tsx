@@ -2,7 +2,6 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import Animated, { FadeIn, FadeOut, SlideInDown } from 'react-native-reanimated';
-import Svg, { Path } from 'react-native-svg';
 
 import { Text } from '@/components/AppText';
 import { engine } from '@/games/engine';
@@ -13,20 +12,10 @@ import { F } from '@/theme/tokens';
 
 import { useBack } from '@/lib/useBack';
 import { SUBSCRIPTION } from '@/features/store/catalog';
+import { Bolt, SPARK } from './Bolt';
 import { AD_CAP, ADS_LIVE, cancelRecharge, rechargeWithAd, rechargeWithTokens, subscribeFromRecharge, useRecharge, useSparks } from './sparks';
 
 type Choice = { key: string; label: string; sub: string; on?: () => void; off?: boolean };
-
-export const SPARK = ['#ffe07a', '#ffb547'] as const;
-
-/** The Sparks bolt. */
-export function Bolt({ size, color = SPARK[0] }: { size: number; color?: string }) {
-  return (
-    <Svg width={size} height={size} viewBox="0 0 24 24">
-      <Path d="M13.5 2 5 13.4h5.6L9.8 22 19 10.3h-5.7L13.5 2Z" fill={color} />
-    </Svg>
-  );
-}
 
 const WHY: Record<string, string> = {
   offline: 'No connection. Refills need the internet.',

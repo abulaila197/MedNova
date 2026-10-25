@@ -12,6 +12,8 @@ import { F } from '@/theme/tokens';
 import { engine } from '../engine';
 import { usePauseHide } from '../engine/usePauseHide';
 import { recordItem } from '../shell/flow';
+import { sparksCost } from '@/features/sparks/costs';
+import { chargeUnit, needSparks } from '@/features/sparks/sparks';
 import { useSession } from '../shell/session';
 import { PauseMenu } from '../shell/PauseMenu';
 import type { PlayProps } from '../shell/types';
@@ -67,14 +69,16 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   );
 
   const open = useCallback(
-    (id: string) => {
+    async (id: string) => {
+      // Riddler Solo pays per level (#64): each level needs its Sparks before it opens.
+      if (!(await needSparks(sparksCost(play.game, 'solo', play.settings)))) return;
       const l = startLevel(id, Date.now(), retryCap(sessionRef.current, id));
       ref.current = l;
       setLevel(l);
       setNotice(null);
       save(l, sessionRef.current);
     },
-    [save],
+    [save, play],
   );
 
   const dispatch = useCallback(
@@ -115,6 +119,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
           feedsLearn: !solved && feedsLearn(r),
           gameData: { stars: next.stars, exp, wrong: next.wrong.length, kind: r.kind, revived: next.revived ?? 0 },
         });
+        void chargeUnit(play, `${play.id}:L${list.length}`, sparksCost(play.game, 'solo', play.settings));
       }
       save(next, list);
     },

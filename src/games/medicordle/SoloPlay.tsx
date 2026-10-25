@@ -2,6 +2,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Platform, Share, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 
+import { sparksCost } from '@/features/sparks/costs';
+import { chargeUnit, needSparks } from '@/features/sparks/sparks';
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
@@ -131,6 +133,8 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
           feedsLearn: false,
           gameData: { style, kind, guesses: r.guesses.length, exp: r.exp, day: next.day },
         });
+        // Endless costs 5 Sparks a word (#69), paid as each word ends.
+        if (next.kind === 'endless') void chargeUnit(play, `${play.id}:${r.wordId}`, sparksCost(play.game, 'solo', play.settings));
         if (next.kind === 'daily' && next.day != null) {
           const day = next.day;
           engine.kv.set(dailyKey(style, day), { wordId: r.wordId, guesses: r.guesses, solved: r.solved, finished: true } satisfies DailyDone);
@@ -147,6 +151,14 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   );
 
   usePauseHide(() => dispatch({ type: 'PAUSE', now: Date.now() }));
+
+  /** The next Endless word costs 5 Sparks: an empty bar opens Recharge first (#69). */
+  const nextWord = useCallback(async () => {
+    const r = runRef.current;
+    const more = r && r.kind === 'endless' && r.index + 1 < r.wordIds.length;
+    if (more && !(await needSparks(sparksCost(play.game, 'solo', play.settings)))) return;
+    dispatch({ type: 'NEXT', now: Date.now() });
+  }, [dispatch, play]);
 
   /**
    * NM23: up to two hints per Custom word, 1 then 2 tokens; refunded if the word ended first (rule 18). One payment at
@@ -291,7 +303,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
             primary={
               run.kind === 'daily'
                 ? { label: 'See results', onPress: () => dispatch({ type: 'NEXT', now: Date.now() }) }
-                : { label: run.index + 1 >= run.wordIds.length ? 'See results' : 'Next word', onPress: () => dispatch({ type: 'NEXT', now: Date.now() }) }
+                : { label: run.index + 1 >= run.wordIds.length ? 'See results' : 'Next word', onPress: () => void nextWord() }
             }
             secondary={
               run.kind === 'daily'

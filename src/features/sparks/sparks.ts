@@ -11,7 +11,7 @@ import { supabase } from '@/lib/supabase';
 import { useAccount } from '@/state/account';
 import { useSession } from '@/games/shell/session';
 
-import { sparksCost } from './costs';
+import { perUnit, sparksCost } from './costs';
 
 /** Ads go live once the store accounts exist (EC2); until then 'Watch an ad' gives its Sparks with no ad (TR5). */
 export const ADS_LIVE = false;
@@ -67,6 +67,7 @@ export async function chargePlay(play: Play, free: boolean) {
   if (!play.userId) return engine.gate.countGuest(play.game, play.id);
   if (free || isSubscribed()) return;
   if (await engine.gate.useBoost(play.game, play.id)) return;
+  if (perUnit(play.game, play.mode, play.settings)) return; // the game pays each level / word itself
   await chargeUnit(play, play.id, sparksCost(play.game, play.mode, play.settings));
 }
 

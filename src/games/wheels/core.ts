@@ -50,7 +50,7 @@ export const MIXES: { value: Mix; label: string }[] = [
 export const fieldWeights = (mix: Mix = 'mixed'): [FieldKey, number][] =>
   mix === 'mixed' ? FIELD_WEIGHTS : FIELDS.filter((f) => f.group === mix).map((f) => [f.key, 1]);
 
-export const TARGETS = [50, 100] as const;
+export const TARGETS = [25, 50, 100] as const; // 25 added (Yazan 2026-10-25)
 export type Target = (typeof TARGETS)[number];
 export const FEEDBACK_MS = { right: 1100, wrong: 1800 }; // as coded
 export const STAR_WINDOW_MS = 3000; // WC5

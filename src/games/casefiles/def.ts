@@ -6,6 +6,9 @@ import { OnlinePlay } from './OnlinePlay';
 import { caseFilesScreens, INK, INK_TEAMS } from './screens';
 import { SoloPlay } from './SoloPlay';
 
+/** Online cases in a row (1-3; an older room has none and plays one). */
+const cases = (settings: Record<string, unknown>) => Math.min(3, Math.max(1, Number(settings.count) || 1));
+
 /** Case Files on the shared shell (CF1-CF12, TMG-CF): Solo library, Offline and Online Multiplayer. */
 export const caseFiles: GameDef = {
   key: 'case-files-unsolved',
@@ -40,8 +43,9 @@ export const caseFiles: GameDef = {
       blurb: 'The same case at the same time, with live progress.',
       howTo: [
         'Everyone gets the same random case at the same time and works it alone, against the host\'s time limit.',
+        'The host picks 1, 2 or 3 cases. They come one after another, each with the full time limit, and your points add up.',
         'You see when someone reaches a new stage or solves it, never their answers or points.',
-        'Scoring is the same as Solo, and the case\'s points are your EXP. A tie goes to the faster finish.',
+        'Scoring is the same as Solo, and every case\'s points are your EXP. A tie goes to the faster finish.',
         'Everything stays sealed until everyone closes the case or time runs out. With teams, the team score is its players’ average.',
       ],
     },
@@ -49,8 +53,18 @@ export const caseFiles: GameDef = {
   setup: {
     solo: [],
     offline: [],
-    // CF12: the host's time limit.
+    // CF12: the host's time limit, per case; 1 to 3 cases back to back, points add up (Yazan, 2026-10-25).
     online: [
+      {
+        key: 'count',
+        label: 'Cases',
+        choices: [
+          { value: 1, label: '1 case' },
+          { value: 2, label: '2 cases' },
+          { value: 3, label: '3 cases' },
+        ],
+        initial: 1,
+      },
       {
         key: 'timelimit',
         label: 'Time limit',
@@ -74,7 +88,7 @@ export const caseFiles: GameDef = {
   screens: caseFilesScreens,
   // CF6: a Solo case pays its points the first time only; Offline pays nothing.
   exp: (_score, items) => items.reduce((a, i) => a + (Number(i.gameData.exp) || 0), 0),
-  expCap: (_settings, mode) => (mode === 'offline' ? 0 : 3 * CF.points.ddRight + CF.points.provisional + CF.points.timeMax),
+  expCap: (settings, mode) => (mode === 'offline' ? 0 : (mode === 'online' ? cases(settings) : 1) * (3 * CF.points.ddRight + CF.points.provisional + CF.points.timeMax)),
   itemLabel: (item) => {
     const c = caseById.get(item.itemId);
     return c ? `${c.title}: ${c.final}` : item.itemId;

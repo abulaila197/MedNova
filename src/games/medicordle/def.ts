@@ -75,8 +75,7 @@ export const novaMedicordle: GameDef = {
         label: 'Words',
         choices: [
           { value: 3, label: '3', note: 'quick' },
-          { value: 5, label: '5' },
-          { value: 10, label: '10', note: 'long' },
+          { value: 5, label: '5', note: 'long' },
         ],
         initial: 3,
       },
@@ -99,8 +98,7 @@ export const novaMedicordle: GameDef = {
         label: 'Words',
         choices: [
           { value: 3, label: '3', note: 'quick' },
-          { value: 5, label: '5' },
-          { value: 10, label: '10', note: 'long' },
+          { value: 5, label: '5', note: 'long' },
         ],
         initial: 5,
       },

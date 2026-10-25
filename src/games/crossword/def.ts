@@ -5,6 +5,9 @@ import { OfflinePlay } from './OfflinePlay';
 import { OnlinePlay } from './OnlinePlay';
 import { SoloPlay } from './SoloPlay';
 
+/** Online puzzles in a row (1-3; an older room has none and plays one). */
+const cases = (settings: Record<string, unknown>) => Math.min(3, Math.max(1, Number(settings.count) || 1));
+
 /** Nova Crossword on the shared shell (CW1-CW12): Solo, Offline and Online Multiplayer. */
 export const novaCrossword: GameDef = {
   key: 'nova-crossword',
@@ -39,18 +42,29 @@ export const novaCrossword: GameDef = {
       blurb: 'Everyone plays the same grid live. First right answer claims the word.',
       howTo: [
         'Everyone gets the same random grid at the same time. The first right answer claims the word and its letters.',
+        `The host picks 1, 2 or 3 puzzles. They come one after another, each with the full time limit, ${CW.hearts} fresh hearts and its own revive.`,
         `A wrong answer costs one of your ${CW.hearts} hearts; trying the same wrong answer again costs nothing. No hints online.`,
         'At 0 hearts you get one revive per match for 1 token, or you watch the rest.',
         'The race ends when every word is claimed, everyone is out, or the host\'s time runs out. Most letters owned wins.',
-        `EXP by place: 1st earns 3 stars, 2nd 2, everyone else who claimed a word 1. Each star is ${CW.expPerStar} EXP. Teams score their players' average.`,
+        `EXP by place on each puzzle: 1st earns 3 stars, 2nd 2, everyone else who claimed a word 1. Each star is ${CW.expPerStar} EXP. Letters add up over the puzzles. Teams score their players' average.`,
       ],
     },
   ],
   setup: {
     solo: [],
     offline: [],
-    // CW11: the host's time limit.
+    // CW11: the host's time limit, per puzzle; 1 to 3 puzzles back to back, points add up (Yazan, 2026-10-25).
     online: [
+      {
+        key: 'count',
+        label: 'Puzzles',
+        choices: [
+          { value: 1, label: '1 puzzle' },
+          { value: 2, label: '2 puzzles' },
+          { value: 3, label: '3 puzzles' },
+        ],
+        initial: 1,
+      },
       {
         key: 'timelimit',
         label: 'Time limit',
@@ -72,7 +86,7 @@ export const novaCrossword: GameDef = {
   Online: OnlinePlay,
   // CW9: Solo pays the EXP each puzzle earned this session (stored on its first word); Offline earns none; CW12: Online up to 3 stars.
   exp: (_score, items) => items.reduce((a, i) => a + (Number(i.gameData.exp) || 0), 0),
-  expCap: (_settings, mode) => (mode === 'offline' ? 0 : mode === 'online' ? 3 * CW.expPerStar : PUZZLES.length * 3 * CW.expPerStar),
+  expCap: (settings, mode) => (mode === 'offline' ? 0 : mode === 'online' ? cases(settings) * 3 * CW.expPerStar : PUZZLES.length * 3 * CW.expPerStar),
   itemLabel: (item) => wordById.get(item.itemId)?.answer ?? item.itemId,
   itemNoun: 'puzzle',
   itemsTitle: 'Words',

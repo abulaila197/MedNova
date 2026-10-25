@@ -30,33 +30,38 @@ const puzzleOf = (n: number) => PUZZLES[n - 1];
 /** CW12: stars by rank (1st 3, 2nd 2, the rest 1), only for players who claimed a word; 4 EXP a star. */
 export const onlineStars = (rank: number, words: number) => (words < 1 ? 0 : rank <= 1 ? 3 : rank === 2 ? 2 : 1);
 
-/** Each word is one item. Yours = right; the rest are misses, and Learn gets the ones you got wrong or nobody claimed (CW1). */
+/**
+ * Each word is one item. Yours = right; the rest are misses, and Learn gets the ones you got wrong or nobody claimed
+ * (CW1). With 2 or 3 puzzles, each puzzle's stars go by your place on it, so EXP adds up (Yazan, 2026-10-25).
+ */
 function itemsOf(me: string) {
   return (st: RaceState) => {
-    const p = puzzleOf(st.item ?? st.my_items?.[0]?.item ?? 1);
     const by = new Map((st.claims ?? []).map((c) => [c.word_id, c]));
-    const mine = st.players.find((x) => x.user_id === me);
-    const words = (st.claims ?? []).filter((c) => c.user_id === me).length;
-    const stars = onlineStars(mine?.rank ?? st.players.length, words);
     const nameOf = new Map(st.players.map((x) => [x.user_id, x.name]));
-    return p.words.map((w, i) => {
-      const c = by.get(w.id);
-      const tried = st.tried?.[w.id] ?? [];
-      const right = c?.user_id === me;
-      return {
-        seat: 0,
-        itemId: w.id,
-        answerKey: w.dossier ?? null,
-        outcome: right ? ('right' as const) : ('wrong' as const),
-        answersGiven: tried,
-        timeMs: c?.at_ms ?? 0,
-        hintsUsed: 0,
-        revealsUsed: 0,
-        points: right ? w.answer.length : 0,
-        feedsLearn: !right && (!c || tried.length > 0),
-        // The match's EXP rides on the first word, like Solo stores a puzzle's EXP on its first word (CW9).
-        gameData: { level: p.level, answer: w.answer, clue: clueText(w), category: w.category, claimedBy: c ? nameOf.get(c.user_id) ?? null : null, room: st.room_id, ...(i === 0 ? { exp: stars * CW.expPerStar, stars } : null) },
-      };
+    const list = st.my_items?.length ? st.my_items : [{ item: st.item ?? 1, rank: null }];
+    return list.flatMap((m) => {
+      const p = puzzleOf(m.item);
+      const words = p.words.filter((w) => by.get(w.id)?.user_id === me).length;
+      const stars = onlineStars(m.rank ?? st.players.length, words);
+      return p.words.map((w, i) => {
+        const c = by.get(w.id);
+        const tried = st.tried?.[w.id] ?? [];
+        const right = c?.user_id === me;
+        return {
+          seat: 0,
+          itemId: w.id,
+          answerKey: w.dossier ?? null,
+          outcome: right ? ('right' as const) : ('wrong' as const),
+          answersGiven: tried,
+          timeMs: c?.at_ms ?? 0,
+          hintsUsed: 0,
+          revealsUsed: 0,
+          points: right ? w.answer.length : 0,
+          feedsLearn: !right && (!c || tried.length > 0),
+          // Each puzzle's EXP rides on its first word, like Solo stores a puzzle's EXP on its first word (CW9).
+          gameData: { level: p.level, answer: w.answer, clue: clueText(w), category: w.category, claimedBy: c ? nameOf.get(c.user_id) ?? null : null, room: st.room_id, ...(i === 0 ? { exp: stars * CW.expPerStar, stars } : null) },
+        };
+      });
     });
   };
 }
@@ -120,10 +125,13 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   }
 
   const p = puzzleOf(st.item);
+  const total = st.total ?? 1;
+  const ids = new Set(p.words.map((w) => w.id));
   const mine = st.players.find((x) => x.user_id === me);
   const talker = { id: me, name: mine?.name ?? 'You', face: mine?.character ?? 'yara' };
   const byUser = new Map(st.players.map((x) => [x.user_id, x]));
-  const claimsList = st.claims ?? [];
+  // Only this puzzle's claims (earlier puzzles' stay in the match's list).
+  const claimsList = (st.claims ?? []).filter((c) => ids.has(c.word_id));
   const claims = Object.fromEntries(claimsList.map((c) => [c.word_id, colorOf(byUser.get(c.user_id))]));
   const solved = claimsList.map((c) => c.word_id);
   const left = p.words.length - solved.length;
@@ -151,10 +159,10 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
 
   return (
     <GameScreen scroll={false} bodyStyle={{ paddingTop: u(12), paddingHorizontal: u(16), gap: u(10) }}>
-      <AppTopBar kicker={`${left} ${left === 1 ? 'word' : 'words'} left`} title="The race" sub={sub} hearts={hearts} score={mine?.score ?? 0} onPause={() => setMenu(true)} />
+      <AppTopBar kicker={`${left} ${left === 1 ? 'word' : 'words'} left`} title={total > 1 ? `Puzzle ${st.index + 1} of ${total}` : 'The race'} sub={sub} hearts={hearts} score={mine?.score ?? 0} onPause={() => setMenu(true)} />
       {board}
       {!reveal && playing && !out && !menu ? (
-        <Race onTyping={setTyping} puzzle={p} matchId={matchId} solved={solved} claims={claims} tried={st.tried ?? {}} hearts={hearts} width={W} load={load} claimerOf={(id) => byUser.get(claimsList.find((c) => c.word_id === id)?.user_id ?? '')?.name} />
+        <Race key={st.index} onTyping={setTyping} puzzle={p} matchId={matchId} solved={solved} claims={claims} tried={st.tried ?? {}} hearts={hearts} width={W} load={load} claimerOf={(id) => byUser.get(claimsList.find((c) => c.word_id === id)?.user_id ?? '')?.name} />
       ) : (
         <>
           <AppGrid puzzle={p} solved={solved} claims={claims} width={W - u(32)} />
@@ -169,7 +177,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
             players={st.players}
             me={me}
             how={(x) => `${wordsOf(x.user_id)} ${wordsOf(x.user_id) === 1 ? 'word' : 'words'}`}
-            next={st.phase === 'done' ? doneLine : `Results in ${nextIn} s`}
+            next={st.phase === 'done' ? doneLine : `${st.index + 1 < total ? 'Next puzzle' : 'Results'} in ${nextIn} s`}
           />
         </Animated.View>
       ) : canRevive && !menu ? (
@@ -178,7 +186,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
             playId={matchId}
             name={mine?.name ?? 'You'}
             payer="You"
-            text={`No hearts left. One revive per match: ${CW.revivePrice} token gives ${CW.reviveHearts} heart. Your claimed words stay yours.`}
+            text={`No hearts left. One revive per ${total > 1 ? 'puzzle' : 'match'}: ${CW.revivePrice} token gives ${CW.reviveHearts} heart. Your claimed words stay yours.`}
             decline="No revive, watch the rest"
             onRevive={async () => {
               // A failed request throws, so the card refunds the token and says so. The server doesn't yet check that the

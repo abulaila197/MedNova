@@ -57,6 +57,7 @@ export const diagnosticPursuit: GameDef = {
         key: 'cases',
         label: 'Cases',
         choices: [
+          { value: 3, label: '3', note: 'about 3 min' },
           { value: 5, label: '5', note: 'about 5 min' },
           { value: 10, label: '10', note: 'about 10 min' },
         ],

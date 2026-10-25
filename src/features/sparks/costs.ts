@@ -40,6 +40,10 @@ const COSTS: Partial<Record<GameKey, Partial<Record<Mode, Price>>>> = {
   'nova-password': { offline: PASSWORD, online: PASSWORD },
 };
 
+/** Games paid level by level or word by word (#64, #69): Riddler Solo and Medicordle Endless. */
+export const perUnit = (game: GameKey, mode: Mode, settings: Settings) =>
+  mode === 'solo' && (game === 'the-riddler' || (game === 'nova-medicordle' && settings.word === 'endless'));
+
 /** Sparks one play (or one level / word, for the games charged that way) costs with these settings. */
 export function sparksCost(game: GameKey, mode: Mode, settings: Settings) {
   if (settings.custom) return 0; // your own custom case is practice
@@ -52,4 +56,18 @@ export function costRange(game: GameKey, mode: Mode, opts: { key: string; choice
   for (const o of opts) mixes = mixes.flatMap((m) => o.choices.map((c) => ({ ...m, [o.key]: c.value })));
   const all = mixes.map((m) => sparksCost(game, mode, m));
   return { min: Math.min(...all), max: Math.max(...all) };
+}
+
+/**
+ * Prices for a setup page: the play's cost with the chosen settings, and for each option whose choices change the
+ * cost, every choice's cost (with the other choices as they are).
+ */
+export function setupPrices(game: GameKey, mode: Mode, vals: Settings, opts: { key: string; choices: { value: string | number }[] }[]) {
+  const cost = sparksCost(game, mode, vals);
+  const per: Record<string, (v: string | number) => number> = {};
+  for (const o of opts) {
+    const each = o.choices.map((c) => sparksCost(game, mode, { ...vals, [o.key]: c.value }));
+    if (new Set(each).size > 1) per[o.key] = (v) => sparksCost(game, mode, { ...vals, [o.key]: v });
+  }
+  return { cost, per };
 }

@@ -6,7 +6,9 @@ export function settingsLine(def: GameDef | null | undefined, settings: Record<s
     const v = settings[o.key];
     const c = o.choices.find((x) => x.value === v);
     const label = c?.label ?? String(v ?? o.initial);
-    return typeof (c?.value ?? o.initial) === 'number' ? `${label} ${o.label.toLowerCase()}` : label;
+    // "10 min time limit", but "2 cases" stays as it is.
+    const named = label.toLowerCase().includes(o.label.toLowerCase().replace(/s$/, ''));
+    return typeof (c?.value ?? o.initial) === 'number' && !named ? `${label} ${o.label.toLowerCase()}` : label;
   });
   const teams = Number(settings.teams) || 0;
   if (def?.teams?.online) parts.push(teams >= 2 ? `${teams} teams` : 'Teams off');
