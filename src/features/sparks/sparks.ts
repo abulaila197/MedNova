@@ -98,7 +98,7 @@ const close = (ok: boolean) => {
 const settled = async () => {
   await refreshSparks();
   const a = useRecharge.getState().ask;
-  if (a && useSparks.getState().value >= a.cost) close(true);
+  if (a && a.cost > 0 && useSparks.getState().value >= a.cost) close(true);
 };
 
 // One request at a time: a fast double tap must not pay twice (DEF-094).
@@ -125,10 +125,11 @@ export const rechargeWithAd = once(async () => {
   return data as View;
 });
 
-/** 'Refill with tokens': just enough Sparks for this play, 1 token each. */
+/** 'Refill with tokens': just enough Sparks for this play (from the header: up to a full bar), 1 token each. */
 export const rechargeWithTokens = once(async (uid) => {
   const a = useRecharge.getState().ask;
-  const n = Math.max(1, (a?.cost ?? 0) - useSparks.getState().value);
+  const { value, max } = useSparks.getState();
+  const n = Math.max(1, (a?.cost || max) - value);
   const { data, error } = await supabase.rpc('sparks_buy', { n });
   if (error) throw error;
   // The token spend is a server row: bring it down so the coin shows the new balance.
@@ -138,6 +139,9 @@ export const rechargeWithTokens = once(async (uid) => {
 });
 
 export const cancelRecharge = () => close(false);
+
+/** The header's Sparks: the same sheet with no play waiting (cost 0), to watch an ad or fill up with tokens. */
+export const openSparks = () => useRecharge.setState({ ask: { cost: 0, done: () => {} }, why: null });
 
 /** 'Subscribe': closes the sheet and opens the Nova Shop (MN7). */
 export const subscribeFromRecharge = () => {

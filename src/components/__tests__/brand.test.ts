@@ -50,6 +50,14 @@ test('the game header (GH1-GH3): smaller parts, token coin last on the right, no
   assert.ok(Number(coin![1]) <= Number(rp![1]), 'coin + EXP ring must not exceed the report button');
 });
 
+test('signed in, the header shows look A (photo, level ring, Sparks) in place of the logo; guests keep the logo', () => {
+  const h = header();
+  assert.match(h, /\{signedIn \? \(\s*<Me g=\{g\} \/>\s*\) : \(\s*<View style=\{z\.lk\}>\s*<PulseStar /);
+  assert.match(h, /router\.navigate\('\/profile'\)/); // the photo opens the Profile
+  assert.match(h, /onPress=\{tapped\(openSparks\)\}/); // the Sparks open Recharge
+  assert.match(h, /<TokenCoin size=\{h\(g \? 17 : 20\)\} progress=\{0\}/); // the coin lost its level ring
+});
+
 test('the token coin is drawn only in PulseStar.tsx, from the Pulse star outline', () => {
   assert.deepEqual(where(/export function TokenCoin/), ['src/components/PulseStar.tsx']);
   assert.deepEqual(where(/<TokenCoin /), ['src/components/Congrats.tsx', 'src/components/Header.tsx', 'src/features/daily/DailyPopup.tsx', 'src/features/rounds/Ribbon.tsx', 'src/features/rounds/RoundsHost.tsx', 'src/features/rounds/RoundsPage.tsx', 'src/features/store/StorePage.tsx', 'src/features/style/StylePage.tsx']); // the daily pop-up (DL1), the Store (MN7), the redeem pop-up, Grand Rounds and the Style shop reuse it

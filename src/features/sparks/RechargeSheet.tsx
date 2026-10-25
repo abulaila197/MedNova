@@ -23,7 +23,10 @@ const WHY: Record<string, string> = {
   full: 'Your bar is already full',
 };
 
-/** Shown over any page when a play costs more Sparks than the bar holds (replaces the free-plays sheet, #70). */
+/**
+ * Shown over any page when a play costs more Sparks than the bar holds (replaces the free-plays sheet, #70), and from
+ * the header's Sparks with no play waiting.
+ */
 export function RechargeSheet() {
   const t = useTheme();
   const ask = useRecharge((s) => s.ask);
@@ -37,7 +40,9 @@ export function RechargeSheet() {
   // Android back = Not now (PB3).
   useBack(!!ask, cancelRecharge);
   if (!ask) return null;
-  const need = Math.max(1, ask.cost - bar.value);
+  // From the header (cost 0) the tokens fill the bar; before a play they buy just what it needs.
+  const need = Math.max(1, (ask.cost || bar.max) - bar.value);
+  const full = ask.cost === 0 && bar.value >= bar.max;
   const short = why === 'tokens';
   const choices: Choice[] = [
     {
@@ -49,9 +54,9 @@ export function RechargeSheet() {
     },
     {
       key: 'tokens',
-      label: `Get ${need} Sparks for ${need} token${need === 1 ? '' : 's'}`,
+      label: full ? 'Your bar is full' : `${ask.cost ? 'Get' : 'Fill up:'} ${need} Sparks for ${need} token${need === 1 ? '' : 's'}`,
       sub: tokens == null ? '' : short ? `Not enough: you have ${tokens}` : `You have ${tokens}`,
-      off: busy,
+      off: busy || full,
       on: rechargeWithTokens,
     },
     { key: 'sub', label: `Subscribe for ${SUBSCRIPTION.price} a month`, sub: 'Unlimited Sparks, no ads', on: subscribeFromRecharge },
@@ -75,13 +80,13 @@ function Panel({ t, cost, value, max, refill, note, choices }: { t: Theme; cost:
       <View style={[s.grab, { backgroundColor: 'rgba(255,255,255,0.2)' }]} />
       <Text style={[s.mono, { color: t.kick, alignSelf: 'center' }]}>RECHARGE</Text>
       <Text style={[s.vT, { color: t.fg }]}>
-        {'Not enough '}
+        {cost ? 'Not enough ' : 'Your '}
         <Text style={[s.vT, { color: t.accent, fontFamily: F.displayItalic }]}>Sparks</Text>
       </Text>
-      <Text style={[s.refill, { color: t.soft, marginTop: u(8) }]}>{`This play costs ${cost}. You have ${value}.`}</Text>
+      <Text style={[s.refill, { color: t.soft, marginTop: u(8) }]}>{cost ? `This play costs ${cost}. You have ${value}.` : `You have ${value} of ${max}.`}</Text>
       <View style={[s.track, { backgroundColor: 'rgba(255,255,255,0.1)' }]}>
         <LinearGradient colors={[...SPARK]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={{ width: `${Math.min(100, (value / max) * 100)}%`, height: '100%', borderRadius: 99 }} />
-        <View style={[s.mark, { left: `${Math.min(100, (cost / max) * 100)}%`, backgroundColor: t.fg }]} />
+        {cost ? <View style={[s.mark, { left: `${Math.min(100, (cost / max) * 100)}%`, backgroundColor: t.fg }]} /> : null}
       </View>
       <View style={s.row}>
         <Bolt size={u(11)} />
@@ -106,7 +111,7 @@ function Panel({ t, cost, value, max, refill, note, choices }: { t: Theme; cost:
         )}
       </View>
       <Pressable onPress={cancelRecharge} style={s.notNow} accessibilityRole="button">
-        <Text style={[s.notNowT, { color: t.mute }]}>Not now</Text>
+        <Text style={[s.notNowT, { color: t.mute }]}>{cost ? 'Not now' : 'Close'}</Text>
       </Pressable>
     </View>
   );
