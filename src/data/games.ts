@@ -1,4 +1,4 @@
-// The games in Yazan's Games page order (2026-10-05); decision 63 adds the one-line descriptions. Imposter joined last (2026-10-25), then Code Clinic.
+// The games in Yazan's Games page order (2026-10-05); decision 63 adds the one-line descriptions. Imposter joined last (2026-10-25), then Code Clinic and Nova Password.
 // sub = the game's sub name ('Title: Sub name', build/game-subtitles.md).
 export type Game = { key: string; lead: string; em: string; sub: string; desc: string };
 
@@ -16,4 +16,5 @@ export const GAMES: Game[] = [
   { key: 'nova-crossword', lead: 'Nova', em: 'Crossword', sub: "The Clinician's Grid", desc: 'Fill the grid with diseases, drugs and signs.' },
   { key: 'imposter', lead: 'The', em: 'Imposter', sub: 'Who Walked In', desc: 'One player has a different word. Find who walked in.' },
   { key: 'code-clinic', lead: 'Code', em: 'Clinic', sub: 'Read Between the Lines', desc: 'Two teams, one-word clues. Find your cards, never the deadly one.' },
+  { key: 'nova-password', lead: 'Nova', em: 'Password', sub: 'One Word Away', desc: 'One-word clues, one secret term. The fewest clues wins.' },
 ];

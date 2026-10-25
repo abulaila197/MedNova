@@ -39,6 +39,7 @@ BAND = {  # tall pictures (Yazan 2026-10-18 v2): scenes run from under the title
     'the-quiz-parade': (130, 300, 1150, 1300),
     'imposter': (120, 290, 1150, 1300),
     'code-clinic': (80, 260, 1150, 1300),
+    'nova-password': (80, 260, 1150, 1300),
 }
 
 

@@ -24,6 +24,7 @@ const BAKED = {
     'the-quiz-parade': require('@/assets/games/baked/dark/the-quiz-parade.webp'),
     imposter: require('@/assets/games/baked/dark/imposter.webp'),
     'code-clinic': require('@/assets/games/baked/dark/code-clinic.webp'),
+    'nova-password': require('@/assets/games/baked/dark/nova-password.webp'),
   },
 } as const;
 

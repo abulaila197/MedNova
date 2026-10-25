@@ -28,6 +28,7 @@ const BB: Record<string, Box> = {
   'the-quiz-parade': [0.4, 1, 0.58, 0.98],
   imposter: [0.4, 1, 0.58, 0.98],
   'code-clinic': [0.4, 1, 0.58, 0.98],
+  'nova-password': [0.4, 1, 0.58, 0.98],
 };
 const ZM: Record<string, number> = { 'nova-crossword': 0.86, 'the-silent-artist': 0.86, 'trust-me-not': 0.8, 'the-conqueror': 0.8 };
 const AR_D = 0.5625; // 900 x 1600

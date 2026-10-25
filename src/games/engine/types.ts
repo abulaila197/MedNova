@@ -13,7 +13,8 @@ export type GameKey =
   | 'trust-me-not'
   | 'the-quiz-parade'
   | 'imposter'
-  | 'code-clinic';
+  | 'code-clinic'
+  | 'nova-password';
 
 export type Mode = 'solo' | 'offline' | 'online';
 

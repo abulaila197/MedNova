@@ -20,6 +20,7 @@ const LOAD: Record<string, () => GameDef> = {
   'the-quiz-parade': () => require('../parade/def').quizParade,
   imposter: () => require('../imposter/def').imposter,
   'code-clinic': () => require('../codeclinic/def').codeClinic,
+  'nova-password': () => require('../password/def').novaPassword,
 };
 
 const loaded = new Map<string, GameDef>();
