@@ -77,7 +77,7 @@ export const TOUR_STEPS: readonly { key: string; name: string; path: string }[] 
   { key: 'achievements', name: 'Achievements', path: '/achievements' },
   { key: 'rounds', name: 'Grand Rounds', path: '/rounds' },
   { key: 'cards', name: 'Card hunt', path: '/cards' },
-  { key: 'store', name: 'Store', path: '/store' },
+  { key: 'store', name: 'Nova Shop', path: '/store' },
   { key: 'style', name: 'Style shop', path: '/style' },
   { key: 'faq', name: 'FAQ', path: '/faq' },
   { key: 'about', name: 'About', path: '/about' },

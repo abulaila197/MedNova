@@ -57,7 +57,7 @@ export function StorePage() {
   return (
     <Screen tab={null} glow={21}>
       <InfoScroll>
-        <Kicker>Store</Kicker>
+        <Kicker>Nova Shop</Kicker>
         <Text style={[ui.H, { color: c.fg, fontFamily: F.display }]}>
           {'Top up your '}
           <Text style={[ui.H, { color: t.accent, fontFamily: F.displayItalic }]}>tokens</Text>

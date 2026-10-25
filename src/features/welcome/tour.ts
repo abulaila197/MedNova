@@ -11,7 +11,7 @@ export const TOUR: Stop[] = [
   { who: 'atlas', title: 'Your profile', text: 'Your level, EXP and game stats grow with every play, and each new level pays tokens.' },
   { who: 'omar', title: 'Friends', text: 'Add friends, challenge them to any game, and talk in rooms with stickers and voice lines.' },
   { who: 'yara', title: 'Achievements', text: 'Your trophy shelf. Bronze, silver and gold badges, and each one pays tokens.' },
-  { who: 'pip', title: 'Store', text: 'Spend tokens on extra plays, or go unlimited with no ads.' },
+  { who: 'pip', title: 'Nova Shop', text: 'Spend tokens on extra plays, or go unlimited with no ads.' },
   { who: 'yazan', title: 'Cards', text: 'Collect the named cards in the treasure hunt. Finish the set for a big token prize.' },
   { who: 'nova', title: 'Only on MedNova', text: 'Every game has its own world, and online games are refereed by our server, so no one can cheat. Now let’s grab your first daily reward!' },
 ];

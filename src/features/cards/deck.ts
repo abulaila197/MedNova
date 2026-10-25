@@ -7,7 +7,7 @@ export type HuntCard = { key: string; name: string; stars: number; art: ImageSou
 export const DECK: HuntCard[] = [
   { key: 'bolt', name: 'Bolt', stars: 1, art: require('../../../assets/cards/bolt.jpg'), mission: 'Sign in', clue: 'Ten doors, ten rooms, one key: you. Knock on every one of them.' },
   { key: 'iris', name: 'Iris', stars: 1, art: require('../../../assets/cards/iris.jpg'), mission: 'Play all 10 games', clue: 'Show up like the morning ward round. Seven days in a row, no excuses.' },
-  { key: 'atlas', name: 'Atlas', stars: 2, art: require('../../../assets/cards/atlas.jpg'), mission: 'Log in 7 days in a row', clue: 'Some things in the Store cost nothing at all. Taste every free sample.' },
+  { key: 'atlas', name: 'Atlas', stars: 2, art: require('../../../assets/cards/atlas.jpg'), mission: 'Log in 7 days in a row', clue: 'Some things in the Nova Shop cost nothing at all. Taste every free sample.' },
   { key: 'nova', name: 'Nova', stars: 2, art: require('../../../assets/cards/nova.jpg'), mission: 'Collect every free token way', clue: 'Real rivals breathe on the other side. Face them fifty times.' },
   { key: 'pip', name: 'Pip', stars: 3, art: require('../../../assets/cards/pip.jpg'), mission: 'Play 50 online matches', clue: 'Be a student again. Clear a hundred cards from your review pile.' },
   { key: 'yara', name: 'Yara', stars: 3, art: require('../../../assets/cards/yara.jpg'), mission: 'Clear 100 review cards', clue: 'Nobody survives medicine alone. Gather ten friends around you.' },

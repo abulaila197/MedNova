@@ -23,7 +23,7 @@ const ITEMS = [
   ['Friends', '/friends'],
   ['Achievements', '/achievements'],
   ['My cards', '/cards'],
-  ['Store', '/store'],
+  ['Nova Shop', '/store'],
   ['Contact', '/contact'],
   ['About', '/about'],
   ['FAQ', '/faq'],

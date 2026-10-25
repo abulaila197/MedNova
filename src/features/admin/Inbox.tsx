@@ -17,7 +17,7 @@ const str = (v: unknown) => (v == null ? '' : String(v));
 
 const KINDS: { key: What; label: string; open: string; note: string }[] = [
   { key: 'contact', label: 'Contact', open: 'new', note: 'Messages from the Contact page.' },
-  { key: 'feedback', label: 'Feedback', open: 'new', note: 'Feedback from the Store free tokens row.' },
+  { key: 'feedback', label: 'Feedback', open: 'new', note: 'Feedback from the Nova Shop free tokens row.' },
   { key: 'stories', label: 'Stories', open: 'new', note: 'Stories are anonymous unless the player ticked "Credit me".' },
   { key: 'ambassador', label: 'Ambassador', open: 'pending', note: 'Approving a video pays the player 200 tokens once.' },
   { key: 'cases', label: 'Cases', open: 'waiting', note: 'Approved cases become playable, only by their maker, as practice.' },
@@ -173,7 +173,7 @@ export function Downloads({ c }: { c: C }) {
   return (
     <>
       <Text style={[ui.H, s.H, s.gapL, { color: c.fg }]}>Downloads</Text>
-      <Text style={[ui.p, { color: c.mute }]}>The global mission bar in the Store. Reaching 100,000 opens the 200-token reward.</Text>
+      <Text style={[ui.p, { color: c.mute }]}>The global mission bar in the Nova Shop. Reaching 100,000 opens the 200-token reward.</Text>
       <Kicker style={s.gapS}>{now == null ? 'Loading' : `Now ${now.toLocaleString('en-GB')}`}</Kicker>
       <TextInput value={n} onChangeText={(v) => setN(v.replace(/\D/g, ''))} placeholder="New total" placeholderTextColor={c.mute} keyboardType="number-pad" style={[s.in, s.gapS, { backgroundColor: c.surf, borderColor: c.line, color: c.fg }]} />
       <GradBtn label="Save total" onPress={save} style={s.gapS} />
