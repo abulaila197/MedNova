@@ -12,13 +12,14 @@ import { useSession } from '@/games/shell/session';
 import { DEAL_OFF, FRAMES, TITLES } from '@/features/style/catalog';
 import { Framed, type FrameKey } from '@/features/style/Frame';
 import { loadStyle, useStyle } from '@/features/style/useStyle';
+import { SOVEREIGN_PACK } from '@/features/shop/robots';
 import { useAccount } from '@/state/account';
 import { u } from '@/theme/scale';
 import type { Theme } from '@/theme/tokens';
 import { F } from '@/theme/tokens';
 
 import { FreeSheets, FreeTokens, useFree } from './FreeTokens';
-import { buy, restore, useIsSubscribed, useSubscription, type BuyResult } from './billing';
+import { BILLING_LIVE, buy, restore, useIsSubscribed, useSubscription, type BuyResult } from './billing';
 import { PACKS, SUBSCRIPTION, type Pack } from './catalog';
 
 const SAY: Record<BuyResult, string> = {
@@ -126,6 +127,11 @@ export function StorePage() {
           ))}
         </ScrollView>
 
+        {/* The Sovereign package (Yazan 2026-10-25): $10 for Sovereign, its frame and 500 tokens. */}
+        <View style={{ height: u(14) }} />
+        <Kicker inSec>Packages</Kicker>
+        <SovereignCard t={t} busy={busy === SOVEREIGN_PACK.id} onBuy={() => run(SOVEREIGN_PACK.id, () => buy(SOVEREIGN_PACK.id))} />
+
         <Pressable onPress={() => run('restore', restore)} hitSlop={u(10)} style={s.restore} accessibilityRole="button">
           <Text style={[s.restoreT, { color: t.accent }]}>Restore purchases</Text>
         </Pressable>
@@ -152,6 +158,32 @@ function StyleRow({ t }: { t: Theme }) {
         <Text style={[s.styleS, { color: names.length ? t.accent : t.mute }]}>{names.length ? `${DEAL_OFF}% off this week: ${names.join(' and ')}` : 'Dress your name for every room'}</Text>
       </View>
       <Text style={[s.styleS, { color: t.accent }]}>Open ›</Text>
+    </Pressable>
+  );
+}
+
+/** Sovereign, wearing its frame, with what the package holds. "Coming soon" until the stores sell it. */
+function SovereignCard({ t, busy, onBuy }: { t: Theme; busy: boolean; onBuy: () => void }) {
+  const owned = useStyle((x) => x.owned.includes('robot:sovereign'));
+  return (
+    <Pressable onPress={owned ? undefined : onBuy} accessibilityRole="button" accessibilityLabel={`Sovereign package for ${SOVEREIGN_PACK.price}`} style={[s.style, { backgroundColor: t.panel, borderColor: t.panelLine }, busy && s.busy]}>
+      <Framed slug="sovereign" size={u(64)} frame="sovereign" still />
+      <View style={{ flex: 1 }}>
+        <Text style={[s.mono, { color: '#f5c542' }]}>{'\u2605'.repeat(6)}</Text>
+        <Text style={[s.styleH, { color: t.fg }]}>Sovereign package</Text>
+        <Text style={[s.styleS, { color: t.mute }]}>{`Sovereign, its frame and ${SOVEREIGN_PACK.tokens} tokens`}</Text>
+        <Text style={[s.styleS, { color: t.accent }]}>+30% EXP · refill 5 min</Text>
+      </View>
+      {owned ? (
+        <Text style={[s.styleS, { color: t.mute }]}>Owned</Text>
+      ) : (
+        <View style={{ alignItems: 'center', gap: u(3) }}>
+          <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={[s.cBtn, s.sovBtn]}>
+            <Text style={[s.cBtnT, { color: t.onGrad }]}>{SOVEREIGN_PACK.price}</Text>
+          </LinearGradient>
+          {!BILLING_LIVE ? <Text style={[s.mono, { color: t.mute }]}>COMING SOON</Text> : null}
+        </View>
+      )}
     </Pressable>
   );
 }
@@ -208,6 +240,7 @@ const s = StyleSheet.create({
   wasLine: { position: 'absolute', left: -u(2), right: -u(2), height: u(1.6), borderRadius: 1, transform: [{ rotate: '-12deg' }] },
   cU: { fontFamily: F.body, fontSize: u(10) },
   cBtn: { alignSelf: 'stretch', height: u(30), borderRadius: 999, alignItems: 'center', justifyContent: 'center', marginTop: u(10) },
+  sovBtn: { alignSelf: 'auto', marginTop: 0, paddingHorizontal: u(16) },
   cBtnT: { fontFamily: F.bodyBold, fontSize: u(12) },
   said: { fontFamily: F.bodyMedium, fontSize: u(11), lineHeight: u(15), marginTop: u(12), borderWidth: 1, borderRadius: u(12), paddingVertical: u(8), paddingHorizontal: u(12), overflow: 'hidden' },
   restore: { alignSelf: 'center', marginTop: u(14), padding: u(4) },
