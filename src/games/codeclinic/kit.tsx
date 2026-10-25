@@ -1,5 +1,6 @@
-import { useState, type ReactNode } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { useEffect, useState, type ReactNode } from 'react';
+import { Animated, Easing, Platform, Pressable, StyleSheet, View } from 'react-native';
+import { Image } from 'expo-image';
 
 import { Text } from '@/components/AppText';
 import { useTheme } from '@/state/app';
@@ -54,8 +55,9 @@ export function ClinicScreen({ turn, remaining, onPause, children, bottom }: { t
 }
 
 /**
- * The 5 x 5 board. Hidden cards show only the word; with `key` on (the spymaster holding the key) every card shows
- * its colour. `marked` is a card picked once and waiting for the second tap.
+ * The 5 x 5 board, styled like the paper game: beige word cards that flip over to their picture when turned. With
+ * `showKey` on (the spymaster holding the key) each hidden card takes its key colour round the edge. `marked` is a card
+ * picked once and waiting for the second tap; `fade` dims the hidden key cards at the end of a game.
  */
 export function Board({
   cards,
@@ -72,7 +74,6 @@ export function Board({
   disabled?: boolean;
   fade?: boolean;
 }) {
-  const t = useTheme();
   const [w, setW] = useState(0);
   const gap = u(4);
   // Rounded down so five always fit in a row.
@@ -80,40 +81,79 @@ export function Board({
   return (
     <View style={[s.board, { gap }]} onLayout={(e) => setW(e.nativeEvent.layout.width)}>
       {cw
-        ? cards.map((c) => {
-            const open = c.revealed;
-            const keyed = showKey && !open;
-            const can = !!onTap && !disabled && !open;
-            const isMarked = marked === c.index;
-            const lines = wrapWord(c.term);
-            // Never cut a word: long words go over two lines and the font shrinks to fit the longest line.
-            const fs = Math.min(cw * 0.17, (cw - 6) / (Math.max(...lines.map((x) => x.length)) * 0.6));
-            const look = open
-              ? { backgroundColor: fill(c.color), borderColor: edge(c.color) }
-              : keyed
-                ? { backgroundColor: fill(c.color), borderColor: edge(c.color), borderWidth: 2, opacity: fade ? 0.5 : 1 }
-                : { backgroundColor: t.panel, borderColor: isMarked ? t.accent : t.panelLine, borderWidth: isMarked ? 2 : 1 };
-            return (
-              <Pressable
-                key={c.index}
-                disabled={!can}
-                onPress={tapped(() => onTap?.(c.index))}
-                style={[s.card, { width: cw, height: cw * 0.72 }, look, isMarked ? { transform: [{ scale: 1.06 }] } : null]}
-                accessibilityRole="button"
-                accessibilityLabel={open ? `${c.term}, ${c.color}` : c.term}
-              >
-                <Text style={[s.word, { fontSize: fs, lineHeight: fs * 1.15, color: open ? edge(c.color) : t.white, textDecorationLine: open && c.color === 'assassin' ? 'line-through' : 'none' }]}>
-                  {lines.join('\n')}
-                </Text>
-                {open && c.color === 'assassin' ? <Text style={[s.skull, { color: DEADLY.color }]}>✕</Text> : null}
-                {keyed && c.color === 'assassin' ? <Text style={[s.skull, { color: DEADLY.color }]}>DEADLY</Text> : null}
-              </Pressable>
-            );
-          })
+        ? cards.map((c) => (
+            <CardTile
+              key={c.index}
+              card={c}
+              cw={cw}
+              keyed={!!showKey && !c.revealed}
+              marked={marked === c.index}
+              fade={!!fade}
+              onPress={onTap && !disabled && !c.revealed ? () => onTap(c.index) : undefined}
+            />
+          ))
         : null}
     </View>
   );
 }
+
+export const BACK = {
+  red: require('../../../assets/games/codeclinic/back-red.webp'),
+  blue: require('../../../assets/games/codeclinic/back-blue.webp'),
+  neutral: require('../../../assets/games/codeclinic/back-neutral.webp'),
+  assassin: require('../../../assets/games/codeclinic/back-assassin.webp'),
+} as const;
+
+/** One card: the beige front with the word (and the word upside down, as on the paper cards), the picture on the back. */
+function CardTile({ card: c, cw, keyed, marked, fade, onPress }: { card: Card; cw: number; keyed: boolean; marked: boolean; fade: boolean; onPress?: () => void }) {
+  const t = useTheme();
+  const ch = cw * 0.72;
+  // Already turned when the board first shows (a rejoin or a rematch screen): no flip, just the back.
+  const [turn] = useState(() => new Animated.Value(c.revealed ? 1 : 0));
+  useEffect(() => {
+    Animated.timing(turn, { toValue: c.revealed ? 1 : 0, duration: 520, easing: Easing.inOut(Easing.cubic), useNativeDriver: Platform.OS !== 'web' }).start();
+  }, [c.revealed, turn]);
+  const front = turn.interpolate({ inputRange: [0, 1], outputRange: ['0deg', '180deg'] });
+  const back = turn.interpolate({ inputRange: [0, 1], outputRange: ['180deg', '360deg'] });
+  const lines = wrapWord(c.term);
+  // Never cut a word: long words go over two lines and the font shrinks to fit the longest line.
+  const fs = Math.min(cw * 0.15, (cw - 16) / (Math.max(...lines.map((x) => x.length)) * 0.62));
+  const ink = keyed ? edge(c.color) : PAPER.line;
+  return (
+    <Pressable
+      disabled={!onPress}
+      onPress={onPress ? tapped(onPress) : undefined}
+      style={[{ width: cw, height: ch }, marked ? { transform: [{ scale: 1.08 }], zIndex: 2 } : null, keyed && fade ? { opacity: 0.5 } : null]}
+      accessibilityRole="button"
+      accessibilityLabel={c.revealed ? `${c.term}, ${c.color === 'assassin' ? 'deadly' : c.color}` : c.term}
+    >
+      <Animated.View
+        style={[
+          s.face,
+          { backgroundColor: keyed ? fill(c.color) : PAPER.card, borderColor: marked ? t.accent : ink, borderWidth: marked || keyed ? 2 : 1, transform: [{ perspective: 600 }, { rotateY: front }] },
+        ]}
+      >
+        <Text style={[s.flipWord, { fontSize: fs * 0.55, color: keyed ? 'rgba(255,255,255,0.45)' : PAPER.faint }]} numberOfLines={1}>
+          {c.term}
+        </Text>
+        <View style={[s.label, { backgroundColor: PAPER.label, borderColor: keyed ? edge(c.color) : PAPER.line }]}>
+          <Text style={[s.word, { fontSize: fs, lineHeight: fs * 1.12, color: PAPER.ink }]}>{lines.join('\n')}</Text>
+        </View>
+        {keyed && c.color === 'assassin' ? <Text style={[s.skull, { color: DEADLY.color }]}>DEADLY</Text> : null}
+      </Animated.View>
+      <Animated.View style={[s.face, s.backFace, { borderColor: edge(c.color), transform: [{ perspective: 600 }, { rotateY: back }] }]}>
+        <Image source={BACK[c.color]} style={StyleSheet.absoluteFill} contentFit="cover" />
+        <View style={s.backTag}>
+          <Text style={[s.backWord, { fontSize: Math.max(7, fs * 0.62), textDecorationLine: c.color === 'assassin' ? 'line-through' : 'none' }]} numberOfLines={1}>
+            {c.term}
+          </Text>
+        </View>
+      </Animated.View>
+    </Pressable>
+  );
+}
+
+const PAPER = { card: '#e3d0a2', label: '#f8f2e2', line: '#bfa671', ink: '#2a2216', faint: 'rgba(42,34,22,0.32)' };
 
 const V = (ch: string | undefined) => !!ch && /[aeiouy]/i.test(ch);
 // Letter pairs that sound as one and are never split, and medical word parts to split at first.
@@ -242,8 +282,11 @@ export function wrapWord(word: string): string[] {
   return [`${word.slice(0, best)}-`, word.slice(best)];
 }
 
-/** The key colours, explained under the board while the key shows. */
-export function KeyLegend() {
+/**
+ * The spymaster's key, like the paper key card in its stand: the 25 squares in board order, then what each colour
+ * means. Without `colors` only the meaning row shows.
+ */
+export function KeyLegend({ colors }: { colors?: readonly CardColor[] | null }) {
   const t = useTheme();
   const row = [
     { c: TEAM.red.color, l: 'Red' },
@@ -251,14 +294,35 @@ export function KeyLegend() {
     { c: NEUTRAL.color, l: 'Neutral' },
     { c: DEADLY.color, l: 'Deadly: loses the game' },
   ];
+  const sq = u(15);
   return (
-    <View style={s.legend}>
-      {row.map((x) => (
-        <View key={x.l} style={s.legendI}>
-          <View style={[s.dot, { backgroundColor: x.c }]} />
-          <Text style={[s.small, { color: t.mute }]}>{x.l}</Text>
+    <View style={s.keyWrap}>
+      {colors && colors.length === 25 ? (
+        <View style={s.keyCard}>
+          <View style={[s.keyGrid, { width: sq * 5 + u(3) * 4 + u(8) }]}>
+            {colors.map((c, i) => (
+              <View
+                key={i}
+                style={[
+                  s.keySq,
+                  { width: sq, height: sq, backgroundColor: c === 'neutral' ? PAPER.card : c === 'assassin' ? '#111' : edge(c), borderColor: c === 'assassin' ? DEADLY.color : 'rgba(0,0,0,0.25)' },
+                ]}
+              >
+                {c === 'assassin' ? <Text style={{ color: DEADLY.color, fontSize: u(9), lineHeight: u(11), fontFamily: F.bodyBold }}>✕</Text> : null}
+              </View>
+            ))}
+          </View>
+          <View style={s.keyFoot} />
         </View>
-      ))}
+      ) : null}
+      <View style={s.legend}>
+        {row.map((x) => (
+          <View key={x.l} style={s.legendI}>
+            <View style={[s.dot, { backgroundColor: x.c }]} />
+            <Text style={[s.small, { color: t.mute }]}>{x.l}</Text>
+          </View>
+        ))}
+      </View>
     </View>
   );
 }
@@ -390,15 +454,32 @@ export const s = StyleSheet.create({
   pillT: { fontFamily: F.bodyBold, fontSize: u(11.5), lineHeight: u(14) },
   dot: { width: u(8), height: u(8), borderRadius: u(4) },
   board: { flexDirection: 'row', flexWrap: 'wrap', marginTop: u(10) },
-  card: {
-    borderRadius: u(8),
+  face: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    borderRadius: u(6),
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: u(2),
-    borderWidth: 1,
+    gap: u(1),
+    padding: u(3),
+    backfaceVisibility: 'hidden',
+    overflow: 'hidden',
   },
-  word: { fontFamily: F.bodySemi, textAlign: 'center' },
+  backFace: { borderWidth: 2, padding: 0, justifyContent: 'flex-end' },
+  label: { alignSelf: 'stretch', flex: 1, borderRadius: u(3), borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
+  flipWord: { fontFamily: F.bodySemi, transform: [{ rotate: '180deg' }], letterSpacing: 0.3 },
+  word: { fontFamily: F.bodyBold, textAlign: 'center', letterSpacing: 0.2 },
+  backTag: { alignSelf: 'stretch', backgroundColor: 'rgba(8,10,20,0.62)', paddingVertical: u(1) },
+  backWord: { fontFamily: F.bodySemi, color: '#fff', textAlign: 'center' },
   skull: { fontFamily: F.mono, fontSize: u(6.5), marginTop: u(1) },
+  keyWrap: { alignItems: 'center', gap: u(6), marginTop: u(8) },
+  keyCard: { backgroundColor: '#d9dde4', borderRadius: u(10), padding: u(7), borderWidth: 2, borderColor: '#9aa3b2', alignItems: 'center' },
+  keyGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: u(3), backgroundColor: '#1b2030', padding: u(4), borderRadius: u(5) },
+  keySq: { borderRadius: u(3), borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
+  keyFoot: { width: u(40), height: u(4), borderRadius: u(2), backgroundColor: '#9aa3b2', marginTop: u(5) },
   legend: {
     flexDirection: 'row',
     flexWrap: 'wrap',

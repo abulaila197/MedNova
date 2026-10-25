@@ -261,7 +261,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
         <>
           <TeamHead team={team} lead="The key" sub="Your cards are in your colour. Avoid the deadly card at all costs." />
           <Board cards={g.cards} showKey={off.keyHeldBy === team} />
-          {off.keyHeldBy === team ? <KeyLegend /> : null}
+          {off.keyHeldBy === team ? <KeyLegend colors={g.cards.map((c) => c.color)} /> : null}
         </>
       );
       bottom = (
@@ -279,7 +279,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
         <>
           <TeamHead team={team} lead={`Turn ${g.turnNumber}`} sub={`${spyName(team)}, take the phone. Check the key, then start: you have 60 seconds for your clue.`} />
           <Board cards={g.cards} showKey={off.keyHeldBy === team} />
-          {off.keyHeldBy === team ? <KeyLegend /> : null}
+          {off.keyHeldBy === team ? <KeyLegend colors={g.cards.map((c) => c.color)} /> : null}
         </>
       );
       bottom = (
@@ -294,7 +294,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
           <TeamHead team={team} lead={`${spyName(team)}'s clue`} sub="Say one word out loud, and how many cards it points to. Then pick the number." />
           <Clock ms={left} />
           <Board cards={g.cards} showKey={off.keyHeldBy === team} />
-          {off.keyHeldBy === team ? <KeyLegend /> : null}
+          {off.keyHeldBy === team ? <KeyLegend colors={g.cards.map((c) => c.color)} /> : null}
           <NumberPick value={num} onPick={setNum} team={team} />
         </>
       );

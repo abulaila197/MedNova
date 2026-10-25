@@ -152,7 +152,13 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
         const seatsOf = st.seats!;
         const order = [me, ...seatsOf.filter((id) => id !== me)];
         const byId = new Map(st.players.map((p) => [p.user_id, p]));
-        const seats = order.map((id, i) => ({ seat: i, userId: id, name: id === me ? 'You' : (byId.get(id)?.name ?? 'Player'), character: byId.get(id)?.character, color: SEAT_COLOURS[seatsOf.indexOf(id) % SEAT_COLOURS.length].color }));
+        const seats = order.map((id, i) => ({
+          seat: i,
+          userId: id,
+          name: id === me ? 'You' : (byId.get(id)?.name ?? 'Player'),
+          character: byId.get(id)?.character,
+          color: SEAT_COLOURS[seatsOf.indexOf(id) % SEAT_COLOURS.length].color,
+        }));
         const standings = order
           .map((id, i) => ({ seat: i, name: seats[i].name, score: byId.get(id)?.score ?? 0, timeMs: 0, rank: byId.get(id)?.rank ?? order.length }))
           .sort((a, b) => a.rank - b.rank);
@@ -228,7 +234,9 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
         <View style={k.head}>
           <Kick>{v.played.length ? `Game ${v.played.length + 1}` : 'Before you start'}</Kick>
           <Text style={[k.headT, { color: t.white }]}>Pick your team</Text>
-          <Text style={[k.sub, { color: t.mute }]}>2 or 3 players a team. Each team needs one spymaster: claim it, or the host picks one{host ? ' (tap a name)' : ''}. A team without one gets one at the start.</Text>
+          <Text style={[k.sub, { color: t.mute }]}>
+            2 or 3 players a team. Each team needs one spymaster: claim it, or the host picks one{host ? ' (tap a name)' : ''}. A team without one gets one at the start.
+          </Text>
         </View>
         {(['red', 'blue'] as const).map((team) => (
           <Panel key={team} style={{ borderColor: TEAM[team].color }}>
@@ -241,7 +249,14 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
             {live
               .filter((p) => p.team === team)
               .map((p) => (
-                <Pressable key={p.id} disabled={!host} onPress={tapped(() => send({ type: 'ASSIGN_SPYMASTER', playerId: p.id }))} style={k.row} accessibilityRole="button" accessibilityLabel={`Make ${p.name} spymaster`}>
+                <Pressable
+                  key={p.id}
+                  disabled={!host}
+                  onPress={tapped(() => send({ type: 'ASSIGN_SPYMASTER', playerId: p.id }))}
+                  style={k.row}
+                  accessibilityRole="button"
+                  accessibilityLabel={`Make ${p.name} spymaster`}
+                >
                   <Text style={{ fontSize: u(14), lineHeight: u(18), color: p.isSpymaster ? TEAM[team].color : t.dim }}>{p.isSpymaster ? '★' : '·'}</Text>
                   <Text style={[k.rowN, { color: t.fg }]} numberOfLines={1}>
                     {p.id === me ? `${p.name} (you)` : p.name}
@@ -251,7 +266,12 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
               ))}
           </Panel>
         ))}
-        {live.some((p) => !p.team) ? <Text style={[k.sub, { color: t.dim }]}>{`No team yet: ${live.filter((p) => !p.team).map((p) => nameOf(p.id)).join(', ')}`}</Text> : null}
+        {live.some((p) => !p.team) ? (
+          <Text style={[k.sub, { color: t.dim }]}>{`No team yet: ${live
+            .filter((p) => !p.team)
+            .map((p) => nameOf(p.id))
+            .join(', ')}`}</Text>
+        ) : null}
         {myTeam && playing ? (
           spy ? (
             <Ghost label="Step down as spymaster" onPress={() => send({ type: 'RELEASE_SPYMASTER' })} />
@@ -321,14 +341,23 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
       );
     } else if (g.phase === 'clue') {
       const giving = myTurn && spy;
-      const check = word.trim() ? checkClue(word, g.cards.filter((c) => !c.revealed).map((c) => c.term)) : null;
+      const check = word.trim()
+        ? checkClue(
+            word,
+            g.cards.filter((c) => !c.revealed).map((c) => c.term),
+          )
+        : null;
       body = (
         <>
-          <TeamHead team={team} lead={giving ? 'Your clue' : `${TEAM[team].name} spymaster is thinking`} sub={giving ? 'One word, and how many of your cards it points to. Not a word on the board, or part of one.' : undefined} />
+          <TeamHead
+            team={team}
+            lead={giving ? 'Your clue' : `${TEAM[team].name} spymaster is thinking`}
+            sub={giving ? 'One word, and how many of your cards it points to. Not a word on the board, or part of one.' : undefined}
+          />
           {roleLine}
           <Clock ms={left} />
           <Board cards={cards} showKey={!!v.key} />
-          {v.key ? <KeyLegend /> : null}
+          {v.key ? <KeyLegend colors={v.key} /> : null}
           {giving ? (
             <>
               <TextInput
@@ -370,13 +399,8 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
           </View>
           {roleLine}
           <Clock ms={left} />
-          <Board
-            cards={cards}
-            showKey={!!v.key}
-            marked={g.marker}
-            onTap={guessing ? (i) => send(g.marker === i ? { type: 'CONFIRM', cardIndex: i } : { type: 'MARK', cardIndex: i }) : undefined}
-          />
-          {v.key ? <KeyLegend /> : null}
+          <Board cards={cards} showKey={!!v.key} marked={g.marker} onTap={guessing ? (i) => send(g.marker === i ? { type: 'CONFIRM', cardIndex: i } : { type: 'MARK', cardIndex: i }) : undefined} />
+          {v.key ? <KeyLegend colors={v.key} /> : null}
           {refusal ? <Text style={[k.sub, { color: '#f0b54a' }]}>{refusal}</Text> : null}
         </>
       );
@@ -398,7 +422,12 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
 
 function SmallBtn({ label, color, onPress }: { label: string; color: string; onPress: () => void }) {
   return (
-    <Pressable onPress={tapped(onPress)} style={{ borderWidth: 1, borderColor: color, borderRadius: u(10), paddingHorizontal: u(12), paddingVertical: u(4) }} accessibilityRole="button" accessibilityLabel={label}>
+    <Pressable
+      onPress={tapped(onPress)}
+      style={{ borderWidth: 1, borderColor: color, borderRadius: u(10), paddingHorizontal: u(12), paddingVertical: u(4) }}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+    >
       <Text style={{ fontFamily: F.bodyBold, fontSize: u(11), color }}>{label}</Text>
     </Pressable>
   );
