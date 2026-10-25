@@ -3,20 +3,18 @@ import type { Term } from './types';
 
 /** Lower case, accents removed. */
 export const strip = (s: string): string =>
-  s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  s
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase();
 
 /** Words of a text: split on anything that is not a letter or digit. "anti-inflammatory" -> anti, inflammatory */
-export const tokens = (s: string): string[] => strip(s).split(/[^a-z0-9]+/).filter(Boolean);
+export const tokens = (s: string): string[] =>
+  strip(s)
+    .split(/[^a-z0-9]+/)
+    .filter(Boolean);
 
-export type ClueRejection =
-  | 'EMPTY'
-  | 'NOT_ONE_WORD'
-  | 'INVALID_CHARS'
-  | 'TOO_LONG'
-  | 'TERM_WORD'
-  | 'SAME_ROOT'
-  | 'FORBIDDEN'
-  | 'DUPLICATE';
+export type ClueRejection = 'EMPTY' | 'NOT_ONE_WORD' | 'INVALID_CHARS' | 'TOO_LONG' | 'TERM_WORD' | 'SAME_ROOT' | 'FORBIDDEN' | 'DUPLICATE';
 
 export type ClueCheck = { ok: true; clue: string } | { ok: false; reason: ClueRejection };
 
@@ -42,11 +40,7 @@ export function validateClue(term: Term, raw: string, previous: readonly string[
 
   // 2. the term itself, one of its words, or containing one of its words
   const joined = termTokens.join('');
-  if (
-    clueTokens.join('') === joined ||
-    clueTokens.some((c) => termTokens.includes(c)) ||
-    clueTokens.some((c) => termTokens.some((t) => t.length >= CONFIG.ROOT_CONTAINS_MIN && c.includes(t)))
-  ) {
+  if (clueTokens.join('') === joined || clueTokens.some((c) => termTokens.includes(c)) || clueTokens.some((c) => termTokens.some((t) => t.length >= CONFIG.ROOT_CONTAINS_MIN && c.includes(t)))) {
     return { ok: false, reason: 'TERM_WORD' };
   }
 

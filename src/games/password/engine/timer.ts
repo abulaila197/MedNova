@@ -20,9 +20,7 @@ export function elapsed(t: Timer, now: number): number {
 export const isTimeUp = (t: Timer, now: number): boolean => elapsed(t, now) >= CONFIG.ROUND_MAX_MS;
 
 export function pauseTimer(t: Timer, now: number): Timer {
-  return t.runningSince === null || t.endedAtMs !== null
-    ? t
-    : { ...t, elapsedMs: elapsed(t, now), runningSince: null };
+  return t.runningSince === null || t.endedAtMs !== null ? t : { ...t, elapsedMs: elapsed(t, now), runningSince: null };
 }
 
 export function resumeTimer(t: Timer, now: number): Timer {

@@ -136,8 +136,7 @@ export function initialOnlineState(myId: string): OnlineState {
 }
 
 /** Only the other team's number of completed words is shown. */
-export const opponentProgress = (s: OnlineState): TeamProgress | null =>
-  s.myTeam ? s.progress[s.myTeam === 'A' ? 'B' : 'A'] : null;
+export const opponentProgress = (s: OnlineState): TeamProgress | null => (s.myTeam ? s.progress[s.myTeam === 'A' ? 'B' : 'A'] : null);
 export const myProgress = (s: OnlineState): TeamProgress | null => (s.myTeam ? s.progress[s.myTeam] : null);
 export const msLeft = (s: OnlineState, now: number): number => (s.roundEndsAt === null ? 0 : Math.max(0, s.roundEndsAt - now));
 
@@ -153,8 +152,7 @@ function withPing(env: OnlineEnv, s: OnlineState): { state: OnlineState; fx: FX[
 function userAction(env: OnlineEnv, s: OnlineState, event: OnlineEvent): OnlineStep {
   const ping = withPing(env, s);
   let state = ping.state;
-  const done = (patch: Partial<OnlineState>, fx: FX[] = []): OnlineStep =>
-    step<OnlineState, OnlineEvent>({ ...state, ...patch }, [...ping.fx, ...fx]);
+  const done = (patch: Partial<OnlineState>, fx: FX[] = []): OnlineStep => step<OnlineState, OnlineEvent>({ ...state, ...patch }, [...ping.fx, ...fx]);
 
   switch (event.type) {
     case 'USER_ACTIVITY':
@@ -166,7 +164,11 @@ function userAction(env: OnlineEnv, s: OnlineState, event: OnlineEvent): OnlineS
       const term = s.currentTermId ? findTerm(env.terms, s.currentTermId) : undefined;
       if (!term) return done({ notice: 'NO_WORD' });
       const check = validateClue(term, event.text, s.clues);
-      if (!check.ok) return done({ notice: check.reason }, [{ type: 'HAPTIC', kind: 'wrong' }, { type: 'SOUND', kind: 'buzzer' }]);
+      if (!check.ok)
+        return done({ notice: check.reason }, [
+          { type: 'HAPTIC', kind: 'wrong' },
+          { type: 'SOUND', kind: 'buzzer' },
+        ]);
       return done({ notice: null }, [{ type: 'SEND', message: { t: 'CLUE', text: check.clue } }]);
     }
     case 'PICK_GUESS': {
@@ -217,13 +219,9 @@ export function onlineTransition(env: OnlineEnv, s: OnlineState, event: OnlineEv
       ]);
     case 'CONNECTION_LOST':
       if (ui.name === 'reconnecting') return stay(s);
-      return step<OnlineState, OnlineEvent>({ ...s, ui: { name: 'reconnecting' } }, [
-        { type: 'START_TIMER', id: REJOIN, ms: CONFIG.REJOIN_WINDOW_MS, event: { type: 'REJOIN_TIMEOUT' } },
-      ]);
+      return step<OnlineState, OnlineEvent>({ ...s, ui: { name: 'reconnecting' } }, [{ type: 'START_TIMER', id: REJOIN, ms: CONFIG.REJOIN_WINDOW_MS, event: { type: 'REJOIN_TIMEOUT' } }]);
     case 'REJOIN_TIMEOUT':
-      return ui.name === 'reconnecting'
-        ? step<OnlineState, OnlineEvent>({ ...s, ui: { name: 'left' } }, [{ type: 'NAVIGATE', to: 'menu' }])
-        : stay(s);
+      return ui.name === 'reconnecting' ? step<OnlineState, OnlineEvent>({ ...s, ui: { name: 'left' } }, [{ type: 'NAVIGATE', to: 'menu' }]) : stay(s);
     case 'S_SNAPSHOT': {
       const d = event.data;
       return step<OnlineState, OnlineEvent>(
@@ -264,20 +262,23 @@ export function onlineTransition(env: OnlineEnv, s: OnlineState, event: OnlineEv
   switch (event.type) {
     case 'S_ROUND_START':
       if (ui.name === 'reconnecting') return stay(s);
-      return step<OnlineState, OnlineEvent>({
-        ...s,
-        ui: { name: 'playing' },
-        round: event.round,
-        role: event.role,
-        players: event.players ?? s.players,
-        progress: event.progress,
-        roundEndsAt: env.now() + event.endsInMs,
-        currentTermId: null,
-        clues: [],
-        guesses: [],
-        forfeitedTeams: [],
-        notice: null,
-      }, [{ type: 'SOUND', kind: 'tick' }]);
+      return step<OnlineState, OnlineEvent>(
+        {
+          ...s,
+          ui: { name: 'playing' },
+          round: event.round,
+          role: event.role,
+          players: event.players ?? s.players,
+          progress: event.progress,
+          roundEndsAt: env.now() + event.endsInMs,
+          currentTermId: null,
+          clues: [],
+          guesses: [],
+          forfeitedTeams: [],
+          notice: null,
+        },
+        [{ type: 'SOUND', kind: 'tick' }],
+      );
     case 'S_NEW_WORD':
       return step<OnlineState, OnlineEvent>({
         ...s,
@@ -291,21 +292,24 @@ export function onlineTransition(env: OnlineEnv, s: OnlineState, event: OnlineEv
     case 'S_CLUE_REJECTED':
       return step<OnlineState, OnlineEvent>({ ...s, notice: event.reason }, [{ type: 'HAPTIC', kind: 'wrong' }]);
     case 'S_GUESS_WRONG':
-      return step<OnlineState, OnlineEvent>(
-        { ...s, guesses: s.guesses.includes(event.termId) ? s.guesses : [...s.guesses, event.termId] },
-        [{ type: 'SOUND', kind: 'buzzer' }, { type: 'HAPTIC', kind: 'wrong' }],
-      );
+      return step<OnlineState, OnlineEvent>({ ...s, guesses: s.guesses.includes(event.termId) ? s.guesses : [...s.guesses, event.termId] }, [
+        { type: 'SOUND', kind: 'buzzer' },
+        { type: 'HAPTIC', kind: 'wrong' },
+      ]);
     case 'S_PROGRESS': {
       const mine = s.myTeam === event.teamId;
       return step<OnlineState, OnlineEvent>(
         { ...s, progress: { ...s.progress, [event.teamId]: { completed: event.completed, total: event.total } } },
-        mine ? [{ type: 'SOUND', kind: 'ding' }, { type: 'HAPTIC', kind: 'correct' }] : [],
+        mine
+          ? [
+              { type: 'SOUND', kind: 'ding' },
+              { type: 'HAPTIC', kind: 'correct' },
+            ]
+          : [],
       );
     }
     case 'S_ROUND_ENDED':
-      return step<OnlineState, OnlineEvent>({ ...s, ui: { name: 'roundBreak', round: event.round, results: event.results } }, [
-        { type: 'SOUND', kind: 'buzzer' },
-      ]);
+      return step<OnlineState, OnlineEvent>({ ...s, ui: { name: 'roundBreak', round: event.round, results: event.results } }, [{ type: 'SOUND', kind: 'buzzer' }]);
     default:
       break;
   }

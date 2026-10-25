@@ -15,12 +15,7 @@ export type PlanResult = { ok: true; rounds: RoundPlan[] } | { ok: false; reason
  *    the teams take turns and would hear each other's answers;
  *  - round 2 always uses new words.
  */
-export function planMatch(input: {
-  terms: readonly Term[];
-  settings: Settings;
-  mode: 'online' | 'offline';
-  rng: Rng;
-}): PlanResult {
+export function planMatch(input: { terms: readonly Term[]; settings: Settings; mode: 'online' | 'offline'; rng: Rng }): PlanResult {
   const { settings, mode, rng } = input;
   const pool = shuffle(termsOfBank(input.terms, settings.bank), rng);
   const perRound = mode === 'online' ? settings.wordsPerTeam : settings.wordsPerTeam * 2;

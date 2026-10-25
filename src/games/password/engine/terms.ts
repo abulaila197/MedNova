@@ -28,8 +28,7 @@ export function searchTerms(terms: readonly Term[], query: string, limit = 8): T
 export const findTerm = (terms: readonly Term[], id: TermId): Term | undefined => terms.find((t) => t.id === id);
 
 /** Terms of the chosen bank (Mixed = all). */
-export const termsOfBank = (terms: readonly Term[], bank: BankChoice): Term[] =>
-  bank === 'mixed' ? terms.slice() : terms.filter((t) => t.bank === bank);
+export const termsOfBank = (terms: readonly Term[], bank: BankChoice): Term[] => (bank === 'mixed' ? terms.slice() : terms.filter((t) => t.bank === bank));
 
 export function shuffle<T>(items: readonly T[], rng: Rng): T[] {
   const a = items.slice();

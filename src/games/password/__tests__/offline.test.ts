@@ -1,14 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {
-  currentTermId,
-  initialOfflineState,
-  offlineTransition,
-  rolesFor,
-  type OfflineEnv,
-  type OfflineEvent,
-  type OfflineState,
-} from '../engine/offlineMachine';
+import { currentTermId, initialOfflineState, offlineTransition, rolesFor, type OfflineEnv, type OfflineEvent, type OfflineState } from '../engine/offlineMachine';
 import type { Effect } from '../engine/types';
 import { makeClock, makeTerms, seqRng } from './helpers';
 
@@ -28,7 +20,10 @@ function feed(e: OfflineEnv, s: OfflineState, events: OfflineEvent[]) {
 }
 const NAMES = ['Ann', 'Ben', 'Cy', 'Di'];
 const ready = (e = env(), settings: any = {}) =>
-  feed(e, initialOfflineState(), [{ type: 'SET_PLAYERS', names: NAMES }, { type: 'SET_SETTINGS', settings }]).state;
+  feed(e, initialOfflineState(), [
+    { type: 'SET_PLAYERS', names: NAMES },
+    { type: 'SET_SETTINGS', settings },
+  ]).state;
 const begin = (e = env(), settings: any = {}) => feed(e, ready(e, settings), [{ type: 'START_MATCH' }]).state;
 const other = (t: 'A' | 'B') => (t === 'A' ? 'B' : 'A');
 
@@ -49,19 +44,30 @@ function playTurn(e: OfflineEnv, s: OfflineState, clues: number, ms = 60_000, wi
 
 test('setup: 4 unique names, teams 2 + 2, givers, settings', () => {
   const e = env();
-  for (const names of [['A', 'B', 'C'], ['A', 'B', 'C', 'D', 'E'], ['A', 'b', 'C', 'B'], ['A', 'B', 'C', ' ']]) {
+  for (const names of [
+    ['A', 'B', 'C'],
+    ['A', 'B', 'C', 'D', 'E'],
+    ['A', 'b', 'C', 'B'],
+    ['A', 'B', 'C', ' '],
+  ]) {
     const s = feed(e, initialOfflineState(), [{ type: 'SET_PLAYERS', names }]).state;
     assert.deepEqual(s.ui, { name: 'setup', notice: 'INVALID_PLAYERS' });
   }
   let s = ready(e);
-  assert.deepEqual(s.setup.players.map((p) => p.team), ['A', 'A', 'B', 'B']);
+  assert.deepEqual(
+    s.setup.players.map((p) => p.team),
+    ['A', 'A', 'B', 'B'],
+  );
   assert.deepEqual(s.setup.givers, { A: 'p1', B: 'p3' });
 
   // teams must stay 2 + 2
   assert.equal(feed(e, s, [{ type: 'ASSIGN_TEAMS', teams: { p1: 'A', p2: 'A', p3: 'A', p4: 'B' } }]).state.ui.name, 'setup');
   assert.deepEqual((feed(e, s, [{ type: 'ASSIGN_TEAMS', teams: { p1: 'A', p2: 'A', p3: 'A', p4: 'B' } }]).state.ui as any).notice, 'TEAMS_NOT_2_AND_2');
   s = feed(e, s, [{ type: 'ASSIGN_TEAMS', teams: { p1: 'A', p3: 'A', p2: 'B', p4: 'B' } }]).state;
-  assert.deepEqual(s.setup.players.map((p) => p.team), ['A', 'B', 'A', 'B']);
+  assert.deepEqual(
+    s.setup.players.map((p) => p.team),
+    ['A', 'B', 'A', 'B'],
+  );
   assert.deepEqual(s.setup.givers, { A: 'p1', B: 'p2' }); // givers follow the new teams
 
   s = feed(e, s, [{ type: 'RANDOMIZE_TEAMS' }]).state;
@@ -80,11 +86,7 @@ test('setup: 4 unique names, teams 2 + 2, givers, settings', () => {
 
 test('not enough terms in the chosen bank blocks the start', () => {
   const small: OfflineEnv = { terms: makeTerms(3, 2), rng: seqRng(), now: clock.now };
-  const s = feed(small, initialOfflineState(), [
-    { type: 'SET_PLAYERS', names: NAMES },
-    { type: 'SET_SETTINGS', settings: { bank: 'basic' } },
-    { type: 'START_MATCH' },
-  ]).state;
+  const s = feed(small, initialOfflineState(), [{ type: 'SET_PLAYERS', names: NAMES }, { type: 'SET_SETTINGS', settings: { bank: 'basic' } }, { type: 'START_MATCH' }]).state;
   assert.deepEqual(s.ui, { name: 'setup', notice: 'NOT_ENOUGH_TERMS' });
 });
 
@@ -100,7 +102,10 @@ test('the app picks the first team at random; each team has its own words', () =
   const [r1] = s.plan!;
   assert.equal(r1.lists.A.length, 5);
   assert.equal(r1.lists.B.length, 5);
-  assert.equal(r1.lists.A.some((id) => r1.lists.B.includes(id)), false); // different words per team
+  assert.equal(
+    r1.lists.A.some((id) => r1.lists.B.includes(id)),
+    false,
+  ); // different words per team
 });
 
 test('a full round: giver counts clues, correct moves on, results by words then clues then time', () => {
@@ -202,7 +207,10 @@ test('the ticker starts with a turn and stops when it ends', () => {
   assert.deepEqual(start.effects, [{ type: 'START_TICKER', id: 'clock', ms: 1000, event: { type: 'TICK' } }]);
   const exit = feed(e, start.state, [{ type: 'EXIT' }]);
   assert.equal(exit.state.ui.name, 'exited');
-  assert.deepEqual(exit.effects.map((x) => x.type), ['CANCEL_TICKER', 'NAVIGATE']);
+  assert.deepEqual(
+    exit.effects.map((x) => x.type),
+    ['CANCEL_TICKER', 'NAVIGATE'],
+  );
 });
 
 test('two rounds: new words, roles swap, the other team starts, totals add up, rematch returns to setup', () => {
@@ -223,7 +231,10 @@ test('two rounds: new words, roles swap, the other team starts, totals add up, r
   const roles2 = rolesFor(s.setup, first1, 1);
   assert.equal(roles2.guesserId, giver1); // the former giver is now the guesser
   const words1 = new Set([...s.plan![0].lists.A, ...s.plan![0].lists.B]);
-  assert.equal([...s.plan![1].lists.A, ...s.plan![1].lists.B].some((id) => words1.has(id)), false); // new words
+  assert.equal(
+    [...s.plan![1].lists.A, ...s.plan![1].lists.B].some((id) => words1.has(id)),
+    false,
+  ); // new words
 
   r = playTurn(e, s, 1, 30_000);
   assert.equal((r.state.turn as any).team, other(first1));
@@ -243,11 +254,20 @@ test('two rounds: new words, roles swap, the other team starts, totals add up, r
   assert.equal(summary.totals.B.timeMs, round1.B.timeMs + round2.B.timeMs);
 
   // rematch needs all 4 players; then back to setup with the same names
-  s = feed(e, s, [{ type: 'REMATCH_ACCEPT', playerId: 'p1' }, { type: 'REMATCH_ACCEPT', playerId: 'p1' }, { type: 'REMATCH_ACCEPT', playerId: 'zzz' }, { type: 'REMATCH_ACCEPT', playerId: 'p2' }, { type: 'REMATCH_ACCEPT', playerId: 'p3' }]).state;
+  s = feed(e, s, [
+    { type: 'REMATCH_ACCEPT', playerId: 'p1' },
+    { type: 'REMATCH_ACCEPT', playerId: 'p1' },
+    { type: 'REMATCH_ACCEPT', playerId: 'zzz' },
+    { type: 'REMATCH_ACCEPT', playerId: 'p2' },
+    { type: 'REMATCH_ACCEPT', playerId: 'p3' },
+  ]).state;
   assert.equal(s.ui.name, 'results'); // 3 of 4 so far
   s = feed(e, s, [{ type: 'REMATCH_ACCEPT', playerId: 'p4' }]).state;
   assert.deepEqual(s.ui, { name: 'setup', notice: null });
-  assert.deepEqual(s.setup.players.map((p) => p.name), NAMES);
+  assert.deepEqual(
+    s.setup.players.map((p) => p.name),
+    NAMES,
+  );
   assert.equal(s.plan, null);
   s = feed(e, s, [{ type: 'START_MATCH' }]).state; // new words are drawn on start
   assert.equal(s.ui.name, 'turnIntro');

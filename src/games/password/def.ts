@@ -1,5 +1,7 @@
 import type { GameDef } from '../shell/types';
 import { OfflinePlay } from './OfflinePlay';
+import { OnlinePlay } from './OnlinePlay';
+import { expOf } from './online';
 import { TERMS } from './offline';
 
 const count = (bank: string) => TERMS.filter((x) => x.bank === bank).length.toLocaleString('en-US');
@@ -51,12 +53,31 @@ export const novaPassword: GameDef = {
         'No EXP in this mode.',
       ],
     },
+    {
+      mode: 'online',
+      title: 'Online',
+      blurb: '4 players on their own phones. Both teams play at once on the same words.',
+      howTo: [
+        'Exactly 4 players. The host sets the two teams of two and who gives clues first; roles swap in round 2.',
+        'Both teams play at the same time, on the same words in a different order. You only see how many words the other team has done.',
+        'The clue giver types one-word clues. The app turns down part of the term, the same root, a crossed-out word or a repeat.',
+        'The guesser types 3 letters and picks a term from the list. Wrong guesses are free. 3 minutes a round.',
+        'Most words wins, then the fewest clues, then the least time. Win 60 EXP, draw 40, loss 20, at most 60 a match.',
+      ],
+    },
   ],
   setup: { offline: SETUP, online: SETUP },
-  players: { offline: { min: 4, max: 4 } },
+  players: { offline: { min: 4, max: 4 }, online: { min: 4, max: 4 } },
   playersNote: () => 'You pick the teams and clue givers on the next page. Pass the phone earns no EXP.',
   Play: { offline: OfflinePlay },
-  exp: () => 0,
+  Online: OnlinePlay,
+  // Pass the phone earns no EXP; Online gives win 60, draw 40, loss 20, nothing after a forfeit.
+  exp: (_score, items) =>
+    expOf(
+      items
+        .filter((x) => (x.gameData as { forfeit?: boolean } | null)?.forfeit !== undefined)
+        .map((x) => ({ outcome: x.outcome === 'right' ? 'win' : x.outcome === 'skipped' ? 'draw' : 'loss', forfeit: !!(x.gameData as { forfeit?: boolean }).forfeit })),
+    ),
   expCap: (_settings, mode) => (mode === 'online' ? 60 : 0),
   itemLabel: (item) => {
     const d = item.gameData as { team?: string; winner?: string };

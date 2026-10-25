@@ -28,10 +28,7 @@ export type LobbyIntent =
   | { type: 'RANDOMIZE' }
   | { type: 'SET_SETTINGS'; settings: Partial<Settings> };
 
-export type LobbyEvent =
-  | { type: 'PLAYER_JOINED'; player: LobbyPlayer }
-  | { type: 'PLAYER_LEFT'; playerId: string }
-  | { type: 'INTENT'; by: string; intent: LobbyIntent };
+export type LobbyEvent = { type: 'PLAYER_JOINED'; player: LobbyPlayer } | { type: 'PLAYER_LEFT'; playerId: string } | { type: 'INTENT'; by: string; intent: LobbyIntent };
 
 export const defaultSettings = (): Settings => ({ bank: 'mixed', wordsPerTeam: 5, rounds: 1 });
 
@@ -98,17 +95,17 @@ function applyIntent(s: LobbyState, intent: LobbyIntent, rng: Rng): LobbyState {
       return { ...s, givers };
     }
     case 'RANDOMIZE': {
-      const shuffled = shuffle(s.players.map((p) => p.id), rng);
+      const shuffled = shuffle(
+        s.players.map((p) => p.id),
+        rng,
+      );
       const teams: Record<string, TeamId | null> = {};
       shuffled.forEach((id, i) => (teams[id] = i < CONFIG.TEAM_SIZE ? 'A' : 'B'));
       return fixGivers({ ...s, teams, givers: { A: null, B: null } });
     }
     case 'SET_SETTINGS': {
       const next = { ...s.settings, ...intent.settings };
-      const valid =
-        (next.bank === 'clinical' || next.bank === 'basic' || next.bank === 'mixed') &&
-        (next.wordsPerTeam === 5 || next.wordsPerTeam === 10) &&
-        (next.rounds === 1 || next.rounds === 2);
+      const valid = (next.bank === 'clinical' || next.bank === 'basic' || next.bank === 'mixed') && (next.wordsPerTeam === 5 || next.wordsPerTeam === 10) && (next.rounds === 1 || next.rounds === 2);
       return valid ? { ...s, settings: next } : s;
     }
   }

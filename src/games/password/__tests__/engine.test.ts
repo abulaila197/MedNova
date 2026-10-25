@@ -64,12 +64,18 @@ test('autocomplete: nothing until 3 letters, then prefix first, exact names', ()
   assert.equal(searchTerms(terms, 'INFARC')[0].id, 'mi'); // word-start match, accents/case ignored
   assert.deepEqual(searchTerms(terms, 'zzzz'), []);
   assert.equal(searchTerms(terms, 'clinical', 3).length, 3);
-  assert.deepEqual(searchTerms(terms, 'fem').map((t) => t.id), ['femur']);
+  assert.deepEqual(
+    searchTerms(terms, 'fem').map((t) => t.id),
+    ['femur'],
+  );
 });
 
 test('banks: clinical, basic science, or mixed', () => {
   const terms = makeTerms(5, 7);
-  assert.equal(termsOfBank(terms, 'clinical').every((t) => t.bank === 'clinical'), true);
+  assert.equal(
+    termsOfBank(terms, 'clinical').every((t) => t.bank === 'clinical'),
+    true,
+  );
   assert.equal(termsOfBank(terms, 'basic').length, 7 + 1); // + Femur
   assert.equal(termsOfBank(terms, 'mixed').length, terms.length);
 });
@@ -88,7 +94,10 @@ test('online plan: same words in a different order; round 2 uses new words', () 
     assert.notDeepEqual(r.lists.A, r.lists.B); // different order
   }
   const first = new Set(rounds[0].lists.A);
-  assert.equal(rounds[1].lists.A.some((id: string) => first.has(id)), false); // no repeats
+  assert.equal(
+    rounds[1].lists.A.some((id: string) => first.has(id)),
+    false,
+  ); // no repeats
 });
 
 test('offline plan: each team gets its own words, never shared, round 2 new', () => {
@@ -107,7 +116,10 @@ test('plan respects the bank and fails when there are not enough terms', () => {
   const tiny = planMatch({ terms: makeTerms(3, 2), settings: settings({ bank: 'basic' }), mode: 'offline', rng: seqRng() });
   assert.deepEqual(tiny, { ok: false, reason: 'NOT_ENOUGH_TERMS' });
   assert.deepEqual(differentOrder(['x'], seqRng()), ['x']);
-  assert.notDeepEqual(differentOrder(['a', 'b', 'c'], () => 0.999), ['a', 'b', 'c']); // even a stubborn rng changes the order
+  assert.notDeepEqual(
+    differentOrder(['a', 'b', 'c'], () => 0.999),
+    ['a', 'b', 'c'],
+  ); // even a stubborn rng changes the order
 });
 
 // ---------------------------------------------------------------------------- team round
@@ -177,7 +189,12 @@ test('two rounds add up words, clues and time; a forfeited round is 0 words and 
 // ---------------------------------------------------------------------------- lobby
 const four = (): LobbyState => {
   let s = newLobby({ id: 'h', name: 'Host' });
-  for (const [id, name] of [['p2', 'Bea'], ['p3', 'Cy'], ['p4', 'Di']]) s = lobbyReduce(s, { type: 'PLAYER_JOINED', player: { id, name } });
+  for (const [id, name] of [
+    ['p2', 'Bea'],
+    ['p3', 'Cy'],
+    ['p4', 'Di'],
+  ])
+    s = lobbyReduce(s, { type: 'PLAYER_JOINED', player: { id, name } });
   return s;
 };
 const intent = (s: LobbyState, by: string, i: any, rng?: () => number) => lobbyReduce(s, { type: 'INTENT', by, intent: i }, rng);
@@ -190,7 +207,13 @@ test('lobby: exactly 4 players, only the host changes anything, teams are 2 + 2'
   assert.deepEqual(canStart(s), { ok: false, reason: 'TEAMS_NOT_2_AND_2' });
 
   assert.equal(intent(s, 'p2', { type: 'ASSIGN', playerId: 'p2', team: 'A' }), s); // not the host: ignored
-  for (const [id, team] of [['h', 'A'], ['p2', 'A'], ['p3', 'B'], ['p4', 'B']] as const) s = intent(s, 'h', { type: 'ASSIGN', playerId: id, team });
+  for (const [id, team] of [
+    ['h', 'A'],
+    ['p2', 'A'],
+    ['p3', 'B'],
+    ['p4', 'B'],
+  ] as const)
+    s = intent(s, 'h', { type: 'ASSIGN', playerId: id, team });
   assert.deepEqual(s.givers, { A: 'h', B: 'p3' }); // first member is the default giver
   assert.deepEqual(canStart(s), { ok: true });
 
@@ -227,7 +250,13 @@ test('lobby: the host leaving passes the host role; roles swap in round 2', () =
   s = lobbyReduce(s, { type: 'PLAYER_LEFT', playerId: 'h' });
   assert.equal(s.hostId, 'p2');
   s = lobbyReduce(s, { type: 'PLAYER_JOINED', player: { id: 'h2', name: 'New' } });
-  for (const [id, team] of [['p2', 'A'], ['p3', 'A'], ['p4', 'B'], ['h2', 'B']] as const) s = intent(s, 'p2', { type: 'ASSIGN', playerId: id, team });
+  for (const [id, team] of [
+    ['p2', 'A'],
+    ['p3', 'A'],
+    ['p4', 'B'],
+    ['h2', 'B'],
+  ] as const)
+    s = intent(s, 'p2', { type: 'ASSIGN', playerId: id, team });
   s = intent(s, 'p2', { type: 'SET_GIVER', team: 'A', playerId: 'p3' });
   const r1 = rolesForRound(s, 0);
   const r2 = rolesForRound(s, 1);

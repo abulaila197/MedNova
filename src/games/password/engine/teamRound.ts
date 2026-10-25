@@ -41,8 +41,7 @@ function patchCurrent(tr: TeamRound, patch: (w: WordState) => WordState): TeamRo
 }
 
 /** A clue was given. `text` is set online (typed clue); offline it is just a +1. */
-export const addClue = (tr: TeamRound, text?: string): TeamRound =>
-  patchCurrent(tr, (w) => ({ ...w, count: w.count + 1, clues: text !== undefined ? [...w.clues, text] : w.clues }));
+export const addClue = (tr: TeamRound, text?: string): TeamRound => patchCurrent(tr, (w) => ({ ...w, count: w.count + 1, clues: text !== undefined ? [...w.clues, text] : w.clues }));
 
 /** Offline undo for a mistaken +1. */
 export const removeClue = (tr: TeamRound): TeamRound =>

@@ -1,16 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {
-  initialOnlineState,
-  msLeft,
-  myProgress,
-  onlineTransition,
-  opponentProgress,
-  type OnlineEnv,
-  type OnlineEvent,
-  type OnlineState,
-  type SnapshotData,
-} from '../engine/onlineMachine';
+import { initialOnlineState, msLeft, myProgress, onlineTransition, opponentProgress, type OnlineEnv, type OnlineEvent, type OnlineState, type SnapshotData } from '../engine/onlineMachine';
 import type { Effect, TeamRoundResult } from '../engine/types';
 import { MI, makeClock, makeTerms } from './helpers';
 
@@ -23,8 +13,17 @@ const players = [
   { id: 'y', name: 'Y', team: 'B' as const, role: 'guesser' as const, connected: true },
 ];
 const snap = (over: Partial<SnapshotData> = {}): SnapshotData => ({
-  myTeam: 'A', role: 'giver', round: 0, totalRounds: 2, players, currentTermId: MI.id, clues: [], guesses: [],
-  progress: { A: { completed: 0, total: 5 }, B: { completed: 2, total: 5 } }, endsInMs: 180_000, ...over,
+  myTeam: 'A',
+  role: 'giver',
+  round: 0,
+  totalRounds: 2,
+  players,
+  currentTermId: MI.id,
+  clues: [],
+  guesses: [],
+  progress: { A: { completed: 0, total: 5 }, B: { completed: 2, total: 5 } },
+  endsInMs: 180_000,
+  ...over,
 });
 
 function feed(s: OnlineState, events: OnlineEvent[]) {
@@ -37,8 +36,7 @@ function feed(s: OnlineState, events: OnlineEvent[]) {
   }
   return { state, effects };
 }
-const live = (data: Partial<SnapshotData> = {}, id = 'me') =>
-  feed(initialOnlineState(id), [{ type: 'S_SNAPSHOT', data: snap(data) }]).state;
+const live = (data: Partial<SnapshotData> = {}, id = 'me') => feed(initialOnlineState(id), [{ type: 'S_SNAPSHOT', data: snap(data) }]).state;
 const sent = (fx: Effect<OnlineEvent>[]) => fx.filter((f) => f.type === 'SEND').map((f: any) => f.message);
 const msgs = (fx: Effect<OnlineEvent>[]) => sent(fx).filter((m) => m.t !== 'ACTIVITY');
 
@@ -59,14 +57,23 @@ test('giver: clues are checked locally, sent once, and rejected clues are not se
   assert.deepEqual(msgs(r.effects), [{ t: 'CLUE', text: 'pain' }]);
   assert.equal(r.state.notice, null);
 
-  for (const [text, reason] of [['heart', 'FORBIDDEN'], ['infarct', 'SAME_ROOT'], ['Myocardial', 'TERM_WORD'], ['chest pain', 'NOT_ONE_WORD'], ['', 'EMPTY']] as const) {
+  for (const [text, reason] of [
+    ['heart', 'FORBIDDEN'],
+    ['infarct', 'SAME_ROOT'],
+    ['Myocardial', 'TERM_WORD'],
+    ['chest pain', 'NOT_ONE_WORD'],
+    ['', 'EMPTY'],
+  ] as const) {
     r = feed(live(), [{ type: 'GIVE_CLUE', text }]);
     assert.equal(r.state.notice, reason, text);
     assert.deepEqual(msgs(r.effects), []); // nothing goes to the server
   }
 
   // a clue the server accepted cannot be repeated
-  r = feed(live(), [{ type: 'S_CLUE_ACCEPTED', text: 'pain' }, { type: 'GIVE_CLUE', text: 'PAIN' }]);
+  r = feed(live(), [
+    { type: 'S_CLUE_ACCEPTED', text: 'pain' },
+    { type: 'GIVE_CLUE', text: 'PAIN' },
+  ]);
   assert.equal(r.state.notice, 'DUPLICATE');
   assert.deepEqual(r.state.clues, ['pain']);
   assert.equal(feed(live(), [{ type: 'S_CLUE_REJECTED', reason: 'SAME_ROOT' }]).state.notice, 'SAME_ROOT'); // the server has the last word
@@ -95,9 +102,12 @@ test('the guesser never holds the secret term, even if the server sent it by mis
   assert.equal(feed(guesser, [{ type: 'GIVE_CLUE', text: 'pain' }]).state.notice, 'NOT_GIVER');
 });
 
-test('wrong guesses are shown and free; progress shows only the other team\'s words completed', () => {
+test("wrong guesses are shown and free; progress shows only the other team's words completed", () => {
   let s = live();
-  s = feed(s, [{ type: 'S_GUESS_WRONG', termId: 'appy' }, { type: 'S_GUESS_WRONG', termId: 'appy' }]).state;
+  s = feed(s, [
+    { type: 'S_GUESS_WRONG', termId: 'appy' },
+    { type: 'S_GUESS_WRONG', termId: 'appy' },
+  ]).state;
   assert.deepEqual(s.guesses, ['appy']);
   assert.deepEqual(opponentProgress(s), { completed: 2, total: 5 });
   assert.deepEqual(myProgress(s), { completed: 0, total: 5 });
@@ -114,7 +124,10 @@ test('round end, round break and the next round with swapped roles', () => {
     A: { teamId: 'A', wordsCompleted: 5, clues: 11, timeMs: 100_000 },
     B: { teamId: 'B', wordsCompleted: 4, clues: 8, timeMs: 180_000 },
   };
-  let s = feed(live(), [{ type: 'S_CLUE_ACCEPTED', text: 'pain' }, { type: 'S_ROUND_ENDED', round: 0, results }]).state;
+  let s = feed(live(), [
+    { type: 'S_CLUE_ACCEPTED', text: 'pain' },
+    { type: 'S_ROUND_ENDED', round: 0, results },
+  ]).state;
   assert.deepEqual(s.ui, { name: 'roundBreak', round: 0, results });
   assert.equal(feed(s, [{ type: 'GIVE_CLUE', text: 'pain' }]).state, s); // nothing during the break
 
@@ -157,7 +170,11 @@ test('disconnect: 30 s to rejoin, the snapshot restores play, timeout leaves; qu
 
 test('connection and forfeit facts update the screen', () => {
   let s = live();
-  s = feed(s, [{ type: 'S_PLAYER_CONNECTION', playerId: 'x', connected: false }, { type: 'S_TEAM_FORFEITED', teamId: 'B' }, { type: 'S_TEAM_FORFEITED', teamId: 'B' }]).state;
+  s = feed(s, [
+    { type: 'S_PLAYER_CONNECTION', playerId: 'x', connected: false },
+    { type: 'S_TEAM_FORFEITED', teamId: 'B' },
+    { type: 'S_TEAM_FORFEITED', teamId: 'B' },
+  ]).state;
   assert.equal(s.players.find((p) => p.id === 'x')!.connected, false);
   assert.deepEqual(s.forfeitedTeams, ['B']);
 });
@@ -171,5 +188,8 @@ test('activity pings are throttled to one per 10 seconds', () => {
   assert.equal(sent(r.effects).length, 0);
   clock.advance(6000);
   r = feed(r.state, [{ type: 'GIVE_CLUE', text: 'pain' }]); // any input counts
-  assert.deepEqual(sent(r.effects).map((m) => m.t), ['ACTIVITY', 'CLUE']);
+  assert.deepEqual(
+    sent(r.effects).map((m) => m.t),
+    ['ACTIVITY', 'CLUE'],
+  );
 });

@@ -38,8 +38,14 @@ export interface MatchSummary {
 
 export function summarizeMatch(rounds: readonly Record<TeamId, TeamRoundResult>[]): MatchSummary {
   const totals = {
-    A: sumResults('A', rounds.map((r) => r.A)),
-    B: sumResults('B', rounds.map((r) => r.B)),
+    A: sumResults(
+      'A',
+      rounds.map((r) => r.A),
+    ),
+    B: sumResults(
+      'B',
+      rounds.map((r) => r.B),
+    ),
   };
   return {
     rounds: rounds.slice(),
