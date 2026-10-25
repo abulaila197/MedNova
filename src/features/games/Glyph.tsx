@@ -19,6 +19,8 @@ const GLY: Record<string, Prim[]> = {
   'the-quiz-parade': [{ r: [5, 9, 14, 10, 2] }, { p: 'M5 12h14M8 9l2 10M14 9l2 10' }, { p: 'M7 3l4 5M17 3l-4 5' }],
   // a half-and-half mask
   imposter: [{ p: 'M5 5c4-1.5 10-1.5 14 0 0 7-3 13-7 14-4-1-7-7-7-14z' }, { p: 'M12 4.2v14.6' }, { c: [9, 10, 1], fill: true }, { c: [15, 10, 1], fill: true }],
+  // four word cards, two turned over
+  'code-clinic': [{ r: [3.5, 3.5, 7.5, 7.5, 1.5] }, { r: [13, 3.5, 7.5, 7.5, 1.5], fill: true }, { r: [3.5, 13, 7.5, 7.5, 1.5], fill: true }, { r: [13, 13, 7.5, 7.5, 1.5] }],
 };
 
 function Shapes({ k, paint }: { k: string; paint: string }) {

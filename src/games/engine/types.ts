@@ -12,7 +12,8 @@ export type GameKey =
   | 'the-conqueror'
   | 'trust-me-not'
   | 'the-quiz-parade'
-  | 'imposter';
+  | 'imposter'
+  | 'code-clinic';
 
 export type Mode = 'solo' | 'offline' | 'online';
 
