@@ -1,4 +1,4 @@
-import { Image } from 'expo-image';
+import { Image, type ImageSource } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
@@ -12,6 +12,7 @@ import { Congrats } from '@/components/Congrats';
 import { Screen } from '@/components/Screen';
 import { useSession } from '@/games/shell/session';
 import { MECHS, MECHS_PRIZE } from '@/features/chests/data';
+import { ROBOTS, robotOf } from '@/features/shop/robots';
 import { InfoScroll, Kicker, s as ui, useInfo } from '@/features/info/ui';
 import { loadStyle, useStyle } from '@/features/style/useStyle';
 import { u } from '@/theme/scale';
@@ -32,6 +33,8 @@ export function CollectionPage() {
   const [open, setOpen] = useState<number | null>(null);
   const [mech, setMech] = useState<number | null>(null);
   const mechs = useStyle(useShallow((x) => x.owned.filter((k) => k.startsWith('mech:')).map((k) => k.slice(5))));
+  const robots = useStyle(useShallow((x) => x.owned.filter((k) => k.startsWith('robot:')).map((k) => k.slice(6))));
+  const [robot, setRobot] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [won, setWon] = useState(false);
   const [err, setErr] = useState('');
@@ -93,8 +96,11 @@ export function CollectionPage() {
         </View>
         <Binder t={t} found={found} onOpen={setOpen} />
         <Mechs t={t} owned={mechs} onOpen={setMech} />
+        <RobotPack t={t} owned={robots} group="shop" onOpen={setRobot} />
+        <RobotPack t={t} owned={robots} group="special" onOpen={setRobot} />
       </InfoScroll>
       <MechViewer i={mech} onClose={() => setMech(null)} />
+      <CardViewer card={robotOf(robot ?? undefined)} onClose={() => setRobot(null)} />
       <Viewer t={t} i={open} onClose={() => setOpen(null)} />
       <Congrats open={won} tokens={HUNT_PRIZE} title="The hunt is complete" line="Nine cards, nine missions, one weary medic. Your tokens are in your wallet." onClose={() => setWon(false)} />
     </Screen>
@@ -166,10 +172,60 @@ function Mechs({ t, owned, onOpen }: { t: Theme; owned: string[]; onOpen: (i: nu
 
 const MECH_RATIO = 860 / 480;
 
+/** Style shop characters (Yazan 2026-10-25): the five sold in the shop as one pack, Linky, Sovereign and Admin as a special one. */
+function RobotPack({ t, owned, group, onOpen }: { t: Theme; owned: string[]; group: 'shop' | 'special'; onOpen: (key: string) => void }) {
+  const w = Math.floor((u(246) - u(10) * 2 - u(16) - 4) / 3);
+  const list = ROBOTS.filter((r) => r.group === group);
+  const n = list.filter((r) => owned.includes(r.key)).length;
+  return (
+    <View style={{ marginTop: u(22) }}>
+      <Kicker>{group === 'shop' ? 'Style shop' : 'Rare finds'}</Kicker>
+      <Text style={[ui.H, { color: t.fg, fontFamily: F.display }]}>
+        {group === 'shop' ? 'Shop ' : 'Special '}
+        <Text style={[ui.H, { color: t.accent, fontFamily: F.displayItalic }]}>pack</Text>
+      </Text>
+      <View style={s.count}>
+        <Text style={[s.countT, { color: t.fg }]}>{`${n} of ${list.length} owned`}</Text>
+        <View style={s.pips}>
+          {list.map((r) => (
+            <View key={r.key} style={[s.pip, { backgroundColor: owned.includes(r.key) ? t.accent : t.panelLine }]} />
+          ))}
+        </View>
+      </View>
+      <Text style={[s.hint, { color: t.mute }]}>{group === 'shop' ? 'Bought with tokens in the Style shop.' : 'Never sold for tokens: earned, in a package, or one of a kind.'}</Text>
+      <View style={[s.binder, { backgroundColor: 'rgba(255,255,255,0.03)', borderColor: t.panelLine }]}>
+        {list.map((r) => {
+          const has = owned.includes(r.key);
+          return (
+            <Pressable key={r.key} disabled={!has} onPress={() => onOpen(r.key)} style={{ width: w, alignItems: 'center' }} accessibilityRole="button" accessibilityLabel={has ? `Open ${r.name}` : 'Locked character'}>
+              <View style={[s.mSleeve, { width: w, borderRadius: w * 0.07 }]}>
+                <Image source={r.card} style={[{ width: w - 6, height: (w - 6) * MECH_RATIO, borderRadius: w * 0.05 }, !has && { opacity: 0.12 }]} contentFit="cover" />
+                {!has ? (
+                  <View style={[StyleSheet.absoluteFill, s.lock]}>
+                    <Svg width={u(12)} height={u(12)} viewBox="0 0 24 24">
+                      <Rect x={5} y={10.5} width={14} height={10} rx={2} fill={t.fg} />
+                      <Path d="M8 10.5 V8 a4 4 0 0 1 8 0 V10.5" stroke={t.fg} strokeWidth={2.2} fill="none" />
+                    </Svg>
+                  </View>
+                ) : null}
+              </View>
+              <Text style={[s.bName, { color: has ? t.fg : t.mute }]}>{has ? r.name : '★'.repeat(r.stars)}</Text>
+            </Pressable>
+          );
+        })}
+      </View>
+    </View>
+  );
+}
+
 /** One robot's card, big (also opened from the chest page's items, list #87). */
 export function MechViewer({ i, onClose }: { i: number | null; onClose: () => void }) {
-  if (i === null) return null;
-  const m = MECHS[i];
+  return <CardViewer card={i === null ? null : MECHS[i]} onClose={onClose} />;
+}
+
+/** Any front-only card (Nova Mechs, Style shop characters), big in its saver. */
+export function CardViewer({ card: m, onClose }: { card: { card: ImageSource; name: string; title: string } | null | undefined; onClose: () => void }) {
+  if (!m) return null;
   const w = u(196);
   return (
     <Modal transparent visible animationType="fade" onRequestClose={onClose}>

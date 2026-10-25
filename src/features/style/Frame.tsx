@@ -1,3 +1,4 @@
+import { Image, type ImageSource } from 'expo-image';
 import { useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Animated, { cancelAnimation, Easing, useAnimatedStyle, useReducedMotion, useSharedValue, withRepeat, withSequence, withTiming } from 'react-native-reanimated';
@@ -5,13 +6,15 @@ import Svg, { Circle, Defs, Ellipse, G, LinearGradient, Path, Stop } from 'react
 
 import { useSvgId } from '@/components/svgId';
 import { AuroraBase, AuroraMoving, AuroraSparkles, HelixBase, LaurelGlow, NovaBase, NovaMoving, PulseBase, PulseMoving } from '@/features/style/Ornate';
+import { Accents, PAD } from '@/features/style/Accents';
 import { useLook, wantLooks } from '@/features/style/useStyle';
 import { Face } from '@/games/shell/Face';
 import { useTheme } from '@/state/app';
 
 export type FrameKey =
   | 'normal' | 'bronze' | 'silver' | 'gold' | 'platinum'
-  | 'pulse' | 'nova' | 'helix' | 'stethoscope' | 'laurel' | 'aurora' | 'neuron' | 'rounds';
+  | 'pulse' | 'nova' | 'helix' | 'stethoscope' | 'laurel' | 'aurora' | 'neuron' | 'rounds'
+  | 'inviter' | 'sovereign' | 'admin';
 
 // Everything is drawn in a 100 x 100 box; the face fills the middle (radius 38), the frame sits around it.
 const V = 100;
@@ -24,6 +27,26 @@ const METAL: Record<'bronze' | 'silver' | 'gold' | 'platinum', string[]> = {
   gold: ['#fff2b8', '#e8b64a', '#a8761c', '#f5d376', '#8a5d12'],
   platinum: ['#ffffff', '#dfe8f3', '#a9b7c9', '#f4f8fc', '#8e9db2'],
 };
+
+// Yazan's Flow art for the premium frames (2026-10-25). Each image is square with the ring's hole in the centre;
+// `ext` is the image side over the hole's diameter, `w` the share of the image's width the art covers. Every frame is
+// drawn as wide as the metal rings (Yazan: same side-to-side size), so the face shrinks to fit a thicker frame.
+const ART: Partial<Record<FrameKey, { src: ImageSource; ext: number; w: number }>> = {
+  helix: { src: require('../../../assets/frames/helix.webp'), ext: 1.658, w: 0.828 },
+  neuron: { src: require('../../../assets/frames/neuron.webp'), ext: 1.854, w: 0.855 },
+  pulse: { src: require('../../../assets/frames/pulse.webp'), ext: 1.535, w: 0.918 },
+  laurel: { src: require('../../../assets/frames/laurel.webp'), ext: 1.913, w: 0.816 },
+  aurora: { src: require('../../../assets/frames/aurora.webp'), ext: 1.7, w: 0.957 },
+  nova: { src: require('../../../assets/frames/nova.webp'), ext: 1.75, w: 0.84 },
+  rounds: { src: require('../../../assets/frames/rounds.webp'), ext: 2.085, w: 0.75 },
+  inviter: { src: require('../../../assets/frames/inviter.webp'), ext: 1.32, w: 0.945 },
+  sovereign: { src: require('../../../assets/frames/sovereign.webp'), ext: 1.95, w: 0.688 },
+  admin: { src: require('../../../assets/frames/admin.webp'), ext: 1.734, w: 0.93 },
+};
+// The hole sits a touch inside the face's edge so the ring covers it cleanly.
+const HOLE = 0.74;
+// Outer width of the metal rings, as a share of the box.
+const RING_W = 0.965;
 
 const pt = (r: number, a: number) => [C + r * Math.cos(a), C + r * Math.sin(a)] as const;
 
@@ -222,12 +245,26 @@ function Moving({ k, id }: { k: FrameKey; id: string }) {
  * A character face inside a profile frame. `size` is the whole framed box. Frames move only on big faces
  * (Profile, results, lobby seats, player card): `still` keeps them still in lists, and Reduce Motion always does.
  */
-export function Framed({ slug, size, frame, still = false }: { slug: string; size: number; frame: FrameKey; still?: boolean }) {
+export function Framed({ slug, size, frame, still = false, accent }: { slug: string; size: number; frame: FrameKey; still?: boolean; accent?: boolean }) {
   const t = useTheme();
   const reduce = useReducedMotion();
   const id = useSvgId('fr');
   const id2 = useSvgId('fm');
+  const id3 = useSvgId('fa');
   const f = size * FACE;
+  const art = ART[frame];
+  if (art) {
+    const w = (size * RING_W) / art.w;
+    const fq = (w / art.ext / HOLE) * FACE;
+    return (
+      <View style={{ width: size, height: size }}>
+        <View style={[s.face, { top: (size - fq) / 2, left: (size - fq) / 2 }]}>
+          <Face slug={slug} size={fq} />
+        </View>
+        <Image source={art.src} style={{ position: 'absolute', width: w, height: w, left: (size - w) / 2, top: (size - w) / 2 }} transition={0} pointerEvents="none" />
+      </View>
+    );
+  }
   return (
     <View style={{ width: size, height: size }}>
       <View style={[s.face, { top: (size - f) / 2, left: (size - f) / 2 }]}>
@@ -237,6 +274,16 @@ export function Framed({ slug, size, frame, still = false }: { slug: string; siz
         <Base k={frame} id={id} line={t.panelLine} />
       </Svg>
       {still || reduce ? null : <Moving k={frame} id={id2} />}
+      {accent ? (
+        <Svg
+          width={size * (1 + (2 * PAD) / V)}
+          height={size * (1 + (2 * PAD) / V)}
+          viewBox={`${-PAD} ${-PAD} ${V + 2 * PAD} ${V + 2 * PAD}`}
+          style={{ position: 'absolute', left: (-size * PAD) / V, top: (-size * PAD) / V }}
+          pointerEvents="none">
+          <Accents k={frame} id={id3} />
+        </Svg>
+      ) : null}
     </View>
   );
 }

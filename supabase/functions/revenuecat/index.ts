@@ -9,8 +9,9 @@ declare const Deno: { env: { get(k: string): string | undefined }; serve(h: (req
 const admin = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!, { auth: { persistSession: false } });
 
 /** Mirrors PACKS in src/features/store/catalog.ts (MN4). */
-const PACK_TOKENS: Record<string, number> = { tokens_50: 50, tokens_200: 200, tokens_500: 500, tokens_1000: 1000 };
+const PACK_TOKENS: Record<string, number> = { tokens_100: 100, tokens_400: 400, tokens_1000: 1000, tokens_2000: 2000 };
 const SUBSCRIPTION = 'unlimited_monthly';
+const SOVEREIGN = 'sovereign_pack'; // $10: Sovereign, its frame and 500 tokens (Yazan 2026-10-25)
 const SUB_BONUS = 500; // once per account, on the first subscription (Yazan 2026-10-21)
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -44,6 +45,12 @@ Deno.serve(async (req) => {
       { onConflict: 'id', ignoreDuplicates: true },
     );
     if (error) return new Response(error.message, { status: 500 }); // RevenueCat retries
+    return ok();
+  }
+
+  if (e.type === 'NON_RENEWING_PURCHASE' && product === SOVEREIGN) {
+    const { error } = await admin.rpc('grant_sovereign', { uid: e.app_user_id, event_id: (e.transaction_id ?? e.id).replace(/[^A-Za-z0-9]/g, '').slice(0, 60) });
+    if (error) return new Response(error.message, { status: 500 });
     return ok();
   }
 

@@ -21,6 +21,15 @@ const FACES: Record<string, number> = {
   aurora: require('../../../assets/mechs/aurora-face.webp'),
   cortex: require('../../../assets/mechs/cortex-face.webp'),
   titan: require('../../../assets/mechs/titan-face.webp'),
+  // Style shop characters (2026-10-25).
+  bloop: require('../../../assets/shop/bloop-face.webp'),
+  pixel: require('../../../assets/shop/pixel-face.webp'),
+  nimbus: require('../../../assets/shop/nimbus-face.webp'),
+  ember: require('../../../assets/shop/ember-face.webp'),
+  zenith: require('../../../assets/shop/zenith-face.webp'),
+  linky: require('../../../assets/shop/linky-face.webp'),
+  sovereign: require('../../../assets/shop/sovereign-face.webp'),
+  admin: require('../../../assets/shop/admin-face.webp'),
 };
 
 /** A character's round face (its ring is drawn into the picture). */

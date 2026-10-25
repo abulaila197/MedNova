@@ -816,6 +816,95 @@ function Medal() {
   );
 }
 
+// ---------------------------------------------------------------- Friendship chain (Inviter set, Yazan 2026-10-25)
+
+const CORAL = '#ff7a5c';
+const LINK_CYAN = '#3cc8e0';
+const HEART = 'M0,9 C-11,1 -11,-8 -5.5,-9 C-2.5,-9.5 -0.6,-7.6 0,-5.6 C0.6,-7.6 2.5,-9.5 5.5,-9 C11,-8 11,1 0,9 Z';
+
+/** One half of the chain: links alternate flat (an open loop) and side-on (a thin bar), coral then cyan. */
+function ChainHalf({ k, n, flip }: { k: number; n: number; flip?: boolean }) {
+  const step = 17;
+  const w = (n * step + 14) * k;
+  return (
+    <Svg width={w} height={30 * k} viewBox={`0 0 ${n * step + 14} 30`} style={flip ? { transform: [{ scaleX: -1 }] } : undefined}>
+      {Array.from({ length: n }, (_, i) => {
+        const x = 8 + i * step;
+        const c = i % 2 ? LINK_CYAN : CORAL;
+        return i % 2 ? (
+          <Rect key={i} x={x - 11} y={13} width={22} height={4.5} rx={2.25} fill={c} />
+        ) : (
+          <Ellipse key={i} cx={x} cy={15} rx={12} ry={7.5} fill="none" stroke={c} strokeWidth={4} />
+        );
+      })}
+    </Svg>
+  );
+}
+
+function ChainHeart({ T, a, d, k, c }: { T: SharedValue<number>; a: number; d: number; k: number; c: string }) {
+  const st = useAnimatedStyle(() => {
+    const q = seg(T.value, 1000, 1300, 'out');
+    return {
+      opacity: T.value < 1000 ? 0 : 1 - seg(T.value, 1700, 700),
+      transform: [{ translateX: Math.cos(a) * d * k * q }, { translateY: Math.sin(a) * d * k * q - 30 * k * q }, { scale: 0.4 + 0.6 * q }],
+    };
+  });
+  return (
+    <Animated.View style={[s.abs, { left: -12 * k, top: -12 * k }, st]}>
+      <Svg width={24 * k} height={24 * k} viewBox="-12 -12 24 24">
+        <Path d={HEART} fill={c} />
+      </Svg>
+    </Animated.View>
+  );
+}
+
+function FriendChain() {
+  const { width, height, k } = useK();
+  const T = useClock();
+  const layer = useLayer(T);
+  const cy = height * 0.42;
+  const n = 6;
+  const kc = k * 1.5; // chain drawn bold
+  const half = (n * 17 + 14) * kc;
+  // the two halves slide in from the screen edges and meet in the middle
+  const left = useAnimatedStyle(() => ({ transform: [{ translateX: track(T.value, [[0, -half - 10 * kc], [850, 0, 'out']]) }] }));
+  const right = useAnimatedStyle(() => ({ transform: [{ translateX: track(T.value, [[0, half + 10 * kc], [850, 0, 'out']]) }] }));
+  const shake = useAnimatedStyle(() => ({ transform: [{ translateY: T.value > 850 && T.value < 1050 ? Math.sin(T.value / 18) * 3 * k * (1 - seg(T.value, 850, 200)) : 0 }] }));
+  const heart = useAnimatedStyle(() => ({
+    opacity: T.value < 850 ? 0 : 1,
+    transform: [{ scale: track(T.value, [[850, 0], [1050, 1.35, 'out'], [1250, 1, 'inOut']]) }],
+  }));
+  const hearts = useMemo(() => Array.from({ length: 12 }, (_, i) => ({ a: -Math.PI / 2 + ((i - 5.5) / 5.5) * 1.5, d: 80 + ((i * 23) % 50), c: i % 2 ? LINK_CYAN : CORAL })), []);
+  return (
+    <Animated.View style={[StyleSheet.absoluteFill, layer]}>
+      <Scrim T={T} />
+      <Animated.View style={[s.abs, { left: 0, right: 0, top: cy - 15 * kc, height: 30 * kc }, shake]}>
+        <Animated.View style={[s.abs, { left: width / 2 - half + 2 * kc, top: 0 }, left]}>
+          <ChainHalf k={kc} n={n} />
+        </Animated.View>
+        <Animated.View style={[s.abs, { left: width / 2 - 2 * kc, top: 0 }, right]}>
+          <ChainHalf k={kc} n={n} flip />
+        </Animated.View>
+      </Animated.View>
+      <Svg width={width} height={height} style={StyleSheet.absoluteFill}>
+        <Ring T={T} at={880} cx={width / 2} cy={cy} from={16 * k} to={120 * k} w={6 * k} color={CORAL} />
+        <Ring T={T} at={1000} cx={width / 2} cy={cy} from={16 * k} to={150 * k} w={4 * k} color={LINK_CYAN} />
+      </Svg>
+      <View style={[s.abs, { left: width / 2, top: cy }]}>
+        {hearts.map((h, i) => (
+          <ChainHeart key={i} T={T} a={h.a} d={h.d} k={k} c={h.c} />
+        ))}
+      </View>
+      <Animated.View style={[s.abs, { left: width / 2 - 34 * k, top: cy - 34 * k }, heart]}>
+        <Svg width={68 * k} height={68 * k} viewBox="-13 -13 26 26">
+          <Path d={HEART} fill="#ff4d6d" stroke="#ffffff" strokeWidth={1.4} />
+          <Path d="M-5,-5 Q-7,-2 -5,1" stroke="#ffffff" strokeOpacity={0.7} strokeWidth={1.3} fill="none" strokeLinecap="round" />
+        </Svg>
+      </Animated.View>
+    </Animated.View>
+  );
+}
+
 const AnimatedRect = Animated.createAnimatedComponent(Rect);
 
 const PLAY: Record<string, () => React.JSX.Element> = {
@@ -827,6 +916,7 @@ const PLAY: Record<string, () => React.JSX.Element> = {
   spotlight: Spotlight,
   trophy: TrophyFx,
   medal: Medal,
+  friend_chain: FriendChain,
   // retired before the server swapped them (20261018040000_win_effects_v2)
   signed_off: TooEasy,
   supernova: Spotlight,
@@ -901,6 +991,13 @@ export function EffectSign({ kind, size }: { kind: EffectKey; size: number }) {
         <>
           <Path d="M17,3 L23,3 L34,34 L6,34 Z" fill="#fff6d8" opacity={0.55} />
           <Ellipse cx={20} cy={34} rx={15} ry={3} fill="#fff6d8" opacity={0.8} />
+        </>
+      ) : kind === 'friend_chain' ? (
+        <>
+          <Ellipse cx={11} cy={20} rx={8} ry={5} fill="none" stroke={CORAL} strokeWidth={3} />
+          <Rect x={16} y={18.5} width={9} height={3} rx={1.5} fill={LINK_CYAN} />
+          <Ellipse cx={29} cy={20} rx={8} ry={5} fill="none" stroke={CORAL} strokeWidth={3} />
+          <Path d={HEART} transform="translate(20,9) scale(0.55)" fill="#ff4d6d" />
         </>
       ) : kind === 'trophy' ? (
         <>

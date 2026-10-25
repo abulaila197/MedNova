@@ -25,7 +25,20 @@ export const MECH_CHARACTERS: Character[] = [
   { slug: 'titan', name: 'Titan', ring: '#ff7a1a' },
 ];
 
-export const characterOf = (slug?: string) => CHARACTERS.find((c) => c.slug === slug) ?? MECH_CHARACTERS.find((c) => c.slug === slug);
+/** The Style shop characters (Yazan 2026-10-25): five sold for tokens, then Linky, Sovereign and Admin. */
+export const SHOP_CHARACTERS: Character[] = [
+  { slug: 'bloop', name: 'Bloop', ring: '#3cc8d8' },
+  { slug: 'pixel', name: 'Pixel', ring: '#9b5de5' },
+  { slug: 'nimbus', name: 'Nimbus', ring: '#8fd3ff' },
+  { slug: 'ember', name: 'Ember', ring: '#ff6a2a' },
+  { slug: 'zenith', name: 'Zenith', ring: '#e8b64a' },
+  { slug: 'linky', name: 'Linky', ring: '#ff7a5c' },
+  { slug: 'sovereign', name: 'Sovereign', ring: '#f2c14e' },
+  { slug: 'admin', name: 'Admin', ring: '#40e0ff' },
+];
+
+export const characterOf = (slug?: string) =>
+  CHARACTERS.find((c) => c.slug === slug) ?? MECH_CHARACTERS.find((c) => c.slug === slug) ?? SHOP_CHARACTERS.find((c) => c.slug === slug);
 
 /** The first character nobody in `taken` has picked. */
 export const freeCharacter = (taken: (string | undefined)[]) => CHARACTERS.find((c) => !taken.includes(c.slug)) ?? CHARACTERS[0];

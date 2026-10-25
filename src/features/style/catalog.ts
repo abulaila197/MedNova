@@ -19,6 +19,9 @@ export const FRAMES: (Item & { key: FrameKey })[] = [
   { id: 'frame:aurora', key: 'aurora', name: 'Aurora', price: 1100 },
   { id: 'frame:nova', key: 'nova', name: 'Nova', price: 1200 },
   { id: 'frame:rounds', key: 'rounds', name: 'Grand Rounds', price: null },
+  { id: 'frame:inviter', key: 'inviter', name: 'Inviter', price: null },
+  { id: 'frame:sovereign', key: 'sovereign', name: 'Sovereign', price: null },
+  { id: 'frame:admin', key: 'admin', name: 'Admin', price: null },
 ];
 
 const T = (key: string, name: string, price: number): Item => ({ id: `title:${key}`, key, name, price });
@@ -40,7 +43,10 @@ export const PLATINUM_TITLES: Item[] = ACHIEVEMENTS.filter((a) => a.goals.length
   price: null,
 }));
 
-export type EffectKey = 'confetti' | 'trophy' | 'medal' | 'pulse_wave' | 'too_easy' | 'mic_drop' | 'flatline' | 'spotlight';
+/** Titles that are never sold. "The Admin" is only on the MedNova team account (list #8). */
+export const SPECIAL_TITLES: Item[] = [{ id: 'title:the_admin', key: 'the_admin', name: 'The Admin', price: null }];
+
+export type EffectKey = 'confetti' | 'trophy' | 'medal' | 'pulse_wave' | 'too_easy' | 'mic_drop' | 'flatline' | 'spotlight' | 'friend_chain';
 
 /**
  * Win effects: everyone in an online room sees yours when you win. Yazan 2026-10-18: celebrations first, the four
@@ -55,13 +61,25 @@ export const EFFECTS: (Item & { key: EffectKey; what: string })[] = [
   { id: 'effect:mic_drop', key: 'mic_drop', name: 'Mic Drop', price: 300, what: 'You drop the mic. Nothing more to say' },
   { id: 'effect:flatline', key: 'flatline', name: 'Flatline', price: 350, what: "Everyone else's line goes flat" },
   { id: 'effect:spotlight', key: 'spotlight', name: 'Spotlight', price: 400, what: 'Lights out for them, a spotlight for you' },
+  { id: 'effect:friend_chain', key: 'friend_chain', name: 'Friendship Chain', price: null, what: 'Two chains lock together around a heart' },
 ];
+
+/** How each earned item is got (shown instead of a price), and the ones only listed to their owner. */
+export const EARNED_HOW: Record<string, string> = {
+  'frame:rounds': 'Finish all 13 Grand Rounds weeks',
+  'frame:inviter': 'Have 10 friends redeem your invite code',
+  'effect:friend_chain': 'Have 10 friends redeem your invite code',
+  'frame:sovereign': 'Comes with the Sovereign package',
+  'frame:admin': 'MedNova team only',
+  'title:the_admin': 'MedNova team only',
+};
+export const OWNER_ONLY = ['frame:admin', 'title:the_admin'];
 
 /** Text sticker packs for online rooms (your character's stickers stay free). */
 export const PACK_PRICE = 30;
 
 export const titleName = (key?: string | null) =>
-  [...TITLES, ...PLATINUM_TITLES].find((x) => x.key === key)?.name ?? 'Medical Student';
+  [...TITLES, ...PLATINUM_TITLES, ...SPECIAL_TITLES].find((x) => x.key === key)?.name ?? 'Medical Student';
 
 export const isPlatinumTitle = (key?: string | null) => !!key?.startsWith('p:');
 

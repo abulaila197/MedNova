@@ -59,7 +59,8 @@ export function StorePage() {
       <InfoScroll>
         <Kicker>Nova Shop</Kicker>
         <Text style={[ui.H, { color: c.fg, fontFamily: F.display }]}>
-          {'Top up your '}
+          {/* Not just buying: the shop is where tokens are earned, bought and spent (Yazan 2026-10-25, #32). */}
+          {'Earn, buy and spend '}
           <Text style={[ui.H, { color: t.accent, fontFamily: F.displayItalic }]}>tokens</Text>
         </Text>
         {signedIn ? (
@@ -74,7 +75,7 @@ export function StorePage() {
         ) : (
           <Pressable onPress={() => router.navigate('/auth')} style={s.bal} accessibilityRole="button">
             <Text style={[s.balT, { color: c.mute }]}>
-              {'Sign in to buy. '}
+              {'Sign in to earn, buy and spend. '}
               <Text style={[s.balT, { color: t.accent, fontFamily: F.bodyBold }]}>Sign in</Text>
             </Text>
           </Pressable>
@@ -172,7 +173,11 @@ function PackCard({ t, p, i, busy, onBuy }: { t: Theme; p: Pack; i: number; busy
           </View>
         ))}
       </View>
-      <Text style={[s.was, { color: WAS }]}>{p.was}</Text>
+      <View style={s.wasBox}>
+        <Text style={[s.was, { color: WAS }]}>{p.was}</Text>
+        {/* drawn, not textDecoration: that line's colour doesn't follow on Android or web */}
+        <View style={[s.wasLine, { backgroundColor: WAS }]} />
+      </View>
       <Text style={[s.cN, { color: t.fg }]}>{p.tokens}</Text>
       <Text style={[s.cU, { color: t.mute }]}>tokens</Text>
       <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={s.cBtn}>
@@ -198,7 +203,9 @@ const s = StyleSheet.create({
   card: { width: CARD, borderWidth: 1, borderRadius: u(18), padding: u(12), alignItems: 'center' },
   pile: { marginBottom: u(6) },
   cN: { fontFamily: F.display, fontSize: u(24), lineHeight: u(28) },
-  was: { fontFamily: F.bodyBold, fontSize: u(12), lineHeight: u(14), textDecorationLine: 'line-through', textDecorationColor: WAS },
+  was: { fontFamily: F.bodyBold, fontSize: u(12), lineHeight: u(14) },
+  wasBox: { justifyContent: 'center' },
+  wasLine: { position: 'absolute', left: -u(2), right: -u(2), height: u(1.6), borderRadius: 1, transform: [{ rotate: '-12deg' }] },
   cU: { fontFamily: F.body, fontSize: u(10) },
   cBtn: { alignSelf: 'stretch', height: u(30), borderRadius: 999, alignItems: 'center', justifyContent: 'center', marginTop: u(10) },
   cBtnT: { fontFamily: F.bodyBold, fontSize: u(12) },

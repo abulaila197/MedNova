@@ -1,6 +1,7 @@
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useState, type ReactNode } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import Svg, { Circle, Defs, LinearGradient as SvgLinear, Path, Rect, Stop } from 'react-native-svg';
 
@@ -8,6 +9,8 @@ import { Text } from '@/components/AppText';
 import { Sheet } from '@/components/Sheet';
 import { useSvgId } from '@/components/svgId';
 import { MECHS } from '@/features/chests/data';
+import { bonusLine, ROBOTS, starsOf } from '@/features/shop/robots';
+import { useStyle } from '@/features/style/useStyle';
 import { Face } from '@/games/shell/Face';
 import { CHARACTERS } from '@/games/shell/characters';
 import { useTheme } from '@/state/app';
@@ -63,7 +66,9 @@ export function CharacterPicker({ open, onClose, wearing, owned, found, onWear, 
     setSel(null);
     onClose();
   };
-  const mech = MECHS.find((m) => m.key === sel);
+  // Style shop and special robots you own (style items 'robot:<key>').
+  const robots = useStyle(useShallow((x) => x.owned.filter((k) => k.startsWith('robot:')).map((k) => k.slice(6))));
+  const mech = MECHS.find((m) => m.key === sel) ?? ROBOTS.find((r) => r.key === sel);
   const orig = CHARACTERS.find((c) => c.slug === sel);
   return (
     <Sheet open={open} onClose={close}>
@@ -78,7 +83,9 @@ export function CharacterPicker({ open, onClose, wearing, owned, found, onWear, 
           <View style={{ flex: 1 }}>
             <Text style={[s.name, { color: t.fg }]}>{mech?.name ?? orig?.name}</Text>
             <Text style={[s.sub, { color: t.mute }]}>{mech ? mech.title : 'Original pack'}</Text>
-            {mech ? <Text style={s.stars}>{'★'.repeat(mech.stars)}</Text> : null}
+            <Text style={s.stars}>{'★'.repeat(starsOf(sel))}</Text>
+            {/* The character you wear sets your star bonus (Yazan 2026-10-25). */}
+            <Text style={[s.sub, { color: t.accent }]}>{`Star bonus: ${bonusLine(sel)}`}</Text>
           </View>
         </View>
 
@@ -115,7 +122,22 @@ export function CharacterPicker({ open, onClose, wearing, owned, found, onWear, 
             );
           })}
         </View>
-        <Text style={[s.note, { color: t.mute }]}>Locked characters come from the treasure hunt, robots from daily chests.</Text>
+        <Text style={[s.k, { color: t.kick }]}>{`STYLE SHOP · ${ROBOTS.filter((r) => robots.includes(r.key)).length} OF ${ROBOTS.length}`}</Text>
+        <View style={s.grid}>
+          {ROBOTS.map((m) => {
+            const has = robots.includes(m.key);
+            return (
+              <Pressable key={m.key} disabled={!has} onPress={() => setSel(m.key)} style={s.mCell} accessibilityRole="button" accessibilityLabel={has ? m.name : `${m.name}, locked`} accessibilityState={{ selected: sel === m.key, disabled: !has }}>
+                <Pick size={MECH} on={sel === m.key}>
+                  <Image source={m.face} style={[{ width: MECH, height: MECH }, !has && { opacity: 0.3 }]} contentFit="contain" />
+                  {!has ? <Lock t={t} /> : null}
+                </Pick>
+                <Text style={[s.mStars, { opacity: has ? 1 : 0.45 }]}>{'★'.repeat(m.stars)}</Text>
+              </Pressable>
+            );
+          })}
+        </View>
+        <Text style={[s.note, { color: t.mute }]}>Locked characters come from the treasure hunt, Nova Mechs from daily chests, the rest from the Style shop.</Text>
       </ScrollView>
 
       {error ? <Text style={[s.note, { color: t.mute, marginTop: u(8) }]}>{error}</Text> : null}
