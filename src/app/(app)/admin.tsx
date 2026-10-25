@@ -18,7 +18,8 @@ const when = (iso: string) => new Date(iso).toLocaleString('en-GB', { day: 'nume
 
 /**
  * Hidden Admin page (AD1): only in the menu for Yazan's account, and every call is checked again on the server.
- * Find a player by username, give (or take back) tokens with a note; each grant is a row in their wallet.
+ * Find a player by username, give (or take back) tokens with a note; each grant is a row in their wallet. Sparks go
+ * to one player or, with tokens, to everyone (#4); a gift may take a bar past 100.
  */
 export default function Page() {
   const c = useInfo();
@@ -29,6 +30,12 @@ export default function Page() {
   const [amount, setAmount] = useState('');
   const giving = useRef(false);
   const [note, setNote] = useState('');
+  const [sparks, setSparks] = useState('');
+  const [allTok, setAllTok] = useState('');
+  const [allSp, setAllSp] = useState('');
+  const [allNote, setAllNote] = useState('');
+  const [sure, setSure] = useState(false);
+  const [allMsg, setAllMsg] = useState<{ text: string; bad?: boolean } | null>(null);
   const [msg, setMsg] = useState<{ text: string; bad?: boolean } | null>(null);
   const [show, setShow] = useState<'new' | 'all'>('new');
   const [reports, setReports] = useState<Report[] | null>(null);
@@ -92,6 +99,41 @@ export default function Page() {
     setNote('');
   };
 
+  const sp = Math.trunc(Number(sparks));
+  const giveSparks = async () => {
+    if (!pick || !sp) return setMsg({ text: 'Pick a player and type a number of Sparks.', bad: true });
+    if (giving.current) return;
+    giving.current = true;
+    setMsg(null);
+    const { error } = await supabase.rpc('admin_grant_sparks', { target: pick.id, amount: sp, note });
+    giving.current = false;
+    if (error) return setMsg({ text: 'Not saved. Sparks go from 1 to 1,000.', bad: true });
+    setMsg({ text: `Gave ${sp} Spark${sp === 1 ? '' : 's'} to @${pick.username}.` });
+    setSparks('');
+    setNote('');
+  };
+
+  // Everyone at once: the first tap asks, the second sends.
+  const at = Math.trunc(Number(allTok)) || 0;
+  const asp = Math.trunc(Number(allSp)) || 0;
+  const giveAll = async () => {
+    if (at <= 0 && asp <= 0) return setAllMsg({ text: 'Type tokens, Sparks or both.', bad: true });
+    if (!sure) return setSure(true);
+    if (giving.current) return;
+    giving.current = true;
+    setAllMsg(null);
+    const { data, error } = await supabase.rpc('admin_grant_all', { tokens: at, sparks: asp, note: allNote });
+    giving.current = false;
+    setSure(false);
+    if (error) return setAllMsg({ text: 'Not sent. Each amount goes from 0 to 500.', bad: true });
+    const players = Number((data as { players?: number } | null)?.players ?? 0);
+    setAllMsg({ text: `Sent to ${players} player${players === 1 ? '' : 's'}.` });
+    setAllTok('');
+    setAllSp('');
+    setAllNote('');
+  };
+  const allLabel = sure ? `Tap again to send to every player` : 'Give to everyone';
+
   const field = [s.in, { backgroundColor: c.surf, borderColor: c.line, color: c.fg }];
   return (
     <Screen tab={null} glow={21}>
@@ -127,7 +169,17 @@ export default function Page() {
         <TextInput value={amount} onChangeText={setAmount} placeholder="Tokens (use - to take back)" placeholderTextColor={c.mute} keyboardType="numbers-and-punctuation" style={[field, s.gapS]} />
         <TextInput value={note} onChangeText={setNote} placeholder="Note (why), saved with the grant" placeholderTextColor={c.mute} maxLength={200} style={[field, s.gapS]} />
         <GradBtn label="Give tokens" onPress={give} style={s.gap} />
+        <TextInput value={sparks} onChangeText={setSparks} placeholder="Sparks (1 to 1,000)" placeholderTextColor={c.mute} keyboardType="number-pad" style={[field, s.gap]} />
+        <GradBtn label="Give Sparks" onPress={giveSparks} style={s.gapS} />
         {msg ? <Text style={[ui.p, { color: msg.bad ? c.t.error : c.fg }]}>{msg.text}</Text> : null}
+
+        <Text style={[ui.H, s.H, s.gapL, { color: c.fg }]}>Give everyone</Text>
+        <Text style={[ui.p, { color: c.mute }]}>Tokens and/or Sparks to every player, for an event or an apology. Up to 500 of each.</Text>
+        <TextInput value={allTok} onChangeText={(v) => (setAllTok(v), setSure(false))} placeholder="Tokens each" placeholderTextColor={c.mute} keyboardType="number-pad" style={[field, s.gapS]} />
+        <TextInput value={allSp} onChangeText={(v) => (setAllSp(v), setSure(false))} placeholder="Sparks each" placeholderTextColor={c.mute} keyboardType="number-pad" style={[field, s.gapS]} />
+        <TextInput value={allNote} onChangeText={setAllNote} placeholder="Note (why)" placeholderTextColor={c.mute} maxLength={200} style={[field, s.gapS]} />
+        <GradBtn label={allLabel} onPress={giveAll} style={s.gap} />
+        {allMsg ? <Text style={[ui.p, { color: allMsg.bad ? c.t.error : c.fg }]}>{allMsg.text}</Text> : null}
 
         <Text style={[ui.H, s.H, s.gapL, { color: c.fg }]}>Reports</Text>
         <Text style={[ui.p, { color: c.mute }]}>Sent from the red ! by players and guests, newest first.</Text>
