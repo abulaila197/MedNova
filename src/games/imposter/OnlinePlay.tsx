@@ -401,4 +401,4 @@ function MyWord({ word }: { word: string }) {
   );
 }
 
-const inp = { borderWidth: 1, borderRadius: u(14), paddingHorizontal: u(14), paddingVertical: u(12), fontFamily: F.bodySemi, fontSize: u(16) };
+const inp = { borderWidth: 1, borderRadius: u(14), paddingHorizontal: u(14), paddingVertical: u(12), fontFamily: F.bodySemi, fontSize: u(16), marginBottom: u(12) };
