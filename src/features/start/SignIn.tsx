@@ -93,6 +93,8 @@ function plain(msg: string) {
   if (m.includes('already registered')) return 'That email already has an account. Sign in instead.';
   if (m.includes('expired') || m.includes('invalid') && m.includes('token')) return 'That code is wrong or has expired. Send a new one.';
   if (m.includes('password') && m.includes('characters')) return 'Use at least 6 characters for your password.';
+  // List: when the email sending limit is hit, no codes can go out (Yazan's wording, 2026-10-25).
+  if (m.includes('email rate limit')) return 'Only Google and Apple sign-in work now.';
   if (m.includes('rate limit') || m.includes('security purposes')) return 'Too many tries. Wait a minute, then try again.';
   if (m.includes('network') || m.includes('fetch')) return 'No connection. Check your internet and try again.';
   return msg;

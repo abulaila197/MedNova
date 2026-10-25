@@ -20,6 +20,8 @@ const GROUPS = Object.entries(
   }, {}),
 ).sort((a, b) => b[1].length - a[1].length);
 const FONTS = PKGS.filter((p) => p.f);
+const LOTTIE =
+  'Lottie Simple License (LottieFiles). The animation may be used for free in personal and commercial work, and may be changed. It may not be sold or shared on its own as an animation file, or used in a way that breaks the law.';
 
 /** Open-source licences (Session 4, linked from About): every package the app ships, grouped by licence, with the full texts. Built by scripts/build-licences.mjs. */
 export function LicencesPage() {
@@ -30,9 +32,10 @@ export function LicencesPage() {
         <Kicker>Open-source licences</Kicker>
         <Rich text={'Built on *open source.*'} style={ui.H} />
         <Text style={[ui.p, { color: c.mute }]}>{`MedNova uses ${PKGS.length} open-source packages and ${FONTS.length} font families. Tap a licence to see who made them and read its full text.`}</Text>
-        <Text style={[ui.p, { color: c.mute }]}>The Trophy win effect animation is from LottieFiles, used under its free Lottie Simple License.</Text>
         <View style={ui.xsec}>
           <Group title="Fonts · SIL Open Font License 1.1" rows={FONTS.map((p) => p.f!)} text={TEXTS['OFL-1.1']} />
+          {/* List #43: the Trophy credit sits with the other credits instead of the intro. */}
+          <Group title="Animations · Lottie Simple License" rows={['Trophy win effect  from LottieFiles']} text={LOTTIE} />
           {GROUPS.map(([l, list]) => (
             <Group key={l} title={`${l} · ${list.length}`} rows={list.map((p) => `${p.n} ${p.v}${p.c ? `  ${p.c}` : ''}`)} text={TEXTS[l]} />
           ))}

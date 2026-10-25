@@ -189,7 +189,7 @@ export const PRIVACY: Section[] = [
           'To answer your messages and bug reports.',
         ],
       },
-      { b: 'Legal basis.', p: 'Under the EU GDPR and Egypt\'s Personal Data Protection Law (No. 151 of 2020), we use your data because it is needed to provide the service you asked for (our contract with you), and for our legitimate interest in keeping MedNova safe and working.' },
+      { b: 'Legal basis.', p: 'Under the EU GDPR and the data protection laws that apply to you, we use your data because it is needed to provide the service you asked for (our contract with you), and for our legitimate interest in keeping MedNova safe and working.' },
     ],
   },
   {
@@ -217,7 +217,7 @@ export const PRIVACY: Section[] = [
           'Objection: object to how we use your data, or ask us to limit it.',
         ],
       },
-      { p: 'These rights come from the GDPR and Egypt\'s Personal Data Protection Law. To use them, write to us (see Contact). You may also complain to your local data protection authority.' },
+      { p: 'These rights come from the GDPR and the data protection laws that apply to you. To use them, write to us (see Contact). You may also complain to your local data protection authority.' },
     ],
   },
   {

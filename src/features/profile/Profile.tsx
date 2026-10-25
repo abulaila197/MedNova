@@ -18,6 +18,7 @@ import { loadFriends, unblockUser, useFriends } from '@/state/friends';
 import { u } from '@/theme/scale';
 import { F, type Theme } from '@/theme/tokens';
 
+import { ChangeName } from './ChangeName';
 import { CharacterPicker } from './CharacterPicker';
 import { useProfileStats } from './stats';
 import { titleName } from '@/features/style/catalog';
@@ -64,6 +65,7 @@ export function Profile() {
     void loadStyle();
   }, [profile?.id]);
   const [pick, setPick] = useState(false);
+  const [rename, setRename] = useState(false);
   const [wearErr, setWearErr] = useState<string | null>(null);
   const wearing = useRef(false);
   const mechs = useStyle(useShallow((x) => x.owned.filter((k) => k.startsWith('mech:')).map((k) => k.slice(5))));
@@ -109,6 +111,12 @@ export function Profile() {
           <Text style={[s.title, { color: titleColor(t.mode, look.title, t.accent) }]}>{titleName(look.title)}</Text>
           <Text style={[s.role, { color: t.mute }]}>{profile ? `@${profile.username.toUpperCase()}` : 'SIGN IN TO SAVE YOUR PROGRESS'}</Text>
           <View style={s.style}>
+            {/* List #2: Change name first. */}
+            {profile ? (
+              <Pressable onPress={() => setRename(true)} style={[s.stBtn, { backgroundColor: t.chip, borderColor: t.chipLine }]} accessibilityRole="button">
+                <Text style={[s.stT, { color: t.fg }]}>Change name</Text>
+              </Pressable>
+            ) : null}
             <Pressable onPress={() => setPick(true)} style={[s.stBtn, { backgroundColor: t.chip, borderColor: t.chipLine }]} accessibilityRole="button">
               <Text style={[s.stT, { color: t.fg }]}>Change character</Text>
             </Pressable>
@@ -145,6 +153,7 @@ export function Profile() {
         {profile ? <DeleteAccount t={t} /> : null}
       </ScrollView>
     </Fade>
+    <ChangeName open={rename} onClose={() => setRename(false)} />
     <CharacterPicker
       open={pick}
       onClose={() => {
