@@ -1,10 +1,10 @@
 // The Nova Password online referee: Yazan's rules on the server. The match is saved in pw_games with each player's own
 // view next to it; phones read only their own view with pw_state, so a secret term only ever reaches its clue giver.
-// The 1,000-term bank (with the forbidden words the clue check needs) is bundled in. Built with
-// scripts/build-nova-password-function.sh.
+// The 1,000-term bank (with the forbidden words the clue check needs) lives in pw_terms; the first request fills it
+// from terms.json at a pinned commit. Change BANK to a newer commit and empty pw_terms when the bank changes.
+// Built with scripts/build-nova-password-function.sh.
 import { createClient } from 'npm:@supabase/supabase-js@2';
 
-import terms from '../../../src/games/password/data/terms.json';
 import type { Term } from '../../../src/games/password/engine/types';
 import { dueOf, MOVES, onlineRanks, scoresOf, startOnlineRoom, stepOnline, viewsOf, type Move, type Room } from '../../../src/games/password/online';
 
@@ -15,7 +15,18 @@ const cors = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
-const TERMS = terms as Term[];
+const BANK = 'https://raw.githubusercontent.com/abulaila197/MedNova/94aac00a03ded40d06ee5f73d5e46573c9682985/src/games/password/data/terms.json';
+let TERMS: Term[] | null = null;
+
+async function bank(): Promise<Term[]> {
+  if (TERMS) return TERMS;
+  const { data } = await admin.from('pw_terms').select('id, name, bank, category, forbidden').range(0, 1999);
+  if (data && data.length >= 1000) return (TERMS = data as Term[]);
+  const list = (await (await fetch(BANK)).json()) as Term[];
+  const { error } = await admin.from('pw_terms').upsert(list);
+  if (error) throw new Error(error.message);
+  return (TERMS = list);
+}
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { ...cors, 'Content-Type': 'application/json' } });
 
 type Loaded = {
@@ -42,6 +53,12 @@ Deno.serve(async (req) => {
     return json({ result: 'bad_request' }, 400);
   }
   if (!body.m) return json({ result: 'bad_request' }, 400);
+  let terms: Term[];
+  try {
+    terms = await bank();
+  } catch {
+    return json({ result: 'error', message: 'word bank unavailable' }, 500);
+  }
   const move: Move = body.move && MOVES.has(body.move.type) ? body.move : { type: 'TICK' };
   // Two phones can step in at once; the save only lands on the version it read, so a clash just runs again.
   for (let attempt = 0; attempt < 4; attempt++) {
@@ -56,12 +73,18 @@ Deno.serve(async (req) => {
       if (now < L.match.ends_ms) return json({ result: 'wait' });
       saved = startOnlineRoom({ host: L.host, seats: L.seats, names: L.names ?? {}, settings: L.match.settings ?? {} });
     }
-    const { next, refused } = stepOnline(TERMS, saved, who.user.id, move, L.dropped ?? [], now);
+    const { next, refused } = stepOnline(terms, saved, who.user.id, move, L.dropped ?? [], now);
     if (next === L.state) return json({ result: refused ? 'refused' : 'same', ...refused });
     const done = next.ended;
     const { data: ok, error: e2 } = await admin.rpc('pw_save', {
-      m: body.m, ver: L.version, st: next, vw: viewsOf(next, TERMS), due: dueOf(next),
-      scores: scoresOf(next, L.seats), ranks: done ? onlineRanks(next, L.seats) : null, ph: done ? 'done' : 'case',
+      m: body.m,
+      ver: L.version,
+      st: next,
+      vw: viewsOf(next, terms),
+      due: dueOf(next),
+      scores: scoresOf(next, L.seats),
+      ranks: done ? onlineRanks(next, L.seats) : null,
+      ph: done ? 'done' : 'case',
     });
     if (e2) return json({ result: 'error', message: e2.message }, 500);
     if (ok) return json({ result: refused ? 'refused' : 'ok', version: L.version + 1, ...refused });
