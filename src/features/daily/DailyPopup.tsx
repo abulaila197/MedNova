@@ -10,7 +10,9 @@ import { u, useScreen } from '@/theme/scale';
 import type { Theme } from '@/theme/tokens';
 import { F } from '@/theme/tokens';
 
-import { CALENDAR_DAYS, dayPrize } from './prizes';
+import { Bolt, SPARK } from '@/features/sparks/Bolt';
+
+import { CALENDAR_DAYS, dayPrize, daySparks } from './prizes';
 
 type Props = {
   /** Calendar day (1-30) today's claim lands on. */
@@ -30,7 +32,8 @@ const COLS = 7;
 
 /**
  * Daily login pop-up (DL1-DL4), locked look B "Pill organiser": the month is a blister pack of 30 doses.
- * Taken doses leave an empty dashed blister; Collect pops today's capsule and a token flies out.
+ * Each dose is our token coin (Yazan, 2026-10-25). Taken doses leave an empty dashed blister; Collect pops today's
+ * coin and a token flies out.
  */
 export function DailyPopup({ day, collected, signedIn, busy, error, onCollect, onSignIn, onClose }: Props) {
   const t = useTheme();
@@ -40,6 +43,9 @@ export function DailyPopup({ day, collected, signedIn, busy, error, onCollect, o
   const gap = u(5);
   const cell = (inner - u(26) - gap * (COLS - 1)) / COLS; // u(26) = the week number column
   const prize = dayPrize(day);
+  // Today's Sparks know today's date (the weekend Sparks); later days show only the big days' Sparks.
+  const sparks = daySparks(day, new Date());
+  const and = sparks ? ` + ${sparks} Sparks` : '';
   const rows = Array.from({ length: Math.ceil(CALENDAR_DAYS / COLS) }, (_, r) => r);
   const nextPrize = dayPrize((day % CALENDAR_DAYS) + 1);
   const state = (d: number) => (d < day || (d === day && collected) ? 'done' : d === day ? 'today' : 'later');
@@ -97,7 +103,7 @@ export function DailyPopup({ day, collected, signedIn, busy, error, onCollect, o
                 .map((d) => {
                   const wide = d === CALENDAR_DAYS;
                   const w = wide ? cell * (COLS - 1) + gap * (COLS - 2) : cell;
-                  return <Blister key={d} t={t} d={d} w={w} h={cell * 1.45} st={state(d)} wide={wide} popped={collected && d === day} />;
+                  return <Blister key={d} t={t} d={d} w={w} h={cell * 1.45} st={state(d)} wide={wide} popped={collected && d === day} sparks={d === day ? sparks : daySparks(d)} />;
                 })}
             </View>
           ))}
@@ -106,7 +112,7 @@ export function DailyPopup({ day, collected, signedIn, busy, error, onCollect, o
         {signedIn ? (
           collected ? (
             <Animated.View entering={FadeIn.duration(300).delay(250)}>
-              <Text style={[s.note, { color: t.soft }]}>{`+${prize} added! Come back tomorrow for ${nextPrize} more.`}</Text>
+              <Text style={[s.note, { color: t.soft }]}>{`+${prize} tokens${and} added! Come back tomorrow for ${nextPrize} more.`}</Text>
             </Animated.View>
           ) : (
             <Pressable
@@ -117,7 +123,7 @@ export function DailyPopup({ day, collected, signedIn, busy, error, onCollect, o
             >
               <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={s.btn}>
                 <TokenCoin size={u(16)} progress={0} track="transparent" />
-                <Text style={[s.btnT, { color: t.onGrad }]}>{`Collect ${prize} token${prize === 1 ? '' : 's'}`}</Text>
+                <Text style={[s.btnT, { color: t.onGrad }]}>{`Collect ${prize} tokens${and}`}</Text>
               </LinearGradient>
             </Pressable>
           )
@@ -152,17 +158,16 @@ type CellP = {
   st: 'done' | 'today' | 'later';
   wide: boolean;
   popped: boolean;
+  /** Sparks this day gives too (0 for none). */
+  sparks: number;
 };
 
-/** One blister: the capsule sits low in its bubble, away from the top edge; taken doses leave it empty and dashed. */
-function Blister({ t, d, w, h, st, wide, popped }: CellP) {
+/** One blister: the coin sits low in its bubble, away from the top edge; taken doses leave it empty and dashed. */
+function Blister({ t, d, w, h, st, wide, popped, sparks }: CellP) {
   const prize = dayPrize(d);
   const big = prize >= 3 && !wide;
   const today = st === 'today';
   const done = st === 'done';
-  const capW = big ? w * 0.74 : w * 0.6;
-  const capH = big ? h * 0.28 : h * 0.22;
-  const half = ['#6fd6ff', '#eef0ff'];
   return (
     <View
       style={[
@@ -191,34 +196,28 @@ function Blister({ t, d, w, h, st, wide, popped }: CellP) {
       ) : wide ? (
         <Animated.View exiting={ZoomOut.duration(260)} style={s.month}>
           <Envelope size={h * 0.5} t={t} />
-          <Text style={[s.amtBig, { color: today ? t.accent : t.fg }]}>Day 30 · +10</Text>
+          <Text style={[s.amtBig, { color: today ? t.accent : t.fg }]}>{`Day 30 · +${prize}`}</Text>
+          {sparks ? <SparkTag n={sparks} big /> : null}
         </Animated.View>
       ) : (
         <Animated.View exiting={ZoomOut.duration(260)} style={s.dose}>
-          <View style={s.capArea}>
-            <View
-              style={[
-                s.cap,
-                {
-                  width: capW,
-                  height: capH,
-                  borderRadius: capH / 2,
-                  transform: [{ rotate: '-28deg' }],
-                },
-              ]}
-            >
-              {big ? (
-                <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />
-              ) : (
-                <>
-                  <View style={[s.half, { backgroundColor: half[0] }]} />
-                  <View style={[s.half, { backgroundColor: half[1] }]} />
-                </>
-              )}
-              <View style={[s.shine, { borderRadius: capH / 2 }]} />
+          {sparks ? (
+            // A Sparks day: tokens and Sparks as two short lines, each with its own mark.
+            <View style={[s.capArea, { gap: u(3) }]}>
+              <View style={s.spark}>
+                <TokenCoin size={u(9)} progress={0} track="transparent" />
+                <Text style={[s.amt, { color: today ? t.accent : t.fg, fontFamily: F.bodyBold }]}>{String(prize)}</Text>
+              </View>
+              <SparkTag n={sparks} />
             </View>
-          </View>
-          <Text style={[s.amt, { color: today ? t.accent : big ? t.fg : t.soft }, big && { fontFamily: F.bodyBold }]}>{`+${prize}`}</Text>
+          ) : (
+            <>
+              <View style={s.capArea}>
+                <TokenCoin size={w * 0.8} progress={0} track="transparent" />
+              </View>
+              <Text style={[s.amt, { color: today ? t.accent : big ? t.fg : t.soft }, big && { fontFamily: F.bodyBold }]}>{`+${prize}`}</Text>
+            </>
+          )}
         </Animated.View>
       )}
       {popped ? (
@@ -226,6 +225,16 @@ function Blister({ t, d, w, h, st, wide, popped }: CellP) {
           <TokenCoin size={u(18)} progress={0} track="transparent" />
         </Animated.View>
       ) : null}
+    </View>
+  );
+}
+
+/** The Sparks a day gives on top of its tokens: a gold bolt and the count. */
+function SparkTag({ n, big }: { n: number; big?: boolean }) {
+  return (
+    <View style={s.spark}>
+      <Bolt size={u(big ? 11 : 7)} />
+      <Text style={[big ? s.amtBig : s.amt, { color: SPARK[0] }]}>{String(n)}</Text>
     </View>
   );
 }
@@ -242,6 +251,7 @@ function Envelope({ size, t }: { size: number; t: Theme }) {
 }
 
 const s = StyleSheet.create({
+  spark: { flexDirection: 'row', alignItems: 'center', gap: u(1) },
   month: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: u(8) },
   amtBig: { fontFamily: F.bodyBold, fontSize: u(11) },
   wrap: { zIndex: 30, alignItems: 'center', justifyContent: 'center' },
@@ -293,20 +303,10 @@ const s = StyleSheet.create({
   dose: {
     ...StyleSheet.absoluteFill,
     alignItems: 'center',
-    paddingTop: u(9),
+    paddingTop: u(4),
     paddingBottom: u(4),
   },
   capArea: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  cap: { overflow: 'hidden', flexDirection: 'row' },
-  half: { flex: 1 },
-  shine: {
-    position: 'absolute',
-    left: '12%',
-    right: '12%',
-    top: '14%',
-    height: '26%',
-    backgroundColor: 'rgba(255,255,255,0.45)',
-  },
   fly: { position: 'absolute', alignSelf: 'center' },
   btnWrap: { alignSelf: 'stretch' },
   btn: {
