@@ -20,6 +20,10 @@ export const ROBOTS: Robot[] = [
   { key: 'admin', name: 'Admin', title: 'The Architect', stars: 6, price: null, group: 'special', how: 'Only on the MedNova team account', card: require('../../../assets/shop/admin-card.jpg'), face: require('../../../assets/shop/admin-face.webp') },
 ];
 
+/** Tokens, once, for owning all five shop robots (Yazan 2026-10-25); paid by style_buy on the server. */
+export const SHOP_ROBOTS_PRIZE = 500;
+export const SHOP_ROBOT_KEYS = ROBOTS.filter((r) => r.group === 'shop').map((r) => `robot:${r.key}`);
+
 export const robotOf = (key?: string) => ROBOTS.find((r) => r.key === key);
 
 /** The Sovereign package's store product (paid through the stores, like the token packs). */

@@ -117,7 +117,7 @@ export function useLook(userId?: string | null): Look {
   return useStyle((s) => (!userId ? PLAIN : userId === me ? s.worn : (s.looks[userId] ?? PLAIN)));
 }
 
-export type ShopResult = { ok: true } | { ok: false; why: string; need?: number };
+export type ShopResult = { ok: true; prize?: number } | { ok: false; why: string; need?: number };
 
 const after = async () => {
   const userId = useSession.getState().userId;

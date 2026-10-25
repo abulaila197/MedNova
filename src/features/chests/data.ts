@@ -37,7 +37,7 @@ export const MECHS: { key: string; name: string; title: string; stars: 3 | 4 | 5
   { key: 'cortex', name: 'Cortex', title: 'The Neon Ronin', stars: 5, card: require('../../../assets/mechs/cortex-card.jpg'), face: require('../../../assets/mechs/cortex-face.webp') },
   { key: 'titan', name: 'Titan', title: 'The Six-Armed Forge', stars: 5, card: require('../../../assets/mechs/titan-card.jpg'), face: require('../../../assets/mechs/titan-face.webp') },
 ];
-export const MECHS_PRIZE = 400;
+export const MECHS_PRIZE = 500;
 
 const STAR_RARITY: Record<3 | 4 | 5, Rarity> = { 3: 'rare', 4: 'epic', 5: 'legendary' };
 const STAR_DUPE: Record<3 | 4 | 5, number> = { 3: 25, 4: 50, 5: 80 };

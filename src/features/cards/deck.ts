@@ -24,4 +24,4 @@ export const DECK: HuntCard[] = [
 ];
 
 /** Prize for the last card (Omar), redeemed on the collection page. */
-export const HUNT_PRIZE = 200;
+export const HUNT_PRIZE = 500;

@@ -5,6 +5,7 @@ import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Image } from 'expo-image';
 
 import { Text } from '@/components/AppText';
+import { Congrats } from '@/components/Congrats';
 import { Display } from '@/components/Txt';
 import { useBalance } from '@/components/LevelBadge';
 import { TokenCoin } from '@/components/PulseStar';
@@ -15,7 +16,7 @@ import { Face } from '@/games/shell/Face';
 import { useSession } from '@/games/shell/session';
 import { TEXT_PACKS, textPackOf } from '@/online/textStickers';
 import { CardViewer } from '@/features/cards/CollectionPage';
-import { bonusLine, ROBOTS, type Robot, robotOf, SOVEREIGN_PACK } from '@/features/shop/robots';
+import { bonusLine, ROBOTS, type Robot, robotOf, SHOP_ROBOT_KEYS, SHOP_ROBOTS_PRIZE, SOVEREIGN_PACK } from '@/features/shop/robots';
 import { wearCharacter } from '@/features/shop/wear';
 import { loadFree, useFree } from '@/features/store/FreeTokens';
 import { useAccount } from '@/state/account';
@@ -49,6 +50,10 @@ const fromChest = (id: string) => !!textPackOf(id.replace(/^pack:/, ''))?.chest;
 const ROBOT_ITEMS: Item[] = ROBOTS.map((r) => ({ id: `robot:${r.key}`, key: r.key, name: r.name, price: r.price }));
 const SOCIAL = ['tiktok', 'instagram', 'facebook', 'youtube', 'channel'];
 
+// The goal line over the shop robots: how many you own, or that the prize is collected.
+const shopGoal = (n: number) =>
+  n >= SHOP_ROBOT_KEYS.length ? `All five owned. ${SHOP_ROBOTS_PRIZE} tokens collected.` : `Own all five for ${SHOP_ROBOTS_PRIZE} tokens · ${n} of ${SHOP_ROBOT_KEYS.length}`;
+
 const left = (ms: number) => {
   const h = Math.max(0, Math.floor((ms - Date.now()) / 3600000));
   return h >= 24 ? `${Math.floor(h / 24)}d ${h % 24}h` : `${h}h`;
@@ -75,6 +80,7 @@ export function StylePage() {
   const [gift, setGift] = useState(false);
   const [trying, setTrying] = useState<Item | null>(null);
   const [card, setCard] = useState<Robot | null>(null);
+  const [won, setWon] = useState(false);
   const free = useFree((x) => x.status);
 
   useEffect(() => {
@@ -99,6 +105,7 @@ export function StylePage() {
       const r = await fn();
       setBusy(false);
       setSaid(r.ok ? done : whySay(r as { why: string; need?: number }));
+      if (r.ok && (r as { prize?: number }).prize) setWon(true);
     });
   };
 
@@ -190,6 +197,7 @@ export function StylePage() {
             return (
               <View key={g}>
                 <Text style={[s.gK, { color: c.mute }]}>{g === 'shop' ? 'BUY WITH TOKENS' : 'SPECIAL · NOT SOLD FOR TOKENS'}</Text>
+                {g === 'shop' ? <Text style={[s.goal, { color: t.accent }]}>{shopGoal(SHOP_ROBOT_KEYS.filter(has).length)}</Text> : null}
                 <View style={s.grid}>
                   {[...items, ...Array.from({ length: (3 - (items.length % 3)) % 3 }, () => null)].map((it, i) => !it ? <View key={`gap${i}`} style={s.cellGap} /> : (
                     <Cell key={it.id} t={t} on={pick?.id === it.id} onPress={() => setPick(it)}>
@@ -287,6 +295,7 @@ export function StylePage() {
       ) : null}
 
       <GiftSheet open={gift} item={pick} onClose={() => setGift(false)} onSent={(name) => setSaid(`Sent to ${name}. They get a pop-up next time they open MedNova.`)} />
+      <Congrats open={won} tokens={SHOP_ROBOTS_PRIZE} title="All five robots are yours" line="Bloop, Pixel, Nimbus, Ember and Zenith. Your tokens are in your wallet." onClose={() => setWon(false)} />
       {card ? <CardViewer card={card} onClose={() => setCard(null)} /> : null}
       {trying ? <WinEffect kind={(trying as (typeof EFFECTS)[number]).key} onDone={() => setTrying(null)} /> : null}
     </Screen>
@@ -431,6 +440,7 @@ const s = StyleSheet.create({
   star: { fontSize: u(9), letterSpacing: u(0.5) },
   bonus: { fontFamily: F.body, fontSize: u(8), lineHeight: u(10.5), textAlign: 'center' },
   gK: { fontFamily: F.mono, fontSize: u(8), letterSpacing: u(1.2), marginTop: u(14), marginBottom: -u(4) },
+  goal: { fontFamily: F.bodySemi, fontSize: u(10.5), marginTop: u(7), marginBottom: -u(2) },
   price: { flexDirection: 'row', alignItems: 'center', gap: u(3) },
   pT: { fontFamily: F.mono, fontSize: u(8.5), letterSpacing: u(0.8) },
   was: { textDecorationLine: 'line-through' },

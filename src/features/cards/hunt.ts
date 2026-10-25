@@ -25,7 +25,7 @@ export async function loadHunt() {
   }
 }
 
-/** Omar's prize (200 tokens), once all nine cards are found. */
+/** Omar's prize (HUNT_PRIZE tokens), once all nine cards are found. */
 export async function redeemHuntPrize() {
   const r = await call<{ ok: boolean; why?: string; tokens?: number }>('hunt_prize');
   const uid = useSession.getState().userId;

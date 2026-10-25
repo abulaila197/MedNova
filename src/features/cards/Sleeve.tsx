@@ -8,7 +8,7 @@ import { PulseStar } from '@/components/PulseStar';
 import type { Theme } from '@/theme/tokens';
 import { F } from '@/theme/tokens';
 
-import type { HuntCard } from './deck';
+import { HUNT_PRIZE, type HuntCard } from './deck';
 
 export const RATIO = 860 / 480;
 
@@ -70,7 +70,7 @@ export function CardBack({ card, w, i }: { card: HuntCard; w: number; i: number 
             <Text style={[s.kick, { fontSize: w * 0.04, marginTop: w * 0.05 }]}>{last ? 'THE LAST CARD' : 'YOUR NEXT CLUE'}</Text>
           </View>
           <Text style={[s.clue, { fontSize: w * (last ? 0.062 : 0.074), lineHeight: w * (last ? 0.088 : 0.1), marginTop: w * 0.06 }]}>{card.clue}</Text>
-          {last ? <Text style={[s.prize, { fontSize: w * 0.05, marginTop: w * 0.05 }]}>200 tokens wait for you</Text> : null}
+          {last ? <Text style={[s.prize, { fontSize: w * 0.05, marginTop: w * 0.05 }]}>{`${HUNT_PRIZE} tokens wait for you`}</Text> : null}
           <View style={{ flex: 1 }} />
           <View style={[s.foot, { borderTopColor: 'rgba(233,180,76,0.35)', paddingTop: w * 0.035 }]}>
             <Text style={[s.footT, { fontSize: w * 0.034 }]}>{card.name.toUpperCase()}</Text>
