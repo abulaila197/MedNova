@@ -1,7 +1,8 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
 
-import { needPlay } from '@/features/freeplays/paywall';
+import { sparksCost } from '@/features/sparks/costs';
+import { needSparks } from '@/features/sparks/sparks';
 
 import type { Mode, Seat } from '../engine/types';
 import { alwaysFree, startPlay } from './flow';
@@ -63,8 +64,8 @@ export function useSetup(def: GameDef, mode: Mode, prefill?: Record<string, unkn
   const teamChoices = [{ value: 0, label: 'Off' }, ...Array.from({ length: Math.max(0, Math.min(6, seats.length) - 1) }, (_, i) => ({ value: i + 2, label: String(i + 2) }))];
 
   const start = async () => {
-    // Medicordle Solo asks here, not on the mode card: the Daily word is always free (TR3).
-    if (mode === 'solo' && def.key === 'nova-medicordle' && !alwaysFree({ game: def.key, mode, settings: vals }) && !(await needPlay(def.key))) return;
+    // The chosen setup sets the cost; too few Sparks opens the Recharge sheet first (#70). Daily Medicordle is free (TR3).
+    if (!alwaysFree({ game: def.key, mode, settings: vals }) && !(await needSparks(sparksCost(def.key, mode, vals)))) return;
     setBusy(true);
     const named = range
       ? seats.map((x, i) => {

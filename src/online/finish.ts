@@ -24,7 +24,7 @@ export async function finishOnline(
   if (done) return done;
   const play = await startPlay(def.key, 'online', a.settings, a.seats);
   await kv.set(`online:${match}`, play.id);
-  await countPlay(play); // every player uses one of their own free plays (TR4)
+  await countPlay(play); // every player pays their own Sparks (TR4)
   for (const it of a.items) await recordItem(play, it);
   await finishPlay(def, play, a.score, a.standings);
   return play.id;

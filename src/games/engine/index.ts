@@ -3,6 +3,7 @@ import { createRecorder } from './recorder';
 import { createWallet } from './wallet';
 import { createGate } from './gate';
 import { createPicker } from './picker';
+import { createSparks } from './sparks';
 
 export * from './types';
 export * from './storage';
@@ -10,6 +11,7 @@ export * from './recorder';
 export * from './wallet';
 export * from './levels';
 export * from './gate';
+export * from './sparks';
 export * from './picker';
 export * from './standings';
 
@@ -46,5 +48,6 @@ export const engine = {
   recorder: createRecorder(kv),
   wallet: createWallet(kv),
   gate: createGate(kv),
+  sparks: createSparks(kv),
   picker: createPicker(kv),
 };

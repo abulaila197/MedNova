@@ -97,7 +97,7 @@ function Gate({ def, mode }: { def: GameDef; mode: Mode }) {
           <T size={13} color={VV.paperSoft}>
             {online
               ? 'Online needs an account so other players see your name and your results are kept.'
-              : 'You have played your 3 free Solo and Pass the phone games. Sign in to keep going. Your points and EXP from these games come with you.'}
+              : 'You have used your 5 free plays. Sign in to keep going. Your points and EXP from these games come with you.'}
           </T>
           <View style={{ gap: u(8), marginTop: u(6) }}>
             <Btn label="Sign in" onPress={() => router.push('/auth')} />

@@ -16,8 +16,8 @@ import { StyleHost } from '@/features/style/StyleHost';
 import { RoundsHost } from '@/features/rounds/RoundsHost';
 import { CardHost } from '@/features/cards/CardHost';
 import { markVisited } from '@/features/achievements/useAchievements';
-import { PaywallSheet } from '@/features/freeplays/PaywallSheet';
-import { cancelPaywall } from '@/features/freeplays/paywall';
+import { RechargeSheet } from '@/features/sparks/RechargeSheet';
+import { cancelRecharge, watchSparks } from '@/features/sparks/sparks';
 import { useStopSoundsOnLeave } from '@/lib/sound';
 import { useBack } from '@/lib/useBack';
 import { useApp, useTheme } from '@/state/app';
@@ -41,10 +41,11 @@ export default function AppLayout() {
   useEffect(() => {
     if (was.current === path) return;
     was.current = path;
-    cancelPaywall();
+    cancelRecharge();
     useApp.getState().setReport(false);
     closeFriendSheet();
   }, [path]);
+  useEffect(watchSparks, []);
   // "Get to Know MedNova": each page outside the games counts once.
   useEffect(() => {
     void markVisited(path);
@@ -69,7 +70,7 @@ export default function AppLayout() {
       <WelcomeHost />
       <HelpHost />
       <DailyHost />
-      <PaywallSheet />
+      <RechargeSheet />
       <StyleHost />
       <RoundsHost />
       <CardHost />

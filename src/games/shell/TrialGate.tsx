@@ -9,7 +9,7 @@ import type { Mode } from '../engine/types';
 import { Body, Btn, Card, GameScreen, Ghost, Kick, Title } from './ui';
 
 
-/** Rules 19-20: after 3 guest plays of a mode, sign in before setup. Guest plays carry over. */
+/** #83: after a guest's 5 free plays (all games together), sign in before setup. Guest plays carry over. */
 export function TrialGate({ game, mode }: { game: string; mode: Mode }) {
   const g = GAMES.find((x) => x.key === game);
   const online = mode === 'online';
@@ -22,7 +22,7 @@ export function TrialGate({ game, mode }: { game: string; mode: Mode }) {
         <Body>
           {online
             ? 'Online Multiplayer needs an account so other players see your name and your results are kept.'
-            : 'You have used your free try of this game. Sign in for 3 free plays of every game each day. Your misses, points and EXP from your tries come with you.'}
+            : 'You have used your 5 free plays. Sign in to play with Sparks: a full bar of 100 that refills on its own. Your misses, points and EXP from your plays come with you.'}
         </Body>
         <View style={{ gap: u(8), marginTop: u(4) }}>
           <Btn label="Sign in" onPress={() => router.push('/auth')} />

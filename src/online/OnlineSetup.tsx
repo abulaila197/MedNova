@@ -13,6 +13,9 @@ import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F, type Theme } from '@/theme/tokens';
 
+import { sparksCost } from '@/features/sparks/costs';
+import { needSparks } from '@/features/sparks/sparks';
+
 import { createRoom, JOIN_SAY, joinRoom, joinRoomId } from './api';
 import { lobbyOf, useJoin, useOpenRooms } from './useJoin';
 import { settingsLine } from './format';
@@ -137,6 +140,8 @@ function Create({ def, prefill }: { def: GameDef; prefill?: Record<string, unkno
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState(false);
   const create = async () => {
+    // Each player pays for themselves (TR4); the host checks at Create, players at I'm ready.
+    if (!(await needSparks(sparksCost(def.key, 'online', { ...vals, teams })))) return;
     setBusy(true);
     setErr(false);
     try {

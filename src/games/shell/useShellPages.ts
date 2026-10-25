@@ -1,33 +1,31 @@
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 
-import { needPlay } from '@/features/freeplays/paywall';
+import { costRange, sparksCost } from '@/features/sparks/costs';
+import { needSparks } from '@/features/sparks/sparks';
 import { leaveRoom, rematchRoom } from '@/online/api';
 
-import { engine, FREE_DAILY } from '../engine';
+import { engine, GUEST_PLAYS } from '../engine';
 import type { Mode, Play, PlayItem } from '../engine/types';
-import { alwaysFree, startPlay, trialsLeft } from './flow';
+import { alwaysFree, startPlay } from './flow';
 import { isSubscribed } from '@/features/store/billing';
 import { useSession } from './session';
 import { teamsOf, teamStandings } from './teams';
 import { teamScoreOf, type GameDef } from './types';
 
-/** Mode landing logic: resumable plays, free plays left, the open How to play card, and Play (with the trial gate). */
+/** Mode landing logic: resumable plays, what a play costs, the open How to play card, and Play (with the guest gate). */
 export function useLanding(def: GameDef) {
   const signedIn = !!useSession((s) => s.userId);
   const [open, setOpen] = useState<Mode | null>(null);
   const [resume, setResume] = useState<Partial<Record<Mode, Play | null>>>({});
-  const [left, setLeft] = useState<Partial<Record<Mode, number | null>>>({});
+  const [left, setLeft] = useState<number | null>(null);
 
   const load = useCallback(() => {
     let live = true;
     (async () => {
       const r: typeof resume = {};
-      const l: typeof left = {};
-      for (const m of def.modes) {
-        r[m.mode] = await engine.recorder.resumable(def.key, m.mode);
-        l[m.mode] = await trialsLeft(def.key, m.mode);
-      }
+      for (const m of def.modes) r[m.mode] = await engine.recorder.resumable(def.key, m.mode);
+      const l = signedIn ? null : await engine.gate.guestLeft();
       if (live) {
         setResume(r);
         setLeft(l);
@@ -36,16 +34,14 @@ export function useLanding(def: GameDef) {
     return () => {
       live = false;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- signedIn makes a new load (run by the effect below) when the account changes
   }, [def, signedIn]);
   useFocusEffect(load);
-  // Signing in or out while the page is open changes the free plays at once (focus alone would miss it).
+  // Signing in or out while the page is open changes the notes at once (focus alone would miss it).
   useEffect(load, [load]);
 
   const go = async (mode: Mode) => {
-    if (await engine.gate.mustSignIn(def.key, mode, signedIn)) return router.push(`/play/${def.key}/gate?mode=${mode}`);
-    // Out of today's free plays: the sheet asks first (TR1). Medicordle Solo asks at setup, where Daily stays free (TR3).
-    if (!(def.key === 'nova-medicordle' && mode === 'solo') && !(await needPlay(def.key))) return;
+    if (await engine.gate.mustSignIn(mode, signedIn)) return router.push(`/play/${def.key}/gate?mode=${mode}`);
+    // The Sparks are checked at Start, where the setup sets the cost.
     router.push(`/play/${def.key}/setup?mode=${mode}`);
   };
   const resumePlay = (p: Play) => router.push(`/play/${def.key}/run?play=${p.id}`);
@@ -54,13 +50,17 @@ export function useLanding(def: GameDef) {
     const i = (p.resume as { index?: number } | null)?.index;
     return `Resume ${def.itemNoun ?? 'case'} ${i != null ? i + 1 : ''}`.trim();
   };
-  /** The small note on a mode card: today's free plays left, a guest's one try, or that online needs an account. */
+  /** The small note on a mode card: what a play costs, a guest's free plays left, or that online needs an account. */
   const note = (mode: Mode) => {
-    const l = left[mode];
-    if (l == null) return '';
-    if (signedIn && isSubscribed()) return 'Unlimited plays';
-    if (signedIn) return l > FREE_DAILY ? `${l} plays left today` : `${l}/${FREE_DAILY} free today`;
-    return mode === 'online' ? 'Sign in to play' : l > 0 ? '1 free try' : 'Free try used';
+    if (signedIn) {
+      if (isSubscribed()) return 'Unlimited Sparks';
+      const c = costRange(def.key, mode, def.setup[mode] ?? []);
+      if (c.max <= 0) return 'Free';
+      if (def.key === 'nova-medicordle' && mode === 'solo') return `Daily free · Endless ${c.max} Sparks a word`;
+      return c.min === c.max ? `${c.min} Sparks` : `${c.min} to ${c.max} Sparks`;
+    }
+    if (left == null) return '';
+    return mode === 'online' ? 'Sign in to play' : left > 0 ? `${left} of ${GUEST_PLAYS} free plays left` : 'Free plays used';
   };
   return { open, setOpen, resume, go, resumePlay, resumeLabel, note };
 }
@@ -86,12 +86,12 @@ export function useResults(def: GameDef, play: Play, items: PlayItem[]) {
   const signedIn = !!useSession((s) => s.userId);
   /** The same trial gate as Play: a guest out of free plays goes to sign-in instead of a new game. */
   const gated = async () => {
-    if (!(await engine.gate.mustSignIn(def.key, play.mode, signedIn))) return false;
+    if (!(await engine.gate.mustSignIn(play.mode, signedIn))) return false;
     router.replace(`/play/${def.key}/gate?mode=${play.mode}`);
     return true;
   };
-  /** Signed in and out of today's free plays: the sheet asks first (TR1). */
-  const paid = async () => alwaysFree(play) || needPlay(def.key);
+  /** Signed in with too few Sparks for the same settings: the Recharge sheet asks first (#70). */
+  const paid = async () => alwaysFree(play) || needSparks(sparksCost(def.key, play.mode, play.settings));
   const rematch = async () => {
     if (!(await paid())) return;
     if (room) {
@@ -106,7 +106,6 @@ export function useResults(def: GameDef, play: Play, items: PlayItem[]) {
   const changeSettings = async () => {
     if (room) return rematch();
     if (await gated()) return;
-    if (!(def.key === 'nova-medicordle' && play.mode === 'solo') && !(await paid())) return;
     router.replace(`/play/${def.key}/setup?mode=${play.mode}&from=${play.id}`);
   };
   const backToGames = () => {

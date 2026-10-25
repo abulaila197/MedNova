@@ -13,4 +13,4 @@ export const PACKS: Pack[] = [
 ];
 
 /** `bonus`: tokens paid once per account on the first subscription (Yazan 2026-10-21; the revenuecat webhook pays it). */
-export const SUBSCRIPTION = { id: 'unlimited_monthly', price: '$2.99', period: 'month', bonus: 500, perks: ['Unlimited plays', 'No ads', 'No token cost'] };
+export const SUBSCRIPTION = { id: 'unlimited_monthly', price: '$2.99', period: 'month', bonus: 500, perks: ['Unlimited Sparks', 'No ads', 'No token cost'] };

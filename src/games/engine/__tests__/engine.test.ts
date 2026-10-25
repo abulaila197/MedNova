@@ -6,7 +6,8 @@ import { memoryKV } from '../storage';
 import { createRecorder } from '../recorder';
 import { createWallet } from '../wallet';
 import { levelOf, levelTokens, stepTo } from '../levels';
-import { createGate, GUEST_TRIALS } from '../gate';
+import { createGate, GUEST_PLAYS } from '../gate';
+import { createSparks, refill, spendAt, SPARKS_MAX } from '../sparks';
 import { createPicker } from '../picker';
 import { rank } from '../standings';
 
@@ -138,43 +139,66 @@ test('wallet: admin grants count, refused rows drop, merged overspend can go bel
   assert.equal((await w.unsynced()).some((e) => e.id === rc), false);
 });
 
-test('gate: a guest gets 1 try per game for every mode, idempotent per play; online needs sign-in (T23)', async () => {
-  const g = createGate(memoryKV(), () => '2026-10-11');
-  await g.countPlay('nova-crossword', 'p0', false);
-  await g.countPlay('nova-crossword', 'p0', false);
-  assert.equal(await g.used('nova-crossword'), GUEST_TRIALS);
-  assert.equal(await g.mustSignIn('nova-crossword', 'solo', false), true);
-  assert.equal(await g.mustSignIn('nova-crossword', 'offline', false), true, 'solo and offline share the one try');
-  assert.equal(await g.mustSignIn('nova-crossword', 'solo', true), false);
-  assert.equal(await g.mustSignIn('the-riddler', 'solo', false), false, 'games counted apart');
-  assert.equal(await g.mustSignIn('the-riddler', 'online', false), true, 'online always needs sign-in');
+test('gate: a guest gets 5 plays in total across all games, idempotent per play; online needs sign-in (#83)', async () => {
+  const g = createGate(memoryKV());
+  for (const [game, id] of [['nova-crossword', 'p0'], ['nova-crossword', 'p0'], ['the-riddler', 'p1'], ['the-riddler', 'p2'], ['imposter', 'p3']] as const) await g.countGuest(game, id);
+  assert.equal(await g.guestLeft(), 1);
+  assert.equal(await g.mustSignIn('solo', false), false);
+  await g.countGuest('code-clinic', 'p4');
+  assert.equal(await g.guestLeft(), 0);
+  assert.equal(await g.mustSignIn('solo', false), true);
+  assert.equal(await g.mustSignIn('offline', false), true, 'solo and pass the phone share the 5');
+  assert.equal(await g.mustSignIn('solo', true), false);
+  assert.equal(await g.mustSignIn('online', false), true, 'online always needs sign-in');
+  assert.equal(GUEST_PLAYS, 5);
 });
 
-test('gate: signed in gets 3 free plays per game per day, bought plays add one, a new day resets (TR1-TR3)', async () => {
-  let day = '2026-10-11';
-  const g = createGate(memoryKV(), () => day);
-  for (const id of ['a', 'b', 'c', 'c']) await g.countPlay('the-riddler', id, true);
-  await g.countPlay('the-riddler', 'daily', true, true);
-  assert.deepEqual(await g.allowance('the-riddler'), { used: 3, free: 3, extra: 0, left: 0, boost: 0 });
-  assert.equal((await g.allowance('nova-crossword')).left, 3, 'each game has its own 3');
-  await g.addPlay('the-riddler');
-  assert.equal((await g.allowance('the-riddler')).left, 1);
-  await g.countPlay('the-riddler', 'd', true);
-  assert.equal((await g.allowance('the-riddler')).left, 0);
-  day = '2026-10-12';
-  assert.deepEqual(await g.allowance('the-riddler'), { used: 0, free: 3, extra: 0, left: 3, boost: 0 });
-});
-
-test('gate: Grand Rounds booster plays come after the free ones, only for that game, and end with the week', async () => {
-  const g = createGate(memoryKV(), () => '2026-10-13');
-  await g.addBoost('the-riddler', 0, 10);
-  for (const id of ['a', 'b', 'c']) await g.countPlay('the-riddler', id, true);
-  assert.deepEqual(await g.allowance('the-riddler'), { used: 3, free: 3, extra: 0, left: 10, boost: 10 });
-  await g.countPlay('the-riddler', 'd', true);
-  assert.deepEqual(await g.allowance('the-riddler'), { used: 4, free: 3, extra: 1, left: 9, boost: 9 });
-  assert.equal((await g.allowance('nova-crossword')).boost, 0);
+test('gate: Grand Rounds booster plays cover one play each, only for that game, and end with the week', async () => {
+  const g = createGate(memoryKV());
+  await g.addBoost('the-riddler', 0, 2);
+  assert.equal(await g.useBoost('the-riddler', 'a'), true);
+  assert.equal(await g.useBoost('the-riddler', 'a'), true, 'the same play is covered once');
+  assert.equal(await g.boostLeft('the-riddler'), 1);
+  assert.equal(await g.useBoost('nova-crossword', 'b'), false);
+  assert.equal(await g.useBoost('the-riddler', 'c'), true);
+  assert.equal(await g.useBoost('the-riddler', 'd'), false, 'used up');
+  await g.addBoost('the-riddler', 0, 1);
   await g.expireBoost(1);
-  assert.equal((await g.allowance('the-riddler')).left, 0);
+  assert.equal(await g.boostLeft('the-riddler'), 0);
+});
+
+test('sparks: refill one every N minutes up to 100, above full it waits, never below 0', () => {
+  const m = 60000;
+  assert.deepEqual(refill({ value: 50, at: 0 }, 25 * m, 10), { value: 52, at: 20 * m }, 'the part-filled Spark keeps its time');
+  assert.deepEqual(refill({ value: 99, at: 0 }, 60 * m, 10), { value: 100, at: 60 * m });
+  assert.deepEqual(refill({ value: 130, at: 0 }, 60 * m, 10), { value: 130, at: 60 * m }, 'gifts above full do not refill');
+  assert.deepEqual(refill({ value: 10, at: 0 }, 25 * m, 5), { value: 15, at: 25 * m });
+  assert.deepEqual(spendAt({ value: 100, at: 0 }, 30 * m, 25, 10), { value: 75, at: 30 * m }, 'a full bar starts refilling at the spend');
+  assert.deepEqual(spendAt({ value: 3, at: 0 }, 0, 25, 10), { value: 0, at: 0 });
+});
+
+test('sparks: a unit pays once; spends since the last server bar count; settle keeps only unsent ones', async () => {
+  let t = 1_000_000;
+  const s = createSparks(memoryKV(), () => t);
+  assert.equal((await s.state(10)).value, SPARKS_MAX, 'a new account starts full');
+  assert.equal(await s.charge('play1', 25, 'the-riddler'), true);
+  assert.equal(await s.charge('play1', 25, 'the-riddler'), false, 'same play, no second charge');
+  assert.equal(await s.paid('play1'), true);
+  t += 60000;
+  await s.charge('play2', 15, 'the-riddler');
+  assert.equal((await s.state(10)).value, 60);
+  t += 10 * 60000;
+  const st = await s.state(10);
+  assert.equal(st.value, 61);
+  assert.ok(st.nextIn > 0 && st.nextIn <= 10 * 60000);
+  const sent = (await s.pending()).map((x) => x.id);
+  await s.charge('play3', 10, 'imposter');
+  await s.settle('u1', { value: 61, at: t }, sent);
+  assert.equal((await s.pending()).length, 1, 'the spend made during the sync waits for the next one');
+  assert.equal((await s.state(10)).value, 51);
+  await s.settle('u2', { value: 100, at: t }, []);
+  assert.equal((await s.pending()).length, 0, 'another account starts clean');
+  assert.equal(await s.paid('play1'), false);
 });
 
 test('picker: unseen first, then reshuffle when the bank runs out', async () => {

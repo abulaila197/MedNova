@@ -19,6 +19,8 @@ import { openReport } from '@/features/profile/Friends';
 import { shareText } from '@/lib/share';
 import { call, leaveRoom, rematchRoom, removePlayer, setReady, setTeam, startMatch, updateRoom, type RoomState, type Seat } from './api';
 import { settingsLine } from './format';
+import { sparksCost } from '@/features/sparks/costs';
+import { needSparks } from '@/features/sparks/sparks';
 import { G } from './grey';
 import { TalkBubble, TalkPanel } from './TalkBar';
 import { toggleMute, useTalk, useTalkFeed } from './talk';
@@ -273,6 +275,8 @@ export function Lobby({ def, roomId }: { def: GameDef; roomId: string }) {
             label={busy ? 'Starting…' : startFail ? 'Couldn’t start. Try again' : allReady ? 'Start' : players.length < need ? `Start · needs ${need} players` : `Start · ${players.length - notReady.length} of ${players.length} ready`}
             off={!allReady || busy}
             onPress={async () => {
+              // The host may have changed the settings since Create: the Sparks are checked again.
+              if (!(await needSparks(sparksCost(def.key, 'online', room.settings)))) return;
               setBusy(true);
               // A refused start (someone left or un-readied) says so on the button instead of failing silently (AP12g).
               await startMatch(room.id).catch(() => flashStartFail());
@@ -283,7 +287,10 @@ export function Lobby({ def, roomId }: { def: GameDef; roomId: string }) {
         ) : mine?.state === 'spectator' ? (
           <GBtn style={s.grow} label="Watching this match" off />
         ) : (
-          <GBtn label={mine?.ready ? 'Not ready yet' : 'I’m ready'} onPress={() => setReady(room.id, !mine?.ready).then(reload).catch(() => {})} style={[s.grow, mine?.ready ? s.ghost : null]} />
+          <GBtn label={mine?.ready ? 'Not ready yet' : 'I’m ready'} onPress={async () => {
+            if (!mine?.ready && !(await needSparks(sparksCost(def.key, 'online', room.settings)))) return;
+            setReady(room.id, !mine?.ready).then(reload).catch(() => {});
+          }} style={[s.grow, mine?.ready ? s.ghost : null]} />
         )}
       </View>
 

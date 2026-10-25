@@ -1,25 +1,24 @@
 // The shared play flow every game uses, so the general rules never differ between games.
-import { engine, GUEST_TRIALS, TRIAL_MODES } from '../engine';
+import { engine } from '../engine';
 import type { GameKey, Mode, Play, PlayItem, Seat, Standing } from '../engine/types';
+import { bonusOf } from '@/features/shop/robots';
+import { chargePlay } from '@/features/sparks/sparks';
+import { useAccount } from '@/state/account';
 import { sfxVerdict } from '@/lib/sound';
 import { syncAccount } from '@/lib/sync';
 
 import { useSession } from './session';
 import type { GameDef } from './types';
 
-/** Free plays left: a guest's one try per game (0 for Online), or a signed-in player's plays left today (TR1). */
-export async function trialsLeft(game: GameKey, mode: Mode) {
-  if (useSession.getState().userId) return (await engine.gate.allowance(game)).left;
-  if (!TRIAL_MODES.includes(mode)) return 0;
-  return Math.max(0, GUEST_TRIALS - (await engine.gate.used(game)));
-}
-
-/** Medicordle's Daily word never uses a free play (TR3), nor does playing your own custom case (practice). */
+/** Medicordle's Daily word never costs Sparks (TR3), nor does playing your own custom case (practice). */
 export const alwaysFree = (play: Pick<Play, 'game' | 'mode' | 'settings'>) =>
   (play.game === 'nova-medicordle' && play.mode === 'solo' && play.settings.word !== 'endless') || !!play.settings.custom;
 
-/** Counts a play against the free plays once (TR2: at its first answer; online: when the match ends). */
-export const countPlay = (play: Play) => engine.gate.countPlay(play.game, play.id, !!play.userId, alwaysFree(play));
+/** Pays for the play once (TR2: at its first answer; online: when the match ends): Sparks, or a guest play. */
+export const countPlay = (play: Play) => chargePlay(play, alwaysFree(play));
+
+/** The worn character's EXP bonus (#88), never above the game's per-play cap. */
+const withBonus = (exp: number, cap: number) => Math.min(cap, Math.round(exp * (1 + bonusOf(useAccount.getState().profile?.avatar).exp / 100)));
 
 /** Rule 9: settings are frozen here. Starting a new game drops the old bookmark for that mode (rule 7). */
 export async function startPlay(game: GameKey, mode: Mode, settings: Record<string, unknown>, seats?: Seat[]) {
@@ -29,7 +28,7 @@ export async function startPlay(game: GameKey, mode: Mode, settings: Record<stri
 }
 
 /**
- * Records one answered item. The first one counts the free play (TR2). Solo and Offline give the right, wrong or
+ * Records one answered item. The first one pays for the play (TR2). Solo and Offline give the right, wrong or
  * time-up sound here, as the answer shows; `quiet` is for games that record a batch at the end and sound each answer
  * themselves. Online never sounds here: its items arrive at the end, and its reveal plays the sound (useRevealSound).
  */
@@ -43,9 +42,10 @@ export async function recordItem(play: Play, item: Omit<PlayItem, 'id' | 'at' | 
 /** Ends the play, then pays EXP on the phone at once (rule 6). */
 export async function finishPlay(def: GameDef, play: Play, score: number, standings?: Standing[]) {
   const items = await engine.recorder.itemsOf(play.id);
-  const exp = Math.max(0, Math.min(def.exp(score, items, play.settings), def.expCap(play.settings, play.mode)));
+  const cap = def.expCap(play.settings, play.mode);
+  const exp = Math.max(0, withBonus(Math.min(def.exp(score, items, play.settings), cap), cap));
   await engine.recorder.finish(play.id, { score, standings, expEarned: exp });
-  const paid = await engine.wallet.earn(play.id, exp, def.expCap(play.settings, play.mode));
+  const paid = await engine.wallet.earn(play.id, exp, cap);
   if (paid.levelsGained > 0) await engine.recorder.noteLevelUp(play.id, paid.level, paid.tokensGained);
   const uid = useSession.getState().userId;
   if (uid) syncAccount(uid).catch(() => {}); // offline is fine: it uploads next time

@@ -8,7 +8,7 @@ import { create } from 'zustand';
 
 import { Text, TextInput } from '@/components/AppText';
 import { Sheet } from '@/components/Sheet';
-import { ADS_LIVE } from '@/features/freeplays/paywall';
+import { ADS_LIVE } from '@/features/sparks/sparks';
 import { Kicker } from '@/features/info/ui';
 import { useSession } from '@/games/shell/session';
 import { syncAccount } from '@/lib/sync';
