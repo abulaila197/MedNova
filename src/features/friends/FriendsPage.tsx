@@ -7,6 +7,7 @@ import { Text, TextInput } from '@/components/AppText';
 import { Congrats } from '@/components/Congrats';
 import { Screen } from '@/components/Screen';
 import { loadFree, useFree } from '@/features/store/FreeTokens';
+import { useStyle } from '@/features/style/useStyle';
 import { FriendsSection, Name, Ring } from '@/features/profile/Friends';
 import { InfoScroll, Kicker, s as ui, useInfo } from '@/features/info/ui';
 import { useSession } from '@/games/shell/session';
@@ -59,6 +60,7 @@ export function FriendsPage() {
               ))}
             </View>
             <Strip t={t} code={profile.friend_code} />
+            <InviteGoals t={t} />
             <Redeem t={t} />
             {tab === 2 ? <Find t={t} /> : <FriendsSection t={t} only={tab === 0 ? 'friends' : 'requests'} />}
           </>
@@ -82,6 +84,38 @@ function Strip({ t, code }: { t: Theme; code: string }) {
       <View style={{ flex: 1 }} />
       <Grad t={t} label="Share" onPress={share} />
     </View>
+  );
+}
+
+// Rewards for redeemed invite codes (Yazan 2026-10-25): the Inviter set at 10, Linky at 20 (the server grants both).
+const GOALS = [
+  { n: 10, name: 'Inviter set', item: 'frame:inviter', what: 'Frame, name box and the Friendship Chain win effect' },
+  { n: 20, name: 'Linky', item: 'robot:linky', what: 'The Friend Signal, a 4-star character (or follow all our pages)' },
+];
+
+/** How far your redeemed codes are from each reward. Tapping opens the Style shop. */
+function InviteGoals({ t }: { t: Theme }) {
+  const n = useFree((x) => x.status?.invites ?? 0);
+  const owned = useStyle((x) => x.owned);
+  return (
+    <Pressable onPress={() => router.navigate('/style' as never)} style={[s.goals, { borderColor: t.panelLine, backgroundColor: t.panel }]} accessibilityRole="link">
+      <Text style={[s.mono, { color: t.kick }]}>{`FRIENDS WHO USED YOUR CODE · ${n}`}</Text>
+      {GOALS.map((g) => {
+        const done = n >= g.n || owned.includes(g.item); // Linky also comes from the social follows
+        return (
+          <View key={g.n} style={{ marginTop: u(8) }}>
+            <View style={s.goalTop}>
+              <Text style={[s.goalN, { color: t.fg }]}>{g.name}</Text>
+              <Text style={[s.mono, { color: done ? t.accent : t.mute }]}>{done ? 'UNLOCKED ✓' : `${n} / ${g.n}`}</Text>
+            </View>
+            <View style={[s.bar, { backgroundColor: 'rgba(255,255,255,0.08)' }]}>
+              <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={[s.barFill, { width: `${done ? 100 : (n / g.n) * 100}%` }]} />
+            </View>
+            <Text style={[s.goalS, { color: t.mute }]}>{g.what}</Text>
+          </View>
+        );
+      })}
+    </Pressable>
   );
 }
 
@@ -198,6 +232,12 @@ const Ghost = ({ t, label, onPress }: { t: Theme; label: string; onPress?: () =>
 );
 
 const s = StyleSheet.create({
+  goals: { borderWidth: 1, borderRadius: u(16), padding: u(12), marginTop: u(10) },
+  goalTop: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  goalN: { fontFamily: F.bodySemi, fontSize: u(12) },
+  goalS: { fontFamily: F.body, fontSize: u(9), marginTop: u(3) },
+  bar: { height: u(6), borderRadius: 999, overflow: 'hidden', marginTop: u(5) },
+  barFill: { height: '100%', borderRadius: 999 },
   guest: { marginTop: u(14), borderWidth: 1, borderRadius: u(14), padding: u(12), gap: u(4) },
   guestT: { fontFamily: F.bodyMedium, fontSize: u(11), lineHeight: u(15) },
   guestA: { fontFamily: F.bodyBold, fontSize: u(11) },
