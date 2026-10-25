@@ -149,8 +149,8 @@ export async function wear(p: { frame?: string; title?: string; effect?: string 
   return data as ShopResult;
 }
 
-/** Other token spends: name glow, a second chance in a run, the Grand Rounds booster. */
-export async function spendTokens(what: 'glow' | 'second' | 'booster', ref?: string): Promise<ShopResult & { cost?: number; id?: string }> {
+/** Other token spends: name glow and a second chance in a run. */
+export async function spendTokens(what: 'glow' | 'second', ref?: string): Promise<ShopResult & { cost?: number; id?: string }> {
   const userId = useSession.getState().userId;
   if (!userId) return { ok: false, why: 'signin' };
   await syncAccount(userId).catch(() => {});
@@ -182,7 +182,6 @@ export const WHY: Record<string, string> = {
   'not friends': 'You can only send gifts to friends.',
   'not sold': 'This one is earned, not sold.',
   'not owned': 'Buy it first.',
-  'not this week': 'The booster is only for this week’s game.',
   max: 'No more second chances in this run.',
   offline: 'Could not reach MedNova. Check your connection and try again.',
   signin: 'Sign in first.',

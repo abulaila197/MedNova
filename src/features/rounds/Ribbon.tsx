@@ -5,14 +5,14 @@ import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import Svg, { Circle, Defs, LinearGradient, Path, Stop } from 'react-native-svg';
 
 import { Text } from '@/components/AppText';
-import { TokenCoin } from '@/components/PulseStar';
 import { useSvgId } from '@/components/svgId';
+import { Bolt } from '@/features/sparks/Bolt';
 import { tapped } from '@/lib/sound';
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
-import { doneOf, loadRounds, PART_NAME, timeLeft, useRoundsStore, weekName, type Rounds } from './useRounds';
+import { CHEST_NAME, doneOf, loadRounds, timeLeft, useRoundsStore, weekName, type Rounds } from './useRounds';
 
 /**
  * Grand Rounds on the Games page (Yazan 2026-10-13): a small round button on the right under the header; tapping it
@@ -78,24 +78,22 @@ function Ring({ done }: { done: number }) {
   );
 }
 
-/** Look B: a heartbeat line that lights up as you play; each beat is one sub-mode (or the one mode of a mode week). */
+/** Look B: a heartbeat line that lights up as you use Sparks; one beat for each of the week's 3 missions. */
 export function Beat({ r, more = true }: { r: Rounds; more?: boolean }) {
   const t = useTheme();
   const id = useSvgId('rb');
   const W = 250;
-  const TOTAL = r.parts.reduce((a, p) => a + p.of, 0);
+  const TOP = r.missions.at(-1)?.of ?? 1;
   const DONE = doneOf(r);
-  let x = 0;
   let d = 'M0,9';
   const marks: { x: number; label: string }[] = [];
-  for (const p of r.parts) {
-    const w = (p.of / TOTAL) * W;
-    const m = x + w / 2;
-    // The beat labels are 50 units wide, too narrow for 'Pass the phone': the ribbon keeps the short 'Pass'.
-    d += ` L${m - 7},9 L${m - 4},6 L${m - 2},9 L${m},1 L${m + 2},15 L${m + 4},9 L${x + w},9`;
-    marks.push({ x: m, label: `${r.this.kind === 'mode' ? 'Wins' : p.k === 'offline' ? 'Pass' : p.k === 'local' ? 'Solo/Pass' : PART_NAME[p.k]} ${p.n ?? 0}/${p.of}` });
-    x += w;
+  for (const m of r.missions) {
+    // Each beat sits where its mission is reached along the line (the last one just short of the end).
+    const x = Math.min(W - 10, (m.of / TOP) * W);
+    d += ` L${x - 7},9 L${x - 4},6 L${x - 2},9 L${x},1 L${x + 2},15 L${x + 4},9`;
+    marks.push({ x, label: `${m.claimed ? '✓ ' : ''}${CHEST_NAME[m.chest].split(' ')[0]} ${m.of}` });
   }
+  d += ` L${W},9`;
   return (
     <View style={s.beat}>
       <View style={s.row}>
@@ -106,8 +104,8 @@ export function Beat({ r, more = true }: { r: Rounds; more?: boolean }) {
       <View style={s.row}>
         <Text style={[s.left, { color: t.mute, flex: 1 }]}>{r.claimed ? 'DONE THIS WEEK' : `${timeLeft(r.ends).toUpperCase()} LEFT${more ? ' · TAP FOR MORE' : ''}`}</Text>
         <View style={s.prize}>
-          <Text style={[s.prizeT, { color: t.fg }]}>{r.prize}</Text>
-          <TokenCoin size={u(10)} progress={1} track="transparent" />
+          <Bolt size={u(9)} />
+          <Text style={[s.prizeT, { color: t.fg }]}>{`${r.used} / ${TOP}`}</Text>
         </View>
       </View>
       <Svg width="100%" height={u(18)} viewBox={`0 0 ${W} 16`} preserveAspectRatio="none">

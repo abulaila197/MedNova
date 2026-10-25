@@ -153,20 +153,6 @@ test('gate: a guest gets 5 plays in total across all games, idempotent per play;
   assert.equal(GUEST_PLAYS, 5);
 });
 
-test('gate: Grand Rounds booster plays cover one play each, only for that game, and end with the week', async () => {
-  const g = createGate(memoryKV());
-  await g.addBoost('the-riddler', 0, 2);
-  assert.equal(await g.useBoost('the-riddler', 'a'), true);
-  assert.equal(await g.useBoost('the-riddler', 'a'), true, 'the same play is covered once');
-  assert.equal(await g.boostLeft('the-riddler'), 1);
-  assert.equal(await g.useBoost('nova-crossword', 'b'), false);
-  assert.equal(await g.useBoost('the-riddler', 'c'), true);
-  assert.equal(await g.useBoost('the-riddler', 'd'), false, 'used up');
-  await g.addBoost('the-riddler', 0, 1);
-  await g.expireBoost(1);
-  assert.equal(await g.boostLeft('the-riddler'), 0);
-});
-
 test('sparks: refill one every N minutes up to 100, above full it waits, never below 0', () => {
   const m = 60000;
   assert.deepEqual(refill({ value: 50, at: 0 }, 25 * m, 10), { value: 52, at: 20 * m }, 'the part-filled Spark keeps its time');

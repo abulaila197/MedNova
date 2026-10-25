@@ -4,7 +4,7 @@ import type { FrameKey } from './Frame';
 
 export type Item = { id: string; key: string; name: string; price: number | null };
 
-/** Frames, cheapest first. Grand Rounds is earned by finishing 13 weeks (price null). */
+/** Frames, cheapest first. Grand Rounds is earned by stamping 13 weeks (price null). */
 export const FRAMES: (Item & { key: FrameKey })[] = [
   { id: 'frame:normal', key: 'normal', name: 'Normal', price: 0 },
   { id: 'frame:bronze', key: 'bronze', name: 'Bronze', price: 60 },
@@ -66,7 +66,7 @@ export const EFFECTS: (Item & { key: EffectKey; what: string })[] = [
 
 /** How each earned item is got (shown instead of a price), and the ones only listed to their owner. */
 export const EARNED_HOW: Record<string, string> = {
-  'frame:rounds': 'Finish all 13 Grand Rounds weeks',
+  'frame:rounds': 'Stamp 13 Grand Rounds weeks',
   'frame:inviter': 'Have 10 friends redeem your invite code',
   'effect:friend_chain': 'Have 10 friends redeem your invite code',
   'frame:sovereign': 'Comes with the Sovereign package',

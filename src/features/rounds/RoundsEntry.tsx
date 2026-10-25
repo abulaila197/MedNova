@@ -8,7 +8,7 @@ import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import { Beat } from './Ribbon';
-import { isComplete, loadRounds, useRoundsStore } from './useRounds';
+import { loadRounds, readyOf, useRoundsStore } from './useRounds';
 
 /** This week's Grand Rounds at the top of the Achievements page: the same heartbeat line, changing every week. */
 export function RoundsEntry() {
@@ -18,7 +18,7 @@ export function RoundsEntry() {
     void loadRounds();
   }, []);
   if (!r) return null;
-  const ready = !r.claimed && isComplete(r);
+  const ready = readyOf(r).length > 0;
   return (
     <Pressable onPress={() => router.navigate('/rounds' as never)} style={[s.card, { backgroundColor: t.panel, borderColor: ready ? t.accent : t.panelLine }]} accessibilityRole="link" accessibilityLabel="Open Grand Rounds">
       <View style={s.top}>

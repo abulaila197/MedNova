@@ -6,10 +6,6 @@ import type { GameKey, Mode } from './types';
 
 export const GUEST_PLAYS = 5;
 const GUEST_KEY = 'guest_trials';
-const BOOST_KEY = 'rounds_boost';
-
-/** Grand Rounds booster plays (24 tokens = 10 plays of that week's game that cost no Sparks; reworked in #86). */
-type Boost = { week: number; game: string; left: number; used?: string[] };
 
 /** Modes a guest may try. Online Multiplayer always needs sign-in. */
 export const TRIAL_MODES: Mode[] = ['solo', 'offline'];
@@ -47,39 +43,6 @@ export function createGate(kv: KV) {
         if (list.includes(playId)) return;
         all[game] = [...list, playId];
         await kv.set(GUEST_KEY, all);
-      });
-    },
-    /** Booster plays left for this game this week. */
-    boostLeft(game: GameKey) {
-      return run(async () => {
-        const b = await kv.get<Boost>(BOOST_KEY);
-        return b && b.game === game ? b.left : 0;
-      });
-    },
-    /** Uses one booster play for this play (once per play); true when the play is covered by it. */
-    useBoost(game: GameKey, playId: string) {
-      return run(async () => {
-        const b = await kv.get<Boost>(BOOST_KEY);
-        if (!b || b.game !== game) return false;
-        if (b.used?.includes(playId)) return true;
-        if (b.left <= 0) return false;
-        await kv.set(BOOST_KEY, { ...b, left: b.left - 1, used: [...(b.used ?? []), playId].slice(-50) } satisfies Boost);
-        return true;
-      });
-    },
-    /** Adds bought booster plays for this week's game (a new week or game replaces the old ones). */
-    addBoost(game: GameKey, week: number, plays: number) {
-      return run(async () => {
-        const b = await kv.get<Boost>(BOOST_KEY);
-        const same = b && b.week === week && b.game === game;
-        await kv.set(BOOST_KEY, { week, game, left: (same ? b.left : 0) + plays, used: same ? b.used : [] } satisfies Boost);
-      });
-    },
-    /** Drops booster plays from an earlier week. */
-    expireBoost(week: number) {
-      return run(async () => {
-        const b = await kv.get<Boost>(BOOST_KEY);
-        if (b && b.week !== week) await kv.set(BOOST_KEY, null);
       });
     },
   };

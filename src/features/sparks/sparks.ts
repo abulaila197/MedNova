@@ -60,20 +60,20 @@ export async function syncSparks(uid: string) {
 }
 
 /**
- * Pays for a play once, at its first answer (TR2, #52). Guests use one of their 5 plays (#83); subscribers and
- * free plays (Medicordle Daily, your own case) pay nothing; a Grand Rounds booster play pays nothing.
+ * Pays for a play once, at its first answer (TR2, #52). Guests use one of their 5 plays (#83); free plays (Medicordle
+ * Daily, your own case) pay nothing. Subscribers' plays are logged at their price so Grand Rounds counts them; the
+ * server leaves their bar as it is.
  */
 export async function chargePlay(play: Play, free: boolean) {
   if (!play.userId) return engine.gate.countGuest(play.game, play.id);
-  if (free || isSubscribed()) return;
-  if (await engine.gate.useBoost(play.game, play.id)) return;
+  if (free) return;
   if (perUnit(play.game, play.mode, play.settings)) return; // the game pays each level / word itself
   await chargeUnit(play, play.id, sparksCost(play.game, play.mode, play.settings));
 }
 
 /** Pays `cost` once for one unit of a play (a Riddler level, a Medicordle Endless word). */
 export async function chargeUnit(play: Play, unit: string, cost: number) {
-  if (!play.userId || isSubscribed() || cost <= 0) return;
+  if (!play.userId || cost <= 0) return;
   if (await engine.sparks.charge(unit, cost, play.game)) syncSparks(play.userId).catch(() => {});
 }
 
