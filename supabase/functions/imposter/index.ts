@@ -1,10 +1,12 @@
 // The Imposter online referee (IM2): Yazan's engine on the server. The game is saved in im_games with each player's
 // own view next to it; phones read only their own view with im_state, so words never reach the wrong phone.
-// The word bank and the bad-word list are bundled in. Bundled with scripts/build-imposter-function.sh.
+// The word bank (packed, bank.json) and the bad-word list are bundled in. Bundled with scripts/build-imposter-function.sh.
 import { createClient } from 'npm:@supabase/supabase-js@2';
 
+import { unpackBank, type PackedBank } from '../../../src/games/imposter/bankCodec';
 import type { SubtypeChoice } from '../../../src/games/imposter/engine/types';
 import { dueOf, onlineRanks, scoresOf, startOnlineGame, stepOnline, viewsOf, type Move, type Saved } from '../../../src/games/imposter/online';
+import packed from './bank.json' with { type: 'json' };
 
 declare const Deno: { env: { get(k: string): string | undefined }; serve(h: (req: Request) => Promise<Response>): void };
 
@@ -13,6 +15,7 @@ const cors = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
+const BANK = unpackBank(packed as PackedBank);
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { ...cors, 'Content-Type': 'application/json' } });
 
 type Loaded = {
@@ -54,12 +57,12 @@ Deno.serve(async (req) => {
     if (!saved) {
       if (now < L.match.ends_ms) return json({ result: 'wait' });
       const g = startOnlineGame({
-        roomId: L.room_id, host: L.host, seats: L.seats, names: L.names ?? {},
+        bank: BANK, roomId: L.room_id, host: L.host, seats: L.seats, names: L.names ?? {},
         style: String(L.match.settings.style ?? 'mixed') as SubtypeChoice, rounds: Number(L.match.settings.rounds) || 3, now,
       });
       saved = { g, alerts: [] };
     }
-    const { next, refused } = stepOnline(saved, who.user.id, move, L.dropped ?? [], now);
+    const { next, refused } = stepOnline(BANK, saved, who.user.id, move, L.dropped ?? [], now);
     if (next === L.state) return json({ result: refused ? 'refused' : 'same', ...refused });
     // A match that could not start (too few players) or that ran out ends here.
     const done = next.g.phase.kind === 'matchEnd' || next.g.phase.kind === 'lobby';

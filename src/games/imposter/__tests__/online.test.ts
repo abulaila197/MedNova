@@ -3,6 +3,8 @@ import { test } from 'node:test';
 
 import { RULES } from '../engine/constants';
 import { onlineRanks, scoresOf, startOnlineGame, stepOnline, viewsOf, dueOf, type Move, type Saved } from '../online';
+import { packBank, unpackBank } from '../bankCodec';
+import { BANK } from '../offline';
 import { mulberry32 } from './helpers';
 
 const seats = ['u-a', 'u-b', 'u-c', 'u-d'];
@@ -11,9 +13,9 @@ const names = { 'u-a': 'Ann', 'u-b': 'Ben', 'u-c': 'Cat', 'u-d': 'Dan' };
 function setup(rounds = 1) {
   const rng = mulberry32(11);
   let now = 5_000;
-  let saved: Saved = { g: startOnlineGame({ roomId: 'r', host: 'u-b', seats, names, style: 'mixed', rounds, now, rng }), alerts: [] };
+  let saved: Saved = { g: startOnlineGame({ bank: BANK, roomId: 'r', host: 'u-b', seats, names, style: 'mixed', rounds, now, rng }), alerts: [] };
   const go = (me: string, move: Move, dropped: string[] = []) => {
-    const r = stepOnline(saved, me, move, dropped, now, rng);
+    const r = stepOnline(BANK, saved, me, move, dropped, now, rng);
     saved = r.next;
     return r;
   };
@@ -120,4 +122,13 @@ test('Online: three blocked clues tell the host, on the host’s view only', () 
   const before = t.s;
   t.go(typer, { type: 'TICK' });
   assert.equal(t.s, before);
+});
+
+test('Online: the packed bank the referee carries holds every pair the engine reads, unchanged', () => {
+  const back = unpackBank(packBank(BANK));
+  assert.equal(back.pairs.length, BANK.pairs.length);
+  for (let i = 0; i < BANK.pairs.length; i++) {
+    const { kind: _k, topic: _t, ...want } = BANK.pairs[i];
+    assert.deepEqual(back.pairs[i], want);
+  }
 });

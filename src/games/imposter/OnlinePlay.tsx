@@ -320,7 +320,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
           votes={tallies}
           pickable={(id) => playing && id !== me && (!cands || cands.includes(id))}
           onPick={playing ? (id) => send({ type: 'CAST_VOTE', target: id }) : undefined}
-          mark={{ [me]: 'YOU', ...(myVote ? { [myVote]: 'YOUR VOTE' } : {}) }}
+          mark={myVote ? { [myVote]: '✓' } : undefined}
         />
         {v.lastTurnClues?.length ? <ClueList clues={v.lastTurnClues} people={people} /> : null}
       </>

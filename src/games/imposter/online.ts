@@ -3,9 +3,8 @@
 // referee's whole logic, kept here so it is tested with the rest of the game; the edge function only loads and saves.
 import { createGame, nextDeadline, reduce } from './engine/engine';
 import { PROFANITY } from './engine/filter';
-import type { GameAction, GameEvent, GameState, RoundSummary, SubtypeChoice } from './engine/types';
+import type { GameAction, GameEvent, GameState, RoundSummary, SubtypeChoice, WordBank } from './engine/types';
 import { getView, type PlayerView } from './engine/view';
-import { BANK } from './offline';
 
 /** The moves a phone may send; the referee fills in playerId from the signed-in user. */
 export type Move =
@@ -28,9 +27,10 @@ export type Saved = { g: GameState; alerts: Alert[] };
  */
 export type ImView = PlayerView & { caught: string | null; alerts: Alert[]; history: RoundSummary[] };
 
-const envAt = (now: number, rng: () => number) => ({ now, rng, bank: BANK, profanity: PROFANITY });
+const envAt = (bank: WordBank, now: number, rng: () => number) => ({ now, rng, bank, profanity: PROFANITY });
 
 export function startOnlineGame(o: {
+  bank: WordBank;
   roomId: string;
   host: string;
   seats: string[];
@@ -41,7 +41,7 @@ export function startOnlineGame(o: {
   rng?: () => number;
 }): GameState {
   const rng = o.rng ?? Math.random;
-  const env = envAt(o.now, rng);
+  const env = envAt(o.bank, o.now, rng);
   const host = o.seats.includes(o.host) ? o.host : o.seats[0];
   const name = (id: string) => o.names[id]?.trim() || 'Player';
   let s = createGame({ roomId: o.roomId, mode: 'online', host: { id: host, name: name(host) } });
@@ -57,8 +57,8 @@ const MAX_ALERTS = 6;
  * One request: players who dropped out leave the game first, then the move is applied for `me`.
  * Returns the new save (the same object when nothing changed) and the refusal for my move, if any.
  */
-export function stepOnline(saved: Saved, me: string, move: Move, dropped: string[], now: number, rng: () => number = Math.random): { next: Saved; refused: { code: string; message: string } | null } {
-  const env = envAt(now, rng);
+export function stepOnline(bank: WordBank, saved: Saved, me: string, move: Move, dropped: string[], now: number, rng: () => number = Math.random): { next: Saved; refused: { code: string; message: string } | null } {
+  const env = envAt(bank, now, rng);
   let g = saved.g;
   const events: GameEvent[] = [];
   for (const id of dropped) {
