@@ -190,7 +190,7 @@ export const LOAD: Record<string, LoadCfg> = {
     sub: { f: 'BarlowCondensed_500Medium', s: 15, c: '#b9d3d0' },
     tip: { f: 'BarlowCondensed_500Medium', s: 13.5, c: '#dcebe9', bg: 'rgba(0,10,12,0.62)', b: 'rgba(120,210,200,0.22)' },
     bar: { t: 'line', c: '#ff3b3b', track: 'rgba(160,230,220,0.14)', glow: '0 0 10px #ff3b3b, 0 0 22px rgba(255,59,59,0.55)' },
-    tag: { t: 'Pass the phone · Online · 3-6 players', side: 'left', c: '#dcebe9', bg: 'rgba(0,0,0,0.45)', b: 'rgba(160,230,220,0.28)' },
+    tag: { t: 'Pass the phone · Online', side: 'left', c: '#dcebe9', bg: 'rgba(0,0,0,0.45)', b: 'rgba(160,230,220,0.28)' },
     glows: [
       { x: 0.5, y: 0.412, r: 46, c: 'rgba(255,40,40,0.5)', a: 'pulse' },
       { x: 0.635, y: 0.322, r: 40, c: 'rgba(150,255,240,0.35)', a: 'flicker' },
