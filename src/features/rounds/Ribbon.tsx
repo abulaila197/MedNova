@@ -12,7 +12,7 @@ import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
-import { CHEST_NAME, doneOf, loadRounds, timeLeft, useRoundsStore, weekName, type Rounds } from './useRounds';
+import { doneOf, loadRounds, timeLeft, useRoundsStore, weekName, type Rounds } from './useRounds';
 
 /**
  * Grand Rounds on the Games page (Yazan 2026-10-13): a small round button on the right under the header; tapping it
@@ -91,7 +91,7 @@ export function Beat({ r, more = true }: { r: Rounds; more?: boolean }) {
     // Each beat sits where its mission is reached along the line (the last one just short of the end).
     const x = Math.min(W - 10, (m.of / TOP) * W);
     d += ` L${x - 7},9 L${x - 4},6 L${x - 2},9 L${x},1 L${x + 2},15 L${x + 4},9`;
-    marks.push({ x, label: `${m.claimed ? '✓ ' : ''}${CHEST_NAME[m.chest].split(' ')[0]} ${m.of}` });
+    marks.push({ x, label: `${m.claimed ? '✓ ' : ''}${m.of}` });
   }
   d += ` L${W},9`;
   return (

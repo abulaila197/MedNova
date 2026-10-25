@@ -20,7 +20,7 @@ import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import { Beat } from './Ribbon';
-import { aboutGames, CHEST_NAME, claimRounds, CYCLE_WEEKS, loadRounds, timeLeft, useRoundsStore, weekGoal, weekName, type Week } from './useRounds';
+import { aboutGames, CHEST_NAME, claimRounds, CYCLE_WEEKS, loadRounds, useRoundsStore, weekGoal, weekName, type Week } from './useRounds';
 import { useLock } from '@/lib/useLock';
 
 /** A mode week's stamp sign: a phone for Pass, a single figure for Solo, linked dots for Online. */
@@ -141,18 +141,18 @@ export function RoundsPage() {
                   <Image source={CHESTS[m.chest].art} style={[s.mChest, !reached && !m.claimed && { opacity: 0.45 }]} contentFit="contain" accessibilityLabel={CHEST_NAME[m.chest]} />
                   <View style={{ flex: 1 }}>
                     <View style={s.pRow}>
-                      <Text style={[s.pN, { color: c.fg }]}>{`Mission ${i + 1} · ${CHEST_NAME[m.chest]}`}</Text>
-                      <Text style={[s.pC, { color: reached ? t.accent : c.mute }]}>{`${Math.min(r.used, m.of)} / ${m.of}`}</Text>
+                      <Text style={[s.pN, { color: c.fg, flex: 1 }]} numberOfLines={1}>{`Mission ${i + 1}`}</Text>
+                      <Text style={[s.pC, { color: reached ? t.accent : c.mute }]}>{`${Math.min(r.used, m.of)}/${m.of}`}</Text>
                     </View>
                     <View style={[s.track, { backgroundColor: t.chip }]}>
                       <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={[s.fill, { width: `${Math.min(1, r.used / m.of) * 100}%` }]} />
                     </View>
-                    <Text style={[s.mS, { color: c.mute }]}>{`${m.of} Sparks${about ? ` · ${about}` : ''}${i === 2 ? ' · stamps the week' : ''}`}</Text>
+                    <Text style={[s.mS, { color: c.mute }]}>{`${CHEST_NAME[m.chest]}${about ? ` · ${about}` : ''}${i === 2 ? ' · stamps the week' : ''}`}</Text>
                   </View>
                   {m.claimed ? (
                     <Text style={[s.mDone, { color: t.accent }]}>✓</Text>
                   ) : reached && signedIn ? (
-                    <Btn t={t} label="Collect" small busy={busy} onPress={() => collect(i + 1)} />
+                    <Btn t={t} label="Collect" tiny busy={busy} onPress={() => collect(i + 1)} />
                   ) : null}
                 </View>
               );
@@ -164,7 +164,6 @@ export function RoundsPage() {
               <Text style={[s.prizeN, { color: c.fg }]}>{r.used}</Text>
               <Text style={[s.prizeS, { color: c.mute }]}>Sparks used this week</Text>
             </View>
-            <Text style={[s.left, { color: c.mute }]}>{`${timeLeft(r.ends).toUpperCase()} LEFT`}</Text>
           </View>
           {!signedIn ? (
             <Btn t={t} label="Sign in to take part" onPress={() => router.navigate('/auth')} />
@@ -208,11 +207,11 @@ export function RoundsPage() {
   );
 }
 
-function Btn({ t, label, onPress, busy, coin, small }: { t: Theme; label: string; onPress: () => void; busy?: boolean; coin?: boolean; small?: boolean }) {
+function Btn({ t, label, onPress, busy, coin, small, tiny }: { t: Theme; label: string; onPress: () => void; busy?: boolean; coin?: boolean; small?: boolean; tiny?: boolean }) {
   return (
-    <Pressable onPress={onPress} disabled={busy} accessibilityRole="button" style={[!small && { marginTop: u(12) }, busy && { opacity: 0.6 }]}>
-      <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={[s.btn, small && s.btnS]}>
-        <Text style={[s.btnT, { color: t.onGrad }]}>{label}</Text>
+    <Pressable onPress={onPress} disabled={busy} accessibilityRole="button" style={[!small && !tiny && { marginTop: u(12) }, busy && { opacity: 0.6 }]}>
+      <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={[s.btn, small && s.btnS, tiny && s.btnXS]}>
+        <Text style={[s.btnT, tiny && s.btnXT, { color: t.onGrad }]}>{label}</Text>
         {coin ? <TokenCoin size={u(11)} progress={0} track="transparent" /> : null}
       </LinearGradient>
     </Pressable>
@@ -226,14 +225,13 @@ const s = StyleSheet.create({
   goal: { fontFamily: F.body, fontSize: u(10.5), marginTop: u(2) },
   pRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: u(4) },
   pN: { fontFamily: F.bodySemi, fontSize: u(11) },
-  pC: { fontFamily: F.mono, fontSize: u(9.5), letterSpacing: u(0.6) },
+  pC: { fontFamily: F.mono, fontSize: u(9), letterSpacing: u(0.2), marginLeft: u(6) },
   track: { height: u(5), borderRadius: u(3), overflow: 'hidden' },
   fill: { height: '100%', borderRadius: u(3) },
   foot: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderTopWidth: 1, marginTop: u(14), paddingTop: u(10) },
   prize: { flexDirection: 'row', alignItems: 'center', gap: u(4) },
   prizeN: { fontFamily: F.display, fontSize: u(20) },
   prizeS: { fontFamily: F.body, fontSize: u(10.5), marginLeft: u(2) },
-  left: { fontFamily: F.mono, fontSize: u(8.5), letterSpacing: u(1) },
   done: { fontFamily: F.bodySemi, fontSize: u(11.5), textAlign: 'center', marginTop: u(12) },
   said: { fontFamily: F.bodyMedium, fontSize: u(11), lineHeight: u(15), marginTop: u(10), borderWidth: 1, borderRadius: u(12), paddingVertical: u(8), paddingHorizontal: u(12), overflow: 'hidden' },
   mRow: { flexDirection: 'row', alignItems: 'center', gap: u(10) },
@@ -246,5 +244,7 @@ const s = StyleSheet.create({
   nx: { fontFamily: F.display, fontSize: u(16) },
   btn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: u(4), height: u(40), borderRadius: 999, paddingHorizontal: u(16) },
   btnS: { height: u(32), paddingHorizontal: u(14) },
+  btnXS: { height: u(26), paddingHorizontal: u(10) },
+  btnXT: { fontSize: u(10.5) },
   btnT: { fontFamily: F.bodyBold, fontSize: u(12.5) },
 });
