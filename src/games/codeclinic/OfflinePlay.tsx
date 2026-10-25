@@ -27,8 +27,7 @@ type Saved = {
 };
 
 /** Why the game ended, said of the winner (w) and the loser (l). */
-const reason = (why: string | null, w: string, l: string) =>
-  why === 'assassin' ? `${l} touched the deadly card.` : why === 'forfeit' ? `${l} gave up.` : `${w} found all their cards.`;
+const reason = (why: string | null, w: string, l: string) => (why === 'assassin' ? `${l} touched the deadly card.` : why === 'forfeit' ? `${l} gave up.` : `${w} found all their cards.`);
 
 function resumeOrStart(play: PlayProps['play']): Saved {
   const r = play.resume as Saved | null;
