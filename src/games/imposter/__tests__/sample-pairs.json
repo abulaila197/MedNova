@@ -1,0 +1,326 @@
+{
+  "pairs": [
+    {
+      "id": "clin-01",
+      "subtype": "clinical",
+      "category": "Respiratory",
+      "a": {
+        "word": "Pneumonia",
+        "alts": []
+      },
+      "b": {
+        "word": "Tuberculosis",
+        "alts": [
+          "TB",
+          "phthisis",
+          "consumption"
+        ]
+      }
+    },
+    {
+      "id": "clin-02",
+      "subtype": "clinical",
+      "category": "Respiratory",
+      "a": {
+        "word": "Asthma",
+        "alts": []
+      },
+      "b": {
+        "word": "Pulmonary embolism",
+        "alts": [
+          "PE"
+        ]
+      }
+    },
+    {
+      "id": "clin-03",
+      "subtype": "clinical",
+      "category": "Cardiovascular",
+      "a": {
+        "word": "Atrial fibrillation",
+        "alts": [
+          "AF",
+          "AFib"
+        ]
+      },
+      "b": {
+        "word": "Myocardial infarction",
+        "alts": [
+          "MI",
+          "heart attack"
+        ]
+      }
+    },
+    {
+      "id": "clin-04",
+      "subtype": "clinical",
+      "category": "Cardiovascular",
+      "a": {
+        "word": "Hypertension",
+        "alts": [
+          "high blood pressure"
+        ]
+      },
+      "b": {
+        "word": "Heart failure",
+        "alts": [
+          "HF",
+          "CHF",
+          "cardiac failure"
+        ]
+      }
+    },
+    {
+      "id": "clin-05",
+      "subtype": "clinical",
+      "category": "Digestive",
+      "a": {
+        "word": "Hepatitis",
+        "alts": []
+      },
+      "b": {
+        "word": "Appendicitis",
+        "alts": []
+      }
+    },
+    {
+      "id": "clin-06",
+      "subtype": "clinical",
+      "category": "Digestive",
+      "a": {
+        "word": "Gastroenteritis",
+        "alts": [
+          "stomach flu"
+        ]
+      },
+      "b": {
+        "word": "Peptic ulcer",
+        "alts": [
+          "PUD",
+          "stomach ulcer"
+        ]
+      }
+    },
+    {
+      "id": "clin-07",
+      "subtype": "clinical",
+      "category": "Respiratory",
+      "a": {
+        "word": "Dyspnea",
+        "alts": [
+          "dyspnoea",
+          "breathlessness",
+          "shortness of breath"
+        ]
+      },
+      "b": {
+        "word": "Hemoptysis",
+        "alts": [
+          "haemoptysis",
+          "coughing blood"
+        ]
+      }
+    },
+    {
+      "id": "clin-08",
+      "subtype": "clinical",
+      "category": "Cardiovascular",
+      "a": {
+        "word": "Palpitations",
+        "alts": []
+      },
+      "b": {
+        "word": "Syncope",
+        "alts": [
+          "fainting"
+        ]
+      }
+    },
+    {
+      "id": "clin-09",
+      "subtype": "clinical",
+      "category": "Respiratory",
+      "a": {
+        "word": "Chest X-ray",
+        "alts": [
+          "CXR",
+          "chest radiograph"
+        ]
+      },
+      "b": {
+        "word": "Spirometry",
+        "alts": [
+          "PFT"
+        ]
+      }
+    },
+    {
+      "id": "clin-10",
+      "subtype": "clinical",
+      "category": "Digestive",
+      "a": {
+        "word": "Omeprazole",
+        "alts": []
+      },
+      "b": {
+        "word": "Ondansetron",
+        "alts": []
+      }
+    },
+    {
+      "id": "basic-11",
+      "subtype": "basic",
+      "category": "Anatomy",
+      "a": {
+        "word": "Tibia",
+        "alts": [
+          "shinbone"
+        ]
+      },
+      "b": {
+        "word": "Ulna",
+        "alts": []
+      }
+    },
+    {
+      "id": "basic-12",
+      "subtype": "basic",
+      "category": "Anatomy",
+      "a": {
+        "word": "Femur",
+        "alts": [
+          "thighbone"
+        ]
+      },
+      "b": {
+        "word": "Scapula",
+        "alts": [
+          "shoulder blade"
+        ]
+      }
+    },
+    {
+      "id": "basic-13",
+      "subtype": "basic",
+      "category": "Physiology",
+      "a": {
+        "word": "Cortisol",
+        "alts": [
+          "hydrocortisone"
+        ]
+      },
+      "b": {
+        "word": "Insulin",
+        "alts": []
+      }
+    },
+    {
+      "id": "basic-14",
+      "subtype": "basic",
+      "category": "Physiology",
+      "a": {
+        "word": "Neutrophil",
+        "alts": [
+          "PMN"
+        ]
+      },
+      "b": {
+        "word": "Erythrocyte",
+        "alts": [
+          "red blood cell",
+          "RBC"
+        ]
+      }
+    },
+    {
+      "id": "basic-15",
+      "subtype": "basic",
+      "category": "Biochemistry",
+      "a": {
+        "word": "Amylase",
+        "alts": []
+      },
+      "b": {
+        "word": "Pepsin",
+        "alts": []
+      }
+    },
+    {
+      "id": "basic-16",
+      "subtype": "basic",
+      "category": "Biochemistry",
+      "a": {
+        "word": "Glucose",
+        "alts": [
+          "blood sugar"
+        ]
+      },
+      "b": {
+        "word": "Cholesterol",
+        "alts": []
+      }
+    },
+    {
+      "id": "basic-17",
+      "subtype": "basic",
+      "category": "Pharmacology",
+      "a": {
+        "word": "Propranolol",
+        "alts": []
+      },
+      "b": {
+        "word": "Furosemide",
+        "alts": [
+          "frusemide",
+          "Lasix"
+        ]
+      }
+    },
+    {
+      "id": "basic-18",
+      "subtype": "basic",
+      "category": "Pharmacology",
+      "a": {
+        "word": "Paracetamol",
+        "alts": [
+          "acetaminophen"
+        ]
+      },
+      "b": {
+        "word": "Morphine",
+        "alts": []
+      }
+    },
+    {
+      "id": "basic-19",
+      "subtype": "basic",
+      "category": "Pathology",
+      "a": {
+        "word": "Necrosis",
+        "alts": []
+      },
+      "b": {
+        "word": "Hyperplasia",
+        "alts": []
+      }
+    },
+    {
+      "id": "basic-20",
+      "subtype": "basic",
+      "category": "Microbiology",
+      "a": {
+        "word": "Staphylococcus",
+        "alts": [
+          "staph"
+        ]
+      },
+      "b": {
+        "word": "Escherichia coli",
+        "alts": [
+          "E. coli",
+          "ecoli"
+        ]
+      }
+    }
+  ]
+}

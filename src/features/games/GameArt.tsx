@@ -22,6 +22,7 @@ const BAKED = {
     'the-streak-master': require('@/assets/games/baked/dark/the-streak-master.webp'),
     'case-files-unsolved': require('@/assets/games/baked/dark/case-files-unsolved.webp'),
     'the-quiz-parade': require('@/assets/games/baked/dark/the-quiz-parade.webp'),
+    imposter: require('@/assets/games/baked/dark/imposter.webp'),
   },
 } as const;
 

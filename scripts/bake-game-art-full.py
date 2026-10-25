@@ -37,6 +37,7 @@ BAND = {  # tall pictures (Yazan 2026-10-18 v2): scenes run from under the title
     'the-silent-artist': (302, 440, 1150, 1300),
     'the-diagnostic-pursuit': (172, 330, 1150, 1300),
     'the-quiz-parade': (130, 300, 1150, 1300),
+    'imposter': (120, 290, 1150, 1300),
 }
 
 

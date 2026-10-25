@@ -58,6 +58,7 @@
   },
   "devDependencies": {
     "@types/react": "~19.2.2",
+    "badwords-list": "^2.0.1-4",
     "eslint": "^9.0.0",
     "eslint-config-expo": "~57.0.2",
     "typescript": "~6.0.3",

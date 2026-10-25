@@ -17,6 +17,8 @@ const GLY: Record<string, Prim[]> = {
   'case-files-unsolved': [{ c: [10, 10, 5.5] }, { p: 'M14 14l6 6' }],
   // a parade drum
   'the-quiz-parade': [{ r: [5, 9, 14, 10, 2] }, { p: 'M5 12h14M8 9l2 10M14 9l2 10' }, { p: 'M7 3l4 5M17 3l-4 5' }],
+  // a half-and-half mask
+  imposter: [{ p: 'M5 5c4-1.5 10-1.5 14 0 0 7-3 13-7 14-4-1-7-7-7-14z' }, { p: 'M12 4.2v14.6' }, { c: [9, 10, 1], fill: true }, { c: [15, 10, 1], fill: true }],
 };
 
 function Shapes({ k, paint }: { k: string; paint: string }) {

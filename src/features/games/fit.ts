@@ -26,6 +26,7 @@ const BB: Record<string, Box> = {
   'case-files-unsolved': [0.3, 1, 0.4, 1], 'nova-crossword': [0.4, 1, 0.58, 0.97], 'nova-medicordle': [0.2, 1, 0.52, 0.97], 'the-diagnostic-pursuit': [0.25, 1, 0.64, 1],
   'the-riddler': [0.3, 1, 0.55, 1], 'the-silent-artist': [0.35, 1, 0.58, 1], 'the-streak-master': [0.45, 1, 0.58, 0.98], 'the-wheels-of-chaos': [0.3, 1, 0.58, 0.97],
   'the-quiz-parade': [0.4, 1, 0.58, 0.98],
+  imposter: [0.4, 1, 0.58, 0.98],
 };
 const ZM: Record<string, number> = { 'nova-crossword': 0.86, 'the-silent-artist': 0.86, 'trust-me-not': 0.8, 'the-conqueror': 0.8 };
 const AR_D = 0.5625; // 900 x 1600

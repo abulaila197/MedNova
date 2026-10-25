@@ -18,6 +18,7 @@ const LOAD: Record<string, () => GameDef> = {
   'the-conqueror': () => require('../conqueror/def').conqueror,
   'trust-me-not': () => require('../trustmenot/def').trustMeNot,
   'the-quiz-parade': () => require('../parade/def').quizParade,
+  imposter: () => require('../imposter/def').imposter,
 };
 
 const loaded = new Map<string, GameDef>();

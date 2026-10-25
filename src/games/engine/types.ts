@@ -11,7 +11,8 @@ export type GameKey =
   | 'case-files-unsolved'
   | 'the-conqueror'
   | 'trust-me-not'
-  | 'the-quiz-parade';
+  | 'the-quiz-parade'
+  | 'imposter';
 
 export type Mode = 'solo' | 'offline' | 'online';
 
