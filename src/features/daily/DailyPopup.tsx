@@ -29,6 +29,8 @@ type Props = {
 };
 
 const COLS = 7;
+/** How much wider the 7th column is than the others. */
+const LAST = 1.4;
 
 /**
  * Daily login pop-up (DL1-DL4), locked look B "Pill organiser": the month is a blister pack of 30 doses.
@@ -41,7 +43,8 @@ export function DailyPopup({ day, collected, signedIn, busy, error, onCollect, o
   const cardW = Math.min(width - u(32), u(340));
   const inner = cardW - u(36);
   const gap = u(5);
-  const cell = (inner - u(26) - gap * (COLS - 1)) / COLS; // u(26) = the week number column
+  // u(16) = the week number column; the 7th column (the Sparks days) is wider so its two lines have room.
+  const cell = (inner - u(16) - gap * (COLS - 1)) / (COLS - 1 + LAST);
   const prize = dayPrize(day);
   // Today's Sparks know today's date (the weekend Sparks); later days show only the big days' Sparks.
   const sparks = daySparks(day, new Date());
@@ -102,7 +105,7 @@ export function DailyPopup({ day, collected, signedIn, busy, error, onCollect, o
                 .filter((d) => d <= CALENDAR_DAYS)
                 .map((d) => {
                   const wide = d === CALENDAR_DAYS;
-                  const w = wide ? cell * (COLS - 1) + gap * (COLS - 2) : cell;
+                  const w = wide ? cell * (COLS - 2 + LAST) + gap * (COLS - 2) : d % COLS === 0 ? cell * LAST : cell;
                   return <Blister key={d} t={t} d={d} w={w} h={cell * 1.45} st={state(d)} wide={wide} popped={collected && d === day} sparks={d === day ? sparks : daySparks(d)} />;
                 })}
             </View>
@@ -287,7 +290,7 @@ const s = StyleSheet.create({
   },
   row: { flexDirection: 'row', alignItems: 'center' },
   wk: {
-    width: u(21),
+    width: u(11),
     fontFamily: F.mono,
     fontSize: u(6.5),
     letterSpacing: u(0.6),
