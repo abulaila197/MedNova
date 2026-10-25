@@ -2,6 +2,7 @@ import type { GameDef } from '../shell/types';
 import { POINTS } from './core';
 import { QUESTIONS } from './data';
 import { OfflinePlay } from './OfflinePlay';
+import { OnlinePlay } from './OnlinePlay';
 import { itemLine, SoloPlay } from './SoloPlay';
 
 const count = (kind: string) => QUESTIONS.filter((q) => q.kind === kind).length.toLocaleString('en-US');
@@ -29,7 +30,7 @@ const QUESTIONS_N = {
   initial: 10,
 };
 
-/** The Quiz Parade (QP1-QP11): 7 question types, scored one by one, no streak. Solo and Pass the phone. */
+/** The Quiz Parade (QP1-QP12): 7 question types, scored one by one, no streak. Solo, Pass the phone and Online. */
 export const quizParade: GameDef = {
   key: 'the-quiz-parade',
   modes: [
@@ -56,12 +57,24 @@ export const quizParade: GameDef = {
         'Ties go to the most fully right answers. Teams score their players\' average. No EXP in this mode.',
       ],
     },
+    {
+      mode: 'online',
+      title: 'Same questions, live',
+      blurb: 'Everyone gets each question at once. Fast and right scores a bonus.',
+      howTo: [
+        'Everyone gets the same question at the same time, on its own clock. One answer each, no helpers.',
+        'The next question starts as soon as everyone has answered.',
+        'Same points as Solo. The first fully right answer on each question gets +1, and Closest number goes to the nearest guess.',
+        'You earn your points as EXP, up to 60. Missed questions wait for you in Today\'s review.',
+      ],
+    },
   ],
-  setup: { solo: [STYLE, QUESTIONS_N], offline: [STYLE, QUESTIONS_N] },
+  setup: { solo: [STYLE, QUESTIONS_N], offline: [STYLE, QUESTIONS_N], online: [STYLE, QUESTIONS_N] },
   players: { offline: { min: 2, max: 6 } },
-  teams: { offline: true },
+  teams: { offline: true, online: true },
   playersNote: () => 'Player 1 is you, the phone owner. Pass the phone earns no EXP; only your missed questions go to Learn.',
   Play: { solo: SoloPlay, offline: OfflinePlay },
+  Online: OnlinePlay,
   // QP11: EXP = points, at most 60. Pass the phone earns none, like every Pass the phone mode.
   exp: (score) => Math.min(60, Math.max(0, score)),
   expCap: (_settings, mode) => (mode === 'offline' ? 0 : 60),
