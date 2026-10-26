@@ -9,7 +9,7 @@ const CASE: CaseDef = {
   id: 'MP-1', title: 'Test', personal: 'p', incident: 'i', background: 'b',
   exam: [{ title: 'General', body: 'e1' }, { title: 'Abdominal', body: 'e2' }],
   investigations: [{ title: 'Laboratory', body: '', reports: [] }, { title: 'Imaging', body: '', reports: [] }],
-  treatment: 't', discharge: 'd', dd1: ['a', 'b', 'c', 'd', 'x'], dd2: [['b']], final: 'x',
+  treatment: 't', discharge: 'd', answers: ['x', 'a', 'b', 'c', 'd'], final: 'x',
 };
 const run = (r: Run, ...es: RunEvent[]) => es.reduce((a, e) => stepRun(CASE, a, e), r);
 const toProvisional = (r: Run) =>
@@ -36,19 +36,19 @@ test('gating (CF1): history before the list, exam before the filter, all tests b
   assert.equal(stageOf(r), 'Investigations');
 });
 
-test('scoring (CF7): filtered list vs DD2 only, provisional 20, time bonus over 5 min when solved', () => {
-  assert.deepEqual(scoreDd([['b']], ['b', 'x', 'q']), { right: 1, wrong: 2, points: 6 });
-  assert.equal(scoreDd([['b']], ['q', 'r', 's', 't', 'u']).points, 0);
-  // Either name fills a slot; the second name for the same slot neither scores nor costs.
-  assert.deepEqual(scoreDd([['b', 'c'], ['d']], ['c', 'b', 'd']), { right: 2, wrong: 0, points: 20 });
+test('scoring (#67): both lists against the doctor\'s list, each name once; provisional 20, time bonus over 5 min when solved', () => {
+  assert.deepEqual(scoreDd(['b'], ['b', 'x', 'q']), { right: 1, wrong: 2, points: 6 });
+  assert.equal(scoreDd(['b'], ['q', 'r', 's', 't', 'u']).points, 0);
+  // A name in both lists counts once, right or wrong.
+  assert.deepEqual(scoreDd(['b', 'c'], ['b', 'q'], ['b', 'c', 'q']), { right: 2, wrong: 1, points: 18 });
+  assert.deepEqual(scoreDd(['b'], null, ['b']), { right: 1, wrong: 0, points: 10 });
   assert.equal(timeBonus(150_000), 5);
   let r = toProvisional(startRun('MP-1', 0));
   r = run(r, { type: 'SUBMIT_PROVISIONAL', id: 'x', now: 60_000 });
   assert.equal(r.finalMs, 60_000);
   const s = scoreRun(CASE, r);
-  // The final ('x') in the filtered list neither scores nor costs: 'b' +10, 'q' -2.
-  assert.deepEqual([s.dd, s.provisional, s.redemption, s.time, s.total, s.stamp], [8, 20, 0, 8, 36, 'SOLVED']);
-  assert.equal(scoreRun({ ...CASE, parent: 'q' }, r).dd, 10);
+  // First list a, b, x and narrowed b, x, q: a, b and x right once each (+30), q wrong (-2). The final scores like any right name (#66).
+  assert.deepEqual([s.dd, s.provisional, s.redemption, s.time, s.total, s.stamp], [28, 20, 0, 8, 56, 'SOLVED']);
   assert.equal(status(CASE, r).canRedemption, false);
 });
 
@@ -100,11 +100,12 @@ test('offline (CF8, CF10): same case in turn, sealed discharge, finished lines w
   assert.deepEqual(r.map((x) => [x.seat, x.rank]), [[1, 1], [0, 2]]);
 });
 
-test('every first-list name is one disease from the master list (compound answers split, 2026-10-18)', async () => {
+test('every doctor\'s list name is one disease from the master list, each once, the final included (#65, #67)', async () => {
   const cases = (await import('../data/cases.json')).default as CaseDef[];
   const labels = new Set(((await import('../data/diagnoses.json')).default as { label: string }[]).map((d) => d.label));
   for (const c of cases) {
-    for (const x of c.dd1) assert.ok(labels.has(x) && !/ or /.test(x), `${c.id}: ${x}`);
-    assert.equal(new Set(c.dd1).size, c.dd1.length, `${c.id}: duplicate first-list name`);
+    for (const x of c.answers) assert.ok(labels.has(x) && !/ or /.test(x), `${c.id}: ${x}`);
+    assert.equal(new Set(c.answers).size, c.answers.length, `${c.id}: duplicate name`);
+    assert.ok(c.answers.includes(c.final) && labels.has(c.final), `${c.id}: final`);
   }
 });

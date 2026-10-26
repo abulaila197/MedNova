@@ -54,7 +54,8 @@
 "id": "acute-appendicitis",
 "label": "Acute appendicitis",
 "aliases": [
-"Appendicitis"
+"Appendicitis",
+"Acute uncomplicated appendicitis"
 ],
 "dossier": "acute-appendicitis"
 },
@@ -168,11 +169,6 @@
 "label": "Acute HIV infection"
 },
 {
-"id": "acute-inferior-myocardial-infarction",
-"label": "Acute inferior myocardial infarction",
-"dossier": "myocardial-infarction-acute-coronary-syndrome"
-},
-{
 "id": "acute-intermittent-porphyria",
 "label": "Acute intermittent porphyria",
 "dossier": "acute-intermittent-porphyria"
@@ -199,7 +195,8 @@
 "id": "acute-limb-ischemia",
 "label": "Acute limb ischemia",
 "aliases": [
-"ALI"
+"ALI",
+"Embolic acute limb ischemia"
 ],
 "dossier": "acute-limb-ischemia"
 },
@@ -297,11 +294,6 @@
 "SMV thrombosis"
 ],
 "dossier": "acute-superior-mesenteric-vein-thrombosis"
-},
-{
-"id": "acute-uncomplicated-appendicitis",
-"label": "Acute uncomplicated appendicitis",
-"dossier": "acute-appendicitis"
 },
 {
 "id": "acute-uncomplicated-cystitis",
@@ -1502,11 +1494,6 @@
 {
 "id": "electrolyte-imbalance",
 "label": "Electrolyte imbalance"
-},
-{
-"id": "embolic-acute-limb-ischemia",
-"label": "Embolic acute limb ischemia",
-"dossier": "acute-limb-ischemia"
 },
 {
 "id": "emphysematous-cystitis",
@@ -2732,7 +2719,8 @@
 "label": "Myocardial infarction",
 "aliases": [
 "MI",
-"Heart attack"
+"Heart attack",
+"Acute inferior myocardial infarction"
 ],
 "dossier": "myocardial-infarction-acute-coronary-syndrome"
 },
@@ -4247,14 +4235,6 @@
 "dossier": "ulcerative-colitis"
 },
 {
-"id": "uncomplicated-urinary-tract-infection",
-"label": "Uncomplicated urinary tract infection",
-"aliases": [
-"Cystitis"
-],
-"dossier": "acute-cystitis-lower-urinary-tract-infection"
-},
-{
 "id": "unstable-angina",
 "label": "Unstable angina"
 },
@@ -4266,7 +4246,9 @@
 "id": "urinary-tract-infection",
 "label": "Urinary tract infection",
 "aliases": [
-"UTI"
+"UTI",
+"Uncomplicated urinary tract infection",
+"Cystitis"
 ],
 "dossier": "acute-cystitis-lower-urinary-tract-infection"
 },

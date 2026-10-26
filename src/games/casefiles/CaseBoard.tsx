@@ -206,8 +206,8 @@ function FileReader({ def, run, file, onEvent, onBack }: { def: CaseDef; run: Ru
 }
 
 const PICK = {
-  dd: { title: 'Your differential', note: `Up to ${CF.ddMax} diagnoses. It is scored once, after the examination.`, max: CF.ddMax, go: 'File the differential' },
-  filter: { title: 'Narrow it down', note: 'Now you have examined the patient: add, remove or keep. This list is the one that scores.', max: CF.ddMax, go: 'File the narrowed list' },
+  dd: { title: 'Your differential', note: `Up to ${CF.ddMax} diagnoses. Right ones score, wrong ones cost a little.`, max: CF.ddMax, go: 'File the differential' },
+  filter: { title: 'Narrow it down', note: 'Now you have examined the patient: add, remove or keep. A name already in your first list counts once.', max: CF.ddMax, go: 'File the narrowed list' },
   provisional: { title: 'Name the diagnosis', note: 'One diagnosis, the exact name. You hear right or not right at once.', max: 1, go: 'Submit the diagnosis' },
   redemption: { title: 'Your last call', note: 'You have read the treatment. One more diagnosis, worth 10 if right.', max: 1, go: 'Submit the last call' },
 };

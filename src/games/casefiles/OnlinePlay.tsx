@@ -135,7 +135,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
       setRun(r);
       if (r === saved) {
         pending.current.push({
-          report: { stage: stageOf(r), filtered: r.filtered, provisional: r.provisional?.id ?? null, redemption: r.redemption?.id ?? null },
+          report: { stage: stageOf(r), filtered: r.filtered, first: r.filtered ? r.dd : null, provisional: r.provisional?.id ?? null, redemption: r.redemption?.id ?? null },
           tries: 0,
         });
         void flush();
@@ -180,10 +180,12 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
       runs.current.set(index, next);
       setRun(next);
       void engine.kv.set(runKey, next).catch(() => {});
-      // Report what changed: the stage, the narrowed list (scored once), the provisional, the last call.
+      // Report what changed: the stage, both lists once the narrowed one is filed (#67: both score), the provisional, the last call.
+      const filed = !prev.filtered && next.filtered;
       const report = {
         stage: stageOf(next),
-        filtered: !prev.filtered && next.filtered ? next.filtered : null,
+        filtered: filed ? next.filtered : null,
+        first: filed ? next.dd : null,
         provisional: !prev.provisional && next.provisional ? next.provisional.id : null,
         redemption: !prev.redemption && next.redemption ? next.redemption.id : null,
       };

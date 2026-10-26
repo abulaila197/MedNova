@@ -62,7 +62,7 @@
   ],
   "treatment": "The surgical team decided the safest course was to take her to theatre for a closer look. Working through three small incisions, they found what had been causing the trouble, dealt with it carefully, and left everything around it undisturbed and healthy. There was no rupture, no pus, nothing that had spread beyond where it started. By the next morning, her fever had settled on its own, her appetite was creeping back before breakfast even arrived, and she was already asking when she could go home rather than asking for more pain relief.",
   "discharge": "The pathology report landed on her chart the following afternoon, quietly confirming what the surgical team had suspected all along — an inflamed appendix, caught early, with clean margins and no sign of rupture or spread. Sarah went home on day two, three small dressings taped along her side, a stack of wound-care instructions in hand, and strict orders to stay off the gym for a couple of weeks.",
-  "dd1": [
+  "answers": [
    "Acute appendicitis",
    "Ectopic pregnancy",
    "Ruptured ovarian cyst",
@@ -70,17 +70,7 @@
    "Pelvic inflammatory disease",
    "Mesenteric adenitis"
   ],
-  "dd2": [
-   [
-    "Mesenteric adenitis"
-   ],
-   [
-    "Ruptured ovarian cyst",
-    "Ovarian torsion"
-   ]
-  ],
-  "final": "Acute uncomplicated appendicitis",
-  "parent": "Acute appendicitis"
+  "final": "Acute appendicitis"
  },
  {
   "id": "MP-2301",
@@ -139,7 +129,7 @@
   ],
   "treatment": "Within the hour, Maya was on her way to theatre. Working through small incisions, the surgical team located the source of the bleeding, brought it under control, and carefully removed the affected structure while leaving everything else untouched. She received a transfusion of blood to replace what she'd lost. Almost as soon as the bleeding was controlled, her blood pressure began climbing back toward normal, and the grey pallor slowly left her face.",
   "discharge": "Maya's recovery over the following two days was steady and uncomplicated. Before she left, the team spent time talking with her about what had happened, what it might mean for future pregnancies given the surgery to one of her tubes, and the importance of an early scan the next time she thinks she might be pregnant.",
-  "dd1": [
+  "answers": [
    "Ruptured ectopic pregnancy",
    "Ruptured ovarian cyst",
    "Ovarian torsion",
@@ -147,12 +137,6 @@
    "Incomplete miscarriage",
    "Acute appendicitis",
    "Pelvic inflammatory disease"
-  ],
-  "dd2": [
-   [
-    "Ruptured ovarian cyst",
-    "Ovarian torsion"
-   ]
   ],
   "final": "Ruptured ectopic pregnancy"
  },
@@ -216,17 +200,12 @@
   ],
   "treatment": "Denise was started on fluids through a drip and a course of antibiotics while the team monitored how she responded. Her pain settled steadily over the following day, and once the surgical team judged the inflammation had calmed enough to operate safely, she was taken for a keyhole procedure during the same admission. She was up and moving, tolerating food again, well before the day was out.",
   "discharge": "Denise went home two days later, her small keyhole scars healing cleanly, with advice to ease back into a normal diet gradually. The surgical team reassured her that, gallbladder removed, the twinges she'd been living with for two years wouldn't be coming back.",
-  "dd1": [
+  "answers": [
    "Acute cholecystitis",
    "Acute pancreatitis",
    "Acute cholangitis",
    "Peptic ulcer disease",
    "Community-acquired pneumonia"
-  ],
-  "dd2": [
-   [
-    "Acute cholangitis"
-   ]
   ],
   "final": "Acute cholecystitis"
  },
@@ -286,17 +265,12 @@
   ],
   "treatment": "Priya was started straight away on medication and given oxygen through a mask while her breathing was monitored closely for the first day. Over the following 48 hours, her oxygen levels crept back up on their own, the stabbing chest pain eased with each breath, and the color returned to her lips.",
   "discharge": "She was discharged on ongoing blood thinners, with clear advice to come off the contraceptive pill and discuss safer alternatives, and firm encouragement to use her next long flight as the moment to finally quit smoking for good.",
-  "dd1": [
+  "answers": [
    "Acute pulmonary embolism",
    "Community-acquired pneumonia",
    "Pneumothorax",
    "Musculoskeletal chest pain",
    "Acute coronary syndrome"
-  ],
-  "dd2": [
-   [
-    "Community-acquired pneumonia"
-   ]
   ],
   "final": "Acute pulmonary embolism"
  },
@@ -359,19 +333,13 @@
   ],
   "treatment": "Noah was started immediately on strong intravenous antibiotics, along with fluids to support him and constant monitoring in intensive care. Over the following two days, his fever gradually broke, his eyes began following his mother's face again, and he started taking his bottle a little at a time.",
   "discharge": "He completed the rest of his antibiotic course in hospital, and before going home a hearing test was arranged, since this kind of infection can occasionally leave that particular after-effect. His parents left with a plan to catch up on the remaining scheduled vaccinations and a follow-up appointment to check on his development.",
-  "dd1": [
+  "answers": [
    "Bacterial meningitis",
    "Viral meningitis",
    "Viral encephalitis",
    "Febrile seizure",
    "Urinary tract infection",
    "Sepsis"
-  ],
-  "dd2": [
-   [
-    "Viral meningitis",
-    "Viral encephalitis"
-   ]
   ],
   "final": "Bacterial meningitis"
  },
@@ -427,17 +395,12 @@
   ],
   "treatment": "Chloe was taken urgently to theatre. Working through small keyhole incisions, the surgical team found what they'd suspected, carefully released it, and waited to watch the color return before deciding it was healthy enough to leave in place rather than remove. She woke from the anesthetic already reporting the pain as far more manageable than before she went in.",
   "discharge": "She went home the following day, the affected ovary preserved and expected to work normally going forward. Her family was advised on the small chance this could happen again in the future, and told to come straight back in if that same tearing pain ever returned.",
-  "dd1": [
+  "answers": [
    "Ovarian torsion",
    "Ruptured ovarian cyst",
    "Acute appendicitis",
    "Urinary tract infection",
    "Ovulation pain"
-  ],
-  "dd2": [
-   [
-    "Ruptured ovarian cyst"
-   ]
   ],
   "final": "Ovarian torsion"
  },
@@ -491,17 +454,12 @@
   ],
   "treatment": "Tyler was taken to theatre without further delay. The surgical team found what had happened, carefully corrected it, and waited to see healthy color return before deciding it was worth preserving. To prevent anything like this from happening again, both sides were secured in place before he was closed up. He woke with the pain already dramatically eased.",
   "discharge": "He went home the next day with simple pain relief and instructions to avoid sport for a few weeks while things healed. Both sides had been preserved, and his family was reassured that the stitching in place now meant this particular emergency shouldn't recur.",
-  "dd1": [
+  "answers": [
    "Testicular torsion",
    "Epididymo-orchitis",
    "Torsion of testicular appendage",
    "Incarcerated inguinal hernia",
    "Hematoma"
-  ],
-  "dd2": [
-   [
-    "Torsion of testicular appendage"
-   ]
   ],
   "final": "Testicular torsion"
  },
@@ -555,17 +513,12 @@
   ],
   "treatment": "Sofia was kept sedated with the breathing tube in place for a few days in intensive care while strong antibiotics were given through a drip, and the swelling in her throat was checked periodically. Once the team judged it had settled enough, the tube was carefully removed with everyone standing ready in case it was needed again. She came through it breathing comfortably entirely on her own.",
   "discharge": "She finished her antibiotic course before leaving hospital, and before discharge her family made sure she was caught up on the vaccination she'd missed as a baby, with the team gently explaining just how much that one appointment could have changed.",
-  "dd1": [
+  "answers": [
    "Acute epiglottitis",
    "Croup",
    "Retropharyngeal abscess",
    "Foreign body aspiration",
    "Bacterial tracheitis"
-  ],
-  "dd2": [
-   [
-    "Bacterial tracheitis"
-   ]
   ],
   "final": "Acute epiglottitis"
  },
@@ -627,17 +580,12 @@
   ],
   "treatment": "Harold was started straight away on fluids through a drip alongside antibiotics, with his blood pressure and confusion checked at regular intervals through the night. By the second day, his fevers had settled, his blood pressure had climbed back to a healthy range, and his daughter arrived to find him asking after his prize tomato plants instead of asking where he was.",
   "discharge": "He completed his course of antibiotics and was discharged home with a community nurse arranged to check in on him over the following weeks. Before he left, he was finally given the vaccine he'd never quite gotten around to, with a gentle reminder of why it mattered.",
-  "dd1": [
+  "answers": [
    "Community-acquired pneumonia with sepsis",
    "Urinary tract infection",
    "Exacerbation of chronic lung disease",
    "Acute pulmonary embolism",
    "Heart failure"
-  ],
-  "dd2": [
-   [
-    "Urinary tract infection"
-   ]
   ],
   "final": "Community-acquired pneumonia with sepsis"
  },
@@ -697,17 +645,12 @@
   ],
   "treatment": "Given the pattern on the baby's heart trace and the overall clinical picture, the team moved quickly to deliver by emergency cesarean section rather than wait any longer. The baby was delivered promptly, needed a little help getting started with breathing, and was soon settled comfortably in the neonatal unit. Once the womb was empty, the bleeding that had worried everyone came under control.",
   "discharge": "Both mother and baby did well over the following days, the baby kept in for a short spell of monitoring given the early arrival. Before Amara went home, the team talked through what had happened and the closer blood pressure monitoring she'd need in any future pregnancy.",
-  "dd1": [
+  "answers": [
    "Placental abruption",
    "Placenta previa",
    "Preterm labor",
    "Uterine rupture",
    "Chorioamnionitis"
-  ],
-  "dd2": [
-   [
-    "Preterm labor"
-   ]
   ],
   "final": "Placental abruption"
  },
@@ -767,17 +710,12 @@
   ],
   "treatment": "Kevin was started promptly on a course of infusion treatment aimed at calming down the immune response responsible for his weakness, with his breathing strength checked several times a day in case it began to slip further. Physiotherapy was brought in early to keep his joints moving and his muscles as ready as possible for when his strength began to return, which it slowly did over the following two weeks.",
   "discharge": "Once his breathing was confirmed stable and he could stand with support, Kevin was transferred to a rehabilitation unit to continue his recovery, with physiotherapy continuing as an outpatient. Most people who go through what he did make substantial recoveries over the following months, and his team were quietly optimistic about his outlook.",
-  "dd1": [
+  "answers": [
    "Guillain-Barré syndrome",
    "Transverse myelitis",
    "Spinal cord compression",
    "Myasthenia gravis",
    "Electrolyte imbalance"
-  ],
-  "dd2": [
-   [
-    "Transverse myelitis"
-   ]
   ],
   "final": "Guillain-Barré syndrome"
  },
@@ -835,17 +773,12 @@
   ],
   "treatment": "Walter was admitted for a course of intravenous antibiotics and bowel rest, with his pain, temperature, and blood markers checked daily. Over the following three days his fever settled, his appetite slowly returned, and the tenderness in his abdomen eased enough for him to walk comfortably around the ward.",
   "discharge": "He was discharged on oral antibiotics to finish the course at home, with a plan for a colonoscopy in six weeks once the inflammation had fully settled, both to confirm the diagnosis directly and to make sure nothing else was hiding underneath it. He was also referred to a dietitian to talk through ways of increasing the fibre in his diet.",
-  "dd1": [
+  "answers": [
    "Acute diverticulitis",
    "Acute appendicitis",
    "Colorectal cancer",
    "Ischemic colitis",
    "Ovarian cyst"
-  ],
-  "dd2": [
-   [
-    "Colorectal cancer"
-   ]
   ],
   "final": "Acute diverticulitis"
  },
@@ -900,20 +833,14 @@
   ],
   "treatment": "Frank was rushed straight to an emergency procedure carried out through an artery in his wrist. His chest pain eased almost as soon as it was done, and by the next morning he was sitting up in bed, color back in his face, asking when he could have a proper breakfast.",
   "discharge": "He was discharged a few days later on a combination of heart medications, with a firm and detailed conversation about quitting smoking, controlling his blood pressure and cholesterol properly this time, and a referral to a cardiac rehabilitation program to help him get back on his feet safely.",
-  "dd1": [
+  "answers": [
    "Myocardial infarction",
    "Unstable angina",
    "Aortic dissection",
    "Acute pericarditis",
    "Gastroesophageal reflux disease"
   ],
-  "dd2": [
-   [
-    "Aortic dissection"
-   ]
-  ],
-  "final": "Acute inferior myocardial infarction",
-  "parent": "Myocardial infarction"
+  "final": "Myocardial infarction"
  },
  {
   "id": "MP-2313",
@@ -967,17 +894,12 @@
   ],
   "treatment": "Bernard was started on a prolonged course of targeted antibiotics, with the wound cleaned and dressed regularly by the specialist foot team, and his blood sugar brought under much tighter control during the admission. Over the following weeks, the wound slowly began to shrink and the redness around it faded.",
   "discharge": "He completed a long course of antibiotics as an outpatient, with regular foot clinic follow-up arranged and a referral to a diabetes specialist team to help him manage his sugar levels going forward, along with education on daily foot checks to catch anything like this much earlier next time.",
-  "dd1": [
+  "answers": [
    "Diabetic foot osteomyelitis",
    "Cellulitis",
    "Peripheral arterial disease",
    "Charcot foot",
    "Skin cancer"
-  ],
-  "dd2": [
-   [
-    "Cellulitis"
-   ]
   ],
   "final": "Diabetic foot osteomyelitis"
  },
@@ -1032,17 +954,12 @@
   ],
   "treatment": "Eugene was rushed to theatre without delay, where the vascular surgical team worked to control the bleeding and repair what they found. He required significant blood transfusion during the operation and spent the following days in intensive care while his body recovered from the strain.",
   "discharge": "His recovery was slow but steady over the following two weeks, moving from intensive care to a general ward as his strength returned. Before discharge, his family was given a clear explanation of what had happened and firm advice about never missing a follow-up scan again.",
-  "dd1": [
+  "answers": [
    "Ruptured abdominal aortic aneurysm",
    "Renal colic",
    "Acute pancreatitis",
    "Mechanical back pain",
    "Vertebral fracture"
-  ],
-  "dd2": [
-   [
-    "Renal colic"
-   ]
   ],
   "final": "Ruptured abdominal aortic aneurysm"
  },
@@ -1098,17 +1015,12 @@
   ],
   "treatment": "A thin tube was passed, bringing him near-instant relief. He was started on medication to treat the underlying cause over time, with the tube left in place temporarily while the medication took effect.",
   "discharge": "After a trial without the drainage tube proved successful a few days later, Arthur went home passing urine normally again, with ongoing medication and a referral to a urologist to discuss longer-term options for his enlarged prostate.",
-  "dd1": [
+  "answers": [
    "Acute urinary retention due to BPH",
    "Urinary tract infection",
    "Urethral stricture",
    "Neurogenic bladder",
    "Prostate cancer"
-  ],
-  "dd2": [
-   [
-    "Urinary tract infection"
-   ]
   ],
   "final": "Acute urinary retention due to BPH"
  },
@@ -1164,17 +1076,12 @@
   ],
   "treatment": "Mia was started promptly on an infusion treatment aimed at calming her immune system's overreaction, along with a high dose of a common anti-inflammatory medicine. Within a day of starting treatment, her fever finally broke for good, and over the following days her eyes, lips, and rash all began to settle.",
   "discharge": "She was discharged home with a lower daily dose of the same anti-inflammatory medicine to continue for several weeks, and a follow-up echocardiogram booked to make sure her coronary arteries returned fully to normal over time.",
-  "dd1": [
+  "answers": [
    "Kawasaki disease",
    "Scarlet fever",
    "Measles",
    "Viral exanthem",
    "Adenovirus infection"
-  ],
-  "dd2": [
-   [
-    "Scarlet fever"
-   ]
   ],
   "final": "Kawasaki disease"
  },
@@ -1231,17 +1138,12 @@
   ],
   "treatment": "Rachel was started immediately on fluids and a hormone replacement given directly into her vein, alongside close monitoring of her blood sugar and blood pressure. Within hours her blood pressure began climbing steadily, and by the next day she was able to sit up and eat a little breakfast for the first time in what felt like weeks.",
   "discharge": "She was discharged on daily replacement hormone tablets that she'll need for life, along with a card and an emergency injection kit to carry with her in case of future crises, and clear education on increasing her dose during illness or times of stress.",
-  "dd1": [
+  "answers": [
    "Addisonian crisis",
    "Hypothyroidism",
    "Depression",
    "Sepsis",
    "Hypoglycemia"
-  ],
-  "dd2": [
-   [
-    "Hypothyroidism"
-   ]
   ],
   "final": "Addisonian crisis"
  },
@@ -1300,17 +1202,12 @@
   ],
   "treatment": "Linda was started immediately on intravenous antibiotics and fluids, and once stable enough, taken for a procedure using a scope passed down through her stomach. Her fever and shivering settled within a day of the procedure, and the yellow tinge in her eyes began to fade over the following days.",
   "discharge": "Once she'd recovered from the acute infection, Linda was scheduled for removal of her gallbladder during the same admission to prevent this from happening again, and went home a few days later with her jaundice almost entirely resolved and clear advice about the surgery's aftercare.",
-  "dd1": [
+  "answers": [
    "Acute cholangitis",
    "Acute cholecystitis",
    "Viral hepatitis",
    "Pancreatic cancer",
    "Hemolytic jaundice"
-  ],
-  "dd2": [
-   [
-    "Acute cholecystitis"
-   ]
   ],
   "final": "Acute cholangitis"
  },
@@ -1366,17 +1263,12 @@
   ],
   "treatment": "Douglas was taken to theatre within the hour for urgent surgery, alongside high-dose intravenous antibiotics and close monitoring in intensive care. He required a further planned return to theatre two days later before the wound was gradually allowed to heal and later covered with a skin graft.",
   "discharge": "After several weeks in hospital, Douglas was discharged to continue his recovery and physiotherapy as an outpatient, with his diabetes brought under much tighter control during the admission and clear education on treating even small skin injuries seriously from now on.",
-  "dd1": [
+  "answers": [
    "Necrotizing fasciitis",
    "Cellulitis",
    "Deep vein thrombosis",
    "Acute compartment syndrome",
    "Gas gangrene"
-  ],
-  "dd2": [
-   [
-    "Gas gangrene"
-   ]
   ],
   "final": "Necrotizing fasciitis"
  },
@@ -1432,17 +1324,12 @@
   ],
   "treatment": "Ella was started on back-to-back nebulized treatments to open her airways, along with a course of oral steroids and supplemental oxygen through small tubing under her nose. Over the following few hours her breathing gradually eased, the wheeze became easier to hear clearly again as more air began moving, and by the next morning she was able to talk in full sentences and asked for breakfast.",
   "discharge": "She was discharged home on a short course of steroid tablets and a revised asthma action plan, with a strong emphasis from the team on keeping up with her daily preventer inhaler, and a follow-up appointment booked with the asthma nurse to review her technique and triggers.",
-  "dd1": [
+  "answers": [
    "Acute severe asthma exacerbation",
    "Bronchiolitis",
    "Community-acquired pneumonia",
    "Foreign body aspiration",
    "Anaphylaxis"
-  ],
-  "dd2": [
-   [
-    "Community-acquired pneumonia"
-   ]
   ],
   "final": "Acute severe asthma exacerbation"
  },
@@ -1498,17 +1385,12 @@
   ],
   "treatment": "Given how soon after her symptoms began she'd arrived, the team moved quickly to give her emergency medication through a vein, followed by a specialist procedure carried out through one of her blood vessels. Within hours of the procedure, her speech began to clear, and she was able to lift her right arm off the bed on her own for the first time since breakfast.",
   "discharge": "Over the following week, Dorothy made a strong recovery with the help of physiotherapy and speech therapy. She was discharged home with her blood thinner dose reviewed and a clearer system agreed with her husband to make sure she never misses one again.",
-  "dd1": [
+  "answers": [
    "Acute ischemic stroke",
    "Intracerebral hemorrhage",
    "Hypoglycemia",
    "Todd's paralysis",
    "Bell's palsy"
-  ],
-  "dd2": [
-   [
-    "Intracerebral hemorrhage"
-   ]
   ],
   "final": "Acute ischemic stroke"
  },
@@ -1561,17 +1443,12 @@
   ],
   "treatment": "Jordan was given an injection into his thigh muscle without delay, along with oxygen, fluids through a drip, and additional medication to calm the reaction and bring down the swelling. Within minutes his breathing eased noticeably, and over the following hour the swelling in his face and the hives across his skin began to fade.",
   "discharge": "He was observed for several hours given the small chance of symptoms returning, then discharged with a new pair of auto-injectors, clear written instructions on early warning signs, and a referral to an allergy specialist to review his management plan going forward.",
-  "dd1": [
+  "answers": [
    "Anaphylaxis",
    "Acute asthma exacerbation",
    "Angioedema",
    "Panic attack",
    "Vasovagal syncope"
-  ],
-  "dd2": [
-   [
-    "Acute asthma exacerbation"
-   ]
   ],
   "final": "Anaphylaxis"
  },
@@ -1620,17 +1497,12 @@
   ],
   "treatment": "Sam was taken to theatre without delay for a procedure to make long incisions along the leg, releasing the built-up pressure immediately. The wounds were left open initially and monitored closely, then gradually closed over the following days as the swelling went down.",
   "discharge": "He completed his recovery over the following weeks with regular wound checks and physiotherapy to regain strength and movement in his foot, with the team relieved the pressure had been caught and treated before any lasting nerve or muscle damage could set in.",
-  "dd1": [
+  "answers": [
    "Acute compartment syndrome",
    "Post-fracture pain",
    "Deep vein thrombosis",
    "Nerve injury",
    "Tight cast"
-  ],
-  "dd2": [
-   [
-    "Nerve injury"
-   ]
   ],
   "final": "Acute compartment syndrome"
  },
@@ -1684,18 +1556,13 @@
   ],
   "treatment": "His blood thinner was urgently reversed with medication to correct his clotting, and the neurosurgical team carried out an urgent procedure. Over the following two days, he became noticeably more alert, recognizing his daughter clearly and answering questions correctly again.",
   "discharge": "He was discharged after a week of monitoring and physiotherapy, with a careful discussion about the risks and benefits of restarting his blood thinner, and advice for his family on fall-proofing his home to help prevent this happening again.",
-  "dd1": [
+  "answers": [
    "Subdural hematoma",
    "Delirium",
    "Dementia",
    "Stroke",
    "Drug overdose",
    "Adverse drug reaction"
-  ],
-  "dd2": [
-   [
-    "Delirium"
-   ]
   ],
   "final": "Subdural hematoma"
  },
@@ -1745,17 +1612,12 @@
   ],
   "treatment": "Carol was started on medication and advised to stay as mobile as comfortably possible. Over the following days, the swelling and tenderness in her calf gradually began to settle.",
   "discharge": "She went home on ongoing blood thinners for several months, with a discussion about stopping her hormone replacement therapy given the added risk it carries alongside a clot, and advice on moving regularly during any future long journeys.",
-  "dd1": [
+  "answers": [
    "Deep vein thrombosis",
    "Cellulitis",
    "Ruptured Baker's cyst",
    "Superficial thrombophlebitis",
    "Chronic venous insufficiency"
-  ],
-  "dd2": [
-   [
-    "Cellulitis"
-   ]
   ],
   "final": "Deep vein thrombosis"
  },
@@ -1812,17 +1674,12 @@
   ],
   "treatment": "Bianca was started on intravenous antibiotics and fluids to help with the dehydration from being sick, with her temperature and pain checked regularly. Over the following two days her fever settled, the back pain eased considerably, and she was able to keep food down again.",
   "discharge": "She was discharged home to complete a full course of oral antibiotics, with advice on staying well hydrated and returning promptly if the back pain or fever came back, along with a routine follow-up urine test arranged after finishing the course.",
-  "dd1": [
+  "answers": [
    "Acute pyelonephritis",
    "Urinary tract infection",
    "Renal colic",
    "Acute appendicitis",
    "Ovarian cyst"
-  ],
-  "dd2": [
-   [
-    "Renal colic"
-   ]
   ],
   "final": "Acute pyelonephritis"
  },
@@ -1877,17 +1734,12 @@
   ],
   "treatment": "Gerald was started promptly on an antiviral medication in tablet form, along with eye drops to protect and soothe the surface of his eye, and the ophthalmology team monitored him closely over the following days to make sure the deeper structures of the eye remained unaffected. The blisters gradually dried and crusted over, and the redness in his eye slowly began to settle.",
   "discharge": "He was discharged on a full course of antiviral tablets with close ophthalmology follow-up arranged over the following weeks, given the small risk of this condition affecting the eye more seriously later on, and advice on avoiding contact with anyone who'd never had chickenpox until the blisters had fully crusted over.",
-  "dd1": [
+  "answers": [
    "Herpes zoster ophthalmicus",
    "Bacterial conjunctivitis",
    "Contact dermatitis",
    "Periorbital cellulitis",
    "Migraine"
-  ],
-  "dd2": [
-   [
-    "Periorbital cellulitis"
-   ]
   ],
   "final": "Herpes zoster ophthalmicus"
  },
@@ -1942,17 +1794,12 @@
   ],
   "treatment": "An urgent needle procedure was carried out with the help of ultrasound, bringing swift relief to her breathing and blood pressure. She was also referred urgently for a review of her dialysis schedule, since how consistently dialysis is carried out can play a part in problems like this.",
   "discharge": "She recovered well over the following days, discharged with a much stricter dialysis schedule agreed with her kidney team and closer cardiology follow-up to keep an eye on any fluid building up around her heart again in the future.",
-  "dd1": [
+  "answers": [
    "Cardiac tamponade",
    "Heart failure",
    "Massive pulmonary embolism",
    "Anemia",
    "Acute pericarditis"
-  ],
-  "dd2": [
-   [
-    "Heart failure"
-   ]
   ],
   "final": "Cardiac tamponade"
  },
@@ -2008,17 +1855,12 @@
   ],
   "treatment": "Given how his blood pressure and heart rate were trending, the team elected to monitor him extremely closely in a high-dependency setting with blood held ready, rather than rush straight to surgery, since injuries like this can often settle on their own if the bleeding stops. His numbers stabilized over the following hours without needing surgery or transfusion.",
   "discharge": "After several days of monitoring, with repeat scans confirming things were settling as hoped, Marcus was discharged with strict instructions to avoid any contact sports or heavy lifting for several weeks while the injury fully healed, and clear guidance on symptoms that should bring him straight back in.",
-  "dd1": [
+  "answers": [
    "Splenic rupture",
    "Rib fracture",
    "Kidney injury",
    "Diaphragmatic rupture",
    "Soft tissue bruising"
-  ],
-  "dd2": [
-   [
-    "Kidney injury"
-   ]
   ],
   "final": "Splenic rupture"
  },
@@ -2071,18 +1913,13 @@
   ],
   "treatment": "Susan was given medication directly into the eye and through a vein to treat the problem urgently, along with pain relief and anti-sickness medication. Once things had settled, a small laser procedure was performed to prevent the problem coming back. Her pain and blurred vision began easing within hours.",
   "discharge": "She was discharged with eye drops to continue in both eyes, since the same problem can develop in the other eye later on, and the same preventive laser procedure was arranged for her left eye shortly afterward to head off any future episode there too.",
-  "dd1": [
+  "answers": [
    "Acute angle-closure glaucoma",
    "Migraine with aura",
    "Acute anterior uveitis",
    "Corneal abrasion",
    "Keratitis",
    "Gastroenteritis"
-  ],
-  "dd2": [
-   [
-    "Acute anterior uveitis"
-   ]
   ],
   "final": "Acute angle-closure glaucoma"
  },
@@ -2137,17 +1974,12 @@
   ],
   "treatment": "Malik was started on strong pain relief through a drip, warmed blankets, and generous fluids to help the crisis pass, with his oxygen levels and breathing checked frequently given the concern about his chest. Over the following two days, the pain in his legs and back gradually eased, and his oxygen levels crept back up to his usual baseline.",
   "discharge": "He was discharged once his pain was controlled on tablets alone, with his usual sickle cell team following up to review his prevention plan and talk through what might have triggered this particular episode.",
-  "dd1": [
+  "answers": [
    "Sickle cell vaso-occlusive crisis",
    "Acute chest syndrome",
    "Osteomyelitis",
    "Acute pulmonary embolism",
    "Community-acquired pneumonia"
-  ],
-  "dd2": [
-   [
-    "Acute chest syndrome"
-   ]
   ],
   "final": "Sickle cell vaso-occlusive crisis"
  },
@@ -2202,17 +2034,12 @@
   ],
   "treatment": "Zara was started on a carefully planned course of treatment under a specialist pediatric team, alongside supportive treatments including blood and platelet transfusions and medication to protect against infection while her own immune system was suppressed by the treatment. Over the following weeks, her energy slowly began to return between treatment cycles, and the bruising on her skin gradually faded.",
   "discharge": "She continued her chemotherapy as planned through repeated outpatient visits and shorter hospital stays, with her family supported by the pediatric oncology team throughout what would be a long road of treatment ahead, and an early, encouraging response noted on her first check of the abnormal cells.",
-  "dd1": [
+  "answers": [
    "Acute leukemia",
    "Immune thrombocytopenic purpura",
    "Viral infection",
    "Aplastic anemia",
    "Henoch-Schönlein purpura"
-  ],
-  "dd2": [
-   [
-    "Immune thrombocytopenic purpura"
-   ]
   ],
   "final": "Acute leukemia"
  },
@@ -2265,17 +2092,12 @@
   ],
   "treatment": "Hannah was given a short course of high-dose steroids through a vein to help calm the inflammation affecting her optic nerve and speed her visual recovery, alongside a thorough explanation from the neurology team of what the scan and other results meant and what the road ahead might look like. Her vision began to improve gradually over the following two weeks.",
   "discharge": "She was discharged with vision much improved, though not entirely back to normal yet, and referred to a specialist team to discuss long-term treatment options aimed at reducing the frequency of future episodes like this one.",
-  "dd1": [
+  "answers": [
    "Multiple sclerosis",
    "Migraine with aura",
    "Optic nerve compression",
    "Ischemic optic neuropathy",
    "Viral conjunctivitis"
-  ],
-  "dd2": [
-   [
-    "Ischemic optic neuropathy"
-   ]
   ],
   "final": "Multiple sclerosis"
  },
@@ -2330,17 +2152,12 @@
   ],
   "treatment": "Nadia was started on a combination of intravenous antibiotics targeting the likely range of bacteria responsible, with close monitoring of her fever and pain. When her response to antibiotics alone proved slower than hoped after 48 hours, a drain was placed through the skin under imaging guidance, after which her fever and pain both improved rapidly.",
   "discharge": "She completed a longer course of oral antibiotics after leaving hospital, with a follow-up scan arranged to confirm the collection had fully resolved, and a frank discussion with the gynecology team about future fertility and the importance of prompt treatment for any similar symptoms going forward.",
-  "dd1": [
+  "answers": [
    "Tubo-ovarian abscess",
    "Pelvic inflammatory disease",
    "Ruptured ovarian cyst",
    "Ectopic pregnancy",
    "Acute appendicitis"
-  ],
-  "dd2": [
-   [
-    "Pelvic inflammatory disease"
-   ]
   ],
   "final": "Tubo-ovarian abscess"
  },
@@ -2395,17 +2212,12 @@
   ],
   "treatment": "Colin was started immediately on a high-dose treatment through a vein. Over the following two days, his eye movements returned to normal and his balance improved noticeably, though his confusion took a little longer to clear.",
   "discharge": "He was discharged on ongoing oral vitamin supplementation, with support offered for alcohol reduction services and a referral to a dietitian, along with a clear explanation to him and his sister of the importance of continuing the vitamin replacement and improving his diet going forward.",
-  "dd1": [
+  "answers": [
    "Wernicke's encephalopathy",
    "Alcohol withdrawal",
    "Hepatic encephalopathy",
    "Stroke",
    "Subdural hematoma"
-  ],
-  "dd2": [
-   [
-    "Hepatic encephalopathy"
-   ]
   ],
   "final": "Wernicke's encephalopathy"
  },
@@ -2454,17 +2266,12 @@
   ],
   "treatment": "Rebecca was started on antibiotics, and a fine-needle procedure was carried out under ultrasound guidance, avoiding the need for a more invasive operation. She was supported by a lactation consultant to keep breastfeeding or expressing from both sides where possible, since continuing to remove milk actually helps the area heal. Her fever settled within a day of the drainage, and the redness and swelling gradually began to reduce.",
   "discharge": "She completed a course of oral antibiotics at home, with a follow-up ultrasound arranged to confirm the collection hadn't reaccumulated, and ongoing support from the lactation team to help with positioning and latch to prevent this happening again.",
-  "dd1": [
-   "Mastitis",
+  "answers": [
    "Breast abscess",
+   "Mastitis",
    "Inflammatory breast cancer",
    "Blocked milk duct",
    "Cellulitis"
-  ],
-  "dd2": [
-   [
-    "Mastitis"
-   ]
   ],
   "final": "Breast abscess"
  },
@@ -2518,17 +2325,12 @@
   ],
   "treatment": "Trevor was taken to theatre without delay, where the surgical team repaired what they found and washed out the abdominal cavity thoroughly. He was kept on strong antibiotics and closely monitored in the days that followed, gradually able to start sipping fluids again as his bowel function returned.",
   "discharge": "He was discharged after a week in hospital, with the anti-inflammatory painkillers he'd been taking for his knee stopped for good and a different approach agreed for his pain relief, along with a course of treatment to eradicate the stomach bacterium found to be a common driver of ulcers like his.",
-  "dd1": [
+  "answers": [
    "Perforated peptic ulcer",
    "Acute pancreatitis",
    "Acute cholecystitis",
    "Ruptured abdominal aortic aneurysm",
    "Myocardial infarction"
-  ],
-  "dd2": [
-   [
-    "Acute pancreatitis"
-   ]
   ],
   "final": "Perforated peptic ulcer"
  },
@@ -2582,17 +2384,12 @@
   ],
   "treatment": "A needle was inserted urgently into the right side of Owen's chest bringing immediate relief to his breathing and blood pressure, followed shortly after by a proper chest tube placed over the following days. He improved dramatically within minutes of the first needle.",
   "discharge": "Once the chest tube was removed and a follow-up X-ray confirmed his lung had fully re-expanded, Owen was discharged with advice to avoid flying or scuba diving for a period of time, information about the small chance of this happening again given his build, and clear guidance on symptoms that should prompt him to seek help urgently.",
-  "dd1": [
+  "answers": [
    "Tension pneumothorax",
    "Pneumothorax",
    "Acute pulmonary embolism",
    "Acute asthma exacerbation",
    "Cardiac tamponade"
-  ],
-  "dd2": [
-   [
-    "Pneumothorax"
-   ]
   ],
   "final": "Tension pneumothorax"
  },
@@ -2646,17 +2443,12 @@
   ],
   "treatment": "Leo was admitted for intravenous antibiotics targeting the infection more aggressively than the oral course he'd had before, with the ENT team monitoring him closely for any sign of the infection spreading further, which would have needed a surgical procedure to address directly. Over the following three days, his fever settled, the swelling behind his ear reduced, and his ear returned to its normal position.",
   "discharge": "He completed a longer course of antibiotics at home after leaving hospital, with a follow-up ENT appointment arranged to check his hearing and make sure the infection had fully cleared, along with a discussion about whether grommets might help reduce how often he gets ear infections going forward.",
-  "dd1": [
+  "answers": [
    "Acute mastoiditis",
    "Acute otitis media",
    "Cellulitis",
    "Insect bite reaction",
    "Lymphadenitis"
-  ],
-  "dd2": [
-   [
-    "Acute otitis media"
-   ]
   ],
   "final": "Acute mastoiditis"
  },
@@ -2711,17 +2503,12 @@
   ],
   "treatment": "Isabelle was started immediately on aggressive intravenous fluids to support her blood pressure, along with antibiotics and close monitoring in intensive care given how unwell she'd become. Her blood pressure gradually stabilized over the following day, and the rash and fever began to settle over the following two to three days as the underlying cause was brought under control.",
   "discharge": "She was discharged after several days once fully stable, with clear education about tampon use, changing frequency, and early warning signs to watch for, along with advice that she may need to avoid tampons altogether going forward given her history.",
-  "dd1": [
+  "answers": [
    "Toxic shock syndrome",
    "Sepsis",
    "Meningococcal septicemia",
    "Allergic drug reaction",
    "Scarlet fever"
-  ],
-  "dd2": [
-   [
-    "Meningococcal septicemia"
-   ]
   ],
   "final": "Toxic shock syndrome"
  },
@@ -2777,17 +2564,12 @@
   ],
   "treatment": "Daniel was started immediately on a course of targeted medication chosen to match what his blood film had shown, along with fluids and close monitoring of his blood counts and organ function given the risk of this illness worsening quickly. Over the following two days, the wave-like fevers settled into something milder and eventually stopped altogether, and his energy slowly began to return.",
   "discharge": "He completed his full course of antimalarial treatment, with follow-up blood tests arranged to confirm the parasite had fully cleared, and detailed advice for any future travel about completing preventive medication for the whole recommended course, stomach upset and all.",
-  "dd1": [
+  "answers": [
    "Malaria",
    "Typhoid fever",
    "Dengue fever",
    "Influenza",
    "Traveler's diarrhea"
-  ],
-  "dd2": [
-   [
-    "Typhoid fever"
-   ]
   ],
   "final": "Malaria"
  },
@@ -2844,17 +2626,12 @@
   ],
   "treatment": "Patricia was started on very careful, gradual intravenous fluid replacement alongside a slow, steady insulin infusion, with her blood sugar, sodium levels, and kidney function checked frequently throughout, since bringing the levels down too quickly in this particular condition can itself cause harm. Over the following two days, as her blood levels normalized gradually, she became progressively more alert, eventually recognizing her son and able to hold a normal conversation again.",
   "discharge": "She was discharged home once stable, with a review of her diabetes medications and a plan for closer monitoring, along with a chat with her son about arrangements to check on her more frequently, especially during any future illness.",
-  "dd1": [
+  "answers": [
    "Hyperosmolar hyperglycemic state",
    "Diabetic ketoacidosis",
    "Stroke",
    "Urinary tract infection",
    "Sepsis"
-  ],
-  "dd2": [
-   [
-    "Urinary tract infection"
-   ]
   ],
   "final": "Hyperosmolar hyperglycemic state"
  },
@@ -2907,20 +2684,14 @@
   ],
   "treatment": "Roger was taken urgently to theatre, where the vascular surgical team used a specialized catheter to restore blood flow to his leg. His pain eased and the color returned to his foot within hours of the procedure, and his blood-thinning medication was restarted and carefully optimized afterward.",
   "discharge": "He was discharged with his leg fully recovered and viable, on a stricter and more closely monitored blood-thinning regimen going forward, with a clear conversation about the importance of taking it consistently given what had almost happened to his leg.",
-  "dd1": [
+  "answers": [
    "Acute limb ischemia",
    "Deep vein thrombosis",
    "Peripheral arterial disease",
    "Sciatica",
    "Acute compartment syndrome"
   ],
-  "dd2": [
-   [
-    "Peripheral arterial disease"
-   ]
-  ],
-  "final": "Embolic acute limb ischemia",
-  "parent": "Acute limb ischemia"
+  "final": "Acute limb ischemia"
  },
  {
   "id": "MP-2344",
@@ -2971,17 +2742,12 @@
   ],
   "treatment": "Michelle was started on a short course of oral steroids to reduce the swelling around the affected nerve, along with careful advice on protecting her right eye with lubricating drops and a patch at night to prevent it drying out while she couldn't blink fully. Over the following two weeks, she began to notice small improvements, first in being able to close her eye a little, then gradually more movement returning across the rest of her face.",
   "discharge": "She was discharged the same day with her steroid course and eye protection plan, along with a follow-up appointment to check her progress, and reassurance that the great majority of people with this condition make a full or near-full recovery over the following weeks to months.",
-  "dd1": [
+  "answers": [
    "Bell's palsy",
    "Stroke",
    "Ramsay Hunt syndrome",
    "Lyme disease",
    "Facial nerve tumor"
-  ],
-  "dd2": [
-   [
-    "Ramsay Hunt syndrome"
-   ]
   ],
   "final": "Bell's palsy"
  },
@@ -3033,17 +2799,12 @@
   ],
   "treatment": "With Toby safely asleep under anesthesia, the team used a small camera to look into his airways and deal with what they found. His breathing was checked closely as he woke up, and the one-sided wheeze that had worried his mother was gone entirely.",
   "discharge": "He was observed for a few hours to make sure his breathing stayed settled, then discharged home the same day, with his parents given clear, practical advice about age-appropriate food textures and the importance of supervising young children closely around nuts, grapes, and other similarly risky foods.",
-  "dd1": [
+  "answers": [
    "Foreign body aspiration",
    "Acute asthma exacerbation",
    "Croup",
    "Bronchiolitis",
    "Viral upper respiratory infection"
-  ],
-  "dd2": [
-   [
-    "Acute asthma exacerbation"
-   ]
   ],
   "final": "Foreign body aspiration"
  },
@@ -3099,17 +2860,12 @@
   ],
   "treatment": "Harold was admitted for a prolonged course of targeted intravenous antibiotics aimed at the specific bacterium commonly responsible for this condition, alongside strict, closely supervised control of his blood sugar levels, since good sugar control is a key part of recovery from this particular infection. Over the following weeks, his ear pain gradually eased, and the facial weakness stopped progressing further, though it took time to see any real improvement in that.",
   "discharge": "He completed a long course of antibiotics as an outpatient, with regular ENT follow-up and repeat scans arranged to confirm the infection was fully clearing, alongside ongoing input from a diabetes specialist team to keep his sugar levels properly controlled going forward.",
-  "dd1": [
+  "answers": [
    "Malignant otitis externa",
    "Otitis externa",
    "Acute mastoiditis",
    "Ear canal tumor",
    "Bell's palsy"
-  ],
-  "dd2": [
-   [
-    "Acute mastoiditis"
-   ]
   ],
   "final": "Malignant otitis externa"
  },
@@ -3165,17 +2921,12 @@
   ],
   "treatment": "Amelia was monitored closely with regular blood pressure checks and fluid balance monitoring, with her salt and fluid intake temporarily restricted and a medication given to help control her elevated blood pressure. Over the following week, her blood pressure gradually settled toward normal, the puffiness around her eyes reduced, and her urine slowly returned to its usual color.",
   "discharge": "She was discharged home with a plan for regular blood pressure and urine checks over the following weeks to make sure everything continued to settle as expected, with the vast majority of children with this condition going on to make a complete recovery.",
-  "dd1": [
+  "answers": [
    "Post-streptococcal glomerulonephritis",
    "Nephrotic syndrome",
    "Henoch-Schönlein purpura",
    "Urinary tract infection",
    "IgA nephropathy"
-  ],
-  "dd2": [
-   [
-    "IgA nephropathy"
-   ]
   ],
   "final": "Post-streptococcal glomerulonephritis"
  },
@@ -3232,17 +2983,12 @@
   ],
   "treatment": "Given how stable Grace remained throughout, with no ongoing signs of significant internal bleeding, the team managed her conservatively with pain relief and a period of observation rather than surgery, checking her blood pressure and pain levels regularly over the following hours to make sure nothing changed. Her pain gradually settled with simple pain relief over the following day.",
   "discharge": "She was discharged home the same day with pain relief to continue as needed, reassurance that this kind of event is common and usually resolves on its own without any lasting effect on her fertility, and advice to come back promptly if the pain worsened or she felt increasingly unwell.",
-  "dd1": [
+  "answers": [
    "Ruptured corpus luteal cyst",
    "Ectopic pregnancy",
    "Ovarian torsion",
    "Acute appendicitis",
    "Ovulation pain"
-  ],
-  "dd2": [
-   [
-    "Ectopic pregnancy"
-   ]
   ],
   "final": "Ruptured corpus luteal cyst"
  },
@@ -3296,17 +3042,12 @@
   ],
   "treatment": "Vanessa's new hormonal contraceptive pill, a known trigger for this particular condition, was stopped immediately, and she was started on a specific intravenous treatment aimed at correcting the underlying metabolic problem, alongside strong pain relief and close monitoring of her heart rate, blood pressure, and neurological function given the risk of this condition affecting the nerves more seriously if not treated promptly. Over the following days, her abdominal pain gradually eased, her agitation and confusion settled, and the weakness in her hands stopped progressing.",
   "discharge": "She was discharged with a detailed list of medications and triggers to avoid going forward, a referral to a specialist metabolic team for long-term management and genetic counseling, and a suggestion that her aunt's unexplained \"nerve problem\" might be worth looking into given how these conditions can run in families.",
-  "dd1": [
+  "answers": [
    "Acute intermittent porphyria",
    "Acute appendicitis",
    "Primary psychiatric disorder",
    "Lead poisoning",
    "Bowel obstruction"
-  ],
-  "dd2": [
-   [
-    "Bowel obstruction"
-   ]
   ],
   "final": "Acute intermittent porphyria"
  },
@@ -3365,17 +3106,12 @@
   ],
   "treatment": "Diane was started immediately on a combination of medications to bring her body's overdrive under control and slow her racing heart, along with cooling measures, fluids, and treatment for the underlying viral illness that appeared to have tipped things over. Over the following 24 hours, her heart rate and temperature gradually came down, and her confusion cleared as she became noticeably calmer and more like herself.",
   "discharge": "She was discharged once stable on ongoing thyroid-suppressing medication, with an urgent referral to an endocrinologist to formally diagnose and manage the underlying thyroid condition that had gone unchecked for months before this crisis.",
-  "dd1": [
+  "answers": [
    "Thyroid storm",
    "Sepsis",
    "Neuroleptic malignant syndrome",
    "Serotonin syndrome",
    "Delirium tremens"
-  ],
-  "dd2": [
-   [
-    "Sepsis"
-   ]
   ],
   "final": "Thyroid storm"
  },
@@ -3431,18 +3167,13 @@
   ],
   "treatment": "Patrick was taken to theatre within hours for emergency spinal surgery, since the timing of surgery has a real bearing on how much function can be recovered. His bladder sensation and leg strength began showing small signs of improvement over the following days, monitored closely by the spinal and urology teams together.",
   "discharge": "He was discharged to continue his recovery with physiotherapy and close urology follow-up given the bladder symptoms, with the team explaining honestly that some symptoms might take months to improve fully, or in a minority of cases might not resolve completely, while remaining encouraged by his early progress.",
-  "dd1": [
+  "answers": [
    "Cauda equina syndrome",
    "Mechanical back pain",
    "Sciatica",
    "Spinal cord compression",
    "Urinary tract infection",
    "Conus medullaris syndrome"
-  ],
-  "dd2": [
-   [
-    "Conus medullaris syndrome"
-   ]
   ],
   "final": "Cauda equina syndrome"
  },
@@ -3495,17 +3226,12 @@
   ],
   "treatment": "With his airway secured, Marcus was taken to theatre for the maxillofacial team to surgically drain and wash out the infected area thoroughly, alongside a course of high-dose intravenous antibiotics. His swelling gradually began to reduce over the following days, and his breathing and swallowing steadily improved.",
   "discharge": "He was discharged after completing his antibiotic course, with a firm and detailed conversation about the importance of regular dental care going forward, given how close a simple untreated tooth infection had come to threatening his airway.",
-  "dd1": [
+  "answers": [
    "Ludwig's angina",
    "Dental abscess",
    "Peritonsillar abscess",
    "Acute epiglottitis",
    "Cellulitis"
-  ],
-  "dd2": [
-   [
-    "Peritonsillar abscess"
-   ]
   ],
   "final": "Ludwig's angina"
  },
@@ -3559,17 +3285,12 @@
   ],
   "treatment": "Fiona was started on a targeted medication through a vein without waiting for the final confirmatory test result, since early treatment makes a real difference to outcomes. She was also given medication to prevent further seizures and monitored closely in intensive care. Over the following days, her confusion and speech difficulty began to improve, and the right-sided weakness gradually lessened.",
   "discharge": "She completed a full course of antiviral treatment in hospital, with ongoing rehabilitation arranged for some residual difficulties with memory and word-finding, and follow-up scans planned to monitor her recovery over the following months.",
-  "dd1": [
+  "answers": [
    "Herpes simplex encephalitis",
    "Bacterial meningitis",
    "Epilepsy",
    "Autoimmune encephalitis",
    "Stroke"
-  ],
-  "dd2": [
-   [
-    "Autoimmune encephalitis"
-   ]
   ],
   "final": "Herpes simplex encephalitis"
  },
@@ -3629,18 +3350,13 @@
   ],
   "treatment": "Sandra was started on a combination of heart medications carefully chosen to be compatible with breastfeeding, along with fluid restriction and close monitoring of her breathing and fluid balance. Over the following week, her breathlessness gradually eased, she was able to lie flat again without difficulty, and the swelling in her ankles reduced.",
   "discharge": "She was discharged home on ongoing heart medication with close cardiology follow-up and a repeat echocardiogram planned in a few months to check how much her heart function had recovered, along with support arranged at home given the demands of caring for a newborn while managing a new heart condition.",
-  "dd1": [
+  "answers": [
    "Peripartum cardiomyopathy",
    "Acute pulmonary embolism",
    "Normal postpartum changes",
    "Anemia",
    "Panic attack",
    "Anxiety disorder"
-  ],
-  "dd2": [
-   [
-    "Acute pulmonary embolism"
-   ]
   ],
   "final": "Peripartum cardiomyopathy"
  },
@@ -3693,17 +3409,12 @@
   ],
   "treatment": "Given how urgently this needed addressing before it could threaten his central vision permanently, Peter was taken to theatre the same day for an eye operation. He was advised to keep his head in a specific position for several days afterward to help it heal.",
   "discharge": "He was discharged with clear instructions on positioning and activity restrictions during his recovery, along with close ophthalmology follow-up to monitor how well the retina was healing back into place, and advice on the warning signs to watch for in his other eye given his risk factors.",
-  "dd1": [
+  "answers": [
    "Retinal detachment",
    "Vitreous hemorrhage",
    "Migraine with aura",
    "Posterior vitreous detachment",
    "Transient ischemic attack"
-  ],
-  "dd2": [
-   [
-    "Posterior vitreous detachment"
-   ]
   ],
   "final": "Retinal detachment"
  },
@@ -3756,17 +3467,12 @@
   ],
   "treatment": "Given the early signs of pressure building, the neurosurgical team took Joan to theatre to relieve it before it could worsen further. Her blood pressure was also carefully controlled throughout her recovery. Over the following days, her balance and coordination began to improve steadily with the help of physiotherapy.",
   "discharge": "She was discharged to a rehabilitation unit to continue building her strength and coordination, with her blood pressure medication reviewed and a much stricter plan put in place to make sure she takes it consistently going forward.",
-  "dd1": [
+  "answers": [
    "Acute cerebellar hemorrhage",
    "Cerebellar stroke",
    "Vestibular neuritis",
    "Transient ischemic attack",
    "Cerebellar tumor"
-  ],
-  "dd2": [
-   [
-    "Cerebellar stroke"
-   ]
   ],
   "final": "Acute cerebellar hemorrhage"
  },
@@ -3822,17 +3528,12 @@
   ],
   "treatment": "Grayson's feeds were stopped completely to rest his bowel, and a tube was placed to gently decompress his stomach while he was supported entirely through a vein for nutrition, alongside a course of antibiotics and extremely close monitoring by the neonatal team, with repeat abdominal X-rays taken regularly. Thankfully, over the following week, his abdomen gradually became less distended, and the concerning findings on his X-rays slowly resolved without needing surgery.",
   "discharge": "Feeds were reintroduced very gradually and cautiously over the following couple of weeks once he'd fully recovered, with the neonatal team keeping him under close observation throughout the rest of his stay before he was eventually well enough, weeks later, to go home with his family.",
-  "dd1": [
+  "answers": [
    "Necrotizing enterocolitis",
    "Feed intolerance",
    "Sepsis",
    "Bowel obstruction",
    "Spontaneous intestinal perforation"
-  ],
-  "dd2": [
-   [
-    "Spontaneous intestinal perforation"
-   ]
   ],
   "final": "Necrotizing enterocolitis"
  },
@@ -3891,17 +3592,12 @@
   ],
   "treatment": "Anthony was taken to theatre urgently for the surgical team to repair the damage and thoroughly wash out the chest cavity, given how quickly leaking contents can cause serious infection. He was kept without anything by mouth for an extended period afterward, fed entirely through a tube bypassing the repair site while it healed, alongside a prolonged course of antibiotics.",
   "discharge": "After a lengthy recovery in hospital with the repair confirmed to be healing well on a follow-up contrast study, he was gradually reintroduced to eating and discharged home, with clear advice about avoiding forceful vomiting where possible in the future and seeking urgent help immediately if anything like this chest pain ever happened again.",
-  "dd1": [
+  "answers": [
    "Boerhaave syndrome",
    "Myocardial infarction",
    "Perforated peptic ulcer",
    "Acute pancreatitis",
    "Mallory-Weiss tear"
-  ],
-  "dd2": [
-   [
-    "Perforated peptic ulcer"
-   ]
   ],
   "final": "Boerhaave syndrome"
  },
@@ -3953,17 +3649,12 @@
   ],
   "treatment": "Ivy was admitted for close monitoring given her age and the concerning pauses in breathing, with oxygen support available during and after coughing fits, and a course of antibiotics started both to help her own recovery and to reduce how contagious she was to others. Nursing staff kept her under continuous monitoring to catch and respond quickly to any breathing pauses, which gradually became less frequent over the following several days.",
   "discharge": "She was discharged home once her breathing pauses had settled and her parents felt confident managing her ongoing cough, which the team explained could linger for several more weeks even after treatment, along with advice on keeping her away from other infants where possible and making sure the rest of the household, including her older sibling, were checked and treated if needed.",
-  "dd1": [
+  "answers": [
    "Whooping cough",
    "Bronchiolitis",
    "Viral upper respiratory infection",
    "Foreign body aspiration",
    "Gastroesophageal reflux disease"
-  ],
-  "dd2": [
-   [
-    "Bronchiolitis"
-   ]
   ],
   "final": "Whooping cough"
  },
@@ -4019,17 +3710,12 @@
   ],
   "treatment": "Gordon was started on nebulized medication to open his airways, a short course of oral steroids, controlled oxygen therapy carefully titrated given his tendency to retain carbon dioxide, and antibiotics given the change in his sputum. Over the following two days, his breathing gradually eased and his oxygen levels improved on lower amounts of supplemental oxygen.",
   "discharge": "He was discharged with a course of steroids and antibiotics to complete at home, a review of his inhaler technique, and a referral to the respiratory team for consideration of a pulmonary rehabilitation program to help him manage his condition longer term.",
-  "dd1": [
+  "answers": [
    "Acute exacerbation of COPD",
    "Community-acquired pneumonia",
    "Acute heart failure",
    "Acute pulmonary embolism",
    "Pneumothorax"
-  ],
-  "dd2": [
-   [
-    "Community-acquired pneumonia"
-   ]
   ],
   "final": "Acute exacerbation of COPD"
  },
@@ -4089,17 +3775,12 @@
   ],
   "treatment": "Walter was given intravenous medication to help his body remove the excess fluid, along with careful monitoring of his weight, fluid balance, and kidney function each day, and his regular heart medications were restarted and optimized. Over the following four days, the swelling in his legs reduced substantially, his breathing became much easier, and he was able to lie flat comfortably again at night.",
   "discharge": "He was discharged on an adjusted medication regimen with clear instructions on daily weighing and salt restriction, along with a heart failure nurse arranged to follow up closely at home and make sure he never runs out of his medications again.",
-  "dd1": [
+  "answers": [
    "Decompensated congestive heart failure",
    "Acute exacerbation of COPD",
    "Acute pulmonary embolism",
    "Community-acquired pneumonia",
    "Kidney failure"
-  ],
-  "dd2": [
-   [
-    "Acute exacerbation of COPD"
-   ]
   ],
   "final": "Decompensated congestive heart failure"
  },
@@ -4153,17 +3834,12 @@
   ],
   "treatment": "Linda was given medication through a vein to slow her heart rate down to a safer, more comfortable range, with continuous heart monitoring throughout. Within a couple of hours her heart rate settled into a more controlled range, and though the underlying rhythm problem persisted on the monitor, her symptoms of racing and breathlessness resolved considerably.",
   "discharge": "She was discharged on a regular heart-rate-controlling medication and a blood thinner to reduce her risk of stroke associated with this rhythm, with cardiology follow-up arranged to discuss longer-term options, including whether attempting to restore a normal rhythm might be appropriate for her.",
-  "dd1": [
+  "answers": [
    "Atrial fibrillation with rapid ventricular response",
    "Supraventricular tachycardia",
    "Panic attack",
    "Thyrotoxicosis",
    "Anemia"
-  ],
-  "dd2": [
-   [
-    "Thyrotoxicosis"
-   ]
   ],
   "final": "Atrial fibrillation with rapid ventricular response"
  },
@@ -4217,20 +3893,14 @@
   ],
   "treatment": "Chloe was started on a short course of oral antibiotics along with simple pain relief for the discomfort, and advised to drink plenty of fluids to help flush her system. Her symptoms began improving within a day of starting the antibiotics, with the burning and urgency settling steadily.",
   "discharge": "She completed her short course of antibiotics with symptoms fully resolved, and was given general advice on staying well hydrated and urinating after intercourse, which can help reduce how often these infections recur.",
-  "dd1": [
-   "Uncomplicated urinary tract infection",
+  "answers": [
+   "Urinary tract infection",
    "Acute pyelonephritis",
    "Vaginal candidiasis",
    "Sexually transmitted infection",
    "Interstitial cystitis"
   ],
-  "dd2": [
-   [
-    "Acute pyelonephritis"
-   ]
-  ],
-  "final": "Uncomplicated urinary tract infection",
-  "parent": "Urinary tract infection"
+  "final": "Urinary tract infection"
  },
  {
   "id": "MP-2364",
@@ -4280,17 +3950,12 @@
   ],
   "treatment": "Emma was given targeted headache medication along with anti-sickness medication and encouraged to rest in a quiet, dark room. Within a couple of hours, her headache had eased substantially and the nausea settled.",
   "discharge": "She was discharged with medication to keep on hand for future attacks, advice on identifying and managing her personal triggers, and a suggestion to discuss preventive treatment with her regular doctor given how frequently these headaches have been affecting her.",
-  "dd1": [
+  "answers": [
    "Migraine with aura",
    "Subarachnoid hemorrhage",
    "Tension-type headache",
    "Cluster headache",
    "Meningitis"
-  ],
-  "dd2": [
-   [
-    "Tension-type headache"
-   ]
   ],
   "final": "Migraine with aura"
  },
@@ -4342,17 +4007,12 @@
   ],
   "treatment": "Brian was started on a strong anti-inflammatory medication to bring the pain and swelling under control quickly, with his toe rested and elevated. Within two days, the redness and swelling had noticeably reduced, and he was able to gradually start putting weight back on the foot.",
   "discharge": "He was discharged with advice on dietary changes to reduce his risk of future flares, along with a discussion about starting a long-term medication to lower his uric acid levels given how significant this episode had been, and a plan to follow up with his regular doctor to monitor his levels going forward.",
-  "dd1": [
+  "answers": [
    "Acute gout",
    "Septic arthritis",
    "Cellulitis",
    "Pseudogout",
    "Traumatic injury"
-  ],
-  "dd2": [
-   [
-    "Septic arthritis"
-   ]
   ],
   "final": "Acute gout"
  },
@@ -4402,17 +4062,12 @@
   ],
   "treatment": "Nathan was started on a course of antibiotics targeting the bacteria most commonly responsible for this kind of skin infection, with his leg elevated to help reduce the swelling, and his blood sugar levels monitored closely given his diabetes. Over the following three days, the redness and swelling gradually reduced, and his fever settled.",
   "discharge": "He completed his course of antibiotics at home, with advice on proper wound care for any future skin injuries and a reminder of how important good blood sugar control is in helping prevent and fight off infections like this one.",
-  "dd1": [
+  "answers": [
    "Cellulitis",
    "Necrotizing fasciitis",
    "Deep vein thrombosis",
    "Contact dermatitis",
    "Erysipelas"
-  ],
-  "dd2": [
-   [
-    "Erysipelas"
-   ]
   ],
   "final": "Cellulitis"
  },
@@ -4465,17 +4120,12 @@
   ],
   "treatment": "Given how early in her illness she'd presented, Karen was started on an antiviral medication aimed at shortening the duration and severity of her symptoms, along with plenty of fluids, rest, and simple medication to manage her fever and aches. Over the following three to four days, her fever gradually settled and her energy slowly began to return.",
   "discharge": "She was advised to rest at home until fully recovered and fever-free, with clear guidance on staying away from work and other people while contagious, and a strong recommendation to get her flu vaccine each year going forward given how exposed she is working with young children.",
-  "dd1": [
+  "answers": [
    "Influenza",
    "COVID-19",
    "Common cold",
    "Streptococcal pharyngitis",
    "Community-acquired pneumonia"
-  ],
-  "dd2": [
-   [
-    "COVID-19"
-   ]
   ],
   "final": "Influenza"
  },
@@ -4527,17 +4177,12 @@
   ],
   "treatment": "Lily was managed with simple measures at home — fever medication, cool baths, and specific lotion to ease the itching, along with clear advice to keep her fingernails short to reduce skin damage from scratching and lower the risk of the spots becoming infected. Over the following week, the spots gradually crusted over and stopped appearing.",
   "discharge": "She was kept off nursery until all the spots had fully crusted over, as advised, and her family was encouraged to arrange her vaccination against this illness for any future, unvaccinated siblings to help prevent it happening again in the household.",
-  "dd1": [
+  "answers": [
    "Chickenpox",
    "Hand-foot-and-mouth disease",
    "Allergic reaction",
    "Impetigo",
    "Insect bite reaction"
-  ],
-  "dd2": [
-   [
-    "Hand-foot-and-mouth disease"
-   ]
   ],
   "final": "Chickenpox"
  },
@@ -4591,17 +4236,12 @@
   ],
   "treatment": "Oscar was managed with supportive care, including fever medication, fluids to keep him well hydrated, and close monitoring for any signs of the complications this illness can occasionally cause, such as chest or ear infections. Public health authorities were also notified given how contagious this illness is. Over the following several days, his fever gradually settled and the rash began to fade, working its way down his body in the same order it had appeared.",
   "discharge": "He was kept isolated until no longer considered contagious, and his family had a detailed conversation with the pediatric team about catching up on his full vaccination schedule to protect him and others going forward.",
-  "dd1": [
+  "answers": [
    "Measles",
    "Rubella",
    "Scarlet fever",
    "Viral exanthem",
    "Allergic drug reaction"
-  ],
-  "dd2": [
-   [
-    "Rubella"
-   ]
   ],
   "final": "Measles"
  },
@@ -4653,17 +4293,12 @@
   ],
   "treatment": "Ruby was managed with simple pain relief to help with the discomfort from the mouth ulcers, encouragement to take cool, soft fluids and foods that wouldn't irritate her mouth further, and close monitoring of her hydration. Over the following few days, her fever settled, the mouth ulcers began to heal, and her appetite gradually returned.",
   "discharge": "She was kept home from nursery until she was feeling better and no longer had open blisters, with her parents given advice on hygiene measures to reduce the small risk of spreading it to other children in the household or at nursery.",
-  "dd1": [
+  "answers": [
    "Hand-foot-and-mouth disease",
    "Chickenpox",
    "Herpetic gingivostomatitis",
    "Herpangina",
    "Allergic reaction"
-  ],
-  "dd2": [
-   [
-    "Herpangina"
-   ]
   ],
   "final": "Hand-foot-and-mouth disease"
  },
@@ -4715,17 +4350,12 @@
   ],
   "treatment": "Ethan was started on a short course of oral antibiotics along with pain relief to help with the discomfort, particularly at night. Within two days his fever settled and the ear pain reduced substantially, and he returned to his usual cheerful self.",
   "discharge": "He completed his course of antibiotics at home, with a follow-up hearing check arranged in a few weeks to confirm his hearing had returned to normal, and a discussion with his parents about whether grommets might be worth considering if he continues to have frequent infections like this one.",
-  "dd1": [
+  "answers": [
    "Acute otitis media",
    "Otitis media with effusion",
    "Acute mastoiditis",
    "Ear canal foreign body",
    "Teething"
-  ],
-  "dd2": [
-   [
-    "Otitis media with effusion"
-   ]
   ],
   "final": "Acute otitis media"
  },
@@ -4777,17 +4407,12 @@
   ],
   "treatment": "Freddie was given a single dose of oral steroid medication to reduce the swelling in his airway, along with a short period of observation to make sure his breathing settled as expected. Within a couple of hours, the barking cough and noisy breathing had noticeably improved, and he was back to playing normally.",
   "discharge": "He was discharged home the same evening with advice on what to watch for if his breathing became more difficult again, reassurance that the cough might linger for a few more days even as he improved, and simple comfort measures to help him through it.",
-  "dd1": [
+  "answers": [
    "Croup",
    "Acute epiglottitis",
    "Foreign body aspiration",
    "Bacterial tracheitis",
    "Anaphylaxis"
-  ],
-  "dd2": [
-   [
-    "Bacterial tracheitis"
-   ]
   ],
   "final": "Croup"
  },
@@ -4839,17 +4464,12 @@
   ],
   "treatment": "Amelia was supported with small, frequent feeds and, when her breathing effort made bottle feeding too tiring, some feeds were given through a small tube into her stomach to make sure she stayed properly hydrated and nourished, alongside supplemental oxygen and close monitoring of her breathing. Over the following three days, her breathing effort gradually eased, and she was able to return to taking full feeds by mouth.",
   "discharge": "She was discharged home once feeding well and breathing comfortably on room air, with advice for her parents on the usual course of this illness, when to seek help again if her breathing worsened, and simple measures to reduce the spread of the virus to her older sibling and others.",
-  "dd1": [
+  "answers": [
    "Bronchiolitis",
    "Viral-induced wheeze",
    "Community-acquired pneumonia",
    "Whooping cough",
    "Congenital heart disease"
-  ],
-  "dd2": [
-   [
-    "Viral-induced wheeze"
-   ]
   ],
   "final": "Bronchiolitis"
  },
@@ -4901,17 +4521,12 @@
   ],
   "treatment": "Jacob was first given fluids through a vein to correct his salt balance and dehydration before any procedure could safely go ahead, since operating before this is corrected can be dangerous. Once his levels had normalized, the surgical team performed a small operation. He was able to start small feeds again within a day of the procedure, tolerating increasing volumes without the forceful vomiting returning.",
   "discharge": "He went home a few days after the procedure, feeding well and gaining weight appropriately, with a routine follow-up appointment arranged to confirm his continued progress.",
-  "dd1": [
+  "answers": [
    "Pyloric stenosis",
    "Gastroesophageal reflux disease",
    "Overfeeding",
    "Cow's milk protein allergy",
    "Urinary tract infection"
-  ],
-  "dd2": [
-   [
-    "Gastroesophageal reflux disease"
-   ]
   ],
   "final": "Pyloric stenosis"
  },
@@ -4966,17 +4581,12 @@
   ],
   "treatment": "Eleanor was started immediately on hormone treatment given directly into a vein, alongside gradual warming measures, careful fluid management, and close monitoring in intensive care given how unwell this particular condition can become. Over the following two to three days, her body temperature slowly returned to normal, her heart rate improved, and she became noticeably more alert and able to hold a proper conversation.",
   "discharge": "She was discharged once stable back onto her regular thyroid replacement tablets, with a proper system put in place, involving her neighbor and a local support service, to help make sure she takes her medication consistently going forward and has regular contact to check on her wellbeing.",
-  "dd1": [
+  "answers": [
    "Myxedema coma",
    "Hypothermia",
    "Stroke",
    "Sepsis",
    "Drug overdose"
-  ],
-  "dd2": [
-   [
-    "Hypothermia"
-   ]
   ],
   "final": "Myxedema coma"
  },
@@ -5034,17 +4644,12 @@
   ],
   "treatment": "Sophia was started on anti-inflammatory medication to settle the joint pain and inflammation, along with a course of antibiotics to fully clear any remaining infection, and close monitoring of her heart with the cardiology team involved given the murmur found on examination. Over the following two weeks, her joint pain resolved completely, the jerky hand movements settled, and her heart rate returned to normal.",
   "discharge": "She was discharged with a plan for long-term monthly antibiotic injections to prevent a recurrence, given how significantly repeat episodes can affect the heart over time, along with regular cardiology follow-up to monitor the mild valve changes found on her scan.",
-  "dd1": [
+  "answers": [
    "Rheumatic fever",
    "Septic arthritis",
    "Juvenile idiopathic arthritis",
    "Reactive arthritis",
    "Infective endocarditis"
-  ],
-  "dd2": [
-   [
-    "Infective endocarditis"
-   ]
   ],
   "final": "Rheumatic fever"
  },
@@ -5098,17 +4703,12 @@
   ],
   "treatment": "Ryan was managed with supportive care, including rest, fluids, and simple pain relief for his throat and fever, since this illness doesn't respond to antibiotics. He was specifically advised to avoid any contact sports or heavy lifting for several weeks given his enlarged spleen, which carries a small risk of rupture during this illness if injured. Over the following two to three weeks, his energy and throat symptoms gradually improved, though the fatigue took noticeably longer to fully resolve.",
   "discharge": "He was discharged with clear written advice about avoiding contact sports and heavy lifting for at least a month, along with reassurance that the profound tiredness some people feel with this illness can take several weeks to fully lift, and to return if he developed any severe abdominal pain suggesting his spleen had been affected.",
-  "dd1": [
+  "answers": [
    "Infectious mononucleosis",
    "Streptococcal pharyngitis",
    "Acute HIV infection",
    "Cytomegalovirus infection",
    "Peritonsillar abscess"
-  ],
-  "dd2": [
-   [
-    "Streptococcal pharyngitis"
-   ]
   ],
   "final": "Infectious mononucleosis"
  },
@@ -5161,17 +4761,12 @@
   ],
   "treatment": "Daisy was started on a course of antibiotics to treat the underlying infection, along with fever medication for her comfort. Within a day of starting the antibiotics, her fever began to settle, and over the following week the rash gradually faded, with some peeling of the skin on her hands as it resolved, which the family was told to expect.",
   "discharge": "She completed her full course of antibiotics at home and was kept away from school until 24 hours after starting treatment and no longer feeling unwell, as advised, to reduce the risk of passing the infection on to her classmates.",
-  "dd1": [
+  "answers": [
    "Scarlet fever",
    "Kawasaki disease",
    "Viral exanthem",
    "Allergic drug reaction",
    "Measles"
-  ],
-  "dd2": [
-   [
-    "Kawasaki disease"
-   ]
   ],
   "final": "Scarlet fever"
  },
@@ -5226,7 +4821,7 @@
   ],
   "treatment": "Rachel was started on replacement tablets, with advice on how to take them to maximize absorption and minimize stomach upset, while her heavy periods were addressed in parallel with the gynecology team to treat the underlying cause of her ongoing blood loss. Over the following two months, her energy levels and breathlessness gradually improved as her blood results recovered.",
   "discharge": "She continued her iron supplements for several months to fully replenish her stores, with a repeat blood count arranged to confirm full recovery, alongside ongoing management of her heavy periods to prevent this from recurring.",
-  "dd1": [
+  "answers": [
    "Iron deficiency anemia",
    "Anemia of chronic disease",
    "Vitamin B12 deficiency anemia",
@@ -5234,12 +4829,6 @@
    "Hypothyroidism",
    "Hyperthyroidism",
    "Depression"
-  ],
-  "dd2": [
-   [
-    "Vitamin B12 deficiency anemia",
-    "Folate deficiency anemia"
-   ]
   ],
   "final": "Iron deficiency anemia"
  },
@@ -5292,18 +4881,13 @@
   ],
   "treatment": "Dennis was given a fast-acting treatment by mouth, followed by a snack once he was able to swallow safely, along with close monitoring over the following hours. Within fifteen minutes of the first treatment, his confusion cleared completely and he was back to his usual self, embarrassed but otherwise well.",
   "discharge": "He was discharged with a review of his insulin dosing and meal timing with a diabetes nurse, advice on always carrying a fast-acting sugar source and checking his blood sugar before driving, and a reminder of the importance of never skipping meals when taking insulin.",
-  "dd1": [
+  "answers": [
    "Hypoglycemia",
    "Stroke",
    "Seizure",
    "Alcohol intoxication",
    "Diabetic ketoacidosis",
    "Hyperosmolar hyperglycemic state"
-  ],
-  "dd2": [
-   [
-    "Stroke"
-   ]
   ],
   "final": "Hypoglycemia"
  },
@@ -5352,17 +4936,12 @@
   ],
   "treatment": "Cynthia was started on a course of medication alongside a combination of antibiotics, and advised to stop taking ibuprofen and switch to a different pain reliever for her headaches. Over the following weeks, her abdominal discomfort gradually resolved.",
   "discharge": "She completed her course of treatment, with a follow-up breath test arranged in a couple of months to confirm the bacterium had been fully cleared, and advice on avoiding anti-inflammatory painkillers going forward given her history.",
-  "dd1": [
+  "answers": [
    "Peptic ulcer disease",
    "Gastroesophageal reflux disease",
    "Gastritis",
    "Gallstone disease",
    "Functional dyspepsia"
-  ],
-  "dd2": [
-   [
-    "Gastroesophageal reflux disease"
-   ]
   ],
   "final": "Peptic ulcer disease"
  },
@@ -5414,17 +4993,12 @@
   ],
   "treatment": "Jordan was managed with rest, simple pain relief for his headache, and clear guidance on gradually returning to normal activities, with strict instructions to avoid any contact sports until fully cleared. His headache and nausea settled over the following day with rest.",
   "discharge": "He was discharged with written head injury advice for his parents, including signs that should prompt an urgent return, and a structured, step-by-step plan for returning to school and eventually sport only once he'd been fully symptom-free for a period of time, in line with standard concussion recovery guidance.",
-  "dd1": [
+  "answers": [
    "Concussion",
    "Intracranial hemorrhage",
    "Skull fracture",
    "Cervical spine injury",
    "Post-traumatic headache"
-  ],
-  "dd2": [
-   [
-    "Intracranial hemorrhage"
-   ]
   ],
   "final": "Concussion"
  },
@@ -5477,17 +5051,12 @@
   ],
   "treatment": "Margaret was started on a medication aimed at supporting her remaining memory function for as long as possible, alongside practical support put in place at home, including a referral to social services to arrange help with daily tasks and safety measures like a stove timer. Her family was given detailed information and support resources to help them plan for her ongoing care.",
   "discharge": "She was discharged home with regular follow-up arranged through the memory clinic to monitor her progress, and her daughter was connected with a local carers' support group to help navigate the road ahead.",
-  "dd1": [
+  "answers": [
    "Alzheimer's disease",
    "Vascular dementia",
    "Delirium",
    "Depression",
    "Age-related memory changes"
-  ],
-  "dd2": [
-   [
-    "Vascular dementia"
-   ]
   ],
   "final": "Alzheimer's disease"
  },
@@ -5539,17 +5108,12 @@
   ],
   "treatment": "Albert was started on medication to ease his symptoms, along with a referral to physiotherapy to help maintain his mobility and balance. Over the following weeks, his tremor became less noticeable and his movements grew a little quicker and easier.",
   "discharge": "He continued regular follow-up with the neurology team to adjust his medication over time as needed, along with ongoing physiotherapy input, and information for both him and his wife about the condition and what to expect going forward.",
-  "dd1": [
+  "answers": [
    "Parkinson's disease",
    "Essential tremor",
    "Drug-induced parkinsonism",
    "Normal pressure hydrocephalus",
    "Vascular parkinsonism"
-  ],
-  "dd2": [
-   [
-    "Vascular parkinsonism"
-   ]
   ],
   "final": "Parkinson's disease"
  },
@@ -5599,17 +5163,12 @@
   ],
   "treatment": "Diane was started on a structured plan including physiotherapy to strengthen the muscles supporting her knee, weight management advice, and simple pain relief for flare-ups, with an injection into the joint offered for more significant symptom relief in the meantime. Over the following months, her pain became more manageable with these measures, allowing her to gradually return to some gentle walking.",
   "discharge": "She continued with physiotherapy and weight management support long-term, with a discussion about the possibility of knee replacement surgery down the line if her symptoms significantly worsened or stopped responding to these more conservative measures.",
-  "dd1": [
+  "answers": [
    "Osteoarthritis",
    "Rheumatoid arthritis",
    "Acute gout",
    "Meniscal tear",
    "Hip osteoarthritis"
-  ],
-  "dd2": [
-   [
-    "Meniscal tear"
-   ]
   ],
   "final": "Osteoarthritis"
  },
@@ -5664,17 +5223,12 @@
   ],
   "treatment": "Angela was started on a long-term medication, alongside a short course of steroids to bring the current flare under control more quickly, and close monitoring for how well she tolerated the medication. Over the following weeks, her joint swelling and morning stiffness gradually improved.",
   "discharge": "She continued regular follow-up with the rheumatology team to monitor her response to treatment and adjust medications as needed, with blood tests arranged periodically to check both her disease activity and for any medication side effects.",
-  "dd1": [
+  "answers": [
    "Rheumatoid arthritis",
    "Osteoarthritis",
    "Psoriatic arthritis",
    "Viral arthritis",
    "Systemic lupus erythematosus"
-  ],
-  "dd2": [
-   [
-    "Systemic lupus erythematosus"
-   ]
   ],
   "final": "Rheumatoid arthritis"
  },
@@ -5726,17 +5280,12 @@
   ],
   "treatment": "Susan was taught and guided through a specific series of head movements, performed right there in the department, designed to settle her symptoms. Her symptoms noticeably improved even during the session, and she was given instructions to repeat a simpler version of the exercise at home if needed.",
   "discharge": "She was discharged with written instructions for the head-repositioning exercise to use if symptoms recurred, along with reassurance about the generally short-lived and treatable nature of this condition, and advice to return if anything different or more concerning developed, such as hearing changes or persistent imbalance.",
-  "dd1": [
+  "answers": [
    "Benign paroxysmal positional vertigo",
    "Vestibular neuritis",
    "Ménière's disease",
    "Posterior circulation stroke",
    "Vestibular migraine"
-  ],
-  "dd2": [
-   [
-    "Vestibular neuritis"
-   ]
   ],
   "final": "Benign paroxysmal positional vertigo"
  },
@@ -5792,17 +5341,12 @@
   ],
   "treatment": "Liam was started on steroids to bring the current flare under control, along with nutritional support given his weight loss, and the gastroenterology team began planning a longer-term medication to keep the condition in remission going forward. Over the following two weeks, his diarrhea frequency reduced, his energy began to improve, and the fever settled.",
   "discharge": "He was discharged on a tapering course of steroids alongside a new long-term medication to maintain remission, with regular gastroenterology follow-up arranged, dietary advice, and information about support resources for people living with this lifelong condition.",
-  "dd1": [
+  "answers": [
    "Crohn's disease",
    "Ulcerative colitis",
    "Gastroenteritis",
    "Acute appendicitis",
    "Intestinal tuberculosis"
-  ],
-  "dd2": [
-   [
-    "Ulcerative colitis"
-   ]
   ],
   "final": "Crohn's disease"
  },
@@ -5859,17 +5403,12 @@
   ],
   "treatment": "Terrence was admitted for supportive care including nutritional support, careful management of the fluid building up in his abdomen, and a specific medication considered for more severe cases, alongside close monitoring for signs of his liver function declining further. Over the following two weeks, his jaundice gradually began to improve and his confusion cleared.",
   "discharge": "He was discharged with a strong recommendation and referral for alcohol treatment support services, close follow-up with the liver team to monitor his ongoing liver function, and a frank conversation about the importance of stopping alcohol completely to give his liver the best chance of recovering.",
-  "dd1": [
+  "answers": [
    "Alcoholic hepatitis",
    "Viral hepatitis",
    "Choledocholithiasis",
    "Decompensated cirrhosis",
    "Liver cancer"
-  ],
-  "dd2": [
-   [
-    "Decompensated cirrhosis"
-   ]
   ],
   "final": "Alcoholic hepatitis"
  },
@@ -5928,17 +5467,12 @@
   ],
   "treatment": "Danielle was started on medication to bring her blood pressure down to a safer range, along with a course of medication to help protect the baby's lungs in case early delivery became necessary, and a further medication was given to reduce her risk of a seizure. She was monitored extremely closely, and given the severity of her symptoms and blood results, the team proceeded with an induced delivery earlier than her due date once she and the baby were both considered stable enough for it.",
   "discharge": "Both Danielle and her baby did well following the delivery, with her blood pressure gradually returning toward normal over the following weeks under close monitoring, and she was counselled about her increased risk of this condition in any future pregnancy and the importance of early antenatal blood pressure checks.",
-  "dd1": [
+  "answers": [
    "Preeclampsia",
    "Chronic hypertension",
    "Tension-type headache",
    "Migraine",
    "Gallstone disease"
-  ],
-  "dd2": [
-   [
-    "Chronic hypertension"
-   ]
   ],
   "final": "Preeclampsia"
  },
@@ -5997,18 +5531,13 @@
   ],
   "treatment": "Victor was started on intravenous medication to bring his blood pressure down in a careful, controlled manner rather than too quickly, which can itself be dangerous, with close monitoring of his blood pressure, kidney function, and neurological state throughout. Over the following 24 hours, his blood pressure gradually came down to a safer range, his confusion cleared, and his breathing eased.",
   "discharge": "He was discharged on a combination of blood pressure medications with a clear plan and reminders in place to ensure he never runs out again, along with close follow-up with his regular doctor to monitor his kidney function and blood pressure control going forward.",
-  "dd1": [
+  "answers": [
    "Hypertensive emergency",
    "Acute ischemic stroke",
    "Subarachnoid hemorrhage",
    "Acute coronary syndrome",
    "Panic attack",
    "Anxiety disorder"
-  ],
-  "dd2": [
-   [
-    "Acute ischemic stroke"
-   ]
   ],
   "final": "Hypertensive emergency"
  },
@@ -6060,17 +5589,12 @@
   ],
   "treatment": "Melissa was started on a course of antibiotics along with a nasal spray to help reduce the swelling inside her nose and improve drainage, plus simple pain relief for the facial pressure and headache. Over the following week, the facial pain gradually eased and the discharge became clearer and less frequent.",
   "discharge": "She completed her course of antibiotics with symptoms fully resolved, and was advised to return if symptoms like this recurred frequently, since that might warrant a closer look at any underlying structural cause within her sinuses.",
-  "dd1": [
+  "answers": [
    "Acute bacterial sinusitis",
    "Viral upper respiratory infection",
    "Tension-type headache",
    "Migraine",
    "Dental abscess"
-  ],
-  "dd2": [
-   [
-    "Viral upper respiratory infection"
-   ]
   ],
   "final": "Acute bacterial sinusitis"
  },
@@ -6122,17 +5646,12 @@
   ],
   "treatment": "Mia was started on medicated eye drops, along with advice on gently cleaning away the crusted discharge with cooled boiled water and a clean cloth before each application, and careful handwashing to avoid spreading it to family members. Within two days, the redness and discharge had noticeably improved.",
   "discharge": "She completed her course of eye drops with both eyes fully settled, and was kept off school until the discharge had cleared, in line with usual school policy for this kind of contagious eye infection.",
-  "dd1": [
+  "answers": [
    "Bacterial conjunctivitis",
    "Viral conjunctivitis",
    "Allergic conjunctivitis",
    "Eye foreign body",
    "Periorbital cellulitis"
-  ],
-  "dd2": [
-   [
-    "Viral conjunctivitis"
-   ]
   ],
   "final": "Bacterial conjunctivitis"
  },
@@ -6185,17 +5704,12 @@
   ],
   "treatment": "Kevin was reassured about the benign nature of the diagnosis, given his heart tests were entirely normal, and was advised to take a simple anti-inflammatory medication along with resting from the new exercise routine that had likely triggered it. Over the following week to two, the pain gradually settled as he eased back into activity more gradually.",
   "discharge": "He was discharged with reassurance and written information explaining why his heart tests ruled out anything serious, along with advice on gradually reintroducing exercise and returning if the pain changed character or new symptoms developed.",
-  "dd1": [
+  "answers": [
    "Costochondritis",
    "Acute coronary syndrome",
    "Acute pulmonary embolism",
    "Acute pericarditis",
    "Muscle strain"
-  ],
-  "dd2": [
-   [
-    "Muscle strain"
-   ]
   ],
   "final": "Costochondritis"
  },
@@ -6247,17 +5761,12 @@
   ],
   "treatment": "Sarah was started on antibiotic ear drops along with advice to keep the ear completely dry for the next couple of weeks, avoiding swimming and using a hairdryer on a cool setting after showering if needed. Within a few days, the pain and swelling had noticeably improved.",
   "discharge": "She completed her course of ear drops with the infection fully settled, and was given practical advice on using earplugs while swimming and thoroughly drying her ears afterward to help prevent this recurring given her job.",
-  "dd1": [
+  "answers": [
    "Otitis externa",
    "Acute otitis media",
    "Malignant otitis externa",
    "Ear canal foreign body",
    "Otomycosis"
-  ],
-  "dd2": [
-   [
-    "Otomycosis"
-   ]
   ],
   "final": "Otitis externa"
  },
@@ -6309,17 +5818,12 @@
   ],
   "treatment": "Noah was started on a course of antibiotics along with pain relief to help him manage the throat discomfort and continue drinking fluids. Within two days, his fever settled and the swallowing pain became much more manageable, and the swelling in his neck gradually reduced.",
   "discharge": "He completed his full course of antibiotics at home and was kept off school until he was fever-free and feeling well again, as advised, to avoid passing the infection on to his classmates.",
-  "dd1": [
+  "answers": [
    "Bacterial tonsillitis",
    "Infectious mononucleosis",
    "Viral pharyngitis",
    "Peritonsillar abscess",
    "Scarlet fever"
-  ],
-  "dd2": [
-   [
-    "Infectious mononucleosis"
-   ]
   ],
   "final": "Bacterial tonsillitis"
  },
@@ -6371,17 +5875,12 @@
   ],
   "treatment": "Chloe was started on a topical antibiotic cream to apply directly to the affected areas several times a day, along with advice on gently soaking off the crusts with warm water before each application and keeping her fingernails short to reduce the spread from scratching. Within a week, the lesions had fully healed.",
   "discharge": "She was kept home from preschool until the lesions had crusted over and started healing, as advised, with hygiene tips given to her mother to reduce the small risk of it spreading to other family members or classmates.",
-  "dd1": [
+  "answers": [
    "Impetigo",
    "Herpes simplex",
    "Eczema herpeticum",
    "Insect bite reaction",
    "Contact dermatitis"
-  ],
-  "dd2": [
-   [
-    "Herpes simplex"
-   ]
   ],
   "final": "Impetigo"
  },
@@ -6433,17 +5932,12 @@
   ],
   "treatment": "Raymond was started promptly on an antiviral medication in tablet form, given within the window where it works best at reducing the severity and duration of the outbreak, along with pain relief for the nerve pain, which can sometimes be quite severe and slow to settle even after the rash itself heals. Over the following two weeks, the blisters gradually crusted over and the sharp pain slowly began to ease.",
   "discharge": "He was advised to keep the area covered while blisters were still present to avoid passing the virus to anyone who'd never had chickenpox, with a follow-up arranged to check on the nerve pain, since it can occasionally persist for some time after the rash has fully healed.",
-  "dd1": [
+  "answers": [
    "Herpes zoster",
    "Contact dermatitis",
    "Cellulitis",
    "Herpes simplex",
    "Musculoskeletal chest pain"
-  ],
-  "dd2": [
-   [
-    "Contact dermatitis"
-   ]
   ],
   "final": "Herpes zoster"
  },
@@ -6496,17 +5990,12 @@
   ],
   "treatment": "Patricia was started on a specific medication, with the dose gradually increased to find the level that controlled her symptoms while minimizing side effects. Over the following weeks, the frequency and severity of her pain episodes reduced substantially, allowing her to eat and brush her teeth again without the same dread of triggering an attack.",
   "discharge": "She continued on her medication with regular follow-up to monitor its effectiveness and any side effects, with the option of a specific surgical procedure discussed for the future if medication alone stopped controlling her symptoms adequately.",
-  "dd1": [
+  "answers": [
    "Trigeminal neuralgia",
    "Dental abscess",
    "Temporomandibular joint dysfunction",
    "Cluster headache",
    "Multiple sclerosis"
-  ],
-  "dd2": [
-   [
-    "Multiple sclerosis"
-   ]
   ],
   "final": "Trigeminal neuralgia"
  }

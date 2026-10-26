@@ -16,15 +16,11 @@ export type CaseDef = {
   investigations: Investigation[];
   treatment: string;
   discharge: string;
-  /** The doc's first list (DD1), shown in the end review only; never scored (CF1). */
-  dd1: string[];
-  /** The doc's narrowed list (DD2) without the final diagnosis, as slots: a slot counts when any of its names is
-   *  listed ("Ruptured ovarian cyst" or "Ovarian torsion"). What the filtered list scores against (CF1, CF7). */
-  dd2: string[][];
-  /** The final diagnosis (= the provisional answer). Strict match (CF3). */
+  /** "The doctor's list" (#67, Yazan 2026-10-26): the one answer list both of the player's lists score against, each
+   *  name once, the final diagnosis included. Shown in the end review. */
+  answers: string[];
+  /** The final diagnosis (= the provisional answer). Strict match (CF3); parent/child pairs keep the broader name (#65). */
   final: string;
-  /** A broader name for the final the doc listed in DD2 ("Acute appendicitis"): like the final, it neither scores nor costs in the DD. */
-  parent?: string;
 };
 
 export const CF = {
@@ -44,7 +40,7 @@ export type Run = {
   opened: FileId[];
   examPages: number[];
   examRequested: boolean;
-  /** First list (unscored), then the filtered list after the exam (scored once, CF1). */
+  /** First list, then the narrowed list after the exam; both score against the doctor's list, each name once (#67). */
   dd: string[] | null;
   filtered: string[] | null;
   invRequested: boolean;
@@ -180,19 +176,13 @@ export function stepRun(def: CaseDef, r: Run, e: RunEvent, sealed = false): Run 
 export const snapshot = (def: CaseDef, r: Run, now: number) => (r.phase === 'board' ? stepRun(def, r, { type: 'PAUSE', now }) : r);
 
 /**
- * DD: +10 per narrowed-list slot hit, -2 per entry that hits no slot, floored at 0 (CF7). A slot counts once, so a
- * second name for the same slot (or a duplicate) earns nothing and costs nothing.
+ * DD (#67, Yazan 2026-10-26): both lists score against the doctor's list, each name once across them. +10 per right
+ * name, -2 per wrong one, floored at 0. Naming it again in the narrowed list adds nothing and costs nothing.
  */
-export function scoreDd(slots: readonly (readonly string[])[], entries: readonly string[]) {
-  const unique = [...new Set(entries)];
-  const hit = new Set<number>();
-  let wrong = 0;
-  for (const x of unique) {
-    const i = slots.findIndex((names) => names.includes(x));
-    if (i < 0) wrong++;
-    else hit.add(i);
-  }
-  const right = hit.size;
+export function scoreDd(answers: readonly string[], ...lists: (readonly string[] | null | undefined)[]) {
+  const unique = [...new Set(lists.flatMap((l) => l ?? []))];
+  const right = unique.filter((x) => answers.includes(x)).length;
+  const wrong = unique.length - right;
   return { right, wrong, points: Math.max(0, right * CF.points.ddRight - wrong * CF.points.ddWrong) };
 }
 
@@ -202,7 +192,7 @@ export const timeBonus = (ms: number) => Math.round(CF.points.timeMax * Math.max
 export type Score = { dd: number; ddRight: number; ddWrong: number; provisional: number; redemption: number; time: number; total: number; solved: boolean; stamp: 'SOLVED' | 'CLOSED' };
 
 export function scoreRun(def: CaseDef, r: Run): Score {
-  const dd = scoreDd(def.dd2, (r.filtered ?? []).filter((x) => x !== def.final && x !== def.parent)); // CF7: the final is not part of the DD
+  const dd = scoreDd(def.answers, r.dd, r.filtered);
   const provisional = r.provisional?.correct ? CF.points.provisional : 0;
   const redemption = r.redemption?.correct ? CF.points.redemption : 0;
   const solved = !!r.provisional?.correct || !!r.redemption?.correct;

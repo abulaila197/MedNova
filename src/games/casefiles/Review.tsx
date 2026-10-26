@@ -7,13 +7,12 @@ import { caseNo } from './data';
 import { Btn, Card, CaseTitle, Kicker, NR, NoirScreen, Stamp, T } from './noir';
 
 /**
- * The case review once the file is closed (CF1, CF7): the stamp, the points line by line, your narrowed list
- * against the doc's, and the doc's first list for reference. The right name is shown here, at the very end.
+ * The case review once the file is closed: the stamp, the points line by line, your two lists marked against the
+ * doctor's list (#67: each name scores once across both), then the doctor's list. The right name is shown here, at the very end.
  */
 export function Review({ def, run, replay, onDone, doneLabel = 'See results' }: { def: CaseDef; run: Run; replay?: boolean; onDone: () => void; doneLabel?: string }) {
   const sc = scoreRun(def, run);
-  const hit = (x: string) => def.dd2.some((slot) => slot.includes(x));
-  const free = (x: string) => x === def.final || x === def.parent;
+  const hit = (x: string) => def.answers.includes(x);
   const lines = [
     { k: `Differential (${sc.ddRight} right, ${sc.ddWrong} wrong)`, v: sc.dd },
     { k: 'Diagnosis', v: sc.provisional },
@@ -44,24 +43,27 @@ export function Review({ def, run, replay, onDone, doneLabel = 'See results' }: 
         </View>
         {replay ? <T size={11} color={NR.dim}>A replay: no EXP this time.</T> : null}
       </View>
+      {[
+        { title: 'Your first list', list: run.dd ?? [], before: [] as string[] },
+        { title: 'Your narrowed list', list: run.filtered ?? [], before: run.dd ?? [] },
+      ].map((part) => (
+        <View key={part.title} style={s.box}>
+          <Kicker>{part.title}</Kicker>
+          {part.list.map((x) => {
+            // A name already in your first list counted there (#67: once across both lists).
+            const again = part.before.includes(x);
+            return (
+              <T key={x} size={13} color={again ? NR.soft : hit(x) ? NR.green : NR.red}>
+                {again ? '·' : hit(x) ? `+${CF.points.ddRight}` : `-${CF.points.ddWrong}`}  {x}
+                {again ? '  (in your first list, counted once)' : ''}
+              </T>
+            );
+          })}
+        </View>
+      ))}
       <View style={s.box}>
-        <Kicker>Your narrowed list</Kicker>
-        {(run.filtered ?? []).map((x, i, list) => {
-          // A slot counts once (GB5): a second name of a slot already listed scores nothing, as the total does.
-          const again = hit(x) && list.slice(0, i).some((y) => def.dd2.some((slot) => slot.includes(x) && slot.includes(y)));
-          return (
-            <T key={x} size={13} color={free(x) || again ? NR.soft : hit(x) ? NR.green : NR.red}>
-              {free(x) || again ? '·' : hit(x) ? `+${CF.points.ddRight}` : `-${CF.points.ddWrong}`}  {x}
-              {x === def.final ? '  (the diagnosis, not scored here)' : free(x) ? '  (another name for the diagnosis, not scored)' : again ? '  (same slot as a name above, counted once)' : ''}
-            </T>
-          );
-        })}
-      </View>
-      <View style={s.box}>
-        <Kicker>The narrowed list in the file</Kicker>
-        <T size={13} style={{ lineHeight: u(19) }}>{[def.final, ...def.dd2.map((slot) => slot.join(' or '))].join('  /  ')}</T>
-        <Kicker>The first list in the file</Kicker>
-        <T size={12.5} color={NR.soft} style={{ lineHeight: u(18) }}>{def.dd1.join('  /  ')}</T>
+        <Kicker>The doctor’s list</Kicker>
+        <T size={13} style={{ lineHeight: u(19) }}>{def.answers.join('  /  ')}</T>
       </View>
       <Btn label={doneLabel} onPress={onDone} />
     </NoirScreen>

@@ -8,6 +8,8 @@ import { SoloPlay } from './SoloPlay';
 
 /** Online cases in a row (1-3; an older room has none and plays one). */
 const cases = (settings: Record<string, unknown>) => Math.min(3, Math.max(1, Number(settings.count) || 1));
+/** The most right differential names one case can pay (#67: the longest doctor's list). */
+const MOST_RIGHT = Math.max(...CASES.map((c) => c.answers.length));
 
 /** Case Files on the shared shell (CF1-CF12, TMG-CF): Solo library, Offline and Online Multiplayer. */
 export const caseFiles: GameDef = {
@@ -20,7 +22,7 @@ export const caseFiles: GameDef = {
       howTo: [
         'Pick a case from the library. Every case is open.',
         'Read the personal file and the history, then write a differential of up to 5.',
-        'Request the examination, read at least one page, then narrow your list. Only the narrowed list scores.',
+        'Request the examination, read at least one page, then narrow your list. Both lists score against the doctor\'s list, each name once.',
         'Read every investigation, then name the diagnosis: right is +20. Wrong? Read the treatment and make one last call for +10.',
         `Each right differential is +${CF.points.ddRight}, each wrong one -${CF.points.ddWrong}, and solving fast adds up to +${CF.points.timeMax}.`,
         'Replaying a case is free but earns no EXP. A wrong first diagnosis goes to Learn.',
@@ -88,7 +90,7 @@ export const caseFiles: GameDef = {
   screens: caseFilesScreens,
   // CF6: a Solo case pays its points the first time only; Offline pays nothing.
   exp: (_score, items) => items.reduce((a, i) => a + (Number(i.gameData.exp) || 0), 0),
-  expCap: (settings, mode) => (mode === 'offline' ? 0 : (mode === 'online' ? cases(settings) : 1) * (3 * CF.points.ddRight + CF.points.provisional + CF.points.timeMax)),
+  expCap: (settings, mode) => (mode === 'offline' ? 0 : (mode === 'online' ? cases(settings) : 1) * (MOST_RIGHT * CF.points.ddRight + CF.points.provisional + CF.points.timeMax)),
   itemLabel: (item) => {
     const c = caseById.get(item.itemId);
     return c ? `${c.title}: ${c.final}` : item.itemId;
