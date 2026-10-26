@@ -16,6 +16,8 @@ import { CHARACTERS } from '@/games/shell/characters';
 import { MECHS } from '@/features/chests/data';
 import { ROBOTS } from '@/features/shop/robots';
 
+import { useOfflineRetry } from '@/features/offline/useOfflineRetry';
+
 import { flushInBackground, giftsSeen, loadStyle, refusedSeen, useStyle } from './useStyle';
 
 const nameOf = (id: string) => {
@@ -34,6 +36,7 @@ export function StyleHost() {
   const gifts = useStyle((s) => s.gifts);
   const avatar = useAccount((a) => a.profile?.avatar ?? 'yara');
   const refused = useStyle((s) => s.refused);
+  useOfflineRetry();
   useEffect(() => {
     void loadStyle();
   }, [userId]);
