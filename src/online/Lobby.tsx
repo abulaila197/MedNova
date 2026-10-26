@@ -352,6 +352,8 @@ function RoomSettings({ def, state, onDone }: { def: GameDef; state: RoomState; 
   const opts = def.setup.online ?? [];
   const [vals, setVals] = useState<Record<string, unknown>>(() => ({ ...state.room.settings }));
   const [pub, setPub] = useState(state.room.is_public);
+  const [saving, setSaving] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
   const rows: { key: string; label: string; choices: { value: string | number; label: string }[]; value: unknown; set: (v: string | number) => void }[] = [
     ...opts.map((o) => ({ key: o.key, label: o.label, choices: o.choices, value: vals[o.key] ?? o.initial, set: (v: string | number) => setVals((p) => ({ ...p, [o.key]: v })) })),
     ...(def.teams?.online
@@ -377,8 +379,23 @@ function RoomSettings({ def, state, onDone }: { def: GameDef; state: RoomState; 
           </View>
         </View>
       ))}
-      <Text style={[s.small, { fontFamily: L.body, color: L.dim }]}>Saving asks everyone to tap Ready again.</Text>
-      <GBtn label="Save" onPress={() => updateRoom(state.room.id, vals, pub).then(onDone).catch(onDone)} />
+      <Text style={[s.small, { fontFamily: L.body, color: err ? L.amber : L.dim }]}>{err ?? 'Saving asks everyone to tap Ready again.'}</Text>
+      <GBtn
+        label={saving ? 'Saving…' : 'Save'}
+        off={saving}
+        onPress={async () => {
+          // #12: a failed save used to close the sheet silently, so the change looked ignored. Now it says why.
+          setSaving(true);
+          setErr(null);
+          try {
+            await updateRoom(state.room.id, vals, pub);
+            onDone();
+          } catch {
+            setErr('Couldn’t save. Check your connection and try again.');
+          }
+          setSaving(false);
+        }}
+      />
     </>
   );
 }

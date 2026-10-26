@@ -49,6 +49,8 @@ function itemsOf(st: RaceState) {
  * Nova Medicordle Online (NM10, NM11, NM15-NM18, NM26-NM29): the same word for everyone, each on their own board,
  * six guesses, no letter hints. 100, 80, 65... by solve order plus 10 for each guess left. The server checks every guess.
  */
+const NOTE_AT_MS = 20_000;
+
 export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   const { st, load, server, playing, watchSub, doneLine, notice, setNotice, leave } = useRace(def, roomId, matchId, me, itemsOf);
   const [menu, setMenu] = useState(false);
@@ -109,7 +111,8 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   const nextIn = Math.max(0, Math.ceil((st.phase_ends_at - server) / 1000));
   const waiting = st.players.filter((p) => p.user_id !== me && !p.dropped && !p.done).length;
   // NM28: the definition shows on your last guess (after the 5th miss), and to everyone when the word ends.
-  const definition = reveal || (!solved && guesses.length >= MAX_ROWS - 1) ? w.definition : null;
+  // #45 (Yazan 2026-10-26): it also shows to everyone once 20 s are left on the word.
+  const definition = reveal || (!solved && guesses.length >= MAX_ROWS - 1) || left <= NOTE_AT_MS ? w.definition : null;
 
   const submit = (g: string) => {
     if (pending) return 'Sending…';

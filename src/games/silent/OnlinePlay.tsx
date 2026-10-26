@@ -70,6 +70,15 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
 
   const teams = Number(st?.settings.teams) || 0;
   const colorOf = (p: RacePlayer | undefined) => (!p ? R.soft : teams >= 2 && p.team != null ? presetTeam(p.team).color : playerColour(st?.players ?? [], p.user_id));
+  // The live channel's handlers read the latest state through these.
+  const stRef = useRef(st);
+  const pushRef = useRef(push);
+  const colorRef = useRef(colorOf);
+  useEffect(() => {
+    stRef.current = st;
+    pushRef.current = push;
+    colorRef.current = colorOf;
+  });
 
   // Live strokes from the drawer (the stroke being drawn, and the board after each line).
   useEffect(() => {
@@ -80,13 +89,18 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
         setStrokes((cur) => (p.turn > cur.turn || (p.turn === cur.turn && p.version > cur.version) ? p : cur));
         live.set(null);
       })
+      // #19 (Yazan 2026-10-26): a close guess tells everyone who is close, never the guess itself.
+      .on('broadcast', { event: 'close' }, ({ payload }) => {
+        const p = stRef.current?.players.find((x) => x.user_id === (payload as { user_id?: string })?.user_id);
+        if (p && p.user_id !== me) pushRef.current(`@${p.name} is so close!`, colorRef.current(p));
+      })
       .subscribe();
     channel.current = ch;
     return () => {
       channel.current = null;
       supabase.removeChannel(ch);
     };
-  }, [matchId, live]);
+  }, [matchId, live, me]);
 
   // Catch up from the saved board when the server's version moves past ours (missed broadcasts, a reconnect).
   const sa = st?.sa;
@@ -231,7 +245,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
             <WrongGuesses list={sa.guesses} players={st.players} />
           </Frame>
         </View>
-        {playing ? <GuessBox key={st.index} solved={st.me?.solved_ms != null} points={st.me?.points ?? 0} rank={st.me?.rank ?? null} matchId={matchId} load={load} /> : <Note style={{ textAlign: 'center' }}>{watchLine}</Note>}
+        {playing ? <GuessBox key={st.index} solved={st.me?.solved_ms != null} points={st.me?.points ?? 0} rank={st.me?.rank ?? null} matchId={matchId} load={load} onClose={() => void channel.current?.send({ type: 'broadcast', event: 'close', payload: { user_id: me } })} /> : <Note style={{ textAlign: 'center' }}>{watchLine}</Note>}
         {playing ? <ReportBtn sa={sa} matchId={matchId} load={load} /> : null}
       </KeyboardLift>
       {extras}
@@ -300,7 +314,7 @@ function WrongGuesses({ list, players }: { list: NonNullable<RaceState['sa']>['g
 }
 
 /** Type a guess. The server runs the coded matcher on it and says right, close or not. */
-function GuessBox({ solved, points, rank, matchId, load }: { solved: boolean; points: number; rank: number | null; matchId: string; load: () => Promise<void> }) {
+function GuessBox({ solved, points, rank, matchId, load, onClose }: { solved: boolean; points: number; rank: number | null; matchId: string; load: () => Promise<void>; onClose: () => void }) {
   const R = useSlateRoom();
   const [text, setText] = useState('');
   const [line, setLine] = useState<string | null>(null);
@@ -312,6 +326,7 @@ function GuessBox({ solved, points, rank, matchId, load }: { solved: boolean; po
     try {
       const { result: res } = await invoke<{ result: string }>('silent-artist', { m: matchId, guess: g });
       setLine(res === 'correct' ? null : res === 'close' ? `“${g}” is so close!` : res === 'wrong' ? `Not “${g}”` : null);
+      if (res === 'close') onClose();
       setText('');
       await load();
     } catch {
