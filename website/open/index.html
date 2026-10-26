@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Open in MedNova</title>
+<meta name="description" content="Open this MedNova invite in the app.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0d1738">
+<link rel="icon" href="/assets/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/site.css">
+</head>
+<body>
+<header class="top"><a class="brand" href="/"><img src="/assets/icon-192.png" alt="" width="34" height="34"><span>Med<em>Nova</em></span></a><nav><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a><a href="/delete-account/">Delete account</a><a href="/support/">Support</a></nav></header>
+<main>
+<section class="hero open"><img src="/assets/icon-192.png" alt="" width="96" height="96"><p class="kick" id="kind">MedNova invite</p><h1 id="head">Open this in <em>MedNova.</em></h1><p class="code" id="code" hidden></p><a class="btn" id="go" href="/">Open MedNova</a><p class="lead" id="how">If nothing happens, MedNova is not on this phone yet. It is coming soon to the App Store and Google Play.</p></section>
+</main>
+<footer><p>© 2026 MedNova · For education only, not medical advice. All cases and patients are fictional.</p><p><a href="mailto:Support.novagames@gmail.com">Support.novagames@gmail.com</a></p></footer>
+<script>
+(function () {
+  var NAMES = {"the-diagnostic-pursuit":"The Diagnostic Pursuit","the-silent-artist":"The Silent Artist","nova-crossword":"Nova Crossword","the-quiz-parade":"The Quiz Parade","the-riddler":"The Riddler","the-conqueror":"The Conqueror","nova-password":"Nova Password","nova-medicordle":"Nova Medicordle","the-streak-master":"The Streak Master","code-clinic":"Code Clinic","case-files-unsolved":"Case Files","the-wheels-of-chaos":"The Wheels of Chaos","imposter":"The Imposter"};
+  var m = location.pathname.match(/^\/(add|join)\/([A-Za-z0-9-]{1,24})\/?$/);
+  if (!m) return;
+  var kind = m[1], code = m[2].toUpperCase();
+  var g = new URLSearchParams(location.search).get('g') || '';
+  if (!/^[a-z0-9-]{1,40}$/.test(g)) g = '';
+  var link = 'mednova://' + kind + '/' + code + (kind === 'join' && g ? '?g=' + encodeURIComponent(g) : '');
+  var $ = function (id) { return document.getElementById(id); };
+  $('code').hidden = false;
+  $('code').textContent = code;
+  $('go').href = link;
+  if (kind === 'add') {
+    $('kind').textContent = 'Friend invite';
+    $('head').innerHTML = 'You are invited to <em>be friends.</em>';
+    $('how').textContent = 'Tap Open MedNova. No app yet? Once you have it, open Profile, tap + Add friend and enter the code above.';
+  } else {
+    $('kind').textContent = NAMES[g] ? NAMES[g] + ' room' : 'Room invite';
+    $('head').innerHTML = 'Join the room <em>and play.</em>';
+    $('how').textContent = 'Tap Open MedNova. No app yet? Once you have it, open the game, choose Online and type the room code above.';
+  }
+  location.href = link;
+})();
+</script>
+</body>
+</html>
