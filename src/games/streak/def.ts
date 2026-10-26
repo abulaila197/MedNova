@@ -16,7 +16,7 @@ const STYLE = {
   initial: 'mixed',
 };
 
-// SM7: online rooms pick 5, 10 or 15 questions (Yazan 2026-10-25, was 10/15/20) and 10, 15 or 20 s per question.
+// SM7: online rooms pick 5, 10 or 15 questions (Yazan 2026-10-25, was 10/15/20) and 15, 20 or 25 s per question (#76: +5 s, Online only, Yazan 2026-10-26).
 const QUESTIONS_N = {
   key: 'questions',
   label: 'How many',
@@ -31,11 +31,11 @@ const QTIME = {
   key: 'qtime',
   label: 'Time per question',
   choices: [
-    { value: 10, label: '10 s' },
     { value: 15, label: '15 s' },
     { value: 20, label: '20 s' },
+    { value: 25, label: '25 s' },
   ],
-  initial: 15,
+  initial: 20,
 };
 
 const LENGTH = {

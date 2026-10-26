@@ -24,8 +24,20 @@ export const SL = {
   pink: '#f3a6b6',
   blue: '#9fd3ef',
   red: '#f08a7e',
-  inks: ['#f4f1e6', '#f2df8a', '#f3a6b6', '#9fd3ef'],
-  inkNames: ['White chalk', 'Yellow chalk', 'Pink chalk', 'Blue chalk'],
+  // #11 (Yazan 2026-10-26): 24 colours. The first 4 are the chalk sticks on the ledge; the palette holds all 24.
+  // Strokes carry the colour itself, so every phone draws the same whatever its palette.
+  inks: [
+    '#f4f1e6', '#f2df8a', '#f3a6b6', '#9fd3ef', '#a8e6c1', '#c9b6f2',
+    '#ef4444', '#f97316', '#f5b82e', '#84cc16', '#22c55e', '#14b8a6',
+    '#38bdf8', '#3b82f6', '#6366f1', '#8b5cf6', '#d946ef', '#f43f5e',
+    '#9ca3af', '#f1c27d', '#92400e', '#7f1d1d', '#1e3a8a', '#111111',
+  ],
+  inkNames: [
+    'White chalk', 'Yellow chalk', 'Pink chalk', 'Blue chalk', 'Mint', 'Lilac',
+    'Red', 'Orange', 'Amber', 'Lime', 'Green', 'Teal',
+    'Sky blue', 'Blue', 'Indigo', 'Violet', 'Magenta', 'Rose',
+    'Grey', 'Skin', 'Brown', 'Dark red', 'Navy', 'Black',
+  ],
   sizes: [9, 20] as [number, number],
   head: 'CabinSketch_700Bold',
   headLight: 'CabinSketch_400Regular',
@@ -148,25 +160,51 @@ export function HintCard({ hint }: { hint: HintView }) {
   );
 }
 
-/** Chalk sticks and actions on the wooden ledge under the board. */
+/** Chalk sticks and actions on the wooden ledge under the board; the palette opens all 24 colours above it (#11). */
 export function Ledge({ ink, size, erase, onInk, onSize, onErase, onUndo, onClear }: { ink: number; size: number; erase: boolean; onInk: (i: number) => void; onSize: () => void; onErase: () => void; onUndo: () => void; onClear: () => void }) {
+  const [open, setOpen] = useState(false);
   const tool = (key: string, on: boolean, child: ReactNode, onPress: () => void, label: string) => (
     <Pressable key={key} onPress={onPress} hitSlop={u(4)} style={[s.tool, on && { transform: [{ translateY: -u(4) }] }]} accessibilityRole="button" accessibilityLabel={label} accessibilityState={{ selected: on }}>
       {child}
     </Pressable>
   );
   const word = (t: string, on = false) => <Text style={[s.toolT, on && { color: SL.yellow }]}>{t}</Text>;
+  const pick = (i: number) => {
+    onInk(i);
+    setOpen(false);
+  };
+  const extra = !erase && ink >= QUICK;
   return (
-    <View style={s.ledge}>
-      {SL.inks.map((c, i) => tool(`i${i}`, !erase && ink === i, <View style={[s.stick, { backgroundColor: c, opacity: !erase && ink === i ? 1 : 0.72 }]} />, () => onInk(i), SL.inkNames[i]))}
-      <View style={s.sep} />
-      {tool('size', false, word(size ? 'Thick' : 'Thin'), onSize, 'Line size')}
-      {tool('erase', erase, word('Erase', erase), onErase, 'Eraser')}
-      {tool('undo', false, word('Undo'), onUndo, 'Undo')}
-      {tool('clear', false, word('Clear'), onClear, 'Clear the board')}
+    <View style={{ zIndex: 10 }}>
+      {open ? (
+        <View style={s.palette}>
+          {SL.inks.map((c, i) => (
+            <Pressable key={c} onPress={() => pick(i)} style={[s.swatch, { backgroundColor: c }, !erase && ink === i ? s.swatchOn : null]} accessibilityRole="button" accessibilityLabel={SL.inkNames[i]} accessibilityState={{ selected: !erase && ink === i }} />
+          ))}
+        </View>
+      ) : null}
+      <View style={s.ledge}>
+        {SL.inks.slice(0, QUICK).map((c, i) => tool(`i${i}`, !erase && ink === i, <View style={[s.stick, { backgroundColor: c, opacity: !erase && ink === i ? 1 : 0.72 }]} />, () => pick(i), SL.inkNames[i]))}
+        {tool(
+          'palette',
+          extra || open,
+          <View style={[s.wheel, extra ? { backgroundColor: SL.inks[ink] } : null]}>
+            {extra ? null : PALETTE_DOTS.map((c) => <View key={c} style={[s.wheelDot, { backgroundColor: c }]} />)}
+          </View>,
+          () => setOpen(!open),
+          'All colours',
+        )}
+        <View style={s.sep} />
+        {tool('size', false, word(size ? 'Thick' : 'Thin'), onSize, 'Line size')}
+        {tool('erase', erase, word('Erase', erase), onErase, 'Eraser')}
+        {tool('undo', false, word('Undo'), onUndo, 'Undo')}
+        {tool('clear', false, word('Clear'), onClear, 'Clear the board')}
+      </View>
     </View>
   );
 }
+const QUICK = 4;
+const PALETTE_DOTS = ['#ef4444', '#f5b82e', '#22c55e', '#3b82f6'];
 
 /** "Hold to peek": the performer sees the disease again only while holding. */
 export function Peek({ word }: { word: string }) {
@@ -265,7 +303,12 @@ const s = StyleSheet.create({
   mask: { fontFamily: SL.head, fontSize: u(17), letterSpacing: u(3) },
   ledge: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: SL.frame, borderRadius: u(3), paddingVertical: u(6), paddingHorizontal: u(8), boxShadow: 'inset 0 2px 3px rgba(0,0,0,0.35)' },
   tool: { paddingVertical: u(4), paddingHorizontal: u(2), alignItems: 'center', justifyContent: 'center' },
-  stick: { width: u(26), height: u(8), borderRadius: u(4), boxShadow: '0 1px 1px rgba(0,0,0,0.4)' },
+  stick: { width: u(22), height: u(8), borderRadius: u(4), boxShadow: '0 1px 1px rgba(0,0,0,0.4)' },
+  wheel: { width: u(18), height: u(18), borderRadius: u(9), flexDirection: 'row', flexWrap: 'wrap', overflow: 'hidden', borderWidth: 1.5, borderColor: SL.chalk },
+  wheelDot: { width: '50%', height: '50%' },
+  palette: { position: 'absolute', bottom: '100%', left: 0, right: 0, marginBottom: u(6), flexDirection: 'row', flexWrap: 'wrap', gap: u(6), padding: u(8), backgroundColor: SL.frameDark, borderRadius: u(6), boxShadow: '0 4px 12px rgba(0,0,0,0.45)' },
+  swatch: { width: '14.2%', aspectRatio: 1.6, borderRadius: u(4), borderWidth: 1, borderColor: 'rgba(0,0,0,0.35)' },
+  swatchOn: { borderWidth: 2.5, borderColor: SL.chalk },
   toolT: { fontFamily: SL.body, fontSize: u(12), color: SL.chalk },
   sep: { width: 1, height: u(18), backgroundColor: 'rgba(0,0,0,0.25)' },
   peek: { flex: 1.15, justifyContent: 'center', borderWidth: 1, borderStyle: 'dashed', borderRadius: u(10), paddingVertical: u(10), paddingHorizontal: u(10) },

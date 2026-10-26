@@ -277,14 +277,19 @@ function PassedRow({ c, cols, tile, color }: { c: SlideColors; cols: number; til
 
 const MARK_BG = (c: SlideColors, m: Mark) => (m === 'ok' ? c.ok : m === 'near' ? c.near : c.off);
 
+/** #16 (Yazan 2026-10-26): the reveal starts sooner and plays faster (was 140 ms apart, 620 ms each, colour from 38%). */
+const STAGGER_MS = 70;
+const REVEAL_MS = 360;
+const COLOUR_FROM = 0.2;
+
 /** One glass slide. `delay` >= 0 plays the reveal: sheen first, then the colour glows in, slide by slide. */
 function Tile({ c, size, letter, mark, delay, ghost, typed, edge }: { c: SlideColors; size: number; letter: string; mark: Mark | null; delay: number; ghost?: string; typed?: boolean; edge?: string }) {
   const t = useTheme();
   const p = useSharedValue(delay >= 0 ? 0 : 1);
   useEffect(() => {
-    if (delay >= 0) p.value = withDelay(delay * 140, withTiming(1, { duration: 620 }));
+    if (delay >= 0) p.value = withDelay(delay * STAGGER_MS, withTiming(1, { duration: REVEAL_MS }));
   }, [delay, p]);
-  const colour = useAnimatedStyle(() => ({ opacity: interpolate(p.value, [0.38, 1], [0, 1], 'clamp') }));
+  const colour = useAnimatedStyle(() => ({ opacity: interpolate(p.value, [COLOUR_FROM, 1], [0, 1], 'clamp') }));
   const sheen = useAnimatedStyle(() => ({ transform: [{ translateX: interpolate(p.value, [0, 0.55], [-size * 1.4, size * 1.4], 'clamp') }, { rotate: '20deg' }] }));
   const lit = mark === 'ok' || mark === 'near';
   const bg = mark ? MARK_BG(c, mark) : null;
