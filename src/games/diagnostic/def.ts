@@ -38,7 +38,7 @@ export const diagnosticPursuit: GameDef = {
       blurb: 'A new clue every 10 seconds. First to the diagnosis scores most.',
       howTo: [
         'Join a room with a code or from the open list, or host your own. 2 to 6 players.',
-        'Everyone gets the same case. A new clue appears every 10 seconds, or at once when someone gets it right. A case lasts 60 seconds.',
+        'Everyone gets the same case. A new clue appears every 10 seconds, and a case lasts 60 seconds.',
         'Guess as often as you like. A wrong guess locks you out for 5 seconds. There is no Skip, Reveal or Hint.',
         'Points: solving order (100, 80, 65, 50, 40, 30) + fewer clues (up to 50) + time left (up to 20).',
         'Most points after the last case wins. Your unsolved cases go to your Learn review.',

@@ -44,8 +44,6 @@ type DPState = {
   total: number;
   case_number: number | null;
   answer_id: string | null;
-  /** Clues showing now (#18: a right answer brings the next one early); null on old servers and outside a case. */
-  clues?: number | null;
   settings: Record<string, unknown>;
   players: P[];
   me: { locked_until: number | null; wrong: string[]; solved_ms: number | null; rank: number | null; points: number; clues: number | null } | null;
@@ -55,8 +53,7 @@ type DPState = {
 const CASE_MS = 60_000;
 
 /**
- * DP Online (DPN1-DPN7): everyone gets the same case, one clue every 10 s, 60 s per case; a right answer by anyone
- * brings the next clue at once and the 10 s restart from it (#18). The server referees (ON17):
+ * DP Online (DPN1-DPN7): everyone gets the same case, one clue every 10 s, 60 s per case. The server referees (ON17):
  * this screen asks it for the state every second, sends guesses, and shows the result. No Skip, Reveal or Hint online.
  */
 export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
@@ -173,8 +170,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   const elapsed = Math.max(0, server - st.phase_started_at);
   const reveal = st.phase === 'reveal';
   const solved = st.me?.solved_ms != null;
-  const live = st.clues ?? Math.min(DP.clueCount, Math.floor(elapsed / 10_000) + 1);
-  const clues = reveal || solved ? (solved && !reveal ? st.me!.clues ?? DP.clueCount : DP.clueCount) : Math.min(DP.clueCount, Math.max(1, live));
+  const clues = reveal || solved ? (solved && !reveal ? st.me!.clues ?? DP.clueCount : DP.clueCount) : Math.min(DP.clueCount, Math.floor(elapsed / 10_000) + 1);
   const attempt: Attempt = { cluesShown: clues, wrong: st.me?.wrong ?? [], reveals: 0, status: solved ? 'solved' : 'active' };
   const left = reveal ? 0 : Math.max(0, st.phase_ends_at - server);
   const lockLeft = st.me?.locked_until ? st.me.locked_until - server : 0;
