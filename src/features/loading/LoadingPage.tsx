@@ -60,23 +60,31 @@ export function LoadingPage({ g, w, h, live, p, tip, barRef }: { g: LoadCfg; w: 
 
       <View style={[s.txt, { top: q(g.txt.top) + Math.max(0, ins.top - q(24)), alignItems: center ? 'center' : 'flex-start', transform: g.txt.rot ? [{ rotate: `${g.txt.rot}deg` }] : undefined }]}>
         <Text style={[s.orig, { fontFamily: g.orig.f, color: g.orig.c, textAlign: g.txt.align }]}>MedNova Original:</Text>
-        <Text
-          style={{
-            marginTop: q(6),
-            fontFamily: g.title.f,
-            fontSize: q(g.title.s),
-            lineHeight: q(g.title.s * 1.02),
-            color: g.title.c,
-            letterSpacing: ls(g.title.ls, g.title.s),
-            textAlign: g.txt.align,
-            textShadowColor: g.title.sh ?? 'rgba(0,0,0,0.25)',
-            textShadowOffset: { width: 0, height: g.title.sh ? 0 : 2 },
-            textShadowRadius: q(g.title.sh ? 16 : 12),
-          }}
-        >
-          {`${LEAD[g.key]} `}
-          <Text style={{ color: g.title.em, fontFamily: g.title.emF ?? g.title.f }}>{EM[g.key]}</Text>
-        </Text>
+        {/* #13: the two title words are separate texts, not one text with a nested span. On Android a nested span in
+            another font (or one measured before its font loaded) sometimes lost the game's word. */}
+        <View style={{ marginTop: q(6), flexDirection: 'row', flexWrap: 'wrap', justifyContent: center ? 'center' : 'flex-start', columnGap: q(g.title.s * 0.24) }}>
+          {[
+            { t: LEAD[g.key], c: g.title.c, f: g.title.f },
+            { t: EM[g.key], c: g.title.em, f: g.title.emF ?? g.title.f },
+          ].map((x, i) => (
+            <Text
+              key={i}
+              style={{
+                fontFamily: x.f,
+                fontSize: q(g.title.s),
+                lineHeight: q(g.title.s * 1.02),
+                color: x.c,
+                letterSpacing: ls(g.title.ls, g.title.s),
+                textAlign: g.txt.align,
+                textShadowColor: g.title.sh ?? 'rgba(0,0,0,0.25)',
+                textShadowOffset: { width: 0, height: g.title.sh ? 0 : 2 },
+                textShadowRadius: q(g.title.sh ? 16 : 12),
+              }}
+            >
+              {x.t}
+            </Text>
+          ))}
+        </View>
         <Text style={{ marginTop: q(8), fontFamily: g.sub.f, fontSize: q(g.sub.s), lineHeight: q(g.sub.s * 1.25), color: g.sub.c, letterSpacing: ls(g.sub.ls, g.sub.s), textAlign: g.txt.align }}>{SUB[g.key]}</Text>
         <View ref={barRef} collapsable={false} style={{ marginTop: q(20), height: barHeight(g), width: barW, alignSelf: center ? 'center' : 'flex-start' }}>
           <Bar g={g} p={p} w={barW} />

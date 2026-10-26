@@ -14,7 +14,7 @@ export const STYLES: Record<Style, { name: string; points: number; seconds: numb
   mcq: { name: 'Direct MCQ', points: 1, seconds: 20 },
   tf: { name: 'True or False', points: 1, seconds: 15 },
   r2o: { name: 'Rule 2 Out', points: 2, seconds: 30 },
-  match: { name: 'Matching', points: 3, seconds: 30 },
+  match: { name: 'Matching', points: 3, seconds: 35 }, // +5 s (Yazan 2026-10-24, #63)
   riddle: { name: 'Riddle MCQ', points: 1, seconds: 20 },
   reverse: { name: 'Reverse Question', points: 2, seconds: 30 },
   lie: { name: 'Three Truths and a Lie', points: 2, seconds: 30 },
@@ -185,11 +185,11 @@ function answer(t: Turn, a: Answer, now: number): Turn {
   return { ...t, phase: 'feedback', until: now + (right ? FEEDBACK_MS.right : FEEDBACK_MS.wrong), results: [...t.results, r] };
 }
 
-function nextQuestion(t: Turn, bank: Bank, rng: Rng): Turn {
+/** #63 (Yazan 2026-10-26, one spin per turn): the next question keeps the turn's style and field and starts at once. */
+function nextQuestion(t: Turn, bank: Bank, rng: Rng, now: number): Turn {
   if (t.k + 1 >= t.count) return { ...t, phase: 'over', until: null };
-  const combo = spinCombo(t.combo, rng, t.mix);
-  const question = pickQuestion(bank, combo.style, combo.field, t.seen, rng);
-  return { ...t, k: t.k + 1, combo, question, phase: 'reveal', until: null, seen: [...t.seen, question.id] };
+  const question = pickQuestion(bank, t.combo.style, t.combo.field, t.seen, rng);
+  return ask({ ...t, k: t.k + 1, question, seen: [...t.seen, question.id] }, now);
 }
 
 export function stepTurn(t: Turn, e: TurnEvent, bank: Bank, rng: Rng): Turn {
@@ -222,7 +222,7 @@ export function stepTurn(t: Turn, e: TurnEvent, bank: Bank, rng: Rng): Turn {
       if (t.until == null || e.now < t.until) return t;
       if (t.phase === 'star') return ask({ ...t, star: 'used' }, e.now);
       if (t.phase === 'question') return answer(t, null, e.now);
-      if (t.phase === 'feedback') return nextQuestion(t, bank, rng);
+      if (t.phase === 'feedback') return nextQuestion(t, bank, rng, e.now);
       return t;
   }
 }

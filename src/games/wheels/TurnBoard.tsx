@@ -2,7 +2,7 @@
 // own style with the bulb timer, and the right/wrong moment. Used by Solo and Pass the phone.
 import { LinearGradient } from 'expo-linear-gradient';
 import { memo, useEffect, useEffectEvent, useMemo, useState, type ReactNode } from 'react';
-import { Pressable, StyleSheet, View, type LayoutChangeEvent } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View, type LayoutChangeEvent } from 'react-native';
 import { Text } from '@/components/AppText';
 
 import { u } from '@/theme/scale';
@@ -14,7 +14,9 @@ import { Brass, Btn, BODY, BODY_B, Bulbs, CardArt, CB, CD, CM, Gem, Kicker, Paus
 export type Strip = { seat: number; name: string; color?: string; score: number; me?: boolean }[];
 
 const SPIN_MS = 70;
-const STOP = { count: 700, style: 1100, field: 1500, go: 2300 };
+/** #81 (Yazan 2026-10-24): the reels spin one after another, each for REEL_MS; #56: the result then holds HOLD_MS. */
+const REEL_MS = 900;
+const HOLD_MS = 3000;
 const LETTERS = 'ABCD';
 const PAIR_INK = ['#79c9b6', '#b98ad8', '#e8c46a', '#e0828f', '#8fb4e8', '#d9a07a'];
 /** A paired Matching box: the pair's colour on the edge, with a soft glow in the same colour. */
@@ -22,16 +24,21 @@ const glow = (c: string) => ({ borderColor: c, shadowColor: c, shadowOpacity: 0.
 const qWord = (n: number) => `${n} Question${n > 1 ? 's' : ''}`;
 
 /**
- * The three reels and the banner. Spins the reels that change for this question (every SPIN_MS, in this small part
- * of the board only), stops them one by one, then tells the turn to go on. Mounted again for each spin (`key`) and
- * after a pause (the board is hidden), so the spin starts from 0 as before.
+ * The three reels and the banner. The reels that change for this question spin one after another (#81), each in
+ * this small part of the board only, then the result holds for 3 s (#56) before the turn goes on. Mounted again for
+ * each spin (`key`) and after a pause (the board is hidden), so the spin starts from 0 as before.
  */
 function Reels({ turn, onGo }: { turn: Turn; onGo: () => void }) {
   // A Star re-spin keeps the count and style (the Star only re-spins the field); a later question keeps the count.
   const respin = turn.star === 'used' && turn.k === 0;
-  const spinCount = turn.k === 0 && !respin;
-  const spinStyle = !respin;
   const spinning = turn.phase === 'reveal';
+  const order = [...(turn.k === 0 && !respin ? ['count'] : []), ...(!respin ? ['style'] : []), 'field'] as const;
+  const stopAt = (reel: 'count' | 'style' | 'field') => {
+    const i = (order as readonly string[]).indexOf(reel);
+    return i < 0 ? -1 : (i + 1) * REEL_MS;
+  };
+  const startAt = (reel: 'count' | 'style' | 'field') => stopAt(reel) - REEL_MS;
+  const settleAt = order.length * REEL_MS;
   const [t, setT] = useState(0);
   const go = useEffectEvent(onGo);
   useEffect(() => {
@@ -40,26 +47,30 @@ function Reels({ turn, onGo }: { turn: Turn; onGo: () => void }) {
     const id = setInterval(() => {
       const e = Date.now() - start;
       setT(e);
-      if (e >= STOP.go) {
+      if (e >= settleAt + HOLD_MS) {
         clearInterval(id);
         go();
       }
     }, SPIN_MS);
     return () => clearInterval(id);
-  }, [spinning]);
+  }, [spinning, settleAt]);
   const tick = Math.floor(t / SPIN_MS);
-  const count = spinning && spinCount && t < STOP.count ? String(1 + (tick % 3)) : String(turn.count);
-  const style = spinning && spinStyle && t < STOP.style ? STYLES[STYLE_KEYS[tick % STYLE_KEYS.length]].name : STYLES[turn.combo.style].name;
-  const field = spinning && t < STOP.field ? FIELDS[(tick * 3) % FIELDS.length].name : fieldName(turn.combo.field);
-  const settled = !spinning || t >= STOP.field;
+  const moving = (reel: 'count' | 'style' | 'field') => spinning && t >= startAt(reel) && t < stopAt(reel);
+  // A reel waiting for its turn shows a blank, so they land one after another.
+  const waiting = (reel: 'count' | 'style' | 'field') => spinning && t < startAt(reel);
+  const value = (reel: 'count' | 'style' | 'field', rolling: string, landed: string) => (moving(reel) ? rolling : waiting(reel) ? '?' : landed);
+  const count = value('count', String(1 + (tick % 3)), String(turn.count));
+  const style = value('style', STYLES[STYLE_KEYS[tick % STYLE_KEYS.length]].name, STYLES[turn.combo.style].name);
+  const field = value('field', FIELDS[(tick * 3) % FIELDS.length].name, fieldName(turn.combo.field));
+  const settled = !spinning || t >= settleAt;
   const st = STYLES[turn.question.style];
   return (
     <>
-      <Reel label="COUNT" value={count} spinning={spinning && !settled} />
-      <Reel label="STYLE" value={style} spinning={spinning && !settled} />
-      <Reel label="FIELD" value={field} spinning={spinning && !settled} />
+      <Reel label="COUNT" value={count} spinning={moving('count') || waiting('count')} />
+      <Reel label="STYLE" value={style} spinning={moving('style') || waiting('style')} />
+      <Reel label="FIELD" value={field} spinning={moving('field') || waiting('field')} />
       <View style={{ height: u(2) }} />
-      {settled ? <Banner parts={[turn.k ? `Question ${turn.k + 1} of ${turn.count}` : qWord(turn.count), st.name, fieldName(turn.combo.field)]} /> : null}
+      {settled ? <Banner parts={[turn.k ? `Question ${turn.k + 1} of ${turn.count}` : qWord(turn.count), st.name, fieldName(turn.combo.field)]} /> : <View style={{ height: u(66) }} />}
     </>
   );
 }
@@ -123,8 +134,9 @@ const markColor = (m: Mark) => (m === 'right' ? VV.right : m === 'wrong' ? VV.wr
 function Option({ letter, text, mark = 'none', on, onPress, disabled, cross, fill }: { letter?: string; text: string; mark?: Mark; on?: boolean; onPress?: () => void; disabled?: boolean; cross?: boolean; fill?: boolean }) {
   const c = markColor(mark);
   return (
-    <Pressable onPress={onPress} disabled={disabled} accessibilityRole="button" accessibilityState={{ selected: on }} accessibilityLabel={text} style={fill ? { flex: 1 } : null}>
-      <Brass r={12} style={fill ? { flex: 1 } : null} inner={[{ backgroundColor: on ? '#5c0c18' : VV.panel, borderWidth: c ? 2 : 0, borderColor: c ?? 'transparent' }, fill ? { flex: 1, justifyContent: 'center' } : null]}>
+    // fill grows to the tallest box (flexGrow, not flex: 1, whose 0 basis collapsed Rule 2 Out boxes and hid their text, #63).
+    <Pressable onPress={onPress} disabled={disabled} accessibilityRole="button" accessibilityState={{ selected: on }} accessibilityLabel={text} style={fill ? { flexGrow: 1 } : null}>
+      <Brass r={12} style={fill ? { flexGrow: 1 } : null} inner={[{ backgroundColor: on ? '#5c0c18' : VV.panel, borderWidth: c ? 2 : 0, borderColor: c ?? 'transparent' }, fill ? { flexGrow: 1, justifyContent: 'center' } : null]}>
         {cross ? <T f={CB} size={11} color={VV.ink} style={s.cross}>✕</T> : null}
         <View style={s.opt}>
           {letter ? (
@@ -307,6 +319,8 @@ export function TurnBoard({ turn, now, kicker, title, strip, tray = [], footer, 
           </View>
           <PauseBtn onPress={onPause} />
         </View>
+        {/* #81: the reels sit in the middle of the screen. */}
+        <View style={{ flex: 1, justifyContent: 'center', gap: u(11) }}>
         <Reels key={`${turn.k}:${q.id}:${turn.star}`} turn={turn} onGo={() => !watch && onEvent({ type: 'GO', now: Date.now() })} />
         {turn.phase === 'star' ? (
           <Brass r={14} inner={{ backgroundColor: VV.panel, padding: u(12), gap: u(9) }}>
@@ -328,7 +342,7 @@ export function TurnBoard({ turn, now, kicker, title, strip, tray = [], footer, 
             )}
           </Brass>
         ) : null}
-        <View style={{ flex: 1 }} />
+        </View>
         {turn.sun ? <T f={CM} size={11.5} color={VV.gold} style={{ textAlign: 'center' }}>The Sun doubles this turn’s points.</T> : null}
         <Tray cards={tray} />
       </View>
@@ -349,6 +363,8 @@ export function TurnBoard({ turn, now, kicker, title, strip, tray = [], footer, 
         <T f={CM} size={12} color={VV.soft}>{`${st.name} · ${st.points} pt${st.points > 1 ? 's' : ''}${turn.sun ? ' ×2' : ''}`}</T>
       </View>
       {strip ? <ScoreStrip strip={strip} /> : null}
+      {/* #63: a long Matching (or any long question) scrolls instead of running off small screens. */}
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ gap: u(8), paddingBottom: u(4) }} showsVerticalScrollIndicator={false}>
       <Brass r={14} inner={{ backgroundColor: VV.panel, paddingHorizontal: u(13), paddingVertical: u(10), gap: u(4) }}>
         <View style={s.spread}>
           <T f={CM} size={11} color={VV.right} style={{ letterSpacing: u(1.4) }}>{fieldName(q.field).toUpperCase()}</T>
@@ -364,7 +380,7 @@ export function TurnBoard({ turn, now, kicker, title, strip, tray = [], footer, 
           <T f={CD} size={20} color={result.right ? VV.right : VV.wrong}>{result.right ? `Bravo! +${result.points * (turn.sun ? 2 : 1)}` : result.answer == null ? 'Time is up' : 'Not this time'}</T>
         </View>
       ) : null}
-      <View style={{ flex: 1 }} />
+      </ScrollView>
       {footer}
       <Tray cards={tray} />
     </View>
