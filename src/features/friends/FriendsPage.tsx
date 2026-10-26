@@ -90,7 +90,7 @@ function Strip({ t, code }: { t: Theme; code: string }) {
 // Rewards for redeemed invite codes (Yazan 2026-10-25): the Inviter set at 10, Linky at 20 (the server grants both).
 const GOALS = [
   { n: 10, name: 'Inviter set', item: 'frame:inviter', what: 'Frame, name box and the Friendship Chain win effect' },
-  { n: 20, name: 'Linky', item: 'robot:linky', what: 'The Friend Signal, a 4-star character (or follow all our pages)' },
+  { n: 20, name: 'Linky', item: 'robot:linky', what: 'The Friend Signal, a 4-star character' },
 ];
 
 /** How far your redeemed codes are from each reward. Tapping opens the Style shop. */

@@ -15,7 +15,7 @@ export const ROBOTS: Robot[] = [
   { key: 'nimbus', name: 'Nimbus', title: 'The Cloud Surfer', stars: 4, price: 1000, group: 'shop', card: require('../../../assets/shop/nimbus-card.jpg'), face: require('../../../assets/shop/nimbus-face.webp') },
   { key: 'ember', name: 'Ember', title: 'The Fire Dancer', stars: 4, price: 1000, group: 'shop', card: require('../../../assets/shop/ember-card.jpg'), face: require('../../../assets/shop/ember-face.webp') },
   { key: 'zenith', name: 'Zenith', title: 'The Star Pilot', stars: 5, price: 1500, group: 'shop', card: require('../../../assets/shop/zenith-card.jpg'), face: require('../../../assets/shop/zenith-face.webp') },
-  { key: 'linky', name: 'Linky', title: 'The Friend Signal', stars: 4, price: null, group: 'special', how: 'Follow all our pages, or have 20 friends redeem your code', card: require('../../../assets/shop/linky-card.jpg'), face: require('../../../assets/shop/linky-face.webp') },
+  { key: 'linky', name: 'Linky', title: 'The Friend Signal', stars: 4, price: null, group: 'special', how: 'Have 20 friends redeem your code', card: require('../../../assets/shop/linky-card.jpg'), face: require('../../../assets/shop/linky-face.webp') },
   { key: 'sovereign', name: 'Sovereign', title: 'The Crown Engine', stars: 6, price: null, group: 'special', how: 'Sovereign package: $10 with its frame and 500 tokens', card: require('../../../assets/shop/sovereign-card.jpg'), face: require('../../../assets/shop/sovereign-face.webp') },
   { key: 'admin', name: 'Admin', title: 'The Architect', stars: 6, price: null, group: 'special', how: 'Only on the MedNova team account', card: require('../../../assets/shop/admin-card.jpg'), face: require('../../../assets/shop/admin-face.webp') },
 ];

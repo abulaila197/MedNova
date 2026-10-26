@@ -48,7 +48,6 @@ const fromChest = (id: string) => !!textPackOf(id.replace(/^pack:/, ''))?.chest;
 
 // Characters (Yazan 2026-10-25): first tab. The five shop robots, then the special three that are never sold for tokens.
 const ROBOT_ITEMS: Item[] = ROBOTS.map((r) => ({ id: `robot:${r.key}`, key: r.key, name: r.name, price: r.price }));
-const SOCIAL = ['tiktok', 'instagram', 'facebook', 'youtube', 'channel'];
 
 // The goal line over the shop robots: how many you own, or that the prize is collected.
 const shopGoal = (n: number) =>
@@ -114,10 +113,9 @@ export function StylePage() {
   const wearing = (it: Item) =>
     it.id.startsWith('robot:') ? profile?.avatar === it.key
     : it.id.startsWith('frame:') ? worn.frame === it.key : it.id.startsWith('title:') ? worn.title === it.key : it.id.startsWith('effect:') ? worn.effect === it.key : false;
-  // Linky: every social follow, or 20 redeemed codes.
-  const socials = SOCIAL.filter((k) => free?.done.includes(`free:${k}`)).length;
+  // Linky: 20 redeemed codes only (Yazan 2026-10-26).
   const earnedHow = (it: Item) =>
-    it.key === 'linky' ? `${robotOf('linky')!.how}. You have ${socials} of 5 follows and ${free?.invites ?? 0} of 20 codes.` : EARNED_HOW[it.id] ?? robotOf(it.key)?.how;
+    it.key === 'linky' ? `${robotOf('linky')!.how}. You have ${free?.invites ?? 0} of 20 codes.` : EARNED_HOW[it.id] ?? robotOf(it.key)?.how;
 
   return (
     <Screen tab={null} glow={21}>
@@ -285,6 +283,8 @@ export function StylePage() {
               ) : (
                 <Big t={t} label="Wear" busy={busy} onPress={() => act(() => wear({ [pick.id.split(':')[0]]: pick.id.slice(pick.id.indexOf(':') + 1) }), 'Done. Everyone sees it now.')} />
               )
+            ) : pick.id === 'robot:admin' ? (
+              <Text style={[s.pT, { color: t.error }]}>ADMIN</Text>
             ) : pick.price == null ? (
               <Text style={[s.barS, { color: c.mute }]}>{fromChest(pick.id) ? 'From daily chests' : 'Earned, not sold'}</Text>
             ) : (
@@ -314,6 +314,8 @@ function Cell({ t, on, onPress, children }: { t: Theme; on: boolean; onPress: ()
 function Price({ t, it, deal, owned, wearing }: { t: Theme; it: Item; deal: string[]; owned: boolean; wearing: boolean }) {
   if (wearing) return <Text style={[s.pT, { color: t.accent }]}>WEARING</Text>;
   if (owned) return <Text style={[s.pT, { color: t.mute }]}>OWNED</Text>;
+  // The Admin character is never earned: players see a red ADMIN tag (Yazan 2026-10-26).
+  if (it.id === 'robot:admin') return <Text style={[s.pT, { color: t.error }]}>ADMIN</Text>;
   if (it.price == null) return <Text style={[s.pT, { color: t.mute }]}>EARNED</Text>;
   const now = costOf(it, deal)!;
   return (
