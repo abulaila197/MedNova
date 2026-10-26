@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 
@@ -45,27 +45,34 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   const [ink, setInk] = useState(0);
   const [size, setSize] = useState(0);
   const [erase, setErase] = useState(false);
+  // A word of my own (My diseases): only that word, no field picker.
+  const custom = typeof play.settings.custom === 'string' ? wordById.get(play.settings.custom) : undefined;
+  const [pool] = useState(() => (custom ? [custom] : WORDS));
 
   const set = useCallback(
     (next: SoloRun) => {
       ref.current = next;
       setRun(next);
       engine.recorder.bookmark(play.id, snapshot(next, Date.now(), sketch.current), next.done.length);
-      engine.kv.set(RECENT_KEY, next.recent);
+      if (!custom) engine.kv.set(RECENT_KEY, next.recent);
     },
-    [play.id],
+    [play.id, custom],
   );
 
   const begin = useCallback(async () => {
     const recent = (await engine.kv.get<string[]>(RECENT_KEY)) ?? [];
-    set(startSolo(WORDS, { seed: play.id, fields, recent, now: Date.now() }));
-  }, [play.id, fields, set]);
+    set(startSolo(pool, { seed: play.id, fields: custom ? [] : fields, recent: custom ? [] : recent, now: Date.now() }));
+  }, [play.id, fields, set, pool, custom]);
+
+  useEffect(() => {
+    if (custom && !ref.current) void begin();
+  }, [custom, begin]);
 
   const dispatch = useCallback(
     (e: SoloEvent) => {
       const prev = ref.current;
       if (!prev) return;
-      const next = stepSolo(prev, e, WORDS);
+      const next = stepSolo(prev, e, pool);
       if (next === prev) return;
       // A disease is recorded once the player moves on from its reveal (Retry draws it again instead).
       if (prev.phase === 'reveal' && (e.type === 'NEXT' || e.type === 'FINISH')) {
@@ -88,7 +95,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
       set(next);
       if (next.phase === 'done') onFinish(next.done.length);
     },
-    [play, set, onFinish],
+    [play, set, onFinish, pool],
   );
 
   // Each finished line, Undo or Clear updates the bookmark's drawing.
@@ -109,6 +116,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
 
   if (!fonts) return <SlateScreen>{null}</SlateScreen>;
 
+  if (!run && custom) return <SlateScreen>{null}</SlateScreen>;
   if (!run)
     return (
       <SlateScreen>

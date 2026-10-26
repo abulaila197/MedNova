@@ -98,7 +98,7 @@ export function HeatBoard(p: BoardProps) {
               <Text style={[s.q, { color: t.fg }]}>{p.q.stem}</Text>
               {(
                 <View style={s.grid}>
-                  {p.round.order.map((ci) => {
+                  {p.round.order.filter((ci) => ci < p.q.choices.length).map((ci) => {
                     const gone = p.round.removed.includes(ci);
                     const state = showing && fb ? (ci === p.q.answer ? 'good' : ci === fb.picked ? 'bad' : 'idle') : p.locked === ci ? 'locked' : 'idle';
                     return (

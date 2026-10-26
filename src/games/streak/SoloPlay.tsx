@@ -56,6 +56,8 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   const [kept, setKept] = useState(() => (play.resume as SoloSave | null)?.kept ?? 0);
   const keptRef = useRef(kept);
   const signedIn = useSession((x) => !!x.userId);
+  // A question of my own (My diseases): just that one, practice only (no EXP, no helpers, nothing to Learn).
+  const custom = typeof play.settings.custom === 'string' && questionById.has(play.settings.custom) ? play.settings.custom : null;
 
   // Start: resume the bookmark, or a fresh queue, unseen first (rule 15). Mixed is about half and half.
   useEffect(() => {
@@ -65,7 +67,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
       if (r && !r.queue.every((id) => questionById.has(id))) r = null; // a question left the bank since: start fresh
       if (!r) {
         const pick = (ids: string[]) => engine.picker.pick(play.game, ids, ids.length);
-        const queue = style === 'mixed' ? mixQueue(await pick(idsOf('clinical')), await pick(idsOf('basic'))) : await pick(poolFor(style));
+        const queue = custom ? [custom] : style === 'mixed' ? mixQueue(await pick(idsOf('clinical')), await pick(idsOf('basic'))) : await pick(poolFor(style));
         r = startRound(queue, lengthSec, Date.now());
         engine.recorder.bookmark(play.id, { round: snapshotRound(r, Date.now()), style, lengthSec } satisfies SoloSave, 0);
       }
@@ -77,7 +79,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
     return () => {
       live = false;
     };
-  }, [play, style, lengthSec]);
+  }, [play, style, lengthSec, custom]);
 
   const dispatch = useCallback(
     (e: RoundEvent) => {
@@ -91,7 +93,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
       // Each answered or skipped question is one item. Wrong answers go to Learn (SM1); skips are not misses.
       for (const a of next.answers.slice(prev.answers.length)) {
         const q = questionById.get(a.qId)!;
-        engine.picker.markSeen(play.game, a.qId);
+        if (!custom) engine.picker.markSeen(play.game, a.qId);
         recordItem(play, {
           seat: 0,
           itemId: a.qId,
@@ -102,15 +104,15 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
           hintsUsed: 0,
           revealsUsed: 0,
           points: a.points,
-          feedsLearn: a.outcome === 'wrong',
+          feedsLearn: a.outcome === 'wrong' && !custom,
           gameData: { style, field: q.field, kind: q.kind, streak: a.streak },
         });
       }
-      if (next.phase === 'over' && prev.phase !== 'over') {
+      if (next.phase === 'over' && prev.phase !== 'over' && !custom) {
         recordBest(style, lengthSec, next.score).then(setBest);
       }
     },
-    [play, style, lengthSec],
+    [play, style, lengthSec, custom],
   );
 
   // The clock: ticks while a question runs or a result shows.
@@ -182,10 +184,10 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
       totalMs={round.lengthMs + round.helpers.time * ADD_MS}
       onAnswer={(choice) => !paying.current && dispatch({ type: 'ANSWER', choice, now: Date.now() })}
       onPause={() => dispatch({ type: 'PAUSE', now: Date.now() })}
-      helpers={{ onHelper: helper, usable: (k) => helperUsable(round, k) }}
+      helpers={custom ? undefined : { onHelper: helper, usable: (k) => helperUsable(round, k) }}
       hidden={paused}
       notice={notice}
-      offer={signedIn && !over && !paused && kept < 3 && (round.lost ?? 0) >= 3 ? { label: `Keep your streak of ${round.lost} · ${SECOND_PRICE[kept]} tokens`, onPress: () => void keep() } : null}
+      offer={signedIn && !custom && !over && !paused && kept < 3 && (round.lost ?? 0) >= 3 ? { label: `Keep your streak of ${round.lost} · ${SECOND_PRICE[kept]} tokens`, onPress: () => void keep() } : null}
       dock={over ? <OverCard round={round} best={best} onNext={() => onFinish(round.score)} /> : undefined}>
       <PauseMenu open={paused} mode="solo" onResume={() => dispatch({ type: 'RESUME', now: Date.now() })} onQuit={onQuit} />
     </HeatBoard>

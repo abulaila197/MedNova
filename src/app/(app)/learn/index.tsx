@@ -7,7 +7,7 @@ import Animated, { interpolateColor, useAnimatedScrollHandler, useAnimatedStyle,
 
 import { Screen } from '@/components/Screen';
 import { loadChallenges, logChallenge, useChests } from '@/features/chests/useChests';
-import { customId, loadCases, useCases, wordTitle, type CustomCase } from '@/features/learn/cases';
+import { customId, loadCases, SOLO_WORD_GAMES, useCases, wordTitle, type CustomCase, type PlayerWord } from '@/features/learn/cases';
 import { gameLabel } from '@/features/learn/NewWord';
 import { startPlay } from '@/games/shell/flow';
 import { useSession } from '@/games/shell/session';
@@ -203,6 +203,15 @@ async function playCase(k: CustomCase) {
   router.push(`/play/the-diagnostic-pursuit/run?play=${play.id}` as never);
 }
 
+/** A word of mine opens a Solo practice of its game with only that word (no EXP, no Sparks), before approval too. */
+async function playWord(w: PlayerWord) {
+  const custom = customId(w.id);
+  const settings =
+    w.game === 'nova-medicordle' ? { style: w.data.word.length === 6 ? 'classic' : 'custom', word: 'endless', custom } : w.game === 'the-streak-master' ? { style: 'mixed', length: 60, custom } : { custom };
+  const play = await startPlay(w.game, 'solo', settings);
+  router.push(`/play/${w.game}/run?play=${play.id}` as never);
+}
+
 /** My diseases (Yazan 2026-10-26, #37): my cases and words, each opening as a dossier. */
 function CasesPage() {
   const t = useTheme();
@@ -219,8 +228,8 @@ function CasesPage() {
     }, [signedIn]),
   );
   const rows = [
-    ...(list ?? []).map((k) => ({ key: `case:${k.id}`, at: k.created_at, name: k.diagnosis, sub: `Diagnostic Pursuit · ${k.gender[0]}, ${k.age}`, status: k.status, play: k.answer_id && k.status !== 'declined' ? k : null })),
-    ...(words ?? []).map((w) => ({ key: `word:${w.id}`, at: w.created_at, name: wordTitle(w), sub: gameLabel(w.game), status: w.status, play: null })),
+    ...(list ?? []).map((k) => ({ key: `case:${k.id}`, at: k.created_at, name: k.diagnosis, sub: `Diagnostic Pursuit · ${k.gender[0]}, ${k.age}`, status: k.status, play: k.answer_id && k.status !== 'declined' ? () => playCase(k) : null })),
+    ...(words ?? []).map((w) => ({ key: `word:${w.id}`, at: w.created_at, name: wordTitle(w), sub: gameLabel(w.game), status: w.status, play: SOLO_WORD_GAMES.includes(w.game) && w.status !== 'declined' ? () => playWord(w) : null })),
   ].sort((x, y) => y.at.localeCompare(x.at));
   const go = (to: string) => router.push((signedIn ? to : '/auth') as never);
   return (
@@ -252,7 +261,7 @@ function CasesPage() {
               <Text style={[s.csA, { color: c.mute }]}>{`${r.sub} · ${STATE[r.status]}`}</Text>
             </View>
             {r.play ? (
-              <Pressable onPress={() => playCase(r.play!).catch(() => setErr('Could not start the case. Try again.'))} accessibilityRole="button" accessibilityLabel={`Practise ${r.name}`}>
+              <Pressable onPress={() => r.play!().catch(() => setErr('Could not start it. Try again.'))} accessibilityRole="button" accessibilityLabel={`Practise ${r.name}`}>
                 <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.play}>
                   <Text style={[s.playT, { color: t.onGrad }]}>Practise</Text>
                 </LinearGradient>

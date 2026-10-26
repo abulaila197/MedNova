@@ -1,6 +1,9 @@
 import { create } from 'zustand';
 
 import { caseById } from '@/games/diagnostic/data';
+import { wordById as mcWordById } from '@/games/medicordle/data';
+import { wordById as saWordById } from '@/games/silent/data';
+import { questionById } from '@/games/streak/data';
 import type { DPCase } from '@/games/diagnostic/core';
 import { useSession } from '@/games/shell/session';
 import { supabase } from '@/lib/supabase';
@@ -101,6 +104,17 @@ export function toDPCase(c: CustomCase): DPCase {
   };
 }
 
+/** Games whose Solo mode can practise one of my words (the others have no Solo mode). */
+export const SOLO_WORD_GAMES: WordGame[] = ['the-silent-artist', 'nova-medicordle', 'the-streak-master'];
+
+/** Puts a word of mine into its game's own list under "c:" + uuid, so that game's Solo can play it. */
+function addToGame(w: PlayerWord) {
+  const id = customId(w.id);
+  if (w.game === 'the-silent-artist') saWordById.set(id, { id, name: w.data.name, field: w.data.field, aliases: w.data.aliases });
+  else if (w.game === 'nova-medicordle') mcWordById.set(id, { id, style: w.data.word.length === 6 ? 'classic' : 'custom', word: w.data.word, definition: w.data.definition, dossier: null });
+  else if (w.game === 'the-streak-master') questionById.set(id, { id, kind: 'clinical', field: 'My diseases', stem: w.data.stem, choices: w.data.choices, answer: w.data.answer, explanation: null, dossier: null });
+}
+
 /** Loads my cases and words, and puts the cases into the game's case list (practice works before approval too). */
 export async function loadCases() {
   if (!useSession.getState().userId) return useCases.setState({ list: [], words: [] });
@@ -111,7 +125,9 @@ export async function loadCases() {
   if (cs.error) throw cs.error;
   const list = (cs.data ?? []) as CustomCase[];
   for (const c of list) if (c.answer_id) caseById.set(customId(c.id), toDPCase(c));
-  useCases.setState({ list, words: ws.error ? (useCases.getState().words ?? []) : ((ws.data ?? []) as PlayerWord[]) });
+  const words = ws.error ? (useCases.getState().words ?? []) : ((ws.data ?? []) as PlayerWord[]);
+  for (const w of words) if (w.status !== 'declined') addToGame(w);
+  useCases.setState({ list, words });
 }
 
 /** Saves a new word for one game; the server checks its form and allows 20 a day. */

@@ -22,8 +22,22 @@ import { F } from '@/theme/tokens';
 const TAB_H = [69, 51, 51, 79, 56];
 
 const STATUS = { waiting: 'Waiting for approval', approved: 'Approved', declined: 'Declined' } as const;
-// A tab's height for a label of this length (own items have their own tab names).
-const tabH = (label: string) => Math.max(44, 16 + label.length * 6.2);
+// Own items have their own tab names: each tab sizes to its label, and together they end above the folder's lower
+// corner, as the first one starts at its top (Yazan 2026-10-26).
+const FOLD_H = 322;
+const TAB_GAP = 4;
+const FOLD_CORNER = 18;
+function tabHeights(labels: string[]) {
+  const want = labels.map((l) => Math.max(44, 16 + l.length * 6.2));
+  const room = FOLD_H - FOLD_CORNER - TAB_GAP * (labels.length - 1);
+  const sum = want.reduce((a, b) => a + b, 0);
+  if (sum <= room) return want;
+  // Too tall: every tab gives up the same share of the space above its label's own length.
+  const need = labels.map((l) => 12 + l.length * 4.7);
+  const spare = want.map((w, i) => w - need[i]);
+  const cut = Math.min(1, (sum - room) / spare.reduce((a, b) => a + b, 0));
+  return want.map((w, i) => w - spare[i] * cut);
+}
 
 /**
  * A disease dossier (?id=canonical id): a folder card whose tabs on the right switch the field. With ?mine=case:<id>
@@ -81,7 +95,7 @@ function MinePage({ mine }: { mine: string }) {
           </Text>
         </View>
         {note ? <Text style={[s.dmT, { color: t.fg }]}>{`Note from MedNova: ${note}`}</Text> : null}
-        <Folder fields={fields} on={on} setOn={setOn} heights={fields.map((f) => tabH(f.tab))} />
+        <Folder fields={fields} on={on} setOn={setOn} heights={tabHeights(fields.map((f) => f.tab))} />
       </View>
     </Screen>
   );
@@ -202,7 +216,7 @@ const s = StyleSheet.create({
   sw: { width: u(16), height: u(6), borderRadius: u(2), borderWidth: 1 },
   dmT: { fontFamily: F.body, fontSize: u(10), lineHeight: u(12) },
   note: { position: 'absolute', left: u(16), right: u(12), bottom: u(12), fontSize: u(8.5) },
-  fold: { flexDirection: 'row', marginTop: u(6), height: u(322) },
+  fold: { flexDirection: 'row', marginTop: u(6), height: u(FOLD_H) },
   fcard: {
     flex: 1,
     borderWidth: 1,
@@ -215,6 +229,6 @@ const s = StyleSheet.create({
   fp: { ...StyleSheet.absoluteFill, paddingVertical: u(18), paddingHorizontal: u(14), gap: u(10) },
   cf: { fontFamily: F.mono, fontSize: u(9), lineHeight: u(12), letterSpacing: u(1.62) },
   p: { fontFamily: F.display, fontSize: u(16), lineHeight: u(21.12) },
-  ftabs: { width: u(30), gap: u(4) },
+  ftabs: { width: u(30), gap: u(TAB_GAP) },
   tab: { width: u(30), borderWidth: 1, borderLeftWidth: 0, borderTopRightRadius: u(10), borderBottomRightRadius: u(10), justifyContent: 'center' },
 });

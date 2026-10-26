@@ -85,6 +85,9 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
           await engine.kv.set(dailyKey(style, today), { wordId: r.wordIds[0], guesses: [], solved: false, finished: false, run: snapshotSolo(r, now) } satisfies DailyDone);
         }
       }
+      // A word of my own (My diseases): just that word, practice only, no EXP.
+      const custom = typeof play.settings.custom === 'string' && wordById.has(play.settings.custom) ? play.settings.custom : null;
+      if (!r && custom) r = startSolo('endless', style, [custom], null, Date.now(), [custom]);
       if (!r) {
         const pool = poolFor(style).map((w) => w.id);
         r = startSolo('endless', style, await engine.picker.pick(play.game, pool, pool.length), null, Date.now(), (await engine.kv.get<string[]>(PAID_KEY)) ?? []);
@@ -116,7 +119,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
       if (next.results.length > prev.results.length) {
         const r = next.results[next.results.length - 1];
         const w = wordById.get(r.wordId)!;
-        engine.picker.markSeen(play.game, r.wordId);
+        if (!play.settings.custom) engine.picker.markSeen(play.game, r.wordId);
         if (next.kind === 'endless' && r.exp > 0) {
           engine.kv.get<string[]>(PAID_KEY).then((old) => engine.kv.set(PAID_KEY, [...new Set([...(old ?? []), r.wordId])]));
         }
@@ -269,7 +272,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
     const bad = lengthCheck(g, style, w.word.length);
     if (bad === 'short') return custom ? 'At least 7 letters' : 'Not enough letters';
     if (bad === 'long') return 'Too many letters';
-    if (!isWord(g)) return 'Not in word list';
+    if (g !== w.word && !isWord(g)) return 'Not in word list';
     dispatch({ type: 'GUESS', word: g, answer: w.word, now: Date.now() });
     return null;
   };
