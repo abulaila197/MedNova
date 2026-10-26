@@ -87,7 +87,7 @@ test('levels: climb (LV2), then 6% more per level after 10 (LV4); tokens with th
   assert.deepEqual([2, 3, 4, 10, 11, 12].map(stepTo), [60, 80, 100, 220, 233, 247]);
   assert.equal(levelOf(4334).level, 20);
   assert.equal(levelOf(4333).level, 19);
-  assert.deepEqual([1, 2, 4, 5, 10, 11].map(levelTokens), [0, 1, 3, 7, 15, 16]);
+  assert.deepEqual([1, 2, 4, 5, 10, 11].map(levelTokens), [0, 5, 15, 35, 75, 80]);
   assert.deepEqual(levelOf(0), { level: 1, into: 0, need: 60 });
   assert.deepEqual(levelOf(59), { level: 1, into: 59, need: 60 });
   assert.deepEqual(levelOf(60), { level: 2, into: 0, need: 80 });
@@ -97,16 +97,16 @@ test('levels: climb (LV2), then 6% more per level after 10 (LV4); tokens with th
 
 test('wallet: earn once per play, cap, tokens per level up (LV1, LV5)', async () => {
   const w = createWallet(memoryKV());
-  assert.deepEqual(await w.earn('p1', 150, 100), { amount: 100, level: 2, levelsGained: 1, tokensGained: 1 });
+  assert.deepEqual(await w.earn('p1', 150, 100), { amount: 100, level: 2, levelsGained: 1, tokensGained: 5 });
   assert.equal((await w.earn('p1', 150, 100)).amount, 0, 'second earn for same play ignored');
-  assert.deepEqual(await w.earn('p2', 130, 1000), { amount: 130, level: 3, levelsGained: 1, tokensGained: 1 });
+  assert.deepEqual(await w.earn('p2', 130, 1000), { amount: 130, level: 3, levelsGained: 1, tokensGained: 5 });
   let b = await w.balance();
   assert.equal(b.exp, 230);
-  assert.equal(b.tokens, 2);
+  assert.equal(b.tokens, 10);
   assert.equal(b.into, 230 - 140);
-  assert.deepEqual(await w.earn('p3', 1000, 1000), { amount: 1000, level: 9, levelsGained: 6, tokensGained: 9 }); // level 5 adds 3
+  assert.deepEqual(await w.earn('p3', 1000, 1000), { amount: 1000, level: 9, levelsGained: 6, tokensGained: 45 }); // level 5 adds 15
   b = await w.balance();
-  assert.equal(b.tokens, 11);
+  assert.equal(b.tokens, 55);
   await w.spend(3, 'hint');
   assert.equal((await w.balance()).exp, 1230, 'spending never lowers EXP');
   assert.equal((await w.earn('p4', -50, 100)).amount, 0);
@@ -115,22 +115,22 @@ test('wallet: earn once per play, cap, tokens per level up (LV1, LV5)', async ()
 test('wallet: spend needs tokens, refund once', async () => {
   const w = createWallet(memoryKV());
   assert.equal(await w.spend(1, 'hint'), null);
-  await w.earn('p1', 400, 1000); // level 5 = 4 level tokens + the 3-token prize
+  await w.earn('p1', 400, 1000); // level 5 = 20 level tokens + the 15-token prize
   const rc = await w.spend(1, 'hint', 'p1');
   assert.ok(rc);
-  assert.equal((await w.balance()).tokens, 6);
+  assert.equal((await w.balance()).tokens, 34);
   assert.equal(await w.refund(rc!), true);
   assert.equal(await w.refund(rc!), false);
-  assert.equal((await w.balance()).tokens, 7);
+  assert.equal((await w.balance()).tokens, 35);
 });
 
 test('wallet: admin grants count, refused rows drop, merged overspend can go below 0 (EC1, AD1, OW1)', async () => {
   const w = createWallet(memoryKV());
-  await w.earn('p1', 60, 100); // level 2 = 1 token
+  await w.earn('p1', 60, 100); // level 2 = 5 tokens
   const rc = await w.spend(1, 'hint', 'p1');
   await w.mergeRemote([
     { id: 'g1', kind: 'grant', exp: 0, tokens: 5, reason: 'admin', note: 'thanks', at: 1, synced: true },
-    { id: 'w-other', kind: 'spend', exp: 0, tokens: -6, reason: 'hint', at: 2, synced: true },
+    { id: 'w-other', kind: 'spend', exp: 0, tokens: -10, reason: 'hint', at: 2, synced: true },
   ]);
   assert.equal((await w.balance()).tokens, -1, 'owed back from later levels');
   assert.equal(await w.spend(1, 'hint'), null, 'no spending while owing');

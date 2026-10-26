@@ -1,12 +1,13 @@
-// Player levels (LV1, LV2, LV4, LV5): EXP raises the level; each level up gives 1 token and every 5th level 3 more.
+// Player levels (LV1, LV2, LV4, LV5): EXP raises the level; each level up gives 5 tokens and every 5th level 20 in
+// all (Yazan 2026-10-26, was 1 and 4).
 // Climb: level 2 at 60 EXP, each next level needs 20 more up to level 10 (1,260 in total), then 6% more each level.
 
 export const LEVEL_STEP_START = 60;
 export const LEVEL_STEP_GROW = 20;
 export const STEEP_FROM = 10;
 export const STEEP_GROWTH = 1.06;
-export const TOKENS_PER_LEVEL = 1;
-export const FIFTH_LEVEL_PRIZE = 3;
+export const TOKENS_PER_LEVEL = 5;
+export const FIFTH_LEVEL_PRIZE = 15;
 
 const linearStep = (level: number) => LEVEL_STEP_START + LEVEL_STEP_GROW * (level - 2);
 
@@ -28,7 +29,7 @@ export function levelOf(totalExp: number) {
   return { level, into: left, need: stepTo(level + 1) };
 }
 
-/** The results line for a play that levelled the player up (LV1, step 3), e.g. "Level 7 · +1 token". */
+/** The results line for a play that levelled the player up (LV1, step 3), e.g. "Level 7 · +5 tokens". */
 export function levelUpLine(up: { level: number; tokens: number } | undefined) {
   if (!up) return null;
   return `Level ${up.level} · +${up.tokens} token${up.tokens === 1 ? '' : 's'}`;
