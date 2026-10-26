@@ -21,8 +21,8 @@ export type ChestsView = {
   owned: Record<ChestKind, number>;
   /** Item keys the player already has (robots, stickers, effects). */
   have: string[];
-  /** Today's challenge line for the link card. */
-  today: { step: 1 | 2 | 3 | 4; line: string; streak: number };
+  /** This week's Grand Rounds for the link card: chests now come from its missions (Yazan 2026-10-26). */
+  rounds: { kick: string; line: string; run: number };
   /** Opens one chest on the server. */
   open: (k: ChestKind) => Promise<OpenResult>;
 };
@@ -90,7 +90,7 @@ export function ChestsPage({ v }: { v: ChestsView }) {
   return (
     <Screen tab={null} glow={21}>
       <InfoScroll>
-        <Kicker>Daily rewards</Kicker>
+        <Kicker>Grand Rounds rewards</Kicker>
         <Text style={[ui.H, { color: c.fg, fontFamily: F.display }]}>
           {'My '}
           <Text style={[ui.H, { color: t.accent, fontFamily: F.displayItalic }]}>chests</Text>
@@ -180,14 +180,14 @@ export function ChestsPage({ v }: { v: ChestsView }) {
         </View>
         {sel === 'epic' ? <Text style={[s.note, { color: c.mute }]}>At least one Rare or better, with the best odds for 5-star robots.</Text> : null}
 
-        <Pressable onPress={() => router.navigate('/challenges' as never)} style={[s.link, { backgroundColor: c.surf, borderColor: c.line }]} accessibilityRole="link" accessibilityLabel="Open daily challenges">
+        <Pressable onPress={() => router.navigate('/rounds' as never)} style={[s.link, { backgroundColor: c.surf, borderColor: c.line }]} accessibilityRole="link" accessibilityLabel="Open Grand Rounds">
           <View style={{ flex: 1 }}>
-            <Text style={[s.linkK, { color: c.kick }]}>{v.today.step > 3 ? 'ALL DONE TODAY' : `CHALLENGE ${v.today.step} OF 3`}</Text>
-            <Text style={[s.linkT, { color: c.fg }]}>{v.today.line}</Text>
+            <Text style={[s.linkK, { color: c.kick }]}>{v.rounds.kick}</Text>
+            <Text style={[s.linkT, { color: c.fg }]}>{v.rounds.line}</Text>
           </View>
           <View style={s.streak}>
-            {[0, 1, 2, 3, 4].map((d) => (
-              <View key={d} style={[s.sDot, { backgroundColor: d < v.today.streak ? '#b07cff' : c.line }]} />
+            {[0, 1, 2, 3].map((d) => (
+              <View key={d} style={[s.sDot, { backgroundColor: d < v.rounds.run ? '#b07cff' : c.line }]} />
             ))}
           </View>
         </Pressable>

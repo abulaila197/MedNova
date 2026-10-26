@@ -1,4 +1,3 @@
-import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Pressable, StyleSheet, View } from 'react-native';
 
@@ -8,7 +7,7 @@ import { InfoScroll, Kicker, s as ui, useInfo } from '@/features/info/ui';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
-import { CHESTS, type ChestKind } from './data';
+import { TokenCoin } from '@/components/PulseStar';
 
 /** `say` is the task as a phrase for a locked card, e.g. 'play 12 games'. */
 export type Task = { label: string; say: string; n: number; of: number; share?: boolean };
@@ -16,8 +15,9 @@ export type ChallengesView = {
   /** 1-3: the one counting now; 4: all done today. */
   step: 1 | 2 | 3 | 4;
   tasks: [Task[], Task[], Task[]];
-  /** Days in a row with all 3 done (0-5). */
-  streak: number;
+  /** Warm-up, Full Shift, Overtime and their token prizes (10 / 30 / 50). */
+  names: string[];
+  prizes: number[];
   resetIn: string;
   /** Not signed in: nothing counts yet. */
   guest?: boolean;
@@ -26,55 +26,41 @@ export type ChallengesView = {
   onShare?: () => void;
 };
 
-const REWARD: ChestKind[] = ['wooden', 'golden', 'diamond'];
-
-/** Daily challenges (Yazan 2026-10-18): one after the other; the next only starts counting when the last is done. */
+/**
+ * Daily missions (Yazan 2026-10-18, reworked 2026-10-26): one after the other, the next only starts counting when the
+ * last is done; each pays tokens. Opened from the Achievements page.
+ */
 export function ChallengesPage({ v }: { v: ChallengesView }) {
   const c = useInfo();
   const t = c.t;
   return (
     <Screen tab={null} glow={21}>
       <InfoScroll>
-        <Kicker>{v.resetIn ? `New challenges in ${v.resetIn}` : 'Daily rewards'}</Kicker>
+        <Kicker>{v.resetIn ? `New missions in ${v.resetIn}` : 'Every day'}</Kicker>
         <Text style={[ui.H, { color: c.fg, fontFamily: F.display }]}>
           {'Daily '}
-          <Text style={[ui.H, { color: t.accent, fontFamily: F.displayItalic }]}>challenges</Text>
+          <Text style={[ui.H, { color: t.accent, fontFamily: F.displayItalic }]}>missions</Text>
         </Text>
-
-        <View style={[s.streak, { backgroundColor: c.surf, borderColor: c.line }]}>
-          <Image source={CHESTS.epic.art} style={s.epic} contentFit="contain" />
-          <View style={{ flex: 1 }}>
-            <Text style={[s.sT, { color: c.fg }]}>Epic chest</Text>
-            <Text style={[s.sS, { color: c.mute }]}>Finish all 3 challenges 5 days in a row.</Text>
-            <View style={s.days}>
-              {[0, 1, 2, 3, 4].map((d) => {
-                const on = d < v.streak;
-                return (
-                  <View key={d} style={[s.day, { borderColor: on ? '#b07cff' : c.line, backgroundColor: on ? 'rgba(176,124,255,0.18)' : 'transparent' }]}>
-                    <Text style={[s.dayT, { color: on ? '#d9c4ff' : c.mute }]}>{on ? '✓' : `${d + 1}`}</Text>
-                  </View>
-                );
-              })}
-            </View>
-          </View>
-        </View>
 
         {v.tasks.map((tasks, i) => {
           const step = (i + 1) as 1 | 2 | 3;
           const done = v.step > step;
           const locked = v.step < step;
-          const chest = CHESTS[REWARD[i]];
+          const name = v.names[i] ?? `Mission ${step}`;
           return (
             <View key={step} style={[s.card, { backgroundColor: locked ? c.surf2 : c.surf, borderColor: v.step === step ? t.accent : c.line }]}>
               <View style={s.head}>
                 <View style={{ flex: 1 }}>
-                  <Text style={[s.k, { color: done ? '#5fd38a' : locked ? c.mute : c.kick }]}>{done ? 'DONE · CHEST ADDED' : locked ? 'LOCKED' : 'NOW COUNTING'}</Text>
-                  <Text style={[s.h, { color: locked ? c.mute : c.fg }]}>{`Challenge ${step}`}</Text>
+                  <Text style={[s.k, { color: done ? '#5fd38a' : locked ? c.mute : c.kick }]}>{done ? `DONE · +${v.prizes[i]} TOKENS` : locked ? 'LOCKED' : 'NOW COUNTING'}</Text>
+                  <Text style={[s.h, { color: locked ? c.mute : c.fg }]}>{name}</Text>
                 </View>
-                <Image source={chest.art} style={[s.chest, locked && { opacity: 0.45 }]} contentFit="contain" />
+                <View style={[s.prize, locked && { opacity: 0.45 }]}>
+                  <TokenCoin size={u(14)} progress={0} track="transparent" />
+                  <Text style={[s.prizeT, { color: c.fg }]}>{v.prizes[i]}</Text>
+                </View>
               </View>
               {locked ? (
-                <Text style={[s.lock, { color: c.mute }]}>{`Starts after challenge ${step - 1}: ${tasks.map((x) => x.say).join(', ')}.`}</Text>
+                <Text style={[s.lock, { color: c.mute }]}>{`Starts after ${v.names[i - 1] ?? `mission ${step - 1}`}: ${tasks.map((x) => x.say).join(', ')}.`}</Text>
               ) : (
                 <View style={{ gap: u(7), marginTop: u(10) }}>
                   {tasks.map((x) => {
@@ -101,27 +87,21 @@ export function ChallengesPage({ v }: { v: ChallengesView }) {
             </View>
           );
         })}
-        {v.guest ? <Text style={[s.foot, { color: t.accent }]}>Sign in to start counting your challenges.</Text> : null}
+        {v.guest ? <Text style={[s.foot, { color: t.accent }]}>Sign in to start counting your missions.</Text> : null}
         {v.offline ? <Text style={[s.foot, { color: t.accent }]}>Can’t reach MedNova right now, so your progress isn’t shown. Check your connection.</Text> : null}
-        <Text style={[s.foot, { color: c.mute }]}>A share counts when you pick an app to send the link to. An ad counts when you watch it to the end.</Text>
+        <Text style={[s.foot, { color: c.mute }]}>Only games that use Sparks count, each game once per mission. A share counts when you pick an app to send the link to. An ad counts when you watch it to the end. With nothing to review, the review task is already done.</Text>
       </InfoScroll>
     </Screen>
   );
 }
 
 const s = StyleSheet.create({
-  streak: { flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderRadius: u(16), padding: u(12), marginTop: u(16), gap: u(10) },
-  epic: { width: u(54), height: u(54) },
-  sT: { fontFamily: F.display, fontSize: u(14) },
-  sS: { fontFamily: F.body, fontSize: u(8.5), marginTop: u(2) },
-  days: { flexDirection: 'row', gap: u(5), marginTop: u(7) },
-  day: { width: u(20), height: u(20), borderRadius: u(10), borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
-  dayT: { fontFamily: F.bodyBold, fontSize: u(8.5) },
   card: { borderWidth: 1, borderRadius: u(16), paddingHorizontal: u(12), paddingTop: u(10), paddingBottom: u(12), marginTop: u(12) },
   head: { flexDirection: 'row', alignItems: 'center', gap: u(8) },
   k: { fontFamily: F.mono, fontSize: u(7.5), letterSpacing: u(1.3) },
   h: { fontFamily: F.display, fontSize: u(15), marginTop: u(2) },
-  chest: { width: u(40), height: u(40) },
+  prize: { flexDirection: 'row', alignItems: 'center', gap: u(4) },
+  prizeT: { fontFamily: F.display, fontSize: u(16) },
   lock: { fontFamily: F.body, fontSize: u(9), lineHeight: u(13), marginTop: u(6) },
   pRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: u(3) },
   pN: { fontFamily: F.bodySemi, fontSize: u(9.5) },

@@ -1,6 +1,6 @@
 import type { ImageSource } from 'expo-image';
 
-/** Daily chests (Yazan 2026-10-18): earned from the 3 daily challenges, never sold. */
+/** Chests (Yazan 2026-10-18), never sold: from the 3 Grand Rounds missions, and Epic for 4 weeks in a row (2026-10-26). */
 export type ChestKind = 'wooden' | 'golden' | 'diamond' | 'epic';
 export type Rarity = 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary';
 
@@ -14,10 +14,10 @@ export const RARITY: Record<Rarity, { name: string; color: string }> = {
 export const RARITY_ORDER: Rarity[] = ['common', 'uncommon', 'rare', 'epic', 'legendary'];
 
 export const CHESTS: Record<ChestKind, { name: string; art: ImageSource; items: number; from: string; odds: Partial<Record<Rarity, number>> }> = {
-  wooden: { name: 'Wooden chest', art: require('../../../assets/chests/chest-wooden.webp'), items: 1, from: 'Challenge 1', odds: { common: 70, uncommon: 24, rare: 5, epic: 1 } },
-  golden: { name: 'Golden chest', art: require('../../../assets/chests/chest-golden.webp'), items: 2, from: 'Challenge 2', odds: { common: 50, uncommon: 30, rare: 14, epic: 5, legendary: 1 } },
-  diamond: { name: 'Diamond chest', art: require('../../../assets/chests/chest-diamond.webp'), items: 3, from: 'Challenge 3', odds: { common: 30, uncommon: 32, rare: 22, epic: 12, legendary: 4 } },
-  epic: { name: 'Epic chest', art: require('../../../assets/chests/chest-epic.webp'), items: 3, from: '5 days in a row', odds: { rare: 40, epic: 35, legendary: 25 } },
+  wooden: { name: 'Wooden chest', art: require('../../../assets/chests/chest-wooden.webp'), items: 1, from: 'Grand Rounds mission 1', odds: { common: 70, uncommon: 24, rare: 6 } },
+  golden: { name: 'Golden chest', art: require('../../../assets/chests/chest-golden.webp'), items: 2, from: 'Grand Rounds mission 2', odds: { common: 50, uncommon: 30, rare: 14, epic: 6 } },
+  diamond: { name: 'Diamond chest', art: require('../../../assets/chests/chest-diamond.webp'), items: 3, from: 'Grand Rounds mission 3', odds: { common: 30, uncommon: 32, rare: 22, epic: 12, legendary: 4 } },
+  epic: { name: 'Epic chest', art: require('../../../assets/chests/chest-epic.webp'), items: 3, from: 'Grand Rounds 4 weeks in a row', odds: { rare: 40, epic: 35, legendary: 25 } },
 };
 export const CHEST_ORDER: ChestKind[] = ['wooden', 'golden', 'diamond', 'epic'];
 

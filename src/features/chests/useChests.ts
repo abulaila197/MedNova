@@ -1,5 +1,5 @@
-// Daily challenges and chests (Yazan 2026-10-18): the server counts games, ads, shares and review cards,
-// files the chests and rolls what's inside; the phone only reads and asks.
+// Daily missions and chests: the server counts games, ads, shares and the review pile and pays the missions'
+// tokens (Yazan 2026-10-26); it also rolls what's inside a chest. The phone only reads and asks.
 import { create } from 'zustand';
 
 import { useSession } from '@/games/shell/session';
@@ -18,8 +18,9 @@ export type Challenges = {
   day: string;
   /** 1-3 = the challenge now counting, 4 = all done today. */
   step: 1 | 2 | 3 | 4;
-  /** Days in a row with all 3 done (0-5). */
-  streak: number;
+  /** Mission names (Warm-up, Full Shift, Overtime) and their token prizes (10 / 30 / 50). */
+  names: string[];
+  prizes: number[];
   /** When the day resets (ms). */
   resets: number;
   chests: Record<ChestKind, number>;
@@ -49,6 +50,14 @@ export async function loadChallenges(force = false) {
   const c = data as Challenges | null;
   if (c && Array.isArray(c.tasks)) useChests.setState({ c, failed: false });
   else useChests.setState({ failed: true });
+  if (c && c.signed_in && c.step === 3 && c.tasks[2]?.some((k) => k.k === 'review' && k.n < k.of)) void reviewIfEmpty();
+}
+
+/** Overtime asks for an empty review pile: a player with nothing to review (no mistakes) has it done already. */
+async function reviewIfEmpty() {
+  const { loadLearn, pileOf, reviewState } = await import('@/features/learn/library');
+  const [{ cards }, st] = await Promise.all([loadLearn(), reviewState()]);
+  if (!pileOf(cards, st).length) logChallenge('review');
 }
 
 /** Opens one chest. Tokens and duplicates are paid on the server. */

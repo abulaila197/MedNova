@@ -13,11 +13,11 @@ export const HELP: Record<string, Stop[]> = {
     { who: 'yara', title: 'Deals and gifts', text: 'One frame and one title are cheaper every week. You can also Gift an item to a friend, and some items are only earned, never sold.' },
   ],
   '/challenges': [
-    { who: 'bolt', title: 'Daily missions', text: 'Three missions every day, done in order: the second starts counting only when the first is finished.' },
-    { who: 'bolt', title: 'A chest for each', text: 'Finish them for a wooden, a golden and a diamond chest. Finish all three five days in a row for an epic chest.' },
+    { who: 'bolt', title: 'Daily missions', text: 'Warm-up, Full Shift and Overtime every day, done in order: the next starts counting only when the last is finished.' },
+    { who: 'bolt', title: 'Tokens for each', text: 'They pay 10, 30 and 50 tokens. Only games that use Sparks count, and each game counts once per mission.' },
   ],
   '/chests': [
-    { who: 'pip', title: 'Your chests', text: 'Chests you earn from daily missions wait here. Tap one to open it.' },
+    { who: 'pip', title: 'Your chests', text: 'Chests you earn from Grand Rounds missions wait here until you open them. Stamp 4 weeks in a row for an epic chest.' },
     { who: 'pip', title: 'What’s inside', text: 'Tokens, chat stickers, rare win effects and Nova Mechs cards. Better chests hold rarer things, and a card you already have turns into tokens.' },
   ],
 };

@@ -29,7 +29,12 @@ export type Rounds = {
   stamps: number[];
   /** Different weeks stamped since the last cycle prize. */
   cycle: { have: number; of: number; prize: number };
+  /** Stamped weeks in a row toward the next Epic chest (0-4; every 4 in a row pays one). */
+  run: number;
 };
+
+/** Weeks in a row with all 3 missions done that pay an Epic chest (Yazan 2026-10-26). */
+export const EPIC_RUN = 4;
 
 /** 13 game weeks, then an Online, a Solo and a Pass the phone week. */
 export const CYCLE_WEEKS = 16;
@@ -82,6 +87,15 @@ export const doneOf = (r: Rounds | null) => {
   return r && top ? Math.min(1, r.used / top) : 0;
 };
 
+/**
+ * The red dot on the Grand Rounds and chest buttons (Yazan 2026-10-26): shown to signed-in players until all 3 of
+ * this week's missions are collected, then gone from both until next week.
+ */
+export const useRoundsDot = () => {
+  const signedIn = useSession((x) => !!x.userId);
+  return useRoundsStore((x) => signedIn && !!x.r && !x.r.claimed);
+};
+
 /** Missions reached but not yet collected. */
 export const readyOf = (r: Rounds | null) => (r ? r.missions.map((m, i) => ({ ...m, tier: i + 1 })).filter((m) => !m.claimed && r.used >= m.of) : []);
 
@@ -93,5 +107,5 @@ export async function claimRounds(tier: number) {
   if (userId) await syncAccount(userId).catch(() => {});
   await loadRounds(true);
   void loadChallenges(true);
-  return data as { ok: boolean; why?: string; chest?: ChestKind; stamp?: boolean; prize?: number };
+  return data as { ok: boolean; why?: string; chest?: ChestKind; stamp?: boolean; prize?: number; epic?: boolean };
 }

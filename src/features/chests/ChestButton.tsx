@@ -8,12 +8,18 @@ import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
+import { useRoundsDot } from '@/features/rounds/useRounds';
+
 import { chestCount, loadChallenges, useChests } from './useChests';
 
-/** The chest button under Grand Rounds on the Games page; the badge counts unopened chests. */
+/**
+ * The chest button under Grand Rounds on the Games page; the badge counts unopened chests. With none to open, the red
+ * Grand Rounds dot shows until this week's missions are done (Yazan 2026-10-26).
+ */
 export function ChestButton() {
   const t = useTheme();
   const count = useChests((x) => chestCount(x.c));
+  const dot = useRoundsDot();
   useFocusEffect(
     useCallback(() => {
       void loadChallenges();
@@ -59,6 +65,8 @@ export function ChestButton() {
         <View style={[s.badge, { backgroundColor: t.red, borderColor: t.sky }]}>
           <Text style={s.badgeT}>{count}</Text>
         </View>
+      ) : dot ? (
+        <View style={[s.dot, { backgroundColor: t.red, borderColor: t.sky }]} />
       ) : null}
     </Pressable>
   );
@@ -88,5 +96,6 @@ const s = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: u(3),
   },
+  dot: { position: 'absolute', right: u(-2), top: u(-2), width: u(10), height: u(10), borderRadius: u(5), borderWidth: 1.5 },
   badgeT: { color: '#fff', fontFamily: F.bodyBold, fontSize: u(7.5) },
 });

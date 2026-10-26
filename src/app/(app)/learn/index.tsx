@@ -82,7 +82,7 @@ function ReviewPage({ pile, reload }: { pile: Card[] | null; reload: () => Promi
   const card = pile?.[0];
   const total = Math.max(start, pile?.length ?? 0);
   const done = total - (pile?.length ?? 0);
-  // Challenge 3 asks for an empty review pile; it counts once the pile is empty while that challenge is on.
+  // Overtime (daily mission 3) asks for an empty review pile; it counts once the pile is empty while that mission is on.
   const wantsReview = useChests((x) => x.c?.step === 3 && x.c.tasks[2]?.some((k) => k.k === 'review' && k.n < k.of));
   const empty = pile?.length === 0;
   useEffect(() => {

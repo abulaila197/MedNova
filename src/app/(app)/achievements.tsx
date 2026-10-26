@@ -6,6 +6,7 @@ import { Text } from '@/components/AppText';
 import { Screen } from '@/components/Screen';
 import { type AchRow, useAchievements } from '@/features/achievements/useAchievements';
 import { tierTokens, TOUR_STEPS } from '@/features/achievements/progress';
+import { MissionsEntry } from '@/features/chests/MissionsEntry';
 import { RoundsEntry } from '@/features/rounds/RoundsEntry';
 import Svg, { Circle, Defs, LinearGradient as SvgLinear, Path, Stop } from 'react-native-svg';
 import { InfoScroll, Kicker, s as ui, useInfo } from '@/features/info/ui';
@@ -48,6 +49,8 @@ export default function Page() {
         {error ? <Text style={[ui.p, { color: c.t.error }]}>{error}</Text> : null}
         {/* This week's Grand Rounds, changing every week like the Games page button (Yazan 2026-10-13). */}
         <RoundsEntry />
+        {/* Today's daily missions, paying tokens (Yazan 2026-10-26). */}
+        <MissionsEntry />
         <View style={[s.log, { backgroundColor: c.surf, borderColor: c.line }]}>
           <View style={[s.margin, { backgroundColor: c.t.rose }]} />
           {rows?.map((r) => <LogRow key={r.key} r={r} t={c.t} canCollect={signedIn} busy={busy === r.key} onCollect={() => collect(r.key)} />)}

@@ -20,7 +20,7 @@ import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import { Beat } from './Ribbon';
-import { aboutGames, CHEST_NAME, claimRounds, CYCLE_WEEKS, loadRounds, useRoundsStore, weekGoal, weekName, type Week } from './useRounds';
+import { aboutGames, CHEST_NAME, claimRounds, CYCLE_WEEKS, EPIC_RUN, loadRounds, useRoundsStore, weekGoal, weekName, type Week } from './useRounds';
 import { useLock } from '@/lib/useLock';
 
 /** A mode week's stamp sign: a phone for Pass, a single figure for Solo, linked dots for Online. */
@@ -107,7 +107,7 @@ export function RoundsPage() {
       setBusy(false);
       if (x.ok && x.prize) setWon(x.prize);
       setSaid(
-        x.ok ? `${CHEST_NAME[x.chest ?? 'wooden']} collected${x.stamp ? ' and this week is stamped' : ''}. Open it from the chest button on the Games page.`
+        x.ok ? `${CHEST_NAME[x.chest ?? 'wooden']}${x.epic ? ' and an Epic chest' : ''} collected${x.stamp ? ' and this week is stamped' : ''}. Open ${x.epic ? 'them' : 'it'} from the chest button on the Games page.`
         : 'Not saved yet: your plays are still reaching your account. Try again in a moment.',
       );
     });
@@ -192,6 +192,25 @@ export function RoundsPage() {
           {`${r.cycle.have} of ${r.cycle.of} different weeks stamped: a stamp from every one pays ${r.cycle.prize} tokens. ${r.stamps.length} week${r.stamps.length === 1 ? '' : 's'} stamped in all; 13 earn the Grand Rounds frame.`}
         </Text>
 
+        {/* Every 4 weeks in a row with all 3 missions done pays an Epic chest (Yazan 2026-10-26). */}
+        <View style={[s.epic, { backgroundColor: c.surf, borderColor: c.line }]}>
+          <Image source={CHESTS.epic.art} style={s.epicArt} contentFit="contain" accessibilityLabel="Epic chest" />
+          <View style={{ flex: 1 }}>
+            <Text style={[s.epicT, { color: c.fg }]}>Epic chest</Text>
+            <Text style={[s.epicS, { color: c.mute }]}>{`Stamp ${EPIC_RUN} weeks in a row.`}</Text>
+            <View style={s.runRow}>
+              {Array.from({ length: EPIC_RUN }, (_, d) => {
+                const on = d < (r.run ?? 0);
+                return (
+                  <View key={d} style={[s.run, { borderColor: on ? '#b07cff' : c.line, backgroundColor: on ? 'rgba(176,124,255,0.18)' : 'transparent' }]}>
+                    <Text style={[s.runT, { color: on ? '#d9c4ff' : c.mute }]}>{on ? '✓' : `${d + 1}`}</Text>
+                  </View>
+                );
+              })}
+            </View>
+          </View>
+        </View>
+
         <Kicker inSec>Next week</Kicker>
         <View style={[s.head, { marginTop: u(6) }]}>
           <WeekSign w={r.next} px={u(26)} t={t} />
@@ -239,6 +258,13 @@ const s = StyleSheet.create({
   mS: { fontFamily: F.body, fontSize: u(9.5), marginTop: u(3) },
   mDone: { fontFamily: F.bodyBold, fontSize: u(16), width: u(24), textAlign: 'center' },
   stamps: { flexDirection: 'row', flexWrap: 'wrap', gap: u(8), marginTop: u(8) },
+  epic: { flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderRadius: u(16), padding: u(12), marginTop: u(14), gap: u(10) },
+  epicArt: { width: u(54), height: u(54) },
+  epicT: { fontFamily: F.display, fontSize: u(14) },
+  epicS: { fontFamily: F.body, fontSize: u(8.5), marginTop: u(2) },
+  runRow: { flexDirection: 'row', gap: u(5), marginTop: u(7) },
+  run: { width: u(20), height: u(20), borderRadius: u(10), borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
+  runT: { fontFamily: F.bodyBold, fontSize: u(8.5) },
   stamp: { width: u(44), height: u(44), borderRadius: u(22), borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
   tick: { position: 'absolute', right: u(-2), top: u(-4), fontFamily: F.bodyBold, fontSize: u(11) },
   nx: { fontFamily: F.display, fontSize: u(16) },

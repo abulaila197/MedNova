@@ -12,7 +12,7 @@ import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
-import { doneOf, loadRounds, timeLeft, useRoundsStore, weekName, type Rounds } from './useRounds';
+import { doneOf, loadRounds, timeLeft, useRoundsDot, useRoundsStore, weekName, type Rounds } from './useRounds';
 
 /**
  * Grand Rounds on the Games page (Yazan 2026-10-13): a small round button on the right under the header; tapping it
@@ -22,6 +22,7 @@ export function RoundsButton() {
   const t = useTheme();
   const [open, setOpen] = useState(false);
   const r = useRoundsStore((x) => x.r);
+  const dot = useRoundsDot();
   const toggle = tapped(() => setOpen((o) => !o));
   useEffect(() => {
     void loadRounds();
@@ -39,6 +40,7 @@ export function RoundsButton() {
       {open ? <Pressable style={StyleSheet.absoluteFill} onPress={toggle} accessibilityLabel="Close Grand Rounds" /> : null}
       <Pressable onPress={toggle} style={[s.btn, { backgroundColor: t.panel, borderColor: t.panelLine }]} accessibilityRole="button" accessibilityLabel="Grand Rounds this week" accessibilityState={{ expanded: open }}>
         <Ring done={doneOf(r)} />
+        {dot ? <View style={[s.dot, { backgroundColor: t.red, borderColor: t.sky }]} /> : null}
       </Pressable>
       {open ? (
         <Animated.View entering={FadeIn.duration(160)} exiting={FadeOut.duration(120)} style={[s.pop, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
@@ -132,6 +134,8 @@ export function Beat({ r, more = true }: { r: Rounds; more?: boolean }) {
 
 const s = StyleSheet.create({
   btn: { position: 'absolute', right: u(16), top: u(8), width: u(27), height: u(27), borderRadius: u(13.5), borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
+  // The same red dot as the daily reward button.
+  dot: { position: 'absolute', right: u(-2), top: u(-2), width: u(10), height: u(10), borderRadius: u(5), borderWidth: 1.5 },
   pop: { position: 'absolute', left: u(16), right: u(16), top: u(41), borderRadius: u(14), borderWidth: 1, paddingHorizontal: u(12), paddingTop: u(10), paddingBottom: u(8) },
   beat: { gap: u(3) },
   row: { flexDirection: 'row', alignItems: 'center', gap: u(6) },
