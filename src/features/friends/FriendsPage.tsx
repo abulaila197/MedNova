@@ -192,7 +192,7 @@ function Find({ t }: { t: Theme }) {
     <>
       <View style={[s.input, s.search, { borderColor: t.panelLine, backgroundColor: t.panel2 }]}>
         <Text style={{ color: t.mute, fontSize: u(12) }}>⌕</Text>
-        <TextInput value={q} onChangeText={setQ} autoCapitalize="none" autoCorrect={false} placeholder="Find a player by name or @username" placeholderTextColor={t.mute} style={[s.searchT, { color: t.fg }]} />
+        <TextInput value={q} onChangeText={setQ} autoCapitalize="none" autoCorrect={false} placeholder="Find a player by name, @username or friend code" placeholderTextColor={t.mute} style={[s.searchT, { color: t.fg }]} />
       </View>
       {rows ? <Text style={[s.sub, { color: t.mute }]}>{rows.length ? `${rows.length} PLAYER${rows.length === 1 ? '' : 'S'}` : 'NOBODY BY THAT NAME YET'}</Text> : null}
       {rows?.map((f) => {

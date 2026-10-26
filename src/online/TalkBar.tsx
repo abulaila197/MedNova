@@ -1,6 +1,6 @@
 import { Image } from 'expo-image';
 import { useEffect, useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Text, MAX_FONT_SCALE } from '@/components/AppText';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -95,14 +95,15 @@ export function TalkPanel({ room, me, onSent }: { room: string; me: Me; onSent?:
           </Pressable>
         )
       ) : (
-        <View style={[s.vg, cooling && s.cool]}>
+        // 19 lines since the taunts (2026-10-26): the list scrolls instead of growing the tray.
+        <ScrollView style={[s.vScroll, cooling && s.cool]} contentContainerStyle={s.vg} showsVerticalScrollIndicator={false}>
           {VOICE.map((v) => (
             <Pressable key={v.id} disabled={cooling} onPress={() => send('voice', v.id)} style={[s.vl, { borderColor: L.line, backgroundColor: L.panel }]} accessibilityRole="button" accessibilityLabel={`Say: ${v.line}`}>
               <Text style={[s.vlI, { color: L.mute }]}>▶</Text>
               <Text style={[s.vlT, { color: L.fg, fontFamily: L.semi }]} numberOfLines={1}>{v.line}</Text>
             </Pressable>
           ))}
-        </View>
+        </ScrollView>
       )}
       <Text style={[s.small, { color: L.dim, fontFamily: L.body }]}>{cooling ? 'One message every 3 seconds.' : tab === 'voice' ? 'Everyone hears the same voice.' : 'Tap a sticker to send it.'}</Text>
     </View>
@@ -243,6 +244,7 @@ const s = StyleSheet.create({
   empty: { alignItems: 'center', gap: u(3), paddingVertical: u(16) },
   emptyT: { fontFamily: F.bodySemi, fontSize: u(10.5), color: G.mute },
   sImg: { width: '100%', height: '100%' },
+  vScroll: { maxHeight: u(176) },
   vg: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', rowGap: u(6) },
   vl: { width: '48.5%', flexDirection: 'row', alignItems: 'center', gap: u(6), borderWidth: 1, borderColor: G.line, backgroundColor: G.panel, borderRadius: u(10), paddingVertical: u(7), paddingHorizontal: u(9) },
   vlI: { fontSize: u(7.5), color: G.mute },

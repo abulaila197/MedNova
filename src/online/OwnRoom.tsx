@@ -14,7 +14,7 @@ import { useAccount } from '@/state/account';
 import { shareText } from '@/lib/share';
 
 import { createRoom, JOIN_SAY, joinRoom, joinRoomId, leaveRoom, rematchRoom, setReady, setTeam, startMatch, type Seat } from './api';
-import { settingsLine } from './format';
+import { roomShareText, settingsLine } from './format';
 import { LobbySheets, type LobbySheet } from './Lobby';
 import { RoomLookProvider, type RoomLook } from './look';
 import { useTalk, useTalkFeed } from './talk';
@@ -89,6 +89,9 @@ function Kick({ kit, children, color }: { kit: RoomKit; children: string; color:
 }
 
 /** The game's choices on its paper: the picked one filled in the paper's accent. */
+/** #49 (Yazan 2026-10-26): Leave is the same cyan in every game's room, whatever its own look. */
+const LEAVE = '#6fd6ff';
+
 function Choices<V extends string | number>({ kit, choices, value, onChange }: { kit: RoomKit; choices: { value: V; label: string }[]; value: V; onChange?: (v: V) => void }) {
   const { z, paper } = kit;
   return (
@@ -329,7 +332,7 @@ export function OwnLobby({ kit, def, roomId }: { kit: RoomKit; def: GameDef; roo
     );
   }
 
-  const share = () => shareText(`Join my ${w.game} room on MedNova. ${w.code}: ${spaced(room.code)}`);
+  const share = () => shareText(roomShareText(w.game, room.code, room.game));
   const allReady = players.length >= 2 && players.every((p) => p.ready);
   const notReady = players.filter((p) => !p.ready);
   const status =
@@ -378,7 +381,7 @@ export function OwnLobby({ kit, def, roomId }: { kit: RoomKit; def: GameDef; roo
   };
   const empty = (n: number) =>
     Array.from({ length: n }, (_, i) => (
-      <Pressable key={`e${i}`} onPress={share} style={[st.row, { gap: z(10), paddingVertical: z(9) }, i < n - 1 ? { borderBottomWidth: 1, borderBottomColor: paper.rule } : null]} accessibilityRole="button" accessibilityLabel="Invite a player">
+      <Pressable key={`e${i}`} onPress={() => setSheet('invite')} style={[st.row, { gap: z(10), paddingVertical: z(9) }, i < n - 1 ? { borderBottomWidth: 1, borderBottomColor: paper.rule } : null]} accessibilityRole="button" accessibilityLabel="Invite a player">
         <View style={{ width: z(34), height: z(34), borderRadius: z(17), borderWidth: 1.5, borderStyle: 'dashed', borderColor: paper.rule, alignItems: 'center', justifyContent: 'center', marginLeft: z(18) }}>
           <KT kit={kit} size={16} color={paper.soft}>+</KT>
         </View>
@@ -391,7 +394,7 @@ export function OwnLobby({ kit, def, roomId }: { kit: RoomKit; def: GameDef; roo
       <kit.Screen top={<LobbySheets def={def} state={state} sheet={sheet} setSheet={setSheet} reload={reload} />}>
         <View style={st.spread}>
           <Pressable onPress={leave} hitSlop={z(8)} accessibilityRole="button">
-            <KT kit={kit} size={13} color={rc.soft}>{`‹ ${w.leave}`}</KT>
+            <KT kit={kit} size={13} color={LEAVE}>{`‹ ${w.leave}`}</KT>
           </Pressable>
           <Pressable onPress={() => setSheet('how')} hitSlop={z(8)} accessibilityRole="button">
             <KT kit={kit} size={13} color={rc.acc}>How to play</KT>

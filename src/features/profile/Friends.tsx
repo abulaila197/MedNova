@@ -1,6 +1,6 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 import { create } from 'zustand';
@@ -10,7 +10,7 @@ import { PlayerFace } from '@/features/style/Frame';
 import { useSecond } from '@/lib/useSecond';
 import { useAccount } from '@/state/account';
 import { clock } from '@/games/engine/clock';
-import { acceptInvite, challenge, useInvites } from '@/online/invites';
+import { acceptInvite, useInvites, watch } from '@/online/invites';
 import { type Friend, respondFriend, seenLabel, useFriends } from '@/state/friends';
 import { u } from '@/theme/scale';
 import { F, type Theme } from '@/theme/tokens';
@@ -18,10 +18,14 @@ import { F, type Theme } from '@/theme/tokens';
 /** Which friends sheet is open (drawn by FriendSheets at the app layout so it covers the dock). */
 /** A player to report: from the friends list or an online lobby. */
 export type ReportTarget = { id: string; name: string; avatar: string };
-type SheetState = { open: null | 'add' | 'menu' | 'report'; friend: Friend | null; code: string; target: ReportTarget | null };
+type SheetState = { open: null | 'add' | 'menu' | 'report' | 'profile' | 'challenge'; friend: Friend | null; code: string; target: ReportTarget | null };
 export const useFriendSheet = create<SheetState>(() => ({ open: null, friend: null, code: '', target: null }));
 export const openAdd = (code = '') => useFriendSheet.setState({ open: 'add', friend: null, code, target: null });
 const openMenu = (friend: Friend) => useFriendSheet.setState({ open: 'menu', friend, code: '', target: null });
+/** #85: tapping a friend opens their profile sheet (Remove, Block and Report sit at its bottom). */
+export const openProfile = (friend: Friend) => useFriendSheet.setState({ open: 'profile', friend, code: '', target: null });
+/** #47: Challenge opens the game grid; picking a game opens its room and invites them. */
+export const openChallenge = (friend: Friend) => useFriendSheet.setState({ open: 'challenge', friend, code: '', target: null });
 export const openReport = (target: ReportTarget) => useFriendSheet.setState({ open: 'report', friend: null, code: '', target });
 
 const ONLINE = { dark: '#7be0a8' };
@@ -35,6 +39,14 @@ export function FriendsSection({ t, only }: { t: Theme; only?: 'friends' | 'requ
   const list = useFriends((x) => x.list);
   const [busy, setBusy] = useState<string | null>(null);
   const invites = useInvites((x) => x.list);
+  const playing = useFriends((x) => x.playing);
+  const say = useInvites((x) => x.say);
+  // A failed Join or Watch says why for a few seconds.
+  useEffect(() => {
+    if (!say) return;
+    const id = setTimeout(() => useInvites.setState({ say: null }), 5000);
+    return () => clearTimeout(id);
+  }, [say]);
   // Ticks the "time left" on challenges once a second while any are open.
   const now = useSecond(invites.length > 0);
   const line = { borderColor: t.panelLine };
@@ -75,6 +87,7 @@ export function FriendsSection({ t, only }: { t: Theme; only?: 'friends' | 'requ
           </Pressable>
         </View>
       )}
+      {say ? <Text style={[s.note, { color: t.accent }]}>{say}</Text> : null}
       {only === 'requests' && !incoming.length ? <Text style={[s.note, { color: t.mute }]}>No requests right now.</Text> : null}
       {showReq && incoming.length && !only ? <Text style={[s.sub, { color: t.mute }]}>{`REQUESTS · ${incoming.length}`}</Text> : null}
       {(showReq ? incoming : []).map((f) => (
@@ -98,13 +111,20 @@ export function FriendsSection({ t, only }: { t: Theme; only?: 'friends' | 'requ
       {showFr && friends.length === 0 ? <Text style={[s.note, { color: t.mute }]}>No friends yet. Find players or share your invite code.</Text> : null}
       {(showFr ? friends : []).map((f) => {
         const inv = invites.find((x) => x.from_user === f.id);
-        const when = inv ? `CHALLENGED YOU · ${clock(Date.parse(inv.expires_at) - now, { down: true })} LEFT` : f.kind === 'outgoing' ? 'REQUEST SENT' : seenLabel(f.last_seen, invites.length ? now : undefined);
+        const live = f.kind === 'friend' ? playing[f.id] : undefined;
+        const when = inv
+          ? `CHALLENGED YOU · ${clock(Date.parse(inv.expires_at) - now, { down: true })} LEFT`
+          : f.kind === 'outgoing'
+            ? 'REQUEST SENT'
+            : live
+              ? 'IN A MATCH'
+              : seenLabel(f.last_seen, invites.length ? now : undefined);
         return (
           <View key={f.id} style={[s.fr, line]}>
             <Ring t={t} f={f} />
-            <Pressable style={s.frT} onPress={() => openMenu(f)} accessibilityRole="button" accessibilityHint="Remove, block or report">
+            <Pressable style={s.frT} onPress={() => (f.kind === 'friend' ? openProfile(f) : openMenu(f))} accessibilityRole="button" accessibilityHint={f.kind === 'friend' ? 'Open their profile' : 'Cancel the request'}>
               <Name t={t} f={f} />
-              <Text style={[s.frS, { color: inv ? t.accent : when === 'ONLINE' ? ONLINE[t.mode] : t.mute }]}>{when}</Text>
+              <Text style={[s.frS, { color: inv ? t.accent : when === 'ONLINE' || live ? ONLINE[t.mode] : t.mute }]}>{when}</Text>
             </Pressable>
             {inv ? (
               // ON24: a challenge waits here for 10 minutes after its banner.
@@ -113,21 +133,26 @@ export function FriendsSection({ t, only }: { t: Theme; only?: 'friends' | 'requ
                   <Text style={[s.chT, { color: t.onGrad }]}>Join</Text>
                 </LinearGradient>
               </Pressable>
-            ) : f.kind === 'friend' ? (
-              // ON24: opens a private room for The Diagnostic Pursuit (the only online game so far) and invites them.
+            ) : live ? (
+              // #80: watch their running match (the game's watch screen, no buttons).
               <Pressable
                 disabled={busy === f.id}
-                onPress={() => act(f.id, async () => void (await challenge(f.id, 'the-diagnostic-pursuit', { difficulty: 'Medium', cases: 5, teams: 0 })))}
+                onPress={() => act(f.id, async () => void (await watch(f.id, live.game)))}
                 style={[s.ch, s.ghost, line, busy === f.id && { opacity: 0.5 }]}
                 accessibilityRole="button"
-                accessibilityLabel={`Challenge ${f.display_name}`}>
+                accessibilityLabel={`Watch ${f.display_name}'s match`}>
+                <Text style={[s.ghT, { color: t.fg }]}>Watch</Text>
+              </Pressable>
+            ) : f.kind === 'friend' ? (
+              // #47: pick any online game, then straight into its room with the invite sent.
+              <Pressable onPress={() => openChallenge(f)} style={[s.ch, s.ghost, line]} accessibilityRole="button" accessibilityLabel={`Challenge ${f.display_name}`}>
                 <Text style={[s.ghT, { color: t.fg }]}>Challenge</Text>
               </Pressable>
             ) : null}
           </View>
         );
       })}
-      {showFr && friends.length ? <Text style={[s.tip, { color: t.mute }]}>Tap a friend’s name to remove or block.</Text> : null}
+      {showFr && friends.length ? <Text style={[s.tip, { color: t.mute }]}>Tap a friend to see their profile.</Text> : null}
     </>
   );
 }

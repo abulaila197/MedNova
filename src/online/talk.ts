@@ -2,9 +2,11 @@ import { createAudioPlayer, setAudioModeAsync, type AudioPlayer } from 'expo-aud
 import { useFocusEffect } from 'expo-router';
 import { useCallback, useEffect, useRef } from 'react';
 import { AppState } from 'react-native';
+import type { RealtimeChannel } from '@supabase/supabase-js';
 import { create } from 'zustand';
 
 import { awake, track, untrack } from '@/lib/sound';
+import { supabase } from '@/lib/supabase';
 
 import { call } from './api';
 import { voiceById } from './voice';
@@ -69,6 +71,26 @@ function releaseVoices() {
   players.clear();
 }
 
+// Chat lag (#10, 2026-10-26): a sent line also goes out at once over a live channel per room; the 1.5 s server
+// check stays as the backup for anyone who missed it. Each line shown from one path cancels its copy from the other.
+const channels = new Map<string, RealtimeChannel>();
+const SEEN_MS = 8000;
+const seenLive = new Map<string, number[]>();
+const seenPoll = new Map<string, number[]>();
+const seenKey = (m: Pick<TalkMsg, 'user_id' | 'kind' | 'item'>) => `${m.user_id}|${m.kind}|${m.item}`;
+/** True (and used up) when the other path already showed this line; else remembers it for the other path. */
+function shownBefore(m: TalkMsg, other: Map<string, number[]>, mine: Map<string, number[]>) {
+  const k = seenKey(m);
+  const now = Date.now();
+  const left = (other.get(k) ?? []).filter((at) => now - at < SEEN_MS);
+  if (left.length) {
+    other.set(k, left.slice(1));
+    return true;
+  }
+  mine.set(k, [...(mine.get(k) ?? []).filter((at) => now - at < SEEN_MS), now]);
+  return false;
+}
+
 const pop = (m: TalkMsg) => {
   useTalk.setState((s) => ({ pops: [...s.pops.filter((x) => x.user_id !== m.user_id), m] }));
   setTimeout(() => useTalk.setState((s) => ({ pops: s.pops.filter((x) => x.id !== m.id) })), POP_MS);
@@ -81,8 +103,10 @@ export async function sendTalk(room: string, me: { id: string; name: string; fac
   useTalk.setState({ nextAt: now + COOLDOWN_MS });
   const r = await call<string>('send_talk', { r: room, kind, item }).catch(() => 'error');
   if (r === 'sent') {
-    pop({ id: -now, user_id: me.id, name: me.name, face: me.face, kind, item, at: now });
+    const m: TalkMsg = { id: -now, user_id: me.id, name: me.name, face: me.face, kind, item, at: now };
+    pop(m);
     if (kind === 'voice') playVoice(item);
+    void channels.get(room)?.send({ type: 'broadcast', event: 'talk', payload: m });
   }
   return r;
 }
@@ -102,7 +126,7 @@ export function useTalkFeed(room: string | undefined, me: string | null) {
       else if (first) last.current = 0;
       if (first) return;
       for (const m of rows ?? []) {
-        if (m.user_id === me || isMuted(room, m.user_id)) continue;
+        if (m.user_id === me || isMuted(room, m.user_id) || shownBefore(m, seenLive, seenPoll)) continue;
         pop(m);
         if (m.kind === 'voice') playVoice(m.item);
       }
@@ -119,9 +143,27 @@ export function useTalkFeed(room: string | undefined, me: string | null) {
       return () => clearInterval(id);
     }, [load]),
   );
+  // The live channel: only lines the server already accepted are sent on it (sendTalk), so its checks still hold.
+  useEffect(() => {
+    if (!room) return;
+    const ch = supabase.channel(`talk-${room}`, { config: { broadcast: { self: false } } });
+    ch.on('broadcast', { event: 'talk' }, ({ payload }) => {
+      const m = payload as TalkMsg;
+      if (!m?.user_id || m.user_id === me || isMuted(room, m.user_id) || shownBefore(m, seenPoll, seenLive)) return;
+      pop(m);
+      if (m.kind === 'voice') playVoice(m.item);
+    }).subscribe();
+    channels.set(room, ch);
+    return () => {
+      if (channels.get(room) === ch) channels.delete(room);
+      supabase.removeChannel(ch);
+    };
+  }, [room, me]);
   useEffect(
     () => () => {
       useTalk.setState({ pops: [] });
+      seenLive.clear();
+      seenPoll.clear();
       releaseVoices();
     },
     [room],

@@ -4,7 +4,7 @@ import { create } from 'zustand';
 
 import { useAccount } from '@/state/account';
 
-import { challengeFriend, JOIN_SAY, myInvites, respondInvite, type Invite } from './api';
+import { challengeFriend, JOIN_SAY, myInvites, respondInvite, watchFriend, type Invite } from './api';
 import { keepIfSame } from './same';
 import { onAccountSwitch } from '@/state/accountSwitch';
 
@@ -60,4 +60,17 @@ export async function challenge(friendId: string, game: string, settings: Record
   const r = await challengeFriend(friendId, game as Invite['game'], settings, useAccount.getState().profile?.avatar);
   if (r.result === 'sent' && r.room_id) lobby(game, r.room_id);
   return r.result;
+}
+
+/** Watch a friend's running match (#80): you join their room as a watcher and land on the game's watch screen. */
+export async function watch(friendId: string, game: string) {
+  try {
+    const r = await watchFriend(friendId, useAccount.getState().profile?.avatar);
+    if ((r.result === 'joined' || r.result === 'spectating') && r.room_id) lobby(game, r.room_id);
+    else useInvites.setState({ say: JOIN_SAY[r.result] ?? JOIN_SAY.error });
+    return r.result;
+  } catch {
+    useInvites.setState({ say: JOIN_SAY.error });
+    return 'error';
+  }
 }

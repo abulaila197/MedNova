@@ -17,8 +17,9 @@ import { F, THEMES } from '@/theme/tokens';
 import { loadFriends, useFriends } from '@/state/friends';
 import { openReport } from '@/features/profile/Friends';
 import { shareText } from '@/lib/share';
+import { InviteFriends } from './InviteFriends';
 import { call, leaveRoom, rematchRoom, removePlayer, setReady, setTeam, startMatch, updateRoom, type RoomState, type Seat } from './api';
-import { settingsLine } from './format';
+import { roomShareText, settingsLine } from './format';
 import { sparksCost } from '@/features/sparks/costs';
 import { needSparks } from '@/features/sparks/sparks';
 import { G } from './grey';
@@ -130,7 +131,7 @@ export function Lobby({ def, roomId }: { def: GameDef; roomId: string }) {
 
   // Names the game for every lobby, not only The Diagnostic Pursuit (AP10b).
   const g = GAMES.find((x) => x.key === def.key);
-  const share = () => shareText(`Join my MedNova room for ${g ? `${g.lead} ${g.em}`.trim() : 'a game'}. Room code: ${spaced(room.code)}`);
+  const share = () => shareText(roomShareText(g ? `${g.lead} ${g.em}`.trim() : 'a game', room.code, room.game));
   // Most games start at 2; a game can ask for more (Imposter needs 3).
   const need = Math.max(2, def.players?.online?.min ?? 2);
   const allReady = players.length >= need && players.every((p) => p.ready);
@@ -181,7 +182,7 @@ export function Lobby({ def, roomId }: { def: GameDef; roomId: string }) {
   };
   const empties = (n: number) =>
     Array.from({ length: n }, (_, i) => (
-      <Pressable key={`e${i}`} onPress={share} style={[s.tile, s.empty]} accessibilityRole="button" accessibilityLabel="Invite a player">
+      <Pressable key={`e${i}`} onPress={() => setSheet('invite')} style={[s.tile, s.empty]} accessibilityRole="button" accessibilityLabel="Invite a player">
         <Text style={[s.plus, { color: G.dim }]}>+</Text>
         <Text style={[s.tl, { color: G.dim }]}>Invite</Text>
       </Pressable>
@@ -194,7 +195,7 @@ export function Lobby({ def, roomId }: { def: GameDef; roomId: string }) {
     <GreyScreen over={over}>
       <View style={s.tb}>
         <Pressable onPress={leave} hitSlop={u(8)} accessibilityRole="button">
-          <Text style={[s.tbT, { color: G.mute }]}>‹ Leave room</Text>
+          <Text style={[s.tbT, { color: G.acc }]}>‹ Leave room</Text>
         </Pressable>
         <Pressable onPress={() => setSheet('how')} hitSlop={u(8)} accessibilityRole="button">
           <Text style={[s.tbT, { color: G.acc, fontFamily: F.bodySemi }]}>How to play</Text>
@@ -298,7 +299,7 @@ export function Lobby({ def, roomId }: { def: GameDef; roomId: string }) {
   );
 }
 
-export type LobbySheet = 'how' | 'settings' | 'talk' | { seat: Seat } | null;
+export type LobbySheet = 'how' | 'settings' | 'talk' | 'invite' | { seat: Seat } | null;
 
 /** The lobby's pop-up sheets: How to play, Talk, the host's room settings, and a player's seat. */
 export function LobbySheets({ def, state, sheet, setSheet, reload }: { def: GameDef; state: RoomState; sheet: LobbySheet; setSheet: (x: LobbySheet) => void; reload: () => void }) {
@@ -317,6 +318,9 @@ export function LobbySheets({ def, state, sheet, setSheet, reload }: { def: Game
       </Sheet>
       <Sheet tone={TONE} open={sheet === 'settings'} onClose={() => setSheet(null)}>
         {sheet === 'settings' ? <RoomSettings def={def} state={state} onDone={() => (setSheet(null), reload())} /> : null}
+      </Sheet>
+      <Sheet tone={TONE} open={sheet === 'invite'} onClose={() => setSheet(null)}>
+        {sheet === 'invite' ? <InviteFriends state={state} /> : null}
       </Sheet>
       <Sheet tone={TONE} open={!!sheet && typeof sheet === 'object'} onClose={() => setSheet(null)}>
         {sheet && typeof sheet === 'object' ? <SeatSheet state={state} seat={sheet.seat} teams={teams} onDone={() => (setSheet(null), reload())} /> : null}

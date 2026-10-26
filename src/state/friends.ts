@@ -19,15 +19,38 @@ export type Blocked = { id: string; username: string; display_name: string; avat
 /** What the server says when you send a request by code (FR2). */
 export type RequestResult = 'sent' | 'accepted' | 'already' | 'pending' | 'self' | 'not_found' | 'unavailable';
 
-type State = { list: Friend[]; blocked: Blocked[]; loaded: boolean };
-export const useFriends = create<State>(() => ({ list: [], blocked: [], loaded: false }));
-onAccountSwitch(() => useFriends.setState({ list: [], blocked: [], loaded: false }));
+/** A friend in a running match right now (#80): the room to watch. */
+export type Playing = { friend: string; room_id: string; game: string };
 
-/** Reloads friends, requests and blocked players from the server. */
+/** What a friend's profile sheet shows (#85). */
+export type FriendProfile = {
+  id: string;
+  username: string;
+  display_name: string;
+  avatar: string;
+  last_seen: string | null;
+  level: number;
+  tokens: number;
+  since: string | null;
+  characters: string[];
+};
+
+type State = { list: Friend[]; blocked: Blocked[]; playing: Record<string, Playing>; loaded: boolean };
+export const useFriends = create<State>(() => ({ list: [], blocked: [], playing: {}, loaded: false }));
+onAccountSwitch(() => useFriends.setState({ list: [], blocked: [], playing: {}, loaded: false }));
+
+/** Reloads friends, requests, blocked players and who is mid-match from the server. */
 export async function loadFriends() {
-  const [list, blocked] = await Promise.all([call<Friend[]>('my_friends'), call<Blocked[]>('my_blocks')]);
-  useFriends.setState({ list: list ?? [], blocked: blocked ?? [], loaded: true });
+  const [list, blocked, playing] = await Promise.all([
+    call<Friend[]>('my_friends'),
+    call<Blocked[]>('my_blocks'),
+    call<Playing[]>('friends_playing').catch(() => [] as Playing[]),
+  ]);
+  useFriends.setState({ list: list ?? [], blocked: blocked ?? [], playing: Object.fromEntries((playing ?? []).map((p) => [p.friend, p])), loaded: true });
 }
+
+/** A friend's profile (#85); null if you aren't friends any more. */
+export const loadFriendProfile = (id: string) => call<FriendProfile | null>('friend_profile', { other: id });
 
 export async function requestFriend(code: string) {
   const r = await call<RequestResult>('request_friend', { code });
@@ -56,7 +79,7 @@ export async function unblockUser(id: string) {
 }
 
 export function clearFriends() {
-  useFriends.setState({ list: [], blocked: [], loaded: false });
+  useFriends.setState({ list: [], blocked: [], playing: {}, loaded: false });
 }
 
 /** FR4: "ONLINE" while seen in the last 2 minutes, else how long ago. */

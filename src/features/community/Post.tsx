@@ -1,8 +1,8 @@
-import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 
 import { PulseStar } from '@/components/PulseStar';
+import { useLike } from '@/features/community/likes';
 import { tapped } from '@/lib/sound';
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
@@ -10,11 +10,12 @@ import { F } from '@/theme/tokens';
 
 /**
  * An announcement from the MedNova team (Yazan, 2026-10-13: the Community page is announcements). The like
- * counter sits next to the post; for now a like is kept on this phone (the shared count comes with the server).
+ * counter sits next to the post: one shared count for everyone (#25).
  */
-export function Post({ kick, lead, em, body }: { kick: string; lead: string; em: string; body: string[] }) {
+export function Post({ id, kick, lead, em, body }: { id: string; kick: string; lead: string; em: string; body: string[] }) {
   const t = useTheme();
-  const [liked, setLiked] = useState(false);
+  const like = useLike(`post:${id}`);
+  const liked = like.mine;
   return (
     <View style={[s.card, { backgroundColor: t.panel2, borderColor: t.panelLine }]}>
       <View style={s.from}>
@@ -30,9 +31,9 @@ export function Post({ kick, lead, em, body }: { kick: string; lead: string; em:
           {p}
         </Text>
       ))}
-      <Pressable onPress={tapped(() => setLiked(!liked))} style={[s.like, { borderColor: liked ? t.accent : t.chipLine, backgroundColor: t.chip }]} accessibilityRole="button" accessibilityState={{ selected: liked }} accessibilityLabel={liked ? 'Unlike' : 'Like'}>
+      <Pressable onPress={tapped(like.toggle)} style={[s.like, { borderColor: liked ? t.accent : t.chipLine, backgroundColor: t.chip }]} accessibilityRole="button" accessibilityState={{ selected: liked }} accessibilityLabel={liked ? 'Unlike' : 'Like'}>
         <Text style={[s.heart, { color: liked ? t.accent : t.mute }]}>{liked ? '♥' : '♡'}</Text>
-        <Text style={[s.count, { color: liked ? t.accent : t.fg }]}>{liked ? 1 : 0}</Text>
+        <Text style={[s.count, { color: liked ? t.accent : t.fg }]}>{like.n}</Text>
       </Pressable>
     </View>
   );

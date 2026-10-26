@@ -1,7 +1,8 @@
 import * as Clipboard from 'expo-clipboard';
+import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useRef, useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Text, TextInput } from '@/components/AppText';
 
 import { useBalance } from '@/components/LevelBadge';
@@ -11,12 +12,20 @@ import { PlayerFace } from '@/features/style/Frame';
 import { PlayerTitle } from '@/features/style/PlayerTitle';
 import { useAccount } from '@/state/account';
 import { useTheme } from '@/state/app';
-import { blockUser, removeFriend, type RequestResult, requestFriend, seenLabel } from '@/state/friends';
+import { blockUser, type FriendProfile, loadFriendProfile, removeFriend, type RequestResult, requestFriend, seenLabel, useFriends } from '@/state/friends';
 import { u } from '@/theme/scale';
 import { F, type Theme } from '@/theme/tokens';
 import { shareText } from '@/lib/share';
 
-import { Name, openReport, useFriendSheet } from './Friends';
+import { TokenCoin } from '@/components/PulseStar';
+import { GAMES } from '@/data/games';
+import { LOAD } from '@/features/loading/configs';
+import { Face } from '@/games/shell/Face';
+import { characterOf } from '@/games/shell/characters';
+import { gameDef } from '@/games/shell/registry';
+import { challenge, watch } from '@/online/invites';
+
+import { Name, openChallenge, openReport, useFriendSheet } from './Friends';
 
 export const closeFriendSheet = () => useFriendSheet.setState({ open: null, friend: null, code: '', target: null });
 const close = closeFriendSheet;
@@ -38,7 +47,7 @@ export function FriendSheets() {
   const open = useFriendSheet((x) => x.open);
   return (
     <Sheet open={!!open} onClose={close}>
-      {open === 'add' ? <AddFriend /> : open === 'menu' ? <FriendMenu /> : open === 'report' ? <ReportPlayer /> : null}
+      {open === 'add' ? <AddFriend /> : open === 'menu' ? <FriendMenu /> : open === 'report' ? <ReportPlayer /> : open === 'profile' ? <FriendProfileSheet /> : open === 'challenge' ? <ChallengeGrid /> : null}
     </Sheet>
   );
 }
@@ -184,6 +193,150 @@ function FriendMenu() {
   );
 }
 
+/**
+ * #85 (Yazan 2026-10-26, slide-up sheet): a friend's face, level, tokens and characters, with Challenge or Watch;
+ * Remove, Block and Report sit at the bottom.
+ */
+function FriendProfileSheet() {
+  const t = useTheme();
+  const f = useFriendSheet((x) => x.friend);
+  const live = useFriends((x) => (f ? x.playing[f.id] : undefined));
+  const [p, setP] = useState<FriendProfile | null | 'error'>(null);
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState(false);
+  useEffect(() => {
+    if (!f) return;
+    let on = true;
+    loadFriendProfile(f.id)
+      .then((r) => on && setP(r ?? 'error'))
+      .catch(() => on && setP('error'));
+    return () => {
+      on = false;
+    };
+  }, [f]);
+  if (!f) return null;
+  const when = live ? 'IN A MATCH' : seenLabel(f.last_seen);
+  const run = async (fn: () => Promise<void>) => {
+    setBusy(true);
+    setErr(false);
+    try {
+      await fn();
+      close();
+    } catch {
+      setErr(true);
+      setBusy(false);
+    }
+  };
+  const ready = p && p !== 'error' ? p : null;
+  const chars = ready?.characters ?? [];
+  return (
+    <ScrollView style={{ maxHeight: u(560) }} contentContainerStyle={{ gap: u(10) }} showsVerticalScrollIndicator={false}>
+      <View style={s.ph}>
+        <PlayerFace slug={f.avatar} size={u(64)} userId={f.id} />
+        <View style={{ flex: 1, minWidth: 0, gap: u(2) }}>
+          <Name t={t} f={f} size={21} />
+          <PlayerTitle userId={f.id} size={11} />
+          <Text style={[s.mhS, { color: when === 'ONLINE' || live ? '#7be0a8' : t.mute }]}>{`@${f.username.toUpperCase()} · ${when}`}</Text>
+        </View>
+      </View>
+      <View style={s.stats}>
+        <Stat t={t} label="LEVEL" value={ready ? String(ready.level) : '–'} />
+        <Stat t={t} label="TOKENS" value={ready ? ready.tokens.toLocaleString() : '–'} coin />
+        <Stat t={t} label="CHARACTERS" value={ready ? String(chars.length) : '–'} />
+      </View>
+      {p === 'error' ? <Text style={[s.msg, { color: t.mute }]}>Couldn’t load their profile. Check your connection.</Text> : null}
+      {chars.length ? (
+        <>
+          <Text style={[s.k, { color: t.kick }]}>THEIR CHARACTERS</Text>
+          <View style={s.chars}>
+            {chars.map((c) => (
+              <View key={c} style={s.char}>
+                <Face slug={c} size={u(34)} />
+                <Text style={[s.charT, { color: t.mute }]} numberOfLines={1}>{characterOf(c)?.name ?? c}</Text>
+              </View>
+            ))}
+          </View>
+        </>
+      ) : null}
+      {ready?.since ? <Text style={[s.since, { color: t.mute }]}>{`Friends since ${new Date(ready.since).toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' })}`}</Text> : null}
+      <Pressable disabled={busy} onPress={() => (live ? run(async () => void (await watch(f.id, live.game))) : openChallenge(f))} accessibilityRole="button">
+        <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.btn}>
+          <Text style={[s.btnT, { color: t.onGrad }]}>{live ? 'Watch their match' : `Challenge ${f.display_name}`}</Text>
+        </LinearGradient>
+      </Pressable>
+      <Act t={t} title="Remove friend" note={`Takes ${f.display_name} off both lists. They can send a new request later.`} onPress={() => run(() => removeFriend(f.id))} disabled={busy} />
+      <Act t={t} red title={`Block ${f.display_name}`} note="Also stops their requests and challenges. Undo any time under Blocked players on your Profile." onPress={() => run(() => blockUser(f.id))} disabled={busy} />
+      <Act t={t} title={`Report ${f.display_name}`} note="Tell us what happened. Reports are private." onPress={() => openReport({ id: f.id, name: f.display_name, avatar: f.avatar })} disabled={busy} />
+      {err ? <Text style={[s.msg, { color: t.error }]}>Couldn’t reach the server. Check your connection.</Text> : null}
+      <Pressable onPress={close} accessibilityRole="button">
+        <Text style={[s.cancel, { color: t.mute }]}>Close</Text>
+      </Pressable>
+    </ScrollView>
+  );
+}
+
+function Stat({ t, label, value, coin }: { t: Theme; label: string; value: string; coin?: boolean }) {
+  return (
+    <View style={[s.stat, { backgroundColor: t.panel2, borderColor: t.panelLine }]}>
+      <View style={s.statV}>
+        {coin ? <TokenCoin size={u(14)} progress={0} track="transparent" /> : null}
+        <Text style={[s.statN, { color: t.fg }]}>{value}</Text>
+      </View>
+      <Text style={[s.statL, { color: t.mute }]}>{label}</Text>
+    </View>
+  );
+}
+
+/** #47 (Yazan 2026-10-26, photo grid): pick any game; its room opens with the usual settings and the invite goes out. */
+function ChallengeGrid() {
+  const t = useTheme();
+  const f = useFriendSheet((x) => x.friend);
+  const [busy, setBusy] = useState<string | null>(null);
+  const [err, setErr] = useState(false);
+  if (!f) return null;
+  const pick = async (key: string) => {
+    setBusy(key);
+    setErr(false);
+    try {
+      const def = gameDef(key);
+      const opts = def?.setup.online ?? [];
+      const settings: Record<string, unknown> = Object.fromEntries(opts.map((o) => [o.key, o.initial]));
+      if (def?.teams?.online) settings.teams = 0;
+      const r = await challenge(f.id, key, settings);
+      if (r === 'sent') close();
+      else setErr(true);
+    } catch {
+      setErr(true);
+    }
+    setBusy(null);
+  };
+  return (
+    <>
+      <Text style={[s.k, { color: t.kick }]}>{`CHALLENGE ${f.display_name.toUpperCase()}`}</Text>
+      <Text style={[s.since, { color: t.mute, textAlign: 'left' }]}>Pick a game. Its room opens with the usual settings, which you can still change in the room.</Text>
+      <ScrollView style={{ maxHeight: u(470) }} contentContainerStyle={s.grid} showsVerticalScrollIndicator={false}>
+        {GAMES.map((g) => {
+          const photo = LOAD[g.key]?.photo;
+          return (
+            <Pressable key={g.key} disabled={!!busy} onPress={() => pick(g.key)} style={[s.tileG, { borderColor: t.panelLine, backgroundColor: t.panel2 }, busy && busy !== g.key && { opacity: 0.5 }]} accessibilityRole="button" accessibilityLabel={`Challenge with ${g.lead} ${g.em}`}>
+              {photo ? <Image source={photo} style={StyleSheet.absoluteFill} contentFit="cover" transition={0} /> : null}
+              <LinearGradient colors={['rgba(5,6,16,0)', 'rgba(5,6,16,0.92)']} start={{ x: 0, y: 0.35 }} end={{ x: 0, y: 1 }} style={StyleSheet.absoluteFill} />
+              <View style={s.tileT}>
+                <Text style={[s.tileL, { color: '#fff' }]} numberOfLines={1}>{g.lead}</Text>
+                <Text style={[s.tileE, { color: t.accent }]} numberOfLines={1}>{busy === g.key ? 'Opening…' : g.em}</Text>
+              </View>
+            </Pressable>
+          );
+        })}
+      </ScrollView>
+      {err ? <Text style={[s.msg, { color: t.error }]}>Couldn’t open the room. Check your connection.</Text> : null}
+      <Pressable onPress={close} accessibilityRole="button">
+        <Text style={[s.cancel, { color: t.mute }]}>Cancel</Text>
+      </Pressable>
+    </>
+  );
+}
+
 const REASONS = ['Rude name', 'Abusive chat', 'Cheating', 'Other'] as const;
 
 /** Report a player (Session 4, look "Reason chips"): pick a reason, add a note if you like, Send. Goes to the Admin reports. */
@@ -280,6 +433,21 @@ const s = StyleSheet.create({
   actS: { marginTop: u(2), fontFamily: F.body, fontSize: u(9.5), lineHeight: u(13) },
   cancel: { textAlign: 'center', fontFamily: F.bodySemi, fontSize: u(11), paddingTop: u(2) },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: u(6) },
+  ph: { flexDirection: 'row', alignItems: 'center', gap: u(12) },
+  stats: { flexDirection: 'row', gap: u(8) },
+  stat: { flex: 1, borderWidth: 1, borderRadius: u(14), paddingVertical: u(9), alignItems: 'center', gap: u(3) },
+  statV: { flexDirection: 'row', alignItems: 'center', gap: u(4) },
+  statN: { fontFamily: F.display, fontSize: u(18), lineHeight: u(21) },
+  statL: { fontFamily: F.mono, fontSize: u(7), letterSpacing: u(1.2) },
+  chars: { flexDirection: 'row', flexWrap: 'wrap', gap: u(8) },
+  char: { width: u(48), alignItems: 'center', gap: u(3) },
+  charT: { fontFamily: F.body, fontSize: u(8) },
+  since: { fontFamily: F.body, fontSize: u(9.5), textAlign: 'center' },
+  grid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', rowGap: u(8) },
+  tileG: { width: '48.5%', aspectRatio: 1.25, borderRadius: u(14), borderWidth: 1, overflow: 'hidden', justifyContent: 'flex-end' },
+  tileT: { padding: u(9) },
+  tileL: { fontFamily: F.body, fontSize: u(9.5) },
+  tileE: { fontFamily: F.displayItalic, fontSize: u(15), lineHeight: u(18) },
   chip: { borderWidth: 1, borderRadius: 999, paddingVertical: u(6), paddingHorizontal: u(11) },
   chipT: { fontFamily: F.bodySemi, fontSize: u(10) },
   note: { borderWidth: 1, borderRadius: u(12), minHeight: u(52), padding: u(10), fontFamily: F.body, fontSize: u(10.5), textAlignVertical: 'top' },

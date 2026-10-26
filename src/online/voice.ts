@@ -1,4 +1,4 @@
-// ON28: the 12 shared voice lines (Kokoro voice 'Lewis').
+// ON28: the shared voice lines (Kokoro voice 'Lewis'). The last 7 (#40, #9 taunts, 2026-10-26) are stand-ins until Yazan's recordings arrive.
 export const VOICE: { id: string; line: string; src: number }[] = [
   { id: 'good-luck', line: "Good luck!", src: require('../../assets/voice/good-luck.m4a') },
   { id: 'nice-one', line: "Nice one!", src: require('../../assets/voice/nice-one.m4a') },
@@ -12,6 +12,13 @@ export const VOICE: { id: string; line: string; src: number }[] = [
   { id: 'sorry', line: "Sorry!", src: require('../../assets/voice/sorry.m4a') },
   { id: 'ready', line: "Ready!", src: require('../../assets/voice/ready.m4a') },
   { id: 'help-me', line: "Help me!", src: require('../../assets/voice/help-me.m4a') },
+  { id: 'give-gift', line: "Give me a gift!", src: require('../../assets/voice/give-gift.m4a') },
+  { id: 'too-slow', line: "Too slow!", src: require('../../assets/voice/too-slow.m4a') },
+  { id: 'all-youve-got', line: "Is that all you've got?", src: require('../../assets/voice/all-youve-got.m4a') },
+  { id: 'catch-me', line: "Catch me if you can!", src: require('../../assets/voice/catch-me.m4a') },
+  { id: 'too-easy', line: "Too easy!", src: require('../../assets/voice/too-easy.m4a') },
+  { id: 'keep-up', line: "Keep up!", src: require('../../assets/voice/keep-up.m4a') },
+  { id: 'better-luck', line: "Better luck next time!", src: require('../../assets/voice/better-luck.m4a') },
 ];
 /** Lines only Trust Me Not offers, in the same voice (Yazan, 2026-10-09: the 12 shared lines plus these 3). */
 export const TMN_VOICE: typeof VOICE = [

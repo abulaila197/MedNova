@@ -15,7 +15,7 @@ export const invoke = async <T = unknown>(fn: string, body?: Record<string, unkn
   return data as T;
 };
 
-export type JoinResult = { result: 'joined' | 'spectating' | 'full' | 'closed' | 'not_found' | 'removed'; room_id?: string };
+export type JoinResult = { result: 'joined' | 'spectating' | 'full' | 'closed' | 'not_found' | 'removed' | 'in_progress' | 'not_playing'; room_id?: string };
 
 export type PublicRoom = { id: string; code: string; host_name: string; host_avatar: string | null; host_level: number; players: number; settings: Record<string, unknown> };
 
@@ -73,6 +73,7 @@ export const rematchRoom = (r: string) => call<void>('rematch_room', { r });
 
 export const challengeFriend = (friend: string, game: GameKey, settings: Record<string, unknown>, wanted?: string) =>
   call<{ result: 'sent' | 'self' | 'not_friends'; room_id?: string; code?: string }>('challenge_friend', { friend, game, settings, wanted: wanted ?? null });
+export const watchFriend = (friend: string, wanted?: string) => call<JoinResult>('watch_friend', { friend, wanted: wanted ?? null });
 export const myInvites = () => call<Invite[]>('my_challenges');
 export const respondInvite = (invite: string, accept: boolean, wanted?: string) =>
   call<JoinResult | { result: 'declined' | 'expired' | 'not_found' }>('respond_invite', { invite, accept, wanted: wanted ?? null });
@@ -84,5 +85,7 @@ export const JOIN_SAY: Record<string, string> = {
   not_found: 'No open room has that code.',
   removed: 'The host removed you from that room.',
   expired: 'That challenge has ended.',
+  in_progress: 'That public match has started. Only friends of its players can watch; join at the rematch.',
+  not_playing: 'Their match has just ended.',
   error: 'Couldn’t reach the server. Check your connection.',
 };

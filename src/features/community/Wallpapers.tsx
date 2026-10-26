@@ -6,6 +6,7 @@ import { Text } from '@/components/AppText';
 import { Back } from '@/components/Back';
 import { Fade } from '@/components/Fade';
 import { PulseStar } from '@/components/PulseStar';
+import { useLike } from '@/features/community/likes';
 import { saveWallpaper, type SaveResult } from '@/features/community/save';
 import { WALLPAPERS } from '@/features/community/Shelf';
 import { tapped } from '@/lib/sound';
@@ -17,7 +18,8 @@ const two = (x: number) => String(x).padStart(2, '0');
 
 function WallPost({ src, i }: { src: ImageSourcePropType; i: number }) {
   const t = useTheme();
-  const [liked, setLiked] = useState(false);
+  const like = useLike(`wall:w${two(i + 1)}`);
+  const liked = like.mine;
   const [saved, setSaved] = useState<SaveResult | 'saving' | null>(null);
   const save = tapped(async () => {
     if (saved === 'saving') return;
@@ -36,9 +38,9 @@ function WallPost({ src, i }: { src: ImageSourcePropType; i: number }) {
         <Image source={src} style={s.fill} contentFit="cover" transition={0} cachePolicy="memory" accessibilityLabel={`Wallpaper ${i + 1}`} />
       </View>
       <View style={s.acts}>
-        <Pressable onPress={tapped(() => setLiked(!liked))} style={[s.act, { borderColor: liked ? t.accent : t.chipLine, backgroundColor: t.chip }]} accessibilityRole="button" accessibilityState={{ selected: liked }} accessibilityLabel={liked ? 'Unlike' : 'Like'}>
+        <Pressable onPress={tapped(like.toggle)} style={[s.act, { borderColor: liked ? t.accent : t.chipLine, backgroundColor: t.chip }]} accessibilityRole="button" accessibilityState={{ selected: liked }} accessibilityLabel={liked ? 'Unlike' : 'Like'}>
           <Text style={[s.ico, { color: liked ? t.accent : t.mute }]}>{liked ? '♥' : '♡'}</Text>
-          <Text style={[s.actT, { color: liked ? t.accent : t.fg }]}>{liked ? 1 : 0}</Text>
+          <Text style={[s.actT, { color: liked ? t.accent : t.fg }]}>{like.n}</Text>
         </Pressable>
         <Pressable onPress={save} style={[s.act, { borderColor: saved === 'saved' ? t.accent : t.chipLine, backgroundColor: t.chip }]} accessibilityRole="button" accessibilityLabel="Save to photos">
           <Text style={[s.ico, { color: saved === 'saved' ? t.accent : t.mute }]}>⤓</Text>
