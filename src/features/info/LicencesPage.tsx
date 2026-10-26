@@ -23,6 +23,8 @@ const FONTS = PKGS.filter((p) => p.f);
 const LOTTIE =
   'Lottie Simple License (LottieFiles). The animation may be used for free in personal and commercial work, and may be changed. It may not be sold or shared on its own as an animation file, or used in a way that breaks the law.';
 
+const CHATTERBOX =
+  'MIT License. Copyright (c) 2025 Resemble AI. Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files, to deal in the Software without restriction, including the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies, subject to including this notice. THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.';
 const CC0 =
   'Creative Commons Zero (CC0 1.0). The maker gave these sounds to the public domain: they may be used, changed and shared for any purpose, commercial included, without asking or giving credit. We credit Kenney anyway.';
 
@@ -41,6 +43,7 @@ export function LicencesPage() {
           <Group title="Animations · Lottie Simple License" rows={['Trophy win effect  from LottieFiles']} text={LOTTIE} />
           {/* #15: the app sounds are Kenney's CC0 packs since 2026-10-26. */}
           <Group title="Sounds · CC0 1.0" rows={['Tap, right, wrong, win, time up and token sounds  by Kenney (kenney.nl)']} text={CC0} />
+          <Group title="Voice lines · MIT" rows={['The 19 game voice lines  made with Chatterbox by Resemble AI']} text={CHATTERBOX} />
           {GROUPS.map(([l, list]) => (
             <Group key={l} title={`${l} · ${list.length}`} rows={list.map((p) => `${p.n} ${p.v}${p.c ? `  ${p.c}` : ''}`)} text={TEXTS[l]} />
           ))}

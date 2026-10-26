@@ -1,4 +1,4 @@
-// ON28: the shared voice lines (Kokoro voice 'Lewis'). The last 7 (#40, #9 taunts, 2026-10-26) are stand-ins until Yazan's recordings arrive.
+// ON28: the shared voice lines. Since 2026-10-26 all 19 are Chatterbox (Resemble AI, MIT) in our British voice, the takes Yazan picked by ear.
 export const VOICE: { id: string; line: string; src: number }[] = [
   { id: 'good-luck', line: "Good luck!", src: require('../../assets/voice/good-luck.m4a') },
   { id: 'nice-one', line: "Nice one!", src: require('../../assets/voice/nice-one.m4a') },
