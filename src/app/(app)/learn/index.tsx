@@ -7,7 +7,8 @@ import Animated, { interpolateColor, useAnimatedScrollHandler, useAnimatedStyle,
 
 import { Screen } from '@/components/Screen';
 import { loadChallenges, logChallenge, useChests } from '@/features/chests/useChests';
-import { customId, loadCases, useCases, type CustomCase } from '@/features/learn/cases';
+import { customId, loadCases, useCases, wordTitle, type CustomCase } from '@/features/learn/cases';
+import { gameLabel } from '@/features/learn/NewWord';
 import { startPlay } from '@/games/shell/flow';
 import { useSession } from '@/games/shell/session';
 import { Fade } from '@/components/Fade';
@@ -21,9 +22,9 @@ import { useTheme } from '@/state/app';
 import { u, useScreen } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
-const NAMES = ['Review', 'Dossiers', 'My cases'];
+const NAMES = ['Review', 'Dossiers', 'My diseases'];
 
-/** Learn: three pages swiped sideways (Today's review, Disease dossiers, My cases) under a fixed row of page names. */
+/** Learn: three pages swiped sideways (Today's review, Disease dossiers, My diseases) under a fixed row of page names. */
 export default function Learn() {
   const { width: W } = useScreen();
   const x = useSharedValue(0);
@@ -107,6 +108,11 @@ function ReviewPage({ pile, reload }: { pile: Card[] | null; reload: () => Promi
       {card ? (
         <>
           <FlipCard key={card.key} card={card} flipped={flipped} onPress={() => setFlipped((f) => !f)} />
+          {flipped && card.kind === 'dossier' ? (
+            <Pressable onPress={() => router.push(`/learn/dossier?id=${card.dossier.id}`)} style={s.open} accessibilityRole="link">
+              <Text style={[s.openT, { color: t.accent }]}>Open dossier ›</Text>
+            </Pressable>
+          ) : null}
           <View style={s.lrow}>
             <Pressable onPress={() => act(again)} style={[s.btn, s.again, { borderColor: c.againLine }]} accessibilityRole="button">
               <Text style={[s.btnT, { color: c.againText }]}>Again</Text>
@@ -189,53 +195,72 @@ function DossiersPage({ missed }: { missed: Map<string, { count: number; last: n
   );
 }
 
-const STATE = { waiting: 'Waiting for approval', declined: 'Private note' } as const;
+const STATE = { waiting: 'Waiting', approved: 'Approved', declined: 'Declined' } as const;
 
-/** Approved cases open straight into a Diagnostic Pursuit practice round (no EXP, no free play used). */
+/** Cases open straight into a Diagnostic Pursuit practice round (no EXP, no Sparks), before approval too (#21). */
 async function playCase(k: CustomCase) {
   const play = await startPlay('the-diagnostic-pursuit', 'solo', { difficulty: 'Medium', cases: 1, custom: customId(k.id) });
   router.push(`/play/the-diagnostic-pursuit/run?play=${play.id}` as never);
 }
 
+/** My diseases (Yazan 2026-10-26, #37): my cases and words, each opening as a dossier. */
 function CasesPage() {
   const t = useTheme();
   const c = useLearnColors(t.mode);
   const signedIn = !!useSession((x) => x.userId);
   const list = useCases((x) => x.list);
+  const words = useCases((x) => x.words);
   const [err, setErr] = useState('');
   useFocusEffect(
     useCallback(() => {
       setErr('');
-      loadCases().catch(() => setErr('Could not load your cases. Check your connection.'));
+      loadCases().catch(() => setErr('Could not load My diseases. Check your connection.'));
       // eslint-disable-next-line react-hooks/exhaustive-deps -- signedIn only re-runs the load when the account changes while the page is open
     }, [signedIn]),
   );
-  const cases = list ?? [];
+  const rows = [
+    ...(list ?? []).map((k) => ({ key: `case:${k.id}`, at: k.created_at, name: k.diagnosis, sub: `Diagnostic Pursuit · ${k.gender[0]}, ${k.age}`, status: k.status, play: k.answer_id && k.status !== 'declined' ? k : null })),
+    ...(words ?? []).map((w) => ({ key: `word:${w.id}`, at: w.created_at, name: wordTitle(w), sub: gameLabel(w.game), status: w.status, play: null })),
+  ].sort((x, y) => y.at.localeCompare(x.at));
+  const go = (to: string) => router.push((signedIn ? to : '/auth') as never);
   return (
     <ScrollPage>
-      <PageTitle first="My" em="cases" small={`${cases.length}`} />
-      <Pressable onPress={() => router.push((signedIn ? '/learn/new-case' : '/auth') as never)} style={[s.newc, { borderColor: c.newcLine, backgroundColor: c.newcBg }]} accessibilityRole="button">
-        <Text style={[s.newcT, { color: t.accent }]}>{signedIn ? '+ Write a new case' : 'Sign in to write your own cases'}</Text>
-      </Pressable>
+      <PageTitle first="My" em="diseases" small={`${rows.length}`} />
+      {signedIn ? (
+        <View style={s.two}>
+          <Pressable onPress={() => go('/learn/new-case')} style={[s.newc, s.half, { borderColor: c.newcLine, backgroundColor: c.newcBg }]} accessibilityRole="button">
+            <Text style={[s.newcT, { color: t.accent }]}>+ Write a DP case</Text>
+          </Pressable>
+          <Pressable onPress={() => go('/learn/new-word')} style={[s.newc, s.half, { borderColor: c.newcLine, backgroundColor: c.newcBg }]} accessibilityRole="button">
+            <Text style={[s.newcT, { color: t.accent }]}>+ Add a word</Text>
+          </Pressable>
+        </View>
+      ) : (
+        <Pressable onPress={() => go('/auth')} style={[s.newc, { borderColor: c.newcLine, backgroundColor: c.newcBg }]} accessibilityRole="button">
+          <Text style={[s.newcT, { color: t.accent }]}>Sign in to write your own cases and words</Text>
+        </Pressable>
+      )}
       {err ? <Text style={[s.csA, { color: t.error }]}>{err}</Text> : null}
-      {signedIn && list && !cases.length ? <Text style={[s.csA, { color: c.mute }]}>No cases yet. Write one and it stays here as a private note.</Text> : null}
+      {signedIn && list && !rows.length ? (
+        <Text style={[s.csA, { color: c.mute }]}>Nothing yet. Write a case or add a word for Silent Artist, Medicordle, Streak Master, Imposter or Password. You can practise it straight away; once approved it plays in rooms you host, and pays 10 tokens.</Text>
+      ) : null}
       <View>
-        {cases.map((k, i) => (
-          <View key={k.id} style={[s.cs, i < cases.length - 1 && { borderBottomWidth: 1, borderBottomColor: c.rowLine }]}>
+        {rows.map((r, i) => (
+          <Pressable key={r.key} onPress={() => router.push(`/learn/dossier?mine=${r.key}` as never)} style={[s.cs, i < rows.length - 1 && { borderBottomWidth: 1, borderBottomColor: c.rowLine }]} accessibilityRole="button">
             <View style={s.csL}>
-              <Text style={[s.csB, { color: t.fg }]}>{k.diagnosis}</Text>
-              <Text style={[s.csA, { color: c.mute }]}>{`${k.field ?? 'Case'} · ${k.gender[0]}, ${k.age}`}</Text>
+              <Text style={[s.csB, { color: t.fg }]} numberOfLines={1}>{r.name}</Text>
+              <Text style={[s.csA, { color: c.mute }]}>{`${r.sub} · ${STATE[r.status]}`}</Text>
             </View>
-            {k.status === 'approved' && k.answer_id ? (
-              <Pressable onPress={() => playCase(k).catch(() => setErr('Could not start the case. Try again.'))} accessibilityRole="button" accessibilityLabel={`Play ${k.diagnosis}`}>
+            {r.play ? (
+              <Pressable onPress={() => playCase(r.play!).catch(() => setErr('Could not start the case. Try again.'))} accessibilityRole="button" accessibilityLabel={`Practise ${r.name}`}>
                 <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.play}>
-                  <Text style={[s.playT, { color: t.onGrad }]}>Play</Text>
+                  <Text style={[s.playT, { color: t.onGrad }]}>Practise</Text>
                 </LinearGradient>
               </Pressable>
             ) : (
-              <Text style={[s.csE, { color: k.status === 'declined' ? c.mute : t.accent }]}>{STATE[k.status === 'declined' ? 'declined' : 'waiting'].toUpperCase()}</Text>
+              <Text style={[s.csE, { color: r.status === 'approved' ? t.accent : c.mute }]}>{STATE[r.status].toUpperCase()}</Text>
             )}
-          </View>
+          </Pressable>
         ))}
       </View>
     </ScrollPage>
@@ -243,6 +268,10 @@ function CasesPage() {
 }
 
 const s = StyleSheet.create({
+  two: { flexDirection: 'row', gap: u(8) },
+  half: { flex: 1 },
+  open: { alignSelf: 'center', paddingVertical: u(6) },
+  openT: { fontFamily: F.bodySemi, fontSize: u(11) },
   flex: { flex: 1 },
   wds: {
     flexDirection: 'row',

@@ -7,7 +7,10 @@ import { supabase } from '@/lib/supabase';
 import { call } from '@/online/api';
 import { onAccountSwitch } from '@/state/accountSwitch';
 
-/** A case the player wrote (custom_cases): private until approved, then only its maker plays it. */
+/**
+ * A case the player wrote (custom_cases). Its maker reads it as a dossier and practises it alone at once; once Admin
+ * approves it, it also plays in rooms the maker hosts (Yazan 2026-10-26). `note` is Admin's note to the maker.
+ */
 export type CustomCase = {
   id: string;
   diagnosis: string;
@@ -21,13 +24,64 @@ export type CustomCase = {
   investigation: string;
   findings: string[];
   status: 'waiting' | 'approved' | 'declined';
+  note: string | null;
   created_at: string;
 };
 
-export type NewCase = Omit<CustomCase, 'id' | 'status' | 'created_at'>;
+/** Games a player can add a word to, with each one's form (Yazan 2026-10-26, #37). */
+export type WordGame = 'the-silent-artist' | 'nova-medicordle' | 'the-streak-master' | 'imposter' | 'nova-password';
+export type WordData = {
+  'the-silent-artist': { name: string; field: string; aliases: string[] };
+  'nova-medicordle': { word: string; definition: string };
+  'the-streak-master': { stem: string; choices: string[]; answer: number };
+  imposter: { a: string; b: string; category: string };
+  'nova-password': { name: string; forbidden: string[] };
+};
+/** A word the player added (player_words), reviewed like a case. */
+export type PlayerWord = { [G in WordGame]: { id: string; game: G; data: WordData[G]; status: CustomCase['status']; note: string | null; created_at: string } }[WordGame];
 
-export const useCases = create<{ list: CustomCase[] | null }>(() => ({ list: null }));
-onAccountSwitch(() => useCases.setState({ list: null }));
+/** The word's name as a list shows it. */
+export function wordTitle(w: { game: WordGame; data: WordData[WordGame] }) {
+  const d = w.data as Record<string, unknown>;
+  if (w.game === 'nova-medicordle') return String(d.word);
+  if (w.game === 'the-streak-master') return String(d.stem);
+  if (w.game === 'imposter') return `${d.a} / ${d.b}`;
+  return String(d.name);
+}
+
+/** A case or word of mine as dossier tabs (#21): the fields its maker wrote, nothing added. */
+export function mineFields(m: { kind: 'case'; c: CustomCase } | { kind: 'word'; w: PlayerWord }): { key: string; tab: string; label: string; text: string }[] {
+  const f = (key: string, tab: string, text: string, label = tab) => ({ key, tab, label, text });
+  if (m.kind === 'case') {
+    const c = m.c;
+    return [
+      f('pt', 'Patient', `${c.gender}, ${c.age}${c.field ? `\n${c.field}` : ''}`),
+      f('pr', 'Presentation', c.presentation),
+      f('hx', 'History', c.history || 'Not written.'),
+      f('ex', 'Exam', c.exam || 'Not written.', 'Clinical exam'),
+      f('iv', 'Tests', c.investigation || 'Not written.', 'Investigations'),
+      ...(c.findings.length ? [f('kf', 'Key findings', c.findings.join('\n\n'))] : []),
+    ];
+  }
+  const w = m.w;
+  switch (w.game) {
+    case 'the-silent-artist':
+      return [f('nm', 'Disease', w.data.name), f('fd', 'Field', w.data.field), ...(w.data.aliases.length ? [f('al', 'Other names', w.data.aliases.join('\n'))] : [])];
+    case 'nova-medicordle':
+      return [f('wd', 'Word', w.data.word), f('df', 'Definition', w.data.definition)];
+    case 'the-streak-master':
+      return [f('q', 'Question', w.data.stem), f('ch', 'Choices', w.data.choices.map((x, i) => `${i === w.data.answer ? '✓ ' : '· '}${x}`).join('\n'))];
+    case 'imposter':
+      return [f('a', 'Disease 1', w.data.a), f('b', 'Disease 2', w.data.b), f('ct', 'Field', w.data.category)];
+    default:
+      return [f('tm', 'Term', w.data.name), f('fb', 'Forbidden', w.data.forbidden.join('\n'), 'Forbidden words')];
+  }
+}
+
+export type NewCase = Omit<CustomCase, 'id' | 'status' | 'note' | 'created_at'>;
+
+export const useCases = create<{ list: CustomCase[] | null; words: PlayerWord[] | null }>(() => ({ list: null, words: null }));
+onAccountSwitch(() => useCases.setState({ list: null, words: null }));
 
 /** Diagnostic Pursuit id of a custom case ("c:" + uuid), so the solo game can play it. */
 export const customId = (id: string) => `c:${id}`;
@@ -47,14 +101,23 @@ export function toDPCase(c: CustomCase): DPCase {
   };
 }
 
-/** Loads my cases and puts the approved, playable ones into the game's case list. */
+/** Loads my cases and words, and puts the cases into the game's case list (practice works before approval too). */
 export async function loadCases() {
-  if (!useSession.getState().userId) return useCases.setState({ list: [] });
-  const { data, error } = await supabase.from('custom_cases').select('*').order('created_at', { ascending: false });
-  if (error) throw error;
-  const list = (data ?? []) as CustomCase[];
-  for (const c of list) if (c.status === 'approved' && c.answer_id) caseById.set(customId(c.id), toDPCase(c));
-  useCases.setState({ list });
+  if (!useSession.getState().userId) return useCases.setState({ list: [], words: [] });
+  const [cs, ws] = await Promise.all([
+    supabase.from('custom_cases').select('*').order('created_at', { ascending: false }),
+    supabase.from('player_words').select('id, game, data, status, note, created_at').order('created_at', { ascending: false }),
+  ]);
+  if (cs.error) throw cs.error;
+  const list = (cs.data ?? []) as CustomCase[];
+  for (const c of list) if (c.answer_id) caseById.set(customId(c.id), toDPCase(c));
+  useCases.setState({ list, words: ws.error ? (useCases.getState().words ?? []) : ((ws.data ?? []) as PlayerWord[]) });
+}
+
+/** Saves a new word for one game; the server checks its form and allows 20 a day. */
+export async function saveWord<G extends WordGame>(game: G, w: WordData[G]) {
+  await call('save_word', { game, w });
+  await loadCases().catch(() => {});
 }
 
 /** Saves a new case. Once the server took it, a failed list reload doesn't count as "not saved" (AP12d). */

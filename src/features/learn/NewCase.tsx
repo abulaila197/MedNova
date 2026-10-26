@@ -60,7 +60,7 @@ export function NewCase() {
   return (
     <Screen tab="learn" glow={6}>
       <InfoScroll>
-        <Back label="My cases" fallback="/learn" />
+        <Back label="My diseases" fallback="/learn" />
         <Kicker style={{ marginTop: u(10) }}>Case laboratory</Kicker>
         <Text style={[ui.H, { color: c.fg, fontFamily: F.display }]}>
           {'Write a '}
@@ -113,19 +113,19 @@ export function NewCase() {
         {msg ? <Text style={[s.msg, { color: t.error }]}>{msg}</Text> : null}
         <Pressable disabled={busy} onPress={save} accessibilityRole="button" style={busy && { opacity: 0.6 }}>
           <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.save}>
-            <Text style={[s.saveT, { color: t.onGrad }]}>{signedIn ? 'Save to My cases' : 'Sign in to save'}</Text>
+            <Text style={[s.saveT, { color: t.onGrad }]}>{signedIn ? 'Save to My diseases' : 'Sign in to save'}</Text>
           </LinearGradient>
         </Pressable>
-        <Text style={[s.foot, { color: t.mute }]}>Saved as a private note. Once it’s approved you can play it yourself as practice.</Text>
+        <Text style={[s.foot, { color: t.mute }]}>You can practise it alone straight away. Once it’s approved it also plays in rooms you host, and you get 10 tokens.</Text>
       </InfoScroll>
     </Screen>
   );
 }
 
-const ph = (t: Theme) => 'rgba(154,160,196,0.55)';
-const inp = (t: Theme) => [s.in, { color: t.fg, borderColor: t.panelLine, backgroundColor: t.panel2 }];
+export const ph = (t: Theme) => 'rgba(154,160,196,0.55)';
+export const inp = (t: Theme) => [s.in, { color: t.fg, borderColor: t.panelLine, backgroundColor: t.panel2 }];
 
-function Box({ t, n, title, children }: { t: Theme; n: string; title: string; children: ReactNode }) {
+export function Box({ t, n, title, children }: { t: Theme; n: string; title: string; children: ReactNode }) {
   return (
     <View style={[s.box, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
       <View style={s.boxH}>
@@ -137,9 +137,9 @@ function Box({ t, n, title, children }: { t: Theme; n: string; title: string; ch
   );
 }
 
-const Label = ({ t, text }: { t: Theme; text: string }) => <Text style={[s.lab, { color: t.mute }]}>{text}</Text>;
+export const Label = ({ t, text }: { t: Theme; text: string }) => <Text style={[s.lab, { color: t.mute }]}>{text}</Text>;
 
-function Field({ t, label, v, set, ph: hint }: { t: Theme; label: string; v: string; set: (v: string) => void; ph?: string }) {
+export function Field({ t, label, v, set, ph: hint }: { t: Theme; label: string; v: string; set: (v: string) => void; ph?: string }) {
   return (
     <View style={{ gap: u(5) }}>
       <Label t={t} text={label} />
@@ -148,7 +148,7 @@ function Field({ t, label, v, set, ph: hint }: { t: Theme; label: string; v: str
   );
 }
 
-function Chips({ t, items, on, onPick }: { t: Theme; items: string[]; on: number | null; onPick: (i: number) => void }) {
+export function Chips({ t, items, on, onPick }: { t: Theme; items: string[]; on: number | null; onPick: (i: number) => void }) {
   return (
     <View style={s.chips}>
       {items.map((x, i) => (
@@ -160,7 +160,7 @@ function Chips({ t, items, on, onPick }: { t: Theme; items: string[]; on: number
   );
 }
 
-const s = StyleSheet.create({
+export const s = StyleSheet.create({
   box: { marginTop: u(12), borderWidth: 1, borderRadius: u(18), padding: u(14), gap: u(10) },
   boxH: { flexDirection: 'row', alignItems: 'baseline', gap: u(8) },
   boxN: { fontFamily: F.mono, fontSize: u(9), letterSpacing: u(1) },

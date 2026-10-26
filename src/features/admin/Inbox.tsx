@@ -5,6 +5,8 @@ import { Text, TextInput } from '@/components/AppText';
 import { GradBtn, Kicker, s as ui, type useInfo } from '@/features/info/ui';
 import { PROMPTS } from '@/features/store/FreeTokens';
 import { call } from '@/online/api';
+
+import { Submissions } from './Submissions';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
@@ -20,7 +22,7 @@ const KINDS: { key: What; label: string; open: string; note: string }[] = [
   { key: 'feedback', label: 'Feedback', open: 'new', note: 'Feedback from the Nova Shop free tokens row.' },
   { key: 'stories', label: 'Stories', open: 'new', note: 'Stories are anonymous unless the player ticked "Credit me".' },
   { key: 'ambassador', label: 'Ambassador', open: 'pending', note: 'Approving a video pays the player 200 tokens once.' },
-  { key: 'cases', label: 'Cases', open: 'waiting', note: 'Approved cases become playable, only by their maker, as practice.' },
+  { key: 'cases', label: 'My diseases', open: 'waiting', note: 'Cases and words players wrote. Edit, add a note, then approve (10 tokens to the player, 5 a day at most) or decline. Approved ones play in rooms their maker hosts.' },
 ];
 
 /** Admin inbox: everything players send in (besides reports), with mark done or approve / decline. */
@@ -39,6 +41,7 @@ export function Inbox({ c }: { c: C }) {
     setErr(false);
   }
   useEffect(() => {
+    if (what === 'cases') return; // My diseases has its own list (Submissions)
     let live = true; // an older tab's slow answer must not replace this one (AP12e)
     call<Item[]>('admin_inbox', { what, show })
       .then((r) => live && setItems(r ?? []))
@@ -75,8 +78,9 @@ export function Inbox({ c }: { c: C }) {
           </Pressable>
         ))}
       </View>
-      {err ? <Text style={[s.small, { color: c.t.error }]}>Could not load or save. Check the connection.</Text> : null}
-      {items && !items.length ? <Text style={[s.small, s.gapS, { color: c.mute }]}>{show === 'open' ? 'Nothing waiting.' : 'Nothing yet.'}</Text> : null}
+      {what === 'cases' ? <Submissions c={c} show={show} /> : null}
+      {what !== 'cases' && err ? <Text style={[s.small, { color: c.t.error }]}>Could not load or save. Check the connection.</Text> : null}
+      {what !== 'cases' && items && !items.length ? <Text style={[s.small, s.gapS, { color: c.mute }]}>{show === 'open' ? 'Nothing waiting.' : 'Nothing yet.'}</Text> : null}
       <View style={s.list}>
         {(items ?? []).map((it) => {
           const shut = it.status !== kind.open;

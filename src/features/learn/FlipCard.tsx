@@ -8,7 +8,7 @@ import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
-import { type Card, FIELDS, titleOf } from './library';
+import { type Card, titleOf } from './library';
 import { useLearnColors } from './palette';
 
 /** "3 days ago", "today", "yesterday". */
@@ -18,7 +18,8 @@ function ago(at: number) {
 }
 
 /**
- * Today's review flash card. A missed disease shows its name, with one dossier field on the back (RL7); a missed
+ * Today's review flash card. A missed disease shows 3 of its clues and you guess it; the back shows its name (Yazan
+ * 2026-10-26, replacing RL7's name-first card); a missed
  * question shows the question and its choices, with the answer on the back, Anki style (RL5).
  */
 export function FlipCard({ card, flipped, onPress }: { card: Card; flipped: boolean; onPress: () => void }) {
@@ -49,20 +50,25 @@ export function FlipCard({ card, flipped, onPress }: { card: Card; flipped: bool
     </View>
   );
   const isDossier = card.kind === 'dossier';
-  const fieldAt = isDossier ? FIELDS.findIndex((f) => f.key === card.field) : 0;
   const title = isDossier ? titleOf(card.dossier.name) : null;
   return (
-    <Pressable onPress={onPress} style={s.flip} accessibilityRole="button" accessibilityLabel={flipped ? 'Show the front' : isDossier ? 'Show one fact from its dossier' : 'Show the answer'}>
+    <Pressable onPress={onPress} style={s.flip} accessibilityRole="button" accessibilityLabel={flipped ? 'Show the front' : isDossier ? 'Show the disease' : 'Show the answer'}>
       <Animated.View style={[face, front]} pointerEvents="none">
         {bg}
         {src}
         {card.kind === 'dossier' ? (
           <>
-            <View style={s.mid}>
-              {title!.first ? <Text style={[s.big, { color: t.fg }]}>{title!.first}</Text> : null}
-              <Text style={[s.big, { color: t.accent, fontFamily: F.displayItalic }]}>{title!.em}</Text>
+            <View style={s.qmid}>
+              {card.facts.map((f) => (
+                <View key={f.label} style={s.clue}>
+                  <Text style={[s.fld, { color: t.accent }]}>{f.label.toUpperCase()}</Text>
+                  <Text style={[s.clueT, card.facts.some((x) => x.text.length > 140) && s.clueLong, { color: t.fg }]} numberOfLines={6}>
+                    {f.text}
+                  </Text>
+                </View>
+              ))}
             </View>
-            <Text style={[s.hint, { color: c.mute }]}>Tap for one fact from its dossier</Text>
+            <Text style={[s.hint, { color: c.mute }]}>Which disease is it? Tap to see</Text>
           </>
         ) : (
           <>
@@ -85,16 +91,12 @@ export function FlipCard({ card, flipped, onPress }: { card: Card; flipped: bool
         {bg}
         {card.kind === 'dossier' ? (
           <>
-            <Text style={[s.fld, { color: t.accent }]}>{FIELDS[fieldAt].label.toUpperCase()}</Text>
-            <Text style={[s.fact, card.dossier[card.field].length > 120 && s.factLong, { color: t.fg }]}>{card.dossier[card.field]}</Text>
-            <View style={s.foot}>
-              <View style={s.dots}>
-                {FIELDS.map((f, i) => (
-                  <View key={f.key} style={[s.ld, i === fieldAt ? { width: u(14), backgroundColor: t.accent } : { backgroundColor: c.dotOff }]} />
-                ))}
-              </View>
-              <Text style={[s.hint, { color: c.mute }]}>From the dossier</Text>
+            <Text style={[s.fld, { color: t.accent }]}>THE DISEASE</Text>
+            <View style={s.mid}>
+              {title!.first ? <Text style={[s.big, { color: t.fg }]}>{title!.first}</Text> : null}
+              <Text style={[s.big, { color: t.accent, fontFamily: F.displayItalic }]}>{title!.em}</Text>
             </View>
+            <Text style={[s.hint, { color: c.mute }]}>Its dossier is one tap below</Text>
           </>
         ) : (
           <>
@@ -131,11 +133,9 @@ const s = StyleSheet.create({
   img: { width: '100%', height: u(96), borderRadius: u(10) },
   hint: { fontFamily: F.body, fontSize: u(9.5), lineHeight: u(11) },
   tail: { marginTop: 'auto' },
+  clue: { gap: u(2) },
+  clueT: { fontFamily: F.body, fontSize: u(11.5), lineHeight: u(15) },
+  clueLong: { fontSize: u(10.5), lineHeight: u(13.5) },
   fld: { fontFamily: F.mono, fontSize: u(9), lineHeight: u(12), letterSpacing: u(1.62) },
   fact: { fontFamily: F.display, fontSize: u(19), lineHeight: u(24.7) },
-  // Real dossier fields run longer than the locked sample; long ones step down so they stay on the card.
-  factLong: { fontSize: u(15), lineHeight: u(20) },
-  foot: { marginTop: 'auto', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  dots: { flexDirection: 'row', gap: u(4) },
-  ld: { width: u(5), height: u(5), borderRadius: u(5) },
 });

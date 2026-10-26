@@ -5,6 +5,7 @@ import { engine } from '@/games/engine';
 import type { GameKey, PlayItem } from '@/games/engine/types';
 import { IMAGES } from '@/games/crossword/data/images';
 import { wordById } from '@/games/crossword/data';
+import { CASES, caseById } from '@/games/diagnostic/data';
 import { questionById } from '@/games/streak/data';
 import { answerText as paradeAnswer } from '@/games/parade/core';
 import { questionById as paradeById } from '@/games/parade/data';
@@ -68,7 +69,7 @@ export function titleOf(name: string) {
 
 type Base = { key: string; game: string; gameName: string; at: number };
 export type Card =
-  | (Base & { kind: 'dossier'; dossier: Dossier; field: FieldKey })
+  | (Base & { kind: 'dossier'; dossier: Dossier; facts: { label: string; text: string }[] })
   | (Base & { kind: 'qa'; q: string; choices: string[]; answer: string | null; image?: number });
 
 /** A missed question from a question game, rebuilt from the game's own bank (RL5: question and answer only). */
@@ -118,7 +119,7 @@ export async function loadLearn() {
       // One card per disease, whichever game missed it last.
       const key = `dossier:${d.id}`;
       const prev = cards.get(key);
-      if (!prev || prev.at < it.at) cards.set(key, { ...base, key, kind: 'dossier', dossier: d, field: FIELDS[hash(d.id) % FIELDS.length].key });
+      if (!prev || prev.at < it.at) cards.set(key, { ...base, key, kind: 'dossier', dossier: d, facts: factsOf(d, game, it.itemId) });
     } else {
       const qa = qaOf(game, it);
       const prev = cards.get(base.key);
@@ -128,7 +129,21 @@ export async function loadLearn() {
   return { missed, cards: [...cards.values()] };
 }
 
-const hash = (s: string) => [...s].reduce((h, ch) => (h * 31 + ch.charCodeAt(0)) >>> 0, 7);
+/** A Diagnostic Pursuit case for each disease (its first one), for the review card's clues. */
+const CASE_OF = new Map<string, (typeof CASES)[number]>();
+for (const c of CASES) if (c.canonical_id && !CASE_OF.has(c.canonical_id)) CASE_OF.set(c.canonical_id, c);
+
+/**
+ * The front of a disease's review card (Yazan 2026-10-26): the last 3 clues of its Diagnostic Pursuit case, word for
+ * word (the missed case itself when it was a DP miss). A disease with no DP case shows its dossier's Clinical features
+ * and Investigations as they are.
+ */
+function factsOf(d: Dossier, game: string, itemId: string) {
+  const own = game === 'the-diagnostic-pursuit' ? caseById.get(itemId) : undefined;
+  const k = own?.canonical_id === d.id ? own : CASE_OF.get(d.id);
+  if (k && k.clues.length >= 3) return k.clues.slice(-3).map((text, i) => ({ label: `Clue ${k.clues.length - 2 + i}`, text }));
+  return FIELDS.filter((f) => f.key === 'cli' || f.key === 'inv').map((f) => ({ label: f.label, text: d[f.key] }));
+}
 
 // Today's review (RL4): each miss shows once. Got it puts it away until it is missed again; Again sends it to the
 // end of the pile.
