@@ -12,8 +12,8 @@ import { LoadingPage } from './LoadingPage';
 import { type LoadRun, useLoading } from './store';
 import { useScreen } from '@/theme/scale';
 
-/** Locked timings (2026-10-05): doors 0.9 s in, 5 s loading, bar wipe out (slowed to about 2 s on 2026-10-19). */
-export const LOAD_MS = 5000;
+/** Locked timings (2026-10-05): doors 0.9 s in, 3 s loading (was 5, Yazan 2026-10-26), bar wipe out (slowed to about 2 s on 2026-10-19). */
+export const LOAD_MS = 3000;
 const DOORS_MS = 900;
 const SETTLE_MS = 1100;
 const DOORS = Easing.bezier(0.6, 0, 0.2, 1);
