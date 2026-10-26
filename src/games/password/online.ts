@@ -48,6 +48,8 @@ export type Room = {
   played: Played[];
   rematch: string[];
   ended: boolean;
+  /** The host's own approved terms (My diseases): played first, at most half of each game's words. */
+  own?: Term[];
 };
 
 export type Refusal = { code: string; message: string };
@@ -76,6 +78,8 @@ export type PwView = {
   results: Record<TeamId, TeamRoundResult>[];
   played: Played[];
   rematch: string[];
+  /** The host's own terms' names, so guessers can pick them (the phones only carry the bank). */
+  ownTerms: { id: TermId; name: string }[];
 };
 
 const refuse = (code: string, message: string): Refusal => ({ code, message });
@@ -116,6 +120,11 @@ export function startOnlineRoom(o: { host: string; seats: string[]; names: Recor
   };
   return { order, names, left: [], lobby, phase: 'lobby', plan: null, round: 0, startedAt: 0, teams: null, results: [], forfeited: [], breakEnds: null, played: [], rematch: [], ended: false };
 }
+
+/** Up to half of a game's words from the host's own terms, in random order. */
+const firstOf = (r: Room) => (r.own ?? []).map((t) => t.id).slice(0, Math.floor((r.lobby.settings.wordsPerTeam * r.lobby.settings.rounds) / 2));
+/** The bank plus the host's own terms. */
+const withOwn = (r: Room, terms: readonly Term[]) => (r.own?.length ? [...r.own, ...terms] : terms);
 
 const live = (r: Room) => r.order.filter((id) => !r.left.includes(id));
 const roleOf = (r: Room, id: string) => rolesForRound(r.lobby, r.round)[id] ?? null;
@@ -217,7 +226,7 @@ function handle(r: Room, me: string, m: Move, terms: readonly Term[], rng: Rng, 
       if (!host) return refuse('NOT_HOST', 'Only the host can start.');
       const check = canStart(r.lobby);
       if (!check.ok) return refuse(check.reason, START_WHY[check.reason]);
-      const plan = planMatch({ terms, settings: r.lobby.settings, mode: 'online', rng });
+      const plan = planMatch({ terms, settings: r.lobby.settings, mode: 'online', rng, first: firstOf(r) });
       if (!plan.ok) return refuse('NOT_ENOUGH_TERMS', 'Not enough words for these settings.');
       r.plan = plan.rounds;
       r.results = [];
@@ -273,7 +282,7 @@ function handle(r: Room, me: string, m: Move, terms: readonly Term[], rng: Rng, 
       // All four accept: new words, same teams; roles go back to the givers the host picked.
       const four = r.lobby.players.map((p) => p.id);
       if (four.length === CONFIG.PLAYERS && four.every((id) => r.rematch.includes(id))) {
-        const plan = planMatch({ terms, settings: r.lobby.settings, mode: 'online', rng });
+        const plan = planMatch({ terms, settings: r.lobby.settings, mode: 'online', rng, first: firstOf(r) });
         if (!plan.ok) return refuse('NOT_ENOUGH_TERMS', 'Not enough words for these settings.');
         r.plan = plan.rounds;
         r.results = [];
@@ -317,7 +326,7 @@ export function stepOnline(terms: readonly Term[], saved: Room, me: string, move
     }
     if (move.type !== 'TICK') {
       if (!r.order.includes(me) || r.left.includes(me)) refused = refuse('LEFT_GAME', 'You are not in this game.');
-      else refused = handle(r, me, move, terms, rng, now);
+      else refused = handle(r, me, move, withOwn(r, terms), rng, now);
     }
   }
   if (JSON.stringify(r) === JSON.stringify(saved)) return { next: saved, refused };
@@ -325,7 +334,8 @@ export function stepOnline(terms: readonly Term[], saved: Room, me: string, move
 }
 
 /** Each player's own view keyed by user id, plus 'watch' for spectators. Only a giver's view holds the word. */
-export function viewsOf(r: Room, terms: readonly Term[]): Record<string, PwView> {
+export function viewsOf(r: Room, bank: readonly Term[]): Record<string, PwView> {
+  const terms = withOwn(r, bank);
   const roles = r.phase === 'playing' || r.phase === 'roundEnd' ? rolesForRound(r.lobby, r.round) : {};
   const teamView = (team: TeamId): TeamView | null => {
     const t = r.teams?.[team];
@@ -346,6 +356,7 @@ export function viewsOf(r: Room, terms: readonly Term[]): Record<string, PwView>
     results: r.results,
     played: r.played,
     rematch: r.rematch,
+    ownTerms: (r.own ?? []).map((t) => ({ id: t.id, name: t.name })),
   };
   const empty = { word: null, clues: [], guesses: [], doneWords: [], wordNo: 0 };
   const out: Record<string, PwView> = {};

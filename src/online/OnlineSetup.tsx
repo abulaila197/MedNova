@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Platform, Pressable, StyleSheet, View } from 'react-native';
 import { Text, TextInput } from '@/components/AppText';
 
@@ -16,6 +16,7 @@ import { F, type Theme } from '@/theme/tokens';
 import { setupPrices, sparksCost } from '@/features/sparks/costs';
 import { needSparks, useSparks } from '@/features/sparks/sparks';
 import { useIsSubscribed } from '@/features/store/billing';
+import { loadCases, useCases } from '@/features/learn/cases';
 
 import { createRoom, JOIN_SAY, joinRoom, joinRoomId } from './api';
 import { lobbyOf, useJoin, useOpenRooms } from './useJoin';
@@ -138,6 +139,10 @@ function Create({ def, prefill }: { def: GameDef; prefill?: Record<string, unkno
   );
   const [teams, setTeams] = useState(Number(prefill?.teams) || 0);
   const [pub, setPub] = useState(true);
+  // My diseases: the host's approved items for this game can join the match (Yazan 2026-10-26).
+  const mine = useApprovedCount(def.key);
+  const [own, setOwn] = useState(prefill?.own === 'off' ? 'off' : 'on');
+  const more = mine ? { own } : {};
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState(false);
   // Every choice that changes the cost shows its Sparks, as on the Solo setup page (#36).
@@ -151,7 +156,7 @@ function Create({ def, prefill }: { def: GameDef; prefill?: Record<string, unkno
     setBusy(true);
     setErr(false);
     try {
-      const id = await createRoom(def.key, { ...vals, teams }, pub, avatar);
+      const id = await createRoom(def.key, { ...vals, teams, ...more }, pub, avatar);
       lobbyOf(def, id);
     } catch {
       setErr(true);
@@ -169,6 +174,11 @@ function Create({ def, prefill }: { def: GameDef; prefill?: Record<string, unkno
         {def.teams?.online ? (
           <Line label="Teams">
             <Chips choices={[{ value: 0, label: 'Off' }, { value: 2, label: '2' }, { value: 3, label: '3' }]} value={teams} onChange={setTeams} />
+          </Line>
+        ) : null}
+        {mine ? (
+          <Line label="Use my words">
+            <Chips choices={[{ value: 'on', label: 'On', note: `${mine} approved` }, { value: 'off', label: 'Off' }]} value={own} onChange={(v) => setOwn(v === 'off' ? 'off' : 'on')} />
           </Line>
         ) : null}
         <Line label="Who joins">
@@ -224,3 +234,14 @@ const s = StyleSheet.create({
   lbl: { fontFamily: F.bodySemi, fontSize: u(11), lineHeight: u(14), width: u(62) },
   note: { fontFamily: F.body, fontSize: u(9.5), lineHeight: u(13), textAlign: 'center' },
 });
+
+/** How many of my approved cases or words this game can use in a room I host (0 when signed out or not loaded). */
+function useApprovedCount(game: string) {
+  const list = useCases((x) => x.list);
+  const words = useCases((x) => x.words);
+  useEffect(() => {
+    if (list == null) loadCases().catch(() => {});
+  }, [list]);
+  if (game === 'the-diagnostic-pursuit') return (list ?? []).filter((c) => c.status === 'approved' && c.answer_id).length;
+  return (words ?? []).filter((w) => w.game === game && w.status === 'approved').length;
+}

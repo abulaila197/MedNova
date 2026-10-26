@@ -362,7 +362,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
         )}
       </View>
     );
-    const wrongLine = v.guesses.length ? <Text style={[k.sub, { color: '#ffb3a4', marginTop: u(6) }]}>{`Not it: ${v.guesses.map((id) => termOf(id)?.name ?? id).join(', ')}`}</Text> : null;
+    const wrongLine = v.guesses.length ? <Text style={[k.sub, { color: '#ffb3a4', marginTop: u(6) }]}>{`Not it: ${v.guesses.map((id) => (termOf(id) ?? (v.ownTerms ?? []).find((x) => x.id === id))?.name ?? id).join(', ')}`}</Text> : null;
     if (!v.me || !mine) {
       body = (
         <>
@@ -430,7 +430,9 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
         </View>
       );
     } else {
-      const hits = searchTerms(TERMS, query, 6).filter((x) => !v.doneWords.includes(x.id));
+      // The host's own terms (My diseases) can be guessed too.
+      const own = (v.ownTerms ?? []).map((x) => ({ ...x, bank: 'clinical' as const, category: '', forbidden: [] }));
+      const hits = searchTerms(own.length ? [...own, ...TERMS] : TERMS, query, 6).filter((x) => !v.doneWords.includes(x.id));
       body = (
         <>
           {head}

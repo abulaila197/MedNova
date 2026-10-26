@@ -23,11 +23,13 @@ import type { OnlineProps } from '../shell/types';
 import { Board, Sketch, liveStroke, type BoardHandle, type Stroke } from './Board';
 import { SA } from './core';
 import { WORDS, wordName } from './data';
+import { ownSketches, useOwnItems } from '@/online/own';
 import { ChalkBtn, ChalkTitle, ClockChalkTimer, Frame, HintCard, Kicker, Ledge, Note, Panel, PauseBtn, SL, Scores, SlateScreen, TopRow, useSlateRoom } from './slate';
 
 /** Everyone sees the same board shape online, so a drawing lands in the same place on every phone. */
 const RATIO = 1.1;
-const wordOf = (n: number | null | undefined) => (n ? WORDS[n - 1] : undefined);
+// The host's own words (My diseases) have numbers past the bank and come from the server.
+const wordOf = (n: number | null | undefined) => (n ? (ownSketches.get(n) ?? WORDS[n - 1]) : undefined);
 
 /** Each turn is one item: what you drew, or what you guessed. SA1: no Learn and no EXP; the dossier links still show (RS1). */
 function itemsOf(st: RaceState) {
@@ -129,6 +131,8 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   }, [st, sa, me, push]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useRaceRevealSound(st, me);
+  // The host's own words (My diseases): fetched as they show (the drawer's options, then each reveal).
+  useOwnItems(matchId, [st?.item, ...(sa?.options ?? []), ...(st?.my_items ?? []).map((m) => m.item)]);
   if (!st) return <SlateScreen>{null}</SlateScreen>;
   if (st.phase === 'countdown' || !sa) {
     return (

@@ -16,6 +16,7 @@ import { CaseBoard } from './CaseBoard';
 import { second } from '../engine/timeStore';
 import { DP, type Attempt } from './core';
 import { caseById, guessName } from './data';
+import { useOwnItems } from '@/online/own';
 import { useMatchState } from '@/online/useMatchState';
 import { useRevealSound } from '@/lib/sound';
 import { useBackPause } from '@/online/backPause';
@@ -142,6 +143,8 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   const myRow = st?.players.find((p) => p.user_id === me && !p.dropped);
   // Right or wrong only once the case's answer shows for everyone.
   useRevealSound(st && myRow && st.case_number != null && (st.phase === 'reveal' || st.phase === 'done') ? `${st.case_index}` : null, myRow ? myRow.solved : null);
+  // The host's own cases (My diseases) come from the server.
+  const ready = useOwnItems(matchId, [st?.case_number]);
   if (!st) return <GameScreen scroll={false}>{null}</GameScreen>;
 
   if (st.phase === 'countdown' || st.case_number == null) {
@@ -163,6 +166,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
     );
   }
 
+  if (!ready) return <GameScreen scroll={false}>{null}</GameScreen>;
   const c = caseById.get(String(st.case_number))!;
   const mine = st.players.find((p) => p.user_id === me);
   // Spectators talk too (ON12); their face comes from their seat in the room.

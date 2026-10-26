@@ -13,9 +13,11 @@ import type { OnlineProps } from '../shell/types';
 import { GameScreen } from '../shell/ui';
 import type { Round } from './core';
 import { QUESTIONS } from './data';
+import { ownQuestions, useOwnItems } from '@/online/own';
 import { HeatBoard } from './HeatBoard';
 
-const questionOf = (n: number) => QUESTIONS[n - 1];
+// The host's own questions (My diseases) have numbers past the bank and come from the server.
+const questionOf = (n: number) => ownQuestions.get(n) ?? QUESTIONS[n - 1];
 /** SM8: streak milestones that alert everyone. */
 const MILESTONES = [5, 10, 15];
 
@@ -68,7 +70,8 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   }, [st, me, push]);
 
   useRaceRevealSound(st, me);
-  if (!st) return <GameScreen scroll={false}>{null}</GameScreen>;
+  const ready = useOwnItems(matchId, [st?.item, ...(st?.my_items ?? []).map((m) => m.item)]);
+  if (!st || !ready) return <GameScreen scroll={false}>{null}</GameScreen>;
   if (st.phase === 'countdown' || st.item == null) {
     return (
       <GameScreen scroll={false}>

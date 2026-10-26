@@ -3,7 +3,7 @@
 // referee's whole logic, kept here so it is tested with the rest of the game; the edge function only loads and saves.
 import { createGame, nextDeadline, reduce } from './engine/engine';
 import { PROFANITY } from './engine/filter';
-import type { GameAction, GameEvent, GameState, RoundSummary, SubtypeChoice, WordBank } from './engine/types';
+import type { GameAction, GameEvent, GameState, RoundSummary, SubtypeChoice, WordBank, WordPair } from './engine/types';
 import { getView, type PlayerView } from './engine/view';
 
 /** The moves a phone may send; the referee fills in playerId from the signed-in user. */
@@ -18,8 +18,8 @@ export type Move =
 /** A note for one player (the host hears when someone keeps trying blocked words). */
 export type Alert = { to: string; text: string; at: number };
 
-/** What is saved: the engine's game plus the notes waiting to be shown. */
-export type Saved = { g: GameState; alerts: Alert[] };
+/** What is saved: the engine's game plus the notes waiting to be shown, and the host's own pairs (My diseases). */
+export type Saved = { g: GameState; alerts: Alert[]; own?: WordPair[] };
 
 /**
  * One player's screen: the engine's view, plus who was caught once the vote has caught them, and the finished
@@ -27,7 +27,7 @@ export type Saved = { g: GameState; alerts: Alert[] };
  */
 export type ImView = PlayerView & { caught: string | null; alerts: Alert[]; history: RoundSummary[] };
 
-const envAt = (bank: WordBank, now: number, rng: () => number) => ({ now, rng, bank, profanity: PROFANITY });
+const envAt = (bank: WordBank, now: number, rng: () => number, first?: WordPair[]) => ({ now, rng, bank, profanity: PROFANITY, first });
 
 export function startOnlineGame(o: {
   bank: WordBank;
@@ -39,9 +39,11 @@ export function startOnlineGame(o: {
   rounds: number;
   now: number;
   rng?: () => number;
+  /** The host's own pairs, played first (up to half the rounds is the caller's choice). */
+  first?: WordPair[];
 }): GameState {
   const rng = o.rng ?? Math.random;
-  const env = envAt(o.bank, o.now, rng);
+  const env = envAt(o.bank, o.now, rng, o.first);
   const host = o.seats.includes(o.host) ? o.host : o.seats[0];
   const name = (id: string) => o.names[id]?.trim() || 'Player';
   let s = createGame({ roomId: o.roomId, mode: 'online', host: { id: host, name: name(host) } });
@@ -58,7 +60,7 @@ const MAX_ALERTS = 6;
  * Returns the new save (the same object when nothing changed) and the refusal for my move, if any.
  */
 export function stepOnline(bank: WordBank, saved: Saved, me: string, move: Move, dropped: string[], now: number, rng: () => number = Math.random): { next: Saved; refused: { code: string; message: string } | null } {
-  const env = envAt(bank, now, rng);
+  const env = envAt(bank, now, rng, saved.own);
   let g = saved.g;
   const events: GameEvent[] = [];
   for (const id of dropped) {
@@ -79,7 +81,7 @@ export function stepOnline(bank: WordBank, saved: Saved, me: string, move: Move,
     const who = g.players.find((p) => p.id === e.playerId)?.name ?? 'A player';
     alerts = [...alerts, { to: e.notifyId, text: `${who} has tried blocked words 3 times.`, at: now }].slice(-MAX_ALERTS);
   }
-  const next = { g, alerts };
+  const next = saved.own ? { g, alerts, own: saved.own } : { g, alerts };
   const refused = move.type === 'TICK' ? null : r.error;
   if (JSON.stringify(next) === JSON.stringify(saved)) return { next: saved, refused };
   return { next, refused };

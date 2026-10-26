@@ -27,6 +27,16 @@ async function bank(): Promise<Term[]> {
   if (error) throw new Error(error.message);
   return (TERMS = list);
 }
+/** My diseases: the host's approved Password terms, in random order (Yazan 2026-10-26). */
+async function ownTerms(host: string): Promise<Term[]> {
+  if (!host) return [];
+  const { data } = await admin.from('player_words').select('id, data').eq('user_id', host).eq('game', 'nova-password').eq('status', 'approved').limit(50);
+  const rows = (data ?? []) as { id: string; data: { name: string; forbidden: string[] } }[];
+  return rows
+    .map((r) => ({ r, k: Math.random() }))
+    .sort((x, y) => x.k - y.k)
+    .map(({ r }) => ({ id: `c:${r.id}`, name: r.data.name, bank: 'clinical' as const, category: 'disease', forbidden: r.data.forbidden }));
+}
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { ...cors, 'Content-Type': 'application/json' } });
 
 type Loaded = {
@@ -72,6 +82,10 @@ Deno.serve(async (req) => {
     if (!saved) {
       if (now < L.match.ends_ms) return json({ result: 'wait' });
       saved = startOnlineRoom({ host: L.host, seats: L.seats, names: L.names ?? {}, settings: L.match.settings ?? {} });
+      if (L.match.settings?.own !== 'off') {
+        const own = await ownTerms(L.host);
+        if (own.length) saved = { ...saved, own };
+      }
     }
     const { next, refused } = stepOnline(terms, saved, who.user.id, move, L.dropped ?? [], now);
     if (next === L.state) return json({ result: refused ? 'refused' : 'same', ...refused });

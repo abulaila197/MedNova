@@ -14,10 +14,12 @@ import type { OnlineProps } from '../shell/types';
 import { GameScreen } from '../shell/ui';
 import { MAX_ROWS, lengthCheck, soloExp, type Style } from './core';
 import { WORDS, isWord } from './data';
+import { ownWords, useOwnItems } from '@/online/own';
 import { SlideTable, TurnClock } from './Slides';
 
 const STYLE_NAME: Record<Style, string> = { classic: 'Classic', custom: 'Custom' };
-const wordOf = (n: number) => WORDS[n - 1];
+// The host's own words (My diseases) have numbers past the bank and come from the server.
+const wordOf = (n: number) => ownWords.get(n) ?? WORDS[n - 1];
 /** NM11: "close" once a player has two-thirds of the letters green in one row (4 of 6 in Classic). */
 const closeAt = (len: number) => Math.ceil((2 * len) / 3);
 
@@ -89,7 +91,8 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   }
 
   useRaceRevealSound(st, me);
-  if (!st) return <GameScreen scroll={false}>{null}</GameScreen>;
+  const ready = useOwnItems(matchId, [st?.item, ...(st?.my_items ?? []).map((m) => m.item)]);
+  if (!st || !ready) return <GameScreen scroll={false}>{null}</GameScreen>;
   if (st.phase === 'countdown' || st.item == null) {
     return (
       <GameScreen scroll={false}>
@@ -119,7 +122,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
     const bad = lengthCheck(g, style, w.word.length);
     if (bad === 'short') return style === 'custom' ? 'At least 7 letters' : 'Not enough letters';
     if (bad === 'long') return 'Too many letters';
-    if (!isWord(g)) return 'Not in word list';
+    if (g !== w.word && !isWord(g)) return 'Not in word list';
     setPending(g);
     call<{ outcome: string }>('nm_guess', { m: matchId, word: g })
       .then((r) => {

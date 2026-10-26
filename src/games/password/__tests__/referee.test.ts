@@ -132,3 +132,16 @@ test('a rematch needs all four; EXP is 60 / 40 / 20, nothing on a forfeit, 60 at
     60,
   );
 });
+
+test('My diseases: the host’s own terms play first, at most half the words, and guessers can name them', () => {
+  const own: Term[] = ['Alpha', 'Beta', 'Gamma', 'Delta'].map((name, i) => ({ id: `c:${i}`, name: `${name} syndrome`, bank: 'clinical', category: 'disease', forbidden: ['a', 'b', 'c', 'd', 'e'] }));
+  const r = go({ ...room(), own }, 'h', { type: 'START' }, 0).next;
+  const words = r.plan!.flatMap((p) => p.lists.A);
+  assert.equal(words.filter((id) => id.startsWith('c:')).length, 2); // 5 words: half is 2
+  const g = giverOf(r, 'A');
+  assert.ok(viewsOf(r, TERMS)[g].word!.id.startsWith('c:'));
+  assert.equal(viewsOf(r, TERMS).watch.ownTerms.length, 4);
+  // Solving my own term counts like a bank one.
+  const after = solve(r, 'A', 1_000);
+  assert.equal(viewsOf(after, TERMS)[g].doneWords.length, 1);
+});

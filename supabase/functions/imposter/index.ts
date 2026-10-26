@@ -4,7 +4,7 @@
 import { createClient } from 'npm:@supabase/supabase-js@2';
 
 import { unpackBank, type PackedBank } from '../../../src/games/imposter/bankCodec';
-import type { SubtypeChoice } from '../../../src/games/imposter/engine/types';
+import type { SubtypeChoice, WordPair } from '../../../src/games/imposter/engine/types';
 import { dueOf, onlineRanks, scoresOf, startOnlineGame, stepOnline, viewsOf, type Move, type Saved } from '../../../src/games/imposter/online';
 import packed from './bank.json' with { type: 'json' };
 
@@ -29,6 +29,18 @@ type Loaded = {
   names: Record<string, string>;
   dropped: string[];
 };
+
+/** My diseases: up to `n` of the host's approved Imposter pairs, in random order (Yazan 2026-10-26). */
+async function ownPairs(host: string, n: number): Promise<WordPair[]> {
+  if (n < 1 || !host) return [];
+  const { data } = await admin.from('player_words').select('id, data').eq('user_id', host).eq('game', 'imposter').eq('status', 'approved').limit(50);
+  const rows = (data ?? []) as { id: string; data: { a: string; b: string; category: string } }[];
+  return rows
+    .map((r) => ({ r, k: Math.random() }))
+    .sort((x, y) => x.k - y.k)
+    .slice(0, n)
+    .map(({ r }) => ({ id: `c:${r.id}`, subtype: 'clinical' as const, category: r.data.category, a: { word: r.data.a, alts: [] }, b: { word: r.data.b, alts: [] }, kind: 'disease' as const }));
+}
 
 const MOVES = new Set(['TICK', 'SUBMIT_CLUE', 'DECIDE', 'CAST_VOTE', 'SUBMIT_GUESS', 'NEXT_ROUND']);
 
@@ -56,11 +68,13 @@ Deno.serve(async (req) => {
     let saved = L.state;
     if (!saved) {
       if (now < L.match.ends_ms) return json({ result: 'wait' });
+      const rounds = Number(L.match.settings.rounds) || 3;
+      const own = L.match.settings.own === 'off' ? [] : await ownPairs(L.host, Math.floor(rounds / 2));
       const g = startOnlineGame({
         bank: BANK, roomId: L.room_id, host: L.host, seats: L.seats, names: L.names ?? {},
-        style: String(L.match.settings.style ?? 'mixed') as SubtypeChoice, rounds: Number(L.match.settings.rounds) || 3, now,
+        style: String(L.match.settings.style ?? 'mixed') as SubtypeChoice, rounds, now, first: own,
       });
-      saved = { g, alerts: [] };
+      saved = own.length ? { g, alerts: [], own } : { g, alerts: [] };
     }
     const { next, refused } = stepOnline(BANK, saved, who.user.id, move, L.dropped ?? [], now);
     if (next === L.state) return json({ result: refused ? 'refused' : 'same', ...refused });
