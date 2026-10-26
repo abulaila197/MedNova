@@ -15,7 +15,7 @@ import { u } from '@/theme/scale';
 import { F, THEMES } from '@/theme/tokens';
 
 import { loadFriends, useFriends } from '@/state/friends';
-import { openReport } from '@/features/profile/Friends';
+import { openPlayer, openReport } from '@/features/profile/Friends';
 import { shareText } from '@/lib/share';
 import { InviteFriends } from './InviteFriends';
 import { call, leaveRoom, rematchRoom, removePlayer, setReady, setTeam, startMatch, updateRoom, type RoomState, type Seat } from './api';
@@ -431,6 +431,17 @@ function SeatSheet({ state, seat, teams, onDone }: { state: RoomState; seat: Sea
             })}
           </View>
         </>
+      ) : null}
+      {!self ? (
+        <Pressable
+          onPress={() => {
+            onDone();
+            openPlayer({ id: seat.user_id, display_name: seat.name, avatar: seat.character });
+          }}
+          style={[s.remove, { borderColor: L.line }]}
+          accessibilityRole="button">
+          <Text style={[s.removeT, { fontFamily: L.semi, color: L.fg }]}>{`View ${seat.name}’s profile`}</Text>
+        </Pressable>
       ) : null}
       {!self ? <FriendRow seat={seat} /> : null}
       {!self ? <MuteRow room={state.room.id} seat={seat} /> : null}

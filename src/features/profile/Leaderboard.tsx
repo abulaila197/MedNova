@@ -3,6 +3,7 @@ import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
+import { openPlayer } from '@/features/profile/Friends';
 import { useStyle, wantLooks } from '@/features/style/useStyle';
 import Svg, { Circle, Defs, RadialGradient, Stop } from 'react-native-svg';
 
@@ -115,6 +116,8 @@ export function Leaderboard() {
   const [game, setGame] = useState<string | null>(null);
   const [pick, setPick] = useState<'game' | 'period' | null>(null);
   const board = useBoard(period, scope, game, userId);
+  // Tap a player for their profile sheet (Yazan 2026-10-26, pick B); signed in only, not yourself.
+  const canOpen = (id: string) => !!userId && id !== userId;
   const rows = board && board !== 'error' ? board.rows : [];
   const mine = userId && board && board !== 'error' ? board.me : null;
   const g = gameName(game);
@@ -179,7 +182,7 @@ export function Leaderboard() {
                 const who = rows[i];
                 if (!who) return null;
                 return (
-                  <View key={r.word} style={[s.rk, { left: u(r.cx - 40), top: u(r.top - 115) }]}>
+                  <Pressable key={r.word} disabled={!canOpen(who.id)} onPress={() => openPlayer({ id: who.id, display_name: who.name })} style={[s.rk, { left: u(r.cx - 40), top: u(r.top - 115) }]} accessibilityRole="button" accessibilityHint="Open their profile">
                     <View style={{ width: u(r.d), height: u(r.d) }}>
                       <StarGlow r={r.d / 2} blur={r.blur} spread={r.spread} a={r.a} />
                       <View style={{ width: u(r.d), height: u(r.d), borderRadius: u(r.d / 2), backgroundColor: p.star }} />
@@ -192,12 +195,12 @@ export function Leaderboard() {
                       <LevelBadge level={who.level} size={u(15)} />
                     </View>
                     <Text style={[s.pts, { color: t.mute }]}>{num(who.exp)}</Text>
-                  </View>
+                  </Pressable>
                 );
               })}
             </View>
             {rows.slice(3).map((r, i) => (
-              <View key={r.id} style={[s.r, { borderColor: t.panelLine }, i === 0 && s.first]}>
+              <Pressable key={r.id} disabled={!canOpen(r.id)} onPress={() => openPlayer({ id: r.id, display_name: r.name })} style={[s.r, { borderColor: t.panelLine }, i === 0 && s.first]} accessibilityRole="button" accessibilityHint="Open their profile">
                 <Text style={[s.rN, { color: t.kick }]}>{String(r.rank).padStart(2, '0')}</Text>
                 <View style={s.rNm}>
                   <Text style={[s.rB, { color: r.id === userId ? t.accent : t.fg }, glowOf(r.id)]} numberOfLines={1}>
@@ -206,7 +209,7 @@ export function Leaderboard() {
                   <LevelBadge level={r.level} size={u(15)} />
                 </View>
                 <Text style={[s.rS, { color: t.mute }]}>{num(r.exp)}</Text>
-              </View>
+              </Pressable>
             ))}
             {period === 'month' && scope === 'everyone' ? (
               <Text style={[s.prize, { color: t.mute }]}>{game ? MONTH_PRIZE_GAME : MONTH_PRIZE_ALL}</Text>

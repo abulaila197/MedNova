@@ -12,7 +12,7 @@ import { PlayerFace } from '@/features/style/Frame';
 import { PlayerTitle } from '@/features/style/PlayerTitle';
 import { useAccount } from '@/state/account';
 import { useTheme } from '@/state/app';
-import { blockUser, type FriendProfile, loadFriendProfile, removeFriend, type RequestResult, requestFriend, seenLabel, useFriends } from '@/state/friends';
+import { blockUser, type FriendProfile, loadFriendProfile, loadFriends, removeFriend, type RequestResult, requestFriend, seenLabel, useFriends } from '@/state/friends';
 import { u } from '@/theme/scale';
 import { F, type Theme } from '@/theme/tokens';
 import { shareText } from '@/lib/share';
@@ -25,6 +25,7 @@ import { DECK } from '@/features/cards/deck';
 import { MECHS } from '@/features/chests/data';
 import { robotOf } from '@/features/shop/robots';
 import { gameDef } from '@/games/shell/registry';
+import { call } from '@/online/api';
 import { challenge, watch } from '@/online/invites';
 
 import { Name, openChallenge, openReport, useFriendSheet } from './Friends';
@@ -197,41 +198,58 @@ function FriendMenu() {
 
 /**
  * #85 (Yazan 2026-10-26, slide-up sheet): a friend's face, level, tokens and characters, with Challenge or Watch;
- * Remove, Block and Report sit at the bottom.
+ * Remove, Block and Report sit at the bottom. Any other player (pick B) gets the same sheet without tokens,
+ * with Add friend (or Accept) instead of Challenge, and no Remove.
  */
 function FriendProfileSheet() {
   const t = useTheme();
-  const f = useFriendSheet((x) => x.friend);
-  const live = useFriends((x) => (f ? x.playing[f.id] : undefined));
+  const hint = useFriendSheet((x) => x.friend);
   const [p, setP] = useState<FriendProfile | null | 'error'>(null);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState(false);
   const [view, setView] = useState<FriendCard | null>(null);
   useEffect(() => {
-    if (!f) return;
+    if (!hint) return;
     let on = true;
-    loadFriendProfile(f.id)
+    loadFriendProfile(hint.id)
       .then((r) => on && setP(r ?? 'error'))
       .catch(() => on && setP('error'));
     return () => {
       on = false;
     };
-  }, [f]);
+  }, [hint]);
+  const ready = p && p !== 'error' ? p : null;
+  // What the server sent wins over what the opener knew (a leaderboard row has no face or @username).
+  const f = hint && ready ? { ...hint, username: ready.username, display_name: ready.display_name, avatar: ready.avatar, last_seen: ready.last_seen, kind: ready.relation } : hint;
+  const friend = f?.kind === 'friend';
+  const live = useFriends((x) => (f && friend ? x.playing[f.id] : undefined));
   if (!f) return null;
-  const when = live ? 'IN A MATCH' : seenLabel(f.last_seen);
-  const run = async (fn: () => Promise<void>) => {
+  const when = !friend ? null : live ? 'IN A MATCH' : seenLabel(f.last_seen);
+  const run = async (fn: () => Promise<void>, stay?: boolean) => {
     setBusy(true);
     setErr(false);
     try {
       await fn();
-      close();
+      if (!stay) close();
     } catch {
       setErr(true);
-      setBusy(false);
     }
+    setBusy(false);
   };
-  const ready = p && p !== 'error' ? p : null;
   const chars = ready?.characters ?? [];
+  const add = () =>
+    run(async () => {
+      await call('request_friend_id', { other: f.id });
+      await loadFriends();
+      setP((x) => (x && x !== 'error' ? { ...x, relation: x.relation === 'incoming' ? 'friend' : 'outgoing' } : x));
+    }, true);
+  const main = friend
+    ? { label: live ? 'Watch their match' : `Challenge ${f.display_name}`, go: () => (live ? run(async () => void (await watch(f.id, live.game))) : openChallenge(f)) }
+    : f.kind === 'incoming'
+      ? { label: `Accept ${f.display_name}’s friend request`, go: add }
+      : f.kind === 'outgoing'
+        ? { label: 'Friend request sent', go: null }
+        : { label: `Add ${f.display_name} as a friend`, go: add };
 
   return (
     <ScrollView style={{ maxHeight: u(560) }} contentContainerStyle={{ gap: u(10) }} showsVerticalScrollIndicator={false}>
@@ -240,12 +258,12 @@ function FriendProfileSheet() {
         <View style={{ flex: 1, minWidth: 0, gap: u(2) }}>
           <Name t={t} f={f} size={21} />
           <PlayerTitle userId={f.id} size={11} />
-          <Text style={[s.mhS, { color: when === 'ONLINE' || live ? '#7be0a8' : t.mute }]}>{`@${f.username.toUpperCase()} · ${when}`}</Text>
+          {f.username ? <Text style={[s.mhS, { color: when === 'ONLINE' || live ? '#7be0a8' : t.mute }]}>{when ? `@${f.username.toUpperCase()} · ${when}` : `@${f.username.toUpperCase()}`}</Text> : null}
         </View>
       </View>
       <View style={s.stats}>
         <Stat t={t} label="LEVEL" value={ready ? String(ready.level) : '–'} />
-        <Stat t={t} label="TOKENS" value={ready ? ready.tokens.toLocaleString() : '–'} coin />
+        {ready && ready.tokens == null ? null : <Stat t={t} label="TOKENS" value={ready?.tokens != null ? ready.tokens.toLocaleString() : '–'} coin />}
         <Stat t={t} label="CHARACTERS" value={ready ? String(chars.length) : '–'} />
       </View>
       {p === 'error' ? <Text style={[s.msg, { color: t.mute }]}>Couldn’t load their profile. Check your connection.</Text> : null}
@@ -265,12 +283,12 @@ function FriendProfileSheet() {
         </>
       ) : null}
       {ready?.since ? <Text style={[s.since, { color: t.mute }]}>{`Friends since ${new Date(ready.since).toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' })}`}</Text> : null}
-      <Pressable disabled={busy} onPress={() => (live ? run(async () => void (await watch(f.id, live.game))) : openChallenge(f))} accessibilityRole="button">
+      <Pressable disabled={busy || !main.go || !ready} onPress={main.go ?? undefined} style={!main.go ? { opacity: 0.55 } : null} accessibilityRole="button">
         <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.btn}>
-          <Text style={[s.btnT, { color: t.onGrad }]}>{live ? 'Watch their match' : `Challenge ${f.display_name}`}</Text>
+          <Text style={[s.btnT, { color: t.onGrad }]}>{main.label}</Text>
         </LinearGradient>
       </Pressable>
-      <Act t={t} title="Remove friend" note={`Takes ${f.display_name} off both lists. They can send a new request later.`} onPress={() => run(() => removeFriend(f.id))} disabled={busy} />
+      {friend ? <Act t={t} title="Remove friend" note={`Takes ${f.display_name} off both lists. They can send a new request later.`} onPress={() => run(() => removeFriend(f.id))} disabled={busy} /> : null}
       <Act t={t} red title={`Block ${f.display_name}`} note="Also stops their requests and challenges. Undo any time under Blocked players on your Profile." onPress={() => run(() => blockUser(f.id))} disabled={busy} />
       <Act t={t} title={`Report ${f.display_name}`} note="Tell us what happened. Reports are private." onPress={() => openReport({ id: f.id, name: f.display_name, avatar: f.avatar })} disabled={busy} />
       {err ? <Text style={[s.msg, { color: t.error }]}>Couldn’t reach the server. Check your connection.</Text> : null}

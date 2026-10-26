@@ -8,7 +8,7 @@ import { Congrats } from '@/components/Congrats';
 import { Screen } from '@/components/Screen';
 import { loadFree, useFree } from '@/features/store/FreeTokens';
 import { useStyle } from '@/features/style/useStyle';
-import { FriendsSection, Name, Ring } from '@/features/profile/Friends';
+import { FriendsSection, Name, openPlayer, Ring } from '@/features/profile/Friends';
 import { InfoScroll, Kicker, s as ui, useInfo } from '@/features/info/ui';
 import { useSession } from '@/games/shell/session';
 import { syncAccount } from '@/lib/sync';
@@ -20,7 +20,7 @@ import type { Theme } from '@/theme/tokens';
 import { F } from '@/theme/tokens';
 import { shareText } from '@/lib/share';
 
-type Found = Omit<Friend, 'kind' | 'last_seen'> & { kind: Friend['kind'] | 'none' };
+type Found = Omit<Friend, 'last_seen'>;
 
 /** Friends (locked look B, "Tabs"): Friends / Requests / Find, with the invite code and Redeem under the tabs on every tab. */
 export function FriendsPage() {
@@ -200,10 +200,10 @@ function Find({ t }: { t: Theme }) {
         return (
           <View key={f.id} style={[s.fr, { borderColor: t.panelLine }]}>
             <Ring t={t} f={f} />
-            <View style={{ flex: 1 }}>
+            <Pressable style={{ flex: 1 }} onPress={() => openPlayer(f)} accessibilityRole="button" accessibilityHint="Open their profile">
               <Name t={t} f={{ ...f, last_seen: null, kind: 'friend' }} />
               <Text style={[s.frS, { color: t.mute }]}>{`@${f.username.toUpperCase()}`}</Text>
-            </View>
+            </Pressable>
             {state === 'none' ? (
               <Grad t={t} label="+ Add" onPress={() => add(f.id)} />
             ) : state === 'incoming' ? (

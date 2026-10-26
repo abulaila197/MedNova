@@ -4,7 +4,7 @@ import { create } from 'zustand';
 import { call } from '@/online/api';
 import { onAccountSwitch } from '@/state/accountSwitch';
 
-/** A friend or a request (FR1-FR4). `kind`: friend, incoming (they asked you) or outgoing (you asked them). */
+/** A friend or a request (FR1-FR4). `kind`: friend, incoming (they asked you), outgoing (you asked them) or none (any other player's profile). */
 export type Friend = {
   id: string;
   username: string;
@@ -12,7 +12,7 @@ export type Friend = {
   avatar: string;
   level: number;
   last_seen: string | null;
-  kind: 'friend' | 'incoming' | 'outgoing';
+  kind: 'friend' | 'incoming' | 'outgoing' | 'none';
 };
 export type Blocked = { id: string; username: string; display_name: string; avatar: string };
 
@@ -22,15 +22,16 @@ export type RequestResult = 'sent' | 'accepted' | 'already' | 'pending' | 'self'
 /** A friend in a running match right now (#80): the room to watch. */
 export type Playing = { friend: string; room_id: string; game: string };
 
-/** What a friend's profile sheet shows (#85). */
+/** What a player's profile sheet shows (#85). Tokens, since and last seen are null unless you're friends. */
 export type FriendProfile = {
   id: string;
   username: string;
   display_name: string;
   avatar: string;
+  relation: Friend['kind'];
   last_seen: string | null;
   level: number;
-  tokens: number;
+  tokens: number | null;
   since: string | null;
   characters: string[];
 };
@@ -49,7 +50,7 @@ export async function loadFriends() {
   useFriends.setState({ list: list ?? [], blocked: blocked ?? [], playing: Object.fromEntries((playing ?? []).map((p) => [p.friend, p])), loaded: true });
 }
 
-/** A friend's profile (#85); null if you aren't friends any more. */
+/** A player's profile (#85, any player since Yazan's pick B); null if either of you blocked the other. */
 export const loadFriendProfile = (id: string) => call<FriendProfile | null>('friend_profile', { other: id });
 
 export async function requestFriend(code: string) {

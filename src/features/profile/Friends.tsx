@@ -24,6 +24,9 @@ export const openAdd = (code = '') => useFriendSheet.setState({ open: 'add', fri
 const openMenu = (friend: Friend) => useFriendSheet.setState({ open: 'menu', friend, code: '', target: null });
 /** #85: tapping a friend opens their profile sheet (Remove, Block and Report sit at its bottom). */
 export const openProfile = (friend: Friend) => useFriendSheet.setState({ open: 'profile', friend, code: '', target: null });
+/** Any player's profile sheet (Yazan 2026-10-26, pick B): from Find, room seats and the leaderboard. The sheet fills in the rest. */
+export const openPlayer = (p: { id: string; display_name: string; avatar?: string; username?: string }) =>
+  openProfile(useFriends.getState().list.find((x) => x.id === p.id) ?? { id: p.id, display_name: p.display_name, username: p.username ?? '', avatar: p.avatar ?? '', level: 0, last_seen: null, kind: 'none' });
 /** #47: Challenge opens the game grid; picking a game opens its room and invites them. */
 export const openChallenge = (friend: Friend) => useFriendSheet.setState({ open: 'challenge', friend, code: '', target: null });
 export const openReport = (target: ReportTarget) => useFriendSheet.setState({ open: 'report', friend: null, code: '', target });
