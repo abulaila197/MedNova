@@ -16,7 +16,7 @@ import { q } from './geo';
 import { Particles } from './Particles';
 
 /**
- * One mode loading page: "MedNova Original:", the title and sub name, the game's own bar and a game tip,
+ * One mode loading page: "MedNova:", the title and sub name, the game's own bar and a game tip,
  * over Yazan's photo brought to life (slow push-in, glows, particles). `live` false holds the art still
  * (during the doors). `p` is the bar's progress, 0 to 1.
  */
@@ -59,7 +59,8 @@ export function LoadingPage({ g, w, h, live, p, tip, barRef }: { g: LoadCfg; w: 
       <LinearGradient colors={g.veil.c as [string, string, ...string[]]} locations={g.veil.at as [number, number, ...number[]]} style={StyleSheet.absoluteFill} pointerEvents="none" />
 
       <View style={[s.txt, { top: q(g.txt.top) + Math.max(0, ins.top - q(24)), alignItems: center ? 'center' : 'flex-start', transform: g.txt.rot ? [{ rotate: `${g.txt.rot}deg` }] : undefined }]}>
-        <Text style={[s.orig, { fontFamily: g.orig.f, color: g.orig.c, textAlign: g.txt.align }]}>MedNova Original:</Text>
+        {/* "Original" dropped from every loading page (Yazan 2026-10-26). */}
+        <Text style={[s.orig, { fontFamily: g.orig.f, color: g.orig.c, textAlign: g.txt.align }]}>MedNova:</Text>
         {/* #13: the two title words are separate texts, not one text with a nested span. On Android a nested span in
             another font (or one measured before its font loaded) sometimes lost the game's word. */}
         <View style={{ marginTop: q(6), flexDirection: 'row', flexWrap: 'wrap', justifyContent: center ? 'center' : 'flex-start', columnGap: q(g.title.s * 0.24) }}>
@@ -122,7 +123,7 @@ function Glow({ o, id, artW, artH, live }: { o: LoadCfg['glows'][number]; id: st
   const sc = useSharedValue(1);
   const dy = useSharedValue(0);
   useEffect(() => {
-    if (!live) return;
+    if (!live || o.a === 'still') return;
     const ms = (n: number) => ({ duration: n, easing: Easing.inOut(Easing.ease) });
     if (o.a === 'pulse') {
       op.value = withRepeat(withSequence(withTiming(1, ms(1300)), withTiming(0.55, ms(1300))), -1);

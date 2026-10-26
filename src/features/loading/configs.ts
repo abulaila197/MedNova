@@ -20,7 +20,8 @@ export type LoadCfg = {
   tip: { f: string; s: number; c: string; bg: string; b: string };
   bar: { t: BarType; c?: string; track?: string; glow?: string; flag?: string };
   tag: { t: string; side: 'left' | 'right'; c: string; bg: string; b: string };
-  glows: { x: number; y: number; r: number; c: string; a: 'pulse' | 'flicker' }[];
+  /** 'still': drawn once, no motion. */
+  glows: { x: number; y: number; r: number; c: string; a: 'pulse' | 'flicker' | 'still' }[];
   parts: PartType[];
   chase?: { y: number; xs: number[] };
   sweep?: boolean;
@@ -239,9 +240,10 @@ export const LOAD: Record<string, LoadCfg> = {
     tip: { f: 'CormorantGaramond_600SemiBold_Italic', s: 16, c: '#f8e6c0', bg: 'rgba(20,4,2,0.6)', b: 'rgba(255,216,138,0.25)' },
     bar: { t: 'bulbs', c: '#ffd88a' },
     tag: { t: ALL, side: 'left', c: '#f8e2b8', bg: 'rgba(0,0,0,0.45)', b: 'rgba(255,216,138,0.3)' },
-    glows: [{ x: 0.17, y: 0.74, r: 46, c: 'rgba(255,140,40,0.7)', a: 'flicker' }],
+    // The fire stays still (Yazan 2026-10-26): its flicker and the floating embers made Streak Master's way in and out lag.
+    glows: [{ x: 0.17, y: 0.74, r: 46, c: 'rgba(255,140,40,0.7)', a: 'still' }],
     chase: { y: 0.443, xs: [0.03, 0.1, 0.17, 0.24, 0.31, 0.385, 0.455, 0.53, 0.6, 0.675, 0.75, 0.82, 0.895, 0.965] },
-    parts: ['embers'],
+    parts: [],
     tips: ['Each answer in a row is worth more than the last.', 'One miss and your streak drops to zero.', 'Skip keeps your streak alive, at a price.'],
     fonts: ['Limelight_400Regular', 'CormorantGaramond_600SemiBold_Italic'],
   },
