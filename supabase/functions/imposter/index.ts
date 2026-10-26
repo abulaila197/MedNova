@@ -1,12 +1,11 @@
 // The Imposter online referee (IM2): Yazan's engine on the server. The game is saved in im_games with each player's
 // own view next to it; phones read only their own view with im_state, so words never reach the wrong phone.
-// The word bank (packed, bank.json) and the bad-word list are bundled in. Bundled with scripts/build-imposter-function.sh.
+// The bad-word list is bundled in; the word bank (pairs.json) is read once from the repo at a pinned commit, so the
+// function is a single file. Change BANK to a newer commit when the bank changes. Bundled with scripts/build-imposter-function.sh.
 import { createClient } from 'npm:@supabase/supabase-js@2';
 
-import { unpackBank, type PackedBank } from '../../../src/games/imposter/bankCodec';
-import type { SubtypeChoice, WordPair } from '../../../src/games/imposter/engine/types';
+import type { SubtypeChoice, WordBank, WordPair } from '../../../src/games/imposter/engine/types';
 import { dueOf, onlineRanks, scoresOf, startOnlineGame, stepOnline, viewsOf, type Move, type Saved } from '../../../src/games/imposter/online';
-import packed from './bank.json' with { type: 'json' };
 
 declare const Deno: { env: { get(k: string): string | undefined }; serve(h: (req: Request) => Promise<Response>): void };
 
@@ -15,7 +14,15 @@ const cors = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
-const BANK = unpackBank(packed as PackedBank);
+const BANK = 'https://raw.githubusercontent.com/abulaila197/MedNova/774c73f/src/games/imposter/data/pairs.json';
+let bank: Promise<WordBank> | null = null;
+const loadBank = () =>
+  (bank ??= fetch(BANK)
+    .then((r) => (r.ok ? (r.json() as Promise<WordBank>) : Promise.reject(new Error(`bank ${r.status}`))))
+    .catch((e) => {
+      bank = null;
+      throw e;
+    }));
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { ...cors, 'Content-Type': 'application/json' } });
 
 type Loaded = {
@@ -56,6 +63,12 @@ Deno.serve(async (req) => {
     return json({ result: 'bad_request' }, 400);
   }
   if (!body.m) return json({ result: 'bad_request' }, 400);
+  let pairs: WordBank;
+  try {
+    pairs = await loadBank();
+  } catch {
+    return json({ result: 'error', message: 'word bank unavailable' }, 500);
+  }
   const move: Move = body.move && MOVES.has(body.move.type) ? body.move : { type: 'TICK' };
   // Two phones can step in at once; the save only lands on the version it read, so a clash just runs again.
   for (let attempt = 0; attempt < 4; attempt++) {
@@ -71,12 +84,12 @@ Deno.serve(async (req) => {
       const rounds = Number(L.match.settings.rounds) || 3;
       const own = L.match.settings.own === 'off' ? [] : await ownPairs(L.host, Math.floor(rounds / 2));
       const g = startOnlineGame({
-        bank: BANK, roomId: L.room_id, host: L.host, seats: L.seats, names: L.names ?? {},
+        bank: pairs, roomId: L.room_id, host: L.host, seats: L.seats, names: L.names ?? {},
         style: String(L.match.settings.style ?? 'mixed') as SubtypeChoice, rounds, now, first: own,
       });
       saved = own.length ? { g, alerts: [], own } : { g, alerts: [] };
     }
-    const { next, refused } = stepOnline(BANK, saved, who.user.id, move, L.dropped ?? [], now);
+    const { next, refused } = stepOnline(pairs, saved, who.user.id, move, L.dropped ?? [], now);
     if (next === L.state) return json({ result: refused ? 'refused' : 'same', ...refused });
     // A match that could not start (too few players) or that ran out ends here.
     const done = next.g.phase.kind === 'matchEnd' || next.g.phase.kind === 'lobby';
