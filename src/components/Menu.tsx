@@ -77,7 +77,7 @@ export function Menu() {
       <Pressable style={s.moonc} onPress={() => go('/profile')}>
         {/* Signed in, the moon carries your level and its phase is how far into the next one (#34). */}
         <View>
-          <Moon size={u(54)} f={profile ? (need ? into / need : 0) : 0.3} />
+          <Moon size={u(54)} f={profile ? 0.2 + 0.8 * (need ? into / need : 0) : 0.3} />
           {profile ? (
             <View style={[StyleSheet.absoluteFill, s.moonL]} accessibilityLabel={`Level ${level}`}>
               <Text style={[s.moonK, { color: t.white }]}>LEVEL</Text>
