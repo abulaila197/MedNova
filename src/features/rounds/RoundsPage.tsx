@@ -61,7 +61,7 @@ function WeekSign({ w, px, t, dim }: { w: Week; px: number; t: Theme; dim?: bool
 
 // The same order as rounds_week on the server.
 const CYCLE: Week[] = [
-  ...['the-diagnostic-pursuit', 'the-silent-artist', 'the-quiz-parade', 'the-wheels-of-chaos', 'the-riddler', 'the-conqueror', 'case-files-unsolved', 'nova-medicordle', 'the-streak-master', 'nova-crossword', 'imposter', 'code-clinic', 'nova-password'].map(
+  ...['the-diagnostic-pursuit', 'the-silent-artist', 'nova-crossword', 'the-quiz-parade', 'the-riddler', 'the-conqueror', 'nova-password', 'nova-medicordle', 'the-streak-master', 'code-clinic', 'case-files-unsolved', 'the-wheels-of-chaos', 'imposter'].map(
     (game, slot) => ({ kind: 'game' as const, slot, game }),
   ),
   { kind: 'mode', slot: 13, mode: 'online' },
