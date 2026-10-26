@@ -14,6 +14,8 @@ import { WelcomeHost } from '@/features/welcome/WelcomeHost';
 import { HelpHost } from '@/features/welcome/HelpHost';
 import { StyleHost } from '@/features/style/StyleHost';
 import { RoundsHost } from '@/features/rounds/RoundsHost';
+import { LevelUpHost } from '@/features/level/LevelUpHost';
+import { LeaderPrizeHost } from '@/features/profile/LeaderPrizeHost';
 import { CardHost } from '@/features/cards/CardHost';
 import { markVisited } from '@/features/achievements/useAchievements';
 import { RechargeSheet } from '@/features/sparks/RechargeSheet';
@@ -73,6 +75,8 @@ export default function AppLayout() {
       <RechargeSheet />
       <StyleHost />
       <RoundsHost />
+      <LevelUpHost />
+      <LeaderPrizeHost />
       <CardHost />
     </View>
   );

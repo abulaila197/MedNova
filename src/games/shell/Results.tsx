@@ -9,6 +9,7 @@ import { F } from '@/theme/tokens';
 import { levelUpLine } from '../engine/levels';
 import type { Play, PlayItem } from '../engine/types';
 import { AddPill } from '@/features/friends/AddAfterMatch';
+import { LevelCounter } from '@/features/level/LevelCounter';
 import { RoomTalk } from '@/online/TalkBar';
 
 import { PlayerFace } from '@/features/style/Frame';
@@ -58,7 +59,7 @@ export function Results({ def, play, items }: { def: GameDef; play: Play; items:
             <Kick>{x.label}</Kick>
           </View>
         )).flatMap((el, i) => (i === 0 ? [el, <ExpStat key="exp" exp={play.expEarned} />] : [el]))}
-        {lvl ? <Text style={[s.lvl, { color: t.accent }]}>{lvl}</Text> : null}
+        {uid ? <LevelCounter play={play} /> : lvl ? <Text style={[s.lvl, { color: t.accent }]}>{lvl}</Text> : null}
       </Card>
       {teamRows ? (
         <Card>

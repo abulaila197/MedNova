@@ -31,21 +31,35 @@ export function PlayerTitle({ userId, size = 12, style, accent, mode }: { userId
   );
 }
 
-/** The sole winner's account, if they have one: online seats carry it; offline and solo, seat 0 is the phone owner. */
-export function winnerAccount(play: { mode: string; standings: { seat: number; rank: number }[]; seats: { seat: number; userId?: string | null }[] }, me: string | null) {
-  const top = play.standings.filter((r) => r.rank === 1);
-  if (top.length !== 1 || play.standings.length < 2) return null;
-  const seat = top[0].seat;
+type Result = { id?: string; mode: string; settings?: Record<string, unknown>; standings: { seat: number; rank: number }[]; seats: { seat: number; userId?: string | null }[] };
+
+/** A stable pick among `n` from a text (the same on every phone in the room). */
+const pickOf = (key: string, n: number) => {
+  let h = 0;
+  for (let i = 0; i < key.length; i++) h = (h * 31 + key.charCodeAt(i)) | 0;
+  return Math.abs(h) % n;
+};
+
+/**
+ * The winner's account, if they have one: online seats carry it; offline and solo, seat 0 is the phone owner.
+ * Ties are already broken by speed (#79, Yazan 2026-10-25: first to get there wins); a tie even in speed picks one
+ * of the tied players at random, the same pick on every phone (seeded by the room).
+ */
+export function winnerAccount(play: Result, me: string | null) {
+  if (play.standings.length < 2) return null;
+  const top = play.standings.filter((r) => r.rank === 1).sort((a, b) => a.seat - b.seat);
+  if (!top.length) return null;
+  const seat = top[top.length === 1 ? 0 : pickOf(String(play.settings?.room ?? play.id ?? ''), top.length)].seat;
   return (play.mode === 'online' ? play.seats.find((x) => x.seat === seat)?.userId : seat === 0 ? me : null) ?? null;
 }
 
 /**
  * Whose win effect plays on these results (Yazan 2026-10-13: Online, Solo and Pass the phone), only as the game
- * just ended so reopening old results stays quiet. Online: the sole winner. Pass the phone: you, when your seat
- * (the phone owner) is the sole winner. Solo: you, after any game that scored.
+ * just ended so reopening old results stays quiet. Online: the winner. Pass the phone: you, when your seat
+ * (the phone owner) is the winner. Solo: you, after any game that scored.
  */
 export function effectWinner(
-  play: { mode: string; score: number; endedAt: number | null; standings: { seat: number; rank: number }[]; seats: { seat: number; userId?: string | null }[] },
+  play: Result & { score: number; endedAt: number | null },
   me: string | null,
 ) {
   if (!play.endedAt || Date.now() - play.endedAt > 60_000) return null;

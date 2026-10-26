@@ -5,6 +5,7 @@ import { Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native'
 import { Text } from '@/components/AppText';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { useBalance } from '@/components/LevelBadge';
 import { Moon } from '@/components/Moon';
 import { loadAchievements } from '@/features/achievements/useAchievements';
 import { engine, GUEST_PLAYS } from '@/games/engine';
@@ -37,6 +38,7 @@ export function Menu() {
   const muted = useSound((m) => m.muted);
   const setMuted = useSound((m) => m.setMuted);
   const profile = useAccount((a) => a.profile);
+  const { level, into, need } = useBalance();
   const isAdmin = useAccount((a) => a.isAdmin);
   const items = isAdmin ? [...ITEMS, ['Admin', '/admin'] as const] : ITEMS;
   const [outErr, setOutErr] = useState(false);
@@ -73,7 +75,16 @@ export function Menu() {
         <Text style={{ color: t.mute, fontSize: u(15) }}>×</Text>
       </Pressable>
       <Pressable style={s.moonc} onPress={() => go('/profile')}>
-        <Moon size={u(50)} f={0.3} />
+        {/* Signed in, the moon carries your level and its phase is how far into the next one (#34). */}
+        <View>
+          <Moon size={u(54)} f={profile ? (need ? into / need : 0) : 0.3} />
+          {profile ? (
+            <View style={[StyleSheet.absoluteFill, s.moonL]} accessibilityLabel={`Level ${level}`}>
+              <Text style={[s.moonK, { color: t.white }]}>LEVEL</Text>
+              <Text style={[s.moonN, { color: t.white }]}>{level}</Text>
+            </View>
+          ) : null}
+        </View>
         <View style={{ flex: 1 }}>
           {profile ? (
             <>
@@ -138,6 +149,9 @@ export function Menu() {
 const s = StyleSheet.create({
   col: { position: 'absolute', left: u(18), bottom: u(22), width: '56%', zIndex: 1 },
   close: { width: u(30), height: u(30), borderRadius: u(10), borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
+  moonL: { alignItems: 'center', justifyContent: 'center' },
+  moonK: { fontFamily: F.mono, fontSize: u(6), letterSpacing: u(1.2), marginBottom: -u(2), textShadowColor: 'rgba(0,0,0,0.9)', textShadowRadius: u(4) },
+  moonN: { fontFamily: F.display, fontSize: u(22), lineHeight: u(26), textShadowColor: 'rgba(0,0,0,0.9)', textShadowRadius: u(5) },
   moonc: { flexDirection: 'row', alignItems: 'center', gap: u(10), marginTop: u(16) },
   guest: { fontFamily: F.display, fontSize: u(18), lineHeight: u(18) },
   small: { fontFamily: F.body, fontSize: u(9), marginTop: u(3) },

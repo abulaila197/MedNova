@@ -73,6 +73,10 @@ function useBoard(period: Period, scope: 'everyone' | 'friends', game: string | 
   return board;
 }
 
+// Monthly prizes (#73, Yazan 2026-10-25), paid by lb_claim on the server when the month ends.
+const MONTH_PRIZE_ALL = 'MONTHLY PRIZES · 1ST 500 · 2ND 300 · 3RD 150 · 4TH TO 10TH 50 TOKENS';
+const MONTH_PRIZE_GAME = 'MONTHLY PRIZES · THE TOP 3 OF THIS GAME WIN 100 TOKENS EACH';
+
 const TOP = 72; // content area top (design px)
 
 /** CSS box-shadow `0 0 blur spread` glow around a circle of radius r, as a soft radial gradient. */
@@ -204,6 +208,9 @@ export function Leaderboard() {
                 <Text style={[s.rS, { color: t.mute }]}>{num(r.exp)}</Text>
               </View>
             ))}
+            {period === 'month' && scope === 'everyone' ? (
+              <Text style={[s.prize, { color: t.mute }]}>{game ? MONTH_PRIZE_GAME : MONTH_PRIZE_ALL}</Text>
+            ) : null}
           </View>
         </ScrollView>
       </Fade>
@@ -270,6 +277,7 @@ const s = StyleSheet.create({
   rNm: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: u(6) },
   rB: { fontFamily: F.display, fontSize: u(16), lineHeight: u(16) },
   rS: { fontFamily: F.display, fontSize: u(15), lineHeight: u(19) },
+  prize: { fontFamily: F.mono, fontSize: u(7.5), letterSpacing: u(1), lineHeight: u(12), textAlign: 'center', marginTop: u(14), paddingHorizontal: u(16) },
   note: { position: 'absolute', left: u(16), right: u(16), top: u(70), textAlign: 'center', fontFamily: F.body, fontSize: u(11), lineHeight: u(15) },
   guest: { marginTop: u(3), fontFamily: F.body, fontSize: u(10.5), lineHeight: u(14) },
   menu: { position: 'absolute', top: u(88 - TOP + 30), left: u(14), right: u(14), flexDirection: 'row', flexWrap: 'wrap', borderWidth: 1, borderRadius: u(16), paddingHorizontal: u(10), paddingVertical: u(4) },
