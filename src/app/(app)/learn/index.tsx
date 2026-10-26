@@ -203,9 +203,11 @@ async function playCase(k: CustomCase) {
   router.push(`/play/the-diagnostic-pursuit/run?play=${play.id}` as never);
 }
 
-/** A word of mine opens a Solo practice of its game with only that word (no EXP, no Sparks), before approval too. */
+/** A word of mine opens a practice of its game with that word (no EXP, no Sparks), before approval too. */
 async function playWord(w: PlayerWord) {
   const custom = customId(w.id);
+  // No Solo mode: Pass the phone, with this word played first (Yazan 2026-10-26).
+  if (!SOLO_WORD_GAMES.includes(w.game)) return router.push(`/play/${w.game}/setup?mode=offline&custom=${encodeURIComponent(custom)}` as never);
   const settings =
     w.game === 'nova-medicordle' ? { style: w.data.word.length === 6 ? 'classic' : 'custom', word: 'endless', custom } : w.game === 'the-streak-master' ? { style: 'mixed', length: 60, custom } : { custom };
   const play = await startPlay(w.game, 'solo', settings);
@@ -229,7 +231,7 @@ function CasesPage() {
   );
   const rows = [
     ...(list ?? []).map((k) => ({ key: `case:${k.id}`, at: k.created_at, name: k.diagnosis, sub: `Diagnostic Pursuit · ${k.gender[0]}, ${k.age}`, status: k.status, play: k.answer_id && k.status !== 'declined' ? () => playCase(k) : null })),
-    ...(words ?? []).map((w) => ({ key: `word:${w.id}`, at: w.created_at, name: wordTitle(w), sub: gameLabel(w.game), status: w.status, play: SOLO_WORD_GAMES.includes(w.game) && w.status !== 'declined' ? () => playWord(w) : null })),
+    ...(words ?? []).map((w) => ({ key: `word:${w.id}`, at: w.created_at, name: wordTitle(w), sub: gameLabel(w.game), status: w.status, play: w.status !== 'declined' ? () => playWord(w) : null })),
   ].sort((x, y) => y.at.localeCompare(x.at));
   const go = (to: string) => router.push((signedIn ? to : '/auth') as never);
   return (

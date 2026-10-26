@@ -15,7 +15,7 @@ import { Body, Btn, Card, Ghost, Kick } from '../shell/ui';
 import { privateWord } from './engine/engine';
 import type { GameAction, GameState, SubtypeChoice } from './engine/types';
 import { BigClock, DecisionButtons, Holder, HoldWord, ImposterScreen, PlayerTiles, RoundResult, s as k, type Person } from './kit';
-import { act, holderOf, idOf, roundOutcome, seatOf, shiftDeadlines, startOfflineGame, tally } from './offline';
+import { act, holderOf, idOf, ownFirst, roundOutcome, seatOf, shiftDeadlines, startOfflineGame, tally } from './offline';
 
 type Saved = { state: GameState; recorded: number };
 
@@ -24,7 +24,7 @@ function resumeOrStart(play: PlayProps['play']): Saved {
   const r = play.resume as Saved | null;
   if (r?.state?.round && r.state.mode === 'offline') return r;
   const seats = play.seats.filter((x) => !x.removed).map((x) => ({ seat: x.seat, name: x.name }));
-  return { state: startOfflineGame(seats, (play.settings.style as SubtypeChoice) ?? 'mixed', Number(play.settings.rounds) || 3, Date.now()), recorded: 0 };
+  return { state: startOfflineGame(seats, (play.settings.style as SubtypeChoice) ?? 'mixed', Number(play.settings.rounds) || 3, Date.now(), Math.random, ownFirst(play.settings.custom)), recorded: 0 };
 }
 
 /**
@@ -97,16 +97,16 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   const send = useCallback(
     (a: GameAction) => {
       const cur = ref.current;
-      const r = act(cur.state, a, Date.now());
+      const r = act(cur.state, a, Date.now(), Math.random, ownFirst(play.settings.custom));
       if (!r.error) commit(r.state);
     },
-    [commit],
+    [commit, play.settings.custom],
   );
 
   const kind = st?.state.phase.kind;
   const timed = !paused && (kind === 'offlineDiscussion' || kind === 'redemption');
   const now = useTicker(timed, 250, (n) => {
-    commit(act(ref.current.state, { type: 'TICK' }, n).state);
+    commit(act(ref.current.state, { type: 'TICK' }, n, Math.random, ownFirst(play.settings.custom)).state);
   });
 
   const pause = () => {

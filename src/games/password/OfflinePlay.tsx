@@ -16,7 +16,7 @@ import { initialOfflineState, offlineTransition, rolesFor, type OfflineEvent, ty
 import { offlineGiverView } from './engine/selectors';
 import type { BankChoice, Settings, TeamId } from './engine/types';
 import { Clock, ClueStack, PasswordScreen, Plate, ResultRow, SHOW, ShowBtn, TEAM, TeamHead, TeamPicker, s as k } from './kit';
-import { ENV, playEffects, TERMS, termOf, uniqueNames } from './offline';
+import { envFor, playEffects, termOf, uniqueNames } from './offline';
 
 type Saved = { off: OfflineState; recorded: number; wins: Record<number, number> };
 
@@ -39,9 +39,10 @@ function resumeOrStart(play: PlayProps['play']): Saved {
   const r = play.resume as Saved | null;
   if (r?.off) return r;
   const names = uniqueNames(play.seats.filter((x) => !x.removed).map((x) => x.name));
+  const env = envFor(play.settings.custom);
   let off = initialOfflineState();
-  off = offlineTransition(ENV, off, { type: 'SET_PLAYERS', names }).state;
-  off = offlineTransition(ENV, off, { type: 'SET_SETTINGS', settings: settingsOf(play) }).state;
+  off = offlineTransition(env, off, { type: 'SET_PLAYERS', names }).state;
+  off = offlineTransition(env, off, { type: 'SET_SETTINGS', settings: settingsOf(play) }).state;
   return { off, recorded: 0, wins: {} };
 }
 
@@ -79,7 +80,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   const send = useCallback(
     (e: OfflineEvent) => {
       const cur = ref.current;
-      const r = offlineTransition(ENV, cur.off, e);
+      const r = offlineTransition(envFor(play.settings.custom), cur.off, e);
       playEffects(r.effects);
       if (r.state === cur.off) return;
       let { recorded, wins } = cur;
@@ -205,7 +206,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
     );
     bottom = <Btn label={`I'm ${nameOf(roles.giverId)}: start the clock`} onPress={() => send({ type: 'START_TURN' })} />;
   } else if (ui.name === 'playing' && off.turn) {
-    const v = offlineGiverView(TERMS, off, now)!;
+    const v = offlineGiverView(envFor(play.settings.custom).terms, off, now)!;
     const term = termOf(off.turn.tr.queue[0] ?? null);
     const team = off.turn.team;
     body = (

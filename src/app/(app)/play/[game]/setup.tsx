@@ -7,7 +7,7 @@ import { Setup } from '@/games/shell/Setup';
 import { OnlineSetup } from '@/online/OnlineSetup';
 
 export default function SetupPage() {
-  const { game, mode, from } = useLocalSearchParams<{ game: string; mode: Mode; from?: string }>();
+  const { game, mode, from, custom } = useLocalSearchParams<{ game: string; mode: Mode; from?: string; custom?: string }>();
   const def = gameDef(game);
   const [prefill, setPrefill] = useState<Record<string, unknown> | null | undefined>(from ? undefined : null);
   const [seats, setSeats] = useState<Seat[] | undefined>(undefined);
@@ -26,5 +26,7 @@ export default function SetupPage() {
     return <O def={def} prefill={prefill ?? undefined} />;
   }
   const S = def.screens?.Setup ?? Setup;
-  return <S def={def} mode={mode} prefill={prefill ?? undefined} prefillSeats={seats} />;
+  // ?custom= practises one of my own words (My diseases).
+  const pre = custom ? { ...(prefill ?? {}), custom } : (prefill ?? undefined);
+  return <S def={def} mode={mode} prefill={pre} prefillSeats={seats} />;
 }

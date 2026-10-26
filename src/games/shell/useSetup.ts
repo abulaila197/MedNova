@@ -64,8 +64,10 @@ export function useSetup(def: GameDef, mode: Mode, prefill?: Record<string, unkn
   const teamChoices = [{ value: 0, label: 'Off' }, ...Array.from({ length: Math.max(0, Math.min(6, seats.length) - 1) }, (_, i) => ({ value: i + 2, label: String(i + 2) }))];
 
   const start = async () => {
+    // A practice of my own word (My diseases) keeps its word id, which also makes it free.
+    const own = typeof prefill?.custom === 'string' ? { ...vals, custom: prefill.custom } : vals;
     // The chosen setup sets the cost; too few Sparks opens the Recharge sheet first (#70). Daily Medicordle is free (TR3).
-    if (!alwaysFree({ game: def.key, mode, settings: vals }) && !(await needSparks(sparksCost(def.key, mode, vals)))) return;
+    if (!alwaysFree({ game: def.key, mode, settings: own }) && !(await needSparks(sparksCost(def.key, mode, own)))) return;
     setBusy(true);
     const named = range
       ? seats.map((x, i) => {
@@ -73,7 +75,7 @@ export function useSetup(def: GameDef, mode: Mode, prefill?: Record<string, unkn
           return { seat: i, name: x.name.trim() || `Player ${i + 1}`, color: tm?.color ?? x.color, ...(tm ? { team: tm.id } : null) };
         })
       : undefined;
-    const settings = teams ? { ...vals, teams: teams.map((x) => ({ ...x, name: x.name.trim() || preset(x.id).name })) } : vals;
+    const settings = teams ? { ...own, teams: teams.map((x) => ({ ...x, name: x.name.trim() || preset(x.id).name })) } : own;
     const play = await startPlay(def.key, mode, settings, named);
     router.replace(`/play/${def.key}/run?play=${play.id}`);
   };

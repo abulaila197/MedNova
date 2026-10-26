@@ -3,22 +3,29 @@
 import pairsJson from './data/pairs.json';
 import { createGame, reduce, type Env } from './engine/engine';
 import { PROFANITY } from './engine/filter';
-import type { GameAction, GameState, RoundSummary, SubtypeChoice, WordBank } from './engine/types';
+import type { GameAction, GameState, RoundSummary, SubtypeChoice, WordBank, WordPair } from './engine/types';
 
 export const BANK = pairsJson as unknown as WordBank;
+
+/** My own pairs (My diseases), by their "c:" id, so a practice match plays its pair first. */
+export const OWN_PAIRS = new Map<string, WordPair>();
+export const ownFirst = (custom: unknown) => {
+  const p = typeof custom === 'string' ? OWN_PAIRS.get(custom) : undefined;
+  return p ? [p] : undefined;
+};
 
 export const idOf = (seat: number) => `s${seat}`;
 export const seatOf = (id: string) => Number(id.slice(1));
 
-export function startOfflineGame(seats: { seat: number; name: string }[], subtype: SubtypeChoice, rounds: number, now: number, rng: () => number = Math.random): GameState {
+export function startOfflineGame(seats: { seat: number; name: string }[], subtype: SubtypeChoice, rounds: number, now: number, rng: () => number = Math.random, first?: WordPair[]): GameState {
   const [host, ...rest] = seats;
   let s = createGame({ roomId: 'offline', mode: 'offline', host: { id: idOf(host.seat), name: host.name } });
   for (const x of rest) s = act(s, { type: 'JOIN', playerId: idOf(x.seat), name: x.name }, now, rng).state;
-  return act(s, { type: 'START_MATCH', playerId: idOf(host.seat), config: { subtype, rounds } }, now, rng).state;
+  return act(s, { type: 'START_MATCH', playerId: idOf(host.seat), config: { subtype, rounds } }, now, rng, first).state;
 }
 
-export function act(s: GameState, a: GameAction, now: number, rng: () => number = Math.random) {
-  const env: Env = { now, rng, bank: BANK, profanity: PROFANITY };
+export function act(s: GameState, a: GameAction, now: number, rng: () => number = Math.random, first?: WordPair[]) {
+  const env: Env = { now, rng, bank: BANK, profanity: PROFANITY, first };
   return reduce(s, a, env);
 }
 

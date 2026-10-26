@@ -274,3 +274,14 @@ test('online EXP: placeholders, forfeits and guests earn nothing; 200 EXP = 1 to
   assert.equal(onlineExp({ team: 'A', winner: 'A', forfeited: false, isSignedIn: false }), 0);
   assert.deepEqual(expBar(450), { tokens: 2, remainder: 50, progress: 0.25 });
 });
+
+test('a practice plan plays my own term first, then the bank, without repeating it', () => {
+  const terms = makeTerms();
+  const own = terms[terms.length - 1].id;
+  const plan = planMatch({ terms, settings: settings({ wordsPerTeam: 10, rounds: 2 }), mode: 'offline', rng: seqRng(), first: [own] });
+  assert.ok(plan.ok);
+  const rounds = (plan as any).rounds;
+  assert.equal(rounds[0].lists.A[0], own);
+  const all = rounds.flatMap((r: any) => [...r.lists.A, ...r.lists.B]);
+  assert.equal(all.filter((id: string) => id === own).length, 1);
+});

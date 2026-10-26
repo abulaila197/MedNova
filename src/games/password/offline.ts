@@ -10,7 +10,15 @@ export const TERMS = termsJson as Term[];
 
 export const ENV: OfflineEnv = { terms: TERMS, rng: Math.random, now: () => Date.now() };
 
-export const termOf = (id: string | null) => (id ? (TERMS.find((x) => x.id === id) ?? null) : null);
+/** My own terms (My diseases), by their "c:" id; a practice match plays its term first. */
+export const OWN_TERMS = new Map<string, Term>();
+/** The machine's world for one play: a practice of my own term adds it and plays it first. */
+export function envFor(custom: unknown): OfflineEnv {
+  const own = typeof custom === 'string' ? OWN_TERMS.get(custom) : undefined;
+  return own ? { ...ENV, terms: [own, ...TERMS], first: [own.id] } : ENV;
+}
+
+export const termOf = (id: string | null) => (id ? (OWN_TERMS.get(id) ?? TERMS.find((x) => x.id === id) ?? null) : null);
 
 /** The machine wants four different names; a repeated name gets its seat number. */
 export const uniqueNames = (names: string[]) => names.map((n, i) => (names.findIndex((m) => m.trim().toLowerCase() === n.trim().toLowerCase()) === i ? n : `${n} ${i + 1}`));

@@ -3,6 +3,8 @@ import { create } from 'zustand';
 import { caseById } from '@/games/diagnostic/data';
 import { wordById as mcWordById } from '@/games/medicordle/data';
 import { wordById as saWordById } from '@/games/silent/data';
+import { OWN_PAIRS } from '@/games/imposter/offline';
+import { OWN_TERMS } from '@/games/password/offline';
 import { questionById } from '@/games/streak/data';
 import type { DPCase } from '@/games/diagnostic/core';
 import { useSession } from '@/games/shell/session';
@@ -104,14 +106,16 @@ export function toDPCase(c: CustomCase): DPCase {
   };
 }
 
-/** Games whose Solo mode can practise one of my words (the others have no Solo mode). */
+/** Games whose Solo mode can practise one of my words; the Imposter and Password ones practise in Pass the phone. */
 export const SOLO_WORD_GAMES: WordGame[] = ['the-silent-artist', 'nova-medicordle', 'the-streak-master'];
 
-/** Puts a word of mine into its game's own list under "c:" + uuid, so that game's Solo can play it. */
+/** Puts a word of mine into its game's own list under "c:" + uuid, so that game can practise it. */
 function addToGame(w: PlayerWord) {
   const id = customId(w.id);
   if (w.game === 'the-silent-artist') saWordById.set(id, { id, name: w.data.name, field: w.data.field, aliases: w.data.aliases });
   else if (w.game === 'nova-medicordle') mcWordById.set(id, { id, style: w.data.word.length === 6 ? 'classic' : 'custom', word: w.data.word, definition: w.data.definition, dossier: null });
+  else if (w.game === 'imposter') OWN_PAIRS.set(id, { id, subtype: 'clinical', category: w.data.category, a: { word: w.data.a, alts: [] }, b: { word: w.data.b, alts: [] }, kind: 'disease' });
+  else if (w.game === 'nova-password') OWN_TERMS.set(id, { id, name: w.data.name, bank: 'clinical', category: 'disease', forbidden: w.data.forbidden });
   else if (w.game === 'the-streak-master') questionById.set(id, { id, kind: 'clinical', field: 'My diseases', stem: w.data.stem, choices: w.data.choices, answer: w.data.answer, explanation: null, dossier: null });
 }
 

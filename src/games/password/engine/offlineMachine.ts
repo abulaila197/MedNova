@@ -26,6 +26,8 @@ export interface OfflineEnv {
   terms: readonly Term[];
   rng: Rng;
   now: () => number;
+  /** Terms played before the rest, in order: a player's own words (My diseases). */
+  first?: readonly string[];
 }
 
 export interface OfflinePlayer {
@@ -176,7 +178,7 @@ function setupEvent(env: OfflineEnv, s: OfflineState, event: OfflineEvent): Offl
         return bad('TEAMS_NOT_2_AND_2');
       }
       if (!setup.givers.A || !setup.givers.B) return bad('MISSING_GIVER');
-      const planned = planMatch({ terms: env.terms, settings: setup.settings, mode: 'offline', rng: env.rng });
+      const planned = planMatch({ terms: env.terms, settings: setup.settings, mode: 'offline', rng: env.rng, first: env.first });
       if (!planned.ok) return bad('NOT_ENOUGH_TERMS');
       const first: TeamId = env.rng() < 0.5 ? 'A' : 'B'; // the app picks the first team at random
       return step<OfflineState, OfflineEvent>({

@@ -55,3 +55,11 @@ test('Pass the phone: a whole round goes from hand to hand, seat 0 holds the pho
   assert.equal(String(s.phase.kind), 'wordReveal');
   assert.equal(s.round!.index, 1);
 });
+
+test('Pass the phone practice: my own pair plays first', () => {
+  const rng = mulberry32(3);
+  const own = { id: 'c:mine', subtype: 'clinical' as const, category: 'Respiratory', a: { word: 'Asthma', alts: [] }, b: { word: 'COPD', alts: [] } };
+  const s: GameState = startOfflineGame(seats, 'basic', 2, 1_000, rng, [own]);
+  assert.equal(s.round?.pair.id, 'c:mine');
+  assert.ok(s.usedPairIds.includes('c:mine'));
+});

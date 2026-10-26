@@ -3,7 +3,7 @@ import { RULES } from './constants';
 import type { ProfanityChecker } from './profanity';
 import type {
   ActionResult, GameAction, GameError, GameEvent, GameState, Mode, Player, Round, RoundSummary,
-  Subtype, WordBank, WordEntry,
+  Subtype, WordBank, WordEntry, WordPair,
 } from './types';
 import { isCorrectGuess } from './wordMatch';
 
@@ -13,6 +13,8 @@ export interface Env {
   rng: () => number; // [0, 1)
   bank: WordBank;
   profanity: ProfanityChecker;
+  /** Pairs played before the bank, in order: a player's own words (My diseases). */
+  first?: WordPair[];
 }
 
 type Fail = { error: GameError; persist?: boolean };
@@ -102,7 +104,9 @@ function confirmerFor(s: GameState): string | null {
 function startRound(s: GameState, env: Env, ev: GameEvent[]): void {
   const cfg = s.config!;
   let subtype: Subtype = cfg.subtype === 'mixed' ? (env.rng() < 0.5 ? 'clinical' : 'basic') : cfg.subtype;
-  let pool = env.bank.pairs.filter((p) => p.subtype === subtype && !s.usedPairIds.includes(p.id));
+  const own = env.first?.find((p) => !s.usedPairIds.includes(p.id));
+  let pool = own ? [own] : env.bank.pairs.filter((p) => p.subtype === subtype && !s.usedPairIds.includes(p.id));
+  if (own) subtype = own.subtype;
   if (!pool.length && cfg.subtype === 'mixed') {
     subtype = subtype === 'clinical' ? 'basic' : 'clinical';
     pool = env.bank.pairs.filter((p) => p.subtype === subtype && !s.usedPairIds.includes(p.id));
