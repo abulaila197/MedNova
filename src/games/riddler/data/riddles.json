@@ -435,8 +435,8 @@
   ],
   "definition": "An autoimmune cause of hyperthyroidism often associated with diffuse goiter, ophthalmopathy, and pretibial skin changes.",
   "dossier": "graves-disease",
-  "w": 2048,
-  "h": 746,
+  "w": 1024,
+  "h": 799,
   "file": "r-035.jpg"
  },
  {
@@ -532,9 +532,9 @@
   "aliases": [],
   "definition": "A connective-tissue disorder associated with tall habitus, long limbs and fingers, lens dislocation, and aortic root disease.",
   "dossier": "marfan-syndrome",
-  "w": 1024,
-  "h": 225,
-  "file": "r-043.png"
+  "w": 1011,
+  "h": 414,
+  "file": "r-043.jpg"
  },
  {
   "id": "r-044",
@@ -970,9 +970,9 @@
   ],
   "definition": "A sex chromosome disorder with one X missing, associated with short stature, gonadal dysgenesis, and characteristic features such as webbed neck.",
   "dossier": "turner-syndrome",
-  "w": 1024,
-  "h": 225,
-  "file": "r-077.png"
+  "w": 754,
+  "h": 486,
+  "file": "r-077.jpg"
  },
  {
   "id": "r-078",
