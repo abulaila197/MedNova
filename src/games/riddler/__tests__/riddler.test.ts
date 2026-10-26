@@ -37,13 +37,14 @@ test('a level: wrong picks cost a life, repeats are free, 3 wrong fails, right s
   assert.equal(f.phase, 'failed');
 });
 
-test('search: nothing under 3 letters, label prefix first, skips wrong picks', () => {
+test('search: nothing under 4 letters, label prefix first, skips wrong picks', () => {
   const list: Answer[] = [{ id: 'a', label: 'Rabies' }, { id: 'b', label: 'Raccoon eyes' }, { id: 'c', label: 'Hemophilia B', aliases: ['Christmas disease'] }];
   assert.deepEqual(search(list, 'ra'), []);
-  assert.deepEqual(search(list, 'rab').map((a) => a.id), ['a']);
+  assert.deepEqual(search(list, 'rab'), []);
+  assert.deepEqual(search(list, 'rabi').map((a) => a.id), ['a']);
   assert.deepEqual(search(list, 'christ').map((a) => a.id), ['c']);
-  assert.deepEqual(search(list, 'rab', ['a']).map((a) => a.id), []);
-  assert.deepEqual(search(list, 'rac').map((a) => a.id), ['b']);
+  assert.deepEqual(search(list, 'rabi', ['a']).map((a) => a.id), []);
+  assert.deepEqual(search(list, 'racc').map((a) => a.id), ['b']);
 });
 
 test('names: up to 2 other names in brackets, only those count, a missing \'s does not matter', () => {

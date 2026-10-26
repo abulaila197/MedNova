@@ -170,7 +170,7 @@ export function RiddleBoard(p: BoardProps) {
 /** Wrong-guess notes shown at once; older ones fold into "+N more". */
 const MAX_NOTES = 5;
 
-/** 3+ letters (a short name typed in full from 2), up to 5 suggestions above the field; tapping one answers. */
+/** 4+ letters (a short name typed in full from 2), up to 5 suggestions above the field; tapping one answers. */
 function AnswerBox({ wrong, wrongSeq, locked, disabled, onGuess }: { wrong: string[]; wrongSeq: number; locked: boolean; disabled: boolean; onGuess: (id: string) => void }) {
   const t = useTheme();
   const [text, setText] = useState('');
