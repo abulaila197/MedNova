@@ -173,7 +173,7 @@ export function stepOffline(r: OfflineRun, e: OfflineEvent, pool: readonly Word[
       const at = Math.min(r.turnMs, elapsed(r, e.now));
       const t = currentTurn(r);
       if (t.team != null) {
-        const points = guesserPoints(at, r.turnMs, r.hints.fieldAt);
+        const points = guesserPoints(at, r.turnMs, r.hints.earlyAt ?? r.hints.fieldAt);
         return record({ ...r, gotAt: at }, { outcome: 'guessed', atMs: at, guesser: null, stealTeam: null, points, performerPoints: 0 });
       }
       return { ...r, phase: 'whoGot', gotAt: at, elapsedMs: at, runningSince: null };
@@ -184,7 +184,7 @@ export function stepOffline(r: OfflineRun, e: OfflineEvent, pool: readonly Word[
       if (r.phase !== 'whoGot' || r.gotAt == null || !r.hints) return r;
       const t = currentTurn(r);
       if (e.seat === t.seat || r.removed.includes(e.seat) || !(e.seat in r.scores)) return r;
-      const points = guesserPoints(r.gotAt, r.turnMs, r.hints.fieldAt);
+      const points = guesserPoints(r.gotAt, r.turnMs, r.hints.earlyAt ?? r.hints.fieldAt);
       return record(r, { outcome: 'guessed', atMs: r.gotAt, guesser: e.seat, stealTeam: null, points, performerPoints: performerShare(points) });
     }
     case 'STEAL': {
