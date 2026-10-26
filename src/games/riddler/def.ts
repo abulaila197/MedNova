@@ -48,7 +48,7 @@ export const riddler: GameDef = {
       title: 'Pass the phone',
       blurb: 'Same picture for everyone, one after another. Fastest solver wins it.',
       howTo: [
-        'Add 2 to 6 players, or split them into teams. Pick 3, 5 or 10 pictures and the time per turn.',
+        'Add 2 to 6 players, or split them into teams. Pick 3 or 5 pictures and the time per turn.',
         'Everyone plays the same picture in turn. Guess as often as you like, but a wrong guess locks you for 5 s.',
         'Fastest solver scores 100, then 80, 65 and so on, plus up to 50 for time left. Time up scores 0.',
         'Teams take turns one after another, and a team scores its players\' average. No hints and no EXP in this mode.',
