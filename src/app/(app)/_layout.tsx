@@ -8,6 +8,7 @@ import { ReportSheet } from '@/components/ReportSheet';
 import { LoadingHost } from '@/features/loading/LoadingHost';
 import { pageCard } from '@/features/loading/snapshot';
 import { closeFriendSheet, FriendSheets } from '@/features/profile/FriendSheets';
+import { PickNameHost } from '@/features/profile/PickName';
 import { InviteBanner } from '@/online/InviteBanner';
 import { DailyHost } from '@/features/daily/DailyHost';
 import { WelcomeHost } from '@/features/welcome/WelcomeHost';
@@ -78,6 +79,7 @@ export default function AppLayout() {
       <LevelUpHost />
       <LeaderPrizeHost />
       <CardHost />
+      <PickNameHost />
     </View>
   );
 }

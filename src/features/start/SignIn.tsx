@@ -10,6 +10,7 @@ import { TopInset } from '@/components/TopInset';
 import { DISCLAIMER } from '@/features/info/content';
 import { KeyboardLift } from '@/games/shell/KeyboardLift';
 import { takeAddCode } from '@/features/profile/pendingAdd';
+import { googleSignIn } from '@/lib/googleSignIn';
 import { supabase } from '@/lib/supabase';
 import { call } from '@/online/api';
 import { u, useScreen } from '@/theme/scale';
@@ -52,8 +53,8 @@ const C = {
   },
 };
 
-// Google and Apple sign-in are shown but not live yet: a tap says they are coming. Before a store build, either wire
-// them or hide them, since stores reject buttons that do nothing. Sign In tab only: they also create the account.
+// Google sign-in is live (2026-10-26). Apple is shown but not live yet: a tap says it is coming. Before a store build,
+// wire it or hide it, since stores reject buttons that do nothing. Sign In tab only: they also create the account.
 const SHOW_SOCIAL = true;
 
 const TAB = cssAngle(100, 105, 27);
@@ -163,6 +164,14 @@ export function SignIn() {
       }
       if (error) throw error;
       enter();
+    });
+
+  // Google (option A): a first Google sign-in also makes the account; the app then asks for a username once
+  // (PickName). Not on the web build, which has no app link to come back to.
+  const google = () =>
+    act(async () => {
+      if (Platform.OS === 'web') return setNote({ text: 'Google sign-in works in the phone app.', bad: false });
+      if (await googleSignIn()) enter();
     });
 
   const signUp = () =>
@@ -410,7 +419,8 @@ export function SignIn() {
               <View style={[s.orLine, { backgroundColor: c.orLine }]} />
             </View>
             <Pressable
-              onPress={() => setNote({ text: 'Google sign-in is coming soon. Use your email for now.', bad: false })}
+              onPress={google}
+              disabled={busy}
               accessibilityRole="button"
               style={[s.ggl, { backgroundColor: c.ggl, borderColor: c.gglEdge ?? c.ggl }]}>
               <Google />
