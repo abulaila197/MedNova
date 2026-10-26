@@ -1,5 +1,5 @@
 import * as Clipboard from 'expo-clipboard';
-import { Image } from 'expo-image';
+import { Image, type ImageSource } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
@@ -20,8 +20,10 @@ import { shareText } from '@/lib/share';
 import { TokenCoin } from '@/components/PulseStar';
 import { GAMES } from '@/data/games';
 import { LOAD } from '@/features/loading/configs';
-import { Face } from '@/games/shell/Face';
-import { characterOf } from '@/games/shell/characters';
+import { CardViewer } from '@/features/cards/CollectionPage';
+import { DECK } from '@/features/cards/deck';
+import { MECHS } from '@/features/chests/data';
+import { robotOf } from '@/features/shop/robots';
 import { gameDef } from '@/games/shell/registry';
 import { challenge, watch } from '@/online/invites';
 
@@ -204,6 +206,7 @@ function FriendProfileSheet() {
   const [p, setP] = useState<FriendProfile | null | 'error'>(null);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState(false);
+  const [view, setView] = useState<FriendCard | null>(null);
   useEffect(() => {
     if (!f) return;
     let on = true;
@@ -229,6 +232,7 @@ function FriendProfileSheet() {
   };
   const ready = p && p !== 'error' ? p : null;
   const chars = ready?.characters ?? [];
+
   return (
     <ScrollView style={{ maxHeight: u(560) }} contentContainerStyle={{ gap: u(10) }} showsVerticalScrollIndicator={false}>
       <View style={s.ph}>
@@ -249,12 +253,14 @@ function FriendProfileSheet() {
         <>
           <Text style={[s.k, { color: t.kick }]}>THEIR CHARACTERS</Text>
           <View style={s.chars}>
-            {chars.map((c) => (
-              <View key={c} style={s.char}>
-                <Face slug={c} size={u(34)} />
-                <Text style={[s.charT, { color: t.mute }]} numberOfLines={1}>{characterOf(c)?.name ?? c}</Text>
-              </View>
-            ))}
+            {chars.map((c) => {
+              const card = cardOf(c);
+              return card ? (
+                <Pressable key={c} onPress={() => setView(card)} style={[s.card, { borderColor: t.panelLine }]} accessibilityRole="button" accessibilityLabel={`View ${card.name}'s card`}>
+                  <Image source={card.card} style={s.cardImg} contentFit="cover" transition={0} />
+                </Pressable>
+              ) : null;
+            })}
           </View>
         </>
       ) : null}
@@ -271,8 +277,18 @@ function FriendProfileSheet() {
       <Pressable onPress={close} accessibilityRole="button">
         <Text style={[s.cancel, { color: t.mute }]}>Close</Text>
       </Pressable>
+      <CardViewer card={view} onClose={() => setView(null)} />
     </ScrollView>
   );
+}
+
+type FriendCard = { card: ImageSource; name: string; title: string };
+/** A character's collectable card (Yazan 2026-10-26: their characters show as cards, tap to view): originals, Nova Mechs or shop robots. */
+function cardOf(slug: string): FriendCard | null {
+  const d = DECK.find((x) => x.key === slug);
+  if (d) return { card: d.art as ImageSource, name: d.name, title: `${d.stars}-star original` };
+  const m = MECHS.find((x) => x.key === slug) ?? robotOf(slug);
+  return m ? { card: m.card, name: m.name, title: m.title } : null;
 }
 
 function Stat({ t, label, value, coin }: { t: Theme; label: string; value: string; coin?: boolean }) {
@@ -440,8 +456,8 @@ const s = StyleSheet.create({
   statN: { fontFamily: F.display, fontSize: u(18), lineHeight: u(21) },
   statL: { fontFamily: F.mono, fontSize: u(7), letterSpacing: u(1.2) },
   chars: { flexDirection: 'row', flexWrap: 'wrap', gap: u(8) },
-  char: { width: u(48), alignItems: 'center', gap: u(3) },
-  charT: { fontFamily: F.body, fontSize: u(8) },
+  card: { width: u(54), aspectRatio: 480 / 860, borderRadius: u(6), borderWidth: 1, overflow: 'hidden' },
+  cardImg: { width: '100%', height: '100%' },
   since: { fontFamily: F.body, fontSize: u(9.5), textAlign: 'center' },
   grid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', rowGap: u(8) },
   tileG: { width: '48.5%', aspectRatio: 1.25, borderRadius: u(14), borderWidth: 1, overflow: 'hidden', justifyContent: 'flex-end' },
