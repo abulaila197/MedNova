@@ -8,6 +8,7 @@ import { OWN_TERMS } from '@/games/password/offline';
 import { questionById } from '@/games/streak/data';
 import type { DPCase } from '@/games/diagnostic/core';
 import { useSession } from '@/games/shell/session';
+import { copyOf, keepCopy } from '@/lib/copies';
 import { supabase } from '@/lib/supabase';
 import { call } from '@/online/api';
 import { onAccountSwitch } from '@/state/accountSwitch';
@@ -85,8 +86,9 @@ export function mineFields(m: { kind: 'case'; c: CustomCase } | { kind: 'word'; 
 
 export type NewCase = Omit<CustomCase, 'id' | 'status' | 'note' | 'created_at'>;
 
-export const useCases = create<{ list: CustomCase[] | null; words: PlayerWord[] | null }>(() => ({ list: null, words: null }));
-onAccountSwitch(() => useCases.setState({ list: null, words: null }));
+/** `savedAt`: the lists are the saved copy from then, because the server can't be reached (#59). */
+export const useCases = create<{ list: CustomCase[] | null; words: PlayerWord[] | null; savedAt?: number | null }>(() => ({ list: null, words: null, savedAt: null }));
+onAccountSwitch(() => useCases.setState({ list: null, words: null, savedAt: null }));
 
 /** Diagnostic Pursuit id of a custom case ("c:" + uuid), so the solo game can play it. */
 export const customId = (id: string) => `c:${id}`;
@@ -121,17 +123,28 @@ function addToGame(w: PlayerWord) {
 
 /** Loads my cases and words, and puts the cases into the game's case list (practice works before approval too). */
 export async function loadCases() {
-  if (!useSession.getState().userId) return useCases.setState({ list: [], words: [] });
+  const uid = useSession.getState().userId;
+  if (!uid) return useCases.setState({ list: [], words: [] });
   const [cs, ws] = await Promise.all([
     supabase.from('custom_cases').select('*').order('created_at', { ascending: false }),
     supabase.from('player_words').select('id, game, data, status, note, created_at').order('created_at', { ascending: false }),
   ]);
-  if (cs.error) throw cs.error;
+  if (cs.error) {
+    // Offline: My diseases opens from the saved copy, and its practice plays still work (#59).
+    const copy = await copyOf<{ list: CustomCase[]; words: PlayerWord[] }>('cases', uid);
+    if (copy && useSession.getState().userId === uid) {
+      for (const c of copy.v.list) if (c.answer_id) caseById.set(customId(c.id), toDPCase(c));
+      for (const w of copy.v.words) if (w.status !== 'declined') addToGame(w);
+      useCases.setState({ ...copy.v, savedAt: copy.at });
+    }
+    throw cs.error;
+  }
   const list = (cs.data ?? []) as CustomCase[];
   for (const c of list) if (c.answer_id) caseById.set(customId(c.id), toDPCase(c));
   const words = ws.error ? (useCases.getState().words ?? []) : ((ws.data ?? []) as PlayerWord[]);
   for (const w of words) if (w.status !== 'declined') addToGame(w);
-  useCases.setState({ list, words });
+  useCases.setState({ list, words, savedAt: null });
+  if (!ws.error) void keepCopy('cases', uid, { list, words });
 }
 
 /** Saves a new word for one game; the server checks its form and allows 20 a day. */

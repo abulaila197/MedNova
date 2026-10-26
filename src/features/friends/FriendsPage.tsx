@@ -122,6 +122,7 @@ function InviteGoals({ t }: { t: Theme }) {
 /** Redeem a friend's code: once per account; both players get 10 (a congrats pop-up shows yours). */
 function Redeem({ t }: { t: Theme }) {
   const redeemed = useFree((x) => x.status?.redeemed);
+  const off = useFriends((x) => x.savedAt != null);
   const [code, setCode] = useState('');
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState('');
@@ -150,7 +151,9 @@ function Redeem({ t }: { t: Theme }) {
       <Text style={[s.mono, { color: t.mute }]}>GOT A CODE FROM A FRIEND?</Text>
       <View style={s.rd}>
         <TextInput value={code} onChangeText={(v) => setCode(v.toUpperCase())} placeholder="Enter code" placeholderTextColor={t.mute} autoCapitalize="characters" autoCorrect={false} maxLength={12} style={[s.input, { flex: 1, minWidth: 0, width: 0, color: t.fg, borderColor: t.panelLine, backgroundColor: t.panel2 }]} />
-        <Ghost t={t} label={busy ? '...' : 'Redeem'} onPress={go} />
+        <View style={off ? { opacity: 0.4 } : null} pointerEvents={off ? 'none' : 'auto'}>
+          <Ghost t={t} label={busy ? '...' : 'Redeem'} onPress={go} />
+        </View>
       </View>
       {msg ? <Text style={[s.msg, { color: t.error }]}>{msg}</Text> : null}
       <Congrats open={won} tokens={10} title="Welcome aboard" line="Your friend's code worked. They get 10 tokens too." onClose={() => setWon(false)} />
@@ -160,6 +163,7 @@ function Redeem({ t }: { t: Theme }) {
 
 /** Find players by name or @username and send a request. */
 function Find({ t }: { t: Theme }) {
+  const off = useFriends((x) => x.savedAt != null);
   const [q, setQ] = useState('');
   const [rows, setRows] = useState<Found[] | null>(null);
   const [sent, setSent] = useState<string[]>([]);
@@ -188,6 +192,8 @@ function Find({ t }: { t: Theme }) {
       setSent((x) => x.filter((y) => y !== id));
     }
   };
+  // Finding players needs the server (#59).
+  if (off) return <Text style={[s.sub, { color: t.mute }]}>FINDING PLAYERS NEEDS INTERNET</Text>;
   return (
     <>
       <View style={[s.input, s.search, { borderColor: t.panelLine, backgroundColor: t.panel2 }]}>

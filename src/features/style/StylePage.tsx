@@ -11,6 +11,7 @@ import { useBalance } from '@/components/LevelBadge';
 import { TokenCoin } from '@/components/PulseStar';
 import { Screen } from '@/components/Screen';
 import { Sheet } from '@/components/Sheet';
+import { OfflineLine } from '@/components/OfflineLine';
 import { InfoScroll, Kicker, s as ui, useInfo } from '@/features/info/ui';
 import { Face } from '@/games/shell/Face';
 import { useSession } from '@/games/shell/session';
@@ -72,6 +73,7 @@ export function StylePage() {
   const profile = useAccount((a) => a.profile);
   const { tokens } = useBalance();
   const { owned, worn, deal, dealEnds } = useStyle();
+  const styleSavedAt = useStyle((x) => x.savedAt);
   const [pick, setPick] = useState<Item | null>(null);
   const [busy, setBusy] = useState(false);
   const lock = useLock();
@@ -96,14 +98,15 @@ export function StylePage() {
   // Owner-only items (the Admin set) are listed only to whoever has them.
   const shown = <T extends Item>(l: T[]) => l.filter((x) => !OWNER_ONLY.includes(x.id) || has(x.id));
 
-  const act = async (fn: () => Promise<{ ok: boolean; why?: string; need?: number }>, done: string) => {
+  const act = async (fn: () => Promise<{ ok: boolean; why?: string; need?: number; queued?: boolean }>, done: string) => {
     if (!signedIn) return router.navigate('/auth');
     await lock(async () => {
       setBusy(true);
       setSaid('');
       const r = await fn();
       setBusy(false);
-      setSaid(r.ok ? done : whySay(r as { why: string; need?: number }));
+      // Offline, a wear change shows at once and goes up when the phone is back online (#58).
+      setSaid(r.ok ? (r.queued ? 'Done on this phone. It saves to your account when you’re back online.' : done) : whySay(r as { why: string; need?: number }));
       if (r.ok && (r as { prize?: number }).prize) setWon(true);
     });
   };
@@ -125,6 +128,8 @@ export function StylePage() {
           {'Dress your '}
           <Text style={[ui.H, { color: t.accent, fontFamily: F.displayItalic }]}>name</Text>
         </Text>
+        {/* Offline: what you own, from the saved copy; buying needs internet (#57). */}
+        <OfflineLine at={styleSavedAt} />
 
         {/* You, wearing what you tapped. */}
         <View style={[s.me, { backgroundColor: c.surf, borderColor: c.line }]}>

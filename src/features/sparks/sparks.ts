@@ -3,7 +3,8 @@
 import { router } from 'expo-router';
 import { create } from 'zustand';
 
-import { engine, SPARKS_MAX } from '@/games/engine';
+import { engine, SPARK_TOKEN, SPARKS_MAX } from '@/games/engine';
+import { newId } from '@/games/engine/ids';
 import type { Play } from '@/games/engine/types';
 import { isSubscribed } from '@/features/store/billing';
 import { bonusOf } from '@/features/shop/robots';
@@ -51,9 +52,12 @@ const take = async (uid: string, v: View, sent: string[]) => {
   useSparks.setState({ adsLeft: v.ads_left });
 };
 
-/** Sends the phone's spends and takes the server's bar (offline: nothing happens, they go next time). */
-export async function syncSparks(uid: string) {
-  const spends = await engine.sparks.pending();
+/**
+ * Sends the phone's spends and takes the server's bar (offline: nothing happens, they go next time). Offline refills
+ * (negative cost) go only with `withBuys`, from the account sync right after the wallet rows that paid for them.
+ */
+export async function syncSparks(uid: string, withBuys = false) {
+  const spends = (await engine.sparks.pending()).filter((x) => withBuys || x.cost > 0);
   const { data, error } = await supabase.rpc('sparks_sync', { spends: spends.map((x) => ({ ...x, at: new Date(x.at).toISOString() })) });
   if (error) throw error;
   await take(uid, data as View, spends.map((x) => x.id));
@@ -126,17 +130,48 @@ export const rechargeWithAd = once(async () => {
 });
 
 /** 'Refill with tokens': just enough Sparks for this play (from the header: up to a full bar), 1 token each. */
-export const rechargeWithTokens = once(async (uid) => {
+export const rechargeWithTokens = async () => {
+  const uid = useSession.getState().userId;
+  if (!uid || useRecharge.getState().busy) return;
   const a = useRecharge.getState().ask;
   const { value, max } = useSparks.getState();
   const n = Math.max(1, (a?.cost || max) - value);
-  const { data, error } = await supabase.rpc('sparks_buy', { n });
-  if (error) throw error;
-  // The token spend is a server row: bring it down so the coin shows the new balance.
-  const { syncAccount } = await import('@/lib/sync');
-  syncAccount(uid).catch(() => {});
-  return data as View;
-});
+  useRecharge.setState({ busy: true, why: null });
+  try {
+    await syncSparks(uid); // offline spends first, so the server's bar is the real one
+  } catch {
+    return refillOnPhone(n);
+  }
+  try {
+    const { data, error } = await supabase.rpc('sparks_buy', { n });
+    if (error) throw error;
+    const v = data as View;
+    await take(uid, v, []);
+    // The token spend is a server row: bring it down so the coin shows the new balance.
+    const { syncAccount } = await import('@/lib/sync');
+    syncAccount(uid).catch(() => {});
+    useRecharge.setState({ busy: false, why: v.ok === false ? (v.why ?? 'error') : null });
+    if (v.ok !== false) await settled();
+  } catch {
+    // The server was reached a moment ago: don't buy again on the phone in case this one went through.
+    useRecharge.setState({ busy: false, why: 'offline' });
+  }
+};
+
+/**
+ * Offline (Yazan 2026-10-26): the tokens come off the phone's wallet and the Sparks go on the phone's bar at once.
+ * Back online the wallet row goes up first (checked against the balance), then the Sparks (added only if the tokens
+ * were taken), so the server never gives Sparks it wasn't paid for (#60).
+ */
+async function refillOnPhone(n: number) {
+  if (useSparks.getState().value + n > SPARKS_MAX) return useRecharge.setState({ busy: false, why: 'full' });
+  const id = newId('k');
+  const paid = await engine.wallet.spend(n * SPARK_TOKEN, `sparks:${id}`);
+  if (!paid) return useRecharge.setState({ busy: false, why: 'tokens' });
+  await engine.sparks.add(id, n);
+  useRecharge.setState({ busy: false, why: null });
+  await settled();
+}
 
 export const cancelRecharge = () => close(false);
 

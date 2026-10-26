@@ -12,6 +12,8 @@ import { PlayerFace } from '@/features/style/Frame';
 import { PlayerTitle } from '@/features/style/PlayerTitle';
 import { useAccount } from '@/state/account';
 import { useTheme } from '@/state/app';
+import { OfflineLine } from '@/components/OfflineLine';
+import { agoText } from '@/lib/copies';
 import { blockUser, type FriendProfile, loadFriendProfile, loadFriends, removeFriend, type RequestResult, requestFriend, seenLabel, useFriends } from '@/state/friends';
 import { u } from '@/theme/scale';
 import { F, type Theme } from '@/theme/tokens';
@@ -223,8 +225,11 @@ function FriendProfileSheet() {
   const f = hint && ready ? { ...hint, username: ready.username, display_name: ready.display_name, avatar: ready.avatar, last_seen: ready.last_seen, kind: ready.relation } : hint;
   const friend = f?.kind === 'friend';
   const live = useFriends((x) => (f && friend ? x.playing[f.id] : undefined));
+  const offAt = useFriends((x) => x.savedAt);
+  const off = offAt != null;
   if (!f) return null;
-  const when = !friend ? null : live ? 'IN A MATCH' : seenLabel(f.last_seen);
+  // Offline nobody shows ONLINE (#59): the time they were last seen instead.
+  const when = !friend ? null : live ? 'IN A MATCH' : off ? (f.last_seen ? `LAST SEEN ${agoText(Date.parse(f.last_seen)).toUpperCase()}` : 'NOT SEEN YET') : seenLabel(f.last_seen);
   const run = async (fn: () => Promise<void>, stay?: boolean) => {
     setBusy(true);
     setErr(false);
@@ -283,7 +288,8 @@ function FriendProfileSheet() {
         </>
       ) : null}
       {ready?.since ? <Text style={[s.since, { color: t.mute }]}>{`Friends since ${new Date(ready.since).toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' })}`}</Text> : null}
-      <Pressable disabled={busy || !main.go || !ready} onPress={main.go ?? undefined} style={!main.go ? { opacity: 0.55 } : null} accessibilityRole="button">
+      <OfflineLine at={offAt} style={{ marginTop: 0 }} />
+      <Pressable disabled={busy || off || !main.go || !ready} onPress={main.go ?? undefined} style={!main.go || off ? { opacity: off ? 0.4 : 0.55 } : null} accessibilityRole="button">
         <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.btn}>
           <Text style={[s.btnT, { color: t.onGrad }]}>{main.label}</Text>
         </LinearGradient>
@@ -431,8 +437,10 @@ function ReportPlayer() {
 
 function Act({ t, title, note, red, onPress, disabled }: { t: Theme; title: string; note: string; red?: boolean; onPress: () => void; disabled?: boolean }) {
   const c = red ? t.error : t.fg;
+  // Offline these all need the server: greyed out (#59).
+  const off = useFriends((x) => x.savedAt != null);
   return (
-    <Pressable onPress={onPress} disabled={disabled} style={[s.act, { borderColor: red ? 'rgba(199,54,70,0.5)' : t.panelLine }]} accessibilityRole="button">
+    <Pressable onPress={onPress} disabled={disabled || off} style={[s.act, { borderColor: red ? 'rgba(199,54,70,0.5)' : t.panelLine }, off && { opacity: 0.4 }]} accessibilityRole="button">
       <Text style={[s.actT, { color: c }]}>{title}</Text>
       <Text style={[s.actS, { color: t.mute }]}>{note}</Text>
     </Pressable>

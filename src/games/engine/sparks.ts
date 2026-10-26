@@ -1,7 +1,8 @@
 // Sparks (#4, #82): one bar per account that replaces the free plays. Full = 100, +1 every few minutes (the worn
 // character's stars set how many, #88), a play costs Sparks at its first answer (#52, TR2). The server holds the real
 // bar; the phone keeps the last bar the server sent plus its own spends since, so play works offline and the server
-// replays those spends when it is back (#60). Ads, tokens and admin gifts add Sparks on the server only.
+// replays those spends when it is back (#60). Ads and admin gifts add Sparks on the server only; a refill with tokens
+// made offline is kept on the phone and checked by the server when it is back (Yazan 2026-10-26).
 import { serial, type KV } from './storage';
 import { newId } from './ids';
 
@@ -64,6 +65,18 @@ export function createSparks(kv: KV, now: () => number = Date.now) {
         st.units = [...st.units, unit].slice(-KEEP_UNITS);
         await kv.set(KEY, st);
         return true;
+      });
+    },
+    /**
+     * Sparks refilled with tokens while offline: kept with the spends as a negative cost under `id` (the wallet row's
+     * reason is 'sparks:<id>'); the server adds them once it has taken the tokens (sparks_sync).
+     */
+    add(id: string, n: number) {
+      return run(async () => {
+        const st = await read();
+        if (n <= 0 || st.spends.some((x) => x.id === id)) return;
+        st.spends.push({ id, unit: `buy:${id}`, cost: -n, game: 'buy', at: now() });
+        await kv.set(KEY, st);
       });
     },
     /** True when `unit` was already paid (so a resumed play is never charged twice). */

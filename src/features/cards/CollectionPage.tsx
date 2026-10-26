@@ -7,6 +7,7 @@ import Animated, { useAnimatedStyle, useSharedValue, withTiming, runOnJS } from 
 import Svg, { Path, Rect } from 'react-native-svg';
 import { useShallow } from 'zustand/react/shallow';
 
+import { OfflineLine } from '@/components/OfflineLine';
 import { Text } from '@/components/AppText';
 import { Congrats } from '@/components/Congrats';
 import { Screen } from '@/components/Screen';
@@ -29,6 +30,7 @@ export function CollectionPage() {
   const t = c.t;
   const signedIn = !!useSession((x) => x.userId);
   const status = useHunt((h) => h.status);
+  const savedAt = useHunt((h) => h.savedAt);
   const found = status?.found ?? [];
   const [open, setOpen] = useState<number | null>(null);
   const [mech, setMech] = useState<number | null>(null);
@@ -41,7 +43,8 @@ export function CollectionPage() {
   useFocusEffect(
     useCallback(() => {
       void loadStyle();
-      loadHunt().catch(() => setErr('Could not load your cards. Check your connection.'));
+      // Offline with a saved copy, the cards stay open with the offline line instead of an error (#59).
+      loadHunt().catch(() => !useHunt.getState().status && setErr('Could not load your cards. Check your connection.'));
       // eslint-disable-next-line react-hooks/exhaustive-deps -- signedIn only re-runs the load when the account changes while the page is open
     }, [signedIn]),
   );
@@ -68,6 +71,7 @@ export function CollectionPage() {
             {'My card '}
             <Text style={[ui.H, { color: t.accent, fontFamily: F.displayItalic }]}>collection</Text>
           </Text>
+          <OfflineLine at={savedAt} />
           <View style={s.count}>
             <Text style={[s.countT, { color: c.fg }]}>{`${found.length} of 9 found`}</Text>
             <View style={s.pips}>

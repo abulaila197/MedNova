@@ -4,6 +4,7 @@ import { useCallback, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import Svg, { Circle, Path } from 'react-native-svg';
 
+import { OfflineLine } from '@/components/OfflineLine';
 import { Text } from '@/components/AppText';
 import { Image } from 'expo-image';
 
@@ -75,6 +76,7 @@ export function RoundsPage() {
   const t = c.t;
   const r = useRoundsStore((x) => x.r);
   const failed = useRoundsStore((x) => x.failed);
+  const savedAt = useRoundsStore((x) => x.savedAt);
   const signedIn = !!useSession((x) => x.userId);
   const [busy, setBusy] = useState(false);
   const lock = useLock();
@@ -120,6 +122,7 @@ export function RoundsPage() {
           {'Grand '}
           <Text style={[ui.H, { color: t.accent, fontFamily: F.displayItalic }]}>Rounds</Text>
         </Text>
+        <OfflineLine at={savedAt} />
 
         <View style={[s.card, { backgroundColor: c.surf, borderColor: c.line }]}>
           <View style={s.head}>

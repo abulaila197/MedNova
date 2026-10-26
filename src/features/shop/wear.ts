@@ -1,13 +1,7 @@
-import { supabase } from '@/lib/supabase';
-import { useAccount } from '@/state/account';
+import { wearCharacterNow } from '@/features/style/useStyle';
 
-/** Put on a character you own; the server checks it is yours (set_avatar). */
-export async function wearCharacter(slug: string): Promise<{ ok: boolean; why?: string }> {
-  const { data, error } = await supabase.rpc('set_avatar', { slug });
-  const r = data as { ok?: boolean; why?: string } | null;
-  if (error || !r) return { ok: false, why: 'net' };
-  if (!r.ok) return { ok: false, why: r.why ?? 'not owned' };
-  const p = useAccount.getState().profile;
-  if (p) useAccount.setState({ profile: { ...p, avatar: slug } });
-  return { ok: true };
+/** Put on a character you own; the server checks it is yours (set_avatar). Offline it is saved and sent later (#58). */
+export async function wearCharacter(slug: string): Promise<{ ok: boolean; why?: string; queued?: boolean }> {
+  const r = await wearCharacterNow(slug);
+  return r.ok ? { ok: true, queued: r.queued } : { ok: false, why: r.why === 'offline' ? 'net' : r.why };
 }

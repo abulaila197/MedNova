@@ -6,6 +6,8 @@ import { Text } from '@/components/AppText';
 import { create } from 'zustand';
 
 import { LevelBadge } from '@/components/LevelBadge';
+import { OfflineLine } from '@/components/OfflineLine';
+import { agoText } from '@/lib/copies';
 import { PlayerFace } from '@/features/style/Frame';
 import { useSecond } from '@/lib/useSecond';
 import { useAccount } from '@/state/account';
@@ -43,6 +45,10 @@ export function FriendsSection({ t, only }: { t: Theme; only?: 'friends' | 'requ
   const [busy, setBusy] = useState<string | null>(null);
   const invites = useInvites((x) => x.list);
   const playing = useFriends((x) => x.playing);
+  // Offline (#59, Yazan 2026-10-26): the saved list, nobody shown ONLINE, and the buttons that need the server greyed out.
+  const savedAt = useFriends((x) => x.savedAt);
+  const off = savedAt != null;
+  const dim = off ? { opacity: 0.4 } : null;
   const say = useInvites((x) => x.say);
   // A failed Join or Watch says why for a few seconds.
   useEffect(() => {
@@ -85,11 +91,12 @@ export function FriendsSection({ t, only }: { t: Theme; only?: 'friends' | 'requ
       {only ? null : (
         <View style={s.head}>
           <Text style={[s.sh2, { color: t.kick }]}>FRIENDS</Text>
-          <Pressable onPress={() => openAdd()} hitSlop={u(8)} accessibilityRole="button">
+          <Pressable disabled={off} onPress={() => openAdd()} hitSlop={u(8)} style={dim} accessibilityRole="button">
             <Text style={[s.add, { color: t.accent }]}>+ Add friend</Text>
           </Pressable>
         </View>
       )}
+      <OfflineLine at={savedAt} />
       {say ? <Text style={[s.note, { color: t.accent }]}>{say}</Text> : null}
       {only === 'requests' && !incoming.length ? <Text style={[s.note, { color: t.mute }]}>No requests right now.</Text> : null}
       {showReq && incoming.length && !only ? <Text style={[s.sub, { color: t.mute }]}>{`REQUESTS · ${incoming.length}`}</Text> : null}
@@ -100,12 +107,12 @@ export function FriendsSection({ t, only }: { t: Theme; only?: 'friends' | 'requ
             <Name t={t} f={f} />
             <Text style={[s.frS, { color: t.mute }]}>WANTS TO BE FRIENDS</Text>
           </View>
-          <Pressable disabled={busy === f.id} onPress={() => act(f.id, () => respondFriend(f.id, true))} accessibilityRole="button" accessibilityLabel={`Accept ${f.display_name}`}>
+          <Pressable disabled={off || busy === f.id} onPress={() => act(f.id, () => respondFriend(f.id, true))} style={dim} accessibilityRole="button" accessibilityLabel={`Accept ${f.display_name}`}>
             <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.ch}>
               <Text style={[s.chT, { color: t.onGrad }]}>Accept</Text>
             </LinearGradient>
           </Pressable>
-          <Pressable disabled={busy === f.id} onPress={() => act(f.id, () => respondFriend(f.id, false))} style={[s.x, line]} accessibilityRole="button" accessibilityLabel={`Decline ${f.display_name}`}>
+          <Pressable disabled={off || busy === f.id} onPress={() => act(f.id, () => respondFriend(f.id, false))} style={[s.x, line, dim]} accessibilityRole="button" accessibilityLabel={`Decline ${f.display_name}`}>
             <Text style={[s.xT, { color: t.mute }]}>✕</Text>
           </Pressable>
         </View>
@@ -121,7 +128,11 @@ export function FriendsSection({ t, only }: { t: Theme; only?: 'friends' | 'requ
             ? 'REQUEST SENT'
             : live
               ? 'IN A MATCH'
-              : seenLabel(f.last_seen, invites.length ? now : undefined);
+              : off
+                ? f.last_seen
+                  ? `LAST SEEN ${agoText(Date.parse(f.last_seen)).toUpperCase()}`
+                  : 'NOT SEEN YET'
+                : seenLabel(f.last_seen, invites.length ? now : undefined);
         return (
           <View key={f.id} style={[s.fr, line]}>
             <Ring t={t} f={f} />
@@ -148,7 +159,7 @@ export function FriendsSection({ t, only }: { t: Theme; only?: 'friends' | 'requ
               </Pressable>
             ) : f.kind === 'friend' ? (
               // #47: pick any online game, then straight into its room with the invite sent.
-              <Pressable onPress={() => openChallenge(f)} style={[s.ch, s.ghost, line]} accessibilityRole="button" accessibilityLabel={`Challenge ${f.display_name}`}>
+              <Pressable disabled={off} onPress={() => openChallenge(f)} style={[s.ch, s.ghost, line, dim]} accessibilityRole="button" accessibilityLabel={`Challenge ${f.display_name}`}>
                 <Text style={[s.ghT, { color: t.fg }]}>Challenge</Text>
               </Pressable>
             ) : null}

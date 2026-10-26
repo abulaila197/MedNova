@@ -1,6 +1,8 @@
 import { AppState } from 'react-native';
 import { create } from 'zustand';
 
+import { useSession } from '@/games/shell/session';
+import { copyOf, keepCopy } from '@/lib/copies';
 import { call } from '@/online/api';
 import { onAccountSwitch } from '@/state/accountSwitch';
 
@@ -36,22 +38,52 @@ export type FriendProfile = {
   characters: string[];
 };
 
-type State = { list: Friend[]; blocked: Blocked[]; playing: Record<string, Playing>; loaded: boolean };
-export const useFriends = create<State>(() => ({ list: [], blocked: [], playing: {}, loaded: false }));
-onAccountSwitch(() => useFriends.setState({ list: [], blocked: [], playing: {}, loaded: false }));
+/** `savedAt`: the list on screen is the saved copy from then, because the server can't be reached (#59). */
+type State = { list: Friend[]; blocked: Blocked[]; playing: Record<string, Playing>; loaded: boolean; savedAt: number | null };
+const EMPTY: State = { list: [], blocked: [], playing: {}, loaded: false, savedAt: null };
+export const useFriends = create<State>(() => EMPTY);
+onAccountSwitch(() => useFriends.setState(EMPTY));
 
-/** Reloads friends, requests, blocked players and who is mid-match from the server. */
+type Saved = { list: Friend[]; blocked: Blocked[] };
+
+/** Reloads friends, requests, blocked players and who is mid-match from the server. Offline: the saved copy, then throws. */
 export async function loadFriends() {
-  const [list, blocked, playing] = await Promise.all([
-    call<Friend[]>('my_friends'),
-    call<Blocked[]>('my_blocks'),
-    call<Playing[]>('friends_playing').catch(() => [] as Playing[]),
-  ]);
-  useFriends.setState({ list: list ?? [], blocked: blocked ?? [], playing: Object.fromEntries((playing ?? []).map((p) => [p.friend, p])), loaded: true });
+  const uid = useSession.getState().userId;
+  try {
+    const [list, blocked, playing] = await Promise.all([
+      call<Friend[]>('my_friends'),
+      call<Blocked[]>('my_blocks'),
+      call<Playing[]>('friends_playing').catch(() => [] as Playing[]),
+    ]);
+    useFriends.setState({ list: list ?? [], blocked: blocked ?? [], playing: Object.fromEntries((playing ?? []).map((p) => [p.friend, p])), loaded: true, savedAt: null });
+    if (uid) void keepCopy<Saved>('friends', uid, { list: list ?? [], blocked: blocked ?? [] });
+  } catch (e) {
+    const copy = uid ? await copyOf<Saved>('friends', uid) : null;
+    if (copy && useSession.getState().userId === uid) useFriends.setState({ ...copy.v, playing: {}, loaded: true, savedAt: copy.at });
+    throw e;
+  }
 }
 
 /** A player's profile (#85, any player since Yazan's pick B); null if either of you blocked the other. */
-export const loadFriendProfile = (id: string) => call<FriendProfile | null>('friend_profile', { other: id });
+export async function loadFriendProfile(id: string): Promise<FriendProfile | null> {
+  const uid = useSession.getState().userId;
+  // Profiles you opened are kept per account; offline the saved one opens (#59).
+  const saved = uid ? await copyOf<Record<string, FriendProfile>>('profiles', uid) : null;
+  try {
+    const p = await call<FriendProfile | null>('friend_profile', { other: id });
+    if (uid) {
+      const rest = { ...saved?.v };
+      if (p) rest[id] = p;
+      else delete rest[id];
+      void keepCopy('profiles', uid, rest);
+    }
+    return p;
+  } catch (e) {
+    const p = saved?.v[id];
+    if (p) return p;
+    throw e;
+  }
+}
 
 export async function requestFriend(code: string) {
   const r = await call<RequestResult>('request_friend', { code });
@@ -80,7 +112,7 @@ export async function unblockUser(id: string) {
 }
 
 export function clearFriends() {
-  useFriends.setState({ list: [], blocked: [], playing: {}, loaded: false });
+  useFriends.setState(EMPTY);
 }
 
 /** FR4: "ONLINE" while seen in the last 2 minutes, else how long ago. */

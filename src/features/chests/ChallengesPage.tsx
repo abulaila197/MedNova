@@ -1,6 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { Pressable, StyleSheet, View } from 'react-native';
 
+import { OfflineLine } from '@/components/OfflineLine';
 import { Text } from '@/components/AppText';
 import { Screen } from '@/components/Screen';
 import { InfoScroll, Kicker, s as ui, useInfo } from '@/features/info/ui';
@@ -23,6 +24,8 @@ export type ChallengesView = {
   guest?: boolean;
   /** Today's challenges could not be read (no connection). */
   offline?: boolean;
+  /** Shown from the saved copy read then (#59). */
+  savedAt?: number | null;
   onShare?: () => void;
 };
 
@@ -37,6 +40,7 @@ export function ChallengesPage({ v }: { v: ChallengesView }) {
     <Screen tab={null} glow={21}>
       <InfoScroll>
         <Kicker>{v.resetIn ? `New missions in ${v.resetIn}` : 'Every day'}</Kicker>
+        <OfflineLine at={v.savedAt} style={{ marginTop: 0 }} />
         <Text style={[ui.H, { color: c.fg, fontFamily: F.display }]}>
           {'Daily '}
           <Text style={[ui.H, { color: t.accent, fontFamily: F.displayItalic }]}>missions</Text>

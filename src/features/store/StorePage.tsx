@@ -7,6 +7,7 @@ import { Text } from '@/components/AppText';
 import { useBalance } from '@/components/LevelBadge';
 import { TokenCoin } from '@/components/PulseStar';
 import { Screen } from '@/components/Screen';
+import { OfflineLine } from '@/components/OfflineLine';
 import { InfoScroll, Kicker, s as ui, useInfo } from '@/features/info/ui';
 import { useSession } from '@/games/shell/session';
 import { DEAL_OFF, FRAMES, TITLES } from '@/features/style/catalog';
@@ -34,6 +35,7 @@ const dateOf = (ms: number) => new Date(ms).toLocaleDateString(undefined, { day:
 
 /** The Store (MN3-MN8, look C "Small cards"): the monthly subscription as a banner, the free tokens row, then the token packs. */
 export function StorePage() {
+  const styleSavedAt = useStyle((x) => x.savedAt);
   const c = useInfo();
   const t = c.t;
   const signedIn = !!useSession((x) => x.userId);
@@ -64,6 +66,8 @@ export function StorePage() {
           {'Earn, buy and spend '}
           <Text style={[ui.H, { color: t.accent, fontFamily: F.displayItalic }]}>tokens</Text>
         </Text>
+        {/* Offline: what you own, from the saved copy; buying needs internet (#57). */}
+        <OfflineLine at={styleSavedAt} />
         {signedIn ? (
           <View style={s.bal}>
             <TokenCoin size={u(18)} progress={0} track="transparent" />

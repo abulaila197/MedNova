@@ -7,6 +7,7 @@ import Animated, { interpolateColor, useAnimatedScrollHandler, useAnimatedStyle,
 
 import { Screen } from '@/components/Screen';
 import { loadChallenges, logChallenge, useChests } from '@/features/chests/useChests';
+import { OfflineLine } from '@/components/OfflineLine';
 import { customId, loadCases, SOLO_WORD_GAMES, useCases, wordTitle, type CustomCase, type PlayerWord } from '@/features/learn/cases';
 import { gameLabel } from '@/features/learn/NewWord';
 import { startPlay } from '@/games/shell/flow';
@@ -221,11 +222,13 @@ function CasesPage() {
   const signedIn = !!useSession((x) => x.userId);
   const list = useCases((x) => x.list);
   const words = useCases((x) => x.words);
+  const savedAt = useCases((x) => x.savedAt);
   const [err, setErr] = useState('');
   useFocusEffect(
     useCallback(() => {
       setErr('');
-      loadCases().catch(() => setErr('Could not load My diseases. Check your connection.'));
+      // Offline with a saved copy: the list shows with the offline line instead of an error (#59).
+      loadCases().catch(() => !useCases.getState().list && setErr('Could not load My diseases. Check your connection.'));
       // eslint-disable-next-line react-hooks/exhaustive-deps -- signedIn only re-runs the load when the account changes while the page is open
     }, [signedIn]),
   );
@@ -251,6 +254,7 @@ function CasesPage() {
           <Text style={[s.newcT, { color: t.accent }]}>Sign in to write your own cases and words</Text>
         </Pressable>
       )}
+      <OfflineLine at={savedAt} />
       {err ? <Text style={[s.csA, { color: t.error }]}>{err}</Text> : null}
       {signedIn && list && !rows.length ? (
         <Text style={[s.csA, { color: c.mute }]}>Nothing yet. Write a case or add a word for Silent Artist, Medicordle, Streak Master, Imposter or Password. You can practise it straight away; once approved it plays in rooms you host, and pays 10 tokens.</Text>

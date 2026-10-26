@@ -6,6 +6,7 @@ import { engine, RECORDER_KEYS } from '@/games/engine';
 import { useSession } from '@/games/shell/session';
 import { supabase } from '@/lib/supabase';
 import { PROGRESS_KEYS } from '@/lib/progress';
+import { dropCopies } from '@/lib/copies';
 import { holdUnsynced, ITEMS_CURSOR, LEDGER_CURSOR, PLAYS_CURSOR, syncAccount } from '@/lib/sync';
 import { loadSubscription } from '@/features/store/billing';
 import { invoke } from '@/online/api';
@@ -55,6 +56,12 @@ async function loadProfile(userId: string) {
   } finally {
     if (profileLoading === userId) profileLoading = null;
   }
+}
+
+/** Reads the profile again (after a wear change went up, so the server's character shows). */
+export function refreshProfile() {
+  const id = useSession.getState().userId;
+  if (id) void loadProfile(id);
 }
 
 /** Retries the profile when it never arrived (an offline launch), once the network may be back. */
@@ -190,6 +197,7 @@ async function leavePhone(owner: string, hold: boolean) {
   if (hold) await holdUnsynced(owner).catch(() => {});
   await stashPhone(owner).catch(() => {});
   await engine.kv.remove(profileKey(owner));
+  await dropCopies(owner);
   await engine.kv.remove(OWNER_KEY);
   await clearPhone();
 }
@@ -242,6 +250,8 @@ export async function deleteAccount() {
   if (id) {
     await engine.kv.remove(stashKey(id));
     await engine.kv.remove(profileKey(id));
+    await engine.kv.remove(`wear:pending:${id}`);
+    await dropCopies(id);
   }
   await engine.kv.remove(OWNER_KEY);
   await supabase.auth.signOut({ scope: 'local' });

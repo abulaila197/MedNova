@@ -7,6 +7,7 @@ import { loadChallenges } from '@/features/chests/useChests';
 import { sparksCost } from '@/features/sparks/costs';
 import type { GameKey } from '@/games/engine/types';
 import { useSession } from '@/games/shell/session';
+import { copyOf, keepCopy } from '@/lib/copies';
 import { supabase } from '@/lib/supabase';
 import { syncAccount } from '@/lib/sync';
 import { onAccountSwitch } from '@/state/accountSwitch';
@@ -65,9 +66,10 @@ export const timeLeft = (ends: number) => {
 };
 
 /** `failed`: the last read did not reach the server (offline) (AP8). */
-type State = { r: Rounds | null; at: number; failed: boolean };
-export const useRoundsStore = create<State>(() => ({ r: null, at: 0, failed: false }));
-onAccountSwitch(() => useRoundsStore.setState({ r: null, at: 0, failed: false }));
+/** `savedAt`: `r` is the saved copy from then (#59, read-only offline: collecting needs the server). */
+type State = { r: Rounds | null; at: number; failed: boolean; savedAt: number | null };
+export const useRoundsStore = create<State>(() => ({ r: null, at: 0, failed: false, savedAt: null }));
+onAccountSwitch(() => useRoundsStore.setState({ r: null, at: 0, failed: false, savedAt: null }));
 
 /** Reads this week's state (guests see the goal with no progress). Cheap: skips if read in the last 20 s unless forced. */
 export async function loadRounds(force = false) {
@@ -77,8 +79,14 @@ export async function loadRounds(force = false) {
   if (userId) await syncAccount(userId).catch(() => {});
   const { data } = await supabase.rpc('rounds_status');
   const r = data as Rounds | null;
-  if (r?.this && Array.isArray(r.missions)) useRoundsStore.setState({ r, failed: false });
-  else useRoundsStore.setState({ failed: true });
+  if (r?.this && Array.isArray(r.missions)) {
+    useRoundsStore.setState({ r, failed: false, savedAt: null });
+    if (userId) void keepCopy('rounds', userId, r);
+  } else {
+    const copy = userId ? await copyOf<Rounds>('rounds', userId) : null;
+    if (copy && useSession.getState().userId === userId) useRoundsStore.setState({ r: copy.v, failed: true, savedAt: copy.at });
+    else useRoundsStore.setState({ failed: true });
+  }
 }
 
 /** How far along the last mission the week is (0-1). */

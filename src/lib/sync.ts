@@ -175,7 +175,7 @@ async function run(userId: string) {
   await syncProgress(userId);
   // The Sparks bar: the phone's spends go up, the server's bar comes down.
   // (Loaded here, not at the top: the Sparks module reads the account, which imports this file.)
-  await import('@/features/sparks/sparks').then((m) => m.syncSparks(userId)).catch(() => {});
+  await import('@/features/sparks/sparks').then((m) => m.syncSparks(userId, true)).catch(() => {});
 
   // Bring down what other phones saved.
   const [w, p, it] = await Promise.all([

@@ -9,6 +9,8 @@ import { create } from 'zustand';
 import { Text, TextInput } from '@/components/AppText';
 import { Sheet } from '@/components/Sheet';
 import { ADS_LIVE } from '@/features/sparks/sparks';
+import { OfflineLine } from '@/components/OfflineLine';
+import { copyOf, keepCopy } from '@/lib/copies';
 import { Kicker } from '@/features/info/ui';
 import { useSession } from '@/games/shell/session';
 import { syncAccount } from '@/lib/sync';
@@ -130,12 +132,22 @@ type FreeStatus = { ads_today?: number; done: string[]; ambassador: 'pending' | 
 type OpenSheet = 'story' | 'feedback' | 'ambassador' | null;
 
 /** What this player already collected, and which sheet is open (drawn by the Store page above its scroll). */
-export const useFree = create<{ status: FreeStatus | null; sheet: OpenSheet }>(() => ({ status: null, sheet: null }));
-onAccountSwitch(() => useFree.setState({ status: null, sheet: null }));
+/** `savedAt`: `status` is the saved copy from then, because the server can't be reached (#59). */
+export const useFree = create<{ status: FreeStatus | null; sheet: OpenSheet; savedAt?: number | null }>(() => ({ status: null, sheet: null, savedAt: null }));
+onAccountSwitch(() => useFree.setState({ status: null, sheet: null, savedAt: null }));
 
 export async function loadFree() {
-  if (!useSession.getState().userId) return useFree.setState({ status: null });
-  useFree.setState({ status: await call<FreeStatus>('free_status') });
+  const uid = useSession.getState().userId;
+  if (!uid) return useFree.setState({ status: null, savedAt: null });
+  try {
+    const status = await call<FreeStatus>('free_status');
+    useFree.setState({ status, savedAt: null });
+    void keepCopy('free', uid, status);
+  } catch (e) {
+    const copy = await copyOf<FreeStatus>('free', uid);
+    if (copy && useSession.getState().userId === uid) useFree.setState({ status: copy.v, savedAt: copy.at });
+    throw e;
+  }
 }
 
 /** After the server paid: bring the new wallet rows to the phone, then refresh what's collected. */
@@ -154,6 +166,7 @@ const SOCIAL = ['tiktok', 'instagram', 'facebook', 'youtube', 'channel'] as cons
 export function FreeTokens({ t }: { t: Theme }) {
   const signedIn = !!useSession((x) => x.userId);
   const st = useFree((x) => x.status);
+  const savedAt = useFree((x) => x.savedAt);
   const [busy, setBusy] = useState<string | null>(null);
   useEffect(() => {
     loadFree().catch(() => {});
@@ -211,6 +224,7 @@ export function FreeTokens({ t }: { t: Theme }) {
     <>
       <View style={{ height: u(14) }} />
       <Kicker inSec>Free tokens</Kicker>
+      <OfflineLine at={savedAt} style={{ marginTop: 0 }} />
       <Row>
         <Global t={t} st={st} signedIn={signedIn} />
         <WayCard t={t} w={AD_WAY} label={ADS_LIVE && st ? `${AD_WAY.label} · ${st.ads_today ?? 0} of ${AD_CAP} today` : AD_WAY.label} act={signedIn ? AD_WAY.act : 'Sign in'} done={(st?.ads_today ?? 0) >= AD_CAP} locked={!ADS_LIVE} busy={busy === 'ad'} onPress={() => (signedIn ? watchAd() : router.navigate('/auth'))} />

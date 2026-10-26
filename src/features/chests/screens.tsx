@@ -74,6 +74,7 @@ export function ChallengesScreen() {
   useLoad();
   const c = useChests((x) => x.c);
   const failed = useChests((x) => x.failed);
+  const savedAt = useChests((x) => x.savedAt);
   // The "new challenges in" line ticks instead of keeping the time it was first drawn at (AP12b).
   const now = useSecond(!!c);
   const tasks = (c?.tasks ?? EMPTY).map((list) => list.map((x): TaskView => ({ ...ROW[x.k](x.of), n: x.n, of: x.of, share: x.k === 'shares' }))) as [TaskView[], TaskView[], TaskView[]];
@@ -87,6 +88,7 @@ export function ChallengesScreen() {
         resetIn: c ? resetIn(c.resets, now) : '',
         guest: c ? !c.signed_in : false,
         offline: !c && failed,
+        savedAt,
         onShare: shareApp,
       }}
     />

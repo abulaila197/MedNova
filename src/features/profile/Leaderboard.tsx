@@ -12,6 +12,7 @@ import { Fade } from '@/components/Fade';
 import { useSvgId } from '@/components/svgId';
 import { GAMES } from '@/data/games';
 import { useSession } from '@/games/shell/session';
+import { agoText, copyOf, keepCopy } from '@/lib/copies';
 import { supabase } from '@/lib/supabase';
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
@@ -45,7 +46,8 @@ const PERIODS: { k: Period; label: string; empty: string }[] = [
 ];
 const SHORT: Record<Period, string> = { week: 'Week', month: 'Month', all: 'All time' };
 type Row = { rank: number; id: string; name: string; level: number; exp: number };
-type Board = { rows: Row[]; me: { rank: number; exp: number; above: { name: string; gap: number } | null } | null };
+/** `savedAt`: shown from the saved copy read then, because the server can't be reached (#59). */
+type Board = { rows: Row[]; me: { rank: number; exp: number; above: { name: string; gap: number } | null } | null; savedAt?: number };
 const num = (n: number) => n.toLocaleString('en-US');
 const gameName = (k: string | null) => (k ? (GAMES.find((g) => g.key === k) ?? { lead: '', em: k }) : null);
 
@@ -61,16 +63,20 @@ function useBoard(period: Period, scope: 'everyone' | 'friends', game: string | 
   }
   useEffect(() => {
     let live = true;
-    supabase.rpc('leaderboard', { period, scope, game }).then(({ data, error }) => {
+    supabase.rpc('leaderboard', { period, scope, game }).then(async ({ data, error }) => {
+      // Each filter's last board is kept per account; offline the saved one shows with its time (#59).
+      const saved = userId ? await copyOf<Record<string, Board>>('leaderboard', userId) : null;
       if (!live) return;
-      setBoard(error || !data ? 'error' : (data as Board));
+      if (error || !data) return setBoard(saved?.v[filter] ?? 'error');
+      setBoard(data as Board);
+      if (userId) void keepCopy('leaderboard', userId, { ...saved?.v, [filter]: { ...(data as Board), savedAt: Date.now() } });
       // Bought name glow (Yazan 2026-10-13): ask for the shown players' looks.
-      if (data) wantLooks((data as Board).rows.map((r) => r.id));
+      wantLooks((data as Board).rows.map((r) => r.id));
     });
     return () => {
       live = false;
     };
-  }, [period, scope, game, userId]);
+  }, [period, scope, game, userId, filter]);
   return board;
 }
 
@@ -125,6 +131,8 @@ export function Leaderboard() {
   const note =
     board === 'error'
       ? 'Could not load the board. Check your connection.'
+      : board?.savedAt
+        ? `Offline · last updated ${agoText(board.savedAt)}.`
       : board && !rows.length
         ? scope === 'friends' && !userId
           ? 'Sign in to see your friends here.'

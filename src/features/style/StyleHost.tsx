@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import { useEffect } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { AppState, Pressable, StyleSheet, View } from 'react-native';
 
 import { Text } from '@/components/AppText';
 import { Sheet } from '@/components/Sheet';
@@ -12,12 +12,18 @@ import { F } from '@/theme/tokens';
 
 import { EFFECTS, FRAMES, PLATINUM_TITLES, TITLES } from './catalog';
 import { Framed, type FrameKey } from './Frame';
-import { giftsSeen, loadStyle, useStyle } from './useStyle';
+import { CHARACTERS } from '@/games/shell/characters';
+import { MECHS } from '@/features/chests/data';
+import { ROBOTS } from '@/features/shop/robots';
+
+import { flushInBackground, giftsSeen, loadStyle, refusedSeen, useStyle } from './useStyle';
 
 const nameOf = (id: string) => {
   const [kind, key] = [id.slice(0, id.indexOf(':')), id.slice(id.indexOf(':') + 1)];
   const all = kind === 'frame' ? FRAMES : kind === 'title' ? [...TITLES, ...PLATINUM_TITLES] : kind === 'effect' ? EFFECTS : [];
   const found = all.find((x) => x.key === key)?.name;
+  if (kind === 'avatar') return [...CHARACTERS.map((c) => ({ key: c.slug, name: c.name })), ...MECHS, ...ROBOTS].find((c) => c.key === key)?.name ?? 'that character';
+  if (kind === 'effect' && key === 'null') return 'taking off your win effect';
   return kind === 'pack' ? 'a sticker pack' : kind === 'frame' ? `the ${found} frame` : kind === 'title' ? `the title ${found}` : `the ${found} win effect`;
 };
 
@@ -27,10 +33,37 @@ export function StyleHost() {
   const userId = useSession((s) => s.userId);
   const gifts = useStyle((s) => s.gifts);
   const avatar = useAccount((a) => a.profile?.avatar ?? 'yara');
+  const refused = useStyle((s) => s.refused);
   useEffect(() => {
     void loadStyle();
   }, [userId]);
+  // Wear changes made offline go up when the app comes back, and every minute while some still wait (#58).
+  useEffect(() => {
+    if (!userId) return;
+    const sub = AppState.addEventListener('change', (st) => st === 'active' && void flushInBackground());
+    const id = setInterval(() => void flushInBackground(), 60000);
+    return () => {
+      sub.remove();
+      clearInterval(id);
+    };
+  }, [userId]);
   const g = gifts[0];
+  // A change the server refused once back online is put back, with a note (Yazan 2026-10-26).
+  if (!g && refused.length)
+    return (
+      <Sheet open onClose={refusedSeen}>
+        <View style={s.wrap}>
+          <Text style={[s.k, { color: t.kick }]}>PUT BACK</Text>
+          <Text style={[s.h, { color: t.fg }]}>{`Couldn’t save ${refused.map(nameOf).join(', ')}`}</Text>
+          <Text style={[s.p, { color: t.mute, textAlign: 'center' }]}>You changed it while offline, but your account says it isn’t yours any more, so your look is back to what your account has.</Text>
+          <View style={s.row}>
+            <Pressable onPress={refusedSeen} style={[s.btn, { borderColor: t.panelLine }]} accessibilityRole="button">
+              <Text style={[s.btnT, { color: t.fg }]}>OK</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Sheet>
+    );
   const frame = g?.item.startsWith('frame:') ? (g.item.slice(6) as FrameKey) : null;
   return (
     <Sheet open={!!g} onClose={() => void giftsSeen()}>

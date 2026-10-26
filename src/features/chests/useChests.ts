@@ -4,6 +4,7 @@ import { create } from 'zustand';
 
 import { useSession } from '@/games/shell/session';
 import { supabase } from '@/lib/supabase';
+import { copyOf, keepCopy } from '@/lib/copies';
 import { syncAccount } from '@/lib/sync';
 import { loadStyle } from '@/features/style/useStyle';
 
@@ -33,9 +34,10 @@ export type OpenResult = { ok: true; items: Won[]; prize: number } | { ok: false
 const NONE: Record<ChestKind, number> = { wooden: 0, golden: 0, diamond: 0, epic: 0 };
 
 /** `failed`: the last read did not reach the server (offline), so the page can say so instead of showing zeros (AP8). */
-type State = { c: Challenges | null; at: number; failed: boolean };
-export const useChests = create<State>(() => ({ c: null, at: 0, failed: false }));
-onAccountSwitch(() => useChests.setState({ c: null, at: 0, failed: false }));
+/** `savedAt`: `c` is the saved copy from then (#59, read-only offline: opening a chest needs the server). */
+type State = { c: Challenges | null; at: number; failed: boolean; savedAt: number | null };
+export const useChests = create<State>(() => ({ c: null, at: 0, failed: false, savedAt: null }));
+onAccountSwitch(() => useChests.setState({ c: null, at: 0, failed: false, savedAt: null }));
 
 export const chestsOwned = (c: Challenges | null) => (c ? c.chests : NONE);
 export const chestCount = (c: Challenges | null) => Object.values(chestsOwned(c)).reduce((a, n) => a + n, 0);
@@ -48,8 +50,14 @@ export async function loadChallenges(force = false) {
   if (userId) await syncAccount(userId).catch(() => {});
   const { data } = await supabase.rpc('challenges_status', { tz_min: -new Date().getTimezoneOffset() });
   const c = data as Challenges | null;
-  if (c && Array.isArray(c.tasks)) useChests.setState({ c, failed: false });
-  else useChests.setState({ failed: true });
+  if (c && Array.isArray(c.tasks)) {
+    useChests.setState({ c, failed: false, savedAt: null });
+    if (userId && c.signed_in) void keepCopy('challenges', userId, c);
+  } else {
+    const copy = userId ? await copyOf<Challenges>('challenges', userId) : null;
+    if (copy && useSession.getState().userId === userId) useChests.setState({ c: copy.v, failed: true, savedAt: copy.at });
+    else useChests.setState({ failed: true });
+  }
   if (c && c.signed_in && c.step === 3 && c.tasks[2]?.some((k) => k.k === 'review' && k.n < k.of)) void reviewIfEmpty();
 }
 

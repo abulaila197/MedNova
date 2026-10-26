@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { engine } from '@/games/engine';
 import { useSession } from '@/games/shell/session';
 import { learnCounts } from '@/features/learn/library';
+import { copyOf, keepCopy } from '@/lib/copies';
 import { supabase } from '@/lib/supabase';
 import { syncAccount } from '@/lib/sync';
 import { useFriends } from '@/state/friends';
@@ -42,6 +43,15 @@ const paidTiers = (ledger: { kind: string; reason: string }[]) => {
   return out;
 };
 
+async function socialCounts(me: string): Promise<SocialCounts> {
+  const { data, error } = await supabase.rpc('social_counts').then((r) => r, () => ({ data: null, error: true }));
+  if (!error && data) {
+    void keepCopy('social', me, data);
+    return data as SocialCounts;
+  }
+  return (await copyOf<SocialCounts>('social', me))?.v ?? {};
+}
+
 /** Everything the counters need, read from the phone. */
 export async function loadAchievements(friendIds: string[], me?: string): Promise<AchRow[]> {
   const [{ plays, items }, ledger, bal, best, learn, social, tour] = await Promise.all([
@@ -51,7 +61,8 @@ export async function loadAchievements(friendIds: string[], me?: string): Promis
     engine.kv.get<Record<number, number>>('crossword:best'),
     learnCounts(),
     // Invites, challenges and written cases live on the server; offline or signed out they read 0.
-    me ? supabase.rpc('social_counts').then(({ data }) => (data as SocialCounts | null) ?? {}, () => ({})) : Promise.resolve({} as SocialCounts),
+    // Offline they come from the saved copy (#59).
+    me ? socialCounts(me) : Promise.resolve({} as SocialCounts),
     engine.kv.get<string[]>(TOUR),
   ]);
   const counts = achievementProgress({

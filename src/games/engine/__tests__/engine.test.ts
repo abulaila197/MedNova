@@ -187,6 +187,23 @@ test('sparks: a unit pays once; spends since the last server bar count; settle k
   assert.equal(await s.paid('play1'), false);
 });
 
+test('sparks: a refill bought offline adds at once, once per id, and waits until the server settles it', async () => {
+  const t = 1_000_000;
+  const s = createSparks(memoryKV(), () => t);
+  await s.settle('u1', { value: 20, at: t }, []);
+  await s.add('k1', 30);
+  await s.add('k1', 30);
+  assert.equal((await s.state(10)).value, 50, 'added once');
+  await s.charge('play1', 10, 'imposter');
+  assert.equal((await s.state(10)).value, 40);
+  const [buy] = (await s.pending()).filter((x) => x.cost < 0);
+  assert.equal(buy.unit, 'buy:k1');
+  // The server took the tokens and added the Sparks: the phone's bar now comes from it.
+  await s.settle('u1', { value: 40, at: t }, (await s.pending()).map((x) => x.id));
+  assert.equal((await s.pending()).length, 0);
+  assert.equal((await s.state(10)).value, 40);
+});
+
 test('picker: unseen first, then reshuffle when the bank runs out', async () => {
   const kv = memoryKV();
   const pk = createPicker(kv);

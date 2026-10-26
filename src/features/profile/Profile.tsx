@@ -11,7 +11,7 @@ import { Fade } from '@/components/Fade';
 import { useSvgId } from '@/components/svgId';
 import { FriendCount } from '@/features/profile/Friends';
 import { Face } from '@/games/shell/Face';
-import { supabase } from '@/lib/supabase';
+import { wearCharacter as wearOwned } from '@/features/shop/wear';
 import { deleteAccount, useAccount } from '@/state/account';
 import { useTheme } from '@/state/app';
 import { loadFriends, unblockUser, useFriends } from '@/state/friends';
@@ -73,7 +73,7 @@ export function Profile() {
   const wearing = useRef(false);
   const huntFound = useHunt((h) => h.status?.found ?? EMPTY);
   const mechs = useStyle(useShallow((x) => x.owned.filter((k) => k.startsWith('mech:')).map((k) => k.slice(5))));
-  // The server checks a robot is yours before you can wear it (set_avatar).
+  // The server checks a robot is yours before you can wear it (set_avatar); offline it waits on the phone (#58).
   const wearCharacter = async (slug: string) => {
     if (!profile) {
       setPick(false);
@@ -83,15 +83,11 @@ export function Profile() {
     if (wearing.current) return;
     wearing.current = true;
     setWearErr(null);
-    const { data, error } = await supabase.rpc('set_avatar', { slug });
+    const r = await wearOwned(slug);
     wearing.current = false;
-    if ((data as { ok?: boolean } | null)?.ok) {
-      useAccount.setState({ profile: { ...profile, avatar: slug } });
-      setPick(false);
-      return;
-    }
+    if (r.ok) return setPick(false);
     // Say why instead of leaving the sheet open with no answer (AP12f).
-    setWearErr(error || !data ? 'Could not reach MedNova. Check your connection and try again.' : 'That character isn’t yours yet.');
+    setWearErr(r.why === 'not owned' ? 'That character isn’t yours yet.' : 'Could not reach MedNova. Check your connection and try again.');
   };
   const pct = (a: number | null | undefined) => (a == null ? '–' : `${Math.round(a * 100)}%`);
   return (
