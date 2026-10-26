@@ -33,8 +33,8 @@ export function useRoom(roomId: string | undefined, every = 2000) {
       const poll = () => {
         if (busy.current || AppState.currentState !== 'active') return;
         busy.current = true;
-        // A request that never answers must not stop the room from refreshing (#17): give up on it after 6 s.
-        const id = setTimeout(() => (busy.current = false), 6000);
+        // A request that never answers must not stop the room from refreshing (#17): give up on it after 3 s.
+        const id = setTimeout(() => (busy.current = false), 3000);
         load().finally(() => {
           clearTimeout(id);
           busy.current = false;

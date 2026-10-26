@@ -11,7 +11,7 @@ type Stamped = { now: number };
 
 const POLL_MS = 1000;
 const NOTICE_MS = 2200;
-const POLL_GIVE_UP_MS = 6000;
+const POLL_GIVE_UP_MS = 3000;
 
 /**
  * The one way an online game follows its match: polls the server's state every second (skipping a
