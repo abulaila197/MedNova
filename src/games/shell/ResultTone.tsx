@@ -76,7 +76,8 @@ export function ResultTone({ play, items, uid, plain }: { play: Play; items: Pla
         accessibilityIgnoresInvertColors
       />
       <View style={s.words}>
-        <Text style={[s.head, { color: t.white }]}>{head}</Text>
+        {/* Cyan like "over" in Game over, upright (Yazan 2026-10-26, #48). */}
+        <Text style={[s.head, { color: t.accent }]}>{head}</Text>
         <Text style={[s.sub, { color: t.soft }]}>{sub}</Text>
       </View>
     </View>

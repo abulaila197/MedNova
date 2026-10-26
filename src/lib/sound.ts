@@ -1,4 +1,4 @@
-// App sounds (Yazan, 2026-10-13: "Taps and moments", made in code by build/app-sound/synth.py). One mute switch in
+// App sounds (Yazan, 2026-10-13: "Taps and moments"; since 2026-10-26 Kenney CC0 sounds he picked by ear, #15). One mute switch in
 // the menu silences every sound in the app, Trust Me Not included. Right and wrong never play online before the
 // answer is shown to everyone: callers play them at the reveal, not at the guess.
 import { createAudioPlayer, setAudioModeAsync, type AudioPlayer } from 'expo-audio';

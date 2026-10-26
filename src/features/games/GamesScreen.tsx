@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { cancelAnimation, Easing, useSharedValue, withTiming } from 'react-native-reanimated';
@@ -15,6 +15,8 @@ import { useTheme } from '@/state/app';
 import { DESIGN_W, u } from '@/theme/scale';
 
 import { FILL_H } from './fit';
+import { useGamesFocus } from './focus';
+import { GameTagSheet } from './GameTag';
 
 const N = GAMES.length;
 const mod = (v: number) => ((v % N) + N) % N;
@@ -23,13 +25,31 @@ const EASE = Easing.bezier(0.3, 0.7, 0.2, 1);
 /** Locked Games page (decision 63): swipe through the games; the dots follow. */
 export function GamesScreen() {
   const t = useTheme();
-  const pos = useSharedValue(0); // unbounded page position; game = pos mod N
+  const pos = useSharedValue(useGamesFocus.getState().j); // unbounded page position; game = pos mod N
   const start = useSharedValue(0);
-  const [sel, setSel] = useState(0);
+  const [sel, setSel] = useState(() => useGamesFocus.getState().j);
+  const landed = useSharedValue(useGamesFocus.getState().j); // the page `sel` was last set to, readable from the swipe
+  // Coming back from a game's results: show that game straight away, no slide.
+  useEffect(
+    () =>
+      useGamesFocus.subscribe(({ j }) => {
+        cancelAnimation(pos);
+        pos.set(j);
+        landed.set(j);
+        setSel(j);
+      }),
+    [pos, landed],
+  );
   // How much less room the body has than the design (taller dock over the phone's buttons): the lower group lifts by it.
   const [lift, setLift] = useState(0);
 
-  const pick = useCallback((target: number) => setSel(mod(target)), []);
+  const pick = useCallback(
+    (target: number) => {
+      landed.set(mod(target));
+      setSel(mod(target));
+    },
+    [landed],
+  );
   const go = useCallback(
     (target: number) => {
       // The page (and its neighbours) are rebuilt only once the slide has landed, so building them can't stall it.
@@ -52,6 +72,10 @@ export function GamesScreen() {
     .onStart(() => {
       cancelAnimation(pos);
       start.value = pos.value;
+      // A swipe that starts before the last one landed: its landing never reached React, so the pages around where
+      // we really are were never built and a third quick swipe slid onto an empty page (#22). Build them now.
+      const at = Math.round(pos.value);
+      if ((((at % N) + N) % N) !== landed.value) scheduleOnRN(pick, at);
     })
     .onUpdate((e) => {
       pos.set(start.value - e.translationX / u(DESIGN_W));
@@ -79,6 +103,7 @@ export function GamesScreen() {
           <RoundsButton />
         </View>
       </GestureDetector>
+      <GameTagSheet />
     </Screen>
   );
 }

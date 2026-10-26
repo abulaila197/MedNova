@@ -9,6 +9,7 @@ import { engine, GUEST_PLAYS } from '../engine';
 import type { Mode, Play, PlayItem } from '../engine/types';
 import { alwaysFree, startPlay } from './flow';
 import { isSubscribed } from '@/features/store/billing';
+import { focusGame } from '@/features/games/focus';
 import { useSession } from './session';
 import { teamsOf, teamStandings } from './teams';
 import { teamScoreOf, type GameDef } from './types';
@@ -110,7 +111,9 @@ export function useResults(def: GameDef, play: Play, items: PlayItem[]) {
   };
   const backToGames = () => {
     if (room) leaveRoom(room).catch(() => {});
-    router.replace('/games');
+    // Land on the game just played, and drop the game's pages so Back can't return to these results.
+    focusGame(def.key);
+    router.dismissTo('/games');
   };
   const openDossier = (key: string) => router.push(`/learn/dossier?id=${key}`);
   return { multi, mine, right, nameOf, colorOf, teams, teamRows, plain, stats, missed, rematch, changeSettings, backToGames, openDossier };

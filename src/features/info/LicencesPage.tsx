@@ -23,6 +23,9 @@ const FONTS = PKGS.filter((p) => p.f);
 const LOTTIE =
   'Lottie Simple License (LottieFiles). The animation may be used for free in personal and commercial work, and may be changed. It may not be sold or shared on its own as an animation file, or used in a way that breaks the law.';
 
+const CC0 =
+  'Creative Commons Zero (CC0 1.0). The maker gave these sounds to the public domain: they may be used, changed and shared for any purpose, commercial included, without asking or giving credit. We credit Kenney anyway.';
+
 /** Open-source licences (Session 4, linked from About): every package the app ships, grouped by licence, with the full texts. Built by scripts/build-licences.mjs. */
 export function LicencesPage() {
   const c = useInfo();
@@ -36,6 +39,8 @@ export function LicencesPage() {
           <Group title="Fonts · SIL Open Font License 1.1" rows={FONTS.map((p) => p.f!)} text={TEXTS['OFL-1.1']} />
           {/* List #43: the Trophy credit sits with the other credits instead of the intro. */}
           <Group title="Animations · Lottie Simple License" rows={['Trophy win effect  from LottieFiles']} text={LOTTIE} />
+          {/* #15: the app sounds are Kenney's CC0 packs since 2026-10-26. */}
+          <Group title="Sounds · CC0 1.0" rows={['Tap, right, wrong, win, time up and token sounds  by Kenney (kenney.nl)']} text={CC0} />
           {GROUPS.map(([l, list]) => (
             <Group key={l} title={`${l} · ${list.length}`} rows={list.map((p) => `${p.n} ${p.v}${p.c ? `  ${p.c}` : ''}`)} text={TEXTS[l]} />
           ))}

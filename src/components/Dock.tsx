@@ -36,7 +36,8 @@ export function Dock({ active }: { active: Tab }) {
           <View style={[s.gbox, { shadowColor: t.gamesGlow }]}>
             <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0.2, y: 0 }} end={{ x: 0.8, y: 1 }} style={s.gfill}>
               <View style={s.glit} />
-              <GamesIcon size={u(21)} color={t.onGrad} />
+              {/* A little bigger than Learn and Community (Yazan 2026-10-26). */}
+              <GamesIcon size={u(24)} color={t.onGrad} />
             </LinearGradient>
           </View>
         ) : (
