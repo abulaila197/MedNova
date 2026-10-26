@@ -1,6 +1,7 @@
 import { router, usePathname } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { AppState } from 'react-native';
+import { create } from 'zustand';
 
 import { localDay } from '@/games/engine/gate';
 import { defaultKV } from '@/games/engine/storage';
@@ -13,11 +14,19 @@ import { useStart } from '@/state/start';
 
 import { useWelcome } from '../welcome/WelcomeHost';
 import { DailyPopup } from './DailyPopup';
+import { CALENDAR_DAYS } from './prizes';
 
 const kv = defaultKV();
 const GUEST_SEEN = 'daily:guest_seen';
 
 type Open = { day: number; collected: boolean };
+
+/**
+ * The daily reward button on the Games page (Yazan 2026-10-26): `ask` bumps to open the pop-up on demand; `ready`
+ * says today's reward is still waiting (its badge).
+ */
+export const useDaily = create<{ ask: number; ready: boolean }>(() => ({ ask: 0, ready: false }));
+export const openDaily = () => useDaily.setState((x) => ({ ask: x.ask + 1 }));
 
 /**
  * Shows the daily pop-up on the first Games page visit of the player's day, once the intro is over.
@@ -68,10 +77,32 @@ export function DailyHost() {
         return;
       }
       const st = data as { next_day: number; last_date: string | null };
+      useDaily.setState({ ready: st.last_date !== today });
       if (st.last_date === today) return;
       setOpen({ day: st.next_day, collected: false });
     })();
   }, [known, intro, welcomed, path, userId, wake]);
+
+  // The button: opens the pop-up any time; today's reward can be collected only if it wasn't yet.
+  const ask = useDaily((x) => x.ask);
+  useEffect(() => {
+    if (!ask) return;
+    void (async () => {
+      setError(null);
+      if (!userId) return setOpen({ day: 1, collected: false });
+      const { data, error: e } = await supabase.rpc('daily_status');
+      if (e || !data) {
+        setOpen({ day: 1, collected: false });
+        setError('Could not reach MedNova. Check your connection and try again.');
+        return;
+      }
+      const st = data as { next_day: number; last_date: string | null };
+      const done = st.last_date === localDay();
+      useDaily.setState({ ready: !done });
+      // Already collected: show the dose taken today (the calendar has moved on to the next one).
+      setOpen({ day: done ? (st.next_day > 1 ? st.next_day - 1 : CALENDAR_DAYS) : st.next_day, collected: done });
+    })();
+  }, [ask, userId]);
 
   // The found-card pop-up waits while this one is up.
   useEffect(() => usePopups.setState({ daily: !!open }), [open]);
@@ -95,6 +126,7 @@ export function DailyHost() {
     if (!r.ok)
       return setError(r.why === 'done' ? "You've already grabbed today's reward." : "Your phone's date looks off, so today's reward can't be given. Check your date settings.");
     setOpen({ day: r.day ?? open.day, collected: true });
+    useDaily.setState({ ready: false });
     if (userId) syncAccount(userId).catch(() => {}); // brings the new tokens down to the wallet
   };
 

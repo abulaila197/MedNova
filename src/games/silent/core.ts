@@ -16,10 +16,9 @@ export const SA = {
   soloMs: 60_000,
   /** Words a phone avoids repeating across matches. */
   recentMemory: 50,
-  // #16 (Yazan 2026-10-26): the field and the blanks (letter count) show from the start; letters come sooner and
-  // faster, from 20% to 60% of the turn (was field 30%, blanks 40%, letters to 90%). The early bonus is now for a
-  // guess before the first letter.
-  hints: { field: 0, blanks: 0, lettersStart: 0.2, lettersEnd: 0.6, maxFraction: 0.35, maxLetters: 8 },
+  // #16 (Yazan 2026-10-26): the field and the blanks (letter count) show from the start (were 30% and 40%); some
+  // letters, never all, still come one by one from 40% to 90%. The early bonus is for a guess before letters start.
+  hints: { field: 0, blanks: 0, lettersStart: 0.4, lettersEnd: 0.9, maxFraction: 0.35, maxLetters: 8 },
   score: { min: 20, max: 100, early: 25, performerShare: 0.5, steal: 10 },
 };
 
@@ -96,7 +95,7 @@ export function lettersToReveal(n: number) {
 
 /**
  * SA5 hint ladder, stretched to the turn time: word count, field and blanks from the start (#16), then letters one
- * by one from 20% to 60%. Longer names show letters faster.
+ * by one from 40% until 90%. Longer names show letters faster.
  */
 export function hintPlan(word: Word, turnMs: number, seed: number): HintPlan {
   const name = word.name;
@@ -104,7 +103,7 @@ export function hintPlan(word: Word, turnMs: number, seed: number): HintPlan {
   const n = lettersToReveal(positions.length);
   const start = Math.round(SA.hints.lettersStart * turnMs);
   const end = Math.round(SA.hints.lettersEnd * turnMs);
-  const gap = n > 1 ? (end - start) / (n - 1) : 0;
+  const gap = n > 0 ? (end - start) / n : 0;
   const [order] = shuffle(positions, hashSeed(`hints:${seed}:${word.id}`));
   const slots = order.slice(0, n);
   return {
@@ -115,7 +114,7 @@ export function hintPlan(word: Word, turnMs: number, seed: number): HintPlan {
     earlyAt: start,
     template: [...name].map((ch) => (guessable(ch) ? '_' : ch)).join(''),
     slots,
-    times: slots.map((_, i) => Math.round(start + i * gap)),
+    times: slots.map((_, i) => Math.round(start + (i + 1) * gap)),
   };
 }
 
@@ -142,7 +141,7 @@ export function hintStage(plan: HintPlan, elapsed: number) {
 
 /* ------------------------------ scoring ------------------------------ */
 
-/** SA7 guesser points: 100 down to 20 by time left, +25 if guessed before the first letter showed (#16). */
+/** SA7 guesser points: 100 down to 20 by time left, +25 if guessed before letters start (#16). */
 export function guesserPoints(elapsed: number, turnMs: number, earlyAt: number) {
   const left = Math.min(1, Math.max(0, (turnMs - elapsed) / turnMs));
   return Math.round(SA.score.min + (SA.score.max - SA.score.min) * left + (elapsed < earlyAt ? SA.score.early : 0));

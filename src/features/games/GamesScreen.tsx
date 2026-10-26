@@ -8,6 +8,7 @@ import { Screen } from '@/components/Screen';
 import { GAMES } from '@/data/games';
 import { GamePage } from './GamePage';
 import { Dots, wrapOff } from './Dots';
+import { DailyButton } from '@/features/daily/DailyButton';
 import { ChestButton } from '@/features/chests/ChestButton';
 import { RoundsButton } from '@/features/rounds/Ribbon';
 import { useTheme } from '@/state/app';
@@ -74,6 +75,7 @@ export function GamesScreen() {
             <Dots pos={pos} onPick={jump} accent={t.accent} />
           </View>
           <ChestButton />
+          <DailyButton />
           <RoundsButton />
         </View>
       </GestureDetector>

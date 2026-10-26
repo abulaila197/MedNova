@@ -9,13 +9,13 @@ import { soloLeft, startSolo, stepSolo } from '../solo';
 const POOL: Word[] = Array.from({ length: 12 }, (_, i) => ({ id: `w${i}`, name: i === 0 ? 'Myocardial infarction' : `Disease number ${i}`, field: i % 2 ? 'Cardiology' : 'Neurology', aliases: [] }));
 const step = (r: OfflineRun, e: OfflineEvent) => stepOffline(r, e, POOL);
 
-test('hint ladder (SA5, #16): words, field and blanks from the start, letters from 20% to 60%, stretched to the turn', () => {
+test('hint ladder (SA5, #16): words, field and blanks from the start, letters from 40% to 90%, stretched to the turn', () => {
   const w = POOL[0];
   for (const turn of [60_000, 90_000, 120_000]) {
     const p = hintPlan(w, turn, 7);
-    assert.equal(p.times[0], turn * 0.2);
-    assert.equal(p.earlyAt, turn * 0.2);
-    assert.equal(p.times[p.times.length - 1], turn * 0.6);
+    assert.ok(p.times[0] > turn * 0.4);
+    assert.equal(p.earlyAt, turn * 0.4);
+    assert.equal(p.times[p.times.length - 1], turn * 0.9);
     assert.deepEqual(hintView(w, p, 0), { words: 2, field: w.field, mask: '__________ __________' });
     const end = hintView(w, p, turn).mask!;
     assert.equal(end.replace(/_/g, '').replace(' ', '').length, lettersToReveal(20));
@@ -26,7 +26,7 @@ test('hint ladder (SA5, #16): words, field and blanks from the start, letters fr
   assert.equal(lettersToReveal(40), 8);
 });
 
-test('guesser points (SA7): 100 to 20 by time, +25 before the first letter', () => {
+test('guesser points (SA7): 100 to 20 by time, +25 before letters start', () => {
   assert.equal(guesserPoints(0, 60_000, 18_000), 125);
   assert.equal(guesserPoints(18_000, 60_000, 18_000), 76);
   assert.equal(guesserPoints(60_000, 60_000, 18_000), 20);
