@@ -21,7 +21,7 @@ export const gameLabel = (g: string) => {
   return x ? `${x.lead.replace(/^The /, '')} ${x.em}`.trim() : g;
 };
 
-/** Add a word (Yazan 2026-10-26, #37): pick the game, then fill in that game's form. */
+/** Create your own (was Add a word; Yazan 2026-10-26, #37, renamed 2026-10-27): pick the game, then fill in that game's form. */
 export function NewWord({ start }: { start?: WordGame }) {
   const c = useInfo();
   const t = c.t;
@@ -83,8 +83,8 @@ export function NewWord({ start }: { start?: WordGame }) {
         <Back label="My diseases" fallback="/learn" />
         <Kicker style={{ marginTop: u(10) }}>Word laboratory</Kicker>
         <Text style={[ui.H, { color: c.fg, fontFamily: F.display }]}>
-          {'Add a '}
-          <Text style={[ui.H, { color: t.accent, fontFamily: F.displayItalic }]}>word</Text>
+          {'Create your '}
+          <Text style={[ui.H, { color: t.accent, fontFamily: F.displayItalic }]}>own</Text>
         </Text>
         <Box t={t} n="1" title="Game">
           <Chips t={t} items={WORD_GAMES.map(gameLabel)} on={WORD_GAMES.indexOf(game)} onPick={(i) => pick(WORD_GAMES[i])} />

@@ -246,7 +246,7 @@ function CasesPage() {
             <Text style={[s.newcT, { color: t.accent }]}>+ Write a DP case</Text>
           </Pressable>
           <Pressable onPress={() => go('/learn/new-word')} style={[s.newc, s.half, { borderColor: c.newcLine, backgroundColor: c.newcBg }]} accessibilityRole="button">
-            <Text style={[s.newcT, { color: t.accent }]}>+ Add a word</Text>
+            <Text style={[s.newcT, { color: t.accent }]}>+ Create your own</Text>
           </Pressable>
         </View>
       ) : (
