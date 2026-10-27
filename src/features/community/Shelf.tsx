@@ -8,19 +8,22 @@ import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
-// Yazan's wallpapers and merch photos (2026-10-13). Merch 05-06 are the printed mug cut from his two-mug shots.
+// Yazan's wallpapers and merch photos (2026-10-13). Wallpapers ordered so the dark-blue ones sit apart (2026-10-27).
+// Merch (2026-10-27): mugs between the clothes, m02 the black mug kept from the first set.
 export const WALLPAPERS: ImageSourcePropType[] = [
   require('@/assets/community/wallpapers/w01.jpg'),
   require('@/assets/community/wallpapers/w02.jpg'),
-  require('@/assets/community/wallpapers/w03.jpg'),
-  require('@/assets/community/wallpapers/w04.jpg'),
   require('@/assets/community/wallpapers/w05.jpg'),
-  require('@/assets/community/wallpapers/w06.jpg'),
-  require('@/assets/community/wallpapers/w07.jpg'),
+  require('@/assets/community/wallpapers/w03.jpg'),
   require('@/assets/community/wallpapers/w08.jpg'),
+  require('@/assets/community/wallpapers/w04.jpg'),
   require('@/assets/community/wallpapers/w09.jpg'),
+  require('@/assets/community/wallpapers/w06.jpg'),
   require('@/assets/community/wallpapers/w10.jpg'),
+  require('@/assets/community/wallpapers/w07.jpg'),
 ];
+/** Each wallpaper's own id (its file), for likes and saved file names: the order above can change. */
+export const WALLPAPER_IDS = ['w01', 'w02', 'w05', 'w03', 'w08', 'w04', 'w09', 'w06', 'w10', 'w07'];
 export const MERCH: ImageSourcePropType[] = [
   require('@/assets/community/merch/m01.jpg'),
   require('@/assets/community/merch/m02.jpg'),

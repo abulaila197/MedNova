@@ -8,23 +8,21 @@ import { Fade } from '@/components/Fade';
 import { PulseStar } from '@/components/PulseStar';
 import { useLike } from '@/features/community/likes';
 import { saveWallpaper, type SaveResult } from '@/features/community/save';
-import { WALLPAPERS } from '@/features/community/Shelf';
+import { WALLPAPER_IDS, WALLPAPERS } from '@/features/community/Shelf';
 import { tapped } from '@/lib/sound';
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
-const two = (x: number) => String(x).padStart(2, '0');
-
-function WallPost({ src, i }: { src: ImageSourcePropType; i: number }) {
+function WallPost({ src, id }: { src: ImageSourcePropType; id: string }) {
   const t = useTheme();
-  const like = useLike(`wall:w${two(i + 1)}`);
+  const like = useLike(`wall:${id}`);
   const liked = like.mine;
   const [saved, setSaved] = useState<SaveResult | 'saving' | null>(null);
   const save = tapped(async () => {
     if (saved === 'saving') return;
     setSaved('saving');
-    setSaved(await saveWallpaper(src, `mednova-wallpaper-${two(i + 1)}`));
+    setSaved(await saveWallpaper(src, `mednova-wallpaper-${id.slice(1)}`));
   });
   const saveLabel = saved === 'saving' ? 'Saving…' : saved === 'saved' ? 'Saved' : saved === 'denied' ? 'Allow photos to save' : saved === 'error' ? 'Try again' : 'Save';
   return (
@@ -35,7 +33,7 @@ function WallPost({ src, i }: { src: ImageSourcePropType; i: number }) {
       </View>
       {/* The frame sets the shape; a bare Image takes the file's own height on web. */}
       <View style={s.photo}>
-        <Image source={src} style={s.fill} contentFit="cover" transition={0} cachePolicy="memory" accessibilityLabel={`Wallpaper ${i + 1}`} />
+        <Image source={src} style={s.fill} contentFit="cover" transition={0} cachePolicy="memory" accessibilityLabel={`Wallpaper ${Number(id.slice(1))}`} />
       </View>
       <View style={s.acts}>
         <Pressable onPress={tapped(like.toggle)} style={[s.act, { borderColor: liked ? t.accent : t.chipLine, backgroundColor: t.chip }]} accessibilityRole="button" accessibilityState={{ selected: liked }} accessibilityLabel={liked ? 'Unlike' : 'Like'}>
@@ -65,7 +63,7 @@ export function Wallpapers() {
           </Text>
         </View>
         {WALLPAPERS.map((src, i) => (
-          <WallPost key={i} src={src} i={i} />
+          <WallPost key={WALLPAPER_IDS[i]} src={src} id={WALLPAPER_IDS[i]} />
         ))}
       </ScrollView>
     </Fade>
