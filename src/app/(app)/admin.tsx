@@ -12,14 +12,23 @@ import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 type Player = { id: string; username: string; display_name: string; tokens: number };
+type ChestPick = '' | 'wooden' | 'golden' | 'diamond' | 'epic';
+type Sent = { id: string; title: string; tokens: number; sparks: number; chest: string | null; at: string; to: string | null; read: number; collected: number };
+const CHEST_PICKS: { k: ChestPick; label: string }[] = [
+  { k: '', label: 'No chest' },
+  { k: 'wooden', label: 'Wooden' },
+  { k: 'golden', label: 'Golden' },
+  { k: 'diamond', label: 'Diamond' },
+  { k: 'epic', label: 'Epic' },
+];
 type Report = { id: string; kind: string; body: string; context: { chips?: string[]; path?: string }; status: 'new' | 'done'; created_at: string; username: string | null };
 
 const when = (iso: string) => new Date(iso).toLocaleString('en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
 
 /**
  * Hidden Admin page (AD1): only in the menu for Yazan's account, and every call is checked again on the server.
- * Find a player by username, give (or take back) tokens with a note; each grant is a row in their wallet. Sparks go
- * to one player or, with tokens, to everyone (#4); a gift may take a bar past 100.
+ * Send to Inbox (Yazan 2026-10-27): a message to everyone or to one player, with tokens, Sparks and/or a chest that
+ * reach the wallet only when the player taps Collect. Taking tokens back from a player stays instant.
  */
 export default function Page() {
   const c = useInfo();
@@ -27,16 +36,20 @@ export default function Page() {
   const [q, setQ] = useState('');
   const [found, setFound] = useState<Player[]>([]);
   const [pick, setPick] = useState<Player | null>(null);
-  const [amount, setAmount] = useState('');
   const giving = useRef(false);
-  const [note, setNote] = useState('');
+  const [toAll, setToAll] = useState(true);
+  const [title, setTitle] = useState('');
+  const [body, setBody] = useState('');
+  const [tok, setTok] = useState('');
   const [sparks, setSparks] = useState('');
-  const [allTok, setAllTok] = useState('');
-  const [allSp, setAllSp] = useState('');
-  const [allNote, setAllNote] = useState('');
+  const [chest, setChest] = useState<ChestPick>('');
   const [sure, setSure] = useState(false);
-  const [allMsg, setAllMsg] = useState<{ text: string; bad?: boolean } | null>(null);
+  const [sendMsg, setSendMsg] = useState<{ text: string; bad?: boolean } | null>(null);
+  const [back, setBack] = useState('');
+  const [note, setNote] = useState('');
   const [msg, setMsg] = useState<{ text: string; bad?: boolean } | null>(null);
+  const [sent, setSent] = useState<Sent[] | null>(null);
+  const loadSent = () => supabase.rpc('admin_inbox_sent').then(({ data }) => setSent((data as Sent[]) ?? []));
   const [show, setShow] = useState<'new' | 'all'>('new');
   const [reports, setReports] = useState<Report[] | null>(null);
   const [repErr, setRepErr] = useState(false);
@@ -47,6 +60,9 @@ export default function Page() {
     setRepShown(repFor);
     if (isAdmin) setReports(null);
   }
+  useEffect(() => {
+    if (isAdmin) void loadSent();
+  }, [isAdmin]);
   useEffect(() => {
     if (!isAdmin) return;
     supabase.rpc('admin_reports', { show }).then(({ data, error }) => {
@@ -81,105 +97,133 @@ export default function Page() {
 
   if (!isAdmin) return <Redirect href="/games" />;
 
-  const n = Math.trunc(Number(amount));
-  const give = async () => {
-    if (!pick || !n) return setMsg({ text: 'Pick a player and type a number of tokens.', bad: true });
-    // Each call is a new grant on the server, so a double tap would give twice (AP12e).
+  // Send to Inbox. Everyone: the first tap asks, the second sends.
+  const tn = Math.trunc(Number(tok)) || 0;
+  const sn = Math.trunc(Number(sparks)) || 0;
+  const send = async () => {
+    if (!title.trim()) return setSendMsg({ text: 'Write a title.', bad: true });
+    if (!toAll && !pick) return setSendMsg({ text: 'Pick a player above, or send to all players.', bad: true });
+    if (tn < 0 || sn < 0) return setSendMsg({ text: 'Gifts can’t be minus. Use Take tokens back below.', bad: true });
+    if (toAll && !sure) return setSure(true);
+    // Each call is a new message on the server, so a double tap would send twice (AP12e).
     if (giving.current) return;
     giving.current = true;
-    setMsg(null);
-    const { data, error } = await supabase.rpc('admin_grant_tokens', { target: pick.id, amount: n, note });
-    giving.current = false;
-    if (error) return setMsg({ text: 'Not saved. Amounts go from -1,000 to 5,000.', bad: true });
-    const tokens = Number((data as { tokens?: number } | null)?.tokens ?? pick.tokens + n);
-    setPick({ ...pick, tokens });
-    setFound((f) => f.map((p) => (p.id === pick.id ? { ...p, tokens } : p)));
-    setMsg({ text: `${n > 0 ? 'Gave' : 'Took back'} ${Math.abs(n)} token${Math.abs(n) === 1 ? '' : 's'}. @${pick.username} now has ${tokens}.` });
-    setAmount('');
-    setNote('');
-  };
-
-  const sp = Math.trunc(Number(sparks));
-  const giveSparks = async () => {
-    if (!pick || !sp) return setMsg({ text: 'Pick a player and type a number of Sparks.', bad: true });
-    if (giving.current) return;
-    giving.current = true;
-    setMsg(null);
-    const { error } = await supabase.rpc('admin_grant_sparks', { target: pick.id, amount: sp, note });
-    giving.current = false;
-    if (error) return setMsg({ text: 'Not saved. Sparks go from 1 to 1,000.', bad: true });
-    setMsg({ text: `Gave ${sp} Spark${sp === 1 ? '' : 's'} to @${pick.username}.` });
-    setSparks('');
-    setNote('');
-  };
-
-  // Everyone at once: the first tap asks, the second sends.
-  const at = Math.trunc(Number(allTok)) || 0;
-  const asp = Math.trunc(Number(allSp)) || 0;
-  const giveAll = async () => {
-    if (at <= 0 && asp <= 0) return setAllMsg({ text: 'Type tokens, Sparks or both.', bad: true });
-    if (!sure) return setSure(true);
-    if (giving.current) return;
-    giving.current = true;
-    setAllMsg(null);
-    const { data, error } = await supabase.rpc('admin_grant_all', { tokens: at, sparks: asp, note: allNote });
+    setSendMsg(null);
+    const { data, error } = await supabase.rpc('admin_inbox_send', { target: toAll ? null : pick!.id, title, body, tokens: tn, sparks: sn, chest });
     giving.current = false;
     setSure(false);
-    if (error) return setAllMsg({ text: 'Not sent. Each amount goes from 0 to 500.', bad: true });
+    if (error) return setSendMsg({ text: toAll ? 'Not sent. To everyone: up to 500 tokens and 500 Sparks.' : 'Not sent. Up to 5,000 tokens and 1,000 Sparks.', bad: true });
     const players = Number((data as { players?: number } | null)?.players ?? 0);
-    setAllMsg({ text: `Sent to ${players} player${players === 1 ? '' : 's'}.` });
-    setAllTok('');
-    setAllSp('');
-    setAllNote('');
+    setSendMsg({ text: toAll ? `Sent to ${players} player${players === 1 ? '' : 's'}. They collect it from their Inbox.` : `Sent to @${pick!.username}'s Inbox.` });
+    setTitle('');
+    setBody('');
+    setTok('');
+    setSparks('');
+    setChest('');
+    void loadSent();
   };
-  const allLabel = sure ? `Tap again to send to every player` : 'Give to everyone';
+  const sendLabel = toAll ? (sure ? 'Tap again to send to every player' : 'Send to all players') : pick ? `Send to @${pick.username}` : 'Send';
+
+  // Taking tokens back is a correction, not a gift: it stays instant.
+  const bn = Math.abs(Math.trunc(Number(back)) || 0);
+  const takeBack = async () => {
+    if (!pick || !bn) return setMsg({ text: 'Pick a player and type how many tokens to take back.', bad: true });
+    if (giving.current) return;
+    giving.current = true;
+    setMsg(null);
+    const { data, error } = await supabase.rpc('admin_grant_tokens', { target: pick.id, amount: -bn, note });
+    giving.current = false;
+    if (error) return setMsg({ text: 'Not saved. Up to 1,000 at a time.', bad: true });
+    const tokens = Number((data as { tokens?: number } | null)?.tokens ?? pick.tokens - bn);
+    setPick({ ...pick, tokens });
+    setFound((f) => f.map((p) => (p.id === pick.id ? { ...p, tokens } : p)));
+    setMsg({ text: `Took back ${bn} token${bn === 1 ? '' : 's'}. @${pick.username} now has ${tokens}.` });
+    setBack('');
+    setNote('');
+  };
 
   const field = [s.in, { backgroundColor: c.surf, borderColor: c.line, color: c.fg }];
+  // The player search, used by One player and by Take tokens back (shown once on the page).
+  const players = () => (
+    <>
+      <TextInput value={q} onChangeText={setQ} placeholder="Search a username" placeholderTextColor={c.mute} autoCapitalize="none" autoCorrect={false} style={[field, s.gap]} />
+      <View style={s.list}>
+        {found.map((p) => {
+          const on = pick?.id === p.id;
+          return (
+            <Pressable
+              key={p.id}
+              onPress={() => setPick(p)}
+              accessibilityRole="button"
+              accessibilityState={{ selected: on }}
+              style={[s.row, { borderColor: on ? c.chipOnLine : c.line, backgroundColor: on ? c.chipOnFill : 'transparent' }]}
+            >
+              <View style={{ flex: 1 }}>
+                <Text style={[s.name, { color: c.fg }]} numberOfLines={1}>{`Dr. ${p.display_name}`}</Text>
+                <Text style={[s.small, { color: c.mute }]}>{`@${p.username}`}</Text>
+              </View>
+              <Text style={[s.tok, { color: p.tokens < 0 ? c.t.red : c.fg }]}>{`${p.tokens} tokens`}</Text>
+            </Pressable>
+          );
+        })}
+        {q.trim() && !found.length ? <Text style={[s.small, { color: c.mute }]}>No player with that username.</Text> : null}
+      </View>
+    </>
+  );
   return (
     <Screen tab={null} glow={21}>
       <InfoScroll>
         <Kicker>Admin</Kicker>
-        <Text style={[ui.H, s.H, { color: c.fg }]}>Give tokens</Text>
-        <Text style={[ui.p, { color: c.mute }]}>Only your account sees this page. The player gets the tokens the next time their app syncs.</Text>
+        <Text style={[ui.H, s.H, { color: c.fg }]}>Send to Inbox</Text>
+        <Text style={[ui.p, { color: c.mute }]}>Only your account sees this page. A message with gifts lands in the player’s Inbox with a red dot; the gifts reach their wallet when they tap Collect. “All players” reaches accounts that exist now.</Text>
 
-        <TextInput value={q} onChangeText={setQ} placeholder="Search a username" placeholderTextColor={c.mute} autoCapitalize="none" autoCorrect={false} style={[field, s.gap]} />
-        <View style={s.list}>
-          {found.map((p) => {
-            const on = pick?.id === p.id;
-            return (
-              <Pressable
-                key={p.id}
-                onPress={() => setPick(p)}
-                accessibilityRole="button"
-                accessibilityState={{ selected: on }}
-                style={[s.row, { borderColor: on ? c.chipOnLine : c.line, backgroundColor: on ? c.chipOnFill : 'transparent' }]}
-              >
-                <View style={{ flex: 1 }}>
-                  <Text style={[s.name, { color: c.fg }]} numberOfLines={1}>{`Dr. ${p.display_name}`}</Text>
-                  <Text style={[s.small, { color: c.mute }]}>{`@${p.username}`}</Text>
-                </View>
-                <Text style={[s.tok, { color: p.tokens < 0 ? c.t.red : c.fg }]}>{`${p.tokens} tokens`}</Text>
-              </Pressable>
-            );
-          })}
-          {q.trim() && !found.length ? <Text style={[s.small, { color: c.mute }]}>No player with that username.</Text> : null}
+        <View style={[s.chips, s.gap]}>
+          {([true, false] as const).map((all) => (
+            <Pressable key={String(all)} onPress={() => (setToAll(all), setSure(false))} accessibilityRole="tab" accessibilityState={{ selected: toAll === all }} style={[s.chip, { borderColor: toAll === all ? c.chipOnLine : c.line, backgroundColor: toAll === all ? c.chipOnFill : 'transparent' }]}>
+              <Text style={[s.chipT, { color: toAll === all ? c.fg : c.mute }]}>{all ? 'All players' : 'One player'}</Text>
+            </Pressable>
+          ))}
         </View>
 
-        <Kicker style={s.gap}>{pick ? `For @${pick.username}` : 'Pick a player above'}</Kicker>
-        <TextInput value={amount} onChangeText={setAmount} placeholder="Tokens (use - to take back)" placeholderTextColor={c.mute} keyboardType="numbers-and-punctuation" style={[field, s.gapS]} />
-        <TextInput value={note} onChangeText={setNote} placeholder="Note (why), saved with the grant" placeholderTextColor={c.mute} maxLength={200} style={[field, s.gapS]} />
-        <GradBtn label="Give tokens" onPress={give} style={s.gap} />
-        <TextInput value={sparks} onChangeText={setSparks} placeholder="Sparks (1 to 1,000)" placeholderTextColor={c.mute} keyboardType="number-pad" style={[field, s.gap]} />
-        <GradBtn label="Give Sparks" onPress={giveSparks} style={s.gapS} />
-        {msg ? <Text style={[ui.p, { color: msg.bad ? c.t.error : c.fg }]}>{msg.text}</Text> : null}
+        {toAll ? null : players()}
 
-        <Text style={[ui.H, s.H, s.gapL, { color: c.fg }]}>Give everyone</Text>
-        <Text style={[ui.p, { color: c.mute }]}>Tokens and/or Sparks to every player, for an event or an apology. Up to 500 of each.</Text>
-        <TextInput value={allTok} onChangeText={(v) => (setAllTok(v), setSure(false))} placeholder="Tokens each" placeholderTextColor={c.mute} keyboardType="number-pad" style={[field, s.gapS]} />
-        <TextInput value={allSp} onChangeText={(v) => (setAllSp(v), setSure(false))} placeholder="Sparks each" placeholderTextColor={c.mute} keyboardType="number-pad" style={[field, s.gapS]} />
-        <TextInput value={allNote} onChangeText={setAllNote} placeholder="Note (why)" placeholderTextColor={c.mute} maxLength={200} style={[field, s.gapS]} />
-        <GradBtn label={allLabel} onPress={giveAll} style={s.gap} />
-        {allMsg ? <Text style={[ui.p, { color: allMsg.bad ? c.t.error : c.fg }]}>{allMsg.text}</Text> : null}
+        <TextInput value={title} onChangeText={setTitle} placeholder="Title (e.g. Sorry for the outage)" placeholderTextColor={c.mute} maxLength={80} style={[field, s.gap]} />
+        <TextInput value={body} onChangeText={setBody} placeholder="Message" placeholderTextColor={c.mute} maxLength={1000} multiline style={[field, s.gapS, s.multi]} />
+        <View style={[s.pair, s.gapS]}>
+          <TextInput value={tok} onChangeText={(v) => (setTok(v), setSure(false))} placeholder={toAll ? 'Tokens (up to 500)' : 'Tokens (up to 5,000)'} placeholderTextColor={c.mute} keyboardType="number-pad" style={[field, s.half]} />
+          <TextInput value={sparks} onChangeText={(v) => (setSparks(v), setSure(false))} placeholder={toAll ? 'Sparks (up to 500)' : 'Sparks (up to 1,000)'} placeholderTextColor={c.mute} keyboardType="number-pad" style={[field, s.half]} />
+        </View>
+        <View style={[s.chips, s.gapS]}>
+          {CHEST_PICKS.map((x) => (
+            <Pressable key={x.k || 'none'} onPress={() => (setChest(x.k), setSure(false))} accessibilityRole="button" accessibilityState={{ selected: chest === x.k }} style={[s.chip, { borderColor: chest === x.k ? c.chipOnLine : c.line, backgroundColor: chest === x.k ? c.chipOnFill : 'transparent' }]}>
+              <Text style={[s.chipT, { color: chest === x.k ? c.fg : c.mute }]}>{x.label}</Text>
+            </Pressable>
+          ))}
+        </View>
+        <GradBtn label={sendLabel} onPress={send} style={s.gap} />
+        {sendMsg ? <Text style={[ui.p, { color: sendMsg.bad ? c.t.error : c.fg }]}>{sendMsg.text}</Text> : null}
+
+        <Text style={[ui.H, s.H, s.gapL, { color: c.fg }]}>Sent</Text>
+        <Text style={[ui.p, { color: c.mute }]}>Your last 50 messages: who opened them and who collected.</Text>
+        {sent && !sent.length ? <Text style={[s.small, s.gapS, { color: c.mute }]}>Nothing sent yet.</Text> : null}
+        <View style={s.list}>
+          {(sent ?? []).map((m) => (
+            <View key={m.id} style={[s.rep, { borderColor: c.line }]}>
+              <Text style={[s.small, { color: c.mute }]}>{`${when(m.at)} · ${m.to ? '@' + m.to : 'All players'}`}</Text>
+              <Text style={[s.name, { color: c.fg }]}>{m.title}</Text>
+              <Text style={[s.small, { color: c.fg }]}>{[m.tokens ? `${m.tokens} tokens` : '', m.sparks ? `${m.sparks} Sparks` : '', m.chest ? `${m.chest} chest` : ''].filter(Boolean).join(' · ') || 'Message only'}</Text>
+              <Text style={[s.small, { color: c.mute }]}>{`Opened ${m.read} · Collected ${m.collected}`}</Text>
+            </View>
+          ))}
+        </View>
+
+        <Text style={[ui.H, s.H, s.gapL, { color: c.fg }]}>Take tokens back</Text>
+        <Text style={[ui.p, { color: c.mute }]}>A correction for one player, taken from their wallet at once.</Text>
+        {toAll ? players() : <Kicker style={s.gap}>{pick ? `For @${pick.username}` : 'Pick a player above'}</Kicker>}
+        <TextInput value={back} onChangeText={setBack} placeholder="Tokens to take back" placeholderTextColor={c.mute} keyboardType="number-pad" style={[field, s.gap]} />
+        <TextInput value={note} onChangeText={setNote} placeholder="Note (why), saved with it" placeholderTextColor={c.mute} maxLength={200} style={[field, s.gapS]} />
+        <GradBtn label={pick ? `Take back from @${pick.username}` : 'Take back'} onPress={takeBack} style={s.gap} />
+        {msg ? <Text style={[ui.p, { color: msg.bad ? c.t.error : c.fg }]}>{msg.text}</Text> : null}
 
         <Text style={[ui.H, s.H, s.gapL, { color: c.fg }]}>Reports</Text>
         <Text style={[ui.p, { color: c.mute }]}>Sent from the red ! by players and guests, newest first.</Text>
@@ -226,4 +270,10 @@ const s = StyleSheet.create({
   name: { fontFamily: F.display, fontSize: u(14) },
   small: { fontFamily: F.body, fontSize: u(9), marginTop: u(2) },
   tok: { fontFamily: F.mono, fontSize: u(10) },
+  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: u(6) },
+  chip: { borderWidth: 1, borderRadius: 999, paddingHorizontal: u(12), paddingVertical: u(6) },
+  chipT: { fontFamily: F.bodySemi, fontSize: u(10) },
+  pair: { flexDirection: 'row', gap: u(8) },
+  half: { flex: 1, minWidth: 0, width: 0 },
+  multi: { height: u(80), paddingTop: u(10), textAlignVertical: 'top' },
 });

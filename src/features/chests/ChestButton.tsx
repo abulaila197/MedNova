@@ -13,7 +13,7 @@ import { useRoundsDot } from '@/features/rounds/useRounds';
 import { chestCount, loadChallenges, useChests } from './useChests';
 
 /**
- * The chest button under Grand Rounds on the Games page; the badge counts unopened chests. With none to open, the red
+ * The chest button under Grand Rounds on the Games page (last of the four); the badge counts unopened chests. With none to open, the red
  * Grand Rounds dot shows until this week's missions are done (Yazan 2026-10-26).
  */
 export function ChestButton() {
@@ -76,7 +76,7 @@ const s = StyleSheet.create({
   btn: {
     position: 'absolute',
     right: u(16),
-    top: u(43), // 2026-10-19: both ribbon buttons 80% of their size (Yazan)
+    top: u(113), // last of the four (Yazan 2026-10-27); 80% size since 2026-10-19
     width: u(27),
     height: u(27),
     borderRadius: u(13.5),
@@ -96,6 +96,6 @@ const s = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: u(3),
   },
-  dot: { position: 'absolute', right: u(-2), top: u(-2), width: u(10), height: u(10), borderRadius: u(5), borderWidth: 1.5 },
+  dot: { position: 'absolute', right: u(-1), top: u(-1), width: u(7), height: u(7), borderRadius: u(3.5), borderWidth: 1 },
   badgeT: { color: '#fff', fontFamily: F.bodyBold, fontSize: u(7.5) },
 });

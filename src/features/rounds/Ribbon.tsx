@@ -133,10 +133,11 @@ export function Beat({ r, more = true }: { r: Rounds; more?: boolean }) {
 }
 
 const s = StyleSheet.create({
-  btn: { position: 'absolute', right: u(16), top: u(8), width: u(27), height: u(27), borderRadius: u(13.5), borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
+  // Third of the four buttons (Yazan 2026-10-27); the pop-up opens under it.
+  btn: { position: 'absolute', right: u(16), top: u(78), width: u(27), height: u(27), borderRadius: u(13.5), borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
   // The same red dot as the daily reward button.
-  dot: { position: 'absolute', right: u(-2), top: u(-2), width: u(10), height: u(10), borderRadius: u(5), borderWidth: 1.5 },
-  pop: { position: 'absolute', left: u(16), right: u(16), top: u(41), borderRadius: u(14), borderWidth: 1, paddingHorizontal: u(12), paddingTop: u(10), paddingBottom: u(8) },
+  dot: { position: 'absolute', right: u(-1), top: u(-1), width: u(7), height: u(7), borderRadius: u(3.5), borderWidth: 1 },
+  pop: { position: 'absolute', left: u(16), right: u(16), top: u(111), borderRadius: u(14), borderWidth: 1, paddingHorizontal: u(12), paddingTop: u(10), paddingBottom: u(8) },
   beat: { gap: u(3) },
   row: { flexDirection: 'row', alignItems: 'center', gap: u(6) },
   beatT: { flex: 1, fontFamily: F.display, fontSize: u(11) },

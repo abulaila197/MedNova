@@ -7,7 +7,7 @@ import { u } from '@/theme/scale';
 import { openDaily, useDaily } from './DailyHost';
 
 /**
- * The daily reward button under the chest button on the Games page (Yazan 2026-10-26): opens the daily pop-up, where
+ * The daily reward button under the Inbox button on the Games page (Yazan 2026-10-26, moved 2026-10-27): opens the daily pop-up, where
  * today's reward can be collected if it wasn't yet. A dot shows while it waits.
  */
 export function DailyButton() {
@@ -32,7 +32,7 @@ export function DailyButton() {
 }
 
 const s = StyleSheet.create({
-  // Under the chest button (top 43), the same 35 apart as the chest under Grand Rounds.
-  btn: { position: 'absolute', right: u(16), top: u(78), width: u(27), height: u(27), borderRadius: u(13.5), borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
-  dot: { position: 'absolute', right: u(-2), top: u(-2), width: u(10), height: u(10), borderRadius: u(5), borderWidth: 1.5 },
+  // Second of the four, under Inbox (top 8), 35 apart like the rest (Yazan 2026-10-27).
+  btn: { position: 'absolute', right: u(16), top: u(43), width: u(27), height: u(27), borderRadius: u(13.5), borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
+  dot: { position: 'absolute', right: u(-1), top: u(-1), width: u(7), height: u(7), borderRadius: u(3.5), borderWidth: 1 },
 });
