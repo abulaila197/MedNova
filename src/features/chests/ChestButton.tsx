@@ -76,7 +76,7 @@ const s = StyleSheet.create({
   btn: {
     position: 'absolute',
     right: u(16),
-    top: u(78), // last of the three (Yazan 2026-10-27); 80% size since 2026-10-19
+    top: u(68), // last of the three (Yazan 2026-10-27); 80% size since 2026-10-19
     width: u(27),
     height: u(27),
     borderRadius: u(13.5),

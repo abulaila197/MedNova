@@ -33,6 +33,6 @@ export function DailyButton() {
 
 const s = StyleSheet.create({
   // Second of the four, under Inbox (top 8), 35 apart like the rest (Yazan 2026-10-27).
-  btn: { position: 'absolute', right: u(16), top: u(43), width: u(27), height: u(27), borderRadius: u(13.5), borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
+  btn: { position: 'absolute', right: u(16), top: u(38), width: u(27), height: u(27), borderRadius: u(13.5), borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
   dot: { position: 'absolute', right: u(-1), top: u(-1), width: u(7), height: u(7), borderRadius: u(3.5), borderWidth: 1 },
 });
