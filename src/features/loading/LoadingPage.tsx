@@ -56,6 +56,10 @@ export function LoadingPage({ g, w, h, live, p, tip, barRef }: { g: LoadCfg; w: 
           {g.parts.length ? <Particles types={g.parts} t={clock} w={artW} h={artH} /> : null}
         </Animated.View>
       </View>
+      {/* A lowered photo melts into the plain colour above it, so no hard edge shows. */}
+      {g.artY && g.bg ? (
+        <LinearGradient colors={[g.bg, `${g.bg}00`]} style={{ position: 'absolute', left: 0, right: 0, top: q(g.artY) - 2, height: q(60) }} pointerEvents="none" />
+      ) : null}
       <LinearGradient colors={g.veil.c as [string, string, ...string[]]} locations={g.veil.at as [number, number, ...number[]]} style={StyleSheet.absoluteFill} pointerEvents="none" />
 
       <View style={[s.txt, { top: q(g.txt.top) + Math.max(0, ins.top - q(24)), alignItems: center ? 'center' : 'flex-start', transform: g.txt.rot ? [{ rotate: `${g.txt.rot}deg` }] : undefined }]}>
