@@ -11,7 +11,6 @@ import { Dots, wrapOff } from './Dots';
 import { DailyButton } from '@/features/daily/DailyButton';
 import { ChestButton } from '@/features/chests/ChestButton';
 import { InboxButton } from '@/features/inbox/InboxButton';
-import { RoundsButton } from '@/features/rounds/Ribbon';
 import { useTheme } from '@/state/app';
 import { DESIGN_W, u } from '@/theme/scale';
 
@@ -99,10 +98,9 @@ export function GamesScreen() {
           <View style={[StyleSheet.absoluteFill, { transform: [{ translateY: -lift }] }]} pointerEvents="box-none">
             <Dots pos={pos} onPick={jump} accent={t.accent} />
           </View>
-          {/* Top to bottom (Yazan 2026-10-27): Inbox, daily reward, Grand Rounds, chests. */}
+          {/* Top to bottom (Yazan 2026-10-27): Inbox, daily reward, chests (Grand Rounds inside the chest page). */}
           <InboxButton />
           <DailyButton />
-          <RoundsButton />
           <ChestButton />
         </View>
       </GestureDetector>

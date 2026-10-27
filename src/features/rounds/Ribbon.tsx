@@ -1,84 +1,14 @@
-import { router, useFocusEffect } from 'expo-router';
-import { useCallback, useEffect, useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
-import Svg, { Circle, Defs, LinearGradient, Path, Stop } from 'react-native-svg';
+import { StyleSheet, View } from 'react-native';
+import Svg, { Defs, LinearGradient, Path, Stop } from 'react-native-svg';
 
 import { Text } from '@/components/AppText';
 import { useSvgId } from '@/components/svgId';
 import { Bolt } from '@/features/sparks/Bolt';
-import { tapped } from '@/lib/sound';
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
-import { doneOf, loadRounds, timeLeft, useRoundsDot, useRoundsStore, weekName, type Rounds } from './useRounds';
-
-/**
- * Grand Rounds on the Games page (Yazan 2026-10-13): a small round button on the right under the header; tapping it
- * opens a small pop-up with the heartbeat line (look B).
- */
-export function RoundsButton() {
-  const t = useTheme();
-  const [open, setOpen] = useState(false);
-  const r = useRoundsStore((x) => x.r);
-  const dot = useRoundsDot();
-  const toggle = tapped(() => setOpen((o) => !o));
-  useEffect(() => {
-    void loadRounds();
-  }, []);
-  // Leaving the Games page closes the pop-up and re-reads the week on return.
-  useFocusEffect(
-    useCallback(() => {
-      void loadRounds();
-      return () => setOpen(false);
-    }, []),
-  );
-  if (!r) return null;
-  return (
-    <>
-      {open ? <Pressable style={StyleSheet.absoluteFill} onPress={toggle} accessibilityLabel="Close Grand Rounds" /> : null}
-      <Pressable onPress={toggle} style={[s.btn, { backgroundColor: t.panel, borderColor: t.panelLine }]} accessibilityRole="button" accessibilityLabel="Grand Rounds this week" accessibilityState={{ expanded: open }}>
-        <Ring done={doneOf(r)} />
-        {dot ? <View style={[s.dot, { backgroundColor: t.red, borderColor: t.sky }]} /> : null}
-      </Pressable>
-      {open ? (
-        <Animated.View entering={FadeIn.duration(160)} exiting={FadeOut.duration(120)} style={[s.pop, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
-          <Pressable
-            onPress={() => {
-              setOpen(false);
-              router.navigate('/rounds' as never);
-            }}
-            accessibilityRole="link"
-            accessibilityLabel="Open Grand Rounds">
-            <Beat r={r} />
-          </Pressable>
-        </Animated.View>
-      ) : null}
-    </>
-  );
-}
-
-/** The button face: a tiny heartbeat inside a ring that fills with the week's progress. */
-function Ring({ done }: { done: number }) {
-  const t = useTheme();
-  const id = useSvgId('rr');
-  const r = 13;
-  const c = 2 * Math.PI * r;
-  return (
-    <Svg width={u(24)} height={u(24)} viewBox="0 0 30 30">
-      <Defs>
-        <LinearGradient id={id} x1="0" y1="0" x2="30" y2="30" gradientUnits="userSpaceOnUse">
-          <Stop offset="0" stopColor={t.gradA} />
-          <Stop offset="1" stopColor={t.gradB} />
-        </LinearGradient>
-      </Defs>
-      <Circle cx={15} cy={15} r={r} fill="none" stroke={t.chipLine} strokeWidth={1.6} />
-      <Circle cx={15} cy={15} r={r} fill="none" stroke={`url(#${id})`} strokeWidth={1.8} strokeDasharray={`${c * done} ${c}`} strokeLinecap="round" transform="rotate(-90 15 15)" />
-      <Path d="M7.5,15.5 L11,15.5 L12.6,12.5 L14.4,19.5 L16.4,9.5 L18.2,15.5 L22.5,15.5" stroke={t.accent} strokeWidth={1.5} fill="none" strokeLinejoin="round" strokeLinecap="round" />
-    </Svg>
-  );
-}
+import { doneOf, timeLeft, weekName, type Rounds } from './useRounds';
 
 /** Look B: a heartbeat line that lights up as you use Sparks; one beat for each of the week's 3 missions. */
 export function Beat({ r, more = true }: { r: Rounds; more?: boolean }) {
@@ -133,11 +63,6 @@ export function Beat({ r, more = true }: { r: Rounds; more?: boolean }) {
 }
 
 const s = StyleSheet.create({
-  // Third of the four buttons (Yazan 2026-10-27); the pop-up opens under it.
-  btn: { position: 'absolute', right: u(16), top: u(78), width: u(27), height: u(27), borderRadius: u(13.5), borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
-  // The same red dot as the daily reward button.
-  dot: { position: 'absolute', right: u(-1), top: u(-1), width: u(7), height: u(7), borderRadius: u(3.5), borderWidth: 1 },
-  pop: { position: 'absolute', left: u(16), right: u(16), top: u(111), borderRadius: u(14), borderWidth: 1, paddingHorizontal: u(12), paddingTop: u(10), paddingBottom: u(8) },
   beat: { gap: u(3) },
   row: { flexDirection: 'row', alignItems: 'center', gap: u(6) },
   beatT: { flex: 1, fontFamily: F.display, fontSize: u(11) },

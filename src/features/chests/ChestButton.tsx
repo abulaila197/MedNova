@@ -13,7 +13,7 @@ import { useRoundsDot } from '@/features/rounds/useRounds';
 import { chestCount, loadChallenges, useChests } from './useChests';
 
 /**
- * The chest button under Grand Rounds on the Games page (last of the four); the badge counts unopened chests. With none to open, the red
+ * The chest button on the Games page (last of the three; Grand Rounds sits inside its page); the badge counts unopened chests. With none to open, the red
  * Grand Rounds dot shows until this week's missions are done (Yazan 2026-10-26).
  */
 export function ChestButton() {
@@ -39,7 +39,7 @@ export function ChestButton() {
       accessibilityRole='button'
       accessibilityLabel={`Chests, ${count} to open`}
     >
-      {/* Same face as the Grand Rounds button: a faint ring at the same size, the chest inside. */}
+      {/* Same face as the Inbox button: a faint ring at the same size, the chest inside. */}
       <Svg width={u(24)} height={u(24)} viewBox='0 0 30 30'>
         <Circle
           cx={15}
@@ -76,7 +76,7 @@ const s = StyleSheet.create({
   btn: {
     position: 'absolute',
     right: u(16),
-    top: u(113), // last of the four (Yazan 2026-10-27); 80% size since 2026-10-19
+    top: u(78), // last of the three (Yazan 2026-10-27); 80% size since 2026-10-19
     width: u(27),
     height: u(27),
     borderRadius: u(13.5),

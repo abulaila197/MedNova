@@ -12,6 +12,7 @@ import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import { MechViewer } from '@/features/cards/CollectionPage';
+import { RoundsEntry } from '@/features/rounds/RoundsEntry';
 
 import { CHEST_ORDER, CHESTS, chestItems, ITEMS, MECHS, MECHS_PRIZE, RARITY, RARITY_ORDER, type ChestKind, type Item } from './data';
 import type { OpenResult } from './useChests';
@@ -95,6 +96,8 @@ export function ChestsPage({ v }: { v: ChestsView }) {
           {'My '}
           <Text style={[ui.H, { color: t.accent, fontFamily: F.displayItalic }]}>chests</Text>
         </Text>
+        {/* Grand Rounds lives here now, not as its own Games page button (Yazan 2026-10-27). */}
+        <RoundsEntry />
 
         <View style={s.row}>
           <View style={s.left}>
