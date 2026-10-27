@@ -189,16 +189,18 @@ export function FreeTokens({ t }: { t: Theme }) {
   const tap = (w: Way) => {
     if (!signedIn) return router.navigate('/auth');
     if (busy) return;
+    // A collected link still opens its page, with no reward again (Yazan 2026-10-27).
+    const again = isDone(w);
     if ((SOCIAL as readonly string[]).includes(w.key)) {
       Linking.openURL(LINKS[w.key as (typeof SOCIAL)[number]]).catch(() => {});
-      return claim(w.key);
+      return again ? undefined : claim(w.key);
     }
     if (w.key === 'listing') {
       Linking.openURL(Platform.OS === 'android' ? LINKS.listingAndroid : LINKS.listing).catch(() => {});
-      return claim('listing');
+      return again ? undefined : claim('listing');
     }
     if (w.key === 'community') {
-      claim('community');
+      if (!again) claim('community');
       return router.navigate('/community' as never);
     }
     if (w.key === 'invite') return router.navigate('/friends' as never);
@@ -229,7 +231,7 @@ export function FreeTokens({ t }: { t: Theme }) {
         <Global t={t} st={st} signedIn={signedIn} />
         <WayCard t={t} w={AD_WAY} label={ADS_LIVE && st ? `${AD_WAY.label} · ${st.ads_today ?? 0} of ${AD_CAP} today` : AD_WAY.label} act={signedIn ? AD_WAY.act : 'Sign in'} done={(st?.ads_today ?? 0) >= AD_CAP} locked={!ADS_LIVE} busy={busy === 'ad'} onPress={() => (signedIn ? watchAd() : router.navigate('/auth'))} />
         {WAYS.map((w) => (
-          <WayCard key={w.key} t={t} w={w} label={label(w)} act={act(w)} done={isDone(w)} locked={noLink(w)} busy={busy === w.key} onPress={() => tap(w)} />
+          <WayCard key={w.key} t={t} w={w} label={label(w)} act={act(w)} done={isDone(w)} locked={noLink(w)} busy={busy === w.key} onPress={() => tap(w)} reopen={LINKED.includes(w.key)} />
         ))}
       </Row>
     </>
@@ -244,9 +246,12 @@ function Row({ children }: { children: ReactNode }) {
   );
 }
 
-function WayCard({ t, w, label, act, done, locked, busy, onPress }: { t: Theme; w: Way; label: string; act: string; done: boolean; locked?: boolean; busy: boolean; onPress: () => void }) {
+/** Ways that open a page; they stay tappable after collecting. */
+const LINKED = ['tiktok', 'instagram', 'facebook', 'youtube', 'channel', 'community', 'listing'];
+
+function WayCard({ t, w, label, act, done, locked, busy, onPress, reopen }: { t: Theme; w: Way; label: string; act: string; done: boolean; locked?: boolean; busy: boolean; onPress: () => void; reopen?: boolean }) {
   return (
-    <Pressable onPress={done || locked ? undefined : onPress} accessibilityRole="button" accessibilityLabel={`${w.label}, ${w.tokens} tokens`} style={[s.card, { backgroundColor: t.panel, borderColor: t.panelLine }, busy && { opacity: 0.6 }]}>
+    <Pressable onPress={locked || (done && !reopen) ? undefined : onPress} accessibilityRole="button" accessibilityLabel={`${w.label}, ${w.tokens} tokens`} style={[s.card, { backgroundColor: t.panel, borderColor: t.panelLine }, busy && { opacity: 0.6 }]}>
       <View style={[s.ic, { backgroundColor: 'rgba(111,214,255,0.1)' }]}>{w.icon({ size: u(17), color: t.accent })}</View>
       <Text style={[s.cN, { color: t.fg }]}>{`+${w.tokens}`}</Text>
       <Text style={[s.cU, { color: t.mute }]} numberOfLines={2}>

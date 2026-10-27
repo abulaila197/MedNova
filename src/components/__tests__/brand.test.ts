@@ -60,7 +60,7 @@ test('signed in, the header shows look A (photo, level ring, Sparks) in place of
 
 test('the token coin is drawn only in PulseStar.tsx, from the Pulse star outline', () => {
   assert.deepEqual(where(/export function TokenCoin/), ['src/components/PulseStar.tsx']);
-  assert.deepEqual(where(/<TokenCoin /), ['src/components/Congrats.tsx', 'src/components/Header.tsx', 'src/features/chests/ChallengesPage.tsx', 'src/features/daily/DailyPopup.tsx', 'src/features/level/LevelCounter.tsx', 'src/features/level/LevelUpHost.tsx', 'src/features/profile/FriendSheets.tsx', 'src/features/rounds/RoundsPage.tsx', 'src/features/store/StorePage.tsx', 'src/features/style/StylePage.tsx']); // the daily pop-up (DL1), the Store (MN7), the redeem pop-up, the level counter and pop-up, Grand Rounds, the daily missions, the Style shop and a friend's profile (#85) reuse it
+  assert.deepEqual(where(/<TokenCoin /), ['src/components/Congrats.tsx', 'src/components/Header.tsx', 'src/features/chests/ChallengesPage.tsx', 'src/features/daily/DailyPopup.tsx', 'src/features/inbox/InboxPage.tsx', 'src/features/level/LevelCounter.tsx', 'src/features/level/LevelUpHost.tsx', 'src/features/profile/FriendSheets.tsx', 'src/features/rounds/RoundsPage.tsx', 'src/features/store/StorePage.tsx', 'src/features/style/StylePage.tsx']); // the daily pop-up (DL1), the Store (MN7), the redeem pop-up, the level counter and pop-up, Grand Rounds, the daily missions, the Style shop, a friend's profile (#85) and the Inbox gifts reuse it
   const ps = code.find((f) => f.path === 'src/components/PulseStar.tsx')!.text;
   assert.match(ps, /starAt\(12, 12, 5\.6\)/);
 });

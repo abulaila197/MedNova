@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Text } from '@/components/AppText';
+import { OfflineLine } from '@/components/OfflineLine';
 import { TokenCoin } from '@/components/PulseStar';
 import { Screen } from '@/components/Screen';
 import { CHESTS } from '@/features/chests/data';
@@ -14,7 +15,7 @@ import { useSession } from '@/games/shell/session';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
-import { collect, hasGift, loadInbox, readAll, useInbox, type Message } from './useInbox';
+import { clearable, clearInbox, collect, collectAll, hasGift, loadInbox, readAll, useInbox, type Message } from './useInbox';
 
 const when = (iso: string) => new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
 
@@ -28,6 +29,26 @@ export function InboxPage() {
   const uid = useSession((x) => x.userId);
   const list = useInbox((x) => x.list);
   const failed = useInbox((x) => x.failed);
+  const savedAt = useInbox((x) => x.savedAt);
+  const [busy, setBusy] = useState<'all' | 'clear' | null>(null);
+  const [err, setErr] = useState('');
+  // Collect all while gifts wait; Clear messages only once everything is collected (Yazan 2026-10-27).
+  const gifts = (list ?? []).filter((m) => hasGift(m) && !m.collected).length;
+  const canClear = !gifts && (list ?? []).some(clearable);
+  const all = async () => {
+    if (busy) return;
+    setBusy('all');
+    setErr('');
+    if (!(await collectAll())) setErr('Some gifts didn’t collect. Check your connection and try again.');
+    setBusy(null);
+  };
+  const clear = async () => {
+    if (busy) return;
+    setBusy('clear');
+    setErr('');
+    if (!(await clearInbox())) setErr('Couldn’t clear. Check your connection and try again.');
+    setBusy(null);
+  };
   // On every visit, and again when the player signs in or out here.
   useFocusEffect(
     useCallback(() => {
@@ -45,6 +66,23 @@ export function InboxPage() {
           {'Your '}
           <Text style={[ui.H, { color: t.accent, fontFamily: F.displayItalic }]}>inbox</Text>
         </Text>
+        <OfflineLine at={uid ? savedAt : null} style={{ marginTop: u(6) }} />
+        {uid && (gifts || canClear) ? (
+          <View style={s.tools}>
+            {gifts ? (
+              <Pressable onPress={all} disabled={!!busy} accessibilityRole="button" style={s.goWrapRow}>
+                <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.go}>
+                  <Text style={[s.goT, { color: t.onGrad }]}>{busy === 'all' ? 'Collecting…' : 'Collect all'}</Text>
+                </LinearGradient>
+              </Pressable>
+            ) : (
+              <Pressable onPress={clear} disabled={!!busy} accessibilityRole="button" style={[s.ghost, { borderColor: c.line }]}>
+                <Text style={[s.goT, { color: c.fg }]}>{busy === 'clear' ? 'Clearing…' : 'Clear messages'}</Text>
+              </Pressable>
+            )}
+          </View>
+        ) : null}
+        {err ? <Text style={[s.err, { color: t.error }]}>{err}</Text> : null}
         {!uid ? <Text style={[s.foot, { color: t.accent }]}>Sign in to get messages and gifts.</Text> : null}
         {uid && failed && !list ? <Text style={[s.foot, { color: t.accent }]}>Can’t reach MedNova right now. Check your connection.</Text> : null}
         {uid && list && !list.length ? <Text style={[s.foot, { color: c.mute }]}>Nothing here yet. Gifts and news from us land here.</Text> : null}
@@ -72,7 +110,7 @@ function Card({ m }: { m: Message }) {
   return (
     <View style={[s.card, { backgroundColor: c.surf, borderColor: gift && !m.collected ? t.accent : c.line }]}>
       <Text style={[s.k, { color: c.kick }]}>{when(m.at).toUpperCase()}</Text>
-      <Text style={[s.h, { color: c.fg }]}>{m.title}</Text>
+      {m.title ? <Text style={[s.h, { color: c.fg }]}>{m.title}</Text> : null}
       {m.body ? <Text style={[s.body, { color: c.mute }]}>{m.body}</Text> : null}
       {gift ? (
         <View style={s.gifts}>
@@ -91,7 +129,7 @@ function Card({ m }: { m: Message }) {
           {m.chest ? (
             <View style={[s.chip, { backgroundColor: t.chip, borderColor: t.chipLine }]}>
               <Image source={CHESTS[m.chest].art} style={s.chest} contentFit="contain" />
-              <Text style={[s.chipT, { color: c.fg }]}>{CHESTS[m.chest].name}</Text>
+              <Text style={[s.chipT, { color: c.fg }]}>{(m.chests ?? 1) > 1 ? `${m.chests} × ${CHESTS[m.chest].name}` : CHESTS[m.chest].name}</Text>
             </View>
           ) : null}
         </View>
@@ -122,6 +160,9 @@ const s = StyleSheet.create({
   chipT: { fontFamily: F.bodySemi, fontSize: u(10) },
   chest: { width: u(16), height: u(16) },
   goWrap: { alignSelf: 'flex-start', marginTop: u(10) },
+  goWrapRow: { alignSelf: 'flex-start' },
+  tools: { flexDirection: 'row', gap: u(8), marginTop: u(10) },
+  ghost: { borderWidth: 1, borderRadius: u(12), paddingVertical: u(7), paddingHorizontal: u(18) },
   go: { borderRadius: u(12), paddingVertical: u(7), paddingHorizontal: u(18) },
   goT: { fontFamily: F.bodyBold, fontSize: u(11) },
   done: { fontFamily: F.mono, fontSize: u(8), letterSpacing: u(1.3), marginTop: u(10) },

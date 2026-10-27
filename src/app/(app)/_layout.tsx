@@ -59,9 +59,14 @@ export default function AppLayout() {
   // The page slides and shrinks flat (Yazan, 2026-10-10): a 3D-tilted, round-clipped page is redrawn
   // every frame on phones, which stutters and tears.
   const card = useAnimatedStyle(() => ({ transform: [{ translateX: width * 0.66 * p.value }, { scale: 1 - 0.2 * p.value }] }));
+  const menuSt = useAnimatedStyle(() => ({ opacity: p.value > 0.001 ? 1 : 0 }));
   return (
     <View style={{ flex: 1, backgroundColor: t.sky }}>
-      <Menu />
+      {/* Hidden while closed: the pages cross-fade when you move between them, and the menu behind showed through
+          as a ghost in between (Yazan's video, 2026-10-27). */}
+      <Animated.View style={[StyleSheet.absoluteFill, menuSt]} pointerEvents={open ? 'box-none' : 'none'}>
+        <Menu />
+      </Animated.View>
       <Animated.View ref={pageCard} collapsable={false} style={[s.card, { transformOrigin: 'left center' }, open && { borderRadius: u(34) }, card]} renderToHardwareTextureAndroid={open}>
         <Stack screenOptions={{ headerShown: false, animation: 'fade', contentStyle: { backgroundColor: t.sky } }} />
         {open ? <Pressable style={s.catch} onPress={() => setMenu(false)} accessibilityLabel="Close menu" /> : null}

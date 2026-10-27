@@ -23,12 +23,13 @@ import { useResults } from '../shell/useShellPages';
 import { AT, AtlasScreen, Btn, CG, CGB, CGI, CZ, CZM, KINGDOMS, Kicker, Parchment, ROMAN, Room, T, v } from './atlas';
 
 /** The landing's room: the sepia room with the game's art feathered in at the top. */
-export function Backdrop({ def }: { def: Pick<GameDef, 'key'> }) {
+export function Backdrop({ def, low }: { def: Pick<GameDef, 'key'>; low?: boolean }) {
   const art = LOAD[def.key];
   return (
     <>
       <Room />
-      {art ? <FeatherArt source={art.photo} position={art.fo} opacity={0.6} edges={{ bottom: 0.55 }} style={s.art} /> : null}
+      {/* low: the landing page keeps the art under its card, so the title and lines above stay clear (Yazan 2026-10-27). */}
+      {art ? <FeatherArt source={art.photo} position={art.fo} opacity={0.6} edges={low ? { top: 0.3, bottom: 0.25 } : { bottom: 0.55 }} style={low ? s.artLow : s.art} /> : null}
     </>
   );
 }
@@ -231,6 +232,7 @@ export function Results({ def, play, items }: { def: GameDef; play: Play; items:
 
 const s = StyleSheet.create({
   art: { position: 'absolute', left: 0, right: 0, top: 0, height: '62%' },
+  artLow: { position: 'absolute', left: 0, right: 0, top: '40%', height: '60%' },
   sheet: {
     backgroundColor: AT.paper,
     borderRadius: v(6),

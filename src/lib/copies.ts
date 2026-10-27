@@ -4,7 +4,7 @@
 // copy replaces the phone's.
 import { engine } from '@/games/engine';
 
-export const COPIES = ['style', 'friends', 'hunt', 'challenges', 'rounds', 'social', 'leaderboard', 'cases', 'free', 'profiles', 'daily'] as const;
+export const COPIES = ['style', 'friends', 'hunt', 'challenges', 'rounds', 'social', 'leaderboard', 'cases', 'free', 'profiles', 'daily', 'inbox'] as const;
 export type CopyName = (typeof COPIES)[number];
 
 /** A saved copy and when it was read from the server (ms). */

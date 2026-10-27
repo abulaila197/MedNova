@@ -1,14 +1,13 @@
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 
-import { costRange, sparksCost } from '@/features/sparks/costs';
+import { sparksCost } from '@/features/sparks/costs';
 import { needSparks } from '@/features/sparks/sparks';
 import { leaveRoom, rematchRoom } from '@/online/api';
 
 import { engine, GUEST_PLAYS } from '../engine';
 import type { Mode, Play, PlayItem } from '../engine/types';
 import { alwaysFree, startPlay } from './flow';
-import { isSubscribed } from '@/features/store/billing';
 import { focusGame } from '@/features/games/focus';
 import { useSession } from './session';
 import { teamsOf, teamStandings } from './teams';
@@ -51,16 +50,9 @@ export function useLanding(def: GameDef) {
     const i = (p.resume as { index?: number } | null)?.index;
     return `Resume ${def.itemNoun ?? 'case'} ${i != null ? i + 1 : ''}`.trim();
   };
-  /** The small note on a mode card: what a play costs, a guest's free plays left, or that online needs an account. */
+  /** The small note on a mode card: only a guest's free plays left, or that online needs an account. No Sparks text on the cards (Yazan 2026-10-27). */
   const note = (mode: Mode) => {
-    if (signedIn) {
-      if (isSubscribed()) return 'Unlimited Sparks';
-      const c = costRange(def.key, mode, def.setup[mode] ?? []);
-      if (c.max <= 0) return 'Free';
-      if (def.key === 'nova-medicordle' && mode === 'solo') return `Daily free · Endless ${c.max} Sparks a word`;
-      return c.min === c.max ? `${c.min} Sparks` : `${c.min} to ${c.max} Sparks`;
-    }
-    if (left == null) return '';
+    if (signedIn || left == null) return '';
     return mode === 'online' ? 'Sign in to play' : left > 0 ? `${left} of ${GUEST_PLAYS} free plays left` : 'Free plays used';
   };
   return { open, setOpen, resume, go, resumePlay, resumeLabel, note };

@@ -21,10 +21,6 @@ export const gameLabel = (g: string) => {
   return x ? `${x.lead.replace(/^The /, '')} ${x.em}`.trim() : g;
 };
 
-// The fields each game's own bank uses, so an approved word plays as it is.
-const SA_FIELDS = ['Cardiology', 'Pulmonology', 'Neurology', 'Psychiatry', 'Dermatology', 'Gastroenterology', 'Endocrinology', 'OB/GYN', 'Pediatrics & Genetics', 'Infectious diseases', 'Hematology', 'Other'];
-const IM_FIELDS = ['Respiratory', 'Cardiovascular', 'Digestive', 'Nervous', 'Endocrine', 'Renal and urinary', 'Skin', 'Musculoskeletal', 'Reproductive', 'Blood and immune', 'Pharmacology', 'Microbiology'];
-
 /** Add a word (Yazan 2026-10-26, #37): pick the game, then fill in that game's form. */
 export function NewWord({ start }: { start?: WordGame }) {
   const c = useInfo();
@@ -32,7 +28,8 @@ export function NewWord({ start }: { start?: WordGame }) {
   const signedIn = !!useSession((x) => x.userId);
   const [game, setGame] = useState<WordGame>(start && WORD_GAMES.includes(start) ? start : 'the-silent-artist');
   const [name, setName] = useState('');
-  const [field, setField] = useState<number | null>(null);
+  // Typed by the player and optional (Yazan 2026-10-27).
+  const [field, setField] = useState('');
   const [alts, setAlts] = useState(['', '']);
   const [definition, setDefinition] = useState('');
   const [stem, setStem] = useState('');
@@ -46,7 +43,7 @@ export function NewWord({ start }: { start?: WordGame }) {
   const letters = name.replace(/[^A-Za-z]/g, '');
   const form = (): { ok: true; w: WordData[WordGame] } | { ok: false; why: string } => {
     if (game === 'the-silent-artist')
-      return name.trim().length < 2 ? { ok: false, why: 'Add the disease name.' } : field == null ? { ok: false, why: 'Pick a field.' } : { ok: true, w: { name, field: SA_FIELDS[field], aliases: alts.filter((x) => x.trim()) } };
+      return name.trim().length < 2 ? { ok: false, why: 'Add the disease name.' } : { ok: true, w: { name, field: field.trim(), aliases: alts.filter((x) => x.trim()) } };
     if (game === 'nova-medicordle')
       return letters.length < 6 || letters.length > 15 ? { ok: false, why: 'The word needs 6 to 15 letters.' } : definition.trim().length < 5 ? { ok: false, why: 'Add a one-line definition.' } : { ok: true, w: { word: letters.toUpperCase(), definition } };
     if (game === 'the-streak-master') {
@@ -54,13 +51,13 @@ export function NewWord({ start }: { start?: WordGame }) {
       return stem.trim().length < 10 ? { ok: false, why: 'Write the question.' } : filled < choices.length ? { ok: false, why: 'Fill in every choice.' } : answer == null ? { ok: false, why: 'Tap the right choice.' } : { ok: true, w: { stem, choices, answer } };
     }
     if (game === 'imposter')
-      return name.trim().length < 2 || b.trim().length < 2 ? { ok: false, why: 'Add both diseases.' } : name.trim().toLowerCase() === b.trim().toLowerCase() ? { ok: false, why: 'The two diseases must differ.' } : field == null ? { ok: false, why: 'Pick a field.' } : { ok: true, w: { a: name, b, category: IM_FIELDS[field] } };
+      return name.trim().length < 2 || b.trim().length < 2 ? { ok: false, why: 'Add both diseases.' } : name.trim().toLowerCase() === b.trim().toLowerCase() ? { ok: false, why: 'The two diseases must differ.' } : { ok: true, w: { a: name, b, category: field.trim() } };
     return name.trim().length < 2 ? { ok: false, why: 'Add the term.' } : forbidden.some((x) => !x.trim()) ? { ok: false, why: 'Add all 5 forbidden words.' } : { ok: true, w: { name, forbidden } };
   };
 
   const pick = (g: WordGame) => {
     setGame(g);
-    setField(null);
+    setField('');
     setMsg('');
   };
   const save = async () => {
@@ -96,8 +93,7 @@ export function NewWord({ start }: { start?: WordGame }) {
         {game === 'the-silent-artist' ? (
           <Box t={t} n="2" title="The disease to draw">
             <Field t={t} label="Disease name *" v={name} set={setName} ph="Myocardial infarction" />
-            <Label t={t} text="Field *" />
-            <Chips t={t} items={SA_FIELDS} on={field} onPick={setField} />
+            <Field t={t} label="Field (optional)" v={field} set={setField} ph="Cardiology" />
             {alts.map((a, i) => (
               <Field key={i} t={t} label={`Other name ${i + 1} (optional)`} v={a} set={(v) => setAlts((x) => x.map((y, j) => (j === i ? v : y)))} ph={i === 0 ? 'Heart attack' : 'MI'} />
             ))}
@@ -131,8 +127,7 @@ export function NewWord({ start }: { start?: WordGame }) {
           <Box t={t} n="2" title="Two look-alike diseases">
             <Field t={t} label="Disease 1 *" v={name} set={setName} ph="Pneumonia" />
             <Field t={t} label="Disease 2 *" v={b} set={setB} ph="Tuberculosis" />
-            <Label t={t} text="Field *" />
-            <Chips t={t} items={IM_FIELDS} on={field} onPick={setField} />
+            <Field t={t} label="Field (optional)" v={field} set={setField} ph="Respiratory" />
           </Box>
         ) : (
           <Box t={t} n="2" title="The term and its forbidden words">

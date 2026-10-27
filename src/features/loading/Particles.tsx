@@ -10,7 +10,7 @@ import { q } from './geo';
 // clock `t` (seconds), so nothing is stored per frame and a paused clock holds the picture still.
 // Speeds are the preview's pixels per frame at 60 fps, on the photo box.
 
-const COUNT: Record<PartType, number> = { rain: 70, rainwin: 26, chalk: 40, motes: 34, sparkle: 22, embers: 26, smoke: 9 };
+const COUNT: Record<PartType, number> = { rain: 70, rainwin: 26, chalk: 40, motes: 34, sparkle: 8, embers: 26, smoke: 9 };
 
 /** Same random numbers every run for particle i, field k (and respawn cycle c). */
 function hash(i: number, k: number, c: number) {
@@ -72,7 +72,8 @@ function Particle({ ty, i, t, w, h }: { ty: PartType; i: number; t: SharedValue<
       const ph = hash(i, 5, 0) * 6.28 + sp * f;
       const c = Math.floor(ph / (6.28 * 3));
       const a = Math.max(0, Math.sin(ph));
-      return { opacity: a * 0.9, transform: [{ translateX: w * (0.1 + hash(i, 0, c) * 0.8) }, { translateY: h * (0.3 + hash(i, 1, c) * 0.6) }, { scale: (0.5 + a) / 1.5 }] };
+      // Very faint and few (Yazan 2026-10-27).
+      return { opacity: a * 0.35, transform: [{ translateX: w * (0.1 + hash(i, 0, c) * 0.8) }, { translateY: h * (0.3 + hash(i, 1, c) * 0.6) }, { scale: (0.5 + a) / 1.5 }] };
     }
     if (ty === 'embers') {
       const d = 0.008 + hash(i, 6, 0) * 0.012;
@@ -110,7 +111,7 @@ function Particle({ ty, i, t, w, h }: { ty: PartType; i: number; t: SharedValue<
     return <Animated.View style={[s.p, s.dot, { width: d, height: d, marginLeft: -d / 2, marginTop: -d / 2, backgroundColor: ty === 'chalk' ? 'rgb(245,243,232)' : 'rgb(255,220,150)' }, st]} />;
   }
   if (ty === 'sparkle') {
-    const z = (1 + r(7) * 2) * 1.5 * 4 * sc;
+    const z = (1 + r(7) * 2) * 2.4 * sc;
     return (
       <Animated.View style={[s.p, { width: z, height: z, marginLeft: -z / 2, marginTop: -z / 2 }, st]}>
         <View style={[s.bar, { left: 0, right: 0, top: z / 2 - 0.5, height: 1 }]} />

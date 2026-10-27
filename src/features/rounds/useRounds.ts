@@ -4,8 +4,6 @@ import { create } from 'zustand';
 
 import { GAMES } from '@/data/games';
 import { loadChallenges } from '@/features/chests/useChests';
-import { sparksCost } from '@/features/sparks/costs';
-import type { GameKey } from '@/games/engine/types';
 import { useSession } from '@/games/shell/session';
 import { copyOf, keepCopy } from '@/lib/copies';
 import { supabase } from '@/lib/supabase';
@@ -52,13 +50,6 @@ export const weekName = (w: Week) => (w.kind === 'mode' ? MODE_WEEK[w.mode] : ((
 /** What counts this week, in words. */
 export const weekGoal = (w: Week) =>
   w.kind === 'mode' ? `Use Sparks on any game in ${MODE_NAME[w.mode]}` : 'Use Sparks on this game, in any mode';
-
-/** "about 20 games" for a mission, at the game's usual price (game weeks only). */
-export function aboutGames(w: Week, sparks: number) {
-  if (w.kind !== 'game') return null;
-  const each = sparksCost(w.game as GameKey, 'online', {}) || sparksCost(w.game as GameKey, 'offline', {});
-  return each ? `about ${Math.ceil(sparks / each)} games` : null;
-}
 
 export const timeLeft = (ends: number) => {
   const h = Math.max(0, Math.floor((ends - Date.now()) / 3600000));

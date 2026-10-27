@@ -15,9 +15,9 @@ export const RARITY_ORDER: Rarity[] = ['common', 'uncommon', 'rare', 'epic', 'le
 
 export const CHESTS: Record<ChestKind, { name: string; art: ImageSource; items: number; from: string; odds: Partial<Record<Rarity, number>> }> = {
   wooden: { name: 'Wooden chest', art: require('../../../assets/chests/chest-wooden.webp'), items: 1, from: 'Grand Rounds mission 1', odds: { common: 70, uncommon: 24, rare: 6 } },
-  golden: { name: 'Golden chest', art: require('../../../assets/chests/chest-golden.webp'), items: 2, from: 'Grand Rounds mission 2', odds: { common: 50, uncommon: 30, rare: 14, epic: 6 } },
-  diamond: { name: 'Diamond chest', art: require('../../../assets/chests/chest-diamond.webp'), items: 3, from: 'Grand Rounds mission 3', odds: { common: 30, uncommon: 32, rare: 22, epic: 12, legendary: 4 } },
-  epic: { name: 'Epic chest', art: require('../../../assets/chests/chest-epic.webp'), items: 3, from: 'Grand Rounds 4 weeks in a row', odds: { rare: 40, epic: 35, legendary: 25 } },
+  golden: { name: 'Golden chest', art: require('../../../assets/chests/chest-golden.webp'), items: 1, from: 'Grand Rounds mission 2', odds: { common: 50, uncommon: 30, rare: 14, epic: 6 } },
+  diamond: { name: 'Diamond chest', art: require('../../../assets/chests/chest-diamond.webp'), items: 1, from: 'Grand Rounds mission 3', odds: { common: 30, uncommon: 32, rare: 22, epic: 12, legendary: 4 } },
+  epic: { name: 'Epic chest', art: require('../../../assets/chests/chest-epic.webp'), items: 1, from: 'Grand Rounds 4 weeks in a row', odds: { rare: 40, epic: 35, legendary: 25 } },
 };
 export const CHEST_ORDER: ChestKind[] = ['wooden', 'golden', 'diamond', 'epic'];
 

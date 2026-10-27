@@ -14,7 +14,7 @@ import { Backdrop, Gate, Lobby, OnlineSetup, Results } from './rooms';
 function BackLink() {
   return (
     <Pressable onPress={() => (router.canGoBack() ? router.back() : router.replace('/games'))} accessibilityRole="link" hitSlop={v(8)} style={{ alignSelf: 'flex-start', paddingHorizontal: v(4) }}>
-      <T f={CGI} size={16} color={AT.soft}>‹ Games</T>
+      <T f={CGI} size={16} color={BRIGHT}>‹ Games</T>
     </Pressable>
   );
 }
@@ -23,13 +23,13 @@ function Landing({ def }: { def: GameDef }) {
   const g = GAMES.find((x) => x.key === def.key)!;
   const { open, setOpen, resume, go, resumePlay, resumeLabel, note } = useLanding(def);
   return (
-    <AtlasScreen scroll under={<Backdrop def={def} />}>
+    <AtlasScreen scroll under={<Backdrop def={def} low />}>
       <BackLink />
       <View style={{ gap: v(3), paddingHorizontal: v(4), marginBottom: v(4) }}>
-        <Kicker>Choose how to play</Kicker>
+        <Kicker color={BRIGHT}>Choose how to play</Kicker>
         <T f={CZ} size={30} color={AT.gold} style={{ lineHeight: v(35) }}>{`${g.lead} ${g.em}`}</T>
         <T f={CGI} size={17} style={{ lineHeight: v(21) }}>{g.sub}</T>
-        <T size={15} color={AT.soft} style={{ marginTop: v(4), lineHeight: v(19) }}>{g.desc}</T>
+        <T size={15} color={BRIGHT} style={{ marginTop: v(4), lineHeight: v(19) }}>{g.desc}</T>
       </View>
       {def.modes.map((m) => {
         const bm = resume[m.mode];
@@ -65,6 +65,9 @@ function Landing({ def }: { def: GameDef }) {
     </AtlasScreen>
   );
 }
+
+/** Clearer than AT.soft over the dark room (Yazan 2026-10-27). */
+const BRIGHT = '#e8d6b4';
 
 export const conquerorScreens: OwnScreens = { Landing, Gate, OnlineSetup, Lobby, Results };
 

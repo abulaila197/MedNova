@@ -66,9 +66,11 @@ export function GamesScreen() {
   );
 
   // The swipe runs on the UI thread; only the settled page goes back to React.
+  // Lighter swipe (Yazan 2026-10-27, "feels like resistance"): it starts sooner, a slightly slanted swipe still
+  // counts, a shorter or slower flick turns the page, and a fast flick lands quicker.
   const pan = Gesture.Pan()
-    .activeOffsetX([-10, 10])
-    .failOffsetY([-14, 14])
+    .activeOffsetX([-6, 6])
+    .failOffsetY([-22, 22])
     .onStart(() => {
       cancelAnimation(pos);
       start.value = pos.value;
@@ -84,8 +86,9 @@ export function GamesScreen() {
       const base = Math.round(start.value);
       const moved = pos.value - base;
       let target = Math.round(pos.value);
-      if (Math.abs(moved) > 0.18 || Math.abs(e.velocityX) > 400) target = base + (moved > 0 ? 1 : -1);
-      pos.set(withTiming(target, { duration: 380, easing: EASE }, (fin) => fin && scheduleOnRN(pick, target)));
+      if (Math.abs(moved) > 0.12 || Math.abs(e.velocityX) > 250) target = base + (moved > 0 ? 1 : -1);
+      const ms = Math.abs(e.velocityX) > 900 ? 260 : 330;
+      pos.set(withTiming(target, { duration: ms, easing: EASE }, (fin) => fin && scheduleOnRN(pick, target)));
     });
 
   return (

@@ -13,7 +13,7 @@ import { F } from '@/theme/tokens';
 
 type Player = { id: string; username: string; display_name: string; tokens: number };
 type ChestPick = '' | 'wooden' | 'golden' | 'diamond' | 'epic';
-type Sent = { id: string; title: string; tokens: number; sparks: number; chest: string | null; at: string; to: string | null; read: number; collected: number };
+type Sent = { id: string; title: string; tokens: number; sparks: number; chest: string | null; chests?: number; at: string; to: string | null; read: number; collected: number };
 const CHEST_PICKS: { k: ChestPick; label: string }[] = [
   { k: '', label: 'No chest' },
   { k: 'wooden', label: 'Wooden' },
@@ -43,6 +43,8 @@ export default function Page() {
   const [tok, setTok] = useState('');
   const [sparks, setSparks] = useState('');
   const [chest, setChest] = useState<ChestPick>('');
+  // How many chests of that kind (1 to 20, Yazan 2026-10-27).
+  const [chests, setChests] = useState(1);
   const [sure, setSure] = useState(false);
   const [sendMsg, setSendMsg] = useState<{ text: string; bad?: boolean } | null>(null);
   const [back, setBack] = useState('');
@@ -101,7 +103,8 @@ export default function Page() {
   const tn = Math.trunc(Number(tok)) || 0;
   const sn = Math.trunc(Number(sparks)) || 0;
   const send = async () => {
-    if (!title.trim()) return setSendMsg({ text: 'Write a title.', bad: true });
+    // The title and message are optional; a message can be just a gift (Yazan 2026-10-27).
+    if (!title.trim() && !body.trim() && !tn && !sn && !chest) return setSendMsg({ text: 'Write something or add a gift.', bad: true });
     if (!toAll && !pick) return setSendMsg({ text: 'Pick a player above, or send to all players.', bad: true });
     if (tn < 0 || sn < 0) return setSendMsg({ text: 'Gifts can’t be minus. Use Take tokens back below.', bad: true });
     if (toAll && !sure) return setSure(true);
@@ -109,7 +112,7 @@ export default function Page() {
     if (giving.current) return;
     giving.current = true;
     setSendMsg(null);
-    const { data, error } = await supabase.rpc('admin_inbox_send', { target: toAll ? null : pick!.id, title, body, tokens: tn, sparks: sn, chest });
+    const { data, error } = await supabase.rpc('admin_inbox_send', { target: toAll ? null : pick!.id, title, body, tokens: tn, sparks: sn, chest, chests: chest ? chests : 1 });
     giving.current = false;
     setSure(false);
     if (error) return setSendMsg({ text: toAll ? 'Not sent. To everyone: up to 500 tokens and 500 Sparks.' : 'Not sent. Up to 5,000 tokens and 1,000 Sparks.', bad: true });
@@ -120,6 +123,7 @@ export default function Page() {
     setTok('');
     setSparks('');
     setChest('');
+    setChests(1);
     void loadSent();
   };
   const sendLabel = toAll ? (sure ? 'Tap again to send to every player' : 'Send to all players') : pick ? `Send to @${pick.username}` : 'Send';
@@ -187,8 +191,8 @@ export default function Page() {
 
         {toAll ? null : players()}
 
-        <TextInput value={title} onChangeText={setTitle} placeholder="Title (e.g. Sorry for the outage)" placeholderTextColor={c.mute} maxLength={80} style={[field, s.gap]} />
-        <TextInput value={body} onChangeText={setBody} placeholder="Message" placeholderTextColor={c.mute} maxLength={1000} multiline style={[field, s.gapS, s.multi]} />
+        <TextInput value={title} onChangeText={setTitle} placeholder="Title (optional)" placeholderTextColor={c.mute} maxLength={80} style={[field, s.gap]} />
+        <TextInput value={body} onChangeText={setBody} placeholder="Message (optional)" placeholderTextColor={c.mute} maxLength={1000} multiline style={[field, s.gapS, s.multi]} />
         <View style={[s.pair, s.gapS]}>
           <TextInput value={tok} onChangeText={(v) => (setTok(v), setSure(false))} placeholder={toAll ? 'Tokens (up to 500)' : 'Tokens (up to 5,000)'} placeholderTextColor={c.mute} keyboardType="number-pad" style={[field, s.half]} />
           <TextInput value={sparks} onChangeText={(v) => (setSparks(v), setSure(false))} placeholder={toAll ? 'Sparks (up to 500)' : 'Sparks (up to 1,000)'} placeholderTextColor={c.mute} keyboardType="number-pad" style={[field, s.half]} />
@@ -200,6 +204,18 @@ export default function Page() {
             </Pressable>
           ))}
         </View>
+        {chest ? (
+          <View style={[s.count, s.gapS]}>
+            <Text style={[s.small, { color: c.mute, flex: 1 }]}>How many chests</Text>
+            <Pressable onPress={() => (setChests((n) => Math.max(1, n - 1)), setSure(false))} accessibilityRole="button" accessibilityLabel="One less chest" style={[s.step, { borderColor: c.line }]}>
+              <Text style={[s.name, { color: c.fg }]}>−</Text>
+            </Pressable>
+            <Text style={[s.name, s.countN, { color: c.fg }]}>{chests}</Text>
+            <Pressable onPress={() => (setChests((n) => Math.min(20, n + 1)), setSure(false))} accessibilityRole="button" accessibilityLabel="One more chest" style={[s.step, { borderColor: c.line }]}>
+              <Text style={[s.name, { color: c.fg }]}>+</Text>
+            </Pressable>
+          </View>
+        ) : null}
         <GradBtn label={sendLabel} onPress={send} style={s.gap} />
         {sendMsg ? <Text style={[ui.p, { color: sendMsg.bad ? c.t.error : c.fg }]}>{sendMsg.text}</Text> : null}
 
@@ -210,8 +226,8 @@ export default function Page() {
           {(sent ?? []).map((m) => (
             <View key={m.id} style={[s.rep, { borderColor: c.line }]}>
               <Text style={[s.small, { color: c.mute }]}>{`${when(m.at)} · ${m.to ? '@' + m.to : 'All players'}`}</Text>
-              <Text style={[s.name, { color: c.fg }]}>{m.title}</Text>
-              <Text style={[s.small, { color: c.fg }]}>{[m.tokens ? `${m.tokens} tokens` : '', m.sparks ? `${m.sparks} Sparks` : '', m.chest ? `${m.chest} chest` : ''].filter(Boolean).join(' · ') || 'Message only'}</Text>
+              {m.title ? <Text style={[s.name, { color: c.fg }]}>{m.title}</Text> : null}
+              <Text style={[s.small, { color: c.fg }]}>{[m.tokens ? `${m.tokens} tokens` : '', m.sparks ? `${m.sparks} Sparks` : '', m.chest ? `${(m.chests ?? 1) > 1 ? `${m.chests} × ` : ''}${m.chest} chest` : ''].filter(Boolean).join(' · ') || 'Message only'}</Text>
               <Text style={[s.small, { color: c.mute }]}>{`Opened ${m.read} · Collected ${m.collected}`}</Text>
             </View>
           ))}
@@ -269,6 +285,9 @@ const s = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center', gap: u(10), borderWidth: 1, borderRadius: u(14), paddingVertical: u(8), paddingHorizontal: u(12) },
   name: { fontFamily: F.display, fontSize: u(14) },
   small: { fontFamily: F.body, fontSize: u(9), marginTop: u(2) },
+  count: { flexDirection: 'row', alignItems: 'center', gap: u(8) },
+  step: { width: u(28), height: u(28), borderWidth: 1, borderRadius: u(14), alignItems: 'center', justifyContent: 'center' },
+  countN: { minWidth: u(20), textAlign: 'center' },
   tok: { fontFamily: F.mono, fontSize: u(10) },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: u(6) },
   chip: { borderWidth: 1, borderRadius: 999, paddingHorizontal: u(12), paddingVertical: u(6) },

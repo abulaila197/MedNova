@@ -144,7 +144,9 @@ function Run({ run }: { run: LoadRun }) {
       <Animated.View style={[s.clip, outer]}>
         <Animated.View style={[s.page, { width: W, height: H }, inner]}>
           <Animated.View style={[StyleSheet.absoluteFill, settleSt]}>
-            <LoadingPage g={g} w={W} h={H} live={stage !== 'doors'} p={p} tip={tip} barRef={bar} />
+            {/* Laid out only once its fonts are in: text measured in the stand-in font kept that size when the real font
+                drew, so titles lost letters ("The Para") or gained gaps (Yazan 2026-10-27). */}
+            {split === null ? null : <LoadingPage g={g} w={W} h={H} live={stage !== 'doors'} p={p} tip={tip} barRef={bar} />}
           </Animated.View>
         </Animated.View>
       </Animated.View>

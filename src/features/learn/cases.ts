@@ -72,13 +72,13 @@ export function mineFields(m: { kind: 'case'; c: CustomCase } | { kind: 'word'; 
   const w = m.w;
   switch (w.game) {
     case 'the-silent-artist':
-      return [f('nm', 'Disease', w.data.name), f('fd', 'Field', w.data.field), ...(w.data.aliases.length ? [f('al', 'Other names', w.data.aliases.join('\n'))] : [])];
+      return [f('nm', 'Disease', w.data.name), ...(w.data.field ? [f('fd', 'Field', w.data.field)] : []), ...(w.data.aliases.length ? [f('al', 'Other names', w.data.aliases.join('\n'))] : [])];
     case 'nova-medicordle':
       return [f('wd', 'Word', w.data.word), f('df', 'Definition', w.data.definition)];
     case 'the-streak-master':
       return [f('q', 'Question', w.data.stem), f('ch', 'Choices', w.data.choices.map((x, i) => `${i === w.data.answer ? '✓ ' : '· '}${x}`).join('\n'))];
     case 'imposter':
-      return [f('a', 'Disease 1', w.data.a), f('b', 'Disease 2', w.data.b), f('ct', 'Field', w.data.category)];
+      return [f('a', 'Disease 1', w.data.a), f('b', 'Disease 2', w.data.b), ...(w.data.category ? [f('ct', 'Field', w.data.category)] : [])];
     default:
       return [f('tm', 'Term', w.data.name), f('fb', 'Forbidden', w.data.forbidden.join('\n'), 'Forbidden words')];
   }

@@ -21,7 +21,7 @@ import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import { Beat } from './Ribbon';
-import { aboutGames, CHEST_NAME, claimRounds, CYCLE_WEEKS, EPIC_RUN, loadRounds, useRoundsStore, weekGoal, weekName, type Week } from './useRounds';
+import { CHEST_NAME, claimRounds, CYCLE_WEEKS, EPIC_RUN, loadRounds, useRoundsStore, weekGoal, weekName, type Week } from './useRounds';
 import { useLock } from '@/lib/useLock';
 
 /** A mode week's stamp sign: a phone for Pass, a single figure for Solo, linked dots for Online. */
@@ -138,7 +138,6 @@ export function RoundsPage() {
           <View style={{ gap: u(10), marginTop: u(14) }}>
             {r.missions.map((m, i) => {
               const reached = r.used >= m.of;
-              const about = aboutGames(r.this, m.of);
               return (
                 <View key={m.chest} style={s.mRow}>
                   <Image source={CHESTS[m.chest].art} style={[s.mChest, !reached && !m.claimed && { opacity: 0.45 }]} contentFit="contain" accessibilityLabel={CHEST_NAME[m.chest]} />
@@ -150,7 +149,7 @@ export function RoundsPage() {
                     <View style={[s.track, { backgroundColor: t.chip }]}>
                       <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={[s.fill, { width: `${Math.min(1, r.used / m.of) * 100}%` }]} />
                     </View>
-                    <Text style={[s.mS, { color: c.mute }]}>{`${CHEST_NAME[m.chest]}${about ? ` · ${about}` : ''}${i === 2 ? ' · stamps the week' : ''}`}</Text>
+                    <Text style={[s.mS, { color: c.mute }]}>{`${CHEST_NAME[m.chest]}${i === 2 ? ' · stamps the week' : ''}`}</Text>
                   </View>
                   {m.claimed ? (
                     <Text style={[s.mDone, { color: t.accent }]}>✓</Text>
