@@ -60,6 +60,7 @@ export function LoadingPage({ g, w, h, live, p, tip, barRef }: { g: LoadCfg; w: 
 
       <View style={[s.txt, { top: q(g.txt.top) + Math.max(0, ins.top - q(24)), alignItems: center ? 'center' : 'flex-start', transform: g.txt.rot ? [{ rotate: `${g.txt.rot}deg` }] : undefined }]}>
         {/* "Original" dropped from every loading page (Yazan 2026-10-26). */}
+        {/* Each line spans the full text column (textAlign places it), so Android never wraps its last word out of sight. */}
         <Text style={[s.orig, { fontFamily: g.orig.f, color: g.orig.c, textAlign: g.txt.align }]}>MedNova:</Text>
         {/* #13: the two title words are separate texts, not one text with a nested span. On Android a nested span in
             another font (or one measured before its font loaded) sometimes lost the game's word. */}
@@ -86,7 +87,7 @@ export function LoadingPage({ g, w, h, live, p, tip, barRef }: { g: LoadCfg; w: 
             </Text>
           ))}
         </View>
-        <Text style={{ marginTop: q(8), fontFamily: g.sub.f, fontSize: q(g.sub.s), lineHeight: q(g.sub.s * 1.25), color: g.sub.c, letterSpacing: ls(g.sub.ls, g.sub.s), textAlign: g.txt.align }}>{SUB[g.key]}</Text>
+        <Text style={{ alignSelf: 'stretch', marginTop: q(8), fontFamily: g.sub.f, fontSize: q(g.sub.s), lineHeight: q(g.sub.s * 1.25), color: g.sub.c, letterSpacing: ls(g.sub.ls, g.sub.s), textAlign: g.txt.align }}>{SUB[g.key]}</Text>
         <View ref={barRef} collapsable={false} style={{ marginTop: q(20), height: barHeight(g), width: barW, alignSelf: center ? 'center' : 'flex-start' }}>
           <Bar g={g} p={p} w={barW} />
         </View>
@@ -204,7 +205,7 @@ const s = StyleSheet.create({
   glow: { position: 'absolute', mixBlendMode: 'screen' },
   sweep: { position: 'absolute', top: '-20%', bottom: '-20%', left: '-20%', right: '-20%', mixBlendMode: 'soft-light' },
   txt: { position: 'absolute', left: q(24), right: q(24) },
-  orig: { fontSize: q(11), letterSpacing: q(11 * 0.16), textTransform: 'uppercase', opacity: 0.9 },
+  orig: { alignSelf: 'stretch', fontSize: q(11), letterSpacing: q(11 * 0.16), textTransform: 'uppercase', opacity: 0.9 },
   tip: { marginTop: q(12), paddingVertical: q(8), paddingHorizontal: q(12), borderRadius: q(8), borderWidth: 1, maxWidth: '100%' },
   tag: { position: 'absolute', paddingVertical: q(5), paddingHorizontal: q(8), borderRadius: q(5), borderWidth: 1 },
   tagT: { fontFamily: F.bodySemi, fontSize: q(8.5), letterSpacing: q(8.5 * 0.14) },
