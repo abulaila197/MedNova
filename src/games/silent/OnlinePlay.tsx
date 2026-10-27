@@ -31,7 +31,7 @@ const RATIO = 1.1;
 // The host's own words (My diseases) have numbers past the bank and come from the server.
 const wordOf = (n: number | null | undefined) => (n ? (ownSketches.get(n) ?? WORDS[n - 1]) : undefined);
 
-/** Each turn is one item: what you drew, or what you guessed. SA1: no Learn and no EXP; the dossier links still show (RS1). */
+/** Each turn is one item: what you drew, or what you guessed. SA1: no Learn; EXP from the score (def.exp); the dossier links still show (RS1). */
 function itemsOf(st: RaceState) {
   // An item this app build doesn't have (the server's list is newer) is left out instead of failing the finish (X2).
   return (st.my_items ?? []).filter((m) => !!wordOf(m.item)).map((m) => {

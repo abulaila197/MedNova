@@ -67,7 +67,7 @@ export const silentArtist: GameDef = {
         'Everyone else types guesses. Small typos count; a near miss tells only you it is close.',
         'Hints arrive as the clock runs: the word count, then the field, then letters.',
         'Faster guesses score 20 to 125. The artist earns the average of everyone\'s points, +20 if all got it.',
-        'Two reports cancel the artist\'s points for that turn. No EXP, nothing goes to Learn.',
+        'Two reports cancel the artist\'s points for that turn. Every 10 points is 1 EXP, up to 60. Nothing goes to Learn.',
       ],
     },
   ],
@@ -78,9 +78,10 @@ export const silentArtist: GameDef = {
   playersNote: () => 'Player 1 is you, the phone owner. The Silent Artist earns no EXP and sends nothing to Learn.',
   Play: { solo: SoloPlay, offline: OfflinePlay },
   Online: OnlinePlay,
-  // SA1: no EXP and nothing to Learn in any mode.
-  exp: () => 0,
-  expCap: () => 0,
+  // SA1: nothing to Learn in any mode. Online pays 1 EXP per 10 points, up to 60 (Yazan 2026-10-27); Solo and
+  // Pass the phone stay EXP-free.
+  exp: (score) => Math.min(60, Math.max(0, Math.floor(score / 10))),
+  expCap: (_settings, mode) => (mode === 'online' ? 60 : 0),
   itemLabel: (item) => {
     const w = wordById.get(item.itemId);
     return w ? wordName(w) : item.itemId;
