@@ -143,6 +143,7 @@ export function FriendsSection({ t, only }: { t: Theme; only?: 'friends' | 'requ
               // #80: watch their running match (the game's watch screen, no buttons).
               <Pressable
                 disabled={busy === f.id}
+                hitSlop={u(8)}
                 onPress={() => act(f.id, async () => void (await watch(f.id, live.game, f.display_name)))}
                 style={[s.ch, s.ghost, line, busy === f.id && { opacity: 0.5 }]}
                 accessibilityRole="button"
@@ -151,7 +152,7 @@ export function FriendsSection({ t, only }: { t: Theme; only?: 'friends' | 'requ
               </Pressable>
             ) : f.kind === 'friend' ? (
               // #47: pick any online game, then straight into its room with the invite sent.
-              <Pressable disabled={off} onPress={() => openChallenge(f)} style={[s.ch, s.ghost, line, dim]} accessibilityRole="button" accessibilityLabel={`Challenge ${f.display_name}`}>
+              <Pressable disabled={off} hitSlop={u(8)} onPress={() => openChallenge(f)} style={[s.ch, s.ghost, line, dim]} accessibilityRole="button" accessibilityLabel={`Challenge ${f.display_name}`}>
                 <Text style={[s.ghT, { color: t.fg }]}>Challenge</Text>
               </Pressable>
             ) : null}
