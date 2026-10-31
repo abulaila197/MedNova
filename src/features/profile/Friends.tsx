@@ -1,6 +1,6 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 import { create } from 'zustand';
@@ -49,13 +49,6 @@ export function FriendsSection({ t, only }: { t: Theme; only?: 'friends' | 'requ
   const savedAt = useFriends((x) => x.savedAt);
   const off = savedAt != null;
   const dim = off ? { opacity: 0.4 } : null;
-  const say = useInvites((x) => x.say);
-  // A failed Join or Watch says why for a few seconds.
-  useEffect(() => {
-    if (!say) return;
-    const id = setTimeout(() => useInvites.setState({ say: null }), 5000);
-    return () => clearTimeout(id);
-  }, [say]);
   // Ticks the "time left" on challenges once a second while any are open.
   const now = useSecond(invites.length > 0);
   const line = { borderColor: t.panelLine };
@@ -97,7 +90,6 @@ export function FriendsSection({ t, only }: { t: Theme; only?: 'friends' | 'requ
         </View>
       )}
       <OfflineLine at={savedAt} />
-      {say ? <Text style={[s.note, { color: t.accent }]}>{say}</Text> : null}
       {only === 'requests' && !incoming.length ? <Text style={[s.note, { color: t.mute }]}>No requests right now.</Text> : null}
       {showReq && incoming.length && !only ? <Text style={[s.sub, { color: t.mute }]}>{`REQUESTS · ${incoming.length}`}</Text> : null}
       {(showReq ? incoming : []).map((f) => (
@@ -151,7 +143,7 @@ export function FriendsSection({ t, only }: { t: Theme; only?: 'friends' | 'requ
               // #80: watch their running match (the game's watch screen, no buttons).
               <Pressable
                 disabled={busy === f.id}
-                onPress={() => act(f.id, async () => void (await watch(f.id, live.game)))}
+                onPress={() => act(f.id, async () => void (await watch(f.id, live.game, f.display_name)))}
                 style={[s.ch, s.ghost, line, busy === f.id && { opacity: 0.5 }]}
                 accessibilityRole="button"
                 accessibilityLabel={`Watch ${f.display_name}'s match`}>

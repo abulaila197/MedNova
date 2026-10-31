@@ -27,7 +27,7 @@ import { DECK } from '@/features/cards/deck';
 import { MECHS } from '@/features/chests/data';
 import { robotOf } from '@/features/shop/robots';
 import { gameDef } from '@/games/shell/registry';
-import { call } from '@/online/api';
+import { call, watchAlwaysGet, watchAlwaysSet } from '@/online/api';
 import { challenge, watch } from '@/online/invites';
 
 import { Name, openChallenge, openReport, useFriendSheet } from './Friends';
@@ -51,7 +51,10 @@ const SAY: Record<RequestResult | 'error', string> = {
 export function FriendSheets() {
   const open = useFriendSheet((x) => x.open);
   return (
-    <Sheet open={!!open} onClose={close}>
+    // #15/#22 (2026-10-31): `still`. These sheets change height after they open (the profile loads, Challenge swaps
+    // in the game grid); on Android the slide-in's leftover offset then made the main button miss taps (the same
+    // fault Sheet's note describes inside a Modal). Watch and Challenge worked on the web, where there's no offset.
+    <Sheet open={!!open} onClose={close} still>
       {open === 'add' ? <AddFriend /> : open === 'menu' ? <FriendMenu /> : open === 'report' ? <ReportPlayer /> : open === 'profile' ? <FriendProfileSheet /> : open === 'challenge' ? <ChallengeGrid /> : null}
     </Sheet>
   );
@@ -227,6 +230,19 @@ function FriendProfileSheet() {
   const live = useFriends((x) => (f && friend ? x.playing[f.id] : undefined));
   const offAt = useFriends((x) => x.savedAt);
   const off = offAt != null;
+  // #16 (Always allow): whether this friend may watch my matches without asking, with a switch to turn it off.
+  const [always, setAlways] = useState(false);
+  const fid = f?.id;
+  useEffect(() => {
+    if (!fid || !friend) return;
+    let on = true;
+    watchAlwaysGet(fid)
+      .then((x) => on && setAlways(!!x))
+      .catch(() => {});
+    return () => {
+      on = false;
+    };
+  }, [fid, friend]);
   if (!f) return null;
   // Offline nobody shows ONLINE (#59): the time they were last seen instead.
   const when = !friend ? null : live ? 'IN A MATCH' : off ? (f.last_seen ? `LAST SEEN ${agoText(Date.parse(f.last_seen)).toUpperCase()}` : 'NOT SEEN YET') : seenLabel(f.last_seen);
@@ -249,7 +265,7 @@ function FriendProfileSheet() {
       setP((x) => (x && x !== 'error' ? { ...x, relation: x.relation === 'incoming' ? 'friend' : 'outgoing' } : x));
     }, true);
   const main = friend
-    ? { label: live ? 'Watch their match' : `Challenge ${f.display_name}`, go: () => (live ? run(async () => void (await watch(f.id, live.game))) : openChallenge(f)) }
+    ? { label: live ? 'Watch their match' : `Challenge ${f.display_name}`, go: () => (live ? run(async () => void (await watch(f.id, live.game, f.display_name))) : openChallenge(f)) }
     : f.kind === 'incoming'
       ? { label: `Accept ${f.display_name}’s friend request`, go: add }
       : f.kind === 'outgoing'
@@ -294,6 +310,18 @@ function FriendProfileSheet() {
           <Text style={[s.btnT, { color: t.onGrad }]}>{main.label}</Text>
         </LinearGradient>
       </Pressable>
+      {friend && always ? (
+        <Act
+          t={t}
+          title="Stop Always allow"
+          note={`${f.display_name} can watch your matches without asking. Turn it off so they ask first.`}
+          onPress={() => run(async () => {
+            await watchAlwaysSet(f.id, false);
+            setAlways(false);
+          }, true)}
+          disabled={busy}
+        />
+      ) : null}
       {friend ? <Act t={t} title="Remove friend" note={`Takes ${f.display_name} off both lists. They can send a new request later.`} onPress={() => run(() => removeFriend(f.id))} disabled={busy} /> : null}
       <Act t={t} red title={`Block ${f.display_name}`} note="Also stops their requests and challenges. Undo any time under Blocked players on your Profile." onPress={() => run(() => blockUser(f.id))} disabled={busy} />
       <Act t={t} title={`Report ${f.display_name}`} note="Tell us what happened. Reports are private." onPress={() => openReport({ id: f.id, name: f.display_name, avatar: f.avatar })} disabled={busy} />

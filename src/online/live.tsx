@@ -1,5 +1,6 @@
+import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 import Animated, { FadeIn, FadeOut, SlideInUp } from 'react-native-reanimated';
 
@@ -8,7 +9,11 @@ import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
+import { leaveRoom } from './api';
 import { G } from './grey';
+
+/** #13 (Yazan: 5 s): how long after the countdown ends the match may take to start before the phone says so. */
+const STUCK_MS = 5000;
 
 /** ON8 / DPN7: a pill slides in under the header for a big moment ("Sara solved it, 2nd"), then fades after 2 s. */
 export function useAlerts() {
@@ -36,7 +41,36 @@ export function AlertPill({ alert }: { alert: { id: number; text: string; color:
 }
 
 /** ON16: the 3-2-1 before the first case, with everyone's faces, in the online grey. */
+// #13: if the match still hasn't started 5 s after the count ends (the game keeps checking the server every
+// second meanwhile), it says so with a Leave button instead of standing on "1" for ever.
 export function Countdown({ ms, faces, ids, line }: { ms: number; faces: string[]; ids?: string[]; line: string }) {
+  const { game, room } = useLocalSearchParams<{ game?: string; room?: string }>();
+  const done = ms <= 0;
+  const [stuck, setStuck] = useState(false);
+  useEffect(() => {
+    if (!done) return;
+    const id = setTimeout(() => setStuck(true), STUCK_MS);
+    return () => {
+      clearTimeout(id);
+      setStuck(false);
+    };
+  }, [done]);
+  const leave = async () => {
+    if (room) await leaveRoom(room).catch(() => {});
+    router.replace(game ? `/play/${game}` : '/games');
+  };
+  if (stuck) {
+    return (
+      <Animated.View entering={FadeIn.duration(200)} style={[StyleSheet.absoluteFill, s.cd]}>
+        <Text style={[s.cdK, { color: G.mute }]}>MATCH DIDN’T START</Text>
+        <Text style={[s.stuckT, { color: G.fg }]}>Couldn’t start the match.</Text>
+        <Text style={[s.cdL, { color: G.mute, textAlign: 'center', maxWidth: u(240) }]}>The server didn’t deal the first round. Check your connection, then try again from the room.</Text>
+        <Pressable onPress={leave} style={[s.leave, { borderColor: 'rgba(255,255,255,0.3)' }]} accessibilityRole="button">
+          <Text style={[s.leaveT, { color: G.fg }]}>Leave</Text>
+        </Pressable>
+      </Animated.View>
+    );
+  }
   return (
     <Animated.View entering={FadeIn.duration(200)} style={[StyleSheet.absoluteFill, s.cd]}>
       <Text style={[s.cdK, { color: G.mute }]}>MATCH STARTING</Text>
@@ -64,4 +98,7 @@ const s = StyleSheet.create({
   cdN: { fontFamily: F.display, fontSize: u(90), lineHeight: u(100) },
   cdF: { flexDirection: 'row', gap: u(6) },
   cdL: { fontFamily: F.body, fontSize: u(10.5) },
+  stuckT: { fontFamily: F.display, fontSize: u(20) },
+  leave: { marginTop: u(8), borderWidth: 1, borderRadius: 999, paddingVertical: u(8), paddingHorizontal: u(26) },
+  leaveT: { fontFamily: F.bodySemi, fontSize: u(11.5) },
 });

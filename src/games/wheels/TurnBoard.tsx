@@ -363,6 +363,13 @@ export function TurnBoard({ turn, now, kicker, title, strip, tray = [], footer, 
         <T f={CM} size={12} color={VV.soft}>{`${st.name} · ${st.points} pt${st.points > 1 ? 's' : ''}${turn.sun ? ' ×2' : ''}`}</T>
       </View>
       {strip ? <ScoreStrip strip={strip} /> : null}
+      {/* #52 (2026-10-31): online, the answers belong to the player whose turn it is; the others see whose turn and watch. */}
+      {watch ? (
+        <View style={[s.whose, { borderColor: VV.brass }]}>
+          <T f={CD} size={16} color={VV.gold}>{title}</T>
+          <T f={CM} size={11} color={VV.soft}>Watch their answer</T>
+        </View>
+      ) : null}
       {/* #63: a long Matching (or any long question) scrolls instead of running off small screens. */}
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ gap: u(8), paddingBottom: u(4) }} showsVerticalScrollIndicator={false}>
       <Brass r={14} inner={{ backgroundColor: VV.panel, paddingHorizontal: u(13), paddingVertical: u(10), gap: u(4) }}>
@@ -372,7 +379,7 @@ export function TurnBoard({ turn, now, kicker, title, strip, tray = [], footer, 
         </View>
         <T f={BODY_B} size={q.prompt.length > 110 ? 14.5 : 15.5} color={VV.ink} style={{ lineHeight: u(20.5) }}>{q.prompt}</T>
       </Brass>
-      <View pointerEvents={watch ? 'none' : 'auto'}>
+      <View pointerEvents={watch ? 'none' : 'auto'} style={watch && !result ? { opacity: 0.55 } : null}>
         <Answers key={`${turn.k}:${q.id}`} q={q} given={result ? result.answer : undefined} onAnswer={(a) => onEvent({ type: 'ANSWER', answer: a, now: Date.now() })} />
       </View>
       {result ? (
@@ -389,6 +396,7 @@ export function TurnBoard({ turn, now, kicker, title, strip, tray = [], footer, 
 
 const s = StyleSheet.create({
   top: { flexDirection: 'row', alignItems: 'center', gap: u(12) },
+  whose: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', borderWidth: 1, borderRadius: u(12), paddingVertical: u(6), paddingHorizontal: u(12), backgroundColor: 'rgba(0,0,0,0.25)' },
   spread: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', columnGap: u(10) },
   reel: { height: u(54), paddingHorizontal: u(24), alignItems: 'center', justifyContent: 'center' },
   pip: { position: 'absolute', top: '50%', marginTop: -u(9), fontSize: u(13), color: VV.redInk },

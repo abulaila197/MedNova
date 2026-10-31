@@ -73,7 +73,23 @@ export const rematchRoom = (r: string) => call<void>('rematch_room', { r });
 
 export const challengeFriend = (friend: string, game: GameKey, settings: Record<string, unknown>, wanted?: string) =>
   call<{ result: 'sent' | 'self' | 'not_friends'; room_id?: string; code?: string }>('challenge_friend', { friend, game, settings, wanted: wanted ?? null });
-export const watchFriend = (friend: string, wanted?: string) => call<JoinResult>('watch_friend', { friend, wanted: wanted ?? null });
+export const watchFriend = (friend: string, wanted?: string) =>
+  call<JoinResult | { result: 'asked'; ask: string }>('watch_friend', { friend, wanted: wanted ?? null });
+/** #16: a watch request waits for the player's answer (20 s). */
+export const watchAskState = (ask: string) => call<{ status: 'open' | 'allowed' | 'declined' | 'cancelled' | 'expired' }>('watch_ask_state', { ask });
+export const cancelWatch = (ask: string) => call<void>('cancel_watch', { ask });
+export const answerWatch = (ask: string, answer: 'allow' | 'always' | 'decline') => call<{ result: 'ok' | 'expired' }>('answer_watch', { ask, answer });
+export const watchAlwaysGet = (other: string) => call<boolean>('watch_always_get', { other });
+export const watchAlwaysSet = (other: string, allow: boolean) => call<void>('watch_always_set', { other, allow });
+/** The live page's check-in (every 5 s): my seat, who we're waiting for (#24) and who asks to watch me (#16). */
+export type LiveInfo = {
+  result: 'ok' | 'not_member';
+  status?: string;
+  me?: 'in' | 'spectator' | 'left' | 'removed' | null;
+  waiting?: { user_id: string; name: string; gone_ms: number }[];
+  asks?: { id: string; name: string; avatar: string; left_ms: number }[];
+};
+export const roomLive = (r: string) => call<LiveInfo>('room_live', { r });
 export const myInvites = () => call<Invite[]>('my_challenges');
 export const respondInvite = (invite: string, accept: boolean, wanted?: string) =>
   call<JoinResult | { result: 'declined' | 'expired' | 'not_found' }>('respond_invite', { invite, accept, wanted: wanted ?? null });
@@ -86,6 +102,8 @@ export const JOIN_SAY: Record<string, string> = {
   removed: 'The host removed you from that room.',
   expired: 'That challenge has ended.',
   in_progress: 'That public match has started. Only friends of its players can watch; join at the rematch.',
-  not_playing: 'Their match has just ended.',
+  not_playing: 'They aren’t in a match right now.',
+  declined: 'They said no to being watched this time.',
+  no_answer: 'They didn’t answer, so you can’t watch this time.',
   error: 'Couldn’t reach the server. Check your connection.',
 };

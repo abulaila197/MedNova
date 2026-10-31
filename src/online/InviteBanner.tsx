@@ -14,7 +14,7 @@ import { F } from '@/theme/tokens';
 
 import { settingsLine } from './format';
 import type { Invite } from './api';
-import { acceptInvite, markBannered, useInvites } from './invites';
+import { acceptInvite, cancelAsking, markBannered, useInvites } from './invites';
 import { G } from './grey';
 
 const SHOW_MS = 10_000;
@@ -30,9 +30,44 @@ export function InviteBanner() {
   const bannered = useInvites((s) => s.bannered);
   const inv = list.find((x) => !bannered.includes(x.id));
   const busy = /\/(live|run|lobby)$/.test(path);
-  if (!inv || busy) return null;
   const top = (Platform.OS === 'web' ? u(30) : ins.top) + u(48);
-  return <Banner key={inv.id} inv={inv} top={top} />;
+  return (
+    <>
+      {!inv || busy ? null : <Banner key={inv.id} inv={inv} top={top} />}
+      <WatchNote top={top} />
+    </>
+  );
+}
+
+/**
+ * #15/#16: what happened to a Watch tap, wherever it was tapped (Friends list, a profile pop-up, the leaderboard):
+ * "Waiting for … to allow" with Cancel while the friend decides, then why it didn't work for a few seconds.
+ */
+function WatchNote({ top }: { top: number }) {
+  const asking = useInvites((s) => s.asking);
+  const say = useInvites((s) => s.say);
+  useEffect(() => {
+    if (!say) return;
+    const id = setTimeout(() => useInvites.setState({ say: null }), 5000);
+    return () => clearTimeout(id);
+  }, [say]);
+  if (!asking && !say) return null;
+  return (
+    <Animated.View key={asking ? asking.ask : say ?? ''} entering={SlideInUp.duration(320)} exiting={SlideOutUp.duration(240)} style={[s.wrap, { top, zIndex: 45 }]}>
+      <View style={s.t}>
+        <Text style={s.n} numberOfLines={2}>{asking ? `Waiting for ${asking.name} to allow you to watch…` : say}</Text>
+      </View>
+      {asking ? (
+        <Pressable onPress={cancelAsking} hitSlop={u(6)} accessibilityRole="button">
+          <Text style={s.later}>Cancel</Text>
+        </Pressable>
+      ) : (
+        <Pressable onPress={() => useInvites.setState({ say: null })} hitSlop={u(6)} accessibilityRole="button" accessibilityLabel="Close">
+          <Text style={s.later}>OK</Text>
+        </Pressable>
+      )}
+    </Animated.View>
+  );
 }
 
 /** One challenge's banner: its bar runs out over SHOW_MS (started again if the invite changes), then it moves to Friends. */
