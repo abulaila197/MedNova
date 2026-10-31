@@ -1,4 +1,5 @@
 import { LinearGradient } from 'expo-linear-gradient';
+import { safeEnter } from '@/lib/enter';
 import { Modal, Pressable, StyleSheet, View } from 'react-native';
 import Animated, { ZoomIn } from 'react-native-reanimated';
 
@@ -16,7 +17,7 @@ export function Congrats({ open, tokens, title, line, onClose }: { open: boolean
     <Modal transparent visible animationType="fade" onRequestClose={onClose}>
       <Pressable style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(3,4,12,0.78)' }]} onPress={onClose} accessibilityLabel="Close" />
       <View style={s.mid} pointerEvents="box-none">
-        <Animated.View entering={ZoomIn.springify().damping(14)} style={[s.card, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
+        <Animated.View entering={safeEnter(ZoomIn.springify().damping(14))} style={[s.card, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
           <View style={[s.halo, { backgroundColor: 'rgba(111,214,255,0.16)' }]}>
             <TokenCoin size={u(58)} progress={0} track="transparent" />
           </View>

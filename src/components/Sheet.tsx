@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { safeEnter } from '@/lib/enter';
 import { Platform, Pressable, StyleSheet, View } from 'react-native';
 import Animated, { FadeIn, FadeOut, SlideInDown, SlideOutDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -27,7 +28,7 @@ export function Sheet({ open, onClose, children, tone, lift = true, still = fals
         <Pressable style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(5,6,16,0.55)' }]} onPress={onClose} accessibilityLabel="Close" />
       </Animated.View>
       <Animated.View
-        entering={still ? undefined : SlideInDown.duration(380)}
+        entering={still ? undefined : safeEnter(SlideInDown.duration(380))}
         exiting={still ? undefined : SlideOutDown.duration(250)}
         style={[s.sheet, { bottom: up, paddingBottom: u(22) + (Platform.OS === 'web' ? 0 : ins.bottom) }, { backgroundColor: tone?.bg ?? t.panel, borderColor: tone?.line ?? t.panelLine, shadowColor: '#000' }]}>
         <View style={[s.grab, { backgroundColor: 'rgba(255,255,255,0.2)' }]} />

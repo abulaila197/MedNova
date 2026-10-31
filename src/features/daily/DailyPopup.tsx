@@ -1,4 +1,5 @@
 import { LinearGradient } from 'expo-linear-gradient';
+import { safeEnter } from '@/lib/enter';
 import { Pressable, StyleSheet, View } from 'react-native';
 import Animated, { FadeIn, FadeOut, Keyframe, ZoomIn, ZoomOut } from 'react-native-reanimated';
 import Svg, { Path } from 'react-native-svg';
@@ -68,7 +69,7 @@ export function DailyPopup({ day, collected, signedIn, busy, error, onCollect, o
         />
       </Animated.View>
       <Animated.View
-        entering={ZoomIn.duration(320)}
+        entering={safeEnter(ZoomIn.duration(320))}
         exiting={FadeOut.duration(200)}
         style={[
           s.card,

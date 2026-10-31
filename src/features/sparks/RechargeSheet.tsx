@@ -1,4 +1,5 @@
 import { LinearGradient } from 'expo-linear-gradient';
+import { safeEnter } from '@/lib/enter';
 import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import Animated, { FadeIn, FadeOut, SlideInDown } from 'react-native-reanimated';
@@ -66,7 +67,7 @@ export function RechargeSheet() {
       <Animated.View entering={FadeIn.duration(220)} exiting={FadeOut.duration(180)} style={StyleSheet.absoluteFill}>
         <Pressable style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(5,6,16,0.6)' }]} onPress={cancelRecharge} accessibilityLabel="Close" />
       </Animated.View>
-      <Animated.View entering={SlideInDown.duration(360)} style={s.dock}>
+      <Animated.View entering={safeEnter(SlideInDown.duration(360))} style={s.dock}>
         <Panel t={t} cost={ask.cost} value={bar.value} max={bar.max} refill={bar.refillMin} note={why && why !== 'tokens' ? (WHY[why] ?? 'Something went wrong. Try again.') : null} choices={choices} />
       </Animated.View>
     </View>

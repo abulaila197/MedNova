@@ -51,10 +51,9 @@ const SAY: Record<RequestResult | 'error', string> = {
 export function FriendSheets() {
   const open = useFriendSheet((x) => x.open);
   return (
-    // #15/#22 (2026-10-31): `still`. These sheets change height after they open (the profile loads, Challenge swaps
-    // in the game grid); on Android the slide-in's leftover offset then made the main button miss taps (the same
-    // fault Sheet's note describes inside a Modal). Watch and Challenge worked on the web, where there's no offset.
-    <Sheet open={!!open} onClose={close} still>
+    // #22 (2026-10-31): these sheets change height after they open (the profile loads, Challenge swaps in the game
+    // grid); Sheet now fades in on Android (safeEnter), so their buttons and cards take taps there.
+    <Sheet open={!!open} onClose={close}>
       {open === 'add' ? <AddFriend /> : open === 'menu' ? <FriendMenu /> : open === 'report' ? <ReportPlayer /> : open === 'profile' ? <FriendProfileSheet /> : open === 'challenge' ? <ChallengeGrid /> : null}
     </Sheet>
   );

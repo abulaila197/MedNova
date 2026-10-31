@@ -1,4 +1,5 @@
 import { router, usePathname } from 'expo-router';
+import { safeEnter } from '@/lib/enter';
 import { useEffect, useRef, useState } from 'react';
 import { AppState, Pressable, StyleSheet, View } from 'react-native';
 import Animated, { FadeIn, FadeOut, ZoomIn } from 'react-native-reanimated';
@@ -83,7 +84,7 @@ export function CardHost() {
       <Animated.View entering={FadeIn.duration(250)} exiting={FadeOut.duration(200)} style={StyleSheet.absoluteFill}>
         <Pressable style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(5,6,16,0.6)' }]} onPress={() => void done()} accessibilityLabel="Close" />
       </Animated.View>
-      <Animated.View entering={ZoomIn.duration(320)} exiting={FadeOut.duration(200)} style={[s.card, { backgroundColor: t.panel2, borderColor: t.panelLine }]}>
+      <Animated.View entering={safeEnter(ZoomIn.duration(320))} exiting={FadeOut.duration(200)} style={[s.card, { backgroundColor: t.panel2, borderColor: t.panelLine }]}>
         <Text style={[s.kick, { color: t.kick }]}>NEW CARD FOUND</Text>
         <Sleeve t={t} card={card} w={w} locked={false} style={{ marginTop: u(12) }} />
         <Text style={[s.name, { color: t.fg }]}>{card.name}</Text>

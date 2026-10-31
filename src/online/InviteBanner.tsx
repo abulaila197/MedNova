@@ -1,4 +1,5 @@
 import { LinearGradient } from 'expo-linear-gradient';
+import { safeEnter } from '@/lib/enter';
 import { usePathname } from 'expo-router';
 import { useEffect } from 'react';
 import { Platform, Pressable, StyleSheet, View } from 'react-native';
@@ -53,7 +54,7 @@ function WatchNote({ top }: { top: number }) {
   }, [say]);
   if (!asking && !say) return null;
   return (
-    <Animated.View key={asking ? asking.ask : say ?? ''} entering={SlideInUp.duration(320)} exiting={SlideOutUp.duration(240)} style={[s.wrap, { top, zIndex: 45 }]}>
+    <Animated.View key={asking ? asking.ask : say ?? ''} entering={safeEnter(SlideInUp.duration(320))} exiting={SlideOutUp.duration(240)} style={[s.wrap, { top, zIndex: 45 }]}>
       <View style={s.t}>
         <Text style={s.n} numberOfLines={2}>{asking ? `Waiting for ${asking.name} to allow you to watch…` : say}</Text>
       </View>
@@ -82,7 +83,7 @@ function Banner({ inv, top }: { inv: Invite; top: number }) {
   const run = useAnimatedStyle(() => ({ width: `${bar.value * 100}%` }));
   const g = GAMES.find((x) => x.key === inv.game);
   return (
-    <Animated.View entering={SlideInUp.duration(320)} exiting={SlideOutUp.duration(240)} style={[s.wrap, { top }]}>
+    <Animated.View entering={safeEnter(SlideInUp.duration(320))} exiting={SlideOutUp.duration(240)} style={[s.wrap, { top }]}>
       <PlayerFace slug={inv.avatar} size={u(32)} userId={inv.from_user} still />
       <View style={s.t}>
         <Text style={s.n} numberOfLines={1}>{`${inv.display_name} challenges you`}</Text>

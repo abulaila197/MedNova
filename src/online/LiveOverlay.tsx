@@ -1,4 +1,5 @@
 import { LinearGradient } from 'expo-linear-gradient';
+import { safeEnter } from '@/lib/enter';
 import { router } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Platform, Pressable, StyleSheet, View } from 'react-native';
@@ -94,7 +95,7 @@ export function LiveOverlay({ room, game }: { room: string; game: string }) {
         </Pressable>
       ) : null}
       {waiting && left != null ? (
-        <Animated.View entering={SlideInUp.duration(300)} exiting={SlideOutUp.duration(220)} style={[s.card, { top }]} pointerEvents="none">
+        <Animated.View entering={safeEnter(SlideInUp.duration(300))} exiting={SlideOutUp.duration(220)} style={[s.card, { top }]} pointerEvents="none">
           <View style={s.t}>
             <Text style={s.n} numberOfLines={1}>{`Waiting for ${waiting.name} to come back…`}</Text>
             <Text style={s.d} numberOfLines={1}>{left > 0 ? `If they don’t, you win in ${left} s` : 'You win'}</Text>
@@ -103,7 +104,7 @@ export function LiveOverlay({ room, game }: { room: string; game: string }) {
         </Animated.View>
       ) : null}
       {ask ? (
-        <Animated.View key={ask.id} entering={SlideInUp.duration(300)} exiting={SlideOutUp.duration(220)} style={[s.card, { top: top + (waiting ? u(64) : 0) }]}>
+        <Animated.View key={ask.id} entering={safeEnter(SlideInUp.duration(300))} exiting={SlideOutUp.duration(220)} style={[s.card, { top: top + (waiting ? u(64) : 0) }]}>
           <PlayerFace slug={ask.avatar} size={u(30)} still />
           <View style={s.t}>
             <Text style={s.n} numberOfLines={2}>{`${ask.name} wants to watch your match`}</Text>

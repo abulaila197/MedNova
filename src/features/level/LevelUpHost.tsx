@@ -1,4 +1,5 @@
 import { LinearGradient } from 'expo-linear-gradient';
+import { safeEnter } from '@/lib/enter';
 import { usePathname } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Modal, Pressable, StyleSheet, View } from 'react-native';
@@ -58,7 +59,7 @@ export function LevelUpHost() {
     <Modal transparent visible animationType="fade" onRequestClose={close}>
       <Pressable style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(3,4,12,0.78)' }]} onPress={close} accessibilityLabel="Close" />
       <View style={s.mid} pointerEvents="box-none">
-        <Animated.View entering={ZoomIn.springify().damping(14)} style={[s.card, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
+        <Animated.View entering={safeEnter(ZoomIn.springify().damping(14))} style={[s.card, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
           <View style={[s.halo, { backgroundColor: 'rgba(111,214,255,0.14)' }]}>
             <LevelRing size={u(96)} level={level} progress={need ? into / need : 0} slug={slug} />
           </View>
