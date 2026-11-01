@@ -106,7 +106,7 @@ const shownOf = (server: number, st: RaceState | null) => (st ? `${second(st.pha
  * Also turns the finished match into a local play and opens the results (ON21).
  */
 export function useRace(def: GameDef, roomId: string, matchId: string, me: string, toItems: (st: RaceState) => Omit<PlayItem, 'id' | 'at' | 'playId'>[]) {
-  const { st, load, server, clock, notice, setNotice } = useMatchState<RaceState>('race_state', matchId, { shown: shownOf });
+  const { st, load, server, clock, notice, setNotice } = useMatchState<RaceState>('race_state', matchId, { shown: shownOf, race: def.key !== 'the-silent-artist' });
   const showResults = useShowResults(def.key, matchId, st?.phase === 'done');
   const finishing = useRef(false);
   const items = useRef(toItems);

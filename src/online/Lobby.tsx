@@ -197,7 +197,6 @@ export function Lobby({ def, roomId }: { def: GameDef; roomId: string }) {
   const over = (
     <>
       <LobbySheets def={def} state={state} sheet={sheet} setSheet={setSheet} reload={reload} />
-      {wait.show ? <BusyWait game={def.key} place={wait.place} onStop={host ? wait.stop : undefined} /> : null}
     </>
   );
 
@@ -212,6 +211,7 @@ export function Lobby({ def, roomId }: { def: GameDef; roomId: string }) {
           <Text style={[s.tbT, { color: G.acc, fontFamily: F.bodySemi }]}>How to play</Text>
         </Pressable>
       </View>
+      {wait.show ? <BusyWait place={wait.place} onStop={host ? wait.stop : undefined} /> : null}
       <View style={s.rh}>
         <View>
           <Text style={[s.k, { color: G.mute }]}>{room.is_public ? 'PUBLIC ROOM' : 'PRIVATE ROOM'}</Text>
@@ -284,8 +284,8 @@ export function Lobby({ def, roomId }: { def: GameDef; roomId: string }) {
         ) : host ? (
           <GBtn
             style={s.grow}
-            label={busy ? 'Starting…' : startFail ? 'Couldn’t start. Try again' : allReady ? 'Start' : players.length < need ? `Start · needs ${need} players` : `Start · ${players.length - notReady.length} of ${players.length} ready`}
-            off={!allReady || busy}
+            label={wait.show ? `Waiting in line · ${wait.place}` : busy ? 'Starting…' : startFail ? 'Couldn’t start. Try again' : allReady ? 'Start' : players.length < need ? `Start · needs ${need} players` : `Start · ${players.length - notReady.length} of ${players.length} ready`}
+            off={!allReady || busy || wait.show}
             onPress={async () => {
               // The host may have changed the settings since Create: the Sparks are checked again.
               if (!(await needSparks(sparksCost(def.key, 'online', room.settings)))) return;

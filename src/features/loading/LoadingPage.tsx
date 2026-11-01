@@ -20,7 +20,7 @@ import { Particles } from './Particles';
  * over Yazan's photo brought to life (slow push-in, glows, particles). `live` false holds the art still
  * (during the doors). `p` is the bar's progress, 0 to 1.
  */
-export function LoadingPage({ g, w, h, live, p, tip, barRef, tipLead = 'Tip: ' }: { g: LoadCfg; w: number; h: number; live: boolean; p: SharedValue<number>; tip: string; barRef?: Ref<View>; tipLead?: string }) {
+export function LoadingPage({ g, w, h, live, p, tip, barRef }: { g: LoadCfg; w: number; h: number; live: boolean; p: SharedValue<number>; tip: string; barRef?: Ref<View> }) {
   const ins = useSafeAreaInsets();
   const artH = h;
   const artW = (artH * 9) / 16;
@@ -97,7 +97,7 @@ export function LoadingPage({ g, w, h, live, p, tip, barRef, tipLead = 'Tip: ' }
         </View>
         <View style={[s.tip, { backgroundColor: g.tip.bg, borderColor: g.tip.b, alignSelf: center ? 'center' : 'flex-start' }]}>
           <Text style={{ fontFamily: g.tip.f, fontSize: q(g.tip.s), lineHeight: q(g.tip.s * 1.35), color: g.tip.c, textAlign: g.txt.align }}>
-            {tipLead ? <Text style={{ opacity: 0.7 }}>{tipLead}</Text> : null}
+            <Text style={{ opacity: 0.7 }}>Tip: </Text>
             {tip}
           </Text>
         </View>

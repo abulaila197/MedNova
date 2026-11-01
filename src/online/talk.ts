@@ -1,6 +1,6 @@
 import { createAudioPlayer, setAudioModeAsync, type AudioPlayer } from 'expo-audio';
 import { useFocusEffect } from 'expo-router';
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { AppState } from 'react-native';
 import type { RealtimeChannel } from '@supabase/supabase-js';
 import { create } from 'zustand';
@@ -111,10 +111,12 @@ export async function sendTalk(room: string, me: { id: string; name: string; fac
   return r;
 }
 
-/** Fetches new talk for a room every 1.5 s while the page is open; skips what was said before you arrived. */
+/** Fetches new talk for a room every 1.5 s while the page is open (every 15 s while its live line is open); skips what was said before you arrived. */
 export function useTalkFeed(room: string | undefined, me: string | null) {
   const last = useRef<number | null>(null);
   const loading = useRef(false);
+  // Push (Yazan 2026-11-01): talk already arrives on its live line; with that line open, the check is only a backup.
+  const [lineOpen, setLineOpen] = useState(false);
   const load = useCallback(async () => {
     // One fetch at a time: two overlapping calls with the same `after` would pop and voice a line twice (AP10d).
     if (!room || loading.current || AppState.currentState !== 'active') return;
@@ -139,9 +141,9 @@ export function useTalkFeed(room: string | undefined, me: string | null) {
   useFocusEffect(
     useCallback(() => {
       load();
-      const id = setInterval(load, 1500);
+      const id = setInterval(load, lineOpen ? 15000 : 1500);
       return () => clearInterval(id);
-    }, [load]),
+    }, [load, lineOpen]),
   );
   // The live channel: only lines the server already accepted are sent on it (sendTalk), so its checks still hold.
   useEffect(() => {
@@ -152,10 +154,11 @@ export function useTalkFeed(room: string | undefined, me: string | null) {
       if (!m?.user_id || m.user_id === me || isMuted(room, m.user_id) || shownBefore(m, seenPoll, seenLive)) return;
       pop(m);
       if (m.kind === 'voice') playVoice(m.item);
-    }).subscribe();
+    }).subscribe((status) => setLineOpen(status === 'SUBSCRIBED'));
     channels.set(room, ch);
     return () => {
       if (channels.get(room) === ch) channels.delete(room);
+      setLineOpen(false);
       supabase.removeChannel(ch);
     };
   }, [room, me]);

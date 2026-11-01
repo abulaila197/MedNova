@@ -4,7 +4,18 @@ import { AppState } from 'react-native';
 import { timeStore, type Clock } from '@/games/engine/timeStore';
 
 import { call } from './api';
+import { BACKUP_MS, usePushLine } from './push';
 import { keepIfSame } from './same';
+
+/** A deadline from a state: a number of ms, or a date string; null if it isn't one. */
+const toMs = (x: unknown): number | null => {
+  if (typeof x === 'number' && isFinite(x)) return x;
+  if (typeof x === 'string') {
+    const t = Date.parse(x);
+    return isNaN(t) ? null : t;
+  }
+  return null;
+};
 
 /** Answer of a match's state call: always carries the server clock. */
 type Stamped = { now: number };
@@ -22,6 +33,8 @@ const missingFn = (e: unknown) => {
 };
 
 const POLL_MS = 1000;
+/** Race games without push (Yazan 2026-11-01): each player goes at their own pace, so every 2 s is enough. */
+const RACE_POLL_MS = 2000;
 const NOTICE_MS = 2200;
 const POLL_GIVE_UP_MS = 3000;
 
@@ -38,9 +51,9 @@ const POLL_GIVE_UP_MS = 3000;
 export function useMatchState<T extends Stamped>(
   rpc: string,
   matchId: string,
-  opts: { tickMs?: number; quiet?: boolean; shown?: (server: number, st: T | null) => unknown } = {},
+  opts: { tickMs?: number; quiet?: boolean; race?: boolean; shown?: (server: number, st: T | null) => unknown } = {},
 ) {
-  const { tickMs = 250, quiet = false } = opts;
+  const { tickMs = 250, quiet = false, race = false } = opts;
   const [st, setSt] = useState<T | null>(null);
   const [clock] = useState(timeStore);
   // The clock keeps server time (the phone's time plus the offset read from the last answer).
@@ -79,15 +92,15 @@ export function useMatchState<T extends Stamped>(
     }
   }, [ask, quiet, clock]);
 
-  const tick = useEffectEvent((n: number) => {
-    const sv = n + offset.current;
-    clock.set(sv, opts.shown ? opts.shown(sv, st) : sv);
-  });
-
-  useEffect(() => {
-    // In the background no polls and no clock ticks (the seat is kept by live.tsx's room_ping); one poll on return (AP9).
-    const poll = () => {
-      if (busy.current || AppState.currentState !== 'active') return;
+  // One ask at a time. A push signal that lands while an ask is out is not lost: one more ask follows it.
+  const again = useRef(false);
+  const poll = useCallback(() => {
+    const go = () => {
+      if (AppState.currentState !== 'active') return;
+      if (busy.current) {
+        again.current = true;
+        return;
+      }
       busy.current = true;
       // #17: a request that never answers (a phone switching networks) used to hold `busy` for good, so the
       // screen stopped following the match and froze. After POLL_GIVE_UP_MS the next poll goes out anyway.
@@ -95,10 +108,40 @@ export function useMatchState<T extends Stamped>(
       load().finally(() => {
         clearTimeout(id);
         busy.current = false;
+        if (again.current) {
+          again.current = false;
+          go();
+        }
       });
     };
+    go();
+  }, [load]);
+
+  // Push (Yazan 2026-11-01): with the match's push line open, ask when the server signals a change, at each deadline
+  // (a phase ending, a referee step due) and as a slow backup; without it, ask every second (2 s in race games).
+  const pushed = usePushLine(matchId ? `match:${matchId}` : null, poll);
+  const every = pushed ? BACKUP_MS : race ? RACE_POLL_MS : POLL_MS;
+  const deadlineDone = useRef(0);
+
+  const tick = useEffectEvent((n: number) => {
+    const sv = n + offset.current;
+    clock.set(sv, opts.shown ? opts.shown(sv, st) : sv);
+    if (pushed && st) {
+      // Phases end on the server clock; the first ask after the end moves the match on and signals everyone.
+      const o = st as unknown as { phase_ends_at?: unknown; due?: unknown };
+      const ends = [o.phase_ends_at, o.due].map(toMs).filter((x): x is number => x != null && x > deadlineDone.current);
+      const next = ends.length ? Math.min(...ends) : null;
+      if (next != null && sv >= next + 250) {
+        deadlineDone.current = next;
+        poll();
+      }
+    }
+  });
+
+  useEffect(() => {
+    // In the background no polls and no clock ticks (the seat is kept by live.tsx's room_ping); one poll on return (AP9).
     poll();
-    const p = setInterval(poll, POLL_MS);
+    const p = setInterval(() => poll(), every);
     const t = setInterval(() => AppState.currentState === 'active' && tick(Date.now()), tickMs);
     const back = AppState.addEventListener('change', (a) => a === 'active' && poll());
     return () => {
@@ -106,7 +149,7 @@ export function useMatchState<T extends Stamped>(
       clearInterval(t);
       back.remove();
     };
-  }, [load, tickMs]);
+  }, [poll, tickMs, every]);
 
   useEffect(() => {
     if (!notice) return;

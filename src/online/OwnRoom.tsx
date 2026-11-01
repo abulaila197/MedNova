@@ -421,7 +421,6 @@ export function OwnLobby({ kit, def, roomId }: { kit: RoomKit; def: GameDef; roo
         top={
           <>
             <LobbySheets def={def} state={state} sheet={sheet} setSheet={setSheet} reload={reload} />
-            {wait.show ? <BusyWait game={def.key} place={wait.place} onStop={host ? wait.stop : undefined} /> : null}
           </>
         }>
         <View style={st.spread}>
@@ -432,6 +431,7 @@ export function OwnLobby({ kit, def, roomId }: { kit: RoomKit; def: GameDef; roo
             <KT kit={kit} size={13} color={rc.acc}>How to play</KT>
           </Pressable>
         </View>
+        {wait.show ? <BusyWait place={wait.place} onStop={host ? wait.stop : undefined} /> : null}
         <View style={{ gap: z(3) }}>
           <Kick kit={kit} color={rc.soft}>{room.is_public ? 'Open room' : 'Private room'}</Kick>
           <kit.Title text={w.lobby} />
@@ -503,8 +503,8 @@ export function OwnLobby({ kit, def, roomId }: { kit: RoomKit; def: GameDef; roo
               <kit.Btn label="Back to lobby" onPress={() => rematchRoom(room.id).then(reload).catch(() => {})} />
             ) : host ? (
               <kit.Btn
-                label={busy ? 'Starting…' : startFail ? 'Couldn’t start. Try again' : allReady ? w.start : players.length < 2 ? 'Needs 2 players' : `${players.length - notReady.length} of ${players.length} ready`}
-                off={!allReady || busy}
+                label={wait.show ? `Waiting in line · ${wait.place}` : busy ? 'Starting…' : startFail ? 'Couldn’t start. Try again' : allReady ? w.start : players.length < 2 ? 'Needs 2 players' : `${players.length - notReady.length} of ${players.length} ready`}
+                off={!allReady || busy || wait.show}
                 onPress={async () => {
                   setBusy(true);
                   // A refused start (someone left or un-readied) says so on the button instead of failing silently (AP12g).
