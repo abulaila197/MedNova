@@ -8,6 +8,18 @@ import { keepIfSame } from './same';
 
 /** Answer of a match's state call: always carries the server clock. */
 type Stamped = { now: number };
+/**
+ * Group 10 (Yazan 2026-11-01), lighter updates: the state is asked for through poll_state, which answers with only
+ * the clock ({ now, same: true }) when nothing changed since the fingerprint `h` of the last full answer. Everything
+ * else stays as it was: one ask a second, the give-up timer, no asks in the background, "Reconnecting…".
+ */
+type Light = { now: number; same?: true; h?: string };
+/** A server without poll_state yet (before its SQL is pasted): ask the state function directly, as before. */
+let legacy = false;
+const missingFn = (e: unknown) => {
+  const x = e as { code?: string; message?: string } | null;
+  return x?.code === 'PGRST202' || /poll_state/.test(x?.message ?? '');
+};
 
 const POLL_MS = 1000;
 const NOTICE_MS = 2200;
@@ -36,17 +48,36 @@ export function useMatchState<T extends Stamped>(
   const [notice, setNotice] = useState<string | null>(null);
   const offset = useRef(0);
   const busy = useRef(false);
+  // Fingerprint of the last full state this screen holds; null until the first one (or after a failed ask).
+  const seen = useRef<string | null>(null);
+
+  const ask = useCallback(async (): Promise<(T & Light) | null> => {
+    if (!legacy) {
+      try {
+        return await call<T & Light>('poll_state', { fn: rpc, m: matchId, seen: seen.current });
+      } catch (e) {
+        if (!missingFn(e)) throw e;
+        legacy = true;
+      }
+    }
+    return await call<T>(rpc, { m: matchId });
+  }, [rpc, matchId]);
 
   const load = useCallback(async () => {
     try {
-      const s = await call<T>(rpc, { m: matchId });
+      const s = await ask();
+      if (!s) throw new Error('no state');
       offset.current = s.now - Date.now();
       clock.put(Date.now() + offset.current);
-      setSt((prev) => keepIfSame(prev, s));
+      if (s.same) return; // nothing changed: the screen keeps the state it has
+      seen.current = s.h ?? null;
+      const { h: _h, ...full } = s;
+      setSt((prev) => keepIfSame(prev, full as unknown as T));
     } catch {
+      seen.current = null; // the next answer is a full one
       if (!quiet) setNotice('Reconnecting…');
     }
-  }, [rpc, matchId, quiet, clock]);
+  }, [ask, quiet, clock]);
 
   const tick = useEffectEvent((n: number) => {
     const sv = n + offset.current;
