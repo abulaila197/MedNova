@@ -105,20 +105,45 @@ export function Plate({ term, category, forbidden, team, compact }: { term: stri
 /** The stack of clue chips for the current word, and the team's total. */
 type PlateTerm = { name: string; category?: string; forbidden?: readonly string[] };
 
+/** #35 card halves (Yazan's photo of قول لا تقول): green and magenta. Each word keeps its colour when the card turns. */
+const HALF = { green: { bg: '#7fae2e', box: '#f4f1e8' }, magenta: { bg: '#a3134f', box: '#f4f1e8' } };
+const INK = '#2a1d16';
+
+function Half({ word, tone, flipped }: { word: PlateTerm; tone: keyof typeof HALF; flipped?: boolean }) {
+  const h = HALF[tone];
+  const fs = word.name.length > 22 ? 14 : word.name.length > 14 ? 16 : 18;
+  return (
+    <View style={[s.half, { backgroundColor: h.bg }, flipped && { transform: [{ rotate: '180deg' }] }]}>
+      {word.category ? <Text style={s.halfCat}>{word.category.toUpperCase()}</Text> : null}
+      <Text style={[s.halfT, { fontSize: u(fs), lineHeight: u(fs * 1.2) }]} numberOfLines={2}>
+        {word.name}
+      </Text>
+      <View style={[s.halfBox, { backgroundColor: h.box }]}>
+        <Text style={s.halfK}>DON&apos;T SAY</Text>
+        {(word.forbidden ?? []).map((w) => (
+          <Text key={w} style={s.halfW}>
+            {w}
+          </Text>
+        ))}
+      </View>
+    </View>
+  );
+}
+
 /**
- * #35 (Yazan 2026-11-01, like قول لا تقول): one card with two words. The word in play faces the clue giver; the other
- * sits upside down on the far half. Swap turns the card round; only the word facing the giver counts.
+ * #35 (Yazan 2026-11-01, like قول لا تقول): one card with two words in two coloured halves. The word in play faces the
+ * clue giver at the top; the other is upside down on the bottom half. Swap turns the card round; only the word
+ * facing the giver counts.
  */
-export function DualPlate({ term, alt, team, onSwap, disabled }: { term: PlateTerm; alt: PlateTerm | null; team: TeamId; onSwap: () => void; disabled?: boolean }) {
+export function DualPlate({ term, alt, team, onSwap, disabled }: { term: PlateTerm & { id?: string }; alt: (PlateTerm & { id?: string }) | null; team: TeamId; onSwap: () => void; disabled?: boolean }) {
   const t = useTheme();
   if (!alt) return <Plate term={term.name} category={term.category} forbidden={term.forbidden} team={team} />;
+  // The same word keeps the same colour whichever way the card faces.
+  const green = (term.id ?? term.name) < (alt.id ?? alt.name);
   return (
-    <View style={{ gap: u(6), marginTop: u(6) }}>
-      <View style={{ transform: [{ rotate: '180deg' }], opacity: 0.62 }} accessibilityLabel={`Other word: ${alt.name}`}>
-        <Plate term={alt.name} category={alt.category} forbidden={alt.forbidden} team={team} compact />
-      </View>
-      <View style={s.swapRow}>
-        <View style={[s.swapLine, { backgroundColor: t.chipLine }]} />
+    <View style={[s.card, { borderColor: TEAM[team].color }]}>
+      <Half word={term} tone={green ? 'green' : 'magenta'} />
+      <View style={s.seam} pointerEvents="box-none">
         <Pressable
           onPress={() => {
             tapped();
@@ -126,15 +151,14 @@ export function DualPlate({ term, alt, team, onSwap, disabled }: { term: PlateTe
           }}
           disabled={disabled}
           hitSlop={u(8)}
-          style={[s.swapBtn, { borderColor: TEAM[team].color, backgroundColor: TEAM[team].deep, opacity: disabled ? 0.5 : 1 }]}
+          style={[s.swapBtn, { borderColor: '#fff', backgroundColor: '#1b2140', opacity: disabled ? 0.5 : 1 }]}
           accessibilityRole="button"
           accessibilityLabel="Swap to the other word"
         >
-          <Text style={[s.swapT, { color: t.white }]}>⇅  Swap word</Text>
+          <Text style={[s.swapT, { color: t.white }]}>⇅ Swap</Text>
         </Pressable>
-        <View style={[s.swapLine, { backgroundColor: t.chipLine }]} />
       </View>
-      <Plate term={term.name} category={term.category} forbidden={term.forbidden} team={team} compact />
+      <Half word={alt} tone={green ? 'magenta' : 'green'} flipped />
     </View>
   );
 }
@@ -257,7 +281,7 @@ export const s = StyleSheet.create({
   head: { alignItems: 'center', gap: u(3), paddingTop: u(10) },
   headT: { fontFamily: F.display, fontSize: u(28), lineHeight: u(32), textAlign: 'center' },
   sub: { fontFamily: F.body, fontSize: u(11.5), lineHeight: u(16), textAlign: 'center' },
-  clock: { fontFamily: F.display, fontSize: u(40), lineHeight: u(44), marginTop: u(4), textAlign: 'center' },
+  clock: { fontFamily: F.display, fontSize: u(30), lineHeight: u(34), marginTop: 0, textAlign: 'center' },
   plateWrap: {
     marginTop: u(8),
     borderWidth: 2,
@@ -269,10 +293,16 @@ export const s = StyleSheet.create({
     shadowOffset: { width: 0, height: 0 },
     elevation: 6,
   },
-  swapRow: { flexDirection: 'row', alignItems: 'center', gap: u(8) },
-  swapLine: { flex: 1, height: 1 },
-  swapBtn: { borderWidth: 1.5, borderRadius: u(20), paddingVertical: u(5), paddingHorizontal: u(14) },
-  swapT: { fontFamily: F.bodyBold, fontSize: u(13) },
+  card: { marginTop: u(2), borderWidth: 2, borderRadius: u(16), overflow: 'hidden', alignSelf: 'center', width: '88%' },
+  half: { paddingHorizontal: u(12), paddingTop: u(4), paddingBottom: u(12), alignItems: 'center', gap: u(1) },
+  halfCat: { fontFamily: F.mono, fontSize: u(9), letterSpacing: u(1.2), color: 'rgba(255,255,255,0.8)' },
+  halfT: { fontFamily: F.display, color: '#fff', textAlign: 'center' },
+  halfBox: { alignSelf: 'stretch', borderRadius: u(9), paddingVertical: u(4), alignItems: 'center', gap: 0 },
+  halfK: { fontFamily: F.mono, fontSize: u(8), letterSpacing: u(1.2), color: '#9a7d6a', marginBottom: u(1) },
+  halfW: { fontFamily: F.bodySemi, fontSize: u(12.5), lineHeight: u(15.5), color: INK },
+  seam: { height: 0, zIndex: 2, alignItems: 'center', justifyContent: 'center', overflow: 'visible' },
+  swapBtn: { borderWidth: 2, borderRadius: u(16), paddingVertical: u(4), paddingHorizontal: u(12) },
+  swapT: { fontFamily: F.bodyBold, fontSize: u(12) },
   bulbs: { flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: u(6), marginBottom: u(6) },
   bulb: { width: u(7), height: u(7), borderRadius: u(4) },
   plate: { backgroundColor: PLATE.bg, borderRadius: u(10), paddingVertical: u(12), paddingHorizontal: u(10), alignItems: 'center', gap: u(4) },
@@ -283,14 +313,15 @@ export const s = StyleSheet.create({
   forbRow: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: u(5) },
   forbChip: { borderWidth: 1, borderRadius: u(10), paddingHorizontal: u(8), paddingVertical: u(2) },
   forbT: { fontFamily: F.bodySemi, fontSize: u(11), lineHeight: u(15), textDecorationLine: 'line-through' },
-  stackRow: { flexDirection: 'row', alignItems: 'flex-end', marginTop: u(12), gap: u(10) },
+  stackRow: { flexDirection: 'row', alignItems: 'flex-end', marginTop: u(4), gap: u(10) },
   chips: { flexDirection: 'row', alignItems: 'center', height: u(22), marginTop: u(4) },
   chip: { width: u(20), height: u(20), borderRadius: u(10), borderWidth: 2, borderColor: '#141a2e' },
   total: { fontFamily: F.display, fontSize: u(20), lineHeight: u(24) },
   small: { fontFamily: F.body, fontSize: u(10.5), lineHeight: u(14) },
-  show: { borderWidth: 2, borderRadius: u(14), paddingVertical: u(10), alignItems: 'center', justifyContent: 'center' },
-  showT: { fontFamily: F.bodyBold, fontSize: u(15), lineHeight: u(19) },
-  showS: { fontFamily: F.body, fontSize: u(9.5), lineHeight: u(12) },
+  // Yazan 2026-11-01: smaller buttons so the whole two-word card fits on one screen.
+  show: { borderWidth: 1.5, borderRadius: u(11), paddingVertical: u(5), alignItems: 'center', justifyContent: 'center' },
+  showT: { fontFamily: F.bodyBold, fontSize: u(13), lineHeight: u(16) },
+  showS: { fontFamily: F.body, fontSize: u(8.5), lineHeight: u(10) },
   row: { flexDirection: 'row', alignItems: 'center', gap: u(8), paddingVertical: u(5), paddingHorizontal: u(4) },
   rowN: { flex: 1, fontFamily: F.bodySemi, fontSize: u(12.5), lineHeight: u(16) },
   tag: { fontFamily: F.mono, fontSize: u(8.5), letterSpacing: u(0.8) },

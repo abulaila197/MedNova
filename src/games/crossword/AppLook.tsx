@@ -132,10 +132,10 @@ export const AppGrid = memo(function AppGrid({ puzzle, solved, revealed = [], se
           key={k}
           onPress={() => press({ r, c: col })}
           accessibilityLabel={`Row ${r + 1}, column ${col + 1}${shown.has(k) ? `, ${idx.letterAt.get(k)}` : ''}`}
-          style={[s.tile, { left: col * step, top: r * step, width: size, height: size, borderRadius: Math.max(2, size * 0.14), backgroundColor: c.glass, borderColor: picked ? t.accent : c.line, borderWidth: picked ? 1.5 : 1 }, bg ? { boxShadow: `0 0 ${Math.round(size * 0.35)}px ${bg}66` } : null]}
+          style={[s.tile, { left: col * step, top: r * step, width: size, height: size, borderRadius: Math.max(2, size * 0.14), backgroundColor: c.beigeTile, borderColor: picked ? t.accent : c.beigeLine, borderWidth: picked ? 2 : 1 }, bg ? { boxShadow: `0 0 ${Math.round(size * 0.35)}px ${bg}66` } : null]}
         >
           {bg ? <View style={[StyleSheet.absoluteFill, { backgroundColor: bg }]} /> : null}
-          {picked && !bg ? <View style={[StyleSheet.absoluteFill, { backgroundColor: t.accent, opacity: 0.16 }]} /> : null}
+          {picked && !bg ? <View style={[StyleSheet.absoluteFill, { backgroundColor: t.accent, opacity: 0.3 }]} /> : null}
           <LinearGradient colors={[c.fadeTop, 'transparent']} style={[s.top, { height: size * 0.5 }]} pointerEvents="none" />
           {shown.has(k) ? <Text style={{ fontFamily: F.bodyBold, fontSize: size * 0.52, color: c.onTile }}>{idx.letterAt.get(k)}</Text> : null}
         </Pressable>,

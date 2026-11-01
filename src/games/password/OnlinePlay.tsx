@@ -389,8 +389,8 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
         <>
           {head}
           <DualPlate
-            term={{ name: w.name, category: CATEGORY[w.category] ?? w.category, forbidden: w.forbidden }}
-            alt={v.alt ? { name: v.alt.name, category: CATEGORY[v.alt.category] ?? v.alt.category, forbidden: v.alt.forbidden } : null}
+            term={{ id: w.id, name: w.name, category: CATEGORY[w.category] ?? w.category, forbidden: w.forbidden }}
+            alt={v.alt ? { id: v.alt.id, name: v.alt.name, category: CATEGORY[v.alt.category] ?? v.alt.category, forbidden: v.alt.forbidden } : null}
             team={v.me.team}
             disabled={sending}
             onSwap={() => {

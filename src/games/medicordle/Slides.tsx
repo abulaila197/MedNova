@@ -207,7 +207,7 @@ function Board(p: {
 
   return (
     <View style={s.boardWrap} onLayout={onLayout}>
-      <LinearGradient colors={[p.c.boxA, p.c.boxB]} style={[s.board, { borderColor: p.c.line, padding: pad }]}>
+      <LinearGradient colors={[p.c.beigeA, p.c.beigeB]} style={[s.board, { borderColor: p.c.beigeLine, padding: pad }]}>
         {tile > 0 && !p.hidden
           ? Array.from({ length: p.rows }, (_, r) => {
               const row = p.played[r];
@@ -294,7 +294,7 @@ function Tile({ c, size, letter, mark, delay, ghost, typed, edge }: { c: SlideCo
     <View
       style={[
         s.tile,
-        { width: size, height: size, borderColor: typed ? t.soft : c.line, backgroundColor: c.glass, borderRadius: Math.max(3, size * 0.11) },
+        { width: size, height: size, borderColor: typed ? t.soft : c.line, backgroundColor: c.tileSolid, borderRadius: Math.max(3, size * 0.11) },
         lit ? { boxShadow: `0 0 ${Math.round(size * 0.3)}px ${bg}88` } : null,
       ]}>
       {bg && missing ? <View style={[StyleSheet.absoluteFill, { backgroundColor: bg, opacity: 0.5 }]} /> : bg ? <Animated.View style={[StyleSheet.absoluteFill, { backgroundColor: bg }, colour]} /> : null}

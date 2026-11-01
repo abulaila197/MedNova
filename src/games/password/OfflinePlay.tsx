@@ -212,12 +212,15 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
     const team = off.turn.team;
     body = (
       <>
-        <Clock ms={v.msLeft} />
-        <Text style={[k.sub, { color: t.mute }]}>{`${nameOf(v.giverId)} gives clues to ${nameOf(v.guesserId)}`}</Text>
+        {/* One row for the clock and who plays, so the whole two-word card fits on one screen. */}
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: u(10) }}>
+          <Clock ms={v.msLeft} />
+          <Text style={[k.sub, { color: t.mute, flexShrink: 1, textAlign: 'left' }]}>{`${nameOf(v.giverId)} gives clues\nto ${nameOf(v.guesserId)}`}</Text>
+        </View>
         {term ? (
           <DualPlate
-            term={{ name: term.name, category: CATEGORY[term.category] ?? term.category, forbidden: term.forbidden }}
-            alt={alt ? { name: alt.name, category: CATEGORY[alt.category] ?? alt.category, forbidden: alt.forbidden } : null}
+            term={{ id: term.id, name: term.name, category: CATEGORY[term.category] ?? term.category, forbidden: term.forbidden }}
+            alt={alt ? { id: alt.id, name: alt.name, category: CATEGORY[alt.category] ?? alt.category, forbidden: alt.forbidden } : null}
             team={team}
             onSwap={() => send({ type: 'SWAP' })}
           />
@@ -226,7 +229,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
       </>
     );
     bottom = (
-      <View style={{ gap: u(8) }}>
+      <View style={{ gap: u(6) }}>
         <View style={{ flexDirection: 'row', gap: u(8) }}>
           <ShowBtn label="−1" sub="undo" color={t.mute} flex={0.3} disabled={v.clueCount === 0} onPress={() => send({ type: 'CLUE_MINUS' })} />
           <ShowBtn label="+1 clue" sub="after every clue" color={TEAM[team].color} onPress={() => send({ type: 'CLUE_PLUS' })} />
