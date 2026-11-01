@@ -18,7 +18,7 @@ create table if not exists public.online_meter_conf (
   monthly_gb numeric not null default 5,
   online_share numeric not null default 0.75 check (online_share > 0 and online_share <= 1),
   bytes_per_sec int not null default 2000 check (bytes_per_sec > 0), -- match updates 1/s + chat checks every 1.5 s + seat check every 5 s, ~1 KB each
-  cycle_day int not null default 1 check (cycle_day between 1 and 28),
+  cycle_day int not null default 6 check (cycle_day between 1 and 28),
   tz text not null default 'Africa/Cairo',
   week_starts int not null default 6 check (week_starts between 0 and 6), -- 6 = Saturday, 0 = Sunday
   busy_players int not null default 250 check (busy_players > 0),

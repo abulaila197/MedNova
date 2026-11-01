@@ -90,5 +90,7 @@ create policy "mednova members hear their lines" on realtime.messages
 -- Weekly share meter: with push, a player uses far less (signals + one fetch per change + backup checks).
 -- Kept a little high on purpose until the real numbers from Supabase's Usage page are in.
 update public.online_meter_conf set bytes_per_sec = 900, updated_at = now() where id = 1 and bytes_per_sec = 2000;
+-- Supabase usage month restarts on the 6th (Yazan 2026-11-01).
+update public.online_meter_conf set cycle_day = 6, updated_at = now() where id = 1 and cycle_day = 1;
 
 select 'push ready' as done;
