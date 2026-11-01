@@ -11,6 +11,7 @@ import { settingsLine } from '@/online/format';
 import { useRace, type RacePlayer, type RaceState } from '@/online/race';
 import { RoomTalk } from '@/online/TalkBar';
 import { u } from '@/theme/scale';
+import { useKeyboardHeight } from '@/lib/useKeyboard';
 import { useRaceRevealSound } from '@/online/raceSound';
 import { useBackPause } from '@/online/backPause';
 
@@ -24,7 +25,7 @@ import { Board, Sketch, liveStroke, type BoardHandle, type Stroke } from './Boar
 import { SA } from './core';
 import { WORDS, wordName } from './data';
 import { ownSketches, useOwnItems } from '@/online/own';
-import { ChalkBtn, ChalkTitle, ClockChalkTimer, Frame, HintCard, Kicker, Ledge, Note, Panel, PauseBtn, SL, Scores, SlateScreen, TopRow, useSlateRoom } from './slate';
+import { ChalkBtn, ChalkTitle, ClockChalkTimer, Frame, HintCard, HintLine, Kicker, Ledge, Note, Panel, PauseBtn, SL, Scores, SlateScreen, TopRow, useSlateRoom } from './slate';
 
 /** Everyone sees the same board shape online, so a drawing lands in the same place on every phone. */
 const RATIO = 1.1;
@@ -60,6 +61,8 @@ function itemsOf(st: RaceState) {
  */
 export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   const R = useSlateRoom();
+  // #38/#40 (Yazan 2026-11-01): while the keyboard is open, the word's hint sits right above the guess box.
+  const typing = useKeyboardHeight() > 0;
   const { st, load, server, clock, playing, watchLine, doneLine, notice, setNotice, leave } = useRace(def, roomId, matchId, me, itemsOf);
   const [menu, setMenu] = useState(false);
   useBackPause(menu, setMenu);
@@ -242,13 +245,14 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
       {/* The guess box sits at the bottom: lift it over the keyboard (the board shrinks, minHeight keeps a bit). */}
       <KeyboardLift style={s.lift}>
         <TopRow kicker={kick} title={`${drawer?.name ?? 'Someone'} is drawing`} color={colorOf(drawer)} right={<><ClockChalkTimer clock={clock} leftAt={leftAt} totalMs={turnMs} /><PauseBtn onPress={pause} /></>} />
-        <HintCard hint={{ words: sa.words ?? 1, field: sa.field, mask: sa.mask }} />
+        {typing && playing ? null : <HintCard hint={{ words: sa.words ?? 1, field: sa.field, mask: sa.mask }} />}
         <View style={s.fill}>
           <Frame style={{ width: '100%', maxWidth: u(330) }}>
             <Sketch strokes={strokes.turn === st.index ? strokes.list : []} live={live} bg={R.board} ratio={RATIO} />
             <WrongGuesses list={sa.guesses} players={st.players} />
           </Frame>
         </View>
+        {typing && playing ? <HintLine hint={{ words: sa.words ?? 1, field: sa.field, mask: sa.mask }} /> : null}
         {playing ? <GuessBox key={st.index} solved={st.me?.solved_ms != null} points={st.me?.points ?? 0} rank={st.me?.rank ?? null} matchId={matchId} load={load} onClose={() => void channel.current?.send({ type: 'broadcast', event: 'close', payload: { user_id: me } })} /> : <Note style={{ textAlign: 'center' }}>{watchLine}</Note>}
         {playing ? <ReportBtn sa={sa} matchId={matchId} load={load} /> : null}
       </KeyboardLift>

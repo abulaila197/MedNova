@@ -1,6 +1,6 @@
 import type { GameDef } from '../shell/types';
 import { SA } from './core';
-import { isBasic, MIXES, WORDS, wordById, wordName } from './data';
+import { isBasic, MIXES, PICKABLE, wordById, wordName } from './data';
 import { OfflinePlay } from './OfflinePlay';
 import { OnlinePlay } from './OnlinePlay';
 import { SoloPlay } from './SoloPlay';
@@ -16,7 +16,7 @@ const TURN = {
 const MIX = {
   key: 'mix',
   label: 'Words',
-  choices: MIXES.map((m) => ({ ...m, note: `${m.value === 'mixed' ? WORDS.length : WORDS.filter((w) => isBasic(w) === (m.value === 'basic')).length} words` })),
+  choices: MIXES.map((m) => ({ ...m, note: `${m.value === 'mixed' ? PICKABLE.length : PICKABLE.filter((w) => isBasic(w) === (m.value === 'basic')).length} words` })),
   initial: 'mixed',
 };
 
@@ -38,7 +38,7 @@ export const silentArtist: GameDef = {
     {
       mode: 'solo',
       title: 'Practice sketch',
-      blurb: `Draw ${WORDS.length} diseases and basic science words alone against the clock. No score.`,
+      blurb: `Draw ${PICKABLE.length} diseases and basic science words alone against the clock. No score.`,
       howTo: [
         'Pick the fields you want, or keep them all.',
         'You see a word and have 60 s to draw it on the slate.',

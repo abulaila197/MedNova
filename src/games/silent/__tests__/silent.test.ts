@@ -132,12 +132,23 @@ test('online guess matcher (as coded): aliases and typos count, look-alikes are 
   assert.equal(evaluateGuess('hypertention', words[1], index), 'correct');
 });
 
-test('word list (QS1): 300 diseases then 200 basic science words, every name and other name guesses right', async () => {
-  const { WORDS, wordsFor } = await import('../data');
+test('word list (QS1, #38/#45/#46): 701 words, 700 pickable, medicine cup retired, every name and other name guesses right', async () => {
+  const { WORDS, PICKABLE, wordsFor } = await import('../data');
   const { buildAnswerIndex, evaluateGuess } = await import('../guess');
-  assert.equal(WORDS.length, 500);
-  assert.equal(wordsFor('clinical').length, 300);
-  assert.equal(wordsFor('basic').length, 200);
+  assert.equal(WORDS.length, 701);
+  assert.equal(PICKABLE.length, 700);
+  assert.equal(WORDS[485].name, 'Medicine cup');
+  assert.ok(!PICKABLE.some((w) => w.name === 'Medicine cup'));
+  assert.equal(new Set(WORDS.map((w) => w.id)).size, 701);
+  assert.equal(wordsFor('clinical').length, 440);
+  assert.equal(wordsFor('basic').length, 260);
+  assert.equal(wordsFor('clinical').filter((w) => w.field === 'Medical tools').length, 40);
+  const seen = new Map<string, string>();
+  for (const w of WORDS) for (const n of [w.name, ...w.aliases]) {
+    const k = n.toLowerCase();
+    assert.ok(!seen.has(k) || seen.get(k) === w.id, `${n} is used by ${seen.get(k)} and ${w.id}`);
+    seen.set(k, w.id);
+  }
   assert.ok(wordsFor('basic').every((w) => w.id.startsWith('b')));
   const index = buildAnswerIndex(WORDS);
   for (const w of WORDS) for (const n of [w.name, ...w.aliases]) assert.equal(evaluateGuess(n, w, index), 'correct', `${w.id} ${n}`);

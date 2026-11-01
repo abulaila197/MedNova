@@ -10,7 +10,7 @@ import { recordItem } from '../shell/flow';
 import { PauseMenu } from '../shell/PauseMenu';
 import type { PlayProps } from '../shell/types';
 import type { BoardHandle, Stroke } from './Board';
-import { FIELDS, RECENT_KEY, WORDS, wordById } from './data';
+import { FIELDS, PICKABLE, RECENT_KEY, WORDS, wordById } from './data';
 import { ChalkBtn, ChalkChip, ChalkTitle, ClockChalkTimer, Kicker, Ledge, Note, PauseBtn, Panel, SL, SlateScreen, TopRow, useSlateRoom, useSlateFonts } from './slate';
 import { soloLeft, startSolo, stepSolo, type SoloEvent, type SoloRun } from './solo';
 import { FitBoard } from './Stage';
@@ -47,7 +47,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   const [erase, setErase] = useState(false);
   // A word of my own (My diseases): only that word, no field picker.
   const custom = typeof play.settings.custom === 'string' ? wordById.get(play.settings.custom) : undefined;
-  const [pool] = useState(() => (custom ? [custom] : WORDS));
+  const [pool] = useState(() => (custom ? [custom] : PICKABLE));
 
   const set = useCallback(
     (next: SoloRun) => {

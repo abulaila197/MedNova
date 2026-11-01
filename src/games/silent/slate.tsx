@@ -160,6 +160,21 @@ export function HintCard({ hint }: { hint: HintView }) {
   );
 }
 
+/** #38/#40: the same hint in one tight strip, shown right above the guess box while the keyboard is open. */
+export function HintLine({ hint }: { hint: HintView }) {
+  const ink = { color: useSlateRoom().ink };
+  return (
+    <Panel style={{ paddingVertical: u(5), gap: u(2) }}>
+      <Text style={[s.hintK, ink, { fontSize: u(12), opacity: 0.85 }]} numberOfLines={1}>
+        {`${hint.words} ${hint.words === 1 ? 'word' : 'words'} · ${hint.field ?? 'Field soon'}`}
+      </Text>
+      <Text style={[s.mask, ink, { fontSize: u(16), textAlign: 'center' }]} numberOfLines={1} adjustsFontSizeToFit>
+        {hint.mask ? hint.mask.replace(/ /g, '    ') : '· · ·'}
+      </Text>
+    </Panel>
+  );
+}
+
 /** Chalk sticks and actions on the wooden ledge under the board; the palette opens all 24 colours above it (#11). */
 export function Ledge({ ink, size, erase, onInk, onSize, onErase, onUndo, onClear }: { ink: number; size: number; erase: boolean; onInk: (i: number) => void; onSize: () => void; onErase: () => void; onUndo: () => void; onClear: () => void }) {
   const [open, setOpen] = useState(false);
@@ -177,14 +192,16 @@ export function Ledge({ ink, size, erase, onInk, onSize, onErase, onUndo, onClea
   return (
     <View style={{ zIndex: 10 }}>
       {open ? (
-        <View style={s.palette}>
-          {SL.inks.map((c, i) => (
-            <Pressable key={c} onPress={() => pick(i)} style={[s.swatch, { backgroundColor: c }, !erase && ink === i ? s.swatchOn : null]} accessibilityRole="button" accessibilityLabel={SL.inkNames[i]} accessibilityState={{ selected: !erase && ink === i }} />
-          ))}
+        <View style={s.paletteWrap} pointerEvents="box-none">
+          <View style={s.palette}>
+            {SL.inks.map((c, i) => (
+              <Pressable key={c} onPress={() => pick(i)} style={[s.swatch, { backgroundColor: c }, !erase && ink === i ? s.swatchOn : null]} accessibilityRole="button" accessibilityLabel={SL.inkNames[i]} accessibilityState={{ selected: !erase && ink === i }} />
+            ))}
+          </View>
         </View>
       ) : null}
       <View style={s.ledge}>
-        {SL.inks.slice(0, QUICK).map((c, i) => tool(`i${i}`, !erase && ink === i, <View style={[s.stick, { backgroundColor: c, opacity: !erase && ink === i ? 1 : 0.72 }]} />, () => pick(i), SL.inkNames[i]))}
+        {SL.inks.slice(0, QUICK).map((c, i) => tool(`i${i}`, !erase && ink === i, <View style={[s.stick, { backgroundColor: c, opacity: !erase && ink === i ? 1 : 0.72 }, !erase && ink === i ? s.swatchOn : null]} />, () => pick(i), SL.inkNames[i]))}
         {tool(
           'palette',
           extra || open,
@@ -204,6 +221,11 @@ export function Ledge({ ink, size, erase, onInk, onSize, onErase, onUndo, onClea
   );
 }
 const QUICK = 4;
+/** Palette box width, height, gap and padding. */
+const SW = 34;
+const SH = 26;
+const SG = 6;
+const SP = 8;
 const PALETTE_DOTS = ['#ef4444', '#f5b82e', '#22c55e', '#3b82f6'];
 
 /** "Hold to peek": the performer sees the disease again only while holding. */
@@ -303,11 +325,15 @@ const s = StyleSheet.create({
   mask: { fontFamily: SL.head, fontSize: u(17), letterSpacing: u(3) },
   ledge: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: SL.frame, borderRadius: u(3), paddingVertical: u(6), paddingHorizontal: u(8), boxShadow: 'inset 0 2px 3px rgba(0,0,0,0.35)' },
   tool: { paddingVertical: u(4), paddingHorizontal: u(2), alignItems: 'center', justifyContent: 'center' },
-  stick: { width: u(22), height: u(8), borderRadius: u(4), boxShadow: '0 1px 1px rgba(0,0,0,0.4)' },
+  // #17/#38 (Yazan 2026-11-01): the ledge colours are boxes like the grid's.
+  stick: { width: u(24), height: u(18), borderRadius: u(3), borderWidth: 1, borderColor: 'rgba(0,0,0,0.35)', boxShadow: '0 1px 1px rgba(0,0,0,0.4)' },
   wheel: { width: u(18), height: u(18), borderRadius: u(9), flexDirection: 'row', flexWrap: 'wrap', overflow: 'hidden', borderWidth: 1.5, borderColor: SL.chalk },
   wheelDot: { width: '50%', height: '50%' },
-  palette: { position: 'absolute', bottom: '100%', left: 0, right: 0, marginBottom: u(6), flexDirection: 'row', flexWrap: 'wrap', gap: u(6), padding: u(8), backgroundColor: SL.frameDark, borderRadius: u(6), boxShadow: '0 4px 12px rgba(0,0,0,0.45)' },
-  swatch: { width: '14.2%', aspectRatio: 1.6, borderRadius: u(4), borderWidth: 1, borderColor: 'rgba(0,0,0,0.35)' },
+  // #17/#38 (Yazan 2026-11-01): 24 fixed boxes, 6 a row, in a panel sized to them (a % width with aspectRatio
+  // collapsed into thin lines on Android).
+  paletteWrap: { position: 'absolute', bottom: '100%', left: 0, right: 0, marginBottom: u(6), alignItems: 'center' },
+  palette: { width: u(SW * 6 + SG * 5 + SP * 2), flexDirection: 'row', flexWrap: 'wrap', gap: u(SG), padding: u(SP), backgroundColor: SL.frameDark, borderRadius: u(6), boxShadow: '0 4px 12px rgba(0,0,0,0.45)' },
+  swatch: { width: u(SW), height: u(SH), borderRadius: u(4), borderWidth: 1, borderColor: 'rgba(0,0,0,0.35)' },
   swatchOn: { borderWidth: 2.5, borderColor: SL.chalk },
   toolT: { fontFamily: SL.body, fontSize: u(12), color: SL.chalk },
   sep: { width: 1, height: u(18), backgroundColor: 'rgba(0,0,0,0.25)' },
