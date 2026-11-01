@@ -18,12 +18,12 @@ const P: PuzzleDef = {
   ],
 };
 
-test('all 40 bundled puzzles are valid: letters agree at every crossing, no word fully crossed', () => {
-  assert.equal(PUZZLES.length, 40);
+test('all 50 bundled puzzles are valid: letters agree at every crossing, no word fully crossed', () => {
+  assert.equal(PUZZLES.length, 50);
   for (const p of PUZZLES) assert.deepEqual(validatePuzzle(p), [], p.id);
   // Array order is the online puzzle number (cw_words.n); levels 1-5 stay first, every level 1-40 used once.
   PUZZLES.forEach((p, i) => assert.equal(p.id, `cw-${String(i + 1).padStart(2, '0')}`));
-  assert.deepEqual(PUZZLES.map((p) => p.level).sort((a, b) => a - b), Array.from({ length: 40 }, (_, i) => i + 1));
+  assert.deepEqual(PUZZLES.map((p) => p.level).sort((a, b) => a - b), Array.from({ length: 50 }, (_, i) => i + 1));
   for (let i = 0; i < 5; i++) assert.equal(PUZZLES[i].level, i + 1);
   const answers = PUZZLES.flatMap((p) => p.words.map((w) => w.answer));
   assert.equal(new Set(answers.slice(-PUZZLES.slice(31).reduce((n, p) => n + p.words.length, 0))).size, PUZZLES.slice(31).reduce((n, p) => n + p.words.length, 0));

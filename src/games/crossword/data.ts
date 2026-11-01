@@ -1,7 +1,7 @@
 import type { PuzzleDef, WordDef } from './core';
 import puzzles from './data/puzzles.json';
 
-/** The 40 bundled puzzles. Array order = online puzzle number (cw_words.n); `level` sets the solo map order. */
+/** The 50 bundled puzzles. Array order = online puzzle number (cw_words.n); `level` sets the solo map order. */
 export const PUZZLES = puzzles as PuzzleDef[];
 export const puzzleById = new Map(PUZZLES.map((p) => [p.id, p]));
 export const puzzleByLevel = new Map(PUZZLES.map((p) => [p.level, p]));
