@@ -1,9 +1,9 @@
 // The Code Clinic online referee (CC1): Yazan's room rules on the server. The match is saved in cc_games with each
 // player's own view next to it; phones read only their own view with cc_state, so the key never reaches a guesser.
-// The 1,000-word bank is bundled in. Bundled with scripts/build-code-clinic-function.sh.
+// The word bank (terms.json) is read once from the public repo at a pinned commit, so the function stays small.
+// Change BANK to a newer commit when the bank changes. Bundled with scripts/build-code-clinic-function.sh.
 import { createClient } from 'npm:@supabase/supabase-js@2';
 
-import terms from '../../../src/games/codeclinic/data/terms.json';
 import type { Term } from '../../../src/games/codeclinic/engine/types';
 import { dueOf, MOVES, onlineRanks, scoresOf, startOnlineRoom, stepOnline, viewsOf, type Move, type Room } from '../../../src/games/codeclinic/online';
 
@@ -14,7 +14,15 @@ const cors = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
-const TERMS = terms as Term[];
+const BANK = 'https://raw.githubusercontent.com/abulaila197/MedNova/0d88564c60cadb108269902d223eca288bff62a8/src/games/codeclinic/data/terms.json';
+let bank: Promise<Term[]> | null = null;
+const loadBank = () =>
+  (bank ??= fetch(BANK)
+    .then((r) => (r.ok ? (r.json() as Promise<Term[]>) : Promise.reject(new Error(`bank ${r.status}`))))
+    .catch((e) => {
+      bank = null;
+      throw e;
+    }));
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { ...cors, 'Content-Type': 'application/json' } });
 
 type Loaded = {
@@ -42,6 +50,12 @@ Deno.serve(async (req) => {
   }
   if (!body.m) return json({ result: 'bad_request' }, 400);
   const move: Move = body.move && MOVES.has(body.move.type) ? body.move : { type: 'TICK' };
+  let TERMS: Term[];
+  try {
+    TERMS = await loadBank();
+  } catch {
+    return json({ result: 'error', message: 'word bank unavailable' }, 500);
+  }
   // Two phones can step in at once; the save only lands on the version it read, so a clash just runs again.
   for (let attempt = 0; attempt < 4; attempt++) {
     const { data, error } = await admin.rpc('cc_load', { m: body.m, u: who.user.id });

@@ -4,5 +4,5 @@
 set -e
 cd "$(dirname "$0")/.."
 OUT=supabase/functions/nova-password
-npx -y esbuild@0.24.0 "$OUT/index.ts" --bundle --minify-syntax --minify-identifiers --format=esm --platform=neutral --target=es2022 --external:'npm:*' --log-level=warning --outfile="$OUT/dist/index.js"
+npx -y esbuild@0.24.0 "$OUT/index.ts" --bundle --minify --format=esm --platform=neutral --target=es2022 --external:'npm:*' --log-level=warning --outfile="$OUT/dist/index.js"
 wc -c "$OUT/dist/index.js"
