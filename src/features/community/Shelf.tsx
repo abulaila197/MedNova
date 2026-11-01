@@ -8,22 +8,45 @@ import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
-// Yazan's wallpapers and merch photos (2026-10-13). Wallpapers ordered so the dark-blue ones sit apart (2026-10-27).
-// Merch (2026-10-27): mugs between the clothes, m02 the black mug kept from the first set.
-export const WALLPAPERS: ImageSourcePropType[] = [
-  require('@/assets/community/wallpapers/w01.jpg'),
-  require('@/assets/community/wallpapers/w02.jpg'),
-  require('@/assets/community/wallpapers/w05.jpg'),
-  require('@/assets/community/wallpapers/w03.jpg'),
-  require('@/assets/community/wallpapers/w08.jpg'),
-  require('@/assets/community/wallpapers/w04.jpg'),
-  require('@/assets/community/wallpapers/w09.jpg'),
-  require('@/assets/community/wallpapers/w06.jpg'),
-  require('@/assets/community/wallpapers/w10.jpg'),
-  require('@/assets/community/wallpapers/w07.jpg'),
-];
-/** Each wallpaper's own id (its file), for likes and saved file names: the order above can change. */
-export const WALLPAPER_IDS = ['w01', 'w02', 'w05', 'w03', 'w08', 'w04', 'w09', 'w06', 'w10', 'w07'];
+// Yazan's wallpapers and merch photos (2026-10-13). w11-w30 (2026-11-01, Group 11): the newer characters, 15 alone
+// and 5 small groups. Merch (2026-10-27): mugs between the clothes, m02 the black mug kept from the first set.
+const WALL: Record<string, ImageSourcePropType> = {
+  w01: require('@/assets/community/wallpapers/w01.jpg'),
+  w02: require('@/assets/community/wallpapers/w02.jpg'),
+  w03: require('@/assets/community/wallpapers/w03.jpg'),
+  w04: require('@/assets/community/wallpapers/w04.jpg'),
+  w05: require('@/assets/community/wallpapers/w05.jpg'),
+  w06: require('@/assets/community/wallpapers/w06.jpg'),
+  w07: require('@/assets/community/wallpapers/w07.jpg'),
+  w08: require('@/assets/community/wallpapers/w08.jpg'),
+  w09: require('@/assets/community/wallpapers/w09.jpg'),
+  w10: require('@/assets/community/wallpapers/w10.jpg'),
+  w11: require('@/assets/community/wallpapers/w11.jpg'),
+  w12: require('@/assets/community/wallpapers/w12.jpg'),
+  w13: require('@/assets/community/wallpapers/w13.jpg'),
+  w14: require('@/assets/community/wallpapers/w14.jpg'),
+  w15: require('@/assets/community/wallpapers/w15.jpg'),
+  w16: require('@/assets/community/wallpapers/w16.jpg'),
+  w17: require('@/assets/community/wallpapers/w17.jpg'),
+  w18: require('@/assets/community/wallpapers/w18.jpg'),
+  w19: require('@/assets/community/wallpapers/w19.jpg'),
+  w20: require('@/assets/community/wallpapers/w20.jpg'),
+  w21: require('@/assets/community/wallpapers/w21.jpg'),
+  w22: require('@/assets/community/wallpapers/w22.jpg'),
+  w23: require('@/assets/community/wallpapers/w23.jpg'),
+  w24: require('@/assets/community/wallpapers/w24.jpg'),
+  w25: require('@/assets/community/wallpapers/w25.jpg'),
+  w26: require('@/assets/community/wallpapers/w26.jpg'),
+  w27: require('@/assets/community/wallpapers/w27.jpg'),
+  w28: require('@/assets/community/wallpapers/w28.jpg'),
+  w29: require('@/assets/community/wallpapers/w29.jpg'),
+  w30: require('@/assets/community/wallpapers/w30.jpg'),
+};
+/** The Wallpapers page, mixed old and new (Yazan 2026-11-01). Each id is the file, for likes and saved file names. */
+export const WALLPAPER_IDS = ['w26', 'w15', 'w01', 'w22', 'w20', 'w02', 'w23', 'w21', 'w05', 'w14', 'w13', 'w03', 'w24', 'w16', 'w08', 'w30', 'w12', 'w04', 'w29', 'w19', 'w09', 'w25', 'w27', 'w06', 'w11', 'w18', 'w10', 'w28', 'w17', 'w07'];
+export const WALLPAPERS: ImageSourcePropType[] = WALLPAPER_IDS.map((id) => WALL[id]);
+/** The Community shelf's hand (Yazan 2026-11-01): the moon cradle and the robot dinner, plus 4 new ones, mixed. */
+export const SHELF_WALLPAPERS: ImageSourcePropType[] = ['w26', 'w04', 'w28', 'w11', 'w01', 'w17'].map((id) => WALL[id]);
 export const MERCH: ImageSourcePropType[] = [
   require('@/assets/community/merch/m01.jpg'),
   require('@/assets/community/merch/m02.jpg'),
