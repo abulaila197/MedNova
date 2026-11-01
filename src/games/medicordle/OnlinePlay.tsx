@@ -12,12 +12,12 @@ import { playerColour } from '../shell/characters';
 import { PauseMenu } from '../shell/PauseMenu';
 import type { OnlineProps } from '../shell/types';
 import { GameScreen } from '../shell/ui';
-import { MAX_ROWS, lengthCheck, soloExp, type Style } from './core';
+import { MAX_ROWS, lengthCheck, minLen, soloExp, type Style } from './core';
 import { WORDS, isWord } from './data';
 import { ownWords, useOwnItems } from '@/online/own';
 import { SlideTable, TurnClock } from './Slides';
 
-const STYLE_NAME: Record<Style, string> = { classic: 'Classic', custom: 'Custom' };
+const STYLE_NAME: Record<Style, string> = { classic: 'Classic', five: 'Classic', custom: 'Custom' };
 // The host's own words (My diseases) have numbers past the bank and come from the server.
 const wordOf = (n: number) => ownWords.get(n) ?? WORDS[n - 1];
 /** NM11: "close" once a player has two-thirds of the letters green in one row (4 of 6 in Classic). */
@@ -178,7 +178,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
       live={playing && !reveal && !solved && !out}
       onSubmit={submit}
       maxLen={w.word.length}
-      minLen={style === 'custom' ? 7 : 6}
+      minLen={minLen(style)}
       onPause={() => setMenu(true)}
       notice={notice}
       dock={dock}>

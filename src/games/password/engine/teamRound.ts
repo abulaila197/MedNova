@@ -20,12 +20,42 @@ export interface TeamRound {
   queue: TermId[];
   words: Record<TermId, WordState>;
   completed: TermId[];
+  /**
+   * #35 (Yazan 2026-11-01): each card holds two words. The other word of each card in the queue, by the word showing
+   * now. Older saves have none (one word per card).
+   */
+  alts?: Record<TermId, TermId>;
 }
 
-export function newTeamRound(termIds: readonly TermId[]): TeamRound {
+export function newTeamRound(termIds: readonly TermId[], alts?: Record<TermId, TermId>): TeamRound {
   const words: Record<TermId, WordState> = {};
   for (const id of termIds) words[id] = { termId: id, clues: [], count: 0, done: false };
-  return { queue: termIds.slice(), words, completed: [] };
+  const tr: TeamRound = { queue: termIds.slice(), words, completed: [] };
+  if (alts) tr.alts = Object.fromEntries(termIds.filter((id) => alts[id]).map((id) => [id, alts[id]]));
+  return tr;
+}
+
+/** The other word on the current card (upside down), if the card has two. */
+export const altWord = (tr: TeamRound): TermId | null => {
+  const id = currentWord(tr);
+  return id !== null ? (tr.alts?.[id] ?? null) : null;
+};
+
+/**
+ * #35: turns the current card round. The other word becomes the one in play and only it counts as the answer;
+ * the clues already given on this card stay counted. Allowed any time (Yazan's pick).
+ */
+export function swapWord(tr: TeamRound): TeamRound {
+  const id = currentWord(tr);
+  const other = altWord(tr);
+  if (id === null || other === null) return tr;
+  const words = { ...tr.words };
+  words[other] = { ...words[id], termId: other };
+  delete words[id];
+  const alts = { ...tr.alts };
+  delete alts[id];
+  alts[other] = id;
+  return { ...tr, queue: [other, ...tr.queue.slice(1)], words, alts };
 }
 
 export const currentWord = (tr: TeamRound): TermId | null => tr.queue[0] ?? null;

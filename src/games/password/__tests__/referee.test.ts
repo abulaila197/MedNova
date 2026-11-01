@@ -145,3 +145,23 @@ test('My diseases: the host’s own terms play first, at most half the words, an
   const after = solve(r, 'A', 1_000);
   assert.equal(viewsOf(after, TERMS)[g].doneWords.length, 1);
 });
+
+test('#35: the giver sees two words and can swap any time; the server takes only the word showing', () => {
+  let r = go(room(), 'h', { type: 'START' }, 0).next;
+  const g = giverOf(r, 'A');
+  const q = guesserOf(r, 'A');
+  const v = viewsOf(r, TERMS);
+  const first = v[g].word!;
+  const second = v[g].alt!;
+  assert.ok(second && second.id !== first.id);
+  assert.equal(v[q].alt ?? null, null); // the guesser never sees either word
+  assert.equal(go(r, q, { type: 'SWAP' }, 1).refused?.code, 'NOT_GIVER');
+  r = go(r, g, { type: 'SWAP' }, 1).next;
+  assert.equal(viewsOf(r, TERMS)[g].word!.id, second.id);
+  assert.equal(viewsOf(r, TERMS)[g].alt!.id, first.id);
+  // The word turned away no longer counts.
+  r = go(r, q, { type: 'GUESS', termId: first.id }, 2).next;
+  assert.equal(r.teams!.A.tr.completed.length, 0);
+  r = go(r, q, { type: 'GUESS', termId: second.id }, 3).next;
+  assert.deepEqual(r.teams!.A.tr.completed, [second.id]);
+});

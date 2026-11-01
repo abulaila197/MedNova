@@ -26,7 +26,7 @@ import { validateClue } from './engine/clues';
 import type { LobbyIntent } from './engine/lobby';
 import { searchTerms } from './engine/terms';
 import type { BankChoice, TeamId } from './engine/types';
-import { Clock, clock, PasswordScreen, Plate, ResultRow, ShowBtn, TEAM, TeamHead, s as k } from './kit';
+import { Clock, clock, DualPlate, PasswordScreen, ResultRow, ShowBtn, TEAM, TeamHead, s as k } from './kit';
 import { TERMS, termOf } from './offline';
 import { clueWhy, startWhy, type Move, type PwView } from './online';
 
@@ -388,7 +388,16 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
       body = (
         <>
           {head}
-          <Plate term={w.name} category={CATEGORY[w.category] ?? w.category} forbidden={w.forbidden} team={v.me.team} />
+          <DualPlate
+            term={{ name: w.name, category: CATEGORY[w.category] ?? w.category, forbidden: w.forbidden }}
+            alt={v.alt ? { name: v.alt.name, category: CATEGORY[v.alt.category] ?? v.alt.category, forbidden: v.alt.forbidden } : null}
+            team={v.me.team}
+            disabled={sending}
+            onSwap={() => {
+              setClue('');
+              void send({ type: 'SWAP' });
+            }}
+          />
           <Text style={[k.small, { color: t.mute, textAlign: 'center', marginTop: u(8) }]}>{`Word ${v.wordNo} of ${mine.total} · your clues so far`}</Text>
           {clueChips}
           {wrongLine}

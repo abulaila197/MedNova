@@ -1,5 +1,5 @@
 // Builds Nova Medicordle's accepted-guess list (decision NM24): the open-source `word-list`
-// package (MIT, dev-time only) + data/medical-terms.txt + every answer, kept to 6-15 letters.
+// package (MIT, dev-time only) + data/medical-terms.txt + every answer, kept to 5-15 letters.
 // Output: one sorted, fixed-width string per length, so the app checks a guess by binary search
 // with no start-up cost. Run: node scripts/build-medicordle-guesses.mjs
 import { readFileSync, writeFileSync } from 'node:fs';
@@ -18,7 +18,7 @@ const answers = JSON.parse(readFileSync(join(data, 'words.json'), 'utf8')).map((
 const byLen = {};
 for (const raw of [...english, ...medical, ...answers]) {
   const w = raw.trim().toUpperCase();
-  if (!/^[A-Z]{6,15}$/.test(w)) continue;
+  if (!/^[A-Z]{5,15}$/.test(w)) continue;
   (byLen[w.length] ??= new Set()).add(w);
 }
 const out = {};

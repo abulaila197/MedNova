@@ -49,6 +49,7 @@ export const novaPassword: GameDef = {
         'Exactly 4 players in 2 teams of 2. In each team one gives clues and the other guesses; roles swap in round 2.',
         'Teams take turns. The clue giver holds the phone and sees one secret term at a time, with words they must not say.',
         'Say one word per clue, out loud, and tap +1 each time. Wrong guesses are free; Skip sends the word to the back.',
+        'Each card holds two words; the second sits upside down. The clue giver can swap any time, and only the word facing them counts.',
         'Each team has 3 minutes for its list. Most words wins, then the fewest clues, then the least time.',
         'No EXP in this mode.',
       ],
@@ -59,8 +60,9 @@ export const novaPassword: GameDef = {
       blurb: '4 players on their own phones. Both teams play at once on the same words.',
       howTo: [
         'Exactly 4 players. The host sets the two teams of two and who gives clues first; roles swap in round 2.',
-        'Both teams play at the same time, on the same words in a different order. You only see how many words the other team has done.',
+        'Both teams play at the same time, on the same cards in a different order. You only see how many words the other team has done.',
         'The clue giver types one-word clues. The app turns down part of the term, the same root, a crossed-out word or a repeat.',
+        'Each card holds two words; the second sits upside down. The clue giver can swap any time, and only the word facing them counts.',
         'The guesser types 3 letters and picks a term from the list. Wrong guesses are free. 3 minutes a round.',
         'Most words wins, then the fewest clues, then the least time. Win 60 EXP, draw 40, loss 20, at most 60 a match.',
       ],

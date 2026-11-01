@@ -4,7 +4,7 @@ import { planMatch, type RoundPlan } from './match';
 import { summarizeMatch, type MatchSummary } from './scoring';
 import { shuffle } from './terms';
 import { elapsed, isTimeUp, pauseTimer, resumeTimer, startTimer, stopTimer, type Timer } from './timer';
-import { addClue, currentWord, isFinished, markCorrect, newTeamRound, removeClue, skipWord, totalClues, wordsCompleted, type TeamRound } from './teamRound';
+import { addClue, currentWord, isFinished, markCorrect, newTeamRound, removeClue, skipWord, swapWord, totalClues, wordsCompleted, type TeamRound } from './teamRound';
 import type { Effect, Rng, Settings, Step, TeamId, Term, TeamRoundResult } from './types';
 
 /**
@@ -87,6 +87,8 @@ export type OfflineEvent =
   | { type: 'CORRECT' }
   | { type: 'NOT_CORRECT' }
   | { type: 'SKIP' }
+  /** #35: turn the card round to its other word. */
+  | { type: 'SWAP' }
   | { type: 'TICK' }
   | { type: 'APP_BACKGROUND' }
   | { type: 'APP_FOREGROUND' }
@@ -240,6 +242,8 @@ function playingEvent(env: OfflineEnv, s: OfflineState, event: OfflineEvent): Of
       ]);
     case 'SKIP':
       return update(skipWord(turn.tr), [{ type: 'SOUND', kind: 'tap' }]);
+    case 'SWAP':
+      return update(swapWord(turn.tr), [{ type: 'SOUND', kind: 'tap' }]);
     case 'CORRECT': {
       const tr = markCorrect(turn.tr);
       const next = { ...s, turn: { ...turn, tr } };
@@ -266,7 +270,7 @@ function startTurn(env: OfflineEnv, s: OfflineState, round: number, team: TeamId
     team,
     giverId: roles.giverId,
     guesserId: roles.guesserId,
-    tr: newTeamRound(s.plan![round].lists[team]),
+    tr: newTeamRound(s.plan![round].lists[team], s.plan![round].alts),
     timer: startTimer(env.now()),
   };
   return step<OfflineState, OfflineEvent>({ ...s, turn, ui: { name: 'playing' } }, [{ type: 'START_TICKER', id: CLOCK, ms: CONFIG.TICK_MS, event: { type: 'TICK' } }]);

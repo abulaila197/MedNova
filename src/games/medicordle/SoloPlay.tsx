@@ -15,7 +15,7 @@ import { PauseMenu } from '../shell/PauseMenu';
 import type { PlayProps } from '../shell/types';
 import { Btn, GameScreen, Ghost } from '../shell/ui';
 import {
-  bumpStreak, dailyOpen, dailyWord, dayNumber, HINT_COSTS, lengthCheck, liveStreak, MAX_ROWS, pickHint, score, shareText,
+  bumpStreak, dailyOpen, dailyWord, dayNumber, HINT_COSTS, lengthCheck, liveStreak, minLen, MAX_ROWS, pickHint, score, shareText,
   type DailyLast, type Streak, type Style,
 } from './core';
 import { isWord, poolFor, wordById } from './data';
@@ -26,7 +26,7 @@ const streakKey = (style: Style) => `medicordle:streak:${style}`;
 const dailyKey = (style: Style, day: number) => `medicordle:daily:${style}:${day}`;
 const lastKey = (style: Style) => `medicordle:daily:last:${style}`;
 const PAID_KEY = 'medicordle:endless:paid'; // NM30: Endless words that already paid EXP
-const STYLE_NAME: Record<Style, string> = { classic: 'Classic', custom: 'Custom' };
+const STYLE_NAME: Record<Style, string> = { classic: 'Classic', five: 'Classic', custom: 'Custom' };
 
 /**
  * The daily lock, written when the daily word starts so the day can't be replayed: while unfinished it keeps the run
@@ -37,8 +37,10 @@ type DailyDone = { wordId: string; guesses: string[]; solved: boolean; finished?
 /** Solo: today's word or an endless queue, on the Specimen slides board. */
 export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   const t = useTheme();
-  const style = (play.settings.style as Style) ?? 'classic';
   const kind = play.settings.word === 'endless' ? 'endless' : 'daily';
+  // #34 (Yazan 2026-11-01): the Daily word stays 6 letters; 5 letters is for Endless.
+  const picked = (play.settings.style as Style) ?? 'classic';
+  const style: Style = kind === 'daily' && picked === 'five' ? 'classic' : picked;
   const [run, setRun] = useState<SoloRun | null>(null);
   const runRef = useRef<SoloRun | null>(null);
   const [done, setDone] = useState<DailyDone | null>(null);
@@ -289,7 +291,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
       live={run.phase === 'playing'}
       onSubmit={submit}
       maxLen={w.word.length}
-      minLen={custom ? 7 : 6}
+      minLen={minLen(style)}
       hint={
         custom && !over && run.hints < HINT_COSTS.length
           ? { label: `Letter hint · ${HINT_COSTS[run.hints]} token${HINT_COSTS[run.hints] > 1 ? 's' : ''}`, onPress: hint, disabled: paused }

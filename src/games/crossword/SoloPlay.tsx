@@ -13,10 +13,10 @@ import { recordItem } from '../shell/flow';
 import { PauseMenu } from '../shell/PauseMenu';
 import type { PlayProps } from '../shell/types';
 import { Btn, GameScreen, Ghost, Kick } from '../shell/ui';
-import { AppGrid, AppLevelMap, AppPopup, AppTopBar } from './AppLook';
+import { AppGrid, AppLevelMap, AppPopup, AppTopBar, TIP, useGridTaps } from './AppLook';
 import {
   CW, buildSlots, composeAnswer, indexOf, isFilled, isUnlocked, judge, levelExp, lockedCells, pickHintCells, placeLetter, removeSlot, soloStars, startSolo, stepSolo,
-  type CellPos, type PuzzleDef, type SoloEvent, type SoloRun, type Typed,
+  type PuzzleDef, type SoloEvent, type SoloRun, type Typed,
 } from './core';
 import { PUZZLES, clueText, puzzleById, puzzleByLevel } from './data';
 
@@ -34,7 +34,7 @@ function bestsOf(stored: Record<number, number>, list: Done[]) {
   return b;
 }
 
-/** Solo (CW1-CW4, CW8, CW9): the level map, one puzzle at a time with tap to zoom, a result card, then session results. */
+/** Solo (CW1-CW4, CW8, CW9): the level map, one puzzle at a time (tap lights a word, double tap opens it), a result card, then session results. */
 export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   const saved = play.resume as SoloSave | null;
   // An open puzzle that has left the levels since goes back to the map.
@@ -45,7 +45,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   const sessionRef = useRef<Done[]>(saved?.session ?? []);
   const [stored, setStored] = useState<Record<number, number>>({});
   const [paused, setPaused] = useState(false);
-  // Each open puzzle (including a replay) gets a fresh screen: zoomed out, nothing open.
+  // Each open puzzle (including a replay) gets a fresh screen: nothing open.
   const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
@@ -179,7 +179,7 @@ function recordWords(play: PlayProps['play'], p: PuzzleDef, r: SoloRun, exp: num
 }
 
 /**
- * One puzzle on screen: top bar, the zoomable grid, the answer popup. Shared by Solo; `dock` shows the out of
+ * One puzzle on screen: top bar, the grid, the answer popup. Shared by Solo; `dock` shows the out of
  * hearts or result card over the grid.
  */
 function Puzzle({ puzzle, run, playId, paused, onEvent, onPause, dock, children }: {
@@ -189,7 +189,6 @@ function Puzzle({ puzzle, run, playId, paused, onEvent, onPause, dock, children 
   const { width } = useScreen();
   const W = Math.min(width, 430);
   const idx = indexOf(puzzle);
-  const [zoom, setZoom] = useState<CellPos | null>(null);
   const [word, setWord] = useState<string | null>(null);
   const [typed, setTyped] = useState<Typed>([]);
   const [notice, setNotice] = useState<string | null>(null);
@@ -223,15 +222,6 @@ function Puzzle({ puzzle, run, playId, paused, onEvent, onPause, dock, children 
     setNotice(null);
   };
 
-  /** Tap to zoom: the first tap zooms; once zoomed, a tap opens that square's word (tap again to switch across/down). */
-  const tapCell = (cell: CellPos) => {
-    if (!playing) return;
-    if (!zoom) return setZoom(cell);
-    const ids = (idx.wordsAt.get(`${cell.r},${cell.c}`) ?? []).filter((id) => !run.solved.includes(id));
-    if (!ids.length) return;
-    const i = word ? ids.indexOf(word) : -1;
-    openWord(ids[(i + 1) % ids.length]);
-  };
 
   const submit = (next: Typed) => {
     if (!word) return;
@@ -277,16 +267,16 @@ function Puzzle({ puzzle, run, playId, paused, onEvent, onPause, dock, children 
     setNotice(null);
   };
 
+  const taps = useGridTaps(idx, run.solved, openWord, playing);
   const sel = word ? idx.wordById.get(word)! : null;
   const left = puzzle.words.length - run.solved.length;
 
   return (
     <GameScreen scroll={false} bodyStyle={{ paddingTop: u(12), paddingHorizontal: u(16), gap: u(10) }}>
       <AppTopBar kicker="Nova Crossword" title={`Puzzle ${puzzle.level}`} sub={`${puzzle.words.length} words · ${left} to go`} hearts={run.hearts} stars={soloStars(puzzle, run)} onPause={onPause} />
-      <AppGrid puzzle={puzzle} solved={run.solved} revealed={run.revealed} selected={word} width={W - u(32)} zoom={zoom} onCell={tapCell} onBlank={(c) => playing && !zoom && setZoom(c)} />
+      <AppGrid puzzle={puzzle} solved={run.solved} revealed={run.revealed} selected={word ?? taps.lit} width={W - u(32)} onCell={taps.tap} onDouble={taps.double} />
       <View style={s.under}>
-        <Text style={[s.tip, { color: t.mute }]}>{zoom ? 'Tap a square to open its word.' : 'Tap part of the grid to zoom in.'}</Text>
-        {zoom ? <Ghost label="Zoom out" onPress={() => setZoom(null)} /> : null}
+        <Text style={[s.tip, { color: t.mute }]}>{TIP}</Text>
       </View>
       {playing ? (
         <View style={s.endRow}>

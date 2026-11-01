@@ -1,6 +1,7 @@
 // Nova Medicordle rules engine: pure functions, no React. Decisions NM1-NM25 in build/shared-rules.md.
 
-export type Style = 'classic' | 'custom';
+/** #34 (Yazan 2026-11-01): 'five' is Classic with 5 letters. */
+export type Style = 'classic' | 'five' | 'custom';
 
 /** A word from the bank. `dossier` is the canonical disease id for the results link (RS1), when there is one. */
 export type Word = { id: string; style: Style; word: string; definition: string; dossier: string | null };
@@ -11,6 +12,11 @@ export type Mark = 'ok' | 'near' | 'off' | 'missing';
 
 export const MAX_ROWS = 6;
 export const CLASSIC_LEN = 6;
+export const FIVE_LEN = 5;
+/** The fixed length of a Classic style (6, or 5 for 'five'); null for Custom. */
+export const fixedLen = (style: Style): number | null => (style === 'classic' ? CLASSIC_LEN : style === 'five' ? FIVE_LEN : null);
+/** The shortest guess a style takes. */
+export const minLen = (style: Style): number => fixedLen(style) ?? CUSTOM_MIN;
 export const CUSTOM_MIN = 7;
 
 /** NM23: up to two letter hints per Custom word, 1 token then 2 tokens. */
@@ -39,10 +45,10 @@ export function score(guess: string, answer: string): Mark[] {
 /** Why a guess can't be played; costs no try (NM2). */
 export type Reject = 'short' | 'long' | 'unknown';
 
-/** Length rule: Classic is exactly 6; Custom is 7 up to the answer's length (NM4). */
+/** Length rule: Classic is exactly 6 (or 5); Custom is 7 up to the answer's length (NM4). */
 export function lengthCheck(guess: string, style: Style, answerLen: number): Reject | null {
-  const min = style === 'classic' ? CLASSIC_LEN : CUSTOM_MIN;
-  const max = style === 'classic' ? CLASSIC_LEN : answerLen;
+  const min = minLen(style);
+  const max = fixedLen(style) ?? answerLen;
   if (guess.length < min) return 'short';
   if (guess.length > max) return 'long';
   return null;
@@ -167,7 +173,7 @@ export function seeded(seed: number) {
 export function dailyWord<T extends { id: string }>(pool: T[], style: Style, day: number): T {
   const order = [...pool].sort((a, b) => (a.id < b.id ? -1 : 1));
   const cycle = Math.floor(day / order.length);
-  const rng = seeded((style === 'classic' ? 0x51ed : 0xc0de) + cycle * 7919);
+  const rng = seeded((style === 'classic' ? 0x51ed : style === 'five' ? 0xf1fe : 0xc0de) + cycle * 7919);
   for (let i = order.length - 1; i > 0; i--) {
     const j = Math.floor(rng() * (i + 1));
     [order[i], order[j]] = [order[j], order[i]];

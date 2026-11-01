@@ -10,6 +10,7 @@ const STYLE = {
   label: 'Style',
   choices: [
     { value: 'classic', label: 'Classic', note: '6 letters' },
+    { value: 'five', label: 'Classic 5', note: '5 letters' },
     { value: 'custom', label: 'Custom', note: '7 to 15 letters' },
   ],
   initial: 'classic',
@@ -26,7 +27,8 @@ export const novaMedicordle: GameDef = {
       howTo: [
         'Guess the hidden medical word in six tries. Every guess must be a real word.',
         'Green is the right letter in the right place, yellow is in the word but elsewhere, grey is not in the word.',
-        'Classic words have 6 letters. Custom words have 7 to 15, and a guess can be shorter than the word.',
+        'Classic words have 6 letters, or 5 in Classic 5. Custom words have 7 to 15, and a guess can be shorter than the word.',
+        'The Daily word is always 6 letters. Classic 5 plays in Endless.',
         'The definition appears on your last guess. Custom words also have up to two letter hints, 1 token then 2.',
         'Fewer guesses earn more EXP. The daily word earns double and keeps your streak going.',
       ],

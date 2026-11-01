@@ -15,7 +15,7 @@ import { PauseMenu } from '../shell/PauseMenu';
 import { teamLap, teamsOf } from '../shell/teams';
 import type { PlayProps } from '../shell/types';
 import { Btn, GameScreen } from '../shell/ui';
-import { lengthCheck, type Style } from './core';
+import { lengthCheck, minLen, type Style } from './core';
 import { isWord, poolFor, wordById } from './data';
 import {
   currentSeat, offlineRecap, offlineStandings, showDefinition, snapshotOffline, startOffline, stepOffline, turnLeft,
@@ -25,7 +25,7 @@ import { DoneCard } from './SoloPlay';
 import { SlideTable, TurnClock } from './Slides';
 import { second, useTicker } from '../engine/useTicker';
 
-const STYLE_NAME: Record<Style, string> = { classic: 'Classic', custom: 'Custom' };
+const STYLE_NAME: Record<Style, string> = { classic: 'Classic', five: 'Classic', custom: 'Custom' };
 
 /** Offline Multiplayer: one shared board per word, turns in random full laps, a timer per guess, no hint, no EXP. */
 export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
@@ -139,7 +139,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
       live={run.phase === 'playing'}
       onSubmit={submit}
       maxLen={w.word.length}
-      minLen={style === 'custom' ? 7 : 6}
+      minLen={minLen(style)}
       onPause={() => dispatch({ type: 'PAUSE', now: Date.now() })}
       hidden={paused && run.before === 'playing'}
       dock={

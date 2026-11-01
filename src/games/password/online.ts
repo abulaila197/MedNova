@@ -6,7 +6,7 @@ import { validateClue, type ClueRejection } from './engine/clues';
 import { canStart, lobbyReduce, rolesForRound, type LobbyIntent, type LobbyState, type StartCheck } from './engine/lobby';
 import { planMatch, type RoundPlan } from './engine/match';
 import { forfeitedResult, summarizeMatch, type Winner } from './engine/scoring';
-import { addClue, currentWord, isFinished, markCorrect, newTeamRound, skipWord, totalClues, wordsCompleted, type TeamRound } from './engine/teamRound';
+import { addClue, currentWord, isFinished, markCorrect, newTeamRound, skipWord, swapWord, altWord, totalClues, wordsCompleted, type TeamRound } from './engine/teamRound';
 import type { BankChoice, Rng, Role, Settings, TeamId, TeamRoundResult, Term, TermId } from './engine/types';
 
 /** The moves a phone may send; the referee fills in who sent it from the signed-in user. */
@@ -17,11 +17,13 @@ export type Move =
   | { type: 'CLUE'; text: string }
   | { type: 'GUESS'; termId: TermId }
   | { type: 'SKIP' }
+  /** #35: the giver turns the card round to its other word. */
+  | { type: 'SWAP' }
   | { type: 'NEXT' }
   | { type: 'REMATCH' }
   | { type: 'FINISH' };
 
-export const MOVES = new Set<Move['type']>(['TICK', 'LOBBY', 'START', 'CLUE', 'GUESS', 'SKIP', 'NEXT', 'REMATCH', 'FINISH']);
+export const MOVES = new Set<Move['type']>(['TICK', 'LOBBY', 'START', 'CLUE', 'GUESS', 'SKIP', 'SWAP', 'NEXT', 'REMATCH', 'FINISH']);
 
 type TeamPlay = { tr: TeamRound; guesses: TermId[]; doneAt: number | null; forfeit: boolean };
 
@@ -70,6 +72,8 @@ export type PwView = {
   breakEnds: number | null;
   me: { team: TeamId; role: Role } | null;
   word: { id: TermId; name: string; category: string; forbidden: string[] } | null;
+  /** #35: the other word on the giver's card (shown upside down), when the card has two. */
+  alt?: { id: TermId; name: string; category: string; forbidden: string[] } | null;
   clues: string[];
   guesses: TermId[];
   doneWords: TermId[];
@@ -145,7 +149,8 @@ function beginRound(r: Room, round: number, now: number) {
   r.startedAt = now;
   r.breakEnds = null;
   const lists = r.plan![round].lists;
-  r.teams = { A: { tr: newTeamRound(lists.A), guesses: [], doneAt: null, forfeit: false }, B: { tr: newTeamRound(lists.B), guesses: [], doneAt: null, forfeit: false } };
+  const alts = r.plan![round].alts;
+  r.teams = { A: { tr: newTeamRound(lists.A, alts), guesses: [], doneAt: null, forfeit: false }, B: { tr: newTeamRound(lists.B, alts), guesses: [], doneAt: null, forfeit: false } };
   // A team that lost a player for good forfeits every round it cannot play.
   for (const team of TEAMS) if (membersOf(r, team).some((id) => r.left.includes(id))) forfeit(r, team, now);
 }
@@ -270,6 +275,15 @@ function handle(r: Room, me: string, m: Move, terms: readonly Term[], rng: Rng, 
       p.t.guesses = [];
       return null;
     }
+    case 'SWAP': {
+      // #35: any time; only the word showing counts as the answer from now on.
+      const p = inPlay(r, me, 'giver');
+      if ('code' in p) return p;
+      if (!altWord(p.t.tr)) return refuse('NO_OTHER', 'This card has one word.');
+      p.t.tr = swapWord(p.t.tr);
+      p.t.guesses = [];
+      return null;
+    }
     case 'NEXT':
       if (r.phase !== 'roundEnd') return refuse('NOT_BREAK', 'Not between rounds.');
       if (!host) return refuse('NOT_HOST', 'The host moves on.');
@@ -369,10 +383,13 @@ export function viewsOf(r: Room, bank: readonly Term[]): Record<string, PwView> 
     }
     const cur = t.doneAt === null ? currentWord(t.tr) : null;
     const term = cur ? terms.find((x) => x.id === cur) : undefined;
+    const altId = t.doneAt === null ? altWord(t.tr) : null;
+    const alt = altId ? terms.find((x) => x.id === altId) : undefined;
     out[id] = {
       ...base,
       me: { team: ro.team, role: ro.role },
       word: ro.role === 'giver' && term && !r.left.includes(id) ? { id: term.id, name: term.name, category: term.category, forbidden: term.forbidden } : null,
+      alt: ro.role === 'giver' && alt && !r.left.includes(id) ? { id: alt.id, name: alt.name, category: alt.category, forbidden: alt.forbidden } : null,
       clues: cur ? t.tr.words[cur].clues : [],
       guesses: cur ? t.guesses : [],
       doneWords: t.tr.completed,

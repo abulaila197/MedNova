@@ -15,8 +15,8 @@ import { PauseMenu } from '../shell/PauseMenu';
 import { teamLap, teamsOf } from '../shell/teams';
 import type { PlayProps } from '../shell/types';
 import { Btn, GameScreen, Ghost, Kick } from '../shell/ui';
-import { AppGrid, AppPopup, AppTopBar } from './AppLook';
-import { CW, autoSolved, buildSlots, composeAnswer, indexOf, isFilled, judge, lockedCells, placeLetter, removeSlot, type CellPos, type PuzzleDef, type Typed } from './core';
+import { AppGrid, AppPopup, AppTopBar, TIP, useGridTaps } from './AppLook';
+import { CW, autoSolved, buildSlots, composeAnswer, indexOf, isFilled, judge, lockedCells, placeLetter, removeSlot, type PuzzleDef, type Typed } from './core';
 import { PUZZLES, clueText, puzzleById } from './data';
 import { currentSeat, offlineRecap, offlineStandings, startOffline, stepOffline, type OfflineEvent, type OfflineRun } from './offline';
 
@@ -161,14 +161,13 @@ function recordWords(play: PlayProps['play'], p: PuzzleDef, r: OfflineRun) {
   }
 }
 
-/** One player's turn: zoom, open a word, answer it. Closing the word ends the turn with no penalty (as coded). */
+/** One player’s turn: open a word, answer it. Closing the word ends the turn with no penalty (as coded). */
 function Turn({ puzzle, run, claims, width, onEvent }: { puzzle: PuzzleDef; run: OfflineRun; claims: Record<string, string>; width: number; onEvent: (e: OfflineEvent) => void }) {
   const t = useTheme();
   const idx = indexOf(puzzle);
   const seat = currentSeat(run);
   const me = run.players[seat];
   const solved = Object.keys(run.solvedBy);
-  const [zoom, setZoom] = useState<CellPos | null>(null);
   const [word, setWord] = useState<string | null>(null);
   const [typed, setTyped] = useState<Typed>([]);
   const [notice, setNotice] = useState<string | null>(null);
@@ -183,14 +182,6 @@ function Turn({ puzzle, run, claims, width, onEvent }: { puzzle: PuzzleDef; run:
     setNotice(null);
   };
 
-  const tapCell = (cell: CellPos) => {
-    if (flash) return;
-    if (!zoom) return setZoom(cell);
-    const ids = (idx.wordsAt.get(`${cell.r},${cell.c}`) ?? []).filter((id) => !solved.includes(id));
-    if (!ids.length) return;
-    const i = word ? ids.indexOf(word) : -1;
-    openWord(ids[(i + 1) % ids.length]);
-  };
 
   const submit = (next: Typed) => {
     if (!word) return;
@@ -224,13 +215,13 @@ function Turn({ puzzle, run, claims, width, onEvent }: { puzzle: PuzzleDef; run:
     if (isFilled(slots, next)) submit(next);
   };
 
+  const taps = useGridTaps(idx, solved, openWord, !flash);
   const sel = word ? idx.wordById.get(word)! : null;
   return (
     <>
-      <AppGrid puzzle={puzzle} solved={solved} claims={claims} selected={word} width={width - u(32)} zoom={zoom} onCell={tapCell} onBlank={(c) => !zoom && setZoom(c)} />
+      <AppGrid puzzle={puzzle} solved={solved} claims={claims} selected={word ?? taps.lit} width={width - u(32)} onCell={taps.tap} onDouble={taps.double} />
       <View style={s.under}>
-        <Text style={[s.tip, { color: t.mute }]}>{zoom ? 'Tap a square to open its word.' : 'Tap part of the grid to zoom in.'}</Text>
-        {zoom ? <Ghost label="Zoom out" onPress={() => setZoom(null)} /> : null}
+        <Text style={[s.tip, { color: t.mute }]}>{TIP}</Text>
       </View>
       {sel ? (
         <Animated.View entering={FadeIn.duration(160)} exiting={FadeOut.duration(140)} style={[StyleSheet.absoluteFill, s.sheetWrap]}>

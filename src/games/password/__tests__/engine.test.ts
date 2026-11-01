@@ -285,3 +285,28 @@ test('a practice plan plays my own term first, then the bank, without repeating 
   const all = rounds.flatMap((r: any) => [...r.lists.A, ...r.lists.B]);
   assert.equal(all.filter((id: string) => id === own).length, 1);
 });
+
+test('#35: every card holds a second word, unused elsewhere; swap plays it and only it counts', async () => {
+  const { newTeamRound, swapWord, altWord, currentWord, markCorrect, addClue } = await import('../engine/teamRound');
+  const plan = planMatch({ terms: makeTerms(200, 200), settings: settings({ wordsPerTeam: 10, rounds: 2 }), mode: 'offline', rng: seqRng() });
+  assert.ok(plan.ok);
+  const rounds = (plan as any).rounds;
+  const firsts = rounds.flatMap((r: any) => [...r.lists.A, ...r.lists.B]);
+  const seconds = rounds.flatMap((r: any) => Object.values(r.alts));
+  assert.equal(seconds.length, firsts.length);
+  assert.equal(new Set([...firsts, ...seconds]).size, firsts.length * 2);
+  let tr = newTeamRound(rounds[0].lists.A, rounds[0].alts);
+  const a = currentWord(tr)!;
+  const b = altWord(tr)!;
+  tr = addClue(tr, 'one');
+  tr = swapWord(tr);
+  assert.equal(currentWord(tr), b);
+  assert.equal(altWord(tr), a);
+  assert.equal(tr.words[b].count, 1); // the clue on this card stays counted
+  assert.ok(!tr.words[a]);
+  tr = swapWord(swapWord(tr)); // any time, back and forth
+  assert.equal(currentWord(tr), b);
+  tr = markCorrect(tr);
+  assert.deepEqual(tr.completed, [b]);
+  assert.ok(!tr.completed.includes(a));
+});

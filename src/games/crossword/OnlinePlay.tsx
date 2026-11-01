@@ -17,9 +17,9 @@ import { playerColour } from '../shell/characters';
 import { PauseMenu } from '../shell/PauseMenu';
 import { presetTeam } from '../shell/teams';
 import type { OnlineProps } from '../shell/types';
-import { GameScreen, Ghost } from '../shell/ui';
-import { AppGrid, AppPopup, AppTopBar } from './AppLook';
-import { CW, buildSlots, composeAnswer, indexOf, isFilled, lockedCells, placeLetter, removeSlot, type CellPos, type PuzzleDef, type Typed } from './core';
+import { GameScreen } from '../shell/ui';
+import { AppGrid, AppPopup, AppTopBar, TIP, useGridTaps } from './AppLook';
+import { CW, buildSlots, composeAnswer, indexOf, isFilled, lockedCells, placeLetter, removeSlot, type PuzzleDef, type Typed } from './core';
 import { PUZZLES, clueText } from './data';
 import { ReviveCard } from './OfflinePlay';
 import { clock } from '@/games/engine/clock';
@@ -212,14 +212,13 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   );
 }
 
-/** Your side of the race: zoom, open any unclaimed word, answer it. A word someone else claims closes on you. */
+/** Your side of the race: open any unclaimed word, answer it. A word someone else claims closes on you. */
 function Race({ onTyping, puzzle, matchId, solved, claims, tried, hearts, width, load, claimerOf }: {
   onTyping: (open: boolean) => void; puzzle: PuzzleDef; matchId: string; solved: string[]; claims: Record<string, string>; tried: Record<string, string[]>; hearts: number; width: number;
   load: () => Promise<void>; claimerOf: (wordId: string) => string | undefined;
 }) {
   const t = useTheme();
   const idx = indexOf(puzzle);
-  const [zoom, setZoom] = useState<CellPos | null>(null);
   const [word, setWord] = useState<string | null>(null);
   const [typed, setTyped] = useState<Typed>([]);
   const [line, setLine] = useState<string | null>(null);
@@ -242,13 +241,6 @@ function Race({ onTyping, puzzle, matchId, solved, claims, tried, hearts, width,
     setLine(null);
   };
 
-  const tapCell = (cell: CellPos) => {
-    if (!zoom) return setZoom(cell);
-    const ids = (idx.wordsAt.get(`${cell.r},${cell.c}`) ?? []).filter((id) => !solved.includes(id));
-    if (!ids.length) return;
-    const i = word ? ids.indexOf(word) : -1;
-    openWord(ids[(i + 1) % ids.length]);
-  };
 
   const submit = async (next: Typed) => {
     if (!word || busy.current) return;
@@ -299,13 +291,13 @@ function Race({ onTyping, puzzle, matchId, solved, claims, tried, hearts, width,
     return () => onTyping(false);
   }, [word, onTyping]);
 
+  const taps = useGridTaps(idx, solved, openWord);
   const sel = word ? idx.wordById.get(word)! : null;
   return (
     <>
-      <AppGrid puzzle={puzzle} solved={solved} claims={claims} selected={word} width={width - u(32)} zoom={zoom} onCell={tapCell} onBlank={(c) => !zoom && setZoom(c)} />
+      <AppGrid puzzle={puzzle} solved={solved} claims={claims} selected={word ?? taps.lit} width={width - u(32)} onCell={taps.tap} onDouble={taps.double} />
       <View style={s.under}>
-        <Text style={[s.tip, { color: t.mute, flex: 1 }]}>{line && !sel ? line : zoom ? 'Tap a square to open its word.' : 'Tap part of the grid to zoom in.'}</Text>
-        {zoom ? <Ghost label="Zoom out" onPress={() => setZoom(null)} /> : null}
+        <Text style={[s.tip, { color: t.mute, flex: 1 }]}>{line && !sel ? line : TIP}</Text>
       </View>
       {sel ? (
         <Animated.View entering={FadeIn.duration(160)} exiting={FadeOut.duration(140)} style={[StyleSheet.absoluteFill, s.sheetWrap]}>

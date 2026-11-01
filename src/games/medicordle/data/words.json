@@ -1748,5 +1748,705 @@
   "word": "MASTOCYTOSIS",
   "definition": "Too many mast cells in the skin or organs.",
   "dossier": null
+ },
+ {
+  "id": "five-001",
+  "style": "five",
+  "word": "ULCER",
+  "definition": "Open sore on the skin or a mucous membrane.",
+  "dossier": null
+ },
+ {
+  "id": "five-002",
+  "style": "five",
+  "word": "COLON",
+  "definition": "Large intestine between the caecum and the rectum.",
+  "dossier": null
+ },
+ {
+  "id": "five-003",
+  "style": "five",
+  "word": "SPINE",
+  "definition": "Column of vertebrae that protects the spinal cord.",
+  "dossier": null
+ },
+ {
+  "id": "five-004",
+  "style": "five",
+  "word": "NERVE",
+  "definition": "Bundle of fibres that carries signals around the body.",
+  "dossier": null
+ },
+ {
+  "id": "five-005",
+  "style": "five",
+  "word": "LIVER",
+  "definition": "Large organ that makes bile and clears toxins.",
+  "dossier": null
+ },
+ {
+  "id": "five-006",
+  "style": "five",
+  "word": "VIRUS",
+  "definition": "Tiny infectious agent that copies itself inside cells.",
+  "dossier": null
+ },
+ {
+  "id": "five-007",
+  "style": "five",
+  "word": "FEVER",
+  "definition": "Body temperature above normal.",
+  "dossier": null
+ },
+ {
+  "id": "five-008",
+  "style": "five",
+  "word": "TIBIA",
+  "definition": "Shin bone.",
+  "dossier": null
+ },
+ {
+  "id": "five-009",
+  "style": "five",
+  "word": "FEMUR",
+  "definition": "Thigh bone, the longest bone in the body.",
+  "dossier": null
+ },
+ {
+  "id": "five-010",
+  "style": "five",
+  "word": "SKULL",
+  "definition": "Bony case of the head.",
+  "dossier": null
+ },
+ {
+  "id": "five-011",
+  "style": "five",
+  "word": "BLOOD",
+  "definition": "Fluid pumped by the heart through the vessels.",
+  "dossier": null
+ },
+ {
+  "id": "five-012",
+  "style": "five",
+  "word": "HEART",
+  "definition": "Muscular pump that drives blood around the body.",
+  "dossier": null
+ },
+ {
+  "id": "five-013",
+  "style": "five",
+  "word": "RENAL",
+  "definition": "Relating to the kidneys.",
+  "dossier": null
+ },
+ {
+  "id": "five-014",
+  "style": "five",
+  "word": "LUNGS",
+  "definition": "Paired organs of breathing.",
+  "dossier": null
+ },
+ {
+  "id": "five-015",
+  "style": "five",
+  "word": "BOWEL",
+  "definition": "The intestine.",
+  "dossier": null
+ },
+ {
+  "id": "five-016",
+  "style": "five",
+  "word": "GLAND",
+  "definition": "Organ that makes and releases substances such as hormones.",
+  "dossier": null
+ },
+ {
+  "id": "five-017",
+  "style": "five",
+  "word": "PULSE",
+  "definition": "Rhythmic throb of an artery with each heartbeat.",
+  "dossier": null
+ },
+ {
+  "id": "five-018",
+  "style": "five",
+  "word": "SWEAT",
+  "definition": "Salty fluid from skin glands that cools the body.",
+  "dossier": null
+ },
+ {
+  "id": "five-019",
+  "style": "five",
+  "word": "TOXIN",
+  "definition": "Poison made by a living organism.",
+  "dossier": null
+ },
+ {
+  "id": "five-020",
+  "style": "five",
+  "word": "SERUM",
+  "definition": "Clear part of blood left after it clots.",
+  "dossier": null
+ },
+ {
+  "id": "five-021",
+  "style": "five",
+  "word": "OVARY",
+  "definition": "Female gland that makes eggs and hormones.",
+  "dossier": null
+ },
+ {
+  "id": "five-022",
+  "style": "five",
+  "word": "TOOTH",
+  "definition": "Hard structure in the jaw used for biting and chewing.",
+  "dossier": null
+ },
+ {
+  "id": "five-023",
+  "style": "five",
+  "word": "MOLAR",
+  "definition": "Back tooth that grinds food.",
+  "dossier": null
+ },
+ {
+  "id": "five-024",
+  "style": "five",
+  "word": "PUPIL",
+  "definition": "Opening in the centre of the iris.",
+  "dossier": null
+ },
+ {
+  "id": "five-025",
+  "style": "five",
+  "word": "SCALP",
+  "definition": "Skin covering the top of the head.",
+  "dossier": null
+ },
+ {
+  "id": "five-026",
+  "style": "five",
+  "word": "THUMB",
+  "definition": "First digit of the hand.",
+  "dossier": null
+ },
+ {
+  "id": "five-027",
+  "style": "five",
+  "word": "ELBOW",
+  "definition": "Joint between the upper arm and the forearm.",
+  "dossier": null
+ },
+ {
+  "id": "five-028",
+  "style": "five",
+  "word": "ANKLE",
+  "definition": "Joint between the leg and the foot.",
+  "dossier": null
+ },
+ {
+  "id": "five-029",
+  "style": "five",
+  "word": "WRIST",
+  "definition": "Joint between the forearm and the hand.",
+  "dossier": null
+ },
+ {
+  "id": "five-030",
+  "style": "five",
+  "word": "CHEST",
+  "definition": "Front of the body between the neck and the abdomen.",
+  "dossier": null
+ },
+ {
+  "id": "five-031",
+  "style": "five",
+  "word": "NAVEL",
+  "definition": "Belly button, where the umbilical cord was attached.",
+  "dossier": null
+ },
+ {
+  "id": "five-032",
+  "style": "five",
+  "word": "AORTA",
+  "definition": "Largest artery, leaving the left ventricle.",
+  "dossier": null
+ },
+ {
+  "id": "five-033",
+  "style": "five",
+  "word": "UVULA",
+  "definition": "Small fleshy lobe hanging from the back of the soft palate.",
+  "dossier": null
+ },
+ {
+  "id": "five-034",
+  "style": "five",
+  "word": "VOMIT",
+  "definition": "Stomach contents brought up through the mouth.",
+  "dossier": null
+ },
+ {
+  "id": "five-035",
+  "style": "five",
+  "word": "COUGH",
+  "definition": "Sudden forceful breath out that clears the airway.",
+  "dossier": null
+ },
+ {
+  "id": "five-036",
+  "style": "five",
+  "word": "CRAMP",
+  "definition": "Sudden painful tightening of a muscle.",
+  "dossier": null
+ },
+ {
+  "id": "five-037",
+  "style": "five",
+  "word": "SPASM",
+  "definition": "Sudden involuntary muscle contraction.",
+  "dossier": null
+ },
+ {
+  "id": "five-038",
+  "style": "five",
+  "word": "STOOL",
+  "definition": "Faeces.",
+  "dossier": null
+ },
+ {
+  "id": "five-039",
+  "style": "five",
+  "word": "URINE",
+  "definition": "Fluid made by the kidneys and stored in the bladder.",
+  "dossier": null
+ },
+ {
+  "id": "five-040",
+  "style": "five",
+  "word": "MUCUS",
+  "definition": "Slimy fluid that lines and protects membranes.",
+  "dossier": null
+ },
+ {
+  "id": "five-041",
+  "style": "five",
+  "word": "BOLUS",
+  "definition": "Ball of chewed food that is swallowed.",
+  "dossier": null
+ },
+ {
+  "id": "five-042",
+  "style": "five",
+  "word": "CHYME",
+  "definition": "Partly digested food leaving the stomach.",
+  "dossier": null
+ },
+ {
+  "id": "five-043",
+  "style": "five",
+  "word": "GRAFT",
+  "definition": "Tissue moved from one place to another.",
+  "dossier": null
+ },
+ {
+  "id": "five-044",
+  "style": "five",
+  "word": "STENT",
+  "definition": "Tube placed to hold a vessel or duct open.",
+  "dossier": null
+ },
+ {
+  "id": "five-045",
+  "style": "five",
+  "word": "OPIUM",
+  "definition": "Narcotic latex from the poppy, the source of morphine.",
+  "dossier": null
+ },
+ {
+  "id": "five-046",
+  "style": "five",
+  "word": "LYMPH",
+  "definition": "Fluid drained from the tissues into lymph vessels.",
+  "dossier": null
+ },
+ {
+  "id": "five-047",
+  "style": "five",
+  "word": "CODON",
+  "definition": "Three-base unit of mRNA that codes for an amino acid.",
+  "dossier": null
+ },
+ {
+  "id": "five-048",
+  "style": "five",
+  "word": "LYSIS",
+  "definition": "Breaking apart of a cell.",
+  "dossier": null
+ },
+ {
+  "id": "five-049",
+  "style": "five",
+  "word": "MUMPS",
+  "definition": "Viral infection that swells the parotid glands.",
+  "dossier": null
+ },
+ {
+  "id": "five-050",
+  "style": "five",
+  "word": "POLIO",
+  "definition": "Viral infection that can paralyse muscles.",
+  "dossier": null
+ },
+ {
+  "id": "five-051",
+  "style": "five",
+  "word": "HIVES",
+  "definition": "Itchy raised welts on the skin.",
+  "dossier": null
+ },
+ {
+  "id": "five-052",
+  "style": "five",
+  "word": "LUPUS",
+  "definition": "Autoimmune disease of the skin, joints and kidneys.",
+  "dossier": null
+ },
+ {
+  "id": "five-053",
+  "style": "five",
+  "word": "COLIC",
+  "definition": "Severe pain that comes and goes in waves.",
+  "dossier": null
+ },
+ {
+  "id": "five-054",
+  "style": "five",
+  "word": "CROUP",
+  "definition": "Childhood airway infection with a barking cough.",
+  "dossier": null
+ },
+ {
+  "id": "five-055",
+  "style": "five",
+  "word": "MANIA",
+  "definition": "Abnormally high mood and energy.",
+  "dossier": null
+ },
+ {
+  "id": "five-056",
+  "style": "five",
+  "word": "APNEA",
+  "definition": "A pause in breathing.",
+  "dossier": null
+ },
+ {
+  "id": "five-057",
+  "style": "five",
+  "word": "EDEMA",
+  "definition": "Swelling from fluid in the tissues.",
+  "dossier": null
+ },
+ {
+  "id": "five-058",
+  "style": "five",
+  "word": "ATOPY",
+  "definition": "Tendency to develop allergies.",
+  "dossier": null
+ },
+ {
+  "id": "five-059",
+  "style": "five",
+  "word": "TINEA",
+  "definition": "Fungal skin infection, also called ringworm.",
+  "dossier": null
+ },
+ {
+  "id": "five-060",
+  "style": "five",
+  "word": "AMEBA",
+  "definition": "Single-celled organism that moves with false feet.",
+  "dossier": null
+ },
+ {
+  "id": "five-061",
+  "style": "five",
+  "word": "FUNGI",
+  "definition": "Kingdom that includes yeasts and moulds.",
+  "dossier": null
+ },
+ {
+  "id": "five-062",
+  "style": "five",
+  "word": "SPORE",
+  "definition": "Hardy resting form of some bacteria and fungi.",
+  "dossier": null
+ },
+ {
+  "id": "five-063",
+  "style": "five",
+  "word": "PRION",
+  "definition": "Misfolded protein that causes brain disease.",
+  "dossier": null
+ },
+ {
+  "id": "five-064",
+  "style": "five",
+  "word": "PILUS",
+  "definition": "Hair-like structure on the surface of a bacterium.",
+  "dossier": null
+ },
+ {
+  "id": "five-065",
+  "style": "five",
+  "word": "SALVE",
+  "definition": "Soothing ointment for the skin.",
+  "dossier": null
+ },
+ {
+  "id": "five-066",
+  "style": "five",
+  "word": "SYRUP",
+  "definition": "Thick sweet liquid medicine.",
+  "dossier": null
+ },
+ {
+  "id": "five-067",
+  "style": "five",
+  "word": "TALUS",
+  "definition": "Ankle bone that joins the tibia and fibula.",
+  "dossier": null
+ },
+ {
+  "id": "five-068",
+  "style": "five",
+  "word": "ILIUM",
+  "definition": "Large upper bone of the pelvis.",
+  "dossier": null
+ },
+ {
+  "id": "five-069",
+  "style": "five",
+  "word": "ATLAS",
+  "definition": "First neck vertebra, which holds up the skull.",
+  "dossier": null
+ },
+ {
+  "id": "five-070",
+  "style": "five",
+  "word": "HYOID",
+  "definition": "Small U-shaped bone in the neck.",
+  "dossier": null
+ },
+ {
+  "id": "five-071",
+  "style": "five",
+  "word": "INCUS",
+  "definition": "Middle ear bone shaped like an anvil.",
+  "dossier": null
+ },
+ {
+  "id": "five-072",
+  "style": "five",
+  "word": "SINUS",
+  "definition": "Air-filled space in the bones of the face.",
+  "dossier": null
+ },
+ {
+  "id": "five-073",
+  "style": "five",
+  "word": "CILIA",
+  "definition": "Tiny hairs that sweep mucus along the airways.",
+  "dossier": null
+ },
+ {
+  "id": "five-074",
+  "style": "five",
+  "word": "VILLI",
+  "definition": "Finger-like folds lining the small intestine.",
+  "dossier": null
+ },
+ {
+  "id": "five-075",
+  "style": "five",
+  "word": "FOVEA",
+  "definition": "Pit in the retina with the sharpest vision.",
+  "dossier": null
+ },
+ {
+  "id": "five-076",
+  "style": "five",
+  "word": "GYRUS",
+  "definition": "Ridge on the surface of the brain.",
+  "dossier": null
+ },
+ {
+  "id": "five-077",
+  "style": "five",
+  "word": "ACTIN",
+  "definition": "Protein of the thin muscle filaments.",
+  "dossier": null
+ },
+ {
+  "id": "five-078",
+  "style": "five",
+  "word": "LIPID",
+  "definition": "Fat or fat-like molecule.",
+  "dossier": null
+ },
+ {
+  "id": "five-079",
+  "style": "five",
+  "word": "BURSA",
+  "definition": "Fluid sac that cushions a joint.",
+  "dossier": null
+ },
+ {
+  "id": "five-080",
+  "style": "five",
+  "word": "FOSSA",
+  "definition": "Shallow hollow in a bone.",
+  "dossier": null
+ },
+ {
+  "id": "five-081",
+  "style": "five",
+  "word": "VAGUS",
+  "definition": "Tenth cranial nerve, which slows the heart.",
+  "dossier": null
+ },
+ {
+  "id": "five-082",
+  "style": "five",
+  "word": "LABOR",
+  "definition": "Process of giving birth.",
+  "dossier": null
+ },
+ {
+  "id": "five-083",
+  "style": "five",
+  "word": "FETUS",
+  "definition": "Unborn baby from 8 weeks to birth.",
+  "dossier": null
+ },
+ {
+  "id": "five-084",
+  "style": "five",
+  "word": "TWINS",
+  "definition": "Two babies from one pregnancy.",
+  "dossier": null
+ },
+ {
+  "id": "five-085",
+  "style": "five",
+  "word": "FAINT",
+  "definition": "Brief loss of consciousness.",
+  "dossier": null
+ },
+ {
+  "id": "five-086",
+  "style": "five",
+  "word": "PALSY",
+  "definition": "Paralysis of a muscle or group of muscles.",
+  "dossier": null
+ },
+ {
+  "id": "five-087",
+  "style": "five",
+  "word": "STOMA",
+  "definition": "Surgical opening of the bowel onto the skin.",
+  "dossier": null
+ },
+ {
+  "id": "five-088",
+  "style": "five",
+  "word": "NURSE",
+  "definition": "Health worker who cares for patients.",
+  "dossier": null
+ },
+ {
+  "id": "five-089",
+  "style": "five",
+  "word": "SHOCK",
+  "definition": "Failure of blood flow to the organs.",
+  "dossier": null
+ },
+ {
+  "id": "five-090",
+  "style": "five",
+  "word": "LEECH",
+  "definition": "Blood-sucking worm once used in medicine.",
+  "dossier": null
+ },
+ {
+  "id": "five-091",
+  "style": "five",
+  "word": "LOUSE",
+  "definition": "Wingless insect that lives in hair.",
+  "dossier": null
+ },
+ {
+  "id": "five-092",
+  "style": "five",
+  "word": "FLUKE",
+  "definition": "Flat parasitic worm, such as the liver fluke.",
+  "dossier": null
+ },
+ {
+  "id": "five-093",
+  "style": "five",
+  "word": "YEAST",
+  "definition": "Single-celled fungus, such as Candida.",
+  "dossier": null
+ },
+ {
+  "id": "five-094",
+  "style": "five",
+  "word": "HELIX",
+  "definition": "Spiral shape, as in DNA.",
+  "dossier": null
+ },
+ {
+  "id": "five-095",
+  "style": "five",
+  "word": "TUMOR",
+  "definition": "Abnormal growth of tissue.",
+  "dossier": null
+ },
+ {
+  "id": "five-096",
+  "style": "five",
+  "word": "ACUTE",
+  "definition": "Sudden in onset and short in course.",
+  "dossier": null
+ },
+ {
+  "id": "five-097",
+  "style": "five",
+  "word": "NARES",
+  "definition": "The nostrils.",
+  "dossier": null
+ },
+ {
+  "id": "five-098",
+  "style": "five",
+  "word": "BRAIN",
+  "definition": "Organ in the skull that controls the body.",
+  "dossier": null
+ },
+ {
+  "id": "five-099",
+  "style": "five",
+  "word": "BELCH",
+  "definition": "Letting gas out of the stomach through the mouth.",
+  "dossier": null
+ },
+ {
+  "id": "five-100",
+  "style": "five",
+  "word": "ENEMA",
+  "definition": "Fluid put into the rectum to empty the bowel.",
+  "dossier": null
  }
 ]

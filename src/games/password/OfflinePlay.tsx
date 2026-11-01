@@ -15,7 +15,7 @@ import { Body, Btn, Card, Ghost, Kick } from '../shell/ui';
 import { initialOfflineState, offlineTransition, rolesFor, type OfflineEvent, type OfflineState, type SetupNotice } from './engine/offlineMachine';
 import { offlineGiverView } from './engine/selectors';
 import type { BankChoice, Settings, TeamId } from './engine/types';
-import { Clock, ClueStack, PasswordScreen, Plate, ResultRow, SHOW, ShowBtn, TEAM, TeamHead, TeamPicker, s as k } from './kit';
+import { Clock, ClueStack, DualPlate, PasswordScreen, ResultRow, SHOW, ShowBtn, TEAM, TeamHead, TeamPicker, s as k } from './kit';
 import { envFor, playEffects, termOf, uniqueNames } from './offline';
 
 type Saved = { off: OfflineState; recorded: number; wins: Record<number, number> };
@@ -197,7 +197,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
         />
         <Card>
           <Kick>How it works</Kick>
-          <Body>Say one word at a time, never part of the term or a crossed-out word. Tap +1 for every clue. Wrong guesses are free; Skip sends the word to the back.</Body>
+          <Body>Say one word at a time, never part of the term or a crossed-out word. Tap +1 for every clue. Wrong guesses are free; Skip sends the word to the back. Each card has two words: Swap turns it round, and only the word facing you counts.</Body>
         </Card>
         {ui.team === off.firstTeams[ui.round] ? null : (
           <Body style={{ textAlign: 'center' }}>{`${TEAM[other(ui.team)].name} finished with ${off.results[ui.round]?.[other(ui.team)]?.wordsCompleted ?? 0} words. Your turn.`}</Body>
@@ -208,12 +208,20 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   } else if (ui.name === 'playing' && off.turn) {
     const v = offlineGiverView(envFor(play.settings.custom).terms, off, now)!;
     const term = termOf(off.turn.tr.queue[0] ?? null);
+    const alt = termOf(off.turn.tr.alts?.[off.turn.tr.queue[0] ?? ''] ?? null);
     const team = off.turn.team;
     body = (
       <>
         <Clock ms={v.msLeft} />
         <Text style={[k.sub, { color: t.mute }]}>{`${nameOf(v.giverId)} gives clues to ${nameOf(v.guesserId)}`}</Text>
-        {term ? <Plate term={term.name} category={CATEGORY[term.category] ?? term.category} forbidden={term.forbidden} team={team} /> : null}
+        {term ? (
+          <DualPlate
+            term={{ name: term.name, category: CATEGORY[term.category] ?? term.category, forbidden: term.forbidden }}
+            alt={alt ? { name: alt.name, category: CATEGORY[alt.category] ?? alt.category, forbidden: alt.forbidden } : null}
+            team={team}
+            onSwap={() => send({ type: 'SWAP' })}
+          />
+        ) : null}
         <ClueStack count={v.clueCount} total={v.totalClues} team={team} word={v.wordsDone + 1} words={v.wordsTotal} />
       </>
     );

@@ -1,5 +1,5 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import { memo, useEffect, useState, type ReactNode } from 'react';
+import { memo, useEffect, useRef, useState, type ReactNode } from 'react';
 import Animated, { useAnimatedStyle, useSharedValue, withSequence, withTiming } from 'react-native-reanimated';
 import { Image } from 'expo-image';
 import { Pressable, StyleSheet, View } from 'react-native';
@@ -11,7 +11,7 @@ import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import { slideColors } from '../medicordle/palette';
-import { cellKey, CW, indexOf, lockedCells, QWERTY_ROWS, type CellPos, type PuzzleDef, type Slot, type Typed, type WordDef } from './core';
+import { cellKey, CW, indexOf, lockedCells, QWERTY_ROWS, type CellPos, type PuzzleDef, type PuzzleIndex, type Slot, type Typed, type WordDef } from './core';
 import { IMAGES } from './data/images';
 
 // Nova Crossword's look (Yazan picked D, 2026-10-05): the app's own look, built like Nova Medicordle's slides:
@@ -57,23 +57,47 @@ export function AppTopBar({ kicker, title = 'Nova Crossword', titleColor, sub, h
 }
 
 const HINT_DARK = '#5b8cff';
-/** Tap to zoom (Yazan 2026-10-05): the first tap zooms into that part of the grid so a square is finger-sized. */
-export const ZOOM = 2.2;
+/** #37 (Yazan 2026-11-01): two taps on the same square within this time open its word. */
+const DOUBLE_MS = 350;
+export const TIP = 'Tap a square to light up its word. Double tap to open it.';
 
 /**
- * The grid of glass tiles. `zoom` is the square the view is zoomed onto (null = whole grid); `claims` colours a
- * solved word by who claimed it (Offline). Taps on squares go to `onCell`, taps on the gaps to `onBlank`.
+ * #37: no zoom. One tap lights up a square's word (tap the same square again for its other direction); a double tap
+ * opens the lit word. Shared by Solo, Pass the phone and Online.
  */
-export const AppGrid = memo(function AppGrid({ puzzle, solved, revealed = [], selected, width, zoom = null, claims, onCell, onBlank }: {
-  puzzle: PuzzleDef; solved: string[]; revealed?: string[]; selected?: string | null; width: number; zoom?: CellPos | null;
-  claims?: Record<string, string>; onCell?: (cell: CellPos) => void; onBlank?: (cell: CellPos) => void;
+export function useGridTaps(idx: PuzzleIndex, solved: readonly string[], open: (id: string) => void, enabled = true) {
+  const [lit, setLit] = useState<string | null>(null);
+  const litRef = useRef<string | null>(null);
+  const idsAt = (cell: CellPos) => (idx.wordsAt.get(`${cell.r},${cell.c}`) ?? []).filter((id) => !solved.includes(id));
+  const tap = (cell: CellPos) => {
+    if (!enabled) return;
+    const ids = idsAt(cell);
+    const i = litRef.current ? ids.indexOf(litRef.current) : -1;
+    const next = ids.length ? ids[(i + 1) % ids.length] : null;
+    litRef.current = next;
+    setLit(next);
+  };
+  const double = (cell: CellPos) => {
+    if (!enabled) return;
+    const id = litRef.current;
+    if (id && idsAt(cell).includes(id)) open(id);
+  };
+  return { lit: lit && !solved.includes(lit) ? lit : null, tap, double };
+}
+
+/**
+ * The grid of glass tiles, centred with no box around it (#37). `claims` colours a solved word by who claimed it
+ * (Offline). A tap on a square goes to `onCell`; a second tap on it right after goes to `onDouble` instead.
+ */
+export const AppGrid = memo(function AppGrid({ puzzle, solved, revealed = [], selected, width, claims, onCell, onDouble }: {
+  puzzle: PuzzleDef; solved: string[]; revealed?: string[]; selected?: string | null; width: number;
+  claims?: Record<string, string>; onCell?: (cell: CellPos) => void; onDouble?: (cell: CellPos) => void;
 }) {
   const t = useTheme();
   const c = slideColors(t.mode);
   const idx = indexOf(puzzle);
-  const pad = u(8);
   const gap = 2;
-  const size = Math.floor((width - pad * 2 - gap * (puzzle.cols - 1)) / puzzle.cols);
+  const size = Math.floor((width - gap * (puzzle.cols - 1)) / puzzle.cols);
   const step = size + gap;
   const W = step * puzzle.cols - gap;
   const H = step * puzzle.rows - gap;
@@ -81,23 +105,17 @@ export const AppGrid = memo(function AppGrid({ puzzle, solved, revealed = [], se
   const shown = lockedCells(idx, solved, revealed);
   const sel = new Set((selected ? idx.cellsOf.get(selected)! : []).map(cellKey));
   const solvedSet = new Set(solved);
-  // Zoom: scale about the tapped square, clamped so the grid always fills the view.
-  const z = useSharedValue(zoom ? 1 : 0);
-  const fx = useSharedValue(W / 2);
-  const fy = useSharedValue(H / 2);
-  useEffect(() => {
-    if (zoom) {
-      fx.value = withTiming(zoom.c * step + size / 2, { duration: 260 });
-      fy.value = withTiming(zoom.r * step + size / 2, { duration: 260 });
+  const last = useRef<{ k: string; at: number } | null>(null);
+  const press = (cell: CellPos) => {
+    const k = `${cell.r},${cell.c}`;
+    const now = Date.now();
+    if (last.current && last.current.k === k && now - last.current.at < DOUBLE_MS) {
+      last.current = null;
+      return onDouble?.(cell);
     }
-    z.value = withTiming(zoom ? 1 : 0, { duration: 260 });
-  }, [zoom, step, size, z, fx, fy]);
-  const zs = useAnimatedStyle(() => {
-    const k = 1 + (ZOOM - 1) * z.value;
-    const tx = Math.min(0, Math.max(W - W * k, W / 2 - fx.value * k));
-    const ty = Math.min(0, Math.max(H - H * k, H / 2 - fy.value * k));
-    return { transform: [{ translateX: tx + (W / 2) * (k - 1) }, { translateY: ty + (H / 2) * (k - 1) }, { scale: k }] };
-  });
+    last.current = { k, at: now };
+    onCell?.(cell);
+  };
   const cells = [];
   for (let r = 0; r < puzzle.rows; r++)
     for (let col = 0; col < puzzle.cols; col++) {
@@ -112,7 +130,7 @@ export const AppGrid = memo(function AppGrid({ puzzle, solved, revealed = [], se
       cells.push(
         <Pressable
           key={k}
-          onPress={() => onCell?.({ r, c: col })}
+          onPress={() => press({ r, c: col })}
           accessibilityLabel={`Row ${r + 1}, column ${col + 1}${shown.has(k) ? `, ${idx.letterAt.get(k)}` : ''}`}
           style={[s.tile, { left: col * step, top: r * step, width: size, height: size, borderRadius: Math.max(2, size * 0.14), backgroundColor: c.glass, borderColor: picked ? t.accent : c.line, borderWidth: picked ? 1.5 : 1 }, bg ? { boxShadow: `0 0 ${Math.round(size * 0.35)}px ${bg}66` } : null]}
         >
@@ -123,20 +141,7 @@ export const AppGrid = memo(function AppGrid({ puzzle, solved, revealed = [], se
         </Pressable>,
       );
     }
-  return (
-    <View style={[s.board, { backgroundColor: c.boxB, borderColor: c.line, padding: pad }]}>
-      <View style={{ width: W, height: H, overflow: 'hidden' }}>
-        <Animated.View style={[{ width: W, height: H }, zs]}>
-          <Pressable
-            style={StyleSheet.absoluteFill}
-            accessible={false}
-            onPress={(e) => onBlank?.({ r: Math.min(puzzle.rows - 1, Math.floor(e.nativeEvent.locationY / step)), c: Math.min(puzzle.cols - 1, Math.floor(e.nativeEvent.locationX / step)) })}
-          />
-          {cells}
-        </Animated.View>
-      </View>
-    </View>
-  );
+  return <View style={{ width: W, height: H, alignSelf: 'center' }}>{cells}</View>;
 });
 
 /** The answer card: a specimen-note style card with the clue, glass slots and Medicordle's glass keys. */
@@ -155,7 +160,10 @@ export function AppPopup({ word, slots, typed, tokens, width, notice, shake = 0,
   const c = slideColors(t.mode);
   const inner = width - u(28);
   const n = slots.length;
-  const slotW = Math.min(u(34), Math.floor((inner - (n - 1) * u(4)) / n));
+  // #33 (Yazan 2026-11-01): long answers go on two rows, and the letter size follows the box so it always fits.
+  const perRow = n > 10 ? Math.ceil(n / 2) : n;
+  const slotW = Math.min(u(34), Math.floor((inner - (perRow - 1) * u(4)) / perRow));
+  const slotRows = n > 10 ? [slots.slice(0, perRow).map((_, i) => i), slots.slice(perRow).map((_, i) => i + perRow)] : [slots.map((_, i) => i)];
   const keyW = Math.floor((inner - 9 * u(4)) / 10);
   return (
     <View style={[s.sheet, { backgroundColor: '#0c1130', borderColor: c.line }]}>
@@ -172,16 +180,21 @@ export function AppPopup({ word, slots, typed, tokens, width, notice, shake = 0,
       ) : (
         <Text style={[s.clue, { color: t.fg }]}>{word.question.text}</Text>
       )}
-      <Animated.View style={[{ flexDirection: 'row', justifyContent: 'center', gap: u(4), marginTop: u(4) }, shakeStyle]}>
-        {slots.map((sl, i) => {
-          const ch = sl.locked ? sl.letter : typed[i];
-          return (
-            <Pressable key={i} onPress={() => onSlot?.(i)} accessibilityLabel={`Letter ${i + 1}`} style={[s.tile, s.slot, { width: slotW, height: slotW * 1.12, borderRadius: u(5), backgroundColor: sl.locked ? c.ok : c.glass, borderColor: !sl.locked && ch ? t.soft : c.line }]}>
-              <LinearGradient colors={[c.fadeTop, 'transparent']} style={[s.top, { height: '50%' }]} pointerEvents="none" />
-              <Text style={{ fontFamily: F.bodyBold, fontSize: u(17), color: sl.locked ? c.onTile : t.fg }}>{ch ?? ''}</Text>
-            </Pressable>
-          );
-        })}
+      <Animated.View style={[{ gap: u(5), marginTop: u(4) }, shakeStyle]}>
+        {slotRows.map((row, ri) => (
+          <View key={ri} style={{ flexDirection: 'row', justifyContent: 'center', gap: u(4) }}>
+            {row.map((i) => {
+              const sl = slots[i];
+              const ch = sl.locked ? sl.letter : typed[i];
+              return (
+                <Pressable key={i} onPress={() => onSlot?.(i)} accessibilityLabel={`Letter ${i + 1}`} style={[s.tile, s.slot, { width: slotW, height: slotW * 1.12, borderRadius: u(5), backgroundColor: sl.locked ? c.ok : c.glass, borderColor: !sl.locked && ch ? t.soft : c.line }]}>
+                  <LinearGradient colors={[c.fadeTop, 'transparent']} style={[s.top, { height: '50%' }]} pointerEvents="none" />
+                  <Text style={{ fontFamily: F.bodyBold, fontSize: Math.min(u(17), slotW * 0.58), lineHeight: Math.min(u(17), slotW * 0.58) * 1.2, color: sl.locked ? c.onTile : t.fg }}>{ch ?? ''}</Text>
+                </Pressable>
+              );
+            })}
+          </View>
+        ))}
       </Animated.View>
       <Text style={[s.notice, { color: t.mute }]} numberOfLines={1}>{notice ?? ' '}</Text>
       <View style={{ gap: u(5) }}>

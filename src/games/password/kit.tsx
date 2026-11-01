@@ -69,21 +69,25 @@ export function Clock({ ms }: { ms: number }) {
 }
 
 /** The secret term on a lit plate, with its forbidden words under it. */
-export function Plate({ term, category, forbidden, team }: { term: string; category?: string; forbidden?: readonly string[]; team: TeamId }) {
+export function Plate({ term, category, forbidden, team, compact }: { term: string; category?: string; forbidden?: readonly string[]; team: TeamId; compact?: boolean }) {
   const t = useTheme();
+  // Compact (#35, two words on one card): no bulbs, a smaller plate, so both halves fit above the buttons.
+  const fs = compact ? (term.length > 22 ? 16 : term.length > 14 ? 18 : 22) : term.length > 22 ? 19 : term.length > 14 ? 23 : 28;
   return (
-    <View style={[s.plateWrap, { borderColor: TEAM[team].color, shadowColor: TEAM[team].color }]}>
-      <View style={s.bulbs}>
-        {Array.from({ length: 9 }, (_, i) => (
-          <View key={i} style={[s.bulb, { backgroundColor: i % 2 ? TEAM[team].color : '#ffe2a8' }]} />
-        ))}
-      </View>
-      <View style={s.plate}>
+    <View style={[s.plateWrap, { borderColor: TEAM[team].color, shadowColor: TEAM[team].color }, compact && { marginTop: 0, padding: u(8) }]}>
+      {compact ? null : (
+        <View style={s.bulbs}>
+          {Array.from({ length: 9 }, (_, i) => (
+            <View key={i} style={[s.bulb, { backgroundColor: i % 2 ? TEAM[team].color : '#ffe2a8' }]} />
+          ))}
+        </View>
+      )}
+      <View style={[s.plate, compact && { paddingVertical: u(7), gap: u(2) }]}>
         {category ? <Text style={[s.cat, { color: PLATE.faint }]}>{category.toUpperCase()}</Text> : null}
-        <Text style={[s.term, { color: PLATE.ink, fontSize: u(term.length > 22 ? 19 : term.length > 14 ? 23 : 28), lineHeight: u(term.length > 22 ? 24 : term.length > 14 ? 28 : 33) }]}>{term}</Text>
+        <Text style={[s.term, { color: PLATE.ink, fontSize: u(fs), lineHeight: u(fs * 1.2) }]}>{term}</Text>
       </View>
       {forbidden?.length ? (
-        <View style={s.forb}>
+        <View style={[s.forb, compact && { marginTop: u(6), gap: u(4) }]}>
           <Text style={[s.forbK, { color: t.mute }]}>DON&apos;T SAY</Text>
           <View style={s.forbRow}>
             {forbidden.map((w) => (
@@ -99,6 +103,42 @@ export function Plate({ term, category, forbidden, team }: { term: string; categ
 }
 
 /** The stack of clue chips for the current word, and the team's total. */
+type PlateTerm = { name: string; category?: string; forbidden?: readonly string[] };
+
+/**
+ * #35 (Yazan 2026-11-01, like قول لا تقول): one card with two words. The word in play faces the clue giver; the other
+ * sits upside down on the far half. Swap turns the card round; only the word facing the giver counts.
+ */
+export function DualPlate({ term, alt, team, onSwap, disabled }: { term: PlateTerm; alt: PlateTerm | null; team: TeamId; onSwap: () => void; disabled?: boolean }) {
+  const t = useTheme();
+  if (!alt) return <Plate term={term.name} category={term.category} forbidden={term.forbidden} team={team} />;
+  return (
+    <View style={{ gap: u(6), marginTop: u(6) }}>
+      <View style={{ transform: [{ rotate: '180deg' }], opacity: 0.62 }} accessibilityLabel={`Other word: ${alt.name}`}>
+        <Plate term={alt.name} category={alt.category} forbidden={alt.forbidden} team={team} compact />
+      </View>
+      <View style={s.swapRow}>
+        <View style={[s.swapLine, { backgroundColor: t.chipLine }]} />
+        <Pressable
+          onPress={() => {
+            tapped();
+            onSwap();
+          }}
+          disabled={disabled}
+          hitSlop={u(8)}
+          style={[s.swapBtn, { borderColor: TEAM[team].color, backgroundColor: TEAM[team].deep, opacity: disabled ? 0.5 : 1 }]}
+          accessibilityRole="button"
+          accessibilityLabel="Swap to the other word"
+        >
+          <Text style={[s.swapT, { color: t.white }]}>⇅  Swap word</Text>
+        </Pressable>
+        <View style={[s.swapLine, { backgroundColor: t.chipLine }]} />
+      </View>
+      <Plate term={term.name} category={term.category} forbidden={term.forbidden} team={team} compact />
+    </View>
+  );
+}
+
 export function ClueStack({ count, total, team, word, words }: { count: number; total: number; team: TeamId; word: number; words: number }) {
   const t = useTheme();
   return (
@@ -229,6 +269,10 @@ export const s = StyleSheet.create({
     shadowOffset: { width: 0, height: 0 },
     elevation: 6,
   },
+  swapRow: { flexDirection: 'row', alignItems: 'center', gap: u(8) },
+  swapLine: { flex: 1, height: 1 },
+  swapBtn: { borderWidth: 1.5, borderRadius: u(20), paddingVertical: u(5), paddingHorizontal: u(14) },
+  swapT: { fontFamily: F.bodyBold, fontSize: u(13) },
   bulbs: { flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: u(6), marginBottom: u(6) },
   bulb: { width: u(7), height: u(7), borderRadius: u(4) },
   plate: { backgroundColor: PLATE.bg, borderRadius: u(10), paddingVertical: u(12), paddingHorizontal: u(10), alignItems: 'center', gap: u(4) },
