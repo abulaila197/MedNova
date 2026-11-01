@@ -20,8 +20,10 @@ import { useOfflineRetry } from '@/features/offline/useOfflineRetry';
 
 import { flushInBackground, giftsSeen, loadStyle, refusedSeen, useStyle } from './useStyle';
 
-const nameOf = (id: string) => {
+/** A Style shop item's name in a sentence ("the Aurora frame"); also used by Inbox gifts from friends (#20). */
+export const nameOf = (id: string) => {
   const [kind, key] = [id.slice(0, id.indexOf(':')), id.slice(id.indexOf(':') + 1)];
+  if (kind === 'robot') return ROBOTS.find((c) => c.key === key)?.name ?? 'a robot';
   const all = kind === 'frame' ? FRAMES : kind === 'title' ? [...TITLES, ...PLATINUM_TITLES] : kind === 'effect' ? EFFECTS : [];
   const found = all.find((x) => x.key === key)?.name;
   if (kind === 'avatar') return [...CHARACTERS.map((c) => ({ key: c.slug, name: c.name })), ...MECHS, ...ROBOTS].find((c) => c.key === key)?.name ?? 'that character';

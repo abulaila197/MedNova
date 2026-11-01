@@ -6,10 +6,12 @@ import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Text } from '@/components/AppText';
 import { OfflineLine } from '@/components/OfflineLine';
-import { TokenCoin } from '@/components/PulseStar';
+import { PulseStar, TokenCoin } from '@/components/PulseStar';
 import { Screen } from '@/components/Screen';
 import { CHESTS } from '@/features/chests/data';
 import { InfoScroll, Kicker, s as ui, useInfo } from '@/features/info/ui';
+import { nameOf } from '@/features/style/StyleHost';
+import { PlayerFace } from '@/features/style/Frame';
 import { Bolt } from '@/features/sparks/Bolt';
 import { useSession } from '@/games/shell/session';
 import { u } from '@/theme/scale';
@@ -61,7 +63,7 @@ export function InboxPage() {
   return (
     <Screen tab={null} glow={21}>
       <InfoScroll>
-        <Kicker>From the MedNova team</Kicker>
+        <Kicker>Messages and gifts</Kicker>
         <Text style={[ui.H, { color: c.fg, fontFamily: F.display }]}>
           {'Your '}
           <Text style={[ui.H, { color: t.accent, fontFamily: F.displayItalic }]}>inbox</Text>
@@ -109,8 +111,19 @@ function Card({ m }: { m: Message }) {
   };
   return (
     <View style={[s.card, { backgroundColor: c.surf, borderColor: gift && !m.collected ? t.accent : c.line }]}>
-      <Text style={[s.k, { color: c.kick }]}>{when(m.at).toUpperCase()}</Text>
+      {/* #30: who it's from: a friend's face and name, or the MedNova team. */}
+      <View style={s.from}>
+        {m.from ? <PlayerFace slug={m.from.avatar ?? 'yara'} size={u(18)} userId={m.from.id} still /> : <View style={[s.icon, { backgroundColor: '#0b0e24' }]}><PulseStar width={u(18)} height={u(18)} glow={0.3} /></View>}
+        <Text style={[s.k, { color: c.kick, flexShrink: 1 }]} numberOfLines={1}>{`${m.from ? `FROM ${m.from.name.toUpperCase()}` : 'FROM THE MEDNOVA TEAM'} · ${when(m.at).toUpperCase()}`}</Text>
+      </View>
       {m.title ? <Text style={[s.h, { color: c.fg }]}>{m.title}</Text> : null}
+      {m.item ? (
+        <Text style={[s.body, { color: c.fg }]}>
+          {`${m.from?.name ?? 'A friend'} sent you `}
+          <Text style={{ color: t.accent, fontFamily: F.bodySemi }}>{nameOf(m.item)}</Text>
+          {'. It’s already in your Style items.'}
+        </Text>
+      ) : null}
       {m.body ? <Text style={[s.body, { color: c.mute }]}>{m.body}</Text> : null}
       {gift ? (
         <View style={s.gifts}>
@@ -153,6 +166,8 @@ function Card({ m }: { m: Message }) {
 const s = StyleSheet.create({
   card: { borderWidth: 1, borderRadius: u(16), paddingHorizontal: u(12), paddingTop: u(10), paddingBottom: u(12), marginTop: u(12) },
   k: { fontFamily: F.mono, fontSize: u(7.5), letterSpacing: u(1.3) },
+  from: { flexDirection: 'row', alignItems: 'center', gap: u(6) },
+  icon: { width: u(18), height: u(18), borderRadius: u(5), overflow: 'hidden', alignItems: 'center', justifyContent: 'center' },
   h: { fontFamily: F.display, fontSize: u(15), marginTop: u(2) },
   body: { fontFamily: F.body, fontSize: u(10), lineHeight: u(15), marginTop: u(4) },
   gifts: { flexDirection: 'row', flexWrap: 'wrap', gap: u(6), marginTop: u(10) },

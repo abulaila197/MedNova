@@ -1,6 +1,7 @@
 import { Redirect } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
+import type Animated from 'react-native-reanimated';
 import { Text, TextInput } from '@/components/AppText';
 
 import { Screen } from '@/components/Screen';
@@ -13,7 +14,7 @@ import { F } from '@/theme/tokens';
 
 type Player = { id: string; username: string; display_name: string; tokens: number };
 type ChestPick = '' | 'wooden' | 'golden' | 'diamond' | 'epic';
-type Sent = { id: string; title: string; tokens: number; sparks: number; chest: string | null; chests?: number; at: string; to: string | null; read: number; collected: number };
+type Sent = { id: string; title: string; body?: string; tokens: number; sparks: number; chest: string | null; chests?: number; at: string; target?: string | null; to: string | null; to_name?: string | null; read: number; collected: number };
 const CHEST_PICKS: { k: ChestPick; label: string }[] = [
   { k: '', label: 'No chest' },
   { k: 'wooden', label: 'Wooden' },
@@ -37,6 +38,9 @@ export default function Page() {
   const [found, setFound] = useState<Player[]>([]);
   const [pick, setPick] = useState<Player | null>(null);
   const giving = useRef(false);
+  const scroll = useRef<Animated.ScrollView | null>(null);
+  // #2: the sent message waiting for a second tap on Clear.
+  const [clearing, setClearing] = useState<string | null>(null);
   const [toAll, setToAll] = useState(true);
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
@@ -52,6 +56,29 @@ export default function Page() {
   const [msg, setMsg] = useState<{ text: string; bad?: boolean } | null>(null);
   const [sent, setSent] = useState<Sent[] | null>(null);
   const loadSent = () => supabase.rpc('admin_inbox_sent').then(({ data }) => setSent((data as Sent[]) ?? []));
+  // #2 (Yazan's pick): Clear hides a sent message from this list only; players keep it and can still collect it.
+  const clearSent = async (id: string) => {
+    setClearing(null);
+    const { error } = await supabase.rpc('admin_inbox_hide', { msg: id });
+    if (!error) setSent((l) => (l ?? []).filter((m) => m.id !== id));
+  };
+  // #51: Reuse fills the Send form with a sent message; nothing goes out until Send is tapped.
+  const reuse = (m: Sent) => {
+    if (m.target && m.to && m.to !== '?') {
+      setToAll(false);
+      setQ(m.to); // the search shows them, ticked
+      setPick({ id: m.target, username: m.to, display_name: m.to_name ?? m.to, tokens: found.find((p) => p.id === m.target)?.tokens ?? 0 });
+    } else setToAll(true);
+    setTitle(m.title ?? '');
+    setBody(m.body ?? '');
+    setTok(m.tokens ? String(m.tokens) : '');
+    setSparks(m.sparks ? String(m.sparks) : '');
+    setChest((m.chest ?? '') as ChestPick);
+    setChests(m.chests ?? 1);
+    setSure(false);
+    setSendMsg({ text: 'Filled in from a sent message. Change anything, then tap Send.' });
+    scroll.current?.scrollTo({ y: 0, animated: true });
+  };
   const [show, setShow] = useState<'new' | 'all'>('new');
   const [reports, setReports] = useState<Report[] | null>(null);
   const [repErr, setRepErr] = useState(false);
@@ -176,7 +203,7 @@ export default function Page() {
   );
   return (
     <Screen tab={null} glow={21}>
-      <InfoScroll>
+      <InfoScroll scrollRef={scroll}>
         <Kicker>Admin</Kicker>
         <Text style={[ui.H, s.H, { color: c.fg }]}>Send to Inbox</Text>
         <Text style={[ui.p, { color: c.mute }]}>Only your account sees this page. A message with gifts lands in the player’s Inbox with a red dot; the gifts reach their wallet when they tap Collect. “All players” reaches accounts that exist now.</Text>
@@ -220,7 +247,7 @@ export default function Page() {
         {sendMsg ? <Text style={[ui.p, { color: sendMsg.bad ? c.t.error : c.fg }]}>{sendMsg.text}</Text> : null}
 
         <Text style={[ui.H, s.H, s.gapL, { color: c.fg }]}>Sent</Text>
-        <Text style={[ui.p, { color: c.mute }]}>Your last 50 messages: who opened them and who collected.</Text>
+        <Text style={[ui.p, { color: c.mute }]}>Your last 50 messages: who opened them and who collected. Reuse fills the form above; Clear hides one from this list.</Text>
         {sent && !sent.length ? <Text style={[s.small, s.gapS, { color: c.mute }]}>Nothing sent yet.</Text> : null}
         <View style={s.list}>
           {(sent ?? []).map((m) => (
@@ -229,6 +256,26 @@ export default function Page() {
               {m.title ? <Text style={[s.name, { color: c.fg }]}>{m.title}</Text> : null}
               <Text style={[s.small, { color: c.fg }]}>{[m.tokens ? `${m.tokens} tokens` : '', m.sparks ? `${m.sparks} Sparks` : '', m.chest ? `${(m.chests ?? 1) > 1 ? `${m.chests} × ` : ''}${m.chest} chest` : ''].filter(Boolean).join(' · ') || 'Message only'}</Text>
               <Text style={[s.small, { color: c.mute }]}>{`Opened ${m.read} · Collected ${m.collected}`}</Text>
+              <View style={[s.chips, { marginTop: u(4) }]}>
+                <Pressable onPress={() => reuse(m)} accessibilityRole="button" style={[s.chip, { borderColor: c.line }]}>
+                  <Text style={[s.chipT, { color: c.fg }]}>Reuse</Text>
+                </Pressable>
+                {clearing === m.id ? (
+                  <>
+                    <Pressable onPress={() => clearSent(m.id)} accessibilityRole="button" style={[s.chip, { borderColor: c.t.error }]}>
+                      <Text style={[s.chipT, { color: c.t.error }]}>Yes, clear it</Text>
+                    </Pressable>
+                    <Pressable onPress={() => setClearing(null)} accessibilityRole="button" style={[s.chip, { borderColor: c.line }]}>
+                      <Text style={[s.chipT, { color: c.mute }]}>Keep</Text>
+                    </Pressable>
+                  </>
+                ) : (
+                  <Pressable onPress={() => setClearing(m.id)} accessibilityRole="button" style={[s.chip, { borderColor: c.line }]}>
+                    <Text style={[s.chipT, { color: c.mute }]}>Clear</Text>
+                  </Pressable>
+                )}
+              </View>
+              {clearing === m.id ? <Text style={[s.small, { color: c.mute }]}>Clears it from this list only. Players keep it and can still collect it.</Text> : null}
             </View>
           ))}
         </View>

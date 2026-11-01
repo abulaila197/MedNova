@@ -8,8 +8,13 @@ import { copyOf, keepCopy } from '@/lib/copies';
 import { supabase } from '@/lib/supabase';
 import { syncAccount } from '@/lib/sync';
 
-/** One Inbox message from the MedNova team (Yazan 2026-10-27), with its gifts. */
-export type Message = { id: string; title: string; body: string; tokens: number; sparks: number; chest: ChestKind | null; chests?: number; at: string; read: boolean; collected: boolean };
+/** One Inbox message from the MedNova team (Yazan 2026-10-27) with its gifts, or a friend's Style shop gift (#20). */
+export type Message = {
+  id: string; title: string; body: string; tokens: number; sparks: number; chest: ChestKind | null; chests?: number; at: string; read: boolean; collected: boolean;
+  /** #20/#30: a Style shop gift from a friend (the item is already theirs, nothing to collect); null = the MedNova team. */
+  item?: string | null;
+  from?: { id: string; name: string; avatar: string | null } | null;
+};
 
 /** `savedAt`: the list is the saved copy from then, because the server can't be reached. */
 type State = { list: Message[] | null; waiting: number; failed: boolean; savedAt?: number | null };
