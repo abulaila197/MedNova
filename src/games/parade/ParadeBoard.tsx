@@ -143,7 +143,7 @@ function Answer(p: AnswerProps) {
       const q = p.q;
       const picked = p.shown && (p.shown.style === 'mcq' || p.shown.style === 'reverse') ? p.shown.pick : null;
       return (
-        <Scroll after={p.after} head={q.style === 'reverse' ? <><Text style={[s.rk, { color: t.dim }]}>WHICH QUESTION IS THIS THE ANSWER TO?</Text><Text style={[s.big, { color: t.white }]}>{q.prompt}</Text></> : head}>
+        <Scroll after={p.after} head={q.style === 'reverse' ? <><Text style={[s.rk, { color: t.dim }]}>WHICH QUESTION HAS THIS ANSWER?</Text><Text style={[s.big, { color: t.white }]}>{q.prompt}</Text></> : head}>
           {p.layout.map((ci) => (
             <Tile
               key={ci}
