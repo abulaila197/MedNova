@@ -3,12 +3,11 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
 
-import { deal, mirrorSwap, playable, react, reactions, startChain, type Card } from '../cards';
 import {
-  judge, soloExp, spinCombo, spinField, FIELDS, startSolo, startTurn, stepSolo, stepTurn, turnPoints, STAR_WINDOW_MS, STYLES, STYLE_KEYS,
+  judge, soloExp, spinCombo, spinField, FIELDS, startSolo, startTurn, stepSolo, stepTurn, turnPoints, STYLES, STYLE_KEYS,
   type Answer, type Question, type Rng, type Turn,
 } from '../core';
-import { actor, canRedeem, startOffline, stepOffline, BOSS_BONUS, BOSS_ITEMS, REDEMPTION_ITEMS, redemptionItems, type FullBank, type OfflineGame } from '../offline';
+import { actor, canRedeem, startOffline, stepOffline, upgradeSaved, BOSS_BONUS, BOSS_ITEMS, REDEMPTION_ITEMS, redemptionItems, type FullBank, type OfflineGame } from '../offline';
 import { SAMPLE_BANK as bank } from '../data/samples';
 
 function seeded(seed: number): Rng {
@@ -39,7 +38,6 @@ function playTurn(t: Turn, right = true, now = 0): Turn {
   for (let i = 0; i < 40 && x.phase !== 'over'; i++) {
     now += 1000;
     if (x.phase === 'reveal') x = stepTurn(x, { type: 'GO', now }, bank, rng);
-    else if (x.phase === 'star') x = stepTurn(x, { type: 'KEEP', now }, bank, rng);
     else if (x.phase === 'question') x = right ? stepTurn(x, { type: 'ANSWER', answer: rightAnswer(x.question), now }, bank, rng) : stepTurn(x, { type: 'TICK', now: now + 60_000 }, bank, rng);
     else if (x.phase === 'feedback') x = stepTurn(x, { type: 'TICK', now: now + 5000 }, bank, rng);
   }
@@ -86,33 +84,21 @@ test('QS1: Clinical or Basic spins only that group of fields; Mixed spins both',
   assert.equal(g.mix, 'basic');
 });
 
-test('a turn asks Count questions, scores by style and the Sun doubles it', () => {
-  const t = playTurn(startTurn(bank, [], seeded(3), { sun: true }));
+test('a turn asks Count questions and scores by style', () => {
+  const t = playTurn(startTurn(bank, [], seeded(3)));
   assert.equal(t.phase, 'over');
   assert.equal(t.results.length, t.count);
   const raw = t.results.reduce((a, r) => a + STYLES[r.style].points, 0);
-  assert.equal(turnPoints(t), raw * 2);
+  assert.equal(turnPoints(t), raw);
   const missed = playTurn(startTurn(bank, [], seeded(3)), false);
   assert.equal(turnPoints(missed), 0);
   assert.ok(missed.results.every((r) => r.answer === null));
 });
 
-test('WC5: the Star opens a 3 s window after the first wheels; a re-spin keeps the style', () => {
+test('#39a: no Star window: the first wheels go straight to the question', () => {
   const rng = seeded(4);
-  let t = startTurn(bank, [], rng, { star: true });
-  t = stepTurn(t, { type: 'GO', now: 1000 }, bank, rng);
-  assert.equal(t.phase, 'star');
-  assert.equal(t.until, 1000 + STAR_WINDOW_MS);
-  const style = t.combo.style;
-  t = stepTurn(t, { type: 'STAR', now: 2000 }, bank, rng);
-  assert.equal(t.phase, 'reveal');
-  assert.equal(t.combo.style, style);
-  t = stepTurn(t, { type: 'GO', now: 3000 }, bank, rng);
+  const t = stepTurn(startTurn(bank, [], rng), { type: 'GO', now: 1000 }, bank, rng);
   assert.equal(t.phase, 'question');
-  // Window runs out on its own: straight to the question.
-  let u = stepTurn(startTurn(bank, [], rng, { star: true }), { type: 'GO', now: 0 }, bank, rng);
-  u = stepTurn(u, { type: 'TICK', now: STAR_WINDOW_MS }, bank, rng);
-  assert.equal(u.phase, 'question');
 });
 
 test('pause freezes the question timer', () => {
@@ -143,60 +129,7 @@ test('Solo runs turns until the target; EXP is half the points rounded down (WC1
   assert.equal(soloExp(51), 25);
 });
 
-test('cards: 2 unique each, the rest out of the game', () => {
-  const hands = deal(3, seeded(7));
-  assert.equal(new Set(hands.flat()).size, 6);
-  assert.ok(hands.every((h) => h.length === 2));
-});
-
-const H = (...hs: Card[][]) => hs;
-
-test('reaction chain (spec 8.4): Magician, Mirror, then the sender Hermits it: nobody hurt', () => {
-  const active = [0, 1, 2];
-  let c = startChain({ by: 0, card: 'tower', target: 1 }, H(['hermit'], ['magician'], ['mirror']), active);
-  assert.deepEqual(reactions(c, active), ['magician']);
-  c = react(c, 'magician', active, 2);
-  assert.equal(c.holder, 2);
-  c = react(c, 'mirror', active);
-  assert.equal(c.holder, 0);
-  assert.deepEqual(reactions(c, active), ['hermit']); // no Mirror once back at the sender
-  c = react(c, 'hermit', active);
-  assert.deepEqual(c.result, { victim: null });
-  assert.deepEqual(c.hands, [[], [], []]);
-});
-
-test('reaction chain: undefended sender takes the bounce; Magician user may Hermit it first', () => {
-  const active = [0, 1, 2];
-  let c = startChain({ by: 0, card: 'tower', target: 1 }, H([], ['magician'], ['mirror']), active);
-  c = react(react(c, 'magician', active, 2), 'mirror', active);
-  assert.deepEqual(c.result, { victim: 0 }); // sender holds nothing: lands without asking
-  let d = startChain({ by: 0, card: 'tower', target: 1 }, H([], ['magician', 'hermit'], ['mirror']), active);
-  d = react(react(d, 'magician', active, 2), 'mirror', active);
-  assert.equal(d.holder, 1);
-  assert.equal(d.cleanup, true);
-  d = react(d, 'hermit', active);
-  assert.deepEqual(d.result, { victim: null });
-});
-
-test('Magician needs a third player; Mirror does not answer a Moon', () => {
-  const c = startChain({ by: 0, card: 'tower', target: 1 }, H([], ['magician']), [0, 1]);
-  assert.deepEqual(c.result, { victim: 1 });
-  const m = startChain({ by: 0, card: 'moon', target: 1 }, H([], ['mirror'], []), [0, 1, 2]);
-  assert.deepEqual(m.result, { victim: 1 });
-});
-
-test('WC4: Mirror swap gives the picked card for a random one; empty hands cannot be picked', () => {
-  const hands = H(['mirror', 'sun'], ['tower', 'moon'], []);
-  assert.ok(playable(hands, 0, [0, 1, 2]).includes('mirror'));
-  const { hands: after, got } = mirrorSwap(hands, 0, 1, 'sun', seeded(8));
-  assert.ok(got === 'tower' || got === 'moon');
-  assert.deepEqual(after[0], [got]);
-  assert.ok(after[1].includes('sun') && after[1].length === 2);
-  assert.ok(!playable(H(['mirror', 'sun'], [], []), 0, [0, 1, 2]).includes('mirror'));
-  assert.ok(!playable(H(['mirror'], ['tower'], []), 0, [0, 1, 2]).includes('mirror')); // nothing to give
-});
-
-/** A bot that plays every card at the next seat and answers with a given hit rate. */
+/** A bot that takes every Redemption offered and answers with a given hit rate. */
 function drive(g0: OfflineGame, seed: number, hit = 0.6, maxSteps = 20000) {
   const rng = seeded(seed);
   const pick = seeded(seed + 1);
@@ -204,25 +137,8 @@ function drive(g0: OfflineGame, seed: number, hit = 0.6, maxSteps = 20000) {
   let now = 0;
   for (let i = 0; i < maxSteps && g.phase !== 'done'; i++) {
     now += 500;
-    const me = actor(g)!;
-    const next = g.active[(g.active.indexOf(me) + 1) % g.active.length];
+    void actor(g);
     switch (g.phase) {
-      case 'initiation': {
-        const card = playable(g.hands, me, g.active)[0];
-        if (card === 'star' || card === 'sun') g = stepOffline(g, { type: 'PLAY', play: { card } }, bank, rng);
-        else if (card === 'tower' || card === 'moon') g = stepOffline(g, { type: 'PLAY', play: { card, target: next } }, bank, rng);
-        else if (card === 'mirror') {
-          const target = g.active.find((s) => s !== me && g.hands[s].length)!;
-          g = stepOffline(g, { type: 'PLAY', play: { card, target, give: g.hands[me].find((c) => c !== 'mirror')! } }, bank, rng);
-        } else g = stepOffline(g, { type: 'PASS' }, bank, rng);
-        break;
-      }
-      case 'reaction': {
-        const opts = reactions(g.chain!, g.active);
-        const to = g.active.find((s) => s !== g.chain!.attack.by && s !== g.chain!.holder);
-        g = stepOffline(g, { type: 'REACT', choice: opts[0] ?? null, to }, bank, rng);
-        break;
-      }
       case 'redemptionOffer': g = stepOffline(g, { type: 'REDEEM', use: true }, bank, rng); break;
       case 'redemption': {
         const r = g.redemption!;
@@ -234,7 +150,6 @@ function drive(g0: OfflineGame, seed: number, hit = 0.6, maxSteps = 20000) {
       case 'turn': {
         const t = g.turn!;
         if (t.phase === 'reveal') g = stepOffline(g, { type: 'TURN', e: { type: 'GO', now } }, bank, rng);
-        else if (t.phase === 'star') g = stepOffline(g, { type: 'TURN', e: { type: 'STAR', now } }, bank, rng);
         else if (t.phase === 'question') g = stepOffline(g, { type: 'TURN', e: { type: 'ANSWER', answer: pick() < hit ? rightAnswer(t.question) : null, now } }, bank, rng);
         else g = stepOffline(g, { type: 'TURN', e: { type: 'TICK', now: now + 5000 } }, bank, rng);
         break;
@@ -276,30 +191,53 @@ test('Offline: the game stops the moment someone reaches the target', () => {
   assert.ok(g.log.filter((l) => l.k === 'boss').length < 3);
 });
 
-test('WC2/WC3: The World is offered to the lowest (ties too), after a round, once a cycle', () => {
+test('#39a: Redemption goes to last place (ties too), after a round, once an act for the whole game', () => {
   const g0 = startOffline(3, 100, bank, seeded(41));
-  const g = { ...g0, hands: [['world'], [], []] as Card[][], scores: [5, 5, 9] };
+  const g = { ...g0, scores: [5, 5, 9] };
   assert.equal(canRedeem(g, 0), false); // no round played yet
   assert.equal(canRedeem({ ...g, roundsPlayed: 1 }, 0), true); // tied lowest
-  assert.equal(canRedeem({ ...g, roundsPlayed: 1, scores: [9, 5, 5] }, 0), false);
-  assert.equal(canRedeem({ ...g, roundsPlayed: 1, worldCycle: 0 }, 0), false);
-  assert.equal(canRedeem({ ...g, roundsPlayed: 3, cycle: 1, worldCycle: 0 }, 0), true);
+  assert.equal(canRedeem({ ...g, roundsPlayed: 1 }, 1), true);
+  assert.equal(canRedeem({ ...g, roundsPlayed: 1 }, 2), false); // not last
+  assert.equal(canRedeem({ ...g, roundsPlayed: 1, redCycle: 0 }, 0), false); // used this act
+  assert.equal(canRedeem({ ...g, roundsPlayed: 3, cycle: 1, redCycle: 0 }, 0), true); // a new act
 });
 
-test('Offline: a Moon removes the turn; the last player left wins', () => {
+test('#39a: Redemption is offered once an act in real games, and taking it ends the offers for that act', () => {
+  for (const seats of [2, 3, 4]) {
+    for (const seed of [61, 62, 63]) {
+      const g = drive(startOffline(seats, 100, bank, seeded(seed)), seed, 0.3);
+      assert.equal(g.phase, 'done');
+      const acts = g.log.filter((l) => l.k === 'redemption').length;
+      assert.ok(acts >= 1 && acts <= 3, `${seats} players seed ${seed}: ${acts} Redemptions`);
+    }
+  }
+});
+
+test('#39a: the turn order runs every seat, and removing players still ends with the last one standing', () => {
   let g = startOffline(3, 100, bank, seeded(51));
-  g = { ...g, hands: [['moon'], [], []], init: { at: -1, plays: 0 } };
-  g = { ...g, order: [0, 1, 2], phase: 'initiation', init: { at: 0, plays: 0 } };
   const rng = seeded(52);
-  g = stepOffline(g, { type: 'PLAY', play: { card: 'moon', target: 1 } }, bank, rng);
-  assert.deepEqual(g.skipped, [1]);
   assert.equal(g.phase, 'turn');
-  assert.equal(actor(g), 0);
-  g = stepOffline(g, { type: 'REMOVE', seat: 0 }, bank, rng);
-  assert.equal(actor(g), 2); // seat 1 is skipped, seat 0 left
-  g = stepOffline(g, { type: 'REMOVE', seat: 2 }, bank, rng);
+  const first = actor(g)!;
+  assert.equal(first, g.order[0]);
+  g = stepOffline(g, { type: 'REMOVE', seat: first }, bank, rng);
+  assert.equal(actor(g), g.order[1]);
+  g = stepOffline(g, { type: 'REMOVE', seat: g.order[1] }, bank, rng);
   assert.equal(g.phase, 'done');
-  assert.deepEqual(g.result!.winners, [1]);
+  assert.deepEqual(g.result!.winners, [g.order[2]]);
+});
+
+test('#39a: a game saved with tarot cards loads without them', () => {
+  const g = startOffline(3, 100, bank, seeded(71));
+  const old = {
+    ...g, phase: 'initiation', hands: [['star'], ['world'], []], init: { at: 0, plays: 0 }, attacks: [], chain: null, skipped: [], sun: [], star: [],
+    worldCycle: 0, log: [{ k: 'play', seat: 0, card: 'star' }, { k: 'turn', seat: 1, points: 4, sun: false }],
+  } as unknown as OfflineGame;
+  const n = upgradeSaved(old, bank, seeded(72));
+  assert.equal(n.phase, 'turn');
+  assert.equal(n.redCycle, 0);
+  assert.ok(!('hands' in n) && !('chain' in n));
+  assert.deepEqual(n.log.map((l) => l.k), ['turn']);
+  assert.equal(upgradeSaved(g, bank, seeded(72)), g); // a new save is left alone
 });
 
 test('WC10: the real bank covers every style in every field, with Redemption and Boss sets per field', () => {

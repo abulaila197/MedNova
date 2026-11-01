@@ -1,7 +1,7 @@
 // The Wheels of Chaos Online (WC20-WC23): the full show on everyone's own phone. The server referees (the wheels
 // edge function); this screen polls the game every second, shows whoever's turn it is live to the whole room, and
-// sends only my own moves. Cards stay secret: the server hides other players' hands. The Boss Round is played by
-// everyone at once, each swipe sent as it happens.
+// sends only my own moves. The Boss Round is played by everyone at once, each swipe sent as it happens. No tarot
+// cards since #39a (Yazan 2026-11-01).
 import { router } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { PanResponder, View } from 'react-native';
@@ -16,17 +16,16 @@ import { useStableCallback } from '@/lib/useStableCallback';
 import { u } from '@/theme/scale';
 
 import type { OnlineProps } from '../shell/types';
-import { CARD_INFO, type Card } from './cards';
 import { fieldName, type Answer, type QResult, type Question, type TurnEvent } from './core';
 import { BANK } from './data';
 import { bankVersion } from './keys';
 import { actor, bossPoints, BOSS_BONUS, BOSS_MS, BOSS_RIGHT, BOSS_WRONG, type OfflineGame } from './offline';
-import { actName, Board, BossOver, CardWindow, ReactWindow, recapLine, RedemptionBoard, RedemptionOffer, Top, TurnOver, type Seats } from './OfflinePlay';
+import { actName, Board, BossOver, recapLine, RedemptionBoard, RedemptionOffer, Top, TurnOver, type Seats } from './OfflinePlay';
 import { ONLINE_MS, type Move, type OnlineWheels } from './online';
 import { WheelsPause, VELVET_KIT } from './screens';
 import { TurnBoard, type Strip } from './TurnBoard';
 import { gameShown } from './shown';
-import { Bill, Btn, Bulbs, bulbsLit, CardArt, CD, CM, GEMS, Panel, PauseBtn, ROMAN, Rule, T, VelvetScreen, VV } from './velvet';
+import { Bill, Btn, Bulbs, bulbsLit, CD, CM, GEMS, Panel, PauseBtn, ROMAN, Rule, T, VelvetScreen, VV } from './velvet';
 import { useMatchState } from '@/online/useMatchState';
 import { useRevealSound } from '@/lib/sound';
 import { useBackPause } from '@/online/backPause';
@@ -61,7 +60,7 @@ function hydrate(g: OfflineGame): OfflineGame {
   return { ...g, turn, redemption, boss };
 }
 
-const WAITS: Partial<Record<OfflineGame['phase'], number>> = { initiation: ONLINE_MS.init, reaction: ONLINE_MS.react, redemptionOffer: ONLINE_MS.offer };
+const WAITS: Partial<Record<OfflineGame['phase'], number>> = { redemptionOffer: ONLINE_MS.offer };
 
 const styleOf = (q: Question) => (BANK.questions[Number(q.id)] ?? q).style;
 
@@ -167,7 +166,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
       return;
     }
     for (const l of g.log.slice(seenLog.current)) {
-      if (l.k === 'turn' || l.k === 'skipped') continue;
+      if (l.k === 'turn') continue;
       const line = recapLine(l, seatName);
       if (line) push(line, GEMS[('seat' in l ? l.seat : 0) % GEMS.length]);
     }
@@ -195,7 +194,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
         const mine = st.state!.g.answers.filter((a) => a.seat === mySeat).map((a) => a.r);
         const items = mine.map((r: QResult) => ({
           seat: 0, itemId: BANK.questions[Number(r.id)]?.id ?? r.id, answerKey: null, outcome: r.right ? ('right' as const) : r.answer == null ? ('timed_out' as const) : ('wrong' as const),
-          answersGiven: [], timeMs: 0, hintsUsed: 0, revealsUsed: 0, points: r.points, feedsLearn: false, gameData: { style: r.style, field: r.field },
+          answersGiven: [], timeMs: 0, hintsUsed: 0, revealsUsed: 0, points: r.points, feedsLearn: true, gameData: { style: r.style, field: r.field },
         }));
         const id = await finishOnline(def, matchId, { settings: { ...st.settings, room: roomId, match: matchId }, seats, standings, score, items });
         showResults(id);
@@ -245,7 +244,6 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   const seats: Seats = new Map((st.seats ?? []).map((_, s) => [s, { name: seatName(s), color: GEMS[s % GEMS.length] }]));
   const board: Strip = g.active.map((s) => ({ seat: s, name: seatName(s), color: GEMS[s % GEMS.length], score: g.scores[s], me: s === who })).sort((a, b) => b.score - a.score);
   const mine = who != null && who === mySeat;
-  const hand = mySeat != null ? g.hands[mySeat] : [];
   const pause = () => setMenu(true);
   const o = st.state;
   const wait = WAITS[g.phase];
@@ -260,32 +258,11 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
         {playing ? null : <Btn label="Back to the room" onPress={() => router.replace(`/play/${def.key}/lobby?room=${roomId}`)} />}
       </View>
     );
-  else if (g.phase === 'initiation' && who != null)
-    body = mine ? (
-      <CardWindow g={g} seat={who} seats={seats} board={board} onPlay={(p) => send({ type: 'PLAY', play: p })} onPass={() => send({ type: 'PASS' })} onPause={pause} />
-    ) : (
-      <Watching kicker={`${actName(g)} · Card window`} title={`${seatName(who)} is choosing`} line="Cards played on you show up here." board={board} hand={hand} onPause={pause} />
-    );
-  else if (g.phase === 'reaction' && g.chain)
-    body =
-      g.chain.holder === mySeat ? (
-        <ReactWindow g={g} seats={seats} onReact={(choice, to) => send({ type: 'REACT', choice, to })} onPause={pause} />
-      ) : (
-        <Watching
-          kicker={`${actName(g)} · ${CARD_INFO[g.chain.attack.card].name}`}
-          title={`${CARD_INFO[g.chain.attack.card].name} incoming`}
-          line={`${seatName(g.chain.attack.by)} played ${CARD_INFO[g.chain.attack.card].name} on ${seatName(g.chain.attack.target)}. ${seatName(g.chain.holder)} has ${ONLINE_MS.react / 1000} seconds to answer.`}
-          card={g.chain.attack.card}
-          board={board}
-          hand={hand}
-          onPause={pause}
-        />
-      );
   else if (g.phase === 'redemptionOffer' && who != null)
     body = mine ? (
       <RedemptionOffer seat={who} seats={seats} onPick={(use) => send({ type: 'REDEEM', use })} onPause={pause} />
     ) : (
-      <Watching kicker="The World" title={`${seatName(who)} holds The World`} line="Last place may swap this turn for a Redemption round." card="world" board={board} hand={hand} onPause={pause} />
+      <Watching kicker="Redemption" title={`${seatName(who)} is last`} line="Last place may swap this turn for a Redemption round, once an act." board={board} onPause={pause} />
     );
   else if (g.phase === 'redemption' && g.redemption)
     body = (
@@ -306,10 +283,9 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
         kicker={actName(g)}
         title={mine ? 'Your turn' : `${seatName(who)}’s turn`}
         strip={board}
-        tray={hand}
         watch={!mine}
         footer={mine ? undefined : <T f={CM} size={12} color={VV.soft} style={{ textAlign: 'center' }}>{`${seatName(who)} is answering`}</T>}
-        onEvent={(e: TurnEvent) => send(e.type === 'ANSWER' ? { type: 'ANSWER', answer: e.answer as Answer } : e.type === 'GO' || e.type === 'STAR' || e.type === 'KEEP' ? { type: e.type } : { type: 'TICK' })}
+        onEvent={(e: TurnEvent) => send(e.type === 'ANSWER' ? { type: 'ANSWER', answer: e.answer as Answer } : e.type === 'GO' ? { type: 'GO' } : { type: 'TICK' })}
         onPause={pause}
       />
     );
@@ -320,7 +296,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
 
   return (
     <>
-      <VelvetScreen scroll={g.phase === 'initiation' || g.phase === 'turnOver' || g.phase === 'bossOver'}>
+      <VelvetScreen scroll={g.phase === 'turnOver' || g.phase === 'bossOver'}>
         {waitBar}
         {body}
         {extras}
@@ -341,23 +317,12 @@ function WaitBar({ left, total, mine }: { left: number; total: number; mine: boo
 }
 
 /** Someone else's move: what is happening, the table, and my own cards (WC20). */
-function Watching({ kicker, title, line, card, board, hand, onPause }: { kicker: string; title: string; line: string; card?: Card; board: Strip; hand: Card[]; onPause: () => void }) {
+function Watching({ kicker, title, line, board, onPause }: { kicker: string; title: string; line: string; board: Strip; onPause: () => void }) {
   return (
     <View style={{ gap: u(12) }}>
       <Top kicker={kicker} title={title} onPause={onPause} />
-      {card ? (
-        <View style={{ alignItems: 'center', paddingTop: u(4) }}>
-          <CardArt card={card} w={u(88)} />
-        </View>
-      ) : null}
       <T size={13.5} color={VV.soft} style={{ textAlign: 'center' }}>{line}</T>
       <Board board={board} />
-      {hand.length ? (
-        <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: u(10) }}>
-          <T f={CM} size={12} color={VV.soft} style={{ flex: 1, alignSelf: 'center' }}>Your cards</T>
-          {hand.map((c) => <CardArt key={c} card={c} w={u(34)} />)}
-        </View>
-      ) : null}
     </View>
   );
 }

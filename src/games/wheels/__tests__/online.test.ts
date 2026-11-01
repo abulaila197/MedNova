@@ -3,7 +3,6 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
 
-import { playable, targetsFor } from '../cards';
 import { judge, type Answer, type Question, type Rng } from '../core';
 import { decodeKeys, encodeKeys } from '../keys';
 import { actor, type FullBank } from '../offline';
@@ -71,17 +70,10 @@ function playOut(seed: number, seats: number, idle: (seat: number) => boolean, d
     const who = actor(g);
     let m: Move | null = null;
     if (who != null && !idle(who)) {
-      if (g.phase === 'initiation') {
-        const can = playable(g.hands, who, g.active).filter((c) => c !== 'mirror');
-        const c = can[0];
-        if (c === 'star' || c === 'sun') m = { type: 'PLAY', play: { card: c } };
-        else if (c === 'tower' || c === 'moon') m = { type: 'PLAY', play: { card: c, target: targetsFor(g.hands, who, c, g.active)[0] } };
-        else m = { type: 'PASS' };
-      } else if (g.phase === 'reaction') m = { type: 'REACT', choice: null };
-      else if (g.phase === 'redemptionOffer') m = { type: 'REDEEM', use: true };
+      if (g.phase === 'redemptionOffer') m = { type: 'REDEEM', use: true };
       else if (g.phase === 'turn' && g.turn) {
         const t = g.turn;
-        m = t.phase === 'reveal' ? { type: 'GO' } : t.phase === 'star' ? { type: 'KEEP' } : t.phase === 'question' ? { type: 'ANSWER', answer: rightAnswer(t.question) } : null;
+        m = t.phase === 'reveal' ? { type: 'GO' } : t.phase === 'question' ? { type: 'ANSWER', answer: rightAnswer(t.question) } : null;
       } else if (g.phase === 'redemption' && g.redemption) {
         const r = g.redemption;
         const q = r.items[r.index];
@@ -113,7 +105,8 @@ test('a whole online game plays to the end with every phone playing', () => {
     const { o, phases } = playOut(seed, 3, () => false);
     assert.equal(o.g.phase, 'done', `seed ${seed}`);
     assert.ok(o.g.result!.winners.length >= 1);
-    assert.ok(phases.has('initiation') && phases.has('turn'));
+    assert.ok(phases.has('turn') && phases.has('boss'));
+    assert.ok(!o.g.log.some((l) => (l.k as string) === 'hit' || (l.k as string) === 'cancel'), 'no card log lines');
     const ranks = onlineRanks(o.g);
     for (const w of o.g.result!.winners) assert.equal(ranks[w], 1);
   }
@@ -125,46 +118,32 @@ test('idle phones never stall the show: every wait has a deadline', () => {
     assert.equal(o.g.phase, 'done', `seed ${seed}`);
     assert.ok(phases.has('boss') && phases.has('bossOver'));
     assert.ok(o.g.log.every((l) => l.k !== 'turn' || l.points === 0), 'nobody answered, no turn scored');
-    if (waits.reaction != null) assert.equal(waits.reaction, ONLINE_MS.react);
-    assert.equal(waits.initiation, ONLINE_MS.init);
+    assert.equal(waits.turnOver, ONLINE_MS.turnOver);
+    assert.equal(waits.bossOver, ONLINE_MS.bossOver);
   }
 });
 
-test('WC21: an unanswered attack lands after 15 s', () => {
+test('an unanswered question runs out on its own timer', () => {
   const rng = seeded(11);
-  const now = 5_000_000;
-  // Seat 0 plays The Tower on seat 1; the others pass, and seat 1 never answers.
-  for (let seed = 0; seed < 200; seed++) {
-    let o = startOnline(3, 50, 'mixed', keys.v, slim, seeded(seed), now);
-    const g = o.g;
-    const who = actor(g);
-    if (g.phase !== 'initiation' || who == null || !g.hands[who].includes('tower')) continue;
-    const target = targetsFor(g.hands, who, 'tower', g.active)[0];
-    o = stepOnline(o, { type: 'PLAY', play: { card: 'tower', target } }, who, { dropped: [], swipes: {} }, slim, rng, now + 100);
-    let t = now + 100;
-    while (o.g.phase === 'initiation') {
-      const a = actor(o.g)!;
-      t += 100;
-      o = stepOnline(o, { type: 'PASS' }, a, { dropped: [], swipes: {} }, slim, rng, t);
-    }
-    if (o.g.phase !== 'reaction') continue;
-    assert.equal(o.deadline, t + ONLINE_MS.react);
-    const held = stepOnline(o, { type: 'TICK' }, null, { dropped: [], swipes: {} }, slim, rng, t + ONLINE_MS.react - 1);
-    assert.equal(held.g.phase, 'reaction');
-    const landed = stepOnline(o, { type: 'TICK' }, null, { dropped: [], swipes: {} }, slim, rng, t + ONLINE_MS.react);
-    assert.notEqual(landed.g.phase, 'reaction');
-    assert.ok(landed.g.log.some((l) => l.k === 'hit' && l.card === 'tower') || landed.g.log.some((l) => l.k === 'cancel'));
-    return;
-  }
-  assert.fail('no seed dealt The Tower to the first player');
+  let now = 5_000_000;
+  let o = startOnline(3, 50, 'mixed', keys.v, slim, seeded(4), now);
+  assert.equal(o.g.phase, 'turn', 'no card phase before the first turn');
+  const who = actor(o.g)!;
+  now += 100;
+  o = stepOnline(o, { type: 'GO' }, who, { dropped: [], swipes: {} }, slim, rng, now);
+  assert.equal(o.g.turn?.phase, 'question');
+  const due = dueOf(o)!;
+  assert.ok(due > now);
+  const done = stepOnline(o, { type: 'TICK' }, null, { dropped: [], swipes: {} }, slim, rng, due + 1);
+  assert.notEqual(done.g.turn?.phase, 'question');
 });
 
 test('only the seat whose turn it is can move', () => {
   const o = startOnline(3, 50, 'mixed', keys.v, slim, seeded(3), 1000);
   const who = actor(o.g)!;
   const other = [0, 1, 2].find((s) => s !== who)!;
-  assert.equal(stepOnline(o, { type: 'PASS' }, other, { dropped: [], swipes: {} }, slim, seeded(1), 1100), o);
-  assert.notEqual(stepOnline(o, { type: 'PASS' }, who, { dropped: [], swipes: {} }, slim, seeded(1), 1100), o);
+  assert.equal(stepOnline(o, { type: 'GO' }, other, { dropped: [], swipes: {} }, slim, seeded(1), 1100), o);
+  assert.notEqual(stepOnline(o, { type: 'GO' }, who, { dropped: [], swipes: {} }, slim, seeded(1), 1100), o);
 });
 
 test('WC23: the Boss Round is everyone at once, scored from each phone’s swipes', () => {

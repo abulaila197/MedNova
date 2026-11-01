@@ -7,9 +7,8 @@ import { Text } from '@/components/AppText';
 
 import { u } from '@/theme/scale';
 
-import type { Card } from './cards';
-import { FIELDS, STAR_WINDOW_MS, STYLE_KEYS, STYLES, fieldName, timeLeft, type Answer, type Question, type Turn, type TurnEvent } from './core';
-import { Brass, Btn, BODY, BODY_B, Bulbs, CardArt, CB, CD, CM, Gem, Kicker, PauseBtn, T, VV } from './velvet';
+import { FIELDS, STYLE_KEYS, STYLES, fieldName, timeLeft, type Answer, type Question, type Turn, type TurnEvent } from './core';
+import { Brass, Btn, BODY, BODY_B, Bulbs, CB, CD, CM, Gem, Kicker, PauseBtn, T, VV } from './velvet';
 
 export type Strip = { seat: number; name: string; color?: string; score: number; me?: boolean }[];
 
@@ -29,10 +28,9 @@ const qWord = (n: number) => `${n} Question${n > 1 ? 's' : ''}`;
  * each spin (`key`) and after a pause (the board is hidden), so the spin starts from 0 as before.
  */
 function Reels({ turn, onGo }: { turn: Turn; onGo: () => void }) {
-  // A Star re-spin keeps the count and style (the Star only re-spins the field); a later question keeps the count.
-  const respin = turn.star === 'used' && turn.k === 0;
+  // A later question keeps the count.
   const spinning = turn.phase === 'reveal';
-  const order = [...(turn.k === 0 && !respin ? ['count'] : []), ...(!respin ? ['style'] : []), 'field'] as const;
+  const order = [...(turn.k === 0 ? ['count'] : []), 'style', 'field'] as const;
   const stopAt = (reel: 'count' | 'style' | 'field') => {
     const i = (order as readonly string[]).indexOf(reel);
     return i < 0 ? -1 : (i + 1) * REEL_MS;
@@ -112,16 +110,6 @@ function ScoreStrip({ strip }: { strip: Strip }) {
           <T f={BODY_B} size={12.5} color={p.me ? VV.ink : VV.dim}>{`${p.name} ${p.score}`}</T>
         </View>
       ))}
-    </View>
-  );
-}
-
-function Tray({ cards }: { cards: Card[] }) {
-  if (!cards.length) return null;
-  return (
-    <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: u(10) }}>
-      <T f={CM} size={12} color={VV.soft} style={{ flex: 1, alignSelf: 'center' }}>Your cards</T>
-      {cards.map((c) => <CardArt key={c} card={c} w={u(30)} />)}
     </View>
   );
 }
@@ -287,13 +275,12 @@ const promptLead: Partial<Record<Question['style'], string>> = { reverse: 'Here 
 
 // ---------------------------------------------------------------- the board
 
-export function TurnBoard({ turn, now, kicker, title, strip, tray = [], footer, onEvent, onPause, hidden, watch }: {
+export function TurnBoard({ turn, now, kicker, title, strip, footer, onEvent, onPause, hidden, watch }: {
   turn: Turn;
   now: number;
   kicker: string;
   title: string;
   strip?: Strip;
-  tray?: Card[];
   footer?: ReactNode;
   onEvent: (e: TurnEvent) => void;
   onPause: () => void;
@@ -309,7 +296,6 @@ export function TurnBoard({ turn, now, kicker, title, strip, tray = [], footer, 
   if (hidden) return null;
 
   if (!asking) {
-    const starLeft = turn.phase === 'star' ? timeLeft(turn, now) : 0;
     return (
       <View style={{ flex: 1, gap: u(11) }}>
         <View style={s.top}>
@@ -321,30 +307,8 @@ export function TurnBoard({ turn, now, kicker, title, strip, tray = [], footer, 
         </View>
         {/* #81: the reels sit in the middle of the screen. */}
         <View style={{ flex: 1, justifyContent: 'center', gap: u(11) }}>
-        <Reels key={`${turn.k}:${q.id}:${turn.star}`} turn={turn} onGo={() => !watch && onEvent({ type: 'GO', now: Date.now() })} />
-        {turn.phase === 'star' ? (
-          <Brass r={14} inner={{ backgroundColor: VV.panel, padding: u(12), gap: u(9) }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: u(12) }}>
-              <CardArt card="star" w={u(34)} />
-              <View style={{ flex: 1, gap: u(2) }}>
-                <T f={CB} size={13} color={VV.gold}>The Star</T>
-                <T size={12} color={VV.soft}>Re-spin the field wheel? The card is spent either way.</T>
-              </View>
-            </View>
-            <Bulbs frac={starLeft / STAR_WINDOW_MS} />
-            {watch ? (
-              <T size={12} color={VV.dim} style={{ textAlign: 'center' }}>Deciding…</T>
-            ) : (
-              <View style={{ flexDirection: 'row', gap: u(10) }}>
-                <Btn label="Keep it" ghost onPress={() => onEvent({ type: 'KEEP', now: Date.now() })} style={{ flex: 1 }} />
-                <Btn label="Re-spin" onPress={() => onEvent({ type: 'STAR', now: Date.now() })} style={{ flex: 1 }} />
-              </View>
-            )}
-          </Brass>
-        ) : null}
+        <Reels key={`${turn.k}:${q.id}`} turn={turn} onGo={() => !watch && onEvent({ type: 'GO', now: Date.now() })} />
         </View>
-        {turn.sun ? <T f={CM} size={11.5} color={VV.gold} style={{ textAlign: 'center' }}>The Sun doubles this turn’s points.</T> : null}
-        <Tray cards={tray} />
       </View>
     );
   }
@@ -360,7 +324,7 @@ export function TurnBoard({ turn, now, kicker, title, strip, tray = [], footer, 
       </View>
       <View style={s.spread}>
         <T f={CM} size={12} color={VV.brass} style={{ letterSpacing: u(1) }}>{`QUESTION ${turn.k + 1} OF ${turn.count}`}</T>
-        <T f={CM} size={12} color={VV.soft}>{`${st.name} · ${st.points} pt${st.points > 1 ? 's' : ''}${turn.sun ? ' ×2' : ''}`}</T>
+        <T f={CM} size={12} color={VV.soft}>{`${st.name} · ${st.points} pt${st.points > 1 ? 's' : ''}`}</T>
       </View>
       {strip ? <ScoreStrip strip={strip} /> : null}
       {/* #52 (2026-10-31): online, the answers belong to the player whose turn it is; the others see whose turn and watch. */}
@@ -384,12 +348,11 @@ export function TurnBoard({ turn, now, kicker, title, strip, tray = [], footer, 
       </View>
       {result ? (
         <View style={{ alignItems: 'center', gap: u(2) }}>
-          <T f={CD} size={20} color={result.right ? VV.right : VV.wrong}>{result.right ? `Bravo! +${result.points * (turn.sun ? 2 : 1)}` : result.answer == null ? 'Time is up' : 'Not this time'}</T>
+          <T f={CD} size={20} color={result.right ? VV.right : VV.wrong}>{result.right ? `Bravo! +${result.points}` : result.answer == null ? 'Time is up' : 'Not this time'}</T>
         </View>
       ) : null}
       </ScrollView>
       {footer}
-      <Tray cards={tray} />
     </View>
   );
 }

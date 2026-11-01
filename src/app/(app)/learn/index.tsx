@@ -124,6 +124,8 @@ function ReviewPage({ pile, reload }: { pile: Card[] | null; reload: () => Promi
               </LinearGradient>
             </Pressable>
           </View>
+          {/* #28 (Yazan 2026-11-01): what the two buttons do. */}
+          <Text style={[s.how, { color: c.mute }]}>Again: see it later today · Got it: put it away</Text>
         </>
       ) : pile ? (
         <View style={[s.empty, { borderColor: c.cardLine }]}>
@@ -304,6 +306,7 @@ const s = StyleSheet.create({
   lpg: { height: u(3), borderRadius: u(3), overflow: 'hidden' },
   lpgFill: { height: '100%', borderRadius: u(3) },
   lrow: { flexDirection: 'row', gap: u(7) },
+  how: { fontFamily: F.body, fontSize: u(9.5), textAlign: 'center', marginTop: u(6) },
   btnWrap: { flex: 1 },
   btn: {
     flex: 1,

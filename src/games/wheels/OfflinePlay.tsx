@@ -1,5 +1,5 @@
-// Pass the phone (WC1, WC12-WC17): the full game on one phone. Three acts of 3, 2 and 2 rounds; each round opens
-// with a card window, then everyone's turn; each act ends with a Boss Round of turn-based swipes. The phone goes
+// Pass the phone (WC1, WC12-WC17): the full game on one phone. Three acts of 3, 2 and 2 rounds of everyone's turn;
+// each act ends with a Boss Round of turn-based swipes. No tarot cards since #39a (Yazan 2026-11-01). The phone goes
 // round behind a curtain that shows what happened since that player last held it (OF1).
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { PanResponder, View } from 'react-native';
@@ -12,16 +12,15 @@ import { usePauseHide } from '../engine/usePauseHide';
 import { recordItem } from '../shell/flow';
 import { RECAP_MAX } from '../shell/recap';
 import type { PlayProps } from '../shell/types';
-import { CARD_INFO, magicianTargets, playable, reactions, targetsFor, type Card, type Play as CardPlay, type Reaction } from './cards';
 import { fieldName, type Mix, type QResult, type Target } from './core';
 import { BANK } from './data';
 import {
-  actor, bossPoints, startOffline, stepOffline, BOSS_BONUS, BOSS_MS, BOSS_RIGHT, BOSS_WRONG, CYCLES, MAX_PLAYS, REDEMPTION_ITEMS, REDEMPTION_MS,
+  actor, bossPoints, startOffline, stepOffline, upgradeSaved, BOSS_BONUS, BOSS_MS, BOSS_RIGHT, BOSS_WRONG, CYCLES, REDEMPTION_ITEMS, REDEMPTION_MS,
   type Log, type OfflineEvent, type OfflineGame,
 } from './offline';
 import { WheelsPause } from './screens';
 import { TurnBoard, type Strip } from './TurnBoard';
-import { Bill, Btn, Bulbs, CardArt, CB, CD, Chip, CM, Gem, Kicker, Panel, PauseBtn, ROMAN, Rule, T, VelvetScreen, VV } from './velvet';
+import { Bill, Btn, Bulbs, CB, CD, CM, Gem, Kicker, Panel, PauseBtn, ROMAN, Rule, T, VelvetScreen, VV } from './velvet';
 import { useTicker } from '../engine/useTicker';
 import { gameShown } from './shown';
 
@@ -35,7 +34,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   // The saved game (its clocks started again), or a new one.
   const [first] = useState(() => {
     const saved = play.resume as OfflineGame | null;
-    if (saved) return { g: stepOffline(saved, { type: 'RESUME', now: Date.now() }, BANK, Math.random), fresh: false };
+    if (saved) return { g: stepOffline(upgradeSaved(saved, BANK, Math.random), { type: 'RESUME', now: Date.now() }, BANK, Math.random), fresh: false };
     return { g: startOffline(play.seats.length, target, BANK, Math.random, mix), fresh: true };
   });
   const [g, setG] = useState<OfflineGame>(first.g);
@@ -56,7 +55,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
       for (const r of rs)
         recordItem(play, {
           seat, itemId: r.id, answerKey: null, outcome: r.right ? 'right' : r.answer == null ? 'timed_out' : 'wrong', answersGiven: [], timeMs: 0,
-          hintsUsed: 0, revealsUsed: 0, points: r.points, feedsLearn: false, gameData: { style: r.style, field: r.field },
+          hintsUsed: 0, revealsUsed: 0, points: r.points, feedsLearn: seat === 0, gameData: { style: r.style, field: r.field },
         });
     },
     [play],
@@ -71,7 +70,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
       ref.current = next;
       setG(next);
       engine.recorder.bookmark(play.id, snapshot(next, Date.now()), next.scores[0] ?? 0);
-      // Each answered question is one item under the player who answered it. Nothing goes to Learn (WC7).
+      // Each answered question is one item under the player who answered it; the phone owner's misses go to Learn.
       if (next.answers.length > prev.answers.length) for (const a of next.answers.slice(prev.answers.length)) record(a.seat, [a.r]);
       const pr = prev.redemption, nr = next.redemption;
       if (nr && nr.answers.length > (pr && pr.seat === nr.seat && pr.items === nr.items ? pr.answers.length : 0)) {
@@ -121,8 +120,6 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
 
   let body: React.ReactNode;
   if (who != null && who !== holder) body = <Curtain g={g} seat={who} seats={seats} board={board} since={seen[who] ?? 0} onReady={ready} />;
-  else if (g.phase === 'initiation' && who != null) body = <CardWindow g={g} seat={who} seats={seats} board={board} onPlay={(p) => dispatch({ type: 'PLAY', play: p })} onPass={() => dispatch({ type: 'PASS' })} onPause={pause} />;
-  else if (g.phase === 'reaction' && g.chain) body = <ReactWindow g={g} seats={seats} onReact={(choice, to) => dispatch({ type: 'REACT', choice, to })} onPause={pause} />;
   else if (g.phase === 'redemptionOffer' && who != null) body = <RedemptionOffer seat={who} seats={seats} onPick={(use) => dispatch({ type: 'REDEEM', use })} onPause={pause} />;
   else if (g.phase === 'redemption' && g.redemption) body = <RedemptionBoard g={g} now={now} seats={seats} onEvent={(e) => dispatch({ type: 'RED', e })} onPause={pause} hidden={paused} />;
   else if (g.phase === 'turn' && g.turn && who != null)
@@ -133,7 +130,6 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
         kicker={actName(g)}
         title={`${name(who)}’s turn`}
         strip={board}
-        tray={g.hands[who]}
         onEvent={(e) => dispatch({ type: 'TURN', e })}
         onPause={pause}
         hidden={paused}
@@ -145,7 +141,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
 
   return (
     <>
-      <VelvetScreen scroll={g.phase === 'initiation' || g.phase === 'turnOver' || g.phase === 'bossOver' || who !== holder}>{body}</VelvetScreen>
+      <VelvetScreen scroll={g.phase === 'turnOver' || g.phase === 'bossOver' || who !== holder}>{body}</VelvetScreen>
       <WheelsPause
         open={paused}
         mode="offline"
@@ -192,24 +188,11 @@ export function Board({ board, extra }: { board: Strip; extra?: Record<number, s
   );
 }
 
-const cardName = (c: Card) => CARD_INFO[c].name;
-
-/** OF1: one line per public event since this player last held the phone. Hands stay secret. */
+/** OF1: one line per event since this player last held the phone. */
 export function recapLine(l: Log, n: (s: number) => string): string | null {
   switch (l.k) {
-    case 'play':
-      if (l.card === 'mirror') return `${n(l.seat)} used The Mirror on ${n(l.target!)}`;
-      return l.target != null ? `${n(l.seat)} played ${cardName(l.card)} on ${n(l.target)}` : `${n(l.seat)} played ${cardName(l.card)}`;
-    case 'react':
-      if (l.card === 'magician') return `${n(l.seat)} sent it on to ${n(l.to!)} with The Magician`;
-      if (l.card === 'mirror') return `${n(l.seat)} bounced it back with The Mirror`;
-      return `${n(l.seat)} cancelled it with The Hermit`;
-    case 'hit':
-      return l.card === 'tower' ? `${n(l.seat)} lost ${l.loss} to The Tower` : `${n(l.seat)} will miss a turn to The Moon`;
-    case 'skipped':
-      return `${n(l.seat)}’s turn was skipped`;
     case 'turn':
-      return `${n(l.seat)} scored ${l.points}${l.sun ? ' with The Sun' : ''}`;
+      return `${n(l.seat)} scored ${l.points}`;
     case 'redemption':
       return `${n(l.seat)} played Redemption · +${l.points}`;
     case 'boss':
@@ -226,8 +209,7 @@ export function recapLine(l: Log, n: (s: number) => string): string | null {
 function Curtain({ g, seat, seats, board, since, onReady }: { g: OfflineGame; seat: number; seats: Seats; board: Strip; since: number; onReady: () => void }) {
   const n = (s: number) => seats.get(s)?.name ?? `Player ${s + 1}`;
   const lines = g.log.slice(since).map((l) => recapLine(l, n)).filter((x): x is string => !!x).slice(-RECAP_MAX);
-  const why =
-    g.phase === 'initiation' ? 'Card window' : g.phase === 'reaction' ? 'A card is aimed at you' : g.phase === 'boss' ? 'Boss Round' : g.phase === 'redemptionOffer' ? 'Your turn' : 'Your turn';
+  const why = g.phase === 'boss' ? 'Boss Round' : 'Your turn';
   return (
     <View style={{ gap: u(14), paddingTop: u(18) }}>
       <View style={{ alignItems: 'center', gap: u(4) }}>
@@ -237,7 +219,6 @@ function Curtain({ g, seat, seats, board, since, onReady }: { g: OfflineGame; se
           <Gem c={seats.get(seat)?.color} size={13} />
           <T f={CD} size={32} color={VV.gold}>{n(seat)}</T>
         </View>
-        <T size={12} color={VV.dim}>Nobody else looks: your cards are on the next screen.</T>
       </View>
       {lines.length ? (
         <Panel>
@@ -253,136 +234,14 @@ function Curtain({ g, seat, seats, board, since, onReady }: { g: OfflineGame; se
   );
 }
 
-// ---------------------------------------------------------------- card window (Initiation)
-
-export function CardWindow({ g, seat, seats, board, onPlay, onPass, onPause }: { g: OfflineGame; seat: number; seats: Seats; board: Strip; onPlay: (p: CardPlay) => void; onPass: () => void; onPause: () => void }) {
-  const hand = g.hands[seat];
-  const can = playable(g.hands, seat, g.active);
-  const [pick, setPick] = useState<Card | null>(can[0] ?? null);
-  const [to, setTo] = useState<number | null>(null);
-  const [give, setGive] = useState<Card | null>(null);
-  // A new hand or another card played: start the choice again.
-  const deal = `${hand.join(',')}|${g.init.plays}`;
-  const [dealt, setDealt] = useState(deal);
-  if (dealt !== deal) {
-    setDealt(deal);
-    setPick(can[0] ?? null);
-    setTo(null);
-    setGive(null);
-  }
-  const targets = pick ? targetsFor(g.hands, seat, pick, g.active) : [];
-  const needsTarget = pick === 'tower' || pick === 'moon' || pick === 'mirror';
-  const gives = pick === 'mirror' ? hand.filter((c) => c !== 'mirror') : [];
-  const giveCard = gives.length === 1 ? gives[0] : give;
-  const ok = !!pick && (!needsTarget || to != null) && (pick !== 'mirror' || !!giveCard);
-  const n = (s: number) => seats.get(s)?.name ?? `Player ${s + 1}`;
-  const left = MAX_PLAYS - g.init.plays;
-  const play = () => {
-    if (!pick || !ok) return;
-    if (pick === 'star' || pick === 'sun') onPlay({ card: pick });
-    else if (pick === 'mirror') onPlay({ card: 'mirror', target: to!, give: giveCard! });
-    else onPlay({ card: pick as 'tower' | 'moon', target: to! });
-  };
-  return (
-    <View style={{ gap: u(12) }}>
-      <Top kicker={`${actName(g)} · Card window`} title="Play or pass" onPause={onPause} />
-      <Board board={board} />
-      <View style={{ flexDirection: 'row', justifyContent: 'center', gap: u(18), paddingTop: u(12) }}>
-        {hand.map((c) => (
-          <CardArt key={c} card={c} w={u(70)} on={pick === c} dim={!can.includes(c)} onPress={can.includes(c) ? () => (setPick(c), setTo(null), setGive(null)) : undefined} />
-        ))}
-      </View>
-      {pick ? (
-        <View style={{ gap: u(2), alignItems: 'center' }}>
-          <T f={CB} size={14} color={VV.gold}>{cardName(pick)}</T>
-          <T size={13} color={VV.soft} style={{ textAlign: 'center' }}>{CARD_INFO[pick].text}</T>
-        </View>
-      ) : null}
-      {hand.some((c) => !can.includes(c)) ? (
-        <T size={11.5} color={VV.dim} style={{ textAlign: 'center' }}>{`${hand.filter((c) => !can.includes(c)).map(cardName).join(' and ')} can’t be played now. It waits for its moment.`}</T>
-      ) : null}
-      {pick && needsTarget ? (
-        <View style={{ gap: u(6), alignItems: 'center' }}>
-          <T f={CM} size={11} color={VV.dim} style={{ letterSpacing: u(1.4) }}>{pick === 'mirror' ? 'SWAP WITH' : 'AIM AT'}</T>
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: u(8) }}>
-            {targets.map((s) => <Chip key={s} label={n(s)} color={seats.get(s)?.color} on={to === s} onPress={() => setTo(s)} />)}
-          </View>
-        </View>
-      ) : null}
-      {pick === 'mirror' && gives.length > 1 ? (
-        <View style={{ gap: u(6), alignItems: 'center' }}>
-          <T f={CM} size={11} color={VV.dim} style={{ letterSpacing: u(1.4) }}>GIVE AWAY</T>
-          <View style={{ flexDirection: 'row', gap: u(8) }}>
-            {gives.map((c) => <Chip key={c} label={cardName(c)} on={give === c} onPress={() => setGive(c)} />)}
-          </View>
-        </View>
-      ) : pick === 'mirror' && giveCard ? (
-        <T size={12} color={VV.soft} style={{ textAlign: 'center' }}>{`You give ${cardName(giveCard)} and take one of their cards at random.`}</T>
-      ) : null}
-      <T f={CM} size={11.5} color={VV.dim} style={{ textAlign: 'center' }}>{`You can play ${left} more card${left > 1 ? 's' : ''} in this window.`}</T>
-      <View style={{ flexDirection: 'row', gap: u(10) }}>
-        <Btn label={g.init.plays ? 'Done' : 'Pass'} ghost onPress={onPass} style={{ flex: 1 }} />
-        <Btn label={pick ? (to != null ? `Play on ${n(to)}` : 'Play') : 'Play'} disabled={!ok} onPress={play} style={{ flex: 1.3 }} />
-      </View>
-    </View>
-  );
-}
-
-// ---------------------------------------------------------------- reaction chain
-
-export function ReactWindow({ g, seats, onReact, onPause }: { g: OfflineGame; seats: Seats; onReact: (c: Reaction | null, to?: number) => void; onPause: () => void }) {
-  const c = g.chain!;
-  const n = (s: number) => seats.get(s)?.name ?? `Player ${s + 1}`;
-  const legal = reactions(c, g.active);
-  const [pick, setPick] = useState<Reaction | null>(null);
-  const [to, setTo] = useState<number | null>(null);
-  const last = c.steps[c.steps.length - 1];
-  const card = cardName(c.attack.card);
-  const what = c.attack.card === 'tower' ? 'takes 10 points' : 'skips your next turn';
-  const line = c.cleanup
-    ? `The Mirror bounced ${n(c.attack.by)}’s ${card} back. Stop it with The Hermit before it returns to ${n(c.attack.by)}?`
-    : c.holder === c.attack.by
-      ? `${n(last.seat)} bounced your ${card} back at you. It ${what}.`
-      : last.kind === 'magician'
-        ? `${n(last.seat)} sent ${n(c.attack.by)}’s ${card} on to you. It ${what}.`
-        : `${n(c.attack.by)} played ${card} on you. It ${what}.`;
-  const ok = pick == null || pick !== 'magician' || to != null;
-  return (
-    <View style={{ flex: 1, gap: u(12) }}>
-      <Top kicker={`${actName(g)} · ${n(c.holder)}`} title={`${card} incoming`} onPause={onPause} />
-      <View style={{ alignItems: 'center', paddingTop: u(6) }}>
-        <CardArt card={c.attack.card} w={u(96)} />
-      </View>
-      <T size={14} color={VV.ink} style={{ textAlign: 'center' }}>{line}</T>
-      <View style={{ flexDirection: 'row', justifyContent: 'center', gap: u(14) }}>
-        {legal.map((r) => <CardArt key={r} card={r} w={u(70)} on={pick === r} onPress={() => (setPick(pick === r ? null : r), setTo(null))} />)}
-      </View>
-      {pick ? <T size={12.5} color={VV.soft} style={{ textAlign: 'center' }}>{CARD_INFO[pick].text}</T> : null}
-      {pick === 'magician' ? (
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: u(8) }}>
-          {magicianTargets(c, g.active).map((s) => <Chip key={s} label={n(s)} color={seats.get(s)?.color} on={to === s} onPress={() => setTo(s)} />)}
-        </View>
-      ) : null}
-      <View style={{ flex: 1 }} />
-      <View style={{ flexDirection: 'row', gap: u(10) }}>
-        <Btn label={c.cleanup ? 'Keep it' : 'Let it land'} ghost onPress={() => onReact(null)} style={{ flex: 1 }} />
-        <Btn label={pick ? `Play ${cardName(pick).replace('The ', '')}` : 'Pick one'} disabled={!pick || !ok} onPress={() => pick && onReact(pick, to ?? undefined)} style={{ flex: 1.2 }} />
-      </View>
-    </View>
-  );
-}
-
 // ---------------------------------------------------------------- Redemption (WC3, WC13, WC15)
 
 export function RedemptionOffer({ seat, seats, onPick, onPause }: { seat: number; seats: Seats; onPick: (use: boolean) => void; onPause: () => void }) {
   return (
     <View style={{ flex: 1, gap: u(14) }}>
-      <Top kicker={`The World · ${seats.get(seat)?.name ?? ''}`} title="A second chance" onPause={onPause} />
-      <View style={{ alignItems: 'center', paddingTop: u(8) }}>
-        <CardArt card="world" w={u(110)} on />
-      </View>
-      <T size={14} style={{ textAlign: 'center' }}>{`You’re last. Swap this turn for a Redemption round: ${REDEMPTION_ITEMS} quick true or false calls in ${REDEMPTION_MS / 1000} seconds, +1 each.`}</T>
-      <T size={12} color={VV.dim} style={{ textAlign: 'center' }}>You keep The World, but it works once an act.</T>
+      <Top kicker={`Redemption · ${seats.get(seat)?.name ?? ''}`} title="A second chance" onPause={onPause} />
+      <T size={14} style={{ textAlign: 'center', paddingTop: u(8) }}>{`You’re last. Swap this turn for a Redemption round: ${REDEMPTION_ITEMS} quick true or false calls in ${REDEMPTION_MS / 1000} seconds, +1 each.`}</T>
+      <T size={12} color={VV.dim} style={{ textAlign: 'center' }}>Redemption can be used once an act, by whoever is last first.</T>
       <View style={{ flex: 1 }} />
       <View style={{ flexDirection: 'row', gap: u(10) }}>
         <Btn label="Keep my turn" ghost onPress={() => onPick(false)} style={{ flex: 1 }} />
@@ -395,14 +254,13 @@ export function RedemptionOffer({ seat, seats, onPick, onPause }: { seat: number
 export function RedemptionBoard({ g, now, seats, onEvent, onPause, hidden, watch }: { g: OfflineGame; now: number; seats: Seats; onEvent: (e: { type: 'GO'; now: number } | { type: 'ANSWER'; value: boolean; now: number }) => void; onPause?: () => void; hidden?: boolean; watch?: boolean }) {
   const r = g.redemption!;
   if (hidden) return null;
-  const sun = g.sun.includes(r.seat);
   if (r.phase === 'reveal')
     return (
       <View style={{ flex: 1, gap: u(14) }}>
         <Top kicker={`Redemption · ${fieldName(r.field)}`} title={`${seats.get(r.seat)?.name ?? ''}’s second chance`} onPause={onPause} />
         <Bill>
           <T f={CD} size={18} color={VV.redInk} style={{ textAlign: 'center' }}>{`${REDEMPTION_ITEMS} calls · ${REDEMPTION_MS / 1000} seconds`}</T>
-          <T size={13} color={VV.paperSoft} style={{ textAlign: 'center' }}>{`True or false, as fast as you can. Each right call is +1${sun ? ', doubled by The Sun' : ''}. A wrong call costs nothing but time.`}</T>
+          <T size={13} color={VV.paperSoft} style={{ textAlign: 'center' }}>{`True or false, as fast as you can. Each right call is +1. A wrong call costs nothing but time.`}</T>
         </Bill>
         <View style={{ flex: 1 }} />
         {watch ? null : <Btn label="Begin" onPress={() => onEvent({ type: 'GO', now: Date.now() })} />}
@@ -453,11 +311,10 @@ export function TurnOver({ g, seat, seats, board, onNext }: { g: OfflineGame; se
               <T f={CB} size={13} color={VV.soft}>{String(r.points)}</T>
             </View>
           ))}
-          {g.turn?.sun ? <T f={CM} size={11.5} color={VV.gold}>The Sun doubled it.</T> : null}
         </Panel>
       ) : red ? (
         <Panel>
-          <T size={13}>{`Redemption: ${red.right} right of ${red.items.length}${g.sun.includes(seat) ? ', doubled by The Sun' : ''}.`}</T>
+          <T size={13}>{`Redemption: ${red.right} right of ${red.items.length}.`}</T>
         </Panel>
       ) : null}
       <Board board={board} />

@@ -52,6 +52,8 @@ export function Fade({
   return (
     <MaskedView
       style={style}
+      // #1 (Yazan 2026-10-31): the default software mode drew black while a page faded out (leaving a Learn book).
+      androidRenderingMode="hardware"
       onLayout={onLayout}
       maskElement={
         <LinearGradient

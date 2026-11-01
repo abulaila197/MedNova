@@ -41,7 +41,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
       for (const r of rs)
         recordItem(play, {
           seat: 0, itemId: r.id, answerKey: null, outcome: r.right ? 'right' : r.answer == null ? 'timed_out' : 'wrong', answersGiven: [], timeMs: 0,
-          hintsUsed: 0, revealsUsed: 0, points: r.points, feedsLearn: false, // WC7: nothing goes to Learn
+          hintsUsed: 0, revealsUsed: 0, points: r.points, feedsLearn: true, // #39a (2026-10-31): misses go to Learn (was WC7: nothing)
           gameData: { style: r.style, field: r.field },
         });
     },

@@ -107,7 +107,7 @@ export const LOAD: Record<string, LoadCfg> = {
       { x: 0.5, y: 0.355, r: 50, c: 'rgba(255,170,60,0.6)', a: 'still' },
     ],
     parts: ['sparkle'],
-    tips: ['Hold The World for a comeback when you fall behind.', 'The Star gives you 3 s to re-spin the field.', 'Cards can be played on rivals. Watch your back.'],
+    tips: ['Last place can take a Redemption round, once an act.', 'Rule 2 Out and Matching are all or nothing.', 'The Boss Round winner takes +20.'],
     fonts: ['Cinzel_500Medium', 'Cinzel_400Regular', 'CinzelDecorative_700Bold', 'CormorantGaramond_400Regular_Italic'],
   },
   'the-riddler': {

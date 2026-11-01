@@ -1,18 +1,13 @@
 // The Wheels of Chaos Online (WC20-WC23): the Pass the phone game run by the server (ON17), one phone per player.
 // Players take turns while the room watches (WC20). Every wait has a deadline so an idle phone never stalls the
-// show: an attack lands after 15 s without an answer (WC21), and the other waits use the times below. The Boss
+// show; the waits use the times below. The tarot cards were removed (#39a, Yazan 2026-11-01). The Boss
 // Round is played by everyone at once, each on their own phone (WC23). The same code runs on the server, so it
 // draws from the answer keys (keys.ts) and never needs the full bank.
-import type { Play, Reaction } from './cards';
 import { type Answer, type Mix, type Rng, type Target } from './core';
 import { actor, closeBoss, startOffline, stepOffline, BOSS_MS, type FullBank, type OfflineEvent, type OfflineGame } from './offline';
 
 export const ONLINE_MS = {
-  /** A seat's card window. */
-  init: 15_000,
-  /** WC21: time to answer a card attack before it lands. */
-  react: 15_000,
-  /** The World's Redemption offer. */
+  /** The Redemption offer to last place. */
   offer: 10_000,
   /** The wheels spin on every phone; the player's phone moves on when they stop, this is the fallback. */
   reveal: 5_000,
@@ -38,13 +33,8 @@ export type OnlineWheels = {
 
 /** What a phone may send. The server stamps the time. */
 export type Move =
-  | { type: 'PLAY'; play: Play }
-  | { type: 'PASS' }
-  | { type: 'REACT'; choice: Reaction | null; to?: number }
   | { type: 'REDEEM'; use: boolean }
   | { type: 'GO' }
-  | { type: 'STAR' }
-  | { type: 'KEEP' }
   | { type: 'ANSWER'; answer: Answer }
   | { type: 'CALL'; value: boolean }
   | { type: 'TICK' };
@@ -55,16 +45,13 @@ export type Outside = { dropped: number[]; swipes: Record<number, boolean[]> };
 function waitKey(g: OfflineGame): string {
   const t = g.turn;
   return [
-    g.phase, actor(g), g.cycle, g.round, g.init.at, g.init.plays, g.attacks.length,
-    g.chain ? `${g.chain.attack.by}>${g.chain.attack.target}.${g.chain.steps.length}.${g.chain.holder}.${g.chain.cleanup}` : '',
-    t ? `${g.turnAt}.${t.k}.${t.phase}.${t.star}` : '', g.redemption?.phase ?? '', g.boss?.phase ?? '',
+    g.phase, actor(g), g.cycle, g.round,
+    t ? `${g.turnAt}.${t.k}.${t.phase}` : '', g.redemption?.phase ?? '', g.boss?.phase ?? '',
   ].join('|');
 }
 
 function waitFor(g: OfflineGame): number | null {
   switch (g.phase) {
-    case 'initiation': return ONLINE_MS.init;
-    case 'reaction': return ONLINE_MS.react;
     case 'redemptionOffer': return ONLINE_MS.offer;
     case 'turn': return g.turn?.phase === 'reveal' ? ONLINE_MS.reveal : null;
     case 'redemption': return g.redemption?.phase === 'reveal' ? ONLINE_MS.redReveal : null;
@@ -111,8 +98,6 @@ function closeOnline(g: OfflineGame, swipes: Outside['swipes']): OfflineGame {
 function timeout(g: OfflineGame, t: number, bank: FullBank, rng: Rng, swipes: Outside['swipes']): OfflineGame {
   const step = (e: OfflineEvent) => stepOffline(g, e, bank, rng);
   switch (g.phase) {
-    case 'initiation': return step({ type: 'PASS' });
-    case 'reaction': return step({ type: 'REACT', choice: null });
     case 'redemptionOffer': return step({ type: 'REDEEM', use: false });
     case 'turn': return step({ type: 'TURN', e: { type: g.turn?.phase === 'reveal' ? 'GO' : 'TICK', now: t } });
     case 'redemption': return step({ type: 'RED', e: { type: g.redemption?.phase === 'reveal' ? 'GO' : 'TICK', now: t } });
@@ -147,13 +132,8 @@ export function startOnline(seats: number, target: Target, mix: Mix, v: string, 
 
 function toEvent(m: Move, g: OfflineGame, now: number): OfflineEvent | null {
   switch (m.type) {
-    case 'PLAY': return { type: 'PLAY', play: m.play };
-    case 'PASS': return { type: 'PASS' };
-    case 'REACT': return { type: 'REACT', choice: m.choice, to: m.to };
     case 'REDEEM': return { type: 'REDEEM', use: m.use };
     case 'GO': return g.phase === 'redemption' ? { type: 'RED', e: { type: 'GO', now } } : { type: 'TURN', e: { type: 'GO', now } };
-    case 'STAR': return { type: 'TURN', e: { type: 'STAR', now } };
-    case 'KEEP': return { type: 'TURN', e: { type: 'KEEP', now } };
     case 'ANSWER': return { type: 'TURN', e: { type: 'ANSWER', answer: m.answer, now } };
     case 'CALL': return { type: 'RED', e: { type: 'ANSWER', value: m.value, now } };
     default: return null;

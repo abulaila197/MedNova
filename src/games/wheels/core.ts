@@ -53,7 +53,6 @@ export const fieldWeights = (mix: Mix = 'mixed'): [FieldKey, number][] =>
 export const TARGETS = [25, 50, 100] as const; // 25 added (Yazan 2026-10-25)
 export type Target = (typeof TARGETS)[number];
 export const FEEDBACK_MS = { right: 1100, wrong: 1800 }; // as coded
-export const STAR_WINDOW_MS = 3000; // WC5
 
 // ---------------------------------------------------------------- questions
 
@@ -133,7 +132,7 @@ export function spinCombo(prev: Combo | null, rng: Rng, mix: Mix = 'mixed'): Com
 
 export type QResult = { id: string; style: Style; field: FieldKey; right: boolean; points: number; answer: Answer };
 
-export type TurnPhase = 'reveal' | 'star' | 'question' | 'feedback' | 'over';
+export type TurnPhase = 'reveal' | 'question' | 'feedback' | 'over';
 
 export type Turn = {
   count: number;
@@ -141,12 +140,8 @@ export type Turn = {
   combo: Combo;
   question: Question;
   phase: TurnPhase;
-  /** Question timer, Star window or feedback end. */
+  /** Question timer or feedback end. */
   until: number | null;
-  /** WC5: the Star re-spin is still open for the first question. */
-  star: 'pending' | 'used' | 'none';
-  /** The Sun doubles the turn's points. */
-  sun: boolean;
   mix: Mix;
   results: QResult[];
   seen: string[];
@@ -155,25 +150,23 @@ export type Turn = {
 
 export type TurnEvent =
   | { type: 'GO'; now: number } // wheels finished spinning on screen
-  | { type: 'STAR'; now: number } // re-spin the field (WC5)
-  | { type: 'KEEP'; now: number } // keep the field, skip the Star window
   | { type: 'ANSWER'; answer: Answer; now: number }
   | { type: 'TICK'; now: number }
   | { type: 'PAUSE'; now: number }
   | { type: 'RESUME'; now: number };
 
-export function startTurn(bank: Bank, seen: readonly string[], rng: Rng, opts: { star?: boolean; sun?: boolean; mix?: Mix } = {}): Turn {
+export function startTurn(bank: Bank, seen: readonly string[], rng: Rng, opts: { mix?: Mix } = {}): Turn {
   const mix = opts.mix ?? 'mixed';
   const count = spinCount(rng);
   const combo = spinCombo(null, rng, mix);
   const question = pickQuestion(bank, combo.style, combo.field, seen, rng);
   return {
     count, k: 0, combo, question, phase: 'reveal', until: null,
-    star: opts.star ? 'pending' : 'none', sun: !!opts.sun, mix, results: [], seen: [...seen, question.id], pausedAt: null,
+    mix, results: [], seen: [...seen, question.id], pausedAt: null,
   };
 }
 
-export const turnPoints = (t: Turn) => t.results.reduce((a, r) => a + r.points, 0) * (t.sun ? 2 : 1);
+export const turnPoints = (t: Turn) => t.results.reduce((a, r) => a + r.points, 0);
 
 function ask(t: Turn, now: number): Turn {
   return { ...t, phase: 'question', until: now + STYLES[t.question.style].seconds * 1000 };
@@ -203,24 +196,11 @@ export function stepTurn(t: Turn, e: TurnEvent, bank: Bank, rng: Rng): Turn {
   if (t.pausedAt != null) return t;
   switch (e.type) {
     case 'GO':
-      if (t.phase !== 'reveal') return t;
-      // WC5: the Star window sits between the first wheels and the first question.
-      if (t.k === 0 && t.star === 'pending') return { ...t, phase: 'star', until: e.now + STAR_WINDOW_MS };
-      return ask(t, e.now);
-    case 'STAR': {
-      if (t.phase !== 'star') return t;
-      const field = spinField(rng, t.mix);
-      const combo = { style: t.combo.style, field };
-      const question = pickQuestion(bank, combo.style, field, t.seen.slice(0, -1), rng);
-      return { ...t, combo, question, phase: 'reveal', star: 'used', until: null, seen: [...t.seen.slice(0, -1), question.id] };
-    }
-    case 'KEEP':
-      return t.phase === 'star' ? ask({ ...t, star: 'used' }, e.now) : t;
+      return t.phase === 'reveal' ? ask(t, e.now) : t;
     case 'ANSWER':
       return t.phase === 'question' ? answer(t, e.answer, e.now) : t;
     case 'TICK':
       if (t.until == null || e.now < t.until) return t;
-      if (t.phase === 'star') return ask({ ...t, star: 'used' }, e.now);
       if (t.phase === 'question') return answer(t, null, e.now);
       if (t.phase === 'feedback') return nextQuestion(t, bank, rng, e.now);
       return t;

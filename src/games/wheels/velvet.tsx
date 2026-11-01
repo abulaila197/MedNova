@@ -11,7 +11,6 @@ import { loadFonts } from '@/features/loading/fonts';
 import { u } from '@/theme/scale';
 
 import { GameScreen } from '../shell/ui';
-import type { Card } from './cards';
 
 export const VV = {
   brass: '#d8b26a',
@@ -40,16 +39,6 @@ export const BODY_B = 'InterTight_600SemiBold';
 const FONTS = [CD, CM, CB, 'InterTight_500Medium', 'InterTight_600SemiBold'];
 export const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI'];
 
-export const CARD_ART: Record<Card, number> = {
-  star: require('@/assets/wheels/star.jpg'),
-  sun: require('@/assets/wheels/sun.jpg'),
-  tower: require('@/assets/wheels/tower.jpg'),
-  magician: require('@/assets/wheels/magician.jpg'),
-  moon: require('@/assets/wheels/moon.jpg'),
-  hermit: require('@/assets/wheels/hermit.jpg'),
-  mirror: require('@/assets/wheels/mirror.jpg'),
-  world: require('@/assets/wheels/world.jpg'),
-};
 
 let fontsReady = false;
 export function useVelvetFonts() {
@@ -173,22 +162,6 @@ export function Bulbs({ frac }: { frac: number }) {
         return <View key={i} style={{ flex: 1, height: u(7), borderRadius: u(4), backgroundColor: lit ? '#ffd27a' : 'rgba(216,178,106,0.2)', shadowColor: '#ffbf4a', shadowOpacity: lit ? 0.8 : 0, shadowRadius: u(4) }} />;
       })}
     </View>
-  );
-}
-
-/** A tarot card in a brass frame; lifted and lit when picked. */
-export function CardArt({ card, w, on, onPress, dim }: { card: Card; w: number; on?: boolean; onPress?: () => void; dim?: boolean }) {
-  const body = (
-    <Brass r={10} style={{ width: w, opacity: dim ? 0.45 : 1, transform: [{ translateY: on ? -u(10) : 0 }], shadowColor: '#ffcf70', shadowOpacity: on ? 0.6 : 0, shadowRadius: u(12) }}>
-      <Image source={CARD_ART[card]} style={{ width: '100%', aspectRatio: 0.667 }} contentFit="cover" />
-    </Brass>
-  );
-  return onPress ? (
-    <Pressable onPress={onPress} accessibilityRole="button" accessibilityState={{ selected: on }}>
-      {body}
-    </Pressable>
-  ) : (
-    body
   );
 }
 

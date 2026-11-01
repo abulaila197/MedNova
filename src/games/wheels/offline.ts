@@ -1,17 +1,15 @@
 // The Wheels of Chaos Offline (pass the phone, WC1): the full game on one phone, 2 to 4 players, no teams
-// (TM1). Cycles of 3, 2 and 2 rounds, each round opening with a card window (Initiation, then each
-// declared attack resolved in order through its reaction chain) and each cycle ending in a Boss Round,
-// played here as turn-based swipes. Reaching the target ends the game at once; otherwise the best score
-// after Boss Round 3 wins (equal top scores draw). Ported from game.py, with WC2 to WC5.
+// (TM1). Cycles (acts) of 3, 2 and 2 rounds of turns, each cycle ending in a Boss Round, played here as
+// turn-based swipes. Reaching the target ends the game at once; otherwise the best score after Boss Round 3 wins
+// (equal top scores draw). The tarot cards were removed (#39a, Yazan 2026-11-01): Redemption is offered to last
+// place once an act, and the Star and Sun are gone.
 import {
   spinField, startTurn, stepTurn, turnPoints,
   type Bank, type FieldKey, type Mix, type QResult, type Question, type Rng, type Target, type Turn, type TurnEvent,
 } from './core';
-import { deal, mirrorSwap, playable, react, startChain, targetsFor, TOWER_DAMAGE, type Attack, type Card, type Chain, type Play, type Reaction } from './cards';
 import { shuffle } from '../engine/random';
 
 export const CYCLES = [3, 2, 2];
-export const MAX_PLAYS = 2; // per seat per Initiation (spec 8.1)
 
 export const BOSS_ITEMS = 30;
 export const BOSS_MS = 30_000;
@@ -103,44 +101,31 @@ export function bossPoints(b: Boss, seat: number): number {
 // ---------------------------------------------------------------- the game
 
 export type Log =
-  | { k: 'play'; seat: number; card: Card; target?: number }
-  | { k: 'react'; seat: number; card: Reaction; to?: number }
-  | { k: 'hit'; seat: number; card: 'tower' | 'moon'; loss: number }
-  | { k: 'cancel'; seat: number; card: 'tower' | 'moon' }
-  | { k: 'skipped'; seat: number }
-  | { k: 'turn'; seat: number; points: number; sun: boolean }
+  | { k: 'turn'; seat: number; points: number }
   | { k: 'redemption'; seat: number; points: number; field: FieldKey }
   | { k: 'boss'; winners: number[]; bonus: number; points: Record<number, number> }
   | { k: 'left'; seat: number };
 
-export type Phase = 'initiation' | 'reaction' | 'redemptionOffer' | 'turn' | 'redemption' | 'turnOver' | 'boss' | 'bossOver' | 'done';
+export type Phase = 'redemptionOffer' | 'turn' | 'redemption' | 'turnOver' | 'boss' | 'bossOver' | 'done';
 
 export type OfflineGame = {
   seats: number;
   target: Target;
   mix: Mix;
   active: number[];
-  hands: Card[][];
   scores: number[];
   cycle: number;
   round: number;
   roundsPlayed: number;
   order: number[];
   phase: Phase;
-  /** Initiation: index into order and plays used by that seat. */
-  init: { at: number; plays: number };
-  attacks: Attack[];
-  chain: Chain | null;
-  skipped: number[];
-  sun: number[];
-  star: number[];
   /** Index into order of the turn being played. */
   turnAt: number;
   turn: Turn | null;
   redemption: Redemption | null;
   boss: Boss | null;
-  /** WC2: the cycle The World was last used in. */
-  worldCycle: number | null;
+  /** The cycle Redemption was last used in: once an act for the whole game (Yazan 2026-11-01). */
+  redCycle: number | null;
   /** WC19: Redemption rounds played this game, per field, in order. */
   redRounds?: Partial<Record<FieldKey, number[]>>;
   seen: string[];
@@ -150,9 +135,6 @@ export type OfflineGame = {
 };
 
 export type OfflineEvent =
-  | { type: 'PLAY'; play: Play }
-  | { type: 'PASS' }
-  | { type: 'REACT'; choice: Reaction | null; to?: number }
   | { type: 'REDEEM'; use: boolean }
   | { type: 'TURN'; e: TurnEvent }
   | { type: 'RED'; e: RedemptionEvent }
@@ -164,19 +146,30 @@ export type OfflineEvent =
 
 export function startOffline(seats: number, target: Target, bank: FullBank, rng: Rng, mix: Mix = 'mixed'): OfflineGame {
   const g: OfflineGame = {
-    seats, target, mix, active: Array.from({ length: seats }, (_, i) => i), hands: deal(seats, rng), scores: Array(seats).fill(0),
-    cycle: 0, round: 0, roundsPlayed: 0, order: [], phase: 'initiation', init: { at: 0, plays: 0 }, attacks: [], chain: null,
-    skipped: [], sun: [], star: [], turnAt: 0, turn: null, redemption: null, boss: null, worldCycle: null, seen: [], answers: [], log: [], result: null,
+    seats, target, mix, active: Array.from({ length: seats }, (_, i) => i), scores: Array(seats).fill(0),
+    cycle: 0, round: 0, roundsPlayed: 0, order: [], phase: 'turn',
+    turnAt: 0, turn: null, redemption: null, boss: null, redCycle: null, seen: [], answers: [], log: [], result: null,
   };
-  // There is a card window before round 1 too (spec 9.1).
   return beginRound(g, bank, rng);
+}
+
+/**
+ * A game saved before the tarot cards were removed (#39a): drops the card parts, keeps The World's act as the
+ * Redemption act, and a round caught in its card window starts its turns.
+ */
+export function upgradeSaved(saved: OfflineGame, bank: FullBank, rng: Rng): OfflineGame {
+  const old = saved as OfflineGame & { hands?: unknown; worldCycle?: number | null; phase: string };
+  if (!('hands' in old)) return saved;
+  const { hands: _h, worldCycle, init: _i, attacks: _a, chain: _c, skipped: _s, sun: _u, star: _t, ...rest } = old as unknown as Record<string, unknown> & { worldCycle?: number | null };
+  const g = { ...(rest as unknown as OfflineGame), redCycle: worldCycle ?? null, log: (old.log as { k: string }[]).filter((l) => ['turn', 'redemption', 'boss', 'left'].includes(l.k)) as Log[] };
+  const was = old.phase as string;
+  if (was === 'initiation' || was === 'reaction') return startSeatTurn({ ...g, phase: 'turn', turnAt: -1, turn: null, redemption: null }, bank, rng, 1);
+  return g;
 }
 
 /** The seat holding the phone now, or null between steps. */
 export function actor(g: OfflineGame): number | null {
   switch (g.phase) {
-    case 'initiation': return g.order[g.init.at] ?? null;
-    case 'reaction': return g.chain?.holder ?? null;
     case 'redemptionOffer': case 'turn': case 'redemption': case 'turnOver': return g.order[g.turnAt] ?? null;
     case 'boss': return g.boss ? g.boss.order[g.boss.at] : null;
     default: return null;
@@ -185,14 +178,14 @@ export function actor(g: OfflineGame): number | null {
 
 export const isLowest = (g: OfflineGame, seat: number) => g.scores[seat] === Math.min(...g.active.map((s) => g.scores[s]));
 
-/** WC3: holds The World, among the lowest (ties allowed), a round already played; WC2: once a cycle. */
+/** Last place (ties allowed), a round already played, and not used yet this act by anyone (Yazan 2026-11-01). */
 export const canRedeem = (g: OfflineGame, seat: number) =>
-  g.hands[seat].includes('world') && g.worldCycle !== g.cycle && g.roundsPlayed >= 1 && isLowest(g, seat);
+  g.redCycle !== g.cycle && g.roundsPlayed >= 1 && isLowest(g, seat);
 
 function finish(g: OfflineGame, pool: number[]): OfflineGame {
   const top = Math.max(...pool.map((s) => g.scores[s]));
   const winners = pool.filter((s) => g.scores[s] === top);
-  return { ...g, phase: 'done', turn: null, chain: null, result: { winners, draw: winners.length > 1 } };
+  return { ...g, phase: 'done', turn: null, result: { winners, draw: winners.length > 1 } };
 }
 
 /** The target ends the game the moment anyone reaches it (spec 2.2). */
@@ -203,64 +196,22 @@ function checkTarget(g: OfflineGame): OfflineGame {
 
 function beginRound(g: OfflineGame, bank: FullBank, rng: Rng): OfflineGame {
   const order = shuffle(g.active, rng);
-  return nextInitiator({ ...g, order, phase: 'initiation', init: { at: -1, plays: 0 }, attacks: [], chain: null, skipped: [], sun: [], star: [], turnAt: 0, turn: null, redemption: null }, bank, rng);
+  return startSeatTurn({ ...g, order, turnAt: -1, turn: null, redemption: null }, bank, rng, 1);
 }
 
-/** Moves Initiation on, skipping seats with nothing they can play. */
-function nextInitiator(g: OfflineGame, bank: FullBank, rng: Rng): OfflineGame {
-  let at = g.init.at + 1;
-  while (at < g.order.length && (!g.active.includes(g.order[at]) || !playable(g.hands, g.order[at], g.active).length)) at++;
-  if (at < g.order.length) return { ...g, phase: 'initiation', init: { at, plays: 0 } };
-  return nextAttack({ ...g, init: { at, plays: 0 } }, bank, rng);
-}
-
-function applyChain(g: OfflineGame, c: Chain): OfflineGame {
-  const log: Log[] = [...g.log];
-  for (const st of c.steps) {
-    if (st.kind === 'magician') log.push({ k: 'react', seat: st.seat, card: 'magician', to: st.to });
-    if (st.kind === 'mirror') log.push({ k: 'react', seat: st.seat, card: 'mirror' });
-    if (st.kind === 'hermit') log.push({ k: 'react', seat: st.seat, card: 'hermit' }, { k: 'cancel', seat: st.seat, card: c.attack.card });
-  }
-  const v = c.result?.victim;
-  if (v == null) return { ...g, hands: c.hands, log, chain: null };
-  if (c.attack.card === 'moon') return { ...g, hands: c.hands, skipped: [...g.skipped, v], log: [...log, { k: 'hit', seat: v, card: 'moon', loss: 0 }], chain: null };
-  const scores = [...g.scores];
-  const loss = Math.min(TOWER_DAMAGE, scores[v]); // floor at 0
-  scores[v] -= loss;
-  return { ...g, hands: c.hands, scores, log: [...log, { k: 'hit', seat: v, card: 'tower', loss }], chain: null };
-}
-
-/** Batched reactions: each declared attack in order; then the round's turns begin. */
-function nextAttack(g: OfflineGame, bank: FullBank, rng: Rng): OfflineGame {
-  let s = g;
-  while (s.attacks.length) {
-    const [a, ...rest] = s.attacks;
-    s = { ...s, attacks: rest };
-    if (!s.active.includes(a.target) || !s.active.includes(a.by)) continue;
-    const chain = startChain(a, s.hands, s.active);
-    if (!chain.result) return { ...s, phase: 'reaction', chain };
-    s = applyChain(s, chain);
-  }
-  return startSeatTurn({ ...s, turnAt: -1 }, bank, rng, 1);
-}
-
-/** The next turn in this round's order (step 1), skipping Moon-skipped and departed seats. */
+/** The next turn in this round's order (step 1), skipping departed seats. */
 function startSeatTurn(g: OfflineGame, bank: FullBank, rng: Rng, step: number): OfflineGame {
   let at = g.turnAt + step;
-  let log = g.log;
-  while (at < g.order.length && (!g.active.includes(g.order[at]) || g.skipped.includes(g.order[at]))) {
-    if (g.active.includes(g.order[at])) log = [...log, { k: 'skipped', seat: g.order[at] }];
-    at++;
-  }
-  const s = { ...g, log, turnAt: at, turn: null, redemption: null };
+  while (at < g.order.length && !g.active.includes(g.order[at])) at++;
+  const s = { ...g, turnAt: at, turn: null, redemption: null };
   if (at >= g.order.length) return endRound(s, bank, rng);
   const seat = g.order[at];
   if (canRedeem(s, seat)) return { ...s, phase: 'redemptionOffer' };
   return playTurn(s, seat, bank, rng);
 }
 
-function playTurn(g: OfflineGame, seat: number, bank: FullBank, rng: Rng): OfflineGame {
-  const turn = startTurn(bank, g.seen, rng, { star: g.star.includes(seat), sun: g.sun.includes(seat), mix: g.mix });
+function playTurn(g: OfflineGame, _seat: number, bank: FullBank, rng: Rng): OfflineGame {
+  const turn = startTurn(bank, g.seen, rng, { mix: g.mix });
   return { ...g, phase: 'turn', turn, seen: turn.seen };
 }
 
@@ -336,15 +287,7 @@ function removeSeat(g: OfflineGame, seat: number, bank: FullBank, rng: Rng): Off
   const was = actor(g);
   let s: OfflineGame = { ...g, active: g.active.filter((x) => x !== seat), log: [...g.log, { k: 'left', seat }] };
   if (s.active.length === 1) return finish(s, s.active); // the last one standing wins (spec 9.2)
-  s = { ...s, attacks: s.attacks.filter((a) => a.by !== seat && a.target !== seat) };
   switch (s.phase) {
-    case 'initiation':
-      return was === seat ? nextInitiator(s, bank, rng) : s;
-    case 'reaction': {
-      const a = s.chain!.attack;
-      const involved = a.by === seat || s.chain!.steps.some((st) => st.seat === seat || (st.kind === 'magician' && st.to === seat));
-      return involved ? nextAttack({ ...s, chain: null }, bank, rng) : s;
-    }
     case 'redemptionOffer': case 'turn': case 'redemption': case 'turnOver':
       return was === seat ? startSeatTurn(s, bank, rng, 1) : s;
     case 'boss':
@@ -361,35 +304,6 @@ export function stepOffline(g: OfflineGame, e: OfflineEvent, bank: FullBank, rng
       return removeSeat(g, e.seat, bank, rng);
     case 'PAUSE': case 'RESUME':
       return shiftTimers(g, e);
-    case 'PLAY': {
-      if (g.phase !== 'initiation' || g.init.plays >= MAX_PLAYS) return g;
-      const seat = g.order[g.init.at];
-      const p = e.play;
-      if (!playable(g.hands, seat, g.active).includes(p.card)) return g;
-      if ('target' in p && !targetsFor(g.hands, seat, p.card, g.active).includes(p.target)) return g;
-      let hands = g.hands.map((h, i) => (i === seat ? h.filter((c) => c !== p.card) : h));
-      let s: OfflineGame = { ...g, hands, init: { ...g.init, plays: g.init.plays + 1 }, log: [...g.log, { k: 'play', seat, card: p.card, target: 'target' in p ? p.target : undefined }] };
-      if (p.card === 'star') s = { ...s, star: [...s.star, seat] };
-      if (p.card === 'sun') s = { ...s, sun: [...s.sun, seat] };
-      if (p.card === 'tower' || p.card === 'moon') s = { ...s, attacks: [...s.attacks, { by: seat, card: p.card, target: p.target }] };
-      if (p.card === 'mirror') {
-        if (!hands[seat].includes(p.give)) return g;
-        hands = mirrorSwap(g.hands, seat, p.target, p.give, rng).hands;
-        s = { ...s, hands };
-      }
-      // Done once out of plays or out of playable cards.
-      if (s.init.plays >= MAX_PLAYS || !playable(s.hands, seat, s.active).length) return nextInitiator(s, bank, rng);
-      return s;
-    }
-    case 'PASS':
-      return g.phase === 'initiation' ? nextInitiator(g, bank, rng) : g;
-    case 'REACT': {
-      if (g.phase !== 'reaction' || !g.chain) return g;
-      const chain = react(g.chain, e.choice, g.active, e.to);
-      if (chain === g.chain) return g;
-      if (!chain.result) return { ...g, chain };
-      return nextAttack(applyChain(g, chain), bank, rng);
-    }
     case 'REDEEM': {
       if (g.phase !== 'redemptionOffer') return g;
       const seat = g.order[g.turnAt];
@@ -399,7 +313,7 @@ export function stepOffline(g: OfflineGame, e: OfflineEvent, bank: FullBank, rng
       const { items, round } = redemptionItems(bank, field, rng, used);
       const redemption: Redemption = { seat, field, items, index: 0, right: 0, answers: [], phase: 'reveal', until: null, pausedAt: null };
       const redRounds = round == null ? g.redRounds : { ...g.redRounds, [field]: [...used, round] };
-      return { ...g, phase: 'redemption', worldCycle: g.cycle, redemption, redRounds };
+      return { ...g, phase: 'redemption', redCycle: g.cycle, redemption, redRounds };
     }
     case 'TURN': {
       if (g.phase !== 'turn' || !g.turn) return g;
@@ -413,7 +327,7 @@ export function stepOffline(g: OfflineGame, e: OfflineEvent, bank: FullBank, rng
       return checkTarget({
         ...g, turn, seen: turn.seen, scores, phase: 'turnOver',
         answers: [...g.answers, ...turn.results.map((r) => ({ seat, r }))],
-        log: [...g.log, { k: 'turn', seat, points, sun: turn.sun }],
+        log: [...g.log, { k: 'turn', seat, points }],
       });
     }
     case 'RED': {
@@ -421,8 +335,7 @@ export function stepOffline(g: OfflineGame, e: OfflineEvent, bank: FullBank, rng
       const r = stepRedemption(g.redemption, e.e);
       if (r === g.redemption) return g;
       if (r.phase !== 'over') return { ...g, redemption: r };
-      // The Sun doubles whatever the turn earns, Redemption included.
-      const points = r.right * (g.sun.includes(r.seat) ? 2 : 1);
+      const points = r.right;
       const scores = [...g.scores];
       scores[r.seat] += points;
       return checkTarget({ ...g, redemption: r, scores, phase: 'turnOver', log: [...g.log, { k: 'redemption', seat: r.seat, points, field: r.field }] });

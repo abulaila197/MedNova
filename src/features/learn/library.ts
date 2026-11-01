@@ -10,6 +10,7 @@ import { questionById } from '@/games/streak/data';
 import { answerText as paradeAnswer } from '@/games/parade/core';
 import { questionById as paradeById } from '@/games/parade/data';
 import { question as tmnQuestion } from '@/games/trustmenot/text';
+import { questionById as wheelsById } from '@/games/wheels/data';
 
 import dossiersJson from './data/dossiers.json';
 import shelvesJson from './data/shelves.json';
@@ -69,7 +70,7 @@ export function titleOf(name: string) {
 
 type Base = { key: string; game: string; gameName: string; at: number };
 export type Card =
-  | (Base & { kind: 'dossier'; dossier: Dossier; facts: { label: string; text: string }[] })
+  | (Base & { kind: 'dossier'; dossier: Dossier; facts: { clues: string[] | null; points: string[] } })
   | (Base & { kind: 'qa'; q: string; choices: string[]; answer: string | null; image?: number });
 
 /** A missed question from a question game, rebuilt from the game's own bank (RL5: question and answer only). */
@@ -90,6 +91,23 @@ function qaOf(game: string, item: PlayItem): Omit<Extract<Card, { kind: 'qa' }>,
     if (!w) return null;
     const answer = w.answer.charAt(0) + w.answer.slice(1).toLowerCase();
     return w.question.kind === 'text' ? { q: w.question.text, choices: [], answer } : { q: 'Identify the picture.', choices: [], answer, image: IMAGES[w.question.imageKey] };
+  }
+  // #39a (Yazan 2026-10-31): Wheels of Chaos misses come to Learn too, every question style.
+  if (game === 'the-wheels-of-chaos') {
+    const q = wheelsById.get(item.itemId);
+    if (!q) return null;
+    switch (q.style) {
+      case 'mcq': case 'riddle': case 'reverse':
+        return { q: q.style === 'reverse' ? `Which question has this answer: ${q.prompt}` : q.prompt, choices: q.choices, answer: q.choices[q.answer] ?? null };
+      case 'tf':
+        return { q: q.prompt, choices: ['True', 'False'], answer: q.answer ? 'True' : 'False' };
+      case 'lie':
+        return { q: `${q.prompt}: which statement is the lie?`, choices: q.statements, answer: q.statements[q.lie] ?? null };
+      case 'r2o':
+        return { q: q.prompt || 'Which two are the odd ones out?', choices: q.items, answer: `${q.items[q.out[0]]} and ${q.items[q.out[1]]}` };
+      case 'match':
+        return { q: q.prompt, choices: [], answer: q.pairs.map(([a, b]) => `${a} → ${b}`).join('\n') };
+    }
   }
   if (game === 'trust-me-not') {
     const q = tmnQuestion(item.itemId);
@@ -134,15 +152,25 @@ const CASE_OF = new Map<string, (typeof CASES)[number]>();
 for (const c of CASES) if (c.canonical_id && !CASE_OF.has(c.canonical_id)) CASE_OF.set(c.canonical_id, c);
 
 /**
- * The front of a disease's review card (Yazan 2026-10-26): the last 3 clues of its Diagnostic Pursuit case, word for
- * word (the missed case itself when it was a DP miss). A disease with no DP case shows its dossier's Clinical features
- * and Investigations as they are.
+ * The front of a disease's review card. A disease with a Diagnostic Pursuit case (the missed case itself when it was a
+ * DP miss) shows the case's last 3 clues; the card picks one of them each time it comes up (#31, Yazan 2026-10-31).
+ * A disease with no DP case shows its dossier's Clinical features and Investigations as short points (#5).
  */
-function factsOf(d: Dossier, game: string, itemId: string) {
+function factsOf(d: Dossier, game: string, itemId: string): { clues: string[] | null; points: string[] } {
   const own = game === 'the-diagnostic-pursuit' ? caseById.get(itemId) : undefined;
   const k = own?.canonical_id === d.id ? own : CASE_OF.get(d.id);
-  if (k && k.clues.length >= 3) return k.clues.slice(-3).map((text, i) => ({ label: `Clue ${k.clues.length - 2 + i}`, text }));
-  return FIELDS.filter((f) => f.key === 'cli' || f.key === 'inv').map((f) => ({ label: f.label, text: d[f.key] }));
+  if (k && k.clues.length >= 3) return { clues: k.clues.slice(-3), points: [] };
+  return { clues: null, points: FIELDS.filter((f) => f.key === 'cli' || f.key === 'inv').flatMap((f) => pointsOf(d[f.key])) };
+}
+
+/** A dossier field as short points: its own lines, else its sentences, else its semicolon parts. */
+export function pointsOf(text: string): string[] {
+  const t = (text ?? '').trim();
+  if (!t) return [];
+  const lines = t.split(/\n+/).map((x) => x.replace(/^[-•*\d.)\s]+/, '').trim()).filter(Boolean);
+  if (lines.length > 1) return lines.map((x) => x.charAt(0).toUpperCase() + x.slice(1));
+  const parts = t.split(/;\s+|(?<=[.!?])\s+(?=[A-Z])/).map((x) => x.trim().replace(/[.;]$/, '')).filter(Boolean);
+  return (parts.length ? parts : [t]).map((x) => x.charAt(0).toUpperCase() + x.slice(1));
 }
 
 // Today's review (RL4): each miss shows once. Got it puts it away until it is missed again; Again sends it to the
