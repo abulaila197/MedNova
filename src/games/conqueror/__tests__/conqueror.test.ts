@@ -104,7 +104,8 @@ test('setup: 2 to 6 players, capital 30,000 and 2 outposts of 10,000 each', () =
   }
 });
 
-test('board: 60 tiles, all 11 cards, 49 questions shared by the 4 styles', () => {
+test('board: 60 tiles, all 6 cards, 54 questions shared by the 4 styles', () => {
+  assert.equal(CARD_TYPES.length, 6);
   const b = makeBoard(seeded(3));
   assert.equal(b.length, 60);
   assert.deepEqual(b.filter((t) => t.kind === 'card').map((t) => t.card).sort(), [...CARD_TYPES].sort());

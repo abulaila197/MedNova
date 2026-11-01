@@ -30,8 +30,8 @@ export const BALANCE = {
   REVOLUTION_TROOPS: 5000,
 
   TILES: 60,
-  /** 11 card tiles so all 11 cards are on every board (CQ15). */
-  CARD_TILES: 11,
+  /** 6 card tiles so all 6 cards are on every board (CQ15, 6 cards since 2026-11-01). */
+  CARD_TILES: 6,
 
   CLOSEST_ITEMS: 3,
   STANDING_HEARTS: 2,
@@ -70,7 +70,11 @@ export const CARDS: Record<CardType, { name: string; text: string }> = {
   joker: { name: 'Joker', text: 'Switch your solo tile to another question style.' },
   hide_troops: { name: 'Hide troops', text: 'Your troop counts are hidden from others this stage.' },
 };
-export const CARD_TYPES = Object.keys(CARDS) as CardType[];
+/**
+ * The cards dealt on the board (Yazan 2026-11-01: keep 6 clear cards). Trap, Reinforcements, Ambush, Revolution and
+ * Betrayal are no longer dealt; their rules stay in the code so a match saved before the change still finishes.
+ */
+export const CARD_TYPES: CardType[] = ['shield', 'spy', 'double_attack', 'earthquake', 'hide_troops', 'joker'];
 
 export type VersusStyle = 'closest' | 'rush' | 'standing' | 'clue';
 export const VERSUS_STYLES: VersusStyle[] = ['closest', 'rush', 'standing', 'clue'];
@@ -205,7 +209,7 @@ export const landsOf = (m: Match, id: string) => m.landOrder.map((l) => m.lands[
 export const accuracy = (p: Player) => (p.stats.attempted ? p.stats.correct / p.stats.attempted : 0);
 export const totalTroops = (m: Match, id: string) => m.players[id].reserve + landsOf(m, id).reduce((s, l) => s + l.troops, 0);
 
-/** A fresh shuffled board: 60 tiles, card tiles hold the cards (all 11 when there are 11 tiles), the rest share the 4 solo styles evenly. */
+/** A fresh shuffled board: 60 tiles, card tiles hold the cards (all 6 when there are 6 tiles), the rest share the 4 solo styles evenly. */
 export function makeBoard(rng: Rng): Tile[] {
   const cards = shuffle(CARD_TYPES, rng);
   const cardSlots = BALANCE.CARD_TILES;
