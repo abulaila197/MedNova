@@ -5,6 +5,7 @@ import { Text, TextInput } from '@/components/AppText';
 import Animated, { FadeIn, FadeInDown, useAnimatedStyle, useSharedValue, withSequence, withTiming } from 'react-native-reanimated';
 
 import { useTheme } from '@/state/app';
+import { BEIGE } from '@/theme/beige';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
@@ -89,8 +90,8 @@ export function RiddleBoard(p: BoardProps) {
 
         <View style={s.stage} onLayout={onStage}>
           {pic ? (
-            <View style={[s.board, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
-              <View style={[s.print, { transform: [{ rotate: `${tilt}deg` }] }]}>
+            <View style={[s.board, { backgroundColor: BEIGE?.board ?? t.panel, borderColor: BEIGE?.boardLine ?? t.panelLine }]}>
+              <View style={[s.print, BEIGE ? { backgroundColor: BEIGE.paper } : null, { transform: [{ rotate: `${tilt}deg` }] }]}>
                 <View style={s.tape} />
                 {p.hidden ? (
                   <View style={[pic, s.cover]}>

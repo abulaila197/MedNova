@@ -7,6 +7,7 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { useTheme } from '@/state/app';
+import { BEIGE } from '@/theme/beige';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
@@ -217,14 +218,14 @@ function Option({ label, state, late, gone, live, faces, onPress, hc }: { label:
         disabled={!live}
         style={[
           s.opt,
-          { backgroundColor: t.panel, borderColor: t.panelLine, opacity: gone ? 0.28 : 1 },
+          { backgroundColor: BEIGE?.bg ?? t.panel, borderColor: BEIGE?.line ?? t.panelLine, opacity: gone ? 0.28 : 1 },
           tint ? { borderColor: tint, borderWidth: 1.5, backgroundColor: mix(tint, '#151933', 0.2) } : null,
           state === 'locked' ? { borderColor: t.accent, borderWidth: 1.5 } : null,
         ]}
         accessibilityRole="button"
         accessibilityState={{ disabled: !live }}
         accessibilityLabel={gone ? `${label}, removed` : label}>
-        <Text style={[s.optT, { color: t.fg, fontFamily: tint || state === 'locked' ? F.bodyBold : F.body, textDecorationLine: gone ? 'line-through' : 'none' }]}>{label}</Text>
+        <Text style={[s.optT, { color: tint ? t.fg : BEIGE?.ink ?? t.fg, fontFamily: tint || state === 'locked' ? F.bodyBold : F.body, textDecorationLine: gone ? 'line-through' : 'none' }]}>{label}</Text>
       </Pressable>
       {faces?.length ? (
         // Online: the faces of everyone who picked this answer, on its top corner.

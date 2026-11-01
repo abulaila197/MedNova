@@ -7,6 +7,7 @@ import { MAX_FONT_SCALE, Text, TextInput } from '@/components/AppText';
 import { clock } from '@/games/engine/clock';
 import { useClock, type Clock } from '@/games/engine/useTicker';
 import { useTheme } from '@/state/app';
+import { BEIGE } from '@/theme/beige';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
@@ -360,7 +361,7 @@ function Tile({ label, state, live, onPress, gone, faces, tall, small, mark, str
           s.tile,
           tall && s.tall,
           small && s.small,
-          { backgroundColor: t.panel, borderColor: t.panelLine, opacity: gone ? 0.28 : 1 },
+          { backgroundColor: BEIGE?.bg ?? t.panel, borderColor: BEIGE?.line ?? t.panelLine, opacity: gone ? 0.28 : 1 },
           tint ? { borderColor: tint, borderWidth: 1.5 } : null,
           dot ? { borderLeftColor: dot, borderLeftWidth: u(4) } : null,
         ]}
@@ -373,7 +374,7 @@ function Tile({ label, state, live, onPress, gone, faces, tall, small, mark, str
           </View>
         ) : null}
         <View style={{ flex: 1 }}>
-          <Text style={[small ? s.tileS : s.tileT, tall && s.tallT, { color: t.fg, fontFamily: tint ? F.bodyBold : F.body, textDecorationLine: gone || struck ? 'line-through' : 'none' }]}>{label}</Text>
+          <Text style={[small ? s.tileS : s.tileT, tall && s.tallT, { color: BEIGE?.ink ?? t.fg, fontFamily: tint ? F.bodyBold : F.body, textDecorationLine: gone || struck ? 'line-through' : 'none' }]}>{label}</Text>
           {note ? <Text style={[s.note, { color: PC.good }]}>{note}</Text> : null}
         </View>
       </Pressable>
