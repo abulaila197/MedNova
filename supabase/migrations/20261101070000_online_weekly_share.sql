@@ -41,7 +41,9 @@ as $$
   select coalesce(sum(np * greatest(0, extract(epoch from (least(fin, now()) - greatest(m.created_at, since))))), 0)
   from (
     select mt.created_at,
-           (select count(*) from public.match_players mp where mp.match_id = mt.id) as np,
+           (select count(*) from public.match_players mp where mp.match_id = mt.id)
+             -- watchers use about as much as players; counted while they are still in the room
+             + (select count(*) from public.room_players rp where rp.room_id = mt.room_id and rp.state = 'spectator') as np,
            least(mt.created_at + interval '2 hours', coalesce(
              mt.ended_at,
              case when exists (select 1 from public.room_players rp
