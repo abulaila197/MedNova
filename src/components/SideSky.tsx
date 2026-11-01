@@ -6,6 +6,7 @@ import { StyleSheet, useWindowDimensions, View } from 'react-native';
 import { BAKED } from '@/features/start/baked';
 import { NAVY } from '@/features/start/Sky';
 import { Grain } from '@/components/Grain';
+import { useSideBg } from '@/state/sideBg';
 import { FRAME_W } from '@/theme/scale';
 import { THEMES } from '@/theme/tokens';
 
@@ -26,8 +27,22 @@ const LOOK = {
 export function SideSky() {
   const { width } = useWindowDimensions();
   const path = usePathname();
+  const own = useSideBg((s) => s.bg);
   const side = (width - FRAME_W) / 2;
   if (side < 1) return null;
+  if (own) {
+    // A page with its own design: its own background, mirrored, under the same navy header band.
+    const flip = (left: number) => (
+      <View style={[s.edge, { left, width: FRAME_W, transform: [{ scaleX: -1 }] }]}>{own.node}</View>
+    );
+    return (
+      <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: THEMES.dark.sky, overflow: 'hidden' }]}>
+        {flip(side - FRAME_W + 1)}
+        {flip(side + FRAME_W - 1)}
+        {own.header ? <View style={{ position: 'absolute', left: 0, right: 0, top: 0, height: own.header, backgroundColor: THEMES.dark.sky }} /> : null}
+      </View>
+    );
+  }
   const look = START.some((p) => path.startsWith(p)) ? LOOK.start : LOOK.page;
   const mirror = (left: number) => (
     <View style={[s.edge, { left, width: FRAME_W, transform: [{ scaleX: -1 }] }]}>

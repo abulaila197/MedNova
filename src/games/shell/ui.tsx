@@ -16,9 +16,9 @@ import { Bolt } from '@/features/sparks/Bolt';
  * glow and grain are then not drawn at all, rather than drifting unseen underneath.
  */
 /** `bottom` stays on screen under the scrolling body: right after the content when it fits, pinned when it doesn't. */
-export function GameScreen({ children, scroll = true, top, under, bodyStyle, bottom }: { children: ReactNode; scroll?: boolean; top?: ReactNode; under?: ReactNode; bodyStyle?: StyleProp<ViewStyle>; bottom?: ReactNode }) {
+export function GameScreen({ children, scroll = true, top, under, side, bodyStyle, bottom }: { children: ReactNode; scroll?: boolean; top?: ReactNode; under?: ReactNode; side?: ReactNode; bodyStyle?: StyleProp<ViewStyle>; bottom?: ReactNode }) {
   return (
-    <Screen dock={false} glow={under ? false : 1} game under={under}>
+    <Screen dock={false} glow={under ? false : 1} game under={under} side={side}>
       {top}
       {scroll ? (
         <>

@@ -28,6 +28,8 @@ const frame = frameFit(Dimensions.get('window'), Dimensions.get('screen'), Platf
 export const K = frame.K;
 /** Width of the app frame: the whole screen, or the centred column. */
 export const FRAME_W = frame.frameW;
+/** #12: the app is a centred column with sides (tablets, short phones), not the full screen width. */
+export const IS_COLUMN = FRAME_W < Dimensions.get('window').width - 1;
 
 /** Design px to screen px. A worklet, so animated styles and gestures can call it on the UI thread. */
 export const u = (n: number) => {

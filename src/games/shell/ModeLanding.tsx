@@ -6,7 +6,7 @@ import { FeatherArt } from '@/components/FeatherArt';
 import { GAMES } from '@/data/games';
 import { LOAD } from '@/features/loading/configs';
 import { useTheme } from '@/state/app';
-import { u } from '@/theme/scale';
+import { IS_COLUMN, u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 import { tapped } from '@/lib/sound';
 
@@ -34,7 +34,8 @@ export function ModeLanding({ def }: { def: GameDef }) {
             source={art.photo}
             position={art.fo}
             opacity={0.34}
-            edges={{ bottom: 0.65 }}
+            // #12: on a centred column the art also fades at its sides, so no box edge shows beside the page.
+            edges={IS_COLUMN ? { bottom: 0.65, left: 0.12, right: 0.12 } : { bottom: 0.65 }}
             style={s.art}
           />
         ) : undefined
