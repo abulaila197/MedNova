@@ -17,7 +17,7 @@ export const novaCrossword: GameDef = {
       title: 'Puzzle by puzzle',
       blurb: `${PUZZLES.length} medical crosswords. One star opens the next.`,
       howTo: [
-        'Tap part of the grid to zoom in, then tap a square to open its word. Tap the same square again to switch between across and down.',
+        'Tap a square to light up its word, and tap it again for the word going the other way. Double tap to open the lit word.',
         'Read the clue or the picture and type the answer. A full answer is checked straight away.',
         `You have ${CW.hearts} hearts per puzzle. A wrong answer costs one; trying the same wrong answer again costs nothing.`,
         'A hint costs 1 token and shows a third of the empty letters. Out of hearts, 1 token buys a heart, or replay.',

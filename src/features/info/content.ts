@@ -14,12 +14,15 @@ export const INTENTS = [
   { key: 'collaborate', hint: 'Teaching, cases, development or partnership…' },
 ];
 
-// ---------- FAQ ("Chapters, revised"), rewritten 2026-10-11 for the 10 live games (Yazan approved)
+// ---------- FAQ ("Chapters, revised"): rewritten 2026-10-11 for the 10 live games, refreshed 2026-11-01 for the 13 games,
+// Sparks, missions, chests, watching and the online busy line (Yazan picked a full refresh, Group 11).
 export type Faq = { q: string; a: string; scoring?: boolean };
 export type Chapter = { n: string; chip: string; title: string; tag: string; items: Faq[] };
 
 const GAME_LIST = GAMES.map((g) => `${g.lead} ${g.em}`);
 const listed = `${GAME_LIST.slice(0, -1).join(', ')} and ${GAME_LIST[GAME_LIST.length - 1]}`;
+const COUNT_WORDS = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen'];
+const gameCount = COUNT_WORDS[GAMES.length] ?? String(GAMES.length);
 
 export const CHAPTERS: Chapter[] = [
   {
@@ -28,9 +31,10 @@ export const CHAPTERS: Chapter[] = [
     title: 'Getting started',
     tag: 'Foundation',
     items: [
-      { q: 'What is MedNova?', a: 'MedNova teaches medicine through games. You read clues, name diseases, answer questions and solve picture riddles, and the cases you miss come back later in your Learning Space. It is for education only, not medical advice, and every patient in it is fictional.' },
-      { q: 'Which games are there?', a: `${GAMES.length === 10 ? 'Ten' : GAMES.length}: ${listed}.` },
-      { q: 'Do I need an account?', a: 'No. As a guest you get 5 free plays across all games. A free account plays with Sparks: a bar of 100 that refills one Spark every 10 minutes (faster with a higher-star character). Each game costs Sparks by how long it lasts, and the Medicordle Daily word is always free. To refill sooner, watch an ad for 5 Sparks or swap tokens 1 for 1, or subscribe for $2.99 a month for unlimited Sparks and no ads.' },
+      { q: 'What is MedNova?', a: 'MedNova teaches medicine through games. You read clues, name diseases, answer questions, draw, give clues and solve picture riddles, and what you miss comes back later in your Learning Space. It is for education only, not medical advice, and every patient in it is fictional.' },
+      { q: 'Which games are there?', a: `${gameCount}: ${listed}.` },
+      { q: 'Do I need an account?', a: 'No. As a guest you get 5 free plays across all games. A free account plays with Sparks, keeps your progress on our servers and lets you add friends and play online.' },
+      { q: 'What are Sparks?', a: 'Sparks are what a game costs to play. Your bar holds 100 and refills one Spark every 10 minutes, faster when you wear a character with more stars. Each game costs Sparks by how long it lasts, and you pay at your first answer. The Medicordle Daily word is always free. To refill sooner, use Watch an ad for 5 Sparks (20 a day) or swap tokens 1 for 1.' },
     ],
   },
   {
@@ -40,11 +44,13 @@ export const CHAPTERS: Chapter[] = [
     tag: 'Gameplay',
     items: [
       { q: 'How does The Diagnostic Pursuit score?', a: 'Clues arrive one by one. Name the disease on an earlier clue to score more, plus up to 20 points for speed. A wrong guess shows the next clue.', scoring: true },
-      { q: 'How does Case Files work?', a: 'Work a case from history to discharge: pick your differentials, read the investigations, then make your diagnosis. Each case pays once; replaying it is free but earns no EXP.' },
-      { q: 'How does Nova Medicordle work?', a: "Guess the medical word in six tries. Green is the right letter in the right place, yellow is in the word but elsewhere, grey is not in the word. Play today's word, which earns double, or keep going in Endless." },
-      { q: 'How does The Streak Master work?', a: 'Answer as many questions as you can before the clock runs out. Every right answer in a row is worth one point more than the last, and a wrong answer resets your streak.' },
-      { q: 'How do The Riddler and Nova Crossword work?', a: 'The Riddler shows a picture rebus that you read as a condition or sign. Nova Crossword is a medical crossword. Both are played level by level, and stars open the next level.' },
-      { q: 'What are The Wheels of Chaos, The Silent Artist, The Conqueror and Trust Me Not?', a: 'The Wheels of Chaos spins three wheels that pick your question. The Silent Artist is drawing or acting a disease while the room guesses. The Conqueror is answering to raise troops and take lands. Trust Me Not is surviving a year of famine as one camp, with a traitor or two among you.' },
+      { q: 'How does Case Files work?', a: 'Work a case from history to discharge: write your differentials, read the examination and investigations, then make your diagnosis. Each case pays once; replaying it is free but earns no EXP.' },
+      { q: 'How does Nova Medicordle work?', a: "Guess the medical word in six tries. Green is the right letter in the right place, yellow is in the word but elsewhere, grey is not in the word. The Daily word has 6 letters and earns double; Endless also has Classic 5 with 5-letter words." },
+      { q: 'How do The Streak Master and The Quiz Parade work?', a: 'The Streak Master is a race against the clock: every right answer in a row is worth one point more than the last, and a wrong answer resets your streak. The Quiz Parade marches through seven kinds of question, each on its own clock, and harder kinds score more.' },
+      { q: 'How do The Riddler and Nova Crossword work?', a: 'The Riddler shows a picture riddle that you read as a condition or sign. Nova Crossword is a medical crossword: tap a square to light up its word, double tap to open it, and you have 3 hearts per puzzle. Both are played level by level, and stars open the next level.' },
+      { q: 'How does The Wheels of Chaos work?', a: 'One wheel with three rings picks how many questions you get, their style and their field. Reach the target first, 25 or 50 points. With friends, each act ends in a Boss Round, and from round 2 whoever is last can swap a turn for a Redemption round.' },
+      { q: 'What are The Silent Artist and The Conqueror?', a: 'In The Silent Artist you pick one of 3 secret words and draw it (or act it out on one phone) while everyone guesses. The Conqueror is a war of questions: answer to raise troops, play 6 kinds of action card, make alliances and take your rivals\' lands. Lose your capital and you are out.' },
+      { q: 'What are Code Clinic, Nova Password and The Imposter?', a: 'Code Clinic: two teams, and each spymaster gives one-word clues to find their team\'s cards and avoid the deadly one. Nova Password: in teams of two, one partner gives one-word clues until the other guesses the term. The Imposter: everyone gets the same word except one player, and you give clues and vote to catch them.' },
     ],
   },
   {
@@ -53,18 +59,24 @@ export const CHAPTERS: Chapter[] = [
     title: 'Playing together',
     tag: 'Multiplayer',
     items: [
-      { q: 'How do I play with friends?', a: 'Most games have Pass the phone, where you take turns on one phone, and Online, where everyone plays live on their own phone. The Conqueror and Trust Me Not are online only. Many games also let the host split players into teams.' },
-      { q: 'Who wins a tie?', a: 'The faster player.' },
+      { q: 'How do I play with friends?', a: 'Most games have Pass the phone, where you take turns on one phone, and Online, where everyone plays live on their own phone. Host a room and share its code, join an open room, or challenge a friend from their profile. The Conqueror is online only. Many games also let the host split players into teams.' },
+      { q: 'Can I watch a friend play?', a: 'Yes. Tap Watch on a friend who is in a match. They get a Yes or No first, and can let you always watch. Up to 3 people can watch a match; if it is full, try again at the rematch.' },
+      { q: 'Why does it say the servers are busy?', a: 'When a lot of people are playing online at once, a new match waits its turn. Your room stays open with a banner showing your place in line, and the match starts by itself. Matches already running are never stopped.' },
+      { q: 'Why is Online resting?', a: 'Online play shares a weekly allowance. If a week\'s share runs out, new online matches rest until the day shown, and matches already running finish. Solo and Pass the phone always work.' },
+      { q: 'Who wins a tie?', a: 'The faster player. On a leaderboard, whoever got there first.' },
     ],
   },
   {
     n: '04',
-    chip: 'EXP',
-    title: 'EXP and tokens',
+    chip: 'Rewards',
+    title: 'EXP, tokens and rewards',
     tag: 'Progress',
     items: [
-      { q: 'How do I earn EXP?', a: 'By playing Solo and Online. Each game pays for what you get right; for example, Medicordle gives up to 12 EXP a word and The Streak Master 2 EXP per right answer. Pass the phone and The Silent Artist are for fun and earn no EXP.' },
-      { q: 'What are levels and tokens?', a: 'EXP raises your level, and each new level gives you 1 token. Tokens pay for extras such as letter hints in Medicordle and a revive in Nova Crossword.' },
+      { q: 'How do I earn EXP?', a: 'By playing Solo and Online. Each game pays for what you get right; for example, Medicordle gives up to 12 EXP a word and The Streak Master 2 EXP per right answer. Pass the phone and Silent Artist practice are for fun and earn no EXP.' },
+      { q: 'What are levels and tokens?', a: 'EXP raises your level, and each new level pays tokens. Tokens buy extras such as hints, revives and helpers, and looks in the Style shop: characters, frames, titles, win effects and sticker packs.' },
+      { q: 'What are daily missions and the daily gift?', a: 'Every day: Warm-up, Full Shift and Overtime, done in order, paying 10, 30 and 50 tokens. Only games that use Sparks count, and each game counts once per mission. The daily gift calendar pays tokens and Sparks each day you claim it.' },
+      { q: 'What are Grand Rounds and chests?', a: 'Grand Rounds gives you 3 missions each week, and each one pays a chest: wooden, golden, then diamond. Finish all three 4 weeks in a row for an epic chest. Chests hold tokens, chat stickers, rare win effects and Nova Mechs cards; a card you already have turns into tokens.' },
+      { q: 'How do cards and leaderboards work?', a: 'Collect the Original pack through the card hunt, the Nova Mechs from chests, and the Style shop robots with tokens; finishing a pack pays a prize. Each month the top players on the leaderboards win tokens.' },
     ],
   },
   {
@@ -73,8 +85,9 @@ export const CHAPTERS: Chapter[] = [
     title: 'Learning Space',
     tag: 'Review',
     items: [
-      { q: 'What goes into Learning Space?', a: "What you miss: unsolved Diagnostic Pursuit cases, a wrong first diagnosis in Case Files, missed questions in The Streak Master and Trust Me Not, missed Crossword words and unsolved Riddler conditions. Medicordle, The Silent Artist and The Wheels of Chaos add nothing. In Pass the phone, only the phone owner's misses go in." },
+      { q: 'What goes into Learning Space?', a: "What you miss: unsolved Diagnostic Pursuit cases, a wrong first diagnosis in Case Files, missed questions in The Streak Master, The Quiz Parade and The Wheels of Chaos, missed Crossword words and unsolved Riddler conditions. The word and party games add nothing. In Pass the phone, only the phone owner's misses go in." },
       { q: 'How do I review them?', a: "Today's review shows each missed disease as a flip card with one dossier field on the back. Disease dossiers hold the full file for every disease." },
+      { q: 'Can I add my own cases and words?', a: 'Yes. In Learn you can write your own case or word. You can practise it straight away; once it is approved, you can also play it with friends.' },
     ],
   },
   {
@@ -85,6 +98,7 @@ export const CHAPTERS: Chapter[] = [
     items: [
       { q: "Something isn't working. What do I do?", a: 'Tap the red ! button at the top of any page and tell us what happened, in which game and on which case or question.' },
       { q: 'Where do the cases come from?', a: 'They are written for MedNova to teach reasoning. If you think a fact is wrong, report it with the red ! button.' },
+      { q: 'How do I delete my account?', a: 'Open your Profile and tap Delete my account, then confirm. Everything linked to it is removed from our servers.' },
     ],
   },
 ];
@@ -120,9 +134,10 @@ export const PRIVACY: Section[] = [
   {
     n: '02',
     k: 'Your account',
-    plain: 'An account needs your *email, a password and a username.*',
+    plain: 'An account needs your *email (or Google) and a username.*',
     legal: [
       { b: 'Sign-up.', p: 'When you create an account we receive your email address, a password and the username you choose (also used as your display name). Sign-in and email codes are handled by Supabase Auth. Your password is stored by Supabase only as a one-way hash; MedNova never sees or stores it in plain text.' },
+      { b: 'Google sign-in.', p: 'If you sign in with Google, Google confirms who you are and shares your email address and basic profile (name and picture) with us. We never see your Google password, and we use only your email to make your account.' },
       { b: 'Profile.', p: 'Your account has a profile with your username, display name, avatar (the character you pick) and a friend code that others can use to add you.' },
       { b: 'Guests.', p: 'You can play as a guest without an account. Guest progress stays on your phone and is not linked to you on our servers.' },
     ],
@@ -137,6 +152,11 @@ export const PRIVACY: Section[] = [
           'Plays and scores: which games you play, your answers and results, scores, streaks and times.',
           'Learning: the cases you miss and the cards you collect, so you can review them later.',
           'EXP and tokens: your wallet is kept on your phone and, when you are signed in, synced to your account.',
+          'Sparks: your Sparks bar, what each play cost and when it refills.',
+          'Rewards: your daily gift days, daily missions, Grand Rounds stamps, chests and what they held, achievements and cards.',
+          'Style: the characters, frames, titles, win effects and stickers you own and wear, and gifts you send or receive.',
+          'Leaderboards and likes: your place on the boards, monthly prizes, and the wallpapers and posts you like.',
+          'Your cases and words: what you write in Learn, and whether it was approved.',
         ],
       },
     ],
@@ -152,19 +172,25 @@ export const PRIVACY: Section[] = [
           'Presence: when you were last seen in the app, shown to your friends.',
           'Invites and challenges you send or receive.',
           'Online rooms and matches: the rooms you create or join, your team and character, guesses and results.',
-          'Room chat: the stickers and preset voice lines you send in a room. There is no free-text chat.',
+          'Room chat: the stickers and preset voice lines you send in a room. There is no free-text chat, but in some games the clues and guesses you type are shown to the other players.',
+          'Watching: who asked to watch your match, your Yes or No, and the friends you always allow. Up to 3 people can watch a match, and they see it as the players do.',
+          'Inbox: messages and gifts sent to you, and which you claimed.',
           'Silent Artist: the drawings you make in an online room are sent live to the other players in that room.',
           'Reports: if you report a drawing, we keep the report and the drawing so it can be reviewed.',
         ],
       },
       { p: 'Other players can see your username, avatar, scores in shared games and anything you send in a room. Do not use your real name as a username if you do not want it shown.' },
+      { p: 'While you are in a room or match, your phone keeps a live connection to our server so it hears changes at once. To keep online play running for everyone, the server also counts how many players are in matches and for how long.' },
     ],
   },
   {
     n: '05',
     k: 'On your phone',
     plain: 'Some data *stays on your device.*',
-    legal: [{ p: 'MedNova stores your sign-in session, settings, saved plays and wallet on your phone so the app works offline and opens quickly. Deleting the app removes this local data.' }],
+    legal: [
+      { p: 'MedNova stores your sign-in session, settings, saved plays and wallet on your phone so the app works offline and opens quickly. Deleting the app removes this local data.' },
+      { b: 'Photos.', p: 'When you save a wallpaper, your phone may ask to let MedNova add photos. MedNova only adds the picture you save; it never reads your gallery.' },
+    ],
   },
   {
     n: '06',
@@ -183,12 +209,14 @@ export const PRIVACY: Section[] = [
       {
         li: [
           'To create and secure your account and sign you in.',
-          'To save your progress, scores, wallet and learning cards.',
+          'To save your progress, scores, wallet, Sparks and learning cards.',
+          'To run daily missions, Grand Rounds, chests, cards, leaderboards and their prizes.',
           'To run friends, invites, online rooms and matches.',
           'To keep play safe: blocking, reviewing reports and stopping misuse.',
-          'To answer your messages and bug reports.',
+          'To answer your messages and bug reports, and to review the cases and words you write.',
         ],
       },
+      { p: 'When you write to us through Contact or the red ! button, we keep your message, where it happened and any email you give, so we can answer and fix the problem.' },
       { b: 'Legal basis.', p: 'Under the EU GDPR and the data protection laws that apply to you, we use your data because it is needed to provide the service you asked for (our contract with you), and for our legitimate interest in keeping MedNova safe and working.' },
     ],
   },
@@ -196,7 +224,7 @@ export const PRIVACY: Section[] = [
     n: '08',
     k: 'How long we keep it',
     plain: 'Until you *delete your account.*',
-    legal: [{ p: 'We keep your account data for as long as your account exists. When you delete your account, your account and the rows linked to it (profile, plays, wallet, misses, cards, friends and blocks) are removed from our servers. Data on your phone stays until you delete the app.' }],
+    legal: [{ p: 'We keep your account data for as long as your account exists. When you delete your account, your account and the rows linked to it (profile, plays, wallet, Sparks, rewards, items, misses, cards, friends and blocks) are removed from our servers. Data on your phone stays until you delete the app.' }],
   },
   {
     n: '09',
@@ -272,16 +300,19 @@ export const TERMS: Section[] = [
     n: '05',
     k: 'Scores and leaderboards',
     plain: 'Scores follow the *rules of each game.*',
-    legal: [{ p: 'MedNova records game results according to the rules displayed in the game. Scores, streaks, EXP, tokens and leaderboard rankings are calculated by the relevant game. Results, EXP and tokens have no money value and may be reset, corrected, removed, or changed when necessary to address errors, misuse, or changes to the platform.' }],
+    legal: [
+      { p: 'MedNova records game results according to the rules displayed in the game. Scores, streaks, EXP, tokens and leaderboard rankings are calculated by the relevant game. Results, EXP and tokens have no money value and may be reset, corrected, removed, or changed when necessary to address errors, misuse, or changes to the platform.' },
+      { b: 'Sparks, rewards and items.', p: 'Sparks, tokens, chests, cards and Style items are part of the game. They have no money value, cannot be exchanged for money, and are not transferable except as the app allows (for example a gift to a friend). Chest odds are shown in the app. Prices, odds, prizes and refill times may change.' },
+    ],
   },
   {
     n: '06',
     k: 'Your content',
     plain: 'What you share with others is *your responsibility.*',
     legal: [
-      { p: 'Your username, the drawings you make in Silent Artist and the stickers and voice lines you send in online rooms are seen by other players. You are responsible for them. Do not use content that is offensive, hateful, sexual, violent, harassing, misleading, or that includes real patient information or other people\'s personal data.' },
-      { p: 'Stories and custom cases you share must be your own or shared with permission, medically responsible, and free of anything that could identify a real patient.' },
-      { p: 'MedNova has zero tolerance for objectionable content or abusive users. You can block any player and report any player, drawing, story or case. We review reports and may remove content, change a username, or suspend or close an account that breaks these rules.' },
+      { p: 'Your username, the drawings you make in Silent Artist, the clues and guesses you type in online games and the stickers and voice lines you send in online rooms are seen by other players. You are responsible for them. Do not use content that is offensive, hateful, sexual, violent, harassing, misleading, or that includes real patient information or other people\'s personal data.' },
+      { p: 'Cases and words you write in Learn must be your own or shared with permission, medically responsible, and free of anything that could identify a real patient. We review them before they can be played with others.' },
+      { p: 'MedNova has zero tolerance for objectionable content or abusive users. You can block any player and report any player, drawing or case. We review reports and may remove content, change a username, or suspend or close an account that breaks these rules.' },
     ],
   },
   {

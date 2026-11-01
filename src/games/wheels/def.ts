@@ -32,10 +32,10 @@ export const wheelsOfChaos: GameDef = {
     {
       mode: 'solo',
       title: 'Spin to the target',
-      blurb: 'Spin the three wheels and answer what they pick, turn after turn, until you reach the target.',
+      blurb: 'Spin the wheel\'s three rings and answer what they pick, turn after turn, until you reach the target.',
       howTo: [
         'Pick a target of 25 or 50 points, and mixed, clinical or basic science questions.',
-        'Each turn the wheels pick how many questions (1 to 3), their style and their field.',
+        'Each turn one spin of the wheel\'s three rings picks how many questions (1 to 3), their style and their field.',
         'Seven styles, each with its own points and timer: from True or False (1 point) to Matching (3 points).',
         'Rule 2 Out and Matching are all or nothing.',
         'You earn half your points as EXP. Solo has no Boss Round or Redemption.',
