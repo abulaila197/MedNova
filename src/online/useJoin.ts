@@ -4,7 +4,7 @@ import { useCallback, useState } from 'react';
 import type { GameDef } from '@/games/shell/types';
 import { useAccount } from '@/state/account';
 
-import { JOIN_SAY, listPublicRooms, type JoinResult, type PublicRoom } from './api';
+import { JOIN_SAY, listPublicRooms, sayError, type JoinResult, type PublicRoom } from './api';
 
 /** Into a room's lobby. */
 export const lobbyOf = (def: GameDef, id: string) => router.replace(`/play/${def.key}/lobby?room=${id}`);
@@ -21,8 +21,8 @@ export function useJoin(def: GameDef) {
       const r = await fn(avatar);
       if ((r.result === 'joined' || r.result === 'spectating') && r.room_id) lobbyOf(def, r.room_id);
       else setMsg(JOIN_SAY[r.result] ?? JOIN_SAY.error);
-    } catch {
-      setMsg(JOIN_SAY.error);
+    } catch (e) {
+      setMsg(sayError(e));
     }
     setBusy(false);
   };

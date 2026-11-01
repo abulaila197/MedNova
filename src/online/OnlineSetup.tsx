@@ -18,7 +18,8 @@ import { needSparks, useSparks } from '@/features/sparks/sparks';
 import { useIsSubscribed } from '@/features/store/billing';
 import { loadCases, useCases } from '@/features/learn/cases';
 
-import { createRoom, JOIN_SAY, joinRoom, joinRoomId } from './api';
+import { createRoom, joinRoom, joinRoomId, restingSay, sayError } from './api';
+import { useResting } from './useBusyLine';
 import { lobbyOf, useJoin, useOpenRooms } from './useJoin';
 import { settingsLine } from './format';
 
@@ -32,6 +33,20 @@ export function OnlineSetup({ def, prefill }: { def: GameDef; prefill?: Record<s
   const t = useTheme();
   const g = GAMES.find((x) => x.key === def.key)!;
   const [tab, setTab] = useState<Tab>(prefill ? 'create' : 'join');
+  // Weekly online share (Yazan 2026-11-01): when this week's share is used up, the page says when online is back.
+  const resting = useResting();
+  if (resting !== null) {
+    return (
+      <GameScreen bodyStyle={{ paddingTop: u(10), gap: u(10) }}>
+        <Back label={`${g.lead} ${g.em}`} fallback={`/play/${def.key}`} />
+        <Title lead="Play" em="online" size={21} />
+        <Card style={s.card}>
+          <Text style={[s.k, { color: t.mute }]}>ONLINE IS RESTING</Text>
+          <Text style={[s.rest, { color: t.fg }]}>{restingSay(resting || null)}</Text>
+        </Card>
+      </GameScreen>
+    );
+  }
   return (
     <GameScreen bodyStyle={{ paddingTop: u(10), gap: u(10) }}>
       <Back label={`${g.lead} ${g.em}`} fallback={`/play/${def.key}`} />
@@ -144,7 +159,7 @@ function Create({ def, prefill }: { def: GameDef; prefill?: Record<string, unkno
   const [own, setOwn] = useState(prefill?.own === 'off' ? 'off' : 'on');
   const more = mine ? { own } : {};
   const [busy, setBusy] = useState(false);
-  const [err, setErr] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
   // Every choice that changes the cost shows its Sparks, as on the Solo setup page (#36).
   const subscribed = useIsSubscribed();
   const have = useSparks((x) => x.value);
@@ -154,12 +169,12 @@ function Create({ def, prefill }: { def: GameDef; prefill?: Record<string, unkno
     // Each player pays for themselves (TR4); the host checks at Create, players at I'm ready.
     if (!(await needSparks(sparksCost(def.key, 'online', { ...vals, teams })))) return;
     setBusy(true);
-    setErr(false);
+    setErr(null);
     try {
       const id = await createRoom(def.key, { ...vals, teams, ...more }, pub, avatar);
       lobbyOf(def, id);
-    } catch {
-      setErr(true);
+    } catch (e) {
+      setErr(sayError(e));
       setBusy(false);
     }
   };
@@ -186,7 +201,7 @@ function Create({ def, prefill }: { def: GameDef; prefill?: Record<string, unkno
         </Line>
       </Card>
       <Text style={[s.note, { color: err ? t.error : t.dim }]}>
-        {err ? JOIN_SAY.error : priced ? `This game costs ${cost} Sparks · you have ${have}` : teams ? 'You put players in teams in the lobby.' : 'You can still change these in the lobby.'}
+        {err ? err : priced ? `This game costs ${cost} Sparks · you have ${have}` : teams ? 'You put players in teams in the lobby.' : 'You can still change these in the lobby.'}
       </Text>
       <Btn label={busy ? 'Opening room…' : 'Create room'} onPress={create} disabled={busy} />
     </>
@@ -215,6 +230,7 @@ const s = StyleSheet.create({
   stubN: { fontFamily: F.body, fontSize: u(9), lineHeight: u(12) },
   card: { padding: u(10), gap: u(7) },
   k: { fontFamily: F.mono, fontSize: u(7.5), letterSpacing: u(1.4) },
+  rest: { fontFamily: F.body, fontSize: u(13), lineHeight: u(19) },
   boxes: { flexDirection: 'row', gap: u(5) },
   box: { flex: 1, height: u(34), borderRadius: u(9), borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
   boxT: { fontFamily: F.mono, fontSize: u(16) },

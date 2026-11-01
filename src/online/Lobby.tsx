@@ -18,7 +18,9 @@ import { loadFriends, useFriends } from '@/state/friends';
 import { openPlayer, openReport } from '@/features/profile/Friends';
 import { shareText } from '@/lib/share';
 import { InviteFriends } from './InviteFriends';
-import { call, leaveRoom, rematchRoom, removePlayer, setReady, setTeam, startMatch, updateRoom, type RoomState, type Seat } from './api';
+import { call, leaveRoom, rematchRoom, removePlayer, setReady, setTeam, updateRoom, type RoomState, type Seat } from './api';
+import { BusyWait } from './BusyWait';
+import { useBusyLine } from './useBusyLine';
 import { roomShareText, settingsLine } from './format';
 import { sparksCost } from '@/features/sparks/costs';
 import { needSparks } from '@/features/sparks/sparks';
@@ -92,6 +94,10 @@ export function Lobby({ def, roomId }: { def: GameDef; roomId: string }) {
       router.replace(`/play/${def.key}/live?room=${room.id}&match=${room.match_id}`);
     }
   }, [room, def.key]);
+
+  const readyAll = players.length >= Math.max(2, def.players?.online?.min ?? 2) && players.every((p) => p.ready);
+  const inLobby = room?.status === 'lobby';
+  const wait = useBusyLine({ roomId: room?.id, host, inLobby, readyAll, reload, onFail: flashStartFail });
 
   // Teams on: the host deals anyone without a team round the teams, so Start never waits on an empty pick.
   useEffect(() => {
@@ -188,7 +194,12 @@ export function Lobby({ def, roomId }: { def: GameDef; roomId: string }) {
       </Pressable>
     ));
 
-  const over = <LobbySheets def={def} state={state} sheet={sheet} setSheet={setSheet} reload={reload} />;
+  const over = (
+    <>
+      <LobbySheets def={def} state={state} sheet={sheet} setSheet={setSheet} reload={reload} />
+      {wait.show ? <BusyWait game={def.key} place={wait.place} onStop={host ? wait.stop : undefined} /> : null}
+    </>
+  );
 
 
   return (
@@ -280,8 +291,7 @@ export function Lobby({ def, roomId }: { def: GameDef; roomId: string }) {
               if (!(await needSparks(sparksCost(def.key, 'online', room.settings)))) return;
               setBusy(true);
               // A refused start (someone left or un-readied) says so on the button instead of failing silently (AP12g).
-              await startMatch(room.id).catch(() => flashStartFail());
-              await reload();
+              await wait.tryStart();
               setBusy(false);
             }}
           />

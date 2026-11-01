@@ -13,7 +13,9 @@ import type { GameDef } from '@/games/shell/types';
 import { useAccount } from '@/state/account';
 import { shareText } from '@/lib/share';
 
-import { createRoom, JOIN_SAY, joinRoom, joinRoomId, leaveRoom, rematchRoom, setReady, setTeam, startMatch, type Seat } from './api';
+import { createRoom, joinRoom, joinRoomId, leaveRoom, rematchRoom, restingSay, sayError, setReady, setTeam, type Seat } from './api';
+import { BusyWait } from './BusyWait';
+import { useBusyLine, useResting } from './useBusyLine';
 import { roomShareText, settingsLine } from './format';
 import { LobbySheets, type LobbySheet } from './Lobby';
 import { RoomLookProvider, type RoomLook } from './look';
@@ -133,6 +135,22 @@ export function OwnOnlineSetup({ kit, def, prefill }: { kit: RoomKit; def: GameD
     { key: 'join', title: w.find, note: w.findNote },
     { key: 'create', title: w.host, note: w.hostNote },
   ];
+  // Weekly online share (Yazan 2026-11-01): when this week's share is used up, the page says when online is back.
+  const resting = useResting();
+  if (resting !== null) {
+    return (
+      <kit.Screen>
+        <View style={{ gap: z(4) }}>
+          <BackLink kit={kit} label={w.game} to={`/play/${def.key}`} />
+          <Kick kit={kit} color={kit.room.soft}>Online</Kick>
+          <kit.Title text={w.setup} />
+        </View>
+        <kit.Paper>
+          <KT kit={kit} size={14} color={kit.paper.fg}>{restingSay(resting || null)}</KT>
+        </kit.Paper>
+      </kit.Screen>
+    );
+  }
   return (
     <kit.Screen>
       <View style={{ gap: z(4) }}>
@@ -222,14 +240,14 @@ function Create({ kit, def, prefill }: { kit: RoomKit; def: GameDef; prefill?: R
   const [teams, setTeams] = useState(Number(prefill?.teams) || 0);
   const [pub, setPub] = useState(1);
   const [busy, setBusy] = useState(false);
-  const [err, setErr] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
   const create = async () => {
     setBusy(true);
-    setErr(false);
+    setErr(null);
     try {
       lobbyOf(def, await createRoom(def.key, { ...vals, teams }, pub === 1, avatar));
-    } catch {
-      setErr(true);
+    } catch (e) {
+      setErr(sayError(e));
       setBusy(false);
     }
   };
@@ -247,7 +265,7 @@ function Create({ kit, def, prefill }: { kit: RoomKit; def: GameDef; prefill?: R
         {line('Who joins', <Choices kit={kit} choices={[{ value: 1, label: 'Anyone' }, { value: 0, label: 'Code only' }]} value={pub} onChange={setPub} />, !opts.length && !def.teams?.online)}
       </kit.Paper>
       <KT kit={kit} size={12} color={err ? kit.room.acc : kit.room.soft} style={{ textAlign: 'center' }}>
-        {err ? JOIN_SAY.error : teams ? 'You put players in teams in the lobby.' : 'You can still change these in the lobby.'}
+        {err ? err : teams ? 'You put players in teams in the lobby.' : 'You can still change these in the lobby.'}
       </KT>
       <kit.Btn label={busy ? 'Opening…' : kit.words.create} off={busy} onPress={create} />
     </>
@@ -291,6 +309,14 @@ export function OwnLobby({ kit, def, roomId }: { kit: RoomKit; def: GameDef; roo
       router.replace(`/play/${def.key}/live?room=${room.id}&match=${room.match_id}`);
     }
   }, [room, def.key]);
+  const wait = useBusyLine({
+    roomId: room?.id,
+    host,
+    inLobby: room?.status === 'lobby',
+    readyAll: players.length >= 2 && players.every((p) => p.ready),
+    reload,
+    onFail: flashStartFail,
+  });
   // Teams on: the host deals anyone without a team round the teams, so Start never waits on an empty pick.
   useEffect(() => {
     if (!host || !room || room.status !== 'lobby' || teams < 2) return;
@@ -391,7 +417,13 @@ export function OwnLobby({ kit, def, roomId }: { kit: RoomKit; def: GameDef; roo
 
   return (
     <RoomLookProvider value={kit.look}>
-      <kit.Screen top={<LobbySheets def={def} state={state} sheet={sheet} setSheet={setSheet} reload={reload} />}>
+      <kit.Screen
+        top={
+          <>
+            <LobbySheets def={def} state={state} sheet={sheet} setSheet={setSheet} reload={reload} />
+            {wait.show ? <BusyWait game={def.key} place={wait.place} onStop={host ? wait.stop : undefined} /> : null}
+          </>
+        }>
         <View style={st.spread}>
           <Pressable onPress={leave} hitSlop={z(8)} accessibilityRole="button">
             <KT kit={kit} size={13} color={LEAVE}>{`‹ ${w.leave}`}</KT>
@@ -476,8 +508,7 @@ export function OwnLobby({ kit, def, roomId }: { kit: RoomKit; def: GameDef; roo
                 onPress={async () => {
                   setBusy(true);
                   // A refused start (someone left or un-readied) says so on the button instead of failing silently (AP12g).
-                  await startMatch(room.id).catch(() => flashStartFail());
-                  await reload();
+                  await wait.tryStart();
                   setBusy(false);
                 }}
               />

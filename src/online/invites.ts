@@ -4,7 +4,7 @@ import { create } from 'zustand';
 
 import { useAccount } from '@/state/account';
 
-import { cancelWatch, challengeFriend, JOIN_SAY, myInvites, respondInvite, watchAskState, watchFriend, type Invite } from './api';
+import { cancelWatch, challengeFriend, JOIN_SAY, sayError, myInvites, respondInvite, watchAskState, watchFriend, type Invite } from './api';
 import { keepIfSame } from './same';
 import { onAccountSwitch } from '@/state/accountSwitch';
 
@@ -51,8 +51,8 @@ export async function acceptInvite(inv: Invite) {
     const r = await respondInvite(inv.id, true, useAccount.getState().profile?.avatar);
     if ((r.result === 'joined' || r.result === 'spectating') && 'room_id' in r && r.room_id) lobby(inv.game, r.room_id);
     else useInvites.setState({ say: JOIN_SAY[r.result] ?? JOIN_SAY.error });
-  } catch {
-    useInvites.setState({ say: JOIN_SAY.error });
+  } catch (e) {
+    useInvites.setState({ say: sayError(e) });
   }
   await loadInvites().catch(() => {});
 }
@@ -77,8 +77,8 @@ export async function watch(friendId: string, game: string, name = 'your friend'
       return waitForAnswer(r.ask);
     }
     return enter(r, game);
-  } catch {
-    useInvites.setState({ say: JOIN_SAY.error });
+  } catch (e) {
+    useInvites.setState({ say: sayError(e) });
     return 'error';
   }
 }

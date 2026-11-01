@@ -5,7 +5,7 @@ import { View } from 'react-native';
 import { Text } from '@/components/AppText';
 import { Screen } from '@/components/Screen';
 import { useSession } from '@/games/shell/session';
-import { JOIN_SAY, joinRoom } from '@/online/api';
+import { JOIN_SAY, joinRoom, sayError } from '@/online/api';
 import { useAccount } from '@/state/account';
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
@@ -27,7 +27,7 @@ export default function JoinLink() {
         if ((r.result === 'joined' || r.result === 'spectating') && r.room_id && g) router.replace(`/play/${g}/lobby?room=${r.room_id}`);
         else setMsg(JOIN_SAY[r.result] ?? JOIN_SAY.error);
       })
-      .catch(() => live && setMsg(JOIN_SAY.error));
+      .catch((e) => live && setMsg(sayError(e)));
     return () => {
       live = false;
     };
