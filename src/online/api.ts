@@ -116,6 +116,7 @@ export const sayError = (e: unknown) => {
   const until = restingUntil(e);
   if (until !== null) return restingSay(until);
   if (isBusy(e)) return 'Servers are busy right now. Tap Start to wait in line.';
+  if (errText(e).includes('watchers_full')) return 'This match already has 3 watchers. Try again at the rematch.';
   return JOIN_SAY.error;
 };
 

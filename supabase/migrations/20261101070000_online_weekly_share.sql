@@ -1,4 +1,4 @@
--- Busy line + weekly online data share (Yazan 2026-11-01).
+-- Busy line + weekly online data share + at most 3 watchers per match (Yazan 2026-11-01).
 --
 -- BUSY LINE: when more than busy_players are playing online right now, a new match waits in line instead of starting.
 -- The host's phone asks online_turn every 5 s; the room's players see "You're number N in line"; the match starts by
@@ -225,6 +225,13 @@ begin
   if tg_op = 'UPDATE' then
     -- room_players: only a fresh (re)join sets joined_at; ready taps, pings and rematch seats pass.
     if new.joined_at is not distinct from old.joined_at then return new; end if;
+  end if;
+  -- Watching (Yazan 2026-11-01): at most 3 watchers per match.
+  if tg_table_name = 'room_players' then
+    if new.state = 'spectator' and (select count(*) from public.room_players w
+        where w.room_id = new.room_id and w.state = 'spectator' and w.user_id <> new.user_id) >= 3 then
+      raise exception 'watchers_full';
+    end if;
   end if;
   if tg_table_name = 'matches' then
     if not public.online_can_start(new.room_id) then raise exception 'online_busy'; end if;
