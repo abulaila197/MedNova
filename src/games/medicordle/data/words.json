@@ -2448,5 +2448,705 @@
   "word": "ENEMA",
   "definition": "Fluid put into the rectum to empty the bowel.",
   "dossier": null
+ },
+ {
+  "id": "five-101",
+  "style": "five",
+  "word": "ANVIL",
+  "definition": "Middle ear bone between the hammer and the stirrup; also called the incus.",
+  "dossier": null
+ },
+ {
+  "id": "five-102",
+  "style": "five",
+  "word": "CECUM",
+  "definition": "Pouch at the start of the large intestine where the appendix attaches.",
+  "dossier": null
+ },
+ {
+  "id": "five-103",
+  "style": "five",
+  "word": "FACET",
+  "definition": "Small flat joint surface, as between two vertebrae.",
+  "dossier": null
+ },
+ {
+  "id": "five-104",
+  "style": "five",
+  "word": "HILUM",
+  "definition": "Notch where vessels, nerves and ducts enter or leave an organ.",
+  "dossier": null
+ },
+ {
+  "id": "five-105",
+  "style": "five",
+  "word": "ILEUM",
+  "definition": "Last part of the small intestine, where vitamin B12 is absorbed.",
+  "dossier": null
+ },
+ {
+  "id": "five-106",
+  "style": "five",
+  "word": "INION",
+  "definition": "Bump at the back of the skull; the external occipital protuberance.",
+  "dossier": null
+ },
+ {
+  "id": "five-107",
+  "style": "five",
+  "word": "JOINT",
+  "definition": "Place where two bones meet.",
+  "dossier": null
+ },
+ {
+  "id": "five-108",
+  "style": "five",
+  "word": "NASAL",
+  "definition": "Relating to the nose.",
+  "dossier": null
+ },
+ {
+  "id": "five-109",
+  "style": "five",
+  "word": "ORBIT",
+  "definition": "Bony socket that holds the eye.",
+  "dossier": null
+ },
+ {
+  "id": "five-110",
+  "style": "five",
+  "word": "PINNA",
+  "definition": "Outer, visible part of the ear.",
+  "dossier": null
+ },
+ {
+  "id": "five-111",
+  "style": "five",
+  "word": "RAMUS",
+  "definition": "Branch of a bone or nerve, like the vertical part of the jaw.",
+  "dossier": null
+ },
+ {
+  "id": "five-112",
+  "style": "five",
+  "word": "TORSO",
+  "definition": "The trunk of the body, without the head and limbs.",
+  "dossier": null
+ },
+ {
+  "id": "five-113",
+  "style": "five",
+  "word": "TRUNK",
+  "definition": "Main body part, or the main stem of a nerve or vessel.",
+  "dossier": null
+ },
+ {
+  "id": "five-114",
+  "style": "five",
+  "word": "VOMER",
+  "definition": "Thin bone forming the back of the nasal septum.",
+  "dossier": null
+ },
+ {
+  "id": "five-115",
+  "style": "five",
+  "word": "GONAD",
+  "definition": "Sex gland: an ovary or a testis.",
+  "dossier": null
+ },
+ {
+  "id": "five-116",
+  "style": "five",
+  "word": "CALYX",
+  "definition": "Cup-shaped space in the kidney that collects urine.",
+  "dossier": null
+ },
+ {
+  "id": "five-117",
+  "style": "five",
+  "word": "SPERM",
+  "definition": "Male reproductive cell.",
+  "dossier": null
+ },
+ {
+  "id": "five-118",
+  "style": "five",
+  "word": "RENIN",
+  "definition": "Kidney enzyme that starts the angiotensin pathway and raises blood pressure.",
+  "dossier": null
+ },
+ {
+  "id": "five-119",
+  "style": "five",
+  "word": "AMINO",
+  "definition": "Acid that is a building block of proteins.",
+  "dossier": null
+ },
+ {
+  "id": "five-120",
+  "style": "five",
+  "word": "LOCUS",
+  "definition": "Fixed place of a gene on a chromosome.",
+  "dossier": null
+ },
+ {
+  "id": "five-121",
+  "style": "five",
+  "word": "EBOLA",
+  "definition": "Virus causing a severe hemorrhagic fever.",
+  "dossier": null
+ },
+ {
+  "id": "five-122",
+  "style": "five",
+  "word": "POLYP",
+  "definition": "Growth sticking out from a mucous membrane, as in the colon.",
+  "dossier": null
+ },
+ {
+  "id": "five-123",
+  "style": "five",
+  "word": "MYOMA",
+  "definition": "Benign tumor of muscle, such as a uterine fibroid.",
+  "dossier": null
+ },
+ {
+  "id": "five-124",
+  "style": "five",
+  "word": "NEVUS",
+  "definition": "A mole or birthmark on the skin.",
+  "dossier": null
+ },
+ {
+  "id": "five-125",
+  "style": "five",
+  "word": "WOUND",
+  "definition": "Injury that breaks the skin or other tissue.",
+  "dossier": null
+ },
+ {
+  "id": "five-126",
+  "style": "five",
+  "word": "RIGOR",
+  "definition": "Shaking chill with a rising fever; or the stiffness after death.",
+  "dossier": null
+ },
+ {
+  "id": "five-127",
+  "style": "five",
+  "word": "SHUNT",
+  "definition": "Passage that diverts flow, such as a tube draining fluid from the brain.",
+  "dossier": null
+ },
+ {
+  "id": "five-128",
+  "style": "five",
+  "word": "VARIX",
+  "definition": "Enlarged, twisted vein, as in the esophagus.",
+  "dossier": null
+ },
+ {
+  "id": "five-129",
+  "style": "five",
+  "word": "BRUIT",
+  "definition": "Whooshing sound over a narrowed artery heard with a stethoscope.",
+  "dossier": null
+ },
+ {
+  "id": "five-130",
+  "style": "five",
+  "word": "RALES",
+  "definition": "Crackling lung sounds heard on breathing in.",
+  "dossier": null
+ },
+ {
+  "id": "five-131",
+  "style": "five",
+  "word": "ETHER",
+  "definition": "Early inhaled anesthetic.",
+  "dossier": null
+ },
+ {
+  "id": "five-132",
+  "style": "five",
+  "word": "LATEX",
+  "definition": "Rubber in gloves that can cause allergy.",
+  "dossier": null
+ },
+ {
+  "id": "five-133",
+  "style": "five",
+  "word": "SLING",
+  "definition": "Cloth support that holds an injured arm.",
+  "dossier": null
+ },
+ {
+  "id": "five-134",
+  "style": "five",
+  "word": "BRACE",
+  "definition": "Device that supports or holds a body part in place.",
+  "dossier": null
+ },
+ {
+  "id": "five-135",
+  "style": "five",
+  "word": "GAUZE",
+  "definition": "Thin woven fabric used for dressings.",
+  "dossier": null
+ },
+ {
+  "id": "five-136",
+  "style": "five",
+  "word": "PROBE",
+  "definition": "Slim instrument used to explore a wound or cavity.",
+  "dossier": null
+ },
+ {
+  "id": "five-137",
+  "style": "five",
+  "word": "CLAMP",
+  "definition": "Instrument that grips tissue or shuts a vessel.",
+  "dossier": null
+ },
+ {
+  "id": "five-138",
+  "style": "five",
+  "word": "DRAIN",
+  "definition": "Tube that lets fluid or pus leave a wound.",
+  "dossier": null
+ },
+ {
+  "id": "five-139",
+  "style": "five",
+  "word": "SCOPE",
+  "definition": "Instrument with a camera for looking inside the body.",
+  "dossier": null
+ },
+ {
+  "id": "five-140",
+  "style": "five",
+  "word": "LASER",
+  "definition": "Focused light beam used to cut or seal tissue.",
+  "dossier": null
+ },
+ {
+  "id": "five-141",
+  "style": "five",
+  "word": "ASSAY",
+  "definition": "Lab test that measures a substance.",
+  "dossier": null
+ },
+ {
+  "id": "five-142",
+  "style": "five",
+  "word": "SMEAR",
+  "definition": "Thin layer of sample spread on a slide, like a Pap test.",
+  "dossier": null
+ },
+ {
+  "id": "five-143",
+  "style": "five",
+  "word": "TITER",
+  "definition": "Concentration of an antibody, found by dilution.",
+  "dossier": null
+ },
+ {
+  "id": "five-144",
+  "style": "five",
+  "word": "STAIN",
+  "definition": "Dye that colors cells for the microscope, like Gram.",
+  "dossier": null
+ },
+ {
+  "id": "five-145",
+  "style": "five",
+  "word": "DOULA",
+  "definition": "Trained helper who supports a mother during birth.",
+  "dossier": null
+ },
+ {
+  "id": "five-146",
+  "style": "five",
+  "word": "MEDIC",
+  "definition": "Doctor, or a soldier trained in first aid.",
+  "dossier": null
+ },
+ {
+  "id": "five-147",
+  "style": "five",
+  "word": "TRACT",
+  "definition": "Pathway of organs or nerve fibers, like the urinary tract.",
+  "dossier": null
+ },
+ {
+  "id": "five-148",
+  "style": "five",
+  "word": "FLORA",
+  "definition": "Bacteria that normally live in or on the body.",
+  "dossier": null
+ },
+ {
+  "id": "five-149",
+  "style": "five",
+  "word": "PUBIS",
+  "definition": "Front part of the hip bone.",
+  "dossier": null
+ },
+ {
+  "id": "five-150",
+  "style": "five",
+  "word": "OPTIC",
+  "definition": "Relating to the eye or vision, as in the optic nerve.",
+  "dossier": null
+ },
+ {
+  "id": "five-151",
+  "style": "five",
+  "word": "AURAL",
+  "definition": "Relating to the ear or hearing.",
+  "dossier": null
+ },
+ {
+  "id": "five-152",
+  "style": "five",
+  "word": "VIRAL",
+  "definition": "Caused by a virus.",
+  "dossier": null
+ },
+ {
+  "id": "five-153",
+  "style": "five",
+  "word": "TOXIC",
+  "definition": "Poisonous or harmful to the body.",
+  "dossier": null
+ },
+ {
+  "id": "five-154",
+  "style": "five",
+  "word": "TONIC",
+  "definition": "Steady muscle contraction, as in tonic seizures.",
+  "dossier": null
+ },
+ {
+  "id": "five-155",
+  "style": "five",
+  "word": "TRAIT",
+  "definition": "Feature passed down through genes.",
+  "dossier": null
+ },
+ {
+  "id": "five-156",
+  "style": "five",
+  "word": "CLONE",
+  "definition": "Genetically identical copy of a cell or organism.",
+  "dossier": null
+ },
+ {
+  "id": "five-157",
+  "style": "five",
+  "word": "PHAGE",
+  "definition": "Virus that infects bacteria.",
+  "dossier": null
+ },
+ {
+  "id": "five-158",
+  "style": "five",
+  "word": "LARVA",
+  "definition": "Young form of an insect or worm that hatches from an egg.",
+  "dossier": null
+ },
+ {
+  "id": "five-159",
+  "style": "five",
+  "word": "VENOM",
+  "definition": "Poison injected by a snake, spider or insect.",
+  "dossier": null
+ },
+ {
+  "id": "five-160",
+  "style": "five",
+  "word": "BIRTH",
+  "definition": "The delivery of a baby.",
+  "dossier": null
+ },
+ {
+  "id": "five-161",
+  "style": "five",
+  "word": "CHILD",
+  "definition": "Young person between infancy and puberty.",
+  "dossier": null
+ },
+ {
+  "id": "five-162",
+  "style": "five",
+  "word": "SIGHT",
+  "definition": "Ability to see.",
+  "dossier": null
+ },
+ {
+  "id": "five-163",
+  "style": "five",
+  "word": "SMELL",
+  "definition": "Sense carried by the olfactory nerve.",
+  "dossier": null
+ },
+ {
+  "id": "five-164",
+  "style": "five",
+  "word": "TASTE",
+  "definition": "Sense of flavor on the tongue.",
+  "dossier": null
+ },
+ {
+  "id": "five-165",
+  "style": "five",
+  "word": "TOUCH",
+  "definition": "Sense felt through the skin.",
+  "dossier": null
+ },
+ {
+  "id": "five-166",
+  "style": "five",
+  "word": "VOICE",
+  "definition": "Sound made by the vocal cords.",
+  "dossier": null
+ },
+ {
+  "id": "five-167",
+  "style": "five",
+  "word": "SLEEP",
+  "definition": "Natural rest with REM and non-REM stages.",
+  "dossier": null
+ },
+ {
+  "id": "five-168",
+  "style": "five",
+  "word": "SNORE",
+  "definition": "Rough breathing sound in sleep from a vibrating airway.",
+  "dossier": null
+ },
+ {
+  "id": "five-169",
+  "style": "five",
+  "word": "OBESE",
+  "definition": "Having a BMI of 30 or more.",
+  "dossier": null
+ },
+ {
+  "id": "five-170",
+  "style": "five",
+  "word": "FIBER",
+  "definition": "Plant food we cannot digest that helps the bowel; also a thread-like cell.",
+  "dossier": null
+ },
+ {
+  "id": "five-171",
+  "style": "five",
+  "word": "CHOKE",
+  "definition": "To have the airway blocked.",
+  "dossier": null
+ },
+ {
+  "id": "five-172",
+  "style": "five",
+  "word": "AXIAL",
+  "definition": "Along the central line of the body, like the skull and spine.",
+  "dossier": null
+ },
+ {
+  "id": "five-173",
+  "style": "five",
+  "word": "ULNAR",
+  "definition": "Relating to the forearm bone on the little-finger side.",
+  "dossier": null
+ },
+ {
+  "id": "five-174",
+  "style": "five",
+  "word": "DIGIT",
+  "definition": "A finger or toe.",
+  "dossier": null
+ },
+ {
+  "id": "five-175",
+  "style": "five",
+  "word": "VAGAL",
+  "definition": "Relating to the vagus nerve.",
+  "dossier": null
+ },
+ {
+  "id": "five-176",
+  "style": "five",
+  "word": "CROWN",
+  "definition": "Part of a tooth above the gum, or a cap placed on it.",
+  "dossier": null
+ },
+ {
+  "id": "five-177",
+  "style": "five",
+  "word": "FLOSS",
+  "definition": "Thread for cleaning between teeth.",
+  "dossier": null
+ },
+ {
+  "id": "five-178",
+  "style": "five",
+  "word": "DIZZY",
+  "definition": "Feeling lightheaded or that the room is spinning.",
+  "dossier": null
+ },
+ {
+  "id": "five-179",
+  "style": "five",
+  "word": "ORGAN",
+  "definition": "Body part with a special job, like the heart.",
+  "dossier": null
+ },
+ {
+  "id": "five-180",
+  "style": "five",
+  "word": "CLEFT",
+  "definition": "Gap present from birth, as in the lip or palate.",
+  "dossier": null
+ },
+ {
+  "id": "five-181",
+  "style": "five",
+  "word": "ATRIA",
+  "definition": "The two upper chambers of the heart.",
+  "dossier": null
+ },
+ {
+  "id": "five-182",
+  "style": "five",
+  "word": "VALVE",
+  "definition": "Flap that keeps blood flowing one way.",
+  "dossier": null
+ },
+ {
+  "id": "five-183",
+  "style": "five",
+  "word": "CRYPT",
+  "definition": "Small pit in the gut lining, like the crypts of Lieberkuhn.",
+  "dossier": null
+ },
+ {
+  "id": "five-184",
+  "style": "five",
+  "word": "SULCI",
+  "definition": "Grooves on the surface of the brain.",
+  "dossier": null
+ },
+ {
+  "id": "five-185",
+  "style": "five",
+  "word": "SEPTA",
+  "definition": "Thin walls dividing a cavity, like in the heart or nose.",
+  "dossier": null
+ },
+ {
+  "id": "five-186",
+  "style": "five",
+  "word": "MOUTH",
+  "definition": "Opening where digestion starts.",
+  "dossier": null
+ },
+ {
+  "id": "five-187",
+  "style": "five",
+  "word": "CHEEK",
+  "definition": "Side of the face below the eye.",
+  "dossier": null
+ },
+ {
+  "id": "five-188",
+  "style": "five",
+  "word": "THIGH",
+  "definition": "Upper leg between the hip and the knee.",
+  "dossier": null
+ },
+ {
+  "id": "five-189",
+  "style": "five",
+  "word": "NODAL",
+  "definition": "Relating to a node, such as a lymph node.",
+  "dossier": null
+ },
+ {
+  "id": "five-190",
+  "style": "five",
+  "word": "ACHES",
+  "definition": "Dull, constant pains.",
+  "dossier": null
+ },
+ {
+  "id": "five-191",
+  "style": "five",
+  "word": "CELLS",
+  "definition": "The smallest living units of the body.",
+  "dossier": null
+ },
+ {
+  "id": "five-192",
+  "style": "five",
+  "word": "GENES",
+  "definition": "Units of DNA that carry inherited information.",
+  "dossier": null
+ },
+ {
+  "id": "five-193",
+  "style": "five",
+  "word": "NODES",
+  "definition": "Small lumps of tissue, like the lymph nodes.",
+  "dossier": null
+ },
+ {
+  "id": "five-194",
+  "style": "five",
+  "word": "LOBES",
+  "definition": "Rounded divisions of an organ, like the lung or brain.",
+  "dossier": null
+ },
+ {
+  "id": "five-195",
+  "style": "five",
+  "word": "VEINS",
+  "definition": "Vessels that carry blood back to the heart.",
+  "dossier": null
+ },
+ {
+  "id": "five-196",
+  "style": "five",
+  "word": "TEETH",
+  "definition": "Hard structures in the jaw used to chew.",
+  "dossier": null
+ },
+ {
+  "id": "five-197",
+  "style": "five",
+  "word": "NAILS",
+  "definition": "Hard keratin plates on the fingers and toes.",
+  "dossier": null
+ },
+ {
+  "id": "five-198",
+  "style": "five",
+  "word": "ITCHY",
+  "definition": "Having an urge to scratch.",
+  "dossier": null
+ },
+ {
+  "id": "five-199",
+  "style": "five",
+  "word": "AXONS",
+  "definition": "Long fibers that carry signals away from nerve cells.",
+  "dossier": null
+ },
+ {
+  "id": "five-200",
+  "style": "five",
+  "word": "WARTS",
+  "definition": "Small rough skin growths caused by HPV.",
+  "dossier": null
  }
 ]
