@@ -8,6 +8,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useBalance } from '@/components/LevelBadge';
 import { Moon } from '@/components/Moon';
 import { loadAchievements } from '@/features/achievements/useAchievements';
+import { loadChallenges, missionsLeft, useChests } from '@/features/chests/useChests';
 import { engine, GUEST_PLAYS } from '@/games/engine';
 import { sfx, tapped, useSound } from '@/lib/sound';
 import { signOut, useAccount } from '@/state/account';
@@ -53,6 +54,11 @@ export function Menu() {
       .then((rows) => setWaiting(rows.some((r) => r.paid < r.reached)))
       .catch(() => {});
   }, [open, profile, friends]);
+  // #19: a red dot on Achievements while today's daily missions aren't all done (cyan wins when tokens wait).
+  const missions = useChests((x) => missionsLeft(x.c));
+  useEffect(() => {
+    if (open && profile) void loadChallenges();
+  }, [open, profile]);
   // Guests: free plays left, 5 in total (#83).
   const [tries, setTries] = useState<number | null>(null);
   useEffect(() => {
@@ -116,7 +122,9 @@ export function Menu() {
             <Pressable key={to} onPress={() => go(to)} style={[s.r, { borderBottomColor: t.panelLine }, i === 0 && { borderTopWidth: 1, borderTopColor: t.panelLine }]}>
               <Text style={[s.no, { color: t.kick }]} numberOfLines={1}>{String(i + 1).padStart(2, '0')}</Text>
               <Text style={[s.lbl, { color: on ? t.accent : t.white, fontFamily: on ? F.displayItalic : F.display }]}>{label}</Text>
-              {waiting && to === '/achievements' ? <View style={[s.dot, { backgroundColor: t.accent }]} accessibilityLabel="Tokens waiting" /> : null}
+              {to === '/achievements' && profile && (waiting || missions) ? (
+                <View style={[s.dot, { backgroundColor: waiting ? t.accent : t.red }]} accessibilityLabel={waiting ? 'Tokens waiting' : 'Daily missions not done'} />
+              ) : null}
             </Pressable>
           );
         })}
@@ -161,7 +169,8 @@ const s = StyleSheet.create({
   r: { flexDirection: 'row', alignItems: 'baseline', gap: u(12), paddingVertical: u(9), borderBottomWidth: 1 },
   no: { fontFamily: F.mono, fontSize: u(8.5), letterSpacing: u(1.275), width: u(16) },
   lbl: { fontSize: u(14.5), lineHeight: u(16.5), flex: 1 },
-  dot: { width: u(7), height: u(7), borderRadius: u(4), alignSelf: 'center' },
+  // #9: kept in from the row's right edge (Yazan 2026-10-31).
+  dot: { width: u(7), height: u(7), borderRadius: u(4), alignSelf: 'center', marginRight: u(14) },
   pills: { flexDirection: 'row', flexWrap: 'wrap', gap: u(8) },
   theme: { flexDirection: 'row', alignSelf: 'flex-start', borderWidth: 1, borderRadius: 999, padding: u(3) },
   opt: { paddingVertical: u(5), paddingHorizontal: u(11), borderRadius: 999 },

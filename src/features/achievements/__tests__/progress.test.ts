@@ -3,7 +3,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import type { GameKey, Mode, Play, PlayItem } from '../../../games/engine/types';
-import { ACHIEVEMENTS, achievementProgress, tiersReached, tierTokens, type AchInputs } from '../progress';
+import { ACHIEVEMENTS, achievementProgress, ROTATION_GAMES, tiersReached, tierTokens, type AchInputs } from '../progress';
 
 const NOON = new Date(2026, 9, 10, 12, 0).getTime();
 let n = 0;
@@ -35,10 +35,13 @@ test('achievements: finished plays, unfinished and other accounts left out', () 
 });
 
 test('achievements: full rotation is the least-played game', () => {
-  const keys: GameKey[] = ['case-files-unsolved', 'the-conqueror', 'nova-crossword', 'the-diagnostic-pursuit', 'nova-medicordle', 'the-riddler', 'the-silent-artist', 'the-streak-master', 'trust-me-not', 'the-wheels-of-chaos'];
-  const nine = keys.slice(0, 9).flatMap((g) => [play(g), play(g)]);
-  assert.equal(achievementProgress(base({ plays: nine })).full_rotation, 0);
-  const all = [...nine, play('the-wheels-of-chaos'), play('the-wheels-of-chaos'), play('the-riddler')];
+  const keys: GameKey[] = [...ROTATION_GAMES];
+  assert.equal(keys.length, 13);
+  assert.ok(!keys.includes('trust-me-not'));
+  const most = keys.slice(0, 12).flatMap((g) => [play(g), play(g)]);
+  assert.equal(achievementProgress(base({ plays: most })).full_rotation, 0);
+  const last = keys[12];
+  const all = [...most, play(last), play(last), play('the-riddler'), play('trust-me-not')];
   assert.equal(achievementProgress(base({ plays: all })).full_rotation, 2);
 });
 
@@ -107,16 +110,23 @@ test('achievements: full marks counts distinct solo puzzles with 3 stars, or the
   assert.equal(achievementProgress(base({ plays: [a, on], items, crosswordThreeStars: 7 })).full_marks, 7);
 });
 
-test('achievements: Conqueror and Trust Me Not wins are the owner placing 1st', () => {
+test('achievements: Conqueror and the 4 new games count wins as the owner placing 1st', () => {
   const plays = [
     play('the-conqueror', 'online', { seats: two, standings: ranked(0) }),
     play('the-conqueror', 'online', { seats: two, standings: ranked(1) }),
-    play('trust-me-not', 'online', { seats: two, standings: ranked(0) }),
-    play('trust-me-not', 'online', { seats: two, standings: ranked(0), status: 'in_progress' }),
+    play('code-clinic', 'online', { seats: two, standings: ranked(0) }),
+    play('code-clinic', 'online', { seats: two, standings: ranked(0), status: 'in_progress' }),
+    play('nova-password', 'offline', { seats: two, standings: ranked(0) }),
+    play('imposter', 'offline', { seats: two, standings: ranked(1) }),
+    play('the-quiz-parade', 'online', { seats: two, standings: ranked(0) }),
+    play('the-quiz-parade', 'online', { seats: two, standings: ranked(0) }),
   ];
   const r = achievementProgress(base({ plays }));
   assert.equal(r.conqueror, 1);
-  assert.equal(r.most_trusted, 1);
+  assert.equal(r.code_breaker, 1);
+  assert.equal(r.one_word, 1);
+  assert.equal(r.sharp_eye, 0);
+  assert.equal(r.parade_leader, 2);
 });
 
 test('achievements: team player counts the owner team placing 1st', () => {
@@ -150,7 +160,7 @@ test('achievements: offline games, inputs, and house call with friends only', ()
 test('achievements: every key has a count and tiers follow the goals', () => {
   const r = achievementProgress(base());
   assert.deepEqual(Object.keys(r).sort(), ACHIEVEMENTS.map((a) => a.key).sort());
-  assert.equal(ACHIEVEMENTS.length, 27);
+  assert.equal(ACHIEVEMENTS.length, 30);
   assert.equal(tiersReached('hot_streak', 9), 0);
   assert.equal(tiersReached('hot_streak', 10), 1);
   assert.equal(tiersReached('hot_streak', 34), 2);
@@ -170,11 +180,11 @@ test('achievements: invites, challenges and written cases come from the server; 
   assert.equal(achievementProgress(base()).recruiter, 0);
   const practice = play('the-diagnostic-pursuit', 'solo', { settings: { custom: 'c:x' } });
   assert.equal(achievementProgress(base({ plays: [practice], items: [item(practice)] })).first_rounds, 0);
-  // Platinum pays Bronze + Silver + Gold (Yazan 2026-10-13).
-  assert.deepEqual(tierTokens('case_writer'), [3, 4, 5, 12]);
-  assert.deepEqual(tierTokens('recruiter'), [1, 3, 5, 9]);
-  assert.deepEqual(tierTokens('ad_watcher'), [5, 10, 20, 35]);
-  assert.deepEqual(tierTokens('app_tour'), [5]);
+  // Platinum pays Bronze + Silver + Gold (Yazan 2026-10-13); all doubled 2026-11-01.
+  assert.deepEqual(tierTokens('case_writer'), [6, 8, 10, 24]);
+  assert.deepEqual(tierTokens('recruiter'), [2, 6, 10, 18]);
+  assert.deepEqual(tierTokens('ad_watcher'), [10, 20, 40, 70]);
+  assert.deepEqual(tierTokens('app_tour'), [10]);
   assert.equal(achievementProgress(base({ social: { ad_watcher: 50 } })).ad_watcher, 50);
   assert.equal(tiersReached('ad_watcher', 50), 2);
 });

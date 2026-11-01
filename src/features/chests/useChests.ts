@@ -42,6 +42,9 @@ onAccountSwitch(() => useChests.setState({ c: null, at: 0, failed: false, savedA
 export const chestsOwned = (c: Challenges | null) => (c ? c.chests : NONE);
 export const chestCount = (c: Challenges | null) => Object.values(chestsOwned(c)).reduce((a, n) => a + n, 0);
 
+/** Today's daily missions are not all done yet (signed in only; a copy from an earlier day doesn't count). Red dot, #19. */
+export const missionsLeft = (c: Challenges | null) => !!c && c.signed_in && c.step <= 3 && c.resets > Date.now();
+
 /** Reads today's challenges and the chests waiting (guests see the challenges with no progress). Skips if read in the last 20 s. */
 export async function loadChallenges(force = false) {
   if (!force && Date.now() - useChests.getState().at < 20000) return;

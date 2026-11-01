@@ -14,7 +14,10 @@ export type AchKey =
   | 'cold_case'
   | 'full_marks'
   | 'conqueror'
-  | 'most_trusted'
+  | 'parade_leader'
+  | 'one_word'
+  | 'code_breaker'
+  | 'sharp_eye'
   | 'team_player'
   | 'house_call'
   | 'recruiter'
@@ -45,7 +48,11 @@ export const ACHIEVEMENTS: readonly { key: AchKey; name: string; what: string; g
   { key: 'cold_case', name: 'Cold Case', what: 'Solve Case Files cases', goals: [10, 50, 150, 375] },
   { key: 'full_marks', name: 'Full Marks', what: 'Get 3 stars on crosswords', goals: [10, 20, 31] },
   { key: 'conqueror', name: 'Conqueror', what: 'Win The Conqueror', goals: [1, 10, 50, 125] },
-  { key: 'most_trusted', name: 'Most Trusted', what: 'Win Trust Me Not', goals: [1, 10, 50, 125] },
+  // The 4 new games replace Most Trusted (Trust Me Not was cancelled; Yazan 2026-11-01).
+  { key: 'parade_leader', name: 'Parade Leader', what: 'Win The Quiz Parade', goals: [1, 10, 50, 125] },
+  { key: 'one_word', name: 'One Word Wonder', what: 'Win Nova Password', goals: [1, 10, 50, 125] },
+  { key: 'code_breaker', name: 'Code Breaker', what: 'Win Code Clinic', goals: [1, 10, 50, 125] },
+  { key: 'sharp_eye', name: 'Sharp Eye', what: 'Win The Imposter', goals: [1, 10, 50, 125] },
   { key: 'team_player', name: 'Team Player', what: 'Win team matches', goals: [1, 10, 50, 125] },
   { key: 'house_call', name: 'House Call', what: 'Play online with friends', goals: [1, 20, 100, 250] },
   { key: 'recruiter', name: 'Recruiter', what: 'Invite friends who join', goals: [3, 10, 30, 75] },
@@ -88,16 +95,16 @@ export const TOUR_STEPS: readonly { key: string; name: string; path: string }[] 
 /** The tour step a page path counts for, if any. */
 export const tourStepOf = (path: string) => TOUR_STEPS.find((x) => x.path === path)?.key;
 
-/** Tokens paid for bronze, silver and gold. */
-export const TIER_TOKENS = [1, 3, 5] as const;
+/** Tokens paid for bronze, silver and gold (doubled, Yazan 2026-11-01). */
+export const TIER_TOKENS = [2, 6, 10] as const;
 
 /**
- * Case Writer pays 3/4/5 (AC9) and Commercial Break 5/10/20; every other achievement pays TIER_TOKENS. Platinum pays
- * the three added up (Yazan 2026-10-13). "Get to Know MedNova" pays 5 once.
+ * Case Writer pays 6/8/10 (AC9) and Commercial Break 10/20/40; every other achievement pays TIER_TOKENS. Platinum pays
+ * the three added up (Yazan 2026-10-13). "Get to Know MedNova" pays 10 once. All doubled on 2026-11-01.
  */
 export const tierTokens = (key: AchKey): readonly number[] => {
-  if (key === 'app_tour') return [5];
-  const b = key === 'case_writer' ? [3, 4, 5] : key === 'ad_watcher' ? [5, 10, 20] : [...TIER_TOKENS];
+  if (key === 'app_tour') return [10];
+  const b = key === 'case_writer' ? [6, 8, 10] : key === 'ad_watcher' ? [10, 20, 40] : [...TIER_TOKENS];
   return [...b, b[0] + b[1] + b[2]];
 };
 
@@ -121,9 +128,11 @@ export type AchInputs = {
   tour?: string[];
 };
 
-const GAMES: GameKey[] = [
+/** Every game on the Games page, for Full Rotation (Trust Me Not was cancelled; the 4 new games added 2026-11-01). */
+export const ROTATION_GAMES: GameKey[] = [
   'case-files-unsolved', 'the-conqueror', 'nova-crossword', 'the-diagnostic-pursuit', 'nova-medicordle',
-  'the-riddler', 'the-silent-artist', 'the-streak-master', 'trust-me-not', 'the-wheels-of-chaos',
+  'the-riddler', 'the-silent-artist', 'the-streak-master', 'the-wheels-of-chaos',
+  'the-quiz-parade', 'nova-password', 'code-clinic', 'imposter',
 ];
 
 const OWNER = 0;
@@ -156,8 +165,9 @@ export function achievementProgress(i: AchInputs): Record<AchKey, number> {
   const of = (g: GameKey) => mine.filter((m) => m.p.game === g);
   const solved = (g: GameKey) => of(g).filter((m) => m.x.outcome === 'right');
 
+  const wins = (g: GameKey) => plays.filter((p) => p.game === g && won(p)).length;
   const friends = new Set(i.friendIds ?? []);
-  const perGame = GAMES.map((g) => plays.filter((p) => p.game === g).length);
+  const perGame = ROTATION_GAMES.map((g) => plays.filter((p) => p.game === g).length);
   const night = plays.filter((p) => p.endedAt != null && new Date(p.endedAt).getHours() < 5).length;
   const threeStars = new Set(
     of('nova-crossword')
@@ -180,7 +190,10 @@ export function achievementProgress(i: AchInputs): Record<AchKey, number> {
     // Online stars are by place, not by words left, so only Solo puzzles count.
     full_marks: Math.max(threeStars, i.crosswordThreeStars ?? 0),
     conqueror: plays.filter((p) => p.game === 'the-conqueror' && won(p)).length,
-    most_trusted: plays.filter((p) => p.game === 'trust-me-not' && won(p)).length,
+    parade_leader: wins('the-quiz-parade'),
+    one_word: wins('nova-password'),
+    code_breaker: wins('code-clinic'),
+    sharp_eye: wins('imposter'),
     team_player: plays.filter(teamWon).length,
     house_call: plays.filter((p) => p.mode === 'online' && p.seats.some((s) => s.seat !== OWNER && s.userId && friends.has(s.userId))).length,
     recruiter: i.social?.recruiter ?? 0,
