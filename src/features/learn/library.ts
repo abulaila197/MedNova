@@ -83,7 +83,7 @@ function qaOf(game: string, item: PlayItem): Omit<Extract<Card, { kind: 'qa' }>,
     const q = paradeById.get(item.itemId);
     if (!q) return null;
     const choices = q.style === 'mcq' || q.style === 'reverse' ? q.choices : q.style === 'tf' ? ['True', 'False'] : [];
-    const ask = q.style === 'reverse' ? `Which question is this the answer to: ${q.prompt}` : q.prompt;
+    const ask = q.style === 'reverse' ? `Which question has this answer: ${q.prompt}` : q.prompt;
     return { q: ask, choices, answer: paradeAnswer(q) };
   }
   if (game === 'nova-crossword') {
