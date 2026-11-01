@@ -220,7 +220,7 @@ export function AppPopup({ word, slots, typed, tokens, width, notice, shake = 0,
 }
 
 /** Level map: numbered glass slides in a snake, green when 3 stars, accent edge on the next one. */
-export function AppLevelMap({ best, count = 31, action, onOpen }: { best: Record<number, number>; count?: number; action?: ReactNode; onOpen?: (level: number) => void }) {
+export function AppLevelMap({ best, count = 40, action, onOpen }: { best: Record<number, number>; count?: number; action?: ReactNode; onOpen?: (level: number) => void }) {
   const t = useTheme();
   const c = slideColors(t.mode);
   const [w, setW] = useState(0);
