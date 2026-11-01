@@ -1,9 +1,10 @@
 // The Imposter online referee (IM2): Yazan's engine on the server. The game is saved in im_games with each player's
 // own view next to it; phones read only their own view with im_state, so words never reach the wrong phone.
-// The bad-word list is bundled in; the word bank (pairs.json) is read once from the repo at a pinned commit, so the
-// function is a single file. Change BANK to a newer commit when the bank changes. Bundled with scripts/build-imposter-function.sh.
+// The bad-word list and the word bank (pairs.json) are bundled in (the repo is private, so the function can't fetch
+// them). Rebuild and redeploy when the bank changes. Bundled with scripts/build-imposter-function.sh.
 import { createClient } from 'npm:@supabase/supabase-js@2';
 
+import pairsJson from '../../../src/games/imposter/data/pairs.json';
 import type { SubtypeChoice, WordBank, WordPair } from '../../../src/games/imposter/engine/types';
 import { dueOf, onlineRanks, scoresOf, startOnlineGame, stepOnline, viewsOf, type Move, type Saved } from '../../../src/games/imposter/online';
 
@@ -14,15 +15,7 @@ const cors = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
-const BANK = 'https://raw.githubusercontent.com/abulaila197/MedNova/774c73f/src/games/imposter/data/pairs.json';
-let bank: Promise<WordBank> | null = null;
-const loadBank = () =>
-  (bank ??= fetch(BANK)
-    .then((r) => (r.ok ? (r.json() as Promise<WordBank>) : Promise.reject(new Error(`bank ${r.status}`))))
-    .catch((e) => {
-      bank = null;
-      throw e;
-    }));
+const loadBank = async (): Promise<WordBank> => pairsJson as unknown as WordBank;
 const json = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { ...cors, 'Content-Type': 'application/json' } });
 
 type Loaded = {

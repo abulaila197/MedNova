@@ -1,10 +1,11 @@
 // The Nova Password online referee: Yazan's rules on the server. The match is saved in pw_games with each player's own
 // view next to it; phones read only their own view with pw_state, so a secret term only ever reaches its clue giver.
-// The 1,000-term bank (with the forbidden words the clue check needs) lives in pw_terms; the first request fills it
-// from terms.json at a pinned commit. Change BANK to a newer commit and empty pw_terms when the bank changes.
+// The term bank (with the forbidden words the clue check needs) is bundled in from terms.json (the repo is private, so
+// the function can't fetch it). Rebuild and redeploy when the bank changes.
 // Built with scripts/build-nova-password-function.sh.
 import { createClient } from 'npm:@supabase/supabase-js@2';
 
+import termsJson from '../../../src/games/password/data/terms.json';
 import type { Term } from '../../../src/games/password/engine/types';
 import { dueOf, MOVES, onlineRanks, scoresOf, startOnlineRoom, stepOnline, viewsOf, type Move, type Room } from '../../../src/games/password/online';
 
@@ -15,18 +16,7 @@ const cors = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
-const BANK = 'https://raw.githubusercontent.com/abulaila197/MedNova/94aac00a03ded40d06ee5f73d5e46573c9682985/src/games/password/data/terms.json';
-let TERMS: Term[] | null = null;
-
-async function bank(): Promise<Term[]> {
-  if (TERMS) return TERMS;
-  const { data } = await admin.from('pw_terms').select('id, name, bank, category, forbidden').range(0, 1999);
-  if (data && data.length >= 1000) return (TERMS = data as Term[]);
-  const list = (await (await fetch(BANK)).json()) as Term[];
-  const { error } = await admin.from('pw_terms').upsert(list);
-  if (error) throw new Error(error.message);
-  return (TERMS = list);
-}
+const bank = async (): Promise<Term[]> => termsJson as Term[];
 /** My diseases: the host's approved Password terms, in random order (Yazan 2026-10-26). */
 async function ownTerms(host: string): Promise<Term[]> {
   if (!host) return [];

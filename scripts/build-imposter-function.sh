@@ -1,6 +1,6 @@
 #!/bin/sh
 # Builds the Imposter online referee: Yazan's engine and the bad-word list in one file, deployed as the 'imposter'
-# edge function (verify_jwt on). The word bank is read from the repo at the commit pinned in its index.ts.
+# edge function (verify_jwt on). The word bank is bundled in too: rebuild and redeploy when it changes.
 set -e
 cd "$(dirname "$0")/.."
 OUT=supabase/functions/imposter
