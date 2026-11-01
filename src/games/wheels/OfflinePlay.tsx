@@ -20,7 +20,7 @@ import {
 } from './offline';
 import { WheelsPause } from './screens';
 import { TurnBoard, type Strip } from './TurnBoard';
-import { Bill, Btn, Bulbs, CB, CD, CM, Gem, Kicker, Panel, PauseBtn, ROMAN, Rule, T, VelvetScreen, VV } from './velvet';
+import { Bill, Btn, Bulbs, CB, CD, CM, Gem, Kicker, Panel, PauseBtn, QF_B, ROMAN, Rule, T, VelvetScreen, VV } from './velvet';
 import { useTicker } from '../engine/useTicker';
 import { gameShown } from './shown';
 
@@ -281,7 +281,7 @@ export function RedemptionBoard({ g, now, seats, onEvent, onPause, hidden, watch
         <T f={CM} size={12} color={VV.soft}>{`${r.right} right`}</T>
       </View>
       <Panel inner={{ paddingVertical: u(22) }}>
-        <T f="InterTight_600SemiBold" size={17} style={{ textAlign: 'center', lineHeight: u(23) }}>{q.prompt}</T>
+        <T f={QF_B} size={18.5} style={{ textAlign: 'center', lineHeight: u(23.5) }}>{q.prompt}</T>
       </Panel>
       <View style={{ flex: 1 }} />
       <View style={{ flexDirection: 'row', gap: u(10), opacity: watch ? 0.4 : 1 }} pointerEvents={watch ? 'none' : 'auto'}>

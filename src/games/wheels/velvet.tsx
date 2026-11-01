@@ -36,7 +36,10 @@ export const CM = 'Cinzel_500Medium';
 export const CB = 'Cinzel_700Bold';
 export const BODY = 'InterTight_500Medium';
 export const BODY_B = 'InterTight_600SemiBold';
-const FONTS = [CD, CM, CB, 'InterTight_500Medium', 'InterTight_600SemiBold'];
+/** #32 (Yazan 2026-11-01): questions and answers are set in Alegreya Sans. */
+export const QF = 'AlegreyaSans_500Medium';
+export const QF_B = 'AlegreyaSans_700Bold';
+const FONTS = [CD, CM, CB, 'InterTight_500Medium', 'InterTight_600SemiBold', QF, QF_B];
 export const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI'];
 
 

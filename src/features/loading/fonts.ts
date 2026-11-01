@@ -32,6 +32,8 @@ const FILES: Record<string, number> = {
   CrimsonPro_400Regular: require('@expo-google-fonts/crimson-pro/400Regular/CrimsonPro_400Regular.ttf'),
   CrimsonPro_400Regular_Italic: require('@expo-google-fonts/crimson-pro/400Regular_Italic/CrimsonPro_400Regular_Italic.ttf'),
   CrimsonPro_600SemiBold: require('@expo-google-fonts/crimson-pro/600SemiBold/CrimsonPro_600SemiBold.ttf'),
+  AlegreyaSans_500Medium: require('@expo-google-fonts/alegreya-sans/500Medium/AlegreyaSans_500Medium.ttf'),
+  AlegreyaSans_700Bold: require('@expo-google-fonts/alegreya-sans/700Bold/AlegreyaSans_700Bold.ttf'),
   LibreBaskerville_400Regular_Italic: require('@expo-google-fonts/libre-baskerville/400Regular_Italic/LibreBaskerville_400Regular_Italic.ttf'),
 };
 

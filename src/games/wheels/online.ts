@@ -10,7 +10,7 @@ export const ONLINE_MS = {
   /** The Redemption offer to last place. */
   offer: 10_000,
   /** The wheels spin on every phone; the player's phone moves on when they stop, this is the fallback. */
-  reveal: 5_000,
+  reveal: 6_500, // the wheel stops at 3.3 s, then its result holds 3 s (#27, #56)
   /** The Redemption rules card before the calls start. */
   redReveal: 8_000,
   turnOver: 4_500,

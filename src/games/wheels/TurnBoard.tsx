@@ -1,20 +1,19 @@
 // One player's turn on the Velvet stage: the three slot reels, the Star window (WC5), then each question in its
 // own style with the bulb timer, and the right/wrong moment. Used by Solo and Pass the phone.
 import { LinearGradient } from 'expo-linear-gradient';
-import { memo, useEffect, useEffectEvent, useMemo, useState, type ReactNode } from 'react';
+import { useEffect, useEffectEvent, useMemo, useState, type ReactNode } from 'react';
 import { Pressable, ScrollView, StyleSheet, View, type LayoutChangeEvent } from 'react-native';
-import { Text } from '@/components/AppText';
 
 import { u } from '@/theme/scale';
 
-import { FIELDS, STYLE_KEYS, STYLES, fieldName, timeLeft, type Answer, type Question, type Turn, type TurnEvent } from './core';
-import { Brass, Btn, BODY, BODY_B, Bulbs, CB, CD, CM, Gem, Kicker, PauseBtn, T, VV } from './velvet';
+import { STYLES, fieldName, timeLeft, type Answer, type Question, type Turn, type TurnEvent } from './core';
+import { WheelSpin, STOP_MS } from './WheelSpin';
+import { Brass, Btn, BODY_B, Bulbs, CB, CD, CM, Gem, Kicker, PauseBtn, QF, QF_B, T, VV } from './velvet';
 
 export type Strip = { seat: number; name: string; color?: string; score: number; me?: boolean }[];
 
-const SPIN_MS = 70;
-/** #81 (Yazan 2026-10-24): the reels spin one after another, each for REEL_MS; #56: the result then holds HOLD_MS. */
-const REEL_MS = 900;
+const TICK_MS = 100;
+/** #56: the wheel's result holds HOLD_MS before the question. */
 const HOLD_MS = 3000;
 const LETTERS = 'ABCD';
 const PAIR_INK = ['#79c9b6', '#b98ad8', '#e8c46a', '#e0828f', '#8fb4e8', '#d9a07a'];
@@ -23,20 +22,12 @@ const glow = (c: string) => ({ borderColor: c, shadowColor: c, shadowOpacity: 0.
 const qWord = (n: number) => `${n} Question${n > 1 ? 's' : ''}`;
 
 /**
- * The three reels and the banner. The reels that change for this question spin one after another (#81), each in
- * this small part of the board only, then the result holds for 3 s (#56) before the turn goes on. Mounted again for
- * each spin (`key`) and after a pause (the board is hidden), so the spin starts from 0 as before.
+ * The wheel (#27, look A) and the banner. The three rings stop one after another, then the result holds for 3 s
+ * (#56) before the turn goes on. Mounted again for each spin (`key`) and after a pause (the board is hidden), so the
+ * spin starts from 0 as before. Only a turn's first question spins: the rest keep its count, style and field (#39b).
  */
 function Reels({ turn, onGo }: { turn: Turn; onGo: () => void }) {
-  // A later question keeps the count.
   const spinning = turn.phase === 'reveal';
-  const order = [...(turn.k === 0 ? ['count'] : []), 'style', 'field'] as const;
-  const stopAt = (reel: 'count' | 'style' | 'field') => {
-    const i = (order as readonly string[]).indexOf(reel);
-    return i < 0 ? -1 : (i + 1) * REEL_MS;
-  };
-  const startAt = (reel: 'count' | 'style' | 'field') => stopAt(reel) - REEL_MS;
-  const settleAt = order.length * REEL_MS;
   const [t, setT] = useState(0);
   const go = useEffectEvent(onGo);
   useEffect(() => {
@@ -45,49 +36,23 @@ function Reels({ turn, onGo }: { turn: Turn; onGo: () => void }) {
     const id = setInterval(() => {
       const e = Date.now() - start;
       setT(e);
-      if (e >= settleAt + HOLD_MS) {
+      if (e >= STOP_MS.field + HOLD_MS) {
         clearInterval(id);
         go();
       }
-    }, SPIN_MS);
+    }, TICK_MS);
     return () => clearInterval(id);
-  }, [spinning, settleAt]);
-  const tick = Math.floor(t / SPIN_MS);
-  const moving = (reel: 'count' | 'style' | 'field') => spinning && t >= startAt(reel) && t < stopAt(reel);
-  // A reel waiting for its turn shows a blank, so they land one after another.
-  const waiting = (reel: 'count' | 'style' | 'field') => spinning && t < startAt(reel);
-  const value = (reel: 'count' | 'style' | 'field', rolling: string, landed: string) => (moving(reel) ? rolling : waiting(reel) ? '?' : landed);
-  const count = value('count', String(1 + (tick % 3)), String(turn.count));
-  const style = value('style', STYLES[STYLE_KEYS[tick % STYLE_KEYS.length]].name, STYLES[turn.combo.style].name);
-  const field = value('field', FIELDS[(tick * 3) % FIELDS.length].name, fieldName(turn.combo.field));
-  const settled = !spinning || t >= settleAt;
+  }, [spinning]);
+  const done = (ring: keyof typeof STOP_MS) => !spinning || t >= STOP_MS[ring];
   const st = STYLES[turn.question.style];
   return (
     <>
-      <Reel label="COUNT" value={count} spinning={moving('count') || waiting('count')} />
-      <Reel label="STYLE" value={style} spinning={moving('style') || waiting('style')} />
-      <Reel label="FIELD" value={field} spinning={moving('field') || waiting('field')} />
-      <View style={{ height: u(2) }} />
-      {settled ? <Banner parts={[turn.k ? `Question ${turn.k + 1} of ${turn.count}` : qWord(turn.count), st.name, fieldName(turn.combo.field)]} /> : <View style={{ height: u(66) }} />}
+      <WheelSpin turn={turn} settled={{ count: done('count'), style: done('style'), field: done('field') }} />
+      <T f={CM} size={9.5} color={VV.soft} style={{ textAlign: 'center', letterSpacing: u(0.6) }} lines={1}>CENTRE COUNT · MIDDLE STYLE · OUTER FIELD</T>
+      {done('field') ? <Banner parts={[turn.k ? `Question ${turn.k + 1} of ${turn.count}` : qWord(turn.count), st.name, fieldName(turn.combo.field)]} /> : <View style={{ height: u(66) }} />}
     </>
   );
 }
-
-/** One slot reel: the landed value in crimson between two faded neighbours. Redraws only when its value changes. */
-const Reel = memo(function Reel({ label, value, spinning }: { label: string; value: string; spinning: boolean }) {
-  return (
-    <View style={{ flexDirection: 'row', alignItems: 'center', gap: u(10) }}>
-      <T f={CM} size={11.5} color={VV.brass} style={{ width: u(52), letterSpacing: u(1) }}>{label}</T>
-      <Brass style={{ flex: 1 }} r={10}>
-        <LinearGradient colors={['#b9a57f', VV.paper, '#fff8e6', VV.paper, '#b9a57f']} locations={[0, 0.22, 0.5, 0.78, 1]} style={s.reel}>
-          <T f={CB} size={value.length > 18 ? 12.5 : value.length > 12 ? 15 : 18} color={VV.redInk} style={{ textAlign: 'center', opacity: spinning ? 0.55 : 1 }} lines={1}>{value}</T>
-          <Text style={[s.pip, { left: u(6) }]}>▶</Text>
-          <Text style={[s.pip, { right: u(6) }]}>◀</Text>
-        </LinearGradient>
-      </Brass>
-    </View>
-  );
-});
 
 function Banner({ parts }: { parts: string[] }) {
   return (
@@ -132,7 +97,7 @@ function Option({ letter, text, mark = 'none', on, onPress, disabled, cross, fil
               <T f={CB} size={13} color={c ? VV.paperInk : VV.redInk}>{mark === 'right' ? '✓' : mark === 'wrong' ? '✕' : letter}</T>
             </View>
           ) : null}
-          <T f={BODY} size={14} color={VV.ink} style={{ flex: 1 }}>{text}</T>
+          <T f={QF} size={15.5} color={VV.ink} style={{ flex: 1 }}>{text}</T>
         </View>
       </Brass>
     </Pressable>
@@ -224,7 +189,7 @@ function Answers({ q, given, onAnswer }: { q: Question; given: Answer | undefine
       const ink = (li: number) => PAIR_INK[li % PAIR_INK.length];
       // Long pairs shrink the text and give the answers more width, so six long rows still fit the stage.
       const chars = q.pairs.reduce((n, [a, b]) => n + a.length + b.length, 0);
-      const fs = chars > 420 ? 8.5 : chars > 300 ? 9.5 : 10.5;
+      const fs = chars > 420 ? 9.5 : chars > 300 ? 10.5 : 11.5;
       const cell = chars > 300 ? s.cellTight : null;
       return (
         <View style={{ gap: u(8) }}>
@@ -240,7 +205,7 @@ function Answers({ q, given, onAnswer }: { q: Question; given: Answer | undefine
                 <View key={i} style={{ flexDirection: 'row', gap: u(8) }}>
                   <Pressable disabled={done} onPress={() => setLeft(left === i ? null : i)} accessibilityRole="button" accessibilityState={{ selected: left === i }} accessibilityLabel={l} style={[s.cell, cell, { flex: chars > 300 ? 0.8 : 1 }, set ? glow(ink(i)) : null, left === i ? { borderColor: VV.gold, backgroundColor: '#5c0c18' } : null, markColor(mark) ? { borderColor: markColor(mark)! } : null]}>
                     {set ? <Gem c={ink(i)} size={7} /> : null}
-                    <T f={BODY_B} size={fs} color={VV.ink} style={{ flex: 1 }}>{l}</T>
+                    <T f={QF_B} size={fs} color={VV.ink} style={{ flex: 1 }}>{l}</T>
                   </Pressable>
                   <Pressable
                     disabled={done || left == null}
@@ -253,7 +218,7 @@ function Answers({ q, given, onAnswer }: { q: Question; given: Answer | undefine
                     accessibilityLabel={q.pairs[ri][1]}
                     style={[s.cell, cell, { flex: chars > 300 ? 1.2 : 1 }, owner >= 0 ? glow(ink(owner)) : null]}>
                     {owner >= 0 ? <Gem c={ink(owner)} size={7} /> : null}
-                    <T f={BODY} size={fs} color={VV.ink} style={{ flex: 1 }}>{q.pairs[ri][1]}</T>
+                    <T f={QF} size={fs} color={VV.ink} style={{ flex: 1 }}>{q.pairs[ri][1]}</T>
                   </Pressable>
                 </View>
               );
@@ -341,7 +306,7 @@ export function TurnBoard({ turn, now, kicker, title, strip, footer, onEvent, on
           <T f={CM} size={11} color={VV.right} style={{ letterSpacing: u(1.4) }}>{fieldName(q.field).toUpperCase()}</T>
           {promptLead[q.style] ? <T f={CM} size={10.5} color={VV.dim}>{promptLead[q.style]}</T> : null}
         </View>
-        <T f={BODY_B} size={q.prompt.length > 110 ? 14.5 : 15.5} color={VV.ink} style={{ lineHeight: u(20.5) }}>{q.prompt}</T>
+        <T f={QF_B} size={q.prompt.length > 110 ? 16 : 17} color={VV.ink} style={{ lineHeight: u(21.5) }}>{q.prompt}</T>
       </Brass>
       <View pointerEvents={watch ? 'none' : 'auto'} style={watch && !result ? { opacity: 0.55 } : null}>
         <Answers key={`${turn.k}:${q.id}`} q={q} given={result ? result.answer : undefined} onAnswer={(a) => onEvent({ type: 'ANSWER', answer: a, now: Date.now() })} />
@@ -361,8 +326,6 @@ const s = StyleSheet.create({
   top: { flexDirection: 'row', alignItems: 'center', gap: u(12) },
   whose: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', borderWidth: 1, borderRadius: u(12), paddingVertical: u(6), paddingHorizontal: u(12), backgroundColor: 'rgba(0,0,0,0.25)' },
   spread: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', columnGap: u(10) },
-  reel: { height: u(54), paddingHorizontal: u(24), alignItems: 'center', justifyContent: 'center' },
-  pip: { position: 'absolute', top: '50%', marginTop: -u(9), fontSize: u(13), color: VV.redInk },
   opt: { flexDirection: 'row', alignItems: 'center', gap: u(10), paddingVertical: u(6.5), paddingHorizontal: u(12) },
   cross: { position: 'absolute', top: u(3), right: u(7), zIndex: 1 },
   letter: { width: u(24), height: u(24), borderRadius: u(12), backgroundColor: VV.cream, alignItems: 'center', justifyContent: 'center' },
