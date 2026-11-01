@@ -6,9 +6,9 @@ import type { Term } from '../engine/types';
 
 const TERMS = termsJson as Term[];
 
-test('the bank: 500 clinical + 500 basic science, unique ids and names', () => {
-  assert.equal(TERMS.filter((t) => t.bank === 'clinical').length, 500);
-  assert.equal(TERMS.filter((t) => t.bank === 'basic').length, 500);
+test('the bank: 600 clinical + 600 basic science, unique ids and names', () => {
+  assert.equal(TERMS.filter((t) => t.bank === 'clinical').length, 600);
+  assert.equal(TERMS.filter((t) => t.bank === 'basic').length, 600);
   assert.equal(new Set(TERMS.map((t) => t.id)).size, TERMS.length);
   assert.equal(new Set(TERMS.map((t) => tokens(t.name).join(' '))).size, TERMS.length);
 });

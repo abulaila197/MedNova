@@ -15910,6 +15910,2894 @@
     "alts": []
    },
    "topic": "Fungi and parasites"
+  },
+  {
+   "id": "c501",
+   "subtype": "clinical",
+   "category": "Respiratory",
+   "a": {
+    "word": "Legionnaires disease",
+    "alts": [
+     "legionella"
+    ]
+   },
+   "b": {
+    "word": "Psittacosis",
+    "alts": [
+     "parrot fever"
+    ]
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c502",
+   "subtype": "clinical",
+   "category": "Respiratory",
+   "a": {
+    "word": "Pleurisy",
+    "alts": [
+     "pleuritis"
+    ]
+   },
+   "b": {
+    "word": "Costochondritis",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c503",
+   "subtype": "clinical",
+   "category": "Respiratory",
+   "a": {
+    "word": "Tension pneumothorax",
+    "alts": []
+   },
+   "b": {
+    "word": "Hemothorax",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c504",
+   "subtype": "clinical",
+   "category": "Respiratory",
+   "a": {
+    "word": "Alpha-1 antitrypsin deficiency",
+    "alts": [
+     "A1AT deficiency"
+    ]
+   },
+   "b": {
+    "word": "Primary ciliary dyskinesia",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c505",
+   "subtype": "clinical",
+   "category": "Respiratory",
+   "a": {
+    "word": "Coal worker pneumoconiosis",
+    "alts": [
+     "black lung"
+    ]
+   },
+   "b": {
+    "word": "Berylliosis",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c506",
+   "subtype": "clinical",
+   "category": "Respiratory",
+   "a": {
+    "word": "Hypersensitivity pneumonitis",
+    "alts": [
+     "farmer lung"
+    ]
+   },
+   "b": {
+    "word": "Eosinophilic pneumonia",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c507",
+   "subtype": "clinical",
+   "category": "Respiratory",
+   "a": {
+    "word": "Crackles",
+    "alts": [
+     "crepitations",
+     "rales"
+    ]
+   },
+   "b": {
+    "word": "Rhonchi",
+    "alts": []
+   },
+   "kind": "symptom"
+  },
+  {
+   "id": "c508",
+   "subtype": "clinical",
+   "category": "Respiratory",
+   "a": {
+    "word": "Barking cough",
+    "alts": []
+   },
+   "b": {
+    "word": "Whooping",
+    "alts": []
+   },
+   "kind": "symptom"
+  },
+  {
+   "id": "c509",
+   "subtype": "clinical",
+   "category": "Respiratory",
+   "a": {
+    "word": "D-dimer",
+    "alts": []
+   },
+   "b": {
+    "word": "CT pulmonary angiogram",
+    "alts": [
+     "CTPA"
+    ]
+   },
+   "kind": "investigation"
+  },
+  {
+   "id": "c510",
+   "subtype": "clinical",
+   "category": "Respiratory",
+   "a": {
+    "word": "Non-invasive ventilation",
+    "alts": [
+     "NIV",
+     "BiPAP"
+    ]
+   },
+   "b": {
+    "word": "CPAP",
+    "alts": []
+   },
+   "kind": "treatment"
+  },
+  {
+   "id": "c511",
+   "subtype": "clinical",
+   "category": "Cardiovascular",
+   "a": {
+    "word": "Tricuspid regurgitation",
+    "alts": []
+   },
+   "b": {
+    "word": "Pulmonary stenosis",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c512",
+   "subtype": "clinical",
+   "category": "Cardiovascular",
+   "a": {
+    "word": "Atrial flutter",
+    "alts": []
+   },
+   "b": {
+    "word": "Wolff-Parkinson-White syndrome",
+    "alts": [
+     "WPW"
+    ]
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c513",
+   "subtype": "clinical",
+   "category": "Cardiovascular",
+   "a": {
+    "word": "Brugada syndrome",
+    "alts": []
+   },
+   "b": {
+    "word": "Torsades de pointes",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c514",
+   "subtype": "clinical",
+   "category": "Cardiovascular",
+   "a": {
+    "word": "Transposition of the great arteries",
+    "alts": []
+   },
+   "b": {
+    "word": "Hypoplastic left heart syndrome",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c515",
+   "subtype": "clinical",
+   "category": "Cardiovascular",
+   "a": {
+    "word": "Takotsubo cardiomyopathy",
+    "alts": [
+     "broken heart syndrome"
+    ]
+   },
+   "b": {
+    "word": "Constrictive pericarditis",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c516",
+   "subtype": "clinical",
+   "category": "Cardiovascular",
+   "a": {
+    "word": "Kawasaki disease",
+    "alts": []
+   },
+   "b": {
+    "word": "Takayasu arteritis",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c517",
+   "subtype": "clinical",
+   "category": "Cardiovascular",
+   "a": {
+    "word": "Orthostatic hypotension",
+    "alts": [
+     "postural hypotension"
+    ]
+   },
+   "b": {
+    "word": "Vasovagal syncope",
+    "alts": []
+   },
+   "kind": "symptom"
+  },
+  {
+   "id": "c518",
+   "subtype": "clinical",
+   "category": "Cardiovascular",
+   "a": {
+    "word": "Raised JVP",
+    "alts": [
+     "jugular venous pressure"
+    ]
+   },
+   "b": {
+    "word": "Pulsus paradoxus",
+    "alts": []
+   },
+   "kind": "symptom"
+  },
+  {
+   "id": "c519",
+   "subtype": "clinical",
+   "category": "Cardiovascular",
+   "a": {
+    "word": "Tilt table test",
+    "alts": []
+   },
+   "b": {
+    "word": "Ambulatory blood pressure monitoring",
+    "alts": [
+     "ABPM"
+    ]
+   },
+   "kind": "investigation"
+  },
+  {
+   "id": "c520",
+   "subtype": "clinical",
+   "category": "Cardiovascular",
+   "a": {
+    "word": "Implantable defibrillator",
+    "alts": [
+     "ICD"
+    ]
+   },
+   "b": {
+    "word": "Catheter ablation",
+    "alts": []
+   },
+   "kind": "treatment"
+  },
+  {
+   "id": "c521",
+   "subtype": "clinical",
+   "category": "Digestive",
+   "a": {
+    "word": "Barrett esophagus",
+    "alts": []
+   },
+   "b": {
+    "word": "Eosinophilic esophagitis",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c522",
+   "subtype": "clinical",
+   "category": "Digestive",
+   "a": {
+    "word": "Mallory-Weiss tear",
+    "alts": []
+   },
+   "b": {
+    "word": "Boerhaave syndrome",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c523",
+   "subtype": "clinical",
+   "category": "Digestive",
+   "a": {
+    "word": "Primary sclerosing cholangitis",
+    "alts": [
+     "PSC"
+    ]
+   },
+   "b": {
+    "word": "Autoimmune hepatitis",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c524",
+   "subtype": "clinical",
+   "category": "Digestive",
+   "a": {
+    "word": "Gilbert syndrome",
+    "alts": []
+   },
+   "b": {
+    "word": "Dubin-Johnson syndrome",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c525",
+   "subtype": "clinical",
+   "category": "Digestive",
+   "a": {
+    "word": "Ischemic colitis",
+    "alts": []
+   },
+   "b": {
+    "word": "Microscopic colitis",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c526",
+   "subtype": "clinical",
+   "category": "Digestive",
+   "a": {
+    "word": "Anal fistula",
+    "alts": []
+   },
+   "b": {
+    "word": "Pilonidal sinus",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c527",
+   "subtype": "clinical",
+   "category": "Digestive",
+   "a": {
+    "word": "Tenesmus",
+    "alts": []
+   },
+   "b": {
+    "word": "Fecal urgency",
+    "alts": []
+   },
+   "kind": "symptom"
+  },
+  {
+   "id": "c528",
+   "subtype": "clinical",
+   "category": "Digestive",
+   "a": {
+    "word": "Dyspepsia",
+    "alts": [
+     "indigestion"
+    ]
+   },
+   "b": {
+    "word": "Early satiety",
+    "alts": []
+   },
+   "kind": "symptom"
+  },
+  {
+   "id": "c529",
+   "subtype": "clinical",
+   "category": "Digestive",
+   "a": {
+    "word": "Fecal calprotectin",
+    "alts": [
+     "calprotectin"
+    ]
+   },
+   "b": {
+    "word": "Capsule endoscopy",
+    "alts": []
+   },
+   "kind": "investigation"
+  },
+  {
+   "id": "c530",
+   "subtype": "clinical",
+   "category": "Digestive",
+   "a": {
+    "word": "Polyethylene glycol",
+    "alts": [
+     "macrogol"
+    ]
+   },
+   "b": {
+    "word": "Pancreatic enzyme replacement",
+    "alts": [
+     "Creon"
+    ]
+   },
+   "kind": "treatment"
+  },
+  {
+   "id": "c531",
+   "subtype": "clinical",
+   "category": "Skin",
+   "a": {
+    "word": "Hand foot and mouth disease",
+    "alts": []
+   },
+   "b": {
+    "word": "Herpangina",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c532",
+   "subtype": "clinical",
+   "category": "Skin",
+   "a": {
+    "word": "Erythema nodosum",
+    "alts": []
+   },
+   "b": {
+    "word": "Erythema multiforme",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c533",
+   "subtype": "clinical",
+   "category": "Skin",
+   "a": {
+    "word": "Lichen sclerosus",
+    "alts": []
+   },
+   "b": {
+    "word": "Lichen simplex chronicus",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c534",
+   "subtype": "clinical",
+   "category": "Skin",
+   "a": {
+    "word": "Keratoacanthoma",
+    "alts": []
+   },
+   "b": {
+    "word": "Seborrheic keratosis",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c535",
+   "subtype": "clinical",
+   "category": "Skin",
+   "a": {
+    "word": "Pyoderma gangrenosum",
+    "alts": []
+   },
+   "b": {
+    "word": "Ecthyma",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c536",
+   "subtype": "clinical",
+   "category": "Skin",
+   "a": {
+    "word": "Sunburn",
+    "alts": []
+   },
+   "b": {
+    "word": "Polymorphic light eruption",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c537",
+   "subtype": "clinical",
+   "category": "Skin",
+   "a": {
+    "word": "Koebner phenomenon",
+    "alts": []
+   },
+   "b": {
+    "word": "Nikolsky sign",
+    "alts": []
+   },
+   "kind": "symptom"
+  },
+  {
+   "id": "c538",
+   "subtype": "clinical",
+   "category": "Skin",
+   "a": {
+    "word": "Comedones",
+    "alts": [
+     "blackheads"
+    ]
+   },
+   "b": {
+    "word": "Milia",
+    "alts": []
+   },
+   "kind": "symptom"
+  },
+  {
+   "id": "c539",
+   "subtype": "clinical",
+   "category": "Skin",
+   "a": {
+    "word": "Punch biopsy",
+    "alts": []
+   },
+   "b": {
+    "word": "Shave biopsy",
+    "alts": []
+   },
+   "kind": "investigation"
+  },
+  {
+   "id": "c540",
+   "subtype": "clinical",
+   "category": "Skin",
+   "a": {
+    "word": "Calcipotriol",
+    "alts": []
+   },
+   "b": {
+    "word": "Coal tar",
+    "alts": []
+   },
+   "kind": "treatment"
+  },
+  {
+   "id": "c541",
+   "subtype": "clinical",
+   "category": "Reproductive",
+   "a": {
+    "word": "Ovarian torsion",
+    "alts": []
+   },
+   "b": {
+    "word": "Ruptured ovarian cyst",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c542",
+   "subtype": "clinical",
+   "category": "Reproductive",
+   "a": {
+    "word": "Endometrial hyperplasia",
+    "alts": []
+   },
+   "b": {
+    "word": "Endometrial polyp",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c543",
+   "subtype": "clinical",
+   "category": "Reproductive",
+   "a": {
+    "word": "Vulvovaginal candidiasis",
+    "alts": [
+     "thrush"
+    ]
+   },
+   "b": {
+    "word": "Atrophic vaginitis",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c544",
+   "subtype": "clinical",
+   "category": "Reproductive",
+   "a": {
+    "word": "Choriocarcinoma",
+    "alts": []
+   },
+   "b": {
+    "word": "Granulosa cell tumour",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c545",
+   "subtype": "clinical",
+   "category": "Reproductive",
+   "a": {
+    "word": "Cryptorchidism",
+    "alts": [
+     "undescended testis"
+    ]
+   },
+   "b": {
+    "word": "Retractile testis",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c546",
+   "subtype": "clinical",
+   "category": "Reproductive",
+   "a": {
+    "word": "Asherman syndrome",
+    "alts": []
+   },
+   "b": {
+    "word": "Sheehan syndrome",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c547",
+   "subtype": "clinical",
+   "category": "Reproductive",
+   "a": {
+    "word": "Mittelschmerz",
+    "alts": [
+     "ovulation pain"
+    ]
+   },
+   "b": {
+    "word": "Premenstrual spotting",
+    "alts": []
+   },
+   "kind": "symptom"
+  },
+  {
+   "id": "c548",
+   "subtype": "clinical",
+   "category": "Reproductive",
+   "a": {
+    "word": "Breast tenderness",
+    "alts": []
+   },
+   "b": {
+    "word": "Breast engorgement",
+    "alts": []
+   },
+   "kind": "symptom"
+  },
+  {
+   "id": "c549",
+   "subtype": "clinical",
+   "category": "Reproductive",
+   "a": {
+    "word": "Hysterosalpingogram",
+    "alts": [
+     "HSG"
+    ]
+   },
+   "b": {
+    "word": "Transvaginal ultrasound",
+    "alts": []
+   },
+   "kind": "investigation"
+  },
+  {
+   "id": "c550",
+   "subtype": "clinical",
+   "category": "Reproductive",
+   "a": {
+    "word": "Mifepristone",
+    "alts": []
+   },
+   "b": {
+    "word": "Oxytocin infusion",
+    "alts": []
+   },
+   "kind": "treatment"
+  },
+  {
+   "id": "c551",
+   "subtype": "clinical",
+   "category": "Musculoskeletal",
+   "a": {
+    "word": "De Quervain tenosynovitis",
+    "alts": []
+   },
+   "b": {
+    "word": "Trigger finger",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c552",
+   "subtype": "clinical",
+   "category": "Musculoskeletal",
+   "a": {
+    "word": "Dupuytren contracture",
+    "alts": []
+   },
+   "b": {
+    "word": "Ganglion cyst",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c553",
+   "subtype": "clinical",
+   "category": "Musculoskeletal",
+   "a": {
+    "word": "Sever disease",
+    "alts": [
+     "calcaneal apophysitis"
+    ]
+   },
+   "b": {
+    "word": "Kohler disease",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c554",
+   "subtype": "clinical",
+   "category": "Musculoskeletal",
+   "a": {
+    "word": "Olecranon bursitis",
+    "alts": []
+   },
+   "b": {
+    "word": "Prepatellar bursitis",
+    "alts": [
+     "housemaid knee"
+    ]
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c555",
+   "subtype": "clinical",
+   "category": "Musculoskeletal",
+   "a": {
+    "word": "Reactive arthritis",
+    "alts": []
+   },
+   "b": {
+    "word": "Enteropathic arthritis",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c556",
+   "subtype": "clinical",
+   "category": "Musculoskeletal",
+   "a": {
+    "word": "Achilles tendon rupture",
+    "alts": []
+   },
+   "b": {
+    "word": "Calf muscle tear",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c557",
+   "subtype": "clinical",
+   "category": "Musculoskeletal",
+   "a": {
+    "word": "Joint locking",
+    "alts": []
+   },
+   "b": {
+    "word": "Joint giving way",
+    "alts": []
+   },
+   "kind": "symptom"
+  },
+  {
+   "id": "c558",
+   "subtype": "clinical",
+   "category": "Musculoskeletal",
+   "a": {
+    "word": "Trendelenburg gait",
+    "alts": []
+   },
+   "b": {
+    "word": "Antalgic gait",
+    "alts": []
+   },
+   "kind": "symptom"
+  },
+  {
+   "id": "c559",
+   "subtype": "clinical",
+   "category": "Musculoskeletal",
+   "a": {
+    "word": "HLA-B27",
+    "alts": []
+   },
+   "b": {
+    "word": "Anti-dsDNA antibodies",
+    "alts": []
+   },
+   "kind": "investigation"
+  },
+  {
+   "id": "c560",
+   "subtype": "clinical",
+   "category": "Musculoskeletal",
+   "a": {
+    "word": "Leflunomide",
+    "alts": []
+   },
+   "b": {
+    "word": "Sulfasalazine",
+    "alts": []
+   },
+   "kind": "treatment"
+  },
+  {
+   "id": "c561",
+   "subtype": "clinical",
+   "category": "Nervous",
+   "a": {
+    "word": "Idiopathic intracranial hypertension",
+    "alts": []
+   },
+   "b": {
+    "word": "Normal pressure hydrocephalus",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c562",
+   "subtype": "clinical",
+   "category": "Nervous",
+   "a": {
+    "word": "Lambert-Eaton syndrome",
+    "alts": []
+   },
+   "b": {
+    "word": "Botulism",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c563",
+   "subtype": "clinical",
+   "category": "Nervous",
+   "a": {
+    "word": "Frontotemporal dementia",
+    "alts": []
+   },
+   "b": {
+    "word": "Vascular dementia",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c564",
+   "subtype": "clinical",
+   "category": "Nervous",
+   "a": {
+    "word": "Narcolepsy",
+    "alts": []
+   },
+   "b": {
+    "word": "Idiopathic hypersomnia",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c565",
+   "subtype": "clinical",
+   "category": "Nervous",
+   "a": {
+    "word": "Wernicke encephalopathy",
+    "alts": []
+   },
+   "b": {
+    "word": "Korsakoff syndrome",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c566",
+   "subtype": "clinical",
+   "category": "Nervous",
+   "a": {
+    "word": "Syringomyelia",
+    "alts": []
+   },
+   "b": {
+    "word": "Cauda equina syndrome",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c567",
+   "subtype": "clinical",
+   "category": "Nervous",
+   "a": {
+    "word": "Dysdiadochokinesia",
+    "alts": []
+   },
+   "b": {
+    "word": "Intention tremor",
+    "alts": []
+   },
+   "kind": "symptom"
+  },
+  {
+   "id": "c568",
+   "subtype": "clinical",
+   "category": "Nervous",
+   "a": {
+    "word": "Hemianopia",
+    "alts": []
+   },
+   "b": {
+    "word": "Scotoma",
+    "alts": []
+   },
+   "kind": "symptom"
+  },
+  {
+   "id": "c569",
+   "subtype": "clinical",
+   "category": "Nervous",
+   "a": {
+    "word": "Tensilon test",
+    "alts": []
+   },
+   "b": {
+    "word": "Anti-acetylcholine receptor antibodies",
+    "alts": []
+   },
+   "kind": "investigation"
+  },
+  {
+   "id": "c570",
+   "subtype": "clinical",
+   "category": "Nervous",
+   "a": {
+    "word": "Pyridostigmine",
+    "alts": []
+   },
+   "b": {
+    "word": "Riluzole",
+    "alts": []
+   },
+   "kind": "treatment"
+  },
+  {
+   "id": "c571",
+   "subtype": "clinical",
+   "category": "Blood and immune",
+   "a": {
+    "word": "Hereditary spherocytosis",
+    "alts": []
+   },
+   "b": {
+    "word": "G6PD deficiency",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c572",
+   "subtype": "clinical",
+   "category": "Blood and immune",
+   "a": {
+    "word": "Myelodysplastic syndrome",
+    "alts": []
+   },
+   "b": {
+    "word": "Myelofibrosis",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c573",
+   "subtype": "clinical",
+   "category": "Blood and immune",
+   "a": {
+    "word": "Heparin-induced thrombocytopenia",
+    "alts": [
+     "HIT"
+    ]
+   },
+   "b": {
+    "word": "Antiphospholipid syndrome",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c574",
+   "subtype": "clinical",
+   "category": "Blood and immune",
+   "a": {
+    "word": "Hairy cell leukaemia",
+    "alts": []
+   },
+   "b": {
+    "word": "Burkitt lymphoma",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c575",
+   "subtype": "clinical",
+   "category": "Blood and immune",
+   "a": {
+    "word": "Essential thrombocythaemia",
+    "alts": []
+   },
+   "b": {
+    "word": "Secondary polycythaemia",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c576",
+   "subtype": "clinical",
+   "category": "Blood and immune",
+   "a": {
+    "word": "Mastocytosis",
+    "alts": []
+   },
+   "b": {
+    "word": "Hypereosinophilic syndrome",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c577",
+   "subtype": "clinical",
+   "category": "Blood and immune",
+   "a": {
+    "word": "Purpura",
+    "alts": []
+   },
+   "b": {
+    "word": "Ecchymosis",
+    "alts": []
+   },
+   "kind": "symptom"
+  },
+  {
+   "id": "c578",
+   "subtype": "clinical",
+   "category": "Blood and immune",
+   "a": {
+    "word": "Pruritus after bathing",
+    "alts": [
+     "aquagenic pruritus"
+    ]
+   },
+   "b": {
+    "word": "Erythromelalgia",
+    "alts": []
+   },
+   "kind": "symptom"
+  },
+  {
+   "id": "c579",
+   "subtype": "clinical",
+   "category": "Blood and immune",
+   "a": {
+    "word": "Reticulocyte count",
+    "alts": []
+   },
+   "b": {
+    "word": "Haptoglobin",
+    "alts": []
+   },
+   "kind": "investigation"
+  },
+  {
+   "id": "c580",
+   "subtype": "clinical",
+   "category": "Blood and immune",
+   "a": {
+    "word": "Fresh frozen plasma",
+    "alts": [
+     "FFP"
+    ]
+   },
+   "b": {
+    "word": "Cryoprecipitate",
+    "alts": []
+   },
+   "kind": "treatment"
+  },
+  {
+   "id": "c581",
+   "subtype": "clinical",
+   "category": "Endocrine",
+   "a": {
+    "word": "Liddle syndrome",
+    "alts": []
+   },
+   "b": {
+    "word": "Bartter syndrome",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c582",
+   "subtype": "clinical",
+   "category": "Endocrine",
+   "a": {
+    "word": "De Quervain thyroiditis",
+    "alts": [
+     "subacute thyroiditis"
+    ]
+   },
+   "b": {
+    "word": "Postpartum thyroiditis",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c583",
+   "subtype": "clinical",
+   "category": "Endocrine",
+   "a": {
+    "word": "Myxoedema coma",
+    "alts": []
+   },
+   "b": {
+    "word": "Adrenal crisis",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c584",
+   "subtype": "clinical",
+   "category": "Endocrine",
+   "a": {
+    "word": "Hyperosmolar hyperglycaemic state",
+    "alts": [
+     "HHS"
+    ]
+   },
+   "b": {
+    "word": "Lactic acidosis",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c585",
+   "subtype": "clinical",
+   "category": "Endocrine",
+   "a": {
+    "word": "Androgen insensitivity syndrome",
+    "alts": []
+   },
+   "b": {
+    "word": "Kallmann syndrome",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c586",
+   "subtype": "clinical",
+   "category": "Endocrine",
+   "a": {
+    "word": "Insulinoma",
+    "alts": []
+   },
+   "b": {
+    "word": "Glucagonoma",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c587",
+   "subtype": "clinical",
+   "category": "Endocrine",
+   "a": {
+    "word": "Galactorrhoea",
+    "alts": []
+   },
+   "b": {
+    "word": "Acanthosis nigricans",
+    "alts": []
+   },
+   "kind": "symptom"
+  },
+  {
+   "id": "c588",
+   "subtype": "clinical",
+   "category": "Endocrine",
+   "a": {
+    "word": "Tetany",
+    "alts": []
+   },
+   "b": {
+    "word": "Chvostek sign",
+    "alts": []
+   },
+   "kind": "symptom"
+  },
+  {
+   "id": "c589",
+   "subtype": "clinical",
+   "category": "Endocrine",
+   "a": {
+    "word": "C-peptide",
+    "alts": []
+   },
+   "b": {
+    "word": "Serum IGF-1",
+    "alts": [
+     "IGF-1"
+    ]
+   },
+   "kind": "investigation"
+  },
+  {
+   "id": "c590",
+   "subtype": "clinical",
+   "category": "Endocrine",
+   "a": {
+    "word": "Hydrocortisone injection",
+    "alts": []
+   },
+   "b": {
+    "word": "Propylthiouracil",
+    "alts": [
+     "PTU"
+    ]
+   },
+   "kind": "treatment"
+  },
+  {
+   "id": "c591",
+   "subtype": "clinical",
+   "category": "Renal and urinary",
+   "a": {
+    "word": "Post-streptococcal glomerulonephritis",
+    "alts": []
+   },
+   "b": {
+    "word": "Goodpasture syndrome",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c592",
+   "subtype": "clinical",
+   "category": "Renal and urinary",
+   "a": {
+    "word": "Membranous nephropathy",
+    "alts": []
+   },
+   "b": {
+    "word": "Focal segmental glomerulosclerosis",
+    "alts": [
+     "FSGS"
+    ]
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c593",
+   "subtype": "clinical",
+   "category": "Renal and urinary",
+   "a": {
+    "word": "Transitional cell carcinoma",
+    "alts": []
+   },
+   "b": {
+    "word": "Squamous bladder carcinoma",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c594",
+   "subtype": "clinical",
+   "category": "Renal and urinary",
+   "a": {
+    "word": "Acute interstitial nephritis",
+    "alts": []
+   },
+   "b": {
+    "word": "Papillary necrosis",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c595",
+   "subtype": "clinical",
+   "category": "Renal and urinary",
+   "a": {
+    "word": "Posterior urethral valves",
+    "alts": []
+   },
+   "b": {
+    "word": "Pelviureteric junction obstruction",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c596",
+   "subtype": "clinical",
+   "category": "Renal and urinary",
+   "a": {
+    "word": "Urethral stricture",
+    "alts": []
+   },
+   "b": {
+    "word": "Bladder stones",
+    "alts": []
+   },
+   "kind": "disease"
+  },
+  {
+   "id": "c597",
+   "subtype": "clinical",
+   "category": "Renal and urinary",
+   "a": {
+    "word": "Cloudy urine",
+    "alts": []
+   },
+   "b": {
+    "word": "Smelly urine",
+    "alts": []
+   },
+   "kind": "symptom"
+  },
+  {
+   "id": "c598",
+   "subtype": "clinical",
+   "category": "Renal and urinary",
+   "a": {
+    "word": "Suprapubic pain",
+    "alts": []
+   },
+   "b": {
+    "word": "Strangury",
+    "alts": []
+   },
+   "kind": "symptom"
+  },
+  {
+   "id": "c599",
+   "subtype": "clinical",
+   "category": "Renal and urinary",
+   "a": {
+    "word": "Urine albumin-creatinine ratio",
+    "alts": [
+     "ACR"
+    ]
+   },
+   "b": {
+    "word": "24-hour urine collection",
+    "alts": []
+   },
+   "kind": "investigation"
+  },
+  {
+   "id": "c600",
+   "subtype": "clinical",
+   "category": "Renal and urinary",
+   "a": {
+    "word": "Hemofiltration",
+    "alts": []
+   },
+   "b": {
+    "word": "Plasma exchange",
+    "alts": []
+   },
+   "kind": "treatment"
+  },
+  {
+   "id": "b501",
+   "subtype": "basic",
+   "category": "Anatomy",
+   "a": {
+    "word": "Hamate",
+    "alts": []
+   },
+   "b": {
+    "word": "Pisiform",
+    "alts": []
+   },
+   "topic": "Bones"
+  },
+  {
+   "id": "b502",
+   "subtype": "basic",
+   "category": "Anatomy",
+   "a": {
+    "word": "Navicular",
+    "alts": []
+   },
+   "b": {
+    "word": "Cuboid",
+    "alts": []
+   },
+   "topic": "Bones"
+  },
+  {
+   "id": "b503",
+   "subtype": "basic",
+   "category": "Anatomy",
+   "a": {
+    "word": "Ethmoid bone",
+    "alts": []
+   },
+   "b": {
+    "word": "Lacrimal bone",
+    "alts": []
+   },
+   "topic": "Bones"
+  },
+  {
+   "id": "b504",
+   "subtype": "basic",
+   "category": "Anatomy",
+   "a": {
+    "word": "Nasal bone",
+    "alts": []
+   },
+   "b": {
+    "word": "Vomer",
+    "alts": []
+   },
+   "topic": "Bones"
+  },
+  {
+   "id": "b505",
+   "subtype": "basic",
+   "category": "Anatomy",
+   "a": {
+    "word": "Supraspinatus",
+    "alts": []
+   },
+   "b": {
+    "word": "Infraspinatus",
+    "alts": []
+   },
+   "topic": "Muscles"
+  },
+  {
+   "id": "b506",
+   "subtype": "basic",
+   "category": "Anatomy",
+   "a": {
+    "word": "Teres major",
+    "alts": []
+   },
+   "b": {
+    "word": "Teres minor",
+    "alts": []
+   },
+   "topic": "Muscles"
+  },
+  {
+   "id": "b507",
+   "subtype": "basic",
+   "category": "Anatomy",
+   "a": {
+    "word": "Masseter",
+    "alts": []
+   },
+   "b": {
+    "word": "Pterygoid",
+    "alts": []
+   },
+   "topic": "Muscles"
+  },
+  {
+   "id": "b508",
+   "subtype": "basic",
+   "category": "Anatomy",
+   "a": {
+    "word": "Serratus anterior",
+    "alts": []
+   },
+   "b": {
+    "word": "Rhomboid major",
+    "alts": []
+   },
+   "topic": "Muscles"
+  },
+  {
+   "id": "b509",
+   "subtype": "basic",
+   "category": "Anatomy",
+   "a": {
+    "word": "Gracilis",
+    "alts": []
+   },
+   "b": {
+    "word": "Semitendinosus",
+    "alts": []
+   },
+   "topic": "Muscles"
+  },
+  {
+   "id": "b510",
+   "subtype": "basic",
+   "category": "Anatomy",
+   "a": {
+    "word": "Accessory nerve",
+    "alts": []
+   },
+   "b": {
+    "word": "Olfactory nerve",
+    "alts": []
+   },
+   "topic": "Nerves"
+  },
+  {
+   "id": "b511",
+   "subtype": "basic",
+   "category": "Anatomy",
+   "a": {
+    "word": "Genitofemoral nerve",
+    "alts": []
+   },
+   "b": {
+    "word": "Ilioinguinal nerve",
+    "alts": []
+   },
+   "topic": "Nerves"
+  },
+  {
+   "id": "b512",
+   "subtype": "basic",
+   "category": "Anatomy",
+   "a": {
+    "word": "Lateral cutaneous nerve of thigh",
+    "alts": []
+   },
+   "b": {
+    "word": "Saphenous nerve",
+    "alts": []
+   },
+   "topic": "Nerves"
+  },
+  {
+   "id": "b513",
+   "subtype": "basic",
+   "category": "Anatomy",
+   "a": {
+    "word": "Splenic artery",
+    "alts": []
+   },
+   "b": {
+    "word": "Left gastric artery",
+    "alts": []
+   },
+   "topic": "Blood vessels"
+  },
+  {
+   "id": "b514",
+   "subtype": "basic",
+   "category": "Anatomy",
+   "a": {
+    "word": "Azygos vein",
+    "alts": []
+   },
+   "b": {
+    "word": "Hemiazygos vein",
+    "alts": []
+   },
+   "topic": "Blood vessels"
+  },
+  {
+   "id": "b515",
+   "subtype": "basic",
+   "category": "Anatomy",
+   "a": {
+    "word": "Ulnar artery",
+    "alts": []
+   },
+   "b": {
+    "word": "Anterior interosseous artery",
+    "alts": []
+   },
+   "topic": "Blood vessels"
+  },
+  {
+   "id": "b516",
+   "subtype": "basic",
+   "category": "Anatomy",
+   "a": {
+    "word": "Medial collateral ligament",
+    "alts": [
+     "MCL"
+    ]
+   },
+   "b": {
+    "word": "Anterior talofibular ligament",
+    "alts": []
+   },
+   "topic": "Joints and ligaments"
+  },
+  {
+   "id": "b517",
+   "subtype": "basic",
+   "category": "Anatomy",
+   "a": {
+    "word": "Submandibular gland",
+    "alts": []
+   },
+   "b": {
+    "word": "Sublingual gland",
+    "alts": []
+   },
+   "topic": "Organs and glands"
+  },
+  {
+   "id": "b518",
+   "subtype": "basic",
+   "category": "Physiology",
+   "a": {
+    "word": "Brain natriuretic peptide",
+    "alts": [
+     "BNP"
+    ]
+   },
+   "b": {
+    "word": "Endothelin",
+    "alts": []
+   },
+   "topic": "Hormones"
+  },
+  {
+   "id": "b519",
+   "subtype": "basic",
+   "category": "Physiology",
+   "a": {
+    "word": "Inhibin",
+    "alts": []
+   },
+   "b": {
+    "word": "Activin",
+    "alts": []
+   },
+   "topic": "Hormones"
+  },
+  {
+   "id": "b520",
+   "subtype": "basic",
+   "category": "Physiology",
+   "a": {
+    "word": "Gastric inhibitory peptide",
+    "alts": [
+     "GIP"
+    ]
+   },
+   "b": {
+    "word": "GLP-1",
+    "alts": []
+   },
+   "topic": "Hormones"
+  },
+  {
+   "id": "b521",
+   "subtype": "basic",
+   "category": "Physiology",
+   "a": {
+    "word": "Reticulocyte",
+    "alts": []
+   },
+   "b": {
+    "word": "Megakaryocyte",
+    "alts": []
+   },
+   "topic": "Blood"
+  },
+  {
+   "id": "b522",
+   "subtype": "basic",
+   "category": "Physiology",
+   "a": {
+    "word": "Antithrombin",
+    "alts": []
+   },
+   "b": {
+    "word": "Protein C",
+    "alts": []
+   },
+   "topic": "Blood"
+  },
+  {
+   "id": "b523",
+   "subtype": "basic",
+   "category": "Physiology",
+   "a": {
+    "word": "Expiratory reserve volume",
+    "alts": []
+   },
+   "b": {
+    "word": "Inspiratory reserve volume",
+    "alts": []
+   },
+   "topic": "Breathing"
+  },
+  {
+   "id": "b524",
+   "subtype": "basic",
+   "category": "Physiology",
+   "a": {
+    "word": "Diffusion capacity",
+    "alts": [
+     "DLCO"
+    ]
+   },
+   "b": {
+    "word": "Airway resistance",
+    "alts": []
+   },
+   "topic": "Breathing"
+  },
+  {
+   "id": "b525",
+   "subtype": "basic",
+   "category": "Physiology",
+   "a": {
+    "word": "Pulse pressure",
+    "alts": []
+   },
+   "b": {
+    "word": "Systemic vascular resistance",
+    "alts": []
+   },
+   "topic": "Heart and circulation"
+  },
+  {
+   "id": "b526",
+   "subtype": "basic",
+   "category": "Physiology",
+   "a": {
+    "word": "Venous return",
+    "alts": []
+   },
+   "b": {
+    "word": "Central venous pressure",
+    "alts": []
+   },
+   "topic": "Heart and circulation"
+  },
+  {
+   "id": "b527",
+   "subtype": "basic",
+   "category": "Physiology",
+   "a": {
+    "word": "Tubular reabsorption",
+    "alts": []
+   },
+   "b": {
+    "word": "Tubular secretion",
+    "alts": []
+   },
+   "topic": "Kidney"
+  },
+  {
+   "id": "b528",
+   "subtype": "basic",
+   "category": "Physiology",
+   "a": {
+    "word": "Free water clearance",
+    "alts": []
+   },
+   "b": {
+    "word": "Renal plasma flow",
+    "alts": []
+   },
+   "topic": "Kidney"
+  },
+  {
+   "id": "b529",
+   "subtype": "basic",
+   "category": "Physiology",
+   "a": {
+    "word": "Refractory period",
+    "alts": []
+   },
+   "b": {
+    "word": "Threshold potential",
+    "alts": []
+   },
+   "topic": "Nerves"
+  },
+  {
+   "id": "b530",
+   "subtype": "basic",
+   "category": "Physiology",
+   "a": {
+    "word": "Tetanic contraction",
+    "alts": []
+   },
+   "b": {
+    "word": "Twitch",
+    "alts": []
+   },
+   "topic": "Muscle"
+  },
+  {
+   "id": "b531",
+   "subtype": "basic",
+   "category": "Physiology",
+   "a": {
+    "word": "Gastrocolic reflex",
+    "alts": []
+   },
+   "b": {
+    "word": "Enterogastric reflex",
+    "alts": []
+   },
+   "topic": "Gut"
+  },
+  {
+   "id": "b532",
+   "subtype": "basic",
+   "category": "Physiology",
+   "a": {
+    "word": "Set point",
+    "alts": []
+   },
+   "b": {
+    "word": "Feedforward control",
+    "alts": []
+   },
+   "topic": "Regulation"
+  },
+  {
+   "id": "b533",
+   "subtype": "basic",
+   "category": "Physiology",
+   "a": {
+    "word": "Capacitation",
+    "alts": []
+   },
+   "b": {
+    "word": "Acrosome reaction",
+    "alts": []
+   },
+   "topic": "Reproduction"
+  },
+  {
+   "id": "b534",
+   "subtype": "basic",
+   "category": "Biochemistry",
+   "a": {
+    "word": "Mannose",
+    "alts": []
+   },
+   "b": {
+    "word": "Ribose",
+    "alts": []
+   },
+   "topic": "Sugars and fats"
+  },
+  {
+   "id": "b535",
+   "subtype": "basic",
+   "category": "Biochemistry",
+   "a": {
+    "word": "Glycerol",
+    "alts": []
+   },
+   "b": {
+    "word": "Phosphatidylcholine",
+    "alts": []
+   },
+   "topic": "Sugars and fats"
+  },
+  {
+   "id": "b536",
+   "subtype": "basic",
+   "category": "Biochemistry",
+   "a": {
+    "word": "Omega-3 fatty acid",
+    "alts": []
+   },
+   "b": {
+    "word": "Trans fat",
+    "alts": []
+   },
+   "topic": "Sugars and fats"
+  },
+  {
+   "id": "b537",
+   "subtype": "basic",
+   "category": "Biochemistry",
+   "a": {
+    "word": "Glycogen debranching",
+    "alts": []
+   },
+   "b": {
+    "word": "Glycogen branching",
+    "alts": []
+   },
+   "topic": "Metabolic pathways"
+  },
+  {
+   "id": "b538",
+   "subtype": "basic",
+   "category": "Biochemistry",
+   "a": {
+    "word": "Ketolysis",
+    "alts": []
+   },
+   "b": {
+    "word": "Fatty acid synthesis",
+    "alts": []
+   },
+   "topic": "Metabolic pathways"
+  },
+  {
+   "id": "b539",
+   "subtype": "basic",
+   "category": "Biochemistry",
+   "a": {
+    "word": "Pyruvate carboxylase",
+    "alts": []
+   },
+   "b": {
+    "word": "PEP carboxykinase",
+    "alts": []
+   },
+   "topic": "Metabolic enzymes"
+  },
+  {
+   "id": "b540",
+   "subtype": "basic",
+   "category": "Biochemistry",
+   "a": {
+    "word": "HMG-CoA reductase",
+    "alts": []
+   },
+   "b": {
+    "word": "HMG-CoA synthase",
+    "alts": []
+   },
+   "topic": "Metabolic enzymes"
+  },
+  {
+   "id": "b541",
+   "subtype": "basic",
+   "category": "Biochemistry",
+   "a": {
+    "word": "Glucokinase",
+    "alts": []
+   },
+   "b": {
+    "word": "Fructokinase",
+    "alts": []
+   },
+   "topic": "Metabolic enzymes"
+  },
+  {
+   "id": "b542",
+   "subtype": "basic",
+   "category": "Biochemistry",
+   "a": {
+    "word": "Proline",
+    "alts": []
+   },
+   "b": {
+    "word": "Hydroxyproline",
+    "alts": []
+   },
+   "topic": "Amino acids and nucleotides"
+  },
+  {
+   "id": "b543",
+   "subtype": "basic",
+   "category": "Biochemistry",
+   "a": {
+    "word": "Serine",
+    "alts": []
+   },
+   "b": {
+    "word": "Threonine",
+    "alts": []
+   },
+   "topic": "Amino acids and nucleotides"
+  },
+  {
+   "id": "b544",
+   "subtype": "basic",
+   "category": "Biochemistry",
+   "a": {
+    "word": "Methionine",
+    "alts": []
+   },
+   "b": {
+    "word": "Leucine",
+    "alts": []
+   },
+   "topic": "Amino acids and nucleotides"
+  },
+  {
+   "id": "b545",
+   "subtype": "basic",
+   "category": "Biochemistry",
+   "a": {
+    "word": "Alkaptonuria",
+    "alts": []
+   },
+   "b": {
+    "word": "Cystinuria",
+    "alts": []
+   },
+   "topic": "Inherited metabolic disorders"
+  },
+  {
+   "id": "b546",
+   "subtype": "basic",
+   "category": "Biochemistry",
+   "a": {
+    "word": "Pompe disease",
+    "alts": []
+   },
+   "b": {
+    "word": "McArdle disease",
+    "alts": []
+   },
+   "topic": "Inherited metabolic disorders"
+  },
+  {
+   "id": "b547",
+   "subtype": "basic",
+   "category": "Biochemistry",
+   "a": {
+    "word": "Biotin",
+    "alts": []
+   },
+   "b": {
+    "word": "Pantothenic acid",
+    "alts": []
+   },
+   "topic": "Vitamins"
+  },
+  {
+   "id": "b548",
+   "subtype": "basic",
+   "category": "Biochemistry",
+   "a": {
+    "word": "Vitamin D",
+    "alts": []
+   },
+   "b": {
+    "word": "Cobalamin",
+    "alts": []
+   },
+   "topic": "Vitamins"
+  },
+  {
+   "id": "b549",
+   "subtype": "basic",
+   "category": "Biochemistry",
+   "a": {
+    "word": "Elastase",
+    "alts": []
+   },
+   "b": {
+    "word": "Carboxypeptidase",
+    "alts": []
+   },
+   "topic": "Digestive enzymes"
+  },
+  {
+   "id": "b550",
+   "subtype": "basic",
+   "category": "Biochemistry",
+   "a": {
+    "word": "Primase",
+    "alts": []
+   },
+   "b": {
+    "word": "Telomerase",
+    "alts": []
+   },
+   "topic": "DNA and RNA enzymes"
+  },
+  {
+   "id": "b551",
+   "subtype": "basic",
+   "category": "Pharmacology",
+   "a": {
+    "word": "Teicoplanin",
+    "alts": []
+   },
+   "b": {
+    "word": "Daptomycin",
+    "alts": []
+   },
+   "topic": "Infection drugs"
+  },
+  {
+   "id": "b552",
+   "subtype": "basic",
+   "category": "Pharmacology",
+   "a": {
+    "word": "Co-amoxiclav",
+    "alts": []
+   },
+   "b": {
+    "word": "Cefotaxime",
+    "alts": []
+   },
+   "topic": "Infection drugs"
+  },
+  {
+   "id": "b553",
+   "subtype": "basic",
+   "category": "Pharmacology",
+   "a": {
+    "word": "Fosfomycin",
+    "alts": []
+   },
+   "b": {
+    "word": "Pivmecillinam",
+    "alts": []
+   },
+   "topic": "Infection drugs"
+  },
+  {
+   "id": "b554",
+   "subtype": "basic",
+   "category": "Pharmacology",
+   "a": {
+    "word": "Mebendazole",
+    "alts": []
+   },
+   "b": {
+    "word": "Niclosamide",
+    "alts": []
+   },
+   "topic": "Infection drugs"
+  },
+  {
+   "id": "b555",
+   "subtype": "basic",
+   "category": "Pharmacology",
+   "a": {
+    "word": "Pregabalin",
+    "alts": []
+   },
+   "b": {
+    "word": "Carbamazepine",
+    "alts": []
+   },
+   "topic": "Brain and pain drugs"
+  },
+  {
+   "id": "b556",
+   "subtype": "basic",
+   "category": "Pharmacology",
+   "a": {
+    "word": "Aripiprazole",
+    "alts": []
+   },
+   "b": {
+    "word": "Paliperidone",
+    "alts": []
+   },
+   "topic": "Brain and pain drugs"
+  },
+  {
+   "id": "b557",
+   "subtype": "basic",
+   "category": "Pharmacology",
+   "a": {
+    "word": "Duloxetine",
+    "alts": []
+   },
+   "b": {
+    "word": "Trazodone",
+    "alts": []
+   },
+   "topic": "Brain and pain drugs"
+  },
+  {
+   "id": "b558",
+   "subtype": "basic",
+   "category": "Pharmacology",
+   "a": {
+    "word": "Buprenorphine",
+    "alts": []
+   },
+   "b": {
+    "word": "Oxycodone",
+    "alts": []
+   },
+   "topic": "Brain and pain drugs"
+  },
+  {
+   "id": "b559",
+   "subtype": "basic",
+   "category": "Pharmacology",
+   "a": {
+    "word": "Ramipril",
+    "alts": []
+   },
+   "b": {
+    "word": "Perindopril",
+    "alts": []
+   },
+   "topic": "Heart and blood pressure drugs"
+  },
+  {
+   "id": "b560",
+   "subtype": "basic",
+   "category": "Pharmacology",
+   "a": {
+    "word": "Metoprolol",
+    "alts": []
+   },
+   "b": {
+    "word": "Nebivolol",
+    "alts": []
+   },
+   "topic": "Heart and blood pressure drugs"
+  },
+  {
+   "id": "b561",
+   "subtype": "basic",
+   "category": "Pharmacology",
+   "a": {
+    "word": "Edoxaban",
+    "alts": []
+   },
+   "b": {
+    "word": "Fondaparinux",
+    "alts": []
+   },
+   "topic": "Heart and blood pressure drugs"
+  },
+  {
+   "id": "b562",
+   "subtype": "basic",
+   "category": "Pharmacology",
+   "a": {
+    "word": "Ticagrelor",
+    "alts": []
+   },
+   "b": {
+    "word": "Dipyridamole",
+    "alts": []
+   },
+   "topic": "Heart and blood pressure drugs"
+  },
+  {
+   "id": "b563",
+   "subtype": "basic",
+   "category": "Pharmacology",
+   "a": {
+    "word": "Lansoprazole",
+    "alts": []
+   },
+   "b": {
+    "word": "Ranitidine",
+    "alts": []
+   },
+   "topic": "Hormone, stomach and allergy drugs"
+  },
+  {
+   "id": "b564",
+   "subtype": "basic",
+   "category": "Pharmacology",
+   "a": {
+    "word": "Promethazine",
+    "alts": []
+   },
+   "b": {
+    "word": "Hydroxyzine",
+    "alts": []
+   },
+   "topic": "Hormone, stomach and allergy drugs"
+  },
+  {
+   "id": "b565",
+   "subtype": "basic",
+   "category": "Pharmacology",
+   "a": {
+    "word": "Tacrolimus",
+    "alts": []
+   },
+   "b": {
+    "word": "Everolimus",
+    "alts": []
+   },
+   "topic": "Cancer and immune drugs"
+  },
+  {
+   "id": "b566",
+   "subtype": "basic",
+   "category": "Pharmacology",
+   "a": {
+    "word": "Imatinib",
+    "alts": []
+   },
+   "b": {
+    "word": "Tamoxifen",
+    "alts": []
+   },
+   "topic": "Cancer and immune drugs"
+  },
+  {
+   "id": "b567",
+   "subtype": "basic",
+   "category": "Pharmacology",
+   "a": {
+    "word": "Vecuronium",
+    "alts": []
+   },
+   "b": {
+    "word": "Mivacurium",
+    "alts": []
+   },
+   "topic": "Anaesthesia and muscle drugs"
+  },
+  {
+   "id": "b568",
+   "subtype": "basic",
+   "category": "Pathology",
+   "a": {
+    "word": "Pyknosis",
+    "alts": []
+   },
+   "b": {
+    "word": "Karyorrhexis",
+    "alts": []
+   },
+   "topic": "Cell injury and death"
+  },
+  {
+   "id": "b569",
+   "subtype": "basic",
+   "category": "Pathology",
+   "a": {
+    "word": "Gummatous necrosis",
+    "alts": []
+   },
+   "b": {
+    "word": "Hydropic change",
+    "alts": []
+   },
+   "topic": "Cell injury and death"
+  },
+  {
+   "id": "b570",
+   "subtype": "basic",
+   "category": "Pathology",
+   "a": {
+    "word": "Fibrous scar",
+    "alts": []
+   },
+   "b": {
+    "word": "Keloid scar",
+    "alts": []
+   },
+   "topic": "Inflammation and repair"
+  },
+  {
+   "id": "b571",
+   "subtype": "basic",
+   "category": "Pathology",
+   "a": {
+    "word": "Serous exudate",
+    "alts": []
+   },
+   "b": {
+    "word": "Fibrinous exudate",
+    "alts": []
+   },
+   "topic": "Inflammation and repair"
+  },
+  {
+   "id": "b572",
+   "subtype": "basic",
+   "category": "Pathology",
+   "a": {
+    "word": "Leukocyte adhesion",
+    "alts": []
+   },
+   "b": {
+    "word": "Diapedesis",
+    "alts": []
+   },
+   "topic": "Inflammation and repair"
+  },
+  {
+   "id": "b573",
+   "subtype": "basic",
+   "category": "Pathology",
+   "a": {
+    "word": "Adenocarcinoma",
+    "alts": []
+   },
+   "b": {
+    "word": "Small cell carcinoma",
+    "alts": []
+   },
+   "topic": "Tumours"
+  },
+  {
+   "id": "b574",
+   "subtype": "basic",
+   "category": "Pathology",
+   "a": {
+    "word": "Leiomyoma",
+    "alts": []
+   },
+   "b": {
+    "word": "Leiomyosarcoma",
+    "alts": []
+   },
+   "topic": "Tumours"
+  },
+  {
+   "id": "b575",
+   "subtype": "basic",
+   "category": "Pathology",
+   "a": {
+    "word": "Liposarcoma",
+    "alts": []
+   },
+   "b": {
+    "word": "Rhabdomyosarcoma",
+    "alts": []
+   },
+   "topic": "Tumours"
+  },
+  {
+   "id": "b576",
+   "subtype": "basic",
+   "category": "Pathology",
+   "a": {
+    "word": "Hamartoma",
+    "alts": []
+   },
+   "b": {
+    "word": "Choristoma",
+    "alts": []
+   },
+   "topic": "Tumours"
+  },
+  {
+   "id": "b577",
+   "subtype": "basic",
+   "category": "Pathology",
+   "a": {
+    "word": "Arterial thrombus",
+    "alts": []
+   },
+   "b": {
+    "word": "Venous thrombus",
+    "alts": []
+   },
+   "topic": "Blood flow disorders"
+  },
+  {
+   "id": "b578",
+   "subtype": "basic",
+   "category": "Pathology",
+   "a": {
+    "word": "Septic embolus",
+    "alts": []
+   },
+   "b": {
+    "word": "Cholesterol embolus",
+    "alts": []
+   },
+   "topic": "Blood flow disorders"
+  },
+  {
+   "id": "b579",
+   "subtype": "basic",
+   "category": "Pathology",
+   "a": {
+    "word": "Red infarct",
+    "alts": []
+   },
+   "b": {
+    "word": "White infarct",
+    "alts": []
+   },
+   "topic": "Blood flow disorders"
+  },
+  {
+   "id": "b580",
+   "subtype": "basic",
+   "category": "Pathology",
+   "a": {
+    "word": "Prader-Willi syndrome",
+    "alts": []
+   },
+   "b": {
+    "word": "Angelman syndrome",
+    "alts": []
+   },
+   "topic": "Genetic disease"
+  },
+  {
+   "id": "b581",
+   "subtype": "basic",
+   "category": "Pathology",
+   "a": {
+    "word": "Becker muscular dystrophy",
+    "alts": []
+   },
+   "b": {
+    "word": "Myotonic dystrophy",
+    "alts": []
+   },
+   "topic": "Genetic disease"
+  },
+  {
+   "id": "b582",
+   "subtype": "basic",
+   "category": "Pathology",
+   "a": {
+    "word": "Serum sickness",
+    "alts": []
+   },
+   "b": {
+    "word": "Arthus reaction",
+    "alts": []
+   },
+   "topic": "Hypersensitivity and rejection"
+  },
+  {
+   "id": "b583",
+   "subtype": "basic",
+   "category": "Pathology",
+   "a": {
+    "word": "Contact hypersensitivity",
+    "alts": []
+   },
+   "b": {
+    "word": "Tuberculin reaction",
+    "alts": []
+   },
+   "topic": "Hypersensitivity and rejection"
+  },
+  {
+   "id": "b584",
+   "subtype": "basic",
+   "category": "Microbiology",
+   "a": {
+    "word": "Coxsackievirus",
+    "alts": []
+   },
+   "b": {
+    "word": "Echovirus",
+    "alts": []
+   },
+   "topic": "Viruses"
+  },
+  {
+   "id": "b585",
+   "subtype": "basic",
+   "category": "Microbiology",
+   "a": {
+    "word": "Hantavirus",
+    "alts": []
+   },
+   "b": {
+    "word": "Lassa virus",
+    "alts": []
+   },
+   "topic": "Viruses"
+  },
+  {
+   "id": "b586",
+   "subtype": "basic",
+   "category": "Microbiology",
+   "a": {
+    "word": "Yellow fever virus",
+    "alts": []
+   },
+   "b": {
+    "word": "West Nile virus",
+    "alts": []
+   },
+   "topic": "Viruses"
+  },
+  {
+   "id": "b587",
+   "subtype": "basic",
+   "category": "Microbiology",
+   "a": {
+    "word": "Monkeypox virus",
+    "alts": [
+     "mpox"
+    ]
+   },
+   "b": {
+    "word": "Smallpox virus",
+    "alts": [
+     "variola"
+    ]
+   },
+   "topic": "Viruses"
+  },
+  {
+   "id": "b588",
+   "subtype": "basic",
+   "category": "Microbiology",
+   "a": {
+    "word": "Serratia marcescens",
+    "alts": []
+   },
+   "b": {
+    "word": "Citrobacter",
+    "alts": []
+   },
+   "topic": "Gram-negative bacteria"
+  },
+  {
+   "id": "b589",
+   "subtype": "basic",
+   "category": "Microbiology",
+   "a": {
+    "word": "Bacteroides fragilis",
+    "alts": []
+   },
+   "b": {
+    "word": "Fusobacterium",
+    "alts": []
+   },
+   "topic": "Gram-negative bacteria"
+  },
+  {
+   "id": "b590",
+   "subtype": "basic",
+   "category": "Microbiology",
+   "a": {
+    "word": "Pasteurella multocida",
+    "alts": []
+   },
+   "b": {
+    "word": "Capnocytophaga",
+    "alts": []
+   },
+   "topic": "Gram-negative bacteria"
+  },
+  {
+   "id": "b591",
+   "subtype": "basic",
+   "category": "Microbiology",
+   "a": {
+    "word": "Staphylococcus epidermidis",
+    "alts": []
+   },
+   "b": {
+    "word": "Staphylococcus saprophyticus",
+    "alts": []
+   },
+   "topic": "Gram-positive bacteria"
+  },
+  {
+   "id": "b592",
+   "subtype": "basic",
+   "category": "Microbiology",
+   "a": {
+    "word": "Bacillus cereus",
+    "alts": []
+   },
+   "b": {
+    "word": "Streptococcus mutans",
+    "alts": []
+   },
+   "topic": "Gram-positive bacteria"
+  },
+  {
+   "id": "b593",
+   "subtype": "basic",
+   "category": "Microbiology",
+   "a": {
+    "word": "Malassezia",
+    "alts": []
+   },
+   "b": {
+    "word": "Sporothrix",
+    "alts": []
+   },
+   "topic": "Fungi and parasites"
+  },
+  {
+   "id": "b594",
+   "subtype": "basic",
+   "category": "Microbiology",
+   "a": {
+    "word": "Naegleria fowleri",
+    "alts": []
+   },
+   "b": {
+    "word": "Acanthamoeba",
+    "alts": []
+   },
+   "topic": "Fungi and parasites"
+  },
+  {
+   "id": "b595",
+   "subtype": "basic",
+   "category": "Microbiology",
+   "a": {
+    "word": "Toxocara",
+    "alts": []
+   },
+   "b": {
+    "word": "Trichinella",
+    "alts": []
+   },
+   "topic": "Fungi and parasites"
+  },
+  {
+   "id": "b596",
+   "subtype": "basic",
+   "category": "Microbiology",
+   "a": {
+    "word": "Chlamydia psittaci",
+    "alts": []
+   },
+   "b": {
+    "word": "Chlamydia pneumoniae",
+    "alts": []
+   },
+   "topic": "Other bacteria"
+  },
+  {
+   "id": "b597",
+   "subtype": "basic",
+   "category": "Microbiology",
+   "a": {
+    "word": "Ehrlichia",
+    "alts": []
+   },
+   "b": {
+    "word": "Anaplasma",
+    "alts": []
+   },
+   "topic": "Other bacteria"
+  },
+  {
+   "id": "b598",
+   "subtype": "basic",
+   "category": "Microbiology",
+   "a": {
+    "word": "Transposon",
+    "alts": []
+   },
+   "b": {
+    "word": "Integron",
+    "alts": []
+   },
+   "topic": "Bacterial structure and genetics"
+  },
+  {
+   "id": "b599",
+   "subtype": "basic",
+   "category": "Microbiology",
+   "a": {
+    "word": "Lipopolysaccharide",
+    "alts": [
+     "LPS"
+    ]
+   },
+   "b": {
+    "word": "Teichoic acid",
+    "alts": []
+   },
+   "topic": "Bacterial structure and genetics"
+  },
+  {
+   "id": "b600",
+   "subtype": "basic",
+   "category": "Microbiology",
+   "a": {
+    "word": "Indole test",
+    "alts": []
+   },
+   "b": {
+    "word": "Urease test",
+    "alts": []
+   },
+   "topic": "Laboratory methods"
   }
  ]
 }

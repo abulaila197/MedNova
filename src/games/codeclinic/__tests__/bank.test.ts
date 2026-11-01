@@ -7,9 +7,9 @@ import type { Term } from '../engine/types';
 
 const TERMS = termsJson as Term[];
 
-test('the bank: 500 clinical + 500 basic science, unique ids and words, one word each', () => {
-  assert.equal(TERMS.filter((t) => t.style === 'clinical').length, 500);
-  assert.equal(TERMS.filter((t) => t.style === 'basic').length, 500);
+test('the bank: the clinical + basic science counts, unique ids and words, one word each', () => {
+  assert.equal(TERMS.filter((t) => t.style === 'clinical').length, 595);
+  assert.equal(TERMS.filter((t) => t.style === 'basic').length, 605);
   assert.equal(new Set(TERMS.map((t) => t.id)).size, TERMS.length);
   assert.equal(new Set(TERMS.map((t) => t.term.toLowerCase())).size, TERMS.length);
   for (const t of TERMS) assert.match(t.term, /^[A-Za-z]+$/, t.term);

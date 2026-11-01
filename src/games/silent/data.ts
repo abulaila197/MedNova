@@ -1,18 +1,20 @@
 import { fullName } from '../shell/names';
 import type { Word } from './core';
 import basicJson from './data/words-basic.json';
+import moreJson from './data/words-more.json';
 import newJson from './data/words-new.json';
 import wordsJson from './data/words.json';
 
 /**
  * The words to draw or act (master list, NL1 names): the 300 diseases (w ids), then the 200 basic science
- * words (b ids), then the 201 added 2026-11-01 (#38/#45: t ids are medical tools, counted as clinical; more w and b ids).
+ * words (b ids), then the 201 added 2026-11-01 (#38/#45: t ids are medical tools, counted as clinical; more w and b ids),
+ * then 300 more (Yazan 2026-11-01: 50 tools t041-t090, 130 clinical w401-w530, 120 basic b262-b381).
  * The order matters: online turns name a word by its place here (sa_words.n), so new words only ever go at the end.
  */
-export const WORDS = [...(wordsJson as Word[]), ...(basicJson as Word[]), ...(newJson as Word[])];
+export const WORDS = [...(wordsJson as Word[]), ...(basicJson as Word[]), ...(newJson as Word[]), ...(moreJson as Word[])];
 /** #46: words taken out. They stay in the list so the places above don't shift, but are never picked (sa_words.retired online). */
 export const RETIRED: ReadonlySet<string> = new Set(['b186']);
-/** The words a game can pick: 700. */
+/** The words a game can pick: 1,000. */
 export const PICKABLE = WORDS.filter((w) => !RETIRED.has(w.id));
 
 /** QS1: Mixed (default), Clinical or Basic science, for Pass the phone and Online rooms. */

@@ -18,13 +18,13 @@ const count = (ps: WordPair[], f: (p: WordPair) => string | undefined) => {
   return m;
 };
 
-test('word bank: 500 pairs per subtype with the agreed categories', () => {
-  assert.equal(clinical.length, 500);
-  assert.equal(basic.length, 500);
+test('word bank: 600 pairs per subtype with the agreed categories', () => {
+  assert.equal(clinical.length, 600);
+  assert.equal(basic.length, 600);
   const systems = ['Respiratory', 'Cardiovascular', 'Digestive', 'Nervous', 'Endocrine', 'Renal and urinary', 'Musculoskeletal', 'Reproductive', 'Blood and immune', 'Skin'];
-  assert.deepEqual(count(clinical, (p) => p.category), Object.fromEntries(systems.map((s) => [s, 50])));
-  assert.deepEqual(count(clinical, (p) => p.kind), { disease: 300, symptom: 80, investigation: 60, treatment: 60 });
-  assert.deepEqual(count(basic, (p) => p.category), { Anatomy: 84, Physiology: 84, Biochemistry: 83, Pharmacology: 83, Pathology: 83, Microbiology: 83 });
+  assert.deepEqual(count(clinical, (p) => p.category), Object.fromEntries(systems.map((s) => [s, 60])));
+  assert.deepEqual(count(clinical, (p) => p.kind), { disease: 360, symptom: 100, investigation: 70, treatment: 70 });
+  assert.deepEqual(count(basic, (p) => p.category), { Anatomy: 101, Physiology: 100, Biochemistry: 100, Pharmacology: 100, Pathology: 99, Microbiology: 100 });
 });
 
 test('word bank: the 20 approved sample pairs come first, unchanged', () => {
