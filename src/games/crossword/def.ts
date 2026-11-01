@@ -30,7 +30,7 @@ export const novaCrossword: GameDef = {
       blurb: 'Pass the phone. Claim words to own their letters.',
       howTo: [
         'Add 2 to 6 players. Everyone plays the same grid, one word per turn, in a random order each lap.',
-        'A right answer scores its length, plus any crossing word it completes. A wrong answer costs one of your 5 hearts.',
+        `A right answer scores its length, plus any crossing word it completes. A wrong answer costs one of your ${CW.hearts} hearts.`,
         'Closing a word ends your turn with no penalty. There are no hints and no EXP in this mode.',
         'At 0 hearts each player gets one revive, 1 token paid by the phone owner, or they are out.',
         'You can split players into teams. Teams take turns, and a team scores its players\' average.',

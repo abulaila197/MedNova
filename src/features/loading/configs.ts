@@ -286,7 +286,7 @@ export const LOAD: Record<string, LoadCfg> = {
     bar: { t: 'line', c: '#8e1b2a', track: 'rgba(28,26,24,0.16)', glow: '0 0 4px rgba(142,27,42,0.4)' },
     tag: { t: ALL, side: 'left', c: '#1c1a18', bg: 'rgba(250,246,236,0.6)', b: 'rgba(28,26,24,0.3)' },
     sweep: true, glows: [], parts: [],
-    tips: ['A wrong answer costs a heart. You have 5.', 'Leave no word unsolved for 3 stars.', 'A letter hint opens a third of the empty letters.'],
+    tips: ['A wrong answer costs a heart. You have 3.', 'Leave no word unsolved for 3 stars.', 'A letter hint opens a third of the empty letters.'],
     fonts: ['LibreBaskerville_400Regular', 'LibreBaskerville_400Regular_Italic', 'AbrilFatface_400Regular'],
   },
 };

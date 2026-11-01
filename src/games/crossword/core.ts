@@ -26,7 +26,7 @@ export type WordDef = {
 export type PuzzleDef = { id: string; level: number; rows: number; cols: number; words: WordDef[] };
 
 export const CW = {
-  hearts: 5, // CW2: per puzzle (Solo), per player (Offline)
+  hearts: 3, // CW2: per puzzle (Solo), per player (Offline), per puzzle (Online). 5 -> 3 (Yazan 2026-11-01).
   /** CW4: a hint costs 1 token and reveals a third of the word's empty letters. */
   hintPrice: 1,
   /** CW3: a token revive gives 1 heart (Solo unlimited, Offline once per player). */

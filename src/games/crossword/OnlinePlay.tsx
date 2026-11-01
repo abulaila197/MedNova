@@ -68,7 +68,7 @@ function itemsOf(me: string) {
 
 /**
  * Nova Crossword Online (CW6, CW7, CW10-CW12): everyone races the same random grid. The first right answer claims the
- * word and its letters; a wrong answer costs one of 5 hearts. One token revive per player. The server referees.
+ * word and its letters; a wrong answer costs one of 3 hearts. One token revive per player. The server referees.
  */
 export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   const t = useTheme();

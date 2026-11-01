@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
 
-import { buildSlots, cellKey, composeAnswer, indexOf, isFilled, isUnlocked, levelExp, lockedCells, pickHintCells, placeLetter, removeSlot, startSolo, starsFor, stepSolo, validatePuzzle, type PuzzleDef } from '../core';
+import { CW, buildSlots, cellKey, composeAnswer, indexOf, isFilled, isUnlocked, levelExp, lockedCells, pickHintCells, placeLetter, removeSlot, startSolo, starsFor, stepSolo, validatePuzzle, type PuzzleDef } from '../core';
 import { currentSeat, offlineRecap, startOffline, stepOffline } from '../offline';
 
 const PUZZLES = JSON.parse(readFileSync('src/games/crossword/data/puzzles.json', 'utf8')) as PuzzleDef[];
@@ -65,8 +65,8 @@ test('solo: wrong costs a heart, repeats are free, 0 hearts is out, revive gives
   let r = startSolo('t');
   r = stepSolo(P, r, { type: 'SUBMIT', wordId: 'cow', answer: 'COX' });
   r = stepSolo(P, r, { type: 'SUBMIT', wordId: 'cow', answer: 'COX' });
-  assert.equal(r.hearts, 4);
-  for (const a of ['CAB', 'CAD', 'CAN', 'CAP']) r = stepSolo(P, r, { type: 'SUBMIT', wordId: 'cat', answer: a });
+  assert.equal(r.hearts, CW.hearts - 1);
+  for (const a of ['CAB', 'CAD', 'CAN', 'CAP'].slice(0, CW.hearts - 1)) r = stepSolo(P, r, { type: 'SUBMIT', wordId: 'cat', answer: a });
   assert.equal(r.phase, 'out');
   assert.equal(stepSolo(P, r, { type: 'SUBMIT', wordId: 'cat', answer: 'CAT' }), r);
   r = stepSolo(P, r, { type: 'REVIVE' });
@@ -90,11 +90,11 @@ test('offline: right scores the length and passes, wrong costs a heart, one revi
   assert.equal(o.players[first].score, 3);
   assert.equal(currentSeat(o), other);
   assert.equal(o.phase, 'handoff');
-  // other burns 5 hearts across their turns (first passes by closing)
-  for (let i = 0; i < 5; i++) {
+  // other burns all their hearts across their turns (first passes by closing)
+  for (let i = 0; i < CW.hearts; i++) {
     o = stepOffline(P, o, { type: 'READY' });
     o = stepOffline(P, o, { type: 'SUBMIT', wordId: 'cow', answer: `CO${'ABCDE'[i]}` });
-    if (i < 4) {
+    if (i < CW.hearts - 1) {
       o = stepOffline(P, o, { type: 'READY' });
       o = stepOffline(P, o, { type: 'CLOSE' });
     }
