@@ -95,6 +95,25 @@ test('a turn asks Count questions and scores by style', () => {
   assert.ok(missed.results.every((r) => r.answer === null));
 });
 
+test('#39b: every question in a turn has the turn\'s style and field, with no new spin in between', () => {
+  // The real bank has every style in every field, so the turn never has to borrow another kind of question.
+  const real = JSON.parse(readFileSync('src/games/wheels/data/bank.json', 'utf8')) as FullBank;
+  for (let seed = 1; seed <= 60; seed++) {
+    const rng = seeded(seed);
+    let t = stepTurn(startTurn(real, [], rng), { type: 'GO', now: 0 }, real, rng);
+    const first = t.combo;
+    let now = 0;
+    while (t.phase !== 'over') {
+      now += 100_000;
+      t = stepTurn(t, t.phase === 'question' ? { type: 'ANSWER', answer: rightAnswer(t.question), now } : { type: 'TICK', now }, real, rng);
+      assert.notEqual(t.phase, 'reveal', 'no second spin inside a turn');
+      if (t.phase !== 'over') assert.deepEqual(t.combo, first);
+    }
+    assert.equal(t.results.length, t.count);
+    assert.ok(t.results.every((r) => r.style === first.style && r.field === first.field), `seed ${seed}`);
+  }
+});
+
 test('#39a: no Star window: the first wheels go straight to the question', () => {
   const rng = seeded(4);
   const t = stepTurn(startTurn(bank, [], rng), { type: 'GO', now: 1000 }, bank, rng);

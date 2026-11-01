@@ -63,9 +63,16 @@ function playOut(seed: number, seats: number, idle: (seat: number) => boolean, d
   const dropped: number[] = [];
   const phases = new Set<string>();
   const waits: Record<string, number> = {};
+  const combos = new Map<string, string>();
   for (let i = 0; i < 20_000 && o.g.phase !== 'done'; i++) {
     const g = o.g;
     phases.add(g.phase);
+    if (g.phase === 'turn' && g.turn) {
+      // #39b: online, too, a turn keeps its first style and field for every question.
+      const k = `${g.cycle}.${g.round}.${g.turnAt}`, c = `${g.turn.combo.style}/${g.turn.combo.field}`;
+      if (!combos.has(k)) combos.set(k, c);
+      assert.equal(combos.get(k), c, `turn ${k}`);
+    }
     if (dropAt && i === dropAt.at) dropped.push(dropAt.seat);
     const who = actor(g);
     let m: Move | null = null;

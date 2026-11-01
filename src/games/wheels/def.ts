@@ -14,9 +14,9 @@ const TARGET = {
   choices: [
     { value: 25, label: '25', note: 'POINTS' },
     { value: 50, label: '50', note: 'POINTS' },
-    { value: 100, label: '100', note: 'POINTS' },
   ],
-  initial: 50,
+  // #25/#26 (Yazan 2026-11-01): only 25 and 50, 25 first.
+  initial: 25,
 };
 
 // QS1: Mixed, Clinical or Basic science, Mixed first and picked by default.
@@ -34,7 +34,7 @@ export const wheelsOfChaos: GameDef = {
       title: 'Spin to the target',
       blurb: 'Spin the three wheels and answer what they pick, turn after turn, until you reach the target.',
       howTo: [
-        'Pick a target of 50 or 100 points, and mixed, clinical or basic science questions.',
+        'Pick a target of 25 or 50 points, and mixed, clinical or basic science questions.',
         'Each turn the wheels pick how many questions (1 to 3), their style and their field.',
         'Seven styles, each with its own points and timer: from True or False (1 point) to Matching (3 points).',
         'Rule 2 Out and Matching are all or nothing.',
@@ -58,7 +58,7 @@ export const wheelsOfChaos: GameDef = {
       title: 'Live on stage',
       blurb: 'The full show for 2 to 4 players, each on their own phone.',
       howTo: [
-        'The host picks a target of 50 or 100 points and the question type. 2 to 4 players, no teams.',
+        'The host picks a target of 25 or 50 points and the question type. 2 to 4 players, no teams.',
         'Players take turns while the whole room watches.',
         'From round 2, whoever is last first can swap a turn for a Redemption round. Once an act, for everyone.',
         'The Boss Round is played by everyone at once, each on their own phone.',

@@ -14,7 +14,7 @@ export const STYLES: Record<Style, { name: string; points: number; seconds: numb
   mcq: { name: 'Direct MCQ', points: 1, seconds: 20 },
   tf: { name: 'True or False', points: 1, seconds: 15 },
   r2o: { name: 'Rule 2 Out', points: 2, seconds: 30 },
-  match: { name: 'Matching', points: 3, seconds: 35 }, // +5 s (Yazan 2026-10-24, #63)
+  match: { name: 'Matching', points: 3, seconds: 40 }, // +5 s twice (Yazan 2026-10-24 #63, 2026-11-01 #32)
   riddle: { name: 'Riddle MCQ', points: 1, seconds: 20 },
   reverse: { name: 'Reverse Question', points: 2, seconds: 30 },
   lie: { name: 'Three Truths and a Lie', points: 2, seconds: 30 },
@@ -50,7 +50,7 @@ export const MIXES: { value: Mix; label: string }[] = [
 export const fieldWeights = (mix: Mix = 'mixed'): [FieldKey, number][] =>
   mix === 'mixed' ? FIELD_WEIGHTS : FIELDS.filter((f) => f.group === mix).map((f) => [f.key, 1]);
 
-export const TARGETS = [25, 50, 100] as const; // 25 added (Yazan 2026-10-25)
+export const TARGETS = [25, 50, 100] as const; // 25 added (Yazan 2026-10-25). Setup offers only 25 and 50 (#25, 2026-11-01); 100 stays valid for tests and old saves.
 export type Target = (typeof TARGETS)[number];
 export const FEEDBACK_MS = { right: 1100, wrong: 1800 }; // as coded
 
