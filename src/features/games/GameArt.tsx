@@ -9,7 +9,7 @@ import { ART_END, BODY_TOP, W } from './fit';
 // Each drawing with its arc fade is baked into one transparent
 // image by scripts/bake-game-art.py, so the phone draws a plain picture instead of three stacked
 // SVG masks per page. Re-run the script after changing a drawing or the geometry in fit.ts.
-const BAKED = {
+export const GAME_ART = {
   dark: {
     'trust-me-not': require('@/assets/games/baked/dark/trust-me-not.webp'),
     'the-conqueror': require('@/assets/games/baked/dark/the-conqueror.webp'),
@@ -30,7 +30,7 @@ const BAKED = {
 
 /** The game drawing, lower right, fading in along the big curve (prototype `.np.arc`). Drawn in body coordinates. */
 export const GameArt = memo(function GameArt({ k, mode, lift }: { k: string; mode: Mode; lift: number }) {
-  const src = BAKED[mode][k as keyof (typeof BAKED)['dark']];
+  const src = GAME_ART[mode][k as keyof (typeof GAME_ART)['dark']];
   return (
     <Image
       source={src}

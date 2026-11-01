@@ -10,7 +10,9 @@
     "backgroundColor": "#0d1738",
     "ios": {
       "icon": "./assets/images/icon.png",
-      "bundleIdentifier": "com.novagames.mednova"
+      "bundleIdentifier": "com.novagames.mednova",
+      "supportsTablet": true,
+      "requireFullScreen": true
     },
     "android": {
       "package": "com.novagames.mednova",

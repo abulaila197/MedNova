@@ -12,6 +12,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { BootSplash } from '@/features/start/BootSplash';
 import { Intro } from '@/features/start/Intro';
+import { SideSky } from '@/components/SideSky';
 import { startAccount } from '@/state/account';
 import { watchResize } from '@/state/resize';
 import { bootStart, endIntro, useStart, useStartReady } from '@/state/start';
@@ -63,6 +64,7 @@ export default function RootLayout() {
       <StatusBar style="light" />
       {go ? (
         <>
+      <SideSky />
       {/* the app frame: the full screen, or a centred column (see theme/scale.ts) */}
       <View style={{ flex: 1, width: FRAME_W, overflow: 'hidden' }}>
       <Stack screenOptions={{ headerShown: false, animation: 'fade', contentStyle: { backgroundColor: THEMES.dark.sky } }} />

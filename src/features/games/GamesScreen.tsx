@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useFocusEffect } from 'expo-router';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { cancelAnimation, Easing, useSharedValue, withTiming } from 'react-native-reanimated';
@@ -12,9 +13,11 @@ import { DailyButton } from '@/features/daily/DailyButton';
 import { ChestButton } from '@/features/chests/ChestButton';
 import { InboxButton } from '@/features/inbox/InboxButton';
 import { useTheme } from '@/state/app';
+import { setSideArt } from '@/state/sideArt';
 import { DESIGN_W, u } from '@/theme/scale';
 
-import { FILL_H } from './fit';
+import { ART_END, BODY_TOP, FILL_H } from './fit';
+import { GAME_ART } from './GameArt';
 import { useGamesFocus } from './focus';
 import { GameTagSheet } from './GameTag';
 
@@ -42,6 +45,17 @@ export function GamesScreen() {
   );
   // How much less room the body has than the design (taller dock over the phone's buttons): the lower group lifts by it.
   const [lift, setLift] = useState(0);
+  // #12: on a centred column (tablets, short phones) the sides carry on the shown game's drawing (SideSky).
+  const body = useRef<View>(null);
+  const [bodyY, setBodyY] = useState<number | null>(null);
+  useFocusEffect(
+    useCallback(() => {
+      if (bodyY == null) return;
+      const key = GAMES[sel].key as keyof (typeof GAME_ART)['dark'];
+      setSideArt({ src: GAME_ART.dark[key], top: bodyY - lift, height: u(ART_END - BODY_TOP) });
+      return () => setSideArt(null);
+    }, [sel, bodyY, lift]),
+  );
 
   const pick = useCallback(
     (target: number) => {
@@ -94,7 +108,13 @@ export function GamesScreen() {
   return (
     <Screen tab="games" glow={0}>
       <GestureDetector gesture={pan}>
-        <View style={s.fill} onLayout={(e) => setLift(Math.round(u(FILL_H) - e.nativeEvent.layout.height))}>
+        <View
+          ref={body}
+          style={s.fill}
+          onLayout={(e) => {
+            setLift(Math.round(u(FILL_H) - e.nativeEvent.layout.height));
+            body.current?.measureInWindow((_x, y) => setBodyY(y));
+          }}>
           {/* the shown game and two on each side are mounted, so the next page's art is already decoded when a swipe
               lands (2026-10-19, was one each side: building it as the slide ended froze the page) */}
           {GAMES.map((g, j) => (Math.abs(wrapOff(j - sel)) <= 2 ? <GamePage key={g.key} game={g} j={j} pos={pos} active={j === sel} lift={lift} /> : null))}
