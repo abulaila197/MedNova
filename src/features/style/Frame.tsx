@@ -30,7 +30,7 @@ const METAL: Record<'bronze' | 'silver' | 'gold' | 'platinum', string[]> = {
 
 // Yazan's Flow art for the premium frames (2026-10-25). Each image is square with the ring's hole in the centre;
 // `ext` is the image side over the hole's diameter, `w` the share of the image's width the art covers. Every frame is
-// drawn as wide as the metal rings (Yazan: same side-to-side size), so the face shrinks to fit a thicker frame.
+// drawn round the same-size face as the metal rings, so a thicker frame reaches further out (Yazan 2026-11-01, #36).
 const ART: Partial<Record<FrameKey, { src: ImageSource; ext: number; w: number }>> = {
   helix: { src: require('../../../assets/frames/helix.webp'), ext: 1.658, w: 0.828 },
   neuron: { src: require('../../../assets/frames/neuron.webp'), ext: 1.854, w: 0.855 },
@@ -45,8 +45,6 @@ const ART: Partial<Record<FrameKey, { src: ImageSource; ext: number; w: number }
 };
 // The hole sits a touch inside the face's edge so the ring covers it cleanly.
 const HOLE = 0.74;
-// Outer width of the metal rings, as a share of the box.
-const RING_W = 0.965;
 
 const pt = (r: number, a: number) => [C + r * Math.cos(a), C + r * Math.sin(a)] as const;
 
@@ -254,8 +252,9 @@ export function Framed({ slug, size, frame, still = false, accent }: { slug: str
   const f = size * FACE;
   const art = ART[frame];
   if (art) {
-    const w = (size * RING_W) / art.w;
-    const fq = (w / art.ext / HOLE) * FACE;
+    // #36 (Yazan 2026-11-01): the face stays the size it has in the metal frames; a thick frame grows outward instead.
+    const fq = f;
+    const w = (fq / FACE) * HOLE * art.ext;
     return (
       <View style={{ width: size, height: size }}>
         <View style={[s.face, { top: (size - fq) / 2, left: (size - fq) / 2 }]}>

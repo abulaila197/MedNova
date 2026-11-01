@@ -221,7 +221,10 @@ export function StylePage() {
             {[...frames, ...Array.from({ length: (3 - (frames.length % 3)) % 3 }, () => null)].map((it, i) => !it ? <View key={`gap${i}`} style={s.cellGap} /> : (
               <Cell key={it.id} t={t} on={pick?.id === it.id} onPress={() => setPick(it)}>
                 {/* Still in the grid; the one you tap moves in the card above. */}
-                <Framed slug={profile?.avatar ?? 'yara'} size={u(62)} frame={it.key} still />
+                {/* Room above and below: thick frames reach past the box now that the face keeps its size (#36). */}
+                <View style={{ marginVertical: u(6) }}>
+                  <Framed slug={profile?.avatar ?? 'yara'} size={u(62)} frame={it.key} still />
+                </View>
                 <Text style={[s.cN, { color: c.fg }]} numberOfLines={1}>{it.name}</Text>
                 <Price t={t} it={it} deal={deal} owned={has(it.id)} wearing={wearing(it)} />
               </Cell>

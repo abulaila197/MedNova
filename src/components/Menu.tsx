@@ -18,12 +18,13 @@ import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 const ITEMS = [
-  ['My Profile', '/profile'], // first item (Yazan 2026-10-21); the moon button still opens it too
-  ['Leaderboard', '/leaderboard'],
+  // Order set by Yazan 2026-10-31 (#49).
+  ['My Profile', '/profile'], // the moon button still opens it too
   ['Friends', '/friends'],
-  ['Achievements', '/achievements'],
-  ['My cards', '/cards'],
   ['Nova Shop', '/store'],
+  ['My cards', '/cards'],
+  ['Achievements', '/achievements'],
+  ['Leaderboard', '/leaderboard'],
   ['Contact', '/contact'],
   ['About', '/about'],
   ['FAQ', '/faq'],

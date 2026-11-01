@@ -1,6 +1,6 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useFocusEffect } from 'expo-router';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import { Text } from '@/components/AppText';
@@ -10,15 +10,14 @@ import { Screen } from '@/components/Screen';
 import { OfflineLine } from '@/components/OfflineLine';
 import { InfoScroll, Kicker, s as ui, useInfo } from '@/features/info/ui';
 import { useSession } from '@/games/shell/session';
-import { DEAL_OFF, FRAMES, TITLES } from '@/features/style/catalog';
-import { Framed, type FrameKey } from '@/features/style/Frame';
-import { loadStyle, useStyle } from '@/features/style/useStyle';
+import { Framed } from '@/features/style/Frame';
+import { useStyle } from '@/features/style/useStyle';
 import { SOVEREIGN_PACK } from '@/features/shop/robots';
-import { useAccount } from '@/state/account';
 import { u } from '@/theme/scale';
 import type { Theme } from '@/theme/tokens';
 import { F } from '@/theme/tokens';
 
+import { StyleBanner } from './StyleBanner';
 import { FreeSheets, FreeTokens, useFree } from './FreeTokens';
 import { BILLING_LIVE, buy, restore, useIsSubscribed, useSubscription, type BuyResult } from './billing';
 import { PACKS, SUBSCRIPTION, type Pack } from './catalog';
@@ -121,7 +120,7 @@ export function StorePage() {
         {/* Style shop (Yazan 2026-10-13): frames, titles, win effects and stickers, bought with tokens. */}
         <View style={{ height: u(14) }} />
         <Kicker inSec>Style</Kicker>
-        <StyleRow t={t} />
+        <StyleBanner t={t} />
 
         <View style={{ height: u(14) }} />
         <Kicker inSec>Token packs</Kicker>
@@ -143,26 +142,6 @@ export function StorePage() {
       </InfoScroll>
       <FreeSheets t={t} />
     </Screen>
-  );
-}
-
-/** The way into the Style shop, with this week's deal on it. */
-function StyleRow({ t }: { t: Theme }) {
-  const deal = useStyle((x) => x.deal);
-  const avatar = useAccount((a) => a.profile?.avatar ?? 'yara');
-  useEffect(() => {
-    void loadStyle();
-  }, []);
-  const names = [FRAMES.find((x) => x.id === deal[0])?.name, TITLES.find((x) => x.id === deal[1])?.name].filter(Boolean);
-  return (
-    <Pressable onPress={() => router.navigate('/style' as never)} style={[s.style, { backgroundColor: t.panel, borderColor: t.panelLine }]} accessibilityRole="link">
-      <Framed slug={avatar} size={u(46)} frame={(FRAMES.find((x) => x.id === deal[0])?.key ?? 'gold') as FrameKey} still />
-      <View style={{ flex: 1 }}>
-        <Text style={[s.styleH, { color: t.fg }]}>Frames, titles and effects</Text>
-        <Text style={[s.styleS, { color: names.length ? t.accent : t.mute }]}>{names.length ? `${DEAL_OFF}% off this week: ${names.join(' and ')}` : 'Dress your name for every room'}</Text>
-      </View>
-      <Text style={[s.styleS, { color: t.accent }]}>Open ›</Text>
-    </Pressable>
   );
 }
 

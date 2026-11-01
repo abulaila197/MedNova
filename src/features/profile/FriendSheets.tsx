@@ -272,7 +272,7 @@ function FriendProfileSheet() {
         : { label: `Add ${f.display_name} as a friend`, go: add };
 
   return (
-    <ScrollView style={{ maxHeight: u(560) }} contentContainerStyle={{ gap: u(10) }} showsVerticalScrollIndicator={false}>
+    <ScrollView style={{ maxHeight: u(560) }} contentContainerStyle={{ gap: u(10), paddingTop: u(8) }} showsVerticalScrollIndicator={false}>
       <View style={s.ph}>
         <PlayerFace slug={f.avatar} size={u(64)} userId={f.id} />
         <View style={{ flex: 1, minWidth: 0, gap: u(2) }}>

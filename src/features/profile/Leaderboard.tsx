@@ -131,13 +131,13 @@ export function Leaderboard() {
   const note =
     board === 'error'
       ? 'Could not load the board. Check your connection.'
-      : board?.savedAt
-        ? `Offline · last updated ${agoText(board.savedAt)}.`
       : board && !rows.length
         ? scope === 'friends' && !userId
           ? 'Sign in to see your friends here.'
           : `No EXP earned ${per.empty}${g ? ` in ${g.lead} ${g.em}` : ''}.`
         : null;
+  // #11 (Yazan 2026-10-31): the offline line gets its own red line above the podium, so it never sits behind a name.
+  const offline = board && board !== 'error' && board.savedAt ? `Offline · last updated ${agoText(board.savedAt)}` : null;
   const sub = !userId
     ? null
     : !mine
@@ -184,6 +184,7 @@ export function Leaderboard() {
                 </Pressable>
               </View>
             </View>
+            {offline ? <Text style={[s.offline, { color: t.red }]}>{offline}</Text> : null}
             <View style={s.hero}>
               {note ? <Text style={[s.note, { color: t.mute }]}>{note}</Text> : null}
               {TOP3.map((r, i) => {
@@ -289,6 +290,7 @@ const s = StyleSheet.create({
   rB: { fontFamily: F.display, fontSize: u(16), lineHeight: u(16) },
   rS: { fontFamily: F.display, fontSize: u(15), lineHeight: u(19) },
   prize: { fontFamily: F.mono, fontSize: u(7.5), letterSpacing: u(1), lineHeight: u(12), textAlign: 'center', marginTop: u(14), paddingHorizontal: u(16) },
+  offline: { fontFamily: F.bodySemi, fontSize: u(10.5), textAlign: 'center', marginTop: u(8) },
   note: { position: 'absolute', left: u(16), right: u(16), top: u(70), textAlign: 'center', fontFamily: F.body, fontSize: u(11), lineHeight: u(15) },
   guest: { marginTop: u(3), fontFamily: F.body, fontSize: u(10.5), lineHeight: u(14) },
   menu: { position: 'absolute', top: u(88 - TOP + 30), left: u(14), right: u(14), flexDirection: 'row', flexWrap: 'wrap', borderWidth: 1, borderRadius: u(16), paddingHorizontal: u(10), paddingVertical: u(4) },
