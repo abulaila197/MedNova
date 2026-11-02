@@ -46,14 +46,23 @@ const WALL: Record<string, ImageSourcePropType> = {
 export const WALLPAPER_IDS = ['w26', 'w15', 'w01', 'w22', 'w20', 'w02', 'w23', 'w21', 'w05', 'w14', 'w13', 'w03', 'w24', 'w16', 'w08', 'w30', 'w12', 'w04', 'w29', 'w19', 'w09', 'w25', 'w27', 'w06', 'w11', 'w18', 'w10', 'w28', 'w17', 'w07'];
 export const WALLPAPERS: ImageSourcePropType[] = WALLPAPER_IDS.map((id) => WALL[id]);
 /** The Community shelf's hand (Yazan 2026-11-01): the moon cradle and the robot dinner, plus 4 new ones, mixed. */
-export const SHELF_WALLPAPERS: ImageSourcePropType[] = ['w26', 'w04', 'w28', 'w11', 'w01', 'w17'].map((id) => WALL[id]);
+// Small copies for the shelf hands (Yazan 2026-11-02, lag): 12 full-size photos shrunk into small cards cost
+// about 50 MB of memory; the full pictures load only on the wallpaper page.
+export const SHELF_WALLPAPERS: ImageSourcePropType[] = [
+  require('@/assets/community/thumbs/w26.jpg'),
+  require('@/assets/community/thumbs/w04.jpg'),
+  require('@/assets/community/thumbs/w28.jpg'),
+  require('@/assets/community/thumbs/w11.jpg'),
+  require('@/assets/community/thumbs/w01.jpg'),
+  require('@/assets/community/thumbs/w17.jpg'),
+];
 export const MERCH: ImageSourcePropType[] = [
-  require('@/assets/community/merch/m01.jpg'),
-  require('@/assets/community/merch/m02.jpg'),
-  require('@/assets/community/merch/m03.jpg'),
-  require('@/assets/community/merch/m04.jpg'),
-  require('@/assets/community/merch/m05.jpg'),
-  require('@/assets/community/merch/m06.jpg'),
+  require('@/assets/community/thumbs/m01.jpg'),
+  require('@/assets/community/thumbs/m02.jpg'),
+  require('@/assets/community/thumbs/m03.jpg'),
+  require('@/assets/community/thumbs/m04.jpg'),
+  require('@/assets/community/thumbs/m05.jpg'),
+  require('@/assets/community/thumbs/m06.jpg'),
 ];
 
 const W = 58; // one photo, phone-wallpaper shaped

@@ -25,10 +25,10 @@ const fill = (c: CardColor) => (c === 'red' || c === 'blue' ? TEAM[c].deep : c =
 const edge = (c: CardColor) => (c === 'red' || c === 'blue' ? TEAM[c].color : c === 'neutral' ? NEUTRAL.color : DEADLY.color);
 
 /** The game page: whose turn on top, the pause button, then the phase's own body. */
-export function ClinicScreen({ turn, remaining, onPause, children, bottom }: { turn: Team | null; remaining: Record<Team, number>; onPause: () => void; children: ReactNode; bottom?: ReactNode }) {
+export function ClinicScreen({ turn, remaining, onPause, children, bottom, over }: { turn: Team | null; remaining: Record<Team, number>; onPause: () => void; children: ReactNode; bottom?: ReactNode; over?: ReactNode }) {
   const t = useTheme();
   return (
-    <GameScreen scroll bottom={bottom}>
+    <GameScreen scroll bottom={bottom} top={over}>
       <View style={s.top}>
         <View style={s.score}>
           {(['red', 'blue'] as const).map((tm) => (

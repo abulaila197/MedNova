@@ -34,7 +34,7 @@ export default function Page() {
         <Kicker>MedNova · Support</Kicker>
         <Rich text={'Answers before\nthe *next case.*'} style={[ui.H, s.H]} />
 
-        <Fade from={0.85} horizontal style={s.areasWrap}>
+        <Fade veil from={0.85} horizontal style={s.areasWrap}>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={s.areas}>
             <Pressable onPress={() => setArea(SEARCH)} accessibilityRole="button" accessibilityLabel="Search questions" style={[s.area, s.searchChip, { backgroundColor: c.surf, borderColor: area === SEARCH ? c.areaOnLine : c.line }]}>
               <SearchGlyph color={area === SEARCH ? c.fg : c.mute} />

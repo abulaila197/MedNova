@@ -92,7 +92,7 @@ export function Profile() {
   const pct = (a: number | null | undefined) => (a == null ? '–' : `${Math.round(a * 100)}%`);
   return (
     <>
-    <Fade stops={[[0, 0], [0.04, 1], [0.9, 1], [1, 0]]} style={s.area}>
+    <Fade veil stops={[[0, 0], [0.04, 1], [0.9, 1], [1, 0]]} style={s.area}>
       <ScrollView style={s.fill} contentContainerStyle={s.pf} showsVerticalScrollIndicator={false}>
         {/* Your framed face where the planet was (Yazan 2026-10-13: on the planet spot, orbit and moons removed). */}
         <View style={s.me}>

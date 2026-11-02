@@ -10,6 +10,7 @@ import { pageCard } from '@/features/loading/snapshot';
 import { closeFriendSheet, FriendSheets } from '@/features/profile/FriendSheets';
 import { PickNameHost } from '@/features/profile/PickName';
 import { InviteBanner } from '@/online/InviteBanner';
+import { TalkHost } from '@/online/TalkBar';
 import { NetDot } from '@/online/netDot';
 import { DailyHost } from '@/features/daily/DailyHost';
 import { WelcomeHost } from '@/features/welcome/WelcomeHost';
@@ -72,6 +73,7 @@ export default function AppLayout() {
         <Stack screenOptions={{ headerShown: false, animation: 'fade', contentStyle: { backgroundColor: t.sky } }} />
         {open ? <Pressable style={s.catch} onPress={() => setMenu(false)} accessibilityLabel="Close menu" /> : null}
       </Animated.View>
+      <TalkHost />
       <LoadingHost />
       <ReportSheet />
       <FriendSheets />

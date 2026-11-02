@@ -15,14 +15,15 @@ import { F } from '@/theme/tokens';
 
 import { settingsLine } from './format';
 import type { Invite } from './api';
-import { acceptInvite, cancelAsking, markBannered, useInvites } from './invites';
+import { acceptInvite, cancelAsking, loadInvites, markBannered, useInvites } from './invites';
 import { G } from './grey';
 
-const SHOW_MS = 10_000;
 
 /**
- * ON24, "Top banner" (Yazan's pick): a new challenge slides down under the header for 10 s with a bar running out.
- * Later keeps it on your Friends list (Join + time left) until it ends. Not shown on match screens.
+ * ON24, "Top banner" (Yazan's pick): a new challenge slides down under the header. #3 (Yazan 2026-11-02): it shows
+ * on every page and stays until you tap Join or Later, or the challenge ends (the bar is the time it has left); it
+ * used to leave after 10 s and was easy to miss. In a game (Solo, Pass the phone or online) it waits, and the app
+ * checks again the moment you leave the game, so it shows right away. Later keeps it on your Friends list.
  */
 export function InviteBanner() {
   const ins = useSafeAreaInsets();
@@ -31,6 +32,9 @@ export function InviteBanner() {
   const bannered = useInvites((s) => s.bannered);
   const inv = list.find((x) => !bannered.includes(x.id));
   const busy = /\/(live|run|lobby)$/.test(path);
+  useEffect(() => {
+    if (!busy) loadInvites().catch(() => {});
+  }, [busy]);
   const top = (Platform.OS === 'web' ? u(30) : ins.top) + u(48);
   return (
     <>
@@ -71,13 +75,16 @@ function WatchNote({ top }: { top: number }) {
   );
 }
 
-/** One challenge's banner: its bar runs out over SHOW_MS (started again if the invite changes), then it moves to Friends. */
+/** One challenge's banner: its bar is the challenge's time left; at the end it goes (Join or Later close it sooner). */
 function Banner({ inv, top }: { inv: Invite; top: number }) {
   const bar = useSharedValue(1);
   useEffect(() => {
-    bar.value = 1;
-    bar.value = withTiming(0, { duration: SHOW_MS, easing: Easing.linear });
-    const id = setTimeout(() => markBannered(inv.id), SHOW_MS);
+    const start = new Date(inv.created_at).getTime();
+    const end = new Date(inv.expires_at).getTime();
+    const left = Math.max(0, end - Date.now());
+    bar.value = Math.min(1, left / Math.max(1, end - start));
+    bar.value = withTiming(0, { duration: left, easing: Easing.linear });
+    const id = setTimeout(() => markBannered(inv.id), left);
     return () => clearTimeout(id);
   }, [inv, bar]);
   const run = useAnimatedStyle(() => ({ width: `${bar.value * 100}%` }));

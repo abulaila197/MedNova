@@ -567,10 +567,9 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   }
 
   return (
-    <PasswordScreen turn={v.phase === 'playing' ? (v.me?.team ?? null) : null} pills={pills} onPause={() => setMenu(true)} bottom={bottom}>
+    <PasswordScreen turn={v.phase === 'playing' ? (v.me?.team ?? null) : null} pills={pills} onPause={() => setMenu(true)} bottom={bottom} over={v.phase === 'playing' ? null : talk}>
       {body}
       {extras}
-      {v.phase === 'playing' ? null : talk}
       <PauseMenu open={menu} mode="online" onResume={() => setMenu(false)} onQuit={leave} />
     </PasswordScreen>
   );

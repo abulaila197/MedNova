@@ -27,10 +27,10 @@ export const clock = (ms: number) => {
 };
 
 /** The screen with the two teams' pills on top (the playing team lit) and the pause button. */
-export function PasswordScreen({ turn, pills, onPause, children, bottom }: { turn: TeamId | null; pills: Record<TeamId, string>; onPause: () => void; children: ReactNode; bottom?: ReactNode }) {
+export function PasswordScreen({ turn, pills, onPause, children, bottom, over }: { turn: TeamId | null; pills: Record<TeamId, string>; onPause: () => void; children: ReactNode; bottom?: ReactNode; over?: ReactNode }) {
   const t = useTheme();
   return (
-    <GameScreen scroll bottom={bottom}>
+    <GameScreen scroll bottom={bottom} top={over}>
       <View style={s.top}>
         <View style={s.score}>
           {(['A', 'B'] as const).map((tm) => (

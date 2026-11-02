@@ -24,7 +24,7 @@ const BUILD = [
 export function Feed() {
   const t = useTheme();
   return (
-    <Fade stops={[[0, 1], [0.82, 1], [1, 0]]} style={s.area}>
+    <Fade veil stops={[[0, 1], [0.82, 1], [1, 0]]} style={s.area}>
       <ScrollView style={s.fill} contentContainerStyle={s.c2} showsVerticalScrollIndicator={false}>
         <View style={s.head}>
           <Text style={[s.kick, { color: t.kick }]}>NOVA COMMUNITY</Text>

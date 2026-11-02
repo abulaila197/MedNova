@@ -71,7 +71,7 @@ export function InfoScroll({ children, scrollY, over, scrollRef, contentStyle }:
     if (scrollY) scrollY.set(e.contentOffset.y / Math.max(1, e.contentSize.height - e.layoutMeasurement.height));
   });
   return (
-    <Fade from={FADE_FROM} style={s.pg}>
+    <Fade veil from={FADE_FROM} style={s.pg}>
       {/* Keyboard (PB10): iOS insets the scroll view; Android (edge-to-edge, no window resize) shrinks it with
           KeyboardLift, and Android's ScrollView then keeps the focused text box in view. */}
       <Lift>

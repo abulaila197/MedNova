@@ -1,6 +1,7 @@
 import { Image } from 'expo-image';
 import { useEffect, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { create } from 'zustand';
+import { Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Text, MAX_FONT_SCALE } from '@/components/AppText';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -15,7 +16,7 @@ import { u, useScreen } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import { G } from './grey';
-import { useRoomLook } from './look';
+import { RoomLookProvider, useRoomLook, type RoomLook } from './look';
 import { stickerById, STICKERS } from './stickers';
 import { TEXT_PACKS } from './textStickers';
 import { sendTalk, toggleMute, useTalk, useTalkFeed, type TalkMsg } from './talk';
@@ -38,16 +39,42 @@ function useCooling() {
   return cooling;
 }
 
+type Tab = 'sticker' | 'special' | 'voice';
+/** #6 (Yazan 2026-11-02): the tray remembers its tab, pack and scroll spot while you stay in the same room. */
+const memo: { room: string; tab: Tab; pk: string | null; y: Record<Tab, number> } = { room: '', tab: 'sticker', pk: null, y: { sticker: 0, special: 0, voice: 0 } };
+const remember = (room: string) => {
+  if (memo.room !== room) Object.assign(memo, { room, tab: 'sticker', pk: null, y: { sticker: 0, special: 0, voice: 0 } });
+  return memo;
+};
+
 /** The Talk tray (ON12, locked lobby preview): your character's stickers, picture only, and the shared voice lines. */
-export function TalkPanel({ room, me, onSent }: { room: string; me: Me; onSent?: () => void }) {
+export function TalkPanel({ room, me, onSent, maxH }: { room: string; me: Me; onSent?: () => void; maxH?: number }) {
   const L = useRoomLook();
-  const [tab, setTab] = useState<'sticker' | 'special' | 'voice'>('sticker');
+  const m = remember(room);
+  const [tab, setTabState] = useState<Tab>(m.tab);
+  const setTab = (k: Tab) => ((m.tab = k), setTabState(k));
   const cooling = useCooling();
   // Bought text packs (Yazan 2026-10-13) sit in their own "Special" tab; your character's stickers stay free.
   const owned = useStyle((x) => x.owned);
   // Only your profile character's stickers in the first tab; Special holds the non-character packs you own.
   const packs = TEXT_PACKS.filter((p) => owned.includes(`pack:${p.key}`));
-  const [pk, setPk] = useState<string | null>(null);
+  const [pk, setPkState] = useState<string | null>(m.pk);
+  const setPk = (k: string) => ((m.pk = k), (m.y.special = 0), setPkState(k));
+  // The tray's list scrolls inside the room it has (the button can sit high or low), from where you left it.
+  const bodyMax = maxH != null ? Math.max(u(110), maxH - u(48)) : undefined;
+  // A plain function, not a component, so a redraw (the 3 s cooldown) keeps the same list and its scroll spot.
+  const body = (k: Tab, children: React.ReactNode, style?: object) => (
+    <ScrollView
+      key={k}
+      style={[{ maxHeight: bodyMax ?? (k === 'voice' ? u(176) : undefined) }, style]}
+      contentContainerStyle={k === 'voice' ? s.vg : undefined}
+      contentOffset={{ x: 0, y: m.y[k] }}
+      onScroll={(e) => (m.y[k] = e.nativeEvent.contentOffset.y)}
+      scrollEventThrottle={64}
+      showsVerticalScrollIndicator={false}>
+      {children}
+    </ScrollView>
+  );
   const pack = packs.find((p) => p.key === pk) ?? packs[0];
   const send = async (kind: TalkMsg['kind'], item: string) => {
     const r = await sendTalk(room, me, kind, item);
@@ -63,16 +90,18 @@ export function TalkPanel({ room, me, onSent }: { room: string; me: Me; onSent?:
         ))}
       </View>
       {tab === 'sticker' ? (
-        <View style={[s.sg, cooling && s.cool]}>
-          {(STICKERS[me.face] ?? []).map((x) => (
-            <Pressable key={x.id} disabled={cooling} onPress={() => send('sticker', x.id)} style={s.sItem} accessibilityRole="button" accessibilityLabel={`Send sticker: ${x.label}`}>
-              <Image source={x.src} style={s.sImg} contentFit="contain" />
-            </Pressable>
-          ))}
-        </View>
+        body('sticker', (
+          <View style={s.sg}>
+            {(STICKERS[me.face] ?? []).map((x) => (
+              <Pressable key={x.id} disabled={cooling} onPress={() => send('sticker', x.id)} style={s.sItem} accessibilityRole="button" accessibilityLabel={`Send sticker: ${x.label}`}>
+                <Image source={x.src} style={s.sImg} contentFit="contain" />
+              </Pressable>
+            ))}
+          </View>
+        ), cooling ? s.cool : undefined)
       ) : tab === 'special' ? (
         pack ? (
-          <View style={[s.sg, cooling && s.cool]}>
+          body('special', <View style={s.sg}>
             {packs.length > 1 ? (
               <View style={s.sets}>
                 {packs.map((p) => (
@@ -87,7 +116,7 @@ export function TalkPanel({ room, me, onSent }: { room: string; me: Me; onSent?:
                 <Image source={x.src} style={s.sImg} contentFit="contain" />
               </Pressable>
             ))}
-          </View>
+          </View>, cooling ? s.cool : undefined)
         ) : (
           <Pressable onPress={() => router.navigate('/style?tab=stickers' as never)} style={s.empty} accessibilityRole="link">
             <Text style={[s.emptyT, { color: L.mute, fontFamily: L.semi }]}>No special stickers yet.</Text>
@@ -96,14 +125,14 @@ export function TalkPanel({ room, me, onSent }: { room: string; me: Me; onSent?:
         )
       ) : (
         // 19 lines since the taunts (2026-10-26): the list scrolls instead of growing the tray.
-        <ScrollView style={[s.vScroll, cooling && s.cool]} contentContainerStyle={s.vg} showsVerticalScrollIndicator={false}>
+        body('voice', <>
           {VOICE.map((v) => (
             <Pressable key={v.id} disabled={cooling} onPress={() => send('voice', v.id)} style={[s.vl, { borderColor: L.line, backgroundColor: L.panel }]} accessibilityRole="button" accessibilityLabel={`Say: ${v.line}`}>
               <Text style={[s.vlI, { color: L.mute }]}>▶</Text>
               <Text style={[s.vlT, { color: L.fg, fontFamily: L.semi }]} numberOfLines={1}>{v.line}</Text>
             </Pressable>
           ))}
-        </ScrollView>
+        </>, cooling ? s.cool : undefined)
       )}
       <Text style={[s.small, { color: L.dim, fontFamily: L.body }]}>{cooling ? 'One message every 3 seconds.' : tab === 'voice' ? 'Everyone hears the same voice.' : 'Tap a sticker to send it.'}</Text>
     </View>
@@ -154,7 +183,19 @@ export function FloatingTalk({ room, me }: { room: string; me: Me }) {
   // can no longer be dragged below the bottom edge and lost (DEF-081).
   const ins = useSafeAreaInsets();
   const boxH = useSharedValue(height);
-  const bottomGap = Math.max(u(20), ins.bottom);
+  // #11 (Yazan 2026-11-02): from just under the game's header row down to just above the bottom edge.
+  const topGap = (Platform.OS === 'web' ? u(30) : ins.top) + u(54);
+  const bottomGap = Math.max(u(8), ins.bottom + u(4));
+  // #6: the tray opens above or below the button, whichever has more room, and never runs off the screen.
+  const [fan, setFan] = useState<{ up: boolean; room: number }>({ up: true, room: u(300) });
+  const toggle = (yy: number, hh: number) => {
+    if (!open) {
+      const above = yy - topGap + u(40);
+      const below = hh - yy - size - bottomGap;
+      setFan(above >= below ? { up: true, room: above - u(BTN + 8) } : { up: false, room: below - u(8) });
+    }
+    setOpen(!open);
+  };
   const [side, setSide] = useState<'left' | 'right'>('right');
   const [open, setOpen] = useState(false);
   const [note, setNote] = useState<string | null>(null);
@@ -174,14 +215,14 @@ export function FloatingTalk({ room, me }: { room: string; me: Me }) {
     })
     .onUpdate((e) => {
       x.value = sx.value + e.translationX;
-      y.value = Math.min(boxH.value - size - bottomGap, Math.max(u(70), sy.value + e.translationY));
+      y.value = Math.min(boxH.value - size - bottomGap, Math.max(topGap, sy.value + e.translationY));
     })
     .onEnd(() => {
       const right = x.value + size / 2 > width / 2;
       x.value = withSpring(right ? width - size - edge : edge, { damping: 16 });
       runOnJS(setSide)(right ? 'right' : 'left');
     });
-  const tap = Gesture.Tap().onEnd(() => runOnJS(setOpen)(!open));
+  const tap = Gesture.Tap().onEnd(() => runOnJS(toggle)(y.value, boxH.value));
   const btn = useAnimatedStyle(() => ({ transform: [{ translateX: x.value }, { translateY: y.value }] }));
 
   const mute = (m: TalkMsg) => {
@@ -198,7 +239,7 @@ export function FloatingTalk({ room, me }: { room: string; me: Me }) {
       onLayout={(e) => {
         const hh = e.nativeEvent.layout.height;
         boxH.set(hh);
-        if (y.get() > hh - size - bottomGap) y.set(Math.max(u(70), hh - size - bottomGap));
+        if (y.get() > hh - size - bottomGap) y.set(Math.max(topGap, hh - size - bottomGap));
       }}>
       {open ? <Pressable style={StyleSheet.absoluteFill} onPress={() => setOpen(false)} accessibilityLabel="Close talk" /> : null}
       <Animated.View style={[s.anchor, { width: size, height: size }, btn]} pointerEvents="box-none">
@@ -211,8 +252,8 @@ export function FloatingTalk({ room, me }: { room: string; me: Me }) {
           ))}
         </View>
         {open ? (
-          <Animated.View entering={FadeIn.duration(160)} style={[s.fan, { backgroundColor: L.raised, borderColor: L.line }, side === 'right' ? { right: 0 } : { left: 0 }]}>
-            <TalkPanel room={room} me={me} onSent={() => setOpen(false)} />
+          <Animated.View entering={FadeIn.duration(160)} style={[s.fan, { backgroundColor: L.raised, borderColor: L.line, maxHeight: fan.room }, fan.up ? { bottom: u(BTN + 8) } : { top: size + u(8) }, side === 'right' ? { right: 0 } : { left: 0 }]}>
+            <TalkPanel room={room} me={me} onSent={() => setOpen(false)} maxH={fan.room - u(20)} />
           </Animated.View>
         ) : null}
         <GestureDetector gesture={Gesture.Exclusive(pan, tap)}>
@@ -237,7 +278,7 @@ const s = StyleSheet.create({
   tabT: { fontFamily: F.bodySemi, fontSize: u(10.5) },
   sg: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', rowGap: u(6) },
   sItem: { width: '23%', aspectRatio: 1, alignItems: 'center', justifyContent: 'center' },
-  sets: { width: '100%', flexDirection: 'row', gap: u(6), marginBottom: u(2) },
+  sets: { width: '100%', flexDirection: 'row', flexWrap: 'wrap', gap: u(6), marginBottom: u(2) },
   wItem: { width: '48.5%', aspectRatio: 1.7, alignItems: 'center', justifyContent: 'center' },
   pk: { borderRadius: 999, borderWidth: 1, borderColor: G.line, paddingHorizontal: u(8), paddingVertical: u(3) },
   pkT: { fontFamily: F.bodySemi, fontSize: u(9.5) },
@@ -258,13 +299,38 @@ const s = StyleSheet.create({
   bf: { position: 'absolute', right: u(-4), bottom: u(-4), borderRadius: u(10), borderWidth: 1.5, borderColor: G.page },
   anchor: { position: 'absolute', left: 0, top: 0, zIndex: 25 },
   pops: { position: 'absolute', bottom: 0, width: u(180), gap: u(4) },
-  fan: { position: 'absolute', bottom: u(BTN + 8), width: u(250), backgroundColor: G.raised, borderWidth: 1, borderColor: G.line, borderRadius: u(16), padding: u(10), boxShadow: '0px 14px 30px rgba(0,0,0,0.45)' },
+  fan: { position: 'absolute', width: u(250), backgroundColor: G.raised, borderWidth: 1, borderColor: G.line, borderRadius: u(16), padding: u(10), boxShadow: '0px 14px 30px rgba(0,0,0,0.45)' },
   fbtn: { backgroundColor: G.raised, borderWidth: 1, borderColor: 'rgba(255,255,255,0.18)', alignItems: 'center', justifyContent: 'center', boxShadow: '0px 8px 18px rgba(0,0,0,0.45)' },
   note: { position: 'absolute', left: u(20), right: u(20), bottom: u(30), textAlign: 'center', fontFamily: F.bodySemi, fontSize: u(10), color: G.fg, backgroundColor: G.raised, borderRadius: u(10), paddingVertical: u(7), paddingHorizontal: u(10), overflow: 'hidden', zIndex: 26 },
 });
 
-/** The in-game and results talk (ON22): listens to the room and shows the floating button. */
+type Shown = { key: number; room: string; me: Me; look: RoomLook } | null;
+const useShown = create<{ on: Shown }>(() => ({ on: null }));
+let nextKey = 1;
+
+/**
+ * The in-game and results talk (ON22): listens to the room and shows the floating button. #11 (Yazan 2026-11-02):
+ * the button is drawn by TalkHost over the whole app window, not inside the game's own box, so in every game it can
+ * go anywhere from under the header to the bottom edge (in some games it was boxed in by the scrolling body).
+ */
 export function RoomTalk({ room, me }: { room: string; me: Me }) {
   useTalkFeed(room, me.id);
-  return <FloatingTalk room={room} me={me} />;
+  const look = useRoomLook();
+  const [key] = useState(() => nextKey++);
+  useEffect(() => {
+    useShown.setState({ on: { key, room, me, look } });
+  }, [key, room, me.id, me.name, me.face, look]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => () => useShown.setState((x) => (x.on?.key === key ? { on: null } : x)), [key]);
+  return null;
+}
+
+/** Mounted once in the app layout: the floating chat button of the room you are in, if any. */
+export function TalkHost() {
+  const on = useShown((x) => x.on);
+  if (!on) return null;
+  return (
+    <RoomLookProvider value={on.look}>
+      <FloatingTalk key={on.room} room={on.room} me={on.me} />
+    </RoomLookProvider>
+  );
 }

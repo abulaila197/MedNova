@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Image } from 'expo-image';
-import { type ImageSourcePropType, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { FlatList, type ImageSourcePropType, Pressable, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 
 import { Back } from '@/components/Back';
@@ -33,7 +33,7 @@ function WallPost({ src, id }: { src: ImageSourcePropType; id: string }) {
       </View>
       {/* The frame sets the shape; a bare Image takes the file's own height on web. */}
       <View style={s.photo}>
-        <Image source={src} style={s.fill} contentFit="cover" transition={0} cachePolicy="memory" accessibilityLabel={`Wallpaper ${Number(id.slice(1))}`} />
+        <Image source={src} style={s.fill} contentFit="cover" transition={0} cachePolicy="disk" recyclingKey={id} accessibilityLabel={`Wallpaper ${Number(id.slice(1))}`} />
       </View>
       <View style={s.acts}>
         <Pressable onPress={tapped(like.toggle)} style={[s.act, { borderColor: liked ? t.accent : t.chipLine, backgroundColor: t.chip }]} accessibilityRole="button" accessibilityState={{ selected: liked }} accessibilityLabel={liked ? 'Unlike' : 'Like'}>
@@ -49,30 +49,46 @@ function WallPost({ src, id }: { src: ImageSourcePropType; id: string }) {
   );
 }
 
-/** Nova Wallpapers (Yazan, 2026-10-13): one scrolling page of photo posts, each with a Like and a Save to photos. */
+/**
+ * Nova Wallpapers (Yazan, 2026-10-13): one scrolling page of photo posts, each with a Like and a Save to photos.
+ * 2026-11-02 (lag): a windowed list draws only the posts near the screen (all 30 full-size photos at once used
+ * about 120 MB), and the edge fade is a still veil instead of a mask over the moving list.
+ */
 export function Wallpapers() {
   const t = useTheme();
   return (
-    <Fade stops={[[0, 1], [0.86, 1], [1, 0]]} style={s.area}>
-      <ScrollView style={{ flex: 1 }} contentContainerStyle={s.list} showsVerticalScrollIndicator={false}>
-        <Back label="Community" fallback="/community" />
-        <View>
-          <Text style={[s.kick, { color: t.kick }]}>NOVA COMMUNITY</Text>
-          <Text style={[s.h2, { color: t.white }]}>
-            Nova <Text style={{ fontFamily: F.displayItalic, color: t.accent }}>Wallpapers</Text>
-          </Text>
-        </View>
-        {WALLPAPERS.map((src, i) => (
-          <WallPost key={WALLPAPER_IDS[i]} src={src} id={WALLPAPER_IDS[i]} />
-        ))}
-      </ScrollView>
+    <Fade veil stops={[[0, 1], [0.86, 1], [1, 0]]} style={s.area}>
+      <FlatList
+        style={{ flex: 1 }}
+        contentContainerStyle={s.list}
+        showsVerticalScrollIndicator={false}
+        data={WALLPAPER_IDS}
+        keyExtractor={(id) => id}
+        initialNumToRender={2}
+        maxToRenderPerBatch={2}
+        windowSize={3}
+        removeClippedSubviews
+        ListHeaderComponent={
+          <View style={{ gap: u(14), paddingBottom: u(14) }}>
+            <Back label="Community" fallback="/community" />
+            <View>
+              <Text style={[s.kick, { color: t.kick }]}>NOVA COMMUNITY</Text>
+              <Text style={[s.h2, { color: t.white }]}>
+                Nova <Text style={{ fontFamily: F.displayItalic, color: t.accent }}>Wallpapers</Text>
+              </Text>
+            </View>
+          </View>
+        }
+        ItemSeparatorComponent={() => <View style={{ height: u(14) }} />}
+        renderItem={({ item, index }) => <WallPost src={WALLPAPERS[index]} id={item} />}
+      />
     </Fade>
   );
 }
 
 const s = StyleSheet.create({
   area: { flex: 1, marginTop: u(16) },
-  list: { paddingHorizontal: u(14), gap: u(14), paddingBottom: u(90) },
+  list: { paddingHorizontal: u(14), paddingBottom: u(90) },
   kick: { marginTop: u(4), lineHeight: u(12), fontFamily: F.mono, fontSize: u(8.5), letterSpacing: u(1.7) },
   h2: { marginTop: u(3), fontFamily: F.display, fontSize: u(25), lineHeight: u(28) },
   post: { borderRadius: u(18), borderWidth: 1, overflow: 'hidden' },

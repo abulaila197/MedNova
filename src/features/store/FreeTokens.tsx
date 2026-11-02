@@ -115,7 +115,7 @@ const WAYS: Way[] = [
   { key: 'instagram', label: 'Follow us on Instagram', tokens: 3, act: 'Follow', icon: I.instagram },
   { key: 'facebook', label: 'Follow us on Facebook', tokens: 3, act: 'Follow', icon: I.facebook },
   { key: 'youtube', label: 'Subscribe on YouTube', tokens: 3, act: 'Subscribe', icon: I.youtube },
-  { key: 'channel', label: 'Join our Instagram channel', tokens: 3, act: 'Join', icon: I.channel },
+  // The Instagram channel item was removed (Yazan 2026-11-02, #28): there is no channel.
   { key: 'community', label: 'Visit the Community page', tokens: 2, act: 'Visit', icon: I.community },
   { key: 'listing', label: Platform.OS === 'android' ? 'Visit us on Google Play' : 'Visit us on the App Store', tokens: 3, act: 'Visit', icon: I.listing },
   { key: 'feedback', label: 'Send us your feedback', tokens: 10, act: 'Write', icon: I.feedback },

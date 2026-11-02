@@ -381,10 +381,9 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   const typingNow = (ph.kind === 'clue' && ph.stage === 'typing' && mine(v.typingPlayerId)) || (ph.kind === 'redemption' && mine(v.caught));
   const showCat = ph.kind !== 'roundResult' && ph.kind !== 'matchEnd';
   return (
-    <ImposterScreen round={Math.max(1, v.roundNumber)} rounds={v.totalRounds ?? 1} category={showCat ? v.category : null} onPause={pause} bottom={bottom}>
+    <ImposterScreen round={Math.max(1, v.roundNumber)} rounds={v.totalRounds ?? 1} category={showCat ? v.category : null} onPause={pause} bottom={bottom} over={typingNow ? null : talk}>
       {body}
       {extras}
-      {typingNow ? null : talk}
       <PauseMenu open={menu} mode="online" onResume={() => setMenu(false)} onQuit={leave} />
     </ImposterScreen>
   );

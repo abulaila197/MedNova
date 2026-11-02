@@ -144,7 +144,7 @@ function ScrollPage({ children }: { children: ReactNode }) {
   // Overflow of less than a row's bottom padding (12) only trims empty space, so it does not count.
   const over = box > 0 && content - u(36) > box + u(12);
   return (
-    <Fade from={0.9} to={1} off={!over} style={s.flex} onLayout={(e) => setBox(e.nativeEvent.layout.height)}>
+    <Fade veil from={0.9} to={1} off={!over} style={s.flex} onLayout={(e) => setBox(e.nativeEvent.layout.height)}>
       <ScrollView nestedScrollEnabled scrollEnabled={over} showsVerticalScrollIndicator={false} onContentSizeChange={(_, h) => setContent(h)} contentContainerStyle={[s.pg, s.pgEnd]}>
         {children}
       </ScrollView>

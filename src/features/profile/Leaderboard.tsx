@@ -167,7 +167,7 @@ export function Leaderboard() {
   );
   return (
     <View style={s.area}>
-      <Fade stops={[[0, 1], [0.86, 1], [0.99, 0], [1, 0]]} style={s.area}>
+      <Fade veil stops={[[0, 1], [0.86, 1], [0.99, 0], [1, 0]]} style={s.area}>
         <ScrollView style={s.fill} contentContainerStyle={s.c} showsVerticalScrollIndicator={false}>
           <View style={s.lb}>
             <View style={s.top}>

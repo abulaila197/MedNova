@@ -56,7 +56,7 @@ export default function ShelfPage() {
         {data && !mine.length ? (
           <Text style={[s.none, { color: c.mute }]}>No misses here yet. Diseases you miss in The Diagnostic Pursuit, Case Files and The Riddler land in their book.</Text>
         ) : null}
-        <Fade from={0.78} to={0.96} style={s.scr}>
+        <Fade veil from={0.78} to={0.96} style={s.scr}>
           <ScrollView ref={list} showsVerticalScrollIndicator={false} contentContainerStyle={s.idx}>
             {groups.map((g) => (
               <View key={g.letter} onLayout={(e) => (tops.current[g.letter] = e.nativeEvent.layout.y)}>

@@ -411,10 +411,9 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   }
 
   return (
-    <ClinicScreen turn={v.phase === 'playing' ? (g?.turn ?? null) : null} remaining={g?.remaining ?? { red: 9, blue: 8 }} onPause={pause} bottom={bottom}>
+    <ClinicScreen turn={v.phase === 'playing' ? (g?.turn ?? null) : null} remaining={g?.remaining ?? { red: 9, blue: 8 }} onPause={pause} bottom={bottom} over={v.phase === 'playing' && g?.phase === 'clue' && spy ? null : talk}>
       {body}
       {extras}
-      {v.phase === 'playing' && g?.phase === 'clue' && spy ? null : talk}
       <PauseMenu open={menu} mode="online" onResume={() => setMenu(false)} onQuit={leave} />
     </ClinicScreen>
   );
