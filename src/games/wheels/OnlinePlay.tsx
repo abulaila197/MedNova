@@ -18,7 +18,7 @@ import type { OnlineProps } from '../shell/types';
 import { fieldName, type Answer, type QResult, type Question, type TurnEvent } from './core';
 import { BANK } from './data';
 import { bankVersion } from './keys';
-import { actor, bossPoints, BOSS_BONUS, BOSS_MS, BOSS_RIGHT, BOSS_WRONG, type OfflineGame } from './offline';
+import { actor, bossPoints, bossBonus, BOSS_MS, BOSS_RIGHT, BOSS_WRONG, type OfflineGame } from './offline';
 import { actName, Board, BossOver, recapLine, RedemptionBoard, RedemptionOffer, Top, TurnOver, type Seats } from './OfflinePlay';
 import { ONLINE_MS, type Move, type OnlineWheels } from './online';
 import { PauseMenu } from '../shell/PauseMenu';
@@ -261,7 +261,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
     body = mine ? (
       <RedemptionOffer seat={who} seats={seats} onPick={(use) => send({ type: 'REDEEM', use })} onPause={pause} />
     ) : (
-      <Watching kicker="Redemption" title={`${seatName(who)} is last`} line="Last place may swap this turn for a Redemption round, once an act." board={board} onPause={pause} />
+      <Watching kicker="Redemption" title={`${seatName(who)} is last`} line="Final round: last place may swap this turn for a Redemption round, once a game." board={board} onPause={pause} />
     );
   else if (g.phase === 'redemption' && g.redemption)
     body = (
@@ -404,7 +404,7 @@ function OnlineBoss({ g, seat, st, server, seatName, matchId, onDone, onPause }:
           <T f={CD} size={19} color={VV.redInk} style={{ textAlign: 'center' }}>{b.category}</T>
           <Rule c="rgba(42,26,18,0.18)" />
           <T size={13} color={VV.paperInk} style={{ textAlign: 'center' }}>{`Swipe right if it belongs, left if it doesn’t. ${BOSS_MS / 1000} seconds. +${BOSS_RIGHT} for a right swipe, ${BOSS_WRONG} for a wrong one.`}</T>
-          <T size={12} color={VV.paperSoft} style={{ textAlign: 'center' }}>{`Same items for everyone, each in their own order. Highest score wins +${BOSS_BONUS}.`}</T>
+          <T size={12} color={VV.paperSoft} style={{ textAlign: 'center' }}>{`Same items for everyone, each in their own order. Highest score wins +${bossBonus(g.target)}.`}</T>
         </Bill>
         {startsIn != null ? <T f={CD} size={30} color={VV.gold} style={{ textAlign: 'center' }}>{String(startsIn)}</T> : null}
         {done && seat != null ? (

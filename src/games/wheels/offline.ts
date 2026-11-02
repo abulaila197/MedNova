@@ -2,7 +2,7 @@
 // (TM1). Cycles (acts) of 3, 2 and 2 rounds of turns, each cycle ending in a Boss Round, played here as
 // turn-based swipes. Reaching the target ends the game at once; otherwise the best score after Boss Round 3 wins
 // (equal top scores draw). The tarot cards were removed (#39a, Yazan 2026-11-01): Redemption is offered to last
-// place once an act, and the Star and Sun are gone.
+// place once a game, in the final round only (2026-11-02), and the Star and Sun are gone.
 import {
   spinField, startTurn, stepTurn, turnPoints,
   type Bank, type FieldKey, type Mix, type QResult, type Question, type Rng, type Target, type Turn, type TurnEvent,
@@ -15,7 +15,10 @@ export const BOSS_ITEMS = 30;
 export const BOSS_MS = 30_000;
 export const BOSS_RIGHT = 2;
 export const BOSS_WRONG = -1;
-export const BOSS_BONUS = 20;
+/** Boss Round bonus: a fifth of the target (+5 at 25, +10 at 50), Yazan 2026-11-02 (was +20). */
+export const bossBonus = (target: number) => Math.round(target / 5);
+/** The bonus in a 50-point game, the biggest one (EXP caps). */
+export const BOSS_BONUS = bossBonus(50);
 
 export const REDEMPTION_ITEMS = 10;
 export const REDEMPTION_MS = 20_000;
@@ -124,7 +127,7 @@ export type OfflineGame = {
   turn: Turn | null;
   redemption: Redemption | null;
   boss: Boss | null;
-  /** The cycle Redemption was last used in: once an act for the whole game (Yazan 2026-11-01). */
+  /** The cycle Redemption was used in: once a game, final round only (Yazan 2026-11-02). */
   redCycle: number | null;
   /** WC19: Redemption rounds played this game, per field, in order. */
   redRounds?: Partial<Record<FieldKey, number[]>>;
@@ -178,9 +181,11 @@ export function actor(g: OfflineGame): number | null {
 
 export const isLowest = (g: OfflineGame, seat: number) => g.scores[seat] === Math.min(...g.active.map((s) => g.scores[s]));
 
-/** Last place (ties allowed), a round already played, and not used yet this act by anyone (Yazan 2026-11-01). */
+/** Is this the game's final round (the last round of Act III)? */
+export const isFinalRound = (g: OfflineGame) => g.cycle === CYCLES.length - 1 && g.round === CYCLES[g.cycle] - 1;
+/** Last place (ties allowed), only in the game's final round, once a game for everyone (Yazan 2026-11-02). */
 export const canRedeem = (g: OfflineGame, seat: number) =>
-  g.redCycle !== g.cycle && g.roundsPlayed >= 1 && isLowest(g, seat);
+  g.redCycle == null && isFinalRound(g) && isLowest(g, seat);
 
 function finish(g: OfflineGame, pool: number[]): OfflineGame {
   const top = Math.max(...pool.map((s) => g.scores[s]));
@@ -233,7 +238,7 @@ function startBoss(g: OfflineGame, bank: FullBank, rng: Rng): OfflineGame {
   return { ...g, phase: 'boss', boss, turn: null, redemption: null };
 }
 
-/** Highest Boss points share +20, split evenly and rounded down (spec 5.2). */
+/** Highest Boss points share a fifth of the target, split evenly and rounded down (spec 5.2). */
 export function closeBoss(g: OfflineGame): OfflineGame {
   const b = g.boss!;
   const seats = b.order.filter((s) => g.active.includes(s));
@@ -241,7 +246,7 @@ export function closeBoss(g: OfflineGame): OfflineGame {
   for (const s of seats) points[s] = bossPoints(b, s);
   const top = Math.max(...seats.map((s) => points[s]));
   const winners = seats.filter((s) => points[s] === top);
-  const bonus = Math.floor(BOSS_BONUS / winners.length);
+  const bonus = Math.floor(bossBonus(g.target) / winners.length);
   const scores = [...g.scores];
   for (const s of winners) scores[s] += bonus;
   return checkTarget({ ...g, scores, phase: 'bossOver', log: [...g.log, { k: 'boss', winners, bonus, points }] });

@@ -107,7 +107,7 @@ export const LOAD: Record<string, LoadCfg> = {
       { x: 0.5, y: 0.355, r: 50, c: 'rgba(255,170,60,0.6)', a: 'still' },
     ],
     parts: ['sparkle'],
-    tips: ['Last place can take a Redemption round, once an act.', 'Rule 2 Out and Matching are all or nothing.', 'The Boss Round winner takes +20.'],
+    tips: ['In the final round, last place can take a Redemption round.', 'Rule 2 Out and Matching are all or nothing.', 'The Boss Round winner takes a fifth of the target.'],
     fonts: ['Cinzel_500Medium', 'Cinzel_400Regular', 'CinzelDecorative_700Bold', 'CormorantGaramond_400Regular_Italic'],
   },
   'the-riddler': {

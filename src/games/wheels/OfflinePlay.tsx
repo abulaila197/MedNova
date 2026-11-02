@@ -15,7 +15,7 @@ import type { PlayProps } from '../shell/types';
 import { fieldName, type Mix, type QResult, type Target } from './core';
 import { BANK } from './data';
 import {
-  actor, bossPoints, startOffline, stepOffline, upgradeSaved, BOSS_BONUS, BOSS_MS, BOSS_RIGHT, BOSS_WRONG, CYCLES, REDEMPTION_ITEMS, REDEMPTION_MS,
+  actor, bossPoints, startOffline, stepOffline, upgradeSaved, bossBonus, BOSS_MS, BOSS_RIGHT, BOSS_WRONG, CYCLES, REDEMPTION_ITEMS, REDEMPTION_MS,
   type Log, type OfflineEvent, type OfflineGame,
 } from './offline';
 import { PauseMenu } from '../shell/PauseMenu';
@@ -241,7 +241,7 @@ export function RedemptionOffer({ seat, seats, onPick, onPause }: { seat: number
     <View style={{ flex: 1, gap: u(14) }}>
       <Top kicker={`Redemption · ${seats.get(seat)?.name ?? ''}`} title="A second chance" onPause={onPause} />
       <T size={14} style={{ textAlign: 'center', paddingTop: u(8) }}>{`You’re last. Swap this turn for a Redemption round: ${REDEMPTION_ITEMS} quick true or false calls in ${REDEMPTION_MS / 1000} seconds, +1 each.`}</T>
-      <T size={12} color={VV.dim} style={{ textAlign: 'center' }}>Redemption can be used once an act, by whoever is last first.</T>
+      <T size={12} color={VV.dim} style={{ textAlign: 'center' }}>Redemption is offered once a game, in the final round, to whoever is last first.</T>
       <View style={{ flex: 1 }} />
       <View style={{ flexDirection: 'row', gap: u(10) }}>
         <Btn label="Keep my turn" ghost onPress={() => onPick(false)} style={{ flex: 1 }} />
@@ -349,7 +349,7 @@ function BossBoard({ g, seat, now, seats, onEvent, onPause, hidden }: { g: Offli
           <T f={CD} size={19} color={VV.redInk} style={{ textAlign: 'center' }}>{b.category}</T>
           <Rule c="rgba(42,26,18,0.18)" />
           <T size={13} color={VV.paperInk} style={{ textAlign: 'center' }}>{`Swipe right if it belongs, left if it doesn’t. ${BOSS_MS / 1000} seconds. +${BOSS_RIGHT} for a right swipe, ${BOSS_WRONG} for a wrong one.`}</T>
-          <T size={12} color={VV.paperSoft} style={{ textAlign: 'center' }}>{`Everyone gets the same items in their own order. Highest score wins +${BOSS_BONUS}.`}</T>
+          <T size={12} color={VV.paperSoft} style={{ textAlign: 'center' }}>{`Everyone gets the same items in their own order. Highest score wins +${bossBonus(g.target)}.`}</T>
         </Bill>
         <View style={{ flex: 1 }} />
         <Btn label="Start swiping" onPress={() => onEvent({ type: 'GO', now: Date.now() })} />
@@ -397,7 +397,7 @@ export function BossOver({ g, seats, board, onNext }: { g: OfflineGame; seats: S
   return (
     <View style={{ gap: u(12) }}>
       <Top kicker={`Act ${ROMAN[g.cycle]} · Boss Round`} title={`${l.winners.map(n).join(' and ')} +${l.bonus}`} />
-      <T size={13} color={VV.soft}>{l.winners.length > 1 ? `A tie at the top: they share the ${BOSS_BONUS}.` : `Best swiper takes the ${BOSS_BONUS}.`}</T>
+      <T size={13} color={VV.soft}>{l.winners.length > 1 ? `A tie at the top: +${l.bonus} each.` : `Best swiper takes +${l.bonus}.`}</T>
       <Board board={board.map((p) => ({ ...p, me: l.winners.includes(p.seat) }))} extra={extra} />
       {onNext ? <Btn label={last ? 'Final curtain' : `On to Act ${ROMAN[g.cycle + 1]}`} onPress={onNext} /> : null}
     </View>

@@ -7,7 +7,7 @@ import {
   judge, soloExp, spinCombo, spinField, FIELDS, startSolo, startTurn, stepSolo, stepTurn, turnPoints, STYLES, STYLE_KEYS,
   type Answer, type Question, type Rng, type Turn,
 } from '../core';
-import { actor, canRedeem, startOffline, stepOffline, upgradeSaved, BOSS_BONUS, BOSS_ITEMS, REDEMPTION_ITEMS, redemptionItems, type FullBank, type OfflineGame } from '../offline';
+import { actor, canRedeem, startOffline, stepOffline, upgradeSaved, bossBonus, BOSS_ITEMS, REDEMPTION_ITEMS, redemptionItems, type FullBank, type OfflineGame } from '../offline';
 import { SAMPLE_BANK as bank } from '../data/samples';
 
 function seeded(seed: number): Rng {
@@ -200,34 +200,37 @@ test('Offline: whole games finish, by target or after Boss Round 3', () => {
   // A low hit rate on 100 runs all three cycles and three Boss Rounds.
   const slow = drive(startOffline(3, 100, bank, seeded(21)), 21, 0.1);
   assert.equal(slow.log.filter((l) => l.k === 'boss').length, 3);
-  assert.ok(slow.log.filter((l) => l.k === 'boss').every((l) => l.k === 'boss' && l.bonus === Math.floor(BOSS_BONUS / l.winners.length)));
+  assert.ok(slow.log.filter((l) => l.k === 'boss').every((l) => l.k === 'boss' && l.bonus === Math.floor(bossBonus(slow.target) / l.winners.length)));
 });
 
 test('Offline: the game stops the moment someone reaches the target', () => {
-  const g = drive(startOffline(2, 50, bank, seeded(31)), 31, 1);
+  const g = drive(startOffline(2, 25, bank, seeded(31)), 31, 1);
   assert.equal(g.phase, 'done');
-  assert.ok(g.result!.winners.every((s) => g.scores[s] >= 50));
+  assert.ok(g.result!.winners.every((s) => g.scores[s] >= 25));
   assert.ok(g.log.filter((l) => l.k === 'boss').length < 3);
 });
 
-test('#39a: Redemption goes to last place (ties too), after a round, once an act for the whole game', () => {
+test('#22: Redemption goes to last place (ties too), only in the final round of Act III, once a game', () => {
   const g0 = startOffline(3, 100, bank, seeded(41));
   const g = { ...g0, scores: [5, 5, 9] };
-  assert.equal(canRedeem(g, 0), false); // no round played yet
-  assert.equal(canRedeem({ ...g, roundsPlayed: 1 }, 0), true); // tied lowest
-  assert.equal(canRedeem({ ...g, roundsPlayed: 1 }, 1), true);
-  assert.equal(canRedeem({ ...g, roundsPlayed: 1 }, 2), false); // not last
-  assert.equal(canRedeem({ ...g, roundsPlayed: 1, redCycle: 0 }, 0), false); // used this act
-  assert.equal(canRedeem({ ...g, roundsPlayed: 3, cycle: 1, redCycle: 0 }, 0), true); // a new act
+  const fin = { ...g, cycle: 2, round: 1 };
+  assert.equal(canRedeem(g, 0), false); // first round
+  assert.equal(canRedeem({ ...g, roundsPlayed: 2, round: 2 }, 0), false); // last round of Act I is not the final round
+  assert.equal(canRedeem({ ...g, cycle: 2, round: 0 }, 0), false); // Act III, not its last round
+  assert.equal(canRedeem(fin, 0), true); // tied lowest
+  assert.equal(canRedeem(fin, 1), true);
+  assert.equal(canRedeem(fin, 2), false); // not last
+  assert.equal(canRedeem({ ...fin, redCycle: 2 }, 0), false); // used this game
 });
 
-test('#39a: Redemption is offered once an act in real games, and taking it ends the offers for that act', () => {
+test('#22: in real games Redemption is played at most once, and only in the final round', () => {
   for (const seats of [2, 3, 4]) {
     for (const seed of [61, 62, 63]) {
       const g = drive(startOffline(seats, 100, bank, seeded(seed)), seed, 0.3);
       assert.equal(g.phase, 'done');
-      const acts = g.log.filter((l) => l.k === 'redemption').length;
-      assert.ok(acts >= 1 && acts <= 3, `${seats} players seed ${seed}: ${acts} Redemptions`);
+      const reds = g.log.filter((l) => l.k === 'redemption').length;
+      assert.ok(reds <= 1, `${seats} players seed ${seed}: ${reds} Redemptions`);
+      assert.ok(g.redCycle == null || g.redCycle === 2);
     }
   }
 });

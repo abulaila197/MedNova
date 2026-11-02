@@ -46,8 +46,8 @@ export const wheelsOfChaos: GameDef = {
       howTo: [
         'Add 2 to 4 players. Each round the turn order is shuffled, then everyone spins in turn.',
         'The show has three acts of 3, 2 and 2 rounds.',
-        'Each act ends with a Boss Round: swipe the items that fit. The best swiper wins +20.',
-        'From round 2, whoever is last first can swap a turn for a Redemption round. Once an act, for everyone.',
+        'Each act ends with a Boss Round: swipe the items that fit. The best swiper wins a fifth of the target: +5 in a 25-point game, +10 in a 50.',
+        'In the final round, whoever is last first can swap a turn for a Redemption round. Once a game, for everyone.',
         'First to the target wins at once. Otherwise the best score after Act III wins. No EXP in this mode.',
       ],
     },
@@ -58,7 +58,7 @@ export const wheelsOfChaos: GameDef = {
       howTo: [
         'The host picks a target of 25 or 50 points and the question type. 2 to 4 players, no teams.',
         'Players take turns while the whole room watches.',
-        'From round 2, whoever is last first can swap a turn for a Redemption round. Once an act, for everyone.',
+        'In the final round, whoever is last first can swap a turn for a Redemption round. Once a game, for everyone.',
         'The Boss Round is played by everyone at once, each on their own phone.',
         'Boss Round winners show up as alerts. You earn half your points as EXP.',
       ],
