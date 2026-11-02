@@ -28,7 +28,20 @@ type Meter = {
   busy_limit: number;
   in_line: number;
   by_game: Record<string, number>;
+  guard?: {
+    hit: boolean;
+    checked_at: string | null;
+    stop_at: number;
+    db_mb: number;
+    db_limit_mb: number;
+    files_mb: number;
+    files_limit_mb: number;
+    signins: number;
+    signins_limit: number;
+  };
 };
+
+const pc = (a: number, b: number) => `${b ? Math.round((a / b) * 1000) / 10 : 0}%`;
 
 const day = (iso: string) => new Date(iso).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
 const gameName = (k: string) => {
@@ -71,6 +84,7 @@ export function ServerMeter() {
     );
   }
   const pct = m.allowed_so_far_mb ? Math.min(1, m.used_month_mb / m.allowed_so_far_mb) : 1;
+  const g = m.guard;
   const games = Object.entries(m.by_game).sort((a, b) => b[1] - a[1]);
   return (
     <View style={box}>
@@ -94,6 +108,18 @@ export function ServerMeter() {
       <Text style={[s.small, { color: c.mute }]}>
         {`This week ${m.used_week_mb} MB used of a ${m.week_share_mb} MB share (plus what earlier weeks didn’t use). This month ${m.used_month_mb} of ${m.month_online_mb} MB for online; the month restarts ${day(m.month_end)}. Estimate; Supabase’s Usage page has the real total.`}
       </Text>
+
+      {g ? (
+        <>
+          <Text style={[s.k, s.gap, { color: g.hit ? '#ff6b6b' : c.mute }]}>
+            {g.hit ? `FREE LIMITS · ${Math.round(g.stop_at * 100)}% REACHED, ONLINE RESTS UNTIL ${day(m.month_end).toUpperCase()}` : `FREE LIMITS · ONLINE STOPS AT ${Math.round(g.stop_at * 100)}%`}
+          </Text>
+          <Text style={[s.line, { color: c.fg }]}>{`Database ${g.db_mb} of ${g.db_limit_mb} MB · ${pc(g.db_mb, g.db_limit_mb)}`}</Text>
+          <Text style={[s.line, { color: c.fg }]}>{`Stored files ${g.files_mb} of ${g.files_limit_mb} MB · ${pc(g.files_mb, g.files_limit_mb)}`}</Text>
+          <Text style={[s.line, { color: c.fg }]}>{`Signed in this month ${g.signins} of ${g.signins_limit.toLocaleString('en-GB')} · ${pc(g.signins, g.signins_limit)}`}</Text>
+          <Text style={[s.small, { color: c.mute }]}>{g.checked_at ? `Real numbers, checked every hour (last ${new Date(g.checked_at).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}).` : 'Not checked yet.'}</Text>
+        </>
+      ) : null}
     </View>
   );
 }
