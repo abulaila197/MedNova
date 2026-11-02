@@ -56,9 +56,15 @@ describe('clues', () => {
     const r = run(afterReveal.state, clue('blue', 1, T0 + 4, 'aortic'));
     expect(r.state.phase).toBe('guess');
   });
-  it('rejects numbers outside 1-9', () => {
-    const r = run(fresh(), clue('red', 0, T0), clue('red', 10, T0), clue('red', 1.5, T0));
+  it('rejects numbers outside 0-9', () => {
+    const r = run(fresh(), clue('red', -1, T0), clue('red', 10, T0), clue('red', 1.5, T0));
     expect(notices(r.effects)).toEqual(['BAD_NUMBER', 'BAD_NUMBER', 'BAD_NUMBER']);
+  });
+  it('a 0 clue gives no guess limit, but one guess is still needed (Yazan 2026-11-02)', () => {
+    const r = run(fresh(), clue('red', 0, T0));
+    expect(r.state.phase).toBe('guess');
+    expect(r.state.clue?.guessesLeft).toBe(null);
+    expect(notices(run(r.state, { type: 'END_TURN', team: 'red', at: T0 + 1 }).effects)).toEqual(['NEED_ONE_GUESS']);
   });
   it('the other team cannot give the clue', () => {
     expect(notices(run(fresh(), clue('blue', 1, T0)).effects)).toEqual(['WRONG_TEAM']);

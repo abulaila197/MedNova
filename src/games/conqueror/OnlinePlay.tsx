@@ -79,7 +79,8 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   const meTalk = st?.players.find((p) => p.user_id === me);
   // The talk button steps aside while I answer, so it never covers a choice (as in Wheels and Crossword).
   const mm = st?.state?.m;
-  const answering = !!mm && !mm.players[me]?.out && (mm.phase === 'solo_play' || mm.phase === 'versus' || (mm.phase === 'duel' && [mm.duels[mm.duelIndex]?.p1, mm.duels[mm.duelIndex]?.p2].includes(me)));
+  // Inspection fix A (Yazan 2026-11-02): also while I pick a number, play cards or move troops (taps on the map).
+  const answering = !!mm && !!mm.players[me] && !mm.players[me].out && (['solo_pick', 'solo_play', 'versus', 'gap_cards', 'gap_moves'].includes(mm.phase) || (mm.phase === 'duel' && [mm.duels[mm.duelIndex]?.p1, mm.duels[mm.duelIndex]?.p2].includes(me)));
   const hold = st?.state?.holds.find((h) => h.until > server) ?? null;
 
   // The first phone in the seating nudges as soon as a clock runs out, the others a moment later in case it went quiet.
@@ -124,7 +125,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   const extras = (
     <>
       <AlertPill alert={alert} />
-      {answering ? null : (
+      {answering && !hold ? null : (
         <RoomTalk room={roomId} me={{ id: me, name: meTalk?.name ?? 'You', face: meTalk?.character ?? 'yara' }} />
       )}
       {notice ? (

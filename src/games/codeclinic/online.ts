@@ -130,6 +130,18 @@ function startGame(r: Room, terms: readonly Term[], rng: Rng, now: number, rotat
   return null;
 }
 
+/**
+ * Inspection fix E (Yazan 2026-11-02): when nobody gives a clue for 3 rounds in a row (6 turns, both teams), the
+ * players have walked away without leaving; the match ends instead of passing turns forever.
+ */
+export const IDLE_END = 6;
+/** How many turns in a row, at the end of the log, ran out of time with no clue. */
+export function idleTurns(log: readonly { kind: string; phase?: string }[]): number {
+  let n = 0;
+  for (let i = log.length - 1; i >= 0 && log[i].kind === 'timeout' && log[i].phase === 'clue'; i--) n++;
+  return n;
+}
+
 /** A player is out for good (left the room, or past the 60 s rejoin window). */
 function markLeft(r: Room, id: string, now: number) {
   const p = r.players[id];
@@ -178,6 +190,7 @@ function handle(r: Room, p: CPlayer, m: Move, terms: readonly Term[], rng: Rng, 
         applyGame(r, { type: 'TICK', at: now });
         if (r.game.log.length !== before) r.marker = null;
         afterAction(r);
+        if (r.phase === 'playing' && idleTurns(r.game.log) >= IDLE_END) r.ended = true;
       }
       return null;
     case 'SET_TEAM':

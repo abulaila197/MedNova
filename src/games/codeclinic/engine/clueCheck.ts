@@ -23,7 +23,7 @@ export function normalizeTerm(s: string): string {
  * Validates a typed clue against the cards that are STILL UNREVEALED.
  *  - single word only: no spaces, no hyphens
  *  - letters and digits only
- *  - not equal to a board word, not containing one, not inside one
+ *  - not equal to a board word, not containing one, not inside one (2-3 letter short forms may sit inside one)
  *    ("cardio" is rejected next to "cardiomyopathy"; "heartburn" next to "heart")
  * Revealed cards are ignored on purpose.
  */
@@ -40,7 +40,8 @@ export function checkClue(raw: string, unrevealedTerms: readonly string[]): Clue
     const t = normalizeTerm(term);
     if (t === c) return fail('BOARD_WORD', `"${term}" is on the board.`, term);
     if (c.includes(t)) return fail('CONTAINS_BOARD_WORD', `Contains the board word "${term}".`, term);
-    if (t.includes(c)) return fail('INSIDE_BOARD_WORD', `Is part of the board word "${term}".`, term);
+    // Yazan 2026-11-02: a short form (2-3 letters) may sit inside a longer card ("MI" next to "Microbiology").
+    if (c.length > CLUE.shortMax && t.includes(c)) return fail('INSIDE_BOARD_WORD', `Is part of the board word "${term}".`, term);
   }
   return { ok: true, clue };
 }

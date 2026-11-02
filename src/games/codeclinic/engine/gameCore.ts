@@ -21,7 +21,8 @@ import {
  *   ready (offline only: waits for BEGIN_TURN) -> clue (60 s) -> guess (60 s) -> next team's turn
  *
  * Rules
- *  - Clue number 1-9 or 'unlimited'. Guesses allowed = number + 1 (unlimited: no cap).
+ *  - Clue number 0-9 or 'unlimited'. Guesses allowed = number + 1 (unlimited: no cap). 0 (Yazan 2026-11-02, as in the
+ *    original): "none of ours fit this word"; like unlimited there is no cap, and one guess is still needed.
  *  - Own-team card: keep guessing. Neutral or enemy card: turn ends. Assassin: that team loses.
  *  - Revealing the last card of either team (even by mistake) wins it for that team.
  *  - May end the turn voluntarily only after at least 1 guess.
@@ -177,8 +178,8 @@ function handle(state: GameState, event: Exclude<GameEvent, { type: 'TICK' | 'PA
       if (state.phase !== 'clue') return reject(state, 'WRONG_PHASE', 'Not the clue phase.');
       if (event.team !== state.turn) return reject(state, 'WRONG_TEAM', 'Not your team\'s turn.');
       const n = event.number;
-      if (n !== 'unlimited' && !(Number.isInteger(n) && n >= 1 && n <= CLUE.maxNumber)) {
-        return reject(state, 'BAD_NUMBER', `Pick 1-${CLUE.maxNumber} or unlimited.`);
+      if (n !== 'unlimited' && !(Number.isInteger(n) && n >= 0 && n <= CLUE.maxNumber)) {
+        return reject(state, 'BAD_NUMBER', `Pick 0-${CLUE.maxNumber} or unlimited.`);
       }
       let word: string | null = null;
       if (event.word !== null) {
@@ -190,7 +191,7 @@ function handle(state: GameState, event: Exclude<GameEvent, { type: 'TICK' | 'PA
         team: event.team,
         word,
         number: n,
-        guessesLeft: n === 'unlimited' ? null : n + 1,
+        guessesLeft: n === 'unlimited' || n === 0 ? null : n + 1,
         guesses: 0,
       };
       return {

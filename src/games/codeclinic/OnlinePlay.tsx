@@ -24,6 +24,7 @@ import type { OnlineProps } from '../shell/types';
 import { Body, Btn, Card as Panel, Chips, GameScreen, Ghost, Kick } from '../shell/ui';
 import { checkClue } from './engine/clueCheck';
 import type { Card, ClueNumber, StyleChoice, Team } from './engine/types';
+import { CLUE } from './engine/config';
 import { Board, ClinicScreen, Clock, clueText, KeyLegend, NumberPick, TEAM, TeamHead, s as k } from './kit';
 import type { CcView, Move } from './online';
 import { playEffects } from './offline';
@@ -366,7 +367,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
                   setWord(x);
                   setRefusal(null);
                 }}
-                maxLength={30}
+                maxLength={CLUE.maxLength}
                 autoCorrect={false}
                 autoCapitalize="none"
                 placeholder="Your one-word clue"
@@ -410,8 +411,11 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
     body = <Body style={{ textAlign: 'center', marginTop: u(40) }}>Dealing the board…</Body>;
   }
 
+  // The talk button steps aside while I have a choice on screen: my clue as spymaster, or the cards on my guessing
+  // turn (inspection fix A, Yazan 2026-11-02).
+  const choosing = v.phase === 'playing' && !!g && g.turn === myTeam && (g.phase === 'clue' ? spy : !spy);
   return (
-    <ClinicScreen turn={v.phase === 'playing' ? (g?.turn ?? null) : null} remaining={g?.remaining ?? { red: 9, blue: 8 }} onPause={pause} bottom={bottom} over={v.phase === 'playing' && g?.phase === 'clue' && spy ? null : talk}>
+    <ClinicScreen turn={v.phase === 'playing' ? (g?.turn ?? null) : null} remaining={g?.remaining ?? { red: 9, blue: 8 }} onPause={pause} bottom={bottom} over={choosing ? null : talk}>
       {body}
       {extras}
       <PauseMenu open={menu} mode="online" onResume={() => setMenu(false)} onQuit={leave} />

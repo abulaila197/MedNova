@@ -164,6 +164,8 @@ export function TalkBubble({ m, face, size = 60 }: { m: TalkMsg; face?: boolean;
 }
 
 const BTN = 46;
+/** How far under the top of its area the button starts. */
+const START_DROP = 58;
 
 /**
  * ON22: the floating chat button for in-game and results. Your character in a round button you can drag anywhere;
@@ -175,10 +177,6 @@ export function FloatingTalk({ room, me }: { room: string; me: Me }) {
   const L = useRoomLook();
   const size = u(BTN);
   const edge = u(10);
-  const x = useSharedValue(width - size - edge);
-  const y = useSharedValue(height * 0.6);
-  const sx = useSharedValue(0);
-  const sy = useSharedValue(0);
   // The overlay starts under the game header, so its own height (not the window's) bounds the drag: the button
   // can no longer be dragged below the bottom edge and lost (DEF-081).
   const ins = useSafeAreaInsets();
@@ -186,6 +184,12 @@ export function FloatingTalk({ room, me }: { room: string; me: Me }) {
   // #11 (Yazan 2026-11-02): from just under the game's header row down to just above the bottom edge.
   const topGap = (Platform.OS === 'web' ? u(30) : ins.top) + u(54);
   const bottomGap = Math.max(u(8), ins.bottom + u(4));
+  const x = useSharedValue(width - size - edge);
+  // Inspection fix A (Yazan 2026-11-02): it starts in the top corner, under the pause button, where the games keep
+  // no buttons (in the middle of the side it sat on vote buttons, cards and answers).
+  const y = useSharedValue(topGap + u(START_DROP));
+  const sx = useSharedValue(0);
+  const sy = useSharedValue(0);
   // #6: the tray opens above or below the button, whichever has more room, and never runs off the screen.
   const [fan, setFan] = useState<{ up: boolean; room: number }>({ up: true, room: u(300) });
   const toggle = (yy: number, hh: number) => {

@@ -26,7 +26,10 @@ export const ROOM = {
 export const CLUE = {
   maxNumber: 9,
   minLength: 2,
-  maxLength: 30,
+  /** Yazan 2026-11-02: capped at 16, the longest word in the bank (e.g. Thrombocytopenia), so glued words stay short. */
+  maxLength: 16,
+  /** Clues this short (MI, CPR, ECG) are only refused when they are a board word, not when they sit inside one. */
+  shortMax: 3,
 } as const;
 
 /** CC2 (Yazan 2026-10-25): online EXP only, no tokens. Winners 60, losers 20. Pass the phone earns none. */

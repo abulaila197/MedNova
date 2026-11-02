@@ -173,3 +173,32 @@ test('EXP: winners 60, losers 20 a game, at most 60 a match', () => {
   assert.equal(expOf(3, 0), 60);
   assert.equal(expOf(3, 2), 60);
 });
+
+test('nobody gives a clue for 3 rounds: the match ends (inspection fix E)', () => {
+  const s = new Sim();
+  s.teams();
+  s.must('a', { type: 'START' });
+  for (let i = 0; i < 5; i++) {
+    s.now += 61_000;
+    s.must('a', { type: 'TICK' });
+    assert.equal(s.r.ended, false, `still open after ${i + 1} idle turns`);
+  }
+  s.now += 61_000;
+  s.must('a', { type: 'TICK' });
+  assert.equal(s.r.ended, true);
+});
+
+test('a clue resets the idle count', () => {
+  const s = new Sim();
+  s.teams();
+  s.must('a', { type: 'START' });
+  for (let i = 0; i < 5; i++) {
+    s.now += 61_000;
+    s.must('a', { type: 'TICK' });
+  }
+  const spy = SEATS.find((id) => s.r.players[id].isSpymaster && s.r.players[id].team === s.g.turn)!;
+  s.must(spy, { type: 'CLUE', word: 'zebra', number: 1 });
+  s.now += 61_000;
+  s.must('a', { type: 'TICK' });
+  assert.equal(s.r.ended, false);
+});

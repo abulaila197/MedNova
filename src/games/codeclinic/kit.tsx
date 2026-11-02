@@ -371,10 +371,10 @@ export function TeamHead({ team, lead, sub }: { team: Team; lead: string; sub?: 
   );
 }
 
-/** The clue number picker: 1 to 9, or unlimited. */
+/** The clue number picker: 0 to 9, or unlimited. */
 export function NumberPick({ value, onPick, team }: { value: ClueNumber | null; onPick: (n: ClueNumber) => void; team: Team }) {
   const t = useTheme();
-  const all: ClueNumber[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 'unlimited'];
+  const all: ClueNumber[] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 'unlimited'];
   return (
     <View style={s.nums}>
       {all.map((n) => {

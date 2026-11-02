@@ -28,6 +28,13 @@ describe('checkClue', () => {
   });
   it('rejects 1-letter and over-long clues', () => {
     expect(checkClue('a', [])).toMatchObject({ ok: false, problem: 'TOO_SHORT' });
-    expect(checkClue('x'.repeat(31), [])).toMatchObject({ ok: false, problem: 'TOO_LONG' });
+    expect(checkClue('x'.repeat(17), [])).toMatchObject({ ok: false, problem: 'TOO_LONG' });
+    expect(checkClue('x'.repeat(16), [])).toMatchObject({ ok: true });
+  });
+  it('a 2-3 letter short form may sit inside a longer card, but not match one (Yazan 2026-11-02)', () => {
+    expect(checkClue('MI', ['Microbiology'])).toMatchObject({ ok: true });
+    expect(checkClue('ECG', ['Necgraph'])).toMatchObject({ ok: true });
+    expect(checkClue('MI', ['Mi'])).toMatchObject({ ok: false, problem: 'BOARD_WORD' });
+    expect(checkClue('card', ['Cardiomyopathy'])).toMatchObject({ ok: false, problem: 'INSIDE_BOARD_WORD' });
   });
 });

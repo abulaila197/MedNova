@@ -377,8 +377,14 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
     );
   }
 
-  // The talk button steps aside while I type, so it never covers the box.
-  const typingNow = (ph.kind === 'clue' && ph.stage === 'typing' && mine(v.typingPlayerId)) || (ph.kind === 'redemption' && mine(v.caught));
+  // The talk button steps aside while I type, so it never covers the box, while the vote buttons are up, and over my secret word
+  // (inspection fix A, Yazan 2026-11-02).
+  const typingNow =
+    (ph.kind === 'clue' && ph.stage === 'typing' && mine(v.typingPlayerId)) ||
+    (ph.kind === 'redemption' && mine(v.caught)) ||
+    (ph.kind === 'decision' && !v.decisionAnswered.includes(me)) ||
+    ph.kind === 'vote' ||
+    ph.kind === 'wordReveal';
   const showCat = ph.kind !== 'roundResult' && ph.kind !== 'matchEnd';
   return (
     <ImposterScreen round={Math.max(1, v.roundNumber)} rounds={v.totalRounds ?? 1} category={showCat ? v.category : null} onPause={pause} bottom={bottom} over={typingNow ? null : talk}>

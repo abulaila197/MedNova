@@ -167,7 +167,10 @@ export function SoloPage({ m, me, seconds, act }: P) {
     const shown = q.shown ?? [];
     const lefts = q.pairs.map((x) => x[0]);
     // Long answers get more of the row, so the pairs stay shorter.
-    const wide = shown.some((r) => r.length > 50) ? [0.75, 1.25] : [1, 1];
+    // A left name with one long word (fix C) keeps an even split, so it has room to stay whole.
+    const longLeft = lefts.some((l) => l.split(/\s+/).some((w) => w.length > 11));
+    const wide = shown.some((r) => r.length > 50) && !longLeft ? [0.75, 1.25] : [1, 1];
+    const leftSize = Math.min(...lefts.map((l) => fitSize(l, 14.5)));
     body = (
       <>
         <Paper>
@@ -182,7 +185,7 @@ export function SoloPage({ m, me, seconds, act }: P) {
             return (
               <View key={l} style={{ flexDirection: 'row', gap: v(8) }}>
                 <View style={{ flex: wide[0] }}>
-                  <Option fill small label={l} mark={pairs[i] ? String(shown.indexOf(pairs[i]!) + 1) : ' '} on={left === i} onPress={() => setLeft(left === i ? null : i)} />
+                  <Option fill small size={leftSize} label={l} mark={pairs[i] ? String(shown.indexOf(pairs[i]!) + 1) : ' '} on={left === i} onPress={() => setLeft(left === i ? null : i)} />
                 </View>
                 <View style={{ flex: wide[1] }}>
                   {r == null ? null : (
@@ -277,10 +280,12 @@ function Closest({ m, me, act, msNow }: P) {
       <Paper>
         <T f={CG} size={17} color={AT.ink} style={{ lineHeight: v(22) }}>{q.prompt}</T>
       </Paper>
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: v(10) }}>
+      {/* Inspection fix B (Yazan 2026-11-02): the unit beside the box ran off the screen ("compartments", even "ribs"),
+          so it now sits under the box. */}
+      <View style={{ flexDirection: 'row' }}>
         <TextInput value={text} onChangeText={setText} keyboardType="decimal-pad" placeholder="Your guess" placeholderTextColor={AT.dim} style={s.input} accessibilityLabel="Your guess" />
-        {q.unit ? <T f={CGB} size={17} color={AT.soft}>{q.unit}</T> : null}
       </View>
+      {q.unit ? <T f={CGB} size={15} color={AT.soft} style={{ marginTop: v(-4), paddingLeft: v(4) }}>{q.unit}</T> : null}
       <View style={{ flexDirection: 'row' }}>
         <Btn label="Seal guess" disabled={!text || Number.isNaN(n)} onPress={() => (act({ type: 'closest', item: at, value: n, ms: msNow() }), setText(''))} />
       </View>
@@ -661,7 +666,16 @@ function Paper({ children }: { children: React.ReactNode }) {
   );
 }
 
-function Option({ label, mark, on, onPress, small, fill }: { label: string; mark?: string; on?: boolean; onPress: () => void; small?: boolean; fill?: boolean }) {
+/**
+ * Inspection fix C (Yazan 2026-11-02): one long word (e.g. "cricoarytenoid") can't wrap and was cut off in the narrow
+ * boxes, so a label whose longest word passes 11 letters gets a smaller font, down to 80% of the normal size. The left names of a question share one size, so the rows match.
+ */
+function fitSize(label: string, base: number) {
+  const longest = Math.max(0, ...label.split(/[\s/-]+/).map((w) => w.length));
+  return longest > 11 ? Math.max(base * 0.8, (base * 11) / longest) : base;
+}
+
+function Option({ label, mark, on, onPress, small, fill, size }: { label: string; mark?: string; on?: boolean; onPress: () => void; small?: boolean; fill?: boolean; size?: number }) {
   return (
     <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={label} accessibilityState={{ selected: on }} style={({ pressed }) => [s.opt, fill ? { flex: 1 } : null, small ? { paddingVertical: v(8) } : null, on ? s.optOn : null, pressed ? { opacity: 0.8 } : null]}>
       {mark != null ? (
@@ -669,7 +683,7 @@ function Option({ label, mark, on, onPress, small, fill }: { label: string; mark
           <T f={CZ} size={11} color="#ffffff">{mark}</T>
         </View>
       ) : null}
-      <T f={on ? CGB : CG} size={small ? 14.5 : 16} color={AT.ink} style={{ flex: 1, lineHeight: v(small ? 18 : 20) }}>{label}</T>
+      <T f={on ? CGB : CG} size={size ?? fitSize(label, small ? 14.5 : 16)} color={AT.ink} style={{ flex: 1, lineHeight: v(small ? 18 : 20) }}>{label}</T>
     </Pressable>
   );
 }

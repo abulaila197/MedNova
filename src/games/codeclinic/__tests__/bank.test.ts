@@ -25,3 +25,19 @@ test('every style fills a board', () => {
     assert.equal(newBoard(TERMS, style, seededRng(3)).cards.length, 25);
   }
 });
+
+test('every board has at least three field groups of 3 or more words (Yazan 2026-11-02)', () => {
+  const shapes = new Set<string>();
+  for (const style of ['clinical', 'basic', 'mixed'] as const) {
+    for (let seed = 1; seed <= 200; seed++) {
+      const picked = pickTerms(TERMS, style, seededRng(seed));
+      assert.equal(new Set(picked.map((t) => t.id)).size, 25);
+      const per = new Map<string, number>();
+      for (const t of picked) per.set(t.field, (per.get(t.field) ?? 0) + 1);
+      const groups = [...per.values()].filter((n) => n >= 2).sort((a, b) => b - a);
+      assert.ok(groups.filter((n) => n >= 3).length >= 3, `${style} seed ${seed}: ${groups}`);
+      shapes.add(groups.join('+'));
+    }
+  }
+  assert.ok(shapes.size > 20, 'the group sizes change from game to game');
+});
