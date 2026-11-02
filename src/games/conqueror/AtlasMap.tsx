@@ -5,7 +5,7 @@ import { memo, useMemo } from 'react';
 import { View } from 'react-native';
 import Svg, { Circle, ClipPath, Defs, G, Image as SvgImage, Path, Rect, Text as SvgText } from 'react-native-svg';
 
-import { AT, Capital, CZ, KINGDOMS, Piece, shade } from './atlas';
+import { MAPC as AT, MAP_FONT as CZ, Capital, KINGDOMS, Piece, shade } from './atlas';
 import { MAP_H, MAP_W, type AtlasMap } from './map';
 
 export type LandView = { seat: number | null; troops: string | null; capital: boolean; shielded?: boolean; trapped?: boolean };
@@ -38,7 +38,7 @@ function AtlasMapView({ map, lands, width, selected, targets, arrows = [], onLan
   const W = MAP_W, H = MAP_H;
 
   return (
-    <View style={{ width, height, borderWidth: 1.5, borderColor: 'rgba(20,10,4,0.6)', backgroundColor: AT.sea }}>
+    <View style={{ width, height, borderWidth: 1.5, borderColor: AT.frame, backgroundColor: AT.sea }}>
       <Svg width="100%" height="100%" viewBox={`0 0 ${W} ${H}`}>
         <Defs>
           {map.lands.map((l) => (
@@ -82,10 +82,10 @@ function AtlasMapView({ map, lands, width, selected, targets, arrows = [], onLan
           <Path key={i} d={`M${x - 6} ${y + 3}L${x} ${y - 5}L${x + 6} ${y + 3}M${x - 1} ${y - 3.5}L${x + 1.5} ${y - 0.5}`} fill="none" stroke={AT.ink} strokeOpacity={0.5} strokeWidth={1} strokeLinejoin="round" />
         ))}
         <G transform={`translate(${W - 26} ${H - 26})`} opacity={0.75}>
-          <Circle r={13} fill="none" stroke="#cdb88c" strokeWidth={0.7} />
-          <Path d="M0-17 L2.6 0 L0 17 L-2.6 0Z" fill="#cdb88c" />
-          <Path d="M-17 0 L0 2.6 L17 0 L0-2.6Z" fill="#cdb88c" opacity={0.6} />
-          <SvgText y={-19} textAnchor="middle" fontFamily={CZ} fontSize={7.5} fill="#cdb88c">N</SvgText>
+          <Circle r={13} fill="none" stroke="#5a3a1e" strokeWidth={0.7} />
+          <Path d="M0-17 L2.6 0 L0 17 L-2.6 0Z" fill="#5a3a1e" />
+          <Path d="M-17 0 L0 2.6 L17 0 L0-2.6Z" fill="#5a3a1e" opacity={0.6} />
+          <SvgText y={-19} textAnchor="middle" fontFamily={CZ} fontSize={7.5} fill="#5a3a1e">N</SvgText>
         </G>
         {onLand
           ? map.lands.map((l) => <Path key={`t${l.id}`} d={l.d} fill="#000" fillOpacity={0.001} onPress={() => onLand(l.id)} />)

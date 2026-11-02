@@ -13,7 +13,7 @@ import { scheduleOnRN } from 'react-native-worklets';
 
 import { MAX_FONT_SCALE } from '@/components/AppText';
 
-import { AT, Capital, CZ, KINGDOMS, Piece, PAWN, shade } from './atlas';
+import { MAPC as AT, MAP_FONT as CZ, Capital, KINGDOMS, Piece, PAWN, shade } from './atlas';
 import { MapChart, type LandView } from './AtlasMap';
 import { MAP_H, MAP_W, type AtlasMap } from './map';
 import type { MarchView } from './view';

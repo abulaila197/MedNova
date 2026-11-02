@@ -44,6 +44,9 @@ export const AT = {
   wrong: '#ff7a88',
 }
 /** Kingdom colours (watercolour inks), one per seat. */
+/** The map keeps its old Ink Atlas look (Yazan 2026-11-02: "use the old map and its box around it"). */
+export const MAPC = { sea: '#aa9e80', seaLine: '#7d7258', land: '#ecdcb4', ink: '#3b2412', red: '#8e1c1c', cream: '#f3e6c6', paper: '#f1e3c2', frame: 'rgba(20,10,4,0.6)', compass: '#5a3a1e' };
+export const MAP_FONT = 'Cinzel_700Bold';
 export const KINGDOMS = ['#9b2420', '#2b56a0', '#3f7a3a', '#c58a1f', '#6a3d8c', '#2a8484'];
 
 export const CZ = F.display;
@@ -51,7 +54,7 @@ export const CZM = F.bodySemi;
 export const CG = F.bodyMedium;
 export const CGI = F.bodyMedium;
 export const CGB = F.bodyBold;
-const FONTS: string[] = [];
+const FONTS: string[] = [MAP_FONT];
 export const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI'];
 
 let fontsReady = false;
@@ -243,8 +246,8 @@ export function Piece({ kind, color, x, y, s: sc = 0.84, label, id }: { kind: 'r
       </G>
       {label ? (
         <G transform={`translate(${x} ${y + 5})`}>
-          <Path d={`M${-lw / 2} 0h${lw}l-2 4.5 2 4.5h${-lw}l2-4.5Z`} fill={AT.paper} stroke="#cdb88c" strokeWidth={0.7} />
-          <SvgText y={7} textAnchor="middle" fontFamily={CZ} fontSize={7.2} fill={AT.ink}>{label}</SvgText>
+          <Path d={`M${-lw / 2} 0h${lw}l-2 4.5 2 4.5h${-lw}l2-4.5Z`} fill={MAPC.paper} stroke={MAPC.compass} strokeWidth={0.7} />
+          <SvgText y={7} textAnchor="middle" fontFamily={MAP_FONT} fontSize={7.2} fill={MAPC.ink}>{label}</SvgText>
         </G>
       ) : null}
     </G>
@@ -269,8 +272,8 @@ export function Capital({ seat, x, y, label }: { seat: number; x: number; y: num
       <SvgImage href={CAPITALS[seat % CAPITALS.length]} x={x - w / 2} y={y - h + 1.5} width={w} height={h} />
       {label ? (
         <G transform={`translate(${x} ${y + 5})`}>
-          <Path d={`M${-lw / 2} 0h${lw}l-2 4.5 2 4.5h${-lw}l2-4.5Z`} fill={AT.paper} stroke="#cdb88c" strokeWidth={0.7} />
-          <SvgText y={7} textAnchor="middle" fontFamily={CZ} fontSize={7.2} fill={AT.ink}>{label}</SvgText>
+          <Path d={`M${-lw / 2} 0h${lw}l-2 4.5 2 4.5h${-lw}l2-4.5Z`} fill={MAPC.paper} stroke={MAPC.compass} strokeWidth={0.7} />
+          <SvgText y={7} textAnchor="middle" fontFamily={MAP_FONT} fontSize={7.2} fill={MAPC.ink}>{label}</SvgText>
         </G>
       ) : null}
     </G>
