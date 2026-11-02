@@ -169,17 +169,19 @@ export function AppPopup({ word, slots, typed, tokens, width, notice, shake = 0,
   const c = slideColors(t.mode);
   const inner = width - u(28);
   const n = slots.length;
-  // #33 (Yazan 2026-11-01) + 2026-11-02: one word stays on one row up to 13 letters (TACHYCARDIA split as
+  // #33 (Yazan 2026-11-01) + 2026-11-02: one word stays on one row (TACHYCARDIA split as
   // TACHYC / ARDIA read like two words); a two-word answer that needs two rows breaks between its words, and a
   // dash marks where the second word starts.
   const breaks = (word.breaks ?? []).filter((b) => b > 0 && b < n);
   const idx = slots.map((_, i) => i);
   const slotRows: number[][] = breaks.length && n > 10
     ? [0, ...breaks, n].slice(0, -1).map((from, k, all) => idx.slice(from, k + 1 < all.length ? all[k + 1] : n))
-    : n > 13 ? [idx.slice(0, Math.ceil(n / 2)), idx.slice(Math.ceil(n / 2))] : [idx];
+    : [idx];
+  // Option A (Yazan 2026-11-02): one-word answers always stay on one line; 14-15 letters get tighter gaps.
+  const GAP = n > 13 ? u(2) : u(4);
   const DASH = u(10);
   const dashesIn = (row: number[]) => row.filter((i) => i > row[0] && breaks.includes(i)).length;
-  const slotW = Math.min(u(34), ...slotRows.map((row) => Math.floor((inner - (row.length - 1) * u(4) - dashesIn(row) * (DASH + u(4))) / row.length)));
+  const slotW = Math.min(u(34), ...slotRows.map((row) => Math.floor((inner - (row.length - 1) * GAP - dashesIn(row) * (DASH + GAP)) / row.length)));
   const keyW = Math.floor((inner - 9 * u(4)) / 10);
   return (
     <View style={[s.sheet, { backgroundColor: '#0c1130', borderColor: c.line }]}>
@@ -198,7 +200,7 @@ export function AppPopup({ word, slots, typed, tokens, width, notice, shake = 0,
       )}
       <Animated.View style={[{ gap: u(5), marginTop: u(4) }, shakeStyle]}>
         {slotRows.map((row, ri) => (
-          <View key={ri} style={{ flexDirection: 'row', justifyContent: 'center', gap: u(4) }}>
+          <View key={ri} style={{ flexDirection: 'row', justifyContent: 'center', gap: GAP }}>
             {row.map((i, k) => {
               const sl = slots[i];
               const ch = sl.locked ? sl.letter : typed[i];
