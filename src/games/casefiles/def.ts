@@ -3,7 +3,6 @@ import { CF } from './core';
 import { CASES, caseById } from './data';
 import { OfflinePlay } from './OfflinePlay';
 import { OnlinePlay } from './OnlinePlay';
-import { caseFilesScreens, INK, INK_TEAMS } from './screens';
 import { SoloPlay } from './SoloPlay';
 
 /** Online cases in a row (1-3; an older room has none and plays one). */
@@ -85,9 +84,6 @@ export const caseFiles: GameDef = {
   playersNote: () => 'Player 1 is you, the phone owner: a wrong first diagnosis of yours goes to Learn. Pass the phone earns no EXP.',
   Play: { solo: SoloPlay, offline: OfflinePlay },
   Online: OnlinePlay,
-  // RS3: one look of its own, so its shell screens are drawn in the Evidence board look too.
-  palette: { seats: INK, teams: INK_TEAMS },
-  screens: caseFilesScreens,
   // CF6: a Solo case pays its points the first time only; Offline pays nothing.
   exp: (_score, items) => items.reduce((a, i) => a + (Number(i.gameData.exp) || 0), 0),
   expCap: (settings, mode) => (mode === 'offline' ? 0 : (mode === 'online' ? cases(settings) : 1) * (MOST_RIGHT * CF.points.ddRight + CF.points.provisional + CF.points.timeMax)),

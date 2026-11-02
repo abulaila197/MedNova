@@ -119,7 +119,7 @@ export function CaseBoard({ def, run, sealed, kicker, onEvent, onPause }: { def:
       </View>
       <View style={s.stages}>
         {STAGES.map((x, i) => (
-          <T key={x} size={11} color={i === stage ? NR.white : i < stage ? NR.dim : '#4a4a48'} style={i < stage ? { textDecorationLine: 'line-through' } : null}>
+          <T key={x} size={11} color={i === stage ? NR.white : i < stage ? NR.dim : '#5a6090'} style={i < stage ? { textDecorationLine: 'line-through' } : null}>
             {x}
             {i < STAGES.length - 1 ? '  ·  ' : ''}
           </T>
@@ -288,7 +288,7 @@ function Verdict({ def, run, kind, sealed, onNext }: { def: CaseDef; run: Run; k
         <Kicker>{kind === 'provisional' ? 'Your diagnosis' : 'Your last call'}</Kicker>
         <T size={18} color={NR.soft} style={{ textAlign: 'center' }}>{v?.id}</T>
         <Animated.View entering={FadeIn.delay(250).duration(300)}>
-          <T size={40} color={right ? NR.green : NR.red}>{right ? 'Right.' : 'Not right.'}</T>
+          <T size={40} color={right ? NR.green : NR.wrong}>{right ? 'Right.' : 'Not right.'}</T>
         </Animated.View>
         <T size={13} color={NR.soft} style={{ textAlign: 'center', maxWidth: u(260) }}>{note}</T>
         {score ? (

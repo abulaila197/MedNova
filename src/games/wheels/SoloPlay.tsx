@@ -9,7 +9,7 @@ import { recordItem } from '../shell/flow';
 import type { PlayProps } from '../shell/types';
 import { startSolo, stepSolo, STYLES, fieldName, type Mix, type QResult, type SoloEvent, type SoloRun, type Target } from './core';
 import { BANK } from './data';
-import { WheelsPause } from './screens';
+import { PauseMenu } from '../shell/PauseMenu';
 import { TurnBoard } from './TurnBoard';
 import { Btn, CB, CD, Kicker, Panel, Rule, T, VelvetScreen, VV } from './velvet';
 import { useTicker } from '../engine/useTicker';
@@ -99,7 +99,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
           <TurnOver run={run} onNext={() => dispatch({ type: 'NEXT' })} onEnd={() => dispatch({ type: 'END' })} />
         ) : null}
       </VelvetScreen>
-      <WheelsPause open={paused} mode="solo" onResume={resume} onQuit={onQuit} />
+      <PauseMenu open={paused} mode="solo" onResume={resume} onQuit={onQuit} />
     </>
   );
 }
@@ -127,7 +127,7 @@ function TurnOver({ run, onNext, onEnd }: { run: SoloRun; onNext: () => void; on
           <T f={CB} size={12} color={VV.dim} style={{ letterSpacing: u(1.2) }}>SCORE</T>
           <T f={CD} size={22} color={VV.gold}>{`${run.score} / ${run.target}`}</T>
         </View>
-        <View style={{ height: u(6), borderRadius: u(3), backgroundColor: 'rgba(216,178,106,0.2)', overflow: 'hidden' }}>
+        <View style={{ height: u(6), borderRadius: u(3), backgroundColor: 'rgba(255,255,255,0.1)', overflow: 'hidden' }}>
           <View style={{ width: `${Math.min(100, (run.score / run.target) * 100)}%`, height: '100%', backgroundColor: VV.brass }} />
         </View>
       </Panel>

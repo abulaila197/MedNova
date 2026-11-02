@@ -98,7 +98,8 @@ export const respondInvite = (invite: string, accept: boolean, wanted?: string) 
 // Busy line + weekly online share (Yazan 2026-11-01). The server refuses new rooms, joins and starts with
 // 'online_resting <until>' when the week's online data share is used up, and new starts with 'online_busy' when too many
 // players are online at once (the room then waits in line: onlineTurn).
-export type OnlineStatus = { open: boolean; until: string | null; day?: string | null };
+/** locked (Yazan 2026-11-02): games whose online play the Admin page locked; '*' = every game. */
+export type OnlineStatus = { open: boolean; until: string | null; day?: string | null; locked?: string[] };
 export const onlineStatus = () => call<OnlineStatus>('online_status');
 export type Turn = { go?: boolean; place: number; busy?: boolean };
 export const onlineTurn = (r: string) => call<Turn>('online_turn', { r });
@@ -111,11 +112,13 @@ export const restingUntil = (e: unknown): string | null => {
 };
 export const restingSay = (day: string | null) =>
   `Online play is resting until ${day || 'Saturday'}. Our free server shares its online time across the weeks, and this week’s share is used up. Solo and Pass the phone still work.`;
+export const LOCKED_SAY = 'Online play for this game is locked for now while we fix something. Solo and Pass the phone still work.';
 /** What to say for a failed room call. */
 export const sayError = (e: unknown) => {
   const until = restingUntil(e);
   if (until !== null) return restingSay(until);
   if (isBusy(e)) return 'Servers are busy right now. Tap Start to wait in line.';
+  if (errText(e).includes('online_locked')) return LOCKED_SAY;
   if (errText(e).includes('watchers_full')) return 'This match already has 3 watchers. Try again at the rematch.';
   return JOIN_SAY.error;
 };

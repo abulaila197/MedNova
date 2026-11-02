@@ -13,7 +13,7 @@ import { scheduleOnRN } from 'react-native-worklets';
 
 import { MAX_FONT_SCALE } from '@/components/AppText';
 
-import { AT, Capital, KINGDOMS, Piece, PAWN, shade } from './atlas';
+import { AT, Capital, CZ, KINGDOMS, Piece, PAWN, shade } from './atlas';
 import { MapChart, type LandView } from './AtlasMap';
 import { MAP_H, MAP_W, type AtlasMap } from './map';
 import type { MarchView } from './view';
@@ -195,7 +195,7 @@ function Bubble({ t, k, at: p, color, label }: { t: SharedValue<number>; k: numb
         <Circle r={10} fill="none" stroke={AT.cream} strokeOpacity={0.5} strokeWidth={0.8} strokeDasharray="1.5 1.5" />
       </Svg>
       <View style={[StyleSheet.absoluteFill, { alignItems: 'center', justifyContent: 'center' }]}>
-        <Animated.Text maxFontSizeMultiplier={MAX_FONT_SCALE} style={{ color: AT.cream, fontFamily: 'Cinzel_700Bold', fontSize: 7.5 * k }}>{label}</Animated.Text>
+        <Animated.Text maxFontSizeMultiplier={MAX_FONT_SCALE} style={{ color: AT.cream, fontFamily: CZ, fontSize: 7.5 * k }}>{label}</Animated.Text>
       </View>
     </Animated.View>
   );

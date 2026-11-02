@@ -1,47 +1,51 @@
-// The Wheels of Chaos' own design language: look B "Velvet stage" (Yazan, 2026-10-05). Crimson velvet from the
-// loading photo, brass frames, cream playbill paper, with look A's type: Cinzel Decorative for titles and Cinzel
-// for labels. Nothing here comes from the app's look or another game's; only the game header is shared.
-import { Image } from 'expo-image';
+// The Wheels of Chaos pieces, in the app's look since Yazan 2026-11-02 (#19: "the old design look shouldn't be present
+// anywhere"): navy cards, the app's cyan/violet, Gabarito titles and Inter Tight labels. The velvet stage, brass and
+// playbill paper are gone; the names stay so the play screens keep working. Questions and answers keep Alegreya Sans (#32).
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useState, type ReactNode } from 'react';
 import { Pressable, StyleSheet, View, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
 import { Text } from '@/components/AppText';
 
 import { loadFonts } from '@/features/loading/fonts';
+import { tapped } from '@/lib/sound';
 import { u } from '@/theme/scale';
+import { F } from '@/theme/tokens';
 
+import { SEAT_COLOURS } from '../shell/characters';
 import { GameScreen } from '../shell/ui';
 
+/** App colours under the old names: brass = accent, paper = the app's soft beige (Yazan 2026-11-02), redInk = violet. */
 export const VV = {
-  brass: '#d8b26a',
-  cream: '#f4e6c6',
-  paper: '#f1e2bf',
-  ink: '#f6ead0',
-  soft: '#d2bf98',
-  dim: '#9a8766',
-  red: '#7a1424',
-  redInk: '#8e1a2c',
-  paperInk: '#2a1a12',
-  paperSoft: '#6b5640',
-  panel: 'rgba(28,6,10,0.78)',
-  gold: '#ffe3a3',
-  right: '#79c9b6',
-  wrong: '#e0828f',
-  line: 'rgba(216,178,106,0.25)',
+  brass: '#6fd6ff',
+  cream: '#eef0ff',
+  paper: '#efe4cb',
+  ink: '#eef0ff',
+  soft: '#c3c7e4',
+  dim: '#8a90b8',
+  red: '#a48bff',
+  redInk: '#5b45c4',
+  paperInk: '#3b2f1c',
+  paperSoft: '#6b5a3e',
+  panel: '#26376f',
+  gold: '#ffd166',
+  right: '#3fc58a',
+  wrong: '#ff7a88',
+  line: 'rgba(255,255,255,0.13)',
 };
-/** Player gems: picked to sit on crimson and cream (the app's cyan/violet would clash). */
-export const GEMS = ['#79c9b6', '#b98ad8', '#e8c46a', '#e0828f'];
-export const CD = 'CinzelDecorative_700Bold';
-export const CM = 'Cinzel_500Medium';
-export const CB = 'Cinzel_700Bold';
-export const BODY = 'InterTight_500Medium';
-export const BODY_B = 'InterTight_600SemiBold';
+/** The soft beige boxes of Streak Master / Quiz Parade (src/theme/beige.ts): answers, board cards. paper = picked. */
+export const BOX = { bg: '#efe4cb', line: '#cdb88c', ink: '#3b2f1c', paper: '#e3d4b2' };
+/** Player colours: the app's seat colours. */
+export const GEMS = SEAT_COLOURS.map((c) => c.color);
+export const CD = F.display;
+export const CM = F.bodySemi;
+export const CB = F.bodyBold;
+export const BODY = F.bodyMedium;
+export const BODY_B = F.bodySemi;
 /** #32 (Yazan 2026-11-01): questions and answers are set in Alegreya Sans. */
 export const QF = 'AlegreyaSans_500Medium';
 export const QF_B = 'AlegreyaSans_700Bold';
-const FONTS = [CD, CM, CB, 'InterTight_500Medium', 'InterTight_600SemiBold', QF, QF_B];
+const FONTS = [QF, QF_B];
 export const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI'];
-
 
 let fontsReady = false;
 export function useVelvetFonts() {
@@ -56,41 +60,31 @@ export function useVelvetFonts() {
   return ok;
 }
 
-/** The stage: the loading page's velvet photo under a dark veil. `dark` adds to the veil (pause, curtains). */
-export function Velvet({ dark = 0 }: { dark?: number }) {
-  return (
-    <View style={StyleSheet.absoluteFill} pointerEvents="none">
-      <Image source={require('@/assets/loading/the-wheels-of-chaos.jpg')} style={StyleSheet.absoluteFill} contentFit="cover" contentPosition={{ top: '0%', left: '50%' }} />
-      <LinearGradient colors={[`rgba(10,0,3,${0.55 + dark})`, `rgba(10,0,3,${0.72 + dark})`, 'rgba(8,0,2,0.92)']} locations={[0, 0.45, 1]} style={StyleSheet.absoluteFill} />
-    </View>
-  );
-}
-
-/** A Wheels page: the game header over the velvet stage. */
-export function VelvetScreen({ children, scroll = false, dark = 0, top }: { children: ReactNode; scroll?: boolean; dark?: number; top?: ReactNode }) {
+/** A Wheels page: the game header over the app sky. */
+export function VelvetScreen({ children, scroll = false, top }: { children: ReactNode; scroll?: boolean; dark?: number; top?: ReactNode }) {
   const ok = useVelvetFonts();
   return (
-    <GameScreen scroll={scroll} under={<Velvet dark={dark} />} top={ok ? top : null} bodyStyle={{ paddingTop: u(12), paddingHorizontal: u(16), paddingBottom: u(16), gap: u(12) }}>
+    <GameScreen scroll={scroll} top={ok ? top : null} bodyStyle={{ paddingTop: u(12), paddingHorizontal: u(16), paddingBottom: u(16), gap: u(12) }}>
       {ok ? children : null}
     </GameScreen>
   );
 }
 
-/** A brass-rimmed piece: a light rim over a darker one. */
+/** A card with the app's hairline edge (was the brass rim). */
 export const Brass = ({ children, r = 12, style, inner }: { children: ReactNode; r?: number; style?: StyleProp<ViewStyle>; inner?: StyleProp<ViewStyle> }) => (
-  <LinearGradient colors={['#f1d79a', '#b8893f', '#7d5a26']} style={[{ borderRadius: u(r), padding: u(2.5) }, style]}>
-    <View style={[{ borderRadius: u(r - 2), overflow: 'hidden' }, inner]}>{children}</View>
-  </LinearGradient>
+  <View style={[{ borderRadius: u(r), borderWidth: 1, borderColor: VV.line, overflow: 'hidden' }, style]}>
+    <View style={[{ borderRadius: u(r - 1), overflow: 'hidden' }, inner]}>{children}</View>
+  </View>
 );
 
-/** A dark brass panel. */
+/** A navy panel. */
 export const Panel = ({ children, style, inner }: { children: ReactNode; style?: StyleProp<ViewStyle>; inner?: StyleProp<ViewStyle> }) => (
-  <Brass r={14} style={style} inner={[{ backgroundColor: VV.panel, padding: u(14), gap: u(9) }, inner]}>{children}</Brass>
+  <Brass r={18} style={style} inner={[{ backgroundColor: VV.panel, padding: u(14), gap: u(9) }, inner]}>{children}</Brass>
 );
 
-/** Cream playbill paper in a brass frame. */
+/** A beige card (was the cream playbill). */
 export const Bill = ({ children, style, tight }: { children: ReactNode; style?: StyleProp<ViewStyle>; tight?: boolean }) => (
-  <Brass r={8} style={style} inner={{ backgroundColor: VV.paper }}>
+  <Brass r={18} style={[{ borderColor: BOX.line }, style]} inner={{ backgroundColor: VV.paper }}>
     <View style={tight ? { paddingHorizontal: u(15), paddingVertical: u(11), gap: u(6) } : { paddingHorizontal: u(16), paddingVertical: u(14), gap: u(10) }}>{children}</View>
   </Brass>
 );
@@ -100,61 +94,58 @@ export const T = ({ children, f = BODY, size = 13, color = VV.ink, style, lines 
 );
 
 export const Kicker = ({ children, color = VV.brass }: { children: string; color?: string }) => (
-  <T f={CM} size={11.5} color={color} style={{ letterSpacing: u(1.8) }}>{children.toUpperCase()}</T>
+  <Text style={{ fontFamily: F.mono, fontSize: u(10), lineHeight: u(14), letterSpacing: u(1.6), color }}>{children.toUpperCase()}</Text>
 );
 
-/** "Tonight's Bill": the last word in brass. */
+/** A title with the last word in the accent colour, like the app's titles. */
 export function Title({ text, size = 26 }: { text: string; size?: number }) {
   const i = text.lastIndexOf(' ');
   return (
-    <T f={CD} size={size} style={{ lineHeight: u(size * 1.2) }}>
+    <T f={CD} size={size} style={{ lineHeight: u(size * 1.1) }}>
       {i > 0 ? text.slice(0, i + 1) : ''}
       <Text style={{ color: VV.brass }}>{i > 0 ? text.slice(i + 1) : text}</Text>
     </T>
   );
 }
 
-/** Crimson button in brass, or a brass outline (ghost). `paper` is the ink outline used on the playbill. */
+/** The app's gradient button, or its outline button (ghost / paper). */
 export function Btn({ label, onPress, ghost, paper, disabled, style }: { label: string; onPress?: () => void; ghost?: boolean; paper?: boolean; disabled?: boolean; style?: StyleProp<ViewStyle> }) {
   return (
-    <Pressable onPress={onPress} disabled={disabled} accessibilityRole="button" accessibilityLabel={label} style={({ pressed }) => [{ opacity: disabled ? 0.4 : pressed ? 0.8 : 1 }, style]}>
+    <Pressable onPress={tapped(onPress)} disabled={disabled} accessibilityRole="button" accessibilityLabel={label} style={({ pressed }) => [{ opacity: disabled ? 0.45 : pressed ? 0.85 : 1 }, style]}>
       {ghost || paper ? (
-        <View style={{ paddingVertical: u(12), borderRadius: u(30), borderWidth: 1.5, borderColor: paper ? VV.paperInk : VV.brass, alignItems: 'center' }}>
-          <T f={CB} size={12} color={paper ? VV.paperInk : VV.brass} style={{ letterSpacing: u(0.6), textAlign: 'center' }}>{label.toUpperCase()}</T>
+        <View style={s.ghost}>
+          <T f={F.bodySemi} size={12.5} color={VV.ink} style={{ textAlign: 'center' }}>{label}</T>
         </View>
       ) : (
-        <Brass r={30}>
-          <LinearGradient colors={['#a8203a', '#6a0f1e']} style={{ paddingVertical: u(12), paddingHorizontal: u(10), alignItems: 'center' }}>
-            <T f={CB} size={14} color={VV.gold} style={{ letterSpacing: u(1), textAlign: 'center' }}>{label.toUpperCase()}</T>
-          </LinearGradient>
-        </Brass>
+        <LinearGradient colors={['#a48bff', '#6fd6ff']} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.btn}>
+          <T f={F.bodyBold} size={13} color="#0b0b26" style={{ textAlign: 'center' }}>{label}</T>
+        </LinearGradient>
       )}
     </Pressable>
   );
 }
 
-/** A player's gem: a small tilted square. */
+/** A player's colour dot. */
 export const Gem = ({ c, size = 11 }: { c?: string; size?: number }) => (
-  <View style={{ width: u(size), height: u(size), transform: [{ rotate: '45deg' }], backgroundColor: c ?? VV.brass, borderWidth: 1, borderColor: 'rgba(255,240,200,0.7)' }} />
+  <View style={{ width: u(size), height: u(size), borderRadius: u(size), backgroundColor: c ?? VV.brass }} />
 );
 
 export const Rule = ({ c = VV.line }: { c?: string }) => <View style={{ height: 1, backgroundColor: c }} />;
 
-/** A round token (target, question type): crimson when picked. On paper by default. */
-export function Token({ label, sub, on, onPress, dark, small }: { label: string; sub?: string; on?: boolean; onPress: () => void; dark?: boolean; small?: boolean }) {
-  const base = dark ? VV.ink : VV.paperInk;
+/** A choice chip (target, question type): accent when picked. */
+export function Token({ label, sub, on, onPress, small }: { label: string; sub?: string; on?: boolean; onPress: () => void; dark?: boolean; small?: boolean }) {
   return (
-    <Pressable onPress={onPress} accessibilityRole="radio" accessibilityState={{ selected: on }} accessibilityLabel={label} style={[s.token, small ? { minWidth: u(52), paddingVertical: u(3), paddingHorizontal: u(9) } : null, { borderColor: on ? VV.redInk : dark ? VV.line : 'rgba(42,26,18,0.4)' }, on ? { backgroundColor: VV.redInk } : null]}>
-      <T f={CB} size={sub ? (small ? 13.5 : 15) : small ? 12 : 12.5} color={on ? VV.gold : base} style={{ textAlign: 'center' }}>{label}</T>
-      {sub ? <T f={CM} size={8} color={on ? VV.gold : dark ? VV.dim : VV.paperSoft} style={{ letterSpacing: u(1) }}>{sub}</T> : null}
+    <Pressable onPress={tapped(onPress)} accessibilityRole="radio" accessibilityState={{ selected: on }} accessibilityLabel={label} style={[s.token, small ? { minWidth: u(52), paddingVertical: u(3), paddingHorizontal: u(9) } : null, on ? { borderColor: VV.brass, backgroundColor: 'rgba(111,214,255,0.14)' } : null]}>
+      <T f={CB} size={sub ? (small ? 13.5 : 15) : small ? 12 : 12.5} color={on ? VV.brass : VV.ink} style={{ textAlign: 'center' }}>{label}</T>
+      {sub ? <T f={F.mono} size={8} color={on ? VV.brass : VV.dim} style={{ letterSpacing: u(1) }}>{sub}</T> : null}
     </Pressable>
   );
 }
 
-/** The bulb timer: 20 lights that go out as time runs down. */
+/** The timer: 20 segments that go out as time runs down. */
 const BULBS = 20;
 
-/** How many bulbs are lit at `frac` of the time left: the only thing the bulb timer shows of the clock. */
+/** How many segments are lit at `frac` of the time left: the only thing the timer shows of the clock. */
 export const bulbsLit = (frac: number) => Array.from({ length: BULBS }, (_, i) => i / BULBS < frac).filter(Boolean).length;
 
 export function Bulbs({ frac }: { frac: number }) {
@@ -162,7 +153,7 @@ export function Bulbs({ frac }: { frac: number }) {
     <View style={{ flexDirection: 'row', gap: u(3) }}>
       {Array.from({ length: BULBS }, (_, i) => {
         const lit = i / BULBS < frac;
-        return <View key={i} style={{ flex: 1, height: u(7), borderRadius: u(4), backgroundColor: lit ? '#ffd27a' : 'rgba(216,178,106,0.2)', shadowColor: '#ffbf4a', shadowOpacity: lit ? 0.8 : 0, shadowRadius: u(4) }} />;
+        return <View key={i} style={{ flex: 1, height: u(6), borderRadius: u(3), backgroundColor: lit ? (frac < 0.25 ? '#ff7a88' : VV.brass) : 'rgba(255,255,255,0.1)' }} />;
       })}
     </View>
   );
@@ -171,17 +162,17 @@ export function Bulbs({ frac }: { frac: number }) {
 /** A player chip for picking a target. */
 export function Chip({ label, color, on, onPress }: { label: string; color?: string; on?: boolean; onPress: () => void }) {
   return (
-    <Pressable onPress={onPress} accessibilityRole="radio" accessibilityState={{ selected: on }} accessibilityLabel={label} style={[s.chip, on ? { backgroundColor: VV.cream, borderColor: VV.cream } : null]}>
+    <Pressable onPress={tapped(onPress)} accessibilityRole="radio" accessibilityState={{ selected: on }} accessibilityLabel={label} style={[s.chip, on ? { backgroundColor: 'rgba(111,214,255,0.14)', borderColor: VV.brass } : null]}>
       {color ? <Gem c={color} size={8} /> : null}
-      <T f={CB} size={13} color={on ? VV.redInk : VV.ink}>{label}</T>
+      <T f={CB} size={13} color={on ? VV.brass : VV.ink}>{label}</T>
     </Pressable>
   );
 }
 
-/** The square pause button (rule 4), in brass. */
+/** The pause button, as the app's round icon button. */
 export function PauseBtn({ onPress }: { onPress: () => void }) {
   return (
-    <Pressable onPress={onPress} hitSlop={u(8)} accessibilityRole="button" accessibilityLabel="Pause" style={s.pause}>
+    <Pressable onPress={tapped(onPress)} hitSlop={u(8)} accessibilityRole="button" accessibilityLabel="Pause" style={s.pause}>
       <View style={s.bar} />
       <View style={s.bar} />
     </Pressable>
@@ -189,8 +180,10 @@ export function PauseBtn({ onPress }: { onPress: () => void }) {
 }
 
 const s = StyleSheet.create({
-  token: { minWidth: u(58), paddingHorizontal: u(10), paddingVertical: u(5), borderRadius: u(29), borderWidth: 1.5, alignItems: 'center', justifyContent: 'center' },
-  chip: { flexDirection: 'row', alignItems: 'center', gap: u(8), paddingVertical: u(8), paddingHorizontal: u(14), borderRadius: u(20), borderWidth: 1, borderColor: 'rgba(216,178,106,0.55)', backgroundColor: 'rgba(28,6,10,0.7)' },
-  pause: { width: u(30), height: u(30), borderRadius: u(8), borderWidth: 1.5, borderColor: VV.brass, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: u(4), backgroundColor: 'rgba(28,6,10,0.6)' },
-  bar: { width: u(3), height: u(11), borderRadius: u(1), backgroundColor: VV.brass },
+  btn: { borderRadius: u(14), paddingVertical: u(12), paddingHorizontal: u(18), alignItems: 'center' },
+  ghost: { borderRadius: u(14), borderWidth: 1, borderColor: 'rgba(255,255,255,0.09)', backgroundColor: 'rgba(255,255,255,0.05)', paddingVertical: u(11), paddingHorizontal: u(16), alignItems: 'center' },
+  token: { minWidth: u(58), paddingHorizontal: u(10), paddingVertical: u(5), borderRadius: u(10), borderWidth: 1, borderColor: 'rgba(255,255,255,0.09)', backgroundColor: 'rgba(255,255,255,0.05)', alignItems: 'center', justifyContent: 'center' },
+  chip: { flexDirection: 'row', alignItems: 'center', gap: u(8), paddingVertical: u(8), paddingHorizontal: u(14), borderRadius: u(12), borderWidth: 1, borderColor: 'rgba(255,255,255,0.09)', backgroundColor: 'rgba(255,255,255,0.05)' },
+  pause: { width: u(30), height: u(30), borderRadius: u(10), borderWidth: 1, borderColor: 'rgba(255,255,255,0.09)', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: u(4), backgroundColor: 'rgba(255,255,255,0.05)' },
+  bar: { width: u(3), height: u(11), borderRadius: u(1), backgroundColor: '#eef0ff' },
 });

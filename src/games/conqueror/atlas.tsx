@@ -1,8 +1,6 @@
-// The Conqueror's own design language: look A "Ink Atlas" on a mid-dark warm sepia screen (CQ20, Yazan
-// 2026-10-08). A parchment chart with watercolour kingdoms and chess pieces, red wax seals, Cinzel for titles and
-// labels, Cormorant Garamond for running text. Nothing here comes from the app's look or another game's; only the
-// game header is shared.
-import { Image } from 'expo-image';
+// The Conqueror pieces, in the app's look since Yazan 2026-11-02 (#19: "the old design look shouldn't be present
+// anywhere"): app sky, navy chips, cyan accent, Gabarito + Inter Tight, and the app's soft beige for paper (cards,
+// sheets, the land on the map). The names stay so the play screens keep working.
 import { LinearGradient } from 'expo-linear-gradient';
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import { Pressable, StyleSheet, View, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
@@ -12,7 +10,10 @@ import Svg, { Defs, Ellipse, G, Image as SvgImage, LinearGradient as SvgGradient
 import { loadFonts } from '@/features/loading/fonts';
 import { clock } from '@/games/engine/clock';
 import { DESIGN_W, u } from '@/theme/scale';
+import { F } from '@/theme/tokens';
+import { tapped } from '@/lib/sound';
 
+import { PauseMenu } from '../shell/PauseMenu';
 import { GameScreen } from '../shell/ui';
 import { CARDS, type CardType } from './core';
 
@@ -20,35 +21,37 @@ import { CARDS, type CardType } from './core';
 export const v = (n: number) => u((n * DESIGN_W) / 360);
 
 export const AT = {
-  bg: '#3a2b1e',
-  cream: '#f3e6c6',
-  soft: '#c2ab84',
-  dim: '#8f7a5a',
-  gold: '#f0c27a',
-  ink: '#3b2412',
-  inkSoft: '#6b4a2a',
-  paper: '#f1e3c2',
-  paperDeep: '#e6d1a0',
-  red: '#8e1c1c',
-  redHi: '#b23a30',
-  redLo: '#7a1414',
-  line: 'rgba(243,230,198,0.18)',
-  chip: 'rgba(243,230,198,0.07)',
-  sea: '#aa9e80',
-  seaLine: '#7d7258',
-  land: '#ecdcb4',
-  right: '#9fd39a',
-  wrong: '#e58b7f',
-};
+  bg: '#0d1738',
+  cream: '#eef0ff',
+  soft: '#c3c7e4',
+  dim: '#8a90b8',
+  /** Titles and highlights: the app's cyan. */
+  gold: '#6fd6ff',
+  ink: '#3b2f1c',
+  inkSoft: '#6b5a3e',
+  paper: '#efe4cb',
+  paperDeep: '#e3d4b2',
+  /** The accent on beige paper: a deep violet (was the red ink). */
+  red: '#5b45c4',
+  redHi: '#a48bff',
+  redLo: '#6fd6ff',
+  line: 'rgba(255,255,255,0.13)',
+  chip: 'rgba(255,255,255,0.05)',
+  sea: '#1a2858',
+  seaLine: '#3a4f96',
+  land: '#efe4cb',
+  right: '#3fc58a',
+  wrong: '#ff7a88',
+}
 /** Kingdom colours (watercolour inks), one per seat. */
 export const KINGDOMS = ['#9b2420', '#2b56a0', '#3f7a3a', '#c58a1f', '#6a3d8c', '#2a8484'];
 
-export const CZ = 'Cinzel_700Bold';
-export const CZM = 'Cinzel_500Medium';
-export const CG = 'CormorantGaramond_600SemiBold';
-export const CGI = 'CormorantGaramond_600SemiBold_Italic';
-export const CGB = 'CormorantGaramond_700Bold';
-const FONTS = [CZ, CZM, CG, CGI, CGB];
+export const CZ = F.display;
+export const CZM = F.bodySemi;
+export const CG = F.bodyMedium;
+export const CGI = F.bodyMedium;
+export const CGB = F.bodyBold;
+const FONTS: string[] = [];
 export const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI'];
 
 let fontsReady = false;
@@ -64,26 +67,17 @@ export function useAtlasFonts() {
   return ok;
 }
 
-/** The mid-dark sepia room: warm light from the top, darker corners, a fine paper grain. */
+/** Kept for old callers: the app sky shows through, nothing is drawn. */
 export function Room() {
-  return (
-    <View style={StyleSheet.absoluteFill} pointerEvents="none">
-      <LinearGradient colors={['#4a3524', '#3a2b1e', '#2e2218']} locations={[0, 0.45, 1]} style={StyleSheet.absoluteFill} />
-      <LinearGradient colors={['rgba(255,220,160,0.10)', 'rgba(255,220,160,0)']} style={[StyleSheet.absoluteFill, { bottom: '55%' }]} />
-      <Image source={require('@/assets/textures/grain.png')} style={[StyleSheet.absoluteFill, { opacity: 0.08 }]} contentFit="cover" />
-    </View>
-  );
+  return null;
 }
 
-/** #12: the sides of a wide screen show the plain room, never the art feathered into some pages. */
-const ROOM = <Room />;
-
-/** A Conqueror page: the game header over the sepia room, always in the dark header. */
-export function AtlasScreen({ children, scroll = false, under, top }: { children: ReactNode; scroll?: boolean; under?: ReactNode; top?: ReactNode }) {
+/** A Conqueror page: the game header over the app sky (`under` art is no longer drawn). */
+export function AtlasScreen({ children, scroll = false, top }: { children: ReactNode; scroll?: boolean; under?: ReactNode; top?: ReactNode }) {
   const ok = useAtlasFonts();
   return (
     <>
-      <GameScreen scroll={scroll} under={under ?? <Room />} side={ROOM} top={ok ? top : null} bodyStyle={{ paddingTop: v(12), paddingHorizontal: v(14), paddingBottom: v(14), gap: v(11) }}>
+      <GameScreen scroll={scroll} top={ok ? top : null} bodyStyle={{ paddingTop: v(12), paddingHorizontal: v(14), paddingBottom: v(14), gap: v(11) }}>
         {ok ? children : null}
       </GameScreen>
     </>
@@ -95,7 +89,7 @@ export const T = ({ children, f = CG, size = 15, color = AT.cream, style, lines 
 );
 
 export const Kicker = ({ children, color = AT.soft }: { children: string; color?: string }) => (
-  <T f={CZM} size={10} color={color} style={{ letterSpacing: v(1.6), opacity: 0.85 }}>{children.toUpperCase()}</T>
+  <T f={F.mono} size={10} color={color} style={{ letterSpacing: v(1.6) }}>{children.toUpperCase()}</T>
 );
 
 /** The page top: stage kicker, a gold Cinzel title, an italic line, and the wax clock on the right. */
@@ -122,54 +116,24 @@ function PauseBtn() {
   const open = useContext(PauseCtx);
   if (!open) return null;
   return (
-    <Pressable onPress={open} hitSlop={v(8)} accessibilityRole="button" accessibilityLabel="Pause" style={({ pressed }) => [s.pause, pressed ? { opacity: 0.75 } : null]}>
+    <Pressable onPress={tapped(open)} hitSlop={v(8)} accessibilityRole="button" accessibilityLabel="Pause" style={({ pressed }) => [s.pause, pressed ? { opacity: 0.75 } : null]}>
       <View style={s.bar} />
       <View style={s.bar} />
     </Pressable>
   );
 }
 
-/**
- * The Conqueror's own pause page: a field tent over the chart. Online the war goes on for the others, and a player
- * who stays away is played by the court (CQ12) and removed after 2 stages away.
- */
+/** The pause page: the app's shared one. Online the war goes on for the others (CQ12). */
 export function AtlasPause({ open, onResume, onLeave }: { open: boolean; onResume: () => void; onLeave: () => void }) {
-  if (!open) return null;
-  return (
-    <View style={[StyleSheet.absoluteFill, { zIndex: 20 }]}>
-      <AtlasScreen>
-        <View style={{ flex: 1, justifyContent: 'center', gap: v(18) }}>
-          <View style={s.tent}>
-            <Parchment />
-            <View style={s.tentRule} pointerEvents="none" />
-            <Kicker color={AT.inkSoft}>The war goes on</Kicker>
-            <T f={CZ} size={30} color={AT.ink} style={{ lineHeight: v(36) }}>Field Tent</T>
-            <View style={{ width: v(44), height: 1, backgroundColor: 'rgba(142,28,28,0.55)', marginVertical: v(4) }} />
-            <T f={CGI} size={16} color={AT.inkSoft} style={{ textAlign: 'center', lineHeight: v(20) }}>
-              The others keep playing while this is open. If you stay away, the court plays your turns, and after 2 stages away your kingdom falls.
-            </T>
-          </View>
-          <View style={{ gap: v(10) }}>
-            <View style={{ flexDirection: 'row' }}>
-              <Btn label="Back to the war" onPress={onResume} />
-            </View>
-            <View style={{ flexDirection: 'row' }}>
-              <Btn label="Leave the war" ghost onPress={onLeave} />
-            </View>
-          </View>
-        </View>
-      </AtlasScreen>
-    </View>
-  );
+  return <PauseMenu open={open} mode="online" onResume={onResume} onQuit={onLeave} />;
 }
 
-
-/** A red wax seal (the clock, or a badge). */
+/** The round clock badge (was the wax seal): the app gradient, rose when time runs low. */
 export function Seal({ text, hot, size = 54 }: { text: string; hot?: boolean; size?: number }) {
   return (
-    <View style={{ width: v(size), height: v(size), borderRadius: v(size / 2), overflow: 'hidden', shadowColor: '#000', shadowOpacity: 0.4, shadowRadius: v(4), shadowOffset: { width: 0, height: v(2) }, elevation: 3 }}>
-      <LinearGradient colors={hot ? ['#d0453a', '#8a1616'] : [AT.redHi, AT.redLo]} start={{ x: 0.3, y: 0.2 }} end={{ x: 0.8, y: 1 }} style={{ flex: 1, alignItems: 'center', justifyContent: 'center', borderRadius: v(size / 2), borderWidth: v(3), borderColor: 'rgba(243,230,198,0.25)' }}>
-        <T f={CZ} size={size * 0.28} color={AT.cream}>{text}</T>
+    <View style={{ width: v(size), height: v(size), borderRadius: v(size / 2), overflow: 'hidden' }}>
+      <LinearGradient colors={hot ? ['#ff7a88', '#c73646'] : [AT.redHi, AT.redLo]} start={{ x: 0.3, y: 0.2 }} end={{ x: 0.8, y: 1 }} style={{ flex: 1, alignItems: 'center', justifyContent: 'center', borderRadius: v(size / 2) }}>
+        <T f={CZ} size={size * 0.28} color="#0b0b26">{text}</T>
       </LinearGradient>
     </View>
   );
@@ -187,20 +151,26 @@ export function Chip({ color, name, count, dim, mark }: { color: string; name: s
   );
 }
 
-/** Red ink button, or an outlined one. */
+/** The app's gradient button, or its outline button. */
 export function Btn({ label, onPress, ghost, disabled, style }: { label: string; onPress?: () => void; ghost?: boolean; disabled?: boolean; style?: StyleProp<ViewStyle> }) {
   return (
-    <Pressable onPress={onPress} disabled={disabled} accessibilityRole="button" accessibilityLabel={label} style={({ pressed }) => [{ flex: 1, opacity: disabled ? 0.4 : pressed ? 0.8 : 1 }, style]}>
-      <View style={ghost ? s.ghost : s.go}>
-        <T f={CZ} size={13.5} color={AT.cream} style={{ letterSpacing: v(1), textAlign: 'center' }}>{label}</T>
-      </View>
+    <Pressable onPress={tapped(onPress)} disabled={disabled} accessibilityRole="button" accessibilityLabel={label} style={({ pressed }) => [{ flex: 1, opacity: disabled ? 0.45 : pressed ? 0.85 : 1 }, style]}>
+      {ghost ? (
+        <View style={s.ghost}>
+          <T f={F.bodySemi} size={13.5} color={AT.cream} style={{ textAlign: 'center' }}>{label}</T>
+        </View>
+      ) : (
+        <LinearGradient colors={['#a48bff', '#6fd6ff']} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.go}>
+          <T f={F.bodyBold} size={14} color="#0b0b26" style={{ textAlign: 'center' }}>{label}</T>
+        </LinearGradient>
+      )}
     </Pressable>
   );
 }
 
 export const Rule = () => <View style={{ height: 1, backgroundColor: AT.line }} />;
 
-/** An action card on cream paper with a red inner rule. */
+/** An action card on the app's beige. */
 export function CardTile({ card, w = 62, on, onPress, dim }: { card: CardType; w?: number; on?: boolean; onPress?: () => void; dim?: boolean }) {
   const info = CARDS[card];
   // Text grows with the tile (the big card on a card tile's reveal).
@@ -210,8 +180,6 @@ export function CardTile({ card, w = 62, on, onPress, dim }: { card: CardType; w
   const nameSize = Math.min(10.5 * k, (w - 16) / (longest * 0.74));
   const body = (
     <View style={[s.card, { width: v(w), height: v(w * 1.04), opacity: dim ? 0.45 : 1 }, on ? { transform: [{ translateY: -v(6) }], borderColor: AT.red, borderWidth: 1.5 } : null]}>
-      <Parchment radius={5} />
-      <View style={s.cardRule} pointerEvents="none" />
       <T f={CZ} size={nameSize} color={AT.red} style={{ lineHeight: v(nameSize * 1.15), textAlign: 'center' }} lines={info.name.includes(' ') ? 2 : 1}>{info.name}</T>
       <T f={CGI} size={k * 10.5} color={AT.ink} style={{ lineHeight: v(k * 11.5), textAlign: 'center' }} lines={3}>{SHORT[card]}</T>
     </View>
@@ -275,7 +243,7 @@ export function Piece({ kind, color, x, y, s: sc = 0.84, label, id }: { kind: 'r
       </G>
       {label ? (
         <G transform={`translate(${x} ${y + 5})`}>
-          <Path d={`M${-lw / 2} 0h${lw}l-2 4.5 2 4.5h${-lw}l2-4.5Z`} fill={AT.paper} stroke="#5a3a1e" strokeWidth={0.7} />
+          <Path d={`M${-lw / 2} 0h${lw}l-2 4.5 2 4.5h${-lw}l2-4.5Z`} fill={AT.paper} stroke="#cdb88c" strokeWidth={0.7} />
           <SvgText y={7} textAnchor="middle" fontFamily={CZ} fontSize={7.2} fill={AT.ink}>{label}</SvgText>
         </G>
       ) : null}
@@ -301,7 +269,7 @@ export function Capital({ seat, x, y, label }: { seat: number; x: number; y: num
       <SvgImage href={CAPITALS[seat % CAPITALS.length]} x={x - w / 2} y={y - h + 1.5} width={w} height={h} />
       {label ? (
         <G transform={`translate(${x} ${y + 5})`}>
-          <Path d={`M${-lw / 2} 0h${lw}l-2 4.5 2 4.5h${-lw}l2-4.5Z`} fill={AT.paper} stroke="#5a3a1e" strokeWidth={0.7} />
+          <Path d={`M${-lw / 2} 0h${lw}l-2 4.5 2 4.5h${-lw}l2-4.5Z`} fill={AT.paper} stroke="#cdb88c" strokeWidth={0.7} />
           <SvgText y={7} textAnchor="middle" fontFamily={CZ} fontSize={7.2} fill={AT.ink}>{label}</SvgText>
         </G>
       ) : null}
@@ -309,9 +277,9 @@ export function Capital({ seat, x, y, label }: { seat: number; x: number; y: num
   );
 }
 
-/** Yazan's parchment (2026-10-14) laid behind a paper surface; the surface keeps its cream colour underneath. */
-export function Parchment({ radius = 6 }: { radius?: number }) {
-  return <Image source={require('@/assets/conqueror/parchment.jpg')} style={[StyleSheet.absoluteFill, { borderRadius: v(radius) }]} contentFit="cover" pointerEvents="none" />;
+/** Was the parchment picture; paper surfaces are now plain app beige, so nothing is drawn. */
+export function Parchment(_: { radius?: number }) {
+  return null;
 }
 
 /** A lone piece as a small icon (board tiles, chips). */
@@ -324,11 +292,11 @@ export function PieceIcon({ kind = 'pawn', color, size = 18 }: { kind?: 'rook' |
 }
 
 const s = StyleSheet.create({
-  chip: { flexDirection: 'row', alignItems: 'center', gap: v(5), paddingLeft: v(5), paddingRight: v(9), paddingVertical: v(2), borderRadius: v(20), backgroundColor: AT.chip, borderWidth: 1, borderColor: 'rgba(243,230,198,0.16)' },
-  go: { paddingVertical: v(13), borderRadius: v(6), backgroundColor: AT.red, alignItems: 'center', shadowColor: '#4a0a0a', shadowOpacity: 1, shadowRadius: 0, shadowOffset: { width: 0, height: v(3) }, elevation: 2 },
-  ghost: { paddingVertical: v(12), borderRadius: v(6), borderWidth: 1.5, borderColor: 'rgba(243,230,198,0.5)', alignItems: 'center' },
-  card: { borderRadius: v(5), backgroundColor: AT.paper, borderWidth: 1, borderColor: '#5a3a1e', paddingHorizontal: v(5), paddingVertical: v(6), justifyContent: 'center', alignItems: 'center', gap: v(2) },
-  pause: { width: v(34), height: v(34), borderRadius: v(6), borderWidth: 1.5, borderColor: 'rgba(243,230,198,0.45)', backgroundColor: 'rgba(30,20,12,0.45)', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: v(5), marginTop: v(10) },
+  chip: { flexDirection: 'row', alignItems: 'center', gap: v(5), paddingLeft: v(5), paddingRight: v(9), paddingVertical: v(2), borderRadius: v(20), backgroundColor: AT.chip, borderWidth: 1, borderColor: 'rgba(255,255,255,0.09)' },
+  go: { paddingVertical: v(13), borderRadius: v(14), alignItems: 'center' },
+  ghost: { paddingVertical: v(12), borderRadius: v(14), borderWidth: 1, borderColor: 'rgba(255,255,255,0.09)', backgroundColor: 'rgba(255,255,255,0.05)', alignItems: 'center' },
+  card: { borderRadius: v(10), backgroundColor: AT.paper, borderWidth: 1, borderColor: '#cdb88c', paddingHorizontal: v(5), paddingVertical: v(6), justifyContent: 'center', alignItems: 'center', gap: v(2) },
+  pause: { width: v(34), height: v(34), borderRadius: v(11), borderWidth: 1, borderColor: 'rgba(255,255,255,0.09)', backgroundColor: 'rgba(255,255,255,0.05)', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: v(5), marginTop: v(10) },
   bar: { width: v(3.5), height: v(13), borderRadius: v(1), backgroundColor: AT.cream },
   tent: { backgroundColor: AT.paper, borderRadius: v(6), paddingVertical: v(26), paddingHorizontal: v(22), alignItems: 'center', gap: v(4), borderWidth: 1, borderColor: '#5a3a1e', shadowColor: '#000', shadowOpacity: 0.45, shadowRadius: v(10), shadowOffset: { width: 0, height: v(4) }, elevation: 4 },
   tentRule: { position: 'absolute', left: v(6), right: v(6), top: v(6), bottom: v(6), borderWidth: 1, borderColor: 'rgba(142,28,28,0.45)', borderRadius: v(4) },

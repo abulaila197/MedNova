@@ -55,11 +55,11 @@ const Ring = memo(function Ring({ id, r0, r1, labels, land, base }: { id: string
     <Svg width="100%" height="100%" viewBox={`0 0 ${BOX} ${BOX}`}>
       <Defs>
         <RadialGradient id={`${id}d`} cx={C} cy={C} r={r1} gradientUnits="userSpaceOnUse">
-          <Stop offset={r0 / r1} stopColor="#5c0c18" />
-          <Stop offset={1} stopColor="#8e1a2c" />
+          <Stop offset={r0 / r1} stopColor="#1a2858" />
+          <Stop offset={1} stopColor="#2c3e7c" />
         </RadialGradient>
         <RadialGradient id={`${id}l`} cx={C} cy={C} r={r1} gradientUnits="userSpaceOnUse">
-          <Stop offset={r0 / r1} stopColor="#d9c49a" />
+          <Stop offset={r0 / r1} stopColor="#e3d4b2" />
           <Stop offset={1} stopColor={VV.paper} />
         </RadialGradient>
       </Defs>
@@ -79,7 +79,7 @@ const Ring = memo(function Ring({ id, r0, r1, labels, land, base }: { id: string
               {lines.map((ln, j) => {
                 const off = (j - (lines.length - 1) / 2) * lh;
                 return (
-                  <SvgText key={j} x={0} y={(low ? mid + off : -mid + off) + fs * 0.36} fontFamily={CB} fontSize={fs} fill={dark ? VV.cream : VV.redInk} textAnchor="middle">
+                  <SvgText key={j} x={0} y={(low ? mid + off : -mid + off) + fs * 0.36} fontFamily={CB} fontSize={fs} fill={dark ? VV.cream : VV.paperInk} textAnchor="middle">
                     {ln}
                   </SvgText>
                 );
@@ -108,23 +108,23 @@ const Frame = memo(function Frame({ lit }: { lit: { count: boolean; style: boole
     <Svg width="100%" height="100%" viewBox={`0 0 ${BOX} ${BOX}`} style={{ position: 'absolute' }}>
       <Defs>
         <RadialGradient id="hub" cx={C - 6} cy={C - 6} r={18} gradientUnits="userSpaceOnUse">
-          <Stop offset={0} stopColor="#fff2c6" />
-          <Stop offset={1} stopColor="#a8823f" />
+          <Stop offset={0} stopColor="#dff6ff" />
+          <Stop offset={1} stopColor="#6f8fe0" />
         </RadialGradient>
       </Defs>
-      {lit.field ? <Path d={top(RINGS.field[0], RINGS.field[1], FIELDS.length)} fill="rgba(255,236,190,0.18)" stroke={VV.gold} strokeWidth={3} /> : null}
-      {lit.style ? <Path d={top(RINGS.style[0], RINGS.style[1], STYLE_KEYS.length)} fill="rgba(255,236,190,0.18)" stroke={VV.gold} strokeWidth={3} /> : null}
-      {lit.count ? <Path d={top(RINGS.count[0], RINGS.count[1], 3)} fill="rgba(255,236,190,0.18)" stroke={VV.gold} strokeWidth={3} /> : null}
-      <Circle cx={C} cy={C} r={R + 8} fill="none" stroke="#c99a52" strokeWidth={13} />
-      <Circle cx={C} cy={C} r={R + 14} fill="none" stroke="#f2d38c" strokeWidth={1.2} />
-      <Circle cx={C} cy={C} r={R + 1.5} fill="none" stroke="#7a5a26" strokeWidth={1.2} />
+      {lit.field ? <Path d={top(RINGS.field[0], RINGS.field[1], FIELDS.length)} fill="rgba(111,214,255,0.2)" stroke={VV.brass} strokeWidth={3} /> : null}
+      {lit.style ? <Path d={top(RINGS.style[0], RINGS.style[1], STYLE_KEYS.length)} fill="rgba(111,214,255,0.2)" stroke={VV.brass} strokeWidth={3} /> : null}
+      {lit.count ? <Path d={top(RINGS.count[0], RINGS.count[1], 3)} fill="rgba(111,214,255,0.2)" stroke={VV.brass} strokeWidth={3} /> : null}
+      <Circle cx={C} cy={C} r={R + 8} fill="none" stroke="#3a4f96" strokeWidth={13} />
+      <Circle cx={C} cy={C} r={R + 14} fill="none" stroke="#6fd6ff" strokeWidth={1.2} />
+      <Circle cx={C} cy={C} r={R + 1.5} fill="none" stroke="#0d1738" strokeWidth={1.2} />
       {Array.from({ length: 24 }, (_, i) => {
         const d = (i / 24) * 360;
         const on = i % 2 === 0;
-        return <Circle key={i} cx={C + (R + 8) * Math.cos(rad(d))} cy={C + (R + 8) * Math.sin(rad(d))} r={2.6} fill={on ? '#fff3c4' : '#9b7a3e'} />;
+        return <Circle key={i} cx={C + (R + 8) * Math.cos(rad(d))} cy={C + (R + 8) * Math.sin(rad(d))} r={2.6} fill={on ? '#dff6ff' : '#8a90b8'} />;
       })}
-      <Circle cx={C} cy={C} r={18} fill="url(#hub)" stroke="#6b4a1a" strokeWidth={2} />
-      <Path d={`M ${C - 13} ${C - R - 24} L ${C + 13} ${C - R - 24} L ${C} ${C - R + 2} Z`} fill="#e9c77e" stroke="#6b4a1a" strokeWidth={1.5} />
+      <Circle cx={C} cy={C} r={18} fill="url(#hub)" stroke="#0d1738" strokeWidth={2} />
+      <Path d={`M ${C - 13} ${C - R - 24} L ${C + 13} ${C - R - 24} L ${C} ${C - R + 2} Z`} fill="#6fd6ff" stroke="#0d1738" strokeWidth={1.5} />
     </Svg>
   );
 });

@@ -226,15 +226,15 @@ export const cardName = (c: CardType) => CARDS[c].name;
 const s = StyleSheet.create({
   grid: { flexDirection: 'row', flexWrap: 'wrap', columnGap: v(11), rowGap: v(7), width: v(6 * 41 + 5 * 11), alignSelf: 'center' },
   seal: {
-    width: v(41), height: v(41), borderRadius: v(20.5), alignItems: 'center', justifyContent: 'center', backgroundColor: '#efdfb6',
+    width: v(41), height: v(41), borderRadius: v(20.5), alignItems: 'center', justifyContent: 'center', backgroundColor: '#efe4cb',
     borderWidth: 1.5, borderColor: 'rgba(59,36,18,0.55)', shadowColor: '#000', shadowOpacity: 0.35, shadowRadius: v(2), shadowOffset: { width: 0, height: v(1.5) }, elevation: 2,
   },
-  sealTaken: { backgroundColor: '#d9c290', opacity: 0.88 },
+  sealTaken: { backgroundColor: '#e3d4b2', opacity: 0.88 },
   sealOn: { backgroundColor: AT.red, borderColor: AT.cream, borderWidth: 2 },
   panel: { flexDirection: 'row', alignItems: 'center', gap: v(10), paddingVertical: v(9), paddingHorizontal: v(6), borderTopWidth: 1, borderBottomWidth: 1, borderColor: AT.line },
-  res: { paddingHorizontal: v(6), paddingVertical: v(3), borderRadius: v(6), borderWidth: 1, borderColor: 'transparent' },
+  res: { paddingHorizontal: v(6), paddingVertical: v(3), borderRadius: v(12), borderWidth: 1, borderColor: 'transparent' },
   res0: { paddingHorizontal: v(4) },
-  step: { width: v(44), height: v(40), borderRadius: v(6), borderWidth: 1.5, borderColor: 'rgba(243,230,198,0.5)', alignItems: 'center', justifyContent: 'center' },
+  step: { width: v(44), height: v(40), borderRadius: v(12), borderWidth: 1.5, borderColor: 'rgba(255,255,255,0.5)', alignItems: 'center', justifyContent: 'center' },
 });
 
 export { Rule };

@@ -18,7 +18,7 @@ import {
   actor, bossPoints, startOffline, stepOffline, upgradeSaved, BOSS_BONUS, BOSS_MS, BOSS_RIGHT, BOSS_WRONG, CYCLES, REDEMPTION_ITEMS, REDEMPTION_MS,
   type Log, type OfflineEvent, type OfflineGame,
 } from './offline';
-import { WheelsPause } from './screens';
+import { PauseMenu } from '../shell/PauseMenu';
 import { TurnBoard, type Strip } from './TurnBoard';
 import { Bill, Btn, Bulbs, CB, CD, CM, Gem, Kicker, Panel, PauseBtn, QF_B, ROMAN, Rule, T, VelvetScreen, VV } from './velvet';
 import { useTicker } from '../engine/useTicker';
@@ -142,7 +142,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   return (
     <>
       <VelvetScreen scroll={g.phase === 'turnOver' || g.phase === 'bossOver' || who !== holder}>{body}</VelvetScreen>
-      <WheelsPause
+      <PauseMenu
         open={paused}
         mode="offline"
         seats={play.seats.map((x) => ({ ...x, removed: x.removed || !g.active.includes(x.seat) }))}

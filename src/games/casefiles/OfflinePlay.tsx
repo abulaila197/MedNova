@@ -10,7 +10,7 @@ import { recordItem } from '../shell/flow';
 import { teamsOf } from '../shell/teams';
 import type { PlayProps } from '../shell/types';
 import { CaseBoard } from './CaseBoard';
-import { CasePause } from './screens';
+import { PauseMenu } from '../shell/PauseMenu';
 import { scoreRun, type RunEvent } from './core';
 import { CASES, PLAYED_KEY, caseById, caseLabel, dossierOf, type Played } from './data';
 import { Btn, Card, CaseTitle, Kicker, NR, NoirScreen, PauseBtn, Stamp, T, caseClock } from './noir';
@@ -96,7 +96,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   if (!o) return <NoirScreen>{null}</NoirScreen>;
   const def = caseById.get(o.caseId)!;
   const menu = (
-    <CasePause
+    <PauseMenu
       open={o.run?.phase === 'paused' || (handMenu && (o.phase === 'handoff' || !o.run))}
       mode="offline"
       seats={play.seats.map((x) => ({ ...x, removed: x.removed || !o.order.includes(x.seat) }))}

@@ -9,12 +9,10 @@ import { invoke, leaveRoom } from '@/online/api';
 import { finishOnline, useShowResults } from '@/online/finish';
 import { settingsLine } from '@/online/format';
 import { AlertPill, Countdown, useAlerts } from '@/online/live';
-import { RoomLookProvider } from '@/online/look';
 import { RoomTalk } from '@/online/TalkBar';
 import { u } from '@/theme/scale';
 
 import type { OnlineProps } from '../shell/types';
-import { ATLAS_KIT } from './rooms';
 import { AT, AtlasPause, AtlasScreen, Btn, CGI, KINGDOMS, PauseCtx, T } from './atlas';
 import { places } from './core';
 import { makeMap, seedOf } from './map';
@@ -127,9 +125,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
     <>
       <AlertPill alert={alert} />
       {answering ? null : (
-        <RoomLookProvider value={ATLAS_KIT.look}>
-          <RoomTalk room={roomId} me={{ id: me, name: meTalk?.name ?? 'You', face: meTalk?.character ?? 'yara' }} />
-        </RoomLookProvider>
+        <RoomTalk room={roomId} me={{ id: me, name: meTalk?.name ?? 'You', face: meTalk?.character ?? 'yara' }} />
       )}
       {notice ? (
         <View style={{ position: 'absolute', bottom: u(90), left: u(16), right: u(16), alignItems: 'center' }} pointerEvents="none">

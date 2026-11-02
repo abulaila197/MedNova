@@ -4,9 +4,7 @@ import { answerLabel, questionById } from './data';
 import { BOSS_BONUS } from './offline';
 import { OfflinePlay } from './OfflinePlay';
 import { OnlinePlay } from './OnlinePlay';
-import { wheelsScreens } from './screens';
 import { SoloPlay } from './SoloPlay';
-import { GEMS } from './velvet';
 
 const TARGET = {
   key: 'target',
@@ -81,7 +79,4 @@ export const wheelsOfChaos: GameDef = {
   },
   itemNoun: 'turn',
   itemsTitle: 'Questions',
-  // RS3: one look of its own (Velvet stage), so its shell screens are drawn in that look too.
-  palette: { seats: GEMS, teams: [] },
-  screens: wheelsScreens,
 };

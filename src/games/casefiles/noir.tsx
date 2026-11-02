@@ -1,75 +1,47 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import { useEffect, useState, type ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { Pressable, StyleSheet, View, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
 import { Text } from '@/components/AppText';
-import Svg, { Defs, RadialGradient, Rect, Stop } from 'react-native-svg';
 
-import { loadFonts } from '@/features/loading/fonts';
+import { tapped } from '@/lib/sound';
 import { u } from '@/theme/scale';
+import { F } from '@/theme/tokens';
 
 import { GameScreen } from '../shell/ui';
 import { clock } from '@/games/engine/clock';
 
-// Case Files' own design language: "Evidence board". Creamy police folders pinned to a felt board, joined by
-// red strings, in a grey room lit from the top-left, Barlow Condensed type throughout (was a typewriter face until 2026-10-13). It carries on from the game's loading page (rain,
-// dark room, red thread). Nothing here comes from the app's look or another game's; only the game header is
-// shared. One look in both app themes, like the loading page.
+// Case Files pieces, in the app's look since Yazan 2026-11-02 (#19: "the old design look shouldn't be present
+// anywhere"): app sky, navy panels, cyan accent, Inter Tight; the index cards are the app's soft beige (like Streak
+// Master's boxes). The names stay so the play screens keep working.
 
 export const NR = {
-  page: ['#3a3a39', '#232322'] as [string, string],
-  card: '#ececea',
-  cardInk: '#161616',
-  cardSoft: '#5f5f5c',
-  white: '#f2f2f2',
-  soft: '#a3a3a0',
-  dim: '#6f6f6c',
-  line: '#2f2f2f',
-  red: '#c8232f',
-  redSoft: 'rgba(200,35,47,0.18)',
-  green: '#7fb48a',
-  panel: 'rgba(255,255,255,0.04)',
-  type: 'BarlowCondensed_500Medium',
+  card: '#efe4cb',
+  cardInk: '#3b2f1c',
+  cardSoft: '#6b5a3e',
+  white: '#eef0ff',
+  soft: '#c3c7e4',
+  dim: '#8a90b8',
+  line: 'rgba(255,255,255,0.13)',
+  /** The accent (was the red thread): the app's cyan. */
+  red: '#6fd6ff',
+  redSoft: 'rgba(111,214,255,0.14)',
+  green: '#3fc58a',
+  wrong: '#ff7a88',
+  panel: '#26376f',
+  type: F.bodyMedium,
 };
-export const NOIR_FONTS = ['BarlowCondensed_500Medium'];
+export const NOIR_FONTS: string[] = [];
 
-let fontsReady = false;
-/** Loads the case-file face (Barlow Condensed, Yazan 2026-10-13) once; pages render after it. */
+/** App fonts are loaded at start; kept so the pages' gate stays the same. */
 export function useNoirFonts() {
-  const [ok, setOk] = useState(fontsReady);
-  useEffect(() => {
-    if (!fontsReady)
-      loadFonts(NOIR_FONTS).finally(() => {
-        fontsReady = true;
-        setOk(true);
-      });
-  }, []);
-  return ok;
+  return true;
 }
 
-/** The room: plain grey with a soft light from the top-left corner (Yazan, 2026-10-05). */
-function Room() {
-  return (
-    <View style={StyleSheet.absoluteFill} pointerEvents="none">
-      <LinearGradient colors={NR.page} start={{ x: 0, y: 0 }} end={{ x: 0.4, y: 1 }} style={StyleSheet.absoluteFill} />
-      <Svg width="100%" height="100%" style={StyleSheet.absoluteFill}>
-        <Defs>
-          <RadialGradient id="cfLamp" cx="0%" cy="0%" r="75%">
-            <Stop offset="0" stopColor="#fff" stopOpacity={0.16} />
-            <Stop offset="0.5" stopColor="#fff" stopOpacity={0.04} />
-            <Stop offset="1" stopColor="#fff" stopOpacity={0} />
-          </RadialGradient>
-        </Defs>
-        <Rect width="100%" height="100%" fill="url(#cfLamp)" />
-      </Svg>
-    </View>
-  );
-}
-
-/** A Case Files page: the game header over the dark office. */
+/** A Case Files page: the game header over the app sky. */
 export function NoirScreen({ children, scroll = false, top }: { children: ReactNode; scroll?: boolean; top?: ReactNode }) {
   const fonts = useNoirFonts();
   return (
-    <GameScreen scroll={scroll} under={<Room />} top={fonts ? top : null} bodyStyle={[s.body, { paddingBottom: u(14) }]}>
+    <GameScreen scroll={scroll} top={fonts ? top : null} bodyStyle={[s.body, { paddingBottom: u(14) }]}>
       {fonts ? children : null}
     </GameScreen>
   );
@@ -84,14 +56,14 @@ export function T({ children, size = 14, color = NR.white, style, lines }: { chi
 }
 
 export function Kicker({ children, color = NR.dim }: { children: string; color?: string }) {
-  return <T size={10.5} color={color} style={{ letterSpacing: 2.4 }}>{children.toUpperCase()}</T>;
+  return <T size={10} color={color} style={{ fontFamily: F.mono, letterSpacing: 1.6 }}>{children.toUpperCase()}</T>;
 }
 
-/** "The Migrating Pain": the last word in red, like the loading page title. */
+/** "The Migrating Pain": the last word in the accent colour, like the app titles. */
 export function CaseTitle({ title, size = 23 }: { title: string; size?: number }) {
   const i = title.lastIndexOf(' ');
   return (
-    <T size={size} style={{ lineHeight: u(size * 1.2) }}>
+    <T size={size} style={{ fontFamily: F.display, lineHeight: u(size * 1.2) }}>
       {i > 0 ? title.slice(0, i + 1) : ''}
       <Text style={{ color: NR.red }}>{i > 0 ? title.slice(i + 1) : title}</Text>
     </T>
@@ -100,8 +72,16 @@ export function CaseTitle({ title, size = 23 }: { title: string; size?: number }
 
 export function Btn({ label, onPress, ghost, disabled, style }: { label: string; onPress?: () => void; ghost?: boolean; disabled?: boolean; style?: StyleProp<ViewStyle> }) {
   return (
-    <Pressable onPress={onPress} disabled={disabled} accessibilityRole="button" accessibilityLabel={label} style={({ pressed }) => [s.btn, ghost ? s.ghost : null, { opacity: disabled ? 0.4 : pressed ? 0.75 : 1 }, style]}>
-      <T size={ghost ? 13 : 14.5} color={ghost ? NR.soft : NR.white} style={{ letterSpacing: 1, textAlign: 'center', textTransform: ghost ? 'none' : 'uppercase' }}>{label}</T>
+    <Pressable onPress={tapped(onPress)} disabled={disabled} accessibilityRole="button" accessibilityLabel={label} style={({ pressed }) => [{ opacity: disabled ? 0.45 : pressed ? 0.85 : 1 }, style]}>
+      {ghost ? (
+        <View style={[s.btn, s.ghost]}>
+          <T size={12.5} color={NR.white} style={{ fontFamily: F.bodySemi, textAlign: 'center' }}>{label}</T>
+        </View>
+      ) : (
+        <LinearGradient colors={['#a48bff', '#6fd6ff']} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.btn}>
+          <T size={13} color="#0b0b26" style={{ fontFamily: F.bodyBold, textAlign: 'center' }}>{label}</T>
+        </LinearGradient>
+      )}
     </Pressable>
   );
 }
@@ -109,7 +89,7 @@ export function Btn({ label, onPress, ghost, disabled, style }: { label: string;
 /** The square pause button in the corner (rule 4). */
 export function PauseBtn({ onPress }: { onPress: () => void }) {
   return (
-    <Pressable onPress={onPress} hitSlop={u(8)} accessibilityRole="button" accessibilityLabel="Pause" style={s.pause}>
+    <Pressable onPress={tapped(onPress)} hitSlop={u(8)} accessibilityRole="button" accessibilityLabel="Pause" style={s.pause}>
       <View style={s.bar} />
       <View style={s.bar} />
     </Pressable>
@@ -123,10 +103,10 @@ export function Card({ children, style }: { children: ReactNode; style?: StylePr
 
 /** The end stamp, slightly tilted, in red for CLOSED and green-grey for SOLVED. */
 export function Stamp({ word, size = 30 }: { word: 'SOLVED' | 'CLOSED'; size?: number }) {
-  const c = word === 'SOLVED' ? NR.green : NR.red;
+  const c = word === 'SOLVED' ? NR.green : NR.wrong;
   return (
     <View style={[s.stamp, { borderColor: c }]}>
-      <T size={size} color={c} style={{ letterSpacing: 4, lineHeight: u(size * 1.1) }}>{word}</T>
+      <T size={size} color={c} style={{ fontFamily: F.display, letterSpacing: 4, lineHeight: u(size * 1.1) }}>{word}</T>
     </View>
   );
 }
@@ -136,10 +116,10 @@ export const caseClock = (ms: number, down = false) => clock(ms, { pad: true, do
 
 export const s = StyleSheet.create({
   body: { paddingTop: u(14), paddingHorizontal: u(16), gap: u(12) },
-  btn: { borderRadius: u(12), borderWidth: 1.5, borderColor: NR.red, backgroundColor: NR.redSoft, alignItems: 'center', justifyContent: 'center', paddingVertical: u(12), paddingHorizontal: u(10) },
-  ghost: { borderColor: NR.line, backgroundColor: 'transparent', paddingVertical: u(10) },
-  pause: { width: u(32), height: u(32), borderRadius: u(10), borderWidth: 1, borderColor: NR.line, flexDirection: 'row', gap: u(4), alignItems: 'center', justifyContent: 'center' },
-  bar: { width: u(3), height: u(12), backgroundColor: NR.soft },
-  card: { backgroundColor: NR.card, paddingHorizontal: u(14), paddingVertical: u(12), borderRadius: u(10) },
+  btn: { borderRadius: u(14), alignItems: 'center', justifyContent: 'center', paddingVertical: u(12), paddingHorizontal: u(14) },
+  ghost: { borderWidth: 1, borderColor: 'rgba(255,255,255,0.09)', backgroundColor: 'rgba(255,255,255,0.05)', paddingVertical: u(11) },
+  pause: { width: u(30), height: u(30), borderRadius: u(10), borderWidth: 1, borderColor: 'rgba(255,255,255,0.09)', backgroundColor: 'rgba(255,255,255,0.05)', flexDirection: 'row', gap: u(4), alignItems: 'center', justifyContent: 'center' },
+  bar: { width: u(3), height: u(11), borderRadius: u(1), backgroundColor: NR.white },
+  card: { backgroundColor: NR.card, borderWidth: 1, borderColor: '#cdb88c', paddingHorizontal: u(14), paddingVertical: u(12), borderRadius: u(14) },
   stamp: { alignSelf: 'center', borderWidth: 3, paddingHorizontal: u(12), paddingVertical: u(2), transform: [{ rotate: '-8deg' }] },
 });

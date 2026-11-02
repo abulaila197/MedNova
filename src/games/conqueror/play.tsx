@@ -58,7 +58,7 @@ function NameField({ index, placeholder, button, onSend, skip = [] }: { index: R
   return (
     <View style={{ gap: v(8) }}>
       <View style={{ flexDirection: 'row', gap: v(8), alignItems: 'center' }}>
-        <TextInput value={text} onChangeText={setText} onSubmitEditing={() => send(text)} returnKeyType="send" blurOnSubmit={false} autoCorrect={false} placeholder={placeholder} placeholderTextColor={AT.dim} style={[s.input, { flex: 1 }]} accessibilityLabel={placeholder} />
+        <TextInput value={text} onChangeText={setText} onSubmitEditing={() => send(text)} returnKeyType="send" blurOnSubmit={false} autoCorrect={false} placeholder={placeholder} placeholderTextColor={AT.dim} style={[s.input, { flex: 1, minWidth: 0, width: 0 }]} accessibilityLabel={placeholder} />
         <Btn label={button} style={{ flex: 0, minWidth: v(80) }} onPress={() => send(text)} />
       </View>
       {sugs.length ? (
@@ -399,7 +399,7 @@ export function VersusResult({ m }: { m: MatchView }) {
       {r.ranking.map((id, i) => (
         <View key={id} style={s.row}>
           <T f={CZ} size={14} color={AT.soft} style={{ width: v(26) }}>{ROMAN[i]}</T>
-          <View style={{ width: v(11), height: v(11), borderRadius: v(6), backgroundColor: colorOf(m, id) }} />
+          <View style={{ width: v(11), height: v(11), borderRadius: v(12), backgroundColor: colorOf(m, id) }} />
           <T f={CGB} size={17} style={{ flex: 1 }}>{nameOf(m, id)}</T>
           {r.points[id] ? <T f={CZ} size={15} color={AT.gold}>{`+${fmt(r.points[id] * BALANCE.TROOPS_PER_POINT)}`}</T> : null}
         </View>
@@ -657,11 +657,11 @@ function Option({ label, mark, on, onPress, small }: { label: string; mark?: str
   return (
     <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={label} accessibilityState={{ selected: on }} style={({ pressed }) => [s.opt, small ? { paddingVertical: v(8) } : null, on ? s.optOn : null, pressed ? { opacity: 0.8 } : null]}>
       {mark != null ? (
-        <View style={[s.mark, !mark.trim() ? { backgroundColor: 'transparent', borderWidth: 1.5, borderColor: 'rgba(243,230,198,0.4)' } : null, on ? { backgroundColor: AT.cream } : null]}>
-          <T f={CZ} size={11} color={on ? AT.red : AT.cream}>{mark}</T>
+        <View style={[s.mark, !mark.trim() ? { backgroundColor: 'transparent', borderWidth: 1.5, borderColor: 'rgba(59,47,28,0.4)' } : null]}>
+          <T f={CZ} size={11} color="#ffffff">{mark}</T>
         </View>
       ) : null}
-      <T f={CGB} size={small ? 14.5 : 16} color={on ? AT.cream : AT.cream} style={{ flex: 1, lineHeight: v(small ? 18 : 20) }}>{label}</T>
+      <T f={on ? CGB : CG} size={small ? 14.5 : 16} color={AT.ink} style={{ flex: 1, lineHeight: v(small ? 18 : 20) }}>{label}</T>
     </Pressable>
   );
 }
@@ -669,7 +669,7 @@ function Option({ label, mark, on, onPress, small }: { label: string; mark?: str
 function Dots({ n, at }: { n: number; at: number }) {
   return (
     <View style={{ flexDirection: 'row', gap: v(6), justifyContent: 'center' }}>
-      {Array.from({ length: n }, (_, i) => <View key={i} style={{ width: v(9), height: v(9), borderRadius: v(5), backgroundColor: i < at ? AT.gold : i === at ? AT.redHi : 'rgba(243,230,198,0.2)' }} />)}
+      {Array.from({ length: n }, (_, i) => <View key={i} style={{ width: v(9), height: v(9), borderRadius: v(5), backgroundColor: i < at ? AT.gold : i === at ? AT.redHi : 'rgba(255,255,255,0.2)' }} />)}
     </View>
   );
 }
@@ -686,17 +686,18 @@ export function Waiting({ text }: { text: string }) {
 export { SECRET };
 
 const s = StyleSheet.create({
-  paper: { backgroundColor: AT.paper, borderRadius: v(6), borderWidth: 1, borderColor: '#5a3a1e', padding: v(14), gap: v(8) },
-  opt: { flexDirection: 'row', alignItems: 'center', gap: v(10), paddingVertical: v(11), paddingHorizontal: v(12), borderRadius: v(6), borderWidth: 1, borderColor: 'rgba(243,230,198,0.28)', backgroundColor: 'rgba(243,230,198,0.06)' },
-  optOn: { backgroundColor: AT.red, borderColor: AT.cream },
-  mark: { width: v(22), height: v(22), borderRadius: v(11), alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(142,28,28,0.85)' },
-  pill: { paddingVertical: v(7), paddingHorizontal: v(12), borderRadius: v(20), borderWidth: 1, borderColor: 'rgba(243,230,198,0.35)' },
-  pillOn: { backgroundColor: AT.red, borderColor: AT.cream },
-  input: { minHeight: v(46), borderRadius: v(6), borderWidth: 1.5, borderColor: 'rgba(243,230,198,0.45)', paddingHorizontal: v(12), color: AT.cream, fontFamily: CGB, fontSize: v(18), flex: 1 },
-  sug: { flexDirection: 'row', alignItems: 'baseline', gap: v(8), paddingVertical: v(9), paddingHorizontal: v(12), borderRadius: v(6), backgroundColor: AT.paper, borderWidth: 1, borderColor: '#5a3a1e' },
+  paper: { backgroundColor: AT.paper, borderRadius: v(12), borderWidth: 1, borderColor: '#cdb88c', padding: v(14), gap: v(8) },
+  opt: { flexDirection: 'row', alignItems: 'center', gap: v(10), paddingVertical: v(11), paddingHorizontal: v(12), borderRadius: v(12), borderWidth: 1, borderColor: '#cdb88c', backgroundColor: AT.paper },
+  // The chosen answer: the app's chosen ring (src/online/chosen.tsx), on the beige box.
+  optOn: { backgroundColor: AT.paperDeep, borderColor: '#6fd6ff', borderWidth: 3 },
+  mark: { width: v(22), height: v(22), borderRadius: v(11), alignItems: 'center', justifyContent: 'center', backgroundColor: '#24346c' },
+  pill: { paddingVertical: v(7), paddingHorizontal: v(12), borderRadius: v(20), borderWidth: 1, borderColor: 'rgba(255,255,255,0.35)' },
+  pillOn: { backgroundColor: 'rgba(111,214,255,0.14)', borderColor: '#6fd6ff' },
+  input: { minHeight: v(46), borderRadius: v(12), borderWidth: 1.5, borderColor: 'rgba(255,255,255,0.45)', paddingHorizontal: v(12), color: AT.cream, fontFamily: CGB, fontSize: v(18), flex: 1 },
+  sug: { flexDirection: 'row', alignItems: 'baseline', gap: v(8), paddingVertical: v(9), paddingHorizontal: v(12), borderRadius: v(12), backgroundColor: AT.paper, borderWidth: 1, borderColor: '#cdb88c' },
   found: { paddingVertical: v(4), paddingHorizontal: v(10), borderRadius: v(14), backgroundColor: AT.paper },
-  tab: { flex: 1, paddingVertical: v(8), borderRadius: v(6), borderWidth: 1, borderColor: 'rgba(243,230,198,0.3)', alignItems: 'center' },
-  tabOn: { backgroundColor: AT.red, borderColor: AT.cream },
+  tab: { flex: 1, paddingVertical: v(8), borderRadius: v(12), borderWidth: 1, borderColor: 'rgba(255,255,255,0.3)', alignItems: 'center' },
+  tabOn: { backgroundColor: 'rgba(111,214,255,0.14)', borderColor: '#6fd6ff' },
   row: { flexDirection: 'row', alignItems: 'center', gap: v(8) },
-  box: { padding: v(12), borderRadius: v(6), borderWidth: 1, borderColor: AT.line, backgroundColor: 'rgba(0,0,0,0.12)', gap: v(4) },
+  box: { padding: v(12), borderRadius: v(12), borderWidth: 1, borderColor: AT.line, backgroundColor: '#26376f', gap: v(4) },
 });

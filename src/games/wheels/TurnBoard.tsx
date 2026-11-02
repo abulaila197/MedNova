@@ -1,4 +1,4 @@
-// One player's turn on the Velvet stage: the three slot reels, the Star window (WC5), then each question in its
+// One player's turn (app look since 2026-11-02, beige answer boxes like Streak Master and Quiz Parade): the three slot reels, the Star window (WC5), then each question in its
 // own style with the bulb timer, and the right/wrong moment. Used by Solo and Pass the phone.
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useEffectEvent, useMemo, useState, type ReactNode } from 'react';
@@ -8,7 +8,7 @@ import { u } from '@/theme/scale';
 
 import { STYLES, fieldName, timeLeft, type Answer, type Question, type Turn, type TurnEvent } from './core';
 import { WheelSpin, STOP_MS } from './WheelSpin';
-import { Brass, Btn, BODY_B, Bulbs, CB, CD, CM, Gem, Kicker, PauseBtn, QF, QF_B, T, VV } from './velvet';
+import { BOX, Brass, Btn, BODY_B, Bulbs, CB, CD, CM, Gem, Kicker, PauseBtn, QF, QF_B, T, VV } from './velvet';
 
 export type Strip = { seat: number; name: string; color?: string; score: number; me?: boolean }[];
 
@@ -16,7 +16,7 @@ const TICK_MS = 100;
 /** #56: the wheel's result holds HOLD_MS before the question. */
 const HOLD_MS = 3000;
 const LETTERS = 'ABCD';
-const PAIR_INK = ['#79c9b6', '#b98ad8', '#e8c46a', '#e0828f', '#8fb4e8', '#d9a07a'];
+const PAIR_INK = ['#1f9e86', '#7b4fd0', '#c48a12', '#d0455a', '#3c7be0', '#c06a2a'];
 /** A paired Matching box: the pair's colour on the edge, with a soft glow in the same colour. */
 const glow = (c: string) => ({ borderColor: c, shadowColor: c, shadowOpacity: 0.75, shadowRadius: u(7), shadowOffset: { width: 0, height: 0 } });
 const qWord = (n: number) => `${n} Question${n > 1 ? 's' : ''}`;
@@ -57,9 +57,9 @@ function Reels({ turn, onGo }: { turn: Turn; onGo: () => void }) {
 function Banner({ parts }: { parts: string[] }) {
   return (
     <Brass r={14}>
-      <LinearGradient colors={['#8e1a2c', '#5c0c18']} style={{ paddingVertical: u(12), paddingHorizontal: u(14), alignItems: 'center', gap: u(4) }}>
-        <T f={CM} size={10.5} color={VV.cream} style={{ letterSpacing: u(2.4) }}>THE WHEELS HAVE SPOKEN</T>
-        <T f={CD} size={15} color={VV.gold} style={{ textAlign: 'center' }}>{parts.join('  ★  ')}</T>
+      <LinearGradient colors={['#a48bff', '#6fd6ff']} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={{ paddingVertical: u(12), paddingHorizontal: u(14), alignItems: 'center', gap: u(4) }}>
+        <T f={CM} size={10.5} color="#0b0b26" style={{ letterSpacing: u(2.4) }}>THE WHEELS HAVE SPOKEN</T>
+        <T f={CD} size={15} color="#0b0b26" style={{ textAlign: 'center' }}>{parts.join('  ★  ')}</T>
       </LinearGradient>
     </Brass>
   );
@@ -89,15 +89,15 @@ function Option({ letter, text, mark = 'none', on, onPress, disabled, cross, fil
   return (
     // fill grows to the tallest box (flexGrow, not flex: 1, whose 0 basis collapsed Rule 2 Out boxes and hid their text, #63).
     <Pressable onPress={onPress} disabled={disabled} accessibilityRole="button" accessibilityState={{ selected: on }} accessibilityLabel={text} style={fill ? { flexGrow: 1 } : null}>
-      <Brass r={12} style={fill ? { flexGrow: 1 } : null} inner={[{ backgroundColor: on ? '#5c0c18' : VV.panel, borderWidth: c ? 2 : 0, borderColor: c ?? 'transparent' }, fill ? { flexGrow: 1, justifyContent: 'center' } : null]}>
-        {cross ? <T f={CB} size={11} color={VV.ink} style={s.cross}>✕</T> : null}
+      <Brass r={12} style={[{ borderWidth: 0 }, fill ? { flexGrow: 1 } : null]} inner={[{ backgroundColor: on ? BOX.paper : BOX.bg, borderWidth: c || on ? 2 : 1, borderColor: c ?? (on ? VV.brass : BOX.line) }, fill ? { flexGrow: 1, justifyContent: 'center' } : null]}>
+        {cross ? <T f={CB} size={11} color={BOX.ink} style={s.cross}>✕</T> : null}
         <View style={s.opt}>
           {letter ? (
             <View style={[s.letter, c ? { backgroundColor: c } : null]}>
-              <T f={CB} size={13} color={c ? VV.paperInk : VV.redInk}>{mark === 'right' ? '✓' : mark === 'wrong' ? '✕' : letter}</T>
+              <T f={CB} size={13} color="#ffffff">{mark === 'right' ? '✓' : mark === 'wrong' ? '✕' : letter}</T>
             </View>
           ) : null}
-          <T f={QF} size={15.5} color={VV.ink} style={{ flex: 1 }}>{text}</T>
+          <T f={on ? QF_B : QF} size={15.5} color={BOX.ink} style={{ flex: 1 }}>{text}</T>
         </View>
       </Brass>
     </Pressable>
@@ -203,9 +203,9 @@ function Answers({ q, given, onAnswer }: { q: Question; given: Answer | undefine
               const owner = done ? -1 : got.findIndex((x) => x === ri);
               return (
                 <View key={i} style={{ flexDirection: 'row', gap: u(8) }}>
-                  <Pressable disabled={done} onPress={() => setLeft(left === i ? null : i)} accessibilityRole="button" accessibilityState={{ selected: left === i }} accessibilityLabel={l} style={[s.cell, cell, { flex: chars > 300 ? 0.8 : 1 }, set ? glow(ink(i)) : null, left === i ? { borderColor: VV.gold, backgroundColor: '#5c0c18' } : null, markColor(mark) ? { borderColor: markColor(mark)! } : null]}>
+                  <Pressable disabled={done} onPress={() => setLeft(left === i ? null : i)} accessibilityRole="button" accessibilityState={{ selected: left === i }} accessibilityLabel={l} style={[s.cell, cell, { flex: chars > 300 ? 0.8 : 1 }, set ? glow(ink(i)) : null, left === i ? { borderColor: VV.brass, borderWidth: 2.5, backgroundColor: BOX.paper } : null, markColor(mark) ? { borderColor: markColor(mark)! } : null]}>
                     {set ? <Gem c={ink(i)} size={7} /> : null}
-                    <T f={QF_B} size={fs} color={VV.ink} style={{ flex: 1 }}>{l}</T>
+                    <T f={QF_B} size={fs} color={BOX.ink} style={{ flex: 1 }}>{l}</T>
                   </Pressable>
                   <Pressable
                     disabled={done || left == null}
@@ -218,7 +218,7 @@ function Answers({ q, given, onAnswer }: { q: Question; given: Answer | undefine
                     accessibilityLabel={q.pairs[ri][1]}
                     style={[s.cell, cell, { flex: chars > 300 ? 1.2 : 1 }, owner >= 0 ? glow(ink(owner)) : null]}>
                     {owner >= 0 ? <Gem c={ink(owner)} size={7} /> : null}
-                    <T f={QF} size={fs} color={VV.ink} style={{ flex: 1 }}>{q.pairs[ri][1]}</T>
+                    <T f={QF} size={fs} color={BOX.ink} style={{ flex: 1 }}>{q.pairs[ri][1]}</T>
                   </Pressable>
                 </View>
               );
@@ -295,8 +295,8 @@ export function TurnBoard({ turn, now, kicker, title, strip, footer, onEvent, on
       {/* #52 (2026-10-31): online, the answers belong to the player whose turn it is; the others see whose turn and watch. */}
       {watch ? (
         <View style={[s.whose, { borderColor: VV.brass }]}>
-          <T f={CD} size={16} color={VV.gold}>{title}</T>
-          <T f={CM} size={11} color={VV.soft}>Watch their answer</T>
+          <T f={CD} size={16} color={VV.ink} lines={1} style={{ textAlign: 'center' }}>{title}</T>
+          <T f={CM} size={11} color={VV.soft} lines={1}>Watch their answer</T>
         </View>
       ) : null}
       {/* #63: a long Matching (or any long question) scrolls instead of running off small screens. */}
@@ -324,11 +324,12 @@ export function TurnBoard({ turn, now, kicker, title, strip, footer, onEvent, on
 
 const s = StyleSheet.create({
   top: { flexDirection: 'row', alignItems: 'center', gap: u(12) },
-  whose: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', borderWidth: 1, borderRadius: u(12), paddingVertical: u(6), paddingHorizontal: u(12), backgroundColor: 'rgba(0,0,0,0.25)' },
+  // #19 (2026-11-02): name on top, the small line under it, so a long name never pushes it out of the box.
+  whose: { alignItems: 'center', gap: u(1), borderWidth: 1, borderRadius: u(14), paddingVertical: u(6), paddingHorizontal: u(12), backgroundColor: VV.panel },
   spread: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', columnGap: u(10) },
   opt: { flexDirection: 'row', alignItems: 'center', gap: u(10), paddingVertical: u(6.5), paddingHorizontal: u(12) },
   cross: { position: 'absolute', top: u(3), right: u(7), zIndex: 1 },
-  letter: { width: u(24), height: u(24), borderRadius: u(12), backgroundColor: VV.cream, alignItems: 'center', justifyContent: 'center' },
+  letter: { width: u(24), height: u(24), borderRadius: u(12), backgroundColor: '#24346c', alignItems: 'center', justifyContent: 'center' },
   cellTight: { minHeight: u(28), paddingHorizontal: u(8), paddingVertical: u(3), gap: u(5) },
-  cell: { flexDirection: 'row', alignItems: 'center', gap: u(7), minHeight: u(40), paddingHorizontal: u(10), paddingVertical: u(6), borderRadius: u(10), borderWidth: 1.5, borderColor: 'rgba(216,178,106,0.45)', backgroundColor: VV.panel },
+  cell: { flexDirection: 'row', alignItems: 'center', gap: u(7), minHeight: u(40), paddingHorizontal: u(10), paddingVertical: u(6), borderRadius: u(10), borderWidth: 1.5, borderColor: BOX.line, backgroundColor: BOX.bg },
 });

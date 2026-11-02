@@ -8,7 +8,7 @@ import { usePauseHide } from '../engine/usePauseHide';
 import { recordItem } from '../shell/flow';
 import type { PlayProps } from '../shell/types';
 import { CaseBoard } from './CaseBoard';
-import { CasePause } from './screens';
+import { PauseMenu } from '../shell/PauseMenu';
 import { scoreRun, snapshot, startRun, stepRun, type CaseDef, type Run, type RunEvent } from './core';
 import { CASES, PLAYED_KEY, caseById, caseLabel, dossierOf, type Played } from './data';
 import { Btn, Kicker, NR, NoirScreen, Stamp, T } from './noir';
@@ -117,7 +117,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
         onEvent={dispatch}
         onPause={() => dispatch({ type: 'PAUSE', now: Date.now() })}
       />
-      <CasePause open={state.run.phase === 'paused'} mode="solo" onResume={() => dispatch({ type: 'RESUME', now: Date.now() })} onQuit={onQuit} />
+      <PauseMenu open={state.run.phase === 'paused'} mode="solo" onResume={() => dispatch({ type: 'RESUME', now: Date.now() })} onQuit={onQuit} />
     </>
   );
 }
@@ -157,5 +157,5 @@ function Library({ played, onPick }: { played: Played; onPick: (id: string) => v
 
 const s = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center', gap: u(8), backgroundColor: NR.card, paddingHorizontal: u(12), paddingVertical: u(7), borderRadius: u(10), borderLeftWidth: 4, borderLeftColor: 'transparent' },
-  on: { borderLeftColor: NR.red, backgroundColor: '#ffffff' },
+  on: { borderLeftColor: NR.red, backgroundColor: '#e3d4b2' },
 });

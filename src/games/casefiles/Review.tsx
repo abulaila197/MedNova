@@ -53,7 +53,7 @@ export function Review({ def, run, replay, onDone, doneLabel = 'See results' }: 
             // A name already in your first list counted there (#67: once across both lists).
             const again = part.before.includes(x);
             return (
-              <T key={x} size={13} color={again ? NR.soft : hit(x) ? NR.green : NR.red}>
+              <T key={x} size={13} color={again ? NR.soft : hit(x) ? NR.green : NR.wrong}>
                 {again ? '·' : hit(x) ? `+${CF.points.ddRight}` : `-${CF.points.ddWrong}`}  {x}
                 {again ? '  (in your first list, counted once)' : ''}
               </T>

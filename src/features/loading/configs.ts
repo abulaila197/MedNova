@@ -269,7 +269,7 @@ export const LOAD: Record<string, LoadCfg> = {
     tag: { t: ALL, side: 'left', c: '#f8e2b8', bg: 'rgba(0,0,0,0.45)', b: 'rgba(255,216,138,0.3)' },
     // The fire stays still (Yazan 2026-10-26): its flicker and the floating embers made Streak Master's way in and out lag.
     glows: [
-      { x: 0.57, y: 0.565, r: 46, c: 'rgba(255,140,40,0.7)', a: 'still' },
+      { x: 0.6, y: 0.555, r: 40, c: 'rgba(255,140,40,0.6)', a: 'still' },
     ],
     parts: [],
     tips: ['Each answer in a row is worth more than the last.', 'One miss and your streak drops to zero.', 'Skip keeps your streak alive, at a price.'],
