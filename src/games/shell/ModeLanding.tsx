@@ -57,15 +57,15 @@ export function ModeLanding({ def }: { def: GameDef }) {
         const locked = online ? lock : null;
         return (
           <Card key={m.mode}>
+            {/* #25 (Yazan 2026-11-02): every Online card says beta: a red tag, slightly tilted, on the card's corner. */}
+            {online ? (
+              <View style={s.beta} pointerEvents="none">
+                <Text style={s.betaT}>BETA</Text>
+              </View>
+            ) : null}
             <View style={s.row}>
               <View style={s.name}>
                 <Kick color={t.accent}>{MODE_NAME[m.mode]}</Kick>
-                {/* #25 (Yazan 2026-11-02): every Online card says beta. */}
-                {online ? (
-                  <View style={[s.beta, { borderColor: t.accent }]}>
-                    <Text style={[s.betaT, { color: t.accent }]}>BETA</Text>
-                  </View>
-                ) : null}
                 {locked ? <LockIcon color={t.error} /> : null}
               </View>
               {locked ? null : note(m.mode) ? (
@@ -120,8 +120,8 @@ const s = StyleSheet.create({
   art: { position: 'absolute', left: 0, right: 0, top: 0, height: u(330) },
   row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   name: { flexDirection: 'row', alignItems: 'center', gap: u(6) },
-  beta: { borderWidth: 1, borderRadius: u(6), paddingHorizontal: u(4), paddingVertical: u(1) },
-  betaT: { fontFamily: F.bodyBold, fontSize: u(7), lineHeight: u(9), letterSpacing: u(0.8) },
+  beta: { position: 'absolute', top: -u(7), right: u(12), zIndex: 2, backgroundColor: '#e5394b', borderRadius: u(6), paddingHorizontal: u(8), paddingVertical: u(2.5), transform: [{ rotate: '8deg' }], shadowColor: '#000', shadowOpacity: 0.35, shadowRadius: u(3), shadowOffset: { width: 0, height: u(1) }, elevation: 3 },
+  betaT: { fontFamily: F.bodyBold, fontSize: u(8.5), lineHeight: u(11), letterSpacing: u(1.2), color: '#ffffff' },
   lock: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: u(6), borderWidth: 1, borderRadius: u(14), paddingVertical: u(10), marginTop: u(4) },
   lockT: { fontFamily: F.bodyBold, fontSize: u(12.5), lineHeight: u(15) },
   h: { fontFamily: F.display, fontSize: u(19), lineHeight: u(22) },
