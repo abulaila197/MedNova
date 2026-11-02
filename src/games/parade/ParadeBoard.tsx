@@ -13,6 +13,7 @@ import { F } from '@/theme/tokens';
 
 import { Face } from '../shell/Face';
 import { Btn, GameScreen, RoundBtn } from '../shell/ui';
+import { CHOSEN, ChosenTick } from '@/online/chosen';
 import { answerText, HELPER_PRICE, TYPE_NAME, type HelperKind, type Question, type Response, type Round } from './core';
 
 // The Quiz Parade board (QP8): the app look, like The Streak Master, dark only. A question counter, the type and
@@ -32,10 +33,13 @@ export type BoardProps = {
   onPause: () => void;
   helpers?: { onHelper: (kind: HelperKind) => void; usable: (kind: HelperKind) => boolean };
   hidden?: boolean;
-  notice?: string | null;
+  /** A line under the answers; online it can be the row of faces that have answered (AnsweredRow). */
+  notice?: ReactNode;
   dock?: ReactNode;
   /** Online: your answer is in; waiting for the others (no right or wrong yet). */
   locked?: boolean;
+  /** Online: the answer you sent, marked until the question ends (Yazan 2026-11-02). */
+  sent?: Response | null;
   /** Online, once the question ends: who picked each choice (character slugs by choice index). */
   faces?: Record<number, string[]>;
   /** Shown instead of the points line once the question ends (e.g. "Nearest: Omar, 206"). */
@@ -83,6 +87,7 @@ export function ParadeBoard(p: BoardProps) {
               removed={p.round.removed}
               live={live}
               locked={!!p.locked}
+              sent={!showing && p.locked ? p.sent ?? null : null}
               shown={showing ? mine?.response ?? null : undefined}
               faces={p.faces}
               onAnswer={p.onAnswer}
@@ -101,7 +106,7 @@ export function ParadeBoard(p: BoardProps) {
           </Animated.View>
         )}
 
-        {p.notice ? <Animated.Text maxFontSizeMultiplier={MAX_FONT_SCALE} entering={FadeIn} style={[s.notice, { color: t.soft }]}>{p.notice}</Animated.Text> : null}
+        {typeof p.notice === 'string' ? <Animated.Text maxFontSizeMultiplier={MAX_FONT_SCALE} entering={FadeIn} style={[s.notice, { color: t.soft }]}>{p.notice}</Animated.Text> : p.notice ?? null}
         {p.dock ? (
           <>
             <View style={{ flex: 1 }} />
@@ -123,6 +128,8 @@ type AnswerProps = {
   removed: number[];
   live: boolean;
   locked: boolean;
+  /** Online: the answer you sent while it waits (marked with the chosen look). */
+  sent?: Response | null;
   /** Once the question ends: the answer given (null = none); undefined while it runs. */
   shown: Response | null | undefined;
   faces?: Record<number, string[]>;
@@ -143,36 +150,37 @@ function Answer(p: AnswerProps) {
     case 'reverse': {
       const q = p.q;
       const picked = p.shown && (p.shown.style === 'mcq' || p.shown.style === 'reverse') ? p.shown.pick : null;
+      const sentPick = p.sent && (p.sent.style === 'mcq' || p.sent.style === 'reverse') ? p.sent.pick : null;
       return (
         <Scroll after={p.after} head={q.style === 'reverse' ? <><Text style={[s.rk, { color: t.dim }]}>WHICH QUESTION HAS THIS ANSWER?</Text><Text style={[s.big, { color: t.white }]}>{q.prompt}</Text></> : head}>
           {p.layout.map((ci) => (
             <Tile
               key={ci}
               label={q.choices[ci]}
-              state={done ? (ci === q.answer ? 'good' : ci === picked ? 'bad' : 'idle') : 'idle'}
+              state={done ? (ci === q.answer ? 'good' : ci === picked ? 'bad' : 'idle') : ci === sentPick ? 'chosen' : 'idle'}
+              dim={sentPick != null && ci !== sentPick}
               gone={p.removed.includes(ci)}
               live={p.live && !p.removed.includes(ci)}
               faces={p.faces?.[ci]}
               onPress={() => p.onAnswer({ style: q.style, pick: ci })}
             />
           ))}
-          {p.locked ? <Waiting /> : null}
         </Scroll>
       );
     }
     case 'tf': {
       const q = p.q;
       const picked = p.shown && p.shown.style === 'tf' ? p.shown.value : null;
+      const sentV = p.sent && p.sent.style === 'tf' ? p.sent.value : null;
       return (
         <Scroll after={p.after} head={head}>
           <View style={s.tfRow}>
             {[true, false].map((v) => (
               <View key={String(v)} style={{ flex: 1 }}>
-                <Tile tall label={v ? 'True' : 'False'} state={done ? (v === q.answer ? 'good' : v === picked ? 'bad' : 'idle') : 'idle'} live={p.live} faces={p.faces?.[v ? 1 : 0]} onPress={() => p.onAnswer({ style: 'tf', value: v })} />
+                <Tile tall label={v ? 'True' : 'False'} state={done ? (v === q.answer ? 'good' : v === picked ? 'bad' : 'idle') : v === sentV ? 'chosen' : 'idle'} dim={sentV != null && v !== sentV} live={p.live} faces={p.faces?.[v ? 1 : 0]} onPress={() => p.onAnswer({ style: 'tf', value: v })} />
               </View>
             ))}
           </View>
-          {p.locked ? <Waiting /> : null}
         </Scroll>
       );
     }
@@ -201,10 +209,6 @@ function Scroll({ head, children, foot, after }: { head: ReactNode; children: Re
   );
 }
 
-function Waiting() {
-  const t = useTheme();
-  return <Text style={[s.wait, { color: t.mute }]}>Locked in. Waiting for the others…</Text>;
-}
 
 type Q<S> = Extract<Question, { style: S }>;
 
@@ -217,7 +221,7 @@ function RuleOut(p: AnswerProps & { q: Q<'r2o'>; head: ReactNode }) {
     <Scroll
       after={p.after}
       head={p.head}
-      foot={done || p.locked ? (p.locked ? <Waiting /> : null) : <Btn label={sel.length === 2 ? 'Rule these out' : `Pick ${2 - sel.length} more`} disabled={!p.live || sel.length !== 2} onPress={() => p.onAnswer({ style: 'r2o', picks: sel })} />}>
+      foot={done || p.locked ? null : <Btn label={sel.length === 2 ? 'Rule these out' : `Pick ${2 - sel.length} more`} disabled={!p.live || sel.length !== 2} onPress={() => p.onAnswer({ style: 'r2o', picks: sel })} />}>
       {p.layout.map((i) => {
         const out = p.q.out.includes(i);
         const mine = given.includes(i);
@@ -255,7 +259,7 @@ function Match(p: AnswerProps & { q: Q<'match'>; head: ReactNode }) {
     <Scroll
       after={p.after}
       head={<>{p.head}<Text style={[s.hint, { color: t.dim }]}>{done ? 'Right pairs in green' : 'Tap an item on the left, then its match on the right.'}</Text></>}
-      foot={done || p.locked ? (p.locked ? <Waiting /> : null) : <Btn label={full ? 'Submit' : `${map.filter((v) => v < 0).length} left to match`} disabled={!p.live || !full} onPress={() => p.onAnswer({ style: 'match', map })} />}>
+      foot={done || p.locked ? null : <Btn label={full ? 'Submit' : `${map.filter((v) => v < 0).length} left to match`} disabled={!p.live || !full} onPress={() => p.onAnswer({ style: 'match', map })} />}>
       <View style={s.cols}>
         <View style={s.col}>
           {p.q.pairs.map(([a], li) => {
@@ -292,7 +296,7 @@ function Order(p: AnswerProps & { q: Q<'order'>; head: ReactNode }) {
     <Scroll
       after={p.after}
       head={<>{p.head}<Text style={[s.hint, { color: t.dim }]}>{done ? 'The right place is under each item' : 'Tap the items from first to last.'}</Text></>}
-      foot={done || p.locked ? (p.locked ? <Waiting /> : null) : <Btn label={full ? 'Submit' : `${p.q.items.length - seq.length} left`} disabled={!p.live || !full} onPress={() => p.onAnswer({ style: 'order', seq })} />}>
+      foot={done || p.locked ? null : <Btn label={full ? 'Submit' : `${p.q.items.length - seq.length} left`} disabled={!p.live || !full} onPress={() => p.onAnswer({ style: 'order', seq })} />}>
       {p.layout.map((i) => {
         const at = given.indexOf(i);
         return (
@@ -323,7 +327,7 @@ function Closest(p: AnswerProps & { q: Q<'closest'>; head: ReactNode }) {
     <Scroll
       after={p.after}
       head={p.head}
-      foot={done || p.locked ? (p.locked ? <Waiting /> : null) : <Btn label="Submit" disabled={!p.live || !ok} onPress={() => p.onAnswer({ style: 'closest', value: num })} />}>
+      foot={done || p.locked ? null : <Btn label="Submit" disabled={!p.live || !ok} onPress={() => p.onAnswer({ style: 'closest', value: num })} />}>
       <View style={[s.numBox, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
         <TextInput
           value={done ? (p.shown && p.shown.style === 'closest' ? String(p.shown.value) : '–') : v}
@@ -342,9 +346,9 @@ function Closest(p: AnswerProps & { q: Q<'closest'>; head: ReactNode }) {
   );
 }
 
-type TileState = 'idle' | 'good' | 'bad' | 'picked';
+type TileState = 'idle' | 'good' | 'bad' | 'picked' | 'chosen';
 
-function Tile({ label, state, live, onPress, gone, faces, tall, small, mark, struck, dot, note }: { label: string; state: TileState; live: boolean; onPress: () => void; gone?: boolean; faces?: string[]; tall?: boolean; small?: boolean; mark?: string; struck?: boolean; dot?: string; note?: string }) {
+function Tile({ label, state, live, onPress, gone, dim, faces, tall, small, mark, struck, dot, note }: { label: string; state: TileState; live: boolean; onPress: () => void; gone?: boolean; dim?: boolean; faces?: string[]; tall?: boolean; small?: boolean; mark?: string; struck?: boolean; dot?: string; note?: string }) {
   const t = useTheme();
   const x = useSharedValue(0);
   useEffect(() => {
@@ -361,8 +365,9 @@ function Tile({ label, state, live, onPress, gone, faces, tall, small, mark, str
           s.tile,
           tall && s.tall,
           small && s.small,
-          { backgroundColor: BEIGE?.bg ?? t.panel, borderColor: BEIGE?.line ?? t.panelLine, opacity: gone ? 0.28 : 1 },
+          { backgroundColor: BEIGE?.bg ?? t.panel, borderColor: BEIGE?.line ?? t.panelLine, opacity: gone ? 0.28 : dim ? 0.5 : 1 },
           tint ? { borderColor: tint, borderWidth: 1.5 } : null,
+          state === 'chosen' ? CHOSEN : null,
           dot ? { borderLeftColor: dot, borderLeftWidth: u(4) } : null,
         ]}
         accessibilityRole="button"
@@ -374,10 +379,11 @@ function Tile({ label, state, live, onPress, gone, faces, tall, small, mark, str
           </View>
         ) : null}
         <View style={{ flex: 1 }}>
-          <Text style={[small ? s.tileS : s.tileT, tall && s.tallT, { color: BEIGE?.ink ?? t.fg, fontFamily: tint ? F.bodyBold : F.body, textDecorationLine: gone || struck ? 'line-through' : 'none' }]}>{label}</Text>
+          <Text style={[small ? s.tileS : s.tileT, tall && s.tallT, { color: BEIGE?.ink ?? t.fg, fontFamily: tint || state === 'chosen' ? F.bodyBold : F.body, textDecorationLine: gone || struck ? 'line-through' : 'none' }]}>{label}</Text>
           {note ? <Text style={[s.note, { color: PC.good }]}>{note}</Text> : null}
         </View>
       </Pressable>
+      {state === 'chosen' ? <ChosenTick /> : null}
       {faces?.length ? (
         <Animated.View entering={FadeIn.duration(220)} style={s.faces} pointerEvents="none">
           {faces.slice(0, 6).map((f, i) => (

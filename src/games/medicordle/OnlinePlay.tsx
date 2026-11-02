@@ -1,3 +1,4 @@
+import { AnsweredRow } from '@/online/AnsweredRow';
 import { useEffect, useRef, useState } from 'react';
 
 import { call } from '@/online/api';
@@ -158,7 +159,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
       players={st.players.filter((p) => p.solved)}
       me={me}
       how={(p) => `${p.tries} ${p.tries === 1 ? 'try' : 'tries'}`}
-      next={waiting ? `Waiting for ${waiting} more` : 'Everyone has finished'}
+      next={waiting ? <AnsweredRow seats={st.players} /> : 'Everyone has finished'}
     />
   ) : undefined;
 

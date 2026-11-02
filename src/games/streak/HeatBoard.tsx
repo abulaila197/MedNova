@@ -16,6 +16,7 @@ import { GameScreen, RoundBtn } from '../shell/ui';
 import { HELPER_PRICE, type HelperKind, type Question, type Round } from './core';
 import { clock } from '@/games/engine/clock';
 import { useClock, type Clock } from '@/games/engine/useTicker';
+import { CHOSEN, ChosenTick } from '@/online/chosen';
 
 // The Streak Master's own design language (SM10): "Heat column".
 // The streak fills a heat tube on the left, segment by segment; the round clock is a burning fuse with
@@ -46,7 +47,8 @@ export type BoardProps = {
   helpers?: { onHelper: (kind: HelperKind) => void; usable: (kind: HelperKind) => boolean };
   /** Covers the question while paused (rule 4). */
   hidden?: boolean;
-  notice?: string | null;
+  /** A line under the board; online it can be the row of faces that have answered (AnsweredRow). */
+  notice?: ReactNode;
   /** A paid offer under the board (Solo's second chance). */
   offer?: { label: string; onPress: () => void } | null;
   /** Replaces the options: time up, turn over. */
@@ -111,6 +113,7 @@ export function HeatBoard(p: BoardProps) {
                         gone={gone}
                         faces={p.faces?.[ci]}
                         live={p.round.phase === 'playing' && !gone && p.locked == null}
+                        dim={!showing && p.locked != null && p.locked !== ci}
                         onPress={() => p.onAnswer(ci)}
                         hc={hc}
                       />
@@ -132,9 +135,9 @@ export function HeatBoard(p: BoardProps) {
               </Pressable>
             </Animated.View>
           ) : null}
-          {p.notice ? (
+          {typeof p.notice === 'string' ? (
             <Animated.Text maxFontSizeMultiplier={MAX_FONT_SCALE} entering={FadeIn} style={[s.notice, { color: t.soft }]}>{p.notice}</Animated.Text>
-          ) : null}
+          ) : (p.notice ?? null)}
           {p.dock ? (
             // Time up and turn over sit in the middle of the screen (Yazan, 2026-10-04).
             <>
@@ -198,7 +201,7 @@ function Fuse({ frac, cool, hot, track, burning }: { frac: number; cool: string;
   );
 }
 
-function Option({ label, state, late, gone, live, faces, onPress, hc }: { label: string; state: 'idle' | 'good' | 'bad' | 'locked'; late: boolean; gone: boolean; live: boolean; faces?: string[]; onPress: () => void; hc: ReturnType<typeof heatColors> }) {
+function Option({ label, state, late, gone, live, dim, faces, onPress, hc }: { label: string; state: 'idle' | 'good' | 'bad' | 'locked'; late: boolean; gone: boolean; live: boolean; dim?: boolean; faces?: string[]; onPress: () => void; hc: ReturnType<typeof heatColors> }) {
   const t = useTheme();
   const x = useSharedValue(0);
   const glow = useSharedValue(0);
@@ -218,15 +221,17 @@ function Option({ label, state, late, gone, live, faces, onPress, hc }: { label:
         disabled={!live}
         style={[
           s.opt,
-          { backgroundColor: BEIGE?.bg ?? t.panel, borderColor: BEIGE?.line ?? t.panelLine, opacity: gone ? 0.28 : 1 },
+          { backgroundColor: BEIGE?.bg ?? t.panel, borderColor: BEIGE?.line ?? t.panelLine, opacity: gone ? 0.28 : dim ? 0.5 : 1 },
           tint ? { borderColor: tint, borderWidth: 1.5, backgroundColor: mix(tint, '#151933', 0.2) } : null,
-          state === 'locked' ? { borderColor: t.accent, borderWidth: 1.5 } : null,
+          // Your answer, until the question ends (Yazan 2026-11-02): a thick glowing ring and a tick, the rest dim.
+          state === 'locked' ? CHOSEN : null,
         ]}
         accessibilityRole="button"
         accessibilityState={{ disabled: !live }}
         accessibilityLabel={gone ? `${label}, removed` : label}>
         <Text style={[s.optT, { color: tint ? t.fg : BEIGE?.ink ?? t.fg, fontFamily: tint || state === 'locked' ? F.bodyBold : F.body, textDecorationLine: gone ? 'line-through' : 'none' }]}>{label}</Text>
       </Pressable>
+      {state === 'locked' ? <ChosenTick /> : null}
       {faces?.length ? (
         // Online: the faces of everyone who picked this answer, on its top corner.
         <Animated.View entering={FadeIn.duration(220)} style={s.faces} pointerEvents="none">

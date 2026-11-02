@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 
@@ -13,7 +14,7 @@ import type { RacePlayer } from './race';
  * Between items in a race match (Riddler, Medicordle, Streak online): the answer, each player's result for it,
  * and when the next one starts. Uses the game's own theme colours, like the offline reveal cards.
  */
-export function RaceReveal({ label, answer, players, me, how, next }: { label: string; answer: string; players: RacePlayer[]; me: string; how: (p: RacePlayer) => string; next: string }) {
+export function RaceReveal({ label, answer, players, me, how, next }: { label: string; answer: string; players: RacePlayer[]; me: string; how: (p: RacePlayer) => string; next: ReactNode }) {
   const t = useTheme();
   const rows = [...players].filter((p) => !p.dropped).sort((a, b) => (b.item_points ?? 0) - (a.item_points ?? 0));
   return (
@@ -30,7 +31,7 @@ export function RaceReveal({ label, answer, players, me, how, next }: { label: s
           </View>
         ))}
       </View>
-      <Text style={[s.next, { color: t.mute }]}>{next}</Text>
+      {typeof next === 'string' ? <Text style={[s.next, { color: t.mute }]}>{next}</Text> : next}
     </View>
   );
 }

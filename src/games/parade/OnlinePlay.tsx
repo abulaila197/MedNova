@@ -1,3 +1,4 @@
+import { AnsweredRow } from '@/online/AnsweredRow';
 import { useState } from 'react';
 
 import { call } from '@/online/api';
@@ -90,7 +91,6 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   const points = st.me?.points ?? 0;
   const last = st.index + 1 >= st.total;
   const nextIn = Math.max(0, Math.ceil((st.phase_ends_at - server) / 1000));
-  const waiting = st.players.filter((p) => p.user_id !== me && !p.dropped && !p.done).length;
 
   // ParadeBoard reads a Solo round; online fills one from the server's state. Your answer stays "locked in" until
   // the question ends, then right and wrong show for everyone at once, with faces on Multiple choice, Reverse and True or false.
@@ -153,7 +153,8 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
       locked={!reveal && (mine != null || !playing)}
       faces={reveal ? faces : undefined}
       verdict={verdict}
-      notice={notice ?? result ?? (!playing ? watchLine : mine != null ? (waiting ? `Locked in. Waiting for ${waiting} more` : 'Locked in') : null)}>
+      sent={mine}
+      notice={notice ?? result ?? (!playing ? watchLine : mine != null ? <AnsweredRow seats={st.players.map((p) => (p.user_id === me ? { ...p, done: true } : p))} /> : null)}>
       <RoomTalk room={roomId} me={talker} />
       <PauseMenu open={menu} mode="online" onResume={() => setMenu(false)} onQuit={leave} />
     </ParadeBoard>

@@ -31,7 +31,7 @@ const DIFF_COLOR: Record<string, string> = {
 export const amber = (t: Theme) => '#f59e0b';
 const alpha = (hex: string, a: number) => hex + Math.round(a * 255).toString(16).padStart(2, '0');
 
-export type BoardResult = { outcome: 'right' | 'wrong' | 'skipped' | 'timed_out'; points: number; line: string; nextLabel: string; onNext?: () => void };
+export type BoardResult = { outcome: 'right' | 'wrong' | 'skipped' | 'timed_out'; points: number; line: string; nextLabel: string; onNext?: () => void; /** Online: the row of faces that have solved it, instead of the line. */ wait?: ReactNode };
 
 export type BoardProps = {
   /** Remounts the answer box for each new case or turn. */
@@ -363,7 +363,7 @@ function ResultCard({ r, c }: { r: BoardResult; c: DPCase }) {
       <Text style={[s.resD, { color: t.white }]}>{guessById.has(c.answer_id) ? guessName(c.answer_id) : c.disease}</Text>
       <Text style={[s.resF, { color: t.mute }]}>{c.fields.join(' · ')}</Text>
       <Text style={[s.resL, { color: t.soft }]}>{r.line}</Text>
-      {r.onNext ? <Btn label={r.nextLabel} onPress={r.onNext} style={{ marginTop: u(4) }} /> : <Text style={[s.resN, { color: t.dim }]}>{r.nextLabel}</Text>}
+      {r.onNext ? <Btn label={r.nextLabel} onPress={r.onNext} style={{ marginTop: u(4) }} /> : r.wait ? r.wait : <Text style={[s.resN, { color: t.dim }]}>{r.nextLabel}</Text>}
     </Animated.View>
   );
 }

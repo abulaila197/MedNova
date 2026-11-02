@@ -414,7 +414,7 @@ function OnlineBoss({ g, seat, st, server, seatName, matchId, onDone, onPause }:
               ? 'Some swipes didn’t reach the server, so your score may be lower than shown.'
               : pending > 0
                 ? 'Sending your swipes…'
-                : `${bossPoints({ ...b, swipes: { [seat]: mine } }, seat)} points. Waiting for the others.`}
+                : `${bossPoints({ ...b, swipes: { [seat]: mine } }, seat)} points.`}
           </T>
         ) : null}
         {b.phase === 'playing' ? (

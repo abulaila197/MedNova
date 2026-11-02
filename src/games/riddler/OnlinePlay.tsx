@@ -1,3 +1,4 @@
+import { AnsweredRow } from '@/online/AnsweredRow';
 import { useEffect, useRef, useState } from 'react';
 
 import { call } from '@/online/api';
@@ -110,7 +111,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
       players={st.players.filter((p) => p.solved)}
       me={me}
       how={(p) => nth(p.item_rank ?? 1)}
-      next={waiting ? `Waiting for ${waiting} more` : 'Everyone solved it'}
+      next={waiting ? <AnsweredRow seats={st.players} /> : 'Everyone solved it'}
     />
   ) : undefined;
 
@@ -132,7 +133,8 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
           const res = await call<{ outcome: string }>('rd_guess', { m: matchId, answer: id });
           if (res.outcome === 'wrong') setWrongSeq((x) => x + 1);
           else if (res.outcome === 'ignored_finished') setNotice('That answer came too late.');
-          await load();
+          // The new state comes by push; this ask only makes it sooner on this phone, so the tap doesn't wait for it.
+          void load();
         } catch {
           setNotice('Couldn’t send that. Try again.');
         }

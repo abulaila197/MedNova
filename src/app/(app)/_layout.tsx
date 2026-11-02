@@ -10,6 +10,7 @@ import { pageCard } from '@/features/loading/snapshot';
 import { closeFriendSheet, FriendSheets } from '@/features/profile/FriendSheets';
 import { PickNameHost } from '@/features/profile/PickName';
 import { InviteBanner } from '@/online/InviteBanner';
+import { NetDot } from '@/online/netDot';
 import { DailyHost } from '@/features/daily/DailyHost';
 import { WelcomeHost } from '@/features/welcome/WelcomeHost';
 import { HelpHost } from '@/features/welcome/HelpHost';
@@ -75,6 +76,7 @@ export default function AppLayout() {
       <ReportSheet />
       <FriendSheets />
       <InviteBanner />
+      <NetDot />
       <WelcomeHost />
       <HelpHost />
       <DailyHost />

@@ -1,3 +1,4 @@
+import { AnsweredRow } from '@/online/AnsweredRow';
 import { router } from 'expo-router';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
@@ -190,7 +191,8 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
           outcome: 'right' as const,
           points: st.me!.points,
           line: `${nth(st.me!.rank ?? 1)} to solve · ${st.me!.points} points with ${st.me!.clues} ${st.me!.clues === 1 ? 'clue' : 'clues'}`,
-          nextLabel: reveal ? `${last ? 'Results' : 'Next case'} in ${nextIn} s` : waiting ? `Waiting for ${waiting} more` : 'Everyone solved it',
+          nextLabel: reveal ? `${last ? 'Results' : 'Next case'} in ${nextIn} s` : waiting ? '' : 'Everyone solved it',
+          wait: !reveal && waiting ? <AnsweredRow seats={st.players.map((p) => ({ user_id: p.user_id, character: p.character, done: p.solved || p.user_id === me, dropped: p.dropped }))} /> : undefined,
         }
       : reveal
         ? { outcome: 'timed_out' as const, points: 0, line: 'Time ran out. No points this case.', nextLabel: `${last ? 'Results' : 'Next case'} in ${nextIn} s` }

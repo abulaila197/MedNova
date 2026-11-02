@@ -13,6 +13,7 @@ import type { OnlineProps } from '../shell/types';
 import { GameScreen } from '../shell/ui';
 import type { Round } from './core';
 import { QUESTIONS } from './data';
+import { AnsweredRow } from '@/online/AnsweredRow';
 import { ownQuestions, useOwnItems } from '@/online/own';
 import { HeatBoard } from './HeatBoard';
 
@@ -90,7 +91,6 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   const right = mine != null && mine === q.answer;
   const last = st.index + 1 >= st.total;
   const nextIn = Math.max(0, Math.ceil((st.phase_ends_at - server) / 1000));
-  const waiting = st.players.filter((p) => p.user_id !== me && !p.dropped && !p.done).length;
 
   // HeatBoard reads a Solo round; online fills one from the server's state. Your pick stays "locked in" until the
   // question ends, then right and wrong show for everyone at once with each player's face on their answer (Yazan).
@@ -135,7 +135,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
       onPause={() => setMenu(true)}
       locked={reveal ? null : mine}
       faces={reveal ? faces : undefined}
-      notice={notice ?? result ?? (!playing ? watchLine : mine != null ? (waiting ? `Locked in. Waiting for ${waiting} more` : 'Locked in') : null)}>
+      notice={notice ?? result ?? (!playing ? watchLine : mine != null ? <AnsweredRow seats={st.players.map((p) => (p.user_id === me ? { ...p, done: true } : p))} /> : null)}>
       <AlertPill alert={alert} />
       <RoomTalk room={roomId} me={talker} />
       <PauseMenu open={menu} mode="online" onResume={() => setMenu(false)} onQuit={leave} />

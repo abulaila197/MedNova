@@ -5,6 +5,7 @@ import { timeStore, type Clock } from '@/games/engine/timeStore';
 
 import { call } from './api';
 import { BACKUP_MS, usePushLine } from './push';
+import { setNetDown } from './netDot';
 import { keepIfSame } from './same';
 
 /** A deadline from a state: a number of ms, or a date string; null if it isn't one. */
@@ -37,6 +38,10 @@ const POLL_MS = 1000;
 const RACE_POLL_MS = 2000;
 const NOTICE_MS = 2200;
 const POLL_GIVE_UP_MS = 3000;
+/** "Reconnecting" shows only after this many failed asks in a row (Yazan 2026-11-02), as the small wifi dot. */
+const DOWN_AFTER = 2;
+/** The server's answer once this phone is no longer in the match (it left): stop asking for good. */
+const notMember = (e: unknown) => /not in this match/.test((e as { message?: string } | null)?.message ?? '');
 
 /**
  * The one way an online game follows its match: polls the server's state every second (skipping a
@@ -51,9 +56,10 @@ const POLL_GIVE_UP_MS = 3000;
 export function useMatchState<T extends Stamped>(
   rpc: string,
   matchId: string,
-  opts: { tickMs?: number; quiet?: boolean; race?: boolean; shown?: (server: number, st: T | null) => unknown } = {},
+  opts: { tickMs?: number; quiet?: boolean; race?: boolean; steady?: boolean; shown?: (server: number, st: T | null) => unknown } = {},
 ) {
-  const { tickMs = 250, quiet = false, race = false } = opts;
+  // steady: keep the old pace even with push open (The Silent Artist's board, Yazan 2026-11-02).
+  const { tickMs = 250, quiet = false, race = false, steady = false } = opts;
   const [st, setSt] = useState<T | null>(null);
   const [clock] = useState(timeStore);
   // The clock keeps server time (the phone's time plus the offset read from the last answer).
@@ -63,6 +69,10 @@ export function useMatchState<T extends Stamped>(
   const busy = useRef(false);
   // Fingerprint of the last full state this screen holds; null until the first one (or after a failed ask).
   const seen = useRef<string | null>(null);
+  // Failed asks in a row, and whether the server said this phone has left the match (then it stops asking).
+  const fails = useRef(0);
+  const [gone, setGone] = useState(false);
+  const goneRef = useRef(false);
 
   const ask = useCallback(async (): Promise<(T & Light) | null> => {
     if (!legacy) {
@@ -80,23 +90,33 @@ export function useMatchState<T extends Stamped>(
     try {
       const s = await ask();
       if (!s) throw new Error('no state');
+      if (fails.current >= DOWN_AFTER && !quiet) setNetDown(matchId, false);
+      fails.current = 0;
       offset.current = s.now - Date.now();
       clock.put(Date.now() + offset.current);
       if (s.same) return; // nothing changed: the screen keeps the state it has
       seen.current = s.h ?? null;
       const { h: _h, ...full } = s;
       setSt((prev) => keepIfSame(prev, full as unknown as T));
-    } catch {
+    } catch (e) {
       seen.current = null; // the next answer is a full one
-      if (!quiet) setNotice('Reconnecting…');
+      if (notMember(e)) {
+        // Left the match (an old screen still open behind the new one): stop asking instead of every 2 s for good.
+        goneRef.current = true;
+        setGone(true);
+        setNetDown(matchId, false);
+        return;
+      }
+      fails.current += 1;
+      if (fails.current >= DOWN_AFTER && !quiet) setNetDown(matchId, true);
     }
-  }, [ask, quiet, clock]);
+  }, [ask, quiet, clock, matchId]);
 
   // One ask at a time. A push signal that lands while an ask is out is not lost: one more ask follows it.
   const again = useRef(false);
   const poll = useCallback(() => {
     const go = () => {
-      if (AppState.currentState !== 'active') return;
+      if (AppState.currentState !== 'active' || goneRef.current) return;
       if (busy.current) {
         again.current = true;
         return;
@@ -119,8 +139,8 @@ export function useMatchState<T extends Stamped>(
 
   // Push (Yazan 2026-11-01): with the match's push line open, ask when the server signals a change, at each deadline
   // (a phase ending, a referee step due) and as a slow backup; without it, ask every second (2 s in race games).
-  const pushed = usePushLine(matchId ? `match:${matchId}` : null, poll);
-  const every = pushed ? BACKUP_MS : race ? RACE_POLL_MS : POLL_MS;
+  const pushed = usePushLine(matchId && !gone ? `match:${matchId}` : null, poll);
+  const every = pushed && !steady ? BACKUP_MS : race ? RACE_POLL_MS : POLL_MS;
   const deadlineDone = useRef(0);
 
   const tick = useEffectEvent((n: number) => {
@@ -131,7 +151,8 @@ export function useMatchState<T extends Stamped>(
       const o = st as unknown as { phase_ends_at?: unknown; due?: unknown };
       const ends = [o.phase_ends_at, o.due].map(toMs).filter((x): x is number => x != null && x > deadlineDone.current);
       const next = ends.length ? Math.min(...ends) : null;
-      if (next != null && sv >= next + 250) {
+      // Ask right as the phase ends (Yazan 2026-11-02: no lag between questions); a tiny margin for clock drift.
+      if (next != null && sv >= next + 50) {
         deadlineDone.current = next;
         poll();
       }
@@ -151,6 +172,9 @@ export function useMatchState<T extends Stamped>(
     };
   }, [poll, tickMs, every]);
 
+  // Leaving the screen clears its wifi dot.
+  useEffect(() => () => setNetDown(matchId, false), [matchId]);
+
   useEffect(() => {
     if (!notice) return;
     const id = setTimeout(() => setNotice(null), NOTICE_MS);
@@ -160,5 +184,5 @@ export function useMatchState<T extends Stamped>(
   /** The server time right now (not the last tick's): for timing a tap. Call it from handlers and effects only. */
   const serverNow = useCallback(() => Date.now() + offset.current, []);
 
-  return { st, load, server, clock: clock as Clock, serverNow, notice, setNotice };
+  return { st, load, server, clock: clock as Clock, serverNow, notice, setNotice, gone };
 }

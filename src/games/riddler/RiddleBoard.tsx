@@ -1,3 +1,4 @@
+import { CHOSEN } from '@/online/chosen';
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Image } from 'expo-image';
 import { Platform, Pressable, StyleSheet, View, type LayoutChangeEvent } from 'react-native';
@@ -53,7 +54,7 @@ export type BoardProps = {
   lockMs?: number;
   wrong: string[];
   wrongSeq: number;
-  onGuess: (answerId: string) => void;
+  onGuess: (answerId: string) => unknown;
   onPause: () => void;
   /** Solo only: the paid hint shows the definition. */
   hint?: { used: boolean; onHint: () => void };
@@ -172,9 +173,11 @@ export function RiddleBoard(p: BoardProps) {
 const MAX_NOTES = 5;
 
 /** 4+ letters (a short name typed in full from 2), up to 5 suggestions above the field; tapping one answers. */
-function AnswerBox({ wrong, wrongSeq, locked, disabled, onGuess }: { wrong: string[]; wrongSeq: number; locked: boolean; disabled: boolean; onGuess: (id: string) => void }) {
+function AnswerBox({ wrong, wrongSeq, locked, disabled, onGuess }: { wrong: string[]; wrongSeq: number; locked: boolean; disabled: boolean; onGuess: (id: string) => unknown }) {
   const t = useTheme();
   const [text, setText] = useState('');
+  // The answer being sent (Yazan 2026-11-02: a tap shows at once, and no second tap goes out meanwhile).
+  const [sending, setSending] = useState<string | null>(null);
   const sugs = useMemo(() => search(ANSWERS, text, wrong), [text, wrong]);
   const q = text.trim().toLowerCase();
 
@@ -189,14 +192,17 @@ function AnswerBox({ wrong, wrongSeq, locked, disabled, onGuess }: { wrong: stri
   const shake = useAnimatedStyle(() => ({ transform: [{ translateX: x.value }] }));
 
   const pick = (id: string) => {
-    if (locked || disabled) return;
-    onGuess(id);
+    if (locked || disabled || sending) return;
+    const name = ANSWERS.find((a) => a.id === id);
+    if (name) setText(fullName(name));
+    setSending(id);
+    Promise.resolve(onGuess(id)).finally(() => setSending(null));
   };
   const exact = sugs.find((a) => a.label.toLowerCase() === q);
 
   return (
     <View>
-      {sugs.length && !locked ? (
+      {sugs.length && !locked && !sending ? (
         <View style={[s.sugs, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
           {sugs.map((a, i) => {
             const name = fullName(a);
@@ -212,12 +218,12 @@ function AnswerBox({ wrong, wrongSeq, locked, disabled, onGuess }: { wrong: stri
           })}
         </View>
       ) : null}
-      <Animated.View style={[s.box, { backgroundColor: t.panel2, borderColor: locked ? t.panelLine : t.accent, opacity: locked ? 0.6 : 1 }, shake]}>
+      <Animated.View style={[s.box, { backgroundColor: t.panel2, borderColor: locked ? t.panelLine : t.accent, opacity: locked ? 0.6 : 1 }, sending ? CHOSEN : null, shake]}>
         <TextInput
           value={text}
           onChangeText={setText}
           onSubmitEditing={() => exact && pick(exact.id)}
-          editable={!locked && !disabled}
+          editable={!locked && !disabled && !sending}
           placeholder={locked ? 'Wait for the lock…' : 'Type 3+ letters, then tap your answer'}
           placeholderTextColor={t.dim}
           autoCorrect={false}
