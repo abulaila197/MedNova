@@ -30,8 +30,8 @@ function Icon({ d, on, color, off, size }: { d: string; on: boolean; color: stri
 }
 
 /** Title strip like Medicordle's slide label: accent end strip, kicker, Gabarito title, hearts and stars (Solo) or a score (Offline). */
-export function AppTopBar({ kicker, title = 'Nova Crossword', titleColor, sub, hearts, stars, score, onPause }: {
-  kicker: string; title?: string; titleColor?: string; sub: string; hearts: number; stars?: number; score?: number; onPause?: () => void;
+export function AppTopBar({ kicker, title = 'Nova Crossword', titleColor, sub, hearts, maxHearts = CW.hearts, stars, score, onPause }: {
+  kicker: string; title?: string; titleColor?: string; sub: string; hearts: number; maxHearts?: number; stars?: number; score?: number; onPause?: () => void;
 }) {
   const t = useTheme();
   const c = slideColors(t.mode);
@@ -43,7 +43,7 @@ export function AppTopBar({ kicker, title = 'Nova Crossword', titleColor, sub, h
         <Text style={[s.sub, { color: t.mute }]}>{sub}</Text>
       </View>
       <View style={s.labelR}>
-        <View style={{ flexDirection: 'row', gap: u(2) }} accessibilityLabel={`${hearts} hearts`}>{Array.from({ length: CW.hearts }, (_, i) => <Icon key={i} d={HEART} on={i < hearts} color="#ff6b7d" off={t.dim} size={13} />)}</View>
+        <View style={{ flexDirection: 'row', gap: u(2) }} accessibilityLabel={`${hearts} hearts`}>{Array.from({ length: Math.max(maxHearts, hearts) }, (_, i) => <Icon key={i} d={HEART} on={i < hearts} color="#ff6b7d" off={t.dim} size={13} />)}</View>
         {stars != null ? <View style={{ flexDirection: 'row', gap: u(1) }} accessibilityLabel={`${stars} of 3 stars`}>{[0, 1, 2].map((i) => <Icon key={i} d={STAR} on={i < stars} color={c.near} off={t.dim} size={13} />)}</View> : null}
         {score != null ? <Text style={[s.sub, { color: t.fg, fontFamily: F.bodySemi }]}>{`${score} pts`}</Text> : null}
       </View>
@@ -144,6 +144,15 @@ export const AppGrid = memo(function AppGrid({ puzzle, solved, revealed = [], se
   return <View style={{ width: W, height: H, alignSelf: 'center' }}>{cells}</View>;
 });
 
+/** The dash between the two words of a two-word answer. */
+function Dash({ w, color }: { w: number; color: string }) {
+  return (
+    <View style={{ width: w, alignSelf: 'center', alignItems: 'center' }} accessibilityLabel="new word">
+      <View style={{ width: w, height: u(3), borderRadius: u(2), backgroundColor: color }} />
+    </View>
+  );
+}
+
 /** The answer card: a specimen-note style card with the clue, glass slots and Medicordle's glass keys. */
 export function AppPopup({ word, slots, typed, tokens, width, notice, shake = 0, foot, onKey, onSlot, onHint, onClose }: {
   word: WordDef; slots: Slot[]; typed: Typed; tokens?: number; width: number; notice?: string | null; shake?: number;
@@ -160,10 +169,17 @@ export function AppPopup({ word, slots, typed, tokens, width, notice, shake = 0,
   const c = slideColors(t.mode);
   const inner = width - u(28);
   const n = slots.length;
-  // #33 (Yazan 2026-11-01): long answers go on two rows, and the letter size follows the box so it always fits.
-  const perRow = n > 10 ? Math.ceil(n / 2) : n;
-  const slotW = Math.min(u(34), Math.floor((inner - (perRow - 1) * u(4)) / perRow));
-  const slotRows = n > 10 ? [slots.slice(0, perRow).map((_, i) => i), slots.slice(perRow).map((_, i) => i + perRow)] : [slots.map((_, i) => i)];
+  // #33 (Yazan 2026-11-01) + 2026-11-02: one word stays on one row up to 13 letters (TACHYCARDIA split as
+  // TACHYC / ARDIA read like two words); a two-word answer that needs two rows breaks between its words, and a
+  // dash marks where the second word starts.
+  const breaks = (word.breaks ?? []).filter((b) => b > 0 && b < n);
+  const idx = slots.map((_, i) => i);
+  const slotRows: number[][] = breaks.length && n > 10
+    ? [0, ...breaks, n].slice(0, -1).map((from, k, all) => idx.slice(from, k + 1 < all.length ? all[k + 1] : n))
+    : n > 13 ? [idx.slice(0, Math.ceil(n / 2)), idx.slice(Math.ceil(n / 2))] : [idx];
+  const DASH = u(10);
+  const dashesIn = (row: number[]) => row.filter((i) => i > row[0] && breaks.includes(i)).length;
+  const slotW = Math.min(u(34), ...slotRows.map((row) => Math.floor((inner - (row.length - 1) * u(4) - dashesIn(row) * (DASH + u(4))) / row.length)));
   const keyW = Math.floor((inner - 9 * u(4)) / 10);
   return (
     <View style={[s.sheet, { backgroundColor: '#0c1130', borderColor: c.line }]}>
@@ -183,16 +199,21 @@ export function AppPopup({ word, slots, typed, tokens, width, notice, shake = 0,
       <Animated.View style={[{ gap: u(5), marginTop: u(4) }, shakeStyle]}>
         {slotRows.map((row, ri) => (
           <View key={ri} style={{ flexDirection: 'row', justifyContent: 'center', gap: u(4) }}>
-            {row.map((i) => {
+            {row.map((i, k) => {
               const sl = slots[i];
               const ch = sl.locked ? sl.letter : typed[i];
-              return (
+              const dash = breaks.includes(i) ? (k > 0 ? 'before' : 'row') : null;
+              const tile = (
                 <Pressable key={i} onPress={() => onSlot?.(i)} accessibilityLabel={`Letter ${i + 1}`} style={[s.tile, s.slot, { width: slotW, height: slotW * 1.12, borderRadius: u(5), backgroundColor: sl.locked ? c.ok : c.glass, borderColor: !sl.locked && ch ? t.soft : c.line }]}>
                   <LinearGradient colors={[c.fadeTop, 'transparent']} style={[s.top, { height: '50%' }]} pointerEvents="none" />
                   <Text style={{ fontFamily: F.bodyBold, fontSize: Math.min(u(17), slotW * 0.58), lineHeight: Math.min(u(17), slotW * 0.58) * 1.2, color: sl.locked ? c.onTile : t.fg }}>{ch ?? ''}</Text>
                 </Pressable>
               );
+              if (!dash) return tile;
+              // The dash sits between the two words; when the second word starts a new row, it ends the row above.
+              return dash === 'before' ? [<Dash key={`d${i}`} w={DASH} color={t.soft} />, tile] : tile;
             })}
+            {ri < slotRows.length - 1 && breaks.includes(slotRows[ri + 1][0]) ? <Dash w={DASH} color={t.soft} /> : null}
           </View>
         ))}
       </Animated.View>

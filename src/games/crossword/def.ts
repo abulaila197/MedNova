@@ -42,8 +42,8 @@ export const novaCrossword: GameDef = {
       blurb: 'Everyone plays the same grid live. First right answer claims the word.',
       howTo: [
         'Everyone gets the same random grid at the same time. The first right answer claims the word and its letters.',
-        `The host picks 1, 2 or 3 puzzles. They come one after another, each with the full time limit, ${CW.hearts} fresh hearts and its own revive.`,
-        `A wrong answer costs one of your ${CW.hearts} hearts; trying the same wrong answer again costs nothing. No hints online.`,
+        `The host picks 1, 2 or 3 puzzles. They come one after another, each with the full time limit, ${CW.onlineHearts} fresh hearts and its own revive.`,
+        `A wrong answer costs one of your ${CW.onlineHearts} hearts; trying the same wrong answer again costs nothing. No hints online.`,
         'At 0 hearts you get one revive per match for 1 token, or you watch the rest.',
         'The race ends when every word is claimed, everyone is out, or the host\'s time runs out. Most letters owned wins.',
         `EXP by place on each puzzle: 1st earns 3 stars, 2nd 2, everyone else who claimed a word 1. Each star is ${CW.expPerStar} EXP. Letters add up over the puzzles. Teams score their players' average.`,

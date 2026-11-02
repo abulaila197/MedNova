@@ -68,7 +68,7 @@ function itemsOf(me: string) {
 
 /**
  * Nova Crossword Online (CW6, CW7, CW10-CW12): everyone races the same random grid. The first right answer claims the
- * word and its letters; a wrong answer costs one of 3 hearts. One token revive per player. The server referees.
+ * word and its letters; a wrong answer costs one of 5 hearts. One token revive per player. The server referees.
  */
 export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   const t = useTheme();
@@ -93,7 +93,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
     const claims = st.claims ?? [];
     const leaders = [...st.players].filter((x) => !x.dropped).sort((a, b) => b.score - a.score || a.solve_ms - b.solve_ms);
     const leader = leaders[0]?.score ? leaders[0].user_id : null;
-    const outNow = new Set(st.players.filter((x) => (x.hearts ?? CW.hearts) <= 0).map((x) => x.user_id));
+    const outNow = new Set(st.players.filter((x) => (x.hearts ?? CW.onlineHearts) <= 0).map((x) => x.user_id));
     if (!seen.current) {
       seen.current = { claims: new Set(claims.map((c) => c.word_id)), leader, out: outNow };
       return;
@@ -136,7 +136,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   const solved = claimsList.map((c) => c.word_id);
   const left = p.words.length - solved.length;
   const reveal = st.phase !== 'case';
-  const hearts = mine?.hearts ?? CW.hearts;
+  const hearts = mine?.hearts ?? CW.onlineHearts;
   const out = hearts <= 0;
   const canRevive = playing && out && !mine?.revived && !st.me?.done;
   const wordsOf = (id: string) => claimsList.filter((c) => c.user_id === id).length;
@@ -159,7 +159,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
 
   return (
     <GameScreen scroll={false} bodyStyle={{ paddingTop: u(12), paddingHorizontal: u(16), gap: u(10) }}>
-      <AppTopBar kicker={`${left} ${left === 1 ? 'word' : 'words'} left`} title={total > 1 ? `Puzzle ${st.index + 1} of ${total}` : 'The race'} sub={sub} hearts={hearts} score={mine?.score ?? 0} onPause={() => setMenu(true)} />
+      <AppTopBar kicker={`${left} ${left === 1 ? 'word' : 'words'} left`} title={total > 1 ? `Puzzle ${st.index + 1} of ${total}` : 'The race'} sub={sub} hearts={hearts} maxHearts={CW.onlineHearts} score={mine?.score ?? 0} onPause={() => setMenu(true)} />
       {board}
       {!reveal && playing && !out && !menu ? (
         <Race key={st.index} onTyping={setTyping} puzzle={p} matchId={matchId} solved={solved} claims={claims} tried={st.tried ?? {}} hearts={hearts} width={W} load={load} claimerOf={(id) => byUser.get(claimsList.find((c) => c.word_id === id)?.user_id ?? '')?.name} />

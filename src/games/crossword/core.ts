@@ -21,12 +21,16 @@ export type WordDef = {
   question: Question;
   /** CW1: disease answers link their dossier; the rest become term cards in Today's review. */
   dossier?: string;
+  /** Two-word answers (Yazan 2026-11-02): letter places where a new word starts, shown as a dash in the answer slots. */
+  breaks?: number[];
 };
 
 export type PuzzleDef = { id: string; level: number; rows: number; cols: number; words: WordDef[] };
 
 export const CW = {
-  hearts: 3, // CW2: per puzzle (Solo), per player (Offline), per puzzle (Online). 5 -> 3 (Yazan 2026-11-01).
+  hearts: 3, // CW2: per puzzle (Solo), per player (Offline). 5 -> 3 (Yazan 2026-11-01).
+  /** Online keeps 5 hearts per puzzle (Yazan 2026-11-02, #13); the server sets them (match_players.hearts). */
+  onlineHearts: 5,
   /** CW4: a hint costs 1 token and reveals a third of the word's empty letters. */
   hintPrice: 1,
   /** CW3: a token revive gives 1 heart (Solo unlimited, Offline once per player). */
