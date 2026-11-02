@@ -39,8 +39,9 @@ export function SupportBlock({ why, onShop }: { why?: string; onShop?: () => voi
             MedNova is built by a tiny team, and online play runs on a free starter server that can only carry a few
             players at a time.
           </Text>
-          <Text style={[s.p, s.strong, { color: t.white }]}>
-            You can help: every token pack and every MedNova Unlimited subscription from the Nova shop goes into bigger,
+          <Text style={s.help}>You can help</Text>
+          <Text style={[s.p, s.strong, { color: t.white, marginTop: u(-6) }]}>
+            Every token pack and every MedNova Unlimited subscription from the Nova shop goes into bigger,
             stronger servers, so online stays open longer, for more players.
           </Text>
           <Btn
@@ -91,4 +92,6 @@ const s = StyleSheet.create({
   whyK: { fontFamily: F.mono, fontSize: u(7.5), letterSpacing: u(1.4) },
   p: { fontFamily: F.body, fontSize: u(12), lineHeight: u(17.5) },
   strong: { fontFamily: F.bodySemi },
+  // Yazan 2026-11-02: "You can help" in its own colour and font (warm gold, display italic) so it stands out.
+  help: { fontFamily: F.displayItalic, fontSize: u(20), lineHeight: u(24), color: '#ffc85c' },
 });
