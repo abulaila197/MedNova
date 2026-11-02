@@ -120,7 +120,9 @@ async function show(userId: string, st: Status, savedAt: number | null) {
 }
 
 /** Reads your own items, look, the weekly deal and unseen gifts. Offline: the last saved copy. */
-export async function loadStyle() {
+/** When the shop status was last read from the server, per account (G7 #2: page visits reuse it for 3 minutes). */
+let styleAt = { user: '', at: 0 };
+export async function loadStyle(force = false) {
   const userId = useSession.getState().userId;
   if (!userId) {
     useStyle.setState({ owned: PLAIN_OWNED, worn: PLAIN, gifts: [], loaded: true, owner: null, savedAt: null, ...guestDeal() });
@@ -134,6 +136,8 @@ export async function loadStyle() {
   }
   // Waiting wear changes go up first, so the status read next already has them.
   await flushWear().catch(() => {});
+  const fresh = styleAt.user === userId && Date.now() - styleAt.at < 180000;
+  if (!force && fresh && useStyle.getState().owner === userId && useStyle.getState().savedAt == null) return;
   const { data } = await supabase.rpc('style_status');
   const st = data as Status | null;
   if (!st) {
@@ -142,6 +146,7 @@ export async function loadStyle() {
       useStyle.setState({ savedAt: (await copyOf<Status>('style', userId))?.at ?? Date.now() });
     return;
   }
+  styleAt = { user: userId, at: Date.now() };
   void keepCopy('style', userId, st);
   await show(userId, st, null);
 }
@@ -209,7 +214,7 @@ export async function flushInBackground() {
   const r = await flushWear().catch(() => null);
   if (!r || !r.sent.length) return;
   if (r.refused.length) useStyle.setState((s) => ({ refused: [...s.refused, ...r.refused] }));
-  await loadStyle();
+  await loadStyle(true);
 }
 
 export const refusedSeen = () => useStyle.setState({ refused: [] });
@@ -246,7 +251,7 @@ export type ShopResult = { ok: true; prize?: number } | { ok: false; why: string
 const after = async () => {
   const userId = useSession.getState().userId;
   if (userId) await syncAccount(userId).catch(() => {});
-  await loadStyle();
+  await loadStyle(true);
 };
 
 /** Buys an item (or gifts it to a friend). Unsynced spends on this phone go up first so the server sees the right balance. */
@@ -269,7 +274,7 @@ async function wearNow(uid: string, slot: Slot, change: Pending): Promise<WearRe
   const r = await flushWear();
   if (r.offline) return { ok: true, queued: true };
   const bad = r.refused.some((x) => x.startsWith(`${slot}:`));
-  await loadStyle();
+  await loadStyle(true);
   if (slot === 'avatar' && bad) refreshProfile();
   return bad ? { ok: false, why: 'not owned' } : { ok: true };
 }

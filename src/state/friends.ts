@@ -131,17 +131,24 @@ export function seenLabel(lastSeen: string | null, now = Date.now()) {
 
 let beat: ReturnType<typeof setInterval> | null = null;
 let sub: { remove: () => void } | null = null;
-/** While signed in and the app is open: mark yourself seen every minute and refresh the list (FR4). */
+let lastList = 0;
+/**
+ * While signed in and the app is open: mark yourself seen every minute (FR4). The friends list (3 server calls) now
+ * reloads every 5 minutes, on coming back to the app, and whenever you open Friends or Profile (G7 #2: less load).
+ */
 export function startPresence() {
   stopPresence();
+  lastList = 0;
   const tick = () => {
     if (AppState.currentState !== 'active') return;
     void call('touch_seen').catch(() => {});
+    if (Date.now() - lastList < 290000) return;
+    lastList = Date.now();
     void loadFriends().catch(() => {});
   };
   tick();
   beat = setInterval(tick, 60000);
-  sub = AppState.addEventListener('change', (s) => s === 'active' && tick());
+  sub = AppState.addEventListener('change', (s) => s === 'active' && ((lastList = 0), tick()));
 }
 export function stopPresence() {
   if (beat) clearInterval(beat);

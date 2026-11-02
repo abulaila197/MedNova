@@ -40,7 +40,7 @@ export function StyleHost() {
   const refused = useStyle((s) => s.refused);
   useOfflineRetry();
   useEffect(() => {
-    void loadStyle();
+    void loadStyle(true);
   }, [userId]);
   // Wear changes made offline go up when the app comes back, and every minute while some still wait (#58).
   useEffect(() => {

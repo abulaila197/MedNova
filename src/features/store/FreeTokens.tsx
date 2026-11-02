@@ -136,11 +136,15 @@ type OpenSheet = 'story' | 'feedback' | 'ambassador' | null;
 export const useFree = create<{ status: FreeStatus | null; sheet: OpenSheet; savedAt?: number | null }>(() => ({ status: null, sheet: null, savedAt: null }));
 onAccountSwitch(() => useFree.setState({ status: null, sheet: null, savedAt: null }));
 
-export async function loadFree() {
+let freeAt = { user: '', at: 0 };
+/** Free tokens status. Page visits reuse a read from the last 3 minutes (G7 #2); after collecting it's forced. */
+export async function loadFree(force = false) {
   const uid = useSession.getState().userId;
   if (!uid) return useFree.setState({ status: null, savedAt: null });
+  if (!force && freeAt.user === uid && Date.now() - freeAt.at < 180000 && useFree.getState().status && !useFree.getState().savedAt) return;
   try {
     const status = await call<FreeStatus>('free_status');
+    freeAt = { user: uid, at: Date.now() };
     useFree.setState({ status, savedAt: null });
     void keepCopy('free', uid, status);
   } catch (e) {
@@ -154,7 +158,7 @@ export async function loadFree() {
 async function settle() {
   const uid = useSession.getState().userId;
   if (uid) await syncAccount(uid).catch(() => {});
-  await loadFree().catch(() => {});
+  await loadFree(true).catch(() => {});
 }
 
 const CARD = u(124);

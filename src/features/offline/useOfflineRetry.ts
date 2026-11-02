@@ -22,7 +22,7 @@ export function useOfflineRetry() {
       // On a weak signal a try can take longer than 5 s: the next one waits for it instead of piling up.
       if (trying) return;
       const jobs: Promise<unknown>[] = [];
-      if (useStyle.getState().savedAt != null) jobs.push(loadStyle());
+      if (useStyle.getState().savedAt != null) jobs.push(loadStyle(true));
       if (useFriends.getState().savedAt != null) jobs.push(loadFriends());
       if (useHunt.getState().savedAt != null) jobs.push(loadHunt());
       if (useChests.getState().savedAt != null) jobs.push(loadChallenges(true));

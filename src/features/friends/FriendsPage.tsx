@@ -137,7 +137,7 @@ function Redeem({ t }: { t: Theme }) {
       if (r.ok) {
         const uid = useSession.getState().userId;
         if (uid) await syncAccount(uid).catch(() => {});
-        await loadFree().catch(() => {});
+        await loadFree(true).catch(() => {});
         setCode('');
         setWon(true);
       } else setMsg(r.why === 'not_found' ? 'No player has that code.' : r.why === 'self' ? 'That is your own code.' : r.why === 'swap' ? 'You invited this player, so their code can’t pay you back.' : 'You already redeemed a code.');

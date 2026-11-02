@@ -1,6 +1,9 @@
 import { router } from 'expo-router';
 import { AppState, type NativeEventSubscription } from 'react-native';
+import type { RealtimeChannel } from '@supabase/supabase-js';
 import { create } from 'zustand';
+
+import { supabase } from '@/lib/supabase';
 
 import { useAccount } from '@/state/account';
 
@@ -21,22 +24,45 @@ export async function loadInvites() {
   useInvites.setState((s) => ({ list: keepIfSame(s.list, list ?? []) }));
 }
 
-let beat: ReturnType<typeof setInterval> | null = null;
+let beat: ReturnType<typeof setTimeout> | null = null;
 let sub: NativeEventSubscription | null = null;
+let line: RealtimeChannel | null = null;
+let pushed = false;
 
-/** Checks for challenges every 15 s while the app is open and you're signed in. Phone push comes later (ON24). */
-export function startInvites() {
+/**
+ * Challenges to you (G7 #2, Yazan 2026-11-02: less server load). The server pushes a tiny signal on your own private
+ * line ('user:<id>') when a challenge to you arrives or changes, and the phone fetches its invites once. While that
+ * line is open, a slow backup check runs every 60 s; if it isn't (bad network, no SQL yet), every 15 s as before.
+ * Nothing is checked while the app is in the background; coming back checks once.
+ */
+export function startInvites(userId: string) {
   stopInvites();
   const tick = () => AppState.currentState === 'active' && loadInvites().catch(() => {});
+  const loop = () => {
+    beat = setTimeout(() => {
+      tick();
+      loop();
+    }, pushed ? 60000 : 15000);
+  };
   tick();
-  beat = setInterval(tick, 15000);
+  loop();
   sub = AppState.addEventListener('change', (s) => s === 'active' && tick());
+  line = supabase.channel(`user:${userId}`, { config: { private: true } });
+  line.on('broadcast', { event: 'changed' }, () => tick());
+  line.subscribe((status) => {
+    const was = pushed;
+    pushed = status === 'SUBSCRIBED';
+    if (pushed && !was) tick(); // back after a gap: catch up once
+  });
 }
 export function stopInvites() {
-  if (beat) clearInterval(beat);
+  if (beat) clearTimeout(beat);
   sub?.remove();
+  if (line) supabase.removeChannel(line);
   beat = null;
   sub = null;
+  line = null;
+  pushed = false;
   useInvites.setState({ list: [], bannered: [], say: null, asking: null });
 }
 

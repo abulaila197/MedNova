@@ -88,7 +88,7 @@ function apply(id: string | null, email: string | null) {
     void loadProfile(id);
     ready.then(() => syncAccount(id)).catch(() => {}); // retried on the next sign-in, finish or app start
     startPresence();
-    startInvites();
+    startInvites(id);
   } else {
     stopPresence();
     stopInvites();

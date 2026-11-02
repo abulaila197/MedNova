@@ -62,9 +62,9 @@ type State = { r: Rounds | null; at: number; failed: boolean; savedAt: number | 
 export const useRoundsStore = create<State>(() => ({ r: null, at: 0, failed: false, savedAt: null }));
 onAccountSwitch(() => useRoundsStore.setState({ r: null, at: 0, failed: false, savedAt: null }));
 
-/** Reads this week's state (guests see the goal with no progress). Cheap: skips if read in the last 20 s unless forced. */
+/** Reads this week's state (guests see the goal with no progress). Cheap: skips if read in the last 3 minutes unless forced (G7 #2: was 20 s). */
 export async function loadRounds(force = false) {
-  if (!force && Date.now() - useRoundsStore.getState().at < 20000) return;
+  if (!force && Date.now() - useRoundsStore.getState().at < 180000) return;
   useRoundsStore.setState({ at: Date.now() });
   const userId = useSession.getState().userId;
   if (userId) await syncAccount(userId).catch(() => {});

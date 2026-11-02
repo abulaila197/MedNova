@@ -81,7 +81,7 @@ export async function openChest(kind: ChestKind): Promise<OpenResult> {
   if (c && r.chests) useChests.setState({ c: { ...c, chests: r.chests } });
   const userId = useSession.getState().userId;
   if (userId) await syncAccount(userId).catch(() => {});
-  void loadStyle();
+  void loadStyle(true);
   return { ok: true, items: r.items ?? [], prize: r.prize ?? 0 };
 }
 

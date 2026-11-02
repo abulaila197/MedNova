@@ -43,10 +43,14 @@ const paidTiers = (ledger: { kind: string; reason: string }[]) => {
   return out;
 };
 
+let socialAt = { me: '', at: 0, v: {} as SocialCounts };
 async function socialCounts(me: string): Promise<SocialCounts> {
+  // Opening the menu again within 3 minutes reuses the last counts (G7 #2).
+  if (socialAt.me === me && Date.now() - socialAt.at < 180000) return socialAt.v;
   const { data, error } = await supabase.rpc('social_counts').then((r) => r, () => ({ data: null, error: true }));
   if (!error && data) {
     void keepCopy('social', me, data);
+    socialAt = { me, at: Date.now(), v: data as SocialCounts };
     return data as SocialCounts;
   }
   return (await copyOf<SocialCounts>('social', me))?.v ?? {};
