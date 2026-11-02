@@ -120,7 +120,7 @@ const s = StyleSheet.create({
   art: { position: 'absolute', left: 0, right: 0, top: 0, height: u(330) },
   row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   name: { flexDirection: 'row', alignItems: 'center', gap: u(6) },
-  beta: { position: 'absolute', top: -u(7), right: u(12), zIndex: 2, backgroundColor: '#e5394b', borderRadius: u(6), paddingHorizontal: u(8), paddingVertical: u(2.5), transform: [{ rotate: '8deg' }], shadowColor: '#000', shadowOpacity: 0.35, shadowRadius: u(3), shadowOffset: { width: 0, height: u(1) }, elevation: 3 },
+  beta: { position: 'absolute', top: u(10), right: u(12), zIndex: 2, backgroundColor: '#e5394b', borderRadius: u(6), paddingHorizontal: u(8), paddingVertical: u(2.5), transform: [{ rotate: '8deg' }], shadowColor: '#000', shadowOpacity: 0.35, shadowRadius: u(3), shadowOffset: { width: 0, height: u(1) }, elevation: 3 },
   betaT: { fontFamily: F.bodyBold, fontSize: u(8.5), lineHeight: u(11), letterSpacing: u(1.2), color: '#ffffff' },
   lock: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: u(6), borderWidth: 1, borderRadius: u(14), paddingVertical: u(10), marginTop: u(4) },
   lockT: { fontFamily: F.bodyBold, fontSize: u(12.5), lineHeight: u(15) },

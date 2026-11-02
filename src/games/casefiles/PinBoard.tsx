@@ -8,9 +8,9 @@ import { u } from '@/theme/scale';
 import { completed, invFile, status, type CaseDef, type FileId, type Run } from './core';
 import { NR, T } from './noir';
 
-// The evidence board (Case Files look, decided 2026-10-05): files pinned to the board in rings by stage,
+// The evidence board (Case Files look, decided 2026-10-05): files pinned to a grey felt board in rings by stage,
 // the personal file in the centre, red strings joining every file that glow as files unlock. Strings are
-// decoration only (as coded). Since 2026-11-02 the board is navy (app look); the felt photo is no longer used.
+// decoration only (as coded). The felt is Yazan's photo (assets/casefiles/board.jpg).
 
 type Pin = { id: FileId; label: string; x: number; y: number; r: number; kind: 'personal' | 'paper' };
 
@@ -49,6 +49,9 @@ function strands(pins: Pin[]) {
 /** Folder height on the board; width follows each photo. */
 const CARD_H = 60;
 /** Yazan's photos (2026-10-05): the empty felt board in its frame, and the creamy yellow police folder in each state. */
+const BOARD = require('@/assets/casefiles/board.jpg');
+/** The red strings (Yazan 2026-11-02: the board and its red strings stay as they were). */
+const RED = '#c8232f';
 const FOLDER = {
   new: { src: require('@/assets/casefiles/folder-new.png'), ratio: 249 / 360 },
   read: { src: require('@/assets/casefiles/folder-read.png'), ratio: 292 / 360 },
@@ -66,6 +69,7 @@ export const PinBoard = memo(function PinBoard({ def, run, sealed, onOpen }: { d
   const done = completed(run);
   return (
     <View style={s.frame}>
+      <Image source={BOARD} contentFit="fill" style={[StyleSheet.absoluteFill, { width: '100%', height: '100%' }]} />
       <View style={s.felt} onLayout={(e) => setBox({ w: e.nativeEvent.layout.width, h: e.nativeEvent.layout.height })}>
         {box ? (
           <>
@@ -78,8 +82,8 @@ export const PinBoard = memo(function PinBoard({ def, run, sealed, onOpen }: { d
                 const xy = { x1: at(pa).x, y1: pinY(pa), x2: at(pb).x, y2: pinY(pb) };
                 return (
                   <G key={a + b}>
-                    {lit ? <Line {...xy} stroke="#6fd6ff" strokeOpacity={0.22} strokeWidth={5} strokeLinecap="round" /> : null}
-                    <Line {...xy} stroke={lit ? '#a48bff' : NR.red} strokeOpacity={lit ? 1 : 0.7} strokeWidth={lit ? 1.5 : 1.1} />
+                    {lit ? <Line {...xy} stroke="#ff3b47" strokeOpacity={0.22} strokeWidth={5} strokeLinecap="round" /> : null}
+                    <Line {...xy} stroke={lit ? '#e0303c' : RED} strokeOpacity={lit ? 1 : 0.7} strokeWidth={lit ? 1.5 : 1.1} />
                   </G>
                 );
               })}
@@ -170,14 +174,13 @@ function Lock() {
 }
 
 const s = StyleSheet.create({
-  // App look (2026-11-02): a navy board with the app's hairline edge instead of the felt photo.
-  frame: { flex: 1, backgroundColor: '#1a2858', overflow: 'hidden', borderRadius: u(18), borderWidth: 1, borderColor: 'rgba(255,255,255,0.13)' },
+  frame: { flex: 1, backgroundColor: '#1d1d1c', overflow: 'hidden' },
   /** The felt inside the photo's frame, where the files go. */
   felt: { position: 'absolute', left: '7%', right: '7%', top: '5%', bottom: '5%' },
   card: { position: 'absolute' },
   /** A typed paper label stuck just under the folder. */
   label: { position: 'absolute', left: '-30%', right: '-30%', top: '96%', alignItems: 'center' },
-  strip: { backgroundColor: '#efe4cb', paddingHorizontal: u(4), paddingVertical: u(1.5), transform: [{ rotate: '-2deg' }], shadowColor: '#000', shadowOpacity: 0.35, shadowRadius: u(1.5) },
+  strip: { backgroundColor: '#f1ede2', paddingHorizontal: u(4), paddingVertical: u(1.5), transform: [{ rotate: '-2deg' }], shadowColor: '#000', shadowOpacity: 0.35, shadowRadius: u(1.5) },
   pinWrap: { position: 'absolute' },
   lock: { position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, alignItems: 'center', justifyContent: 'center', opacity: 0.85 },
 });
