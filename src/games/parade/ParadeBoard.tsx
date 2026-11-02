@@ -255,29 +255,31 @@ function Match(p: AnswerProps & { q: Q<'match'>; head: ReactNode }) {
     setLeft(null);
   };
   const full = map.every((v) => v >= 0);
+  // Long answers get more of the row, so the pairs stay shorter.
+  const wide = p.q.pairs.some(([, b]) => b.length > 50) ? [0.75, 1.25] : [1, 1];
   return (
     <Scroll
       after={p.after}
       head={<>{p.head}<Text style={[s.hint, { color: t.dim }]}>{done ? 'Right pairs in green' : 'Tap an item on the left, then its match on the right.'}</Text></>}
       foot={done || p.locked ? null : <Btn label={full ? 'Submit' : `${map.filter((v) => v < 0).length} left to match`} disabled={!p.live || !full} onPress={() => p.onAnswer({ style: 'match', map })} />}>
-      <View style={s.cols}>
-        <View style={s.col}>
-          {p.q.pairs.map(([a], li) => {
-            const joined = given[li] >= 0;
-            const ok = given[li] === li;
-            return (
-              <Tile key={li} small label={a} dot={joined ? colorOf(li) : undefined} state={done ? (ok ? 'good' : 'bad') : left === li ? 'picked' : 'idle'} live={p.live} onPress={() => tapLeft(li)} />
-            );
-          })}
-        </View>
-        <View style={s.col}>
-          {p.layout.map((ri) => {
-            const owner = ownerOf(ri);
-            return (
-              <Tile key={ri} small label={p.q.pairs[ri][1]} dot={owner >= 0 ? colorOf(owner) : undefined} state={done ? (owner === ri ? 'good' : 'idle') : 'idle'} live={p.live} onPress={() => tapRight(ri)} />
-            );
-          })}
-        </View>
+      {/* Yazan 2026-11-02: one row per pair, so each left box has the same height as the right box beside it. */}
+      <View style={s.col}>
+        {p.q.pairs.map(([a], li) => {
+          const joined = given[li] >= 0;
+          const ok = given[li] === li;
+          const ri = p.layout[li];
+          const owner = ownerOf(ri);
+          return (
+            <View key={li} style={s.cols}>
+              <View style={{ flex: wide[0] }}>
+                <Tile fill small label={a} dot={joined ? colorOf(li) : undefined} state={done ? (ok ? 'good' : 'bad') : left === li ? 'picked' : 'idle'} live={p.live} onPress={() => tapLeft(li)} />
+              </View>
+              <View style={{ flex: wide[1] }}>
+                <Tile fill small label={p.q.pairs[ri][1]} dot={owner >= 0 ? colorOf(owner) : undefined} state={done ? (owner === ri ? 'good' : 'idle') : 'idle'} live={p.live} onPress={() => tapRight(ri)} />
+              </View>
+            </View>
+          );
+        })}
       </View>
       {done && !p.q.pairs.every((_, i) => given[i] === i) ? <Text style={[s.expl, { color: t.mute }]}>{answerText(p.q)}</Text> : null}
     </Scroll>
@@ -348,7 +350,7 @@ function Closest(p: AnswerProps & { q: Q<'closest'>; head: ReactNode }) {
 
 type TileState = 'idle' | 'good' | 'bad' | 'picked' | 'chosen';
 
-function Tile({ label, state, live, onPress, gone, dim, faces, tall, small, mark, struck, dot, note }: { label: string; state: TileState; live: boolean; onPress: () => void; gone?: boolean; dim?: boolean; faces?: string[]; tall?: boolean; small?: boolean; mark?: string; struck?: boolean; dot?: string; note?: string }) {
+function Tile({ label, state, live, onPress, gone, dim, faces, tall, small, mark, struck, dot, note, fill }: { fill?: boolean; label: string; state: TileState; live: boolean; onPress: () => void; gone?: boolean; dim?: boolean; faces?: string[]; tall?: boolean; small?: boolean; mark?: string; struck?: boolean; dot?: string; note?: string }) {
   const t = useTheme();
   const x = useSharedValue(0);
   useEffect(() => {
@@ -357,12 +359,13 @@ function Tile({ label, state, live, onPress, gone, dim, faces, tall, small, mark
   const move = useAnimatedStyle(() => ({ transform: [{ translateX: x.value }] }));
   const tint = state === 'good' ? PC.good : state === 'bad' ? PC.bad : state === 'picked' ? t.accent : null;
   return (
-    <Animated.View style={move}>
+    <Animated.View style={[move, fill ? { flex: 1 } : null]}>
       <Pressable
         onPress={onPress}
         disabled={!live || gone}
         style={[
           s.tile,
+          fill && { flex: 1 },
           tall && s.tall,
           small && s.small,
           { backgroundColor: BEIGE?.bg ?? t.panel, borderColor: BEIGE?.line ?? t.panelLine, opacity: gone ? 0.28 : dim ? 0.5 : 1 },

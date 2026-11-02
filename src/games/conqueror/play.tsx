@@ -166,30 +166,38 @@ export function SoloPage({ m, me, seconds, act }: P) {
   } else if (style === 'match' && q?.style === 'match') {
     const shown = q.shown ?? [];
     const lefts = q.pairs.map((x) => x[0]);
+    // Long answers get more of the row, so the pairs stay shorter.
+    const wide = shown.some((r) => r.length > 50) ? [0.75, 1.25] : [1, 1];
     body = (
       <>
         <Paper>
           <T f={CG} size={17} color={AT.ink} style={{ lineHeight: v(22) }}>{q.prompt}</T>
           <T f={CGI} size={13.5} color={AT.inkSoft}>Tap a left item, then its match.</T>
         </Paper>
-        <View style={{ flexDirection: 'row', gap: v(8) }}>
-          <View style={{ flex: 1, gap: v(7) }}>
-            {lefts.map((l, i) => <Option key={l} small label={l} mark={pairs[i] ? String(shown.indexOf(pairs[i]!) + 1) : ' '} on={left === i} onPress={() => setLeft(left === i ? null : i)} />)}
-          </View>
-          <View style={{ flex: 1, gap: v(7) }}>
-            {shown.map((r, j) => {
-              const taken = pairs.indexOf(r);
-              return (
-                <Option key={r} small label={r} mark={String(j + 1)} on={taken >= 0} onPress={() => {
-                  if (left == null) return;
-                  const next = pairs.map((x) => (x === r ? null : x));
-                  next[left] = r;
-                  setPairs(next);
-                  setLeft(null);
-                }} />
-              );
-            })}
-          </View>
+        {/* Yazan 2026-11-02: one row per pair, so each left box has the same height as the right box beside it. */}
+        <View style={{ gap: v(7) }}>
+          {lefts.map((l, i) => {
+            const r = shown[i];
+            const taken = r == null ? -1 : pairs.indexOf(r);
+            return (
+              <View key={l} style={{ flexDirection: 'row', gap: v(8) }}>
+                <View style={{ flex: wide[0] }}>
+                  <Option fill small label={l} mark={pairs[i] ? String(shown.indexOf(pairs[i]!) + 1) : ' '} on={left === i} onPress={() => setLeft(left === i ? null : i)} />
+                </View>
+                <View style={{ flex: wide[1] }}>
+                  {r == null ? null : (
+                    <Option fill small label={r} mark={String(i + 1)} on={taken >= 0} onPress={() => {
+                      if (left == null) return;
+                      const next = pairs.map((x) => (x === r ? null : x));
+                      next[left] = r;
+                      setPairs(next);
+                      setLeft(null);
+                    }} />
+                  )}
+                </View>
+              </View>
+            );
+          })}
         </View>
         <View style={{ flex: 1 }} />
         <View style={{ flexDirection: 'row', gap: v(10) }}>
@@ -653,9 +661,9 @@ function Paper({ children }: { children: React.ReactNode }) {
   );
 }
 
-function Option({ label, mark, on, onPress, small }: { label: string; mark?: string; on?: boolean; onPress: () => void; small?: boolean }) {
+function Option({ label, mark, on, onPress, small, fill }: { label: string; mark?: string; on?: boolean; onPress: () => void; small?: boolean; fill?: boolean }) {
   return (
-    <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={label} accessibilityState={{ selected: on }} style={({ pressed }) => [s.opt, small ? { paddingVertical: v(8) } : null, on ? s.optOn : null, pressed ? { opacity: 0.8 } : null]}>
+    <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={label} accessibilityState={{ selected: on }} style={({ pressed }) => [s.opt, fill ? { flex: 1 } : null, small ? { paddingVertical: v(8) } : null, on ? s.optOn : null, pressed ? { opacity: 0.8 } : null]}>
       {mark != null ? (
         <View style={[s.mark, !mark.trim() ? { backgroundColor: 'transparent', borderWidth: 1.5, borderColor: 'rgba(59,47,28,0.4)' } : null]}>
           <T f={CZ} size={11} color="#ffffff">{mark}</T>
