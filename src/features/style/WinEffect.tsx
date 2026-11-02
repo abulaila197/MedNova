@@ -917,9 +917,6 @@ const PLAY: Record<string, () => React.JSX.Element> = {
   trophy: TrophyFx,
   medal: Medal,
   friend_chain: FriendChain,
-  // retired before the server swapped them (20261018040000_win_effects_v2)
-  signed_off: TooEasy,
-  supernova: Spotlight,
 };
 
 const s = StyleSheet.create({

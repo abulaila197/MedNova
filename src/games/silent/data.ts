@@ -12,10 +12,9 @@ import wordsJson from './data/words.json';
  * The order matters: online turns name a word by its place here (sa_words.n), so new words only ever go at the end.
  */
 export const WORDS = [...(wordsJson as Word[]), ...(basicJson as Word[]), ...(newJson as Word[]), ...(moreJson as Word[])];
-/** #46: words taken out. They stay in the list so the places above don't shift, but are never picked (sa_words.retired online). */
-export const RETIRED: ReadonlySet<string> = new Set(['b186']);
-/** The words a game can pick: 1,000. */
-export const PICKABLE = WORDS.filter((w) => !RETIRED.has(w.id));
+/** The words a game can pick: all 1,000 (publish task 1, 2026-11-02: the retired "Medicine cup" was deleted and the
+ *  places after it moved down by one, here and in sa_words). */
+export const PICKABLE = WORDS;
 
 /** QS1: Mixed (default), Clinical or Basic science, for Pass the phone and Online rooms. */
 export type Mix = 'mixed' | 'clinical' | 'basic';

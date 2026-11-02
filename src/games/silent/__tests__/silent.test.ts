@@ -132,14 +132,14 @@ test('online guess matcher (as coded): aliases and typos count, look-alikes are 
   assert.equal(evaluateGuess('hypertention', words[1], index), 'correct');
 });
 
-test('word list (QS1, #38/#45/#46): 1,001 words, 1,000 pickable, medicine cup retired, every name and other name guesses right', async () => {
+test('word list (QS1, #38/#45/#46, publish task 1): 1,000 words, all pickable, medicine cup gone, every name and other name guesses right', async () => {
   const { WORDS, PICKABLE, wordsFor } = await import('../data');
   const { buildAnswerIndex, evaluateGuess } = await import('../guess');
-  assert.equal(WORDS.length, 1001);
+  assert.equal(WORDS.length, 1000);
   assert.equal(PICKABLE.length, 1000);
-  assert.equal(WORDS[485].name, 'Medicine cup');
-  assert.ok(!PICKABLE.some((w) => w.name === 'Medicine cup'));
-  assert.equal(new Set(WORDS.map((w) => w.id)).size, 1001);
+  assert.equal(WORDS[485].name, 'Pill cutter');
+  assert.ok(!WORDS.some((w) => w.name === 'Medicine cup'));
+  assert.equal(new Set(WORDS.map((w) => w.id)).size, 1000);
   assert.equal(wordsFor('clinical').length, 620);
   assert.equal(wordsFor('basic').length, 380);
   assert.equal(wordsFor('clinical').filter((w) => w.field === 'Medical tools').length, 90);

@@ -21,13 +21,13 @@ const P: PuzzleDef = {
 test('all 50 bundled puzzles are valid: letters agree at every crossing, no word fully crossed', () => {
   assert.equal(PUZZLES.length, 50);
   for (const p of PUZZLES) assert.deepEqual(validatePuzzle(p), [], p.id);
-  // Array order is the online puzzle number (cw_words.n); levels 1-5 stay first, every level 1-40 used once.
-  PUZZLES.forEach((p, i) => assert.equal(p.id, `cw-${String(i + 1).padStart(2, '0')}`));
-  assert.deepEqual(PUZZLES.map((p) => p.level).sort((a, b) => a - b), Array.from({ length: 50 }, (_, i) => i + 1));
-  for (let i = 0; i < 5; i++) assert.equal(PUZZLES[i].level, i + 1);
-  const answers = PUZZLES.flatMap((p) => p.words.map((w) => w.answer));
-  assert.equal(new Set(answers.slice(-PUZZLES.slice(31).reduce((n, p) => n + p.words.length, 0))).size, PUZZLES.slice(31).reduce((n, p) => n + p.words.length, 0));
-  assert.ok(PUZZLES[17].words.some((w) => w.answer === 'EPILEPSY'));
+  // Array order is play order (publish task 1): place = level = the online puzzle number (cw_words.n).
+  PUZZLES.forEach((p, i) => assert.equal(p.level, i + 1, p.id));
+  assert.equal(new Set(PUZZLES.map((p) => p.id)).size, 50);
+  // The 19 puzzles added last (cw-32 to cw-50) never repeat an answer among themselves.
+  const late = PUZZLES.filter((p) => Number(p.id.slice(3)) > 31).flatMap((p) => p.words.map((w) => w.answer));
+  assert.equal(new Set(late).size, late.length);
+  assert.ok(PUZZLES.find((p) => p.id === 'cw-18')!.words.some((w) => w.answer === 'EPILEPSY'));
 });
 
 test('popup: letters fill the first open slot, a tap clears it, locked slots keep their letter', () => {
