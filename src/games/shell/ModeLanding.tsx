@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import Svg, { Path, Rect } from 'react-native-svg';
 import { Text } from '@/components/AppText';
@@ -12,6 +13,7 @@ import { F } from '@/theme/tokens';
 import { tapped } from '@/lib/sound';
 import { restingSay, LOCKED_SAY } from '@/online/api';
 import { useOnlineLock } from '@/online/locks';
+import { SupportSheet } from '@/online/SupportSheet';
 
 import type { Mode } from '../engine/types';
 import type { GameDef } from './types';
@@ -26,6 +28,7 @@ export function ModeLanding({ def }: { def: GameDef }) {
   const g = GAMES.find((x) => x.key === def.key)!;
   const { open, setOpen, resume, go, resumePlay, resumeLabel, note } = useLanding(def);
   const lock = useOnlineLock(def.key);
+  const [support, setSupport] = useState(false);
 
   const art = LOAD[def.key];
   return (
@@ -33,7 +36,8 @@ export function ModeLanding({ def }: { def: GameDef }) {
       top={
         // The game's loading-page art as a quiet backdrop behind the title (Yazan 2026-10-14), in its own colours,
         // dissolving into the page with real transparency so no edge can show.
-        art ? (
+        <>
+          {art ? (
           <FeatherArt
             source={art.photo}
             position={art.fo}
@@ -42,7 +46,9 @@ export function ModeLanding({ def }: { def: GameDef }) {
             edges={IS_COLUMN ? { bottom: 0.65, left: 0.12, right: 0.12 } : { bottom: 0.65 }}
             style={s.art}
           />
-        ) : undefined
+        ) : null}
+          {lock ? <SupportSheet open={support} onClose={() => setSupport(false)} why={lock.why === 'admin' ? LOCKED_SAY : restingSay(lock.day ?? null)} /> : null}
+        </>
       }>
       <Back label="Games" fallback="/games" />
       <View style={{ gap: u(6), marginBottom: u(4) }}>
@@ -88,10 +94,11 @@ export function ModeLanding({ def }: { def: GameDef }) {
             {locked ? (
               <>
                 <Body style={{ color: t.soft }}>{locked.why === 'admin' ? LOCKED_SAY : restingSay(locked.day ?? null)}</Body>
-                <View style={[s.lock, { backgroundColor: 'rgba(255,122,136,0.1)', borderColor: 'rgba(255,122,136,0.5)' }]} accessibilityRole="button" accessibilityState={{ disabled: true }} accessibilityLabel="Online is locked">
+                {/* #27 (Yazan 2026-11-02): tapping Locked explains our small servers and how the Nova shop helps. */}
+                <Pressable onPress={tapped(() => setSupport(true))} style={[s.lock, { backgroundColor: 'rgba(255,122,136,0.1)', borderColor: 'rgba(255,122,136,0.5)' }]} accessibilityRole="button" accessibilityLabel="Online is locked. Tap to see how you can help">
                   <LockIcon color={t.error} size={13} />
                   <Text style={[s.lockT, { color: t.error }]}>Locked</Text>
-                </View>
+                </Pressable>
               </>
             ) : (
               <View style={s.btns}>

@@ -19,6 +19,7 @@ import { useIsSubscribed } from '@/features/store/billing';
 import { loadCases, useCases } from '@/features/learn/cases';
 
 import { createRoom, joinRoom, joinRoomId, restingSay, sayError } from './api';
+import { SupportBlock } from './SupportSheet';
 import { useResting } from './useBusyLine';
 import { lobbyOf, useJoin, useOpenRooms } from './useJoin';
 import { settingsLine } from './format';
@@ -44,6 +45,8 @@ export function OnlineSetup({ def, prefill }: { def: GameDef; prefill?: Record<s
           <Text style={[s.k, { color: t.mute }]}>ONLINE IS RESTING</Text>
           <Text style={[s.rest, { color: t.fg }]}>{restingSay(resting || null)}</Text>
         </Card>
+        {/* #27 (Yazan 2026-11-02): the same support part as the locked Online card's pop-up. */}
+        <SupportBlock />
       </GameScreen>
     );
   }
