@@ -15,7 +15,7 @@ import type { PlayProps } from '../shell/types';
 import { fieldName, type Mix, type QResult, type Target } from './core';
 import { BANK } from './data';
 import {
-  actor, bossPoints, startOffline, stepOffline, upgradeSaved, bossBonus, BOSS_MS, BOSS_RIGHT, BOSS_WRONG, CYCLES, REDEMPTION_ITEMS, REDEMPTION_MS,
+  actor, bossPoints, startOffline, stepOffline, upgradeSaved, bossBonus, BOSS_MS, BOSS_RIGHT, BOSS_WRONG, MAX_ACTS, roundsIn, REDEMPTION_ITEMS, REDEMPTION_MS,
   type Log, type OfflineEvent, type OfflineGame,
 } from './offline';
 import { PauseMenu } from '../shell/PauseMenu';
@@ -26,7 +26,7 @@ import { gameShown } from './shown';
 
 export type Seats = Map<number, { name: string; color?: string }>;
 const snapshot = (g: OfflineGame, now: number) => stepOffline(g, { type: 'PAUSE', now }, BANK, Math.random);
-export const actName = (g: OfflineGame) => `Act ${ROMAN[g.cycle]} · Round ${g.round + 1} of ${CYCLES[g.cycle]}`;
+export const actName = (g: OfflineGame) => `Act ${ROMAN[g.cycle]} · Round ${g.round + 1} of ${roundsIn(g.cycle)}`;
 
 export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   const target = (Number(play.settings.target) || 50) as Target;
@@ -393,7 +393,7 @@ export function BossOver({ g, seats, board, onNext }: { g: OfflineGame; seats: S
   const n = (s: number) => seats.get(s)?.name ?? `Player ${s + 1}`;
   if (!l || l.k !== 'boss') return null;
   const extra = Object.fromEntries(Object.entries(l.points).map(([s, p]) => [Number(s), `Boss ${p}`]));
-  const last = g.cycle + 1 >= CYCLES.length;
+  const last = g.cycle + 1 >= MAX_ACTS;
   return (
     <View style={{ gap: u(12) }}>
       <Top kicker={`Act ${ROMAN[g.cycle]} · Boss Round`} title={`${l.winners.map(n).join(' and ')} +${l.bonus}`} />

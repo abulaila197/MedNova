@@ -45,7 +45,7 @@ export const BODY_B = F.bodySemi;
 export const QF = 'AlegreyaSans_500Medium';
 export const QF_B = 'AlegreyaSans_700Bold';
 const FONTS = [QF, QF_B];
-export const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI'];
+export const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
 
 let fontsReady = false;
 export function useVelvetFonts() {

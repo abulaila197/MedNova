@@ -1,6 +1,6 @@
 // The Wheels of Chaos Offline (pass the phone, WC1): the full game on one phone, 2 to 4 players, no teams
 // (TM1). Cycles (acts) of 3, 2 and 2 rounds of turns, each cycle ending in a Boss Round, played here as
-// turn-based swipes. Reaching the target ends the game at once; otherwise the best score after Boss Round 3 wins
+// turn-based swipes. Reaching the target ends the game at once; otherwise extra acts follow Act III until someone does (safety stop after Act X, best score wins)
 // (equal top scores draw). The tarot cards were removed (#39a, Yazan 2026-11-01): Redemption is offered to last
 // place once a game, in the final round only (2026-11-02), and the Star and Sun are gone.
 import {
@@ -10,6 +10,11 @@ import {
 import { shuffle } from '../engine/random';
 
 export const CYCLES = [3, 2, 2];
+/** Play on (Yazan 2026-11-02): after Act III, extra acts of 2 rounds + a Boss Round until someone reaches the
+ *  target. A safety stop after Act X: then the best score wins. */
+export const EXTRA_ROUNDS = 2;
+export const MAX_ACTS = 10;
+export const roundsIn = (cycle: number) => CYCLES[cycle] ?? EXTRA_ROUNDS;
 
 export const BOSS_ITEMS = 30;
 export const BOSS_MS = 30_000;
@@ -182,7 +187,7 @@ export function actor(g: OfflineGame): number | null {
 export const isLowest = (g: OfflineGame, seat: number) => g.scores[seat] === Math.min(...g.active.map((s) => g.scores[s]));
 
 /** Is this the game's final round (the last round of Act III)? */
-export const isFinalRound = (g: OfflineGame) => g.cycle === CYCLES.length - 1 && g.round === CYCLES[g.cycle] - 1;
+export const isFinalRound = (g: OfflineGame) => g.cycle === CYCLES.length - 1 && g.round === roundsIn(g.cycle) - 1;
 /** Last place (ties allowed), only in the game's final round, once a game for everyone (Yazan 2026-11-02). */
 export const canRedeem = (g: OfflineGame, seat: number) =>
   g.redCycle == null && isFinalRound(g) && isLowest(g, seat);
@@ -222,7 +227,7 @@ function playTurn(g: OfflineGame, _seat: number, bank: FullBank, rng: Rng): Offl
 
 function endRound(g: OfflineGame, bank: FullBank, rng: Rng): OfflineGame {
   const s = { ...g, roundsPlayed: g.roundsPlayed + 1, round: g.round + 1 };
-  if (s.round < CYCLES[s.cycle]) return beginRound(s, bank, rng);
+  if (s.round < roundsIn(s.cycle)) return beginRound(s, bank, rng);
   return startBoss(s, bank, rng);
 }
 
@@ -351,7 +356,7 @@ export function stepOffline(g: OfflineGame, e: OfflineEvent, bank: FullBank, rng
       if (g.phase === 'turnOver') return startSeatTurn(g, bank, rng, 1);
       if (g.phase === 'bossOver') {
         const cycle = g.cycle + 1;
-        if (cycle >= CYCLES.length) return finish({ ...g, boss: null }, g.active);
+        if (cycle >= MAX_ACTS) return finish({ ...g, boss: null }, g.active);
         return beginRound({ ...g, cycle, round: 0, boss: null }, bank, rng);
       }
       return g;

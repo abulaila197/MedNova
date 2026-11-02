@@ -7,7 +7,7 @@ import {
   judge, soloExp, spinCombo, spinField, FIELDS, startSolo, startTurn, stepSolo, stepTurn, turnPoints, STYLES, STYLE_KEYS,
   type Answer, type Question, type Rng, type Turn,
 } from '../core';
-import { actor, canRedeem, startOffline, stepOffline, upgradeSaved, bossBonus, BOSS_ITEMS, REDEMPTION_ITEMS, redemptionItems, type FullBank, type OfflineGame } from '../offline';
+import { actor, canRedeem, startOffline, stepOffline, upgradeSaved, bossBonus, MAX_ACTS, BOSS_ITEMS, REDEMPTION_ITEMS, redemptionItems, type FullBank, type OfflineGame } from '../offline';
 import { SAMPLE_BANK as bank } from '../data/samples';
 
 function seeded(seed: number): Rng {
@@ -187,7 +187,7 @@ function drive(g0: OfflineGame, seed: number, hit = 0.6, maxSteps = 20000) {
   return g;
 }
 
-test('Offline: whole games finish, by target or after Boss Round 3', () => {
+test('Offline: whole games finish, by target or at the Act X safety stop', () => {
   for (const seats of [2, 3, 4]) {
     for (const seed of [11, 12, 13]) {
       const g = drive(startOffline(seats, 100, bank, seeded(seed)), seed);
@@ -197,9 +197,11 @@ test('Offline: whole games finish, by target or after Boss Round 3', () => {
       assert.ok(g.result!.winners.every((s) => g.scores[s] === top));
     }
   }
-  // A low hit rate on 100 runs all three cycles and three Boss Rounds.
+  // A low hit rate on 100 plays on past Act III (extra acts of 2 rounds) to the safety stop.
   const slow = drive(startOffline(3, 100, bank, seeded(21)), 21, 0.1);
-  assert.equal(slow.log.filter((l) => l.k === 'boss').length, 3);
+  const bosses = slow.log.filter((l) => l.k === 'boss').length;
+  assert.equal(slow.phase, 'done');
+  assert.ok(bosses > 3 && bosses <= MAX_ACTS, `${bosses} Boss Rounds`);
   assert.ok(slow.log.filter((l) => l.k === 'boss').every((l) => l.k === 'boss' && l.bonus === Math.floor(bossBonus(slow.target) / l.winners.length)));
 });
 
@@ -287,5 +289,13 @@ test('WC19: Redemption plays one written round in order, unplayed rounds first, 
     const { round } = redemptionItems(full, 'surgery', rng, used);
     assert.notEqual(round, used[used.length - 1]);
     used.push(round!);
+  }
+});
+
+test('Play on: a 50-point game keeps going after Act III until someone reaches 50', () => {
+  for (const seed of [1, 2, 3, 4, 5, 6]) {
+    const g = drive(startOffline(2, 50, bank, seeded(seed)), seed, 1);
+    assert.equal(g.phase, 'done');
+    assert.ok(g.result!.winners.every((s) => g.scores[s] >= 50), `seed ${seed}: ${g.scores.join('/')}`);
   }
 });
