@@ -26,17 +26,19 @@ export const SL = {
   red: '#f08a7e',
   // #11 (Yazan 2026-10-26): 24 colours. The first 4 are the chalk sticks on the ledge; the palette holds all 24.
   // Strokes carry the colour itself, so every phone draws the same whatever its palette.
+  // Beige board (Yazan 2026-11-02): the ledge sticks are black (the default), red, blue, green; the chalk pastels
+  // that showed on the navy slate move into the palette.
   inks: [
+    '#111111', '#ef4444', '#3b82f6', '#22c55e', '#f97316', '#f5b82e',
+    '#84cc16', '#14b8a6', '#38bdf8', '#6366f1', '#8b5cf6', '#d946ef',
+    '#f43f5e', '#92400e', '#7f1d1d', '#1e3a8a', '#9ca3af', '#f1c27d',
     '#f4f1e6', '#f2df8a', '#f3a6b6', '#9fd3ef', '#a8e6c1', '#c9b6f2',
-    '#ef4444', '#f97316', '#f5b82e', '#84cc16', '#22c55e', '#14b8a6',
-    '#38bdf8', '#3b82f6', '#6366f1', '#8b5cf6', '#d946ef', '#f43f5e',
-    '#9ca3af', '#f1c27d', '#92400e', '#7f1d1d', '#1e3a8a', '#111111',
   ],
   inkNames: [
+    'Black', 'Red', 'Blue', 'Green', 'Orange', 'Amber',
+    'Lime', 'Teal', 'Sky blue', 'Indigo', 'Violet', 'Magenta',
+    'Rose', 'Brown', 'Dark red', 'Navy', 'Grey', 'Skin',
     'White chalk', 'Yellow chalk', 'Pink chalk', 'Blue chalk', 'Mint', 'Lilac',
-    'Red', 'Orange', 'Amber', 'Lime', 'Green', 'Teal',
-    'Sky blue', 'Blue', 'Indigo', 'Violet', 'Magenta', 'Rose',
-    'Grey', 'Skin', 'Brown', 'Dark red', 'Navy', 'Black',
   ],
   sizes: [9, 20] as [number, number],
   head: 'CabinSketch_700Bold',
@@ -47,6 +49,8 @@ export const SL = {
 const ROOMS = {
   dark: {
     board: '#10153a', boardDeep: '#0b0f2a', boardSoft: '#b6bdd8', boardDim: '#7d86a6',
+    // The drawing surface (Yazan 2026-11-02): the soft beige of Streak Master's boxes, dark brown text on it.
+    paper: '#efe4cb', paperDeep: '#e3d4b2', paperInk: '#3b2f1c', paperSoft: '#6b5a3e',
     ink: '#f1eedf', soft: '#b6bdd8', dim: '#7d86a6', mark: '#f2df8a', alarm: '#f3a6b6',
     card: 'rgba(12,16,40,0.8)', line: 'rgba(241,238,223,0.35)', btn: '#f2df8a', btnText: '#1d2b22', onInk: '#1d2b22',
   },
@@ -80,10 +84,10 @@ export function Kicker({ children, color }: { children: ReactNode; color?: strin
   return <Text style={[s.kick, { color }]}>{typeof children === 'string' ? children.toUpperCase() : children}</Text>;
 }
 
-export function ChalkTitle({ children, size = 26, color, style }: { children: ReactNode; size?: number; color?: string; style?: StyleProp<TextStyle> }) {
+export function ChalkTitle({ children, size = 26, color, style, numberOfLines }: { children: ReactNode; size?: number; color?: string; style?: StyleProp<TextStyle>; numberOfLines?: number }) {
   const R = useSlateRoom();
   color ??= R.ink;
-  return <Text style={[{ fontFamily: SL.head, fontSize: u(size), lineHeight: u(size * 1.15), color }, style]}>{children}</Text>;
+  return <Text numberOfLines={numberOfLines} style={[{ fontFamily: SL.head, fontSize: u(size), lineHeight: u(size * 1.15), color }, style]}>{children}</Text>;
 }
 
 export function Note({ children, style }: { children: ReactNode; style?: StyleProp<TextStyle> }) {
@@ -96,10 +100,25 @@ export function Panel({ children, style }: { children: ReactNode; style?: StyleP
   return <View style={[s.panel, { backgroundColor: R.card, borderColor: R.line }, style]}>{children}</View>;
 }
 
+/**
+ * The framed board sized to the space actually left (Yazan 2026-11-02): the board keeps its shape (height = width x
+ * ratio) and shrinks on short screens, so the hint above and the guess box or chalk ledge below never overlap it.
+ */
+export function FitFrame({ ratio, maxW, children }: { ratio: number; maxW: number; children: ReactNode }) {
+  const [area, setArea] = useState<{ w: number; h: number } | null>(null);
+  const fw = SL.frameW * 2;
+  const width = area ? Math.max(0, Math.min(area.w, maxW, (area.h - fw) / ratio + fw)) : 0;
+  return (
+    <View style={s.fit} onLayout={(e) => setArea({ w: e.nativeEvent.layout.width, h: e.nativeEvent.layout.height })}>
+      {area ? <Frame style={{ width }}>{children}</Frame> : null}
+    </View>
+  );
+}
+
 /** The big board in its wooden frame, with the soft inner shadow of a real slate. */
 export function Frame({ children, style }: { children: ReactNode; style?: StyleProp<ViewStyle> }) {
   return (
-    <View style={[s.frame, { backgroundColor: useSlateRoom().board }, style]}>
+    <View style={[s.frame, { backgroundColor: useSlateRoom().paper }, style]}>
       {children}
       <View pointerEvents="none" style={[StyleSheet.absoluteFill, { boxShadow: 'inset 0 0 28px rgba(0,0,0,0.45)' }]} />
     </View>
@@ -139,9 +158,9 @@ export function ChalkTimer({ leftMs, totalMs, size = 46 }: { leftMs: number; tot
  * ChalkTimer that follows its clock on every tick by itself (`leftAt` turns the clock's time into ms left), so the
  * screen around it redraws only when something else on it changes.
  */
-export function ClockChalkTimer({ clock, leftAt, totalMs }: { clock: Clock; leftAt: (now: number) => number; totalMs: number }) {
+export function ClockChalkTimer({ clock, leftAt, totalMs, size }: { clock: Clock; leftAt: (now: number) => number; totalMs: number; size?: number }) {
   const now = useClock(clock);
-  return <ChalkTimer leftMs={leftAt(now)} totalMs={totalMs} />;
+  return <ChalkTimer leftMs={leftAt(now)} totalMs={totalMs} size={size} />;
 }
 
 /** The hint ladder for the room (SA5): word count, field, then the blanks filling in. */
@@ -242,22 +261,23 @@ export function Peek({ word }: { word: string }) {
 }
 
 /** The chalk-outlined pause button that sits by the timer. */
-export function PauseBtn({ onPress }: { onPress: () => void }) {
+export function PauseBtn({ onPress, small }: { onPress: () => void; small?: boolean }) {
   const R = useSlateRoom();
   return (
-    <Pressable onPress={onPress} hitSlop={u(8)} style={[s.pause, { borderColor: R.line }]} accessibilityRole="button" accessibilityLabel="Pause">
-      <Text style={[s.pauseT, { color: R.ink }]}>❚❚</Text>
+    <Pressable onPress={onPress} hitSlop={u(8)} style={[s.pause, small && s.pauseSmall, { borderColor: R.line }]} accessibilityRole="button" accessibilityLabel="Pause">
+      <Text style={[s.pauseT, small && { fontSize: u(9) }, { color: R.ink }]}>❚❚</Text>
     </Pressable>
   );
 }
 
 /** Page top: a small chalk kicker, the big line (a name, "Who got it?"), and the timer or pause on the right. */
-export function TopRow({ kicker, title, color, right }: { kicker: string; title: string; color?: string; right?: ReactNode }) {
+export function TopRow({ kicker, title, color, right, small }: { kicker: string; title: string; color?: string; right?: ReactNode; small?: boolean }) {
   return (
     <View style={s.top}>
-      <View style={{ flex: 1, gap: u(2) }}>
+      <View style={{ flex: 1, gap: u(2), minWidth: 0 }}>
         <Kicker>{kicker}</Kicker>
-        <ChalkTitle size={22} color={color} style={{ lineHeight: u(26) }}>
+        {/* small: one line in online play, so the board gets the room (Yazan 2026-11-02). */}
+        <ChalkTitle size={small ? 13 : 22} color={color} style={{ lineHeight: u(small ? 17 : 26) }} numberOfLines={small ? 1 : undefined}>
           {title}
         </ChalkTitle>
       </View>
@@ -303,8 +323,8 @@ export function Scores({ rows }: { rows: { key: string | number; name: string; s
 export function PausedCover() {
   const R = useSlateRoom();
   return (
-    <View style={[StyleSheet.absoluteFill, s.cover, { backgroundColor: R.boardDeep }]}>
-      <ChalkTitle size={24} color={R.boardSoft}>
+    <View style={[StyleSheet.absoluteFill, s.cover, { backgroundColor: R.paperDeep }]}>
+      <ChalkTitle size={24} color={R.paperSoft}>
         Paused
       </ChalkTitle>
     </View>
@@ -339,7 +359,9 @@ const s = StyleSheet.create({
   sep: { width: 1, height: u(18), backgroundColor: 'rgba(0,0,0,0.25)' },
   peek: { flex: 1.15, justifyContent: 'center', borderWidth: 1, borderStyle: 'dashed', borderRadius: u(10), paddingVertical: u(10), paddingHorizontal: u(10) },
   pause: { width: u(34), height: u(34), borderRadius: u(17), borderWidth: 1.5, borderStyle: 'dashed', alignItems: 'center', justifyContent: 'center' },
+  pauseSmall: { width: u(22), height: u(22), borderRadius: u(11) },
   pauseT: { fontFamily: SL.body, fontSize: u(11) },
+  fit: { flex: 1, alignSelf: 'stretch', alignItems: 'center', justifyContent: 'center', minHeight: u(90) },
   top: { flexDirection: 'row', alignItems: 'center', gap: u(10) },
   topRight: { flexDirection: 'row', alignItems: 'center', gap: u(8) },
   chip: { flexDirection: 'row', alignItems: 'center', gap: u(6), borderWidth: 1.5, borderStyle: 'dashed', borderRadius: u(20), paddingVertical: u(6), paddingHorizontal: u(12) },

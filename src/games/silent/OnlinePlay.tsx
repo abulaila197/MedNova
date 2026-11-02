@@ -25,7 +25,7 @@ import { Board, Sketch, liveStroke, type BoardHandle, type Stroke } from './Boar
 import { SA } from './core';
 import { WORDS, wordName } from './data';
 import { ownSketches, useOwnItems } from '@/online/own';
-import { ChalkBtn, ChalkTitle, ClockChalkTimer, Frame, HintCard, HintLine, Kicker, Ledge, Note, Panel, PauseBtn, SL, Scores, SlateScreen, TopRow, useSlateRoom } from './slate';
+import { ChalkBtn, FitFrame, ChalkTitle, ClockChalkTimer, Frame, HintCard, HintLine, Kicker, Ledge, Note, Panel, PauseBtn, SL, Scores, SlateScreen, TopRow, useSlateRoom } from './slate';
 
 /** Everyone sees the same board shape online, so a drawing lands in the same place on every phone. */
 const RATIO = 1.1;
@@ -215,7 +215,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
         <Note style={{ marginTop: -u(6) }}>{w?.field}</Note>
         {strokes.turn === st.index && strokes.list.length ? (
           <Frame style={{ width: '62%', alignSelf: 'center' }}>
-            <Sketch strokes={strokes.list} bg={R.board} ratio={RATIO} />
+            <Sketch strokes={strokes.list} bg={R.paper} ratio={RATIO} />
           </Frame>
         ) : null}
         <Panel style={{ paddingVertical: u(10), marginRight: u(34) }}>
@@ -232,7 +232,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   if (drawing) {
     return (
       <SlateScreen>
-        <TopRow kicker={`${kick} · you’re drawing`} title={w ? w.name : ''} color={R.mark} right={<><ClockChalkTimer clock={clock} leftAt={leftAt} totalMs={turnMs} /><PauseBtn onPress={pause} /></>} />
+        <TopRow small kicker={`${kick} · you’re drawing`} title={w ? w.name : ''} color={R.mark} right={<><ClockChalkTimer size={28} clock={clock} leftAt={leftAt} totalMs={turnMs} /><PauseBtn small onPress={pause} /></>} />
         <DrawSide turn={st.index} matchId={matchId} channel={channel} wrong={<WrongGuesses list={sa.guesses} players={st.players} />} />
         <Note style={{ textAlign: 'center' }}>{`${st.players.filter((p) => p.solved).length} of ${st.players.filter((p) => !p.dropped && !p.drawer).length} guessed it · no letters or numbers on the board`}</Note>
         {extras}
@@ -244,17 +244,14 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
     <SlateScreen>
       {/* The guess box sits at the bottom: lift it over the keyboard (the board shrinks, minHeight keeps a bit). */}
       <KeyboardLift style={s.lift}>
-        <TopRow kicker={kick} title={`${drawer?.name ?? 'Someone'} is drawing`} color={colorOf(drawer)} right={<><ClockChalkTimer clock={clock} leftAt={leftAt} totalMs={turnMs} /><PauseBtn onPress={pause} /></>} />
+        <TopRow small kicker={`${kick} · drawing`} title={drawer?.name ?? 'Someone'} color={colorOf(drawer)} right={<>{playing ? <ReportFlag sa={sa} matchId={matchId} load={load} /> : null}<ClockChalkTimer size={28} clock={clock} leftAt={leftAt} totalMs={turnMs} /><PauseBtn small onPress={pause} /></>} />
         {typing && playing ? null : <HintCard hint={{ words: sa.words ?? 1, field: sa.field, mask: sa.mask }} />}
-        <View style={s.fill}>
-          <Frame style={{ width: '100%', maxWidth: u(330) }}>
-            <Sketch strokes={strokes.turn === st.index ? strokes.list : []} live={live} bg={R.board} ratio={RATIO} />
-            <WrongGuesses list={sa.guesses} players={st.players} />
-          </Frame>
-        </View>
+        <FitFrame ratio={RATIO} maxW={u(330)}>
+          <Sketch strokes={strokes.turn === st.index ? strokes.list : []} live={live} bg={R.paper} ratio={RATIO} />
+          <WrongGuesses list={sa.guesses} players={st.players} />
+        </FitFrame>
         {typing && playing ? <HintLine hint={{ words: sa.words ?? 1, field: sa.field, mask: sa.mask }} /> : null}
         {playing ? <GuessBox key={st.index} solved={st.me?.solved_ms != null} points={st.me?.points ?? 0} rank={st.me?.rank ?? null} matchId={matchId} load={load} onClose={() => void channel.current?.send({ type: 'broadcast', event: 'close', payload: { user_id: me } })} /> : <Note style={{ textAlign: 'center' }}>{watchLine}</Note>}
-        {playing ? <ReportBtn sa={sa} matchId={matchId} load={load} /> : null}
       </KeyboardLift>
       {extras}
     </SlateScreen>
@@ -292,12 +289,10 @@ function DrawSide({ turn, matchId, channel, wrong }: { turn: number; matchId: st
 
   return (
     <>
-      <View style={s.fill}>
-        <Frame style={{ width: '100%', maxWidth: u(330) }}>
-          <Board key={turn} ref={board} color={SL.inks[ink]} width={SL.sizes[size]} erase={erase} bg={R.board} ratio={RATIO} onChange={save} onLive={onLive} />
-          {wrong}
-        </Frame>
-      </View>
+      <FitFrame ratio={RATIO} maxW={u(330)}>
+        <Board key={turn} ref={board} color={SL.inks[ink]} width={SL.sizes[size]} erase={erase} bg={R.paper} ratio={RATIO} onChange={save} onLive={onLive} />
+        {wrong}
+      </FitFrame>
       <Ledge ink={ink} size={size} erase={erase} onInk={(i) => (setInk(i), setErase(false))} onSize={() => setSize(size ? 0 : 1)} onErase={() => setErase(!erase)} onUndo={() => board.current?.undo()} onClear={() => board.current?.clear()} />
     </>
   );
@@ -371,6 +366,22 @@ function GuessBox({ solved, points, rank, matchId, load, onClose }: { solved: bo
 }
 
 /** SA7: two reports from different players cancel the drawer's points for this turn. */
+/** Report, as a small flag in the top row while guessing (Yazan 2026-11-02: not under the guess box). */
+function ReportFlag({ sa, matchId, load }: { sa: NonNullable<RaceState['sa']>; matchId: string; load: () => Promise<void> }) {
+  const R = useSlateRoom();
+  return (
+    <Pressable
+      disabled={sa.reported}
+      hitSlop={u(8)}
+      onPress={() => call('sa_report', { m: matchId }).then(load).catch(() => {})}
+      style={[s.flag, { borderColor: sa.reported ? R.line : R.alarm, opacity: sa.reported ? 0.5 : 1 }]}
+      accessibilityRole="button"
+      accessibilityLabel={sa.reported ? 'Drawing reported' : 'Report this drawing (letters or rude)'}>
+      <Text style={[s.flagT, { color: sa.reported ? R.dim : R.alarm }]}>⚑</Text>
+    </Pressable>
+  );
+}
+
 function ReportBtn({ sa, matchId, load }: { sa: NonNullable<RaceState['sa']>; matchId: string; load: () => Promise<void> }) {
   const R = useSlateRoom();
   return (
@@ -398,6 +409,8 @@ const s = StyleSheet.create({
   report: { alignSelf: 'center', paddingVertical: u(4), marginRight: u(34) },
   reportT: { fontFamily: SL.body, fontSize: u(13) },
   wrong: { position: 'absolute', top: u(5), left: u(5), maxWidth: '45%', gap: u(2.5), alignItems: 'flex-start' },
-  wrongRow: { flexDirection: 'row', alignItems: 'center', gap: u(3), maxWidth: '100%', paddingLeft: u(1.5), paddingRight: u(5), paddingVertical: u(1), borderRadius: u(8), backgroundColor: 'rgba(255,255,255,0.08)', borderWidth: 1, borderColor: 'rgba(255,255,255,0.12)' },
-  wrongT: { flexShrink: 1, fontFamily: SL.body, fontSize: u(9), lineHeight: u(11), color: SL.chalk },
+  wrongRow: { flexDirection: 'row', alignItems: 'center', gap: u(3), maxWidth: '100%', paddingLeft: u(1.5), paddingRight: u(5), paddingVertical: u(1), borderRadius: u(8), backgroundColor: 'rgba(59,47,28,0.07)', borderWidth: 1, borderColor: 'rgba(59,47,28,0.18)' },
+  wrongT: { flexShrink: 1, fontFamily: SL.body, fontSize: u(9), lineHeight: u(11), color: '#3b2f1c' },
+  flag: { width: u(22), height: u(22), borderRadius: u(11), borderWidth: 1.5, alignItems: 'center', justifyContent: 'center' },
+  flagT: { fontSize: u(10.5), lineHeight: u(13) },
 });

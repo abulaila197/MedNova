@@ -29,7 +29,7 @@ export function FitBoard({ boardKey, boardRef, shapeRef, ink, size, erase, enabl
     <View style={s.fill} onLayout={(e) => setArea({ w: e.nativeEvent.layout.width, h: e.nativeEvent.layout.height })}>
       {area && ratio ? (
         <Frame style={{ width }}>
-          <Board key={boardKey} ref={boardRef} color={SL.inks[ink]} width={SL.sizes[size]} erase={erase} bg={room.board} enabled={enabled && !paused} initial={initial} onStrokes={onStrokes} ratio={ratio} />
+          <Board key={boardKey} ref={boardRef} color={SL.inks[ink]} width={SL.sizes[size]} erase={erase} bg={room.paper} enabled={enabled && !paused} initial={initial} onStrokes={onStrokes} ratio={ratio} />
           {paused ? <PausedCover /> : null}
         </Frame>
       ) : null}

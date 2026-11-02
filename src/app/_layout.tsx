@@ -19,6 +19,10 @@ import { bootStart, endIntro, useStart, useStartReady } from '@/state/start';
 import { View } from 'react-native';
 import { FRAME_W, useScreen } from '@/theme/scale';
 import { THEMES } from '@/theme/tokens';
+import { freshImagesOnUpdate } from '@/lib/freshImages';
+
+// Before any picture shows: drop a picture cache left over from an older install (see freshImages.ts).
+void freshImagesOnUpdate();
 
 export { CrashScreen as ErrorBoundary } from '@/components/CrashScreen';
 

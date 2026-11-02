@@ -224,7 +224,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
         <Note style={{ marginTop: -u(6) }}>{w?.field}</Note>
         {t.kind === 'drawing' && sketch?.index === run.index && sketch.strokes.length ? (
           <Frame style={{ width: '62%', alignSelf: 'center' }}>
-            <Board color={SL.chalk} width={SL.sizes[0]} erase={false} bg={R.board} enabled={false} initial={sketch.strokes} ratio={sketch.ratio} />
+            <Board color={SL.chalk} width={SL.sizes[0]} erase={false} bg={R.paper} enabled={false} initial={sketch.strokes} ratio={sketch.ratio} />
           </Frame>
         ) : null}
         <Panel>
