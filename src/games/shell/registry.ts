@@ -1,3 +1,4 @@
+import { PARKED_KEYS } from '../../data/games';
 import type { GameDef } from './types';
 
 /*
@@ -25,7 +26,9 @@ const LOAD: Record<string, () => GameDef> = {
 
 const loaded = new Map<string, GameDef>();
 
+/** A parked game (taken off the Games page, Yazan 2026-11-04) has no pages: its links fall back to the Games page. */
 export function gameDef(key: string): GameDef | null {
+  if (PARKED_KEYS.includes(key)) return null;
   const hit = loaded.get(key);
   if (hit) return hit;
   const load = LOAD[key];

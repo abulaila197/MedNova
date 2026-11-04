@@ -14,7 +14,7 @@ export const INTENTS = [
   { key: 'collaborate', hint: 'Teaching, cases, development or partnership…' },
 ];
 
-// ---------- FAQ ("Chapters, revised"): rewritten 2026-10-11 for the 10 live games, refreshed 2026-11-01 for the 13 games,
+// ---------- FAQ ("Chapters, revised"): rewritten 2026-10-11 for the 10 live games, refreshed 2026-11-01 for the 13 games, 10 since 2026-11-04,
 // Sparks, missions, chests, watching and the online busy line (Yazan picked a full refresh, Group 11).
 export type Faq = { q: string; a: string; scoring?: boolean };
 export type Chapter = { n: string; chip: string; title: string; tag: string; items: Faq[] };
@@ -49,8 +49,7 @@ export const CHAPTERS: Chapter[] = [
       { q: 'How do The Streak Master and The Quiz Parade work?', a: 'The Streak Master is a race against the clock: every right answer in a row is worth one point more than the last, and a wrong answer resets your streak. The Quiz Parade marches through seven kinds of question, each on its own clock, and harder kinds score more.' },
       { q: 'How do The Riddler and Nova Crossword work?', a: 'The Riddler shows a picture riddle that you read as a condition or sign. Nova Crossword is a medical crossword: tap a square to light up its word, double tap to open it, and you have 3 hearts per puzzle (5 online). Both are played level by level, and stars open the next level.' },
       { q: 'How does The Wheels of Chaos work?', a: 'One wheel with three rings picks how many questions you get, their style and their field. Reach the target first, 25 or 50 points. With friends, each act ends in a Boss Round, and in the final round whoever is last can swap a turn for a Redemption round, once a game.' },
-      { q: 'What are The Silent Artist and The Conqueror?', a: 'In The Silent Artist you pick one of 3 secret words and draw it (or act it out on one phone) while everyone guesses. The Conqueror is a war of questions: answer to raise troops, play 6 kinds of action card, make alliances and take your rivals\' lands. Lose your capital and you are out.' },
-      { q: 'What are Code Clinic, Nova Password and The Imposter?', a: 'Code Clinic: two teams, and each spymaster gives one-word clues to find their team\'s cards and avoid the deadly one. Nova Password: in teams of two, one partner gives one-word clues until the other guesses the term. The Imposter: everyone gets the same word except one player, and you give clues and vote to catch them.' },
+      { q: 'What are The Silent Artist and The Imposter?', a: 'In The Silent Artist you pick one of 3 secret words and draw it (or act it out on one phone) while everyone guesses. In The Imposter everyone gets the same word except one player, and you give clues and vote to catch them.' },
     ],
   },
   {
@@ -59,7 +58,7 @@ export const CHAPTERS: Chapter[] = [
     title: 'Playing together',
     tag: 'Multiplayer',
     items: [
-      { q: 'How do I play with friends?', a: 'Most games have Pass the phone, where you take turns on one phone, and Online, where everyone plays live on their own phone. Host a room and share its code, join an open room, or challenge a friend from their profile. The Conqueror is online only. Many games also let the host split players into teams.' },
+      { q: 'How do I play with friends?', a: 'Most games have Pass the phone, where you take turns on one phone, and Online, where everyone plays live on their own phone. Host a room and share its code, join an open room, or challenge a friend from their profile. Many games also let the host split players into teams.' },
       { q: 'Can I watch a friend play?', a: 'Yes. Tap Watch on a friend who is in a match. They get a Yes or No first, and can let you always watch. Up to 3 people can watch a match; if it is full, try again at the rematch.' },
       { q: 'Why does it say the servers are busy?', a: 'When a lot of people are playing online at once, a new match waits its turn. Your room stays open with a banner showing your place in line, and the match starts by itself. Matches already running are never stopped.' },
       { q: 'Why is Online resting?', a: 'Online play shares a weekly allowance. If a week\'s share runs out, new online matches rest until the day shown, and matches already running finish. Solo and Pass the phone always work.' },

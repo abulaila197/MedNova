@@ -259,7 +259,7 @@ function CasesPage() {
       <OfflineLine at={savedAt} />
       {err ? <Text style={[s.csA, { color: t.error }]}>{err}</Text> : null}
       {signedIn && list && !rows.length ? (
-        <Text style={[s.csA, { color: c.mute }]}>Nothing yet. Write a case or add a word for Silent Artist, Medicordle, Streak Master, Imposter or Password. You can practise it straight away; once approved it plays in rooms you host, and pays 10 tokens.</Text>
+        <Text style={[s.csA, { color: c.mute }]}>Nothing yet. Write a case or add a word for Silent Artist, Medicordle, Streak Master or Imposter. You can practise it straight away; once approved it plays in rooms you host, and pays 10 tokens.</Text>
       ) : null}
       <View>
         {rows.map((r, i) => (

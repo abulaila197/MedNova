@@ -6,15 +6,22 @@ export const GAMES: Game[] = [
   { key: 'the-diagnostic-pursuit', lead: 'The Diagnostic', em: 'Pursuit', sub: 'The Road to Diagnosis', desc: 'Race the clock to the right diagnosis, one clue at a time.' },
   { key: 'the-silent-artist', lead: 'The Silent', em: 'Artist', sub: 'Chalk and Silence', desc: 'Draw the diagnosis without words while friends guess.' },
   // Trust Me Not was cancelled (Yazan 2026-10-24); its code and database stay, it just isn't listed.
+  // The Conqueror, Nova Password and Code Clinic were taken off (Yazan 2026-11-04, point 6): same, kept in PARKED_GAMES.
   { key: 'nova-crossword', lead: 'Nova', em: 'Crossword', sub: "The Clinician's Grid", desc: 'Fill the grid with diseases, drugs and signs.' },
   { key: 'the-quiz-parade', lead: 'The Quiz', em: 'Parade', sub: 'March of Minds', desc: 'Seven kinds of question, one after another. Harder ones score more.' },
   { key: 'the-riddler', lead: 'The', em: 'Riddler', sub: 'Puzzles in Plain Sight', desc: 'Picture riddles that spell out a condition or sign.' },
-  { key: 'the-conqueror', lead: 'The', em: 'Conqueror', sub: 'The Last Empire', desc: "Answer right to seize land and take over your rivals' territory." },
-  { key: 'nova-password', lead: 'Nova', em: 'Password', sub: 'One Word Away', desc: 'One-word clues, one secret term. The fewest clues wins.' },
   { key: 'nova-medicordle', lead: 'Nova', em: 'Medicordle', sub: 'Word of the Ward', desc: 'Guess the hidden medical term in six tries.' },
   { key: 'the-streak-master', lead: 'The Streak', em: 'Master', sub: 'One Miss Away', desc: 'Answer in a row and keep your streak alive.' },
-  { key: 'code-clinic', lead: 'Code', em: 'Clinic', sub: 'Read Between the Lines', desc: 'Two teams, one-word clues. Find your cards, never the deadly one.' },
   { key: 'case-files-unsolved', lead: 'Case', em: 'Files', sub: 'Unsolved Differentials', desc: 'Open the file, follow the clues and close the case.' },
   { key: 'the-wheels-of-chaos', lead: 'The Wheels of', em: 'Chaos', sub: 'Spin of Fate', desc: 'Spin the wheel and take on whatever case it lands on.' },
   { key: 'imposter', lead: 'The', em: 'Imposter', sub: 'Who Walked In', desc: 'One player has a different word. Find who walked in.' },
 ];
+
+/** Games taken off the Games page but kept for later (Yazan 2026-11-04): code, art, banks and database all stay. */
+export const PARKED_GAMES: Game[] = [
+  { key: 'the-conqueror', lead: 'The', em: 'Conqueror', sub: 'The Last Empire', desc: "Answer right to seize land and take over your rivals' territory." },
+  { key: 'nova-password', lead: 'Nova', em: 'Password', sub: 'One Word Away', desc: 'One-word clues, one secret term. The fewest clues wins.' },
+  { key: 'code-clinic', lead: 'Code', em: 'Clinic', sub: 'Read Between the Lines', desc: 'Two teams, one-word clues. Find your cards, never the deadly one.' },
+];
+
+export const PARKED_KEYS: readonly string[] = PARKED_GAMES.map((g) => g.key);

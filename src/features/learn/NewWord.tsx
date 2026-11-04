@@ -15,7 +15,7 @@ import { F } from '@/theme/tokens';
 import { saveWord, type WordData, type WordGame } from './cases';
 import { Box, Chips, Field, inp, Label, ph, s } from './NewCase';
 
-export const WORD_GAMES: WordGame[] = ['the-silent-artist', 'nova-medicordle', 'the-streak-master', 'imposter', 'nova-password'];
+export const WORD_GAMES: WordGame[] = ['the-silent-artist', 'nova-medicordle', 'the-streak-master', 'imposter'];  // Nova Password parked 2026-11-04
 export const gameLabel = (g: string) => {
   const x = GAMES.find((y) => y.key === g);
   return x ? `${x.lead.replace(/^The /, '')} ${x.em}`.trim() : g;

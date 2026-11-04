@@ -37,7 +37,7 @@ export type AchKey =
 
 // Goals per tier: Bronze, Silver, Gold and Platinum (about 2.5x Gold, Yazan 2026-10-13). Full Marks and Dossier Reader
 // already ask for the whole set at Gold, so they have no Platinum. "Get to know the app" is one step-set (one tier).
-export const ACHIEVEMENTS: readonly { key: AchKey; name: string; what: string; goals: number[] }[] = [
+export const ALL_ACHIEVEMENTS: readonly { key: AchKey; name: string; what: string; goals: number[] }[] = [
   { key: 'first_rounds', name: 'First Rounds', what: 'Finish games', goals: [1, 50, 250, 600] },
   { key: 'full_rotation', name: 'Full Rotation', what: 'Play every game', goals: [1, 5, 20, 50] },
   { key: 'night_shift', name: 'Night Shift', what: 'Finish games after midnight', goals: [1, 10, 50, 125] },
@@ -70,6 +70,10 @@ export const ACHIEVEMENTS: readonly { key: AchKey; name: string; what: string; g
   { key: 'title_collector', name: 'Name Tags', what: 'Own titles from the Style shop', goals: [1, 5, 10, 14] },
   { key: 'app_tour', name: 'Get to Know MedNova', what: 'Visit every page outside the games', goals: [1] },
 ];
+
+/** Hidden while their games are parked (Yazan 2026-11-04): The Conqueror, Nova Password and Code Clinic. */
+export const PARKED_ACHIEVEMENTS: readonly AchKey[] = ['conqueror', 'one_word', 'code_breaker'];
+export const ACHIEVEMENTS = ALL_ACHIEVEMENTS.filter((a) => !PARKED_ACHIEVEMENTS.includes(a.key));
 
 /** The pages "Get to Know MedNova" asks for (the server checks the same list). */
 export const TOUR_STEPS: readonly { key: string; name: string; path: string }[] = [
@@ -129,10 +133,11 @@ export type AchInputs = {
 };
 
 /** Every game on the Games page, for Full Rotation (Trust Me Not was cancelled; the 4 new games added 2026-11-01). */
+// 2026-11-04: The Conqueror, Nova Password and Code Clinic were taken off, so 10 games (server rotation_games() matches).
 export const ROTATION_GAMES: GameKey[] = [
-  'case-files-unsolved', 'the-conqueror', 'nova-crossword', 'the-diagnostic-pursuit', 'nova-medicordle',
+  'case-files-unsolved', 'nova-crossword', 'the-diagnostic-pursuit', 'nova-medicordle',
   'the-riddler', 'the-silent-artist', 'the-streak-master', 'the-wheels-of-chaos',
-  'the-quiz-parade', 'nova-password', 'code-clinic', 'imposter',
+  'the-quiz-parade', 'imposter',
 ];
 
 const OWNER = 0;
@@ -215,6 +220,6 @@ export function achievementProgress(i: AchInputs): Record<AchKey, number> {
 
 /** Tiers reached: 0 none, 1 bronze, 2 silver, 3 gold, 4 platinum. */
 export function tiersReached(key: AchKey, count: number): number {
-  const a = ACHIEVEMENTS.find((x) => x.key === key);
+  const a = ALL_ACHIEVEMENTS.find((x) => x.key === key);
   return a ? a.goals.filter((g) => count >= g).length : 0;
 }

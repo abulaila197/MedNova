@@ -1,4 +1,4 @@
-// Grand Rounds (Yazan 2026-10-13, missions 2026-10-25): a 16-week cycle; each week has 3 missions counted in Sparks
+// Grand Rounds (Yazan 2026-10-13, missions 2026-10-25): a 13-week cycle (16 until 2026-11-04, when 3 games were parked); each week has 3 missions counted in Sparks
 // used, each paying a chest, counted on the server from synced spends.
 import { create } from 'zustand';
 
@@ -36,7 +36,7 @@ export type Rounds = {
 export const EPIC_RUN = 4;
 
 /** 13 game weeks, then an Online, a Solo and a Pass the phone week. */
-export const CYCLE_WEEKS = 16;
+export const CYCLE_WEEKS = 13;
 export const CHEST_NAME: Record<ChestKind, string> = { wooden: 'Wooden chest', golden: 'Golden chest', diamond: 'Diamond chest' };
 const MODE_WEEK: Record<string, string> = { online: 'Online week', solo: 'Solo week', offline: 'Pass the phone week' };
 const MODE_NAME: Record<string, string> = { online: 'Online', solo: 'Solo', offline: 'Pass the phone' };

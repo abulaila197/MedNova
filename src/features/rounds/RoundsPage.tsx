@@ -61,12 +61,12 @@ function WeekSign({ w, px, t, dim }: { w: Week; px: number; t: Theme; dim?: bool
 
 // The same order as rounds_week on the server.
 const CYCLE: Week[] = [
-  ...['the-diagnostic-pursuit', 'the-silent-artist', 'nova-crossword', 'the-quiz-parade', 'the-riddler', 'the-conqueror', 'nova-password', 'nova-medicordle', 'the-streak-master', 'code-clinic', 'case-files-unsolved', 'the-wheels-of-chaos', 'imposter'].map(
+  ...['the-diagnostic-pursuit', 'the-silent-artist', 'nova-crossword', 'the-quiz-parade', 'the-riddler', 'nova-medicordle', 'the-streak-master', 'case-files-unsolved', 'the-wheels-of-chaos', 'imposter'].map(
     (game, slot) => ({ kind: 'game' as const, slot, game }),
   ),
-  { kind: 'mode', slot: 13, mode: 'online' },
-  { kind: 'mode', slot: 14, mode: 'solo' },
-  { kind: 'mode', slot: 15, mode: 'offline' },
+  { kind: 'mode', slot: 10, mode: 'online' },
+  { kind: 'mode', slot: 11, mode: 'solo' },
+  { kind: 'mode', slot: 12, mode: 'offline' },
 ];
 const slotOf = (week: number) => ((week % CYCLE_WEEKS) + CYCLE_WEEKS) % CYCLE_WEEKS;
 
@@ -223,7 +223,7 @@ export function RoundsPage() {
         </Text>
         <View style={{ height: u(30) }} />
       </InfoScroll>
-      <Congrats open={won > 0} tokens={won} title="Every week stamped" line="A stamp from all 16 Grand Rounds weeks. Your tokens are in your wallet, and a new count starts now." onClose={() => setWon(0)} />
+      <Congrats open={won > 0} tokens={won} title="Every week stamped" line="A stamp from all 13 Grand Rounds weeks. Your tokens are in your wallet, and a new count starts now." onClose={() => setWon(0)} />
     </Screen>
   );
 }

@@ -3,7 +3,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import type { GameKey, Mode, Play, PlayItem } from '../../../games/engine/types';
-import { ACHIEVEMENTS, achievementProgress, ROTATION_GAMES, tiersReached, tierTokens, type AchInputs } from '../progress';
+import { ACHIEVEMENTS, ALL_ACHIEVEMENTS, achievementProgress, ROTATION_GAMES, tiersReached, tierTokens, type AchInputs } from '../progress';
 
 const NOON = new Date(2026, 9, 10, 12, 0).getTime();
 let n = 0;
@@ -36,11 +36,11 @@ test('achievements: finished plays, unfinished and other accounts left out', () 
 
 test('achievements: full rotation is the least-played game', () => {
   const keys: GameKey[] = [...ROTATION_GAMES];
-  assert.equal(keys.length, 13);
+  assert.equal(keys.length, 10);
   assert.ok(!keys.includes('trust-me-not'));
-  const most = keys.slice(0, 12).flatMap((g) => [play(g), play(g)]);
+  const most = keys.slice(0, 9).flatMap((g) => [play(g), play(g)]);
   assert.equal(achievementProgress(base({ plays: most })).full_rotation, 0);
-  const last = keys[12];
+  const last = keys[9];
   const all = [...most, play(last), play(last), play('the-riddler'), play('trust-me-not')];
   assert.equal(achievementProgress(base({ plays: all })).full_rotation, 2);
 });
@@ -159,8 +159,9 @@ test('achievements: offline games, inputs, and house call with friends only', ()
 
 test('achievements: every key has a count and tiers follow the goals', () => {
   const r = achievementProgress(base());
-  assert.deepEqual(Object.keys(r).sort(), ACHIEVEMENTS.map((a) => a.key).sort());
-  assert.equal(ACHIEVEMENTS.length, 30);
+  assert.deepEqual(Object.keys(r).sort(), ALL_ACHIEVEMENTS.map((a) => a.key).sort());
+  assert.equal(ALL_ACHIEVEMENTS.length, 30);
+  assert.equal(ACHIEVEMENTS.length, 27, 'Conqueror, One Word Wonder and Code Breaker are hidden while their games are parked');
   assert.equal(tiersReached('hot_streak', 9), 0);
   assert.equal(tiersReached('hot_streak', 10), 1);
   assert.equal(tiersReached('hot_streak', 34), 2);
