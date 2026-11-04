@@ -18,8 +18,8 @@ import { PauseMenu } from '../shell/PauseMenu';
 import { teamLap, teamsOf } from '../shell/teams';
 import type { PlayProps } from '../shell/types';
 import { GameScreen, Kick } from '../shell/ui';
-import { mixQueue, startRound, timeLeft, type Answer, type Style } from './core';
-import { bank, idsOf, poolFor, questionById } from './data';
+import { mixQueue, typeCycle, startRound, timeLeft, type Answer, type Style } from './core';
+import { bank, idsOf, poolFor, questionById, typeOf } from './data';
 import {
   currentSeat, offlineRecap, offlineRows, paradeTieBreak, settleClosest, snapshotOffline, startOffline, stepOffline,
   type OfflineEvent, type OfflineRun,
@@ -48,8 +48,10 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
         const teams = teamsOf(play);
         const order = teams ? teamLap(seats, teams) : shuffle(seats.map((x) => x.seat));
         const pick = (ids: string[]) => engine.picker.pick(play.game, ids, ids.length);
-        const questions = style === 'mixed' ? mixQueue(await pick(idsOf('clinical')), await pick(idsOf('basic')), count) : (await pick(poolFor(style))).slice(0, count);
-        r = startOffline(order, questions);
+        // #15: the types take turns (no type again until every other has come up).
+        const pool = style === 'mixed' ? mixQueue(await pick(idsOf('clinical')), await pick(idsOf('basic')), Infinity) : await pick(poolFor(style));
+        const questions = typeCycle(pool, count, typeOf);
+        r = startOffline(order, questions, Math.random, typeOf);
         engine.recorder.bookmark(play.id, r, 0);
       }
       if (live) {

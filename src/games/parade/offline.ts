@@ -6,7 +6,7 @@ import { shuffle } from '../engine/random';
 import type { Row } from '../engine/standings';
 import type { Play } from '../engine/types';
 import { event, finishRecap, lastIndexOf, leadLine, sides, type RecapLine } from '../shell/recap';
-import { nearestSeats, POINTS, snapshotRound, startRound, stepRound, type Answer, type Question, type Round, type RoundEvent } from './core';
+import { nearestSeats, POINTS, snapshotRound, startRound, stepRound, typeCycle, type Answer, type Question, type Round, type RoundEvent } from './core';
 
 export const COUNTDOWN_MS = 3000; // "Get ready" before each turn, as in The Streak Master
 
@@ -38,8 +38,10 @@ export type OfflineEvent =
   | { type: 'NEXT' }
   | { type: 'REMOVE'; seat: number };
 
-export function startOffline(order: number[], questions: string[], rng: () => number = Math.random): OfflineRun {
-  return { order, turn: 0, queues: order.map(() => shuffle(questions, rng)), round: null, countdownUntil: null, phase: 'handoff', before: null, removed: [], results: [] };
+/** Each player gets the same questions in their own order; with `typeOf` the order keeps the type rounds (#15). */
+export function startOffline(order: number[], questions: string[], rng: () => number = Math.random, typeOf?: (id: string) => string | undefined): OfflineRun {
+  const line = () => (typeOf ? typeCycle(shuffle(questions, rng), questions.length, typeOf, rng) : shuffle(questions, rng));
+  return { order, turn: 0, queues: order.map(() => line()), round: null, countdownUntil: null, phase: 'handoff', before: null, removed: [], results: [] };
 }
 
 export const currentSeat = (r: OfflineRun) => r.order[r.turn];

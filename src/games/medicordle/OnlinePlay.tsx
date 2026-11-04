@@ -16,7 +16,7 @@ import { GameScreen } from '../shell/ui';
 import { MAX_ROWS, lengthCheck, minLen, soloExp, type Style } from './core';
 import { WORDS, isWord } from './data';
 import { ownWords, useOwnItems } from '@/online/own';
-import { SlideTable, TurnClock } from './Slides';
+import { HURRY_MS, SlideTable, TurnClock } from './Slides';
 
 const STYLE_NAME: Record<Style, string> = { classic: 'Classic', five: 'Classic', custom: 'Custom' };
 // The host's own words (My diseases) have numbers past the bank and come from the server.
@@ -59,6 +59,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   const [menu, setMenu] = useState(false);
   useBackPause(menu, setMenu);
   const [pending, setPending] = useState<string | null>(null);
+  const sendNo = useRef(0);
   const { alert, push } = useAlerts();
   const seen = useRef<{ key: string; solved: Set<string>; close: Set<string> }>({ key: '', solved: new Set(), close: new Set() });
 
@@ -114,9 +115,10 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   const last = st.index + 1 >= st.total;
   const nextIn = Math.max(0, Math.ceil((st.phase_ends_at - server) / 1000));
   const waiting = st.players.filter((p) => p.user_id !== me && !p.dropped && !p.done).length;
-  // NM28: the definition shows on your last guess (after the 5th miss), and to everyone when the word ends.
-  // #45 (Yazan 2026-10-26): it also shows to everyone once 20 s are left on the word.
-  const definition = reveal || (!solved && guesses.length >= MAX_ROWS - 1) || left <= NOTE_AT_MS ? w.definition : null;
+  // #9 (Yazan 2026-11-04): online the note opens only in the last 20 s of the word (not on the last guess any more),
+  // and to everyone when the word ends.
+  const hurry = !reveal && left <= NOTE_AT_MS;
+  const definition = reveal || hurry ? w.definition : null;
 
   const submit = (g: string) => {
     if (pending) return 'Sending…';
@@ -125,6 +127,20 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
     if (bad === 'long') return 'Too many letters';
     if (g !== w.word && !isWord(g)) return 'Not in word list';
     setPending(g);
+    // #25 (Yazan 2026-11-04): an answer that never comes (a busy server, a phone switching networks) used to keep
+    // "Sending…" for good. After 5 s the board is checked; a guess the server doesn't have frees the row.
+    const sentAt = ++sendNo.current;
+    setTimeout(() => {
+      if (sendNo.current !== sentAt) return;
+      void load().then(() => {
+        if (sendNo.current !== sentAt) return;
+        setPending((cur) => {
+          if (cur !== g) return cur;
+          setNotice('That guess didn’t go through. Try again.');
+          return null;
+        });
+      });
+    }, 5000);
     call<{ outcome: string }>('nm_guess', { m: matchId, word: g })
       .then((r) => {
         // The server ignored it (the word ended, or I was dropped for being away): nothing will land, so free the slot.
@@ -169,13 +185,15 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
         no: `WORD ${st.index + 1} OF ${st.total}`,
         title: 'Medicordle',
         sub: `Online · ${STYLE_NAME[style]} · ${w.word.length} letters`,
-        right: reveal ? undefined : <TurnClock ms={left} warn={left <= 10_000} />,
+        right: reveal ? undefined : <TurnClock ms={left} warn={left <= HURRY_MS} />,
       }}
       answer={w.word}
       played={guesses.map((g) => ({ word: g }))}
       rows={MAX_ROWS}
       rowSeq={guesses.length}
       definition={definition}
+      noteHot={hurry}
+      noteWait="The definition appears in the last 20 seconds."
       live={playing && !reveal && !solved && !out}
       onSubmit={submit}
       maxLen={w.word.length}

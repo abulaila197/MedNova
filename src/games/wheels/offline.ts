@@ -17,7 +17,7 @@ export const MAX_ACTS = 10;
 export const roundsIn = (cycle: number) => CYCLES[cycle] ?? EXTRA_ROUNDS;
 
 export const BOSS_ITEMS = 30;
-export const BOSS_MS = 30_000;
+export const BOSS_MS = 40_000; // #14 (Yazan 2026-11-04): +10 s
 export const BOSS_RIGHT = 2;
 export const BOSS_WRONG = -1;
 /** Boss Round bonus: a fifth of the target (+5 at 25, +10 at 50), Yazan 2026-11-02 (was +20). */

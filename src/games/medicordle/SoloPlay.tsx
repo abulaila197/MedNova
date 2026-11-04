@@ -288,6 +288,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
       revealed={run.revealed}
       rowSeq={run.rowSeq}
       definition={showDefinition(run) ? w.definition : null}
+      noteHot={run.phase === 'playing' || (run.phase === 'paused' && run.before === 'playing')}
       live={run.phase === 'playing'}
       onSubmit={submit}
       maxLen={w.word.length}

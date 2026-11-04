@@ -647,7 +647,7 @@
   "id": "classic-093",
   "style": "classic",
   "word": "TESTES",
-  "definition": "Male gonads producing sperm and testosterone.",
+  "definition": "Male gonads in the scrotum that make sperm and the main male hormone.",
   "dossier": null
  },
  {
@@ -738,14 +738,14 @@
   "id": "custom-006",
   "style": "custom",
   "word": "ANTHRAX",
-  "definition": "Bacillus anthracis infection with a black painless skin ulcer or severe lung disease.",
+  "definition": "Spore-forming bacterial infection with a black painless skin ulcer or severe lung disease.",
   "dossier": "anthrax-inhalational"
  },
  {
   "id": "custom-007",
   "style": "custom",
   "word": "PANCREATITIS",
-  "definition": "Inflammation of the pancreas with severe upper abdominal pain radiating to the back.",
+  "definition": "Inflammation of the gland behind the stomach, with severe upper abdominal pain going through to the back.",
   "dossier": "acute-pancreatitis"
  },
  {
@@ -773,7 +773,7 @@
   "id": "custom-011",
   "style": "custom",
   "word": "ARRHYTHMIA",
-  "definition": "Abnormal heart rate or rhythm.",
+  "definition": "Abnormal heartbeat: too fast, too slow or irregular.",
   "dossier": null
  },
  {
@@ -794,7 +794,7 @@
   "id": "custom-014",
   "style": "custom",
   "word": "PARAGANGLIOMA",
-  "definition": "Neuroendocrine tumor of paraganglia outside the adrenal gland.",
+  "definition": "Neuroendocrine tumor of nerve-cell clusters outside the adrenal gland.",
   "dossier": null
  },
  {
@@ -857,7 +857,7 @@
   "id": "custom-023",
   "style": "custom",
   "word": "BRONCHIECTASIS",
-  "definition": "Permanent widening of the bronchi with chronic productive cough.",
+  "definition": "Permanent widening of the large airways with chronic productive cough.",
   "dossier": "bronchiectasis"
  },
  {
@@ -878,7 +878,7 @@
   "id": "custom-026",
   "style": "custom",
   "word": "TYPHOID",
-  "definition": "Salmonella Typhi infection with sustained fever and rose spots.",
+  "definition": "Salmonella fever from dirty food or water, with sustained fever and rose spots.",
   "dossier": "typhoid-fever"
  },
  {
@@ -913,7 +913,7 @@
   "id": "custom-031",
   "style": "custom",
   "word": "TETANUS",
-  "definition": "Clostridium tetani toxin causing muscle rigidity, lockjaw and spasms.",
+  "definition": "Toxin from a soil bacterium in a dirty wound, causing muscle rigidity, lockjaw and spasms.",
   "dossier": "tetanus"
  },
  {
@@ -927,7 +927,7 @@
   "id": "custom-033",
   "style": "custom",
   "word": "LYMPHOMA",
-  "definition": "Cancer of lymphocytes, usually arising in lymph nodes.",
+  "definition": "Cancer of white blood cells that usually starts in the glands of the neck, armpit or groin.",
   "dossier": null
  },
  {
@@ -983,7 +983,7 @@
   "id": "custom-041",
   "style": "custom",
   "word": "MELANOMA",
-  "definition": "Malignant tumor of melanocytes, the most dangerous skin cancer.",
+  "definition": "Malignant tumor of the skin's pigment cells, the most dangerous skin cancer.",
   "dossier": "melanoma"
  },
  {
@@ -1011,7 +1011,7 @@
   "id": "custom-045",
   "style": "custom",
   "word": "BOTULISM",
-  "definition": "Clostridium botulinum toxin causing descending flaccid paralysis.",
+  "definition": "Toxin from canned or preserved food causing descending flaccid paralysis.",
   "dossier": "botulism"
  },
  {
@@ -1046,7 +1046,7 @@
   "id": "custom-050",
   "style": "custom",
   "word": "SILICOSIS",
-  "definition": "Lung fibrosis from inhaled silica dust.",
+  "definition": "Lung fibrosis from inhaled quartz dust, as in miners and stone cutters.",
   "dossier": null
  },
  {
@@ -1109,7 +1109,7 @@
   "id": "custom-059",
   "style": "custom",
   "word": "GLOMERULITIS",
-  "definition": "Inflammation of the kidney glomeruli.",
+  "definition": "Inflammation of the kidney's tiny filters.",
   "dossier": null
  },
  {
@@ -1165,7 +1165,7 @@
   "id": "custom-067",
   "style": "custom",
   "word": "ESOPHAGITIS",
-  "definition": "Inflammation of the esophagus.",
+  "definition": "Inflammation of the food pipe.",
   "dossier": null
  },
  {
@@ -1179,35 +1179,35 @@
   "id": "custom-069",
   "style": "custom",
   "word": "MENINGIOMA",
-  "definition": "Usually benign tumor arising from the meninges.",
+  "definition": "Usually benign tumor arising from the coverings of the brain.",
   "dossier": null
  },
  {
   "id": "custom-070",
   "style": "custom",
   "word": "VENTRICULITIS",
-  "definition": "Inflammation of the lining of the brain's ventricles.",
+  "definition": "Inflammation of the lining of the fluid spaces inside the brain.",
   "dossier": null
  },
  {
   "id": "custom-071",
   "style": "custom",
   "word": "RETINOPATHY",
-  "definition": "Damage to the retina, as from diabetes or hypertension.",
+  "definition": "Damage to the light-sensing layer at the back of the eye, as from diabetes or high blood pressure.",
   "dossier": null
  },
  {
   "id": "custom-072",
   "style": "custom",
   "word": "HYPOTHYROIDISM",
-  "definition": "Underactive thyroid causing tiredness, weight gain and cold intolerance.",
+  "definition": "An underactive gland in the neck causing tiredness, weight gain and cold intolerance.",
   "dossier": "primary-hypothyroidism"
  },
  {
   "id": "custom-073",
   "style": "custom",
   "word": "NEUROBLASTOMA",
-  "definition": "Childhood tumor of neural crest cells, often in the adrenal gland.",
+  "definition": "Childhood tumor of nerve crest cells, often in the adrenal gland.",
   "dossier": null
  },
  {
@@ -1277,7 +1277,7 @@
   "id": "custom-083",
   "style": "custom",
   "word": "SCABIES",
-  "definition": "Itchy skin infestation by the mite Sarcoptes scabiei.",
+  "definition": "Itchy skin infestation by a burrowing mite, worse at night.",
   "dossier": "scabies"
  },
  {
@@ -1312,21 +1312,21 @@
   "id": "custom-088",
   "style": "custom",
   "word": "PROSTATITIS",
-  "definition": "Inflammation of the prostate gland.",
+  "definition": "Inflammation of the male gland below the bladder.",
   "dossier": "acute-bacterial-prostatitis"
  },
  {
   "id": "custom-089",
   "style": "custom",
   "word": "ENDOMETRIOSIS",
-  "definition": "Endometrial tissue growing outside the uterus, causing pelvic pain.",
+  "definition": "Womb lining tissue growing outside the uterus, causing pelvic pain.",
   "dossier": "endometriosis"
  },
  {
   "id": "custom-090",
   "style": "custom",
   "word": "THYROIDITIS",
-  "definition": "Inflammation of the thyroid gland.",
+  "definition": "Inflammation of the butterfly-shaped gland in the neck.",
   "dossier": null
  },
  {
@@ -1347,28 +1347,28 @@
   "id": "custom-093",
   "style": "custom",
   "word": "DYSGERMINOMA",
-  "definition": "Ovarian germ cell tumor that matches the testicular seminoma.",
+  "definition": "Ovarian tumor of egg-making cells that matches the testicular seminoma.",
   "dossier": null
  },
  {
   "id": "custom-094",
   "style": "custom",
   "word": "AORTITIS",
-  "definition": "Inflammation of the wall of the aorta.",
+  "definition": "Inflammation of the wall of the body's main artery.",
   "dossier": null
  },
  {
   "id": "custom-095",
   "style": "custom",
   "word": "HYPERTHYROIDISM",
-  "definition": "Overactive thyroid causing weight loss, tremor and heat intolerance.",
+  "definition": "An overactive gland in the neck causing weight loss, tremor and heat intolerance.",
   "dossier": null
  },
  {
   "id": "custom-096",
   "style": "custom",
   "word": "APPENDICITIS",
-  "definition": "Inflammation of the appendix with pain moving to the right lower abdomen.",
+  "definition": "Inflamed small pouch of the bowel, with pain moving to the right lower abdomen.",
   "dossier": "acute-appendicitis"
  },
  {
@@ -1438,7 +1438,7 @@
   "id": "custom-106",
   "style": "custom",
   "word": "ASBESTOSIS",
-  "definition": "Lung fibrosis from inhaled asbestos fibers.",
+  "definition": "Lung fibrosis from inhaled mineral fibers once used in insulation.",
   "dossier": null
  },
  {
@@ -1466,7 +1466,7 @@
   "id": "custom-110",
   "style": "custom",
   "word": "CANDIDIASIS",
-  "definition": "Infection with Candida yeast.",
+  "definition": "Yeast infection, as in oral thrush or vaginal thrush.",
   "dossier": "superficial-candidiasis-oral-thrush-vulvovaginal-candidiasis"
  },
  {
@@ -1494,7 +1494,7 @@
   "id": "custom-114",
   "style": "custom",
   "word": "FASCIITIS",
-  "definition": "Inflammation of fascia, as in the plantar or necrotizing forms.",
+  "definition": "Inflammation of the connective tissue sheets around muscles, as in the plantar or necrotizing forms.",
   "dossier": null
  },
  {
@@ -1508,7 +1508,7 @@
   "id": "custom-116",
   "style": "custom",
   "word": "GIARDIASIS",
-  "definition": "Giardia infection causing greasy diarrhea and bloating.",
+  "definition": "Gut parasite infection from dirty water, causing greasy diarrhea and bloating.",
   "dossier": "giardiasis"
  },
  {
@@ -1529,7 +1529,7 @@
   "id": "custom-119",
   "style": "custom",
   "word": "LEPROSY",
-  "definition": "Chronic Mycobacterium leprae infection of skin and nerves.",
+  "definition": "Chronic mycobacterial infection of skin and nerves, with numb patches.",
   "dossier": null
  },
  {
@@ -1557,7 +1557,7 @@
   "id": "custom-123",
   "style": "custom",
   "word": "PAROTITIS",
-  "definition": "Inflammation of the parotid salivary gland.",
+  "definition": "Inflammation of the salivary gland in front of the ear, as in mumps.",
   "dossier": null
  },
  {
@@ -1585,7 +1585,7 @@
   "id": "custom-127",
   "style": "custom",
   "word": "PLEURISY",
-  "definition": "Inflammation of the pleura with sharp chest pain on breathing.",
+  "definition": "Inflammation of the lining around the lungs, with sharp chest pain on breathing.",
   "dossier": null
  },
  {
@@ -1620,7 +1620,7 @@
   "id": "custom-132",
   "style": "custom",
   "word": "SHIGELLOSIS",
-  "definition": "Shigella infection causing bloody diarrhea.",
+  "definition": "Bacterial infection causing bloody diarrhea, spread person to person.",
   "dossier": null
  },
  {
@@ -1648,28 +1648,28 @@
   "id": "custom-136",
   "style": "custom",
   "word": "TULAREMIA",
-  "definition": "Francisella tularensis infection, often caught from rabbits or ticks.",
+  "definition": "Rabbit fever: a bacterial infection often caught from rabbits or ticks.",
   "dossier": "tularemia"
  },
  {
   "id": "custom-137",
   "style": "custom",
   "word": "TOXOPLASMOSIS",
-  "definition": "Toxoplasma gondii infection, linked to cats and undercooked meat.",
+  "definition": "Parasite infection linked to cats and undercooked meat, risky in pregnancy.",
   "dossier": null
  },
  {
   "id": "custom-138",
   "style": "custom",
   "word": "YERSINIOSIS",
-  "definition": "Yersinia infection that can mimic appendicitis.",
+  "definition": "Gut bacterial infection from undercooked pork that can mimic appendicitis.",
   "dossier": null
  },
  {
   "id": "custom-139",
   "style": "custom",
   "word": "LYMPHANGITIS",
-  "definition": "Inflammation of lymph vessels with red streaks up a limb.",
+  "definition": "Inflammation of the drainage vessels under the skin, with red streaks up a limb.",
   "dossier": null
  },
  {
@@ -1732,7 +1732,7 @@
   "id": "custom-148",
   "style": "custom",
   "word": "OSTEOPENIA",
-  "definition": "Bone density lower than normal but not yet osteoporosis.",
+  "definition": "Bone density lower than normal, but not yet at the brittle-bone level.",
   "dossier": null
  },
  {
@@ -1746,7 +1746,7 @@
   "id": "custom-150",
   "style": "custom",
   "word": "MASTOCYTOSIS",
-  "definition": "Too many mast cells in the skin or organs.",
+  "definition": "Too many histamine-releasing immune cells in the skin or organs.",
   "dossier": null
  },
  {
@@ -1767,7 +1767,7 @@
   "id": "five-003",
   "style": "five",
   "word": "SPINE",
-  "definition": "Column of vertebrae that protects the spinal cord.",
+  "definition": "Column of vertebrae that protects the cord inside it.",
   "dossier": null
  },
  {
@@ -2068,7 +2068,7 @@
   "id": "five-046",
   "style": "five",
   "word": "LYMPH",
-  "definition": "Fluid drained from the tissues into lymph vessels.",
+  "definition": "Clear fluid drained from the tissues back toward the blood.",
   "dossier": null
  },
  {
@@ -2390,7 +2390,7 @@
   "id": "five-092",
   "style": "five",
   "word": "FLUKE",
-  "definition": "Flat parasitic worm, such as the liver fluke.",
+  "definition": "Flat parasitic worm, as in the liver or the blood.",
   "dossier": null
  },
  {
@@ -2775,7 +2775,7 @@
   "id": "five-147",
   "style": "five",
   "word": "TRACT",
-  "definition": "Pathway of organs or nerve fibers, like the urinary tract.",
+  "definition": "Pathway of organs or nerve fibers, as for urine or food.",
   "dossier": null
  },
  {
@@ -2796,7 +2796,7 @@
   "id": "five-150",
   "style": "five",
   "word": "OPTIC",
-  "definition": "Relating to the eye or vision, as in the optic nerve.",
+  "definition": "Relating to the eye or vision, as in the second cranial nerve.",
   "dossier": null
  },
  {
@@ -2824,7 +2824,7 @@
   "id": "five-154",
   "style": "five",
   "word": "TONIC",
-  "definition": "Steady muscle contraction, as in tonic seizures.",
+  "definition": "Steady, held muscle contraction, as in the stiff phase of a seizure.",
   "dossier": null
  },
  {
@@ -3027,7 +3027,7 @@
   "id": "five-183",
   "style": "five",
   "word": "CRYPT",
-  "definition": "Small pit in the gut lining, like the crypts of Lieberkuhn.",
+  "definition": "Small pit between the finger-like folds of the gut lining.",
   "dossier": null
  },
  {
@@ -3097,7 +3097,7 @@
   "id": "five-193",
   "style": "five",
   "word": "NODES",
-  "definition": "Small lumps of tissue, like the lymph nodes.",
+  "definition": "Small bean-shaped lumps of tissue that filter fluid, as in the neck.",
   "dossier": null
  },
  {

@@ -13,8 +13,8 @@ import { recordItem } from '../shell/flow';
 import { PauseMenu } from '../shell/PauseMenu';
 import type { PlayProps } from '../shell/types';
 import { Btn } from '../shell/ui';
-import { answerText, HELPER_PRICE, helperUsable, mixQueue, snapshotRound, startRound, stepRound, timeLeft, type HelperKind, type Round, type RoundEvent, type Style } from './core';
-import { bank, idsOf, poolFor, questionById } from './data';
+import { answerText, HELPER_PRICE, helperUsable, mixQueue, typeCycle, snapshotRound, startRound, stepRound, timeLeft, type HelperKind, type Round, type RoundEvent, type Style } from './core';
+import { bank, idsOf, poolFor, questionById, typeOf } from './data';
 import { ParadeBoard } from './ParadeBoard';
 
 type SoloSave = { round: Round; style: Style; count: number };
@@ -36,7 +36,9 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
       if (r && !r.queue.every((id) => questionById.has(id))) r = null;
       if (!r) {
         const pick = (ids: string[]) => engine.picker.pick(play.game, ids, ids.length);
-        const queue = style === 'mixed' ? mixQueue(await pick(idsOf('clinical')), await pick(idsOf('basic')), count) : (await pick(poolFor(style))).slice(0, count);
+        // #15: the types take turns (no type again until every other has come up).
+        const pool = style === 'mixed' ? mixQueue(await pick(idsOf('clinical')), await pick(idsOf('basic')), Infinity) : await pick(poolFor(style));
+        const queue = typeCycle(pool, count, typeOf);
         r = startRound(queue, Date.now(), bank);
         engine.recorder.bookmark(play.id, { round: snapshotRound(r, Date.now(), bank), style, count } satisfies SoloSave, 0);
       }

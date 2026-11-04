@@ -102,7 +102,7 @@ function Spinning({ children, to, ms }: { children: React.ReactNode; to: number;
 }
 
 /** The brass rim with its bulbs, the pointer and the hub; the landed slices glow once each ring stops. */
-const Frame = memo(function Frame({ lit }: { lit: { count: boolean; style: boolean; field: boolean } }) {
+const Frame = memo(function Frame({ lit, fields }: { lit: { count: boolean; style: boolean; field: boolean }; fields: number }) {
   const top = (r0: number, r1: number, n: number) => wedge(r0, r1, -90 - 180 / n, -90 + 180 / n);
   return (
     <Svg width="100%" height="100%" viewBox={`0 0 ${BOX} ${BOX}`} style={{ position: 'absolute' }}>
@@ -112,7 +112,7 @@ const Frame = memo(function Frame({ lit }: { lit: { count: boolean; style: boole
           <Stop offset={1} stopColor="#6f8fe0" />
         </RadialGradient>
       </Defs>
-      {lit.field ? <Path d={top(RINGS.field[0], RINGS.field[1], FIELDS.length)} fill="rgba(111,214,255,0.2)" stroke={VV.brass} strokeWidth={3} /> : null}
+      {lit.field ? <Path d={top(RINGS.field[0], RINGS.field[1], fields)} fill="rgba(111,214,255,0.2)" stroke={VV.brass} strokeWidth={3} /> : null}
       {lit.style ? <Path d={top(RINGS.style[0], RINGS.style[1], STYLE_KEYS.length)} fill="rgba(111,214,255,0.2)" stroke={VV.brass} strokeWidth={3} /> : null}
       {lit.count ? <Path d={top(RINGS.count[0], RINGS.count[1], 3)} fill="rgba(111,214,255,0.2)" stroke={VV.brass} strokeWidth={3} /> : null}
       <Circle cx={C} cy={C} r={R + 8} fill="none" stroke="#3a4f96" strokeWidth={13} />
@@ -131,16 +131,18 @@ const Frame = memo(function Frame({ lit }: { lit: { count: boolean; style: boole
 
 /** The wheel for a turn's first question; `settled` tells which rings have stopped (the parent keeps the clock). */
 export function WheelSpin({ turn, settled }: { turn: Turn; settled: { count: boolean; style: boolean; field: boolean } }) {
-  const n = { count: 3, style: STYLE_KEYS.length, field: FIELDS.length };
+  // #16 (Yazan 2026-11-04): the field ring shows only the fields the room picked (6 basic, 4 clinical or all 10).
+  const fields = turn.mix && turn.mix !== 'mixed' ? FIELDS.filter((f) => f.group === turn.mix) : FIELDS;
+  const n = { count: 3, style: STYLE_KEYS.length, field: fields.length };
   const land = {
     count: landing(Math.max(0, turn.count - 1), n.count, 5),
     style: landing(STYLE_KEYS.indexOf(turn.combo.style), n.style, -4),
-    field: landing(Math.max(0, FIELDS.findIndex((f) => f.key === turn.combo.field)), n.field, 3),
+    field: landing(Math.max(0, fields.findIndex((f) => f.key === turn.combo.field)), n.field, 3),
   };
   return (
     <View style={{ width: '100%', maxWidth: u(380), aspectRatio: 1, alignSelf: 'center' }}>
       <Spinning to={land.field} ms={STOP_MS.field}>
-        <Ring id="f" r0={RINGS.field[0]} r1={RINGS.field[1]} labels={FIELDS.map((f) => FIELD_LABELS[f.key] ?? f.name)} land={land.field} base={12} />
+        <Ring id="f" r0={RINGS.field[0]} r1={RINGS.field[1]} labels={fields.map((f) => FIELD_LABELS[f.key] ?? f.name)} land={land.field} base={12} />
       </Spinning>
       <Spinning to={land.style} ms={STOP_MS.style}>
         <Ring id="s" r0={RINGS.style[0]} r1={RINGS.style[1]} labels={STYLE_KEYS.map((k) => STYLE_LABELS[k])} land={land.style} base={12} />
@@ -148,7 +150,7 @@ export function WheelSpin({ turn, settled }: { turn: Turn; settled: { count: boo
       <Spinning to={land.count} ms={STOP_MS.count}>
         <Ring id="c" r0={RINGS.count[0]} r1={RINGS.count[1]} labels={COUNT_LABELS} land={land.count} base={15} />
       </Spinning>
-      <Frame lit={settled} />
+      <Frame lit={settled} fields={fields.length} />
     </View>
   );
 }

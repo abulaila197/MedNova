@@ -4,6 +4,7 @@ import { Text, TextInput } from '@/components/AppText';
 import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 
 import { u } from '@/theme/scale';
+import { F } from '@/theme/tokens';
 
 import { searchNames } from '../shell/names';
 import { CF, completed, elapsed, invFile, scoreRun, status, type CaseDef, type FileId, type Run, type RunEvent } from './core';
@@ -21,9 +22,18 @@ const STAGES = ['History', 'Exam', 'Tests', 'Treatment'] as const;
  * the file reader, the diagnosis pickers and the verdicts. `sealed` hides the stamp and the discharge (CF8).
  * The parent owns the run; this only sends events.
  */
-export function CaseBoard({ def, run, sealed, kicker, onEvent, onPause }: { def: CaseDef; run: Run; sealed: boolean; kicker: string; onEvent: (e: RunEvent) => void; onPause: () => void }) {
+export function CaseBoard({ def, run, sealed, kicker, onEvent, onPause, online, countdown, who }: {
+  def: CaseDef; run: Run; sealed: boolean; kicker: string; onEvent: (e: RunEvent) => void; onPause: () => void;
+  /** Online (#10, Yazan 2026-11-04): the discharge opens to each player, then "End the case" closes it for them. */
+  online?: boolean;
+  /** #26: online the top line keeps only the match's countdown ("04:51 left"), in red; no stopwatch beside it. */
+  countdown?: string;
+  /** Pass the phone: whose case it is, bold in their colour (#13). */
+  who?: { name: string; color: string };
+}) {
+  const shut = sealed && !online;
   const [view, setView] = useState<View_>({ at: 'board' });
-  const st = status(def, run, sealed);
+  const st = status(def, run, shut);
   const ticking = run.runningSince != null && run.phase === 'board';
   const now = useTicker(ticking, 500, undefined, { shown: (n) => second(elapsed(run, n)) });
 
@@ -104,7 +114,7 @@ export function CaseBoard({ def, run, sealed, kicker, onEvent, onPause }: { def:
                   : st.unlocked.discharge && !opened.has('discharge')
                     ? { label: 'Read the discharge', go: () => open('discharge') }
                     : completed(run) && opened.has('treatment')
-                      ? { label: 'Close the case', go: () => onEvent({ type: 'CLOSE' }) }
+                      ? { label: online ? 'End the case' : 'Close the case', go: () => onEvent({ type: 'CLOSE' }) }
                       : null;
   const hint = run.dd == null ? 'Read the three history files, then write your differential.' : '';
   const list = run.filtered ?? run.dd;
@@ -112,7 +122,19 @@ export function CaseBoard({ def, run, sealed, kicker, onEvent, onPause }: { def:
     <NoirScreen>
       <View style={s.top}>
         <View style={{ flex: 1 }}>
-          <Kicker>{`${kicker} · ${caseClock(elapsed(run, now))}`}</Kicker>
+          {countdown ? (
+            <View style={{ gap: u(2) }}>
+              <T size={13} color={END} style={{ fontFamily: F.mono, letterSpacing: 1.2 }}>{countdown.toUpperCase()}</T>
+              <Kicker>{kicker}</Kicker>
+            </View>
+          ) : who ? (
+            <View style={{ gap: u(2) }}>
+              <T size={12} color={who.color} style={{ fontFamily: F.bodyBold, letterSpacing: 1.4 }}>{who.name === 'You' ? 'YOUR CASE' : `${who.name.toUpperCase()}’S CASE`}</T>
+              <Kicker>{`${kicker} · ${caseClock(elapsed(run, now))}`}</Kicker>
+            </View>
+          ) : (
+            <Kicker>{`${kicker} · ${caseClock(elapsed(run, now))}`}</Kicker>
+          )}
           <CaseTitle title={def.title} size={19} />
         </View>
         <PauseBtn onPress={onPause} />
@@ -125,7 +147,7 @@ export function CaseBoard({ def, run, sealed, kicker, onEvent, onPause }: { def:
           </T>
         ))}
       </View>
-      <PinBoard def={def} run={run} sealed={sealed} onOpen={open} />
+      <PinBoard def={def} run={run} sealed={shut} onOpen={open} />
       {list ? (
         <View style={{ gap: u(2) }}>
           <T size={12} color={NR.soft} lines={2}>{list.join('  /  ')}</T>
@@ -139,7 +161,15 @@ export function CaseBoard({ def, run, sealed, kicker, onEvent, onPause }: { def:
       ) : hint ? (
         <T size={12} color={NR.soft}>{hint}</T>
       ) : null}
-      {action ? <Btn label={action.label} onPress={action.go} /> : null}
+      {action ? (
+        online && action.label === 'End the case' ? (
+          <Pressable onPress={action.go} accessibilityRole="button" accessibilityLabel="End the case" style={({ pressed }) => [s.end, { opacity: pressed ? 0.85 : 1 }]}>
+            <T size={13} color="#ffffff" style={{ fontFamily: F.bodyBold, textAlign: 'center' }}>End the case</T>
+          </Pressable>
+        ) : (
+          <Btn label={action.label} onPress={action.go} />
+        )
+      ) : null}
     </NoirScreen>
   );
 }
@@ -302,7 +332,11 @@ function Verdict({ def, run, kind, sealed, onNext }: { def: CaseDef; run: Run; k
   );
 }
 
+/** The red of the online countdown and the "End the case" button. */
+const END = '#ff4d5e';
+
 const s = StyleSheet.create({
+  end: { backgroundColor: END, borderRadius: u(14), paddingVertical: u(12), alignItems: 'center' },
   top: { flexDirection: 'row', alignItems: 'flex-start', gap: u(10) },
   stages: { flexDirection: 'row', flexWrap: 'wrap' },
   tabs: { flexDirection: 'row', flexWrap: 'wrap', gap: u(6) },

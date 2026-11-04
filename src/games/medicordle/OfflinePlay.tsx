@@ -22,7 +22,7 @@ import {
   type OfflineEvent, type OfflineRun,
 } from './offline';
 import { DoneCard } from './SoloPlay';
-import { SlideTable, TurnClock } from './Slides';
+import { HURRY_MS, SlideTable, TurnClock } from './Slides';
 import { second, useTicker } from '../engine/useTicker';
 import { TurnName } from '@/games/shell/TurnName';
 
@@ -129,7 +129,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
         no: `WORD ${run.index + 1} OF ${run.wordIds.length}`,
         title: 'Medicordle',
         sub: phase === 'wordOver' ? `${STYLE_NAME[style]} · ${w.word.length} letters · ${run.rows} rows` : <TurnName name={who?.name ?? ''} color={who?.color} after={`’s turn · ${STYLE_NAME[style]} · ${w.word.length} letters`} />,
-        right: phase === 'playing' ? <TurnClock ms={left} warn={left <= 5_000} /> : undefined,
+        right: phase === 'playing' ? <TurnClock ms={left} warn={left <= HURRY_MS} /> : undefined,
       }}
       answer={w.word}
       played={run.turns.map((x) => ({ word: x.word, color: seatOf.get(x.seat)?.color }))}
@@ -137,6 +137,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
       activeColor={phase === 'wordOver' ? undefined : who?.color}
       rowSeq={run.rowSeq}
       definition={showDefinition(run) ? w.definition : null}
+      noteHot={run.phase === 'playing' || (run.phase === 'paused' && run.before === 'playing')}
       live={run.phase === 'playing'}
       onSubmit={submit}
       maxLen={w.word.length}

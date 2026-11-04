@@ -203,7 +203,8 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
         def={def}
         run={o.run}
         sealed
-        kicker={`${nameOf(currentSeat(o))} · ${caseLabel(def.id)}`}
+        who={{ name: nameOf(currentSeat(o)), color: colorOf(currentSeat(o)) }}
+        kicker={caseLabel(def.id)}
         onEvent={dispatch}
         onPause={() => dispatch({ type: 'PAUSE', now: Date.now() })}
       />

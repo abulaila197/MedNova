@@ -134,7 +134,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
       setRun(r);
       if (r === saved) {
         pending.current.push({
-          report: { stage: stageOf(r), filtered: r.filtered, first: r.filtered ? r.dd : null, provisional: r.provisional?.id ?? null, redemption: r.redemption?.id ?? null },
+          report: { stage: stageOf(r), filtered: r.filtered, first: r.filtered ? r.dd : null, provisional: r.provisional?.id ?? null, redemption: r.redemption?.id ?? null, ended: r.phase === 'done' },
           tries: 0,
         });
         void flush();
@@ -173,7 +173,8 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
       const prev = runRef.current;
       if (!prev || !item) return;
       const c = caseOf(item);
-      const next = stepRun(c, prev, e, true);
+      // #10 (Yazan 2026-11-04): online the discharge opens to each player (not sealed), then End the case.
+      const next = stepRun(c, prev, e, false);
       if (next === prev) return;
       runRef.current = next;
       runs.current.set(index, next);
@@ -187,8 +188,10 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
         first: filed ? next.dd : null,
         provisional: !prev.provisional && next.provisional ? next.provisional.id : null,
         redemption: !prev.redemption && next.redemption ? next.redemption.id : null,
+        // Only "End the case" marks you finished on the server; the case closes for the room when everyone has.
+        ended: prev.phase !== 'done' && next.phase === 'done',
       };
-      if (report.stage !== stageOf(prev) || report.filtered || report.provisional || report.redemption) {
+      if (report.stage !== stageOf(prev) || report.filtered || report.provisional || report.redemption || report.ended) {
         pending.current.push({ report, tries: 0 });
         void flush();
       }
@@ -231,10 +234,12 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
         <Card style={{ gap: u(4) }}>
           <T size={11} color={NR.red} style={{ letterSpacing: 2 }}>THE DIAGNOSIS</T>
           <T size={17} color={NR.cardInk}>{c.final}</T>
+          <T size={11} color={NR.cardSoft} style={{ letterSpacing: 2, marginTop: u(6) }}>THE DOCTOR’S LIST</T>
+          <T size={12.5} color={NR.cardInk}>{c.answers.join('  /  ')}</T>
         </Card>
         <View style={{ gap: u(8) }}>
           {rows.map((p, i) => (
-            <Animated.View key={p.user_id} entering={FadeIn.delay(200 + i * 180).duration(260)} style={s.rank}>
+            <Animated.View key={p.user_id} entering={FadeIn.delay(200 + i * 180).duration(260)} style={[s.rank, p.cf ? { alignItems: 'flex-start' } : null]}>
               <T size={18} color={NR.dim} style={{ width: u(24) }}>{String(i + 1)}</T>
               <View style={[s.dot, { backgroundColor: colorOf(p) }]} />
               <View style={{ flex: 1, gap: u(4) }}>
@@ -242,7 +247,8 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
                   <T size={14} lines={1} style={{ flexShrink: 1 }}>{p.user_id === me ? 'You' : p.name}</T>
                   <Stamp word={p.solved ? 'SOLVED' : 'CLOSED'} size={8} />
                 </View>
-                <T size={11} color={NR.soft}>{`${total > 1 ? `+${p.item_points ?? 0} this case · ` : ''}${p.done ? (total > 1 ? 'finished' : `finished in ${caseClock(p.solve_ms)}`) : 'ran out of time'}`}</T>
+                <T size={11} color={NR.soft}>{`${total > 1 ? `+${p.item_points ?? 0} this case · ` : ''}${p.done ? (total > 1 ? 'finished' : `finished in ${caseClock(p.solve_ms)}`) : p.stage === 'Discharge' ? 'answered, didn’t end the case' : 'ran out of time'}`}</T>
+                {p.cf ? <Answers cf={p.cf} answers={c.answers} final={c.final} /> : null}
               </View>
               <T size={18} color={NR.red} style={{ minWidth: u(30), textAlign: 'right' }}>{String(p.score)}</T>
             </Animated.View>
@@ -278,7 +284,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
 
   return (
     <>
-      <CaseBoard def={c} run={run} sealed kicker={`${caseClock(left, true)} left · ${row}${caseLabel(c.id)}`} onEvent={dispatch} onPause={() => setMenu(true)} />
+      <CaseBoard def={c} run={run} sealed online countdown={`${caseClock(left, true)} left`} kicker={`${row}${caseLabel(c.id)}`} onEvent={dispatch} onPause={() => setMenu(true)} />
       {notice ? (
         <View style={s.notice} pointerEvents="none">
           <T size={12} color={NR.white}>{notice}</T>
@@ -290,7 +296,30 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   );
 }
 
+/** #11 (Yazan 2026-11-04): one player's answers on the results, right names ticked. */
+function Answers({ cf, answers, final }: { cf: NonNullable<RacePlayer['cf']>; answers: string[]; final: string }) {
+  const list = (l: string[] | null) => (l?.length ? l.map((x) => `${answers.includes(x) ? '✓' : '✗'}\u00a0${x}`).join('\n') : '—');
+  const call = (x: string | null) => (x ? `${x === final ? '✓' : '✗'}\u00a0${x}` : '—');
+  const rows: [string, string][] = [
+    ['First list', list(cf.first ?? cf.dd)],
+    ['Narrowed list', list(cf.dd)],
+    ['Diagnosis', call(cf.prov)],
+    ...(cf.redeem ? ([['Last call', call(cf.redeem)]] as [string, string][]) : []),
+  ];
+  return (
+    <View style={s.answers}>
+      {rows.map(([k, v]) => (
+        <View key={k} style={{ gap: u(1) }}>
+          <T size={9.5} color={NR.dim} style={{ letterSpacing: 1.4 }}>{k.toUpperCase()}</T>
+          <T size={11.5} color={NR.soft}>{v}</T>
+        </View>
+      ))}
+    </View>
+  );
+}
+
 const s = StyleSheet.create({
+  answers: { gap: u(5), marginTop: u(4), paddingTop: u(6), borderTopWidth: 1, borderColor: NR.line },
   rank: { flexDirection: 'row', alignItems: 'center', gap: u(8), borderBottomWidth: 1, borderColor: NR.line, paddingBottom: u(8) },
   dot: { width: u(10), height: u(10), borderRadius: u(5) },
   recap: { borderTopWidth: 1, borderBottomWidth: 1, borderColor: NR.line, paddingVertical: u(8), gap: u(3) },

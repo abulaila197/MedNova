@@ -43,18 +43,20 @@ export function AlertPill({ alert }: { alert: { id: number; text: string; color:
 /** ON16: the 3-2-1 before the first case, with everyone's faces, in the online grey. */
 // #13: if the match still hasn't started 5 s after the count ends (the game keeps checking the server every
 // second meanwhile), it says so with a Leave button instead of standing on "1" for ever.
-export function Countdown({ ms, faces, ids, line }: { ms: number; faces: string[]; ids?: string[]; line: string }) {
+// #12 (Yazan 2026-11-04): a game whose first round comes from a referee that may need waking (Wheels) passes
+// `dealing` ("Dealing the cards…" shows at 0) and a longer wait before the Leave screen.
+export function Countdown({ ms, faces, ids, line, dealing, stuckMs = STUCK_MS }: { ms: number; faces: string[]; ids?: string[]; line: string; dealing?: string; stuckMs?: number }) {
   const { game, room } = useLocalSearchParams<{ game?: string; room?: string }>();
   const done = ms <= 0;
   const [stuck, setStuck] = useState(false);
   useEffect(() => {
     if (!done) return;
-    const id = setTimeout(() => setStuck(true), STUCK_MS);
+    const id = setTimeout(() => setStuck(true), stuckMs);
     return () => {
       clearTimeout(id);
       setStuck(false);
     };
-  }, [done]);
+  }, [done, stuckMs]);
   const leave = async () => {
     if (room) await leaveRoom(room).catch(() => {});
     router.replace(game ? `/play/${game}` : '/games');
@@ -74,7 +76,7 @@ export function Countdown({ ms, faces, ids, line }: { ms: number; faces: string[
   return (
     <Animated.View entering={FadeIn.duration(200)} style={[StyleSheet.absoluteFill, s.cd]}>
       <Text style={[s.cdK, { color: G.mute }]}>MATCH STARTING</Text>
-      <Text style={[s.cdN, { color: G.fg }]}>{Math.max(1, Math.ceil(ms / 1000))}</Text>
+      {done && dealing ? <Text style={[s.stuckT, { color: G.fg, marginVertical: u(30) }]}>{dealing}</Text> : <Text style={[s.cdN, { color: G.fg }]}>{Math.max(1, Math.ceil(ms / 1000))}</Text>}
       <View style={s.cdF}>
         {faces.map((f, i) => (
           <PlayerFace key={i} slug={f} size={u(28)} userId={ids?.[i]} still />

@@ -130,3 +130,17 @@ test('QP10 Pass the phone: same questions in each turn, Closest number held, the
   assert.deepEqual(by, { 1: 5, 0: 3, 2: 5 });
   assert.deepEqual(offlineRows(run, {}, bank).map((x) => x.score), [5, 3, 5]);
 });
+
+test('typeCycle: no type comes back until every other type has come up (#15)', async () => {
+  const { typeCycle } = await import('../core');
+  const types = ['mcq', 'tf', 'r2o', 'match', 'reverse', 'order', 'closest'];
+  const ids = Array.from({ length: 70 }, (_, i) => `${types[i % 3 === 0 ? 0 : i % 7]}-${i}`); // mcq-heavy on purpose
+  const typeOf = (id: string) => id.split('-')[0];
+  for (const n of [5, 10, 15]) {
+    const out = typeCycle(ids, n, typeOf);
+    assert.equal(out.length, n);
+    assert.equal(new Set(out).size, n);
+    const first = out.slice(0, Math.min(n, 7)).map(typeOf);
+    assert.equal(new Set(first).size, first.length);
+  }
+});

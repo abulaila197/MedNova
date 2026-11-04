@@ -21,6 +21,11 @@ import { slideColors, type SlideColors } from './palette';
 
 const GAP = 5;
 const NOTE_H = u(44);
+/** #9 (Yazan 2026-11-04): the hurry red of the timer and the note, bright enough to read on navy. */
+export const HURRY = '#ff4d5e';
+const HURRY_BG = 'rgba(255,77,94,0.14)';
+/** The timer turns red in the last 20 s of every Medicordle clock. */
+export const HURRY_MS = 20_000;
 const ROWS_KB = ['QWERTYUIOP', 'ASDFGHJKL', 'ZXCVBNM'];
 
 /** One played row on the board; `word` null = a turn that timed out (Offline). `color` = the player's colour. */
@@ -38,6 +43,10 @@ export type TableProps = {
   rowSeq: number;
   /** Shown on the last try and after the word (NM19); null shows the waiting note. */
   definition: string | null;
+  /** #9 (Yazan 2026-11-04): the note opened in the hurry moment (last 20 s online, last guess offline): it turns red. */
+  noteHot?: boolean;
+  /** What the empty note says before the definition opens. */
+  noteWait?: string;
   /** The keyboard takes input only while true. */
   live: boolean;
   /** Checks a typed guess; returns a short reason when it can't be played (costs no try). */
@@ -124,7 +133,7 @@ export function SlideTable(p: TableProps) {
         shake={shake}
         hidden={p.hidden}
         toast={toast ?? p.notice ?? null}
-        note={<SpecimenNote c={c} text={p.hidden ? null : p.definition} />}
+        note={<SpecimenNote c={c} text={p.hidden ? null : p.definition} hot={!!p.noteHot && !p.hidden && p.definition != null} wait={p.noteWait} />}
       />
       {p.dock ? (
         <Animated.View entering={FadeInDown.duration(260)} style={s.dock}>
@@ -186,7 +195,7 @@ export function TurnClock({ ms, warn }: { ms: number; warn: boolean }) {
   const t = useTheme();
   return (
     <View style={s.clock}>
-      <Text style={[s.clockN, { color: warn ? t.rose : t.white }]}>{Math.ceil(ms / 1000)}</Text>
+      <Text style={[s.clockN, { color: warn ? HURRY : t.white }]}>{Math.ceil(ms / 1000)}</Text>
       <Text style={[s.clockL, { color: t.dim }]}>SEC</Text>
     </View>
   );
@@ -307,12 +316,12 @@ function Tile({ c, size, letter, mark, delay, ghost, typed, edge }: { c: SlideCo
 }
 
 /** The definition as a specimen note (dashed card). */
-function SpecimenNote({ c, text }: { c: SlideColors; text: string | null }) {
+function SpecimenNote({ c, text, hot, wait }: { c: SlideColors; text: string | null; hot?: boolean; wait?: string }) {
   const t = useTheme();
   return (
-    <View style={[s.note, { borderColor: c.line, backgroundColor: c.boxA }]}>
-      <Text style={[s.noteL, { color: t.accent }]}>SPECIMEN NOTE</Text>
-      <Text style={[s.noteT, { color: text ? t.fg : t.mute }]}>{text ?? 'The definition appears on your last guess.'}</Text>
+    <View style={[s.note, hot ? { borderColor: HURRY, backgroundColor: HURRY_BG, borderStyle: 'solid' } : { borderColor: c.line, backgroundColor: c.boxA }]}>
+      <Text style={[s.noteL, { color: hot ? HURRY : t.accent }]}>SPECIMEN NOTE</Text>
+      <Text style={[s.noteT, { color: text ? t.fg : t.mute }]}>{text ?? wait ?? 'The definition appears on your last guess.'}</Text>
     </View>
   );
 }

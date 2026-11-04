@@ -39,6 +39,8 @@ export type RacePlayer = {
   revived?: boolean;
   /** Case Files: the stage they have reached (CF9). */
   stage?: string | null;
+  /** Case Files (#11): their answers, sent only once the case has closed: first list, narrowed list, diagnosis, last call. */
+  cf?: { first: string[] | null; dd: string[] | null; prov: string | null; redeem: string | null } | null;
   /** The Silent Artist: drawing this turn. */
   drawer?: boolean;
 };

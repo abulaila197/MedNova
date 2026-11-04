@@ -234,6 +234,30 @@ export function mixQueue(clinical: string[], basic: string[], n: number, rng: ()
   return out;
 }
 
+/**
+ * #15 (Yazan 2026-11-04): a question type doesn't come back until every other type has had its turn. The list is
+ * taken in rounds: each round holds one question of each type still in stock, in a random order. Within a type the
+ * list's own order is kept (unseen first).
+ */
+export function typeCycle(ids: readonly string[], n: number, typeOf: (id: string) => string | undefined, rng: () => number = Math.random): string[] {
+  const byType = new Map<string, string[]>();
+  for (const id of ids) {
+    const t = typeOf(id) ?? '?';
+    if (!byType.has(t)) byType.set(t, []);
+    byType.get(t)!.push(id);
+  }
+  const out: string[] = [];
+  while (out.length < n && byType.size) {
+    for (const t of shuffle([...byType.keys()], rng)) {
+      if (out.length >= n) break;
+      const list = byType.get(t)!;
+      out.push(list.shift()!);
+      if (!list.length) byType.delete(t);
+    }
+  }
+  return out;
+}
+
 /** The right answer written out, for results, feedback and Today's review. */
 export function answerText(q: Question): string {
   switch (q.style) {

@@ -95,6 +95,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
 
   /** Moves made while another is in flight wait here and go next, in order (the referee drops any that no longer fit). */
   const waiting = useRef<Move[]>([]);
+  const warmed = useRef(false);
 
   /** One request to the referee: my move, or a nudge when a wait has run out. */
   const send = useCallback(
@@ -141,13 +142,19 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   useEffect(() => {
     if (!st || st.phase === 'done' || oldBank) return;
     if (!st.state) {
+      // #12 (Yazan 2026-11-04): one early nudge during the countdown wakes the referee and loads its bank (it answers
+      // "wait"), so the first round is dealt at once when the count ends.
       if (server >= st.phase_ends_at) tick();
+      else if (!warmed.current) {
+        warmed.current = true;
+        send({ type: 'TICK' });
+      }
       return;
     }
     if (st.due == null) return;
     const first = who === mySeat || (who == null && mySeat === Math.min(...(g?.active ?? [0])));
     if (server >= st.due + (first ? 0 : 2500)) tick();
-  }, [server, st, who, mySeat, g, tick, oldBank]);
+  }, [server, st, who, mySeat, g, tick, send, oldBank]);
 
   // WC8: card plays, hits and Boss winners as alerts for the room.
   const seenLog = useRef<number | null>(null);
@@ -235,7 +242,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
   if (!st.state || !g) {
     return (
       <VelvetScreen>
-        {st.phase === 'done' ? null : <Countdown ms={Math.max(0, st.phase_ends_at - server)} faces={st.players.map((p) => p.character)} line={settingsLine(def, st.settings)} />}
+        {st.phase === 'done' ? null : <Countdown ms={Math.max(0, st.phase_ends_at - server)} faces={st.players.map((p) => p.character)} line={settingsLine(def, st.settings)} dealing="Dealing the cards…" stuckMs={20_000} />}
         {extras}
       </VelvetScreen>
     );

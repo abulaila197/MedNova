@@ -52,7 +52,7 @@ export const novaMedicordle: GameDef = {
       howTo: [
         'Everyone gets the same word at the same time and guesses on their own board, six tries each.',
         'First solver scores 100, then 80, 65 and so on, plus 10 for each guess left.',
-        'You see when someone solves it or gets close. No letter hints online; the definition appears on your last guess.',
+        'You see when someone solves it or gets close. No letter hints online; the definition appears in the last 20 seconds of each word.',
         'EXP works like Solo: 12 for a first-guess solve, down to 2 on the sixth. Teams score their players\' average.',
       ],
     },

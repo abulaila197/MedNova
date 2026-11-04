@@ -46,7 +46,7 @@ export const wheelsOfChaos: GameDef = {
       howTo: [
         'Add 2 to 4 players. Each round the turn order is shuffled, then everyone spins in turn.',
         'The show has three acts of 3, 2 and 2 rounds. If nobody has reached the target by then, extra acts of 2 rounds follow until someone does.',
-        'Each act ends with a Boss Round: swipe the items that fit. The best swiper wins a fifth of the target: +5 in a 25-point game, +10 in a 50.',
+        'Each act ends with a Boss Round: swipe the items that fit in 40 seconds. The best swiper wins a fifth of the target: +5 in a 25-point game, +10 in a 50.',
         'In the final round, whoever is last first can swap a turn for a Redemption round. Once a game, for everyone.',
         'First to the target wins at once. No EXP in this mode.',
       ],

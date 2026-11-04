@@ -10,3 +10,5 @@ export const bank = (id: string) => questionById.get(id);
 const LIVE = QUESTIONS;
 export const idsOf = (kind: Kind) => LIVE.filter((q) => q.kind === kind).map((q) => q.id);
 export const poolFor = (style: Style) => (style === 'mixed' ? LIVE.map((q) => q.id) : idsOf(style));
+/** A question's type (mcq, tf, r2o, match, reverse, order, closest), for the type rounds (#15). */
+export const typeOf = (id: string) => questionById.get(id)?.style;
