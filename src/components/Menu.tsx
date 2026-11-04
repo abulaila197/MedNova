@@ -13,7 +13,7 @@ import { engine, GUEST_PLAYS } from '@/games/engine';
 import { sfx, tapped, useSound } from '@/lib/sound';
 import { signOut, useAccount } from '@/state/account';
 import { useApp, useTheme } from '@/state/app';
-import { useFriends } from '@/state/friends';
+import { loadFriends, useFriends } from '@/state/friends';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 import { guardedNav } from '@/online/roomGuard';
@@ -48,14 +48,21 @@ export function Menu() {
   // AC6: a dot on Achievements while a reached tier waits to be collected (signed in only).
   const open = useApp((a) => a.menuOpen);
   const friends = useFriends((f) => f.list);
+  // As text, so reloading the same list doesn't ask for achievements again.
+  const friendIds = friends.map((f) => f.id).join(',');
   const [waiting, setWaiting] = useState(false);
   if ((!open || !profile) && waiting) setWaiting(false);
   useEffect(() => {
     if (!open || !profile) return;
-    loadAchievements(friends.map((f) => f.id), profile.id)
+    loadAchievements(friendIds ? friendIds.split(',') : [], profile.id)
       .then((rows) => setWaiting(rows.some((r) => r.paid < r.reached)))
       .catch(() => {});
-  }, [open, profile, friends]);
+  }, [open, profile, friendIds]);
+  // A red dot on Friends while a friend request waits for an answer (Yazan 2026-11-04, point 4).
+  const requests = friends.some((f) => f.kind === 'incoming');
+  useEffect(() => {
+    if (open && profile) loadFriends().catch(() => {});
+  }, [open, profile]);
   // #19: a red dot on Achievements while today's daily missions aren't all done (cyan wins when tokens wait).
   const missions = useChests((x) => missionsLeft(x.c));
   useEffect(() => {
@@ -126,6 +133,9 @@ export function Menu() {
               <Text style={[s.lbl, { color: on ? t.accent : t.white, fontFamily: on ? F.displayItalic : F.display }]}>{label}</Text>
               {to === '/achievements' && profile && (waiting || missions) ? (
                 <View style={[s.dot, { backgroundColor: waiting ? t.accent : t.red }]} accessibilityLabel={waiting ? 'Tokens waiting' : 'Daily missions not done'} />
+              ) : null}
+              {to === '/friends' && profile && requests ? (
+                <View style={[s.dot, { backgroundColor: t.red }]} accessibilityLabel="Friend request waiting" />
               ) : null}
             </Pressable>
           );
