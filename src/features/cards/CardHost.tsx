@@ -1,4 +1,4 @@
-import { router, usePathname } from 'expo-router';
+import { usePathname } from 'expo-router';
 import { safeEnter } from '@/lib/enter';
 import { useEffect, useRef, useState } from 'react';
 import { AppState, Pressable, StyleSheet, View } from 'react-native';
@@ -18,6 +18,7 @@ import { F } from '@/theme/tokens';
 import { DECK } from './deck';
 import { loadHunt, useHunt } from './hunt';
 import { Sleeve } from './Sleeve';
+import { guardedNav } from '@/online/roomGuard';
 
 const kv = defaultKV();
 const seenKey = (uid: string) => `cards:seen:${uid}`;
@@ -97,7 +98,7 @@ export function CardHost() {
           <Pressable
             onPress={() => {
               void done();
-              router.navigate('/cards' as never);
+              guardedNav('/cards');
             }}
             style={[s.btn, { borderColor: t.accent }]}
             accessibilityRole="button">

@@ -53,7 +53,7 @@ test('the game header (GH1-GH3): smaller parts, token coin last on the right, no
 test('signed in, the header shows look A (photo, level ring, Sparks) in place of the logo; guests keep the logo', () => {
   const h = header();
   assert.match(h, /\{signedIn \? \(\s*<Me g=\{g\} \/>\s*\) : \(\s*<View style=\{z\.lk\}>\s*<PulseStar /);
-  assert.match(h, /router\.navigate\('\/profile'\)/); // the photo opens the Profile
+  assert.match(h, /guardedNav\('\/profile'\)/); // the photo opens the Profile (asks first inside an online room)
   assert.match(h, /onPress=\{tapped\(openSparks\)\}/); // the Sparks open Recharge
   assert.match(h, /<TokenCoin size=\{h\(g \? 17 : 20\)\} progress=\{0\}/); // the coin lost its level ring
 });

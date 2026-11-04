@@ -10,6 +10,7 @@ import { useAccount } from '@/state/account';
 import { cancelWatch, challengeFriend, JOIN_SAY, sayError, myInvites, respondInvite, watchAskState, watchFriend, type Invite } from './api';
 import { keepIfSame } from './same';
 import { onAccountSwitch } from '@/state/accountSwitch';
+import { guarded, inRoom } from './roomGuard';
 
 /** ON24: open challenges to you. `bannered` = already shown as the top banner once (Later keeps them on Friends). */
 type State = { list: Invite[]; bannered: string[]; say: string | null; asking: Asking | null };
@@ -71,7 +72,9 @@ export const markBannered = (id: string) => useInvites.setState((s) => ({ banner
 const lobby = (game: string, room: string) => router.push(`/play/${game}/lobby?room=${room}`);
 
 /** Join a friend's challenge: takes you straight to their lobby. */
-export async function acceptInvite(inv: Invite) {
+export async function acceptInvite(inv: Invite): Promise<void> {
+  // Already in another room: leave it first (asks), then join (Yazan 2026-11-04, point 8).
+  if (inRoom()) return guarded(() => void acceptInvite(inv));
   markBannered(inv.id);
   try {
     const r = await respondInvite(inv.id, true, useAccount.getState().profile?.avatar);

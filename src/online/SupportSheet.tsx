@@ -1,5 +1,4 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import { router } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 import Svg, { Circle, Path, Rect } from 'react-native-svg';
 import { Text } from '@/components/AppText';
@@ -8,6 +7,7 @@ import { Btn, Ghost } from '@/games/shell/ui';
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
+import { guardedNav } from './roomGuard';
 
 /**
  * #27 (Yazan 2026-11-02): no separate donations. Where online is locked (the Online card's Locked button, and the
@@ -48,7 +48,7 @@ export function SupportBlock({ why, onShop }: { why?: string; onShop?: () => voi
             label="Support us in the Nova shop"
             onPress={() => {
               onShop?.();
-              router.navigate('/store' as never);
+              guardedNav('/store');
             }}
           />
         </View>

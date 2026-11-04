@@ -29,6 +29,7 @@ import { TalkBubble, TalkPanel } from './TalkBar';
 import { toggleMute, useTalk, useTalkFeed } from './talk';
 import { GREY_LOOK, useRoomLook } from './look';
 import { useRoom } from './useRoom';
+import { hostLeaveNote } from './roomGuard';
 import { GAMES } from '@/data/games';
 
 
@@ -113,6 +114,7 @@ export function Lobby({ def, roomId }: { def: GameDef; roomId: string }) {
     return () => clearTimeout(id);
   }, [copied]);
 
+  const leaveNote = hostLeaveNote(host, [...players, ...watching].filter((p) => p.user_id !== me));
   const leave = async () => {
     await leaveRoom(roomId).catch(() => {});
     router.replace(`/play/${def.key}`);
@@ -206,6 +208,8 @@ export function Lobby({ def, roomId }: { def: GameDef; roomId: string }) {
       <View style={s.tb}>
         <Pressable onPress={leave} hitSlop={u(8)} accessibilityRole="button">
           <Text style={[s.tbT, { color: G.acc }]}>‹ Leave room</Text>
+          {/* Point 5 (Yazan 2026-11-04): the host sees who takes over, or that the room closes. */}
+          {leaveNote ? <Text style={[s.small, { color: G.mute, marginTop: u(2) }]}>{leaveNote}</Text> : null}
         </Pressable>
         <Pressable onPress={() => setSheet('how')} hitSlop={u(8)} accessibilityRole="button">
           <Text style={[s.tbT, { color: G.acc, fontFamily: F.bodySemi }]}>How to play</Text>

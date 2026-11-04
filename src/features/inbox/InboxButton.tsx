@@ -1,4 +1,4 @@
-import { router, useFocusEffect } from 'expo-router';
+import { useFocusEffect } from 'expo-router';
 import { useCallback, useEffect } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import Svg, { Circle, G, Path } from 'react-native-svg';
@@ -8,6 +8,7 @@ import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 
 import { loadWaiting, useInbox } from './useInbox';
+import { guardedNav } from '@/online/roomGuard';
 
 /**
  * The Inbox button, first of the four round buttons on the Games page (Yazan 2026-10-27: Inbox, daily reward, Grand
@@ -29,7 +30,7 @@ export function InboxButton() {
   const line = { stroke: t.accent, strokeWidth: 2.4, fill: 'none', strokeLinejoin: 'round' as const, strokeLinecap: 'round' as const };
   return (
     <Pressable
-      onPress={() => router.navigate('/inbox' as never)}
+      onPress={() => guardedNav('/inbox')}
       style={[s.btn, { backgroundColor: t.panel, borderColor: t.panelLine }]}
       accessibilityRole="button"
       accessibilityLabel={waiting ? `Inbox, ${waiting} new` : 'Inbox'}>

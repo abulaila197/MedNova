@@ -7,7 +7,7 @@ import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Animated, { FadeIn, FadeOut, ZoomIn, runOnJS, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 
-import { router } from 'expo-router';
+import { usePathname } from 'expo-router';
 
 import { Face } from '@/games/shell/Face';
 import { PlayerFace } from '@/features/style/Frame';
@@ -16,6 +16,7 @@ import { u, useScreen } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import { G } from './grey';
+import { guardedNav } from './roomGuard';
 import { RoomLookProvider, useRoomLook, type RoomLook } from './look';
 import { stickerById, STICKERS } from './stickers';
 import { TEXT_PACKS } from './textStickers';
@@ -118,7 +119,7 @@ export function TalkPanel({ room, me, onSent, maxH }: { room: string; me: Me; on
             ))}
           </View>, cooling ? s.cool : undefined)
         ) : (
-          <Pressable onPress={() => router.navigate('/style?tab=stickers' as never)} style={s.empty} accessibilityRole="link">
+          <Pressable onPress={() => guardedNav('/style?tab=stickers')} style={s.empty} accessibilityRole="link">
             <Text style={[s.emptyT, { color: L.mute, fontFamily: L.semi }]}>No special stickers yet.</Text>
             <Text style={[s.emptyT, { color: L.acc, fontFamily: L.semi }]}>Get packs in the Style shop or daily chests ›</Text>
           </Pressable>
@@ -328,10 +329,18 @@ export function RoomTalk({ room, me }: { room: string; me: Me }) {
   return null;
 }
 
+/** Leaving a room takes its chat button away at once (17), even while the room page is still on the stack. */
+export const hideRoomTalk = () => useShown.setState({ on: null });
+
+/** The pages a room's chat button belongs to: the lobby, the live match and the online results. */
+const TALK_PAGE = /^\/play\/[^/]+\/(lobby|live|results)/;
+
 /** Mounted once in the app layout: the floating chat button of the room you are in, if any. */
 export function TalkHost() {
   const on = useShown((x) => x.on);
-  if (!on) return null;
+  // 17 (Yazan 2026-11-04): a page opened over the room (menu, profile…) doesn't show the room's chat button.
+  const path = usePathname();
+  if (!on || !TALK_PAGE.test(path)) return null;
   return (
     <RoomLookProvider value={on.look}>
       <FloatingTalk key={on.room} room={on.room} me={on.me} />

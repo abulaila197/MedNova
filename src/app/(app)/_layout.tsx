@@ -11,6 +11,7 @@ import { closeFriendSheet, FriendSheets } from '@/features/profile/FriendSheets'
 import { PickNameHost } from '@/features/profile/PickName';
 import { InviteBanner } from '@/online/InviteBanner';
 import { TalkHost } from '@/online/TalkBar';
+import { RoomGuardHost } from '@/online/roomGuard';
 import { NetDot } from '@/online/netDot';
 import { DailyHost } from '@/features/daily/DailyHost';
 import { WelcomeHost } from '@/features/welcome/WelcomeHost';
@@ -74,6 +75,7 @@ export default function AppLayout() {
         {open ? <Pressable style={s.catch} onPress={() => setMenu(false)} accessibilityLabel="Close menu" /> : null}
       </Animated.View>
       <TalkHost />
+      <RoomGuardHost />
       <LoadingHost />
       <ReportSheet />
       <FriendSheets />

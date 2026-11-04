@@ -1,5 +1,4 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import { router } from 'expo-router';
 import { Platform, Pressable, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -10,6 +9,7 @@ import { useTheme } from '@/state/app';
 import { DESIGN_W, u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 import { tapped } from '@/lib/sound';
+import { guardedNav } from '@/online/roomGuard';
 
 export type Tab = 'learn' | 'games' | 'community' | null;
 
@@ -25,7 +25,7 @@ export function Dock({ active }: { active: Tab }) {
   const t = useTheme();
   const ins = useSafeAreaInsets();
   const bottom = Platform.OS === 'web' ? u(8) : Math.max(ins.bottom, u(8));
-  const go = tapped((r: Tab) => r && router.navigate(`/${r}`));
+  const go = tapped((r: Tab) => r && guardedNav(`/${r}`));
   const tab = (key: Exclude<Tab, null>, label: string, Icon: typeof LearnIcon) => {
     const on = active === key;
     const g = key === 'games';
