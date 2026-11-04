@@ -14,7 +14,7 @@ const cors = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
-const BANK = 'https://raw.githubusercontent.com/abulaila197/MedNova/0d88564c60cadb108269902d223eca288bff62a8/src/games/imposter/data/pairs.json';
+const BANK = 'https://raw.githubusercontent.com/abulaila197/MedNova/43d9b5b4a51d58457283f01f5b5f1ed1d48695f2/src/games/imposter/data/pairs.json';
 let bank: Promise<WordBank> | null = null;
 const loadBank = () =>
   (bank ??= fetch(BANK)
