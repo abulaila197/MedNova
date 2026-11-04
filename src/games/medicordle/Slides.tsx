@@ -27,7 +27,7 @@ const ROWS_KB = ['QWERTYUIOP', 'ASDFGHJKL', 'ZXCVBNM'];
 export type PlayedRow = { word: string | null; color?: string };
 
 export type TableProps = {
-  label: { no: string; title: string; sub: string; right?: ReactNode };
+  label: { no: string; title: string; sub: ReactNode; right?: ReactNode };
   answer: string;
   played: PlayedRow[];
   rows: number;

@@ -1,7 +1,7 @@
 // Pass the phone (WC1, WC12-WC17): the full game on one phone. Three acts of 3, 2 and 2 rounds of everyone's turn;
 // each act ends with a Boss Round of turn-based swipes. No tarot cards since #39a (Yazan 2026-11-01). The phone goes
 // round behind a curtain that shows what happened since that player last held it (OF1).
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { PanResponder, View } from 'react-native';
 
 import { useStableCallback } from '@/lib/useStableCallback';
@@ -20,6 +20,7 @@ import {
 } from './offline';
 import { PauseMenu } from '../shell/PauseMenu';
 import { TurnBoard, type Strip } from './TurnBoard';
+import { TurnName } from '../shell/TurnName';
 import { Bill, Btn, Bulbs, CB, CD, CM, Gem, Kicker, Panel, PauseBtn, QF_B, ROMAN, Rule, T, VelvetScreen, VV } from './velvet';
 import { useTicker } from '../engine/useTicker';
 import { gameShown } from './shown';
@@ -128,7 +129,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
         turn={g.turn}
         now={now}
         kicker={actName(g)}
-        title={`${name(who)}’s turn`}
+        title={<TurnName name={name(who)} color={seats.get(who)?.color} after="’s turn" />}
         strip={board}
         onEvent={(e) => dispatch({ type: 'TURN', e })}
         onPause={pause}
@@ -160,7 +161,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
 
 // ---------------------------------------------------------------- shared bits
 
-export function Top({ kicker, title, onPause }: { kicker: string; title: string; onPause?: () => void }) {
+export function Top({ kicker, title, onPause }: { kicker: string; title: ReactNode; onPause?: () => void }) {
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: u(12) }}>
       <View style={{ gap: u(2), flex: 1 }}>
@@ -257,7 +258,7 @@ export function RedemptionBoard({ g, now, seats, onEvent, onPause, hidden, watch
   if (r.phase === 'reveal')
     return (
       <View style={{ flex: 1, gap: u(14) }}>
-        <Top kicker={`Redemption · ${fieldName(r.field)}`} title={`${seats.get(r.seat)?.name ?? ''}’s second chance`} onPause={onPause} />
+        <Top kicker={`Redemption · ${fieldName(r.field)}`} title={<TurnName name={seats.get(r.seat)?.name ?? ''} color={seats.get(r.seat)?.color} after="’s second chance" />} onPause={onPause} />
         <Bill>
           <T f={CD} size={18} color={VV.redInk} style={{ textAlign: 'center' }}>{`${REDEMPTION_ITEMS} calls · ${REDEMPTION_MS / 1000} seconds`}</T>
           <T size={13} color={VV.paperSoft} style={{ textAlign: 'center' }}>{`True or false, as fast as you can. Each right call is +1. A wrong call costs nothing but time.`}</T>
@@ -343,7 +344,7 @@ function BossBoard({ g, seat, now, seats, onEvent, onPause, hidden }: { g: Offli
   if (b.phase === 'ready')
     return (
       <View style={{ flex: 1, gap: u(14) }}>
-        <Top kicker={`Act ${ROMAN[g.cycle]} · Boss Round`} title={`${n}’s go`} onPause={onPause} />
+        <Top kicker={`Act ${ROMAN[g.cycle]} · Boss Round`} title={<TurnName name={n} color={seats.get(seat)?.color} after="’s go" />} onPause={onPause} />
         <Bill>
           <T f={CM} size={10.5} color={VV.paperSoft} style={{ letterSpacing: u(2), textAlign: 'center' }}>{fieldName(b.field).toUpperCase()}</T>
           <T f={CD} size={19} color={VV.redInk} style={{ textAlign: 'center' }}>{b.category}</T>

@@ -24,6 +24,7 @@ import {
 import { DoneCard } from './SoloPlay';
 import { SlideTable, TurnClock } from './Slides';
 import { second, useTicker } from '../engine/useTicker';
+import { TurnName } from '@/games/shell/TurnName';
 
 const STYLE_NAME: Record<Style, string> = { classic: 'Classic', five: 'Classic', custom: 'Custom' };
 
@@ -127,7 +128,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
       label={{
         no: `WORD ${run.index + 1} OF ${run.wordIds.length}`,
         title: 'Medicordle',
-        sub: phase === 'wordOver' ? `${STYLE_NAME[style]} · ${w.word.length} letters · ${run.rows} rows` : `${who?.name ?? ''}'s turn · ${STYLE_NAME[style]} · ${w.word.length} letters`,
+        sub: phase === 'wordOver' ? `${STYLE_NAME[style]} · ${w.word.length} letters · ${run.rows} rows` : <TurnName name={who?.name ?? ''} color={who?.color} after={`’s turn · ${STYLE_NAME[style]} · ${w.word.length} letters`} />,
         right: phase === 'playing' ? <TurnClock ms={left} warn={left <= 5_000} /> : undefined,
       }}
       answer={w.word}

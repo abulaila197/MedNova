@@ -15,6 +15,8 @@ import { useStyle } from '@/features/style/useStyle';
 import { u, useScreen } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
+import { useAccount } from '@/state/account';
+
 import { G } from './grey';
 import { guardedNav } from './roomGuard';
 import { RoomLookProvider, useRoomLook, type RoomLook } from './look';
@@ -318,7 +320,11 @@ let nextKey = 1;
  * the button is drawn by TalkHost over the whole app window, not inside the game's own box, so in every game it can
  * go anywhere from under the header to the bottom edge (in some games it was boxed in by the scrolling body).
  */
-export function RoomTalk({ room, me }: { room: string; me: Me }) {
+export function RoomTalk({ room, me: given }: { room: string; me: Me }) {
+  // 22 (Yazan 2026-11-04): your own face is always your profile character (your room character, by rule). Someone
+  // only watching isn't a match player, so the games' fallback showed the default face.
+  const avatar = useAccount((a) => a.profile?.avatar);
+  const me = avatar ? { ...given, face: avatar } : given;
   useTalkFeed(room, me.id);
   const look = useRoomLook();
   const [key] = useState(() => nextKey++);

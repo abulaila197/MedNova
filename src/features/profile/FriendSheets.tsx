@@ -2,7 +2,7 @@ import * as Clipboard from 'expo-clipboard';
 import { Image, type ImageSource } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useRef, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { Text, TextInput } from '@/components/AppText';
 
 import { useBalance } from '@/components/LevelBadge';
@@ -205,8 +205,15 @@ function FriendMenu() {
  * Remove, Block and Report sit at the bottom. Any other player (pick B) gets the same sheet without tokens,
  * with Add friend (or Accept) instead of Challenge, and no Remove.
  */
+/** 23 (Yazan 2026-11-04): a sheet's list stops at 75% of the screen, so on a big-text phone it never covers the header. */
+function useSheetMax(design: number) {
+  const { height } = useWindowDimensions();
+  return Math.min(u(design), height * 0.75 - u(40));
+}
+
 function FriendProfileSheet() {
   const t = useTheme();
+  const maxH = useSheetMax(560);
   const hint = useFriendSheet((x) => x.friend);
   const [p, setP] = useState<FriendProfile | null | 'error'>(null);
   const [busy, setBusy] = useState(false);
@@ -272,7 +279,7 @@ function FriendProfileSheet() {
         : { label: `Add ${f.display_name} as a friend`, go: add };
 
   return (
-    <ScrollView style={{ maxHeight: u(560) }} contentContainerStyle={{ gap: u(10), paddingTop: u(8) }} showsVerticalScrollIndicator={false}>
+    <ScrollView style={{ maxHeight: maxH }} contentContainerStyle={{ gap: u(10), paddingTop: u(8) }} showsVerticalScrollIndicator={false}>
       <View style={s.ph}>
         <PlayerFace slug={f.avatar} size={u(64)} userId={f.id} />
         <View style={{ flex: 1, minWidth: 0, gap: u(2) }}>
@@ -360,6 +367,7 @@ function ChallengeGrid() {
   const f = useFriendSheet((x) => x.friend);
   const [busy, setBusy] = useState<string | null>(null);
   const [err, setErr] = useState(false);
+  const maxH = useSheetMax(470);
   if (!f) return null;
   const pick = async (key: string) => {
     setBusy(key);
@@ -381,7 +389,7 @@ function ChallengeGrid() {
     <>
       <Text style={[s.k, { color: t.kick }]}>{`CHALLENGE ${f.display_name.toUpperCase()}`}</Text>
       <Text style={[s.since, { color: t.mute, textAlign: 'left' }]}>Pick a game. Its room opens with the usual settings, which you can still change in the room.</Text>
-      <ScrollView style={{ maxHeight: u(470) }} contentContainerStyle={s.grid} showsVerticalScrollIndicator={false}>
+      <ScrollView style={{ maxHeight: maxH }} contentContainerStyle={s.grid} showsVerticalScrollIndicator={false}>
         {GAMES.map((g) => {
           const photo = LOAD[g.key]?.photo;
           return (

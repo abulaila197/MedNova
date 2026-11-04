@@ -3,7 +3,7 @@
 // sends only my own moves. The Boss Round is played by everyone at once, each swipe sent as it happens. No tarot
 // cards since #39a (Yazan 2026-11-01).
 import { router } from 'expo-router';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { PanResponder, View } from 'react-native';
 
 import { call, invoke, leaveRoom } from '@/online/api';
@@ -28,6 +28,7 @@ import { Bill, Btn, Bulbs, bulbsLit, CD, CM, GEMS, Panel, PauseBtn, ROMAN, Rule,
 import { useMatchState } from '@/online/useMatchState';
 import { useRevealSound } from '@/lib/sound';
 import { useBackPause } from '@/online/backPause';
+import { TurnName } from '../shell/TurnName';
 
 /** Every phone in a game must carry the same bank; the server checks this. */
 const BANK_V = bankVersion(BANK);
@@ -261,7 +262,7 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
     body = mine ? (
       <RedemptionOffer seat={who} seats={seats} onPick={(use) => send({ type: 'REDEEM', use })} onPause={pause} />
     ) : (
-      <Watching kicker="Redemption" title={`${seatName(who)} is last`} line="Final round: last place may swap this turn for a Redemption round, once a game." board={board} onPause={pause} />
+      <Watching kicker="Redemption" title={<TurnName name={seatName(who)} color={GEMS[who % GEMS.length]} after=" is last" />} line="Final round: last place may swap this turn for a Redemption round, once a game." board={board} onPause={pause} />
     );
   else if (g.phase === 'redemption' && g.redemption)
     body = (
@@ -280,10 +281,10 @@ export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
         turn={g.turn}
         now={server}
         kicker={actName(g)}
-        title={mine ? 'Your turn' : `${seatName(who)}’s turn`}
+        title={mine ? <TurnName name="Your turn" color={GEMS[who % GEMS.length]} /> : <TurnName name={seatName(who)} color={GEMS[who % GEMS.length]} after="’s turn" />}
         strip={board}
         watch={!mine}
-        footer={mine ? undefined : <T f={CM} size={12} color={VV.soft} style={{ textAlign: 'center' }}>{`${seatName(who)} is answering`}</T>}
+        footer={mine ? undefined : <T f={CM} size={12} color={VV.soft} style={{ textAlign: 'center' }}><TurnName name={seatName(who)} color={GEMS[who % GEMS.length]} after=" is answering" /></T>}
         onEvent={(e: TurnEvent) => send(e.type === 'ANSWER' ? { type: 'ANSWER', answer: e.answer as Answer } : e.type === 'GO' ? { type: 'GO' } : { type: 'TICK' })}
         onPause={pause}
       />
@@ -316,7 +317,7 @@ function WaitBar({ left, total, mine }: { left: number; total: number; mine: boo
 }
 
 /** Someone else's move: what is happening, the table, and my own cards (WC20). */
-function Watching({ kicker, title, line, board, onPause }: { kicker: string; title: string; line: string; board: Strip; onPause: () => void }) {
+function Watching({ kicker, title, line, board, onPause }: { kicker: string; title: ReactNode; line: string; board: Strip; onPause: () => void }) {
   return (
     <View style={{ gap: u(12) }}>
       <Top kicker={kicker} title={title} onPause={onPause} />

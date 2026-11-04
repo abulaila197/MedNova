@@ -244,7 +244,7 @@ export function TurnBoard({ turn, now, kicker, title, strip, footer, onEvent, on
   turn: Turn;
   now: number;
   kicker: string;
-  title: string;
+  title: ReactNode;
   strip?: Strip;
   footer?: ReactNode;
   onEvent: (e: TurnEvent) => void;

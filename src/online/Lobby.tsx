@@ -188,9 +188,16 @@ export function Lobby({ def, roomId }: { def: GameDef; roomId: string }) {
       </Pressable>
     );
   };
-  const empties = (n: number) =>
+  // Free seats shared between the teams: each team is offered up to its fair share (6 seats, 2 teams: 3 each).
+  const teamFree = (i: number, have: number) => {
+    const free = Math.max(0, cap - players.length);
+    const share = Math.ceil(cap / Math.max(1, teams));
+    const before = Array.from({ length: i }, (_, j) => Math.max(0, share - players.filter((p) => p.team === j).length)).reduce((a, b) => a + b, 0);
+    return Math.max(0, Math.min(share - have, free - before));
+  };
+  const empties = (n: number, k = 'e') =>
     Array.from({ length: n }, (_, i) => (
-      <Pressable key={`e${i}`} onPress={() => setSheet('invite')} style={[s.tile, s.empty]} accessibilityRole="button" accessibilityLabel="Invite a player">
+      <Pressable key={`${k}${i}`} onPress={() => setSheet('invite')} style={[s.tile, s.empty]} accessibilityRole="button" accessibilityLabel="Invite a player">
         <Text style={[s.plus, { color: G.dim }]}>+</Text>
         <Text style={[s.tl, { color: G.dim }]}>Invite</Text>
       </Pressable>
@@ -247,7 +254,11 @@ export function Lobby({ def, roomId }: { def: GameDef; roomId: string }) {
                 <Text style={[s.tghT, { color: G.fg }]}>{tm.name}</Text>
                 <Text style={[s.tghN, { color: G.dim }]}>{`${list.length} ${list.length === 1 ? 'player' : 'players'}`}</Text>
               </View>
-              <View style={s.tiles}>{list.length ? list.map(tile) : <Text style={[s.small, { color: G.dim }]}>Nobody yet.</Text>}</View>
+              {/* 24 (Yazan 2026-11-04): each team keeps its own Invite tiles, from the room's free seats shared out. */}
+              <View style={s.tiles}>
+                {list.map(tile)}
+                {empties(teamFree(i, list.length), `t${i}`)}
+              </View>
             </View>
           );
         })
@@ -437,9 +448,11 @@ function SeatSheet({ state, seat, teams, onDone }: { state: RoomState; seat: Sea
             {Array.from({ length: teams }, (_, i) => {
               const tm = presetTeam(i);
               const on = seat.team === i;
+              // 24 (Yazan 2026-11-04): big team buttons in the team's colour; the current team is filled.
               return (
-                <Pressable key={i} onPress={() => setTeam(state.room.id, seat.user_id, i).then(onDone).catch(onDone)} style={[s.chip, { borderColor: on ? tm.color : L.line }]} accessibilityRole="button" accessibilityState={{ selected: on }}>
-                  <Text style={[s.chipT, { fontFamily: L.semi, color: on ? tm.color : L.mute }]}>{tm.name}</Text>
+                <Pressable key={i} onPress={() => setTeam(state.room.id, seat.user_id, i).then(onDone).catch(onDone)} style={[s.teamBtn, { borderColor: tm.color, backgroundColor: on ? tm.color : 'transparent' }]} accessibilityRole="button" accessibilityState={{ selected: on }} accessibilityLabel={`Move to ${tm.name}`}>
+                  <View style={[s.tdot, { backgroundColor: on ? '#0b0b26' : tm.color }]} />
+                  <Text style={[s.teamBtnT, { fontFamily: L.semi, color: on ? '#0b0b26' : L.fg }]}>{tm.name}</Text>
                 </Pressable>
               );
             })}
@@ -520,6 +533,8 @@ const s = StyleSheet.create({
   small: { fontFamily: F.body, fontSize: u(9.5), lineHeight: u(13) },
   k: { fontFamily: F.bodySemi, fontSize: u(8), letterSpacing: u(0.9) },
   tb: { flexDirection: 'row', justifyContent: 'space-between' },
+  teamBtn: { flexGrow: 1, flexBasis: '45%', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: u(7), borderWidth: 1.5, borderRadius: 999, paddingVertical: u(11), paddingHorizontal: u(12) },
+  teamBtnT: { fontSize: u(12) },
   tbT: { fontFamily: F.body, fontSize: u(10.5) },
   rh: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end' },
   codeRow: { flexDirection: 'row', alignItems: 'center', gap: u(6) },
