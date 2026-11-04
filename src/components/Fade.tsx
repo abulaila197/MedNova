@@ -1,9 +1,9 @@
 import MaskedView from '@react-native-masked-view/masked-view';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useRef, useState, type ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { Platform, StyleSheet, View, type LayoutChangeEvent, type StyleProp, type ViewStyle } from 'react-native';
 
-import { Backdrop } from '@/components/Backdrop';
+import { useTheme } from '@/state/app';
 
 type Stops = [number, number][];
 
@@ -15,7 +15,7 @@ type Stops = [number, number][];
  *
  * `veil` (Yazan 2026-11-02, lag): for scrolling pages. A mask over a scrolling list makes Android redraw the whole
  * list through an extra layer on every frame. The veil leaves the list alone and lays a still copy of the page
- * backdrop over the edge instead, faded in by a gradient, so the content seems to dissolve into the same backdrop.
+ * colour over the edge instead, faded in by a gradient, so the content seems to dissolve into the page.
  */
 export function Fade({
   from = 1,
@@ -103,53 +103,40 @@ function bands(inv: Stops): { from: number; to: number; stops: Stops }[] {
   return out;
 }
 
-/** The still backdrop copy over the faded edges: see `veil` above. Nothing in it moves while the list scrolls. */
+/**
+ * The still veil over the faded edges: see `veil` above. Nothing in it moves while the list scrolls.
+ * #3 (Yazan 2026-11-04): it used to lay a copy of the page backdrop through a mask, which Android drew as a dark
+ * square in the wrong place on some pages. Now each edge is a plain gradient into the page colour: no copy, no mask.
+ */
 function Veil({ stops, horizontal }: { stops: Stops; horizontal: boolean }) {
-  const ref = useRef<View>(null);
-  const [box, setBox] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
-  // Where the content is fully gone the backdrop is fully drawn: the veil's alpha is the content's alpha flipped.
+  const t = useTheme();
+  // Where the content is fully gone the page colour is fully drawn: the veil's alpha is the content's alpha flipped.
   const inv: Stops = stops.map(([o, a]) => [o, 1 - a]);
+  const rgb = hexRgb(t.sky);
   return (
-    <View
-      ref={ref}
-      pointerEvents="none"
-      style={StyleSheet.absoluteFill}
-      onLayout={() => ref.current?.measureInWindow((x, y, w, h) => setBox((o) => (o && o.x === x && o.y === y && o.w === w && o.h === h ? o : { x, y, w, h })))}>
-      {box
-        ? bands(inv).map((b, i) => {
-            const pos: ViewStyle = horizontal
-              ? { position: 'absolute', top: 0, bottom: 0, left: b.from * box.w, width: (b.to - b.from) * box.w }
-              : { position: 'absolute', left: 0, right: 0, top: b.from * box.h, height: (b.to - b.from) * box.h };
-            const art = (
-              <View style={[StyleSheet.absoluteFill, { overflow: 'hidden' }]}>
-                <View style={{ position: 'absolute', left: -(box.x + (horizontal ? b.from * box.w : 0)), top: -(box.y + (horizontal ? 0 : b.from * box.h)) }}>
-                  <Backdrop />
-                </View>
-              </View>
-            );
-            if (Platform.OS === 'web') {
-              const g = `linear-gradient(${horizontal ? '90deg' : '180deg'}, ${b.stops.map(([o, a]) => `rgba(0,0,0,${a}) ${(o * 100).toFixed(2)}%`).join(', ')})`;
-              return <View key={i} style={[pos, { maskImage: g, WebkitMaskImage: g } as unknown as ViewStyle]}>{art}</View>;
-            }
-            return (
-              <MaskedView
-                key={i}
-                style={pos}
-                androidRenderingMode="hardware"
-                maskElement={
-                  <LinearGradient
-                    colors={b.stops.map(([, a]) => `rgba(0,0,0,${a})`) as unknown as [string, string, ...string[]]}
-                    locations={b.stops.map(([o]) => o) as unknown as [number, number, ...number[]]}
-                    start={{ x: 0, y: 0 }}
-                    end={horizontal ? { x: 1, y: 0 } : { x: 0, y: 1 }}
-                    style={StyleSheet.absoluteFill}
-                  />
-                }>
-                {art}
-              </MaskedView>
-            );
-          })
-        : null}
+    <View pointerEvents="none" style={StyleSheet.absoluteFill}>
+      {bands(inv).map((b, i) => {
+        const pos: ViewStyle = horizontal
+          ? { position: 'absolute', top: 0, bottom: 0, left: `${b.from * 100}%`, width: `${(b.to - b.from) * 100}%` }
+          : { position: 'absolute', left: 0, right: 0, top: `${b.from * 100}%`, height: `${(b.to - b.from) * 100}%` };
+        return (
+          <LinearGradient
+            key={i}
+            pointerEvents="none"
+            colors={b.stops.map(([, a]) => `rgba(${rgb},${a})`) as unknown as [string, string, ...string[]]}
+            locations={b.stops.map(([o]) => o) as unknown as [number, number, ...number[]]}
+            start={{ x: 0, y: 0 }}
+            end={horizontal ? { x: 1, y: 0 } : { x: 0, y: 1 }}
+            style={pos}
+          />
+        );
+      })}
     </View>
   );
+}
+
+/** "#0d1738" -> "13,23,56" (a colour that isn't 6-digit hex falls back to the app navy). */
+function hexRgb(hex: string) {
+  const m = /^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(hex.trim());
+  return m ? [m[1], m[2], m[3]].map((x) => parseInt(x, 16)).join(',') : '13,23,56';
 }

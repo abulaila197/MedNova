@@ -64,12 +64,14 @@ export function TalkPanel({ room, me, onSent, maxH }: { room: string; me: Me; on
   const [pk, setPkState] = useState<string | null>(m.pk);
   const setPk = (k: string) => ((m.pk = k), (m.y.special = 0), setPkState(k));
   // The tray's list scrolls inside the room it has (the button can sit high or low), from where you left it.
-  const bodyMax = maxH != null ? Math.max(u(110), maxH - u(48)) : undefined;
+  // #21 (Yazan 2026-11-04): the panel itself stops at that room and the list takes what the tabs and the note leave
+  // (it shrinks to fit), so the last voices can always be scrolled to instead of hiding under the tray's edge.
+  const bodyMax: number | undefined = undefined;
   // A plain function, not a component, so a redraw (the 3 s cooldown) keeps the same list and its scroll spot.
   const body = (k: Tab, children: React.ReactNode, style?: object) => (
     <ScrollView
       key={k}
-      style={[{ maxHeight: bodyMax ?? (k === 'voice' ? u(176) : undefined) }, style]}
+      style={[maxH != null ? s.shrink : { maxHeight: bodyMax ?? (k === 'voice' ? u(176) : undefined) }, style]}
       contentContainerStyle={k === 'voice' ? s.vg : undefined}
       contentOffset={{ x: 0, y: m.y[k] }}
       onScroll={(e) => (m.y[k] = e.nativeEvent.contentOffset.y)}
@@ -84,7 +86,7 @@ export function TalkPanel({ room, me, onSent, maxH }: { room: string; me: Me; on
     if (r === 'sent') onSent?.();
   };
   return (
-    <View style={s.panel}>
+    <View style={[s.panel, maxH != null && { maxHeight: maxH }]}>
       <View style={s.tabs}>
         {(['sticker', 'special', 'voice'] as const).map((k) => (
           <Pressable key={k} onPress={() => setTab(k)} style={[s.tab, { borderColor: L.line }, tab === k && { backgroundColor: L.btn, borderColor: 'transparent' }]} accessibilityRole="tab" accessibilityState={{ selected: tab === k }}>
@@ -132,7 +134,7 @@ export function TalkPanel({ room, me, onSent, maxH }: { room: string; me: Me; on
           {VOICE.map((v) => (
             <Pressable key={v.id} disabled={cooling} onPress={() => send('voice', v.id)} style={[s.vl, { borderColor: L.line, backgroundColor: L.panel }]} accessibilityRole="button" accessibilityLabel={`Say: ${v.line}`}>
               <Text style={[s.vlI, { color: L.mute }]}>▶</Text>
-              <Text style={[s.vlT, { color: L.fg, fontFamily: L.semi }]} numberOfLines={1}>{v.line}</Text>
+              <Text style={[s.vlT, { color: L.fg, fontFamily: L.semi }]} numberOfLines={2}>{v.line}</Text>
             </Pressable>
           ))}
         </>, cooling ? s.cool : undefined)
@@ -154,7 +156,7 @@ export function TalkBubble({ m, face, size = 60 }: { m: TalkMsg; face?: boolean;
       ) : v ? (
         <View style={[s.vb, { backgroundColor: L.raised }]}>
           <Text style={s.vbI}>🔊</Text>
-          <Text style={[s.vbT, { color: L.fg, fontFamily: L.semi }]} numberOfLines={1}>{v.line}</Text>
+          <Text style={[s.vbT, { color: L.fg, fontFamily: L.semi }]} numberOfLines={2}>{v.line}</Text>
         </View>
       ) : null}
       {face ? (
@@ -281,6 +283,7 @@ export function FloatingTalk({ room, me }: { room: string; me: Me }) {
 const s = StyleSheet.create({
   panel: { gap: u(9) },
   tabs: { flexDirection: 'row', gap: u(6) },
+  shrink: { flexShrink: 1, flexGrow: 0 },
   tab: { flex: 1, alignItems: 'center', paddingVertical: u(6), borderRadius: u(9), borderWidth: 1, borderColor: 'transparent' },
   tabT: { fontFamily: F.bodySemi, fontSize: u(10.5) },
   sg: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', rowGap: u(6) },
@@ -302,7 +305,7 @@ const s = StyleSheet.create({
   bub: { alignItems: 'center', justifyContent: 'center' },
   vb: { flexDirection: 'row', alignItems: 'center', gap: u(5), backgroundColor: G.raised, borderWidth: 1, borderColor: 'rgba(255,255,255,0.14)', borderRadius: u(14), paddingVertical: u(6), paddingHorizontal: u(10), boxShadow: '0px 8px 16px rgba(0,0,0,0.35)' },
   vbI: { fontSize: u(9) },
-  vbT: { fontFamily: F.bodySemi, fontSize: u(11), color: G.fg },
+  vbT: { fontFamily: F.bodySemi, fontSize: u(11), color: G.fg, flexShrink: 1 },
   bf: { position: 'absolute', right: u(-4), bottom: u(-4), borderRadius: u(10), borderWidth: 1.5, borderColor: G.page },
   anchor: { position: 'absolute', left: 0, top: 0, zIndex: 25 },
   pops: { position: 'absolute', bottom: 0, width: u(180), gap: u(4) },
