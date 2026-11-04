@@ -1,7 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import fullJson from '../data/pairs.json';
-import sampleJson from './sample-pairs.json';
 import { validateClue } from '../engine/clues';
 import { isCorrectGuess } from '../engine/wordMatch';
 import { lettersOnly, sameWord } from '../engine/text';
@@ -9,7 +8,6 @@ import type { WordBank, WordPair } from '../engine/types';
 import { Sim, playRoundCaught, profanity } from './helpers';
 
 const full = fullJson as unknown as WordBank;
-const samples = (sampleJson as unknown as WordBank).pairs;
 const clinical = full.pairs.filter((p) => p.subtype === 'clinical');
 const basic = full.pairs.filter((p) => p.subtype === 'basic');
 const count = (ps: WordPair[], f: (p: WordPair) => string | undefined) => {
@@ -24,18 +22,22 @@ test('word bank: 600 pairs per subtype with the agreed categories', () => {
   const systems = ['Respiratory', 'Cardiovascular', 'Digestive', 'Nervous', 'Endocrine', 'Renal and urinary', 'Musculoskeletal', 'Reproductive', 'Blood and immune', 'Skin'];
   assert.deepEqual(count(clinical, (p) => p.category), Object.fromEntries(systems.map((s) => [s, 60])));
   assert.deepEqual(count(clinical, (p) => p.kind), { disease: 360, symptom: 100, investigation: 70, treatment: 70 });
-  assert.deepEqual(count(basic, (p) => p.category), { Anatomy: 101, Physiology: 100, Biochemistry: 100, Pharmacology: 100, Pathology: 99, Microbiology: 100 });
+  assert.deepEqual(count(basic, (p) => p.category), { Anatomy: 100, Physiology: 100, Biochemistry: 100, Pharmacology: 100, Pathology: 100, Microbiology: 100 });
 });
 
-test('word bank: the 20 approved sample pairs come first, unchanged', () => {
-  const order = [...samples.filter((s) => s.subtype === 'clinical'), ...samples.filter((s) => s.subtype === 'basic')];
-  order.forEach((s, i) => {
-    const p = i < 10 ? clinical[i] : basic[i - 10];
-    assert.equal(p.a.word, s.a.word);
-    assert.equal(p.b.word, s.b.word);
-    assert.equal(p.category, s.category);
-    for (const side of ['a', 'b'] as const) for (const alt of s[side].alts) assert.ok(p[side].alts.includes(alt), `${s.id} lost ${alt}`);
-  });
+// Yazan 2026-11-04 (point 20): the two words are close relatives from one family, in plain words on screen.
+test('word bank: both words of a pair come from one family, with no abbreviation on screen', () => {
+  const familyOf = new Map<string, string>();
+  for (const p of full.pairs) {
+    assert.ok(p.family && p.family.trim(), `${p.id} has no family`);
+    for (const e of [p.a, p.b]) {
+      assert.ok(!/[A-Z]{2,}/.test(e.word), `${p.id}: "${e.word}" looks like an abbreviation`);
+      const key = e.word.toLowerCase();
+      const was = familyOf.get(key);
+      assert.ok(!was || was === p.family, `${p.id}: "${e.word}" is in two families (${was}, ${p.family})`);
+      familyOf.set(key, p.family!);
+    }
+  }
 });
 
 test('word bank: structure, unique ids, no duplicate pairs, no word in more than 2 pairs', () => {

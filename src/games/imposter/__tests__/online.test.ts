@@ -128,7 +128,7 @@ test('Online: the packed bank the referee carries holds every pair the engine re
   const back = unpackBank(packBank(BANK));
   assert.equal(back.pairs.length, BANK.pairs.length);
   for (let i = 0; i < BANK.pairs.length; i++) {
-    const { kind: _k, topic: _t, ...want } = BANK.pairs[i];
+    const { kind: _k, topic: _t, family: _f, ...want } = BANK.pairs[i];
     assert.deepEqual(back.pairs[i], want);
   }
 });

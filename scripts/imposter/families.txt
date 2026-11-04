@@ -1,0 +1,390 @@
+# Imposter word families (Yazan 2026-11-04, point 20): each pair is two close relatives from one family.
+# Line: subtype|category|kind or topic|family name|word/alt/alt; word/alt; ...
+# Words on screen are plain full names (no abbreviations); short forms live only as alternatives.
+# scripts/imposter/build.py turns each family into pairs (a ring: 1-2, 2-3, ..., last-1), then trims to the quotas.
+
+## Clinical: Respiratory
+clinical|Respiratory|disease|Airway diseases|Asthma; Chronic obstructive pulmonary disease/COPD; Bronchiectasis; Chronic bronchitis; Emphysema
+clinical|Respiratory|disease|Lung infections|Pneumonia/lung infection; Tuberculosis/TB/consumption; Bronchiolitis; Acute bronchitis; Whooping cough/pertussis; Influenza/flu
+clinical|Respiratory|disease|Pleura|Pneumothorax/collapsed lung; Pleural effusion; Empyema; Haemothorax/hemothorax; Pleurisy/pleuritis
+clinical|Respiratory|disease|Lung cancers|Small cell lung cancer; Non-small cell lung cancer/NSCLC; Mesothelioma; Lung carcinoid tumour/lung carcinoid tumor
+clinical|Respiratory|disease|Scarred lungs|Silicosis; Asbestosis; Black lung/coal worker's pneumoconiosis; Pulmonary fibrosis/lung fibrosis; Sarcoidosis
+clinical|Respiratory|disease|Lung vessels|Pulmonary embolism/PE/lung clot; Pulmonary hypertension; Pulmonary oedema/pulmonary edema/fluid on the lungs
+clinical|Respiratory|disease|Sleep breathing|Obstructive sleep apnoea/obstructive sleep apnea/OSA; Central sleep apnoea/central sleep apnea; Obesity hypoventilation syndrome
+clinical|Respiratory|disease|Upper airway|Croup; Epiglottitis; Tonsillitis; Sinusitis; Common cold/head cold; Laryngitis
+clinical|Respiratory|disease|Inherited lung disease|Cystic fibrosis/CF; Primary ciliary dyskinesia; Alpha-1 antitrypsin deficiency
+clinical|Respiratory|symptom|Breath sounds|Wheeze/wheezing; Stridor; Crackles/crepitations; Pleural rub/friction rub
+clinical|Respiratory|symptom|Cough|Dry cough; Productive cough/wet cough; Coughing blood/haemoptysis/hemoptysis
+clinical|Respiratory|symptom|Hard breathing|Breathlessness/dyspnoea/dyspnea/shortness of breath; Fast breathing/tachypnoea/tachypnea; Chest tightness
+clinical|Respiratory|symptom|Low oxygen signs|Cyanosis/blue lips; Finger clubbing/clubbing
+clinical|Respiratory|investigation|Breathing tests|Spirometry; Peak flow/peak expiratory flow; Lung diffusion test/transfer factor
+clinical|Respiratory|investigation|Lung samples|Sputum culture; Pleural tap/pleural aspiration/thoracentesis; Bronchoscopy
+clinical|Respiratory|investigation|Chest imaging|Chest X-ray/CXR/chest radiograph; Chest ultrasound
+clinical|Respiratory|investigation|Oxygen tests|Arterial blood gas/ABG; Pulse oximetry/oxygen saturation
+clinical|Respiratory|treatment|Inhalers|Salbutamol/albuterol; Ipratropium; Tiotropium; Salmeterol; Budesonide; Beclometasone/beclomethasone
+clinical|Respiratory|treatment|Asthma tablets|Montelukast; Theophylline
+clinical|Respiratory|treatment|Breathing support|Oxygen therapy/home oxygen; Non-invasive ventilation/NIV/BiPAP/CPAP
+
+## Clinical: Cardiovascular
+clinical|Cardiovascular|disease|Heart rhythm|Atrial fibrillation/AF/AFib; Atrial flutter; Ventricular tachycardia/VT; Ventricular fibrillation/VF; Supraventricular tachycardia/SVT; Heart block/atrioventricular block
+clinical|Cardiovascular|disease|Coronary disease|Heart attack/myocardial infarction/MI; Stable angina/angina; Unstable angina; Variant angina/Prinzmetal angina/coronary spasm
+clinical|Cardiovascular|disease|Heart muscle|Dilated cardiomyopathy; Hypertrophic cardiomyopathy/HCM; Restrictive cardiomyopathy; Myocarditis; Takotsubo cardiomyopathy/broken heart syndrome
+clinical|Cardiovascular|disease|Heart valves|Aortic stenosis; Aortic regurgitation; Mitral stenosis; Mitral regurgitation; Mitral valve prolapse; Tricuspid regurgitation
+clinical|Cardiovascular|disease|Heart lining|Infective endocarditis/endocarditis; Pericarditis; Pericardial effusion; Cardiac tamponade/tamponade; Rheumatic fever
+clinical|Cardiovascular|disease|Pump and pressure|Heart failure/cardiac failure/HF; High blood pressure/hypertension; Low blood pressure/hypotension; Cardiogenic shock
+clinical|Cardiovascular|disease|Blood vessels|Aortic aneurysm/AAA; Aortic dissection; Peripheral arterial disease/PAD; Deep vein thrombosis/DVT/leg clot; Varicose veins; Raynaud's phenomenon/Raynaud phenomenon
+clinical|Cardiovascular|disease|Born with it|Ventricular septal defect/VSD/hole in the heart; Atrial septal defect/ASD; Tetralogy of Fallot; Patent ductus arteriosus/PDA; Coarctation of the aorta
+clinical|Cardiovascular|disease|Vessel inflammation|Giant cell arteritis/temporal arteritis; Kawasaki disease; Takayasu arteritis
+clinical|Cardiovascular|symptom|Heartbeat|Palpitations; Racing heart; Skipped beats/ectopic beats
+clinical|Cardiovascular|symptom|Fainting|Fainting/syncope; Dizziness/lightheadedness; Near fainting/presyncope
+clinical|Cardiovascular|symptom|Fluid|Ankle swelling/pedal oedema/pedal edema; Orthopnoea/orthopnea/breathless lying flat; Waking up breathless/paroxysmal nocturnal dyspnoea/PND
+clinical|Cardiovascular|symptom|Pain from poor blood flow|Crushing chest pain; Calf pain on walking/claudication
+clinical|Cardiovascular|symptom|Heart sounds|Heart murmur/murmur; Gallop rhythm/third heart sound
+clinical|Cardiovascular|investigation|Heart tracings|Electrocardiogram/ECG/EKG; Holter monitor/24-hour tape; Exercise stress test/treadmill test
+clinical|Cardiovascular|investigation|Heart pictures|Echocardiogram/echo/heart ultrasound; Coronary angiogram/angiogram/cardiac catheterisation; Transoesophageal echocardiogram/TOE/TEE
+clinical|Cardiovascular|investigation|Heart blood tests|Troponin test/troponin; Brain natriuretic peptide/BNP; Lipid profile/cholesterol test
+clinical|Cardiovascular|treatment|Blood pressure tablets|Amlodipine; Ramipril; Losartan; Bisoprolol
+clinical|Cardiovascular|treatment|Antiplatelets|Aspirin; Clopidogrel; Ticagrelor
+clinical|Cardiovascular|treatment|Statins|Atorvastatin; Simvastatin
+
+## Clinical: Digestive
+clinical|Digestive|disease|Stomach and gullet|Gastric ulcer/stomach ulcer; Duodenal ulcer; Gastritis; Acid reflux/GORD/GERD/reflux disease; Barrett's oesophagus/Barrett's esophagus; Hiatus hernia/hiatal hernia
+clinical|Digestive|disease|Bowel inflammation|Crohn's disease/Crohn disease; Ulcerative colitis/UC; Coeliac disease/celiac disease; Irritable bowel syndrome/IBS; Diverticulitis; Microscopic colitis
+clinical|Digestive|disease|Liver|Hepatitis A; Hepatitis B; Hepatitis C; Fatty liver disease/NAFLD; Cirrhosis/liver cirrhosis; Alcoholic hepatitis
+clinical|Digestive|disease|Gallbladder and pancreas|Gallstones/cholelithiasis; Cholecystitis; Cholangitis; Acute pancreatitis; Chronic pancreatitis
+clinical|Digestive|disease|Gut cancers|Bowel cancer/colorectal cancer/colon cancer; Stomach cancer/gastric cancer; Oesophageal cancer/esophageal cancer; Pancreatic cancer; Liver cancer/hepatocellular carcinoma
+clinical|Digestive|disease|Acute abdomen|Appendicitis; Bowel obstruction/intestinal obstruction; Volvulus; Intussusception
+clinical|Digestive|disease|Gut infections|Gastroenteritis/stomach flu; Food poisoning; Cholera; Typhoid fever/typhoid; Dysentery
+clinical|Digestive|disease|Back passage|Haemorrhoids/hemorrhoids/piles; Anal fissure; Anal fistula
+clinical|Digestive|disease|Hernias|Inguinal hernia; Femoral hernia; Umbilical hernia
+clinical|Digestive|symptom|Being sick|Nausea; Vomiting; Vomiting blood/haematemesis/hematemesis
+clinical|Digestive|symptom|Bowel habit|Diarrhoea/diarrhea; Constipation; Black stools/melaena/melena; Rectal bleeding/blood in stool
+clinical|Digestive|symptom|Upper gut|Heartburn; Difficulty swallowing/dysphagia; Indigestion/dyspepsia
+clinical|Digestive|symptom|Liver signs|Jaundice/yellow skin/icterus; Ascites/fluid in the belly
+clinical|Digestive|investigation|Scopes|Gastroscopy/upper endoscopy/OGD; Colonoscopy; Sigmoidoscopy/flexible sigmoidoscopy; Capsule endoscopy/pill camera
+clinical|Digestive|investigation|Gut lab tests|Liver function tests/LFTs/liver blood test; Stool blood test/faecal immunochemical test/FIT; Urea breath test
+clinical|Digestive|investigation|Gut imaging|Abdominal ultrasound; Barium swallow
+clinical|Digestive|treatment|Acid medicines|Omeprazole; Lansoprazole; Ranitidine; Famotidine
+clinical|Digestive|treatment|Anti-sickness|Ondansetron; Metoclopramide; Domperidone
+clinical|Digestive|treatment|Laxatives|Lactulose; Senna
+
+## Clinical: Nervous
+clinical|Nervous|disease|Strokes and bleeds|Ischaemic stroke/ischemic stroke; Haemorrhagic stroke/hemorrhagic stroke/brain bleed; Mini-stroke/transient ischaemic attack/TIA; Subarachnoid haemorrhage/subarachnoid hemorrhage/SAH; Subdural haematoma/subdural hematoma; Extradural haematoma/epidural hematoma
+clinical|Nervous|disease|Dementia and decline|Alzheimer's disease/Alzheimer disease; Vascular dementia; Lewy body dementia; Frontotemporal dementia; Parkinson's disease/Parkinson disease; Huntington's disease/Huntington disease
+clinical|Nervous|disease|Nerve and muscle|Motor neurone disease/MND/ALS; Myasthenia gravis; Guillain-Barre syndrome/GBS; Multiple sclerosis/MS
+clinical|Nervous|disease|Headaches|Migraine; Tension headache; Cluster headache
+clinical|Nervous|disease|Face nerves|Bell's palsy/Bell palsy; Trigeminal neuralgia
+clinical|Nervous|disease|Brain infections|Meningitis; Encephalitis; Brain abscess
+clinical|Nervous|disease|Seizures|Epilepsy; Absence seizure; Febrile seizure/febrile convulsion; Status epilepticus
+clinical|Nervous|disease|Trapped nerves|Sciatica; Carpal tunnel syndrome; Cubital tunnel syndrome/ulnar nerve entrapment
+clinical|Nervous|disease|Spinal cord emergencies|Cauda equina syndrome; Spinal cord compression
+clinical|Nervous|disease|Brain tumours|Glioblastoma; Meningioma; Acoustic neuroma/vestibular schwannoma
+clinical|Nervous|disease|Movement problems|Essential tremor; Restless legs syndrome; Tourette syndrome/Tourette's
+clinical|Nervous|symptom|Stroke signs|One-sided weakness/hemiparesis; Facial droop; Slurred speech/dysarthria; Word-finding trouble/aphasia/dysphasia
+clinical|Nervous|symptom|Feeling|Numbness; Pins and needles/tingling/paraesthesia/paresthesia; Burning feet
+clinical|Nervous|symptom|Thinking|Confusion; Memory loss/amnesia; Drowsiness
+clinical|Nervous|symptom|Movement|Tremor/shaking; Muscle jerks/myoclonus
+clinical|Nervous|symptom|Eyesight|Double vision/diplopia; Blurred vision
+clinical|Nervous|investigation|Electrical tests|Electroencephalogram/EEG; Electromyography/EMG; Nerve conduction study
+clinical|Nervous|investigation|Brain vessel tests|Carotid ultrasound/carotid doppler; Cerebral angiogram; Transcranial doppler
+clinical|Nervous|investigation|Bedside scores|Glasgow coma scale/GCS; Mini-mental state exam/MMSE
+clinical|Nervous|treatment|Seizure medicines|Levetiracetam; Sodium valproate/valproate; Carbamazepine; Lamotrigine; Phenytoin
+clinical|Nervous|treatment|Parkinson's medicines|Levodopa/L-dopa/co-careldopa; Ropinirole; Pramipexole
+
+## Clinical: Endocrine
+clinical|Endocrine|disease|Diabetes, early|Type 1 diabetes/T1DM; Gestational diabetes; Maturity onset diabetes of the young/MODY
+clinical|Endocrine|disease|Diabetes, later|Type 2 diabetes/T2DM; Prediabetes/impaired glucose tolerance; Metabolic syndrome
+clinical|Endocrine|disease|Sugar emergencies|Diabetic ketoacidosis/DKA; Hyperosmolar hyperglycaemic state/HHS; Hypoglycaemia/hypoglycemia/low blood sugar
+clinical|Endocrine|disease|Thyroid|Graves' disease/Graves disease; Hashimoto's thyroiditis/Hashimoto thyroiditis; Subacute thyroiditis/de Quervain thyroiditis; Thyroid cancer; Goitre/goiter
+clinical|Endocrine|disease|Thyroid emergencies|Thyroid storm; Myxoedema coma/myxedema coma
+clinical|Endocrine|disease|Adrenal|Cushing's syndrome/Cushing syndrome; Addison's disease/Addison disease; Conn's syndrome/Conn syndrome/primary hyperaldosteronism; Phaeochromocytoma/pheochromocytoma; Congenital adrenal hyperplasia/CAH
+clinical|Endocrine|disease|Pituitary|Acromegaly; Gigantism; Prolactinoma; Hypopituitarism; Diabetes insipidus; Sheehan syndrome
+clinical|Endocrine|disease|Calcium glands|Hyperparathyroidism; Hypoparathyroidism; Vitamin D deficiency
+clinical|Endocrine|disease|Weight and fats|Obesity; Familial hypercholesterolaemia/familial hypercholesterolemia; Lipodystrophy
+clinical|Endocrine|disease|Growth and puberty|Precocious puberty/early puberty; Delayed puberty; Growth hormone deficiency; Turner syndrome; Klinefelter syndrome
+clinical|Endocrine|disease|Hormone tumours|Insulinoma; Carcinoid syndrome; Gastrinoma/Zollinger-Ellison syndrome
+clinical|Endocrine|symptom|Thirst and urine|Excessive thirst/polydipsia; Passing lots of urine/polyuria; Passing urine at night/nocturia
+clinical|Endocrine|symptom|Weight and appetite|Weight gain; Weight loss; Increased appetite/polyphagia
+clinical|Endocrine|symptom|Temperature|Heat intolerance; Cold intolerance; Excessive sweating/hyperhidrosis
+clinical|Endocrine|symptom|Steroid look|Moon face; Buffalo hump; Purple stretch marks/striae
+clinical|Endocrine|investigation|Sugar tests|Fasting glucose/fasting blood sugar; Glycated haemoglobin/glycated hemoglobin/HbA1c/A1c; Glucose tolerance test/OGTT; Random glucose/random blood sugar
+clinical|Endocrine|investigation|Hormone tests|Thyroid function tests/TFTs/TSH; Synacthen test/short synacthen test/ACTH stimulation test; Dexamethasone suppression test; Prolactin level
+clinical|Endocrine|treatment|Thyroid medicines|Levothyroxine/thyroxine; Carbimazole; Propylthiouracil/PTU
+clinical|Endocrine|treatment|Diabetes medicines|Metformin; Gliclazide; Sitagliptin; Empagliflozin; Insulin glargine/glargine
+
+## Clinical: Renal and urinary
+clinical|Renal and urinary|disease|Kidney failure|Acute kidney injury/AKI/acute renal failure; Chronic kidney disease/CKD; End-stage kidney disease/ESRD/end-stage renal disease
+clinical|Renal and urinary|disease|Kidney filters|Nephrotic syndrome; Nephritic syndrome; Berger's disease/IgA nephropathy; Minimal change disease; Membranous nephropathy; Post-streptococcal glomerulonephritis
+clinical|Renal and urinary|disease|Urine infections|Cystitis/bladder infection; Pyelonephritis/kidney infection; Urethritis; Prostatitis
+clinical|Renal and urinary|disease|Stones and blockage|Kidney stones/renal stones/nephrolithiasis; Bladder stones; Hydronephrosis; Urinary retention
+clinical|Renal and urinary|disease|Urinary cancers|Bladder cancer; Kidney cancer/renal cell carcinoma; Prostate cancer; Wilms tumour/Wilms tumor/nephroblastoma
+clinical|Renal and urinary|disease|Inherited kidney disease|Polycystic kidney disease/PKD; Alport syndrome; Fanconi syndrome
+clinical|Renal and urinary|disease|Leaking urine|Stress incontinence; Urge incontinence/overactive bladder; Overflow incontinence; Bedwetting/enuresis
+clinical|Renal and urinary|disease|Male waterworks|Enlarged prostate/benign prostatic hyperplasia/BPH; Urethral stricture; Phimosis
+clinical|Renal and urinary|disease|Salts in the blood|Hyperkalaemia/hyperkalemia/high potassium; Hypokalaemia/hypokalemia/low potassium; Hyponatraemia/hyponatremia/low sodium; Hypernatraemia/hypernatremia/high sodium
+clinical|Renal and urinary|disease|Children's urinary tract|Vesicoureteric reflux; Posterior urethral valves; Hypospadias
+clinical|Renal and urinary|symptom|Urine look|Blood in urine/haematuria/hematuria; Frothy urine/foamy urine; Dark urine
+clinical|Renal and urinary|symptom|Passing urine|Painful urination/dysuria/burning urine; Frequent urination; Urgency/urinary urgency; Weak stream/poor stream
+clinical|Renal and urinary|symptom|Urinary pain|Loin pain/flank pain; Renal colic/kidney stone pain; Suprapubic pain
+clinical|Renal and urinary|symptom|Little urine|Oliguria/low urine output; Anuria/no urine
+clinical|Renal and urinary|investigation|Urine tests|Urine dipstick/dipstick; Urine culture/MSU; Urine albumin-creatinine ratio/ACR
+clinical|Renal and urinary|investigation|Kidney blood tests|Serum creatinine/creatinine; Kidney filtration rate/eGFR/GFR; Blood urea/urea
+clinical|Renal and urinary|investigation|Looking inside|Kidney ultrasound/renal ultrasound; Cystoscopy; Kidney biopsy/renal biopsy
+clinical|Renal and urinary|treatment|Water tablets|Furosemide/frusemide; Bumetanide; Bendroflumethiazide; Spironolactone; Indapamide
+clinical|Renal and urinary|treatment|Bladder and prostate medicines|Tamsulosin; Finasteride; Oxybutynin
+
+## Clinical: Musculoskeletal
+clinical|Musculoskeletal|disease|Arthritis|Osteoarthritis; Rheumatoid arthritis/RA; Psoriatic arthritis; Reactive arthritis; Septic arthritis; Juvenile idiopathic arthritis
+clinical|Musculoskeletal|disease|Crystal arthritis|Gout; Pseudogout
+clinical|Musculoskeletal|disease|Spine|Ankylosing spondylitis; Slipped disc/herniated disc/prolapsed disc; Spinal stenosis; Spondylolisthesis; Scoliosis
+clinical|Musculoskeletal|disease|Weak bones|Osteoporosis; Osteomalacia; Rickets; Paget's disease of bone/Paget disease; Brittle bone disease/osteogenesis imperfecta
+clinical|Musculoskeletal|disease|Bone infection and tumours|Osteomyelitis; Osteosarcoma; Ewing sarcoma
+clinical|Musculoskeletal|disease|Fractures|Hip fracture/neck of femur fracture; Wrist fracture/Colles fracture; Ankle fracture; Scaphoid fracture; Stress fracture
+clinical|Musculoskeletal|disease|Tendons|Tennis elbow/lateral epicondylitis; Golfer's elbow/medial epicondylitis; Frozen shoulder/adhesive capsulitis; Rotator cuff tear; Plantar fasciitis; Achilles tendon rupture
+clinical|Musculoskeletal|disease|Knee injuries|Torn meniscus/meniscal tear; Cruciate ligament tear/ACL tear; Dislocated kneecap/patellar dislocation
+clinical|Musculoskeletal|disease|Connective tissue|Lupus/systemic lupus erythematosus/SLE; Scleroderma/systemic sclerosis; Sjogren's syndrome/Sjogren syndrome; Polymyalgia rheumatica/PMR; Dermatomyositis; Fibromyalgia
+clinical|Musculoskeletal|disease|Children's hips|Perthes disease; Slipped upper femoral epiphysis/SUFE/SCFE; Hip dysplasia/developmental dysplasia of the hip/DDH
+clinical|Musculoskeletal|disease|Muscle wasting diseases|Duchenne muscular dystrophy; Becker muscular dystrophy
+clinical|Musculoskeletal|symptom|Joints|Joint pain/arthralgia; Joint swelling; Morning stiffness/joint stiffness
+clinical|Musculoskeletal|symptom|Back and neck|Low back pain/backache; Neck pain; Shoulder pain
+clinical|Musculoskeletal|symptom|Muscles|Muscle weakness; Muscle cramps; Muscle aches/myalgia; Muscle wasting
+clinical|Musculoskeletal|symptom|Bones|Bone pain; Limp
+clinical|Musculoskeletal|investigation|Arthritis blood tests|Rheumatoid factor; Citrullinated peptide antibodies/anti-CCP antibodies/anti-CCP; Antinuclear antibodies/ANA; Uric acid level/urate level
+clinical|Musculoskeletal|investigation|Inflammation tests|C-reactive protein/CRP; Erythrocyte sedimentation rate/ESR/sed rate
+clinical|Musculoskeletal|investigation|Bone pictures|Bone density scan/DEXA scan/DXA; Bone scan/isotope bone scan; Joint X-ray
+clinical|Musculoskeletal|treatment|Anti-inflammatory painkillers|Ibuprofen; Naproxen; Diclofenac; Celecoxib
+clinical|Musculoskeletal|treatment|Arthritis medicines|Methotrexate; Sulfasalazine; Hydroxychloroquine; Leflunomide
+
+## Clinical: Reproductive
+clinical|Reproductive|disease|Ovaries|Polycystic ovary syndrome/PCOS; Ovarian cyst; Ovarian torsion; Ovarian cancer
+clinical|Reproductive|disease|Womb|Endometriosis; Adenomyosis; Fibroids/uterine fibroids; Womb cancer/endometrial cancer; Endometrial polyp
+clinical|Reproductive|disease|Early pregnancy|Miscarriage; Ectopic pregnancy; Molar pregnancy/hydatidiform mole; Hyperemesis gravidarum/severe morning sickness
+clinical|Reproductive|disease|Late pregnancy|Pre-eclampsia/preeclampsia; Eclampsia; Gestational hypertension/pregnancy-induced hypertension; Placenta praevia/placenta previa; Placental abruption
+clinical|Reproductive|disease|Breast|Breast cancer; Fibroadenoma; Breast cyst; Mastitis; Breast abscess
+clinical|Reproductive|disease|Sexual infections|Chlamydia; Gonorrhoea/gonorrhea; Syphilis; Genital herpes; Genital warts; Trichomoniasis
+clinical|Reproductive|disease|Vaginal infections|Bacterial vaginosis/BV; Thrush/vaginal candidiasis/yeast infection; Pelvic inflammatory disease/PID
+clinical|Reproductive|disease|Testicles|Testicular torsion; Epididymitis; Varicocele; Hydrocele; Testicular cancer
+clinical|Reproductive|disease|Cervix|Cervical cancer; Cervical ectropion; Cervical polyp
+clinical|Reproductive|disease|Men's sexual health|Erectile dysfunction/impotence; Premature ejaculation; Male infertility
+clinical|Reproductive|symptom|Periods|Absent periods/amenorrhoea/amenorrhea; Heavy periods/menorrhagia; Painful periods/dysmenorrhoea/dysmenorrhea; Bleeding between periods/intermenstrual bleeding; Bleeding after intercourse/postcoital bleeding
+clinical|Reproductive|symptom|Pelvis|Vaginal discharge; Pelvic pain; Painful intercourse/dyspareunia
+clinical|Reproductive|symptom|Breast changes|Breast lump; Nipple discharge; Breast pain/mastalgia
+clinical|Reproductive|investigation|Pictures|Mammogram; Breast ultrasound; Pelvic ultrasound; Dating scan/pregnancy ultrasound
+clinical|Reproductive|investigation|Samples|Smear test/cervical smear/Pap smear; Vaginal swab/high vaginal swab; Colposcopy
+clinical|Reproductive|investigation|Fertility tests|Pregnancy test/hCG test; Semen analysis/sperm test
+clinical|Reproductive|treatment|Contraception|Combined pill/combined oral contraceptive/COCP; Mini pill/progestogen-only pill/POP; Contraceptive implant/implant; Copper coil/copper IUD; Hormonal coil/Mirena
+clinical|Reproductive|treatment|Labour medicines|Oxytocin; Misoprostol; Mifepristone
+
+## Clinical: Blood and immune
+clinical|Blood and immune|disease|Anaemias|Iron deficiency anaemia/iron deficiency anemia; Pernicious anaemia/pernicious anemia; Folate deficiency anaemia/folate deficiency anemia; Aplastic anaemia/aplastic anemia; Haemolytic anaemia/hemolytic anemia
+clinical|Blood and immune|disease|Inherited blood disease|Sickle cell disease/sickle cell anaemia; Thalassaemia/thalassemia; Haemophilia/hemophilia; Von Willebrand disease; Favism/glucose-6-phosphate dehydrogenase deficiency/G6PD deficiency; Hereditary spherocytosis
+clinical|Blood and immune|disease|Leukaemias|Acute myeloid leukaemia/acute myeloid leukemia/AML; Acute lymphoblastic leukaemia/acute lymphoblastic leukemia/ALL; Chronic myeloid leukaemia/chronic myeloid leukemia/CML; Chronic lymphocytic leukaemia/chronic lymphocytic leukemia/CLL
+clinical|Blood and immune|disease|Lymphomas|Hodgkin lymphoma/Hodgkin's lymphoma; Non-Hodgkin lymphoma/NHL; Burkitt lymphoma; Multiple myeloma/myeloma
+clinical|Blood and immune|disease|Marrow overgrowth|Polycythaemia vera/polycythemia vera; Essential thrombocythaemia/essential thrombocythemia; Myelofibrosis
+clinical|Blood and immune|disease|Clotting and platelets|Immune thrombocytopenia/ITP; Thrombotic thrombocytopenic purpura/TTP; Disseminated intravascular coagulation/DIC; Heparin-induced thrombocytopenia/HIT
+clinical|Blood and immune|disease|Allergy|Anaphylaxis; Hay fever/allergic rhinitis; Hives/urticaria; Angioedema; Food allergy
+clinical|Blood and immune|disease|Born with weak immunity|Common variable immunodeficiency/CVID; Severe combined immunodeficiency/SCID/bubble boy disease; DiGeorge syndrome; Chronic granulomatous disease
+clinical|Blood and immune|disease|Blood infections|Malaria; Sepsis/blood poisoning; Glandular fever/infectious mononucleosis/mono
+clinical|Blood and immune|disease|Transplant problems|Graft-versus-host disease; Transplant rejection/organ rejection
+clinical|Blood and immune|symptom|Bleeding|Easy bruising; Nosebleeds/epistaxis; Bleeding gums; Petechiae/pinpoint rash
+clinical|Blood and immune|symptom|Swollen organs|Swollen lymph nodes/swollen glands/lymphadenopathy; Enlarged spleen/splenomegaly; Enlarged liver/hepatomegaly
+clinical|Blood and immune|symptom|Infection signs|Fever/high temperature/pyrexia; Night sweats; Rigors/shivering/chills
+clinical|Blood and immune|symptom|Anaemia signs|Pale skin/pallor; Tiredness/fatigue
+clinical|Blood and immune|investigation|Blood cell tests|Full blood count/FBC/complete blood count/CBC; Blood film/peripheral smear; Reticulocyte count
+clinical|Blood and immune|investigation|Clotting tests|Clotting screen/coagulation screen/INR; D-dimer; Fibrinogen level
+clinical|Blood and immune|investigation|Biopsies|Bone marrow biopsy; Lymph node biopsy
+clinical|Blood and immune|investigation|Vitamin and iron levels|Ferritin level/ferritin; Vitamin B12 level/B12 level
+clinical|Blood and immune|treatment|Blood thinners|Warfarin; Apixaban; Rivaroxaban; Heparin; Dabigatran
+clinical|Blood and immune|treatment|Blood products|Red cell transfusion/blood transfusion; Platelet transfusion; Fresh frozen plasma/FFP
+
+## Clinical: Skin
+clinical|Skin|disease|Eczemas|Atopic eczema/atopic dermatitis/eczema; Contact dermatitis; Seborrhoeic dermatitis/seborrheic dermatitis/dandruff; Discoid eczema
+clinical|Skin|disease|Scaly rashes|Psoriasis; Lichen planus; Pityriasis rosea
+clinical|Skin|disease|Spots|Acne/acne vulgaris; Rosacea; Perioral dermatitis; Hidradenitis suppurativa
+clinical|Skin|disease|Bacterial skin infections|Impetigo; Cellulitis; Erysipelas; Boil/furuncle; Necrotising fasciitis/necrotizing fasciitis/flesh-eating disease
+clinical|Skin|disease|Fungal skin infections|Ringworm/tinea corporis; Athlete's foot/tinea pedis; Fungal nail infection/onychomycosis; Pityriasis versicolor/tinea versicolor
+clinical|Skin|disease|Viral skin infections|Chickenpox/varicella; Shingles/herpes zoster; Cold sores/herpes labialis; Warts/verruca; Molluscum contagiosum
+clinical|Skin|disease|Bugs on the skin|Scabies; Head lice/nits; Bed bug bites
+clinical|Skin|disease|Skin cancers|Melanoma; Basal cell carcinoma/BCC/rodent ulcer; Squamous cell skin cancer/SCC/squamous cell carcinoma; Actinic keratosis/solar keratosis
+clinical|Skin|disease|Skin colour|Vitiligo; Melasma; Albinism
+clinical|Skin|disease|Hair loss|Alopecia areata/patchy hair loss; Male pattern baldness/androgenetic alopecia
+clinical|Skin|disease|Blistering diseases|Pemphigus vulgaris/pemphigus; Bullous pemphigoid/pemphigoid; Dermatitis herpetiformis; Stevens-Johnson syndrome/SJS
+clinical|Skin|disease|Childhood rashes|Measles; Rubella/German measles; Scarlet fever; Hand, foot and mouth disease; Slapped cheek syndrome/fifth disease; Roseola
+clinical|Skin|symptom|Rash spots|Blisters/vesicles; Pustules; Scaling/flaky skin; Red patches/erythema
+clinical|Skin|symptom|Skin feel|Dry skin/xerosis; Itching/pruritus/itch; Skin peeling
+clinical|Skin|symptom|Hair and nails|Hair loss; Brittle nails; Nail pitting
+clinical|Skin|symptom|Skin colour change|Dark patches/hyperpigmentation; Pale patches/hypopigmentation
+clinical|Skin|investigation|Skin samples|Skin biopsy; Skin scraping; Wood's lamp/Woods lamp exam; Dermatoscopy/dermoscopy
+clinical|Skin|investigation|Allergy tests|Skin prick test/prick test; Patch test; Allergy blood test/specific IgE/RAST
+clinical|Skin|investigation|Swabs|Skin swab/bacterial swab; Viral swab
+clinical|Skin|treatment|Steroid creams|Hydrocortisone cream; Betamethasone cream; Clobetasol cream
+clinical|Skin|treatment|Acne medicines|Benzoyl peroxide; Adapalene; Isotretinoin
+clinical|Skin|treatment|Skin infection medicines|Terbinafine; Clotrimazole; Aciclovir/acyclovir
+
+## Basic: Anatomy
+basic|Anatomy|Muscles|Front thigh muscles|Rectus femoris; Vastus lateralis; Vastus medialis; Vastus intermedius; Sartorius
+basic|Anatomy|Muscles|Back and inner thigh muscles|Biceps femoris; Semitendinosus; Semimembranosus; Gracilis; Adductor longus; Adductor magnus
+basic|Anatomy|Muscles|Calf and shin muscles|Gastrocnemius; Soleus; Tibialis anterior; Tibialis posterior; Peroneus longus/fibularis longus; Plantaris
+basic|Anatomy|Muscles|Buttock muscles|Gluteus maximus; Gluteus medius; Gluteus minimus; Piriformis; Tensor fasciae latae
+basic|Anatomy|Muscles|Arm muscles|Biceps brachii/biceps; Triceps brachii/triceps; Brachialis; Brachioradialis; Coracobrachialis
+basic|Anatomy|Muscles|Shoulder muscles|Deltoid; Supraspinatus; Infraspinatus; Teres minor; Teres major; Subscapularis
+basic|Anatomy|Muscles|Back and chest muscles|Trapezius; Latissimus dorsi/lats; Rhomboid major; Pectoralis major/pecs; Pectoralis minor; Serratus anterior
+basic|Anatomy|Muscles|Face and jaw muscles|Masseter; Temporalis; Buccinator; Orbicularis oris; Orbicularis oculi; Frontalis
+basic|Anatomy|Muscles|Neck muscles|Sternocleidomastoid; Scalene muscles/scalenes; Platysma
+basic|Anatomy|Muscles|Belly muscles|Rectus abdominis/abs; External oblique; Internal oblique; Transversus abdominis
+basic|Anatomy|Bones|Arm and shoulder bones|Humerus; Radius; Ulna; Clavicle/collarbone; Scapula/shoulder blade
+basic|Anatomy|Bones|Leg bones|Femur/thighbone; Tibia/shinbone; Fibula; Patella/kneecap
+basic|Anatomy|Bones|Wrist bones|Scaphoid; Lunate; Triquetrum; Pisiform; Trapezium; Hamate; Capitate; Trapezoid
+basic|Anatomy|Bones|Foot bones|Talus; Calcaneus/heel bone; Navicular; Cuboid; Medial cuneiform
+basic|Anatomy|Bones|Skull bones|Frontal bone; Parietal bone; Occipital bone; Temporal bone; Sphenoid; Ethmoid
+basic|Anatomy|Vessels|Arm arteries|Subclavian artery; Axillary artery; Brachial artery; Radial artery; Ulnar artery
+basic|Anatomy|Vessels|Leg arteries|Femoral artery; Popliteal artery; Dorsalis pedis artery; Posterior tibial artery
+basic|Anatomy|Vessels|Gut arteries|Coeliac trunk/celiac trunk; Superior mesenteric artery; Inferior mesenteric artery; Splenic artery
+basic|Anatomy|Vessels|Surface veins|Great saphenous vein; Small saphenous vein; Cephalic vein; Basilic vein
+basic|Anatomy|Nerves|Arm nerves|Median nerve; Ulnar nerve; Radial nerve; Musculocutaneous nerve; Axillary nerve
+basic|Anatomy|Nerves|Leg nerves|Sciatic nerve; Femoral nerve; Common peroneal nerve/common fibular nerve; Tibial nerve; Obturator nerve
+basic|Anatomy|Nerves|Cranial nerves|Facial nerve; Trigeminal nerve; Vagus nerve; Oculomotor nerve; Hypoglossal nerve; Glossopharyngeal nerve
+basic|Anatomy|Organs|Heart valves|Mitral valve/bicuspid valve; Tricuspid valve; Aortic valve; Pulmonary valve
+basic|Anatomy|Organs|Brain parts|Frontal lobe; Parietal lobe; Temporal lobe; Occipital lobe; Cerebellum; Brainstem
+basic|Anatomy|Organs|Bowel parts|Duodenum; Jejunum; Ileum; Caecum/cecum; Sigmoid colon; Rectum
+basic|Anatomy|Organs|Glands|Thyroid gland; Parathyroid gland; Adrenal gland; Pituitary gland; Pineal gland
+
+## Basic: Physiology
+basic|Physiology|Hormones|Sugar hormones|Insulin; Glucagon; Somatostatin
+basic|Physiology|Hormones|Pituitary hormones|Growth hormone; Prolactin; Thyroid stimulating hormone/TSH/thyrotropin; Adrenocorticotropic hormone/ACTH/corticotropin; Follicle stimulating hormone/FSH; Luteinising hormone/luteinizing hormone/LH
+basic|Physiology|Hormones|Adrenal hormones|Cortisol; Aldosterone; Adrenaline/epinephrine; Noradrenaline/norepinephrine
+basic|Physiology|Hormones|Water and salt hormones|Antidiuretic hormone/ADH/vasopressin; Atrial natriuretic peptide/ANP; Renin; Angiotensin
+basic|Physiology|Hormones|Sex hormones|Oestrogen/estrogen; Progesterone; Testosterone; Inhibin
+basic|Physiology|Hormones|Gut hormones|Gastrin; Secretin; Cholecystokinin/CCK; Ghrelin; Leptin
+basic|Physiology|Hormones|Calcium hormones|Parathyroid hormone/PTH/parathormone; Calcitonin; Calcitriol/active vitamin D
+basic|Physiology|Blood|White blood cells|Neutrophil; Lymphocyte; Monocyte; Eosinophil; Basophil
+basic|Physiology|Immunity|Immune cells|Helper T cell; Killer T cell/cytotoxic T cell; B cell/B lymphocyte; Natural killer cell/NK cell; Plasma cell
+basic|Physiology|Lungs|Lung volumes|Tidal volume; Residual volume; Vital capacity; Total lung capacity; Inspiratory reserve volume; Expiratory reserve volume
+basic|Physiology|Heart|Heart pumping|Stroke volume; Cardiac output; Ejection fraction; Preload; Afterload
+basic|Physiology|Nerves|Nerve signals|Action potential; Resting membrane potential; Depolarisation/depolarization; Repolarisation/repolarization; Hyperpolarisation/hyperpolarization; Refractory period
+basic|Physiology|Nerves|Brain messengers|Dopamine; Serotonin; Acetylcholine; Gamma-aminobutyric acid/GABA; Glutamate; Glycine
+basic|Physiology|Kidneys|Kidney work|Glomerular filtration; Tubular reabsorption; Tubular secretion
+basic|Physiology|Kidneys|Kidney tubes|Loop of Henle; Proximal convoluted tubule/PCT; Distal convoluted tubule/DCT; Collecting duct; Bowman's capsule/Bowman capsule
+basic|Physiology|Blood|Clotting proteins|Fibrin; Thrombin; Prothrombin; Plasmin
+basic|Physiology|Gut|Gut juices|Saliva; Bile; Stomach acid/gastric acid; Pancreatic juice; Intrinsic factor
+basic|Physiology|Senses|Sense receptors|Rods; Cones; Hair cells; Taste buds; Smell receptors/olfactory receptors
+basic|Physiology|Muscle|Muscle proteins|Actin; Myosin; Tropomyosin; Titin
+basic|Physiology|Nerves|Reflexes|Knee jerk reflex/patellar reflex; Ankle jerk reflex; Plantar reflex/Babinski sign; Biceps reflex
+basic|Physiology|Fluids|Body fluids|Plasma; Interstitial fluid; Lymph; Cerebrospinal fluid/CSF
+basic|Physiology|Brain|Brain waves|Alpha waves; Beta waves; Delta waves; Theta waves
+basic|Physiology|Blood|Oxygen carriers|Haemoglobin/hemoglobin; Myoglobin; Fetal haemoglobin/fetal hemoglobin/HbF
+
+## Basic: Biochemistry
+basic|Biochemistry|Sugars|Small sugars|Glucose; Fructose; Galactose; Sucrose; Lactose; Maltose
+basic|Biochemistry|Sugars|Big sugars|Glycogen; Starch; Cellulose
+basic|Biochemistry|Energy|Energy pathways|Glycolysis; Krebs cycle/citric acid cycle/TCA cycle; Gluconeogenesis; Glycogenolysis; Beta-oxidation/fatty acid oxidation; Pentose phosphate pathway
+basic|Biochemistry|Fats|Fats|Cholesterol; Triglyceride; Phospholipid
+basic|Biochemistry|Fats|Fat carriers|Low-density lipoprotein/LDL/bad cholesterol; High-density lipoprotein/HDL/good cholesterol; Very low-density lipoprotein/VLDL; Chylomicron
+basic|Biochemistry|Vitamins|Fat-soluble vitamins|Vitamin A/retinol; Vitamin D/cholecalciferol; Vitamin E/tocopherol; Vitamin K
+basic|Biochemistry|Vitamins|Water-soluble vitamins|Vitamin C/ascorbic acid; Thiamine; Riboflavin; Niacin; Folic acid/folate; Cobalamin
+basic|Biochemistry|Minerals|Trace minerals|Iron; Zinc; Copper; Iodine; Selenium; Magnesium
+basic|Biochemistry|Proteins|Amino acids|Tryptophan; Tyrosine; Phenylalanine; Leucine; Lysine; Methionine
+basic|Biochemistry|Enzymes|Digestive enzymes|Amylase; Pepsin; Trypsin; Lipase; Lactase
+basic|Biochemistry|Enzymes|Liver markers|Alanine aminotransferase/ALT; Aspartate aminotransferase/AST; Alkaline phosphatase/ALP; Gamma-glutamyl transferase/GGT; Bilirubin
+basic|Biochemistry|Energy|Energy molecules|Adenosine triphosphate/ATP; Creatine phosphate/phosphocreatine; Guanosine triphosphate/GTP
+basic|Biochemistry|Genes|Bases|Adenine; Guanine; Cytosine; Thymine; Uracil
+basic|Biochemistry|Genes|Copying genes|Transcription; Translation; Replication; Splicing
+basic|Biochemistry|Inherited diseases|Storage diseases|Gaucher disease; Tay-Sachs disease; Niemann-Pick disease; Fabry disease; Pompe disease
+basic|Biochemistry|Inherited diseases|Amino acid diseases|Phenylketonuria/PKU; Maple syrup urine disease; Homocystinuria; Alkaptonuria
+basic|Biochemistry|Inherited diseases|Sugar diseases|Galactosaemia/galactosemia; Hereditary fructose intolerance; Von Gierke disease
+basic|Biochemistry|Proteins|Chemical bonds|Hydrogen bond; Peptide bond; Disulphide bond/disulfide bond; Ionic bond
+basic|Biochemistry|Proteins|Protein shape|Primary structure; Secondary structure; Tertiary structure; Quaternary structure
+basic|Biochemistry|Enzymes|Enzyme blocking|Competitive inhibition; Non-competitive inhibition; Uncompetitive inhibition
+basic|Biochemistry|Energy|Body acids|Lactic acid/lactate; Ketone bodies/ketones; Uric acid
+basic|Biochemistry|Enzymes|Enzyme helpers|Coenzyme A; Biotin; Lipoic acid
+basic|Biochemistry|Hormones|Hormone types|Steroid hormone; Peptide hormone; Amine hormone
+basic|Biochemistry|Minerals|Body salts|Sodium; Potassium; Calcium; Chloride; Phosphate; Bicarbonate
+
+## Basic: Pharmacology
+basic|Pharmacology|Antibiotics|Penicillins, cephalosporins and carbapenems|Meropenem; Ceftriaxone; Amoxicillin; Flucloxacillin; Cefalexin/cephalexin; Piperacillin-tazobactam/Tazocin
+basic|Pharmacology|Antibiotics|Macrolides|Clarithromycin; Azithromycin; Erythromycin
+basic|Pharmacology|Antibiotics|Urine infection antibiotics|Trimethoprim; Nitrofurantoin; Ciprofloxacin
+basic|Pharmacology|Antibiotics|Hospital antibiotics|Gentamicin; Vancomycin; Metronidazole; Doxycycline
+basic|Pharmacology|Pain|Opioids|Morphine; Codeine; Tramadol; Oxycodone; Fentanyl; Methadone
+basic|Pharmacology|Brain|Benzodiazepines|Diazepam; Lorazepam; Midazolam; Alprazolam; Clonazepam
+basic|Pharmacology|Brain|Antidepressants|Sertraline; Fluoxetine; Citalopram; Amitriptyline; Venlafaxine; Mirtazapine
+basic|Pharmacology|Brain|Antipsychotics|Haloperidol; Olanzapine; Risperidone; Quetiapine; Clozapine; Aripiprazole
+basic|Pharmacology|Hormones|Steroid tablets|Prednisolone; Dexamethasone; Methylprednisolone; Fludrocortisone
+basic|Pharmacology|Cancer|Breast cancer hormone medicines|Tamoxifen; Anastrozole; Letrozole
+basic|Pharmacology|Cancer|Chemotherapy|Cisplatin; Doxorubicin; Vincristine; Cyclophosphamide
+basic|Pharmacology|Cancer|Targeted cancer medicines|Imatinib; Rituximab; Trastuzumab/Herceptin
+basic|Pharmacology|Infections|Antivirals|Oseltamivir/Tamiflu; Zidovudine; Tenofovir; Remdesivir
+basic|Pharmacology|Infections|Antifungals|Fluconazole; Nystatin; Amphotericin B
+basic|Pharmacology|Infections|Malaria medicines|Chloroquine; Artemether; Quinine; Primaquine
+basic|Pharmacology|Infections|Tuberculosis medicines|Rifampicin/rifampin; Isoniazid; Pyrazinamide; Ethambutol
+basic|Pharmacology|Joints|Gout medicines|Allopurinol; Colchicine; Febuxostat
+basic|Pharmacology|Heart|Heart rhythm medicines|Digoxin; Amiodarone; Verapamil; Diltiazem; Flecainide
+basic|Pharmacology|Heart|Nitrates|Glyceryl trinitrate/GTN/nitroglycerin; Isosorbide mononitrate
+basic|Pharmacology|Allergy|Antihistamines|Cetirizine; Loratadine; Chlorphenamine/chlorpheniramine; Fexofenadine
+basic|Pharmacology|Emergency|Antidotes|Naloxone; Flumazenil; Protamine
+basic|Pharmacology|Anaesthesia|Anaesthetics|Propofol; Ketamine; Thiopental; Etomidate
+basic|Pharmacology|Anaesthesia|Local anaesthetics|Lidocaine/lignocaine; Bupivacaine
+basic|Pharmacology|Anaesthesia|Muscle relaxants|Suxamethonium/succinylcholine; Rocuronium; Atracurium
+basic|Pharmacology|Brain|Migraine medicines|Sumatriptan; Rizatriptan
+basic|Pharmacology|Brain|Dementia medicines|Donepezil; Rivastigmine; Memantine
+basic|Pharmacology|Brain|Attention medicines|Methylphenidate/Ritalin; Atomoxetine
+basic|Pharmacology|Bones|Bone medicines|Alendronic acid/alendronate; Risedronate; Zoledronic acid
+basic|Pharmacology|Heart|Cholesterol medicines|Rosuvastatin; Pravastatin; Ezetimibe
+
+## Basic: Pathology
+basic|Pathology|Cell death|Types of necrosis|Coagulative necrosis; Liquefactive necrosis; Caseous necrosis; Fat necrosis; Fibrinoid necrosis; Gangrene
+basic|Pathology|Cell death|Cell death|Apoptosis; Necroptosis; Pyroptosis
+basic|Pathology|Cell change|Cell growth changes|Hyperplasia; Hypertrophy; Atrophy; Metaplasia; Dysplasia; Anaplasia
+basic|Pathology|Inflammation|Inflammation|Acute inflammation; Chronic inflammation; Granulomatous inflammation
+basic|Pathology|Inflammation|Healing|Fibrosis; Granulation tissue; Scar/scarring; Keloid
+basic|Pathology|Circulation|Blood flow problems|Thrombosis; Embolism; Infarction; Ischaemia/ischemia; Haemorrhage/hemorrhage; Oedema/edema
+basic|Pathology|Circulation|Shock|Septic shock; Hypovolaemic shock/hypovolemic shock; Anaphylactic shock; Neurogenic shock
+basic|Pathology|Deposits|Deposits|Amyloidosis; Haemochromatosis/hemochromatosis; Wilson's disease/Wilson disease
+basic|Pathology|Deposits|Calcium deposits|Dystrophic calcification; Metastatic calcification
+basic|Pathology|Tumours|Benign tumours|Adenoma; Lipoma; Papilloma; Haemangioma/hemangioma; Neurofibroma; Chondroma
+basic|Pathology|Tumours|Cancer types|Carcinoma; Sarcoma; Lymphoma; Leukaemia/leukemia; Germ cell tumour/germ cell tumor
+basic|Pathology|Tumours|Carcinoma types|Adenocarcinoma; Urothelial carcinoma/transitional cell carcinoma; Small cell carcinoma; Carcinoma in situ
+basic|Pathology|Tumours|Cancer spread|Blood-borne spread/haematogenous spread; Lymphatic spread; Peritoneal seeding/transcoelomic spread
+basic|Pathology|Tumours|Tumour markers|Prostate-specific antigen/PSA; Carcinoembryonic antigen/CEA; Alpha-fetoprotein/AFP; Cancer antigen 125/CA-125; Human chorionic gonadotropin/hCG
+basic|Pathology|Immunity|Allergy reactions|Immediate hypersensitivity; Antibody-mediated hypersensitivity; Immune complex hypersensitivity; Delayed hypersensitivity
+basic|Pathology|Genetics|Extra chromosomes|Down syndrome; Edwards syndrome; Patau syndrome
+basic|Pathology|Genetics|Connective tissue genes|Fragile X syndrome; Marfan syndrome; Ehlers-Danlos syndrome
+basic|Pathology|Inflammation|Infection damage|Abscess; Granuloma; Fistula; Ulcer
+basic|Pathology|Circulation|Artery hardening|Fatty streak; Atheroma/atheromatous plaque; Arteriosclerosis; Atherosclerosis
+basic|Pathology|Organs|Liver changes|Steatosis/fatty change; Cholestasis
+basic|Pathology|Deposits|Pigments|Lipofuscin; Melanin; Haemosiderin/hemosiderin
+basic|Pathology|Organs|Lung changes|Atelectasis; Consolidation; Hyperinflation
+basic|Pathology|Organs|Kidney changes|Glomerulosclerosis; Acute tubular necrosis; Interstitial nephritis
+basic|Pathology|Organs|Brain changes|Cerebral oedema/cerebral edema/brain swelling; Brain herniation; Hydrocephalus
+basic|Pathology|Organs|Heart masses|Valve vegetation/vegetation; Mural thrombus; Ventricular aneurysm
+basic|Pathology|Genetics|Gene mutations|Point mutation; Frameshift mutation; Deletion; Translocation; Duplication
+basic|Pathology|Inflammation|Wound healing|Primary intention healing; Secondary intention healing
+basic|Pathology|Inflammation|Inflammation messengers|Histamine; Bradykinin; Prostaglandin; Leukotriene
+
+## Basic: Microbiology
+basic|Microbiology|Bacteria|Gram-positive cocci|Staphylococcus aureus/staph aureus; Staphylococcus epidermidis; Streptococcus pyogenes/group A strep; Streptococcus pneumoniae/pneumococcus; Enterococcus faecalis
+basic|Microbiology|Bacteria|Gram-negative rods|Escherichia coli/E. coli/ecoli; Klebsiella pneumoniae/klebsiella; Pseudomonas aeruginosa/pseudomonas; Proteus mirabilis/proteus; Salmonella typhi/salmonella; Shigella
+basic|Microbiology|Bacteria|Gut bacteria|Helicobacter pylori/H. pylori; Campylobacter jejuni/campylobacter; Clostridioides difficile/C. difficile/C diff; Vibrio cholerae
+basic|Microbiology|Bacteria|Spore makers|Clostridium tetani; Clostridium botulinum; Clostridium perfringens; Bacillus anthracis; Bacillus cereus
+basic|Microbiology|Bacteria|Atypical bacteria|Mycoplasma pneumoniae/mycoplasma; Legionella pneumophila/legionella; Chlamydia trachomatis
+basic|Microbiology|Bacteria|Mycobacteria|Mycobacterium tuberculosis; Mycobacterium leprae; Mycobacterium avium
+basic|Microbiology|Bacteria|Spiral bacteria|Treponema pallidum; Borrelia burgdorferi; Leptospira
+basic|Microbiology|Bacteria|Neisseria and friends|Neisseria meningitidis/meningococcus; Neisseria gonorrhoeae/gonococcus; Haemophilus influenzae/Hib
+basic|Microbiology|Bacteria|Gram-positive rods|Listeria monocytogenes/listeria; Corynebacterium diphtheriae; Nocardia; Actinomyces israelii/actinomyces
+basic|Microbiology|Viruses|Herpes family viruses|Herpes simplex virus/HSV; Varicella zoster virus/VZV; Epstein-Barr virus/EBV; Cytomegalovirus/CMV; Human papillomavirus/HPV
+basic|Microbiology|Viruses|Breathing viruses|Influenza virus; Respiratory syncytial virus/RSV; Rhinovirus; Coronavirus; Adenovirus
+basic|Microbiology|Viruses|Gut viruses|Rotavirus; Norovirus; Poliovirus; Enterovirus
+basic|Microbiology|Viruses|Tropical viruses|Dengue virus; Zika virus; Yellow fever virus; Ebola virus
+basic|Microbiology|Viruses|Retroviruses|Human immunodeficiency virus/HIV; Human T-lymphotropic virus/HTLV
+basic|Microbiology|Fungi|Fungi|Candida albicans/candida; Aspergillus fumigatus/aspergillus; Cryptococcus neoformans/cryptococcus; Pneumocystis jirovecii/pneumocystis; Histoplasma capsulatum
+basic|Microbiology|Parasites|Malaria parasites|Plasmodium falciparum; Plasmodium vivax; Plasmodium malariae
+basic|Microbiology|Parasites|Gut protozoa|Giardia lamblia/giardia; Entamoeba histolytica; Cryptosporidium
+basic|Microbiology|Parasites|Blood and tissue protozoa|Toxoplasma gondii/toxoplasma; Trypanosoma cruzi; Leishmania donovani/leishmania
+basic|Microbiology|Parasites|Worms|Roundworm/Ascaris lumbricoides; Pinworm/threadworm/Enterobius vermicularis; Hookworm; Tapeworm/Taenia solium; Schistosoma/bilharzia
+basic|Microbiology|Structure|Bacteria parts|Cell wall; Capsule; Flagellum/flagella; Pilus/pili/fimbriae; Endospore/spore; Plasmid
+basic|Microbiology|Genes|Gene sharing|Conjugation; Transformation; Transduction
+basic|Microbiology|Lab|Stains|Gram stain; Ziehl-Neelsen stain/acid-fast stain; India ink stain; Giemsa stain
+basic|Microbiology|Lab|Culture plates|Blood agar; MacConkey agar; Chocolate agar; Sabouraud agar
+basic|Microbiology|Toxins|Toxins|Exotoxin; Endotoxin; Enterotoxin
+basic|Microbiology|Vaccines|Vaccine types|Live vaccine/live attenuated vaccine; Inactivated vaccine/killed vaccine; Toxoid vaccine; Subunit vaccine
+basic|Microbiology|Lab|Killing germs|Autoclaving/autoclave; Pasteurisation/pasteurization; Disinfection; Sterilisation/sterilization

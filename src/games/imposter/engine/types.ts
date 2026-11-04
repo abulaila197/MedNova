@@ -20,6 +20,8 @@ export interface WordPair {
   kind?: 'disease' | 'symptom' | 'investigation' | 'treatment';
   /** Basic science pairs only: the sub-topic the pair comes from. Informational, the game ignores it. */
   topic?: string;
+  /** The small family both words come from, e.g. "Heart valves" (Yazan 2026-11-04). Informational, the game ignores it. */
+  family?: string;
 }
 export interface WordBank {
   pairs: WordPair[];
