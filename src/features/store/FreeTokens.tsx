@@ -125,9 +125,9 @@ const WAYS: Way[] = [
   { key: 'invite', label: 'Invite a friend with your code', tokens: 10, each: true, act: 'My code', icon: I.invite },
 ];
 
-/** Store ads (1 token each, 5 a day, Yazan 2026-10-12; separate from play-again ads, which give a play and no tokens; the server's ad_watched holds the same numbers). Locked "Coming soon" until ads are live. */
+/** Store ads (1 token each, 10 a day since Yazan 2026-11-07; separate from play-again ads, which give a play and no tokens; the server's ad_watched holds the same numbers). Locked "Coming soon" until ads are live. */
 const AD_WAY: Way = { key: 'ad', label: 'Watch an ad', tokens: 1, each: true, act: 'Watch', icon: I.ad };
-const AD_CAP = 5;
+const AD_CAP = 10;
 
 type FreeStatus = { ads_today?: number; done: string[]; ambassador: 'pending' | 'approved' | 'rejected' | null; invites: number; invite_tokens: number; redeemed: boolean; downloads: number | null; goal: number };
 type OpenSheet = 'story' | 'feedback' | 'ambassador' | null;

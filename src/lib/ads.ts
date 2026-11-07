@@ -1,7 +1,7 @@
 // Rewarded ads (Group 2, Yazan 2026-11-07). The web preview has no ads: this file is the stand-in there; phones load
 // ads.native.ts. Both files keep the same exports.
 
-/** What an ad pays: 'sparks' = +10 Sparks (Recharge, 20 a day), 'store' = 1 token (Nova shop, 5 a day). */
+/** What an ad pays: 'sparks' = +10 Sparks (Recharge, 20 a day), 'store' = 1 token (Nova shop, 10 a day). */
 export type AdKind = 'sparks' | 'store';
 /** earned: watched to the end. nonce: the id the server's reward row carries (it arrives from Google, not the phone). */
 export type AdResult = { earned: boolean; nonce: string };

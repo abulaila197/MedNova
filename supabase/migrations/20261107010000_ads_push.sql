@@ -3,7 +3,7 @@
 -- Ads: Google calls our admob-ssv edge function when an ad is watched to the end; that function (service role) calls
 -- ad_reward_grant(). The phone only asks ad_reward_check(nonce) whether its reward arrived. sparks_ad() and
 -- ad_watched() can no longer be called by phones, so nobody can pay themselves without an ad.
---   Recharge ad ("Sparks reward"): +10 Sparks, 20 a day.  Shop ad ("Shop reward"): 1 token, 5 a day.
+--   Recharge ad ("Sparks reward"): +10 Sparks, 20 a day.  Shop ad ("Shop reward"): 1 token, 10 a day (Yazan 2026-11-07).
 --
 -- Push: phones register their Expo push address (push_register). Social pushes go out at once from triggers
 -- (friend requests, accepted requests, room invites, Inbox gifts); one gentle reminder a day at most goes out at
@@ -50,7 +50,7 @@ begin
   else
     perform pg_advisory_xact_lock(hashtext('free:' || uid::text));
     select count(*) into n from public.ad_views a where a.user_id = uid and a.source = 'store' and a.at >= date_trunc('day', now());
-    if n >= 5 then
+    if n >= 10 then
       insert into public.ad_rewards (tx, user_id, kind, nonce, ok, why) values (ad_reward_grant.tx, uid, k, nonce, false, 'cap');
       return jsonb_build_object('ok', false, 'why', 'cap');
     end if;

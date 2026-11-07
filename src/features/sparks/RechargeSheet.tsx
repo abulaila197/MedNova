@@ -71,8 +71,37 @@ export function RechargeSheet() {
         <Pressable style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(5,6,16,0.6)' }]} onPress={cancelRecharge} accessibilityLabel="Close" />
       </Animated.View>
       <Animated.View entering={safeEnter(SlideInDown.duration(360))} style={s.dock}>
-        <Panel t={t} cost={ask.cost} value={bar.value} max={bar.max} refill={bar.refillMin} note={why && why !== 'tokens' ? (WHY[why] ?? 'Something went wrong. Try again.') : null} choices={choices} />
+        {bar.unlimited ? (
+          <UnlimitedPanel t={t} />
+        ) : (
+          <Panel t={t} cost={ask.cost} value={bar.value} max={bar.max} refill={bar.refillMin} note={why && why !== 'tokens' ? (WHY[why] ?? 'Something went wrong. Try again.') : null} choices={choices} />
+        )}
       </Animated.View>
+    </View>
+  );
+}
+
+/** MedNova Unlimited (Yazan 2026-11-07): no count, no refills to sell, just the full bar and Close. */
+function UnlimitedPanel({ t }: { t: Theme }) {
+  return (
+    <View style={[s.panel, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
+      <View style={[s.grab, { backgroundColor: 'rgba(255,255,255,0.2)' }]} />
+      <Text style={[s.mono, { color: t.kick, alignSelf: 'center' }]}>YOUR SPARKS</Text>
+      <Text style={[s.vT, { color: t.fg }]}>
+        {'Unlimited '}
+        <Text style={[s.vT, { color: t.accent, fontFamily: F.displayItalic }]}>Sparks</Text>
+      </Text>
+      <Text style={[s.inf, { color: t.accent }]} accessibilityLabel="Unlimited">∞</Text>
+      <View style={[s.track, { backgroundColor: 'rgba(255,255,255,0.1)' }]}>
+        <LinearGradient colors={[...SPARK]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={{ width: '100%', height: '100%', borderRadius: 99 }} />
+      </View>
+      <View style={s.row}>
+        <Bolt size={u(11)} />
+        <Text style={[s.refillS, { color: t.mute }]}>MedNova Unlimited is active. Play as much as you like.</Text>
+      </View>
+      <Pressable onPress={cancelRecharge} style={[s.btn, s.btnLine, { borderColor: t.panelLine, marginTop: u(14) }]} accessibilityRole="button">
+        <Text style={[s.btnT, { color: t.fg }]}>Close</Text>
+      </Pressable>
     </View>
   );
 }
@@ -124,6 +153,7 @@ function Panel({ t, cost, value, max, refill, note, choices }: { t: Theme; cost:
 const s = StyleSheet.create({
   dock: { position: 'absolute', left: u(12), right: u(12), bottom: u(24) },
   mono: { fontFamily: F.mono, fontSize: u(7.5), letterSpacing: u(1.3) },
+  inf: { fontFamily: F.display, fontSize: u(34), lineHeight: u(38), textAlign: 'center', marginTop: u(2) },
   notNow: { alignSelf: 'center', marginTop: u(12), padding: u(4) },
   notNowT: { fontFamily: F.bodyMedium, fontSize: u(11) },
   panel: { borderRadius: u(26), borderWidth: 1, padding: u(18), paddingTop: u(10) },
