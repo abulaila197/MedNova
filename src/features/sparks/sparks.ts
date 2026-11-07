@@ -8,15 +8,18 @@ import { newId } from '@/games/engine/ids';
 import type { Play } from '@/games/engine/types';
 import { isSubscribed } from '@/features/store/billing';
 import { bonusOf } from '@/features/shop/robots';
+import { ADS_ON, showRewarded } from '@/lib/ads';
 import { supabase } from '@/lib/supabase';
 import { useAccount } from '@/state/account';
 import { useSession } from '@/games/shell/session';
 
 import { perUnit, sparksCost } from './costs';
 
-/** Ads go live once the store accounts exist (EC2); until then 'Watch an ad' gives its Sparks with no ad (TR5). */
-export const ADS_LIVE = false;
+/** Real rewarded ads on phones (Group 2, 2026-11-07); the web preview has none. */
+export const ADS_LIVE = ADS_ON;
 export const AD_CAP = 20;
+/** What one Recharge ad pays (Yazan 2026-11-06). */
+export const AD_SPARKS = 10;
 
 type Bar = { value: number; max: number; /** when the next Spark lands (ms), null when full */ nextAt: number | null; refillMin: number; unlimited: boolean; adsLeft: number | null };
 export const useSparks = create<Bar>(() => ({ value: SPARKS_MAX, max: SPARKS_MAX, nextAt: null, refillMin: 10, unlimited: false, adsLeft: null }));
@@ -113,7 +116,9 @@ const once = (job: (uid: string) => Promise<View>) => async () => {
   try {
     await syncSparks(uid); // offline spends first, so the server's bar is the real one
     const v = await job(uid);
-    await take(uid, v, []);
+    if (v.value != null) await take(uid, v, []); // a skipped or missing ad brings no bar back
+    // Google's call reached us late: read the bar again a little later so the 10 Sparks show up.
+    if (v.why === 'slow') setTimeout(() => void syncSparks(uid).then(settled).catch(() => {}), 15000);
     useRecharge.setState({ busy: false, why: v.ok === false ? (v.why ?? 'error') : null });
     if (v.ok !== false) await settled();
   } catch {
@@ -121,13 +126,29 @@ const once = (job: (uid: string) => Promise<View>) => async () => {
   }
 };
 
-/** 'Watch an ad': +5 Sparks, 20 a day. A free stand-in until ads are live. */
-export const rechargeWithAd = once(async () => {
-  // ADS_LIVE: show the rewarded ad here and stop if it was not watched to the end (ad_watched counts real ads).
-  const { data, error } = await supabase.rpc('sparks_ad');
-  if (error) throw error;
-  return data as View;
+/** 'Watch an ad': +10 Sparks, 20 a day. Google tells our server the ad was watched; the server pays, then we read it. */
+export const rechargeWithAd = once(async (uid) => {
+  let ad;
+  try {
+    ad = await showRewarded('sparks', uid);
+  } catch {
+    return { ok: false, why: 'no_ad' } as View;
+  }
+  if (!ad.earned) return { ok: false, why: 'skipped' } as View;
+  return waitForReward(ad.nonce);
 });
+
+/** Asks the server (every 1.5 s, up to 20 s) whether Google's reward for this ad has arrived. */
+export async function waitForReward(nonce: string): Promise<View> {
+  for (let i = 0; i < 14; i++) {
+    const { data, error } = await supabase.rpc('ad_reward_check', { nonce });
+    if (error) throw error;
+    const v = data as View & { done?: boolean };
+    if (v.done) return v;
+    await new Promise((r) => setTimeout(r, 1500));
+  }
+  return { ok: false, why: 'slow' } as View;
+}
 
 /** 'Refill with tokens': just enough Sparks for this play (from the header: up to a full bar), 1 token each. */
 export const rechargeWithTokens = async () => {

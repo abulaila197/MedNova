@@ -34,7 +34,7 @@ export const CHAPTERS: Chapter[] = [
       { q: 'What is MedNova?', a: 'MedNova teaches medicine through games. You read clues, name diseases, answer questions, draw, give clues and solve picture riddles, and what you miss comes back later in your Learning Space. It is for education only, not medical advice, and every patient in it is fictional.' },
       { q: 'Which games are there?', a: `${gameCount}: ${listed}.` },
       { q: 'Do I need an account?', a: 'No. As a guest you get 5 free plays across all games. A free account plays with Sparks, keeps your progress on our servers and lets you add friends and play online.' },
-      { q: 'What are Sparks?', a: 'Sparks are what a game costs to play. Your bar holds 100 and refills one Spark every 10 minutes, faster when you wear a character with more stars. Each game costs Sparks by how long it lasts, and you pay at your first answer. The Medicordle Daily word is always free. To refill sooner, use Watch an ad for 5 Sparks (20 a day) or swap tokens 1 for 1.' },
+      { q: 'What are Sparks?', a: 'Sparks are what a game costs to play. Your bar holds 100 and refills one Spark every 10 minutes, faster when you wear a character with more stars. Each game costs Sparks by how long it lasts, and you pay at your first answer. The Medicordle Daily word is always free. To refill sooner, use Watch an ad for 10 Sparks (20 a day) or swap tokens 1 for 1.' },
     ],
   },
   {
@@ -126,7 +126,7 @@ export const PRIVACY: Section[] = [
     k: 'Who we are',
     plain: 'MedNova is run by *its owner,* not a company.',
     legal: [
-      { p: 'MedNova is an educational medical reasoning game. It is run by its owner, who decides how your information is used (the "controller"). This policy explains what the app really collects, why, where it is kept and what you can do about it.' },
+      { p: 'MedNova is an educational medical reasoning game. It is run by its owner, who decides how your information is used (the "controller"). On Google Play the developer is listed as Yazan Yousif and on the App Store as Yazan Mohamed. MedNova is built and supported by a small team in Egypt. This policy explains what the app really collects, why, where it is kept and what you can do about it.' },
       { p: 'MedNova is for education only. It is not medical advice, and all cases and patients in it are fictional.' },
     ],
   },
@@ -193,15 +193,50 @@ export const PRIVACY: Section[] = [
   },
   {
     n: '06',
-    k: 'Where it is kept',
-    plain: 'Our servers are *in the EU,* in Frankfurt.',
+    k: 'Ads',
+    plain: 'Ads are *your choice:* you watch one only to earn a reward.',
     legal: [
-      { p: 'Account and game data is stored with Supabase, which acts as our processor and hosts it on servers in Frankfurt, Germany (EU). Supabase handles it only on our instructions. If you use MedNova from outside the EU, your data travels to these servers.' },
-      { p: 'MedNova does not use analytics, advertising or tracking tools, and does not sell your data.' },
+      { p: 'MedNova shows rewarded ads only when you tap "Watch an ad" (for Sparks or a token). Ads are served by Google AdMob. To show and measure ads, and to stop fraud, Google may collect your device\'s advertising ID, your rough location from your internet address, and how you interact with the ad. We send Google your account id with each rewarded ad only so Google can tell our server you earned the reward.' },
+      { b: 'Your choice.', p: 'In the EU, the UK and some US states, the app asks for your consent before any personalised ads, and you can change your answer at any time in Settings > Privacy choices. On iPhone, the app asks whether it may track you across apps; you can change this in iPhone Settings > Privacy > Tracking. If you say no, you may still see ads that are not personalised. You can also reset or delete your advertising ID in your phone\'s settings.' },
+      { p: 'Google\'s use of this data is described in Google\'s Privacy Policy (policies.google.com/privacy) and at policies.google.com/technologies/partner-sites.' },
     ],
   },
   {
     n: '07',
+    k: 'Crash reports and stats',
+    plain: 'We see *crashes and which pages are used,* not who you are.',
+    legal: [
+      { p: 'MedNova uses Google Firebase Crashlytics to receive a report when the app crashes (the error, the phone model and system version, the app version and your account id, so we can find and fix the problem), and Google Analytics for Firebase to count which pages are opened and which games are started and finished. These stats include an app-instance id and device details, but not your name, email or anything you type, and the advertising features of Analytics are turned off.' },
+    ],
+  },
+  {
+    n: '08',
+    k: 'Notifications',
+    plain: 'Notifications are *off until you say yes.*',
+    legal: [
+      { p: 'If you allow notifications, your phone gives us a push address, which we keep with your account to send friend requests, game invites, Inbox gifts and at most one reminder a day (your daily reward, a full Sparks bar, or Grand Rounds closing). They are delivered through Expo\'s push service and Google Firebase Cloud Messaging or Apple Push Notification service. Turn either kind off in Settings, or turn all of them off in your phone\'s settings. Signing out removes the push address.' },
+    ],
+  },
+  {
+    n: '09',
+    k: 'Purchases',
+    plain: 'Payments go through *Google Play or the App Store.*',
+    legal: [
+      { p: 'Token packs and MedNova Unlimited are bought through Google Play or the App Store, which handle the payment. We never see your card or bank details. We receive a record of what you bought and when (through RevenueCat, our purchase service), linked to your account id, so we can add your tokens or Unlimited. The store also keeps its own record under its own privacy policy.' },
+    ],
+  },
+  {
+    n: '10',
+    k: 'Where it is kept',
+    plain: 'Our servers are *in the EU,* in Frankfurt.',
+    legal: [
+      { p: 'Account and game data is stored with Supabase, which acts as our processor and hosts it on servers in Frankfurt, Germany (EU). Supabase handles it only on our instructions. If you use MedNova from outside the EU, your data travels to these servers.' },
+      { p: 'Other services that handle some data for us, each only for the job described above: Google (AdMob ads, Firebase crash reports, stats and notifications), Expo (delivering notifications), Apple and Google (purchases and notifications) and RevenueCat (purchase records). Some of them process data outside the EU, under their own safeguards such as the EU Standard Contractual Clauses.' },
+      { p: 'MedNova does not sell your data, and never shares your answers, scores or messages with advertisers.' },
+    ],
+  },
+  {
+    n: '11',
     k: 'Why we use it',
     plain: 'We use your data only to *run the game* for you.',
     legal: [
@@ -213,26 +248,29 @@ export const PRIVACY: Section[] = [
           'To run friends, invites, online rooms and matches.',
           'To keep play safe: blocking, reviewing reports and stopping misuse.',
           'To answer your messages and bug reports, and to review the cases and words you write.',
+          'To show the rewarded ads you choose to watch and pay their rewards, and to process your purchases.',
+          'To send the notifications you allowed.',
+          'To find and fix crashes and see which games and pages are used, so we can improve them.',
         ],
       },
       { p: 'When you write to us through Contact or the red ! button, we keep your message, where it happened and any email you give, so we can answer and fix the problem.' },
-      { b: 'Legal basis.', p: 'Under the EU GDPR and the data protection laws that apply to you, we use your data because it is needed to provide the service you asked for (our contract with you), and for our legitimate interest in keeping MedNova safe and working.' },
+      { b: 'Legal basis.', p: 'Under the EU GDPR and the data protection laws that apply to you, we use your data because it is needed to provide the service you asked for (our contract with you), for our legitimate interest in keeping MedNova safe, working and improving (crash reports and stats), and, for personalised ads and notifications, because you agreed. You can withdraw your agreement at any time in Settings.' },
     ],
   },
   {
-    n: '08',
+    n: '12',
     k: 'How long we keep it',
     plain: 'Until you *delete your account.*',
-    legal: [{ p: 'We keep your account data for as long as your account exists. When you delete your account, your account and the rows linked to it (profile, plays, wallet, Sparks, rewards, items, misses, cards, friends and blocks) are removed from our servers. Data on your phone stays until you delete the app.' }],
+    legal: [{ p: 'We keep your account data for as long as your account exists. When you delete your account, your account and the rows linked to it (profile, plays, wallet, Sparks, rewards, items, misses, cards, friends, blocks, push addresses and ad reward records) are removed from our servers. Crash reports and stats are kept by Firebase for up to 14 months and are not linked to your name. Purchase records may be kept as long as tax law requires. Data on your phone stays until you delete the app.' }],
   },
   {
-    n: '09',
+    n: '13',
     k: 'Deleting your account',
     plain: 'You can delete it *yourself, in the app.*',
     legal: [{ p: 'Open Profile and tap "Delete my account", then confirm. Your account is deleted straight away and the app returns to guest mode. If you cannot open the app, write to us and we will delete it for you.' }],
   },
   {
-    n: '10',
+    n: '14',
     k: 'Your rights',
     plain: 'Your data is yours: you can *see, fix or delete* it.',
     legal: [
@@ -248,19 +286,19 @@ export const PRIVACY: Section[] = [
     ],
   },
   {
-    n: '11',
+    n: '15',
     k: 'Age',
     plain: 'MedNova is for people *16 or older.*',
     legal: [{ p: 'You must be 16 or older to create an account. We do not knowingly collect data from children under 16. If you think a child has made an account, write to us and we will delete it.' }],
   },
   {
-    n: '12',
+    n: '16',
     k: 'Changes',
     plain: 'If this policy changes, *this page changes.*',
     legal: [{ p: 'We update this policy when MedNova\'s features or data use change. The current version is always on this page.' }],
   },
   {
-    n: '13',
+    n: '17',
     k: 'Contact',
     plain: 'Privacy questions? *Write to us.*',
     legal: [{ p: `For privacy questions or requests, contact MedNova at ${CONTACT}.` }],
@@ -272,7 +310,7 @@ export const TERMS: Section[] = [
     n: '01',
     k: 'About MedNova',
     plain: 'MedNova is a game for *clinical reasoning.*',
-    legal: [{ p: 'MedNova is an educational medical reasoning game built around clinical case puzzles, diagnostic practice, learning tools, statistics and online play with friends. It is run by its owner.' }],
+    legal: [{ p: 'MedNova is an educational medical reasoning game built around clinical case puzzles, diagnostic practice, learning tools, statistics and online play with friends. It is run by its owner, listed as the developer Yazan Yousif on Google Play and Yazan Mohamed on the App Store, and built and supported by a small team in Egypt.' }],
   },
   {
     n: '02',
@@ -306,6 +344,16 @@ export const TERMS: Section[] = [
   },
   {
     n: '06',
+    k: 'Purchases and ads',
+    plain: 'Buying is *optional;* ads are only the ones you choose.',
+    legal: [
+      { p: 'Token packs and MedNova Unlimited are sold through Google Play or the App Store and follow their payment, refund and cancellation rules. MedNova Unlimited is a monthly subscription that renews automatically until you cancel it in your Google Play or App Store subscriptions; cancelling stops the next renewal, and you keep Unlimited until the paid month ends. Prices are shown in the store before you pay.' },
+      { p: 'Tokens and items you buy are a licence to use them in MedNova. They have no money value and are not refundable except as the store or the law requires. If a purchase does not arrive, write to us and we will fix it.' },
+      { p: 'Rewarded ads appear only when you tap "Watch an ad". A reward is paid once Google confirms the ad was watched to the end, up to the daily limits shown in the app.' },
+    ],
+  },
+  {
+    n: '07',
     k: 'Your content',
     plain: 'What you share with others is *your responsibility.*',
     legal: [
@@ -315,7 +363,7 @@ export const TERMS: Section[] = [
     ],
   },
   {
-    n: '07',
+    n: '08',
     k: 'Acceptable use',
     plain: 'Play fair and *keep MedNova safe.*',
     legal: [
@@ -330,37 +378,37 @@ export const TERMS: Section[] = [
     ],
   },
   {
-    n: '08',
+    n: '09',
     k: 'Privacy',
     plain: 'Your data is covered by the *Privacy Policy.*',
     legal: [{ p: 'Your use of MedNova is also governed by the Privacy Policy, which explains what account, gameplay, social and online-play information is handled and what your rights are.' }],
   },
   {
-    n: '09',
+    n: '10',
     k: 'Intellectual property',
     plain: "MedNova's games and content *belong to MedNova.*",
     legal: [{ p: "MedNova's software, branding, games, cases and written content belong to MedNova and are protected by intellectual-property laws. Artwork was made for MedNova, including with AI image tools. Some photos are the owner's own, and others are public domain or CC0. The game voice lines were recorded for MedNova with the speaker's permission, and the app sounds are public domain (CC0, by Kenney). Fonts and open-source software are used under their own licences, listed in About. Except where expressly permitted, you may not copy, redistribute, reverse engineer or commercially exploit MedNova materials." }],
   },
   {
-    n: '10',
+    n: '11',
     k: 'Availability',
     plain: 'Games and rules *may change* as MedNova grows.',
     legal: [{ p: 'Features may be changed, suspended, or discontinued as MedNova develops. We may update game rules, case libraries, scoring presentation, sign-in options, or other platform functionality when necessary.' }],
   },
   {
-    n: '11',
+    n: '12',
     k: 'Suspension',
     plain: 'Serious misuse can *close an account.*',
     legal: [{ p: 'Access may be restricted or an account may be suspended or terminated when necessary to address serious misuse, objectionable content, security risks, unlawful activity, or violations of these Terms. Where appropriate, users may contact MedNova to ask about an account-related decision.' }],
   },
   {
-    n: '12',
+    n: '13',
     k: 'No guarantee',
     plain: 'We work hard, but *mistakes can happen.*',
     legal: [{ p: 'MedNova is provided as an evolving educational platform. While reasonable efforts are made to keep the service reliable and the information useful, no software or educational content can be guaranteed to be completely error-free or continuously available.' }],
   },
   {
-    n: '13',
+    n: '14',
     k: 'Contact',
     plain: 'Questions about these Terms? *Write to us.*',
     legal: [{ p: `For questions about these Terms, contact MedNova at ${CONTACT}.` }],

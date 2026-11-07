@@ -98,7 +98,7 @@ files['delete-account/index.html'] = page({
   body: `<p class="kick">MedNova · Account deletion</p><h1>Delete your <em>MedNova account.</em></h1>
 <section><p class="kick">In the app</p><h2>The quickest way: <em>do it yourself.</em></h2><ol class="steps"><li>Open MedNova and sign in.</li><li>Go to <b>Profile</b>.</li><li>Tap <b>Delete my account</b>, then confirm.</li></ol><p class="legal">Your account is deleted straight away and the app returns to guest mode.</p></section>
 <section><p class="kick">By email</p><h2>Can't open the app? <em>Write to us.</em></h2><p class="legal">Email ${mail} from the email address you signed up with, with the subject <b>Delete my account</b>, and include your username. We delete the account and reply to confirm, within 30 days at the latest.</p></section>
-<section><p class="kick">What is deleted</p><h2>Your account and <em>everything linked to it.</em></h2><ul><li>Your sign-in (email and password), profile, username, avatar and friend code.</li><li>Your plays, scores, wallet, tokens, missed cases and learning cards.</li><li>Your friends list, requests, invites and blocks.</li></ul><p class="legal next">Data saved on your phone stays there until you delete the app. Anything bought through the App Store or Google Play stays on your store account; cancel a subscription in your store settings.</p></section>`,
+<section><p class="kick">What is deleted</p><h2>Your account and <em>everything linked to it.</em></h2><ul><li>Your sign-in (email and password), profile, username, avatar and friend code.</li><li>Your plays, scores, wallet, tokens, missed cases and learning cards.</li><li>Your friends list, requests, invites and blocks.</li><li>Your notification settings and push addresses, and your ad reward records.</li></ul><p class="legal next">Data saved on your phone stays there until you delete the app. Anything bought through the App Store or Google Play stays on your store account; cancel a subscription in your store settings.</p></section>`,
 });
 
 files['support/index.html'] = page({
@@ -171,6 +171,8 @@ files['_headers'] = `/*
 `;
 
 files['robots.txt'] = 'User-agent: *\nDisallow: /open/\n';
+// AdMob (Group 2): the developer website named in both store listings must list who may sell MedNova's ad space.
+files['app-ads.txt'] = 'google.com, pub-3390074715930067, DIRECT, f08c47fec0942fa0\n';
 
 for (const [rel, text] of Object.entries(files)) {
   const p = path.join(out, rel);

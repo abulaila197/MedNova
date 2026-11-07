@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "455861723966",
+    "project_id": "mednova-7",
+    "storage_bucket": "mednova-7.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:455861723966:android:6c89cceb037556dc03c26f",
+        "android_client_info": {
+          "package_name": "com.novagames.mednova"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAHjYW6tfMW3xx7WRYTTInYe8oOXTIQMYs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

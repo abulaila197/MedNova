@@ -6,6 +6,8 @@ import { chargePlay } from '@/features/sparks/sparks';
 import { useAccount } from '@/state/account';
 import { sfxVerdict } from '@/lib/sound';
 import { syncAccount } from '@/lib/sync';
+import { stat } from '@/lib/stats';
+import { askPushAfterFirstGame } from '@/lib/push';
 
 import { useSession } from './session';
 import type { GameDef } from './types';
@@ -24,6 +26,7 @@ const withBonus = (exp: number, cap: number) => Math.min(cap, Math.round(exp * (
 export async function startPlay(game: GameKey, mode: Mode, settings: Record<string, unknown>, seats?: Seat[]) {
   const old = await engine.recorder.resumable(game, mode);
   if (old) await engine.recorder.discard(old.id);
+  stat('game_start', { game, mode });
   return engine.recorder.start({ game, mode, settings, seats, userId: useSession.getState().userId });
 }
 
@@ -49,5 +52,8 @@ export async function finishPlay(def: GameDef, play: Play, score: number, standi
   if (paid.levelsGained > 0) await engine.recorder.noteLevelUp(play.id, paid.level, paid.tokensGained);
   const uid = useSession.getState().userId;
   if (uid) syncAccount(uid).catch(() => {}); // offline is fine: it uploads next time
+  stat('game_end', { game: play.game, mode: play.mode });
+  // Notifications are asked for after a first finished game, never on the first screen (Yazan 2026-11-07).
+  if (uid) askPushAfterFirstGame();
   return { exp: paid.amount, levelUp: paid.levelsGained > 0 ? paid.level : null, items };
 }

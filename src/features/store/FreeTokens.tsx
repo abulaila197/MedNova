@@ -8,7 +8,8 @@ import { create } from 'zustand';
 
 import { Text, TextInput } from '@/components/AppText';
 import { Sheet } from '@/components/Sheet';
-import { ADS_LIVE } from '@/features/sparks/sparks';
+import { ADS_LIVE, waitForReward } from '@/features/sparks/sparks';
+import { showRewarded } from '@/lib/ads';
 import { OfflineLine } from '@/components/OfflineLine';
 import { copyOf, keepCopy } from '@/lib/copies';
 import { Kicker } from '@/features/info/ui';
@@ -211,14 +212,25 @@ export function FreeTokens({ t }: { t: Theme }) {
     if (w.key === 'ambassador' && st?.ambassador === 'pending') return;
     useFree.setState({ sheet: w.key as OpenSheet });
   };
-  // ADS_LIVE: show the rewarded ad first and stop here unless it was watched to the end.
+  // The rewarded ad first; Google tells our server it was watched to the end and the server pays the token.
+  const [adNote, setAdNote] = useState<string | null>(null);
   const watchAd = async () => {
-    if (busy || !ADS_LIVE) return;
+    const uid = useSession.getState().userId;
+    if (busy || !ADS_LIVE || !uid) return;
     setBusy('ad');
+    setAdNote(null);
     try {
-      await call('ad_watched', { source: 'store' });
-      await settle();
-    } catch {}
+      const ad = await showRewarded('store', uid);
+      if (!ad.earned) setAdNote('The ad was closed early, so no token this time.');
+      else {
+        const v = await waitForReward(ad.nonce);
+        if (v.why === 'slow') setAdNote('Your token is on its way. It will show in a moment.');
+        else if (v.why === 'cap') setAdNote(`No shop ads left today (${AD_CAP} a day).`);
+        await settle();
+      }
+    } catch (e) {
+      setAdNote(String((e as Error)?.message) === 'no_ad' ? 'No ad is available right now. Try again in a minute.' : 'Couldn’t reach the server. Check your connection.');
+    }
     setBusy(null);
   };
   // Social and store-listing ways wait for their real links.
@@ -238,6 +250,7 @@ export function FreeTokens({ t }: { t: Theme }) {
           <WayCard key={w.key} t={t} w={w} label={label(w)} act={act(w)} done={isDone(w)} locked={noLink(w)} busy={busy === w.key} onPress={() => tap(w)} reopen={LINKED.includes(w.key)} />
         ))}
       </Row>
+      {adNote ? <Text style={{ fontFamily: F.body, fontSize: u(11.5), color: t.soft, marginTop: u(6) }}>{adNote}</Text> : null}
     </>
   );
 }

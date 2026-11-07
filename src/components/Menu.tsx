@@ -30,6 +30,7 @@ const ITEMS = [
   ['About', '/about'],
   ['FAQ', '/faq'],
   ['Privacy & Terms', '/privacy'],
+  ['Settings', '/settings'], // Group 2: notifications + Privacy choices
 ] as const;
 
 /** Locked side menu ("Journal index"): sits under the app card, which slides aside. */

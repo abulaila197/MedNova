@@ -24,7 +24,11 @@ import { CardHost } from '@/features/cards/CardHost';
 import { markVisited } from '@/features/achievements/useAchievements';
 import { RechargeSheet } from '@/features/sparks/RechargeSheet';
 import { cancelRecharge, watchSparks } from '@/features/sparks/sparks';
+import { startAds } from '@/lib/ads';
+import { followPushTaps, linkPush } from '@/lib/push';
+import { crashUser, screen, startStats } from '@/lib/stats';
 import { useStopSoundsOnLeave } from '@/lib/sound';
+import { useSession } from '@/games/shell/session';
 import { useBack } from '@/lib/useBack';
 import { useApp, useTheme } from '@/state/app';
 import { u, useScreen } from '@/theme/scale';
@@ -52,6 +56,25 @@ export default function AppLayout() {
     closeFriendSheet();
   }, [path]);
   useEffect(watchSparks, []);
+  // Group 2: the ads consent (EU message / iPhone tracking question) and stats start once the app has settled, and
+  // a tapped notification opens its page.
+  useEffect(() => {
+    const later = setTimeout(() => {
+      void startStats();
+      void startAds();
+    }, 2500);
+    const off = followPushTaps();
+    return () => {
+      clearTimeout(later);
+      off();
+    };
+  }, []);
+  const uid = useSession((x) => x.userId);
+  useEffect(() => {
+    crashUser(uid);
+    linkPush(uid).catch(() => {});
+  }, [uid]);
+  useEffect(() => screen(path), [path]);
   // "Get to Know MedNova": each page outside the games counts once.
   useEffect(() => {
     void markVisited(path);

@@ -138,7 +138,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
           feedsLearn: false,
           gameData: { style, kind, guesses: r.guesses.length, exp: r.exp, day: next.day },
         });
-        // Endless costs 5 Sparks a word (#69), paid as each word ends.
+        // Endless costs 10 Sparks a word (#69), paid as each word ends.
         if (next.kind === 'endless') void chargeUnit(play, `${play.id}:${r.wordId}`, sparksCost(play.game, 'solo', play.settings));
         if (next.kind === 'daily' && next.day != null) {
           const day = next.day;
@@ -157,7 +157,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
 
   usePauseHide(() => dispatch({ type: 'PAUSE', now: Date.now() }));
 
-  /** The next Endless word costs 5 Sparks: an empty bar opens Recharge first (#69). */
+  /** The next Endless word costs 10 Sparks: an empty bar opens Recharge first (#69). */
   const nextWord = useCallback(async () => {
     const r = runRef.current;
     const more = r && r.kind === 'endless' && r.index + 1 < r.wordIds.length;

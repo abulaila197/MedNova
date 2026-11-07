@@ -60,9 +60,8 @@ export function SupportBlock({ why, onShop }: { why?: string; onShop?: () => voi
 /** The pop-up from a locked Online card. */
 export function SupportSheet({ open, onClose, why }: { open: boolean; onClose: () => void; why: string }) {
   return (
-    <Sheet open={open} onClose={onClose}>
+    <Sheet open={open} onClose={onClose} foot={<Ghost label="Not now" onPress={onClose} />}>
       <SupportBlock why={why} onShop={onClose} />
-      <Ghost label="Not now" onPress={onClose} />
     </Sheet>
   );
 }

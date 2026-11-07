@@ -14,7 +14,7 @@ import { F } from '@/theme/tokens';
 import { useBack } from '@/lib/useBack';
 import { SUBSCRIPTION } from '@/features/store/catalog';
 import { Bolt, SPARK } from './Bolt';
-import { AD_CAP, ADS_LIVE, cancelRecharge, rechargeWithAd, rechargeWithTokens, subscribeFromRecharge, useRecharge, useSparks } from './sparks';
+import { AD_CAP, AD_SPARKS, ADS_LIVE, cancelRecharge, rechargeWithAd, rechargeWithTokens, subscribeFromRecharge, useRecharge, useSparks } from './sparks';
 
 type Choice = { key: string; label: string; sub: string; on?: () => void; off?: boolean };
 
@@ -22,6 +22,9 @@ const WHY: Record<string, string> = {
   offline: 'No connection. Refills need the internet.',
   cap: `No ads left today (${AD_CAP} a day)`,
   full: 'Your bar is already full',
+  no_ad: 'No ad is available right now. Try again in a minute.',
+  skipped: 'The ad was closed early, so no Sparks this time.',
+  slow: 'Your Sparks are on their way. They will show in a moment.',
 };
 
 /**
@@ -48,9 +51,9 @@ export function RechargeSheet() {
   const choices: Choice[] = [
     {
       key: 'ad',
-      label: 'Watch an ad · +5 Sparks',
-      sub: why === 'cap' || bar.adsLeft === 0 ? WHY.cap : `${ADS_LIVE ? 'One short ad' : 'Free for now, while ads are off'}${bar.adsLeft == null ? '' : ` · ${bar.adsLeft} of ${AD_CAP} left today`}`,
-      off: bar.adsLeft === 0 || busy,
+      label: `Watch an ad · +${AD_SPARKS} Sparks`,
+      sub: why === 'cap' || bar.adsLeft === 0 ? WHY.cap : `${ADS_LIVE ? 'One short ad' : 'Ads are only in the phone app'}${bar.adsLeft == null ? '' : ` · ${bar.adsLeft} of ${AD_CAP} left today`}`,
+      off: bar.adsLeft === 0 || busy || !ADS_LIVE,
       on: rechargeWithAd,
     },
     {

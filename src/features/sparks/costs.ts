@@ -1,5 +1,5 @@
-// What a play costs in Sparks (Yazan's table, 2026-10-25): about 2.5 Sparks a minute, so a full bar is 4-5 online
-// games. Difficulty and question type never change the cost; in Pass the phone only the phone owner pays.
+// What a play costs in Sparks (Yazan's table, 2026-10-25; every price x1.5 rounded up to 5, Yazan 2026-11-06): about
+// 3.75 Sparks a minute, so a full bar is about 3 online games. Difficulty and question type never change the cost; in Pass the phone only the phone owner pays.
 import type { GameKey, Mode } from '@/games/engine/types';
 
 type Settings = Record<string, unknown>;
@@ -9,34 +9,34 @@ type Price = (s: Settings) => number;
 const by = (key: string, table: Record<string, number>, none: number): Price => (s) => table[String(s[key])] ?? none;
 const flat = (n: number): Price => () => n;
 
-const CASES = by('cases', { 3: 10, 5: 15, 10: 25 }, 15);
-const WORDS = by('words', { 3: 15, 5: 20, 10: 40 }, 20);
-const PHOTOS = by('photos', { 3: 10, 5: 15, 10: 25 }, 15);
-const DRAWS = by('performs', { 1: 10, 2: 20, 3: 30 }, 10);
-const TARGET = by('target', { 25: 20, 50: 30, 100: 40 }, 30);
-const PARADE = by('questions', { 5: 10, 10: 15, 15: 20 }, 15);
-const ROUNDS = by('rounds', { 1: 10, 2: 15, 3: 25, 4: 30, 5: 40 }, 15);
-const STREAK_TIME = by('length', { 60: 5, 90: 10, 120: 15 }, 5);
-// Password: 5 or 10 words a team, 1 or 2 rounds (Yazan: 10 / 20 / 30 / 40).
-const PASSWORD_TABLE: Record<string, number> = { '5:1': 10, '10:1': 20, '5:2': 30, '10:2': 40 };
-const PASSWORD: Price = (s) => PASSWORD_TABLE[`${s.words}:${s.rounds}`] ?? 20;
+const CASES = by('cases', { 3: 15, 5: 25, 10: 40 }, 25);
+const WORDS = by('words', { 3: 25, 5: 30, 10: 60 }, 30);
+const PHOTOS = by('photos', { 3: 15, 5: 25, 10: 40 }, 25);
+const DRAWS = by('performs', { 1: 15, 2: 30, 3: 45 }, 15);
+const TARGET = by('target', { 25: 30, 50: 45, 100: 60 }, 45);
+const PARADE = by('questions', { 5: 15, 10: 25, 15: 30 }, 25);
+const ROUNDS = by('rounds', { 1: 15, 2: 25, 3: 40, 4: 45, 5: 60 }, 25);
+const STREAK_TIME = by('length', { 60: 10, 90: 15, 120: 25 }, 10);
+// Password: 5 or 10 words a team, 1 or 2 rounds (Yazan: 15 / 30 / 45 / 60).
+const PASSWORD_TABLE: Record<string, number> = { '5:1': 15, '10:1': 30, '5:2': 45, '10:2': 60 };
+const PASSWORD: Price = (s) => PASSWORD_TABLE[`${s.words}:${s.rounds}`] ?? 30;
 
 const COSTS: Partial<Record<GameKey, Partial<Record<Mode, Price>>>> = {
   'the-diagnostic-pursuit': { solo: CASES, offline: CASES, online: CASES },
-  // Daily is free (TR3); Endless costs 5 a word, charged word by word.
-  'nova-medicordle': { solo: (s) => (s.word === 'endless' ? 5 : 0), offline: WORDS, online: WORDS },
-  'the-streak-master': { solo: STREAK_TIME, offline: STREAK_TIME, online: by('questions', { 5: 5, 10: 10, 15: 15, 20: 20 }, 10) },
-  // Riddler Solo: 5 a level (#64), charged level by level.
-  'the-riddler': { solo: flat(5), offline: PHOTOS, online: PHOTOS },
-  'the-silent-artist': { solo: flat(5), offline: DRAWS, online: DRAWS },
+  // Daily is free (TR3); Endless costs 10 a word, charged word by word.
+  'nova-medicordle': { solo: (s) => (s.word === 'endless' ? 10 : 0), offline: WORDS, online: WORDS },
+  'the-streak-master': { solo: STREAK_TIME, offline: STREAK_TIME, online: by('questions', { 5: 10, 10: 15, 15: 25, 20: 30 }, 15) },
+  // Riddler Solo: 10 a level (#64), charged level by level.
+  'the-riddler': { solo: flat(10), offline: PHOTOS, online: PHOTOS },
+  'the-silent-artist': { solo: flat(10), offline: DRAWS, online: DRAWS },
   // Case Files and Crossword online: 1, 2 or 3 cases (puzzles) in a row, each with its own time limit.
-  'case-files-unsolved': { solo: flat(5), offline: flat(5), online: by('count', { 1: 5, 2: 10, 3: 15 }, 5) },
-  'nova-crossword': { solo: flat(20), offline: flat(10), online: by('count', { 1: 10, 2: 20, 3: 30 }, 10) },
+  'case-files-unsolved': { solo: flat(10), offline: flat(10), online: by('count', { 1: 10, 2: 15, 3: 25 }, 10) },
+  'nova-crossword': { solo: flat(30), offline: flat(15), online: by('count', { 1: 15, 2: 30, 3: 45 }, 15) },
   'the-wheels-of-chaos': { solo: TARGET, offline: TARGET, online: TARGET },
-  'the-conqueror': { online: flat(30) },
+  'the-conqueror': { online: flat(45) },
   'the-quiz-parade': { solo: PARADE, offline: PARADE, online: PARADE },
   imposter: { offline: ROUNDS, online: ROUNDS },
-  'code-clinic': { offline: flat(20), online: flat(20) },
+  'code-clinic': { offline: flat(30), online: flat(30) },
   'nova-password': { offline: PASSWORD, online: PASSWORD },
 };
 
