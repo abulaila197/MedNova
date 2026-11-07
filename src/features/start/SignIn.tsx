@@ -10,6 +10,7 @@ import { TopInset } from '@/components/TopInset';
 import { DISCLAIMER } from '@/features/info/content';
 import { KeyboardLift } from '@/games/shell/KeyboardLift';
 import { takeAddCode } from '@/features/profile/pendingAdd';
+import { APPLE_ON, appleSignIn } from '@/lib/appleSignIn';
 import { googleSignIn } from '@/lib/googleSignIn';
 import { supabase } from '@/lib/supabase';
 import { call } from '@/online/api';
@@ -53,8 +54,8 @@ const C = {
   },
 };
 
-// Google sign-in is live (2026-10-26). Apple is shown but not live yet: a tap says it is coming. Before a store build,
-// wire it or hide it, since stores reject buttons that do nothing. Sign In tab only: they also create the account.
+// Google sign-in is live (2026-10-26). Apple sign-in is live on iPhone only (2026-11-07) and hidden elsewhere.
+// Sign In tab only: they also create the account.
 const SHOW_SOCIAL = true;
 
 const TAB = cssAngle(100, 105, 27);
@@ -95,7 +96,7 @@ function plain(msg: string) {
   if (m.includes('expired') || m.includes('invalid') && m.includes('token')) return 'That code is wrong or has expired. Send a new one.';
   if (m.includes('password') && m.includes('characters')) return 'Use at least 6 characters for your password.';
   // List: when the email sending limit is hit, no codes can go out (Yazan's wording, 2026-10-25).
-  if (m.includes('email rate limit')) return 'Only Google and Apple sign-in work now.';
+  if (m.includes('email rate limit')) return APPLE_ON ? 'Only Google and Apple sign-in work now.' : 'Only Google sign-in works now.';
   if (m.includes('rate limit') || m.includes('security purposes')) return 'Too many tries. Wait a minute, then try again.';
   if (m.includes('network') || m.includes('fetch')) return 'No connection. Check your internet and try again.';
   return msg;
@@ -172,6 +173,10 @@ export function SignIn() {
     act(async () => {
       if (Platform.OS === 'web') return setNote({ text: 'Google sign-in works in the phone app.', bad: false });
       if (await googleSignIn()) enter();
+    });
+  const apple = () =>
+    act(async () => {
+      if (await appleSignIn()) enter();
     });
 
   const signUp = () =>
@@ -426,13 +431,12 @@ export function SignIn() {
               <Google />
               <Text style={s.gglTxt}>Continue with Google</Text>
             </Pressable>
-            <Pressable
-              onPress={() => setNote({ text: 'Apple sign-in is coming soon. Use your email for now.', bad: false })}
-              accessibilityRole="button"
-              style={[s.ggl, { backgroundColor: '#000000', borderColor: '#000000' }]}>
-              <Apple />
-              <Text style={[s.gglTxt, { color: '#ffffff' }]}>Continue with Apple</Text>
-            </Pressable>
+            {APPLE_ON ? (
+              <Pressable onPress={apple} disabled={busy} accessibilityRole="button" style={[s.ggl, { backgroundColor: '#000000', borderColor: '#000000' }]}>
+                <Apple />
+                <Text style={[s.gglTxt, { color: '#ffffff' }]}>Continue with Apple</Text>
+              </Pressable>
+            ) : null}
           </>
         ) : null}
         {link('Continue as guest', enter)}

@@ -1,6 +1,6 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useFocusEffect } from 'expo-router';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import { Text } from '@/components/AppText';
@@ -19,7 +19,7 @@ import { F } from '@/theme/tokens';
 
 import { StyleBanner } from './StyleBanner';
 import { FreeSheets, FreeTokens, useFree } from './FreeTokens';
-import { BILLING_LIVE, buy, restore, useIsSubscribed, useSubscription, type BuyResult } from './billing';
+import { BILLING_LIVE, buy, loadPrices, restore, useIsSubscribed, usePrice, useSubscription, type BuyResult } from './billing';
 import { PACKS, SUBSCRIPTION, type Pack } from './catalog';
 
 const SAY: Record<BuyResult, string> = {
@@ -45,6 +45,8 @@ export function StorePage() {
   const subscribed = useIsSubscribed();
   const [busy, setBusy] = useState<string | null>(null);
   const [said, setSaid] = useState('');
+  const subPrice = usePrice(SUBSCRIPTION.id, SUBSCRIPTION.price);
+  useEffect(() => loadPrices([...PACKS.map((p) => p.id), SUBSCRIPTION.id, SOVEREIGN_PACK.id]), []);
 
   const run = async (id: string, act: () => Promise<BuyResult>) => {
     if (!signedIn) return router.navigate('/auth'); // MN8: guests sign in first
@@ -89,7 +91,7 @@ export function StorePage() {
         <Pressable
           onPress={subscribed ? undefined : () => run(SUBSCRIPTION.id, () => buy(SUBSCRIPTION.id))}
           accessibilityRole="button"
-          accessibilityLabel={subscribed ? 'MedNova Unlimited is active' : `Subscribe to MedNova Unlimited for ${SUBSCRIPTION.price} a month`}
+          accessibilityLabel={subscribed ? 'MedNova Unlimited is active' : `Subscribe to MedNova Unlimited for ${subPrice} a month`}
           style={[{ marginTop: u(16) }, busy === SUBSCRIPTION.id && s.busy]}
         >
           <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.3 }} end={{ x: 1, y: 0.7 }} style={s.sub}>
@@ -107,7 +109,7 @@ export function StorePage() {
                 </>
               ) : (
                 <>
-                  <Text style={[s.subBtnT, { color: t.gradB }]}>{SUBSCRIPTION.price}</Text>
+                  <Text style={[s.subBtnT, { color: t.gradB }]}>{subPrice}</Text>
                   <Text style={[s.subBtnS, { color: t.gradB }]}>{`a ${SUBSCRIPTION.period}`}</Text>
                 </>
               )}
@@ -138,7 +140,17 @@ export function StorePage() {
         <Pressable onPress={() => run('restore', restore)} hitSlop={u(10)} style={s.restore} accessibilityRole="button">
           <Text style={[s.restoreT, { color: t.accent }]}>Restore purchases</Text>
         </Pressable>
-        <Text style={[s.foot, { color: c.mute }]}>Paid through the App Store or Google Play. Tokens and the subscription stay on your account.</Text>
+        <Text style={[s.foot, { color: c.mute }]}>
+          {`Paid through the App Store or Google Play. Tokens and the subscription stay on your account. MedNova Unlimited is ${subPrice} a month and renews every month until you cancel it in your App Store or Google Play subscriptions, at least a day before it renews. See our `}
+          <Text style={{ color: t.accent }} onPress={() => router.push({ pathname: '/privacy', params: { doc: 'terms' } })} accessibilityRole="link">
+            Terms
+          </Text>
+          {' and '}
+          <Text style={{ color: t.accent }} onPress={() => router.push('/privacy')} accessibilityRole="link">
+            Privacy Policy
+          </Text>
+          .
+        </Text>
       </InfoScroll>
       <FreeSheets t={t} />
     </Screen>
@@ -148,8 +160,9 @@ export function StorePage() {
 /** Sovereign, wearing its frame, with what the package holds. "Coming soon" until the stores sell it. */
 function SovereignCard({ t, busy, onBuy }: { t: Theme; busy: boolean; onBuy: () => void }) {
   const owned = useStyle((x) => x.owned.includes('robot:sovereign'));
+  const price = usePrice(SOVEREIGN_PACK.id, SOVEREIGN_PACK.price);
   return (
-    <Pressable onPress={owned ? undefined : onBuy} accessibilityRole="button" accessibilityLabel={`Sovereign package for ${SOVEREIGN_PACK.price}`} style={[s.style, { backgroundColor: t.panel, borderColor: t.panelLine }, busy && s.busy]}>
+    <Pressable onPress={owned ? undefined : onBuy} accessibilityRole="button" accessibilityLabel={`Sovereign package for ${price}`} style={[s.style, { backgroundColor: t.panel, borderColor: t.panelLine }, busy && s.busy]}>
       <Framed slug="sovereign" size={u(64)} frame="sovereign" still />
       <View style={{ flex: 1 }}>
         <Text style={[s.mono, { color: '#f5c542' }]}>{'\u2605'.repeat(6)}</Text>
@@ -162,7 +175,7 @@ function SovereignCard({ t, busy, onBuy }: { t: Theme; busy: boolean; onBuy: () 
       ) : (
         <View style={{ alignItems: 'center', gap: u(3) }}>
           <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={[s.cBtn, s.sovBtn]}>
-            <Text style={[s.cBtnT, { color: t.onGrad }]}>{SOVEREIGN_PACK.price}</Text>
+            <Text style={[s.cBtnT, { color: t.onGrad }]}>{price}</Text>
           </LinearGradient>
           {!BILLING_LIVE ? <Text style={[s.mono, { color: t.mute }]}>COMING SOON</Text> : null}
         </View>
@@ -179,8 +192,9 @@ const WAS = '#e5534b'; // the old amount, struck through in red
 function PackCard({ t, p, i, busy, onBuy }: { t: Theme; p: Pack; i: number; busy: boolean; onBuy: () => void }) {
   const coin = u(22);
   const step = coin * 0.45;
+  const price = usePrice(p.id, p.price);
   return (
-    <Pressable onPress={onBuy} accessibilityRole="button" accessibilityLabel={`${p.tokens} tokens for ${p.price}`} style={[s.card, { backgroundColor: t.panel, borderColor: t.panelLine }, busy && s.busy]}>
+    <Pressable onPress={onBuy} accessibilityRole="button" accessibilityLabel={`${p.tokens} tokens for ${price}`} style={[s.card, { backgroundColor: t.panel, borderColor: t.panelLine }, busy && s.busy]}>
       <View style={[s.pile, { height: coin, width: coin + step * i }]}>
         {Array.from({ length: i + 1 }, (_, k) => (
           <View key={k} style={{ position: 'absolute', left: step * k, top: 0 }}>
@@ -196,7 +210,7 @@ function PackCard({ t, p, i, busy, onBuy }: { t: Theme; p: Pack; i: number; busy
       <Text style={[s.cN, { color: t.fg }]}>{p.tokens}</Text>
       <Text style={[s.cU, { color: t.mute }]}>tokens</Text>
       <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={s.cBtn}>
-        <Text style={[s.cBtnT, { color: t.onGrad }]}>{p.price}</Text>
+        <Text style={[s.cBtnT, { color: t.onGrad }]}>{price}</Text>
       </LinearGradient>
     </Pressable>
   );

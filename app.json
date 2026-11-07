@@ -10,10 +10,14 @@
     "backgroundColor": "#0d1738",
     "ios": {
       "icon": "./assets/images/icon.png",
-      "bundleIdentifier": "com.novagames.mednova",
+      "bundleIdentifier": "com.Novagames.MedNova",
       "supportsTablet": true,
       "requireFullScreen": true,
-      "googleServicesFile": "./firebase/GoogleService-Info.plist"
+      "googleServicesFile": "./firebase/GoogleService-Info.plist",
+      "usesAppleSignIn": true,
+      "config": {
+        "usesNonExemptEncryption": false
+      }
     },
     "android": {
       "package": "com.novagames.mednova",
@@ -103,7 +107,8 @@
           "icon": "./assets/images/android-icon-monochrome.png",
           "color": "#6fd6ff"
         }
-      ]
+      ],
+      "expo-apple-authentication"
     ],
     "experiments": {
       "typedRoutes": true,

@@ -1,6 +1,6 @@
 // Buying from the Store (MN2-MN4). RevenueCat takes the payment through Apple or Google and tells our server
 // (supabase/functions/revenuecat), which adds the tokens or marks the subscription. The phone then syncs.
-// Off until the store accounts exist (EC2): BILLING_LIVE stays false and nothing is charged.
+// Off until the RevenueCat keys are in (storeKeys.ts): BILLING_LIVE stays false and nothing is charged.
 import { create } from 'zustand';
 
 import { engine } from '@/games/engine';
@@ -8,24 +8,33 @@ import { useSession } from '@/games/shell/session';
 import { supabase } from '@/lib/supabase';
 import { syncAccount } from '@/lib/sync';
 
-/** Switched on together with the store accounts and the RevenueCat keys (EC2). */
-export const BILLING_LIVE = false;
+import { makeStoreProvider } from './storeSdk';
 
-/**
- * The store SDK, plugged in when billing goes live: a small file that wraps react-native-purchases
- * (Purchases.configure + logIn(userId), purchaseProduct, restorePurchases) and calls setBillingProvider().
- * Kept out of the app until then so Expo Go keeps working.
- */
 export type BillingProvider = {
   logIn(userId: string): Promise<void>;
   /** True when the store took the payment; false when the player backed out. */
   buy(productId: string): Promise<boolean>;
   restore(): Promise<void>;
+  /** The store's own price text for each product, in the player's currency. */
+  prices(ids: string[]): Promise<Record<string, string>>;
 };
-let provider: BillingProvider | null = null;
-export const setBillingProvider = (p: BillingProvider) => {
-  provider = p;
-};
+
+// RevenueCat on phones (storeSdk.native.ts); nothing on web. Live once its key is filled in (storeKeys.ts).
+const provider: BillingProvider | null = makeStoreProvider();
+
+/** On once the store keys are in: until then nothing is charged and the shop says "coming soon". */
+export const BILLING_LIVE = provider != null;
+
+/** Local prices from the store ("EGP 49.99"), shown instead of the dollar defaults once they arrive. */
+export const usePrices = create<Record<string, string>>(() => ({}));
+/** The store's price for one product, or the default until the store answers. */
+export const usePrice = (id: string, fallback: string) => usePrices((p) => p[id] ?? fallback);
+let pricesAsked = false;
+export function loadPrices(ids: string[]) {
+  if (!provider || pricesAsked) return;
+  pricesAsked = true;
+  provider.prices(ids).then((p) => usePrices.setState(p), () => (pricesAsked = false));
+}
 
 const SUB_KEY = 'subscription';
 

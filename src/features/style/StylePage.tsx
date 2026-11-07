@@ -20,6 +20,7 @@ import { CardViewer } from '@/features/cards/CollectionPage';
 import { bonusLine, ROBOTS, type Robot, robotOf, SHOP_ROBOT_KEYS, SHOP_ROBOTS_PRIZE, SOVEREIGN_PACK } from '@/features/shop/robots';
 import { wearCharacter } from '@/features/shop/wear';
 import { loadFree, useFree } from '@/features/store/FreeTokens';
+import { BILLING_LIVE, usePrice } from '@/features/store/billing';
 import { useAccount } from '@/state/account';
 import { loadFriends, useFriends } from '@/state/friends';
 import type { Theme } from '@/theme/tokens';
@@ -70,6 +71,7 @@ export function StylePage() {
   const [chosen, setTab] = useState<Tab | null>(null);
   const tab = chosen ?? params.tab ?? 'characters';
   const signedIn = !!useSession((x) => x.userId);
+  const sovPrice = usePrice(SOVEREIGN_PACK.id, SOVEREIGN_PACK.price);
   const profile = useAccount((a) => a.profile);
   const { tokens } = useBalance();
   const { owned, worn, deal, dealEnds } = useStyle();
@@ -208,7 +210,7 @@ export function StylePage() {
                       <Text style={[s.cN, { color: c.fg }]} numberOfLines={1}>{it.name}</Text>
                       <Text style={[s.star, { color: '#f5c542' }]}>{'\u2605'.repeat(robotOf(it.key)!.stars)}</Text>
                       <Text style={[s.bonus, { color: c.mute }]} numberOfLines={2}>{bonusLine(it.key).replace(' · ', '\n')}</Text>
-                      {it.key === 'sovereign' && !has(it.id) ? <Text style={[s.pT, { color: t.fg }]}>{SOVEREIGN_PACK.price}</Text> : <Price t={t} it={it} deal={deal} owned={has(it.id)} wearing={wearing(it)} />}
+                      {it.key === 'sovereign' && !has(it.id) ? <Text style={[s.pT, { color: t.fg }]}>{sovPrice}</Text> : <Price t={t} it={it} deal={deal} owned={has(it.id)} wearing={wearing(it)} />}
                     </Cell>
                   ))}
                 </View>
@@ -278,7 +280,11 @@ export function StylePage() {
                 <Big t={t} label="Wear" busy={busy} onPress={() => act(() => wearCharacter(pick.key), 'Done. Your star bonus changed with it.')} />
               )
             ) : pick.key === 'sovereign' && pick.id.startsWith('robot:') ? (
-              <Text style={[s.barS, { color: c.mute }]}>{`${SOVEREIGN_PACK.price} · Coming soon`}</Text>
+              BILLING_LIVE ? (
+                <Big t={t} label={`Get · ${sovPrice}`} busy={false} onPress={() => router.navigate('/store')} />
+              ) : (
+                <Text style={[s.barS, { color: c.mute }]}>{`${sovPrice} · Coming soon`}</Text>
+              )
             ) : has(pick.id) ? (
               pick.id.startsWith('pack:') ? (
                 <Text style={[s.barS, { color: c.mute }]}>Yours in every room</Text>

@@ -13,6 +13,7 @@ import { F } from '@/theme/tokens';
 
 import { useBack } from '@/lib/useBack';
 import { SUBSCRIPTION } from '@/features/store/catalog';
+import { usePrice } from '@/features/store/billing';
 import { Bolt, SPARK } from './Bolt';
 import { AD_CAP, AD_SPARKS, ADS_LIVE, cancelRecharge, rechargeWithAd, rechargeWithTokens, subscribeFromRecharge, useRecharge, useSparks } from './sparks';
 
@@ -43,6 +44,7 @@ export function RechargeSheet() {
   }, [ask, busy]);
   // Android back = Not now (PB3).
   useBack(!!ask, cancelRecharge);
+  const subPrice = usePrice(SUBSCRIPTION.id, SUBSCRIPTION.price);
   if (!ask) return null;
   // From the header (cost 0) the tokens fill the bar; before a play they buy just what it needs.
   const need = Math.max(1, (ask.cost || bar.max) - bar.value);
@@ -63,7 +65,7 @@ export function RechargeSheet() {
       off: busy || full,
       on: rechargeWithTokens,
     },
-    { key: 'sub', label: `Subscribe for ${SUBSCRIPTION.price} a month`, sub: 'Unlimited Sparks, no ads', on: subscribeFromRecharge },
+    { key: 'sub', label: `Subscribe for ${subPrice} a month`, sub: 'Unlimited Sparks, no ads', on: subscribeFromRecharge },
   ];
   return (
     <View style={[StyleSheet.absoluteFill, { zIndex: 40 }]}>

@@ -8,6 +8,7 @@ import { Screen } from '@/components/Screen';
 import { GradBtn, InfoScroll, Kicker, s as ui, useInfo } from '@/features/info/ui';
 import { useSession } from '@/games/shell/session';
 import { ADS_ON, openPrivacyChoices, privacyChoicesNeeded } from '@/lib/ads';
+import { linkGoogle, signInMethods } from '@/lib/googleSignIn';
 import { askPushNow, PUSH_ON, pushAllowed } from '@/lib/push';
 import { tapped } from '@/lib/sound';
 import { supabase } from '@/lib/supabase';
@@ -15,10 +16,13 @@ import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 type Prefs = { social: boolean; reminders: boolean };
+const WAYS: Record<string, string> = { email: 'email', google: 'Google', apple: 'Apple' };
 
 /**
  * Settings (Group 2, Yazan 2026-11-07): the two notification switches (friends and gifts, one reminder a day) and
  * Privacy choices for ads. Notification choices live on the server, so they follow the account to every phone.
+ * Group 3: "Sign-in" lists the ways into the account and adds Google, so an Apple player who hid their email can
+ * open the same account on Android.
  */
 export default function Page() {
   const c = useInfo();
@@ -27,6 +31,9 @@ export default function Page() {
   const [prefs, setPrefs] = useState<Prefs | null>(null);
   const [choices, setChoices] = useState(false);
   const [err, setErr] = useState<string | null>(null);
+  const [ways, setWays] = useState<string[] | null>(null);
+  const [linkNote, setLinkNote] = useState<{ text: string; bad: boolean } | null>(null);
+  const [linking, setLinking] = useState(false);
 
   const look = useCallback(() => {
     if (PUSH_ON) pushAllowed().then(setAllowed, () => setAllowed('no'));
@@ -41,7 +48,27 @@ export default function Page() {
   useEffect(() => {
     if (!uid) return;
     supabase.rpc('push_my_prefs').then(({ data }) => data && setPrefs(data as Prefs), () => {});
+    signInMethods().then(setWays, () => {});
   }, [uid]);
+
+  const addGoogle = async () => {
+    setLinking(true);
+    setLinkNote(null);
+    try {
+      if (await linkGoogle()) {
+        setWays(await signInMethods());
+        setLinkNote({ text: 'Google added. Sign in with Google on any phone to open this account.', bad: false });
+      }
+    } catch (e) {
+      const m = String((e as Error).message ?? '').toLowerCase();
+      setLinkNote({
+        text: m.includes('already') ? 'That Google account already has its own MedNova account. Pick another Google account.' : 'Couldn’t add Google. Check your connection and try again.',
+        bad: true,
+      });
+    } finally {
+      setLinking(false);
+    }
+  };
 
   const set = async (next: Prefs) => {
     const was = prefs;
@@ -64,7 +91,21 @@ export default function Page() {
         <Kicker>Settings</Kicker>
         <Text style={[ui.H, { color: c.fg, fontFamily: F.display }]}>Settings</Text>
 
-        <View style={{ marginTop: u(14) }}>
+        {uid && Platform.OS !== 'web' && ways ? (
+          <>
+            <View style={{ marginTop: u(14) }}>
+              <Kicker inSec>Sign-in</Kicker>
+            </View>
+            <Text style={[ui.p, { color: c.mute }]}>
+              You sign in with {ways.map((w) => WAYS[w] ?? w).join(' and ')}.
+              {ways.includes('google') ? ' Use Google to open this account on any phone.' : ' Add Google to open this same account on an Android phone or any other phone.'}
+            </Text>
+            {!ways.includes('google') ? <GradBtn label={linking ? 'Opening Google…' : 'Add Google sign-in'} onPress={linking ? () => {} : addGoogle} style={{ marginTop: u(10) }} /> : null}
+            {linkNote ? <Text style={[s.err, { color: linkNote.bad ? c.t.error : c.t.accent }]}>{linkNote.text}</Text> : null}
+          </>
+        ) : null}
+
+        <View style={{ marginTop: u(uid && Platform.OS !== 'web' && ways ? 22 : 14) }}>
           <Kicker inSec>Notifications</Kicker>
         </View>
         {!PUSH_ON ? (

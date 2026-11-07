@@ -31,3 +31,26 @@ export async function googleSignIn() {
   await sessionFromUrl(res.url);
   return true;
 }
+
+/**
+ * Adds Google to the signed-in account (Group 3, Yazan 2026-11-07). An Apple player with "Hide my email" has a
+ * private relay address, so on Android they could never reach the same account; with Google added they sign in with
+ * Google there. Needs "Manual linking" on in Supabase Auth. True once added, false when the page was closed.
+ */
+export async function linkGoogle() {
+  const { data, error } = await supabase.auth.linkIdentity({
+    provider: 'google',
+    options: { redirectTo: AUTH_CALLBACK, skipBrowserRedirect: true, queryParams: { prompt: 'select_account' } },
+  });
+  if (error) throw error;
+  const res = await WebBrowser.openAuthSessionAsync(data.url, AUTH_CALLBACK);
+  if (res.type !== 'success') return false;
+  await sessionFromUrl(res.url);
+  return true;
+}
+
+/** Which ways in this account has: 'email', 'google', 'apple'. */
+export async function signInMethods() {
+  const { data } = await supabase.auth.getUserIdentities();
+  return (data?.identities ?? []).map((i) => i.provider);
+}
