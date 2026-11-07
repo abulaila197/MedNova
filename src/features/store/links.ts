@@ -3,7 +3,7 @@
 export const LINKS: Record<'tiktok' | 'instagram' | 'facebook' | 'youtube' | 'channel' | 'listing' | 'listingAndroid', string> = {
   tiktok: 'https://www.tiktok.com/@nova_verse9',
   instagram: 'https://www.instagram.com/nova_verse4/',
-  facebook: 'https://www.facebook.com/share/19qwGunuJA/',
+  facebook: 'https://www.facebook.com/share/19dfKYrn9e/',
   youtube: 'https://www.youtube.com/@nova_verse4',
   channel: '',
   listing: '',
