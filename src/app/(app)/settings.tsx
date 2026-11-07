@@ -64,7 +64,9 @@ export default function Page() {
         <Kicker>Settings</Kicker>
         <Text style={[ui.H, { color: c.fg, fontFamily: F.display }]}>Settings</Text>
 
-        <Kicker inSec style={{ marginTop: u(14) }}>Notifications</Kicker>
+        <View style={{ marginTop: u(14) }}>
+          <Kicker inSec>Notifications</Kicker>
+        </View>
         {!PUSH_ON ? (
           <Text style={[ui.p, { color: c.mute }]}>Notifications are only in the phone app.</Text>
         ) : !uid ? (
@@ -103,7 +105,9 @@ export default function Page() {
           </>
         )}
 
-        <Kicker inSec style={{ marginTop: u(18) }}>Ads and privacy</Kicker>
+        <View style={{ marginTop: u(22) }}>
+          <Kicker inSec>Ads and privacy</Kicker>
+        </View>
         {!ADS_ON ? (
           <Text style={[ui.p, { color: c.mute }]}>Ads are only in the phone app.</Text>
         ) : (
