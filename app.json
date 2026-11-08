@@ -82,7 +82,9 @@
         "expo-build-properties",
         {
           "android": {
-            "useLegacyPackaging": true
+            "useLegacyPackaging": true,
+            "enableMinifyInReleaseBuilds": true,
+            "extraProguardRules": "-keep class com.novagames.mednova.** { *; }\n-keep class expo.modules.** { *; }\n-keep class com.facebook.react.** { *; }\n-keep class com.facebook.hermes.** { *; }\n-keep class com.revenuecat.purchases.** { *; }\n-keep class com.google.android.gms.ads.** { *; }\n-keep class com.google.firebase.** { *; }\n-keep class io.invertase.** { *; }\n-keepattributes *Annotation*,Signature,InnerClasses,EnclosingMethod"
           },
           "ios": {
             "useFrameworks": "dynamic"
