@@ -28,7 +28,9 @@
     "myocarditis",
     "subclavian-steal-syndrome",
     "peripartum-cardiomyopathy",
-    "hypertensive-emergency"
+    "hypertensive-emergency",
+    "brugada-syndrome",
+    "arrhythmogenic-right-ventricular-cardiomyopathy"
    ]
   },
   {
@@ -329,7 +331,10 @@
     "delirium-tremens",
     "tricyclic-antidepressant-overdose",
     "salicylate-toxicity",
-    "red-man-syndrome"
+    "red-man-syndrome",
+    "serotonin-syndrome",
+    "lithium-toxicity",
+    "bulimia-nervosa"
    ]
   },
   {
@@ -450,7 +455,10 @@
     "gestational-trophoblastic-disease-molar-pregnancy-hydatidiform-mole",
     "ovarian-torsion",
     "ruptured-corpus-luteum-cyst",
-    "breast-abscess"
+    "breast-abscess",
+    "hellp-syndrome",
+    "placenta-previa",
+    "placenta-accreta-spectrum"
    ]
   },
   {
@@ -589,7 +597,15 @@
     "central-retinal-artery-occlusion",
     "ludwig-angina",
     "acute-mastoiditis",
-    "malignant-otitis-externa"
+    "malignant-otitis-externa",
+    "meniere-disease",
+    "optic-neuritis",
+    "central-retinal-vein-occlusion",
+    "orbital-cellulitis",
+    "cholesteatoma",
+    "otosclerosis",
+    "leber-hereditary-optic-neuropathy",
+    "retinoblastoma"
    ]
   },
   {

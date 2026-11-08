@@ -937,7 +937,8 @@
 "label": "Central retinal vein occlusion",
 "aliases": [
 "CRVO"
-]
+],
+"dossier": "central-retinal-vein-occlusion"
 },
 {
 "id": "cerebellar-stroke",
@@ -2388,7 +2389,8 @@
 "label": "Leber hereditary optic neuropathy",
 "aliases": [
 "LHON"
-]
+],
+"dossier": "leber-hereditary-optic-neuropathy"
 },
 {
 "id": "leukocyte-adhesion-deficiency-type-1",
@@ -2929,7 +2931,8 @@
 "label": "Orbital cellulitis",
 "aliases": [
 "Postseptal cellulitis"
-]
+],
+"dossier": "orbital-cellulitis"
 },
 {
 "id": "organophosphate-poisoning",
@@ -3148,7 +3151,8 @@
 },
 {
 "id": "placenta-previa",
-"label": "Placenta previa"
+"label": "Placenta previa",
+"dossier": "placenta-previa"
 },
 {
 "id": "placental-abruption",
@@ -3721,7 +3725,8 @@
 "label": "Serotonin syndrome",
 "aliases": [
 "Serotonin toxicity"
-]
+],
+"dossier": "serotonin-syndrome"
 },
 {
 "id": "severe-combined-immunodeficiency",

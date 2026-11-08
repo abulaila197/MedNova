@@ -4813,5 +4813,149 @@
 "cli": "Paralysis or marked weakness of one limb; upper motor neuron causes give spasticity and brisk reflexes, while plexus or nerve causes give flaccid weakness, wasting, reduced reflexes and sensory loss in that territory.",
 "inv": "Careful neurological examination to localize the lesion; MRI of the brain or spine for central causes, nerve conduction studies and electromyography for plexus or nerve injury, and plexus imaging when needed.",
 "tre": "Treat the underlying cause (acute stroke care, decompression, surgery for nerve injury); physiotherapy, occupational therapy, splints and spasticity management support recovery of function."
+},
+{
+"id": "serotonin-syndrome",
+"name": "Serotonin syndrome",
+"epi": "Occurs at any age in people taking serotonergic drugs, most often after a dose increase, an overdose or a new drug combination; mild cases are often missed.",
+"eti": "Excess serotonin activity in the central and peripheral nervous system, usually from combining SSRIs, SNRIs, MAO inhibitors, tramadol, linezolid, triptans, MDMA or St John's wort.",
+"cli": "Rapid onset within hours of agitation, confusion, sweating, diarrhoea, tachycardia, fever, dilated pupils, tremor, hyperreflexia and inducible or ocular clonus, most marked in the legs.",
+"inv": "Clinical diagnosis using the Hunter criteria (clonus, agitation, sweating, tremor, hyperreflexia with a serotonergic drug); bloods exclude infection, rhabdomyolysis and other toxicity.",
+"tre": "Stop all serotonergic drugs, give supportive care, benzodiazepines for agitation and cooling; cyproheptadine for moderate cases; severe hyperthermia needs ICU sedation and paralysis."
+},
+{
+"id": "meniere-disease",
+"name": "Meniere disease",
+"epi": "Most common between 40 and 60 years, slightly more often in women; usually starts in one ear and can become bilateral over years.",
+"eti": "Endolymphatic hydrops, an excess build-up of endolymph in the inner ear, of uncertain cause; genetic, autoimmune and vascular factors are suggested.",
+"cli": "Recurrent attacks of spinning vertigo lasting 20 minutes to 12 hours with nausea, plus fluctuating low-frequency hearing loss, tinnitus and aural fullness in the affected ear.",
+"inv": "Audiometry shows low-frequency sensorineural hearing loss that varies between tests; MRI excludes vestibular schwannoma; diagnosis is clinical.",
+"tre": "Low-salt diet, betahistine or diuretics, vestibular suppressants and antiemetics for attacks; intratympanic steroids or gentamicin for refractory disease."
+},
+{
+"id": "lithium-toxicity",
+"name": "Lithium toxicity",
+"epi": "Seen in patients on lithium for bipolar disorder, especially older adults; acute-on-chronic toxicity is the most common pattern.",
+"eti": "Narrow therapeutic range; levels rise with dehydration, kidney impairment, thiazide or loop diuretics, ACE inhibitors, ARBs, NSAIDs or overdose.",
+"cli": "Nausea, vomiting and diarrhoea, then coarse tremor, ataxia, slurred speech, confusion, hyperreflexia, myoclonus, seizures and coma; may cause nephrogenic diabetes insipidus.",
+"inv": "Serum lithium level (repeat after 6 hours), creatinine and electrolytes, ECG for bradycardia and QT changes, and thyroid function.",
+"tre": "Stop lithium, IV saline to restore volume, avoid interacting drugs; haemodialysis for high levels with kidney failure or severe neurological signs; activated charcoal does not bind lithium."
+},
+{
+"id": "bulimia-nervosa",
+"name": "Bulimia nervosa",
+"epi": "Most often begins in adolescence or early adulthood, much more common in females; body weight is usually normal or slightly high.",
+"eti": "Multifactorial: genetics, dieting, low self-esteem, perfectionism, mood disorders, trauma and cultural pressure about weight and shape.",
+"cli": "Recurrent binge eating with loss of control followed by compensatory vomiting, laxatives, fasting or excessive exercise; parotid swelling, dental erosion and knuckle calluses (Russell sign).",
+"inv": "Clinical diagnosis; electrolytes show hypokalaemia and metabolic alkalosis from vomiting; ECG for arrhythmia; screen for depression and self-harm.",
+"tre": "Cognitive behavioural therapy for eating disorders is first line; fluoxetine may help; correct electrolytes and treat dental and medical complications."
+},
+{
+"id": "hellp-syndrome",
+"name": "HELLP syndrome",
+"epi": "Affects a small proportion of pregnancies, mostly in the third trimester or just after delivery, and often linked to severe pre-eclampsia.",
+"eti": "Placental dysfunction leading to endothelial injury, microangiopathic haemolysis, liver cell damage and platelet consumption.",
+"cli": "Right upper quadrant or epigastric pain, nausea, malaise and headache, usually with high blood pressure and proteinuria; risk of liver rupture, DIC and placental abruption.",
+"inv": "Haemolysis (schistocytes, high LDH, low haptoglobin), raised liver enzymes and platelets below 100 × 10⁹/L; fetal monitoring and liver imaging if severe pain.",
+"tre": "Stabilise blood pressure, magnesium sulfate to prevent seizures, corticosteroids for fetal lung maturity when time allows, and prompt delivery."
+},
+{
+"id": "placenta-previa",
+"name": "Placenta previa",
+"epi": "Complicates about 1 in 200 pregnancies at term; risk rises with previous caesareans, multiparity, older age, smoking and IVF.",
+"eti": "Implantation of the placenta in the lower uterine segment, covering or lying close to the internal cervical os.",
+"cli": "Sudden painless bright red vaginal bleeding in the second half of pregnancy with a soft non-tender uterus and often a malpresentation.",
+"inv": "Transvaginal ultrasound confirms placental position; digital vaginal examination is avoided until previa is excluded.",
+"tre": "Admission, monitoring and blood ready for bleeding; corticosteroids if preterm; planned caesarean delivery, usually at 36 to 37 weeks."
+},
+{
+"id": "optic-neuritis",
+"name": "Optic neuritis",
+"epi": "Most common in women aged 20 to 45; often the first sign of multiple sclerosis.",
+"eti": "Inflammatory demyelination of the optic nerve, typically idiopathic or MS-related; may be linked to NMOSD (aquaporin-4) or MOG antibody disease.",
+"cli": "Subacute loss of vision in one eye over days with pain on eye movement, reduced colour vision (red desaturation), a relative afferent pupillary defect and a central scotoma.",
+"inv": "Fundoscopy is often normal (retrobulbar) or shows disc swelling; MRI of the orbits and brain shows optic nerve enhancement and checks for MS lesions; antibody tests in atypical cases.",
+"tre": "Most recover over weeks; IV methylprednisolone speeds recovery; disease-modifying therapy if MRI shows high MS risk."
+},
+{
+"id": "central-retinal-vein-occlusion",
+"name": "Central retinal vein occlusion",
+"epi": "Mainly affects people over 60; risk factors include hypertension, diabetes, glaucoma, hyperlipidaemia and hyperviscosity.",
+"eti": "Thrombosis of the central retinal vein at or behind the lamina cribrosa, raising venous pressure across the whole retina.",
+"cli": "Sudden painless blurred or reduced vision in one eye; fundus shows widespread flame haemorrhages, dilated tortuous veins, disc swelling and cotton wool spots.",
+"inv": "Clinical fundoscopy, OCT for macular oedema and fluorescein angiography for ischaemia; check blood pressure, glucose, lipids and blood count.",
+"tre": "Treat risk factors; anti-VEGF injections for macular oedema; laser photocoagulation for neovascularisation; monitor for neovascular glaucoma."
+},
+{
+"id": "orbital-cellulitis",
+"name": "Orbital cellulitis",
+"epi": "More common in children; usually follows ethmoid sinusitis, less often trauma, dental infection or eyelid infection.",
+"eti": "Bacterial infection behind the orbital septum, often Streptococcus, Staphylococcus aureus or Haemophilus influenzae.",
+"cli": "Painful red swollen eyelids with fever, proptosis, painful and restricted eye movements, double vision and possible reduced vision or RAPD.",
+"inv": "Contrast CT of the orbits and sinuses to confirm post-septal spread and abscess; bloods and blood cultures.",
+"tre": "Admission for IV antibiotics, ophthalmology and ENT review; surgical drainage for abscess or worsening vision; watch for cavernous sinus thrombosis."
+},
+{
+"id": "brugada-syndrome",
+"name": "Brugada syndrome",
+"epi": "More common in men and in people of South-East Asian descent; often presents in the 30s to 40s with night-time events.",
+"eti": "Inherited channelopathy, often from SCN5A sodium channel mutations, causing right ventricular conduction abnormality and ventricular arrhythmia risk.",
+"cli": "Syncope, nocturnal agonal breathing or sudden cardiac death, often triggered by fever, sleep, alcohol or certain drugs; family history of sudden death.",
+"inv": "ECG shows coved ST elevation in V1 to V2 (type 1 pattern), which may be revealed by fever or an ajmaline or flecainide challenge; genetic testing and family screening.",
+"tre": "Avoid triggers and treat fever promptly; ICD for survivors of cardiac arrest or arrhythmic syncope; quinidine or ablation for recurrent events."
+},
+{
+"id": "arrhythmogenic-right-ventricular-cardiomyopathy",
+"name": "Arrhythmogenic right ventricular cardiomyopathy",
+"epi": "Affects young adults, more often men and athletes; a leading cause of sudden cardiac death in young people.",
+"eti": "Inherited desmosomal gene mutations (such as PKP2) leading to fibrofatty replacement of mainly right ventricular muscle.",
+"cli": "Palpitations, exercise-induced syncope or sudden death; later right heart failure; family history of early sudden death.",
+"inv": "ECG shows T wave inversion in V1 to V3 and epsilon waves; Holter shows VT with left bundle branch morphology; cardiac MRI shows RV dilatation, wall motion abnormality and fat.",
+"tre": "Stop competitive and endurance sport, beta-blockers, antiarrhythmics, catheter ablation and ICD for high-risk patients; screen relatives."
+},
+{
+"id": "cholesteatoma",
+"name": "Cholesteatoma",
+"epi": "Usually acquired in older children and adults with chronic ear disease; congenital forms appear in children behind an intact eardrum.",
+"eti": "Keratinising squamous epithelium growing into the middle ear and mastoid, often from a retraction pocket in the pars flaccida.",
+"cli": "Persistent foul-smelling ear discharge, progressive conductive hearing loss, and later vertigo, facial weakness or intracranial infection.",
+"inv": "Otoscopy shows white keratin debris or a pearly mass in the attic; high-resolution CT shows bony and ossicular erosion; diffusion MRI for recurrence.",
+"tre": "Surgical removal by mastoidectomy with reconstruction of hearing where possible; long-term follow-up for recurrence."
+},
+{
+"id": "otosclerosis",
+"name": "Otosclerosis",
+"epi": "Begins in young adults, more common in women and in white populations, often familial; may worsen in pregnancy.",
+"eti": "Abnormal bone remodelling of the otic capsule that fixes the stapes footplate in the oval window.",
+"cli": "Slowly progressive conductive hearing loss, often in both ears, with tinnitus and better hearing in noisy places; a reddish blush behind the eardrum (Schwartze sign).",
+"inv": "Normal eardrum; Rinne negative; audiogram shows conductive loss with a Carhart notch at 2 kHz and absent stapedial reflexes; CT may show otic capsule lucency.",
+"tre": "Hearing aids or stapedotomy (stapedectomy); sodium fluoride is sometimes used for cochlear involvement."
+},
+{
+"id": "leber-hereditary-optic-neuropathy",
+"name": "Leber hereditary optic neuropathy",
+"epi": "Mainly young men in their teens to twenties; passed down the maternal line, with incomplete penetrance.",
+"eti": "Mitochondrial DNA mutations (most often m.11778G>A in ND4) impairing complex I and causing retinal ganglion cell loss; smoking and alcohol may trigger it.",
+"cli": "Painless subacute central vision loss in one eye followed within weeks or months by the other eye, with central scotomas and poor colour vision.",
+"inv": "Fundus may show disc hyperaemia and tortuous peripapillary vessels without leakage on angiography; mitochondrial genetic testing confirms it.",
+"tre": "Idebenone may help some patients; stop smoking and limit alcohol; low vision support and genetic counselling."
+},
+{
+"id": "retinoblastoma",
+"name": "Retinoblastoma",
+"epi": "The most common eye cancer in children, usually diagnosed before age 5; about 40% are heritable and often bilateral.",
+"eti": "Loss of both copies of the RB1 tumour suppressor gene in a developing retinal cell; heritable cases carry a germline mutation.",
+"cli": "White pupillary reflex (leukocoria) in photos, squint, red painful eye or poor vision; later increased risk of osteosarcoma in heritable forms.",
+"inv": "Examination under anaesthesia, ocular ultrasound showing a calcified mass, MRI of orbits and brain; RB1 genetic testing and family screening.",
+"tre": "Chemotherapy (systemic, intra-arterial or intravitreal), laser, cryotherapy or enucleation depending on size and spread."
+},
+{
+"id": "placenta-accreta-spectrum",
+"name": "Placenta accreta spectrum",
+"epi": "Rising with caesarean rates; risk is highest with placenta previa over a previous caesarean scar.",
+"eti": "Abnormal attachment of placental villi into or through the uterine wall due to a defective decidua, usually at a uterine scar.",
+"cli": "Often found on antenatal scans; at delivery the placenta fails to separate, causing massive haemorrhage; may invade the bladder.",
+"inv": "Ultrasound shows placental lacunae, loss of the clear zone, myometrial thinning and abnormal vessels; MRI helps assess depth and bladder involvement.",
+"tre": "Planned caesarean hysterectomy at 34 to 36 weeks in a specialist centre with blood products ready, leaving the placenta in place."
 }
 ]
