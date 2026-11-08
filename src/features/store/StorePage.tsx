@@ -1,7 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import { Text } from '@/components/AppText';
 import { Congrats } from '@/components/Congrats';
@@ -25,8 +25,10 @@ import { PACKS, SUBSCRIPTION, type Pack } from './catalog';
 
 // What a finished payment, restore or failure says, as a pop-up the player can't miss (Yazan 2026-11-08: the old line at
 // the top of the shop went unseen, so Restore looked like it did nothing).
-type Pop = { kick: string; title: string; big: string; line: string; coin: boolean; button: string };
+type Pop = { kick: string; title: string; big: string; line: string; coin: boolean; button: string; confirm?: boolean };
 const FAILED: Pop = { kick: 'NOT BOUGHT', title: 'Something went wrong', big: '', line: 'Nothing was charged. Check your connection and try again.', coin: false, button: 'OK' };
+// Restore asks first (Yazan 2026-11-08).
+const ASK_RESTORE: Pop = { kick: 'RESTORE', title: 'Restore purchases?', big: '', line: `We'll check your ${Platform.OS === 'ios' ? 'Apple' : 'Google'} account for MedNova Unlimited and the Sovereign package and add them to this MedNova account.`, coin: false, button: 'Restore', confirm: true };
 const SOON: Pop = { kick: 'COMING SOON', title: 'Not open yet', big: '', line: 'Buying opens when MedNova is in the App Store and Google Play.', coin: false, button: 'OK' };
 
 function boughtPop(id: string): Pop {
@@ -154,7 +156,7 @@ export function StorePage() {
         <Kicker inSec>Packages</Kicker>
         <SovereignCard t={t} busy={busy === SOVEREIGN_PACK.id} onBuy={() => run(SOVEREIGN_PACK.id, () => buy(SOVEREIGN_PACK.id))} />
 
-        <Pressable onPress={() => run('restore', restore)} hitSlop={u(10)} style={s.restore} accessibilityRole="button">
+        <Pressable onPress={() => (signedIn ? setPop(ASK_RESTORE) : router.navigate('/auth'))} hitSlop={u(10)} style={s.restore} accessibilityRole="button">
           <Text style={[s.restoreT, { color: t.accent }]}>Restore purchases</Text>
         </Pressable>
         <Text style={[s.foot, { color: c.mute }]}>
@@ -170,7 +172,7 @@ export function StorePage() {
         </Text>
       </InfoScroll>
       <FreeSheets t={t} />
-      <Congrats open={!!pop} title={pop?.title ?? ''} big={pop?.big} kick={pop?.kick} line={pop?.line ?? ''} coin={pop?.coin} button={pop?.button} onClose={() => setPop(null)} />
+      <Congrats open={!!pop} title={pop?.title ?? ''} big={pop?.big} kick={pop?.kick} line={pop?.line ?? ''} coin={pop?.coin} button={pop?.button} alt={pop?.confirm ? 'Cancel' : undefined} onButton={pop?.confirm ? () => { setPop(null); void run('restore', restore); } : undefined} onClose={() => setPop(null)} />
     </Screen>
   );
 }

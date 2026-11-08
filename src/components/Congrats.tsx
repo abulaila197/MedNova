@@ -24,6 +24,8 @@ export function Congrats({
   kick = 'CONGRATULATIONS',
   coin = true,
   button = 'Collect',
+  onButton,
+  alt,
 }: {
   open: boolean;
   tokens?: number;
@@ -34,6 +36,10 @@ export function Congrats({
   kick?: string;
   coin?: boolean;
   button?: string;
+  /** What the main button does, when it isn't just closing (a confirm). */
+  onButton?: () => void;
+  /** A quieter second button under the main one, such as Cancel. */
+  alt?: string;
 }) {
   const t = useTheme();
   if (!open) return null;
@@ -51,11 +57,16 @@ export function Congrats({
           <Text style={[s.h, { color: t.fg }]}>{title}</Text>
           {big === '' ? null : <Text style={[s.big, { color: t.accent }]}>{big ?? `+${tokens} tokens`}</Text>}
           <Text style={[s.p, { color: t.mute }]}>{line}</Text>
-          <Pressable onPress={onClose} accessibilityRole="button" style={{ alignSelf: 'stretch' }}>
+          <Pressable onPress={onButton ?? onClose} accessibilityRole="button" style={{ alignSelf: 'stretch' }}>
             <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.btn}>
               <Text style={[s.btnT, { color: t.onGrad }]}>{button}</Text>
             </LinearGradient>
           </Pressable>
+          {alt ? (
+            <Pressable onPress={onClose} accessibilityRole="button" hitSlop={u(6)} style={s.alt}>
+              <Text style={[s.altT, { color: t.mute }]}>{alt}</Text>
+            </Pressable>
+          ) : null}
         </Animated.View>
       </View>
     </Modal>
@@ -72,4 +83,6 @@ const s = StyleSheet.create({
   p: { fontFamily: F.body, fontSize: u(10.5), lineHeight: u(15), textAlign: 'center', marginTop: u(4), marginBottom: u(14) },
   btn: { height: u(36), borderRadius: 999, alignItems: 'center', justifyContent: 'center' },
   btnT: { fontFamily: F.bodyBold, fontSize: u(12) },
+  alt: { marginTop: u(10), paddingVertical: u(4), paddingHorizontal: u(12) },
+  altT: { fontFamily: F.bodySemi, fontSize: u(11.5) },
 });
