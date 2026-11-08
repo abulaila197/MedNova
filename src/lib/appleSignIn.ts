@@ -26,5 +26,8 @@ export async function appleSignIn() {
   if (!cred.identityToken) throw new Error('Apple sign-in did not finish. Try again.');
   const { error } = await supabase.auth.signInWithIdToken({ provider: 'apple', token: cred.identityToken, nonce: raw });
   if (error) throw error;
+  // Apple rule 5.1.1(v): the server keeps a refresh token so deleting the account can revoke the Apple link. Best
+  // effort: signing in never waits for it or fails because of it.
+  if (cred.authorizationCode) void supabase.functions.invoke('apple-token', { body: { code: cred.authorizationCode } }).catch(() => {});
   return true;
 }
