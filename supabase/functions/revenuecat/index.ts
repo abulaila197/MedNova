@@ -23,6 +23,10 @@ type Event = {
   transaction_id?: string;
   expiration_at_ms?: number | null;
   event_timestamp_ms?: number;
+  cancel_reason?: string;
+  original_transaction_id?: string;
+  transferred_from?: string[];
+  transferred_to?: string[];
 };
 
 const ok = (note = 'ok') => new Response(note, { status: 200 });
@@ -34,9 +38,20 @@ Deno.serve(async (req) => {
   const e = body?.event;
   if (!e?.id || !e.type) return new Response('bad request', { status: 400 });
   if (e.type === 'TEST') return ok('test');
+  if (e.type === 'TRANSFER') return transfer(e);
   if (!UUID.test(e.app_user_id)) return ok('not a MedNova account'); // anonymous RevenueCat ids are never paid out
 
   const product = (e.product_id ?? '').split(':')[0]; // Google adds ":base-plan"
+  // A refund (Apple or Google gave the money back) arrives as CANCELLATION for CUSTOMER_SUPPORT: take it back
+  // (Yazan 2026-11-08). Tokens come off the balance down to 0; Sovereign and its frame go; Unlimited ends now.
+  if (e.type === 'CANCELLATION' && e.cancel_reason === 'CUSTOMER_SUPPORT' && (PACK_TOKENS[product] || product === SOVEREIGN || product === SUBSCRIPTION)) {
+    // The subscription's 500 bonus goes back only with a refund of the first month that paid it.
+    const firstMonth = product === SUBSCRIPTION && (!e.original_transaction_id || e.original_transaction_id === e.transaction_id);
+    const tokens = PACK_TOKENS[product] ?? (product === SOVEREIGN ? 500 : firstMonth ? SUB_BONUS : 0);
+    const { error } = await admin.rpc('refund_purchase', { uid: e.app_user_id, event_id: e.transaction_id ?? e.id, product, tokens });
+    if (error) return new Response(error.message, { status: 500 });
+    return ok('refund');
+  }
   if (e.type === 'NON_RENEWING_PURCHASE' && PACK_TOKENS[product]) {
     // One row per store transaction: a retried webhook hits the same id and is ignored.
     const id = `p${(e.transaction_id ?? e.id).replace(/[^A-Za-z0-9]/g, '')}`.slice(0, 64);
@@ -77,3 +92,32 @@ Deno.serve(async (req) => {
   }
   return ok('ignored');
 });
+
+/**
+ * Restore on a different MedNova account (Yazan 2026-11-08): RevenueCat moves the store purchases from the old app user
+ * to the new one and tells us with TRANSFER. MedNova Unlimited moves (the old account loses it, no second sign-up
+ * bonus); Sovereign and its frame are added to the new account if the old one bought them, without the 500 tokens again.
+ */
+async function transfer(e: Event) {
+  const to = (e.transferred_to ?? []).find((x) => UUID.test(x));
+  const from = (e.transferred_from ?? []).filter((x) => UUID.test(x) && x !== to);
+  if (!to || !from.length) return ok('transfer: nothing to move');
+  const now = new Date().toISOString();
+  const { data: subs, error: se } = await admin.from('subscriptions').select('user_id, product, expires_at, will_renew').in('user_id', from).gt('expires_at', now);
+  if (se) return new Response(se.message, { status: 500 });
+  const best = (subs ?? []).sort((a: { expires_at: string }, b: { expires_at: string }) => String(b.expires_at).localeCompare(String(a.expires_at)))[0];
+  if (best) {
+    const { error } = await admin.from('subscriptions').upsert({ user_id: to, product: best.product, expires_at: best.expires_at, will_renew: best.will_renew, updated_at: now });
+    if (error) return new Response(error.message, { status: 500 });
+    const { error: off } = await admin.from('subscriptions').update({ expires_at: now, will_renew: false, updated_at: now }).in('user_id', from).gt('expires_at', now);
+    if (off) return new Response(off.message, { status: 500 });
+  }
+  // Only a bought Sovereign travels (a store purchase row), not one an admin gave.
+  const { data: sov, error: ve } = await admin.from('wallet_ledger').select('id').in('user_id', from).eq('reason', `pack:${SOVEREIGN}`).limit(1);
+  if (ve) return new Response(ve.message, { status: 500 });
+  if (sov?.length) {
+    const { error } = await admin.from('style_owned').upsert([{ user_id: to, item: 'robot:sovereign' }, { user_id: to, item: 'frame:sovereign' }], { onConflict: 'user_id,item', ignoreDuplicates: true });
+    if (error) return new Response(error.message, { status: 500 });
+  }
+  return ok(`transfer: ${best ? 'unlimited ' : ''}${sov?.length ? 'sovereign' : ''}`.trim());
+}
