@@ -348,7 +348,13 @@ export const TERMS: Section[] = [
     plain: 'Buying is *optional;* ads are only the ones you choose.',
     legal: [
       { p: 'Token packs and MedNova Unlimited are sold through Google Play or the App Store and follow their payment, refund and cancellation rules. MedNova Unlimited is a monthly subscription that renews automatically until you cancel it in your Google Play or App Store subscriptions; cancelling stops the next renewal, and you keep Unlimited until the paid month ends. Prices are shown in the store before you pay.' },
-      { p: 'Tokens and items you buy are a licence to use them in MedNova. They have no money value and are not refundable except as the store or the law requires. If a purchase does not arrive, write to us and we will fix it.' },
+      { p: 'Tokens and items you buy are a licence to use them in MedNova. They have no money value. If a purchase does not arrive, write to us and we will fix it.' },
+      // Refund rules (Yazan 2026-11-08). They match what the revenuecat function does when a store refunds.
+      { b: 'Refunds: who decides.', p: 'Refunds go through Google Play or the App Store and follow their rules. On the App Store, Apple decides every refund request. On Google Play you can ask Google for a refund within 48 hours of buying; after that, write to us.' },
+      { b: 'Token packs.', p: 'We accept a refund request sent to us only if none of the tokens from that pack have been spent. If a store refunds a token pack, the same number of tokens is taken off your balance (it never goes below zero).' },
+      { b: 'Sovereign package.', p: 'We accept a refund request sent to us only if its 500 tokens have not been spent. If the package is refunded, Sovereign and its frame are removed from your account and you go back to Bolt and the normal frame.' },
+      { b: 'MedNova Unlimited.', p: 'You can cancel any time in your Google Play or App Store subscriptions. You keep Unlimited until the paid month ends, and there is no refund for a month that has already started. If a store refunds a month, Unlimited ends straight away; if it was your first month, the 500 welcome tokens are taken off your balance too.' },
+      { b: 'Your rights.', p: 'Nothing in these refund rules limits the rights the law gives you where you live.' },
       { p: 'Rewarded ads appear only when you tap "Watch an ad". A reward is paid once Google confirms the ad was watched to the end, up to the daily limits shown in the app.' },
     ],
   },
