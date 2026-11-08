@@ -1,0 +1,531 @@
+import * as Clipboard from 'expo-clipboard';
+import { Image, type ImageSource } from 'expo-image';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useEffect, useRef, useState } from 'react';
+import { Pressable, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { Text, TextInput } from '@/components/AppText';
+
+import { useBalance } from '@/components/LevelBadge';
+import { Sheet } from '@/components/Sheet';
+import { supabase } from '@/lib/supabase';
+import { PlayerFace } from '@/features/style/Frame';
+import { PlayerTitle } from '@/features/style/PlayerTitle';
+import { useAccount } from '@/state/account';
+import { useTheme } from '@/state/app';
+import { OfflineLine } from '@/components/OfflineLine';
+import { agoText } from '@/lib/copies';
+import { blockUser, type FriendProfile, loadFriendProfile, loadFriends, removeFriend, type RequestResult, requestFriend, seenLabel, useFriends } from '@/state/friends';
+import { u } from '@/theme/scale';
+import { F, type Theme } from '@/theme/tokens';
+import { shareText } from '@/lib/share';
+
+import { TokenCoin } from '@/components/PulseStar';
+import { GAMES } from '@/data/games';
+import { LOAD } from '@/features/loading/configs';
+import { CardViewer } from '@/features/cards/CollectionPage';
+import { DECK } from '@/features/cards/deck';
+import { MECHS } from '@/features/chests/data';
+import { robotOf } from '@/features/shop/robots';
+import { gameDef } from '@/games/shell/registry';
+import { call, watchAlwaysGet, watchAlwaysSet } from '@/online/api';
+import { challenge, watch } from '@/online/invites';
+
+import { Name, openChallenge, openReport, useFriendSheet } from './Friends';
+
+export const closeFriendSheet = () => useFriendSheet.setState({ open: null, friend: null, code: '', target: null });
+const close = closeFriendSheet;
+const ALLOWED = /[^A-HJ-NP-Z2-9]/g; // friend codes skip 0, O, 1 and I
+
+const SAY: Record<RequestResult | 'error', string> = {
+  sent: 'Request sent. You’re friends once they accept.',
+  accepted: 'They had asked you too, so you’re friends now.',
+  already: 'You’re already friends.',
+  pending: 'You already sent them a request.',
+  self: 'That’s your own code.',
+  not_found: 'No player has that code.',
+  unavailable: 'You can’t send a request to that player.',
+  error: 'Couldn’t reach the server. Check your connection.',
+};
+
+/** The Add friend sheet and the remove/block sheet (FR1-FR3). Lives in the app layout so it covers the dock. */
+export function FriendSheets() {
+  const open = useFriendSheet((x) => x.open);
+  return (
+    // #22 (2026-10-31): these sheets change height after they open (the profile loads, Challenge swaps in the game
+    // grid); Sheet now fades in on Android (safeEnter), so their buttons and cards take taps there.
+    <Sheet open={!!open} onClose={close}>
+      {open === 'add' ? <AddFriend /> : open === 'menu' ? <FriendMenu /> : open === 'report' ? <ReportPlayer /> : open === 'profile' ? <FriendProfileSheet /> : open === 'challenge' ? <ChallengeGrid /> : null}
+    </Sheet>
+  );
+}
+
+/** "Friend pass" look (Yazan's pick): your code on an ID pass with Copy and Share link, then 6 boxes and Send request. */
+function AddFriend() {
+  const t = useTheme();
+  const profile = useAccount((a) => a.profile);
+  const { level } = useBalance();
+  const start = useFriendSheet((x) => x.code);
+  const [code, setCode] = useState(start.toUpperCase().replace(ALLOWED, '').slice(0, 6));
+  const [copied, setCopied] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [msg, setMsg] = useState<RequestResult | 'error' | null>(null);
+  const input = useRef<TextInput>(null);
+  useEffect(() => {
+    if (!copied) return;
+    const id = setTimeout(() => setCopied(false), 1500);
+    return () => clearTimeout(id);
+  }, [copied]);
+  if (!profile) return null;
+  const mine = profile.friend_code;
+  const link = `mednova://add/${mine}`;
+  const ink = '#151a3d';
+  const send = async () => {
+    setBusy(true);
+    setMsg(null);
+    try {
+      const r = await requestFriend(code);
+      setMsg(r);
+      if (r === 'sent' || r === 'accepted') setCode('');
+    } catch {
+      setMsg('error');
+    }
+    setBusy(false);
+  };
+  const good = msg === 'sent' || msg === 'accepted';
+  return (
+    <>
+      <Text style={[s.k, { color: t.mute }]}>YOUR FRIEND CODE</Text>
+      <LinearGradient colors={['#eef1ff', '#cfd6f3']} start={{ x: 0, y: 0 }} end={{ x: 0.6, y: 1 }} style={s.pass}>
+        <View style={[s.slot, { backgroundColor: '#9aa3c9' }]} />
+        <View style={s.idr}>
+          <View style={s.face}>
+            <PlayerFace slug={profile.avatar} size={u(40)} userId={profile.id} still />
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={[s.idN, { color: ink }]} numberOfLines={1}>{`Dr. ${profile.display_name}`}</Text>
+            <Text style={[s.idS, { color: '#4b527a' }]}>{`@${profile.username.toUpperCase()} · LEVEL ${level}`}</Text>
+          </View>
+        </View>
+        <Text style={[s.code, { color: ink }]} accessibilityLabel={`Your friend code ${mine.split('').join(' ')}`}>{`${mine.slice(0, 3)} · ${mine.slice(3)}`}</Text>
+        <View style={[s.strip, { backgroundColor: ink }]}>
+          <Text style={[s.stripT, { color: t.accent }]}>MEDNOVA · FRIEND PASS</Text>
+        </View>
+      </LinearGradient>
+      <View style={s.row}>
+        <Pressable
+          style={[s.gh, { borderColor: t.panelLine }]}
+          onPress={() => Clipboard.setStringAsync(mine).then(() => setCopied(true))}
+          accessibilityRole="button">
+          <Text style={[s.ghT, { color: t.fg }]}>{copied ? 'Copied' : 'Copy'}</Text>
+        </Pressable>
+        <Pressable
+          style={[s.gh, { borderColor: t.panelLine }]}
+          onPress={() => shareText(`Add me on MedNova: ${link}\nOr type my friend code: ${mine}`)}
+          accessibilityRole="button">
+          <Text style={[s.ghT, { color: t.fg }]}>Share link</Text>
+        </Pressable>
+      </View>
+      <Text style={[s.k, { color: t.mute, marginTop: u(4) }]}>ADD A FRIEND</Text>
+      <Pressable onPress={() => input.current?.focus()} style={s.boxes} accessibilityLabel="Friend code">
+        {Array.from({ length: 6 }, (_, i) => (
+          <View key={i} style={[s.box, { backgroundColor: t.panel2, borderColor: code[i] ? 'rgba(111,214,255,0.5)' : t.panelLine }]}>
+            <Text style={[s.boxT, { color: t.fg }]}>{code[i] ?? ''}</Text>
+          </View>
+        ))}
+        <TextInput
+          ref={input}
+          value={code}
+          onChangeText={(v) => {
+            setCode(v.toUpperCase().replace(ALLOWED, '').slice(0, 6));
+            setMsg(null);
+          }}
+          autoCapitalize="characters"
+          autoCorrect={false}
+          maxLength={6}
+          style={s.hidden}
+          accessibilityLabel="Type a friend code"
+        />
+      </Pressable>
+      {msg ? <Text style={[s.msg, { color: good ? t.accent : t.mute }]}>{SAY[msg]}</Text> : null}
+      <Pressable disabled={code.length < 6 || busy} onPress={send} accessibilityRole="button" style={{ opacity: code.length < 6 ? 0.5 : 1 }}>
+        <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.btn}>
+          <Text style={[s.btnT, { color: t.onGrad }]}>{busy ? 'Sending…' : 'Send request'}</Text>
+        </LinearGradient>
+      </Pressable>
+    </>
+  );
+}
+
+/** Tap a friend's name: Remove friend or Block (FR3). For your own pending request: Cancel request. */
+function FriendMenu() {
+  const t = useTheme();
+  const f = useFriendSheet((x) => x.friend);
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState(false);
+  if (!f) return null;
+  const when = f.kind === 'outgoing' ? 'REQUEST SENT' : seenLabel(f.last_seen);
+  const run = async (fn: () => Promise<void>) => {
+    setBusy(true);
+    setErr(false);
+    try {
+      await fn();
+      close();
+    } catch {
+      setErr(true);
+      setBusy(false);
+    }
+  };
+  return (
+    <>
+      <View style={s.mh}>
+        <PlayerFace slug={f.avatar} size={u(46)} userId={f.id} />
+        <View>
+          <Name t={t} f={f} size={19} />
+          <PlayerTitle userId={f.id} size={11} />
+          <Text style={[s.mhS, { color: when === 'ONLINE' ? '#7be0a8' : t.mute }]}>{when}</Text>
+        </View>
+      </View>
+      {f.kind === 'outgoing' ? (
+        <Act t={t} title="Cancel request" note="They won’t see it any more. You can send a new one later." onPress={() => run(() => removeFriend(f.id))} disabled={busy} />
+      ) : (
+        <Act t={t} title="Remove friend" note={`Takes ${f.display_name} off both lists. They can send a new request later.`} onPress={() => run(() => removeFriend(f.id))} disabled={busy} />
+      )}
+      <Act t={t} red title={`Block ${f.display_name}`} note="Also stops their requests and challenges. Undo any time under Blocked players on your Profile." onPress={() => run(() => blockUser(f.id))} disabled={busy} />
+      <Act t={t} title={`Report ${f.display_name}`} note="Tell us what happened. Reports are private." onPress={() => openReport({ id: f.id, name: f.display_name, avatar: f.avatar })} disabled={busy} />
+      {err ? <Text style={[s.msg, { color: t.error }]}>Couldn’t reach the server. Check your connection.</Text> : null}
+      <Pressable onPress={close} accessibilityRole="button">
+        <Text style={[s.cancel, { color: t.mute }]}>Cancel</Text>
+      </Pressable>
+    </>
+  );
+}
+
+/**
+ * #85 (Yazan 2026-10-26, slide-up sheet): a friend's face, level, tokens and characters, with Challenge or Watch;
+ * Remove, Block and Report sit at the bottom. Any other player (pick B) gets the same sheet without tokens,
+ * with Add friend (or Accept) instead of Challenge, and no Remove.
+ */
+/** 23 (Yazan 2026-11-04): a sheet's list stops at 75% of the screen, so on a big-text phone it never covers the header. */
+function useSheetMax(design: number) {
+  const { height } = useWindowDimensions();
+  return Math.min(u(design), height * 0.75 - u(40));
+}
+
+function FriendProfileSheet() {
+  const t = useTheme();
+  const maxH = useSheetMax(560);
+  const hint = useFriendSheet((x) => x.friend);
+  const [p, setP] = useState<FriendProfile | null | 'error'>(null);
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState(false);
+  const [view, setView] = useState<FriendCard | null>(null);
+  useEffect(() => {
+    if (!hint) return;
+    let on = true;
+    loadFriendProfile(hint.id)
+      .then((r) => on && setP(r ?? 'error'))
+      .catch(() => on && setP('error'));
+    return () => {
+      on = false;
+    };
+  }, [hint]);
+  const ready = p && p !== 'error' ? p : null;
+  // What the server sent wins over what the opener knew (a leaderboard row has no face or @username).
+  const f = hint && ready ? { ...hint, username: ready.username, display_name: ready.display_name, avatar: ready.avatar, last_seen: ready.last_seen, kind: ready.relation } : hint;
+  const friend = f?.kind === 'friend';
+  const live = useFriends((x) => (f && friend ? x.playing[f.id] : undefined));
+  const offAt = useFriends((x) => x.savedAt);
+  const off = offAt != null;
+  // #16 (Always allow): whether this friend may watch my matches without asking, with a switch to turn it off.
+  const [always, setAlways] = useState(false);
+  const fid = f?.id;
+  useEffect(() => {
+    if (!fid || !friend) return;
+    let on = true;
+    watchAlwaysGet(fid)
+      .then((x) => on && setAlways(!!x))
+      .catch(() => {});
+    return () => {
+      on = false;
+    };
+  }, [fid, friend]);
+  if (!f) return null;
+  // Offline nobody shows ONLINE (#59): the time they were last seen instead.
+  const when = !friend ? null : live ? 'IN A MATCH' : off ? (f.last_seen ? `LAST SEEN ${agoText(Date.parse(f.last_seen)).toUpperCase()}` : 'NOT SEEN YET') : seenLabel(f.last_seen);
+  const run = async (fn: () => Promise<void>, stay?: boolean) => {
+    setBusy(true);
+    setErr(false);
+    try {
+      await fn();
+      if (!stay) close();
+    } catch {
+      setErr(true);
+    }
+    setBusy(false);
+  };
+  const chars = ready?.characters ?? [];
+  const add = () =>
+    run(async () => {
+      await call('request_friend_id', { other: f.id });
+      await loadFriends();
+      setP((x) => (x && x !== 'error' ? { ...x, relation: x.relation === 'incoming' ? 'friend' : 'outgoing' } : x));
+    }, true);
+  const main = friend
+    ? { label: live ? 'Watch their match' : `Challenge ${f.display_name}`, go: () => (live ? run(async () => void (await watch(f.id, live.game, f.display_name))) : openChallenge(f)) }
+    : f.kind === 'incoming'
+      ? { label: `Accept ${f.display_name}’s friend request`, go: add }
+      : f.kind === 'outgoing'
+        ? { label: 'Friend request sent', go: null }
+        : { label: `Add ${f.display_name} as a friend`, go: add };
+
+  return (
+    <ScrollView style={{ maxHeight: maxH }} contentContainerStyle={{ gap: u(10), paddingTop: u(8) }} showsVerticalScrollIndicator={false}>
+      <View style={s.ph}>
+        <PlayerFace slug={f.avatar} size={u(64)} userId={f.id} />
+        <View style={{ flex: 1, minWidth: 0, gap: u(2) }}>
+          <Name t={t} f={f} size={21} />
+          <PlayerTitle userId={f.id} size={11} />
+          {f.username ? <Text style={[s.mhS, { color: when === 'ONLINE' || live ? '#7be0a8' : t.mute }]}>{when ? `@${f.username.toUpperCase()} · ${when}` : `@${f.username.toUpperCase()}`}</Text> : null}
+        </View>
+      </View>
+      <View style={s.stats}>
+        <Stat t={t} label="LEVEL" value={ready ? String(ready.level) : '–'} />
+        {ready && ready.tokens == null ? null : <Stat t={t} label="TOKENS" value={ready?.tokens != null ? ready.tokens.toLocaleString() : '–'} coin />}
+        <Stat t={t} label="CHARACTERS" value={ready ? String(chars.length) : '–'} />
+      </View>
+      {p === 'error' ? <Text style={[s.msg, { color: t.mute }]}>Couldn’t load their profile. Check your connection.</Text> : null}
+      {chars.length ? (
+        <>
+          <Text style={[s.k, { color: t.kick }]}>THEIR CHARACTERS</Text>
+          <View style={s.chars}>
+            {chars.map((c) => {
+              const card = cardOf(c);
+              return card ? (
+                <Pressable key={c} onPress={() => setView(card)} style={[s.card, { borderColor: t.panelLine }]} accessibilityRole="button" accessibilityLabel={`View ${card.name}'s card`}>
+                  <Image source={card.card} style={s.cardImg} contentFit="cover" transition={0} />
+                </Pressable>
+              ) : null;
+            })}
+          </View>
+        </>
+      ) : null}
+      {ready?.since ? <Text style={[s.since, { color: t.mute }]}>{`Friends since ${new Date(ready.since).toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' })}`}</Text> : null}
+      <OfflineLine at={offAt} style={{ marginTop: 0 }} />
+      <Pressable disabled={busy || off || !main.go || !ready} onPress={main.go ?? undefined} style={!main.go || off ? { opacity: off ? 0.4 : 0.55 } : null} accessibilityRole="button">
+        <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.btn}>
+          <Text style={[s.btnT, { color: t.onGrad }]}>{main.label}</Text>
+        </LinearGradient>
+      </Pressable>
+      {friend && always ? (
+        <Act
+          t={t}
+          title="Stop Always allow"
+          note={`${f.display_name} can watch your matches without asking. Turn it off so they ask first.`}
+          onPress={() => run(async () => {
+            await watchAlwaysSet(f.id, false);
+            setAlways(false);
+          }, true)}
+          disabled={busy}
+        />
+      ) : null}
+      {friend ? <Act t={t} title="Remove friend" note={`Takes ${f.display_name} off both lists. They can send a new request later.`} onPress={() => run(() => removeFriend(f.id))} disabled={busy} /> : null}
+      <Act t={t} red title={`Block ${f.display_name}`} note="Also stops their requests and challenges. Undo any time under Blocked players on your Profile." onPress={() => run(() => blockUser(f.id))} disabled={busy} />
+      <Act t={t} title={`Report ${f.display_name}`} note="Tell us what happened. Reports are private." onPress={() => openReport({ id: f.id, name: f.display_name, avatar: f.avatar })} disabled={busy} />
+      {err ? <Text style={[s.msg, { color: t.error }]}>Couldn’t reach the server. Check your connection.</Text> : null}
+      <Pressable onPress={close} accessibilityRole="button">
+        <Text style={[s.cancel, { color: t.mute }]}>Close</Text>
+      </Pressable>
+      <CardViewer card={view} onClose={() => setView(null)} />
+    </ScrollView>
+  );
+}
+
+type FriendCard = { card: ImageSource; name: string; title: string };
+/** A character's collectable card (Yazan 2026-10-26: their characters show as cards, tap to view): originals, Nova Mechs or shop robots. */
+function cardOf(slug: string): FriendCard | null {
+  const d = DECK.find((x) => x.key === slug);
+  if (d) return { card: d.art as ImageSource, name: d.name, title: `${d.stars}-star original` };
+  const m = MECHS.find((x) => x.key === slug) ?? robotOf(slug);
+  return m ? { card: m.card, name: m.name, title: m.title } : null;
+}
+
+function Stat({ t, label, value, coin }: { t: Theme; label: string; value: string; coin?: boolean }) {
+  return (
+    <View style={[s.stat, { backgroundColor: t.panel2, borderColor: t.panelLine }]}>
+      <View style={s.statV}>
+        {coin ? <TokenCoin size={u(14)} progress={0} track="transparent" /> : null}
+        <Text style={[s.statN, { color: t.fg }]}>{value}</Text>
+      </View>
+      <Text style={[s.statL, { color: t.mute }]}>{label}</Text>
+    </View>
+  );
+}
+
+/** #47 (Yazan 2026-10-26, photo grid): pick any game; its room opens with the usual settings and the invite goes out. */
+function ChallengeGrid() {
+  const t = useTheme();
+  const f = useFriendSheet((x) => x.friend);
+  const [busy, setBusy] = useState<string | null>(null);
+  const [err, setErr] = useState(false);
+  const maxH = useSheetMax(470);
+  if (!f) return null;
+  const pick = async (key: string) => {
+    setBusy(key);
+    setErr(false);
+    try {
+      const def = gameDef(key);
+      const opts = def?.setup.online ?? [];
+      const settings: Record<string, unknown> = Object.fromEntries(opts.map((o) => [o.key, o.initial]));
+      if (def?.teams?.online) settings.teams = 0;
+      const r = await challenge(f.id, key, settings);
+      if (r === 'sent') close();
+      else setErr(true);
+    } catch {
+      setErr(true);
+    }
+    setBusy(null);
+  };
+  return (
+    <>
+      <Text style={[s.k, { color: t.kick }]}>{`CHALLENGE ${f.display_name.toUpperCase()}`}</Text>
+      <Text style={[s.since, { color: t.mute, textAlign: 'left' }]}>Pick a game. Its room opens with the usual settings, which you can still change in the room.</Text>
+      <ScrollView style={{ maxHeight: maxH }} contentContainerStyle={s.grid} showsVerticalScrollIndicator={false}>
+        {GAMES.map((g) => {
+          const photo = LOAD[g.key]?.photo;
+          return (
+            <Pressable key={g.key} disabled={!!busy} onPress={() => pick(g.key)} style={[s.tileG, { borderColor: t.panelLine, backgroundColor: t.panel2 }, busy && busy !== g.key && { opacity: 0.5 }]} accessibilityRole="button" accessibilityLabel={`Challenge with ${g.lead} ${g.em}`}>
+              {photo ? <Image source={photo} style={StyleSheet.absoluteFill} contentFit="cover" transition={0} /> : null}
+              <LinearGradient colors={['rgba(5,6,16,0)', 'rgba(5,6,16,0.92)']} start={{ x: 0, y: 0.35 }} end={{ x: 0, y: 1 }} style={StyleSheet.absoluteFill} />
+              <View style={s.tileT}>
+                <Text style={[s.tileL, { color: '#fff' }]} numberOfLines={1}>{g.lead}</Text>
+                <Text style={[s.tileE, { color: t.accent }]} numberOfLines={1}>{busy === g.key ? 'Opening…' : g.em}</Text>
+              </View>
+            </Pressable>
+          );
+        })}
+      </ScrollView>
+      {err ? <Text style={[s.msg, { color: t.error }]}>Couldn’t open the room. Check your connection.</Text> : null}
+      <Pressable onPress={close} accessibilityRole="button">
+        <Text style={[s.cancel, { color: t.mute }]}>Cancel</Text>
+      </Pressable>
+    </>
+  );
+}
+
+const REASONS = ['Rude name', 'Abusive chat', 'Cheating', 'Other'] as const;
+
+/** Report a player (Session 4, look "Reason chips"): pick a reason, add a note if you like, Send. Goes to the Admin reports. */
+function ReportPlayer() {
+  const t = useTheme();
+  const p = useFriendSheet((x) => x.target);
+  const [why, setWhy] = useState<(typeof REASONS)[number] | null>(null);
+  const [note, setNote] = useState('');
+  const [state, setState] = useState<'idle' | 'busy' | 'sent' | 'error'>('idle');
+  if (!p) return null;
+  const send = async () => {
+    if (!why) return;
+    setState('busy');
+    const { error } = await supabase.rpc('report_player', { target: p.id, reason: why, note: note.trim() });
+    setState(error ? 'error' : 'sent');
+  };
+  const line = { borderColor: t.panelLine };
+  if (state === 'sent')
+    return (
+      <>
+        <Text style={[s.idN, { color: t.fg, textAlign: 'center' }]}>Thanks, we got it.</Text>
+        <Text style={[s.msg, { color: t.mute }]}>{`We’ll look into it. ${p.name} isn’t told who reported them.`}</Text>
+        <Pressable onPress={close} accessibilityRole="button">
+          <Text style={[s.cancel, { color: t.mute }]}>Close</Text>
+        </Pressable>
+      </>
+    );
+  return (
+    <>
+      <View style={s.mh}>
+        <PlayerFace slug={p.avatar} size={u(34)} userId={p.id} still />
+        <Text style={[s.idN, { color: t.fg }]}>{`Report ${p.name}`}</Text>
+      </View>
+      <Text style={[s.k, { color: t.kick }]}>WHAT HAPPENED?</Text>
+      <View style={s.chips}>
+        {REASONS.map((r) => {
+          const on = why === r;
+          return (
+            <Pressable key={r} onPress={() => setWhy(r)} style={[s.chip, line, on && { borderColor: t.accent, backgroundColor: t.chip }]} accessibilityRole="button" accessibilityState={{ selected: on }}>
+              <Text style={[s.chipT, { color: on ? t.fg : t.mute }]}>{r}</Text>
+            </Pressable>
+          );
+        })}
+      </View>
+      <TextInput value={note} onChangeText={setNote} placeholder="Add a note (optional)" placeholderTextColor={t.mute} maxLength={500} multiline style={[s.note, line, { color: t.fg }]} />
+      {state === 'error' ? <Text style={[s.msg, { color: t.error }]}>Couldn’t send. Check your connection.</Text> : null}
+      <Pressable onPress={send} disabled={!why || state === 'busy'} accessibilityRole="button">
+        <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={[s.btn, !why && { opacity: 0.45 }]}>
+          <Text style={[s.btnT, { color: t.onGrad }]}>{state === 'busy' ? 'Sending…' : 'Send report'}</Text>
+        </LinearGradient>
+      </Pressable>
+      <Pressable onPress={close} accessibilityRole="button">
+        <Text style={[s.cancel, { color: t.mute }]}>Cancel</Text>
+      </Pressable>
+    </>
+  );
+}
+
+function Act({ t, title, note, red, onPress, disabled }: { t: Theme; title: string; note: string; red?: boolean; onPress: () => void; disabled?: boolean }) {
+  const c = red ? t.error : t.fg;
+  // Offline these all need the server: greyed out (#59).
+  const off = useFriends((x) => x.savedAt != null);
+  return (
+    <Pressable onPress={onPress} disabled={disabled || off} style={[s.act, { borderColor: red ? 'rgba(199,54,70,0.5)' : t.panelLine }, off && { opacity: 0.4 }]} accessibilityRole="button">
+      <Text style={[s.actT, { color: c }]}>{title}</Text>
+      <Text style={[s.actS, { color: t.mute }]}>{note}</Text>
+    </Pressable>
+  );
+}
+
+const s = StyleSheet.create({
+  k: { fontFamily: F.mono, fontSize: u(7.5), letterSpacing: u(1.4), marginTop: u(4) },
+  pass: { borderRadius: u(16), paddingTop: u(16), paddingHorizontal: u(14), overflow: 'hidden' },
+  slot: { position: 'absolute', top: u(6), left: '50%', width: u(34), height: u(5), marginLeft: u(-17), borderRadius: u(3) },
+  idr: { flexDirection: 'row', alignItems: 'center', gap: u(10) },
+  face: { borderRadius: u(22), borderWidth: u(2), borderColor: '#fff' },
+  idN: { fontFamily: F.display, fontSize: u(19), lineHeight: u(22) },
+  idS: { fontFamily: F.mono, fontSize: u(7), letterSpacing: u(1) },
+  code: { fontFamily: F.mono, fontSize: u(24), letterSpacing: u(3), textAlign: 'center', marginTop: u(10), marginBottom: u(8) },
+  strip: { marginHorizontal: u(-14), paddingVertical: u(5) },
+  stripT: { fontFamily: F.mono, fontSize: u(7), letterSpacing: u(2), textAlign: 'center' },
+  row: { flexDirection: 'row', gap: u(8) },
+  gh: { flex: 1, height: u(28), borderRadius: u(10), borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
+  ghT: { fontFamily: F.bodySemi, fontSize: u(10) },
+  boxes: { flexDirection: 'row', gap: u(6) },
+  box: { flex: 1, height: u(34), borderRadius: u(9), borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
+  boxT: { fontFamily: F.mono, fontSize: u(16) },
+  hidden: { position: 'absolute', left: 0, right: 0, top: 0, bottom: 0, opacity: 0.01, color: 'transparent' },
+  msg: { fontFamily: F.body, fontSize: u(9.5), textAlign: 'center' },
+  btn: { height: u(34), borderRadius: u(12), alignItems: 'center', justifyContent: 'center' },
+  btnT: { fontFamily: F.bodyBold, fontSize: u(11) },
+  mh: { flexDirection: 'row', alignItems: 'center', gap: u(10), paddingBottom: u(4) },
+  mhS: { marginTop: u(3), fontFamily: F.mono, fontSize: u(7.5), letterSpacing: u(1.05) },
+  act: { borderWidth: 1, borderRadius: u(14), paddingVertical: u(10), paddingHorizontal: u(12) },
+  actT: { fontFamily: F.bodySemi, fontSize: u(12) },
+  actS: { marginTop: u(2), fontFamily: F.body, fontSize: u(9.5), lineHeight: u(13) },
+  cancel: { textAlign: 'center', fontFamily: F.bodySemi, fontSize: u(11), paddingTop: u(2) },
+  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: u(6) },
+  ph: { flexDirection: 'row', alignItems: 'center', gap: u(12) },
+  stats: { flexDirection: 'row', gap: u(8) },
+  stat: { flex: 1, borderWidth: 1, borderRadius: u(14), paddingVertical: u(9), alignItems: 'center', gap: u(3) },
+  statV: { flexDirection: 'row', alignItems: 'center', gap: u(4) },
+  statN: { fontFamily: F.display, fontSize: u(18), lineHeight: u(21) },
+  statL: { fontFamily: F.mono, fontSize: u(7), letterSpacing: u(1.2) },
+  chars: { flexDirection: 'row', flexWrap: 'wrap', gap: u(8) },
+  card: { width: u(54), aspectRatio: 480 / 860, borderRadius: u(6), borderWidth: 1, overflow: 'hidden' },
+  cardImg: { width: '100%', height: '100%' },
+  since: { fontFamily: F.body, fontSize: u(9.5), textAlign: 'center' },
+  grid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', rowGap: u(8) },
+  tileG: { width: '48.5%', aspectRatio: 1.25, borderRadius: u(14), borderWidth: 1, overflow: 'hidden', justifyContent: 'flex-end' },
+  tileT: { padding: u(9) },
+  tileL: { fontFamily: F.body, fontSize: u(9.5) },
+  tileE: { fontFamily: F.displayItalic, fontSize: u(15), lineHeight: u(18) },
+  chip: { borderWidth: 1, borderRadius: 999, paddingVertical: u(6), paddingHorizontal: u(11) },
+  chipT: { fontFamily: F.bodySemi, fontSize: u(10) },
+  note: { borderWidth: 1, borderRadius: u(12), minHeight: u(52), padding: u(10), fontFamily: F.body, fontSize: u(10.5), textAlignVertical: 'top' },
+});

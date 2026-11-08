@@ -1,0 +1,1932 @@
+{
+ "note": "Answer-balance edits to the Wheels of Chaos bank (session 2 audit). Online play uses supabase/functions/wheels/keys.json (rebuilt from this bank by scripts/build-wheels-function.sh) and takes effect only at the next edge deploy.",
+ "reverse_choice_edits": [
+  {
+   "id": "medicine-reverse-1",
+   "choice": 1,
+   "correct": false,
+   "old": "Which diabetes medication works by stimulating insulin release from the pancreas?",
+   "new": "Which diabetes medication works by stimulating insulin release from the pancreas and can cause low blood sugar?"
+  },
+  {
+   "id": "medicine-reverse-3",
+   "choice": 0,
+   "correct": false,
+   "old": "Which condition presents with a productive cough and fever from lung infection?",
+   "new": "Which condition presents with a productive cough, fever, and crackles over one area of lung from infection?"
+  },
+  {
+   "id": "medicine-reverse-3",
+   "choice": 2,
+   "correct": true,
+   "old": "Which condition presents with sudden shortness of breath, pleuritic chest pain, and an elevated D-dimer?",
+   "new": "Which condition presents with sudden breathlessness, pleuritic chest pain, and a raised D-dimer?"
+  },
+  {
+   "id": "medicine-reverse-9",
+   "choice": 1,
+   "correct": false,
+   "old": "Which joint condition presents with rhomboid-shaped crystals under polarized light?",
+   "new": "Which joint condition presents with rhomboid-shaped, positively birefringent crystals under polarized light in an older adult?"
+  },
+  {
+   "id": "medicine-reverse-9",
+   "choice": 2,
+   "correct": true,
+   "old": "Which joint condition presents with very high white cell counts and low glucose in the joint fluid, requiring urgent treatment?",
+   "new": "Which joint condition presents with very high white cell counts and low glucose in the joint fluid?"
+  },
+  {
+   "id": "medicine-reverse-11",
+   "choice": 2,
+   "correct": false,
+   "old": "Which joint condition is caused by an autoimmune attack on the joints?",
+   "new": "Which joint condition is caused by an autoimmune attack on the joint lining, often in the small hand joints?"
+  },
+  {
+   "id": "medicine-reverse-13",
+   "choice": 3,
+   "correct": false,
+   "old": "Which condition results from narrowed arteries supplying the limbs?",
+   "new": "Which condition results from narrowed arteries supplying the limbs, causing calf pain on walking?"
+  },
+  {
+   "id": "medicine-reverse-16",
+   "choice": 1,
+   "correct": false,
+   "old": "Which condition is a blood clot blocking a lung artery?",
+   "new": "Which condition is a blood clot blocking a lung artery, often after a deep vein thrombosis?"
+  },
+  {
+   "id": "medicine-reverse-19",
+   "choice": 0,
+   "correct": false,
+   "old": "Which acid-base pattern is typically seen in acute hyperventilation from anxiety?",
+   "new": "Which acid-base pattern is typically seen in acute hyperventilation from anxiety or a panic attack?"
+  },
+  {
+   "id": "medicine-reverse-19",
+   "choice": 1,
+   "correct": true,
+   "old": "Which acid-base pattern is typically seen at baseline in a patient with chronic, stable severe COPD?",
+   "new": "Which acid-base pattern is typically seen at baseline in chronic, stable severe COPD?"
+  },
+  {
+   "id": "medicine-reverse-22",
+   "choice": 0,
+   "correct": false,
+   "old": "Which blood test helps diagnose a heart attack by measuring cardiac muscle damage?",
+   "new": "Which blood test helps diagnose a heart attack by measuring a protein released from damaged heart muscle?"
+  },
+  {
+   "id": "medicine-reverse-22",
+   "choice": 1,
+   "correct": true,
+   "old": "Which blood test helps confirm heart failure by measuring a hormone released from stretched heart chambers?",
+   "new": "Which blood test helps confirm heart failure by measuring a hormone from stretched heart chambers?"
+  },
+  {
+   "id": "medicine-reverse-24",
+   "choice": 3,
+   "correct": false,
+   "old": "Which complication of diabetes causes progressive kidney damage?",
+   "new": "Which complication of long-standing diabetes causes progressive kidney damage with protein in the urine?"
+  },
+  {
+   "id": "surgery-reverse-1",
+   "choice": 0,
+   "correct": false,
+   "old": "Which condition presents with pain in the right upper quadrant after fatty meals?",
+   "new": "Which condition presents with pain in the right upper quadrant after fatty meals, sometimes radiating to the shoulder?"
+  },
+  {
+   "id": "surgery-reverse-2",
+   "choice": 0,
+   "correct": true,
+   "old": "Which surgical approach prioritizes rapid control of bleeding and contamination over definitive repair in unstable trauma patients?",
+   "new": "Which approach controls bleeding and contamination first, delaying definitive repair in unstable trauma patients?"
+  },
+  {
+   "id": "surgery-reverse-2",
+   "choice": 2,
+   "correct": false,
+   "old": "Which approach involves a single, complete definitive repair regardless of patient stability?",
+   "new": "Which approach involves a single, complete definitive repair at the first operation regardless of patient stability?"
+  },
+  {
+   "id": "surgery-reverse-3",
+   "choice": 0,
+   "correct": false,
+   "old": "Which catheter is used to monitor urine output after surgery?",
+   "new": "Which catheter is placed in the bladder to monitor urine output after surgery?"
+  },
+  {
+   "id": "surgery-reverse-3",
+   "choice": 2,
+   "correct": true,
+   "old": "Which specific type of closed suction drain is commonly used to collect fluid after surgery?",
+   "new": "Which closed suction drain is commonly used to collect fluid after surgery?"
+  },
+  {
+   "id": "surgery-reverse-6",
+   "choice": 1,
+   "correct": false,
+   "old": "Which condition presents with a slowly forming blood clot in a deep vein?",
+   "new": "Which condition presents with a blood clot in a deep leg vein, causing calf swelling and tenderness after surgery or immobility?"
+  },
+  {
+   "id": "surgery-reverse-8",
+   "choice": 2,
+   "correct": false,
+   "old": "Which condition involves infection spreading rapidly through soft tissue?",
+   "new": "Which condition involves infection spreading rapidly along the fascial planes of soft tissue, needing urgent debridement?"
+  },
+  {
+   "id": "surgery-reverse-9",
+   "choice": 0,
+   "correct": true,
+   "old": "Which physical exam finding, pain on palpation of the right upper quadrant during inspiration, suggests cholecystitis?",
+   "new": "Which finding, pain on right upper quadrant palpation during inspiration, suggests cholecystitis?"
+  },
+  {
+   "id": "surgery-reverse-9",
+   "choice": 1,
+   "correct": false,
+   "old": "Which finding, pain upon sudden release of abdominal pressure, suggests peritoneal irritation?",
+   "new": "Which finding, pain upon sudden release of abdominal pressure, suggests irritation of the peritoneum?"
+  },
+  {
+   "id": "surgery-reverse-11",
+   "choice": 3,
+   "correct": false,
+   "old": "Which type of tube drains air or fluid from around the lungs?",
+   "new": "Which type of tube is inserted between the ribs to drain air or fluid from around the lungs?"
+  },
+  {
+   "id": "surgery-reverse-12",
+   "choice": 1,
+   "correct": true,
+   "old": "Which system classifies trauma-related blood loss into four stages based on vital signs and estimated blood loss?",
+   "new": "Which system classifies trauma blood loss into four classes based on vital signs and estimated loss?"
+  },
+  {
+   "id": "surgery-reverse-12",
+   "choice": 2,
+   "correct": false,
+   "old": "Which system classifies coma severity based on eye, verbal, and motor response?",
+   "new": "Which system classifies coma severity based on eye opening, verbal response, and motor response after head injury?"
+  },
+  {
+   "id": "surgery-reverse-14",
+   "choice": 1,
+   "correct": false,
+   "old": "Which complication involves organs protruding through a wound separation?",
+   "new": "Which complication involves abdominal organs protruding through a complete separation of the wound?"
+  },
+  {
+   "id": "surgery-reverse-14",
+   "choice": 3,
+   "correct": true,
+   "old": "Which common complication after bowel surgery involves temporary, usually self-limited loss of normal bowel motility?",
+   "new": "Which complication after bowel surgery involves a temporary loss of normal bowel motility?"
+  },
+  {
+   "id": "surgery-reverse-17",
+   "choice": 2,
+   "correct": true,
+   "old": "Which physical finding, bruising around the umbilicus, suggests retroperitoneal hemorrhage, such as from severe pancreatitis?",
+   "new": "Which finding, bruising around the umbilicus, suggests retroperitoneal hemorrhage?"
+  },
+  {
+   "id": "surgery-reverse-18",
+   "choice": 1,
+   "correct": false,
+   "old": "Which condition is suggested by gallstones seen on ultrasound without other findings?",
+   "new": "Which condition is suggested by gallstones seen on ultrasound without wall thickening or other findings?"
+  },
+  {
+   "id": "surgery-reverse-19",
+   "choice": 0,
+   "correct": true,
+   "old": "Which process ensures a patient understands and agrees to the risks and benefits of surgery before it happens?",
+   "new": "Which process ensures a patient understands and agrees to a surgery's risks and benefits?"
+  },
+  {
+   "id": "surgery-reverse-19",
+   "choice": 3,
+   "correct": false,
+   "old": "Which process involves monitoring a patient after surgery?",
+   "new": "Which process involves monitoring a patient's vital signs, pain, and wound in the recovery room after surgery?"
+  },
+  {
+   "id": "surgery-reverse-22",
+   "choice": 0,
+   "correct": false,
+   "old": "Which condition involves a blood clot in a vein?",
+   "new": "Which condition involves a blood clot forming in a deep vein, usually of the leg after immobility?"
+  },
+  {
+   "id": "surgery-reverse-25",
+   "choice": 2,
+   "correct": true,
+   "old": "Which condition presents with pain out of proportion to abdominal exam findings, often in a patient with atrial fibrillation or vascular disease?",
+   "new": "Which condition presents with pain out of proportion to exam findings, often in a patient with atrial fibrillation?"
+  },
+  {
+   "id": "surgery-reverse-25",
+   "choice": 3,
+   "correct": false,
+   "old": "Which condition presents with gradually worsening symptoms that improve reliably with antacids?",
+   "new": "Which condition presents with gradually worsening burning upper abdominal symptoms that improve reliably with antacids?"
+  },
+  {
+   "id": "surgery-reverse-28",
+   "choice": 0,
+   "correct": true,
+   "old": "Which complication involves leakage at a surgical connection between two structures, such as segments of bowel?",
+   "new": "Which complication involves leakage at a surgical join between two segments of bowel?"
+  },
+  {
+   "id": "surgery-reverse-28",
+   "choice": 3,
+   "correct": false,
+   "old": "Which complication involves dangerously elevated pressure within the abdomen?",
+   "new": "Which complication involves dangerously elevated pressure within the abdomen that impairs organ function?"
+  },
+  {
+   "id": "surgery-reverse-29",
+   "choice": 1,
+   "correct": false,
+   "old": "Which sign refers to pain with passive hip extension suggesting psoas irritation?",
+   "new": "Which sign refers to pain with passive extension of the right hip, suggesting psoas irritation?"
+  },
+  {
+   "id": "surgery-reverse-29",
+   "choice": 2,
+   "correct": true,
+   "old": "Which physical exam sign refers to right lower quadrant pain elicited by palpating the left lower quadrant, suggesting appendicitis?",
+   "new": "Which sign refers to right lower quadrant pain when the left lower quadrant is palpated?"
+  },
+  {
+   "id": "surgery-reverse-30",
+   "choice": 0,
+   "correct": false,
+   "old": "Which condition involves inflammation of the pancreas?",
+   "new": "Which condition involves inflammation of the pancreas, often after gallstones or heavy alcohol use?"
+  },
+  {
+   "id": "pediatrics-reverse-1",
+   "choice": 3,
+   "correct": false,
+   "old": "Which chronic condition causes reversible airway narrowing triggered by allergens?",
+   "new": "Which chronic condition causes reversible airway narrowing triggered by allergens, exercise, or cold air?"
+  },
+  {
+   "id": "pediatrics-reverse-4",
+   "choice": 0,
+   "correct": true,
+   "old": "Which childhood vasculitis presents with palpable purpura, joint pain, abdominal pain, and possible kidney involvement?",
+   "new": "Which childhood vasculitis presents with palpable purpura, joint pain, and abdominal pain?"
+  },
+  {
+   "id": "pediatrics-reverse-6",
+   "choice": 2,
+   "correct": true,
+   "old": "Which congenital heart defect is the most common cause of cyanotic heart disease presenting in infancy?",
+   "new": "Which congenital heart defect is the most common cause of cyanotic heart disease overall?"
+  },
+  {
+   "id": "pediatrics-reverse-7",
+   "choice": 0,
+   "correct": false,
+   "old": "Which childhood hip condition involves disrupted blood supply to the femoral head?",
+   "new": "Which childhood hip condition involves disrupted blood supply to the femoral head, usually in boys aged 4 to 10?"
+  },
+  {
+   "id": "pediatrics-reverse-7",
+   "choice": 1,
+   "correct": true,
+   "old": "Which adolescent hip condition involves displacement of the femoral head at the growth plate, often associated with obesity?",
+   "new": "Which adolescent hip condition involves slippage of the femoral head at the growth plate?"
+  },
+  {
+   "id": "pediatrics-reverse-10",
+   "choice": 0,
+   "correct": true,
+   "old": "Which type of seizure in young children is associated with a rapid rise in body temperature and usually has a good outcome?",
+   "new": "Which type of seizure in young children occurs with fever and usually has a good outcome?"
+  },
+  {
+   "id": "pediatrics-reverse-10",
+   "choice": 3,
+   "correct": false,
+   "old": "Which serious infection can also cause seizures along with fever and neck stiffness?",
+   "new": "Which serious infection can also cause seizures along with fever, neck stiffness, and a bulging fontanelle?"
+  },
+  {
+   "id": "pediatrics-reverse-11",
+   "choice": 1,
+   "correct": false,
+   "old": "Which condition causes projectile vomiting from a thickened stomach outlet muscle?",
+   "new": "Which condition causes non-bilious projectile vomiting in young infants from a thickened stomach outlet muscle?"
+  },
+  {
+   "id": "pediatrics-reverse-14",
+   "choice": 0,
+   "correct": true,
+   "old": "Which infant condition causes projectile vomiting due to thickening of the muscle at the stomach outlet?",
+   "new": "Which infant condition causes projectile vomiting from a thickened stomach outlet muscle?"
+  },
+  {
+   "id": "pediatrics-reverse-16",
+   "choice": 1,
+   "correct": true,
+   "old": "Which condition is the most common inherited cause of intellectual disability, caused by a trinucleotide repeat expansion?",
+   "new": "Which condition is the most common inherited cause of intellectual disability?"
+  },
+  {
+   "id": "pediatrics-reverse-16",
+   "choice": 2,
+   "correct": false,
+   "old": "Which condition is caused by a single missing X chromosome in females?",
+   "new": "Which condition is caused by a single missing X chromosome in females, with short stature?"
+  },
+  {
+   "id": "pediatrics-reverse-17",
+   "choice": 3,
+   "correct": true,
+   "old": "Which newborn reflex causes the baby to turn toward a touch on the cheek, helping with feeding?",
+   "new": "Which newborn reflex turns the baby's head toward a touch on the cheek?"
+  },
+  {
+   "id": "pediatrics-reverse-18",
+   "choice": 0,
+   "correct": true,
+   "old": "Which common childhood illness, caused by the varicella-zoster virus, produces an itchy, blistering rash?",
+   "new": "Which common childhood illness produces an itchy, blistering rash in crops?"
+  },
+  {
+   "id": "pediatrics-reverse-19",
+   "choice": 0,
+   "correct": true,
+   "old": "Which pediatric condition presents with colicky abdominal pain, drawing the knees up, and currant jelly stools?",
+   "new": "Which condition presents with colicky abdominal pain and currant jelly stools?"
+  },
+  {
+   "id": "pediatrics-reverse-22",
+   "choice": 1,
+   "correct": false,
+   "old": "Which test assesses a newborn's condition in the first minutes after birth?",
+   "new": "Which test assesses a newborn's condition in the first minutes after birth using five simple criteria?"
+  },
+  {
+   "id": "pediatrics-reverse-23",
+   "choice": 1,
+   "correct": true,
+   "old": "Which childhood illness causes several days of high fever followed by a rash that appears as the fever breaks?",
+   "new": "Which childhood illness causes days of high fever, then a rash as the fever breaks?"
+  },
+  {
+   "id": "pediatrics-reverse-23",
+   "choice": 2,
+   "correct": false,
+   "old": "Which childhood illness is most associated with Koplik spots?",
+   "new": "Which childhood illness is most associated with Koplik spots inside the cheeks before the rash?"
+  },
+  {
+   "id": "pediatrics-reverse-25",
+   "choice": 0,
+   "correct": false,
+   "old": "Which vaccine-preventable illness classically causes a thick gray membrane in the throat?",
+   "new": "Which vaccine-preventable illness classically causes a thick gray membrane in the throat and a bull neck?"
+  },
+  {
+   "id": "pediatrics-reverse-29",
+   "choice": 0,
+   "correct": false,
+   "old": "Which acute viral condition in infants causes wheezing, often from RSV?",
+   "new": "Which acute viral condition in infants causes wheezing and feeding difficulty, often from RSV, usually in winter?"
+  },
+  {
+   "id": "pediatrics-reverse-29",
+   "choice": 1,
+   "correct": true,
+   "old": "Which chronic childhood condition involves airway inflammation and wheezing, often triggered by allergens or exercise?",
+   "new": "Which chronic childhood condition causes recurrent wheeze, often triggered by allergens or exercise?"
+  },
+  {
+   "id": "pediatrics-reverse-30",
+   "choice": 0,
+   "correct": false,
+   "old": "Which condition involves thickening of the stomach outlet muscle?",
+   "new": "Which condition involves thickening of the stomach outlet muscle, causing projectile vomiting in young infants?"
+  },
+  {
+   "id": "pediatrics-reverse-30",
+   "choice": 2,
+   "correct": true,
+   "old": "Which serious condition in premature infants involves inflammation and potential death of bowel tissue?",
+   "new": "Which serious condition in premature infants involves inflammation and death of bowel tissue?"
+  },
+  {
+   "id": "obgyn-reverse-5",
+   "choice": 3,
+   "correct": false,
+   "old": "Which condition involves infection following an untreated sexually transmitted infection?",
+   "new": "Which condition involves infection of the upper genital tract following an untreated sexually transmitted infection?"
+  },
+  {
+   "id": "obgyn-reverse-7",
+   "choice": 1,
+   "correct": true,
+   "old": "Which gynecologic cancer is most strongly associated with persistent infection by certain HPV strains?",
+   "new": "Which gynecologic cancer is most strongly linked to persistent infection with high-risk HPV?"
+  },
+  {
+   "id": "obgyn-reverse-7",
+   "choice": 3,
+   "correct": false,
+   "old": "Which gynecologic cancer is most associated with prolonged unopposed estrogen exposure?",
+   "new": "Which gynecologic cancer is most associated with prolonged unopposed estrogen exposure, as in obesity?"
+  },
+  {
+   "id": "obgyn-reverse-8",
+   "choice": 1,
+   "correct": false,
+   "old": "Which condition involves cysts on the ovaries with hormonal imbalance?",
+   "new": "Which condition involves multiple ovarian cysts with hormonal imbalance and irregular periods?"
+  },
+  {
+   "id": "obgyn-reverse-8",
+   "choice": 3,
+   "correct": true,
+   "old": "Which condition can result from an untreated sexually transmitted infection like chlamydia or gonorrhea?",
+   "new": "Which condition can follow an untreated sexually transmitted infection like chlamydia?"
+  },
+  {
+   "id": "obgyn-reverse-9",
+   "choice": 1,
+   "correct": true,
+   "old": "Which first-trimester test combines an ultrasound measurement of fetal neck fluid with blood markers to screen for chromosomal conditions?",
+   "new": "Which first-trimester ultrasound screen measures fluid at the back of the fetal neck?"
+  },
+  {
+   "id": "obgyn-reverse-9",
+   "choice": 3,
+   "correct": false,
+   "old": "Which test monitors fetal heart rate patterns later in pregnancy?",
+   "new": "Which test monitors fetal heart rate patterns later in pregnancy, often with a belt placed on the mother's abdomen?"
+  },
+  {
+   "id": "obgyn-reverse-10",
+   "choice": 1,
+   "correct": false,
+   "old": "Which condition involves severe, persistent nausea and vomiting during pregnancy?",
+   "new": "Which condition involves severe, persistent nausea and vomiting during pregnancy, with weight loss and dehydration?"
+  },
+  {
+   "id": "obgyn-reverse-13",
+   "choice": 3,
+   "correct": false,
+   "old": "Which term describes normal vaginal discharge after delivery?",
+   "new": "Which term describes the normal vaginal discharge of blood and tissue in the weeks after delivery?"
+  },
+  {
+   "id": "obgyn-reverse-14",
+   "choice": 1,
+   "correct": false,
+   "old": "Which type of growth commonly develops on or within an ovary?",
+   "new": "Which type of growth commonly develops on or within an ovary and may be fluid-filled?"
+  },
+  {
+   "id": "obgyn-reverse-14",
+   "choice": 2,
+   "correct": true,
+   "old": "Which type of typically benign growth commonly develops in the muscular wall of the uterus?",
+   "new": "Which benign growth commonly develops in the muscular wall of the uterus?"
+  },
+  {
+   "id": "obgyn-reverse-15",
+   "choice": 0,
+   "correct": true,
+   "old": "Which type of abnormal pregnancy involves abnormal growth of trophoblastic tissue instead of a normal embryo?",
+   "new": "Which abnormal pregnancy involves overgrowth of trophoblastic tissue instead of a normal embryo?"
+  },
+  {
+   "id": "obgyn-reverse-15",
+   "choice": 3,
+   "correct": false,
+   "old": "Which type of pregnancy complication involves the placenta covering the cervix?",
+   "new": "Which type of pregnancy complication involves the placenta covering the cervix, causing painless bleeding?"
+  },
+  {
+   "id": "obgyn-reverse-16",
+   "choice": 0,
+   "correct": false,
+   "old": "Which obstetric emergency involves the umbilical cord slipping ahead of the baby?",
+   "new": "Which obstetric emergency involves the umbilical cord slipping ahead of the baby after the membranes rupture?"
+  },
+  {
+   "id": "obgyn-reverse-16",
+   "choice": 2,
+   "correct": true,
+   "old": "Which obstetric emergency involves the baby's shoulder becoming stuck behind the mother's pubic bone during delivery?",
+   "new": "Which obstetric emergency involves the baby's shoulder becoming stuck behind the pubic bone?"
+  },
+  {
+   "id": "obgyn-reverse-17",
+   "choice": 3,
+   "correct": false,
+   "old": "Which condition involves the placenta separating from the uterine wall?",
+   "new": "Which condition involves the placenta separating early from the uterine wall, often with painful bleeding?"
+  },
+  {
+   "id": "obgyn-reverse-20",
+   "choice": 0,
+   "correct": false,
+   "old": "Which condition involves abnormal placental tissue growth with no normal embryo?",
+   "new": "Which condition involves abnormal placental tissue growth with no normal embryo, often with very high hCG levels?"
+  },
+  {
+   "id": "obgyn-reverse-21",
+   "choice": 0,
+   "correct": false,
+   "old": "Which condition involves endometrial-like tissue growing outside the uterus?",
+   "new": "Which condition involves endometrial-like tissue growing outside the uterus, often causing painful periods?"
+  },
+  {
+   "id": "obgyn-reverse-21",
+   "choice": 1,
+   "correct": true,
+   "old": "Which hormonal condition is commonly associated with irregular periods, excess androgen signs, and ovarian cysts?",
+   "new": "Which hormonal condition is linked to irregular periods, excess androgen signs, and ovarian cysts?"
+  },
+  {
+   "id": "obgyn-reverse-23",
+   "choice": 2,
+   "correct": true,
+   "old": "Which severe variant of preeclampsia is named for hemolysis, elevated liver enzymes, and low platelets?",
+   "new": "Which severe variant of preeclampsia is named for hemolysis, raised liver enzymes, and low platelets?"
+  },
+  {
+   "id": "obgyn-reverse-23",
+   "choice": 3,
+   "correct": false,
+   "old": "Which severe complication of preeclampsia involves seizures?",
+   "new": "Which severe complication of preeclampsia involves new-onset seizures in a pregnant or postpartum woman?"
+  },
+  {
+   "id": "obgyn-reverse-24",
+   "choice": 1,
+   "correct": false,
+   "old": "Which term describes the transitional years leading up to this event?",
+   "new": "Which term describes the transitional years leading up to this event, often with irregular cycles and hot flashes?"
+  },
+  {
+   "id": "obgyn-reverse-26",
+   "choice": 2,
+   "correct": true,
+   "old": "Which condition involves the placenta separating from the uterine wall before delivery, often with painful bleeding?",
+   "new": "Which condition involves the placenta separating from the uterine wall before delivery?"
+  },
+  {
+   "id": "anatomy-reverse-1",
+   "choice": 0,
+   "correct": false,
+   "old": "Which bony cage protects the heart and lungs?",
+   "new": "Which bony cage, formed by ribs and sternum, protects the heart and lungs?"
+  },
+  {
+   "id": "anatomy-reverse-3",
+   "choice": 0,
+   "correct": false,
+   "old": "Which organ lies in the right upper quadrant and produces bile?",
+   "new": "Which organ lies in the right upper quadrant, produces bile, and is the largest solid organ in the abdomen?"
+  },
+  {
+   "id": "anatomy-reverse-3",
+   "choice": 2,
+   "correct": true,
+   "old": "Which intraperitoneal organ lies behind ribs 9–11 on the left and is the most commonly injured in blunt abdominal trauma?",
+   "new": "Which intraperitoneal organ lies behind left ribs 9–11 and is often injured in blunt trauma?"
+  },
+  {
+   "id": "anatomy-reverse-7",
+   "choice": 2,
+   "correct": true,
+   "old": "Which nerve is the largest in the body and divides into the tibial and common fibular nerves near the popliteal fossa?",
+   "new": "Which nerve is the largest in the body and divides into the tibial and common fibular nerves?"
+  },
+  {
+   "id": "anatomy-reverse-7",
+   "choice": 3,
+   "correct": false,
+   "old": "Which nerve passes through the obturator foramen?",
+   "new": "Which nerve passes through the obturator foramen to supply the adductor muscles of the medial thigh?"
+  },
+  {
+   "id": "anatomy-reverse-11",
+   "choice": 3,
+   "correct": false,
+   "old": "Which venous channel carries most cerebral blood to the internal jugular vein?",
+   "new": "Which venous channel carries most cerebral blood to the internal jugular vein at the jugular foramen?"
+  },
+  {
+   "id": "anatomy-reverse-12",
+   "choice": 0,
+   "correct": false,
+   "old": "Which cranial nerve supplies the muscles of facial expression and anterior tongue taste?",
+   "new": "Which cranial nerve supplies the muscles of facial expression and taste to the anterior two-thirds of the tongue?"
+  },
+  {
+   "id": "anatomy-reverse-13",
+   "choice": 0,
+   "correct": true,
+   "old": "Which diencephalic structure is the main relay station for sensory information heading to the cerebral cortex?",
+   "new": "Which diencephalic structure is the main relay for sensory information heading to the cortex?"
+  },
+  {
+   "id": "anatomy-reverse-13",
+   "choice": 1,
+   "correct": false,
+   "old": "Which structure is the main site of dopamine-producing neurons in the midbrain?",
+   "new": "Which structure is the main site of dopamine-producing neurons in the midbrain that degenerate in Parkinson disease?"
+  },
+  {
+   "id": "anatomy-reverse-15",
+   "choice": 3,
+   "correct": false,
+   "old": "Which organ absorbs water from waste?",
+   "new": "Which organ absorbs water from waste before it leaves the body?"
+  },
+  {
+   "id": "anatomy-reverse-21",
+   "choice": 1,
+   "correct": true,
+   "old": "Which peritoneal space between the liver and right kidney collects fluid in a supine patient and is checked in FAST scanning?",
+   "new": "Which peritoneal space between the liver and right kidney is checked in FAST scanning?"
+  },
+  {
+   "id": "anatomy-reverse-21",
+   "choice": 3,
+   "correct": false,
+   "old": "Which space lies behind the stomach and lesser omentum?",
+   "new": "Which space lies behind the stomach and lesser omentum and communicates through the epiploic foramen?"
+  },
+  {
+   "id": "anatomy-reverse-22",
+   "choice": 0,
+   "correct": true,
+   "old": "Which deep facial space connects the infratemporal fossa, orbit, nasal cavity, and middle cranial fossa, and transmits the maxillary nerve?",
+   "new": "Which deep facial space transmits the maxillary nerve and links the orbit with the nasal cavity?"
+  },
+  {
+   "id": "anatomy-reverse-22",
+   "choice": 3,
+   "correct": false,
+   "old": "Which space lies between the masseter muscle and the mandibular ramus?",
+   "new": "Which space lies between the masseter muscle and the mandibular ramus and can fill with pus from molar infections?"
+  },
+  {
+   "id": "anatomy-reverse-23",
+   "choice": 1,
+   "correct": false,
+   "old": "What is the recess between the epiglottis and the base of the tongue?",
+   "new": "What is the recess between the epiglottis and the base of the tongue called?"
+  },
+  {
+   "id": "anatomy-reverse-23",
+   "choice": 3,
+   "correct": true,
+   "old": "Which internal ridge at the tracheal bifurcation, near T4/T5, is a key bronchoscopy landmark?",
+   "new": "Which ridge at the tracheal bifurcation is a key bronchoscopy landmark?"
+  },
+  {
+   "id": "anatomy-reverse-24",
+   "choice": 0,
+   "correct": false,
+   "old": "Which nerve is at risk in a midshaft humeral fracture?",
+   "new": "Which nerve is at risk in a midshaft humeral fracture along the spiral groove, causing wrist drop?"
+  },
+  {
+   "id": "anatomy-reverse-24",
+   "choice": 1,
+   "correct": true,
+   "old": "Which nerve is at risk in a surgical-neck humeral fracture or shoulder dislocation, causing deltoid weakness and 'regimental badge' sensory loss?",
+   "new": "Which nerve is at risk in a surgical-neck humeral fracture, causing deltoid weakness?"
+  },
+  {
+   "id": "anatomy-reverse-25",
+   "choice": 0,
+   "correct": false,
+   "old": "What structure forms the inferior border of the inguinal canal?",
+   "new": "What structure, the rolled lower edge of the external oblique aponeurosis, forms the floor of the inguinal canal?"
+  },
+  {
+   "id": "anatomy-reverse-28",
+   "choice": 1,
+   "correct": false,
+   "old": "Which recess lies behind the sternum between costal and mediastinal pleura?",
+   "new": "Which recess lies behind the sternum between the costal and mediastinal pleura at the anterior margin?"
+  },
+  {
+   "id": "anatomy-reverse-31",
+   "choice": 2,
+   "correct": true,
+   "old": "Injury to which nerve during thyroidectomy causes hoarseness by paralyzing the intrinsic laryngeal muscles?",
+   "new": "Injury to which nerve during thyroidectomy causes hoarseness?"
+  },
+  {
+   "id": "anatomy-reverse-32",
+   "choice": 1,
+   "correct": false,
+   "old": "Which landmark marks the junction of the sigmoid colon and rectum?",
+   "new": "Which landmark marks the junction of the sigmoid colon and rectum, near the S3 vertebra?"
+  },
+  {
+   "id": "anatomy-reverse-32",
+   "choice": 3,
+   "correct": true,
+   "old": "Which anal canal landmark separates visceral from somatic innervation and changes venous and lymphatic drainage?",
+   "new": "Which anal canal landmark separates visceral from somatic innervation?"
+  },
+  {
+   "id": "anatomy-reverse-35",
+   "choice": 1,
+   "correct": true,
+   "old": "Which structure, running within the spermatic cord, carries sperm from the epididymis to the ejaculatory duct?",
+   "new": "Which structure carries sperm from the epididymis to the ejaculatory duct?"
+  },
+  {
+   "id": "anatomy-reverse-36",
+   "choice": 1,
+   "correct": false,
+   "old": "What structure carries the remnant of the ductus arteriosus?",
+   "new": "What fibrous band is the remnant of the ductus arteriosus, linking the aorta to the pulmonary trunk?"
+  },
+  {
+   "id": "physiology-reverse-6",
+   "choice": 3,
+   "correct": false,
+   "old": "Which enzyme in red cells converts CO2 and water to carbonic acid?",
+   "new": "Which enzyme in red blood cells rapidly converts CO2 and water to carbonic acid?"
+  },
+  {
+   "id": "physiology-reverse-12",
+   "choice": 1,
+   "correct": false,
+   "old": "Which hormone from the adrenal medulla mediates fight-or-flight?",
+   "new": "Which hormone from the adrenal medulla mediates the fight-or-flight response to acute stress?"
+  },
+  {
+   "id": "physiology-reverse-14",
+   "choice": 3,
+   "correct": false,
+   "old": "Which phase has all valves closed with falling ventricular pressure?",
+   "new": "Which phase has all valves closed with falling ventricular pressure just before the mitral valve opens?"
+  },
+  {
+   "id": "physiology-reverse-17",
+   "choice": 0,
+   "correct": false,
+   "old": "Which hormone is released by stretched atria and increases sodium excretion?",
+   "new": "Which hormone is released by stretched atrial muscle cells and increases sodium excretion by the kidney?"
+  },
+  {
+   "id": "physiology-reverse-22",
+   "choice": 0,
+   "correct": false,
+   "old": "Which cells form the outer layer of the filtration barrier?",
+   "new": "Which cells form the outer layer of the glomerular filtration barrier with their interdigitating foot processes?"
+  },
+  {
+   "id": "physiology-reverse-26",
+   "choice": 1,
+   "correct": false,
+   "old": "Which transporter absorbs glucose with sodium in the intestine?",
+   "new": "Which transporter absorbs glucose together with sodium across the intestinal brush border?"
+  },
+  {
+   "id": "physiology-reverse-28",
+   "choice": 1,
+   "correct": false,
+   "old": "Which hormone from I cells stimulates gallbladder contraction?",
+   "new": "Which hormone from duodenal I cells stimulates gallbladder contraction and enzyme release?"
+  },
+  {
+   "id": "physiology-reverse-30",
+   "choice": 1,
+   "correct": false,
+   "old": "Which vitamin is needed for calcium absorption through calcitriol?",
+   "new": "Which vitamin is needed for intestinal calcium absorption through its active form, calcitriol?"
+  },
+  {
+   "id": "pathology-reverse-3",
+   "choice": 0,
+   "correct": false,
+   "old": "Which disease shows cystic medial degeneration and aortic dissection?",
+   "new": "Which disease shows cystic medial degeneration of the aorta, predisposing to aortic dissection?"
+  },
+  {
+   "id": "pathology-reverse-5",
+   "choice": 3,
+   "correct": false,
+   "old": "Which lung disease is defined by a chronic productive cough for months?",
+   "new": "Which lung disease is defined by a chronic productive cough for at least three months in two consecutive years?"
+  },
+  {
+   "id": "pathology-reverse-9",
+   "choice": 1,
+   "correct": false,
+   "old": "Which condition is fluid in the pleural space?",
+   "new": "Which condition is an abnormal collection of fluid in the pleural space?"
+  },
+  {
+   "id": "pathology-reverse-13",
+   "choice": 0,
+   "correct": false,
+   "old": "Which disorder is failure of the lower esophageal sphincter to relax?",
+   "new": "Which disorder is failure of the lower esophageal sphincter to relax, with loss of peristalsis?"
+  },
+  {
+   "id": "pathology-reverse-21",
+   "choice": 1,
+   "correct": false,
+   "old": "Which is the most common primary malignant liver tumor?",
+   "new": "Which is the most common primary malignant liver tumor, often arising in a cirrhotic liver?"
+  },
+  {
+   "id": "pathology-reverse-22",
+   "choice": 0,
+   "correct": true,
+   "old": "Which benign breast tumor is a mobile, well-circumscribed mass in young women?",
+   "new": "Which benign breast tumor is a mobile, well-defined mass in young women?"
+  },
+  {
+   "id": "pathology-reverse-22",
+   "choice": 3,
+   "correct": false,
+   "old": "Which breast lesion follows trauma with fatty necrosis?",
+   "new": "Which breast lesion follows trauma to the breast and shows fat necrosis with calcification?"
+  },
+  {
+   "id": "pathology-reverse-25",
+   "choice": 0,
+   "correct": true,
+   "old": "Which cause of childhood nephrotic syndrome shows normal light microscopy and foot process effacement?",
+   "new": "Which cause of nephrotic syndrome in children shows normal light microscopy?"
+  },
+  {
+   "id": "pathology-reverse-25",
+   "choice": 1,
+   "correct": false,
+   "old": "Which glomerular disease shows Kimmelstiel-Wilson nodules?",
+   "new": "Which glomerular disease shows Kimmelstiel-Wilson nodules in long-standing diabetes?"
+  },
+  {
+   "id": "pathology-reverse-26",
+   "choice": 3,
+   "correct": false,
+   "old": "Which tau-rich round inclusions are seen in frontotemporal dementia?",
+   "new": "Which tau-rich round inclusions are seen in neurons in Pick disease, a frontotemporal dementia?"
+  },
+  {
+   "id": "pathology-reverse-30",
+   "choice": 1,
+   "correct": false,
+   "old": "Which condition causes transient chest pain from reversible ischemia?",
+   "new": "Which condition causes transient chest pain on exertion from reversible myocardial ischemia?"
+  },
+  {
+   "id": "pharmacology-reverse-1",
+   "choice": 1,
+   "correct": false,
+   "old": "Which drug relieves pain, fever, and inflammation and can irritate the stomach?",
+   "new": "Which drug relieves pain, fever, and inflammation but can irritate the stomach lining and cause ulcers?"
+  },
+  {
+   "id": "pharmacology-reverse-3",
+   "choice": 3,
+   "correct": false,
+   "old": "Which drug is a common trigger of malignant hyperthermia?",
+   "new": "Which drug is a common trigger of malignant hyperthermia when used for rapid sequence intubation?"
+  },
+  {
+   "id": "pharmacology-reverse-4",
+   "choice": 0,
+   "correct": true,
+   "old": "Which drug is usually the first choice for type 2 diabetes, working mainly by reducing liver glucose output?",
+   "new": "Which drug is usually first choice for type 2 diabetes, mainly reducing liver glucose output?"
+  },
+  {
+   "id": "pharmacology-reverse-4",
+   "choice": 3,
+   "correct": false,
+   "old": "Which drug is given by injection and directly replaces insulin?",
+   "new": "Which drug is given by injection and directly replaces the hormone missing in type 1 diabetes?"
+  },
+  {
+   "id": "pharmacology-reverse-5",
+   "choice": 3,
+   "correct": false,
+   "old": "Which drug reverses the effect of non-depolarizing neuromuscular blockers?",
+   "new": "Which drug reverses the effect of non-depolarizing neuromuscular blockers at the end of anesthesia?"
+  },
+  {
+   "id": "pharmacology-reverse-8",
+   "choice": 1,
+   "correct": false,
+   "old": "Which diuretic acts on the distal tubule and can cause hyponatremia?",
+   "new": "Which diuretic acts on the distal convoluted tubule and can cause hyponatremia and hypercalcemia?"
+  },
+  {
+   "id": "pharmacology-reverse-11",
+   "choice": 1,
+   "correct": false,
+   "old": "Which antibiotic class works on bacterial ribosomes and includes azithromycin?",
+   "new": "Which antibiotic class works on the bacterial 50S ribosomal subunit and includes azithromycin?"
+  },
+  {
+   "id": "pharmacology-reverse-12",
+   "choice": 0,
+   "correct": false,
+   "old": "Which drug opens the airways in a routine asthma flare?",
+   "new": "Which inhaled drug opens the airways quickly in a routine asthma flare?"
+  },
+  {
+   "id": "pharmacology-reverse-13",
+   "choice": 0,
+   "correct": true,
+   "old": "Which antiepileptic drug shows zero-order kinetics at typical therapeutic doses and can cause gingival hyperplasia?",
+   "new": "Which antiepileptic drug shows zero-order kinetics and can cause gingival hyperplasia?"
+  },
+  {
+   "id": "pharmacology-reverse-15",
+   "choice": 1,
+   "correct": false,
+   "old": "Which heart drug is a diuretic that can cause low potassium?",
+   "new": "Which heart drug is a diuretic that can cause low potassium and is used for fluid overload?"
+  },
+  {
+   "id": "pharmacology-reverse-15",
+   "choice": 2,
+   "correct": true,
+   "old": "Which heart drug becomes more toxic when blood potassium is low, and has a specific antibody-fragment antidote?",
+   "new": "Which heart drug is more toxic when potassium is low and has an antibody antidote?"
+  },
+  {
+   "id": "pharmacology-reverse-16",
+   "choice": 3,
+   "correct": false,
+   "old": "Which drug is used as an antidote for cyanide poisoning?",
+   "new": "Which drug is used as an antidote for cyanide poisoning, for example after smoke inhalation?"
+  },
+  {
+   "id": "pharmacology-reverse-21",
+   "choice": 0,
+   "correct": true,
+   "old": "Which antibiotic can discolor the developing teeth of a young child and is generally avoided in pregnancy?",
+   "new": "Which antibiotic can discolor a young child's developing teeth?"
+  },
+  {
+   "id": "pharmacology-reverse-21",
+   "choice": 3,
+   "correct": false,
+   "old": "Which antibiotic can cause aplastic anemia in rare cases?",
+   "new": "Which antibiotic can cause aplastic anemia and gray baby syndrome in rare cases?"
+  },
+  {
+   "id": "pharmacology-reverse-22",
+   "choice": 0,
+   "correct": true,
+   "old": "Which antibiotic can cause flushing and low blood pressure known as red man syndrome if infused too quickly?",
+   "new": "Which antibiotic can cause flushing (red man syndrome) if infused too quickly?"
+  },
+  {
+   "id": "pharmacology-reverse-23",
+   "choice": 2,
+   "correct": false,
+   "old": "Which drug lowers blood pressure by relaxing blood vessels?",
+   "new": "Which drug lowers blood pressure by relaxing the smooth muscle of blood vessels?"
+  },
+  {
+   "id": "pharmacology-reverse-24",
+   "choice": 1,
+   "correct": false,
+   "old": "Which drug is the specific treatment for benzodiazepine overdose?",
+   "new": "Which drug is the specific treatment for a benzodiazepine overdose, used with caution?"
+  },
+  {
+   "id": "pharmacology-reverse-26",
+   "choice": 2,
+   "correct": false,
+   "old": "Which drug is a beta blocker used to control symptoms of thyroid storm?",
+   "new": "Which drug is a beta blocker used to control the adrenergic symptoms of thyroid storm, such as tachycardia?"
+  },
+  {
+   "id": "pharmacology-reverse-28",
+   "choice": 2,
+   "correct": true,
+   "old": "Which drug inhibits dihydrofolate reductase and is used in both cancer treatment and autoimmune disease at different doses?",
+   "new": "Which drug inhibits dihydrofolate reductase and is used in cancer and autoimmune disease?"
+  },
+  {
+   "id": "pharmacology-reverse-28",
+   "choice": 3,
+   "correct": false,
+   "old": "Which drug stabilizes microtubules to block cell division?",
+   "new": "Which drug stabilizes microtubules to block cell division and can cause peripheral neuropathy?"
+  },
+  {
+   "id": "pharmacology-reverse-30",
+   "choice": 2,
+   "correct": false,
+   "old": "Which tuberculosis drug can cause optic neuritis and color vision changes?",
+   "new": "Which tuberculosis drug can cause optic neuritis and red-green color vision changes, so vision is checked?"
+  },
+  {
+   "id": "microbiology-reverse-4",
+   "choice": 2,
+   "correct": true,
+   "old": "Which gram-negative diplococcus classically grows on Thayer-Martin agar and causes a purulent urethral discharge?",
+   "new": "Which gram-negative diplococcus grows on Thayer-Martin agar and causes purulent urethritis?"
+  },
+  {
+   "id": "microbiology-reverse-5",
+   "choice": 2,
+   "correct": true,
+   "old": "Which bacterium is a leading cause of both bacterial meningitis and community-acquired pneumonia in adults?",
+   "new": "Which bacterium is a leading cause of both meningitis and pneumonia in adults?"
+  },
+  {
+   "id": "microbiology-reverse-8",
+   "choice": 1,
+   "correct": true,
+   "old": "Which encapsulated fungus is identified using an India ink preparation and classically causes meningitis in immunocompromised hosts?",
+   "new": "Which encapsulated fungus is seen on India ink staining and causes meningitis in immunocompromised hosts?"
+  },
+  {
+   "id": "microbiology-reverse-15",
+   "choice": 2,
+   "correct": false,
+   "old": "Which staining method is used specifically to detect Mycobacterium species?",
+   "new": "Which staining method is used specifically to detect Mycobacterium species, which resist decolorization by acid?"
+  },
+  {
+   "id": "microbiology-reverse-17",
+   "choice": 0,
+   "correct": true,
+   "old": "Which organism, carried in the maternal genital tract, is a leading cause of neonatal meningitis and sepsis?",
+   "new": "Which organism, carried in the maternal genital tract, is a leading cause of neonatal sepsis?"
+  },
+  {
+   "id": "microbiology-reverse-17",
+   "choice": 3,
+   "correct": false,
+   "old": "Which organism is a leading cause of meningococcal outbreaks in college dormitories?",
+   "new": "Which organism is a leading cause of meningococcal outbreaks in college dormitories and military barracks?"
+  },
+  {
+   "id": "microbiology-reverse-18",
+   "choice": 2,
+   "correct": true,
+   "old": "Which virus uses reverse transcriptase to convert its RNA genome into DNA before integrating into the host genome?",
+   "new": "Which virus copies its RNA genome into DNA with reverse transcriptase and integrates it into host DNA?"
+  },
+  {
+   "id": "microbiology-reverse-18",
+   "choice": 3,
+   "correct": false,
+   "old": "Which virus is a partially double-stranded DNA virus that infects the liver?",
+   "new": "Which virus is a partially double-stranded DNA virus that infects the liver and can cause chronic hepatitis?"
+  },
+  {
+   "id": "microbiology-reverse-24",
+   "choice": 0,
+   "correct": false,
+   "old": "Which bacterium causes a painless genital ulcer detected by dark-field microscopy?",
+   "new": "Which bacterium causes a painless genital ulcer, the chancre, best detected by dark-field microscopy?"
+  },
+  {
+   "id": "microbiology-reverse-24",
+   "choice": 3,
+   "correct": true,
+   "old": "Which obligate intracellular bacterium is a leading cause of preventable infertility if left untreated?",
+   "new": "Which obligate intracellular bacterium is a leading cause of preventable infertility?"
+  },
+  {
+   "id": "microbiology-reverse-28",
+   "choice": 1,
+   "correct": false,
+   "old": "Which virus causes measles?",
+   "new": "Which virus causes measles, with Koplik spots and a spreading rash?"
+  },
+  {
+   "id": "biochemistry-reverse-10",
+   "choice": 2,
+   "correct": false,
+   "old": "Which molecule is the main energy currency of the cell?",
+   "new": "Which molecule is the main energy currency of the cell, made largely in the mitochondria?"
+  },
+  {
+   "id": "biochemistry-reverse-11",
+   "choice": 2,
+   "correct": false,
+   "old": "Which pathway builds new glucose from amino acids and other sources?",
+   "new": "Which pathway builds new glucose from amino acids, lactate, and glycerol during prolonged fasting?"
+  },
+  {
+   "id": "biochemistry-reverse-14",
+   "choice": 3,
+   "correct": false,
+   "old": "Which enzyme complex is analogous in function but acts on alpha-ketoglutarate instead?",
+   "new": "Which enzyme complex is analogous in function but acts on alpha-ketoglutarate in the citric acid cycle instead?"
+  },
+  {
+   "id": "biochemistry-reverse-20",
+   "choice": 1,
+   "correct": false,
+   "old": "Which pathway generates most ATP from NADH and FADH2?",
+   "new": "Which pathway generates most ATP from NADH and FADH2 on the inner mitochondrial membrane?"
+  },
+  {
+   "id": "biochemistry-reverse-21",
+   "choice": 2,
+   "correct": true,
+   "old": "Which type of enzyme inhibition increases the apparent Km but leaves Vmax unchanged, and can be overcome with excess substrate?",
+   "new": "Which type of enzyme inhibition raises the apparent Km without changing Vmax?"
+  },
+  {
+   "id": "biochemistry-reverse-24",
+   "choice": 0,
+   "correct": true,
+   "old": "Which enzyme, targeted by statins, catalyzes the rate-limiting step of cholesterol synthesis?",
+   "new": "Which enzyme, targeted by statins, is rate-limiting in cholesterol synthesis?"
+  },
+  {
+   "id": "biochemistry-reverse-24",
+   "choice": 1,
+   "correct": false,
+   "old": "Which enzyme catalyzes the rate-limiting step of fatty acid synthesis?",
+   "new": "Which enzyme catalyzes the rate-limiting step of fatty acid synthesis, making malonyl-CoA?"
+  },
+  {
+   "id": "biochemistry-reverse-25",
+   "choice": 0,
+   "correct": true,
+   "old": "Which enzyme deficiency causes alkaptonuria, with dark urine and darkened cartilage over time?",
+   "new": "Which enzyme deficiency causes alkaptonuria, with urine that darkens on standing?"
+  },
+  {
+   "id": "biochemistry-reverse-25",
+   "choice": 1,
+   "correct": false,
+   "old": "Which enzyme deficiency causes classic galactosemia?",
+   "new": "Which enzyme deficiency causes classic galactosemia, with cataracts and liver failure in infants?"
+  }
+ ],
+ "redemption_true_to_false": [
+  {
+   "id": "medicine-red-4-6",
+   "old": "Acute pancreatitis is associated with an elevated lipase level.",
+   "old_answer": true,
+   "new": "Acute pancreatitis is associated with a low serum lipase level.",
+   "new_answer": false
+  },
+  {
+   "id": "medicine-red-5-8",
+   "old": "A pleural effusion is a buildup of fluid around the lungs.",
+   "old_answer": true,
+   "new": "A pleural effusion is a buildup of air around the lungs.",
+   "new_answer": false
+  },
+  {
+   "id": "medicine-red-6-3",
+   "old": "Vitamin B12 deficiency can cause a type of anemia with large red blood cells.",
+   "old_answer": true,
+   "new": "Vitamin B12 deficiency can cause a type of anemia with small red blood cells.",
+   "new_answer": false
+  },
+  {
+   "id": "medicine-red-7-4",
+   "old": "Hyperparathyroidism can cause elevated blood calcium.",
+   "old_answer": true,
+   "new": "Hyperparathyroidism typically causes low blood calcium.",
+   "new_answer": false
+  },
+  {
+   "id": "medicine-red-8-5",
+   "old": "Hyperthyroidism can cause tremors.",
+   "old_answer": true,
+   "new": "Hyperthyroidism typically causes a slow heart rate.",
+   "new_answer": false
+  },
+  {
+   "id": "medicine-red-10-4",
+   "old": "Superior vena cava syndrome can cause facial swelling.",
+   "old_answer": true,
+   "new": "Superior vena cava syndrome typically causes swelling of both legs.",
+   "new_answer": false
+  },
+  {
+   "id": "surgery-red-3-3",
+   "old": "The recurrent laryngeal nerve can be at risk during thyroid surgery.",
+   "old_answer": true,
+   "new": "The facial nerve is the nerve most at risk during thyroid surgery.",
+   "new_answer": false
+  },
+  {
+   "id": "surgery-red-3-5",
+   "old": "Cullen's sign refers to bruising around the belly button.",
+   "old_answer": true,
+   "new": "Cullen's sign refers to bruising on the flanks.",
+   "new_answer": false
+  },
+  {
+   "id": "surgery-red-3-10",
+   "old": "Free air under the diaphragm can suggest a perforated organ.",
+   "old_answer": true,
+   "new": "Free air under the diaphragm typically suggests a ruptured spleen.",
+   "new_answer": false
+  },
+  {
+   "id": "surgery-red-4-5",
+   "old": "A hemostat is used to clamp blood vessels.",
+   "old_answer": true,
+   "new": "A hemostat is used to make skin incisions.",
+   "new_answer": false
+  },
+  {
+   "id": "surgery-red-5-3",
+   "old": "The rule of nines helps estimate burn surface area.",
+   "old_answer": true,
+   "new": "The rule of nines helps estimate the depth of a burn.",
+   "new_answer": false
+  },
+  {
+   "id": "surgery-red-6-5",
+   "old": "An abdominal aortic aneurysm involves an abnormal widening of the aorta.",
+   "old_answer": true,
+   "new": "An abdominal aortic aneurysm involves an abnormal narrowing of the aorta.",
+   "new_answer": false
+  },
+  {
+   "id": "surgery-red-7-3",
+   "old": "Fine needle aspiration uses a thin needle to collect cells.",
+   "old_answer": true,
+   "new": "Fine needle aspiration removes the entire lesion for examination.",
+   "new_answer": false
+  },
+  {
+   "id": "surgery-red-8-8",
+   "old": "A positive margin means cancer cells were found at the resection edge.",
+   "old_answer": true,
+   "new": "A positive margin means no cancer cells were found at the resection edge.",
+   "new_answer": false
+  },
+  {
+   "id": "surgery-red-9-9",
+   "old": "Clostridium perfringens is associated with gas gangrene.",
+   "old_answer": true,
+   "new": "Clostridium perfringens is the main cause of tetanus.",
+   "new_answer": false
+  },
+  {
+   "id": "surgery-red-10-2",
+   "old": "Permissive hypotension is used in certain trauma patients to reduce bleeding.",
+   "old_answer": true,
+   "new": "Permissive hypotension is the preferred strategy in patients with severe traumatic brain injury.",
+   "new_answer": false
+  },
+  {
+   "id": "pediatrics-red-4-4",
+   "old": "Chickenpox causes an itchy, blistering rash.",
+   "old_answer": true,
+   "new": "Chickenpox is caused by a bacterium.",
+   "new_answer": false
+  },
+  {
+   "id": "pediatrics-red-4-8",
+   "old": "Bronchiolitis in infants can be caused by RSV.",
+   "old_answer": true,
+   "new": "Bronchiolitis in infants is most often caused by Streptococcus pneumoniae.",
+   "new_answer": false
+  },
+  {
+   "id": "pediatrics-red-4-10",
+   "old": "Roseola can cause a rash after a high fever breaks.",
+   "old_answer": true,
+   "new": "Roseola typically causes a rash before the fever begins.",
+   "new_answer": false
+  },
+  {
+   "id": "pediatrics-red-5-1",
+   "old": "Pyloric stenosis often involves a palpable 'olive-shaped' mass in the abdomen.",
+   "old_answer": true,
+   "new": "Pyloric stenosis classically causes bilious vomiting.",
+   "new_answer": false
+  },
+  {
+   "id": "pediatrics-red-5-8",
+   "old": "Bronchiolitis commonly affects infants under 2 years of age.",
+   "old_answer": true,
+   "new": "Bronchiolitis mainly affects adolescents rather than infants.",
+   "new_answer": false
+  },
+  {
+   "id": "pediatrics-red-5-9",
+   "old": "Hirschsprung disease can cause chronic constipation.",
+   "old_answer": true,
+   "new": "Hirschsprung disease is caused by excess nerve cells in the colon wall.",
+   "new_answer": false
+  },
+  {
+   "id": "pediatrics-red-6-1",
+   "old": "Neonatal respiratory distress syndrome is related to a lack of surfactant.",
+   "old_answer": true,
+   "new": "Neonatal respiratory distress syndrome is related to an excess of surfactant.",
+   "new_answer": false
+  },
+  {
+   "id": "pediatrics-red-6-3",
+   "old": "Turner syndrome is associated with short stature and a webbed neck.",
+   "old_answer": true,
+   "new": "Turner syndrome is associated with tall stature.",
+   "new_answer": false
+  },
+  {
+   "id": "pediatrics-red-6-9",
+   "old": "Wilms tumor often presents as a painless abdominal mass.",
+   "old_answer": true,
+   "new": "Wilms tumor is a tumor of the liver.",
+   "new_answer": false
+  },
+  {
+   "id": "pediatrics-red-7-2",
+   "old": "The DTaP vaccine protects against diphtheria, tetanus, and pertussis.",
+   "old_answer": true,
+   "new": "The DTaP vaccine protects against diphtheria, tetanus, and polio.",
+   "new_answer": false
+  },
+  {
+   "id": "pediatrics-red-8-1",
+   "old": "Erythema toxicum is a common, harmless newborn rash.",
+   "old_answer": true,
+   "new": "Erythema toxicum is a dangerous newborn rash that needs urgent antibiotics.",
+   "new_answer": false
+  },
+  {
+   "id": "pediatrics-red-8-3",
+   "old": "Cradle cap refers to scaly, greasy patches on a baby's scalp.",
+   "old_answer": true,
+   "new": "Cradle cap refers to scaly, greasy patches on a baby's feet.",
+   "new_answer": false
+  },
+  {
+   "id": "pediatrics-red-8-9",
+   "old": "A pediatrician specializes in the care of children.",
+   "old_answer": true,
+   "new": "A pediatrician specializes in the care of older adults.",
+   "new_answer": false
+  },
+  {
+   "id": "pediatrics-red-9-2",
+   "old": "Ventricular septal defect involves a hole between the heart's lower chambers.",
+   "old_answer": true,
+   "new": "Ventricular septal defect involves a hole between the heart's upper chambers.",
+   "new_answer": false
+  },
+  {
+   "id": "pediatrics-red-9-3",
+   "old": "Patent ductus arteriosus involves a persistent connection between the aorta and pulmonary artery.",
+   "old_answer": true,
+   "new": "Patent ductus arteriosus involves a persistent connection between the two atria.",
+   "new_answer": false
+  },
+  {
+   "id": "pediatrics-red-9-6",
+   "old": "Hemophilia is a bleeding disorder caused by a missing clotting factor.",
+   "old_answer": true,
+   "new": "Hemophilia is a bleeding disorder caused by too few platelets.",
+   "new_answer": false
+  },
+  {
+   "id": "pediatrics-red-10-1",
+   "old": "Anaphylaxis is treated urgently with intramuscular epinephrine.",
+   "old_answer": true,
+   "new": "Anaphylaxis is treated first with oral antihistamines rather than epinephrine.",
+   "new_answer": false
+  },
+  {
+   "id": "pediatrics-red-10-3",
+   "old": "Bacterial meningitis is generally treated with antibiotics.",
+   "old_answer": true,
+   "new": "Bacterial meningitis is generally treated with antiviral medication.",
+   "new_answer": false
+  },
+  {
+   "id": "pediatrics-red-10-4",
+   "old": "Kawasaki disease is commonly treated with IVIG to reduce coronary artery risk.",
+   "old_answer": true,
+   "new": "Kawasaki disease is commonly treated with IVIG to reduce kidney damage.",
+   "new_answer": false
+  },
+  {
+   "id": "pediatrics-red-10-7",
+   "old": "Exclusive breastfeeding is often recommended for about the first 6 months of life.",
+   "old_answer": true,
+   "new": "Exclusive breastfeeding is often recommended for about the first 2 months of life.",
+   "new_answer": false
+  },
+  {
+   "id": "obgyn-red-4-2",
+   "old": "Condoms are a barrier method of contraception.",
+   "old_answer": true,
+   "new": "Condoms are a hormonal method of contraception.",
+   "new_answer": false
+  },
+  {
+   "id": "obgyn-red-4-5",
+   "old": "The first stage of labor involves cervical dilation.",
+   "old_answer": true,
+   "new": "The first stage of labor involves delivery of the baby.",
+   "new_answer": false
+  },
+  {
+   "id": "obgyn-red-4-9",
+   "old": "Syphilis is caused by a bacterium.",
+   "old_answer": true,
+   "new": "Syphilis is caused by a virus.",
+   "new_answer": false
+  },
+  {
+   "id": "obgyn-red-5-5",
+   "old": "Oxytocin stimulates uterine contractions during labor.",
+   "old_answer": true,
+   "new": "Oxytocin relaxes the uterus during labor.",
+   "new_answer": false
+  },
+  {
+   "id": "obgyn-red-5-7",
+   "old": "Menarche refers to the first menstrual period.",
+   "old_answer": true,
+   "new": "Menarche refers to the last menstrual period.",
+   "new_answer": false
+  },
+  {
+   "id": "obgyn-red-5-9",
+   "old": "Dysmenorrhea refers to painful menstrual periods.",
+   "old_answer": true,
+   "new": "Dysmenorrhea refers to the absence of menstrual periods.",
+   "new_answer": false
+  },
+  {
+   "id": "obgyn-red-6-1",
+   "old": "Placenta previa classically causes painless vaginal bleeding.",
+   "old_answer": true,
+   "new": "Placenta previa classically causes painful vaginal bleeding with a rigid uterus.",
+   "new_answer": false
+  },
+  {
+   "id": "obgyn-red-6-7",
+   "old": "A hormonal IUD releases progestin locally within the uterus.",
+   "old_answer": true,
+   "new": "A hormonal IUD releases estrogen locally within the uterus.",
+   "new_answer": false
+  },
+  {
+   "id": "obgyn-red-6-10",
+   "old": "Stress urinary incontinence can involve leakage with coughing or sneezing.",
+   "old_answer": true,
+   "new": "Stress urinary incontinence is leakage caused by an overactive bladder muscle.",
+   "new_answer": false
+  },
+  {
+   "id": "obgyn-red-7-3",
+   "old": "IVF involves fertilization of an egg outside the body.",
+   "old_answer": true,
+   "new": "IVF involves fertilization of an egg inside the fallopian tube.",
+   "new_answer": false
+  },
+  {
+   "id": "obgyn-red-7-5",
+   "old": "Lochia refers to normal vaginal discharge after delivery.",
+   "old_answer": true,
+   "new": "Lochia refers to milk production after delivery.",
+   "new_answer": false
+  },
+  {
+   "id": "obgyn-red-7-9",
+   "old": "An anatomy ultrasound is typically performed around the middle of pregnancy.",
+   "old_answer": true,
+   "new": "An anatomy ultrasound is typically performed in the first few weeks of pregnancy.",
+   "new_answer": false
+  },
+  {
+   "id": "obgyn-red-8-2",
+   "old": "Vaginal dryness can occur due to declining estrogen after menopause.",
+   "old_answer": true,
+   "new": "Vaginal dryness can occur due to rising estrogen after menopause.",
+   "new_answer": false
+  },
+  {
+   "id": "obgyn-red-8-6",
+   "old": "A dermoid cyst can contain tissue like hair or teeth.",
+   "old_answer": true,
+   "new": "A dermoid cyst is usually a malignant tumor.",
+   "new_answer": false
+  },
+  {
+   "id": "obgyn-red-8-8",
+   "old": "Ovarian torsion is considered a gynecologic emergency.",
+   "old_answer": true,
+   "new": "Ovarian torsion is a minor problem that can safely wait for a routine clinic visit.",
+   "new_answer": false
+  },
+  {
+   "id": "obgyn-red-9-3",
+   "old": "Eclamptic seizures are often managed with magnesium sulfate.",
+   "old_answer": true,
+   "new": "Eclamptic seizures are usually managed with calcium gluconate.",
+   "new_answer": false
+  },
+  {
+   "id": "obgyn-red-9-7",
+   "old": "A threatened miscarriage involves bleeding with a closed cervix.",
+   "old_answer": true,
+   "new": "A threatened miscarriage involves bleeding with an open cervix.",
+   "new_answer": false
+  },
+  {
+   "id": "obgyn-red-9-10",
+   "old": "Accelerations on fetal monitoring are generally a reassuring sign.",
+   "old_answer": true,
+   "new": "Accelerations on fetal monitoring are generally a sign of fetal distress.",
+   "new_answer": false
+  },
+  {
+   "id": "obgyn-red-10-1",
+   "old": "Intrauterine growth restriction means a fetus is smaller than expected for gestational age.",
+   "old_answer": true,
+   "new": "Intrauterine growth restriction means a fetus is larger than expected for gestational age.",
+   "new_answer": false
+  },
+  {
+   "id": "obgyn-red-10-3",
+   "old": "Oligohydramnios refers to an abnormally low amount of amniotic fluid.",
+   "old_answer": true,
+   "new": "Oligohydramnios refers to an abnormally high amount of amniotic fluid.",
+   "new_answer": false
+  },
+  {
+   "id": "obgyn-red-10-6",
+   "old": "Vasa previa involves fetal vessels crossing near the cervical opening.",
+   "old_answer": true,
+   "new": "Vasa previa involves the placenta separating early from the uterine wall.",
+   "new_answer": false
+  },
+  {
+   "id": "anatomy-red-1-5",
+   "old": "Gas exchange takes place in the alveoli.",
+   "old_answer": true,
+   "new": "Gas exchange takes place mainly in the bronchi.",
+   "new_answer": false
+  },
+  {
+   "id": "anatomy-red-2-4",
+   "old": "The larynx is commonly known as the 'voice box.'",
+   "old_answer": true,
+   "new": "The larynx is commonly known as the 'windpipe.'",
+   "new_answer": false
+  },
+  {
+   "id": "anatomy-red-3-8",
+   "old": "The clavicle is commonly called the 'collarbone.'",
+   "old_answer": true,
+   "new": "The clavicle is commonly called the 'shoulder blade.'",
+   "new_answer": false
+  },
+  {
+   "id": "anatomy-red-5-1",
+   "old": "The pulmonary artery carries deoxygenated blood to the lungs.",
+   "old_answer": true,
+   "new": "The pulmonary artery carries oxygenated blood to the lungs.",
+   "new_answer": false
+  },
+  {
+   "id": "anatomy-red-5-5",
+   "old": "The vagus nerve is the tenth cranial nerve.",
+   "old_answer": true,
+   "new": "The vagus nerve is the seventh cranial nerve.",
+   "new_answer": false
+  },
+  {
+   "id": "anatomy-red-5-7",
+   "old": "The hepatic portal vein carries blood from the gut to the liver.",
+   "old_answer": true,
+   "new": "The hepatic portal vein carries blood from the liver to the heart.",
+   "new_answer": false
+  },
+  {
+   "id": "anatomy-red-7-10",
+   "old": "The mitral valve lies between the left atrium and left ventricle.",
+   "old_answer": true,
+   "new": "The mitral valve lies between the right atrium and right ventricle.",
+   "new_answer": false
+  },
+  {
+   "id": "anatomy-red-8-9",
+   "old": "The duodenum is the first part of the small intestine.",
+   "old_answer": true,
+   "new": "The jejunum is the first part of the small intestine.",
+   "new_answer": false
+  },
+  {
+   "id": "anatomy-red-9-2",
+   "old": "The cerebellum is mainly responsible for coordination and balance.",
+   "old_answer": true,
+   "new": "The cerebellum is mainly responsible for vision.",
+   "new_answer": false
+  },
+  {
+   "id": "anatomy-red-10-4",
+   "old": "There are 7 cervical vertebrae in the human neck.",
+   "old_answer": true,
+   "new": "There are 12 cervical vertebrae in the human neck.",
+   "new_answer": false
+  },
+  {
+   "id": "physiology-red-1-1",
+   "old": "The heart's electrical impulse normally begins in the SA node.",
+   "old_answer": true,
+   "new": "The heart's electrical impulse normally begins in the AV node.",
+   "new_answer": false
+  },
+  {
+   "id": "physiology-red-8-3",
+   "old": "Sodium is the main cation in extracellular fluid.",
+   "old_answer": true,
+   "new": "Potassium is the main cation in extracellular fluid.",
+   "new_answer": false
+  },
+  {
+   "id": "pathology-red-1-4",
+   "old": "Cirrhosis involves scarring of the liver.",
+   "old_answer": true,
+   "new": "Cirrhosis involves scarring of the kidney.",
+   "new_answer": false
+  },
+  {
+   "id": "pathology-red-2-6",
+   "old": "Melanoma arises from melanocytes.",
+   "old_answer": true,
+   "new": "Melanoma arises from keratinocytes.",
+   "new_answer": false
+  },
+  {
+   "id": "pathology-red-4-7",
+   "old": "Melena is black tarry stool from upper GI bleeding.",
+   "old_answer": true,
+   "new": "Melena is bright red blood in the stool from lower GI bleeding.",
+   "new_answer": false
+  },
+  {
+   "id": "pathology-red-5-3",
+   "old": "Down syndrome is due to trisomy 21.",
+   "old_answer": true,
+   "new": "Down syndrome is due to trisomy 18.",
+   "new_answer": false
+  },
+  {
+   "id": "pathology-red-6-4",
+   "old": "Hypertrophy is an increase in cell size.",
+   "old_answer": true,
+   "new": "Hypertrophy is an increase in cell number.",
+   "new_answer": false
+  },
+  {
+   "id": "pathology-red-7-3",
+   "old": "Fibrosis is the formation of scar tissue.",
+   "old_answer": true,
+   "new": "Fibrosis is the formation of new bone tissue.",
+   "new_answer": false
+  },
+  {
+   "id": "pathology-red-9-4",
+   "old": "Cholecystitis is inflammation of the gallbladder.",
+   "old_answer": true,
+   "new": "Cholecystitis is inflammation of the pancreas.",
+   "new_answer": false
+  },
+  {
+   "id": "pathology-red-9-6",
+   "old": "Osteomyelitis is infection of bone.",
+   "old_answer": true,
+   "new": "Osteomyelitis is infection of muscle.",
+   "new_answer": false
+  },
+  {
+   "id": "pathology-red-9-10",
+   "old": "Hematuria means blood in the urine.",
+   "old_answer": true,
+   "new": "Hematuria means blood in the stool.",
+   "new_answer": false
+  },
+  {
+   "id": "pathology-red-10-5",
+   "old": "Cataracts are clouding of the lens.",
+   "old_answer": true,
+   "new": "Cataracts are clouding of the cornea.",
+   "new_answer": false
+  },
+  {
+   "id": "pharmacology-red-5-9",
+   "old": "Ondansetron is used to reduce nausea.",
+   "old_answer": true,
+   "new": "Ondansetron works by blocking dopamine receptors.",
+   "new_answer": false
+  },
+  {
+   "id": "pharmacology-red-6-9",
+   "old": "Spironolactone can raise potassium levels.",
+   "old_answer": true,
+   "new": "Spironolactone typically lowers potassium levels.",
+   "new_answer": false
+  },
+  {
+   "id": "pharmacology-red-7-2",
+   "old": "Metoprolol is a beta blocker.",
+   "old_answer": true,
+   "new": "Metoprolol is a calcium channel blocker.",
+   "new_answer": false
+  },
+  {
+   "id": "pharmacology-red-7-3",
+   "old": "Omeprazole belongs to the proton pump inhibitor class.",
+   "old_answer": true,
+   "new": "Omeprazole belongs to the H2 blocker class.",
+   "new_answer": false
+  },
+  {
+   "id": "pharmacology-red-7-10",
+   "old": "Atropine can be used to treat certain slow heart rhythms.",
+   "old_answer": true,
+   "new": "Atropine is used to slow the heart rate.",
+   "new_answer": false
+  },
+  {
+   "id": "pharmacology-red-8-9",
+   "old": "Protamine sulfate reverses heparin.",
+   "old_answer": true,
+   "new": "Protamine sulfate reverses warfarin.",
+   "new_answer": false
+  },
+  {
+   "id": "pharmacology-red-9-7",
+   "old": "Propylthiouracil is used to treat an overactive thyroid.",
+   "old_answer": true,
+   "new": "Propylthiouracil is used to treat an underactive thyroid.",
+   "new_answer": false
+  },
+  {
+   "id": "pharmacology-red-10-4",
+   "old": "Vincristine is well known for causing peripheral neuropathy.",
+   "old_answer": true,
+   "new": "Vincristine is well known for causing hemorrhagic cystitis.",
+   "new_answer": false
+  },
+  {
+   "id": "pharmacology-red-10-6",
+   "old": "Bleomycin can cause lung scarring.",
+   "old_answer": true,
+   "new": "Bleomycin is well known for causing hearing loss.",
+   "new_answer": false
+  },
+  {
+   "id": "pharmacology-red-10-7",
+   "old": "Rituximab targets a marker on certain B cells.",
+   "old_answer": true,
+   "new": "Rituximab targets a marker on T cells.",
+   "new_answer": false
+  },
+  {
+   "id": "microbiology-red-3-10",
+   "old": "Cryptococcus is a type of fungus.",
+   "old_answer": true,
+   "new": "Cryptococcus is a type of bacterium.",
+   "new_answer": false
+  },
+  {
+   "id": "microbiology-red-4-5",
+   "old": "The common cold is most often caused by rhinovirus.",
+   "old_answer": true,
+   "new": "The common cold is most often caused by influenza virus.",
+   "new_answer": false
+  },
+  {
+   "id": "microbiology-red-5-3",
+   "old": "Mycobacterium tuberculosis is best seen with an acid-fast stain.",
+   "old_answer": true,
+   "new": "Mycobacterium tuberculosis is best seen with a Gram stain.",
+   "new_answer": false
+  },
+  {
+   "id": "microbiology-red-6-7",
+   "old": "Genital herpes is caused by a virus.",
+   "old_answer": true,
+   "new": "Genital herpes is caused by a bacterium.",
+   "new_answer": false
+  },
+  {
+   "id": "microbiology-red-7-5",
+   "old": "Rocky Mountain spotted fever is transmitted by ticks.",
+   "old_answer": true,
+   "new": "Rocky Mountain spotted fever is transmitted by mosquitoes.",
+   "new_answer": false
+  },
+  {
+   "id": "microbiology-red-9-3",
+   "old": "Cytomegalovirus can be transmitted from mother to baby.",
+   "old_answer": true,
+   "new": "Cytomegalovirus is a type of bacterium.",
+   "new_answer": false
+  },
+  {
+   "id": "microbiology-red-10-6",
+   "old": "Overusing antibiotics for viral illnesses can contribute to resistance.",
+   "old_answer": true,
+   "new": "Using antibiotics for viral illnesses helps prevent resistance.",
+   "new_answer": false
+  },
+  {
+   "id": "biochemistry-red-4-1",
+   "old": "The citric acid cycle takes place inside the mitochondria.",
+   "old_answer": true,
+   "new": "The citric acid cycle takes place in the cytoplasm.",
+   "new_answer": false
+  },
+  {
+   "id": "biochemistry-red-4-4",
+   "old": "The pentose phosphate pathway produces NADPH.",
+   "old_answer": true,
+   "new": "The pentose phosphate pathway mainly produces ATP.",
+   "new_answer": false
+  },
+  {
+   "id": "biochemistry-red-4-9",
+   "old": "Messenger RNA carries genetic instructions to the ribosome.",
+   "old_answer": true,
+   "new": "Messenger RNA carries amino acids to the ribosome.",
+   "new_answer": false
+  },
+  {
+   "id": "biochemistry-red-5-9",
+   "old": "Vitamin B1 deficiency is linked to beriberi.",
+   "old_answer": true,
+   "new": "Vitamin B1 deficiency is linked to scurvy.",
+   "new_answer": false
+  },
+  {
+   "id": "biochemistry-red-7-2",
+   "old": "Glycogenolysis is the breakdown of glycogen to release glucose.",
+   "old_answer": true,
+   "new": "Glycogenolysis is the synthesis of glycogen from glucose.",
+   "new_answer": false
+  },
+  {
+   "id": "biochemistry-red-8-3",
+   "old": "A nonsense mutation creates a premature stop codon.",
+   "old_answer": true,
+   "new": "A nonsense mutation replaces one amino acid with another.",
+   "new_answer": false
+  },
+  {
+   "id": "biochemistry-red-9-1",
+   "old": "Steroid hormones are derived from cholesterol.",
+   "old_answer": true,
+   "new": "Steroid hormones are derived from amino acids.",
+   "new_answer": false
+  },
+  {
+   "id": "biochemistry-red-9-2",
+   "old": "Peptide hormones typically bind receptors on the cell surface.",
+   "old_answer": true,
+   "new": "Peptide hormones typically bind receptors in the nucleus.",
+   "new_answer": false
+  },
+  {
+   "id": "biochemistry-red-9-5",
+   "old": "Insulin signaling involves a receptor tyrosine kinase.",
+   "old_answer": true,
+   "new": "Insulin signaling involves a G protein-coupled receptor.",
+   "new_answer": false
+  },
+  {
+   "id": "biochemistry-red-10-5",
+   "old": "ALT and AST are examples of liver enzymes.",
+   "old_answer": true,
+   "new": "ALT and AST are examples of kidney function tests.",
+   "new_answer": false
+  }
+ ]
+}

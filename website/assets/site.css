@@ -1,0 +1,68 @@
+/* MedNova website: the app's deep navy Nebula look (theme/tokens.ts), one reading column, phone first. */
+@font-face { font-family: 'Gabarito'; font-weight: 700; font-display: swap; src: url(/assets/fonts/gabarito-700.woff2) format('woff2'); }
+@font-face { font-family: 'Inter Tight'; font-weight: 100 900; font-display: swap; src: url(/assets/fonts/inter-tight.woff2) format('woff2'); }
+@font-face { font-family: 'JetBrains Mono'; font-weight: 500; font-display: swap; src: url(/assets/fonts/jetbrains-mono-500.woff2) format('woff2'); }
+
+:root {
+  --sky: #0d1738; --panel: #26376f; --panel2: #213166; --line: rgba(255,255,255,0.13);
+  --fg: #eef0ff; --soft: #c3c7e4; --mute: #9aa0c4; --accent: #6fd6ff; --kick: #4fc8ff; --gradA: #a48bff;
+  --display: 'Gabarito', system-ui, sans-serif; --body: 'Inter Tight', system-ui, sans-serif; --mono: 'JetBrains Mono', ui-monospace, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; min-height: 100vh; color: var(--fg); font: 16px/1.6 var(--body);
+  background: radial-gradient(60rem 30rem at 85% -10%, rgba(143,117,255,0.28), transparent 60%),
+              radial-gradient(50rem 28rem at -10% 20%, rgba(79,170,255,0.2), transparent 60%), var(--sky);
+  background-attachment: fixed;
+}
+a { color: var(--accent); }
+em { font-style: normal; color: var(--accent); }
+
+.top { max-width: 760px; margin: 0 auto; padding: 18px 16px; display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; justify-content: space-between; }
+.brand { display: flex; align-items: center; gap: 10px; color: var(--fg); text-decoration: none; font: 700 22px var(--display); }
+.brand img { border-radius: 9px; }
+nav { display: flex; flex-wrap: wrap; gap: 6px; }
+nav a { color: var(--mute); text-decoration: none; font-size: 14px; font-weight: 600; padding: 6px 12px; border-radius: 999px; border: 1px solid transparent; }
+nav a:hover { color: var(--fg); }
+nav a[aria-current] { color: var(--fg); background: rgba(255,255,255,0.08); border-color: var(--line); }
+
+main { max-width: 760px; margin: 0 auto; padding: 24px 16px 56px; display: grid; gap: 18px; }
+h1 { font: 700 clamp(34px, 8vw, 52px)/1.05 var(--display); letter-spacing: -0.01em; margin: 0 0 8px; text-wrap: balance; }
+h2 { font: 700 23px/1.2 var(--display); margin: 6px 0 0; text-wrap: balance; }
+.kick { margin: 0; font: 500 11.5px/1.6 var(--mono); letter-spacing: 0.16em; text-transform: uppercase; color: var(--kick); }
+.lead { color: var(--soft); font-size: 17px; margin: 0; max-width: 58ch; }
+
+main > section { background: rgba(38,55,111,0.55); border: 1px solid var(--line); border-radius: 20px; padding: 20px 20px 22px; }
+main > section.hero, main > section.cards { background: none; border: 0; padding: 0; }
+.hero { display: grid; gap: 12px; justify-items: start; padding-top: 8px; }
+.hero img { border-radius: 22px; box-shadow: 0 10px 40px rgba(111,214,255,0.25); }
+
+.legal { margin: 8px 0 0; color: var(--mute); font-size: 15px; }
+.legal b { color: var(--fg); font-weight: 600; }
+.next { margin-top: 12px; }
+ul, ol { margin: 10px 0 0; padding-left: 20px; color: var(--mute); font-size: 15px; display: grid; gap: 6px; }
+ul li::marker { color: var(--kick); }
+.steps { color: var(--soft); }
+.steps li::marker { color: var(--accent); font-family: var(--mono); }
+.steps b { color: var(--fg); }
+
+.games { list-style: none; padding: 0; gap: 0; }
+.games li { padding: 10px 0; border-top: 1px solid var(--line); display: grid; gap: 2px; }
+.games li:first-child { border-top: 0; }
+.games b { color: var(--fg); font: 700 17px var(--display); }
+
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
+.card { display: flex; justify-content: space-between; align-items: center; padding: 16px 18px; border-radius: 16px; background: var(--panel2); border: 1px solid var(--line); color: var(--fg); text-decoration: none; font-weight: 600; }
+.card span { color: var(--accent); }
+.card:hover { border-color: var(--accent); }
+
+.open { justify-items: center; text-align: center; padding-top: 24px; }
+.open .lead { font-size: 15px; color: var(--mute); }
+.code { margin: 4px 0; font: 500 30px var(--mono); letter-spacing: 0.2em; padding: 10px 22px; border-radius: 14px; background: var(--panel2); border: 1px solid var(--line); }
+.btn { display: inline-block; padding: 14px 28px; border-radius: 999px; font-weight: 600; text-decoration: none; color: #0b0b26; background: linear-gradient(100deg, var(--gradA), var(--accent)); }
+
+footer { max-width: 760px; margin: 0 auto; padding: 0 16px 40px; color: var(--mute); font-size: 13px; }
+footer p { margin: 4px 0; }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }

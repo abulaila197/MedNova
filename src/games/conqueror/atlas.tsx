@@ -1,0 +1,307 @@
+// The Conqueror pieces, in the app's look since Yazan 2026-11-02 (#19: "the old design look shouldn't be present
+// anywhere"): app sky, navy chips, cyan accent, Gabarito + Inter Tight, and the app's soft beige for paper (cards,
+// sheets, the land on the map). The names stay so the play screens keep working.
+import { LinearGradient } from 'expo-linear-gradient';
+import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
+import { Pressable, StyleSheet, View, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
+import { Text } from '@/components/AppText';
+import Svg, { Defs, Ellipse, G, Image as SvgImage, LinearGradient as SvgGradient, Path, Stop, Text as SvgText } from 'react-native-svg';
+
+import { loadFonts } from '@/features/loading/fonts';
+import { clock } from '@/games/engine/clock';
+import { DESIGN_W, u } from '@/theme/scale';
+import { F } from '@/theme/tokens';
+import { tapped } from '@/lib/sound';
+
+import { PauseMenu } from '../shell/PauseMenu';
+import { GameScreen } from '../shell/ui';
+import { CARDS, type CardType } from './core';
+
+/** Sizes here are in the approved preview's pixels (a 360px phone); the app's design width is 282px. */
+export const v = (n: number) => u((n * DESIGN_W) / 360);
+
+export const AT = {
+  bg: '#0d1738',
+  cream: '#eef0ff',
+  soft: '#c3c7e4',
+  dim: '#8a90b8',
+  /** Titles and highlights: the app's cyan. */
+  gold: '#6fd6ff',
+  ink: '#3b2f1c',
+  inkSoft: '#6b5a3e',
+  paper: '#efe4cb',
+  paperDeep: '#e3d4b2',
+  /** The accent on beige paper: a deep violet (was the red ink). */
+  red: '#5b45c4',
+  redHi: '#a48bff',
+  redLo: '#6fd6ff',
+  line: 'rgba(255,255,255,0.13)',
+  chip: 'rgba(255,255,255,0.05)',
+  sea: '#1a2858',
+  seaLine: '#3a4f96',
+  land: '#efe4cb',
+  right: '#3fc58a',
+  wrong: '#ff7a88',
+}
+/** Kingdom colours (watercolour inks), one per seat. */
+/** The map keeps its old Ink Atlas look (Yazan 2026-11-02: "use the old map and its box around it"). */
+export const MAPC = { sea: '#aa9e80', seaLine: '#7d7258', land: '#ecdcb4', ink: '#3b2412', red: '#8e1c1c', cream: '#f3e6c6', paper: '#f1e3c2', frame: 'rgba(20,10,4,0.6)', compass: '#5a3a1e' };
+export const MAP_FONT = 'Cinzel_700Bold';
+export const KINGDOMS = ['#9b2420', '#2b56a0', '#3f7a3a', '#c58a1f', '#6a3d8c', '#2a8484'];
+
+export const CZ = F.display;
+export const CZM = F.bodySemi;
+export const CG = F.bodyMedium;
+export const CGI = F.bodyMedium;
+export const CGB = F.bodyBold;
+const FONTS: string[] = [MAP_FONT];
+export const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI'];
+
+let fontsReady = false;
+export function useAtlasFonts() {
+  const [ok, setOk] = useState(fontsReady);
+  useEffect(() => {
+    if (!fontsReady)
+      loadFonts(FONTS).finally(() => {
+        fontsReady = true;
+        setOk(true);
+      });
+  }, []);
+  return ok;
+}
+
+/** Kept for old callers: the app sky shows through, nothing is drawn. */
+export function Room() {
+  return null;
+}
+
+/** A Conqueror page: the game header over the app sky (`under` art is no longer drawn). */
+export function AtlasScreen({ children, scroll = false, top }: { children: ReactNode; scroll?: boolean; under?: ReactNode; top?: ReactNode }) {
+  const ok = useAtlasFonts();
+  return (
+    <>
+      <GameScreen scroll={scroll} top={ok ? top : null} bodyStyle={{ paddingTop: v(12), paddingHorizontal: v(14), paddingBottom: v(14), gap: v(11) }}>
+        {ok ? children : null}
+      </GameScreen>
+    </>
+  );
+}
+
+export const T = ({ children, f = CG, size = 15, color = AT.cream, style, lines }: { children: ReactNode; f?: string; size?: number; color?: string; style?: StyleProp<TextStyle>; lines?: number }) => (
+  <Text numberOfLines={lines} style={[{ fontFamily: f, fontSize: v(size), lineHeight: v(size * 1.25), color }, style]}>{children}</Text>
+);
+
+export const Kicker = ({ children, color = AT.soft }: { children: string; color?: string }) => (
+  <T f={F.mono} size={10} color={color} style={{ letterSpacing: v(1.6) }}>{children.toUpperCase()}</T>
+);
+
+/** The page top: stage kicker, a gold Cinzel title, an italic line, and the wax clock on the right. */
+export function Top({ kicker, title, line, seconds, right }: { kicker: string; title: string; line?: string; seconds?: number | null; right?: ReactNode }) {
+  return (
+    <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: v(10), paddingHorizontal: v(4) }}>
+      <View style={{ flex: 1, gap: v(2) }}>
+        <Kicker>{kicker}</Kicker>
+        <T f={CZ} size={23} color={AT.gold} style={{ lineHeight: v(27) }}>{title}</T>
+        {line ? <T f={CGI} size={15} style={{ lineHeight: v(18) }}>{line}</T> : null}
+      </View>
+      {right}
+      {seconds != null ? <Seal text={clock(seconds * 1000, { down: true })} hot={seconds <= 5} /> : null}
+      <PauseBtn />
+    </View>
+  );
+}
+
+/** Opens the pause page; every page top shows the button when the match gives one. */
+export const PauseCtx = createContext<(() => void) | null>(null);
+
+/** Two ink bars in a small parchment square. */
+function PauseBtn() {
+  const open = useContext(PauseCtx);
+  if (!open) return null;
+  return (
+    <Pressable onPress={tapped(open)} hitSlop={v(8)} accessibilityRole="button" accessibilityLabel="Pause" style={({ pressed }) => [s.pause, pressed ? { opacity: 0.75 } : null]}>
+      <View style={s.bar} />
+      <View style={s.bar} />
+    </Pressable>
+  );
+}
+
+/** The pause page: the app's shared one. Online the war goes on for the others (CQ12). */
+export function AtlasPause({ open, onResume, onLeave }: { open: boolean; onResume: () => void; onLeave: () => void }) {
+  return <PauseMenu open={open} mode="online" onResume={onResume} onQuit={onLeave} />;
+}
+
+/** The round clock badge (was the wax seal): the app gradient, rose when time runs low. */
+export function Seal({ text, hot, size = 54 }: { text: string; hot?: boolean; size?: number }) {
+  return (
+    <View style={{ width: v(size), height: v(size), borderRadius: v(size / 2), overflow: 'hidden' }}>
+      <LinearGradient colors={hot ? ['#ff7a88', '#c73646'] : [AT.redHi, AT.redLo]} start={{ x: 0.3, y: 0.2 }} end={{ x: 0.8, y: 1 }} style={{ flex: 1, alignItems: 'center', justifyContent: 'center', borderRadius: v(size / 2) }}>
+        <T f={CZ} size={size * 0.28} color="#0b0b26">{text}</T>
+      </LinearGradient>
+    </View>
+  );
+}
+
+/** A player chip: kingdom dot, name, and a small count (lands). */
+export function Chip({ color, name, count, dim, mark }: { color: string; name: string; count?: number | string; dim?: boolean; mark?: string }) {
+  return (
+    <View style={[s.chip, dim ? { opacity: 0.45 } : null]}>
+      <View style={{ width: v(11), height: v(11), borderRadius: v(6), backgroundColor: color }} />
+      <T f={CGB} size={13} style={{ lineHeight: v(16) }}>{name}</T>
+      {count != null ? <T f={CZ} size={9.5} color={AT.soft}>{String(count)}</T> : null}
+      {mark ? <T f={CZ} size={10} color={AT.gold}>{mark}</T> : null}
+    </View>
+  );
+}
+
+/** The app's gradient button, or its outline button. */
+export function Btn({ label, onPress, ghost, disabled, style }: { label: string; onPress?: () => void; ghost?: boolean; disabled?: boolean; style?: StyleProp<ViewStyle> }) {
+  return (
+    <Pressable onPress={tapped(onPress)} disabled={disabled} accessibilityRole="button" accessibilityLabel={label} style={({ pressed }) => [{ flex: 1, opacity: disabled ? 0.45 : pressed ? 0.85 : 1 }, style]}>
+      {ghost ? (
+        <View style={s.ghost}>
+          <T f={F.bodySemi} size={13.5} color={AT.cream} style={{ textAlign: 'center' }}>{label}</T>
+        </View>
+      ) : (
+        <LinearGradient colors={['#a48bff', '#6fd6ff']} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.go}>
+          <T f={F.bodyBold} size={14} color="#0b0b26" style={{ textAlign: 'center' }}>{label}</T>
+        </LinearGradient>
+      )}
+    </Pressable>
+  );
+}
+
+export const Rule = () => <View style={{ height: 1, backgroundColor: AT.line }} />;
+
+/** An action card on the app's beige. */
+export function CardTile({ card, w = 62, on, onPress, dim }: { card: CardType; w?: number; on?: boolean; onPress?: () => void; dim?: boolean }) {
+  const info = CARDS[card];
+  // Text grows with the tile (the big card on a card tile's reveal).
+  const k = w / 62;
+  // Long single-word names (Reinforcements, Earthquake) shrink to fit on one line.
+  const longest = Math.max(...info.name.split(' ').map((x) => x.length));
+  const nameSize = Math.min(10.5 * k, (w - 16) / (longest * 0.74));
+  const body = (
+    <View style={[s.card, { width: v(w), height: v(w * 1.04), opacity: dim ? 0.45 : 1 }, on ? { transform: [{ translateY: -v(6) }], borderColor: AT.red, borderWidth: 1.5 } : null]}>
+      <T f={CZ} size={nameSize} color={AT.red} style={{ lineHeight: v(nameSize * 1.15), textAlign: 'center' }} lines={info.name.includes(' ') ? 2 : 1}>{info.name}</T>
+      <T f={CGI} size={k * 10.5} color={AT.ink} style={{ lineHeight: v(k * 11.5), textAlign: 'center' }} lines={3}>{SHORT[card]}</T>
+    </View>
+  );
+  return onPress ? <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={info.name} accessibilityState={{ selected: on }}>{body}</Pressable> : body;
+}
+
+/** Card lines short enough for the small paper tile; the full text shows when a card is picked. */
+export const SHORT: Record<CardType, string> = {
+  double_attack: 'One extra move',
+  shield: 'Bounce attacks',
+  spy: 'See reserves',
+  trap: 'Hurt attackers',
+  reinforcements: '+50% on a move',
+  ambush: 'A rival loses a move',
+  earthquake: 'Rivals’ outposts -20%',
+  revolution: '+5,000 if behind',
+  betrayal: 'Take an ally’s land',
+  joker: 'Switch a tile’s style',
+  hide_troops: 'Hide your numbers',
+};
+
+// ---------------------------------------------------------------- chess pieces
+
+export const PAWN =
+  'M10 1.6a4.6 4.6 0 0 1 3.1 8a1.3 1.3 0 0 1 1.5 1.6c0 .9-.6 1.4-1.4 1.6C13.6 17 15 20.4 16.6 22.6H17.8a1.6 1.6 0 0 1 1.6 1.6v1.4a1.6 1.6 0 0 1-1.6 1.6H2.2A1.6 1.6 0 0 1 .6 25.6v-1.4a1.6 1.6 0 0 1 1.6-1.6H3.4C5 20.4 6.4 17 6.8 12.8c-.8-.2-1.4-.7-1.4-1.6a1.3 1.3 0 0 1 1.5-1.6a4.6 4.6 0 0 1 3.1-8Z';
+export const ROOK =
+  'M3.2 1.2h2.6v2.6h2.4V1.2h3.6v2.6h2.4V1.2h2.6v6.4l-1.8 1.6c.2 4.6.8 9.4 2.2 13.4H17.8a1.6 1.6 0 0 1 1.6 1.6v1.4a1.6 1.6 0 0 1-1.6 1.6H2.2A1.6 1.6 0 0 1 .6 25.6v-1.4a1.6 1.6 0 0 1 1.6-1.6H2.6C4 18.6 4.6 13.8 4.8 9.2L3.2 7.6Z';
+
+export function shade(hex: string, f: number) {
+  const c = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
+  const o = c.map((v) => Math.round(f < 0 ? v * (1 + f) : v + (255 - v) * f));
+  return `#${o.map((v) => v.toString(16).padStart(2, '0')).join('')}`;
+}
+
+/** A chess piece standing with its base centre at (x, y), inside an SVG in map units. */
+export function Piece({ kind, color, x, y, s: sc = 0.84, label, id }: { kind: 'rook' | 'pawn'; color: string; x: number; y: number; s?: number; label?: string; id: string }) {
+  const w = 20 * sc, h = 28 * sc;
+  const lw = label ? 6 + 5.2 * label.length : 0;
+  return (
+    <G>
+      <Defs>
+        <SvgGradient id={id} x1="0" y1="0" x2="1" y2="0">
+          <Stop offset="0" stopColor={shade(color, 0.45)} />
+          <Stop offset="0.45" stopColor={color} />
+          <Stop offset="1" stopColor={shade(color, -0.45)} />
+        </SvgGradient>
+      </Defs>
+      <Ellipse cx={x} cy={y + 1} rx={10.5 * sc} ry={3 * sc} fill="#1a0e05" opacity={0.35} />
+      <G transform={`translate(${x - w / 2} ${y - h + 1.5 * sc}) scale(${sc})`}>
+        <Path d={kind === 'rook' ? ROOK : PAWN} fill={`url(#${id})`} stroke={shade(color, -0.6)} strokeWidth={0.7} strokeLinejoin="round" />
+        {kind === 'rook' ? (
+          <Path d="M5.6 10c-.2 4.4-.8 8.6-2 12.4" fill="none" stroke="#fff" strokeOpacity={0.45} strokeWidth={0.9} strokeLinecap="round" />
+        ) : (
+          <>
+            <Path d="M6 4.2a4 4 0 0 1 4-2.2" fill="none" stroke="#fff" strokeOpacity={0.75} strokeWidth={1.1} strokeLinecap="round" />
+            <Path d="M7.4 14c-.3 3.4-1.4 6.2-2.6 8.4" fill="none" stroke="#fff" strokeOpacity={0.45} strokeWidth={0.9} strokeLinecap="round" />
+          </>
+        )}
+        <Path d="M12.6 14.5c.4 3 1.4 5.6 2.6 7.6M9.6 15v7" fill="none" stroke="#000" strokeOpacity={0.12} strokeWidth={0.6} />
+      </G>
+      {label ? (
+        <G transform={`translate(${x} ${y + 5})`}>
+          <Path d={`M${-lw / 2} 0h${lw}l-2 4.5 2 4.5h${-lw}l2-4.5Z`} fill={MAPC.paper} stroke={MAPC.compass} strokeWidth={0.7} />
+          <SvgText y={7} textAnchor="middle" fontFamily={MAP_FONT} fontSize={7.2} fill={MAPC.ink}>{label}</SvgText>
+        </G>
+      ) : null}
+    </G>
+  );
+}
+
+/** Yazan's crowned capital piece (2026-10-14), one picture per kingdom colour, standing with its base centre at (x, y). */
+const CAPITALS = [
+  require('@/assets/conqueror/capital-0.png'),
+  require('@/assets/conqueror/capital-1.png'),
+  require('@/assets/conqueror/capital-2.png'),
+  require('@/assets/conqueror/capital-3.png'),
+  require('@/assets/conqueror/capital-4.png'),
+  require('@/assets/conqueror/capital-5.png'),
+];
+export function Capital({ seat, x, y, label }: { seat: number; x: number; y: number; label?: string }) {
+  const h = 38, w = (h * 70) / 150;
+  const lw = label ? 6 + 5.2 * label.length : 0;
+  return (
+    <G>
+      <Ellipse cx={x} cy={y + 1} rx={10.5} ry={3} fill="#1a0e05" opacity={0.35} />
+      <SvgImage href={CAPITALS[seat % CAPITALS.length]} x={x - w / 2} y={y - h + 1.5} width={w} height={h} />
+      {label ? (
+        <G transform={`translate(${x} ${y + 5})`}>
+          <Path d={`M${-lw / 2} 0h${lw}l-2 4.5 2 4.5h${-lw}l2-4.5Z`} fill={MAPC.paper} stroke={MAPC.compass} strokeWidth={0.7} />
+          <SvgText y={7} textAnchor="middle" fontFamily={MAP_FONT} fontSize={7.2} fill={MAPC.ink}>{label}</SvgText>
+        </G>
+      ) : null}
+    </G>
+  );
+}
+
+/** Was the parchment picture; paper surfaces are now plain app beige, so nothing is drawn. */
+export function Parchment(_: { radius?: number }) {
+  return null;
+}
+
+/** A lone piece as a small icon (board tiles, chips). */
+export function PieceIcon({ kind = 'pawn', color, size = 18 }: { kind?: 'rook' | 'pawn'; color: string; size?: number }) {
+  return (
+    <Svg width={v(size * 0.72)} height={v(size)} viewBox="-1 -1 22 30">
+      <Piece kind={kind} color={color} x={10} y={27} s={0.95} id={`pi${kind}${color.slice(1)}`} />
+    </Svg>
+  );
+}
+
+const s = StyleSheet.create({
+  chip: { flexDirection: 'row', alignItems: 'center', gap: v(5), paddingLeft: v(5), paddingRight: v(9), paddingVertical: v(2), borderRadius: v(20), backgroundColor: AT.chip, borderWidth: 1, borderColor: 'rgba(255,255,255,0.09)' },
+  go: { paddingVertical: v(13), borderRadius: v(14), alignItems: 'center' },
+  ghost: { paddingVertical: v(12), borderRadius: v(14), borderWidth: 1, borderColor: 'rgba(255,255,255,0.09)', backgroundColor: 'rgba(255,255,255,0.05)', alignItems: 'center' },
+  card: { borderRadius: v(10), backgroundColor: AT.paper, borderWidth: 1, borderColor: '#cdb88c', paddingHorizontal: v(5), paddingVertical: v(6), justifyContent: 'center', alignItems: 'center', gap: v(2) },
+  pause: { width: v(34), height: v(34), borderRadius: v(11), borderWidth: 1, borderColor: 'rgba(255,255,255,0.09)', backgroundColor: 'rgba(255,255,255,0.05)', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: v(5), marginTop: v(10) },
+  bar: { width: v(3.5), height: v(13), borderRadius: v(1), backgroundColor: AT.cream },
+  tent: { backgroundColor: AT.paper, borderRadius: v(6), paddingVertical: v(26), paddingHorizontal: v(22), alignItems: 'center', gap: v(4), borderWidth: 1, borderColor: '#5a3a1e', shadowColor: '#000', shadowOpacity: 0.45, shadowRadius: v(10), shadowOffset: { width: 0, height: v(4) }, elevation: 4 },
+  tentRule: { position: 'absolute', left: v(6), right: v(6), top: v(6), bottom: v(6), borderWidth: 1, borderColor: 'rgba(142,28,28,0.45)', borderRadius: v(4) },
+  cardRule: { position: 'absolute', left: v(3), right: v(3), top: v(3), bottom: v(3), borderWidth: 1, borderColor: 'rgba(142,28,28,0.45)', borderRadius: v(3) },
+});

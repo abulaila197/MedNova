@@ -1,0 +1,2358 @@
+{
+ "note": "Session 2 audit edits to the Conqueror clean source (applied to fields/*.json; bank.json is rebuilt with build/conqueror-bank.py). Online play reads the cq_bank table, so these take effect only after the bank row is reloaded and the edge function redeployed.",
+ "tf_true_to_false": [
+  {
+   "id": "anat_tf_001",
+   "old": "The human right lung possesses three lobes, while the left lung possesses two lobes.",
+   "new": "The human right lung possesses two lobes, while the left lung possesses three lobes."
+  },
+  {
+   "id": "anat_tf_008",
+   "old": "The celiac trunk arises from the abdominal aorta at the approximate level of T12.",
+   "new": "The celiac trunk arises from the abdominal aorta at the approximate level of L3."
+  },
+  {
+   "id": "anat_tf_009",
+   "old": "The facial nerve (CN VII) exits the base of the skull through the stylomastoid foramen.",
+   "new": "The facial nerve (CN VII) exits the base of the skull through the foramen ovale."
+  },
+  {
+   "id": "anat_tf_011",
+   "old": "The cerebral aqueduct of Sylvius connects the third ventricle to the fourth ventricle.",
+   "new": "The cerebral aqueduct of Sylvius connects the lateral ventricles to the third ventricle."
+  },
+  {
+   "id": "anat_tf_015",
+   "old": "Skeletal muscle fibers are multinucleated cells with peripherally located nuclei.",
+   "new": "Skeletal muscle fibers are mononucleated cells with centrally located nuclei."
+  },
+  {
+   "id": "anat_tf_021",
+   "old": "The phrenic nerves originate from cervical spinal roots C3, C4, and C5 (\"C3, 4, 5 keeps the diaphragm alive\").",
+   "new": "The phrenic nerves originate from cervical spinal roots C6, C7, and C8."
+  },
+  {
+   "id": "anat_tf_024",
+   "old": "The central sulcus of Rolando separates the frontal lobe from the parietal lobe.",
+   "new": "The central sulcus of Rolando separates the frontal lobe from the temporal lobe."
+  },
+  {
+   "id": "anat_tf_036",
+   "old": "The pudendal nerve arises from the ventral rami of sacral spinal nerves S2, S3, and S4.",
+   "new": "The pudendal nerve arises from the ventral rami of lumbar spinal nerves L2, L3, and L4."
+  },
+  {
+   "id": "anat_tf_046",
+   "old": "The anatomical snuffbox contains the radial artery pulsing along its floor over the scaphoid bone.",
+   "new": "The anatomical snuffbox contains the ulnar artery pulsing along its floor over the scaphoid bone."
+  },
+  {
+   "id": "anat_tf_048",
+   "old": "The internal thoracic (mammary) artery is a direct branch of the first part of the subclavian artery.",
+   "new": "The internal thoracic (mammary) artery is a direct branch of the common carotid artery."
+  },
+  {
+   "id": "anat_tf_050",
+   "old": "The maxillary division of the trigeminal nerve (CN V2) passes through the foramen rotundum.",
+   "new": "The maxillary division of the trigeminal nerve (CN V2) passes through the foramen ovale."
+  },
+  {
+   "id": "anat_tf_053",
+   "old": "Podocytes are specialized visceral epithelial cells in Bowman capsule whose foot processes form filtration slits.",
+   "new": "Podocytes are specialized parietal epithelial cells lining the outer wall of Bowman capsule."
+  },
+  {
+   "id": "anat_tf_054",
+   "old": "The first pharyngeal cleft gives rise to the external acoustic meatus.",
+   "new": "The first pharyngeal cleft gives rise to the Eustachian (auditory) tube."
+  },
+  {
+   "id": "anat_tf_056",
+   "old": "The thoracic duct empties into the venous system at the junction of the left internal jugular and left subclavian veins.",
+   "new": "The thoracic duct empties into the venous system at the junction of the right internal jugular and right subclavian veins."
+  },
+  {
+   "id": "anat_tf_061",
+   "old": "The deep fibular (peroneal) nerve supplies the tibialis anterior, extensor digitorum longus, and extensor hallucis longus muscles.",
+   "new": "The superficial fibular (peroneal) nerve supplies the tibialis anterior, extensor digitorum longus, and extensor hallucis longus muscles."
+  },
+  {
+   "id": "anat_tf_066",
+   "old": "The anterior communicating artery connects the right and left anterior cerebral arteries in the Circle of Willis.",
+   "new": "The anterior communicating artery connects the internal carotid artery to the posterior cerebral artery in the Circle of Willis."
+  },
+  {
+   "id": "anat_tf_069",
+   "old": "Paneth cells are located at the base of intestinal crypts of Lieberkühn and secrete alpha-defensins and lysozyme.",
+   "new": "Paneth cells are located at the tips of intestinal villi and secrete alpha-defensins and lysozyme."
+  },
+  {
+   "id": "anat_tf_073",
+   "old": "The sensory innervation of the posterior one-third of the tongue for both general touch and taste is mediated entirely by CN IX.",
+   "new": "The sensory innervation of the posterior one-third of the tongue for both general touch and taste is mediated entirely by CN VII."
+  },
+  {
+   "id": "anat_tf_074",
+   "old": "The spinal trigeminal nucleus receives and processes pain and temperature information from the ipsilateral face.",
+   "new": "The spinal trigeminal nucleus receives and processes pain and temperature information from the contralateral face."
+  },
+  {
+   "id": "anat_tf_078",
+   "old": "The obturator nerve passes through the obturator canal to innervate the hip adductor muscle compartment.",
+   "new": "The obturator nerve passes through the greater sciatic foramen to innervate the hip adductor muscle compartment."
+  },
+  {
+   "id": "anat_tf_079",
+   "old": "Juxtaglomerular cells in the afferent arteriole are modified smooth muscle cells that synthesize, store, and secrete renin.",
+   "new": "Juxtaglomerular cells in the afferent arteriole are modified smooth muscle cells that synthesize, store, and secrete aldosterone."
+  },
+  {
+   "id": "anat_tf_085",
+   "old": "The lumbricals of the hand flex the metacarpophalangeal (MCP) joints and extend the interphalangeal (IP) joints.",
+   "new": "The lumbricals of the hand extend the metacarpophalangeal (MCP) joints and flex the interphalangeal (IP) joints."
+  },
+  {
+   "id": "bio_tf_002",
+   "old": "Mature human erythrocytes rely solely on anaerobic glycolysis for ATP generation because they lack mitochondria.",
+   "new": "Mature human erythrocytes generate most of their ATP by oxidative phosphorylation in their mitochondria."
+  },
+  {
+   "id": "bio_tf_003",
+   "old": "Phosphofructokinase-1 (PFK-1) is allosterically activated by AMP and fructose-2,6-bisphosphate.",
+   "new": "Phosphofructokinase-1 (PFK-1) is allosterically activated by ATP and citrate."
+  },
+  {
+   "id": "bio_tf_006",
+   "old": "Beta-oxidation of long-chain fatty acids occurs primarily within the mitochondrial matrix.",
+   "new": "Beta-oxidation of long-chain fatty acids occurs primarily within the cytosol."
+  },
+  {
+   "id": "bio_tf_007",
+   "old": "Statins lower serum LDL cholesterol by competitively inhibiting HMG-CoA reductase.",
+   "new": "Statins lower serum LDL cholesterol by competitively inhibiting acetyl-CoA carboxylase."
+  },
+  {
+   "id": "bio_tf_008",
+   "old": "The urea cycle operates to convert toxic free ammonia into urea primarily in the liver.",
+   "new": "The urea cycle operates to convert toxic free ammonia into urea primarily in the kidney."
+  },
+  {
+   "id": "bio_tf_009",
+   "old": "Phenylalanine is converted to tyrosine by the enzyme phenylalanine hydroxylase.",
+   "new": "Phenylalanine is converted to tyrosine by the enzyme tyrosinase."
+  },
+  {
+   "id": "bio_tf_011",
+   "old": "DNA replication in eukaryotic cells proceeds semi-conservatively.",
+   "new": "DNA replication in eukaryotic cells proceeds conservatively, with both parental strands staying together in one daughter molecule."
+  },
+  {
+   "id": "bio_tf_013",
+   "old": "Vitamin C is an essential cofactor for prolyl and lysyl hydroxylases during collagen biosynthesis.",
+   "new": "Vitamin K is an essential cofactor for prolyl and lysyl hydroxylases during collagen biosynthesis."
+  },
+  {
+   "id": "bio_tf_017",
+   "old": "Glycogen is a branched polymer of glucose linked by alpha-1,4- and alpha-1,6-glycosidic bonds.",
+   "new": "Glycogen is an unbranched polymer of glucose linked only by alpha-1,4-glycosidic bonds."
+  },
+  {
+   "id": "bio_tf_019",
+   "old": "Chylomicrons carry dietary exogenous lipids from the intestine to peripheral tissues and liver.",
+   "new": "Chylomicrons carry endogenous lipids synthesized in the liver to peripheral tissues."
+  },
+  {
+   "id": "bio_tf_025",
+   "old": "Pellagra is characterized by the 3 Ds: diarrhea, dermatitis, and dementia, caused by deficiency of niacin (Vitamin B3).",
+   "new": "Pellagra is characterized by the 3 Ds: diarrhea, dermatitis, and dementia, caused by deficiency of thiamine (Vitamin B1)."
+  },
+  {
+   "id": "bio_tf_026",
+   "old": "Glucose-6-phosphate dehydrogenase (G6PD) catalyzes the first and rate-limiting step of the pentose phosphate pathway.",
+   "new": "Glucose-6-phosphate dehydrogenase (G6PD) catalyzes the first and rate-limiting step of glycolysis."
+  },
+  {
+   "id": "bio_tf_028",
+   "old": "Glucokinase has a lower affinity (higher Km) and higher Vmax for glucose than hexokinase I-III.",
+   "new": "Glucokinase has a higher affinity (lower Km) and lower Vmax for glucose than hexokinase I-III."
+  },
+  {
+   "id": "bio_tf_032",
+   "old": "Carnitine palmitoyltransferase-1 (CPT-1) is allosterically inhibited by malonyl-CoA during active fatty acid synthesis.",
+   "new": "Carnitine palmitoyltransferase-1 (CPT-1) is allosterically activated by malonyl-CoA during active fatty acid synthesis."
+  },
+  {
+   "id": "bio_tf_036",
+   "old": "Alkaptonuria is caused by deficiency of homogentisate oxidase, resulting in urine that turns black upon atmospheric oxidation.",
+   "new": "Alkaptonuria is caused by deficiency of phenylalanine hydroxylase, resulting in urine that turns black upon atmospheric oxidation."
+  },
+  {
+   "id": "bio_tf_039",
+   "old": "Allopurinol lowers serum uric acid by competitively inhibiting the enzyme xanthine oxidase.",
+   "new": "Allopurinol lowers serum uric acid by competitively inhibiting the enzyme adenosine deaminase."
+  },
+  {
+   "id": "bio_tf_041",
+   "old": "Thymidylate synthase catalyzes the methylation of dUMP to dTMP using N5,N10-methylene-tetrahydrofolate.",
+   "new": "Thymidylate synthase catalyzes the methylation of dUMP to dTMP using S-adenosylmethionine as the methyl donor."
+  },
+  {
+   "id": "bio_tf_044",
+   "old": "Night blindness (nyctalopia) and xerophthalmia are early clinical signs of vitamin A deficiency.",
+   "new": "Night blindness (nyctalopia) and xerophthalmia are early clinical signs of vitamin D deficiency."
+  },
+  {
+   "id": "bio_tf_050",
+   "old": "In a Lineweaver-Burk double reciprocal plot, the x-intercept equals -1/Km and the y-intercept equals 1/Vmax.",
+   "new": "In a Lineweaver-Burk double reciprocal plot, the x-intercept equals -1/Vmax and the y-intercept equals 1/Km."
+  },
+  {
+   "id": "bio_tf_054",
+   "old": "Prostaglandins, thromboxanes, and leukotrienes are synthesized from the 20-carbon polyunsaturated fatty acid arachidonic acid.",
+   "new": "Prostaglandins, thromboxanes, and leukotrienes are synthesized from cholesterol."
+  },
+  {
+   "id": "bio_tf_060",
+   "old": "Medium-chain acyl-CoA dehydrogenase (MCAD) deficiency presents with non-ketotic hypoglycemia after overnight fasting.",
+   "new": "Medium-chain acyl-CoA dehydrogenase (MCAD) deficiency presents with hypoglycemia and markedly raised ketone levels after overnight fasting."
+  },
+  {
+   "id": "bio_tf_068",
+   "old": "Leflunomide treats rheumatoid arthritis by inhibiting dihydroorotate dehydrogenase, blocking de novo pyrimidine synthesis in lymphocytes.",
+   "new": "Leflunomide treats rheumatoid arthritis by inhibiting IMP dehydrogenase, blocking de novo purine synthesis in lymphocytes."
+  },
+  {
+   "id": "bio_tf_071",
+   "old": "DNA topoisomerase II (DNA gyrase in bacteria) introduces negative supercoils by creating transient double-strand DNA breaks.",
+   "new": "DNA topoisomerase II (DNA gyrase in bacteria) introduces negative supercoils by creating transient single-strand DNA breaks."
+  },
+  {
+   "id": "bio_tf_073",
+   "old": "Avidin in raw egg whites binds tightly to biotin, preventing its gastrointestinal absorption.",
+   "new": "Avidin in raw egg whites binds tightly to thiamine, preventing its gastrointestinal absorption."
+  },
+  {
+   "id": "bio_tf_074",
+   "old": "Vitamin E (alpha-tocopherol) functions primarily as a lipid-soluble antioxidant protecting cell membrane polyunsaturated fatty acids from peroxidation.",
+   "new": "Vitamin E (alpha-tocopherol) functions primarily as a water-soluble cofactor for carboxylation reactions."
+  },
+  {
+   "id": "bio_tf_078",
+   "old": "Phosphorylation of glycogen phosphorylase by phosphorylase kinase converts it from the inactive b form to the active a form.",
+   "new": "Phosphorylation of glycogen phosphorylase by phosphorylase kinase converts it from the active a form to the inactive b form."
+  },
+  {
+   "id": "med_tf_002",
+   "old": "In acute myocardial infarction, ST elevation indicates transmural myocardial ischemia.",
+   "new": "In acute myocardial infarction, ST depression indicates transmural myocardial ischemia."
+  },
+  {
+   "id": "med_tf_005",
+   "old": "The presence of S3 gallop in an adult over 40 is a sensitive and specific indicator of elevated left ventricular filling pressure.",
+   "new": "The presence of S3 gallop in an adult over 40 is a sensitive and specific indicator of elevated left ventricular filling pressure.",
+   "old_explanation": "An S3 gallop reflects high left ventricular end-diastolic filling pressure and volume overload.",
+   "new_explanation": "An S3 gallop is fairly specific for high left ventricular filling pressure, but its sensitivity is low: many patients with raised filling pressure have no audible S3.",
+   "why": "original True statement was inaccurate"
+  },
+  {
+   "id": "med_tf_013",
+   "old": "Subacute granulomatous thyroiditis (de Quervain) is characterized by an exquisitely tender, painful thyroid gland and elevated ESR.",
+   "new": "Subacute granulomatous thyroiditis (de Quervain) is characterized by a painless, non-tender thyroid gland and a normal ESR."
+  },
+  {
+   "id": "med_tf_014",
+   "old": "A serum ferritin level below 15 ng/mL is virtually diagnostic of iron deficiency anemia.",
+   "new": "A serum ferritin level above 300 ng/mL is virtually diagnostic of iron deficiency anemia."
+  },
+  {
+   "id": "med_tf_018",
+   "old": "The Direct Antiglobulin Test (Coombs test) detects antibodies or complement bound directly to the patient's red blood cell membrane.",
+   "new": "The Direct Antiglobulin Test (Coombs test) detects free antibodies circulating in the patient's serum."
+  },
+  {
+   "id": "med_tf_020",
+   "old": "In chronic obstructive pulmonary disease (COPD), the post-bronchodilator FEV1/FVC ratio is less than 0.70.",
+   "new": "In chronic obstructive pulmonary disease (COPD), the post-bronchodilator FEV1/FVC ratio is greater than 0.70."
+  },
+  {
+   "id": "med_tf_025",
+   "old": "Congestive heart failure is the most common cause of a transudative pleural effusion.",
+   "new": "Pneumonia is the most common cause of a transudative pleural effusion."
+  },
+  {
+   "id": "med_tf_026",
+   "old": "Acute tubular necrosis (ATN) typically presents with muddy brown granular casts on urine microscopic examination.",
+   "new": "Acute tubular necrosis (ATN) typically presents with red blood cell casts on urine microscopic examination."
+  },
+  {
+   "id": "med_tf_029",
+   "old": "Minimal change disease is the most common cause of nephrotic syndrome in children and responds dramatically to corticosteroids.",
+   "new": "Minimal change disease is the most common cause of nephrotic syndrome in children and is typically resistant to corticosteroids."
+  },
+  {
+   "id": "med_tf_038",
+   "old": "Osler nodes represent immune complex deposition in the dermal microvasculature.",
+   "new": "Osler nodes are painless, flat hemorrhagic lesions on the palms and soles caused by septic microemboli."
+  },
+  {
+   "id": "med_tf_040",
+   "old": "Celiac disease is associated with human leukocyte antigen (HLA) DQ2 and DQ8 alleles in over 95% of patients.",
+   "new": "Celiac disease is associated with the HLA-B27 allele in over 95% of patients."
+  },
+  {
+   "id": "med_tf_043",
+   "old": "Lactulose is the first-line therapy for hepatic encephalopathy, working by trapping ammonium ions in the colonic lumen.",
+   "new": "Lactulose is the first-line therapy for hepatic encephalopathy, working by raising colonic pH so that ammonia is absorbed more readily."
+  },
+  {
+   "id": "med_tf_047",
+   "old": "Wilson disease is caused by mutations in the ATP7B gene, leading to defective biliary copper excretion.",
+   "new": "Wilson disease is caused by mutations in the HFE gene, leading to defective biliary copper excretion."
+  },
+  {
+   "id": "med_tf_052",
+   "old": "In acute pancreatitis, serum lipase is more sensitive and specific than serum amylase and remains elevated longer.",
+   "new": "In acute pancreatitis, serum amylase is more sensitive and specific than serum lipase and remains elevated longer."
+  },
+  {
+   "id": "med_tf_055",
+   "old": "Spontaneous bacterial peritonitis (SBP) can be diagnosed if ascitic fluid absolute neutrophil count is >= 250 cells/µL.",
+   "new": "Spontaneous bacterial peritonitis (SBP) can be diagnosed only once the ascitic fluid culture becomes positive."
+  },
+  {
+   "id": "med_tf_058",
+   "old": "Limited cutaneous systemic sclerosis (CREST syndrome) is associated with anti-centromere antibodies.",
+   "new": "Limited cutaneous systemic sclerosis (CREST syndrome) is associated with anti-Smith antibodies."
+  },
+  {
+   "id": "med_tf_060",
+   "old": "Scleroderma renal crisis is characterized by acute severe hypertension, microangiopathic hemolytic anemia, and is treated with ACE inhibitors.",
+   "new": "Scleroderma renal crisis is characterized by acute severe hypertension, microangiopathic hemolytic anemia, and is treated with high-dose corticosteroids."
+  },
+  {
+   "id": "med_tf_065",
+   "old": "Ankylosing spondylitis is strongly linked to the HLA-B27 allele and presents with inflammatory back pain improving with exercise.",
+   "new": "Ankylosing spondylitis is strongly linked to the HLA-B27 allele and presents with inflammatory back pain that worsens with exercise."
+  },
+  {
+   "id": "med_tf_068",
+   "old": "Pseudogout is characterized by calcium pyrophosphate dihydrate (CPPD) crystal deposition with positive birefringence.",
+   "new": "Pseudogout is characterized by monosodium urate crystal deposition with negative birefringence."
+  },
+  {
+   "id": "med_tf_071",
+   "old": "Rapid correction of chronic severe hyponatremia can cause osmotic demyelination syndrome (central pontine myelinolysis).",
+   "new": "Rapid correction of chronic severe hyponatremia typically causes cerebral edema and herniation."
+  },
+  {
+   "id": "med_tf_076",
+   "old": "Cushing disease refers specifically to hypercortisolemia caused by an ACTH-secreting pituitary adenoma.",
+   "new": "Cushing disease refers specifically to hypercortisolemia caused by a cortisol-secreting adrenal adenoma."
+  },
+  {
+   "id": "med_tf_082",
+   "old": "Heparin-induced thrombocytopenia (HIT) is caused by IgG antibodies directed against platelet factor 4 (PF4)-heparin complexes.",
+   "new": "Heparin-induced thrombocytopenia (HIT) is caused by IgE antibodies directed against heparin alone."
+  },
+  {
+   "id": "micro_tf_001",
+   "old": "Staphylococcus aureus is coagulase-positive and ferments mannitol, turning mannitol salt agar yellow.",
+   "new": "Staphylococcus aureus is coagulase-negative and does not ferment mannitol."
+  },
+  {
+   "id": "micro_tf_011",
+   "old": "Neisseria meningitidis ferments both maltose and glucose, whereas Neisseria gonorrhoeae ferments only glucose.",
+   "new": "Neisseria gonorrhoeae ferments both maltose and glucose, whereas Neisseria meningitidis ferments only glucose."
+  },
+  {
+   "id": "micro_tf_021",
+   "old": "Mycobacterium tuberculosis is an obligate aerobe that preferentially replicates in lung apices due to high oxygen tension.",
+   "new": "Mycobacterium tuberculosis is an obligate anaerobe that preferentially replicates in the lung bases due to low oxygen tension."
+  },
+  {
+   "id": "micro_tf_024",
+   "old": "Rickettsia rickettsii replicates inside endothelial cells, causing vascular leakage and a petechial rash that begins on the wrists and ankles.",
+   "new": "Rickettsia rickettsii causes a petechial rash that begins on the trunk and spreads outward to the limbs."
+  },
+  {
+   "id": "micro_tf_027",
+   "old": "The VDRL and RPR screening tests for syphilis detect non-specific anticardiolipin antibodies.",
+   "new": "The VDRL and RPR screening tests for syphilis detect antibodies specific to Treponema pallidum antigens."
+  },
+  {
+   "id": "micro_tf_032",
+   "old": "Varicella-zoster virus establishes latency in the dorsal root and cranial nerve sensory ganglia.",
+   "new": "Varicella-zoster virus establishes latency in the anterior horn motor neurons of the spinal cord."
+  },
+  {
+   "id": "micro_tf_034",
+   "old": "Cytomegalovirus is the most common congenital viral infection in the United States.",
+   "new": "Rubella is the most common congenital viral infection in the United States."
+  },
+  {
+   "id": "micro_tf_036",
+   "old": "Hepatitis B virus is a partially double-stranded circular DNA virus that replicates via reverse transcription of an RNA intermediate.",
+   "new": "Hepatitis B virus is a single-stranded positive-sense RNA virus that replicates without any reverse transcription step."
+  },
+  {
+   "id": "micro_tf_045",
+   "old": "Koplik spots on buccal mucosa are pathognomonic for measles (rubeola) infection.",
+   "new": "Koplik spots on buccal mucosa are pathognomonic for rubella (German measles) infection."
+  },
+  {
+   "id": "micro_tf_047",
+   "old": "Rotavirus is a naked double-stranded RNA virus with a segmented genome.",
+   "new": "Rotavirus is an enveloped single-stranded DNA virus."
+  },
+  {
+   "id": "micro_tf_051",
+   "old": "The HIV-1 viral genome consists of two identical single-stranded positive-sense RNA molecules.",
+   "new": "The HIV-1 viral genome consists of a single double-stranded DNA molecule."
+  },
+  {
+   "id": "micro_tf_052",
+   "old": "Chemokine receptor CCR5 is used as a coreceptor by macrophage-tropic (M-tropic) strains of HIV-1.",
+   "new": "Chemokine receptor CXCR4 is the coreceptor used by macrophage-tropic (M-tropic) strains of HIV-1."
+  },
+  {
+   "id": "micro_tf_056",
+   "old": "Aspergillus fumigatus produces acute-angle (45°) branching septate hyphae.",
+   "new": "Aspergillus fumigatus produces broad, non-septate hyphae that branch at right angles."
+  },
+  {
+   "id": "micro_tf_059",
+   "old": "Blastomyces dermatitidis is characterized in tissue by broad-based budding yeasts with thick doubly contoured walls.",
+   "new": "Blastomyces dermatitidis is characterized in tissue by narrow-based budding yeasts surrounded by a thick polysaccharide capsule."
+  },
+  {
+   "id": "micro_tf_064",
+   "old": "Cryptosporidium oocysts stain acid-fast with modified Kinyoun carbolfuchsin stain.",
+   "new": "Cryptosporidium oocysts are best identified in stool with India ink staining."
+  },
+  {
+   "id": "micro_tf_065",
+   "old": "Cats are the definitive hosts for Toxoplasma gondii, where the sexual reproductive cycle occurs.",
+   "new": "Dogs are the definitive hosts for Toxoplasma gondii, where the sexual reproductive cycle occurs."
+  },
+  {
+   "id": "micro_tf_066",
+   "old": "Plasmodium vivax and Plasmodium ovale can form dormant hypnozoites in hepatocytes that cause late clinical relapses.",
+   "new": "Plasmodium falciparum and Plasmodium malariae can form dormant hypnozoites in hepatocytes that cause late clinical relapses."
+  },
+  {
+   "id": "micro_tf_073",
+   "old": "Vancomycin-resistant enterococci (VRE) modify their peptidoglycan terminus from D-Ala-D-Ala to D-Ala-D-Lac.",
+   "new": "Vancomycin-resistant enterococci (VRE) resist vancomycin mainly by producing an enzyme that degrades the drug."
+  },
+  {
+   "id": "obgyn_tf_005",
+   "old": "Calcium gluconate is the specific antidote for magnesium sulfate toxicity.",
+   "new": "Naloxone is the specific antidote for magnesium sulfate toxicity."
+  },
+  {
+   "id": "obgyn_tf_006",
+   "old": "Uterine atony is the most common cause of primary postpartum hemorrhage.",
+   "new": "Retained placental tissue is the most common cause of primary postpartum hemorrhage."
+  },
+  {
+   "id": "obgyn_tf_013",
+   "old": "Intravenous penicillin G is the first-line intrapartum antibiotic of choice for maternal GBS colonization.",
+   "new": "Intravenous vancomycin is the first-line intrapartum antibiotic of choice for maternal GBS colonization."
+  },
+  {
+   "id": "obgyn_tf_015",
+   "old": "The second stage of labor begins with complete cervical dilation (10 cm) and ends with delivery of the baby.",
+   "new": "The second stage of labor begins with complete cervical dilation (10 cm) and ends with delivery of the placenta."
+  },
+  {
+   "id": "obgyn_tf_017",
+   "old": "Normal fetal heart rate baseline ranges between 110 and 160 beats per minute.",
+   "new": "Normal fetal heart rate baseline ranges between 60 and 100 beats per minute."
+  },
+  {
+   "id": "obgyn_tf_018",
+   "old": "Early decelerations in fetal heart rate monitoring are considered reassuring and benign.",
+   "new": "Early decelerations in fetal heart rate monitoring indicate uteroplacental insufficiency and fetal hypoxia."
+  },
+  {
+   "id": "obgyn_tf_020",
+   "old": "Variable decelerations are caused by transient umbilical cord compression.",
+   "new": "Variable decelerations are caused by fetal head compression."
+  },
+  {
+   "id": "obgyn_tf_025",
+   "old": "HPV genotypes 16 and 18 cause the majority of cervical carcinomas.",
+   "new": "HPV genotypes 6 and 11 cause the majority of cervical carcinomas."
+  },
+  {
+   "id": "obgyn_tf_028",
+   "old": "Clue cells are vaginal epithelial cells studded with adherent coccobacilli, pathognomonic for bacterial vaginosis.",
+   "new": "Clue cells are vaginal epithelial cells studded with adherent coccobacilli, characteristic of vulvovaginal candidiasis."
+  },
+  {
+   "id": "obgyn_tf_031",
+   "old": "Vulvovaginal candidiasis is characterized by pseudohyphae on KOH prep and normal vaginal pH (3.8-4.5).",
+   "new": "Vulvovaginal candidiasis is characterized by clue cells on wet mount and a vaginal pH above 4.5."
+  },
+  {
+   "id": "obgyn_tf_039",
+   "old": "Complete hydatidiform moles are typically diploid and entirely paternal in genetic origin.",
+   "new": "Complete hydatidiform moles are typically triploid and contain fetal tissue."
+  },
+  {
+   "id": "obgyn_tf_042",
+   "old": "Primary amenorrhea is diagnosed if menarche has not occurred by age 15 in a patient with normal breast development.",
+   "new": "Primary amenorrhea is diagnosed if menarche has not occurred by age 12 in a patient with normal breast development."
+  },
+  {
+   "id": "obgyn_tf_049",
+   "old": "The McRoberts maneuver for shoulder dystocia involves extreme hyperflexion of the maternal thighs onto the abdomen.",
+   "new": "The McRoberts maneuver for shoulder dystocia involves applying firm fundal pressure."
+  },
+  {
+   "id": "obgyn_tf_052",
+   "old": "The Kleihauer-Betke test relies on the resistance of fetal hemoglobin to acid elution compared to adult hemoglobin.",
+   "new": "The Kleihauer-Betke test relies on the resistance of adult hemoglobin to acid elution compared to fetal hemoglobin."
+  },
+  {
+   "id": "obgyn_tf_055",
+   "old": "Nitrazine paper turns dark blue at a basic pH > 6.5, supporting the diagnosis of ruptured amniotic membranes.",
+   "new": "Amniotic fluid is acidic, so Nitrazine paper turns yellow when the amniotic membranes have ruptured."
+  },
+  {
+   "id": "obgyn_tf_058",
+   "old": "Monochorionic diamniotic (MoDi) twin pregnancies are the specific subgroup at risk for Twin-to-Twin Transfusion Syndrome.",
+   "new": "Dichorionic diamniotic (DiDi) twin pregnancies are the specific subgroup at risk for Twin-to-Twin Transfusion Syndrome."
+  },
+  {
+   "id": "obgyn_tf_061",
+   "old": "Congenital toxoplasmosis classically causes a triad of chorioretinitis, hydrocephalus, and diffuse intracranial calcifications.",
+   "new": "Congenital toxoplasmosis classically causes a triad of cataracts, patent ductus arteriosus, and sensorineural deafness."
+  },
+  {
+   "id": "obgyn_tf_065",
+   "old": "Granulosa cell tumors of the ovary produce estrogen and feature Call-Exner bodies on histological examination.",
+   "new": "Granulosa cell tumors of the ovary produce alpha-fetoprotein and feature Schiller-Duval bodies on histological examination."
+  },
+  {
+   "id": "obgyn_tf_070",
+   "old": "Tamoxifen exerts anti-estrogenic effects on breast tissue but pro-estrogenic effects on the endometrium.",
+   "new": "Tamoxifen exerts pro-estrogenic effects on breast tissue but anti-estrogenic effects on the endometrium."
+  },
+  {
+   "id": "obgyn_tf_075",
+   "old": "Kallmann syndrome is characterized by hypogonadotropic hypogonadism associated with anosmia or hyposmia.",
+   "new": "Kallmann syndrome is characterized by hypergonadotropic hypogonadism associated with anosmia or hyposmia."
+  },
+  {
+   "id": "obgyn_tf_080",
+   "old": "Unilateral bloody nipple discharge without a palpable breast mass is most commonly caused by an intraductal papilloma.",
+   "new": "Unilateral bloody nipple discharge without a palpable breast mass is most commonly caused by invasive ductal carcinoma."
+  },
+  {
+   "id": "obgyn_tf_086",
+   "old": "In a pregnant patient with appendicitis, the appendix is typically displaced cephalad and laterally into the right upper quadrant as the uterus enlarges.",
+   "new": "In a pregnant patient with appendicitis, the appendix is typically displaced caudally and medially deep into the pelvis as the uterus enlarges."
+  },
+  {
+   "id": "path_tf_005",
+   "old": "Caseous necrosis is pathognomonic for tuberculous mycobacterial infection.",
+   "new": "Caseous necrosis is pathognomonic for tuberculous mycobacterial infection.",
+   "old_explanation": "Caseous necrosis is the friable cheese-like tissue destruction characteristic of granulomas in Mycobacterium tuberculosis and systemic fungi.",
+   "new_explanation": "Caseous necrosis is characteristic of tuberculosis but not pathognomonic: it also occurs in systemic fungal infections such as histoplasmosis.",
+   "why": "original True statement was inaccurate"
+  },
+  {
+   "id": "path_tf_009",
+   "old": "Bcl-2 is an anti-apoptotic protein that inhibits mitochondrial outer membrane permeabilization.",
+   "new": "Bcl-2 is a pro-apoptotic protein that promotes mitochondrial outer membrane permeabilization."
+  },
+  {
+   "id": "path_tf_011",
+   "old": "Neutrophils are the predominant leukocyte population in the acute inflammatory exudate during the first 6 to 24 hours.",
+   "new": "Lymphocytes are the predominant leukocyte population in the acute inflammatory exudate during the first 6 to 24 hours."
+  },
+  {
+   "id": "path_tf_013",
+   "old": "Leukocyte adhesion deficiency type 1 (LAD-1) is caused by a congenital defect in CD18 integrin beta-2 chain synthesis.",
+   "new": "Leukocyte adhesion deficiency type 1 (LAD-1) is caused by a congenital defect in fucosylation of sialyl-Lewis X."
+  },
+  {
+   "id": "path_tf_016",
+   "old": "Type III collagen is the initial structural collagen deposited in healing wounds and is later replaced by strong Type I collagen.",
+   "new": "Type I collagen is the initial structural collagen deposited in healing wounds and is later replaced by Type III collagen."
+  },
+  {
+   "id": "path_tf_021",
+   "old": "Arterial thrombi typically form at sites of endothelial injury or turbulence and grow retrograde toward the heart.",
+   "new": "Arterial thrombi typically form at sites of endothelial injury and grow in the direction of blood flow, away from the heart."
+  },
+  {
+   "id": "path_tf_024",
+   "old": "Cardiogenic shock is characterized by elevated systemic vascular resistance and elevated pulmonary capillary wedge pressure.",
+   "new": "Cardiogenic shock is characterized by low systemic vascular resistance and low pulmonary capillary wedge pressure."
+  },
+  {
+   "id": "path_tf_028",
+   "old": "Right-sided heart failure causes nutmeg liver due to passive chronic venous congestion of hepatic central veins.",
+   "new": "Left-sided heart failure causes nutmeg liver due to passive chronic venous congestion of hepatic central veins."
+  },
+  {
+   "id": "path_tf_035",
+   "old": "The Warburg effect describes the preference of malignant cells for aerobic glycolysis rather than oxidative phosphorylation.",
+   "new": "The Warburg effect describes the preference of malignant cells for oxidative phosphorylation rather than glycolysis."
+  },
+  {
+   "id": "path_tf_037",
+   "old": "Paraneoplastic hypercalcemia in squamous cell carcinoma of the lung is mediated by parathyroid hormone-related peptide (PTHrP).",
+   "new": "Paraneoplastic hypercalcemia in squamous cell carcinoma of the lung is mediated by ectopic ACTH."
+  },
+  {
+   "id": "path_tf_038",
+   "old": "Human papillomavirus (HPV) high-risk types 16 and 18 encode oncoproteins E6 and E7, which inactivate p53 and Rb respectively.",
+   "new": "Human papillomavirus (HPV) high-risk types 16 and 18 encode oncoproteins E6 and E7, which inactivate Rb and p53 respectively."
+  },
+  {
+   "id": "path_tf_041",
+   "old": "Goodpasture syndrome is an example of Type II antibody-mediated cytotoxic hypersensitivity.",
+   "new": "Goodpasture syndrome is an example of Type III immune complex-mediated hypersensitivity."
+  },
+  {
+   "id": "path_tf_045",
+   "old": "Bruton X-linked agammaglobulinemia results from a defect in Bruton tyrosine kinase (BTK), arresting B-cell maturation at the pre-B stage.",
+   "new": "Bruton X-linked agammaglobulinemia results from a defect in Bruton tyrosine kinase (BTK), arresting T-cell maturation in the thymus."
+  },
+  {
+   "id": "path_tf_055",
+   "old": "The most common congenital cardiac malformation identified at birth is a ventricular septal defect (VSD).",
+   "new": "The most common congenital cardiac malformation identified at birth is tetralogy of Fallot."
+  },
+  {
+   "id": "path_tf_062",
+   "old": "Small cell lung carcinoma is strongly associated with cigarette smoking and frequently expresses neuroendocrine markers such as chromogranin.",
+   "new": "Small cell lung carcinoma is rarely associated with cigarette smoking and lacks neuroendocrine markers."
+  },
+  {
+   "id": "path_tf_072",
+   "old": "Poststreptococcal glomerulonephritis demonstrates subepithelial \"humps\" on electron microscopy.",
+   "new": "Poststreptococcal glomerulonephritis demonstrates a 'spike and dome' pattern of deposits on silver stain."
+  },
+  {
+   "id": "peds_tf_002",
+   "old": "A normal 12-month-old infant is expected to have tripled their birth weight.",
+   "new": "A normal 12-month-old infant is expected to have quadrupled their birth weight."
+  },
+  {
+   "id": "peds_tf_003",
+   "old": "The posterior fontanelle of a normal infant typically closes by 2 to 3 months of age.",
+   "new": "The posterior fontanelle of a normal infant typically closes by 18 to 24 months of age."
+  },
+  {
+   "id": "peds_tf_010",
+   "old": "Respiratory syncytial virus (RSV) is the leading causative pathogen in infant acute bronchiolitis.",
+   "new": "Adenovirus is the leading causative pathogen in infant acute bronchiolitis."
+  },
+  {
+   "id": "peds_tf_012",
+   "old": "Croup (laryngotracheobronchitis) is most commonly caused by human parainfluenza virus type 1.",
+   "new": "Croup (laryngotracheobronchitis) is most commonly caused by Haemophilus influenzae type b."
+  },
+  {
+   "id": "peds_tf_014",
+   "old": "The 'steeple sign' on an anteroposterior neck radiograph represents subglottic tracheal narrowing in croup.",
+   "new": "The 'steeple sign' on an anteroposterior neck radiograph represents a swollen epiglottis in acute epiglottitis."
+  },
+  {
+   "id": "peds_tf_018",
+   "old": "A patent ductus arteriosus produces a continuous, rough 'machinery' murmur at the left infraclavicular area.",
+   "new": "A patent ductus arteriosus produces a harsh holosystolic murmur at the left lower sternal border."
+  },
+  {
+   "id": "peds_tf_019",
+   "old": "Indomethacin or ibuprofen promotes closure of a hemodynamically significant patent ductus arteriosus in premature neonates.",
+   "new": "Indomethacin or ibuprofen is given to keep the ductus arteriosus open in ductal-dependent congenital heart disease."
+  },
+  {
+   "id": "peds_tf_021",
+   "old": "Secundum atrial septal defects classically produce wide, fixed splitting of the second heart sound (S2).",
+   "new": "Secundum atrial septal defects classically produce paradoxical splitting of the second heart sound (S2)."
+  },
+  {
+   "id": "peds_tf_022",
+   "old": "Transposition of the great arteries is characterized by an 'egg-on-a-string' cardiac contour on chest radiography.",
+   "new": "Transposition of the great arteries is characterized by a 'boot-shaped' cardiac contour on chest radiography."
+  },
+  {
+   "id": "peds_tf_024",
+   "old": "Coarctation of the aorta typically presents with hypertension in the arms and diminished, delayed pulses in the legs.",
+   "new": "Coarctation of the aorta typically presents with hypertension in the legs and diminished, delayed pulses in the arms."
+  },
+  {
+   "id": "peds_tf_026",
+   "old": "Hypochloremic, hypokalemic metabolic alkalosis is the classic electrolyte derangement in hypertrophic pyloric stenosis.",
+   "new": "Hyperchloremic metabolic acidosis is the classic electrolyte derangement in hypertrophic pyloric stenosis."
+  },
+  {
+   "id": "peds_tf_028",
+   "old": "The stool in acute intussusception is classically described as 'currant jelly' stool.",
+   "new": "The stool in acute intussusception is classically described as 'rice-water' stool."
+  },
+  {
+   "id": "peds_tf_034",
+   "old": "Duodenal atresia presents on plain abdominal radiography with the classic 'double bubble' sign.",
+   "new": "Duodenal atresia presents on plain abdominal radiography with the classic 'coffee bean' sign."
+  },
+  {
+   "id": "peds_tf_036",
+   "old": "In omphalocele, the herniated abdominal viscera are covered by a membrane sac.",
+   "new": "In omphalocele, the herniated abdominal viscera are not covered by any membrane sac."
+  },
+  {
+   "id": "peds_tf_041",
+   "old": "Henoch-Schönlein purpura is an IgA-mediated small-vessel leukocytoclastic vasculitis.",
+   "new": "Henoch-Schönlein purpura is an IgE-mediated large-vessel granulomatous vasculitis."
+  },
+  {
+   "id": "peds_tf_045",
+   "old": "Neuroblastoma frequently crosses the midline and causes elevated urinary catecholamine metabolites (VMA and HVA).",
+   "new": "Neuroblastoma characteristically arises from the renal parenchyma and does not produce catecholamine metabolites."
+  },
+  {
+   "id": "peds_tf_046",
+   "old": "Acute lymphoblastic leukemia (ALL) is the most common pediatric malignancy.",
+   "new": "Acute myeloid leukemia (AML) is the most common pediatric malignancy."
+  },
+  {
+   "id": "peds_tf_047",
+   "old": "Roseola infantum (HHV-6) is characterized by high fever that breaks abruptly just as a rose-colored maculopapular rash appears.",
+   "new": "Roseola infantum (HHV-6) is characterized by a rash that appears first and is followed by several days of high fever."
+  },
+  {
+   "id": "peds_tf_049",
+   "old": "Erythema infectiosum (Fifth disease) produces a classic 'slapped cheek' appearance followed by a lacy reticular rash.",
+   "new": "Erythema infectiosum (Fifth disease) is caused by human herpesvirus 6."
+  },
+  {
+   "id": "peds_tf_054",
+   "old": "Phenylketonuria (PKU) is caused by a deficiency of the enzyme phenylalanine hydroxylase.",
+   "new": "Phenylketonuria (PKU) is caused by a deficiency of the enzyme tyrosinase."
+  },
+  {
+   "id": "peds_tf_055",
+   "old": "Sweat chloride testing >= 60 mmol/L confirms the diagnosis of cystic fibrosis.",
+   "new": "A sweat chloride level below 30 mmol/L confirms the diagnosis of cystic fibrosis."
+  },
+  {
+   "id": "peds_tf_058",
+   "old": "Chronic granulomatous disease results from a defect in the NADPH oxidase enzyme complex.",
+   "new": "Chronic granulomatous disease results from a defect in the myeloperoxidase enzyme."
+  },
+  {
+   "id": "peds_tf_060",
+   "old": "DiGeorge syndrome is caused by a microdeletion on chromosome 22q11.2.",
+   "new": "DiGeorge syndrome is caused by a microdeletion on chromosome 7q11.23."
+  },
+  {
+   "id": "peds_tf_063",
+   "old": "Biliary atresia presents with persistent conjugated (direct) hyperbilirubinemia, acholic pale stools, and dark urine.",
+   "new": "Biliary atresia presents with isolated unconjugated (indirect) hyperbilirubinemia and normally pigmented stools."
+  },
+  {
+   "id": "peds_tf_066",
+   "old": "In slipped capital femoral epiphysis, the femoral head slips posterior and medial relative to the femoral neck.",
+   "new": "In slipped capital femoral epiphysis, the femoral head slips anterior and lateral relative to the femoral neck."
+  },
+  {
+   "id": "peds_tf_071",
+   "old": "The Barlow test detects an unstable hip by attempting to gently dislocate the femoral head posterior out of the acetabulum.",
+   "new": "The Barlow test reduces a dislocated hip by abducting the flexed thigh and lifting the greater trochanter anteriorly."
+  },
+  {
+   "id": "peds_tf_074",
+   "old": "Ewing sarcoma characteristically displays an 'onion-skin' lamellated periosteal reaction.",
+   "new": "Ewing sarcoma characteristically displays a 'soap-bubble' lytic appearance in the epiphysis."
+  },
+  {
+   "id": "peds_tf_076",
+   "old": "Prader-Willi syndrome is caused by the loss of paternally expressed genes on chromosome 15q11-q13.",
+   "new": "Prader-Willi syndrome is caused by the loss of maternally expressed genes on chromosome 15q11-q13."
+  },
+  {
+   "id": "peds_tf_080",
+   "old": "Osteogenesis imperfecta is caused by mutations in type I collagen genes (COL1A1 or COL1A2).",
+   "new": "Osteogenesis imperfecta is caused by mutations in the fibrillin-1 gene (FBN1)."
+  },
+  {
+   "id": "peds_tf_082",
+   "old": "Maple syrup urine disease results from defective catabolism of branched-chain amino acids (leucine, isoleucine, valine).",
+   "new": "Maple syrup urine disease results from defective catabolism of aromatic amino acids (phenylalanine, tyrosine, tryptophan)."
+  },
+  {
+   "id": "pharm_tf_001",
+   "old": "Beta-2 adrenergic receptor stimulation promotes relaxation of bronchial smooth muscle.",
+   "new": "Beta-2 adrenergic receptor stimulation promotes contraction of bronchial smooth muscle."
+  },
+  {
+   "id": "pharm_tf_012",
+   "old": "Thiazide diuretics inhibit the Na+/Cl- cotransporter in the early distal convoluted tubule.",
+   "new": "Thiazide diuretics inhibit the Na+/K+/2Cl- cotransporter in the thick ascending limb of Henle."
+  },
+  {
+   "id": "pharm_tf_014",
+   "old": "Nitroglycerin primarily reduces cardiac preload by dilating venous capacitance vessels.",
+   "new": "Nitroglycerin at standard doses primarily reduces afterload by dilating systemic arterioles."
+  },
+  {
+   "id": "pharm_tf_019",
+   "old": "Furosemide inhibits the Na+/K+/2Cl- symporter in the thick ascending limb of Henle.",
+   "new": "Furosemide inhibits the Na+/Cl- cotransporter in the distal convoluted tubule."
+  },
+  {
+   "id": "pharm_tf_022",
+   "old": "Benzodiazepines increase the frequency of GABA-A receptor chloride channel opening.",
+   "new": "Benzodiazepines increase the duration, rather than the frequency, of GABA-A receptor chloride channel opening."
+  },
+  {
+   "id": "pharm_tf_026",
+   "old": "Levodopa is capable of crossing the blood-brain barrier via the large neutral amino acid transporter.",
+   "new": "Dopamine itself readily crosses the blood-brain barrier, so it can be given orally to treat Parkinson disease."
+  },
+  {
+   "id": "pharm_tf_034",
+   "old": "Macrolides like azithromycin bind reversibly to the 50S ribosomal subunit.",
+   "new": "Macrolides like azithromycin bind reversibly to the 30S ribosomal subunit."
+  },
+  {
+   "id": "pharm_tf_038",
+   "old": "Rifampin exerts its antimicrobial effect by inhibiting bacterial DNA-dependent RNA polymerase.",
+   "new": "Rifampin exerts its antimicrobial effect by inhibiting bacterial DNA gyrase."
+  },
+  {
+   "id": "pharm_tf_040",
+   "old": "Acyclovir has high selective toxicity because it requires herpesvirus-encoded thymidine kinase for initial phosphorylation.",
+   "new": "Acyclovir is efficiently phosphorylated by host thymidine kinase in uninfected human cells."
+  },
+  {
+   "id": "pharm_tf_042",
+   "old": "Sulfonylureas stimulate insulin release by closing ATP-sensitive potassium channels in beta cells.",
+   "new": "Sulfonylureas stimulate insulin release by opening ATP-sensitive potassium channels in beta cells."
+  },
+  {
+   "id": "pharm_tf_044",
+   "old": "Propylthiouracil inhibits both thyroid hormone synthesis and peripheral conversion of T4 to T3.",
+   "new": "Methimazole inhibits both thyroid hormone synthesis and peripheral conversion of T4 to T3."
+  },
+  {
+   "id": "pharm_tf_054",
+   "old": "Metoclopramide enhances gastric emptying by antagonizing dopamine D2 receptors.",
+   "new": "Metoclopramide enhances gastric emptying by stimulating dopamine D2 receptors."
+  },
+  {
+   "id": "pharm_tf_062",
+   "old": "Low-molecular-weight heparins predominantly inhibit factor Xa rather than thrombin.",
+   "new": "Low-molecular-weight heparins predominantly inhibit thrombin rather than factor Xa."
+  },
+  {
+   "id": "pharm_tf_087",
+   "old": "Idarucizumab is a specific monoclonal antibody fragment developed for rapid reversal of dabigatran.",
+   "new": "Idarucizumab is a specific monoclonal antibody fragment developed for rapid reversal of rivaroxaban."
+  },
+  {
+   "id": "phys_tf_002",
+   "old": "The sinoatrial (SA) node normally has the fastest intrinsic rate of spontaneous automaticity in the cardiac conduction system.",
+   "new": "The atrioventricular (AV) node normally has the fastest intrinsic rate of spontaneous automaticity in the cardiac conduction system."
+  },
+  {
+   "id": "phys_tf_005",
+   "old": "Pulmonary surfactant increases lung compliance and prevents alveolar collapse at low lung volumes.",
+   "new": "Pulmonary surfactant decreases lung compliance and promotes alveolar collapse at low lung volumes."
+  },
+  {
+   "id": "phys_tf_006",
+   "old": "Carbon monoxide binds to hemoglobin with an affinity approximately 200 times greater than that of oxygen.",
+   "new": "Carbon monoxide binds to hemoglobin with an affinity only about twice that of oxygen."
+  },
+  {
+   "id": "phys_tf_007",
+   "old": "Inulin clearance is clinically considered the gold standard benchmark for measuring Glomerular Filtration Rate (GFR).",
+   "new": "Para-aminohippuric acid (PAH) clearance is clinically considered the gold standard benchmark for measuring Glomerular Filtration Rate (GFR)."
+  },
+  {
+   "id": "phys_tf_008",
+   "old": "Under normal physiological conditions, 100% of filtered glucose is reabsorbed in the proximal convoluted tubule.",
+   "new": "Under normal physiological conditions, most filtered glucose is reabsorbed in the collecting duct."
+  },
+  {
+   "id": "phys_tf_009",
+   "old": "The intracellular concentration of potassium (K+) is much higher than its extracellular concentration in healthy human cells.",
+   "new": "The extracellular concentration of potassium (K+) is much higher than its intracellular concentration in healthy human cells."
+  },
+  {
+   "id": "phys_tf_011",
+   "old": "Skeletal muscle contraction requires ATP binding to the myosin head to detach it from the actin filament.",
+   "new": "Skeletal muscle contraction requires ATP binding to the myosin head to attach it firmly to actin, so ATP depletion causes muscle relaxation."
+  },
+  {
+   "id": "phys_tf_012",
+   "old": "Gastrin is secreted by G cells located in the antrum of the stomach.",
+   "new": "Gastrin is secreted by G cells located in the gastric fundus."
+  },
+  {
+   "id": "phys_tf_016",
+   "old": "Antidiuretic hormone (ADH) acts on V2 receptors in collecting duct principal cells to increase water reabsorption.",
+   "new": "Antidiuretic hormone (ADH) acts on V1 receptors in collecting duct principal cells to increase water reabsorption."
+  },
+  {
+   "id": "phys_tf_018",
+   "old": "The partial pressure of oxygen in arterial blood (PaO2) under normal conditions breathing room air at sea level is approximately 95-100 mmHg.",
+   "new": "The partial pressure of oxygen in arterial blood (PaO2) under normal conditions breathing room air at sea level is approximately 40 mmHg."
+  },
+  {
+   "id": "phys_tf_024",
+   "old": "Hyperventilation lowers arterial PaCO2, leading to respiratory alkalosis.",
+   "new": "Hyperventilation raises arterial PaCO2, leading to respiratory acidosis."
+  },
+  {
+   "id": "phys_tf_025",
+   "old": "The PR interval on a normal surface ECG reflects conduction delay through the atrioventricular (AV) node.",
+   "new": "The PR interval on a normal surface ECG reflects ventricular repolarization."
+  },
+  {
+   "id": "phys_tf_026",
+   "old": "Vital capacity is the maximum volume of air that can be exhaled after a maximal inspiration.",
+   "new": "Vital capacity is the volume of air that remains in the lungs after a maximal expiration."
+  },
+  {
+   "id": "phys_tf_028",
+   "old": "According to Poiseuille law, reducing the internal radius of an arteriole by 50% increases its vascular resistance 16-fold.",
+   "new": "According to Poiseuille law, reducing the internal radius of an arteriole by 50% increases its vascular resistance 4-fold."
+  },
+  {
+   "id": "phys_tf_031",
+   "old": "In a standing position, both ventilation and perfusion are greater at the lung base than at the lung apex.",
+   "new": "In a standing position, both ventilation and perfusion are greater at the lung apex than at the lung base."
+  },
+  {
+   "id": "phys_tf_034",
+   "old": "Afferent arteriolar constriction decreases both renal blood flow (RBF) and glomerular filtration rate (GFR).",
+   "new": "Afferent arteriolar constriction decreases renal blood flow (RBF) but increases glomerular filtration rate (GFR)."
+  },
+  {
+   "id": "phys_tf_038",
+   "old": "GABA and glycine are the primary inhibitory neurotransmitters in the mammalian central nervous system.",
+   "new": "Glutamate and glycine are the primary inhibitory neurotransmitters in the mammalian central nervous system."
+  },
+  {
+   "id": "phys_tf_043",
+   "old": "In primary adrenal insufficiency (Addison disease), serum ACTH is elevated, causing generalized cutaneous hyperpigmentation.",
+   "new": "In primary adrenal insufficiency (Addison disease), serum ACTH is low and the skin is typically pale."
+  },
+  {
+   "id": "phys_tf_045",
+   "old": "C-peptide is cleaved from proinsulin in equimolar amounts and serves as a reliable marker of endogenous insulin secretion.",
+   "new": "C-peptide is present in commercial insulin preparations, so it cannot distinguish endogenous from injected insulin."
+  },
+  {
+   "id": "phys_tf_047",
+   "old": "Diabetic ketoacidosis (DKA) characteristically presents with an elevated serum anion gap (> 12 mEq/L).",
+   "new": "Diabetic ketoacidosis (DKA) characteristically presents with a normal serum anion gap."
+  },
+  {
+   "id": "phys_tf_049",
+   "old": "Coronary blood flow to the left ventricular subendocardium occurs predominantly during ventricular diastole.",
+   "new": "Coronary blood flow to the left ventricular subendocardium occurs predominantly during ventricular systole."
+  },
+  {
+   "id": "phys_tf_050",
+   "old": "Diffusion capacity of the lung for carbon monoxide (DLCO) is characteristically reduced in emphysema due to alveolar septal destruction.",
+   "new": "Diffusion capacity of the lung for carbon monoxide (DLCO) is characteristically increased in emphysema."
+  },
+  {
+   "id": "phys_tf_052",
+   "old": "The sodium-potassium pump (Na+/K+ ATPase) exports 3 Na+ ions in exchange for importing 2 K+ ions using 1 ATP.",
+   "new": "The sodium-potassium pump (Na+/K+ ATPase) exports 2 Na+ ions in exchange for importing 3 K+ ions using 1 ATP."
+  },
+  {
+   "id": "phys_tf_058",
+   "old": "A right-to-left cardiac or pulmonary shunt produces hypoxemia that cannot be fully corrected by breathing 100% supplemental oxygen.",
+   "new": "A right-to-left cardiac or pulmonary shunt produces hypoxemia that is fully corrected by breathing 100% supplemental oxygen."
+  },
+  {
+   "id": "phys_tf_063",
+   "old": "In prerenal acute kidney injury, the fractional excretion of sodium (FENa) is typically less than 1% and urine osmolarity exceeds 500 mOsm/kg.",
+   "new": "In prerenal acute kidney injury, the fractional excretion of sodium (FENa) is typically greater than 2% and urine osmolarity is below 350 mOsm/kg."
+  },
+  {
+   "id": "surg_tf_001",
+   "old": "A femoral hernia is located inferior to the inguinal ligament and medial to the femoral vein.",
+   "new": "A femoral hernia is located superior to the inguinal ligament and lateral to the femoral vein."
+  },
+  {
+   "id": "surg_tf_004",
+   "old": "The spleen is the most frequently injured abdominal solid organ in blunt trauma.",
+   "new": "The pancreas is the most frequently injured abdominal solid organ in blunt trauma."
+  },
+  {
+   "id": "surg_tf_005",
+   "old": "Tension pneumothorax should be diagnosed clinically and treated immediately without waiting for a chest radiograph.",
+   "new": "Tension pneumothorax should be confirmed on chest radiograph before needle decompression is performed."
+  },
+  {
+   "id": "surg_tf_013",
+   "old": "Hypocalcemia causes QT prolongation on electrocardiogram.",
+   "new": "Hypocalcemia causes QT shortening on electrocardiogram."
+  },
+  {
+   "id": "surg_tf_014",
+   "old": "Hyperkalemia produces peaked T waves on the electrocardiogram.",
+   "new": "Hyperkalemia produces prominent U waves on the electrocardiogram."
+  },
+  {
+   "id": "surg_tf_019",
+   "old": "Charcot triad indicates the presence of ascending cholangitis.",
+   "new": "Charcot triad (fever, right upper quadrant pain, jaundice) indicates acute appendicitis."
+  },
+  {
+   "id": "surg_tf_021",
+   "old": "Subdural hematomas cross cranial sutures on non-contrast head CT.",
+   "new": "Epidural hematomas typically cross cranial sutures on non-contrast head CT."
+  },
+  {
+   "id": "surg_tf_029",
+   "old": "Carotid endarterectomy is indicated for symptomatic patients with 70% to 99% internal carotid artery stenosis.",
+   "new": "Carotid endarterectomy is indicated for symptomatic patients with less than 50% internal carotid artery stenosis."
+  },
+  {
+   "id": "surg_tf_039",
+   "old": "Esophageal rupture (Boerhaave syndrome) most commonly occurs in the posterolateral left distal esophagus.",
+   "new": "Esophageal rupture (Boerhaave syndrome) most commonly occurs in the upper cervical esophagus."
+  },
+  {
+   "id": "surg_tf_049",
+   "old": "Septic shock in its early warm phase typically exhibits high cardiac output and low systemic vascular resistance.",
+   "new": "Septic shock in its early warm phase typically exhibits low cardiac output and high systemic vascular resistance."
+  },
+  {
+   "id": "surg_tf_057",
+   "old": "The right testicular vein empties directly into the inferior vena cava at an acute angle.",
+   "new": "The right testicular vein empties into the right renal vein."
+  },
+  {
+   "id": "surg_tf_064",
+   "old": "Calcitonin is a specific serum tumor marker for medullary thyroid carcinoma.",
+   "new": "Thyroglobulin is a specific serum tumor marker for medullary thyroid carcinoma."
+  },
+  {
+   "id": "surg_tf_068",
+   "old": "An Amyand hernia contains the vermiform appendix within an inguinal hernia sac.",
+   "new": "An Amyand hernia contains a Meckel diverticulum within an inguinal hernia sac."
+  }
+ ],
+ "accuracy": [
+  {
+   "id": "med_tf_090",
+   "field": "prompt",
+   "old": "Susac syndrome characteristically produces hyperdense 'snowball' lesions in the central corpus callosum on sagittal T2/FLAIR MRI.",
+   "new": "Susac syndrome characteristically produces hyperintense 'snowball' lesions in the central corpus callosum on sagittal T2/FLAIR MRI."
+  },
+  {
+   "id": "obgyn_tf_012",
+   "field": "prompt",
+   "old": "Routine universal screening for Group B Streptococcus (GBS) colonization is performed between 35 and 37 weeks gestation.",
+   "new": "Routine universal screening for Group B Streptococcus (GBS) colonization is performed at 36 0/7 to 37 6/7 weeks gestation."
+  },
+  {
+   "id": "obgyn_tf_012",
+   "field": "explanation",
+   "old": "ACOG recommends rectovaginal culture at 35-37 weeks to guide intrapartum prophylaxis.",
+   "new": "ACOG recommends rectovaginal culture at 36 0/7 to 37 6/7 weeks to guide intrapartum prophylaxis."
+  },
+  {
+   "id": "path_tf_064",
+   "field": "prompt",
+   "old": "Asbestos exposure increases the relative risk of bronchogenic carcinoma more than the risk of malignant mesothelioma.",
+   "new": "Among asbestos-exposed people, bronchogenic carcinoma is more common than malignant mesothelioma."
+  },
+  {
+   "id": "phys_tf_087",
+   "field": "prompt",
+   "old": "During rapid early ventricular ejection, blood continues to accelerate out of the left ventricle into the aorta even after LV intracavitary pressure falls slightly below aortic root pressure.",
+   "new": "During late (reduced) ventricular ejection, blood continues to flow out of the left ventricle into the aorta even after LV intracavitary pressure falls slightly below aortic root pressure."
+  },
+  {
+   "id": "phys_tf_089",
+   "field": "prompt",
+   "old": "In mammalian hair cells of the cochlea, mechanical deflection of stereocilia toward the kinocilium opens apical transduction channels that depolarize the cell via inward flux of potassium (K+) from the high-potassium endolymph.",
+   "new": "In mammalian hair cells of the cochlea, mechanical deflection of stereocilia toward the tallest stereocilia opens apical transduction channels that depolarize the cell via inward flux of potassium (K+) from the high-potassium endolymph."
+  },
+  {
+   "id": "obgyn_mcq_017",
+   "field": "prompt",
+   "old": "What screening test is universally performed at 35 to 37 weeks gestation to identify colonization that requires intrapartum antibiotic prophylaxis?",
+   "new": "What screening test is universally performed at 36 0/7 to 37 6/7 weeks gestation to identify colonization that requires intrapartum antibiotic prophylaxis?"
+  }
+ ],
+ "other": [
+  {
+   "id": "pharm_match_015",
+   "field": "explanation",
+   "old": "RIPE regimen antitubercular drugs have classic USMLE board-tested adverse reactions.",
+   "new": "Each drug in the RIPE regimen has a characteristic adverse effect.",
+   "why": "removed \"USMLE board-tested\" wording"
+  },
+  {
+   "id": "path_mcq_060",
+   "field": "prompt",
+   "old": "Which proto-oncogene encoding a small GTPase is the most frequently mutated oncogene in human human cancers, notably pancreatic adenocarcinoma?",
+   "new": "Which proto-oncogene encoding a small GTPase is the most frequently mutated oncogene in human cancers, notably pancreatic adenocarcinoma?"
+  }
+ ],
+ "mcq_length": [
+  {
+   "id": "anat_mcq_002",
+   "option": 3,
+   "correct": false,
+   "old": "Teres minor",
+   "new": "Teres minor (posterior cuff)"
+  },
+  {
+   "id": "anat_mcq_006",
+   "option": 2,
+   "correct": false,
+   "old": "Iliopsoas",
+   "new": "Iliopsoas (iliacus and psoas major)"
+  },
+  {
+   "id": "anat_mcq_007",
+   "option": 2,
+   "correct": false,
+   "old": "3 lobes in both",
+   "new": "3 lobes in both the right and the left lungs"
+  },
+  {
+   "id": "anat_mcq_016",
+   "option": 3,
+   "correct": false,
+   "old": "Temporalis",
+   "new": "Temporalis (anterior fibers)"
+  },
+  {
+   "id": "anat_mcq_017",
+   "option": 1,
+   "correct": false,
+   "old": "Foramen ovale",
+   "new": "Foramen ovale of the sphenoid"
+  },
+  {
+   "id": "anat_mcq_018",
+   "option": 2,
+   "correct": false,
+   "old": "Cerebral aqueduct of Sylvius",
+   "new": "Cerebral aqueduct of Sylvius (mesencephalic duct)"
+  },
+  {
+   "id": "anat_mcq_025",
+   "option": 2,
+   "correct": false,
+   "old": "Foramen ovale",
+   "new": "Foramen ovale of the interatrial septum"
+  },
+  {
+   "id": "anat_mcq_026",
+   "option": 1,
+   "correct": false,
+   "old": "First pharyngeal arch",
+   "new": "First pharyngeal arch (mandibular arch)"
+  },
+  {
+   "id": "anat_mcq_029",
+   "option": 2,
+   "correct": false,
+   "old": "Cubital tunnel syndrome",
+   "new": "Cubital tunnel syndrome (ulnar nerve)"
+  },
+  {
+   "id": "anat_mcq_031",
+   "option": 1,
+   "correct": false,
+   "old": "Achilles tendon",
+   "new": "Achilles (calcaneal) tendon"
+  },
+  {
+   "id": "anat_mcq_034",
+   "option": 2,
+   "correct": false,
+   "old": "T6-T7 intervertebral disc and xiphoid",
+   "new": "T6-T7 intervertebral disc and xiphisternal joint"
+  },
+  {
+   "id": "anat_mcq_036",
+   "option": 3,
+   "correct": false,
+   "old": "First part of duodenum",
+   "new": "First part of the duodenum (superior part)"
+  },
+  {
+   "id": "anat_mcq_037",
+   "option": 1,
+   "correct": false,
+   "old": "Inferior vena cava",
+   "new": "Inferior vena cava (infrarenal)"
+  },
+  {
+   "id": "anat_mcq_040",
+   "option": 2,
+   "correct": false,
+   "old": "Three corpora cavernosa",
+   "new": "Three corpora cavernosa with no corpus spongiosum"
+  },
+  {
+   "id": "anat_mcq_045",
+   "option": 1,
+   "correct": false,
+   "old": "Ventral posteromedial (VPM) nucleus",
+   "new": "Ventral posteromedial (VPM) thalamic nucleus"
+  },
+  {
+   "id": "anat_mcq_051",
+   "option": 1,
+   "correct": false,
+   "old": "Third pharyngeal pouch",
+   "new": "Third pharyngeal pouch (dorsal wing)"
+  },
+  {
+   "id": "anat_mcq_057",
+   "option": 3,
+   "correct": false,
+   "old": "Thyroarytenoid",
+   "new": "Thyroarytenoid (including vocalis)"
+  },
+  {
+   "id": "anat_mcq_062",
+   "option": 0,
+   "correct": true,
+   "old": "Lateral femoral cutaneous nerve under inguinal ligament",
+   "new": "Lateral femoral cutaneous nerve"
+  },
+  {
+   "id": "anat_mcq_065",
+   "option": 2,
+   "correct": false,
+   "old": "Abducens nerve (CN VI)",
+   "new": "Abducens nerve (CN VI) along the clivus"
+  },
+  {
+   "id": "anat_mcq_075",
+   "option": 1,
+   "correct": false,
+   "old": "Hamstrings",
+   "new": "Hamstrings (biceps femoris, semitendinosus, semimembranosus)"
+  },
+  {
+   "id": "anat_mcq_076",
+   "option": 2,
+   "correct": false,
+   "old": "Flexor carpi radialis and palmaris longus",
+   "new": "Flexor carpi radialis, palmaris longus, and flexor digitorum superficialis"
+  },
+  {
+   "id": "anat_mcq_080",
+   "option": 1,
+   "correct": false,
+   "old": "First and second pharyngeal clefts",
+   "new": "First and second pharyngeal clefts (grooves)"
+  },
+  {
+   "id": "anat_mcq_084",
+   "option": 3,
+   "correct": false,
+   "old": "Broad ligament",
+   "new": "Broad ligament (mesovarium portion)"
+  },
+  {
+   "id": "anat_mcq_086",
+   "option": 2,
+   "correct": false,
+   "old": "Bilateral angular gyri",
+   "new": "Bilateral angular gyri of the parietal lobes"
+  },
+  {
+   "id": "bio_mcq_004",
+   "option": 2,
+   "correct": false,
+   "old": "Complex III (Cytochrome bc1 complex)",
+   "new": "Complex III (Ubiquinol-cytochrome c oxidoreductase)"
+  },
+  {
+   "id": "bio_mcq_013",
+   "option": 3,
+   "correct": false,
+   "old": "Vitamin E",
+   "new": "Vitamin E (tocopherol)"
+  },
+  {
+   "id": "bio_mcq_017",
+   "option": 3,
+   "correct": false,
+   "old": "Increases both Km and Vmax",
+   "new": "Increases both the apparent Km and the Vmax"
+  },
+  {
+   "id": "bio_mcq_020",
+   "option": 3,
+   "correct": false,
+   "old": "Apo A-I",
+   "new": "Apo A-I (on HDL)"
+  },
+  {
+   "id": "bio_mcq_021",
+   "option": 1,
+   "correct": false,
+   "old": "NADH",
+   "new": "NADH (from glycolysis)"
+  },
+  {
+   "id": "bio_mcq_028",
+   "option": 1,
+   "correct": false,
+   "old": "Debranching enzyme",
+   "new": "Debranching enzyme (alpha-1,6-glucosidase)"
+  },
+  {
+   "id": "bio_mcq_033",
+   "option": 1,
+   "correct": false,
+   "old": "Fatty acid synthase",
+   "new": "Fatty acid synthase complex"
+  },
+  {
+   "id": "bio_mcq_044",
+   "option": 1,
+   "correct": false,
+   "old": "Thymidylate synthase",
+   "new": "Thymidylate synthase (dUMP to dTMP)"
+  },
+  {
+   "id": "bio_mcq_046",
+   "option": 3,
+   "correct": false,
+   "old": "Vitamin E (Tocopherol)",
+   "new": "Vitamin E (Alpha-tocopherol)"
+  },
+  {
+   "id": "bio_mcq_048",
+   "option": 1,
+   "correct": false,
+   "old": "Direct inhibition of Complex IV",
+   "new": "Direct inhibition of Complex IV (cytochrome c oxidase)"
+  },
+  {
+   "id": "bio_mcq_049",
+   "option": 3,
+   "correct": false,
+   "old": "Rotor gamma subunit",
+   "new": "Central stalk gamma subunit of F1"
+  },
+  {
+   "id": "bio_mcq_053",
+   "option": 2,
+   "correct": false,
+   "old": "Decreases both Km and Vmax",
+   "new": "Decreases both the apparent Km and the Vmax"
+  },
+  {
+   "id": "bio_mcq_061",
+   "option": 0,
+   "correct": true,
+   "old": "Lysosomal acid alpha-1,4-glucosidase",
+   "new": "Acid alpha-glucosidase"
+  },
+  {
+   "id": "bio_mcq_061",
+   "option": 2,
+   "correct": false,
+   "old": "Debranching enzyme",
+   "new": "Debranching enzyme (amylo-1,6-glucosidase)"
+  },
+  {
+   "id": "bio_mcq_066",
+   "option": 1,
+   "correct": false,
+   "old": "ATP-binding cassette transporter A1 (ABCA1)",
+   "new": "ATP-binding cassette transporter A1 (ABCA1) on enterocytes"
+  },
+  {
+   "id": "bio_mcq_067",
+   "option": 3,
+   "correct": false,
+   "old": "Sphingomyelinase",
+   "new": "Lysosomal acid sphingomyelinase"
+  },
+  {
+   "id": "bio_mcq_077",
+   "option": 2,
+   "correct": false,
+   "old": "Biotin (Vitamin B7)",
+   "new": "Biotin (Vitamin B7, Vitamin H)"
+  },
+  {
+   "id": "bio_mcq_080",
+   "option": 2,
+   "correct": false,
+   "old": "Complex II",
+   "new": "Complex II (succinate dehydrogenase)"
+  },
+  {
+   "id": "bio_mcq_082",
+   "option": 2,
+   "correct": false,
+   "old": "Shine-Dalgarno sequence",
+   "new": "Shine-Dalgarno ribosome-binding sequence"
+  },
+  {
+   "id": "bio_mcq_083",
+   "option": 0,
+   "correct": true,
+   "old": "Electrophoretic Mobility Shift Assay (EMSA / Gel Shift)",
+   "new": "Gel shift assay (EMSA)"
+  },
+  {
+   "id": "bio_mcq_084",
+   "option": 3,
+   "correct": false,
+   "old": "Hexokinase",
+   "new": "Hexokinase type I"
+  },
+  {
+   "id": "bio_mcq_086",
+   "option": 2,
+   "correct": false,
+   "old": "DNA glycosylase",
+   "new": "Uracil-DNA glycosylase"
+  },
+  {
+   "id": "med_mcq_006",
+   "option": 1,
+   "correct": false,
+   "old": "Thyroid-stimulating immunoglobulin (TSI)",
+   "new": "TSH receptor-stimulating immunoglobulin (TSI)"
+  },
+  {
+   "id": "med_mcq_007",
+   "option": 3,
+   "correct": false,
+   "old": "Stool culture for ova and parasites",
+   "new": "Stool microscopy for ova and parasites (O&P)"
+  },
+  {
+   "id": "med_mcq_010",
+   "option": 3,
+   "correct": false,
+   "old": "Legionella pneumophila",
+   "new": "Legionella pneumophila serogroup 1"
+  },
+  {
+   "id": "med_mcq_017",
+   "option": 1,
+   "correct": false,
+   "old": "Rhomboid-shaped, weakly positively birefringent crystals",
+   "new": "Rhomboid-shaped, weakly positively birefringent CPPD crystals"
+  },
+  {
+   "id": "med_mcq_022",
+   "option": 0,
+   "correct": true,
+   "old": "Lumbar puncture with CSF analysis and culture",
+   "new": "Lumbar puncture with CSF culture"
+  },
+  {
+   "id": "med_mcq_022",
+   "option": 1,
+   "correct": false,
+   "old": "Non-contrast head CT alone",
+   "new": "Non-contrast head CT of the brain alone"
+  },
+  {
+   "id": "med_mcq_028",
+   "option": 2,
+   "correct": false,
+   "old": "Psoriatic arthritis",
+   "new": "Polyarticular psoriatic arthritis"
+  },
+  {
+   "id": "med_mcq_030",
+   "option": 2,
+   "correct": false,
+   "old": "Primary aldosteronism from adrenal adenoma",
+   "new": "Primary aldosteronism from an aldosterone-producing adrenal adenoma"
+  },
+  {
+   "id": "med_mcq_032",
+   "option": 2,
+   "correct": false,
+   "old": "Hypertension, hyperglycemia, and hyperpigmentation",
+   "new": "Hypertension, hyperglycemia, and skin hyperpigmentation"
+  },
+  {
+   "id": "med_mcq_033",
+   "option": 3,
+   "correct": false,
+   "old": "Serum thyroid-stimulating hormone",
+   "new": "Serum thyroid-stimulating hormone (TSH)"
+  },
+  {
+   "id": "med_mcq_035",
+   "option": 2,
+   "correct": false,
+   "old": "Staphylococcus epidermidis",
+   "new": "Coagulase-negative Staphylococcus epidermidis"
+  },
+  {
+   "id": "med_mcq_041",
+   "option": 1,
+   "correct": false,
+   "old": "Centriacinar (centrilobular) emphysema in upper lung zones",
+   "new": "Centriacinar (centrilobular) emphysema predominantly in upper lung zones"
+  },
+  {
+   "id": "med_mcq_052",
+   "option": 2,
+   "correct": false,
+   "old": "Within 24 hours",
+   "new": "Within 24 hours of last known well"
+  },
+  {
+   "id": "med_mcq_054",
+   "option": 0,
+   "correct": true,
+   "old": "Muscle weakness that improves with repetitive exercise and absent deep tendon reflexes",
+   "new": "Weakness improving with repeated effort; reduced reflexes"
+  },
+  {
+   "id": "med_mcq_054",
+   "option": 1,
+   "correct": false,
+   "old": "Muscle weakness that worsens progressively with exercise",
+   "new": "Muscle weakness that worsens progressively with repeated exercise"
+  },
+  {
+   "id": "med_mcq_058",
+   "option": 1,
+   "correct": false,
+   "old": "ATP7B gene mutation",
+   "new": "ATP7B copper transporter gene mutation"
+  },
+  {
+   "id": "med_mcq_062",
+   "option": 3,
+   "correct": false,
+   "old": "Nonalcoholic steatohepatitis (NASH)",
+   "new": "Nonalcoholic steatohepatitis (NASH/MASH)"
+  },
+  {
+   "id": "med_mcq_063",
+   "option": 3,
+   "correct": false,
+   "old": ">= 1,000 cells/µL",
+   "new": ">= 1,000 neutrophils/µL"
+  },
+  {
+   "id": "med_mcq_066",
+   "option": 3,
+   "correct": false,
+   "old": "Polyarteritis nodosa",
+   "new": "Polyarteritis nodosa (PAN)"
+  },
+  {
+   "id": "med_mcq_072",
+   "option": 0,
+   "correct": true,
+   "old": "Emergent therapeutic plasma exchange and corticosteroids",
+   "new": "Plasma exchange and corticosteroids"
+  },
+  {
+   "id": "med_mcq_072",
+   "option": 2,
+   "correct": false,
+   "old": "High-dose intravenous heparin",
+   "new": "High-dose intravenous unfractionated heparin"
+  },
+  {
+   "id": "med_mcq_074",
+   "option": 0,
+   "correct": true,
+   "old": "Discontinue all heparin products immediately and initiate a non-heparin direct thrombin inhibitor",
+   "new": "Stop all heparin and start a non-heparin anticoagulant"
+  },
+  {
+   "id": "med_mcq_077",
+   "option": 1,
+   "correct": false,
+   "old": "Small cell lung carcinoma",
+   "new": "Small cell (oat cell) lung carcinoma"
+  },
+  {
+   "id": "med_mcq_082",
+   "option": 1,
+   "correct": false,
+   "old": "Type 1 (distal) RTA",
+   "new": "Type 1 (classic distal) RTA"
+  },
+  {
+   "id": "micro_mcq_003",
+   "option": 2,
+   "correct": false,
+   "old": "Klebsiella pneumoniae",
+   "new": "Klebsiella pneumoniae subsp. pneumoniae"
+  },
+  {
+   "id": "micro_mcq_004",
+   "option": 1,
+   "correct": false,
+   "old": "Staphylococcus epidermidis",
+   "new": "Staphylococcus epidermidis (coagulase-negative)"
+  },
+  {
+   "id": "micro_mcq_024",
+   "option": 0,
+   "correct": true,
+   "old": "Large cells with prominent basophilic intranuclear inclusion surrounded by a clear halo",
+   "new": "Owl's eye basophilic intranuclear inclusions"
+  },
+  {
+   "id": "micro_mcq_026",
+   "option": 2,
+   "correct": false,
+   "old": "M2 matrix protein",
+   "new": "M2 matrix ion channel protein"
+  },
+  {
+   "id": "micro_mcq_044",
+   "option": 1,
+   "correct": false,
+   "old": "Ascaris lumbricoides",
+   "new": "Ascaris lumbricoides (giant roundworm)"
+  },
+  {
+   "id": "micro_mcq_057",
+   "option": 3,
+   "correct": false,
+   "old": "Hepatitis D virus (HDV)",
+   "new": "Hepatitis D virus (HDV, delta agent)"
+  },
+  {
+   "id": "micro_mcq_084",
+   "option": 1,
+   "correct": false,
+   "old": "Human herpesvirus 6 (HHV-6)",
+   "new": "Human herpesvirus 6 (HHV-6, roseola)"
+  },
+  {
+   "id": "obgyn_mcq_004",
+   "option": 3,
+   "correct": false,
+   "old": "Levetiracetam",
+   "new": "Intravenous levetiracetam"
+  },
+  {
+   "id": "obgyn_mcq_006",
+   "option": 3,
+   "correct": false,
+   "old": "Cervical ectropion",
+   "new": "Cervical ectropion (erosion)"
+  },
+  {
+   "id": "obgyn_mcq_012",
+   "option": 2,
+   "correct": false,
+   "old": "Cornua / interstitial tube",
+   "new": "Cornual (interstitial) part of the tube"
+  },
+  {
+   "id": "obgyn_mcq_013",
+   "option": 0,
+   "correct": true,
+   "old": "Transvaginal ultrasound and quantitative serum beta-hCG",
+   "new": "Transvaginal ultrasound and serum beta-hCG"
+  },
+  {
+   "id": "obgyn_mcq_013",
+   "option": 3,
+   "correct": false,
+   "old": "Culdocentesis",
+   "new": "Culdocentesis for free intraperitoneal blood"
+  },
+  {
+   "id": "obgyn_mcq_015",
+   "option": 3,
+   "correct": false,
+   "old": "Leucovorin",
+   "new": "Leucovorin (folinic acid)"
+  },
+  {
+   "id": "obgyn_mcq_016",
+   "option": 1,
+   "correct": false,
+   "old": "At 12 weeks gestation only",
+   "new": "At 12 weeks gestation only, at the dating scan"
+  },
+  {
+   "id": "obgyn_mcq_017",
+   "option": 2,
+   "correct": false,
+   "old": "Endocervical swab for Neisseria gonorrhoeae",
+   "new": "Endocervical NAAT swab for Neisseria gonorrhoeae"
+  },
+  {
+   "id": "obgyn_mcq_018",
+   "option": 2,
+   "correct": false,
+   "old": "Intravenous vancomycin",
+   "new": "Intravenous vancomycin plus gentamicin"
+  },
+  {
+   "id": "obgyn_mcq_022",
+   "option": 0,
+   "correct": true,
+   "old": "Diagnostic laparoscopy with direct visualization and biopsy",
+   "new": "Laparoscopy with biopsy"
+  },
+  {
+   "id": "obgyn_mcq_029",
+   "option": 1,
+   "correct": false,
+   "old": "Serous cystadenoma",
+   "new": "Serous cystadenofibroma"
+  },
+  {
+   "id": "obgyn_mcq_038",
+   "option": 2,
+   "correct": false,
+   "old": "Placenta accreta",
+   "new": "Placenta accreta spectrum disorder"
+  },
+  {
+   "id": "obgyn_mcq_043",
+   "option": 2,
+   "correct": false,
+   "old": "Late decelerations",
+   "new": "Late (uteroplacental) decelerations"
+  },
+  {
+   "id": "obgyn_mcq_044",
+   "option": 3,
+   "correct": false,
+   "old": "Thin-walled empty gestational sac",
+   "new": "Thin-walled empty gestational sac with no yolk sac seen"
+  },
+  {
+   "id": "obgyn_mcq_046",
+   "option": 0,
+   "correct": true,
+   "old": "Quantitative human chorionic gonadotropin (beta-hCG)",
+   "new": "Serum beta-hCG"
+  },
+  {
+   "id": "obgyn_mcq_051",
+   "option": 2,
+   "correct": false,
+   "old": "Ceftriaxone monotherapy",
+   "new": "Intravenous ceftriaxone monotherapy"
+  },
+  {
+   "id": "obgyn_mcq_060",
+   "option": 1,
+   "correct": false,
+   "old": "Preterm labor",
+   "new": "Spontaneous preterm labor"
+  },
+  {
+   "id": "obgyn_mcq_068",
+   "option": 2,
+   "correct": false,
+   "old": "Dichorionic diamniotic (DiDi) twins",
+   "new": "Dichorionic diamniotic (DiDi) monozygotic twins"
+  },
+  {
+   "id": "obgyn_mcq_082",
+   "option": 2,
+   "correct": false,
+   "old": "Clomiphene",
+   "new": "Clomiphene citrate"
+  },
+  {
+   "id": "obgyn_mcq_089",
+   "option": 0,
+   "correct": true,
+   "old": "After completion of pubertal development (late adolescence)",
+   "new": "After puberty is complete"
+  },
+  {
+   "id": "path_mcq_002",
+   "option": 0,
+   "correct": true,
+   "old": "Preserved tissue architecture with ghostly outlines of anucleate myocytes",
+   "new": "Preserved outlines of anucleate myocytes"
+  },
+  {
+   "id": "path_mcq_004",
+   "option": 2,
+   "correct": false,
+   "old": "Caseous necrosis",
+   "new": "Caseous (granulomatous) necrosis"
+  },
+  {
+   "id": "path_mcq_008",
+   "option": 1,
+   "correct": false,
+   "old": "Vascular endothelial growth factor (VEGF)",
+   "new": "Vascular endothelial growth factor A (VEGF-A)"
+  },
+  {
+   "id": "path_mcq_009",
+   "option": 0,
+   "correct": true,
+   "old": "Endothelial injury, stasis/turbulent flow, and hypercoagulability",
+   "new": "Endothelial injury, stasis, hypercoagulability"
+  },
+  {
+   "id": "path_mcq_015",
+   "option": 3,
+   "correct": false,
+   "old": "Type IV hypersensitivity",
+   "new": "Type IV (delayed-type) hypersensitivity"
+  },
+  {
+   "id": "path_mcq_020",
+   "option": 0,
+   "correct": true,
+   "old": "Ventricular free wall rupture causing cardiac tamponade",
+   "new": "Ventricular free wall rupture"
+  },
+  {
+   "id": "path_mcq_024",
+   "option": 2,
+   "correct": false,
+   "old": "Paraseptal (distal acinar) emphysema",
+   "new": "Paraseptal (distal acinar) emphysema along the pleura"
+  },
+  {
+   "id": "path_mcq_029",
+   "option": 0,
+   "correct": true,
+   "old": "Smooth, linear IgG deposition along the glomerular basement membrane",
+   "new": "Linear IgG deposits along the GBM"
+  },
+  {
+   "id": "path_mcq_034",
+   "option": 2,
+   "correct": false,
+   "old": "Cowdry A inclusions",
+   "new": "Cowdry type A inclusions"
+  },
+  {
+   "id": "path_mcq_037",
+   "option": 2,
+   "correct": false,
+   "old": "Follicular carcinoma",
+   "new": "Follicular thyroid carcinoma"
+  },
+  {
+   "id": "path_mcq_040",
+   "option": 2,
+   "correct": false,
+   "old": "Langhans giant cell",
+   "new": "Langhans multinucleated giant cell"
+  },
+  {
+   "id": "path_mcq_045",
+   "option": 0,
+   "correct": true,
+   "old": "Extracellular beta-amyloid plaques and intracellular hyperphosphorylated tau neurofibrillary tangles",
+   "new": "Beta-amyloid plaques and tau neurofibrillary tangles"
+  },
+  {
+   "id": "path_mcq_049",
+   "option": 2,
+   "correct": false,
+   "old": "Increased pulmonary capillary wedge pressure with severe bradycardia",
+   "new": "Increased pulmonary capillary wedge pressure with severe bradycardia and pulmonary edema"
+  },
+  {
+   "id": "path_mcq_077",
+   "option": 1,
+   "correct": false,
+   "old": "AA (amyloid-associated) amyloidosis",
+   "new": "AA (serum amyloid A-derived) amyloidosis"
+  },
+  {
+   "id": "path_mcq_081",
+   "option": 1,
+   "correct": false,
+   "old": "Glomerular capillary wire-looping",
+   "new": "Subendothelial glomerular capillary wire-looping"
+  },
+  {
+   "id": "path_mcq_082",
+   "option": 3,
+   "correct": false,
+   "old": "Gastrointestinal stromal tumor",
+   "new": "Gastrointestinal stromal tumor (GIST)"
+  },
+  {
+   "id": "peds_mcq_001",
+   "option": 3,
+   "correct": false,
+   "old": "12 months",
+   "new": "12 to 15 months"
+  },
+  {
+   "id": "peds_mcq_006",
+   "option": 3,
+   "correct": false,
+   "old": "Persistent pulmonary hypertension",
+   "new": "Persistent pulmonary hypertension of the newborn"
+  },
+  {
+   "id": "peds_mcq_008",
+   "option": 1,
+   "correct": false,
+   "old": "Parainfluenza virus type 1",
+   "new": "Human parainfluenza virus type 1"
+  },
+  {
+   "id": "peds_mcq_011",
+   "option": 0,
+   "correct": true,
+   "old": "Barking 'seal-like' cough, inspiratory stridor, and hoarseness",
+   "new": "Barking cough, inspiratory stridor, hoarseness"
+  },
+  {
+   "id": "peds_mcq_011",
+   "option": 3,
+   "correct": false,
+   "old": "Bilateral parotid gland swelling",
+   "new": "Bilateral painful parotid gland swelling with fever"
+  },
+  {
+   "id": "peds_mcq_013",
+   "option": 0,
+   "correct": true,
+   "old": "Nebulized racemic epinephrine and single-dose oral dexamethasone",
+   "new": "Nebulized epinephrine plus oral dexamethasone"
+  },
+  {
+   "id": "peds_mcq_013",
+   "option": 2,
+   "correct": false,
+   "old": "Inhaled albuterol monotherapy",
+   "new": "Inhaled albuterol monotherapy every 20 minutes"
+  },
+  {
+   "id": "peds_mcq_018",
+   "option": 1,
+   "correct": false,
+   "old": "Atrial septal defect (ASD)",
+   "new": "Secundum atrial septal defect (ASD)"
+  },
+  {
+   "id": "peds_mcq_019",
+   "option": 1,
+   "correct": false,
+   "old": "Continuous 'machine-like' murmur at the left infraclavicular area",
+   "new": "Continuous 'machine-like' murmur at the left infraclavicular area, peaking around S2"
+  },
+  {
+   "id": "peds_mcq_021",
+   "option": 0,
+   "correct": true,
+   "old": "Indomethacin or Ibuprofen (cyclooxygenase inhibitors)",
+   "new": "Indomethacin or ibuprofen"
+  },
+  {
+   "id": "peds_mcq_024",
+   "option": 3,
+   "correct": false,
+   "old": "Persistent truncus arteriosus",
+   "new": "Persistent truncus arteriosus (common trunk)"
+  },
+  {
+   "id": "peds_mcq_027",
+   "option": 3,
+   "correct": false,
+   "old": "Aortic stenosis",
+   "new": "Supravalvular aortic stenosis"
+  },
+  {
+   "id": "peds_mcq_029",
+   "option": 3,
+   "correct": false,
+   "old": "Normal anion gap acidosis with hyperkalemia",
+   "new": "Normal anion gap metabolic acidosis with hyperkalemia"
+  },
+  {
+   "id": "peds_mcq_030",
+   "option": 2,
+   "correct": false,
+   "old": "Whipple procedure",
+   "new": "Whipple pancreaticoduodenectomy"
+  },
+  {
+   "id": "peds_mcq_032",
+   "option": 0,
+   "correct": true,
+   "old": "Episodic severe colicky abdominal pain, a palpable sausage-shaped mass, and 'currant jelly' stools",
+   "new": "Colicky pain, sausage-shaped mass, and currant jelly stools"
+  },
+  {
+   "id": "peds_mcq_038",
+   "option": 2,
+   "correct": false,
+   "old": "Abdominal ultrasound alone",
+   "new": "Abdominal ultrasound with Doppler alone"
+  },
+  {
+   "id": "peds_mcq_054",
+   "option": 2,
+   "correct": false,
+   "old": "Roseola infantum",
+   "new": "Roseola infantum (exanthem subitum)"
+  },
+  {
+   "id": "peds_mcq_056",
+   "option": 0,
+   "correct": true,
+   "old": "Single high-dose Intravenous Immunoglobulin plus high-dose Aspirin",
+   "new": "IVIG plus high-dose aspirin"
+  },
+  {
+   "id": "peds_mcq_060",
+   "option": 3,
+   "correct": false,
+   "old": "Methylmalonic acidemia",
+   "new": "Isolated methylmalonic acidemia"
+  },
+  {
+   "id": "peds_mcq_061",
+   "option": 2,
+   "correct": false,
+   "old": "Type III (Cori disease)",
+   "new": "Type III (Cori/Forbes disease)"
+  },
+  {
+   "id": "peds_mcq_066",
+   "option": 0,
+   "correct": true,
+   "old": "Quantitative pilocarpine iontophoresis sweat chloride test showing >= 60 mmol/L",
+   "new": "Sweat chloride >= 60 mmol/L"
+  },
+  {
+   "id": "peds_mcq_069",
+   "option": 3,
+   "correct": false,
+   "old": "Hyper-IgE syndrome",
+   "new": "Autosomal dominant hyper-IgE (Job) syndrome"
+  },
+  {
+   "id": "peds_mcq_071",
+   "option": 3,
+   "correct": false,
+   "old": "Severe combined immunodeficiency",
+   "new": "Severe combined immunodeficiency (SCID)"
+  },
+  {
+   "id": "peds_mcq_073",
+   "option": 3,
+   "correct": false,
+   "old": "Meconium ileus",
+   "new": "Meconium ileus from inspissated meconium"
+  },
+  {
+   "id": "peds_mcq_086",
+   "option": 2,
+   "correct": false,
+   "old": "Ehlers-Danlos syndrome",
+   "new": "Classic Ehlers-Danlos syndrome"
+  },
+  {
+   "id": "peds_mcq_090",
+   "option": 2,
+   "correct": false,
+   "old": "Vitamin B6 (pyridoxine)",
+   "new": "Vitamin B6 (pyridoxal phosphate)"
+  },
+  {
+   "id": "pharm_mcq_002",
+   "option": 3,
+   "correct": false,
+   "old": "Scopolamine",
+   "new": "Scopolamine (hyoscine)"
+  },
+  {
+   "id": "pharm_mcq_005",
+   "option": 0,
+   "correct": true,
+   "old": "First-dose orthostatic hypotension and syncope",
+   "new": "First-dose orthostatic hypotension"
+  },
+  {
+   "id": "pharm_mcq_005",
+   "option": 2,
+   "correct": false,
+   "old": "Hypertensive crisis",
+   "new": "Hypertensive crisis on the first dose"
+  },
+  {
+   "id": "pharm_mcq_026",
+   "option": 3,
+   "correct": false,
+   "old": "30S subunit; competitive block of aminoacyl-tRNA binding only",
+   "new": "30S subunit; competitive block of aminoacyl-tRNA binding at the A site"
+  },
+  {
+   "id": "pharm_mcq_028",
+   "option": 3,
+   "correct": false,
+   "old": "Sulfonamides (e.g., sulfamethoxazole)",
+   "new": "Sulfonamides (e.g., sulfamethoxazole, sulfadiazine)"
+  },
+  {
+   "id": "pharm_mcq_048",
+   "option": 2,
+   "correct": false,
+   "old": "Deferoxamine",
+   "new": "Deferoxamine mesylate"
+  },
+  {
+   "id": "pharm_mcq_063",
+   "option": 1,
+   "correct": false,
+   "old": "Ampicillin-gentamicin",
+   "new": "Ampicillin plus gentamicin combination"
+  },
+  {
+   "id": "pharm_mcq_081",
+   "option": 2,
+   "correct": false,
+   "old": "Hydroxocobalamin",
+   "new": "Hydroxocobalamin (vitamin B12a)"
+  },
+  {
+   "id": "phys_mcq_002",
+   "option": 3,
+   "correct": false,
+   "old": "Systemic vascular resistance",
+   "new": "Total systemic vascular resistance"
+  },
+  {
+   "id": "phys_mcq_021",
+   "option": 1,
+   "correct": false,
+   "old": "Sodium excretion and potassium retention",
+   "new": "Sodium excretion with potassium and hydrogen retention"
+  },
+  {
+   "id": "phys_mcq_024",
+   "option": 1,
+   "correct": false,
+   "old": "Thyroid-stimulating hormone (TSH)",
+   "new": "Thyroid-stimulating hormone (thyrotropin, TSH)"
+  },
+  {
+   "id": "phys_mcq_025",
+   "option": 1,
+   "correct": false,
+   "old": "Chief cells",
+   "new": "Chief (zymogenic) cells"
+  },
+  {
+   "id": "phys_mcq_026",
+   "option": 3,
+   "correct": false,
+   "old": "End-Diastolic Volume / End-Systolic Volume",
+   "new": "End-Diastolic Volume / End-Systolic Volume (EDV / ESV)"
+  },
+  {
+   "id": "phys_mcq_036",
+   "option": 2,
+   "correct": false,
+   "old": "Proximal convoluted tubule",
+   "new": "Proximal convoluted tubule (early S1 segment)"
+  },
+  {
+   "id": "phys_mcq_042",
+   "option": 0,
+   "correct": true,
+   "old": "Anti-inflammatory and immunosuppressive via NF-kappa-B inhibition and annexin-1 induction",
+   "new": "Anti-inflammatory and immunosuppressive"
+  },
+  {
+   "id": "phys_mcq_046",
+   "option": 2,
+   "correct": false,
+   "old": "Gq protein activation, elevated IP3 and DAG",
+   "new": "Gq protein activation, phospholipase C, elevated IP3 and DAG"
+  },
+  {
+   "id": "phys_mcq_048",
+   "option": 0,
+   "correct": true,
+   "old": "Divert blood flow away from poorly ventilated alveoli toward well-ventilated regions",
+   "new": "Divert blood away from poorly ventilated alveoli"
+  },
+  {
+   "id": "phys_mcq_053",
+   "option": 3,
+   "correct": false,
+   "old": "Gonadotropin-releasing hormone (GnRH)",
+   "new": "Gonadotropin-releasing hormone (GnRH, LHRH)"
+  },
+  {
+   "id": "phys_mcq_059",
+   "option": 1,
+   "correct": false,
+   "old": "Markedly elevated (> 30 mmHg)",
+   "new": "Markedly elevated (typically > 30 mmHg)"
+  },
+  {
+   "id": "phys_mcq_068",
+   "option": 1,
+   "correct": false,
+   "old": "IP3 receptor channels",
+   "new": "Inositol trisphosphate (IP3) receptor channels"
+  },
+  {
+   "id": "phys_mcq_072",
+   "option": 1,
+   "correct": false,
+   "old": "Zona fasciculata, producing cortisol",
+   "new": "Zona fasciculata, producing cortisol and corticosterone"
+  },
+  {
+   "id": "phys_mcq_074",
+   "option": 2,
+   "correct": false,
+   "old": "Hypovolemic hyponatremia with low urine Na+",
+   "new": "Hypovolemic hyponatremia with low urine sodium (< 20 mEq/L)"
+  },
+  {
+   "id": "phys_mcq_084",
+   "option": 3,
+   "correct": false,
+   "old": "Glucagon binds beta-cell receptors to release insulin",
+   "new": "Glucagon binds beta-cell receptors to directly release insulin"
+  },
+  {
+   "id": "phys_mcq_085",
+   "option": 1,
+   "correct": false,
+   "old": "Atrial contraction against stiffened ventricle",
+   "new": "Atrial contraction against a stiff, noncompliant ventricle"
+  },
+  {
+   "id": "surg_mcq_005",
+   "option": 3,
+   "correct": false,
+   "old": "Umbilical hernia",
+   "new": "Paraumbilical (umbilical) hernia"
+  },
+  {
+   "id": "surg_mcq_008",
+   "option": 1,
+   "correct": false,
+   "old": "Incarcerated hernia",
+   "new": "Incarcerated abdominal wall hernia"
+  },
+  {
+   "id": "surg_mcq_009",
+   "option": 1,
+   "correct": false,
+   "old": "Perforated peptic ulcer",
+   "new": "Perforated duodenal peptic ulcer"
+  },
+  {
+   "id": "surg_mcq_012",
+   "option": 1,
+   "correct": false,
+   "old": "Ileocecal valve",
+   "new": "Ileocecal valve (Bauhin valve)"
+  },
+  {
+   "id": "surg_mcq_016",
+   "option": 1,
+   "correct": false,
+   "old": "Amyloid stroma with calcitonin staining",
+   "new": "Amyloid stroma with positive calcitonin immunostaining"
+  },
+  {
+   "id": "surg_mcq_019",
+   "option": 1,
+   "correct": false,
+   "old": "Femoral artery aneurysm",
+   "new": "Common femoral artery aneurysm"
+  },
+  {
+   "id": "surg_mcq_022",
+   "option": 1,
+   "correct": false,
+   "old": "Abdominal CT angiography",
+   "new": "Contrast-enhanced abdominal CT angiography"
+  },
+  {
+   "id": "surg_mcq_026",
+   "option": 2,
+   "correct": false,
+   "old": "Strict bed rest and abdominal truss",
+   "new": "Strict bed rest and an abdominal truss indefinitely"
+  },
+  {
+   "id": "surg_mcq_036",
+   "option": 2,
+   "correct": false,
+   "old": "Internal carotid artery",
+   "new": "Cavernous internal carotid artery"
+  },
+  {
+   "id": "surg_mcq_039",
+   "option": 2,
+   "correct": false,
+   "old": "CT scan with oral contrast",
+   "new": "CT scan with oral and intravenous contrast first"
+  },
+  {
+   "id": "surg_mcq_057",
+   "option": 1,
+   "correct": false,
+   "old": "Immediate exploratory laparotomy",
+   "new": "Immediate exploratory laparotomy and necrosectomy"
+  },
+  {
+   "id": "surg_mcq_066",
+   "option": 3,
+   "correct": false,
+   "old": "Irritable bowel syndrome",
+   "new": "Irritable bowel syndrome (IBS-D)"
+  },
+  {
+   "id": "surg_mcq_075",
+   "option": 1,
+   "correct": false,
+   "old": "Simple abdominal hypertension",
+   "new": "Isolated intra-abdominal hypertension"
+  },
+  {
+   "id": "surg_mcq_076",
+   "option": 2,
+   "correct": false,
+   "old": "Papillary dermis to the reticular dermis",
+   "new": "Papillary dermis to the deep reticular dermis"
+  },
+  {
+   "id": "surg_mcq_080",
+   "option": 2,
+   "correct": false,
+   "old": "Immediate high-dose hydrocortisone monotherapy",
+   "new": "Immediate high-dose intravenous hydrocortisone monotherapy before induction"
+  }
+ ]
+}

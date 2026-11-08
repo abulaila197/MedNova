@@ -1,0 +1,186 @@
+// The Conqueror Online (CQ1): the whole match on everyone's own phone. The server referees (the conqueror edge
+// function) and this screen polls the match every second, draws the page for the current phase, and sends only my
+// own actions. The map is drawn on each phone from the match id, so every player sees the same continent (CQ21).
+import { router } from 'expo-router';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { View } from 'react-native';
+
+import { invoke, leaveRoom } from '@/online/api';
+import { finishOnline, useShowResults } from '@/online/finish';
+import { settingsLine } from '@/online/format';
+import { AlertPill, Countdown, useAlerts } from '@/online/live';
+import { RoomTalk } from '@/online/TalkBar';
+import { u } from '@/theme/scale';
+
+import type { OnlineProps } from '../shell/types';
+import { AT, AtlasPause, AtlasScreen, Btn, CGI, KINGDOMS, PauseCtx, T } from './atlas';
+import { places } from './core';
+import { makeMap, seedOf } from './map';
+import { BoardPage, MovesPage, type Act } from './pages';
+import { CardsPage, DuelPage, HoldPage, OutBanner, SoloPage, VersusPage, type Hold } from './play';
+import type { MatchView } from './view';
+import { useMatchState } from '@/online/useMatchState';
+import { useBackPause } from '@/online/backPause';
+import { conquerorShown } from './shown';
+
+type CPlayer = { user_id: string; name: string; character: string; dropped: boolean; rank: number | null };
+type CState = {
+  now: number;
+  room_id: string;
+  phase: 'countdown' | 'case' | 'done';
+  phase_ends_at: number;
+  settings: Record<string, unknown>;
+  players: CPlayer[];
+  version: number;
+  /** The match as this player may see it (view.ts): rivals' secrets and right answers stay on the server. */
+  state: { m: MatchView; deadline: number | null; started: number; holds: Hold[] } | null;
+};
+
+export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
+  // The screen redraws when what it shows of the clock changes (conquerorShown), not on every 250 ms tick.
+  const { st, load, server, serverNow, notice, setNotice } = useMatchState<CState>('cq_state', matchId, { shown: conquerorShown });
+  const busy = useRef(false);
+  const { alert } = useAlerts();
+
+  const act: Act = useCallback(
+    async (action) => {
+      if (busy.current) return;
+      busy.current = true;
+      try {
+        await invoke('conqueror', { m: matchId, action });
+      } catch {
+        setNotice('Couldn’t send that. Check your connection.');
+      } finally {
+        busy.current = false;
+        load();
+      }
+    },
+    [matchId, load, setNotice],
+  );
+  /** A nudge when a clock has run out, so the referee moves the war on (the countdown's end deals the first board). */
+  const lastTick = useRef(0);
+  const tick = useCallback(async () => {
+    if (Date.now() - lastTick.current < 1200) return;
+    lastTick.current = Date.now();
+    try {
+      await invoke('conqueror', { m: matchId, action: { type: 'tick' } });
+    } catch {
+      // The next poll tries again.
+    } finally {
+      load();
+    }
+  }, [matchId, load]);
+
+  const m = st?.state?.m ?? null;
+  const players = m?.order.length ?? 0;
+  const map = useMemo(() => (players ? makeMap(seedOf(matchId), players) : null), [matchId, players]);
+  const deadline = st?.state?.deadline ?? null;
+  const seconds = deadline ? Math.max(0, (deadline - server) / 1000) : null;
+  const meTalk = st?.players.find((p) => p.user_id === me);
+  // The talk button steps aside while I answer, so it never covers a choice (as in Wheels and Crossword).
+  const mm = st?.state?.m;
+  // Inspection fix A (Yazan 2026-11-02): also while I pick a number, play cards or move troops (taps on the map).
+  const answering = !!mm && !!mm.players[me] && !mm.players[me].out && (['solo_pick', 'solo_play', 'versus', 'gap_cards', 'gap_moves'].includes(mm.phase) || (mm.phase === 'duel' && [mm.duels[mm.duelIndex]?.p1, mm.duels[mm.duelIndex]?.p2].includes(me)));
+  const hold = st?.state?.holds.find((h) => h.until > server) ?? null;
+
+  // The first phone in the seating nudges as soon as a clock runs out, the others a moment later in case it went quiet.
+  const seat = Math.max(0, st?.players.findIndex((p) => p.user_id === me) ?? 0);
+  useEffect(() => {
+    if (!st || st.phase === 'done') return;
+    const due = st.state ? st.state.deadline : st.phase_ends_at;
+    if (due != null && server >= due + seat * 1500) tick();
+  }, [server, st, seat, tick]);
+  const elapsed = st?.state ? Math.max(0, server - st.state.started) : 0;
+  // An answer's time is read at the moment of the tap, on the same server-time base as `elapsed`.
+  const started = st?.state?.started ?? null;
+  const msNow = useCallback(() => (started == null ? 0 : Math.max(0, serverNow() - started)), [serverNow, started]);
+
+  // The end: the final places become an ordinary play on this phone (ON21), paying EXP for my right answers.
+  const showResults = useShowResults(def.key, matchId, st?.phase === 'done');
+  const finishing = useRef(false);
+  useEffect(() => {
+    if (!st || st.phase !== 'done' || !m || finishing.current || !m.players[me]) return;
+    finishing.current = true;
+    (async () => {
+      try {
+        const place = places(m);
+        const local = [me, ...m.order.filter((id) => id !== me)];
+        const seats = local.map((id, i) => ({ seat: i, userId: id, name: id === me ? 'You' : m.players[id].name, character: st.players.find((x) => x.user_id === id)?.character, color: KINGDOMS[m.order.indexOf(id) % KINGDOMS.length] }));
+        const stand = local.map((id, i) => ({ seat: i, name: seats[i].name, score: m.landOrder.filter((l) => m.lands[l].owner === id).length, timeMs: 0, rank: place[id] })).sort((a, b) => a.rank - b.rank);
+        const id = await finishOnline(def, matchId, { settings: { ...st.settings, room: roomId, match: matchId, right: m.players[me].stats.right ?? 0 }, seats, standings: stand, score: stand.find((x) => x.seat === 0)?.score ?? 0, items: [] });
+        showResults(id);
+      } catch {
+        finishing.current = false; // the next poll tries again
+      }
+    })();
+  }, [st, m, me, def, roomId, matchId, showResults]);
+  const [menu, setMenu] = useState(false);
+  useBackPause(menu, setMenu);
+  const pause = useCallback(() => setMenu(true), []);
+  const leave = useCallback(async () => {
+    await leaveRoom(roomId).catch(() => {});
+    router.replace(`/play/${def.key}`);
+  }, [roomId, def.key]);
+
+  const extras = (
+    <>
+      <AlertPill alert={alert} />
+      {answering && !hold ? null : (
+        <RoomTalk room={roomId} me={{ id: me, name: meTalk?.name ?? 'You', face: meTalk?.character ?? 'yara' }} />
+      )}
+      {notice ? (
+        <View style={{ position: 'absolute', bottom: u(90), left: u(16), right: u(16), alignItems: 'center' }} pointerEvents="none">
+          <View style={{ backgroundColor: 'rgba(0,0,0,0.65)', borderRadius: u(10), padding: u(8) }}>
+            <T size={13} color={AT.cream}>{notice}</T>
+          </View>
+        </View>
+      ) : null}
+    </>
+  );
+
+  if (!st) return <AtlasScreen>{null}</AtlasScreen>;
+  if (!m || !map) {
+    return (
+      <AtlasScreen>
+        {st.phase === 'done' ? null : <Countdown ms={Math.max(0, st.phase_ends_at - server)} faces={st.players.map((p) => p.character)} ids={st.players.map((p) => p.user_id)} line={settingsLine(def, st.settings)} />}
+        {extras}
+      </AtlasScreen>
+    );
+  }
+
+  const props = { m, me, map, seconds, act, elapsed, msNow };
+  // A spectator has no seat in the war: they watch like a fallen player (DEF-006).
+  const seated = !!m.players[me];
+  const out = !seated || m.players[me].out;
+  let body: React.ReactNode;
+  if (hold) body = <HoldPage m={m} me={me} map={map} hold={hold} seconds={Math.max(0, (hold.until - server) / 1000)} />;
+  else if (m.phase === 'over')
+    body = (
+      <View style={{ alignItems: 'center', gap: u(16), marginTop: u(140) }}>
+        <T f={CGI} size={18} color={AT.gold} style={{ textAlign: 'center' }}>{seated ? 'The war is over…' : 'The war is over.'}</T>
+        {seated ? null : <Btn label="Back to the room" onPress={() => router.replace(`/play/${def.key}/lobby?room=${roomId}`)} />}
+      </View>
+    );
+  else if (m.phase === 'duel') body = <DuelPage {...props} />;
+  else if (out) body = <><OutBanner m={m} me={me} /><MovesWatch {...props} /></>;
+  else if (m.phase === 'solo_pick') body = <BoardPage {...props} />;
+  else if (m.phase === 'solo_play') body = <SoloPage {...props} />;
+  else if (m.phase === 'versus') body = <VersusPage {...props} />;
+  else if (m.phase === 'gap_cards') body = <CardsPage {...props} />;
+  else body = <MovesPage {...props} />;
+
+  return (
+    <PauseCtx.Provider value={pause}>
+      <AtlasScreen scroll={!hold && (m.phase === 'solo_play' || m.phase === 'gap_cards')}>
+        {body}
+        {extras}
+      </AtlasScreen>
+      <AtlasPause open={menu} onResume={() => setMenu(false)} onLeave={leave} />
+    </PauseCtx.Provider>
+  );
+}
+
+/** A fallen player watches the map. */
+function MovesWatch({ m, me, map }: { m: MatchView; me: string; map: ReturnType<typeof makeMap> }) {
+  return <HoldPage m={m} me={me} map={map} hold={{ kind: 'battle', until: 0, log: [] }} seconds={0} />;
+}

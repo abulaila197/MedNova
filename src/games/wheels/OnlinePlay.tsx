@@ -1,0 +1,467 @@
+// The Wheels of Chaos Online (WC20-WC23): the full show on everyone's own phone. The server referees (the wheels
+// edge function); this screen polls the game every second, shows whoever's turn it is live to the whole room, and
+// sends only my own moves. The Boss Round is played by everyone at once, each swipe sent as it happens. No tarot
+// cards since #39a (Yazan 2026-11-01).
+import { router } from 'expo-router';
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { PanResponder, View } from 'react-native';
+
+import { call, invoke, leaveRoom } from '@/online/api';
+import { finishOnline, useShowResults } from '@/online/finish';
+import { settingsLine } from '@/online/format';
+import { AlertPill, Countdown, useAlerts } from '@/online/live';
+import { RoomTalk } from '@/online/TalkBar';
+import { useStableCallback } from '@/lib/useStableCallback';
+import { u } from '@/theme/scale';
+
+import type { OnlineProps } from '../shell/types';
+import { fieldName, type Answer, type QResult, type Question, type TurnEvent } from './core';
+import { BANK } from './data';
+import { bankVersion } from './keys';
+import { actor, bossPoints, bossBonus, BOSS_MS, BOSS_RIGHT, BOSS_WRONG, type OfflineGame } from './offline';
+import { actName, Board, BossOver, recapLine, RedemptionBoard, RedemptionOffer, Top, TurnOver, type Seats } from './OfflinePlay';
+import { ONLINE_MS, type Move, type OnlineWheels } from './online';
+import { PauseMenu } from '../shell/PauseMenu';
+import { TurnBoard, type Strip } from './TurnBoard';
+import { gameShown } from './shown';
+import { Bill, Btn, Bulbs, bulbsLit, CD, CM, GEMS, Panel, PauseBtn, ROMAN, Rule, T, VelvetScreen, VV } from './velvet';
+import { useMatchState } from '@/online/useMatchState';
+import { useRevealSound } from '@/lib/sound';
+import { useBackPause } from '@/online/backPause';
+import { TurnName } from '../shell/TurnName';
+
+/** Every phone in a game must carry the same bank; the server checks this. */
+const BANK_V = bankVersion(BANK);
+
+type WPlayer = { user_id: string; name: string; character: string; team: number | null; score: number; dropped: boolean; rank: number | null };
+type WState = {
+  now: number;
+  room_id: string;
+  phase: 'countdown' | 'case' | 'done';
+  phase_ends_at: number;
+  settings: Record<string, unknown>;
+  players: WPlayer[];
+  seats: string[] | null;
+  me: number | null;
+  version: number;
+  due: number | null;
+  state: OnlineWheels | null;
+  swipes: Record<string, number>;
+  my_swipes: boolean[] | null;
+};
+
+/** The server plays on answer keys; the phone puts the bank's words back in. */
+function hydrate(g: OfflineGame): OfflineGame {
+  const turn = g.turn ? { ...g.turn, question: BANK.questions[Number(g.turn.question.id)] ?? g.turn.question } : null;
+  const redemption = g.redemption ? { ...g.redemption, items: g.redemption.items.map((q) => BANK.redemption[Number(q.id)] ?? q) } : null;
+  let boss = g.boss;
+  const set = boss ? BANK.boss[Number(boss.category)] : undefined;
+  if (boss && set) boss = { ...boss, category: set.category, items: boss.items.map((it) => ({ label: set.items[Number(it.label)]?.label ?? it.label, fits: it.fits })) };
+  return { ...g, turn, redemption, boss };
+}
+
+const WAITS: Partial<Record<OfflineGame['phase'], number>> = { redemptionOffer: ONLINE_MS.offer };
+
+const styleOf = (q: Question) => (BANK.questions[Number(q.id)] ?? q).style;
+
+/**
+ * Everything this screen shows of the clock (bulbs, whole seconds) and the moments it asks the server to move on.
+ * The screen redraws when this changes instead of on every 200 ms tick; nothing on it moves in between.
+ */
+function shownOf(sv: number, st: WState | null) {
+  if (!st) return null;
+  // Once a wait has run out, every tick counts again: the screen keeps nudging the server until it moves on.
+  if (!st.state) return sv >= st.phase_ends_at ? sv : `c${Math.max(1, Math.ceil((st.phase_ends_at - sv) / 1000))}`;
+  const o = st.state;
+  const g = o.g;
+  const wait = WAITS[g.phase];
+  const waitLeft = wait && o.deadline ? Math.max(0, o.deadline - sv) : null;
+  const b = g.boss;
+  const boss = b ? `${b.until != null ? bulbsLit(Math.max(0, b.until - sv) / BOSS_MS) : 0}:${b.phase === 'ready' && o.deadline ? Math.ceil((o.deadline - sv) / 1000) : ''}` : '';
+  if (st.due != null && sv >= st.due) return sv;
+  return `${waitLeft == null ? '' : `${bulbsLit(waitLeft / wait!)}:${Math.ceil(waitLeft / 1000)}`}|${gameShown({ ...g, boss: null }, sv, styleOf)}|${boss}`;
+}
+
+export function OnlinePlay({ def, roomId, matchId, me }: OnlineProps) {
+  const { st, load, server, notice, setNotice } = useMatchState<WState>('wc_state', matchId, { tickMs: 200, shown: shownOf });
+  const [oldBank, setOldBank] = useState(false);
+  const [menu, setMenu] = useState(false);
+  useBackPause(menu, setMenu);
+  const lastTick = useRef(0);
+  const busy = useRef(false);
+  const showResults = useShowResults(def.key, matchId, st?.phase === 'done');
+  const finishing = useRef(false);
+  const { alert, push } = useAlerts();
+
+  /** Moves made while another is in flight wait here and go next, in order (the referee drops any that no longer fit). */
+  const waiting = useRef<Move[]>([]);
+  const warmed = useRef(false);
+
+  /** One request to the referee: my move, or a nudge when a wait has run out. */
+  const send = useCallback(
+    async (move: Move) => {
+      if (move.type !== 'TICK') {
+        if (busy.current) {
+          if (waiting.current.length < 3) waiting.current.push(move);
+          return;
+        }
+        busy.current = true;
+      }
+      let next: Move | undefined = move;
+      while (next) {
+        const m: Move = next;
+        try {
+          const data = await invoke<{ result?: string } | null>('wheels', { m: matchId, v: BANK_V, move: m });
+          if (data?.result === 'bank') setOldBank(true);
+        } catch {
+          if (m.type !== 'TICK') {
+            setNotice('Couldn’t send that. Check your connection.');
+            waiting.current = []; // later moves were made on top of this one: drop them too
+          }
+        }
+        next = m.type !== 'TICK' ? waiting.current.shift() : undefined;
+      }
+      if (move.type !== 'TICK') busy.current = false;
+      load();
+    },
+    [matchId, load, setNotice],
+  );
+  const tick = useCallback(() => {
+    if (Date.now() - lastTick.current < 1200) return;
+    lastTick.current = Date.now();
+    send({ type: 'TICK' });
+  }, [send]);
+
+  const g = useMemo(() => (st?.state ? hydrate(st.state.g) : null), [st?.version, st?.state]); // eslint-disable-line react-hooks/exhaustive-deps
+  const mySeat = st?.me ?? null;
+  const playing = mySeat != null;
+  const who = g ? actor(g) : null;
+
+  // The server moves on when someone asks after a wait runs out: the player whose turn it is first, the rest a
+  // moment later in case that phone has gone quiet. The first request after the countdown deals the cards.
+  useEffect(() => {
+    if (!st || st.phase === 'done' || oldBank) return;
+    if (!st.state) {
+      // #12 (Yazan 2026-11-04): one early nudge during the countdown wakes the referee and loads its bank (it answers
+      // "wait"), so the first round is dealt at once when the count ends.
+      if (server >= st.phase_ends_at) tick();
+      else if (!warmed.current) {
+        warmed.current = true;
+        send({ type: 'TICK' });
+      }
+      return;
+    }
+    if (st.due == null) return;
+    const first = who === mySeat || (who == null && mySeat === Math.min(...(g?.active ?? [0])));
+    if (server >= st.due + (first ? 0 : 2500)) tick();
+  }, [server, st, who, mySeat, g, tick, send, oldBank]);
+
+  // WC8: card plays, hits and Boss winners as alerts for the room.
+  const seenLog = useRef<number | null>(null);
+  const seatName = useCallback(
+    (s: number) => {
+      const id = st?.seats?.[s];
+      if (s === mySeat) return 'You';
+      return st?.players.find((p) => p.user_id === id)?.name ?? `Player ${s + 1}`;
+    },
+    [st?.seats, st?.players, mySeat],
+  );
+  useEffect(() => {
+    if (!g) return;
+    if (seenLog.current == null || g.log.length < seenLog.current) {
+      seenLog.current = g.log.length;
+      return;
+    }
+    for (const l of g.log.slice(seenLog.current)) {
+      if (l.k === 'turn') continue;
+      const line = recapLine(l, seatName);
+      if (line) push(line, GEMS[('seat' in l ? l.seat : 0) % GEMS.length]);
+    }
+    seenLog.current = g.log.length;
+  }, [g, seatName, push]);
+
+  // The end: the server's final places become an ordinary play on this phone (ON21). EXP is half my points (WC11).
+  useEffect(() => {
+    if (!st || st.phase !== 'done' || !playing || finishing.current || !st.state || !st.seats) return;
+    finishing.current = true;
+    (async () => {
+      try {
+        const seatsOf = st.seats!;
+        const order = [mySeat!, ...seatsOf.map((_, i) => i).filter((i) => i !== mySeat)];
+        const local = new Map(order.map((s, i) => [s, i]));
+        const byId = new Map(st.players.map((p) => [p.user_id, p]));
+        const seats = order.map((s, i) => ({ seat: i, userId: seatsOf[s], name: s === mySeat ? 'You' : (byId.get(seatsOf[s])?.name ?? `Player ${s + 1}`), character: byId.get(seatsOf[s])?.character, color: GEMS[s % GEMS.length] }));
+        const standings = order
+          .map((s) => {
+            const p = byId.get(seatsOf[s]);
+            return { seat: local.get(s)!, name: seats[local.get(s)!].name, score: p?.score ?? 0, timeMs: 0, rank: p?.rank ?? order.length };
+          })
+          .sort((a, b) => a.rank - b.rank);
+        const score = byId.get(me)?.score ?? 0;
+        const mine = st.state!.g.answers.filter((a) => a.seat === mySeat).map((a) => a.r);
+        const items = mine.map((r: QResult) => ({
+          seat: 0, itemId: BANK.questions[Number(r.id)]?.id ?? r.id, answerKey: null, outcome: r.right ? ('right' as const) : r.answer == null ? ('timed_out' as const) : ('wrong' as const),
+          answersGiven: [], timeMs: 0, hintsUsed: 0, revealsUsed: 0, points: r.points, feedsLearn: true, gameData: { style: r.style, field: r.field },
+        }));
+        const id = await finishOnline(def, matchId, { settings: { ...st.settings, room: roomId, match: matchId }, seats, standings, score, items });
+        showResults(id);
+      } catch {
+        finishing.current = false; // the next poll tries again
+      }
+    })();
+  }, [st, playing, mySeat, me, def, roomId, matchId, showResults]);
+
+
+  const leave = useCallback(async () => {
+    await leaveRoom(roomId).catch(() => {});
+    router.replace(`/play/${def.key}`);
+  }, [roomId, def.key]);
+
+  // My answer's right or wrong, as the feedback shows it to everyone.
+  const fb = g?.phase === 'turn' && who === mySeat && g.turn?.phase === 'feedback' ? g.turn.results[g.turn.k] : undefined;
+  useRevealSound(fb ? `${g!.turn!.count}:${g!.turn!.k}:${fb.id}` : null, fb ? (fb.right ? true : fb.answer == null ? 'timeup' : false) : null);
+
+  const meTalk = st?.players.find((p) => p.user_id === me);
+  // The talk button steps aside while I answer or swipe, so it never covers a choice (as in Crossword).
+  const answering = !!g && ((g.phase === 'turn' && who === mySeat && g.turn?.phase === 'question') || (g.phase === 'redemption' && who === mySeat) || (g.phase === 'boss' && g.boss?.phase === 'playing'));
+  const extras = (
+    <>
+      <AlertPill alert={alert} />
+      {answering ? null : <RoomTalk room={roomId} me={{ id: me, name: meTalk?.name ?? 'You', face: meTalk?.character ?? 'yara' }} />}
+      {notice || oldBank ? (
+        <View style={{ position: 'absolute', bottom: u(90), left: u(16), right: u(16), alignItems: 'center' }} pointerEvents="none">
+          <View style={{ backgroundColor: 'rgba(0,0,0,0.65)', borderRadius: u(10), padding: u(8) }}>
+            <T size={12} color={VV.cream}>{oldBank ? 'This game uses a different question bank. Update the app to play.' : notice}</T>
+          </View>
+        </View>
+      ) : null}
+    </>
+  );
+
+  if (!st) return <VelvetScreen>{null}</VelvetScreen>;
+  if (!st.state || !g) {
+    return (
+      <VelvetScreen>
+        {st.phase === 'done' ? null : <Countdown ms={Math.max(0, st.phase_ends_at - server)} faces={st.players.map((p) => p.character)} line={settingsLine(def, st.settings)} dealing="Dealing the cards…" stuckMs={20_000} />}
+        {extras}
+      </VelvetScreen>
+    );
+  }
+
+  const seats: Seats = new Map((st.seats ?? []).map((_, s) => [s, { name: seatName(s), color: GEMS[s % GEMS.length] }]));
+  const board: Strip = g.active.map((s) => ({ seat: s, name: seatName(s), color: GEMS[s % GEMS.length], score: g.scores[s], me: s === who })).sort((a, b) => b.score - a.score);
+  const mine = who != null && who === mySeat;
+  const pause = () => setMenu(true);
+  const o = st.state;
+  const wait = WAITS[g.phase];
+  const waitBar = wait && o.deadline ? <WaitBar left={Math.max(0, o.deadline - server)} total={wait} mine={mine} /> : null;
+
+  let body: React.ReactNode = null;
+  if (g.phase === 'done')
+    body = (
+      <View style={{ alignItems: 'center', gap: u(16), marginTop: u(120) }}>
+        <T f={CD} size={22} color={VV.gold} style={{ textAlign: 'center' }}>{playing ? 'Final curtain…' : 'Final curtain.'}</T>
+        {/* A spectator has no results page to go to: back to the room for the rematch (X1). */}
+        {playing ? null : <Btn label="Back to the room" onPress={() => router.replace(`/play/${def.key}/lobby?room=${roomId}`)} />}
+      </View>
+    );
+  else if (g.phase === 'redemptionOffer' && who != null)
+    body = mine ? (
+      <RedemptionOffer seat={who} seats={seats} onPick={(use) => send({ type: 'REDEEM', use })} onPause={pause} />
+    ) : (
+      <Watching kicker="Redemption" title={<TurnName name={seatName(who)} color={GEMS[who % GEMS.length]} after=" is last" />} line="Final round: last place may swap this turn for a Redemption round, once a game." board={board} onPause={pause} />
+    );
+  else if (g.phase === 'redemption' && g.redemption)
+    body = (
+      <RedemptionBoard
+        g={g}
+        now={server}
+        seats={seats}
+        watch={!mine}
+        onEvent={(e) => send(e.type === 'GO' ? { type: 'GO' } : { type: 'CALL', value: e.value })}
+        onPause={pause}
+      />
+    );
+  else if (g.phase === 'turn' && g.turn && who != null)
+    body = (
+      <TurnBoard
+        turn={g.turn}
+        now={server}
+        kicker={actName(g)}
+        title={mine ? <TurnName name="Your turn" color={GEMS[who % GEMS.length]} /> : <TurnName name={seatName(who)} color={GEMS[who % GEMS.length]} after="’s turn" />}
+        strip={board}
+        watch={!mine}
+        footer={mine ? undefined : <T f={CM} size={12} color={VV.soft} style={{ textAlign: 'center' }}><TurnName name={seatName(who)} color={GEMS[who % GEMS.length]} after=" is answering" /></T>}
+        onEvent={(e: TurnEvent) => send(e.type === 'ANSWER' ? { type: 'ANSWER', answer: e.answer as Answer } : e.type === 'GO' ? { type: 'GO' } : { type: 'TICK' })}
+        onPause={pause}
+      />
+    );
+  else if (g.phase === 'turnOver' && who != null) body = <TurnOver g={g} seat={who} seats={seats} board={board} />;
+  else if (g.phase === 'boss' && g.boss)
+    body = <OnlineBoss g={g} seat={mySeat} st={st} server={server} seatName={seatName} matchId={matchId} onDone={tick} onPause={pause} />;
+  else if (g.phase === 'bossOver') body = <BossOver g={g} seats={seats} board={board} />;
+
+  return (
+    <>
+      <VelvetScreen scroll={g.phase === 'turnOver' || g.phase === 'bossOver'}>
+        {waitBar}
+        {body}
+        {extras}
+      </VelvetScreen>
+      <PauseMenu open={menu} mode="online" onResume={() => setMenu(false)} onQuit={leave} />
+    </>
+  );
+}
+
+/** How long the player whose move it is has left. */
+function WaitBar({ left, total, mine }: { left: number; total: number; mine: boolean }) {
+  return (
+    <View style={{ gap: u(4), marginBottom: u(10) }}>
+      <Bulbs frac={left / total} />
+      <T f={CM} size={11} color={mine ? VV.gold : VV.dim} style={{ textAlign: 'right' }}>{`${Math.ceil(left / 1000)} s${mine ? ' to choose' : ''}`}</T>
+    </View>
+  );
+}
+
+/** Someone else's move: what is happening, the table, and my own cards (WC20). */
+function Watching({ kicker, title, line, board, onPause }: { kicker: string; title: ReactNode; line: string; board: Strip; onPause: () => void }) {
+  return (
+    <View style={{ gap: u(12) }}>
+      <Top kicker={kicker} title={title} onPause={onPause} />
+      <T size={13.5} color={VV.soft} style={{ textAlign: 'center' }}>{line}</T>
+      <Board board={board} />
+    </View>
+  );
+}
+
+// ---------------------------------------------------------------- Boss Round, everyone at once (WC23)
+
+function OnlineBoss({ g, seat, st, server, seatName, matchId, onDone, onPause }: {
+  g: OfflineGame; seat: number | null; st: WState; server: number; seatName: (s: number) => string; matchId: string; onDone: () => void; onPause: () => void;
+}) {
+  const b = g.boss!;
+  const [mine, setMine] = useState<boolean[]>(st.my_swipes ?? []);
+  const mineRef = useRef(mine);
+  const queue = useRef<Promise<unknown>>(Promise.resolve());
+  const [lost, setLost] = useState(false);
+  const [pending, setPending] = useState(0);
+  // How many of my swipes the server has (from the poll), so a resend whose answer got lost isn't sent twice.
+  const serverHas = useRef(0);
+  const myServer = st.my_swipes?.length ?? 0;
+  useEffect(() => {
+    serverHas.current = myServer;
+  }, [myServer]);
+  const key = `${g.cycle}`;
+  useEffect(() => {
+    mineRef.current = st.my_swipes ?? [];
+    setMine(mineRef.current);
+  }, [key]); // eslint-disable-line react-hooks/exhaustive-deps
+  const playing = b.phase === 'playing' && seat != null;
+  const deck = seat != null ? (b.decks[seat] ?? []) : [];
+  const done = mine.length >= deck.length && deck.length > 0;
+  const swipe = useCallback(
+    (fits: boolean) => {
+      const cur = mineRef.current;
+      if (cur.length >= deck.length) return;
+      const i = cur.length;
+      mineRef.current = [...cur, fits];
+      setMine(mineRef.current);
+      // Sent one by one, in order, so the server keeps them in the same order as my deck. Swipes made while one is
+      // in flight wait in the queue; a failed send is retried (0.5, 1, 2, 4 s) before the next one goes.
+      setPending((n) => n + 1);
+      queue.current = queue.current.then(async () => {
+        for (let a = 0; a < 5; a++) {
+          if (serverHas.current > i) return setPending((n) => n - 1);
+          try {
+            await call('wc_swipe', { m: matchId, i, fits });
+            return setPending((n) => n - 1);
+          } catch {
+            if (a < 4) await new Promise((r) => setTimeout(r, 500 * 2 ** a));
+          }
+        }
+        setPending((n) => n - 1);
+        setLost(true);
+      });
+    },
+    [deck.length, matchId],
+  );
+  const latestSwipe = useStableCallback(swipe);
+  const pan = useMemo(
+    () =>
+      PanResponder.create({
+        onMoveShouldSetPanResponder: (_, d) => Math.abs(d.dx) > 12,
+        onPanResponderRelease: (_, d) => {
+          if (Math.abs(d.dx) > 60) latestSwipe(d.dx > 0);
+        },
+      }),
+    [latestSwipe],
+  );
+  // When I finish my deck, the round can close early once everyone has.
+  useEffect(() => {
+    if (done) queue.current.then(onDone);
+  }, [done, onDone]);
+
+  if (b.phase === 'ready' || !playing || done) {
+    const others = g.active.filter((s) => s !== seat);
+    const startsIn = b.phase === 'ready' && st.state?.deadline ? Math.max(0, Math.ceil((st.state.deadline - server) / 1000)) : null;
+    return (
+      <View style={{ gap: u(14) }}>
+        <Top kicker={`Act ${ROMAN[g.cycle]} · Boss Round`} title={b.phase === 'ready' ? 'Everyone swipes at once' : done ? 'Deck done' : 'The Boss Round'} onPause={onPause} />
+        <Bill>
+          <T f={CM} size={10.5} color={VV.paperSoft} style={{ letterSpacing: u(2), textAlign: 'center' }}>{fieldName(b.field).toUpperCase()}</T>
+          <T f={CD} size={19} color={VV.redInk} style={{ textAlign: 'center' }}>{b.category}</T>
+          <Rule c="rgba(42,26,18,0.18)" />
+          <T size={13} color={VV.paperInk} style={{ textAlign: 'center' }}>{`Swipe right if it belongs, left if it doesn’t. ${BOSS_MS / 1000} seconds. +${BOSS_RIGHT} for a right swipe, ${BOSS_WRONG} for a wrong one.`}</T>
+          <T size={12} color={VV.paperSoft} style={{ textAlign: 'center' }}>{`Same items for everyone, each in their own order. Highest score wins +${bossBonus(g.target)}.`}</T>
+        </Bill>
+        {startsIn != null ? <T f={CD} size={30} color={VV.gold} style={{ textAlign: 'center' }}>{String(startsIn)}</T> : null}
+        {done && seat != null ? (
+          <T size={13} color={VV.soft} style={{ textAlign: 'center' }}>
+            {lost
+              ? 'Some swipes didn’t reach the server, so your score may be lower than shown.'
+              : pending > 0
+                ? 'Sending your swipes…'
+                : `${bossPoints({ ...b, swipes: { [seat]: mine } }, seat)} points.`}
+          </T>
+        ) : null}
+        {b.phase === 'playing' ? (
+          <Panel>
+            {others.map((s) => (
+              <T key={s} size={12.5} color={VV.soft}>{`${seatName(s)}: ${st.swipes[String(s)] ?? 0} of ${b.items.length}`}</T>
+            ))}
+          </Panel>
+        ) : null}
+      </View>
+    );
+  }
+
+  const item = b.items[deck[Math.min(mine.length, deck.length - 1)]];
+  const left = b.until != null ? Math.max(0, b.until - server) : 0;
+  return (
+    <View style={{ flex: 1, gap: u(12) }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: u(12) }}>
+        <View style={{ flex: 1 }}>
+          <Bulbs frac={left / BOSS_MS} />
+        </View>
+        <PauseBtn onPress={onPause} />
+      </View>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        <T f={CM} size={12} color={VV.brass} style={{ letterSpacing: u(1), flexShrink: 1 }} lines={1}>{b.category.toUpperCase()}</T>
+        <T f={CM} size={12} color={VV.soft} style={{ flexShrink: 0 }}>{`${bossPoints({ ...b, swipes: { [seat!]: mine } }, seat!)} pts`}</T>
+      </View>
+      <View style={{ flex: 1, justifyContent: 'center', minHeight: u(240) }} {...pan.panHandlers}>
+        <Bill style={{ marginHorizontal: u(20) }}>
+          <View style={{ minHeight: u(150), alignItems: 'center', justifyContent: 'center', gap: u(8) }}>
+            <T f={CM} size={10.5} color={VV.paperSoft} style={{ letterSpacing: u(2) }}>{`${mine.length + 1} OF ${b.items.length}`}</T>
+            <T f={CD} size={20} color={VV.paperInk} style={{ textAlign: 'center' }}>{item.label}</T>
+          </View>
+        </Bill>
+        <T size={11.5} color={VV.dim} style={{ textAlign: 'center', marginTop: u(10) }}>Swipe the card, or tap below.</T>
+      </View>
+      <View style={{ flexDirection: 'row', gap: u(10) }}>
+        <Btn label="‹ Doesn’t fit" ghost onPress={() => swipe(false)} style={{ flex: 1 }} />
+        <Btn label="Fits ›" onPress={() => swipe(true)} style={{ flex: 1 }} />
+      </View>
+    </View>
+  );
+}

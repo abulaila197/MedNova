@@ -1,0 +1,56 @@
+import { shuffle, termsOfBank } from './terms';
+import type { Rng, Settings, TeamId, Term, TermId } from './types';
+
+/** The words of one round for each team. */
+export interface RoundPlan {
+  lists: Record<TeamId, TermId[]>;
+  /** #35: the second word on each card (by the first word). Older saves have none. */
+  alts?: Record<TermId, TermId>;
+}
+
+export type PlanResult = { ok: true; rounds: RoundPlan[] } | { ok: false; reason: 'NOT_ENOUGH_TERMS' };
+
+/**
+ * Draws the words of a whole match.
+ *  - online: both teams get the SAME words, in a different order;
+ *  - offline: each team gets its OWN random words (no balancing: there is no difficulty), because
+ *    the teams take turns and would hear each other's answers;
+ *  - round 2 always uses new words;
+ *  - #35: every card also holds a second word (from the same bank, never used elsewhere in the match).
+ */
+export function planMatch(input: { terms: readonly Term[]; settings: Settings; mode: 'online' | 'offline'; rng: Rng; first?: readonly string[] }): PlanResult {
+  const { settings, mode, rng } = input;
+  const first = (input.first ?? []).flatMap((id) => input.terms.filter((t) => t.id === id));
+  const pool = [...first, ...shuffle(termsOfBank(input.terms, settings.bank), rng).filter((t) => !first.includes(t))];
+  const perRound = mode === 'online' ? settings.wordsPerTeam : settings.wordsPerTeam * 2;
+  if (pool.length < perRound * settings.rounds) return { ok: false, reason: 'NOT_ENOUGH_TERMS' };
+  // The second words come from the rest of the bank (never the host's own terms); a small bank leaves some cards
+  // with one word.
+  const spare = pool.slice(perRound * settings.rounds).filter((t) => !first.includes(t));
+
+  const rounds: RoundPlan[] = [];
+  for (let r = 0; r < settings.rounds; r++) {
+    const slice = pool.slice(r * perRound, (r + 1) * perRound).map((t) => t.id);
+    const alts: Record<TermId, TermId> = {};
+    slice.forEach((id, i) => {
+      const other = spare[r * perRound + i];
+      if (other) alts[id] = other.id;
+    });
+    if (mode === 'offline') {
+      rounds.push({ lists: { A: slice.slice(0, settings.wordsPerTeam), B: slice.slice(settings.wordsPerTeam) }, alts });
+    } else {
+      rounds.push({ lists: { A: slice, B: differentOrder(slice, rng) }, alts });
+    }
+  }
+  return { ok: true, rounds };
+}
+
+/** A shuffle of the same words that is not the same order (when there is more than one word). */
+export function differentOrder(ids: readonly TermId[], rng: Rng): TermId[] {
+  if (ids.length < 2) return ids.slice();
+  for (let i = 0; i < 10; i++) {
+    const s = shuffle(ids, rng);
+    if (s.some((id, k) => id !== ids[k])) return s;
+  }
+  return [...ids.slice(1), ids[0]]; // guaranteed different
+}

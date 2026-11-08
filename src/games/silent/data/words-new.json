@@ -1,0 +1,1449 @@
+[
+ {
+  "id": "t001",
+  "name": "Stethoscope",
+  "field": "Medical tools",
+  "aliases": []
+ },
+ {
+  "id": "t002",
+  "name": "Scalpel",
+  "field": "Medical tools",
+  "aliases": []
+ },
+ {
+  "id": "t003",
+  "name": "Thermometer",
+  "field": "Medical tools",
+  "aliases": [
+   "Fever thermometer"
+  ]
+ },
+ {
+  "id": "t004",
+  "name": "Otoscope",
+  "field": "Medical tools",
+  "aliases": [
+   "Ear scope"
+  ]
+ },
+ {
+  "id": "t005",
+  "name": "Reflex hammer",
+  "field": "Medical tools",
+  "aliases": []
+ },
+ {
+  "id": "t006",
+  "name": "Crutches",
+  "field": "Medical tools",
+  "aliases": [
+   "Crutch"
+  ]
+ },
+ {
+  "id": "t007",
+  "name": "Wheelchair",
+  "field": "Medical tools",
+  "aliases": []
+ },
+ {
+  "id": "t008",
+  "name": "Defibrillator",
+  "field": "Medical tools",
+  "aliases": [
+   "AED"
+  ]
+ },
+ {
+  "id": "t009",
+  "name": "X-ray machine",
+  "field": "Medical tools",
+  "aliases": [
+   "X-ray"
+  ]
+ },
+ {
+  "id": "t010",
+  "name": "Tongue depressor",
+  "field": "Medical tools",
+  "aliases": []
+ },
+ {
+  "id": "t011",
+  "name": "Blood pressure cuff",
+  "field": "Medical tools",
+  "aliases": [
+   "Sphygmomanometer",
+   "BP cuff"
+  ]
+ },
+ {
+  "id": "t012",
+  "name": "Forceps",
+  "field": "Medical tools",
+  "aliases": []
+ },
+ {
+  "id": "t013",
+  "name": "Surgical scissors",
+  "field": "Medical tools",
+  "aliases": []
+ },
+ {
+  "id": "t014",
+  "name": "Stretcher",
+  "field": "Medical tools",
+  "aliases": []
+ },
+ {
+  "id": "t015",
+  "name": "Hospital bed",
+  "field": "Medical tools",
+  "aliases": []
+ },
+ {
+  "id": "t016",
+  "name": "Walking cane",
+  "field": "Medical tools",
+  "aliases": [
+   "Cane",
+   "Walking stick"
+  ]
+ },
+ {
+  "id": "t017",
+  "name": "Walker",
+  "field": "Medical tools",
+  "aliases": [
+   "Zimmer frame"
+  ]
+ },
+ {
+  "id": "t018",
+  "name": "Splint",
+  "field": "Medical tools",
+  "aliases": []
+ },
+ {
+  "id": "t019",
+  "name": "Plaster cast",
+  "field": "Medical tools",
+  "aliases": [
+   "Cast"
+  ]
+ },
+ {
+  "id": "t020",
+  "name": "Neck brace",
+  "field": "Medical tools",
+  "aliases": [
+   "Cervical collar"
+  ]
+ },
+ {
+  "id": "t021",
+  "name": "Arm sling",
+  "field": "Medical tools",
+  "aliases": [
+   "Sling"
+  ]
+ },
+ {
+  "id": "t022",
+  "name": "Pulse oximeter",
+  "field": "Medical tools",
+  "aliases": []
+ },
+ {
+  "id": "t023",
+  "name": "Eye chart",
+  "field": "Medical tools",
+  "aliases": [
+   "Snellen chart"
+  ]
+ },
+ {
+  "id": "t024",
+  "name": "Hearing aid",
+  "field": "Medical tools",
+  "aliases": []
+ },
+ {
+  "id": "t025",
+  "name": "Eyeglasses",
+  "field": "Medical tools",
+  "aliases": [
+   "Glasses",
+   "Spectacles"
+  ]
+ },
+ {
+  "id": "t026",
+  "name": "Dental drill",
+  "field": "Medical tools",
+  "aliases": []
+ },
+ {
+  "id": "t027",
+  "name": "Dental braces",
+  "field": "Medical tools",
+  "aliases": [
+   "Braces"
+  ]
+ },
+ {
+  "id": "t028",
+  "name": "Dentures",
+  "field": "Medical tools",
+  "aliases": [
+   "False teeth"
+  ]
+ },
+ {
+  "id": "t029",
+  "name": "Ultrasound probe",
+  "field": "Medical tools",
+  "aliases": [
+   "Ultrasound"
+  ]
+ },
+ {
+  "id": "t030",
+  "name": "MRI scanner",
+  "field": "Medical tools",
+  "aliases": [
+   "MRI"
+  ]
+ },
+ {
+  "id": "t031",
+  "name": "ECG machine",
+  "field": "Medical tools",
+  "aliases": [
+   "EKG",
+   "Electrocardiogram"
+  ]
+ },
+ {
+  "id": "t032",
+  "name": "Ventilator",
+  "field": "Medical tools",
+  "aliases": []
+ },
+ {
+  "id": "t033",
+  "name": "Bedpan",
+  "field": "Medical tools",
+  "aliases": []
+ },
+ {
+  "id": "t034",
+  "name": "Tourniquet",
+  "field": "Medical tools",
+  "aliases": []
+ },
+ {
+  "id": "t035",
+  "name": "Endoscope",
+  "field": "Medical tools",
+  "aliases": []
+ },
+ {
+  "id": "t036",
+  "name": "Baby incubator",
+  "field": "Medical tools",
+  "aliases": [
+   "Incubator"
+  ]
+ },
+ {
+  "id": "t037",
+  "name": "Glucometer",
+  "field": "Medical tools",
+  "aliases": [
+   "Blood glucose meter"
+  ]
+ },
+ {
+  "id": "t038",
+  "name": "Ambulance",
+  "field": "Medical tools",
+  "aliases": []
+ },
+ {
+  "id": "t039",
+  "name": "Ice pack",
+  "field": "Medical tools",
+  "aliases": []
+ },
+ {
+  "id": "t040",
+  "name": "Weighing scale",
+  "field": "Medical tools",
+  "aliases": [
+   "Scale"
+  ]
+ },
+ {
+  "id": "w301",
+  "name": "Heart transplant",
+  "field": "Cardiology",
+  "aliases": []
+ },
+ {
+  "id": "w302",
+  "name": "Chest pain",
+  "field": "Cardiology",
+  "aliases": []
+ },
+ {
+  "id": "w303",
+  "name": "Heart murmur",
+  "field": "Cardiology",
+  "aliases": []
+ },
+ {
+  "id": "w304",
+  "name": "Bradycardia",
+  "field": "Cardiology",
+  "aliases": [
+   "Slow heart rate"
+  ]
+ },
+ {
+  "id": "w305",
+  "name": "Tachycardia",
+  "field": "Cardiology",
+  "aliases": [
+   "Fast heart rate"
+  ]
+ },
+ {
+  "id": "w306",
+  "name": "Fainting",
+  "field": "Cardiology",
+  "aliases": [
+   "Syncope"
+  ]
+ },
+ {
+  "id": "w307",
+  "name": "Whooping cough",
+  "field": "Pulmonology",
+  "aliases": [
+   "Pertussis"
+  ]
+ },
+ {
+  "id": "w308",
+  "name": "Common cold",
+  "field": "Pulmonology",
+  "aliases": [
+   "Cold"
+  ]
+ },
+ {
+  "id": "w309",
+  "name": "Wheezing",
+  "field": "Pulmonology",
+  "aliases": []
+ },
+ {
+  "id": "w310",
+  "name": "Shortness of breath",
+  "field": "Pulmonology",
+  "aliases": [
+   "Breathlessness"
+  ]
+ },
+ {
+  "id": "w311",
+  "name": "Hyperventilation",
+  "field": "Pulmonology",
+  "aliases": []
+ },
+ {
+  "id": "w312",
+  "name": "Constipation",
+  "field": "Gastroenterology",
+  "aliases": []
+ },
+ {
+  "id": "w313",
+  "name": "Diarrhea",
+  "field": "Gastroenterology",
+  "aliases": []
+ },
+ {
+  "id": "w314",
+  "name": "Food poisoning",
+  "field": "Gastroenterology",
+  "aliases": []
+ },
+ {
+  "id": "w315",
+  "name": "Stomach ache",
+  "field": "Gastroenterology",
+  "aliases": [
+   "Tummy ache",
+   "Belly ache"
+  ]
+ },
+ {
+  "id": "w316",
+  "name": "Liver transplant",
+  "field": "Hepatology",
+  "aliases": []
+ },
+ {
+  "id": "w317",
+  "name": "Spinal cord injury",
+  "field": "Neurology",
+  "aliases": []
+ },
+ {
+  "id": "w318",
+  "name": "Vertigo",
+  "field": "Neurology",
+  "aliases": []
+ },
+ {
+  "id": "w319",
+  "name": "Tension headache",
+  "field": "Neurology",
+  "aliases": []
+ },
+ {
+  "id": "w320",
+  "name": "Memory loss",
+  "field": "Neurology",
+  "aliases": [
+   "Amnesia"
+  ]
+ },
+ {
+  "id": "w321",
+  "name": "Head injury",
+  "field": "Neurology",
+  "aliases": []
+ },
+ {
+  "id": "w322",
+  "name": "Coma",
+  "field": "Neurology",
+  "aliases": []
+ },
+ {
+  "id": "w323",
+  "name": "Sleep paralysis",
+  "field": "Sleep medicine",
+  "aliases": []
+ },
+ {
+  "id": "w324",
+  "name": "Jet lag",
+  "field": "Sleep medicine",
+  "aliases": []
+ },
+ {
+  "id": "w325",
+  "name": "Hip fracture",
+  "field": "Orthopedics",
+  "aliases": [
+   "Broken hip"
+  ]
+ },
+ {
+  "id": "w326",
+  "name": "Flat feet",
+  "field": "Orthopedics",
+  "aliases": [
+   "Flat foot"
+  ]
+ },
+ {
+  "id": "w327",
+  "name": "Bow legs",
+  "field": "Orthopedics",
+  "aliases": [
+   "Bowlegs"
+  ]
+ },
+ {
+  "id": "w328",
+  "name": "Whiplash",
+  "field": "Orthopedics",
+  "aliases": []
+ },
+ {
+  "id": "w329",
+  "name": "Low back pain",
+  "field": "Orthopedics",
+  "aliases": [
+   "Back pain"
+  ]
+ },
+ {
+  "id": "w330",
+  "name": "Shin splints",
+  "field": "Sports medicine",
+  "aliases": []
+ },
+ {
+  "id": "w331",
+  "name": "Muscle cramp",
+  "field": "Sports medicine",
+  "aliases": [
+   "Cramp"
+  ]
+ },
+ {
+  "id": "w332",
+  "name": "Stiff neck",
+  "field": "Rheumatology",
+  "aliases": [
+   "Neck pain"
+  ]
+ },
+ {
+  "id": "w333",
+  "name": "Joint pain",
+  "field": "Rheumatology",
+  "aliases": []
+ },
+ {
+  "id": "w334",
+  "name": "Swollen joint",
+  "field": "Rheumatology",
+  "aliases": []
+ },
+ {
+  "id": "w335",
+  "name": "Dandruff",
+  "field": "Dermatology",
+  "aliases": []
+ },
+ {
+  "id": "w336",
+  "name": "Impetigo",
+  "field": "Dermatology",
+  "aliases": []
+ },
+ {
+  "id": "w337",
+  "name": "Cold sore",
+  "field": "Dermatology",
+  "aliases": [
+   "Herpes labialis"
+  ]
+ },
+ {
+  "id": "w338",
+  "name": "Lipoma",
+  "field": "Dermatology",
+  "aliases": []
+ },
+ {
+  "id": "w339",
+  "name": "Insect bite",
+  "field": "Dermatology",
+  "aliases": [
+   "Bug bite"
+  ]
+ },
+ {
+  "id": "w340",
+  "name": "Dengue fever",
+  "field": "Infectious diseases",
+  "aliases": [
+   "Dengue"
+  ]
+ },
+ {
+  "id": "w341",
+  "name": "Pandemic",
+  "field": "Infectious diseases",
+  "aliases": []
+ },
+ {
+  "id": "w342",
+  "name": "Spider bite",
+  "field": "Emergency medicine",
+  "aliases": []
+ },
+ {
+  "id": "w343",
+  "name": "Tetanus",
+  "field": "Infectious diseases",
+  "aliases": [
+   "Lockjaw"
+  ]
+ },
+ {
+  "id": "w344",
+  "name": "Mumps",
+  "field": "Infectious diseases",
+  "aliases": []
+ },
+ {
+  "id": "w345",
+  "name": "Infected wound",
+  "field": "Infectious diseases",
+  "aliases": []
+ },
+ {
+  "id": "w346",
+  "name": "Polio",
+  "field": "Infectious diseases",
+  "aliases": [
+   "Poliomyelitis"
+  ]
+ },
+ {
+  "id": "w347",
+  "name": "Plague",
+  "field": "Infectious diseases",
+  "aliases": [
+   "Black death"
+  ]
+ },
+ {
+  "id": "w348",
+  "name": "Tick bite",
+  "field": "Infectious diseases",
+  "aliases": [
+   "Lyme disease"
+  ]
+ },
+ {
+  "id": "w349",
+  "name": "Dog bite",
+  "field": "Emergency medicine",
+  "aliases": []
+ },
+ {
+  "id": "w350",
+  "name": "Cat scratch fever",
+  "field": "Parasitology",
+  "aliases": [
+   "Cat scratch disease"
+  ]
+ },
+ {
+  "id": "w351",
+  "name": "Sleeping sickness",
+  "field": "Parasitology",
+  "aliases": [
+   "African trypanosomiasis"
+  ]
+ },
+ {
+  "id": "w352",
+  "name": "Mosquito net",
+  "field": "Parasitology",
+  "aliases": [
+   "Bed net"
+  ]
+ },
+ {
+  "id": "w353",
+  "name": "Hearing loss",
+  "field": "ENT",
+  "aliases": [
+   "Deafness"
+  ]
+ },
+ {
+  "id": "w354",
+  "name": "Tinnitus",
+  "field": "ENT",
+  "aliases": [
+   "Ringing ears"
+  ]
+ },
+ {
+  "id": "w355",
+  "name": "Nosebleed",
+  "field": "ENT",
+  "aliases": [
+   "Epistaxis"
+  ]
+ },
+ {
+  "id": "w356",
+  "name": "Earwax blockage",
+  "field": "ENT",
+  "aliases": [
+   "Earwax"
+  ]
+ },
+ {
+  "id": "w357",
+  "name": "Snoring",
+  "field": "ENT",
+  "aliases": []
+ },
+ {
+  "id": "w358",
+  "name": "Impacted wisdom tooth",
+  "field": "Dentistry",
+  "aliases": [
+   "Wisdom tooth"
+  ]
+ },
+ {
+  "id": "w359",
+  "name": "Tooth sensitivity",
+  "field": "Dentistry",
+  "aliases": [
+   "Sensitive teeth"
+  ]
+ },
+ {
+  "id": "w360",
+  "name": "Tooth extraction",
+  "field": "Dentistry",
+  "aliases": [
+   "Pulling a tooth"
+  ]
+ },
+ {
+  "id": "w361",
+  "name": "Color blindness",
+  "field": "Ophthalmology",
+  "aliases": [
+   "Colour blindness"
+  ]
+ },
+ {
+  "id": "w362",
+  "name": "Stye",
+  "field": "Ophthalmology",
+  "aliases": []
+ },
+ {
+  "id": "w363",
+  "name": "Night blindness",
+  "field": "Ophthalmology",
+  "aliases": []
+ },
+ {
+  "id": "w364",
+  "name": "Dry eye",
+  "field": "Ophthalmology",
+  "aliases": []
+ },
+ {
+  "id": "w365",
+  "name": "Black eye",
+  "field": "Ophthalmology",
+  "aliases": []
+ },
+ {
+  "id": "w366",
+  "name": "Bulging eyes",
+  "field": "Endocrinology",
+  "aliases": [
+   "Exophthalmos"
+  ]
+ },
+ {
+  "id": "w367",
+  "name": "Weight gain",
+  "field": "Endocrinology",
+  "aliases": []
+ },
+ {
+  "id": "w368",
+  "name": "Junk food",
+  "field": "Nutrition",
+  "aliases": [
+   "Fast food"
+  ]
+ },
+ {
+  "id": "w369",
+  "name": "Dehydration",
+  "field": "Nutrition",
+  "aliases": []
+ },
+ {
+  "id": "w370",
+  "name": "Urinary incontinence",
+  "field": "Nephrology & Urology",
+  "aliases": [
+   "Incontinence"
+  ]
+ },
+ {
+  "id": "w371",
+  "name": "Bedwetting",
+  "field": "Nephrology & Urology",
+  "aliases": [
+   "Enuresis"
+  ]
+ },
+ {
+  "id": "w372",
+  "name": "Kidney transplant",
+  "field": "Nephrology & Urology",
+  "aliases": []
+ },
+ {
+  "id": "w373",
+  "name": "Morning sickness",
+  "field": "OB/GYN",
+  "aliases": []
+ },
+ {
+  "id": "w374",
+  "name": "C-section",
+  "field": "OB/GYN",
+  "aliases": [
+   "Caesarean section",
+   "Cesarean section"
+  ]
+ },
+ {
+  "id": "w375",
+  "name": "Twin pregnancy",
+  "field": "OB/GYN",
+  "aliases": [
+   "Twins"
+  ]
+ },
+ {
+  "id": "w376",
+  "name": "Menstrual cramps",
+  "field": "OB/GYN",
+  "aliases": [
+   "Period pain",
+   "Dysmenorrhea"
+  ]
+ },
+ {
+  "id": "w377",
+  "name": "Colic",
+  "field": "Pediatrics & Genetics",
+  "aliases": [
+   "Baby colic"
+  ]
+ },
+ {
+  "id": "w378",
+  "name": "Teething",
+  "field": "Pediatrics & Genetics",
+  "aliases": []
+ },
+ {
+  "id": "w379",
+  "name": "Diaper rash",
+  "field": "Pediatrics & Genetics",
+  "aliases": [
+   "Nappy rash"
+  ]
+ },
+ {
+  "id": "w380",
+  "name": "Premature baby",
+  "field": "Pediatrics & Genetics",
+  "aliases": [
+   "Preemie"
+  ]
+ },
+ {
+  "id": "w381",
+  "name": "Scarlet fever",
+  "field": "Pediatrics & Genetics",
+  "aliases": []
+ },
+ {
+  "id": "w382",
+  "name": "Anorexia nervosa",
+  "field": "Psychiatry",
+  "aliases": [
+   "Anorexia"
+  ]
+ },
+ {
+  "id": "w383",
+  "name": "Bulimia nervosa",
+  "field": "Psychiatry",
+  "aliases": [
+   "Bulimia"
+  ]
+ },
+ {
+  "id": "w384",
+  "name": "Nicotine addiction",
+  "field": "Psychiatry",
+  "aliases": [
+   "Smoking addiction"
+  ]
+ },
+ {
+  "id": "w385",
+  "name": "Aerophobia",
+  "field": "Psychiatry",
+  "aliases": [
+   "Fear of flying"
+  ]
+ },
+ {
+  "id": "w386",
+  "name": "Blood donation",
+  "field": "Hematology",
+  "aliases": [
+   "Donating blood"
+  ]
+ },
+ {
+  "id": "w387",
+  "name": "Blood transfusion",
+  "field": "Hematology",
+  "aliases": [
+   "Transfusion"
+  ]
+ },
+ {
+  "id": "w388",
+  "name": "Lung cancer",
+  "field": "Oncology",
+  "aliases": []
+ },
+ {
+  "id": "w389",
+  "name": "Skin cancer",
+  "field": "Oncology",
+  "aliases": []
+ },
+ {
+  "id": "w390",
+  "name": "Pink ribbon",
+  "field": "Oncology",
+  "aliases": [
+   "Cancer ribbon"
+  ]
+ },
+ {
+  "id": "w391",
+  "name": "Breast cancer",
+  "field": "Oncology",
+  "aliases": []
+ },
+ {
+  "id": "w392",
+  "name": "Chemotherapy",
+  "field": "Oncology",
+  "aliases": [
+   "Chemo"
+  ]
+ },
+ {
+  "id": "w393",
+  "name": "Brain tumor",
+  "field": "Oncology",
+  "aliases": [
+   "Brain tumour"
+  ]
+ },
+ {
+  "id": "w394",
+  "name": "Hair loss from chemo",
+  "field": "Oncology",
+  "aliases": [
+   "Chemo hair loss"
+  ]
+ },
+ {
+  "id": "w395",
+  "name": "Food allergy",
+  "field": "Immunology",
+  "aliases": []
+ },
+ {
+  "id": "w396",
+  "name": "Choking",
+  "field": "Emergency medicine",
+  "aliases": []
+ },
+ {
+  "id": "w397",
+  "name": "Drowning",
+  "field": "Emergency medicine",
+  "aliases": []
+ },
+ {
+  "id": "w398",
+  "name": "Electric shock",
+  "field": "Emergency medicine",
+  "aliases": [
+   "Electrocution"
+  ]
+ },
+ {
+  "id": "w399",
+  "name": "Snake bite",
+  "field": "Emergency medicine",
+  "aliases": []
+ },
+ {
+  "id": "w400",
+  "name": "Bee sting",
+  "field": "Emergency medicine",
+  "aliases": []
+ },
+ {
+  "id": "b201",
+  "name": "Humerus",
+  "field": "Anatomy",
+  "aliases": []
+ },
+ {
+  "id": "b202",
+  "name": "Tibia",
+  "field": "Anatomy",
+  "aliases": []
+ },
+ {
+  "id": "b203",
+  "name": "Sternum",
+  "field": "Anatomy",
+  "aliases": []
+ },
+ {
+  "id": "b204",
+  "name": "Biceps",
+  "field": "Anatomy",
+  "aliases": [
+   "Bicep"
+  ]
+ },
+ {
+  "id": "b205",
+  "name": "Outer ear",
+  "field": "Anatomy",
+  "aliases": [
+   "Pinna",
+   "Ear"
+  ]
+ },
+ {
+  "id": "b206",
+  "name": "Nose",
+  "field": "Anatomy",
+  "aliases": []
+ },
+ {
+  "id": "b207",
+  "name": "Belly button",
+  "field": "Anatomy",
+  "aliases": [
+   "Navel"
+  ]
+ },
+ {
+  "id": "b208",
+  "name": "Tonsils",
+  "field": "Anatomy",
+  "aliases": [
+   "Tonsil"
+  ]
+ },
+ {
+  "id": "b209",
+  "name": "Fingernail",
+  "field": "Anatomy",
+  "aliases": [
+   "Nail"
+  ]
+ },
+ {
+  "id": "b210",
+  "name": "Achilles tendon",
+  "field": "Anatomy",
+  "aliases": []
+ },
+ {
+  "id": "b211",
+  "name": "Stretching",
+  "field": "Physiology",
+  "aliases": [
+   "Stretch"
+  ]
+ },
+ {
+  "id": "b212",
+  "name": "Fever",
+  "field": "Physiology",
+  "aliases": []
+ },
+ {
+  "id": "b213",
+  "name": "Thirst",
+  "field": "Physiology",
+  "aliases": []
+ },
+ {
+  "id": "b214",
+  "name": "Hunger",
+  "field": "Physiology",
+  "aliases": []
+ },
+ {
+  "id": "b215",
+  "name": "Itching",
+  "field": "Physiology",
+  "aliases": []
+ },
+ {
+  "id": "b216",
+  "name": "Burping",
+  "field": "Physiology",
+  "aliases": [
+   "Belching",
+   "Burp"
+  ]
+ },
+ {
+  "id": "b217",
+  "name": "Balance",
+  "field": "Physiology",
+  "aliases": []
+ },
+ {
+  "id": "b218",
+  "name": "Laughing",
+  "field": "Physiology",
+  "aliases": [
+   "Laughter",
+   "Laugh"
+  ]
+ },
+ {
+  "id": "b219",
+  "name": "Aging",
+  "field": "Physiology",
+  "aliases": [
+   "Ageing"
+  ]
+ },
+ {
+  "id": "b220",
+  "name": "Blushing",
+  "field": "Physiology",
+  "aliases": []
+ },
+ {
+  "id": "b221",
+  "name": "Pipette",
+  "field": "Microbiology",
+  "aliases": []
+ },
+ {
+  "id": "b222",
+  "name": "Lab goggles",
+  "field": "Microbiology",
+  "aliases": [
+   "Goggles",
+   "Safety goggles"
+  ]
+ },
+ {
+  "id": "b223",
+  "name": "Bunsen burner",
+  "field": "Microbiology",
+  "aliases": []
+ },
+ {
+  "id": "b224",
+  "name": "Dirty hands",
+  "field": "Microbiology",
+  "aliases": [
+   "Germs on hands"
+  ]
+ },
+ {
+  "id": "b225",
+  "name": "Bacterial colony",
+  "field": "Microbiology",
+  "aliases": [
+   "Colony"
+  ]
+ },
+ {
+  "id": "b226",
+  "name": "Cockroach",
+  "field": "Microbiology",
+  "aliases": []
+ },
+ {
+  "id": "b227",
+  "name": "Bat",
+  "field": "Microbiology",
+  "aliases": []
+ },
+ {
+  "id": "b228",
+  "name": "Yogurt",
+  "field": "Microbiology",
+  "aliases": [
+   "Probiotics",
+   "Yoghurt"
+  ]
+ },
+ {
+  "id": "b229",
+  "name": "Lab mouse",
+  "field": "Microbiology",
+  "aliases": [
+   "Mouse"
+  ]
+ },
+ {
+  "id": "b230",
+  "name": "Dirty water",
+  "field": "Microbiology",
+  "aliases": [
+   "Contaminated water"
+  ]
+ },
+ {
+  "id": "b231",
+  "name": "Lump",
+  "field": "Pathology",
+  "aliases": [
+   "Mass"
+  ]
+ },
+ {
+  "id": "b232",
+  "name": "Boil",
+  "field": "Pathology",
+  "aliases": [
+   "Furuncle"
+  ]
+ },
+ {
+  "id": "b233",
+  "name": "Pimple",
+  "field": "Pathology",
+  "aliases": [
+   "Zit",
+   "Spot"
+  ]
+ },
+ {
+  "id": "b234",
+  "name": "Broken tooth",
+  "field": "Pathology",
+  "aliases": [
+   "Chipped tooth"
+  ]
+ },
+ {
+  "id": "b235",
+  "name": "Bloodshot eye",
+  "field": "Pathology",
+  "aliases": [
+   "Red eye"
+  ]
+ },
+ {
+  "id": "b236",
+  "name": "Edema",
+  "field": "Pathology",
+  "aliases": [
+   "Oedema"
+  ]
+ },
+ {
+  "id": "b237",
+  "name": "Enlarged heart",
+  "field": "Pathology",
+  "aliases": [
+   "Cardiomegaly"
+  ]
+ },
+ {
+  "id": "b238",
+  "name": "Broken nose",
+  "field": "Pathology",
+  "aliases": []
+ },
+ {
+  "id": "b239",
+  "name": "Blocked artery",
+  "field": "Pathology",
+  "aliases": [
+   "Clogged artery"
+  ]
+ },
+ {
+  "id": "b240",
+  "name": "Smoker's lung",
+  "field": "Pathology",
+  "aliases": [
+   "Black lung"
+  ]
+ },
+ {
+  "id": "b241",
+  "name": "Antibiotic",
+  "field": "Pharmacology",
+  "aliases": [
+   "Antibiotics"
+  ]
+ },
+ {
+  "id": "b242",
+  "name": "Painkiller",
+  "field": "Pharmacology",
+  "aliases": [
+   "Analgesic"
+  ]
+ },
+ {
+  "id": "b243",
+  "name": "Sleeping pill",
+  "field": "Pharmacology",
+  "aliases": [
+   "Sleeping pills"
+  ]
+ },
+ {
+  "id": "b244",
+  "name": "First aid kit",
+  "field": "Pharmacology",
+  "aliases": [
+   "First aid box"
+  ]
+ },
+ {
+  "id": "b245",
+  "name": "Hot water bottle",
+  "field": "Pharmacology",
+  "aliases": []
+ },
+ {
+  "id": "b246",
+  "name": "Antacid",
+  "field": "Pharmacology",
+  "aliases": [
+   "Antacids"
+  ]
+ },
+ {
+  "id": "b247",
+  "name": "Sunscreen",
+  "field": "Pharmacology",
+  "aliases": []
+ },
+ {
+  "id": "b248",
+  "name": "Mouthwash",
+  "field": "Pharmacology",
+  "aliases": []
+ },
+ {
+  "id": "b249",
+  "name": "Eye patch",
+  "field": "Pharmacology",
+  "aliases": []
+ },
+ {
+  "id": "b250",
+  "name": "Overdose",
+  "field": "Pharmacology",
+  "aliases": [
+   "OD"
+  ]
+ },
+ {
+  "id": "b251",
+  "name": "Water molecule",
+  "field": "Biochemistry",
+  "aliases": [
+   "Water",
+   "H2O"
+  ]
+ },
+ {
+  "id": "b252",
+  "name": "Salt",
+  "field": "Biochemistry",
+  "aliases": [
+   "Sodium chloride"
+  ]
+ },
+ {
+  "id": "b253",
+  "name": "Bread",
+  "field": "Biochemistry",
+  "aliases": [
+   "Carbohydrate",
+   "Carbs"
+  ]
+ },
+ {
+  "id": "b254",
+  "name": "Milk",
+  "field": "Biochemistry",
+  "aliases": []
+ },
+ {
+  "id": "b255",
+  "name": "Carbon dioxide",
+  "field": "Biochemistry",
+  "aliases": [
+   "CO2"
+  ]
+ },
+ {
+  "id": "b256",
+  "name": "Oxygen",
+  "field": "Biochemistry",
+  "aliases": [
+   "O2"
+  ]
+ },
+ {
+  "id": "b257",
+  "name": "Banana",
+  "field": "Biochemistry",
+  "aliases": [
+   "Potassium"
+  ]
+ },
+ {
+  "id": "b258",
+  "name": "Spinach",
+  "field": "Biochemistry",
+  "aliases": [
+   "Iron"
+  ]
+ },
+ {
+  "id": "b259",
+  "name": "Butter",
+  "field": "Biochemistry",
+  "aliases": [
+   "Fat"
+  ]
+ },
+ {
+  "id": "b260",
+  "name": "Honey",
+  "field": "Biochemistry",
+  "aliases": []
+ },
+ {
+  "id": "b261",
+  "name": "Umbilical cord",
+  "field": "Anatomy",
+  "aliases": [
+   "Cord"
+  ]
+ }
+]

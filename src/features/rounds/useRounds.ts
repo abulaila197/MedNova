@@ -1,0 +1,110 @@
+// Grand Rounds (Yazan 2026-10-13, missions 2026-10-25): a 13-week cycle (16 until 2026-11-04, when 3 games were parked); each week has 3 missions counted in Sparks
+// used, each paying a chest, counted on the server from synced spends.
+import { create } from 'zustand';
+
+import { GAMES } from '@/data/games';
+import { loadChallenges } from '@/features/chests/useChests';
+import { useSession } from '@/games/shell/session';
+import { copyOf, keepCopy } from '@/lib/copies';
+import { supabase } from '@/lib/supabase';
+import { syncAccount } from '@/lib/sync';
+import { onAccountSwitch } from '@/state/accountSwitch';
+
+export type Week = { kind: 'game'; slot: number; game: string } | { kind: 'mode'; slot: number; mode: 'online' | 'solo' | 'offline' };
+export type ChestKind = 'wooden' | 'golden' | 'diamond';
+/** One of the week's 3 missions (#27, Yazan 2026-10-25): a running total of Sparks used, and its chest. */
+export type Mission = { of: number; chest: ChestKind; claimed: boolean };
+
+export type Rounds = {
+  week: number;
+  this: Week;
+  next: Week;
+  ends: number;
+  /** Sparks used this week on the week's game (or mode). */
+  used: number;
+  missions: Mission[];
+  /** Week 3's mission stamps the week. */
+  claimed: boolean;
+  stamps: number[];
+  /** Different weeks stamped since the last cycle prize. */
+  cycle: { have: number; of: number; prize: number };
+  /** Stamped weeks in a row toward the next Epic chest (0-4; every 4 in a row pays one). */
+  run: number;
+};
+
+/** Weeks in a row with all 3 missions done that pay an Epic chest (Yazan 2026-10-26). */
+export const EPIC_RUN = 4;
+
+/** 13 game weeks, then an Online, a Solo and a Pass the phone week. */
+export const CYCLE_WEEKS = 13;
+export const CHEST_NAME: Record<ChestKind, string> = { wooden: 'Wooden chest', golden: 'Golden chest', diamond: 'Diamond chest' };
+const MODE_WEEK: Record<string, string> = { online: 'Online week', solo: 'Solo week', offline: 'Pass the phone week' };
+const MODE_NAME: Record<string, string> = { online: 'Online', solo: 'Solo', offline: 'Pass the phone' };
+
+/** "Diagnostic Pursuit", or "Online week" for the three mode weeks. */
+export const weekName = (w: Week) => (w.kind === 'mode' ? MODE_WEEK[w.mode] : (() => {
+  const g = GAMES.find((x) => x.key === w.game);
+  return g ? `${g.lead.replace(/^The /, '')} ${g.em}`.trim() : w.game;
+})());
+
+/** What counts this week, in words. */
+export const weekGoal = (w: Week) =>
+  w.kind === 'mode' ? `Use Sparks on any game in ${MODE_NAME[w.mode]}` : 'Use Sparks on this game, in any mode';
+
+export const timeLeft = (ends: number) => {
+  const h = Math.max(0, Math.floor((ends - Date.now()) / 3600000));
+  return h >= 24 ? `${Math.floor(h / 24)}d ${h % 24}h` : `${h}h`;
+};
+
+/** `failed`: the last read did not reach the server (offline) (AP8). */
+/** `savedAt`: `r` is the saved copy from then (#59, read-only offline: collecting needs the server). */
+type State = { r: Rounds | null; at: number; failed: boolean; savedAt: number | null };
+export const useRoundsStore = create<State>(() => ({ r: null, at: 0, failed: false, savedAt: null }));
+onAccountSwitch(() => useRoundsStore.setState({ r: null, at: 0, failed: false, savedAt: null }));
+
+/** Reads this week's state (guests see the goal with no progress). Cheap: skips if read in the last 3 minutes unless forced (G7 #2: was 20 s). */
+export async function loadRounds(force = false) {
+  if (!force && Date.now() - useRoundsStore.getState().at < 180000) return;
+  useRoundsStore.setState({ at: Date.now() });
+  const userId = useSession.getState().userId;
+  if (userId) await syncAccount(userId).catch(() => {});
+  const { data } = await supabase.rpc('rounds_status');
+  const r = data as Rounds | null;
+  if (r?.this && Array.isArray(r.missions)) {
+    useRoundsStore.setState({ r, failed: false, savedAt: null });
+    if (userId) void keepCopy('rounds', userId, r);
+  } else {
+    const copy = userId ? await copyOf<Rounds>('rounds', userId) : null;
+    if (copy && useSession.getState().userId === userId) useRoundsStore.setState({ r: copy.v, failed: true, savedAt: copy.at });
+    else useRoundsStore.setState({ failed: true });
+  }
+}
+
+/** How far along the last mission the week is (0-1). */
+export const doneOf = (r: Rounds | null) => {
+  const top = r?.missions.at(-1)?.of ?? 0;
+  return r && top ? Math.min(1, r.used / top) : 0;
+};
+
+/**
+ * The red dot on the Grand Rounds and chest buttons (Yazan 2026-10-26): shown to signed-in players until all 3 of
+ * this week's missions are collected, then gone from both until next week.
+ */
+export const useRoundsDot = () => {
+  const signedIn = useSession((x) => !!x.userId);
+  return useRoundsStore((x) => signedIn && !!x.r && !x.r.claimed);
+};
+
+/** Missions reached but not yet collected. */
+export const readyOf = (r: Rounds | null) => (r ? r.missions.map((m, i) => ({ ...m, tier: i + 1 })).filter((m) => !m.claimed && r.used >= m.of) : []);
+
+/** Collects mission `tier` (1-3): its chest; mission 3 also stamps the week and may pay the cycle prize. */
+export async function claimRounds(tier: number) {
+  const { data, error } = await supabase.rpc('rounds_claim', { tier });
+  if (error || !data) return { ok: false, why: 'offline' } as const;
+  const userId = useSession.getState().userId;
+  if (userId) await syncAccount(userId).catch(() => {});
+  await loadRounds(true);
+  void loadChallenges(true);
+  return data as { ok: boolean; why?: string; chest?: ChestKind; stamp?: boolean; prize?: number; epic?: boolean };
+}
