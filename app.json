@@ -85,7 +85,7 @@
             "useLegacyPackaging": true
           },
           "ios": {
-            "useFrameworks": "static"
+            "useFrameworks": "dynamic"
           }
         }
       ],
