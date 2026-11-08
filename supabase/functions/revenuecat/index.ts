@@ -112,12 +112,14 @@ async function transfer(e: Event) {
     const { error: off } = await admin.from('subscriptions').update({ expires_at: now, will_renew: false, updated_at: now }).in('user_id', from).gt('expires_at', now);
     if (off) return new Response(off.message, { status: 500 });
   }
-  // Only a bought Sovereign travels (a store purchase row), not one an admin gave.
-  const { data: sov, error: ve } = await admin.from('wallet_ledger').select('id').in('user_id', from).eq('reason', `pack:${SOVEREIGN}`).limit(1);
+  // Only a bought (and not refunded) Sovereign travels: a store purchase row, not one an admin gave.
+  const { data: rows, error: ve } = await admin.from('wallet_ledger').select('reason').in('user_id', from).in('reason', [`pack:${SOVEREIGN}`, `refund:${SOVEREIGN}`]);
   if (ve) return new Response(ve.message, { status: 500 });
-  if (sov?.length) {
+  const reasons = (rows ?? []).map((r: { reason: string }) => r.reason);
+  const sov = reasons.includes(`pack:${SOVEREIGN}`) && !reasons.includes(`refund:${SOVEREIGN}`);
+  if (sov) {
     const { error } = await admin.from('style_owned').upsert([{ user_id: to, item: 'robot:sovereign' }, { user_id: to, item: 'frame:sovereign' }], { onConflict: 'user_id,item', ignoreDuplicates: true });
     if (error) return new Response(error.message, { status: 500 });
   }
-  return ok(`transfer: ${best ? 'unlimited ' : ''}${sov?.length ? 'sovereign' : ''}`.trim());
+  return ok(`transfer: ${best ? 'unlimited ' : ''}${sov ? 'sovereign' : ''}`.trim());
 }
