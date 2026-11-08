@@ -36,7 +36,8 @@ export function Feed() {
         <Socials />
         <Shelf lead="Nova" em="Wallpapers" photos={SHELF_WALLPAPERS} to="/community/wallpapers" />
         <Post id="vision" kick="OUR VISION" lead="Medicine," em="reimagined as wonder" body={VISION} />
-        <Shelf lead="Nova" em="merch" note="Soon in the store" photos={MERCH} to="/community/soon" />
+        {/* A look-ahead, not an unfinished store (audit call 2, Yazan 2026-11-08). */}
+        <Shelf lead="Nova" em="merch" note="Preview" photos={MERCH} to="/community/soon" />
         <Post id="build" kick="BEHIND MEDNOVA" lead="Built slowly," em="with care" body={BUILD} />
       </ScrollView>
     </Fade>

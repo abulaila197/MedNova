@@ -29,7 +29,9 @@ type Pop = { kick: string; title: string; big: string; line: string; coin: boole
 const FAILED: Pop = { kick: 'NOT BOUGHT', title: 'Something went wrong', big: '', line: 'Nothing was charged. Check your connection and try again.', coin: false, button: 'OK' };
 // Restore asks first (Yazan 2026-11-08).
 const ASK_RESTORE: Pop = { kick: 'RESTORE', title: 'Restore purchases?', big: '', line: `We'll check your ${Platform.OS === 'ios' ? 'Apple' : 'Google'} account for MedNova Unlimited and the Sovereign package and add them to this MedNova account.`, coin: false, button: 'Restore', confirm: true };
-const SOON: Pop = { kick: 'COMING SOON', title: 'Not open yet', big: '', line: 'Buying opens when MedNova is in the App Store and Google Play.', coin: false, button: 'OK' };
+// Each phone names only its own store (Apple 2.3.10, Yazan 2026-11-08).
+const STORE = Platform.OS === 'ios' ? 'the App Store' : 'Google Play';
+const SOON: Pop = { kick: 'COMING SOON', title: 'Not open yet', big: '', line: `Buying opens when MedNova is in ${STORE}.`, coin: false, button: 'OK' };
 
 function boughtPop(id: string): Pop {
   const pack = PACKS.find((p) => p.id === id);
@@ -160,7 +162,7 @@ export function StorePage() {
           <Text style={[s.restoreT, { color: t.accent }]}>Restore purchases</Text>
         </Pressable>
         <Text style={[s.foot, { color: c.mute }]}>
-          {`Paid through the App Store or Google Play. Tokens and the subscription stay on your account. MedNova Unlimited is ${subPrice} a month and renews every month until you cancel it in your App Store or Google Play subscriptions, at least a day before it renews. See our `}
+          {`Paid through ${STORE}. Tokens and the subscription stay on your account. MedNova Unlimited is ${subPrice} a month and renews every month until you cancel it in your ${STORE} subscriptions, at least a day before it renews. See our `}
           <Text style={{ color: t.accent }} onPress={() => router.push({ pathname: '/privacy', params: { doc: 'terms' } })} accessibilityRole="link">
             Terms
           </Text>

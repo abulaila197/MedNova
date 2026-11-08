@@ -195,7 +195,7 @@ export function FreeTokens({ t }: { t: Theme }) {
     if (!signedIn) return router.navigate('/auth');
     if (busy) return;
     // A collected link still opens its page, with no reward again (Yazan 2026-10-27).
-    const again = isDone(w);
+    const again = isDone(w) || unpaid(w);
     if ((SOCIAL as readonly string[]).includes(w.key)) {
       Linking.openURL(LINKS[w.key as (typeof SOCIAL)[number]]).catch(() => {});
       return again ? undefined : claim(w.key);
@@ -236,6 +236,9 @@ export function FreeTokens({ t }: { t: Theme }) {
   // Social and store-listing ways wait for their real links.
   const noLink = (w: Way) =>
     (SOCIAL as readonly string[]).includes(w.key) ? !LINKS[w.key as (typeof SOCIAL)[number]] : w.key === 'listing' && !(Platform.OS === 'android' ? LINKS.listingAndroid : LINKS.listing);
+  // Apple 3.2.2 (Yazan 2026-11-08, call 1): on iPhone, following us and visiting the store page open the page but pay no
+  // tokens. Android keeps the reward (Google only bans paying for ratings).
+  const unpaid = (w: Way) => Platform.OS === 'ios' && ((SOCIAL as readonly string[]).includes(w.key) || w.key === 'listing');
   const label = (w: Way) => (w.key === 'story' ? `${w.label} · ${stories} of 5` : w.key === 'invite' && st ? `${w.label} · ${st.invite_tokens} of 150` : w.label);
   const act = (w: Way) => (!signedIn ? 'Sign in' : w.key === 'ambassador' && st?.ambassador === 'pending' ? 'In review' : w.act);
   return (
@@ -247,7 +250,7 @@ export function FreeTokens({ t }: { t: Theme }) {
         <Global t={t} st={st} signedIn={signedIn} />
         <WayCard t={t} w={AD_WAY} label={ADS_LIVE && st ? `${AD_WAY.label} · ${st.ads_today ?? 0} of ${AD_CAP} today` : AD_WAY.label} act={signedIn ? AD_WAY.act : 'Sign in'} done={(st?.ads_today ?? 0) >= AD_CAP} locked={!ADS_LIVE} busy={busy === 'ad'} onPress={() => (signedIn ? watchAd() : router.navigate('/auth'))} />
         {WAYS.map((w) => (
-          <WayCard key={w.key} t={t} w={w} label={label(w)} act={act(w)} done={isDone(w)} locked={noLink(w)} busy={busy === w.key} onPress={() => tap(w)} reopen={LINKED.includes(w.key)} />
+          <WayCard key={w.key} t={t} w={w} label={label(w)} act={act(w)} done={!unpaid(w) && isDone(w)} unpaid={unpaid(w)} locked={noLink(w)} busy={busy === w.key} onPress={() => tap(w)} reopen={LINKED.includes(w.key)} />
         ))}
       </Row>
       {adNote ? <Text style={{ fontFamily: F.body, fontSize: u(11.5), color: t.soft, marginTop: u(6) }}>{adNote}</Text> : null}
@@ -266,11 +269,11 @@ function Row({ children }: { children: ReactNode }) {
 /** Ways that open a page; they stay tappable after collecting. */
 const LINKED = ['tiktok', 'instagram', 'facebook', 'youtube', 'channel', 'community', 'listing'];
 
-function WayCard({ t, w, label, act, done, locked, busy, onPress, reopen }: { t: Theme; w: Way; label: string; act: string; done: boolean; locked?: boolean; busy: boolean; onPress: () => void; reopen?: boolean }) {
+function WayCard({ t, w, label, act, done, locked, busy, onPress, reopen, unpaid }: { t: Theme; w: Way; label: string; act: string; done: boolean; locked?: boolean; busy: boolean; onPress: () => void; reopen?: boolean; unpaid?: boolean }) {
   return (
-    <Pressable onPress={locked || (done && !reopen) ? undefined : onPress} accessibilityRole="button" accessibilityLabel={`${w.label}, ${w.tokens} tokens`} style={[s.card, { backgroundColor: t.panel, borderColor: t.panelLine }, busy && { opacity: 0.6 }]}>
+    <Pressable onPress={locked || (done && !reopen) ? undefined : onPress} accessibilityRole="button" accessibilityLabel={unpaid ? w.label : `${w.label}, ${w.tokens} tokens`} style={[s.card, { backgroundColor: t.panel, borderColor: t.panelLine }, busy && { opacity: 0.6 }]}>
       <View style={[s.ic, { backgroundColor: 'rgba(111,214,255,0.1)' }]}>{w.icon({ size: u(17), color: t.accent })}</View>
-      <Text style={[s.cN, { color: t.fg }]}>{`+${w.tokens}`}</Text>
+      <Text style={[s.cN, { color: unpaid ? t.mute : t.fg }]}>{unpaid ? '♥' : `+${w.tokens}`}</Text>
       <Text style={[s.cU, { color: t.mute }]} numberOfLines={2}>
         {w.each ? `${label} · each` : label}
       </Text>

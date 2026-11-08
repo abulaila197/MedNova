@@ -31,7 +31,7 @@ export function Soon() {
       <Text style={[s.h2, { color: t.white }]}>
         Still <Text style={{ fontFamily: F.displayItalic, color: t.accent }}>rising</Text>
       </Text>
-      <Text style={[s.p, { color: t.mute }]}>Reels, shorts, stories and posts from MedNova land here soon.</Text>
+      <Text style={[s.p, { color: t.mute }]}>Nova merch is a preview for now: the hoodies, tees and mugs come later. Reels, shorts and stories from MedNova will land here too.</Text>
       <Pressable style={[s.nt, { backgroundColor: t.panel, borderColor: t.panelLine }]} accessibilityRole="button">
         <Text style={[s.ntT, { color: t.fg }]}>Notify me</Text>
       </Pressable>

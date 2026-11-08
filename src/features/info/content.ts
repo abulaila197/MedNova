@@ -137,6 +137,8 @@ export const PRIVACY: Section[] = [
     legal: [
       { b: 'Sign-up.', p: 'When you create an account we receive your email address, a password and the username you choose (also used as your display name). Sign-in and email codes are handled by Supabase Auth. Your password is stored by Supabase only as a one-way hash; MedNova never sees or stores it in plain text.' },
       { b: 'Google sign-in.', p: 'If you sign in with Google, Google confirms who you are and shares your email address and basic profile (name and picture) with us. We never see your Google password, and we use only your email to make your account.' },
+      // Apple sign-in (Yazan 2026-11-08, audit fix 4).
+      { b: 'Sign in with Apple.', p: 'On iPhone you can sign in with Apple. Apple confirms who you are and shares your name and an email address with us; if you choose Hide My Email, we get a private relay address from Apple instead of your real one. We never see your Apple ID password. We also keep a token from Apple so that, when you delete your account, we can tell Apple to remove MedNova from the apps using your Apple ID.' },
       { b: 'Profile.', p: 'Your account has a profile with your username, display name, avatar (the character you pick) and a friend code that others can use to add you.' },
       { b: 'Guests.', p: 'You can play as a guest without an account. Guest progress stays on your phone and is not linked to you on our servers.' },
     ],
@@ -282,7 +284,7 @@ export const PRIVACY: Section[] = [
           'Objection: object to how we use your data, or ask us to limit it.',
         ],
       },
-      { p: 'These rights come from the GDPR and the data protection laws that apply to you. To use them, write to us (see Contact). You may also complain to your local data protection authority.' },
+      { p: 'These rights come from the data protection laws that apply to you, including the EU and UK GDPR, the Saudi Personal Data Protection Law (PDPL) and the Egyptian Personal Data Protection Law (Law No. 151 of 2020). To use them, write to us (see Contact). You may also complain to your local data protection authority.' },
     ],
   },
   {
@@ -413,8 +415,36 @@ export const TERMS: Section[] = [
     plain: 'We work hard, but *mistakes can happen.*',
     legal: [{ p: 'MedNova is provided as an evolving educational platform. While reasonable efforts are made to keep the service reliable and the information useful, no software or educational content can be guaranteed to be completely error-free or continuously available.' }],
   },
+  // Audit fix 5 + call 4 (Yazan 2026-11-08): liability, ending an account, changes and governing law.
   {
     n: '14',
+    k: 'Limits of liability',
+    plain: 'MedNova is a game, and our *responsibility has limits.*',
+    legal: [
+      { p: 'MedNova is provided "as is" for education and entertainment. To the extent the law allows, MedNova and its owner are not liable for indirect or consequential losses, for decisions made using the app, for loss of game progress or virtual items, or for problems caused by your device, connection or third-party services.' },
+      { p: 'Where the law does not allow these limits, they apply only as far as the law permits. Nothing in these Terms limits liability that cannot be limited by law, or your rights as a consumer.' },
+    ],
+  },
+  {
+    n: '15',
+    k: 'Ending your account',
+    plain: 'You can *leave any time.*',
+    legal: [{ p: 'You can stop using MedNova and delete your account at any time from Profile, or ask us to delete it. Deleting your account removes your progress, tokens and items, and they cannot be restored. A subscription is managed by your app store, so cancel it there as well. We may end accounts as described under Suspension.' }],
+  },
+  {
+    n: '16',
+    k: 'Changes to these Terms',
+    plain: 'If the Terms change, *we will tell you.*',
+    legal: [{ p: 'We may update these Terms when MedNova changes. The current version is always in the app and on our website. For important changes we will tell you in the app before they apply. If you keep using MedNova after a change, the new Terms apply; if you do not agree, you can delete your account.' }],
+  },
+  {
+    n: '17',
+    k: 'Governing law',
+    plain: 'These Terms follow *the laws of Saudi Arabia.*',
+    legal: [{ p: 'These Terms are governed by the laws of the Kingdom of Saudi Arabia, and disputes go to its competent courts. This does not take away any rights the consumer laws of your own country give you.' }],
+  },
+  {
+    n: '18',
     k: 'Contact',
     plain: 'Questions about these Terms? *Write to us.*',
     legal: [{ p: `For questions about these Terms, contact MedNova at ${CONTACT}.` }],
