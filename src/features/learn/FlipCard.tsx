@@ -1,6 +1,6 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useState } from 'react';
-import { Image, Pressable, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
@@ -53,18 +53,13 @@ export function FlipCard({ card, flipped, onPress }: { card: Card; flipped: bool
   );
   const isDossier = card.kind === 'dossier';
   const title = isDossier ? titleOf(card.dossier.name) : null;
-  // #7 (Yazan 2026-11-04): the card grows to fit its answer (or question), up to about half the screen (the room between the title and the buttons); past that the
-  // text steps down a size and scrolls inside the card. The estimate counts lines at the card's width.
-  const { height: screenH, width: screenW } = useWindowDimensions();
+  // The card fills the room between the title and the buttons (flex 1); its answer scrolls inside it. A minimum height
+  // taken from the whole screen (#7, 48%) pushed Again / Got it under the dock on phones with tall system bars and on
+  // iPhones (Yazan 2026-11-08), so the card no longer has one.
   const answer = card.kind === 'dossier' ? '' : card.answer ?? 'Not saved for this question.';
   const longAnswer = answer.length > 110;
-  const lines = (text: string, perLine: number) => Math.ceil(text.length / Math.max(10, perLine));
-  const textW = Math.min(screenW, u(400)) - u(64);
-  const backH = u(64) + lines(answer, textW / (longAnswer ? u(8) : u(10))) * (longAnswer ? u(20) : u(24.7)) + u(40);
-  const frontH = card.kind === 'dossier' ? 0 : u(70) + lines(card.q, textW / u(8)) * u(21) + card.choices.length * u(30) + (card.image ? u(100) : 0);
-  const fitH = Math.min(Math.max(u(220), backH, frontH), screenH * 0.48);
   return (
-    <Pressable onPress={onPress} style={[s.flip, { minHeight: fitH }]} accessibilityRole="button" accessibilityLabel={flipped ? 'Show the front' : isDossier ? 'Show the disease' : 'Show the answer'}>
+    <Pressable onPress={onPress} style={s.flip} accessibilityRole="button" accessibilityLabel={flipped ? 'Show the front' : isDossier ? 'Show the disease' : 'Show the answer'}>
       <Animated.View style={[face, front]} pointerEvents={flipped ? 'none' : 'box-none'}>
         {bg}
         {src}
@@ -135,7 +130,7 @@ export function FlipCard({ card, flipped, onPress }: { card: Card; flipped: bool
 }
 
 const s = StyleSheet.create({
-  flip: { flex: 1, minHeight: u(220) },
+  flip: { flex: 1 },
   face: { ...StyleSheet.absoluteFill, borderRadius: u(20), borderWidth: 1, padding: u(16), gap: u(7), backfaceVisibility: 'hidden', overflow: 'hidden' },
   src: { flexDirection: 'row', alignItems: 'center', gap: u(6) },
   dot: { width: u(6), height: u(6), borderRadius: u(6) },

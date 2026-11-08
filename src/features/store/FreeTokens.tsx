@@ -27,7 +27,7 @@ type Icon = (p: { size: number; color: string }) => ReactNode;
 type Way = { key: string; label: string; tokens: number; each?: boolean; act: string; icon: Icon };
 
 const stroke = { fill: 'none', strokeWidth: 1.7, strokeLinecap: 'round', strokeLinejoin: 'round' } as const;
-const I: Record<string, Icon> = {
+export const I: Record<string, Icon> = {
   tiktok: ({ size, color }) => (
     <Svg width={size} height={size} viewBox="0 0 24 24" stroke={color} {...stroke}>
       <Path d="M13 4v10.5a3.5 3.5 0 1 1-3.5-3.5" />

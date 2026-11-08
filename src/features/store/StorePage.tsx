@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 
 import { Text } from '@/components/AppText';
+import { Congrats } from '@/components/Congrats';
 import { useBalance } from '@/components/LevelBadge';
 import { TokenCoin } from '@/components/PulseStar';
 import { Screen } from '@/components/Screen';
@@ -11,7 +12,7 @@ import { OfflineLine } from '@/components/OfflineLine';
 import { InfoScroll, Kicker, s as ui, useInfo } from '@/features/info/ui';
 import { useSession } from '@/games/shell/session';
 import { Framed } from '@/features/style/Frame';
-import { useStyle } from '@/features/style/useStyle';
+import { loadStyle, useStyle } from '@/features/style/useStyle';
 import { SOVEREIGN_PACK } from '@/features/shop/robots';
 import { u } from '@/theme/scale';
 import type { Theme } from '@/theme/tokens';
@@ -19,16 +20,30 @@ import { F } from '@/theme/tokens';
 
 import { StyleBanner } from './StyleBanner';
 import { FreeSheets, FreeTokens, useFree } from './FreeTokens';
-import { BILLING_LIVE, buy, loadPrices, restore, useIsSubscribed, usePrice, useSubscription, type BuyResult } from './billing';
+import { BILLING_LIVE, buy, isSubscribed, loadPrices, restore, useIsSubscribed, usePrice, useSubscription, type BuyResult } from './billing';
 import { PACKS, SUBSCRIPTION, type Pack } from './catalog';
 
-const SAY: Record<BuyResult, string> = {
-  done: 'Added to your account.',
-  cancelled: '',
-  soon: 'Buying opens when MedNova is in the App Store and Google Play.',
-  signin: '',
-  failed: 'Not bought. Check your connection and try again.',
-};
+// What a finished payment, restore or failure says, as a pop-up the player can't miss (Yazan 2026-11-08: the old line at
+// the top of the shop went unseen, so Restore looked like it did nothing).
+type Pop = { kick: string; title: string; big: string; line: string; coin: boolean; button: string };
+const FAILED: Pop = { kick: 'NOT BOUGHT', title: 'Something went wrong', big: '', line: 'Nothing was charged. Check your connection and try again.', coin: false, button: 'OK' };
+const SOON: Pop = { kick: 'COMING SOON', title: 'Not open yet', big: '', line: 'Buying opens when MedNova is in the App Store and Google Play.', coin: false, button: 'OK' };
+
+function boughtPop(id: string): Pop {
+  const pack = PACKS.find((p) => p.id === id);
+  const base = { kick: 'CONGRATULATIONS', title: 'Your payment was successful', coin: true, button: 'Great' };
+  if (pack) return { ...base, big: `+${pack.tokens} tokens`, line: 'Your tokens are in your wallet.' };
+  if (id === SUBSCRIPTION.id) return { ...base, big: 'MedNova Unlimited', line: `${SUBSCRIPTION.perks.join(' · ')}. It's on for your account now.` };
+  return { ...base, big: 'Sovereign package', line: `Sovereign, its frame and ${SOVEREIGN_PACK.tokens} tokens are yours.` };
+}
+
+async function restoredPop(): Promise<Pop> {
+  await loadStyle(true).catch(() => {});
+  const found = [isSubscribed() && 'MedNova Unlimited', useStyle.getState().owned.includes('robot:sovereign') && 'the Sovereign package'].filter(Boolean);
+  return found.length
+    ? { kick: 'RESTORE', title: 'Purchases restored', big: '', line: `On your account: ${found.join(' and ')}.`, coin: false, button: 'OK' }
+    : { kick: 'RESTORE', title: 'Nothing to restore', big: '', line: 'No subscription or package was found for this store account. Token packs are added once, when you buy them.', coin: false, button: 'OK' };
+}
 
 const dateOf = (ms: number) => new Date(ms).toLocaleDateString(undefined, { day: 'numeric', month: 'short' });
 
@@ -44,7 +59,7 @@ export function StorePage() {
   useFocusEffect(useCallback(() => () => useFree.setState({ sheet: null }), []));
   const subscribed = useIsSubscribed();
   const [busy, setBusy] = useState<string | null>(null);
-  const [said, setSaid] = useState('');
+  const [pop, setPop] = useState<Pop | null>(null);
   const subPrice = usePrice(SUBSCRIPTION.id, SUBSCRIPTION.price);
   useEffect(() => loadPrices([...PACKS.map((p) => p.id), SUBSCRIPTION.id, SOVEREIGN_PACK.id]), []);
 
@@ -52,10 +67,13 @@ export function StorePage() {
     if (!signedIn) return router.navigate('/auth'); // MN8: guests sign in first
     if (busy) return;
     setBusy(id);
-    setSaid('');
     const r = await act();
     setBusy(null);
-    setSaid(SAY[r]);
+    // The Sovereign card reads what you own, so a purchase or restore reloads it.
+    if (r === 'done' && id !== 'restore') void loadStyle(true).catch(() => {});
+    if (r === 'done') setPop(id === 'restore' ? await restoredPop() : boughtPop(id));
+    else if (r === 'failed') setPop(FAILED);
+    else if (r === 'soon') setPop(SOON);
   };
 
   return (
@@ -87,7 +105,6 @@ export function StorePage() {
           </Pressable>
         )}
 
-        {said ? <Text style={[s.said, { color: c.fg, borderColor: t.panelLine, backgroundColor: t.panel }]}>{said}</Text> : null}
         <Pressable
           onPress={subscribed ? undefined : () => run(SUBSCRIPTION.id, () => buy(SUBSCRIPTION.id))}
           accessibilityRole="button"
@@ -153,6 +170,7 @@ export function StorePage() {
         </Text>
       </InfoScroll>
       <FreeSheets t={t} />
+      <Congrats open={!!pop} title={pop?.title ?? ''} big={pop?.big} kick={pop?.kick} line={pop?.line ?? ''} coin={pop?.coin} button={pop?.button} onClose={() => setPop(null)} />
     </Screen>
   );
 }
@@ -239,7 +257,6 @@ const s = StyleSheet.create({
   cBtn: { alignSelf: 'stretch', height: u(30), borderRadius: 999, alignItems: 'center', justifyContent: 'center', marginTop: u(10) },
   sovBtn: { alignSelf: 'auto', marginTop: 0, paddingHorizontal: u(16) },
   cBtnT: { fontFamily: F.bodyBold, fontSize: u(12) },
-  said: { fontFamily: F.bodyMedium, fontSize: u(11), lineHeight: u(15), marginTop: u(12), borderWidth: 1, borderRadius: u(12), paddingVertical: u(8), paddingHorizontal: u(12), overflow: 'hidden' },
   restore: { alignSelf: 'center', marginTop: u(14), padding: u(4) },
   style: { flexDirection: 'row', alignItems: 'center', gap: u(12), borderWidth: 1, borderRadius: u(18), padding: u(12), marginTop: u(6) },
   styleH: { fontFamily: F.display, fontSize: u(15) },
