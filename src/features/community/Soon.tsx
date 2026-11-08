@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 
 import { cover, Feather } from '@/features/community/fx';
@@ -32,9 +32,6 @@ export function Soon() {
         Still <Text style={{ fontFamily: F.displayItalic, color: t.accent }}>rising</Text>
       </Text>
       <Text style={[s.p, { color: t.mute }]}>Nova merch is a preview for now: the hoodies, tees and mugs come later. Reels, shorts and stories from MedNova will land here too.</Text>
-      <Pressable style={[s.nt, { backgroundColor: t.panel, borderColor: t.panelLine }]} accessibilityRole="button">
-        <Text style={[s.ntT, { color: t.fg }]}>Notify me</Text>
-      </Pressable>
     </View>
   );
 }
@@ -45,6 +42,4 @@ const s = StyleSheet.create({
   kick: { height: u(12), lineHeight: u(12), fontFamily: F.mono, fontSize: u(8.5), letterSpacing: u(1.7) },
   h2: { height: u(29), lineHeight: u(29), fontFamily: F.display, fontSize: u(30), overflow: 'visible' },
   p: { width: u(230), textAlign: 'center', fontFamily: F.body, fontSize: u(11), lineHeight: u(16.5) },
-  nt: { marginTop: u(6), height: u(34), paddingHorizontal: u(16), borderRadius: 999, borderWidth: 1, justifyContent: 'center' },
-  ntT: { fontFamily: F.bodySemi, fontSize: u(11) },
 });

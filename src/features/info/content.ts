@@ -34,7 +34,7 @@ export const CHAPTERS: Chapter[] = [
       { q: 'What is MedNova?', a: 'MedNova teaches medicine through games. You read clues, name diseases, answer questions, draw, give clues and solve picture riddles, and what you miss comes back later in your Learning Space. It is for education only, not medical advice, and every patient in it is fictional.' },
       { q: 'Which games are there?', a: `${gameCount}: ${listed}.` },
       { q: 'Do I need an account?', a: 'No. As a guest you get 5 free plays across all games. A free account plays with Sparks, keeps your progress on our servers and lets you add friends and play online.' },
-      { q: 'What are Sparks?', a: 'Sparks are what a game costs to play. Your bar holds 100 and refills one Spark every 10 minutes, faster when you wear a character with more stars. Each game costs Sparks by how long it lasts, and you pay at your first answer. The Medicordle Daily word is always free. To refill sooner, use Watch an ad for 10 Sparks (20 a day) or swap tokens 1 for 1.' },
+      { q: 'What are Sparks?', a: 'Sparks are what a game costs to play. Your bar holds 100 and refills one Spark every 10 minutes, faster when you wear a character with more stars. Each game costs Sparks by how long it lasts, and you pay at your first answer. The Medicordle Daily word is always free. To refill sooner, use Watch an ad for 10 Sparks (20 a day) or swap tokens 1 for 1. With MedNova Unlimited your Sparks never run out.' },
     ],
   },
   {
@@ -85,12 +85,24 @@ export const CHAPTERS: Chapter[] = [
     tag: 'Review',
     items: [
       { q: 'What goes into Learning Space?', a: "What you miss: unsolved Diagnostic Pursuit cases, a wrong first diagnosis in Case Files, missed questions in The Streak Master, The Quiz Parade and The Wheels of Chaos, missed Crossword words and unsolved Riddler conditions. The word and party games add nothing. In Pass the phone, only the phone owner's misses go in." },
-      { q: 'How do I review them?', a: "Today's review shows each missed disease as a flip card with one dossier field on the back. Disease dossiers hold the full file for every disease." },
+      { q: 'How do I review them?', a: "Today's review shows each miss as a flip card. A missed disease shows 3 of its clues: name it, then tap to see the answer on the back. A missed question shows the question and its choices, with the answer on the back. Disease dossiers hold the full file for every disease." },
       { q: 'Can I add my own cases and words?', a: 'Yes. In Learn you can write your own case or word. You can practise it straight away; once it is approved, you can also play it with friends.' },
     ],
   },
   {
     n: '06',
+    chip: 'Shop',
+    title: 'Nova Shop and purchases',
+    tag: 'Purchases',
+    items: [
+      { q: 'What can I buy?', a: 'Open the menu, then Nova Shop. Token packs add tokens to your account. The Sovereign package is a one-time buy: the Sovereign robot, its frame and 500 tokens. MedNova Unlimited is a monthly subscription with unlimited Sparks and no ads, plus 500 tokens on your first month (once per account). Everything is paid through Google Play or the App Store.' },
+      { q: 'How do I cancel MedNova Unlimited?', a: 'In your Google Play or App Store subscriptions. You keep Unlimited until the paid month ends.' },
+      { q: 'I changed phone or account. How do I get my purchases back?', a: 'Sign in, open Nova Shop and tap Restore purchases at the bottom. It asks first, then checks your store account. MedNova Unlimited and the Sovereign package come back; token packs are already on your MedNova account. If you restore on a different MedNova account, Unlimited moves to it and leaves the old one.' },
+      { q: 'Can I get a refund?', a: 'Refunds go through Google Play or the App Store. If a purchase is refunded, what it gave is taken back: the tokens from a pack, Sovereign and its frame, or Unlimited. The full rules are in the Terms, section 06.' },
+    ],
+  },
+  {
+    n: '07',
     chip: 'Help',
     title: 'Help',
     tag: 'Support',
