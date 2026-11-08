@@ -45,7 +45,7 @@ async function restoredPop(): Promise<Pop> {
   await loadStyle(true).catch(() => {});
   const found = [isSubscribed() && 'MedNova Unlimited', useStyle.getState().owned.includes('robot:sovereign') && 'the Sovereign package'].filter(Boolean);
   return found.length
-    ? { kick: 'RESTORE', title: 'Purchases restored', big: '', line: `On your account: ${found.join(' and ')}.`, coin: false, button: 'OK' }
+    ? { kick: 'RESTORE', title: 'Restore checked', big: '', line: `Your account has: ${found.join(' and ')}.`, coin: false, button: 'OK' }
     : { kick: 'RESTORE', title: 'Nothing to restore', big: '', line: 'No subscription or package was found for this store account. Token packs are added once, when you buy them.', coin: false, button: 'OK' };
 }
 
