@@ -5998,5 +5998,3195 @@
    "Multiple sclerosis"
   ],
   "final": "Trigeminal neuralgia"
+ },
+ {
+  "id": "MP-2400",
+  "title": "The Sweet-Smelling Breath",
+  "personal": "Liam Carter, 19, Male, 181 cm, 64 kg, first-year engineering student. Brought to the emergency department by his flatmates late on a Sunday night.",
+  "incident": "For three days Liam had been drinking water like he'd just crossed a desert, and getting up four or five times a night to pass it again. He put it down to the heating in the halls and too much instant noodles. Then on Saturday the stomach ache arrived, a deep, griping pain across his middle, and with it came the vomiting: twice in the afternoon, three times overnight. By Sunday evening he couldn't keep even sips of water down. His flatmates found him on the sofa breathing oddly, long and deep, as if he'd just run for a bus, and slurring his words. One of them said his breath smelled strangely sweet, like nail varnish remover.",
+  "background": "Liam had been well until a few weeks ago. Looking back, he admitted his jeans had got loose; he thought he had lost four or five kilograms without trying, and he'd felt tired in lectures for a month. He'd had a sore throat and a cold about ten days earlier. He takes no regular medicines, has never been in hospital, and doesn't smoke. He drinks at weekends but said he hadn't touched alcohol for a week because he felt too rough. His grandmother takes insulin, and an uncle has an underactive thyroid.",
+  "exam": [
+   {
+    "title": "General",
+    "body": "Liam looked pale and drowsy but woke to his name. His lips and tongue were dry, his eyes slightly sunken. Temperature 37.2°C, pulse 122 and regular, blood pressure 98 over 58, respiratory rate 30, with deep, sighing breaths. A sweet, fruity smell hung on his breath."
+   },
+   {
+    "title": "Abdominal",
+    "body": "His abdomen was diffusely tender, more in the upper half, but soft, with no guarding and no rebound. Bowel sounds were present but quiet. No masses, and no tenderness at the right lower quadrant point."
+   },
+   {
+    "title": "Neurological",
+    "body": "He was slow to answer but oriented to his name and place, moving all four limbs normally, with no neck stiffness and no focal weakness."
+   }
+  ],
+  "investigations": [
+   {
+    "title": "Bedside",
+    "body": "A finger-prick test and a urine dip were done within minutes of arrival:",
+    "reports": [
+     {
+      "title": "Bedside Report",
+      "lines": [
+       "Capillary glucose: reads \"HI\" on the meter",
+       "Urine dip: glucose 4+, ketones 3+",
+       "Capillary ketones: 5.8 mmol/L"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Laboratory",
+    "body": "A venous blood gas and bloods followed:",
+    "reports": [
+     {
+      "title": "Laboratory Report",
+      "lines": [
+       "pH 7.08, bicarbonate 7 mmol/L, anion gap 28",
+       "Plasma glucose 31 mmol/L",
+       "Sodium 131, potassium 5.6 mmol/L",
+       "Urea and creatinine mildly raised, in keeping with dehydration",
+       "Amylase and lipase normal",
+       "White cells mildly raised, CRP normal"
+      ]
+     }
+    ]
+   }
+  ],
+  "treatment": "Liam was given intravenous fluids straight away, followed by a carefully measured continuous infusion of a hormone his own body had stopped making, with potassium added once his levels began to fall. He was checked hourly. Over the next 18 hours his breathing settled, the sweet smell faded, his blood acid levels returned to normal and he began eating again.",
+  "discharge": "He went home on a new daily routine of injections, after teaching sessions with the specialist nurse on checking his levels, recognising early warning signs and adjusting doses when unwell, with a clinic appointment in one week.",
+  "answers": [
+   "Diabetic ketoacidosis",
+   "Hyperosmolar hyperglycemic state",
+   "Acute pancreatitis",
+   "Gastroenteritis",
+   "Alcoholic ketoacidosis"
+  ],
+  "final": "Diabetic ketoacidosis"
+ },
+ {
+  "id": "MP-2401",
+  "title": "Pain Through to the Back",
+  "personal": "Gerald Okafor, 47, Male, 176 cm, 96 kg, long-distance lorry driver. Arrived by ambulance from a motorway service station.",
+  "incident": "The pain started about two hours after a big birthday dinner the night before: a heavy, boring pain high in the middle of his stomach that seemed to go straight through to his back, as if someone was pushing a fist from front to back. Lying flat made it worse. The only position he could bear was sitting forward, hugging his knees. He vomited four times, but it brought no relief. By morning he was sweating and shaking and couldn't climb back into his cab.",
+  "background": "Gerald admitted he drinks most nights on the road, four or five cans, more at weekends, and had 'a fair few' at the party. He has had dull pains under his right ribs after fatty meals a couple of times in the past year that settled on their own. He takes tablets for blood pressure and was told his cholesterol was high. He smokes 15 a day. No previous operations. His father died of a heart attack at 60.",
+  "exam": [
+   {
+    "title": "General",
+    "body": "He sat bolt upright and leaning forward, clammy and in obvious pain. Temperature 38.1°C, pulse 112, blood pressure 104 over 66, respiratory rate 24, oxygen saturation 94% on air."
+   },
+   {
+    "title": "Abdominal",
+    "body": "The upper abdomen was tender with some guarding, the belly mildly swollen, and bowel sounds were quiet. There was faint bluish discolouration around the umbilicus. No pulsatile mass was felt."
+   },
+   {
+    "title": "Chest",
+    "body": "Breath sounds were slightly reduced at the left base; the heart sounds were normal."
+   }
+  ],
+  "investigations": [
+   {
+    "title": "Laboratory",
+    "body": "Bloods were sent urgently:",
+    "reports": [
+     {
+      "title": "Laboratory Report",
+      "lines": [
+       "Serum lipase: more than ten times the upper limit of normal",
+       "White cell count 16, CRP 140",
+       "Calcium low at 1.98 mmol/L",
+       "Liver enzymes mildly raised, bilirubin normal",
+       "Triglycerides moderately raised",
+       "Troponin normal"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Imaging",
+    "body": "An ultrasound and later a CT scan were arranged:",
+    "reports": [
+     {
+      "title": "Imaging Report",
+      "lines": [
+       "Ultrasound: several small stones in the gallbladder, common bile duct not dilated",
+       "CT: swollen gland behind the stomach with surrounding fluid, no free gas, aorta normal calibre",
+       "Small left-sided pleural effusion"
+      ]
+     }
+    ]
+   }
+  ],
+  "treatment": "Gerald was kept nil by mouth at first and given generous intravenous fluids, strong pain relief and anti-sickness medicine, with close monitoring of his urine output and oxygen levels. Within a few days the pain eased, he was eating light meals, and his inflammatory markers came down.",
+  "discharge": "Before discharge he was booked for removal of the gallbladder during the same admission period and given firm advice and support to stop drinking alcohol, with a follow-up clinic to check his recovery.",
+  "answers": [
+   "Acute pancreatitis",
+   "Perforated peptic ulcer",
+   "Myocardial infarction",
+   "Acute cholecystitis",
+   "Ruptured abdominal aortic aneurysm"
+  ],
+  "final": "Acute pancreatitis"
+ },
+ {
+  "id": "MP-2402",
+  "title": "Nothing Coming Out",
+  "personal": "Margaret Ellis, 71, Female, 160 cm, 70 kg, retired librarian. Admitted to the surgical assessment unit from her GP.",
+  "incident": "For two days Margaret had had waves of cramping pain around her belly button that came every few minutes, built to a peak and then faded. At first she vomited her breakfast; by the second day what came up was greenish-brown and smelled foul. Her belly had blown up 'like a drum', she said, and she hadn't passed any wind or opened her bowels since the pain started, which for someone as regular as her was unheard of.",
+  "background": "Margaret had her womb removed through a cut in her lower belly 20 years ago and an appendix operation as a child. She has well-controlled blood pressure on one tablet and takes nothing else. Her bowels had been normal until this week: no blood, no weight loss, no change in habit. She lives alone and is fully independent.",
+  "exam": [
+   {
+    "title": "General",
+    "body": "She looked dry and uncomfortable, pulse 104, blood pressure 118 over 70, temperature 37.4°C."
+   },
+   {
+    "title": "Abdominal",
+    "body": "Her abdomen was markedly distended and tympanic, with old scars across the lower abdomen and in the right lower quadrant. It was mildly tender all over without guarding. Bowel sounds were high-pitched and tinkling. Hernial orifices were empty."
+   },
+   {
+    "title": "Rectal",
+    "body": "Rectal examination found an empty rectum with no mass and no blood."
+   }
+  ],
+  "investigations": [
+   {
+    "title": "Laboratory",
+    "body": "Bloods were taken:",
+    "reports": [
+     {
+      "title": "Laboratory Report",
+      "lines": [
+       "Sodium 133, potassium 3.1 mmol/L",
+       "Urea raised, creatinine mildly raised",
+       "Lactate normal",
+       "White cell count 12"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Imaging",
+    "body": "Plain films and then a CT were done:",
+    "reports": [
+     {
+      "title": "Imaging Report",
+      "lines": [
+       "Abdominal X-ray: multiple dilated central loops of small bowel with valvulae conniventes, little gas in the colon",
+       "CT: dilated small bowel to a single transition point in the lower abdomen near old scar tissue, collapsed bowel beyond it",
+       "No free gas, bowel wall enhancing normally, no mass"
+      ]
+     }
+    ]
+   }
+  ],
+  "treatment": "A tube was passed through her nose into her stomach to drain it, she was kept nil by mouth, and she was given intravenous fluids with potassium. She was watched closely and given a drink of contrast to follow its passage. After two days the contrast reached the large bowel, she passed wind, and the swelling went down.",
+  "discharge": "Margaret was discharged eating normally, with advice about the possibility of this happening again and to return immediately if the cramping, vomiting or swelling came back.",
+  "answers": [
+   "Small bowel obstruction",
+   "Large bowel obstruction",
+   "Paralytic ileus",
+   "Acute diverticulitis",
+   "Incarcerated inguinal hernia"
+  ],
+  "final": "Small bowel obstruction"
+ },
+ {
+  "id": "MP-2403",
+  "title": "The Twisted Balloon",
+  "personal": "Arthur Bennett, 82, Male, 172 cm, 61 kg, nursing home resident. Sent in by the home's nurse.",
+  "incident": "Over a day and a half Arthur's belly had swollen up enormously. The nurses said he had always been 'bunged up', needing laxatives most days, but this was different: he hadn't passed anything at all, not even wind, and his abdomen had become tight and round. He grimaced when they moved him and had vomited once. He kept rubbing the left side of his tummy.",
+  "background": "Arthur has Parkinson's disease and mild memory problems, and is on several medications including ones that slow the bowel. He has chronic constipation going back decades. He had a similar but milder episode last year that settled after the nurses gave him an enema. No previous abdominal surgery. He does not smoke or drink.",
+  "exam": [
+   {
+    "title": "General",
+    "body": "Frail and dehydrated, pulse 98, blood pressure 124 over 76, temperature 37.0°C, alert but confused to date."
+   },
+   {
+    "title": "Abdominal",
+    "body": "His abdomen was hugely distended, asymmetric and resonant, especially on the left, with mild generalised tenderness and no peritonitis. Bowel sounds were reduced."
+   },
+   {
+    "title": "Rectal",
+    "body": "Rectal examination found a loaded but soft rectum, no mass."
+   }
+  ],
+  "investigations": [
+   {
+    "title": "Imaging",
+    "body": "An abdominal X-ray was taken first:",
+    "reports": [
+     {
+      "title": "Imaging Report",
+      "lines": [
+       "A single massively dilated loop of large bowel arising from the pelvis, shaped like a bent inner tube, pointing up towards the right upper abdomen",
+       "No free gas under the diaphragm"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Laboratory",
+    "body": "Bloods were sent:",
+    "reports": [
+     {
+      "title": "Laboratory Report",
+      "lines": [
+       "Lactate 1.6 mmol/L",
+       "White cell count 11",
+       "Creatinine mildly raised"
+      ]
+     }
+    ]
+   }
+  ],
+  "treatment": "A flexible camera was passed from below, which untwisted the bowel with a dramatic rush of gas and stool, and a soft tube was left in place for a day to keep it decompressed. Arthur's abdomen went down within hours and he was comfortable by the next morning.",
+  "discharge": "Because these episodes often come back, the surgeons discussed a planned operation with Arthur's family; they chose to continue with a stronger bowel routine and to return straight away if the swelling came back.",
+  "answers": [
+   "Sigmoid volvulus",
+   "Small bowel obstruction",
+   "Toxic megacolon",
+   "Colonic pseudo-obstruction",
+   "Fecal impaction"
+  ],
+  "final": "Sigmoid volvulus"
+ },
+ {
+  "id": "MP-2404",
+  "title": "Pain Out of Proportion",
+  "personal": "Dorothy Wallace, 76, Female, 158 cm, 66 kg, retired seamstress. Seen in the emergency department in the early hours.",
+  "incident": "Dorothy woke at 3 a.m. with the worst stomach pain of her life, around the middle and all over, which she rated twenty out of ten. She vomited twice and then had a sudden urge to open her bowels, passing a loose stool with some dark red blood in it. When the doctor pressed on her tummy she said it hurt, but her face didn't match the force of the pain she described.",
+  "background": "Dorothy has an irregular heartbeat and was prescribed a blood thinner, but admitted she had stopped it a month ago because of bruising. She has high blood pressure and had a mini-stroke three years ago. She has had cramping pains after meals for the past few months and has been eating less because of it. She smoked for 40 years and stopped five years ago.",
+  "exam": [
+   {
+    "title": "General",
+    "body": "She was restless and in severe pain, pulse 128 and irregularly irregular, blood pressure 102 over 60, temperature 37.6°C."
+   },
+   {
+    "title": "Abdominal",
+    "body": "Her abdomen was soft and only mildly tender, without guarding or rebound, despite her distress. Bowel sounds were sparse."
+   },
+   {
+    "title": "Cardiovascular",
+    "body": "Irregularly irregular pulse, no murmurs. Peripheral pulses present."
+   }
+  ],
+  "investigations": [
+   {
+    "title": "Laboratory",
+    "body": "Bloods came back:",
+    "reports": [
+     {
+      "title": "Laboratory Report",
+      "lines": [
+       "Lactate 5.9 mmol/L",
+       "White cell count 21",
+       "Metabolic acidosis on blood gas",
+       "Amylase mildly raised",
+       "Troponin normal"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "ECG",
+    "body": "An ECG was recorded:",
+    "reports": [
+     {
+      "title": "ECG Report",
+      "lines": [
+       "Irregularly irregular rhythm with no P waves, rate 130",
+       "No acute ST changes"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Imaging",
+    "body": "An urgent CT scan with contrast in the arteries was performed:",
+    "reports": [
+     {
+      "title": "Imaging Report",
+      "lines": [
+       "A clot blocking the main artery supplying the small bowel shortly after its origin",
+       "Segments of small bowel with thinned walls that are not enhancing",
+       "No free gas, aorta not dilated"
+      ]
+     }
+    ]
+   }
+  ],
+  "treatment": "Dorothy was resuscitated, started on blood thinners and taken straight to theatre, where the blood flow was restored and a length of non-viable bowel was removed. She spent several days in intensive care before returning to the ward.",
+  "discharge": "She was discharged after a long recovery on lifelong blood thinners for her heart rhythm, with dietitian follow-up and an outpatient surgical review.",
+  "answers": [
+   "Acute mesenteric ischemia",
+   "Acute pancreatitis",
+   "Ruptured abdominal aortic aneurysm",
+   "Perforated peptic ulcer",
+   "Ischemic colitis"
+  ],
+  "final": "Acute mesenteric ischemia"
+ },
+ {
+  "id": "MP-2405",
+  "title": "Tearing Between the Shoulders",
+  "personal": "Raymond Hughes, 58, Male, 185 cm, 92 kg, warehouse manager. Arrived by ambulance from work.",
+  "incident": "Raymond was lifting a box when a sudden, ripping pain hit the front of his chest and shot straight through to between his shoulder blades. He said it felt like something tearing inside him, and it reached full strength in seconds. It then seemed to travel down his back towards his lower ribs. He felt faint and sweaty, and for a minute his left leg felt cold and numb.",
+  "background": "Raymond has had high blood pressure for years but admits he takes his tablets only when he remembers. He smokes 20 a day and drinks socially. He has never had chest pain before. He's tall and his father died suddenly in his sixties of 'a burst artery'. No recent illnesses.",
+  "exam": [
+   {
+    "title": "General",
+    "body": "He was pale and sweaty and in severe pain. Pulse 104. Blood pressure 182 over 96 in the right arm and 148 over 84 in the left. Temperature normal, oxygen 96% on air."
+   },
+   {
+    "title": "Cardiovascular",
+    "body": "A soft early diastolic murmur was heard at the left sternal edge. The left femoral pulse was weaker than the right."
+   },
+   {
+    "title": "Neurological",
+    "body": "No focal weakness at the time of examination; the numbness in his leg had settled."
+   }
+  ],
+  "investigations": [
+   {
+    "title": "ECG",
+    "body": "An ECG was done on arrival:",
+    "reports": [
+     {
+      "title": "ECG Report",
+      "lines": [
+       "Sinus tachycardia",
+       "Left ventricular hypertrophy pattern, no acute ST elevation"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Imaging",
+    "body": "A chest X-ray and then an urgent CT angiogram of the chest and abdomen were performed:",
+    "reports": [
+     {
+      "title": "Imaging Report",
+      "lines": [
+       "Chest X-ray: widened mediastinum",
+       "CT: a flap within the aortic wall starting just above the aortic valve and extending down into the abdomen, separating two channels of blood flow",
+       "No blood around the heart"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Laboratory",
+    "body": "Bloods were sent alongside:",
+    "reports": [
+     {
+      "title": "Laboratory Report",
+      "lines": [
+       "Troponin normal",
+       "D-dimer markedly raised",
+       "Haemoglobin normal"
+      ]
+     }
+    ]
+   }
+  ],
+  "treatment": "His blood pressure and heart rate were brought down quickly with intravenous medicines and strong pain relief was given, while the cardiothoracic team was called. He went to theatre the same night for an emergency repair of the first part of the main artery.",
+  "discharge": "After a stay in intensive care and on the ward, he went home on strict blood pressure control, with lifelong scans of the main artery planned and an urgent referral to stop smoking.",
+  "answers": [
+   "Aortic dissection",
+   "Myocardial infarction",
+   "Acute pulmonary embolism",
+   "Tension pneumothorax",
+   "Acute pericarditis"
+  ],
+  "final": "Aortic dissection"
+ },
+ {
+  "id": "MP-2406",
+  "title": "Fever and Fingernails",
+  "personal": "Daniel Moore, 34, Male, 178 cm, 70 kg, unemployed, living in supported housing. Referred by the community outreach nurse.",
+  "incident": "For three weeks Daniel had had fevers that came and went, drenching night sweats and an aching tiredness that kept him in bed most of the day. He'd lost his appetite and some weight. In the last few days he'd noticed tiny painful lumps on the pads of two fingers and thin dark lines under a few of his fingernails, like splinters. His outreach nurse also spotted that he was a little breathless walking up the stairs.",
+  "background": "Daniel injects drugs and said he sometimes shares or reuses equipment. He had an abscess in his arm treated last year. He has no known heart problems. He smokes, and drinks occasionally. He takes no regular medicines.",
+  "exam": [
+   {
+    "title": "General",
+    "body": "Thin and unwell, temperature 38.6°C, pulse 108, blood pressure 112 over 62. Several injection marks in both arms."
+   },
+   {
+    "title": "Hands and eyes",
+    "body": "Tender red nodules on two finger pads, dark linear marks under three nails, and small flat painless red spots on both palms. Small haemorrhages were seen on the inside of the lower eyelid."
+   },
+   {
+    "title": "Cardiovascular",
+    "body": "A new loud murmur over the lower left sternal edge, louder on breathing in. Raised neck veins with a visible pulsation."
+   }
+  ],
+  "investigations": [
+   {
+    "title": "Laboratory",
+    "body": "Blood cultures were taken from three separate sites before any antibiotics:",
+    "reports": [
+     {
+      "title": "Laboratory Report",
+      "lines": [
+       "Blood cultures: the same bacterium grown in all three sets",
+       "CRP 160, white cell count 15",
+       "Haemoglobin 101 g/L",
+       "Urine dip: blood ++"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Imaging",
+    "body": "An ultrasound scan of the heart was performed:",
+    "reports": [
+     {
+      "title": "Echocardiogram Report",
+      "lines": [
+       "A mobile growth attached to the valve on the right side of the heart",
+       "Moderate backward leak through that valve",
+       "Normal pumping function"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Chest X-ray",
+    "body": "A chest X-ray was also done:",
+    "reports": [
+     {
+      "title": "Imaging Report",
+      "lines": [
+       "Several small rounded shadows in both lungs, some with central cavities"
+      ]
+     }
+    ]
+   }
+  ],
+  "treatment": "Daniel was started on a long course of intravenous antibiotics targeting the organism grown, given through a line in his arm, with weekly heart scans. His fever settled within a week and the growth on the valve gradually shrank.",
+  "discharge": "He completed six weeks of treatment, was linked with addiction services and a needle exchange, and was given advice about dental care and future procedures, with cardiology follow-up.",
+  "answers": [
+   "Infective endocarditis",
+   "Community-acquired pneumonia with sepsis",
+   "Rheumatic fever",
+   "Systemic lupus erythematosus",
+   "Tuberculosis"
+  ],
+  "final": "Infective endocarditis"
+ },
+ {
+  "id": "MP-2407",
+  "title": "Better Leaning Forward",
+  "personal": "Ahmed Rahman, 26, Male, 175 cm, 72 kg, junior accountant. Walked into the emergency department.",
+  "incident": "For two days Ahmed had a sharp, stabbing pain in the centre of his chest that got much worse when he took a deep breath, coughed or lay flat in bed. Sitting up and leaning forward over the back of a chair was the only thing that eased it. The pain sometimes reached up to the ridge of his left shoulder. He was worried it was his heart.",
+  "background": "A week and a half ago Ahmed had a cold with a runny nose, sore throat and aches, which got better on its own. He is otherwise healthy, takes no medicines, doesn't smoke, and plays five-a-side football weekly. No family history of heart disease at a young age. No recent travel.",
+  "exam": [
+   {
+    "title": "General",
+    "body": "Comfortable sitting forward, temperature 37.9°C, pulse 96, blood pressure 124 over 78, oxygen 99%."
+   },
+   {
+    "title": "Cardiovascular",
+    "body": "A scratchy, high-pitched sound with three components was heard at the left lower sternal edge, loudest with him leaning forward and breath held. Heart sounds otherwise normal. Neck veins not raised."
+   },
+   {
+    "title": "Chest",
+    "body": "Lungs clear. No chest wall tenderness."
+   }
+  ],
+  "investigations": [
+   {
+    "title": "ECG",
+    "body": "An ECG was recorded:",
+    "reports": [
+     {
+      "title": "ECG Report",
+      "lines": [
+       "Widespread saddle-shaped ST elevation across most leads",
+       "PR segment depression",
+       "No reciprocal ST depression"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Laboratory",
+    "body": "Bloods were sent:",
+    "reports": [
+     {
+      "title": "Laboratory Report",
+      "lines": [
+       "Troponin normal",
+       "CRP mildly raised at 34",
+       "White cell count normal"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Imaging",
+    "body": "A bedside heart ultrasound was performed:",
+    "reports": [
+     {
+      "title": "Echocardiogram Report",
+      "lines": [
+       "Small rim of fluid around the heart, no compression of the heart chambers",
+       "Normal heart muscle movement"
+      ]
+     }
+    ]
+   }
+  ],
+  "treatment": "Ahmed was treated with a regular anti-inflammatory painkiller and a second medicine taken for three months to reduce the chance of the problem returning, and advised to rest. Within a few days the pain had gone.",
+  "discharge": "He was told to avoid competitive sport for at least three months and until his symptoms and blood tests had settled, with a follow-up appointment and a repeat ECG.",
+  "answers": [
+   "Acute pericarditis",
+   "Myocardial infarction",
+   "Acute pulmonary embolism",
+   "Costochondritis",
+   "Myocarditis"
+  ],
+  "final": "Acute pericarditis"
+ },
+ {
+  "id": "MP-2408",
+  "title": "Collapse on the Pitch",
+  "personal": "Josh Whitfield, 17, Male, 183 cm, 74 kg, sixth-form student and county-level footballer. Brought in by ambulance from a match.",
+  "incident": "Midway through the second half, Josh sprinted for a long ball, then suddenly went grey and dropped to the grass. Team-mates said he was out for about 20 seconds and came round without any jerking or tongue biting. He said he'd felt his heart pounding just before. Looking back, he'd had a couple of near-faints during sprints this season and some chest tightness on hard runs that he'd kept quiet about so as not to lose his place.",
+  "background": "Josh has no medical conditions and takes no medicines or supplements. His uncle died suddenly at 32 while out jogging, and the family 'never really got an answer'. He doesn't smoke, drink or take drugs.",
+  "exam": [
+   {
+    "title": "General",
+    "body": "Alert and embarrassed, pulse 72 and regular, blood pressure 122 over 70, oxygen normal. No injuries from the fall."
+   },
+   {
+    "title": "Cardiovascular",
+    "body": "A harsh murmur at the left sternal edge that got louder when he stood up from squatting and when he strained, and softer when he squatted. Prominent heave at the apex."
+   }
+  ],
+  "investigations": [
+   {
+    "title": "ECG",
+    "body": "A resting ECG was recorded:",
+    "reports": [
+     {
+      "title": "ECG Report",
+      "lines": [
+       "Very tall voltages consistent with a thick left ventricle",
+       "Deep inverted T waves across the chest leads",
+       "Narrow, deep Q waves in the lateral leads"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Imaging",
+    "body": "An echocardiogram was performed:",
+    "reports": [
+     {
+      "title": "Echocardiogram Report",
+      "lines": [
+       "Markedly thickened wall between the two pumping chambers, 24 mm",
+       "Forward movement of a valve leaflet narrowing the outflow from the heart during contraction",
+       "Good overall pumping"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Monitoring",
+    "body": "He was observed on a cardiac monitor overnight:",
+    "reports": [
+     {
+      "title": "Monitoring Report",
+      "lines": [
+       "Short runs of a fast abnormal rhythm from the lower chambers"
+      ]
+     }
+    ]
+   }
+  ],
+  "treatment": "Josh was told to stop competitive sport immediately and was started on a medicine to slow and relax his heart. Because of his fainting, family history and the runs of abnormal rhythm, he had a small device fitted under the skin to shock the heart back into rhythm if needed.",
+  "discharge": "He was discharged with cardiology follow-up, a referral for genetic testing, and screening offered to his parents and siblings.",
+  "answers": [
+   "Hypertrophic cardiomyopathy",
+   "Vasovagal syncope",
+   "Aortic stenosis",
+   "Long QT syndrome",
+   "Myocarditis"
+  ],
+  "final": "Hypertrophic cardiomyopathy"
+ },
+ {
+  "id": "MP-2409",
+  "title": "The Swollen Belly and the Fever",
+  "personal": "Patrick Doyle, 61, Male, 177 cm, 79 kg, retired builder. Admitted from the liver clinic.",
+  "incident": "Patrick's belly had been slowly swelling for months, but over the past four days it had become tender all over, and he'd been running temperatures and shivering. His wife said he'd also become muddled, forgetting what day it was and dozing off mid-sentence, which wasn't like him. He'd had some loose stools as well.",
+  "background": "Patrick drank heavily for 30 years and was diagnosed with liver scarring three years ago. He's been sober for eight months. He takes a water tablet and a medicine to keep his bowels moving. He had fluid drained from his abdomen twice last year. He doesn't smoke now.",
+  "exam": [
+   {
+    "title": "General",
+    "body": "Jaundiced and drowsy but rousable, temperature 38.3°C, pulse 102, blood pressure 98 over 60. Spider-like blood vessels on his chest and red palms."
+   },
+   {
+    "title": "Abdominal",
+    "body": "Tensely distended with shifting dullness and a fluid thrill, mildly tender diffusely without guarding. The spleen tip was palpable."
+   },
+   {
+    "title": "Neurological",
+    "body": "A coarse flapping tremor of the outstretched hands. Oriented to person only."
+   }
+  ],
+  "investigations": [
+   {
+    "title": "Diagnostic tap",
+    "body": "A needle was used to draw a sample of the abdominal fluid:",
+    "reports": [
+     {
+      "title": "Fluid Report",
+      "lines": [
+       "Neutrophil count 640 cells per cubic millimetre",
+       "Gram stain: no organisms seen, culture sent in blood culture bottles",
+       "Protein low; large gap between blood and fluid albumin"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Laboratory",
+    "body": "Bloods were sent:",
+    "reports": [
+     {
+      "title": "Laboratory Report",
+      "lines": [
+       "Bilirubin 68",
+       "Albumin 24",
+       "INR 1.8",
+       "Creatinine rising from his baseline",
+       "Sodium 129",
+       "White cell count 13"
+      ]
+     }
+    ]
+   }
+  ],
+  "treatment": "Patrick was started on intravenous antibiotics and given albumin infusions to protect his kidneys, with his water tablet paused. His bowel medicine was increased to clear his confusion. Within 48 hours his temperature settled, a repeat fluid sample showed the cell count falling, and his thinking cleared.",
+  "discharge": "He was discharged on a daily preventive antibiotic, with liver clinic follow-up and a referral for liver transplant assessment.",
+  "answers": [
+   "Spontaneous bacterial peritonitis",
+   "Alcoholic hepatitis",
+   "Acute cholangitis",
+   "Perforated peptic ulcer",
+   "Hepatocellular carcinoma"
+  ],
+  "final": "Spontaneous bacterial peritonitis"
+ },
+ {
+  "id": "MP-2410",
+  "title": "Coffee Grounds and Black Tar",
+  "personal": "Kevin Marsh, 54, Male, 174 cm, 81 kg, pub landlord. Brought in by ambulance after collapsing at home.",
+  "incident": "Kevin had felt sick all evening, then suddenly vomited a large amount of bright red blood mixed with dark clots into the kitchen sink. Twenty minutes later it happened again. He felt lightheaded getting up and fainted on the way to the bathroom. His wife said his stools had been black and sticky like tar for the past day.",
+  "background": "Kevin has drunk heavily for most of his adult life, half a bottle of spirits most nights. Two years ago he was told his liver was 'struggling', but he missed his follow-up. He takes nothing regularly except occasional ibuprofen for his back. He smokes 10 a day.",
+  "exam": [
+   {
+    "title": "General",
+    "body": "Pale, sweaty and anxious, pulse 128, blood pressure 86 over 50, capillary refill slow. Yellowish tinge to the eyes. Blood around his mouth."
+   },
+   {
+    "title": "Abdominal",
+    "body": "Distended with shifting dullness, non-tender. Dilated veins radiating from the umbilicus. The spleen was palpable. Liver edge not felt."
+   },
+   {
+    "title": "Skin and hands",
+    "body": "Multiple spider-like blood vessels over the upper chest, red palms and mild finger clubbing. Some enlargement of the breast tissue."
+   }
+  ],
+  "investigations": [
+   {
+    "title": "Laboratory",
+    "body": "Bloods were sent and blood cross-matched:",
+    "reports": [
+     {
+      "title": "Laboratory Report",
+      "lines": [
+       "Haemoglobin 72 g/L",
+       "Platelets 64",
+       "INR 1.9",
+       "Albumin 26, bilirubin 52",
+       "Urea disproportionately raised compared with creatinine"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Endoscopy",
+    "body": "After resuscitation, a camera was passed into the gullet and stomach within hours:",
+    "reports": [
+     {
+      "title": "Endoscopy Report",
+      "lines": [
+       "Several large swollen veins in the lower gullet, one with a fresh fibrin plug and active oozing",
+       "Bands applied to the veins with good control of bleeding",
+       "Stomach lining mildly congested, no ulcer"
+      ]
+     }
+    ]
+   }
+  ],
+  "treatment": "Kevin was resuscitated with fluids and blood, and started on a drug to lower the pressure in the gut's blood vessels and on preventive antibiotics before the camera test, where the bleeding veins were banded. He had no further bleeding.",
+  "discharge": "He was discharged on a tablet to reduce pressure in those veins, a repeat banding programme, preventive antibiotics planned according to guidelines, and referral to alcohol services and the liver clinic.",
+  "answers": [
+   "Esophageal variceal bleeding",
+   "Peptic ulcer disease",
+   "Mallory-Weiss tear",
+   "Boerhaave syndrome",
+   "Gastric cancer"
+  ],
+  "final": "Esophageal variceal bleeding"
+ },
+ {
+  "id": "MP-2411",
+  "title": "The Bread Problem",
+  "personal": "Sophie Turner, 29, Female, 163 cm, 51 kg, primary school teacher. Seen in gastroenterology clinic.",
+  "incident": "For about a year Sophie had been bloated after most meals, with loose, pale stools that floated and were hard to flush. She'd had crampy tummy pains and lots of wind. She'd lost six kilograms without dieting, felt exhausted despite sleeping well, and recently noticed itchy, blistering bumps on her elbows and knees that she kept scratching.",
+  "background": "Sophie was treated for low iron twice in the past two years, but it kept coming back despite tablets. Her periods are normal. She has an underactive thyroid treated with a daily tablet. Her sister has type 1 diabetes. She doesn't smoke and rarely drinks. No recent travel.",
+  "exam": [
+   {
+    "title": "General",
+    "body": "Slim and pale, otherwise well. Small mouth ulcers. Normal observations."
+   },
+   {
+    "title": "Skin",
+    "body": "Clusters of small, intensely itchy blisters and scratch marks on both elbows, knees and buttocks."
+   },
+   {
+    "title": "Abdominal",
+    "body": "Mildly distended, mildly tender without guarding, no masses."
+   }
+  ],
+  "investigations": [
+   {
+    "title": "Laboratory",
+    "body": "Bloods were taken while she was still eating a normal diet:",
+    "reports": [
+     {
+      "title": "Laboratory Report",
+      "lines": [
+       "Haemoglobin 104 g/L with small red cells, ferritin low",
+       "Folate low, vitamin D low",
+       "Tissue transglutaminase antibody strongly positive, total IgA normal"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Endoscopy",
+    "body": "A camera test with biopsies from the first part of the small bowel was arranged:",
+    "reports": [
+     {
+      "title": "Pathology Report",
+      "lines": [
+       "Flattened villi",
+       "Deepened crypts",
+       "Increased numbers of lymphocytes within the lining"
+      ]
+     }
+    ]
+   }
+  ],
+  "treatment": "Sophie was referred to a dietitian and started on a strict lifelong diet avoiding wheat, barley and rye, along with iron, folate and vitamin D supplements. Within three months her bloating and diarrhoea had settled, the itchy rash was fading and her energy had returned.",
+  "discharge": "She was discharged to follow-up in clinic with yearly blood tests, a bone density scan, and advice that first-degree relatives could be offered testing.",
+  "answers": [
+   "Celiac disease",
+   "Irritable bowel syndrome",
+   "Crohn's disease",
+   "Lactose intolerance",
+   "Giardiasis"
+  ],
+  "final": "Celiac disease"
+ },
+ {
+  "id": "MP-2412",
+  "title": "Blood With Every Visit",
+  "personal": "Hannah Price, 24, Female, 168 cm, 55 kg, marketing assistant. Admitted from her GP.",
+  "incident": "For six weeks Hannah had been rushing to the toilet eight to ten times a day, passing loose stool mixed with blood and mucus. She often felt she needed to go even when there was nothing to pass. She'd had crampy lower tummy pain that eased after going. In the last few days she'd become feverish and weak and had to stop working.",
+  "background": "Hannah stopped smoking four months ago. She has no other illnesses and takes the contraceptive pill. No recent travel, antibiotics or contact with anyone unwell. Her cousin has an inflammatory bowel condition. No weight-loss diets.",
+  "exam": [
+   {
+    "title": "General",
+    "body": "Pale and tired, temperature 37.9°C, pulse 104, blood pressure 108 over 66."
+   },
+   {
+    "title": "Abdominal",
+    "body": "Tender in the left lower abdomen without guarding. Not distended. Normal bowel sounds."
+   },
+   {
+    "title": "Rectal",
+    "body": "Fresh blood and mucus on the glove. No fissures, fistulae or skin tags around the anus."
+   }
+  ],
+  "investigations": [
+   {
+    "title": "Laboratory",
+    "body": "Bloods and stool samples were sent:",
+    "reports": [
+     {
+      "title": "Laboratory Report",
+      "lines": [
+       "Haemoglobin 98 g/L",
+       "CRP 72, albumin 30",
+       "Stool cultures and C. difficile toxin negative",
+       "Faecal calprotectin markedly raised"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Endoscopy",
+    "body": "A flexible camera examination of the lower bowel was performed:",
+    "reports": [
+     {
+      "title": "Endoscopy Report",
+      "lines": [
+       "Continuous inflammation starting at the anus and extending up into the sigmoid without any skip areas",
+       "Lining red, granular and bleeding on touch, with superficial ulcers",
+       "Biopsies: crypt abscesses and distorted crypts confined to the inner lining"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Imaging",
+    "body": "An abdominal X-ray was taken:",
+    "reports": [
+     {
+      "title": "Imaging Report",
+      "lines": [
+       "Large bowel not dilated"
+      ]
+     }
+    ]
+   }
+  ],
+  "treatment": "Hannah was given intravenous steroids, blood clot prevention and fluids, with daily review of her stool count and blood tests. By day three she was going four times a day with little blood, and she switched to tablets.",
+  "discharge": "She went home on a reducing course of steroids and a long-term anti-inflammatory medicine to keep the bowel calm, with an IBD nurse contact number and clinic review in four weeks.",
+  "answers": [
+   "Ulcerative colitis",
+   "Crohn's disease",
+   "Infectious colitis",
+   "Irritable bowel syndrome",
+   "Colorectal cancer"
+  ],
+  "final": "Ulcerative colitis"
+ },
+ {
+  "id": "MP-2413",
+  "title": "Cola-Coloured Urine",
+  "personal": "Marcus Allen, 23, Male, 186 cm, 88 kg, personal trainer. Seen in the emergency department.",
+  "incident": "Marcus had done a punishing new 'challenge' workout two days ago, hundreds of squats and lunges in sweltering heat with little to drink. The next day his thighs were extraordinarily painful and swollen, far beyond normal soreness, and he couldn't straighten his legs. This morning he noticed his urine was dark brown, like cola, and there wasn't much of it.",
+  "background": "Marcus is healthy, takes a protein shake and creatine powder and occasionally ibuprofen. He denied steroid or drug use. He drinks socially at weekends. No family history of muscle disease.",
+  "exam": [
+   {
+    "title": "General",
+    "body": "Uncomfortable, mildly dehydrated, temperature 37.3°C, pulse 96, blood pressure 138 over 82."
+   },
+   {
+    "title": "Musculoskeletal",
+    "body": "Both thighs were swollen, firm and exquisitely tender, worse on stretching. Distal pulses and sensation were normal. Compartments soft enough not to be tense."
+   },
+   {
+    "title": "Abdominal",
+    "body": "Soft, non-tender; no kidney tenderness."
+   }
+  ],
+  "investigations": [
+   {
+    "title": "Bedside",
+    "body": "A urine dip was done:",
+    "reports": [
+     {
+      "title": "Bedside Report",
+      "lines": [
+       "Strongly positive for blood",
+       "Microscopy: no red cells seen"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Laboratory",
+    "body": "Bloods were sent:",
+    "reports": [
+     {
+      "title": "Laboratory Report",
+      "lines": [
+       "Creatine kinase 98,000 U/L",
+       "Creatinine 168, raised from normal",
+       "Potassium 5.7 mmol/L",
+       "Calcium slightly low, phosphate raised"
+      ]
+     }
+    ]
+   }
+  ],
+  "treatment": "Marcus was given large volumes of intravenous fluids to keep his urine flowing at a high rate, his potassium was treated and monitored on a heart monitor, and his ibuprofen and creatine were stopped. Over four days his muscle enzyme levels fell steadily and his kidney function returned to normal.",
+  "discharge": "He was discharged with advice to build up exercise gradually, drink enough in hot conditions, avoid anti-inflammatory painkillers for now, and have his kidney blood tests repeated in a week.",
+  "answers": [
+   "Rhabdomyolysis",
+   "Acute compartment syndrome",
+   "Deep vein thrombosis",
+   "Post-streptococcal glomerulonephritis",
+   "Polymyositis"
+  ],
+  "final": "Rhabdomyolysis"
+ },
+ {
+  "id": "MP-2414",
+  "title": "Writhing in the Waiting Room",
+  "personal": "Tom Fletcher, 38, Male, 179 cm, 85 kg, delivery driver. Walked into the emergency department.",
+  "incident": "Tom woke at 5 a.m. with a severe pain in his right side, just under the ribs at the back, coming in waves so intense he was sick twice. He couldn't sit still, pacing the room and then crouching down, unable to find any comfortable position. The pain then started to move round to the front and down towards his groin. He noticed a pinkish tinge when he passed urine.",
+  "background": "Tom spends long hours in a hot van and admits he barely drinks water so he doesn't need to stop. His father had something similar years ago. He has gout, treated occasionally with tablets when it flares. He doesn't smoke and drinks a few beers at weekends.",
+  "exam": [
+   {
+    "title": "General",
+    "body": "Restless and unable to keep still, sweating, temperature 37.1°C, pulse 102, blood pressure 148 over 90."
+   },
+   {
+    "title": "Abdominal",
+    "body": "Soft, mildly tender in the right flank and right lower abdomen without guarding or rebound. Tender over the right kidney angle at the back. Testes normal."
+   }
+  ],
+  "investigations": [
+   {
+    "title": "Bedside",
+    "body": "A urine dip was done:",
+    "reports": [
+     {
+      "title": "Bedside Report",
+      "lines": [
+       "Blood ++",
+       "Nitrites and leucocytes negative"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Laboratory",
+    "body": "Bloods were sent:",
+    "reports": [
+     {
+      "title": "Laboratory Report",
+      "lines": [
+       "White cells normal",
+       "Creatinine normal",
+       "Urate mildly raised",
+       "Calcium normal"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Imaging",
+    "body": "A low-dose CT scan of the abdomen and pelvis without contrast was done:",
+    "reports": [
+     {
+      "title": "Imaging Report",
+      "lines": [
+       "A 5 mm dense stone in the lower right ureter close to the bladder",
+       "Mild swelling of the right kidney's collecting system",
+       "Appendix normal, aorta normal"
+      ]
+     }
+    ]
+   }
+  ],
+  "treatment": "Tom was given an anti-inflammatory painkiller by injection, which eased the pain within half an hour, plus anti-sickness medicine and a tablet to relax the tube from the kidney.",
+  "discharge": "He was sent home with painkillers, the relaxing tablet and a sieve to catch anything he passed, advice to drink plenty of water, and to return urgently if he developed a fever. He passed a small gritty stone four days later.",
+  "answers": [
+   "Renal colic",
+   "Acute appendicitis",
+   "Acute pyelonephritis",
+   "Ruptured abdominal aortic aneurysm",
+   "Testicular torsion"
+  ],
+  "final": "Renal colic"
+ },
+ {
+  "id": "MP-2415",
+  "title": "Puffy Eyes in the Morning",
+  "personal": "Noah Patel, 4, Male, 104 cm, 19 kg, nursery pupil. Brought in by his parents.",
+  "incident": "For a week Noah's mum had noticed his eyes were puffy when he woke up, which she put down to hay fever. Over the last few days the swelling spread to his ankles and his tummy got bigger; his shoes became tight and his trousers wouldn't do up. His wee looked foamy in the toilet, like it had soap in it, but wasn't red.",
+  "background": "Noah had a cough and cold two weeks ago. He's been otherwise healthy, is fully immunised and growing well. No family history of kidney disease. No recent sore throat or skin infection. He takes no medicines.",
+  "exam": [
+   {
+    "title": "General",
+    "body": "Happy and playful, puffy around both eyes, blood pressure normal for age, temperature normal."
+   },
+   {
+    "title": "Abdominal",
+    "body": "Mildly distended with shifting dullness, non-tender. No organ enlargement."
+   },
+   {
+    "title": "Limbs",
+    "body": "Soft, pitting swelling of both feet and shins, and of the scrotum."
+   }
+  ],
+  "investigations": [
+   {
+    "title": "Bedside",
+    "body": "A urine dip was done:",
+    "reports": [
+     {
+      "title": "Bedside Report",
+      "lines": [
+       "Protein 4+",
+       "Blood negative"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Laboratory",
+    "body": "Bloods and a spot urine test were sent:",
+    "reports": [
+     {
+      "title": "Laboratory Report",
+      "lines": [
+       "Albumin 16 g/L",
+       "Cholesterol markedly raised",
+       "Creatinine normal for age",
+       "Urine protein to creatinine ratio very high",
+       "Complement levels normal"
+      ]
+     }
+    ]
+   }
+  ],
+  "treatment": "Noah was started on a course of steroids by mouth, with a low-salt diet and close monitoring of his weight, blood pressure and urine. His parents were taught to dip his urine at home. After 10 days his urine was free of protein and the swelling had gone.",
+  "discharge": "He was discharged on a slowly reducing steroid course, with advice about infection risk while on treatment and the likelihood of relapses, and follow-up with the children's kidney team.",
+  "answers": [
+   "Nephrotic syndrome",
+   "Post-streptococcal glomerulonephritis",
+   "Henoch-Schönlein purpura",
+   "Hemolytic uremic syndrome",
+   "Congestive heart failure"
+  ],
+  "final": "Nephrotic syndrome"
+ },
+ {
+  "id": "MP-2416",
+  "title": "The Changing Face",
+  "personal": "Angela Ross, 41, Female, 165 cm, 89 kg, call-centre supervisor. Referred to endocrinology clinic.",
+  "incident": "Over a year and a half Angela had put on 20 kilograms, almost all around her belly and face, while her arms and legs seemed to get thinner. Her friends said her face had become 'moon-like' and red. She'd developed purple stretch marks on her stomach, bruised at the slightest knock, and found it hard to get up from a low chair without using her arms. Her periods became irregular and she'd grown more facial hair.",
+  "background": "Angela was recently diagnosed with high blood pressure and borderline diabetes. She has not taken steroid tablets, creams or inhalers. She broke a rib coughing last winter. She is otherwise well and doesn't smoke.",
+  "exam": [
+   {
+    "title": "General",
+    "body": "Rounded red face, fat pad at the back of the neck and above the collarbones, blood pressure 164 over 98, BMI 32."
+   },
+   {
+    "title": "Skin",
+    "body": "Broad purple stretch marks over the abdomen, thin skin, several bruises on her arms and legs, mild acne."
+   },
+   {
+    "title": "Musculoskeletal",
+    "body": "Weakness of hip and shoulder muscles; unable to rise from squatting without help."
+   }
+  ],
+  "investigations": [
+   {
+    "title": "Laboratory",
+    "body": "Screening tests were arranged:",
+    "reports": [
+     {
+      "title": "Laboratory Report",
+      "lines": [
+       "Morning cortisol not suppressed after an overnight low-dose dexamethasone test",
+       "Raised 24-hour urine free cortisol on two collections",
+       "Late-night salivary cortisol raised",
+       "ACTH level inappropriately normal to raised",
+       "Potassium low-normal, glucose high"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Imaging",
+    "body": "Further testing pointed to the brain, and an MRI was done:",
+    "reports": [
+     {
+      "title": "Imaging Report",
+      "lines": [
+       "A 6 mm lesion in the pituitary gland"
+      ]
+     }
+    ]
+   }
+  ],
+  "treatment": "Angela underwent surgery through the nose to remove the small lump in her pituitary gland. Afterwards her own hormone levels dropped very low, so she needed temporary replacement tablets, which were slowly weaned over the following months.",
+  "discharge": "Over the next year her weight fell, her blood pressure and sugar improved, and her strength returned. She continues under endocrine follow-up with periodic scans and tests.",
+  "answers": [
+   "Cushing's syndrome",
+   "Polycystic ovary syndrome",
+   "Hypothyroidism",
+   "Metabolic syndrome",
+   "Primary hyperaldosteronism"
+  ],
+  "final": "Cushing's syndrome"
+ },
+ {
+  "id": "MP-2417",
+  "title": "Pounding Headaches and Pale Spells",
+  "personal": "Victor Lindqvist, 39, Male, 180 cm, 70 kg, software developer. Seen after a GP referral.",
+  "incident": "For about six months Victor had had sudden attacks lasting 10 to 20 minutes: a pounding headache, his heart racing hard in his chest, drenching sweat and an overwhelming sense that something terrible was about to happen. Afterwards he felt washed out. During one attack at the GP's surgery his blood pressure was 220 over 120; between attacks it was only mildly raised. He'd lost a little weight and his hands sometimes trembled.",
+  "background": "Victor was told he might have panic attacks and was offered talking therapy, which didn't help. He takes no medicines. His mother had an operation on her neck for a 'thyroid lump' that turned out to be unusual. He drinks little coffee and no alcohol.",
+  "exam": [
+   {
+    "title": "General",
+    "body": "Slim, pale, slightly anxious. Pulse 96, blood pressure 156 over 98 lying and 132 over 84 standing."
+   },
+   {
+    "title": "Neck",
+    "body": "No goitre or nodules felt."
+   },
+   {
+    "title": "Cardiovascular",
+    "body": "Normal heart sounds, no murmurs. No abdominal bruit."
+   }
+  ],
+  "investigations": [
+   {
+    "title": "Laboratory",
+    "body": "Blood and urine tests were sent:",
+    "reports": [
+     {
+      "title": "Laboratory Report",
+      "lines": [
+       "Plasma free metanephrines markedly raised",
+       "24-hour urine metanephrines raised",
+       "Fasting glucose mildly raised",
+       "Thyroid function normal"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Imaging",
+    "body": "A CT scan of the abdomen was performed:",
+    "reports": [
+     {
+      "title": "Imaging Report",
+      "lines": [
+       "A 4 cm well-defined mass in the left adrenal gland, bright on enhanced images"
+      ]
+     }
+    ]
+   }
+  ],
+  "treatment": "Victor was started on blood-pressure tablets that blocked the effects of his excess hormones, first one type and then a second added once the first was in place, with extra salt and fluids, for two weeks before his adrenal gland was removed by keyhole surgery.",
+  "discharge": "His attacks stopped after the operation. Because of his family history he was referred for genetic testing, with lifelong follow-up blood tests to check for any return.",
+  "answers": [
+   "Pheochromocytoma",
+   "Panic disorder",
+   "Thyroid storm",
+   "Hypertensive emergency",
+   "Carcinoid syndrome"
+  ],
+  "final": "Pheochromocytoma"
+ },
+ {
+  "id": "MP-2418",
+  "title": "The Worst Headache of Her Life",
+  "personal": "Julia Romero, 44, Female, 166 cm, 63 kg, solicitor. Brought in by ambulance from the gym.",
+  "incident": "Julia was lifting weights when she felt a sudden, explosive pain at the back of her head, 'like being hit with a cricket bat', which reached its peak within a second. She'd never had a headache like it. She vomited twice, couldn't bear the gym lights and her neck felt stiff. She was drowsy in the ambulance but answering questions.",
+  "background": "Julia smokes 10 a day and has borderline high blood pressure that isn't treated. Her mother had polycystic kidney disease. She takes the contraceptive pill. She has occasional tension headaches but nothing like this.",
+  "exam": [
+   {
+    "title": "General",
+    "body": "Drowsy but rousable, oriented, temperature 37.0°C, pulse 64, blood pressure 172 over 98."
+   },
+   {
+    "title": "Neurological",
+    "body": "Neck stiff on forward bending. Photophobia. Pupils equal and reactive. No limb weakness. Glasgow Coma Scale 14."
+   },
+   {
+    "title": "Eyes",
+    "body": "Fundoscopy: small haemorrhages near the optic discs."
+   }
+  ],
+  "investigations": [
+   {
+    "title": "Imaging",
+    "body": "An urgent CT scan of the head was performed within an hour of the onset:",
+    "reports": [
+     {
+      "title": "Imaging Report",
+      "lines": [
+       "Fresh blood in the fluid spaces around the base of the brain",
+       "No enlargement of the brain's fluid chambers at this stage"
+      ]
+     },
+     {
+      "title": "Angiography Report",
+      "lines": [
+       "A 7 mm bulge on an artery at the front of the circle of arteries at the base of the brain"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Laboratory",
+    "body": "Bloods were sent:",
+    "reports": [
+     {
+      "title": "Laboratory Report",
+      "lines": [
+       "Sodium normal",
+       "Clotting normal"
+      ]
+     }
+    ]
+   }
+  ],
+  "treatment": "Julia was transferred to the neurosurgical unit, given a tablet to protect the brain from narrowed blood vessels over the following weeks, and her blood pressure was carefully controlled. The bulging artery was sealed from inside with fine coils passed up from the groin the next morning.",
+  "discharge": "She stayed in hospital for two weeks for monitoring, then went home with advice to stop smoking, control her blood pressure, and attend neurosurgical follow-up with repeat imaging.",
+  "answers": [
+   "Subarachnoid hemorrhage",
+   "Migraine with aura",
+   "Bacterial meningitis",
+   "Hypertensive emergency",
+   "Reversible cerebral vasoconstriction syndrome"
+  ],
+  "final": "Subarachnoid hemorrhage"
+ },
+ {
+  "id": "MP-2419",
+  "title": "Heavy Eyelids by Evening",
+  "personal": "Fiona MacLeod, 32, Female, 167 cm, 60 kg, hairdresser. Seen in neurology clinic.",
+  "incident": "For three months Fiona had found that by late afternoon her eyelids drooped and she saw double, especially when looking up at clients in the mirror. A night's sleep put it right again. Lately, chewing a steak dinner made her jaw tired, and her voice became nasal and faint when she talked for a long time. Holding her arms up to blow-dry hair became exhausting after a few minutes, though she felt fine after resting.",
+  "background": "Fiona has an overactive thyroid that was treated two years ago. She takes no medicines now. No family history of nerve or muscle disease. No recent infections.",
+  "exam": [
+   {
+    "title": "General",
+    "body": "Well, normal observations. Speech became slightly nasal after counting aloud to 50."
+   },
+   {
+    "title": "Eyes",
+    "body": "Drooping of both eyelids that worsened after looking upwards for a minute; double vision when looking to the left. Pupils normal."
+   },
+   {
+    "title": "Neurological",
+    "body": "Shoulder strength initially normal but weakened after repeated arm raises; reflexes and sensation normal."
+   }
+  ],
+  "investigations": [
+   {
+    "title": "Laboratory",
+    "body": "Blood tests were sent:",
+    "reports": [
+     {
+      "title": "Laboratory Report",
+      "lines": [
+       "Antibodies against the acetylcholine receptor positive",
+       "Thyroid function normal",
+       "Creatine kinase normal"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Neurophysiology",
+    "body": "Nerve and muscle tests were done:",
+    "reports": [
+     {
+      "title": "Neurophysiology Report",
+      "lines": [
+       "Decrease in muscle response of more than 10% with repeated nerve stimulation",
+       "Increased jitter on single-fibre testing"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Imaging",
+    "body": "A CT scan of the chest was performed:",
+    "reports": [
+     {
+      "title": "Imaging Report",
+      "lines": [
+       "An enlarged thymus gland, no invasive features"
+      ]
+     }
+    ]
+   }
+  ],
+  "treatment": "Fiona was started on a tablet that boosts the signal between nerves and muscles, taken several times a day, which noticeably improved her eyelids and double vision. She was referred to the thoracic surgeons to have the thymus gland removed.",
+  "discharge": "She was discharged from clinic with a warning card listing medicines to avoid, advice to seek urgent help if she had trouble swallowing or breathing, and regular neurology follow-up.",
+  "answers": [
+   "Myasthenia gravis",
+   "Lambert-Eaton myasthenic syndrome",
+   "Multiple sclerosis",
+   "Guillain-Barré syndrome",
+   "Thyroid eye disease"
+  ],
+  "final": "Myasthenia gravis"
+ },
+ {
+  "id": "MP-2420",
+  "title": "Back Pain That Would Not Lie Down",
+  "personal": "Stephen Clarke, 52, Male, 178 cm, 84 kg, plasterer. Seen in the emergency department for the third time in a week.",
+  "incident": "Stephen's back pain started about ten days ago, deep in the middle of his back, much worse at night and not eased by lying still. He'd been sent home twice with painkillers. Since yesterday he'd had fevers and sweats, and this morning his legs felt heavy and clumsy on the stairs, with tingling in both feet. He hadn't passed urine since the night before, though he felt no urge.",
+  "background": "Stephen has type 2 diabetes, poorly controlled. Three weeks ago he had a painful boil on his thigh that burst and drained by itself. He takes metformin and a blood pressure tablet. No history of cancer. He smokes 10 a day.",
+  "exam": [
+   {
+    "title": "General",
+    "body": "Unwell, sweating, temperature 38.7°C, pulse 112, blood pressure 132 over 80."
+   },
+   {
+    "title": "Spine",
+    "body": "Marked tenderness when tapping over the lower thoracic spine. No deformity."
+   },
+   {
+    "title": "Neurological",
+    "body": "Weakness in both legs, worse in hip flexion, with brisk knee reflexes and upgoing toes. Reduced sensation to pinprick below the level of the belly button. A bladder scan showed 900 ml of urine."
+   }
+  ],
+  "investigations": [
+   {
+    "title": "Laboratory",
+    "body": "Bloods were sent:",
+    "reports": [
+     {
+      "title": "Laboratory Report",
+      "lines": [
+       "White cell count 19, CRP 240, ESR 95",
+       "Blood cultures: grape-like clusters of bacteria seen",
+       "Glucose 18 mmol/L, HbA1c high"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Imaging",
+    "body": "An urgent MRI of the whole spine with contrast was performed:",
+    "reports": [
+     {
+      "title": "Imaging Report",
+      "lines": [
+       "A rim-enhancing collection in the space around the spinal cord from T8 to T10",
+       "Compression of the spinal cord at T9 with signal change in the cord",
+       "Adjacent vertebrae show early inflammatory change"
+      ]
+     }
+    ]
+   }
+  ],
+  "treatment": "Stephen was started on intravenous antibiotics immediately, a catheter was placed to drain his bladder, and he was taken to theatre that night for surgical drainage of the collection and decompression of the spinal cord.",
+  "discharge": "He completed a long course of antibiotics, went to a rehabilitation unit to regain strength in his legs, and continued with diabetes clinic follow-up.",
+  "answers": [
+   "Spinal epidural abscess",
+   "Metastatic spinal cord compression",
+   "Guillain-Barré syndrome",
+   "Cauda equina syndrome",
+   "Osteomyelitis"
+  ],
+  "final": "Spinal epidural abscess"
+ },
+ {
+  "id": "MP-2421",
+  "title": "Jaw Pain When Chewing",
+  "personal": "Eleanor Firth, 74, Female, 160 cm, 58 kg, retired church organist. Seen urgently in the GP surgery, then sent to hospital.",
+  "incident": "For three weeks Eleanor had had a new headache over her right temple, constant and throbbing. Brushing her hair over that side was painful, and her jaw ached after chewing for a minute or so, easing when she stopped. She'd been feeling tired with aching shoulders and hips in the mornings. Yesterday, for about five minutes, a curtain came down over the vision in her right eye and then lifted again.",
+  "background": "Eleanor has had osteoarthritis of the knees for years and takes paracetamol. She had a mild stroke scare ten years ago but has no lasting problems. She lost three kilograms recently without trying. She doesn't smoke or drink.",
+  "exam": [
+   {
+    "title": "General",
+    "body": "Well-appearing, temperature 37.6°C, pulse 78, blood pressure 142 over 82."
+   },
+   {
+    "title": "Head",
+    "body": "The right temporal artery was thickened, tender and beaded, with a weak pulse. Scalp tender over the right side."
+   },
+   {
+    "title": "Eyes",
+    "body": "Visual acuity normal today. Pupils equal and reactive. No visible changes at the back of the eye."
+   }
+  ],
+  "investigations": [
+   {
+    "title": "Laboratory",
+    "body": "Bloods were sent the same day:",
+    "reports": [
+     {
+      "title": "Laboratory Report",
+      "lines": [
+       "ESR 92 mm/hr",
+       "CRP 64",
+       "Platelets raised at 520",
+       "Mild normocytic anaemia"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Imaging",
+    "body": "An ultrasound of the temporal arteries was done:",
+    "reports": [
+     {
+      "title": "Imaging Report",
+      "lines": [
+       "Dark halo of swelling around the right temporal artery wall that does not compress"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Biopsy",
+    "body": "A small segment of the right temporal artery was biopsied:",
+    "reports": [
+     {
+      "title": "Pathology Report",
+      "lines": [
+       "Inflammation of the artery wall with giant cells and breakdown of the internal elastic layer"
+      ]
+     }
+    ]
+   }
+  ],
+  "treatment": "Because of the brief loss of vision, Eleanor was started on high-dose steroids the same day, before the biopsy, along with stomach and bone protection. Her headache vanished within 48 hours and her jaw no longer ached when she ate.",
+  "discharge": "She was discharged on a slowly reducing steroid course over many months, with rheumatology follow-up, regular blood tests, and instructions to seek help immediately for any change in vision.",
+  "answers": [
+   "Giant cell arteritis",
+   "Trigeminal neuralgia",
+   "Migraine with aura",
+   "Temporomandibular joint dysfunction",
+   "Polymyalgia rheumatica"
+  ],
+  "final": "Giant cell arteritis"
+ },
+ {
+  "id": "MP-2422",
+  "title": "Stiff and Shaking With a Fever",
+  "personal": "Amira Hassan, 18 months, Female, 81 cm, 11 kg, toddler. Brought in by ambulance.",
+  "incident": "Amira had been grumpy with a runny nose since yesterday. This afternoon her temperature shot up to 39.6°C, and minutes later her parents found her stiff, eyes rolled up, with both arms and legs jerking rhythmically. It lasted about two minutes and stopped on its own. Afterwards she was sleepy and floppy for half an hour, then perked up and started asking for her bottle.",
+  "background": "Amira was born at term and is developing normally, walking and saying a few words. She is fully immunised. Her father had 'fits with temperatures' as a toddler. She takes no medicines. No head injury and no possible access to medicines at home.",
+  "exam": [
+   {
+    "title": "General",
+    "body": "Alert and playful now, temperature 39.1°C, pulse 140, respiratory rate 32, oxygen 98%. Well perfused."
+   },
+   {
+    "title": "ENT",
+    "body": "Both eardrums only mildly pink, not bulging. Runny nose and red throat."
+   },
+   {
+    "title": "Neurological",
+    "body": "Moving all limbs symmetrically, normal tone, no neck stiffness. Anterior fontanelle closed. No rash."
+   }
+  ],
+  "investigations": [
+   {
+    "title": "Laboratory",
+    "body": "A urine sample was collected:",
+    "reports": [
+     {
+      "title": "Laboratory Report",
+      "lines": [
+       "Urine dip negative for nitrites and leucocytes",
+       "Blood glucose normal"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Clinical",
+    "body": "After a period of observation, the paediatrician recorded:",
+    "reports": [
+     {
+      "title": "Clinical Assessment Report",
+      "lines": [
+       "A single episode of whole-body stiffening and jerking lasting under 15 minutes, with full recovery",
+       "Source of fever: viral upper respiratory infection",
+       "No features suggesting infection of the brain or its coverings"
+      ]
+     }
+    ]
+   }
+  ],
+  "treatment": "Amira was given medicine to make her more comfortable and watched for a few hours. She stayed well, drank happily and played on the ward.",
+  "discharge": "Her parents were reassured, given written advice on what to do if it happened again, including how to place her in the recovery position and when to call an ambulance, and told that most children grow out of it.",
+  "answers": [
+   "Febrile seizure",
+   "Bacterial meningitis",
+   "Epilepsy",
+   "Hypoglycemia",
+   "Breath-holding spell"
+  ],
+  "final": "Febrile seizure"
+ },
+ {
+  "id": "MP-2423",
+  "title": "Pressure Behind the Eyes",
+  "personal": "Chloe Barker, 27, Female, 162 cm, 98 kg, nursery nurse. Referred by her optician.",
+  "incident": "For two months Chloe had had headaches every day, worse in the morning, when lying down or when she coughed or bent over. She heard a whooshing noise in her ears in time with her heartbeat, and several times a day her vision went grey for a few seconds when she stood up. Her optician found something abnormal at the back of both eyes and sent her straight in.",
+  "background": "Chloe has gained 15 kilograms in the past year. She took a course of antibiotics for acne three months ago. She takes the contraceptive pill. No history of head injury. She doesn't smoke.",
+  "exam": [
+   {
+    "title": "General",
+    "body": "Well, BMI 37, normal observations."
+   },
+   {
+    "title": "Eyes",
+    "body": "Both optic discs swollen with blurred margins. Visual acuity normal. Enlarged blind spots on visual field testing. A mild weakness of outward eye movement on the right."
+   },
+   {
+    "title": "Neurological",
+    "body": "Otherwise normal, no limb weakness, no neck stiffness."
+   }
+  ],
+  "investigations": [
+   {
+    "title": "Imaging",
+    "body": "An MRI and MR venogram of the brain were performed:",
+    "reports": [
+     {
+      "title": "Imaging Report",
+      "lines": [
+       "No mass, no enlargement of the fluid chambers",
+       "Partially empty pituitary fossa and flattening of the back of the eyeballs",
+       "No clot in the brain's veins"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Lumbar puncture",
+    "body": "A lumbar puncture was performed lying on her side:",
+    "reports": [
+     {
+      "title": "CSF Report",
+      "lines": [
+       "Opening pressure 38 cm of water",
+       "Normal cell count, protein and glucose"
+      ]
+     }
+    ]
+   }
+  ],
+  "treatment": "Chloe's acne antibiotic was stopped, she was started on a tablet that lowers fluid production around the brain, and the lumbar puncture itself brought her headache down noticeably. She was referred to a weight-management programme.",
+  "discharge": "She was discharged with regular eye-clinic checks of her vision and optic nerves, and told to return urgently if her vision worsened.",
+  "answers": [
+   "Idiopathic intracranial hypertension",
+   "Migraine with aura",
+   "Cerebral venous sinus thrombosis",
+   "Brain tumor",
+   "Optic neuritis"
+  ],
+  "final": "Idiopathic intracranial hypertension"
+ },
+ {
+  "id": "MP-2424",
+  "title": "The Whole House Had Headaches",
+  "personal": "Bogdan Kowalski, 45, Male, 175 cm, 80 kg, factory worker. Arrived by ambulance with his wife and two children.",
+  "incident": "It was the first cold week of winter and the family had switched on an old gas heater in the living room. Over the evening all of them developed throbbing headaches, nausea and dizziness. Bogdan's eight-year-old vomited, and his wife felt confused. Even the dog seemed sleepy. They thought it was a stomach bug, but when Bogdan nearly fainted standing up, a neighbour called an ambulance. The headaches eased in the fresh air outside.",
+  "background": "Bogdan is healthy, smokes 10 a day and takes no medicines. The family moved into the rented flat two months ago. The heater had not been serviced. No one had eaten anything unusual.",
+  "exam": [
+   {
+    "title": "General",
+    "body": "Mildly confused and slow to answer, pulse 108, blood pressure 128 over 80, temperature normal. Pulse oximeter reading 98% on air."
+   },
+   {
+    "title": "Neurological",
+    "body": "Unsteady when walking heel-to-toe. No focal weakness."
+   },
+   {
+    "title": "Cardiovascular",
+    "body": "Fast regular rhythm, no murmurs."
+   }
+  ],
+  "investigations": [
+   {
+    "title": "Laboratory",
+    "body": "An arterial blood gas with co-oximetry was taken:",
+    "reports": [
+     {
+      "title": "Laboratory Report",
+      "lines": [
+       "Carboxyhaemoglobin 24% (his children 18% and 20%)",
+       "Mildly raised lactate",
+       "Oxygen level dissolved in the blood normal"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "ECG",
+    "body": "An ECG was recorded:",
+    "reports": [
+     {
+      "title": "ECG Report",
+      "lines": [
+       "Sinus tachycardia",
+       "Minor ST depression in the chest leads"
+      ]
+     },
+     {
+      "title": "Laboratory Report",
+      "lines": [
+       "Troponin mildly raised"
+      ]
+     }
+    ]
+   }
+  ],
+  "treatment": "The whole family was given high-flow oxygen through tight-fitting masks for several hours until their levels normalised. Bogdan's heart strain was monitored, and the specialist service was consulted about pressurised oxygen given his confusion.",
+  "discharge": "Before they went home, the gas company condemned the heater, a detector alarm was fitted, and the family was told to look out for memory or mood changes over the following weeks.",
+  "answers": [
+   "Carbon monoxide poisoning",
+   "Gastroenteritis",
+   "Migraine with aura",
+   "Hypoglycemia",
+   "Cyanide poisoning"
+  ],
+  "final": "Carbon monoxide poisoning"
+ },
+ {
+  "id": "MP-2425",
+  "title": "Fine at First",
+  "personal": "Laura Mitchell, 19, Female, 168 cm, 57 kg, university student. Brought in by a friend.",
+  "incident": "Laura told her friend she had taken 'a whole lot of tablets' about 30 hours earlier after a breakup: two packets of over-the-counter painkillers, around 32 tablets of 500 mg, swallowed over an hour. At first she felt completely fine and didn't tell anyone. Today she had started vomiting and had a dull ache under her right ribs.",
+  "background": "Laura has been feeling low for months and was seen by her GP for anxiety. She weighs 57 kg. She drinks heavily at weekends. No other medical problems; takes the contraceptive pill only.",
+  "exam": [
+   {
+    "title": "General",
+    "body": "Tired and tearful, mildly dehydrated, pulse 96, blood pressure 112 over 70, temperature 37.0°C. Slight yellowing of the whites of the eyes."
+   },
+   {
+    "title": "Abdominal",
+    "body": "Tender in the right upper abdomen, liver edge just palpable, no guarding."
+   },
+   {
+    "title": "Neurological",
+    "body": "Fully alert and oriented, no flapping tremor."
+   }
+  ],
+  "investigations": [
+   {
+    "title": "Laboratory",
+    "body": "Bloods were sent:",
+    "reports": [
+     {
+      "title": "Laboratory Report",
+      "lines": [
+       "Drug level detectable in the blood",
+       "ALT 2,800 U/L",
+       "INR 2.1",
+       "Bilirubin 48",
+       "Creatinine normal",
+       "Venous pH 7.36, glucose normal"
+      ]
+     }
+    ]
+   }
+  ],
+  "treatment": "Laura was started immediately on an intravenous antidote infusion, continued until her liver tests and clotting started to improve, with close monitoring and the liver unit kept informed. She received anti-sickness medicine and fluids.",
+  "discharge": "Once her liver results were clearly improving and she was medically fit, she was assessed by the mental health team, with a safety plan, follow-up arranged with the community team, and advice to her friend about support.",
+  "answers": [
+   "Paracetamol overdose",
+   "Viral hepatitis",
+   "Alcoholic hepatitis",
+   "Acute cholecystitis",
+   "Salicylate poisoning"
+  ],
+  "final": "Paracetamol overdose"
+ },
+ {
+  "id": "MP-2426",
+  "title": "Tears, Drool and Twitching",
+  "personal": "Ravi Kumar, 36, Male, 170 cm, 65 kg, farm labourer. Brought in from a farm by co-workers.",
+  "incident": "Ravi had spent the morning spraying a crop by hand without gloves or a mask on a hot, windy day. By lunchtime he was sweating heavily, drooling, with streaming eyes and nose, and had vomited and soiled himself. His co-workers said his muscles were twitching under the skin and he was getting short of breath and wheezy. His vision had gone blurred and dim.",
+  "background": "Ravi is fit and well and takes no medicines. He'd never had asthma. He doesn't drink alcohol. His co-workers brought the container of the spray with them.",
+  "exam": [
+   {
+    "title": "General",
+    "body": "Drenched in sweat, drooling, smelling of chemicals, pulse 48, blood pressure 92 over 58, respiratory rate 28, oxygen 89% on air."
+   },
+   {
+    "title": "Eyes",
+    "body": "Pinpoint pupils on both sides, streaming tears."
+   },
+   {
+    "title": "Chest",
+    "body": "Widespread wheeze and crackles with lots of secretions."
+   },
+   {
+    "title": "Neurological",
+    "body": "Fine twitching of muscles in the arms and chest, generalised weakness."
+   }
+  ],
+  "investigations": [
+   {
+    "title": "Laboratory",
+    "body": "Bloods were sent:",
+    "reports": [
+     {
+      "title": "Laboratory Report",
+      "lines": [
+       "Red cell cholinesterase activity markedly reduced",
+       "Mildly raised white cells and glucose",
+       "Arterial blood gas: low oxygen with mild acidosis"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "ECG",
+    "body": "An ECG was recorded:",
+    "reports": [
+     {
+      "title": "ECG Report",
+      "lines": [
+       "Sinus bradycardia, rate 46",
+       "Prolonged QT interval"
+      ]
+     }
+    ]
+   }
+  ],
+  "treatment": "Ravi's contaminated clothes were removed and his skin washed by staff wearing protective equipment. He was given repeated, doubling doses of a drug to dry his secretions and speed his heart until his chest was clear, plus a second antidote to reactivate the blocked enzyme, oxygen and a short stay in intensive care.",
+  "discharge": "He recovered over five days, was warned about delayed nerve weakness that can occasionally follow, and the farm was reported to the health and safety authorities about protective equipment.",
+  "answers": [
+   "Organophosphate poisoning",
+   "Anaphylaxis",
+   "Acute severe asthma exacerbation",
+   "Heat stroke",
+   "Opioid overdose"
+  ],
+  "final": "Organophosphate poisoning"
+ },
+ {
+  "id": "MP-2427",
+  "title": "Collapse at Mile Twenty",
+  "personal": "Ben Spencer, 31, Male, 180 cm, 76 kg, accountant. Brought in by ambulance from a city marathon.",
+  "incident": "It was an unusually hot and humid race day. At mile twenty, spectators saw Ben stumbling and weaving, then he collapsed. When the medics reached him he was confused, saying odd things and trying to get up to carry on, and then he had a brief fit. His skin was hot to touch. He'd been drinking water at every station.",
+  "background": "Ben had trained for six months but had a cold last week and nearly pulled out. He takes an antihistamine for hay fever. No other medical history. He doesn't drink much.",
+  "exam": [
+   {
+    "title": "General",
+    "body": "Agitated and confused, Glasgow Coma Scale 11, rectal temperature 41.6°C, pulse 152, blood pressure 92 over 50, respiratory rate 32. Skin flushed, hot and still sweaty."
+   },
+   {
+    "title": "Neurological",
+    "body": "No neck stiffness; moving all limbs; unsteady trying to sit up."
+   },
+   {
+    "title": "Cardiovascular",
+    "body": "Fast regular rhythm, no murmurs."
+   }
+  ],
+  "investigations": [
+   {
+    "title": "Laboratory",
+    "body": "Bloods were sent:",
+    "reports": [
+     {
+      "title": "Laboratory Report",
+      "lines": [
+       "Sodium 139 mmol/L",
+       "Glucose normal",
+       "Creatine kinase 6,400 U/L",
+       "ALT raised",
+       "Creatinine raised",
+       "Platelets low with prolonged clotting times"
+      ]
+     }
+    ]
+   }
+  ],
+  "treatment": "Ben was cooled immediately on the spot by being immersed in an ice-water tub, with his temperature checked continuously, until it reached 39°C, then given intravenous fluids and admitted to intensive care, where his kidney, liver and clotting were monitored.",
+  "discharge": "His mental state returned to normal within hours. He was discharged after four days with advice to avoid strenuous exercise for several weeks, to acclimatise gradually before future races, and not to race when unwell.",
+  "answers": [
+   "Heat stroke",
+   "Hyponatremia",
+   "Bacterial meningitis",
+   "Hypoglycemia",
+   "Thyroid storm"
+  ],
+  "final": "Heat stroke"
+ },
+ {
+  "id": "MP-2428",
+  "title": "Found in the Snow",
+  "personal": "Walter Hayes, 79, Male, 170 cm, 62 kg, widower who lives alone. Brought in by ambulance after being found by a neighbour.",
+  "incident": "The neighbour found Walter lying on his kitchen floor on a freezing January morning, with the back door open and the heating off. He had probably fallen the evening before and couldn't get up. He was mumbling and couldn't say what had happened. He wasn't shivering.",
+  "background": "Walter has an underactive thyroid and mild memory problems. He takes thyroid tablets and something to help him sleep. His neighbour thought he hadn't been eating much since his wife died last year. He drinks a little whisky most evenings.",
+  "exam": [
+   {
+    "title": "General",
+    "body": "Pale and cold to touch, drowsy, Glasgow Coma Scale 12, core temperature 30.8°C, pulse 42 and irregular, blood pressure 92 over 58, respiratory rate 10."
+   },
+   {
+    "title": "Skin",
+    "body": "No frostbite. Bruising over the right hip."
+   },
+   {
+    "title": "Neurological",
+    "body": "Slow, slurred speech, sluggish reflexes. Pupils equal and slow to react."
+   }
+  ],
+  "investigations": [
+   {
+    "title": "ECG",
+    "body": "An ECG was recorded:",
+    "reports": [
+     {
+      "title": "ECG Report",
+      "lines": [
+       "Slow atrial fibrillation",
+       "A small extra hump at the junction of the QRS and ST segment in several leads",
+       "Prolonged intervals"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Laboratory",
+    "body": "Bloods were sent:",
+    "reports": [
+     {
+      "title": "Laboratory Report",
+      "lines": [
+       "Glucose 4.2 mmol/L",
+       "Potassium normal",
+       "Creatine kinase raised",
+       "TSH mildly raised, free T4 normal",
+       "Amylase normal"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Imaging",
+    "body": "An X-ray of the hip was done:",
+    "reports": [
+     {
+      "title": "Imaging Report",
+      "lines": [
+       "No fracture"
+      ]
+     }
+    ]
+   }
+  ],
+  "treatment": "Walter was handled very gently to avoid triggering a dangerous heart rhythm, wet clothing was removed, and he was rewarmed with warm-air blankets and warmed intravenous fluids. Over six hours his temperature returned to normal, his heart rhythm settled and his speech cleared.",
+  "discharge": "Before discharge, a social worker arranged a personal alarm, regular home visits and help with heating costs, with his GP asked to review his sleeping tablet and his thyroid dose.",
+  "answers": [
+   "Hypothermia",
+   "Myxedema coma",
+   "Acute ischemic stroke",
+   "Hypoglycemia",
+   "Subdural hematoma"
+  ],
+  "final": "Hypothermia"
+ },
+ {
+  "id": "MP-2429",
+  "title": "The Spreading Ring",
+  "personal": "Sarah Lockwood, 35, Female, 170 cm, 64 kg, forestry worker. Seen in the GP surgery, then the infectious diseases clinic.",
+  "incident": "Two weeks after a camping trip in the woods, Sarah noticed a red patch on the back of her knee. Over a week it slowly grew to the size of a dinner plate, with a clearer centre, like a target. It wasn't itchy or painful. She felt fluey, with headaches, aching joints and tiredness. Now, a few weeks on, the right side of her face had dropped: she couldn't close her right eye fully and drooled from the corner of her mouth.",
+  "background": "Sarah remembers pulling a tiny black bug off her leg after the trip but thought nothing of it. She is otherwise healthy, takes no medicines and is not pregnant. No recent cold sores.",
+  "exam": [
+   {
+    "title": "General",
+    "body": "Well, temperature 37.4°C, normal pulse and blood pressure."
+   },
+   {
+    "title": "Skin",
+    "body": "A large, round, expanding red rash on the back of the right knee, about 22 cm across, with central clearing. Two smaller similar rashes on the trunk."
+   },
+   {
+    "title": "Neurological",
+    "body": "Weakness of the whole right side of the face including the forehead. Otherwise normal."
+   }
+  ],
+  "investigations": [
+   {
+    "title": "Laboratory",
+    "body": "Blood tests were sent:",
+    "reports": [
+     {
+      "title": "Laboratory Report",
+      "lines": [
+       "Antibody screening test positive, confirmed on a second specific test",
+       "Normal full blood count, mildly raised CRP"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "ECG",
+    "body": "Because of the nerve involvement, an ECG was done:",
+    "reports": [
+     {
+      "title": "ECG Report",
+      "lines": [
+       "Normal rhythm, PR interval at the upper limit of normal"
+      ]
+     }
+    ]
+   }
+  ],
+  "treatment": "Sarah was given a course of oral antibiotics for three weeks. The rashes faded within a fortnight, and over the next two months the weakness in her face gradually recovered.",
+  "discharge": "She was advised on preventing future bites, checking her skin after outdoor work and removing any attached bugs promptly with fine tweezers.",
+  "answers": [
+   "Lyme disease",
+   "Bell's palsy",
+   "Cellulitis",
+   "Tinea corporis",
+   "Erythema multiforme"
+  ],
+  "final": "Lyme disease"
+ },
+ {
+  "id": "MP-2430",
+  "title": "Bone-Breaking Aches After Holiday",
+  "personal": "Priya Nair, 28, Female, 160 cm, 54 kg, travel blogger. Seen in the emergency department.",
+  "incident": "Five days after returning from a fortnight in South-East Asia, Priya came down with a sudden high fever, a crushing headache behind her eyes and such severe aches in her muscles and bones that she said it felt as if they were breaking. On the fourth day of illness the fever dropped, but she felt worse: tummy pain, repeated vomiting, and her gums bled when she brushed her teeth. A flat red rash with small pale islands had spread over her legs.",
+  "background": "Priya was bitten by mosquitoes many times during the day while travelling. She took no antimalarial tablets. She had a similar fever on a trip two years ago that was never diagnosed. She is otherwise healthy and takes no medicines.",
+  "exam": [
+   {
+    "title": "General",
+    "body": "Tired and flushed, temperature 37.6°C, pulse 112, blood pressure 96 over 76 (narrow gap), capillary refill 3 seconds."
+   },
+   {
+    "title": "Skin",
+    "body": "A widespread red rash with islands of normal skin, and tiny red pinpoint spots on the lower legs. Blood pressure cuff left a crop of new spots on her arm."
+   },
+   {
+    "title": "Abdominal",
+    "body": "Tender liver edge 2 cm below the ribs, mild fluid in the abdomen."
+   }
+  ],
+  "investigations": [
+   {
+    "title": "Laboratory",
+    "body": "Bloods were sent:",
+    "reports": [
+     {
+      "title": "Laboratory Report",
+      "lines": [
+       "Platelets 32",
+       "Haematocrit rising from 39% to 47% over 12 hours",
+       "White cell count low at 2.6",
+       "ALT and AST raised",
+       "Malaria smear and rapid test negative on three occasions",
+       "Viral antigen NS1 positive"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Imaging",
+    "body": "A bedside ultrasound was done:",
+    "reports": [
+     {
+      "title": "Imaging Report",
+      "lines": [
+       "Fluid around the gallbladder and a small amount in the abdomen",
+       "Small fluid collection at the base of the right lung"
+      ]
+     }
+    ]
+   }
+  ],
+  "treatment": "Priya was admitted and given carefully measured intravenous fluids with blood counts checked every few hours, as fluid was leaking from her blood vessels. Painkillers that thin the blood were avoided. After 48 hours her blood count stabilised, her platelets began to climb and her appetite returned.",
+  "discharge": "She was discharged with advice to rest, avoid anti-inflammatory painkillers until fully recovered, and to take strict precautions against mosquito bites on future trips, as a second infection with a different type can be more severe.",
+  "answers": [
+   "Dengue fever",
+   "Malaria",
+   "Typhoid fever",
+   "Chikungunya",
+   "Measles"
+  ],
+  "final": "Dengue fever"
+ },
+ {
+  "id": "MP-2431",
+  "title": "The Slow-Rising Fever",
+  "personal": "Imran Siddiqui, 22, Male, 176 cm, 68 kg, engineering student. Referred from the GP.",
+  "incident": "Imran came back from visiting family in South Asia three weeks ago. Over the past ten days his fever crept up a little higher each day, reaching 39.8°C now, with a dull headache, a dry cough and loss of appetite. At first he was constipated; for the last two days he's had loose 'pea-soup' stools. He feels increasingly vague and slowed down.",
+  "background": "Imran ate street food and drank water from local sources during his trip. He didn't have travel vaccinations before leaving. He has no medical conditions and takes no medicines.",
+  "exam": [
+   {
+    "title": "General",
+    "body": "Tired and apathetic, temperature 39.6°C, pulse 82 (slow for his fever), blood pressure 112 over 70."
+   },
+   {
+    "title": "Skin",
+    "body": "A few faint pink spots on the upper abdomen that faded briefly when pressed."
+   },
+   {
+    "title": "Abdominal",
+    "body": "Mildly tender, slightly distended, with a palpable spleen tip and a smooth liver edge."
+   }
+  ],
+  "investigations": [
+   {
+    "title": "Laboratory",
+    "body": "Bloods were sent:",
+    "reports": [
+     {
+      "title": "Laboratory Report",
+      "lines": [
+       "Blood cultures: a Gram-negative rod grown, identified on day two",
+       "White cell count low-normal",
+       "ALT mildly raised",
+       "Malaria smears and rapid test negative"
+      ]
+     }
+    ]
+   }
+  ],
+  "treatment": "Imran was started on intravenous antibiotics chosen with the travel history and local resistance in mind, then adjusted when the sensitivities came back. His fever settled after five days, and his appetite and energy came back gradually.",
+  "discharge": "He completed his antibiotic course at home and was given advice on hand hygiene; because of his job handling food in a café, he was kept off work until stool samples were confirmed clear, and was advised to get vaccinated before future travel.",
+  "answers": [
+   "Typhoid fever",
+   "Malaria",
+   "Dengue fever",
+   "Infectious mononucleosis",
+   "Amebic liver abscess"
+  ],
+  "final": "Typhoid fever"
+ },
+ {
+  "id": "MP-2432",
+  "title": "The Cough That Stayed",
+  "personal": "Juan Morales, 41, Male, 172 cm, 60 kg, kitchen porter. Seen in the respiratory clinic.",
+  "incident": "For three months Juan had a cough that wouldn't go away. At first it was dry, but now it brings up thick sputum, and twice this week there were streaks of blood in it. He'd been waking up soaked with sweat, needing to change his T-shirt, and had lost eight kilograms without trying. He felt feverish in the evenings.",
+  "background": "Juan moved from a country where this illness is common three years ago. He lives in a crowded shared house with seven other men. He smokes 15 a day. He has never been tested for HIV. He takes no medicines.",
+  "exam": [
+   {
+    "title": "General",
+    "body": "Thin and tired, temperature 37.9°C, pulse 98, oxygen 95% on air."
+   },
+   {
+    "title": "Chest",
+    "body": "Crackles and harsh breathing at the top of the right lung. No wheeze."
+   },
+   {
+    "title": "Lymph nodes",
+    "body": "Small, non-tender nodes in the neck."
+   }
+  ],
+  "investigations": [
+   {
+    "title": "Imaging",
+    "body": "A chest X-ray was taken:",
+    "reports": [
+     {
+      "title": "Imaging Report",
+      "lines": [
+       "Patchy shadowing with a cavity in the right upper lobe",
+       "Enlarged lymph nodes at the right hilum"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Laboratory",
+    "body": "Three early-morning sputum samples were sent:",
+    "reports": [
+     {
+      "title": "Laboratory Report",
+      "lines": [
+       "Sputum smear: acid-fast bacilli seen",
+       "Rapid DNA test positive, no resistance to the main first-line drug detected",
+       "HIV test negative",
+       "CRP 54, mild anaemia"
+      ]
+     }
+    ]
+   }
+  ],
+  "treatment": "Juan was isolated in a single room while infectious and started on a combination of four antibiotics for two months, followed by two of them for a further four months. A specialist nurse arranged directly observed treatment to make sure he took every dose. His sweats stopped within weeks and he regained weight.",
+  "discharge": "The public health team screened the people he lived and worked with, and he was followed in clinic until he completed the full six months of treatment.",
+  "answers": [
+   "Tuberculosis",
+   "Lung cancer",
+   "Community-acquired pneumonia with sepsis",
+   "Sarcoidosis",
+   "Lung abscess"
+  ],
+  "final": "Tuberculosis"
+ },
+ {
+  "id": "MP-2433",
+  "title": "Breathless on the Stairs",
+  "personal": "Mark Davies, 39, Male, 180 cm, 66 kg, graphic designer. Admitted from the emergency department.",
+  "incident": "For three weeks Mark had become steadily more breathless, first on the stairs, now walking across a room. He had a dry cough, low-grade fevers and felt exhausted. His mouth had been sore, with white patches that scraped off. He'd lost weight over the past few months without trying and had had shingles last year.",
+  "background": "Mark has never been tested for HIV. He has had several male partners in the past few years and did not always use condoms. He takes no regular medicines and has no known medical problems. He doesn't smoke.",
+  "exam": [
+   {
+    "title": "General",
+    "body": "Thin and breathless at rest, temperature 38.0°C, respiratory rate 28, oxygen 90% on air dropping to 82% after walking a few metres."
+   },
+   {
+    "title": "Mouth",
+    "body": "White plaques on the tongue and palate that scraped off, leaving red patches."
+   },
+   {
+    "title": "Chest",
+    "body": "Surprisingly few signs: chest clear to listening apart from faint crackles at both bases."
+   }
+  ],
+  "investigations": [
+   {
+    "title": "Imaging",
+    "body": "A chest X-ray was taken:",
+    "reports": [
+     {
+      "title": "Imaging Report",
+      "lines": [
+       "Fine, hazy shadowing spreading out from both hila in a symmetrical pattern",
+       "No effusion"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Laboratory",
+    "body": "Bloods and sputum were sent:",
+    "reports": [
+     {
+      "title": "Laboratory Report",
+      "lines": [
+       "HIV test positive",
+       "CD4 count 64 cells per cubic millimetre",
+       "LDH raised",
+       "Arterial oxygen low on air",
+       "Induced sputum: organism identified on special stain"
+      ]
+     }
+    ]
+   }
+  ],
+  "treatment": "Mark was started on high-dose antibiotics through a drip, together with steroids because his oxygen levels were low, and given oxygen. He also received treatment for the mouth infection. After a week his breathing improved and he switched to tablets.",
+  "discharge": "Two weeks after starting treatment for the lung infection, he began lifelong antiviral treatment under the HIV clinic, along with a preventive antibiotic until his immune count recovered. His partners were offered testing.",
+  "answers": [
+   "Pneumocystis pneumonia",
+   "Tuberculosis",
+   "Community-acquired pneumonia with sepsis",
+   "Acute pulmonary embolism",
+   "Sarcoidosis"
+  ],
+  "final": "Pneumocystis pneumonia"
+ },
+ {
+  "id": "MP-2434",
+  "title": "Red Bumps on Her Shins",
+  "personal": "Kemi Adeyemi, 33, Female, 170 cm, 65 kg, pharmacist. Seen in the respiratory clinic.",
+  "incident": "Over a month Kemi developed painful, tender red lumps on the front of both shins that looked like bruises, along with painful swollen ankles that made walking difficult. She had a dry cough, felt tired and a bit breathless on hills. Her eyes had become red and sore, and light bothered her.",
+  "background": "Kemi is healthy and takes no medicines. She doesn't smoke. No recent sore throat, no new medicines, no pregnancy. No travel outside the UK. No known contact with tuberculosis. Her aunt has 'something with her lungs and eyes'.",
+  "exam": [
+   {
+    "title": "General",
+    "body": "Well, temperature 37.5°C, normal observations."
+   },
+   {
+    "title": "Skin",
+    "body": "Tender, warm, raised red-purple lumps on both shins. Puffy, warm ankles."
+   },
+   {
+    "title": "Eyes",
+    "body": "Redness around the coloured part of both eyes, with cells seen in the front chamber on slit-lamp examination."
+   },
+   {
+    "title": "Chest",
+    "body": "Clear to listening."
+   }
+  ],
+  "investigations": [
+   {
+    "title": "Imaging",
+    "body": "A chest X-ray and then a CT scan were done:",
+    "reports": [
+     {
+      "title": "Imaging Report",
+      "lines": [
+       "Enlarged lymph nodes on both sides of the root of the lungs",
+       "Small nodules along the airways and lymph channels in the upper zones"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Laboratory",
+    "body": "Bloods were sent:",
+    "reports": [
+     {
+      "title": "Laboratory Report",
+      "lines": [
+       "Serum ACE raised",
+       "Calcium mildly raised",
+       "Interferon-gamma release assay negative",
+       "ESR raised"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Biopsy",
+    "body": "A sample of a lymph node was taken through a camera passed into the airway:",
+    "reports": [
+     {
+      "title": "Pathology Report",
+      "lines": [
+       "Compact, non-caseating granulomas",
+       "No organisms on special stains and cultures"
+      ]
+     }
+    ]
+   }
+  ],
+  "treatment": "Kemi was treated with anti-inflammatory painkillers for her joints and skin and steroid eye drops for the eye inflammation. Her lung function was only mildly affected, so steroid tablets were held back while she was watched.",
+  "discharge": "The skin lumps faded over six weeks. She was followed in respiratory and eye clinics with lung function tests and calcium checks, and told this form often settles by itself within two years.",
+  "answers": [
+   "Sarcoidosis",
+   "Tuberculosis",
+   "Lymphoma",
+   "Rheumatoid arthritis",
+   "Reactive arthritis"
+  ],
+  "final": "Sarcoidosis"
+ },
+ {
+  "id": "MP-2435",
+  "title": "The Rash That Followed the Sun",
+  "personal": "Grace Okonkwo, 26, Female, 165 cm, 56 kg, nursing student. Seen in the rheumatology clinic.",
+  "incident": "After a beach holiday Grace developed a red rash across her cheeks and the bridge of her nose, sparing the creases beside her nostrils, which flared each time she went in the sun. For months her small finger joints, wrists and knees had been painful and stiff. Her fingers turned white then blue in the cold. She'd had mouth ulcers, patchy hair loss and a sharp pain in her chest when breathing deeply.",
+  "background": "Grace had a miscarriage last year. She takes no regular medicines and isn't on any new drugs. Her mother has an underactive thyroid. No recent infections.",
+  "exam": [
+   {
+    "title": "General",
+    "body": "Tired, temperature 37.6°C, blood pressure 142 over 90."
+   },
+   {
+    "title": "Skin",
+    "body": "A red rash over both cheeks and the nose, sparing the nasolabial folds. Small painless ulcers on the roof of the mouth. Thinning of hair."
+   },
+   {
+    "title": "Musculoskeletal",
+    "body": "Tender, mildly swollen finger joints and wrists, no deformity."
+   },
+   {
+    "title": "Chest",
+    "body": "A soft rubbing sound at the left lung base."
+   }
+  ],
+  "investigations": [
+   {
+    "title": "Laboratory",
+    "body": "Bloods and urine were sent:",
+    "reports": [
+     {
+      "title": "Laboratory Report",
+      "lines": [
+       "ANA strongly positive",
+       "Anti-double-stranded DNA antibodies raised",
+       "Complement C3 and C4 low",
+       "White cells 2.8, platelets 110",
+       "ESR raised, CRP normal",
+       "Urine: protein ++ and red cell casts"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Biopsy",
+    "body": "A kidney biopsy was arranged:",
+    "reports": [
+     {
+      "title": "Pathology Report",
+      "lines": [
+       "Inflammation of many filtering units with immune deposits",
+       "Classified as a moderately active form requiring treatment"
+      ]
+     }
+    ]
+   }
+  ],
+  "treatment": "Grace was started on a long-term antimalarial tablet, a course of steroids and a medicine to calm the immune system and protect her kidneys. She was also given sun-protection advice.",
+  "discharge": "Over three months her rash, joint pains and protein in the urine improved. She is followed jointly by rheumatology and kidney clinics, with advice to plan any future pregnancy with her specialists.",
+  "answers": [
+   "Systemic lupus erythematosus",
+   "Rheumatoid arthritis",
+   "Rosacea",
+   "Dermatomyositis",
+   "Post-streptococcal glomerulonephritis"
+  ],
+  "final": "Systemic lupus erythematosus"
+ },
+ {
+  "id": "MP-2436",
+  "title": "The Hot, Swollen Knee",
+  "personal": "Frank Gallagher, 67, Male, 175 cm, 88 kg, retired electrician. Seen in the emergency department.",
+  "incident": "Over a day and a half Frank's right knee had become hugely swollen, red, hot and so painful that he couldn't bear to move it even slightly or let the bedsheet touch it. He'd been shivering and felt feverish. He couldn't put any weight on the leg.",
+  "background": "Frank has rheumatoid arthritis treated with a weekly tablet and a low dose of steroids. He had a knee joint injection two weeks ago for a flare. He also has diabetes. He had gout once in his big toe years ago. He drinks moderately.",
+  "exam": [
+   {
+    "title": "General",
+    "body": "Unwell, temperature 38.9°C, pulse 108, blood pressure 128 over 76."
+   },
+   {
+    "title": "Musculoskeletal",
+    "body": "Right knee hot, red and tensely swollen with a large effusion. Any attempt at movement caused severe pain; the joint was held slightly bent. Other joints showed his usual mild hand changes only."
+   }
+  ],
+  "investigations": [
+   {
+    "title": "Joint aspiration",
+    "body": "Before antibiotics, fluid was drawn from the knee:",
+    "reports": [
+     {
+      "title": "Synovial Fluid Report",
+      "lines": [
+       "Cloudy yellow fluid",
+       "White cell count 85,000 per cubic millimetre, mostly neutrophils",
+       "Gram stain: clusters of Gram-positive cocci",
+       "No crystals seen under polarised light"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Laboratory",
+    "body": "Bloods were sent:",
+    "reports": [
+     {
+      "title": "Laboratory Report",
+      "lines": [
+       "CRP 210, white cell count 16",
+       "Blood cultures: same organism grown",
+       "Urate normal"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Imaging",
+    "body": "An X-ray of the knee was taken:",
+    "reports": [
+     {
+      "title": "Imaging Report",
+      "lines": [
+       "Large joint effusion, no fracture, no bone destruction yet"
+      ]
+     }
+    ]
+   }
+  ],
+  "treatment": "Frank was started on intravenous antibiotics as soon as the samples were taken, and the orthopaedic team washed out the joint in theatre. His weekly arthritis tablet was paused while he was being treated.",
+  "discharge": "He completed several weeks of antibiotics, had physiotherapy to regain movement in the knee, and his rheumatologist reviewed his long-term treatment.",
+  "answers": [
+   "Septic arthritis",
+   "Acute gout",
+   "Pseudogout",
+   "Rheumatoid arthritis",
+   "Cellulitis"
+  ],
+  "final": "Septic arthritis"
+ },
+ {
+  "id": "MP-2437",
+  "title": "The Limping Teenager",
+  "personal": "Callum Reid, 13, Male, 160 cm, 74 kg, secondary school pupil. Brought to clinic by his mother.",
+  "incident": "For six weeks Callum had a limp and an ache in his left knee and inner thigh, worse after football. His mother thought it was growing pains. Three days ago he slipped on a step and since then the pain has become much worse, and he's been walking with his left foot pointing outwards.",
+  "background": "Callum has been gaining weight steadily and is at the 99th centile. He has no other medical conditions. He is not on any medicines. No fever, rash or recent infection.",
+  "exam": [
+   {
+    "title": "General",
+    "body": "Well, no fever, normal observations, overweight."
+   },
+   {
+    "title": "Musculoskeletal",
+    "body": "Walks with an antalgic limp, left foot turned out. Knee examination entirely normal. Left hip has limited turning inwards, and when the hip is bent up it swings outwards into external rotation. Leg slightly shorter on the left."
+   }
+  ],
+  "investigations": [
+   {
+    "title": "Imaging",
+    "body": "X-rays of both hips, including a frog-leg view, were taken:",
+    "reports": [
+     {
+      "title": "Imaging Report",
+      "lines": [
+       "The rounded top of the left thigh bone has shifted backwards and downwards relative to the neck of the bone",
+       "A line drawn along the top of the neck does not cut through the ball on the left",
+       "Right hip normal"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Laboratory",
+    "body": "Bloods were sent:",
+    "reports": [
+     {
+      "title": "Laboratory Report",
+      "lines": [
+       "Inflammatory markers normal",
+       "Thyroid function normal"
+      ]
+     }
+    ]
+   }
+  ],
+  "treatment": "Callum was told not to put weight on the leg and was admitted. The next day the orthopaedic surgeons fixed the top of his thigh bone in place with a single screw. The surgeons also discussed preventive fixing of the other side.",
+  "discharge": "He was discharged on crutches with a gradual return to walking, advice on weight management, and regular clinic X-rays to check both hips until he stops growing.",
+  "answers": [
+   "Slipped capital femoral epiphysis",
+   "Perthes disease",
+   "Transient synovitis of the hip",
+   "Septic arthritis",
+   "Osgood-Schlatter disease"
+  ],
+  "final": "Slipped capital femoral epiphysis"
+ },
+ {
+  "id": "MP-2438",
+  "title": "Stiff Every Morning",
+  "personal": "Daniel Brooks, 26, Male, 183 cm, 78 kg, plumber. Seen in rheumatology clinic.",
+  "incident": "For about two years Daniel had had pain and stiffness in his lower back and buttocks that came on gradually. It was worst first thing in the morning, lasting over an hour, and woke him in the second half of the night. Unusually, it got better with exercise and worse with rest. Anti-inflammatory tablets helped a lot. Last year he'd had one painful red eye that needed drops.",
+  "background": "Daniel is otherwise healthy. He had heel pain last year. His father 'walks bent over'. No bowel symptoms, no skin rashes, no recent infections. He doesn't smoke.",
+  "exam": [
+   {
+    "title": "General",
+    "body": "Well, normal observations."
+   },
+   {
+    "title": "Spine",
+    "body": "Reduced bending forward of the lower back on measurement, with reduced chest expansion. Tenderness over both sacroiliac joints."
+   },
+   {
+    "title": "Feet",
+    "body": "Tender where the Achilles tendon inserts on the left heel."
+   }
+  ],
+  "investigations": [
+   {
+    "title": "Imaging",
+    "body": "X-rays and an MRI of the pelvis and spine were taken:",
+    "reports": [
+     {
+      "title": "Imaging Report",
+      "lines": [
+       "X-ray: erosions and blurring of both sacroiliac joints",
+       "MRI: active inflammation of the bone next to both sacroiliac joints",
+       "Early bony bridges at the corners of two lumbar vertebrae"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Laboratory",
+    "body": "Bloods were sent:",
+    "reports": [
+     {
+      "title": "Laboratory Report",
+      "lines": [
+       "HLA-B27 positive",
+       "CRP mildly raised",
+       "Rheumatoid factor negative"
+      ]
+     }
+    ]
+   }
+  ],
+  "treatment": "Daniel was given regular anti-inflammatory medicine and a structured physiotherapy and exercise programme. When his symptoms weren't fully controlled after three months, he started a biological injection that blocks a key inflammatory signal, with excellent results.",
+  "discharge": "He continues in rheumatology follow-up, with advice to keep active, stay off cigarettes and seek urgent eye care if his eye became red and painful again.",
+  "answers": [
+   "Ankylosing spondylitis",
+   "Mechanical back pain",
+   "Rheumatoid arthritis",
+   "Reactive arthritis",
+   "Psoriatic arthritis"
+  ],
+  "final": "Ankylosing spondylitis"
+ },
+ {
+  "id": "MP-2439",
+  "title": "Kicked From Behind",
+  "personal": "Richard Stone, 44, Male, 178 cm, 86 kg, solicitor. Walked into the emergency department with a limp.",
+  "incident": "Richard was playing squash, lunging forward for a drop shot, when he felt a sudden sharp pain at the back of his right ankle and heard a loud snap. He turned round to see who had kicked him, but nobody was there. He could still walk afterwards, though with a flat-footed limp, and couldn't push off on his toes.",
+  "background": "Richard plays squash only occasionally. He finished a course of a particular antibiotic for a chest infection last month. He has no other medical problems. He doesn't smoke.",
+  "exam": [
+   {
+    "title": "General",
+    "body": "Comfortable at rest, normal observations."
+   },
+   {
+    "title": "Musculoskeletal",
+    "body": "Swelling and bruising over the back of the right ankle with a palpable gap about 5 cm above the heel bone. Lying face down with knees bent, the right foot hung straight down rather than slightly pointed. Squeezing the right calf did not make the foot point down; it did on the left. Unable to stand on tiptoe on the right."
+   }
+  ],
+  "investigations": [
+   {
+    "title": "Imaging",
+    "body": "An ultrasound of the back of the ankle was performed:",
+    "reports": [
+     {
+      "title": "Imaging Report",
+      "lines": [
+       "Complete discontinuity of the large tendon at the back of the ankle about 5 cm above its insertion",
+       "The gap closed with the foot pointed down"
+      ]
+     }
+    ]
+   }
+  ],
+  "treatment": "Richard was put in a boot with wedges that held his foot pointing down, given crutches and blood-clot prevention injections. He and the orthopaedic team agreed on treatment without surgery, with a carefully staged programme to gradually bring his foot back up over eight weeks.",
+  "discharge": "He was discharged to physiotherapy for a long rehabilitation programme and advised it would be six to nine months before he could return to squash.",
+  "answers": [
+   "Achilles tendon rupture",
+   "Ankle fracture",
+   "Deep vein thrombosis",
+   "Muscle strain",
+   "Achilles tendinopathy"
+  ],
+  "final": "Achilles tendon rupture"
+ },
+ {
+  "id": "MP-2440",
+  "title": "Screaming Spells and Jelly",
+  "personal": "Leo Fischer, 9 months, Male, 72 cm, 9 kg, infant. Brought in by his parents in the evening.",
+  "incident": "Since lunchtime Leo had been having sudden spells every 15 to 20 minutes where he screamed inconsolably, went pale and drew his knees up to his tummy. Between attacks he was unusually quiet and floppy. He'd vomited three times, the last one greenish. This evening his nappy contained a dark red, sticky stool that looked like redcurrant jelly.",
+  "background": "Leo had a cold with a runny nose last week. He was born at term, is growing well and is fully immunised, including the rotavirus vaccine some months ago. No previous operations.",
+  "exam": [
+   {
+    "title": "General",
+    "body": "Pale and lethargic between spells, temperature 37.5°C, pulse 160, capillary refill 3 seconds, mildly dry."
+   },
+   {
+    "title": "Abdominal",
+    "body": "A sausage-shaped mass felt in the right upper abdomen, with an unusually empty feel in the right lower quadrant. Mildly distended, no guarding."
+   },
+   {
+    "title": "Rectal",
+    "body": "Dark red mucus with blood on the glove."
+   }
+  ],
+  "investigations": [
+   {
+    "title": "Imaging",
+    "body": "An ultrasound scan of the abdomen was performed:",
+    "reports": [
+     {
+      "title": "Imaging Report",
+      "lines": [
+       "A target-shaped mass with rings of bowel inside bowel in the right upper abdomen, 3.5 cm across",
+       "Blood flow seen in the bowel wall, no free fluid of concern"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Laboratory",
+    "body": "Bloods were sent:",
+    "reports": [
+     {
+      "title": "Laboratory Report",
+      "lines": [
+       "Mildly raised white cells",
+       "Electrolytes: mild dehydration"
+      ]
+     }
+    ]
+   }
+  ],
+  "treatment": "After fluids through a drip, Leo had an air enema under X-ray guidance by the radiologist, with the surgical team present. The mass reduced with a gush of air into the small bowel, and he settled within an hour.",
+  "discharge": "He was watched overnight, fed normally the next morning, and went home with advice to come back straight away if the screaming spells or bloody stools returned.",
+  "answers": [
+   "Intussusception",
+   "Pyloric stenosis",
+   "Malrotation with volvulus",
+   "Gastroenteritis",
+   "Incarcerated inguinal hernia"
+  ],
+  "final": "Intussusception"
+ },
+ {
+  "id": "MP-2441",
+  "title": "The Baby Who Never Opened His Bowels",
+  "personal": "Oscar Thompson, 3 days, Male, 51 cm, 3.4 kg, term newborn. Reviewed on the postnatal ward.",
+  "incident": "Oscar had not passed his first sticky black stool in his first two days, which the midwife flagged as unusual. Since this morning his tummy had become swollen and tight, he was refusing feeds and had vomited twice, the second time green. When the doctor examined his bottom, a sudden explosive gush of wind and stool followed.",
+  "background": "Oscar was born at 39 weeks by normal delivery after an uncomplicated pregnancy. His older brother needed 'bowel surgery as a baby' but the family isn't sure of the details. He has no other abnormalities noted on newborn check.",
+  "exam": [
+   {
+    "title": "General",
+    "body": "Irritable, temperature 37.0°C, pulse 152, mildly jaundiced."
+   },
+   {
+    "title": "Abdominal",
+    "body": "Markedly distended, tympanic, visible bowel loops, non-tender."
+   },
+   {
+    "title": "Rectal",
+    "body": "Tight anal canal with an explosive release of gas and meconium after the examining finger was withdrawn."
+   }
+  ],
+  "investigations": [
+   {
+    "title": "Imaging",
+    "body": "X-rays and a contrast enema were done:",
+    "reports": [
+     {
+      "title": "Imaging Report",
+      "lines": [
+       "Multiple dilated loops of bowel, no gas in the rectum",
+       "Contrast enema: a narrow rectum and lower sigmoid with a cone-shaped widening to dilated bowel above"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Biopsy",
+    "body": "A suction biopsy of the rectal lining was taken:",
+    "reports": [
+     {
+      "title": "Pathology Report",
+      "lines": [
+       "Absence of nerve cells in the bowel wall layers",
+       "Thickened, increased nerve fibres on special staining"
+      ]
+     }
+    ]
+   }
+  ],
+  "treatment": "Oscar was given intravenous fluids and antibiotics and had regular gentle washouts of his rectum through a soft tube, which relieved the swelling and allowed him to feed. At four weeks old, surgeons removed the affected segment and joined the healthy bowel to the anus.",
+  "discharge": "He was discharged feeding and gaining weight, with parents taught to watch for fever, a swollen belly or foul diarrhoea, which can signal a serious bowel inflammation, and with long-term surgical follow-up.",
+  "answers": [
+   "Hirschsprung disease",
+   "Meconium ileus",
+   "Necrotizing enterocolitis",
+   "Malrotation with volvulus",
+   "Hypothyroidism"
+  ],
+  "final": "Hirschsprung disease"
+ },
+ {
+  "id": "MP-2442",
+  "title": "Yellow, With Pale Nappies",
+  "personal": "Ava Collins, 6 weeks, Female, 56 cm, 4.3 kg, infant. Referred from the GP at her six-week check.",
+  "incident": "Ava had been a bit yellow since her first week, which her parents were told was common and would fade. But it hadn't: at six weeks her skin and eyes were still yellow, if anything deeper. Her nappies were the giveaway: her wee was dark, like tea, and her stools had turned pale, almost putty-coloured. She was feeding well and seemed content.",
+  "background": "Ava was born at term after an uncomplicated pregnancy and is breastfed. No family history of liver disease. Her blood group is not incompatible with her mother's. She has had vitamin K at birth.",
+  "exam": [
+   {
+    "title": "General",
+    "body": "Well, alert and feeding, jaundiced. Weight gain slightly slower than expected."
+   },
+   {
+    "title": "Abdominal",
+    "body": "The liver was firm and enlarged 3 cm below the ribs. Spleen just palpable. No ascites."
+   },
+   {
+    "title": "Stool and urine",
+    "body": "A nappy brought in showed a pale stool on the colour card. Urine dark."
+   }
+  ],
+  "investigations": [
+   {
+    "title": "Laboratory",
+    "body": "Bloods were sent:",
+    "reports": [
+     {
+      "title": "Laboratory Report",
+      "lines": [
+       "Total bilirubin raised, mostly conjugated (direct) fraction",
+       "GGT markedly raised",
+       "ALT mildly raised",
+       "Clotting mildly prolonged, corrected with vitamin K",
+       "Thyroid function and alpha-1 antitrypsin normal"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Imaging",
+    "body": "An abdominal ultrasound after fasting was performed:",
+    "reports": [
+     {
+      "title": "Imaging Report",
+      "lines": [
+       "Small or absent gallbladder",
+       "A triangular area of echoes at the porta hepatis",
+       "No dilated bile ducts"
+      ]
+     }
+    ]
+   }
+  ],
+  "treatment": "Ava was transferred to a specialist liver centre, where the diagnosis was confirmed during an operation. Surgeons joined a loop of bowel directly to the underside of her liver so bile could drain. Within weeks her stools became yellow again and her jaundice faded.",
+  "discharge": "She was discharged on vitamin supplements, an antibiotic to prevent infection of the bile drainage, and close follow-up, with her parents told that she may need a liver transplant later.",
+  "answers": [
+   "Biliary atresia",
+   "Breast milk jaundice",
+   "Choledochal cyst",
+   "Neonatal hepatitis",
+   "Hypothyroidism"
+  ],
+  "final": "Biliary atresia"
+ },
+ {
+  "id": "MP-2443",
+  "title": "Sick All Day, Every Day",
+  "personal": "Natalie Brooks, 25, Female, 165 cm, 58 kg, pharmacy assistant. Admitted from the early pregnancy unit.",
+  "incident": "Natalie was ten weeks pregnant with her first baby. For three weeks she'd been vomiting many times a day, not just in the mornings, and could keep down barely anything, even water. She'd lost five kilograms, felt dizzy whenever she stood, and her urine had become scanty and dark. Even the smell of food made her heave.",
+  "background": "Natalie's sister had a similar problem in her pregnancies. She has no medical conditions and takes folic acid. She hasn't had any pain, bleeding or fever. No diarrhoea.",
+  "exam": [
+   {
+    "title": "General",
+    "body": "Pale, dry lips and tongue, pulse 112, blood pressure 102 over 64, temperature normal."
+   },
+   {
+    "title": "Abdominal",
+    "body": "Soft, non-tender, uterus not palpable above the pelvic bone."
+   },
+   {
+    "title": "Neck",
+    "body": "No goitre."
+   }
+  ],
+  "investigations": [
+   {
+    "title": "Bedside",
+    "body": "A urine dip was done:",
+    "reports": [
+     {
+      "title": "Bedside Report",
+      "lines": [
+       "Ketones 3+",
+       "No nitrites or leucocytes"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Laboratory",
+    "body": "Bloods were sent:",
+    "reports": [
+     {
+      "title": "Laboratory Report",
+      "lines": [
+       "Sodium 131, potassium 3.0",
+       "Urea raised",
+       "Free T4 mildly raised, TSH suppressed",
+       "Liver tests mildly raised",
+       "Pregnancy hormone level high"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Imaging",
+    "body": "An ultrasound scan was performed:",
+    "reports": [
+     {
+      "title": "Imaging Report",
+      "lines": [
+       "Two pregnancy sacs, each with a heartbeat, measuring 10 weeks",
+       "No signs of a molar pregnancy"
+      ]
+     }
+    ]
+   }
+  ],
+  "treatment": "Natalie was given intravenous fluids with potassium, the vitamin thiamine before any sugar-containing fluids, regular anti-sickness medicines and blood-clot prevention injections. Within two days she could drink and eat small amounts again, and her thyroid tests were expected to settle as the pregnancy progressed.",
+  "discharge": "She went home on anti-sickness tablets, with a plan to return early if she couldn't keep fluids down, and continued antenatal care for her twin pregnancy.",
+  "answers": [
+   "Hyperemesis gravidarum",
+   "Gastroenteritis",
+   "Molar pregnancy",
+   "Thyrotoxicosis",
+   "Urinary tract infection"
+  ],
+  "final": "Hyperemesis gravidarum"
+ },
+ {
+  "id": "MP-2444",
+  "title": "After the Placenta Came Out",
+  "personal": "Rebecca Hall, 34, Female, 163 cm, 70 kg, nurse. On the labour ward.",
+  "incident": "Rebecca had a long labour with her third baby, augmented with a hormone drip, before delivering a healthy 4.4 kg boy. The placenta came out ten minutes later and looked complete. But half an hour afterwards, the midwife noticed a steady trickle of blood soaking pad after pad, and then clots gushed out when Rebecca shifted. She felt faint and cold.",
+  "background": "Rebecca had two previous normal deliveries. Her blood count was normal at 36 weeks. She has no clotting problems and takes no blood thinners. Her pregnancy had extra fluid around the baby.",
+  "exam": [
+   {
+    "title": "General",
+    "body": "Pale and anxious, pulse 124, blood pressure 92 over 58, estimated blood loss so far 1,500 ml."
+   },
+   {
+    "title": "Abdominal",
+    "body": "The womb felt soft, boggy and large, up above the belly button, and firmed up with massage but soon softened again."
+   },
+   {
+    "title": "Vaginal",
+    "body": "No tears or bleeding from the birth canal; placenta checked complete."
+   }
+  ],
+  "investigations": [
+   {
+    "title": "Laboratory",
+    "body": "Urgent bloods were sent:",
+    "reports": [
+     {
+      "title": "Laboratory Report",
+      "lines": [
+       "Haemoglobin 82 g/L, down from 122",
+       "Platelets 180",
+       "Fibrinogen 2.6 g/L",
+       "Clotting times normal"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Clinical",
+    "body": "The obstetric team recorded:",
+    "reports": [
+     {
+      "title": "Clinical Assessment Report",
+      "lines": [
+       "Continuing heavy bleeding from the uterus after delivery",
+       "Uterus soft and poorly contracted, the most likely cause",
+       "No retained tissue or genital tract trauma seen"
+      ]
+     }
+    ]
+   }
+  ],
+  "treatment": "The team called for help, rubbed the womb and gave several drugs to make it contract, along with fluids, blood and a medicine that reduces clot breakdown. When the bleeding continued, a balloon was placed inside the womb to compress it. The bleeding stopped and she was cared for in high dependency overnight.",
+  "discharge": "Rebecca went home after four days on iron supplements, with advice that the same thing could happen in a future pregnancy so her care team would plan for it in advance.",
+  "answers": [
+   "Postpartum hemorrhage",
+   "Placental abruption",
+   "Uterine rupture",
+   "Retained placenta",
+   "Amniotic fluid embolism"
+  ],
+  "final": "Postpartum hemorrhage"
+ },
+ {
+  "id": "MP-2445",
+  "title": "Pain That Came With Every Period",
+  "personal": "Isabel Grant, 31, Female, 166 cm, 58 kg, architect. Seen in gynaecology clinic.",
+  "incident": "Since her teens, Isabel had painful periods, but over the last five years the pain had become severe, starting a couple of days before her period and lasting throughout, needing days off work. Sex had become painful deep inside, and opening her bowels during her period was agonising. She and her partner had been trying for a baby for two years without success.",
+  "background": "Isabel's periods are regular. She had normal smear tests. Her mother had the same problem. She has no other medical conditions. She tried various painkillers with only partial relief. No sexually transmitted infections.",
+  "exam": [
+   {
+    "title": "General",
+    "body": "Well, normal observations."
+   },
+   {
+    "title": "Abdominal",
+    "body": "Soft, mild lower abdominal tenderness."
+   },
+   {
+    "title": "Pelvic",
+    "body": "The womb was fixed and tilted backwards. Tender nodules were felt behind the womb. A tender swelling on the left side."
+   }
+  ],
+  "investigations": [
+   {
+    "title": "Imaging",
+    "body": "A transvaginal ultrasound was performed:",
+    "reports": [
+     {
+      "title": "Imaging Report",
+      "lines": [
+       "A 5 cm left ovarian cyst with uniform, low-level internal echoes, giving a \"ground-glass\" appearance",
+       "Reduced sliding between the womb and the bowel behind it"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Laparoscopy",
+    "body": "A keyhole operation was performed:",
+    "reports": [
+     {
+      "title": "Operation Report",
+      "lines": [
+       "Dark, powder-burn spots and scarring on the lining of the pelvis and ligaments behind the womb",
+       "Left ovarian cyst filled with thick chocolate-brown fluid",
+       "Tissue samples confirm cells resembling the womb lining outside the womb"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Laboratory",
+    "body": "Bloods were sent:",
+    "reports": [
+     {
+      "title": "Laboratory Report",
+      "lines": [
+       "CA-125 mildly raised"
+      ]
+     }
+    ]
+   }
+  ],
+  "treatment": "During the keyhole operation the cyst was removed and the abnormal spots treated. Afterwards, Isabel was referred to the fertility clinic and offered hormone treatment for pain once she had decided on her pregnancy plans.",
+  "discharge": "She was discharged to fertility and gynaecology follow-up, with pain management advice and information about support groups.",
+  "answers": [
+   "Endometriosis",
+   "Pelvic inflammatory disease",
+   "Ovarian torsion",
+   "Irritable bowel syndrome",
+   "Adenomyosis"
+  ],
+  "final": "Endometriosis"
+ },
+ {
+  "id": "MP-2446",
+  "title": "The Curtain That Did Not Lift",
+  "personal": "George Palmer, 72, Male, 175 cm, 82 kg, retired bus driver. Walked into the eye emergency clinic.",
+  "incident": "Two hours ago, while reading the paper, George suddenly lost almost all the vision in his right eye, as if a light had been switched off. There was no pain. He'd had a couple of short episodes over the past month when a curtain had come down over that eye for a few minutes and then lifted, but this time it hadn't come back.",
+  "background": "George has high blood pressure, high cholesterol and type 2 diabetes. He smokes 15 a day. He had a heart attack five years ago. He takes several tablets. He has not had headaches, jaw pain or scalp tenderness.",
+  "exam": [
+   {
+    "title": "General",
+    "body": "Well, pulse irregular at 88, blood pressure 168 over 94."
+   },
+   {
+    "title": "Eyes",
+    "body": "Right eye can only count fingers. Abnormal pupil response: right pupil dilates when the light swings to it. The back of the eye shows a pale, milky retina with a cherry-red spot at the centre and narrowed, segmented arteries. Left eye normal."
+   },
+   {
+    "title": "Neck",
+    "body": "A bruit heard over the right carotid artery."
+   }
+  ],
+  "investigations": [
+   {
+    "title": "Laboratory",
+    "body": "Bloods were sent:",
+    "reports": [
+     {
+      "title": "Laboratory Report",
+      "lines": [
+       "ESR 18, CRP normal",
+       "Glucose raised, cholesterol raised"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Imaging",
+    "body": "Further tests were arranged:",
+    "reports": [
+     {
+      "title": "Imaging Report",
+      "lines": [
+       "Carotid ultrasound: 80% narrowing of the right internal carotid artery",
+       "ECG: atrial fibrillation"
+      ]
+     }
+    ]
+   }
+  ],
+  "treatment": "Because his vision loss was from a blockage, George was treated urgently on the stroke pathway. He was started on blood-thinning treatment and cholesterol medicine, and referred to the vascular surgeons, who removed the plaque from his neck artery two weeks later.",
+  "discharge": "His vision in that eye improved only slightly. He continued anticoagulation for his heart rhythm, quit smoking with support, and has eye and stroke clinic follow-up.",
+  "answers": [
+   "Central retinal artery occlusion",
+   "Central retinal vein occlusion",
+   "Retinal detachment",
+   "Giant cell arteritis",
+   "Vitreous hemorrhage"
+  ],
+  "final": "Central retinal artery occlusion"
+ },
+ {
+  "id": "MP-2447",
+  "title": "The Hot Potato Voice",
+  "personal": "Ellie Watson, 20, Female, 168 cm, 60 kg, university student. Seen in the emergency department.",
+  "incident": "Ellie had a bad sore throat for a week, which seemed to be getting better, but over the last two days it had become much worse, mainly on the left side. She could barely open her mouth, swallowing even her own saliva was agonising so she was spitting into a cup, and her voice sounded muffled, as if she had a hot potato in her mouth. The pain went up into her left ear.",
+  "background": "Ellie has had several bouts of tonsillitis. She smokes socially. She takes the contraceptive pill. She has no allergies.",
+  "exam": [
+   {
+    "title": "General",
+    "body": "Unwell, drooling, temperature 38.9°C, pulse 108, oxygen normal. No noisy breathing."
+   },
+   {
+    "title": "Throat",
+    "body": "Opening her mouth limited to two finger-breadths. A tense swelling above and to the side of the left tonsil, pushing the uvula across to the right. Tonsils red."
+   },
+   {
+    "title": "Neck",
+    "body": "Tender, enlarged lymph nodes on the left side of the neck."
+   }
+  ],
+  "investigations": [
+   {
+    "title": "Laboratory",
+    "body": "Bloods were sent:",
+    "reports": [
+     {
+      "title": "Laboratory Report",
+      "lines": [
+       "White cell count 18",
+       "CRP 140",
+       "Glandular fever screen negative"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Procedure",
+    "body": "After numbing spray, a needle was inserted into the swelling:",
+    "reports": [
+     {
+      "title": "Procedure Report",
+      "lines": [
+       "10 ml of pus drawn off",
+       "Sent for culture"
+      ]
+     }
+    ]
+   }
+  ],
+  "treatment": "Ellie had the pus drained, which instantly made her more comfortable, and was given intravenous antibiotics, a dose of steroid, pain relief and fluids. By the next morning she could swallow and was switched to antibiotic tablets.",
+  "discharge": "She was discharged with a course of antibiotics and advised that if this happened again, the ENT team would consider removing her tonsils.",
+  "answers": [
+   "Peritonsillar abscess",
+   "Bacterial tonsillitis",
+   "Infectious mononucleosis",
+   "Acute epiglottitis",
+   "Ludwig's angina"
+  ],
+  "final": "Peritonsillar abscess"
+ },
+ {
+  "id": "MP-2448",
+  "title": "Diarrhoea, Then Barely Any Urine",
+  "personal": "Mia Robinson, 5, Female, 108 cm, 18 kg, primary school pupil. Admitted from the emergency department.",
+  "incident": "A week after a family visit to a petting farm, Mia had bloody diarrhoea and crampy tummy pain. It seemed to be getting better, but over the last two days she had become very pale, sleepy and puffy around the eyes, and her mum noticed she had barely passed any urine. A few small bruises appeared on her legs.",
+  "background": "Mia is usually healthy and fully immunised. Her cousin had a 'bad tummy bug' after the same farm visit. She took no antibiotics or new medicines. No family history of kidney disease.",
+  "exam": [
+   {
+    "title": "General",
+    "body": "Pale and lethargic, temperature 37.2°C, pulse 128, blood pressure 124 over 80 (high for age), mild swelling of the face and ankles."
+   },
+   {
+    "title": "Skin",
+    "body": "A few small bruises on her legs and tiny red spots."
+   },
+   {
+    "title": "Abdominal",
+    "body": "Mildly tender, no guarding."
+   }
+  ],
+  "investigations": [
+   {
+    "title": "Laboratory",
+    "body": "Bloods and stool were sent:",
+    "reports": [
+     {
+      "title": "Laboratory Report",
+      "lines": [
+       "Haemoglobin 72 g/L",
+       "Blood film: fragmented red cells",
+       "Platelets 38",
+       "Creatinine high for age",
+       "LDH raised, haptoglobin low, Coombs test negative",
+       "Stool: toxin-producing E. coli identified"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Urine",
+    "body": "A urine sample was tested:",
+    "reports": [
+     {
+      "title": "Laboratory Report",
+      "lines": [
+       "Protein and blood present"
+      ]
+     }
+    ]
+   }
+  ],
+  "treatment": "Mia was transferred to the children's kidney unit. She was given careful fluid management, a blood transfusion, and, when her kidneys stopped producing urine, dialysis for ten days. Antibiotics were not given. Her kidneys gradually recovered.",
+  "discharge": "She was discharged with yearly kidney checks to look for long-term problems with her blood pressure or kidney function, and public health followed up the farm.",
+  "answers": [
+   "Hemolytic uremic syndrome",
+   "Henoch-Schönlein purpura",
+   "Post-streptococcal glomerulonephritis",
+   "Thrombotic thrombocytopenic purpura",
+   "Acute leukemia"
+  ],
+  "final": "Hemolytic uremic syndrome"
+ },
+ {
+  "id": "MP-2449",
+  "title": "Spots That Would Not Fade",
+  "personal": "Ethan Clarke, 7, Male, 122 cm, 23 kg, primary school pupil. Seen in the paediatric assessment unit.",
+  "incident": "Ethan had a sore throat and runny nose two weeks ago. Five days ago a rash appeared on his legs and buttocks: raised red and purple spots that didn't fade when his mum pressed a glass against them. His knees and ankles became swollen and sore, and he limped. For two days he'd had crampy tummy pain that came and went.",
+  "background": "Ethan is fully immunised and usually well. No bruising elsewhere, no nosebleeds, no bleeding gums. No family history of bleeding disorders. He hasn't started any new medicines.",
+  "exam": [
+   {
+    "title": "General",
+    "body": "Well, alert, temperature 37.3°C, blood pressure normal for age."
+   },
+   {
+    "title": "Skin",
+    "body": "Raised, purple spots and blotches concentrated on the buttocks and the backs of his legs, not blanching. None on the trunk or face."
+   },
+   {
+    "title": "Musculoskeletal",
+    "body": "Swollen, tender ankles and knees with reduced movement."
+   },
+   {
+    "title": "Abdominal",
+    "body": "Mild tenderness around the belly button, no masses."
+   }
+  ],
+  "investigations": [
+   {
+    "title": "Laboratory",
+    "body": "Bloods and urine were checked:",
+    "reports": [
+     {
+      "title": "Laboratory Report",
+      "lines": [
+       "Platelet count normal",
+       "Clotting normal",
+       "Kidney function normal",
+       "Urine: small amount of blood, no significant protein"
+      ]
+     }
+    ]
+   },
+   {
+    "title": "Imaging",
+    "body": "Because of his tummy pain, an ultrasound was done:",
+    "reports": [
+     {
+      "title": "Imaging Report",
+      "lines": [
+       "Mildly thickened small bowel wall, no telescoping of bowel"
+      ]
+     }
+    ]
+   }
+  ],
+  "treatment": "Ethan was given simple pain relief and rest. His tummy pain and joint swelling settled within a week, and the rash faded over three weeks.",
+  "discharge": "His parents were taught to check his urine and blood pressure at the GP over the next six months, as the kidneys can be affected, and told to seek help if he developed severe tummy pain.",
+  "answers": [
+   "Henoch-Schönlein purpura",
+   "Immune thrombocytopenic purpura",
+   "Acute leukemia",
+   "Meningococcal septicemia",
+   "Hemolytic uremic syndrome"
+  ],
+  "final": "Henoch-Schönlein purpura"
  }
 ]

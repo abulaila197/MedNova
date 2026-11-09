@@ -4437,5 +4437,367 @@
 "aliases": [
 "XGP"
 ]
+},
+{
+"id": "achilles-tendinopathy",
+"label": "Achilles tendinopathy",
+"aliases": []
+},
+{
+"id": "acute-mesenteric-ischemia",
+"label": "Acute mesenteric ischemia",
+"aliases": [
+"Mesenteric ischemia"
+]
+},
+{
+"id": "adenomyosis",
+"label": "Adenomyosis",
+"aliases": []
+},
+{
+"id": "ankle-fracture",
+"label": "Ankle fracture",
+"aliases": []
+},
+{
+"id": "ankylosing-spondylitis",
+"label": "Ankylosing spondylitis",
+"aliases": [],
+"dossier": "ankylosing-spondylitis"
+},
+{
+"id": "biliary-atresia",
+"label": "Biliary atresia",
+"aliases": []
+},
+{
+"id": "brain-tumor",
+"label": "Brain tumor",
+"aliases": []
+},
+{
+"id": "breast-milk-jaundice",
+"label": "Breast milk jaundice",
+"aliases": []
+},
+{
+"id": "breath-holding-spell",
+"label": "Breath-holding spell",
+"aliases": []
+},
+{
+"id": "carcinoid-syndrome",
+"label": "Carcinoid syndrome",
+"aliases": []
+},
+{
+"id": "celiac-disease",
+"label": "Celiac disease",
+"aliases": [
+"Coeliac disease"
+],
+"dossier": "celiac-disease"
+},
+{
+"id": "cerebral-venous-sinus-thrombosis",
+"label": "Cerebral venous sinus thrombosis",
+"aliases": [
+"CVST"
+],
+"dossier": "cerebral-venous-sinus-thrombosis"
+},
+{
+"id": "chikungunya",
+"label": "Chikungunya",
+"aliases": []
+},
+{
+"id": "choledochal-cyst",
+"label": "Choledochal cyst",
+"aliases": []
+},
+{
+"id": "colonic-pseudo-obstruction",
+"label": "Colonic pseudo-obstruction",
+"aliases": [
+"Ogilvie syndrome"
+],
+"dossier": "acute-colonic-pseudo-obstruction-ogilvie-syndrome"
+},
+{
+"id": "cushings-syndrome",
+"label": "Cushing's syndrome",
+"aliases": [
+"Cushing syndrome",
+"Cushing disease"
+],
+"dossier": "cushing-syndrome"
+},
+{
+"id": "cyanide-poisoning",
+"label": "Cyanide poisoning",
+"aliases": []
+},
+{
+"id": "dermatomyositis",
+"label": "Dermatomyositis",
+"aliases": [],
+"dossier": "dermatomyositis"
+},
+{
+"id": "endometriosis",
+"label": "Endometriosis",
+"aliases": [],
+"dossier": "endometriosis"
+},
+{
+"id": "erythema-multiforme",
+"label": "Erythema multiforme",
+"aliases": []
+},
+{
+"id": "esophageal-variceal-bleeding",
+"label": "Esophageal variceal bleeding",
+"aliases": [
+"Variceal bleeding"
+],
+"dossier": "esophageal-variceal-bleeding"
+},
+{
+"id": "fecal-impaction",
+"label": "Fecal impaction",
+"aliases": []
+},
+{
+"id": "gastric-cancer",
+"label": "Gastric cancer",
+"aliases": [
+"Stomach cancer"
+]
+},
+{
+"id": "giant-cell-arteritis",
+"label": "Giant cell arteritis",
+"aliases": [
+"Temporal arteritis",
+"GCA"
+],
+"dossier": "temporal-arteritis-giant-cell-arteritis"
+},
+{
+"id": "giardiasis",
+"label": "Giardiasis",
+"aliases": [],
+"dossier": "giardiasis"
+},
+{
+"id": "hepatocellular-carcinoma",
+"label": "Hepatocellular carcinoma",
+"aliases": [
+"HCC"
+],
+"dossier": "hepatocellular-carcinoma"
+},
+{
+"id": "hirschsprung-disease",
+"label": "Hirschsprung disease",
+"aliases": [],
+"dossier": "hirschsprung-disease"
+},
+{
+"id": "hyperemesis-gravidarum",
+"label": "Hyperemesis gravidarum",
+"aliases": []
+},
+{
+"id": "hyponatremia",
+"label": "Hyponatremia",
+"aliases": []
+},
+{
+"id": "infectious-colitis",
+"label": "Infectious colitis",
+"aliases": []
+},
+{
+"id": "intussusception",
+"label": "Intussusception",
+"aliases": [],
+"dossier": "intussusception"
+},
+{
+"id": "lambert-eaton-myasthenic-syndrome",
+"label": "Lambert-Eaton myasthenic syndrome",
+"aliases": [
+"LEMS"
+],
+"dossier": "lambert-eaton-myasthenic-syndrome"
+},
+{
+"id": "long-qt-syndrome",
+"label": "Long QT syndrome",
+"aliases": []
+},
+{
+"id": "lung-cancer",
+"label": "Lung cancer",
+"aliases": [],
+"dossier": "lung-cancer"
+},
+{
+"id": "lymphoma",
+"label": "Lymphoma",
+"aliases": []
+},
+{
+"id": "malrotation-with-volvulus",
+"label": "Malrotation with volvulus",
+"aliases": [
+"Midgut volvulus"
+]
+},
+{
+"id": "meconium-ileus",
+"label": "Meconium ileus",
+"aliases": []
+},
+{
+"id": "metabolic-syndrome",
+"label": "Metabolic syndrome",
+"aliases": []
+},
+{
+"id": "molar-pregnancy",
+"label": "Molar pregnancy",
+"aliases": [
+"Hydatidiform mole"
+],
+"dossier": "gestational-trophoblastic-disease-molar-pregnancy-hydatidiform-mole"
+},
+{
+"id": "myocarditis",
+"label": "Myocarditis",
+"aliases": [],
+"dossier": "myocarditis"
+},
+{
+"id": "neonatal-hepatitis",
+"label": "Neonatal hepatitis",
+"aliases": []
+},
+{
+"id": "optic-neuritis",
+"label": "Optic neuritis",
+"aliases": [],
+"dossier": "optic-neuritis"
+},
+{
+"id": "osgood-schlatter-disease",
+"label": "Osgood-Schlatter disease",
+"aliases": [],
+"dossier": "osgood-schlatter-disease"
+},
+{
+"id": "paracetamol-overdose",
+"label": "Paracetamol overdose",
+"aliases": [
+"Acetaminophen overdose"
+],
+"dossier": "acetaminophen-toxicity"
+},
+{
+"id": "paralytic-ileus",
+"label": "Paralytic ileus",
+"aliases": []
+},
+{
+"id": "perthes-disease",
+"label": "Perthes disease",
+"aliases": [
+"Legg-Calvé-Perthes disease"
+]
+},
+{
+"id": "pheochromocytoma",
+"label": "Pheochromocytoma",
+"aliases": [],
+"dossier": "pheochromocytoma"
+},
+{
+"id": "polymyalgia-rheumatica",
+"label": "Polymyalgia rheumatica",
+"aliases": [
+"PMR"
+],
+"dossier": "polymyalgia-rheumatica"
+},
+{
+"id": "polymyositis",
+"label": "Polymyositis",
+"aliases": []
+},
+{
+"id": "postpartum-hemorrhage",
+"label": "Postpartum hemorrhage",
+"aliases": [
+"PPH"
+]
+},
+{
+"id": "primary-hyperaldosteronism",
+"label": "Primary hyperaldosteronism",
+"aliases": [
+"Conn's syndrome"
+]
+},
+{
+"id": "retained-placenta",
+"label": "Retained placenta",
+"aliases": []
+},
+{
+"id": "reversible-cerebral-vasoconstriction-syndrome",
+"label": "Reversible cerebral vasoconstriction syndrome",
+"aliases": [
+"RCVS"
+]
+},
+{
+"id": "rhabdomyolysis",
+"label": "Rhabdomyolysis",
+"aliases": []
+},
+{
+"id": "salicylate-poisoning",
+"label": "Salicylate poisoning",
+"aliases": [
+"Aspirin overdose"
+],
+"dossier": "salicylate-toxicity"
+},
+{
+"id": "sarcoidosis",
+"label": "Sarcoidosis",
+"aliases": [],
+"dossier": "sarcoidosis"
+},
+{
+"id": "sigmoid-volvulus",
+"label": "Sigmoid volvulus",
+"aliases": []
+},
+{
+"id": "slipped-capital-femoral-epiphysis",
+"label": "Slipped capital femoral epiphysis",
+"aliases": [
+"SCFE"
+],
+"dossier": "slipped-capital-femoral-epiphysis"
+},
+{
+"id": "spinal-epidural-abscess",
+"label": "Spinal epidural abscess",
+"aliases": []
 }
 ]

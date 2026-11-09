@@ -3,7 +3,7 @@ import type { CaseDef } from './core';
 import casesJson from './data/cases.json';
 import diagnosesJson from './data/diagnoses.json';
 
-/** The 100 cases, cleaned at import (IM1, CF2) with plain diagnosis names (build/case-files/build.py). */
+/** The cases (100, plus 50 added 2026-11-09), cleaned at import (IM1, CF2) with plain diagnosis names (build/case-files/build.py). */
 export const CASES = casesJson as CaseDef[];
 export const caseById = new Map(CASES.map((c) => [c.id, c]));
 /** What players see instead of the old database id: the case's place in order, three figures (Yazan, 2026-10-05). */
