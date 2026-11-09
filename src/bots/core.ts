@@ -7,19 +7,19 @@ import type { Bot, BotLevel, BotType } from './types';
 /** Every character a bot may wear: all of them except Admin (Yazan 2026-11-09). */
 const WEARABLE = [...CHARACTERS, ...MECH_CHARACTERS, ...SHOP_CHARACTERS].filter((c) => c.slug !== 'admin').map((c) => c.slug);
 
-/** More stars = more nerdy (Yazan 2026-11-09): which star counts each type wears. */
-const STARS_FOR: Record<BotType, number[]> = { dumb: [1, 2, 3], worker: [3, 4], nerd: [5, 6] };
+/** More stars = more smart (Yazan 2026-11-09): which star counts each type wears. */
+const STARS_FOR: Record<BotType, number[]> = { freshman: [1, 2, 3], scholar: [3, 4], genius: [5, 6] };
 const facesFor = (t: BotType) => WEARABLE.filter((slug) => STARS_FOR[t].includes(starsOf(slug)));
 
 /** The mix of types each level deals (Yazan 2026-11-09: the level sets the mix, always with some variety). */
 const MIX: Record<BotLevel, Record<BotType, number>> = {
-  easy: { dumb: 0.6, worker: 0.3, nerd: 0.1 },
-  medium: { dumb: 0.25, worker: 0.5, nerd: 0.25 },
-  hard: { dumb: 0.1, worker: 0.3, nerd: 0.6 },
+  easy: { freshman: 0.6, scholar: 0.3, genius: 0.1 },
+  medium: { freshman: 0.25, scholar: 0.5, genius: 0.25 },
+  hard: { freshman: 0.1, scholar: 0.3, genius: 0.6 },
 };
 
 /** The player levels shown on each type's badge, so the badge also hints how strong a bot is. */
-const LEVELS: Record<BotType, [number, number]> = { dumb: [1, 9], worker: [8, 22], nerd: [20, 45] };
+const LEVELS: Record<BotType, [number, number]> = { freshman: [1, 9], scholar: [8, 22], genius: [20, 45] };
 
 const pick = <T,>(xs: T[]) => xs[Math.floor(Math.random() * xs.length)];
 const between = ([a, b]: [number, number]) => a + Math.floor(Math.random() * (b - a + 1));
@@ -27,10 +27,10 @@ const between = ([a, b]: [number, number]) => a + Math.floor(Math.random() * (b 
 function typeFor(level: BotLevel): BotType {
   const m = MIX[level];
   let r = Math.random();
-  for (const t of ['dumb', 'worker', 'nerd'] as BotType[]) {
+  for (const t of ['freshman', 'scholar', 'genius'] as BotType[]) {
     if ((r -= m[t]) <= 0) return t;
   }
-  return 'worker';
+  return 'scholar';
 }
 
 /** A new bot of a type, whose name is not one of `taken` (names never repeat at one table). */

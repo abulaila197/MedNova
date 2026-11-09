@@ -32,9 +32,9 @@ type Phase = 'away' | 'in' | 'ready' | 'leaving';
 type Sheet_ = 'how' | 'talk' | { bot: Bot } | null;
 
 const BLURB: Record<BotType, string> = {
-  dumb: 'Means well, guesses a lot. Slow, clumsy and fun to beat.',
-  worker: 'Steady and careful. Rarely brilliant, rarely lost.',
-  nerd: 'Fast and sharp, and likes you to know it. Beatable, just.',
+  freshman: 'Means well, guesses a lot. Slow, clumsy and fun to beat.',
+  scholar: 'Steady and careful. Rarely brilliant, rarely lost.',
+  genius: 'Fast and sharp, and likes you to know it. Beatable, just.',
 };
 
 /** The Vs bots room (Yazan 2026-11-09): the old lobby kept for bots. They join one by one, get ready and talk. */
