@@ -90,7 +90,8 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
     rules: RULES,
     pick: async () => (await engine.picker.pick(play.game, poolFor(play.settings.difficulty as Difficulty), Number(play.settings.cases) || 5)).map(Number),
     toItems: itemsOf,
-    factOf: (item) => caseById.get(String(item))?.canonical_id ?? caseById.get(String(item))?.disease ?? null,
+    // The short name only, so the bubble stays small.
+    guessName: (id) => guessById.get(id)?.label ?? guessName(id),
   });
   const [wrongSeq, setWrongSeq] = useState(0);
   const [notice, setNotice] = useState<string | null>(null);
@@ -160,7 +161,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
       notice={notice ?? (lockLeft > 0 ? `Wrong. Locked for ${Math.ceil(lockLeft / 1000)} s.` : null)}
       pausedNote="The match is paused, rivals too. Resume to see the case again."
       worth={{ label: 'Your points', value: String(me?.score ?? 0) }}
-      live={<RivalStrip st={st} race={race} t={t} wrongName={guessName} />}
+      live={<RivalStrip st={st} race={race} />}
       onPause={g.openMenu}
       onGuess={(guess) => {
         if (lockLeft > 0) return;

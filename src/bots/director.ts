@@ -1,11 +1,11 @@
 import { useEffect, useRef } from 'react';
 
 import { stickerById, STICKERS } from '@/match/stickers';
-import { isMuted, onTalk, sayAsBot } from '@/match/talk';
+import { isMuted, onTalk, popAsBot, sayAsBot } from '@/match/talk';
 
 import { CHATTY, personaOf } from './identity';
 import { heardKind, linesFor, type Heard, type Line, type Moment, type Place } from './lines';
-import type { Bot } from './types';
+import type { Bot, Persona } from './types';
 
 /**
  * Who says what, and when (G3, Yazan 2026-11-09). Games and the room tell the director what happened; it decides
@@ -78,17 +78,37 @@ export function rivalMoment(room: string, bot: Bot, m: Moment, ctx: Ctx = {}): b
 }
 
 /**
- * The Genius shares one short fact after a round, at most every 2 rounds per room (a Shy Genius less often).
- * The game passes the fact text (see facts.ts).
+ * After a round the Genius may point you to the dossier and Learn instead of lecturing (Yazan 2026-11-09: no fact
+ * text, a short line in its own manner). At most every 2 rounds per room; a Shy Genius less often.
  */
-export function rivalFact(room: string, bot: Bot, text: string | null, round: number): boolean {
-  if (!text || bot.type !== 'genius' || isMuted(room, bot.id)) return false;
+const STUDY: Record<Persona, string[]> = {
+  showoff: ['Easy one. It\'s all in the dossier.', 'I read that dossier twice. Your turn.', 'Check the dossier, then come back.'],
+  shy: ['The dossier helped me with that one.', 'Maybe look at the dossier later?', 'I learned it in Learn, honestly.'],
+  joker: ['Dossier. Read it. Thank me later.', 'Spoiler: the dossier knew all along.', 'Homework: one dossier, no excuses.'],
+  sore: ['Go read the dossier before the next one.', 'That\'s in the dossier. Study it.', 'Learn it properly next time.'],
+  cheer: ['Open that dossier, you\'ve got this!', 'Add it to your Learn review!', 'One dossier read and it\'s yours!'],
+  cool: ['It\'s in the dossier.', 'Dossier covers that one.', 'Worth a look in Learn.'],
+  hot: ['READ the dossier!', 'Dossier. Now. Go!', 'Study it in Learn. Seriously.'],
+  sleepy: ['The dossier… explains it better than me.', 'Read the dossier… then nap.', 'Learn has it… go study.'],
+};
+export function rivalStudy(room: string, bot: Bot, round: number): boolean {
+  if (bot.type !== 'genius' || isMuted(room, bot.id)) return false;
   const lastRound = factRound.get(room);
   if (lastRound != null && round - lastRound < 2) return false;
   if (Math.random() >= (persona(bot) === 'shy' ? 0.3 : 0.6)) return false;
-  const ok = sayAsBot(room, { user_id: bot.id, name: bot.name, face: bot.character, kind: 'fact', item: text }, 8000);
-  if (ok) factRound.set(room, round);
+  const pool = STUDY[persona(bot)].filter((x) => `t:${x}` !== last.get(bot.id));
+  const text = pool[Math.floor(Math.random() * pool.length)];
+  const ok = sayAsBot(room, { user_id: bot.id, name: bot.name, face: bot.character, kind: 'line', item: text }, 6000);
+  if (ok) {
+    factRound.set(room, round);
+    last.set(bot.id, `t:${text}`);
+  }
   return ok;
+}
+
+/** A rival's wrong guess (Diagnostic Pursuit), as a chat bubble that comes and goes; it can show beside other chat. */
+export function rivalGuess(room: string, bot: Bot, text: string) {
+  return popAsBot(room, { user_id: bot.id, name: bot.name, face: bot.character, kind: 'guess', item: text });
 }
 
 /** Forget a room's talk memory when it closes. */
@@ -120,7 +140,7 @@ export function useRivalEars(room: string | undefined, bots: Bot[]) {
       const label = msg.kind === 'sticker' ? (stickerById.get(msg.item)?.label ?? '') : '';
       const heard = heardKind(msg.kind, msg.item, label);
       quietUntil = now + 3500;
-      timers.push(setTimeout(() => rivalMoment(room, who, 'heard', { heard }), 900 + Math.random() * 1600));
+      timers.push(setTimeout(() => rivalMoment(room, who, 'heard', { heard }), 2000 + Math.random() * 1000));
     });
     return () => {
       off();

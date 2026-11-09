@@ -10,8 +10,11 @@ import { voiceById } from './voice';
  * Stickers and voice lines in a Vs bots room and match (ON12, ON28; bots 2026-11-09). Everything stays on the phone:
  * yours shows and plays at once, and the bots' lines wait their turn (sayAsBot), never two at the same time.
  */
-/** A Genius's short medical fact is the one text a rival sends (kind 'fact', item = the text). */
-export type TalkMsg = { id: number; user_id: string; name: string; face: string; kind: 'sticker' | 'voice' | 'fact'; item: string; at: number };
+/**
+ * Rivals also send two kinds of short text (item = the text): 'line', a few words (a Genius pointing you to the dossier),
+ * and 'guess', a wrong diagnosis in Diagnostic Pursuit, shown crossed out (Yazan 2026-11-09).
+ */
+export type TalkMsg = { id: number; user_id: string; name: string; face: string; kind: 'sticker' | 'voice' | 'line' | 'guess'; item: string; at: number };
 
 type State = {
   /** Messages popping right now (they fade after 3 s). */
@@ -25,8 +28,8 @@ export const useTalk = create<State>(() => ({ pops: [], muted: {}, nextAt: 0 }))
 
 export const COOLDOWN_MS = 3000;
 const POP_MS = 3000;
-/** A fact stays long enough to read. */
-const FACT_MS = 6000;
+/** A text line stays a little longer, to read it. */
+const LINE_MS = 4000;
 /** Yazan 2026-11-09: two bots never talk at once; the next waits until this long after the one before. */
 const BOT_GAP_MS = 2200;
 
@@ -77,7 +80,7 @@ function releaseVoices() {
 let nextId = 1;
 const pop = (m: TalkMsg) => {
   useTalk.setState((s) => ({ pops: [...s.pops.filter((x) => x.user_id !== m.user_id), m] }));
-  setTimeout(() => useTalk.setState((s) => ({ pops: s.pops.filter((x) => x.id !== m.id) })), m.kind === 'fact' ? FACT_MS : POP_MS);
+  setTimeout(() => useTalk.setState((s) => ({ pops: s.pops.filter((x) => x.id !== m.id) })), m.kind === 'line' ? LINE_MS : POP_MS);
 };
 
 /** Who hears what the player sends: the bots of the room (they react, group 3). */
@@ -122,7 +125,7 @@ function drain() {
     const m = { ...next.m, id: nextId++, at: Date.now() };
     pop(m);
     if (m.kind === 'voice') playVoice(m.item);
-    busyUntil = Date.now() + (m.kind === 'fact' ? FACT_MS : BOT_GAP_MS);
+    busyUntil = Date.now() + (m.kind === 'line' ? LINE_MS : BOT_GAP_MS);
   }
   if (queue.length) timer = setTimeout(drain, Math.max(0, busyUntil - Date.now()));
 }
@@ -133,6 +136,16 @@ export function sayAsBot(room: string, m: Omit<TalkMsg, 'id' | 'at'>, fresh = 80
   if (queue.some((q) => q.room === room && q.m.user_id === m.user_id)) return false;
   queue.push({ room, m, until: Date.now() + fresh });
   if (!timer) drain();
+  return true;
+}
+
+/**
+ * A rival's wrong guess pops at once, outside the queue: it can show beside another rival's chat (Yazan 2026-11-09),
+ * then goes like any message.
+ */
+export function popAsBot(room: string, m: Omit<TalkMsg, 'id' | 'at'>) {
+  if ((open.get(room) ?? 0) <= 0 || isMuted(room, m.user_id)) return false;
+  pop({ ...m, id: nextId++, at: Date.now() });
   return true;
 }
 

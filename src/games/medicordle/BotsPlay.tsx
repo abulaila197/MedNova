@@ -78,7 +78,6 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
     rules,
     pick: async () => (await engine.picker.pick(play.game, poolFor(style).map((w) => w.id), Number(play.settings.words) || 5)).map((id) => indexOf.get(id)!).filter(Boolean),
     toItems: itemsOf,
-    factOf: (item) => wordOf(item)?.dossier ?? null,
   });
   const { st, race, t } = g;
   const menu = <PauseMenu open={g.menu} mode="bots" onResume={g.closeMenu} onQuit={g.quit} />;

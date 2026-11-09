@@ -105,7 +105,6 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
       return ids.map((id) => indexOf.get(id)!).filter(Boolean);
     },
     toItems: itemsOf,
-    factOf: (item) => questionOf(item)?.dossier ?? null,
   });
   const { st, race, t, push } = g;
 

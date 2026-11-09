@@ -81,7 +81,6 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
     rules: RULES,
     pick: async () => (await engine.picker.pick(play.game, RIDDLES.map((x) => x.id), Number(play.settings.photos) || 5)).map((id) => indexOf.get(id)!).filter(Boolean),
     toItems: itemsOf,
-    factOf: (item) => riddleOf(item)?.dossier ?? null,
     solvedText: (name, _rank, ms) => `${name} solved it in ${clock(ms)}`,
   });
   const [wrongSeq, setWrongSeq] = useState(0);
@@ -140,7 +139,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
       wrong={st.me?.wrong ?? []}
       wrongSeq={wrongSeq}
       hidden={g.paused}
-      live={<RivalStrip st={st} race={race} t={t} />}
+      live={<RivalStrip st={st} race={race} />}
       onGuess={(id) => {
         if (lockLeft > 0 || g.paused) return;
         if (id === r.id) g.solve();

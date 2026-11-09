@@ -32,15 +32,16 @@ export function AfterMatch({ play }: { play: Play }) {
     const n = play.standings.length;
     const rank = new Map(play.standings.map((x) => [x.seat, x.rank]));
     const rivals = play.seats.filter((x) => x.bot && !x.removed).sort((x, y) => (rank.get(x.seat) ?? n) - (rank.get(y.seat) ?? n));
-    const ids = setTimeout(() => {
-      said.current = true;
-      for (const x of rivals) {
+    // Each rival reacts in its own time, 2 to 4 s after the results open (never all on the same instant).
+    const ids = rivals.map((x) =>
+      setTimeout(() => {
+        said.current = true;
         const r = rank.get(x.seat) ?? n;
         const place: Place = r === 1 ? 'lead' : r >= n ? 'last' : 'mid';
         rivalMoment(room, x.bot!, 'end', { place, tableSize: n });
-      }
-    }, 1200);
-    return () => clearTimeout(ids);
+      }, 2000 + Math.random() * 2000),
+    );
+    return () => ids.forEach(clearTimeout);
   }, [loaded, play]);
 
   if (!a.want.length && !a.leave.length) return null;

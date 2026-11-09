@@ -185,7 +185,7 @@ export function linesFor(persona: Persona, type: BotType, m: Moment, ctx: { plac
 }
 
 /** What kind of thing you sent, so a rival can answer in kind. */
-export function heardKind(kind: 'sticker' | 'voice' | 'fact', item: string, label = ''): Heard {
+export function heardKind(kind: 'sticker' | 'voice' | 'line' | 'guess', item: string, label = ''): Heard {
   if (kind === 'voice') {
     if (['good-luck', 'nice-one', 'well-played', 'gg', 'thank-you', 'ready'].includes(item)) return 'nice';
     if (['too-slow', 'all-youve-got', 'catch-me', 'too-easy', 'keep-up', 'better-luck', 'hurry-up'].includes(item)) return 'taunt';

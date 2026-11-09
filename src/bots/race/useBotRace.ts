@@ -14,8 +14,7 @@ import { useSession } from '@/games/shell/session';
 import { useBack } from '@/lib/useBack';
 
 import { moodOf, type Mood } from '../brain';
-import { resetRoomTalk, rivalFact, rivalMoment, useRivalEars } from '../director';
-import { factFor } from '../facts';
+import { resetRoomTalk, rivalGuess, rivalMoment, rivalStudy, useRivalEars } from '../director';
 import type { Place } from '../lines';
 import { meet } from '../memory';
 import type { Bot } from '../types';
@@ -29,8 +28,8 @@ export type BotRaceOpts = Pick<PlayProps, 'play' | 'onFinish' | 'onQuit'> & {
   pick: () => Promise<number[]>;
   /** Your items for the play, saved when the match ends (your misses feed Learn where the game does). */
   toItems: (st: RaceState, race: BotRace) => Item[];
-  /** The disease behind an item, for a Genius fact after it (a dossier id or a name), or null for none. */
-  factOf?: (item: number) => string | null;
+  /** Diagnostic Pursuit: a rival's wrong guess in words; it pops as a chat bubble when the rival makes it. */
+  guessName?: (id: string) => string;
   /** The alert when a rival solves (default "Sara solved it, 2nd"); `ms` is its time on the question. */
   solvedText?: (name: string, rank: number, ms: number) => string;
   /** Answers stay secret until the reveal (Streak Master): no solve alerts or right/wrong talk while a question runs. */
@@ -47,7 +46,7 @@ const any = <T,>(xs: T[]) => xs[Math.floor(Math.random() * xs.length)];
  * app is away (Yazan 2026-11-09: pause freezes them). Gives the screen the same RaceState the online races had, sends
  * the live alerts and the rivals' talk, and turns the finished match into an ordinary play.
  */
-export function useBotRace({ play, onFinish, onQuit, rules, pick, toItems, factOf, solvedText, blind, fine }: BotRaceOpts) {
+export function useBotRace({ play, onFinish, onQuit, rules, pick, toItems, guessName, solvedText, blind, fine }: BotRaceOpts) {
   const room = `bot:${play.id}`;
   const [race, setRace] = useState<BotRace | null>(null);
   const [menu, setMenu] = useState(false);
@@ -114,6 +113,19 @@ export function useBotRace({ play, onFinish, onQuit, rules, pick, toItems, factO
 
   // What happened since the last draw: alerts and the rivals' talk.
   const seen = useRef({ index: -1, phase: '', solved: new Set<string>(), tries: {} as Record<string, number>, alone: false, ranks: {} as Record<string, number>, moods: {} as Record<string, Mood> });
+  // Reactions come a beat later, never on the same instant (Yazan 2026-11-09: 2 to 3 s, so they don't look coded).
+  const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const pausedRef = useRef(false);
+  useEffect(() => {
+    pausedRef.current = paused;
+  }, [paused]);
+  useEffect(() => () => timers.current.forEach(clearTimeout), []);
+  const later = (fn: () => void, lo = 2000, hi = 3000) =>
+    void timers.current.push(
+      setTimeout(() => {
+        if (!pausedRef.current) fn();
+      }, lo + Math.random() * (hi - lo)),
+    );
   useEffect(() => {
     if (!st || !race) return;
     const s = seen.current;
@@ -131,7 +143,7 @@ export function useBotRace({ play, onFinish, onQuit, rules, pick, toItems, factO
         s.ranks = Object.fromEntries(st.players.map((p) => [p.user_id, p.rank ?? n]));
         if (st.index === 0) {
           const b = any(rivals.current);
-          if (b) rivalMoment(room, b, 'start', table);
+          if (b) later(() => rivalMoment(room, b, 'start', table), 1500, 3000);
         }
       }
       for (const p of st.players) {
@@ -142,9 +154,19 @@ export function useBotRace({ play, onFinish, onQuit, rules, pick, toItems, factO
           if (b) {
             const ms = race.plansNow()?.[p.user_id]?.doneAt ?? 0;
             push(solvedText ? solvedText(p.name, p.item_rank ?? 1, ms) : `${p.name} solved it, ${nth(p.item_rank ?? 1)}`, playerColour(st.players, p.user_id));
-            rivalMoment(room, b, 'right', { ...table, place: placeOf(p, n) });
+            const place = placeOf(p, n);
+            later(() => rivalMoment(room, b, 'right', { ...table, place }));
           }
-        } else if (b && !p.solved && p.tries > (s.tries[p.user_id] ?? 0)) rivalMoment(room, b, 'wrong', { ...table, place: placeOf(p, n) });
+        } else if (b && !p.solved && p.tries > (s.tries[p.user_id] ?? 0)) {
+          // Diagnostic Pursuit: the wrong guess itself pops in the chat; other games: maybe a reaction a beat later.
+          const plan = race.plansNow()?.[p.user_id];
+          const said = guessName && plan?.wrongs?.[p.tries - 1];
+          if (said) rivalGuess(room, b, guessName(said));
+          else {
+            const place = placeOf(p, n);
+            later(() => rivalMoment(room, b, 'wrong', { ...table, place }));
+          }
+        }
         s.tries[p.user_id] = p.tries;
       }
       const left = st.players.filter((p) => !p.done);
@@ -158,21 +180,26 @@ export function useBotRace({ play, onFinish, onQuit, rules, pick, toItems, factO
       const myRank = me?.rank ?? n;
       for (const b of rivals.current) {
         const p = row(b.id);
-        if (blind && p?.done) rivalMoment(room, b, p.solved ? 'right' : 'wrong', { ...table, place: placeOf(p, n) });
-        if (p?.rank && p.rank < myRank && (s.ranks[b.id] ?? n) > (s.ranks[YOU] ?? n)) rivalMoment(room, b, 'overtake', { ...table, place: placeOf(p, n) });
+        const place = placeOf(p, n);
+        if (blind && p?.done) later(() => rivalMoment(room, b, p.solved ? 'right' : 'wrong', { ...table, place }));
+        if (p?.rank && p.rank < myRank && (s.ranks[b.id] ?? n) > (s.ranks[YOU] ?? n)) later(() => rivalMoment(room, b, 'overtake', { ...table, place }));
         const mood = moodOf(race.mindOf(b.id));
-        if (mood && mood !== s.moods[b.id]) rivalMoment(room, b, mood, { ...table, place: placeOf(p, n) });
+        if (mood && mood !== s.moods[b.id]) later(() => rivalMoment(room, b, mood, { ...table, place }));
         s.moods[b.id] = mood;
       }
       const other = any(rivals.current);
-      if (other && me) rivalMoment(room, other, me.solved ? 'youRight' : 'youWrong', { ...table, place: placeOf(row(other.id), n) });
+      if (other && me) {
+        const place = placeOf(row(other.id), n);
+        later(() => rivalMoment(room, other, me.solved ? 'youRight' : 'youWrong', { ...table, place }));
+      }
       const genius = rivals.current.filter((b) => b.type === 'genius');
       const g = any(genius);
-      const about = st.item != null ? factOf?.(st.item) : null;
-      if (g && about) rivalFact(room, g, factFor(about, st.index + Math.floor(Math.random() * 7)), st.index);
+      const round = st.index;
+      if (g) later(() => rivalStudy(room, g, round), 2500, 3500);
       if (st.index + 1 < st.total) {
         const b = any(rivals.current);
-        if (b) rivalMoment(room, b, 'round', { ...table, place: placeOf(row(b.id), n) });
+        const place = placeOf(row(b?.id ?? ''), n);
+        if (b) later(() => rivalMoment(room, b, 'round', { ...table, place }));
       }
     }
     s.phase = st.phase;
