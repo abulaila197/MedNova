@@ -196,7 +196,7 @@ export function BotRoom({ def, play }: { def: GameDef; play: Play }) {
     Array.from({ length: Math.max(0, n) }, (_, i) => (
       <Pressable key={`add${team ?? ''}${i}`} onPress={() => tapAdd(team)} style={[st.tile, st.empty, teams >= 2 && st.tight]} accessibilityRole="button" accessibilityLabel="Add a rival">
         <Text style={[st.plus, { color: G.dim }]}>+</Text>
-        <Text style={[st.tl, { color: G.dim }]}>Add bot</Text>
+        <Text style={[st.tl, { color: G.dim }]}>Add rival</Text>
       </Pressable>
     ));
   const free = max - live.length;
@@ -232,7 +232,7 @@ export function BotRoom({ def, play }: { def: GameDef; play: Play }) {
         </Pressable>
       </View>
       <View>
-        <Text style={[st.k, { color: G.mute }]}>VS BOTS · {LEVEL_NAME[level].toUpperCase()}</Text>
+        <Text style={[st.k, { color: G.mute }]}>VS RIVALS · {LEVEL_NAME[level].toUpperCase()}</Text>
         <Text style={[st.h, { color: G.fg }]}>Your room</Text>
       </View>
       <View style={st.stl}>
@@ -314,7 +314,7 @@ function HowTo({ def }: { def: GameDef }) {
   const steps = def.modes.find((m) => m.mode === 'bots')?.howTo ?? [];
   return (
     <>
-      <Text style={[st.k, { fontFamily: L.semi, color: L.mute }]}>HOW TO PLAY VS BOTS</Text>
+      <Text style={[st.k, { fontFamily: L.semi, color: L.mute }]}>HOW TO PLAY VS RIVALS</Text>
       {steps.map((x, i) => (
         <View key={i} style={st.step}>
           <Text style={[st.stepN, { fontFamily: L.mono, color: L.dim }]}>{i + 1}</Text>
