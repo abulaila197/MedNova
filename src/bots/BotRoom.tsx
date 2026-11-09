@@ -151,7 +151,7 @@ export function BotRoom({ def, play }: { def: GameDef; play: Play }) {
     if (b && (!ph || ph === 'away')) return <View key={x.bot!.id} style={[st.tile, st.empty, teams >= 2 && st.tight]}><Text style={[st.tl, { color: G.dim }]}>Joining…</Text></View>;
     const id = b?.id ?? me.id;
     const said = pops.find((m) => m.user_id === id);
-    const label = !b ? 'You' : ph === 'leaving' ? 'Leaving…' : ph === 'ready' ? '✓ Ready' : 'Getting ready';
+    const label = !b ? '♛ Host' : ph === 'leaving' ? 'Leaving…' : ph === 'ready' ? '✓ Ready' : 'Getting ready';
     return (
       <Animated.View key={id} entering={safeEnter(ZoomIn.springify().damping(15))} exiting={FadeOut.duration(250)} style={[st.tile, teams >= 2 && st.tight, ph === 'leaving' && { opacity: 0.5 }]}>
         <Pressable onPress={() => b && ph !== 'leaving' && setSheet({ bot: b })} style={st.tileIn} accessibilityRole="button" accessibilityLabel={`${b ? b.name : 'You'}, ${label}`}>
