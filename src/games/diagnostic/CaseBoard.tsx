@@ -60,6 +60,10 @@ export type BoardProps = {
   onGuess: (g: GuessEntry) => void;
   onSkip: () => void;
   onReveal: () => void;
+  /** Replaces the middle figure (Worth now), e.g. Vs rivals shows your match points. */
+  worth?: { label: string; value: string };
+  /** Vs rivals: the rivals' live progress, under the top bar. */
+  live?: ReactNode;
   /** Extra layer over the screen (pause menu, curtain). */
   children?: ReactNode;
 };
@@ -90,6 +94,7 @@ export function CaseBoard(p: BoardProps) {
     <GameScreen scroll={false}>
       <KeyboardLift style={s.fill}>
         {focused ? <SlimBar {...p} /> : <TopBar {...p} />}
+        {p.live}
 
         {p.phase === 'paused' ? (
           <View style={[s.hidden, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
@@ -157,7 +162,7 @@ function TopBar(p: BoardProps) {
       </View>
       <View style={[s.stats, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
         <Stat label={p.clock.label} value={clock(p.clock.ms, { pad: true, down: p.clock.down })} color={p.clock.warn ? t.rose : amber(t)} />
-        <Stat label={p.result ? 'Scored' : 'Worth now'} value={String(worth)} />
+        <Stat label={p.worth?.label ?? (p.result ? 'Scored' : 'Worth now')} value={p.worth?.value ?? String(worth)} />
         <Stat label="Clues" value={`${p.attempt.cluesShown} / ${DP.clueCount}`} />
       </View>
       <View style={[s.prog, { backgroundColor: t.chipLine }]}>

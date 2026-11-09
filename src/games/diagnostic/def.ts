@@ -1,6 +1,7 @@
 import type { GameDef } from '../shell/types';
 import { MAX_CASE_POINTS } from './core';
 import { caseById, guessById, guessName, LEVELS, levelCount } from './data';
+import { BotsPlay } from './BotsPlay';
 import { OfflinePlay } from './OfflinePlay';
 import { SoloPlay } from './SoloPlay';
 
@@ -103,7 +104,7 @@ export const diagnosticPursuit: GameDef = {
   bots: { min: 1, max: 5 },
   teams: { offline: true, bots: true },
   players: { offline: { min: 2, max: 6 } },
-  Play: { solo: SoloPlay, offline: OfflinePlay },
+  Play: { solo: SoloPlay, offline: OfflinePlay, bots: BotsPlay },
   // DP4: EXP = points ÷ 10, each case counted up to the Solo most (120 points = 12 EXP), online too (DPN3: race bonuses
   // still rank players, they don't add EXP).
   // Playing your own case is practice: no EXP (Yazan 2026-10-12).

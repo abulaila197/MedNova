@@ -1,6 +1,7 @@
 import type { GameDef } from '../shell/types';
 import { offlineRows } from './core';
 import { wordById } from './data';
+import { BotsPlay } from './BotsPlay';
 import { OfflinePlay } from './OfflinePlay';
 import { SoloPlay } from './SoloPlay';
 
@@ -122,7 +123,7 @@ export const novaMedicordle: GameDef = {
   teams: { offline: true, bots: true },
   teamScore: { offline: 'sum', bots: 'average' },
   playersNote: (n) => `Player 1 is you, the phone owner. With ${n} players the board has ${offlineRows(n)} rows, ${offlineRows(n) / n} guesses each.`,
-  Play: { solo: SoloPlay, offline: OfflinePlay },
+  Play: { solo: SoloPlay, offline: OfflinePlay, bots: BotsPlay },
   // NM22: Solo EXP per word is stored on each item; NM25: Offline earns none.
   exp: (_score, items) => items.reduce((a, i) => a + (Number(i.gameData.exp) || 0), 0),
   expCap: (settings, mode) => (mode === 'bots' ? 12 * (Number(settings.words) || 5) : settings.word === 'daily' ? 24 : settings.word === 'endless' ? 12 * 150 : 0),

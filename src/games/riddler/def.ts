@@ -1,6 +1,7 @@
 import type { GameDef } from '../shell/types';
 import { RD } from './core';
 import { RIDDLES, riddleById, riddleName } from './data';
+import { BotsPlay } from './BotsPlay';
 import { OfflinePlay } from './OfflinePlay';
 import { SoloPlay } from './SoloPlay';
 
@@ -71,7 +72,7 @@ export const riddler: GameDef = {
   bots: { min: 1, max: 3 },
   teams: { offline: true, bots: true },
   playersNote: () => 'Player 1 is you, the phone owner. Pass the phone earns no EXP; only your unsolved condition pictures go to Learn.',
-  Play: { solo: SoloPlay, offline: OfflinePlay },
+  Play: { solo: SoloPlay, offline: OfflinePlay, bots: BotsPlay },
   // RD9, RD10: Solo pays the EXP each level earned this session; RD12: Offline earns none.
   exp: (_score, items) => items.reduce((a, i) => a + (Number(i.gameData.exp) || 0), 0),
   expCap: (settings, mode) => (mode === 'offline' ? 0 : (mode === 'bots' ? Number(settings.photos) || 5 : RIDDLES.length) * 3 * RD.expPerStar),

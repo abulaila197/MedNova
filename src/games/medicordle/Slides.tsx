@@ -59,6 +59,8 @@ export type TableProps = {
   dock?: ReactNode;
   notice?: string | null;
   hidden?: boolean;
+  /** Vs rivals: the rivals' mini boards, between the label and the board. */
+  extra?: ReactNode;
   children?: ReactNode;
 };
 
@@ -121,6 +123,7 @@ export function SlideTable(p: TableProps) {
   return (
     <GameScreen scroll={false}>
       <SlideLabel {...p.label} onPause={p.onPause} />
+      {p.extra}
       <Board
         c={c}
         answer={p.answer}

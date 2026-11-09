@@ -7,6 +7,8 @@ import { needSparks } from '@/features/sparks/sparks';
 import { engine, GUEST_PLAYS } from '../engine';
 import type { Mode, Play, PlayItem } from '../engine/types';
 import { alwaysFree, startPlay } from './flow';
+import { afterMatch, namesOf, rematchSeats } from '@/bots/after';
+import { useRivals } from '@/bots/memory';
 import { focusGame } from '@/features/games/focus';
 import { useSession } from './session';
 import { teamsOf, teamStandings } from './teams';
@@ -87,9 +89,15 @@ export function useResults(def: GameDef, play: Play, items: PlayItem[]) {
   const rematch = async () => {
     if (!(await paid())) return;
     if (await gated()) return;
+    // Vs rivals (G4): back to the room with the same rivals, except any who left; new ones take their seats.
+    if (play.mode === 'bots') {
+      const { leave } = afterMatch(play, useRivals.getState().favs);
+      const next = await startPlay(def.key, play.mode, play.settings, rematchSeats(play, leave));
+      router.replace(`/play/${def.key}/room?play=${next.id}${leave.length ? `&left=${encodeURIComponent(namesOf(leave))}` : ''}`);
+      return;
+    }
     const next = await startPlay(def.key, play.mode, play.settings, play.seats.filter((x) => !x.removed));
-    // Vs bots: the rematch meets the same bots in the room again, where they can be swapped or kicked.
-    router.replace(`/play/${def.key}/${play.mode === 'bots' ? 'room' : 'run'}?play=${next.id}`);
+    router.replace(`/play/${def.key}/run?play=${next.id}`);
   };
   const changeSettings = async () => {
     if (await gated()) return;

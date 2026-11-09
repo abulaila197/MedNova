@@ -23,7 +23,7 @@ import { CHOSEN, ChosenTick } from '@/match/chosen';
 // a spark plus the written time next to pause; the six options sit in a 2 by 3 grid. A right answer
 // glows green; a wrong pick turns red and shakes, then the right answer glows green.
 
-const SEGMENTS = 10;
+export const SEGMENTS = 10;
 
 export function heatColors() {
   return { good: '#3fc58a', bad: '#ff5c6c', hot: '#a48bff', segOff: '#10132a' };
@@ -57,6 +57,8 @@ export type BoardProps = {
   locked?: number | null;
   /** Online, once the question ends: who picked each choice (character slugs by choice index). */
   faces?: Record<number, string[]>;
+  /** Vs rivals: the rivals' heat columns, above the question. */
+  live?: ReactNode;
   children?: ReactNode;
 };
 
@@ -83,6 +85,7 @@ export function HeatBoard(p: BoardProps) {
 
         <View style={s.main}>
           {p.who ? <Text style={[s.who, { color: p.who.color ?? t.accent }]} numberOfLines={1}>{p.who.name}</Text> : null}
+          {p.live}
           <View style={s.top}>
             <Text style={[s.field, { color: t.accent }]} numberOfLines={1}>{p.hidden ? '' : p.q.field.toUpperCase()}</Text>
             <View style={s.right}>

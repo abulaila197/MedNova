@@ -12,6 +12,7 @@ import { AddPill } from '@/features/friends/AddAfterMatch';
 import { LevelCounter } from '@/features/level/LevelCounter';
 import { RoomTalk } from '@/match/TalkBar';
 
+import { AfterMatch } from '@/bots/AfterMatch';
 import { PlayerFace } from '@/features/style/Frame';
 import { effectWinner, PlayerTitle, winnerAccount } from '@/features/style/PlayerTitle';
 import { WinEffect } from '@/features/style/WinEffect';
@@ -124,6 +125,7 @@ export function Results({ def, play, items }: { def: GameDef; play: Play; items:
         ))}
         {missed ? <Body>{multi ? 'Your missed cases are waiting in Today\'s review.' : 'Missed cases are waiting in Today\'s review.'}</Body> : null}
       </Card>
+      {play.mode === 'bots' ? <AfterMatch play={play} /> : null}
       <View style={{ flexDirection: 'row', gap: u(8) }}>
         <Btn label="Rematch" onPress={rematch} style={{ flex: 1 }} />
         <Ghost label="Change settings" onPress={changeSettings} style={{ flex: 1 }} />

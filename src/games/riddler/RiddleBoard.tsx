@@ -62,6 +62,8 @@ export type BoardProps = {
   notice?: string | null;
   /** Replaces the answer box: result card, turn over. */
   dock?: ReactNode;
+  /** Vs rivals: the rivals' live progress, under the title. */
+  live?: ReactNode;
   children?: ReactNode;
 };
 
@@ -88,6 +90,7 @@ export function RiddleBoard(p: BoardProps) {
           </View>
           <RoundBtn label="Pause" glyph="❚❚" onPress={p.onPause} />
         </View>
+        {p.live}
 
         <View style={s.stage} onLayout={onStage}>
           {pic ? (

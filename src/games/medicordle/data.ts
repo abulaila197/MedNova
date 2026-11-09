@@ -12,3 +12,9 @@ export function isWord(word: string): boolean {
   packed ??= require('./data/guesses.json') as Record<string, string>;
   return inList(packed[String(word.length)], word);
 }
+
+/** The accepted guesses of one length, packed (sorted, fixed width): the rivals pick their real words from it (G4). */
+export function packedOf(len: number): string | undefined {
+  packed ??= require('./data/guesses.json') as Record<string, string>;
+  return packed[String(len)];
+}

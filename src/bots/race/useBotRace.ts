@@ -1,0 +1,227 @@
+import { useCallback, useEffect, useRef, useState } from 'react';
+
+import { engine } from '@/games/engine';
+import type { PlayItem, Standing } from '@/games/engine/types';
+import { timeStore, type Clock } from '@/games/engine/timeStore';
+import { usePauseHide } from '@/games/engine/usePauseHide';
+import { playerColour } from '@/games/shell/characters';
+import { recordItem } from '@/games/shell/flow';
+import type { PlayProps } from '@/games/shell/types';
+import { nth, useAlerts } from '@/match/live';
+import type { RacePlayer, RaceState } from '@/match/race';
+import { useRaceRevealSound } from '@/match/raceSound';
+import { useSession } from '@/games/shell/session';
+import { useBack } from '@/lib/useBack';
+
+import { moodOf, type Mood } from '../brain';
+import { resetRoomTalk, rivalFact, rivalMoment, useRivalEars } from '../director';
+import { factFor } from '../facts';
+import type { Place } from '../lines';
+import { meet } from '../memory';
+import type { Bot } from '../types';
+import { BotRace, YOU, type Rules } from './engine';
+
+type Item = Omit<PlayItem, 'id' | 'at' | 'playId'>;
+
+export type BotRaceOpts = Pick<PlayProps, 'play' | 'onFinish' | 'onQuit'> & {
+  rules: Rules;
+  /** The match's items (bank numbers), picked once when the match opens. */
+  pick: () => Promise<number[]>;
+  /** Your items for the play, saved when the match ends (your misses feed Learn where the game does). */
+  toItems: (st: RaceState, race: BotRace) => Item[];
+  /** The disease behind an item, for a Genius fact after it (a dossier id or a name), or null for none. */
+  factOf?: (item: number) => string | null;
+  /** The alert when a rival solves (default "Sara solved it, 2nd"); `ms` is its time on the question. */
+  solvedText?: (name: string, rank: number, ms: number) => string;
+  /** Answers stay secret until the reveal (Streak Master): no solve alerts or right/wrong talk while a question runs. */
+  blind?: boolean;
+  /** Redraw every 100 ms instead of 250 (smooth clocks). */
+  fine?: boolean;
+};
+
+const placeOf = (p: RacePlayer | undefined, n: number): Place => (!p?.rank || p.rank === 1 ? 'lead' : p.rank >= n ? 'last' : 'mid');
+const any = <T,>(xs: T[]) => xs[Math.floor(Math.random() * xs.length)];
+
+/**
+ * A Vs rivals match on the phone (G4): the rivals play on match time, which stops while the pause menu is open or the
+ * app is away (Yazan 2026-11-09: pause freezes them). Gives the screen the same RaceState the online races had, sends
+ * the live alerts and the rivals' talk, and turns the finished match into an ordinary play.
+ */
+export function useBotRace({ play, onFinish, onQuit, rules, pick, toItems, factOf, solvedText, blind, fine }: BotRaceOpts) {
+  const room = `bot:${play.id}`;
+  const [race, setRace] = useState<BotRace | null>(null);
+  const [menu, setMenu] = useState(false);
+  const [t, setT] = useState(0);
+  const clock = useRef<{ base: number; since: number | null }>({ base: 0, since: null });
+  // The same match time as a Clock, for widgets that follow every tick (Streak Master's fuse).
+  const [store] = useState(() => timeStore(0));
+  const now = useCallback(() => clock.current.base + (clock.current.since != null ? Date.now() - clock.current.since : 0), []);
+  const { alert, push } = useAlerts();
+  const rivals = useRef<Bot[]>([]);
+  const [bots, setBots] = useState<Bot[]>([]);
+
+  // The match: the items, your level (rivals grow a little with it) and the rivals from the room.
+  useEffect(() => {
+    let live = true;
+    (async () => {
+      const items = await pick();
+      const level = (await engine.wallet.balance().catch(() => ({ level: 1 }))).level;
+      const you = play.seats[0];
+      const rs = play.seats.filter((x) => x.bot && !x.removed).map((x) => ({ ...x.bot!, team: x.team ?? null }));
+      if (!live) return;
+      meet(rs);
+      rivals.current = rs;
+      setBots(rs);
+      setRace(new BotRace({ playId: play.id, items, you: { name: 'You', character: you?.character ?? 'yara', team: you?.team ?? null }, rivals: rs, rules, settings: play.settings, playerLevel: level }));
+    })();
+    return () => {
+      live = false;
+    };
+    // The match is built once per play.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [play.id]);
+  useEffect(() => () => resetRoomTalk(room), [room]);
+
+  // Pause: the menu, the app going away, or a page opened over the match. Match time stops; so do the rivals.
+  const { hidden, resume } = usePauseHide(() => setMenu(true));
+  const paused = menu || hidden;
+  const closeMenu = () => {
+    setMenu(false);
+    resume();
+  };
+  // Android back opens the pause menu, and a second press closes it.
+  useBack(true, () => (paused ? closeMenu() : setMenu(true)));
+  const running = !!race && !paused;
+  useEffect(() => {
+    if (!running) return;
+    const c = clock.current;
+    c.since = Date.now();
+    const id = setInterval(() => {
+      const n = now();
+      store.set(n, n);
+      setT(n);
+    }, fine ? 100 : 250);
+    return () => {
+      clearInterval(id);
+      c.base += Date.now() - (c.since ?? Date.now());
+      c.since = null;
+    };
+  }, [running, fine, now, store]);
+
+  const st = race ? race.state(t) : null;
+  useRaceRevealSound(st, YOU);
+  useRivalEars(room, bots);
+
+  // What happened since the last draw: alerts and the rivals' talk.
+  const seen = useRef({ index: -1, phase: '', solved: new Set<string>(), tries: {} as Record<string, number>, alone: false, ranks: {} as Record<string, number>, moods: {} as Record<string, Mood> });
+  useEffect(() => {
+    if (!st || !race) return;
+    const s = seen.current;
+    const n = st.players.length;
+    const table = { tableSize: n };
+    const byId = new Map(rivals.current.map((b) => [b.id, b]));
+    const row = (id: string) => st.players.find((p) => p.user_id === id);
+    const me = row(YOU);
+    if (st.phase === 'case') {
+      if (s.index !== st.index || s.phase !== 'case') {
+        s.index = st.index;
+        s.solved = new Set(st.players.filter((p) => p.solved).map((p) => p.user_id));
+        s.tries = Object.fromEntries(st.players.map((p) => [p.user_id, p.tries]));
+        s.alone = false;
+        s.ranks = Object.fromEntries(st.players.map((p) => [p.user_id, p.rank ?? n]));
+        if (st.index === 0) {
+          const b = any(rivals.current);
+          if (b) rivalMoment(room, b, 'start', table);
+        }
+      }
+      for (const p of st.players) {
+        const b = byId.get(p.user_id);
+        if (blind) continue;
+        if (p.solved && !s.solved.has(p.user_id)) {
+          s.solved.add(p.user_id);
+          if (b) {
+            const ms = race.plansNow()?.[p.user_id]?.doneAt ?? 0;
+            push(solvedText ? solvedText(p.name, p.item_rank ?? 1, ms) : `${p.name} solved it, ${nth(p.item_rank ?? 1)}`, playerColour(st.players, p.user_id));
+            rivalMoment(room, b, 'right', { ...table, place: placeOf(p, n) });
+          }
+        } else if (b && !p.solved && p.tries > (s.tries[p.user_id] ?? 0)) rivalMoment(room, b, 'wrong', { ...table, place: placeOf(p, n) });
+        s.tries[p.user_id] = p.tries;
+      }
+      const left = st.players.filter((p) => !p.done);
+      if (!s.alone && n > 1 && left.length === 1 && left[0].user_id === YOU) {
+        s.alone = true;
+        push('Only you left', '#f5b041');
+      }
+    } else if (st.phase === 'reveal' && (s.phase !== 'reveal' || s.index !== st.index)) {
+      s.index = st.index;
+      // Who passed you, who's on fire or tilted, what they make of your answer, and a Genius fact.
+      const myRank = me?.rank ?? n;
+      for (const b of rivals.current) {
+        const p = row(b.id);
+        if (blind && p?.done) rivalMoment(room, b, p.solved ? 'right' : 'wrong', { ...table, place: placeOf(p, n) });
+        if (p?.rank && p.rank < myRank && (s.ranks[b.id] ?? n) > (s.ranks[YOU] ?? n)) rivalMoment(room, b, 'overtake', { ...table, place: placeOf(p, n) });
+        const mood = moodOf(race.mindOf(b.id));
+        if (mood && mood !== s.moods[b.id]) rivalMoment(room, b, mood, { ...table, place: placeOf(p, n) });
+        s.moods[b.id] = mood;
+      }
+      const other = any(rivals.current);
+      if (other && me) rivalMoment(room, other, me.solved ? 'youRight' : 'youWrong', { ...table, place: placeOf(row(other.id), n) });
+      const genius = rivals.current.filter((b) => b.type === 'genius');
+      const g = any(genius);
+      const about = st.item != null ? factOf?.(st.item) : null;
+      if (g && about) rivalFact(room, g, factFor(about, st.index + Math.floor(Math.random() * 7)), st.index);
+      if (st.index + 1 < st.total) {
+        const b = any(rivals.current);
+        if (b) rivalMoment(room, b, 'round', { ...table, place: placeOf(row(b.id), n) });
+      }
+    }
+    s.phase = st.phase;
+  });
+
+  // The match ended: your items, then the shell's finish (EXP, results).
+  const finishing = useRef(false);
+  useEffect(() => {
+    if (!st || !race || st.phase !== 'done' || finishing.current) return;
+    finishing.current = true;
+    (async () => {
+      for (const it of toItems(st, race)) await recordItem(play, it, true);
+      const seatOf = (id: string) => (id === YOU ? 0 : (play.seats.find((x) => x.bot?.id === id)?.seat ?? 0));
+      const standings: Standing[] = st.players
+        .map((p) => ({ seat: seatOf(p.user_id), name: p.user_id === YOU ? 'You' : p.name, score: p.score, timeMs: p.solve_ms, rank: p.rank ?? st.players.length }))
+        .sort((a, b) => a.rank - b.rank);
+      onFinish(st.players.find((p) => p.user_id === YOU)?.score ?? 0, standings);
+    })();
+  });
+
+  const act = <A extends unknown[], R>(fn: (at: number, ...a: A) => R) => (...a: A): R | undefined => {
+    if (!race || paused) return undefined;
+    const at = now();
+    const r = fn(at, ...a);
+    setT(at);
+    return r;
+  };
+
+  const uid = useSession((x) => x.userId);
+  const talker = { id: uid ?? 'me', name: 'You', face: play.seats[0]?.character ?? 'yara' };
+  return {
+    st,
+    race,
+    room,
+    talker,
+    /** Match time now (ms); the clocks draw from it. */
+    t,
+    paused,
+    menu: paused,
+    openMenu: () => setMenu(true),
+    closeMenu,
+    quit: onQuit,
+    alert,
+    push,
+    /** Match time as a Clock (store.get() is the latest match time). */
+    clock: store as Clock,
+    wrong: act((at, answer: string, o?: { lock?: boolean; outAfter?: number }) => race!.wrong(at, answer, o)),
+    solve: act((at, extra?: { pick?: number; guess?: string; greens?: number }) => race!.solve(at, extra)),
+    miss: act((at, extra?: { pick?: number; guess?: string; greens?: number }) => race!.miss(at, extra)),
+    row: act((at, guess: string, greens: number) => race!.row(at, guess, greens)),
+  };
+}

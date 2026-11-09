@@ -40,7 +40,7 @@ const BLURB: Record<BotType, string> = {
 };
 
 /** The Vs bots room (Yazan 2026-11-09): the old lobby kept for bots. They join one by one, get ready and talk. */
-export function BotRoom({ def, play }: { def: GameDef; play: Play }) {
+export function BotRoom({ def, play, left }: { def: GameDef; play: Play; left?: string }) {
   const L = GREY_LOOK;
   const room = `bot:${play.id}`;
   useTalkRoom(room);
@@ -150,7 +150,14 @@ export function BotRoom({ def, play }: { def: GameDef; play: Play }) {
   const allReady = live.length > 0 && ready.length === live.length;
   const waitingOn = live.find((x) => phase[x.bot!.id] !== 'ready');
   const joining = live.filter((x) => !phase[x.bot!.id] || phase[x.bot!.id] === 'away').length;
-  const status = allReady ? 'Everyone is ready' : joining ? (joining === 1 ? 'A rival is joining…' : `${joining} rivals are joining…`) : `Waiting for ${waitingOn?.name ?? 'the rivals'}`;
+  // After a rematch: who left, for the first moments while the new rivals walk in.
+  const [leftNote, setLeftNote] = useState(left ?? null);
+  useEffect(() => {
+    if (!left) return;
+    const id = setTimeout(() => setLeftNote(null), 6000);
+    return () => clearTimeout(id);
+  }, [left]);
+  const status = leftNote ? `${leftNote} left. ${joining ? 'New rivals are joining…' : 'New rivals are in.'}` : allReady ? 'Everyone is ready' : joining ? (joining === 1 ? 'A rival is joining…' : `${joining} rivals are joining…`) : `Waiting for ${waitingOn?.name ?? 'the rivals'}`;
   const canPlay = !!def.Play.bots;
 
   const leave = async () => {

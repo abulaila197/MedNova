@@ -1,6 +1,7 @@
 import type { GameDef } from '../shell/types';
 import { expForRight, SM_EXP } from './core';
 import { questionById } from './data';
+import { BotsPlay } from './BotsPlay';
 import { OfflinePlay } from './OfflinePlay';
 import { SoloPlay } from './SoloPlay';
 
@@ -93,7 +94,7 @@ export const streakMaster: GameDef = {
   bots: { min: 1, max: 5 },
   teams: { offline: true, bots: true },
   playersNote: () => 'Player 1 is you, the phone owner. Pass the phone earns no EXP; only your missed questions go to Learn.',
-  Play: { solo: SoloPlay, offline: OfflinePlay },
+  Play: { solo: SoloPlay, offline: OfflinePlay, bots: BotsPlay },
   // SM16: Solo and Online EXP is 2 per right answer, at most 60 (the streak score itself is unchanged); SM13: Offline earns none.
   exp: (_score, items, settings) => (settings?.custom ? 0 : expForRight(items.filter((i) => i.seat === 0 && i.outcome === 'right').length)),
   expCap: (_settings, mode) => (mode === 'offline' ? 0 : SM_EXP.cap),
