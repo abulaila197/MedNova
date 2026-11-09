@@ -33,7 +33,10 @@ const clueAt = (ms: number) => Math.min(DP.clueCount, Math.floor(ms / CLUE_MS) +
 function nearMisses(item: number, seed: string, n: number) {
   const c = caseById.get(String(item));
   if (!c || !n) return [];
-  const pool = [...new Set(CASES.filter((x) => x.answer_id !== c.answer_id && guessById.has(x.answer_id) && x.fields.some((f) => c.fields.includes(f))).map((x) => x.answer_id))];
+  // Closest first: the most fields in common, the main field counting double; then the nearest dozen.
+  const near = (x: (typeof CASES)[number]) => x.fields.filter((f) => c.fields.includes(f)).length + (x.fields[0] === c.fields[0] ? 1 : 0);
+  const ranked = CASES.filter((x) => x.answer_id !== c.answer_id && guessById.has(x.answer_id) && near(x) > 0).sort((a, b) => near(b) - near(a));
+  const pool = [...new Set(ranked.map((x) => x.answer_id))].slice(0, 12);
   const r = rng(seed);
   const out: string[] = [];
   while (out.length < n && pool.length) out.push(pool.splice(Math.floor(r() * pool.length), 1)[0]);
