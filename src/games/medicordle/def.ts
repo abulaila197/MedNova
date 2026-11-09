@@ -46,7 +46,7 @@ export const novaMedicordle: GameDef = {
     },
     {
       mode: 'bots',
-      title: 'Race the bots',
+      title: 'Word duel',
       blurb: 'The same word as the bots, each on your own board.',
       howTo: [
         'Pick Easy, Medium or Hard and 1 to 3 bots. Meet them in the room: tap a bot for its profile, swap it or kick it.',

@@ -33,7 +33,7 @@ export const diagnosticPursuit: GameDef = {
     },
     {
       mode: 'bots',
-      title: 'Race the bots',
+      title: 'Diagnosis showdown',
       blurb: 'A new clue every 10 seconds. Beat the bots to the diagnosis.',
       howTo: [
         'Pick Easy, Medium or Hard and 1 to 5 bots. Meet them in the room: tap a bot for its profile, swap it or kick it.',

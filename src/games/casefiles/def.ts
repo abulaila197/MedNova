@@ -39,7 +39,7 @@ export const caseFiles: GameDef = {
     },
     {
       mode: 'bots',
-      title: 'Race the bots',
+      title: 'Case showdown',
       blurb: 'The same case as the bots, with live progress.',
       howTo: [
         'Pick Easy, Medium or Hard and 1 to 3 bots. Meet them in the room: tap a bot for its profile, swap it or kick it.',

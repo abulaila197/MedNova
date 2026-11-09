@@ -77,7 +77,7 @@ export const streakMaster: GameDef = {
     },
     {
       mode: 'bots',
-      title: 'Race the bots',
+      title: 'Streak showdown',
       blurb: 'Answer first and keep your streak. The bots\' heat columns rise and crash beside yours.',
       howTo: [
         'Pick Easy, Medium or Hard and 1 to 5 bots. Meet them in the room: tap a bot for its profile, swap it or kick it.',

@@ -57,8 +57,11 @@ export function ModeLanding({ def }: { def: GameDef }) {
               <View style={s.name}>
                 <Kick color={t.accent}>{MODE_NAME[m.mode]}</Kick>
               </View>
+              {/* Yazan 2026-11-09: a small pill, not the big spaced label that ran into the mode name. */}
               {note(m.mode) ? (
-                <Kick>{note(m.mode)}</Kick>
+                <View style={[s.free, { borderColor: t.panelLine }]}>
+                  <Text style={[s.freeT, { color: t.mute }]} numberOfLines={1}>{note(m.mode)}</Text>
+                </View>
               ) : null}
             </View>
             <Text style={[s.h, { color: t.white }]}>{m.title}</Text>
@@ -87,7 +90,9 @@ export function ModeLanding({ def }: { def: GameDef }) {
 
 const s = StyleSheet.create({
   art: { position: 'absolute', left: 0, right: 0, top: 0, height: u(330) },
-  row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: u(10) },
+  free: { borderWidth: 1, borderRadius: 999, paddingVertical: u(2), paddingHorizontal: u(8), flexShrink: 0 },
+  freeT: { fontFamily: F.bodySemi, fontSize: u(9) },
   name: { flexDirection: 'row', alignItems: 'center', gap: u(6) },
   h: { fontFamily: F.display, fontSize: u(19), lineHeight: u(22) },
   how: { fontFamily: F.bodySemi, fontSize: u(11), lineHeight: u(14) },

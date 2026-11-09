@@ -37,7 +37,7 @@ export const novaCrossword: GameDef = {
     },
     {
       mode: 'bots',
-      title: 'Race the bots',
+      title: 'Grid showdown',
       blurb: 'The same grid as the bots. First right answer claims the word.',
       howTo: [
         'Pick Easy, Medium or Hard and 1 to 3 bots. Meet them in the room: tap a bot for its profile, swap it or kick it.',

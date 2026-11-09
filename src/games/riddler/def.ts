@@ -55,7 +55,7 @@ export const riddler: GameDef = {
     },
     {
       mode: 'bots',
-      title: 'Race the bots',
+      title: 'Riddle duel',
       blurb: 'The same picture as the bots. Solve it first.',
       howTo: [
         'Pick Easy, Medium or Hard and 1 to 3 bots. Meet them in the room: tap a bot for its profile, swap it or kick it.',

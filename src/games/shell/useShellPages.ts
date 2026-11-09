@@ -54,7 +54,7 @@ export function useLanding(def: GameDef) {
   /** The small note on a mode card: only a guest's free plays left. No Sparks text on the cards (Yazan 2026-10-27). */
   const note = (_mode: Mode) => {
     if (signedIn || left == null) return '';
-    return left > 0 ? `${left} of ${GUEST_PLAYS} free plays left` : 'Free plays used';
+    return left > 0 ? `${left}/${GUEST_PLAYS} free` : 'Free plays used';
   };
   return { open, setOpen, resume, go, resumePlay, resumeLabel, note };
 }
