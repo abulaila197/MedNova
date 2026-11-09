@@ -119,9 +119,13 @@ export const sayError = (e: unknown) => {
   if (until !== null) return restingSay(until);
   if (isBusy(e)) return 'Servers are busy right now. Tap Start to wait in line.';
   if (errText(e).includes('online_locked')) return LOCKED_SAY;
+  if (errText(e).includes('account_banned')) return BANNED_SAY;
   if (errText(e).includes('watchers_full')) return 'This match already has 3 watchers. Try again at the rematch.';
   return JOIN_SAY.error;
 };
+
+/** A player the admin banned (admin Players, 2026-11-09): online play is off; solo still works. */
+export const BANNED_SAY = 'Your account can’t play online right now. Solo games still work. Contact us from Settings if you think this is a mistake.';
 
 export const JOIN_SAY: Record<string, string> = {
   full: 'That room is full.',

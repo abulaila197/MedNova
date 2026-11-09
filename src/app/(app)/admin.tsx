@@ -7,6 +7,7 @@ import { Text, TextInput } from '@/components/AppText';
 import { Screen } from '@/components/Screen';
 import { Downloads, Inbox } from '@/features/admin/Inbox';
 import { OnlineLocks } from '@/features/admin/OnlineLocks';
+import { Players, type AdminPlayer } from '@/features/admin/Players';
 import { ServerMeter } from '@/features/admin/ServerMeter';
 import { GradBtn, InfoScroll, Kicker, s as ui, useInfo } from '@/features/info/ui';
 import { supabase } from '@/lib/supabase';
@@ -57,6 +58,25 @@ export default function Page() {
   const [note, setNote] = useState('');
   const [msg, setMsg] = useState<{ text: string; bad?: boolean } | null>(null);
   const [sent, setSent] = useState<Sent[] | null>(null);
+  // Where the Send and Take back parts start, so a player's actions can jump there.
+  const ySend = useRef(0);
+  const yBack = useRef(0);
+  const choose = (p: AdminPlayer) => {
+    setQ(p.username);
+    setPick({ id: p.id, username: p.username, display_name: p.display_name, tokens: found.find((f) => f.id === p.id)?.tokens ?? 0 });
+  };
+  const messagePlayer = (p: AdminPlayer) => {
+    choose(p);
+    setToAll(false);
+    setSure(false);
+    setSendMsg({ text: `Writing to @${p.username}. Add a message or gifts, then tap Send.` });
+    scroll.current?.scrollTo({ y: Math.max(0, ySend.current - 12), animated: true });
+  };
+  const takeBackFrom = (p: AdminPlayer) => {
+    choose(p);
+    setMsg(null);
+    scroll.current?.scrollTo({ y: Math.max(0, yBack.current - 12), animated: true });
+  };
   const loadSent = () => supabase.rpc('admin_inbox_sent').then(({ data }) => setSent((data as Sent[]) ?? []));
   // #2 (Yazan's pick): Clear hides a sent message from this list only; players keep it and can still collect it.
   const clearSent = async (id: string) => {
@@ -209,7 +229,8 @@ export default function Page() {
         <Kicker>Admin</Kicker>
         <ServerMeter />
         <OnlineLocks />
-        <Text style={[ui.H, s.H, s.gap, { color: c.fg }]}>Send to Inbox</Text>
+        <Players c={c} onMessage={messagePlayer} onTakeBack={takeBackFrom} />
+        <Text onLayout={(e) => (ySend.current = e.nativeEvent.layout.y)} style={[ui.H, s.H, s.gapL, { color: c.fg }]}>Send to Inbox</Text>
         <Text style={[ui.p, { color: c.mute }]}>Only your account sees this page. A message with gifts lands in the player’s Inbox with a red dot; the gifts reach their wallet when they tap Collect. “All players” reaches accounts that exist now.</Text>
 
         <View style={[s.chips, s.gap]}>
@@ -284,7 +305,7 @@ export default function Page() {
           ))}
         </View>
 
-        <Text style={[ui.H, s.H, s.gapL, { color: c.fg }]}>Take tokens back</Text>
+        <Text onLayout={(e) => (yBack.current = e.nativeEvent.layout.y)} style={[ui.H, s.H, s.gapL, { color: c.fg }]}>Take tokens back</Text>
         <Text style={[ui.p, { color: c.mute }]}>A correction for one player, taken from their wallet at once.</Text>
         {toAll ? players() : <Kicker style={s.gap}>{pick ? `For @${pick.username}` : 'Pick a player above'}</Kicker>}
         <TextInput value={back} onChangeText={setBack} placeholder="Tokens to take back" placeholderTextColor={c.mute} keyboardType="number-pad" style={[field, s.gap]} />
