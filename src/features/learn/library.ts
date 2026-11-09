@@ -9,11 +9,15 @@ import { CASES, caseById } from '@/games/diagnostic/data';
 import { questionById } from '@/games/streak/data';
 import { answerText as paradeAnswer } from '@/games/parade/core';
 import { questionById as paradeById } from '@/games/parade/data';
-import { question as tmnQuestion } from '@/games/trustmenot/text';
 import { questionById as wheelsById } from '@/games/wheels/data';
 
 import dossiersJson from './data/dossiers.json';
 import shelvesJson from './data/shelves.json';
+import tmnJson from './data/tmn-questions.json';
+
+/** Trust Me Not was removed (2026-11-09); its question texts stay so old misses still show in Today's review. */
+const TMN = tmnJson as Record<string, { q: string; c: string[] }>;
+const tmnQuestion = (id: string) => ({ q: TMN[id]?.q ?? '', choices: TMN[id]?.c ?? [] });
 
 export type Dossier = { id: string; name: string; epi: string; eti: string; cli: string; inv: string; tre: string };
 export type FieldKey = 'epi' | 'eti' | 'cli' | 'inv' | 'tre';

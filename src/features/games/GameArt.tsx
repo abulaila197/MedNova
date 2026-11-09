@@ -11,8 +11,6 @@ import { ART_END, BODY_TOP, W } from './fit';
 // SVG masks per page. Re-run the script after changing a drawing or the geometry in fit.ts.
 const BAKED = {
   dark: {
-    'trust-me-not': require('@/assets/games/baked/dark/trust-me-not.webp'),
-    'the-conqueror': require('@/assets/games/baked/dark/the-conqueror.webp'),
     'the-diagnostic-pursuit': require('@/assets/games/baked/dark/the-diagnostic-pursuit.webp'),
     'the-wheels-of-chaos': require('@/assets/games/baked/dark/the-wheels-of-chaos.webp'),
     'nova-crossword': require('@/assets/games/baked/dark/nova-crossword.webp'),
@@ -23,8 +21,6 @@ const BAKED = {
     'case-files-unsolved': require('@/assets/games/baked/dark/case-files-unsolved.webp'),
     'the-quiz-parade': require('@/assets/games/baked/dark/the-quiz-parade.webp'),
     imposter: require('@/assets/games/baked/dark/imposter.webp'),
-    'code-clinic': require('@/assets/games/baked/dark/code-clinic.webp'),
-    'nova-password': require('@/assets/games/baked/dark/nova-password.webp'),
   },
 } as const;
 

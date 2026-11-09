@@ -4,8 +4,8 @@
 import json, re, sys, collections
 keys = {r[0]: r[1] for r in json.load(open(sys.argv[1]))}
 w = json.load(open('src/games/wheels/data/bank.json'))
-c = json.load(open('src/games/conqueror/data/bank.json'))
-t = json.load(open('src/games/trustmenot/data/questions.json'))
+c = json.load(open('/mnt/project-files/mednova/archive/removed-games-2026-11-09/conqueror-bank.json')  # Conqueror removed 2026-11-09, bank archived)
+t = json.load(open('/mnt/project-files/mednova/archive/removed-games-2026-11-09/tmn-questions.json')  # Trust Me Not removed 2026-11-09, full bank archived)
 TMN_FIELD = {'BAN': 'anatomy', 'BBC': 'biochemistry', 'BMI': 'microbiology', 'BPA': 'pathology', 'BPC': 'pharmacology', 'BPH': 'physiology',
              'CEM': 'medicine', 'CIM': 'medicine', 'COG': 'obgyn', 'CPE': 'pediatrics', 'CPN': 'medicine', 'CSU': 'surgery'}
 BASIC = {'anatomy', 'biochemistry', 'microbiology', 'pathology', 'pharmacology', 'physiology'}

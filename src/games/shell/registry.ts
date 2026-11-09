@@ -16,12 +16,8 @@ const LOAD: Record<string, () => GameDef> = {
   'case-files-unsolved': () => require('../casefiles/def').caseFiles,
   'nova-crossword': () => require('../crossword/def').novaCrossword,
   'the-wheels-of-chaos': () => require('../wheels/def').wheelsOfChaos,
-  'the-conqueror': () => require('../conqueror/def').conqueror,
-  'trust-me-not': () => require('../trustmenot/def').trustMeNot,
   'the-quiz-parade': () => require('../parade/def').quizParade,
   imposter: () => require('../imposter/def').imposter,
-  'code-clinic': () => require('../codeclinic/def').codeClinic,
-  'nova-password': () => require('../password/def').novaPassword,
 };
 
 const loaded = new Map<string, GameDef>();
