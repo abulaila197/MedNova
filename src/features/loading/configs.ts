@@ -33,7 +33,7 @@ export type LoadCfg = {
   fonts: string[];
 };
 
-const ALL = 'Solo · Pass the phone · Vs bots';
+const ALL = 'Solo · Pass the phone · Vs rivals';
 // Silent Artist has no bots (Yazan 2026-11-09): practice and Pass the phone only.
 const NO_BOTS = 'Solo · Pass the phone';
 

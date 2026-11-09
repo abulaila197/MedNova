@@ -15,7 +15,7 @@ import type { GameDef } from './types';
 import { useLanding } from './useShellPages';
 import { Body, Btn, Card, GameScreen, Ghost, Kick, Title } from './ui';
 
-export const MODE_NAME: Record<Mode, string> = { solo: 'Solo', offline: 'Pass the phone', bots: 'Vs bots', online: 'Online Multiplayer' };
+export const MODE_NAME: Record<Mode, string> = { solo: 'Solo', offline: 'Pass the phone', bots: 'Vs rivals', online: 'Online Multiplayer' };
 
 /** The app-look landing: title, then a card per mode with How to play, over the game's loading art. */
 export function ModeLanding({ def }: { def: GameDef }) {

@@ -34,9 +34,9 @@ export const diagnosticPursuit: GameDef = {
     {
       mode: 'bots',
       title: 'Diagnosis showdown',
-      blurb: 'A new clue every 10 seconds. Beat the bots to the diagnosis.',
+      blurb: 'A new clue every 10 seconds. Beat the rivals to the diagnosis.',
       howTo: [
-        'Pick Easy, Medium or Hard and 1 to 5 bots. Meet them in the room: tap a bot for its profile, swap it or kick it.',
+        'Pick Easy, Medium or Hard and 1 to 5 rivals. Meet them in the room: tap a rival for its profile, swap it or kick it.',
         'Everyone gets the same case. A new clue appears every 10 seconds, and a case lasts 60 seconds.',
         'Guess as often as you like. A wrong guess locks you out for 5 seconds. There is no Skip, Reveal or Hint.',
         'Points: solving order (100, 80, 65, 50, 40, 30) + fewer clues (up to 50) + time left (up to 20).',

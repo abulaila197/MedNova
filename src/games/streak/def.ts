@@ -78,9 +78,9 @@ export const streakMaster: GameDef = {
     {
       mode: 'bots',
       title: 'Streak showdown',
-      blurb: 'Answer first and keep your streak. The bots\' heat columns rise and crash beside yours.',
+      blurb: 'Answer first and keep your streak. The rivals\' heat columns rise and crash beside yours.',
       howTo: [
-        'Pick Easy, Medium or Hard and 1 to 5 bots. Meet them in the room: tap a bot for its profile, swap it or kick it.',
+        'Pick Easy, Medium or Hard and 1 to 5 rivals. Meet them in the room: tap a rival for its profile, swap it or kick it.',
         'Everyone gets the same question with the same choices at once. One pick each, no helpers.',
         'Right answers score by order: 100, 80, 65 and so on, plus 10 for each answer in your streak after the first (up to 50).',
         'A wrong pick or no answer drops your streak to 0. Ties go to the longest streak, then most right answers.',

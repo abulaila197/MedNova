@@ -58,8 +58,8 @@ export const CHAPTERS: Chapter[] = [
     title: 'Playing together',
     tag: 'Multiplayer',
     items: [
-      { q: 'How do I play with friends?', a: 'Most games have Pass the phone, where you take turns on one phone. Empty seats can be filled with bots, and many games let you split players into teams.' },
-      { q: 'What is Vs bots?', a: 'Race bots in most games, with no internet needed. Pick Easy, Medium or Hard and how many bots. There are three kinds: Dumb, Hardworker and Nerd. They send stickers and voice lines and react to yours. Tap a bot in the room to see its profile, swap it or kick it.' },
+      { q: 'How do I play with friends?', a: 'Most games have Pass the phone, where you take turns on one phone. Empty seats can be filled with rivals, and many games let you split players into teams.' },
+      { q: 'What is Vs rivals?', a: 'Race rivals in most games, with no internet needed. Pick Easy, Medium or Hard and how many rivals. There are three kinds: Dumb, Hardworker and Nerd. They send stickers and voice lines and react to yours. Tap a rival in the room to see its profile, swap it or kick it.' },
       { q: 'Who wins a tie?', a: 'The faster player. On a leaderboard, whoever got there first.' },
     ],
   },
@@ -69,7 +69,7 @@ export const CHAPTERS: Chapter[] = [
     title: 'EXP, tokens and rewards',
     tag: 'Progress',
     items: [
-      { q: 'How do I earn EXP?', a: 'By playing Solo and Vs bots. Each game pays for what you get right; for example, Medicordle gives up to 12 EXP a word and The Streak Master 2 EXP per right answer. Pass the phone and Silent Artist practice are for fun and earn no EXP.' },
+      { q: 'How do I earn EXP?', a: 'By playing Solo and Vs rivals. Each game pays for what you get right; for example, Medicordle gives up to 12 EXP a word and The Streak Master 2 EXP per right answer. Pass the phone and Silent Artist practice are for fun and earn no EXP.' },
       { q: 'What are levels and tokens?', a: 'EXP raises your level, and each new level pays tokens. Tokens buy extras such as hints, revives and helpers, and looks in the Style shop: characters, frames, titles, win effects and sticker packs.' },
       { q: 'What are daily missions and the daily gift?', a: 'Every day: Warm-up, Full Shift and Overtime, done in order, paying 10, 30 and 50 tokens. Only games that use Sparks count, and each game counts once per mission. The daily gift calendar pays tokens and Sparks each day you claim it.' },
       { q: 'What are Grand Rounds and chests?', a: 'Grand Rounds gives you 3 missions each week, and each one pays a chest: wooden, golden, then diamond. Finish all three 4 weeks in a row for an epic chest. Chests hold tokens, chat stickers, rare win effects and Nova Mechs cards; a card you already have turns into tokens.' },

@@ -59,11 +59,11 @@ export const quizParade: GameDef = {
     {
       mode: 'bots',
       title: 'Quiz face-off',
-      blurb: 'Each question at once with the bots. Fast and right scores a bonus.',
+      blurb: 'Each question at once with the rivals. Fast and right scores a bonus.',
       howTo: [
-        'Pick Easy, Medium or Hard and 1 to 5 bots. Meet them in the room: tap a bot for its profile, swap it or kick it.',
+        'Pick Easy, Medium or Hard and 1 to 5 rivals. Meet them in the room: tap a rival for its profile, swap it or kick it.',
         'Everyone gets the same question at the same time, on its own clock. One answer each, no helpers.',
-        'At the reveal, each bot\'s face sits on the answer it picked.',
+        'At the reveal, each rival\'s face sits on the answer it picked.',
         'Same points as Solo. The first fully right answer on each question gets +1, and Closest number goes to the nearest guess.',
         'You earn your points as EXP, up to 60. Missed questions wait for you in Today\'s review.',
       ],

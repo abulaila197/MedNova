@@ -56,9 +56,9 @@ export const riddler: GameDef = {
     {
       mode: 'bots',
       title: 'Riddle duel',
-      blurb: 'The same picture as the bots. Solve it first.',
+      blurb: 'The same picture as the rivals. Solve it first.',
       howTo: [
-        'Pick Easy, Medium or Hard and 1 to 3 bots. Meet them in the room: tap a bot for its profile, swap it or kick it.',
+        'Pick Easy, Medium or Hard and 1 to 3 rivals. Meet them in the room: tap a rival for its profile, swap it or kick it.',
         'Everyone gets the same picture at the same time, with 90 s to solve it.',
         'Guess as often as you like, but a wrong guess locks you for 5 s.',
         'First solver scores 100, then 80, 65 and so on, plus up to 50 for time left.',

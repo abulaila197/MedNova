@@ -38,10 +38,10 @@ export const novaCrossword: GameDef = {
     {
       mode: 'bots',
       title: 'Grid showdown',
-      blurb: 'The same grid as the bots. First right answer claims the word.',
+      blurb: 'The same grid as the rivals. First right answer claims the word.',
       howTo: [
-        'Pick Easy, Medium or Hard and 1 to 3 bots. Meet them in the room: tap a bot for its profile, swap it or kick it.',
-        'Everyone plays the same grid. The first right answer claims the word and its letters. A bot never takes the word you are typing.',
+        'Pick Easy, Medium or Hard and 1 to 3 rivals. Meet them in the room: tap a rival for its profile, swap it or kick it.',
+        'Everyone plays the same grid. The first right answer claims the word and its letters. A rival never takes the word you are typing.',
         `Pick 1, 2 or 3 puzzles. They come one after another, each with the full time limit, ${CW.onlineHearts} fresh hearts and its own revive.`,
         `A wrong answer costs one of your ${CW.onlineHearts} hearts; trying the same wrong answer again costs nothing. No hints.`,
         'The race ends when every word is claimed, everyone is out, or time runs out. Most letters owned wins.',

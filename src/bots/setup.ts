@@ -15,7 +15,7 @@ export function botSetup(def: GameDef): SetupOption[] {
   const extra: SetupOption[] = [
     {
       key: 'botLevel',
-      label: 'Bots',
+      label: 'Rivals',
       choices: [
         { value: 'easy', label: 'Easy', note: 'mostly Dumb' },
         { value: 'medium', label: 'Medium', note: 'mostly Hardworker' },

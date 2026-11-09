@@ -135,7 +135,7 @@ export function BotRoom({ def, play }: { def: GameDef; play: Play }) {
   const allReady = live.length > 0 && ready.length === live.length;
   const waitingOn = live.find((x) => phase[x.bot!.id] !== 'ready');
   const joining = live.filter((x) => !phase[x.bot!.id] || phase[x.bot!.id] === 'away').length;
-  const status = allReady ? 'Everyone is ready' : joining ? (joining === 1 ? 'A bot is joining…' : `${joining} bots are joining…`) : `Waiting for ${waitingOn?.name ?? 'the bots'}`;
+  const status = allReady ? 'Everyone is ready' : joining ? (joining === 1 ? 'A rival is joining…' : `${joining} rivals are joining…`) : `Waiting for ${waitingOn?.name ?? 'the rivals'}`;
   const canPlay = !!def.Play.bots;
 
   const leave = async () => {
@@ -179,7 +179,7 @@ export function BotRoom({ def, play }: { def: GameDef; play: Play }) {
   };
   const adds = (n: number, team?: number) =>
     Array.from({ length: Math.max(0, n) }, (_, i) => (
-      <Pressable key={`add${team ?? ''}${i}`} onPress={() => add(team)} style={[st.tile, st.empty, teams >= 2 && st.tight]} accessibilityRole="button" accessibilityLabel="Add a bot">
+      <Pressable key={`add${team ?? ''}${i}`} onPress={() => add(team)} style={[st.tile, st.empty, teams >= 2 && st.tight]} accessibilityRole="button" accessibilityLabel="Add a rival">
         <Text style={[st.plus, { color: G.dim }]}>+</Text>
         <Text style={[st.tl, { color: G.dim }]}>Add bot</Text>
       </Pressable>
@@ -257,12 +257,12 @@ export function BotRoom({ def, play }: { def: GameDef; play: Play }) {
       <View style={st.sum}>
         <View style={{ gap: u(2), flex: 1 }}>
           <Text style={[st.k, { color: G.mute }]}>SETTINGS</Text>
-          <Text style={[st.sumT, { color: G.fg }]}>{[settingsLine(def, play.settings), `${LEVEL_NAME[level]} bots`].filter(Boolean).join(' · ')}</Text>
+          <Text style={[st.sumT, { color: G.fg }]}>{[settingsLine(def, play.settings), `${LEVEL_NAME[level]} rivals`].filter(Boolean).join(' · ')}</Text>
         </View>
       </View>
 
       <Text style={[st.note, { color: G.dim }]}>
-        {canPlay ? 'Tap a bot to see its profile, swap it or kick it.' : 'Tap a bot to see its profile, swap it or kick it. Bot matches come in the next build step.'}
+        {canPlay ? 'Tap a rival to see its profile, swap it or kick it.' : 'Tap a rival to see its profile, swap it or kick it. Rival matches come in the next build step.'}
       </Text>
       <View style={st.lbar}>
         <Pressable onPress={() => setSheet('talk')} style={st.talk} accessibilityRole="button" accessibilityLabel="Talk: stickers and voice">

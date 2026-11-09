@@ -40,12 +40,12 @@ export const caseFiles: GameDef = {
     {
       mode: 'bots',
       title: 'Case showdown',
-      blurb: 'The same case as the bots, with live progress.',
+      blurb: 'The same case as the rivals, with live progress.',
       howTo: [
-        'Pick Easy, Medium or Hard and 1 to 3 bots. Meet them in the room: tap a bot for its profile, swap it or kick it.',
+        'Pick Easy, Medium or Hard and 1 to 3 rivals. Meet them in the room: tap a rival for its profile, swap it or kick it.',
         'Everyone gets the same random case at the same time and works it alone, against the time limit.',
         'Pick 1, 2 or 3 cases. They come one after another, each with the full time limit, and your points add up.',
-        'You see when a bot closes the case. Everything stays sealed until the end, then you see every bot\'s diagnosis.',
+        'You see when a rival closes the case. Everything stays sealed until the end, then you see every rival\'s diagnosis.',
         'Scoring is the same as Solo, and every case\'s points are your EXP. A tie goes to the faster finish.',
       ],
     },
