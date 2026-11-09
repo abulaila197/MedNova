@@ -1,5 +1,5 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import { useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
@@ -15,6 +15,46 @@ import { useLearnColors } from './palette';
 function ago(at: number) {
   const days = Math.floor((Date.now() - at) / 86_400_000);
   return days <= 0 ? 'today' : days === 1 ? 'yesterday' : `${days} days ago`;
+}
+
+/**
+ * The scrolling middle of a card face (Yazan 2026-11-09: a long answer was cut with no sign it scrolls). It takes the
+ * vertical swipe before the Learn pager does, shows its scroll bar, and while more is hidden below it fades the last
+ * lines out over a small "Scroll for more" cue. A tap on its content still turns the card.
+ */
+function CardScroll({ children, onPress, label, center = true, fade }: { children: ReactNode; onPress: () => void; label: string; center?: boolean; fade: string }) {
+  const t = useTheme();
+  const [boxH, setBoxH] = useState(0);
+  const [inH, setInH] = useState(0);
+  const [y, setY] = useState(0);
+  const more = inH > boxH + 2 && y + boxH < inH - 6;
+  return (
+    <View style={s.qscroll}>
+      <ScrollView
+        style={s.qscroll}
+        contentContainerStyle={center ? s.qin : s.qtop}
+        nestedScrollEnabled
+        persistentScrollbar
+        showsVerticalScrollIndicator={inH > boxH + 2}
+        onLayout={(e) => setBoxH(e.nativeEvent.layout.height)}
+        onContentSizeChange={(_w, h) => setInH(h)}
+        onScroll={(e) => setY(e.nativeEvent.contentOffset.y)}
+        scrollEventThrottle={32}
+      >
+        <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={label}>
+          {children}
+        </Pressable>
+      </ScrollView>
+      {more ? (
+        <View style={s.more} pointerEvents="none">
+          <LinearGradient colors={[`${fade}00`, fade]} style={s.moreFade} />
+          <View style={[s.moreBar, { backgroundColor: fade }]}>
+            <Text style={[s.moreT, { color: t.accent }]}>Scroll for more ↓</Text>
+          </View>
+        </View>
+      ) : null}
+    </View>
+  );
 }
 
 /**
@@ -57,7 +97,8 @@ export function FlipCard({ card, flipped, onPress }: { card: Card; flipped: bool
   // taken from the whole screen (#7, 48%) pushed Again / Got it under the dock on phones with tall system bars and on
   // iPhones (Yazan 2026-11-08), so the card no longer has one.
   const answer = card.kind === 'dossier' ? '' : card.answer ?? 'Not saved for this question.';
-  const longAnswer = answer.length > 110;
+  // Longer answers step down in size so most fit without scrolling; the longest still scroll.
+  const answerSize = answer.length > 320 ? s.factXL : answer.length > 200 ? s.factXLong : answer.length > 110 ? s.factLong : null;
   return (
     <Pressable onPress={onPress} style={s.flip} accessibilityRole="button" accessibilityLabel={flipped ? 'Show the front' : isDossier ? 'Show the disease' : 'Show the answer'}>
       <Animated.View style={[face, front]} pointerEvents={flipped ? 'none' : 'box-none'}>
@@ -66,8 +107,8 @@ export function FlipCard({ card, flipped, onPress }: { card: Card; flipped: bool
         {card.kind === 'dossier' ? (
           <>
             {/* #5: no clue labels, one point per line, and the box scrolls; a tap on it still flips the card. */}
-            <ScrollView style={s.qscroll} contentContainerStyle={s.qin} showsVerticalScrollIndicator={false}>
-              <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel="Show the disease">
+            <CardScroll onPress={onPress} label="Show the disease" fade={c.cardB}>
+              <View>
                 {card.facts.clues ? (
                   <Text style={[s.one, { color: t.fg }]}>{card.facts.clues[pick % card.facts.clues.length]}</Text>
                 ) : (
@@ -78,15 +119,15 @@ export function FlipCard({ card, flipped, onPress }: { card: Card; flipped: bool
                     </View>
                   ))
                 )}
-              </Pressable>
-            </ScrollView>
+              </View>
+            </CardScroll>
             <Text style={[s.hint, { color: c.mute }]}>Which disease is it? Tap to see</Text>
           </>
         ) : (
           <>
             {/* A long question scrolls instead of being cut; a tap on it still turns the card. */}
-            <ScrollView style={s.qscroll} contentContainerStyle={s.qin} showsVerticalScrollIndicator={false}>
-              <Pressable onPress={onPress} style={s.qmid} accessibilityRole="button" accessibilityLabel="Show the answer">
+            <CardScroll onPress={onPress} label="Show the answer" fade={c.cardB}>
+              <View style={s.qmid}>
                 {card.image ? <Image source={card.image} style={s.img} resizeMode="contain" /> : null}
                 <Text style={[s.q, (card.q.length > 80 || card.choices.length > 4) && s.qLong, { color: t.fg }]}>{card.q}</Text>
                 <View style={[s.chs, card.choices.length > 4 && s.chGrid]}>
@@ -96,8 +137,8 @@ export function FlipCard({ card, flipped, onPress }: { card: Card; flipped: bool
                     </Text>
                   ))}
                 </View>
-              </Pressable>
-            </ScrollView>
+              </View>
+            </CardScroll>
             <Text style={[s.hint, { color: c.mute }]}>Tap for the answer</Text>
           </>
         )}
@@ -116,9 +157,9 @@ export function FlipCard({ card, flipped, onPress }: { card: Card; flipped: bool
         ) : (
           <>
             <Text style={[s.fld, { color: t.accent }]}>ANSWER</Text>
-            <ScrollView style={s.qscroll} showsVerticalScrollIndicator={false}>
-              <Text style={[s.fact, longAnswer && s.factLong, { color: t.fg }]}>{answer}</Text>
-            </ScrollView>
+            <CardScroll onPress={onPress} label="Show the front" center={false} fade={c.cardB}>
+              <Text style={[s.fact, answerSize, { color: t.fg }]}>{answer}</Text>
+            </CardScroll>
             <Text style={[s.hint, { color: c.mute }]} numberOfLines={2}>
               {card.q}
             </Text>
@@ -159,4 +200,11 @@ const s = StyleSheet.create({
   fld: { fontFamily: F.mono, fontSize: u(9), lineHeight: u(12), letterSpacing: u(1.62) },
   fact: { fontFamily: F.display, fontSize: u(19), lineHeight: u(24.7) },
   factLong: { fontSize: u(15), lineHeight: u(20) },
+  factXLong: { fontSize: u(13), lineHeight: u(17.5) },
+  factXL: { fontSize: u(12), lineHeight: u(16) },
+  qtop: { paddingVertical: u(4) },
+  more: { position: 'absolute', left: 0, right: 0, bottom: 0 },
+  moreFade: { height: u(26) },
+  moreBar: { alignItems: 'center', paddingTop: u(1), paddingBottom: u(2) },
+  moreT: { fontFamily: F.bodySemi, fontSize: u(9), lineHeight: u(12) },
 });

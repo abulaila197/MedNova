@@ -521,9 +521,10 @@ const s = StyleSheet.create({
   orTxt: { fontFamily: F.mono, fontSize: k(7.5), letterSpacing: k(1.5) },
   ggl: { height: k(31), borderRadius: k(12), borderWidth: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: k(7) },
   gglTxt: { fontFamily: F.bodySemi, fontSize: k(10.5), color: '#16162b' },
-  guest: { alignSelf: 'center', height: k(13), justifyContent: 'center' },
-  guestTxt: { fontFamily: F.body, fontSize: k(10.5), lineHeight: k(13) },
-  guestLine: { position: 'absolute', left: 0, right: 0, top: k(13.4), height: Math.max(1, k(0.8)) },
+  // Room for the letters' tails and the underline under them (Yazan 2026-11-09: the bottoms were cut on Android).
+  guest: { alignSelf: 'center', paddingBottom: k(2.5) },
+  guestTxt: { fontFamily: F.body, fontSize: k(10.5), lineHeight: k(15) },
+  guestLine: { position: 'absolute', left: 0, right: 0, bottom: k(1), height: Math.max(1, k(0.8)) },
   agree: { fontFamily: F.body, fontSize: k(8), lineHeight: k(10), textAlign: 'center' },
   tick: { flexDirection: 'row', alignItems: 'center', gap: k(8), marginTop: k(2) },
   box: { width: k(14), height: k(14), borderRadius: k(4), borderWidth: 1, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },

@@ -24,9 +24,10 @@ const OUT = Easing.out(Easing.cubic);
 const GROW_MS = 450;
 const RISE_MS = 450;
 const SWEEP_MS = 1100;
-// The game screen is opened this long before the way out, underneath the still-covering loading page, so
-// building it can't stall the line.
-const OPEN_EARLY_MS = 700;
+// The game screen is built underneath the loading page once the bar is full, and the page holds still this long
+// before the way out (Yazan 2026-11-09): building it while the bar or the line still moved made them stutter.
+const FULL_HOLD_MS = 80;
+const BUILD_MS = 350;
 
 /** Sits above the app pages: plays a game's loading page between its Play button and the next screen. */
 export function LoadingHost() {
@@ -119,8 +120,8 @@ function Run({ run }: { run: LoadRun }) {
         // read the game's question bank now, while the bar runs, not when the game opens
         setTimeout(() => gameDef(run.key), 400);
       }, 60 + SETTLE_MS + 20),
-      setTimeout(() => router.push(`/play/${run.key}`), 60 + SETTLE_MS + 20 + LOAD_MS + 250 - OPEN_EARLY_MS),
-      setTimeout(() => wipe(), 60 + SETTLE_MS + 20 + LOAD_MS + 250),
+      setTimeout(() => router.push(`/play/${run.key}`), 60 + SETTLE_MS + 20 + LOAD_MS + FULL_HOLD_MS),
+      setTimeout(() => wipe(), 60 + SETTLE_MS + 20 + LOAD_MS + FULL_HOLD_MS + BUILD_MS),
     );
     return () => timers.forEach(clearTimeout);
     // eslint-disable-next-line react-hooks/exhaustive-deps

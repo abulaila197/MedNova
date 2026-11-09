@@ -11,13 +11,15 @@ export const MAX_FONT_SCALE = 1;
 const BREAK = Platform.OS === 'android' ? 'simple' : undefined;
 
 // iPhone cuts off the tops of letters (and the bottoms of g, y, p) that reach past a line height smaller than the font's
-// own height; Android lets them spill, so tight display titles ("Play", game names) only broke on iPhone (Yazan
+// own height; Android mostly lets them spill, so tight display titles ("Play", game names) only broke on iPhone (Yazan
 // 2026-11-08). Such a text gets a little room above and below, taken back by equal negative margins, so the letters
 // draw whole and the layout doesn't move. Texts with a fixed height, a background or a border are left alone.
-const TIGHT = 1.2;
+// Android cut them too, on lines only a little taller than the font ("Continue as guest", Yazan 2026-11-09), so it gets
+// the same room, from a slightly looser line height.
+const TIGHT = Platform.OS === 'android' ? 1.3 : 1.2;
 const ROOM = 1.36;
 const num = (v: unknown) => (typeof v === 'number' ? v : v == null ? 0 : NaN);
-function iosRoom(style: TextProps['style']): TextStyle | null {
+function letterRoom(style: TextProps['style']): TextStyle | null {
   const f = StyleSheet.flatten(style) as TextStyle | undefined;
   if (!f?.fontSize || !f.lineHeight || f.lineHeight >= f.fontSize * TIGHT) return null;
   if (f.height != null || f.backgroundColor || f.borderWidth || f.borderTopWidth || f.borderBottomWidth) return null;
@@ -32,7 +34,7 @@ function iosRoom(style: TextProps['style']): TextStyle | null {
 
 /** react-native Text with the text-size cap. Use instead of importing Text from react-native. */
 export function Text(props: TextProps & { ref?: React.Ref<RNText> }) {
-  const room = Platform.OS === 'ios' ? iosRoom(props.style) : null;
+  const room = Platform.OS === 'web' ? null : letterRoom(props.style);
   return <RNText maxFontSizeMultiplier={MAX_FONT_SCALE} textBreakStrategy={BREAK} {...props} style={room ? [props.style, room] : props.style} />;
 }
 // eslint-disable-next-line @typescript-eslint/no-redeclare -- the type that goes with the component, as in react-native

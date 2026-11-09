@@ -10,10 +10,10 @@ const APath = Animated.createAnimatedComponent(Path);
 /** Each game's own progress bar (preview v4). `p` runs 0 to 1 over the loading time. */
 export function Bar({ g, p, w }: { g: LoadCfg; p: SharedValue<number>; w: number }) {
   const b = g.bar;
-  if (b.t === 'line' || b.t === 'flame' || b.t === 'diamond') return <LineBar g={g} p={p} />;
+  if (b.t === 'line' || b.t === 'flame' || b.t === 'diamond') return <LineBar g={g} p={p} w={w} />;
   if (b.t === 'chalk') return <Chalk c={b.c!} p={p} w={w} />;
   if (b.t === 'march') return <March c={b.c!} flag={b.flag!} p={p} w={w} />;
-  if (b.t === 'thread') return <Thread c={b.c!} p={p} />;
+  if (b.t === 'thread') return <Thread c={b.c!} p={p} w={w} />;
   if (b.t === 'tiles') return <Steps n={6} p={p} kind="tiles" />;
   if (b.t === 'squares') return <Steps n={12} p={p} kind="squares" />;
   return <Steps n={10} p={p} kind="bulbs" />;
@@ -22,16 +22,18 @@ export function Bar({ g, p, w }: { g: LoadCfg; p: SharedValue<number>; w: number
 /** Bar box height: the step bars are taller or shorter than the 18px line box. */
 export const barHeight = (g: LoadCfg) => q(g.bar.t === 'tiles' ? 26 : g.bar.t === 'squares' ? 16 : g.bar.t === 'march' ? 22 : 18);
 
-function LineBar({ g, p }: { g: LoadCfg; p: SharedValue<number> }) {
+// The fill grows by scaling and the tip slides by moving (Yazan 2026-11-09): changing their width and left every frame
+// laid the bar out again and redrew its glow on each frame, which made the line stutter.
+function LineBar({ g, p, w }: { g: LoadCfg; p: SharedValue<number>; w: number }) {
   const b = g.bar;
-  const fill = useAnimatedStyle(() => ({ width: `${p.value * 100}%` }));
-  const tip = useAnimatedStyle(() => ({ left: `${p.value * 100}%` }));
+  const fill = useAnimatedStyle(() => ({ transform: [{ scaleX: Math.max(0.001, p.value) }] }));
+  const tip = useAnimatedStyle(() => ({ transform: [{ translateX: p.value * w }] }));
   return (
     <View style={StyleSheet.absoluteFill}>
       <View style={[s.track, { backgroundColor: b.track }]} />
-      <Animated.View style={[s.track, { right: undefined, backgroundColor: b.c, boxShadow: b.glow }, fill]} />
+      <Animated.View style={[s.track, { transformOrigin: 'left center', backgroundColor: b.c, boxShadow: b.glow }, fill]} />
       {b.t === 'flame' ? (
-        <Animated.View style={[s.tip, { top: q(3), width: q(12), height: q(12), marginLeft: -q(6) }, tip]}>
+        <Animated.View style={[s.tip, { left: 0, top: q(3), width: q(12), height: q(12), marginLeft: -q(6) }, tip]}>
           <Svg width="100%" height="100%" viewBox="0 0 12 12">
             <Defs>
               <RadialGradient id="flametip" cx="50%" cy="50%" r="50%">
@@ -44,7 +46,11 @@ function LineBar({ g, p }: { g: LoadCfg; p: SharedValue<number> }) {
           </Svg>
         </Animated.View>
       ) : null}
-      {b.t === 'diamond' ? <Animated.View style={[s.tip, { top: q(4), width: q(9), height: q(9), marginLeft: -q(4.5), backgroundColor: b.c, transform: [{ rotate: '45deg' }], boxShadow: `0 0 10px ${b.c}` }, tip]} /> : null}
+      {b.t === 'diamond' ? (
+        <Animated.View style={[s.tip, { left: 0, top: q(4), width: q(9), height: q(9), marginLeft: -q(4.5) }, tip]}>
+          <View style={{ flex: 1, backgroundColor: b.c, transform: [{ rotate: '45deg' }], boxShadow: `0 0 10px ${b.c}` }} />
+        </Animated.View>
+      ) : null}
     </View>
   );
 }
@@ -122,12 +128,12 @@ function March({ c, flag, p, w }: { c: string; flag: string; p: SharedValue<numb
 }
 
 const PINS = [0, 0.33, 0.66, 1];
-function Thread({ c, p }: { c: string; p: SharedValue<number> }) {
-  const fill = useAnimatedStyle(() => ({ width: `${p.value * 100}%` }));
+function Thread({ c, p, w }: { c: string; p: SharedValue<number>; w: number }) {
+  const fill = useAnimatedStyle(() => ({ transform: [{ scaleX: Math.max(0.001, p.value) }] }));
   return (
     <View style={[StyleSheet.absoluteFill, { marginHorizontal: q(4) }]}>
       <View style={[s.thread, { top: q(9), height: 1, backgroundColor: 'rgba(255,255,255,0.12)' }]} />
-      <Animated.View style={[s.thread, { right: undefined, top: q(8.5), height: q(2), backgroundColor: c, boxShadow: '0 0 6px rgba(200,35,47,0.6)' }, fill]} />
+      <Animated.View style={[s.thread, { transformOrigin: 'left center', top: q(8.5), height: q(2), backgroundColor: c, boxShadow: '0 0 6px rgba(200,35,47,0.6)' }, fill]} />
       {PINS.map((x) => (
         <Pin key={x} x={x} p={p} />
       ))}

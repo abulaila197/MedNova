@@ -10,7 +10,9 @@ import { q } from './geo';
 // clock `t` (seconds), so nothing is stored per frame and a paused clock holds the picture still.
 // Speeds are the preview's pixels per frame at 60 fps, on the photo box.
 
-const COUNT: Record<PartType, number> = { rain: 70, rainwin: 26, chalk: 40, motes: 34, sparkle: 8, embers: 26, smoke: 9 };
+// About half the preview's counts (Yazan 2026-11-09): each particle is its own moving view, and 70 raindrops made
+// the loading page stutter on mid-range phones.
+const COUNT: Record<PartType, number> = { rain: 32, rainwin: 14, chalk: 20, motes: 18, sparkle: 6, embers: 14, smoke: 6 };
 
 /** Same random numbers every run for particle i, field k (and respawn cycle c). */
 function hash(i: number, k: number, c: number) {
