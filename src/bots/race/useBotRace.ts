@@ -153,7 +153,7 @@ export function useBotRace({ play, onFinish, onQuit, rules, pick, toItems, guess
           s.solved.add(p.user_id);
           if (b) {
             const ms = race.plansNow()?.[p.user_id]?.doneAt ?? 0;
-            push(solvedText ? solvedText(p.name, p.item_rank ?? 1, ms) : `${p.name} solved it, ${nth(p.item_rank ?? 1)}`, playerColour(st.players, p.user_id));
+            push(solvedText ? solvedText(p.name, p.item_rank ?? 1, ms) : `${p.name} solved ${nth(p.item_rank ?? 1)}`, playerColour(st.players, p.user_id));
             const place = placeOf(p, n);
             later(() => rivalMoment(room, b, 'right', { ...table, place }));
           }

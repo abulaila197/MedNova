@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { decide, moodOf } from '@/bots/brain';
 import { orderPoints, YOU, type Rules } from '@/bots/race/engine';
 import { rangePlan } from '@/bots/race/plans';
+import { RivalStrip } from '@/bots/race/RivalStrip';
 import { useBotRace } from '@/bots/race/useBotRace';
 import { clock } from '@/games/engine/clock';
 import { AnsweredRow } from '@/match/AnsweredRow';
@@ -138,6 +139,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
       wrong={st.me?.wrong ?? []}
       wrongSeq={wrongSeq}
       hidden={g.paused}
+      live={<RivalStrip st={st} race={race} />}
       onGuess={(id) => {
         if (lockLeft > 0 || g.paused) return;
         if (id === r.id) g.solve();
