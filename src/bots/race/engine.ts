@@ -114,6 +114,10 @@ export class BotRace implements Race {
   plansNow() {
     return this.cur?.plans ?? null;
   }
+  /** The plans of question `i`, running or finished (Case Files shows every rival's answers at the reveal). */
+  plansAt(i: number) {
+    return this.done[i]?.plans ?? (i === this.done.length ? this.cur?.plans : undefined) ?? null;
+  }
   startOfNow() {
     return this.cur?.start ?? null;
   }
@@ -148,7 +152,8 @@ export class BotRace implements Race {
       ...this.rivals.map((b) => {
         const p = c.plans[b.id];
         const inTime = p.doneAt != null && p.doneAt <= limitMs;
-        return { id: b.id, solved: inTime && p.solved, doneAt: inTime ? p.doneAt : null, tries: p.rows?.length ?? p.wrongAt.length + (p.solved ? 1 : 0), answer: inTime ? (p.answer ?? null) : null };
+        // The answer goes to `scoreAll` even when the rival ran out of time: Case Files still pays the lists it filed.
+        return { id: b.id, solved: inTime && p.solved, doneAt: inTime ? p.doneAt : null, tries: p.rows?.length ?? p.wrongAt.length + (p.solved ? 1 : 0), answer: p.answer ?? null };
       }),
     ];
     const solvers = rows.filter((x) => x.solved).sort((a, b) => a.doneAt! - b.doneAt! || (a.id === YOU ? -1 : b.id === YOU ? 1 : 0));

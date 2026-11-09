@@ -109,3 +109,62 @@ test('every doctor\'s list name is one disease from the master list, each once, 
     assert.ok(c.answers.includes(c.final) && labels.has(c.final), `${c.id}: final`);
   }
 });
+
+// ---- Case showdown (vs rivals, G5) ----
+import { mindFor as mindForRival } from '../../../bots/brain';
+import { casePlan, parseWork, stageAt } from '../rivals';
+
+const CASE0 = CASE;
+const CASES = [CASE, { ...CASE, id: 'MP-2', answers: ['y', 'a', 'b'], final: 'y' }, { ...CASE, id: 'MP-3', answers: ['z', 'c'], final: 'z' }];
+const POOL0 = ['Gastroenteritis', 'Kidney stone', 'Diverticulitis', 'Cholecystitis', 'Pancreatitis', 'Pyelonephritis'];
+const rivalOf = (type: 'genius' | 'scholar' | 'freshman') => mindForRival({ id: `bot:${type}:T`, type, name: 'T', persona: 'cheer' });
+
+test('case showdown: a rival files sensible lists, a diagnosis and points, the same way every time', () => {
+  const a = { seed: 'm1:0', limitMs: 600_000, gap: 0, progress: 0, pool: POOL0 };
+  const p = casePlan(rivalOf('scholar'), CASE0, a);
+  const w = parseWork(p.answer)!;
+  assert.ok(w.first.length >= 1 && w.first.length <= 5);
+  assert.ok(w.dd.length >= 1 && w.dd.length <= 5);
+  assert.ok(w.dd.every((x) => w.first.includes(x)));
+  assert.ok(w.at.exam < w.at.inv && w.at.inv < w.at.prov && w.at.prov <= w.at.done);
+  assert.equal(p.points, w.points);
+  if (p.doneAt != null) assert.equal(p.solved, w.prov === CASE0.final || w.redeem === CASE0.final);
+  assert.deepEqual(casePlan(rivalOf('scholar'), CASE0, a), p);
+  assert.equal(stageAt(w, 0, false), 'History');
+  assert.equal(stageAt(w, w.at.exam, false), 'Examination');
+  assert.equal(stageAt(w, w.at.prov, false), 'Treatment');
+  assert.equal(stageAt(w, w.at.prov, true), 'Finished');
+});
+
+test('case showdown: a Genius solves more cases and scores more than a Freshman over many seeds', () => {
+  const sum = (type: 'genius' | 'freshman') => {
+    let pts = 0;
+    let solved = 0;
+    for (let i = 0; i < 60; i++) {
+      const p = casePlan(rivalOf(type), CASES[i % CASES.length], { seed: `m${i}:0`, limitMs: 600_000, gap: 0, progress: 0.5, pool: POOL0 });
+      pts += p.points ?? 0;
+      if (p.solved) solved++;
+    }
+    return { pts, solved };
+  };
+  const g = sum('genius');
+  const f = sum('freshman');
+  assert.ok(g.solved > f.solved, `genius ${g.solved} vs freshman ${f.solved}`);
+  assert.ok(g.pts > f.pts);
+  assert.ok(f.solved >= 5);
+});
+
+test('case showdown: a rival out of time still earns what it filed, never ends the case, and gets no time bonus', () => {
+  // Find a seed where the rival runs out of time (decide says no time), then check the points.
+  for (let i = 0; i < 400; i++) {
+    const p = casePlan(rivalOf('freshman'), CASE0, { seed: `late${i}:0`, limitMs: 300_000, gap: 0, progress: 0, pool: POOL0 });
+    if (p.doneAt != null) continue;
+    const w = parseWork(p.answer)!;
+    assert.equal(p.solved, false);
+    assert.equal(w.redeem, null); // the last call comes at the end, after time up
+    assert.ok(w.at.done > 300_000);
+    assert.ok((p.points ?? 0) <= 50 + 20); // lists and maybe a diagnosis, no time bonus
+    return;
+  }
+  assert.fail('no late rival found');
+});
