@@ -5,11 +5,12 @@ import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 import { openPlayer } from '@/features/profile/Friends';
 import { useStyle, wantLooks } from '@/features/style/useStyle';
-import Svg, { Circle, Defs, RadialGradient, Stop } from 'react-native-svg';
+import Svg, { Path } from 'react-native-svg';
+import { PlayerFace } from '@/features/style/Frame';
+import { useAccount } from '@/state/account';
 
 import { LevelBadge, useBalance } from '@/components/LevelBadge';
 import { Fade } from '@/components/Fade';
-import { useSvgId } from '@/components/svgId';
 import { GAMES } from '@/data/games';
 import { useSession } from '@/games/shell/session';
 import { agoText, copyOf, keepCopy } from '@/lib/copies';
@@ -18,25 +19,28 @@ import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
-// Page colours from the locked preview (d-/l-leaderboard).
+// Page colours (dark only).
 const C = {
   dark: {
-    star: '#ffffff',
-    // rank words and the pinned rank number are lilac (#c9b8ff) in the preview; accent per the standing rule
     rank: '#6fd6ff',
     pinLine: 'rgba(164,139,255,0.55)',
     pinShadow: (k: number) => `0px ${12 * k}px ${30 * k}px ${-14 * k}px rgba(143,117,255,0.8)`,
     prog: 'rgba(255,255,255,0.1)',
+    box: ['#2a3c7a', '#1a2754'] as const,
+    boxFirst: ['#3a3f86', '#1f2a5c'] as const,
+    boxLine: '#33478a',
+    row: '#1a2754',
   },
 };
-const HALO = '201,184,255'; // star glow colour
 
-// Top three as stars. cx = star centre x, top = star top (screen design px), d = star diameter, a = glow alpha.
-const TOP3 = [
-  { word: 'First', cx: 141, top: 139, d: 20, a: 0.9, blur: 32, spread: 7 },
-  { word: 'Second', cx: 62, top: 192, d: 14, a: 0.65, blur: 22, spread: 5 },
-  { word: 'Third', cx: 221.5, top: 211, d: 11, a: 0.45, blur: 18, spread: 4 },
+// Podium (Yazan 2026-11-09, option A, short boxes): 2nd, 1st, 3rd as boxes with the player's photo on top.
+// h = box height, f = photo size (design px). Medal colours: m = light, d = deep.
+const POD = [
+  { place: 2, h: 97, f: 42, m: '#dfe6ff', d: '#9aa6cc' },
+  { place: 1, h: 108, f: 49, m: '#ffd76a', d: '#c99a2e' },
+  { place: 3, h: 90, f: 40, m: '#f0a875', d: '#b86a3c' },
 ];
+const POD_ROOM = 44; // space above the tallest box for the 1st photo and its crown, so nothing reaches the filters
 
 type Period = 'week' | 'month' | 'all';
 const PERIODS: { k: Period; label: string; empty: string }[] = [
@@ -45,7 +49,7 @@ const PERIODS: { k: Period; label: string; empty: string }[] = [
   { k: 'all', label: 'All time', empty: 'yet' },
 ];
 const SHORT: Record<Period, string> = { week: 'Week', month: 'Month', all: 'All time' };
-type Row = { rank: number; id: string; name: string; level: number; exp: number };
+type Row = { rank: number; id: string; name: string; level: number; exp: number; avatar?: string | null };
 /** `savedAt`: shown from the saved copy read then, because the server can't be reached (#59). */
 type Board = { rows: Row[]; me: { rank: number; exp: number; above: { name: string; gap: number } | null } | null; savedAt?: number };
 const num = (n: number) => n.toLocaleString('en-US');
@@ -86,29 +90,17 @@ const MONTH_PRIZE_GAME = 'MONTHLY PRIZES · THE TOP 3 OF THIS GAME WIN 100 TOKEN
 
 const TOP = 72; // content area top (design px)
 
-/** CSS box-shadow `0 0 blur spread` glow around a circle of radius r, as a soft radial gradient. */
-function StarGlow({ r, blur, spread, a }: { r: number; blur: number; spread: number; a: number }) {
-  const id = useSvgId('sg');
-  const e = r + spread; // shadow edge
-  const R = e + blur;
-  const sz = 2 * R;
+/** The 1st place crown. */
+function Crown({ w, color }: { w: number; color: string }) {
   return (
-    <Svg width={u(sz)} height={u(sz)} viewBox={`0 0 ${sz} ${sz}`} style={{ position: 'absolute', left: u(r - R), top: u(r - R) }} pointerEvents="none">
-      <Defs>
-        <RadialGradient id={id} cx={R} cy={R} r={R} gradientUnits="userSpaceOnUse">
-          <Stop offset="0" stopColor={`rgb(${HALO})`} stopOpacity={a * 0.6} />
-          <Stop offset={Math.max(0, e - blur / 2) / R} stopColor={`rgb(${HALO})`} stopOpacity={a * 0.52} />
-          <Stop offset={e / R} stopColor={`rgb(${HALO})`} stopOpacity={a * 0.3} />
-          <Stop offset={(e + blur / 2) / R} stopColor={`rgb(${HALO})`} stopOpacity={a * 0.09} />
-          <Stop offset="1" stopColor={`rgb(${HALO})`} stopOpacity={0} />
-        </RadialGradient>
-      </Defs>
-      <Circle cx={R} cy={R} r={R} fill={`url(#${id})`} />
+    <Svg width={u(w)} height={u(w * 0.72)} viewBox="0 0 24 17.3">
+      <Path d="M2 15.3 L0.6 3.6 L7 8.4 L12 0.6 L17 8.4 L23.4 3.6 L22 15.3 Z" fill={color} stroke="#c99a2e" strokeWidth={1} strokeLinejoin="round" />
+      <Path d="M3 16.3 H21" stroke="#c99a2e" strokeWidth={1.4} strokeLinecap="round" />
     </Svg>
   );
 }
 
-/** Leaderboard: scope and filters, the top three as stars, places 4 to 50 and your pinned row. */
+/** Leaderboard: scope and filters, the top three on a podium, places 4 to 50 and your pinned row. */
 export function Leaderboard() {
   const t = useTheme();
   const looks = useStyle((x) => x.looks);
@@ -116,6 +108,7 @@ export function Leaderboard() {
   const p = C[t.mode];
   const pill = [s.pill, { backgroundColor: t.panel, borderColor: t.panelLine }];
   const me = useBalance();
+  const myFace = useAccount((a) => a.profile?.avatar) || 'yara';
   const userId = useSession((x) => x.userId);
   const [scope, setScope] = useState<'everyone' | 'friends'>('everyone');
   const [period, setPeriod] = useState<Period>('week');
@@ -185,41 +178,55 @@ export function Leaderboard() {
               </View>
             </View>
             {offline ? <Text style={[s.offline, { color: t.red }]}>{offline}</Text> : null}
-            <View style={s.hero}>
-              {note ? <Text style={[s.note, { color: t.mute }]}>{note}</Text> : null}
-              {TOP3.map((r, i) => {
-                const who = rows[i];
-                if (!who) return null;
-                return (
-                  <Pressable key={r.word} disabled={!canOpen(who.id)} onPress={() => openPlayer({ id: who.id, display_name: who.name })} style={[s.rk, { left: u(r.cx - 40), top: u(r.top - 115) }]} accessibilityRole="button" accessibilityHint="Open their profile">
-                    <View style={{ width: u(r.d), height: u(r.d) }}>
-                      <StarGlow r={r.d / 2} blur={r.blur} spread={r.spread} a={r.a} />
-                      <View style={{ width: u(r.d), height: u(r.d), borderRadius: u(r.d / 2), backgroundColor: p.star }} />
-                    </View>
-                    <Text style={[s.word, { color: p.rank }]}>{r.word}</Text>
-                    <View style={s.nmRow}>
-                      <Text style={[s.name, { color: t.fg }, glowOf(who.id)]} numberOfLines={1}>
+            {note ? <Text style={[s.note, { color: t.mute }]}>{note}</Text> : null}
+            {rows.length ? (
+              <View style={s.pod}>
+                {POD.map((b) => {
+                  const who = rows[b.place - 1];
+                  const first = b.place === 1;
+                  if (!who) return <View key={b.place} style={[s.box, s.boxEmpty, { height: u(b.h * 0.6), borderColor: p.boxLine }]} />;
+                  return (
+                    <Pressable key={b.place} disabled={!canOpen(who.id)} onPress={() => openPlayer({ id: who.id, display_name: who.name, avatar: who.avatar ?? undefined })} style={[s.box, { height: u(b.h), borderColor: first ? 'rgba(255,215,106,0.4)' : p.boxLine }]} accessibilityRole="button" accessibilityHint="Open their profile">
+                      <LinearGradient colors={first ? p.boxFirst : p.box} style={[StyleSheet.absoluteFill, s.boxFill]} />
+                      <View style={[s.face, { top: u(-b.f / 2 - 3), width: u(b.f + 4), height: u(b.f + 4), borderColor: b.m, boxShadow: `0px 0px ${u(14)}px ${b.m}66` }]}>
+                        <PlayerFace slug={who.avatar || 'yara'} size={u(b.f - 2)} userId={who.id} still />
+                      </View>
+                      {first ? (
+                        <View style={[s.crown, { top: u(-b.f / 2 - 3 - 15) }]}>
+                          <Crown w={18} color={b.m} />
+                        </View>
+                      ) : null}
+                      <View style={{ height: u(b.f / 2 + 4) }} />
+                      <Text style={[s.bName, { color: t.fg }, glowOf(who.id)]} numberOfLines={1}>
                         {who.id === userId ? 'You' : who.name}
                       </Text>
-                      <LevelBadge level={who.level} size={u(15)} />
-                    </View>
-                    <Text style={[s.pts, { color: t.mute }]}>{num(who.exp)}</Text>
-                  </Pressable>
-                );
-              })}
-            </View>
-            {rows.slice(3).map((r, i) => (
-              <Pressable key={r.id} disabled={!canOpen(r.id)} onPress={() => openPlayer({ id: r.id, display_name: r.name })} style={[s.r, { borderColor: t.panelLine }, i === 0 && s.first]} accessibilityRole="button" accessibilityHint="Open their profile">
-                <Text style={[s.rN, { color: t.kick }]}>{String(r.rank).padStart(2, '0')}</Text>
-                <View style={s.rNm}>
-                  <Text style={[s.rB, { color: r.id === userId ? t.accent : t.fg }, glowOf(r.id)]} numberOfLines={1}>
-                    {r.id === userId ? 'You' : r.name}
+                      <View style={s.bLv}>
+                        <LevelBadge level={who.level} size={u(14)} />
+                      </View>
+                      <Text style={[s.bExp, { color: t.fg }]}>{num(who.exp)}</Text>
+                      <Text style={[s.bNum, { color: b.m }]}>{b.place}</Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
+            ) : null}
+            <View style={s.list}>
+              {rows.slice(3).map((r) => (
+                <Pressable key={r.id} disabled={!canOpen(r.id)} onPress={() => openPlayer({ id: r.id, display_name: r.name, avatar: r.avatar ?? undefined })} style={[s.r, { backgroundColor: p.row, borderColor: r.id === userId ? t.accent : t.panelLine }]} accessibilityRole="button" accessibilityHint="Open their profile">
+                  <Text style={[s.rN, { color: t.mute }]}>{r.rank}</Text>
+                  <PlayerFace slug={r.avatar || 'yara'} size={u(26)} userId={r.id} still />
+                  <View style={s.rNm}>
+                    <Text style={[s.rB, { color: r.id === userId ? t.accent : t.fg }, glowOf(r.id)]} numberOfLines={1}>
+                      {r.id === userId ? 'You' : r.name}
+                    </Text>
+                    <LevelBadge level={r.level} size={u(14)} />
+                  </View>
+                  <Text style={[s.rS, { color: t.fg }]}>
+                    {num(r.exp)} <Text style={[s.rU, { color: t.mute }]}>EXP</Text>
                   </Text>
-                  <LevelBadge level={r.level} size={u(15)} />
-                </View>
-                <Text style={[s.rS, { color: t.mute }]}>{num(r.exp)}</Text>
-              </Pressable>
-            ))}
+                </Pressable>
+              ))}
+            </View>
             {period === 'month' && scope === 'everyone' ? (
               <Text style={[s.prize, { color: t.mute }]}>{game ? MONTH_PRIZE_GAME : MONTH_PRIZE_ALL}</Text>
             ) : null}
@@ -228,7 +235,10 @@ export function Leaderboard() {
       </Fade>
       {/* Your row stays pinned under the list. */}
       <View style={[s.pin, { backgroundColor: t.panel, borderColor: p.pinLine, boxShadow: p.pinShadow(u(1)) }]}>
-        <Text style={[s.pinN, { color: p.rank }]}>{mine ? String(mine.rank).padStart(2, '0') : '–'}</Text>
+        <Text style={[s.pinN, { color: p.rank }]}>{mine ? mine.rank : '–'}</Text>
+        <View style={[s.pinFace, { borderColor: t.accent }]}>
+          <PlayerFace slug={myFace} size={u(28)} userId={userId} still />
+        </View>
         <View style={s.pinB}>
           <View style={s.nmRow}>
             <Text style={[s.you, { color: t.fg }]}>You</Text>
@@ -277,27 +287,34 @@ const s = StyleSheet.create({
   flt: { flexDirection: 'row', gap: u(4) },
   pill: { height: u(23), paddingHorizontal: u(7), borderRadius: 999, borderWidth: 1, justifyContent: 'center' },
   pillT: { fontFamily: F.bodySemi, fontSize: u(9), maxWidth: u(90) },
-  hero: { height: u(200), marginTop: u(4), marginHorizontal: u(-16) },
-  rk: { position: 'absolute', width: u(80), alignItems: 'center' },
-  word: { marginTop: u(4), fontFamily: F.displayItalic, fontSize: u(13), lineHeight: u(16) },
-  name: { marginTop: u(4), fontFamily: F.display, fontSize: u(15), lineHeight: u(15) },
-  pts: { marginTop: u(4), fontFamily: F.mono, fontSize: u(7.5), lineHeight: u(10), letterSpacing: u(1.05) },
-  r: { flexDirection: 'row', alignItems: 'center', gap: u(12), paddingVertical: u(8), height: u(36), borderBottomWidth: 1 },
-  first: { borderTopWidth: 1, height: u(37) },
-  rN: { width: u(16), fontFamily: F.mono, fontSize: u(8.5), lineHeight: u(12) },
+  pod: { flexDirection: 'row', alignItems: 'flex-end', gap: u(7), marginTop: u(POD_ROOM), marginBottom: u(12) },
+  box: { flex: 1, alignItems: 'center', borderWidth: 1, borderTopLeftRadius: u(14), borderTopRightRadius: u(14), borderBottomLeftRadius: u(10), borderBottomRightRadius: u(10), paddingHorizontal: u(4) },
+  boxFill: { borderTopLeftRadius: u(13), borderTopRightRadius: u(13), borderBottomLeftRadius: u(9), borderBottomRightRadius: u(9) },
+  boxEmpty: { opacity: 0.4 },
+  face: { position: 'absolute', alignSelf: 'center', borderRadius: 999, borderWidth: u(2), alignItems: 'center', justifyContent: 'center', backgroundColor: '#0d1738' },
+  crown: { position: 'absolute', alignSelf: 'center' },
+  bName: { fontFamily: F.display, fontSize: u(11), lineHeight: u(14), maxWidth: '100%' },
+  bLv: { marginTop: u(2) },
+  bExp: { marginTop: u(2), fontFamily: F.mono, fontSize: u(8.5), lineHeight: u(11) },
+  bNum: { marginTop: 'auto', marginBottom: u(3), fontFamily: F.display, fontSize: u(19), lineHeight: u(22) },
+  list: { gap: u(6) },
+  r: { flexDirection: 'row', alignItems: 'center', gap: u(9), paddingHorizontal: u(10), height: u(42), borderRadius: u(12), borderWidth: 1 },
+  rN: { width: u(16), fontFamily: F.display, fontSize: u(11.5), lineHeight: u(15) },
   nmRow: { flexDirection: 'row', alignItems: 'center', gap: u(5) },
   rNm: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: u(6) },
-  rB: { fontFamily: F.display, fontSize: u(16), lineHeight: u(16) },
-  rS: { fontFamily: F.display, fontSize: u(15), lineHeight: u(19) },
+  rB: { fontFamily: F.display, fontSize: u(12.5), lineHeight: u(16), flexShrink: 1 },
+  rS: { fontFamily: F.mono, fontSize: u(9.5), lineHeight: u(13) },
+  rU: { fontFamily: F.mono, fontSize: u(7) },
   prize: { fontFamily: F.mono, fontSize: u(7.5), letterSpacing: u(1), lineHeight: u(12), textAlign: 'center', marginTop: u(14), paddingHorizontal: u(16) },
   offline: { fontFamily: F.bodySemi, fontSize: u(10.5), textAlign: 'center', marginTop: u(8) },
-  note: { position: 'absolute', left: u(16), right: u(16), top: u(70), textAlign: 'center', fontFamily: F.body, fontSize: u(11), lineHeight: u(15) },
+  note: { marginTop: u(60), marginBottom: u(20), textAlign: 'center', fontFamily: F.body, fontSize: u(11), lineHeight: u(15) },
   guest: { marginTop: u(3), fontFamily: F.body, fontSize: u(10.5), lineHeight: u(14) },
   menu: { position: 'absolute', top: u(88 - TOP + 30), left: u(14), right: u(14), flexDirection: 'row', flexWrap: 'wrap', borderWidth: 1, borderRadius: u(16), paddingHorizontal: u(10), paddingVertical: u(4) },
   opt: { width: '50%', paddingVertical: u(8), paddingHorizontal: u(4), borderBottomWidth: 1 },
   optT: { fontFamily: F.display, fontSize: u(12.5), lineHeight: u(16) },
   pin: { marginTop: u(6), marginBottom: u(80), marginHorizontal: u(14), height: u(66), flexDirection: 'row', alignItems: 'center', gap: u(12), paddingHorizontal: u(14), borderRadius: u(18), borderWidth: 1 },
-  pinN: { fontFamily: F.mono, fontSize: u(8.5), lineHeight: u(12) },
+  pinN: { minWidth: u(16), fontFamily: F.display, fontSize: u(12), lineHeight: u(15) },
+  pinFace: { borderRadius: 999, borderWidth: u(1.5), padding: u(1) },
   pinB: { flex: 1 },
   you: { fontFamily: F.displayItalic, fontSize: u(17), lineHeight: u(21) },
   sub: { marginTop: u(3), fontFamily: F.mono, fontSize: u(7.5), lineHeight: u(10), letterSpacing: u(0.9) },
