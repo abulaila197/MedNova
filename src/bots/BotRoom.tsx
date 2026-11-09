@@ -23,13 +23,15 @@ import { u } from '@/theme/scale';
 import { F, THEMES } from '@/theme/tokens';
 
 import { addBot, swapBot } from './core';
-import { between, JOIN_MS, READY_MS, sayKicked, sayReady } from './roomTalk';
+import { rivalMoment, useRivalEars } from './director';
+import { grownLevel, loadRivals, rivalOf, toggleFav, useRivals } from './memory';
+import { joinMs, readyMs } from './roomTalk';
 import { seatsFor } from './setup';
 import { LEVEL_NAME, TYPE_NAME, type Bot, type BotLevel, type BotType } from './types';
 
 /** Where a bot is in the room: walking in, sitting down, ready, or leaving after a kick. */
 type Phase = 'away' | 'in' | 'ready' | 'leaving';
-type Sheet_ = 'how' | 'talk' | { bot: Bot } | null;
+type Sheet_ = 'how' | 'talk' | { add: number | undefined } | { bot: Bot } | null;
 
 const BLURB: Record<BotType, string> = {
   freshman: 'Means well, guesses a lot. Slow, clumsy and fun to beat.',
@@ -58,6 +60,13 @@ export function BotRoom({ def, play }: { def: GameDef; play: Play }) {
   useEffect(() => () => timers.current.forEach(clearTimeout), []);
 
   const bots = seats.filter((x) => x.bot && !x.removed);
+  const seatsRef = useRef(seats);
+  useEffect(() => {
+    seatsRef.current = seats;
+  }, [seats]);
+  const favs = useRivals((x) => x.favs);
+  const met = useRivals((x) => x.met);
+  useEffect(() => void loadRivals(), []);
   const save = (next: Seat[]) => {
     setSeatsState(next);
     void engine.recorder.setSeats(play.id, next);
@@ -68,9 +77,9 @@ export function BotRoom({ def, play }: { def: GameDef; play: Play }) {
     later(wait, () => {
       setPhase((p) => ({ ...p, [b.id]: 'in' }));
       void sfx('tap');
-      later(between(READY_MS[b.type]), () => {
+      later(readyMs(b), () => {
         setPhase((p) => (p[b.id] === 'in' ? { ...p, [b.id]: 'ready' } : p));
-        sayReady(room, b);
+        rivalMoment(room, b, 'ready', { tableSize: seatsRef.current.filter((x) => x.bot).length });
       });
     });
   };
@@ -80,7 +89,7 @@ export function BotRoom({ def, play }: { def: GameDef; play: Play }) {
     let at = 400;
     for (const x of play.seats) {
       if (!x.bot || x.removed) continue;
-      at += between(JOIN_MS[x.bot.type]);
+      at += joinMs(x.bot);
       arrive(x.bot, Math.min(at, 5000));
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -113,13 +122,17 @@ export function BotRoom({ def, play }: { def: GameDef; play: Play }) {
     setSheet(null);
     leavingRef.current.add(b.id);
     setPhase((p) => ({ ...p, [b.id]: 'leaving' }));
-    sayKicked(room, b);
+    rivalMoment(room, b, 'kicked');
     later(6000, () => gone(b.id));
   };
   const taken = () => [me.name, ...bots.map((x) => x.bot!.name)];
-  const add = (team?: number) => {
+  /** Favourites not already at the table, to bring back with "Add a favourite". */
+  const freeFavs = favs.map(rivalOf).filter((b): b is Bot => !!b && !bots.some((x) => x.bot!.id === b.id));
+  const tapAdd = (team?: number) => (freeFavs.length ? setSheet({ add: team }) : add(team));
+  const add = (team?: number, fav?: Bot) => {
+    setSheet(null);
     if (live.length >= max) return;
-    const b = addBot(level, taken());
+    const b = fav ?? addBot(level, taken());
     const next = [...seats, { seat: seats.length, name: b.name, character: b.character, bot: b, color: '', team }];
     save(recolour(next, teams));
     arrive(b, 300);
@@ -132,6 +145,8 @@ export function BotRoom({ def, play }: { def: GameDef; play: Play }) {
   };
 
   const ready = live.filter((x) => phase[x.bot!.id] === 'ready');
+  // Rivals hear your stickers and voice lines; one answers for the room (G3).
+  useRivalEars(room, ready.map((x) => x.bot!));
   const allReady = live.length > 0 && ready.length === live.length;
   const waitingOn = live.find((x) => phase[x.bot!.id] !== 'ready');
   const joining = live.filter((x) => !phase[x.bot!.id] || phase[x.bot!.id] === 'away').length;
@@ -161,7 +176,7 @@ export function BotRoom({ def, play }: { def: GameDef; play: Play }) {
             </View>
             {b ? (
               <View style={st.lvl}>
-                <LevelBadge level={b.level} size={u(16)} edge={G.panel} />
+                <LevelBadge level={grownLevel(b, met)} size={u(16)} edge={G.panel} />
               </View>
             ) : null}
           </View>
@@ -179,7 +194,7 @@ export function BotRoom({ def, play }: { def: GameDef; play: Play }) {
   };
   const adds = (n: number, team?: number) =>
     Array.from({ length: Math.max(0, n) }, (_, i) => (
-      <Pressable key={`add${team ?? ''}${i}`} onPress={() => add(team)} style={[st.tile, st.empty, teams >= 2 && st.tight]} accessibilityRole="button" accessibilityLabel="Add a rival">
+      <Pressable key={`add${team ?? ''}${i}`} onPress={() => tapAdd(team)} style={[st.tile, st.empty, teams >= 2 && st.tight]} accessibilityRole="button" accessibilityLabel="Add a rival">
         <Text style={[st.plus, { color: G.dim }]}>+</Text>
         <Text style={[st.tl, { color: G.dim }]}>Add bot</Text>
       </Pressable>
@@ -198,8 +213,10 @@ export function BotRoom({ def, play }: { def: GameDef; play: Play }) {
             {sheet === 'talk' ? <TalkPanel room={room} me={me} onSent={() => setSheet(null)} /> : null}
           </Sheet>
           <Sheet tone={{ bg: L.raised, line: L.line }} open={!!sheet && typeof sheet === 'object'} onClose={() => setSheet(null)}>
-            {sheet && typeof sheet === 'object' ? (
-              <BotSheet bot={sheet.bot} room={room} canKick={live.length > 1} onSwap={() => swap(sheet.bot)} onKick={() => kick(sheet.bot)} />
+            {sheet && typeof sheet === 'object' && 'bot' in sheet ? (
+              <BotSheet bot={sheet.bot} level={grownLevel(sheet.bot, met)} fav={favs.includes(sheet.bot.id)} room={room} canKick={live.length > 1} onSwap={() => swap(sheet.bot)} onKick={() => kick(sheet.bot)} />
+            ) : sheet && typeof sheet === 'object' && 'add' in sheet ? (
+              <AddSheet favs={freeFavs} met={met} onPick={(b) => add(sheet.add, b)} />
             ) : null}
           </Sheet>
         </>
@@ -309,7 +326,7 @@ function HowTo({ def }: { def: GameDef }) {
 }
 
 /** Tap a bot: its profile (with the AI tag, Yazan's pick), then Swap, Mute and Kick (never the last bot). */
-function BotSheet({ bot, room, canKick, onSwap, onKick }: { bot: Bot; room: string; canKick: boolean; onSwap: () => void; onKick: () => void }) {
+function BotSheet({ bot, level, fav, room, canKick, onSwap, onKick }: { bot: Bot; level: number; fav: boolean; room: string; canKick: boolean; onSwap: () => void; onKick: () => void }) {
   const L = useRoomLook();
   const muted = (useTalk((x) => x.muted[room]) ?? []).includes(bot.id);
   return (
@@ -318,11 +335,17 @@ function BotSheet({ bot, room, canKick, onSwap, onKick }: { bot: Bot; room: stri
         <View>
           <PlayerFace slug={bot.character} size={u(52)} />
           <View style={st.lvl}>
-            <LevelBadge level={bot.level} size={u(18)} edge={L.raised} />
+            <LevelBadge level={level} size={u(18)} edge={L.raised} />
           </View>
         </View>
         <View style={{ flexShrink: 1, gap: u(3) }}>
-          <Text style={[st.h, { fontFamily: L.head, color: L.fg, fontSize: u(18) }]}>{bot.name}</Text>
+          <View style={st.nameRow}>
+            <Text style={[st.h, { fontFamily: L.head, color: L.fg, fontSize: u(18) }]}>{bot.name}</Text>
+            {/* Favourites (Yazan 2026-11-09): star a rival to bring it back later with Add a favourite. */}
+            <Pressable onPress={() => toggleFav(bot)} hitSlop={u(10)} accessibilityRole="button" accessibilityLabel={fav ? `Remove ${bot.name} from favourites` : `Save ${bot.name} as a favourite`}>
+              <Text style={[st.star, { color: fav ? L.amber : L.dim }]}>{fav ? '★' : '☆'}</Text>
+            </Pressable>
+          </View>
           <View style={st.tags}>
             <View style={[st.ai, { borderColor: L.acc }]}>
               <Text style={[st.aiT, { color: L.acc }]}>AI player</Text>
@@ -343,13 +366,44 @@ function BotSheet({ bot, room, canKick, onSwap, onKick }: { bot: Bot; room: stri
           <Text style={[st.rowT, { color: THEMES.dark.error }]}>{`Kick ${bot.name}`}</Text>
         </Pressable>
       ) : (
-        <Text style={[st.small, { color: L.dim, textAlign: 'center' }]}>A room keeps at least one bot.</Text>
+        <Text style={[st.small, { color: L.dim, textAlign: 'center' }]}>A room keeps at least one rival.</Text>
       )}
     </>
   );
 }
 
+/** Add a rival: one of your favourites, or anyone. */
+function AddSheet({ favs, met, onPick }: { favs: Bot[]; met: Record<string, number>; onPick: (b?: Bot) => void }) {
+  const L = useRoomLook();
+  return (
+    <>
+      <Text style={[st.k, { fontFamily: L.semi, color: L.mute }]}>ADD A FAVOURITE</Text>
+      {favs.map((b) => (
+        <Pressable key={b.id} onPress={() => onPick(b)} style={[st.favRow, { borderColor: L.line }]} accessibilityRole="button" accessibilityLabel={`Add ${b.name}`}>
+          <View>
+            <PlayerFace slug={b.character} size={u(34)} />
+            <View style={st.lvl}>
+              <LevelBadge level={grownLevel(b, met)} size={u(14)} edge={L.raised} />
+            </View>
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={[st.rowT, { color: L.fg }]}>{b.name}</Text>
+            <Text style={[st.small, { color: L.mute }]}>{TYPE_NAME[b.type]}</Text>
+          </View>
+          <Text style={[st.star, { color: L.amber }]}>★</Text>
+        </Pressable>
+      ))}
+      <Pressable onPress={() => onPick()} style={[st.row, { borderColor: L.line }]} accessibilityRole="button">
+        <Text style={[st.rowT, { color: L.fg }]}>Any rival</Text>
+      </Pressable>
+    </>
+  );
+}
+
 const st = StyleSheet.create({
+  nameRow: { flexDirection: 'row', alignItems: 'center', gap: u(8) },
+  star: { fontSize: u(18), lineHeight: u(22) },
+  favRow: { flexDirection: 'row', alignItems: 'center', gap: u(10), borderWidth: 1, borderRadius: u(12), paddingVertical: u(8), paddingHorizontal: u(10) },
   h: { fontFamily: F.display, fontSize: u(21), lineHeight: u(25) },
   small: { fontFamily: F.body, fontSize: u(10), lineHeight: u(14) },
   k: { fontFamily: F.bodySemi, fontSize: u(8), letterSpacing: u(0.9) },

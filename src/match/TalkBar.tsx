@@ -158,6 +158,11 @@ export function TalkBubble({ m, face, size = 60 }: { m: TalkMsg; face?: boolean;
           <Text style={s.vbI}>🔊</Text>
           <Text style={[s.vbT, { color: L.fg, fontFamily: L.semi }]} numberOfLines={2}>{v.line}</Text>
         </View>
+      ) : m.kind === 'fact' ? (
+        <View style={[s.vb, s.fact, { backgroundColor: L.raised }]}>
+          <Text style={s.vbI}>💡</Text>
+          <Text style={[s.vbT, s.factT, { color: L.fg, fontFamily: L.body }]} numberOfLines={4}>{m.item}</Text>
+        </View>
       ) : null}
       {face ? (
         <View style={[s.bf, { borderColor: L.page }]}>
@@ -306,6 +311,8 @@ const s = StyleSheet.create({
   vb: { flexDirection: 'row', alignItems: 'center', gap: u(5), backgroundColor: G.raised, borderWidth: 1, borderColor: 'rgba(255,255,255,0.14)', borderRadius: u(14), paddingVertical: u(6), paddingHorizontal: u(10), boxShadow: '0px 8px 16px rgba(0,0,0,0.35)' },
   vbI: { fontSize: u(9) },
   vbT: { fontFamily: F.bodySemi, fontSize: u(11), color: G.fg, flexShrink: 1 },
+  fact: { width: u(190), alignItems: 'flex-start' },
+  factT: { fontSize: u(10), lineHeight: u(14) },
   bf: { position: 'absolute', right: u(-4), bottom: u(-4), borderRadius: u(10), borderWidth: 1.5, borderColor: G.page },
   anchor: { position: 'absolute', left: 0, top: 0, zIndex: 25 },
   pops: { position: 'absolute', bottom: 0, width: u(180), gap: u(4) },

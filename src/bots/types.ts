@@ -14,9 +14,18 @@ export type Bot = {
   name: string;
   /** The character it wears (never Admin): more stars for smarter bots. */
   character: string;
-  /** The player level shown on its badge. */
+  /** The player level shown on its badge (its starting level; it grows as you meet it, see memory.ts). */
   level: number;
+  /** Hidden personality (Yazan 2026-11-09: in the code only, never shown). Fixed to the name. */
+  persona?: Persona;
 };
+
+/**
+ * Personalities (Yazan 2026-11-09): how a rival acts, on top of how good it is (its type).
+ * Hidden from the player: only felt through how it plays and talks.
+ */
+export type Persona = 'showoff' | 'shy' | 'joker' | 'sore' | 'cheer' | 'cool' | 'hot' | 'sleepy';
+export const PERSONAS: Persona[] = ['showoff', 'shy', 'joker', 'sore', 'cheer', 'cool', 'hot', 'sleepy'];
 
 export const TYPE_NAME: Record<BotType, string> = { freshman: 'Freshman', scholar: 'Scholar', genius: 'Genius' };
 export const LEVEL_NAME: Record<BotLevel, string> = { easy: 'Easy', medium: 'Medium', hard: 'Hard' };

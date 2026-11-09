@@ -1,6 +1,7 @@
 import { starsOf } from '@/features/shop/robots';
 import { CHARACTERS, MECH_CHARACTERS, SHOP_CHARACTERS } from '@/games/shell/characters';
 
+import { faceOf, levelOf, personaOf } from './identity';
 import { BOT_NAMES } from './names';
 import type { Bot, BotLevel, BotType } from './types';
 
@@ -18,11 +19,7 @@ const MIX: Record<BotLevel, Record<BotType, number>> = {
   hard: { freshman: 0.1, scholar: 0.3, genius: 0.6 },
 };
 
-/** The player levels shown on each type's badge, so the badge also hints how strong a bot is. */
-const LEVELS: Record<BotType, [number, number]> = { freshman: [1, 9], scholar: [8, 22], genius: [20, 45] };
-
 const pick = <T,>(xs: T[]) => xs[Math.floor(Math.random() * xs.length)];
-const between = ([a, b]: [number, number]) => a + Math.floor(Math.random() * (b - a + 1));
 
 function typeFor(level: BotLevel): BotType {
   const m = MIX[level];
@@ -33,11 +30,22 @@ function typeFor(level: BotLevel): BotType {
   return 'scholar';
 }
 
-/** A new bot of a type, whose name is not one of `taken` (names never repeat at one table). */
+const ALL_NAMES = new Set(Object.values(BOT_NAMES).flat());
+
+/** The full rival for a name: type, hidden personality, face and starting level all come from the name. */
+export function botNamed(type: BotType, name: string): Bot {
+  return { id: `bot:${type}:${name}`, type, name, character: faceOf(facesFor(type), name), level: levelOf(type, name), persona: personaOf(name) };
+}
+
+/**
+ * A new rival of a type. Its name is not one of `taken` (names never repeat at one table), and its personality
+ * differs from the rivals already there, so a table never has two of the same.
+ */
 export function makeBot(type: BotType, taken: string[] = []): Bot {
-  const names = BOT_NAMES[type].filter((n) => !taken.includes(n));
-  const name = pick(names.length ? names : BOT_NAMES[type]);
-  return { id: `bot:${type}:${name}`, type, name, character: pick(facesFor(type)), level: between(LEVELS[type]) };
+  const busy = new Set(taken.filter((n) => ALL_NAMES.has(n)).map(personaOf));
+  const free = BOT_NAMES[type].filter((n) => !taken.includes(n));
+  const fresh = free.filter((n) => !busy.has(personaOf(n)));
+  return botNamed(type, pick(fresh.length ? fresh : free.length ? free : BOT_NAMES[type]));
 }
 
 /**

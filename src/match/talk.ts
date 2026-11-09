@@ -10,7 +10,8 @@ import { voiceById } from './voice';
  * Stickers and voice lines in a Vs bots room and match (ON12, ON28; bots 2026-11-09). Everything stays on the phone:
  * yours shows and plays at once, and the bots' lines wait their turn (sayAsBot), never two at the same time.
  */
-export type TalkMsg = { id: number; user_id: string; name: string; face: string; kind: 'sticker' | 'voice'; item: string; at: number };
+/** A Genius's short medical fact is the one text a rival sends (kind 'fact', item = the text). */
+export type TalkMsg = { id: number; user_id: string; name: string; face: string; kind: 'sticker' | 'voice' | 'fact'; item: string; at: number };
 
 type State = {
   /** Messages popping right now (they fade after 3 s). */
@@ -24,6 +25,8 @@ export const useTalk = create<State>(() => ({ pops: [], muted: {}, nextAt: 0 }))
 
 export const COOLDOWN_MS = 3000;
 const POP_MS = 3000;
+/** A fact stays long enough to read. */
+const FACT_MS = 6000;
 /** Yazan 2026-11-09: two bots never talk at once; the next waits until this long after the one before. */
 const BOT_GAP_MS = 2200;
 
@@ -74,7 +77,7 @@ function releaseVoices() {
 let nextId = 1;
 const pop = (m: TalkMsg) => {
   useTalk.setState((s) => ({ pops: [...s.pops.filter((x) => x.user_id !== m.user_id), m] }));
-  setTimeout(() => useTalk.setState((s) => ({ pops: s.pops.filter((x) => x.id !== m.id) })), POP_MS);
+  setTimeout(() => useTalk.setState((s) => ({ pops: s.pops.filter((x) => x.id !== m.id) })), m.kind === 'fact' ? FACT_MS : POP_MS);
 };
 
 /** Who hears what the player sends: the bots of the room (they react, group 3). */
@@ -100,7 +103,7 @@ export async function sendTalk(room: string, me: { id: string; name: string; fac
 }
 
 // The bots' line: one message at a time, in the order they were said.
-const queue: { room: string; m: Omit<TalkMsg, 'id' | 'at'> }[] = [];
+const queue: { room: string; m: Omit<TalkMsg, 'id' | 'at'>; until: number }[] = [];
 let busyUntil = 0;
 let timer: ReturnType<typeof setTimeout> | null = null;
 /** Pages showing each room right now (the room page and its match can overlap while one replaces the other). */
@@ -114,21 +117,23 @@ function drain() {
   }
   const next = queue.shift();
   if (!next) return;
-  if ((open.get(next.room) ?? 0) > 0 && !isMuted(next.room, next.m.user_id)) {
+  // A line whose moment has passed is dropped (G3: old lines never play late).
+  if ((open.get(next.room) ?? 0) > 0 && !isMuted(next.room, next.m.user_id) && Date.now() <= next.until) {
     const m = { ...next.m, id: nextId++, at: Date.now() };
     pop(m);
     if (m.kind === 'voice') playVoice(m.item);
-    busyUntil = Date.now() + BOT_GAP_MS;
+    busyUntil = Date.now() + (m.kind === 'fact' ? FACT_MS : BOT_GAP_MS);
   }
   if (queue.length) timer = setTimeout(drain, Math.max(0, busyUntil - Date.now()));
 }
 
-/** A bot says something. It waits behind any bot already talking (never two at once). */
-export function sayAsBot(room: string, m: Omit<TalkMsg, 'id' | 'at'>) {
-  // A bot never queues a second line behind its own unsaid one.
-  if (queue.some((q) => q.room === room && q.m.user_id === m.user_id)) return;
-  queue.push({ room, m });
+/** A rival says something. It waits behind any rival already talking (never two at once), for up to `fresh` ms. */
+export function sayAsBot(room: string, m: Omit<TalkMsg, 'id' | 'at'>, fresh = 8000) {
+  // A rival never queues a second line behind its own unsaid one.
+  if (queue.some((q) => q.room === room && q.m.user_id === m.user_id)) return false;
+  queue.push({ room, m, until: Date.now() + fresh });
   if (!timer) drain();
+  return true;
 }
 
 /** How many bot lines are waiting (bots skip chatter while the line is long). */
