@@ -59,7 +59,7 @@ export const CHAPTERS: Chapter[] = [
     tag: 'Multiplayer',
     items: [
       { q: 'How do I play with friends?', a: 'Most games have Pass the phone, where you take turns on one phone. Empty seats can be filled with rivals, and many games let you split players into teams.' },
-      { q: 'What is Vs rivals?', a: 'Race rivals in most games, with no internet needed. Pick Easy, Medium or Hard and how many rivals. There are three kinds: Freshman, Scholar and Genius. They send stickers and voice lines and react to yours. Tap a rival in the room to see its profile, swap it or kick it.' },
+      { q: 'What is Vs rivals?', a: 'Race rivals in most games, with no internet needed. Pick Freshmen, Scholars or Geniuses and how many rivals. There are three kinds: Freshman, Scholar and Genius. They send stickers and voice lines and react to yours. Tap a rival in the room to see its profile, swap it or kick it.' },
       { q: 'Who wins a tie?', a: 'The faster player. On a leaderboard, whoever got there first.' },
     ],
   },

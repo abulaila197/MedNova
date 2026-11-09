@@ -61,7 +61,7 @@ export const quizParade: GameDef = {
       title: 'Quiz face-off',
       blurb: 'Each question at once with the rivals. Fast and right scores a bonus.',
       howTo: [
-        'Pick Easy, Medium or Hard and 1 to 5 rivals. Meet them in the room: tap a rival for its profile, swap it or kick it.',
+        'Pick Freshmen, Scholars or Geniuses and 1 to 5 rivals. Meet them in the room: tap a rival for its profile, swap it or kick it.',
         'Everyone gets the same question at the same time, on its own clock. One answer each, no helpers.',
         'At the reveal, each rival\'s face sits on the answer it picked.',
         'Same points as Solo. The first fully right answer on each question gets +1, and Closest number goes to the nearest guess.',

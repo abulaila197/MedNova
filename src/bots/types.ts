@@ -28,4 +28,5 @@ export type Persona = 'showoff' | 'shy' | 'joker' | 'sore' | 'cheer' | 'cool' | 
 export const PERSONAS: Persona[] = ['showoff', 'shy', 'joker', 'sore', 'cheer', 'cool', 'hot', 'sleepy'];
 
 export const TYPE_NAME: Record<BotType, string> = { freshman: 'Freshman', scholar: 'Scholar', genius: 'Genius' };
-export const LEVEL_NAME: Record<BotLevel, string> = { easy: 'Easy', medium: 'Medium', hard: 'Hard' };
+/** What the player picks (Yazan 2026-11-09: named by the type the table is mostly made of). */
+export const LEVEL_NAME: Record<BotLevel, string> = { easy: 'Freshmen', medium: 'Scholars', hard: 'Geniuses' };

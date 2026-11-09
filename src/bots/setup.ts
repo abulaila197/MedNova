@@ -17,9 +17,9 @@ export function botSetup(def: GameDef): SetupOption[] {
       key: 'botLevel',
       label: 'Rivals',
       choices: [
-        { value: 'easy', label: 'Easy', note: 'mostly Freshmen' },
-        { value: 'medium', label: 'Medium', note: 'mostly Scholars' },
-        { value: 'hard', label: 'Hard', note: 'mostly Geniuses' },
+        { value: 'easy', label: 'Freshmen', note: 'with a few others' },
+        { value: 'medium', label: 'Scholars', note: 'with a few others' },
+        { value: 'hard', label: 'Geniuses', note: 'with a few others' },
       ],
       initial: 'medium',
     },

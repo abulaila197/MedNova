@@ -42,7 +42,7 @@ export const caseFiles: GameDef = {
       title: 'Case showdown',
       blurb: 'The same case as the rivals, with live progress.',
       howTo: [
-        'Pick Easy, Medium or Hard and 1 to 3 rivals. Meet them in the room: tap a rival for its profile, swap it or kick it.',
+        'Pick Freshmen, Scholars or Geniuses and 1 to 3 rivals. Meet them in the room: tap a rival for its profile, swap it or kick it.',
         'Everyone gets the same random case at the same time and works it alone, against the time limit.',
         'Pick 1, 2 or 3 cases. They come one after another, each with the full time limit, and your points add up.',
         'You see when a rival closes the case. Everything stays sealed until the end, then you see every rival\'s diagnosis.',

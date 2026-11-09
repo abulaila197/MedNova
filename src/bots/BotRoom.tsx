@@ -232,7 +232,7 @@ export function BotRoom({ def, play }: { def: GameDef; play: Play }) {
         </Pressable>
       </View>
       <View>
-        <Text style={[st.k, { color: G.mute }]}>VS RIVALS · {LEVEL_NAME[level].toUpperCase()}</Text>
+        <Text style={[st.k, { color: G.mute }]}>VS RIVALS · MOSTLY {LEVEL_NAME[level].toUpperCase()}</Text>
         <Text style={[st.h, { color: G.fg }]}>Your room</Text>
       </View>
       <View style={st.stl}>
@@ -274,7 +274,7 @@ export function BotRoom({ def, play }: { def: GameDef; play: Play }) {
       <View style={st.sum}>
         <View style={{ gap: u(2), flex: 1 }}>
           <Text style={[st.k, { color: G.mute }]}>SETTINGS</Text>
-          <Text style={[st.sumT, { color: G.fg }]}>{[settingsLine(def, play.settings), `${LEVEL_NAME[level]} rivals`].filter(Boolean).join(' · ')}</Text>
+          <Text style={[st.sumT, { color: G.fg }]}>{[settingsLine(def, play.settings), `Mostly ${LEVEL_NAME[level]}`].filter(Boolean).join(' · ')}</Text>
         </View>
       </View>
 
