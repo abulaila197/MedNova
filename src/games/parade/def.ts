@@ -1,6 +1,7 @@
 import type { GameDef } from '../shell/types';
 import { POINTS } from './core';
 import { QUESTIONS } from './data';
+import { BotsPlay } from './BotsPlay';
 import { OfflinePlay } from './OfflinePlay';
 import { itemLine, SoloPlay } from './SoloPlay';
 
@@ -74,7 +75,7 @@ export const quizParade: GameDef = {
   bots: { min: 1, max: 5 },
   teams: { offline: true, bots: true },
   playersNote: () => 'Player 1 is you, the phone owner. Pass the phone earns no EXP; only your missed questions go to Learn.',
-  Play: { solo: SoloPlay, offline: OfflinePlay },
+  Play: { solo: SoloPlay, offline: OfflinePlay, bots: BotsPlay },
   // QP11: EXP = points, at most 60. Pass the phone earns none, like every Pass the phone mode.
   exp: (score) => Math.min(60, Math.max(0, score)),
   expCap: (_settings, mode) => (mode === 'offline' ? 0 : 60),

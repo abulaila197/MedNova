@@ -21,6 +21,10 @@ export type Plan = {
   solved: boolean;
   /** Visible wrong guesses before that (Diagnostic Pursuit). */
   wrongAt: number[];
+  /** Quiz Parade: its answer, as the game encodes it (compared and scored at the close). */
+  answer?: string | null;
+  /** Quiz Parade: points it earns when the game scores itself (`scoreAll`); solved stays the full-right flag. */
+  points?: number;
   /** What those wrong guesses were (shown live in Diagnostic Pursuit), in the same order. */
   wrongs?: string[];
   /** Medicordle: its rows, each with when it is played and its colours (g = green, y = yellow, x = grey). */
@@ -32,7 +36,8 @@ export type Plan = {
 export type PlanCtx = { seed: string; index: number; item: number; gap: number; progress: number; limitMs: number; mind: Mind };
 
 export type Rules = {
-  limitMs: number;
+  /** The time one question gives, or a function of the item when types differ (Quiz Parade). */
+  limitMs: number | ((item: number) => number);
   revealMs: number;
   /** Your lock after a wrong guess. */
   lockMs: number;
@@ -46,6 +51,11 @@ export type Rules = {
   maxPoints: number;
   /** Streak games: a miss drops the streak to 0. */
   streaks?: boolean;
+  /**
+   * Scores a whole question at once, when a player's points depend on the others' answers (Quiz Parade: nearest
+   * guess wins Closest number, first fully right gets +1). Replaces `points` for that question.
+   */
+  scoreAll?(item: number, rows: { id: string; solved: boolean; doneAt: number | null; answer: string | null; rank: number | null }[]): Record<string, number>;
 };
 
 type You = { doneAt: number | null; solved: boolean; wrong: string[]; guesses: string[]; tries: number; lockedUntil: number; pick: number | null; greens: number | null };
@@ -55,7 +65,17 @@ type Tot = { score: number; solveMs: number; streak: number; best: number; corre
 const freshYou = (): You => ({ doneAt: null, solved: false, wrong: [], guesses: [], tries: 0, lockedUntil: 0, pick: null, greens: null });
 export const YOU = 'you';
 
-export class BotRace {
+/** What every Vs rivals match is built from (the hook gathers it when the match opens). */
+export type RaceCtx = { playId: string; items: number[]; you: { name: string; character: string; team: number | null }; rivals: (Bot & { team?: number | null })[]; settings: Record<string, unknown>; playerLevel: number };
+
+/** What the screen hook needs from any match engine (the question races here, the Crossword claim race in its game). */
+export interface Race {
+  state(t: number): RaceState;
+  plansNow(): Record<string, Plan> | null;
+  mindOf(id: string): Mind;
+}
+
+export class BotRace implements Race {
   readonly rivals: Bot[];
   private minds: Record<string, Mind> = {};
   private tot: Record<string, Tot> = {};
@@ -63,9 +83,7 @@ export class BotRace {
   private cur: { start: number; plans: Record<string, Plan>; you: You } | null = null;
   private finished = false;
 
-  constructor(
-    readonly opts: { playId: string; items: number[]; you: { name: string; character: string; team: number | null }; rivals: (Bot & { team?: number | null })[]; rules: Rules; settings: Record<string, unknown>; playerLevel: number },
-  ) {
+  constructor(readonly opts: RaceCtx & { rules: Rules }) {
     this.rivals = opts.rivals;
     for (const b of opts.rivals) this.minds[b.id] = mindFor(b, opts.playerLevel);
     for (const id of [YOU, ...opts.rivals.map((b) => b.id)]) this.tot[id] = { score: 0, solveMs: 0, streak: 0, best: 0, correct: 0 };
@@ -76,6 +94,11 @@ export class BotRace {
   }
   get total() {
     return this.opts.items.length;
+  }
+  /** The time question `i` gives. */
+  limitOf(i: number) {
+    const l = this.opts.rules.limitMs;
+    return typeof l === 'function' ? l(this.opts.items[i]) : l;
   }
   get countdown() {
     return this.opts.rules.countdownMs ?? 3000;
@@ -101,7 +124,7 @@ export class BotRace {
     const plans: Record<string, Plan> = {};
     for (const b of this.rivals) {
       const gap = (this.tot[b.id].score - this.tot[YOU].score) / stake;
-      plans[b.id] = r.plan(b, { seed: `${this.opts.playId}:${i}`, index: i, item: this.opts.items[i], gap, progress: i / Math.max(1, this.total), limitMs: r.limitMs, mind: this.minds[b.id] });
+      plans[b.id] = r.plan(b, { seed: `${this.opts.playId}:${i}`, index: i, item: this.opts.items[i], gap, progress: i / Math.max(1, this.total), limitMs: this.limitOf(i), mind: this.minds[b.id] });
     }
     this.cur = { start: at, plans, you: freshYou() };
   }
@@ -109,7 +132,7 @@ export class BotRace {
   /** The end of the running question, if it is known yet: everyone done, or its time up. */
   private endOf(t: number): number | null {
     const c = this.cur!;
-    const limit = c.start + this.opts.rules.limitMs;
+    const limit = c.start + this.limitOf(this.done.length);
     const times = [c.you.doneAt, ...Object.values(c.plans).map((p) => p.doneAt)];
     if (times.every((x) => x != null)) return Math.min(limit, c.start + Math.max(...(times as number[])));
     return t >= limit ? limit : null;
@@ -118,29 +141,32 @@ export class BotRace {
   private closeItem(end: number) {
     const c = this.cur!;
     const r = this.opts.rules;
-    const rows: { id: string; solved: boolean; doneAt: number | null; tries: number }[] = [
-      { id: YOU, solved: c.you.solved, doneAt: c.you.doneAt, tries: c.you.tries },
+    const i = this.done.length;
+    const limitMs = this.limitOf(i);
+    const rows: { id: string; solved: boolean; doneAt: number | null; tries: number; answer: string | null }[] = [
+      { id: YOU, solved: c.you.solved, doneAt: c.you.doneAt, tries: c.you.tries, answer: c.you.guesses[0] ?? null },
       ...this.rivals.map((b) => {
         const p = c.plans[b.id];
-        const inTime = p.doneAt != null && p.doneAt <= r.limitMs;
-        return { id: b.id, solved: inTime && p.solved, doneAt: inTime ? p.doneAt : null, tries: p.rows?.length ?? p.wrongAt.length + (p.solved ? 1 : 0) };
+        const inTime = p.doneAt != null && p.doneAt <= limitMs;
+        return { id: b.id, solved: inTime && p.solved, doneAt: inTime ? p.doneAt : null, tries: p.rows?.length ?? p.wrongAt.length + (p.solved ? 1 : 0), answer: inTime ? (p.answer ?? null) : null };
       }),
     ];
     const solvers = rows.filter((x) => x.solved).sort((a, b) => a.doneAt! - b.doneAt! || (a.id === YOU ? -1 : b.id === YOU ? 1 : 0));
     const ranks: Record<string, number | null> = {};
     const points: Record<string, number> = {};
+    for (const x of rows) ranks[x.id] = x.solved ? solvers.indexOf(x) + 1 : null;
+    const all = r.scoreAll?.(this.opts.items[i], rows.map((x) => ({ ...x, rank: ranks[x.id] })));
     for (const x of rows) {
-      const rank = x.solved ? solvers.indexOf(x) + 1 : null;
+      const rank = ranks[x.id];
       const t = this.tot[x.id];
       t.streak = x.solved ? t.streak + 1 : r.streaks ? 0 : t.streak;
       t.best = Math.max(t.best, t.streak);
-      ranks[x.id] = rank;
-      points[x.id] = r.points({ rank, solved: x.solved, doneAt: x.doneAt, tries: x.tries, streak: t.streak, limitMs: r.limitMs });
+      points[x.id] = all ? (all[x.id] ?? 0) : r.points({ rank, solved: x.solved, doneAt: x.doneAt, tries: x.tries, streak: t.streak, limitMs });
       t.score += points[x.id];
       if (x.solved) {
         t.correct++;
         t.solveMs += x.doneAt!;
-      } else t.solveMs += r.limitMs;
+      } else t.solveMs += limitMs;
       if (x.id !== YOU) this.minds[x.id] = afterAnswer(this.minds[x.id], x.solved);
     }
     this.done.push({ plans: c.plans, you: c.you, start: c.start, end, ranks, points });
@@ -266,7 +292,7 @@ export class BotRace {
         ...base,
         phase: 'case',
         phase_started_at: c.start,
-        phase_ends_at: c.start + r.limitMs,
+        phase_ends_at: c.start + this.limitOf(this.done.length),
         index: this.done.length,
         item: o.items[this.done.length],
         answer: null,

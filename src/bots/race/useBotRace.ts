@@ -18,16 +18,19 @@ import { resetRoomTalk, rivalGuess, rivalMoment, rivalStudy, useRivalEars } from
 import type { Place } from '../lines';
 import { meet } from '../memory';
 import type { Bot } from '../types';
-import { BotRace, YOU, type Rules } from './engine';
+import { BotRace, YOU, type Race, type RaceCtx, type Rules } from './engine';
 
 type Item = Omit<PlayItem, 'id' | 'at' | 'playId'>;
 
-export type BotRaceOpts = Pick<PlayProps, 'play' | 'onFinish' | 'onQuit'> & {
-  rules: Rules;
+export type BotRaceOpts<R extends Race = BotRace> = Pick<PlayProps, 'play' | 'onFinish' | 'onQuit'> & {
+  /** The question race's rules (not needed when `build` makes the engine). */
+  rules?: Rules;
+  /** Another engine for the match (Crossword's claim race); the default is the question race with `rules`. */
+  build?: (ctx: RaceCtx) => R;
   /** The match's items (bank numbers), picked once when the match opens. */
   pick: () => Promise<number[]>;
   /** Your items for the play, saved when the match ends (your misses feed Learn where the game does). */
-  toItems: (st: RaceState, race: BotRace) => Item[];
+  toItems: (st: RaceState, race: R) => Item[];
   /** Diagnostic Pursuit: a rival's wrong guess in words; it pops as a chat bubble when the rival makes it. */
   guessName?: (id: string) => string;
   /** The alert when a rival solves (default "Sara solved it, 2nd"); `ms` is its time on the question. */
@@ -46,9 +49,9 @@ const any = <T,>(xs: T[]) => xs[Math.floor(Math.random() * xs.length)];
  * app is away (Yazan 2026-11-09: pause freezes them). Gives the screen the same RaceState the online races had, sends
  * the live alerts and the rivals' talk, and turns the finished match into an ordinary play.
  */
-export function useBotRace({ play, onFinish, onQuit, rules, pick, toItems, guessName, solvedText, blind, fine }: BotRaceOpts) {
+export function useBotRace<R extends Race = BotRace>({ play, onFinish, onQuit, rules, build, pick, toItems, guessName, solvedText, blind, fine }: BotRaceOpts<R>) {
   const room = `bot:${play.id}`;
-  const [race, setRace] = useState<BotRace | null>(null);
+  const [race, setRace] = useState<R | null>(null);
   const [menu, setMenu] = useState(false);
   const [t, setT] = useState(0);
   const clock = useRef<{ base: number; since: number | null }>({ base: 0, since: null });
@@ -71,7 +74,8 @@ export function useBotRace({ play, onFinish, onQuit, rules, pick, toItems, guess
       meet(rs);
       rivals.current = rs;
       setBots(rs);
-      setRace(new BotRace({ playId: play.id, items, you: { name: 'You', character: you?.character ?? 'yara', team: you?.team ?? null }, rivals: rs, rules, settings: play.settings, playerLevel: level }));
+      const ctx: RaceCtx = { playId: play.id, items, you: { name: 'You', character: you?.character ?? 'yara', team: you?.team ?? null }, rivals: rs, settings: play.settings, playerLevel: level };
+      setRace(build ? build(ctx) : (new BotRace({ ...ctx, rules: rules! }) as unknown as R));
     })();
     return () => {
       live = false;
@@ -220,13 +224,14 @@ export function useBotRace({ play, onFinish, onQuit, rules, pick, toItems, guess
     })();
   });
 
-  const act = <A extends unknown[], R>(fn: (at: number, ...a: A) => R) => (...a: A): R | undefined => {
+  const act = <A extends unknown[], X>(fn: (at: number, ...a: A) => X) => (...a: A): X | undefined => {
     if (!race || paused) return undefined;
     const at = now();
     const r = fn(at, ...a);
     setT(at);
     return r;
   };
+  const q = race instanceof BotRace ? (race as BotRace) : null;
 
   const uid = useSession((x) => x.userId);
   const talker = { id: uid ?? 'me', name: 'You', face: play.seats[0]?.character ?? 'yara' };
@@ -246,9 +251,11 @@ export function useBotRace({ play, onFinish, onQuit, rules, pick, toItems, guess
     push,
     /** Match time as a Clock (store.get() is the latest match time). */
     clock: store as Clock,
-    wrong: act((at, answer: string, o?: { lock?: boolean; outAfter?: number }) => race!.wrong(at, answer, o)),
-    solve: act((at, extra?: { pick?: number; guess?: string; greens?: number }) => race!.solve(at, extra)),
-    miss: act((at, extra?: { pick?: number; guess?: string; greens?: number }) => race!.miss(at, extra)),
-    row: act((at, guess: string, greens: number) => race!.row(at, guess, greens)),
+    /** Any move on the engine at match time now (Crossword); nothing while paused. */
+    at: <X,>(fn: (at: number) => X) => act(fn)(),
+    wrong: act((at, answer: string, o?: { lock?: boolean; outAfter?: number }) => q!.wrong(at, answer, o)),
+    solve: act((at, extra?: { pick?: number; guess?: string; greens?: number }) => q!.solve(at, extra)),
+    miss: act((at, extra?: { pick?: number; guess?: string; greens?: number }) => q!.miss(at, extra)),
+    row: act((at, guess: string, greens: number) => q!.row(at, guess, greens)),
   };
 }

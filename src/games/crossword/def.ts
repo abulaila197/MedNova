@@ -1,6 +1,7 @@
 import type { GameDef } from '../shell/types';
 import { CW } from './core';
 import { PUZZLES, wordById } from './data';
+import { BotsPlay } from './BotsPlay';
 import { OfflinePlay } from './OfflinePlay';
 import { SoloPlay } from './SoloPlay';
 
@@ -82,7 +83,7 @@ export const novaCrossword: GameDef = {
   teams: { offline: true, bots: true },
   teamScore: 'average',
   playersNote: () => 'Player 1 is you, the phone owner, and pays for revives. Pass the phone earns no EXP.',
-  Play: { solo: SoloPlay, offline: OfflinePlay },
+  Play: { solo: SoloPlay, offline: OfflinePlay, bots: BotsPlay },
   // CW9: Solo pays the EXP each puzzle earned this session (stored on its first word); Offline earns none; CW12: Online up to 3 stars.
   exp: (_score, items) => items.reduce((a, i) => a + (Number(i.gameData.exp) || 0), 0),
   expCap: (settings, mode) => (mode === 'offline' ? 0 : mode === 'bots' ? cases(settings) * 3 * CW.expPerStar : PUZZLES.length * 3 * CW.expPerStar),
