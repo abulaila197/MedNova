@@ -7,6 +7,7 @@ import { CW, buildSlots, cellKey, composeAnswer, indexOf, isFilled, isUnlocked, 
 import { currentSeat, offlineRecap, startOffline, stepOffline } from '../offline';
 
 const PUZZLES = JSON.parse(readFileSync('src/games/crossword/data/puzzles.json', 'utf8')) as PuzzleDef[];
+const IMAGE_KEYS = new Set([...readFileSync('src/games/crossword/data/images.ts', 'utf8').matchAll(/^  (\w+): require/gm)].map((m) => m[1]));
 
 // CAT across at row 0; COW down from C; TOE down from T. CAT's every cell is not crossed (A is free).
 const P: PuzzleDef = {
@@ -18,15 +19,24 @@ const P: PuzzleDef = {
   ],
 };
 
-test('all 50 bundled puzzles are valid: letters agree at every crossing, no word fully crossed', () => {
-  assert.equal(PUZZLES.length, 50);
+test('all 70 bundled puzzles are valid: letters agree at every crossing, no word fully crossed', () => {
+  assert.equal(PUZZLES.length, 70);
   for (const p of PUZZLES) assert.deepEqual(validatePuzzle(p), [], p.id);
   // Array order is play order (publish task 1): place = level = the online puzzle number (cw_words.n).
   PUZZLES.forEach((p, i) => assert.equal(p.level, i + 1, p.id));
-  assert.equal(new Set(PUZZLES.map((p) => p.id)).size, 50);
+  assert.equal(new Set(PUZZLES.map((p) => p.id)).size, 70);
   // The 19 puzzles added last (cw-32 to cw-50) never repeat an answer among themselves.
   const late = PUZZLES.filter((p) => Number(p.id.slice(3)) > 31).flatMap((p) => p.words.map((w) => w.answer));
   assert.equal(new Set(late).size, late.length);
+  // The 20 photo puzzles (cw-51 to cw-70) repeat no answer from any older puzzle or among themselves,
+  // and each has one Identify picture, except cw-63 (no picture, Yazan 2026-11-09).
+  const older = new Set(PUZZLES.slice(0, 50).flatMap((p) => p.words.map((w) => w.answer)));
+  const fresh = PUZZLES.slice(50).flatMap((p) => p.words.map((w) => w.answer));
+  assert.equal(new Set(fresh).size, fresh.length);
+  fresh.forEach((a) => assert.ok(!older.has(a), a));
+  PUZZLES.slice(50).forEach((p) => assert.equal(p.words.filter((w) => w.question.kind === 'image').length, p.id === 'cw-63' ? 0 : 1, p.id));
+  // Every picture clue has its image registered.
+  PUZZLES.flatMap((p) => p.words).forEach((w) => w.question.kind === 'image' && assert.ok(IMAGE_KEYS.has(w.question.imageKey), w.answer));
   assert.ok(PUZZLES.find((p) => p.id === 'cw-18')!.words.some((w) => w.answer === 'EPILEPSY'));
 });
 
