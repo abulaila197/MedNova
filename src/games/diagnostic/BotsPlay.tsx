@@ -3,7 +3,6 @@ import { StyleSheet, View } from 'react-native';
 
 import { orderPoints, YOU, type Rules } from '@/bots/race/engine';
 import { cluePlan } from '@/bots/race/plans';
-import { RivalStrip } from '@/bots/race/RivalStrip';
 import { useBotRace } from '@/bots/race/useBotRace';
 import { rng } from '@/bots/rng';
 import { AnsweredRow } from '@/match/AnsweredRow';
@@ -161,7 +160,6 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
       notice={notice ?? (lockLeft > 0 ? `Wrong. Locked for ${Math.ceil(lockLeft / 1000)} s.` : null)}
       pausedNote="The match is paused, rivals too. Resume to see the case again."
       worth={{ label: 'Your points', value: String(me?.score ?? 0) }}
-      live={<RivalStrip st={st} race={race} />}
       onPause={g.openMenu}
       onGuess={(guess) => {
         if (lockLeft > 0) return;
