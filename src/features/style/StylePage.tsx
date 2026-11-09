@@ -15,7 +15,7 @@ import { OfflineLine } from '@/components/OfflineLine';
 import { InfoScroll, Kicker, s as ui, useInfo } from '@/features/info/ui';
 import { Face } from '@/games/shell/Face';
 import { useSession } from '@/games/shell/session';
-import { TEXT_PACKS, textPackOf } from '@/online/textStickers';
+import { TEXT_PACKS, textPackOf } from '@/match/textStickers';
 import { CardViewer } from '@/features/cards/CollectionPage';
 import { bonusLine, ROBOTS, type Robot, robotOf, SHOP_ROBOT_KEYS, SHOP_ROBOTS_PRIZE, SOVEREIGN_PACK } from '@/features/shop/robots';
 import { wearCharacter } from '@/features/shop/wear';

@@ -3,7 +3,7 @@ import { create } from 'zustand';
 import { useSession } from '@/games/shell/session';
 import { copyOf, keepCopy } from '@/lib/copies';
 import { syncAccount } from '@/lib/sync';
-import { call } from '@/online/api';
+import { call } from '@/lib/rpc';
 import { onAccountSwitch } from '@/state/accountSwitch';
 
 /** Mission progress per card: [have, need]. */

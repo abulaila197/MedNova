@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { sparksCost } from '@/features/sparks/costs';
 import { needSparks } from '@/features/sparks/sparks';
 
+import { botSetup, botSeats } from '@/bots/setup';
+
 import type { Mode, Seat } from '../engine/types';
 import { alwaysFree, startPlay } from './flow';
 import { freeColour, SEAT_COLOURS } from './characters';
@@ -14,7 +16,8 @@ import type { GameDef } from './types';
 /** Everything a setup page does, apart from how it looks: option values, players, teams and Start (rule 9). */
 export function useSetup(def: GameDef, mode: Mode, prefill?: Record<string, unknown>, prefillSeats?: Seat[]) {
   const preset = (id: number): Team => (def.palette ? { id, ...def.palette.teams[id % def.palette.teams.length] } : presetTeam(id));
-  const opts = def.setup[mode] ?? [];
+  // Vs bots adds the level, how many bots and (where the game has teams) Teams to the game's own options.
+  const opts = mode === 'bots' ? botSetup(def) : (def.setup[mode] ?? []);
   const [vals, setVals] = useState<Record<string, string | number>>(() =>
     Object.fromEntries(opts.map((o) => [o.key, (prefill?.[o.key] as string | number | undefined) ?? o.initial])),
   );
@@ -76,6 +79,13 @@ export function useSetup(def: GameDef, mode: Mode, prefill?: Record<string, unkn
         })
       : undefined;
     const settings = teams ? { ...own, teams: teams.map((x) => ({ ...x, name: x.name.trim() || preset(x.id).name })) } : own;
+    if (mode === 'bots') {
+      // The bots are dealt now and wait in the room, where they can be swapped or kicked before Start.
+      const b = botSeats(def, own);
+      const play = await startPlay(def.key, mode, { ...own, ...b.settings }, b.seats);
+      router.replace(`/play/${def.key}/room?play=${play.id}`);
+      return;
+    }
     const play = await startPlay(def.key, mode, settings, named);
     router.replace(`/play/${def.key}/run?play=${play.id}`);
   };

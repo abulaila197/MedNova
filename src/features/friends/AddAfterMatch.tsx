@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Pressable, StyleSheet } from 'react-native';
 
 import { Text } from '@/components/AppText';
-import { call } from '@/online/api';
+import { call } from '@/lib/rpc';
 import { loadFriends, useFriends } from '@/state/friends';
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';

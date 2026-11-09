@@ -13,7 +13,7 @@ import { F } from '@/theme/tokens';
 
 import { Face } from '../shell/Face';
 import { Btn, GameScreen, RoundBtn } from '../shell/ui';
-import { CHOSEN, ChosenTick } from '@/online/chosen';
+import { CHOSEN, ChosenTick } from '@/match/chosen';
 import { answerText, HELPER_PRICE, TYPE_NAME, type HelperKind, type Question, type Response, type Round } from './core';
 
 // The Quiz Parade board (QP8): the app look, like The Streak Master, dark only. A question counter, the type and

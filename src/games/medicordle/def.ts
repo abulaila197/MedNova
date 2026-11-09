@@ -2,7 +2,6 @@ import type { GameDef } from '../shell/types';
 import { offlineRows } from './core';
 import { wordById } from './data';
 import { OfflinePlay } from './OfflinePlay';
-import { OnlinePlay } from './OnlinePlay';
 import { SoloPlay } from './SoloPlay';
 
 const STYLE = {
@@ -46,14 +45,15 @@ export const novaMedicordle: GameDef = {
       ],
     },
     {
-      mode: 'online',
-      title: 'Same word, race live',
-      blurb: 'Everyone plays the same word on their own board.',
+      mode: 'bots',
+      title: 'Race the bots',
+      blurb: 'The same word as the bots, each on your own board.',
       howTo: [
-        'Everyone gets the same word at the same time and guesses on their own board, six tries each.',
+        'Pick Easy, Medium or Hard and 1 to 3 bots. Meet them in the room: tap a bot for its profile, swap it or kick it.',
+        'Everyone gets the same word at the same time, six tries each. The bots\' small boards fill with colours as they guess, never letters.',
         'First solver scores 100, then 80, 65 and so on, plus 10 for each guess left.',
-        'You see when someone solves it or gets close. No letter hints online; the definition appears in the last 20 seconds of each word.',
-        'EXP works like Solo: 12 for a first-guess solve, down to 2 on the sixth. Teams score their players\' average.',
+        'No letter hints; the definition appears in the last 20 seconds of each word.',
+        'EXP works like Solo: 12 for a first-guess solve, down to 2 on the sixth.',
       ],
     },
   ],
@@ -93,7 +93,7 @@ export const novaMedicordle: GameDef = {
       },
     ],
     // NM15: style, 3, 5 or 10 words, and 60, 90 or 120 s per word.
-    online: [
+    bots: [
       STYLE,
       {
         key: 'words',
@@ -118,14 +118,14 @@ export const novaMedicordle: GameDef = {
   },
   players: { offline: { min: 2, max: 6 } },
   // TMG-NM: offline, the guesser's whole team wins the word, so a team scores its words; NM27: online is the average.
-  teams: { offline: true, online: true },
-  teamScore: { offline: 'sum', online: 'average' },
+  bots: { min: 1, max: 3 },
+  teams: { offline: true, bots: true },
+  teamScore: { offline: 'sum', bots: 'average' },
   playersNote: (n) => `Player 1 is you, the phone owner. With ${n} players the board has ${offlineRows(n)} rows, ${offlineRows(n) / n} guesses each.`,
   Play: { solo: SoloPlay, offline: OfflinePlay },
-  Online: OnlinePlay,
   // NM22: Solo EXP per word is stored on each item; NM25: Offline earns none.
   exp: (_score, items) => items.reduce((a, i) => a + (Number(i.gameData.exp) || 0), 0),
-  expCap: (settings, mode) => (mode === 'online' ? 12 * (Number(settings.words) || 5) : settings.word === 'daily' ? 24 : settings.word === 'endless' ? 12 * 150 : 0),
+  expCap: (settings, mode) => (mode === 'bots' ? 12 * (Number(settings.words) || 5) : settings.word === 'daily' ? 24 : settings.word === 'endless' ? 12 * 150 : 0),
   itemLabel: (item) => wordById.get(item.itemId)?.word ?? item.itemId,
   itemNoun: 'word',
   itemsTitle: 'Words',

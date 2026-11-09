@@ -9,7 +9,7 @@ import type { DPCase } from '@/games/diagnostic/core';
 import { useSession } from '@/games/shell/session';
 import { copyOf, keepCopy } from '@/lib/copies';
 import { supabase } from '@/lib/supabase';
-import { call } from '@/online/api';
+import { call } from '@/lib/rpc';
 import { onAccountSwitch } from '@/state/accountSwitch';
 
 /**

@@ -116,7 +116,7 @@ export function NewCase() {
             <Text style={[s.saveT, { color: t.onGrad }]}>{signedIn ? 'Save to My diseases' : 'Sign in to save'}</Text>
           </LinearGradient>
         </Pressable>
-        <Text style={[s.foot, { color: t.mute }]}>You can practise it alone straight away. Once it’s approved it also plays in rooms you host, and you get 10 tokens.</Text>
+        <Text style={[s.foot, { color: t.mute }]}>You can practise it alone straight away. Once it’s approved you get 10 tokens.</Text>
       </InfoScroll>
     </Screen>
   );

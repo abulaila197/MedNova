@@ -17,7 +17,7 @@ import { useApp, useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 import { tapped } from '@/lib/sound';
-import { guardedNav } from '@/online/roomGuard';
+import { navTo } from '@/lib/nav';
 
 /** The header and everything in it at 80% of the approved size (Yazan, 2026-10-19). */
 const h = (n: number) => u(n * 0.8);
@@ -58,7 +58,7 @@ export function Header({ variant = 'app' }: { variant?: 'app' | 'game' }) {
           <Text style={z.rpT}>!</Text>
         </Pressable>
         {signedIn ? null : (
-          <Pressable onPress={tapped(() => guardedNav('/auth'))} hitSlop={h(8)} accessibilityLabel="Sign in">
+          <Pressable onPress={tapped(() => navTo('/auth'))} hitSlop={h(8)} accessibilityLabel="Sign in">
             <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={z.si}>
               <Text style={[z.siT, { color: t.onGrad }]}>Sign in</Text>
             </LinearGradient>
@@ -76,7 +76,7 @@ function Coin({ g }: { g: boolean }) {
   const t = useTheme();
   const { tokens } = useBalance();
   return (
-    <Pressable onPress={tapped(() => guardedNav('/store'))} style={(g ? gs : s).coin} accessibilityRole="button" accessibilityLabel={`${tokens} tokens. Open the Nova Shop`}>
+    <Pressable onPress={tapped(() => navTo('/store'))} style={(g ? gs : s).coin} accessibilityRole="button" accessibilityLabel={`${tokens} tokens. Open the Nova Shop`}>
       <Text style={[(g ? gs : s).coinT, { color: t.fg }]}>{tokens}</Text>
       <TokenCoin size={h(g ? 17 : 20)} progress={0} track="transparent" />
     </Pressable>
@@ -115,7 +115,7 @@ function Me({ g }: { g: boolean }) {
   const w = h(g ? 70 : 84);
   return (
     <View style={z.me}>
-      <Pressable onPress={tapped(() => guardedNav('/profile'))} hitSlop={h(6)} accessibilityRole="button" accessibilityLabel={`Level ${level}, ${into} of ${need} EXP to level ${level + 1}. Open your profile`}>
+      <Pressable onPress={tapped(() => navTo('/profile'))} hitSlop={h(6)} accessibilityRole="button" accessibilityLabel={`Level ${level}, ${into} of ${need} EXP to level ${level + 1}. Open your profile`}>
         <View style={{ width: size, height: size }}>
           <Svg width={size} height={size} style={StyleSheet.absoluteFill}>
             <Circle cx={size / 2} cy={size / 2} r={r} fill="#141a3f" stroke="rgba(255,255,255,0.16)" strokeWidth={sw} />

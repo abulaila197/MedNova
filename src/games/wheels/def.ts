@@ -3,7 +3,6 @@ import { MIXES, soloExp, STYLES } from './core';
 import { answerLabel, questionById } from './data';
 import { BOSS_BONUS } from './offline';
 import { OfflinePlay } from './OfflinePlay';
-import { OnlinePlay } from './OnlinePlay';
 import { SoloPlay } from './SoloPlay';
 
 const TARGET = {
@@ -52,27 +51,27 @@ export const wheelsOfChaos: GameDef = {
       ],
     },
     {
-      mode: 'online',
-      title: 'Live on stage',
-      blurb: 'The full show for 2 to 4 players, each on their own phone.',
+      mode: 'bots',
+      title: 'Live on stage with bots',
+      blurb: 'The full show against 1 to 3 bots.',
       howTo: [
-        'The host picks a target of 25 or 50 points and the question type. 2 to 4 players, no teams.',
-        'Players take turns while the whole room watches. After Act III, extra acts follow until someone reaches the target.',
+        'Pick Easy, Medium or Hard and 1 to 3 bots. Meet them in the room: tap a bot for its profile, swap it or kick it.',
+        'Pick a target of 25 or 50 points and the question type. No teams.',
+        'You and the bots take turns. After Act III, extra acts follow until someone reaches the target.',
         'In the final round, whoever is last first can swap a turn for a Redemption round. Once a game, for everyone.',
-        'The Boss Round is played by everyone at once, each on their own phone.',
-        'Boss Round winners show up as alerts. You earn half your points as EXP.',
+        'The Boss Round is played by everyone at once. You earn half your points as EXP.',
       ],
     },
   ],
-  setup: { solo: [TARGET, MIX], offline: [TARGET, MIX], online: [TARGET, MIX] },
-  players: { offline: { min: 2, max: 4 }, online: { min: 2, max: 4 } },
+  setup: { solo: [TARGET, MIX], offline: [TARGET, MIX], bots: [TARGET, MIX] },
+  players: { offline: { min: 2, max: 4 } },
   playersNote: () => '2 to 4 players, each with a character. Player I is you, the phone owner. Pass the phone earns no EXP.',
+  bots: { min: 1, max: 3 },
   Play: { solo: SoloPlay, offline: OfflinePlay },
-  Online: OnlinePlay,
   // WC11: Solo and Online EXP is half the points; Offline earns none. Online can add a Boss bonus.
   exp: (score) => soloExp(score),
   expCap: (settings, mode) =>
-    mode === 'offline' ? 0 : soloExp((Number(settings.target) || 50) + (mode === 'online' ? BEST_TURN + BOSS_BONUS : BEST_TURN)),
+    mode === 'offline' ? 0 : soloExp((Number(settings.target) || 50) + (mode === 'bots' ? BEST_TURN + BOSS_BONUS : BEST_TURN)),
   itemLabel: (item) => {
     const q = questionById.get(item.itemId);
     return q ? answerLabel(q) : item.itemId;

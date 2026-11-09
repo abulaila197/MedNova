@@ -22,22 +22,22 @@ const PASSWORD_TABLE: Record<string, number> = { '5:1': 15, '10:1': 30, '5:2': 4
 const PASSWORD: Price = (s) => PASSWORD_TABLE[`${s.words}:${s.rounds}`] ?? 30;
 
 const COSTS: Partial<Record<GameKey, Partial<Record<Mode, Price>>>> = {
-  'the-diagnostic-pursuit': { solo: CASES, offline: CASES, online: CASES },
+  'the-diagnostic-pursuit': { solo: CASES, offline: CASES, bots: CASES },
   // Daily is free (TR3); Endless costs 10 a word, charged word by word.
-  'nova-medicordle': { solo: (s) => (s.word === 'endless' ? 10 : 0), offline: WORDS, online: WORDS },
-  'the-streak-master': { solo: STREAK_TIME, offline: STREAK_TIME, online: by('questions', { 5: 10, 10: 15, 15: 25, 20: 30 }, 15) },
+  'nova-medicordle': { solo: (s) => (s.word === 'endless' ? 10 : 0), offline: WORDS, bots: WORDS },
+  'the-streak-master': { solo: STREAK_TIME, offline: STREAK_TIME, bots: by('questions', { 5: 10, 10: 15, 15: 25, 20: 30 }, 15) },
   // Riddler Solo: 10 a level (#64), charged level by level.
-  'the-riddler': { solo: flat(10), offline: PHOTOS, online: PHOTOS },
-  'the-silent-artist': { solo: flat(10), offline: DRAWS, online: DRAWS },
-  // Case Files and Crossword online: 1, 2 or 3 cases (puzzles) in a row, each with its own time limit.
-  'case-files-unsolved': { solo: flat(10), offline: flat(10), online: by('count', { 1: 10, 2: 15, 3: 25 }, 10) },
-  'nova-crossword': { solo: flat(30), offline: flat(15), online: by('count', { 1: 15, 2: 30, 3: 45 }, 15) },
-  'the-wheels-of-chaos': { solo: TARGET, offline: TARGET, online: TARGET },
-  'the-conqueror': { online: flat(45) },
-  'the-quiz-parade': { solo: PARADE, offline: PARADE, online: PARADE },
-  imposter: { offline: ROUNDS, online: ROUNDS },
-  'code-clinic': { offline: flat(30), online: flat(30) },
-  'nova-password': { offline: PASSWORD, online: PASSWORD },
+  'the-riddler': { solo: flat(10), offline: PHOTOS, bots: PHOTOS },
+  'the-silent-artist': { solo: flat(10), offline: DRAWS },
+  // Case Files and Crossword vs bots: 1, 2 or 3 cases (puzzles) in a row, each with its own time limit.
+  'case-files-unsolved': { solo: flat(10), offline: flat(10), bots: by('count', { 1: 10, 2: 15, 3: 25 }, 10) },
+  'nova-crossword': { solo: flat(30), offline: flat(15), bots: by('count', { 1: 15, 2: 30, 3: 45 }, 15) },
+  'the-wheels-of-chaos': { solo: TARGET, offline: TARGET, bots: TARGET },
+  'the-conqueror': {},
+  'the-quiz-parade': { solo: PARADE, offline: PARADE, bots: PARADE },
+  imposter: { offline: ROUNDS },
+  'code-clinic': { offline: flat(30) },
+  'nova-password': { offline: PASSWORD },
 };
 
 /** Games paid level by level or word by word (#64, #69): Riddler Solo and Medicordle Endless. */

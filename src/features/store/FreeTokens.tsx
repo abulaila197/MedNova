@@ -15,7 +15,7 @@ import { copyOf, keepCopy } from '@/lib/copies';
 import { Kicker } from '@/features/info/ui';
 import { useSession } from '@/games/shell/session';
 import { syncAccount } from '@/lib/sync';
-import { call } from '@/online/api';
+import { call } from '@/lib/rpc';
 import { u } from '@/theme/scale';
 import type { Theme } from '@/theme/tokens';
 import { F } from '@/theme/tokens';

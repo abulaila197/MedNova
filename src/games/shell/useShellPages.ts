@@ -3,7 +3,6 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { sparksCost } from '@/features/sparks/costs';
 import { needSparks } from '@/features/sparks/sparks';
-import { leaveRoom, rematchRoom } from '@/online/api';
 
 import { engine, GUEST_PLAYS } from '../engine';
 import type { Mode, Play, PlayItem } from '../engine/types';
@@ -44,16 +43,18 @@ export function useLanding(def: GameDef) {
     // The Sparks are checked at Start, where the setup sets the cost.
     router.push(`/play/${def.key}/setup?mode=${mode}`);
   };
-  const resumePlay = (p: Play) => router.push(`/play/${def.key}/run?play=${p.id}`);
+  // A Vs bots play that hasn't started yet waits in its room.
+  const resumePlay = (p: Play) => router.push(`/play/${def.key}/${p.mode === 'bots' && p.resume == null ? 'room' : 'run'}?play=${p.id}`);
   /** "Resume case 3": the bookmark's item number when it has one. */
   const resumeLabel = (p: Play) => {
+    if (p.mode === 'bots' && p.resume == null) return 'Back to the room';
     const i = (p.resume as { index?: number } | null)?.index;
     return `Resume ${def.itemNoun ?? 'case'} ${i != null ? i + 1 : ''}`.trim();
   };
-  /** The small note on a mode card: only a guest's free plays left, or that online needs an account. No Sparks text on the cards (Yazan 2026-10-27). */
-  const note = (mode: Mode) => {
+  /** The small note on a mode card: only a guest's free plays left. No Sparks text on the cards (Yazan 2026-10-27). */
+  const note = (_mode: Mode) => {
     if (signedIn || left == null) return '';
-    return mode === 'online' ? 'Sign in to play' : left > 0 ? `${left} of ${GUEST_PLAYS} free plays left` : 'Free plays used';
+    return left > 0 ? `${left} of ${GUEST_PLAYS} free plays left` : 'Free plays used';
   };
   return { open, setOpen, resume, go, resumePlay, resumeLabel, note };
 }
@@ -74,8 +75,6 @@ export function useResults(def: GameDef, play: Play, items: PlayItem[]) {
     { value: `${right}/${mine.length}`, label: 'Solved' },
   ];
   const missed = items.some((i) => i.feedsLearn && i.outcome !== 'right');
-  // ON25: online Rematch and Change settings both go back to the same room's lobby (the host changes settings there).
-  const room = play.mode === 'online' ? (play.settings.room as string | undefined) : undefined;
   const signedIn = !!useSession((s) => s.userId);
   /** The same trial gate as Play: a guest out of free plays goes to sign-in instead of a new game. */
   const gated = async () => {
@@ -87,22 +86,16 @@ export function useResults(def: GameDef, play: Play, items: PlayItem[]) {
   const paid = async () => alwaysFree(play) || needSparks(sparksCost(def.key, play.mode, play.settings));
   const rematch = async () => {
     if (!(await paid())) return;
-    if (room) {
-      await rematchRoom(room).catch(() => {});
-      router.replace(`/play/${def.key}/lobby?room=${room}`);
-      return;
-    }
     if (await gated()) return;
     const next = await startPlay(def.key, play.mode, play.settings, play.seats.filter((x) => !x.removed));
-    router.replace(`/play/${def.key}/run?play=${next.id}`);
+    // Vs bots: the rematch meets the same bots in the room again, where they can be swapped or kicked.
+    router.replace(`/play/${def.key}/${play.mode === 'bots' ? 'room' : 'run'}?play=${next.id}`);
   };
   const changeSettings = async () => {
-    if (room) return rematch();
     if (await gated()) return;
     router.replace(`/play/${def.key}/setup?mode=${play.mode}&from=${play.id}`);
   };
   const backToGames = () => {
-    if (room) leaveRoom(room).catch(() => {});
     // Land on the game just played, and drop the game's pages so Back can't return to these results.
     focusGame(def.key);
     router.dismissTo('/games');

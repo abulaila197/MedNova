@@ -7,8 +7,8 @@ import type { GameKey, Mode } from './types';
 export const GUEST_PLAYS = 5;
 const GUEST_KEY = 'guest_trials';
 
-/** Modes a guest may try. Online Multiplayer always needs sign-in. */
-export const TRIAL_MODES: Mode[] = ['solo', 'offline'];
+/** Modes a guest may try (Vs bots too: bots run on the phone, 2026-11-09). */
+export const TRIAL_MODES: Mode[] = ['solo', 'offline', 'bots'];
 
 type Counted = Record<string, string[]>; // game -> guest play ids that counted
 

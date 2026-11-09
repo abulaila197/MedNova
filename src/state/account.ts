@@ -9,8 +9,7 @@ import { PROGRESS_KEYS } from '@/lib/progress';
 import { dropCopies } from '@/lib/copies';
 import { holdUnsynced, ITEMS_CURSOR, LEDGER_CURSOR, PLAYS_CURSOR, syncAccount } from '@/lib/sync';
 import { loadSubscription } from '@/features/store/billing';
-import { invoke } from '@/online/api';
-import { startInvites, stopInvites } from '@/online/invites';
+import { invoke } from '@/lib/rpc';
 import { runAccountSwitch } from '@/state/accountSwitch';
 import { startPresence, stopPresence } from '@/state/friends';
 
@@ -88,10 +87,8 @@ function apply(id: string | null, email: string | null) {
     void loadProfile(id);
     ready.then(() => syncAccount(id)).catch(() => {}); // retried on the next sign-in, finish or app start
     startPresence();
-    startInvites(id);
   } else {
     stopPresence();
-    stopInvites();
   }
 }
 

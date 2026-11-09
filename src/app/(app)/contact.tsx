@@ -5,7 +5,7 @@ import { Text, TextInput } from '@/components/AppText';
 import { Screen } from '@/components/Screen';
 import { CONTACT_EMAIL, INTENTS } from '@/features/info/content';
 import { GradBtn, InfoScroll, Kicker, s as ui, useInfo } from '@/features/info/ui';
-import { call } from '@/online/api';
+import { call } from '@/lib/rpc';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 import { deviceId } from '@/lib/device';

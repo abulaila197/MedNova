@@ -3,7 +3,7 @@ import { create } from 'zustand';
 
 import { useSession } from '@/games/shell/session';
 import { copyOf, keepCopy } from '@/lib/copies';
-import { call } from '@/online/api';
+import { call } from '@/lib/rpc';
 import { onAccountSwitch } from '@/state/accountSwitch';
 
 /** A friend or a request (FR1-FR4). `kind`: friend, incoming (they asked you), outgoing (you asked them) or none (any other player's profile). */

@@ -18,7 +18,7 @@ import { F } from '@/theme/tokens';
 import { DECK } from './deck';
 import { loadHunt, useHunt } from './hunt';
 import { Sleeve } from './Sleeve';
-import { guardedNav } from '@/online/roomGuard';
+import { navTo } from '@/lib/nav';
 
 const kv = defaultKV();
 const seenKey = (uid: string) => `cards:seen:${uid}`;
@@ -98,7 +98,7 @@ export function CardHost() {
           <Pressable
             onPress={() => {
               void done();
-              guardedNav('/cards');
+              navTo('/cards');
             }}
             style={[s.btn, { borderColor: t.accent }]}
             accessibilityRole="button">

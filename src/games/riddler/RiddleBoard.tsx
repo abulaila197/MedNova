@@ -1,4 +1,4 @@
-import { CHOSEN } from '@/online/chosen';
+import { CHOSEN } from '@/match/chosen';
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Image } from 'expo-image';
 import { Platform, Pressable, StyleSheet, View, type LayoutChangeEvent } from 'react-native';

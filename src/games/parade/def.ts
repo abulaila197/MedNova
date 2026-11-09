@@ -2,7 +2,6 @@ import type { GameDef } from '../shell/types';
 import { POINTS } from './core';
 import { QUESTIONS } from './data';
 import { OfflinePlay } from './OfflinePlay';
-import { OnlinePlay } from './OnlinePlay';
 import { itemLine, SoloPlay } from './SoloPlay';
 
 const count = (kind: string) => QUESTIONS.filter((q) => q.kind === kind).length.toLocaleString('en-US');
@@ -58,23 +57,24 @@ export const quizParade: GameDef = {
       ],
     },
     {
-      mode: 'online',
-      title: 'Same questions, live',
-      blurb: 'Everyone gets each question at once. Fast and right scores a bonus.',
+      mode: 'bots',
+      title: 'Race the bots',
+      blurb: 'Each question at once with the bots. Fast and right scores a bonus.',
       howTo: [
+        'Pick Easy, Medium or Hard and 1 to 5 bots. Meet them in the room: tap a bot for its profile, swap it or kick it.',
         'Everyone gets the same question at the same time, on its own clock. One answer each, no helpers.',
-        'The next question starts as soon as everyone has answered.',
+        'At the reveal, each bot\'s face sits on the answer it picked.',
         'Same points as Solo. The first fully right answer on each question gets +1, and Closest number goes to the nearest guess.',
         'You earn your points as EXP, up to 60. Missed questions wait for you in Today\'s review.',
       ],
     },
   ],
-  setup: { solo: [STYLE, QUESTIONS_N], offline: [STYLE, QUESTIONS_N], online: [STYLE, QUESTIONS_N] },
+  setup: { solo: [STYLE, QUESTIONS_N], offline: [STYLE, QUESTIONS_N], bots: [STYLE, QUESTIONS_N] },
   players: { offline: { min: 2, max: 6 } },
-  teams: { offline: true, online: true },
+  bots: { min: 1, max: 5 },
+  teams: { offline: true, bots: true },
   playersNote: () => 'Player 1 is you, the phone owner. Pass the phone earns no EXP; only your missed questions go to Learn.',
   Play: { solo: SoloPlay, offline: OfflinePlay },
-  Online: OnlinePlay,
   // QP11: EXP = points, at most 60. Pass the phone earns none, like every Pass the phone mode.
   exp: (score) => Math.min(60, Math.max(0, score)),
   expCap: (_settings, mode) => (mode === 'offline' ? 0 : 60),

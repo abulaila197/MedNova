@@ -2,7 +2,7 @@ import { create } from 'zustand';
 
 import { defaultKV } from '@/games/engine/storage';
 import { useSession } from '@/games/shell/session';
-import { call } from '@/online/api';
+import { call } from '@/lib/rpc';
 import { onAccountSwitch } from '@/state/accountSwitch';
 
 // Which help pop-ups (and the welcome tour) were closed, kept on the phone and on the account, so a reinstall

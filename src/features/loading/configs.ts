@@ -33,7 +33,9 @@ export type LoadCfg = {
   fonts: string[];
 };
 
-const ALL = 'Solo · Pass the phone · Online';
+const ALL = 'Solo · Pass the phone · Vs bots';
+// Silent Artist has no bots (Yazan 2026-11-09): practice and Pass the phone only.
+const NO_BOTS = 'Solo · Pass the phone';
 
 export const LOAD: Record<string, LoadCfg> = {
   'the-diagnostic-pursuit': {
@@ -65,7 +67,7 @@ export const LOAD: Record<string, LoadCfg> = {
     sub: { f: 'CabinSketch_400Regular', s: 17, c: '#e6e2d3' },
     tip: { f: 'PatrickHand_400Regular', s: 15, c: '#ebe7da', bg: 'rgba(22,44,36,0.55)', b: 'rgba(240,236,224,0.25)' },
     bar: { t: 'line', c: '#f4f1e6', track: 'rgba(244,241,230,0.18)', glow: '0 0 8px rgba(244,241,230,0.7)' },
-    tag: { t: ALL, side: 'left', c: '#efece0', bg: 'rgba(20,40,32,0.45)', b: 'rgba(240,236,224,0.35)' },
+    tag: { t: NO_BOTS, side: 'left', c: '#efece0', bg: 'rgba(20,40,32,0.45)', b: 'rgba(240,236,224,0.35)' },
     glows: [
       { x: 0.79, y: 0.46, r: 40, c: 'rgba(90,240,255,0.35)', a: 'still' },
       { x: 0.4, y: 0.52, r: 150, c: 'rgba(255,255,245,0.08)', a: 'pulse' },
@@ -173,7 +175,7 @@ export const LOAD: Record<string, LoadCfg> = {
     sub: { f: 'BarlowCondensed_500Medium', s: 15, c: '#b9d3d0' },
     tip: { f: 'BarlowCondensed_500Medium', s: 13.5, c: '#dcebe9', bg: 'rgba(0,10,12,0.62)', b: 'rgba(120,210,200,0.22)' },
     bar: { t: 'line', c: '#ff3b3b', track: 'rgba(160,230,220,0.14)', glow: '0 0 10px #ff3b3b, 0 0 22px rgba(255,59,59,0.55)' },
-    tag: { t: 'Pass the phone · Online', side: 'left', c: '#dcebe9', bg: 'rgba(0,0,0,0.45)', b: 'rgba(160,230,220,0.28)' },
+    tag: { t: 'Pass the phone', side: 'left', c: '#dcebe9', bg: 'rgba(0,0,0,0.45)', b: 'rgba(160,230,220,0.28)' },
     glows: [
       { x: 0.5, y: 0.392, r: 40, c: 'rgba(255,40,40,0.5)', a: 'pulse' },
       { x: 0.5, y: 0.335, r: 36, c: 'rgba(150,255,240,0.35)', a: 'flicker' },

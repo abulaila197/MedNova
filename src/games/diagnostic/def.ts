@@ -2,10 +2,9 @@ import type { GameDef } from '../shell/types';
 import { MAX_CASE_POINTS } from './core';
 import { caseById, guessById, guessName, LEVELS, levelCount } from './data';
 import { OfflinePlay } from './OfflinePlay';
-import { OnlinePlay } from './OnlinePlay';
 import { SoloPlay } from './SoloPlay';
 
-/** The Diagnostic Pursuit on the shared shell: Solo, Offline Multiplayer and Online (the online pilot). */
+/** The Diagnostic Pursuit on the shared shell: Solo, Pass the phone and Vs bots. */
 export const diagnosticPursuit: GameDef = {
   key: 'the-diagnostic-pursuit',
   modes: [
@@ -33,11 +32,11 @@ export const diagnosticPursuit: GameDef = {
       ],
     },
     {
-      mode: 'online',
-      title: 'Race players live',
-      blurb: 'A new clue every 10 seconds. First to the diagnosis scores most.',
+      mode: 'bots',
+      title: 'Race the bots',
+      blurb: 'A new clue every 10 seconds. Beat the bots to the diagnosis.',
       howTo: [
-        'Join a room with a code or from the open list, or host your own. 2 to 6 players.',
+        'Pick Easy, Medium or Hard and 1 to 5 bots. Meet them in the room: tap a bot for its profile, swap it or kick it.',
         'Everyone gets the same case. A new clue appears every 10 seconds, and a case lasts 60 seconds.',
         'Guess as often as you like. A wrong guess locks you out for 5 seconds. There is no Skip, Reveal or Hint.',
         'Points: solving order (100, 80, 65, 50, 40, 30) + fewer clues (up to 50) + time left (up to 20).',
@@ -82,7 +81,7 @@ export const diagnosticPursuit: GameDef = {
         initial: 3,
       },
     ],
-    online: [
+    bots: [
       {
         key: 'difficulty',
         label: 'Difficulty',
@@ -101,10 +100,10 @@ export const diagnosticPursuit: GameDef = {
       },
     ],
   },
-  teams: { offline: true, online: true },
+  bots: { min: 1, max: 5 },
+  teams: { offline: true, bots: true },
   players: { offline: { min: 2, max: 6 } },
   Play: { solo: SoloPlay, offline: OfflinePlay },
-  Online: OnlinePlay,
   // DP4: EXP = points ÷ 10, each case counted up to the Solo most (120 points = 12 EXP), online too (DPN3: race bonuses
   // still rank players, they don't add EXP).
   // Playing your own case is practice: no EXP (Yazan 2026-10-12).

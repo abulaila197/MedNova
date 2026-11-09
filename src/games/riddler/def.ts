@@ -2,7 +2,6 @@ import type { GameDef } from '../shell/types';
 import { RD } from './core';
 import { RIDDLES, riddleById, riddleName } from './data';
 import { OfflinePlay } from './OfflinePlay';
-import { OnlinePlay } from './OnlinePlay';
 import { SoloPlay } from './SoloPlay';
 
 const PHOTOS = {
@@ -55,10 +54,11 @@ export const riddler: GameDef = {
       ],
     },
     {
-      mode: 'online',
-      title: 'Race the same picture',
-      blurb: 'Everyone sees the picture at once. Solve it first.',
+      mode: 'bots',
+      title: 'Race the bots',
+      blurb: 'The same picture as the bots. Solve it first.',
       howTo: [
+        'Pick Easy, Medium or Hard and 1 to 3 bots. Meet them in the room: tap a bot for its profile, swap it or kick it.',
         'Everyone gets the same picture at the same time, with 90 s to solve it.',
         'Guess as often as you like, but a wrong guess locks you for 5 s.',
         'First solver scores 100, then 80, 65 and so on, plus up to 50 for time left.',
@@ -66,15 +66,15 @@ export const riddler: GameDef = {
       ],
     },
   ],
-  setup: { solo: [], offline: [PHOTOS, TURN], online: [PHOTOS] },
+  setup: { solo: [], offline: [PHOTOS, TURN], bots: [PHOTOS] },
   players: { offline: { min: 2, max: 6 } },
-  teams: { offline: true, online: true },
+  bots: { min: 1, max: 3 },
+  teams: { offline: true, bots: true },
   playersNote: () => 'Player 1 is you, the phone owner. Pass the phone earns no EXP; only your unsolved condition pictures go to Learn.',
   Play: { solo: SoloPlay, offline: OfflinePlay },
-  Online: OnlinePlay,
   // RD9, RD10: Solo pays the EXP each level earned this session; RD12: Offline earns none.
   exp: (_score, items) => items.reduce((a, i) => a + (Number(i.gameData.exp) || 0), 0),
-  expCap: (settings, mode) => (mode === 'offline' ? 0 : (mode === 'online' ? Number(settings.photos) || 5 : RIDDLES.length) * 3 * RD.expPerStar),
+  expCap: (settings, mode) => (mode === 'offline' ? 0 : (mode === 'bots' ? Number(settings.photos) || 5 : RIDDLES.length) * 3 * RD.expPerStar),
   itemLabel: (item) => { const r = riddleById.get(item.itemId); return r ? riddleName(r) : item.itemId; },
   itemNoun: 'level',
   itemsTitle: 'Pictures',

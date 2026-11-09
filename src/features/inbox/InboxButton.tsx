@@ -8,7 +8,7 @@ import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 
 import { loadWaiting, useInbox } from './useInbox';
-import { guardedNav } from '@/online/roomGuard';
+import { navTo } from '@/lib/nav';
 
 /**
  * The Inbox button, first of the four round buttons on the Games page (Yazan 2026-10-27: Inbox, daily reward, Grand
@@ -30,7 +30,7 @@ export function InboxButton() {
   const line = { stroke: t.accent, strokeWidth: 2.4, fill: 'none', strokeLinejoin: 'round' as const, strokeLinecap: 'round' as const };
   return (
     <Pressable
-      onPress={() => guardedNav('/inbox')}
+      onPress={() => navTo('/inbox')}
       style={[s.btn, { backgroundColor: t.panel, borderColor: t.panelLine }]}
       accessibilityRole="button"
       accessibilityLabel={waiting ? `Inbox, ${waiting} new` : 'Inbox'}>

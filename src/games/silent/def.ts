@@ -2,7 +2,6 @@ import type { GameDef } from '../shell/types';
 import { SA } from './core';
 import { isBasic, MIXES, PICKABLE, wordById, wordName } from './data';
 import { OfflinePlay } from './OfflinePlay';
-import { OnlinePlay } from './OnlinePlay';
 import { SoloPlay } from './SoloPlay';
 
 const TURN = {
@@ -58,26 +57,13 @@ export const silentArtist: GameDef = {
         'With teams, the performing team scores. On time up the next team gets one 15 s steal worth 10.',
       ],
     },
-    {
-      mode: 'online',
-      title: 'Draw for the room',
-      blurb: 'One draws, everyone types guesses live.',
-      howTo: [
-        'Players take turns to draw. The artist picks 1 of 3 secret words in 10 s and draws it live.',
-        'Everyone else types guesses. Small typos count; a near miss tells only you it is close.',
-        'Hints arrive as the clock runs: the word count, then the field, then letters.',
-        'Faster guesses score 20 to 125. The artist earns the average of everyone\'s points, +20 if all got it.',
-        'Two reports cancel the artist\'s points for that turn. Every 10 points is 1 EXP, up to 60. Nothing goes to Learn.',
-      ],
-    },
   ],
   // QS1 + SA5 + SA12: the host picks the words, the turn time and 1, 2 or 3 draws each.
-  setup: { solo: [], offline: [MIX, TURN, PERFORMS], online: [MIX, TURN, { ...PERFORMS, label: 'Draws each' }] },
+  setup: { solo: [], offline: [MIX, TURN, PERFORMS] },
   players: { offline: { min: 2, max: 6 } },
-  teams: { offline: true, online: true },
+  teams: { offline: true },
   playersNote: () => 'Player 1 is you, the phone owner. The Silent Artist earns no EXP and sends nothing to Learn.',
   Play: { solo: SoloPlay, offline: OfflinePlay },
-  Online: OnlinePlay,
   // SA1: nothing to Learn in any mode. Online pays 1 EXP per 10 points, up to 60 (Yazan 2026-10-27); Solo and
   // Pass the phone stay EXP-free.
   exp: (score) => Math.min(60, Math.max(0, Math.floor(score / 10))),

@@ -131,15 +131,13 @@ function Glow({ o, id, artW, artH, live }: { o: LoadCfg['glows'][number]; id: st
     if (!live || o.a === 'still') return;
     const ms = (n: number) => ({ duration: n, easing: Easing.inOut(Easing.ease) });
     if (o.a === 'pulse') {
+      // Opacity only (Yazan 2026-11-09, lighter loading pages): growing and shrinking a soft glow redraws it every frame.
       op.value = withRepeat(withSequence(withTiming(1, ms(1300)), withTiming(0.55, ms(1300))), -1);
-      sc.value = withRepeat(withSequence(withTiming(1.08, ms(1300)), withTiming(0.92, ms(1300))), -1);
     } else {
       // The preview's candle flicker keyframes over 2.2 s.
       const k = [0.6, 1, 0.75, 0.95, 0.7, 1, 0.85];
       const at = [264, 176, 396, 308, 396, 308, 352];
       op.value = withRepeat(withSequence(...k.map((v, i) => withTiming(v, ms(at[i])))), -1);
-      sc.value = withRepeat(withSequence(withTiming(1.06, ms(440)), withTiming(0.97, ms(704)), withTiming(1, ms(1056))), -1);
-      dy.value = withRepeat(withSequence(withTiming(-0.02, ms(440)), withTiming(0, ms(704)), withTiming(0, ms(1056))), -1);
     }
     return () => [op, sc, dy].forEach(cancelAnimation);
   }, [live, o.a, op, sc, dy]);
@@ -207,7 +205,7 @@ const s = StyleSheet.create({
   root: { overflow: 'hidden' },
   art: { position: 'absolute', overflow: 'hidden' },
   glow: { position: 'absolute', mixBlendMode: 'screen' },
-  sweep: { position: 'absolute', top: '-20%', bottom: '-20%', left: '-20%', right: '-20%', mixBlendMode: 'soft-light' },
+  sweep: { position: 'absolute', top: '-20%', bottom: '-20%', left: '-20%', right: '-20%', opacity: 0.55 },
   txt: { position: 'absolute', left: q(24), right: q(24) },
   orig: { alignSelf: 'stretch', fontSize: q(11), letterSpacing: q(11 * 0.16), textTransform: 'uppercase', opacity: 0.9 },
   tip: { marginTop: q(12), paddingVertical: q(8), paddingHorizontal: q(12), borderRadius: q(8), borderWidth: 1, maxWidth: '100%' },

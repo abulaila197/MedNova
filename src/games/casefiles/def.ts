@@ -2,7 +2,6 @@ import type { GameDef } from '../shell/types';
 import { CF } from './core';
 import { CASES, caseById } from './data';
 import { OfflinePlay } from './OfflinePlay';
-import { OnlinePlay } from './OnlinePlay';
 import { SoloPlay } from './SoloPlay';
 
 /** Online cases in a row (1-3; an older room has none and plays one). */
@@ -39,15 +38,15 @@ export const caseFiles: GameDef = {
       ],
     },
     {
-      mode: 'online',
-      title: 'Race the case',
-      blurb: 'The same case at the same time, with live progress.',
+      mode: 'bots',
+      title: 'Race the bots',
+      blurb: 'The same case as the bots, with live progress.',
       howTo: [
-        'Everyone gets the same random case at the same time and works it alone, against the host\'s time limit.',
-        'The host picks 1, 2 or 3 cases. They come one after another, each with the full time limit, and your points add up.',
-        'You see when someone reaches a new stage or solves it, never their answers or points.',
+        'Pick Easy, Medium or Hard and 1 to 3 bots. Meet them in the room: tap a bot for its profile, swap it or kick it.',
+        'Everyone gets the same random case at the same time and works it alone, against the time limit.',
+        'Pick 1, 2 or 3 cases. They come one after another, each with the full time limit, and your points add up.',
+        'You see when a bot closes the case. Everything stays sealed until the end, then you see every bot\'s diagnosis.',
         'Scoring is the same as Solo, and every case\'s points are your EXP. A tie goes to the faster finish.',
-        'Everything stays sealed until everyone closes the case or time runs out. With teams, the team score is its players’ average.',
       ],
     },
   ],
@@ -55,7 +54,7 @@ export const caseFiles: GameDef = {
     solo: [],
     offline: [],
     // CF12: the host's time limit, per case; 1 to 3 cases back to back, points add up (Yazan, 2026-10-25).
-    online: [
+    bots: [
       {
         key: 'count',
         label: 'Cases',
@@ -79,14 +78,14 @@ export const caseFiles: GameDef = {
     ],
   },
   players: { offline: { min: 2, max: 6 } },
-  teams: { offline: true, online: true },
+  bots: { min: 1, max: 3 },
+  teams: { offline: true, bots: true },
   teamScore: 'average',
   playersNote: () => 'Player 1 is you, the phone owner: a wrong first diagnosis of yours goes to Learn. Pass the phone earns no EXP.',
   Play: { solo: SoloPlay, offline: OfflinePlay },
-  Online: OnlinePlay,
   // CF6: a Solo case pays its points the first time only; Offline pays nothing.
   exp: (_score, items) => items.reduce((a, i) => a + (Number(i.gameData.exp) || 0), 0),
-  expCap: (settings, mode) => (mode === 'offline' ? 0 : (mode === 'online' ? cases(settings) : 1) * (MOST_RIGHT * CF.points.ddRight + CF.points.provisional + CF.points.timeMax)),
+  expCap: (settings, mode) => (mode === 'offline' ? 0 : (mode === 'bots' ? cases(settings) : 1) * (MOST_RIGHT * CF.points.ddRight + CF.points.provisional + CF.points.timeMax)),
   itemLabel: (item) => {
     const c = caseById.get(item.itemId);
     return c ? `${c.title}: ${c.final}` : item.itemId;

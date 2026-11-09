@@ -2,7 +2,6 @@ import type { GameDef } from '../shell/types';
 import { expForRight, SM_EXP } from './core';
 import { questionById } from './data';
 import { OfflinePlay } from './OfflinePlay';
-import { OnlinePlay } from './OnlinePlay';
 import { SoloPlay } from './SoloPlay';
 
 const STYLE = {
@@ -77,10 +76,11 @@ export const streakMaster: GameDef = {
       ],
     },
     {
-      mode: 'online',
-      title: 'Same questions, race live',
-      blurb: 'Answer first and keep your streak for bonus points.',
+      mode: 'bots',
+      title: 'Race the bots',
+      blurb: 'Answer first and keep your streak. The bots\' heat columns rise and crash beside yours.',
       howTo: [
+        'Pick Easy, Medium or Hard and 1 to 5 bots. Meet them in the room: tap a bot for its profile, swap it or kick it.',
         'Everyone gets the same question with the same choices at once. One pick each, no helpers.',
         'Right answers score by order: 100, 80, 65 and so on, plus 10 for each answer in your streak after the first (up to 50).',
         'A wrong pick or no answer drops your streak to 0. Ties go to the longest streak, then most right answers.',
@@ -88,12 +88,12 @@ export const streakMaster: GameDef = {
       ],
     },
   ],
-  setup: { solo: [STYLE, LENGTH], offline: [STYLE, LENGTH], online: [STYLE, QUESTIONS_N, QTIME] },
+  setup: { solo: [STYLE, LENGTH], offline: [STYLE, LENGTH], bots: [STYLE, QUESTIONS_N, QTIME] },
   players: { offline: { min: 2, max: 6 } },
-  teams: { offline: true, online: true },
+  bots: { min: 1, max: 5 },
+  teams: { offline: true, bots: true },
   playersNote: () => 'Player 1 is you, the phone owner. Pass the phone earns no EXP; only your missed questions go to Learn.',
   Play: { solo: SoloPlay, offline: OfflinePlay },
-  Online: OnlinePlay,
   // SM16: Solo and Online EXP is 2 per right answer, at most 60 (the streak score itself is unchanged); SM13: Offline earns none.
   exp: (_score, items, settings) => (settings?.custom ? 0 : expForRight(items.filter((i) => i.seat === 0 && i.outcome === 'right').length)),
   expCap: (_settings, mode) => (mode === 'offline' ? 0 : SM_EXP.cap),

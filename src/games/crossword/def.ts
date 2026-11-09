@@ -2,7 +2,6 @@ import type { GameDef } from '../shell/types';
 import { CW } from './core';
 import { PUZZLES, wordById } from './data';
 import { OfflinePlay } from './OfflinePlay';
-import { OnlinePlay } from './OnlinePlay';
 import { SoloPlay } from './SoloPlay';
 
 /** Online puzzles in a row (1-3; an older room has none and plays one). */
@@ -37,16 +36,16 @@ export const novaCrossword: GameDef = {
       ],
     },
     {
-      mode: 'online',
-      title: 'Race the same grid',
-      blurb: 'Everyone plays the same grid live. First right answer claims the word.',
+      mode: 'bots',
+      title: 'Race the bots',
+      blurb: 'The same grid as the bots. First right answer claims the word.',
       howTo: [
-        'Everyone gets the same random grid at the same time. The first right answer claims the word and its letters.',
-        `The host picks 1, 2 or 3 puzzles. They come one after another, each with the full time limit, ${CW.onlineHearts} fresh hearts and its own revive.`,
-        `A wrong answer costs one of your ${CW.onlineHearts} hearts; trying the same wrong answer again costs nothing. No hints online.`,
-        'At 0 hearts you get one revive per match for 1 token, or you watch the rest.',
-        'The race ends when every word is claimed, everyone is out, or the host\'s time runs out. Most letters owned wins.',
-        `EXP by place on each puzzle: 1st earns 3 stars, 2nd 2, everyone else who claimed a word 1. Each star is ${CW.expPerStar} EXP. Letters add up over the puzzles. Teams score their players' average.`,
+        'Pick Easy, Medium or Hard and 1 to 3 bots. Meet them in the room: tap a bot for its profile, swap it or kick it.',
+        'Everyone plays the same grid. The first right answer claims the word and its letters. A bot never takes the word you are typing.',
+        `Pick 1, 2 or 3 puzzles. They come one after another, each with the full time limit, ${CW.onlineHearts} fresh hearts and its own revive.`,
+        `A wrong answer costs one of your ${CW.onlineHearts} hearts; trying the same wrong answer again costs nothing. No hints.`,
+        'The race ends when every word is claimed, everyone is out, or time runs out. Most letters owned wins.',
+        `EXP by place on each puzzle: 1st earns 3 stars, 2nd 2, everyone else who claimed a word 1. Each star is ${CW.expPerStar} EXP.`,
       ],
     },
   ],
@@ -54,7 +53,7 @@ export const novaCrossword: GameDef = {
     solo: [],
     offline: [],
     // CW11: the host's time limit, per puzzle; 1 to 3 puzzles back to back, points add up (Yazan, 2026-10-25).
-    online: [
+    bots: [
       {
         key: 'count',
         label: 'Puzzles',
@@ -79,19 +78,19 @@ export const novaCrossword: GameDef = {
   },
   players: { offline: { min: 2, max: 6 } },
   // TMG-CW: each player keeps their own hearts and words; a team scores its players' average.
-  teams: { offline: true, online: true },
+  bots: { min: 1, max: 3 },
+  teams: { offline: true, bots: true },
   teamScore: 'average',
   playersNote: () => 'Player 1 is you, the phone owner, and pays for revives. Pass the phone earns no EXP.',
   Play: { solo: SoloPlay, offline: OfflinePlay },
-  Online: OnlinePlay,
   // CW9: Solo pays the EXP each puzzle earned this session (stored on its first word); Offline earns none; CW12: Online up to 3 stars.
   exp: (_score, items) => items.reduce((a, i) => a + (Number(i.gameData.exp) || 0), 0),
-  expCap: (settings, mode) => (mode === 'offline' ? 0 : mode === 'online' ? cases(settings) * 3 * CW.expPerStar : PUZZLES.length * 3 * CW.expPerStar),
+  expCap: (settings, mode) => (mode === 'offline' ? 0 : mode === 'bots' ? cases(settings) * 3 * CW.expPerStar : PUZZLES.length * 3 * CW.expPerStar),
   itemLabel: (item) => wordById.get(item.itemId)?.answer ?? item.itemId,
   itemNoun: 'puzzle',
   itemsTitle: 'Words',
   summary: (play, items) => {
-    if (play.mode === 'offline' || play.mode === 'online') {
+    if (play.mode === 'offline' || play.mode === 'bots') {
       const mine = items.filter((i) => i.seat === 0 && i.outcome === 'right');
       return [
         { value: String(mine.reduce((a, i) => a + i.points, 0)), label: 'Your points' },

@@ -127,6 +127,15 @@ export function createRecorder(kv: KV) {
       });
     },
 
+    /** Vs bots room (2026-11-09): the seats after a bot was kicked, added or swapped, before the match starts. */
+    setSeats(id: string, seats: Seat[]) {
+      return run(async () => {
+        const p = (await plays()).find((x) => x.id === id);
+        if (!p || p.status !== 'in_progress') return null;
+        return savePlay({ ...p, seats });
+      });
+    },
+
     recordItem(item: Omit<PlayItem, 'id' | 'at'> & { at?: number }) {
       return run(async () => {
         const row: PlayItem = { ...item, id: newId('item'), at: item.at ?? Date.now() };

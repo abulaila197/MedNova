@@ -1,3 +1,4 @@
+import type { Bot } from '../../bots/types';
 // Shared types every game uses. The record shape follows build/play-record-draft.md (v3).
 
 export type GameKey =
@@ -16,14 +17,16 @@ export type GameKey =
   | 'code-clinic'
   | 'nova-password';
 
-export type Mode = 'solo' | 'offline' | 'online';
+/** 'online' is only on old plays from before bots (2026-11-09); no game offers it any more. */
+export type Mode = 'solo' | 'offline' | 'bots' | 'online';
 
 export type PlayStatus = 'in_progress' | 'finished';
 
 export type Outcome = 'right' | 'wrong' | 'skipped' | 'timed_out';
 
-/** `team` is the team id when the host turned teams on (TM1-TM6). */
-export type Seat = { seat: number; name: string; color?: string; character?: string; removed?: boolean; team?: number; userId?: string }; // userId: online players (House Call)
+
+/** `team` is the team id when the host turned teams on (TM1-TM6). `bot`: a Vs bots seat (2026-11-09). */
+export type Seat = { seat: number; name: string; color?: string; character?: string; removed?: boolean; team?: number; userId?: string; bot?: Bot }; // userId: online players (House Call)
 
 export type Standing = { seat: number; name: string; score: number; timeMs: number; rank: number };
 

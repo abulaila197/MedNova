@@ -16,7 +16,7 @@ import { useApp, useTheme } from '@/state/app';
 import { loadFriends, useFriends } from '@/state/friends';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
-import { guardedNav } from '@/online/roomGuard';
+import { navTo } from '@/lib/nav';
 
 const ITEMS = [
   // Order set by Yazan 2026-10-31 (#49).
@@ -82,7 +82,7 @@ export function Menu() {
   const top = (Platform.OS === 'web' ? u(30) : ins.top) + u(14);
   const go = tapped((to: string) => {
     setMenu(false);
-    guardedNav(to);
+    navTo(to);
   });
   return (
     // Keeps clear of the phone's own buttons at the bottom (2026-10-19: the version line sat under them).

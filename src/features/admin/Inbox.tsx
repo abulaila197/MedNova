@@ -4,7 +4,7 @@ import { Linking, Pressable, StyleSheet, View } from 'react-native';
 import { Text, TextInput } from '@/components/AppText';
 import { GradBtn, Kicker, s as ui, type useInfo } from '@/features/info/ui';
 import { PROMPTS } from '@/features/store/FreeTokens';
-import { call } from '@/online/api';
+import { call } from '@/lib/rpc';
 
 import { Submissions } from './Submissions';
 import { u } from '@/theme/scale';

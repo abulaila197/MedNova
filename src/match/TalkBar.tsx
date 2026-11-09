@@ -18,11 +18,11 @@ import { F } from '@/theme/tokens';
 import { useAccount } from '@/state/account';
 
 import { G } from './grey';
-import { guardedNav } from './roomGuard';
+import { navTo } from '@/lib/nav';
 import { RoomLookProvider, useRoomLook, type RoomLook } from './look';
 import { stickerById, STICKERS } from './stickers';
 import { TEXT_PACKS } from './textStickers';
-import { sendTalk, toggleMute, useTalk, useTalkFeed, type TalkMsg } from './talk';
+import { sendTalk, toggleMute, useTalk, useTalkRoom, type TalkMsg } from './talk';
 import { VOICE, voiceById } from './voice';
 
 export type Me = { id: string; name: string; face: string };
@@ -123,7 +123,7 @@ export function TalkPanel({ room, me, onSent, maxH }: { room: string; me: Me; on
             ))}
           </View>, cooling ? s.cool : undefined)
         ) : (
-          <Pressable onPress={() => guardedNav('/style?tab=stickers')} style={s.empty} accessibilityRole="link">
+          <Pressable onPress={() => navTo('/style?tab=stickers')} style={s.empty} accessibilityRole="link">
             <Text style={[s.emptyT, { color: L.mute, fontFamily: L.semi }]}>No special stickers yet.</Text>
             <Text style={[s.emptyT, { color: L.acc, fontFamily: L.semi }]}>Get packs in the Style shop or daily chests ›</Text>
           </Pressable>
@@ -237,7 +237,7 @@ export function FloatingTalk({ room, me }: { room: string; me: Me }) {
   const mute = (m: TalkMsg) => {
     if (m.user_id === me.id) return;
     toggleMute(room, m.user_id);
-    setNote(`Muted ${m.name}. Tap their face in the lobby to unmute.`);
+    setNote(`Muted ${m.name}. Tap their face in the room to unmute.`);
   };
   const toSide = side === 'right' ? { right: size + u(8) } : { left: size + u(8) };
 
@@ -328,7 +328,7 @@ export function RoomTalk({ room, me: given }: { room: string; me: Me }) {
   // only watching isn't a match player, so the games' fallback showed the default face.
   const avatar = useAccount((a) => a.profile?.avatar);
   const me = avatar ? { ...given, face: avatar } : given;
-  useTalkFeed(room, me.id);
+  useTalkRoom(room);
   const look = useRoomLook();
   const [key] = useState(() => nextKey++);
   useEffect(() => {
@@ -338,11 +338,8 @@ export function RoomTalk({ room, me: given }: { room: string; me: Me }) {
   return null;
 }
 
-/** Leaving a room takes its chat button away at once (17), even while the room page is still on the stack. */
-export const hideRoomTalk = () => useShown.setState({ on: null });
-
-/** The pages a room's chat button belongs to: the lobby, the live match and the online results. */
-const TALK_PAGE = /^\/play\/[^/]+\/(lobby|live|results)/;
+/** The pages a room's chat button belongs to: the bot room, the match and its results. */
+const TALK_PAGE = /^\/play\/[^/]+\/(room|run|results)/;
 
 /** Mounted once in the app layout: the floating chat button of the room you are in, if any. */
 export function TalkHost() {

@@ -18,7 +18,7 @@ import { ROBOTS } from '@/features/shop/robots';
 import { useOfflineRetry } from '@/features/offline/useOfflineRetry';
 
 import { flushInBackground, giftsSeen, loadStyle, refusedSeen, useStyle } from './useStyle';
-import { guardedNav } from '@/online/roomGuard';
+import { navTo } from '@/lib/nav';
 
 /** A Style shop item's name in a sentence ("the Aurora frame"); also used by Inbox gifts from friends (#20). */
 export const nameOf = (id: string) => {
@@ -88,7 +88,7 @@ export function StyleHost() {
             <Pressable
               onPress={() => {
                 void giftsSeen();
-                guardedNav(`/style?tab=${g.item.startsWith('title:') ? 'titles' : g.item.startsWith('effect:') ? 'effects' : g.item.startsWith('pack:') ? 'stickers' : 'frames'}`);
+                navTo(`/style?tab=${g.item.startsWith('title:') ? 'titles' : g.item.startsWith('effect:') ? 'effects' : g.item.startsWith('pack:') ? 'stickers' : 'frames'}`);
               }}
               style={[s.btn, { borderColor: t.accent }]}
               accessibilityRole="button">

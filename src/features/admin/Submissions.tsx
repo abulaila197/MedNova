@@ -4,7 +4,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { Text, TextInput } from '@/components/AppText';
 import { s as ui, type useInfo } from '@/features/info/ui';
 import { gameLabel } from '@/features/learn/NewWord';
-import { call } from '@/online/api';
+import { call } from '@/lib/rpc';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 

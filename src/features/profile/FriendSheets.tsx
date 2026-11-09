@@ -20,17 +20,13 @@ import { F, type Theme } from '@/theme/tokens';
 import { shareText } from '@/lib/share';
 
 import { TokenCoin } from '@/components/PulseStar';
-import { GAMES } from '@/data/games';
-import { LOAD } from '@/features/loading/configs';
 import { CardViewer } from '@/features/cards/CollectionPage';
 import { DECK } from '@/features/cards/deck';
 import { MECHS } from '@/features/chests/data';
 import { robotOf } from '@/features/shop/robots';
-import { gameDef } from '@/games/shell/registry';
-import { call, watchAlwaysGet, watchAlwaysSet } from '@/online/api';
-import { challenge, watch } from '@/online/invites';
+import { call } from '@/lib/rpc';
 
-import { Name, openChallenge, openReport, useFriendSheet } from './Friends';
+import { Name, openReport, useFriendSheet } from './Friends';
 
 export const closeFriendSheet = () => useFriendSheet.setState({ open: null, friend: null, code: '', target: null });
 const close = closeFriendSheet;
@@ -54,7 +50,7 @@ export function FriendSheets() {
     // #22 (2026-10-31): these sheets change height after they open (the profile loads, Challenge swaps in the game
     // grid); Sheet now fades in on Android (safeEnter), so their buttons and cards take taps there.
     <Sheet open={!!open} onClose={close}>
-      {open === 'add' ? <AddFriend /> : open === 'menu' ? <FriendMenu /> : open === 'report' ? <ReportPlayer /> : open === 'profile' ? <FriendProfileSheet /> : open === 'challenge' ? <ChallengeGrid /> : null}
+      {open === 'add' ? <AddFriend /> : open === 'menu' ? <FriendMenu /> : open === 'report' ? <ReportPlayer /> : open === 'profile' ? <FriendProfileSheet /> : null}
     </Sheet>
   );
 }
@@ -236,19 +232,6 @@ function FriendProfileSheet() {
   const live = useFriends((x) => (f && friend ? x.playing[f.id] : undefined));
   const offAt = useFriends((x) => x.savedAt);
   const off = offAt != null;
-  // #16 (Always allow): whether this friend may watch my matches without asking, with a switch to turn it off.
-  const [always, setAlways] = useState(false);
-  const fid = f?.id;
-  useEffect(() => {
-    if (!fid || !friend) return;
-    let on = true;
-    watchAlwaysGet(fid)
-      .then((x) => on && setAlways(!!x))
-      .catch(() => {});
-    return () => {
-      on = false;
-    };
-  }, [fid, friend]);
   if (!f) return null;
   // Offline nobody shows ONLINE (#59): the time they were last seen instead.
   const when = !friend ? null : live ? 'IN A MATCH' : off ? (f.last_seen ? `LAST SEEN ${agoText(Date.parse(f.last_seen)).toUpperCase()}` : 'NOT SEEN YET') : seenLabel(f.last_seen);
@@ -270,8 +253,9 @@ function FriendProfileSheet() {
       await loadFriends();
       setP((x) => (x && x !== 'error' ? { ...x, relation: x.relation === 'incoming' ? 'friend' : 'outgoing' } : x));
     }, true);
+  // Online Challenge and Watch are gone with online play (Yazan 2026-11-09); friend challenges come back in group 7.
   const main = friend
-    ? { label: live ? 'Watch their match' : `Challenge ${f.display_name}`, go: () => (live ? run(async () => void (await watch(f.id, live.game, f.display_name))) : openChallenge(f)) }
+    ? null
     : f.kind === 'incoming'
       ? { label: `Accept ${f.display_name}’s friend request`, go: add }
       : f.kind === 'outgoing'
@@ -311,22 +295,12 @@ function FriendProfileSheet() {
       ) : null}
       {ready?.since ? <Text style={[s.since, { color: t.mute }]}>{`Friends since ${new Date(ready.since).toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' })}`}</Text> : null}
       <OfflineLine at={offAt} style={{ marginTop: 0 }} />
-      <Pressable disabled={busy || off || !main.go || !ready} onPress={main.go ?? undefined} style={!main.go || off ? { opacity: off ? 0.4 : 0.55 } : null} accessibilityRole="button">
-        <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.btn}>
-          <Text style={[s.btnT, { color: t.onGrad }]}>{main.label}</Text>
-        </LinearGradient>
-      </Pressable>
-      {friend && always ? (
-        <Act
-          t={t}
-          title="Stop Always allow"
-          note={`${f.display_name} can watch your matches without asking. Turn it off so they ask first.`}
-          onPress={() => run(async () => {
-            await watchAlwaysSet(f.id, false);
-            setAlways(false);
-          }, true)}
-          disabled={busy}
-        />
+      {main ? (
+        <Pressable disabled={busy || off || !main.go || !ready} onPress={main.go ?? undefined} style={!main.go || off ? { opacity: off ? 0.4 : 0.55 } : null} accessibilityRole="button">
+          <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.btn}>
+            <Text style={[s.btnT, { color: t.onGrad }]}>{main.label}</Text>
+          </LinearGradient>
+        </Pressable>
       ) : null}
       {friend ? <Act t={t} title="Remove friend" note={`Takes ${f.display_name} off both lists. They can send a new request later.`} onPress={() => run(() => removeFriend(f.id))} disabled={busy} /> : null}
       <Act t={t} red title={`Block ${f.display_name}`} note="Also stops their requests and challenges. Undo any time under Blocked players on your Profile." onPress={() => run(() => blockUser(f.id))} disabled={busy} />
@@ -358,57 +332,6 @@ function Stat({ t, label, value, coin }: { t: Theme; label: string; value: strin
       </View>
       <Text style={[s.statL, { color: t.mute }]}>{label}</Text>
     </View>
-  );
-}
-
-/** #47 (Yazan 2026-10-26, photo grid): pick any game; its room opens with the usual settings and the invite goes out. */
-function ChallengeGrid() {
-  const t = useTheme();
-  const f = useFriendSheet((x) => x.friend);
-  const [busy, setBusy] = useState<string | null>(null);
-  const [err, setErr] = useState(false);
-  const maxH = useSheetMax(470);
-  if (!f) return null;
-  const pick = async (key: string) => {
-    setBusy(key);
-    setErr(false);
-    try {
-      const def = gameDef(key);
-      const opts = def?.setup.online ?? [];
-      const settings: Record<string, unknown> = Object.fromEntries(opts.map((o) => [o.key, o.initial]));
-      if (def?.teams?.online) settings.teams = 0;
-      const r = await challenge(f.id, key, settings);
-      if (r === 'sent') close();
-      else setErr(true);
-    } catch {
-      setErr(true);
-    }
-    setBusy(null);
-  };
-  return (
-    <>
-      <Text style={[s.k, { color: t.kick }]}>{`CHALLENGE ${f.display_name.toUpperCase()}`}</Text>
-      <Text style={[s.since, { color: t.mute, textAlign: 'left' }]}>Pick a game. Its room opens with the usual settings, which you can still change in the room.</Text>
-      <ScrollView style={{ maxHeight: maxH }} contentContainerStyle={s.grid} showsVerticalScrollIndicator={false}>
-        {GAMES.map((g) => {
-          const photo = LOAD[g.key]?.photo;
-          return (
-            <Pressable key={g.key} disabled={!!busy} onPress={() => pick(g.key)} style={[s.tileG, { borderColor: t.panelLine, backgroundColor: t.panel2 }, busy && busy !== g.key && { opacity: 0.5 }]} accessibilityRole="button" accessibilityLabel={`Challenge with ${g.lead} ${g.em}`}>
-              {photo ? <Image source={photo} style={StyleSheet.absoluteFill} contentFit="cover" transition={0} /> : null}
-              <LinearGradient colors={['rgba(5,6,16,0)', 'rgba(5,6,16,0.92)']} start={{ x: 0, y: 0.35 }} end={{ x: 0, y: 1 }} style={StyleSheet.absoluteFill} />
-              <View style={s.tileT}>
-                <Text style={[s.tileL, { color: '#fff' }]} numberOfLines={1}>{g.lead}</Text>
-                <Text style={[s.tileE, { color: t.accent }]} numberOfLines={1}>{busy === g.key ? 'Opening…' : g.em}</Text>
-              </View>
-            </Pressable>
-          );
-        })}
-      </ScrollView>
-      {err ? <Text style={[s.msg, { color: t.error }]}>Couldn’t open the room. Check your connection.</Text> : null}
-      <Pressable onPress={close} accessibilityRole="button">
-        <Text style={[s.cancel, { color: t.mute }]}>Cancel</Text>
-      </Pressable>
-    </>
   );
 }
 

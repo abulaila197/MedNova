@@ -13,7 +13,7 @@ import { takeAddCode } from '@/features/profile/pendingAdd';
 import { APPLE_ON, appleSignIn } from '@/lib/appleSignIn';
 import { googleSignIn } from '@/lib/googleSignIn';
 import { supabase } from '@/lib/supabase';
-import { call } from '@/online/api';
+import { call } from '@/lib/rpc';
 import { u, useScreen } from '@/theme/scale';
 import { F, THEMES } from '@/theme/tokens';
 

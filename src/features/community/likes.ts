@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { create } from 'zustand';
 
 import { useSession } from '@/games/shell/session';
-import { call } from '@/online/api';
+import { call } from '@/lib/rpc';
 
 /**
  * #25 (Yazan 2026-10-26): one shared like count per post and wallpaper, the same for everyone. A guest's tap asks them

@@ -27,9 +27,6 @@ export type PlayProps = {
   onQuit: () => void;
 };
 
-/** A live online match screen (ON17): the room and match ids; the server referees. */
-export type OnlineProps = { def: GameDef; roomId: string; matchId: string; me: string };
-
 /** Everything the shared shell needs to host a game. */
 export type GameDef = {
   key: GameKey;
@@ -38,8 +35,8 @@ export type GameDef = {
   /** Modes that take named players in setup (one phone). Seat 0 is the phone owner. */
   players?: Partial<Record<Mode, { min: number; max: number }>>;
   Play: Partial<Record<Mode, ComponentType<PlayProps>>>;
-  /** The live online match screen; Join/Create and the lobby are shared (ON16, ON20). */
-  Online?: ComponentType<OnlineProps>;
+  /** Vs bots (Yazan 2026-11-09): how many bots the player may pick, not counting the player. */
+  bots?: { min: number; max: number };
   /** EXP for a finished play, and the per-play sanity cap (rule 6). */
   exp: (score: number, items: PlayItem[], settings?: Record<string, unknown>) => number;
   expCap: (settings: Record<string, unknown>, mode?: Play['mode']) => number;
@@ -69,10 +66,6 @@ export type OwnScreens = {
   Gate?: ComponentType<{ def: GameDef; mode: Mode }>;
   Setup?: ComponentType<{ def: GameDef; mode: Mode; prefill?: Record<string, unknown>; prefillSeats?: Seat[] }>;
   Results?: ComponentType<{ def: GameDef; play: Play; items: PlayItem[] }>;
-  /** Online Join/Create (default: the shared OnlineSetup); the room calls stay in src/online/api. */
-  OnlineSetup?: ComponentType<{ def: GameDef; prefill?: Record<string, unknown> }>;
-  /** The room lobby (default: the shared Lobby); the room state comes from src/online/useRoom. */
-  Lobby?: ComponentType<{ def: GameDef; roomId: string }>;
 };
 
 type TeamScore = 'average' | 'sum';

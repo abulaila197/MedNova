@@ -12,7 +12,7 @@ import { FriendsSection, Name, openPlayer, Ring } from '@/features/profile/Frien
 import { InfoScroll, Kicker, s as ui, useInfo } from '@/features/info/ui';
 import { useSession } from '@/games/shell/session';
 import { syncAccount } from '@/lib/sync';
-import { call } from '@/online/api';
+import { call } from '@/lib/rpc';
 import { useAccount } from '@/state/account';
 import { type Friend, loadFriends, useFriends } from '@/state/friends';
 import { u } from '@/theme/scale';

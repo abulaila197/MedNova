@@ -16,7 +16,7 @@ import { GameScreen, RoundBtn } from '../shell/ui';
 import { HELPER_PRICE, type HelperKind, type Question, type Round } from './core';
 import { clock } from '@/games/engine/clock';
 import { useClock, type Clock } from '@/games/engine/useTicker';
-import { CHOSEN, ChosenTick } from '@/online/chosen';
+import { CHOSEN, ChosenTick } from '@/match/chosen';
 
 // The Streak Master's own design language (SM10): "Heat column".
 // The streak fills a heat tube on the left, segment by segment; the round clock is a burning fuse with

@@ -10,7 +10,7 @@ import { levelUpLine } from '../engine/levels';
 import type { Play, PlayItem } from '../engine/types';
 import { AddPill } from '@/features/friends/AddAfterMatch';
 import { LevelCounter } from '@/features/level/LevelCounter';
-import { RoomTalk } from '@/online/TalkBar';
+import { RoomTalk } from '@/match/TalkBar';
 
 import { PlayerFace } from '@/features/style/Frame';
 import { effectWinner, PlayerTitle, winnerAccount } from '@/features/style/PlayerTitle';
@@ -32,17 +32,17 @@ export function Results({ def, play, items }: { def: GameDef; play: Play; items:
   const lvl = levelUpLine(play.levelUp);
   const faceOf = new Map(play.seats.map((x) => [x.seat, x.character]));
   const seatOf = new Map(play.seats.map((x) => [x.seat, x]));
-  // ON22: online results keep the floating talk button.
+  // ON22: Vs bots results keep the floating talk button (the bots react to the result there).
   const uid = useSession((x) => x.userId);
   const winner = winnerAccount(play, uid);
   const fx = effectWinner(play, uid);
-  const room = play.mode === 'online' ? (play.settings.room as string | undefined) : undefined;
+  const room = play.mode === 'bots' ? `bot:${play.id}` : undefined;
   return (
     <WinShake>
     <GameScreen
       top={
         <>
-          {room && uid ? <RoomTalk room={room} me={{ id: uid, name: 'You', face: play.seats[0]?.character ?? 'yara' }} /> : null}
+          {room ? <RoomTalk room={room} me={{ id: uid ?? 'me', name: 'You', face: play.seats[0]?.character ?? 'yara' }} /> : null}
           {/* A bought win effect plays once over fresh results: online for everyone, Solo and Pass the phone for you. */}
           {fx ? <WinEffect userId={fx} /> : null}
         </>
@@ -81,8 +81,8 @@ export function Results({ def, play, items }: { def: GameDef; play: Play; items:
           {play.standings.map((r) => (
             <View key={r.seat} style={s.row}>
               <Text style={[s.rank, { color: t.dim }]}>{r.rank}</Text>
-              {/* ON21: online standings show each player's face. */}
-              {play.mode === 'online' && faceOf.get(r.seat) ? (
+              {/* ON21: Vs bots (and old online) standings show each player's face. */}
+              {(play.mode === 'bots' || play.mode === 'online') && faceOf.get(r.seat) ? (
                 <PlayerFace slug={faceOf.get(r.seat)!} size={u(18)} userId={seatOf.get(r.seat)?.userId} still />
               ) : colorOf.get(r.seat) ? (
                 <View style={[s.dot, { backgroundColor: colorOf.get(r.seat) }]} />
