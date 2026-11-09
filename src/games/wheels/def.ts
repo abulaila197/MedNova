@@ -52,8 +52,8 @@ export const wheelsOfChaos: GameDef = {
     },
     {
       mode: 'bots',
-      title: 'Live on stage with bots',
-      blurb: 'The full show against 1 to 3 bots.',
+      title: 'Live on stage',
+      blurb: 'The full show against 1 to 3 rivals.',
       howTo: [
         'Pick Easy, Medium or Hard and 1 to 3 bots. Meet them in the room: tap a bot for its profile, swap it or kick it.',
         'Pick a target of 25 or 50 points and the question type. No teams.',
