@@ -181,7 +181,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
 
   return (
     <GameScreen scroll={false} bodyStyle={{ paddingTop: u(12), paddingHorizontal: u(16), gap: u(10) }}>
-      <AppTopBar kicker={`${left} ${left === 1 ? 'word' : 'words'} left`} title={total > 1 ? `Puzzle ${st.index + 1} of ${total}` : 'Grid showdown'} sub={sub} hearts={hearts} maxHearts={CW.onlineHearts} score={mine?.score ?? 0} onPause={g.openMenu} />
+      <AppTopBar kicker={`${left} ${left === 1 ? 'word' : 'words'} left`} title={total > 1 ? `Puzzle ${st.index + 1} of ${total}` : 'The race'} sub={sub} hearts={hearts} maxHearts={CW.onlineHearts} score={mine?.score ?? 0} onPause={g.openMenu} />
       {board}
       {!reveal && !out && !g.paused ? (
         <Race
