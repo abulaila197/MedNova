@@ -2,6 +2,7 @@ import type { GameDef } from '../shell/types';
 import { MIXES, soloExp, STYLES } from './core';
 import { answerLabel, questionById } from './data';
 import { BOSS_BONUS } from './offline';
+import { BotsPlay } from './BotsPlay';
 import { OfflinePlay } from './OfflinePlay';
 import { SoloPlay } from './SoloPlay';
 
@@ -67,7 +68,7 @@ export const wheelsOfChaos: GameDef = {
   players: { offline: { min: 2, max: 4 } },
   playersNote: () => '2 to 4 players, each with a character. Player I is you, the phone owner. Pass the phone earns no EXP.',
   bots: { min: 1, max: 3 },
-  Play: { solo: SoloPlay, offline: OfflinePlay },
+  Play: { solo: SoloPlay, offline: OfflinePlay, bots: BotsPlay },
   // WC11: Solo and Online EXP is half the points; Offline earns none. Online can add a Boss bonus.
   exp: (score) => soloExp(score),
   expCap: (settings, mode) =>
