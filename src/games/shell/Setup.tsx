@@ -16,6 +16,7 @@ import { useSession } from './session';
 import { alwaysFree } from './flow';
 import { perUnit, setupPrices } from '@/features/sparks/costs';
 import { useSparks } from '@/features/sparks/sparks';
+import { useIntent } from '@/features/challenges/store';
 import { useIsSubscribed } from '@/features/store/billing';
 import { Btn, Card, Chips, GameScreen, Title } from './ui';
 
@@ -31,6 +32,8 @@ export function Setup({ def, mode, prefill, prefillSeats }: { def: GameDef; mode
   const subscribed = useIsSubscribed();
   const priced = signedIn && !subscribed;
   const have = useSparks((x) => x.value);
+  // G7: a friend challenge being set up says so above Start.
+  const intent = useIntent((x) => (x.intent && x.intent.game === def.key && x.intent.mode === mode ? x.intent : null));
   const free = alwaysFree({ game: def.key, mode, settings: vals });
   const { cost, per } = setupPrices(def.key, mode, vals, opts);
   const showCost = priced && !free && cost > 0;
@@ -43,6 +46,7 @@ export function Setup({ def, mode, prefill, prefillSeats }: { def: GameDef; mode
       bodyStyle={{ paddingTop: u(10), gap: u(10) }}
       bottom={
         <>
+          {intent ? <Text style={[s.small, { color: t.accent, textAlign: 'center' }]}>{`Challenge for ${intent.friend.name} · ${intent.kind === 'score' ? 'Beat my score, 1 day' : `Game challenge, ${intent.days} day${intent.days > 1 ? 's' : ''}`}`}</Text> : null}
           <Text style={[s.small, { color: t.dim, textAlign: 'center' }]}>
             {emptyTeam ? `${emptyTeam.name} has no players yet.` : showCost ? `${each ? 'Costs' : 'This game costs'} ${cost} Sparks${each} · you have ${have}` : 'Settings lock once the game starts.'}
           </Text>
