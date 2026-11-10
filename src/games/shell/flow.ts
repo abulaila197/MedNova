@@ -9,6 +9,7 @@ import { syncAccount } from '@/lib/sync';
 import { stat } from '@/lib/stats';
 import { askPushAfterFirstGame } from '@/lib/push';
 import { checkBossWin } from '@/bots/daily';
+import { afterPlay as afterPlayChallenges } from '@/features/challenges/store';
 import { recordMatch } from '@/bots/memory';
 import { rivalBoost } from '@/bots/rewards';
 
@@ -61,6 +62,8 @@ export async function finishPlay(def: GameDef, play: Play, score: number, standi
   if (paid.levelsGained > 0) await engine.recorder.noteLevelUp(play.id, paid.level, paid.tokensGained);
   const uid = useSession.getState().userId;
   if (uid) syncAccount(uid).catch(() => {}); // offline is fine: it uploads next time
+  // G7: a friend challenge being set up is sent with this score, and open challenges get the score.
+  if (uid && play.mode !== 'offline') void afterPlayChallenges(play, score).catch(() => {});
   stat('game_end', { game: play.game, mode: play.mode });
   // Notifications are asked for after a first finished game, never on the first screen (Yazan 2026-11-07).
   if (uid) askPushAfterFirstGame();

@@ -5,6 +5,7 @@ import { sparksCost } from '@/features/sparks/costs';
 import { needSparks } from '@/features/sparks/sparks';
 
 import { botSetup, botSeats } from '@/bots/setup';
+import { fixedSettings, intentFor, sendChallenge, setIntent } from '@/features/challenges/store';
 
 import type { Mode, Seat } from '../engine/types';
 import { alwaysFree, startPlay } from './flow';
@@ -72,6 +73,12 @@ export function useSetup(def: GameDef, mode: Mode, prefill?: Record<string, unkn
     // The chosen setup sets the cost; too few Sparks opens the Recharge sheet first (#70). Daily Medicordle is free (TR3).
     if (!alwaysFree({ game: def.key, mode, settings: own }) && !(await needSparks(sparksCost(def.key, mode, own)))) return;
     setBusy(true);
+    // G7: a Game challenge being set up goes to the friend now, with these settings; a Beat my score waits for the score.
+    const intent = intentFor(def.key, mode);
+    if (intent?.kind === 'game') {
+      setIntent(null);
+      await sendChallenge({ other: intent.friend.id, kind: 'game', game: def.key, mode: intent.mode, settings: fixedSettings(own), days: intent.days }).catch(() => null);
+    }
     const named = range
       ? seats.map((x, i) => {
           const tm = teams?.find((y) => y.id === x.team);

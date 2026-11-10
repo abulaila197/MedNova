@@ -13,6 +13,7 @@ import { LevelCounter } from '@/features/level/LevelCounter';
 import { RoomTalk } from '@/match/TalkBar';
 
 import { AfterMatch } from '@/bots/AfterMatch';
+import { useIntent } from '@/features/challenges/store';
 import { PlayerFace } from '@/features/style/Frame';
 import { effectWinner, PlayerTitle, winnerAccount } from '@/features/style/PlayerTitle';
 import { WinEffect } from '@/features/style/WinEffect';
@@ -31,6 +32,8 @@ export function Results({ def, play, items }: { def: GameDef; play: Play; items:
   const g = GAMES.find((x) => x.key === def.key)!;
   const { multi, nameOf, colorOf, teamRows, plain, stats, missed, rematch, changeSettings, backToGames, openDossier } = useResults(def, play, items);
   const lvl = levelUpLine(play.levelUp);
+  // G7: "Challenge sent to Dana" / "120 counted for your challenge with Dana" under the EXP line.
+  const chNote = useIntent((x) => (x.note?.playId === play.id ? x.note.text : null));
   const faceOf = new Map(play.seats.map((x) => [x.seat, x.character]));
   const seatOf = new Map(play.seats.map((x) => [x.seat, x]));
   // ON22: Vs bots results keep the floating talk button (the bots react to the result there).
@@ -61,6 +64,7 @@ export function Results({ def, play, items }: { def: GameDef; play: Play; items:
           </View>
         )).flatMap((el, i) => (i === 0 ? [el, <ExpStat key="exp" exp={play.expEarned} />] : [el]))}
         {uid ? <LevelCounter play={play} /> : lvl ? <Text style={[s.lvl, { color: t.accent }]}>{lvl}</Text> : null}
+        {chNote ? <Text style={[s.lvl, { color: t.accent }]}>{chNote}</Text> : null}
       </Card>
       {teamRows ? (
         <Card>

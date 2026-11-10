@@ -12,6 +12,7 @@ import { CHESTS } from '@/features/chests/data';
 import { InfoScroll, Kicker, s as ui, useInfo } from '@/features/info/ui';
 import { nameOf } from '@/features/style/StyleHost';
 import { PlayerFace } from '@/features/style/Frame';
+import { openPlayer } from '@/features/profile/Friends';
 import { Bolt } from '@/features/sparks/Bolt';
 import { useSession } from '@/games/shell/session';
 import { u } from '@/theme/scale';
@@ -157,6 +158,11 @@ function Card({ m }: { m: Message }) {
             </LinearGradient>
           </Pressable>
         )
+      ) : null}
+      {m.challenge && m.from ? (
+        <Pressable onPress={() => openPlayer({ id: m.from!.id, display_name: m.from!.name, avatar: m.from!.avatar ?? undefined })} accessibilityRole="button" style={[s.ghost, s.goWrap]}>
+          <Text style={[s.goT, { color: c.fg }]}>{`Open ${m.from.name}’s profile`}</Text>
+        </Pressable>
       ) : null}
       {err ? <Text style={[s.err, { color: t.error }]}>Couldn’t collect. Check your connection and try again.</Text> : null}
     </View>

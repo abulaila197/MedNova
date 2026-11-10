@@ -26,7 +26,10 @@ import { MECHS } from '@/features/chests/data';
 import { robotOf } from '@/features/shop/robots';
 import { call } from '@/lib/rpc';
 
-import { Name, openReport, useFriendSheet } from './Friends';
+import { ChallengeSheet, ResultSheet } from '@/features/challenges/ChallengeSheets';
+import { loadFriendChallenges, useChallenges, withFriend } from '@/features/challenges/store';
+
+import { Name, openChallenge, openReport, openResult, useFriendSheet } from './Friends';
 
 export const closeFriendSheet = () => useFriendSheet.setState({ open: null, friend: null, code: '', target: null });
 const close = closeFriendSheet;
@@ -50,9 +53,16 @@ export function FriendSheets() {
     // #22 (2026-10-31): these sheets change height after they open (the profile loads, Challenge swaps in the game
     // grid); Sheet now fades in on Android (safeEnter), so their buttons and cards take taps there.
     <Sheet open={!!open} onClose={close}>
-      {open === 'add' ? <AddFriend /> : open === 'menu' ? <FriendMenu /> : open === 'report' ? <ReportPlayer /> : open === 'profile' ? <FriendProfileSheet /> : null}
+      {open === 'add' ? <AddFriend /> : open === 'menu' ? <FriendMenu /> : open === 'report' ? <ReportPlayer /> : open === 'profile' ? <FriendProfileSheet /> : open === 'challenge' || open === 'result' ? <ChallengeHost kind={open} /> : null}
     </Sheet>
   );
+}
+
+/** G7: the Challenge and Result sheets for the friend in the sheet state. Result → Challenge again stays on the same friend. */
+function ChallengeHost({ kind }: { kind: 'challenge' | 'result' }) {
+  const f = useFriendSheet((x) => x.friend);
+  if (!f) return null;
+  return kind === 'result' ? <ResultSheet f={f} onClose={close} onAgain={() => openChallenge(f)} /> : <ChallengeSheet f={f} onClose={close} />;
 }
 
 /** "Friend pass" look (Yazan's pick): your code on an ID pass with Copy and Share link, then 6 boxes and Send request. */
@@ -232,6 +242,12 @@ function FriendProfileSheet() {
   const live = useFriends((x) => (f && friend ? x.playing[f.id] : undefined));
   const offAt = useFriends((x) => x.savedAt);
   const off = offAt != null;
+  // G7: once a challenge with this friend is over and its result unseen, the button reads Result (Yazan 2026-11-10).
+  const chList = useChallenges((x) => x.list);
+  useEffect(() => {
+    if (friend) void loadFriendChallenges();
+  }, [friend]);
+  const result = f && friend ? withFriend(chList, f.id).result : null;
   if (!f) return null;
   // Offline nobody shows ONLINE (#59): the time they were last seen instead.
   const when = !friend ? null : live ? 'IN A MATCH' : off ? (f.last_seen ? `LAST SEEN ${agoText(Date.parse(f.last_seen)).toUpperCase()}` : 'NOT SEEN YET') : seenLabel(f.last_seen);
@@ -253,9 +269,11 @@ function FriendProfileSheet() {
       await loadFriends();
       setP((x) => (x && x !== 'error' ? { ...x, relation: x.relation === 'incoming' ? 'friend' : 'outgoing' } : x));
     }, true);
-  // Online Challenge and Watch are gone with online play (Yazan 2026-11-09); friend challenges come back in group 7.
+  // Friend challenges (G7): Challenge opens the sheet; Result shows a finished challenge, then it reads Challenge again.
   const main = friend
-    ? null
+    ? result
+      ? { label: 'Result', go: () => openResult(f) }
+      : { label: `Challenge ${f.display_name}`, go: () => openChallenge(f) }
     : f.kind === 'incoming'
       ? { label: `Accept ${f.display_name}’s friend request`, go: add }
       : f.kind === 'outgoing'

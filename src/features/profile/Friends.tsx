@@ -17,7 +17,7 @@ import { F, type Theme } from '@/theme/tokens';
 /** Which friends sheet is open (drawn by FriendSheets at the app layout so it covers the dock). */
 /** A player to report: from the friends list or an online lobby. */
 export type ReportTarget = { id: string; name: string; avatar: string };
-type SheetState = { open: null | 'add' | 'menu' | 'report' | 'profile'; friend: Friend | null; code: string; target: ReportTarget | null };
+type SheetState = { open: null | 'add' | 'menu' | 'report' | 'profile' | 'challenge' | 'result'; friend: Friend | null; code: string; target: ReportTarget | null };
 export const useFriendSheet = create<SheetState>(() => ({ open: null, friend: null, code: '', target: null }));
 export const openAdd = (code = '') => useFriendSheet.setState({ open: 'add', friend: null, code, target: null });
 const openMenu = (friend: Friend) => useFriendSheet.setState({ open: 'menu', friend, code: '', target: null });
@@ -26,6 +26,9 @@ export const openProfile = (friend: Friend) => useFriendSheet.setState({ open: '
 /** Any player's profile sheet (Yazan 2026-10-26, pick B): from Find, room seats and the leaderboard. The sheet fills in the rest. */
 export const openPlayer = (p: { id: string; display_name: string; avatar?: string; username?: string }) =>
   openProfile(useFriends.getState().list.find((x) => x.id === p.id) ?? { id: p.id, display_name: p.display_name, username: p.username ?? '', avatar: p.avatar ?? '', level: 0, last_seen: null, kind: 'none' });
+/** G7: the Challenge sheet and the Result sheet for a friend (the profile's main button opens them). */
+export const openChallenge = (friend: Friend) => useFriendSheet.setState({ open: 'challenge', friend, code: '', target: null });
+export const openResult = (friend: Friend) => useFriendSheet.setState({ open: 'result', friend, code: '', target: null });
 export const openReport = (target: ReportTarget) => useFriendSheet.setState({ open: 'report', friend: null, code: '', target });
 
 const ONLINE = { dark: '#7be0a8' };

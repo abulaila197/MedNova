@@ -14,6 +14,8 @@ export type Message = {
   /** #20/#30: a Style shop gift from a friend (the item is already theirs, nothing to collect); null = the MedNova team. */
   item?: string | null;
   from?: { id: string; name: string; avatar: string | null } | null;
+  /** G7: the friend challenge this message is about (sent, received or completed); the card opens the friend's profile. */
+  challenge?: string | null;
 };
 
 /** `savedAt`: the list is the saved copy from then, because the server can't be reached. */
