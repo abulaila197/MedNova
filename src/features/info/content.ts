@@ -33,8 +33,8 @@ export const CHAPTERS: Chapter[] = [
     items: [
       { q: 'What is MedNova?', a: 'MedNova teaches medicine through games. You read clues, name diseases, answer questions, draw, give clues and solve picture riddles, and what you miss comes back later in your Learning Space. It is for education only, not medical advice, and every patient in it is fictional.' },
       { q: 'Which games are there?', a: `${gameCount}: ${listed}.` },
-      { q: 'Do I need an account?', a: 'No. As a guest you get 5 free plays across all games. A free account plays with Sparks, keeps your progress on our servers and lets you add friends and play online.' },
-      { q: 'What are Sparks?', a: 'Sparks are what a game costs to play. Your bar holds 100 and refills one Spark every 10 minutes, faster when you wear a character with more stars. Each game costs Sparks by how long it lasts, and you pay at your first answer. The Medicordle Daily word is always free. To refill sooner, use Watch an ad for 10 Sparks (20 a day) or swap tokens 1 for 1. With MedNova Unlimited your Sparks never run out.' },
+      { q: 'Do I need an account?', a: 'No. As a guest you get 5 free plays across all games. A free account plays with Sparks, keeps your progress on our servers and lets you add friends, challenge them and join the leaderboards.' },
+      { q: 'What are Sparks?', a: 'Sparks are what a game costs to play. Your bar holds 150 and refills one Spark every 10 minutes, faster when you wear a character with more stars. Each game costs Sparks by how long it lasts, and you pay at your first answer. The Medicordle Daily word is always free. To refill sooner, use Watch an ad for 10 Sparks (20 a day) or swap tokens 1 for 1. With MedNova Unlimited your Sparks never run out.' },
     ],
   },
   {
@@ -60,7 +60,9 @@ export const CHAPTERS: Chapter[] = [
     items: [
       { q: 'How do I play with friends?', a: 'Most games have Pass the phone, where you take turns on one phone. Empty seats can be filled with rivals, and many games let you split players into teams.' },
       { q: 'What is Vs rivals?', a: 'Race rivals in most games, with no internet needed. Pick Freshmen, Scholars or Geniuses and how many rivals. There are three kinds: Freshman, Scholar and Genius. They send stickers and voice lines and react to yours. Tap a rival in the room to see its profile, swap it or kick it.' },
-      { q: 'Who wins a tie?', a: 'The faster player. On a leaderboard, whoever got there first.' },
+      { q: 'What is Nemesis?', a: 'The small button under the chests on the Games page. It keeps the rivals you meet most, with the score between you and a Play again button. Up top is the rival of the day: one Genius, one game, the same for everyone. Finish above it in a Vs rivals match of that game and a golden chest is yours, once a day.' },
+      { q: 'How do friend challenges work?', a: 'Open a friend’s profile and tap Challenge. Beat my score: you play first and your score is the bar; your friend has one day to beat it. Game challenge: you both play within 1, 3 or 7 days and the best score wins. The winner gets 10 tokens in the Inbox (the first win against each friend per day). When a challenge is over, the button reads Result until you have seen it.' },
+      { q: 'Who wins a tie?', a: 'The faster player. On a leaderboard, whoever got there first. In a friend challenge, a tie means no winner.' },
     ],
   },
   {
@@ -174,7 +176,7 @@ export const PRIVACY: Section[] = [
   },
   {
     n: '04',
-    k: 'Friends and online play',
+    k: 'Friends and challenges',
     plain: 'Playing with others means *some of your data is shared with them.*',
     legal: [
       {
@@ -316,7 +318,7 @@ export const TERMS: Section[] = [
     n: '01',
     k: 'About MedNova',
     plain: 'MedNova is a game for *clinical reasoning.*',
-    legal: [{ p: 'MedNova is an educational medical reasoning game built around clinical case puzzles, diagnostic practice, learning tools, statistics and online play with friends. It is run by its owner, listed as the developer Yazan Yousif on Google Play and Yazan Mohamed on the App Store, and built and supported by a small team in Egypt.' }],
+    legal: [{ p: 'MedNova is an educational medical reasoning game built around clinical case puzzles, diagnostic practice, learning tools, statistics and friend challenges. It is run by its owner, listed as the developer Yazan Yousif on Google Play and Yazan Mohamed on the App Store, and built and supported by a small team in Egypt.' }],
   },
   {
     n: '02',
@@ -393,7 +395,7 @@ export const TERMS: Section[] = [
     n: '09',
     k: 'Privacy',
     plain: 'Your data is covered by the *Privacy Policy.*',
-    legal: [{ p: 'Your use of MedNova is also governed by the Privacy Policy, which explains what account, gameplay, social and online-play information is handled and what your rights are.' }],
+    legal: [{ p: 'Your use of MedNova is also governed by the Privacy Policy, which explains what account, gameplay, social and friend-challenge information is handled and what your rights are.' }],
   },
   {
     n: '10',

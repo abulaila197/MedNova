@@ -54,7 +54,7 @@ export const ALL_ACHIEVEMENTS: readonly { key: AchKey; name: string; what: strin
   { key: 'code_breaker', name: 'Code Breaker', what: 'Win Code Clinic', goals: [1, 10, 50, 125] },
   { key: 'sharp_eye', name: 'Sharp Eye', what: 'Win The Imposter', goals: [1, 10, 50, 125] },
   { key: 'team_player', name: 'Team Player', what: 'Win team matches', goals: [1, 10, 50, 125] },
-  { key: 'house_call', name: 'House Call', what: 'Play online with friends', goals: [1, 20, 100, 250] },
+  { key: 'house_call', name: 'House Call', what: 'Finish Vs rivals matches', goals: [1, 20, 100, 250] },
   { key: 'recruiter', name: 'Recruiter', what: 'Invite friends who join', goals: [3, 10, 30, 75] },
   { key: 'challenger', name: 'Challenger', what: 'Challenge friends', goals: [10, 20, 30, 75] },
   { key: 'case_writer', name: 'Case Writer', what: 'Write your own cases', goals: [5, 10, 20, 50] },
@@ -200,7 +200,8 @@ export function achievementProgress(i: AchInputs): Record<AchKey, number> {
     code_breaker: wins('code-clinic'),
     sharp_eye: wins('imposter'),
     team_player: plays.filter(teamWon).length,
-    house_call: plays.filter((p) => p.mode === 'online' && p.seats.some((s) => s.seat !== OWNER && s.userId && friends.has(s.userId))).length,
+    // Online play is gone (2026-11-09): House Call counts finished Vs rivals matches, old online ones included.
+    house_call: plays.filter((p) => p.mode === 'bots' || (p.mode === 'online' && p.seats.some((s) => s.seat !== OWNER && s.userId && friends.has(s.userId)))).length,
     recruiter: i.social?.recruiter ?? 0,
     challenger: i.social?.challenger ?? 0,
     case_writer: i.social?.case_writer ?? 0,

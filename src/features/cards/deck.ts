@@ -9,7 +9,7 @@ export const DECK: HuntCard[] = [
   { key: 'iris', name: 'Iris', stars: 1, art: require('../../../assets/cards/iris.jpg'), mission: 'Play all 10 games (any mode)', clue: 'Show up like the morning ward round. Seven days in a row, no excuses.' },
   { key: 'atlas', name: 'Atlas', stars: 2, art: require('../../../assets/cards/atlas.jpg'), mission: 'Log in 7 days in a row', clue: 'Some things in the Nova Shop cost nothing at all. Taste every free sample.' },
   { key: 'nova', name: 'Nova', stars: 2, art: require('../../../assets/cards/nova.jpg'), mission: 'Collect every free token way', clue: 'Real rivals breathe on the other side. Face them fifty times.' },
-  { key: 'pip', name: 'Pip', stars: 3, art: require('../../../assets/cards/pip.jpg'), mission: 'Play 50 online matches', clue: 'Be a student again. Clear a hundred cards from your review pile.' },
+  { key: 'pip', name: 'Pip', stars: 3, art: require('../../../assets/cards/pip.jpg'), mission: 'Play 50 Vs rivals matches', clue: 'Be a student again. Clear a hundred cards from your review pile.' },
   { key: 'yara', name: 'Yara', stars: 3, art: require('../../../assets/cards/yara.jpg'), mission: 'Clear 100 review cards', clue: 'Nobody survives medicine alone. Gather ten friends around you.' },
   { key: 'yazan', name: 'Yazan', stars: 3, art: require('../../../assets/cards/yazan.jpg'), mission: 'Have 10 friends', clue: 'Grand rounds: win every game, in every mode, solo and side by side.' },
   { key: 'layla', name: 'Layla', stars: 4, art: require('../../../assets/cards/layla.jpg'), mission: 'Win every mode and sub mode', clue: 'Try to play a lot. I mean, like, a lot.' },

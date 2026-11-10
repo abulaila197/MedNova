@@ -32,6 +32,9 @@ const GAME_MODES: { key: GameKey; modes: ChallengeMode[] }[] = GAMES.map((g) => 
   if (def?.bots) modes.push('bots');
   return { key: g.key as GameKey, modes };
 }).filter((g) => g.modes.length);
+/** Mode chips mint, duration chips amber (games keep the app's cyan). */
+const MODE_TINT = '#5fd38a';
+const TIME_TINT = '#f5b041';
 const MODE_NAME: Record<ChallengeMode, string> = { solo: 'Solo', bots: 'Vs rivals' };
 const KIND: { k: ChallengeKind; title: string; say: string }[] = [
   { k: 'score', title: 'Beat my score', say: 'You play first. Your score is the bar; they have one day to beat it.' },
@@ -66,9 +69,10 @@ export function ChallengeSheet({ f, onClose }: { f: Friend; onClose: () => void 
     const m = GAME_MODES.find((g) => g.key === k)?.modes ?? ['solo'];
     if (!m.includes(mode)) setMode(m[0]);
   };
-  const chip = (label: string, on: boolean, go: () => void, key = label) => (
-    <Pressable key={key} onPress={go} style={[s.chip, { borderColor: on ? t.accent : t.panelLine, backgroundColor: on ? `${t.accent}22` : 'transparent' }]} accessibilityRole="button" accessibilityState={{ selected: on }}>
-      <Text style={[s.chipT, { color: on ? t.accent : t.fg }]}>{label}</Text>
+  // Yazan 2026-11-10: game, mode and duration each on their own line, each in its own colour.
+  const chip = (label: string, on: boolean, go: () => void, key = label, tint = t.accent) => (
+    <Pressable key={key} onPress={go} style={[s.chip, { borderColor: on ? tint : `${tint}55`, backgroundColor: on ? `${tint}26` : 'transparent' }]} accessibilityRole="button" accessibilityState={{ selected: on }}>
+      <Text style={[s.chipT, { color: on ? tint : t.fg }]}>{label}</Text>
     </Pressable>
   );
   const go = () => {
@@ -141,11 +145,12 @@ export function ChallengeSheet({ f, onClose }: { f: Friend; onClose: () => void 
       <Text style={[s.k, { color: t.kick }]}>NEW CHALLENGE</Text>
       <View style={s.chips}>{KIND.map((x) => chip(x.title, kind === x.k, () => setKind(x.k)))}</View>
       <Text style={[s.sub, { color: t.mute }]}>{KIND.find((x) => x.k === kind)!.say}</Text>
+      <Text style={[s.k, { color: t.kick }]}>GAME</Text>
       <View style={s.chips}>{GAME_MODES.map((g) => chip(gameName(g.key), game === g.key, () => pickGame(g.key), g.key))}</View>
-      <View style={s.chips}>
-        {modes.map((m) => chip(MODE_NAME[m], mode === m, () => setMode(m)))}
-        {kind === 'game' ? DAYS.map((d) => chip(`${d} day${d > 1 ? 's' : ''}`, days === d, () => setDays(d), `d${d}`)) : chip('1 day', true, () => {}, 'd1')}
-      </View>
+      <Text style={[s.k, { color: MODE_TINT }]}>PLAY AS</Text>
+      <View style={s.chips}>{modes.map((m) => chip(MODE_NAME[m], mode === m, () => setMode(m), m, MODE_TINT))}</View>
+      <Text style={[s.k, { color: TIME_TINT }]}>TIME TO PLAY</Text>
+      <View style={s.chips}>{kind === 'game' ? DAYS.map((d) => chip(`${d} day${d > 1 ? 's' : ''}`, days === d, () => setDays(d), `d${d}`, TIME_TINT)) : chip('1 day', true, () => {}, 'd1', TIME_TINT)}</View>
       <Pressable onPress={go} accessibilityRole="button">
         <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.btn}>
           <Text style={[s.btnT, { color: t.onGrad }]}>Set up and play</Text>

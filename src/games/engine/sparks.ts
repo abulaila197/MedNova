@@ -1,4 +1,4 @@
-// Sparks (#4, #82): one bar per account that replaces the free plays. Full = 100, +1 every few minutes (the worn
+// Sparks (#4, #82): one bar per account that replaces the free plays. Full = 150, +1 every few minutes (the worn
 // character's stars set how many, #88), a play costs Sparks at its first answer (#52, TR2). The server holds the real
 // bar; the phone keeps the last bar the server sent plus its own spends since, so play works offline and the server
 // replays those spends when it is back (#60). Ads and admin gifts add Sparks on the server only; a refill with tokens
@@ -6,7 +6,8 @@
 import { serial, type KV } from './storage';
 import { newId } from './ids';
 
-export const SPARKS_MAX = 100;
+/** Bar size (Yazan 2026-11-10: 100 -> 150; the server's limit changes with the later SQL file). */
+export const SPARKS_MAX = 150;
 /** Sparks a watched ad gives (#4). */
 export const SPARK_AD = 5;
 /** Tokens per Spark when refilling (#4). */

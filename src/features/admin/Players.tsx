@@ -238,7 +238,7 @@ function Actions({ c, p, onMessage, onTakeBack, onChange }: { c: C; p: AdminPlay
     setSure('');
     if (error) return setMsg({ text: 'Not saved. Check the connection.', bad: true });
     onChange({ banned: !p.banned });
-    setMsg({ text: p.banned ? 'Unbanned. They can play online again.' : 'Banned: no online games, chat or leaderboard. Solo still works.' });
+    setMsg({ text: p.banned ? 'Unbanned. They can challenge friends and join the leaderboard again.' : 'Banned: no friend challenges, chat or leaderboard. Solo and Vs rivals still work.' });
     setWhy('');
     reload();
   };
@@ -247,7 +247,7 @@ function Actions({ c, p, onMessage, onTakeBack, onChange }: { c: C; p: AdminPlay
     ? [
         `Level ${d.level} · ${d.exp.toLocaleString('en-GB')} EXP`,
         `${d.tokens.toLocaleString('en-GB')} tokens · ${d.sparks ?? 'full'} Sparks`,
-        `${d.plays} games played · ${d.online} online matches · ${d.friends} friends`,
+        `${d.plays} games played · ${d.online} old online matches · ${d.friends} friends`,
         d.top_games.length ? `Plays most: ${d.top_games.map((g) => `${gameName(g.game)} (${g.n})`).join(', ')}` : '',
       ].filter(Boolean)
     : [];

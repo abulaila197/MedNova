@@ -38,8 +38,9 @@ export const EPIC_RUN = 4;
 /** 13 game weeks, then an Online, a Solo and a Pass the phone week. */
 export const CYCLE_WEEKS = 13;
 export const CHEST_NAME: Record<ChestKind, string> = { wooden: 'Wooden chest', golden: 'Golden chest', diamond: 'Diamond chest' };
-const MODE_WEEK: Record<string, string> = { online: 'Online week', solo: 'Solo week', offline: 'Pass the phone week' };
-const MODE_NAME: Record<string, string> = { online: 'Online', solo: 'Solo', offline: 'Pass the phone' };
+// The server's 'online' mode week counts Vs rivals matches now (2026-11-10, SQL with the G7 file).
+const MODE_WEEK: Record<string, string> = { online: 'Vs rivals week', solo: 'Solo week', offline: 'Pass the phone week' };
+const MODE_NAME: Record<string, string> = { online: 'Vs rivals', solo: 'Solo', offline: 'Pass the phone' };
 
 /** "Diagnostic Pursuit", or "Online week" for the three mode weeks. */
 export const weekName = (w: Week) => (w.kind === 'mode' ? MODE_WEEK[w.mode] : (() => {

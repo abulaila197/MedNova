@@ -31,7 +31,8 @@ const COSTS: Partial<Record<GameKey, Partial<Record<Mode, Price>>>> = {
   'the-silent-artist': { solo: flat(10), offline: DRAWS },
   // Case Files and Crossword vs bots: 1, 2 or 3 cases (puzzles) in a row, each with its own time limit.
   'case-files-unsolved': { solo: flat(10), offline: flat(10), bots: by('count', { 1: 10, 2: 15, 3: 25 }, 10) },
-  'nova-crossword': { solo: flat(30), offline: flat(15), bots: by('count', { 1: 15, 2: 30, 3: 45 }, 15) },
+  // Vs rivals: one puzzle costs the same as Solo (Yazan 2026-11-10).
+  'nova-crossword': { solo: flat(30), offline: flat(15), bots: by('count', { 1: 30, 2: 45, 3: 60 }, 30) },
   'the-wheels-of-chaos': { solo: TARGET, offline: TARGET, bots: TARGET },
   'the-conqueror': {},
   'the-quiz-parade': { solo: PARADE, offline: PARADE, bots: PARADE },

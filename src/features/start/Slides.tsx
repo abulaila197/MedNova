@@ -233,7 +233,7 @@ export function SlideGames(p: SlideProps) {
             the case
           </Text>
         </View>
-        <Text style={[st.p, { maxWidth: u(208) }]}>Hunt the diagnosis like a detective, solo or online against friends.</Text>
+        <Text style={[st.p, { maxWidth: u(208) }]}>Hunt the diagnosis like a detective, solo or against smart rivals.</Text>
       </View>
       <View style={{ flex: 1 }} />
       <Dots on={0} />
