@@ -10,6 +10,7 @@ import { GamePage } from './GamePage';
 import { Dots, wrapOff } from './Dots';
 import { DailyButton } from '@/features/daily/DailyButton';
 import { ChestButton } from '@/features/chests/ChestButton';
+import { NemesisButton } from '@/bots/NemesisButton';
 import { InboxButton } from '@/features/inbox/InboxButton';
 import { useTheme } from '@/state/app';
 import { DESIGN_W, u } from '@/theme/scale';
@@ -105,6 +106,8 @@ export function GamesScreen() {
           <InboxButton />
           <DailyButton />
           <ChestButton />
+          {/* G6: the rival of the day and your regulars, under the chests. */}
+          <NemesisButton />
         </View>
       </GestureDetector>
       <GameTagSheet />

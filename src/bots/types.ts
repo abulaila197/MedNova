@@ -30,3 +30,14 @@ export const PERSONAS: Persona[] = ['showoff', 'shy', 'joker', 'sore', 'cheer', 
 export const TYPE_NAME: Record<BotType, string> = { freshman: 'Freshman', scholar: 'Scholar', genius: 'Genius' };
 /** What the player picks (Yazan 2026-11-09: named by the type the table is mostly made of). */
 export const LEVEL_NAME: Record<BotLevel, string> = { easy: 'Freshmen', medium: 'Scholars', hard: 'Geniuses' };
+
+/** Your head-to-head record with one rival (G6): wins and losses are yours. */
+export type HeadToHead = {
+  w: number;
+  l: number;
+  last: 'won' | 'lost';
+  /** The last game you met it in, and that play's settings: "Play again" opens the same kind of room. */
+  game: string;
+  settings: Record<string, unknown>;
+  at: number;
+};

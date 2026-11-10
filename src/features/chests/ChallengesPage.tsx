@@ -9,6 +9,9 @@ import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import { TokenCoin } from '@/components/PulseStar';
+import { PlayerFace } from '@/features/style/Frame';
+import { Image } from 'expo-image';
+import { CHESTS } from './data';
 
 /** `say` is the task as a phrase for a locked card, e.g. 'play 12 games'. */
 export type Task = { label: string; say: string; n: number; of: number; share?: boolean };
@@ -27,6 +30,8 @@ export type ChallengesView = {
   /** Shown from the saved copy read then (#59). */
   savedAt?: number | null;
   onShare?: () => void;
+  /** G6: the rival of the day, a bonus mission beside the three (a golden chest, paid by the server once a day). */
+  boss?: { name: string; face: string; game: string; won: boolean; paid: boolean; onGo: () => void };
 };
 
 /**
@@ -81,6 +86,21 @@ export function ChallengesPage({ v }: { v: ChallengesView }) {
                       </View>
                     );
                   })}
+        {v.boss ? (
+          <Pressable onPress={v.boss.onGo} style={[s.card, { backgroundColor: c.surf, borderColor: v.boss.won ? '#5fd38a' : c.line }]} accessibilityRole="button" accessibilityLabel={`Rival of the day: ${v.boss.name}`}>
+            <View style={s.head}>
+              <View style={{ flex: 1 }}>
+                <Text style={[s.k, { color: v.boss.won ? '#5fd38a' : c.kick }]}>{v.boss.won ? (v.boss.paid ? 'DONE · GOLDEN CHEST' : 'DONE · CHEST ON ITS WAY') : 'BONUS · TODAY ONLY'}</Text>
+                <Text style={[s.h, { color: c.fg }]}>Beat the rival of the day</Text>
+              </View>
+              <Image source={CHESTS.golden.art} style={{ width: u(30), height: u(30) }} contentFit="contain" />
+            </View>
+            <View style={s.bossRow}>
+              <PlayerFace slug={v.boss.face} size={u(26)} still />
+              <Text style={[s.lock, { color: c.mute, marginTop: 0, flex: 1 }]}>{v.boss.won ? `You beat ${v.boss.name} in ${v.boss.game} today.` : `Finish above ${v.boss.name} in a Vs rivals match of ${v.boss.game}. Tap to open the room.`}</Text>
+            </View>
+          </Pressable>
+        ) : null}
                   {!done && tasks.some((x) => x.share && x.n < x.of) ? (
                     <Pressable onPress={v.onShare} style={[s.share, { borderColor: t.accent }]} accessibilityRole="button">
                       <Text style={[s.shareT, { color: t.accent }]}>Share the app</Text>
@@ -100,6 +120,7 @@ export function ChallengesPage({ v }: { v: ChallengesView }) {
 }
 
 const s = StyleSheet.create({
+  bossRow: { flexDirection: 'row', alignItems: 'center', gap: u(8), marginTop: u(8) },
   card: { borderWidth: 1, borderRadius: u(16), paddingHorizontal: u(12), paddingTop: u(10), paddingBottom: u(12), marginTop: u(12) },
   head: { flexDirection: 'row', alignItems: 'center', gap: u(8) },
   k: { fontFamily: F.mono, fontSize: u(7.5), letterSpacing: u(1.3) },

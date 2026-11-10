@@ -1,4 +1,4 @@
-import { useFocusEffect } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import { Platform } from 'react-native';
 import { useCallback } from 'react';
 
@@ -12,6 +12,9 @@ import { CHEST_NAME, loadRounds, useRoundsStore, weekName, type Rounds } from '@
 
 import { chestsOwned, loadChallenges, openChest, useChests, type Task } from './useChests';
 import { useSecond } from '@/lib/useSecond';
+import { GAMES } from '@/data/games';
+import { rivalOfDay, todayWin } from '@/bots/daily';
+import { loadRivals, useRivals } from '@/bots/memory';
 
 const ROW: Record<Task['k'], (of: number) => { label: string; say: string }> = {
   games: (of) => ({ label: 'Play different games', say: `play ${of} different games` }),
@@ -77,6 +80,15 @@ export function ChallengesScreen() {
   const savedAt = useChests((x) => x.savedAt);
   // The "new challenges in" line ticks instead of keeping the time it was first drawn at (AP12b).
   const now = useSecond(!!c);
+  // G6: the rival of the day as a bonus mission; tapping it opens the Nemesis page.
+  const day = useRivals((x) => todayWin(x.day));
+  useFocusEffect(
+    useCallback(() => {
+      void loadRivals();
+    }, []),
+  );
+  const boss = rivalOfDay();
+  const bg = GAMES.find((g) => g.key === boss.game);
   const tasks = (c?.tasks ?? EMPTY).map((list) => list.map((x): TaskView => ({ ...ROW[x.k](x.of), n: x.n, of: x.of, share: x.k === 'shares' }))) as [TaskView[], TaskView[], TaskView[]];
   return (
     <ChallengesPage
@@ -90,6 +102,7 @@ export function ChallengesScreen() {
         offline: !c && failed,
         savedAt,
         onShare: shareApp,
+        boss: { name: boss.bot.name.split(' ')[0], face: boss.bot.character, game: bg ? `${bg.lead} ${bg.em}` : boss.game, won: !!day?.won, paid: !!day?.paid, onGo: () => router.push('/nemesis' as never) },
       }}
     />
   );

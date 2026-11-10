@@ -1,6 +1,6 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 import { openPlayer } from '@/features/profile/Friends';
@@ -8,6 +8,8 @@ import { useStyle, wantLooks } from '@/features/style/useStyle';
 import Svg, { Path } from 'react-native-svg';
 import { PlayerFace } from '@/features/style/Frame';
 import { useAccount } from '@/state/account';
+import { isRivalRow, withRivals } from '@/bots/board';
+import { loadRivals, useRivals } from '@/bots/memory';
 
 import { LevelBadge, useBalance } from '@/components/LevelBadge';
 import { Fade } from '@/components/Fade';
@@ -114,9 +116,25 @@ export function Leaderboard() {
   const [period, setPeriod] = useState<Period>('week');
   const [game, setGame] = useState<string | null>(null);
   const [pick, setPick] = useState<'game' | 'period' | null>(null);
-  const board = useBoard(period, scope, game, userId);
-  // Tap a player for their profile sheet (Yazan 2026-10-26, pick B); signed in only, not yourself.
-  const canOpen = (id: string) => !!userId && id !== userId;
+  const raw = useBoard(period, scope, game, userId);
+  // G6: rivals sit on the Everyone board with EXP of their own (fixed per week, month and game).
+  const rMet = useRivals((x) => x.met);
+  const rRecord = useRivals((x) => x.record);
+  const rFavs = useRivals((x) => x.favs);
+  useEffect(() => void loadRivals(), []);
+  const board = useMemo(() => {
+    if (!raw || raw === 'error' || scope !== 'everyone') return raw;
+    return withRivals(raw, { period, game, userId, met: rMet, known: [...Object.keys(rRecord), ...rFavs] });
+  }, [raw, scope, period, game, userId, rMet, rRecord, rFavs]);
+  // Tap a player for their profile sheet (Yazan 2026-10-26, pick B); signed in only, not yourself. A rival opens Nemesis.
+  const canOpen = (id: string) => isRivalRow(id) || (!!userId && id !== userId);
+  const open = (r: Row) => (isRivalRow(r.id) ? router.push(`/nemesis?rival=${encodeURIComponent(r.id)}` as never) : openPlayer({ id: r.id, display_name: r.name, avatar: r.avatar ?? undefined }));
+  const aiTag = (id: string) =>
+    isRivalRow(id) ? (
+      <View style={[s.ai, { borderColor: t.accent }]}>
+        <Text style={[s.aiT, { color: t.accent }]}>AI</Text>
+      </View>
+    ) : null;
   const rows = board && board !== 'error' ? board.rows : [];
   const mine = userId && board && board !== 'error' ? board.me : null;
   const g = gameName(game);
@@ -186,7 +204,7 @@ export function Leaderboard() {
                   const first = b.place === 1;
                   if (!who) return <View key={b.place} style={[s.box, s.boxEmpty, { height: u(b.h * 0.6), borderColor: p.boxLine }]} />;
                   return (
-                    <Pressable key={b.place} disabled={!canOpen(who.id)} onPress={() => openPlayer({ id: who.id, display_name: who.name, avatar: who.avatar ?? undefined })} style={[s.box, { height: u(b.h), borderColor: first ? 'rgba(255,215,106,0.4)' : p.boxLine }]} accessibilityRole="button" accessibilityHint="Open their profile">
+                    <Pressable key={b.place} disabled={!canOpen(who.id)} onPress={() => open(who)} style={[s.box, { height: u(b.h), borderColor: first ? 'rgba(255,215,106,0.4)' : p.boxLine }]} accessibilityRole="button" accessibilityHint="Open their profile">
                       <LinearGradient colors={first ? p.boxFirst : p.box} style={[StyleSheet.absoluteFill, s.boxFill]} />
                       <View style={[s.face, { top: u(-b.f / 2 - 3), width: u(b.f + 4), height: u(b.f + 4), borderColor: b.m, boxShadow: `0px 0px ${u(14)}px ${b.m}66` }]}>
                         <PlayerFace slug={who.avatar || 'yara'} size={u(b.f - 2)} userId={who.id} still />
@@ -200,8 +218,9 @@ export function Leaderboard() {
                       <Text style={[s.bName, { color: t.fg }, glowOf(who.id)]} numberOfLines={1}>
                         {who.id === userId ? 'You' : who.name}
                       </Text>
-                      <View style={s.bLv}>
+                      <View style={[s.bLv, s.bLvRow]}>
                         <LevelBadge level={who.level} size={u(14)} />
+                        {aiTag(who.id)}
                       </View>
                       <Text style={[s.bExp, { color: t.fg }]}>{num(who.exp)}</Text>
                       <Text style={[s.bNum, { color: b.m }]}>{b.place}</Text>
@@ -212,7 +231,7 @@ export function Leaderboard() {
             ) : null}
             <View style={s.list}>
               {rows.slice(3).map((r) => (
-                <Pressable key={r.id} disabled={!canOpen(r.id)} onPress={() => openPlayer({ id: r.id, display_name: r.name, avatar: r.avatar ?? undefined })} style={[s.r, { backgroundColor: p.row, borderColor: r.id === userId ? t.accent : t.panelLine }]} accessibilityRole="button" accessibilityHint="Open their profile">
+                <Pressable key={r.id} disabled={!canOpen(r.id)} onPress={() => open(r)} style={[s.r, { backgroundColor: p.row, borderColor: r.id === userId ? t.accent : t.panelLine }]} accessibilityRole="button" accessibilityHint="Open their profile">
                   <Text style={[s.rN, { color: t.mute }]}>{r.rank}</Text>
                   <PlayerFace slug={r.avatar || 'yara'} size={u(26)} userId={r.id} still />
                   <View style={s.rNm}>
@@ -220,6 +239,7 @@ export function Leaderboard() {
                       {r.id === userId ? 'You' : r.name}
                     </Text>
                     <LevelBadge level={r.level} size={u(14)} />
+                    {aiTag(r.id)}
                   </View>
                   <Text style={[s.rS, { color: t.fg }]}>
                     {num(r.exp)} <Text style={[s.rU, { color: t.mute }]}>EXP</Text>
@@ -295,6 +315,9 @@ const s = StyleSheet.create({
   crown: { position: 'absolute', alignSelf: 'center' },
   bName: { fontFamily: F.display, fontSize: u(11), lineHeight: u(14), maxWidth: '100%' },
   bLv: { marginTop: u(2) },
+  bLvRow: { flexDirection: 'row', alignItems: 'center', gap: u(3) },
+  ai: { borderWidth: 1, borderRadius: 999, paddingHorizontal: u(4), height: u(12), justifyContent: 'center' },
+  aiT: { fontFamily: F.mono, fontSize: u(6.5), lineHeight: u(8), letterSpacing: u(0.6) },
   bExp: { marginTop: u(2), fontFamily: F.mono, fontSize: u(8.5), lineHeight: u(11) },
   bNum: { marginTop: 'auto', marginBottom: u(3), fontFamily: F.display, fontSize: u(19), lineHeight: u(22) },
   list: { gap: u(6) },

@@ -17,7 +17,7 @@ import { settingsLine } from '@/match/format';
 import { G } from '@/match/grey';
 import { GREY_LOOK, useRoomLook } from '@/match/look';
 import { TalkBubble, TalkPanel } from '@/match/TalkBar';
-import { toggleMute, useTalk, useTalkRoom } from '@/match/talk';
+import { sayAsBot, toggleMute, useTalk, useTalkRoom } from '@/match/talk';
 import { useAccount } from '@/state/account';
 import { u } from '@/theme/scale';
 import { F, THEMES } from '@/theme/tokens';
@@ -25,6 +25,7 @@ import { F, THEMES } from '@/theme/tokens';
 import { addBot, swapBot } from './core';
 import { rivalMoment, useRivalEars } from './director';
 import { grownLevel, loadRivals, rivalOf, toggleFav, useRivals } from './memory';
+import { revengeLine } from './revenge';
 import { joinMs, readyMs } from './roomTalk';
 import { seatsFor } from './setup';
 import { LEVEL_NAME, TYPE_NAME, type Bot, type BotLevel, type BotType } from './types';
@@ -79,7 +80,10 @@ export function BotRoom({ def, play, left }: { def: GameDef; play: Play; left?: 
       void sfx('tap');
       later(readyMs(b), () => {
         setPhase((p) => (p[b.id] === 'in' ? { ...p, [b.id]: 'ready' } : p));
-        rivalMoment(room, b, 'ready', { tableSize: seatsRef.current.filter((x) => x.bot).length });
+        // G6: a rival with a record against you greets you with a revenge line instead of its usual hello.
+        const grudge = revengeLine(useRivals.getState().record[b.id], `${play.id}:${b.id}`);
+        if (grudge) sayAsBot(room, { user_id: b.id, name: b.name, face: b.character, kind: 'line', item: grudge });
+        else rivalMoment(room, b, 'ready', { tableSize: seatsRef.current.filter((x) => x.bot).length });
       });
     });
   };
