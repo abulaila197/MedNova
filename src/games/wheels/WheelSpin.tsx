@@ -9,7 +9,7 @@ import Svg, { Circle, Defs, G, Path, RadialGradient, Stop, Text as SvgText } fro
 
 import { u } from '@/theme/scale';
 
-import { FIELDS, STYLE_KEYS, type Turn } from './core';
+import { mixFields, STYLE_KEYS, type Turn } from './core';
 import { CB, VV } from './velvet';
 
 /** The drawing's own units: a 390-wide box, the wheel's centre in the middle. */
@@ -132,7 +132,7 @@ const Frame = memo(function Frame({ lit, fields }: { lit: { count: boolean; styl
 /** The wheel for a turn's first question; `settled` tells which rings have stopped (the parent keeps the clock). */
 export function WheelSpin({ turn, settled }: { turn: Turn; settled: { count: boolean; style: boolean; field: boolean } }) {
   // #16 (Yazan 2026-11-04): the field ring shows only the fields the room picked (6 basic, 4 clinical or all 10).
-  const fields = turn.mix && turn.mix !== 'mixed' ? FIELDS.filter((f) => f.group === turn.mix) : FIELDS;
+  const fields = mixFields(turn.mix);
   const n = { count: 3, style: STYLE_KEYS.length, field: fields.length };
   const land = {
     count: landing(Math.max(0, turn.count - 1), n.count, 5),

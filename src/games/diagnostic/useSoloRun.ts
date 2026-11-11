@@ -5,6 +5,7 @@ import { recordItem } from '../shell/flow';
 import type { PlayProps } from '../shell/types';
 import { usePauseHide } from '../engine/usePauseHide';
 import { DP } from './core';
+import { tickedFields } from '../shell/fields';
 import { caseById, guessName, poolFor } from './data';
 import type { Difficulty } from './core';
 import { snapshot, startRun, step, type SoloEvent, type SoloRun } from './solo';
@@ -25,7 +26,7 @@ export function useSoloRun({ play, onFinish }: Pick<PlayProps, 'play' | 'onFinis
       if (!r) {
         // Your own approved case (practice: one case, no EXP, no free play, not fed to Learn).
         const custom = typeof play.settings.custom === 'string' && caseById.has(play.settings.custom) ? play.settings.custom : null;
-        const ids = custom ? [custom] : await engine.picker.pick(play.game, poolFor(play.settings.difficulty as Difficulty), Number(play.settings.cases) || 5);
+        const ids = custom ? [custom] : await engine.picker.pick(play.game, poolFor(play.settings.difficulty as Difficulty, tickedFields(play.settings)), Number(play.settings.cases) || 5);
         r = startRun(ids, Date.now());
       }
       if (live) {

@@ -41,14 +41,32 @@ export const COUNT_WEIGHTS: [number, number][] = [[1, 0.4], [2, 0.35], [3, 0.25]
 export const FIELD_WEIGHTS: [FieldKey, number][] = FIELDS.map((f) => [f.key, f.group === 'basic' ? 0.5 / 6 : 0.5 / 4]);
 
 /** QS1: the setup's question type. Clinical or Basic spins only that group's fields; Mixed keeps the half-and-half wheel. */
-export type Mix = 'mixed' | 'clinical' | 'basic';
+// Field ticks (Yazan 2026-11-11): `only:anatomy,surgery` spins only those fields (Boss and Redemption follow, as they
+// pick from the spun field).
+export type Mix = 'mixed' | 'clinical' | 'basic' | `only:${string}`;
 export const MIXES: { value: Mix; label: string }[] = [
   { value: 'mixed', label: 'Mixed' },
   { value: 'clinical', label: 'Clinical' },
   { value: 'basic', label: 'Basic science' },
 ];
+/** The fields a mix spins. */
+export const mixFields = (mix: Mix = 'mixed') => {
+  if (mix.startsWith('only:')) {
+    const on = mix.slice(5).split(',');
+    const out = FIELDS.filter((f) => on.includes(f.key));
+    return out.length ? out : FIELDS;
+  }
+  return mix === 'mixed' ? FIELDS : FIELDS.filter((f) => f.group === mix);
+};
+/** The setup's choice plus its field ticks, as one mix. */
+export const mixWith = (mix: Mix, ticked: string[] | null): Mix => {
+  if (!ticked) return mix;
+  const base = mix === 'mixed' ? FIELDS : FIELDS.filter((f) => f.group === mix);
+  const on = base.filter((f) => ticked.includes(f.key)).map((f) => f.key);
+  return on.length ? `only:${on.join(',')}` : mix;
+};
 export const fieldWeights = (mix: Mix = 'mixed'): [FieldKey, number][] =>
-  mix === 'mixed' ? FIELD_WEIGHTS : FIELDS.filter((f) => f.group === mix).map((f) => [f.key, 1]);
+  mix === 'mixed' ? FIELD_WEIGHTS : mix.startsWith('only:') ? FIELD_WEIGHTS.filter(([k]) => mixFields(mix).some((f) => f.key === k)) : FIELDS.filter((f) => f.group === mix).map((f) => [f.key, 1]);
 
 export const TARGETS = [25, 50, 100] as const; // 25 added (Yazan 2026-10-25). Setup offers only 25 and 50 (#25, 2026-11-01); 100 stays valid for tests and old saves.
 export type Target = (typeof TARGETS)[number];

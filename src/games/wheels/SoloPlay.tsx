@@ -7,7 +7,8 @@ import { engine } from '../engine';
 import { usePauseHide } from '../engine/usePauseHide';
 import { recordItem } from '../shell/flow';
 import type { PlayProps } from '../shell/types';
-import { startSolo, stepSolo, STYLES, fieldName, type Mix, type QResult, type SoloEvent, type SoloRun, type Target } from './core';
+import { tickedFields } from '../shell/fields';
+import { startSolo, stepSolo, STYLES, fieldName, mixWith, type Mix, type QResult, type SoloEvent, type SoloRun, type Target } from './core';
 import { BANK } from './data';
 import { PauseMenu } from '../shell/PauseMenu';
 import { TurnBoard } from './TurnBoard';
@@ -21,7 +22,7 @@ const snapshot = (r: SoloRun, now: number): SoloRun => (r.turn && r.turn.pausedA
 /** Solo (WC1, WC11): spin and answer, turn after turn, until the target. No cards, Boss Round or Redemption. */
 export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   const target = (Number(play.settings.target) || 50) as Target;
-  const mix = (play.settings.mix as Mix) ?? 'mixed';
+  const mix = mixWith((play.settings.mix as Mix) || 'mixed', tickedFields(play.settings));
   // The saved run (its clock started again), or a new one.
   const [first] = useState(() => {
     const saved = (play.resume as { run?: SoloRun } | null)?.run ?? null;

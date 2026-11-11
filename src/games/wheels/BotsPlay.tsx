@@ -17,7 +17,8 @@ import { PauseMenu } from '../shell/PauseMenu';
 import { gameDef } from '../shell/registry';
 import { TurnName } from '../shell/TurnName';
 import type { PlayProps } from '../shell/types';
-import { fieldName, type Answer, type Mix, type QResult, type Target, type TurnEvent } from './core';
+import { tickedFields } from '../shell/fields';
+import { fieldName, type Answer, mixWith, type Mix, type QResult, type Target, type TurnEvent } from './core';
 import { BANK } from './data';
 import { actor, bossBonus, bossPoints, BOSS_MS, BOSS_RIGHT, BOSS_WRONG, type OfflineGame } from './offline';
 import { actName, Board, BossOver, recapLine, RedemptionBoard, RedemptionOffer, Top, TurnOver, type Seats } from './OfflinePlay';
@@ -49,7 +50,7 @@ function itemsOf(g: OfflineGame) {
 
 export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
   const target = (Number(play.settings.target) || 25) as Target;
-  const mix = (play.settings.mix as Mix) || 'mixed';
+  const mix = mixWith((play.settings.mix as Mix) || 'mixed', tickedFields(play.settings));
   const g = useBotRace<WheelsShow>({
     play,
     onFinish,

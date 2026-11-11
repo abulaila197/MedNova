@@ -20,7 +20,11 @@ export function useSetup(def: GameDef, mode: Mode, prefill?: Record<string, unkn
   // Vs bots adds the level, how many bots and (where the game has teams) Teams to the game's own options.
   const opts = mode === 'bots' ? botSetup(def) : (def.setup[mode] ?? []);
   const [vals, setVals] = useState<Record<string, string | number>>(() =>
-    Object.fromEntries(opts.map((o) => [o.key, (prefill?.[o.key] as string | number | undefined) ?? o.initial])),
+    ({
+      ...Object.fromEntries(opts.map((o) => [o.key, (prefill?.[o.key] as string | number | undefined) ?? o.initial])),
+      // Field ticks carry over to "Change settings" and Play again.
+      ...(typeof prefill?.fields === 'string' && opts.some((o) => o.fields) ? { fields: prefill.fields } : {}),
+    }),
   );
   const [busy, setBusy] = useState(false);
   const range = def.players?.[mode];

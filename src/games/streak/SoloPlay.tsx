@@ -18,6 +18,7 @@ import {
   ADD_MS, HELPER_PRICE, helperUsable, mixQueue, snapshotRound, startRound, stepRound, timeLeft,
   type HelperKind, type Round, type RoundEvent, type Style,
 } from './core';
+import { tickedFields } from '../shell/fields';
 import { answerOf, idsOf, poolFor, questionById } from './data';
 import { HeatBoard } from './HeatBoard';
 import { useTickerClock } from '../engine/useTicker';
@@ -45,6 +46,7 @@ const SECOND_PRICE = [5, 10, 20];
 /** Solo (SM3, SM4, SM11, SM16): one timed round, helpers for tokens, EXP = 2 per right answer up to 60 (SM16), misses go to Learn. */
 export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   const style = (play.settings.style as Style) ?? 'mixed';
+  const ticked = tickedFields(play.settings);
   const lengthSec = Number(play.settings.length) || 60;
   const [round, setRound] = useState<Round | null>(null);
   const ref = useRef<Round | null>(null);
@@ -67,7 +69,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
       if (r && !r.queue.every((id) => questionById.has(id))) r = null; // a question left the bank since: start fresh
       if (!r) {
         const pick = (ids: string[]) => engine.picker.pick(play.game, ids, ids.length);
-        const queue = custom ? [custom] : style === 'mixed' ? mixQueue(await pick(idsOf('clinical')), await pick(idsOf('basic'))) : await pick(poolFor(style));
+        const queue = custom ? [custom] : style === 'mixed' && !ticked ? mixQueue(await pick(idsOf('clinical')), await pick(idsOf('basic'))) : await pick(poolFor(style, ticked));
         r = startRound(queue, lengthSec, Date.now());
         engine.recorder.bookmark(play.id, { round: snapshotRound(r, Date.now()), style, lengthSec } satisfies SoloSave, 0);
       }

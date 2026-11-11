@@ -85,7 +85,7 @@ const SPARK_ON = '#ffd166';
 const SPARK_OFF = 'rgba(255,209,102,0.7)';
 
 /** Setup choices as chips; `sparks` gives a choice's Sparks cost, shown under it (#36). */
-export function Chips<V extends string | number>({ choices, value, onChange, sparks }: { choices: { value: V; label: string; note?: string }[]; value: V; onChange: (v: V) => void; sparks?: (v: V) => number | null }) {
+export function Chips<V extends string | number>({ choices, value, onChange, sparks, arrow, onArrow, ticks }: { choices: { value: V; label: string; note?: string }[]; value: V; onChange: (v: V) => void; sparks?: (v: V) => number | null; arrow?: (v: V) => boolean; onArrow?: (v: V, y: number) => void; ticks?: string | null }) {
   const t = useTheme();
   return (
     <View style={s.chips}>
@@ -98,8 +98,23 @@ export function Chips<V extends string | number>({ choices, value, onChange, spa
             style={[s.chip, { borderColor: on ? t.accent : t.chipLine, backgroundColor: on ? t.tabOn : t.chip }]}
             accessibilityRole="button"
             accessibilityState={{ selected: on }}>
-            <Text style={[s.chipT, { color: on ? t.accent : t.fg }]}>{c.label}</Text>
-            {c.note ? <Text style={[s.chipN, { color: t.dim }]}>{c.note}</Text> : null}
+            {arrow?.(c.value) ? (
+              // Field ticks (Yazan 2026-11-11): the arrow opens the choice's field menu.
+              <View style={s.chipRow}>
+                <Text style={[s.chipT, { color: on ? t.accent : t.fg }]}>{c.label}</Text>
+                <Pressable
+                  onPress={tapped((e) => onArrow?.(c.value, e?.nativeEvent?.pageY ?? 0))}
+                  hitSlop={u(8)}
+                  accessibilityRole="button"
+                  accessibilityLabel={`Pick ${c.label} fields`}
+                  style={[s.chipArrow, { borderColor: on ? t.accent : t.chipLine }]}>
+                  <Text style={[s.chipArrowT, { color: on ? t.accent : t.dim }]}>▾</Text>
+                </Pressable>
+              </View>
+            ) : (
+              <Text style={[s.chipT, { color: on ? t.accent : t.fg }]}>{c.label}</Text>
+            )}
+            {on && ticks ? <Text style={[s.chipN, { color: t.accent }]}>{ticks}</Text> : c.note ? <Text style={[s.chipN, { color: t.dim }]}>{c.note}</Text> : null}
             {sparks?.(c.value) != null ? (
               <View style={s.chipSp}>
                 {sparks(c.value) ? <Bolt size={u(8.5)} color={on ? SPARK_ON : SPARK_OFF} /> : null}
@@ -137,6 +152,9 @@ export const s = StyleSheet.create({
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: u(5) },
   chip: { borderRadius: u(10), borderWidth: 1, paddingVertical: u(5), paddingHorizontal: u(10), minWidth: u(44), alignItems: 'center' },
   chipT: { fontFamily: F.bodySemi, fontSize: u(10.5), lineHeight: u(13) },
+  chipRow: { flexDirection: 'row', alignItems: 'center', gap: u(5) },
+  chipArrow: { borderWidth: 1, borderRadius: u(6), width: u(15), height: u(15), alignItems: 'center', justifyContent: 'center' },
+  chipArrowT: { fontFamily: F.bodyBold, fontSize: u(9), lineHeight: u(11) },
   chipN: { fontFamily: F.body, fontSize: u(8), lineHeight: u(10) },
   chipSp: { flexDirection: 'row', alignItems: 'center', gap: u(1.5), marginTop: u(1) },
   chipS: { fontFamily: F.bodyBold, fontSize: u(8.5), lineHeight: u(11), fontVariant: ['tabular-nums'] },

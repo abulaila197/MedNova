@@ -17,6 +17,7 @@ import type { PlayProps } from '../shell/types';
 import { GameScreen, Kick } from '../shell/ui';
 import { CaseBoard } from './CaseBoard';
 import { DP, type Attempt, type Difficulty } from './core';
+import { tickedFields } from '../shell/fields';
 import { CASES, caseById, guessById, guessName, poolFor } from './data';
 import { gameDef } from '../shell/registry';
 
@@ -87,7 +88,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
     onFinish,
     onQuit,
     rules: RULES,
-    pick: async () => (await engine.picker.pick(play.game, poolFor(play.settings.difficulty as Difficulty), Number(play.settings.cases) || 5)).map(Number),
+    pick: async () => (await engine.picker.pick(play.game, poolFor(play.settings.difficulty as Difficulty, tickedFields(play.settings)), Number(play.settings.cases) || 5)).map(Number),
     toItems: itemsOf,
     // The short name only, so the bubble stays small.
     guessName: (id) => guessById.get(id)?.label ?? guessName(id),

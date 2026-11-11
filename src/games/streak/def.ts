@@ -1,11 +1,12 @@
-import type { GameDef } from '../shell/types';
-import { expForRight, SM_EXP } from './core';
-import { questionById } from './data';
+import type { GameDef, SetupOption } from '../shell/types';
+import { expForRight, SM_EXP, type Style } from './core';
+import { fieldMenu, questionById } from './data';
 import { BotsPlay } from './BotsPlay';
 import { OfflinePlay } from './OfflinePlay';
 import { SoloPlay } from './SoloPlay';
 
-const STYLE = {
+// Field ticks: at least 60 questions (the longest streak goal) must stay ticked.
+const STYLE: SetupOption = {
   key: 'style',
   label: 'Questions',
   choices: [
@@ -14,6 +15,7 @@ const STYLE = {
     { value: 'mixed', label: 'Mixed', note: 'about half each' },
   ],
   initial: 'mixed',
+  fields: (v) => fieldMenu(v as Style, 60),
 };
 
 // SM7: online rooms pick 5, 10 or 15 questions (Yazan 2026-10-25, was 10/15/20) and 15, 20 or 25 s per question (#76: +5 s, Online only, Yazan 2026-10-26).

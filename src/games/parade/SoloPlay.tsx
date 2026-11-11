@@ -14,6 +14,7 @@ import { PauseMenu } from '../shell/PauseMenu';
 import type { PlayProps } from '../shell/types';
 import { Btn } from '../shell/ui';
 import { answerText, HELPER_PRICE, helperUsable, mixQueue, typeCycle, snapshotRound, startRound, stepRound, timeLeft, type HelperKind, type Round, type RoundEvent, type Style } from './core';
+import { tickedFields } from '../shell/fields';
 import { bank, idsOf, poolFor, questionById, typeOf } from './data';
 import { ParadeBoard } from './ParadeBoard';
 
@@ -22,6 +23,7 @@ type SoloSave = { round: Round; style: Style; count: number };
 /** Solo (QP1-QP6): 5, 10 or 15 questions, each on its own clock; helpers for tokens; misses go to Today's review (QP5). */
 export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   const style = (play.settings.style as Style) ?? 'mixed';
+  const ticked = tickedFields(play.settings);
   const count = Number(play.settings.questions) || 10;
   const [round, setRound] = useState<Round | null>(null);
   const ref = useRef<Round | null>(null);
@@ -37,7 +39,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
       if (!r) {
         const pick = (ids: string[]) => engine.picker.pick(play.game, ids, ids.length);
         // #15: the types take turns (no type again until every other has come up).
-        const pool = style === 'mixed' ? mixQueue(await pick(idsOf('clinical')), await pick(idsOf('basic')), Infinity) : await pick(poolFor(style));
+        const pool = style === 'mixed' && !ticked ? mixQueue(await pick(idsOf('clinical')), await pick(idsOf('basic')), Infinity) : await pick(poolFor(style, ticked));
         const queue = typeCycle(pool, count, typeOf);
         r = startRound(queue, Date.now(), bank);
         engine.recorder.bookmark(play.id, { round: snapshotRound(r, Date.now(), bank), style, count } satisfies SoloSave, 0);

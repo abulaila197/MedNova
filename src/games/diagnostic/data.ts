@@ -1,3 +1,4 @@
+import { type FieldMenu, groupsOf, inFields } from '../shell/fields';
 import { fullName } from '../shell/names';
 import type { DPCase, Difficulty, GuessEntry } from './core';
 import { buildIndex } from './core';
@@ -19,4 +20,38 @@ export const guessName = (id: string) => {
 
 export const LEVELS: Difficulty[] = ['Easy', 'Medium', 'Hard', 'Extreme'];
 export const levelCount = (d: Difficulty) => CASES.filter((c) => c.difficulty === d).length;
-export const poolFor = (d: Difficulty) => CASES.filter((c) => c.difficulty === d).map((c) => String(c.number));
+
+/** Field ticks (Yazan 2026-11-11): the cases' 38 labels merged into 19 fields. */
+const MERGE: Record<string, string> = {
+  'Tropical Medicine': 'Infectious Diseases',
+  Neurosurgery: 'Neurology',
+  Gastroenterology: 'Gastroenterology & Hepatology',
+  Oncology: 'Hematology & Oncology',
+  Hematology: 'Hematology & Oncology',
+  'Critical Care': 'Pulmonology',
+  Endocrinology: 'Endocrinology & Metabolism',
+  Metabolism: 'Endocrinology & Metabolism',
+  Metabolic: 'Endocrinology & Metabolism',
+  Nutrition: 'Endocrinology & Metabolism',
+  Surgery: 'Surgery & Trauma',
+  'Vascular Surgery': 'Surgery & Trauma',
+  Vascular: 'Surgery & Trauma',
+  Rheumatology: 'Rheumatology & Immunology',
+  Immunology: 'Rheumatology & Immunology',
+  Allergy: 'Rheumatology & Immunology',
+  Nephrology: 'Nephrology & Urology',
+  Urology: 'Nephrology & Urology',
+  Orthopedics: 'Orthopedics & Sports Medicine',
+  Otolaryngology: 'ENT',
+  'Otolaryngology (ENT)': 'ENT',
+};
+export const fieldsOfCase = (c: DPCase) => [...new Set((c.fields ?? []).map((f) => MERGE[f] ?? f))];
+const ofLevel = (d: Difficulty) => CASES.filter((c) => c.difficulty === d);
+/** A level's cases; with field ticks, only cases in a ticked field. */
+export const poolFor = (d: Difficulty, ticked: string[] | null = null) => inFields(ofLevel(d), fieldsOfCase, ticked).map((c) => String(c.number));
+/** The field menu under a difficulty: that level's cases per field (a case in two fields counts in both). */
+export function fieldMenu(d: Difficulty, min: number): FieldMenu {
+  const items = ofLevel(d);
+  const flat = items.flatMap((c) => fieldsOfCase(c).map((f) => ({ f })));
+  return { groups: groupsOf(flat, (x) => x.f, () => undefined), total: (t) => inFields(items, fieldsOfCase, t).length, min, unit: 'cases' };
+}

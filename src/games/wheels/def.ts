@@ -1,6 +1,7 @@
-import type { GameDef } from '../shell/types';
-import { MIXES, soloExp, STYLES } from './core';
-import { answerLabel, questionById } from './data';
+import { groupsOf, inFields } from '../shell/fields';
+import type { GameDef, SetupOption } from '../shell/types';
+import { FIELDS, type Mix, MIXES, soloExp, STYLES } from './core';
+import { answerLabel, BANK, questionById } from './data';
 import { BOSS_BONUS } from './offline';
 import { BotsPlay } from './BotsPlay';
 import { OfflinePlay } from './OfflinePlay';
@@ -18,7 +19,25 @@ const TARGET = {
 };
 
 // QS1: Mixed, Clinical or Basic science, Mixed first and picked by default.
-const MIX = { key: 'mix', label: 'Questions', choices: MIXES, initial: 'mixed' };
+// Field ticks (Yazan 2026-11-11): every field has about 210 questions, so one field alone is enough (50 kept ticked).
+const GROUP_TITLE = { clinical: 'Clinical', basic: 'Basic science' } as const;
+const groupOfField = new Map(FIELDS.map((f) => [f.key as string, f.group]));
+const MIX: SetupOption = {
+  key: 'mix',
+  label: 'Questions',
+  choices: MIXES,
+  initial: 'mixed',
+  fields: (v) => {
+    const mix = v as Mix;
+    const items = BANK.questions.filter((q) => mix === 'mixed' || groupOfField.get(q.field) === mix);
+    return {
+      groups: groupsOf(items, (q) => q.field, (q) => (mix === 'mixed' ? GROUP_TITLE[groupOfField.get(q.field) ?? 'basic'] : undefined), (f) => FIELDS.find((x) => x.key === f)?.name ?? f, ['Clinical', 'Basic science']),
+      total: (t) => inFields(items, (q) => q.field, t).length,
+      min: 50,
+      unit: 'questions',
+    };
+  },
+};
 
 /** The biggest single turn: three Matching questions (3 points each). Solo has no Sun. */
 const BEST_TURN = 3 * Math.max(...Object.values(STYLES).map((s) => s.points));

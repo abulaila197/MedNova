@@ -1,11 +1,15 @@
 import type { GameDef } from '../shell/types';
+import type { Difficulty } from './core';
 import { MAX_CASE_POINTS } from './core';
-import { caseById, guessById, guessName, LEVELS, levelCount } from './data';
+import { caseById, fieldMenu, guessById, guessName, LEVELS, levelCount } from './data';
 import { BotsPlay } from './BotsPlay';
 import { OfflinePlay } from './OfflinePlay';
 import { SoloPlay } from './SoloPlay';
 
 /** The Diagnostic Pursuit on the shared shell: Solo, Pass the phone and Vs bots. */
+// Field ticks: enough cases must stay ticked for the whole game (Pass the phone: every player's rounds).
+const DP_FIELDS = (v: string | number, vals: Record<string, string | number>, seats: number) => fieldMenu(v as Difficulty, (Number(vals.cases) || 5) * Math.max(1, seats));
+
 export const diagnosticPursuit: GameDef = {
   key: 'the-diagnostic-pursuit',
   modes: [
@@ -52,6 +56,7 @@ export const diagnosticPursuit: GameDef = {
         label: 'Difficulty',
         choices: LEVELS.map((d) => ({ value: d, label: d, note: `${levelCount(d)} cases` })),
         initial: 'Medium',
+        fields: DP_FIELDS,
       },
       {
         key: 'cases',
@@ -70,6 +75,7 @@ export const diagnosticPursuit: GameDef = {
         label: 'Difficulty',
         choices: LEVELS.map((d) => ({ value: d, label: d, note: `${levelCount(d)} cases` })),
         initial: 'Medium',
+        fields: DP_FIELDS,
       },
       {
         key: 'cases',
@@ -88,6 +94,7 @@ export const diagnosticPursuit: GameDef = {
         label: 'Difficulty',
         choices: LEVELS.map((d) => ({ value: d, label: d })),
         initial: 'Medium',
+        fields: DP_FIELDS,
       },
       {
         key: 'cases',

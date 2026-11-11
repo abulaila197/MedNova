@@ -12,7 +12,8 @@ import { usePauseHide } from '../engine/usePauseHide';
 import { recordItem } from '../shell/flow';
 import { RECAP_MAX } from '../shell/recap';
 import type { PlayProps } from '../shell/types';
-import { fieldName, type Mix, type QResult, type Target } from './core';
+import { tickedFields } from '../shell/fields';
+import { fieldName, mixWith, type Mix, type QResult, type Target } from './core';
 import { BANK } from './data';
 import {
   actor, bossPoints, startOffline, stepOffline, upgradeSaved, bossBonus, BOSS_MS, BOSS_RIGHT, BOSS_WRONG, MAX_ACTS, roundsIn, REDEMPTION_ITEMS, REDEMPTION_MS,
@@ -31,7 +32,7 @@ export const actName = (g: OfflineGame) => `Act ${ROMAN[g.cycle]} · Round ${g.r
 
 export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   const target = (Number(play.settings.target) || 50) as Target;
-  const mix = (play.settings.mix as Mix) ?? 'mixed';
+  const mix = mixWith((play.settings.mix as Mix) || 'mixed', tickedFields(play.settings));
   // The saved game (its clocks started again), or a new one.
   const [first] = useState(() => {
     const saved = play.resume as OfflineGame | null;

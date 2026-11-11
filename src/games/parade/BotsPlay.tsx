@@ -15,6 +15,7 @@ import { gameDef } from '../shell/registry';
 import type { PlayProps } from '../shell/types';
 import { GameScreen } from '../shell/ui';
 import { grade, layoutFor, mixQueue, TIME_S, typeCycle, type Answer, type Response, type Round, type Style } from './core';
+import { tickedFields } from '../shell/fields';
 import { QUESTIONS, idsOf, poolFor, typeOf } from './data';
 import { ParadeBoard } from './ParadeBoard';
 import { paradePlan, parseResponse, scoreParade } from './rivals';
@@ -73,6 +74,7 @@ function itemsOf(st: RaceState) {
  */
 export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
   const style = (play.settings.style as Style) ?? 'mixed';
+  const ticked = tickedFields(play.settings);
   const [{ rules, found }] = useState(rulesFor);
   const g = useBotRace({
     play,
@@ -84,7 +86,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
     pick: async () => {
       const n = Number(play.settings.questions) || 10;
       const pick = (ids: string[]) => engine.picker.pick(play.game, ids, ids.length);
-      const pool = style === 'mixed' ? mixQueue(await pick(idsOf('clinical')), await pick(idsOf('basic')), Infinity) : await pick(poolFor(style));
+      const pool = style === 'mixed' && !ticked ? mixQueue(await pick(idsOf('clinical')), await pick(idsOf('basic')), Infinity) : await pick(poolFor(style, ticked));
       return typeCycle(pool, n, typeOf).map((id) => indexOf.get(id)!).filter(Boolean);
     },
     toItems: itemsOf,

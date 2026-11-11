@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Platform, Pressable, StyleSheet, View } from 'react-native';
 import { Text, TextInput } from '@/components/AppText';
 
@@ -12,6 +13,8 @@ import { SEAT_COLOURS } from './characters';
 import type { Team } from './teams';
 import type { GameDef } from './types';
 import { useSetup } from './useSetup';
+import { FieldPicker } from './FieldPicker';
+import { fieldsValue, type FieldMenu, tickedFields } from './fields';
 import { useSession } from './session';
 import { alwaysFree } from './flow';
 import { perUnit, setupPrices } from '@/features/sparks/costs';
@@ -38,6 +41,20 @@ export function Setup({ def, mode, prefill, prefillSeats }: { def: GameDef; mode
   const { cost, per } = setupPrices(def.key, mode, vals, opts);
   const showCost = priced && !free && cost > 0;
   const each = perUnit(def.key, mode, vals) ? (def.key === 'the-riddler' ? ' a level' : ' a word') : '';
+  // Field ticks (Yazan 2026-11-11): the open menu, and whether the ticks leave enough to start.
+  const [open, setOpen] = useState<{ key: string; top: number } | null>(null);
+  const ticked = tickedFields(vals);
+  const fieldOpt = opts.find((o) => o.fields);
+  const menu: FieldMenu | null = fieldOpt?.fields?.(vals[fieldOpt.key], vals, seats.length) ?? null;
+  const short = menu && ticked ? menu.total(ticked) < menu.min : false;
+  const setTicks = (m: FieldMenu, t: string[]) =>
+    setVals((p) => {
+      const n = { ...p };
+      const v = fieldsValue(m, t);
+      if (v === undefined) delete n.fields;
+      else n.fields = v;
+      return n;
+    });
 
   // Compact on purpose: every game's setup fits one phone screen without scrolling (Yazan, 2026-10-05). With many
   // players the list scrolls, and Start stays on screen under it.
@@ -48,9 +65,9 @@ export function Setup({ def, mode, prefill, prefillSeats }: { def: GameDef; mode
         <>
           {intent ? <Text style={[s.small, { color: t.accent, textAlign: 'center' }]}>{`Challenge for ${intent.friend.name} · ${intent.kind === 'score' ? 'Beat my score, 1 day' : `Game challenge, ${intent.days} day${intent.days > 1 ? 's' : ''}`}`}</Text> : null}
           <Text style={[s.small, { color: t.dim, textAlign: 'center' }]}>
-            {emptyTeam ? `${emptyTeam.name} has no players yet.` : showCost ? `${each ? 'Costs' : 'This game costs'} ${cost} Sparks${each} · you have ${have}` : 'Settings lock once the game starts.'}
+            {emptyTeam ? `${emptyTeam.name} has no players yet.` : short && menu ? `Tick at least ${menu.min} ${menu.unit} (now ${menu.total(ticked)}).` : showCost ? `${each ? 'Costs' : 'This game costs'} ${cost} Sparks${each} · you have ${have}` : 'Settings lock once the game starts.'}
           </Text>
-          <Btn label="Start" onPress={start} disabled={busy || !!emptyTeam} />
+          <Btn label="Start" onPress={start} disabled={busy || !!emptyTeam || short} />
         </>
       }>
       <Back label={`${g.lead} ${g.em}`} fallback={`/play/${def.key}`} />
@@ -63,13 +80,30 @@ export function Setup({ def, mode, prefill, prefillSeats }: { def: GameDef; mode
               <View style={s.line}>
                 <Text style={[s.lbl, s.side, { color: t.white }]}>{o.label}</Text>
                 <View style={{ flex: 1 }}>
-                  <Chips choices={o.choices} value={vals[o.key]} onChange={(v) => setVals((p) => ({ ...p, [o.key]: v }))} sparks={showCost && per[o.key] ? per[o.key] : undefined} />
+                  <Chips
+                    choices={o.choices}
+                    value={vals[o.key]}
+                    // A new choice starts with every field ticked again.
+                    onChange={(v) => setVals((p) => {
+                      const n = { ...p, [o.key]: v };
+                      if (o.fields && v !== p[o.key]) delete n.fields;
+                      return n;
+                    })}
+                    sparks={showCost && per[o.key] ? per[o.key] : undefined}
+                    arrow={o.fields ? (v) => !!o.fields?.(v, vals, seats.length) : undefined}
+                    onArrow={(v, y) => {
+                      if (v !== vals[o.key]) setVals((p) => { const n = { ...p, [o.key]: v }; delete n.fields; return n; });
+                      setOpen({ key: o.key, top: y + u(16) });
+                    }}
+                    ticks={o.fields && ticked && menu ? `${menu.total(ticked)} ${menu.unit}` : null}
+                  />
                 </View>
               </View>
             </View>
           ))}
         </Card>
       ) : null}
+      {open && menu ? <FieldPicker menu={menu} ticked={tickedFields(vals)} top={open.top} onChange={(t) => setTicks(menu, t)} onClose={() => setOpen(null)} /> : null}
       {range ? <Players st={st} min={range.min} max={range.max} note={def.playersNote?.(seats.length)} teams={teams} /> : null}
     </GameScreen>
   );

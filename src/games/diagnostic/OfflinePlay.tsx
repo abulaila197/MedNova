@@ -10,6 +10,7 @@ import type { PlayProps } from '../shell/types';
 import { GameScreen } from '../shell/ui';
 import { CaseBoard, pointsLine } from './CaseBoard';
 import type { Difficulty } from './core';
+import { tickedFields } from '../shell/fields';
 import { caseById, guessName, poolFor } from './data';
 import {
   currentCase, currentSeat, dpTieBreak, offlineRecap, offlineRows, snapshotOffline, startOffline, stepOffline, timeLeft,
@@ -34,7 +35,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
       if (!r) {
         const seats = play.seats.filter((x) => !x.removed);
         const rounds = Number(play.settings.cases) || 3;
-        const ids = await engine.picker.pick(play.game, poolFor(play.settings.difficulty as Difficulty), rounds * seats.length);
+        const ids = await engine.picker.pick(play.game, poolFor(play.settings.difficulty as Difficulty, tickedFields(play.settings)), rounds * seats.length);
         // TMG-DP: own cases as before; with teams on, teams alternate in the turn order (TM5).
         const teams = teamsOf(play);
         r = startOffline(teams ? teamLap(seats, teams) : shuffle(seats.map((x) => x.seat)), rounds, ids);

@@ -17,6 +17,7 @@ import { teamLap, teamsOf } from '../shell/teams';
 import type { PlayProps } from '../shell/types';
 import { GameScreen, Kick } from '../shell/ui';
 import { mixQueue, startRound, streakTieBreak, timeLeft, type Style } from './core';
+import { tickedFields } from '../shell/fields';
 import { answerOf, idsOf, poolFor, questionById } from './data';
 import { HeatBoard } from './HeatBoard';
 import {
@@ -31,6 +32,7 @@ import { useTickerClock } from '../engine/useTicker';
 export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   const t = useTheme();
   const style = (play.settings.style as Style) ?? 'mixed';
+  const ticked = tickedFields(play.settings);
   const lengthSec = Number(play.settings.length) || 60;
   const [run, setRun] = useState<OfflineRun | null>(null);
   const ref = useRef<OfflineRun | null>(null);
@@ -49,9 +51,9 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
         const order = teams ? teamLap(seats, teams) : shuffle(seats.map((x) => x.seat));
         const want = POOL_SIZE * order.length;
         const pool =
-          style === 'mixed'
+          style === 'mixed' && !ticked
             ? mixQueue(await engine.picker.pick(play.game, idsOf('clinical'), want / 2), await engine.picker.pick(play.game, idsOf('basic'), want / 2))
-            : await engine.picker.pick(play.game, poolFor(style), want);
+            : await engine.picker.pick(play.game, poolFor(style, ticked), want);
         r = startOffline(order, pool, lengthSec);
         engine.recorder.bookmark(play.id, r, 0);
       }

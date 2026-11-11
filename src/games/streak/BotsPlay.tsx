@@ -17,6 +17,7 @@ import { gameDef } from '../shell/registry';
 import type { PlayProps } from '../shell/types';
 import { GameScreen } from '../shell/ui';
 import { mixQueue, type Round, type Style } from './core';
+import { tickedFields } from '../shell/fields';
 import { QUESTIONS, idsOf, poolFor } from './data';
 import { HeatBoard } from './HeatBoard';
 import { HeatColumns } from './HeatColumns';
@@ -87,6 +88,7 @@ function itemsOf(st: RaceState) {
  */
 export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
   const style = (play.settings.style as Style) ?? 'mixed';
+  const ticked = tickedFields(play.settings);
   const qMs = (Number(play.settings.qtime) || 20) * 1000;
   const [rules] = useState(() => rulesFor(qMs));
   const g = useBotRace({
@@ -99,9 +101,9 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
     pick: async () => {
       const n = Number(play.settings.questions) || 10;
       const ids =
-        style === 'mixed'
+        style === 'mixed' && !ticked
           ? mixQueue(await engine.picker.pick(play.game, idsOf('clinical'), Math.ceil(n / 2)), await engine.picker.pick(play.game, idsOf('basic'), Math.floor(n / 2)))
-          : await engine.picker.pick(play.game, poolFor(style), n);
+          : await engine.picker.pick(play.game, poolFor(style, ticked), n);
       return ids.map((id) => indexOf.get(id)!).filter(Boolean);
     },
     toItems: itemsOf,

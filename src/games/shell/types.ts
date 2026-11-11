@@ -1,6 +1,7 @@
 import type { ComponentType } from 'react';
 
 import type { GameKey, Mode, Play, PlayItem, Seat, Standing } from '../engine/types';
+import type { FieldMenu } from './fields';
 
 /** One mode card on a game's landing page. */
 export type ModeDef = {
@@ -17,6 +18,8 @@ export type SetupOption = {
   label: string;
   choices: { value: string | number; label: string; note?: string }[];
   initial: string | number;
+  /** Field ticks (Yazan 2026-11-11): the menu behind a choice's arrow, or null for a choice without one. */
+  fields?: (value: string | number, vals: Record<string, string | number>, seats: number) => FieldMenu | null;
 };
 
 export type PlayProps = {

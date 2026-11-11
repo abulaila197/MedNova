@@ -1,13 +1,14 @@
-import type { GameDef } from '../shell/types';
-import { POINTS } from './core';
-import { QUESTIONS } from './data';
+import type { GameDef, SetupOption } from '../shell/types';
+import { POINTS, type Style } from './core';
+import { fieldMenu, PARADE_FIELD, QUESTIONS } from './data';
 import { BotsPlay } from './BotsPlay';
 import { OfflinePlay } from './OfflinePlay';
 import { itemLine, SoloPlay } from './SoloPlay';
 
 const count = (kind: string) => QUESTIONS.filter((q) => q.kind === kind).length.toLocaleString('en-US');
 
-const STYLE = {
+// Field ticks: at least 15 questions (the longest game) must stay ticked.
+const STYLE: SetupOption = {
   key: 'style',
   label: 'Questions',
   choices: [
@@ -16,6 +17,7 @@ const STYLE = {
     { value: 'basic', label: 'Basic science', note: `${count('basic')} questions` },
   ],
   initial: 'mixed',
+  fields: (v) => fieldMenu(v as Style, 15, (f) => PARADE_FIELD[f] ?? f),
 };
 
 // QP4: 5, 10 or 15 questions.
