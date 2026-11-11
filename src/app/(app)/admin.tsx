@@ -7,6 +7,7 @@ import { Text, TextInput } from '@/components/AppText';
 import { Screen } from '@/components/Screen';
 import { Downloads, Inbox } from '@/features/admin/Inbox';
 import { Players, type AdminPlayer } from '@/features/admin/Players';
+import { ServerUsage } from '@/features/admin/ServerUsage';
 import { GradBtn, InfoScroll, Kicker, s as ui, useInfo } from '@/features/info/ui';
 import { supabase } from '@/lib/supabase';
 import { useAccount } from '@/state/account';
@@ -225,6 +226,7 @@ export default function Page() {
     <Screen tab={null} glow={21}>
       <InfoScroll scrollRef={scroll}>
         <Kicker>Admin</Kicker>
+        <ServerUsage c={c} />
         <Players c={c} onMessage={messagePlayer} onTakeBack={takeBackFrom} />
         <Text onLayout={(e) => (ySend.current = e.nativeEvent.layout.y)} style={[ui.H, s.H, s.gapL, { color: c.fg }]}>Send to Inbox</Text>
         <Text style={[ui.p, { color: c.mute }]}>Only your account sees this page. A message with gifts lands in the player’s Inbox with a red dot; the gifts reach their wallet when they tap Collect. “All players” reaches accounts that exist now.</Text>

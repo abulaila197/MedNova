@@ -5,9 +5,9 @@ import { test } from 'node:test';
 import { heardKind, linesFor, type Moment } from '../lines';
 import { PERSONAS } from '../types';
 
-const VOICES = ['good-luck', 'nice-one', 'so-close', 'hurry-up', 'well-played', 'oops', 'rematch', 'gg', 'thank-you', 'sorry', 'ready', 'help-me', 'give-gift', 'too-slow', 'all-youve-got', 'catch-me', 'too-easy', 'keep-up', 'better-luck'];
+const VOICES = ['good-luck', 'nice-one', 'so-close', 'hurry-up', 'well-played', 'oops', 'rematch', 'gg', 'thank-you', 'sorry', 'ready', 'help-me', 'too-slow', 'all-youve-got', 'catch-me', 'too-easy', 'keep-up', 'better-luck'];
 
-test('lines: only the 19 voice lines are used', () => {
+test('lines: only the 18 voice lines are used', () => {
   const moments: Moment[] = ['ready', 'kicked', 'start', 'right', 'wrong', 'overtake', 'fire', 'tilt', 'round', 'end', 'youRight', 'youWrong', 'heard'];
   for (const p of PERSONAS)
     for (const m of moments)

@@ -129,7 +129,7 @@ export function TalkPanel({ room, me, onSent, maxH }: { room: string; me: Me; on
           </Pressable>
         )
       ) : (
-        // 19 lines since the taunts (2026-10-26): the list scrolls instead of growing the tray.
+        // 18 lines since the taunts (2026-10-26; "Give me a gift" removed 2026-11-11): the list scrolls instead of growing the tray.
         body('voice', <>
           {VOICE.map((v) => (
             <Pressable key={v.id} disabled={cooling} onPress={() => send('voice', v.id)} style={[s.vl, { borderColor: L.line, backgroundColor: L.panel }]} accessibilityRole="button" accessibilityLabel={`Say: ${v.line}`}>

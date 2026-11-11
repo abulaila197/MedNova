@@ -5,6 +5,7 @@ import { Text, TextInput } from '@/components/AppText';
 import { GAMES, PARKED_GAMES } from '@/data/games';
 import { s as ui, type useInfo } from '@/features/info/ui';
 import { PlayerFace } from '@/features/style/Frame';
+import { CHARACTERS, MECH_CHARACTERS, SHOP_CHARACTERS } from '@/games/shell/characters';
 import { supabase } from '@/lib/supabase';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
@@ -49,6 +50,15 @@ const SORTS: { k: Sort; label: string }[] = [
   { k: 'newest', label: 'Newest' },
   { k: 'level', label: 'Level' },
 ];
+/** Unlimited the admin can give (Yazan 2026-11-11), added on top of any time left. */
+const UNLIMITED_DAYS: { d: number; label: string }[] = [
+  { d: 7, label: '7 days' },
+  { d: 30, label: '1 month' },
+  { d: 90, label: '3 months' },
+  { d: 365, label: '1 year' },
+];
+/** Every character a player can own (Bolt and Iris are open to all; Admin stays yours). */
+const UNLOCKABLE = [...CHARACTERS, ...MECH_CHARACTERS, ...SHOP_CHARACTERS].filter((x) => !['bolt', 'iris', 'admin'].includes(x.slug));
 const PROVIDER: Record<string, string> = { google: 'Google', apple: 'Apple', email: 'Email' };
 const gameName = (key: string) => {
   const g = [...GAMES, ...PARKED_GAMES].find((x) => x.key === key);
@@ -210,6 +220,8 @@ function Tag({ text, color }: { text: string; color: string }) {
 function Actions({ c, p, onMessage, onTakeBack, onChange }: { c: C; p: AdminPlayer; onMessage: (p: AdminPlayer) => void; onTakeBack: (p: AdminPlayer) => void; onChange: (x: Partial<AdminPlayer>) => void }) {
   const [d, setD] = useState<Detail | null>(null);
   const [sure, setSure] = useState<'' | 'rename' | 'ban'>('');
+  // Give Unlimited / Unlock character: the choices open under the chips; each sends the player an Inbox note.
+  const [pane, setPane] = useState<'' | 'unlimited' | 'character'>('');
   const [why, setWhy] = useState('');
   const [msg, setMsg] = useState<{ text: string; bad?: boolean } | null>(null);
   const busy = useRef(false);
@@ -243,6 +255,29 @@ function Actions({ c, p, onMessage, onTakeBack, onChange }: { c: C; p: AdminPlay
     reload();
   };
 
+  const giveUnlimited = async (days: number, label: string) => {
+    if (busy.current) return;
+    busy.current = true;
+    const { data, error } = await supabase.rpc('admin_give_unlimited', { target: p.id, days });
+    busy.current = false;
+    if (error) return setMsg({ text: 'Not saved. Check the connection.', bad: true });
+    setPane('');
+    onChange({ unlimited: true });
+    const till = (data as { until?: string } | null)?.until;
+    setMsg({ text: `${label} of Unlimited given${till ? `, until ${day(till)}` : ''}. They got an Inbox note and a notification.` });
+  };
+  const unlock = async (slug: string, name: string) => {
+    if (busy.current) return;
+    busy.current = true;
+    const { data, error } = await supabase.rpc('admin_unlock_character', { target: p.id, slug });
+    busy.current = false;
+    if (error) return setMsg({ text: 'Not saved. Check the connection.', bad: true });
+    const r = data as { ok: boolean; why?: string } | null;
+    if (!r?.ok) return setMsg({ text: r?.why === 'owned' ? `They already have ${name}.` : 'That character can’t be given.', bad: r?.why !== 'owned' });
+    setPane('');
+    setMsg({ text: `${name} unlocked. They got an Inbox note and a notification.` });
+  };
+
   const facts = d
     ? [
         `Level ${d.level} · ${d.exp.toLocaleString('en-GB')} EXP`,
@@ -270,9 +305,25 @@ function Actions({ c, p, onMessage, onTakeBack, onChange }: { c: C; p: AdminPlay
       <View style={[s.chips, s.gapS]}>
         <Chip c={c} label="Message or gift" onPress={() => onMessage(p)} />
         <Chip c={c} label="Take tokens back" onPress={() => onTakeBack(p)} />
+        <Chip c={c} label={p.unlimited ? 'Add Unlimited time' : 'Give Unlimited'} onPress={() => setPane(pane === 'unlimited' ? '' : 'unlimited')} color={pane === 'unlimited' ? c.t.accent : undefined} />
+        <Chip c={c} label="Unlock character" onPress={() => setPane(pane === 'character' ? '' : 'character')} color={pane === 'character' ? c.t.accent : undefined} />
         <Chip c={c} label={sure === 'rename' ? 'Tap again to reset name' : 'Reset name'} onPress={rename} color={sure === 'rename' ? c.t.error : undefined} />
         <Chip c={c} label={p.banned ? 'Unban' : sure === 'ban' ? 'Tap again to ban' : 'Ban'} onPress={ban} color={p.banned ? undefined : c.t.error} />
       </View>
+      {pane === 'unlimited' ? (
+        <View style={[s.chips, s.gapS]}>
+          {UNLIMITED_DAYS.map((x) => (
+            <Chip key={x.d} c={c} label={x.label} onPress={() => giveUnlimited(x.d, x.label)} color={c.t.accent} />
+          ))}
+        </View>
+      ) : null}
+      {pane === 'character' ? (
+        <View style={[s.chips, s.gapS]}>
+          {UNLOCKABLE.map((x) => (
+            <Chip key={x.slug} c={c} label={x.name} onPress={() => unlock(x.slug, x.name)} color={x.ring} />
+          ))}
+        </View>
+      ) : null}
       {sure === 'ban' ? (
         <TextInput value={why} onChangeText={setWhy} placeholder="Reason (only you see it)" placeholderTextColor={c.mute} maxLength={200} style={[s.in, s.gapS, { backgroundColor: c.surf, borderColor: c.line, color: c.fg }]} />
       ) : null}

@@ -157,11 +157,24 @@ test('achievements: offline games, inputs, and house call with friends only', ()
   assert.deepEqual([r.week_on_call, r.residency, r.career, r.back_to_basics, r.dossier_reader], [31, 31, 12, 25, 60]);
 });
 
+test('achievements: rivals beaten count by level, only the ones you finished above', () => {
+  const rival = (seat: number, type: 'freshman' | 'scholar' | 'genius', removed = false) => ({ seat, name: type, removed, bot: { id: `bot:${type}:${seat}`, type } as never });
+  const seats = [{ seat: 0, name: 'You' }, rival(1, 'freshman'), rival(2, 'scholar'), rival(3, 'genius'), rival(4, 'freshman', true)];
+  const rk = (...r: number[]) => r.map((rank, seat) => ({ seat, name: String(seat), rank, score: 10 - rank, timeMs: 0 }));
+  const plays = [
+    play('the-riddler', 'bots', { seats, standings: rk(2, 4, 3, 1, 5) }), // above the Freshman and the Scholar, below the Genius; removed seat skipped
+    play('the-riddler', 'bots', { seats, standings: rk(1, 2, 3, 4, 5) }), // above all three
+    play('the-riddler', 'offline', { seats, standings: rk(1, 2, 3, 4, 5) }), // not a Vs rivals match
+  ];
+  const r = achievementProgress(base({ plays }));
+  assert.deepEqual([r.freshman_hunter, r.scholar_hunter, r.genius_hunter], [2, 2, 1]);
+});
+
 test('achievements: every key has a count and tiers follow the goals', () => {
   const r = achievementProgress(base());
   assert.deepEqual(Object.keys(r).sort(), ALL_ACHIEVEMENTS.map((a) => a.key).sort());
-  assert.equal(ALL_ACHIEVEMENTS.length, 30);
-  assert.equal(ACHIEVEMENTS.length, 27, 'Conqueror, One Word Wonder and Code Breaker are hidden while their games are parked');
+  assert.equal(ALL_ACHIEVEMENTS.length, 33);
+  assert.equal(ACHIEVEMENTS.length, 30, 'Conqueror, One Word Wonder and Code Breaker are hidden while their games are parked');
   assert.equal(tiersReached('hot_streak', 9), 0);
   assert.equal(tiersReached('hot_streak', 10), 1);
   assert.equal(tiersReached('hot_streak', 34), 2);

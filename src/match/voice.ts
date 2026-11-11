@@ -13,7 +13,6 @@ export const VOICE: { id: string; line: string; src: number }[] = [
   { id: 'sorry', line: "Sorry!", src: require('../../assets/voice/sorry.m4a') },
   { id: 'ready', line: "Ready!", src: require('../../assets/voice/ready.m4a') },
   { id: 'help-me', line: "Help me!", src: require('../../assets/voice/help-me.m4a') },
-  { id: 'give-gift', line: "Give me a gift!", src: require('../../assets/voice/give-gift.m4a') },
   { id: 'too-slow', line: "Too slow!", src: require('../../assets/voice/too-slow.m4a') },
   { id: 'all-youve-got', line: "Is that all you've got?", src: require('../../assets/voice/all-youve-got.m4a') },
   { id: 'catch-me', line: "Catch me if you can!", src: require('../../assets/voice/catch-me.m4a') },

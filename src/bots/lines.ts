@@ -1,7 +1,7 @@
 import type { BotType, Persona } from './types';
 
 /**
- * What rivals say (G3, Yazan 2026-11-09): only the 19 voice lines and their character's stickers, chosen by
+ * What rivals say (G3, Yazan 2026-11-09): only the 18 voice lines and their character's stickers, chosen by
  * hidden personality first, then by place (leading, middle, last), with a little of their type mixed in.
  * A sticker line names the kind of sticker by its label; a rival whose pack has none says a voice line instead.
  */
@@ -73,19 +73,19 @@ const BOOKS: Record<Persona, Book> = {
   },
   // Silly stickers, laughs at its own mistakes.
   joker: {
-    ready: { all: [...V('ready', 'give-gift'), S(HAPPY)] },
+    ready: { all: [...V('ready', 'catch-me'), S(HAPPY)] },
     kicked: { all: [...V('oops', 'help-me'), S(SAD)] },
-    start: { all: [...V('give-gift', 'good-luck'), S(HAPPY)] },
+    start: { all: [...V('good-luck', 'catch-me'), S(HAPPY)] },
     right: { lead: [...V('catch-me'), S(HAPPY)], mid: [S(HAPPY)], last: V('oops') },
     wrong: { all: [...V('oops', 'oops', 'help-me'), S(SAD)] },
     overtake: { all: [...V('catch-me'), S(HAPPY)] },
     fire: { all: [S(HAPPY), S(SMUG)] },
     tilt: { all: [...V('oops', 'help-me'), S(SAD)] },
     round: { lead: [S(HAPPY)], last: [...V('help-me', 'oops'), S(SAD)] },
-    end: { lead: [...V('give-gift'), S(HAPPY)], mid: V('rematch', 'oops'), last: [...V('oops', 'rematch'), S(SAD)] },
-    youRight: { all: V('give-gift', 'nice-one') },
+    end: { lead: [...V('catch-me'), S(HAPPY)], mid: V('rematch', 'oops'), last: [...V('oops', 'rematch'), S(SAD)] },
+    youRight: { all: V('nice-one') },
     youWrong: { all: V('oops') },
-    heard: { nice: V('give-gift', 'thank-you'), taunt: [...V('catch-me', 'oops'), S(HAPPY)], sorry: V('oops'), other: [S(HAPPY), S(SAD)] },
+    heard: { nice: V('thank-you'), taunt: [...V('catch-me', 'oops'), S(HAPPY)], sorry: V('oops'), other: [S(HAPPY), S(SAD)] },
   },
   // Salty when behind, sulks at the end, always wants a rematch.
   sore: {

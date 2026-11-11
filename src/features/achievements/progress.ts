@@ -20,6 +20,9 @@ export type AchKey =
   | 'sharp_eye'
   | 'team_player'
   | 'house_call'
+  | 'freshman_hunter'
+  | 'scholar_hunter'
+  | 'genius_hunter'
   | 'recruiter'
   | 'challenger'
   | 'case_writer'
@@ -55,6 +58,10 @@ export const ALL_ACHIEVEMENTS: readonly { key: AchKey; name: string; what: strin
   { key: 'sharp_eye', name: 'Sharp Eye', what: 'Win The Imposter', goals: [1, 10, 50, 125] },
   { key: 'team_player', name: 'Team Player', what: 'Win team matches', goals: [1, 10, 50, 125] },
   { key: 'house_call', name: 'House Call', what: 'Finish Vs rivals matches', goals: [1, 20, 100, 250] },
+  // One per rival level (Yazan 2026-11-11): each rival you finish above counts once.
+  { key: 'freshman_hunter', name: 'Freshman Hunter', what: 'Beat Freshman rivals', goals: [5, 25, 100, 250] },
+  { key: 'scholar_hunter', name: 'Scholar Hunter', what: 'Beat Scholar rivals', goals: [5, 20, 75, 200] },
+  { key: 'genius_hunter', name: 'Genius Hunter', what: 'Beat Genius rivals', goals: [1, 10, 50, 125] },
   { key: 'recruiter', name: 'Recruiter', what: 'Invite friends who join', goals: [3, 10, 30, 75] },
   { key: 'challenger', name: 'Challenger', what: 'Challenge friends', goals: [10, 20, 30, 75] },
   { key: 'case_writer', name: 'Case Writer', what: 'Write your own cases', goals: [5, 10, 20, 50] },
@@ -180,6 +187,16 @@ export function achievementProgress(i: AchInputs): Record<AchKey, number> {
       .map((m) => Number(m.x.gameData.level)),
   ).size;
 
+  // Rivals beaten, by level: every rival seat you finished above in a finished Vs rivals match.
+  const beaten = { freshman: 0, scholar: 0, genius: 0 };
+  for (const p of plays) {
+    if (p.mode !== 'bots') continue;
+    const rank = new Map(p.standings.map((x) => [x.seat, x.rank]));
+    const me = rank.get(OWNER);
+    if (me == null) continue;
+    for (const x of p.seats) if (x.bot && !x.removed && me < (rank.get(x.seat) ?? 0)) beaten[x.bot.type] += 1;
+  }
+
   return {
     first_rounds: plays.length,
     full_rotation: Math.min(...perGame),
@@ -202,6 +219,9 @@ export function achievementProgress(i: AchInputs): Record<AchKey, number> {
     team_player: plays.filter(teamWon).length,
     // Online play is gone (2026-11-09): House Call counts finished Vs rivals matches, old online ones included.
     house_call: plays.filter((p) => p.mode === 'bots' || (p.mode === 'online' && p.seats.some((s) => s.seat !== OWNER && s.userId && friends.has(s.userId)))).length,
+    freshman_hunter: beaten.freshman,
+    scholar_hunter: beaten.scholar,
+    genius_hunter: beaten.genius,
     recruiter: i.social?.recruiter ?? 0,
     challenger: i.social?.challenger ?? 0,
     case_writer: i.social?.case_writer ?? 0,
