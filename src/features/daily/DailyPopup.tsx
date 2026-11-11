@@ -30,8 +30,8 @@ type Props = {
 };
 
 const COLS = 7;
-/** How much wider the 7th column is than the others. */
-const LAST = 1.4;
+/** How much wider the 7th column is than the others (1.4 until 2026-11-11: smaller boxes, Yazan). */
+const LAST = 1.15;
 
 /**
  * Daily login pop-up (DL1-DL4), locked look B "Pill organiser": the month is a blister pack of 30 doses.
@@ -107,7 +107,7 @@ export function DailyPopup({ day, collected, signedIn, busy, error, onCollect, o
                 .map((d) => {
                   const wide = d === CALENDAR_DAYS;
                   const w = wide ? cell * (COLS - 2 + LAST) + gap * (COLS - 2) : d % COLS === 0 ? cell * LAST : cell;
-                  return <Blister key={d} t={t} d={d} w={w} h={cell * 1.45} st={state(d)} wide={wide} popped={collected && d === day} sparks={d === day ? sparks : daySparks(d)} />;
+                  return <Blister key={d} t={t} d={d} w={w} h={cell * 1.3} st={state(d)} wide={wide} popped={collected && d === day} sparks={d === day ? sparks : daySparks(d)} />;
                 })}
             </View>
           ))}

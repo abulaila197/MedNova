@@ -10,11 +10,16 @@ import { TopInset } from '@/components/TopInset';
 import { Intro } from '@/features/start/Intro';
 import { NAVY } from '@/features/start/Sky';
 import { useSlides } from '@/features/start/Slides';
+import { startAds } from '@/lib/ads';
+import { askPushNow, pushAllowed } from '@/lib/push';
 import { markOnboarded } from '@/state/start';
 import { u, useScreen } from '@/theme/scale';
 
 const LAST = 2;
 const EASE = Easing.bezier(0.25, 0.1, 0.25, 1);
+
+/** Set once the last slide hands over to the permission pop-ups and sign-in (a second swipe does nothing). */
+let leaving = false;
 
 /** Intro, then three swipeable onboarding slides. Always dark. */
 export default function Onboarding() {
@@ -27,9 +32,21 @@ export default function Onboarding() {
   const padTop = (Platform.OS === 'web' ? u(30) : ins.top) + u(14);
   const padBottom = u(22) + ins.bottom;
 
+  // Permissions (Yazan 2026-11-11): right after the last slide and before sign-in, the phone's own pop-ups, like
+  // most apps: notifications, then (iPhone) the ads consent and Apple's tracking question. Each only once.
   const toAuth = useCallback(() => {
+    if (leaving) return;
+    leaving = true;
     markOnboarded();
-    router.replace('/auth');
+    void (async () => {
+      try {
+        if ((await pushAllowed()) === 'ask') await askPushNow(null);
+        await startAds();
+      } catch {
+        // a refused or failed pop-up never blocks sign-in
+      }
+      router.replace('/auth');
+    })();
   }, []);
   const go = useCallback(
     (i: number) => {
