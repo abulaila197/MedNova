@@ -10,7 +10,7 @@ import { NR, T } from './noir';
 
 // The evidence board (Case Files look, decided 2026-10-05): files pinned to a grey felt board in rings by stage,
 // the personal file in the centre, red strings joining every file that glow as files unlock. Strings are
-// decoration only (as coded). The felt is Yazan's photo (assets/casefiles/board.jpg).
+// decoration only (as coded). The felt is Yazan's photo (assets/casefiles/board.webp).
 
 type Pin = { id: FileId; label: string; x: number; y: number; r: number; kind: 'personal' | 'paper' };
 
@@ -49,13 +49,13 @@ function strands(pins: Pin[]) {
 /** Folder height on the board; width follows each photo. */
 const CARD_H = 60;
 /** Yazan's photos (2026-10-05): the empty felt board in its frame, and the creamy yellow police folder in each state. */
-const BOARD = require('@/assets/casefiles/board.jpg');
+const BOARD = require('@/assets/casefiles/board.webp');
 /** The red strings (Yazan 2026-11-02: the board and its red strings stay as they were). */
 const RED = '#c8232f';
 const FOLDER = {
-  new: { src: require('@/assets/casefiles/folder-new.png'), ratio: 249 / 360 },
-  read: { src: require('@/assets/casefiles/folder-read.png'), ratio: 292 / 360 },
-  personal: { src: require('@/assets/casefiles/folder-personal.png'), ratio: 248 / 360 },
+  new: { src: require('@/assets/casefiles/folder-new.webp'), ratio: 249 / 360 },
+  read: { src: require('@/assets/casefiles/folder-read.webp'), ratio: 292 / 360 },
+  personal: { src: require('@/assets/casefiles/folder-personal.webp'), ratio: 248 / 360 },
 };
 
 /** Redraws only when the case, the run or the handler changes (not on the board's clock ticks). */

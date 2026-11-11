@@ -10,7 +10,7 @@ import { useSideBg } from '@/state/sideBg';
 import { FRAME_W } from '@/theme/scale';
 import { THEMES } from '@/theme/tokens';
 
-const PAGE = require('@/assets/images/backdrop/page.png');
+const PAGE = require('@/assets/images/backdrop/page.webp');
 /** The start flow (intro, onboarding, sign-in) draws the nebula sky; every other page draws the page backdrop. */
 const START = ['/auth', '/onboarding'];
 const LOOK = {

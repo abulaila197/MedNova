@@ -29,7 +29,7 @@ const SPOTS = [
   },
 ];
 const STRENGTH = 0.55;
-const PAGE = require("@/assets/images/backdrop/page.png");
+const PAGE = require("@/assets/images/backdrop/page.webp");
 
 /** Full-screen background, pinned to the screen's top (pages, header) or bottom (the dock). */
 export function Backdrop({ anchor = "top" }: { anchor?: "top" | "bottom" }) {

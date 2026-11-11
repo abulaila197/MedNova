@@ -49,20 +49,20 @@ export const WALLPAPERS: ImageSourcePropType[] = WALLPAPER_IDS.map((id) => WALL[
 // Small copies for the shelf hands (Yazan 2026-11-02, lag): 12 full-size photos shrunk into small cards cost
 // about 50 MB of memory; the full pictures load only on the wallpaper page.
 export const SHELF_WALLPAPERS: ImageSourcePropType[] = [
-  require('@/assets/community/thumbs/w26.jpg'),
-  require('@/assets/community/thumbs/w04.jpg'),
-  require('@/assets/community/thumbs/w28.jpg'),
-  require('@/assets/community/thumbs/w11.jpg'),
-  require('@/assets/community/thumbs/w01.jpg'),
-  require('@/assets/community/thumbs/w17.jpg'),
+  require('@/assets/community/thumbs/w26.webp'),
+  require('@/assets/community/thumbs/w04.webp'),
+  require('@/assets/community/thumbs/w28.webp'),
+  require('@/assets/community/thumbs/w11.webp'),
+  require('@/assets/community/thumbs/w01.webp'),
+  require('@/assets/community/thumbs/w17.webp'),
 ];
 export const MERCH: ImageSourcePropType[] = [
-  require('@/assets/community/thumbs/m01.jpg'),
-  require('@/assets/community/thumbs/m02.jpg'),
-  require('@/assets/community/thumbs/m03.jpg'),
-  require('@/assets/community/thumbs/m04.jpg'),
-  require('@/assets/community/thumbs/m05.jpg'),
-  require('@/assets/community/thumbs/m06.jpg'),
+  require('@/assets/community/thumbs/m01.webp'),
+  require('@/assets/community/thumbs/m02.webp'),
+  require('@/assets/community/thumbs/m03.webp'),
+  require('@/assets/community/thumbs/m04.webp'),
+  require('@/assets/community/thumbs/m05.webp'),
+  require('@/assets/community/thumbs/m06.webp'),
 ];
 
 const W = 58; // one photo, phone-wallpaper shaped

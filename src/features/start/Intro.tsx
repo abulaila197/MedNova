@@ -51,7 +51,7 @@ const SHIFT = (WM_W + GAP) / 2;
 
 // The star's viewBox (120 100 784 824) fitted into the SYM square, and the glow image's box in it.
 const VB = { x: 120, y: 100, w: 784, h: 824 };
-const GLOW = { x: -180, y: -200, w: 1384, h: 1424 }; // assets/images/intro/star-glow.png, blur 38 baked in
+const GLOW = { x: -180, y: -200, w: 1384, h: 1424 }; // assets/images/intro/star-glow.webp, blur 38 baked in
 
 function prog(t: number, delay: number, dur: number) {
   'worklet';
@@ -214,7 +214,7 @@ export function Intro({ w, h, onDone }: { w: number; h: number; onDone: () => vo
             <Animated.View style={[{ width: sym, height: sym }, hand]}>
               <Animated.View style={[{ flex: 1 }, pop]}>
                 <Animated.View style={[{ position: 'absolute', ...glowBox }, glow]} pointerEvents="none">
-                  <Image source={require('@/assets/images/intro/star-glow.png')} style={{ width: '100%', height: '100%' }} contentFit="fill" transition={0} />
+                  <Image source={require('@/assets/images/intro/star-glow.webp')} style={{ width: '100%', height: '100%' }} contentFit="fill" transition={0} />
                 </Animated.View>
                 <Star t={t} />
               </Animated.View>

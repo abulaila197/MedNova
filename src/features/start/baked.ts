@@ -8,11 +8,11 @@
 export const BAKED_ART = true;
 
 export const BAKED = {
-  sky: require('@/assets/onboarding/baked/sky.png'),
+  sky: require('@/assets/onboarding/baked/sky.webp'),
   veils: [
-    require('@/assets/onboarding/baked/veil-1.png'),
-    require('@/assets/onboarding/baked/veil-2.png'),
-    require('@/assets/onboarding/baked/veil-3.png'),
+    require('@/assets/onboarding/baked/veil-1.webp'),
+    require('@/assets/onboarding/baked/veil-2.webp'),
+    require('@/assets/onboarding/baked/veil-3.webp'),
   ],
   /** nova-community.jpg with Scene's 'top' fade mask baked into its alpha (lossless). */
   communityFade: require('@/assets/onboarding/baked/nova-community-fade.webp'),

@@ -39,7 +39,7 @@ const NO_BOTS = 'Solo · Pass the phone';
 
 export const LOAD: Record<string, LoadCfg> = {
   'the-diagnostic-pursuit': {
-    key: 'the-diagnostic-pursuit', photo: require('@/assets/loading/the-diagnostic-pursuit.jpg'), fo: '66% 64%',
+    key: 'the-diagnostic-pursuit', photo: require('@/assets/loading/the-diagnostic-pursuit.webp'), fo: '66% 64%',
     veil: { c: ['rgba(0,0,0,0.55)', 'rgba(0,0,0,0)'], at: [0, 0.45] },
     txt: { top: 74, align: 'left' },
     orig: { f: 'SpecialElite_400Regular', c: '#b9b9b9' },
@@ -59,7 +59,7 @@ export const LOAD: Record<string, LoadCfg> = {
     fonts: ['SpecialElite_400Regular', 'BebasNeue_400Regular'],
   },
   'the-silent-artist': {
-    key: 'the-silent-artist', photo: require('@/assets/loading/the-silent-artist.jpg'), fo: '55% 52%',
+    key: 'the-silent-artist', photo: require('@/assets/loading/the-silent-artist.webp'), fo: '55% 52%',
     veil: { c: ['rgba(10,25,20,0.35)', 'rgba(0,0,0,0)'], at: [0, 0.4] },
     txt: { top: 46, align: 'center', rot: -2.5 },
     orig: { f: 'CabinSketch_400Regular', c: '#d9d6c8' },
@@ -77,7 +77,7 @@ export const LOAD: Record<string, LoadCfg> = {
     fonts: ['CabinSketch_400Regular', 'CabinSketch_700Bold', 'PatrickHand_400Regular'],
   },
   'the-wheels-of-chaos': {
-    key: 'the-wheels-of-chaos', photo: require('@/assets/loading/the-wheels-of-chaos.jpg'), fo: '50% 60%',
+    key: 'the-wheels-of-chaos', photo: require('@/assets/loading/the-wheels-of-chaos.webp'), fo: '50% 60%',
     veil: { c: ['rgba(10,0,4,0.5)', 'rgba(0,0,0,0)'], at: [0, 0.38] },
     txt: { top: 58, align: 'center' },
     orig: { f: 'Cinzel_500Medium', c: '#cdb27a' },
@@ -95,7 +95,7 @@ export const LOAD: Record<string, LoadCfg> = {
     fonts: ['Cinzel_500Medium', 'Cinzel_400Regular', 'CinzelDecorative_700Bold', 'CormorantGaramond_400Regular_Italic'],
   },
   'the-riddler': {
-    key: 'the-riddler', photo: require('@/assets/loading/the-riddler.jpg'), fo: '40% 60%',
+    key: 'the-riddler', photo: require('@/assets/loading/the-riddler.webp'), fo: '40% 60%',
     veil: { c: ['rgba(15,8,2,0.4)', 'rgba(0,0,0,0)'], at: [0, 0.38] },
     txt: { top: 46, align: 'left' },
     orig: { f: 'IMFellEnglishSC_400Regular', c: '#c8ad7f' },
@@ -115,7 +115,7 @@ export const LOAD: Record<string, LoadCfg> = {
     fonts: ['IMFellEnglishSC_400Regular', 'IMFellEnglish_400Regular', 'IMFellEnglish_400Regular_Italic'],
   },
   'case-files-unsolved': {
-    key: 'case-files-unsolved', photo: require('@/assets/loading/case-files-unsolved.jpg'), fo: '55% 55%',
+    key: 'case-files-unsolved', photo: require('@/assets/loading/case-files-unsolved.webp'), fo: '55% 55%',
     veil: { c: ['rgba(0,0,0,0.72)', 'rgba(0,0,0,0.25)', 'rgba(0,0,0,0)'], at: [0, 0.36, 0.48] },
     txt: { top: 62, align: 'left' },
     orig: { f: 'SpecialElite_400Regular', c: '#b5b5b5' },
@@ -133,7 +133,7 @@ export const LOAD: Record<string, LoadCfg> = {
     fonts: ['SpecialElite_400Regular'],
   },
   'nova-medicordle': {
-    key: 'nova-medicordle', photo: require('@/assets/loading/nova-medicordle.jpg'), fo: '40% 65%',
+    key: 'nova-medicordle', photo: require('@/assets/loading/nova-medicordle.webp'), fo: '40% 65%',
     veil: { c: ['rgba(250,246,234,0.35)', 'rgba(0,0,0,0)'], at: [0, 0.35] },
     txt: { top: 30, align: 'left' }, bg: '#efe8d8',
     orig: { f: 'Archivo_700Bold', c: '#8a8f96' },
@@ -149,7 +149,7 @@ export const LOAD: Record<string, LoadCfg> = {
     fonts: ['Archivo_700Bold', 'Archivo_900Black', 'Archivo_500Medium'],
   },
   'the-quiz-parade': {
-    key: 'the-quiz-parade', photo: require('@/assets/loading/the-quiz-parade.jpg'), fo: '50% 40%',
+    key: 'the-quiz-parade', photo: require('@/assets/loading/the-quiz-parade.webp'), fo: '50% 40%',
     veil: { c: ['rgba(4,8,24,0.55)', 'rgba(0,0,0,0)'], at: [0, 0.34] },
     txt: { top: 62, align: 'center' },
     orig: { f: 'Limelight_400Regular', c: '#e9c98a' },
@@ -167,7 +167,7 @@ export const LOAD: Record<string, LoadCfg> = {
     fonts: ['Limelight_400Regular', 'CormorantGaramond_600SemiBold_Italic'],
   },
   imposter: {
-    key: 'imposter', photo: require('@/assets/loading/imposter.jpg'), fo: '50% 45%',
+    key: 'imposter', photo: require('@/assets/loading/imposter.webp'), fo: '50% 45%',
     veil: { c: ['rgba(0,6,8,0.6)', 'rgba(0,0,0,0)'], at: [0, 0.36] },
     txt: { top: 62, align: 'center' },
     orig: { f: 'BarlowCondensed_500Medium', c: '#8fb3b0' },
@@ -186,7 +186,7 @@ export const LOAD: Record<string, LoadCfg> = {
     fonts: ['BebasNeue_400Regular', 'BarlowCondensed_500Medium'],
   },
   'the-streak-master': {
-    key: 'the-streak-master', photo: require('@/assets/loading/the-streak-master.jpg'), fo: '45% 62%',
+    key: 'the-streak-master', photo: require('@/assets/loading/the-streak-master.webp'), fo: '45% 62%',
     veil: { c: ['rgba(0,0,0,0.45)', 'rgba(0,0,0,0)'], at: [0, 0.36] },
     txt: { top: 40, align: 'center' }, artY: 40, bg: '#0b0208',
     orig: { f: 'Limelight_400Regular', c: '#d9b47a' },
@@ -204,7 +204,7 @@ export const LOAD: Record<string, LoadCfg> = {
     fonts: ['Limelight_400Regular', 'CormorantGaramond_600SemiBold_Italic'],
   },
   'nova-crossword': {
-    key: 'nova-crossword', photo: require('@/assets/loading/nova-crossword.jpg'), fo: '50% 55%',
+    key: 'nova-crossword', photo: require('@/assets/loading/nova-crossword.webp'), fo: '50% 55%',
     veil: { c: ['rgba(250,246,236,0.3)', 'rgba(0,0,0,0)'], at: [0, 0.35] },
     txt: { top: 40, align: 'center' },
     orig: { f: 'LibreBaskerville_400Regular', c: '#7a736a' },

@@ -3,15 +3,15 @@ import { Image } from 'expo-image';
 import { characterOf } from './characters';
 
 const FACES: Record<string, number> = {
-  yazan: require('../../../assets/characters/yazan.png'),
-  yara: require('../../../assets/characters/yara.png'),
-  omar: require('../../../assets/characters/omar.png'),
-  layla: require('../../../assets/characters/layla.png'),
-  atlas: require('../../../assets/characters/atlas.png'),
-  nova: require('../../../assets/characters/nova.png'),
-  bolt: require('../../../assets/characters/bolt.png'),
-  iris: require('../../../assets/characters/iris.png'),
-  pip: require('../../../assets/characters/pip.png'),
+  yazan: require('../../../assets/characters/yazan.webp'),
+  yara: require('../../../assets/characters/yara.webp'),
+  omar: require('../../../assets/characters/omar.webp'),
+  layla: require('../../../assets/characters/layla.webp'),
+  atlas: require('../../../assets/characters/atlas.webp'),
+  nova: require('../../../assets/characters/nova.webp'),
+  bolt: require('../../../assets/characters/bolt.webp'),
+  iris: require('../../../assets/characters/iris.webp'),
+  pip: require('../../../assets/characters/pip.webp'),
   // Nova Mechs, won from daily chests.
   sprocket: require('../../../assets/mechs/sprocket-face.webp'),
   kit: require('../../../assets/mechs/kit-face.webp'),

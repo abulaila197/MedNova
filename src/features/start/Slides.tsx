@@ -40,7 +40,7 @@ type SceneDef = {
 
 const SCENES: SceneDef[] = [
   {
-    src: require('@/assets/onboarding/games.jpg'),
+    src: require('@/assets/onboarding/games.webp'),
     size: 186,
     pos: [-76, -15],
     veil: [[0, 1], [0.3, 1], [0.46, 0], [0.8, 0], [0.96, 1]],
@@ -48,7 +48,7 @@ const SCENES: SceneDef[] = [
     shift: 24,
   },
   {
-    src: require('@/assets/onboarding/learning-space.jpg'),
+    src: require('@/assets/onboarding/learning-space.webp'),
     size: 174,
     pos: [-63.5, -61],
     veil: [[0, 0.6], [0.12, 0], [0.54, 0], [0.7, 1]],
@@ -56,7 +56,7 @@ const SCENES: SceneDef[] = [
     shift: 16,
   },
   {
-    src: require('@/assets/onboarding/nova-community.jpg'),
+    src: require('@/assets/onboarding/nova-community.webp'),
     size: 118,
     pos: null,
     veil: [[0, 1], [0.08, 1], [0.3, 0], [0.7, 0], [1, 0.75]],

@@ -37,9 +37,9 @@ const PASS: [string, string] = ['Good game, everyone.', 'Pass it round and go ag
 // All three are cut at the same line under the ID badge and padded so the badge sits at the same spot; Omar's face is
 // the same size in each (90% of the first preview). The cut edge hides behind the stats card below.
 const STICKER = {
-  win: { src: require('@/assets/stickers/results/omar-win.png'), w: 281, h: 357 },
-  mid: { src: require('@/assets/stickers/results/omar-mid.png'), w: 245, h: 304 },
-  last: { src: require('@/assets/stickers/results/omar-last.png'), w: 250, h: 323 },
+  win: { src: require('@/assets/stickers/results/omar-win.webp'), w: 281, h: 357 },
+  mid: { src: require('@/assets/stickers/results/omar-mid.webp'), w: 245, h: 304 },
+  last: { src: require('@/assets/stickers/results/omar-last.webp'), w: 250, h: 323 },
 };
 const SCALE = 0.325;
 const TUCK = 4; // how far the cut edge sits under the card

@@ -7,7 +7,7 @@ import { scheduleOnRN } from 'react-native-worklets';
 
 import { useScreen } from '@/theme/scale';
 
-const NOVA = require('@/assets/images/splash-nova.png');
+const NOVA = require('@/assets/images/splash-nova.webp');
 // The picture is 1320 x 504: the original 1120 px lettering with each letter moved 40 px further apart (Yazan
 // 2026-10-26, #74 look A), so the letters span 1240 px of it.
 const PIC_W = 1320;

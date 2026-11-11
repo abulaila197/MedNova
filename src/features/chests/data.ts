@@ -28,14 +28,14 @@ const tok = (n: number, rarity: Rarity, art: ImageSource): Item => ({ key: `toke
 
 /** Nova Mechs: front-only cards, no clue and no mission. */
 export const MECHS: { key: string; name: string; title: string; stars: 3 | 4 | 5; card: ImageSource; face: ImageSource }[] = [
-  { key: 'sprocket', name: 'Sprocket', title: 'The Tiny Racer', stars: 3, card: require('../../../assets/mechs/sprocket-card.jpg'), face: require('../../../assets/mechs/sprocket-face.webp') },
-  { key: 'kit', name: 'Kit', title: 'The Snack Hauler', stars: 3, card: require('../../../assets/mechs/kit-card.jpg'), face: require('../../../assets/mechs/kit-face.webp') },
-  { key: 'vex', name: 'Vex', title: 'The Glass Phantom', stars: 4, card: require('../../../assets/mechs/vex-card.jpg'), face: require('../../../assets/mechs/vex-face.webp') },
-  { key: 'bulwark', name: 'Bulwark', title: 'The Storm Tank', stars: 4, card: require('../../../assets/mechs/bulwark-card.jpg'), face: require('../../../assets/mechs/bulwark-face.webp') },
-  { key: 'echo', name: 'Echo', title: 'The Sonar Scout', stars: 4, card: require('../../../assets/mechs/echo-card.jpg'), face: require('../../../assets/mechs/echo-face.webp') },
-  { key: 'aurora', name: 'Aurora', title: 'The Dawn Sentinel', stars: 5, card: require('../../../assets/mechs/aurora-card.jpg'), face: require('../../../assets/mechs/aurora-face.webp') },
-  { key: 'cortex', name: 'Cortex', title: 'The Neon Ronin', stars: 5, card: require('../../../assets/mechs/cortex-card.jpg'), face: require('../../../assets/mechs/cortex-face.webp') },
-  { key: 'titan', name: 'Titan', title: 'The Six-Armed Forge', stars: 5, card: require('../../../assets/mechs/titan-card.jpg'), face: require('../../../assets/mechs/titan-face.webp') },
+  { key: 'sprocket', name: 'Sprocket', title: 'The Tiny Racer', stars: 3, card: require('../../../assets/mechs/sprocket-card.webp'), face: require('../../../assets/mechs/sprocket-face.webp') },
+  { key: 'kit', name: 'Kit', title: 'The Snack Hauler', stars: 3, card: require('../../../assets/mechs/kit-card.webp'), face: require('../../../assets/mechs/kit-face.webp') },
+  { key: 'vex', name: 'Vex', title: 'The Glass Phantom', stars: 4, card: require('../../../assets/mechs/vex-card.webp'), face: require('../../../assets/mechs/vex-face.webp') },
+  { key: 'bulwark', name: 'Bulwark', title: 'The Storm Tank', stars: 4, card: require('../../../assets/mechs/bulwark-card.webp'), face: require('../../../assets/mechs/bulwark-face.webp') },
+  { key: 'echo', name: 'Echo', title: 'The Sonar Scout', stars: 4, card: require('../../../assets/mechs/echo-card.webp'), face: require('../../../assets/mechs/echo-face.webp') },
+  { key: 'aurora', name: 'Aurora', title: 'The Dawn Sentinel', stars: 5, card: require('../../../assets/mechs/aurora-card.webp'), face: require('../../../assets/mechs/aurora-face.webp') },
+  { key: 'cortex', name: 'Cortex', title: 'The Neon Ronin', stars: 5, card: require('../../../assets/mechs/cortex-card.webp'), face: require('../../../assets/mechs/cortex-face.webp') },
+  { key: 'titan', name: 'Titan', title: 'The Six-Armed Forge', stars: 5, card: require('../../../assets/mechs/titan-card.webp'), face: require('../../../assets/mechs/titan-face.webp') },
 ];
 export const MECHS_PRIZE = 500;
 
@@ -45,15 +45,15 @@ const STAR_DUPE: Record<3 | 4 | 5, number> = { 3: 125, 4: 250, 5: 400 };
 
 /** Every item a chest can hold, by rarity. Duplicates turn into `dupe` tokens. */
 export const ITEMS: Item[] = [
-  tok(10, 'common', require('../../../assets/chests/token-10.jpg')),
-  tok(20, 'common', require('../../../assets/chests/token-20.jpg')),
-  tok(30, 'uncommon', require('../../../assets/chests/token-30.jpg')),
+  tok(10, 'common', require('../../../assets/chests/token-10.webp')),
+  tok(20, 'common', require('../../../assets/chests/token-20.webp')),
+  tok(30, 'uncommon', require('../../../assets/chests/token-30.webp')),
   // The 3 taunt text sticker packs (8 stickers each); the tile shows the pack's first sticker.
-  { key: 'pack:arcade', kind: 'sticker', name: 'Arcade Trash Talk', rarity: 'uncommon', art: require('../../../assets/stickers/text/arcade-01.png'), dupe: 75 },
-  { key: 'pack:comic', kind: 'sticker', name: 'Comic Knockout', rarity: 'uncommon', art: require('../../../assets/stickers/text/comic-01.png'), dupe: 75 },
-  { key: 'pack:chrome', kind: 'sticker', name: 'Chrome Swagger', rarity: 'uncommon', art: require('../../../assets/stickers/text/chrome-01.png'), dupe: 75 },
-  tok(50, 'rare', require('../../../assets/chests/token-50.jpg')),
-  tok(100, 'epic', require('../../../assets/chests/token-100.jpg')),
+  { key: 'pack:arcade', kind: 'sticker', name: 'Arcade Trash Talk', rarity: 'uncommon', art: require('../../../assets/stickers/text/arcade-01.webp'), dupe: 75 },
+  { key: 'pack:comic', kind: 'sticker', name: 'Comic Knockout', rarity: 'uncommon', art: require('../../../assets/stickers/text/comic-01.webp'), dupe: 75 },
+  { key: 'pack:chrome', kind: 'sticker', name: 'Chrome Swagger', rarity: 'uncommon', art: require('../../../assets/stickers/text/chrome-01.webp'), dupe: 75 },
+  tok(50, 'rare', require('../../../assets/chests/token-50.webp')),
+  tok(100, 'epic', require('../../../assets/chests/token-100.webp')),
   ...MECHS.map((m): Item => ({ key: `mech:${m.key}`, kind: 'mech', name: m.name, rarity: STAR_RARITY[m.stars], art: m.face, stars: m.stars, dupe: STAR_DUPE[m.stars] })),
   { key: 'effect:too_easy', kind: 'effect', name: 'Too Easy', rarity: 'legendary', dupe: 350 },
   { key: 'effect:mic_drop', kind: 'effect', name: 'Mic Drop', rarity: 'legendary', dupe: 350 },
