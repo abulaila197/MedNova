@@ -5,7 +5,7 @@ import { Text, TextInput } from '@/components/AppText';
 import { GAMES, PARKED_GAMES } from '@/data/games';
 import { s as ui, type useInfo } from '@/features/info/ui';
 import { PlayerFace } from '@/features/style/Frame';
-import { CHARACTERS, MECH_CHARACTERS, SHOP_CHARACTERS } from '@/games/shell/characters';
+import { CHARACTERS, MECH_CHARACTERS, SHOP_CHARACTERS, TEAM_CHARACTERS } from '@/games/shell/characters';
 import { supabase } from '@/lib/supabase';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
@@ -322,6 +322,17 @@ function Actions({ c, p, onMessage, onTakeBack, onChange }: { c: C; p: AdminPlay
           {UNLOCKABLE.map((x) => (
             <Chip key={x.slug} c={c} label={x.name} onPress={() => unlock(x.slug, x.name)} color={x.ring} />
           ))}
+        </View>
+      ) : null}
+      {pane === 'character' ? (
+        <View style={s.gapS}>
+          {/* SuperNova team (Yazan 2026-11-11): only given from here, to the people who helped build MedNova. */}
+          <Text style={[s.small, { color: c.mute }]}>SuperNova team</Text>
+          <View style={[s.chips, s.gapS]}>
+            {TEAM_CHARACTERS.map((x) => (
+              <Chip key={x.slug} c={c} label={x.name} onPress={() => unlock(x.slug, x.name)} color={x.ring} />
+            ))}
+          </View>
         </View>
       ) : null}
       {sure === 'ban' ? (

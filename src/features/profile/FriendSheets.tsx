@@ -24,6 +24,7 @@ import { CardViewer } from '@/features/cards/CollectionPage';
 import { DECK } from '@/features/cards/deck';
 import { MECHS } from '@/features/chests/data';
 import { robotOf } from '@/features/shop/robots';
+import { teamOf } from '@/features/team/team';
 import { call } from '@/lib/rpc';
 
 import { ChallengeSheet, ResultSheet } from '@/features/challenges/ChallengeSheets';
@@ -337,7 +338,7 @@ type FriendCard = { card: ImageSource; name: string; title: string };
 function cardOf(slug: string): FriendCard | null {
   const d = DECK.find((x) => x.key === slug);
   if (d) return { card: d.art as ImageSource, name: d.name, title: `${d.stars}-star original` };
-  const m = MECHS.find((x) => x.key === slug) ?? robotOf(slug);
+  const m = MECHS.find((x) => x.key === slug) ?? robotOf(slug) ?? teamOf(slug);
   return m ? { card: m.card, name: m.name, title: m.title } : null;
 }
 

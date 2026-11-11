@@ -1,12 +1,12 @@
 import { starsOf } from '@/features/shop/robots';
-import { CHARACTERS, MECH_CHARACTERS, SHOP_CHARACTERS } from '@/games/shell/characters';
+import { CHARACTERS, MECH_CHARACTERS, SHOP_CHARACTERS, TEAM_CHARACTERS } from '@/games/shell/characters';
 
 import { faceOf, levelOf, personaOf } from './identity';
 import { BOT_NAMES } from './names';
 import type { Bot, BotLevel, BotType } from './types';
 
-/** Every character a bot may wear: all of them except Admin (Yazan 2026-11-09). */
-const WEARABLE = [...CHARACTERS, ...MECH_CHARACTERS, ...SHOP_CHARACTERS].filter((c) => c.slug !== 'admin').map((c) => c.slug);
+/** Every character a bot may wear: all of them except Admin (Yazan 2026-11-09), SuperNova team included (2026-11-11). */
+const WEARABLE = [...CHARACTERS, ...MECH_CHARACTERS, ...SHOP_CHARACTERS, ...TEAM_CHARACTERS].filter((c) => c.slug !== 'admin').map((c) => c.slug);
 
 /** More stars = more smart (Yazan 2026-11-09): which star counts each type wears. */
 const STARS_FOR: Record<BotType, number[]> = { freshman: [1, 2, 3], scholar: [3, 4], genius: [5, 6] };

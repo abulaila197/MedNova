@@ -14,6 +14,7 @@ import { Screen } from '@/components/Screen';
 import { useSession } from '@/games/shell/session';
 import { MECHS, MECHS_PRIZE } from '@/features/chests/data';
 import { ROBOTS, robotOf } from '@/features/shop/robots';
+import { TEAM, TEAM_LOCKED_LINE, TEAM_THANKS, teamOf } from '@/features/team/team';
 import { InfoScroll, Kicker, s as ui, useInfo } from '@/features/info/ui';
 import { loadStyle, useStyle } from '@/features/style/useStyle';
 import { u } from '@/theme/scale';
@@ -37,6 +38,8 @@ export function CollectionPage() {
   const mechs = useStyle(useShallow((x) => x.owned.filter((k) => k.startsWith('mech:')).map((k) => k.slice(5))));
   const robots = useStyle(useShallow((x) => x.owned.filter((k) => k.startsWith('robot:')).map((k) => k.slice(6))));
   const [robot, setRobot] = useState<string | null>(null);
+  const team = useStyle(useShallow((x) => x.owned.filter((k) => k.startsWith('team:')).map((k) => k.slice(5))));
+  const [member, setMember] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [won, setWon] = useState(false);
   const [err, setErr] = useState('');
@@ -102,7 +105,9 @@ export function CollectionPage() {
         <Mechs t={t} owned={mechs} onOpen={setMech} />
         <RobotPack t={t} owned={robots} group="shop" onOpen={setRobot} />
         <RobotPack t={t} owned={robots} group="special" onOpen={setRobot} />
+        <TeamPack t={t} owned={team} onOpen={setMember} />
       </InfoScroll>
+      <TeamViewer t={t} k={member} onClose={() => setMember(null)} />
       <MechViewer i={mech} onClose={() => setMech(null)} />
       <CardViewer card={robotOf(robot ?? undefined)} onClose={() => setRobot(null)} />
       <Viewer t={t} i={open} onClose={() => setOpen(null)} />
@@ -222,6 +227,101 @@ function RobotPack({ t, owned, group, onOpen }: { t: Theme; owned: string[]; gro
   );
 }
 
+/** SuperNova team (Yazan 2026-11-11): the six people who helped build MedNova; only Admin gives these cards. */
+function TeamPack({ t, owned, onOpen }: { t: Theme; owned: string[]; onOpen: (key: string) => void }) {
+  const w = Math.floor((u(246) - u(10) * 2 - u(16) - 4) / 3);
+  const n = TEAM.filter((m) => owned.includes(m.key)).length;
+  return (
+    <View style={{ marginTop: u(22) }}>
+      <Kicker>Thank you</Kicker>
+      <Text style={[ui.H, { color: t.fg, fontFamily: F.display }]}>
+        {'SuperNova '}
+        <Text style={[ui.H, { color: t.accent, fontFamily: F.displayItalic }]}>team</Text>
+      </Text>
+      <View style={s.count}>
+        <Text style={[s.countT, { color: t.fg }]}>{`${n} of ${TEAM.length} owned`}</Text>
+        <View style={s.pips}>
+          {TEAM.map((m) => (
+            <View key={m.key} style={[s.pip, { backgroundColor: owned.includes(m.key) ? t.accent : t.panelLine }]} />
+          ))}
+        </View>
+      </View>
+      <Text style={[s.hint, { color: t.mute }]}>{`${TEAM_LOCKED_LINE}.`}</Text>
+      <View style={[s.binder, { backgroundColor: 'rgba(255,255,255,0.03)', borderColor: t.panelLine }]}>
+        {TEAM.map((m) => {
+          const has = owned.includes(m.key);
+          return (
+            <Pressable key={m.key} disabled={!has} onPress={() => onOpen(m.key)} style={{ width: w, alignItems: 'center' }} accessibilityRole="button" accessibilityLabel={has ? `Open ${m.name}` : `${m.name}, locked`}>
+              <View style={[s.mSleeve, { width: w, borderRadius: w * 0.07 }]}>
+                <Image source={m.card} style={[{ width: w - 6, height: (w - 6) * MECH_RATIO, borderRadius: w * 0.05 }, !has && { opacity: 0.12 }]} contentFit="cover" />
+                {!has ? (
+                  <View style={[StyleSheet.absoluteFill, s.lock]}>
+                    <Svg width={u(12)} height={u(12)} viewBox="0 0 24 24">
+                      <Rect x={5} y={10.5} width={14} height={10} rx={2} fill={t.fg} />
+                      <Path d="M8 10.5 V8 a4 4 0 0 1 8 0 V10.5" stroke={t.fg} strokeWidth={2.2} fill="none" />
+                    </Svg>
+                  </View>
+                ) : null}
+              </View>
+              {/* Names show even when locked: the team is known, only the card is given (Yazan 2026-11-11). */}
+              <Text style={[s.bName, { color: has ? t.fg : t.mute }]}>{m.name}</Text>
+            </Pressable>
+          );
+        })}
+      </View>
+    </View>
+  );
+}
+
+/** A SuperNova team card, big; tap flips it to the thank-you note on the back. */
+function TeamViewer({ t, k, onClose }: { t: Theme; k: string | null; onClose: () => void }) {
+  const [back, setBack] = useState(false);
+  const sx = useSharedValue(1);
+  const anim = useAnimatedStyle(() => ({ transform: [{ scaleX: sx.value }] }));
+  const m = teamOf(k);
+  if (!m) return null;
+  const w = u(196);
+  const flip = () => {
+    sx.set(withTiming(0, { duration: 160 }, (ok) => {
+      if (!ok) return;
+      runOnJS(setBack)(!back);
+      sx.value = withTiming(1, { duration: 160 });
+    }));
+  };
+  const close = () => {
+    setBack(false);
+    onClose();
+  };
+  return (
+    <Modal transparent visible animationType="fade" onRequestClose={close}>
+      <Pressable style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(3,4,12,0.86)' }]} onPress={close} accessibilityLabel="Close" />
+      <View style={s.view} pointerEvents="box-none">
+        <Pressable onPress={flip} accessibilityRole="button" accessibilityLabel={back ? 'Show the front' : 'Flip the card'}>
+          <Animated.View style={anim}>
+            <View style={[s.mSleeve, { width: w, borderRadius: w * 0.07 }]}>
+              {back ? (
+                <LinearGradient colors={['#1b2a5c', '#0c1433']} style={[s.tBack, { width: w - 6, height: (w - 6) * MECH_RATIO, borderRadius: w * 0.05, borderColor: t.accent }]}>
+                  <Image source={m.face} style={{ width: w * 0.42, height: w * 0.42 }} contentFit="contain" />
+                  <Text style={[s.tKick, { color: t.accent }]}>SUPERNOVA TEAM</Text>
+                  <Text style={s.tName}>{m.name}</Text>
+                  <Text style={s.tLine}>{TEAM_THANKS}</Text>
+                  <Text style={s.tStars}>{'★'.repeat(m.stars)}</Text>
+                </LinearGradient>
+              ) : (
+                <Image source={m.card} style={{ width: w - 6, height: (w - 6) * MECH_RATIO, borderRadius: w * 0.05 }} contentFit="cover" />
+              )}
+            </View>
+          </Animated.View>
+        </Pressable>
+        <Text style={[s.flipT, { color: 'rgba(240,242,255,0.75)' }]}>{back ? 'Tap to see the front' : 'Tap the card to flip it'}</Text>
+        <Pressable onPress={close} style={s.close} accessibilityRole="button">
+          <Text style={s.closeT}>Close</Text>
+        </Pressable>
+      </View>
+    </Modal>
+  );
+}
+
 /** One robot's card, big (also opened from the chest page's items, list #87). */
 export function MechViewer({ i, onClose }: { i: number | null; onClose: () => void }) {
   return <CardViewer card={i === null ? null : MECHS[i]} onClose={onClose} />;
@@ -312,4 +412,9 @@ const s = StyleSheet.create({
   flipT: { fontFamily: F.bodyMedium, fontSize: u(11), marginTop: u(16) },
   close: { marginTop: u(10), paddingHorizontal: u(18), paddingVertical: u(8), borderRadius: 999, borderWidth: 1, borderColor: 'rgba(255,255,255,0.3)' },
   closeT: { fontFamily: F.bodySemi, fontSize: u(11), color: '#f0f2ff' },
+  tBack: { borderWidth: 1, alignItems: 'center', justifyContent: 'center', padding: u(14), gap: u(8) },
+  tKick: { fontFamily: F.mono, fontSize: u(8), letterSpacing: u(2), marginTop: u(6) },
+  tName: { fontFamily: F.display, fontSize: u(22), color: '#f0f2ff' },
+  tLine: { fontFamily: F.bodyMedium, fontSize: u(11.5), lineHeight: u(17), color: 'rgba(240,242,255,0.85)', textAlign: 'center' },
+  tStars: { fontSize: u(13), color: '#f2c14e', marginTop: u(4) },
 });

@@ -2,6 +2,7 @@ import type { ImageSource } from 'expo-image';
 
 import { DECK } from '@/features/cards/deck';
 import { MECHS } from '@/features/chests/data';
+import { teamOf } from '@/features/team/team';
 
 /**
  * Style shop characters (Yazan 2026-10-25): five sold for tokens, and a special group of three that are never sold
@@ -42,9 +43,9 @@ export const STAR_BONUS: Record<number, { exp: number; refillMin: number }> = {
   6: { exp: 30, refillMin: 5 },
 };
 
-/** Stars of any character: the Original pack (hunt cards), Nova Mechs and the shop robots. */
+/** Stars of any character: the Original pack (hunt cards), Nova Mechs, the shop robots and the SuperNova team. */
 export function starsOf(slug?: string | null) {
-  return DECK.find((c) => c.key === slug)?.stars ?? MECHS.find((m) => m.key === slug)?.stars ?? robotOf(slug ?? undefined)?.stars ?? 1;
+  return DECK.find((c) => c.key === slug)?.stars ?? MECHS.find((m) => m.key === slug)?.stars ?? robotOf(slug ?? undefined)?.stars ?? teamOf(slug)?.stars ?? 1;
 }
 
 export const bonusOf = (slug?: string | null) => STAR_BONUS[starsOf(slug)] ?? STAR_BONUS[1];

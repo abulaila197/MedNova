@@ -30,6 +30,13 @@ const FACES: Record<string, number> = {
   linky: require('../../../assets/shop/linky-face.webp'),
   sovereign: require('../../../assets/shop/sovereign-face.webp'),
   admin: require('../../../assets/shop/admin-face.webp'),
+  // SuperNova team (2026-11-11), given by Admin only.
+  mohamed: require('../../../assets/team/mohamed-face.webp'),
+  maged: require('../../../assets/team/maged-face.webp'),
+  dina: require('../../../assets/team/dina-face.webp'),
+  abdo: require('../../../assets/team/abdo-face.webp'),
+  osama: require('../../../assets/team/osama-face.webp'),
+  razan: require('../../../assets/team/razan-face.webp'),
 };
 
 /** A character's round face (its ring is drawn into the picture). */

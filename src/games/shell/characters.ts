@@ -37,8 +37,21 @@ export const SHOP_CHARACTERS: Character[] = [
   { slug: 'admin', name: 'Admin', ring: '#40e0ff' },
 ];
 
+/** The SuperNova team (Yazan 2026-11-11): only Admin gives these; rivals may wear them too. */
+export const TEAM_CHARACTERS: Character[] = [
+  { slug: 'mohamed', name: 'Mohamed', ring: '#2f7f8c' },
+  { slug: 'maged', name: 'Maged', ring: '#c9a27a' },
+  { slug: 'dina', name: 'Dina', ring: '#e0607a' },
+  { slug: 'abdo', name: 'Abdo', ring: '#c76a52' },
+  { slug: 'osama', name: 'Osama', ring: '#b8895a' },
+  { slug: 'razan', name: 'Razan', ring: '#7d93e8' },
+];
+
 export const characterOf = (slug?: string) =>
-  CHARACTERS.find((c) => c.slug === slug) ?? MECH_CHARACTERS.find((c) => c.slug === slug) ?? SHOP_CHARACTERS.find((c) => c.slug === slug);
+  CHARACTERS.find((c) => c.slug === slug) ??
+  MECH_CHARACTERS.find((c) => c.slug === slug) ??
+  SHOP_CHARACTERS.find((c) => c.slug === slug) ??
+  TEAM_CHARACTERS.find((c) => c.slug === slug);
 
 /** The first character nobody in `taken` has picked. */
 export const freeCharacter = (taken: (string | undefined)[]) => CHARACTERS.find((c) => !taken.includes(c.slug)) ?? CHARACTERS[0];

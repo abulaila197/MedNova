@@ -10,6 +10,7 @@ import { Sheet } from '@/components/Sheet';
 import { useSvgId } from '@/components/svgId';
 import { MECHS } from '@/features/chests/data';
 import { bonusLine, ROBOTS, starsOf } from '@/features/shop/robots';
+import { TEAM } from '@/features/team/team';
 import { useStyle } from '@/features/style/useStyle';
 import { Face } from '@/games/shell/Face';
 import { CHARACTERS } from '@/games/shell/characters';
@@ -68,7 +69,9 @@ export function CharacterPicker({ open, onClose, wearing, owned, found, onWear, 
   };
   // Style shop and special robots you own (style items 'robot:<key>').
   const robots = useStyle(useShallow((x) => x.owned.filter((k) => k.startsWith('robot:')).map((k) => k.slice(6))));
-  const mech = MECHS.find((m) => m.key === sel) ?? ROBOTS.find((r) => r.key === sel);
+  // SuperNova team cards you were given (style items 'team:<key>'), Yazan 2026-11-11.
+  const team = useStyle(useShallow((x) => x.owned.filter((k) => k.startsWith('team:')).map((k) => k.slice(5))));
+  const mech = MECHS.find((m) => m.key === sel) ?? ROBOTS.find((r) => r.key === sel) ?? TEAM.find((m) => m.key === sel);
   const orig = CHARACTERS.find((c) => c.slug === sel);
   return (
     <Sheet open={open} onClose={close}>
@@ -137,7 +140,22 @@ export function CharacterPicker({ open, onClose, wearing, owned, found, onWear, 
             );
           })}
         </View>
-        <Text style={[s.note, { color: t.mute }]}>Locked characters come from the treasure hunt, Nova Mechs from daily chests, the rest from the Style shop.</Text>
+        <Text style={[s.k, { color: t.kick }]}>{`SUPERNOVA TEAM · ${TEAM.filter((m) => team.includes(m.key)).length} OF ${TEAM.length}`}</Text>
+        <View style={s.grid}>
+          {TEAM.map((m) => {
+            const has = team.includes(m.key);
+            return (
+              <Pressable key={m.key} disabled={!has} onPress={() => setSel(m.key)} style={s.mCell} accessibilityRole="button" accessibilityLabel={has ? m.name : `${m.name}, locked`} accessibilityState={{ selected: sel === m.key, disabled: !has }}>
+                <Pick size={MECH} on={sel === m.key}>
+                  <Image source={m.face} style={[{ width: MECH, height: MECH }, !has && { opacity: 0.3 }]} contentFit="contain" />
+                  {!has ? <Lock t={t} /> : null}
+                </Pick>
+                <Text style={[s.mStars, { opacity: has ? 1 : 0.45 }]}>{'★'.repeat(m.stars)}</Text>
+              </Pressable>
+            );
+          })}
+        </View>
+        <Text style={[s.note, { color: t.mute }]}>Locked characters come from the treasure hunt, Nova Mechs from daily chests, the rest from the Style shop. SuperNova team cards are only given by Admin.</Text>
       </ScrollView>
 
       {error ? <Text style={[s.note, { color: t.mute, marginTop: u(8) }]}>{error}</Text> : null}
