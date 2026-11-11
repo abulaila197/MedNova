@@ -29,6 +29,8 @@ export const T_DONE = 3.0;
 const PACE = 2;
 /** The wordmark writes in at 1.2x its own speed (it ran at 2.4x in the 3 s version). */
 const LOTTIE_SPEED = 2.4 / PACE;
+/** The intro holds on its still sky this long before it starts, while the page under it is built. */
+const HOLD_MS = 320;
 
 const POP = Easing.bezierFn(0.2, 0.9, 0.3, 1.25);
 const CUT = Easing.bezierFn(0.6, 0, 0.3, 1);
@@ -157,11 +159,23 @@ export function Intro({ w, h, onDone }: { w: number; h: number; onDone: () => vo
   const t = useSharedValue(0);
   const [play, setPlay] = useState(false);
   useEffect(() => {
-    t.value = withTiming(T_DONE, { duration: T_DONE * PACE * 1000, easing: Easing.linear }, (fin) => {
-      if (fin) scheduleOnRN(onDone);
-    });
-    const id = setTimeout(() => setPlay(true), T_LOTTIE * PACE * 1000);
-    return () => clearTimeout(id);
+    // The first page is built under the intro as it opens. The clock waits for that (two frames after the page is in,
+    // and the NOVA splash's fade) so the star's pop isn't played while the phone is still busy building (2026-11-11).
+    let live = true;
+    let id: ReturnType<typeof setTimeout> | undefined;
+    const go = () => {
+      if (!live) return;
+      t.value = withTiming(T_DONE, { duration: T_DONE * PACE * 1000, easing: Easing.linear }, (fin) => {
+        if (fin) scheduleOnRN(onDone);
+      });
+      id = setTimeout(() => setPlay(true), T_LOTTIE * PACE * 1000);
+    };
+    const hold = setTimeout(() => requestAnimationFrame(() => requestAnimationFrame(go)), HOLD_MS);
+    return () => {
+      live = false;
+      clearTimeout(hold);
+      if (id) clearTimeout(id);
+    };
     // onDone is read once; the intro runs a single time per mount
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [t]);

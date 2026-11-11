@@ -17,6 +17,8 @@ export const Wordmark = memo(function Wordmark({ width, height, play, speed = 1 
       loop={false}
       speed={speed}
       resizeMode="contain"
+      // drawn by the graphics chip on Android, not the slow software way, so it doesn't drop frames as it writes in
+      renderMode="HARDWARE"
       style={{ width, height }}
     />
   );

@@ -43,7 +43,9 @@ function Run({ run }: { run: LoadRun }) {
   const [split, setSplit] = useState<number | null>(null);
   // Nothing shows until both door pictures are decoded: before, the loading page flashed through for a moment.
   const [doorsLoaded, setDoorsLoaded] = useState(0);
-  const shown = split !== null && (!run.shot || doorsLoaded >= 2);
+  // ...and until the loading page behind them is built, so the doors don't open while the phone is still busy with it.
+  const [laid, setLaid] = useState(false);
+  const shown = split !== null && laid && (!run.shot || doorsLoaded >= 2);
   const doorLoaded = () => setDoorsLoaded((n) => n + 1);
   const host = useRef<View>(null);
   const bar = useRef<View>(null);
@@ -109,11 +111,17 @@ function Run({ run }: { run: LoadRun }) {
   useEffect(() => {
     if (!shown) return;
     const timers: ReturnType<typeof setTimeout>[] = [];
+    let raf = 0;
     timers.push(
+      // two frames after the page is on screen, so the first frame of the doors isn't spent drawing it
       setTimeout(() => {
-        door.value = withTiming(1, { duration: DOORS_MS, easing: DOORS });
-        settle.value = withTiming(1, { duration: SETTLE_MS, easing: SETTLE });
-      }, 60),
+        raf = requestAnimationFrame(() => {
+          raf = requestAnimationFrame(() => {
+            door.value = withTiming(1, { duration: DOORS_MS, easing: DOORS });
+            settle.value = withTiming(1, { duration: SETTLE_MS, easing: SETTLE });
+          });
+        });
+      }, 30),
       setTimeout(() => {
         setStage('load');
         p.value = withTiming(1, { duration: LOAD_MS, easing: Easing.linear });
@@ -123,7 +131,10 @@ function Run({ run }: { run: LoadRun }) {
       setTimeout(() => router.push(`/play/${run.key}`), 60 + SETTLE_MS + 20 + LOAD_MS + FULL_HOLD_MS),
       setTimeout(() => wipe(), 60 + SETTLE_MS + 20 + LOAD_MS + FULL_HOLD_MS + BUILD_MS),
     );
-    return () => timers.forEach(clearTimeout);
+    return () => {
+      timers.forEach(clearTimeout);
+      cancelAnimationFrame(raf);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shown]);
 
@@ -147,7 +158,11 @@ function Run({ run }: { run: LoadRun }) {
           <Animated.View style={[StyleSheet.absoluteFill, settleSt]}>
             {/* Laid out only once its fonts are in: text measured in the stand-in font kept that size when the real font
                 drew, so titles lost letters ("The Para") or gained gaps (Yazan 2026-10-27). */}
-            {split === null ? null : <LoadingPage g={g} w={W} h={H} live={stage !== 'doors'} p={p} tip={tip} barRef={bar} />}
+            {split === null ? null : (
+              <View style={StyleSheet.absoluteFill} onLayout={() => requestAnimationFrame(() => setLaid(true))}>
+                <LoadingPage g={g} w={W} h={H} live={stage !== 'doors'} p={p} tip={tip} barRef={bar} />
+              </View>
+            )}
           </Animated.View>
         </Animated.View>
       </Animated.View>

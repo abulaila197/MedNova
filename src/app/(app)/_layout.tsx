@@ -91,7 +91,7 @@ export default function AppLayout() {
         <Menu />
       </Animated.View>
       <Animated.View ref={pageCard} collapsable={false} style={[s.card, { transformOrigin: 'left center' }, open && { borderRadius: u(34) }, card]} renderToHardwareTextureAndroid={open}>
-        <Stack screenOptions={{ headerShown: false, animation: 'fade', contentStyle: { backgroundColor: t.sky } }} />
+        <Stack screenOptions={{ headerShown: false, animation: 'fade', animationDuration: 220, freezeOnBlur: true, contentStyle: { backgroundColor: t.sky } }} />
         {open ? <Pressable style={s.catch} onPress={() => setMenu(false)} accessibilityLabel="Close menu" /> : null}
       </Animated.View>
       <TalkHost />

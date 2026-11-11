@@ -71,7 +71,7 @@ export default function RootLayout() {
       <SideSky />
       {/* the app frame: the full screen, or a centred column (see theme/scale.ts) */}
       <View style={{ flex: 1, width: FRAME_W, overflow: 'hidden' }}>
-      <Stack screenOptions={{ headerShown: false, animation: 'fade', contentStyle: { backgroundColor: THEMES.dark.sky } }} />
+      <Stack screenOptions={{ headerShown: false, animation: 'fade', animationDuration: 220, freezeOnBlur: true, contentStyle: { backgroundColor: THEMES.dark.sky } }} />
       {/* returning players: the intro plays over the first page (Games or sign-in) and bursts into it */}
       {intro ? <Intro w={width} h={height} onDone={endIntro} /> : null}
       </View>
