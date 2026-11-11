@@ -783,12 +783,9 @@
   "canonical_id": "graves-disease"
  },
  {
-  "id": "cushing-syndrome",
-  "label": "Cushing Syndrome",
-  "aliases": [
-   "Hypercortisolism",
-   "Cushing Disease"
-  ],
+  "id": "cushing-disease",
+  "label": "Cushing Disease",
+  "aliases": [],
   "answer": true,
   "canonical_id": "cushing-syndrome"
  },
