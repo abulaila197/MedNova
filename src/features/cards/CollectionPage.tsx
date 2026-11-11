@@ -17,6 +17,7 @@ import { ROBOTS, robotOf } from '@/features/shop/robots';
 import { TEAM, TEAM_LOCKED_LINE, TEAM_THANKS, teamOf } from '@/features/team/team';
 import { InfoScroll, Kicker, s as ui, useInfo } from '@/features/info/ui';
 import { loadStyle, useStyle } from '@/features/style/useStyle';
+import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import type { Theme } from '@/theme/tokens';
 import { F } from '@/theme/tokens';
@@ -83,7 +84,7 @@ export function CollectionPage() {
               ))}
             </View>
           </View>
-          <Text style={[s.hint, { color: c.mute }]}>Tap a card to read it, then flip it for the clue.</Text>
+          <Text style={[s.hint, { color: c.mute }]}>Tap a card to see it. Flip a card you found for its clue.</Text>
           {!signedIn ? (
             <Pressable onPress={() => router.navigate('/auth')} style={[s.note, { borderColor: c.line, backgroundColor: c.surf }]} accessibilityRole="button">
               <Text style={[s.noteT, { color: c.fg }]}>Sign in to find your first card and start the hunt.</Text>
@@ -107,10 +108,10 @@ export function CollectionPage() {
         <RobotPack t={t} owned={robots} group="special" onOpen={setRobot} />
         <TeamPack t={t} owned={team} onOpen={setMember} />
       </InfoScroll>
-      <TeamViewer t={t} k={member} onClose={() => setMember(null)} />
-      <MechViewer i={mech} onClose={() => setMech(null)} />
-      <CardViewer card={robotOf(robot ?? undefined)} onClose={() => setRobot(null)} />
-      <Viewer t={t} i={open} onClose={() => setOpen(null)} />
+      <TeamViewer t={t} k={member} locked={!!member && !team.includes(member)} onClose={() => setMember(null)} />
+      <MechViewer i={mech} locked={mech !== null && !mechs.includes(MECHS[mech]?.key ?? '')} onClose={() => setMech(null)} />
+      <CardViewer card={robotOf(robot ?? undefined)} locked={!!robot && !robots.includes(robot)} onClose={() => setRobot(null)} />
+      <Viewer t={t} i={open} locked={open !== null && !found.includes(DECK[open]?.key ?? '')} onClose={() => setOpen(null)} />
       <Congrats open={won} tokens={HUNT_PRIZE} title="The hunt is complete" line="Nine cards, nine missions, one weary medic. Your tokens are in your wallet." onClose={() => setWon(false)} />
     </Screen>
   );
@@ -124,7 +125,7 @@ function Binder({ t, found, onOpen }: { t: Theme; found: string[]; onOpen: (i: n
       {DECK.map((k, i) => {
         const has = found.includes(k.key);
         return (
-          <Pressable key={k.key} disabled={!has} onPress={() => onOpen(i)} style={{ width: w, alignItems: 'center' }} accessibilityRole="button" accessibilityLabel={has ? `Open ${k.name}` : 'Locked card'}>
+          <Pressable key={k.key} onPress={() => onOpen(i)} style={{ width: w, alignItems: 'center' }} accessibilityRole="button" accessibilityLabel={has ? `Open ${k.name}` : 'Locked card, see the front'}>
             <Sleeve t={t} card={k} w={w} locked={!has} />
             <Text style={[s.bName, { color: has ? t.fg : t.mute }]}>{has ? k.name : '★'.repeat(k.stars)}</Text>
           </Pressable>
@@ -158,7 +159,7 @@ function Mechs({ t, owned, onOpen }: { t: Theme; owned: string[]; onOpen: (i: nu
         {MECHS.map((m, i) => {
           const has = owned.includes(m.key);
           return (
-            <Pressable key={m.key} disabled={!has} onPress={() => onOpen(i)} style={{ width: w, alignItems: 'center' }} accessibilityRole="button" accessibilityLabel={has ? `Open ${m.name}` : 'Locked robot'}>
+            <Pressable key={m.key} onPress={() => onOpen(i)} style={{ width: w, alignItems: 'center' }} accessibilityRole="button" accessibilityLabel={has ? `Open ${m.name}` : 'Locked robot, see the front'}>
               <View style={[s.mSleeve, { width: w, borderRadius: w * 0.07 }]}>
                 <Image source={m.card} style={[{ width: w - 6, height: (w - 6) * MECH_RATIO, borderRadius: w * 0.05 }, !has && { opacity: 0.12 }]} contentFit="cover" />
                 {!has ? (
@@ -206,7 +207,7 @@ function RobotPack({ t, owned, group, onOpen }: { t: Theme; owned: string[]; gro
         {list.map((r) => {
           const has = owned.includes(r.key);
           return (
-            <Pressable key={r.key} disabled={!has} onPress={() => onOpen(r.key)} style={{ width: w, alignItems: 'center' }} accessibilityRole="button" accessibilityLabel={has ? `Open ${r.name}` : 'Locked character'}>
+            <Pressable key={r.key} onPress={() => onOpen(r.key)} style={{ width: w, alignItems: 'center' }} accessibilityRole="button" accessibilityLabel={has ? `Open ${r.name}` : 'Locked character, see the front'}>
               <View style={[s.mSleeve, { width: w, borderRadius: w * 0.07 }]}>
                 <Image source={r.card} style={[{ width: w - 6, height: (w - 6) * MECH_RATIO, borderRadius: w * 0.05 }, !has && { opacity: 0.12 }]} contentFit="cover" />
                 {!has ? (
@@ -251,7 +252,7 @@ function TeamPack({ t, owned, onOpen }: { t: Theme; owned: string[]; onOpen: (ke
         {TEAM.map((m) => {
           const has = owned.includes(m.key);
           return (
-            <Pressable key={m.key} disabled={!has} onPress={() => onOpen(m.key)} style={{ width: w, alignItems: 'center' }} accessibilityRole="button" accessibilityLabel={has ? `Open ${m.name}` : `${m.name}, locked`}>
+            <Pressable key={m.key} onPress={() => onOpen(m.key)} style={{ width: w, alignItems: 'center' }} accessibilityRole="button" accessibilityLabel={has ? `Open ${m.name}` : `${m.name}, locked, see the front`}>
               <View style={[s.mSleeve, { width: w, borderRadius: w * 0.07 }]}>
                 <Image source={m.card} style={[{ width: w - 6, height: (w - 6) * MECH_RATIO, borderRadius: w * 0.05 }, !has && { opacity: 0.12 }]} contentFit="cover" />
                 {!has ? (
@@ -274,7 +275,7 @@ function TeamPack({ t, owned, onOpen }: { t: Theme; owned: string[]; onOpen: (ke
 }
 
 /** A SuperNova team card, big; tap flips it to the thank-you note on the back. */
-function TeamViewer({ t, k, onClose }: { t: Theme; k: string | null; onClose: () => void }) {
+function TeamViewer({ t, k, locked, onClose }: { t: Theme; k: string | null; locked?: boolean; onClose: () => void }) {
   const [back, setBack] = useState(false);
   const sx = useSharedValue(1);
   const anim = useAnimatedStyle(() => ({ transform: [{ scaleX: sx.value }] }));
@@ -296,7 +297,7 @@ function TeamViewer({ t, k, onClose }: { t: Theme; k: string | null; onClose: ()
     <Modal transparent visible animationType="fade" onRequestClose={close}>
       <Pressable style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(3,4,12,0.86)' }]} onPress={close} accessibilityLabel="Close" />
       <View style={s.view} pointerEvents="box-none">
-        <Pressable onPress={flip} accessibilityRole="button" accessibilityLabel={back ? 'Show the front' : 'Flip the card'}>
+        <Pressable onPress={flip} disabled={locked} accessibilityRole="button" accessibilityLabel={back ? 'Show the front' : 'Flip the card'}>
           <Animated.View style={anim}>
             <View style={[s.mSleeve, { width: w, borderRadius: w * 0.07 }]}>
               {back ? (
@@ -313,7 +314,7 @@ function TeamViewer({ t, k, onClose }: { t: Theme; k: string | null; onClose: ()
             </View>
           </Animated.View>
         </Pressable>
-        <Text style={[s.flipT, { color: 'rgba(240,242,255,0.75)' }]}>{back ? 'Tap to see the front' : 'Tap the card to flip it'}</Text>
+        {locked ? <LockedTag t={t} line={`${TEAM_LOCKED_LINE}.`} /> : <Text style={[s.flipT, { color: 'rgba(240,242,255,0.75)' }]}>{back ? 'Tap to see the front' : 'Tap the card to flip it'}</Text>}
         <Pressable onPress={close} style={s.close} accessibilityRole="button">
           <Text style={s.closeT}>Close</Text>
         </Pressable>
@@ -322,13 +323,29 @@ function TeamViewer({ t, k, onClose }: { t: Theme; k: string | null; onClose: ()
   );
 }
 
+/**
+ * A card you don't own yet opens as a preview (Yazan 2026-11-11): the front only, never the back, so no hunt clue
+ * shows; a small "Locked" tag says it isn't yours yet.
+ */
+function LockedTag({ t, line }: { t: Theme; line?: string }) {
+  return (
+    <View style={s.lockWrap}>
+      <View style={[s.lockTag, { borderColor: t.accent }]}>
+        <Text style={[s.lockT, { color: t.accent }]}>LOCKED</Text>
+      </View>
+      {line ? <Text style={[s.flipT, { color: 'rgba(240,242,255,0.75)', marginTop: u(6) }]}>{line}</Text> : null}
+    </View>
+  );
+}
+
 /** One robot's card, big (also opened from the chest page's items, list #87). */
-export function MechViewer({ i, onClose }: { i: number | null; onClose: () => void }) {
-  return <CardViewer card={i === null ? null : MECHS[i]} onClose={onClose} />;
+export function MechViewer({ i, locked, onClose }: { i: number | null; locked?: boolean; onClose: () => void }) {
+  return <CardViewer card={i === null ? null : MECHS[i]} locked={locked} onClose={onClose} />;
 }
 
 /** Any front-only card (Nova Mechs, Style shop characters), big in its saver. */
-export function CardViewer({ card: m, onClose }: { card: { card: ImageSource; name: string; title: string } | null | undefined; onClose: () => void }) {
+export function CardViewer({ card: m, locked, onClose }: { card: { card: ImageSource; name: string; title: string } | null | undefined; locked?: boolean; onClose: () => void }) {
+  const t = useTheme();
   if (!m) return null;
   const w = u(196);
   return (
@@ -339,6 +356,7 @@ export function CardViewer({ card: m, onClose }: { card: { card: ImageSource; na
           <Image source={m.card} style={{ width: w - 6, height: (w - 6) * MECH_RATIO, borderRadius: w * 0.05 }} contentFit="cover" />
         </View>
         <Text style={[s.flipT, { color: 'rgba(240,242,255,0.75)' }]}>{`${m.name}, ${m.title}`}</Text>
+        {locked ? <LockedTag t={t} /> : null}
         <Pressable onPress={onClose} style={s.close} accessibilityRole="button">
           <Text style={s.closeT}>Close</Text>
         </Pressable>
@@ -348,7 +366,7 @@ export function CardViewer({ card: m, onClose }: { card: { card: ImageSource; na
 }
 
 /** The opened card: big, in its saver; tap flips it to the clue on the back. */
-function Viewer({ t, i, onClose }: { t: Theme; i: number | null; onClose: () => void }) {
+function Viewer({ t, i, locked, onClose }: { t: Theme; i: number | null; locked?: boolean; onClose: () => void }) {
   const [back, setBack] = useState(false);
   const sx = useSharedValue(1);
   const anim = useAnimatedStyle(() => ({ transform: [{ scaleX: sx.value }] }));
@@ -370,10 +388,10 @@ function Viewer({ t, i, onClose }: { t: Theme; i: number | null; onClose: () => 
     <Modal transparent visible animationType="fade" onRequestClose={close}>
       <Pressable style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(3,4,12,0.86)' }]} onPress={close} accessibilityLabel="Close" />
       <View style={s.view} pointerEvents="box-none">
-        <Pressable onPress={flip} accessibilityRole="button" accessibilityLabel={back ? 'Show the front' : 'Flip for the clue'}>
-          <Animated.View style={anim}>{back ? <BackInSleeve t={t} card={card} i={i} w={w} /> : <Sleeve t={t} card={card} w={w} locked={false} />}</Animated.View>
+        <Pressable onPress={flip} disabled={locked} accessibilityRole="button" accessibilityLabel={back ? 'Show the front' : 'Flip for the clue'}>
+          <Animated.View style={anim}>{back && !locked ? <BackInSleeve t={t} card={card} i={i} w={w} /> : <Sleeve t={t} card={card} w={w} locked={false} />}</Animated.View>
         </Pressable>
-        <Text style={[s.flipT, { color: 'rgba(240,242,255,0.75)' }]}>{back ? 'Tap to see the front' : 'Tap the card to flip it'}</Text>
+        {locked ? <LockedTag t={t} /> : <Text style={[s.flipT, { color: 'rgba(240,242,255,0.75)' }]}>{back ? 'Tap to see the front' : 'Tap the card to flip it'}</Text>}
         <Pressable onPress={close} style={s.close} accessibilityRole="button">
           <Text style={s.closeT}>Close</Text>
         </Pressable>
@@ -409,6 +427,9 @@ const s = StyleSheet.create({
   lock: { alignItems: 'center', justifyContent: 'center' },
   mSleeve: { padding: 3, backgroundColor: 'rgba(190,205,255,0.07)', borderWidth: 1, borderColor: 'rgba(200,215,255,0.22)' },
   view: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+  lockWrap: { alignItems: 'center', marginTop: u(14) },
+  lockTag: { borderWidth: 1, borderRadius: 999, paddingHorizontal: u(12), paddingVertical: u(4) },
+  lockT: { fontFamily: F.mono, fontSize: u(9), letterSpacing: u(1.6) },
   flipT: { fontFamily: F.bodyMedium, fontSize: u(11), marginTop: u(16) },
   close: { marginTop: u(10), paddingHorizontal: u(18), paddingVertical: u(8), borderRadius: 999, borderWidth: 1, borderColor: 'rgba(255,255,255,0.3)' },
   closeT: { fontFamily: F.bodySemi, fontSize: u(11), color: '#f0f2ff' },

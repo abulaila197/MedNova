@@ -71,7 +71,8 @@ const s = StyleSheet.create({
   lic: { marginTop: u(14), alignSelf: 'flex-start', fontFamily: F.body, fontSize: u(9.5), textDecorationLine: 'underline' },
   dawn: { ...StyleSheet.absoluteFill, width: '100%', height: '100%', opacity: 0.95 },
   list: { marginTop: u(6), gap: u(6) },
-  row: { flexDirection: 'row', alignItems: 'baseline', gap: u(10), height: u(19) },
+  // minHeight, not height: a fixed row cut the bottoms of g and j on small Android phones (Yazan 2026-11-11).
+  row: { flexDirection: 'row', alignItems: 'baseline', gap: u(10), minHeight: u(19) },
   no: { fontFamily: F.mono, fontSize: u(8) },
   name: { fontFamily: F.display, fontSize: u(15), lineHeight: u(19) },
 });

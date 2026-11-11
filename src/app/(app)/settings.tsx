@@ -130,7 +130,7 @@ export default function Page() {
             ) : null}
             <Row
               title="Friends and gifts"
-              sub="Friend requests, game invites and gifts in your Inbox."
+              sub="Friend requests, challenges and gifts in your Inbox."
               on={prefs?.social ?? true}
               off={!prefs}
               onChange={(v) => prefs && set({ ...prefs, social: v })}

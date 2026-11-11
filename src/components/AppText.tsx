@@ -13,7 +13,7 @@ const BREAK = Platform.OS === 'android' ? 'simple' : undefined;
 // iPhone cuts off the tops of letters (and the bottoms of g, y, p) that reach past a line height smaller than the font's
 // own height; Android mostly lets them spill, so tight display titles ("Play", game names) only broke on iPhone (Yazan
 // 2026-11-08). Such a text gets a little room above and below, taken back by equal negative margins, so the letters
-// draw whole and the layout doesn't move. Texts with a fixed height, a background or a border are left alone.
+// draw whole and the layout doesn't move. Texts with a background or a border are left alone.
 // Android cut them too, on lines only a little taller than the font ("Continue as guest", Yazan 2026-11-09), so it gets
 // the same room, from a slightly looser line height.
 const TIGHT = Platform.OS === 'android' ? 1.3 : 1.2;
@@ -22,14 +22,21 @@ const num = (v: unknown) => (typeof v === 'number' ? v : v == null ? 0 : NaN);
 function letterRoom(style: TextProps['style']): TextStyle | null {
   const f = StyleSheet.flatten(style) as TextStyle | undefined;
   if (!f?.fontSize || !f.lineHeight || f.lineHeight >= f.fontSize * TIGHT) return null;
-  if (f.height != null || f.backgroundColor || f.borderWidth || f.borderTopWidth || f.borderBottomWidth) return null;
-  const pad = Math.ceil((f.fontSize * ROOM - f.lineHeight) / 2);
+  if (f.backgroundColor || f.borderWidth || f.borderTopWidth || f.borderBottomWidth) return null;
+  // A text boxed to its own line height (big numbers and names, "57%", "Dr. Huda") was left alone and its bottoms were
+  // cut on small Android phones (Yazan 2026-11-11): the box grows by the same room, and the margins take it back.
+  if (f.height != null && (typeof f.height !== 'number' || f.height >= f.fontSize * TIGHT)) return null;
+  const box = typeof f.height === 'number' ? Math.max(f.height, f.lineHeight) : f.lineHeight;
+  const pad = Math.ceil((f.fontSize * ROOM - box) / 2);
+  if (pad <= 0) return null;
   const pt = num(f.paddingTop ?? f.paddingVertical ?? f.padding);
   const pb = num(f.paddingBottom ?? f.paddingVertical ?? f.padding);
   const mt = num(f.marginTop ?? f.marginVertical ?? f.margin);
   const mb = num(f.marginBottom ?? f.marginVertical ?? f.margin);
   if ([pt, pb, mt, mb].some(Number.isNaN)) return null;
-  return { paddingTop: pt + pad, paddingBottom: pb + pad, marginTop: mt - pad, marginBottom: mb - pad };
+  const room: TextStyle = { paddingTop: pt + pad, paddingBottom: pb + pad, marginTop: mt - pad, marginBottom: mb - pad };
+  if (typeof f.height === 'number') room.height = f.height + 2 * pad;
+  return room;
 }
 
 /** react-native Text with the text-size cap. Use instead of importing Text from react-native. */

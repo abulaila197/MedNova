@@ -85,7 +85,8 @@ export function askPushAfterFirstGame(): void {
 const OPEN: Record<string, string> = {
   friend: '/friends',
   inbox: '/inbox',
-  challenge: '/challenges',
+  // Friend challenges (new, result, ending soon) open the Inbox, where the note opens the friend's profile.
+  challenge: '/inbox',
   invite: '/games',
   sparks: '/games',
   daily: '/games',

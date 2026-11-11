@@ -44,15 +44,19 @@ function Tide({ t, pts }: { t: Theme; pts: number[] }) {
   const ys = (pts.length > 1 ? pts : [pts[0] ?? 0, pts[0] ?? 0]).map((a) => 24 - a * 22);
   const d = 'M' + ys.map((y, i) => `${((i * TW) / (ys.length - 1)).toFixed(2)},${y.toFixed(1)}`).join(' L');
   return (
-    <Svg width={u(TW)} height={u(26)} viewBox={`0 0 ${TW} 26`}>
-      <Defs>
-        <SvgLinear id={id} x1="0" y1="0" x2={TW} y2="0" gradientUnits="userSpaceOnUse">
-          <Stop offset="0" stopColor={c[0]} stopOpacity={0.3} />
-          <Stop offset="1" stopColor={c[1]} />
-        </SvgLinear>
-      </Defs>
-      <Path d={d} fill="none" stroke={`url(#${id})`} strokeWidth={1.6} strokeLinejoin="round" />
-    </Svg>
+    // The line takes the room left between the game name and the percentage, so the percentage never runs past the
+    // edge on narrow phones (Yazan 2026-11-11); it stretches sideways only, the stroke keeps its width.
+    <View style={s.tide}>
+      <Svg width="100%" height={u(26)} viewBox={`0 0 ${TW} 26`} preserveAspectRatio="none">
+        <Defs>
+          <SvgLinear id={id} x1="0" y1="0" x2={TW} y2="0" gradientUnits="userSpaceOnUse">
+            <Stop offset="0" stopColor={c[0]} stopOpacity={0.3} />
+            <Stop offset="1" stopColor={c[1]} />
+          </SvgLinear>
+        </Defs>
+        <Path d={d} fill="none" stroke={`url(#${id})`} strokeWidth={u(1.6)} strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
+      </Svg>
+    </View>
   );
 }
 
@@ -283,6 +287,7 @@ const s = StyleSheet.create({
   td: { flexDirection: 'row', alignItems: 'center', gap: u(8), paddingVertical: u(7), minHeight: u(40) },
   tdB: { width: u(104), fontFamily: F.display, fontSize: u(12.5), lineHeight: u(14.375) },
   none: { fontFamily: F.body, fontSize: u(11), lineHeight: u(15), paddingVertical: u(7) },
+  tide: { flex: 1, minWidth: 0 },
   tdN: { width: u(50), textAlign: 'right', fontFamily: F.display, fontSize: u(16), lineHeight: u(20) },
   ch: { height: u(23), paddingHorizontal: u(10), borderRadius: u(10), justifyContent: 'center' },
   ghost: { height: u(25), borderWidth: 1 },
