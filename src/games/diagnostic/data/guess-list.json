@@ -786,7 +786,8 @@
   "id": "cushing-syndrome",
   "label": "Cushing Syndrome",
   "aliases": [
-   "Hypercortisolism"
+   "Hypercortisolism",
+   "Cushing Disease"
   ],
   "answer": true,
   "canonical_id": "cushing-syndrome"
@@ -2883,10 +2884,11 @@
   "id": "stable-angina",
   "label": "Stable Angina",
   "aliases": [
-   "Stable Angina Pectoris"
+   "Stable Angina Pectoris",
+   "Angina Pectoris"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "stable-angina"
  },
  {
   "id": "aortic-dissection",
@@ -2899,8 +2901,8 @@
   "id": "atrial-flutter",
   "label": "Atrial Flutter",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "atrial-flutter"
  },
  {
   "id": "paroxysmal-supraventricular-tachycardia",
@@ -2946,8 +2948,8 @@
    "MR",
    "Mitral Insufficiency"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "mitral-regurgitation"
  },
  {
   "id": "aortic-regurgitation",
@@ -2956,8 +2958,8 @@
    "AR",
    "Aortic Insufficiency"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "aortic-regurgitation"
  },
  {
   "id": "dilated-cardiomyopathy",
@@ -2965,15 +2967,15 @@
   "aliases": [
    "DCM"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "dilated-cardiomyopathy"
  },
  {
   "id": "constrictive-pericarditis",
   "label": "Constrictive Pericarditis",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "constrictive-pericarditis"
  },
  {
   "id": "pericardial-effusion",
@@ -3017,8 +3019,8 @@
   "aliases": [
    "LQTS"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "long-qt-syndrome"
  },
  {
   "id": "vasovagal-syncope",
@@ -3053,8 +3055,8 @@
   "aliases": [
    "TOS"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "thoracic-outlet-syndrome"
  },
  {
   "id": "fibromuscular-dysplasia",
@@ -3071,8 +3073,8 @@
   "aliases": [
    "PAES"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "popliteal-artery-entrapment-syndrome"
  },
  {
   "id": "deep-vein-thrombosis",
@@ -3087,8 +3089,8 @@
   "id": "eisenmenger-syndrome",
   "label": "Eisenmenger Syndrome",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "eisenmenger-syndrome"
  },
  {
   "id": "ventricular-septal-defect",
@@ -3096,8 +3098,8 @@
   "aliases": [
    "VSD"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "ventricular-septal-defect"
  },
  {
   "id": "tetralogy-of-fallot",
@@ -3105,8 +3107,8 @@
   "aliases": [
    "TOF"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "tetralogy-of-fallot"
  },
  {
   "id": "transposition-of-the-great-arteries",
@@ -3123,8 +3125,8 @@
   "aliases": [
    "PPCM"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "peripartum-cardiomyopathy"
  },
  {
   "id": "bronchiectasis",
@@ -3149,8 +3151,8 @@
   "aliases": [
    "ABPA"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "allergic-bronchopulmonary-aspergillosis"
  },
  {
   "id": "aspergilloma",
@@ -3168,8 +3170,8 @@
    "Extrinsic Allergic Alveolitis",
    "HP"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "hypersensitivity-pneumonitis"
  },
  {
   "id": "nonspecific-interstitial-pneumonia",
@@ -3184,15 +3186,15 @@
   "id": "asbestosis",
   "label": "Asbestosis",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "asbestosis"
  },
  {
   "id": "silicosis",
   "label": "Silicosis",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "silicosis"
  },
  {
   "id": "chronic-beryllium-disease",
@@ -3210,8 +3212,8 @@
   "aliases": [
    "LAM"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "lymphangioleiomyomatosis"
  },
  {
   "id": "pulmonary-langerhans-cell-histiocytosis",
@@ -3219,8 +3221,8 @@
   "aliases": [
    "PLCH"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "pulmonary-langerhans-cell-histiocytosis"
  },
  {
   "id": "cryptogenic-organizing-pneumonia",
@@ -3229,8 +3231,8 @@
    "COP",
    "BOOP"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "cryptogenic-organizing-pneumonia"
  },
  {
   "id": "hospital-acquired-pneumonia",
@@ -3257,8 +3259,8 @@
   "aliases": [
    "Pulmonary Abscess"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "lung-abscess"
  },
  {
   "id": "pleural-empyema",
@@ -3267,8 +3269,8 @@
    "Empyema",
    "Empyema Thoracis"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "pleural-empyema"
  },
  {
   "id": "hemothorax",
@@ -3282,10 +3284,11 @@
   "label": "Malignant Pleural Mesothelioma",
   "aliases": [
    "MPM",
-   "Pleural Mesothelioma"
+   "Pleural Mesothelioma",
+   "Mesothelioma"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "malignant-pleural-mesothelioma"
  },
  {
   "id": "lung-adenocarcinoma",
@@ -3360,8 +3363,8 @@
   "aliases": [
    "DAH"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "diffuse-alveolar-hemorrhage"
  },
  {
   "id": "cardiogenic-pulmonary-edema",
@@ -3385,8 +3388,8 @@
   "aliases": [
    "PAVM"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "pulmonary-arteriovenous-malformation"
  },
  {
   "id": "loeffler-syndrome",
@@ -3410,10 +3413,11 @@
   "id": "chronic-eosinophilic-pneumonia",
   "label": "Chronic Eosinophilic Pneumonia",
   "aliases": [
-   "CEP"
+   "CEP",
+   "Eosinophilic Pneumonia"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "chronic-eosinophilic-pneumonia"
  },
  {
   "id": "chronic-thromboembolic-pulmonary-hypertension",
@@ -3430,8 +3434,8 @@
   "aliases": [
    "PAP"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "pulmonary-alveolar-proteinosis"
  },
  {
   "id": "pontiac-fever",
@@ -3456,8 +3460,8 @@
   "aliases": [
    "EoE"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "eosinophilic-esophagitis"
  },
  {
   "id": "achalasia",
@@ -3530,8 +3534,8 @@
    "Gastric Cancer",
    "Stomach Cancer"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "gastric-cancer"
  },
  {
   "id": "gastroparesis",
@@ -3587,10 +3591,11 @@
   "label": "Nonalcoholic Fatty Liver Disease",
   "aliases": [
    "NAFLD",
-   "MASLD"
+   "MASLD",
+   "Metabolic Dysfunction-Associated Steatotic Liver Disease"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "nonalcoholic-fatty-liver-disease"
  },
  {
   "id": "autoimmune-hepatitis",
@@ -3598,8 +3603,8 @@
   "aliases": [
    "AIH"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "autoimmune-hepatitis"
  },
  {
   "id": "primary-biliary-cholangitis",
@@ -3709,8 +3714,8 @@
    "SMA Syndrome",
    "Wilkie Syndrome"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "superior-mesenteric-artery-syndrome"
  },
  {
   "id": "clostridioides-difficile-infection",
@@ -3735,8 +3740,8 @@
   "id": "tropical-sprue",
   "label": "Tropical Sprue",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "tropical-sprue"
  },
  {
   "id": "whipple-disease",
@@ -3768,8 +3773,8 @@
   "id": "toxic-megacolon",
   "label": "Toxic Megacolon",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "toxic-megacolon"
  },
  {
   "id": "pyogenic-liver-abscess",
@@ -3794,8 +3799,8 @@
    "Hydatid Disease",
    "Hydatid Cyst"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "cystic-echinococcosis"
  },
  {
   "id": "ischemic-hepatitis",
@@ -3864,8 +3869,8 @@
    "Duhring Disease",
    "DH"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "dermatitis-herpetiformis"
  },
  {
   "id": "hereditary-fructose-intolerance",
@@ -3874,8 +3879,8 @@
    "HFI",
    "Aldolase B Deficiency"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "hereditary-fructose-intolerance"
  },
  {
   "id": "latent-autoimmune-diabetes-in-adults",
@@ -3900,8 +3905,8 @@
   "id": "prediabetes",
   "label": "Prediabetes",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "prediabetes"
  },
  {
   "id": "toxic-thyroid-adenoma",
@@ -3920,8 +3925,8 @@
    "De Quervain Thyroiditis",
    "Subacute Thyroiditis"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "subacute-thyroiditis"
  },
  {
   "id": "postpartum-thyroiditis",
@@ -3929,8 +3934,8 @@
   "aliases": [
    "PPT"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "postpartum-thyroiditis"
  },
  {
   "id": "tsh-secreting-pituitary-adenoma",
@@ -3956,10 +3961,11 @@
   "label": "Papillary Thyroid Carcinoma",
   "aliases": [
    "PTC",
-   "Papillary Thyroid Cancer"
+   "Papillary Thyroid Cancer",
+   "Thyroid Papillary Carcinoma"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "papillary-thyroid-carcinoma"
  },
  {
   "id": "follicular-thyroid-carcinoma",
@@ -3968,13 +3974,6 @@
    "FTC",
    "Follicular Thyroid Cancer"
   ],
-  "answer": false,
-  "canonical_id": null
- },
- {
-  "id": "cushing-disease",
-  "label": "Cushing Disease",
-  "aliases": [],
   "answer": false,
   "canonical_id": null
  },
@@ -4068,24 +4067,26 @@
   "id": "prolactinoma",
   "label": "Prolactinoma",
   "aliases": [
-   "Lactotroph adenoma"
+   "Lactotroph adenoma",
+   "Hyperprolactinemia",
+   "Lactotroph Adenoma"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "prolactinoma"
  },
  {
   "id": "acromegaly",
   "label": "Acromegaly",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "acromegaly"
  },
  {
   "id": "pituitary-apoplexy",
   "label": "Pituitary Apoplexy",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "pituitary-apoplexy"
  },
  {
   "id": "craniopharyngioma",
@@ -4157,8 +4158,8 @@
    "TIA",
    "Mini-stroke"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "transient-ischemic-attack"
  },
  {
   "id": "intracerebral-hemorrhage",
@@ -4214,8 +4215,8 @@
    "TTH",
    "Tension Headache"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "tension-type-headache"
  },
  {
   "id": "trigeminal-neuralgia",
@@ -4224,8 +4225,8 @@
    "Tic Douloureux",
    "TN"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "trigeminal-neuralgia"
  },
  {
   "id": "idiopathic-intracranial-hypertension",
@@ -4234,8 +4235,8 @@
    "IIH",
    "Pseudotumor Cerebri"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "idiopathic-intracranial-hypertension"
  },
  {
   "id": "vascular-dementia",
@@ -4270,8 +4271,8 @@
   "aliases": [
    "Benign Essential Tremor"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "essential-tremor"
  },
  {
   "id": "progressive-supranuclear-palsy",
@@ -4335,8 +4336,8 @@
   "aliases": [
    "TM"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "transverse-myelitis"
  },
  {
   "id": "lambert-eaton-myasthenic-syndrome",
@@ -4353,8 +4354,8 @@
   "aliases": [
    "CIDP"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "chronic-inflammatory-demyelinating-polyneuropathy"
  },
  {
   "id": "tick-paralysis",
@@ -4442,8 +4443,8 @@
    "CAE",
    "Pyknolepsy"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "childhood-absence-epilepsy"
  },
  {
   "id": "status-epilepticus",
@@ -4467,8 +4468,8 @@
   "id": "narcolepsy",
   "label": "Narcolepsy",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "narcolepsy"
  },
  {
   "id": "restless-legs-syndrome",
@@ -4477,8 +4478,8 @@
    "RLS",
    "Willis-Ekbom Disease"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "restless-legs-syndrome"
  },
  {
   "id": "progressive-encephalomyelitis-with-rigidity-and-myoclonus",
@@ -4766,8 +4767,8 @@
   "aliases": [
    "BV"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "bacterial-vaginosis"
  },
  {
   "id": "genital-herpes",
@@ -4891,15 +4892,15 @@
   "id": "nocardiosis",
   "label": "Nocardiosis",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "nocardiosis"
  },
  {
   "id": "actinomycosis",
   "label": "Actinomycosis",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "actinomycosis"
  },
  {
   "id": "histoplasmosis",
@@ -4933,8 +4934,8 @@
   "id": "rat-bite-fever",
   "label": "Rat-Bite Fever",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "rat-bite-fever"
  },
  {
   "id": "cutaneous-leishmaniasis",
@@ -4958,10 +4959,11 @@
   "id": "leprosy",
   "label": "Leprosy",
   "aliases": [
-   "Hansen disease"
+   "Hansen disease",
+   "Hansen Disease"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "leprosy"
  },
  {
   "id": "trichinellosis",
@@ -5068,8 +5070,8 @@
   "aliases": [
    "NCC"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "neurocysticercosis"
  },
  {
   "id": "mycobacterium-marinum-infection",
@@ -5092,10 +5094,11 @@
   "id": "nongonococcal-urethritis",
   "label": "Nongonococcal Urethritis",
   "aliases": [
-   "NGU"
+   "NGU",
+   "Chlamydial Urethritis"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "nongonococcal-urethritis"
  },
  {
   "id": "acne-vulgaris",
@@ -5119,8 +5122,8 @@
   "id": "lichen-planus",
   "label": "Lichen Planus",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "lichen-planus"
  },
  {
   "id": "nummular-eczema",
@@ -5146,8 +5149,8 @@
   "id": "pityriasis-rosea",
   "label": "Pityriasis Rosea",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "pityriasis-rosea"
  },
  {
   "id": "tinea-pedis",
@@ -5174,8 +5177,8 @@
    "HS",
    "Acne Inversa"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "hidradenitis-suppurativa"
  },
  {
   "id": "furunculosis",
@@ -5207,8 +5210,8 @@
   "id": "pemphigus-vulgaris",
   "label": "Pemphigus Vulgaris",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "pemphigus-vulgaris"
  },
  {
   "id": "linear-iga-bullous-dermatosis",
@@ -5253,8 +5256,8 @@
   "aliases": [
    "cSCC"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "cutaneous-squamous-cell-carcinoma"
  },
  {
   "id": "keratoacanthoma",
@@ -5320,15 +5323,15 @@
   "id": "acanthosis-nigricans",
   "label": "Acanthosis Nigricans",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "acanthosis-nigricans"
  },
  {
   "id": "pyoderma-gangrenosum",
   "label": "Pyoderma Gangrenosum",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "pyoderma-gangrenosum"
  },
  {
   "id": "cutaneous-larva-migrans",
@@ -5401,8 +5404,8 @@
   "aliases": [
    "IBD-associated Arthritis"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "enteropathic-arthritis"
  },
  {
   "id": "osteoarthritis",
@@ -5420,8 +5423,8 @@
   "aliases": [
    "JIA"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "juvenile-idiopathic-arthritis"
  },
  {
   "id": "adult-onset-still-disease",
@@ -5429,8 +5432,8 @@
   "aliases": [
    "AOSD"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "adult-onset-still-disease"
  },
  {
   "id": "sjogren-syndrome",
@@ -5447,8 +5450,8 @@
   "aliases": [
    "DIL"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "drug-induced-lupus"
  },
  {
   "id": "antiphospholipid-syndrome",
@@ -5480,8 +5483,8 @@
   "aliases": [
    "IBM"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "inclusion-body-myositis"
  },
  {
   "id": "antisynthetase-syndrome",
@@ -5558,8 +5561,8 @@
   "id": "fibromyalgia",
   "label": "Fibromyalgia",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "fibromyalgia"
  },
  {
   "id": "familial-mediterranean-fever",
@@ -5649,10 +5652,11 @@
   "id": "vogt-koyanagi-harada-disease",
   "label": "Vogt-Koyanagi-Harada Disease",
   "aliases": [
-   "VKH"
+   "VKH",
+   "VKH Syndrome"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "vogt-koyanagi-harada-disease"
  },
  {
   "id": "autoimmune-inner-ear-disease",
@@ -5722,8 +5726,8 @@
    "Ormond Disease",
    "RPF"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "retroperitoneal-fibrosis"
  },
  {
   "id": "milwaukee-shoulder-syndrome",
@@ -5779,18 +5783,19 @@
    "AIN",
    "Acute Tubulointerstitial Nephritis"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "acute-interstitial-nephritis"
  },
  {
   "id": "contrast-induced-nephropathy",
   "label": "Contrast-Induced Nephropathy",
   "aliases": [
    "CIN",
-   "Contrast-induced AKI"
+   "Contrast-induced AKI",
+   "Contrast-Associated Acute Kidney Injury"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "contrast-induced-nephropathy"
  },
  {
   "id": "membranous-nephropathy",
@@ -5799,8 +5804,8 @@
    "Membranous Glomerulonephritis",
    "MN"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "membranous-nephropathy"
  },
  {
   "id": "iga-nephropathy",
@@ -5809,8 +5814,8 @@
    "IgAN",
    "Berger Disease"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "iga-nephropathy"
  },
  {
   "id": "lupus-nephritis",
@@ -5847,8 +5852,8 @@
   "aliases": [
    "CKD"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "chronic-kidney-disease"
  },
  {
   "id": "autosomal-recessive-polycystic-kidney-disease",
@@ -5879,15 +5884,15 @@
   "id": "renal-oncocytoma",
   "label": "Renal Oncocytoma",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "renal-oncocytoma"
  },
  {
   "id": "bladder-cancer",
   "label": "Bladder Cancer",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "bladder-cancer"
  },
  {
   "id": "acute-bacterial-prostatitis",
@@ -5933,15 +5938,15 @@
   "id": "testicular-cancer",
   "label": "Testicular Cancer",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "testicular-cancer"
  },
  {
   "id": "varicocele",
   "label": "Varicocele",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "varicocele"
  },
  {
   "id": "renal-artery-stenosis",
@@ -5976,18 +5981,19 @@
   "aliases": [
    "XGP"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "xanthogranulomatous-pyelonephritis"
  },
  {
   "id": "distal-renal-tubular-acidosis",
   "label": "Distal Renal Tubular Acidosis",
   "aliases": [
    "dRTA",
-   "Type 1 RTA"
+   "Type 1 RTA",
+   "Renal Tubular Acidosis Type 1"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "distal-renal-tubular-acidosis"
  },
  {
   "id": "proximal-renal-tubular-acidosis",
@@ -6005,8 +6011,8 @@
   "aliases": [
    "Nephrogenic DI"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "nephrogenic-diabetes-insipidus"
  },
  {
   "id": "atypical-hemolytic-uremic-syndrome",
@@ -6024,8 +6030,8 @@
    "ACD",
    "Anemia of Inflammation"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "anemia-of-chronic-disease"
  },
  {
   "id": "beta-thalassemia-major",
@@ -6034,8 +6040,8 @@
    "Cooley Anemia",
    "Thalassemia Major"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "beta-thalassemia-major"
  },
  {
   "id": "hemoglobin-h-disease",
@@ -6050,8 +6056,8 @@
   "id": "folate-deficiency-anemia",
   "label": "Folate Deficiency Anemia",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "folate-deficiency-anemia"
  },
  {
   "id": "aplastic-anemia",
@@ -6276,8 +6282,8 @@
   "id": "adjustment-disorder",
   "label": "Adjustment Disorder",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "adjustment-disorder"
  },
  {
   "id": "cyclothymic-disorder",
@@ -6285,8 +6291,8 @@
   "aliases": [
    "Cyclothymia"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "cyclothymic-disorder"
  },
  {
   "id": "postpartum-depression",
@@ -6313,8 +6319,8 @@
   "aliases": [
    "Simple Phobia"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "specific-phobia"
  },
  {
   "id": "illness-anxiety-disorder",
@@ -6323,8 +6329,8 @@
    "Hypochondriasis",
    "Health Anxiety"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "illness-anxiety-disorder"
  },
  {
   "id": "functional-neurological-symptom-disorder",
@@ -6333,15 +6339,17 @@
    "Conversion Disorder",
    "FND"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "functional-neurological-symptom-disorder"
  },
  {
   "id": "factitious-disorder",
-  "label": "Factitious Disorder",
-  "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "label": "Factitious Disorder Imposed on Self",
+  "aliases": [
+   "Munchausen Syndrome"
+  ],
+  "answer": true,
+  "canonical_id": "factitious-disorder-imposed-on-self"
  },
  {
   "id": "body-dysmorphic-disorder",
@@ -6350,17 +6358,18 @@
    "BDD",
    "Dysmorphophobia"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "body-dysmorphic-disorder"
  },
  {
   "id": "trichotillomania",
   "label": "Trichotillomania",
   "aliases": [
-   "Hair-pulling disorder"
+   "Hair-pulling disorder",
+   "Hair-Pulling Disorder"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "trichotillomania"
  },
  {
   "id": "obsessive-compulsive-personality-disorder",
@@ -6392,8 +6401,8 @@
    "BPD",
    "Emotionally Unstable Personality Disorder"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "borderline-personality-disorder"
  },
  {
   "id": "attention-deficit-hyperactivity-disorder",
@@ -6401,8 +6410,8 @@
   "aliases": [
    "ADHD"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "attention-deficit-hyperactivity-disorder"
  },
  {
   "id": "binge-eating-disorder",
@@ -6410,8 +6419,8 @@
   "aliases": [
    "BED"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "binge-eating-disorder"
  },
  {
   "id": "alcohol-withdrawal-syndrome",
@@ -6433,8 +6442,8 @@
   "id": "opioid-withdrawal",
   "label": "Opioid Withdrawal",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "opioid-withdrawal"
  },
  {
   "id": "psychogenic-nonepileptic-seizures",
@@ -6450,15 +6459,15 @@
   "id": "adenomyosis",
   "label": "Adenomyosis",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "adenomyosis"
  },
  {
   "id": "endometrial-hyperplasia",
   "label": "Endometrial Hyperplasia",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "endometrial-hyperplasia"
  },
  {
   "id": "uterine-leiomyosarcoma",
@@ -6477,9 +6486,11 @@
  {
   "id": "epithelial-ovarian-cancer",
   "label": "Epithelial Ovarian Cancer",
-  "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "aliases": [
+   "Ovarian Cancer"
+  ],
+  "answer": true,
+  "canonical_id": "epithelial-ovarian-cancer"
  },
  {
   "id": "fitz-hugh-curtis-syndrome",
@@ -6494,8 +6505,8 @@
   "aliases": [
    "Miscarriage"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "spontaneous-abortion"
  },
  {
   "id": "placenta-previa",
@@ -6508,8 +6519,8 @@
   "id": "uterine-rupture",
   "label": "Uterine Rupture",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "uterine-rupture"
  },
  {
   "id": "eclampsia",
@@ -6524,15 +6535,15 @@
   "aliases": [
    "AFLP"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "acute-fatty-liver-of-pregnancy"
  },
  {
   "id": "hyperemesis-gravidarum",
   "label": "Hyperemesis Gravidarum",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "hyperemesis-gravidarum"
  },
  {
   "id": "choriocarcinoma",
@@ -6554,15 +6565,15 @@
   "aliases": [
    "Intrauterine Adhesions"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "asherman-syndrome"
  },
  {
   "id": "granulosa-cell-tumor",
   "label": "Granulosa Cell Tumor",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "granulosa-cell-tumor"
  },
  {
   "id": "idiopathic-hirsutism",
@@ -6578,8 +6589,8 @@
    "POI",
    "Premature Ovarian Failure"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "premature-ovarian-insufficiency"
  },
  {
   "id": "atrophic-vaginitis",
@@ -6597,8 +6608,8 @@
   "aliases": [
    "OHSS"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "ovarian-hyperstimulation-syndrome"
  },
  {
   "id": "postpartum-endometritis",
@@ -6646,17 +6657,18 @@
   "id": "bronchopulmonary-dysplasia",
   "label": "Bronchopulmonary Dysplasia",
   "aliases": [
-   "BPD"
+   "BPD",
+   "Chronic Lung Disease of Prematurity"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "bronchopulmonary-dysplasia"
  },
  {
   "id": "duodenal-atresia",
   "label": "Duodenal Atresia",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "duodenal-atresia"
  },
  {
   "id": "meconium-ileus",
@@ -6669,8 +6681,8 @@
   "id": "biliary-atresia",
   "label": "Biliary Atresia",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "biliary-atresia"
  },
  {
   "id": "neonatal-sepsis",
@@ -6723,8 +6735,8 @@
   "id": "neuroblastoma",
   "label": "Neuroblastoma",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "neuroblastoma"
  },
  {
   "id": "retinoblastoma",
@@ -6740,15 +6752,15 @@
    "Autism",
    "ASD"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "autism-spectrum-disorder"
  },
  {
   "id": "benzodiazepine-overdose",
   "label": "Benzodiazepine Overdose",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "benzodiazepine-overdose"
  },
  {
   "id": "clonidine-toxicity",
@@ -6761,15 +6773,15 @@
   "id": "organophosphate-poisoning",
   "label": "Organophosphate Poisoning",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "organophosphate-poisoning"
  },
  {
   "id": "methanol-poisoning",
   "label": "Methanol Poisoning",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "methanol-poisoning"
  },
  {
   "id": "isopropyl-alcohol-poisoning",
@@ -6784,29 +6796,29 @@
   "aliases": [
    "Digitalis Toxicity"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "digoxin-toxicity"
  },
  {
   "id": "calcium-channel-blocker-overdose",
   "label": "Calcium Channel Blocker Overdose",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "calcium-channel-blocker-overdose"
  },
  {
   "id": "isoniazid-toxicity",
   "label": "Isoniazid Toxicity",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "isoniazid-toxicity"
  },
  {
   "id": "heat-exhaustion",
   "label": "Heat Exhaustion",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "heat-exhaustion"
  },
  {
   "id": "serotonin-syndrome",
@@ -6820,9 +6832,11 @@
  {
   "id": "scombroid-poisoning",
   "label": "Scombroid Poisoning",
-  "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "aliases": [
+   "Histamine Fish Poisoning"
+  ],
+  "answer": true,
+  "canonical_id": "scombroid-poisoning"
  },
  {
   "id": "alcoholic-ketoacidosis",
@@ -6860,8 +6874,8 @@
   "id": "acute-dystonic-reaction",
   "label": "Acute Dystonic Reaction",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "acute-dystonic-reaction"
  },
  {
   "id": "idiopathic-systemic-capillary-leak-syndrome",
@@ -6877,8 +6891,8 @@
   "id": "viral-conjunctivitis",
   "label": "Viral Conjunctivitis",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "viral-conjunctivitis"
  },
  {
   "id": "chlamydial-conjunctivitis",
@@ -6918,8 +6932,8 @@
   "id": "episcleritis",
   "label": "Episcleritis",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "episcleritis"
  },
  {
   "id": "herpes-simplex-keratitis",
@@ -6927,22 +6941,24 @@
   "aliases": [
    "HSV Keratitis"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "herpes-simplex-keratitis"
  },
  {
   "id": "bacterial-keratitis",
   "label": "Bacterial Keratitis",
-  "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "aliases": [
+   "Corneal Ulcer"
+  ],
+  "answer": true,
+  "canonical_id": "bacterial-keratitis"
  },
  {
   "id": "corneal-abrasion",
   "label": "Corneal Abrasion",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "corneal-abrasion"
  },
  {
   "id": "normal-tension-glaucoma",
@@ -6976,8 +6992,8 @@
   "aliases": [
    "PVD"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "posterior-vitreous-detachment"
  },
  {
   "id": "central-retinal-vein-occlusion",
@@ -6994,15 +7010,15 @@
   "aliases": [
    "NAION"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "non-arteritic-anterior-ischemic-optic-neuropathy"
  },
  {
   "id": "hypertensive-retinopathy",
   "label": "Hypertensive Retinopathy",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "hypertensive-retinopathy"
  },
  {
   "id": "central-serous-chorioretinopathy",
@@ -7040,8 +7056,8 @@
    "Graves Ophthalmopathy",
    "Graves Orbitopathy"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "thyroid-eye-disease"
  },
  {
   "id": "traumatic-hyphema",
@@ -7057,8 +7073,8 @@
    "OME",
    "Glue Ear"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "otitis-media-with-effusion"
  },
  {
   "id": "cholesteatoma",
@@ -7082,22 +7098,22 @@
   "aliases": [
    "Earwax Impaction"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "cerumen-impaction"
  },
  {
   "id": "labyrinthitis",
   "label": "Labyrinthitis",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "labyrinthitis"
  },
  {
   "id": "perilymph-fistula",
   "label": "Perilymph Fistula",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "perilymph-fistula"
  },
  {
   "id": "sudden-sensorineural-hearing-loss",
@@ -7139,15 +7155,15 @@
   "id": "nasopharyngeal-carcinoma",
   "label": "Nasopharyngeal Carcinoma",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "nasopharyngeal-carcinoma"
  },
  {
   "id": "retropharyngeal-abscess",
   "label": "Retropharyngeal Abscess",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "retropharyngeal-abscess"
  },
  {
   "id": "lemierre-syndrome",
@@ -7169,15 +7185,15 @@
   "id": "acute-laryngitis",
   "label": "Acute Laryngitis",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "acute-laryngitis"
  },
  {
   "id": "branchial-cleft-cyst",
   "label": "Branchial Cleft Cyst",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "branchial-cleft-cyst"
  },
  {
   "id": "ramsay-hunt-syndrome",
@@ -7204,8 +7220,8 @@
    "Runner's Knee",
    "PFPS"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "patellofemoral-pain-syndrome"
  },
  {
   "id": "baker-cyst",
@@ -7234,8 +7250,8 @@
   "id": "ganglion-cyst",
   "label": "Ganglion Cyst",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "ganglion-cyst"
  },
  {
   "id": "distal-biceps-tendon-rupture",
@@ -7289,8 +7305,8 @@
   "id": "spondylolisthesis",
   "label": "Spondylolisthesis",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "spondylolisthesis"
  },
  {
   "id": "pott-disease",
@@ -7324,8 +7340,8 @@
   "aliases": [
    "Osteitis Deformans"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "paget-disease-of-bone"
  },
  {
   "id": "giant-cell-tumor-of-bone",
@@ -7333,8 +7349,8 @@
   "aliases": [
    "Osteoclastoma"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "giant-cell-tumor-of-bone"
  },
  {
   "id": "tietze-syndrome",
@@ -7369,9 +7385,11 @@
  {
   "id": "obturator-hernia",
   "label": "Obturator Hernia",
-  "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "aliases": [
+   "Little Old Lady Hernia"
+  ],
+  "answer": true,
+  "canonical_id": "obturator-hernia"
  },
  {
   "id": "saphena-varix",
@@ -7384,10 +7402,11 @@
   "id": "traumatic-diaphragmatic-rupture",
   "label": "Traumatic Diaphragmatic Rupture",
   "aliases": [
-   "Traumatic Diaphragmatic Hernia"
+   "Traumatic Diaphragmatic Hernia",
+   "Diaphragmatic Rupture"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "traumatic-diaphragmatic-rupture"
  },
  {
   "id": "splenic-abscess",
@@ -7428,8 +7447,8 @@
   "aliases": [
    "Pilonidal Sinus"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "pilonidal-disease"
  },
  {
   "id": "anal-fistula",
@@ -7444,8 +7463,8 @@
   "id": "gallstone-ileus",
   "label": "Gallstone Ileus",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "gallstone-ileus"
  },
  {
   "id": "nonocclusive-mesenteric-ischemia",
@@ -7469,15 +7488,15 @@
   "aliases": [
    "Acute Colonic Pseudo-obstruction"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "acute-colonic-pseudo-obstruction-ogilvie-syndrome"
  },
  {
   "id": "fournier-gangrene",
   "label": "Fournier Gangrene",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "fournier-gangrene"
  },
  {
   "id": "neurofibromatosis-type-2",
@@ -7547,8 +7566,8 @@
   "id": "loeys-dietz-syndrome",
   "label": "Loeys-Dietz Syndrome",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "loeys-dietz-syndrome"
  },
  {
   "id": "congenital-contractural-arachnodactyly",
@@ -7602,8 +7621,8 @@
   "id": "achondroplasia",
   "label": "Achondroplasia",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "achondroplasia"
  },
  {
   "id": "hypophosphatasia",
@@ -7639,8 +7658,8 @@
   "aliases": [
    "Trisomy 21"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "down-syndrome-trisomy-21"
  },
  {
   "id": "alstrom-syndrome",
@@ -7662,8 +7681,8 @@
   "aliases": [
    "FAS"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "fetal-alcohol-syndrome"
  },
  {
   "id": "charge-syndrome",
@@ -7723,8 +7742,8 @@
    "45,X",
    "Monosomy X"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "turner-syndrome"
  },
  {
   "id": "klinefelter-syndrome",
@@ -7732,18 +7751,19 @@
   "aliases": [
    "47,XXY"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "klinefelter-syndrome"
  },
  {
   "id": "androgen-insensitivity-syndrome",
   "label": "Androgen Insensitivity Syndrome",
   "aliases": [
    "AIS",
-   "Testicular Feminization"
+   "Testicular Feminization",
+   "Complete Androgen Insensitivity"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "androgen-insensitivity-syndrome"
  },
  {
   "id": "pseudopseudohypoparathyroidism",
@@ -7811,8 +7831,8 @@
   "id": "hereditary-spherocytosis",
   "label": "Hereditary Spherocytosis",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "hereditary-spherocytosis"
  },
  {
   "id": "hereditary-elliptocytosis",
@@ -8104,9 +8124,11 @@
  {
   "id": "spinocerebellar-ataxia",
   "label": "Spinocerebellar Ataxia",
-  "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "aliases": [
+   "Machado-Joseph Disease"
+  ],
+  "answer": true,
+  "canonical_id": "spinocerebellar-ataxia"
  },
  {
   "id": "spinal-muscular-atrophy",
@@ -8114,8 +8136,8 @@
   "aliases": [
    "SMA"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "spinal-muscular-atrophy"
  },
  {
   "id": "spinal-and-bulbar-muscular-atrophy",
@@ -8133,8 +8155,8 @@
   "aliases": [
    "DMD"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "duchenne-muscular-dystrophy"
  },
  {
   "id": "myotonic-dystrophy-type-1",
@@ -8473,8 +8495,8 @@
   "aliases": [
    "OTC Deficiency"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "ornithine-transcarbamylase-deficiency"
  },
  {
   "id": "glutaric-acidemia-type-1",
@@ -8502,8 +8524,8 @@
    "MCAD Deficiency",
    "MCADD"
   ],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "medium-chain-acyl-coa-dehydrogenase-deficiency"
  },
  {
   "id": "biotinidase-deficiency",
@@ -8548,15 +8570,15 @@
   "id": "primary-hyperoxaluria",
   "label": "Primary Hyperoxaluria",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "primary-hyperoxaluria"
  },
  {
   "id": "cystinuria",
   "label": "Cystinuria",
   "aliases": [],
-  "answer": false,
-  "canonical_id": null
+  "answer": true,
+  "canonical_id": "cystinuria"
  },
  {
   "id": "lowe-syndrome",
@@ -9377,5 +9399,2559 @@
   ],
   "answer": true,
   "canonical_id": "placenta-accreta-spectrum"
+ },
+ {
+  "id": "sinus-bradycardia",
+  "label": "Sinus Bradycardia",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "sinus-bradycardia"
+ },
+ {
+  "id": "orthostatic-hypotension",
+  "label": "Orthostatic Hypotension",
+  "aliases": [
+   "Postural Hypotension"
+  ],
+  "answer": true,
+  "canonical_id": "orthostatic-hypotension"
+ },
+ {
+  "id": "peripheral-artery-disease",
+  "label": "Peripheral Artery Disease",
+  "aliases": [
+   "Peripheral Arterial Disease"
+  ],
+  "answer": true,
+  "canonical_id": "peripheral-artery-disease"
+ },
+ {
+  "id": "varicose-veins",
+  "label": "Varicose Veins",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "varicose-veins"
+ },
+ {
+  "id": "mitral-valve-prolapse",
+  "label": "Mitral Valve Prolapse",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "mitral-valve-prolapse"
+ },
+ {
+  "id": "premature-ventricular-contractions",
+  "label": "Premature Ventricular Contractions",
+  "aliases": [
+   "Ventricular Ectopic Beats"
+  ],
+  "answer": true,
+  "canonical_id": "premature-ventricular-contractions"
+ },
+ {
+  "id": "epistaxis",
+  "label": "Epistaxis",
+  "aliases": [
+   "Nosebleed"
+  ],
+  "answer": true,
+  "canonical_id": "epistaxis"
+ },
+ {
+  "id": "tonsillitis",
+  "label": "Tonsillitis",
+  "aliases": [
+   "Acute Tonsillitis"
+  ],
+  "answer": true,
+  "canonical_id": "tonsillitis"
+ },
+ {
+  "id": "vocal-cord-nodules",
+  "label": "Vocal Cord Nodules",
+  "aliases": [
+   "Singer's Nodules"
+  ],
+  "answer": true,
+  "canonical_id": "vocal-cord-nodules"
+ },
+ {
+  "id": "sialolithiasis",
+  "label": "Sialolithiasis",
+  "aliases": [
+   "Salivary Gland Stone"
+  ],
+  "answer": true,
+  "canonical_id": "sialolithiasis"
+ },
+ {
+  "id": "nasal-bone-fracture",
+  "label": "Nasal Bone Fracture",
+  "aliases": [
+   "Broken Nose"
+  ],
+  "answer": true,
+  "canonical_id": "nasal-bone-fracture"
+ },
+ {
+  "id": "hypothermia",
+  "label": "Hypothermia",
+  "aliases": [
+   "Accidental Hypothermia"
+  ],
+  "answer": true,
+  "canonical_id": "hypothermia"
+ },
+ {
+  "id": "frostbite",
+  "label": "Frostbite",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "frostbite"
+ },
+ {
+  "id": "alcohol-intoxication",
+  "label": "Alcohol Intoxication",
+  "aliases": [
+   "Acute Alcohol Intoxication"
+  ],
+  "answer": true,
+  "canonical_id": "alcohol-intoxication"
+ },
+ {
+  "id": "snake-envenomation",
+  "label": "Snake Envenomation",
+  "aliases": [
+   "Snakebite"
+  ],
+  "answer": true,
+  "canonical_id": "snake-envenomation"
+ },
+ {
+  "id": "pasteurella-bite-wound-infection",
+  "label": "Pasteurella Bite Wound Infection",
+  "aliases": [
+   "Pasteurella multocida Infection"
+  ],
+  "answer": true,
+  "canonical_id": "pasteurella-bite-wound-infection"
+ },
+ {
+  "id": "smoke-inhalation-injury",
+  "label": "Smoke Inhalation Injury",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "smoke-inhalation-injury"
+ },
+ {
+  "id": "electrical-burn-injury",
+  "label": "Electrical Burn Injury",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "electrical-burn-injury"
+ },
+ {
+  "id": "subclinical-hypothyroidism",
+  "label": "Subclinical Hypothyroidism",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "subclinical-hypothyroidism"
+ },
+ {
+  "id": "obesity",
+  "label": "Obesity",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "obesity"
+ },
+ {
+  "id": "vitamin-d-deficiency",
+  "label": "Vitamin D Deficiency",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "vitamin-d-deficiency"
+ },
+ {
+  "id": "simple-goiter",
+  "label": "Simple Goiter",
+  "aliases": [
+   "Multinodular Goiter"
+  ],
+  "answer": true,
+  "canonical_id": "simple-goiter"
+ },
+ {
+  "id": "pubertal-gynecomastia",
+  "label": "Pubertal Gynecomastia",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "pubertal-gynecomastia"
+ },
+ {
+  "id": "acute-gastritis",
+  "label": "Acute Gastritis",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "acute-gastritis"
+ },
+ {
+  "id": "anal-fissure",
+  "label": "Anal Fissure",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "anal-fissure"
+ },
+ {
+  "id": "fragile-x-syndrome",
+  "label": "Fragile X Syndrome",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "fragile-x-syndrome"
+ },
+ {
+  "id": "noonan-syndrome",
+  "label": "Noonan Syndrome",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "noonan-syndrome"
+ },
+ {
+  "id": "edwards-syndrome",
+  "label": "Edwards Syndrome",
+  "aliases": [
+   "Trisomy 18"
+  ],
+  "answer": true,
+  "canonical_id": "edwards-syndrome"
+ },
+ {
+  "id": "patau-syndrome",
+  "label": "Patau Syndrome",
+  "aliases": [
+   "Trisomy 13"
+  ],
+  "answer": true,
+  "canonical_id": "patau-syndrome"
+ },
+ {
+  "id": "cri-du-chat-syndrome",
+  "label": "Cri-du-chat Syndrome",
+  "aliases": [
+   "5p Deletion Syndrome"
+  ],
+  "answer": true,
+  "canonical_id": "cri-du-chat-syndrome"
+ },
+ {
+  "id": "familial-hypercholesterolemia",
+  "label": "Familial Hypercholesterolemia",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "familial-hypercholesterolemia"
+ },
+ {
+  "id": "familial-adenomatous-polyposis",
+  "label": "Familial Adenomatous Polyposis",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "familial-adenomatous-polyposis"
+ },
+ {
+  "id": "lynch-syndrome",
+  "label": "Lynch Syndrome",
+  "aliases": [
+   "Hereditary Nonpolyposis Colorectal Cancer"
+  ],
+  "answer": true,
+  "canonical_id": "lynch-syndrome"
+ },
+ {
+  "id": "prostate-cancer",
+  "label": "Prostate Cancer",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "prostate-cancer"
+ },
+ {
+  "id": "colorectal-cancer",
+  "label": "Colorectal Cancer",
+  "aliases": [
+   "Colon Cancer"
+  ],
+  "answer": true,
+  "canonical_id": "colorectal-cancer"
+ },
+ {
+  "id": "cervical-cancer",
+  "label": "Cervical Cancer",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "cervical-cancer"
+ },
+ {
+  "id": "basal-cell-carcinoma",
+  "label": "Basal Cell Carcinoma",
+  "aliases": [
+   "Rodent Ulcer"
+  ],
+  "answer": true,
+  "canonical_id": "basal-cell-carcinoma"
+ },
+ {
+  "id": "neutropenic-fever",
+  "label": "Neutropenic Fever",
+  "aliases": [
+   "Febrile Neutropenia"
+  ],
+  "answer": true,
+  "canonical_id": "neutropenic-fever"
+ },
+ {
+  "id": "warfarin-over-anticoagulation",
+  "label": "Warfarin Over-Anticoagulation",
+  "aliases": [
+   "Supratherapeutic INR"
+  ],
+  "answer": true,
+  "canonical_id": "warfarin-over-anticoagulation"
+ },
+ {
+  "id": "epididymitis",
+  "label": "Epididymitis",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "epididymitis"
+ },
+ {
+  "id": "hydrocele",
+  "label": "Hydrocele",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "hydrocele"
+ },
+ {
+  "id": "phimosis",
+  "label": "Phimosis",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "phimosis"
+ },
+ {
+  "id": "stress-urinary-incontinence",
+  "label": "Stress Urinary Incontinence",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "stress-urinary-incontinence"
+ },
+ {
+  "id": "generalized-tonic-clonic-epilepsy",
+  "label": "Generalized Tonic-Clonic Epilepsy",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "generalized-tonic-clonic-epilepsy"
+ },
+ {
+  "id": "self-limited-epilepsy-with-centrotemporal-spikes",
+  "label": "Self-Limited Epilepsy with Centrotemporal Spikes",
+  "aliases": [
+   "Benign Rolandic Epilepsy"
+  ],
+  "answer": true,
+  "canonical_id": "self-limited-epilepsy-with-centrotemporal-spikes"
+ },
+ {
+  "id": "postherpetic-neuralgia",
+  "label": "Postherpetic Neuralgia",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "postherpetic-neuralgia"
+ },
+ {
+  "id": "vulvovaginal-candidiasis",
+  "label": "Vulvovaginal Candidiasis",
+  "aliases": [
+   "Vaginal Thrush"
+  ],
+  "answer": true,
+  "canonical_id": "vulvovaginal-candidiasis"
+ },
+ {
+  "id": "trichomoniasis",
+  "label": "Trichomoniasis",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "trichomoniasis"
+ },
+ {
+  "id": "menopause",
+  "label": "Menopause",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "menopause"
+ },
+ {
+  "id": "premenstrual-syndrome",
+  "label": "Premenstrual Syndrome",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "premenstrual-syndrome"
+ },
+ {
+  "id": "ovarian-cyst-rupture",
+  "label": "Ovarian Cyst Rupture",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "ovarian-cyst-rupture"
+ },
+ {
+  "id": "lactational-mastitis",
+  "label": "Lactational Mastitis",
+  "aliases": [
+   "Mastitis"
+  ],
+  "answer": true,
+  "canonical_id": "lactational-mastitis"
+ },
+ {
+  "id": "subconjunctival-hemorrhage",
+  "label": "Subconjunctival Hemorrhage",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "subconjunctival-hemorrhage"
+ },
+ {
+  "id": "blepharitis",
+  "label": "Blepharitis",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "blepharitis"
+ },
+ {
+  "id": "presbyopia",
+  "label": "Presbyopia",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "presbyopia"
+ },
+ {
+  "id": "myopia",
+  "label": "Myopia",
+  "aliases": [
+   "Nearsightedness"
+  ],
+  "answer": true,
+  "canonical_id": "myopia"
+ },
+ {
+  "id": "pterygium",
+  "label": "Pterygium",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "pterygium"
+ },
+ {
+  "id": "colles-fracture",
+  "label": "Colles Fracture",
+  "aliases": [
+   "Distal Radius Fracture"
+  ],
+  "answer": true,
+  "canonical_id": "colles-fracture"
+ },
+ {
+  "id": "clavicle-fracture",
+  "label": "Clavicle Fracture",
+  "aliases": [
+   "Broken Collarbone"
+  ],
+  "answer": true,
+  "canonical_id": "clavicle-fracture"
+ },
+ {
+  "id": "de-quervain-tenosynovitis",
+  "label": "De Quervain Tenosynovitis",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "de-quervain-tenosynovitis"
+ },
+ {
+  "id": "trigger-finger",
+  "label": "Trigger Finger",
+  "aliases": [
+   "Stenosing Tenosynovitis"
+  ],
+  "answer": true,
+  "canonical_id": "trigger-finger"
+ },
+ {
+  "id": "adhesive-capsulitis",
+  "label": "Adhesive Capsulitis",
+  "aliases": [
+   "Frozen Shoulder"
+  ],
+  "answer": true,
+  "canonical_id": "adhesive-capsulitis"
+ },
+ {
+  "id": "social-anxiety-disorder",
+  "label": "Social Anxiety Disorder",
+  "aliases": [
+   "Social Phobia"
+  ],
+  "answer": true,
+  "canonical_id": "social-anxiety-disorder"
+ },
+ {
+  "id": "insomnia-disorder",
+  "label": "Insomnia Disorder",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "insomnia-disorder"
+ },
+ {
+  "id": "alcohol-use-disorder",
+  "label": "Alcohol Use Disorder",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "alcohol-use-disorder"
+ },
+ {
+  "id": "separation-anxiety-disorder",
+  "label": "Separation Anxiety Disorder",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "separation-anxiety-disorder"
+ },
+ {
+  "id": "tourette-syndrome",
+  "label": "Tourette Syndrome",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "tourette-syndrome"
+ },
+ {
+  "id": "tobacco-use-disorder",
+  "label": "Tobacco Use Disorder",
+  "aliases": [
+   "Nicotine Dependence"
+  ],
+  "answer": true,
+  "canonical_id": "tobacco-use-disorder"
+ },
+ {
+  "id": "primary-spontaneous-pneumothorax",
+  "label": "Primary Spontaneous Pneumothorax",
+  "aliases": [
+   "Spontaneous Pneumothorax"
+  ],
+  "answer": true,
+  "canonical_id": "primary-spontaneous-pneumothorax"
+ },
+ {
+  "id": "pleural-effusion",
+  "label": "Pleural Effusion",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "pleural-effusion"
+ },
+ {
+  "id": "exercise-induced-bronchoconstriction",
+  "label": "Exercise-Induced Bronchoconstriction",
+  "aliases": [
+   "Exercise-Induced Asthma"
+  ],
+  "answer": true,
+  "canonical_id": "exercise-induced-bronchoconstriction"
+ },
+ {
+  "id": "postoperative-atelectasis",
+  "label": "Postoperative Atelectasis",
+  "aliases": [
+   "Atelectasis"
+  ],
+  "answer": true,
+  "canonical_id": "postoperative-atelectasis"
+ },
+ {
+  "id": "upper-airway-cough-syndrome",
+  "label": "Upper Airway Cough Syndrome",
+  "aliases": [
+   "Postnasal Drip Syndrome"
+  ],
+  "answer": true,
+  "canonical_id": "upper-airway-cough-syndrome"
+ },
+ {
+  "id": "hyperventilation-syndrome",
+  "label": "Hyperventilation Syndrome",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "hyperventilation-syndrome"
+ },
+ {
+  "id": "olecranon-bursitis",
+  "label": "Olecranon Bursitis",
+  "aliases": [
+   "Student's Elbow"
+  ],
+  "answer": true,
+  "canonical_id": "olecranon-bursitis"
+ },
+ {
+  "id": "prepatellar-bursitis",
+  "label": "Prepatellar Bursitis",
+  "aliases": [
+   "Housemaid's Knee"
+  ],
+  "answer": true,
+  "canonical_id": "prepatellar-bursitis"
+ },
+ {
+  "id": "erythema-nodosum",
+  "label": "Erythema Nodosum",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "erythema-nodosum"
+ },
+ {
+  "id": "viral-arthritis",
+  "label": "Viral Arthritis",
+  "aliases": [
+   "Post-Viral Arthritis"
+  ],
+  "answer": true,
+  "canonical_id": "viral-arthritis"
+ },
+ {
+  "id": "lipoma",
+  "label": "Lipoma",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "lipoma"
+ },
+ {
+  "id": "umbilical-hernia",
+  "label": "Umbilical Hernia",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "umbilical-hernia"
+ },
+ {
+  "id": "perianal-abscess",
+  "label": "Perianal Abscess",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "perianal-abscess"
+ },
+ {
+  "id": "rib-fracture",
+  "label": "Rib Fracture",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "rib-fracture"
+ },
+ {
+  "id": "epidermoid-cyst",
+  "label": "Epidermoid Cyst",
+  "aliases": [
+   "Sebaceous Cyst"
+  ],
+  "answer": true,
+  "canonical_id": "epidermoid-cyst"
+ },
+ {
+  "id": "cardiac-myxoma",
+  "label": "Cardiac Myxoma",
+  "aliases": [
+   "Atrial Myxoma"
+  ],
+  "answer": true,
+  "canonical_id": "cardiac-myxoma"
+ },
+ {
+  "id": "patent-ductus-arteriosus",
+  "label": "Patent Ductus Arteriosus",
+  "aliases": [
+   "PDA"
+  ],
+  "answer": true,
+  "canonical_id": "patent-ductus-arteriosus"
+ },
+ {
+  "id": "prinzmetal-angina",
+  "label": "Prinzmetal Angina",
+  "aliases": [
+   "Vasospastic Angina"
+  ],
+  "answer": true,
+  "canonical_id": "prinzmetal-angina"
+ },
+ {
+  "id": "pulmonary-valve-stenosis",
+  "label": "Pulmonary Valve Stenosis",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "pulmonary-valve-stenosis"
+ },
+ {
+  "id": "granuloma-annulare",
+  "label": "Granuloma Annulare",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "granuloma-annulare"
+ },
+ {
+  "id": "necrobiosis-lipoidica",
+  "label": "Necrobiosis Lipoidica",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "necrobiosis-lipoidica"
+ },
+ {
+  "id": "mycosis-fungoides",
+  "label": "Mycosis Fungoides",
+  "aliases": [
+   "Cutaneous T-Cell Lymphoma"
+  ],
+  "answer": true,
+  "canonical_id": "mycosis-fungoides"
+ },
+ {
+  "id": "sweet-syndrome",
+  "label": "Sweet Syndrome",
+  "aliases": [
+   "Acute Febrile Neutrophilic Dermatosis"
+  ],
+  "answer": true,
+  "canonical_id": "sweet-syndrome"
+ },
+ {
+  "id": "vestibular-schwannoma",
+  "label": "Vestibular Schwannoma",
+  "aliases": [
+   "Acoustic Neuroma"
+  ],
+  "answer": true,
+  "canonical_id": "vestibular-schwannoma"
+ },
+ {
+  "id": "laryngeal-cancer",
+  "label": "Laryngeal Cancer",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "laryngeal-cancer"
+ },
+ {
+  "id": "zenker-diverticulum",
+  "label": "Zenker Diverticulum",
+  "aliases": [
+   "Pharyngeal Pouch"
+  ],
+  "answer": true,
+  "canonical_id": "zenker-diverticulum"
+ },
+ {
+  "id": "superior-semicircular-canal-dehiscence",
+  "label": "Superior Semicircular Canal Dehiscence",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "superior-semicircular-canal-dehiscence"
+ },
+ {
+  "id": "recurrent-respiratory-papillomatosis",
+  "label": "Recurrent Respiratory Papillomatosis",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "recurrent-respiratory-papillomatosis"
+ },
+ {
+  "id": "deep-neck-space-infection",
+  "label": "Deep Neck Space Infection",
+  "aliases": [
+   "Parapharyngeal Abscess"
+  ],
+  "answer": true,
+  "canonical_id": "deep-neck-space-infection"
+ },
+ {
+  "id": "pleomorphic-adenoma",
+  "label": "Pleomorphic Adenoma",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "pleomorphic-adenoma"
+ },
+ {
+  "id": "warthin-tumor",
+  "label": "Warthin Tumor",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "warthin-tumor"
+ },
+ {
+  "id": "vocal-cord-paralysis",
+  "label": "Vocal Cord Paralysis",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "vocal-cord-paralysis"
+ },
+ {
+  "id": "cyanide-poisoning",
+  "label": "Cyanide Poisoning",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "cyanide-poisoning"
+ },
+ {
+  "id": "lead-poisoning",
+  "label": "Lead Poisoning",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "lead-poisoning"
+ },
+ {
+  "id": "anticholinergic-toxicity",
+  "label": "Anticholinergic Toxicity",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "anticholinergic-toxicity"
+ },
+ {
+  "id": "amatoxin-mushroom-poisoning",
+  "label": "Amatoxin Mushroom Poisoning",
+  "aliases": [
+   "Death Cap Poisoning"
+  ],
+  "answer": true,
+  "canonical_id": "amatoxin-mushroom-poisoning"
+ },
+ {
+  "id": "scorpion-envenomation",
+  "label": "Scorpion Envenomation",
+  "aliases": [
+   "Scorpion Sting"
+  ],
+  "answer": true,
+  "canonical_id": "scorpion-envenomation"
+ },
+ {
+  "id": "zollinger-ellison-syndrome",
+  "label": "Zollinger-Ellison Syndrome",
+  "aliases": [
+   "Gastrinoma"
+  ],
+  "answer": true,
+  "canonical_id": "zollinger-ellison-syndrome"
+ },
+ {
+  "id": "rapidly-progressive-glomerulonephritis",
+  "label": "Rapidly Progressive Glomerulonephritis",
+  "aliases": [
+   "Crescentic Glomerulonephritis"
+  ],
+  "answer": true,
+  "canonical_id": "rapidly-progressive-glomerulonephritis"
+ },
+ {
+  "id": "renal-papillary-necrosis",
+  "label": "Renal Papillary Necrosis",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "renal-papillary-necrosis"
+ },
+ {
+  "id": "urothelial-carcinoma-of-the-renal-pelvis",
+  "label": "Urothelial Carcinoma of the Renal Pelvis",
+  "aliases": [
+   "Upper Tract Urothelial Carcinoma"
+  ],
+  "answer": true,
+  "canonical_id": "urothelial-carcinoma-of-the-renal-pelvis"
+ },
+ {
+  "id": "medullary-sponge-kidney",
+  "label": "Medullary Sponge Kidney",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "medullary-sponge-kidney"
+ },
+ {
+  "id": "neuromyelitis-optica-spectrum-disorder",
+  "label": "Neuromyelitis Optica Spectrum Disorder",
+  "aliases": [
+   "Devic Disease"
+  ],
+  "answer": true,
+  "canonical_id": "neuromyelitis-optica-spectrum-disorder"
+ },
+ {
+  "id": "vasa-previa",
+  "label": "Vasa Previa",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "vasa-previa"
+ },
+ {
+  "id": "umbilical-cord-prolapse",
+  "label": "Umbilical Cord Prolapse",
+  "aliases": [
+   "Cord Prolapse"
+  ],
+  "answer": true,
+  "canonical_id": "umbilical-cord-prolapse"
+ },
+ {
+  "id": "twin-twin-transfusion-syndrome",
+  "label": "Twin-Twin Transfusion Syndrome",
+  "aliases": [
+   "TTTS"
+  ],
+  "answer": true,
+  "canonical_id": "twin-twin-transfusion-syndrome"
+ },
+ {
+  "id": "mature-cystic-teratoma",
+  "label": "Mature Cystic Teratoma",
+  "aliases": [
+   "Dermoid Cyst"
+  ],
+  "answer": true,
+  "canonical_id": "mature-cystic-teratoma"
+ },
+ {
+  "id": "endometrial-cancer",
+  "label": "Endometrial Cancer",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "endometrial-cancer"
+ },
+ {
+  "id": "vulvar-lichen-sclerosus",
+  "label": "Vulvar Lichen Sclerosus",
+  "aliases": [
+   "Lichen Sclerosus"
+  ],
+  "answer": true,
+  "canonical_id": "vulvar-lichen-sclerosus"
+ },
+ {
+  "id": "endophthalmitis",
+  "label": "Endophthalmitis",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "endophthalmitis"
+ },
+ {
+  "id": "acanthamoeba-keratitis",
+  "label": "Acanthamoeba Keratitis",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "acanthamoeba-keratitis"
+ },
+ {
+  "id": "retinitis-pigmentosa",
+  "label": "Retinitis Pigmentosa",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "retinitis-pigmentosa"
+ },
+ {
+  "id": "sympathetic-ophthalmia",
+  "label": "Sympathetic Ophthalmia",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "sympathetic-ophthalmia"
+ },
+ {
+  "id": "optic-nerve-glioma",
+  "label": "Optic Nerve Glioma",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "optic-nerve-glioma"
+ },
+ {
+  "id": "optic-disc-drusen",
+  "label": "Optic Disc Drusen",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "optic-disc-drusen"
+ },
+ {
+  "id": "osteosarcoma",
+  "label": "Osteosarcoma",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "osteosarcoma"
+ },
+ {
+  "id": "ewing-sarcoma",
+  "label": "Ewing Sarcoma",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "ewing-sarcoma"
+ },
+ {
+  "id": "osteoid-osteoma",
+  "label": "Osteoid Osteoma",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "osteoid-osteoma"
+ },
+ {
+  "id": "avascular-necrosis-of-the-femoral-head",
+  "label": "Avascular Necrosis of the Femoral Head",
+  "aliases": [
+   "Osteonecrosis of the Hip"
+  ],
+  "answer": true,
+  "canonical_id": "avascular-necrosis-of-the-femoral-head"
+ },
+ {
+  "id": "fat-embolism-syndrome",
+  "label": "Fat Embolism Syndrome",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "fat-embolism-syndrome"
+ },
+ {
+  "id": "lisfranc-injury",
+  "label": "Lisfranc Injury",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "lisfranc-injury"
+ },
+ {
+  "id": "kienbock-disease",
+  "label": "Kienbock Disease",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "kienbock-disease"
+ },
+ {
+  "id": "charcot-neuroarthropathy",
+  "label": "Charcot Neuroarthropathy",
+  "aliases": [
+   "Charcot Foot"
+  ],
+  "answer": true,
+  "canonical_id": "charcot-neuroarthropathy"
+ },
+ {
+  "id": "spinal-epidural-abscess",
+  "label": "Spinal Epidural Abscess",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "spinal-epidural-abscess"
+ },
+ {
+  "id": "wilms-tumor",
+  "label": "Wilms Tumor",
+  "aliases": [
+   "Nephroblastoma"
+  ],
+  "answer": true,
+  "canonical_id": "wilms-tumor"
+ },
+ {
+  "id": "congenital-adrenal-hyperplasia",
+  "label": "Congenital Adrenal Hyperplasia",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "congenital-adrenal-hyperplasia"
+ },
+ {
+  "id": "kernicterus",
+  "label": "Kernicterus",
+  "aliases": [
+   "Bilirubin Encephalopathy"
+  ],
+  "answer": true,
+  "canonical_id": "kernicterus"
+ },
+ {
+  "id": "neonatal-abstinence-syndrome",
+  "label": "Neonatal Abstinence Syndrome",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "neonatal-abstinence-syndrome"
+ },
+ {
+  "id": "catatonia",
+  "label": "Catatonia",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "catatonia"
+ },
+ {
+  "id": "avoidant-restrictive-food-intake-disorder",
+  "label": "Avoidant/Restrictive Food Intake Disorder",
+  "aliases": [
+   "ARFID"
+  ],
+  "answer": true,
+  "canonical_id": "avoidant-restrictive-food-intake-disorder"
+ },
+ {
+  "id": "pica",
+  "label": "Pica",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "pica"
+ },
+ {
+  "id": "antisocial-personality-disorder",
+  "label": "Antisocial Personality Disorder",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "antisocial-personality-disorder"
+ },
+ {
+  "id": "schizotypal-personality-disorder",
+  "label": "Schizotypal Personality Disorder",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "schizotypal-personality-disorder"
+ },
+ {
+  "id": "depersonalization-derealization-disorder",
+  "label": "Depersonalization-Derealization Disorder",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "depersonalization-derealization-disorder"
+ },
+ {
+  "id": "dissociative-identity-disorder",
+  "label": "Dissociative Identity Disorder",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "dissociative-identity-disorder"
+ },
+ {
+  "id": "gambling-disorder",
+  "label": "Gambling Disorder",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "gambling-disorder"
+ },
+ {
+  "id": "pulmonary-hamartoma",
+  "label": "Pulmonary Hamartoma",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "pulmonary-hamartoma"
+ },
+ {
+  "id": "abdominal-compartment-syndrome",
+  "label": "Abdominal Compartment Syndrome",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "abdominal-compartment-syndrome"
+ },
+ {
+  "id": "sigmoid-volvulus",
+  "label": "Sigmoid Volvulus",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "sigmoid-volvulus"
+ },
+ {
+  "id": "flail-chest",
+  "label": "Flail Chest",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "flail-chest"
+ },
+ {
+  "id": "mitral-stenosis",
+  "label": "Mitral Stenosis",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "mitral-stenosis"
+ },
+ {
+  "id": "atrial-septal-defect",
+  "label": "Atrial Septal Defect",
+  "aliases": [
+   "ASD"
+  ],
+  "answer": true,
+  "canonical_id": "atrial-septal-defect"
+ },
+ {
+  "id": "bullous-pemphigoid",
+  "label": "Bullous Pemphigoid",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "bullous-pemphigoid"
+ },
+ {
+  "id": "erythema-multiforme",
+  "label": "Erythema Multiforme",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "erythema-multiforme"
+ },
+ {
+  "id": "acute-mastoiditis",
+  "label": "Acute Mastoiditis",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "acute-mastoiditis"
+ },
+ {
+  "id": "vestibular-neuritis",
+  "label": "Vestibular Neuritis",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "vestibular-neuritis"
+ },
+ {
+  "id": "laryngomalacia",
+  "label": "Laryngomalacia",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "laryngomalacia"
+ },
+ {
+  "id": "juvenile-nasopharyngeal-angiofibroma",
+  "label": "Juvenile Nasopharyngeal Angiofibroma",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "juvenile-nasopharyngeal-angiofibroma"
+ },
+ {
+  "id": "obstructive-sialadenitis",
+  "label": "Obstructive Sialadenitis",
+  "aliases": [
+   "Chronic Sialadenitis"
+  ],
+  "answer": true,
+  "canonical_id": "obstructive-sialadenitis"
+ },
+ {
+  "id": "tympanic-membrane-perforation",
+  "label": "Tympanic Membrane Perforation",
+  "aliases": [
+   "Perforated Eardrum"
+  ],
+  "answer": true,
+  "canonical_id": "tympanic-membrane-perforation"
+ },
+ {
+  "id": "noise-induced-hearing-loss",
+  "label": "Noise-Induced Hearing Loss",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "noise-induced-hearing-loss"
+ },
+ {
+  "id": "presbycusis",
+  "label": "Presbycusis",
+  "aliases": [
+   "Age-Related Hearing Loss"
+  ],
+  "answer": true,
+  "canonical_id": "presbycusis"
+ },
+ {
+  "id": "iron-poisoning",
+  "label": "Iron Poisoning",
+  "aliases": [
+   "Iron Overdose"
+  ],
+  "answer": true,
+  "canonical_id": "iron-poisoning"
+ },
+ {
+  "id": "beta-blocker-overdose",
+  "label": "Beta-Blocker Overdose",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "beta-blocker-overdose"
+ },
+ {
+  "id": "ethylene-glycol-poisoning",
+  "label": "Ethylene Glycol Poisoning",
+  "aliases": [
+   "Antifreeze Poisoning"
+  ],
+  "answer": true,
+  "canonical_id": "ethylene-glycol-poisoning"
+ },
+ {
+  "id": "primary-hyperaldosteronism",
+  "label": "Primary Hyperaldosteronism",
+  "aliases": [
+   "Conn Syndrome"
+  ],
+  "answer": true,
+  "canonical_id": "primary-hyperaldosteronism"
+ },
+ {
+  "id": "hemophilia-c",
+  "label": "Hemophilia C",
+  "aliases": [
+   "Factor XI Deficiency"
+  ],
+  "answer": true,
+  "canonical_id": "hemophilia-c"
+ },
+ {
+  "id": "hereditary-multiple-exostoses",
+  "label": "Hereditary Multiple Exostoses",
+  "aliases": [
+   "Multiple Osteochondromas"
+  ],
+  "answer": true,
+  "canonical_id": "hereditary-multiple-exostoses"
+ },
+ {
+  "id": "waardenburg-syndrome",
+  "label": "Waardenburg Syndrome",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "waardenburg-syndrome"
+ },
+ {
+  "id": "becker-muscular-dystrophy",
+  "label": "Becker Muscular Dystrophy",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "becker-muscular-dystrophy"
+ },
+ {
+  "id": "myotonia-congenita",
+  "label": "Myotonia Congenita",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "myotonia-congenita"
+ },
+ {
+  "id": "hairy-cell-leukemia",
+  "label": "Hairy Cell Leukemia",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "hairy-cell-leukemia"
+ },
+ {
+  "id": "focal-segmental-glomerulosclerosis",
+  "label": "Focal Segmental Glomerulosclerosis",
+  "aliases": [
+   "FSGS"
+  ],
+  "answer": true,
+  "canonical_id": "focal-segmental-glomerulosclerosis"
+ },
+ {
+  "id": "posterior-urethral-valves",
+  "label": "Posterior Urethral Valves",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "posterior-urethral-valves"
+ },
+ {
+  "id": "vesicoureteral-reflux",
+  "label": "Vesicoureteral Reflux",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "vesicoureteral-reflux"
+ },
+ {
+  "id": "urethral-stricture",
+  "label": "Urethral Stricture",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "urethral-stricture"
+ },
+ {
+  "id": "priapism",
+  "label": "Priapism",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "priapism"
+ },
+ {
+  "id": "medication-overuse-headache",
+  "label": "Medication-Overuse Headache",
+  "aliases": [
+   "Rebound Headache"
+  ],
+  "answer": true,
+  "canonical_id": "medication-overuse-headache"
+ },
+ {
+  "id": "lumbar-radiculopathy",
+  "label": "Lumbar Radiculopathy",
+  "aliases": [
+   "Sciatica"
+  ],
+  "answer": true,
+  "canonical_id": "lumbar-radiculopathy"
+ },
+ {
+  "id": "cervical-insufficiency",
+  "label": "Cervical Insufficiency",
+  "aliases": [
+   "Cervical Incompetence"
+  ],
+  "answer": true,
+  "canonical_id": "cervical-insufficiency"
+ },
+ {
+  "id": "preterm-premature-rupture-of-membranes",
+  "label": "Preterm Premature Rupture of Membranes",
+  "aliases": [
+   "PPROM"
+  ],
+  "answer": true,
+  "canonical_id": "preterm-premature-rupture-of-membranes"
+ },
+ {
+  "id": "postpartum-hemorrhage",
+  "label": "Postpartum Hemorrhage",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "postpartum-hemorrhage"
+ },
+ {
+  "id": "chorioamnionitis",
+  "label": "Chorioamnionitis",
+  "aliases": [
+   "Intra-amniotic Infection"
+  ],
+  "answer": true,
+  "canonical_id": "chorioamnionitis"
+ },
+ {
+  "id": "intrahepatic-cholestasis-of-pregnancy",
+  "label": "Intrahepatic Cholestasis of Pregnancy",
+  "aliases": [
+   "Obstetric Cholestasis"
+  ],
+  "answer": true,
+  "canonical_id": "intrahepatic-cholestasis-of-pregnancy"
+ },
+ {
+  "id": "bartholin-gland-abscess",
+  "label": "Bartholin Gland Abscess",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "bartholin-gland-abscess"
+ },
+ {
+  "id": "gestational-hypertension",
+  "label": "Gestational Hypertension",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "gestational-hypertension"
+ },
+ {
+  "id": "anterior-uveitis",
+  "label": "Anterior Uveitis",
+  "aliases": [
+   "Iritis"
+  ],
+  "answer": true,
+  "canonical_id": "anterior-uveitis"
+ },
+ {
+  "id": "keratoconus",
+  "label": "Keratoconus",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "keratoconus"
+ },
+ {
+  "id": "strabismus",
+  "label": "Strabismus",
+  "aliases": [
+   "Squint"
+  ],
+  "answer": true,
+  "canonical_id": "strabismus"
+ },
+ {
+  "id": "amblyopia",
+  "label": "Amblyopia",
+  "aliases": [
+   "Lazy Eye"
+  ],
+  "answer": true,
+  "canonical_id": "amblyopia"
+ },
+ {
+  "id": "diabetic-retinopathy",
+  "label": "Diabetic Retinopathy",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "diabetic-retinopathy"
+ },
+ {
+  "id": "vitreous-hemorrhage",
+  "label": "Vitreous Hemorrhage",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "vitreous-hemorrhage"
+ },
+ {
+  "id": "dacryocystitis",
+  "label": "Dacryocystitis",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "dacryocystitis"
+ },
+ {
+  "id": "nasolacrimal-duct-obstruction",
+  "label": "Nasolacrimal Duct Obstruction",
+  "aliases": [
+   "Congenital Nasolacrimal Duct Obstruction"
+  ],
+  "answer": true,
+  "canonical_id": "nasolacrimal-duct-obstruction"
+ },
+ {
+  "id": "scaphoid-fracture",
+  "label": "Scaphoid Fracture",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "scaphoid-fracture"
+ },
+ {
+  "id": "developmental-dysplasia-of-the-hip",
+  "label": "Developmental Dysplasia of the Hip",
+  "aliases": [
+   "DDH"
+  ],
+  "answer": true,
+  "canonical_id": "developmental-dysplasia-of-the-hip"
+ },
+ {
+  "id": "legg-calve-perthes-disease",
+  "label": "Legg-Calve-Perthes Disease",
+  "aliases": [
+   "Perthes Disease"
+  ],
+  "answer": true,
+  "canonical_id": "legg-calve-perthes-disease"
+ },
+ {
+  "id": "adolescent-idiopathic-scoliosis",
+  "label": "Adolescent Idiopathic Scoliosis",
+  "aliases": [
+   "Scoliosis"
+  ],
+  "answer": true,
+  "canonical_id": "adolescent-idiopathic-scoliosis"
+ },
+ {
+  "id": "hip-fracture",
+  "label": "Hip Fracture",
+  "aliases": [
+   "Fractured Neck of Femur"
+  ],
+  "answer": true,
+  "canonical_id": "hip-fracture"
+ },
+ {
+  "id": "patellar-dislocation",
+  "label": "Patellar Dislocation",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "patellar-dislocation"
+ },
+ {
+  "id": "meckel-diverticulum",
+  "label": "Meckel Diverticulum",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "meckel-diverticulum"
+ },
+ {
+  "id": "transient-tachypnea-of-the-newborn",
+  "label": "Transient Tachypnea of the Newborn",
+  "aliases": [
+   "TTN"
+  ],
+  "answer": true,
+  "canonical_id": "transient-tachypnea-of-the-newborn"
+ },
+ {
+  "id": "hypoplastic-left-heart-syndrome",
+  "label": "Hypoplastic Left Heart Syndrome",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "hypoplastic-left-heart-syndrome"
+ },
+ {
+  "id": "infantile-hemangioma",
+  "label": "Infantile Hemangioma",
+  "aliases": [
+   "Strawberry Hemangioma"
+  ],
+  "answer": true,
+  "canonical_id": "infantile-hemangioma"
+ },
+ {
+  "id": "bipolar-ii-disorder",
+  "label": "Bipolar II Disorder",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "bipolar-ii-disorder"
+ },
+ {
+  "id": "schizoaffective-disorder",
+  "label": "Schizoaffective Disorder",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "schizoaffective-disorder"
+ },
+ {
+  "id": "brief-psychotic-disorder",
+  "label": "Brief Psychotic Disorder",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "brief-psychotic-disorder"
+ },
+ {
+  "id": "aspiration-pneumonia",
+  "label": "Aspiration Pneumonia",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "aspiration-pneumonia"
+ },
+ {
+  "id": "septic-bursitis",
+  "label": "Septic Bursitis",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "septic-bursitis"
+ },
+ {
+  "id": "transthyretin-cardiac-amyloidosis",
+  "label": "Transthyretin Cardiac Amyloidosis",
+  "aliases": [
+   "Cardiac Amyloidosis",
+   "ATTR Amyloidosis"
+  ],
+  "answer": true,
+  "canonical_id": "transthyretin-cardiac-amyloidosis"
+ },
+ {
+  "id": "left-ventricular-noncompaction",
+  "label": "Left Ventricular Noncompaction",
+  "aliases": [
+   "Noncompaction Cardiomyopathy"
+  ],
+  "answer": true,
+  "canonical_id": "left-ventricular-noncompaction"
+ },
+ {
+  "id": "pericardial-cyst",
+  "label": "Pericardial Cyst",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "pericardial-cyst"
+ },
+ {
+  "id": "anomalous-origin-of-the-left-coronary-artery",
+  "label": "Anomalous Origin of the Left Coronary Artery",
+  "aliases": [
+   "ALCAPA",
+   "Bland-White-Garland Syndrome"
+  ],
+  "answer": true,
+  "canonical_id": "anomalous-origin-of-the-left-coronary-artery"
+ },
+ {
+  "id": "ebstein-anomaly",
+  "label": "Ebstein Anomaly",
+  "aliases": [
+   "Ebstein's Anomaly"
+  ],
+  "answer": true,
+  "canonical_id": "ebstein-anomaly"
+ },
+ {
+  "id": "loeffler-endocarditis",
+  "label": "Loeffler Endocarditis",
+  "aliases": [
+   "Hypereosinophilic Endomyocardial Disease"
+  ],
+  "answer": true,
+  "canonical_id": "loeffler-endocarditis"
+ },
+ {
+  "id": "kounis-syndrome",
+  "label": "Kounis Syndrome",
+  "aliases": [
+   "Allergic Angina"
+  ],
+  "answer": true,
+  "canonical_id": "kounis-syndrome"
+ },
+ {
+  "id": "spontaneous-coronary-artery-dissection",
+  "label": "Spontaneous Coronary Artery Dissection",
+  "aliases": [
+   "SCAD"
+  ],
+  "answer": true,
+  "canonical_id": "spontaneous-coronary-artery-dissection"
+ },
+ {
+  "id": "libman-sacks-endocarditis",
+  "label": "Libman-Sacks Endocarditis",
+  "aliases": [
+   "Marantic Endocarditis in Lupus"
+  ],
+  "answer": true,
+  "canonical_id": "libman-sacks-endocarditis"
+ },
+ {
+  "id": "cardiac-angiosarcoma",
+  "label": "Cardiac Angiosarcoma",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "cardiac-angiosarcoma"
+ },
+ {
+  "id": "commotio-cordis",
+  "label": "Commotio Cordis",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "commotio-cordis"
+ },
+ {
+  "id": "short-qt-syndrome",
+  "label": "Short QT Syndrome",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "short-qt-syndrome"
+ },
+ {
+  "id": "cor-triatriatum",
+  "label": "Cor Triatriatum",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "cor-triatriatum"
+ },
+ {
+  "id": "esthesioneuroblastoma",
+  "label": "Esthesioneuroblastoma",
+  "aliases": [
+   "Olfactory Neuroblastoma"
+  ],
+  "answer": true,
+  "canonical_id": "esthesioneuroblastoma"
+ },
+ {
+  "id": "glomus-jugulare-tumor",
+  "label": "Glomus Jugulare Tumor",
+  "aliases": [
+   "Jugular Paraganglioma"
+  ],
+  "answer": true,
+  "canonical_id": "glomus-jugulare-tumor"
+ },
+ {
+  "id": "eagle-syndrome",
+  "label": "Eagle Syndrome",
+  "aliases": [
+   "Elongated Styloid Process Syndrome"
+  ],
+  "answer": true,
+  "canonical_id": "eagle-syndrome"
+ },
+ {
+  "id": "frey-syndrome",
+  "label": "Frey Syndrome",
+  "aliases": [
+   "Gustatory Sweating",
+   "Auriculotemporal Syndrome"
+  ],
+  "answer": true,
+  "canonical_id": "frey-syndrome"
+ },
+ {
+  "id": "mal-de-debarquement-syndrome",
+  "label": "Mal de Debarquement Syndrome",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "mal-de-debarquement-syndrome"
+ },
+ {
+  "id": "patulous-eustachian-tube",
+  "label": "Patulous Eustachian Tube",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "patulous-eustachian-tube"
+ },
+ {
+  "id": "rhinoscleroma",
+  "label": "Rhinoscleroma",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "rhinoscleroma"
+ },
+ {
+  "id": "rhinosporidiosis",
+  "label": "Rhinosporidiosis",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "rhinosporidiosis"
+ },
+ {
+  "id": "pendred-syndrome",
+  "label": "Pendred Syndrome",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "pendred-syndrome"
+ },
+ {
+  "id": "petrous-apicitis",
+  "label": "Petrous Apicitis",
+  "aliases": [
+   "Gradenigo Syndrome"
+  ],
+  "answer": true,
+  "canonical_id": "petrous-apicitis"
+ },
+ {
+  "id": "kimura-disease",
+  "label": "Kimura Disease",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "kimura-disease"
+ },
+ {
+  "id": "methemoglobinemia",
+  "label": "Methemoglobinemia",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "methemoglobinemia"
+ },
+ {
+  "id": "thallium-poisoning",
+  "label": "Thallium Poisoning",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "thallium-poisoning"
+ },
+ {
+  "id": "hydrofluoric-acid-burn",
+  "label": "Hydrofluoric Acid Burn",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "hydrofluoric-acid-burn"
+ },
+ {
+  "id": "strychnine-poisoning",
+  "label": "Strychnine Poisoning",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "strychnine-poisoning"
+ },
+ {
+  "id": "paraquat-poisoning",
+  "label": "Paraquat Poisoning",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "paraquat-poisoning"
+ },
+ {
+  "id": "arsenic-poisoning",
+  "label": "Arsenic Poisoning",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "arsenic-poisoning"
+ },
+ {
+  "id": "mercury-poisoning",
+  "label": "Mercury Poisoning",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "mercury-poisoning"
+ },
+ {
+  "id": "ciguatera-fish-poisoning",
+  "label": "Ciguatera Fish Poisoning",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "ciguatera-fish-poisoning"
+ },
+ {
+  "id": "tetrodotoxin-poisoning",
+  "label": "Tetrodotoxin Poisoning",
+  "aliases": [
+   "Pufferfish Poisoning"
+  ],
+  "answer": true,
+  "canonical_id": "tetrodotoxin-poisoning"
+ },
+ {
+  "id": "box-jellyfish-envenomation",
+  "label": "Box Jellyfish Envenomation",
+  "aliases": [
+   "Chironex Envenomation"
+  ],
+  "answer": true,
+  "canonical_id": "box-jellyfish-envenomation"
+ },
+ {
+  "id": "decompression-sickness",
+  "label": "Decompression Sickness",
+  "aliases": [
+   "The Bends",
+   "Caisson Disease"
+  ],
+  "answer": true,
+  "canonical_id": "decompression-sickness"
+ },
+ {
+  "id": "high-altitude-cerebral-edema",
+  "label": "High-Altitude Cerebral Edema",
+  "aliases": [
+   "HACE"
+  ],
+  "answer": true,
+  "canonical_id": "high-altitude-cerebral-edema"
+ },
+ {
+  "id": "lightning-injury",
+  "label": "Lightning Injury",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "lightning-injury"
+ },
+ {
+  "id": "propofol-infusion-syndrome",
+  "label": "Propofol Infusion Syndrome",
+  "aliases": [
+   "PRIS"
+  ],
+  "answer": true,
+  "canonical_id": "propofol-infusion-syndrome"
+ },
+ {
+  "id": "intestinal-lymphangiectasia",
+  "label": "Intestinal Lymphangiectasia",
+  "aliases": [
+   "Waldmann Disease"
+  ],
+  "answer": true,
+  "canonical_id": "intestinal-lymphangiectasia"
+ },
+ {
+  "id": "hepatic-veno-occlusive-disease",
+  "label": "Hepatic Veno-Occlusive Disease",
+  "aliases": [
+   "Sinusoidal Obstruction Syndrome"
+  ],
+  "answer": true,
+  "canonical_id": "hepatic-veno-occlusive-disease"
+ },
+ {
+  "id": "cronkhite-canada-syndrome",
+  "label": "Cronkhite-Canada Syndrome",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "cronkhite-canada-syndrome"
+ },
+ {
+  "id": "blastic-plasmacytoid-dendritic-cell-neoplasm",
+  "label": "Blastic Plasmacytoid Dendritic Cell Neoplasm",
+  "aliases": [
+   "BPDCN"
+  ],
+  "answer": true,
+  "canonical_id": "blastic-plasmacytoid-dendritic-cell-neoplasm"
+ },
+ {
+  "id": "primary-amoebic-meningoencephalitis",
+  "label": "Primary Amoebic Meningoencephalitis",
+  "aliases": [
+   "Naegleria fowleri Infection"
+  ],
+  "answer": true,
+  "canonical_id": "primary-amoebic-meningoencephalitis"
+ },
+ {
+  "id": "strongyloides-hyperinfection",
+  "label": "Strongyloides Hyperinfection",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "strongyloides-hyperinfection"
+ },
+ {
+  "id": "mucormycosis",
+  "label": "Mucormycosis",
+  "aliases": [
+   "Rhinocerebral Mucormycosis",
+   "Black Fungus"
+  ],
+  "answer": true,
+  "canonical_id": "mucormycosis"
+ },
+ {
+  "id": "fibrillary-glomerulonephritis",
+  "label": "Fibrillary Glomerulonephritis",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "fibrillary-glomerulonephritis"
+ },
+ {
+  "id": "nutcracker-syndrome",
+  "label": "Nutcracker Syndrome",
+  "aliases": [
+   "Left Renal Vein Entrapment"
+  ],
+  "answer": true,
+  "canonical_id": "nutcracker-syndrome"
+ },
+ {
+  "id": "loin-pain-hematuria-syndrome",
+  "label": "Loin Pain Hematuria Syndrome",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "loin-pain-hematuria-syndrome"
+ },
+ {
+  "id": "renal-medullary-carcinoma",
+  "label": "Renal Medullary Carcinoma",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "renal-medullary-carcinoma"
+ },
+ {
+  "id": "collapsing-glomerulopathy",
+  "label": "Collapsing Glomerulopathy",
+  "aliases": [
+   "HIV-Associated Nephropathy"
+  ],
+  "answer": true,
+  "canonical_id": "collapsing-glomerulopathy"
+ },
+ {
+  "id": "placental-site-trophoblastic-tumor",
+  "label": "Placental Site Trophoblastic Tumor",
+  "aliases": [
+   "PSTT"
+  ],
+  "answer": true,
+  "canonical_id": "placental-site-trophoblastic-tumor"
+ },
+ {
+  "id": "meigs-syndrome",
+  "label": "Meigs Syndrome",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "meigs-syndrome"
+ },
+ {
+  "id": "struma-ovarii",
+  "label": "Struma Ovarii",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "struma-ovarii"
+ },
+ {
+  "id": "pseudomyxoma-peritonei",
+  "label": "Pseudomyxoma Peritonei",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "pseudomyxoma-peritonei"
+ },
+ {
+  "id": "sertoli-leydig-cell-tumor",
+  "label": "Sertoli-Leydig Cell Tumor",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "sertoli-leydig-cell-tumor"
+ },
+ {
+  "id": "mayer-rokitansky-kuster-hauser-syndrome",
+  "label": "Mayer-Rokitansky-Kuster-Hauser Syndrome",
+  "aliases": [
+   "MRKH Syndrome",
+   "Mullerian Agenesis"
+  ],
+  "answer": true,
+  "canonical_id": "mayer-rokitansky-kuster-hauser-syndrome"
+ },
+ {
+  "id": "swyer-syndrome",
+  "label": "Swyer Syndrome",
+  "aliases": [
+   "46,XY Complete Gonadal Dysgenesis"
+  ],
+  "answer": true,
+  "canonical_id": "swyer-syndrome"
+ },
+ {
+  "id": "heterotopic-pregnancy",
+  "label": "Heterotopic Pregnancy",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "heterotopic-pregnancy"
+ },
+ {
+  "id": "cesarean-scar-pregnancy",
+  "label": "Cesarean Scar Pregnancy",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "cesarean-scar-pregnancy"
+ },
+ {
+  "id": "peripartum-uterine-inversion",
+  "label": "Peripartum Uterine Inversion",
+  "aliases": [
+   "Uterine Inversion"
+  ],
+  "answer": true,
+  "canonical_id": "peripartum-uterine-inversion"
+ },
+ {
+  "id": "pseudocyesis",
+  "label": "Pseudocyesis",
+  "aliases": [
+   "False Pregnancy"
+  ],
+  "answer": true,
+  "canonical_id": "pseudocyesis"
+ },
+ {
+  "id": "ovarian-vein-thrombosis",
+  "label": "Ovarian Vein Thrombosis",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "ovarian-vein-thrombosis"
+ },
+ {
+  "id": "coats-disease",
+  "label": "Coats Disease",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "coats-disease"
+ },
+ {
+  "id": "birdshot-chorioretinopathy",
+  "label": "Birdshot Chorioretinopathy",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "birdshot-chorioretinopathy"
+ },
+ {
+  "id": "acute-retinal-necrosis",
+  "label": "Acute Retinal Necrosis",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "acute-retinal-necrosis"
+ },
+ {
+  "id": "ocular-toxocariasis",
+  "label": "Ocular Toxocariasis",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "ocular-toxocariasis"
+ },
+ {
+  "id": "best-vitelliform-macular-dystrophy",
+  "label": "Best Vitelliform Macular Dystrophy",
+  "aliases": [
+   "Best Disease"
+  ],
+  "answer": true,
+  "canonical_id": "best-vitelliform-macular-dystrophy"
+ },
+ {
+  "id": "stargardt-disease",
+  "label": "Stargardt Disease",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "stargardt-disease"
+ },
+ {
+  "id": "charles-bonnet-syndrome",
+  "label": "Charles Bonnet Syndrome",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "charles-bonnet-syndrome"
+ },
+ {
+  "id": "fuchs-endothelial-corneal-dystrophy",
+  "label": "Fuchs Endothelial Corneal Dystrophy",
+  "aliases": [
+   "Fuchs Dystrophy"
+  ],
+  "answer": true,
+  "canonical_id": "fuchs-endothelial-corneal-dystrophy"
+ },
+ {
+  "id": "ocular-cicatricial-pemphigoid",
+  "label": "Ocular Cicatricial Pemphigoid",
+  "aliases": [
+   "Mucous Membrane Pemphigoid of the Eye"
+  ],
+  "answer": true,
+  "canonical_id": "ocular-cicatricial-pemphigoid"
+ },
+ {
+  "id": "eales-disease",
+  "label": "Eales Disease",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "eales-disease"
+ },
+ {
+  "id": "tolosa-hunt-syndrome",
+  "label": "Tolosa-Hunt Syndrome",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "tolosa-hunt-syndrome"
+ },
+ {
+  "id": "fibrodysplasia-ossificans-progressiva",
+  "label": "Fibrodysplasia Ossificans Progressiva",
+  "aliases": [
+   "FOP",
+   "Stone Man Syndrome"
+  ],
+  "answer": true,
+  "canonical_id": "fibrodysplasia-ossificans-progressiva"
+ },
+ {
+  "id": "melorheostosis",
+  "label": "Melorheostosis",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "melorheostosis"
+ },
+ {
+  "id": "gorham-stout-disease",
+  "label": "Gorham-Stout Disease",
+  "aliases": [
+   "Vanishing Bone Disease"
+  ],
+  "answer": true,
+  "canonical_id": "gorham-stout-disease"
+ },
+ {
+  "id": "osteopetrosis",
+  "label": "Osteopetrosis",
+  "aliases": [
+   "Marble Bone Disease",
+   "Albers-Schonberg Disease"
+  ],
+  "answer": true,
+  "canonical_id": "osteopetrosis"
+ },
+ {
+  "id": "chondrosarcoma",
+  "label": "Chondrosarcoma",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "chondrosarcoma"
+ },
+ {
+  "id": "adamantinoma",
+  "label": "Adamantinoma",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "adamantinoma"
+ },
+ {
+  "id": "synovial-chondromatosis",
+  "label": "Synovial Chondromatosis",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "synovial-chondromatosis"
+ },
+ {
+  "id": "pigmented-villonodular-synovitis",
+  "label": "Pigmented Villonodular Synovitis",
+  "aliases": [
+   "Tenosynovial Giant Cell Tumor"
+  ],
+  "answer": true,
+  "canonical_id": "pigmented-villonodular-synovitis"
+ },
+ {
+  "id": "freiberg-disease",
+  "label": "Freiberg Disease",
+  "aliases": [
+   "Freiberg Infraction"
+  ],
+  "answer": true,
+  "canonical_id": "freiberg-disease"
+ },
+ {
+  "id": "madelung-deformity",
+  "label": "Madelung Deformity",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "madelung-deformity"
+ },
+ {
+  "id": "klippel-feil-syndrome",
+  "label": "Klippel-Feil Syndrome",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "klippel-feil-syndrome"
+ },
+ {
+  "id": "os-trigonum-syndrome",
+  "label": "Os Trigonum Syndrome",
+  "aliases": [
+   "Posterior Ankle Impingement"
+  ],
+  "answer": true,
+  "canonical_id": "os-trigonum-syndrome"
+ },
+ {
+  "id": "quadrilateral-space-syndrome",
+  "label": "Quadrilateral Space Syndrome",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "quadrilateral-space-syndrome"
+ },
+ {
+  "id": "factitious-disorder-imposed-on-another",
+  "label": "Factitious Disorder Imposed on Another",
+  "aliases": [
+   "Munchausen Syndrome by Proxy",
+   "Fabricated or Induced Illness"
+  ],
+  "answer": true,
+  "canonical_id": "factitious-disorder-imposed-on-another"
+ },
+ {
+  "id": "ganser-syndrome",
+  "label": "Ganser Syndrome",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "ganser-syndrome"
+ },
+ {
+  "id": "shared-psychotic-disorder",
+  "label": "Shared Psychotic Disorder",
+  "aliases": [
+   "Folie a Deux",
+   "Induced Delusional Disorder"
+  ],
+  "answer": true,
+  "canonical_id": "shared-psychotic-disorder"
+ },
+ {
+  "id": "cotard-syndrome",
+  "label": "Cotard Syndrome",
+  "aliases": [
+   "Walking Corpse Syndrome"
+  ],
+  "answer": true,
+  "canonical_id": "cotard-syndrome"
+ },
+ {
+  "id": "capgras-syndrome",
+  "label": "Capgras Syndrome",
+  "aliases": [
+   "Capgras Delusion"
+  ],
+  "answer": true,
+  "canonical_id": "capgras-syndrome"
+ },
+ {
+  "id": "fregoli-syndrome",
+  "label": "Fregoli Syndrome",
+  "aliases": [
+   "Fregoli Delusion"
+  ],
+  "answer": true,
+  "canonical_id": "fregoli-syndrome"
+ },
+ {
+  "id": "delusional-parasitosis",
+  "label": "Delusional Parasitosis",
+  "aliases": [
+   "Ekbom Syndrome"
+  ],
+  "answer": true,
+  "canonical_id": "delusional-parasitosis"
+ },
+ {
+  "id": "kleine-levin-syndrome",
+  "label": "Kleine-Levin Syndrome",
+  "aliases": [
+   "Sleeping Beauty Syndrome"
+  ],
+  "answer": true,
+  "canonical_id": "kleine-levin-syndrome"
+ },
+ {
+  "id": "psychogenic-polydipsia",
+  "label": "Psychogenic Polydipsia",
+  "aliases": [
+   "Primary Polydipsia"
+  ],
+  "answer": true,
+  "canonical_id": "psychogenic-polydipsia"
+ },
+ {
+  "id": "tardive-dyskinesia",
+  "label": "Tardive Dyskinesia",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "tardive-dyskinesia"
+ },
+ {
+  "id": "antidepressant-discontinuation-syndrome",
+  "label": "Antidepressant Discontinuation Syndrome",
+  "aliases": [
+   "SSRI Discontinuation Syndrome"
+  ],
+  "answer": true,
+  "canonical_id": "antidepressant-discontinuation-syndrome"
+ },
+ {
+  "id": "koro",
+  "label": "Koro",
+  "aliases": [
+   "Genital Retraction Syndrome"
+  ],
+  "answer": true,
+  "canonical_id": "koro"
+ },
+ {
+  "id": "body-integrity-dysphoria",
+  "label": "Body Integrity Dysphoria",
+  "aliases": [
+   "Body Integrity Identity Disorder"
+  ],
+  "answer": true,
+  "canonical_id": "body-integrity-dysphoria"
+ },
+ {
+  "id": "othello-syndrome",
+  "label": "Othello Syndrome",
+  "aliases": [
+   "Delusional Jealousy"
+  ],
+  "answer": true,
+  "canonical_id": "othello-syndrome"
+ },
+ {
+  "id": "hepatopulmonary-syndrome",
+  "label": "Hepatopulmonary Syndrome",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "hepatopulmonary-syndrome"
+ },
+ {
+  "id": "pulmonary-veno-occlusive-disease",
+  "label": "Pulmonary Veno-Occlusive Disease",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "pulmonary-veno-occlusive-disease"
+ },
+ {
+  "id": "swyer-james-syndrome",
+  "label": "Swyer-James Syndrome",
+  "aliases": [
+   "Swyer-James-MacLeod Syndrome"
+  ],
+  "answer": true,
+  "canonical_id": "swyer-james-syndrome"
+ },
+ {
+  "id": "bronchopulmonary-sequestration",
+  "label": "Bronchopulmonary Sequestration",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "bronchopulmonary-sequestration"
+ },
+ {
+  "id": "tracheobronchomalacia",
+  "label": "Tracheobronchomalacia",
+  "aliases": [
+   "Excessive Central Airway Collapse"
+  ],
+  "answer": true,
+  "canonical_id": "tracheobronchomalacia"
+ },
+ {
+  "id": "lady-windermere-syndrome",
+  "label": "Lady Windermere Syndrome",
+  "aliases": [
+   "Nodular Bronchiectatic MAC Infection"
+  ],
+  "answer": true,
+  "canonical_id": "lady-windermere-syndrome"
+ },
+ {
+  "id": "pleuroparenchymal-fibroelastosis",
+  "label": "Pleuroparenchymal Fibroelastosis",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "pleuroparenchymal-fibroelastosis"
+ },
+ {
+  "id": "pulmonary-hyalinizing-granuloma",
+  "label": "Pulmonary Hyalinizing Granuloma",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "pulmonary-hyalinizing-granuloma"
+ },
+ {
+  "id": "mesenteric-panniculitis",
+  "label": "Mesenteric Panniculitis",
+  "aliases": [
+   "Sclerosing Mesenteritis"
+  ],
+  "answer": true,
+  "canonical_id": "mesenteric-panniculitis"
+ },
+ {
+  "id": "paget-schroetter-syndrome",
+  "label": "Paget-Schroetter Syndrome",
+  "aliases": [
+   "Effort Thrombosis"
+  ],
+  "answer": true,
+  "canonical_id": "paget-schroetter-syndrome"
+ },
+ {
+  "id": "amyand-hernia",
+  "label": "Amyand Hernia",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "amyand-hernia"
+ },
+ {
+  "id": "littre-hernia",
+  "label": "Littre Hernia",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "littre-hernia"
+ },
+ {
+  "id": "spigelian-hernia",
+  "label": "Spigelian Hernia",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "spigelian-hernia"
+ },
+ {
+  "id": "bouveret-syndrome",
+  "label": "Bouveret Syndrome",
+  "aliases": [],
+  "answer": true,
+  "canonical_id": "bouveret-syndrome"
+ },
+ {
+  "id": "desmoid-tumor",
+  "label": "Desmoid Tumor",
+  "aliases": [
+   "Aggressive Fibromatosis"
+  ],
+  "answer": true,
+  "canonical_id": "desmoid-tumor"
  }
 ]

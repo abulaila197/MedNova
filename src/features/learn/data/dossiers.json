@@ -4957,5 +4957,4370 @@
 "cli": "Often found on antenatal scans; at delivery the placenta fails to separate, causing massive haemorrhage; may invade the bladder.",
 "inv": "Ultrasound shows placental lacunae, loss of the clear zone, myometrial thinning and abnormal vessels; MRI helps assess depth and bladder involvement.",
 "tre": "Planned caesarean hysterectomy at 34 to 36 weeks in a specialist centre with blood products ready, leaving the placenta in place."
+},
+{
+"id": "stable-angina",
+"name": "Stable Angina",
+"epi": "Very common; the usual first sign of coronary artery disease in middle-aged and older adults.",
+"eti": "Fixed atherosclerotic narrowing of a coronary artery limits blood flow when the heart works harder.",
+"cli": "Predictable chest pressure on exertion or stress, relieved by rest or nitroglycerin within minutes.",
+"inv": "Normal resting ECG and troponin; stress testing or CT coronary angiography shows ischemia or stenosis.",
+"tre": "Aspirin, a statin, beta-blocker or calcium channel blocker, sublingual nitroglycerin, risk factor control; revascularization if symptoms persist."
+},
+{
+"id": "mitral-regurgitation",
+"name": "Mitral Regurgitation",
+"epi": "Common valve lesion, rising with age; causes include degeneration, prolapse, ischemia and rheumatic disease.",
+"eti": "Incomplete closure of the mitral valve lets blood flow back into the left atrium in systole.",
+"cli": "Breathlessness, fatigue, palpitations; apical holosystolic murmur radiating to the axilla.",
+"inv": "Echocardiography grades severity and shows the cause; ECG may show atrial fibrillation.",
+"tre": "Diuretics and afterload reduction for symptoms; surgical repair or replacement, or transcatheter clip, when severe."
+},
+{
+"id": "atrial-flutter",
+"name": "Atrial Flutter",
+"epi": "Less common than atrial fibrillation; seen with heart and lung disease and after cardiac surgery.",
+"eti": "A macro-reentrant circuit, usually around the tricuspid annulus in the right atrium, at about 300 per minute.",
+"cli": "Palpitations, fatigue, dizziness; a regular pulse often near 150 from 2:1 conduction.",
+"inv": "ECG shows sawtooth flutter waves, best in the inferior leads.",
+"tre": "Rate control, cardioversion, anticoagulation as in atrial fibrillation; catheter ablation of the cavotricuspid isthmus is often curative."
+},
+{
+"id": "sinus-bradycardia",
+"name": "Sinus Bradycardia",
+"epi": "Common in trained athletes and during sleep; also seen with drugs and hypothyroidism.",
+"eti": "Slow firing of the sinus node from high vagal tone or reduced automaticity.",
+"cli": "Usually no symptoms; if pathological, fatigue, dizziness or fainting.",
+"inv": "ECG shows normal sinus P waves at under 60 per minute; check thyroid, electrolytes and drugs.",
+"tre": "No treatment when harmless; stop offending drugs; atropine or pacing only if symptomatic and persistent."
+},
+{
+"id": "orthostatic-hypotension",
+"name": "Orthostatic Hypotension",
+"epi": "Common in older adults, especially with several drugs, dehydration, diabetes or Parkinson disease.",
+"eti": "Failure of normal reflex vasoconstriction and heart rate rise when standing, so blood pools in the legs.",
+"cli": "Dizziness, blurred vision or fainting on standing, falls.",
+"inv": "A drop of at least 20 systolic or 10 diastolic within 3 minutes of standing.",
+"tre": "Review and reduce drugs, fluids, slow position changes, compression stockings; fludrocortisone or midodrine if needed."
+},
+{
+"id": "peripheral-artery-disease",
+"name": "Peripheral Artery Disease",
+"epi": "Common in older smokers and diabetics; a marker of widespread atherosclerosis.",
+"eti": "Atherosclerotic narrowing of the leg arteries reduces blood flow during exercise.",
+"cli": "Calf claudication relieved by rest; weak pulses, hair loss, cool skin; rest pain and ulcers when severe.",
+"inv": "Ankle-brachial index under 0.9; Doppler ultrasound or angiography maps the narrowing.",
+"tre": "Stop smoking, supervised walking, antiplatelet and statin, control of diabetes and blood pressure; revascularization for severe disease."
+},
+{
+"id": "varicose-veins",
+"name": "Varicose Veins",
+"epi": "Very common, more in women, with age, pregnancy, obesity and long standing.",
+"eti": "Faulty valves in superficial leg veins let blood flow backwards, so the veins dilate and twist.",
+"cli": "Aching, heaviness, itch, ankle swelling; visible tortuous veins; skin changes when advanced.",
+"inv": "Clinical diagnosis; duplex ultrasound shows reflux before treatment.",
+"tre": "Compression stockings, leg raising, exercise; endovenous ablation, foam sclerotherapy or surgery."
+},
+{
+"id": "mitral-valve-prolapse",
+"name": "Mitral Valve Prolapse",
+"epi": "The most common valve abnormality, seen in a few percent of people; linked with connective tissue disorders.",
+"eti": "Thickened, floppy mitral leaflets bulge back into the left atrium in systole.",
+"cli": "Often silent; palpitations, atypical chest pain; mid-systolic click and late murmur.",
+"inv": "Echocardiography shows leaflet displacement and any regurgitation.",
+"tre": "Reassurance; beta-blockers for palpitations; valve repair if severe regurgitation develops."
+},
+{
+"id": "premature-ventricular-contractions",
+"name": "Premature Ventricular Contractions",
+"epi": "Very common in healthy people; more with caffeine, stress, alcohol and heart disease.",
+"eti": "Early beats arising from a focus in the ventricles, outside the normal conduction system.",
+"cli": "Skipped or strong beats; usually harmless.",
+"inv": "ECG or Holter shows wide early QRS complexes with a compensatory pause; echo to check the heart.",
+"tre": "Reassurance and less caffeine; beta-blockers if bothersome; ablation for very frequent beats."
+},
+{
+"id": "epistaxis",
+"name": "Epistaxis",
+"epi": "Very common, especially in children and older adults; most bleeds are anterior.",
+"eti": "Usually bleeding from Kiesselbach plexus on the anterior septum after dryness or trauma.",
+"cli": "Bleeding from one nostril; posterior bleeds are heavier and run down the throat.",
+"inv": "Clinical; blood count and clotting only if severe or recurrent.",
+"tre": "Firm pressure on the soft nose while leaning forward; cautery or packing if it persists."
+},
+{
+"id": "tonsillitis",
+"name": "Tonsillitis",
+"epi": "Very common in children and young adults; viral or bacterial.",
+"eti": "Inflammation of the palatine tonsils, often from viruses or group A streptococcus.",
+"cli": "Sore throat, painful swallowing, fever, tender neck nodes, tonsillar exudate.",
+"inv": "Centor or FeverPAIN score; rapid strep test or throat culture.",
+"tre": "Painkillers and fluids; penicillin for strep; tonsillectomy for frequent recurrences."
+},
+{
+"id": "acute-laryngitis",
+"name": "Acute Laryngitis",
+"epi": "Very common, usually with viral colds or voice overuse.",
+"eti": "Inflammation and swelling of the vocal cords, so they vibrate poorly.",
+"cli": "Hoarse or lost voice, dry cough, sore throat; resolves within two weeks.",
+"inv": "Clinical; laryngoscopy if hoarseness lasts over 3 weeks.",
+"tre": "Voice rest, fluids, steam, stop smoking; no antibiotics."
+},
+{
+"id": "cerumen-impaction",
+"name": "Cerumen Impaction",
+"epi": "Common, especially in older adults, hearing aid users and cotton-bud users.",
+"eti": "Earwax builds up and blocks the ear canal.",
+"cli": "Blocked ear, muffled hearing, sometimes itch, tinnitus or dizziness.",
+"inv": "Otoscopy shows wax blocking the view of the eardrum.",
+"tre": "Softening drops, then irrigation or microsuction."
+},
+{
+"id": "vocal-cord-nodules",
+"name": "Vocal Cord Nodules",
+"epi": "Common in people who overuse their voice, such as singers and teachers.",
+"eti": "Repeated vocal strain causes callus-like swellings on both vocal cords.",
+"cli": "Hoarse, breathy voice and vocal fatigue.",
+"inv": "Laryngoscopy shows paired nodules at the front-middle third junction.",
+"tre": "Voice therapy and rest; surgery only if therapy fails."
+},
+{
+"id": "sialolithiasis",
+"name": "Sialolithiasis",
+"epi": "Most common in the submandibular gland; peak in middle age.",
+"eti": "A calcium stone blocks a salivary duct, so saliva backs up during meals.",
+"cli": "Painful swelling of the gland at mealtimes; infection can follow.",
+"inv": "Palpation, ultrasound or X-ray shows the stone.",
+"tre": "Hydration, massage, sour sweets; removal of the stone or the gland if it recurs."
+},
+{
+"id": "nasal-bone-fracture",
+"name": "Nasal Bone Fracture",
+"epi": "The most common facial fracture, from sport, fights and falls.",
+"eti": "Direct trauma breaks the nasal bones.",
+"cli": "Pain, swelling, nosebleed, deformity, blocked nose.",
+"inv": "Clinical; always check for a septal haematoma; X-ray rarely needed.",
+"tre": "Ice and painkillers; reduction within about 2 weeks if deformed; drain a septal haematoma at once."
+},
+{
+"id": "heat-exhaustion",
+"name": "Heat Exhaustion",
+"epi": "Common in hot weather among outdoor workers, athletes and older people.",
+"eti": "Heat stress with loss of water and salt, without failure of temperature control.",
+"cli": "Weakness, headache, nausea, heavy sweating, fast pulse; temperature under 40 °C; normal mental state.",
+"inv": "Clinical; normal mental state separates it from heat stroke.",
+"tre": "Rest in a cool place, remove clothing, oral or IV fluids."
+},
+{
+"id": "hypothermia",
+"name": "Hypothermia",
+"epi": "Seen in older adults, the homeless, people with alcohol use and after cold-water immersion.",
+"eti": "Body heat loss exceeds production, so the core temperature falls below 35 °C.",
+"cli": "Shivering, then confusion, slow pulse, arrhythmias and coma as it worsens.",
+"inv": "Core temperature measurement; ECG may show J waves and arrhythmias.",
+"tre": "Remove wet clothes, passive and active rewarming, warm IV fluids; careful handling to avoid arrhythmias."
+},
+{
+"id": "benzodiazepine-overdose",
+"name": "Benzodiazepine Overdose",
+"epi": "Common intentional overdose; dangerous mainly when mixed with alcohol or opioids.",
+"eti": "Enhanced GABA-A activity depresses the brain.",
+"cli": "Drowsiness, slurred speech, ataxia, coma; breathing usually preserved if taken alone.",
+"inv": "Clinical, with urine screen; check paracetamol and alcohol levels.",
+"tre": "Supportive care and airway protection; flumazenil only in rare cases because of seizure risk."
+},
+{
+"id": "alcohol-intoxication",
+"name": "Alcohol Intoxication",
+"epi": "Very common, especially in young adults.",
+"eti": "Ethanol depresses the brain in a dose-dependent way.",
+"cli": "Slurred speech, unsteadiness, vomiting, drowsiness; coma at high levels.",
+"inv": "Clinical; check glucose, head injury and other drugs; blood alcohol level.",
+"tre": "Supportive care, airway protection, recovery position, IV fluids and glucose as needed."
+},
+{
+"id": "snake-envenomation",
+"name": "Snake Envenomation",
+"epi": "Common in rural tropical regions; a major cause of death in farmers.",
+"eti": "Venom toxins damage tissue, blood clotting or nerves depending on the snake.",
+"cli": "Pain and swelling at the bite, bleeding, low blood pressure or paralysis.",
+"inv": "Clinical; 20-minute whole blood clotting test and blood tests.",
+"tre": "Immobilize the limb, transfer to hospital, antivenom when indicated, supportive care."
+},
+{
+"id": "pasteurella-bite-wound-infection",
+"name": "Pasteurella Bite Wound Infection",
+"epi": "Common after cat and dog bites, especially cat bites.",
+"eti": "Pasteurella multocida from the animal's mouth infects the wound.",
+"cli": "Rapid pain, redness and swelling within 24 hours; may spread to joints or tendons.",
+"inv": "Clinical; wound culture identifies the organism.",
+"tre": "Wound cleaning, amoxicillin-clavulanate, tetanus and rabies assessment."
+},
+{
+"id": "smoke-inhalation-injury",
+"name": "Smoke Inhalation Injury",
+"epi": "Common in fire victims trapped in closed spaces.",
+"eti": "Heat and toxic smoke injure the airway, with carbon monoxide and cyanide poisoning.",
+"cli": "Hoarse voice, stridor, cough, soot in the mouth, singed hair.",
+"inv": "Clinical, carboxyhemoglobin, lactate; bronchoscopy shows airway injury.",
+"tre": "Early airway protection, 100% oxygen, treat CO and cyanide, supportive ventilation."
+},
+{
+"id": "electrical-burn-injury",
+"name": "Electrical Burn Injury",
+"epi": "Seen in electricians and from household accidents; high voltage causes severe injury.",
+"eti": "Current passing through the body causes heat damage, mostly to muscle and nerves.",
+"cli": "Entry and exit burns, arrhythmias, muscle damage, compartment syndrome, kidney injury.",
+"inv": "ECG, creatine kinase, urine myoglobin, kidney tests.",
+"tre": "Cardiac monitoring, IV fluids for rhabdomyolysis, wound care, fasciotomy if needed."
+},
+{
+"id": "subclinical-hypothyroidism",
+"name": "Subclinical Hypothyroidism",
+"epi": "Common, especially in older women; often autoimmune.",
+"eti": "Mild thyroid failure: TSH rises to keep thyroid hormone in the normal range.",
+"cli": "Usually no symptoms or mild tiredness.",
+"inv": "Raised TSH with normal free T4, repeated after a few months.",
+"tre": "Watch and recheck; levothyroxine if TSH over 10, pregnancy or clear symptoms."
+},
+{
+"id": "prediabetes",
+"name": "Prediabetes",
+"epi": "Very common; a major risk for type 2 diabetes and heart disease.",
+"eti": "Insulin resistance with early beta-cell failure gives glucose above normal but below diabetes.",
+"cli": "No symptoms.",
+"inv": "Fasting glucose 100 to 125 mg/dL, HbA1c 5.7 to 6.4%, or impaired glucose tolerance.",
+"tre": "Weight loss, exercise and diet; metformin in high-risk people."
+},
+{
+"id": "obesity",
+"name": "Obesity",
+"epi": "Very common worldwide and rising; linked with diabetes, heart disease and some cancers.",
+"eti": "Energy intake above energy use, shaped by genes, environment and behaviour.",
+"cli": "Excess body fat; joint pain, breathlessness, sleep apnea and metabolic problems.",
+"inv": "Body mass index of 30 or more, with waist size; check for secondary causes.",
+"tre": "Diet, activity and behaviour change; GLP-1 based drugs; bariatric surgery for severe cases."
+},
+{
+"id": "vitamin-d-deficiency",
+"name": "Vitamin D Deficiency",
+"epi": "Very common, especially with little sun exposure, dark skin and covered clothing.",
+"eti": "Low vitamin D reduces calcium absorption, causing secondary hyperparathyroidism and soft bones.",
+"cli": "Bone pain, muscle weakness, fatigue; rickets in children, osteomalacia in adults.",
+"inv": "Low 25-hydroxyvitamin D; low or normal calcium, high PTH and alkaline phosphatase.",
+"tre": "Vitamin D replacement, calcium if needed, then a maintenance dose."
+},
+{
+"id": "postpartum-thyroiditis",
+"name": "Postpartum Thyroiditis",
+"epi": "Affects about 5% of women in the year after delivery; more with thyroid antibodies.",
+"eti": "Autoimmune inflammation of the thyroid releases stored hormone, then the gland underworks.",
+"cli": "Thyrotoxic phase then hypothyroid phase; painless.",
+"inv": "Thyroid tests over time; low uptake, positive TPO antibodies, negative TRAb.",
+"tre": "Beta-blockers in the toxic phase; levothyroxine if hypothyroid; check yearly."
+},
+{
+"id": "simple-goiter",
+"name": "Simple Goiter",
+"epi": "Common worldwide, especially in iodine-deficient areas; more in women.",
+"eti": "Thyroid enlargement without over- or under-function, often from iodine deficiency.",
+"cli": "Painless neck swelling; pressure symptoms if large.",
+"inv": "Normal thyroid function; ultrasound; fine-needle biopsy of suspicious nodules.",
+"tre": "Iodine where deficient, observation; surgery or radioiodine for large or pressing goiters."
+},
+{
+"id": "prolactinoma",
+"name": "Prolactinoma",
+"epi": "Most common pituitary hormone excess; prolactinoma is the most common functioning pituitary tumour.",
+"eti": "Excess prolactin from a pituitary adenoma, drugs or stalk compression suppresses GnRH.",
+"cli": "Missed periods, milky discharge, infertility, low libido; headaches and visual loss if large.",
+"inv": "Raised prolactin; exclude pregnancy, drugs and hypothyroidism; pituitary MRI.",
+"tre": "Dopamine agonists such as cabergoline; surgery rarely."
+},
+{
+"id": "pubertal-gynecomastia",
+"name": "Pubertal Gynecomastia",
+"epi": "Very common in boys during puberty; usually settles within 2 years.",
+"eti": "A temporary imbalance between estrogen and testosterone in puberty.",
+"cli": "Tender rubbery disc under the nipple, one or both sides.",
+"inv": "Clinical; tests only if very large, persistent or testes are abnormal.",
+"tre": "Reassurance; tamoxifen or surgery rarely."
+},
+{
+"id": "acute-gastritis",
+"name": "Acute Gastritis",
+"epi": "Common; linked with NSAIDs, alcohol, stress and infections.",
+"eti": "Irritation of the stomach lining weakens its protective layer.",
+"cli": "Upper abdominal burning, nausea, vomiting; sometimes bleeding.",
+"inv": "Clinical; endoscopy if alarm features.",
+"tre": "Stop the cause, proton pump inhibitor, antacids."
+},
+{
+"id": "anal-fissure",
+"name": "Anal Fissure",
+"epi": "Common in young and middle-aged adults; linked with constipation.",
+"eti": "A tear in the anal lining, often from hard stool, with spasm of the internal sphincter.",
+"cli": "Sharp pain during and after defecation, bright red bleeding.",
+"inv": "Inspection shows the tear, usually posterior midline.",
+"tre": "Fiber, fluids, laxatives, sitz baths, topical nitrate or diltiazem; botulinum toxin or sphincterotomy if chronic."
+},
+{
+"id": "nonalcoholic-fatty-liver-disease",
+"name": "Nonalcoholic Fatty Liver Disease",
+"epi": "Very common, linked with obesity, diabetes and metabolic syndrome.",
+"eti": "Fat builds up in the liver from insulin resistance; it can progress to inflammation and cirrhosis.",
+"cli": "Usually no symptoms; mild raised liver enzymes.",
+"inv": "Ultrasound, exclusion of other causes, fibrosis scores and elastography.",
+"tre": "Weight loss, exercise, control of diabetes and lipids."
+},
+{
+"id": "klinefelter-syndrome",
+"name": "Klinefelter Syndrome",
+"epi": "About 1 in 600 males; often diagnosed late.",
+"eti": "An extra X chromosome in a male causes testicular failure.",
+"cli": "Tall, small firm testes, gynecomastia, infertility, learning difficulties.",
+"inv": "High FSH/LH, low testosterone; karyotype.",
+"tre": "Testosterone replacement, fertility techniques, support."
+},
+{
+"id": "fragile-x-syndrome",
+"name": "Fragile X Syndrome",
+"epi": "The most common inherited cause of intellectual disability.",
+"eti": "X-linked CGG repeat expansion silences the FMR1 gene.",
+"cli": "Learning disability, autism traits, long face, large ears; large testes after puberty.",
+"inv": "FMR1 DNA testing.",
+"tre": "Education support, therapy, treatment of behaviour and seizures."
+},
+{
+"id": "achondroplasia",
+"name": "Achondroplasia",
+"epi": "The most common skeletal dysplasia; most cases are new mutations.",
+"eti": "FGFR3 mutation slows cartilage growth plates.",
+"cli": "Short limbs, large head, trident hands, normal intelligence.",
+"inv": "Clinical and X-ray; FGFR3 testing.",
+"tre": "Monitor for foramen magnum stenosis and sleep apnea; vosoritide; orthopedic care."
+},
+{
+"id": "duchenne-muscular-dystrophy",
+"name": "Duchenne Muscular Dystrophy",
+"epi": "The most common childhood muscular dystrophy; X-linked, affects boys.",
+"eti": "No dystrophin protein, so muscle fibers break down.",
+"cli": "Gowers sign, calf enlargement, weakness; loss of walking by teens, heart and breathing failure.",
+"inv": "Very high CK; dystrophin gene testing.",
+"tre": "Corticosteroids, physiotherapy, heart and breathing support; exon-skipping drugs."
+},
+{
+"id": "beta-thalassemia-major",
+"name": "Beta-Thalassemia Major",
+"epi": "Common in Mediterranean, Middle Eastern and Asian populations.",
+"eti": "Mutations in both beta-globin genes cause little or no beta chain production.",
+"cli": "Severe anemia from 6 months, enlarged spleen, bone changes.",
+"inv": "Microcytic anemia, target cells; electrophoresis shows high HbF.",
+"tre": "Regular transfusions, iron chelation; stem cell transplant."
+},
+{
+"id": "hereditary-spherocytosis",
+"name": "Hereditary Spherocytosis",
+"epi": "The most common inherited hemolytic anemia in people of northern European descent.",
+"eti": "Defects in spectrin or ankyrin make red cells spherical and fragile.",
+"cli": "Anemia, jaundice, splenomegaly, gallstones.",
+"inv": "Spherocytes, high MCHC, negative Coombs, EMA test.",
+"tre": "Folic acid, transfusions as needed, splenectomy in severe cases."
+},
+{
+"id": "noonan-syndrome",
+"name": "Noonan Syndrome",
+"epi": "About 1 in 1,000 to 2,500; autosomal dominant.",
+"eti": "RAS-MAPK pathway mutations, most often PTPN11.",
+"cli": "Short stature, webbed neck, pulmonary stenosis, chest deformity; both sexes, normal karyotype.",
+"inv": "Clinical; genetic testing.",
+"tre": "Heart care, growth hormone, developmental support."
+},
+{
+"id": "edwards-syndrome",
+"name": "Edwards Syndrome",
+"epi": "The second most common autosomal trisomy; most die in the first year.",
+"eti": "An extra chromosome 18.",
+"cli": "Growth restriction, clenched hands with overlapping fingers, rocker-bottom feet, heart defects.",
+"inv": "Karyotype.",
+"tre": "Supportive and palliative care."
+},
+{
+"id": "patau-syndrome",
+"name": "Patau Syndrome",
+"epi": "Rare trisomy; most babies die within weeks.",
+"eti": "An extra chromosome 13.",
+"cli": "Cleft lip/palate, polydactyly, scalp defects, holoprosencephaly, small eyes.",
+"inv": "Karyotype.",
+"tre": "Supportive and palliative care."
+},
+{
+"id": "cri-du-chat-syndrome",
+"name": "Cri-du-chat Syndrome",
+"epi": "Rare, about 1 in 20,000 to 50,000 births.",
+"eti": "Deletion of part of chromosome 5p.",
+"cli": "Cat-like cry, small head, wide-set eyes, learning disability.",
+"inv": "Karyotype or microarray.",
+"tre": "Developmental support and therapy."
+},
+{
+"id": "familial-hypercholesterolemia",
+"name": "Familial Hypercholesterolemia",
+"epi": "About 1 in 250 people; autosomal dominant.",
+"eti": "Faulty LDL receptors cannot clear LDL from blood.",
+"cli": "Very high LDL, tendon xanthomas, early corneal arcus, early heart disease.",
+"inv": "LDL level, family history, genetic testing.",
+"tre": "High-dose statins, ezetimibe, PCSK9 inhibitors; family screening."
+},
+{
+"id": "familial-adenomatous-polyposis",
+"name": "Familial Adenomatous Polyposis",
+"epi": "About 1 in 10,000; autosomal dominant.",
+"eti": "APC mutation allows hundreds of colon adenomas to form.",
+"cli": "Hundreds of polyps by the teens; cancer by 40 without treatment; osteomas, CHRPE.",
+"inv": "Colonoscopy; APC testing.",
+"tre": "Prophylactic colectomy; screening of family and upper GI tract."
+},
+{
+"id": "lynch-syndrome",
+"name": "Lynch Syndrome",
+"epi": "The most common inherited colorectal cancer syndrome.",
+"eti": "DNA mismatch repair gene mutation, autosomal dominant.",
+"cli": "Early colorectal, endometrial, ovarian and other cancers.",
+"inv": "Tumour MSI or immunohistochemistry; germline testing.",
+"tre": "Regular colonoscopy, gynecological surveillance, aspirin; risk-reducing surgery."
+},
+{
+"id": "folate-deficiency-anemia",
+"name": "Folate Deficiency Anemia",
+"epi": "Common with poor diet, alcohol use, pregnancy, malabsorption and some drugs.",
+"eti": "Lack of folate impairs DNA synthesis, giving large immature red cells.",
+"cli": "Fatigue, pallor, sore tongue; no nerve damage, unlike B12 deficiency.",
+"inv": "Macrocytic anemia, hypersegmented neutrophils, low folate, normal B12.",
+"tre": "Folic acid tablets after checking B12; treat the cause."
+},
+{
+"id": "anemia-of-chronic-disease",
+"name": "Anemia of Chronic Disease",
+"epi": "Second most common anemia; with infections, autoimmune disease, cancer and kidney disease.",
+"eti": "Hepcidin from inflammation traps iron in stores and blunts erythropoietin.",
+"cli": "Mild anemia with symptoms of the underlying disease.",
+"inv": "Normocytic or mildly microcytic; low iron, low TIBC, normal or high ferritin.",
+"tre": "Treat the underlying disease; erythropoietin or IV iron in selected cases."
+},
+{
+"id": "prostate-cancer",
+"name": "Prostate Cancer",
+"epi": "The most common cancer in men in many countries; risk rises with age and family history.",
+"eti": "Malignant growth of prostate glandular cells, usually in the peripheral zone.",
+"cli": "Often silent; urinary symptoms, bone pain from spread.",
+"inv": "PSA, rectal exam, MRI and biopsy; bone scan for staging.",
+"tre": "Active surveillance, surgery or radiotherapy; hormone therapy for advanced disease."
+},
+{
+"id": "colorectal-cancer",
+"name": "Colorectal Cancer",
+"epi": "Third most common cancer worldwide; risk rises after 50.",
+"eti": "Adenoma to carcinoma sequence through APC, KRAS and p53 changes.",
+"cli": "Right side: iron deficiency anemia; left side: bowel habit change and bleeding.",
+"inv": "Colonoscopy and biopsy; CT for staging; CEA.",
+"tre": "Surgery, with chemotherapy for advanced stages."
+},
+{
+"id": "cervical-cancer",
+"name": "Cervical Cancer",
+"epi": "A leading cancer in women where screening is poor; caused by high-risk HPV.",
+"eti": "Persistent HPV infection leads to dysplasia and then cancer.",
+"cli": "Bleeding after sex or between periods, discharge; pelvic pain when advanced.",
+"inv": "Smear and HPV test; colposcopy and biopsy; MRI for staging.",
+"tre": "Surgery for early disease; chemoradiation for advanced; HPV vaccination and screening prevent it."
+},
+{
+"id": "testicular-cancer",
+"name": "Testicular Cancer",
+"epi": "The most common solid cancer in young men; highly curable.",
+"eti": "Germ cell tumors, seminoma or non-seminoma; risk with undescended testis.",
+"cli": "Painless hard lump in the testis.",
+"inv": "Ultrasound; AFP, beta-hCG and LDH.",
+"tre": "Radical inguinal orchidectomy, then surveillance, chemotherapy or radiotherapy."
+},
+{
+"id": "basal-cell-carcinoma",
+"name": "Basal Cell Carcinoma",
+"epi": "The most common skin cancer; slow-growing, rarely spreads.",
+"eti": "Sun damage to basal cells of the epidermis.",
+"cli": "Pearly nodule with telangiectasia and rolled edges, often on the face.",
+"inv": "Biopsy.",
+"tre": "Excision, Mohs surgery, topical therapy or radiotherapy."
+},
+{
+"id": "papillary-thyroid-carcinoma",
+"name": "Papillary Thyroid Carcinoma",
+"epi": "The most common thyroid cancer; excellent prognosis.",
+"eti": "Malignant follicular cells, linked with radiation and BRAF or RET changes.",
+"cli": "Painless thyroid nodule, neck node spread.",
+"inv": "Ultrasound and fine-needle aspiration.",
+"tre": "Thyroidectomy, radioiodine for higher risk, TSH suppression."
+},
+{
+"id": "bladder-cancer",
+"name": "Bladder Cancer",
+"epi": "Common in older men; smoking is the main risk.",
+"eti": "Urothelial carcinoma from carcinogens in urine, such as tobacco and aromatic amines.",
+"cli": "Painless visible blood in the urine.",
+"inv": "Cystoscopy and biopsy; CT urogram.",
+"tre": "Transurethral resection, intravesical BCG; cystectomy for muscle-invasive disease."
+},
+{
+"id": "gastric-cancer",
+"name": "Gastric Cancer",
+"epi": "Common in East Asia; linked with H. pylori, smoking and salty foods.",
+"eti": "Adenocarcinoma of the stomach lining.",
+"cli": "Early fullness, weight loss, indigestion, anemia; Virchow node.",
+"inv": "Endoscopy and biopsy; CT for staging.",
+"tre": "Surgery with chemotherapy; palliative care when advanced."
+},
+{
+"id": "neutropenic-fever",
+"name": "Neutropenic Fever",
+"epi": "A common emergency in patients on chemotherapy.",
+"eti": "Low neutrophils leave the body unable to fight bacteria and fungi.",
+"cli": "Fever, often with few other signs of infection.",
+"inv": "Neutrophils under 0.5 × 10⁹/L with fever; blood cultures.",
+"tre": "Broad-spectrum IV antibiotics within an hour; G-CSF in some cases."
+},
+{
+"id": "warfarin-over-anticoagulation",
+"name": "Warfarin Over-Anticoagulation",
+"epi": "Common in people on warfarin, often after drug interactions or illness.",
+"eti": "Too much vitamin K antagonist effect lowers factors II, VII, IX and X.",
+"cli": "Bruising and bleeding; serious bleeding into the brain or gut.",
+"inv": "Raised INR.",
+"tre": "Stop warfarin; give vitamin K; prothrombin complex concentrate for major bleeding."
+},
+{
+"id": "chronic-kidney-disease",
+"name": "Chronic Kidney Disease",
+"epi": "Common, rising with diabetes, hypertension and age.",
+"eti": "Permanent loss of nephrons over months to years.",
+"cli": "Often silent; tiredness, itch, swelling, anemia, bone disease.",
+"inv": "eGFR under 60 or kidney damage for over 3 months.",
+"tre": "Control blood pressure and diabetes, ACE inhibitor or ARB, SGLT2 inhibitor, dialysis or transplant when needed."
+},
+{
+"id": "nongonococcal-urethritis",
+"name": "Nongonococcal Urethritis",
+"epi": "Common sexually transmitted infection in young adults.",
+"eti": "Chlamydia, Mycoplasma genitalium and others infect the urethra.",
+"cli": "Dysuria and clear discharge; often mild or silent.",
+"inv": "NAAT on urine; Gram stain without gonococci.",
+"tre": "Doxycycline; treat partners; screen for other STIs."
+},
+{
+"id": "epididymitis",
+"name": "Epididymitis",
+"epi": "Common; from STIs in young men and urinary organisms in older men.",
+"eti": "Infection spreads from the urethra or bladder to the epididymis.",
+"cli": "Gradual scrotal pain and swelling, urinary symptoms, fever.",
+"inv": "Urine tests and NAAT; ultrasound shows increased flow.",
+"tre": "Antibiotics (ceftriaxone plus doxycycline in young men), rest, scrotal support."
+},
+{
+"id": "hydrocele",
+"name": "Hydrocele",
+"epi": "Common in newborns and in adult men.",
+"eti": "Fluid collects within the tunica vaginalis around the testis.",
+"cli": "Painless, smooth scrotal swelling that transilluminates.",
+"inv": "Clinical; ultrasound to check the testis.",
+"tre": "Observation; surgery if large or uncomfortable."
+},
+{
+"id": "varicocele",
+"name": "Varicocele",
+"epi": "Common in adolescents and young men, usually on the left.",
+"eti": "Dilated veins of the pampiniform plexus from valve failure; the left testicular vein drains at a right angle.",
+"cli": "Dull ache, 'bag of worms' swelling, reduced fertility.",
+"inv": "Clinical; Doppler ultrasound.",
+"tre": "Observation; surgery or embolization for pain or fertility problems."
+},
+{
+"id": "phimosis",
+"name": "Phimosis",
+"epi": "Physiological in young children; pathological phimosis from scarring is less common.",
+"eti": "A tight foreskin that cannot be pulled back; scarring from lichen sclerosus or infections.",
+"cli": "Unable to retract foreskin, ballooning, recurrent balanitis.",
+"inv": "Clinical examination.",
+"tre": "Topical steroid cream; circumcision for scarring or recurrent infection."
+},
+{
+"id": "stress-urinary-incontinence",
+"name": "Stress Urinary Incontinence",
+"epi": "Very common in women, especially after childbirth and menopause.",
+"eti": "Weak pelvic floor and urethral sphincter fail when abdominal pressure rises.",
+"cli": "Leakage with coughing, sneezing, laughing or exercise.",
+"inv": "History, cough test, bladder diary; urodynamics before surgery.",
+"tre": "Pelvic floor exercises, weight loss; mid-urethral sling surgery."
+},
+{
+"id": "tension-type-headache",
+"name": "Tension-Type Headache",
+"epi": "The most common headache.",
+"eti": "Unclear; muscle tension, stress and poor sleep play a role.",
+"cli": "Bilateral pressing band-like pain, mild to moderate, no nausea.",
+"inv": "Clinical; normal examination.",
+"tre": "Simple painkillers, stress and sleep management; amitriptyline for frequent headaches."
+},
+{
+"id": "transient-ischemic-attack",
+"name": "Transient Ischemic Attack",
+"epi": "Common warning sign of stroke.",
+"eti": "Brief loss of blood flow to part of the brain without lasting tissue death.",
+"cli": "Sudden focal weakness, speech or vision loss that resolves, usually within an hour.",
+"inv": "Normal MRI; carotid imaging, ECG and heart monitoring.",
+"tre": "Urgent antiplatelets or anticoagulation, statin, blood pressure control; carotid surgery if needed."
+},
+{
+"id": "generalized-tonic-clonic-epilepsy",
+"name": "Generalized Tonic-Clonic Epilepsy",
+"epi": "Epilepsy affects about 1% of people.",
+"eti": "Recurrent unprovoked seizures from abnormal brain electrical activity.",
+"cli": "Stiffening and jerking, tongue biting, incontinence, then confusion.",
+"inv": "EEG and MRI after a second unprovoked seizure.",
+"tre": "Antiseizure drugs such as valproate or levetiracetam; safety advice."
+},
+{
+"id": "restless-legs-syndrome",
+"name": "Restless Legs Syndrome",
+"epi": "Common, especially in women, pregnancy, kidney failure and iron deficiency.",
+"eti": "Dopamine dysfunction and low brain iron.",
+"cli": "Urge to move legs, worse in the evening at rest, eased by movement.",
+"inv": "Clinical; check ferritin and kidney function.",
+"tre": "Iron if ferritin low; gabapentinoids or dopamine agonists."
+},
+{
+"id": "self-limited-epilepsy-with-centrotemporal-spikes",
+"name": "Self-Limited Epilepsy with Centrotemporal Spikes",
+"epi": "The most common childhood epilepsy syndrome; outgrown by teens.",
+"eti": "Genetic tendency to seizures from the motor cortex.",
+"cli": "Night-time focal seizures of the face and mouth, drooling.",
+"inv": "EEG with centrotemporal spikes.",
+"tre": "Often no treatment; antiseizure drugs if frequent."
+},
+{
+"id": "postherpetic-neuralgia",
+"name": "Postherpetic Neuralgia",
+"epi": "Common after shingles, especially over 60.",
+"eti": "Nerve damage from varicella-zoster reactivation.",
+"cli": "Burning, aching pain and touch sensitivity in a dermatome lasting over 3 months.",
+"inv": "Clinical.",
+"tre": "Gabapentin, pregabalin, amitriptyline, lidocaine patches; zoster vaccine to prevent."
+},
+{
+"id": "hyperemesis-gravidarum",
+"name": "Hyperemesis Gravidarum",
+"epi": "Affects about 1% of pregnancies; more with twins and molar pregnancy.",
+"eti": "Severe nausea and vomiting linked with high hCG and GDF15.",
+"cli": "Persistent vomiting, weight loss over 5%, dehydration, ketosis.",
+"inv": "Ketonuria, electrolyte problems; ultrasound to check for twins or mole.",
+"tre": "IV fluids with potassium, thiamine, antiemetics; steroids for resistant cases."
+},
+{
+"id": "bacterial-vaginosis",
+"name": "Bacterial Vaginosis",
+"epi": "The most common cause of abnormal vaginal discharge.",
+"eti": "Loss of protective lactobacilli and overgrowth of Gardnerella and anaerobes.",
+"cli": "Thin grey fishy discharge, little irritation.",
+"inv": "Amsel criteria: pH over 4.5, clue cells, positive whiff test, discharge.",
+"tre": "Metronidazole or clindamycin."
+},
+{
+"id": "vulvovaginal-candidiasis",
+"name": "Vulvovaginal Candidiasis",
+"epi": "Very common; more after antibiotics, in pregnancy and with diabetes.",
+"eti": "Overgrowth of Candida albicans in the vagina.",
+"cli": "Itch, soreness, thick white 'cottage cheese' discharge, normal pH.",
+"inv": "Clinical; microscopy or culture.",
+"tre": "Topical or oral azole antifungals."
+},
+{
+"id": "trichomoniasis",
+"name": "Trichomoniasis",
+"epi": "Common sexually transmitted infection worldwide.",
+"eti": "Infection with the protozoan Trichomonas vaginalis.",
+"cli": "Frothy yellow-green discharge, itch, dysuria, strawberry cervix.",
+"inv": "Wet mount or NAAT.",
+"tre": "Metronidazole for patient and partners."
+},
+{
+"id": "menopause",
+"name": "Menopause",
+"epi": "Natural menopause occurs at an average age of about 51.",
+"eti": "The ovaries run out of follicles, so estrogen falls.",
+"cli": "Hot flushes, night sweats, mood change, vaginal dryness, then bone loss.",
+"inv": "Clinical after 12 months without periods; FSH helps under 45.",
+"tre": "Hormone therapy if suitable, vaginal estrogen, lifestyle measures."
+},
+{
+"id": "premenstrual-syndrome",
+"name": "Premenstrual Syndrome",
+"epi": "Very common in women of reproductive age.",
+"eti": "Abnormal brain response to normal cyclical hormone changes.",
+"cli": "Mood, bloating, breast pain and headache in the luteal phase, gone after menstruation.",
+"inv": "Symptom diary over at least two cycles.",
+"tre": "Lifestyle measures, SSRIs, combined pill."
+},
+{
+"id": "spontaneous-abortion",
+"name": "Spontaneous Abortion",
+"epi": "Very common; about 1 in 5 known pregnancies end in miscarriage, mostly in the first trimester.",
+"eti": "Mostly chromosomal abnormalities of the embryo.",
+"cli": "Bleeding and cramps; open os means it cannot be stopped.",
+"inv": "Transvaginal ultrasound and hCG.",
+"tre": "Expectant care, misoprostol, or surgical evacuation; anti-D if Rh negative where indicated."
+},
+{
+"id": "ovarian-cyst-rupture",
+"name": "Ovarian Cyst Rupture",
+"epi": "Common in young women, often with corpus luteum cysts.",
+"eti": "A functional ovarian cyst bursts, releasing fluid or blood.",
+"cli": "Sudden one-sided pelvic pain, often after sex or exercise.",
+"inv": "Negative pregnancy test; ultrasound shows free fluid.",
+"tre": "Pain relief and observation; surgery if bleeding is heavy."
+},
+{
+"id": "lactational-mastitis",
+"name": "Lactational Mastitis",
+"epi": "Common in the first weeks of breastfeeding.",
+"eti": "Milk stasis with or without bacterial infection, often S. aureus.",
+"cli": "Painful red wedge on the breast, fever, flu-like feeling.",
+"inv": "Clinical; ultrasound to exclude abscess.",
+"tre": "Keep breastfeeding, pain relief; flucloxacillin if not better within a day."
+},
+{
+"id": "subconjunctival-hemorrhage",
+"name": "Subconjunctival Hemorrhage",
+"epi": "Common; from coughing, straining, high blood pressure or anticoagulants.",
+"eti": "A small blood vessel under the conjunctiva bursts.",
+"cli": "Painless red patch on the white of the eye, normal vision.",
+"inv": "Clinical; check blood pressure and INR if relevant.",
+"tre": "No treatment; it clears in 2 weeks."
+},
+{
+"id": "corneal-abrasion",
+"name": "Corneal Abrasion",
+"epi": "Very common eye injury.",
+"eti": "A scratch removes part of the corneal surface.",
+"cli": "Pain, watering, light sensitivity, foreign body feeling.",
+"inv": "Fluorescein staining.",
+"tre": "Antibiotic ointment, pain relief; no patching usually."
+},
+{
+"id": "blepharitis",
+"name": "Blepharitis",
+"epi": "Very common, chronic; linked with rosacea and seborrheic dermatitis.",
+"eti": "Inflammation of the eyelid margins and meibomian glands.",
+"cli": "Gritty, itchy eyes; red lid margins; crusty lashes.",
+"inv": "Clinical.",
+"tre": "Warm compresses, lid hygiene; topical or oral antibiotics for severe cases."
+},
+{
+"id": "presbyopia",
+"name": "Presbyopia",
+"epi": "Universal with aging, starting around 40 to 45.",
+"eti": "The lens stiffens with age, losing the ability to focus up close.",
+"cli": "Difficulty reading near print, needing to hold things further away.",
+"inv": "Near vision test.",
+"tre": "Reading glasses or multifocal lenses."
+},
+{
+"id": "myopia",
+"name": "Myopia",
+"epi": "Very common and rising, especially in children with much near work.",
+"eti": "The eye is too long, so images focus in front of the retina.",
+"cli": "Blurred distance vision, squinting.",
+"inv": "Refraction test.",
+"tre": "Glasses or contact lenses; atropine drops and outdoor time slow progression."
+},
+{
+"id": "pterygium",
+"name": "Pterygium",
+"epi": "Common in sunny, dusty climates and outdoor workers.",
+"eti": "UV damage causes fibrovascular tissue to grow from the conjunctiva onto the cornea.",
+"cli": "Triangular fleshy growth, irritation, redness; vision affected if it covers the pupil.",
+"inv": "Slit-lamp examination.",
+"tre": "Lubricants, sunglasses; surgical removal with graft if large."
+},
+{
+"id": "viral-conjunctivitis",
+"name": "Viral Conjunctivitis",
+"epi": "The most common cause of conjunctivitis in adults; very contagious.",
+"eti": "Usually adenovirus infection of the conjunctiva.",
+"cli": "Red watery eyes, grittiness, preauricular node, often after a cold.",
+"inv": "Clinical.",
+"tre": "Cool compresses, lubricants, hand hygiene; settles in 1 to 3 weeks."
+},
+{
+"id": "colles-fracture",
+"name": "Colles Fracture",
+"epi": "The most common fracture in older women with osteoporosis.",
+"eti": "A fall on an outstretched hand breaks the distal radius, tilting it dorsally.",
+"cli": "Painful swollen wrist with 'dinner fork' deformity.",
+"inv": "X-ray of the wrist.",
+"tre": "Reduction and cast; surgery for unstable fractures; treat osteoporosis."
+},
+{
+"id": "clavicle-fracture",
+"name": "Clavicle Fracture",
+"epi": "Very common, especially in young people after falls and sport.",
+"eti": "Direct blow or fall onto the shoulder breaks the clavicle, usually in the middle.",
+"cli": "Pain, swelling and deformity over the collarbone.",
+"inv": "X-ray.",
+"tre": "Sling and pain relief; surgery if very displaced or the skin is at risk."
+},
+{
+"id": "de-quervain-tenosynovitis",
+"name": "De Quervain Tenosynovitis",
+"epi": "Common in new mothers and people with repetitive thumb use.",
+"eti": "Inflammation of the abductor pollicis longus and extensor pollicis brevis tendon sheath.",
+"cli": "Pain on the thumb side of the wrist, worse with lifting.",
+"inv": "Positive Finkelstein test.",
+"tre": "Splint, NSAIDs, steroid injection; surgery if needed."
+},
+{
+"id": "trigger-finger",
+"name": "Trigger Finger",
+"epi": "Common, especially in diabetes and middle-aged women.",
+"eti": "A thickened flexor tendon or narrow A1 pulley causes catching.",
+"cli": "Clicking or locking of a finger, tender palm nodule.",
+"inv": "Clinical.",
+"tre": "Splint, steroid injection; surgical release of the A1 pulley."
+},
+{
+"id": "adhesive-capsulitis",
+"name": "Adhesive Capsulitis",
+"epi": "Common in people aged 40 to 60, especially with diabetes.",
+"eti": "Inflammation and fibrosis of the shoulder joint capsule.",
+"cli": "Pain then stiffness, with loss of active and passive movement.",
+"inv": "Clinical; normal X-ray.",
+"tre": "Physiotherapy, pain relief, steroid injection; resolves over 1 to 3 years."
+},
+{
+"id": "patellofemoral-pain-syndrome",
+"name": "Patellofemoral Pain Syndrome",
+"epi": "Very common cause of knee pain in young active people, especially women.",
+"eti": "Overload and poor tracking of the kneecap against the femur.",
+"cli": "Anterior knee pain, worse with stairs, squats and long sitting.",
+"inv": "Clinical; imaging normal.",
+"tre": "Physiotherapy to strengthen hips and quadriceps, activity change."
+},
+{
+"id": "social-anxiety-disorder",
+"name": "Social Anxiety Disorder",
+"epi": "Common; starts in teens.",
+"eti": "Fear of negative judgement in social situations.",
+"cli": "Avoidance of social events, blushing, sweating, trembling.",
+"inv": "Clinical; symptoms for 6 months or more.",
+"tre": "Cognitive behavioral therapy; SSRIs."
+},
+{
+"id": "specific-phobia",
+"name": "Specific Phobia",
+"epi": "Very common anxiety disorder.",
+"eti": "Learned fear of a specific object or situation.",
+"cli": "Intense fear and avoidance of one thing: animals, heights, flying, needles.",
+"inv": "Clinical; lasts 6 months or more.",
+"tre": "Exposure therapy; short-term benzodiazepines rarely."
+},
+{
+"id": "attention-deficit-hyperactivity-disorder",
+"name": "Attention-Deficit/Hyperactivity Disorder",
+"epi": "Common in children; often continues into adulthood.",
+"eti": "Neurodevelopmental disorder with differences in attention and impulse control networks.",
+"cli": "Inattention, hyperactivity and impulsivity before age 12, in more than one setting.",
+"inv": "Clinical, with rating scales from home and school.",
+"tre": "Behavioral therapy, school support; stimulants like methylphenidate."
+},
+{
+"id": "insomnia-disorder",
+"name": "Insomnia Disorder",
+"epi": "Very common, especially in women and older adults.",
+"eti": "Hyperarousal with learned bad sleep habits.",
+"cli": "Trouble falling or staying asleep at least 3 nights a week for 3 months, with daytime effects.",
+"inv": "Clinical; sleep diary.",
+"tre": "Cognitive behavioral therapy for insomnia, sleep hygiene; short-term hypnotics."
+},
+{
+"id": "alcohol-use-disorder",
+"name": "Alcohol Use Disorder",
+"epi": "Common worldwide; major cause of illness and death.",
+"eti": "Genetic and environmental factors lead to compulsive alcohol use.",
+"cli": "Craving, loss of control, tolerance, withdrawal, harm to life.",
+"inv": "Clinical; AUDIT score; raised GGT and MCV support it.",
+"tre": "Supervised withdrawal, thiamine, psychological support; naltrexone, acamprosate or disulfiram."
+},
+{
+"id": "adjustment-disorder",
+"name": "Adjustment Disorder",
+"epi": "Common after life stresses.",
+"eti": "An excessive emotional reaction to an identifiable stressor.",
+"cli": "Low mood or anxiety within 3 months of a stressor, settling within 6 months after it ends.",
+"inv": "Clinical.",
+"tre": "Supportive therapy and problem-solving."
+},
+{
+"id": "separation-anxiety-disorder",
+"name": "Separation Anxiety Disorder",
+"epi": "Common in children; can occur in adults.",
+"eti": "Excessive fear of separation from attachment figures.",
+"cli": "Distress at separation, worry about harm to parents, school refusal, physical complaints.",
+"inv": "Clinical; symptoms for 4 weeks in children.",
+"tre": "Cognitive behavioral therapy with the family."
+},
+{
+"id": "autism-spectrum-disorder",
+"name": "Autism Spectrum Disorder",
+"epi": "About 1 in 100 children; more in boys.",
+"eti": "Neurodevelopmental condition with strong genetic factors.",
+"cli": "Social communication difficulties and restricted, repetitive behaviors from early childhood.",
+"inv": "Specialist assessment (for example ADOS).",
+"tre": "Early intervention, speech and occupational therapy, education support."
+},
+{
+"id": "tourette-syndrome",
+"name": "Tourette Syndrome",
+"epi": "About 1% of children; more in boys.",
+"eti": "Neurodevelopmental disorder of basal ganglia circuits.",
+"cli": "Multiple motor and at least one vocal tic for over a year, starting before 18.",
+"inv": "Clinical.",
+"tre": "Education and behavioral therapy; drugs like clonidine or aripiprazole if severe."
+},
+{
+"id": "tobacco-use-disorder",
+"name": "Tobacco Use Disorder",
+"epi": "The most common substance use disorder and a leading preventable cause of death.",
+"eti": "Nicotine acts on brain nicotinic receptors, causing dependence.",
+"cli": "Craving, failed quit attempts, withdrawal irritability, early morning smoking.",
+"inv": "Clinical; Fagerström test grades dependence.",
+"tre": "Behavioral support with nicotine replacement, varenicline or bupropion."
+},
+{
+"id": "primary-spontaneous-pneumothorax",
+"name": "Primary Spontaneous Pneumothorax",
+"epi": "Common in tall, thin young men, especially smokers.",
+"eti": "Small blebs at the lung apex rupture, letting air into the pleural space.",
+"cli": "Sudden one-sided pleuritic chest pain and breathlessness.",
+"inv": "Chest X-ray shows the pleural line.",
+"tre": "Observation for small ones; needle aspiration or chest drain; surgery if recurrent."
+},
+{
+"id": "pleural-effusion",
+"name": "Pleural Effusion",
+"epi": "Common; heart failure is the most common cause.",
+"eti": "Fluid builds up in the pleural space from leaky vessels or increased pressure.",
+"cli": "Breathlessness, dullness and quiet breath sounds at the lung base.",
+"inv": "Chest X-ray or ultrasound; tap and Light criteria.",
+"tre": "Treat the cause; drain if large."
+},
+{
+"id": "exercise-induced-bronchoconstriction",
+"name": "Exercise-Induced Bronchoconstriction",
+"epi": "Common in athletes and in people with asthma.",
+"eti": "Breathing in large amounts of dry air cools and dries the airways, triggering bronchospasm.",
+"cli": "Cough, wheeze or chest tightness during or after exercise.",
+"inv": "Exercise challenge test with a fall in FEV1 of 10% or more.",
+"tre": "Inhaled bronchodilator before exercise, warm-up; inhaled steroid if frequent."
+},
+{
+"id": "postoperative-atelectasis",
+"name": "Postoperative Atelectasis",
+"epi": "Very common after abdominal and chest surgery.",
+"eti": "Shallow breathing and secretions cause small areas of lung collapse.",
+"cli": "Low fever, mild breathlessness, reduced breath sounds in the first days after surgery.",
+"inv": "Chest X-ray shows plate-like collapse.",
+"tre": "Pain relief, deep breathing exercises, incentive spirometry, early mobilization."
+},
+{
+"id": "upper-airway-cough-syndrome",
+"name": "Upper Airway Cough Syndrome",
+"epi": "One of the three most common causes of chronic cough.",
+"eti": "Mucus from the nose or sinuses drips into the throat and triggers the cough reflex.",
+"cli": "Chronic cough, throat clearing, drip sensation.",
+"inv": "Clinical; trial of treatment.",
+"tre": "Nasal steroid spray, antihistamines, treat rhinitis or sinusitis."
+},
+{
+"id": "hyperventilation-syndrome",
+"name": "Hyperventilation Syndrome",
+"epi": "Common, often with anxiety or panic.",
+"eti": "Breathing faster than the body needs washes out carbon dioxide, causing alkalosis.",
+"cli": "Breathlessness, tingling, light-headedness, chest tightness, carpopedal spasm.",
+"inv": "Clinical; blood gas shows respiratory alkalosis; exclude other causes.",
+"tre": "Reassurance, slow breathing; treat anxiety."
+},
+{
+"id": "fibromyalgia",
+"name": "Fibromyalgia",
+"epi": "Common, more in women.",
+"eti": "Abnormal central pain processing (central sensitization).",
+"cli": "Widespread pain, fatigue, poor sleep, cognitive problems.",
+"inv": "Clinical; normal blood tests.",
+"tre": "Education, graded exercise, sleep, CBT; amitriptyline, duloxetine or pregabalin."
+},
+{
+"id": "olecranon-bursitis",
+"name": "Olecranon Bursitis",
+"epi": "Common, from pressure, injury, gout or infection.",
+"eti": "Inflammation of the bursa over the olecranon.",
+"cli": "Soft swelling at the back of the elbow; red and hot if infected.",
+"inv": "Clinical; aspiration if infection or gout is suspected.",
+"tre": "Rest, padding, NSAIDs; antibiotics and drainage if septic."
+},
+{
+"id": "prepatellar-bursitis",
+"name": "Prepatellar Bursitis",
+"epi": "Common in people who kneel a lot.",
+"eti": "Inflammation of the bursa in front of the kneecap from repeated pressure.",
+"cli": "Swelling over the kneecap, normal knee movement.",
+"inv": "Clinical; aspiration if infection is a concern.",
+"tre": "Rest, knee pads, NSAIDs; antibiotics if infected."
+},
+{
+"id": "juvenile-idiopathic-arthritis",
+"name": "Juvenile Idiopathic Arthritis",
+"epi": "The most common chronic arthritis of childhood.",
+"eti": "Autoimmune joint inflammation starting before 16.",
+"cli": "Joint swelling for over 6 weeks, morning stiffness, limp; silent uveitis.",
+"inv": "Clinical; ANA predicts eye disease; regular eye checks.",
+"tre": "NSAIDs, joint steroid injections, methotrexate, biologics."
+},
+{
+"id": "erythema-nodosum",
+"name": "Erythema Nodosum",
+"epi": "Most common in young women.",
+"eti": "A hypersensitivity panniculitis of fat under the skin, after infections, sarcoidosis, IBD, drugs or pregnancy.",
+"cli": "Tender red nodules on the shins that fade like bruises.",
+"inv": "Clinical; tests for the cause (throat swab, chest X-ray).",
+"tre": "Treat the cause, rest, NSAIDs."
+},
+{
+"id": "ganglion-cyst",
+"name": "Ganglion Cyst",
+"epi": "The most common soft tissue lump of the hand and wrist.",
+"eti": "A cyst full of jelly-like fluid arising from a joint or tendon sheath.",
+"cli": "Smooth lump, often on the back of the wrist, which may change size.",
+"inv": "Clinical; ultrasound.",
+"tre": "Observation; aspiration or surgery if painful."
+},
+{
+"id": "viral-arthritis",
+"name": "Viral Arthritis",
+"epi": "Common after parvovirus, rubella, hepatitis B and other viruses.",
+"eti": "The immune response to a virus inflames the joints.",
+"cli": "Sudden, often symmetrical small joint pain and swelling that settles within weeks.",
+"inv": "Viral serology.",
+"tre": "NSAIDs; settles by itself."
+},
+{
+"id": "pilonidal-disease",
+"name": "Pilonidal Disease",
+"epi": "Common in young hairy men who sit a lot.",
+"eti": "Hairs push into the skin of the natal cleft, causing sinus tracts and infection.",
+"cli": "Recurrent painful swelling and discharge at the top of the buttock cleft.",
+"inv": "Clinical.",
+"tre": "Drainage of abscess; excision of the sinus; hair removal."
+},
+{
+"id": "lipoma",
+"name": "Lipoma",
+"epi": "The most common soft tissue tumor; benign.",
+"eti": "A benign growth of mature fat cells.",
+"cli": "Soft, painless, mobile lump under the skin.",
+"inv": "Clinical; ultrasound or MRI if large or deep.",
+"tre": "No treatment; excision if bothersome or growing."
+},
+{
+"id": "umbilical-hernia",
+"name": "Umbilical Hernia",
+"epi": "Common in babies and in adults with obesity, pregnancy or ascites.",
+"eti": "Abdominal contents push through a weak spot at the umbilicus.",
+"cli": "Bulge at the navel that grows with coughing.",
+"inv": "Clinical; ultrasound if unclear.",
+"tre": "Watch in children; surgical repair in adults if symptomatic."
+},
+{
+"id": "perianal-abscess",
+"name": "Perianal Abscess",
+"epi": "Common; more in men and in Crohn disease.",
+"eti": "Infection of an anal gland spreads into nearby tissue.",
+"cli": "Throbbing perianal pain, swelling, fever.",
+"inv": "Clinical; MRI if complex.",
+"tre": "Urgent incision and drainage."
+},
+{
+"id": "rib-fracture",
+"name": "Rib Fracture",
+"epi": "Very common after chest injury, especially in older people.",
+"eti": "A blow breaks one or more ribs.",
+"cli": "Pain on breathing and coughing, point tenderness.",
+"inv": "Clinical; X-ray or CT to look for complications.",
+"tre": "Good pain relief, breathing exercises; watch for pneumonia."
+},
+{
+"id": "epidermoid-cyst",
+"name": "Epidermoid Cyst",
+"epi": "Very common skin cyst.",
+"eti": "A cyst of the hair follicle lined by epidermis, filled with keratin.",
+"cli": "Firm round lump with a central punctum; may become inflamed.",
+"inv": "Clinical.",
+"tre": "Excision of the whole cyst if bothersome."
+},
+{
+"id": "constrictive-pericarditis",
+"name": "Constrictive Pericarditis",
+"epi": "Uncommon; after TB, heart surgery, radiotherapy or viral pericarditis.",
+"eti": "A stiff, scarred pericardium stops the heart filling.",
+"cli": "Right heart failure: raised JVP, Kussmaul sign, ascites, edema; pericardial knock.",
+"inv": "Echo, CT or MRI shows thick pericardium; catheter shows equal diastolic pressures.",
+"tre": "Diuretics; pericardiectomy."
+},
+{
+"id": "cardiac-myxoma",
+"name": "Cardiac Myxoma",
+"epi": "The most common primary heart tumor; mostly in women.",
+"eti": "A benign tumor, usually in the left atrium, blocking the mitral valve and shedding emboli.",
+"cli": "Breathlessness, emboli, fever, weight loss; tumor plop.",
+"inv": "Echocardiography.",
+"tre": "Surgical removal."
+},
+{
+"id": "long-qt-syndrome",
+"name": "Long QT Syndrome",
+"epi": "Inherited form about 1 in 2,000; also caused by drugs.",
+"eti": "Abnormal potassium or sodium channels delay ventricular repolarization.",
+"cli": "Fainting or sudden death from torsades de pointes, triggered by exercise, noise or sleep.",
+"inv": "ECG QTc; genetic testing.",
+"tre": "Beta-blockers, avoid QT-prolonging drugs; ICD for high risk."
+},
+{
+"id": "eisenmenger-syndrome",
+"name": "Eisenmenger Syndrome",
+"epi": "Late complication of untreated left-to-right shunts.",
+"eti": "Long-term shunting causes pulmonary hypertension until the shunt reverses.",
+"cli": "Cyanosis, clubbing, breathlessness, high hemoglobin.",
+"inv": "Echocardiography; catheter.",
+"tre": "Pulmonary vasodilators; avoid pregnancy; heart-lung transplant."
+},
+{
+"id": "tetralogy-of-fallot",
+"name": "Tetralogy of Fallot",
+"epi": "The most common cyanotic congenital heart defect.",
+"eti": "Anterior shift of the infundibular septum causes four defects.",
+"cli": "Cyanosis, tet spells, squatting.",
+"inv": "Echocardiography.",
+"tre": "Surgical repair in infancy; knee-chest position and oxygen for spells."
+},
+{
+"id": "patent-ductus-arteriosus",
+"name": "Patent Ductus Arteriosus",
+"epi": "Common in premature babies; also after congenital rubella.",
+"eti": "The ductus arteriosus fails to close after birth.",
+"cli": "Bounding pulses, machinery murmur, heart failure.",
+"inv": "Echocardiography.",
+"tre": "Indomethacin or ibuprofen in preterms; device or surgical closure."
+},
+{
+"id": "prinzmetal-angina",
+"name": "Prinzmetal Angina",
+"epi": "Uncommon; younger smokers.",
+"eti": "Spasm of coronary arteries.",
+"cli": "Chest pain at rest, often early morning; ST elevation during pain.",
+"inv": "ECG during pain; provocation test.",
+"tre": "Calcium channel blockers, nitrates; stop smoking; avoid beta-blockers."
+},
+{
+"id": "pulmonary-valve-stenosis",
+"name": "Pulmonary Valve Stenosis",
+"epi": "Common congenital heart defect; linked with Noonan syndrome.",
+"eti": "A narrow pulmonary valve obstructs right ventricular outflow.",
+"cli": "Often silent; tiredness, breathlessness.",
+"inv": "Echocardiography.",
+"tre": "Balloon valvuloplasty."
+},
+{
+"id": "dermatitis-herpetiformis",
+"name": "Dermatitis Herpetiformis",
+"epi": "Linked with celiac disease.",
+"eti": "IgA against epidermal transglutaminase.",
+"cli": "Very itchy blisters on extensor surfaces.",
+"inv": "Biopsy, celiac antibodies.",
+"tre": "Gluten-free diet, dapsone."
+},
+{
+"id": "pyoderma-gangrenosum",
+"name": "Pyoderma Gangrenosum",
+"epi": "Rare; with IBD, arthritis, blood cancers.",
+"eti": "Neutrophilic inflammation of skin.",
+"cli": "Painful ulcers with purple undermined edges; worse with injury.",
+"inv": "Clinical; biopsy to exclude other causes.",
+"tre": "Steroids, ciclosporin, anti-TNF."
+},
+{
+"id": "granuloma-annulare",
+"name": "Granuloma Annulare",
+"epi": "Common, children and young adults.",
+"eti": "Unknown immune reaction.",
+"cli": "Ring of bumps on hands and feet; no scale.",
+"inv": "Clinical; biopsy if unclear.",
+"tre": "Often none; topical steroids."
+},
+{
+"id": "necrobiosis-lipoidica",
+"name": "Necrobiosis Lipoidica",
+"epi": "Uncommon, linked with diabetes.",
+"eti": "Granulomatous skin disease.",
+"cli": "Yellow-brown shiny plaques on shins.",
+"inv": "Clinical; biopsy.",
+"tre": "Topical steroids; protect from injury."
+},
+{
+"id": "mycosis-fungoides",
+"name": "Mycosis Fungoides",
+"epi": "The most common cutaneous lymphoma.",
+"eti": "Malignant T cells in the skin.",
+"cli": "Long-lasting eczema-like patches, then plaques and tumors.",
+"inv": "Biopsy.",
+"tre": "Topical steroids, phototherapy; systemic therapy later."
+},
+{
+"id": "sweet-syndrome",
+"name": "Sweet Syndrome",
+"epi": "Uncommon; after infections, cancers, drugs.",
+"eti": "Neutrophilic skin inflammation.",
+"cli": "Fever, tender red plaques.",
+"inv": "Biopsy.",
+"tre": "Steroids."
+},
+{
+"id": "acanthosis-nigricans",
+"name": "Acanthosis Nigricans",
+"epi": "Common with obesity and insulin resistance; rarely with cancer.",
+"eti": "Insulin stimulates skin growth factor receptors.",
+"cli": "Dark velvety skin in folds.",
+"inv": "Clinical; check glucose.",
+"tre": "Weight loss; treat insulin resistance."
+},
+{
+"id": "cutaneous-squamous-cell-carcinoma",
+"name": "Cutaneous Squamous Cell Carcinoma",
+"epi": "Second most common skin cancer.",
+"eti": "UV damage; immunosuppression raises risk.",
+"cli": "Growing crusted lump on sun-exposed skin.",
+"inv": "Biopsy.",
+"tre": "Surgical excision."
+},
+{
+"id": "vestibular-schwannoma",
+"name": "Vestibular Schwannoma",
+"epi": "Uncommon benign tumor; both sides in neurofibromatosis type 2.",
+"eti": "A benign Schwann cell tumor of the vestibular nerve.",
+"cli": "One-sided hearing loss, tinnitus, imbalance; facial numbness when large.",
+"inv": "Audiometry; MRI with contrast.",
+"tre": "Observation, radiosurgery or surgery."
+},
+{
+"id": "laryngeal-cancer",
+"name": "Laryngeal Cancer",
+"epi": "Common head and neck cancer in older male smokers.",
+"eti": "Squamous cell carcinoma from smoking and alcohol.",
+"cli": "Persistent hoarseness, painful swallowing, referred ear pain, neck mass.",
+"inv": "Laryngoscopy, biopsy, CT.",
+"tre": "Radiotherapy, surgery, chemoradiation."
+},
+{
+"id": "nasopharyngeal-carcinoma",
+"name": "Nasopharyngeal Carcinoma",
+"epi": "Common in southern China and Southeast Asia.",
+"eti": "Linked to Epstein-Barr virus, salted fish, genes.",
+"cli": "Neck mass, one-sided glue ear, nosebleeds, cranial nerve palsies.",
+"inv": "Endoscopy, biopsy, MRI; EBV DNA.",
+"tre": "Radiotherapy and chemotherapy."
+},
+{
+"id": "zenker-diverticulum",
+"name": "Zenker Diverticulum",
+"epi": "Uncommon; elderly men.",
+"eti": "A pouch through a weak area above the cricopharyngeus.",
+"cli": "Dysphagia, regurgitation, bad breath, aspiration.",
+"inv": "Barium swallow.",
+"tre": "Endoscopic or open surgery."
+},
+{
+"id": "superior-semicircular-canal-dehiscence",
+"name": "Superior Semicircular Canal Dehiscence",
+"epi": "Rare.",
+"eti": "Thin or missing bone over the superior semicircular canal creates a 'third window'.",
+"cli": "Sound- or pressure-induced vertigo, autophony.",
+"inv": "CT temporal bone; VEMP.",
+"tre": "Surgery to repair the canal."
+},
+{
+"id": "recurrent-respiratory-papillomatosis",
+"name": "Recurrent Respiratory Papillomatosis",
+"epi": "Rare; in children and adults.",
+"eti": "HPV 6 and 11 cause papillomas in the airway.",
+"cli": "Progressive hoarseness, stridor.",
+"inv": "Laryngoscopy, biopsy.",
+"tre": "Repeated surgical removal; HPV vaccine."
+},
+{
+"id": "deep-neck-space-infection",
+"name": "Deep Neck Space Infection",
+"epi": "Serious infection; from teeth, tonsils.",
+"eti": "Infection spreads to neck spaces.",
+"cli": "Fever, neck swelling, trismus, sore throat.",
+"inv": "CT.",
+"tre": "IV antibiotics, drainage, airway care."
+},
+{
+"id": "pleomorphic-adenoma",
+"name": "Pleomorphic Adenoma",
+"epi": "The most common salivary gland tumor.",
+"eti": "Benign mixed tumor.",
+"cli": "Painless slow-growing parotid lump.",
+"inv": "Ultrasound, FNA.",
+"tre": "Superficial parotidectomy."
+},
+{
+"id": "warthin-tumor",
+"name": "Warthin Tumor",
+"epi": "Second most common salivary tumor; male smokers.",
+"eti": "Benign tumor with lymphoid and epithelial tissue.",
+"cli": "Painless soft parotid lumps, sometimes both sides.",
+"inv": "Imaging, FNA.",
+"tre": "Observation or surgery."
+},
+{
+"id": "vocal-cord-paralysis",
+"name": "Vocal Cord Paralysis",
+"epi": "Common after thyroid, neck or chest surgery.",
+"eti": "Damage to the recurrent laryngeal nerve.",
+"cli": "Breathy hoarse voice, aspiration.",
+"inv": "Laryngoscopy.",
+"tre": "Voice therapy, injection or surgery."
+},
+{
+"id": "perilymph-fistula",
+"name": "Perilymph Fistula",
+"epi": "Rare; after barotrauma or head injury.",
+"eti": "A leak of inner ear fluid into the middle ear.",
+"cli": "Hearing loss, vertigo, tinnitus after pressure change.",
+"inv": "Clinical; surgical exploration.",
+"tre": "Bed rest; surgical repair."
+},
+{
+"id": "branchial-cleft-cyst",
+"name": "Branchial Cleft Cyst",
+"epi": "Common congenital neck lump.",
+"eti": "Remnant of the second branchial cleft.",
+"cli": "Painless neck lump in front of SCM, enlarging with infection.",
+"inv": "Ultrasound, CT.",
+"tre": "Surgical excision."
+},
+{
+"id": "cyanide-poisoning",
+"name": "Cyanide Poisoning",
+"epi": "Seen in fires and industrial accidents.",
+"eti": "Cyanide blocks cytochrome oxidase.",
+"cli": "Confusion, seizures, collapse, high lactate.",
+"inv": "High lactate, red venous blood.",
+"tre": "Hydroxocobalamin, oxygen."
+},
+{
+"id": "lead-poisoning",
+"name": "Lead Poisoning",
+"epi": "Seen in children in old houses, some jobs.",
+"eti": "Lead blocks heme synthesis and damages nerves.",
+"cli": "Abdominal pain, constipation, learning problems, anemia.",
+"inv": "Blood lead level.",
+"tre": "Remove source; chelation."
+},
+{
+"id": "calcium-channel-blocker-overdose",
+"name": "Calcium Channel Blocker Overdose",
+"epi": "Dangerous overdose.",
+"eti": "Calcium channel block slows the heart and dilates vessels.",
+"cli": "Bradycardia, hypotension, hyperglycemia.",
+"inv": "Clinical, ECG, glucose.",
+"tre": "Calcium, high-dose insulin, vasopressors."
+},
+{
+"id": "isoniazid-toxicity",
+"name": "Isoniazid Toxicity",
+"epi": "Seen in TB patients.",
+"eti": "Isoniazid depletes pyridoxine, lowering GABA.",
+"cli": "Seizures, acidosis, coma.",
+"inv": "Clinical.",
+"tre": "Pyridoxine, benzodiazepines."
+},
+{
+"id": "anticholinergic-toxicity",
+"name": "Anticholinergic Toxicity",
+"epi": "Seen with drugs, plants.",
+"eti": "Muscarinic block.",
+"cli": "Hot, dry, red, blind, mad.",
+"inv": "Clinical.",
+"tre": "Supportive, benzodiazepines, physostigmine."
+},
+{
+"id": "amatoxin-mushroom-poisoning",
+"name": "Amatoxin Mushroom Poisoning",
+"epi": "Leading cause of mushroom deaths.",
+"eti": "Amatoxin blocks RNA polymerase II in liver cells.",
+"cli": "Delayed GI symptoms, then liver failure.",
+"inv": "Clinical; urine amatoxin.",
+"tre": "Supportive, silibinin, transplant."
+},
+{
+"id": "scorpion-envenomation",
+"name": "Scorpion Envenomation",
+"epi": "Common in hot regions; dangerous in children.",
+"eti": "Venom activates sodium channels.",
+"cli": "Pain, sweating, drooling, eye movements, high BP.",
+"inv": "Clinical.",
+"tre": "Antivenom, supportive care."
+},
+{
+"id": "pituitary-apoplexy",
+"name": "Pituitary Apoplexy",
+"epi": "Rare emergency.",
+"eti": "Bleeding or infarction of a pituitary tumor.",
+"cli": "Sudden headache, vision loss, eye palsies, low cortisol.",
+"inv": "MRI.",
+"tre": "Steroids; surgery."
+},
+{
+"id": "nephrogenic-diabetes-insipidus",
+"name": "Nephrogenic Diabetes Insipidus",
+"epi": "Seen with lithium, genetic causes.",
+"eti": "Kidneys don't respond to ADH.",
+"cli": "Polyuria, thirst.",
+"inv": "Water deprivation and desmopressin tests.",
+"tre": "Stop lithium, thiazides, amiloride."
+},
+{
+"id": "eosinophilic-esophagitis",
+"name": "Eosinophilic Esophagitis",
+"epi": "Common cause of food sticking in young men.",
+"eti": "Allergic inflammation of the esophagus.",
+"cli": "Dysphagia, food impaction.",
+"inv": "Endoscopy, biopsy.",
+"tre": "PPI, topical steroids, elimination diet."
+},
+{
+"id": "zollinger-ellison-syndrome",
+"name": "Zollinger-Ellison Syndrome",
+"epi": "Rare; can be part of MEN1.",
+"eti": "Gastrin-secreting tumor.",
+"cli": "Multiple ulcers, diarrhea.",
+"inv": "High gastrin, secretin test.",
+"tre": "PPI; surgery."
+},
+{
+"id": "rapidly-progressive-glomerulonephritis",
+"name": "Rapidly Progressive Glomerulonephritis",
+"epi": "Uncommon but urgent; causes include ANCA vasculitis, anti-GBM disease and immune complex disease.",
+"eti": "Severe glomerular injury forms crescents in Bowman space, so kidney function falls over weeks.",
+"cli": "Rapid kidney failure with blood and protein in the urine, often with systemic symptoms.",
+"inv": "Urine casts, ANCA and anti-GBM antibodies, complement; biopsy shows crescents.",
+"tre": "High-dose steroids with cyclophosphamide or rituximab; plasma exchange in some."
+},
+{
+"id": "acute-interstitial-nephritis",
+"name": "Acute Interstitial Nephritis",
+"epi": "A common cause of drug-related kidney injury.",
+"eti": "An allergic reaction, most often to antibiotics, PPIs or NSAIDs, inflames the kidney interstitium.",
+"cli": "Rising creatinine, sometimes with fever, rash and eosinophilia.",
+"inv": "Urine white cells and casts, eosinophils; biopsy.",
+"tre": "Stop the drug; steroids in some."
+},
+{
+"id": "renal-papillary-necrosis",
+"name": "Renal Papillary Necrosis",
+"epi": "Seen with diabetes, analgesic overuse, sickle cell disease, pyelonephritis and obstruction.",
+"eti": "Ischemia of the renal papillae causes them to die and slough off.",
+"cli": "Flank pain, hematuria, passing tissue; may cause obstruction.",
+"inv": "CT urogram or pyelogram.",
+"tre": "Treat infection, relieve obstruction, stop NSAIDs."
+},
+{
+"id": "contrast-induced-nephropathy",
+"name": "Contrast-Induced Nephropathy",
+"epi": "Seen after iodinated contrast in people with kidney disease or diabetes.",
+"eti": "Contrast causes kidney vessel constriction and direct tubule injury.",
+"cli": "Rise in creatinine within 48 to 72 hours of contrast.",
+"inv": "Creatinine rise after contrast with no other cause.",
+"tre": "Prevention with fluids; supportive care."
+},
+{
+"id": "renal-oncocytoma",
+"name": "Renal Oncocytoma",
+"epi": "About 5% of kidney tumors; benign.",
+"eti": "Benign tumor from intercalated cells of the collecting duct.",
+"cli": "Usually found by chance on imaging.",
+"inv": "CT may show a central scar; biopsy.",
+"tre": "Surveillance or partial nephrectomy."
+},
+{
+"id": "retroperitoneal-fibrosis",
+"name": "Retroperitoneal Fibrosis",
+"epi": "Rare; can be IgG4-related or drug-induced.",
+"eti": "Fibrous tissue grows around the aorta and traps the ureters.",
+"cli": "Back or flank pain, weight loss, kidney failure from blocked ureters.",
+"inv": "CT or MRI.",
+"tre": "Steroids, ureteric stents; surgery."
+},
+{
+"id": "urothelial-carcinoma-of-the-renal-pelvis",
+"name": "Urothelial Carcinoma of the Renal Pelvis",
+"epi": "Rare compared with bladder cancer; same risk factors.",
+"eti": "Urothelial cancer of the renal pelvis or ureter.",
+"cli": "Painless hematuria, flank pain.",
+"inv": "CT urogram, ureteroscopy and biopsy.",
+"tre": "Nephroureterectomy."
+},
+{
+"id": "fournier-gangrene",
+"name": "Fournier Gangrene",
+"epi": "Rare but life-threatening; diabetes and obesity are risks.",
+"eti": "Necrotizing fasciitis of the perineum and genitals.",
+"cli": "Severe pain, swelling, dark skin, crepitus, sepsis.",
+"inv": "Clinical; CT shows gas.",
+"tre": "Urgent surgical debridement and IV antibiotics."
+},
+{
+"id": "medullary-sponge-kidney",
+"name": "Medullary Sponge Kidney",
+"epi": "Uncommon; found in adults with stones.",
+"eti": "Dilated collecting ducts in the renal pyramids.",
+"cli": "Kidney stones, infections, blood in urine.",
+"inv": "CT urogram.",
+"tre": "High fluid intake, treat stones and infections."
+},
+{
+"id": "transverse-myelitis",
+"name": "Transverse Myelitis",
+"epi": "Rare; after infections or with autoimmune disease.",
+"eti": "Inflammation across the spinal cord.",
+"cli": "Weakness, sensory level, bladder problems.",
+"inv": "MRI, CSF.",
+"tre": "Steroids, plasma exchange."
+},
+{
+"id": "neuromyelitis-optica-spectrum-disorder",
+"name": "Neuromyelitis Optica Spectrum Disorder",
+"epi": "Rare; more in women.",
+"eti": "Antibodies against aquaporin-4.",
+"cli": "Optic neuritis, myelitis, area postrema syndrome.",
+"inv": "MRI, AQP4 antibodies.",
+"tre": "Steroids, plasma exchange, immunosuppression."
+},
+{
+"id": "asherman-syndrome",
+"name": "Asherman Syndrome",
+"epi": "Uncommon; mostly after curettage of a pregnant uterus.",
+"eti": "Scar tissue forms in the uterine cavity after the basal endometrium is damaged.",
+"cli": "Light or absent periods, infertility, recurrent miscarriage.",
+"inv": "Hysteroscopy.",
+"tre": "Hysteroscopic removal of adhesions, then estrogen."
+},
+{
+"id": "uterine-rupture",
+"name": "Uterine Rupture",
+"epi": "Rare; mostly after cesarean scar.",
+"eti": "The uterine wall tears during labor.",
+"cli": "Sudden pain, loss of contractions, fetal distress, shock.",
+"inv": "Clinical.",
+"tre": "Emergency laparotomy and delivery."
+},
+{
+"id": "vasa-previa",
+"name": "Vasa Previa",
+"epi": "Rare; more with IVF and velamentous cord.",
+"eti": "Fetal vessels run unprotected over the cervix.",
+"cli": "Painless bleeding when membranes rupture, fetal distress.",
+"inv": "Antenatal Doppler ultrasound.",
+"tre": "Planned cesarean at 34 to 36 weeks."
+},
+{
+"id": "umbilical-cord-prolapse",
+"name": "Umbilical Cord Prolapse",
+"epi": "Rare emergency.",
+"eti": "The cord slips in front of the baby after the waters break.",
+"cli": "Fetal bradycardia after rupture of membranes.",
+"inv": "Vaginal exam.",
+"tre": "Lift the presenting part, knee-chest position, urgent delivery."
+},
+{
+"id": "twin-twin-transfusion-syndrome",
+"name": "Twin-Twin Transfusion Syndrome",
+"epi": "Seen in about 10% of monochorionic twin pregnancies.",
+"eti": "Unbalanced blood flow through placental vessels between twins.",
+"cli": "Polyhydramnios in one twin, oligohydramnios in the other.",
+"inv": "Ultrasound.",
+"tre": "Laser treatment of the connecting vessels."
+},
+{
+"id": "acute-fatty-liver-of-pregnancy",
+"name": "Acute Fatty Liver of Pregnancy",
+"epi": "Rare; late pregnancy.",
+"eti": "Fat builds up in the liver, linked to fetal LCHAD deficiency.",
+"cli": "Nausea, pain, jaundice, low glucose, liver failure.",
+"inv": "Clinical and labs.",
+"tre": "Prompt delivery, supportive care."
+},
+{
+"id": "ovarian-hyperstimulation-syndrome",
+"name": "Ovarian Hyperstimulation Syndrome",
+"epi": "Complication of fertility treatment.",
+"eti": "Ovarian stimulation leaks fluid into the abdomen.",
+"cli": "Abdominal swelling, pain, weight gain, breathlessness.",
+"inv": "Ultrasound.",
+"tre": "Supportive care, drainage."
+},
+{
+"id": "granulosa-cell-tumor",
+"name": "Granulosa Cell Tumor",
+"epi": "Rare ovarian tumor.",
+"eti": "Sex-cord stromal tumor producing estrogen.",
+"cli": "Precocious puberty or postmenopausal bleeding.",
+"inv": "Ultrasound, inhibin.",
+"tre": "Surgery."
+},
+{
+"id": "mature-cystic-teratoma",
+"name": "Mature Cystic Teratoma",
+"epi": "The most common ovarian tumor in young women.",
+"eti": "Germ cell tumor with tissues from all three layers.",
+"cli": "Often silent; may cause torsion.",
+"inv": "Ultrasound.",
+"tre": "Surgical removal."
+},
+{
+"id": "endometrial-cancer",
+"name": "Endometrial Cancer",
+"epi": "The most common gynecological cancer in high-income countries.",
+"eti": "Excess estrogen causes cancer of the endometrium.",
+"cli": "Postmenopausal bleeding.",
+"inv": "Ultrasound and biopsy.",
+"tre": "Hysterectomy and bilateral oophorectomy."
+},
+{
+"id": "epithelial-ovarian-cancer",
+"name": "Epithelial Ovarian Cancer",
+"epi": "The deadliest gynecological cancer.",
+"eti": "Cancer of the ovarian surface or fallopian tube.",
+"cli": "Bloating, early fullness, abdominal swelling.",
+"inv": "CA-125, ultrasound, CT.",
+"tre": "Surgery and chemotherapy."
+},
+{
+"id": "vulvar-lichen-sclerosus",
+"name": "Vulvar Lichen Sclerosus",
+"epi": "Common in postmenopausal women.",
+"eti": "Autoimmune inflammatory skin disease.",
+"cli": "Itching, white thin skin, scarring.",
+"inv": "Clinical; biopsy.",
+"tre": "Potent topical steroids; follow-up for cancer."
+},
+{
+"id": "endophthalmitis",
+"name": "Endophthalmitis",
+"epi": "Rare but sight-threatening; mostly after eye surgery or injections.",
+"eti": "Infection inside the eye, usually from bacteria entering during surgery or injury.",
+"cli": "Pain, sudden vision loss, red eye, hypopyon days after surgery.",
+"inv": "Clinical; vitreous tap for culture.",
+"tre": "Urgent intravitreal antibiotics; vitrectomy if severe."
+},
+{
+"id": "acanthamoeba-keratitis",
+"name": "Acanthamoeba Keratitis",
+"epi": "Rare; almost always in contact lens users.",
+"eti": "A free-living amoeba infects the cornea after exposure to water.",
+"cli": "Severe pain out of proportion to signs, ring infiltrate, slow worsening.",
+"inv": "Corneal scraping, culture, confocal microscopy.",
+"tre": "Long courses of biguanide drops (PHMB, chlorhexidine)."
+},
+{
+"id": "retinitis-pigmentosa",
+"name": "Retinitis Pigmentosa",
+"epi": "The most common inherited retinal dystrophy.",
+"eti": "Genetic loss of rod photoreceptors, then cones.",
+"cli": "Night blindness, tunnel vision, later central loss.",
+"inv": "Fundoscopy, ERG, genetic testing.",
+"tre": "Low-vision aids; gene therapy for some types."
+},
+{
+"id": "thyroid-eye-disease",
+"name": "Thyroid Eye Disease",
+"epi": "Most common with Graves disease; smoking worsens it.",
+"eti": "Autoimmune inflammation of orbital muscles and fat.",
+"cli": "Bulging eyes, lid retraction, double vision, gritty eyes.",
+"inv": "Clinical; CT or MRI of orbits.",
+"tre": "Stop smoking, lubricants, selenium, steroids, teprotumumab; surgery."
+},
+{
+"id": "sympathetic-ophthalmia",
+"name": "Sympathetic Ophthalmia",
+"epi": "Rare; after eye injury or surgery.",
+"eti": "Autoimmune attack on both eyes after uveal proteins are exposed.",
+"cli": "Bilateral uveitis weeks to months after injury to one eye.",
+"inv": "Clinical.",
+"tre": "Immunosuppression; sometimes removal of the injured eye early."
+},
+{
+"id": "bacterial-keratitis",
+"name": "Bacterial Keratitis",
+"epi": "Common in contact lens wearers.",
+"eti": "Bacterial infection of the cornea.",
+"cli": "Pain, red eye, discharge, white corneal spot.",
+"inv": "Fluorescein, scraping for culture.",
+"tre": "Intensive antibiotic drops."
+},
+{
+"id": "posterior-vitreous-detachment",
+"name": "Posterior Vitreous Detachment",
+"epi": "Very common with age.",
+"eti": "The vitreous gel separates from the retina.",
+"cli": "Sudden floaters and flashes.",
+"inv": "Dilated eye exam to exclude a tear.",
+"tre": "Reassurance; urgent review if more symptoms."
+},
+{
+"id": "non-arteritic-anterior-ischemic-optic-neuropathy",
+"name": "Non-Arteritic Anterior Ischemic Optic Neuropathy",
+"epi": "The most common optic neuropathy over 50.",
+"eti": "Poor blood flow to the optic nerve head.",
+"cli": "Sudden painless vision loss, often on waking.",
+"inv": "Clinical; exclude giant cell arteritis.",
+"tre": "Control risk factors."
+},
+{
+"id": "optic-nerve-glioma",
+"name": "Optic Nerve Glioma",
+"epi": "Rare; linked with neurofibromatosis type 1.",
+"eti": "Low-grade astrocytoma of the optic nerve.",
+"cli": "Slow vision loss, proptosis.",
+"inv": "MRI.",
+"tre": "Observation; chemotherapy if worsening."
+},
+{
+"id": "optic-disc-drusen",
+"name": "Optic Disc Drusen",
+"epi": "Common cause of pseudopapilledema.",
+"eti": "Calcified deposits in the optic nerve head.",
+"cli": "Usually silent; field defects.",
+"inv": "Ultrasound, OCT, autofluorescence.",
+"tre": "None; monitor."
+},
+{
+"id": "osteosarcoma",
+"name": "Osteosarcoma",
+"epi": "The most common primary bone cancer in teens.",
+"eti": "Malignant osteoblasts produce bone.",
+"cli": "Bone pain, swelling around the knee.",
+"inv": "X-ray, MRI, biopsy.",
+"tre": "Chemotherapy and surgery."
+},
+{
+"id": "ewing-sarcoma",
+"name": "Ewing Sarcoma",
+"epi": "Second most common bone cancer in children.",
+"eti": "EWSR1-FLI1 fusion.",
+"cli": "Bone pain, swelling, fever.",
+"inv": "X-ray, MRI, biopsy.",
+"tre": "Chemotherapy, surgery, radiotherapy."
+},
+{
+"id": "osteoid-osteoma",
+"name": "Osteoid Osteoma",
+"epi": "Benign bone tumor of young people.",
+"eti": "Small bone-forming tumor producing prostaglandins.",
+"cli": "Night pain relieved by NSAIDs.",
+"inv": "X-ray, CT.",
+"tre": "Radiofrequency ablation."
+},
+{
+"id": "giant-cell-tumor-of-bone",
+"name": "Giant Cell Tumor of Bone",
+"epi": "Benign but aggressive tumor; young adults.",
+"eti": "Tumor of stromal cells and osteoclast-like giant cells.",
+"cli": "Pain, swelling near joint.",
+"inv": "X-ray, MRI, biopsy.",
+"tre": "Curettage; denosumab."
+},
+{
+"id": "paget-disease-of-bone",
+"name": "Paget Disease of Bone",
+"epi": "Common in older people of British descent.",
+"eti": "Disordered bone remodeling.",
+"cli": "Bone pain, deformity, hearing loss.",
+"inv": "High ALP, X-ray, bone scan.",
+"tre": "Bisphosphonates."
+},
+{
+"id": "avascular-necrosis-of-the-femoral-head",
+"name": "Avascular Necrosis of the Femoral Head",
+"epi": "Seen with steroids, alcohol, sickle cell.",
+"eti": "Loss of blood supply to the femoral head.",
+"cli": "Groin pain, reduced movement.",
+"inv": "MRI.",
+"tre": "Core decompression; hip replacement."
+},
+{
+"id": "fat-embolism-syndrome",
+"name": "Fat Embolism Syndrome",
+"epi": "After long bone fractures.",
+"eti": "Fat enters the blood after fractures.",
+"cli": "Breathlessness, confusion, petechial rash.",
+"inv": "Clinical.",
+"tre": "Supportive care, early fixation."
+},
+{
+"id": "lisfranc-injury",
+"name": "Lisfranc Injury",
+"epi": "Uncommon; often missed.",
+"eti": "Injury of the tarsometatarsal joint.",
+"cli": "Midfoot pain, plantar bruising.",
+"inv": "X-ray, CT.",
+"tre": "Surgery."
+},
+{
+"id": "kienbock-disease",
+"name": "Kienbock Disease",
+"epi": "Rare; young adults.",
+"eti": "Avascular necrosis of the lunate.",
+"cli": "Wrist pain and stiffness.",
+"inv": "X-ray, MRI.",
+"tre": "Splint, surgery."
+},
+{
+"id": "charcot-neuroarthropathy",
+"name": "Charcot Neuroarthropathy",
+"epi": "Seen in diabetes with neuropathy.",
+"eti": "Repeated unfelt injury destroys joints.",
+"cli": "Warm, swollen foot, deformity.",
+"inv": "X-ray, MRI.",
+"tre": "Offloading with cast."
+},
+{
+"id": "spinal-epidural-abscess",
+"name": "Spinal Epidural Abscess",
+"epi": "Rare emergency.",
+"eti": "Infection in the epidural space.",
+"cli": "Back pain, fever, neurological deficit.",
+"inv": "MRI.",
+"tre": "Antibiotics, surgery."
+},
+{
+"id": "neuroblastoma",
+"name": "Neuroblastoma",
+"epi": "The most common extracranial solid tumor of childhood.",
+"eti": "Tumor of neural crest cells, usually in the adrenal gland.",
+"cli": "Abdominal mass, bruised eyes from orbital spread, bone pain.",
+"inv": "Urine catecholamines, imaging, biopsy, MIBG scan.",
+"tre": "Surgery, chemotherapy, radiotherapy depending on risk."
+},
+{
+"id": "wilms-tumor",
+"name": "Wilms Tumor",
+"epi": "The most common kidney cancer in children.",
+"eti": "Embryonal kidney tumor, WT1 gene.",
+"cli": "Painless abdominal mass, hematuria, high BP.",
+"inv": "Ultrasound, CT, biopsy.",
+"tre": "Nephrectomy and chemotherapy."
+},
+{
+"id": "congenital-adrenal-hyperplasia",
+"name": "Congenital Adrenal Hyperplasia",
+"epi": "Common inherited endocrine disease.",
+"eti": "21-hydroxylase deficiency.",
+"cli": "Ambiguous genitalia, salt-wasting crisis.",
+"inv": "17-OHP.",
+"tre": "Hydrocortisone, fludrocortisone."
+},
+{
+"id": "duodenal-atresia",
+"name": "Duodenal Atresia",
+"epi": "Linked with Down syndrome.",
+"eti": "Failure of the duodenum to canalize.",
+"cli": "Bilious vomiting soon after birth.",
+"inv": "X-ray double bubble.",
+"tre": "Surgery."
+},
+{
+"id": "kernicterus",
+"name": "Kernicterus",
+"epi": "Rare but preventable.",
+"eti": "Unconjugated bilirubin enters the brain.",
+"cli": "Lethargy, high-pitched cry, arching.",
+"inv": "Bilirubin level, MRI.",
+"tre": "Exchange transfusion, phototherapy."
+},
+{
+"id": "neonatal-abstinence-syndrome",
+"name": "Neonatal Abstinence Syndrome",
+"epi": "Rising with opioid use.",
+"eti": "Withdrawal from opioids after birth.",
+"cli": "Irritability, tremor, poor feeding, diarrhea.",
+"inv": "Clinical, scoring.",
+"tre": "Comfort care; morphine."
+},
+{
+"id": "fetal-alcohol-syndrome",
+"name": "Fetal Alcohol Syndrome",
+"epi": "The leading preventable cause of learning disability.",
+"eti": "Alcohol damages the developing brain.",
+"cli": "Smooth philtrum, thin lip, small eyes, learning problems.",
+"inv": "Clinical.",
+"tre": "Support."
+},
+{
+"id": "catatonia",
+"name": "Catatonia",
+"epi": "Seen with mood, psychotic and medical conditions.",
+"eti": "Disorder of movement and behavior.",
+"cli": "Mutism, posturing, rigidity, echolalia.",
+"inv": "Clinical; lorazepam test.",
+"tre": "Lorazepam, ECT."
+},
+{
+"id": "avoidant-restrictive-food-intake-disorder",
+"name": "Avoidant/Restrictive Food Intake Disorder",
+"epi": "Seen in children.",
+"eti": "Restricted eating not linked to body image.",
+"cli": "Weight loss, nutritional problems.",
+"inv": "Clinical.",
+"tre": "CBT, nutrition support."
+},
+{
+"id": "pica",
+"name": "Pica",
+"epi": "Seen in children, pregnancy, iron deficiency.",
+"eti": "Eating non-food items.",
+"cli": "Eating soil, paint, ice.",
+"inv": "Clinical.",
+"tre": "Treat deficiencies, behavioral support."
+},
+{
+"id": "opioid-withdrawal",
+"name": "Opioid Withdrawal",
+"epi": "Common.",
+"eti": "Lack of opioids.",
+"cli": "Aches, diarrhea, yawning, dilated pupils, goosebumps.",
+"inv": "Clinical.",
+"tre": "Buprenorphine, methadone."
+},
+{
+"id": "antisocial-personality-disorder",
+"name": "Antisocial Personality Disorder",
+"epi": "About 3% of men and 1% of women; common in prisons.",
+"eti": "Genetic factors with childhood abuse or neglect; conduct disorder before 15 is required.",
+"cli": "Repeated law-breaking, lying, impulsivity, aggression, recklessness, lack of remorse.",
+"inv": "Clinical; age 18 or over with evidence of conduct disorder in childhood.",
+"tre": "Hard to treat; manage aggression and substance use, structured programmes."
+},
+{
+"id": "schizotypal-personality-disorder",
+"name": "Schizotypal Personality Disorder",
+"epi": "About 3% of people; more common in relatives of people with schizophrenia.",
+"eti": "Part of the schizophrenia spectrum.",
+"cli": "Odd beliefs or magical thinking, odd speech and dress, social anxiety, few close friends, no sustained psychosis.",
+"inv": "Clinical.",
+"tre": "Psychotherapy, social skills training; low-dose antipsychotics for brief psychotic symptoms."
+},
+{
+"id": "depersonalization-derealization-disorder",
+"name": "Depersonalization-Derealization Disorder",
+"epi": "Up to 2% of people; often starts in teens or early adults.",
+"eti": "Dissociative response, often after stress, trauma or drug use (cannabis).",
+"cli": "Feeling detached from self or that the world is unreal, with intact reality testing.",
+"inv": "Clinical; exclude epilepsy, drugs and other psychiatric illness.",
+"tre": "Psychotherapy (CBT); treat anxiety or depression."
+},
+{
+"id": "dissociative-identity-disorder",
+"name": "Dissociative Identity Disorder",
+"epi": "Rare and debated; strongly linked to severe childhood trauma.",
+"eti": "Failure to integrate identity after repeated early trauma.",
+"cli": "Two or more distinct identity states, amnesia gaps, self-harm.",
+"inv": "Clinical, structured interviews; exclude epilepsy and drugs.",
+"tre": "Long-term trauma-focused psychotherapy."
+},
+{
+"id": "gambling-disorder",
+"name": "Gambling Disorder",
+"epi": "About 1% of adults; more in young men; rising with online betting.",
+"eti": "Behavioural addiction using the brain's reward system.",
+"cli": "Chasing losses, lying, needing bigger bets, restlessness when stopping, debt.",
+"inv": "Clinical (DSM-5 criteria).",
+"tre": "CBT, support groups, financial controls, naltrexone; screen for suicide risk."
+},
+{
+"id": "acute-dystonic-reaction",
+"name": "Acute Dystonic Reaction",
+"epi": "Common within days of starting antipsychotics or antiemetics; young men at highest risk.",
+"eti": "Sudden dopamine block in the basal ganglia upsets the dopamine-acetylcholine balance.",
+"cli": "Torticollis, oculogyric crisis, tongue protrusion, laryngeal spasm.",
+"inv": "Clinical, with drug history.",
+"tre": "IV or IM benztropine or diphenhydramine; stop or lower the drug."
+},
+{
+"id": "lymphangioleiomyomatosis",
+"name": "Lymphangioleiomyomatosis",
+"epi": "Rare; almost only women of childbearing age; sporadic or with tuberous sclerosis.",
+"eti": "TSC gene mutations cause abnormal smooth muscle cells (LAM cells) to grow in the lungs.",
+"cli": "Breathlessness, recurrent pneumothorax, chylous effusions, kidney angiomyolipomas.",
+"inv": "High-resolution CT with diffuse thin-walled cysts, serum VEGF-D.",
+"tre": "Sirolimus; avoid estrogen; lung transplant."
+},
+{
+"id": "pulmonary-alveolar-proteinosis",
+"name": "Pulmonary Alveolar Proteinosis",
+"epi": "Rare; usually adults, often smokers.",
+"eti": "Autoantibodies against GM-CSF stop macrophages clearing surfactant.",
+"cli": "Slowly worsening breathlessness, cough, low oxygen, risk of infections like Nocardia.",
+"inv": "CT crazy paving, milky lavage with PAS-positive material, GM-CSF antibodies.",
+"tre": "Whole-lung lavage, inhaled GM-CSF."
+},
+{
+"id": "allergic-bronchopulmonary-aspergillosis",
+"name": "Allergic Bronchopulmonary Aspergillosis",
+"epi": "Mostly people with asthma or cystic fibrosis.",
+"eti": "Hypersensitivity reaction to Aspergillus growing in the airways.",
+"cli": "Worsening asthma, brown mucus plugs, fleeting shadows, central bronchiectasis.",
+"inv": "Total IgE above 1,000, Aspergillus-specific IgE and IgG, eosinophils, CT.",
+"tre": "Oral steroids, itraconazole; biologics such as omalizumab."
+},
+{
+"id": "pulmonary-hamartoma",
+"name": "Pulmonary Hamartoma",
+"epi": "The most common benign lung tumor; adults 40 to 60.",
+"eti": "Benign growth of cartilage, fat and connective tissue.",
+"cli": "Usually no symptoms; found by chance.",
+"inv": "CT showing fat and popcorn calcification.",
+"tre": "Observation; surgery only if growing or causing symptoms."
+},
+{
+"id": "malignant-pleural-mesothelioma",
+"name": "Malignant Pleural Mesothelioma",
+"epi": "Strongly linked to asbestos, often 30 to 40 years after exposure.",
+"eti": "Malignant tumor of the pleural mesothelial cells.",
+"cli": "Chest wall pain, breathlessness, weight loss, one-sided effusion.",
+"inv": "CT, thoracoscopic biopsy (calretinin, WT1, loss of BAP1).",
+"tre": "Chemotherapy, immunotherapy (nivolumab and ipilimumab), pleurodesis; compensation claims."
+},
+{
+"id": "cryptogenic-organizing-pneumonia",
+"name": "Cryptogenic Organizing Pneumonia",
+"epi": "Uncommon; adults 50 to 60.",
+"eti": "Idiopathic organizing pneumonia; buds of granulation tissue fill the alveoli.",
+"cli": "Flu-like illness, cough, breathlessness that does not respond to antibiotics.",
+"inv": "CT with patchy migratory consolidation, biopsy.",
+"tre": "Oral steroids; relapse is common when tapering."
+},
+{
+"id": "chronic-eosinophilic-pneumonia",
+"name": "Chronic Eosinophilic Pneumonia",
+"epi": "Uncommon; more in women and people with asthma.",
+"eti": "Eosinophil-driven lung inflammation of unknown cause.",
+"cli": "Cough, breathlessness, fever, night sweats, weight loss over weeks.",
+"inv": "Blood and lavage eosinophils; CT with peripheral 'photographic negative of pulmonary edema' shadows.",
+"tre": "Oral steroids with a fast response; relapse is common."
+},
+{
+"id": "traumatic-diaphragmatic-rupture",
+"name": "Traumatic Diaphragmatic Rupture",
+"epi": "Blunt trauma (car crashes) or penetrating injury; mostly left-sided.",
+"eti": "Tear in the diaphragm lets abdominal organs move into the chest.",
+"cli": "Breathlessness, abdominal pain, bowel sounds in the chest; may be missed for years.",
+"inv": "Chest X-ray (NG tube in the chest), CT.",
+"tre": "Surgical repair."
+},
+{
+"id": "abdominal-compartment-syndrome",
+"name": "Abdominal Compartment Syndrome",
+"epi": "Critically ill patients after major surgery, trauma, burns or big fluid resuscitation.",
+"eti": "Raised pressure inside the abdomen cuts blood flow to the organs.",
+"cli": "Tense abdomen, oliguria, high ventilator pressures, low cardiac output.",
+"inv": "Bladder pressure above 20 mmHg with new organ failure.",
+"tre": "Sedation, drain fluid, limit fluids; urgent decompressive laparotomy."
+},
+{
+"id": "gallstone-ileus",
+"name": "Gallstone Ileus",
+"epi": "Rare; mostly elderly women.",
+"eti": "A large gallstone passes through a cholecystoenteric fistula and blocks the bowel, usually at the ileocecal valve.",
+"cli": "Intermittent small bowel obstruction.",
+"inv": "CT (Rigler triad: pneumobilia, obstruction, ectopic stone).",
+"tre": "Surgery: enterolithotomy."
+},
+{
+"id": "sigmoid-volvulus",
+"name": "Sigmoid Volvulus",
+"epi": "Elderly, constipated, often in care homes or with neurological disease.",
+"eti": "A long, redundant sigmoid colon twists on its mesentery.",
+"cli": "Massive abdominal swelling, constipation, pain.",
+"inv": "X-ray (coffee bean sign), CT.",
+"tre": "Endoscopic decompression with a rectal tube; elective sigmoid colectomy."
+},
+{
+"id": "toxic-megacolon",
+"name": "Toxic Megacolon",
+"epi": "Complication of severe ulcerative colitis or C. difficile infection.",
+"eti": "Inflammation paralyses the colon wall and it dilates.",
+"cli": "Fever, fast pulse, tender swollen abdomen, risk of perforation.",
+"inv": "X-ray with colon above 6 cm and signs of systemic toxicity.",
+"tre": "IV fluids, IV steroids, antibiotics, bowel rest; colectomy if no improvement."
+},
+{
+"id": "flail-chest",
+"name": "Flail Chest",
+"epi": "After trauma.",
+"eti": "Segment of chest wall moves independently.",
+"cli": "Paradoxical movement.",
+"inv": "CT.",
+"tre": "Pain control, ventilation, fixation."
+},
+{
+"id": "dilated-cardiomyopathy",
+"name": "Dilated Cardiomyopathy",
+"epi": "The most common cardiomyopathy; causes include genes, alcohol, viruses, pregnancy and drugs.",
+"eti": "The ventricles dilate and contract weakly.",
+"cli": "Heart failure symptoms, arrhythmias, emboli.",
+"inv": "Echo shows dilated, poorly contracting ventricles; exclude coronary disease.",
+"tre": "Heart failure drugs, stop alcohol, devices; transplant if severe."
+},
+{
+"id": "mitral-stenosis",
+"name": "Mitral Stenosis",
+"epi": "Mostly from rheumatic heart disease; common in low-income countries.",
+"eti": "Scarred, fused mitral leaflets narrow the valve, raising left atrial pressure.",
+"cli": "Breathlessness, atrial fibrillation, hemoptysis, worse in pregnancy.",
+"inv": "Echo measures valve area and gradient.",
+"tre": "Diuretics, rate control, anticoagulation; balloon valvotomy or valve replacement."
+},
+{
+"id": "aortic-regurgitation",
+"name": "Aortic Regurgitation",
+"epi": "Causes include bicuspid valve, aortic root dilatation, endocarditis, rheumatic disease and spondyloarthritis.",
+"eti": "The aortic valve leaks in diastole, so the left ventricle is volume-overloaded.",
+"cli": "Palpitations, breathlessness; wide pulse pressure, collapsing pulse, early diastolic murmur.",
+"inv": "Echocardiography.",
+"tre": "Treat blood pressure; valve replacement when symptomatic or the ventricle enlarges."
+},
+{
+"id": "ventricular-septal-defect",
+"name": "Ventricular Septal Defect",
+"epi": "The most common congenital heart defect.",
+"eti": "A hole in the ventricular septum lets blood flow from left to right ventricle.",
+"cli": "Small: loud murmur only; large: heart failure in infancy.",
+"inv": "Echocardiography.",
+"tre": "Small ones often close; diuretics; surgical or device closure for large ones."
+},
+{
+"id": "atrial-septal-defect",
+"name": "Atrial Septal Defect",
+"epi": "Common congenital heart defect, often found in adults.",
+"eti": "A hole in the atrial septum causes left-to-right shunt and right heart overload.",
+"cli": "Often silent; breathlessness, atrial arrhythmias, paradoxical emboli.",
+"inv": "Fixed split second heart sound; echocardiography.",
+"tre": "Device or surgical closure if significant."
+},
+{
+"id": "pemphigus-vulgaris",
+"name": "Pemphigus Vulgaris",
+"epi": "Rare autoimmune blistering disease, middle age.",
+"eti": "Antibodies against desmoglein 3 (and 1) break the links between keratinocytes.",
+"cli": "Painful mouth erosions, flaccid blisters, positive Nikolsky sign.",
+"inv": "Biopsy and direct immunofluorescence; desmoglein antibodies.",
+"tre": "Systemic corticosteroids, rituximab and other immunosuppressants."
+},
+{
+"id": "bullous-pemphigoid",
+"name": "Bullous Pemphigoid",
+"epi": "The most common autoimmune blistering disease; mostly in the elderly.",
+"eti": "Antibodies against hemidesmosome proteins BP180 and BP230.",
+"cli": "Itchy rash then tense blisters, rarely in the mouth.",
+"inv": "Biopsy and immunofluorescence.",
+"tre": "Potent topical steroids, oral steroids, doxycycline."
+},
+{
+"id": "lichen-planus",
+"name": "Lichen Planus",
+"epi": "Common, middle-aged adults; linked with hepatitis C.",
+"eti": "T-cell-mediated attack on basal keratinocytes.",
+"cli": "Purple, polygonal, pruritic, planar papules; Wickham striae; white lacy mouth lesions.",
+"inv": "Clinical; biopsy if unclear.",
+"tre": "Topical steroids; systemic treatment for severe cases."
+},
+{
+"id": "pityriasis-rosea",
+"name": "Pityriasis Rosea",
+"epi": "Common in teens and young adults.",
+"eti": "Probably related to reactivation of human herpesvirus 6 or 7.",
+"cli": "Herald patch then many oval patches along skin lines.",
+"inv": "Clinical; exclude secondary syphilis.",
+"tre": "Reassurance, emollients; settles in 6 to 8 weeks."
+},
+{
+"id": "hidradenitis-suppurativa",
+"name": "Hidradenitis Suppurativa",
+"epi": "Chronic disease of young adults, more in women, smokers and obesity.",
+"eti": "Blocked hair follicles rupture and cause inflammation in skin folds.",
+"cli": "Recurrent painful nodules, abscesses, sinus tracts, scars in armpits and groin.",
+"inv": "Clinical.",
+"tre": "Weight loss, stop smoking, antibiotics, adalimumab, surgery."
+},
+{
+"id": "erythema-multiforme",
+"name": "Erythema Multiforme",
+"epi": "Uncommon; often after herpes simplex infection.",
+"eti": "An immune reaction that damages keratinocytes.",
+"cli": "Target lesions on hands and feet, sometimes mouth sores.",
+"inv": "Clinical.",
+"tre": "Treat the trigger; antivirals for recurrent HSV-related cases."
+},
+{
+"id": "vestibular-neuritis",
+"name": "Vestibular Neuritis",
+"epi": "Common cause of sudden vertigo in adults.",
+"eti": "Inflammation of the vestibular nerve, probably viral.",
+"cli": "Sudden severe vertigo for days with nausea; no hearing loss.",
+"inv": "Clinical; HINTS exam to exclude stroke.",
+"tre": "Short-term vestibular sedatives, steroids early, vestibular rehabilitation."
+},
+{
+"id": "laryngomalacia",
+"name": "Laryngomalacia",
+"epi": "The most common cause of stridor in infants.",
+"eti": "Floppy supraglottic tissues collapse on inspiration.",
+"cli": "Inspiratory stridor worse when lying on the back or feeding; most outgrow it by 18 months.",
+"inv": "Flexible laryngoscopy.",
+"tre": "Reassurance; supraglottoplasty if severe."
+},
+{
+"id": "juvenile-nasopharyngeal-angiofibroma",
+"name": "Juvenile Nasopharyngeal Angiofibroma",
+"epi": "Rare benign tumor of adolescent boys.",
+"eti": "Highly vascular benign tumor at the back of the nose.",
+"cli": "One-sided blocked nose and heavy nosebleeds in a teenage boy.",
+"inv": "CT and MRI; no biopsy (bleeding risk).",
+"tre": "Embolization then surgical removal."
+},
+{
+"id": "retropharyngeal-abscess",
+"name": "Retropharyngeal Abscess",
+"epi": "Mostly in children under 5.",
+"eti": "Infection of lymph nodes behind the pharynx after upper respiratory infections.",
+"cli": "Fever, drooling, neck stiffness, painful swallowing, muffled voice.",
+"inv": "Lateral neck X-ray, CT.",
+"tre": "IV antibiotics and surgical drainage; airway protection."
+},
+{
+"id": "obstructive-sialadenitis",
+"name": "Obstructive Sialadenitis",
+"epi": "Common in older adults with dry mouth or duct narrowing.",
+"eti": "Narrowing or plugs block saliva flow, causing repeated inflammation.",
+"cli": "Recurrent painful swelling of a salivary gland at meals.",
+"inv": "Ultrasound or sialography.",
+"tre": "Hydration, massage, sialogogues; sialendoscopy."
+},
+{
+"id": "otitis-media-with-effusion",
+"name": "Otitis Media with Effusion",
+"epi": "Very common in young children.",
+"eti": "Fluid in the middle ear without acute infection, from poor Eustachian tube function.",
+"cli": "Hearing loss, speech delay, inattention.",
+"inv": "Otoscopy and tympanometry; hearing test.",
+"tre": "Watch for 3 months; grommets or hearing aids if persistent."
+},
+{
+"id": "tympanic-membrane-perforation",
+"name": "Tympanic Membrane Perforation",
+"epi": "Common after infection, slaps, blasts and objects in the ear.",
+"eti": "A tear or hole in the eardrum.",
+"cli": "Pain, bleeding, sudden hearing loss, tinnitus.",
+"inv": "Otoscopy.",
+"tre": "Keep the ear dry; most heal in weeks; surgical repair if not."
+},
+{
+"id": "noise-induced-hearing-loss",
+"name": "Noise-Induced Hearing Loss",
+"epi": "Common among people exposed to loud noise at work or leisure.",
+"eti": "Noise damages outer hair cells in the cochlea.",
+"cli": "Gradual bilateral hearing loss and tinnitus.",
+"inv": "Audiometry shows a 4 kHz notch.",
+"tre": "Prevention with ear protection; hearing aids."
+},
+{
+"id": "presbycusis",
+"name": "Presbycusis",
+"epi": "The most common cause of hearing loss in older adults.",
+"eti": "Age-related loss of cochlear hair cells and nerve fibres.",
+"cli": "Gradual bilateral high-frequency hearing loss, trouble understanding speech.",
+"inv": "Audiometry.",
+"tre": "Hearing aids; cochlear implants if severe."
+},
+{
+"id": "labyrinthitis",
+"name": "Labyrinthitis",
+"epi": "Less common than vestibular neuritis; often after viral infections.",
+"eti": "Inflammation of the inner ear affecting both balance and hearing.",
+"cli": "Sudden vertigo with hearing loss and tinnitus.",
+"inv": "Audiometry; MRI to exclude stroke or tumor.",
+"tre": "Vestibular sedatives, steroids; antibiotics if bacterial."
+},
+{
+"id": "iron-poisoning",
+"name": "Iron Poisoning",
+"epi": "A leading cause of poisoning deaths in young children.",
+"eti": "Iron is corrosive to the gut and poisons cell metabolism.",
+"cli": "Vomiting, bloody diarrhea, a quiet phase, then shock, acidosis and liver failure.",
+"inv": "Serum iron level; X-ray may show tablets.",
+"tre": "Supportive care, whole-bowel irrigation, IV deferoxamine."
+},
+{
+"id": "organophosphate-poisoning",
+"name": "Organophosphate Poisoning",
+"epi": "Common poisoning in farming regions; often intentional.",
+"eti": "Organophosphates block acetylcholinesterase, so acetylcholine builds up.",
+"cli": "Salivation, sweating, miosis, bronchorrhea, bradycardia, fasciculations, weakness.",
+"inv": "Clinical; low cholinesterase activity.",
+"tre": "Decontamination, atropine until secretions dry, pralidoxime, benzodiazepines for seizures."
+},
+{
+"id": "digoxin-toxicity",
+"name": "Digoxin Toxicity",
+"epi": "Common in older people on digoxin with kidney decline or low potassium.",
+"eti": "Too much digoxin blocks the Na-K ATPase, causing arrhythmias.",
+"cli": "Nausea, poor appetite, confusion, yellow vision, slow or irregular pulse.",
+"inv": "Digoxin level, potassium, kidney function, ECG.",
+"tre": "Stop digoxin, correct potassium; digoxin-specific antibody fragments if severe."
+},
+{
+"id": "beta-blocker-overdose",
+"name": "Beta-Blocker Overdose",
+"epi": "A dangerous overdose; propranolol is the most toxic.",
+"eti": "Beta blockade slows the heart and weakens contraction; propranolol blocks sodium channels too.",
+"cli": "Bradycardia, hypotension, low glucose, seizures, coma.",
+"inv": "Clinical; ECG; glucose.",
+"tre": "Atropine, IV fluids, glucagon, high-dose insulin with glucose, pacing, lipid emulsion."
+},
+{
+"id": "ethylene-glycol-poisoning",
+"name": "Ethylene Glycol Poisoning",
+"epi": "Poisoning from antifreeze or brake fluid.",
+"eti": "Alcohol dehydrogenase turns ethylene glycol into toxic glycolate and oxalate.",
+"cli": "Drunk-like state, then acidosis, then kidney failure.",
+"inv": "Osmolar gap, high anion gap acidosis, oxalate crystals.",
+"tre": "Fomepizole or ethanol, hemodialysis, bicarbonate."
+},
+{
+"id": "methanol-poisoning",
+"name": "Methanol Poisoning",
+"epi": "Seen with illegal or contaminated alcohol, sometimes in outbreaks.",
+"eti": "Alcohol dehydrogenase converts methanol to formic acid, which damages the optic nerve.",
+"cli": "Drunk-like state, then visual loss, abdominal pain, acidosis.",
+"inv": "Osmolar gap, high anion gap acidosis; methanol level.",
+"tre": "Fomepizole or ethanol, hemodialysis, bicarbonate, folate."
+},
+{
+"id": "primary-hyperaldosteronism",
+"name": "Primary Hyperaldosteronism",
+"epi": "The most common cause of secondary hypertension.",
+"eti": "Excess aldosterone from an adrenal adenoma or bilateral hyperplasia.",
+"cli": "Resistant hypertension, low potassium, fatigue, cramps.",
+"inv": "High aldosterone-to-renin ratio, confirmatory tests, CT, adrenal vein sampling.",
+"tre": "Surgery for an adenoma; spironolactone for hyperplasia."
+},
+{
+"id": "acromegaly",
+"name": "Acromegaly",
+"epi": "Rare; usually diagnosed years after onset.",
+"eti": "Excess growth hormone, nearly always from a pituitary adenoma.",
+"cli": "Enlarged hands, feet and jaw, sweating, sleep apnea, diabetes, heart disease.",
+"inv": "High IGF-1, no GH suppression on glucose; pituitary MRI.",
+"tre": "Surgery; somatostatin analogs, pegvisomant, radiotherapy."
+},
+{
+"id": "subacute-thyroiditis",
+"name": "Subacute Thyroiditis",
+"epi": "Uncommon; women in middle age, after viral infections.",
+"eti": "Viral-triggered inflammation of the thyroid releases stored hormone.",
+"cli": "Painful tender thyroid, fever, thyrotoxic phase then hypothyroid phase.",
+"inv": "High ESR, thyrotoxicosis, low uptake.",
+"tre": "NSAIDs or steroids, beta-blockers; usually recovers."
+},
+{
+"id": "autoimmune-hepatitis",
+"name": "Autoimmune Hepatitis",
+"epi": "Uncommon; mostly young and middle-aged women.",
+"eti": "The immune system attacks liver cells.",
+"cli": "Fatigue, jaundice, joint pain, raised liver enzymes; can cause cirrhosis.",
+"inv": "High IgG, ANA or anti-smooth muscle antibodies, biopsy.",
+"tre": "Steroids and azathioprine; transplant if liver failure."
+},
+{
+"id": "hemophilia-c",
+"name": "Hemophilia C",
+"epi": "Rare overall, common in Ashkenazi Jews; affects both sexes.",
+"eti": "Autosomal recessive deficiency of clotting factor XI.",
+"cli": "Bleeding after surgery or dental work; rarely spontaneous.",
+"inv": "Prolonged APTT; low factor XI.",
+"tre": "Tranexamic acid, fresh frozen plasma or factor XI concentrate around surgery."
+},
+{
+"id": "spinocerebellar-ataxia",
+"name": "Spinocerebellar Ataxia",
+"epi": "Group of inherited ataxias; SCA3 is the most common worldwide.",
+"eti": "Autosomal dominant CAG repeat expansions damage the cerebellum.",
+"cli": "Progressive ataxia, slurred speech, eye movement problems.",
+"inv": "MRI, genetic testing.",
+"tre": "Supportive: physiotherapy, speech therapy; genetic counseling."
+},
+{
+"id": "loeys-dietz-syndrome",
+"name": "Loeys-Dietz Syndrome",
+"epi": "Rare autosomal dominant connective tissue disorder.",
+"eti": "TGF-beta receptor mutations weaken blood vessel walls.",
+"cli": "Aortic and arterial aneurysms, arterial tortuosity, wide-set eyes, bifid uvula.",
+"inv": "Imaging and genetic testing.",
+"tre": "Beta-blockers or ARBs, early aortic surgery."
+},
+{
+"id": "hereditary-multiple-exostoses",
+"name": "Hereditary Multiple Exostoses",
+"epi": "Rare autosomal dominant disorder.",
+"eti": "EXT1 or EXT2 mutations cause many cartilage-capped bony growths.",
+"cli": "Multiple hard lumps near joints, limb deformities; small risk of chondrosarcoma.",
+"inv": "X-rays; genetic testing.",
+"tre": "Surgery for painful or deforming lumps; watch for malignant change."
+},
+{
+"id": "waardenburg-syndrome",
+"name": "Waardenburg Syndrome",
+"epi": "Rare; a cause of inherited deafness.",
+"eti": "Neural crest cell migration defect (PAX3, MITF and others).",
+"cli": "Deafness, white forelock, different-coloured eyes, wide-set inner eye corners.",
+"inv": "Clinical; genetic testing.",
+"tre": "Hearing aids or cochlear implants; genetic counseling."
+},
+{
+"id": "cystinuria",
+"name": "Cystinuria",
+"epi": "Rare autosomal recessive cause of kidney stones in young people.",
+"eti": "Defective kidney transport of cystine and dibasic amino acids.",
+"cli": "Recurrent kidney stones from childhood.",
+"inv": "Hexagonal crystals, nitroprusside test, urine amino acids.",
+"tre": "High fluid intake, urine alkalinization, tiopronin or penicillamine."
+},
+{
+"id": "hereditary-fructose-intolerance",
+"name": "Hereditary Fructose Intolerance",
+"epi": "Rare autosomal recessive disorder.",
+"eti": "Aldolase B deficiency traps fructose-1-phosphate, blocking glucose release.",
+"cli": "Vomiting, low glucose, liver damage after fructose; dislike of sweets.",
+"inv": "Genetic testing.",
+"tre": "Strict avoidance of fructose, sucrose and sorbitol."
+},
+{
+"id": "ornithine-transcarbamylase-deficiency",
+"name": "Ornithine Transcarbamylase Deficiency",
+"epi": "The most common urea cycle disorder; X-linked.",
+"eti": "Lack of the OTC enzyme blocks the urea cycle so ammonia builds up.",
+"cli": "Neonatal lethargy, vomiting, seizures, coma; milder forms in girls.",
+"inv": "High ammonia, high orotic acid, low citrulline.",
+"tre": "Stop protein, dialysis, nitrogen scavengers, arginine; liver transplant."
+},
+{
+"id": "medium-chain-acyl-coa-dehydrogenase-deficiency",
+"name": "Medium-Chain Acyl-CoA Dehydrogenase Deficiency",
+"epi": "The most common fatty acid oxidation disorder; on newborn screening.",
+"eti": "Autosomal recessive; medium-chain fats can't be broken down during fasting.",
+"cli": "Low glucose without ketones after fasting or illness; sudden death.",
+"inv": "Newborn screen, acylcarnitine profile.",
+"tre": "Avoid fasting, IV glucose during illness."
+},
+{
+"id": "becker-muscular-dystrophy",
+"name": "Becker Muscular Dystrophy",
+"epi": "Milder relative of Duchenne; X-linked.",
+"eti": "In-frame dystrophin mutations make a partly working protein.",
+"cli": "Later onset muscle weakness, cramps, calf enlargement, cardiomyopathy.",
+"inv": "High CK; dystrophin testing.",
+"tre": "Physiotherapy, heart monitoring and treatment."
+},
+{
+"id": "spinal-muscular-atrophy",
+"name": "Spinal Muscular Atrophy",
+"epi": "A leading genetic cause of infant death; autosomal recessive.",
+"eti": "Loss of SMN1 causes degeneration of anterior horn motor neurons.",
+"cli": "Severe weakness and floppiness with alert face, tongue fasciculations, absent reflexes.",
+"inv": "SMN1 genetic testing.",
+"tre": "Nusinersen, risdiplam or gene therapy; breathing and nutrition support."
+},
+{
+"id": "myotonia-congenita",
+"name": "Myotonia Congenita",
+"epi": "Rare inherited muscle channel disorder.",
+"eti": "Faulty chloride channels in muscle cause delayed relaxation.",
+"cli": "Stiffness on starting movement that improves with repetition; muscle hypertrophy.",
+"inv": "EMG, genetic testing.",
+"tre": "Mexiletine; avoid cold."
+},
+{
+"id": "hairy-cell-leukemia",
+"name": "Hairy Cell Leukemia",
+"epi": "Rare B-cell leukemia, mostly in middle-aged men.",
+"eti": "Chronic B-cell cancer driven by BRAF V600E.",
+"cli": "Big spleen, low blood counts, infections.",
+"inv": "Blood film, flow cytometry, bone marrow (dry tap).",
+"tre": "Cladribine; rituximab, BRAF inhibitors."
+},
+{
+"id": "iga-nephropathy",
+"name": "IgA Nephropathy",
+"epi": "The most common glomerulonephritis worldwide.",
+"eti": "IgA immune complexes deposit in the mesangium.",
+"cli": "Visible blood in urine 1 to 2 days after a throat infection; can progress to kidney failure.",
+"inv": "Biopsy shows mesangial IgA.",
+"tre": "ACE inhibitor or ARB, blood pressure control, steroids in some."
+},
+{
+"id": "membranous-nephropathy",
+"name": "Membranous Nephropathy",
+"epi": "The most common cause of nephrotic syndrome in white adults.",
+"eti": "Antibodies against PLA2R on podocytes form subepithelial immune deposits.",
+"cli": "Nephrotic syndrome, blood clots including renal vein thrombosis.",
+"inv": "Anti-PLA2R antibodies, biopsy.",
+"tre": "ACE inhibitors, statins, anticoagulation; rituximab or immunosuppression."
+},
+{
+"id": "focal-segmental-glomerulosclerosis",
+"name": "Focal Segmental Glomerulosclerosis",
+"epi": "A common cause of nephrotic syndrome in adults, especially of African descent.",
+"eti": "Podocyte injury causes scarring in segments of some glomeruli; primary or secondary.",
+"cli": "Nephrotic syndrome, hypertension, progressive kidney failure.",
+"inv": "Kidney biopsy.",
+"tre": "ACE inhibitors, steroids or other immunosuppression for primary forms; treat the cause."
+},
+{
+"id": "distal-renal-tubular-acidosis",
+"name": "Distal Renal Tubular Acidosis",
+"epi": "Uncommon; linked with autoimmune disease, drugs and genetics.",
+"eti": "The distal tubule can't secrete acid.",
+"cli": "Weakness, low potassium, kidney stones, nephrocalcinosis.",
+"inv": "Normal anion gap acidosis with urine pH over 5.5.",
+"tre": "Oral alkali (potassium citrate)."
+},
+{
+"id": "posterior-urethral-valves",
+"name": "Posterior Urethral Valves",
+"epi": "The most common cause of bladder outlet obstruction in newborn boys.",
+"eti": "A membrane in the posterior urethra blocks urine flow.",
+"cli": "Weak stream, palpable bladder, kidney damage; may cause lung problems from low amniotic fluid.",
+"inv": "Ultrasound and voiding cystourethrogram.",
+"tre": "Catheter, then valve ablation by cystoscopy."
+},
+{
+"id": "vesicoureteral-reflux",
+"name": "Vesicoureteral Reflux",
+"epi": "Common in young children with urinary infections; runs in families.",
+"eti": "A short tunnel where the ureter enters the bladder lets urine flow back up.",
+"cli": "Recurrent febrile urinary infections, kidney scars.",
+"inv": "Voiding cystourethrogram.",
+"tre": "Watch; prophylactic antibiotics; surgery if severe."
+},
+{
+"id": "urethral-stricture",
+"name": "Urethral Stricture",
+"epi": "Common in men after catheters, injury or infection.",
+"eti": "Scarring narrows the urethra.",
+"cli": "Weak spraying stream, straining, infections.",
+"inv": "Flow rate test, urethrogram, cystoscopy.",
+"tre": "Dilatation, urethrotomy or urethroplasty."
+},
+{
+"id": "priapism",
+"name": "Priapism",
+"epi": "Uncommon; common in sickle cell disease and with some drugs.",
+"eti": "Ischemic: blood is trapped in the corpora cavernosa.",
+"cli": "Painful erection over 4 hours without arousal.",
+"inv": "Corporal blood gas.",
+"tre": "Urgent aspiration and phenylephrine injection; surgical shunt."
+},
+{
+"id": "chronic-inflammatory-demyelinating-polyneuropathy",
+"name": "Chronic Inflammatory Demyelinating Polyneuropathy",
+"epi": "Uncommon; like a chronic form of Guillain-Barré.",
+"eti": "Immune attack on peripheral nerve myelin over more than 8 weeks.",
+"cli": "Symmetrical weakness of proximal and distal muscles, numbness, absent reflexes.",
+"inv": "Nerve conduction studies, CSF protein.",
+"tre": "IV immunoglobulin, steroids or plasma exchange."
+},
+{
+"id": "idiopathic-intracranial-hypertension",
+"name": "Idiopathic Intracranial Hypertension",
+"epi": "Most common in young women with obesity.",
+"eti": "Raised brain fluid pressure without a mass or blocked veins.",
+"cli": "Headache, pulsatile tinnitus, visual loss, papilledema.",
+"inv": "Normal brain imaging, high opening pressure on lumbar puncture.",
+"tre": "Weight loss, acetazolamide; surgery if vision is at risk."
+},
+{
+"id": "narcolepsy",
+"name": "Narcolepsy",
+"epi": "Uncommon; starts in teens or young adults.",
+"eti": "Loss of orexin-making neurons in the hypothalamus.",
+"cli": "Daytime sleepiness, cataplexy, sleep paralysis, hallucinations.",
+"inv": "Sleep study and MSLT; low CSF orexin.",
+"tre": "Scheduled naps, modafinil, sodium oxybate, pitolisant."
+},
+{
+"id": "childhood-absence-epilepsy",
+"name": "Childhood Absence Epilepsy",
+"epi": "Common childhood epilepsy, usually starting at 4 to 10 years.",
+"eti": "Abnormal thalamocortical rhythms cause brief lapses.",
+"cli": "Many brief staring spells a day, triggered by hyperventilation.",
+"inv": "EEG with 3 Hz spike-and-wave.",
+"tre": "Ethosuximide or valproate."
+},
+{
+"id": "medication-overuse-headache",
+"name": "Medication-Overuse Headache",
+"epi": "Common in people with migraine or tension headache who use painkillers often.",
+"eti": "Frequent painkiller use changes pain pathways, causing daily headaches.",
+"cli": "Headache 15 or more days a month with painkiller use on 10 to 15 days.",
+"inv": "Clinical.",
+"tre": "Stop the overused drug, preventive treatment for the original headache."
+},
+{
+"id": "lumbar-radiculopathy",
+"name": "Lumbar Radiculopathy",
+"epi": "Common in adults aged 30 to 50.",
+"eti": "A herniated disc or narrowed foramen compresses a lumbar nerve root.",
+"cli": "Back pain with shooting leg pain in a dermatome, numbness, weakness.",
+"inv": "Clinical; MRI if severe or persistent.",
+"tre": "Pain relief, physiotherapy; injections or surgery if needed."
+},
+{
+"id": "cervical-insufficiency",
+"name": "Cervical Insufficiency",
+"epi": "A cause of second-trimester pregnancy loss.",
+"eti": "A weak cervix opens painlessly before term.",
+"cli": "Painless cervical dilation in the second trimester.",
+"inv": "Ultrasound cervical length; history of losses.",
+"tre": "Cervical cerclage; vaginal progesterone."
+},
+{
+"id": "preterm-premature-rupture-of-membranes",
+"name": "Preterm Premature Rupture of Membranes",
+"epi": "Occurs in about 3% of pregnancies; a cause of preterm birth.",
+"eti": "Membranes rupture before 37 weeks and before labor.",
+"cli": "Gush or leakage of fluid before term.",
+"inv": "Speculum pooling, nitrazine, ferning; ultrasound.",
+"tre": "Antibiotics, steroids for the baby's lungs, magnesium if very early; deliver at 34 weeks or sooner if infected."
+},
+{
+"id": "postpartum-hemorrhage",
+"name": "Postpartum Hemorrhage",
+"epi": "A leading cause of maternal death worldwide.",
+"eti": "Usually uterine atony; also tears, retained tissue and clotting problems.",
+"cli": "Blood loss over 500 mL after delivery, low blood pressure.",
+"inv": "Clinical; find the cause (tone, trauma, tissue, thrombin).",
+"tre": "Uterine massage, oxytocin, ergometrine, carboprost, tranexamic acid; balloon or surgery."
+},
+{
+"id": "chorioamnionitis",
+"name": "Chorioamnionitis",
+"epi": "Common, especially with long rupture of membranes.",
+"eti": "Bacteria from the vagina infect the membranes and amniotic fluid.",
+"cli": "Maternal fever, tachycardia, uterine tenderness, fetal tachycardia, foul fluid.",
+"inv": "Clinical.",
+"tre": "Broad-spectrum IV antibiotics and delivery."
+},
+{
+"id": "intrahepatic-cholestasis-of-pregnancy",
+"name": "Intrahepatic Cholestasis of Pregnancy",
+"epi": "Common liver problem in late pregnancy; more in some ethnic groups.",
+"eti": "Hormone-related reduced bile flow, so bile acids build up.",
+"cli": "Itching of palms and soles without rash in the third trimester.",
+"inv": "High bile acids.",
+"tre": "Ursodeoxycholic acid, monitoring, early delivery if bile acids are very high."
+},
+{
+"id": "adenomyosis",
+"name": "Adenomyosis",
+"epi": "Common in women in their 40s with children.",
+"eti": "Endometrial tissue grows into the muscle wall of the uterus.",
+"cli": "Heavy painful periods, enlarged tender uterus.",
+"inv": "Ultrasound or MRI.",
+"tre": "Hormonal IUD, NSAIDs, hormones; hysterectomy."
+},
+{
+"id": "bartholin-gland-abscess",
+"name": "Bartholin Gland Abscess",
+"epi": "Common in women of reproductive age.",
+"eti": "The Bartholin duct blocks and the gland gets infected.",
+"cli": "Painful swelling of the lower labium.",
+"inv": "Clinical.",
+"tre": "Drainage with Word catheter or marsupialization; antibiotics if cellulitis."
+},
+{
+"id": "premature-ovarian-insufficiency",
+"name": "Premature Ovarian Insufficiency",
+"epi": "Affects about 1% of women under 40.",
+"eti": "Loss of ovarian function before 40, from genes, autoimmunity, chemotherapy or unknown.",
+"cli": "Missed periods, menopause symptoms, infertility.",
+"inv": "High FSH on two occasions, low estrogen.",
+"tre": "Hormone replacement until natural menopause age; fertility options."
+},
+{
+"id": "endometrial-hyperplasia",
+"name": "Endometrial Hyperplasia",
+"epi": "Common around menopause, especially with obesity.",
+"eti": "Unopposed estrogen makes the endometrium overgrow.",
+"cli": "Abnormal uterine bleeding.",
+"inv": "Ultrasound and biopsy.",
+"tre": "Progestogens (hormonal IUD); hysterectomy if atypia."
+},
+{
+"id": "gestational-hypertension",
+"name": "Gestational Hypertension",
+"epi": "Common, about 5 to 10% of pregnancies.",
+"eti": "New high blood pressure after 20 weeks without organ damage.",
+"cli": "High blood pressure with no protein in urine and no symptoms.",
+"inv": "Blood pressure, urine and blood tests to exclude preeclampsia.",
+"tre": "Labetalol or nifedipine, monitoring; delivery at term."
+},
+{
+"id": "anterior-uveitis",
+"name": "Anterior Uveitis",
+"epi": "Common; linked with HLA-B27 diseases.",
+"eti": "Inflammation of the iris and ciliary body.",
+"cli": "Painful red eye, photophobia, blurred vision, small pupil.",
+"inv": "Slit-lamp exam.",
+"tre": "Steroid and dilating eye drops; treat the cause."
+},
+{
+"id": "herpes-simplex-keratitis",
+"name": "Herpes Simplex Keratitis",
+"epi": "A common cause of corneal blindness.",
+"eti": "Herpes simplex infects the cornea.",
+"cli": "Painful red eye, photophobia, blurred vision, reduced corneal feeling.",
+"inv": "Fluorescein shows dendritic ulcer.",
+"tre": "Topical or oral antivirals; avoid steroids alone."
+},
+{
+"id": "keratoconus",
+"name": "Keratoconus",
+"epi": "Uncommon; starts in teens; linked with eye rubbing and allergies.",
+"eti": "The cornea thins and bulges into a cone.",
+"cli": "Worsening blurred vision, astigmatism, glare.",
+"inv": "Corneal topography.",
+"tre": "Glasses, rigid contact lenses, corneal cross-linking; transplant."
+},
+{
+"id": "strabismus",
+"name": "Strabismus",
+"epi": "Common in children.",
+"eti": "The eyes don't line up because of muscle imbalance, refractive error or nerve problems.",
+"cli": "One eye turns in, out, up or down.",
+"inv": "Light reflex and cover test.",
+"tre": "Glasses, patching, surgery."
+},
+{
+"id": "amblyopia",
+"name": "Amblyopia",
+"epi": "Common cause of poor vision in children.",
+"eti": "Abnormal visual input in early childhood stops the brain developing vision from one eye.",
+"cli": "Reduced vision in one eye with normal eye structure.",
+"inv": "Vision testing and eye exam.",
+"tre": "Glasses, patching or atropine drops in the good eye, early."
+},
+{
+"id": "diabetic-retinopathy",
+"name": "Diabetic Retinopathy",
+"epi": "A leading cause of blindness in working-age adults.",
+"eti": "High glucose damages retinal blood vessels.",
+"cli": "Often silent, then blurred vision, floaters, sudden loss from bleeding.",
+"inv": "Retinal screening photos; fluorescein angiography.",
+"tre": "Glucose and blood pressure control, laser, anti-VEGF injections."
+},
+{
+"id": "hypertensive-retinopathy",
+"name": "Hypertensive Retinopathy",
+"epi": "Seen with long-standing or very high blood pressure.",
+"eti": "High pressure damages retinal arterioles.",
+"cli": "Usually silent; blurred vision in malignant hypertension.",
+"inv": "Fundoscopy.",
+"tre": "Control blood pressure carefully."
+},
+{
+"id": "vitreous-hemorrhage",
+"name": "Vitreous Hemorrhage",
+"epi": "Common in diabetic retinopathy, retinal tears and trauma.",
+"eti": "Bleeding into the vitreous gel from new vessels or a tear.",
+"cli": "Sudden painless floaters and blurred vision.",
+"inv": "Fundoscopy; B-scan ultrasound if no view.",
+"tre": "Treat the cause; vitrectomy if not clearing."
+},
+{
+"id": "episcleritis",
+"name": "Episcleritis",
+"epi": "Common, benign, in young adults.",
+"eti": "Inflammation of the episclera, sometimes with autoimmune disease.",
+"cli": "Mild discomfort, sectoral redness, normal vision.",
+"inv": "Clinical; blanching with phenylephrine.",
+"tre": "Lubricants, NSAIDs; settles by itself."
+},
+{
+"id": "dacryocystitis",
+"name": "Dacryocystitis",
+"epi": "Common in older women and babies with blocked tear ducts.",
+"eti": "Infection of the lacrimal sac behind a blocked nasolacrimal duct.",
+"cli": "Painful swelling at the inner eye corner, watering, pus.",
+"inv": "Clinical.",
+"tre": "Antibiotics, warm compresses; dacryocystorhinostomy."
+},
+{
+"id": "nasolacrimal-duct-obstruction",
+"name": "Nasolacrimal Duct Obstruction",
+"epi": "Common in newborns; most clear by 1 year.",
+"eti": "The lower end of the tear duct fails to open (valve of Hasner).",
+"cli": "Watering and sticky eye without redness.",
+"inv": "Clinical; dye disappearance test.",
+"tre": "Massage, cleaning; probing if not resolved by 1 year."
+},
+{
+"id": "scaphoid-fracture",
+"name": "Scaphoid Fracture",
+"epi": "The most common carpal fracture, in young adults.",
+"eti": "A fall on the outstretched hand breaks the scaphoid.",
+"cli": "Wrist pain, snuffbox tenderness.",
+"inv": "X-rays (may miss it), MRI or CT.",
+"tre": "Cast or surgery; risk of avascular necrosis and nonunion."
+},
+{
+"id": "developmental-dysplasia-of-the-hip",
+"name": "Developmental Dysplasia of the Hip",
+"epi": "Common, more in girls, breech babies and with family history.",
+"eti": "The hip socket is shallow and the femoral head is unstable.",
+"cli": "Positive Barlow and Ortolani tests, uneven creases, limp later.",
+"inv": "Ultrasound under 6 months; X-ray later.",
+"tre": "Pavlik harness; surgery if late."
+},
+{
+"id": "legg-calve-perthes-disease",
+"name": "Legg-Calve-Perthes Disease",
+"epi": "Mostly boys aged 4 to 8.",
+"eti": "Idiopathic avascular necrosis of the femoral head.",
+"cli": "Painless or painful limp, knee pain, reduced hip movement.",
+"inv": "X-ray, MRI.",
+"tre": "Observation, physiotherapy, bracing or surgery."
+},
+{
+"id": "spondylolisthesis",
+"name": "Spondylolisthesis",
+"epi": "Common in young athletes who extend the spine.",
+"eti": "A stress fracture of the pars lets one vertebra slip forward.",
+"cli": "Low back pain, worse with extension, tight hamstrings.",
+"inv": "X-ray, CT or MRI.",
+"tre": "Rest, physiotherapy, bracing; fusion surgery for severe slip."
+},
+{
+"id": "adolescent-idiopathic-scoliosis",
+"name": "Adolescent Idiopathic Scoliosis",
+"epi": "The most common type of scoliosis, in adolescent girls.",
+"eti": "Unknown cause; the spine curves and rotates during growth.",
+"cli": "Uneven shoulders and waist, rib hump; usually painless.",
+"inv": "Adam forward bend test; X-ray measures the Cobb angle.",
+"tre": "Observation, bracing; surgery for large curves."
+},
+{
+"id": "hip-fracture",
+"name": "Hip Fracture",
+"epi": "Very common in older people with osteoporosis; high mortality.",
+"eti": "A fall breaks the proximal femur.",
+"cli": "Hip pain, can't bear weight, shortened externally rotated leg.",
+"inv": "X-ray; MRI if X-ray is normal.",
+"tre": "Surgery within 36 hours, early mobilization, bone protection."
+},
+{
+"id": "patellar-dislocation",
+"name": "Patellar Dislocation",
+"epi": "Common in teenage girls and people with loose joints.",
+"eti": "The kneecap slips out laterally, tearing the medial ligament.",
+"cli": "Painful knee giving way, swelling, apprehension.",
+"inv": "Clinical; X-ray and MRI.",
+"tre": "Brace and physiotherapy; surgery if recurrent."
+},
+{
+"id": "bronchopulmonary-dysplasia",
+"name": "Bronchopulmonary Dysplasia",
+"epi": "The most common chronic lung disease in preterm babies.",
+"eti": "Lung injury from ventilation, oxygen and inflammation in immature lungs.",
+"cli": "Ongoing oxygen need at 36 weeks corrected age.",
+"inv": "Clinical definition; chest X-ray.",
+"tre": "Oxygen, nutrition, diuretics; RSV prevention."
+},
+{
+"id": "biliary-atresia",
+"name": "Biliary Atresia",
+"epi": "The most common cause of liver transplant in children.",
+"eti": "Inflammation destroys the bile ducts outside the liver.",
+"cli": "Jaundice beyond 2 weeks, pale stools, dark urine.",
+"inv": "Conjugated bilirubin, ultrasound, cholangiogram.",
+"tre": "Kasai portoenterostomy before 60 days; liver transplant."
+},
+{
+"id": "meckel-diverticulum",
+"name": "Meckel Diverticulum",
+"epi": "The most common congenital gut anomaly (rule of 2s).",
+"eti": "A leftover vitelline duct, often with stomach lining that causes ulcers.",
+"cli": "Painless rectal bleeding in young children; obstruction or diverticulitis.",
+"inv": "Meckel scan.",
+"tre": "Surgical removal."
+},
+{
+"id": "transient-tachypnea-of-the-newborn",
+"name": "Transient Tachypnea of the Newborn",
+"epi": "Common, especially after C-section without labor.",
+"eti": "Slow clearance of lung fluid after birth.",
+"cli": "Fast breathing in the first hours, settling within 1 to 3 days.",
+"inv": "Chest X-ray.",
+"tre": "Supportive oxygen."
+},
+{
+"id": "hypoplastic-left-heart-syndrome",
+"name": "Hypoplastic Left Heart Syndrome",
+"epi": "Rare but serious congenital heart defect.",
+"eti": "The left side of the heart is underdeveloped; systemic blood flow depends on the ductus.",
+"cli": "Shock and collapse when the ductus closes in the first days.",
+"inv": "Echocardiography.",
+"tre": "Prostaglandin to keep ductus open, staged surgery (Norwood, Glenn, Fontan) or transplant."
+},
+{
+"id": "infantile-hemangioma",
+"name": "Infantile Hemangioma",
+"epi": "The most common tumor of infancy, more in girls and premature babies.",
+"eti": "A benign growth of blood vessel cells.",
+"cli": "Bright red raised lump, rapid growth then slow shrinking.",
+"inv": "Clinical; ultrasound if deep.",
+"tre": "Watch; propranolol if near eyes, airway or ulcerating."
+},
+{
+"id": "bipolar-ii-disorder",
+"name": "Bipolar II Disorder",
+"epi": "About 1% of people.",
+"eti": "Mood disorder with depression and hypomania.",
+"cli": "Recurrent depressions with hypomanic spells.",
+"inv": "Clinical.",
+"tre": "Mood stabilizers (lamotrigine, lithium), quetiapine; avoid antidepressants alone."
+},
+{
+"id": "cyclothymic-disorder",
+"name": "Cyclothymic Disorder",
+"epi": "Uncommon; can progress to bipolar disorder.",
+"eti": "Mild bipolar-spectrum mood instability.",
+"cli": "Many periods of mild highs and lows for 2 years.",
+"inv": "Clinical.",
+"tre": "Psychotherapy; mood stabilizers."
+},
+{
+"id": "borderline-personality-disorder",
+"name": "Borderline Personality Disorder",
+"epi": "About 1 to 2% of people.",
+"eti": "A personality pattern from genetic and early life factors.",
+"cli": "Unstable mood, relationships and self-image, impulsivity, self-harm.",
+"inv": "Clinical.",
+"tre": "Dialectical behavior therapy, mentalization-based therapy."
+},
+{
+"id": "schizoaffective-disorder",
+"name": "Schizoaffective Disorder",
+"epi": "Less than 1% of people.",
+"eti": "A mix of schizophrenia and mood disorder.",
+"cli": "Psychotic symptoms with mood episodes, plus psychosis without mood symptoms.",
+"inv": "Clinical.",
+"tre": "Antipsychotics, mood stabilizers or antidepressants."
+},
+{
+"id": "brief-psychotic-disorder",
+"name": "Brief Psychotic Disorder",
+"epi": "Uncommon; often after severe stress.",
+"eti": "Sudden short psychotic episode.",
+"cli": "Psychosis lasting at least 1 day but less than 1 month, then full recovery.",
+"inv": "Clinical; exclude drugs and medical causes.",
+"tre": "Short antipsychotic course, support."
+},
+{
+"id": "body-dysmorphic-disorder",
+"name": "Body Dysmorphic Disorder",
+"epi": "About 2% of people; teens and young adults.",
+"eti": "Obsessive preoccupation with a perceived flaw in appearance.",
+"cli": "Mirror checking, comparing, seeking cosmetic surgery.",
+"inv": "Clinical.",
+"tre": "CBT, SSRIs; cosmetic surgery doesn't help."
+},
+{
+"id": "functional-neurological-symptom-disorder",
+"name": "Functional Neurological Symptom Disorder",
+"epi": "Common in neurology clinics.",
+"eti": "Real symptoms from altered brain function, without structural disease.",
+"cli": "Weakness, seizures or numbness that don't fit neurological patterns.",
+"inv": "Positive clinical signs like Hoover sign; normal tests.",
+"tre": "Explanation, physiotherapy, psychotherapy."
+},
+{
+"id": "illness-anxiety-disorder",
+"name": "Illness Anxiety Disorder",
+"epi": "Uncommon.",
+"eti": "Excess worry about having a serious disease.",
+"cli": "Health anxiety with few or no physical symptoms.",
+"inv": "Clinical.",
+"tre": "CBT, SSRIs, regular planned visits."
+},
+{
+"id": "binge-eating-disorder",
+"name": "Binge-Eating Disorder",
+"epi": "The most common eating disorder.",
+"eti": "Unclear; linked with mood and stress.",
+"cli": "Binges with loss of control, without compensatory behaviors.",
+"inv": "Clinical.",
+"tre": "CBT, lisdexamfetamine, SSRIs."
+},
+{
+"id": "trichotillomania",
+"name": "Trichotillomania",
+"epi": "Common in teens.",
+"eti": "An obsessive-compulsive spectrum disorder.",
+"cli": "Repeated hair pulling causing hair loss.",
+"inv": "Clinical; trichoscopy.",
+"tre": "Habit reversal therapy, N-acetylcysteine, SSRIs."
+},
+{
+"id": "hypersensitivity-pneumonitis",
+"name": "Hypersensitivity Pneumonitis",
+"epi": "Uncommon; linked to birds, moulds and farm dust.",
+"eti": "Immune reaction to inhaled organic dusts.",
+"cli": "Cough, fever, breathlessness hours after exposure.",
+"inv": "CT, antibodies, bronchoalveolar lavage.",
+"tre": "Avoid exposure; steroids."
+},
+{
+"id": "asbestosis",
+"name": "Asbestosis",
+"epi": "Seen in people who worked with asbestos.",
+"eti": "Asbestos fibers cause lung fibrosis.",
+"cli": "Breathlessness, cough, crackles, clubbing.",
+"inv": "CT, lung function, history.",
+"tre": "Supportive; stop smoking; check for cancer."
+},
+{
+"id": "silicosis",
+"name": "Silicosis",
+"epi": "Seen in miners and stoneworkers.",
+"eti": "Inhaled silica dust causes nodules and fibrosis.",
+"cli": "Breathlessness, cough; TB risk.",
+"inv": "X-ray or CT; history.",
+"tre": "Avoid exposure; screen for TB."
+},
+{
+"id": "aspiration-pneumonia",
+"name": "Aspiration Pneumonia",
+"epi": "Common in people with swallowing problems.",
+"eti": "Inhaled stomach or mouth contents cause infection.",
+"cli": "Fever, cough, often right lower lobe.",
+"inv": "Chest X-ray.",
+"tre": "Antibiotics; swallowing assessment."
+},
+{
+"id": "lung-abscess",
+"name": "Lung Abscess",
+"epi": "Seen with aspiration risk, poor dental health.",
+"eti": "Infection causes a pus-filled cavity in the lung.",
+"cli": "Fever, foul sputum, weight loss.",
+"inv": "Chest X-ray or CT.",
+"tre": "Long course of antibiotics; drainage rarely."
+},
+{
+"id": "pleural-empyema",
+"name": "Pleural Empyema",
+"epi": "Complication of pneumonia.",
+"eti": "Infection spreads into the pleural space.",
+"cli": "Ongoing fever, chest pain after pneumonia.",
+"inv": "Ultrasound, pleural fluid.",
+"tre": "Chest drain and antibiotics; surgery if loculated."
+},
+{
+"id": "enteropathic-arthritis",
+"name": "Enteropathic Arthritis",
+"epi": "Seen in people with inflammatory bowel disease.",
+"eti": "Gut inflammation drives joint inflammation.",
+"cli": "Large joint arthritis, back stiffness with IBD.",
+"inv": "Clinical; exclude infection.",
+"tre": "Treat IBD; physiotherapy; anti-TNF."
+},
+{
+"id": "adult-onset-still-disease",
+"name": "Adult-Onset Still Disease",
+"epi": "Rare.",
+"eti": "Autoinflammatory disease.",
+"cli": "Daily fevers, rash, joint pain, high ferritin.",
+"inv": "Clinical; high ferritin.",
+"tre": "NSAIDs, steroids, IL-1 or IL-6 blockers."
+},
+{
+"id": "septic-bursitis",
+"name": "Septic Bursitis",
+"epi": "Common after skin injury.",
+"eti": "Infection of a bursa.",
+"cli": "Hot, red swelling over a bursa.",
+"inv": "Aspiration of fluid.",
+"tre": "Antibiotics, drainage."
+},
+{
+"id": "inclusion-body-myositis",
+"name": "Inclusion Body Myositis",
+"epi": "The most common myositis after 50.",
+"eti": "Inflammation and degeneration of muscle.",
+"cli": "Slow weakness of thighs and finger flexors.",
+"inv": "Biopsy.",
+"tre": "Physiotherapy; poor response to steroids."
+},
+{
+"id": "drug-induced-lupus",
+"name": "Drug-Induced Lupus",
+"epi": "Linked with procainamide, hydralazine, isoniazid.",
+"eti": "Drugs trigger lupus-like disease.",
+"cli": "Joint pain, fever, pleurisy.",
+"inv": "Anti-histone antibodies.",
+"tre": "Stop the drug."
+},
+{
+"id": "transthyretin-cardiac-amyloidosis",
+"name": "Transthyretin Cardiac Amyloidosis",
+"epi": "Mostly older men; wild-type form, or hereditary forms (V122I common in people of African descent).",
+"eti": "Misfolded transthyretin protein deposits in the myocardium.",
+"cli": "Heart failure with preserved EF, carpal tunnel, spinal stenosis, low BP.",
+"inv": "Echo, cardiac MRI, bone scintigraphy, exclusion of AL with free light chains.",
+"tre": "Tafamidis or other TTR stabilizers, diuretics, avoid rate-control drugs that worsen hypotension."
+},
+{
+"id": "left-ventricular-noncompaction",
+"name": "Left Ventricular Noncompaction",
+"epi": "Rare genetic cardiomyopathy, can run in families.",
+"eti": "Arrest of normal compaction of the myocardium during fetal life.",
+"cli": "Heart failure, arrhythmias, embolic events.",
+"inv": "Echo and cardiac MRI, genetic testing, family screening.",
+"tre": "Heart failure treatment, anticoagulation if needed, ICD for high risk."
+},
+{
+"id": "pericardial-cyst",
+"name": "Pericardial Cyst",
+"epi": "Rare benign mediastinal lesion, often found by chance.",
+"eti": "Congenital outpouching of the pericardium that pinched off.",
+"cli": "Usually none; sometimes chest pain, cough or compression.",
+"inv": "CT or MRI showing a simple cyst.",
+"tre": "Observation; aspiration or surgery if symptomatic."
+},
+{
+"id": "anomalous-origin-of-the-left-coronary-artery",
+"name": "Anomalous Origin of the Left Coronary Artery",
+"epi": "Rare congenital coronary anomaly.",
+"eti": "Left coronary fed by deoxygenated blood from the pulmonary artery; ischemia when pulmonary pressure falls after birth.",
+"cli": "Infant angina with feeds, heart failure, mitral regurgitation.",
+"inv": "ECG, echo, CT or catheter angiography.",
+"tre": "Surgical reimplantation of the coronary into the aorta."
+},
+{
+"id": "ebstein-anomaly",
+"name": "Ebstein Anomaly",
+"epi": "Rare congenital heart defect, linked to maternal lithium.",
+"eti": "Apical displacement of the septal and posterior tricuspid leaflets, atrialized right ventricle.",
+"cli": "Cyanosis, right heart failure, tricuspid regurgitation, WPW.",
+"inv": "Echo, ECG, cardiac MRI.",
+"tre": "Watchful waiting, ablation for pathways, tricuspid repair surgery."
+},
+{
+"id": "loeffler-endocarditis",
+"name": "Loeffler Endocarditis",
+"epi": "Rare complication of hypereosinophilic syndrome.",
+"eti": "Eosinophil toxic granules damage the endocardium, then thrombus and fibrosis.",
+"cli": "Restrictive heart failure, emboli, valve regurgitation.",
+"inv": "Eosinophil count, echo, cardiac MRI, biopsy, FIP1L1-PDGFRA test.",
+"tre": "Steroids, imatinib if PDGFRA-positive, anticoagulation, heart failure care."
+},
+{
+"id": "kounis-syndrome",
+"name": "Kounis Syndrome",
+"epi": "Rare; any allergen can trigger it, often drugs or stings.",
+"eti": "Mast cell mediators cause coronary spasm or plaque rupture.",
+"cli": "Acute coronary syndrome during an allergic reaction.",
+"inv": "ECG, troponin, tryptase, angiography.",
+"tre": "Treat both the allergy and the ischemia; epinephrine with care."
+},
+{
+"id": "spontaneous-coronary-artery-dissection",
+"name": "Spontaneous Coronary Artery Dissection",
+"epi": "Mostly young and middle-aged women, often around pregnancy.",
+"eti": "Tear or bleed in the coronary artery wall, linked to fibromuscular dysplasia.",
+"cli": "Acute coronary syndrome in a woman with few risk factors.",
+"inv": "Coronary angiography, intravascular imaging; screen for FMD.",
+"tre": "Mostly conservative with beta-blockers; stenting only if unstable."
+},
+{
+"id": "libman-sacks-endocarditis",
+"name": "Libman-Sacks Endocarditis",
+"epi": "Seen in SLE, especially with antiphospholipid syndrome.",
+"eti": "Sterile fibrin and immune complex vegetations on valves.",
+"cli": "Usually silent; may cause regurgitation and emboli.",
+"inv": "Echo, negative cultures, lupus serology.",
+"tre": "Treat lupus, anticoagulation if antiphospholipid, valve surgery rarely."
+},
+{
+"id": "cardiac-angiosarcoma",
+"name": "Cardiac Angiosarcoma",
+"epi": "The most common primary malignant tumor of the heart in adults.",
+"eti": "Malignant tumor of endothelial cells, usually in the right atrium.",
+"cli": "Bloody pericardial effusion, tamponade, right heart failure, metastases.",
+"inv": "Echo, cardiac MRI, CT, biopsy.",
+"tre": "Surgery when possible, chemotherapy, radiotherapy; poor prognosis."
+},
+{
+"id": "commotio-cordis",
+"name": "Commotio Cordis",
+"epi": "Mostly young male athletes.",
+"eti": "A blow to the chest during the vulnerable part of the T wave triggers VF.",
+"cli": "Sudden collapse after chest impact.",
+"inv": "Clinical; later tests show a normal heart.",
+"tre": "Immediate CPR and defibrillation; chest protectors."
+},
+{
+"id": "short-qt-syndrome",
+"name": "Short QT Syndrome",
+"epi": "Very rare inherited channelopathy.",
+"eti": "Gain of function in potassium channels shortens repolarization.",
+"cli": "Atrial fibrillation, syncope, sudden cardiac death.",
+"inv": "ECG, family history, genetic tests.",
+"tre": "ICD for high risk; quinidine."
+},
+{
+"id": "cor-triatriatum",
+"name": "Cor Triatriatum",
+"epi": "Very rare congenital heart defect.",
+"eti": "A fibromuscular membrane splits the left atrium and blocks pulmonary venous flow.",
+"cli": "Looks like mitral stenosis: congestion and pulmonary hypertension.",
+"inv": "Echo, cardiac MRI.",
+"tre": "Surgical removal of the membrane."
+},
+{
+"id": "esthesioneuroblastoma",
+"name": "Esthesioneuroblastoma",
+"epi": "Rare tumor; peaks in young and older adults.",
+"eti": "Malignant tumor of olfactory neuroepithelium.",
+"cli": "One-sided blockage, nosebleeds, loss of smell.",
+"inv": "Nasal endoscopy, CT, MRI, biopsy.",
+"tre": "Surgery with radiotherapy."
+},
+{
+"id": "glomus-jugulare-tumor",
+"name": "Glomus Jugulare Tumor",
+"epi": "Rare, more common in middle-aged women.",
+"eti": "Paraganglioma arising from the jugular bulb.",
+"cli": "Pulsatile tinnitus, hearing loss, lower cranial nerve palsies.",
+"inv": "Otoscopy, CT, MRI, catecholamine tests.",
+"tre": "Surgery, radiosurgery, or observation."
+},
+{
+"id": "eagle-syndrome",
+"name": "Eagle Syndrome",
+"epi": "Rare.",
+"eti": "Elongated styloid process or calcified stylohyoid ligament irritates nerves or vessels.",
+"cli": "Throat or ear pain, pain on swallowing or turning the head.",
+"inv": "Palpation, CT.",
+"tre": "Pain relief; styloidectomy."
+},
+{
+"id": "frey-syndrome",
+"name": "Frey Syndrome",
+"epi": "Common after parotid surgery.",
+"eti": "Parasympathetic nerve fibers regrow into sweat glands of the skin.",
+"cli": "Sweating and flushing of the cheek with eating.",
+"inv": "Minor starch-iodine test.",
+"tre": "Botulinum toxin, antiperspirants."
+},
+{
+"id": "mal-de-debarquement-syndrome",
+"name": "Mal de Debarquement Syndrome",
+"epi": "Rare; mostly middle-aged women after cruises or flights.",
+"eti": "The brain stays adapted to passive motion and fails to readapt to land.",
+"cli": "Constant rocking or bobbing that eases while driving or in motion.",
+"inv": "Clinical, after excluding other causes.",
+"tre": "Vestibular rehabilitation, optokinetic therapy, low-dose benzodiazepines or SSRIs."
+},
+{
+"id": "patulous-eustachian-tube",
+"name": "Patulous Eustachian Tube",
+"epi": "Uncommon; linked to weight loss, pregnancy, exercise.",
+"eti": "The Eustachian tube stays open instead of closing.",
+"cli": "Autophony, hearing own breathing, fullness; better lying down or with the head down.",
+"inv": "Otoscopy showing drum moving with breathing, tympanometry.",
+"tre": "Reassurance, weight gain, saline drops; surgical tube closure in severe cases."
+},
+{
+"id": "rhinoscleroma",
+"name": "Rhinoscleroma",
+"epi": "Rare; endemic in Central America, East Africa, Egypt and the Middle East.",
+"eti": "Chronic granulomatous infection by Klebsiella rhinoscleromatis.",
+"cli": "Foul discharge and crusts, then hard nodules deforming the nose (Hebra nose), airway narrowing.",
+"inv": "Biopsy (Mikulicz cells, Russell bodies), culture.",
+"tre": "Months of ciprofloxacin or tetracycline; surgery for scarring."
+},
+{
+"id": "rhinosporidiosis",
+"name": "Rhinosporidiosis",
+"epi": "Mostly India and Sri Lanka; bathing in ponds.",
+"eti": "Infection by Rhinosporidium seeberi, an aquatic protist.",
+"cli": "Bleeding, strawberry-like nasal polyps.",
+"inv": "Biopsy showing large sporangia.",
+"tre": "Surgical excision with cautery of the base; dapsone to reduce recurrence."
+},
+{
+"id": "pendred-syndrome",
+"name": "Pendred Syndrome",
+"epi": "One of the most common syndromic causes of hereditary deafness; autosomal recessive.",
+"eti": "SLC26A4 (pendrin) mutation impairs iodide transport in thyroid and inner ear.",
+"cli": "Congenital sensorineural deafness, goiter in childhood or teens, usually normal thyroid function.",
+"inv": "Hearing tests, CT or MRI (enlarged vestibular aqueduct), perchlorate test, genetics.",
+"tre": "Hearing aids, cochlear implant, thyroxine if hypothyroid."
+},
+{
+"id": "petrous-apicitis",
+"name": "Petrous Apicitis",
+"epi": "Rare complication of otitis media, more often in children.",
+"eti": "Infection spreads into air cells at the petrous apex, near cranial nerves V and VI.",
+"cli": "Gradenigo triad: ear discharge, retro-orbital pain, sixth nerve palsy.",
+"inv": "CT and MRI.",
+"tre": "IV antibiotics; mastoid or petrous surgery if no response."
+},
+{
+"id": "kimura-disease",
+"name": "Kimura Disease",
+"epi": "Rare; mostly young men of East Asian origin.",
+"eti": "Chronic inflammatory disorder of unknown cause, with Th2 response.",
+"cli": "Painless head and neck lumps, eosinophilia, high IgE, nephrotic syndrome.",
+"inv": "Biopsy, eosinophil count, IgE.",
+"tre": "Surgery, steroids, radiotherapy for recurrence."
+},
+{
+"id": "methemoglobinemia",
+"name": "Methemoglobinemia",
+"epi": "Mostly acquired from drugs such as benzocaine, dapsone, nitrates; rarely congenital.",
+"eti": "Iron in hemoglobin is oxidized to the ferric state and cannot carry oxygen.",
+"cli": "Cyanosis not helped by oxygen, headache, breathlessness, seizures at high levels.",
+"inv": "Co-oximetry, saturation gap, check G6PD.",
+"tre": "Stop the cause, oxygen, IV methylene blue (not in G6PD deficiency)."
+},
+{
+"id": "thallium-poisoning",
+"name": "Thallium Poisoning",
+"epi": "Rare; old rodent poisons, criminal poisoning.",
+"eti": "Thallium mimics potassium and blocks cell energy.",
+"cli": "GI upset, painful neuropathy, then hair loss.",
+"inv": "Urine thallium.",
+"tre": "Prussian blue, hemodialysis."
+},
+{
+"id": "hydrofluoric-acid-burn",
+"name": "Hydrofluoric Acid Burn",
+"epi": "Used in glass etching and rust removal.",
+"eti": "Fluoride binds calcium and magnesium, causing tissue death and systemic toxicity.",
+"cli": "Severe pain, hypocalcemia, arrhythmias.",
+"inv": "Calcium, magnesium, ECG.",
+"tre": "Calcium gluconate gel, local or intra-arterial calcium, IV calcium."
+},
+{
+"id": "strychnine-poisoning",
+"name": "Strychnine Poisoning",
+"epi": "Rare; rat poison or adulterated drugs.",
+"eti": "Blocks glycine receptors in the spinal cord.",
+"cli": "Painful spasms with clear consciousness, risus sardonicus.",
+"inv": "Clinical, toxicology.",
+"tre": "Benzodiazepines, quiet room, intubation and paralysis if severe."
+},
+{
+"id": "paraquat-poisoning",
+"name": "Paraquat Poisoning",
+"epi": "Common in rural Asia.",
+"eti": "Paraquat produces free radicals and concentrates in the lungs.",
+"cli": "Mouth burns, kidney injury, lung fibrosis.",
+"inv": "Urine dithionite test, plasma levels.",
+"tre": "Supportive care; avoid oxygen; mostly fatal."
+},
+{
+"id": "arsenic-poisoning",
+"name": "Arsenic Poisoning",
+"epi": "Contaminated water (Bangladesh), pesticides.",
+"eti": "Arsenic blocks cell enzymes.",
+"cli": "Diarrhea, neuropathy, skin changes, cancer.",
+"inv": "Urine arsenic, hair and nails.",
+"tre": "Chelation (dimercaprol, DMSA)."
+},
+{
+"id": "mercury-poisoning",
+"name": "Mercury Poisoning",
+"epi": "Exposure from skin creams, gold mining, broken devices, or methylmercury in fish.",
+"eti": "Mercury binds sulfhydryl groups and damages the brain and kidneys.",
+"cli": "Tremor, erethism (shyness, irritability), gingivitis, nephrotic syndrome; acrodynia in children.",
+"inv": "Blood mercury (organic), urine mercury (inorganic and elemental).",
+"tre": "Remove the source, chelation with DMSA or DMPS, supportive care."
+},
+{
+"id": "ciguatera-fish-poisoning",
+"name": "Ciguatera Fish Poisoning",
+"epi": "Large reef fish in tropical waters (barracuda, grouper, snapper).",
+"eti": "Ciguatoxin from dinoflagellates builds up the food chain and opens sodium channels.",
+"cli": "GI upset, then paresthesia, hot-cold reversal, bradycardia, symptoms that can last months.",
+"inv": "Clinical diagnosis from the fish history.",
+"tre": "Supportive; IV mannitol in early severe cases; avoid alcohol and fish for months."
+},
+{
+"id": "scombroid-poisoning",
+"name": "Scombroid Poisoning",
+"epi": "Badly refrigerated dark-meat fish (tuna, mackerel, mahi-mahi).",
+"eti": "Bacteria turn histidine in the fish into histamine, which cooking does not destroy.",
+"cli": "Flushing, headache, diarrhea, peppery taste; looks like an allergy but in a group.",
+"inv": "Clinical; histamine in the leftover fish.",
+"tre": "H1 and H2 antihistamines; it is not a true fish allergy."
+},
+{
+"id": "tetrodotoxin-poisoning",
+"name": "Tetrodotoxin Poisoning",
+"epi": "Pufferfish, blue-ringed octopus and some newts.",
+"eti": "Tetrodotoxin blocks voltage-gated sodium channels in nerves.",
+"cli": "Perioral numbness, then ascending paralysis with a clear mind.",
+"inv": "Clinical diagnosis.",
+"tre": "Airway support and ventilation until it wears off; no antidote."
+},
+{
+"id": "box-jellyfish-envenomation",
+"name": "Box Jellyfish Envenomation",
+"epi": "Tropical waters of Australia and the Indo-Pacific.",
+"eti": "Chironex fleckeri venom forms pores in heart and nerve cells.",
+"cli": "Severe pain, ladder-pattern welts, collapse and cardiac arrest within minutes.",
+"inv": "Clinical, with sting marks.",
+"tre": "Vinegar on the stings, CPR, antivenom, analgesia."
+},
+{
+"id": "decompression-sickness",
+"name": "Decompression Sickness",
+"epi": "Divers, aviators and tunnel workers.",
+"eti": "Dissolved nitrogen forms bubbles when pressure falls too fast.",
+"cli": "Joint pain, skin mottling, spinal cord damage, chokes.",
+"inv": "Clinical, from the dive history.",
+"tre": "100% oxygen, then hyperbaric recompression."
+},
+{
+"id": "high-altitude-cerebral-edema",
+"name": "High-Altitude Cerebral Edema",
+"epi": "Fast ascent to high altitude, usually above 3,000 to 4,000 metres.",
+"eti": "Low oxygen causes vasogenic brain swelling.",
+"cli": "Headache, ataxia, confusion, then coma; often follows acute mountain sickness.",
+"inv": "Clinical; ataxia is a key sign.",
+"tre": "Descend at once, dexamethasone, oxygen, portable hyperbaric bag."
+},
+{
+"id": "lightning-injury",
+"name": "Lightning Injury",
+"epi": "People outdoors in thunderstorms.",
+"eti": "Very high voltage for a very short time; flashover across the skin.",
+"cli": "Lichtenberg figures, keraunoparalysis, ear injury, cardiac arrest.",
+"inv": "Clinical, ECG, troponin, CK.",
+"tre": "Treat cardiac arrest first, then supportive; reverse triage in mass events."
+},
+{
+"id": "propofol-infusion-syndrome",
+"name": "Propofol Infusion Syndrome",
+"epi": "High-dose propofol for more than 48 hours.",
+"eti": "Propofol blocks fatty acid oxidation in mitochondria.",
+"cli": "Metabolic acidosis, rhabdomyolysis, hyperkalemia, heart failure.",
+"inv": "Lactate, CK, triglycerides, ECG.",
+"tre": "Stop propofol, supportive care, dialysis, ECMO if needed."
+},
+{
+"id": "tropical-sprue",
+"name": "Tropical Sprue",
+"epi": "People living in or visiting the tropics for long periods.",
+"eti": "Unclear; probably bacterial overgrowth after infection.",
+"cli": "Chronic diarrhea, malabsorption, folate and B12 deficiency.",
+"inv": "Biopsy, folate, B12, exclude celiac and parasites.",
+"tre": "Folic acid and tetracycline for months."
+},
+{
+"id": "intestinal-lymphangiectasia",
+"name": "Intestinal Lymphangiectasia",
+"epi": "Rare; usually children.",
+"eti": "Dilated intestinal lymphatics leak lymph into the gut.",
+"cli": "Edema, protein-losing enteropathy, lymphopenia.",
+"inv": "Stool alpha-1-antitrypsin, endoscopy and biopsy.",
+"tre": "Low-fat diet with MCT oil, octreotide."
+},
+{
+"id": "hepatic-veno-occlusive-disease",
+"name": "Hepatic Veno-Occlusive Disease",
+"epi": "After stem cell transplant conditioning, some drugs, bush teas.",
+"eti": "Damage to sinusoid cells blocks small hepatic veins.",
+"cli": "Painful hepatomegaly, weight gain, jaundice.",
+"inv": "Clinical criteria, Doppler, biopsy.",
+"tre": "Defibrotide, fluid balance, supportive care."
+},
+{
+"id": "cronkhite-canada-syndrome",
+"name": "Cronkhite-Canada Syndrome",
+"epi": "Rare; older adults.",
+"eti": "Unknown; probably immune.",
+"cli": "Polyposis, alopecia, nail loss, skin pigment.",
+"inv": "Endoscopy and biopsy.",
+"tre": "Steroids, nutrition, cancer surveillance."
+},
+{
+"id": "superior-mesenteric-artery-syndrome",
+"name": "Superior Mesenteric Artery Syndrome",
+"epi": "Rare; rapid weight loss, scoliosis surgery.",
+"eti": "Loss of the fat pad narrows the angle between the SMA and the aorta.",
+"cli": "Vomiting, early fullness, postprandial pain.",
+"inv": "CT angiography, barium study.",
+"tre": "Nutrition, feeding tube; surgery (duodenojejunostomy)."
+},
+{
+"id": "blastic-plasmacytoid-dendritic-cell-neoplasm",
+"name": "Blastic Plasmacytoid Dendritic Cell Neoplasm",
+"epi": "Rare; mostly older men.",
+"eti": "Malignancy of plasmacytoid dendritic cells.",
+"cli": "Bruise-like skin lesions, then marrow and nodes.",
+"inv": "Skin biopsy, flow cytometry, marrow.",
+"tre": "Tagraxofusp, intensive chemotherapy, stem cell transplant."
+},
+{
+"id": "primary-amoebic-meningoencephalitis",
+"name": "Primary Amoebic Meningoencephalitis",
+"epi": "Rare, nearly always fatal; children swimming in warm fresh water.",
+"eti": "Naegleria fowleri enters through the nose and travels along the olfactory nerve.",
+"cli": "Change in smell or taste, then fulminant meningitis.",
+"inv": "CSF wet mount, PCR.",
+"tre": "Miltefosine, amphotericin B, cooling; very poor prognosis."
+},
+{
+"id": "strongyloides-hyperinfection",
+"name": "Strongyloides Hyperinfection",
+"epi": "People from tropical areas, years after leaving; triggered by steroids or HTLV-1.",
+"eti": "Autoinfection by Strongyloides stercoralis goes out of control.",
+"cli": "Lung and gut symptoms, larva currens, Gram-negative sepsis.",
+"inv": "Larvae in sputum or stool, serology.",
+"tre": "Ivermectin; reduce steroids; screen before immunosuppression."
+},
+{
+"id": "mucormycosis",
+"name": "Mucormycosis",
+"epi": "Uncontrolled diabetes, DKA, neutropenia, iron overload.",
+"eti": "Mucorales fungi invade blood vessels and cause tissue death.",
+"cli": "Facial pain, black eschar, ophthalmoplegia, spread to the brain.",
+"inv": "Biopsy, CT, MRI.",
+"tre": "Urgent surgery and amphotericin B; correct DKA."
+},
+{
+"id": "rat-bite-fever",
+"name": "Rat-Bite Fever",
+"epi": "Pet rat owners, lab workers.",
+"eti": "Streptobacillus moniliformis, or Spirillum minus in Asia.",
+"cli": "Fever, rash on palms and soles, polyarthritis.",
+"inv": "Blood culture, PCR.",
+"tre": "Penicillin."
+},
+{
+"id": "nocardiosis",
+"name": "Nocardiosis",
+"epi": "Mostly immunosuppressed people (transplant, steroids, HIV).",
+"eti": "Nocardia, an aerobic soil bacterium, inhaled or entering through the skin.",
+"cli": "Lung nodules or cavities, brain abscess, skin infection.",
+"inv": "Sputum or tissue culture, modified acid-fast stain, brain imaging.",
+"tre": "Trimethoprim-sulfamethoxazole for months; add other drugs if severe."
+},
+{
+"id": "actinomycosis",
+"name": "Actinomycosis",
+"epi": "Poor dental health, jaw surgery, long-term IUD use.",
+"eti": "Actinomyces israelii, normal mouth flora, invades after injury.",
+"cli": "Hard mass that crosses tissue planes, sinus tracts, sulfur granules.",
+"inv": "Biopsy, anaerobic culture.",
+"tre": "Long course of penicillin; drain or cut out tissue if needed."
+},
+{
+"id": "leprosy",
+"name": "Leprosy",
+"epi": "Still seen in India, Brazil and Indonesia.",
+"eti": "Mycobacterium leprae, which grows in cool skin and nerves.",
+"cli": "Numb skin patches, thick nerves, deformity, eye damage.",
+"inv": "Slit-skin smear, biopsy.",
+"tre": "WHO multidrug therapy (rifampicin, dapsone, clofazimine)."
+},
+{
+"id": "neurocysticercosis",
+"name": "Neurocysticercosis",
+"epi": "The most common cause of acquired epilepsy in the developing world.",
+"eti": "Eating Taenia solium eggs from human feces; larvae form cysts in the brain.",
+"cli": "Seizures, headache, hydrocephalus.",
+"inv": "CT, MRI (scolex dot), serology.",
+"tre": "Albendazole with steroids for live cysts, antiseizure drugs."
+},
+{
+"id": "cystic-echinococcosis",
+"name": "Cystic Echinococcosis",
+"epi": "Sheep-raising areas worldwide.",
+"eti": "Dog tapeworm eggs swallowed; larvae form cysts, mostly in liver and lung.",
+"cli": "Slowly growing cyst, pain, rupture can cause anaphylaxis.",
+"inv": "Ultrasound, CT, serology.",
+"tre": "Albendazole, PAIR drainage or surgery."
+},
+{
+"id": "fibrillary-glomerulonephritis",
+"name": "Fibrillary Glomerulonephritis",
+"epi": "Rare; middle-aged adults.",
+"eti": "Deposits of DNAJB9-rich fibrils in glomeruli.",
+"cli": "Proteinuria, hematuria, high BP, slow kidney failure.",
+"inv": "Kidney biopsy with electron microscopy and DNAJB9 stain.",
+"tre": "Blood pressure control, ACE inhibitors, rituximab sometimes."
+},
+{
+"id": "primary-hyperoxaluria",
+"name": "Primary Hyperoxaluria",
+"epi": "Rare recessive disease.",
+"eti": "Liver enzyme defect (AGXT in type 1) causes too much oxalate.",
+"cli": "Recurrent stones, nephrocalcinosis, kidney failure, oxalate in other organs.",
+"inv": "Urine oxalate, genetic test.",
+"tre": "Fluids, citrate, pyridoxine, lumasiran; liver-kidney transplant."
+},
+{
+"id": "xanthogranulomatous-pyelonephritis",
+"name": "Xanthogranulomatous Pyelonephritis",
+"epi": "Middle-aged women with chronic obstruction.",
+"eti": "Chronic infection behind a stone destroys the kidney.",
+"cli": "Flank pain, fever, mass, weight loss.",
+"inv": "CT.",
+"tre": "Nephrectomy with antibiotics."
+},
+{
+"id": "nutcracker-syndrome",
+"name": "Nutcracker Syndrome",
+"epi": "Thin young people.",
+"eti": "Left renal vein compressed between aorta and SMA.",
+"cli": "Hematuria, left flank pain, pelvic congestion, varicocele in men.",
+"inv": "Doppler ultrasound, CT or MR venography.",
+"tre": "Observation, weight gain, stent or surgery."
+},
+{
+"id": "loin-pain-hematuria-syndrome",
+"name": "Loin Pain Hematuria Syndrome",
+"epi": "Rare; mostly young women.",
+"eti": "Unknown; possibly glomerular bleeding and nerve sensitization.",
+"cli": "Loin pain with hematuria.",
+"inv": "Diagnosis of exclusion.",
+"tre": "Pain control, nerve blocks, renal denervation, rarely autotransplant."
+},
+{
+"id": "renal-medullary-carcinoma",
+"name": "Renal Medullary Carcinoma",
+"epi": "Young people with sickle cell trait.",
+"eti": "Aggressive kidney cancer with SMARCB1 loss.",
+"cli": "Hematuria, flank pain, early spread.",
+"inv": "CT, biopsy.",
+"tre": "Chemotherapy; very poor prognosis."
+},
+{
+"id": "collapsing-glomerulopathy",
+"name": "Collapsing Glomerulopathy",
+"epi": "HIV, APOL1 risk genes, COVID-19.",
+"eti": "Podocyte injury and proliferation.",
+"cli": "Nephrotic syndrome, rapid kidney failure.",
+"inv": "Kidney biopsy.",
+"tre": "Antiretroviral therapy, ACE inhibitors, dialysis."
+},
+{
+"id": "placental-site-trophoblastic-tumor",
+"name": "Placental Site Trophoblastic Tumor",
+"epi": "Rare gestational trophoblastic tumor.",
+"eti": "Tumor of intermediate trophoblast.",
+"cli": "Bleeding years after pregnancy, low hCG.",
+"inv": "hCG, hPL, biopsy.",
+"tre": "Hysterectomy; not very chemosensitive."
+},
+{
+"id": "meigs-syndrome",
+"name": "Meigs Syndrome",
+"epi": "Mostly postmenopausal women.",
+"eti": "Benign ovarian fibroma (or thecoma) leaks fluid that passes into the chest.",
+"cli": "Ascites, right pleural effusion and ovarian mass that mimic cancer.",
+"inv": "Imaging, fluid cytology, pathology after removal.",
+"tre": "Removal of the tumor cures it."
+},
+{
+"id": "struma-ovarii",
+"name": "Struma Ovarii",
+"epi": "Rare; a type of ovarian teratoma.",
+"eti": "Mature teratoma made mostly of thyroid tissue.",
+"cli": "Pelvic mass; sometimes hyperthyroidism, ascites.",
+"inv": "Imaging, whole-body iodine scan, pathology.",
+"tre": "Surgical removal; treat thyroid excess first."
+},
+{
+"id": "pseudomyxoma-peritonei",
+"name": "Pseudomyxoma Peritonei",
+"epi": "Rare.",
+"eti": "Mucinous tumor, usually of the appendix, spreads mucin through the peritoneum.",
+"cli": "Jelly belly: slowly growing abdomen, hernias, bowel blockage.",
+"inv": "CT, tumor markers, surgery.",
+"tre": "Cytoreductive surgery with heated intraperitoneal chemotherapy (HIPEC)."
+},
+{
+"id": "sertoli-leydig-cell-tumor",
+"name": "Sertoli-Leydig Cell Tumor",
+"epi": "Rare; young women.",
+"eti": "Sex cord-stromal tumor making androgens; DICER1 link.",
+"cli": "Fast virilization, amenorrhea.",
+"inv": "Testosterone, imaging, pathology.",
+"tre": "Surgical removal."
+},
+{
+"id": "mayer-rokitansky-kuster-hauser-syndrome",
+"name": "Mayer-Rokitansky-Kuster-Hauser Syndrome",
+"epi": "About 1 in 5,000 girls.",
+"eti": "Failure of the Mullerian ducts to develop.",
+"cli": "Primary amenorrhea with normal puberty; kidney anomalies.",
+"inv": "Ultrasound, MRI, karyotype.",
+"tre": "Vaginal dilators or surgery; psychological support; surrogacy or uterine transplant."
+},
+{
+"id": "androgen-insensitivity-syndrome",
+"name": "Androgen Insensitivity Syndrome",
+"epi": "Rare.",
+"eti": "Androgen receptor mutation; the body cannot respond to testosterone.",
+"cli": "Female look, primary amenorrhea, scant hair, inguinal testes.",
+"inv": "Karyotype, hormones, imaging.",
+"tre": "Remove testes after puberty, estrogen, support."
+},
+{
+"id": "swyer-syndrome",
+"name": "Swyer Syndrome",
+"epi": "Rare.",
+"eti": "Testes fail to form (often SRY mutation).",
+"cli": "Female, no puberty, high gonadotropins.",
+"inv": "Karyotype, hormones.",
+"tre": "Remove streak gonads (tumor risk), hormone therapy; pregnancy possible by egg donation."
+},
+{
+"id": "heterotopic-pregnancy",
+"name": "Heterotopic Pregnancy",
+"epi": "Rare normally, more common after IVF.",
+"eti": "Two pregnancies at once, one in and one outside the uterus.",
+"cli": "Pain and bleeding despite a known uterine pregnancy.",
+"inv": "Transvaginal ultrasound.",
+"tre": "Surgery for the ectopic, keeping the uterine pregnancy."
+},
+{
+"id": "cesarean-scar-pregnancy",
+"name": "Cesarean Scar Pregnancy",
+"epi": "Becoming more common as cesarean rates rise.",
+"eti": "The embryo implants into the muscle defect of an old cesarean scar.",
+"cli": "Painless bleeding in early pregnancy; risk of rupture, placenta accreta and severe hemorrhage.",
+"inv": "Transvaginal ultrasound with Doppler; MRI if unclear.",
+"tre": "Usually ending the pregnancy early: methotrexate, suction or surgical removal with scar repair."
+},
+{
+"id": "peripartum-uterine-inversion",
+"name": "Peripartum Uterine Inversion",
+"epi": "Rare obstetric emergency.",
+"eti": "The uterine fundus turns inside out, often from cord traction on a fundal placenta.",
+"cli": "Heavy bleeding, shock out of proportion (vagal), no fundus felt, mass at the vagina.",
+"inv": "Clinical diagnosis.",
+"tre": "Immediate manual replacement, uterine relaxants, then oxytocin; hydrostatic or surgical repair if needed."
+},
+{
+"id": "pseudocyesis",
+"name": "Pseudocyesis",
+"epi": "Rare; often with strong wish for or fear of pregnancy, past loss or infertility.",
+"eti": "Psychological state that drives real hormonal changes (prolactin, LH).",
+"cli": "Amenorrhea, bigger belly, breast changes, felt fetal movements.",
+"inv": "Negative hCG and an empty uterus on ultrasound.",
+"tre": "Gentle disclosure, psychological support, treat depression or other conditions."
+},
+{
+"id": "ovarian-vein-thrombosis",
+"name": "Ovarian Vein Thrombosis",
+"epi": "Mostly in the days after delivery, especially cesarean.",
+"eti": "Venous stasis, hypercoagulability and pelvic infection; usually the right ovarian vein.",
+"cli": "Fever and flank or lower abdominal pain not helped by antibiotics; rope-like mass.",
+"inv": "CT or MRI with contrast.",
+"tre": "Anticoagulation, with antibiotics if infection is suspected."
+},
+{
+"id": "coats-disease",
+"name": "Coats Disease",
+"epi": "Rare; mostly young boys, usually one eye.",
+"eti": "Leaky abnormal retinal telangiectatic vessels cause exudates and detachment.",
+"cli": "Leukocoria, strabismus, poor vision.",
+"inv": "Fundus exam, fluorescein angiography, ultrasound to exclude retinoblastoma.",
+"tre": "Laser or cryotherapy, anti-VEGF; surgery for detachment."
+},
+{
+"id": "birdshot-chorioretinopathy",
+"name": "Birdshot Chorioretinopathy",
+"epi": "Rare; white middle-aged adults.",
+"eti": "Autoimmune inflammation of the choroid and retina, linked to HLA-A29.",
+"cli": "Floaters, night blindness, poor colour vision, cystoid macular edema.",
+"inv": "Fundus exam, ICG angiography, HLA-A29, electroretinogram.",
+"tre": "Steroids and steroid-sparing immunosuppression."
+},
+{
+"id": "vogt-koyanagi-harada-disease",
+"name": "Vogt-Koyanagi-Harada Disease",
+"epi": "More common in Asian, Hispanic and Middle Eastern people.",
+"eti": "Autoimmune attack on melanocytes in the eye, ear, meninges and skin.",
+"cli": "Meningism, bilateral uveitis with serous detachments, hearing loss, vitiligo, poliosis.",
+"inv": "Clinical, OCT, angiography, CSF.",
+"tre": "High-dose steroids then immunosuppression."
+},
+{
+"id": "acute-retinal-necrosis",
+"name": "Acute Retinal Necrosis",
+"epi": "Rare; healthy or immunocompromised adults.",
+"eti": "Herpes virus (VZV, HSV) infection of the retina.",
+"cli": "Painful red eye, floaters, fast vision loss, retinal detachment.",
+"inv": "Clinical, PCR of aqueous or vitreous.",
+"tre": "IV acyclovir, intravitreal antivirals, laser to prevent detachment."
+},
+{
+"id": "ocular-toxocariasis",
+"name": "Ocular Toxocariasis",
+"epi": "Children who play with dogs or eat soil.",
+"eti": "Toxocara canis larvae reach the eye.",
+"cli": "One-sided vision loss, leukocoria, strabismus.",
+"inv": "Fundus exam, serology.",
+"tre": "Steroids, albendazole, surgery for traction."
+},
+{
+"id": "best-vitelliform-macular-dystrophy",
+"name": "Best Vitelliform Macular Dystrophy",
+"epi": "Rare; autosomal dominant.",
+"eti": "BEST1 mutation affects the retinal pigment epithelium.",
+"cli": "Egg-yolk macular lesion, slowly falling central vision.",
+"inv": "Fundus exam, OCT, EOG, genetics.",
+"tre": "No cure; anti-VEGF for new vessels, low vision aids."
+},
+{
+"id": "stargardt-disease",
+"name": "Stargardt Disease",
+"epi": "The most common inherited macular dystrophy; autosomal recessive.",
+"eti": "ABCA4 mutation causes toxic lipofuscin build-up.",
+"cli": "Slowly falling central vision in childhood or teens.",
+"inv": "Fundus exam, autofluorescence, genetics.",
+"tre": "No cure; avoid high-dose vitamin A, sunglasses, low vision aids."
+},
+{
+"id": "charles-bonnet-syndrome",
+"name": "Charles Bonnet Syndrome",
+"epi": "Common in elderly people with poor vision.",
+"eti": "Visual cortex makes images when deprived of input.",
+"cli": "Vivid, silent visual hallucinations with insight.",
+"inv": "Clinical; exclude delirium and dementia.",
+"tre": "Reassurance, better lighting, treat vision loss."
+},
+{
+"id": "fuchs-endothelial-corneal-dystrophy",
+"name": "Fuchs Endothelial Corneal Dystrophy",
+"epi": "Common in women over 50.",
+"eti": "Endothelial cells fail, so the cornea swells.",
+"cli": "Morning blur, glare, haloes, pain from bullae.",
+"inv": "Slit lamp, pachymetry, specular microscopy.",
+"tre": "Hypertonic saline drops, corneal transplant (DMEK)."
+},
+{
+"id": "ocular-cicatricial-pemphigoid",
+"name": "Ocular Cicatricial Pemphigoid",
+"epi": "Rare; older women.",
+"eti": "Autoimmune scarring of the conjunctiva.",
+"cli": "Dry eye, symblepharon, entropion, blindness.",
+"inv": "Biopsy with immunofluorescence.",
+"tre": "Immunosuppression (dapsone, mycophenolate, cyclophosphamide)."
+},
+{
+"id": "eales-disease",
+"name": "Eales Disease",
+"epi": "Young men in India and the Middle East.",
+"eti": "Retinal vasculitis, possibly a reaction to TB.",
+"cli": "Vitreous hemorrhage, floaters.",
+"inv": "Fundus exam, angiography, TB test.",
+"tre": "Steroids, laser, vitrectomy."
+},
+{
+"id": "tolosa-hunt-syndrome",
+"name": "Tolosa-Hunt Syndrome",
+"epi": "Rare; any age.",
+"eti": "Granulomatous inflammation of the cavernous sinus.",
+"cli": "Painful ophthalmoplegia.",
+"inv": "MRI; exclude other causes.",
+"tre": "Steroids."
+},
+{
+"id": "fibrodysplasia-ossificans-progressiva",
+"name": "Fibrodysplasia Ossificans Progressiva",
+"epi": "Very rare.",
+"eti": "ACVR1 mutation makes muscle turn into bone.",
+"cli": "Flare-ups, then bone, big toe deformity.",
+"inv": "Clinical, X-ray, genetics; avoid biopsy.",
+"tre": "Avoid injury, steroids for flares, palovarotene."
+},
+{
+"id": "melorheostosis",
+"name": "Melorheostosis",
+"epi": "Very rare, not inherited; usually found in childhood or young adults.",
+"eti": "Somatic MAP2K1 mutations make bone overgrow along one side of a limb.",
+"cli": "Pain, stiffness, contractures, limb length difference, skin changes.",
+"inv": "X-ray (dripping candle wax), CT, bone scan.",
+"tre": "Pain relief, physiotherapy, bisphosphonates; surgery for contractures."
+},
+{
+"id": "gorham-stout-disease",
+"name": "Gorham-Stout Disease",
+"epi": "Very rare; children and young adults.",
+"eti": "Abnormal lymphatic and blood vessels grow and dissolve bone.",
+"cli": "Progressive bone loss, fractures, chylothorax if ribs or spine are involved.",
+"inv": "X-ray, MRI, biopsy.",
+"tre": "Sirolimus, bisphosphonates, interferon, radiotherapy, surgery."
+},
+{
+"id": "osteopetrosis",
+"name": "Osteopetrosis",
+"epi": "Rare; severe infant form is recessive, mild adult form is dominant.",
+"eti": "Osteoclasts fail to resorb bone (e.g. carbonic anhydrase II, CLCN7, TCIRG1).",
+"cli": "Dense but brittle bones, marrow failure, nerve compression (blindness, deafness).",
+"inv": "X-rays, genetics.",
+"tre": "Stem cell transplant in the infant form; supportive care."
+},
+{
+"id": "chondrosarcoma",
+"name": "Chondrosarcoma",
+"epi": "The second most common primary bone cancer in adults; peaks age 40 to 70.",
+"eti": "Malignant tumor that makes cartilage; can arise from enchondromas or osteochondromas.",
+"cli": "Deep pain and a slow mass in pelvis, femur, shoulder.",
+"inv": "X-ray, CT, MRI, biopsy.",
+"tre": "Wide surgical excision; resistant to chemo and radiotherapy."
+},
+{
+"id": "adamantinoma",
+"name": "Adamantinoma",
+"epi": "Very rare; young adults.",
+"eti": "Low-grade malignant bone tumor with epithelial cells, almost always in the tibia.",
+"cli": "Painful swelling and bowing of the shin.",
+"inv": "X-ray, MRI, biopsy.",
+"tre": "Wide excision; can spread to the lungs."
+},
+{
+"id": "synovial-chondromatosis",
+"name": "Synovial Chondromatosis",
+"epi": "Rare; middle-aged men, often the knee.",
+"eti": "Metaplasia of synovium into cartilage nodules.",
+"cli": "Pain, swelling, locking, loose bodies.",
+"inv": "X-ray, MRI, arthroscopy.",
+"tre": "Removal of loose bodies and synovectomy."
+},
+{
+"id": "pigmented-villonodular-synovitis",
+"name": "Pigmented Villonodular Synovitis",
+"epi": "Young adults; knee most often.",
+"eti": "Benign tumor of the synovium driven by CSF1.",
+"cli": "Recurrent swelling, bloody effusions, joint damage.",
+"inv": "MRI, aspiration, biopsy.",
+"tre": "Synovectomy; pexidartinib if not operable."
+},
+{
+"id": "freiberg-disease",
+"name": "Freiberg Disease",
+"epi": "Teenage girls, often dancers.",
+"eti": "Osteonecrosis of the metatarsal head from repeated stress.",
+"cli": "Forefoot pain, swelling at the second metatarsophalangeal joint.",
+"inv": "X-ray, MRI.",
+"tre": "Rest, padded shoes; surgery if it persists."
+},
+{
+"id": "madelung-deformity",
+"name": "Madelung Deformity",
+"epi": "Mostly teenage girls; often with Leri-Weill or Turner syndrome.",
+"eti": "Early closure of the inner side of the distal radial growth plate, with a tight Vickers ligament.",
+"cli": "Wrist deformity, prominent ulna, pain, limited rotation.",
+"inv": "Wrist X-ray, MRI, genetic tests.",
+"tre": "Observation, splints; surgery (ligament release, osteotomy) for pain."
+},
+{
+"id": "klippel-feil-syndrome",
+"name": "Klippel-Feil Syndrome",
+"epi": "Rare congenital condition.",
+"eti": "Failure of the neck vertebrae to separate in early fetal life (GDF6, GDF3 and others).",
+"cli": "Short neck, low hairline, limited movement, scoliosis, kidney and heart defects, deafness.",
+"inv": "Spine X-ray and MRI; kidney, heart and hearing checks.",
+"tre": "Avoid contact sports; physiotherapy; surgery for instability or nerve compression."
+},
+{
+"id": "popliteal-artery-entrapment-syndrome",
+"name": "Popliteal Artery Entrapment Syndrome",
+"epi": "Young, fit men; athletes and soldiers.",
+"eti": "Abnormal course of the artery or muscle squeezes the popliteal artery.",
+"cli": "Exercise calf claudication, cold foot; later clot or aneurysm.",
+"inv": "Ankle-brachial index with stress maneuvers, Doppler, MRI or CT angiography.",
+"tre": "Surgical release of the muscle; bypass if the artery is damaged."
+},
+{
+"id": "os-trigonum-syndrome",
+"name": "Os Trigonum Syndrome",
+"epi": "Ballet dancers, soccer players, downhill runners.",
+"eti": "An extra ossicle behind the talus is pinched in plantarflexion.",
+"cli": "Posterior ankle pain on pointing the foot.",
+"inv": "Lateral X-ray, MRI.",
+"tre": "Rest, physiotherapy, injection; surgical removal."
+},
+{
+"id": "quadrilateral-space-syndrome",
+"name": "Quadrilateral Space Syndrome",
+"epi": "Young overhead athletes such as volleyball players and pitchers.",
+"eti": "Axillary nerve and posterior circumflex humeral artery squeezed in the quadrilateral space by fibrous bands or hypertrophy.",
+"cli": "Posterior shoulder pain, numbness over the deltoid, weak abduction, teres minor and deltoid wasting.",
+"inv": "MRI (teres minor atrophy), angiography with arm abducted, nerve studies.",
+"tre": "Rest, physiotherapy; surgical decompression if it persists."
+},
+{
+"id": "thoracic-outlet-syndrome",
+"name": "Thoracic Outlet Syndrome",
+"epi": "Mostly young women; most cases are neurogenic.",
+"eti": "Brachial plexus (lower trunk), subclavian artery or vein squeezed by a cervical rib, scalenes or first rib.",
+"cli": "Ulnar-side tingling, wasting of thenar muscles (Gilliatt-Sumner hand), arm fatigue, pulse loss with arm raised.",
+"inv": "Chest and neck X-ray, nerve studies, Doppler with arm positions.",
+"tre": "Physiotherapy and posture; surgical first-rib or cervical-rib resection."
+},
+{
+"id": "factitious-disorder-imposed-on-another",
+"name": "Factitious Disorder Imposed on Another",
+"epi": "Rare; the perpetrator is usually the mother, often with health-care knowledge.",
+"eti": "The caregiver fakes or causes illness in a child to gain attention or care, without outside gain like money.",
+"cli": "Unexplained, recurring symptoms seen only by one parent; many hospital visits.",
+"inv": "Careful review of records, separation trial, covert monitoring where lawful, toxicology.",
+"tre": "Child protection first; psychiatric care for the caregiver."
+},
+{
+"id": "ganser-syndrome",
+"name": "Ganser Syndrome",
+"epi": "Rare; classically in prisoners.",
+"eti": "A dissociative disorder (or feigning) under severe stress.",
+"cli": "Approximate answers (vorbeireden), clouded mind, pseudohallucinations, amnesia.",
+"inv": "Clinical; exclude organic disease and malingering.",
+"tre": "Remove stress, support, psychotherapy; often resolves suddenly."
+},
+{
+"id": "shared-psychotic-disorder",
+"name": "Shared Psychotic Disorder",
+"epi": "Rare; two people in a close, isolated relationship.",
+"eti": "A dominant person with psychosis passes a delusion to a dependent partner.",
+"cli": "Same delusion held by two people.",
+"inv": "Clinical.",
+"tre": "Separate them; treat the primary person; antipsychotics sometimes for the second."
+},
+{
+"id": "cotard-syndrome",
+"name": "Cotard Syndrome",
+"epi": "Rare; severe depression with psychosis, also in brain disease.",
+"eti": "Nihilistic delusion.",
+"cli": "Belief of being dead or rotting, refusal to eat.",
+"inv": "Clinical, brain imaging.",
+"tre": "Treat depression; ECT works well."
+},
+{
+"id": "capgras-syndrome",
+"name": "Capgras Syndrome",
+"epi": "Rare; schizophrenia, Lewy body and Alzheimer dementia, brain injury.",
+"eti": "Face is recognised, but the emotional feeling of familiarity is lost.",
+"cli": "Belief that a loved one has been replaced by an identical impostor.",
+"inv": "Clinical, brain imaging.",
+"tre": "Treat the cause, antipsychotics with care in Lewy body dementia, support carers."
+},
+{
+"id": "fregoli-syndrome",
+"name": "Fregoli Syndrome",
+"epi": "Rare misidentification syndrome; schizophrenia, brain injury, dementia.",
+"eti": "Over-recognition: unfamiliar faces trigger a feeling of familiarity, often right frontal or temporal damage.",
+"cli": "Belief that different people are one persecutor in disguise.",
+"inv": "Clinical, brain imaging.",
+"tre": "Antipsychotics, treat brain disease."
+},
+{
+"id": "delusional-parasitosis",
+"name": "Delusional Parasitosis",
+"epi": "Mostly older women; also from cocaine, amphetamine, dopamine drugs.",
+"eti": "Delusional disorder of somatic type.",
+"cli": "Fixed belief of infestation, 'specimen sign', skin injury from picking.",
+"inv": "Exclude real infestation, drugs, B12, thyroid, kidney or liver disease.",
+"tre": "Antipsychotics (risperidone, olanzapine) from a trusted doctor, often a dermatologist."
+},
+{
+"id": "kleine-levin-syndrome",
+"name": "Kleine-Levin Syndrome",
+"epi": "Very rare; mostly teenage boys.",
+"eti": "Unknown; often starts after an infection; likely hypothalamic.",
+"cli": "Recurrent hypersomnia with hyperphagia, disinhibition and derealization.",
+"inv": "Clinical, after excluding other causes.",
+"tre": "Support and safety; lithium may reduce episodes; usually fades in adulthood."
+},
+{
+"id": "psychogenic-polydipsia",
+"name": "Psychogenic Polydipsia",
+"epi": "Common in long-stay psychiatric patients, especially schizophrenia.",
+"eti": "Compulsive water drinking that exceeds the kidney's ability to excrete water.",
+"cli": "Polyuria, hyponatremia, confusion, seizures.",
+"inv": "Sodium, urine osmolality, water-deprivation test, diurnal weight.",
+"tre": "Fluid restriction, weigh patient, clozapine; slow sodium correction."
+},
+{
+"id": "tardive-dyskinesia",
+"name": "Tardive Dyskinesia",
+"epi": "Long-term dopamine blocker use; older women at higher risk.",
+"eti": "Dopamine receptor supersensitivity after long blockade.",
+"cli": "Involuntary chewing, tongue and lip movements, choreiform limb moves.",
+"inv": "Clinical; AIMS scale.",
+"tre": "Valbenazine or deutetrabenazine, switch to clozapine or quetiapine."
+},
+{
+"id": "antidepressant-discontinuation-syndrome",
+"name": "Antidepressant Discontinuation Syndrome",
+"epi": "Common after stopping short half-life antidepressants (paroxetine, venlafaxine).",
+"eti": "Sudden drop in serotonin activity.",
+"cli": "FINISH: flu-like, insomnia, nausea, imbalance, sensory 'brain zaps', hyperarousal.",
+"inv": "Clinical; timing after stopping.",
+"tre": "Restart and taper slowly; switch to fluoxetine to taper."
+},
+{
+"id": "koro",
+"name": "Koro",
+"epi": "Culture-bound syndrome, mostly in Southeast Asia and China; can occur in outbreaks.",
+"eti": "Acute anxiety with a cultural belief about genital retraction.",
+"cli": "Intense fear that genitals are shrinking and death will follow.",
+"inv": "Clinical; normal exam.",
+"tre": "Reassurance, education, anxiety treatment."
+},
+{
+"id": "body-integrity-dysphoria",
+"name": "Body Integrity Dysphoria",
+"epi": "Very rare; mostly men; starts in childhood.",
+"eti": "Mismatch between body and the brain's body map, possibly parietal.",
+"cli": "Intense wish for amputation or paralysis of a healthy limb.",
+"inv": "Clinical; exclude psychosis and body dysmorphic disorder.",
+"tre": "Psychotherapy; ethical issues about surgery."
+},
+{
+"id": "factitious-disorder-imposed-on-self",
+"name": "Factitious Disorder Imposed on Self",
+"epi": "More common in women with health-care jobs.",
+"eti": "Deliberate faking or causing illness to take on the sick role, without outside reward.",
+"cli": "Many admissions, odd infections, unclear symptoms, eager for tests and surgery.",
+"inv": "Records review, clinical suspicion, exclusion.",
+"tre": "Gentle non-blaming approach, one main doctor, psychotherapy."
+},
+{
+"id": "othello-syndrome",
+"name": "Othello Syndrome",
+"epi": "More common in men; linked to alcohol, dementia, Parkinson drugs.",
+"eti": "Delusional disorder, jealous type.",
+"cli": "Fixed belief that the partner is unfaithful, checking, stalking, risk of violence.",
+"inv": "Clinical; look for alcohol use and brain disease.",
+"tre": "Assess and protect the partner, antipsychotics, treat alcohol use; sometimes separation."
+},
+{
+"id": "pulmonary-langerhans-cell-histiocytosis",
+"name": "Pulmonary Langerhans Cell Histiocytosis",
+"epi": "Rare; almost only young adult smokers.",
+"eti": "Clonal Langerhans cells (often BRAF V600E) collect around small airways.",
+"cli": "Cough, breathlessness, pneumothorax, diabetes insipidus, bone lesions.",
+"inv": "High-resolution CT, biopsy or bronchoalveolar lavage with CD1a.",
+"tre": "Stop smoking; cladribine or other therapy if progressive."
+},
+{
+"id": "hepatopulmonary-syndrome",
+"name": "Hepatopulmonary Syndrome",
+"epi": "Up to a quarter of people with cirrhosis.",
+"eti": "Dilated lung capillaries cause a right-to-left shunt.",
+"cli": "Platypnea, orthodeoxia, cyanosis, clubbing.",
+"inv": "Arterial gas, contrast (bubble) echo.",
+"tre": "Oxygen; liver transplant cures it."
+},
+{
+"id": "pulmonary-arteriovenous-malformation",
+"name": "Pulmonary Arteriovenous Malformation",
+"epi": "Most are linked to hereditary hemorrhagic telangiectasia.",
+"eti": "Direct artery-to-vein connection in the lung bypasses capillaries.",
+"cli": "Hypoxia, paradoxical stroke or brain abscess, hemoptysis.",
+"inv": "Bubble echo, CT angiography.",
+"tre": "Embolization; antibiotics before dental work."
+},
+{
+"id": "pulmonary-veno-occlusive-disease",
+"name": "Pulmonary Veno-Occlusive Disease",
+"epi": "Rare form of pulmonary hypertension; EIF2AK4 gene, chemotherapy, solvents.",
+"eti": "Fibrosis blocks small pulmonary veins.",
+"cli": "Pulmonary hypertension, very low DLCO, edema with vasodilators.",
+"inv": "CT, right heart catheter, genetics.",
+"tre": "Lung transplant; careful vasodilators."
+},
+{
+"id": "swyer-james-syndrome",
+"name": "Swyer-James Syndrome",
+"epi": "Rare.",
+"eti": "Bronchiolitis obliterans after childhood infection (adenovirus) stops lung growth.",
+"cli": "Hyperlucent lung, recurrent infections.",
+"inv": "X-ray, CT, ventilation-perfusion scan.",
+"tre": "Treat infections; surgery rarely."
+},
+{
+"id": "bronchopulmonary-sequestration",
+"name": "Bronchopulmonary Sequestration",
+"epi": "Rare congenital lung defect.",
+"eti": "Piece of lung not joined to the airways, fed by a systemic artery.",
+"cli": "Recurrent pneumonia in the same lobe.",
+"inv": "CT angiography.",
+"tre": "Surgical removal."
+},
+{
+"id": "diffuse-alveolar-hemorrhage",
+"name": "Diffuse Alveolar Hemorrhage",
+"epi": "Seen in ANCA vasculitis, lupus, anti-GBM disease, drugs, after stem cell transplant.",
+"eti": "Injury to lung capillaries lets blood fill the alveoli.",
+"cli": "Breathlessness, hemoptysis (may be absent), falling hemoglobin, bilateral infiltrates.",
+"inv": "Serial BAL, raised DLCO, autoantibodies, kidney tests.",
+"tre": "High-dose steroids, cyclophosphamide or rituximab, plasma exchange, ventilation."
+},
+{
+"id": "tracheobronchomalacia",
+"name": "Tracheobronchomalacia",
+"epi": "Older adults; COPD, long intubation, relapsing polychondritis.",
+"eti": "Weak cartilage or a floppy back wall lets the airway collapse on breathing out.",
+"cli": "Barking cough, wheeze, poor mucus clearance, recurrent infection.",
+"inv": "Dynamic CT, bronchoscopy.",
+"tre": "CPAP, airway stent trial, surgical tracheobronchoplasty."
+},
+{
+"id": "lady-windermere-syndrome",
+"name": "Lady Windermere Syndrome",
+"epi": "Thin, older non-smoking women.",
+"eti": "Mycobacterium avium complex infection in middle lobe and lingula, maybe from poor mucus clearance.",
+"cli": "Chronic cough, tiredness, weight loss, bronchiectasis.",
+"inv": "CT, three sputum cultures.",
+"tre": "Macrolide, rifampicin and ethambutol for over a year after culture turns negative."
+},
+{
+"id": "pleuroparenchymal-fibroelastosis",
+"name": "Pleuroparenchymal Fibroelastosis",
+"epi": "Rare; after stem cell or lung transplant, chemotherapy, or idiopathic.",
+"eti": "Fibrosis of the upper lobe pleura and lung with elastic tissue.",
+"cli": "Breathlessness, weight loss, flat chest, pneumothorax.",
+"inv": "High-resolution CT, biopsy.",
+"tre": "No proven drug; antifibrotics sometimes; lung transplant."
+},
+{
+"id": "pulmonary-hyalinizing-granuloma",
+"name": "Pulmonary Hyalinizing Granuloma",
+"epi": "Rare; adults.",
+"eti": "Reaction to past infection or autoimmune disease; linked to IgG4 and fibrosing mediastinitis.",
+"cli": "Usually no symptoms; nodules mistaken for cancer.",
+"inv": "Biopsy.",
+"tre": "Observation; surgery only for diagnosis."
+},
+{
+"id": "mesenteric-panniculitis",
+"name": "Mesenteric Panniculitis",
+"epi": "Mostly older men; often found by chance on CT.",
+"eti": "Chronic inflammation and fibrosis of mesenteric fat; sometimes linked to cancer or surgery.",
+"cli": "Abdominal pain, fever, fullness; may cause bowel blockage.",
+"inv": "CT (misty mesentery, fat ring sign, pseudocapsule), biopsy if unclear.",
+"tre": "Often none; steroids, tamoxifen; surgery for obstruction."
+},
+{
+"id": "paget-schroetter-syndrome",
+"name": "Paget-Schroetter Syndrome",
+"epi": "Young, active people doing repeated overhead movements.",
+"eti": "Venous thoracic outlet compression causes a subclavian-axillary vein clot.",
+"cli": "Painful swollen blue arm with dilated veins.",
+"inv": "Doppler, venography with arm positions.",
+"tre": "Catheter-directed thrombolysis, anticoagulation, first rib resection."
+},
+{
+"id": "amyand-hernia",
+"name": "Amyand Hernia",
+"epi": "Rare; more in boys and men; usually right-sided.",
+"eti": "The appendix lies within an inguinal hernia sac.",
+"cli": "Looks like a strangulated inguinal hernia.",
+"inv": "Often found only at surgery; CT may show it.",
+"tre": "Appendectomy and hernia repair (usually without mesh if inflamed)."
+},
+{
+"id": "littre-hernia",
+"name": "Littre Hernia",
+"epi": "Very rare.",
+"eti": "A Meckel diverticulum lies inside a hernia sac (inguinal, femoral, umbilical).",
+"cli": "Painful irreducible hernia, often without full bowel obstruction.",
+"inv": "Usually found at surgery; CT may hint.",
+"tre": "Resection of the diverticulum and hernia repair."
+},
+{
+"id": "spigelian-hernia",
+"name": "Spigelian Hernia",
+"epi": "Rare; adults 40 to 70.",
+"eti": "Hernia through the Spigelian fascia along the semilunar line, often below the arcuate line.",
+"cli": "Pain, sometimes an intermittent lump; high strangulation risk.",
+"inv": "Ultrasound, CT.",
+"tre": "Surgical repair because of the strangulation risk."
+},
+{
+"id": "obturator-hernia",
+"name": "Obturator Hernia",
+"epi": "Elderly, thin women with many pregnancies.",
+"eti": "Hernia through the obturator canal.",
+"cli": "Small bowel obstruction with Howship-Romberg sign.",
+"inv": "CT.",
+"tre": "Urgent surgery."
+},
+{
+"id": "bouveret-syndrome",
+"name": "Bouveret Syndrome",
+"epi": "Rare form of gallstone ileus.",
+"eti": "A large gallstone passes through a fistula into the duodenum and blocks the gastric outlet.",
+"cli": "Vomiting, gastric outlet obstruction.",
+"inv": "CT (Rigler triad: pneumobilia, obstruction, ectopic stone).",
+"tre": "Endoscopic stone removal or surgery."
+},
+{
+"id": "desmoid-tumor",
+"name": "Desmoid Tumor",
+"epi": "Rare; young women, after pregnancy or surgery, FAP (Gardner).",
+"eti": "Clonal fibroblast growth driven by CTNNB1 or APC mutations.",
+"cli": "Firm painless mass that invades locally, does not metastasize.",
+"inv": "MRI, biopsy.",
+"tre": "Watch and wait first; NSAIDs, sorafenib, nirogacestat; surgery if needed."
 }
 ]
