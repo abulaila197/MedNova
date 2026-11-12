@@ -135,7 +135,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
         locked={flash || paused || run.phase !== 'playing'}
         tip="Find one group, then the phone passes on"
         rightStamp="Found it!"
-        top={<TopLine kicker={`${nameOf(seat)}’s turn`} title="Four of a Kind" sub={`${boardLine} · ${run.players[seat].score} points`} />}
+        top={<TopLine kicker={nameOf(seat) === 'You' ? 'Your turn' : `${nameOf(seat)}’s turn`} title="Four of a Kind" sub={`${boardLine} · ${run.players[seat].score} points`} />}
         onSubmit={(tiles) => {
           const v = judgeTurn(run, tiles);
           if (v === 'ignored' || v === 'repeat') return v;

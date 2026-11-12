@@ -127,7 +127,8 @@ export function Tiles({ board, order, picked, onTap, width, disabled }: { board:
         const label = g.b[board.groups[groupOfTile(t)].boxes[t % 4]][0];
         // Words never break in the middle: the longest word sets the size (adjustsFontSizeToFit is native only).
         const longest = Math.max(...label.split(/[\s-]+/).map((x) => x.length));
-        const size = Math.max(TILE_FONT * 0.5, Math.min(TILE_FONT, (w - u(9)) / (longest * 0.6)));
+        const base = TILE_FONT * Math.min(1.5, Math.max(1, w / u(78)));
+        const size = Math.max(base * 0.5, Math.min(base, (w - u(9)) / (longest * 0.6)));
         return (
           <Pressable
             key={t}

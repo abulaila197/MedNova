@@ -18,7 +18,9 @@ export function BoardView({ board, run, top, onSubmit, onShuffle, hint, tip = 'T
   hint?: { label: string; onPress: () => void; disabled?: boolean } | null; tip?: string; who?: Record<number, string>; locked?: boolean; extra?: ReactNode; rightStamp?: string;
 }) {
   const { width } = useScreen();
-  const W = Math.min(width, 430) - u(32);
+  // The boxes take the width they are given (full width on a tablet), four to a row, up to 620 wide.
+  const [box, setBox] = useState(0);
+  const W = Math.min(box || Math.min(width, 430) - u(32), 620);
   const [picked, setPicked] = useState<number[]>([]);
   const [stamp, setStamp] = useState<{ text: string; tone: 'red' | 'gold'; n: number } | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -48,12 +50,14 @@ export function BoardView({ board, run, top, onSubmit, onShuffle, hint, tip = 'T
   };
   const topic = run.revealed != null ? groupById.get(board.groups[run.revealed].id)?.n : null;
   return (
-    <View style={{ flex: 1, gap: u(8) }}>
+    <View style={{ flex: 1, gap: u(8) }} onLayout={(e) => setBox(e.nativeEvent.layout.width)}>
       {top}
       {run.found.map((slot) => (
         <GroupRow key={slot} board={board} slot={slot} who={who?.[slot]} />
       ))}
-      <Tiles board={board} order={run.order} picked={live} onTap={locked ? undefined : tap} width={W} />
+      <View style={{ width: W, alignSelf: 'center' }}>
+        <Tiles board={board} order={run.order} picked={live} onTap={locked ? undefined : tap} width={W} />
+      </View>
       <View style={{ flex: 1, minHeight: u(64), justifyContent: 'center', alignItems: 'center', gap: u(8) }}>
         {stamp ? <Stamp key={stamp.n} text={stamp.text} tone={stamp.tone} /> : topic ? <Note>{`Hint: one group is “${topic}”`}</Note> : <Note>{tip}</Note>}
         {extra}
