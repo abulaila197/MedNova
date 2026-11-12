@@ -94,6 +94,7 @@ export function Sheet({ c, highlight, style }: { c: Case; highlight?: boolean; s
       </View>
       <ScrollView
         ref={scroll}
+        nestedScrollEnabled
         style={{ flex: 1 }}
         contentContainerStyle={{ gap: u(8), paddingBottom: u(26) }}
         showsVerticalScrollIndicator
@@ -133,7 +134,7 @@ export function Sheet({ c, highlight, style }: { c: Case; highlight?: boolean; s
 export function Ask({ stage }: { stage: 1 | 2 }) {
   return (
     <View style={s.askRow}>
-      {stage === 2 ? <Text style={[s.ask, { color: C.okLight }]}>✓ LOCKED</Text> : null}
+      {stage === 2 ? <Text style={[s.ask, { color: C.okLight, fontSize: u(8.5) }]}>✓ STAGE 1 LOCKED · STAGE 2</Text> : <Text style={[s.ask, { color: C.mute, fontSize: u(8.5) }]}>STAGE 1 OF 2</Text>}
       <Text style={s.ask}>{stage === 1 ? 'WHAT WENT WRONG?' : 'WHAT SHOULD HAVE HAPPENED?'}</Text>
     </View>
   );
@@ -209,8 +210,10 @@ export function Explain({ c, run, rows, foot }: { c: Case; run?: CaseRun; rows?:
           ) : null}
           <Text style={s.cardSec}>WHAT WENT WRONG</Text>
           <Text style={s.cardBody}>{c.a[0].o}</Text>
+          {run && run.pick1 != null && run.pick1 > 0 ? <Text style={s.yours}>{`You said: ${c.a[run.pick1].o}`}</Text> : null}
           <Text style={s.cardSec}>WHAT SHOULD HAVE HAPPENED</Text>
           <Text style={[s.cardBody, { fontFamily: F.bodySemi }]}>{c.a[0].x}</Text>
+          {run && run.pick2 != null && run.pick2 > 0 ? <Text style={s.yours}>{`You said: ${c.a[run.pick2].x}`}</Text> : null}
           <Text style={s.cardBody}>{c.a[0].w}</Text>
           <Text style={s.cardSec}>WHY THE REST WERE FINE</Text>
           {c.a.slice(1).map((a, i) => (
@@ -255,11 +258,11 @@ export const s = StyleSheet.create({
   margin: { position: 'absolute', left: u(13), top: 0, bottom: 0, width: 1.5, backgroundColor: C.margin },
   sheetHead: { flexDirection: 'row', justifyContent: 'space-between', gap: u(8), marginBottom: u(6) },
   sheetHeadT: { fontFamily: F.bodyBold, fontSize: u(8.5), letterSpacing: u(1.2), color: C.head, flexShrink: 1 },
-  story: { fontFamily: SERIF, fontSize: u(13), lineHeight: u(20), color: C.ink },
+  story: { fontFamily: SERIF, fontSize: u(12.5), lineHeight: u(19.5), color: C.ink },
   circled: { fontFamily: SERIF, color: C.pen, backgroundColor: 'rgba(226,40,58,0.10)', textDecorationLine: 'underline', textDecorationColor: C.pen },
   penNote: { position: 'absolute', right: u(12), top: u(22), fontFamily: PEN, fontSize: u(18), color: C.pen, transform: [{ rotate: '-6deg' }] },
   fade: { position: 'absolute', left: 0, right: 0, bottom: 0, height: u(30) },
-  askRow: { flexDirection: 'row', gap: u(8), alignItems: 'center' },
+  askRow: { gap: u(3) },
   ask: { fontFamily: F.bodySemi, fontSize: u(10), letterSpacing: u(1.6), color: C.margin },
   opt: { flexDirection: 'row', gap: u(9), borderRadius: u(12), borderWidth: 1, borderColor: C.line, backgroundColor: 'rgba(255,255,255,0.06)', paddingVertical: u(8), paddingHorizontal: u(11) },
   optOn: { borderColor: C.coral, backgroundColor: 'rgba(255,93,108,0.16)' },
@@ -277,6 +280,7 @@ export const s = StyleSheet.create({
   cardMarks: { fontFamily: F.bodySemi, fontSize: u(11), lineHeight: u(16) },
   cardSec: { fontFamily: F.bodyBold, fontSize: u(8.5), letterSpacing: u(1.4), color: C.pen, marginTop: u(6) },
   cardBody: { fontFamily: F.body, fontSize: u(11.5), lineHeight: u(16.5), color: C.ink },
+  yours: { fontFamily: F.body, fontStyle: 'italic', fontSize: u(10.5), lineHeight: u(15), color: C.no },
   rest: { gap: u(2), borderLeftWidth: 2, borderLeftColor: 'rgba(28,35,64,0.15)', paddingLeft: u(8), marginTop: u(2) },
   restO: { fontFamily: F.bodySemi, fontSize: u(11), lineHeight: u(15.5), color: C.inkSoft },
   rows: { gap: u(6) },
