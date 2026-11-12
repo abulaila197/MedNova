@@ -1,3 +1,4 @@
+import { CoinLabel, spoken } from '@/components/CoinLabel';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { Platform, Pressable, StyleSheet, View, type LayoutChangeEvent } from 'react-native';
@@ -145,8 +146,8 @@ export function SlideTable(p: TableProps) {
       ) : (
         <View style={{ gap: u(6) }}>
           {p.hint ? (
-            <Pressable onPress={p.hint.onPress} disabled={p.hint.disabled} style={[s.hint, { borderColor: c.line, backgroundColor: c.key, opacity: p.hint.disabled ? 0.45 : 1 }]} accessibilityRole="button" accessibilityLabel={p.hint.label}>
-              <Text style={[s.hintT, { color: t.accent }]}>{p.hint.label}</Text>
+            <Pressable onPress={p.hint.onPress} disabled={p.hint.disabled} style={[s.hint, { borderColor: c.line, backgroundColor: c.key, opacity: p.hint.disabled ? 0.45 : 1 }]} accessibilityRole="button" accessibilityLabel={spoken(p.hint.label)}>
+              <CoinLabel text={p.hint.label} style={[s.hintT, { color: t.accent }]} />
             </Pressable>
           ) : null}
           <Keys c={c} keys={keys} onKey={press} />

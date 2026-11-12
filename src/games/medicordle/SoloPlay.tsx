@@ -1,3 +1,4 @@
+import { COIN } from '@/components/CoinLabel';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Platform, Share, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
@@ -295,7 +296,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
       minLen={minLen(style)}
       hint={
         custom && !over && run.hints < HINT_COSTS.length
-          ? { label: `Letter hint · ${HINT_COSTS[run.hints]} token${HINT_COSTS[run.hints] > 1 ? 's' : ''}`, onPress: hint, disabled: paused }
+          ? { label: `Letter hint · ${HINT_COSTS[run.hints]}${COIN}`, onPress: hint, disabled: paused }
           : undefined
       }
       onPause={() => dispatch({ type: 'PAUSE', now: Date.now() })}

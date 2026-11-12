@@ -1,3 +1,4 @@
+import { COIN } from '@/components/CoinLabel';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
@@ -285,7 +286,7 @@ export function ReviveCard({ playId, name, text, payer = 'The phone owner', decl
       <Kick color="#ff6b7d">Out of hearts</Kick>
       <Text style={[s.big, { color: t.white }]}>{name}</Text>
       <Text style={[s.line, { color: t.mute }]}>{note ?? text ?? `No hearts left. One revive per player: ${CW.revivePrice} token from the phone owner gives ${CW.reviveHearts} heart. Words claimed so far stay claimed.`}</Text>
-      <Btn label={`Revive · ${CW.revivePrice} token`} onPress={revive} disabled={sending} style={{ marginTop: u(4) }} />
+      <Btn label={`Revive · ${CW.revivePrice}${COIN}`} onPress={revive} disabled={sending} style={{ marginTop: u(4) }} />
       <Ghost label={decline} onPress={onDecline} />
     </View>
   );

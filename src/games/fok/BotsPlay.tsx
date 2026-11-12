@@ -1,3 +1,4 @@
+import { COIN } from '@/components/CoinLabel';
 import { useEffect, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
@@ -170,7 +171,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
           </View>
         }
         tip={hintNote ?? 'Everyone has the same board.'}
-        hint={{ label: run.revealed != null ? 'Hint used' : `Hint · ${FOK.revealCost}`, onPress: () => void buyHint(), disabled: run.revealed != null || hintBusy || run.phase !== 'play' }}
+        hint={{ label: run.revealed != null ? 'Hint used' : `Hint · ${FOK.revealCost}${COIN}`, onPress: () => void buyHint(), disabled: run.revealed != null || hintBusy || run.phase !== 'play' }}
         onSubmit={(tiles) => g.at((at) => race.submit(at, tiles)) ?? 'ignored'}
         onShuffle={() => void g.at((at) => race.shuffle(at))}
       />

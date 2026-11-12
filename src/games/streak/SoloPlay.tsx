@@ -1,3 +1,4 @@
+import { COIN } from '@/components/CoinLabel';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
@@ -192,7 +193,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
       helpers={custom ? undefined : { onHelper: helper, usable: (k) => helperUsable(round, k) }}
       hidden={paused}
       notice={notice}
-      offer={signedIn && !custom && !round.noClock && !over && !paused && kept < 3 && (round.lost ?? 0) >= 3 ? { label: `Keep your streak of ${round.lost} · ${SECOND_PRICE[kept]} tokens`, onPress: () => void keep() } : null}
+      offer={signedIn && !custom && !round.noClock && !over && !paused && kept < 3 && (round.lost ?? 0) >= 3 ? { label: `Keep your streak of ${round.lost} · ${SECOND_PRICE[kept]}${COIN}`, onPress: () => void keep() } : null}
       dock={over ? <OverCard round={round} best={best} onNext={() => onFinish(round.score)} /> : undefined}>
       <PauseMenu open={paused} mode="solo" onResume={() => dispatch({ type: 'RESUME', now: Date.now() })} onQuit={onQuit} />
     </HeatBoard>

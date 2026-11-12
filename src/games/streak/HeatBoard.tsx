@@ -1,3 +1,4 @@
+import { COIN, CoinLabel, spoken } from '@/components/CoinLabel';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, type ReactNode } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
@@ -133,8 +134,8 @@ export function HeatBoard(p: BoardProps) {
           <View style={{ flex: 1 }} />
           {p.offer && !p.dock ? (
             <Animated.View entering={FadeIn}>
-              <Pressable onPress={p.offer.onPress} style={[s.offer, { borderColor: t.accent }]} accessibilityRole="button">
-                <Text style={[s.offerT, { color: t.accent }]}>{p.offer.label}</Text>
+              <Pressable onPress={p.offer.onPress} style={[s.offer, { borderColor: t.accent }]} accessibilityRole="button" accessibilityLabel={spoken(p.offer.label)}>
+                <CoinLabel text={p.offer.label} style={[s.offerT, { color: t.accent }]} />
               </Pressable>
             </Animated.View>
           ) : null}
@@ -262,7 +263,7 @@ function HelperBtn({ kind, label, bg, line, fg, off, onPress }: { kind: HelperKi
   return (
     <Pressable onPress={onPress} disabled={off} style={[s.hb, { backgroundColor: bg, borderColor: line }]} accessibilityRole="button" accessibilityLabel={`${label}, ${price} token${price > 1 ? 's' : ''}`}>
       <Text style={[s.hbT, { color: fg, opacity: off ? 0.45 : 1 }]} numberOfLines={1}>{label}</Text>
-      <Text style={[s.hbP, { color: fg, opacity: off ? 0.34 : 0.75 }]}>{`${price} token${price > 1 ? 's' : ''}`}</Text>
+      <CoinLabel text={`${price}${COIN}`} style={[s.hbP, { color: fg, opacity: off ? 0.34 : 0.75 }]} />
     </Pressable>
   );
 }

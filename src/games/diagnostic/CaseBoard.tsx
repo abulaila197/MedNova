@@ -1,3 +1,4 @@
+import { COIN, CoinLabel, spoken } from '@/components/CoinLabel';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Keyboard, Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
@@ -133,7 +134,7 @@ export function CaseBoard(p: BoardProps) {
             {focused || p.actions === false ? null : p.actions === 'hint' ? (
               p.hint ? (
                 <View style={s.row3}>
-                  <ActionBtn label={p.hint.granted ? '💡 Hint used' : '💡 Hint · 1 token'} flex={1} onPress={p.hint.onHint} disabled={p.hint.granted || p.phase !== 'playing'} bg="#231b4e" line="#504188" fg="#d8b4fe" />
+                  <ActionBtn label={p.hint.granted ? '💡 Hint used' : `💡 Hint · 1${COIN}`} flex={1} onPress={p.hint.onHint} disabled={p.hint.granted || p.phase !== 'playing'} bg="#231b4e" line="#504188" fg="#d8b4fe" />
                 </View>
               ) : null
             ) : <Actions canReveal={p.attempt.cluesShown < DP.clueCount} hint={p.hint} onSkip={p.onSkip} onReveal={p.onReveal} />}
@@ -256,10 +257,8 @@ function Differential({ wrong }: { wrong: string[] }) {
 
 /** One coloured action button. */
 const ActionBtn = ({ label, flex, bg, line, fg, onPress, disabled }: { label: string; flex: number; bg: string; line: string; fg: string; onPress: () => void; disabled?: boolean }) => (
-  <Pressable onPress={onPress} disabled={disabled} style={[s.b3, { flex, backgroundColor: bg, borderColor: line }]} accessibilityRole="button" accessibilityLabel={label}>
-    <Text style={[s.b3T, { color: fg, opacity: disabled ? 0.45 : 1 }]} numberOfLines={1}>
-      {label}
-    </Text>
+  <Pressable onPress={onPress} disabled={disabled} style={[s.b3, { flex, backgroundColor: bg, borderColor: line }]} accessibilityRole="button" accessibilityLabel={spoken(label)}>
+    <CoinLabel text={label} style={[s.b3T, { color: fg, opacity: disabled ? 0.45 : 1 }]} numberOfLines={1} />
   </Pressable>
 );
 

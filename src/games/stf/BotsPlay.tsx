@@ -1,3 +1,4 @@
+import { COIN } from '@/components/CoinLabel';
 import { useEffect, useRef, useState } from 'react';
 import { StyleSheet } from 'react-native';
 
@@ -140,8 +141,8 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
         locked={g.paused || run.stage === 'done'}
         note={run.stage === 'done' ? 'Locked in. Waiting for the rivals…' : 'Answers stay hidden until the reveal.'}
         help={{
-          fifty: { label: run.fifty ? '50/50 used' : `50/50 · ${STF.fiftyCost} tokens`, onPress: () => void buy(STF.fiftyCost, 'stf_fifty', (r) => takeFifty(r, Math.random)), disabled: !!run.fifty || busy },
-          highlight: { label: run.highlight ? 'Highlighted' : `Highlight · ${STF.highlightCost} tokens`, onPress: () => void buy(STF.highlightCost, 'stf_highlight', takeHighlight), disabled: run.highlight || busy },
+          fifty: { label: run.fifty ? '50/50 used' : `50/50 · ${STF.fiftyCost}${COIN}`, onPress: () => void buy(STF.fiftyCost, 'stf_fifty', (r) => takeFifty(r, Math.random)), disabled: !!run.fifty || busy },
+          highlight: { label: run.highlight ? 'Highlighted' : `Highlight · ${STF.highlightCost}${COIN}`, onPress: () => void buy(STF.highlightCost, 'stf_highlight', takeHighlight), disabled: run.highlight || busy },
           note: helpNote,
         }}
         // No chips over the paper (Yazan 2026-11-12): who locked in shows as live pop-ups, never what they picked.

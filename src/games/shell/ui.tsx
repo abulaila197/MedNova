@@ -1,3 +1,4 @@
+import { CoinLabel, spoken } from '@/components/CoinLabel';
 import { LinearGradient } from 'expo-linear-gradient';
 import type { ReactNode } from 'react';
 import { Pressable, ScrollView, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
@@ -62,9 +63,9 @@ export function Body({ children, style }: { children: ReactNode; style?: StylePr
 export function Btn({ label, onPress, disabled, style }: { label: string; onPress?: () => void; disabled?: boolean; style?: StyleProp<ViewStyle> }) {
   const t = useTheme();
   return (
-    <Pressable onPress={tapped(onPress)} disabled={disabled} style={[{ opacity: disabled ? 0.45 : 1 }, style]} accessibilityRole="button" accessibilityLabel={label}>
+    <Pressable onPress={tapped(onPress)} disabled={disabled} style={[{ opacity: disabled ? 0.45 : 1 }, style]} accessibilityRole="button" accessibilityLabel={spoken(label)}>
       <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.btn}>
-        <Text style={[s.btnT, { color: t.onGrad }]}>{label}</Text>
+        <CoinLabel text={label} style={[s.btnT, { color: t.onGrad }]} />
       </LinearGradient>
     </Pressable>
   );

@@ -1,6 +1,7 @@
 // Spot the Flaw's own look (look B "The red pen", Yazan 2026-11-12): the app's navy with a clean white case sheet that
 // has a red margin line, like a marked paper. The story is set in a serif; the Highlight help circles the part in red
 // pen. Rounded choices with coral A-D letters, a coral "Lock it in".
+import { CoinLabel, spoken } from '@/components/CoinLabel';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Modal, Pressable, ScrollView, StyleSheet, View } from 'react-native';
@@ -249,10 +250,8 @@ export const HELP_TONE = {
 export function HelpBtn({ label, tone, onPress, disabled }: { label: string; tone: keyof typeof HELP_TONE; onPress: () => void; disabled?: boolean }) {
   const t = HELP_TONE[tone];
   return (
-    <Pressable onPress={tapped(onPress)} disabled={disabled} accessibilityRole="button" accessibilityLabel={label} style={[s.helpTone, { backgroundColor: t.bg, borderColor: t.line }]}>
-      <Text style={[s.helpToneT, { color: t.fg, opacity: disabled ? 0.45 : 1 }]} numberOfLines={1}>
-        {`${t.icon} ${label}`}
-      </Text>
+    <Pressable onPress={tapped(onPress)} disabled={disabled} accessibilityRole="button" accessibilityLabel={spoken(label)} style={[s.helpTone, { backgroundColor: t.bg, borderColor: t.line }]}>
+      <CoinLabel text={`${t.icon} ${label}`} style={[s.helpToneT, { color: t.fg, opacity: disabled ? 0.45 : 1 }]} numberOfLines={1} />
     </Pressable>
   );
 }

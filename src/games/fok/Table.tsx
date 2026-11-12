@@ -1,5 +1,6 @@
 // Four of a Kind's own look (look E, Yazan 2026-11-12): the card table moved onto the app's navy. Cream boxes with
 // small red crosses, picked boxes lift with a gold edge, found groups become coloured rows, gold Submit. Plain words.
+import { COIN, CoinLabel, spoken } from '@/components/CoinLabel';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Pressable, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
@@ -156,10 +157,8 @@ export function Bar({ children, style }: { children: ReactNode; style?: StylePro
 }
 export function TableBtn({ label, onPress, go, disabled, flex = 1 }: { label: string; onPress?: () => void; go?: boolean; disabled?: boolean; flex?: number }) {
   return (
-    <Pressable onPress={tapped(onPress)} disabled={disabled} accessibilityRole="button" accessibilityLabel={label} style={[s.btn, go ? s.btnGo : null, { flex, opacity: disabled ? 0.45 : 1 }]}>
-      <Text style={[s.btnT, go ? { color: C.goldInk, fontFamily: F.bodyBold } : null]} numberOfLines={1}>
-        {label}
-      </Text>
+    <Pressable onPress={tapped(onPress)} disabled={disabled} accessibilityRole="button" accessibilityLabel={spoken(label)} style={[s.btn, go ? s.btnGo : null, { flex, opacity: disabled ? 0.45 : 1 }]}>
+      <CoinLabel text={label} style={[s.btnT, go ? { color: C.goldInk, fontFamily: F.bodyBold } : null]} numberOfLines={1} />
     </Pressable>
   );
 }
@@ -204,7 +203,7 @@ export function TokenCard({ playId, name, text, onBuy, onNo, noLabel = 'No, show
       <Text style={[s.kick, { color: '#ff8a9a' }]}>OUT OF HEARTS</Text>
       {name ? <Text style={s.cardBig}>{name}</Text> : null}
       <Text style={s.cardLine}>{note ?? text ?? `Second chance: ${FOK.tokenPrice} token gives ${FOK.tokenHearts} heart, once a board. Your found groups stay found.`}</Text>
-      <TableBtn label={`1 more heart · ${FOK.tokenPrice} token`} go onPress={buy} disabled={sending} />
+      <TableBtn label={`1 more heart · ${FOK.tokenPrice}${COIN}`} go onPress={buy} disabled={sending} />
       <TableBtn label={noLabel} onPress={onNo} />
     </View>
   );

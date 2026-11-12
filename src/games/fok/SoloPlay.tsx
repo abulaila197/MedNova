@@ -1,3 +1,4 @@
+import { COIN } from '@/components/CoinLabel';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ScrollView, View } from 'react-native';
 
@@ -172,7 +173,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
         }}
         onShuffle={() => step(reshuffle(run, Math.random))}
         tip={hintNote ?? undefined}
-        hint={{ label: run.revealed != null ? 'Hint used' : `Hint · ${FOK.revealCost}`, onPress: buyHint, disabled: run.revealed != null || hintBusy }}
+        hint={{ label: run.revealed != null ? 'Hint used' : `Hint · ${FOK.revealCost}${COIN}`, onPress: buyHint, disabled: run.revealed != null || hintBusy }}
       />
       {run.phase === 'out' ? (
         <View style={{ position: 'absolute', left: u(16), right: u(16), bottom: u(16) }}>

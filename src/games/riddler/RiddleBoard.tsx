@@ -1,3 +1,4 @@
+import { COIN, CoinLabel } from '@/components/CoinLabel';
 import { CHOSEN } from '@/match/chosen';
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Image } from 'expo-image';
@@ -152,9 +153,10 @@ export function RiddleBoard(p: BoardProps) {
             </Animated.View>
           ) : (
             <Pressable onPress={p.hint.onHint} style={[s.hintB, { borderColor: t.chipLine, backgroundColor: t.chip }]} accessibilityRole="button" accessibilityLabel={`Show definition for ${RD.hintPrice} token`}>
-              <Text style={[s.hintT, { color: t.fg }]}>
-                Show definition <Text style={{ color: t.accent, fontFamily: F.bodyBold }}>{`${RD.hintPrice} token`}</Text>
-              </Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                <Text style={[s.hintT, { color: t.fg }]}>Show definition </Text>
+                <CoinLabel text={`${RD.hintPrice}${COIN}`} style={[s.hintT, { color: t.accent, fontFamily: F.bodyBold }]} />
+              </View>
             </Pressable>
           )
         ) : null}

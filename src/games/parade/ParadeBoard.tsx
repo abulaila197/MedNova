@@ -1,3 +1,4 @@
+import { COIN, CoinLabel } from '@/components/CoinLabel';
 import { useEffect, useState, type ReactNode } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import Animated, { FadeIn, FadeInDown, useAnimatedStyle, useSharedValue, withSequence, withTiming } from 'react-native-reanimated';
@@ -425,7 +426,7 @@ function HelperBtn({ kind, label, bg, line, fg, off, onPress }: { kind: HelperKi
   return (
     <Pressable onPress={onPress} disabled={off} style={[s.hb, { backgroundColor: bg, borderColor: line }]} accessibilityRole="button" accessibilityLabel={`${label}, ${price} token${price > 1 ? 's' : ''}`}>
       <Text style={[s.hbT, { color: fg, opacity: off ? 0.45 : 1 }]} numberOfLines={1}>{label}</Text>
-      <Text style={[s.hbP, { color: fg, opacity: off ? 0.34 : 0.75 }]}>{`${price} token${price > 1 ? 's' : ''}`}</Text>
+      <CoinLabel text={`${price}${COIN}`} style={[s.hbP, { color: fg, opacity: off ? 0.34 : 0.75 }]} />
     </Pressable>
   );
 }

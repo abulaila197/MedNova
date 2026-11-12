@@ -1,3 +1,4 @@
+import { COIN } from '@/components/CoinLabel';
 import { router } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
@@ -266,7 +267,7 @@ function ResultCard({ done, level, onNext, onRetry, onGrid, revive }: { done: Do
       {hide && revive ? (
         <View style={s.row}>
           <Ghost label="Show the answer" onPress={() => setGaveUp(true)} style={{ flex: 1 }} />
-          <Btn label={`3 lives back · ${revive.price} tokens`} onPress={revive.onPress} style={{ flex: 1.4 }} />
+          <Btn label={`3 lives back · ${revive.price}${COIN}`} onPress={revive.onPress} style={{ flex: 1.4 }} />
         </View>
       ) : (
         <View style={s.row}>

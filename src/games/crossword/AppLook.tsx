@@ -1,3 +1,4 @@
+import { COIN, CoinLabel } from '@/components/CoinLabel';
 import { LinearGradient } from 'expo-linear-gradient';
 import { memo, useEffect, useRef, useState, type ReactNode } from 'react';
 import Animated, { useAnimatedStyle, useSharedValue, withSequence, withTiming } from 'react-native-reanimated';
@@ -234,7 +235,7 @@ export function AppPopup({ word, slots, typed, tokens, width, notice, shake = 0,
       </View>
       {foot ?? (
         <Pressable onPress={onHint} accessibilityRole="button" accessibilityLabel="Reveal letters" style={[s.hint, { borderColor: c.line }]}>
-          <Text style={{ fontFamily: F.bodySemi, fontSize: u(12.5), color: t.accent }}>{`Reveal letters · ${CW.hintPrice} token`}</Text>
+          <CoinLabel text={`Reveal letters · ${CW.hintPrice}${COIN}`} style={{ fontFamily: F.bodySemi, fontSize: u(12.5), color: t.accent }} />
           <Text style={{ fontFamily: F.body, fontSize: u(11), color: t.mute }}>{`You have ${tokens ?? 0}`}</Text>
         </Pressable>
       )}

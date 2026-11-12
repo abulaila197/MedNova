@@ -1,3 +1,4 @@
+import { COIN } from '@/components/CoinLabel';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { sfxVerdict } from '@/lib/sound';
@@ -160,8 +161,8 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
         top={<TopLine kicker={kicker} right={<Pill text={left != null ? clockText(left, { down: true }) : `${score} pts`} warn={left != null && left < 15_000} />} />}
         onLock={(pick) => step(lock(run, pick))}
         help={{
-          fifty: { label: run.fifty ? '50/50 used' : `50/50 · ${STF.fiftyCost} tokens`, onPress: () => void buy(STF.fiftyCost, 'stf_fifty', (r) => takeFifty(r, Math.random)), disabled: !!run.fifty || busy },
-          highlight: { label: run.highlight ? 'Highlighted' : `Highlight · ${STF.highlightCost} tokens`, onPress: () => void buy(STF.highlightCost, 'stf_highlight', takeHighlight), disabled: run.highlight || busy },
+          fifty: { label: run.fifty ? '50/50 used' : `50/50 · ${STF.fiftyCost}${COIN}`, onPress: () => void buy(STF.fiftyCost, 'stf_fifty', (r) => takeFifty(r, Math.random)), disabled: !!run.fifty || busy },
+          highlight: { label: run.highlight ? 'Highlighted' : `Highlight · ${STF.highlightCost}${COIN}`, onPress: () => void buy(STF.highlightCost, 'stf_highlight', takeHighlight), disabled: run.highlight || busy },
           note: helpNote,
         }}
       />
