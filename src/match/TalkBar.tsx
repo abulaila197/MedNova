@@ -12,7 +12,7 @@ import { usePathname } from 'expo-router';
 import { Face } from '@/games/shell/Face';
 import { PlayerFace } from '@/features/style/Frame';
 import { useStyle } from '@/features/style/useStyle';
-import { u, useScreen } from '@/theme/scale';
+import { TABLET, u, useScreen } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import { useAccount } from '@/state/account';
@@ -200,7 +200,8 @@ export function FloatingTalk({ room, me }: { room: string; me: Me }) {
   const x = useSharedValue(width - size - edge);
   // Inspection fix A (Yazan 2026-11-02): it starts in the top corner, under the pause button, where the games keep
   // no buttons (in the middle of the side it sat on vote buttons, cards and answers).
-  const y = useSharedValue(topGap + u(START_DROP));
+  // Tablet (2026-11-12): the side panel's cards fill that corner, so it starts halfway down the panel instead.
+  const y = useSharedValue(TABLET ? Math.round(height * 0.55) : topGap + u(START_DROP));
   const sx = useSharedValue(0);
   const sy = useSharedValue(0);
   // #6: the tray opens above or below the button, whichever has more room, and never runs off the screen.
