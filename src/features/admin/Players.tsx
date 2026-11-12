@@ -11,7 +11,7 @@ import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 type C = ReturnType<typeof useInfo>;
-type Sort = 'active' | 'newest' | 'level';
+type Sort = 'active' | 'newest' | 'level' | 'days';
 export type AdminPlayer = {
   id: string;
   username: string;
@@ -24,6 +24,9 @@ export type AdminPlayer = {
   providers: string[];
   unlimited: boolean;
   banned: boolean;
+  /** Yazan 2026-11-12: days the player was active since 11 Nov (Egypt time), and the days in a row up to today. */
+  active_days?: number;
+  active_streak?: number;
 };
 type Summary = { total: number; online: number; today: number; new: number; banned: number };
 type Detail = {
@@ -49,6 +52,7 @@ const SORTS: { k: Sort; label: string }[] = [
   { k: 'active', label: 'Last active' },
   { k: 'newest', label: 'Newest' },
   { k: 'level', label: 'Level' },
+  { k: 'days', label: 'Active days' },
 ];
 /** Unlimited the admin can give (Yazan 2026-11-11), added on top of any time left. */
 const UNLIMITED_DAYS: { d: number; label: string }[] = [
@@ -145,7 +149,7 @@ export function Players({ c, onMessage, onTakeBack }: { c: C; onMessage: (p: Adm
   return (
     <>
       <Text style={[ui.H, s.H, s.gapL, { color: c.fg }]}>Players</Text>
-      <Text style={[ui.p, { color: c.mute }]}>Every account, live: refreshes every 30 seconds. Tap a player for actions. Guests are not counted; they only exist on their phones.</Text>
+      <Text style={[ui.p, { color: c.mute }]}>Every account, live: refreshes every 30 seconds. Tap a player for actions. Guests are not counted; they only exist on their phones. Active days count from 11 Nov, Egypt time.</Text>
       <View style={[s.stats, s.gap]}>
         {stats.map(([label, n, col]) => (
           <View key={label} style={[s.stat, { borderColor: c.line, backgroundColor: c.surf }]}>
@@ -181,6 +185,11 @@ export function Players({ c, onMessage, onTakeBack }: { c: C; onMessage: (p: Adm
                 <Text style={[s.small, { color: isOnline(p) ? GREEN : c.mute }]} numberOfLines={1}>
                   {`${isOnline(p) ? 'Online now' : `Seen ${ago(p.last_seen)}`} · Joined ${day(p.created_at)}`}
                 </Text>
+                {p.active_days != null ? (
+                  <Text style={[s.small, { color: c.mute }]} numberOfLines={1}>
+                    {`Active ${p.active_days} ${p.active_days === 1 ? 'day' : 'days'} · ${p.active_streak ? `🔥 ${p.active_streak} in a row` : 'no streak now'}`}
+                  </Text>
+                ) : null}
               </View>
               <View style={s.tags}>
                 {p.unlimited ? <Tag text="Unlimited" color={c.t.accent} /> : null}
