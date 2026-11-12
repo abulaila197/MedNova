@@ -57,7 +57,7 @@ export const fourOfAKind: GameDef = {
       howTo: [
         'Pick Freshmen, Scholars or Geniuses and 1 to 3 rivals. Meet them in the room: tap a rival for its profile, swap it or kick it.',
         'Everyone plays the same board at the same time. You see how many groups each rival has found, never which.',
-        `${FOK.hearts} hearts a board and one token heart. No hints vs rivals.`,
+        `${FOK.hearts} hearts a board and one token heart. The hint at Solo's price, once a board.`,
         'A board ends when you finish it or its clock runs out. Points, then fewer mistakes, then the faster player.',
         'Your points are your EXP. Groups you miss go to Learn.',
       ],

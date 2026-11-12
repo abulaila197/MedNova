@@ -175,6 +175,17 @@ export class StfRace implements Race {
     return true;
   }
 
+  /** A paid help (50/50, Highlight) on your open case. Returns false when it did nothing. */
+  help(t: number, apply: (run: CaseRun) => CaseRun) {
+    this.sync(t);
+    const c = this.cur;
+    if (!c || c.you.doneAt != null) return false;
+    const next = apply(c.you.run);
+    if (next === c.you.run) return false;
+    c.you.run = next;
+    return true;
+  }
+
   /** Next on the reveal: the next case starts now (or the results). */
   next(t: number) {
     this.sync(t);

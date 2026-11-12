@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { Text } from '@/components/AppText';
@@ -12,6 +12,7 @@ import { RoomTalk } from '@/match/TalkBar';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
+import { engine } from '../engine';
 import { clock } from '../engine/clock';
 import { playerColour } from '../shell/characters';
 import { PauseMenu } from '../shell/PauseMenu';
@@ -20,6 +21,7 @@ import { presetTeam } from '../shell/teams';
 import type { PlayProps } from '../shell/types';
 import { GameScreen } from '../shell/ui';
 import { CaseView } from './CaseView';
+import { STF, takeFifty, takeHighlight, type CaseRun } from './core';
 import { caseById } from './data';
 import { dealCases } from './deal';
 import { caseItem } from './items';
@@ -69,6 +71,22 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
       if (n > (was.locks[p.user_id] ?? 0)) push(n === 1 ? `${p.name} spotted something` : `${p.name} locked in both answers`, colorOf(p));
     }
   }, [st, push]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Help in Vs rivals too, at Solo's token prices (Yazan 2026-11-12); a failed step gives the tokens back.
+  const [helpNote, setHelpNote] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const buy = async (cost: number, reason: string, apply: (r: CaseRun) => CaseRun) => {
+    if (!race || busy) return;
+    setBusy(true);
+    try {
+      const receipt = await engine.wallet.spend(cost, reason, play.id);
+      if (!receipt) return setHelpNote(`This help costs ${cost} tokens. Each level up gives 1 token.`);
+      if (!g.at((at) => race.help(at, apply))) return void engine.wallet.refund(receipt);
+      setHelpNote(null);
+    } finally {
+      setBusy(false);
+    }
+  };
 
   const menu = <PauseMenu open={g.menu} mode="bots" onResume={g.closeMenu} onQuit={g.quit} />;
   if (!st || !race) return <GameScreen scroll={false} under={<StfSky />}>{null}</GameScreen>;
@@ -139,7 +157,12 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
         c={c}
         run={run}
         locked={g.paused || run.stage === 'done'}
-        note={run.stage === 'done' ? 'Locked in. Waiting for the rivals…' : 'Answers stay hidden until the reveal. No help vs rivals.'}
+        note={run.stage === 'done' ? 'Locked in. Waiting for the rivals…' : 'Answers stay hidden until the reveal.'}
+        help={{
+          fifty: { label: run.fifty ? '50/50 used' : `50/50 · ${STF.fiftyCost} tokens`, onPress: () => void buy(STF.fiftyCost, 'stf_fifty', (r) => takeFifty(r, Math.random)), disabled: !!run.fifty || busy },
+          highlight: { label: run.highlight ? 'Highlighted' : `Highlight · ${STF.highlightCost} tokens`, onPress: () => void buy(STF.highlightCost, 'stf_highlight', takeHighlight), disabled: run.highlight || busy },
+          note: helpNote,
+        }}
         top={
           <View style={{ gap: u(8) }}>
             <TopLine kicker={kicker} right={<Pill text={left != null ? clock(left, { down: true }) : `${me?.score ?? 0} pts`} warn={left != null && left < 15_000} />} />

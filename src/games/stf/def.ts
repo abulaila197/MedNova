@@ -59,7 +59,7 @@ export const spotTheFlaw: GameDef = {
       howTo: [
         'Pick Freshmen, Scholars or Geniuses and 1 to 3 rivals. Meet them in the room: tap a rival for its profile, swap it or kick it.',
         'Everyone reads the same case. You see who has locked in each stage, never what they picked.',
-        `${POINTS} No speed bonus and no help vs rivals.`,
+        `${POINTS} No speed bonus. 50/50 and Highlight at Solo's prices, once each a case.`,
         'Ties go to fewer double-wrongs, then the faster player.',
         `Your points are your EXP (up to ${STF.expCase} a case, ${STF.expDay} a day). Missed cases go to Learn.`,
       ],

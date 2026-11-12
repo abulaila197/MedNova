@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
 
@@ -14,6 +14,7 @@ import { RoomTalk } from '@/match/TalkBar';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
+import { engine } from '../engine';
 import { clock } from '../engine/clock';
 import { playerColour } from '../shell/characters';
 import { PauseMenu } from '../shell/PauseMenu';
@@ -74,6 +75,22 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
       if (out.has(p.user_id) && !was.out.has(p.user_id)) push(`${p.name} is out of hearts`, '#f5b041');
     }
   }, [st, push]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // The hint in Vs rivals too, at Solo's token price (Yazan 2026-11-12); a failed step gives the tokens back.
+  const [hintNote, setHintNote] = useState<string | null>(null);
+  const [hintBusy, setHintBusy] = useState(false);
+  const buyHint = async () => {
+    if (!race || hintBusy) return;
+    setHintBusy(true);
+    try {
+      const receipt = await engine.wallet.spend(FOK.revealCost, 'fok_hint', play.id);
+      if (!receipt) return setHintNote(`The hint costs ${FOK.revealCost} tokens. Each level up gives 1 token.`);
+      if (!g.at((at) => race.hint(at))) return void engine.wallet.refund(receipt);
+      setHintNote(null);
+    } finally {
+      setHintBusy(false);
+    }
+  };
 
   const menu = <PauseMenu open={g.menu} mode="bots" onResume={g.closeMenu} onQuit={g.quit} />;
   if (!st || !race) return <GameScreen scroll={false} under={<FokSky />}>{null}</GameScreen>;
@@ -152,7 +169,8 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
             {chips}
           </View>
         }
-        tip="Everyone has the same board. No hints vs rivals."
+        tip={hintNote ?? 'Everyone has the same board.'}
+        hint={{ label: run.revealed != null ? 'Hint used' : `Hint · ${FOK.revealCost}`, onPress: () => void buyHint(), disabled: run.revealed != null || hintBusy || run.phase !== 'play' }}
         onSubmit={(tiles) => g.at((at) => race.submit(at, tiles)) ?? 'ignored'}
         onShuffle={() => void g.at((at) => race.shuffle(at))}
       />
