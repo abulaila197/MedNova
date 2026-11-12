@@ -258,11 +258,11 @@ export class CwRace implements Race {
     return 'wrong';
   }
 
-  /** The token revive: one heart back, once per puzzle. */
+  /** The token revive: one heart back, as often as you pay, like Solo (Yazan 2026-11-12). */
   revive(t: number) {
     this.sync(t);
     const me = this.cur?.seats[YOU];
-    if (!me || me.hearts > 0 || me.revived || me.out) return false;
+    if (!me || me.hearts > 0 || me.out) return false;
     me.hearts = CW.reviveHearts;
     me.revived = true;
     return true;

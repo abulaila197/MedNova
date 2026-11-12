@@ -50,6 +50,7 @@ describe('G6 rewards, boss and board', () => {
     assert.equal(revengeLine(undefined, 'x'), null);
     const l = revengeLine({ w: 1, l: 0, last: 'won', game: 'the-riddler', settings: {}, at: 0 }, 'x');
     assert.ok(l && l.length > 3);
+    assert.ok(l!.endsWith('1–0 to you.'));
     assert.equal(l, revengeLine({ w: 1, l: 0, last: 'won', game: 'the-riddler', settings: {}, at: 0 }, 'x'));
   });
 });

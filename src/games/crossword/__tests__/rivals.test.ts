@@ -83,7 +83,7 @@ test('crossword race: a rival never takes the word you have open while another i
   assert.notEqual(st.claims![0].word_id, 'w1');
 });
 
-test('crossword race: out of hearts, revive once, then decline leaves you watching', () => {
+test('crossword race: out of hearts, revive as often as you pay, then decline leaves you watching', () => {
   const r = make([]);
   const t0 = CW_COUNTDOWN_MS + 1000;
   for (const a of ['AAA', 'BBB', 'CCC', 'DDD', 'EEE']) assert.equal(r.submit(t0, 'w1', a), 'wrong');
@@ -91,8 +91,10 @@ test('crossword race: out of hearts, revive once, then decline leaves you watchi
   assert.equal(r.submit(t0, 'w1', 'CAT'), 'ignored');
   assert.equal(r.revive(t0), true);
   assert.equal(r.state(t0).players[0].hearts, 1);
-  assert.equal(r.revive(t0), false);
+  assert.equal(r.revive(t0), false); // still has a heart
   assert.equal(r.submit(t0, 'w1', 'FFF'), 'wrong');
+  assert.equal(r.revive(t0), true);
+  assert.equal(r.submit(t0, 'w1', 'GGG'), 'wrong');
   r.decline(t0 + 10);
   // Everyone is out: the puzzle ends there.
   assert.equal(r.state(t0 + 20).phase, 'reveal');

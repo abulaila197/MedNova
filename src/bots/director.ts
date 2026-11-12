@@ -4,7 +4,7 @@ import { stickerById, STICKERS } from '@/match/stickers';
 import { isMuted, onTalk, popAsBot, sayAsBot } from '@/match/talk';
 
 import { CHATTY, personaOf } from './identity';
-import { heardKind, linesFor, type Heard, type Line, type Moment, type Place } from './lines';
+import { heardKind, linesFor, replyTo, toneLines, type Heard, type Line, type Moment, type Place } from './lines';
 import type { Bot, Persona } from './types';
 
 /**
@@ -36,19 +36,32 @@ const NO_WAIT: Moment[] = ['kicked', 'end', 'heard'];
 const FRESH: Partial<Record<Moment, number>> = { ready: 9000, kicked: 7000, end: 12000, round: 6000, heard: 6000 };
 
 const last = new Map<string, string>();
+/**
+ * Yazan 2026-11-12: no line said twice by the same rival in one match (voice lines and stickers alike), and rivals
+ * remember how you talked to them this match (nice or taunting) and answer in that tone later. Keyed room|rival.
+ */
+const used = new Map<string, Set<string>>();
+const tone = new Map<string, 'nice' | 'taunt'>();
+const key = (room: string, bot: Bot) => `${room}|${bot.id}`;
+const usedBy = (room: string, bot: Bot) => {
+  let s = used.get(key(room, bot));
+  if (!s) used.set(key(room, bot), (s = new Set()));
+  return s;
+};
 const nextAt = new Map<string, number>();
 const factRound = new Map<string, number>();
 
 const persona = (b: Bot) => b.persona ?? personaOf(b.name);
 const lineKey = (l: Line) => ('voice' in l ? `v:${l.voice}` : `s:${l.sticker.source}`);
 
-/** A sticker from the rival's own pack that fits, or null so it says a voice line instead. */
-function stickerFor(bot: Bot, fit: RegExp) {
-  const own = (STICKERS[bot.character] ?? []).filter((x) => fit.test(x.label));
+/** A sticker from the rival's own pack that fits and that it hasn't sent this match, or null so it says a voice line instead. */
+function stickerFor(bot: Bot, fit: RegExp, done: Set<string>) {
+  const own = (STICKERS[bot.character] ?? []).filter((x) => fit.test(x.label) && !done.has(`k:${x.id}`));
   return own.length ? own[Math.floor(Math.random() * own.length)].id : null;
 }
 
-export type Ctx = { place?: Place; heard?: Heard; tableSize?: number; force?: boolean };
+/** `said`: the voice line you sent, so the reply matches it (you say GG, it says GG back). */
+export type Ctx = { place?: Place; heard?: Heard; said?: string; tableSize?: number; force?: boolean };
 
 /** Something happened to (or around) a rival: maybe it says something. Returns whether a line was queued. */
 export function rivalMoment(room: string, bot: Bot, m: Moment, ctx: Ctx = {}): boolean {
@@ -60,18 +73,25 @@ export function rivalMoment(room: string, bot: Bot, m: Moment, ctx: Ctx = {}): b
   const chance = Math.min(1, RATE[m] * (1 + CHATTY[persona(bot)]) * (m === 'heard' || m === 'kicked' ? 1 : crowd));
   if (!ctx.force && Math.random() >= chance) return false;
 
-  const all = linesFor(persona(bot), bot.type, m, ctx);
-  if (!all.length) return false;
-  // Never the same line twice in a row.
-  const fresh = all.filter((l) => lineKey(l) !== last.get(bot.id));
-  const pool = fresh.length ? fresh : all;
+  const done = usedBy(room, bot);
+  // A reply to your voice line matches it first; the tone you used this match colours what it says about you.
+  const matching = m === 'heard' && ctx.said ? replyTo(persona(bot), ctx.said) : [];
+  const toned = toneLines(persona(bot), m, tone.get(key(room, bot)));
+  const all = [...matching, ...toned, ...linesFor(persona(bot), bot.type, m, ctx)];
+  // Nothing twice in a match: voice lines already said are out, and a sticker line needs a sticker not yet sent.
+  const fresh = all.filter((l) => ('voice' in l ? !done.has(lineKey(l)) : !!stickerFor(bot, l.sticker, done)));
+  if (!fresh.length) return false;
+  // Matching replies and tone lines go first when there are fresh ones.
+  const best = fresh.filter((l) => matching.includes(l) || toned.includes(l));
+  const pool = best.length ? best : fresh;
   const l = pool[Math.floor(Math.random() * pool.length)];
-  const sticker = 'sticker' in l ? stickerFor(bot, l.sticker) : null;
-  const voice = 'voice' in l ? l.voice : sticker ? null : (pool.find((x) => 'voice' in x) as { voice: string } | undefined)?.voice;
+  const sticker = 'sticker' in l ? stickerFor(bot, l.sticker, done) : null;
+  const voice = 'voice' in l ? l.voice : null;
   if (!sticker && !voice) return false;
   const ok = sayAsBot(room, { user_id: bot.id, name: bot.name, face: bot.character, kind: sticker ? 'sticker' : 'voice', item: (sticker ?? voice)! }, FRESH[m] ?? 4000);
   if (ok) {
     last.set(bot.id, lineKey(l));
+    done.add(sticker ? `k:${sticker}` : lineKey(l));
     nextAt.set(bot.id, now + 8000 + Math.random() * 7000);
   }
   return ok;
@@ -114,6 +134,8 @@ export function rivalGuess(room: string, bot: Bot, text: string) {
 /** Forget a room's talk memory when it closes. */
 export function resetRoomTalk(room: string) {
   factRound.delete(room);
+  for (const k of [...used.keys()]) if (k.startsWith(`${room}|`)) used.delete(k);
+  for (const k of [...tone.keys()]) if (k.startsWith(`${room}|`)) tone.delete(k);
 }
 
 /**
@@ -139,8 +161,11 @@ export function useRivalEars(room: string | undefined, bots: Bot[]) {
       const who = live.find((_, i) => (x -= weights[i]) <= 0) ?? live[0];
       const label = msg.kind === 'sticker' ? (stickerById.get(msg.item)?.label ?? '') : '';
       const heard = heardKind(msg.kind, msg.item, label);
+      // Every rival at the table remembers your tone for the rest of the match (the latest one counts).
+      if (heard === 'nice' || heard === 'taunt') for (const b of live) tone.set(key(room, b), heard);
       quietUntil = now + 3500;
-      timers.push(setTimeout(() => rivalMoment(room, who, 'heard', { heard }), 2000 + Math.random() * 1000));
+      const said = msg.kind === 'voice' ? msg.item : undefined;
+      timers.push(setTimeout(() => rivalMoment(room, who, 'heard', { heard, said }), 2000 + Math.random() * 1000));
     });
     return () => {
       off();

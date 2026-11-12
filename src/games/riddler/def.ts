@@ -62,6 +62,7 @@ export const riddler: GameDef = {
         'Pick Freshmen, Scholars or Geniuses and 1 to 3 rivals. Meet them in the room: tap a rival for its profile, swap it or kick it.',
         'Everyone gets the same picture at the same time, with 90 s to solve it.',
         'Guess as often as you like, but a wrong guess locks you for 5 s.',
+        'Stuck? Show the definition for 1 token, like Solo. It caps that picture at 2 stars.',
         'First solver scores 100, then 80, 65 and so on, plus up to 50 for time left.',
         'EXP works like Solo: stars by time and wrong guesses, 4 EXP a star. Missed conditions go to Today\'s review.',
       ],

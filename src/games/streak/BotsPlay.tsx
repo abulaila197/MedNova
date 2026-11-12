@@ -16,7 +16,7 @@ import { PauseMenu } from '../shell/PauseMenu';
 import { gameDef } from '../shell/registry';
 import type { PlayProps } from '../shell/types';
 import { GameScreen } from '../shell/ui';
-import { mixQueue, type Round, type Style } from './core';
+import { ADD_MS, HELPER_PRICE, REMOVE_COUNT, mixQueue, type HelperKind, type Round, type Style } from './core';
 import { tickedFields } from '../shell/fields';
 import { QUESTIONS, idsOf, poolFor } from './data';
 import { HeatBoard } from './HeatBoard';
@@ -70,13 +70,13 @@ function itemsOf(st: RaceState) {
         seat: 0,
         itemId: q.id,
         answerKey: q.dossier,
-        outcome: right ? ('right' as const) : m.pick == null ? ('timed_out' as const) : ('wrong' as const),
+        outcome: right ? ('right' as const) : m.skipped ? ('skipped' as const) : m.pick == null ? ('timed_out' as const) : ('wrong' as const),
         answersGiven: !right && m.pick != null ? [q.choices[m.pick]] : [],
         timeMs: m.solved_ms ?? (Number(st.settings.qtime) || 20) * 1000,
         hintsUsed: 0,
         revealsUsed: 0,
         points: m.points,
-        feedsLearn: !right, // your misses go to Today's review
+        feedsLearn: !right && !m.skipped, // your misses go to Today's review; a paid skip is not a miss
         gameData: { style: st.settings.style, field: q.field, kind: q.kind, streak: run, rank: m.rank },
       };
     });
@@ -109,6 +109,8 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
     toItems: itemsOf,
   });
   const { st, race, t, push } = g;
+  // Helpers vs rivals (Yazan 2026-11-12): Remove 2, Skip and keep your streak, +10 s, at the Solo prices.
+  const [help, setHelp] = useState<{ index: number; removed: number[]; added: number; skipped: boolean }>({ index: -1, removed: [], added: 0, skipped: false });
 
   // "Sara is on a 5 streak" at 5, 10 and 15, and "Omar's 7 streak broke" when a streak of 3 or more ends.
   const streaks = useRef(new Map<string, number>());
@@ -145,9 +147,27 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
   const ends = st.phase_ends_at;
   const faces: Record<number, string[]> = {};
   if (reveal) for (const p of st.players) if (p.pick != null) (faces[p.pick] ??= []).push(p.character);
+  const mineHelp = help.index === st.index ? help : { index: st.index, removed: [] as number[], added: 0, skipped: false };
+  const skipped = mineHelp.skipped;
+  const usable = (k: HelperKind) => !g.paused && !reveal && mine == null && !skipped && (k !== 'remove' || mineHelp.removed.length === 0);
+  const onHelper = (k: HelperKind) => {
+    if (!usable(k)) return;
+    void g.buy(HELPER_PRICE[k], `streak_${k}`, () => {
+      if (k === 'skip') {
+        g.skip();
+        return setHelp({ ...mineHelp, skipped: true });
+      }
+      if (k === 'time') {
+        g.extend(ADD_MS);
+        return setHelp({ ...mineHelp, added: mineHelp.added + ADD_MS });
+      }
+      const wrongs = seededOrder(`${play.id}:${st.index}:remove`, q.choices.length).filter((i) => i !== q.answer);
+      setHelp({ ...mineHelp, removed: wrongs.slice(0, REMOVE_COUNT) });
+    });
+  };
   const round = {
     order: seededOrder(`${play.id}:${st.index}`, q.choices.length),
-    removed: [],
+    removed: mineHelp.removed,
     phase: g.paused ? 'paused' : reveal ? 'feedback' : 'playing',
     before: reveal ? 'feedback' : 'playing',
     streak: me?.streak ?? 0,
@@ -155,7 +175,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
     score: me?.score ?? 0,
     feedback: reveal ? { picked: mine ?? -1, right, points: st.me?.points ?? 0, untilMs: 0 } : null,
   } as unknown as Round;
-  const result = !reveal ? null : st.phase === 'done' ? 'Adding up the scores…' : `${right ? `${nth(st.me?.rank ?? 1)} right · +${st.me?.points ?? 0}` : mine == null ? 'No answer' : 'Wrong'} · ${last ? 'Results' : 'next question'} in ${nextIn} s`;
+  const result = !reveal ? null : st.phase === 'done' ? 'Adding up the scores…' : `${right ? `${nth(st.me?.rank ?? 1)} right · +${st.me?.points ?? 0}` : mine == null ? (skipped ? 'Skipped · streak kept' : 'No answer') : 'Wrong'} · ${last ? 'Results' : 'next question'} in ${nextIn} s`;
 
   return (
     <HeatBoard
@@ -163,7 +183,8 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
       round={round}
       ticks={g.clock}
       leftAt={(sv) => (reveal ? 0 : Math.max(0, ends - sv))}
-      totalMs={qMs}
+      totalMs={qMs + mineHelp.added}
+      helpers={{ onHelper, usable }}
       who={{ name: `Question ${st.index + 1} of ${st.total}` }}
       live={<HeatColumns players={st.players} reveal={reveal} />}
       hidden={g.paused}
@@ -175,7 +196,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
       onPause={g.openMenu}
       locked={reveal ? null : mine}
       faces={reveal ? faces : undefined}
-      notice={result ?? (mine != null ? <AnsweredRow seats={st.players.map((p) => ({ user_id: p.user_id, character: p.character, done: p.done }))} /> : null)}>
+      notice={result ?? (mine != null || skipped ? <AnsweredRow seats={st.players.map((p) => ({ user_id: p.user_id, character: p.character, done: p.done }))} /> : null)}>
       <AlertPill alert={g.alert} />
       <RoomTalk room={g.room} me={g.talker} />
       {menu}

@@ -65,7 +65,8 @@ export const quizParade: GameDef = {
       blurb: 'Each question at once with the rivals. Fast and right scores a bonus.',
       howTo: [
         'Pick Freshmen, Scholars or Geniuses and 1 to 5 rivals. Meet them in the room: tap a rival for its profile, swap it or kick it.',
-        'Everyone gets the same question at the same time, on its own clock. One answer each, no helpers.',
+        'Everyone gets the same question at the same time, on its own clock. One answer each.',
+        'Helpers cost tokens, like Solo: Skip (3) and +10 seconds (1).',
         'At the reveal, each rival\'s face sits on the answer it picked.',
         'Same points as Solo. The first fully right answer on each question gets +1, and Closest number goes to the nearest guess.',
         'You earn your points as EXP, up to 60. Missed questions wait for you in Today\'s review.',

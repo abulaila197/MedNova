@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
@@ -25,7 +25,7 @@ import { presetTeam } from '../shell/teams';
 import type { PlayProps } from '../shell/types';
 import { GameScreen } from '../shell/ui';
 import { AppGrid, AppPopup, AppTopBar, TIP, useGridTaps } from './AppLook';
-import { CW, buildSlots, composeAnswer, indexOf, isFilled, lockedCells, placeLetter, removeSlot, type PuzzleDef, type Typed } from './core';
+import { CW, buildSlots, composeAnswer, indexOf, isFilled, lockedCells, pickHintCells, placeLetter, removeSlot, type PuzzleDef, type Typed } from './core';
 import { PUZZLES, clueText } from './data';
 import { ReviveCard } from './OfflinePlay';
 import { CwRace, showdownStars } from './rivals';
@@ -159,10 +159,10 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
   const hearts = mine?.hearts ?? CW.onlineHearts;
   const out = hearts <= 0;
   const watching = !!st.me?.done && !reveal;
-  const canRevive = !reveal && out && !mine?.revived && !watching;
+  const canRevive = !reveal && out && !watching;
   const wordsOf = (id: string) => claimsList.filter((c) => c.user_id === id && !c.auto).length;
   const nextIn = Math.max(0, Math.ceil((st.phase_ends_at - now) / 1000));
-  const sub = reveal ? (left ? 'Time up' : 'Grid complete') : `${clock(Math.max(0, st.phase_ends_at - now), { down: true })} left · ${mine?.revived ? 'revive used' : 'first right answer claims it'}`;
+  const sub = reveal ? (left ? 'Time up' : 'Grid complete') : `${clock(Math.max(0, st.phase_ends_at - now), { down: true })} left · first right answer claims it`;
 
   const board = (
     <View style={s.lead}>
@@ -193,6 +193,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
           hearts={hearts}
           width={W}
           submit={(wordId, answer) => g.at((at) => race.submit(at, wordId, answer)) ?? 'ignored'}
+          buy={(apply, still) => g.buy(CW.hintPrice, 'crossword_hint', apply, still)}
           claimerOf={(id) => {
             const c = claimsList.find((x) => x.word_id === id);
             return c ? (c.user_id === YOU ? 'You' : byUser.get(c.user_id)?.name) : undefined;
@@ -221,7 +222,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
             playId={play.id}
             name="You"
             payer="You"
-            text={`No hearts left. One revive per ${total > 1 ? 'puzzle' : 'match'}: ${CW.revivePrice} token gives ${CW.reviveHearts} heart. Your claimed words stay yours.`}
+            text={`No hearts left. ${CW.revivePrice} token gives ${CW.reviveHearts} heart, as often as you like. Your claimed words stay yours.`}
             decline="No revive, watch the rest"
             onRevive={() => {
               // The race moved on while the card was up: the token comes back (the card refunds on a throw).
@@ -240,9 +241,11 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
 }
 
 /** Your side of the race: open any unclaimed word, answer it. A word a rival claims closes on you. */
-function Race({ onTyping, puzzle, solved, claims, hearts, width, submit, claimerOf }: {
+function Race({ onTyping, puzzle, solved, claims, hearts, width, submit, buy, claimerOf }: {
   onTyping: (open: boolean, wordId: string | null) => void; puzzle: PuzzleDef; solved: string[]; claims: Record<string, string>; hearts: number; width: number;
   submit: (wordId: string, answer: string) => 'right' | 'wrong' | 'repeat' | 'taken' | 'ignored'; claimerOf: (wordId: string) => string | undefined;
+  /** Pays for a hint (Yazan 2026-11-12: helpers vs rivals at the Solo price); applies only if `still()` holds after paying. */
+  buy: (apply: () => void, still: () => boolean) => Promise<boolean>;
 }) {
   const t = useTheme();
   const idx = indexOf(puzzle);
@@ -250,7 +253,17 @@ function Race({ onTyping, puzzle, solved, claims, hearts, width, submit, claimer
   const [typed, setTyped] = useState<Typed>([]);
   const [line, setLine] = useState<string | null>(null);
   const [shake, setShake] = useState(0);
-  const locked = lockedCells(idx, solved);
+  // Letters your hints showed you on this puzzle (yours only; you still answer the word to claim it).
+  const [revealed, setRevealed] = useState<string[]>([]);
+  const [tokens, setTokens] = useState(0);
+  useEffect(() => {
+    void engine.wallet.balance().then((b) => setTokens(b.tokens));
+  }, [revealed]);
+  const locked = lockedCells(idx, solved, revealed);
+  const live = useRef({ word, solved });
+  useEffect(() => {
+    live.current = { word, solved };
+  });
   // A rival claimed the open word (it was the last one left): it closes on you, and the tip says who.
   const open = word && !solved.includes(word) ? word : null;
   const taken = word && !open ? claimerOf(word) : undefined;
@@ -292,12 +305,27 @@ function Race({ onTyping, puzzle, solved, claims, hearts, width, submit, claimer
     return () => onTyping(false, null);
   }, [open, onTyping]);
 
+  const hint = () => {
+    if (!open) return;
+    const cells = pickHintCells(idx, open, locked);
+    if (!cells.length) return setLine('Only one letter left. Have a go.');
+    const at = open;
+    void buy(
+      () => {
+        setRevealed((r) => [...new Set([...r, ...cells])]);
+        setTyped(buildSlots(idx, at, lockedCells(idx, live.current.solved, [...revealed, ...cells])).map(() => null));
+        setLine(null);
+      },
+      () => live.current.word === at && !live.current.solved.includes(at),
+    );
+  };
+
   const taps = useGridTaps(idx, solved, openWord);
   const sel = open ? idx.wordById.get(open)! : null;
   const tip = line && !sel ? line : taken && taken !== 'You' ? `${taken} claimed it first.` : TIP;
   return (
     <>
-      <AppGrid puzzle={puzzle} solved={solved} claims={claims} selected={open ?? taps.lit} width={width - u(32)} onCell={taps.tap} onDouble={taps.double} />
+      <AppGrid puzzle={puzzle} solved={solved} revealed={revealed} claims={claims} selected={open ?? taps.lit} width={width - u(32)} onCell={taps.tap} onDouble={taps.double} />
       <View style={s.under}>
         <Text style={[s.tip, { color: t.mute, flex: 1 }]}>{tip}</Text>
       </View>
@@ -314,14 +342,8 @@ function Race({ onTyping, puzzle, solved, claims, hearts, width, submit, claimer
             onKey={key}
             onSlot={(i) => setTyped(removeSlot(slots, typed, i))}
             onClose={() => setWord(null)}
-            foot={
-              <View style={[s.foot, { borderColor: t.panelLine }]}>
-                <Text style={[s.footT, { color: t.mute }]}>{`${hearts} ${hearts === 1 ? 'heart' : 'hearts'} left · no hints vs rivals`}</Text>
-                <Pressable onPress={() => setWord(null)} hitSlop={u(6)} accessibilityRole="button" accessibilityLabel="Pick another word">
-                  <Text style={[s.footT, { color: t.accent, fontFamily: F.bodySemi }]}>Other word</Text>
-                </Pressable>
-              </View>
-            }
+            tokens={tokens}
+            onHint={hint}
           />
         </Animated.View>
       ) : null}

@@ -96,6 +96,8 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
   const [wrongSeq, setWrongSeq] = useState(0);
   const [notice, setNotice] = useState<string | null>(null);
   const { st, race, t } = g;
+  // Hint vs rivals (Yazan 2026-11-12): the medical field for 1 token, as Solo. Kept per case.
+  const [hinted, setHinted] = useState(-1);
 
   const menu = <PauseMenu open={g.menu} mode="bots" onResume={g.closeMenu} onQuit={g.quit} />;
   if (!st || !race) return <GameScreen scroll={false}>{null}</GameScreen>;
@@ -156,7 +158,8 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
       clock={{ label: 'Time left', down: true, ms: left, warn: !reveal && left <= 15_000 }}
       wrongSeq={wrongSeq}
       clueSeq={clues}
-      actions={false}
+      actions="hint"
+      hint={{ granted: hinted === st.index, onHint: () => (hinted === st.index || solved || reveal ? undefined : void g.buy(DP.hintTokenCost, 'diagnostic_hint', () => setHinted(st.index))) }}
       result={result}
       notice={notice ?? (lockLeft > 0 ? `Wrong. Locked for ${Math.ceil(lockLeft / 1000)} s.` : null)}
       pausedNote="The match is paused, rivals too. Resume to see the case again."

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { decide, moodOf } from '@/bots/brain';
 import { orderPoints, YOU, type Rules } from '@/bots/race/engine';
@@ -29,7 +29,7 @@ const riddleOf = (n: number) => RIDDLES[n - 1];
 const indexOf = new Map(RIDDLES.map((r, i) => [r.id, i + 1]));
 
 /** Solo's star rule per picture, 4 EXP a star; unsolved = 0. */
-const expFor = (solvedMs: number | null, wrong: number) => (solvedMs == null ? 0 : RD.expPerStar * starsFor(solvedMs, wrong, false));
+const expFor = (solvedMs: number | null, wrong: number, hint: boolean) => (solvedMs == null ? 0 : RD.expPerStar * starsFor(solvedMs, wrong, hint));
 
 const RULES: Rules = {
   limitMs: PHOTO_MS,
@@ -47,7 +47,8 @@ const RULES: Rules = {
   answerOf: (item) => riddleOf(item)?.id ?? null,
 };
 
-function itemsOf(st: RaceState) {
+/** `hinted`: the pictures where you paid for the definition (caps them at 2 stars, like Solo). */
+function itemsOf(st: RaceState, hinted: Set<number>) {
   return (st.my_items ?? [])
     .filter((m) => !!riddleOf(m.item))
     .map((m) => {
@@ -60,11 +61,11 @@ function itemsOf(st: RaceState) {
         outcome: right ? ('right' as const) : ('timed_out' as const),
         answersGiven: m.wrong.map(answerLabel),
         timeMs: m.solved_ms ?? PHOTO_MS,
-        hintsUsed: 0,
+        hintsUsed: hinted.has(m.index) ? 1 : 0,
         revealsUsed: 0,
         points: m.points,
         feedsLearn: !right && feedsLearn(r),
-        gameData: { exp: expFor(m.solved_ms, m.wrong.length), stars: right ? starsFor(m.solved_ms!, m.wrong.length, false) : 0, kind: r.kind, rank: m.rank },
+        gameData: { exp: expFor(m.solved_ms, m.wrong.length, hinted.has(m.index)), stars: right ? starsFor(m.solved_ms!, m.wrong.length, hinted.has(m.index)) : 0, kind: r.kind, rank: m.rank },
       };
     });
 }
@@ -74,13 +75,19 @@ function itemsOf(st: RaceState) {
  * a wrong one. Rivals solve at timed moments ("Jun solved it in 0:14"); their wrong answers never show.
  */
 export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
+  // Definition vs rivals (Yazan 2026-11-12): 1 token, as Solo, caps that picture at 2 stars.
+  const [hinted, setHinted] = useState<number[]>([]);
+  const hintedNow = useRef(hinted);
+  useEffect(() => {
+    hintedNow.current = hinted;
+  }, [hinted]);
   const g = useBotRace({
     play,
     onFinish,
     onQuit,
     rules: RULES,
     pick: async () => (await engine.picker.pick(play.game, RIDDLES.map((x) => x.id), Number(play.settings.photos) || 5)).map((id) => indexOf.get(id)!).filter(Boolean),
-    toItems: itemsOf,
+    toItems: (st) => itemsOf(st, new Set(hintedNow.current)),
     solvedText: (name, _rank, ms) => `${name} solved it in ${clock(ms)}`,
   });
   const [wrongSeq, setWrongSeq] = useState(0);
@@ -146,6 +153,14 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
         else if (g.wrong(id) === 'wrong') setWrongSeq((x) => x + 1);
       }}
       onPause={g.openMenu}
+      hint={{
+        used: hinted.includes(st.index),
+        onHint: () => {
+          if (hinted.includes(st.index) || solved || reveal) return;
+          const at = st.index;
+          void g.buy(RD.hintPrice, 'riddler_hint', () => setHinted((h) => [...h, at]));
+        },
+      }}
       dock={dock}>
       <AlertPill alert={g.alert} />
       <RoomTalk room={g.room} me={g.talker} />

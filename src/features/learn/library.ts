@@ -173,13 +173,17 @@ for (const c of CASES) if (c.canonical_id && !CASE_OF.has(c.canonical_id)) CASE_
 
 /**
  * The front of a disease's review card. A disease with a Diagnostic Pursuit case (the missed case itself when it was a
- * DP miss) shows the case's last 3 clues; the card picks one of them each time it comes up (#31, Yazan 2026-10-31).
+ * DP miss) shows the case's clues 4, 5 and 6 together as one paragraph (Yazan 2026-11-12; was one of the last 3).
  * A disease with no DP case shows its dossier's Clinical features and Investigations as short points (#5).
  */
 function factsOf(d: Dossier, game: string, itemId: string): { clues: string[] | null; points: string[] } {
   const own = game === 'the-diagnostic-pursuit' ? caseById.get(itemId) : undefined;
   const k = own?.canonical_id === d.id ? own : CASE_OF.get(d.id);
-  if (k && k.clues.length >= 3) return { clues: k.clues.slice(-3), points: [] };
+  // Yazan 2026-11-12: clues 4, 5 and 6 read as one paragraph, one sentence after another, with no clue labels.
+  if (k && k.clues.length >= 3) {
+    const part = k.clues.length >= 6 ? k.clues.slice(3, 6) : k.clues.slice(-3);
+    return { clues: [part.map((c) => c.trim()).filter(Boolean).map((c) => (/[.!?]$/.test(c) ? c : `${c}.`)).join(' ')], points: [] };
+  }
   return { clues: null, points: FIELDS.filter((f) => f.key === 'cli' || f.key === 'inv').flatMap((f) => pointsOf(d[f.key])) };
 }
 

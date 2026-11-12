@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
-import { heardKind, linesFor, type Moment } from '../lines';
+import { heardKind, linesFor, replyTo, toneLines, type Moment } from '../lines';
 import { PERSONAS } from '../types';
 
 const VOICES = ['good-luck', 'nice-one', 'so-close', 'hurry-up', 'well-played', 'oops', 'rematch', 'gg', 'thank-you', 'sorry', 'ready', 'help-me', 'too-slow', 'all-youve-got', 'catch-me', 'too-easy', 'keep-up', 'better-luck'];
@@ -38,4 +38,18 @@ test('heard: what you send is read as nice, a taunt, sorry or other', () => {
   assert.equal(heardKind('voice', 'rematch'), 'other');
   assert.equal(heardKind('sticker', 'x', 'Mic drop'), 'taunt');
   assert.equal(heardKind('sticker', 'x', 'Love it'), 'nice');
+});
+
+test('lines: a reply matches what you sent, from the 18 lines only (Yazan 2026-11-12)', () => {
+  const v = (ls: ReturnType<typeof replyTo>) => ls.map((l) => (l as { voice: string }).voice);
+  for (const p of PERSONAS)
+    for (const said of VOICES) {
+      const r = v(replyTo(p, said));
+      assert.ok(r.length, `${p} ${said}`);
+      for (const x of r) assert.ok(VOICES.includes(x), `${p} ${said} ${x}`);
+    }
+  assert.ok(v(replyTo('cool', 'gg')).includes('gg'));
+  assert.ok(v(replyTo('sore', 'too-slow')).includes('all-youve-got'));
+  assert.deepEqual(v(toneLines('cheer', 'youRight', 'nice')), ['nice-one', 'well-played']);
+  assert.deepEqual(toneLines('cheer', 'overtake', 'taunt'), []);
 });

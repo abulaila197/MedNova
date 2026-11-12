@@ -1,6 +1,7 @@
 import type { RaceItemResult, RacePlayer, RaceState } from '../../match/race';
 import { afterAnswer, mindFor, type Mind } from '../brain';
-import type { Bot } from '../types';
+import { between, rng } from '../rng';
+import type { Bot, BotType } from '../types';
 
 /**
  * A Vs rivals match on the phone (G4, Yazan 2026-11-09). The same shape the old online races had (RaceState), so the
@@ -10,6 +11,13 @@ import type { Bot } from '../types';
  *
  * A question ends when everyone is done or its time is up, then the answer shows for a few seconds (the reveal).
  */
+
+/**
+ * Once you are done with a question, the rivals still on it finish within a few seconds by type, so you are not left
+ * waiting (Yazan 2026-11-12): Genius 1-2 s, Scholar 3-4 s, Freshman 5-6 s after you. Rivals already due sooner keep
+ * their own time; what they would have done (right or wrong) stays the same, only sooner.
+ */
+export const HURRY_MS: Record<BotType, [number, number]> = { genius: [1000, 2000], scholar: [3000, 4000], freshman: [5000, 6000] };
 
 export const ORDER_POINTS = [100, 80, 65, 50, 40, 30, 20, 10];
 export const orderPoints = (rank: number) => ORDER_POINTS[Math.min(ORDER_POINTS.length, Math.max(1, rank)) - 1];
@@ -58,7 +66,7 @@ export type Rules = {
   scoreAll?(item: number, rows: { id: string; solved: boolean; doneAt: number | null; answer: string | null; rank: number | null }[]): Record<string, number>;
 };
 
-type You = { doneAt: number | null; solved: boolean; wrong: string[]; guesses: string[]; tries: number; lockedUntil: number; pick: number | null; greens: number | null };
+type You = { doneAt: number | null; solved: boolean; skipped?: boolean; wrong: string[]; guesses: string[]; tries: number; lockedUntil: number; pick: number | null; greens: number | null };
 type Done = { plans: Record<string, Plan>; you: You; start: number; end: number; ranks: Record<string, number | null>; points: Record<string, number> };
 type Tot = { score: number; solveMs: number; streak: number; best: number; correct: number };
 
@@ -80,7 +88,8 @@ export class BotRace implements Race {
   private minds: Record<string, Mind> = {};
   private tot: Record<string, Tot> = {};
   private done: Done[] = [];
-  private cur: { start: number; plans: Record<string, Plan>; you: You } | null = null;
+  /** `extraMs`: time you bought on this question (+10 s helper, vs rivals 2026-11-12); it holds the question open for everyone. */
+  private cur: { start: number; plans: Record<string, Plan>; you: You; extraMs: number } | null = null;
   private finished = false;
 
   constructor(readonly opts: RaceCtx & { rules: Rules }) {
@@ -130,13 +139,18 @@ export class BotRace implements Race {
       const gap = (this.tot[b.id].score - this.tot[YOU].score) / stake;
       plans[b.id] = r.plan(b, { seed: `${this.opts.playId}:${i}`, index: i, item: this.opts.items[i], gap, progress: i / Math.max(1, this.total), limitMs: this.limitOf(i), mind: this.minds[b.id] });
     }
-    this.cur = { start: at, plans, you: freshYou() };
+    this.cur = { start: at, plans, you: freshYou(), extraMs: 0 };
+  }
+
+  /** The running question's time, with any time you bought. */
+  private limitNow() {
+    return this.limitOf(this.done.length) + (this.cur?.extraMs ?? 0);
   }
 
   /** The end of the running question, if it is known yet: everyone done, or its time up. */
   private endOf(t: number): number | null {
     const c = this.cur!;
-    const limit = c.start + this.limitOf(this.done.length);
+    const limit = c.start + this.limitNow();
     const times = [c.you.doneAt, ...Object.values(c.plans).map((p) => p.doneAt)];
     if (times.every((x) => x != null)) return Math.min(limit, c.start + Math.max(...(times as number[])));
     return t >= limit ? limit : null;
@@ -146,7 +160,7 @@ export class BotRace implements Race {
     const c = this.cur!;
     const r = this.opts.rules;
     const i = this.done.length;
-    const limitMs = this.limitOf(i);
+    const limitMs = this.limitNow();
     const rows: { id: string; solved: boolean; doneAt: number | null; tries: number; answer: string | null }[] = [
       { id: YOU, solved: c.you.solved, doneAt: c.you.doneAt, tries: c.you.tries, answer: c.you.guesses[0] ?? null },
       ...this.rivals.map((b) => {
@@ -164,7 +178,8 @@ export class BotRace implements Race {
     for (const x of rows) {
       const rank = ranks[x.id];
       const t = this.tot[x.id];
-      t.streak = x.solved ? t.streak + 1 : r.streaks ? 0 : t.streak;
+      // A paid skip keeps your streak (Streak Master helper, vs rivals 2026-11-12).
+      t.streak = x.solved ? t.streak + 1 : r.streaks && !(x.id === YOU && c.you.skipped) ? 0 : t.streak;
       t.best = Math.max(t.best, t.streak);
       points[x.id] = all ? (all[x.id] ?? 0) : r.points({ rank, solved: x.solved, doneAt: x.doneAt, tries: x.tries, streak: t.streak, limitMs });
       t.score += points[x.id];
@@ -199,6 +214,24 @@ export class BotRace implements Race {
     return this;
   }
 
+  /** You just finished the running question at `at` (ms from its start): pull the slower rivals' plans in. */
+  private hurry(at: number) {
+    const c = this.cur;
+    if (!c) return;
+    const limit = this.limitNow();
+    for (const b of this.rivals) {
+      const p = c.plans[b.id];
+      const [lo, hi] = HURRY_MS[b.type] ?? HURRY_MS.scholar;
+      if (p.doneAt != null && p.doneAt <= at + hi) continue;
+      const r = rng(`${this.opts.playId}:${this.done.length}:${b.id}:hurry`);
+      const was = p.doneAt ?? limit;
+      const to = Math.min(limit, at + Math.round(between(r, lo, hi)));
+      // Moves still to come (wrong guesses, Medicordle rows) are squeezed into the time left, in the same order.
+      const squeeze = (x: number) => (x <= at ? x : Math.round(at + ((x - at) / Math.max(1, was - at)) * (to - at)));
+      c.plans[b.id] = { ...p, doneAt: to, wrongAt: p.wrongAt.map(squeeze), rows: p.rows?.map((row) => ({ ...row, at: squeeze(row.at) })) };
+    }
+  }
+
   // ---- your moves (t = match time) ----
 
   /** A wrong guess: locks you for a moment (unlimited guesses games) or uses a try. */
@@ -210,6 +243,7 @@ export class BotRace implements Race {
     const tries = c.you.tries + 1;
     const out = opts.outAfter != null && tries >= opts.outAfter;
     c.you = { ...c.you, wrong: [...c.you.wrong, answer], guesses: [...c.you.guesses, answer], tries, lockedUntil: opts.lock === false ? 0 : t + this.opts.rules.lockMs, doneAt: out ? t - c.start : null };
+    if (out) this.hurry(t - c.start);
     this.sync(t);
     return out ? ('out' as const) : ('wrong' as const);
   }
@@ -220,6 +254,7 @@ export class BotRace implements Race {
     const c = this.cur;
     if (!c || c.you.doneAt != null) return 'ignored' as const;
     c.you = { ...c.you, solved: true, doneAt: t - c.start, tries: c.you.tries + 1, pick: extra.pick ?? null, greens: extra.greens ?? c.you.greens, guesses: extra.guess ? [...c.you.guesses, extra.guess] : c.you.guesses };
+    this.hurry(t - c.start);
     this.sync(t);
     return 'right' as const;
   }
@@ -230,8 +265,35 @@ export class BotRace implements Race {
     const c = this.cur;
     if (!c || c.you.doneAt != null) return 'ignored' as const;
     c.you = { ...c.you, doneAt: t - c.start, tries: c.you.tries + 1, pick: extra.pick ?? null, greens: extra.greens ?? c.you.greens, guesses: extra.guess ? [...c.you.guesses, extra.guess] : c.you.guesses };
+    this.hurry(t - c.start);
     this.sync(t);
     return 'missed' as const;
+  }
+
+  /** Skip helper (Streak Master vs rivals): you are done with no answer and your streak stays. */
+  skip(t: number) {
+    this.sync(t);
+    const c = this.cur;
+    if (!c || c.you.doneAt != null) return 'ignored' as const;
+    c.you = { ...c.you, doneAt: t - c.start, skipped: true };
+    this.hurry(t - c.start);
+    this.sync(t);
+    return 'skipped' as const;
+  }
+
+  /** +10 s helper (vs rivals): the running question stays open `ms` longer. Rivals keep their plans. */
+  extend(t: number, ms: number) {
+    this.sync(t);
+    const c = this.cur;
+    if (!c || c.you.doneAt != null) return 'ignored' as const;
+    c.extraMs += ms;
+    return 'extended' as const;
+  }
+
+  /** You are still on the running question and may use a helper on it. */
+  canHelp(t: number) {
+    this.sync(t);
+    return !!this.cur && this.cur.you.doneAt == null;
   }
 
   /** A Medicordle row that wasn't the word: counts a try and remembers your greens. */
@@ -276,7 +338,7 @@ export class BotRace implements Race {
       const order = [...ps].sort((a, b) => b.score - a.score || b.best_streak - a.best_streak || b.correct - a.correct || a.solve_ms - b.solve_ms);
       return ps.map((p) => ({ ...p, rank: order.indexOf(p) + 1 }));
     };
-    const myItems: RaceItemResult[] = this.done.map((d, i) => ({ index: i, item: o.items[i], solved_ms: d.you.solved ? d.you.doneAt : null, rank: d.ranks[YOU], points: d.points[YOU], wrong: d.you.wrong, guesses: d.you.guesses, pick: d.you.pick }));
+    const myItems: RaceItemResult[] = this.done.map((d, i) => ({ index: i, item: o.items[i], solved_ms: d.you.solved ? d.you.doneAt : null, rank: d.ranks[YOU], points: d.points[YOU], wrong: d.you.wrong, guesses: d.you.guesses, pick: d.you.pick, skipped: !!d.you.skipped }));
     const base = { now: t, room_id: `bot:${o.playId}`, game: '', total: this.total, settings: o.settings, my_items: myItems };
 
     if (this.cur) {
@@ -297,7 +359,7 @@ export class BotRace implements Race {
         ...base,
         phase: 'case',
         phase_started_at: c.start,
-        phase_ends_at: c.start + this.limitOf(this.done.length),
+        phase_ends_at: c.start + this.limitNow(),
         index: this.done.length,
         item: o.items[this.done.length],
         answer: null,

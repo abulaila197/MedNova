@@ -50,7 +50,8 @@ export type BoardProps = {
   wrongSeq: number;
   clueSeq: number;
   /** false hides Skip and Reveal (Online: clues come on the clock for everyone, DPN1). */
-  actions?: boolean;
+  /** false hides the row; 'hint' shows only the paid Hint (vs rivals, Yazan 2026-11-12). */
+  actions?: boolean | 'hint';
   /** Omit to hide the Hint button (Offline Multiplayer, DPO5). */
   hint?: { granted: boolean; onHint: () => void };
   result: BoardResult | null;
@@ -129,7 +130,13 @@ export function CaseBoard(p: BoardProps) {
 
         {playing ? (
           <View style={[s.bottom, focused && s.bottomFocus]}>
-            {focused || p.actions === false ? null : <Actions canReveal={p.attempt.cluesShown < DP.clueCount} hint={p.hint} onSkip={p.onSkip} onReveal={p.onReveal} />}
+            {focused || p.actions === false ? null : p.actions === 'hint' ? (
+              p.hint ? (
+                <View style={s.row3}>
+                  <ActionBtn label={p.hint.granted ? '💡 Hint used' : '💡 Hint · 1 token'} flex={1} onPress={p.hint.onHint} disabled={p.hint.granted || p.phase !== 'playing'} bg="#231b4e" line="#504188" fg="#d8b4fe" />
+                </View>
+              ) : null
+            ) : <Actions canReveal={p.attempt.cluesShown < DP.clueCount} hint={p.hint} onSkip={p.onSkip} onReveal={p.onReveal} />}
             <AnswerBox
               key={p.turnKey}
               wrong={p.attempt.wrong}

@@ -43,8 +43,9 @@ export const novaCrossword: GameDef = {
       howTo: [
         'Pick Freshmen, Scholars or Geniuses and 1 to 3 rivals. Meet them in the room: tap a rival for its profile, swap it or kick it.',
         'Everyone plays the same grid. The first right answer claims the word and its letters. A rival never takes the word you are typing.',
-        `Pick 1, 2 or 3 puzzles. They come one after another, each with the full time limit, ${CW.onlineHearts} fresh hearts and its own revive.`,
-        `A wrong answer costs one of your ${CW.onlineHearts} hearts; trying the same wrong answer again costs nothing. No hints.`,
+        `Pick 1, 2 or 3 puzzles. They come one after another, each with the full time limit and ${CW.onlineHearts} fresh hearts.`,
+        `A wrong answer costs one of your ${CW.onlineHearts} hearts; trying the same wrong answer again costs nothing.`,
+        `Helpers cost tokens, like Solo: Hint shows some letters of a word (${CW.hintPrice}), and at 0 hearts ${CW.revivePrice} token buys ${CW.reviveHearts} heart, as often as you like.`,
         'The race ends when every word is claimed, everyone is out, or time runs out. Most letters owned wins.',
         `EXP by place on each puzzle: 1st earns 3 stars, 2nd 2, everyone else who claimed a word 1. Each star is ${CW.expPerStar} EXP.`,
       ],

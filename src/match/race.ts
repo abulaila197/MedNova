@@ -44,7 +44,7 @@ export type RaceMine = {
   rank: number | null;
   points: number;
 };
-export type RaceItemResult = { index: number; item: number; solved_ms: number | null; rank: number | null; points: number; wrong: string[]; guesses: string[]; pick: number | null; drawer?: boolean };
+export type RaceItemResult = { index: number; item: number; solved_ms: number | null; rank: number | null; points: number; wrong: string[]; guesses: string[]; pick: number | null; drawer?: boolean; skipped?: boolean };
 export type RaceState = {
   now: number;
   room_id: string;

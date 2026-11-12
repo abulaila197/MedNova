@@ -232,6 +232,7 @@ export function useBotRace<R extends Race = BotRace>({ play, onFinish, onQuit, r
     return r;
   };
   const q = race instanceof BotRace ? (race as BotRace) : null;
+  const paying = useRef(false);
 
   const uid = useSession((x) => x.userId);
   const talker = { id: uid ?? 'me', name: 'You', face: play.seats[0]?.character ?? 'yara' };
@@ -257,5 +258,34 @@ export function useBotRace<R extends Race = BotRace>({ play, onFinish, onQuit, r
     solve: act((at, extra?: { pick?: number; guess?: string; greens?: number }) => q!.solve(at, extra)),
     miss: act((at, extra?: { pick?: number; guess?: string; greens?: number }) => q!.miss(at, extra)),
     row: act((at, guess: string, greens: number) => q!.row(at, guess, greens)),
+    /** Skip helper: done with no answer, streak kept. */
+    skip: act((at) => q!.skip(at)),
+    /** +10 s helper: the question stays open longer. */
+    extend: act((at, ms: number) => q!.extend(at, ms)),
+    /**
+     * Vs rivals helpers (Yazan 2026-11-12): the same helpers and token prices as Solo. Pays first, then applies;
+     * refunds when the question moved on while paying. Says "You need 3 tokens" in the alert pill when short.
+     */
+    buy: async (price: number, reason: string, apply: () => unknown, still: () => boolean = () => true) => {
+      if (!race || paying.current || paused) return false;
+      const index = race.state(now()).index;
+      const ok = () => !pausedRef.current && race.state(now()).index === index && (!q || q.canHelp(now())) && still();
+      if (!ok()) return false;
+      paying.current = true;
+      const receipt = await engine.wallet.spend(price, reason, play.id).catch(() => null);
+      paying.current = false;
+      if (!receipt) {
+        push(`You need ${price} token${price > 1 ? 's' : ''}. Each level up gives 1 token.`, '#f5b041');
+        return false;
+      }
+      if (!ok()) {
+        await engine.wallet.refund(receipt);
+        push('Helper refunded.', '#f5b041');
+        return false;
+      }
+      apply();
+      setT(now());
+      return true;
+    },
   };
 }

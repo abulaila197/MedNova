@@ -65,8 +65,6 @@ function CardScroll({ children, onPress, label, center = true, fade }: { childre
 export function FlipCard({ card, flipped, onPress }: { card: Card; flipped: boolean; onPress: () => void }) {
   const t = useTheme();
   const c = useLearnColors(t.mode);
-  // #31: one of the case's last 3 clues, picked when the card comes up.
-  const [pick] = useState(() => Math.floor(Math.random() * 3));
   const r = useSharedValue(0);
   useEffect(() => {
     r.value = withTiming(flipped ? 180 : 0, { duration: 600, easing: Easing.bezier(0.3, 0.8, 0.3, 1) });
@@ -110,7 +108,7 @@ export function FlipCard({ card, flipped, onPress }: { card: Card; flipped: bool
             <CardScroll onPress={onPress} label="Show the disease" fade={c.cardB}>
               <View>
                 {card.facts.clues ? (
-                  <Text style={[s.one, { color: t.fg }]}>{card.facts.clues[pick % card.facts.clues.length]}</Text>
+                  <Text style={[s.one, card.facts.clues.join(' ').length > 220 && s.oneLong, { color: t.fg }]}>{card.facts.clues.join(' ')}</Text>
                 ) : (
                   card.facts.points.map((p, i) => (
                     <View key={i} style={s.pt}>
@@ -194,6 +192,7 @@ const s = StyleSheet.create({
   qscroll: { flex: 1 },
   qin: { flexGrow: 1, justifyContent: 'center', paddingVertical: u(4) },
   one: { fontFamily: F.body, fontSize: u(14), lineHeight: u(20) },
+  oneLong: { fontSize: u(12.5), lineHeight: u(18) },
   pt: { flexDirection: 'row', gap: u(8), marginBottom: u(6) },
   bul: { width: u(5), height: u(5), borderRadius: u(3), marginTop: u(6) },
   ptT: { flex: 1, fontFamily: F.body, fontSize: u(11.5), lineHeight: u(15.5) },

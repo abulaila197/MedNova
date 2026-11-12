@@ -18,8 +18,12 @@ export function revengeLine(rec: Record_ | undefined, seed: string): string | nu
   const itLost = rec.last === 'won';
   const streak = itLost ? rec.w >= 3 && rec.w > rec.l * 2 : rec.l >= 3 && rec.l > rec.w * 2;
   const pool = itLost ? (streak ? STREAK_IT_LOST : AFTER_IT_LOST) : streak ? STREAK_IT_WON : AFTER_IT_WON;
-  return pool[Math.floor(r() * pool.length)];
+  // Yazan 2026-11-12: it remembers the score too ("Rematch. Now. 3–2 to you.").
+  return `${pool[Math.floor(r() * pool.length)]} ${scoreSaid(rec)}`;
 }
+
+/** The record in the rival's own words: "3–2 to you.", "4–1 to me.", "2–2." */
+export const scoreSaid = (rec: Record_) => (rec.w === rec.l ? `${rec.w}–${rec.l}.` : rec.w > rec.l ? `${rec.w}–${rec.l} to you.` : `${rec.l}–${rec.w} to me.`);
 
 /** "3–1 to you", "1–3 to them", "2–2". */
 export const recordText = (rec: Record_) => (rec.w === rec.l ? `${rec.w}–${rec.l}` : rec.w > rec.l ? `${rec.w}–${rec.l} to you` : `${rec.l}–${rec.w} to them`);

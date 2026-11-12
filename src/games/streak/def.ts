@@ -84,7 +84,8 @@ export const streakMaster: GameDef = {
       blurb: 'Answer first and keep your streak. The rivals\' heat columns rise and crash beside yours.',
       howTo: [
         'Pick Freshmen, Scholars or Geniuses and 1 to 5 rivals. Meet them in the room: tap a rival for its profile, swap it or kick it.',
-        'Everyone gets the same question with the same choices at once. One pick each, no helpers.',
+        'Everyone gets the same question with the same choices at once. One pick each.',
+        'Helpers cost tokens, like Solo: Remove 2 wrong (1), Skip and keep your streak (3), +10 seconds (1).',
         'Right answers score by order: 100, 80, 65 and so on, plus 10 for each answer in your streak after the first (up to 50).',
         'A wrong pick or no answer drops your streak to 0. Ties go to the longest streak, then most right answers.',
         'You earn 2 EXP per right answer, up to 60, like Solo. Missed questions wait for you in Today\'s review.',

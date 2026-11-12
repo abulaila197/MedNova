@@ -197,3 +197,47 @@ export function heardKind(kind: 'sticker' | 'voice' | 'line' | 'guess', item: st
   if (/sad|waaah|sorry|ugh/i.test(label)) return 'sorry';
   return 'other';
 }
+
+/** Personalities that answer a taunt with a taunt; the rest stay polite. */
+const SALTY: Persona[] = ['showoff', 'sore', 'hot'];
+
+/**
+ * A reply that matches your voice line (Yazan 2026-11-12): GG gets GG, Good luck gets Good luck or Thank you,
+ * a taunt gets a taunt back from a salty rival and a calm answer from a polite one.
+ */
+const REPLY: Record<string, { polite: string[]; salty: string[] }> = {
+  gg: { polite: ['gg', 'well-played'], salty: ['gg', 'rematch'] },
+  'good-luck': { polite: ['good-luck', 'thank-you'], salty: ['good-luck', 'catch-me'] },
+  'nice-one': { polite: ['thank-you'], salty: ['thank-you', 'too-easy'] },
+  'well-played': { polite: ['thank-you', 'gg'], salty: ['thank-you', 'too-easy'] },
+  'thank-you': { polite: ['nice-one', 'good-luck'], salty: ['keep-up'] },
+  ready: { polite: ['ready', 'good-luck'], salty: ['ready', 'catch-me'] },
+  rematch: { polite: ['rematch', 'ready'], salty: ['rematch', 'all-youve-got'] },
+  sorry: { polite: ['so-close', 'good-luck'], salty: ['better-luck'] },
+  oops: { polite: ['so-close'], salty: ['too-slow', 'better-luck'] },
+  'so-close': { polite: ['good-luck', 'nice-one'], salty: ['better-luck', 'too-slow'] },
+  'help-me': { polite: ['good-luck'], salty: ['catch-me', 'too-slow'] },
+  'too-slow': { polite: ['so-close', 'well-played'], salty: ['all-youve-got', 'catch-me'] },
+  'all-youve-got': { polite: ['good-luck', 'well-played'], salty: ['all-youve-got', 'too-easy'] },
+  'catch-me': { polite: ['good-luck'], salty: ['too-slow', 'keep-up'] },
+  'too-easy': { polite: ['well-played', 'so-close'], salty: ['all-youve-got', 'better-luck'] },
+  'keep-up': { polite: ['good-luck', 'hurry-up'], salty: ['too-slow', 'catch-me'] },
+  'better-luck': { polite: ['rematch', 'so-close'], salty: ['rematch', 'all-youve-got'] },
+  'hurry-up': { polite: ['sorry', 'oops'], salty: ['keep-up', 'too-slow'] },
+};
+export function replyTo(persona: Persona, said: string): Line[] {
+  const r = REPLY[said];
+  return r ? V(...(SALTY.includes(persona) ? r.salty : r.polite)) : [];
+}
+
+/**
+ * Memory of your tone this match: if you were nice, polite rivals cheer you on; if you taunted, salty rivals rub it in
+ * when they pass you or you miss, and polite ones stay calm.
+ */
+export function toneLines(persona: Persona, m: Moment, tone: 'nice' | 'taunt' | undefined): Line[] {
+  if (!tone) return [];
+  const salty = SALTY.includes(persona);
+  if (tone === 'taunt' && salty) return m === 'overtake' || m === 'youWrong' ? V('too-slow', 'all-youve-got', 'better-luck') : m === 'right' ? V('too-easy', 'catch-me') : [];
+  if (tone === 'nice' && !salty) return m === 'youRight' ? V('nice-one', 'well-played') : m === 'youWrong' ? V('so-close', 'good-luck') : m === 'end' ? V('gg', 'well-played') : [];
+  return [];
+}

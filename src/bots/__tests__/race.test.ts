@@ -118,3 +118,20 @@ test('medicordle: rivals play real words with true colours, and a solve ends on 
   assert.equal(coloursOf('TISSUE', 'TISSUE'), 'gggggg');
   assert.equal(coloursOf('SITUSE', 'TISSUE'), 'ygyyyg');
 });
+
+test('helpers vs rivals: +10 s holds the question open longer; a skip keeps your streak', () => {
+  const r = new BotRace({ playId: 'p1', items: [1, 2, 3], you: { name: 'You', character: 'yara', team: null }, rivals: [rival('scholar', 'Omar')], rules: { ...rules({ Omar: 500 }), streaks: true }, settings: {}, playerLevel: 1 });
+  r.solve(4_000); // question 1 right at 1 s: everyone done, streak 1; reveal to 6 s
+  assert.equal(r.state(6_000).index, 1);
+  assert.equal(r.extend(6_500, 10_000), 'extended');
+  assert.equal(r.state(25_999).phase, 'case');
+  assert.equal(r.state(25_999).phase_ends_at, 26_000);
+  assert.equal(r.skip(25_999), 'skipped');
+  let st = r.state(26_100);
+  assert.equal(st.phase, 'reveal');
+  assert.equal(st.players.find((p) => p.user_id === YOU)!.streak, 1);
+  assert.equal(st.my_items![1].skipped, true);
+  // No answer on question 3 breaks it.
+  st = r.state(27_999 + 10_000);
+  assert.equal(st.players.find((p) => p.user_id === YOU)!.streak, 0);
+});

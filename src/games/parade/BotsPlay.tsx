@@ -14,7 +14,7 @@ import { PauseMenu } from '../shell/PauseMenu';
 import { gameDef } from '../shell/registry';
 import type { PlayProps } from '../shell/types';
 import { GameScreen } from '../shell/ui';
-import { grade, layoutFor, mixQueue, TIME_S, typeCycle, type Answer, type Response, type Round, type Style } from './core';
+import { ADD_MS, HELPER_PRICE, grade, layoutFor, mixQueue, TIME_S, typeCycle, type Answer, type HelperKind, type Response, type Round, type Style } from './core';
 import { tickedFields } from '../shell/fields';
 import { QUESTIONS, idsOf, poolFor, typeOf } from './data';
 import { ParadeBoard } from './ParadeBoard';
@@ -55,13 +55,13 @@ function itemsOf(st: RaceState) {
         seat: 0,
         itemId: q.id,
         answerKey: null,
-        outcome: right ? ('right' as const) : resp ? ('wrong' as const) : ('timed_out' as const),
+        outcome: right ? ('right' as const) : resp ? ('wrong' as const) : m.skipped ? ('skipped' as const) : ('timed_out' as const),
         answersGiven: [],
         timeMs: m.solved_ms ?? TIME_S[q.style] * 1000,
         hintsUsed: 0,
         revealsUsed: 0,
         points: m.points,
-        feedsLearn: !right, // every missed question goes to Today's review
+        feedsLearn: !right && !m.skipped, // every missed question goes to Today's review; a paid skip is not a miss
         gameData: { style: st.settings.style, field: q.field, kind: q.kind, type: q.style, rank: m.rank },
       };
     });
@@ -92,6 +92,8 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
     toItems: itemsOf,
   });
   const { st, race, t, push } = g;
+  // Helpers vs rivals (Yazan 2026-11-12): Skip (3) and +10 s (1), as Solo.
+  const [help, setHelp] = useState<{ index: number; added: number; skipped: boolean }>({ index: -1, added: 0, skipped: false });
 
   // At the reveal: who was first ("Omar was first, +1") or nearest.
   const told = useRef(-1);
@@ -120,7 +122,8 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
   const q = questionOf(st.item);
   const me = st.players.find((p) => p.user_id === YOU);
   const reveal = st.phase !== 'case';
-  const limitMs = TIME_S[q.style] * 1000;
+  const mineHelp = help.index === st.index ? help : { index: st.index, added: 0, skipped: false };
+  const limitMs = TIME_S[q.style] * 1000 + mineHelp.added;
   const ends = st.phase_ends_at;
   const mine = parseResponse(st.me?.guesses[0]);
   const points = reveal ? (st.me?.points ?? 0) : 0;
@@ -146,6 +149,18 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
     answers: reveal ? [answer] : [],
     helpers: { remove: 0, skip: 0, time: 0 },
   };
+  const usable = (k: HelperKind) => k !== 'remove' && !g.paused && !reveal && mine == null && !mineHelp.skipped;
+  const onHelper = (k: HelperKind) => {
+    if (!usable(k)) return;
+    void g.buy(HELPER_PRICE[k], `parade_${k}`, () => {
+      if (k === 'skip') {
+        g.skip();
+        return setHelp({ ...mineHelp, skipped: true });
+      }
+      g.extend(ADD_MS);
+      setHelp({ ...mineHelp, added: mineHelp.added + ADD_MS });
+    });
+  };
   const f = reveal ? found.get(st.item) : undefined;
   const verdict = !reveal
     ? null
@@ -154,14 +169,18 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
         ? `Nearest · +${points}`
         : mine
           ? 'Not the nearest'
-          : 'No answer'
+          : mineHelp.skipped
+            ? 'Skipped'
+            : 'No answer'
       : right
         ? `${nth(st.me?.rank ?? 1)} right · +${points}`
         : points
           ? `Part right · +${points}`
           : mine
             ? 'Wrong'
-            : 'No answer';
+            : mineHelp.skipped
+              ? 'Skipped'
+              : 'No answer';
   const result = !reveal ? null : st.phase === 'done' ? 'Adding up the scores…' : `${last ? 'Results' : 'Next question'} in ${nextIn} s`;
 
   return (
@@ -172,6 +191,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
       leftAt={(sv) => (reveal ? 0 : Math.max(0, ends - sv))}
       who={{ name: `Question ${st.index + 1} of ${st.total}` }}
       hidden={g.paused}
+      helpers={{ onHelper, usable }}
       onAnswer={(response: Response) => {
         if (g.paused || reveal || mine != null) return;
         const guess = JSON.stringify(response);
@@ -184,7 +204,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
       faces={reveal ? faces : undefined}
       verdict={verdict}
       sent={mine}
-      notice={result ?? (mine != null ? <AnsweredRow seats={st.players.map((p) => ({ user_id: p.user_id, character: p.character, done: p.done }))} /> : null)}>
+      notice={result ?? (mine != null || mineHelp.skipped ? <AnsweredRow seats={st.players.map((p) => ({ user_id: p.user_id, character: p.character, done: p.done }))} /> : null)}>
       <AlertPill alert={g.alert} />
       <RoomTalk room={g.room} me={g.talker} />
       {menu}
