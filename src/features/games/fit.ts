@@ -30,6 +30,7 @@ const BB: Record<string, Box> = {
   'tilt-and-tell': [0.4, 1, 0.58, 0.98],
   'four-of-a-kind': [0.4, 1, 0.58, 0.98],
   'spot-the-flaw': [0.4, 1, 0.58, 0.98],
+  'trace-the-treatment': [0.4, 1, 0.58, 0.98],
   'code-clinic': [0.4, 1, 0.58, 0.98],
   'nova-password': [0.4, 1, 0.58, 0.98],
 };

@@ -43,6 +43,7 @@ const COSTS: Partial<Record<GameKey, Partial<Record<Mode, Price>>>> = {
   'four-of-a-kind': { solo: BOARDS, offline: BOARDS, bots: BOARDS },
   // By cases, like Four of a Kind (Yazan 2026-11-12).
   'spot-the-flaw': { solo: FLAWS, offline: FLAWS, bots: FLAWS },
+  'trace-the-treatment': { solo: FLAWS, offline: FLAWS, bots: FLAWS },
   'code-clinic': { offline: flat(30) },
   'nova-password': { offline: PASSWORD },
 };

@@ -17,6 +17,7 @@ export type GameKey =
   | 'tilt-and-tell'
   | 'four-of-a-kind'
   | 'spot-the-flaw'
+  | 'trace-the-treatment'
   | 'code-clinic'
   | 'nova-password';
 

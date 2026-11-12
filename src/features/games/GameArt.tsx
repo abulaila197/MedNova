@@ -23,6 +23,7 @@ const BAKED = {
     'tilt-and-tell': require('@/assets/games/baked/dark/tilt-and-tell.webp'),
     'four-of-a-kind': require('@/assets/games/baked/dark/four-of-a-kind.webp'),
     'spot-the-flaw': require('@/assets/games/baked/dark/spot-the-flaw.webp'),
+    'trace-the-treatment': require('@/assets/games/baked/dark/trace-the-treatment.webp'),
   },
 } as const;
 

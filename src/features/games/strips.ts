@@ -12,5 +12,6 @@ export const STRIP: Record<string, number> = {
   'tilt-and-tell': require('@/assets/games/strips/tilt-and-tell.webp'),
   'four-of-a-kind': require('@/assets/games/strips/four-of-a-kind.webp'),
   'spot-the-flaw': require('@/assets/games/strips/spot-the-flaw.webp'),
+  'trace-the-treatment': require('@/assets/games/strips/trace-the-treatment.webp'),
 };
 

@@ -10,6 +10,7 @@ import { questionById } from '@/games/streak/data';
 import { questionById as wheelsById } from '@/games/wheels/data';
 import { groupById as fokById } from '@/games/fok/data';
 import { caseById as stfById } from '@/games/stf/data';
+import { caseById as tttById } from '@/games/ttt/data';
 
 import dossiersJson from './data/dossiers.json';
 import shelvesJson from './data/shelves.json';
@@ -123,6 +124,11 @@ function qaOf(game: string, item: PlayItem): Omit<Extract<Card, { kind: 'qa' }>,
     const c = stfById.get(item.itemId);
     if (!c) return null;
     return { q: `What went wrong:\n${c.a[0].o}\n\nWhat should have happened:\n${c.a[0].x}\n\nWhy is this?`, choices: [], answer: c.a[0].w };
+  }
+  // Trace the Treatment (Yazan 2026-11-12): the game tells a story, Learn asks directly; the back shows the treatment.
+  if (game === 'trace-the-treatment') {
+    const c = tttById.get(item.itemId);
+    return c ? { q: c.lq, choices: [], answer: c.la } : null;
   }
   if (game === 'trust-me-not') {
     const q = tmnQuestion(item.itemId);
