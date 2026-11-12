@@ -23,7 +23,7 @@ const ROUNDS = {
   initial: 3,
 };
 
-/** Imposter (IM1-IM7): 3 to 6 players, one has a different word and doesn't know it. Pass the phone and Online. */
+/** Imposter (IM1-IM7): 3 to 6 players, one has a different word and is told they are the imposter (since 2026-11-12). Pass the phone and Online. */
 export const imposter: GameDef = {
   key: 'imposter',
   modes: [
@@ -33,7 +33,7 @@ export const imposter: GameDef = {
       blurb: 'Everyone gets the same word but one. Find who walked in.',
       howTo: [
         'Add 3 to 6 players. Pick clinical, basic science or mixed words, and 1 to 5 rounds.',
-        'Pass the phone: each player holds to see their word. One player has a different, related word, and nobody knows who, not even them.',
+        'Pass the phone: each player holds to see their word. One player has a different, related word and is told they are the imposter. Nobody else knows who.',
         'Say one-word clues out loud, in order, for two turns. Then vote now or hear one more turn.',
         'Pass the phone round to vote. Catch the imposter for 2 points each. A caught imposter can still guess your word for 1.',
         'An imposter who gets away scores 2, plus 1 for every wrong vote. No EXP in this mode.',

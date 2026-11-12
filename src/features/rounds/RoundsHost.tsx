@@ -47,7 +47,7 @@ export function RoundsHost() {
     setFailed(false);
     if (key) void kv.set(SHOWN, key);
   };
-  const prize = won ? <Congrats open tokens={won} title="Every week stamped" line="A stamp from all 13 Grand Rounds weeks. Your tokens are in your wallet, and a new count starts now." onClose={() => setWon(0)} /> : null;
+  const prize = won ? <Congrats open tokens={won} title="Every week stamped" line="A stamp from all 12 Grand Rounds weeks. Your tokens are in your wallet, and a new count starts now." onClose={() => setWon(0)} /> : null;
   if (!r || !ready) return prize;
   return (
     <>

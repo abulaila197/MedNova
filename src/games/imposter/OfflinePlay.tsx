@@ -151,8 +151,8 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
     } else {
       body = (
         <>
-          <Holder lead="Your word" person={hp} sub={`Category: ${r.pair.category}. Someone has a different word, and they don't know it. It could be you.`} />
-          <HoldWord word={privateWord(s, hp.id) ?? ''} onSeen={() => setSeen(true)} />
+          <Holder lead="Your word" person={hp} sub={`Category: ${r.pair.category}. One player is the imposter, with a different word. Hold to see your word, and whether it's you.`} />
+          <HoldWord word={privateWord(s, hp.id) ?? ''} imposter={hp.id === r.imposterId} onSeen={() => setSeen(true)} />
         </>
       );
       bottom = <Btn label="Done, pass it on" disabled={!seen} onPress={() => send({ type: 'ACK_WORD', playerId: hp.id })} />;

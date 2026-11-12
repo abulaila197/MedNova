@@ -1,4 +1,4 @@
-// Grand Rounds (Yazan 2026-10-13, missions 2026-10-25): a 13-week cycle (16 until 2026-11-04, when 3 games were parked); each week has 3 missions counted in Sparks
+// Grand Rounds (Yazan 2026-10-13, missions 2026-10-25): a 12-week cycle (16 until 2026-11-04, 13 until 2026-11-12); each week has 3 missions counted in Sparks
 // used, each paying a chest, counted on the server from synced spends.
 import { create } from 'zustand';
 
@@ -35,8 +35,9 @@ export type Rounds = {
 /** Weeks in a row with all 3 missions done that pay an Epic chest (Yazan 2026-10-26). */
 export const EPIC_RUN = 4;
 
-/** 13 game weeks, then an Online, a Solo and a Pass the phone week. */
-export const CYCLE_WEEKS = 13;
+/** 9 game weeks, then a Vs rivals, a Solo and a Pass the phone week. 12 since 2026-11-12 (Quick Fire Quiz, The Imposter
+ *  and Sketch It out, Four of a Kind and Spot the Flaw in; server rounds_week matches after the build-day SQL). */
+export const CYCLE_WEEKS = 12;
 export const CHEST_NAME: Record<ChestKind, string> = { wooden: 'Wooden chest', golden: 'Golden chest', diamond: 'Diamond chest' };
 // The server's 'online' mode week counts Vs rivals matches now (2026-11-10, SQL with the G7 file).
 const MODE_WEEK: Record<string, string> = { online: 'Vs rivals week', solo: 'Solo week', offline: 'Pass the phone week' };

@@ -53,7 +53,8 @@ export function Holder({ lead, person, sub }: { lead: string; person: Person; su
 }
 
 /** Hold to view: the word shows only while the finger is down (offline word reveal and the guess check). */
-export function HoldWord({ word, label = 'Hold to see your word', onSeen, small }: { word: string; label?: string; onSeen?: () => void; small?: boolean }) {
+/** `imposter`: the word comes with a red "You are the imposter" line, shown only while held (Yazan 2026-11-12). */
+export function HoldWord({ word, label = 'Hold to see your word', onSeen, small, imposter }: { word: string; label?: string; onSeen?: () => void; small?: boolean; imposter?: boolean }) {
   const t = useTheme();
   const [on, setOn] = useState(false);
   return (
@@ -67,9 +68,13 @@ export function HoldWord({ word, label = 'Hold to see your word', onSeen, small 
       accessibilityRole="button"
       accessibilityLabel={label}>
       {on ? (
-        <Text style={[s.word, { color: t.white }]} adjustsFontSizeToFit numberOfLines={2}>
-          {word}
-        </Text>
+        <>
+          {imposter ? <Text style={[s.imp, { color: IC.bad, borderColor: IC.bad }]}>YOU ARE THE IMPOSTER</Text> : null}
+          <Text style={[s.word, { color: t.white }]} adjustsFontSizeToFit numberOfLines={2}>
+            {word}
+          </Text>
+          {imposter ? <Text style={[s.holdS, { color: t.soft, textAlign: 'center' }]}>The others share a related word. Blend in.</Text> : null}
+        </>
       ) : (
         <>
           <Text style={[s.holdG, { color: t.accent }]}>◉</Text>
@@ -240,6 +245,7 @@ export const s = StyleSheet.create({
   holdT: { fontFamily: F.bodySemi, fontSize: u(13), lineHeight: u(17) },
   holdS: { fontFamily: F.body, fontSize: u(10), lineHeight: u(13) },
   word: { fontFamily: F.display, fontSize: u(30), lineHeight: u(34), textAlign: 'center' },
+  imp: { fontFamily: F.mono, fontSize: u(11), lineHeight: u(15), letterSpacing: u(1.2), borderWidth: 1, borderRadius: u(99), paddingHorizontal: u(10), paddingVertical: u(3), marginBottom: u(8), overflow: 'hidden' },
   clock: { fontFamily: F.display, fontSize: u(56), lineHeight: u(62), textAlign: 'center' },
   tiles: { flexDirection: 'row', flexWrap: 'wrap', gap: u(8) },
   tile: { width: '48%', flexGrow: 1, borderRadius: u(16), borderWidth: 1, paddingVertical: u(14), paddingHorizontal: u(12), flexDirection: 'row', alignItems: 'center', gap: u(8) },
