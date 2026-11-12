@@ -129,7 +129,8 @@ function PhoneProgramme() {
       <View style={s.fill}>
         <Head end="one Start" />
         {/* the list is drawn twice, so when the first copy has rolled out of sight the second is in its place */}
-        <Fade veil stops={[[0, 0], [0.08, 1], [0.72, 1], [0.94, 0], [1, 0]]} style={s.reel}>
+        {/* A real mask, not the still veil: the veil's flat page colour drew lines against the shaded backdrop. */}
+        <Fade stops={[[0, 0], [0.08, 1], [0.72, 1], [0.94, 0], [1, 0]]} style={s.reel}>
           <View style={s.reelIn} pointerEvents="none" accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
             <Animated.View style={roll}>
               {[0, 1].map((c) =>
