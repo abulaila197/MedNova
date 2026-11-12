@@ -196,10 +196,15 @@ function TabletProgramme() {
     <Screen tab="games" glow={0} wide>
       <View style={s.fill}>
         <Head end="tap one to play" />
+        {/* rows of two, every strip the same height; an odd last game sits alone on the left */}
         <View style={s.tGrid}>
-          {[0, 1].map((c) => (
-            <View key={c} style={s.tCol}>
-              {GAMES.map((g, j) => (j % 2 === c ? <TabletStrip key={g.key} g={g} j={j} /> : null))}
+          {Array.from({ length: Math.ceil(GAMES.length / 2) }, (_, r) => (
+            <View key={r} style={s.tLine}>
+              {[0, 1].map((c) => {
+                const j = r * 2 + c;
+                const g = GAMES[j];
+                return g ? <TabletStrip key={g.key} g={g} j={j} /> : <View key={c} style={s.tGap} />;
+              })}
             </View>
           ))}
         </View>
@@ -232,9 +237,10 @@ const s = StyleSheet.create({
   startTap: { flex: 1, borderRadius: u(22), overflow: 'hidden' },
   start: { flex: 1, borderRadius: u(22), alignItems: 'center', justifyContent: 'center' },
   startT: { fontFamily: F.display, fontSize: u(16), lineHeight: u(20) },
-  tGrid: { flex: 1, flexDirection: 'row', gap: u(12), paddingLeft: u(16), paddingRight: u(52), paddingTop: u(6), paddingBottom: u(16) },
-  tCol: { flex: 1, minWidth: 0, gap: u(12) },
-  tRow: { flex: 1, maxHeight: u(150), minHeight: u(104), borderRadius: u(14), borderWidth: 1, overflow: 'hidden', backgroundColor: '#0b1331' },
+  tGrid: { flex: 1, gap: u(10), paddingLeft: u(16), paddingRight: u(52), paddingTop: u(6), paddingBottom: u(16) },
+  tLine: { flex: 1, maxHeight: u(150), flexDirection: 'row', gap: u(12) },
+  tGap: { flex: 1 },
+  tRow: { flex: 1, minWidth: 0, borderRadius: u(14), borderWidth: 1, overflow: 'hidden', backgroundColor: '#0b1331' },
   tTag: { position: 'absolute', left: u(44), top: u(12) },
   tPlay: { position: 'absolute', right: u(12), bottom: u(12), borderRadius: u(12), paddingVertical: u(6), paddingHorizontal: u(14) },
   tPlayT: { fontFamily: F.bodyBold, fontSize: u(11), lineHeight: u(14) },
