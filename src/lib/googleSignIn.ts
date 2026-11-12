@@ -21,20 +21,23 @@ export async function sessionFromUrl(url: string) {
 }
 
 /**
- * Native Google sign-in on Android (Yazan 2026-11-12, for the next build): Google's own account sheet, which shows
+ * Native Google sign-in on Android and iPhone (Yazan 2026-11-12, for the next build): Google's own account sheet, which shows
  * "MedNova" instead of the xxxx.supabase.co address the web page shows. It needs the Web client ID from Google Cloud
- * in EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID (and that ID added to Supabase's Google provider); until then, and on iPhone,
- * the web page below is used.
+ * in EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID (and that ID added to Supabase's Google provider); until then the web page below
+ * is used. iPhone joins once EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID is set too (Supabase: add that ID and turn on Skip nonce check).
  */
 const WEB_CLIENT_ID = process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID ?? '';
-export const NATIVE_GOOGLE = Platform.OS === 'android' && WEB_CLIENT_ID.endsWith('.apps.googleusercontent.com');
+// iPhone also needs its own iOS client ID (and the plugin's iosUrlScheme in app.json, made from it at build time).
+const IOS_CLIENT_ID = process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID ?? '';
+const isId = (id: string) => id.endsWith('.apps.googleusercontent.com');
+export const NATIVE_GOOGLE = isId(WEB_CLIENT_ID) && (Platform.OS === 'android' || (Platform.OS === 'ios' && isId(IOS_CLIENT_ID)));
 
 async function nativeGoogleSignIn() {
-  // Loaded only here, so the web build and iPhone never touch the native module.
+  // Loaded only here, so the web build never touches the native module.
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   const { GoogleSignin, statusCodes } = require('@react-native-google-signin/google-signin') as typeof import('@react-native-google-signin/google-signin');
-  GoogleSignin.configure({ webClientId: WEB_CLIENT_ID });
-  await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+  GoogleSignin.configure({ webClientId: WEB_CLIENT_ID, ...(Platform.OS === 'ios' ? { iosClientId: IOS_CLIENT_ID } : {}) });
+  if (Platform.OS === 'android') await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
   // Signed out first, so the account picker shows every time (like prompt=select_account on the web page).
   await GoogleSignin.signOut().catch(() => {});
   try {

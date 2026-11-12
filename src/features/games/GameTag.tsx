@@ -39,17 +39,17 @@ const LOOK: Record<GameKind, { label: string; color: string; text: string }> = {
   learn: {
     label: 'On duty',
     color: '#34d399',
-    text: "Learning comes first. Every case or question you miss goes to Today's review on the Learn page, so you can go over it again, and missed diseases open their dossier with the full notes.",
+    text: "Learning first. Every miss goes to Today's review on Learn.",
   },
   both: {
     label: 'Play and learn',
     color: '#f59e0b',
-    text: 'Learning and fun together. You pick up medicine as you play, but the game comes first, so most misses stay in the game. The results page links each answer to its dossier if you want to read up.',
+    text: 'Fun first, medicine along the way. Results link each answer to its dossier.',
   },
   play: {
     label: 'Party time',
     color: '#f472b6',
-    text: "Group games on one phone: pass it around with friends. The words are medical, but nothing goes to Today's review. Just play.",
+    text: 'Group games on one phone with friends. Nothing goes to review.',
   },
 };
 const ORDER: GameKind[] = ['learn', 'both', 'play'];
@@ -107,11 +107,11 @@ export function GameTagSheet() {
 const s = StyleSheet.create({
   tag: { alignSelf: 'flex-start', borderWidth: 1, borderRadius: u(7), paddingVertical: u(3), paddingHorizontal: u(8) },
   t: { fontFamily: F.bodyBold, fontSize: u(8.5), lineHeight: u(11), letterSpacing: u(0.5), textTransform: 'uppercase' },
-  body: { gap: u(10), paddingTop: u(4) },
-  row: { gap: u(7), borderWidth: 1, borderRadius: u(12), padding: u(10) },
-  big: { paddingVertical: u(5), paddingHorizontal: u(11), borderRadius: u(9) },
-  bigT: { fontSize: u(10.5), lineHeight: u(13) },
-  p: { fontFamily: F.body, fontSize: u(12.5), lineHeight: u(19) },
-  ok: { alignSelf: 'stretch', borderWidth: 1, borderRadius: u(14), paddingVertical: u(10), alignItems: 'center' },
+  body: { gap: u(6), paddingTop: u(2) },
+  row: { gap: u(4), borderWidth: 1, borderRadius: u(10), paddingVertical: u(7), paddingHorizontal: u(9) },
+  big: { paddingVertical: u(3), paddingHorizontal: u(9), borderRadius: u(8) },
+  bigT: { fontSize: u(9.5), lineHeight: u(12) },
+  p: { fontFamily: F.body, fontSize: u(11), lineHeight: u(15) },
+  ok: { alignSelf: 'stretch', borderWidth: 1, borderRadius: u(12), paddingVertical: u(8), alignItems: 'center' },
   okT: { fontFamily: F.bodyBold, fontSize: u(12) },
 });
