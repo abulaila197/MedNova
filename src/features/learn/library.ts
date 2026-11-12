@@ -123,11 +123,11 @@ function qaOf(game: string, item: PlayItem): Omit<Extract<Card, { kind: 'qa' }>,
     const notes = boxes.map((b) => `${b}: ${g.b.find((x) => x[0] === b)?.[1] ?? ''}`);
     return { q: `What links these four?\n${boxes.join(' · ')}`, choices: [], answer: [`${g.n}. ${g.l}`, ...notes].join('\n') };
   }
-  // Spot the Flaw: the whole story; the answer is the flaw, what should have happened and why.
+  // Spot the Flaw (Yazan 2026-11-12): front = what went wrong and what should have happened, then "Why?"; back = the explanation only.
   if (game === 'spot-the-flaw') {
     const c = stfById.get(item.itemId);
     if (!c) return null;
-    return { q: `${c.s}\n\nWhat went wrong?`, choices: [], answer: [c.t, c.a[0].o, `What should have happened: ${c.a[0].x}`, c.a[0].w].join('\n') };
+    return { q: `What went wrong:\n${c.a[0].o}\n\nWhat should have happened:\n${c.a[0].x}\n\nWhy is this?`, choices: [], answer: c.a[0].w };
   }
   if (game === 'trust-me-not') {
     const q = tmnQuestion(item.itemId);

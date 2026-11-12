@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import { Text } from '@/components/AppText';
 import { YOU } from '@/bots/race/engine';
 import { useBotRace } from '@/bots/race/useBotRace';
-import { PlayerFace } from '@/features/style/Frame';
 import { settingsLine } from '@/match/format';
 import { AlertPill, Countdown } from '@/match/live';
 import type { RacePlayer, RaceState } from '@/match/race';
@@ -132,24 +131,6 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
   }
 
   const left = race.leftMs(now);
-  const chips = (
-    <View style={s.lead}>
-      {st.players.map((x) => (
-        <View key={x.user_id} style={[s.chip, { borderColor: colorOf(x) }]}>
-          <PlayerFace slug={x.character} size={u(18)} userId={x.user_id} still />
-          <View style={{ flex: 1, minWidth: 0, gap: u(2) }}>
-            <Text style={s.chipT} numberOfLines={1}>{x.user_id === YOU ? 'You' : x.name.split(' ')[0]}</Text>
-            <View style={s.dots}>
-              {[0, 1].map((i) => (
-                <View key={i} style={[s.dot, { backgroundColor: i < (x.greens ?? 0) ? C.coral : 'rgba(255,255,255,0.16)' }]} />
-              ))}
-            </View>
-          </View>
-          <Text style={s.chipS}>{x.score}</Text>
-        </View>
-      ))}
-    </View>
-  );
   return (
     <GameScreen scroll={false} under={<StfSky />} bodyStyle={{ paddingTop: u(12), paddingHorizontal: u(16), paddingBottom: u(14) }}>
       <CaseView
@@ -163,12 +144,8 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
           highlight: { label: run.highlight ? 'Highlighted' : `Highlight · ${STF.highlightCost} tokens`, onPress: () => void buy(STF.highlightCost, 'stf_highlight', takeHighlight), disabled: run.highlight || busy },
           note: helpNote,
         }}
-        top={
-          <View style={{ gap: u(8) }}>
-            <TopLine kicker={kicker} right={<Pill text={left != null ? clock(left, { down: true }) : `${me?.score ?? 0} pts`} warn={left != null && left < 15_000} />} />
-            {chips}
-          </View>
-        }
+        // No chips over the paper (Yazan 2026-11-12): who locked in shows as live pop-ups, never what they picked.
+        top={<TopLine kicker={kicker} right={<Pill text={left != null ? clock(left, { down: true }) : `${me?.score ?? 0} pts`} warn={left != null && left < 15_000} />} />}
         onLock={(pick) => void g.at((at) => race.lock(at, pick))}
       />
       <AlertPill alert={g.alert} />
@@ -179,11 +156,5 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
 }
 
 const s = StyleSheet.create({
-  lead: { flexDirection: 'row', flexWrap: 'wrap', gap: u(6), marginRight: u(52) },
-  chip: { flexDirection: 'row', alignItems: 'center', gap: u(5), borderWidth: 1, borderRadius: 999, paddingVertical: u(3), paddingLeft: u(3), paddingRight: u(8), flexGrow: 1, flexBasis: '45%', backgroundColor: 'rgba(255,255,255,0.05)' },
-  chipT: { fontFamily: F.bodySemi, fontSize: u(11), lineHeight: u(13), color: C.text },
-  dots: { flexDirection: 'row', gap: u(3) },
-  dot: { width: u(10), height: u(4), borderRadius: u(2) },
-  chipS: { fontFamily: F.mono, fontSize: u(10.5), color: C.soft },
   wait: { fontFamily: F.body, fontSize: u(11.5), color: C.mute, textAlign: 'center' },
 });

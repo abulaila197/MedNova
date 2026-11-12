@@ -3,7 +3,7 @@
 // pen. Rounded choices with coral A-D letters, a coral "Lock it in".
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Modal, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 
 import { Text } from '@/components/AppText';
@@ -13,7 +13,7 @@ import { tapped } from '@/lib/sound';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
-import { LEVEL_NAME, STF, casePoints, right1, right2, shownOf, type Case, type CaseRun } from './core';
+import { LEVEL_NAME, casePoints, right1, right2, shownOf, type Case, type CaseRun } from './core';
 import { hospitalOf } from './data';
 
 export const SERIF = 'Fraunces_400Regular';
@@ -26,6 +26,10 @@ export const C = {
   head: '#7a86b3',
   margin: '#ff8b96',
   pen: '#e2283a',
+  /** On the white answer card (Yazan 2026-11-12): headings green, "You said" red, the explanations cyan. */
+  secOk: '#14895a',
+  why: '#0a7f99',
+  said: '#d61f33',
   coral: '#ff5d6c',
   text: '#eef2ff',
   soft: '#cfd8ff',
@@ -73,7 +77,7 @@ export const Pill = ({ text, warn }: { text: string; warn?: boolean }) => (
 );
 
 /** The case sheet: header, the story in a serif, the red margin line. Scrolls inside; Highlight circles the flaw. */
-export function Sheet({ c, highlight, style }: { c: Case; highlight?: boolean; style?: object }) {
+export function Sheet({ c, highlight, style, onOpen }: { c: Case; highlight?: boolean; style?: object; onOpen?: () => void }) {
   const paras = c.s.split('\n\n');
   const ys = useRef<number[]>([]);
   const scroll = useRef<ScrollView>(null);
@@ -96,7 +100,7 @@ export function Sheet({ c, highlight, style }: { c: Case; highlight?: boolean; s
         ref={scroll}
         nestedScrollEnabled
         style={{ flex: 1 }}
-        contentContainerStyle={{ gap: u(8), paddingBottom: u(26) }}
+        contentContainerStyle={{ gap: u(8), paddingBottom: onOpen ? u(40) : u(26) }}
         showsVerticalScrollIndicator
         onScroll={(e) => {
           const { contentOffset, contentSize, layoutMeasurement } = e.nativeEvent;
@@ -125,8 +129,66 @@ export function Sheet({ c, highlight, style }: { c: Case; highlight?: boolean; s
           look here
         </Animated.Text>
       ) : null}
-      {more ? <LinearGradient colors={['rgba(247,248,252,0)', C.paper]} style={s.fade} pointerEvents="none" /> : null}
+      {more ? <LinearGradient colors={['rgba(247,248,252,0)', C.paper]} style={[s.fade, onOpen ? { bottom: u(30) } : null]} pointerEvents="none" /> : null}
+      {onOpen ? (
+        <Pressable onPress={tapped(onOpen)} accessibilityRole="button" accessibilityLabel="Tap to read the whole note" style={s.openBar}>
+          <Text style={s.openT}>Tap to read the whole note  ›</Text>
+        </Pressable>
+      ) : null}
     </View>
+  );
+}
+
+/**
+ * The whole note as one paper in a pop-up (Yazan 2026-11-12): no scrolling; a long note shrinks its font until it fits.
+ */
+export function NotePopup({ c, highlight, onClose }: { c: Case; highlight?: boolean; onClose: () => void }) {
+  const paras = c.s.split('\n\n');
+  const base = u(13.5);
+  const [fs, setFs] = useState(base);
+  const [room, setRoom] = useState(0);
+  const [need, setNeed] = useState(0);
+  const fits = room > 0 && need > 0 && need <= room;
+  // Measured, not guessed: while the note is taller than the paper, step the font down.
+  const sizes = useRef({ room: 0, need: 0 });
+  const check = () => {
+    const { room: r, need: n } = sizes.current;
+    if (r > 0 && n > r) setFs((f) => (f > u(7) ? Math.max(u(7), f * 0.93) : f));
+  };
+  return (
+    <Modal transparent visible animationType="fade" onRequestClose={onClose} statusBarTranslucent>
+      <Pressable style={s.popBack} onPress={onClose} accessibilityLabel="Close the note">
+        <Pressable style={[s.sheet, s.popSheet]} onPress={() => {}}>
+          <View style={s.margin} />
+          <View style={s.sheetHead}>
+            <Text style={s.sheetHeadT} numberOfLines={1}>{`${c.p} · ${hospitalOf(c.id)}`.toUpperCase()}</Text>
+            <Text style={s.sheetHeadT}>{LEVEL_NAME[c.lv].toUpperCase()}</Text>
+          </View>
+          <View style={{ flex: 1, overflow: 'hidden' }} onLayout={(e) => { sizes.current.room = e.nativeEvent.layout.height; setRoom(sizes.current.room); check(); }}>
+            <View key={fs} style={{ gap: fs * 0.6, opacity: fits || fs <= u(7) ? 1 : 0 }} onLayout={(e) => { sizes.current.need = e.nativeEvent.layout.height; setNeed(sizes.current.need); check(); }}>
+              {paras.map((p, i) => {
+                const at = highlight ? p.indexOf(c.h) : -1;
+                const st = [s.story, { fontSize: fs, lineHeight: fs * 1.5 }];
+                return (
+                  <Text key={i} style={st}>
+                    {at < 0 ? p : (
+                      <>
+                        {p.slice(0, at)}
+                        <Text style={s.circled}>{c.h}</Text>
+                        {p.slice(at + c.h.length)}
+                      </>
+                    )}
+                  </Text>
+                );
+              })}
+            </View>
+          </View>
+          <Pressable onPress={tapped(onClose)} accessibilityRole="button" accessibilityLabel="Close" style={s.openBar}>
+            <Text style={s.openT}>Close</Text>
+          </Pressable>
+        </Pressable>
+      </Pressable>
+    </Modal>
   );
 }
 
@@ -199,27 +261,18 @@ export function Explain({ c, run, rows, foot }: { c: Case; run?: CaseRun; rows?:
             {pts != null ? <Text style={[s.cardPts, { color: pts > 0 ? C.ok : pts < 0 ? C.no : C.inkSoft }]}>{pts > 0 ? `+${pts}` : String(pts)}</Text> : null}
           </View>
           <Text style={s.cardTitle}>{c.t}</Text>
-          {run ? (
-            <Text style={s.cardMarks}>
-              <Text style={{ color: right1(run) ? C.ok : C.no }}>{mark(right1(run), 'Spotted it (+3)', run.pick1 === -1 ? 'No answer' : 'Missed it')}</Text>
-              {'   '}
-              <Text style={{ color: right2(run) ? C.ok : C.no }}>{mark(right2(run), 'Right fix (+3)', run.pick2 === -1 ? 'No answer' : 'Wrong fix')}</Text>
-              {!right1(run) && !right2(run) ? <Text style={{ color: C.no }}>{`   both wrong ${STF.bothWrong}`}</Text> : null}
-              {right1(run) && right2(run) && c.lv === 3 ? <Text style={{ color: C.ok }}>{`   hard case +${STF.hardBonus}`}</Text> : null}
-            </Text>
-          ) : null}
           <Text style={s.cardSec}>WHAT WENT WRONG</Text>
           <Text style={s.cardBody}>{c.a[0].o}</Text>
           {run && run.pick1 != null && run.pick1 > 0 ? <Text style={s.yours}>{`You said: ${c.a[run.pick1].o}`}</Text> : null}
           <Text style={s.cardSec}>WHAT SHOULD HAVE HAPPENED</Text>
           <Text style={[s.cardBody, { fontFamily: F.bodySemi }]}>{c.a[0].x}</Text>
           {run && run.pick2 != null && run.pick2 > 0 ? <Text style={s.yours}>{`You said: ${c.a[run.pick2].x}`}</Text> : null}
-          <Text style={s.cardBody}>{c.a[0].w}</Text>
+          <Text style={[s.cardBody, { color: C.why }]}>{c.a[0].w}</Text>
           <Text style={s.cardSec}>WHY THE REST WERE FINE</Text>
           {c.a.slice(1).map((a, i) => (
             <View key={i} style={s.rest}>
               <Text style={s.restO}>{a.o}</Text>
-              <Text style={s.cardBody}>{a.w}</Text>
+              <Text style={[s.cardBody, { color: C.why }]}>{a.w}</Text>
             </View>
           ))}
         </Animated.View>
@@ -262,6 +315,10 @@ export const s = StyleSheet.create({
   circled: { fontFamily: SERIF, color: C.pen, backgroundColor: 'rgba(226,40,58,0.10)', textDecorationLine: 'underline', textDecorationColor: C.pen },
   penNote: { position: 'absolute', right: u(12), top: u(22), fontFamily: PEN, fontSize: u(18), color: C.pen, transform: [{ rotate: '-6deg' }] },
   fade: { position: 'absolute', left: 0, right: 0, bottom: 0, height: u(30) },
+  openBar: { position: 'absolute', left: 0, right: 0, bottom: 0, height: u(30), alignItems: 'center', justifyContent: 'center', backgroundColor: C.paper, borderTopWidth: 1, borderTopColor: 'rgba(122,134,179,0.25)' },
+  openT: { fontFamily: F.bodyBold, fontSize: u(10.5), color: C.pen, letterSpacing: u(0.3) },
+  popBack: { flex: 1, backgroundColor: 'rgba(6,10,30,0.82)', paddingHorizontal: u(14), paddingVertical: u(34), justifyContent: 'center' },
+  popSheet: { flex: 1, paddingBottom: u(36) },
   askRow: { gap: u(3) },
   ask: { fontFamily: F.bodySemi, fontSize: u(10), letterSpacing: u(1.6), color: C.margin },
   opt: { flexDirection: 'row', gap: u(9), borderRadius: u(12), borderWidth: 1, borderColor: C.line, backgroundColor: 'rgba(255,255,255,0.06)', paddingVertical: u(8), paddingHorizontal: u(11) },
@@ -278,9 +335,9 @@ export const s = StyleSheet.create({
   cardPts: { fontFamily: SERIF_BOLD, fontSize: u(22), lineHeight: u(26) },
   cardTitle: { fontFamily: SERIF_BOLD, fontSize: u(19), lineHeight: u(24), color: C.ink },
   cardMarks: { fontFamily: F.bodySemi, fontSize: u(11), lineHeight: u(16) },
-  cardSec: { fontFamily: F.bodyBold, fontSize: u(8.5), letterSpacing: u(1.4), color: C.pen, marginTop: u(6) },
+  cardSec: { fontFamily: F.bodyBold, fontSize: u(8.5), letterSpacing: u(1.4), color: C.secOk, marginTop: u(6) },
   cardBody: { fontFamily: F.body, fontSize: u(11.5), lineHeight: u(16.5), color: C.ink },
-  yours: { fontFamily: F.body, fontStyle: 'italic', fontSize: u(10.5), lineHeight: u(15), color: C.no },
+  yours: { fontFamily: F.body, fontStyle: 'italic', fontSize: u(10.5), lineHeight: u(15), color: C.said },
   rest: { gap: u(2), borderLeftWidth: 2, borderLeftColor: 'rgba(28,35,64,0.15)', paddingLeft: u(8), marginTop: u(2) },
   restO: { fontFamily: F.bodySemi, fontSize: u(11), lineHeight: u(15.5), color: C.inkSoft },
   rows: { gap: u(6) },

@@ -1,11 +1,11 @@
 import { useState, type ReactNode } from "react";
-import { ScrollView, View } from "react-native";
+import { View } from "react-native";
 
 import { Text } from "@/components/AppText";
-import { u, useScreen } from "@/theme/scale";
+import { u } from "@/theme/scale";
 
 import type { Case, CaseRun } from "./core";
-import { Ask, Btn, C, Choices, Sheet, s } from "./Paper";
+import { Ask, Btn, C, Choices, NotePopup, Sheet, s } from "./Paper";
 
 export type Help = {
   fifty: { label: string; onPress: () => void; disabled?: boolean };
@@ -14,8 +14,8 @@ export type Help = {
 };
 
 /**
- * A case in play: the sheet is about 3/5 of the screen tall (Yazan) and scrolls inside; under it the question and its
- * 4 choices, scrolling with the page, and "Lock it in" always in reach at the bottom. Stage 1's choices are replaced by stage 2's once locked. `help` is Solo's 50/50 and Highlight.
+ * A case in play: the sheet takes the room left once the question and its 4 choices fit, with the whole note one tap
+ * away; the helps sit fixed over "Lock it in" at the bottom (Yazan 2026-11-12). Stage 1's choices are replaced by stage 2's once locked. `help` is Solo's 50/50 and Highlight.
  */
 export function CaseView({
   c,
@@ -40,61 +40,39 @@ export function CaseView({
   const [pick, setPick] = useState<{ key: string; i: number } | null>(null);
   const picked = pick?.key === key ? pick.i : null;
   const setPicked = (i: number) => setPick({ key, i });
-  const { height } = useScreen();
+  const [open, setOpen] = useState(false);
   return (
-    <View style={{ flex: 1, gap: u(10) }}>
-      <ScrollView
-        style={{ flex: 1 }}
-        contentContainerStyle={{ gap: u(10), paddingBottom: u(4) }}
-        showsVerticalScrollIndicator={false}
-      >
-        {top}
-        <Sheet
-          c={c}
-          highlight={run.highlight}
-          style={{ height: Math.max(u(260), height * 0.56) }}
-        />
-        <Ask stage={stage} />
-        <Choices
-          c={c}
-          run={run}
-          stage={stage}
-          picked={picked}
-          onPick={setPicked}
-          disabled={locked || run.stage === "done"}
-        />
-        {help ? (
-          <View style={{ gap: u(4) }}>
-            <View style={{ flexDirection: "row", gap: u(6) }}>
-              <Btn
-                label={help.fifty.label}
-                onPress={help.fifty.onPress}
-                disabled={locked || help.fifty.disabled}
-                flex={1}
-              />
-              <Btn
-                label={help.highlight.label}
-                onPress={help.highlight.onPress}
-                disabled={locked || help.highlight.disabled}
-                flex={1}
-              />
-            </View>
-            {help.note ? (
-              <Text style={[s.sub, { textAlign: "center", color: C.soft }]}>
-                {help.note}
-              </Text>
-            ) : null}
-          </View>
-        ) : note ? (
-          <Text style={[s.sub, { textAlign: "center" }]}>{note}</Text>
-        ) : null}
-      </ScrollView>
+    <View style={{ flex: 1, gap: u(8) }}>
+      {top}
+      {/* The paper takes what is left once the 4 choices fit (Yazan 2026-11-12); the whole note opens in a pop-up. */}
+      <Sheet c={c} highlight={run.highlight} style={{ flex: 1, minHeight: u(110) }} onOpen={() => setOpen(true)} />
+      <Ask stage={stage} />
+      <Choices
+        c={c}
+        run={run}
+        stage={stage}
+        picked={picked}
+        onPick={setPicked}
+        disabled={locked || run.stage === "done"}
+      />
+      {help?.note ? (
+        <Text style={[s.sub, { textAlign: "center", color: C.soft }]}>{help.note}</Text>
+      ) : note ? (
+        <Text style={[s.sub, { textAlign: "center" }]}>{note}</Text>
+      ) : null}
+      {help ? (
+        <View style={{ flexDirection: "row", gap: u(6) }}>
+          <Btn label={help.fifty.label} onPress={help.fifty.onPress} disabled={locked || run.stage === "done" || help.fifty.disabled} flex={1} />
+          <Btn label={help.highlight.label} onPress={help.highlight.onPress} disabled={locked || run.stage === "done" || help.highlight.disabled} flex={1} />
+        </View>
+      ) : null}
       <Btn
         label="Lock it in"
         go
         onPress={() => picked != null && onLock(picked)}
         disabled={locked || picked == null || run.stage === "done"}
       />
+      {open ? <NotePopup c={c} highlight={run.highlight} onClose={() => setOpen(false)} /> : null}
     </View>
   );
 }
