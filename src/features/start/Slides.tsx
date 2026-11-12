@@ -81,19 +81,34 @@ function Scene({ si, w, h, padTop, padBottom }: { si: number; w: number; h: numb
   const ih = iw * IMG_RATIO;
   const x = ox + (d.pos ? d.pos[0] * cw : (aw - iw) * 0.5) + u(d.shift ?? 0);
   const y = d.pos ? d.pos[1] * ch : h - ih;
+  // Small phones: the photo is narrower than the screen, so its side edges melt into the sky (Yazan 2026-11-12:
+  // a hard edge showed beside the photo).
+  const l = Math.max(0, x);
+  const r = Math.min(w, x + iw);
+  const melt = u(30);
+  const sides =
+    ox > 0 ? (
+      <>
+        <View style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: l, backgroundColor: NAVY }} />
+        <LinearGradient colors={[NAVY, 'rgba(7,10,28,0)']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={{ position: 'absolute', left: l - 1, top: 0, bottom: 0, width: melt }} />
+        <LinearGradient colors={['rgba(7,10,28,0)', NAVY]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={{ position: 'absolute', left: r - melt + 1, top: 0, bottom: 0, width: melt }} />
+        <View style={{ position: 'absolute', left: r, top: 0, bottom: 0, right: 0, backgroundColor: NAVY }} />
+      </>
+    ) : null;
   if (BAKED_ART) {
     // Same picture from still images: the photo (slide 3 with its top fade already in its alpha) and the veil,
     // a full-height gradient stretched to the screen.
     return (
       <View pointerEvents="none" style={StyleSheet.absoluteFill}>
         <Image source={d.fade === 'top' ? BAKED.communityFade : d.src} style={{ position: 'absolute', left: x, top: y, width: iw, height: ih }} contentFit="fill" transition={0} accessibilityIgnoresInvertColors />
+        {sides}
         <Image source={BAKED.veils[si]} style={StyleSheet.absoluteFill} contentFit="fill" transition={0} accessibilityIgnoresInvertColors />
       </View>
     );
   }
   const id = `ob${si}`;
   const soft = u(26);
-  return (
+  const svg = (
     <Svg width={w} height={h} style={StyleSheet.absoluteFill} pointerEvents="none">
       <Defs>
         {d.fade === 'top' ? (
@@ -116,6 +131,14 @@ function Scene({ si, w, h, padTop, padBottom }: { si: number; w: number; h: numb
       <SvgImage href={d.src} x={x} y={y} width={iw} height={ih} preserveAspectRatio="none" mask={d.fade ? `url(#${id}m)` : undefined} />
       <Rect x={0} y={0} width={w} height={h} fill={`url(#${id}v)`} />
     </Svg>
+  );
+  return sides ? (
+    <View pointerEvents="none" style={StyleSheet.absoluteFill}>
+      {svg}
+      {sides}
+    </View>
+  ) : (
+    svg
   );
 }
 
