@@ -6,7 +6,6 @@ import Animated, { cancelAnimation, Easing, useAnimatedStyle, useSharedValue, wi
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { scheduleOnRN } from 'react-native-worklets';
 
-import { PhoneColumn } from '@/components/PhoneColumn';
 import { TopInset } from '@/components/TopInset';
 import { Intro } from '@/features/start/Intro';
 import { NAVY } from '@/features/start/Sky';
@@ -14,7 +13,7 @@ import { useSlides } from '@/features/start/Slides';
 import { startAds } from '@/lib/ads';
 import { askPushNow, pushAllowed } from '@/lib/push';
 import { markOnboarded } from '@/state/start';
-import { TABLET, u, useScreen } from '@/theme/scale';
+import { u, useScreen } from '@/theme/scale';
 
 const LAST = 2;
 const EASE = Easing.bezier(0.25, 0.1, 0.25, 1);
@@ -23,23 +22,10 @@ const EASE = Easing.bezier(0.25, 0.1, 0.25, 1);
 let leaving = false;
 
 /** Intro, then three swipeable onboarding slides. Always dark. */
-export default function OnboardingPage() {
-  // The logo intro covers the whole screen, also on a tablet where the slides sit in a column.
-  const { width, height } = useScreen();
-  const [intro, setIntro] = useState(true);
-  return (
-    <View style={s.page}>
-      <PhoneColumn soft>
-        <Onboarding intro={intro} />
-      </PhoneColumn>
-      {intro ? <Intro w={width} h={height} onDone={() => setIntro(false)} /> : null}
-    </View>
-  );
-}
-
-function Onboarding({ intro }: { intro: boolean }) {
+export default function Onboarding() {
   const { width: w, height: h } = useScreen();
   const ins = useSafeAreaInsets();
+  const [intro, setIntro] = useState(true);
   const pos = useSharedValue(0);
   const start = useSharedValue(0);
 
@@ -103,19 +89,19 @@ function Onboarding({ intro }: { intro: boolean }) {
   const slides = useSlides({ w, h, padTop, padBottom, onNext: next, onSkip: toAuth });
 
   return (
-    <View style={[s.root, { backgroundColor: TABLET ? undefined : NAVY }]}>
+    <View style={[s.root, { backgroundColor: NAVY }]}>
       <GestureDetector gesture={pan}>
         <Animated.View style={[{ flexDirection: 'row', width: w * 3, height: h }, row]}>{slides}</Animated.View>
       </GestureDetector>
       <View pointerEvents="none" style={s.status}>
         <TopInset />
       </View>
+      {intro ? <Intro w={w} h={h} onDone={() => setIntro(false)} /> : null}
     </View>
   );
 }
 
 const s = StyleSheet.create({
-  page: { flex: 1, backgroundColor: NAVY },
   root: { flex: 1, overflow: 'hidden' },
   status: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 30 },
 });

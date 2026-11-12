@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Animated, Easing, StyleSheet, View } from 'react-native';
 import Svg, { Defs, RadialGradient, Rect, Stop } from 'react-native-svg';
 
-import { DESIGN_W, u, useBleed } from '@/theme/scale';
+import { DESIGN_W, u } from '@/theme/scale';
 
 import { BAKED, BAKED_ART } from './baked';
 
@@ -21,8 +21,6 @@ let seq = 0;
 
 /** CSS radial-gradient(rx% ry% at x% y%, color, transparent end%) layers over a base colour. */
 export function Sky({ w, h }: { w: number; h: number }) {
-  // In a tablet's phone column the whole-screen sky behind it shows instead, so the column has no edges.
-  if (useBleed() > 0) return null;
   if (BAKED_ART) return <BakedSky />;
   return <LiveSky w={w} h={h} />;
 }
@@ -73,9 +71,7 @@ function LiveSky({ w, h }: { w: number; h: number }) {
  * (seed 11 + 17 x screen index), each pulsing between 25% and 80% opacity.
  * Stars are grouped by speed and phase so a single looping clock drives them.
  */
-export function Stars({ si, hd, wd = DESIGN_W, whole = false }: { si: number; hd: number; wd?: number; whole?: boolean }) {
-  // In a tablet's phone column the whole-screen stars behind it (PhoneColumn) show instead.
-  const inCol = useBleed() > 0 && !whole;
+export function Stars({ si, hd, wd = DESIGN_W }: { si: number; hd: number; wd?: number }) {
   const [clock] = useState(() => new Animated.Value(0));
   const groups = useMemo(() => {
     let s = 11 + si * 17;
@@ -99,12 +95,10 @@ export function Stars({ si, hd, wd = DESIGN_W, whole = false }: { si: number; hd
     return out;
   }, [si, hd, wd]);
   useEffect(() => {
-    if (inCol) return;
     const a = Animated.loop(Animated.timing(clock, { toValue: 1, duration: 12000, easing: Easing.linear, useNativeDriver: true }));
     a.start();
     return () => a.stop();
-  }, [clock, inCol]);
-  if (inCol) return null;
+  }, [clock]);
   return (
     <View pointerEvents="none" style={StyleSheet.absoluteFill}>
       {groups.map((g) => {

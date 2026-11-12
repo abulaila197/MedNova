@@ -1,7 +1,7 @@
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useMemo, type ReactNode } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { type ImageStyle, Pressable, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 import Svg, { Defs, Image as SvgImage, LinearGradient as SvgLinear, Mask, RadialGradient, Rect, Stop } from 'react-native-svg';
 
@@ -22,6 +22,10 @@ const BODY = '#d5d8f0';
 const BAR = '#c3c7e4';
 
 const IMG_RATIO = 1376 / 768;
+
+/** Tablet (2026-11-12): the slides fill the whole screen, so their words and buttons are drawn a size larger. */
+const Z = TABLET ? 1.3 : 1;
+const z = (n: number) => u(n * Z);
 
 type Stop3 = [number, number]; // [offset 0..1, opacity of #070a1c]
 type SceneDef = {
@@ -111,25 +115,52 @@ function Scene({ si, w, h, padTop, padBottom }: { si: number; w: number; h: numb
   );
 }
 
+/**
+ * A slide's photo on a tablet: the whole picture across the full width (the phone zooms into part of it), anchored
+ * where its subject sits, under the same top-to-bottom veil.
+ */
+const TAB_POS = ['bottom', 'top', 'bottom'] as const;
+/** Slide 2's heart and book sit low in the photo: zoom in and bring them up into the clear band above the words. */
+const TAB_FOCUS: (null | { zoom: number; fx: number; fy: number; tx: number; ty: number })[] = [null, { zoom: 1.5, fx: 0.62, fy: 0.65, tx: 0.55, ty: 0.36 }, null];
+function TabletScene({ si, w, h }: { si: number; w: number; h: number }) {
+  const d = SCENES[si];
+  const f = TAB_FOCUS[si];
+  const src = d.fade === 'top' ? BAKED.communityFade : d.src;
+  let box: ImageStyle = { position: 'absolute', left: 0, top: 0, right: 0, bottom: 0 };
+  if (f) {
+    const iw = w * f.zoom;
+    const ih = iw * IMG_RATIO;
+    box = { position: 'absolute', width: iw, height: ih, left: w * f.tx - iw * f.fx, top: h * f.ty - ih * f.fy };
+  }
+  return (
+    <View pointerEvents="none" style={StyleSheet.absoluteFill}>
+      <Image source={src} style={box} contentFit={f ? 'fill' : 'cover'} contentPosition={TAB_POS[si]} transition={0} accessibilityIgnoresInvertColors />
+      <Image source={BAKED.veils[si]} style={StyleSheet.absoluteFill} contentFit="fill" transition={0} accessibilityIgnoresInvertColors />
+    </View>
+  );
+}
+
 const st = StyleSheet.create({
   bar: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  barTxt: { fontFamily: F.mono, fontSize: u(9.5), lineHeight: u(13), letterSpacing: u(1.71), color: BAR, textTransform: 'uppercase' },
-  copy: { gap: u(8) },
-  p: { fontFamily: F.body, fontSize: u(12), lineHeight: u(17.4), color: BODY },
-  dots: { flexDirection: 'row', gap: u(6) },
-  dot: { width: u(6), height: u(6), borderRadius: u(6), backgroundColor: 'rgba(255,255,255,0.3)' },
+  barTxt: { fontFamily: F.mono, fontSize: z(9.5), lineHeight: z(13), letterSpacing: z(1.71), color: BAR, textTransform: 'uppercase' },
+  copy: { gap: z(8) },
+  p: { fontFamily: F.body, fontSize: z(12), lineHeight: z(17.4), color: BODY },
+  dots: { flexDirection: 'row', gap: z(6) },
+  dot: { width: z(6), height: z(6), borderRadius: z(6), backgroundColor: 'rgba(255,255,255,0.3)' },
   cta: {
-    height: u(52),
-    borderRadius: u(18),
+    // tablet: a fixed-width button in the middle instead of edge to edge
+    ...(TABLET ? { alignSelf: 'center' as const, width: z(300) } : null),
+    height: z(52),
+    borderRadius: z(18),
     borderWidth: 1,
-    paddingHorizontal: u(18),
+    paddingHorizontal: z(18),
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     overflow: 'visible',
   },
-  ctaTxt: { fontFamily: F.bodySemi, fontSize: u(13.5) },
-  arr: { fontFamily: F.display, fontSize: u(20), lineHeight: u(20) },
+  ctaTxt: { fontFamily: F.bodySemi, fontSize: z(13.5) },
+  arr: { fontFamily: F.display, fontSize: z(20), lineHeight: z(20) },
 });
 
 function Dots({ on }: { on: number }) {
@@ -137,7 +168,7 @@ function Dots({ on }: { on: number }) {
     <View style={st.dots}>
       {[0, 1, 2].map((i) =>
         i === on ? (
-          <LinearGradient key={i} colors={[VIOLET, CYAN]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={[st.dot, { width: u(24) }]} />
+          <LinearGradient key={i} colors={[VIOLET, CYAN]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={[st.dot, { width: z(24) }]} />
         ) : (
           <View key={i} style={st.dot} />
         ),
@@ -156,10 +187,10 @@ function Cta({ live, onPress }: { live: boolean; onPress: () => void }) {
       style={[
         st.cta,
         live
-          ? { borderColor: 'transparent', boxShadow: `0px ${u(14)}px ${u(34)}px ${u(-10)}px rgba(120,140,255,0.95)` }
+          ? { borderColor: 'transparent', boxShadow: `0px ${z(14)}px ${z(34)}px ${z(-10)}px rgba(120,140,255,0.95)` }
           : { borderColor: 'rgba(255,255,255,0.14)', backgroundColor: 'rgba(7,10,28,0.55)' },
       ]}>
-      {live ? <LinearGradient colors={['#a48bff', '#6fd6ff']} start={LIVE.start} end={LIVE.end} style={[StyleSheet.absoluteFill, { borderRadius: u(18) }]} /> : null}
+      {live ? <LinearGradient colors={['#a48bff', '#6fd6ff']} start={LIVE.start} end={LIVE.end} style={[StyleSheet.absoluteFill, { borderRadius: z(18) }]} /> : null}
       <Text style={[st.ctaTxt, { color: live ? '#0b0b26' : 'rgba(238,240,255,0.35)' }]}>Get Started</Text>
       <Text style={[st.arr, { color: live ? '#0b0b26' : 'rgba(238,240,255,0.35)' }]}>→</Text>
     </Pressable>
@@ -168,7 +199,7 @@ function Cta({ live, onPress }: { live: boolean; onPress: () => void }) {
 
 function Skip({ onPress }: { onPress: () => void }) {
   return (
-    <Pressable onPress={onPress} hitSlop={u(12)} accessibilityRole="button" accessibilityLabel="Skip">
+    <Pressable onPress={onPress} hitSlop={z(12)} accessibilityRole="button" accessibilityLabel="Skip">
       <Text style={st.barTxt}>Skip</Text>
     </Pressable>
   );
@@ -177,7 +208,7 @@ function Skip({ onPress }: { onPress: () => void }) {
 /** Glass band behind the centred copy of slide 3 (copy::before, radial closest-side). */
 function Band() {
   return (
-    <Svg width={u(326)} height={u(261)} style={{ position: 'absolute', left: u(-40), top: u(-50) }} pointerEvents="none">
+    <Svg width={z(326)} height={z(261)} style={{ position: 'absolute', left: z(-40), top: z(-50) }} pointerEvents="none">
       <Defs>
         <RadialGradient id="obBand" cx="50%" cy="50%" rx="50%" ry="50%">
           <Stop offset={0} stopColor={NAVY} stopOpacity={0.82} />
@@ -185,7 +216,7 @@ function Band() {
           <Stop offset={1} stopColor={NAVY} stopOpacity={0} />
         </RadialGradient>
       </Defs>
-      <Rect x={0} y={0} width={u(326)} height={u(261)} fill="url(#obBand)" />
+      <Rect x={0} y={0} width={z(326)} height={z(261)} fill="url(#obBand)" />
     </Svg>
   );
 }
@@ -203,16 +234,16 @@ export type SlideProps = {
 function Frame({ si, w, h, padTop, padBottom, children }: Omit<SlideProps, 'onNext' | 'onSkip'> & { children: ReactNode }) {
   const hd = h / u(1);
   return (
-    <View style={{ width: w, height: h, overflow: 'hidden', backgroundColor: TABLET ? undefined : NAVY }}>
+    <View style={{ width: w, height: h, overflow: 'hidden', backgroundColor: NAVY }}>
       {/* Only the still art is cached as one GPU picture, so a swipe moves it without redrawing the photo and
           masks. The twinkling stars sit outside it: their opacity changes every frame and would redraw the cache
           each frame (DEF-071). Same order and place, so nothing looks different. */}
       <View pointerEvents="none" style={StyleSheet.absoluteFill} renderToHardwareTextureAndroid shouldRasterizeIOS>
         <Sky w={w} h={h} />
-        <Scene si={si} w={w} h={h} padTop={padTop} padBottom={padBottom} />
+        {TABLET ? <TabletScene si={si} w={w} h={h} /> : <Scene si={si} w={w} h={h} padTop={padTop} padBottom={padBottom} />}
       </View>
-      <Stars si={si} hd={hd} />
-      <View style={{ flex: 1, paddingTop: padTop, paddingBottom: padBottom, paddingHorizontal: u(18), gap: u(14) }}>{children}</View>
+      <Stars si={si} hd={hd} wd={w / u(1)} />
+      <View style={{ flex: 1, paddingTop: padTop, paddingBottom: padBottom, paddingHorizontal: TABLET ? u(40) : u(18), gap: z(14) }}>{children}</View>
     </View>
   );
 }
@@ -227,13 +258,13 @@ export function SlideGames(p: SlideProps) {
       </View>
       <View style={st.copy}>
         <View>
-          <Text style={{ fontFamily: F.display, fontSize: u(76), lineHeight: u(60.8), letterSpacing: u(-2.28), color: FG }}>Play</Text>
+          <Text style={{ fontFamily: F.display, fontSize: z(76), lineHeight: z(60.8), letterSpacing: z(-2.28), color: FG }}>Play</Text>
           <Text
-            style={{ fontFamily: F.displayItalic, fontSize: u(34), lineHeight: u(34), letterSpacing: u(-2.28), color: ACCENT, textAlign: 'center', marginTop: u(10) }}>
+            style={{ fontFamily: F.displayItalic, fontSize: z(34), lineHeight: z(34), letterSpacing: z(-2.28), color: ACCENT, textAlign: 'center', marginTop: z(10) }}>
             the case
           </Text>
         </View>
-        <Text style={[st.p, { maxWidth: u(208) }]}>Hunt the diagnosis like a detective, solo or against smart rivals.</Text>
+        <Text style={[st.p, { maxWidth: z(208) }]}>Hunt the diagnosis like a detective, solo or against smart rivals.</Text>
       </View>
       <View style={{ flex: 1 }} />
       <Dots on={0} />
@@ -254,27 +285,27 @@ export function SlideLearn(p: SlideProps) {
       <View style={st.copy}>
         <View>
           <View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
-            <Text style={{ fontFamily: F.display, fontSize: u(44), lineHeight: u(38.72), letterSpacing: u(-1.32), color: FG }}>{'Every '}</Text>
+            <Text style={{ fontFamily: F.display, fontSize: z(44), lineHeight: z(38.72), letterSpacing: z(-1.32), color: FG }}>{'Every '}</Text>
             <View>
-              <Text style={{ fontFamily: F.displayItalic, fontSize: u(44), lineHeight: u(38.72), letterSpacing: u(-1.32), color: ROSE }}>miss</Text>
+              <Text style={{ fontFamily: F.displayItalic, fontSize: z(44), lineHeight: z(38.72), letterSpacing: z(-1.32), color: ROSE }}>miss</Text>
               <View
                 pointerEvents="none"
                 style={{
                   position: 'absolute',
-                  left: u(-3),
-                  right: u(-3),
-                  top: u(21.16),
-                  height: u(2),
+                  left: z(-3),
+                  right: z(-3),
+                  top: z(21.16),
+                  height: z(2),
                   backgroundColor: ROSE,
                   transform: [{ rotate: '-6deg' }],
-                  boxShadow: `0px 0px ${u(10)}px ${ROSE}`,
+                  boxShadow: `0px 0px ${z(10)}px ${ROSE}`,
                 }}
               />
             </View>
           </View>
-          <Text style={{ fontFamily: F.displayItalic, fontSize: u(54), lineHeight: u(47.52), letterSpacing: u(-1.32), color: ACCENT }}>{'becomes\na star'}</Text>
+          <Text style={{ fontFamily: F.displayItalic, fontSize: z(54), lineHeight: z(47.52), letterSpacing: z(-1.32), color: ACCENT }}>{'becomes\na star'}</Text>
         </View>
-        <Text style={[st.p, { maxWidth: u(208) }]}>Every disease or term you get wrong lands in your dossier, ready to review.</Text>
+        <Text style={[st.p, { maxWidth: z(208) }]}>Every disease or term you get wrong lands in your dossier, ready to review.</Text>
       </View>
       <Dots on={1} />
       <Cta live={false} onPress={p.onNext} />
@@ -286,14 +317,14 @@ export function SlideLearn(p: SlideProps) {
 export function SlideCommunity(p: SlideProps) {
   return (
     <Frame {...p}>
-      <View style={[st.copy, { marginTop: u(28), alignItems: 'center' }]}>
+      <View style={[st.copy, { marginTop: z(28), alignItems: 'center' }]}>
         <Band />
-        <Text style={{ fontFamily: F.mono, fontSize: u(9), lineHeight: u(12), letterSpacing: u(2.7), color: CYAN }}>NOVA COMMUNITY</Text>
-        <Text style={{ fontFamily: F.display, fontSize: u(40), lineHeight: u(36), letterSpacing: u(-1.2), color: FG, textAlign: 'center' }}>
+        <Text style={{ fontFamily: F.mono, fontSize: z(9), lineHeight: z(12), letterSpacing: z(2.7), color: CYAN }}>NOVA COMMUNITY</Text>
+        <Text style={{ fontFamily: F.display, fontSize: z(40), lineHeight: z(36), letterSpacing: z(-1.2), color: FG, textAlign: 'center' }}>
           {'Never the\nonly one\n'}
           <Text style={{ fontFamily: F.displayItalic, color: ACCENT }}>on call</Text>
         </Text>
-        <Text style={[st.p, { maxWidth: u(194), textAlign: 'center' }]}>Share cases, challenge friends and read the MedNova newspaper.</Text>
+        <Text style={[st.p, { maxWidth: z(194), textAlign: 'center' }]}>Share cases, challenge friends and read the MedNova newspaper.</Text>
       </View>
       <View style={{ flex: 1 }} />
       <View style={{ alignItems: 'center' }}>

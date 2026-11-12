@@ -1,3 +1,4 @@
+import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { useState, type ReactNode } from 'react';
@@ -19,10 +20,13 @@ import { F, THEMES } from '@/theme/tokens';
 
 import { nameIsClean } from '@/lib/names';
 import { cssAngle } from './ease';
+import { BAKED } from './baked';
 import { Sky, Stars } from './Sky';
 
 /** Sign-in card heights and text: 90% of the approved design; widths stay full size (Yazan, 2026-10-19). */
-const k = (n: number) => u(n * 0.9);
+const k = (n: number) => u(n * 0.9 * (TABLET ? 1.15 : 1));
+/** Tablet (2026-11-12): the form is a card of this width in the middle of a full-screen sky, not a phone column. */
+const TAB_W = 340;
 
 // Sign-in colours from the prototype (d-auth / l-auth: `.auth` and `.auth.lite`).
 const C = {
@@ -457,9 +461,15 @@ export function SignIn() {
   }
 
   return (
-    <View style={[s.root, { backgroundColor: TABLET ? undefined : '#070a1c' }]}>
+    <View style={[s.root, { backgroundColor: '#070a1c' }]}>
       <Sky w={w} h={h} />
-      <Stars si={0} hd={h / u(1)} />
+      {TABLET ? (
+        <View pointerEvents="none" style={s.tabArt}>
+          <Image source={BAKED.communityFade} style={StyleSheet.absoluteFill} contentFit="cover" contentPosition="bottom" transition={0} accessibilityIgnoresInvertColors />
+          <LinearGradient colors={['#070a1c', 'rgba(7,10,28,0.55)', 'rgba(7,10,28,0.35)']} locations={[0, 0.45, 1]} style={StyleSheet.absoluteFill} />
+        </View>
+      ) : null}
+      <Stars si={0} hd={h / u(1)} wd={w / u(1)} />
       <TopInset />
       {/* Keyboard (PB10): iOS insets the scroll view; Android shrinks it (KeyboardLift) so the focused box stays in view. */}
       <SignInLift>
@@ -473,17 +483,19 @@ export function SignIn() {
           if (tab === 'up') setUpH((v) => Math.max(v, hh));
           else setInH((v) => Math.max(v, hh));
         }}
-        contentContainerStyle={{ paddingTop: padTop, paddingBottom: padBottom, paddingHorizontal: u(18) }}
+        contentContainerStyle={[{ paddingTop: padTop, paddingBottom: padBottom, paddingHorizontal: u(18) }, TABLET ? { alignItems: 'center' } : null]}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}>
-        <View style={s.head}>
-          <Text style={[s.welcome, { color: c.welcome }]}>Welcome to</Text>
-          <Text style={[s.brand, { color: c.accent }]}>MedNova</Text>
-        </View>
+        <View style={TABLET ? { width: Math.min(w - u(80), u(TAB_W)) } : null}>
+          <View style={s.head}>
+            <Text style={[s.welcome, TABLET && s.welcomeTab, { color: c.welcome }]}>Welcome to</Text>
+            <Text style={[s.brand, TABLET && s.brandTab, { color: c.accent }]}>MedNova</Text>
+          </View>
 
-        <View style={[s.card, { borderColor: c.cardEdge, boxShadow: c.cardShadow }]}>
-          <LinearGradient colors={c.cardGrad} style={[StyleSheet.absoluteFill, { borderRadius: k(21) }]} />
-          {body}
+          <View style={[s.card, { borderColor: c.cardEdge, boxShadow: c.cardShadow }]}>
+            <LinearGradient colors={c.cardGrad} style={[StyleSheet.absoluteFill, { borderRadius: k(21) }]} />
+            {body}
+          </View>
         </View>
       </ScrollView>
       </SignInLift>
@@ -496,6 +508,9 @@ const s = StyleSheet.create({
   // 2026-10-19: smaller title, set a touch lower than the original (Yazan)
   head: { marginTop: u(6) },
   welcome: { fontFamily: F.display, fontSize: u(18), lineHeight: u(17.6), letterSpacing: u(-1.2), alignSelf: 'flex-start' },
+  welcomeTab: { alignSelf: 'center', fontSize: u(22), lineHeight: u(24) },
+  brandTab: { fontSize: u(60), lineHeight: u(62), marginTop: u(4) },
+  tabArt: { position: 'absolute', left: 0, right: 0, bottom: 0, height: '62%', opacity: 0.85 },
   brand: { fontFamily: F.display, fontSize: u(44), lineHeight: u(43.1), letterSpacing: u(-1.2), alignSelf: 'center', marginTop: u(2) },
   // the card at full width, its heights 90% of the approved size, sitting a little higher (Yazan, 2026-10-19)
   card: { marginTop: u(14), borderWidth: 1, borderRadius: k(22), paddingVertical: k(14), paddingHorizontal: u(14), gap: k(8) },
