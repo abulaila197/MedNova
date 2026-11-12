@@ -23,6 +23,7 @@ const KIND: Record<string, GameKind> = {
   'code-clinic': 'play',
   imposter: 'play',
   'tilt-and-tell': 'play',
+  'four-of-a-kind': 'both',
   'the-silent-artist': 'play',
   'nova-medicordle': 'both',
   'the-riddler': 'both',

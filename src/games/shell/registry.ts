@@ -19,6 +19,7 @@ const LOAD: Record<string, () => GameDef> = {
   'the-quiz-parade': () => require('../parade/def').quizParade,
   imposter: () => require('../imposter/def').imposter,
   'tilt-and-tell': () => require('../tilt/def').tiltAndTell,
+  'four-of-a-kind': () => require('../fok/def').fourOfAKind,
 };
 
 const loaded = new Map<string, GameDef>();

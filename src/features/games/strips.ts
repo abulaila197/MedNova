@@ -11,5 +11,6 @@ export const STRIP: Record<string, number> = {
   'the-wheels-of-chaos': require('@/assets/games/strips/the-wheels-of-chaos.webp'),
   imposter: require('@/assets/games/strips/imposter.webp'),
   'tilt-and-tell': require('@/assets/games/strips/tilt-and-tell.webp'),
+  'four-of-a-kind': require('@/assets/games/strips/four-of-a-kind.webp'),
 };
 

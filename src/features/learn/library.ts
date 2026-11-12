@@ -10,6 +10,7 @@ import { questionById } from '@/games/streak/data';
 import { answerText as paradeAnswer } from '@/games/parade/core';
 import { questionById as paradeById } from '@/games/parade/data';
 import { questionById as wheelsById } from '@/games/wheels/data';
+import { groupById as fokById } from '@/games/fok/data';
 
 import dossiersJson from './data/dossiers.json';
 import shelvesJson from './data/shelves.json';
@@ -112,6 +113,14 @@ function qaOf(game: string, item: PlayItem): Omit<Extract<Card, { kind: 'qa' }>,
       case 'match':
         return { q: q.prompt, choices: [], answer: q.pairs.map(([a, b]) => `${a} → ${b}`).join('\n') };
     }
+  }
+  // Four of a Kind: the four boxes you saw; the answer is the link and each box's note. Wordplay never comes here.
+  if (game === 'four-of-a-kind') {
+    const g = fokById.get(item.itemId);
+    const boxes = (item.gameData.boxes as string[] | undefined) ?? [];
+    if (!g || boxes.length !== 4) return null;
+    const notes = boxes.map((b) => `${b}: ${g.b.find((x) => x[0] === b)?.[1] ?? ''}`);
+    return { q: `What links these four?\n${boxes.join(' · ')}`, choices: [], answer: [`${g.n}. ${g.l}`, ...notes].join('\n') };
   }
   if (game === 'trust-me-not') {
     const q = tmnQuestion(item.itemId);

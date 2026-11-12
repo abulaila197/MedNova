@@ -196,13 +196,36 @@ export const LOAD: Record<string, LoadCfg> = {
     tip: { f: 'AlegreyaSans_500Medium', s: 14, c: '#fff4e3', bg: 'rgba(30,8,34,0.62)', b: 'rgba(255,215,128,0.28)' },
     bar: { t: 'line', c: '#ffd780', track: 'rgba(255,215,128,0.16)', glow: '0 0 10px #ffd780, 0 0 22px rgba(255,190,90,0.5)' },
     tag: { t: 'Pass the phone · teams', side: 'left', c: '#fff4e3', bg: 'rgba(0,0,0,0.45)', b: 'rgba(255,215,128,0.3)' },
+    // Bloop's dressing room (2026-11-12): bulbs round the mirror, Bloop's green eyes in the mirror.
     glows: [
-      { x: 0.2, y: 0.42, r: 70, c: 'rgba(255,200,110,0.4)', a: 'still' },
-      { x: 0.62, y: 0.72, r: 40, c: 'rgba(255,215,128,0.35)', a: 'pulse' },
+      { x: 0.13, y: 0.52, r: 60, c: 'rgba(255,200,110,0.38)', a: 'still' },
+      { x: 0.6, y: 0.47, r: 44, c: 'rgba(255,215,128,0.35)', a: 'flicker' },
+      { x: 0.36, y: 0.628, r: 26, c: 'rgba(120,255,170,0.45)', a: 'pulse' },
     ],
     parts: ['motes'],
     tips: ['Tilt down when you get it, up to pass.', 'Only 3 passes a turn, so think before you skip.', 'Hold the phone flat on your forehead, screen facing your team.'],
     fonts: ['Gabarito_800ExtraBold', 'AlegreyaSans_500Medium'],
+  },
+  // Four of a Kind (Yazan 2026-11-12): Sovereign sorting cards in a sunlit medical library, gold and crimson.
+  'four-of-a-kind': {
+    key: 'four-of-a-kind', photo: require('@/assets/loading/four-of-a-kind.webp'), fo: '55% 60%',
+    veil: { c: ['rgba(14,8,2,0.7)', 'rgba(0,0,0,0)'], at: [0, 0.36] },
+    // The art sits a little lower so the tip clears Sovereign's helmet.
+    txt: { top: 40, align: 'center' }, artY: 80, bg: '#140d05',
+    orig: { f: 'LibreBaskerville_400Regular_Italic', c: '#e9cf9a' },
+    title: { f: 'DMSerifDisplay_400Regular', s: 40, c: '#fff6e2', em: '#f2c14e', sh: 'rgba(242,193,78,0.5)' },
+    sub: { f: 'LibreBaskerville_400Regular_Italic', s: 15, c: '#f3e2c0' },
+    tip: { f: 'LibreBaskerville_400Regular_Italic', s: 14, c: '#fff6e2', bg: 'rgba(26,14,4,0.62)', b: 'rgba(242,193,78,0.28)' },
+    bar: { t: 'line', c: '#f2c14e', track: 'rgba(242,193,78,0.16)', glow: '0 0 10px #f2c14e, 0 0 22px rgba(255,180,70,0.5)' },
+    tag: { t: ALL, side: 'left', c: '#fff6e2', bg: 'rgba(0,0,0,0.42)', b: 'rgba(242,193,78,0.3)' },
+    glows: [
+      { x: 0.17, y: 0.26, r: 90, c: 'rgba(255,225,160,0.3)', a: 'still' },
+      { x: 0.35, y: 0.465, r: 26, c: 'rgba(255,40,60,0.5)', a: 'pulse' },
+      { x: 0.69, y: 0.52, r: 24, c: 'rgba(255,40,70,0.5)', a: 'pulse' },
+    ],
+    parts: ['motes'],
+    tips: ['“One away” means 3 of your 4 belong together.', 'Start with the group you are surest of. Fewer boxes make the rest easier.', 'Watch for boxes that could fit two groups. Only one is right.'],
+    fonts: ['DMSerifDisplay_400Regular', 'LibreBaskerville_400Regular_Italic'],
   },
   'the-streak-master': {
     key: 'the-streak-master', photo: require('@/assets/loading/the-streak-master.webp'), fo: '45% 62%',

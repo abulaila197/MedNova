@@ -17,6 +17,8 @@ export const GAMES: Game[] = [
   { key: 'imposter', lead: 'The', em: 'Imposter', sub: 'Who Walked In', desc: 'One player has a different word. Find who walked in.' },
   // New mode 1 of 3 (Yazan 2026-11-12): placed last until he sets its spot in the order.
   { key: 'tilt-and-tell', lead: 'Tilt &', em: 'Tell', sub: 'Read My Mind', desc: 'The word is on your forehead. Your team gives the clues.' },
+  // New mode 2 (Yazan 2026-11-12): placed last until he sets its spot in the order.
+  { key: 'four-of-a-kind', lead: 'Four of a', em: 'Kind', sub: 'Find the Hidden Link', desc: 'Sixteen boxes, four hidden groups. Find what links each four.' },
 ];
 
 /** Games taken off the Games page but kept for later (Yazan 2026-11-04): code, art, banks and database all stay. */

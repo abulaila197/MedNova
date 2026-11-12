@@ -28,6 +28,7 @@ const BB: Record<string, Box> = {
   'the-quiz-parade': [0.4, 1, 0.58, 0.98],
   imposter: [0.4, 1, 0.58, 0.98],
   'tilt-and-tell': [0.4, 1, 0.58, 0.98],
+  'four-of-a-kind': [0.4, 1, 0.58, 0.98],
   'code-clinic': [0.4, 1, 0.58, 0.98],
   'nova-password': [0.4, 1, 0.58, 0.98],
 };

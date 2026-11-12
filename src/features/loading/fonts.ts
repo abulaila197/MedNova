@@ -36,6 +36,7 @@ const FILES: Record<string, number> = {
   AlegreyaSans_500Medium: require('@expo-google-fonts/alegreya-sans/500Medium/AlegreyaSans_500Medium.ttf'),
   AlegreyaSans_700Bold: require('@expo-google-fonts/alegreya-sans/700Bold/AlegreyaSans_700Bold.ttf'),
   LibreBaskerville_400Regular_Italic: require('@expo-google-fonts/libre-baskerville/400Regular_Italic/LibreBaskerville_400Regular_Italic.ttf'),
+  DMSerifDisplay_400Regular: require('@expo-google-fonts/dm-serif-display/400Regular/DMSerifDisplay_400Regular.ttf'),
 };
 
 export async function loadFontsFor(key: string) {

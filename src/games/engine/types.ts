@@ -15,6 +15,7 @@ export type GameKey =
   | 'the-quiz-parade'
   | 'imposter'
   | 'tilt-and-tell'
+  | 'four-of-a-kind'
   | 'code-clinic'
   | 'nova-password';
 
