@@ -1,5 +1,6 @@
 // The shared play flow every game uses, so the general rules never differ between games.
 import { engine } from '../engine';
+import { localDay } from '../engine/gate';
 import type { GameKey, Mode, Play, PlayItem, Seat, Standing } from '../engine/types';
 import { bonusOf } from '@/features/shop/robots';
 import { chargePlay } from '@/features/sparks/sparks';
@@ -46,12 +47,24 @@ export async function recordItem(play: Play, item: Omit<PlayItem, 'id' | 'at' | 
   return row;
 }
 
+/** A game with a daily EXP cap pays only what is left of it today, and counts what it pays. */
+async function dayCapped(def: GameDef, exp: number) {
+  if (!def.expDay) return exp;
+  const key = `expday:${def.key}`;
+  const day = localDay();
+  const got = await engine.kv.get<{ day: string; n: number }>(key);
+  const used = got?.day === day ? got.n : 0;
+  const pay = Math.max(0, Math.min(exp, def.expDay - used));
+  await engine.kv.set(key, { day, n: used + pay });
+  return pay;
+}
+
 /** Ends the play, then pays EXP on the phone at once (rule 6). Vs rivals pays more against stronger rivals (G6). */
 export async function finishPlay(def: GameDef, play: Play, score: number, standings?: Standing[]) {
   const items = await engine.recorder.itemsOf(play.id);
   const cap = def.expCap(play.settings, play.mode);
   const base = Math.round(def.exp(score, items, play.settings) * rivalBoost(play.mode, play.settings));
-  const exp = Math.max(0, withBonus(Math.min(base, cap), cap));
+  const exp = await dayCapped(def, Math.max(0, withBonus(Math.min(base, cap), cap)));
   await engine.recorder.finish(play.id, { score, standings, expEarned: exp });
   if (play.mode === 'bots' && standings?.length) {
     const done = { ...play, standings, endedAt: Date.now() };

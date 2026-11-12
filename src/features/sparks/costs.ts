@@ -16,6 +16,7 @@ const DRAWS = by('performs', { 1: 15, 2: 30, 3: 45 }, 15);
 const TARGET = by('target', { 25: 30, 50: 45, 100: 60 }, 45);
 const PARADE = by('questions', { 5: 15, 10: 25, 15: 30 }, 25);
 const BOARDS = by('boards', { 1: 15, 3: 25, 5: 40 }, 25);
+const FLAWS = by('cases', { 1: 15, 3: 25, 5: 40 }, 25);
 const ROUNDS = by('rounds', { 1: 15, 2: 25, 3: 40, 4: 45, 5: 60 }, 25);
 const STREAK_TIME = by('length', { 60: 10, 90: 15, 120: 25 }, 10);
 // Password: 5 or 10 words a team, 1 or 2 rounds (Yazan: 15 / 30 / 45 / 60).
@@ -42,6 +43,8 @@ const COSTS: Partial<Record<GameKey, Partial<Record<Mode, Price>>>> = {
   'tilt-and-tell': { offline: ROUNDS },
   // By boards, like the other games by rounds (1, 3 or 5).
   'four-of-a-kind': { solo: BOARDS, offline: BOARDS, bots: BOARDS },
+  // By cases, like Four of a Kind (Yazan 2026-11-12).
+  'spot-the-flaw': { solo: FLAWS, offline: FLAWS, bots: FLAWS },
   'code-clinic': { offline: flat(30) },
   'nova-password': { offline: PASSWORD },
 };

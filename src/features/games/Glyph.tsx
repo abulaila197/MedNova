@@ -23,6 +23,8 @@ const GLY: Record<string, Prim[]> = {
   'tilt-and-tell': [{ p: 'M3.5 13c3-2.2 14-2.2 17 0' }, { p: 'M3.5 16c3-2.2 14-2.2 17 0' }, { r: [8.5, 4, 7, 9.5, 1.2], fill: true }],
   // four boxes, the top row found
   'four-of-a-kind': [{ r: [3.5, 3.5, 7.5, 7.5, 1.5], fill: true }, { r: [13, 3.5, 7.5, 7.5, 1.5], fill: true }, { r: [3.5, 13, 7.5, 7.5, 1.5] }, { r: [13, 13, 7.5, 7.5, 1.5] }],
+  // a sheet with lines, one circled in red pen
+  'spot-the-flaw': [{ r: [5, 3, 14, 18, 1.5] }, { p: 'M8 8h8M8 15.5h8' }, { c: [12, 11.8, 3.6] }],
   // four word cards, two turned over
   'code-clinic': [{ r: [3.5, 3.5, 7.5, 7.5, 1.5] }, { r: [13, 3.5, 7.5, 7.5, 1.5], fill: true }, { r: [3.5, 13, 7.5, 7.5, 1.5], fill: true }, { r: [13, 13, 7.5, 7.5, 1.5] }],
   // a padlock

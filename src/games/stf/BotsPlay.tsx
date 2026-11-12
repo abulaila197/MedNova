@@ -1,0 +1,166 @@
+import { useEffect, useRef } from 'react';
+import { StyleSheet, View } from 'react-native';
+
+import { Text } from '@/components/AppText';
+import { YOU } from '@/bots/race/engine';
+import { useBotRace } from '@/bots/race/useBotRace';
+import { PlayerFace } from '@/features/style/Frame';
+import { settingsLine } from '@/match/format';
+import { AlertPill, Countdown } from '@/match/live';
+import type { RacePlayer, RaceState } from '@/match/race';
+import { RoomTalk } from '@/match/TalkBar';
+import { u } from '@/theme/scale';
+import { F } from '@/theme/tokens';
+
+import { clock } from '../engine/clock';
+import { playerColour } from '../shell/characters';
+import { PauseMenu } from '../shell/PauseMenu';
+import { gameDef } from '../shell/registry';
+import { presetTeam } from '../shell/teams';
+import type { PlayProps } from '../shell/types';
+import { GameScreen } from '../shell/ui';
+import { CaseView } from './CaseView';
+import { caseById } from './data';
+import { dealCases } from './deal';
+import { caseItem } from './items';
+import { Btn, C, Explain, Pill, StfSky, TopLine, type RevealRow } from './Paper';
+import { StfRace } from './rivals';
+
+/**
+ * Spot the Flaw vs rivals: the same case for everyone at the same time. You see who has locked in each stage, never
+ * what they picked; the explanation card shows everyone's answers. Your missed cases go to Learn.
+ */
+export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
+  const limitMs = (Number(play.settings.clock) || 0) * 60_000;
+  const cases = useRef<string[]>([]);
+  const g = useBotRace<StfRace>({
+    play,
+    onFinish,
+    onQuit,
+    blind: true,
+    build: (ctx) => new StfRace({ ...ctx, cases: cases.current, limitMs }),
+    pick: async () => {
+      cases.current = await dealCases(play);
+      return cases.current.map((_, i) => i + 1);
+    },
+    toItems: (st: RaceState, race: StfRace) =>
+      (st.my_items ?? []).flatMap((m) => {
+        const run = race.runOfCase(m.index);
+        const id = cases.current[m.index];
+        return id && run ? [caseItem(id, run, { index: m.index, learn: true, ms: m.solved_ms ?? 0 })] : [];
+      }),
+    solvedText: (name) => `${name} locked in both answers`,
+  });
+  const { st, race, t: now, push } = g;
+  const teams = Number(play.settings.teams) || 0;
+  const colorOf = (p: RacePlayer | undefined) => (!p ? C.coral : teams >= 2 && p.team != null ? presetTeam(p.team).color : playerColour(st?.players ?? [], p.user_id));
+
+  // "Sara locked in": who has answered, never what.
+  const seen = useRef<{ index: number; locks: Record<string, number> } | null>(null);
+  useEffect(() => {
+    if (!st || st.phase !== 'case') return;
+    const locks = Object.fromEntries(st.players.map((p) => [p.user_id, p.greens ?? 0]));
+    const was = seen.current;
+    seen.current = { index: st.index, locks };
+    if (!was || was.index !== st.index) return;
+    for (const p of st.players) {
+      if (p.user_id === YOU) continue;
+      const n = locks[p.user_id];
+      if (n > (was.locks[p.user_id] ?? 0)) push(n === 1 ? `${p.name} spotted something` : `${p.name} locked in both answers`, colorOf(p));
+    }
+  }, [st, push]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const menu = <PauseMenu open={g.menu} mode="bots" onResume={g.closeMenu} onQuit={g.quit} />;
+  if (!st || !race) return <GameScreen scroll={false} under={<StfSky />}>{null}</GameScreen>;
+  if (st.phase === 'countdown' || st.item == null) {
+    return (
+      <GameScreen scroll={false} under={<StfSky />}>
+        <Countdown ms={st.phase_ends_at - now} faces={st.players.map((p) => p.character)} line={settingsLine(gameDef(play.game), play.settings)} />
+        <RoomTalk room={g.room} me={g.talker} />
+        {menu}
+      </GameScreen>
+    );
+  }
+
+  const id = race.caseNow();
+  const run = race.mine();
+  const c = id ? caseById.get(id) : null;
+  if (!c || !run) return <GameScreen scroll={false} under={<StfSky />}>{null}</GameScreen>;
+  const total = st.total;
+  const kicker = total > 1 ? `Case ${st.index + 1} of ${total}` : 'One case';
+  const me = st.players.find((p) => p.user_id === YOU);
+
+  if (st.phase !== 'case') {
+    const runs = race.lastRuns();
+    const rows: RevealRow[] = [...st.players]
+      .sort((a, b) => (a.item_rank ?? 9) - (b.item_rank ?? 9))
+      .map((p) => ({ id: p.user_id, name: p.user_id === YOU ? 'You' : p.name, character: p.character, color: colorOf(p), run: runs[p.user_id], points: p.item_points ?? 0, rank: p.item_rank }))
+      .filter((r) => r.run);
+    const nextIn = Math.max(0, Math.ceil((st.phase_ends_at - now) / 1000));
+    const last = st.index + 1 >= total;
+    return (
+      <GameScreen scroll={false} under={<StfSky />} bodyStyle={{ paddingTop: u(12), paddingHorizontal: u(16), paddingBottom: u(14), gap: u(10) }}>
+        <TopLine kicker={`${kicker} · Everyone’s answers`} right={<Pill text={`${me?.score ?? 0} pts`} />} />
+        <Explain
+          c={c}
+          run={run}
+          rows={rows}
+          foot={st.phase === 'done' ? <Text style={s.wait}>Adding up the scores…</Text> : <Btn label={`${last ? 'See results' : 'Next case'} · ${nextIn} s`} go onPress={() => void g.at((at) => race.next(at))} />}
+        />
+        <AlertPill alert={g.alert} />
+        {menu}
+      </GameScreen>
+    );
+  }
+
+  const left = race.leftMs(now);
+  const chips = (
+    <View style={s.lead}>
+      {st.players.map((x) => (
+        <View key={x.user_id} style={[s.chip, { borderColor: colorOf(x) }]}>
+          <PlayerFace slug={x.character} size={u(18)} userId={x.user_id} still />
+          <View style={{ flex: 1, minWidth: 0, gap: u(2) }}>
+            <Text style={s.chipT} numberOfLines={1}>{x.user_id === YOU ? 'You' : x.name.split(' ')[0]}</Text>
+            <View style={s.dots}>
+              {[0, 1].map((i) => (
+                <View key={i} style={[s.dot, { backgroundColor: i < (x.greens ?? 0) ? C.coral : 'rgba(255,255,255,0.16)' }]} />
+              ))}
+            </View>
+          </View>
+          <Text style={s.chipS}>{x.score}</Text>
+        </View>
+      ))}
+    </View>
+  );
+  return (
+    <GameScreen scroll={false} under={<StfSky />} bodyStyle={{ paddingTop: u(12), paddingHorizontal: u(16), paddingBottom: u(14) }}>
+      <CaseView
+        key={st.index}
+        c={c}
+        run={run}
+        locked={g.paused || run.stage === 'done'}
+        note={run.stage === 'done' ? 'Locked in. Waiting for the rivals…' : 'Answers stay hidden until the reveal. No help vs rivals.'}
+        top={
+          <View style={{ gap: u(8) }}>
+            <TopLine kicker={kicker} right={<Pill text={left != null ? clock(left, { down: true }) : `${me?.score ?? 0} pts`} warn={left != null && left < 15_000} />} />
+            {chips}
+          </View>
+        }
+        onLock={(pick) => void g.at((at) => race.lock(at, pick))}
+      />
+      <AlertPill alert={g.alert} />
+      <RoomTalk room={g.room} me={g.talker} />
+      {menu}
+    </GameScreen>
+  );
+}
+
+const s = StyleSheet.create({
+  lead: { flexDirection: 'row', flexWrap: 'wrap', gap: u(6), marginRight: u(52) },
+  chip: { flexDirection: 'row', alignItems: 'center', gap: u(5), borderWidth: 1, borderRadius: 999, paddingVertical: u(3), paddingLeft: u(3), paddingRight: u(8), flexGrow: 1, flexBasis: '45%', backgroundColor: 'rgba(255,255,255,0.05)' },
+  chipT: { fontFamily: F.bodySemi, fontSize: u(11), lineHeight: u(13), color: C.text },
+  dots: { flexDirection: 'row', gap: u(3) },
+  dot: { width: u(10), height: u(4), borderRadius: u(2) },
+  chipS: { fontFamily: F.mono, fontSize: u(10.5), color: C.soft },
+  wait: { fontFamily: F.body, fontSize: u(11.5), color: C.mute, textAlign: 'center' },
+});

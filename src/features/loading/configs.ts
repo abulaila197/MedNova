@@ -227,6 +227,26 @@ export const LOAD: Record<string, LoadCfg> = {
     tips: ['“One away” means 3 of your 4 belong together.', 'Start with the group you are surest of. Fewer boxes make the rest easier.', 'Watch for boxes that could fit two groups. Only one is right.'],
     fonts: ['DMSerifDisplay_400Regular', 'LibreBaskerville_400Regular_Italic'],
   },
+  // Spot the Flaw (Yazan 2026-11-12): Cortex checking a case sheet by lamplight at night, navy, lamp gold and red pen.
+  'spot-the-flaw': {
+    key: 'spot-the-flaw', photo: require('@/assets/loading/spot-the-flaw.webp'), fo: '55% 62%',
+    veil: { c: ['rgba(6,9,22,0.72)', 'rgba(0,0,0,0)'], at: [0, 0.38] },
+    txt: { top: 40, align: 'center' }, artY: 70, bg: '#080b18',
+    orig: { f: 'Fraunces_400Regular_Italic', c: '#ffb3bb' },
+    title: { f: 'Fraunces_800ExtraBold', s: 40, c: '#f7f8fc', em: '#ff5d6c', sh: 'rgba(255,93,108,0.45)' },
+    sub: { f: 'Fraunces_400Regular_Italic', s: 15, c: '#dfe4ff' },
+    tip: { f: 'Fraunces_400Regular_Italic', s: 14, c: '#f7f8fc', bg: 'rgba(8,10,26,0.66)', b: 'rgba(255,93,108,0.3)' },
+    bar: { t: 'line', c: '#ff5d6c', track: 'rgba(255,93,108,0.16)', glow: '0 0 10px #ff5d6c, 0 0 22px rgba(255,93,108,0.5)' },
+    tag: { t: ALL, side: 'left', c: '#f7f8fc', bg: 'rgba(0,0,0,0.45)', b: 'rgba(255,93,108,0.3)' },
+    glows: [
+      { x: 0.2, y: 0.565, r: 60, c: 'rgba(255,200,110,0.35)', a: 'flicker' },
+      { x: 0.53, y: 0.5, r: 34, c: 'rgba(214,80,255,0.4)', a: 'pulse' },
+      { x: 0.5, y: 0.78, r: 18, c: 'rgba(255,40,60,0.5)', a: 'pulse' },
+    ],
+    parts: ['motes'],
+    tips: ['Every detail in the story can look wrong. Only one really is.', 'Stage 2 always comes, even after a wrong stage 1.', 'Both stages wrong costs 3 points, so read the story twice.'],
+    fonts: ['Fraunces_800ExtraBold', 'Fraunces_400Regular_Italic', 'Fraunces_400Regular', 'Caveat_700Bold'],
+  },
   'the-streak-master': {
     key: 'the-streak-master', photo: require('@/assets/loading/the-streak-master.webp'), fo: '45% 62%',
     veil: { c: ['rgba(0,0,0,0.45)', 'rgba(0,0,0,0)'], at: [0, 0.36] },

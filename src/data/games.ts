@@ -19,6 +19,8 @@ export const GAMES: Game[] = [
   { key: 'tilt-and-tell', lead: 'Tilt &', em: 'Tell', sub: 'Read My Mind', desc: 'The word is on your forehead. Your team gives the clues.' },
   // New mode 2 (Yazan 2026-11-12): placed last until he sets its spot in the order.
   { key: 'four-of-a-kind', lead: 'Four of a', em: 'Kind', sub: 'Find the Hidden Link', desc: 'Sixteen boxes, four hidden groups. Find what links each four.' },
+  // New mode 3 (Yazan 2026-11-12): placed last until he sets its spot in the order.
+  { key: 'spot-the-flaw', lead: 'Spot the', em: 'Flaw', sub: 'Read Between the Lines', desc: 'One story, one hidden mistake. Catch it, then fix it.' },
 ];
 
 /** Games taken off the Games page but kept for later (Yazan 2026-11-04): code, art, banks and database all stay. */

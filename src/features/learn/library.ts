@@ -11,6 +11,7 @@ import { answerText as paradeAnswer } from '@/games/parade/core';
 import { questionById as paradeById } from '@/games/parade/data';
 import { questionById as wheelsById } from '@/games/wheels/data';
 import { groupById as fokById } from '@/games/fok/data';
+import { caseById as stfById } from '@/games/stf/data';
 
 import dossiersJson from './data/dossiers.json';
 import shelvesJson from './data/shelves.json';
@@ -121,6 +122,12 @@ function qaOf(game: string, item: PlayItem): Omit<Extract<Card, { kind: 'qa' }>,
     if (!g || boxes.length !== 4) return null;
     const notes = boxes.map((b) => `${b}: ${g.b.find((x) => x[0] === b)?.[1] ?? ''}`);
     return { q: `What links these four?\n${boxes.join(' · ')}`, choices: [], answer: [`${g.n}. ${g.l}`, ...notes].join('\n') };
+  }
+  // Spot the Flaw: the whole story; the answer is the flaw, what should have happened and why.
+  if (game === 'spot-the-flaw') {
+    const c = stfById.get(item.itemId);
+    if (!c) return null;
+    return { q: `${c.s}\n\nWhat went wrong?`, choices: [], answer: [c.t, c.a[0].o, `What should have happened: ${c.a[0].x}`, c.a[0].w].join('\n') };
   }
   if (game === 'trust-me-not') {
     const q = tmnQuestion(item.itemId);

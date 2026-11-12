@@ -20,6 +20,7 @@ const LOAD: Record<string, () => GameDef> = {
   imposter: () => require('../imposter/def').imposter,
   'tilt-and-tell': () => require('../tilt/def').tiltAndTell,
   'four-of-a-kind': () => require('../fok/def').fourOfAKind,
+  'spot-the-flaw': () => require('../stf/def').spotTheFlaw,
 };
 
 const loaded = new Map<string, GameDef>();

@@ -43,6 +43,8 @@ export type GameDef = {
   /** EXP for a finished play, and the per-play sanity cap (rule 6). */
   exp: (score: number, items: PlayItem[], settings?: Record<string, unknown>) => number;
   expCap: (settings: Record<string, unknown>, mode?: Play['mode']) => number;
+  /** Most EXP this game pays in one day on this phone (Spot the Flaw: 60), on top of the per-play cap. */
+  expDay?: number;
   /** One line per item on the results page. */
   itemLabel?: (item: PlayItem) => string;
   /** What one item is called, as in "Resume word 3" (default "case"). */

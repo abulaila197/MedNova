@@ -43,6 +43,7 @@ BAND = {  # tall pictures (Yazan 2026-10-18 v2): scenes run from under the title
     'nova-password': (80, 260, 1150, 1300),
     'tilt-and-tell': (220, 380, 1150, 1300),
     'four-of-a-kind': (220, 380, 1150, 1300),
+    'spot-the-flaw': (200, 360, 1150, 1300),
 }
 
 
