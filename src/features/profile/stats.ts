@@ -43,6 +43,13 @@ export async function loadProfileStats(): Promise<ProfileStats> {
     if (it.outcome === 'right') t.right++;
     tally.set(it.playId, t);
   }
+  // Right answers the server folded away (older than 60 days) count when this phone doesn't have them itself.
+  for (const p of plays) {
+    if (!p.folded?.r || missesOnly.has(p.id)) continue;
+    const t = tally.get(p.id) ?? { right: 0, all: 0 };
+    if (t.right > 0) continue;
+    tally.set(p.id, { right: p.folded.r, all: t.all + p.folded.r });
+  }
   const sum = (ids: string[]) =>
     ids.reduce((s, id) => {
       const t = tally.get(id);

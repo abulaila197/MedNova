@@ -202,3 +202,10 @@ test('achievements: invites, challenges and written cases come from the server; 
   assert.equal(achievementProgress(base({ social: { ad_watcher: 50 } })).ad_watcher, 50);
   assert.equal(tiersReached('ad_watcher', 50), 2);
 });
+
+test('folded right answers (server, older than 60 days) count only when the phone lacks them', async () => {
+  const { achievementProgress } = await import('../progress');
+  const play = { id: 'p1', userId: null, game: 'the-riddler', mode: 'solo', settings: {}, startedAt: 0, endedAt: 1, status: 'finished', score: 0, seats: [], standings: [], pauses: 0, expEarned: 0, resume: null, synced: true, folded: { r: 3, riddle: 3 } } as never;
+  const p = achievementProgress({ plays: [play], items: [], reviewCards: 0 } as never);
+  assert.equal(p.riddle_me_this, 3);
+});

@@ -178,14 +178,19 @@ export function achievementProgress(i: AchInputs): Record<AchKey, number> {
   const solved = (g: GameKey) => of(g).filter((m) => m.x.outcome === 'right');
 
   const wins = (g: GameKey) => plays.filter((p) => p.game === g && won(p)).length;
+  // Folded right answers (server, older than 60 days) count for plays whose rights this phone doesn't have.
+  const haveRights = new Set(mine.filter((m) => m.x.outcome === 'right').map((m) => m.p.id));
+  const folds = plays.filter((p) => p.folded && !haveRights.has(p.id)).map((p) => p.folded!);
+  const fold = (k: 'clean' | 'two' | 'riddle' | 'cold') => folds.reduce((a, f) => a + (f[k] ?? 0), 0);
   const friends = new Set(i.friendIds ?? []);
   const perGame = ROTATION_GAMES.map((g) => plays.filter((p) => p.game === g).length);
   const night = plays.filter((p) => p.endedAt != null && new Date(p.endedAt).getHours() < 5).length;
-  const threeStars = new Set(
-    of('nova-crossword')
+  const threeStars = new Set([
+    ...of('nova-crossword')
       .filter((m) => m.p.mode === 'solo' && Number(m.x.gameData.stars) === 3)
       .map((m) => Number(m.x.gameData.level)),
-  ).size;
+    ...plays.filter((p) => p.game === 'nova-crossword' && !haveRights.has(p.id)).flatMap((p) => p.folded?.stars3 ?? []),
+  ]).size;
 
   // Rivals beaten, by level: every rival seat you finished above in a finished Vs rivals match.
   const beaten = { freshman: 0, scholar: 0, genius: 0 };
@@ -201,14 +206,14 @@ export function achievementProgress(i: AchInputs): Record<AchKey, number> {
     first_rounds: plays.length,
     full_rotation: Math.min(...perGame),
     night_shift: night,
-    clean_diagnosis: solved('the-diagnostic-pursuit').filter((m) => Number(m.x.gameData.cluesShown) === 1).length,
-    hot_streak: Math.max(0, ...of('the-streak-master').map((m) => Number(m.x.gameData.streak) || 0)),
+    clean_diagnosis: solved('the-diagnostic-pursuit').filter((m) => Number(m.x.gameData.cluesShown) === 1).length + fold('clean'),
+    hot_streak: Math.max(0, ...of('the-streak-master').map((m) => Number(m.x.gameData.streak) || 0), ...folds.map((f) => f.streak ?? 0)),
     two_guess: solved('nova-medicordle').filter((m) => {
       const n = rowsUsed(m.x, m.p);
       return n > 0 && n <= 2;
-    }).length,
-    riddle_me_this: solved('the-riddler').length,
-    cold_case: solved('case-files-unsolved').length,
+    }).length + fold('two'),
+    riddle_me_this: solved('the-riddler').length + fold('riddle'),
+    cold_case: solved('case-files-unsolved').length + fold('cold'),
     // Online stars are by place, not by words left, so only Solo puzzles count.
     full_marks: Math.max(threeStars, i.crosswordThreeStars ?? 0),
     conqueror: plays.filter((p) => p.game === 'the-conqueror' && won(p)).length,

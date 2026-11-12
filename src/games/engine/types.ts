@@ -54,7 +54,13 @@ export type Play = {
   /** Game-owned snapshot so a bookmarked play can resume at the exact case and clock (rules 7, 10). */
   resume: unknown;
   synced: boolean;
+  /**
+   * The server folds right answers older than 60 days into this summary and deletes them (Yazan 2026-11-12); a new
+   * phone counts it for stats and achievements. r = your right answers; the rest feed single achievements.
+   */
+  folded?: Folded;
 };
+export type Folded = { r: number; clean?: number; two?: number; riddle?: number; cold?: number; streak?: number; stars3?: number[] };
 
 /** One row per case or question. */
 export type PlayItem = {

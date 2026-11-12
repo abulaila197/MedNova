@@ -128,6 +128,7 @@ type LedgerRow = { id: string; kind: LedgerEntry['kind']; exp: number; tokens: n
 type PlayRow = {
   id: string; game: Play['game']; mode: Play['mode']; submode: string | null; settings: Play['settings']; started_at: string; ended_at: string | null;
   status: Play['status']; score: Play['score']; seats: Play['seats']; standings: Play['standings']; exp_earned: number; updated_at: string;
+  folded?: Play['folded'] | null;
 };
 type ItemRow = {
   id: string; play_id: string; seat: number; item_id: string; answer_key: PlayItem['answerKey']; outcome: PlayItem['outcome']; answers_given: PlayItem['answersGiven'];
@@ -209,6 +210,7 @@ async function run(userId: string) {
           expEarned: r.exp_earned,
           resume: null,
           synced: true,
+          ...(r.folded ? { folded: r.folded } : {}),
         }),
       ),
       items: it.data.map(
