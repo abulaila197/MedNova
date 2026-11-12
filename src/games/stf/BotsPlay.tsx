@@ -103,7 +103,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
         <TopLine kicker={`${kicker} · Everyone’s answers`} right={<Pill text={`${me?.score ?? 0} pts`} />} />
         <Explain
           c={c}
-          run={run}
+          run={race.runOfCase(st.index) ?? run}
           rows={rows}
           foot={st.phase === 'done' ? <Text style={s.wait}>Adding up the scores…</Text> : <Btn label={`${last ? 'See results' : 'Next case'} · ${nextIn} s`} go onPress={() => void g.at((at) => race.next(at))} />}
         />

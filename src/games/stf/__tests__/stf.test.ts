@@ -143,6 +143,10 @@ test('race: you lock both stages, the rivals finish, the reveal waits for Next',
   const st = race.state(t0 + 2000);
   assert.equal(st.phase, 'reveal');
   assert.equal(st.me?.points, casePoints(CASES[0].lv, race.runOfCase(0)!));
+  // The reveal card shows your closed run on the case just played.
+  assert.equal(race.caseNow(), hard);
+  assert.equal(race.mine()?.stage, 'done');
+  assert.deepEqual(race.mine(), race.runOfCase(0));
   assert.equal(race.state(t0 + 30_000).phase, 'reveal');
   assert.ok(race.next(t0 + 30_000));
   assert.equal(race.state(t0 + 30_000).phase, 'case');
