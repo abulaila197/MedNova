@@ -272,9 +272,9 @@ function HelperBtn({ kind, label, bg, line, fg, off, onPress }: { kind: HelperKi
 function Helpers({ onHelper, usable, disabled, noTime }: { onHelper: (k: HelperKind) => void; usable: (k: HelperKind) => boolean; disabled: boolean; noTime?: boolean }) {
   return (
     <View style={s.hrow}>
-      <HelperBtn kind="remove" off={disabled || !usable('remove')} onPress={() => onHelper('remove')} label="✂ Remove 2" bg="#142741" line="#19637e" fg="#67e8f9" />
-      <HelperBtn kind="skip" off={disabled || !usable('skip')} onPress={() => onHelper('skip')} label="⏭ Skip" bg="#2e1a2e" line="#833f4a" fg="#fda4af" />
-      {noTime ? null : <HelperBtn kind="time" off={disabled || !usable('time')} onPress={() => onHelper('time')} label="⏱ +10 s" bg="#231b4e" line="#504188" fg="#d8b4fe" />}
+      <HelperBtn kind="remove" off={disabled || !usable('remove')} onPress={() => onHelper('remove')} label="Remove 2" bg="#142741" line="#19637e" fg="#67e8f9" />
+      <HelperBtn kind="skip" off={disabled || !usable('skip')} onPress={() => onHelper('skip')} label="Skip" bg="#2e1a2e" line="#833f4a" fg="#fda4af" />
+      {noTime ? null : <HelperBtn kind="time" off={disabled || !usable('time')} onPress={() => onHelper('time')} label="+10 s" bg="#231b4e" line="#504188" fg="#d8b4fe" />}
     </View>
   );
 }

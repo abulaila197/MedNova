@@ -18,7 +18,7 @@ import { chargeUnit, needSparks } from '@/features/sparks/sparks';
 import { useSession } from '../shell/session';
 import { PauseMenu } from '../shell/PauseMenu';
 import type { PlayProps } from '../shell/types';
-import { Btn, GameScreen, Ghost, Kick } from '../shell/ui';
+import { Btn, GameScreen, Ghost, HelperButton, Kick } from '../shell/ui';
 import { RD, levelExp, levelTime, livesLeft, retryCap, snapshotLevel, startLevel, stepLevel, type Level, type LevelEvent } from './core';
 import { RIDDLES, answerLabel, feedsLearn, riddleById, riddleName } from './data';
 import { RiddleBoard } from './RiddleBoard';
@@ -267,7 +267,7 @@ function ResultCard({ done, level, onNext, onRetry, onGrid, revive }: { done: Do
       {hide && revive ? (
         <View style={s.row}>
           <Ghost label="Show the answer" onPress={() => setGaveUp(true)} style={{ flex: 1 }} />
-          <Btn label={`3 lives back · ${revive.price}${COIN}`} onPress={revive.onPress} style={{ flex: 1.4 }} />
+          <HelperButton label={`3 lives back · ${revive.price}${COIN}`} tone="rose" onPress={revive.onPress} style={{ flex: 1.4 }} />
         </View>
       ) : (
         <View style={s.row}>

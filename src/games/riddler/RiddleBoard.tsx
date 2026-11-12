@@ -1,4 +1,4 @@
-import { COIN, CoinLabel } from '@/components/CoinLabel';
+import { COIN } from '@/components/CoinLabel';
 import { CHOSEN } from '@/match/chosen';
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Image } from 'expo-image';
@@ -12,7 +12,7 @@ import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import { KeyboardLift } from '../shell/KeyboardLift';
-import { GameScreen, Kick, RoundBtn } from '../shell/ui';
+import { GameScreen, HelperButton, Kick, RoundBtn } from '../shell/ui';
 import { clock } from '@/games/engine/clock';
 import { RD, search, type Riddle } from './core';
 import { fullName } from '../shell/names';
@@ -152,12 +152,7 @@ export function RiddleBoard(p: BoardProps) {
               <Text style={[s.defT, { color: t.soft }]}>{p.riddle.definition}</Text>
             </Animated.View>
           ) : (
-            <Pressable onPress={p.hint.onHint} style={[s.hintB, { borderColor: t.chipLine, backgroundColor: t.chip }]} accessibilityRole="button" accessibilityLabel={`Show definition for ${RD.hintPrice} token`}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={[s.hintT, { color: t.fg }]}>Show definition </Text>
-                <CoinLabel text={`${RD.hintPrice}${COIN}`} style={[s.hintT, { color: t.accent, fontFamily: F.bodyBold }]} />
-              </View>
-            </Pressable>
+            <HelperButton label={`Show definition · ${RD.hintPrice}${COIN}`} tone="purple" onPress={p.hint.onHint} style={{ alignSelf: 'flex-start', paddingVertical: u(8), paddingHorizontal: u(14) }} />
           )
         ) : null}
 

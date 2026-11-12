@@ -1,4 +1,3 @@
-import { CoinLabel, spoken } from '@/components/CoinLabel';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { Platform, Pressable, StyleSheet, View, type LayoutChangeEvent } from 'react-native';
@@ -11,7 +10,7 @@ import { useTheme } from '@/state/app';
 import { TABLET, u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
-import { GameScreen } from '../shell/ui';
+import { GameScreen, HelperButton } from '../shell/ui';
 import { keyStates, score, type Mark } from './core';
 import { slideColors, type SlideColors } from './palette';
 
@@ -146,9 +145,7 @@ export function SlideTable(p: TableProps) {
       ) : (
         <View style={{ gap: u(6) }}>
           {p.hint ? (
-            <Pressable onPress={p.hint.onPress} disabled={p.hint.disabled} style={[s.hint, { borderColor: c.line, backgroundColor: c.key, opacity: p.hint.disabled ? 0.45 : 1 }]} accessibilityRole="button" accessibilityLabel={spoken(p.hint.label)}>
-              <CoinLabel text={p.hint.label} style={[s.hintT, { color: t.accent }]} />
-            </Pressable>
+            <HelperButton label={p.hint.label} tone="purple" onPress={p.hint.onPress} disabled={p.hint.disabled} style={{ alignSelf: 'center', paddingVertical: u(7), paddingHorizontal: u(16) }} />
           ) : null}
           <Keys c={c} keys={keys} onKey={press} />
         </View>

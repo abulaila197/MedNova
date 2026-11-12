@@ -1,5 +1,6 @@
 // Four of a Kind's own look (look E, Yazan 2026-11-12): the card table moved onto the app's navy. Cream boxes with
 // small red crosses, picked boxes lift with a gold edge, found groups become coloured rows, gold Submit. Plain words.
+import { HelperButton } from '../shell/ui';
 import { COIN, CoinLabel, spoken } from '@/components/CoinLabel';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
@@ -203,7 +204,7 @@ export function TokenCard({ playId, name, text, onBuy, onNo, noLabel = 'No, show
       <Text style={[s.kick, { color: '#ff8a9a' }]}>OUT OF HEARTS</Text>
       {name ? <Text style={s.cardBig}>{name}</Text> : null}
       <Text style={s.cardLine}>{note ?? text ?? `Second chance: ${FOK.tokenPrice} token gives ${FOK.tokenHearts} heart, once a board. Your found groups stay found.`}</Text>
-      <TableBtn label={`1 more heart · ${FOK.tokenPrice}${COIN}`} go onPress={buy} disabled={sending} />
+      <HelperButton label={`1 more heart · ${FOK.tokenPrice}${COIN}`} tone="rose" onPress={buy} disabled={sending} style={{ borderRadius: 999, paddingVertical: u(12) }} />
       <TableBtn label={noLabel} onPress={onNo} />
     </View>
   );

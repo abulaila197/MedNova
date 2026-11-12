@@ -13,7 +13,7 @@ import { engine } from '../engine';
 import { recordItem } from '../shell/flow';
 import { PauseMenu } from '../shell/PauseMenu';
 import type { PlayProps } from '../shell/types';
-import { Btn, GameScreen, Ghost, Kick } from '../shell/ui';
+import { Btn, GameScreen, Ghost, HelperButton, Kick } from '../shell/ui';
 import { AppGrid, AppLevelMap, AppPopup, AppTopBar, TIP, useGridTaps } from './AppLook';
 import {
   CW, buildSlots, composeAnswer, indexOf, isFilled, isUnlocked, judge, levelExp, lockedCells, pickHintCells, placeLetter, removeSlot, soloStars, startSolo, stepSolo,
@@ -324,7 +324,7 @@ function OutCard({ playId, onRevive, onReplay, onEnd }: { playId: string; onRevi
       <Kick color="#ff6b7d">Out of hearts</Kick>
       <Text style={[s.big, { color: t.white }]}>Keep going?</Text>
       <Text style={[s.line, { color: t.mute }]}>{note ?? `${CW.revivePrice} token gives you ${CW.reviveHearts} heart. Words you solved stay solved.`}</Text>
-      <Btn label={`Revive · ${CW.revivePrice}${COIN}`} onPress={revive} disabled={sending} style={{ marginTop: u(4) }} />
+      <HelperButton label={`Revive · ${CW.revivePrice}${COIN}`} tone="rose" onPress={revive} disabled={sending} style={{ marginTop: u(4) }} />
       <View style={s.row}>
         <Ghost label="Replay" onPress={onReplay} style={{ flex: 1 }} />
         <Ghost label="End puzzle" onPress={onEnd} style={{ flex: 1 }} />

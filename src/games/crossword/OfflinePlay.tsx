@@ -15,7 +15,7 @@ import { recordItem } from '../shell/flow';
 import { PauseMenu } from '../shell/PauseMenu';
 import { teamLap, teamsOf } from '../shell/teams';
 import type { PlayProps } from '../shell/types';
-import { Btn, GameScreen, Ghost, Kick } from '../shell/ui';
+import { GameScreen, Ghost, HelperButton, Kick } from '../shell/ui';
 import { AppGrid, AppPopup, AppTopBar, TIP, useGridTaps } from './AppLook';
 import { CW, autoSolved, buildSlots, composeAnswer, indexOf, isFilled, judge, lockedCells, placeLetter, removeSlot, type PuzzleDef, type Typed } from './core';
 import { PUZZLES, clueText, puzzleById } from './data';
@@ -286,7 +286,7 @@ export function ReviveCard({ playId, name, text, payer = 'The phone owner', decl
       <Kick color="#ff6b7d">Out of hearts</Kick>
       <Text style={[s.big, { color: t.white }]}>{name}</Text>
       <Text style={[s.line, { color: t.mute }]}>{note ?? text ?? `No hearts left. One revive per player: ${CW.revivePrice} token from the phone owner gives ${CW.reviveHearts} heart. Words claimed so far stay claimed.`}</Text>
-      <Btn label={`Revive · ${CW.revivePrice}${COIN}`} onPress={revive} disabled={sending} style={{ marginTop: u(4) }} />
+      <HelperButton label={`Revive · ${CW.revivePrice}${COIN}`} tone="rose" onPress={revive} disabled={sending} style={{ marginTop: u(4) }} />
       <Ghost label={decline} onPress={onDecline} />
     </View>
   );

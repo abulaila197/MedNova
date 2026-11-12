@@ -71,6 +71,24 @@ export function Btn({ label, onPress, disabled, style }: { label: string; onPres
   );
 }
 
+/** Helper colors from Race to Diagnosis (Yazan 2026-11-12): every paid helper in every game uses one of these, no leading emoji. */
+export const HELPER = {
+  cyan: { bg: '#142741', line: '#19637e', fg: '#67e8f9' },
+  rose: { bg: '#2e1a2e', line: '#833f4a', fg: '#fda4af' },
+  purple: { bg: '#231b4e', line: '#504188', fg: '#d8b4fe' },
+} as const;
+export type HelperTone = keyof typeof HELPER;
+
+/** A paid helper in the Race to Diagnosis style. */
+export function HelperButton({ label, tone, onPress, disabled, style }: { label: string; tone: HelperTone; onPress?: () => void; disabled?: boolean; style?: StyleProp<ViewStyle> }) {
+  const c = HELPER[tone];
+  return (
+    <Pressable onPress={tapped(onPress)} disabled={disabled} accessibilityRole="button" accessibilityLabel={spoken(label)} style={[s.helper, { backgroundColor: c.bg, borderColor: c.line }, style]}>
+      <CoinLabel text={label} style={[s.helperT, { color: c.fg, opacity: disabled ? 0.45 : 1 }]} numberOfLines={1} />
+    </Pressable>
+  );
+}
+
 export function Ghost({ label, onPress, style, danger }: { label: string; onPress?: () => void; style?: StyleProp<ViewStyle>; danger?: boolean }) {
   const t = useTheme();
   return (
@@ -154,6 +172,8 @@ export const s = StyleSheet.create({
   body2: { fontFamily: F.body, fontSize: u(11.5), lineHeight: u(17) },
   btn: { borderRadius: u(14), paddingVertical: u(11), paddingHorizontal: u(18), alignItems: 'center' },
   btnT: { fontFamily: F.bodyBold, fontSize: u(12.5), lineHeight: u(15) },
+  helper: { borderWidth: 1, borderRadius: u(10), paddingVertical: u(11), paddingHorizontal: u(10), alignItems: 'center', justifyContent: 'center' },
+  helperT: { fontFamily: F.bodyBold, fontSize: u(12), lineHeight: u(15) },
   ghost: { borderRadius: u(14), borderWidth: 1, paddingVertical: u(10), paddingHorizontal: u(16), alignItems: 'center' },
   ghostT: { fontFamily: F.bodySemi, fontSize: u(12), lineHeight: u(15) },
   card: { borderRadius: u(18), borderWidth: 1, padding: u(14), gap: u(8) },

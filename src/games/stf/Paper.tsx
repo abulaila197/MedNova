@@ -244,14 +244,14 @@ export function Btn({ label, onPress, go, disabled, flex }: { label: string; onP
 
 /** A help button in Race to Diagnosis' colours (Yazan 2026-11-12): a dark tinted fill, a coloured edge and coloured text. */
 export const HELP_TONE = {
-  fifty: { bg: '#142741', line: '#19637e', fg: '#67e8f9', icon: '✂️' },
-  highlight: { bg: '#231b4e', line: '#504188', fg: '#d8b4fe', icon: '🖍️' },
+  fifty: { bg: '#142741', line: '#19637e', fg: '#67e8f9' },
+  highlight: { bg: '#231b4e', line: '#504188', fg: '#d8b4fe' },
 } as const;
 export function HelpBtn({ label, tone, onPress, disabled }: { label: string; tone: keyof typeof HELP_TONE; onPress: () => void; disabled?: boolean }) {
   const t = HELP_TONE[tone];
   return (
     <Pressable onPress={tapped(onPress)} disabled={disabled} accessibilityRole="button" accessibilityLabel={spoken(label)} style={[s.helpTone, { backgroundColor: t.bg, borderColor: t.line }]}>
-      <CoinLabel text={`${t.icon} ${label}`} style={[s.helpToneT, { color: t.fg, opacity: disabled ? 0.45 : 1 }]} numberOfLines={1} />
+      <CoinLabel text={label} style={[s.helpToneT, { color: t.fg, opacity: disabled ? 0.45 : 1 }]} numberOfLines={1} />
     </Pressable>
   );
 }

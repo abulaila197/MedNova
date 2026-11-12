@@ -6,6 +6,7 @@ import { u, useScreen } from '@/theme/scale';
 
 import { groupById } from './data';
 import type { Board, BoardRun, Verdict } from './core';
+import { HelperButton } from '../shell/ui';
 import { Bar, GroupRow, Note, Stamp, TableBtn, Tiles } from './Table';
 
 /**
@@ -65,7 +66,7 @@ export function BoardView({ board, run, top, onSubmit, onShuffle, hint, tip = 'T
       <Bar>
         <TableBtn label="Shuffle" onPress={onShuffle} disabled={locked} />
         <TableBtn label="Deselect" onPress={() => setPicked([])} disabled={locked || !live.length} />
-        {hint ? <TableBtn label={hint.label} flex={1.3} onPress={hint.onPress} disabled={locked || hint.disabled} /> : null}
+        {hint ? <HelperButton label={hint.label} tone="purple" onPress={hint.onPress} disabled={locked || hint.disabled} style={{ flex: 1.3, borderRadius: 999, paddingVertical: u(10), paddingHorizontal: u(4) }} /> : null}
         <TableBtn label="Submit" go flex={hint ? 1.2 : 1.4} onPress={send} disabled={locked || live.length !== 4} />
       </Bar>
     </View>
