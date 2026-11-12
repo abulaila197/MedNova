@@ -7,8 +7,6 @@ import { IMAGES } from '@/games/crossword/data/images';
 import { wordById } from '@/games/crossword/data';
 import { CASES, caseById } from '@/games/diagnostic/data';
 import { questionById } from '@/games/streak/data';
-import { answerText as paradeAnswer } from '@/games/parade/core';
-import { questionById as paradeById } from '@/games/parade/data';
 import { questionById as wheelsById } from '@/games/wheels/data';
 import { groupById as fokById } from '@/games/fok/data';
 import { caseById as stfById } from '@/games/stf/data';
@@ -85,13 +83,6 @@ function qaOf(game: string, item: PlayItem): Omit<Extract<Card, { kind: 'qa' }>,
     const q = questionById.get(item.itemId);
     return q ? { q: q.stem, choices: q.choices, answer: q.choices[q.answer] ?? null } : null;
   }
-  if (game === 'the-quiz-parade') {
-    const q = paradeById.get(item.itemId);
-    if (!q) return null;
-    const choices = q.style === 'mcq' || q.style === 'reverse' ? q.choices : q.style === 'tf' ? ['True', 'False'] : [];
-    const ask = q.style === 'reverse' ? `Which question has this answer: ${q.prompt}` : q.prompt;
-    return { q: ask, choices, answer: paradeAnswer(q) };
-  }
   if (game === 'nova-crossword') {
     const w = wordById.get(item.itemId);
     if (!w) return null;
@@ -148,10 +139,15 @@ export async function loadLearn() {
   const gameOf = new Map(plays.map((p) => [p.id, p.game as string]));
   const missed = new Map<string, { count: number; last: number }>();
   const cards = new Map<string, Card>();
-  for (const it of items) {
+  for (let it of items) {
     if (!it.feedsLearn || it.outcome === 'right') continue;
-    const game = gameOf.get(it.playId);
-    if (!game) continue;
+    const was = gameOf.get(it.playId);
+    if (!was) continue;
+    // Quick Fire Quiz merged into Wheels (2026-11-12): its misses come back as Wheels cards. Its copies of Wheels
+    // questions were 'wc:<Wheels id>'; the rest kept their ids. Ones Wheels didn't take (3 choices, 5 pairs) drop out.
+    const parade = was === 'the-quiz-parade';
+    const game = parade ? 'the-wheels-of-chaos' : was;
+    if (parade) it = { ...it, itemId: it.itemId.replace(/^wc:/, '') };
     const base = { key: `${game}:${it.itemId}`, game, gameName: gameName(game), at: it.at };
     if (DOSSIER_GAMES.includes(game as GameKey)) {
       const d = it.answerKey ? DOSSIERS.get(it.answerKey) : undefined;

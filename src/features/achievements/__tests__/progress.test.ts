@@ -36,11 +36,11 @@ test('achievements: finished plays, unfinished and other accounts left out', () 
 
 test('achievements: full rotation is the least-played game', () => {
   const keys: GameKey[] = [...ROTATION_GAMES];
-  assert.equal(keys.length, 10);
-  assert.ok(!keys.includes('trust-me-not'));
-  const most = keys.slice(0, 9).flatMap((g) => [play(g), play(g)]);
+  assert.equal(keys.length, 9); // Quick Fire Quiz merged into Wheels (2026-11-12)
+  assert.ok(!keys.includes('trust-me-not') && !keys.includes('the-quiz-parade'));
+  const most = keys.slice(0, 8).flatMap((g) => [play(g), play(g)]);
   assert.equal(achievementProgress(base({ plays: most })).full_rotation, 0);
-  const last = keys[9];
+  const last = keys[8];
   const all = [...most, play(last), play(last), play('the-riddler'), play('trust-me-not')];
   assert.equal(achievementProgress(base({ plays: all })).full_rotation, 2);
 });
@@ -119,7 +119,7 @@ test('achievements: Conqueror and the 4 new games count wins as the owner placin
     play('nova-password', 'offline', { seats: two, standings: ranked(0) }),
     play('imposter', 'offline', { seats: two, standings: ranked(1) }),
     play('the-quiz-parade', 'online', { seats: two, standings: ranked(0) }),
-    play('the-quiz-parade', 'online', { seats: two, standings: ranked(0) }),
+    play('the-wheels-of-chaos', 'bots', { seats: two, standings: ranked(0) }),
   ];
   const r = achievementProgress(base({ plays }));
   assert.equal(r.conqueror, 1);

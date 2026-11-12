@@ -16,7 +16,6 @@ const LOAD: Record<string, () => GameDef> = {
   'case-files-unsolved': () => require('../casefiles/def').caseFiles,
   'nova-crossword': () => require('../crossword/def').novaCrossword,
   'the-wheels-of-chaos': () => require('../wheels/def').wheelsOfChaos,
-  'the-quiz-parade': () => require('../parade/def').quizParade,
   imposter: () => require('../imposter/def').imposter,
   'tilt-and-tell': () => require('../tilt/def').tiltAndTell,
   'four-of-a-kind': () => require('../fok/def').fourOfAKind,

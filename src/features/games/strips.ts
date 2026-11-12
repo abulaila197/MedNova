@@ -3,7 +3,6 @@ export const STRIP: Record<string, number> = {
   'the-diagnostic-pursuit': require('@/assets/games/strips/the-diagnostic-pursuit.webp'),
   'the-silent-artist': require('@/assets/games/strips/the-silent-artist.webp'),
   'nova-crossword': require('@/assets/games/strips/nova-crossword.webp'),
-  'the-quiz-parade': require('@/assets/games/strips/the-quiz-parade.webp'),
   'the-riddler': require('@/assets/games/strips/the-riddler.webp'),
   'nova-medicordle': require('@/assets/games/strips/nova-medicordle.webp'),
   'the-streak-master': require('@/assets/games/strips/the-streak-master.webp'),

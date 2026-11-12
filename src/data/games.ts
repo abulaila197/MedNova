@@ -8,7 +8,6 @@ export const GAMES: Game[] = [
   // Trust Me Not was cancelled (Yazan 2026-10-24); its code and database stay, it just isn't listed.
   // The Conqueror, Nova Password and Code Clinic were taken off (Yazan 2026-11-04, point 6): same, kept in PARKED_GAMES.
   { key: 'nova-crossword', lead: 'Nova', em: 'Crossword', sub: "The Clinician's Grid", desc: 'Fill the grid with diseases, drugs and signs.' },
-  { key: 'the-quiz-parade', lead: 'Quick Fire', em: 'Quiz', sub: 'March of Minds', desc: 'Seven kinds of question, one after another. Harder ones score more.' },
   { key: 'the-riddler', lead: 'Medical', em: 'Riddles', sub: 'Puzzles in Plain Sight', desc: 'Picture riddles that spell out a condition or sign.' },
   { key: 'nova-medicordle', lead: 'Six Word', em: 'Tries', sub: 'Word of the Ward', desc: 'Guess the hidden medical term in six tries.' },
   { key: 'the-streak-master', lead: 'The Streak', em: 'Master', sub: 'One Miss Away', desc: 'Answer in a row and keep your streak alive.' },
@@ -28,6 +27,8 @@ export const PARKED_GAMES: Game[] = [
   { key: 'the-conqueror', lead: 'The', em: 'Conqueror', sub: 'The Last Empire', desc: "Answer right to seize land and take over your rivals' territory." },
   { key: 'nova-password', lead: 'Nova', em: 'Password', sub: 'One Word Away', desc: 'One-word clues, one secret term. The fewest clues wins.' },
   { key: 'code-clinic', lead: 'Code', em: 'Clinic', sub: 'Read Between the Lines', desc: 'Two teams, one-word clues. Find your cards, never the deadly one.' },
+  // Merged into The Wheels of Chaos and removed (Yazan 2026-11-12): its code is gone, its name stays for old plays.
+  { key: 'the-quiz-parade', lead: 'Quick Fire', em: 'Quiz', sub: 'March of Minds', desc: 'Seven kinds of question, one after another. Harder ones score more.' },
 ];
 
 export const PARKED_KEYS: readonly string[] = PARKED_GAMES.map((g) => g.key);

@@ -7,7 +7,7 @@ import { BOT_NAMES } from './names';
  */
 
 /** The games a boss can show up in: every game with a Vs rivals mode. */
-export const BOSS_GAMES = ['the-diagnostic-pursuit', 'nova-crossword', 'the-quiz-parade', 'the-riddler', 'nova-medicordle', 'the-streak-master', 'case-files-unsolved', 'the-wheels-of-chaos'] as const;
+export const BOSS_GAMES = ['the-diagnostic-pursuit', 'nova-crossword', 'the-riddler', 'nova-medicordle', 'the-streak-master', 'case-files-unsolved', 'the-wheels-of-chaos'] as const;
 export type BossGame = (typeof BOSS_GAMES)[number];
 
 export type BossPick = { day: string; name: string; game: BossGame };

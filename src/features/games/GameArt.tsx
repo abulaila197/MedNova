@@ -19,7 +19,6 @@ const BAKED = {
     'the-riddler': require('@/assets/games/baked/dark/the-riddler.webp'),
     'the-streak-master': require('@/assets/games/baked/dark/the-streak-master.webp'),
     'case-files-unsolved': require('@/assets/games/baked/dark/case-files-unsolved.webp'),
-    'the-quiz-parade': require('@/assets/games/baked/dark/the-quiz-parade.webp'),
     imposter: require('@/assets/games/baked/dark/imposter.webp'),
     'tilt-and-tell': require('@/assets/games/baked/dark/tilt-and-tell.webp'),
     'four-of-a-kind': require('@/assets/games/baked/dark/four-of-a-kind.webp'),

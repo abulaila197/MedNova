@@ -17,7 +17,6 @@ export type GameKind = 'learn' | 'both' | 'play';
 
 const KIND: Record<string, GameKind> = {
   'the-diagnostic-pursuit': 'learn',
-  'the-quiz-parade': 'learn',
   'case-files-unsolved': 'learn',
   'the-streak-master': 'learn',
   'nova-crossword': 'learn',

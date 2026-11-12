@@ -14,7 +14,6 @@ const WORDS = by('words', { 3: 25, 5: 30, 10: 60 }, 30);
 const PHOTOS = by('photos', { 3: 15, 5: 25, 10: 40 }, 25);
 const DRAWS = by('performs', { 1: 15, 2: 30, 3: 45 }, 15);
 const TARGET = by('target', { 25: 30, 50: 45, 100: 60 }, 45);
-const PARADE = by('questions', { 5: 15, 10: 25, 15: 30 }, 25);
 const BOARDS = by('boards', { 1: 15, 3: 25, 5: 40 }, 25);
 const FLAWS = by('cases', { 1: 15, 3: 25, 5: 40 }, 25);
 const ROUNDS = by('rounds', { 1: 15, 2: 25, 3: 40, 4: 45, 5: 60 }, 25);
@@ -37,7 +36,6 @@ const COSTS: Partial<Record<GameKey, Partial<Record<Mode, Price>>>> = {
   'nova-crossword': { solo: flat(30), offline: flat(15), bots: by('count', { 1: 30, 2: 45, 3: 60 }, 30) },
   'the-wheels-of-chaos': { solo: TARGET, offline: TARGET, bots: TARGET },
   'the-conqueror': {},
-  'the-quiz-parade': { solo: PARADE, offline: PARADE, bots: PARADE },
   imposter: { offline: ROUNDS },
   // Same as the other Pass the phone game by rounds (Yazan 2026-11-12).
   'tilt-and-tell': { offline: ROUNDS },

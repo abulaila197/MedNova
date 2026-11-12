@@ -52,7 +52,8 @@ export const ALL_ACHIEVEMENTS: readonly { key: AchKey; name: string; what: strin
   { key: 'full_marks', name: 'Full Marks', what: 'Get 3 stars on crosswords', goals: [10, 20, 31] },
   { key: 'conqueror', name: 'Conqueror', what: 'Win The Conqueror', goals: [1, 10, 50, 125] },
   // The 4 new games replace Most Trusted (Trust Me Not was cancelled; Yazan 2026-11-01).
-  { key: 'parade_leader', name: 'Quick Fire Champion', what: 'Win Quick Fire Quiz', goals: [1, 10, 50, 125] },
+  // Quick Fire Quiz merged into Wheels (2026-11-12): the same achievement now counts Wheels wins, old Quick Fire wins kept.
+  { key: 'parade_leader', name: 'Chaos Champion', what: 'Win The Wheels of Chaos', goals: [1, 10, 50, 125] },
   { key: 'one_word', name: 'One Word Wonder', what: 'Win Nova Password', goals: [1, 10, 50, 125] },
   { key: 'code_breaker', name: 'Code Breaker', what: 'Win Code Clinic', goals: [1, 10, 50, 125] },
   { key: 'sharp_eye', name: 'Sharp Eye', what: 'Win The Imposter', goals: [1, 10, 50, 125] },
@@ -140,11 +141,11 @@ export type AchInputs = {
 };
 
 /** Every game on the Games page, for Full Rotation (Trust Me Not was cancelled; the 4 new games added 2026-11-01). */
-// 2026-11-04: The Conqueror, Nova Password and Code Clinic were taken off, so 10 games (server rotation_games() matches).
+// 2026-11-04: The Conqueror, Nova Password and Code Clinic were taken off, so 10 games; 2026-11-12 Quick Fire Quiz merged into Wheels, 9 (server rotation_games() matches after the build-day SQL).
 export const ROTATION_GAMES: GameKey[] = [
   'case-files-unsolved', 'nova-crossword', 'the-diagnostic-pursuit', 'nova-medicordle',
   'the-riddler', 'the-silent-artist', 'the-streak-master', 'the-wheels-of-chaos',
-  'the-quiz-parade', 'imposter',
+  'imposter', // Quick Fire Quiz merged into Wheels (2026-11-12): 9 games
 ];
 
 const OWNER = 0;
@@ -217,7 +218,7 @@ export function achievementProgress(i: AchInputs): Record<AchKey, number> {
     // Online stars are by place, not by words left, so only Solo puzzles count.
     full_marks: Math.max(threeStars, i.crosswordThreeStars ?? 0),
     conqueror: plays.filter((p) => p.game === 'the-conqueror' && won(p)).length,
-    parade_leader: wins('the-quiz-parade'),
+    parade_leader: wins('the-wheels-of-chaos') + wins('the-quiz-parade'),
     one_word: wins('nova-password'),
     code_breaker: wins('code-clinic'),
     sharp_eye: wins('imposter'),
