@@ -20,7 +20,7 @@ export function CaseView({ c, run, top, onLock, help, locked, note }: { c: Case;
   const picked = pick?.key === c.id ? pick.i : null;
   const [open, setOpen] = useState(false);
   return (
-    <View style={{ flex: 1, gap: u(8) }}>
+    <View style={{ flex: 1, gap: u(7) }}>
       {top}
       <Pad c={c} style={{ flexShrink: 1, minHeight: u(120) }} onOpen={() => setOpen(true)} />
       <Ask q={c.q} />
