@@ -84,7 +84,6 @@ export function GameTagSheet() {
     <Sheet open={!!kind} onClose={close}>
       {kind ? (
         <View style={s.body}>
-          <Text style={[s.h, { color: t.fg }]}>What the tags mean</Text>
           {order.map((k) => {
             const look = LOOK[k];
             return (
@@ -109,7 +108,6 @@ const s = StyleSheet.create({
   tag: { alignSelf: 'flex-start', borderWidth: 1, borderRadius: u(7), paddingVertical: u(3), paddingHorizontal: u(8) },
   t: { fontFamily: F.bodyBold, fontSize: u(8.5), lineHeight: u(11), letterSpacing: u(0.5), textTransform: 'uppercase' },
   body: { gap: u(10), paddingTop: u(4) },
-  h: { fontFamily: F.bodyBold, fontSize: u(14) },
   row: { gap: u(7), borderWidth: 1, borderRadius: u(12), padding: u(10) },
   big: { paddingVertical: u(5), paddingHorizontal: u(11), borderRadius: u(9) },
   bigT: { fontSize: u(10.5), lineHeight: u(13) },

@@ -107,7 +107,7 @@ function PhoneGames() {
     });
 
   return (
-    <Screen tab="games" glow={0} symbols>
+    <Screen tab="games" glow={0}>
       <GestureDetector gesture={pan}>
         <View style={s.fill} onLayout={(e) => setLift(Math.round(u(FILL_H) - e.nativeEvent.layout.height))}>
           {/* the shown game and two on each side are mounted, so the next page's art is already decoded when a swipe
