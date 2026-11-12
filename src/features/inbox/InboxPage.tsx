@@ -62,7 +62,7 @@ export function InboxPage() {
     void loadInbox().then(readAll);
   }, [uid]);
   return (
-    <Screen tab={null} glow={21}>
+    <Screen tab={null} glow={21} wide={460}>
       <InfoScroll>
         <Kicker>Messages and gifts</Kicker>
         <Text style={[ui.H, { color: c.fg, fontFamily: F.display }]}>

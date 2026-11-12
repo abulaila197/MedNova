@@ -1,6 +1,7 @@
 import { router, useIsFocused } from 'expo-router';
 import { useEffect } from 'react';
 
+import { PhoneColumn } from '@/components/PhoneColumn';
 import { SignIn } from '@/features/start/SignIn';
 import { useAccount } from '@/state/account';
 
@@ -14,5 +15,9 @@ export default function Auth() {
       router.replace('/games');
     }
   }, [restored, focused]);
-  return <SignIn />;
+  return (
+    <PhoneColumn>
+      <SignIn />
+    </PhoneColumn>
+  );
 }

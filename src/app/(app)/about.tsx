@@ -18,7 +18,7 @@ export default function Page() {
   const c = useInfo();
   const progress = useSharedValue(0);
   return (
-    <Screen tab={null} glow={21} under={<Image source={DAWN[c.t.mode]} contentFit="cover" style={s.dawn} />}>
+    <Screen tab={null} glow={21} under={<Image source={DAWN[c.t.mode]} contentFit="cover" style={s.dawn} />} wide={460}>
       <InfoScroll scrollY={progress} over={<AboutRail progress={progress} />}>
         <Kicker>About MedNova</Kicker>
         <Rich text={'Medicine becomes\na *puzzle.*'} style={ui.H} />

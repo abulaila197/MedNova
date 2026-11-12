@@ -29,7 +29,7 @@ export default function Page() {
   }, [query]);
 
   return (
-    <Screen tab={null} glow={21} under={<Orb />}>
+    <Screen tab={null} glow={21} under={<Orb />} wide={460}>
       <InfoScroll>
         <Kicker>MedNova · Support</Kicker>
         <Rich text={'Answers before\nthe *next case.*'} style={[ui.H, s.H]} />

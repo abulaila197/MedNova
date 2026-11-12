@@ -5,7 +5,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 import Svg, { Defs, Image as SvgImage, LinearGradient as SvgLinear, Mask, RadialGradient, Rect, Stop } from 'react-native-svg';
 
-import { u } from '@/theme/scale';
+import { TABLET, u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import { BAKED, BAKED_ART } from './baked';
@@ -203,7 +203,7 @@ export type SlideProps = {
 function Frame({ si, w, h, padTop, padBottom, children }: Omit<SlideProps, 'onNext' | 'onSkip'> & { children: ReactNode }) {
   const hd = h / u(1);
   return (
-    <View style={{ width: w, height: h, overflow: 'hidden', backgroundColor: NAVY }}>
+    <View style={{ width: w, height: h, overflow: 'hidden', backgroundColor: TABLET ? undefined : NAVY }}>
       {/* Only the still art is cached as one GPU picture, so a swipe moves it without redrawing the photo and
           masks. The twinkling stars sit outside it: their opacity changes every frame and would redraw the cache
           each frame (DEF-071). Same order and place, so nothing looks different. */}

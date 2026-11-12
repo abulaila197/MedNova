@@ -42,7 +42,7 @@ export function ChallengesPage({ v }: { v: ChallengesView }) {
   const c = useInfo();
   const t = c.t;
   return (
-    <Screen tab={null} glow={21}>
+    <Screen tab={null} glow={21} wide={460}>
       <InfoScroll>
         <Kicker>{v.resetIn ? `New missions in ${v.resetIn}` : 'Every day'}</Kicker>
         <OfflineLine at={v.savedAt} style={{ marginTop: 0 }} />

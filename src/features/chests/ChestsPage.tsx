@@ -89,7 +89,7 @@ export function ChestsPage({ v }: { v: ChestsView }) {
   };
 
   return (
-    <Screen tab={null} glow={21}>
+    <Screen tab={null} glow={21} wide={460}>
       <InfoScroll>
         <Kicker>Grand Rounds rewards</Kicker>
         <Text style={[ui.H, { color: c.fg, fontFamily: F.display }]}>

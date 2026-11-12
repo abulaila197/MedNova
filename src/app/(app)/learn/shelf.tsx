@@ -43,7 +43,7 @@ export default function ShelfPage() {
     </Pressable>
   );
   return (
-    <Screen tab="learn" glow={6}>
+    <Screen tab="learn" glow={6} wide={460}>
       <View style={s.dpb}>
         <View style={s.dtop}>
           <Back label="Dossiers" fallback="/learn" />

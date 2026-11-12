@@ -90,7 +90,7 @@ export function RoundsPage() {
   // Offline before the week was ever read: say so instead of an empty page (AP8).
   if (!r)
     return (
-      <Screen tab={null} glow={21}>
+      <Screen tab={null} glow={21} wide={460}>
         {failed ? (
           <InfoScroll>
             <Kicker>Grand Rounds</Kicker>
@@ -115,7 +115,7 @@ export function RoundsPage() {
     });
 
   return (
-    <Screen tab={null} glow={21}>
+    <Screen tab={null} glow={21} wide={460}>
       <InfoScroll>
         <Kicker>{`Week ${slotOf(r.week) + 1} of ${CYCLE_WEEKS}`}</Kicker>
         <Text style={[ui.H, { color: c.fg, fontFamily: F.display }]}>

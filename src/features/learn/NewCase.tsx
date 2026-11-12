@@ -58,7 +58,7 @@ export function NewCase() {
   };
 
   return (
-    <Screen tab="learn" glow={6}>
+    <Screen tab="learn" glow={6} wide={460}>
       <InfoScroll>
         <Back label="My diseases" fallback="/learn" />
         <Kicker style={{ marginTop: u(10) }}>Case laboratory</Kicker>

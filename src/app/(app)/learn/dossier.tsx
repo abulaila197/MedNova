@@ -61,10 +61,10 @@ function MinePage({ mine }: { mine: string }) {
   useEffect(() => {
     if (cs == null) loadCases().catch(() => {});
   }, [cs]);
-  if (cs == null && !w) return <Screen tab="learn" glow={6}>{null}</Screen>;
+  if (cs == null && !w) return <Screen tab="learn" glow={6} wide={460}>{null}</Screen>;
   if (!k && !w) {
     return (
-      <Screen tab="learn" glow={6}>
+      <Screen tab="learn" glow={6} wide={460}>
         <View style={s.dpb}>
           <Back label="My diseases" fallback="/learn" />
           <Text style={[s.dmT, { color: c.mute }]}>This one isn’t in My diseases any more.</Text>
@@ -78,7 +78,7 @@ function MinePage({ mine }: { mine: string }) {
   const title = titleOf(name.length > 40 ? `${name.slice(0, 38)}…` : name);
   const fields = mineFields(k ? { kind: 'case', c: k } : { kind: 'word', w: w! });
   return (
-    <Screen tab="learn" glow={6}>
+    <Screen tab="learn" glow={6} wide={460}>
       <View style={s.dpb}>
         <View style={s.dtop}>
           <Back label="My diseases" fallback="/learn" />
@@ -115,7 +115,7 @@ function LibraryPage() {
   }, [d]);
   if (!d) {
     return (
-      <Screen tab="learn" glow={6}>
+      <Screen tab="learn" glow={6} wide={460}>
         <View style={s.dpb}>
           <Back label="Dossiers" fallback="/learn" />
           <Text style={[s.dmT, { color: c.mute }]}>This dossier is not in the library.</Text>
@@ -126,7 +126,7 @@ function LibraryPage() {
   const title = titleOf(d.name);
   const fields = FIELDS.map((f) => ({ ...f, text: d[f.key] }));
   return (
-    <Screen tab="learn" glow={6}>
+    <Screen tab="learn" glow={6} wide={460}>
       <View style={s.dpb}>
         <View style={s.dtop}>
           <Back label={book?.spine ?? 'Dossiers'} fallback={book ? `/learn/shelf?book=${book.key}` : '/learn'} />

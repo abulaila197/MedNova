@@ -13,6 +13,7 @@ import { F } from '@/theme/tokens';
 import { Bar, barHeight } from './Bar';
 import type { LoadCfg } from './configs';
 import { q } from './geo';
+import { TABLET } from '@/theme/scale';
 import { Particles } from './Particles';
 
 /**
@@ -22,8 +23,9 @@ import { Particles } from './Particles';
  */
 export function LoadingPage({ g, w, h, live, p, tip, barRef }: { g: LoadCfg; w: number; h: number; live: boolean; p: SharedValue<number>; tip: string; barRef?: Ref<View> }) {
   const ins = useSafeAreaInsets();
-  const artH = h;
-  const artW = (artH * 9) / 16;
+  // A tablet is wider than the 9:16 photo: there it fills the width and runs past the bottom instead of leaving black sides.
+  const artW = TABLET ? Math.max(w, (h * 9) / 16) : (h * 9) / 16;
+  const artH = (artW * 16) / 9;
   const clock = useSharedValue(0);
   const push = useSharedValue(1);
   const frame = useFrameCallback((f) => {

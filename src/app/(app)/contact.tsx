@@ -35,7 +35,7 @@ export default function Page() {
     setBusy(false);
   };
   return (
-    <Screen tab={null} glow={21}>
+    <Screen tab={null} glow={21} wide={460}>
       <InfoScroll>
         <Kicker>Contact</Kicker>
         <Text style={[s.H, { color: c.fg }]}>I want to</Text>

@@ -69,7 +69,7 @@ export function NemesisPage() {
   };
   const bossRec = record[boss.bot.id];
   return (
-    <Screen tab={null} glow={21}>
+    <Screen tab={null} glow={21} wide={460}>
       <InfoScroll>
         <Kicker>Vs rivals</Kicker>
         <Text style={[ui.H, { color: c.fg, fontFamily: F.display }]}>

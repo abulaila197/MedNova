@@ -18,19 +18,28 @@ import { DESIGN_W, TABLET, u } from '@/theme/scale';
 import { FILL_H } from './fit';
 import { useGamesFocus } from './focus';
 import { GameTagSheet } from './GameTag';
-import { TabletGames } from './TabletGames';
+import { useGamesGate, shutGames } from './gate';
+import { Programme } from './Programme';
+import { useBack } from '@/lib/useBack';
 
 const N = GAMES.length;
 const mod = (v: number) => ((v % N) + N) % N;
 const EASE = Easing.bezier(0.3, 0.7, 0.2, 1);
 
-/** Locked Games page (decision 63): swipe through the games; the dots follow. */
+/**
+ * The Games tab: first the entrance page, "The programme" (Yazan 2026-11-11), then on a phone its Start opens the
+ * locked Games pages (decision 63: swipe through the games; the dots follow). On a tablet the programme is the whole
+ * tab: each game in it opens straight away (Yazan 2026-11-12).
+ */
 export function GamesScreen() {
-  return TABLET ? <TabletGames /> : <PhoneGames />;
+  const open = useGamesGate((g) => g.open);
+  return !TABLET && open ? <PhoneGames /> : <Programme />;
 }
 
 function PhoneGames() {
   const t = useTheme();
+  // Back goes to the entrance page instead of leaving the app.
+  useBack(true, shutGames);
   const pos = useSharedValue(useGamesFocus.getState().j); // unbounded page position; game = pos mod N
   const start = useSharedValue(0);
   const [sel, setSel] = useState(() => useGamesFocus.getState().j);

@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Animated, Easing, StyleSheet, View } from 'react-native';
 import Svg, { Defs, RadialGradient, Rect, Stop } from 'react-native-svg';
 
-import { DESIGN_W, u } from '@/theme/scale';
+import { DESIGN_W, u, useBleed } from '@/theme/scale';
 
 import { BAKED, BAKED_ART } from './baked';
 
@@ -21,6 +21,8 @@ let seq = 0;
 
 /** CSS radial-gradient(rx% ry% at x% y%, color, transparent end%) layers over a base colour. */
 export function Sky({ w, h }: { w: number; h: number }) {
+  // In a tablet's phone column the whole-screen sky behind it shows instead, so the column has no edges.
+  if (useBleed() > 0) return null;
   if (BAKED_ART) return <BakedSky />;
   return <LiveSky w={w} h={h} />;
 }
@@ -71,14 +73,17 @@ function LiveSky({ w, h }: { w: number; h: number }) {
  * (seed 11 + 17 x screen index), each pulsing between 25% and 80% opacity.
  * Stars are grouped by speed and phase so a single looping clock drives them.
  */
-export function Stars({ si, hd }: { si: number; hd: number }) {
+export function Stars({ si, hd, wd = DESIGN_W, whole = false }: { si: number; hd: number; wd?: number; whole?: boolean }) {
+  // In a tablet's phone column the whole-screen stars behind it (PhoneColumn) show instead.
+  const inCol = useBleed() > 0 && !whole;
   const [clock] = useState(() => new Animated.Value(0));
   const groups = useMemo(() => {
     let s = 11 + si * 17;
     const rnd = () => (s = (s * 9301 + 49297) % 233280) / 233280;
     const out: { key: string; c: number; ph: number; stars: { x: number; y: number; r: number }[] }[] = [];
-    for (let k = 0; k < 70; k++) {
-      const x = rnd() * DESIGN_W;
+    const n = Math.round((70 * wd) / DESIGN_W);
+    for (let k = 0; k < n; k++) {
+      const x = rnd() * wd;
       const y = rnd() * hd;
       const r = rnd() * 1.1 + 0.2;
       const p = rnd() * 6.28;
@@ -92,12 +97,14 @@ export function Stars({ si, hd }: { si: number; hd: number }) {
       g.stars.push({ x, y, r });
     }
     return out;
-  }, [si, hd]);
+  }, [si, hd, wd]);
   useEffect(() => {
+    if (inCol) return;
     const a = Animated.loop(Animated.timing(clock, { toValue: 1, duration: 12000, easing: Easing.linear, useNativeDriver: true }));
     a.start();
     return () => a.stop();
-  }, [clock]);
+  }, [clock, inCol]);
+  if (inCol) return null;
   return (
     <View pointerEvents="none" style={StyleSheet.absoluteFill}>
       {groups.map((g) => {

@@ -3,7 +3,7 @@ import { Wallpapers } from '@/features/community/Wallpapers';
 
 export default function Page() {
   return (
-    <Screen tab='community' glow={14}>
+    <Screen tab='community' glow={14} wide={460}>
       <Wallpapers />
     </Screen>
   );

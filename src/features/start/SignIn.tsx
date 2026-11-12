@@ -14,7 +14,7 @@ import { APPLE_ON, appleSignIn } from '@/lib/appleSignIn';
 import { googleSignIn } from '@/lib/googleSignIn';
 import { supabase } from '@/lib/supabase';
 import { call } from '@/lib/rpc';
-import { u, useScreen } from '@/theme/scale';
+import { TABLET, u, useScreen } from '@/theme/scale';
 import { F, THEMES } from '@/theme/tokens';
 
 import { nameIsClean } from '@/lib/names';
@@ -457,7 +457,7 @@ export function SignIn() {
   }
 
   return (
-    <View style={[s.root, { backgroundColor: '#070a1c' }]}>
+    <View style={[s.root, { backgroundColor: TABLET ? undefined : '#070a1c' }]}>
       <Sky w={w} h={h} />
       <Stars si={0} hd={h / u(1)} />
       <TopInset />

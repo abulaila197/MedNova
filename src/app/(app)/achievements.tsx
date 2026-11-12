@@ -29,7 +29,7 @@ export default function Page() {
   const reached = rows?.reduce((n, r) => n + r.reached, 0) ?? 0;
   const tiers = rows?.reduce((n, r) => n + r.goals.length, 0) ?? 0;
   return (
-    <Screen tab={null} glow={21}>
+    <Screen tab={null} glow={21} wide={460}>
       <InfoScroll>
         <Kicker>Achievements</Kicker>
         <Text style={[ui.H, s.H, { color: c.fg }]}>
