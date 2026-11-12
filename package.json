@@ -28,6 +28,7 @@
     "@react-native-firebase/analytics": "^27.1.0",
     "@react-native-firebase/app": "^27.1.0",
     "@react-native-firebase/crashlytics": "^27.1.0",
+    "@react-native-google-signin/google-signin": "^17.0.0",
     "@react-native-masked-view/masked-view": "0.3.2",
     "@supabase/supabase-js": "^2.117.3",
     "expo": "~57.0.26",

@@ -1,4 +1,5 @@
 import * as WebBrowser from 'expo-web-browser';
+import { Platform } from 'react-native';
 
 import { supabase } from '@/lib/supabase';
 
@@ -19,8 +20,40 @@ export async function sessionFromUrl(url: string) {
   if (error) throw error;
 }
 
-/** Opens Google's sign-in page. True once signed in, false when the player closed the page. */
+/**
+ * Native Google sign-in on Android (Yazan 2026-11-12, for the next build): Google's own account sheet, which shows
+ * "MedNova" instead of the xxxx.supabase.co address the web page shows. It needs the Web client ID from Google Cloud
+ * in EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID (and that ID added to Supabase's Google provider); until then, and on iPhone,
+ * the web page below is used.
+ */
+const WEB_CLIENT_ID = process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID ?? '';
+export const NATIVE_GOOGLE = Platform.OS === 'android' && WEB_CLIENT_ID.endsWith('.apps.googleusercontent.com');
+
+async function nativeGoogleSignIn() {
+  // Loaded only here, so the web build and iPhone never touch the native module.
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { GoogleSignin, statusCodes } = require('@react-native-google-signin/google-signin') as typeof import('@react-native-google-signin/google-signin');
+  GoogleSignin.configure({ webClientId: WEB_CLIENT_ID });
+  await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+  // Signed out first, so the account picker shows every time (like prompt=select_account on the web page).
+  await GoogleSignin.signOut().catch(() => {});
+  try {
+    const res = await GoogleSignin.signIn();
+    if (res.type !== 'success') return false;
+    const token = res.data.idToken;
+    if (!token) throw new Error('Google sign-in did not finish. Try again.');
+    const { error } = await supabase.auth.signInWithIdToken({ provider: 'google', token });
+    if (error) throw error;
+    return true;
+  } catch (e) {
+    if ((e as { code?: string })?.code === statusCodes.SIGN_IN_CANCELLED) return false;
+    throw e;
+  }
+}
+
+/** Opens Google's sign-in (native sheet on Android once set up, else the web page). True once signed in, false when closed. */
 export async function googleSignIn() {
+  if (NATIVE_GOOGLE) return nativeGoogleSignIn();
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: { redirectTo: AUTH_CALLBACK, skipBrowserRedirect: true, queryParams: { prompt: 'select_account' } },
