@@ -34,7 +34,7 @@ export const fourOfAKind: GameDef = {
         'Each board has 16 boxes hiding 4 groups of 4. Tap 4 boxes that share a link, then Submit.',
         'A right group lifts to the top. Three right and the last one falls into place.',
         `You have ${FOK.hearts} hearts a board. A wrong pick costs one; "One away" means 3 of your 4 belong together. The same four twice costs nothing.`,
-        `The hint shows one group's link for ${FOK.revealCost} points. Out of hearts, ${FOK.tokenPrice} token buys a heart once a board.`,
+        `The hint shows one group's link for ${FOK.revealCost} tokens, once a board. Out of hearts, ${FOK.tokenPrice} token buys a heart once a board.`,
         `Points: easy 1, medium 2, hard 3, minus 1 a mistake, up to ${FOK.maxPoints} a board. Points are your EXP. Groups you miss go to Learn.`,
       ],
     },

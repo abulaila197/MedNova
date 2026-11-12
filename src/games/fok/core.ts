@@ -20,6 +20,7 @@ export const FOK = {
   /** The token's second chance: hearts given back, and its price in tokens. */
   tokenHearts: 1,
   tokenPrice: 1,
+  /** Tokens the hint costs. */
   revealCost: 2,
   maxPoints: 8,
   /** The slots on every board, by level. */
@@ -128,7 +129,7 @@ export const buyHeart = (run: BoardRun): BoardRun => (run.phase === 'out' && !ru
 /** No token (or the clock ran out): the board ends and shows its answers. */
 export const endRun = (run: BoardRun): BoardRun => (run.phase === 'done' ? run : { ...run, phase: 'done' });
 
-/** The hint: shows the topic of the easiest group not found yet (once a board, 2 points). */
+/** The hint: shows the topic of the easiest group not found yet (once a board, paid in tokens, Yazan 2026-11-12). */
 export function reveal(run: BoardRun): BoardRun {
   if (run.phase !== 'play' || run.revealed != null) return run;
   const slot = [0, 1, 2, 3].find((s) => !run.found.includes(s));
@@ -138,9 +139,9 @@ export function reveal(run: BoardRun): BoardRun {
 /** Moves the remaining tiles around (Shuffle). */
 export const reshuffle = (run: BoardRun, r: Rand): BoardRun => ({ ...run, order: shuffle(run.order, r) });
 
-/** A board's points: found groups by level, minus mistakes and the hint, 0 to 8. */
+/** A board's points: found groups by level, minus mistakes, 0 to 8 (the hint is paid in tokens, not points). */
 export function boardPoints(board: Board, bank: ReadonlyMap<string, Group>, run: BoardRun): number {
-  const raw = run.found.reduce((a, s) => a + levelPoints(bank.get(board.groups[s].id)!.lv), 0) - run.mistakes - (run.revealed != null ? FOK.revealCost : 0);
+  const raw = run.found.reduce((a, s) => a + levelPoints(bank.get(board.groups[s].id)!.lv), 0) - run.mistakes;
   return Math.max(0, Math.min(FOK.maxPoints, raw));
 }
 

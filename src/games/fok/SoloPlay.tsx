@@ -103,6 +103,25 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
     if (limitMs && save && save.run.phase === 'play' && spent >= limitMs) step(endRun(save.run));
   }, [limitMs, save, spent, step]);
 
+  // The hint costs tokens (Yazan 2026-11-12); a failed step gives them back.
+  const [hintNote, setHintNote] = useState<string | null>(null);
+  const [hintBusy, setHintBusy] = useState(false);
+  const buyHint = async () => {
+    const cur = ref.current;
+    if (!cur || cur.run.revealed != null || hintBusy) return;
+    setHintBusy(true);
+    try {
+      const receipt = await engine.wallet.spend(FOK.revealCost, 'fok_hint', play.id);
+      if (!receipt) return setHintNote(`The hint costs ${FOK.revealCost} tokens. Each level up gives 1 token.`);
+      const now = ref.current;
+      if (!now || now.run.phase !== 'play') return void engine.wallet.refund(receipt);
+      setHintNote(null);
+      step(reveal(now.run));
+    } finally {
+      setHintBusy(false);
+    }
+  };
+
   const finish = () => {
     const done = ref.current?.done ?? [];
     if (!done.length) {
@@ -152,7 +171,8 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
           return r.verdict;
         }}
         onShuffle={() => step(reshuffle(run, Math.random))}
-        hint={{ label: run.revealed != null ? 'Hint used' : `Hint −${FOK.revealCost}`, onPress: () => step(reveal(run)), disabled: run.revealed != null }}
+        tip={hintNote ?? undefined}
+        hint={{ label: run.revealed != null ? 'Hint used' : `Hint · ${FOK.revealCost}`, onPress: buyHint, disabled: run.revealed != null || hintBusy }}
       />
       {run.phase === 'out' ? (
         <View style={{ position: 'absolute', left: u(16), right: u(16), bottom: u(16) }}>
