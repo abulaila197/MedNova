@@ -71,44 +71,25 @@ const SCENES: SceneDef[] = [
 /** Full-bleed illustrated scene of a slide, positioned exactly like the CSS background (cq units of the padded box). */
 function Scene({ si, w, h, padTop, padBottom }: { si: number; w: number; h: number; padTop: number; padBottom: number }) {
   const d = SCENES[si];
-  // Small phones (2026-11-12) fill the width at the height's size: the art keeps the phone frame's size and place,
-  // centred, instead of growing with the extra width and sliding under the words.
-  const aw = Math.min(w, u(DESIGN_W));
-  const ox = (w - aw) / 2;
-  const cw = (aw - u(36)) / 100;
+  const cw = (w - u(36)) / 100;
   const ch = (h - padTop - padBottom) / 100;
   const iw = d.size * cw;
   const ih = iw * IMG_RATIO;
-  const x = ox + (d.pos ? d.pos[0] * cw : (aw - iw) * 0.5) + u(d.shift ?? 0);
+  const x = (d.pos ? d.pos[0] * cw : (w - iw) * 0.5) + u(d.shift ?? 0);
   const y = d.pos ? d.pos[1] * ch : h - ih;
-  // Small phones: the photo is narrower than the screen, so its side edges melt into the sky (Yazan 2026-11-12:
-  // a hard edge showed beside the photo).
-  const l = Math.max(0, x);
-  const r = Math.min(w, x + iw);
-  const melt = u(30);
-  const sides =
-    ox > 0 ? (
-      <>
-        <View style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: l, backgroundColor: NAVY }} />
-        <LinearGradient colors={[NAVY, 'rgba(7,10,28,0)']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={{ position: 'absolute', left: l - 1, top: 0, bottom: 0, width: melt }} />
-        <LinearGradient colors={['rgba(7,10,28,0)', NAVY]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={{ position: 'absolute', left: r - melt + 1, top: 0, bottom: 0, width: melt }} />
-        <View style={{ position: 'absolute', left: r, top: 0, bottom: 0, right: 0, backgroundColor: NAVY }} />
-      </>
-    ) : null;
   if (BAKED_ART) {
     // Same picture from still images: the photo (slide 3 with its top fade already in its alpha) and the veil,
     // a full-height gradient stretched to the screen.
     return (
       <View pointerEvents="none" style={StyleSheet.absoluteFill}>
         <Image source={d.fade === 'top' ? BAKED.communityFade : d.src} style={{ position: 'absolute', left: x, top: y, width: iw, height: ih }} contentFit="fill" transition={0} accessibilityIgnoresInvertColors />
-        {sides}
         <Image source={BAKED.veils[si]} style={StyleSheet.absoluteFill} contentFit="fill" transition={0} accessibilityIgnoresInvertColors />
       </View>
     );
   }
   const id = `ob${si}`;
   const soft = u(26);
-  const svg = (
+  return (
     <Svg width={w} height={h} style={StyleSheet.absoluteFill} pointerEvents="none">
       <Defs>
         {d.fade === 'top' ? (
@@ -132,14 +113,6 @@ function Scene({ si, w, h, padTop, padBottom }: { si: number; w: number; h: numb
       <Rect x={0} y={0} width={w} height={h} fill={`url(#${id}v)`} />
     </Svg>
   );
-  return sides ? (
-    <View pointerEvents="none" style={StyleSheet.absoluteFill}>
-      {svg}
-      {sides}
-    </View>
-  ) : (
-    svg
-  );
 }
 
 /**
@@ -151,7 +124,9 @@ const TAB_POS = ['bottom', 'top', 'bottom'] as const;
 const TAB_FOCUS: (null | { zoom: number; fx: number; fy: number; tx: number; ty: number })[] = [null, { zoom: 1.5, fx: 0.62, fy: 0.65, tx: 0.55, ty: 0.36 }, null];
 function TabletScene({ si, w, h }: { si: number; w: number; h: number }) {
   const d = SCENES[si];
-  const f = TAB_FOCUS[si];
+  const tf = TAB_FOCUS[si];
+  // Small phones are shorter for their width: lift slide 2's book a little higher so it clears the words.
+  const f = tf && !TABLET ? { ...tf, ty: tf.ty - 0.07 } : tf;
   const src = d.fade === 'top' ? BAKED.communityFade : d.src;
   let box: ImageStyle = { position: 'absolute', left: 0, top: 0, right: 0, bottom: 0 };
   if (f) {
@@ -267,7 +242,8 @@ function Frame({ si, w, h, padTop, padBottom, children }: Omit<SlideProps, 'onNe
           each frame (DEF-071). Same order and place, so nothing looks different. */}
       <View pointerEvents="none" style={StyleSheet.absoluteFill} renderToHardwareTextureAndroid shouldRasterizeIOS>
         <Sky w={w} h={h} />
-        {TABLET ? <TabletScene si={si} w={w} h={h} /> : <Scene si={si} w={w} h={h} padTop={padTop} padBottom={padBottom} />}
+        {/* Small phones (2026-11-12) are wider than the phone design at their size: the photo fills the screen as on tablets. */}
+        {TABLET || w > u(DESIGN_W) + 1 ? <TabletScene si={si} w={w} h={h} /> : <Scene si={si} w={w} h={h} padTop={padTop} padBottom={padBottom} />}
       </View>
       <Stars si={si} hd={hd} wd={w / u(1)} />
       <View style={{ flex: 1, paddingTop: padTop, paddingBottom: padBottom, paddingHorizontal: TABLET ? u(40) : u(18), gap: z(14) }}>{children}</View>
