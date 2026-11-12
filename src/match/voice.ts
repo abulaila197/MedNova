@@ -20,6 +20,34 @@ export const VOICE: { id: string; line: string; src: number }[] = [
   { id: 'keep-up', line: "Keep up!", src: require('../../assets/voice/keep-up.m4a') },
   { id: 'better-luck', line: "Better luck next time!", src: require('../../assets/voice/better-luck.m4a') },
 ];
+/**
+ * The same 18 lines in the female voice (Yazan 2026-11-12, voice 2 picked from three samples, made with Chatterbox,
+ * MIT licence), set to the same loudness. Used when the speaker's character is female, or your Settings say so.
+ */
+export const VOICE_F: typeof VOICE = [
+  { id: 'good-luck', line: "Good luck!", src: require('../../assets/voice-f/good-luck.m4a') },
+  { id: 'nice-one', line: "Nice one!", src: require('../../assets/voice-f/nice-one.m4a') },
+  { id: 'so-close', line: "So close!", src: require('../../assets/voice-f/so-close.m4a') },
+  { id: 'hurry-up', line: "Hurry up!", src: require('../../assets/voice-f/hurry-up.m4a') },
+  { id: 'well-played', line: "Well played", src: require('../../assets/voice-f/well-played.m4a') },
+  { id: 'oops', line: "Oops!", src: require('../../assets/voice-f/oops.m4a') },
+  { id: 'rematch', line: "Rematch?", src: require('../../assets/voice-f/rematch.m4a') },
+  { id: 'gg', line: "GG", src: require('../../assets/voice-f/gg.m4a') },
+  { id: 'thank-you', line: "Thank you!", src: require('../../assets/voice-f/thank-you.m4a') },
+  { id: 'sorry', line: "Sorry!", src: require('../../assets/voice-f/sorry.m4a') },
+  { id: 'ready', line: "Ready!", src: require('../../assets/voice-f/ready.m4a') },
+  { id: 'help-me', line: "Help me!", src: require('../../assets/voice-f/help-me.m4a') },
+  { id: 'too-slow', line: "Too slow!", src: require('../../assets/voice-f/too-slow.m4a') },
+  { id: 'all-youve-got', line: "Is that all you've got?", src: require('../../assets/voice-f/all-youve-got.m4a') },
+  { id: 'catch-me', line: "Catch me if you can!", src: require('../../assets/voice-f/catch-me.m4a') },
+  { id: 'too-easy', line: "Too easy!", src: require('../../assets/voice-f/too-easy.m4a') },
+  { id: 'keep-up', line: "Keep up!", src: require('../../assets/voice-f/keep-up.m4a') },
+  { id: 'better-luck', line: "Better luck next time!", src: require('../../assets/voice-f/better-luck.m4a') },
+];
+const femaleById = new Map(VOICE_F.map((v) => [v.id, v]));
+/** The sound for a line in a voice; lines with no female take (Trust Me Not's) keep the male one. */
+export const voiceSrc = (id: string, gender: 'female' | 'male') => (gender === 'female' ? femaleById.get(id)?.src : undefined) ?? voiceById.get(id)?.src;
+
 /** Lines only Trust Me Not offers, in the same voice (Yazan, 2026-10-09: the 12 shared lines plus these 3). */
 export const TMN_VOICE: typeof VOICE = [
   { id: 'trust-me', line: "Trust me!", src: require('../../assets/trustmenot/voice/trust-me.m4a') },

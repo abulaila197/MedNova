@@ -4,7 +4,10 @@ import { create } from 'zustand';
 
 import { awake, track, untrack } from '@/lib/sound';
 
-import { voiceById } from './voice';
+import { voiceGender } from '@/games/shell/characters';
+import { loadVoicePick, useVoicePick } from '@/state/voicePick';
+
+import { voiceSrc } from './voice';
 
 /**
  * Stickers and voice lines in a Vs bots room and match (ON12, ON28; bots 2026-11-09). Everything stays on the phone:
@@ -41,21 +44,28 @@ export function toggleMute(room: string, user: string) {
   });
 }
 
-// One player per voice line, made on first use; short effects mix with other sounds.
+/** Which voice a speaker uses: their character's, or for you the one picked in Settings. */
+export function genderFor(face: string, mine: boolean): 'female' | 'male' {
+  const pick = useVoicePick.getState().pick;
+  return mine && pick !== 'character' ? pick : voiceGender(face);
+}
+
+// One player per voice line and voice, made on first use; short effects mix with other sounds.
 const players = new Map<string, AudioPlayer>();
 let modeSet = false;
-export async function playVoice(id: string) {
-  const v = voiceById.get(id);
-  if (!v || !awake()) return; // no voice lines while the app is in the background
+export async function playVoice(id: string, gender: 'female' | 'male' = 'male') {
+  const src = voiceSrc(id, gender);
+  if (!src || !awake()) return; // no voice lines while the app is in the background
   try {
     if (!modeSet) {
       modeSet = true;
       await setAudioModeAsync({ playsInSilentMode: true, interruptionMode: 'mixWithOthers' }).catch(() => {});
     }
-    let p = players.get(id);
+    const key = `${gender}:${id}`;
+    let p = players.get(key);
     if (!p) {
-      p = track(createAudioPlayer(v.src));
-      players.set(id, p);
+      p = track(createAudioPlayer(src));
+      players.set(key, p);
     }
     await p.seekTo(0);
     // On the web the browser can refuse sound until the page was tapped; that's fine.
@@ -100,7 +110,7 @@ export async function sendTalk(room: string, me: { id: string; name: string; fac
   useTalk.setState({ nextAt: now + COOLDOWN_MS });
   const m: TalkMsg = { id: nextId++, user_id: me.id, name: me.name, face: me.face, kind, item, at: now };
   pop(m);
-  if (kind === 'voice') playVoice(item);
+  if (kind === 'voice') playVoice(item, genderFor(me.face, true));
   listeners.get(room)?.forEach((fn) => fn(m));
   return 'sent';
 }
@@ -124,7 +134,7 @@ function drain() {
   if ((open.get(next.room) ?? 0) > 0 && !isMuted(next.room, next.m.user_id) && Date.now() <= next.until) {
     const m = { ...next.m, id: nextId++, at: Date.now() };
     pop(m);
-    if (m.kind === 'voice') playVoice(m.item);
+    if (m.kind === 'voice') playVoice(m.item, genderFor(m.face, false));
     busyUntil = Date.now() + (m.kind === 'line' ? LINE_MS : BOT_GAP_MS);
   }
   if (queue.length) timer = setTimeout(drain, Math.max(0, busyUntil - Date.now()));
@@ -156,6 +166,7 @@ export const botQueueLength = () => queue.length;
 export function useTalkRoom(room: string | undefined) {
   useEffect(() => {
     if (!room) return;
+    void loadVoicePick();
     open.set(room, (open.get(room) ?? 0) + 1);
     return () => {
       const n = (open.get(room) ?? 1) - 1;

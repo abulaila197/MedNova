@@ -76,3 +76,10 @@ export function playerColour(players: { user_id: string }[], userId: string) {
   const i = players.map((p) => p.user_id).sort().indexOf(userId);
   return SEAT_COLOURS[Math.max(0, i) % SEAT_COLOURS.length].color;
 }
+
+/**
+ * Characters that speak in the female voice (Yazan 2026-11-12: the voice follows the character worn, by players and
+ * rivals). The robots are a best guess from their art; every other character uses the male voice.
+ */
+export const FEMALE_CHARACTERS = new Set(['yara', 'layla', 'iris', 'aurora', 'vex', 'dina', 'razan']);
+export const voiceGender = (slug: string): 'female' | 'male' => (FEMALE_CHARACTERS.has(slug) ? 'female' : 'male');

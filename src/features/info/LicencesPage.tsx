@@ -41,6 +41,8 @@ export function LicencesPage() {
           <Group title="Animations · Lottie Simple License" rows={['Trophy win effect  from LottieFiles']} text={LOTTIE} />
           {/* #15: the app sounds are Kenney's CC0 packs since 2026-10-26. */}
           <Group title="Sounds · CC0 1.0" rows={['Tap, right, wrong, win, time up and token sounds  by Kenney (kenney.nl)']} text={CC0} />
+          {/* Yazan 2026-11-12: the female voice lines were made with Chatterbox (MIT); the male lines are a friend's own recordings. */}
+          <Group title="Female voice lines · MIT" rows={['Made with Chatterbox  Copyright (c) 2025 Resemble AI']} text={TEXTS.MIT} />
           {GROUPS.map(([l, list]) => (
             <Group key={l} title={`${l} · ${list.length}`} rows={list.map((p) => `${p.n} ${p.v}${p.c ? `  ${p.c}` : ''}`)} text={TEXTS[l]} />
           ))}

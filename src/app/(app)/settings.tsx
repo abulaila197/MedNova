@@ -12,6 +12,7 @@ import { linkGoogle, signInMethods } from '@/lib/googleSignIn';
 import { askPushNow, PUSH_ON, pushAllowed } from '@/lib/push';
 import { tapped } from '@/lib/sound';
 import { supabase } from '@/lib/supabase';
+import { loadVoicePick, setVoicePick, useVoicePick, type VoicePick } from '@/state/voicePick';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
@@ -146,6 +147,8 @@ export default function Page() {
           </>
         )}
 
+        <VoiceRow />
+
         <View style={{ marginTop: u(22) }}>
           <Kicker inSec>Ads and privacy</Kicker>
         </View>
@@ -171,6 +174,49 @@ export default function Page() {
         </Pressable>
       </InfoScroll>
     </Screen>
+  );
+}
+
+const VOICES: { k: VoicePick; label: string }[] = [
+  { k: 'character', label: 'My character' },
+  { k: 'female', label: 'Female' },
+  { k: 'male', label: 'Male' },
+];
+
+/** Your voice lines in rooms (Yazan 2026-11-12): follow your character, or always Female or Male. */
+function VoiceRow() {
+  const c = useInfo();
+  const pick = useVoicePick((x) => x.pick);
+  useEffect(() => {
+    void loadVoicePick();
+  }, []);
+  return (
+    <>
+      <View style={{ marginTop: u(22) }}>
+        <Kicker inSec>Voice lines</Kicker>
+      </View>
+      <View style={[s.row, { borderBottomColor: c.line, flexDirection: 'column', alignItems: 'stretch', gap: u(8) }]}>
+        <View>
+          <Text style={[s.rowT, { color: c.fg }]}>Your voice</Text>
+          <Text style={[s.rowS, { color: c.mute }]}>The voice your lines play in. My character: a female character speaks in the female voice. Rivals always follow their character.</Text>
+        </View>
+        <View style={[s.pill, { backgroundColor: c.surf, borderColor: c.line, alignSelf: 'flex-start' }]}>
+          {VOICES.map((v) => (
+            <Pressable key={v.k} onPress={tapped(() => setVoicePick(v.k))} accessibilityRole="button" accessibilityState={{ selected: pick === v.k }} accessibilityLabel={`Voice: ${v.label}`}>
+              {pick === v.k ? (
+                <LinearGradient colors={[c.t.gradA, c.t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={s.opt}>
+                  <Text style={[s.optT, { color: c.t.onGrad }]}>{v.label}</Text>
+                </LinearGradient>
+              ) : (
+                <View style={s.opt}>
+                  <Text style={[s.optT, { color: c.mute }]}>{v.label}</Text>
+                </View>
+              )}
+            </Pressable>
+          ))}
+        </View>
+      </View>
+    </>
   );
 }
 
