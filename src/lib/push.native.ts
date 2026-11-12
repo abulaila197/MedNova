@@ -4,7 +4,7 @@
 import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
 import { router } from 'expo-router';
-import { Platform } from 'react-native';
+import { Linking, Platform } from 'react-native';
 
 import { engine } from '@/games/engine';
 import { useSession } from '@/games/shell/session';
@@ -91,12 +91,15 @@ const OPEN: Record<string, string> = {
   sparks: '/games',
   daily: '/games',
   rounds: '/rounds',
+  // Admin pushes (Yazan 2026-11-12): an update opens the store (its url); a plain notification opens the app.
+  news: '/games',
 };
 
 export function followPushTaps(): () => void {
   const go = (r: Notifications.NotificationResponse | null) => {
     const d = r?.notification.request.content.data as { kind?: string; url?: string } | undefined;
     if (!d) return;
+    if (d.url && /^https:\/\//.test(d.url)) return void Linking.openURL(d.url).catch(() => {});
     const to = d.url ?? (d.kind ? OPEN[d.kind] : undefined);
     if (to) setTimeout(() => router.navigate(to as never), 300);
   };
