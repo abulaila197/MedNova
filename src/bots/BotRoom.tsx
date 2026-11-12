@@ -213,48 +213,8 @@ export function BotRoom({ def, play, left }: { def: GameDef; play: Play; left?: 
   const free = max - live.length;
   const shown = seats.filter((x) => !x.removed);
 
-  const statusEl = (
-<View style={st.stl}>
-        <View style={[st.sd, { backgroundColor: allReady ? G.ok : G.amber }]} />
-        <Text style={[st.stlT, { color: G.mute }]}>{status}</Text>
-        <Text style={[st.stlN, { color: G.fg }]}>{`${live.length + 1} / ${max + 1}`}</Text>
-      </View>
-  );
-  const sumEl = (
-<View style={st.sum}>
-        <View style={{ gap: u(2), flex: 1 }}>
-          <Text style={[st.k, { color: G.mute }]}>SETTINGS</Text>
-          <Text style={[st.sumT, { color: G.fg }]}>{[settingsLine(def, play.settings), `Mostly ${LEVEL_NAME[level]}`].filter(Boolean).join(' · ')}</Text>
-        </View>
-      </View>
-  );
-  const noteEl = (
-<Text style={[st.note, TABLET && st.noteTab, { color: G.dim }]}>
-        {canPlay ? 'Tap a rival to see its profile, swap it or kick it.' : 'Tap a rival to see its profile, swap it or kick it. Rival matches come in the next build step.'}
-      </Text>
-  );
-  const lbarEl = (
-<View style={st.lbar}>
-        <Pressable onPress={() => setSheet('talk')} style={st.talk} accessibilityRole="button" accessibilityLabel="Talk: stickers and voice">
-          <PlayerFace slug={me.face} size={u(20)} userId={profile?.id} still />
-          <Text style={[st.talkT, { color: G.fg }]}>Talk</Text>
-        </Pressable>
-        <GBtn style={st.grow} label={!canPlay ? 'Start · coming soon' : allReady ? 'Start' : `Start · ${ready.length} of ${live.length} ready`} off={!allReady || !canPlay} onPress={start} />
-      </View>
-  );
-
   return (
     <GameScreen
-      panel={
-        TABLET ? (
-          <>
-            {statusEl}
-            {sumEl}
-            {noteEl}
-          </>
-        ) : undefined
-      }
-      bottom={TABLET ? lbarEl : undefined}
       top={
         <>
           <Sheet tone={{ bg: L.raised, line: L.line }} open={sheet === 'how'} onClose={() => setSheet(null)}>
@@ -286,7 +246,11 @@ export function BotRoom({ def, play, left }: { def: GameDef; play: Play; left?: 
         <Text style={[st.k, { color: G.mute }]}>VS RIVALS · MOSTLY {LEVEL_NAME[level].toUpperCase()}</Text>
         <Text style={[st.h, { color: G.fg }]}>Your room</Text>
       </View>
-      {TABLET ? null : statusEl}
+      <View style={st.stl}>
+        <View style={[st.sd, { backgroundColor: allReady ? G.ok : G.amber }]} />
+        <Text style={[st.stlT, { color: G.mute }]}>{status}</Text>
+        <Text style={[st.stlN, { color: G.fg }]}>{`${live.length + 1} / ${max + 1}`}</Text>
+      </View>
 
       {teams >= 2 ? (
         Array.from({ length: teams }, (_, i) => {
@@ -318,9 +282,23 @@ export function BotRoom({ def, play, left }: { def: GameDef; play: Play; left?: 
         </View>
       )}
 
-      {TABLET ? null : sumEl}
-      {TABLET ? null : noteEl}
-      {TABLET ? null : lbarEl}
+      <View style={st.sum}>
+        <View style={{ gap: u(2), flex: 1 }}>
+          <Text style={[st.k, { color: G.mute }]}>SETTINGS</Text>
+          <Text style={[st.sumT, { color: G.fg }]}>{[settingsLine(def, play.settings), `Mostly ${LEVEL_NAME[level]}`].filter(Boolean).join(' · ')}</Text>
+        </View>
+      </View>
+
+      <Text style={[st.note, { color: G.dim }]}>
+        {canPlay ? 'Tap a rival to see its profile, swap it or kick it.' : 'Tap a rival to see its profile, swap it or kick it. Rival matches come in the next build step.'}
+      </Text>
+      <View style={[st.lbar, TABLET && st.lbarTab]}>
+        <Pressable onPress={() => setSheet('talk')} style={st.talk} accessibilityRole="button" accessibilityLabel="Talk: stickers and voice">
+          <PlayerFace slug={me.face} size={u(20)} userId={profile?.id} still />
+          <Text style={[st.talkT, { color: G.fg }]}>Talk</Text>
+        </Pressable>
+        <GBtn style={st.grow} label={!canPlay ? 'Start · coming soon' : allReady ? 'Start' : `Start · ${ready.length} of ${live.length} ready`} off={!allReady || !canPlay} onPress={start} />
+      </View>
     </GameScreen>
   );
 }
@@ -465,8 +443,9 @@ const st = StyleSheet.create({
   sum: { flexDirection: 'row', alignItems: 'center', backgroundColor: G.panel, borderWidth: 1, borderColor: G.line, borderRadius: u(13), paddingVertical: u(9), paddingHorizontal: u(11) },
   sumT: { fontFamily: F.bodySemi, fontSize: u(11) },
   note: { fontFamily: F.body, fontSize: u(10), textAlign: 'center', marginTop: 'auto' },
-  noteTab: { textAlign: 'left', marginTop: 0 },
   lbar: { flexDirection: 'row', alignItems: 'center', gap: u(8) },
+  // tablet: Talk and Start keep the phone's width, centred (Yazan 2026-11-12)
+  lbarTab: { width: '100%', maxWidth: u(300), alignSelf: 'center' },
   talk: { flexDirection: 'row', alignItems: 'center', gap: u(6), borderWidth: 1, borderColor: G.line, backgroundColor: G.panel, borderRadius: u(12), paddingVertical: u(6), paddingLeft: u(6), paddingRight: u(11) },
   talkT: { fontFamily: F.bodySemi, fontSize: u(11.5) },
   grow: { flex: 1 },

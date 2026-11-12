@@ -69,10 +69,10 @@ export function useSlateFonts() {
   return ok;
 }
 
-/** A Silent Artist page: the game header over the dark slate room. `scroll` for long pages (pick, reveal). `panel`: tablet side panel. */
-export function SlateScreen({ children, scroll = false, panel }: { children: ReactNode; scroll?: boolean; panel?: ReactNode }) {
+/** A Silent Artist page: the game header over the dark slate room. `scroll` for long pages (pick, reveal). */
+export function SlateScreen({ children, scroll = false }: { children: ReactNode; scroll?: boolean }) {
   return (
-    <GameScreen scroll={scroll} panel={panel} bodyStyle={[s.body, { paddingBottom: u(14) }]}>
+    <GameScreen scroll={scroll} bodyStyle={[s.body, { paddingBottom: u(14) }]}>
       {children}
     </GameScreen>
   );

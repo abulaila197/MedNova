@@ -7,7 +7,7 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { useTheme } from '@/state/app';
-import { u } from '@/theme/scale';
+import { TABLET, u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import { GameScreen } from '../shell/ui';
@@ -214,7 +214,7 @@ function Board(p: {
   const onLayout = (e: LayoutChangeEvent) => setBox({ w: e.nativeEvent.layout.width, h: e.nativeEvent.layout.height });
   const pad = u(9);
   // Room left for the board once the specimen note (about NOTE_H tall) and the gap under the board are kept.
-  const tile = Math.max(0, Math.min((box.w - pad * 2 - GAP * (cols - 1)) / cols, (box.h - NOTE_H - u(10) - pad * 2 - GAP * (p.rows - 1)) / p.rows, u(40)));
+  const tile = Math.max(0, Math.min((box.w - pad * 2 - GAP * (cols - 1)) / cols, (box.h - NOTE_H - u(10) - pad * 2 - GAP * (p.rows - 1)) / p.rows, u(TABLET ? 64 : 40)));
   const activeRow = p.played.length < p.rows ? p.played.length : -1;
 
   return (
@@ -393,10 +393,11 @@ const s = StyleSheet.create({
   hintT: { fontFamily: F.bodySemi, fontSize: u(10) },
   kb: { gap: u(4.5) },
   krow: { flexDirection: 'row', justifyContent: 'center', gap: u(3.5) },
-  key: { flex: 1, maxWidth: u(23), height: u(34), borderRadius: u(3), borderWidth: 1, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
-  keyWide: { flex: 1.6, maxWidth: u(38) },
+  // tablet (Yazan 2026-11-12): the phone's keyboard, just bigger keys across the wider screen
+  key: { flex: 1, maxWidth: u(TABLET ? 38 : 23), height: u(TABLET ? 44 : 34), borderRadius: u(3), borderWidth: 1, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
+  keyWide: { flex: 1.6, maxWidth: u(TABLET ? 62 : 38) },
   keyTop: { position: 'absolute', left: 0, right: 0, top: 0, height: '50%' },
-  keyT: { fontFamily: F.bodySemi, fontSize: u(11) },
+  keyT: { fontFamily: F.bodySemi, fontSize: u(TABLET ? 14 : 11) },
   keyTW: { fontSize: u(9) },
   dock: { gap: u(8) },
 });

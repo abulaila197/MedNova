@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 
-import { TABLET, u } from '@/theme/scale';
+import { u } from '@/theme/scale';
 
 import { engine, rank } from '../engine';
 import { usePauseHide } from '../engine/usePauseHide';
@@ -249,55 +249,43 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   const titleColor = phase === 'stealing' ? (team(steal)?.color ?? R.ink) : phase === 'whoGot' ? R.ink : color;
   const timer = phase === 'performing' ? <ClockChalkTimer clock={ticks} leftAt={leftAt} totalMs={run.turnMs} /> : phase === 'stealing' ? <ClockChalkTimer clock={ticks} leftAt={leftAt} totalMs={15_000} /> : null;
 
-  const top = <TopRow kicker={phase === 'whoGot' ? `Guessed in ${clock(run.gotAt ?? 0)}` : phase === 'stealing' ? 'Time up · one guess, 15 s' : kick} title={title} color={titleColor} right={<>{timer}<PauseBtn onPress={pause} /></>} />;
-  const hintCard = hint ? <HintCard hint={paused ? { words: hint.words, field: null, mask: null } : hint} /> : null;
-  // Tablet (look A): the board or the mime card on the left, the turn, hint and buttons in the side panel.
-  const controls =
-    phase === 'performing' ? (
-      <View style={TABLET ? s.col : s.row}>
-        <Peek word={paused ? '' : w.name} />
-        <ChalkBtn ghost label="Give up" onPress={() => dispatch({ type: 'GIVE_UP', now: Date.now() })} style={TABLET ? null : s.act} />
-        <ChalkBtn label="Got it!" onPress={() => dispatch({ type: 'GOT_IT', now: Date.now() })} style={TABLET ? null : s.act} />
-      </View>
-    ) : phase === 'whoGot' ? (
-      <Panel style={{ gap: u(8), paddingVertical: u(10) }}>
-        <Note>Tap who said it first. They score by speed, and {nameOf(turn.seat)} gets half.</Note>
-        <View style={s.wrap}>
-          {rows.filter((r) => r.seat !== turn.seat).map((r) => (
-            <ChalkChip key={r.seat} big label={r.name} dot={seatOf.get(r.seat)?.color} onPress={() => dispatch({ type: 'CREDIT', seat: r.seat })} />
-          ))}
-        </View>
-        <ChalkBtn ghost label="Not yet, keep going" onPress={() => dispatch({ type: 'UNDO_GOT', now: Date.now() })} />
-      </Panel>
-    ) : (
-      <Panel style={{ gap: u(8), paddingVertical: u(10) }}>
-        <Note>{`${steal != null ? teamName(steal) : 'The next team'} talks it over and gives one answer. Right is worth 10.`}</Note>
-        <View style={TABLET ? s.col : s.row}>
-          <ChalkBtn ghost label="Missed" onPress={() => dispatch({ type: 'STEAL', success: false })} style={TABLET ? null : { flex: 1 }} />
-          <ChalkBtn label="They got it" onPress={() => dispatch({ type: 'STEAL', success: true })} style={TABLET ? null : { flex: 1.4 }} />
-        </View>
-      </Panel>
-    );
   return (
-    <SlateScreen
-      panel={
-        TABLET ? (
-          <>
-            {top}
-            {hintCard}
-            {controls}
-          </>
-        ) : undefined
-      }>
-      {TABLET ? null : top}
-      {TABLET ? null : hintCard}
+    <SlateScreen>
+      <TopRow kicker={phase === 'whoGot' ? `Guessed in ${clock(run.gotAt ?? 0)}` : phase === 'stealing' ? 'Time up · one guess, 15 s' : kick} title={title} color={titleColor} right={<>{timer}<PauseBtn onPress={pause} /></>} />
+      {hint ? <HintCard hint={paused ? { words: hint.words, field: null, mask: null } : hint} /> : null}
       {acting ? (
         <ActingCard paused={paused} />
       ) : (
         <FitBoard boardKey={run.index} boardRef={board} shapeRef={shape} ink={ink} size={size} erase={erase} enabled={phase === 'performing'} paused={paused} initial={restored?.index === run.index ? restored.strokes : undefined} onStrokes={onStrokes} />
       )}
-      {phase === 'performing' && !acting ? <Ledge ink={ink} size={size} erase={erase} onInk={(i) => (setInk(i), setErase(false))} onSize={() => setSize(size ? 0 : 1)} onErase={() => setErase(!erase)} onUndo={() => board.current?.undo()} onClear={() => board.current?.clear()} /> : null}
-      {TABLET ? null : controls}
+      {phase === 'performing' ? (
+        <>
+          {acting ? null : <Ledge ink={ink} size={size} erase={erase} onInk={(i) => (setInk(i), setErase(false))} onSize={() => setSize(size ? 0 : 1)} onErase={() => setErase(!erase)} onUndo={() => board.current?.undo()} onClear={() => board.current?.clear()} />}
+          <View style={s.row}>
+            <Peek word={paused ? '' : w.name} />
+            <ChalkBtn ghost label="Give up" onPress={() => dispatch({ type: 'GIVE_UP', now: Date.now() })} style={s.act} />
+            <ChalkBtn label="Got it!" onPress={() => dispatch({ type: 'GOT_IT', now: Date.now() })} style={s.act} />
+          </View>
+        </>
+      ) : phase === 'whoGot' ? (
+        <Panel style={{ gap: u(8), paddingVertical: u(10) }}>
+          <Note>Tap who said it first. They score by speed, and {nameOf(turn.seat)} gets half.</Note>
+          <View style={s.wrap}>
+            {rows.filter((r) => r.seat !== turn.seat).map((r) => (
+              <ChalkChip key={r.seat} big label={r.name} dot={seatOf.get(r.seat)?.color} onPress={() => dispatch({ type: 'CREDIT', seat: r.seat })} />
+            ))}
+          </View>
+          <ChalkBtn ghost label="Not yet, keep going" onPress={() => dispatch({ type: 'UNDO_GOT', now: Date.now() })} />
+        </Panel>
+      ) : (
+        <Panel style={{ gap: u(8), paddingVertical: u(10) }}>
+          <Note>{`${steal != null ? teamName(steal) : 'The next team'} talks it over and gives one answer. Right is worth 10.`}</Note>
+          <View style={s.row}>
+            <ChalkBtn ghost label="Missed" onPress={() => dispatch({ type: 'STEAL', success: false })} style={{ flex: 1 }} />
+            <ChalkBtn label="They got it" onPress={() => dispatch({ type: 'STEAL', success: true })} style={{ flex: 1.4 }} />
+          </View>
+        </Panel>
+      )}
       {menu}
     </SlateScreen>
   );
@@ -347,7 +335,6 @@ function outcomeLine(t: TurnRecord, nameOf: (s: number) => string, teamName: (id
 
 const s = StyleSheet.create({
   row: { flexDirection: 'row', gap: u(8), alignItems: 'stretch' },
-  col: { gap: u(8) },
   act: { flex: 1, paddingHorizontal: u(8) },
   wrap: { flexDirection: 'row', flexWrap: 'wrap', gap: u(8) },
   result: { fontFamily: SL.body, fontSize: u(16), lineHeight: u(21) },

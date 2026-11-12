@@ -5,7 +5,7 @@ import { Text, TextInput } from '@/components/AppText';
 import { Back } from '@/components/Back';
 import { GAMES } from '@/data/games';
 import { useTheme } from '@/state/app';
-import { TABLET, u } from '@/theme/scale';
+import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import type { Mode, Seat } from '../engine/types';
@@ -22,8 +22,6 @@ import { useSparks } from '@/features/sparks/sparks';
 import { useIntent } from '@/features/challenges/store';
 import { useIsSubscribed } from '@/features/store/billing';
 import { Btn, Card, Chips, GameScreen, Title } from './ui';
-import { GamePanel } from './GamePanel';
-
 
 
 /** Shared setup: the game's options as chips. Rule 9: they lock when the game starts. `prefill` comes from "Change settings". */
@@ -63,8 +61,6 @@ export function Setup({ def, mode, prefill, prefillSeats }: { def: GameDef; mode
   return (
     <GameScreen
       bodyStyle={{ paddingTop: u(10), gap: u(10) }}
-      // tablet: the game's picture and what it is in the side panel, the cost and Start at its foot
-      panel={TABLET ? <GamePanel game={def.key} /> : undefined}
       bottom={
         <>
           {intent ? <Text style={[s.small, { color: t.accent, textAlign: 'center' }]}>{`Challenge for ${intent.friend.name} · ${intent.kind === 'score' ? 'Beat my score, 1 day' : `Game challenge, ${intent.days} day${intent.days > 1 ? 's' : ''}`}`}</Text> : null}

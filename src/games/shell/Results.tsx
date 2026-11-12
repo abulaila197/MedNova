@@ -3,7 +3,7 @@ import { Text } from '@/components/AppText';
 
 import { GAMES } from '@/data/games';
 import { useTheme } from '@/state/app';
-import { TABLET, u } from '@/theme/scale';
+import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import { levelUpLine } from '../engine/levels';
@@ -41,38 +41,9 @@ export function Results({ def, play, items }: { def: GameDef; play: Play; items:
   const winner = winnerAccount(play, uid);
   const fx = effectWinner(play, uid);
   const room = play.mode === 'bots' ? `bot:${play.id}` : undefined;
-  const statsCard = (
-    <Card style={s.top}>
-      {stats.map((x) => (
-        <View key={x.label} style={s.stat}>
-          <Text style={[s.big, { color: t.white }]}>{x.value}</Text>
-          <Kick>{x.label}</Kick>
-        </View>
-      )).flatMap((el, i) => (i === 0 ? [el, <ExpStat key="exp" exp={play.expEarned} />] : [el]))}
-      {uid ? <LevelCounter play={play} /> : lvl ? <Text style={[s.lvl, { color: t.accent }]}>{lvl}</Text> : null}
-      {chNote ? <Text style={[s.lvl, { color: t.accent }]}>{chNote}</Text> : null}
-    </Card>
-  );
-  const actions = (
-    <>
-      {play.mode === 'bots' ? <AfterMatch play={play} /> : null}
-      <View style={TABLET ? { gap: u(8) } : { flexDirection: 'row', gap: u(8) }}>
-        <Btn label="Rematch" onPress={rematch} style={TABLET ? null : { flex: 1 }} />
-        <Ghost label="Change settings" onPress={changeSettings} style={TABLET ? null : { flex: 1 }} />
-      </View>
-      <Ghost label="Back to games" onPress={backToGames} />
-    </>
-  );
   return (
     <WinShake>
     <GameScreen
-      // tablet: the score, the after-match card and the buttons stay in the side panel
-      panel={TABLET ? (
-        <>
-          {statsCard}
-          {actions}
-        </>
-      ) : undefined}
       top={
         <>
           {room ? <RoomTalk room={room} me={{ id: uid ?? 'me', name: 'You', face: play.seats[0]?.character ?? 'yara' }} /> : null}
@@ -85,7 +56,16 @@ export function Results({ def, play, items }: { def: GameDef; play: Play; items:
         <Title lead="Game" em="over" />
       </View>
       <ResultTone play={play} items={items} uid={uid} plain={plain} />
-      {TABLET ? null : statsCard}
+      <Card style={s.top}>
+        {stats.map((x) => (
+          <View key={x.label} style={s.stat}>
+            <Text style={[s.big, { color: t.white }]}>{x.value}</Text>
+            <Kick>{x.label}</Kick>
+          </View>
+        )).flatMap((el, i) => (i === 0 ? [el, <ExpStat key="exp" exp={play.expEarned} />] : [el]))}
+        {uid ? <LevelCounter play={play} /> : lvl ? <Text style={[s.lvl, { color: t.accent }]}>{lvl}</Text> : null}
+        {chNote ? <Text style={[s.lvl, { color: t.accent }]}>{chNote}</Text> : null}
+      </Card>
       {teamRows ? (
         <Card>
           <Kick>Teams</Kick>
@@ -149,7 +129,12 @@ export function Results({ def, play, items }: { def: GameDef; play: Play; items:
         ))}
         {missed ? <Body>{multi ? 'Your missed cases are waiting in Today\'s review.' : 'Missed cases are waiting in Today\'s review.'}</Body> : null}
       </Card>
-      {TABLET ? null : actions}
+      {play.mode === 'bots' ? <AfterMatch play={play} /> : null}
+      <View style={{ flexDirection: 'row', gap: u(8) }}>
+        <Btn label="Rematch" onPress={rematch} style={{ flex: 1 }} />
+        <Ghost label="Change settings" onPress={changeSettings} style={{ flex: 1 }} />
+      </View>
+      <Ghost label="Back to games" onPress={backToGames} />
     </GameScreen>
     </WinShake>
   );

@@ -4,7 +4,7 @@ import { Text } from '@/components/AppText';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { useTheme } from '@/state/app';
-import { TABLET, u, useScreen } from '@/theme/scale';
+import { u, useScreen } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 import { sfxVerdict } from '@/lib/sound';
 
@@ -15,7 +15,7 @@ import { PauseMenu } from '../shell/PauseMenu';
 import { teamLap, teamsOf } from '../shell/teams';
 import type { PlayProps } from '../shell/types';
 import { Btn, GameScreen, Ghost, Kick } from '../shell/ui';
-import { FitGrid, AppPopup, AppTopBar, TIP, useGridTaps } from './AppLook';
+import { AppGrid, AppPopup, AppTopBar, TIP, useGridTaps } from './AppLook';
 import { CW, autoSolved, buildSlots, composeAnswer, indexOf, isFilled, judge, lockedCells, placeLetter, removeSlot, type PuzzleDef, type Typed } from './core';
 import { PUZZLES, clueText, puzzleById } from './data';
 import { currentSeat, offlineRecap, offlineStandings, startOffline, stepOffline, type OfflineEvent, type OfflineRun } from './offline';
@@ -98,15 +98,13 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   const claims = Object.fromEntries(Object.entries(run.solvedBy).map(([id, s]) => [id, seatOf.get(s)?.color ?? t.accent]));
   const left = p.words.length - Object.keys(run.solvedBy).length;
 
-  const bar = <AppTopBar kicker={`${left} ${left === 1 ? 'word' : 'words'} left`} title={nameOf(seat)} titleColor={who?.color} sub={me.revived ? 'Revive used' : 'One word this turn'} hearts={me.hearts} score={me.score} onPause={() => setPaused(true)} />;
-  // Tablet (look A): the grid on the left, whose turn, hearts and score in the side panel.
   return (
-    <GameScreen scroll={false} bodyStyle={{ paddingTop: u(12), paddingHorizontal: u(16), gap: u(10) }} panel={TABLET ? bar : undefined}>
-      {TABLET ? null : bar}
+    <GameScreen scroll={false} bodyStyle={{ paddingTop: u(12), paddingHorizontal: u(16), gap: u(10) }}>
+      <AppTopBar kicker={`${left} ${left === 1 ? 'word' : 'words'} left`} title={nameOf(seat)} titleColor={who?.color} sub={me.revived ? 'Revive used' : 'One word this turn'} hearts={me.hearts} score={me.score} onPause={() => setPaused(true)} />
       {run.phase === 'playing' && !paused ? (
         <Turn key={run.turns.length} puzzle={p} run={run} claims={claims} width={W} onEvent={dispatch} />
       ) : (
-        <FitGrid puzzle={p} solved={Object.keys(run.solvedBy)} claims={claims} width={W - u(32)} />
+        <AppGrid puzzle={p} solved={Object.keys(run.solvedBy)} claims={claims} width={W - u(32)} />
       )}
       {run.phase === 'revive' ? (
         <Animated.View entering={FadeIn.duration(200)} style={[StyleSheet.absoluteFill, s.dockWrap]}>
@@ -221,7 +219,7 @@ function Turn({ puzzle, run, claims, width, onEvent }: { puzzle: PuzzleDef; run:
   const sel = word ? idx.wordById.get(word)! : null;
   return (
     <>
-      <FitGrid puzzle={puzzle} solved={solved} claims={claims} selected={word ?? taps.lit} width={width - u(32)} onCell={taps.tap} onDouble={taps.double} />
+      <AppGrid puzzle={puzzle} solved={solved} claims={claims} selected={word ?? taps.lit} width={width - u(32)} onCell={taps.tap} onDouble={taps.double} />
       <View style={s.under}>
         <Text style={[s.tip, { color: t.mute }]}>{TIP}</Text>
       </View>

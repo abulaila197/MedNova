@@ -5,12 +5,12 @@ import { MAX_FONT_SCALE, Text, TextInput } from '@/components/AppText';
 import Animated, { FadeIn, FadeInDown, useAnimatedStyle, useSharedValue, withSequence, withTiming } from 'react-native-reanimated';
 
 import { useTheme } from '@/state/app';
-import { TABLET, u } from '@/theme/scale';
+import { u } from '@/theme/scale';
 import { F, type Theme } from '@/theme/tokens';
 
 import { fullName } from '../shell/names';
 import { KeyboardLift } from '../shell/KeyboardLift';
-import { Btn, GameScreen, Kick, PANEL_W, RoundBtn } from '../shell/ui';
+import { Btn, GameScreen, Kick, RoundBtn } from '../shell/ui';
 import { DP, cluePoints, search, type Attempt, type DPCase, type GuessEntry } from './core';
 import { INDEX, guessById, guessName } from './data';
 import { clock } from '@/games/engine/clock';
@@ -69,88 +69,6 @@ export type BoardProps = {
 };
 
 export function CaseBoard(p: BoardProps) {
-  return TABLET ? <TabletBoard {...p} /> : <PhoneBoard {...p} />;
-}
-
-/**
- * Android tablet (look A, Yazan 2026-11-12): the clues fill the wide left side; the clock, points, clue count, rivals
- * and buttons stay in a panel on the right; the answer box runs along the bottom. No Focus mode: the clues stay in
- * view while typing.
- */
-function TabletBoard(p: BoardProps) {
-  const t = useTheme();
-  const scroller = useRef<ScrollView>(null);
-  const hasResult = !!p.result;
-  useEffect(() => {
-    const id = setTimeout(() => scroller.current?.scrollToEnd({ animated: true }), 80);
-    return () => clearTimeout(id);
-  }, [p.clueSeq, hasResult, p.turnKey]);
-  const playing = p.phase === 'playing';
-  const shown = p.c.clues.slice(0, p.attempt.cluesShown);
-  const col = DIFF_COLOR[p.c.difficulty] ?? DIFF_COLOR.Medium;
-  const worth = p.result ? p.result.points : cluePoints(p.attempt.cluesShown);
-  return (
-    <GameScreen scroll={false} wide>
-      <KeyboardLift style={s.fill}>
-        <View style={s.caseRow}>
-          <Text style={[s.ct, s.ctTab, { color: p.titleColor ?? t.white }]} numberOfLines={1}>
-            {p.title} <Text style={[s.of, { color: t.mute }]}>{p.sub}</Text>
-          </Text>
-          <Text style={[s.diff, { color: col, borderColor: alpha(col, 0.55), backgroundColor: alpha(col, 0.12) }]}>{p.c.difficulty}</Text>
-          <RoundBtn label="Pause" glyph="❚❚" onPress={p.onPause} />
-        </View>
-        <View style={s.tRow}>
-          <View style={s.fill}>
-            {p.phase === 'paused' ? (
-              <View style={[s.hidden, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
-                <Kick>Case hidden</Kick>
-                <Text style={[s.hiddenT, { color: t.mute }]}>{p.pausedNote}</Text>
-              </View>
-            ) : (
-              <ScrollView ref={scroller} style={s.fill} contentContainerStyle={s.scroll} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
-                {p.hint?.granted ? <FieldHint c={p.c} /> : null}
-                <View style={s.clues}>
-                  {shown.map((txt, i) => (
-                    <Animated.View key={`${p.turnKey}-${i}`} entering={i === 0 ? FadeIn.duration(200) : FadeInDown.duration(260)}>
-                      <Clue i={i} text={txt} />
-                    </Animated.View>
-                  ))}
-                </View>
-                {p.attempt.wrong.length ? <Differential wrong={p.attempt.wrong} /> : null}
-                {p.result ? <ResultCard r={p.result} c={p.c} /> : null}
-              </ScrollView>
-            )}
-            {p.notice ? (
-              <Animated.Text maxFontSizeMultiplier={MAX_FONT_SCALE} entering={FadeIn} style={[s.notice, { color: t.soft, backgroundColor: t.panel, borderColor: t.panelLine }]}>
-                {p.notice}
-              </Animated.Text>
-            ) : null}
-          </View>
-          <View style={s.tPanel}>
-            <View style={[s.tStats, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
-              <Stat row label={p.clock.label} value={clock(p.clock.ms, { pad: true, down: p.clock.down })} color={p.clock.warn ? t.rose : amber(t)} />
-              <Stat row label={p.worth?.label ?? (p.result ? 'Scored' : 'Worth now')} value={p.worth?.value ?? String(worth)} />
-              <Stat row label="Clues" value={`${p.attempt.cluesShown} / ${DP.clueCount}`} />
-              <View style={[s.prog, { backgroundColor: t.chipLine }]}>
-                <LinearGradient colors={['#10b981', '#06b6d4', '#007AFF']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={{ height: '100%', width: `${(p.attempt.cluesShown / DP.clueCount) * 100}%` }} />
-              </View>
-            </View>
-            {p.live}
-            {playing && p.actions !== false ? <Actions stack canReveal={p.attempt.cluesShown < DP.clueCount} hint={p.hint} onSkip={p.onSkip} onReveal={p.onReveal} /> : null}
-          </View>
-        </View>
-        {playing ? (
-          <View style={s.bottom}>
-            <AnswerBox key={p.turnKey} wrong={p.attempt.wrong} wrongSeq={p.wrongSeq} focused={false} onFocus={() => {}} onBlur={() => {}} onGuess={p.onGuess} />
-          </View>
-        ) : null}
-      </KeyboardLift>
-      {p.children}
-    </GameScreen>
-  );
-}
-
-function PhoneBoard(p: BoardProps) {
   const t = useTheme();
   const [focus, setFocus] = useState(false);
   const scroller = useRef<ScrollView>(null);
@@ -259,10 +177,10 @@ function TopBar(p: BoardProps) {
   );
 }
 
-function Stat({ label, value, color, row }: { label: string; value: string; color?: string; row?: boolean }) {
+function Stat({ label, value, color }: { label: string; value: string; color?: string }) {
   const t = useTheme();
   return (
-    <View style={row ? s.stRow : s.st}>
+    <View style={s.st}>
       <Text style={[s.sl, { color: t.mute }]}>{label}</Text>
       <Text style={[s.sv, { color: color ?? t.accent }]}>{value}</Text>
     </View>
@@ -331,7 +249,7 @@ function Differential({ wrong }: { wrong: string[] }) {
 
 /** One coloured action button. */
 const ActionBtn = ({ label, flex, bg, line, fg, onPress, disabled }: { label: string; flex: number; bg: string; line: string; fg: string; onPress: () => void; disabled?: boolean }) => (
-  <Pressable onPress={onPress} disabled={disabled} style={[s.b3, TABLET ? s.b3Tab : { flex }, { backgroundColor: bg, borderColor: line }]} accessibilityRole="button" accessibilityLabel={label}>
+  <Pressable onPress={onPress} disabled={disabled} style={[s.b3, { flex, backgroundColor: bg, borderColor: line }]} accessibilityRole="button" accessibilityLabel={label}>
     <Text style={[s.b3T, { color: fg, opacity: disabled ? 0.45 : 1 }]} numberOfLines={1}>
       {label}
     </Text>
@@ -339,9 +257,9 @@ const ActionBtn = ({ label, flex, bg, line, fg, onPress, disabled }: { label: st
 );
 
 /** Skip, Reveal a Clue and (Solo only) Hint in one row, old-screen colours. */
-function Actions({ canReveal, hint, onSkip, onReveal, stack }: { canReveal: boolean; hint?: BoardProps['hint']; onSkip: () => void; onReveal: () => void; stack?: boolean }) {
+function Actions({ canReveal, hint, onSkip, onReveal }: { canReveal: boolean; hint?: BoardProps['hint']; onSkip: () => void; onReveal: () => void }) {
   return (
-    <View style={stack ? s.col3 : s.row3}>
+    <View style={s.row3}>
       <ActionBtn label="⏭ Skip" flex={0.8} onPress={onSkip} bg="#2e1a2e" line="#833f4a" fg="#fda4af" />
       <ActionBtn label="🔍 Reveal a Clue" flex={1.3} onPress={onReveal} disabled={!canReveal} bg="#142741" line="#19637e" fg="#67e8f9" />
       {hint ? (
@@ -488,13 +406,6 @@ const s = StyleSheet.create({
   bottom: { gap: u(9), paddingTop: u(6) },
   bottomFocus: { marginTop: 'auto' },
   row3: { flexDirection: 'row', gap: u(5) },
-  col3: { gap: u(7) },
-  b3Tab: { paddingVertical: u(11) },
-  ctTab: { flexShrink: 1 },
-  tRow: { flex: 1, flexDirection: 'row', gap: u(16), marginTop: u(12) },
-  tPanel: { width: u(PANEL_W), gap: u(10) },
-  tStats: { borderWidth: 1, borderRadius: u(14), padding: u(12), gap: u(10) },
-  stRow: { flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between' },
   b3: { borderWidth: 1, borderRadius: u(10), paddingVertical: u(9), paddingHorizontal: u(3), alignItems: 'center' },
   b3T: { fontFamily: F.bodyBold, fontSize: u(9.5), lineHeight: u(12) },
   sugs: { borderWidth: 1, borderBottomWidth: 0, borderTopLeftRadius: u(12), borderTopRightRadius: u(12), padding: u(4) },

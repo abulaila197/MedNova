@@ -6,7 +6,7 @@ import { FeatherArt } from '@/components/FeatherArt';
 import { GAMES } from '@/data/games';
 import { LOAD } from '@/features/loading/configs';
 import { useTheme } from '@/state/app';
-import { IS_COLUMN, TABLET, u } from '@/theme/scale';
+import { IS_COLUMN, u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 import { tapped } from '@/lib/sound';
 
@@ -26,7 +26,6 @@ export function ModeLanding({ def }: { def: GameDef }) {
   const art = LOAD[def.key];
   return (
     <GameScreen
-      wide
       top={
         // The game's loading-page art as a quiet backdrop behind the title (Yazan 2026-10-14), in its own colours,
         // dissolving into the page with real transparency so no edge can show.
@@ -37,7 +36,7 @@ export function ModeLanding({ def }: { def: GameDef }) {
             position={art.fo}
             opacity={0.34}
             // #12: on a centred column the art also fades at its sides, so no box edge shows beside the page.
-            edges={IS_COLUMN && !TABLET ? { bottom: 0.65, left: 0.12, right: 0.12 } : { bottom: 0.65 }}
+            edges={IS_COLUMN ? { bottom: 0.65, left: 0.12, right: 0.12 } : { bottom: 0.65 }}
             style={s.art}
           />
         ) : null}
@@ -49,13 +48,11 @@ export function ModeLanding({ def }: { def: GameDef }) {
         <Title lead={g.lead} em={g.em} />
         <Body>{g.desc}</Body>
       </View>
-      {/* tablet: the modes side by side */}
-      <View style={TABLET ? s.cols : s.list}>
       {def.modes.map((m) => {
         const bm = resume[m.mode];
         const isOpen = open === m.mode;
         return (
-          <Card key={m.mode} style={TABLET ? s.col : null}>
+          <Card key={m.mode}>
             <View style={s.row}>
               <View style={s.name}>
                 <Kick color={t.accent}>{MODE_NAME[m.mode]}</Kick>
@@ -87,15 +84,11 @@ export function ModeLanding({ def }: { def: GameDef }) {
           </Card>
         );
       })}
-      </View>
     </GameScreen>
   );
 }
 
 const s = StyleSheet.create({
-  list: { gap: u(12) },
-  cols: { flexDirection: 'row', alignItems: 'stretch', gap: u(12) },
-  col: { flex: 1, minWidth: 0 },
   art: { position: 'absolute', left: 0, right: 0, top: 0, height: u(330) },
   row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: u(10) },
   free: { borderWidth: 1, borderRadius: 999, paddingVertical: u(2), paddingHorizontal: u(8), flexShrink: 0 },
@@ -105,5 +98,5 @@ const s = StyleSheet.create({
   how: { fontFamily: F.bodySemi, fontSize: u(11), lineHeight: u(14) },
   step: { flexDirection: 'row', gap: u(8) },
   num: { fontFamily: F.mono, fontSize: u(10), lineHeight: u(17), width: u(10) },
-  btns: { flexDirection: 'row', gap: u(8), marginTop: TABLET ? 'auto' : u(4) },
+  btns: { flexDirection: 'row', gap: u(8), marginTop: u(4) },
 });

@@ -7,7 +7,7 @@ import Animated, { FadeIn, FadeInDown, useAnimatedStyle, useSharedValue, withSeq
 
 import { useTheme } from '@/state/app';
 import { BEIGE } from '@/theme/beige';
-import { TABLET, u } from '@/theme/scale';
+import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import { KeyboardLift } from '../shell/KeyboardLift';
@@ -72,8 +72,7 @@ export function RiddleBoard(p: BoardProps) {
   const bad = '#ff5c6c';
   const [stage, setStage] = useState<{ w: number; h: number } | null>(null);
   const onStage = (e: LayoutChangeEvent) => setStage({ w: e.nativeEvent.layout.width, h: e.nativeEvent.layout.height });
-  // Tablet (Yazan 2026-11-12, look A): picture, notes and answer box on the left; title, lives, clock and hint in the side panel.
-  const barH = TABLET ? 0 : u(26);
+  const barH = u(26);
   const pic = stage
     ? fitPicture(p.riddle.w, p.riddle.h, stage.w - 2 * PRINT.boardPadX - 2 * PRINT.pad - u(8), stage.h - barH - u(10) - 2 * PRINT.boardPadY - PRINT.pad - PRINT.capH - u(8))
     : null;
@@ -81,68 +80,17 @@ export function RiddleBoard(p: BoardProps) {
   const prompt = `Identify the medical ${p.riddle.kind}`;
   const warn = p.countdown && p.clockMs <= 10_000;
 
-  const top = (
-    <View style={s.top}>
-      <View style={{ flex: 1 }}>
-        <Kick>{p.kicker}</Kick>
-        <Text style={[s.title, { color: p.title.color ?? t.white }]} numberOfLines={TABLET ? 2 : 1}>{p.title.text}</Text>
-      </View>
-      <RoundBtn label="Pause" glyph="❚❚" onPress={p.onPause} />
-    </View>
-  );
-  const lamps =
-    p.lives != null ? (
-      <View style={s.lamps} accessibilityLabel={`${p.lives} of ${RD.lives} lives left`}>
-        <Text style={[s.barK, { color: t.dim }]}>LIVES</Text>
-        {Array.from({ length: RD.lives }, (_, i) => (
-          <View key={i} style={[s.lamp, i < p.lives! ? { backgroundColor: t.accent, shadowColor: t.accent } : { backgroundColor: '#2a3050', shadowOpacity: 0 }]} />
-        ))}
-      </View>
-    ) : (
-      <Text style={[s.barK, { color: p.lockMs ? bad : t.dim }]}>{p.lockMs ? `LOCKED ${Math.ceil(p.lockMs / 1000)} S` : 'UNLIMITED GUESSES'}</Text>
-    );
-  const clockT = (
-    <Text style={[s.clock, TABLET && s.clockTab, { color: warn ? bad : t.white }]} accessibilityLabel={p.countdown ? `${Math.ceil(p.clockMs / 1000)} seconds left` : `Time ${clock(p.clockMs)}`}>
-      {clock(p.clockMs, { down: p.countdown })}
-    </Text>
-  );
-  const hint =
-    p.hint && !p.dock ? (
-      p.hint.used ? (
-        <Animated.View entering={FadeInDown.duration(220)} style={[s.def, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
-          <Kick color={t.accent}>Definition</Kick>
-          <Text style={[s.defT, { color: t.soft }]}>{p.riddle.definition}</Text>
-        </Animated.View>
-      ) : (
-        <Pressable onPress={p.hint.onHint} style={[s.hintB, { borderColor: t.chipLine, backgroundColor: t.chip }]} accessibilityRole="button" accessibilityLabel={`Show definition for ${RD.hintPrice} token`}>
-          <Text style={[s.hintT, { color: t.fg }]}>
-            Show definition <Text style={{ color: t.accent, fontFamily: F.bodyBold }}>{`${RD.hintPrice} token`}</Text>
-          </Text>
-        </Pressable>
-      )
-    ) : null;
-  const notice = p.notice ? <Text style={[s.notice, { color: t.mute }]}>{p.notice}</Text> : null;
-
-  const panel = TABLET ? (
-    <>
-      {top}
-      {p.live}
-      <View style={[s.tCard, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
-        <Kick>{p.countdown ? 'Time left' : 'Time'}</Kick>
-        {clockT}
-        <View style={[s.tRule, { backgroundColor: t.panelLine }]} />
-        {lamps}
-      </View>
-      {hint}
-      {notice}
-    </>
-  ) : undefined;
-
   return (
-    <GameScreen scroll={false} panel={panel}>
+    <GameScreen scroll={false}>
       <KeyboardLift style={s.fill}>
-        {TABLET ? null : top}
-        {TABLET ? null : p.live}
+        <View style={s.top}>
+          <View style={{ flex: 1 }}>
+            <Kick>{p.kicker}</Kick>
+            <Text style={[s.title, { color: p.title.color ?? t.white }]} numberOfLines={1}>{p.title.text}</Text>
+          </View>
+          <RoundBtn label="Pause" glyph="❚❚" onPress={p.onPause} />
+        </View>
+        {p.live}
 
         <View style={s.stage} onLayout={onStage}>
           {pic ? (
@@ -160,12 +108,21 @@ export function RiddleBoard(p: BoardProps) {
               </View>
             </View>
           ) : null}
-          {TABLET ? null : (
-            <View style={[s.bar, { height: barH }]}>
-              {lamps}
-              {clockT}
-            </View>
-          )}
+          <View style={[s.bar, { height: barH }]}>
+            {p.lives != null ? (
+              <View style={s.lamps} accessibilityLabel={`${p.lives} of ${RD.lives} lives left`}>
+                <Text style={[s.barK, { color: t.dim }]}>LIVES</Text>
+                {Array.from({ length: RD.lives }, (_, i) => (
+                  <View key={i} style={[s.lamp, i < p.lives! ? { backgroundColor: t.accent, shadowColor: t.accent } : { backgroundColor: '#2a3050', shadowOpacity: 0 }]} />
+                ))}
+              </View>
+            ) : (
+              <Text style={[s.barK, { color: p.lockMs ? bad : t.dim }]}>{p.lockMs ? `LOCKED ${Math.ceil(p.lockMs / 1000)} S` : 'UNLIMITED GUESSES'}</Text>
+            )}
+            <Text style={[s.clock, { color: warn ? bad : t.white }]} accessibilityLabel={p.countdown ? `${Math.ceil(p.clockMs / 1000)} seconds left` : `Time ${clock(p.clockMs)}`}>
+              {clock(p.clockMs, { down: p.countdown })}
+            </Text>
+          </View>
         </View>
 
         {p.wrong.length ? (
@@ -187,8 +144,22 @@ export function RiddleBoard(p: BoardProps) {
           </View>
         ) : null}
 
-        {TABLET ? null : hint}
-        {TABLET ? null : notice}
+        {p.hint && !p.dock ? (
+          p.hint.used ? (
+            <Animated.View entering={FadeInDown.duration(220)} style={[s.def, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
+              <Kick color={t.accent}>Definition</Kick>
+              <Text style={[s.defT, { color: t.soft }]}>{p.riddle.definition}</Text>
+            </Animated.View>
+          ) : (
+            <Pressable onPress={p.hint.onHint} style={[s.hintB, { borderColor: t.chipLine, backgroundColor: t.chip }]} accessibilityRole="button" accessibilityLabel={`Show definition for ${RD.hintPrice} token`}>
+              <Text style={[s.hintT, { color: t.fg }]}>
+                Show definition <Text style={{ color: t.accent, fontFamily: F.bodyBold }}>{`${RD.hintPrice} token`}</Text>
+              </Text>
+            </Pressable>
+          )
+        ) : null}
+
+        {p.notice ? <Text style={[s.notice, { color: t.mute }]}>{p.notice}</Text> : null}
 
         {p.dock ? (
           <Animated.View entering={FadeInDown.duration(260)}>{p.dock}</Animated.View>
@@ -289,9 +260,6 @@ const s = StyleSheet.create({
   barK: { fontFamily: F.bodyBold, fontSize: u(8), letterSpacing: u(1.3), marginRight: u(2) },
   lamp: { width: u(11), height: u(11), borderRadius: u(6), shadowOpacity: 0.9, shadowRadius: u(5), shadowOffset: { width: 0, height: 0 } },
   clock: { fontFamily: F.mono, fontSize: u(15), letterSpacing: u(0.6), fontVariant: ['tabular-nums'] },
-  clockTab: { fontSize: u(26), lineHeight: u(32) },
-  tCard: { borderWidth: 1, borderRadius: u(12), padding: u(12), gap: u(6) },
-  tRule: { height: 1, marginVertical: u(2) },
   notes: { flexDirection: 'row', flexWrap: 'wrap', gap: u(7) },
   sticky: { backgroundColor: STICKY.bg, paddingVertical: u(5), paddingHorizontal: u(9), shadowColor: '#000', shadowOpacity: 0.25, shadowRadius: u(4), shadowOffset: { width: 0, height: u(3) }, elevation: 3 },
   stickyT: { fontFamily: F.displayItalic, fontSize: u(11.5), color: STICKY.fg, textDecorationLine: 'line-through', textDecorationColor: STICKY.cross },

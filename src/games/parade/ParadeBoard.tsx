@@ -8,7 +8,7 @@ import { clock } from '@/games/engine/clock';
 import { useClock, type Clock } from '@/games/engine/useTicker';
 import { useTheme } from '@/state/app';
 import { BEIGE } from '@/theme/beige';
-import { TABLET, u } from '@/theme/scale';
+import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import { Face } from '../shell/Face';
@@ -55,43 +55,25 @@ export function ParadeBoard(p: BoardProps) {
   const mine = showing ? p.round.answers[p.round.answers.length - 1] : null;
   const live = p.round.phase === 'playing' && !p.locked;
 
-  const head = (
-    <View style={TABLET ? [s.tCard, { backgroundColor: t.panel, borderColor: t.panelLine }] : s.headPh}>
-      {p.who ? <Text style={[s.who, { color: p.who.color ?? t.accent }]} numberOfLines={1}>{p.who.name}</Text> : null}
-      <View style={s.top}>
-        <View style={{ flex: 1, minWidth: 0 }}>
-          <Text style={[s.count, { color: t.white }]}>
-            {`${Math.min(p.round.index + 1, p.round.queue.length)}`}
-            <Text style={{ color: t.dim }}>{` / ${p.round.queue.length}`}</Text>
-            <Text style={{ color: t.dim }}>{`   ${p.round.score} ${p.round.score === 1 ? 'pt' : 'pts'}`}</Text>
-          </Text>
-          <Text style={[s.type, { color: t.accent }]} numberOfLines={TABLET ? 2 : 1}>{p.hidden ? '' : `${TYPE_NAME[p.q.style].toUpperCase()} · ${p.q.field.toUpperCase()}`}</Text>
-        </View>
-        <View style={s.right}>
-          <ClockText ticks={p.ticks} leftAt={p.leftAt} over={over || showing} white={t.white} />
-          <RoundBtn label="Pause" glyph="❚❚" onPress={p.onPause} />
-        </View>
-      </View>
-      <LiveFuse ticks={p.ticks} leftAt={p.leftAt} totalMs={p.round.limitMs} cool={t.accent} track={t.line} />
-    </View>
-  );
-  const helpers = !p.dock && p.helpers ? <Helpers {...p.helpers} disabled={p.round.phase !== 'playing'} /> : null;
-
-  // Tablet (look A, Yazan 2026-11-12): the question and its answers on the left; the count, score, clock, fuse and
-  // helpers in the side panel.
   return (
-    <GameScreen
-      scroll={false}
-      panel={
-        TABLET ? (
-          <>
-            {head}
-            {helpers}
-          </>
-        ) : undefined
-      }>
+    <GameScreen scroll={false}>
       <View style={s.main}>
-        {TABLET ? null : head}
+        {p.who ? <Text style={[s.who, { color: p.who.color ?? t.accent }]} numberOfLines={1}>{p.who.name}</Text> : null}
+        <View style={s.top}>
+          <View style={{ flex: 1, minWidth: 0 }}>
+            <Text style={[s.count, { color: t.white }]}>
+              {`${Math.min(p.round.index + 1, p.round.queue.length)}`}
+              <Text style={{ color: t.dim }}>{` / ${p.round.queue.length}`}</Text>
+              <Text style={{ color: t.dim }}>{`   ${p.round.score} ${p.round.score === 1 ? 'pt' : 'pts'}`}</Text>
+            </Text>
+            <Text style={[s.type, { color: t.accent }]} numberOfLines={1}>{p.hidden ? '' : `${TYPE_NAME[p.q.style].toUpperCase()} · ${p.q.field.toUpperCase()}`}</Text>
+          </View>
+          <View style={s.right}>
+            <ClockText ticks={p.ticks} leftAt={p.leftAt} over={over || showing} white={t.white} />
+            <RoundBtn label="Pause" glyph="❚❚" onPress={p.onPause} />
+          </View>
+        </View>
+        <LiveFuse ticks={p.ticks} leftAt={p.leftAt} totalMs={p.round.limitMs} cool={t.accent} track={t.line} />
 
         {p.hidden ? (
           <View style={[s.hide, { borderColor: t.panelLine, backgroundColor: t.panel }]}>
@@ -131,9 +113,9 @@ export function ParadeBoard(p: BoardProps) {
             <Animated.View entering={FadeInDown.duration(260)}>{p.dock}</Animated.View>
             <View style={{ flex: 1.15 }} />
           </>
-        ) : TABLET ? null : (
-          helpers
-        )}
+        ) : p.helpers ? (
+          <Helpers {...p.helpers} disabled={p.round.phase !== 'playing'} />
+        ) : null}
       </View>
       {p.children}
     </GameScreen>
@@ -460,8 +442,6 @@ function Helpers({ onHelper, usable, disabled }: { onHelper: (k: HelperKind) => 
 
 const s = StyleSheet.create({
   main: { flex: 1, minWidth: 0, gap: u(9) },
-  headPh: { gap: u(9) },
-  tCard: { borderWidth: 1, borderRadius: u(14), padding: u(12), gap: u(9) },
   who: { fontFamily: F.display, fontSize: u(15), lineHeight: u(18) },
   top: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: u(8) },
   count: { fontFamily: F.display, fontSize: u(17), lineHeight: u(20) },
