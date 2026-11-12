@@ -7,6 +7,7 @@ import { engine } from '../engine';
 import { usePauseHide } from '../engine/usePauseHide';
 import { recordItem } from '../shell/flow';
 import type { PlayProps } from '../shell/types';
+import { isNoClock } from '../shell/clockOption';
 import { tickedFields } from '../shell/fields';
 import { startSolo, stepSolo, STYLES, fieldName, mixWith, type Mix, type QResult, type SoloEvent, type SoloRun, type Target } from './core';
 import { BANK } from './data';
@@ -27,7 +28,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   const [first] = useState(() => {
     const saved = (play.resume as { run?: SoloRun } | null)?.run ?? null;
     if (saved) return { run: saved.turn?.pausedAt != null ? stepSolo(saved, { type: 'RESUME', now: Date.now() }, BANK, Math.random) : saved, fresh: false };
-    return { run: startSolo(BANK, target, [], Math.random, mix), fresh: true };
+    return { run: startSolo(BANK, target, [], Math.random, mix, isNoClock(play.settings)), fresh: true };
   });
   const [run, setRun] = useState<SoloRun>(first.run);
   const ref = useRef<SoloRun>(first.run);

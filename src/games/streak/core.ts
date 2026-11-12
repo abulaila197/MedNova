@@ -62,7 +62,9 @@ export type Round = {
   lost?: number;
   answers: Answer[];
   helpers: Record<HelperKind, number>;
-  endReason: 'time' | 'questions' | null;
+  endReason: 'time' | 'questions' | 'mistake' | null;
+  /** Solo "No clock" (Yazan 2026-11-12): nothing is timed and the round ends on the first wrong answer. */
+  noClock?: boolean;
 };
 
 export type RoundEvent =
@@ -78,9 +80,14 @@ export type Rng = () => number;
 
 const orderFor = (rng: Rng) => shuffle([0, 1, 2, 3, 4, 5], rng);
 
-export function startRound(queue: string[], lengthSec: number, now: number, rng: Rng = Math.random): Round {
+/** A No clock round still keeps answer times; this long never runs out (the time checks skip it). */
+const NO_CLOCK_MS = 24 * 3_600_000;
+
+export function startRound(queue: string[], lengthSec: number, now: number, rng: Rng = Math.random, noClock = false): Round {
+  const ms = noClock ? NO_CLOCK_MS : lengthSec * 1000;
   return {
-    lengthMs: lengthSec * 1000, queue, index: 0, order: orderFor(rng), removed: [], remainingMs: lengthSec * 1000,
+    ...(noClock ? { noClock } : {}),
+    lengthMs: ms, queue, index: 0, order: orderFor(rng), removed: [], remainingMs: ms,
     runningSince: now, shownAtMs: 0, phase: queue.length ? 'playing' : 'over', before: null, streak: 0, maxStreak: 0,
     score: 0, feedback: null, answers: [], helpers: { remove: 0, skip: 0, time: 0 }, endReason: queue.length ? null : 'questions',
   };
@@ -93,7 +100,7 @@ const usedMs = (r: Round, now: number) => r.lengthMs + r.helpers.time * ADD_MS -
 
 export const currentId = (r: Round) => r.queue[r.index];
 
-function over(r: Round, now: number, reason: 'time' | 'questions'): Round {
+function over(r: Round, now: number, reason: 'time' | 'questions' | 'mistake'): Round {
   return { ...r, phase: 'over', before: null, remainingMs: reason === 'time' ? 0 : timeLeft(r, now), runningSince: null, feedback: null, endReason: reason };
 }
 
@@ -111,7 +118,7 @@ export function stepRound(r: Round, e: RoundEvent, answerOf: (id: string) => num
   switch (e.type) {
     case 'ANSWER': {
       if (r.phase !== 'playing' || r.removed.includes(e.choice) || e.choice < 0 || e.choice > 5) return r;
-      if (timeLeft(r, e.now) <= 0) return over(r, e.now, 'time');
+      if (!r.noClock && timeLeft(r, e.now) <= 0) return over(r, e.now, 'time');
       const right = e.choice === answerOf(currentId(r));
       const streak = right ? r.streak + 1 : 0;
       const points = right ? streak : 0;
@@ -126,9 +133,10 @@ export function stepRound(r: Round, e: RoundEvent, answerOf: (id: string) => num
     case 'TICK': {
       if (r.phase === 'feedback' && r.feedback && e.now >= r.feedback.untilMs) {
         const resumed = { ...r, runningSince: e.now };
+        if (r.noClock) return r.feedback.right ? nextQuestion(resumed, e.now, rng) : over(r, e.now, 'mistake');
         return r.remainingMs <= 0 ? over(r, e.now, 'time') : nextQuestion(resumed, e.now, rng);
       }
-      if (r.phase === 'playing' && timeLeft(r, e.now) <= 0) return over(r, e.now, 'time');
+      if (r.phase === 'playing' && !r.noClock && timeLeft(r, e.now) <= 0) return over(r, e.now, 'time');
       return r;
     }
     case 'PAUSE': {
@@ -166,6 +174,7 @@ export function stepRound(r: Round, e: RoundEvent, answerOf: (id: string) => num
 /** Whether a helper would do anything right now (so the screen doesn't charge for nothing). */
 export function helperUsable(r: Round, kind: HelperKind) {
   if (r.phase !== 'playing') return false;
+  if (kind === 'time') return !r.noClock;
   return kind !== 'remove' || r.removed.length === 0;
 }
 

@@ -14,6 +14,7 @@ import { PauseMenu } from '../shell/PauseMenu';
 import type { PlayProps } from '../shell/types';
 import { Btn } from '../shell/ui';
 import { answerText, HELPER_PRICE, helperUsable, mixQueue, typeCycle, snapshotRound, startRound, stepRound, timeLeft, type HelperKind, type Round, type RoundEvent, type Style } from './core';
+import { isNoClock } from '../shell/clockOption';
 import { tickedFields } from '../shell/fields';
 import { bank, idsOf, poolFor, questionById, typeOf } from './data';
 import { ParadeBoard } from './ParadeBoard';
@@ -41,7 +42,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
         // #15: the types take turns (no type again until every other has come up).
         const pool = style === 'mixed' && !ticked ? mixQueue(await pick(idsOf('clinical')), await pick(idsOf('basic')), Infinity) : await pick(poolFor(style, ticked));
         const queue = typeCycle(pool, count, typeOf);
-        r = startRound(queue, Date.now(), bank);
+        r = startRound(queue, Date.now(), bank, Math.random, false, isNoClock(play.settings));
         engine.recorder.bookmark(play.id, { round: snapshotRound(r, Date.now(), bank), style, count } satisfies SoloSave, 0);
       }
       if (live) {

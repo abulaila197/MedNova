@@ -51,6 +51,9 @@ const LENGTH = {
   initial: 60,
 };
 
+/** Solo also offers No clock (Yazan 2026-11-12): nothing timed, the round ends on your first wrong answer. */
+const SOLO_LENGTH = { ...LENGTH, choices: [...LENGTH.choices, { value: 0, label: 'No clock', note: 'ends on 1st mistake' }] };
+
 /** The Streak Master on the shared shell (SM1-SM13): Solo, Offline and Online. */
 export const streakMaster: GameDef = {
   key: 'the-streak-master',
@@ -61,6 +64,7 @@ export const streakMaster: GameDef = {
       blurb: 'Answer as many as you can. Every right answer in a row is worth more.',
       howTo: [
         'Pick clinical, basic science or mixed questions, and a round of 60, 90 or 120 seconds.',
+        'Or pick No clock: take your time, but the round ends on your first wrong answer. It counts toward the same high score.',
         'Each question has six choices. The 1st right answer in a row scores 1, the 2nd scores 2, and so on.',
         'A wrong answer turns red, shows the right one in green, and drops your streak to 0.',
         'Helpers cost tokens: Remove 2 wrong (1), Skip and keep your streak (3), +10 seconds (1).',
@@ -92,7 +96,7 @@ export const streakMaster: GameDef = {
       ],
     },
   ],
-  setup: { solo: [STYLE, LENGTH], offline: [STYLE, LENGTH], bots: [STYLE, QUESTIONS_N, QTIME] },
+  setup: { solo: [STYLE, SOLO_LENGTH], offline: [STYLE, LENGTH], bots: [STYLE, QUESTIONS_N, QTIME] },
   players: { offline: { min: 2, max: 6 } },
   bots: { min: 1, max: 5 },
   teams: { offline: true, bots: true },

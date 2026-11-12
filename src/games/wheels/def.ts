@@ -5,6 +5,7 @@ import { answerLabel, BANK, questionById } from './data';
 import { BOSS_BONUS } from './offline';
 import { BotsPlay } from './BotsPlay';
 import { OfflinePlay } from './OfflinePlay';
+import { clockOption } from '../shell/clockOption';
 import { SoloPlay } from './SoloPlay';
 
 const TARGET = {
@@ -54,6 +55,7 @@ export const wheelsOfChaos: GameDef = {
         'Pick a target of 25 or 50 points, and mixed, clinical or basic science questions.',
         'Each turn one spin of the wheel\'s three rings picks how many questions (1 to 3), their style and their field.',
         'Seven styles, each with its own points and timer: from True or False (1 point) to Matching (3 points).',
+        'Pick No clock to take your time on every question. Points stay the same.',
         'Rule 2 Out and Matching are all or nothing.',
         'You earn half your points as EXP. Solo has no Boss Round or Redemption.',
       ],
@@ -83,7 +85,7 @@ export const wheelsOfChaos: GameDef = {
       ],
     },
   ],
-  setup: { solo: [TARGET, MIX], offline: [TARGET, MIX], bots: [TARGET, MIX] },
+  setup: { solo: [TARGET, MIX, clockOption('each question timed')], offline: [TARGET, MIX], bots: [TARGET, MIX] },
   players: { offline: { min: 2, max: 4 } },
   playersNote: () => '2 to 4 players, each with a character. Player I is you, the phone owner. Pass the phone earns no EXP.',
   bots: { min: 1, max: 3 },

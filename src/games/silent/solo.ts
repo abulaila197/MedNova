@@ -20,7 +20,12 @@ export type SoloRun = {
   recent: string[];
   rng: number;
   done: SoloEntry[];
+  /** "No clock" practice (Yazan 2026-11-12): draw as long as you like, then tap Done. */
+  noClock?: boolean;
 };
+
+/** A No clock drawing keeps its time; this long never runs out (TICK skips it). */
+const NO_CLOCK_MS = 24 * 3_600_000;
 
 export type SoloEvent =
   | { type: 'TICK'; now: number }
@@ -41,8 +46,8 @@ function draw(r: SoloRun, pool: readonly Word[], now: number): SoloRun {
   return { ...r, rng, wordId: w.id, phase: 'drawing', elapsedMs: 0, runningSince: now, board: r.board + 1, used: [...r.used, w.id], recent: remember(r.recent, w.id) };
 }
 
-export function startSolo(pool: readonly Word[], p: { seed: string; fields: string[]; recent?: string[]; now: number }): SoloRun {
-  const base: SoloRun = { phase: 'drawing', before: null, fields: p.fields, wordId: '', turnMs: SA.soloMs, elapsedMs: 0, runningSince: null, board: 0, used: [], recent: p.recent ?? [], rng: hashSeed(p.seed), done: [] };
+export function startSolo(pool: readonly Word[], p: { seed: string; fields: string[]; recent?: string[]; now: number; noClock?: boolean }): SoloRun {
+  const base: SoloRun = { ...(p.noClock ? { noClock: true } : {}), phase: 'drawing', before: null, fields: p.fields, wordId: '', turnMs: p.noClock ? NO_CLOCK_MS : SA.soloMs, elapsedMs: 0, runningSince: null, board: 0, used: [], recent: p.recent ?? [], rng: hashSeed(p.seed), done: [] };
   return draw(base, pool, p.now);
 }
 
@@ -51,7 +56,7 @@ const reveal = (r: SoloRun, now: number): SoloRun => ({ ...r, phase: 'reveal', e
 export function stepSolo(r: SoloRun, e: SoloEvent, pool: readonly Word[]): SoloRun {
   switch (e.type) {
     case 'TICK':
-      return r.phase === 'drawing' && soloLeft(r, e.now) <= 0 ? reveal(r, e.now) : r;
+      return r.phase === 'drawing' && !r.noClock && soloLeft(r, e.now) <= 0 ? reveal(r, e.now) : r;
     case 'REVEAL':
       return r.phase === 'drawing' ? reveal(r, e.now) : r;
     case 'NEXT':

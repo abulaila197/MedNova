@@ -69,11 +69,11 @@ export function ParadeBoard(p: BoardProps) {
             <Text style={[s.type, { color: t.accent }]} numberOfLines={1}>{p.hidden ? '' : `${TYPE_NAME[p.q.style].toUpperCase()} · ${p.q.field.toUpperCase()}`}</Text>
           </View>
           <View style={s.right}>
-            <ClockText ticks={p.ticks} leftAt={p.leftAt} over={over || showing} white={t.white} />
+            {p.round.noClock ? <Text style={[s.clock, { color: t.dim }]}>No clock</Text> : <ClockText ticks={p.ticks} leftAt={p.leftAt} over={over || showing} white={t.white} />}
             <RoundBtn label="Pause" glyph="❚❚" onPress={p.onPause} />
           </View>
         </View>
-        <LiveFuse ticks={p.ticks} leftAt={p.leftAt} totalMs={p.round.limitMs} cool={t.accent} track={t.line} />
+        {p.round.noClock ? null : <LiveFuse ticks={p.ticks} leftAt={p.leftAt} totalMs={p.round.limitMs} cool={t.accent} track={t.line} />}
 
         {p.hidden ? (
           <View style={[s.hide, { borderColor: t.panelLine, backgroundColor: t.panel }]}>
@@ -114,7 +114,7 @@ export function ParadeBoard(p: BoardProps) {
             <View style={{ flex: 1.15 }} />
           </>
         ) : p.helpers ? (
-          <Helpers {...p.helpers} disabled={p.round.phase !== 'playing'} />
+          <Helpers {...p.helpers} noTime={!!p.round.noClock} disabled={p.round.phase !== 'playing'} />
         ) : null}
       </View>
       {p.children}
@@ -431,11 +431,11 @@ function HelperBtn({ kind, label, bg, line, fg, off, onPress }: { kind: HelperKi
 }
 
 /** Solo helpers (QP9): Skip and +10 s only, on every type. */
-function Helpers({ onHelper, usable, disabled }: { onHelper: (k: HelperKind) => void; usable: (k: HelperKind) => boolean; disabled: boolean }) {
+function Helpers({ onHelper, usable, disabled, noTime }: { onHelper: (k: HelperKind) => void; usable: (k: HelperKind) => boolean; disabled: boolean; noTime?: boolean }) {
   return (
     <View style={s.hrow}>
       <HelperBtn kind="skip" off={disabled || !usable('skip')} onPress={() => onHelper('skip')} label="⏭ Skip" bg="#2e1a2e" line="#833f4a" fg="#fda4af" />
-      <HelperBtn kind="time" off={disabled || !usable('time')} onPress={() => onHelper('time')} label="⏱ +10 s" bg="#231b4e" line="#504188" fg="#d8b4fe" />
+      {noTime ? null : <HelperBtn kind="time" off={disabled || !usable('time')} onPress={() => onHelper('time')} label="⏱ +10 s" bg="#231b4e" line="#504188" fg="#d8b4fe" />}
     </View>
   );
 }

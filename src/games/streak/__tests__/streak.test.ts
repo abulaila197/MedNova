@@ -164,3 +164,17 @@ test('second chance: a broken streak comes back once, until the next answer', ()
   r = answer(r, 0, 13_000);
   assert.deepEqual([r.streak, r.score], [4, 10]);
 });
+
+test('No clock (Yazan 2026-11-12): never times out, no +10 s, ends on the first mistake', () => {
+  let r = startRound(seq(10), 0, 0, fixed, true);
+  r = stepRound(r, { type: 'TICK', now: 10 * 60_000 }, ans, fixed);
+  assert.equal(r.phase, 'playing');
+  r = answer(r, 0, 10 * 60_000 + 1000);
+  r = answer(r, 0, 20 * 60_000);
+  assert.deepEqual([r.phase, r.score, r.streak], ['playing', 3, 2]);
+  r = stepRound(r, { type: 'HELPER', kind: 'time', now: 20 * 60_000 + 3000 }, ans, fixed);
+  r = answer(r, 4, 20 * 60_000 + 5000);
+  assert.equal(r.phase, 'over');
+  assert.equal(r.endReason, 'mistake');
+  assert.equal(r.score, 3);
+});

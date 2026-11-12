@@ -283,7 +283,11 @@ export function TurnBoard({ turn, now, kicker, title, strip, footer, onEvent, on
     <View style={{ flex: 1, gap: u(8) }}>
       <View style={s.top}>
         <View style={{ flex: 1 }}>
-          <Bulbs frac={turn.phase === 'question' ? left / (st.seconds * 1000) : 0} />
+          {turn.noClock ? (
+            <T f={CM} size={12} color={VV.dim} style={{ letterSpacing: u(1) }}>NO CLOCK</T>
+          ) : (
+            <Bulbs frac={turn.phase === 'question' ? left / (st.seconds * 1000) : 0} />
+          )}
         </View>
         <PauseBtn onPress={onPause} />
       </View>

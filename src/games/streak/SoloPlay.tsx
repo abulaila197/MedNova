@@ -33,9 +33,11 @@ const oldBestKey = (style: Style, len: number) => `streak:best:${style}:${len}`;
 async function recordBest(style: Style, len: number, score: number) {
   const map = (await engine.kv.get<Record<string, number>>(BEST_KEY)) ?? {};
   const slot = `${style}:${len}`;
-  const legacy = await engine.kv.get<number>(oldBestKey(style, len));
+  const legacy = len ? await engine.kv.get<number>(oldBestKey(style, len)) : null;
   if (legacy != null) await engine.kv.remove(oldBestKey(style, len));
-  const old = Math.max(map[slot] ?? 0, legacy ?? 0);
+  // No clock (len 0) shares the record with the timed rounds (Yazan 2026-11-12): it has to beat this style's top score.
+  const shared = len ? 0 : Math.max(0, ...Object.entries(map).filter(([k]) => k.startsWith(`${style}:`)).map(([, v]) => v));
+  const old = Math.max(map[slot] ?? 0, legacy ?? 0, shared);
   const isNew = score > old;
   if (isNew || legacy != null) await engine.kv.set(BEST_KEY, { ...map, [slot]: Math.max(old, score) });
   return { old, isNew };
@@ -47,7 +49,8 @@ const SECOND_PRICE = [5, 10, 20];
 export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   const style = (play.settings.style as Style) ?? 'mixed';
   const ticked = tickedFields(play.settings);
-  const lengthSec = Number(play.settings.length) || 60;
+  // 0 = No clock (Solo only).
+  const lengthSec = play.settings.length === 0 || play.settings.length === '0' ? 0 : Number(play.settings.length) || 60;
   const [round, setRound] = useState<Round | null>(null);
   const ref = useRef<Round | null>(null);
   const paying = useRef(false);
@@ -70,7 +73,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
       if (!r) {
         const pick = (ids: string[]) => engine.picker.pick(play.game, ids, ids.length);
         const queue = custom ? [custom] : style === 'mixed' && !ticked ? mixQueue(await pick(idsOf('clinical')), await pick(idsOf('basic'))) : await pick(poolFor(style, ticked));
-        r = startRound(queue, lengthSec, Date.now());
+        r = startRound(queue, lengthSec, Date.now(), Math.random, lengthSec === 0);
         engine.recorder.bookmark(play.id, { round: snapshotRound(r, Date.now()), style, lengthSec } satisfies SoloSave, 0);
       }
       if (live) {
@@ -189,7 +192,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
       helpers={custom ? undefined : { onHelper: helper, usable: (k) => helperUsable(round, k) }}
       hidden={paused}
       notice={notice}
-      offer={signedIn && !custom && !over && !paused && kept < 3 && (round.lost ?? 0) >= 3 ? { label: `Keep your streak of ${round.lost} · ${SECOND_PRICE[kept]} tokens`, onPress: () => void keep() } : null}
+      offer={signedIn && !custom && !round.noClock && !over && !paused && kept < 3 && (round.lost ?? 0) >= 3 ? { label: `Keep your streak of ${round.lost} · ${SECOND_PRICE[kept]} tokens`, onPress: () => void keep() } : null}
       dock={over ? <OverCard round={round} best={best} onNext={() => onFinish(round.score)} /> : undefined}>
       <PauseMenu open={paused} mode="solo" onResume={() => dispatch({ type: 'RESUME', now: Date.now() })} onQuit={onQuit} />
     </HeatBoard>
@@ -202,7 +205,7 @@ export function OverCard({ round, best, title, onNext, next = 'See results' }: {
   const right = round.answers.filter((a) => a.outcome === 'right').length;
   return (
     <View style={s.card}>
-      <Text style={[s.k, { color: t.dim }]}>{round.endReason === 'questions' ? 'NO QUESTIONS LEFT' : "TIME'S UP"}</Text>
+      <Text style={[s.k, { color: t.dim }]}>{round.endReason === 'questions' ? 'NO QUESTIONS LEFT' : round.endReason === 'mistake' ? 'FIRST MISTAKE' : "TIME'S UP"}</Text>
       <Text style={[s.line, { color: t.white }]}>{title ?? `${round.score} points`}</Text>
       <Text style={[s.sub, { color: t.mute }]}>
         {`Best streak ${round.maxStreak} · ${right} right of ${round.answers.filter((a) => a.outcome !== 'skipped').length}`}

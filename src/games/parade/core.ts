@@ -132,7 +132,12 @@ export type Round = {
   helpers: Record<HelperKind, number>;
   /** Pass the phone: Closest number goes to the nearest guess, so it scores nothing during the turn (QP6). */
   nearest?: boolean;
+  /** Solo "No clock" (Yazan 2026-11-12): questions never time out and +10 s is hidden. */
+  noClock?: boolean;
 };
+
+/** With No clock a question still keeps an answer time; this long is plenty and never runs out (TICK skips it). */
+const NO_CLOCK_MS = 3_600_000;
 
 export type RoundEvent =
   | { type: 'ANSWER'; response: Response; now: number }
@@ -145,14 +150,14 @@ type Bank = (id: string) => Question | undefined;
 
 const fresh = (r: Round, index: number, now: number, bank: Bank, rng: () => number): Round => {
   const q = bank(r.queue[index]);
-  const limitMs = q ? TIME_S[q.style] * 1000 : 0;
+  const limitMs = !q ? 0 : r.noClock ? NO_CLOCK_MS : TIME_S[q.style] * 1000;
   return { ...r, index, layout: q ? layoutFor(q, rng) : [], removed: [], remainingMs: limitMs, limitMs, runningSince: now, phase: 'playing', feedback: null };
 };
 
-export function startRound(queue: string[], now: number, bank: Bank, rng: () => number = Math.random, nearest = false): Round {
+export function startRound(queue: string[], now: number, bank: Bank, rng: () => number = Math.random, nearest = false, noClock = false): Round {
   const r: Round = {
     queue, index: 0, layout: [], removed: [], remainingMs: 0, runningSince: null, limitMs: 0, phase: 'over', before: null,
-    score: 0, feedback: null, answers: [], helpers: { remove: 0, skip: 0, time: 0 }, ...(nearest ? { nearest } : {}),
+    score: 0, feedback: null, answers: [], helpers: { remove: 0, skip: 0, time: 0 }, ...(nearest ? { nearest } : {}), ...(noClock ? { noClock } : {}),
   };
   return queue.length ? fresh(r, 0, now, bank, rng) : r;
 }
@@ -182,7 +187,7 @@ export function stepRound(r: Round, e: RoundEvent, bank: Bank, rng: () => number
         return r.index + 1 >= r.queue.length ? { ...r, phase: 'over', feedback: null } : fresh(r, r.index + 1, e.now, bank, rng);
       }
       // Time up counts as no answer.
-      if (r.phase === 'playing' && timeLeft(r, e.now) <= 0) return settle(r, null, null, e.now, bank);
+      if (r.phase === 'playing' && !r.noClock && timeLeft(r, e.now) <= 0) return settle(r, null, null, e.now, bank);
       return r;
     }
     case 'PAUSE':
@@ -211,6 +216,7 @@ export function stepRound(r: Round, e: RoundEvent, bank: Bank, rng: () => number
 /** Whether a helper would do anything right now, so the screen doesn't charge for nothing. QP9: Solo offers only Skip and +10 s; Remove 2 stays switched off. */
 export function helperUsable(r: Round, kind: HelperKind, bank: Bank) {
   if (r.phase !== 'playing') return false;
+  if (kind === 'time') return !r.noClock;
   if (kind !== 'remove') return true;
   if (!REMOVE_ON) return false;
   const q = bank(currentId(r));

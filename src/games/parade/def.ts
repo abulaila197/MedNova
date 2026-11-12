@@ -3,6 +3,7 @@ import { POINTS, type Style } from './core';
 import { fieldMenu, PARADE_FIELD, QUESTIONS } from './data';
 import { BotsPlay } from './BotsPlay';
 import { OfflinePlay } from './OfflinePlay';
+import { clockOption } from '../shell/clockOption';
 import { itemLine, SoloPlay } from './SoloPlay';
 
 const count = (kind: string) => QUESTIONS.filter((q) => q.kind === kind).length.toLocaleString('en-US');
@@ -43,7 +44,7 @@ export const quizParade: GameDef = {
       howTo: [
         'Pick clinical, basic science or mixed questions, and 5, 10 or 15 of them.',
         'Seven kinds of question: multiple choice, true or false, rule out 2, match the pairs, reverse, put in order and closest number.',
-        `Each has its own clock. Points: true or false ${POINTS.tf}, multiple choice, reverse and closest number ${POINTS.mcq}, rule out 2 ${POINTS.r2o}, match and order ${POINTS.match}.`,
+        `Each has its own clock, or pick No clock and take your time. Points: true or false ${POINTS.tf}, multiple choice, reverse and closest number ${POINTS.mcq}, rule out 2 ${POINTS.r2o}, match and order ${POINTS.match}.`,
         'Match and order give part points for each right item. Closest number counts within 10% of the answer.',
         'Helpers cost tokens: Skip (3) and +10 seconds (1). Missed questions wait for you in Today\'s review.',
       ],
@@ -73,7 +74,7 @@ export const quizParade: GameDef = {
       ],
     },
   ],
-  setup: { solo: [STYLE, QUESTIONS_N], offline: [STYLE, QUESTIONS_N], bots: [STYLE, QUESTIONS_N] },
+  setup: { solo: [STYLE, QUESTIONS_N, clockOption('each question timed')], offline: [STYLE, QUESTIONS_N], bots: [STYLE, QUESTIONS_N] },
   players: { offline: { min: 2, max: 6 } },
   bots: { min: 1, max: 5 },
   teams: { offline: true, bots: true },

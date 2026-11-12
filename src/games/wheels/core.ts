@@ -164,6 +164,8 @@ export type Turn = {
   results: QResult[];
   seen: string[];
   pausedAt: number | null;
+  /** Solo "No clock" (Yazan 2026-11-12): questions wait for your answer. */
+  noClock?: boolean;
 };
 
 export type TurnEvent =
@@ -173,21 +175,21 @@ export type TurnEvent =
   | { type: 'PAUSE'; now: number }
   | { type: 'RESUME'; now: number };
 
-export function startTurn(bank: Bank, seen: readonly string[], rng: Rng, opts: { mix?: Mix } = {}): Turn {
+export function startTurn(bank: Bank, seen: readonly string[], rng: Rng, opts: { mix?: Mix; noClock?: boolean } = {}): Turn {
   const mix = opts.mix ?? 'mixed';
   const count = spinCount(rng);
   const combo = spinCombo(null, rng, mix);
   const question = pickQuestion(bank, combo.style, combo.field, seen, rng);
   return {
     count, k: 0, combo, question, phase: 'reveal', until: null,
-    mix, results: [], seen: [...seen, question.id], pausedAt: null,
+    mix, results: [], seen: [...seen, question.id], pausedAt: null, ...(opts.noClock ? { noClock: true } : {}),
   };
 }
 
 export const turnPoints = (t: Turn) => t.results.reduce((a, r) => a + r.points, 0);
 
 function ask(t: Turn, now: number): Turn {
-  return { ...t, phase: 'question', until: now + STYLES[t.question.style].seconds * 1000 };
+  return { ...t, phase: 'question', until: t.noClock ? null : now + STYLES[t.question.style].seconds * 1000 };
 }
 
 function answer(t: Turn, a: Answer, now: number): Turn {
@@ -240,13 +242,14 @@ export type SoloRun = {
   phase: 'turn' | 'turnOver' | 'done';
   history: QResult[];
   seen: string[];
+  noClock?: boolean;
 };
 
 export type SoloEvent = TurnEvent | { type: 'NEXT' } | { type: 'END' };
 
-export function startSolo(bank: Bank, target: Target, seen: readonly string[], rng: Rng, mix: Mix = 'mixed'): SoloRun {
-  const turn = startTurn(bank, seen, rng, { mix });
-  return { target, mix, score: 0, turnNo: 1, turn, phase: 'turn', history: [], seen: turn.seen };
+export function startSolo(bank: Bank, target: Target, seen: readonly string[], rng: Rng, mix: Mix = 'mixed', noClock = false): SoloRun {
+  const turn = startTurn(bank, seen, rng, { mix, noClock });
+  return { target, mix, score: 0, turnNo: 1, turn, phase: 'turn', history: [], seen: turn.seen, ...(noClock ? { noClock } : {}) };
 }
 
 export function stepSolo(s: SoloRun, e: SoloEvent, bank: Bank, rng: Rng): SoloRun {
@@ -254,7 +257,7 @@ export function stepSolo(s: SoloRun, e: SoloEvent, bank: Bank, rng: Rng): SoloRu
   if (e.type === 'END') return { ...s, phase: 'done', turn: s.turn };
   if (e.type === 'NEXT') {
     if (s.phase !== 'turnOver') return s;
-    const turn = startTurn(bank, s.seen, rng, { mix: s.mix });
+    const turn = startTurn(bank, s.seen, rng, { mix: s.mix, noClock: s.noClock });
     return { ...s, turnNo: s.turnNo + 1, turn, phase: 'turn', seen: turn.seen };
   }
   if (s.phase !== 'turn' || !s.turn) return s;

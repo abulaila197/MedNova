@@ -144,3 +144,13 @@ test('typeCycle: no type comes back until every other type has come up (#15)', a
     assert.equal(new Set(first).size, first.length);
   }
 });
+
+test('No clock (Yazan 2026-11-12): a question never times out and +10 s is off', async () => {
+  const { startRound, stepRound, helperUsable } = await import('../core');
+  const { bank, QUESTIONS } = await import('../data');
+  let r = startRound([QUESTIONS[0].id, QUESTIONS[1].id], 0, bank, () => 0.5, false, true);
+  r = stepRound(r, { type: 'TICK', now: 30 * 60_000 }, bank);
+  assert.equal(r.phase, 'playing');
+  assert.equal(helperUsable(r, 'time', bank), false);
+  assert.equal(helperUsable(r, 'skip', bank), true);
+});

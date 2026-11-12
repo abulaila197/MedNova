@@ -89,11 +89,11 @@ export function HeatBoard(p: BoardProps) {
           <View style={s.top}>
             <Text style={[s.field, { color: t.accent }]} numberOfLines={1}>{p.hidden ? '' : p.q.field.toUpperCase()}</Text>
             <View style={s.right}>
-              <ClockText ticks={p.ticks} leftAt={p.leftAt} over={over} bad={hc.bad} white={t.white} />
+              {p.round.noClock ? <Text style={[s.clock, { color: t.dim }]}>No clock</Text> : <ClockText ticks={p.ticks} leftAt={p.leftAt} over={over} bad={hc.bad} white={t.white} />}
               <RoundBtn label="Pause" glyph="❚❚" onPress={p.onPause} />
             </View>
           </View>
-          <LiveFuse ticks={p.ticks} leftAt={p.leftAt} totalMs={p.totalMs} cool={t.accent} hot={hc.hot} track={t.line} burning={p.round.phase === 'playing'} />
+          {p.round.noClock ? null : <LiveFuse ticks={p.ticks} leftAt={p.leftAt} totalMs={p.totalMs} cool={t.accent} hot={hc.hot} track={t.line} burning={p.round.phase === 'playing'} />}
 
           {p.hidden ? (
             <View style={[s.hide, { borderColor: t.panelLine, backgroundColor: t.panel }]}>
@@ -148,7 +148,7 @@ export function HeatBoard(p: BoardProps) {
               <View style={{ flex: 1.15 }} />
             </>
           ) : p.helpers ? (
-            <Helpers {...p.helpers} disabled={p.round.phase !== 'playing'} />
+            <Helpers {...p.helpers} noTime={!!p.round.noClock} disabled={p.round.phase !== 'playing'} />
           ) : null}
         </View>
       </View>
@@ -268,12 +268,12 @@ function HelperBtn({ kind, label, bg, line, fg, off, onPress }: { kind: HelperKi
 }
 
 /** Solo helpers in the Diagnostic Pursuit button style (Yazan, 2026-10-04): bigger, coloured, price under each. */
-function Helpers({ onHelper, usable, disabled }: { onHelper: (k: HelperKind) => void; usable: (k: HelperKind) => boolean; disabled: boolean }) {
+function Helpers({ onHelper, usable, disabled, noTime }: { onHelper: (k: HelperKind) => void; usable: (k: HelperKind) => boolean; disabled: boolean; noTime?: boolean }) {
   return (
     <View style={s.hrow}>
       <HelperBtn kind="remove" off={disabled || !usable('remove')} onPress={() => onHelper('remove')} label="✂ Remove 2" bg="#142741" line="#19637e" fg="#67e8f9" />
       <HelperBtn kind="skip" off={disabled || !usable('skip')} onPress={() => onHelper('skip')} label="⏭ Skip" bg="#2e1a2e" line="#833f4a" fg="#fda4af" />
-      <HelperBtn kind="time" off={disabled || !usable('time')} onPress={() => onHelper('time')} label="⏱ +10 s" bg="#231b4e" line="#504188" fg="#d8b4fe" />
+      {noTime ? null : <HelperBtn kind="time" off={disabled || !usable('time')} onPress={() => onHelper('time')} label="⏱ +10 s" bg="#231b4e" line="#504188" fg="#d8b4fe" />}
     </View>
   );
 }

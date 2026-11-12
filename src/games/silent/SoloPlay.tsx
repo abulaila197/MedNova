@@ -12,6 +12,7 @@ import type { PlayProps } from '../shell/types';
 import type { BoardHandle, Stroke } from './Board';
 import { FIELDS, PICKABLE, RECENT_KEY, WORDS, wordById } from './data';
 import { ChalkBtn, ChalkChip, ChalkTitle, ClockChalkTimer, Kicker, Ledge, Note, PauseBtn, Panel, SL, SlateScreen, TopRow, useSlateRoom, useSlateFonts } from './slate';
+import { SA } from './core';
 import { soloLeft, startSolo, stepSolo, type SoloEvent, type SoloRun } from './solo';
 import { FitBoard } from './Stage';
 import { useTickerClock } from '../engine/useTicker';
@@ -41,6 +42,8 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   const ref = useRef<SoloRun | null>(run);
   const sketch = useRef<Sketch | null>(resumed?.sketch ?? null);
   const [fields, setFields] = useState<string[]>([]);
+  // Yazan 2026-11-12: Practice may have No clock, chosen on this game's own start page.
+  const [noClock, setNoClock] = useState(false);
   const board = useRef<BoardHandle>(null);
   const [ink, setInk] = useState(0);
   const [size, setSize] = useState(0);
@@ -61,8 +64,8 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
 
   const begin = useCallback(async () => {
     const recent = (await engine.kv.get<string[]>(RECENT_KEY)) ?? [];
-    set(startSolo(pool, { seed: play.id, fields: custom ? [] : fields, recent: custom ? [] : recent, now: Date.now() }));
-  }, [play.id, fields, set, pool, custom]);
+    set(startSolo(pool, { seed: play.id, fields: custom ? [] : fields, recent: custom ? [] : recent, now: Date.now(), noClock: !custom && noClock }));
+  }, [play.id, fields, set, pool, custom, noClock]);
 
   useEffect(() => {
     if (custom && !ref.current) void begin();
@@ -129,6 +132,11 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
             <ChalkChip small key={f} label={f} on={fields.includes(f)} onPress={() => setFields(fields.includes(f) ? fields.filter((x) => x !== f) : [...fields, f])} />
           ))}
         </View>
+        <Note style={{ fontSize: u(12.5), lineHeight: u(16), marginTop: u(6) }}>Clock</Note>
+        <View style={s.chips}>
+          <ChalkChip small label={`${SA.soloMs / 1000} s a drawing`} on={!noClock} onPress={() => setNoClock(false)} />
+          <ChalkChip small label="No clock" on={noClock} onPress={() => setNoClock(true)} />
+        </View>
         <View style={{ flex: 1 }} />
         <ChalkBtn label="Start drawing" onPress={begin} />
       </SlateScreen>
@@ -149,7 +157,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
         title={phase === 'reveal' ? (last && last.timeMs >= run.turnMs ? "Time's up" : 'Done') : 'Draw this'}
         right={
           <>
-            {phase === 'drawing' ? <ClockChalkTimer clock={clock} leftAt={(n) => soloLeft(run, n)} totalMs={run.turnMs} /> : null}
+            {phase === 'drawing' && !run.noClock ? <ClockChalkTimer clock={clock} leftAt={(n) => soloLeft(run, n)} totalMs={run.turnMs} /> : null}
             <PauseBtn onPress={pause} />
           </>
         }

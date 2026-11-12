@@ -40,7 +40,7 @@ export const silentArtist: GameDef = {
       blurb: `Draw ${PICKABLE.length} diseases and basic science words alone against the clock. No score.`,
       howTo: [
         'Pick the fields you want, or keep them all.',
-        'You see a word and have 60 s to draw it on the slate.',
+        'You see a word and have 60 s to draw it on the slate, or pick No clock and tap Done when you finish.',
         'Then Next gives you a new word, and Retry the same one on a clean board.',
         'It is practice only: no score, no EXP, nothing goes to Learn. Your words are listed at the end with their dossiers.',
       ],
