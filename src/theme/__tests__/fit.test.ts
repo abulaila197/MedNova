@@ -16,8 +16,10 @@ test('fit: Android counts the navigation bar the window leaves out, so phones fi
   assert.equal(big.frameW, 412);
   // Galaxy Note 10+ (412x869 screen): the fit leaves 3.3% at the sides, so it fills the width (2026-10-21).
   assert.equal(frameFit({ width: 412, height: 821 }, { width: 412, height: 869 }, true).frameW, 412);
-  // The same window on iOS (whole screen already) keeps the column, as before.
-  assert.ok(frameFit({ width: 360, height: 752 }, { width: 360, height: 752 }, false).frameW < 360);
+  // The same window on iOS (whole screen already) is a short phone: height-sized, but over the whole width.
+  const ios = frameFit({ width: 360, height: 752 }, { width: 360, height: 752 }, false);
+  assert.equal(ios.frameW, 360);
+  close(ios.K, 752 / 615);
 });
 
 test('fit: split screen keeps the window height', () => {
@@ -25,12 +27,12 @@ test('fit: split screen keeps the window height', () => {
   assert.equal(drawHeight({ width: 180, height: 800 }, { width: 360, height: 800 }, true), 800);
 });
 
-test('fit: tall phones fill the width, short 16:9 phones and tablets get a centred column', () => {
+test('fit: tall phones fill the width; short 16:9 phones keep the height size over the full width (small screens, 2026-11-12); iPad gets a centred column', () => {
   const tall = frameFit({ width: 390, height: 844 }, { width: 390, height: 844 }, false);
   close(tall.K, 390 / DESIGN_W);
   assert.equal(tall.frameW, 390);
   const se = frameFit({ width: 375, height: 667 }, { width: 375, height: 667 }, false);
-  assert.ok(se.frameW < 375);
+  assert.equal(se.frameW, 375);
   close(se.K, 667 / 615);
   const pad = frameFit({ width: 820, height: 1180 }, { width: 820, height: 1180 }, false);
   assert.ok(pad.frameW < 820);

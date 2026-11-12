@@ -5,7 +5,7 @@ import { type ImageStyle, Pressable, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 import Svg, { Defs, Image as SvgImage, LinearGradient as SvgLinear, Mask, RadialGradient, Rect, Stop } from 'react-native-svg';
 
-import { TABLET, u } from '@/theme/scale';
+import { DESIGN_W, TABLET, u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import { BAKED, BAKED_ART } from './baked';
@@ -71,11 +71,15 @@ const SCENES: SceneDef[] = [
 /** Full-bleed illustrated scene of a slide, positioned exactly like the CSS background (cq units of the padded box). */
 function Scene({ si, w, h, padTop, padBottom }: { si: number; w: number; h: number; padTop: number; padBottom: number }) {
   const d = SCENES[si];
-  const cw = (w - u(36)) / 100;
+  // Small phones (2026-11-12) fill the width at the height's size: the art keeps the phone frame's size and place,
+  // centred, instead of growing with the extra width and sliding under the words.
+  const aw = Math.min(w, u(DESIGN_W));
+  const ox = (w - aw) / 2;
+  const cw = (aw - u(36)) / 100;
   const ch = (h - padTop - padBottom) / 100;
   const iw = d.size * cw;
   const ih = iw * IMG_RATIO;
-  const x = (d.pos ? d.pos[0] * cw : (w - iw) * 0.5) + u(d.shift ?? 0);
+  const x = ox + (d.pos ? d.pos[0] * cw : (aw - iw) * 0.5) + u(d.shift ?? 0);
   const y = d.pos ? d.pos[1] * ch : h - ih;
   if (BAKED_ART) {
     // Same picture from still images: the photo (slide 3 with its top fade already in its alpha) and the veil,

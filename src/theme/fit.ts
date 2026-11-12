@@ -37,6 +37,9 @@ export function frameFit(win: Size, screen: Size, android: boolean, tablets = an
   }
   const fillsWidth = phone && DESIGN_W * fit >= win.width * (1 - SLIVER);
   const K = fillsWidth ? win.width / DESIGN_W : fit;
+  // Short phones (Yazan 2026-11-12, "small screens"): the phone design at the height's size, but over the whole
+  // width, not a column with bands at the sides; pages spread the few extra design px like any flexible row.
+  if (phone && !fillsWidth) return { K, frameW: win.width, tablet: false };
   return { K, frameW: Math.min(win.width, DESIGN_W * K), tablet: false };
 }
 
