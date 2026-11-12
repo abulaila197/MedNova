@@ -55,10 +55,10 @@ function Side() {
   );
 }
 
-function Head({ end }: { end: string }) {
+function Head({ end, onHeight }: { end: string; onHeight?: (h: number) => void }) {
   const t = useTheme();
   return (
-    <View style={s.head}>
+    <View style={s.head} onLayout={onHeight ? (e) => onHeight(e.nativeEvent.layout.height) : undefined}>
       <Text style={[s.k, { color: t.accent }]}>TONIGHT ON THE WARD</Text>
       <Text style={[s.h, { color: t.white }]}>
         {`${COUNT} games, `}
@@ -112,13 +112,15 @@ function PhoneProgramme() {
     void sfx('tap');
     openGames();
   };
+  // The list starts under the title however many lines it takes ("Twelve games, one Start" wraps on a narrow phone).
+  const [headH, setHeadH] = useState(0);
   return (
     <Screen tab="games" glow={0}>
       <View style={s.fill}>
-        <Head end="one Start" />
+        <Head end="one Start" onHeight={setHeadH} />
         {/* the list is drawn twice, so when the first copy has rolled out of sight the second is in its place */}
         {/* A real mask, not the still veil: the veil's flat page colour drew lines against the shaded backdrop. */}
-        <Fade stops={[[0, 0], [0.08, 1], [0.72, 1], [0.94, 0], [1, 0]]} style={s.reel}>
+        <Fade stops={[[0, 0], [0.08, 1], [0.72, 1], [0.94, 0], [1, 0]]} style={[s.reel, headH ? { top: headH + u(8) } : null]}>
           <View style={s.reelIn} pointerEvents="none" accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
             <Animated.View style={roll}>
               {[0, 1].map((c) =>
@@ -201,8 +203,8 @@ const s = StyleSheet.create({
   head: { paddingTop: u(10), paddingLeft: u(16), paddingRight: u(44), paddingBottom: u(8), gap: u(2) },
   k: { fontFamily: F.mono, fontSize: u(9), lineHeight: u(12), letterSpacing: u(1.44) },
   h: { fontFamily: F.display, fontSize: u(24), lineHeight: u(26), letterSpacing: u(-0.4) },
-  reel: { position: 'absolute', top: u(74), left: 0, right: 0, bottom: u(66) },
-  reelIn: { flex: 1, overflow: 'hidden', paddingLeft: u(14), paddingRight: u(42) },
+  reel: { position: 'absolute', top: u(74), left: 0, right: 0, bottom: u(84) },
+  reelIn: { flex: 1, overflow: 'hidden', paddingLeft: u(14), paddingRight: u(56) },
   row: { height: u(ROW_H), marginBottom: u(ROW_GAP), borderRadius: u(12), borderWidth: 1, overflow: 'hidden', justifyContent: 'center', backgroundColor: '#0b1331' },
   n: { position: 'absolute', left: u(10), fontFamily: F.mono, fontSize: u(13), lineHeight: u(16) },
   nBig: { left: u(14), top: u(14), fontSize: u(15), lineHeight: u(18) },
@@ -213,7 +215,7 @@ const s = StyleSheet.create({
   sub: { fontFamily: F.mono, fontSize: u(8.5), lineHeight: u(11), letterSpacing: u(0.85) },
   subBig: { fontSize: u(8.5), lineHeight: u(11) },
   desc: { marginTop: u(3), marginRight: u(58), fontFamily: F.body, fontSize: u(10.5), lineHeight: u(14) },
-  startBox: { position: 'absolute', left: u(22), right: u(22), bottom: u(14), height: u(44) },
+  startBox: { position: 'absolute', left: u(22), right: u(22), bottom: u(32), height: u(44) },
   startRing: { position: 'absolute', left: -u(6), right: -u(6), top: -u(6), bottom: -u(6), borderRadius: u(28), borderWidth: u(1.5) },
   startTap: { flex: 1, borderRadius: u(22), overflow: 'hidden' },
   start: { flex: 1, borderRadius: u(22), alignItems: 'center', justifyContent: 'center' },
