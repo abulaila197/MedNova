@@ -15,6 +15,7 @@ import { Intro } from '@/features/start/Intro';
 import { SideSky } from '@/components/SideSky';
 import { startAccount } from '@/state/account';
 import { watchResize } from '@/state/resize';
+import { useSidewaysFrame } from '@/state/sideways';
 import { bootStart, endIntro, useStart, useStartReady } from '@/state/start';
 import { View } from 'react-native';
 import { FRAME_W, useScreen } from '@/theme/scale';
@@ -38,6 +39,7 @@ export default function RootLayout() {
   const ready = useStartReady();
   const intro = useStart((s) => s.intro);
   const { width, height } = useScreen();
+  const sideways = useSidewaysFrame((s) => s.on);
   const [fontsLoaded, fontError] = useFonts({
     Gabarito_700Bold,
     InterTight_400Regular,
@@ -69,8 +71,8 @@ export default function RootLayout() {
       {go ? (
         <>
       <SideSky />
-      {/* the app frame: the full screen, or a centred column (see theme/scale.ts) */}
-      <View style={{ flex: 1, width: FRAME_W, overflow: 'hidden' }}>
+      {/* the app frame: the full screen, or a centred column (see theme/scale.ts); a sideways game fills the turned screen */}
+      <View style={{ flex: 1, width: sideways ? '100%' : FRAME_W, overflow: 'hidden' }}>
       <Stack screenOptions={{ headerShown: false, animation: 'fade', animationDuration: 220, freezeOnBlur: true, contentStyle: { backgroundColor: THEMES.dark.sky } }} />
       {/* returning players: the intro plays over the first page (Games or sign-in) and bursts into it */}
       {intro ? <Intro w={width} h={height} onDone={endIntro} /> : null}

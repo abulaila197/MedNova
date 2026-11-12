@@ -9,9 +9,10 @@ It is laid over the 282 x 615 design screen like CSS cover (nudged right), cut t
   - the art is gone before the planets on the arc, so a gap stays between them,
   - wherever the picture is just its own navy sky it turns clear, so no box edge shows,
   - the left and right screen edges fade softly (2026-10-19).
-Run: python3 scripts/bake-game-art-full.py   (needs Pillow, numpy)
+Run: python3 scripts/bake-game-art-full.py [game keys...]   (needs Pillow, numpy; no keys = every game)
 """
 import os
+import sys
 import numpy as np
 from PIL import Image
 
@@ -40,6 +41,7 @@ BAND = {  # tall pictures (Yazan 2026-10-18 v2): scenes run from under the title
     'imposter': (120, 290, 1150, 1300),
     'code-clinic': (80, 260, 1150, 1300),
     'nova-password': (80, 260, 1150, 1300),
+    'tilt-and-tell': (220, 380, 1150, 1300),
 }
 
 
@@ -50,6 +52,8 @@ def smooth(v, a, b):
 
 os.makedirs(os.path.join(ROOT, 'assets/games/baked/dark'), exist_ok=True)
 for k, (a, b, c, d) in BAND.items():
+    if sys.argv[1:] and k not in sys.argv[1:]:
+        continue
     src = Image.open(os.path.join(ROOT, f'assets/games/full/{k}.jpg')).convert('RGB')
     pw, ph = src.size
     s = max(W / pw, SH / ph)  # design px per picture px

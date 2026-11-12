@@ -29,7 +29,7 @@ export function Setup({ def, mode, prefill, prefillSeats }: { def: GameDef; mode
   const t = useTheme();
   const g = GAMES.find((x) => x.key === def.key)!;
   const st = useSetup(def, mode, prefill, prefillSeats);
-  const { opts, vals, setVals, range, seats, teams, canTeam, emptyTeam, busy, start } = st;
+  const { opts, vals, setVals, range, seats, teams, canTeam, emptyTeam, thinTeam, minEach, busy, start } = st;
   // Signed in without the subscription, every choice that changes the cost shows its Sparks (#36).
   const signedIn = !!useSession((x) => x.userId);
   const subscribed = useIsSubscribed();
@@ -65,9 +65,9 @@ export function Setup({ def, mode, prefill, prefillSeats }: { def: GameDef; mode
         <>
           {intent ? <Text style={[s.small, { color: t.accent, textAlign: 'center' }]}>{`Challenge for ${intent.friend.name} · ${intent.kind === 'score' ? 'Beat my score, 1 day' : `Game challenge, ${intent.days} day${intent.days > 1 ? 's' : ''}`}`}</Text> : null}
           <Text style={[s.small, { color: t.dim, textAlign: 'center' }]}>
-            {emptyTeam ? `${emptyTeam.name} has no players yet.` : short && menu ? `Tick at least ${menu.min} ${menu.unit} (now ${menu.total(ticked)}).` : showCost ? `${each ? 'Costs' : 'This game costs'} ${cost} Sparks${each} · you have ${have}` : 'Settings lock once the game starts.'}
+            {emptyTeam ? `${emptyTeam.name} has no players yet.` : thinTeam ? `${thinTeam.name} needs at least ${minEach} players.` : short && menu ? `Tick at least ${menu.min} ${menu.unit} (now ${menu.total(ticked)}).` : showCost ? `${each ? 'Costs' : 'This game costs'} ${cost} Sparks${each} · you have ${have}` : 'Settings lock once the game starts.'}
           </Text>
-          <Btn label="Start" onPress={start} disabled={busy || !!emptyTeam || short} />
+          <Btn label="Start" onPress={start} disabled={busy || !!emptyTeam || !!thinTeam || short} />
         </>
       }>
       <Back label={`${g.lead} ${g.em}`} fallback={`/play/${def.key}`} />

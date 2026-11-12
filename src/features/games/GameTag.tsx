@@ -22,6 +22,7 @@ const KIND: Record<string, GameKind> = {
   'nova-password': 'play',
   'code-clinic': 'play',
   imposter: 'play',
+  'tilt-and-tell': 'play',
   'the-silent-artist': 'play',
   'nova-medicordle': 'both',
   'the-riddler': 'both',

@@ -37,6 +37,8 @@ const COSTS: Partial<Record<GameKey, Partial<Record<Mode, Price>>>> = {
   'the-conqueror': {},
   'the-quiz-parade': { solo: PARADE, offline: PARADE, bots: PARADE },
   imposter: { offline: ROUNDS },
+  // Same as the other Pass the phone game by rounds (Yazan 2026-11-12).
+  'tilt-and-tell': { offline: ROUNDS },
   'code-clinic': { offline: flat(30) },
   'nova-password': { offline: PASSWORD },
 };

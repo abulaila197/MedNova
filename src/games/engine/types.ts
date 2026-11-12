@@ -14,6 +14,7 @@ export type GameKey =
   | 'trust-me-not'
   | 'the-quiz-parade'
   | 'imposter'
+  | 'tilt-and-tell'
   | 'code-clinic'
   | 'nova-password';
 

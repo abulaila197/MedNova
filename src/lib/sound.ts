@@ -16,10 +16,12 @@ const FX = {
   win: require('@/assets/sound/win.mp3'),
   timeup: require('@/assets/sound/timeup.mp3'),
   token: require('@/assets/sound/token.mp3'),
+  // Tilt & Tell pass: a soft whoosh made for MedNova (2026-11-12), no outside sound.
+  pass: require('@/assets/sound/pass.wav'),
 };
 export type Sound = keyof typeof FX;
 
-const VOLUME: Record<Sound, number> = { tap: 0.35, right: 0.7, wrong: 0.6, win: 0.8, timeup: 0.7, token: 0.6 };
+const VOLUME: Record<Sound, number> = { tap: 0.35, right: 0.7, wrong: 0.6, win: 0.8, timeup: 0.7, token: 0.6, pass: 0.6 };
 
 const kv = defaultKV();
 const MUTE_KEY = 'sound:muted';

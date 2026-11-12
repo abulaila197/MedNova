@@ -55,6 +55,8 @@ export type GameDef = {
   summary?: (play: Play, items: PlayItem[]) => { value: string; label: string }[] | null;
   /** Modes that offer team play (TM1); the host turns it on in setup. Team score is the average unless 'sum' (per mode allowed). */
   teams?: Partial<Record<Mode, true>>;
+  /** Modes played in teams only (Tilt & Tell): teams start on and can't be turned off; `max` teams, `minEach` players a team. */
+  teamsOnly?: Partial<Record<Mode, { max: number; minEach: number }>>;
   teamScore?: TeamScore | Partial<Record<Mode, TeamScore>>;
   /** Note under the players list in setup (default: the phone owner earns EXP and Learn entries). */
   playersNote?: (players: number) => string;

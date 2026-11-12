@@ -4,6 +4,8 @@
 // 2. LV3: wallpaper saving needs no photo READ access. Android 11+ saves through MediaStore with no permission;
 //    only Android 10 and older need WRITE_EXTERNAL_STORAGE (expo-media-library's legacy path), so it is capped
 //    at maxSdkVersion 29. The read permissions themselves are removed with android.blockedPermissions (app.json).
+// 3. The app opens portrait, as before. app.json says "default" only so iOS allows Tilt & Tell's sideways screen
+//    (Yazan 2026-11-12); that one screen turns itself sideways with expo-screen-orientation and back when it closes.
 const { AndroidConfig, withAndroidManifest } = require('expo/config-plugins');
 
 const WRITE = 'android.permission.WRITE_EXTERNAL_STORAGE';
@@ -13,6 +15,8 @@ module.exports = function withAndroidGameAndSaveOnly(config) {
     const manifest = cfg.modResults;
     const app = AndroidConfig.Manifest.getMainApplicationOrThrow(manifest);
     app.$['android:appCategory'] = 'game';
+    const main = AndroidConfig.Manifest.getMainActivityOrThrow(manifest);
+    main.$['android:screenOrientation'] = 'portrait';
 
     const perms = (manifest.manifest['uses-permission'] ??= []);
     const write = perms.find((p) => p.$?.['android:name'] === WRITE);

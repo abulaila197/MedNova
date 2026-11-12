@@ -29,8 +29,11 @@ export function useSetup(def: GameDef, mode: Mode, prefill?: Record<string, unkn
   const [busy, setBusy] = useState(false);
   const range = def.players?.[mode];
   // Every player picks one of the 8 colours (Yazan 2026-10-18); characters live in Profile.
+  // Teams only (Tilt & Tell): teams are always on, at least 2, dealt round the players from the start.
+  const only = def.teamsOnly?.[mode];
   const [seats, setSeats] = useState<Seat[]>(() => {
-    if (!prefillSeats?.length) return Array.from({ length: range?.min ?? 1 }, (_, i) => ({ seat: i, name: i === 0 ? 'You' : `Player ${i + 1}`, color: SEAT_COLOURS[i].color }));
+    if (!prefillSeats?.length)
+      return Array.from({ length: range?.min ?? 1 }, (_, i) => ({ seat: i, name: i === 0 ? 'You' : `Player ${i + 1}`, color: SEAT_COLOURS[i].color, ...(only ? { team: i % 2 } : null) }));
     const out: Seat[] = [];
     prefillSeats.forEach((x, i) => {
       const keep = SEAT_COLOURS.some((c) => c.color === x.color) && !out.some((o) => o.color === x.color);
@@ -43,9 +46,12 @@ export function useSetup(def: GameDef, mode: Mode, prefill?: Record<string, unkn
   const canTeam = !!range && !!def.teams?.[mode];
   const [teams, setTeams] = useState<Team[] | null>(() => {
     const t = prefill?.teams as Team[] | undefined;
-    return canTeam && Array.isArray(t) && t.length >= 2 ? t : null;
+    if (canTeam && Array.isArray(t) && t.length >= 2) return t;
+    return only ? [preset(0), preset(1)] : null;
   });
   const emptyTeam = teams?.find((tm) => !seats.some((x) => x.team === tm.id));
+  // A team with too few players (teams only): Start waits, and the line above it says which team.
+  const thinTeam = only ? teams?.find((tm) => seats.filter((x) => x.team === tm.id).length < only.minEach) : undefined;
 
   const setSeat = (i: number, patch: Partial<Seat>) => setSeats((p) => p.map((x, j) => (j === i ? { ...x, ...patch } : x)));
   const pickColour = (i: number, color: string) => {
@@ -61,6 +67,7 @@ export function useSetup(def: GameDef, mode: Mode, prefill?: Record<string, unkn
   /** TM1-TM4: n teams (keeping valid picks, else dealing players round the teams), or 0 for off. */
   const teamCount = (n: number) => {
     if (!n) {
+      if (only) return;
       setTeams(null);
       setSeats((p) => p.map(({ team: _t, ...x }) => x));
       return;
@@ -69,7 +76,9 @@ export function useSetup(def: GameDef, mode: Mode, prefill?: Record<string, unkn
     setSeats((p) => p.map((x, i) => ({ ...x, team: x.team != null && x.team < n ? x.team : i % n })));
   };
   const renameTeam = (i: number, name: string) => setTeams((ts) => ts && ts.map((y, j) => (j === i ? { ...y, name } : y)));
-  const teamChoices = [{ value: 0, label: 'Off' }, ...Array.from({ length: Math.max(0, Math.min(6, seats.length) - 1) }, (_, i) => ({ value: i + 2, label: String(i + 2) }))];
+  const teamChoices = only
+    ? Array.from({ length: Math.max(1, Math.min(only.max, Math.floor(seats.length / only.minEach)) - 1) }, (_, i) => ({ value: i + 2, label: String(i + 2) }))
+    : [{ value: 0, label: 'Off' }, ...Array.from({ length: Math.max(0, Math.min(6, seats.length) - 1) }, (_, i) => ({ value: i + 2, label: String(i + 2) }))];
 
   const start = async () => {
     // A practice of my own word (My diseases) keeps its word id, which also makes it free.
@@ -101,5 +110,5 @@ export function useSetup(def: GameDef, mode: Mode, prefill?: Record<string, unkn
     router.replace(`/play/${def.key}/run?play=${play.id}`);
   };
 
-  return { opts, vals, setVals, range, seats, setSeat, pickColour, addSeat, removeSeat, canTeam, teams, teamCount, renameTeam, teamChoices, preset, emptyTeam, busy, start };
+  return { opts, vals, setVals, range, seats, setSeat, pickColour, addSeat, removeSeat, canTeam, teams, teamCount, renameTeam, teamChoices, preset, emptyTeam, thinTeam, minEach: only?.minEach ?? 1, busy, start };
 }

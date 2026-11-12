@@ -21,6 +21,7 @@ const BAKED = {
     'case-files-unsolved': require('@/assets/games/baked/dark/case-files-unsolved.webp'),
     'the-quiz-parade': require('@/assets/games/baked/dark/the-quiz-parade.webp'),
     imposter: require('@/assets/games/baked/dark/imposter.webp'),
+    'tilt-and-tell': require('@/assets/games/baked/dark/tilt-and-tell.webp'),
   },
 } as const;
 

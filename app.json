@@ -3,7 +3,7 @@
     "name": "MedNova",
     "slug": "mednova",
     "version": "1.0.0",
-    "orientation": "portrait",
+    "orientation": "default",
     "icon": "./assets/images/icon.png",
     "scheme": "mednova",
     "userInterfaceStyle": "dark",
@@ -110,7 +110,13 @@
           "color": "#6fd6ff"
         }
       ],
-      "expo-apple-authentication"
+      "expo-apple-authentication",
+      [
+        "expo-screen-orientation",
+        {
+          "initialOrientation": "PORTRAIT_UP"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

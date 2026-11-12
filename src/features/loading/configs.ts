@@ -185,6 +185,25 @@ export const LOAD: Record<string, LoadCfg> = {
     tips: ['One player has a different word, and even they don\'t know it.', 'Give a clue that proves you know the word without giving it away.', 'Caught? Guess everyone else\'s word to win a point back.'],
     fonts: ['BebasNeue_400Regular', 'BarlowCondensed_500Medium'],
   },
+  // Tilt & Tell (Yazan 2026-11-12): a 1970s game-show dressing room, marquee bulbs round the mirror, plum and gold.
+  'tilt-and-tell': {
+    key: 'tilt-and-tell', photo: require('@/assets/loading/tilt-and-tell.webp'), fo: '40% 55%',
+    veil: { c: ['rgba(18,4,20,0.7)', 'rgba(0,0,0,0)'], at: [0, 0.38] },
+    txt: { top: 54, align: 'center' },
+    orig: { f: 'AlegreyaSans_500Medium', c: '#e7b7d3' },
+    title: { f: 'Gabarito_800ExtraBold', s: 46, c: '#fff4e3', em: '#ffd780', sh: 'rgba(255,200,110,0.55)' },
+    sub: { f: 'AlegreyaSans_500Medium', s: 16, c: '#f3d9e6' },
+    tip: { f: 'AlegreyaSans_500Medium', s: 14, c: '#fff4e3', bg: 'rgba(30,8,34,0.62)', b: 'rgba(255,215,128,0.28)' },
+    bar: { t: 'bulbs', c: '#ffd780' },
+    tag: { t: 'Pass the phone · teams', side: 'left', c: '#fff4e3', bg: 'rgba(0,0,0,0.45)', b: 'rgba(255,215,128,0.3)' },
+    glows: [
+      { x: 0.2, y: 0.42, r: 70, c: 'rgba(255,200,110,0.4)', a: 'still' },
+      { x: 0.62, y: 0.72, r: 40, c: 'rgba(255,215,128,0.35)', a: 'pulse' },
+    ],
+    parts: ['motes'],
+    tips: ['Tilt down when you get it, up to pass.', 'Only 3 passes a turn, so think before you skip.', 'Hold the phone flat on your forehead, screen facing your team.'],
+    fonts: ['Gabarito_800ExtraBold', 'AlegreyaSans_500Medium'],
+  },
   'the-streak-master': {
     key: 'the-streak-master', photo: require('@/assets/loading/the-streak-master.webp'), fo: '45% 62%',
     veil: { c: ['rgba(0,0,0,0.45)', 'rgba(0,0,0,0)'], at: [0, 0.36] },

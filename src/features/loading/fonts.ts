@@ -26,6 +26,7 @@ const FILES: Record<string, number> = {
   Limelight_400Regular: require('@expo-google-fonts/limelight/400Regular/Limelight_400Regular.ttf'),
   Archivo_500Medium: require('@expo-google-fonts/archivo/500Medium/Archivo_500Medium.ttf'),
   Archivo_700Bold: require('@expo-google-fonts/archivo/700Bold/Archivo_700Bold.ttf'),
+  Gabarito_800ExtraBold: require('@expo-google-fonts/gabarito/800ExtraBold/Gabarito_800ExtraBold.ttf'),
   Archivo_900Black: require('@expo-google-fonts/archivo/900Black/Archivo_900Black.ttf'),
   AbrilFatface_400Regular: require('@expo-google-fonts/abril-fatface/400Regular/AbrilFatface_400Regular.ttf'),
   LibreBaskerville_400Regular: require('@expo-google-fonts/libre-baskerville/400Regular/LibreBaskerville_400Regular.ttf'),

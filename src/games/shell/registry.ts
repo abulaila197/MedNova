@@ -18,6 +18,7 @@ const LOAD: Record<string, () => GameDef> = {
   'the-wheels-of-chaos': () => require('../wheels/def').wheelsOfChaos,
   'the-quiz-parade': () => require('../parade/def').quizParade,
   imposter: () => require('../imposter/def').imposter,
+  'tilt-and-tell': () => require('../tilt/def').tiltAndTell,
 };
 
 const loaded = new Map<string, GameDef>();
