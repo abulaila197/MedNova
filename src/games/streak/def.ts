@@ -51,8 +51,19 @@ const LENGTH = {
   initial: 60,
 };
 
-/** Solo also offers No clock (Yazan 2026-11-12): nothing timed, the round ends on your first wrong answer. */
-const SOLO_LENGTH = { ...LENGTH, choices: [...LENGTH.choices, { value: 0, label: 'No clock', note: 'ends on 1st mistake' }] };
+/**
+ * Solo: 1, 2 or 3 minutes, or No clock (Yazan 2026-11-12): nothing timed, the round ends on your first wrong answer.
+ * Pass the phone keeps 60 / 90 / 120 s.
+ */
+const SOLO_LENGTH = {
+  ...LENGTH,
+  choices: [
+    { value: 60, label: '1 min', note: 'sprint' },
+    { value: 120, label: '2 min' },
+    { value: 180, label: '3 min', note: 'long' },
+    { value: 0, label: 'No clock', note: 'ends on 1st mistake' },
+  ],
+};
 
 /** The Streak Master on the shared shell (SM1-SM13): Solo, Offline and Online. */
 export const streakMaster: GameDef = {
@@ -63,7 +74,7 @@ export const streakMaster: GameDef = {
       title: 'Beat the clock',
       blurb: 'Answer as many as you can. Every right answer in a row is worth more.',
       howTo: [
-        'Pick clinical, basic science or mixed questions, and a round of 60, 90 or 120 seconds.',
+        'Pick clinical, basic science or mixed questions, and a round of 1, 2 or 3 minutes.',
         'Or pick No clock: take your time, but the round ends on your first wrong answer. It counts toward the same high score.',
         'Each question has six choices. The 1st right answer in a row scores 1, the 2nd scores 2, and so on.',
         'A wrong answer turns red, shows the right one in green, and drops your streak to 0.',

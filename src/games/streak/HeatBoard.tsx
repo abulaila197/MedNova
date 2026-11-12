@@ -1,6 +1,6 @@
 import { COIN, CoinLabel, spoken } from '@/components/CoinLabel';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useEffect, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { MAX_FONT_SCALE, Text } from '@/components/AppText';
 import Animated, {
@@ -104,8 +104,8 @@ export function HeatBoard(p: BoardProps) {
             <Animated.View key={p.q.id} entering={FadeIn.duration(180)} style={{ gap: u(10) }}>
               <Text style={[s.q, { color: t.fg }]}>{p.q.stem}</Text>
               {(
-                <View style={s.grid}>
-                  {p.round.order.filter((ci) => ci < p.q.choices.length).map((ci) => {
+                <EqualGrid id={p.q.id}>
+                  {(minH, onH) => p.round.order.filter((ci) => ci < p.q.choices.length).map((ci) => {
                     const gone = p.round.removed.includes(ci);
                     const state = showing && fb ? (ci === p.q.answer ? 'good' : ci === fb.picked ? 'bad' : 'idle') : p.locked === ci ? 'locked' : 'idle';
                     return (
@@ -120,10 +120,12 @@ export function HeatBoard(p: BoardProps) {
                         dim={!showing && p.locked != null && p.locked !== ci}
                         onPress={() => p.onAnswer(ci)}
                         hc={hc}
+                        minH={minH}
+                        onH={onH}
                       />
                     );
                   })}
-                </View>
+                </EqualGrid>
               )}
               {showing && fb && !fb.right && p.q.explanation ? (
                 <Animated.Text maxFontSizeMultiplier={MAX_FONT_SCALE} entering={FadeIn.delay(350)} style={[s.expl, { color: t.mute }]}>{p.q.explanation}</Animated.Text>
@@ -205,7 +207,18 @@ function Fuse({ frac, cool, hot, track, burning }: { frac: number; cool: string;
   );
 }
 
-function Option({ label, state, late, gone, live, dim, faces, onPress, hc }: { label: string; state: 'idle' | 'good' | 'bad' | 'locked'; late: boolean; gone: boolean; live: boolean; dim?: boolean; faces?: string[]; onPress: () => void; hc: ReturnType<typeof heatColors> }) {
+/**
+ * The six answers all take the size of the biggest one (Yazan 2026-11-12: boxes of different heights looked messy).
+ * Each box reports its own height and the grid gives every box the tallest; it starts again with each question.
+ */
+function EqualGrid({ id, children }: { id: string; children: (minH: number, onH: (h: number) => void) => ReactNode }) {
+  const [tall, setTall] = useState({ id, h: 0 });
+  const h = tall.id === id ? tall.h : 0;
+  const onH = (v: number) => setTall((x) => (x.id !== id ? { id, h: v } : v > x.h + 0.5 ? { id, h: v } : x));
+  return <View style={s.grid}>{children(h, onH)}</View>;
+}
+
+function Option({ label, state, late, gone, live, dim, faces, onPress, hc, minH = 0, onH }: { label: string; state: 'idle' | 'good' | 'bad' | 'locked'; late: boolean; gone: boolean; live: boolean; dim?: boolean; faces?: string[]; onPress: () => void; hc: ReturnType<typeof heatColors>; minH?: number; onH?: (h: number) => void }) {
   const t = useTheme();
   const x = useSharedValue(0);
   const glow = useSharedValue(0);
@@ -223,8 +236,10 @@ function Option({ label, state, late, gone, live, dim, faces, onPress, hc }: { l
       <Pressable
         onPress={onPress}
         disabled={!live}
+        onLayout={onH ? (e) => onH(e.nativeEvent.layout.height) : undefined}
         style={[
           s.opt,
+          minH ? { minHeight: minH } : null,
           { backgroundColor: BEIGE?.bg ?? t.panel, borderColor: BEIGE?.line ?? t.panelLine, opacity: gone ? 0.28 : dim ? 0.5 : 1 },
           tint ? { borderColor: tint, borderWidth: 1.5, backgroundColor: mix(tint, '#151933', 0.2) } : null,
           // Your answer, until the question ends (Yazan 2026-11-02): a thick glowing ring and a tick, the rest dim.

@@ -2,6 +2,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet } from 'react-native';
 import { Text, TextInput } from '@/components/AppText';
+import { COIN, CoinLabel } from '@/components/CoinLabel';
 
 import { Sheet } from '@/components/Sheet';
 import { useSession } from '@/games/shell/session';
@@ -88,7 +89,8 @@ export function ChangeName({ open, onClose }: { open: boolean; onClose: () => vo
       {msg ? <Text style={[s.msg, { color: msg.good ? t.accent : t.mute }]}>{msg.text}</Text> : null}
       <Pressable disabled={!ok || busy} onPress={save} accessibilityRole="button" style={{ opacity: ok ? 1 : 0.5 }}>
         <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.btn}>
-          <Text style={[s.btnT, { color: t.onGrad }]}>{busy ? 'Saving…' : cost == null ? 'Change name' : `Change name · ${cost} tokens`}</Text>
+          {/* Yazan 2026-11-12: the price always shows on the button, with the token symbol. */}
+          <CoinLabel style={[s.btnT, { color: t.onGrad }]} text={busy ? 'Saving…' : cost == null ? 'Change name · …' : `Change name · ${cost}${COIN}`} />
         </LinearGradient>
       </Pressable>
     </Sheet>

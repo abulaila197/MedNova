@@ -6,6 +6,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { Back } from '@/components/Back';
 import { Text, TextInput } from '@/components/AppText';
 import { Screen } from '@/components/Screen';
+import { GAMES } from '@/data/games';
 import { InfoScroll, Kicker, s as ui, useInfo } from '@/features/info/ui';
 import { search } from '@/games/diagnostic/core';
 import { INDEX, guessName } from '@/games/diagnostic/data';
@@ -63,10 +64,11 @@ export function NewCase() {
         <Back label="My diseases" fallback="/learn" />
         <Kicker style={{ marginTop: u(10) }}>Case laboratory</Kicker>
         <Text style={[ui.H, { color: c.fg, fontFamily: F.display }]}>
-          {'Write a '}
-          <Text style={[ui.H, { color: t.accent, fontFamily: F.displayItalic }]}>case</Text>
+          {'Create your '}
+          <Text style={[ui.H, { color: t.accent, fontFamily: F.displayItalic }]}>own</Text>
         </Text>
-        <Box t={t} n="1" title="Patient">
+        <GameChoice t={t} on="the-diagnostic-pursuit" onPick={(g) => g !== 'the-diagnostic-pursuit' && router.replace(`/learn/new-word?game=${g}` as never)} />
+        <Box t={t} n="2" title="Patient">
           <Label t={t} text="Diagnosis *" />
           <TextInput value={dx} onChangeText={(v) => (setDx(v), setAnswer(null))} placeholder="Start typing, then pick it from the list" placeholderTextColor={ph(t)} style={inp(t)} autoCorrect={false} />
           {sugs.length ? (
@@ -91,16 +93,16 @@ export function NewCase() {
             </View>
           </View>
         </Box>
-        <Box t={t} n="2" title="Presentation">
+        <Box t={t} n="3" title="Presentation">
           <Label t={t} text="First presentation (ER or clinic) *" />
           <TextInput value={presentation} onChangeText={setPresentation} multiline maxLength={1500} placeholder="A 34-year-old woman comes to the ER with sudden shortness of breath..." placeholderTextColor={ph(t)} style={[inp(t), s.big]} />
         </Box>
-        <Box t={t} n="3" title="Findings">
+        <Box t={t} n="4" title="Findings">
           <Field t={t} label="History finding" v={history} set={setHistory} ph="Long-haul flight 3 days ago" />
           <Field t={t} label="Clinical exam finding" v={exam} set={setExam} ph="Swollen, tender left calf" />
           <Field t={t} label="Investigation finding" v={investigation} set={setInvestigation} ph="Raised D-dimer" />
         </Box>
-        <Box t={t} n="4" title="Key findings">
+        <Box t={t} n="5" title="Key findings">
           {findings.map((f, i) => (
             <Field key={i} t={t} label={`Characteristic finding ${i + 1}`} v={f} set={(v) => setFindings((x) => x.map((y, j) => (j === i ? v : y)))} ph={i === 0 ? 'Filling defect on CT pulmonary angiogram' : ''} />
           ))}
@@ -145,6 +147,28 @@ export function Field({ t, label, v, set, ph: hint }: { t: Theme; label: string;
       <Label t={t} text={label} />
       <TextInput value={v} onChangeText={set} maxLength={300} placeholder={hint} placeholderTextColor={ph(t)} style={inp(t)} />
     </View>
+  );
+}
+
+/** A game's name as the Games page shows it ("Race to Diagnosis", "Sketch It"). */
+export const gameLabel = (g: string) => {
+  const x = GAMES.find((y) => y.key === g);
+  return x ? `${x.lead.replace(/^The /, '')} ${x.em}`.trim() : g;
+};
+
+/** Words the Create your own page can make, after Race to Diagnosis cases (kept here so both pages share it). */
+const WORD_KEYS = ['the-silent-artist', 'nova-medicordle', 'the-streak-master', 'imposter'];
+
+/**
+ * Step 1 of Create your own: the game. Race to Diagnosis cases and the other games' words share one page (Yazan
+ * 2026-11-12: no separate "Write a DP case" button); picking another game swaps in that game's form.
+ */
+export function GameChoice({ t, on, onPick, words = WORD_KEYS }: { t: Theme; on: string; onPick: (g: string) => void; words?: string[] }) {
+  const keys = ['the-diagnostic-pursuit', ...words];
+  return (
+    <Box t={t} n="1" title="Game">
+      <Chips t={t} items={keys.map(gameLabel)} on={keys.indexOf(on)} onPick={(i) => onPick(keys[i])} />
+    </Box>
   );
 }
 

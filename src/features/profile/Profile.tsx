@@ -2,13 +2,12 @@ import { router } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
-import Svg, { Defs, LinearGradient as SvgLinear, Path, Stop } from 'react-native-svg';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useShallow } from 'zustand/react/shallow';
 
 import { LevelBadge, useBalance } from '@/components/LevelBadge';
 import { Display } from '@/components/Txt';
 import { Fade } from '@/components/Fade';
-import { useSvgId } from '@/components/svgId';
 import { FriendCount } from '@/features/profile/Friends';
 import { Face } from '@/games/shell/Face';
 import { wearCharacter as wearOwned } from '@/features/shop/wear';
@@ -35,27 +34,16 @@ const C = {
   dark: { tide: ['#a48bff', '#6fd6ff'] },
 };
 
-const TW = 96; // sparkline width (design px)
+/** Yazan 2026-11-12: the profile buttons get a cyan border so they stand out. */
+const CYAN = '#22d3ee';
 
-function Tide({ t, pts }: { t: Theme; pts: number[] }) {
-  const id = useSvgId('tg');
+/** Your accuracy in one game as a bar filled to that share (Yazan 2026-11-12: was a tide line). */
+function Bar({ t, acc }: { t: Theme; acc: number | null }) {
   const c = C[t.mode].tide;
-  // Accuracy 0-1 drawn top (all right) to bottom (all wrong); one game draws a flat line.
-  const ys = (pts.length > 1 ? pts : [pts[0] ?? 0, pts[0] ?? 0]).map((a) => 24 - a * 22);
-  const d = 'M' + ys.map((y, i) => `${((i * TW) / (ys.length - 1)).toFixed(2)},${y.toFixed(1)}`).join(' L');
+  const w = `${Math.round(Math.max(0, Math.min(1, acc ?? 0)) * 100)}%` as const;
   return (
-    // The line takes the room left between the game name and the percentage, so the percentage never runs past the
-    // edge on narrow phones (Yazan 2026-11-11); it stretches sideways only, the stroke keeps its width.
-    <View style={s.tide}>
-      <Svg width="100%" height={u(26)} viewBox={`0 0 ${TW} 26`} preserveAspectRatio="none">
-        <Defs>
-          <SvgLinear id={id} x1="0" y1="0" x2={TW} y2="0" gradientUnits="userSpaceOnUse">
-            <Stop offset="0" stopColor={c[0]} stopOpacity={0.3} />
-            <Stop offset="1" stopColor={c[1]} />
-          </SvgLinear>
-        </Defs>
-        <Path d={d} fill="none" stroke={`url(#${id})`} strokeWidth={u(1.6)} strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
-      </Svg>
+    <View style={[s.bar, { backgroundColor: t.panel2, borderColor: t.panelLine }]}>
+      {acc ? <LinearGradient colors={[c[0], c[1]]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={[s.barF, { width: w }]} /> : null}
     </View>
   );
 }
@@ -117,7 +105,7 @@ export function Profile() {
           <View style={s.style}>
             {/* List #2: Change name first. */}
             {profile ? (
-              <Pressable onPress={() => setRename(true)} style={[s.stBtn, { backgroundColor: t.chip, borderColor: t.chipLine }]} accessibilityRole="button">
+              <Pressable onPress={() => setRename(true)} style={[s.stBtn, { backgroundColor: t.chip, borderColor: CYAN }]} accessibilityRole="button">
                 <Text style={[s.stT, { color: t.fg }]}>Change name</Text>
               </Pressable>
             ) : null}
@@ -126,11 +114,11 @@ export function Profile() {
                 void loadHunt();
                 setPick(true);
               }}
-              style={[s.stBtn, { backgroundColor: t.chip, borderColor: t.chipLine }]} accessibilityRole="button">
+              style={[s.stBtn, { backgroundColor: t.chip, borderColor: CYAN }]} accessibilityRole="button">
               <Text style={[s.stT, { color: t.fg }]}>Change character</Text>
             </Pressable>
             {[['Change frame', 'frames'], ['Change title', 'titles']].map(([l, tab]) => (
-              <Pressable key={l} onPress={() => router.navigate(`/style?tab=${tab}` as never)} style={[s.stBtn, { backgroundColor: t.chip, borderColor: t.chipLine }]} accessibilityRole="button">
+              <Pressable key={l} onPress={() => router.navigate(`/style?tab=${tab}` as never)} style={[s.stBtn, { backgroundColor: t.chip, borderColor: CYAN }]} accessibilityRole="button">
                 <Text style={[s.stT, { color: t.fg }]}>{l}</Text>
               </Pressable>
             ))}
@@ -152,9 +140,11 @@ export function Profile() {
         {st && !st.games.length ? <Text style={[s.none, { color: t.mute }]}>Play a game and your progress shows up here.</Text> : null}
         {st?.games.map((g) => (
           <View key={g.key} style={s.td}>
-            <Text style={[s.tdB, { color: t.fg }]}>{g.name}</Text>
-            <Tide t={t} pts={g.line} />
-            <Text style={[s.tdN, { color: t.fg }]} numberOfLines={1}>{pct(g.acc)}</Text>
+            <View style={s.tdTop}>
+              <Text style={[s.tdB, { color: t.fg }]} numberOfLines={1}>{g.name}</Text>
+              <Text style={[s.tdN, { color: t.fg }]} numberOfLines={1}>{pct(g.acc)}</Text>
+            </View>
+            <Bar t={t} acc={g.acc} />
           </View>
         ))}
         <FriendCount t={t} />
@@ -284,11 +274,13 @@ const s = StyleSheet.create({
   numB: { fontFamily: F.display, fontSize: u(26), lineHeight: u(26), height: u(26) },
   numS: { marginTop: u(8), fontFamily: F.mono, fontSize: u(7.5), lineHeight: u(10), letterSpacing: u(1.2) },
   sh2: { marginTop: u(10), marginBottom: u(2), fontFamily: F.mono, fontSize: u(8.5), lineHeight: u(12), letterSpacing: u(1.7) },
-  td: { flexDirection: 'row', alignItems: 'center', gap: u(8), paddingVertical: u(7), minHeight: u(40) },
-  tdB: { width: u(104), fontFamily: F.display, fontSize: u(12.5), lineHeight: u(14.375) },
+  td: { gap: u(6), paddingVertical: u(7) },
+  tdTop: { flexDirection: 'row', alignItems: 'center', gap: u(10) },
+  tdB: { flex: 1, minWidth: 0, fontFamily: F.display, fontSize: u(12.5), lineHeight: u(16) },
+  bar: { height: u(9), borderRadius: 999, borderWidth: 1, overflow: 'hidden' },
+  barF: { height: '100%', borderRadius: 999 },
   none: { fontFamily: F.body, fontSize: u(11), lineHeight: u(15), paddingVertical: u(7) },
-  tide: { flex: 1, minWidth: 0 },
-  tdN: { width: u(50), textAlign: 'right', fontFamily: F.display, fontSize: u(16), lineHeight: u(20) },
+  tdN: { textAlign: 'right', fontFamily: F.display, fontSize: u(14), lineHeight: u(18), paddingRight: u(2) },
   ch: { height: u(23), paddingHorizontal: u(10), borderRadius: u(10), justifyContent: 'center' },
   ghost: { height: u(25), borderWidth: 1 },
   ghT: { fontFamily: F.bodySemi, fontSize: u(9.5) },

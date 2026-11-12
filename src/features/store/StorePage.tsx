@@ -184,22 +184,25 @@ function SovereignCard({ t, busy, onBuy }: { t: Theme; busy: boolean; onBuy: () 
   const owned = useStyle((x) => x.owned.includes('robot:sovereign'));
   const price = usePrice(SOVEREIGN_PACK.id, SOVEREIGN_PACK.price);
   return (
-    <Pressable onPress={owned ? undefined : onBuy} accessibilityRole="button" accessibilityLabel={`Sovereign package for ${price}`} style={[s.style, { backgroundColor: t.panel, borderColor: t.panelLine }, busy && s.busy]}>
-      <Framed slug="sovereign" size={u(64)} frame="sovereign" still />
-      <View style={{ flex: 1 }}>
-        <Text style={[s.mono, { color: '#f5c542' }]}>{'\u2605'.repeat(6)}</Text>
-        <Text style={[s.styleH, { color: t.fg }]}>Sovereign package</Text>
-        <Text style={[s.styleS, { color: t.mute }]}>{`Sovereign, its frame and ${SOVEREIGN_PACK.tokens} tokens`}</Text>
-        <Text style={[s.styleS, { color: t.accent }]}>+30% EXP · refill 5 min</Text>
+    // Yazan 2026-11-12: a long local price (EGP) squeezed the words into broken lines, so the price sits under them.
+    <Pressable onPress={owned ? undefined : onBuy} accessibilityRole="button" accessibilityLabel={`Sovereign package for ${price}`} style={[s.style, s.sovCol, { backgroundColor: t.panel, borderColor: t.panelLine }, busy && s.busy]}>
+      <View style={s.sovTop}>
+        <Framed slug="sovereign" size={u(64)} frame="sovereign" still />
+        <View style={{ flex: 1, minWidth: 0 }}>
+          <Text style={[s.mono, { color: '#f5c542' }]} numberOfLines={1}>{'\u2605'.repeat(6)}</Text>
+          <Text style={[s.styleH, { color: t.fg }]} numberOfLines={1} adjustsFontSizeToFit>Sovereign package</Text>
+          <Text style={[s.styleS, { color: t.mute }]}>{`Sovereign, its frame and ${SOVEREIGN_PACK.tokens} tokens`}</Text>
+          <Text style={[s.styleS, { color: t.accent }]}>+30% EXP · refill 5 min</Text>
+        </View>
       </View>
       {owned ? (
-        <Text style={[s.styleS, { color: t.mute }]}>Owned</Text>
+        <Text style={[s.styleS, { color: t.mute, textAlign: 'center' }]}>Owned</Text>
       ) : (
-        <View style={{ alignItems: 'center', gap: u(3) }}>
-          <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={[s.cBtn, s.sovBtn]}>
-            <Text style={[s.cBtnT, { color: t.onGrad }]}>{price}</Text>
+        <View style={{ alignItems: 'stretch', gap: u(3) }}>
+          <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={[s.cBtn, s.sovBtn, s.sovWide]}>
+            <Text style={[s.cBtnT, { color: t.onGrad }]} numberOfLines={1}>{price}</Text>
           </LinearGradient>
-          {!BILLING_LIVE ? <Text style={[s.mono, { color: t.mute }]}>COMING SOON</Text> : null}
+          {!BILLING_LIVE ? <Text style={[s.mono, { color: t.mute, textAlign: 'center' }]}>COMING SOON</Text> : null}
         </View>
       )}
     </Pressable>
@@ -264,6 +267,9 @@ const s = StyleSheet.create({
   restore: { alignSelf: 'center', marginTop: u(14), padding: u(4) },
   style: { flexDirection: 'row', alignItems: 'center', gap: u(12), borderWidth: 1, borderRadius: u(18), padding: u(12), marginTop: u(6) },
   styleH: { fontFamily: F.display, fontSize: u(15) },
+  sovCol: { flexDirection: 'column', alignItems: 'stretch' },
+  sovTop: { flexDirection: 'row', alignItems: 'center', gap: u(12) },
+  sovWide: { alignSelf: 'stretch', width: undefined },
   styleS: { fontFamily: F.bodyMedium, fontSize: u(10), marginTop: u(2) },
   restoreT: { fontFamily: F.bodyMedium, fontSize: u(11) },
   foot: { fontFamily: F.body, fontSize: u(9.5), lineHeight: u(14), marginTop: u(8), textAlign: 'center', paddingHorizontal: u(10) },

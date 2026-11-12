@@ -75,7 +75,7 @@ function One({ c, it, onDone, onErr }: { c: C; it: Sub; onDone: (id: string, st:
   return (
     <View style={[s.rep, { borderColor: c.line, opacity: shut ? 0.6 : 1 }]}>
       <Text style={[s.small, { color: c.mute }]}>
-        {`${it.kind === 'case' ? 'DP CASE' : `${gameLabel(it.game).toUpperCase()} WORD`} · ${when(it.created_at)} · ${it.username ? '@' + it.username : 'Player'}${shut ? ' · ' + it.status.toUpperCase() : ''}`}
+        {`${it.kind === 'case' ? 'RACE TO DIAGNOSIS CASE' : `${gameLabel(it.game).toUpperCase()} WORD`} · ${when(it.created_at)} · ${it.username ? '@' + it.username : 'Player'}${shut ? ' · ' + it.status.toUpperCase() : ''}`}
       </Text>
       {Object.entries(data).map(([k, v]) =>
         FIXED.includes(k) ? (

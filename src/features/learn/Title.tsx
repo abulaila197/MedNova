@@ -21,7 +21,8 @@ export function PageTitle({ first, em, small }: { first: string; em: string; sma
 }
 
 const s = StyleSheet.create({
-  pt: { flexDirection: 'row', alignItems: 'baseline', gap: u(8), height: u(29) },
+  // No fixed height (Yazan 2026-11-12): the title's letters get their room below the line on Android.
+  pt: { flexDirection: 'row', alignItems: 'baseline', gap: u(8), minHeight: u(29) },
   big: { fontFamily: F.display, fontSize: u(24), lineHeight: u(29), letterSpacing: u(-0.48) },
   small: { marginLeft: 'auto', fontFamily: F.mono, fontSize: u(10), lineHeight: u(13) },
 });

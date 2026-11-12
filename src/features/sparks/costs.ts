@@ -18,7 +18,7 @@ const PARADE = by('questions', { 5: 15, 10: 25, 15: 30 }, 25);
 const BOARDS = by('boards', { 1: 15, 3: 25, 5: 40 }, 25);
 const FLAWS = by('cases', { 1: 15, 3: 25, 5: 40 }, 25);
 const ROUNDS = by('rounds', { 1: 15, 2: 25, 3: 40, 4: 45, 5: 60 }, 25);
-const STREAK_TIME = by('length', { 60: 10, 90: 15, 120: 25 }, 10);
+const STREAK_TIME = by('length', { 60: 10, 90: 15, 120: 25, 180: 35 }, 10); // 3 min: Solo only (2026-11-12)
 // Password: 5 or 10 words a team, 1 or 2 rounds (Yazan: 15 / 30 / 45 / 60).
 const PASSWORD_TABLE: Record<string, number> = { '5:1': 15, '10:1': 30, '5:2': 45, '10:2': 60 };
 const PASSWORD: Price = (s) => PASSWORD_TABLE[`${s.words}:${s.rounds}`] ?? 30;

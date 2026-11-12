@@ -6,20 +6,16 @@ import { Pressable, View } from 'react-native';
 import { Back } from '@/components/Back';
 import { Text, TextInput } from '@/components/AppText';
 import { Screen } from '@/components/Screen';
-import { GAMES } from '@/data/games';
 import { InfoScroll, Kicker, s as ui, useInfo } from '@/features/info/ui';
 import { useSession } from '@/games/shell/session';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import { saveWord, type WordData, type WordGame } from './cases';
-import { Box, Chips, Field, inp, Label, ph, s } from './NewCase';
+import { Box, Field, GameChoice, gameLabel, inp, Label, ph, s } from './NewCase';
 
 export const WORD_GAMES: WordGame[] = ['the-silent-artist', 'nova-medicordle', 'the-streak-master', 'imposter'];  // Nova Password parked 2026-11-04
-export const gameLabel = (g: string) => {
-  const x = GAMES.find((y) => y.key === g);
-  return x ? `${x.lead.replace(/^The /, '')} ${x.em}`.trim() : g;
-};
+export { gameLabel };
 
 /** Create your own (was Add a word; Yazan 2026-10-26, #37, renamed 2026-10-27): pick the game, then fill in that game's form. */
 export function NewWord({ start }: { start?: WordGame }) {
@@ -86,9 +82,7 @@ export function NewWord({ start }: { start?: WordGame }) {
           {'Create your '}
           <Text style={[ui.H, { color: t.accent, fontFamily: F.displayItalic }]}>own</Text>
         </Text>
-        <Box t={t} n="1" title="Game">
-          <Chips t={t} items={WORD_GAMES.map(gameLabel)} on={WORD_GAMES.indexOf(game)} onPick={(i) => pick(WORD_GAMES[i])} />
-        </Box>
+        <GameChoice t={t} on={game} onPick={(g) => (g === 'the-diagnostic-pursuit' ? router.replace('/learn/new-case') : pick(g as WordGame))} words={WORD_GAMES} />
 
         {game === 'the-silent-artist' ? (
           <Box t={t} n="2" title="The disease to draw">

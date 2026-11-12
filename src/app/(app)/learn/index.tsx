@@ -247,14 +247,10 @@ function CasesPage() {
     <ScrollPage>
       <PageTitle first="My" em="diseases" small={`${rows.length}`} />
       {signedIn ? (
-        <View style={s.two}>
-          <Pressable onPress={() => go('/learn/new-case')} style={[s.newc, s.half, { borderColor: c.newcLine, backgroundColor: c.newcBg }]} accessibilityRole="button">
-            <Text style={[s.newcT, { color: t.accent }]}>+ Write a DP case</Text>
-          </Pressable>
-          <Pressable onPress={() => go('/learn/new-word')} style={[s.newc, s.half, { borderColor: c.newcLine, backgroundColor: c.newcBg }]} accessibilityRole="button">
-            <Text style={[s.newcT, { color: t.accent }]}>+ Create your own</Text>
-          </Pressable>
-        </View>
+        // One button for every game, Race to Diagnosis cases included (Yazan 2026-11-12).
+        <Pressable onPress={() => go('/learn/new-word')} style={[s.newc, { borderColor: c.newcLine, backgroundColor: c.newcBg }]} accessibilityRole="button">
+          <Text style={[s.newcT, { color: t.accent }]}>+ Create your own</Text>
+        </Pressable>
       ) : (
         <Pressable onPress={() => go('/auth')} style={[s.newc, { borderColor: c.newcLine, backgroundColor: c.newcBg }]} accessibilityRole="button">
           <Text style={[s.newcT, { color: t.accent }]}>Sign in to write your own cases and words</Text>
