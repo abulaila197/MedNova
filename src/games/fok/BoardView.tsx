@@ -65,8 +65,8 @@ export function BoardView({ board, run, top, onSubmit, onShuffle, hint, tip = 'T
       <Bar>
         <TableBtn label="Shuffle" onPress={onShuffle} disabled={locked} />
         <TableBtn label="Deselect" onPress={() => setPicked([])} disabled={locked || !live.length} />
-        {hint ? <TableBtn label={hint.label} onPress={hint.onPress} disabled={locked || hint.disabled} /> : null}
-        <TableBtn label="Submit" go flex={1.4} onPress={send} disabled={locked || live.length !== 4} />
+        {hint ? <TableBtn label={hint.label} flex={1.3} onPress={hint.onPress} disabled={locked || hint.disabled} /> : null}
+        <TableBtn label="Submit" go flex={hint ? 1.2 : 1.4} onPress={send} disabled={locked || live.length !== 4} />
       </Bar>
     </View>
   );
