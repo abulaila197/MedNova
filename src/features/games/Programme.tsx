@@ -34,6 +34,7 @@ const STRIP: Record<string, number> = {
   'case-files-unsolved': require('@/assets/games/strips/case-files-unsolved.webp'),
   'the-wheels-of-chaos': require('@/assets/games/strips/the-wheels-of-chaos.webp'),
   imposter: require('@/assets/games/strips/imposter.webp'),
+  'tilt-and-tell': require('@/assets/games/strips/tilt-and-tell.webp'),
 };
 
 const WORDS = ['No', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen'];

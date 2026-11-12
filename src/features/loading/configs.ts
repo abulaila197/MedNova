@@ -194,7 +194,7 @@ export const LOAD: Record<string, LoadCfg> = {
     title: { f: 'Gabarito_800ExtraBold', s: 46, c: '#fff4e3', em: '#ffd780', sh: 'rgba(255,200,110,0.55)' },
     sub: { f: 'AlegreyaSans_500Medium', s: 16, c: '#f3d9e6' },
     tip: { f: 'AlegreyaSans_500Medium', s: 14, c: '#fff4e3', bg: 'rgba(30,8,34,0.62)', b: 'rgba(255,215,128,0.28)' },
-    bar: { t: 'bulbs', c: '#ffd780' },
+    bar: { t: 'line', c: '#ffd780', track: 'rgba(255,215,128,0.16)', glow: '0 0 10px #ffd780, 0 0 22px rgba(255,190,90,0.5)' },
     tag: { t: 'Pass the phone · teams', side: 'left', c: '#fff4e3', bg: 'rgba(0,0,0,0.45)', b: 'rgba(255,215,128,0.3)' },
     glows: [
       { x: 0.2, y: 0.42, r: 70, c: 'rgba(255,200,110,0.4)', a: 'still' },
