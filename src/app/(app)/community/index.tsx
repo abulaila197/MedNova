@@ -5,7 +5,7 @@ import { Feed } from '@/features/community/Feed';
 // community/soon (Nova merch's +); the wallpapers open the story page.
 export default function Page() {
   return (
-    <Screen tab='community' glow={14} wide={480}>
+    <Screen tab='community' glow={14} wide={480} symbols>
       <Feed />
     </Screen>
   );

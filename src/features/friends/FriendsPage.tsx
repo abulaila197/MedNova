@@ -38,7 +38,7 @@ export function FriendsPage() {
   const fr = list.filter((f) => f.kind === 'friend').length;
   const names = [`Friends · ${fr}`, `Requests · ${req}`, 'Find'];
   return (
-    <Screen tab={null} glow={9} wide={460}>
+    <Screen tab={null} glow={9} wide={460} symbols>
       <InfoScroll>
         <Kicker>Friends</Kicker>
         <Text style={[ui.H, { color: c.fg, fontFamily: F.display }]}>

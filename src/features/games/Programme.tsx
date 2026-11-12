@@ -115,7 +115,7 @@ function PhoneProgramme() {
   // The list starts under the title however many lines it takes ("Twelve games, one Start" wraps on a narrow phone).
   const [headH, setHeadH] = useState(0);
   return (
-    <Screen tab="games" glow={0}>
+    <Screen tab="games" glow={0} symbols>
       <View style={s.fill}>
         <Head end="one Start" onHeight={setHeadH} />
         {/* the list is drawn twice, so when the first copy has rolled out of sight the second is in its place */}
@@ -176,7 +176,7 @@ function TabletStrip({ g, j }: { g: Game; j: number }) {
 
 function TabletProgramme() {
   return (
-    <Screen tab="games" glow={0} wide>
+    <Screen tab="games" glow={0} wide symbols>
       <View style={s.fill}>
         <Head end="tap one to play" />
         {/* rows of two; an odd last game sits alone on the left */}

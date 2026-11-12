@@ -24,7 +24,7 @@ export default function Page() {
     ref.current?.scrollTo({ y: 0, animated: false });
   };
   return (
-    <Screen tab={null} glow={21} wide={460}>
+    <Screen tab={null} glow={21} wide={460} symbols>
       <InfoScroll scrollRef={ref}>
         <View style={[s.pill, { backgroundColor: c.surf, borderColor: c.line }]}>
           {(Object.keys(DOCS) as Doc[]).map((d) => {

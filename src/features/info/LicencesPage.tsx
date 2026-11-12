@@ -30,7 +30,7 @@ const CC0 =
 export function LicencesPage() {
   const c = useInfo();
   return (
-    <Screen tab={null} glow={21} wide={460}>
+    <Screen tab={null} glow={21} wide={460} symbols>
       <InfoScroll>
         <Kicker>Open-source licences</Kicker>
         <Rich text={'Built on *open source.*'} style={ui.H} />

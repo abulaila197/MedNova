@@ -38,7 +38,7 @@ export default function Learn() {
   const { data, reload } = useLearn();
   const go = (i: number) => pager.current?.scrollTo({ x: i * W, animated: true });
   return (
-    <Screen tab="learn" glow={6} wide={460}>
+    <Screen tab="learn" glow={6} wide={460} symbols>
       <View style={s.wds}>
         {NAMES.map((n, i) => (
           <PageName key={n} i={i} label={n} x={x} W={W} onPress={() => go(i)} />

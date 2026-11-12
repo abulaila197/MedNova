@@ -19,7 +19,7 @@ const COL = u(DESIGN_W);
  * The one owner of the screen edges: the header keeps clear of the status bar, and the bottom keeps
  * clear of the phone's system buttons (the dock does it when shown, the content does it otherwise).
  */
-export function Screen({ children, tab = null, glow = 0, header = true, dock = true, under, side, game = false, wide = false }: { children: ReactNode; tab?: Tab; glow?: number | false; header?: boolean; dock?: boolean; under?: ReactNode; side?: ReactNode; game?: boolean; wide?: boolean | number }) {
+export function Screen({ children, tab = null, glow = 0, header = true, dock = true, under, side, game = false, wide = false, symbols = false }: { children: ReactNode; tab?: Tab; glow?: number | false; header?: boolean; dock?: boolean; under?: ReactNode; side?: ReactNode; game?: boolean; wide?: boolean | number; /** The still medical symbols behind the page (approved menu pages only, Yazan 2026-11-12). */ symbols?: boolean }) {
   const t = useTheme();
   // #12: a page with its own background shows it beside the centred column on wide screens (SideSky). `side` is
   // that background without any drawing on it; by default it is `under` itself.
@@ -37,11 +37,11 @@ export function Screen({ children, tab = null, glow = 0, header = true, dock = t
   const bottom = dock || Platform.OS === 'web' ? 0 : ins.bottom;
   return (
     <View style={[s.root, { backgroundColor: t.sky }]}>
-      {glow === false ? null : <Backdrop />}
+      {glow === false ? null : <Backdrop symbols={symbols && !game} />}
       {under}
       {header ? (
         <View style={{ overflow: 'hidden', zIndex: 5 }} onLayout={(e) => setHeadH(Math.round(e.nativeEvent.layout.height))}>
-          {glow === false ? <View style={[StyleSheet.absoluteFill, { backgroundColor: t.sky }]} /> : <Backdrop />}
+          {glow === false ? <View style={[StyleSheet.absoluteFill, { backgroundColor: t.sky }]} /> : <Backdrop symbols={symbols && !game} />}
           {/* Stuck to the top edge (Yazan 2026-10-17): only the phone's own status bar sits above it, in the same navy. */}
           <View style={{ height: Platform.OS === 'web' ? 0 : ins.top }} />
           <Header variant={game ? 'game' : 'app'} />

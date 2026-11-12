@@ -3,6 +3,7 @@ import { StyleSheet, View } from "react-native";
 import Svg, { Defs, Ellipse, RadialGradient, Stop } from "react-native-svg";
 
 import { Grain } from "@/components/Grain";
+import { MedSymbols } from "@/components/MedSymbols";
 import { BAKED_ART } from "@/features/start/baked";
 import { useTheme } from "@/state/app";
 import { useScreen } from "@/theme/scale";
@@ -31,8 +32,11 @@ const SPOTS = [
 const STRENGTH = 0.55;
 const PAGE = require("@/assets/images/backdrop/page.webp");
 
-/** Full-screen background, pinned to the screen's top (pages, header) or bottom (the dock). */
-export function Backdrop({ anchor = "top" }: { anchor?: "top" | "bottom" }) {
+/**
+ * Full-screen background, pinned to the screen's top (pages, header) or bottom (the dock). `symbols` adds the still
+ * medical line symbols (Yazan 2026-11-12, look A2) on the menu pages he approved; never in games or on pages with their own art.
+ */
+export function Backdrop({ anchor = "top", symbols = false }: { anchor?: "top" | "bottom"; symbols?: boolean }) {
   const t = useTheme();
   const { width: w, height: h } = useScreen();
   return (
@@ -76,6 +80,7 @@ export function Backdrop({ anchor = "top" }: { anchor?: "top" | "bottom" }) {
           ))}
         </Svg>
       )}
+      {symbols && anchor === "top" ? <MedSymbols w={w} h={h} look="scatter" color="#a9c8ff" /> : null}
       <Grain />
     </View>
   );

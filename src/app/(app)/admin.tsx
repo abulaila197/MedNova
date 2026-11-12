@@ -223,7 +223,7 @@ export default function Page() {
     </>
   );
   return (
-    <Screen tab={null} glow={21} wide={460}>
+    <Screen tab={null} glow={21} wide={460} symbols>
       <InfoScroll scrollRef={scroll}>
         <Kicker>Admin</Kicker>
         <ServerUsage c={c} />
