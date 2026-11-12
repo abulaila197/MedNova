@@ -16,8 +16,8 @@ export const STF_COUNTDOWN_MS = 3_000;
 export const STF_REVEAL_MS = 60_000;
 
 /** Seconds each stage takes each type, before the case's level and the rival's personality. */
-const STAGE1_S: Record<BotType, [number, number]> = { genius: [26, 48], scholar: [36, 65], freshman: [48, 90] };
-const STAGE2_S: Record<BotType, [number, number]> = { genius: [8, 17], scholar: [11, 24], freshman: [15, 34] };
+const STAGE1_S: Record<BotType, [number, number]> = { genius: [33, 60], scholar: [45, 83], freshman: [60, 113] };
+const STAGE2_S: Record<BotType, [number, number]> = { genius: [9, 21], scholar: [14, 30], freshman: [18, 42] };
 const LEVEL_PACE: Record<Level, number> = { 1: 0.85, 2: 1, 3: 1.2 };
 
 /** A rival's go at one case: when it locks each stage (ms from the case's start) and what it picks (0 = right). */
