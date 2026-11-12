@@ -15,6 +15,9 @@ export const FOK_REVEAL_MS = 7_000;
 
 /** Seconds one group takes each type, before the group's level and the rival's personality. */
 const GROUP_S: Record<BotType, [number, number]> = { genius: [12, 28], scholar: [20, 40], freshman: [30, 60] };
+/** After you finish, a rival still going finishes within (Yazan 2026-11-12): Genius 1-2 s, Scholar 3-4 s, Freshman 5-6 s. */
+const HURRY_S: Record<BotType, [number, number]> = { genius: [1, 2], scholar: [3, 4], freshman: [5, 6] };
+const hurryMs = (type: BotType, r: () => number) => Math.round((HURRY_S[type][0] + r() * (HURRY_S[type][1] - HURRY_S[type][0])) * 1000);
 const LEVEL_PACE: Record<Level, number> = { 1: 0.8, 2: 1, 3: 1.35 };
 
 /** One move in a rival's go at a board: when (ms from the board's start), and the group it found or null for a wrong pick. */
@@ -80,7 +83,7 @@ export function runAt(board: Board, moves: Move[], t: number): BoardRun {
 }
 
 type You = { run: BoardRun; doneAt: number | null };
-type Cur = { start: number; limit: number; you: You; plans: Record<string, Move[]> };
+type Cur = { start: number; limit: number; you: You; plans: Record<string, Move[]>; closeAt: number | null };
 type Row = { points: number; mistakes: number; ms: number; found: number; solved: boolean; run: BoardRun };
 type Done = { start: number; end: number; rows: Record<string, Row>; ranks: Record<string, number> };
 
@@ -136,7 +139,7 @@ export class FokRace implements Race {
       this.minds[b.id] = p.mind;
     }
     const you: You = { run: { ...startRun(rng(`${this.opts.playId}:${i}:deal`)) }, doneAt: null };
-    this.cur = { start: at, limit: this.opts.limitMs ? at + this.opts.limitMs : Infinity, you, plans };
+    this.cur = { start: at, limit: this.opts.limitMs ? at + this.opts.limitMs : Infinity, you, plans, closeAt: null };
   }
 
   private closeBoard(end: number) {
@@ -160,6 +163,25 @@ export class FokRace implements Race {
     this.cur = null;
   }
 
+  /** Your board is over: rivals still going play their remaining moves within a few seconds, then the reveal. */
+  private hurry(c: Cur, t: number) {
+    c.you.doneAt = t;
+    const rel = t - c.start;
+    let last = rel;
+    for (const b of this.rivals) {
+      const moves = c.plans[b.id];
+      const rest = moves.filter((m) => m.at > rel);
+      if (rest.length) {
+        const h = hurryMs(b.type, rng(`${this.opts.playId}:${this.done.length}:${b.id}:hurry`));
+        let k = 0;
+        c.plans[b.id] = moves.map((m) => (m.at > rel ? { ...m, at: Math.min(m.at, rel + Math.round((h * ++k) / rest.length)) } : m));
+      }
+      const plan = c.plans[b.id];
+      if (plan.length) last = Math.max(last, plan[plan.length - 1].at);
+    }
+    c.closeAt = c.start + last;
+  }
+
   /** Moves the match up to match time `t`. */
   sync(t: number) {
     for (let guard = 0; guard < 50 && !this.finished; guard++) {
@@ -175,7 +197,9 @@ export class FokRace implements Race {
       }
       const c = this.cur!;
       if (c.you.doneAt != null) {
-        this.closeBoard(c.you.doneAt);
+        const end = Math.min(c.closeAt ?? c.you.doneAt, c.limit);
+        if (t < end) break;
+        this.closeBoard(end);
         continue;
       }
       if (t >= c.limit) {
@@ -195,7 +219,7 @@ export class FokRace implements Race {
     const next = fn(c.you.run);
     if (next === c.you.run) return false;
     c.you.run = next;
-    if (next.phase === 'done') c.you.doneAt = t;
+    if (next.phase === 'done') this.hurry(c, t);
     this.sync(t);
     return true;
   }

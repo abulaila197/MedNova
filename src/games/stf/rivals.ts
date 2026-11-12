@@ -18,6 +18,9 @@ export const STF_REVEAL_MS = 60_000;
 /** Seconds each stage takes each type, before the case's level and the rival's personality. */
 const STAGE1_S: Record<BotType, [number, number]> = { genius: [33, 60], scholar: [45, 83], freshman: [60, 113] };
 const STAGE2_S: Record<BotType, [number, number]> = { genius: [9, 21], scholar: [14, 30], freshman: [18, 42] };
+/** After you finish, a rival still going finishes within (Yazan 2026-11-12): Genius 1-2 s, Scholar 3-4 s, Freshman 5-6 s. */
+const HURRY_S: Record<BotType, [number, number]> = { genius: [1, 2], scholar: [3, 4], freshman: [5, 6] };
+const hurryMs = (type: BotType, r: () => number) => Math.round((HURRY_S[type][0] + r() * (HURRY_S[type][1] - HURRY_S[type][0])) * 1000);
 const LEVEL_PACE: Record<Level, number> = { 1: 0.85, 2: 1, 3: 1.2 };
 
 /** A rival's go at one case: when it locks each stage (ms from the case's start) and what it picks (0 = right). */
@@ -57,7 +60,7 @@ export function runAt(plan: CasePlan, t: number): CaseRun {
 const locked = (run: CaseRun) => (run.stage === 1 ? 0 : run.stage === 2 ? 1 : 2);
 
 type You = { run: CaseRun; doneAt: number | null };
-type Cur = { start: number; limit: number; you: You; plans: Record<string, CasePlan> };
+type Cur = { start: number; limit: number; you: You; plans: Record<string, CasePlan>; closeAt: number | null };
 type Row = { points: number; doubles: number; ms: number; run: CaseRun };
 type Done = { start: number; end: number; next: number; rows: Record<string, Row>; ranks: Record<string, number> };
 
@@ -114,7 +117,7 @@ export class StfRace implements Race {
       this.minds[b.id] = p.mind;
     }
     const you: You = { run: startCase(rng(`${this.opts.playId}:${i}:deal`)), doneAt: null };
-    this.cur = { start: at, limit: this.opts.limitMs ? at + this.opts.limitMs : Infinity, you, plans };
+    this.cur = { start: at, limit: this.opts.limitMs ? at + this.opts.limitMs : Infinity, you, plans, closeAt: null };
   }
 
   private closeCase(end: number) {
@@ -150,7 +153,9 @@ export class StfRace implements Race {
       }
       const c = this.cur!;
       if (c.you.doneAt != null) {
-        this.closeCase(c.you.doneAt);
+        const end = Math.min(c.closeAt ?? c.you.doneAt, c.limit);
+        if (t < end) break;
+        this.closeCase(end);
         continue;
       }
       if (t >= c.limit) {
@@ -170,9 +175,27 @@ export class StfRace implements Race {
     const next = lock(c.you.run, pick);
     if (next === c.you.run) return false;
     c.you.run = next;
-    if (next.stage === 'done') c.you.doneAt = t;
+    if (next.stage === 'done') this.hurry(c, t);
     this.sync(t);
     return true;
+  }
+
+  /** You locked both stages: rivals still going finish soon, then the reveal. */
+  private hurry(c: Cur, t: number) {
+    c.you.doneAt = t;
+    const rel = t - c.start;
+    let last = rel;
+    for (const b of this.rivals) {
+      const plan = c.plans[b.id];
+      if (plan.at2 > rel) {
+        const h = hurryMs(b.type, rng(`${this.opts.playId}:${this.done.length}:${b.id}:hurry`));
+        const at2 = Math.min(plan.at2, rel + h);
+        const at1 = plan.at1 > rel ? Math.min(plan.at1, rel + Math.round(h / 2)) : plan.at1;
+        c.plans[b.id] = { ...plan, at1, at2 };
+      }
+      last = Math.max(last, c.plans[b.id].at2);
+    }
+    c.closeAt = c.start + last;
   }
 
   /** A paid help (50/50, Highlight) on your open case. Returns false when it did nothing. */

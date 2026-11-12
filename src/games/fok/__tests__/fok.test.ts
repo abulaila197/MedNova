@@ -148,12 +148,15 @@ test('race: you finish, the rivals finish their go, the reveal, then the next bo
   assert.equal(race.submit(t0 + 1000, tilesOf(0)), 'right');
   race.submit(t0 + 2000, tilesOf(1));
   assert.equal(race.submit(t0 + 3000, tilesOf(2)), 'right');
-  const st = race.state(t0 + 3000);
+  // Rivals still going finish within 6 s (Freshman 5-6 s), then the reveal.
+  assert.equal(race.state(t0 + 3000).phase, 'case');
+  const t1 = t0 + 3000 + 6_000;
+  const st = race.state(t1);
   assert.equal(st.phase, 'reveal');
   assert.equal(st.me?.points, FOK.maxPoints);
   assert.equal(st.players.find((p) => p.user_id === YOU)?.rank, 1);
-  assert.equal(race.state(t0 + 3000 + 7_000).phase, 'case');
-  assert.equal(race.state(t0 + 3000 + 7_000).index, 1);
+  assert.equal(race.state(t1 + 7_000).phase, 'case');
+  assert.equal(race.state(t1 + 7_000).index, 1);
   assert.ok(race.runOfBoard(0)?.solved);
 });
 

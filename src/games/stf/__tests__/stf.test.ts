@@ -140,7 +140,9 @@ test('race: you lock both stages, the rivals finish, the reveal waits for Next',
   assert.ok(race.lock(t0 + 1000, 0));
   assert.equal(race.state(t0 + 1000).players.find((p) => p.user_id === YOU)?.greens, 1);
   assert.ok(race.lock(t0 + 2000, 0));
-  const st = race.state(t0 + 2000);
+  // Rivals still going finish within 6 s (Genius 1-2 s, Freshman 5-6 s), then the reveal.
+  assert.equal(race.state(t0 + 2000).phase, 'case');
+  const st = race.state(t0 + 8000);
   assert.equal(st.phase, 'reveal');
   assert.equal(st.me?.points, casePoints(CASES[0].lv, race.runOfCase(0)!));
   // The reveal card shows your closed run on the case just played.
