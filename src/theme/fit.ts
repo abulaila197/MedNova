@@ -24,11 +24,23 @@ export function drawHeight(win: Size, screen: Size, android: boolean) {
  * The design scale K and the app frame's width. Phones fill the width when the fit leaves only a sliver at
  * the sides; tablets and really short phones get a centred column scaled to fit the height.
  */
-export function frameFit(win: Size, screen: Size, android: boolean) {
+export function frameFit(win: Size, screen: Size, android: boolean, tablets = android) {
   const h = drawHeight(win, screen, android);
   const fit = Math.min(win.width / DESIGN_W, h / DESIGN_H);
   const phone = Math.min(win.width, h) < TABLET;
+  // Android tablets (Yazan 2026-11-12, look A): the whole screen at a reading size close to a phone's, so pages
+  // spread into the width instead of a zoomed phone column. iPad stays an iPhone app (no tablet build), so only
+  // Android gets it; the web preview follows Android so the screens can be checked.
+  if (!phone && tablets && win.width >= TABLET) {
+    const K = Math.min(TAB_K_MAX, Math.max(TAB_K_MIN, win.width / TAB_W, h / (DESIGN_H * 1.4)));
+    return { K, frameW: win.width, tablet: true };
+  }
   const fillsWidth = phone && DESIGN_W * fit >= win.width * (1 - SLIVER);
   const K = fillsWidth ? win.width / DESIGN_W : fit;
-  return { K, frameW: Math.min(win.width, DESIGN_W * K) };
+  return { K, frameW: Math.min(win.width, DESIGN_W * K), tablet: false };
 }
+
+/** Tablet design width: a 10-inch tablet (800 dp wide) gets about 560 design px, twice a phone's room. */
+const TAB_W = 560;
+const TAB_K_MIN = 1.25;
+const TAB_K_MAX = 1.7;

@@ -9,6 +9,9 @@ import { Header } from '@/components/Header';
 import { TopInset } from '@/components/TopInset';
 import { useTheme } from '@/state/app';
 import { clearSideBg, setSideBg } from '@/state/sideBg';
+import { ColumnW, DESIGN_W, TABLET, u } from '@/theme/scale';
+
+const COL = u(DESIGN_W);
 
 /**
  * A page of the app: the still navy backdrop, header, content, docked nav. The header and dock show the same
@@ -16,7 +19,7 @@ import { clearSideBg, setSideBg } from '@/state/sideBg';
  * The one owner of the screen edges: the header keeps clear of the status bar, and the bottom keeps
  * clear of the phone's system buttons (the dock does it when shown, the content does it otherwise).
  */
-export function Screen({ children, tab = null, glow = 0, header = true, dock = true, under, side, game = false }: { children: ReactNode; tab?: Tab; glow?: number | false; header?: boolean; dock?: boolean; under?: ReactNode; side?: ReactNode; game?: boolean }) {
+export function Screen({ children, tab = null, glow = 0, header = true, dock = true, under, side, game = false, wide = false }: { children: ReactNode; tab?: Tab; glow?: number | false; header?: boolean; dock?: boolean; under?: ReactNode; side?: ReactNode; game?: boolean; wide?: boolean }) {
   const t = useTheme();
   // #12: a page with its own background shows it beside the centred column on wide screens (SideSky). `side` is
   // that background without any drawing on it; by default it is `under` itself.
@@ -46,7 +49,18 @@ export function Screen({ children, tab = null, glow = 0, header = true, dock = t
       ) : (
         <TopInset />
       )}
-      <View style={[s.body, { paddingBottom: bottom }]}>{children}</View>
+      <View style={[s.body, { paddingBottom: bottom }]}>
+        {/* Android tablets: a page laid out for the width (`wide`) gets the whole screen; any other page keeps its
+            phone layout in a centred phone-wide column, at the tablet's reading size, under the full-width header and
+            bottom bar (Yazan 2026-11-12, look A). */}
+        {TABLET && !wide ? (
+          <ColumnW.Provider value={COL}>
+            <View style={s.col}>{children}</View>
+          </ColumnW.Provider>
+        ) : (
+          children
+        )}
+      </View>
       {dock ? <Dock active={tab} /> : null}
     </View>
   );
@@ -55,4 +69,5 @@ export function Screen({ children, tab = null, glow = 0, header = true, dock = t
 const s = StyleSheet.create({
   root: { flex: 1, overflow: 'hidden' },
   body: { flex: 1, zIndex: 1 },
+  col: { flex: 1, width: COL, alignSelf: 'center' },
 });

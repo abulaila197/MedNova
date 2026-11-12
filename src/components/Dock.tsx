@@ -6,7 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Backdrop } from '@/components/Backdrop';
 import { CommunityIcon, GamesIcon, LearnIcon } from '@/components/Icons';
 import { useTheme } from '@/state/app';
-import { DESIGN_W, u } from '@/theme/scale';
+import { PAGE_W, u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 import { tapped } from '@/lib/sound';
 import { navTo } from '@/lib/nav';
@@ -58,7 +58,7 @@ export function Dock({ active }: { active: Tab }) {
           key={i}
           colors={['transparent', t.dockDivider, t.dockDivider, 'transparent']}
           locations={[0, 0.3, 0.7, 1]}
-          style={[s.div, { left: u(10) + ((i * (DESIGN_W - 20)) / 3) * u(1), top: u(7), height: u(H - 14) }]}
+          style={[s.div, { left: u(10) + ((i * (PAGE_W - 20)) / 3) * u(1), top: u(7), height: u(H - 14) }]}
         />
       ))}
       {tab('learn', 'Learn', LearnIcon)}

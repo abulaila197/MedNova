@@ -35,7 +35,7 @@ export function watchResize(href: () => string) {
       // window: no reload, so an online match or lobby isn't dropped (Yazan 2026-10-19, PB9). The app is also
       // marked a game (plugins/withAndroidGameAndSaveOnly.js), which keeps it portrait on those screens.
       if (onlyTurned(launch, screen) && window.width === screen.width) return;
-      const f = frameFit(window, screen, Platform.OS === 'android');
+      const f = frameFit(window, screen, Platform.OS === 'android', Platform.OS !== 'ios');
       if (Math.abs(f.K - K) / K < 0.02 && Math.abs(f.frameW - FRAME_W) < 2) return;
       void kv
         .set(KEY, { href: safeHref(href()), at: Date.now() })

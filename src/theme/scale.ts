@@ -1,3 +1,4 @@
+import { createContext, useContext } from 'react';
 import { Dimensions, Platform, useWindowDimensions } from 'react-native';
 
 import { frameFit } from './fit';
@@ -22,14 +23,18 @@ import { frameFit } from './fit';
  */
 export { DESIGN_H, DESIGN_W } from './fit';
 
-const frame = frameFit(Dimensions.get('window'), Dimensions.get('screen'), Platform.OS === 'android');
+const frame = frameFit(Dimensions.get('window'), Dimensions.get('screen'), Platform.OS === 'android', Platform.OS !== 'ios');
 
 /** Design px to screen px. */
 export const K = frame.K;
 /** Width of the app frame: the whole screen, or the centred column. */
 export const FRAME_W = frame.frameW;
-/** #12: the app is a centred column with sides (tablets, short phones), not the full screen width. */
+/** #12: the app is a centred column with sides (iPad, short phones), not the full screen width. */
 export const IS_COLUMN = FRAME_W < Dimensions.get('window').width - 1;
+/** Android tablet (look A, Yazan 2026-11-12): the app fills the screen and pages spread into the width. */
+export const TABLET = frame.tablet;
+/** The frame's width in design px: 282 on phones, about 560 on a 10-inch tablet. */
+export const PAGE_W = FRAME_W / K;
 
 /** Design px to screen px. A worklet, so animated styles and gestures can call it on the UI thread. */
 export const u = (n: number) => {
@@ -40,5 +45,21 @@ export const u = (n: number) => {
 /** The app frame's live size. Use instead of useWindowDimensions, which would give the whole screen. */
 export function useScreen() {
   const { width, height } = useWindowDimensions();
-  return { width: Math.min(width, FRAME_W), height };
+  const col = useContext(ColumnW);
+  return { width: Math.min(width, col ?? FRAME_W), height };
+}
+
+/**
+ * On a tablet, a page not laid out for the width yet sits in a phone-wide column (Screen); everything inside it
+ * measures that column, not the screen.
+ */
+export const ColumnW = createContext<number | null>(null);
+
+/**
+ * How far a full-screen layer inside the tablet column must reach out on each side to cover the whole screen
+ * (a sheet's dimmed page, say). 0 outside a column.
+ */
+export function useBleed() {
+  const col = useContext(ColumnW);
+  return col == null ? 0 : Math.max(0, (FRAME_W - col) / 2);
 }

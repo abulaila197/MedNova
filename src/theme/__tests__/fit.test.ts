@@ -37,3 +37,18 @@ test('fit: tall phones fill the width, short 16:9 phones and tablets get a centr
   // A tablet never fills the width, even when its shape would.
   assert.ok(frameFit({ width: 600, height: 1300 }, { width: 600, height: 1300 }, false).frameW < 600);
 });
+
+test('fit: Android tablets fill the screen at a reading size (look A, 2026-11-12); iPad keeps the column', () => {
+  const tab = frameFit({ width: 800, height: 1232 }, { width: 800, height: 1280 }, true);
+  assert.equal(tab.tablet, true);
+  assert.equal(tab.frameW, 800);
+  assert.ok(tab.K >= 1.25 && tab.K <= 1.7);
+  const big = frameFit({ width: 1024, height: 1300 }, { width: 1024, height: 1366 }, true);
+  assert.equal(big.frameW, 1024);
+  assert.ok(big.K <= 1.7);
+  const pad = frameFit({ width: 820, height: 1180 }, { width: 820, height: 1180 }, false);
+  assert.equal(pad.tablet, false);
+  assert.ok(pad.frameW < 820);
+  // Phones never switch, Android or not.
+  assert.equal(frameFit({ width: 412, height: 867 }, { width: 412, height: 915 }, true).tablet, false);
+});
