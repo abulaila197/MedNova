@@ -123,7 +123,7 @@ export function StylePage() {
     it.key === 'linky' ? `${robotOf('linky')!.how}. You have ${free?.invites ?? 0} of 20 codes.` : EARNED_HOW[it.id] ?? robotOf(it.key)?.how;
 
   return (
-    <Screen tab={null} glow={21}>
+    <Screen tab={null} glow={21} wide={500}>
       <InfoScroll>
         <Kicker>Style shop</Kicker>
         <Text style={[ui.H, { color: c.fg, fontFamily: F.display }]}>

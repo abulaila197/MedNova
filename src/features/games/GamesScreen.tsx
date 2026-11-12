@@ -13,11 +13,12 @@ import { ChestButton } from '@/features/chests/ChestButton';
 import { NemesisButton } from '@/bots/NemesisButton';
 import { InboxButton } from '@/features/inbox/InboxButton';
 import { useTheme } from '@/state/app';
-import { DESIGN_W, u } from '@/theme/scale';
+import { DESIGN_W, TABLET, u } from '@/theme/scale';
 
 import { FILL_H } from './fit';
 import { useGamesFocus } from './focus';
 import { GameTagSheet } from './GameTag';
+import { TabletGames } from './TabletGames';
 
 const N = GAMES.length;
 const mod = (v: number) => ((v % N) + N) % N;
@@ -25,6 +26,10 @@ const EASE = Easing.bezier(0.3, 0.7, 0.2, 1);
 
 /** Locked Games page (decision 63): swipe through the games; the dots follow. */
 export function GamesScreen() {
+  return TABLET ? <TabletGames /> : <PhoneGames />;
+}
+
+function PhoneGames() {
   const t = useTheme();
   const pos = useSharedValue(useGamesFocus.getState().j); // unbounded page position; game = pos mod N
   const start = useSharedValue(0);

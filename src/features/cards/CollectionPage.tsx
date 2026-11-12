@@ -18,7 +18,7 @@ import { TEAM, TEAM_LOCKED_LINE, TEAM_THANKS, teamOf } from '@/features/team/tea
 import { InfoScroll, Kicker, s as ui, useInfo } from '@/features/info/ui';
 import { loadStyle, useStyle } from '@/features/style/useStyle';
 import { useTheme } from '@/state/app';
-import { u } from '@/theme/scale';
+import { TABLET, u, useScreen } from '@/theme/scale';
 import type { Theme } from '@/theme/tokens';
 import { F } from '@/theme/tokens';
 
@@ -67,7 +67,7 @@ export function CollectionPage() {
   };
   const canRedeem = found.length === 9 && status?.prize === false;
   return (
-    <Screen tab={null} glow={13}>
+    <Screen tab={null} glow={13} wide={500}>
       <InfoScroll>
         <View>
           <Kicker>Treasure hunt</Kicker>
@@ -117,9 +117,18 @@ export function CollectionPage() {
   );
 }
 
+/**
+ * A card's width in the binders: three across on a phone; five across the wider page on a tablet (2026-11-12).
+ */
+function useCardW() {
+  const n = TABLET ? 5 : 3;
+  const avail = useScreen().width - u(36);
+  return Math.floor((avail - u(10) * (n - 1) - u(16) - 4) / n);
+}
+
 /** Binder page (locked look A): all nine savers on one page, three by three. */
 function Binder({ t, found, onOpen }: { t: Theme; found: string[]; onOpen: (i: number) => void }) {
-  const w = Math.floor((u(246) - u(10) * 2 - u(16) - 4) / 3);
+  const w = useCardW();
   return (
     <View style={[s.binder, { backgroundColor: 'rgba(255,255,255,0.03)', borderColor: t.panelLine }]}>
       {DECK.map((k, i) => {
@@ -137,7 +146,7 @@ function Binder({ t, found, onOpen }: { t: Theme; found: string[]; onOpen: (i: n
 
 /** Nova Mechs (Yazan 2026-10-18): front-only cards won from daily chests; all 8 pay a one-off prize. */
 function Mechs({ t, owned, onOpen }: { t: Theme; owned: string[]; onOpen: (i: number) => void }) {
-  const w = Math.floor((u(246) - u(10) * 2 - u(16) - 4) / 3);
+  const w = useCardW();
   const n = MECHS.filter((m) => owned.includes(m.key)).length;
   return (
     <View style={{ marginTop: u(22) }}>
@@ -184,7 +193,7 @@ const MECH_RATIO = 860 / 480;
 
 /** Style shop characters (Yazan 2026-10-25): the five sold in the shop as one pack, Linky, Sovereign and Admin as a special one. */
 function RobotPack({ t, owned, group, onOpen }: { t: Theme; owned: string[]; group: 'shop' | 'special'; onOpen: (key: string) => void }) {
-  const w = Math.floor((u(246) - u(10) * 2 - u(16) - 4) / 3);
+  const w = useCardW();
   const list = ROBOTS.filter((r) => r.group === group);
   const n = list.filter((r) => owned.includes(r.key)).length;
   return (
@@ -230,7 +239,7 @@ function RobotPack({ t, owned, group, onOpen }: { t: Theme; owned: string[]; gro
 
 /** SuperNova team (Yazan 2026-11-11): the six people who helped build MedNova; only Admin gives these cards. */
 function TeamPack({ t, owned, onOpen }: { t: Theme; owned: string[]; onOpen: (key: string) => void }) {
-  const w = Math.floor((u(246) - u(10) * 2 - u(16) - 4) / 3);
+  const w = useCardW();
   const n = TEAM.filter((m) => owned.includes(m.key)).length;
   return (
     <View style={{ marginTop: u(22) }}>

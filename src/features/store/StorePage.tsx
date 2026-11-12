@@ -81,7 +81,7 @@ export function StorePage() {
   };
 
   return (
-    <Screen tab={null} glow={21}>
+    <Screen tab={null} glow={21} wide={480}>
       <InfoScroll>
         <Kicker>Nova Shop</Kicker>
         <Text style={[ui.H, { color: c.fg, fontFamily: F.display }]}>

@@ -27,7 +27,8 @@ const NAMES = ['Review', 'Dossiers', 'My diseases'];
 
 /** Learn: three pages swiped sideways (Today's review, Disease dossiers, My diseases) under a fixed row of page names. */
 export default function Learn() {
-  const { width: W } = useScreen();
+  // The pages' width comes from their own box (on a tablet the page is a column narrower than the screen).
+  const [W, setW] = useState(useScreen().width);
   const x = useSharedValue(0);
   const pager = useRef<Animated.ScrollView>(null);
   const onScroll = useAnimatedScrollHandler((e) => {
@@ -37,13 +38,16 @@ export default function Learn() {
   const { data, reload } = useLearn();
   const go = (i: number) => pager.current?.scrollTo({ x: i * W, animated: true });
   return (
-    <Screen tab="learn" glow={6}>
+    <Screen tab="learn" glow={6} wide={460}>
       <View style={s.wds}>
         {NAMES.map((n, i) => (
           <PageName key={n} i={i} label={n} x={x} W={W} onPress={() => go(i)} />
         ))}
       </View>
-      <View style={s.pgs} onLayout={(e) => setH(e.nativeEvent.layout.height)}>
+      <View style={s.pgs} onLayout={(e) => {
+          setH(e.nativeEvent.layout.height);
+          setW(e.nativeEvent.layout.width);
+        }}>
         <Animated.ScrollView ref={pager} horizontal pagingEnabled showsHorizontalScrollIndicator={false} onScroll={onScroll} scrollEventThrottle={16} style={s.flex}>
           <View style={{ width: W, height: H }}>
             <ReviewPage pile={data?.pile ?? null} reload={reload} />

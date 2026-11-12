@@ -4,6 +4,7 @@ import { type ReactNode } from 'react';
 import { Platform, StyleSheet, View, type LayoutChangeEvent, type StyleProp, type ViewStyle } from 'react-native';
 
 import { useTheme } from '@/state/app';
+import { useBleed } from '@/theme/scale';
 
 type Stops = [number, number][];
 
@@ -113,8 +114,10 @@ function Veil({ stops, horizontal }: { stops: Stops; horizontal: boolean }) {
   // Where the content is fully gone the page colour is fully drawn: the veil's alpha is the content's alpha flipped.
   const inv: Stops = stops.map(([o, a]) => [o, 1 - a]);
   const rgb = hexRgb(t.sky);
+  // Inside a tablet's centred column the veil runs out to the screen's edges, so it doesn't draw a box.
+  const bleed = useBleed();
   return (
-    <View pointerEvents="none" style={StyleSheet.absoluteFill}>
+    <View pointerEvents="none" style={[StyleSheet.absoluteFill, !horizontal && bleed ? { left: -bleed, right: -bleed } : null]}>
       {bands(inv).map((b, i) => {
         const pos: ViewStyle = horizontal
           ? { position: 'absolute', top: 0, bottom: 0, left: `${b.from * 100}%`, width: `${(b.to - b.from) * 100}%` }

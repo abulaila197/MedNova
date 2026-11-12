@@ -24,6 +24,9 @@ const BAKED = {
   },
 } as const;
 
+/** The ten drawings, by game key (the tablet Games page shows them as tiles). */
+export const ART: Record<string, number> = BAKED.dark;
+
 /** The game drawing, lower right, fading in along the big curve (prototype `.np.arc`). Drawn in body coordinates. */
 export const GameArt = memo(function GameArt({ k, mode, lift }: { k: string; mode: Mode; lift: number }) {
   const src = BAKED[mode][k as keyof (typeof BAKED)['dark']];
