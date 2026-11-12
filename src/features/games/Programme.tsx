@@ -20,7 +20,7 @@ import { F } from '@/theme/tokens';
 
 import { useGamesFocus } from './focus';
 import { openGames } from './gate';
-import { GameTag, GameTagSheet } from './GameTag';
+import { GameTagSheet } from './GameTag';
 
 /** A wide strip cut from each game's poster (assets/games/full, the band around 38% down). */
 const STRIP: Record<string, number> = {
@@ -179,14 +179,8 @@ function TabletStrip({ g, j }: { g: Game; j: number }) {
       onPressOut={() => setDown(false)}
       accessibilityRole="button"
       accessibilityLabel={`Play ${g.lead} ${g.em}`}
-      style={[s.tRow, { borderColor: down ? t.accent : t.panelLine, transform: [{ scale: down ? 0.98 : 1 }] }]}>
-      <StripBody g={g} j={j} big />
-      <View style={s.tTag}>
-        <GameTag game={g.key} />
-      </View>
-      <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.tPlay}>
-        <Text style={[s.tPlayT, { color: t.onGrad }]}>Play</Text>
-      </LinearGradient>
+      style={[s.row, s.tRow, { borderColor: down ? t.accent : t.panelLine, transform: [{ scale: down ? 0.98 : 1 }] }]}>
+      <StripBody g={g} j={j} />
     </Pressable>
   );
 }
@@ -196,7 +190,7 @@ function TabletProgramme() {
     <Screen tab="games" glow={0} wide>
       <View style={s.fill}>
         <Head end="tap one to play" />
-        {/* rows of two, every strip the same height; an odd last game sits alone on the left */}
+        {/* rows of two; an odd last game sits alone on the left */}
         <View style={s.tGrid}>
           {Array.from({ length: Math.ceil(GAMES.length / 2) }, (_, r) => (
             <View key={r} style={s.tLine}>
@@ -237,11 +231,9 @@ const s = StyleSheet.create({
   startTap: { flex: 1, borderRadius: u(22), overflow: 'hidden' },
   start: { flex: 1, borderRadius: u(22), alignItems: 'center', justifyContent: 'center' },
   startT: { fontFamily: F.display, fontSize: u(16), lineHeight: u(20) },
-  tGrid: { flex: 1, gap: u(10), paddingLeft: u(16), paddingRight: u(52), paddingTop: u(6), paddingBottom: u(16) },
-  tLine: { flex: 1, maxHeight: u(150), flexDirection: 'row', gap: u(12) },
+  // tablet (Yazan 2026-11-12): the phone's own strips, two to a row, each one a button
+  tGrid: { gap: u(ROW_GAP), paddingLeft: u(16), paddingRight: u(52), paddingTop: u(6) },
+  tLine: { flexDirection: 'row', gap: u(10) },
   tGap: { flex: 1 },
-  tRow: { flex: 1, minWidth: 0, borderRadius: u(14), borderWidth: 1, overflow: 'hidden', backgroundColor: '#0b1331' },
-  tTag: { position: 'absolute', left: u(44), top: u(12) },
-  tPlay: { position: 'absolute', right: u(12), bottom: u(12), borderRadius: u(12), paddingVertical: u(6), paddingHorizontal: u(14) },
-  tPlayT: { fontFamily: F.bodyBold, fontSize: u(11), lineHeight: u(14) },
+  tRow: { flex: 1, minWidth: 0, marginBottom: 0 },
 });

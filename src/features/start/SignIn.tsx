@@ -1,4 +1,3 @@
-import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { useState, type ReactNode } from 'react';
@@ -20,12 +19,11 @@ import { F, THEMES } from '@/theme/tokens';
 
 import { nameIsClean } from '@/lib/names';
 import { cssAngle } from './ease';
-import { BAKED } from './baked';
 import { Sky, Stars } from './Sky';
 
 /** Sign-in card heights and text: 90% of the approved design; widths stay full size (Yazan, 2026-10-19). */
 const k = (n: number) => u(n * 0.9 * (TABLET ? 1.15 : 1));
-/** Tablet (2026-11-12): the form is a card of this width in the middle of a full-screen sky, not a phone column. */
+/** Tablet (2026-11-12): the form is a card of this width in the middle of a full-screen sky (no artwork), not a phone column. */
 const TAB_W = 340;
 
 // Sign-in colours from the prototype (d-auth / l-auth: `.auth` and `.auth.lite`).
@@ -463,12 +461,6 @@ export function SignIn() {
   return (
     <View style={[s.root, { backgroundColor: '#070a1c' }]}>
       <Sky w={w} h={h} />
-      {TABLET ? (
-        <View pointerEvents="none" style={s.tabArt}>
-          <Image source={BAKED.communityFade} style={StyleSheet.absoluteFill} contentFit="cover" contentPosition="bottom" transition={0} accessibilityIgnoresInvertColors />
-          <LinearGradient colors={['#070a1c', 'rgba(7,10,28,0.55)', 'rgba(7,10,28,0.35)']} locations={[0, 0.45, 1]} style={StyleSheet.absoluteFill} />
-        </View>
-      ) : null}
       <Stars si={0} hd={h / u(1)} wd={w / u(1)} />
       <TopInset />
       {/* Keyboard (PB10): iOS insets the scroll view; Android shrinks it (KeyboardLift) so the focused box stays in view. */}
@@ -510,7 +502,6 @@ const s = StyleSheet.create({
   welcome: { fontFamily: F.display, fontSize: u(18), lineHeight: u(17.6), letterSpacing: u(-1.2), alignSelf: 'flex-start' },
   welcomeTab: { alignSelf: 'center', fontSize: u(22), lineHeight: u(24) },
   brandTab: { fontSize: u(60), lineHeight: u(62), marginTop: u(4) },
-  tabArt: { position: 'absolute', left: 0, right: 0, bottom: 0, height: '62%', opacity: 0.85 },
   brand: { fontFamily: F.display, fontSize: u(44), lineHeight: u(43.1), letterSpacing: u(-1.2), alignSelf: 'center', marginTop: u(2) },
   // the card at full width, its heights 90% of the approved size, sitting a little higher (Yazan, 2026-10-19)
   card: { marginTop: u(14), borderWidth: 1, borderRadius: k(22), paddingVertical: k(14), paddingHorizontal: u(14), gap: k(8) },
