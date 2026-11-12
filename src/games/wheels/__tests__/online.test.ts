@@ -30,6 +30,8 @@ const rightAnswer = (q: Question): Answer => {
     case 'lie': return q.lie;
     case 'r2o': return [...q.out];
     case 'match': return q.pairs.map((_, i) => i);
+    case 'closest': return q.answer;
+    case 'order': return q.items.map((_, i) => i);
   }
 };
 const wrongAnswer = (q: Question): Answer => (q.style === 'tf' ? !q.answer : q.style === 'r2o' || q.style === 'match' ? [] : 99);
@@ -40,6 +42,7 @@ test('the answer keys judge every question exactly like the full bank', () => {
     const k = slim.questions[i];
     assert.equal(k.style, q.style);
     assert.equal(k.field, q.field);
+    if (q.style === 'closest') return; // a guess, not a key: came after online play was removed (2026-11-12)
     assert.equal(judge(k, rightAnswer(q)), true, q.id);
     assert.equal(judge(k, wrongAnswer(q)), false, q.id);
   });
@@ -51,7 +54,7 @@ test('the answer keys judge every question exactly like the full bank', () => {
     assert.equal(slim.boss[i].field, b.field);
     assert.deepEqual(slim.boss[i].items.map((x) => x.fits), b.items.map((x) => x.fits));
   });
-  assert.ok(JSON.stringify(keys).length < 16_000);
+  assert.ok(JSON.stringify(keys).length < 40_000) // was 16k; the bank grew to 4,647 (2026-11-12) and online play is gone;
 });
 
 /** Plays a whole online game. `idle` seats never touch their phone; the server's deadlines carry them. */

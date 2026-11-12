@@ -1,10 +1,10 @@
-// The Wheels of Chaos core: the three wheels, the 7 question styles, judging, and one player's turn as a
+// The Wheels of Chaos core: the three wheels, the 9 question styles, judging, and one player's turn as a
 // pure reducer. Solo (WC1) is an endless run of turns until the point target; no cards, boss or redemption.
 // Ported from the old Python engine (wheels.py, scoring.py, models.py).
 
 export type Rng = () => number;
 
-export type Style = 'mcq' | 'tf' | 'r2o' | 'match' | 'riddle' | 'reverse' | 'lie';
+export type Style = 'mcq' | 'tf' | 'r2o' | 'match' | 'riddle' | 'reverse' | 'lie' | 'closest' | 'order';
 export type FieldKey =
   | 'anatomy' | 'physiology' | 'pathology' | 'pharmacology' | 'microbiology' | 'biochemistry'
   | 'medicine' | 'surgery' | 'pediatrics' | 'obgyn';
@@ -18,7 +18,12 @@ export const STYLES: Record<Style, { name: string; points: number; seconds: numb
   riddle: { name: 'Riddle MCQ', points: 1, seconds: 20 },
   reverse: { name: 'Reverse Question', points: 2, seconds: 30 },
   lie: { name: 'Three Truths and a Lie', points: 2, seconds: 30 },
+  // From Quick Fire Quiz (Yazan 2026-11-12): Closest number like Reverse, Put in order like Matching.
+  closest: { name: 'Closest Number', points: 2, seconds: 25 },
+  order: { name: 'Put in Order', points: 3, seconds: 40 },
 };
+/** Closest number counts within 10% of the answer (an exact answer of 0 needs 0). */
+export const CLOSE_SHARE = 0.1;
 export const STYLE_KEYS = Object.keys(STYLES) as Style[];
 
 export const FIELDS: { key: FieldKey; name: string; group: 'basic' | 'clinical' }[] = [
@@ -81,11 +86,15 @@ export type Question =
   | (Base & { style: 'tf'; answer: boolean })
   | (Base & { style: 'r2o'; items: string[]; out: [number, number] })
   | (Base & { style: 'match'; pairs: [string, string][] })
-  | (Base & { style: 'lie'; statements: string[]; lie: number });
+  | (Base & { style: 'lie'; statements: string[]; lie: number })
+  | (Base & { style: 'closest'; answer: number; unit?: string })
+  /** items in the right order; the screen mixes them. */
+  | (Base & { style: 'order'; items: string[] });
 
 /**
  * A submitted answer: a choice index (MCQ, riddle, reverse, lie), true/false, the two ruled-out item
- * indexes (r2o), or for matching the right-hand pair index picked for each left item. null = time up.
+ * indexes (r2o), for matching the right-hand pair index picked for each left item, the guessed number (closest) or
+ * the item indexes from first to last (order). null = time up.
  */
 export type Answer = number | boolean | number[] | null;
 
@@ -99,6 +108,10 @@ export function judge(q: Question, a: Answer): boolean {
       return Array.isArray(a) && a.length === 2 && new Set(a).size === 2 && a.every((i) => q.out.includes(i as 0));
     case 'match': // all or nothing: every left item to its own right item
       return Array.isArray(a) && a.length === q.pairs.length && a.every((r, i) => r === i);
+    case 'closest':
+      return typeof a === 'number' && Math.abs(a - q.answer) <= Math.abs(q.answer) * CLOSE_SHARE;
+    case 'order': // all or nothing, like Matching
+      return Array.isArray(a) && a.length === q.items.length && a.every((r, i) => r === i);
   }
 }
 

@@ -113,6 +113,10 @@ function qaOf(game: string, item: PlayItem): Omit<Extract<Card, { kind: 'qa' }>,
         return { q: q.prompt || 'Which two are the odd ones out?', choices: q.items, answer: `${q.items[q.out[0]]} and ${q.items[q.out[1]]}` };
       case 'match':
         return { q: q.prompt, choices: [], answer: q.pairs.map(([a, b]) => `${a} → ${b}`).join('\n') };
+      case 'closest':
+        return { q: q.prompt, choices: [], answer: `${q.answer}${q.unit ? ` ${q.unit}` : ''}` };
+      case 'order':
+        return { q: q.prompt, choices: [], answer: q.items.map((x, i) => `${i + 1}. ${x}`).join('\n') };
     }
   }
   // Four of a Kind: the four boxes you saw; the answer is the link and each box's note. Wordplay never comes here.

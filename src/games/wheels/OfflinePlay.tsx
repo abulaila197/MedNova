@@ -253,7 +253,7 @@ export function RedemptionOffer({ seat, seats, onPick, onPause }: { seat: number
   );
 }
 
-export function RedemptionBoard({ g, now, seats, onEvent, onPause, hidden, watch }: { g: OfflineGame; now: number; seats: Seats; onEvent: (e: { type: 'GO'; now: number } | { type: 'ANSWER'; value: boolean; now: number }) => void; onPause?: () => void; hidden?: boolean; watch?: boolean }) {
+export function RedemptionBoard({ g, now, seats, onEvent, onPause, hidden, watch, solo }: { g: Pick<OfflineGame, 'redemption'>; now: number; seats: Seats; onEvent: (e: { type: 'GO'; now: number } | { type: 'ANSWER'; value: boolean; now: number }) => void; onPause?: () => void; hidden?: boolean; watch?: boolean; solo?: string }) {
   const r = g.redemption!;
   if (hidden) return null;
   if (r.phase === 'reveal')
@@ -262,7 +262,7 @@ export function RedemptionBoard({ g, now, seats, onEvent, onPause, hidden, watch
         <Top kicker={`Redemption · ${fieldName(r.field)}`} title={<TurnName name={seats.get(r.seat)?.name ?? ''} color={seats.get(r.seat)?.color} after="’s second chance" />} onPause={onPause} />
         <Bill>
           <T f={CD} size={18} color={VV.redInk} style={{ textAlign: 'center' }}>{`${REDEMPTION_ITEMS} calls · ${REDEMPTION_MS / 1000} seconds`}</T>
-          <T size={13} color={VV.paperSoft} style={{ textAlign: 'center' }}>{`True or false, as fast as you can. Each right call is +1. A wrong call costs nothing but time.`}</T>
+          <T size={13} color={VV.paperSoft} style={{ textAlign: 'center' }}>{solo ?? `True or false, as fast as you can. Each right call is +1. A wrong call costs nothing but time.`}</T>
         </Bill>
         <View style={{ flex: 1 }} />
         {watch ? null : <Btn label="Begin" onPress={() => onEvent({ type: 'GO', now: Date.now() })} />}
@@ -327,7 +327,8 @@ export function TurnOver({ g, seat, seats, board, onNext }: { g: OfflineGame; se
 
 // ---------------------------------------------------------------- Boss Round (spec 5, turn-based swipes)
 
-function BossBoard({ g, seat, now, seats, onEvent, onPause, hidden }: { g: OfflineGame; seat: number; now: number; seats: Seats; onEvent: (e: { type: 'GO'; now: number } | { type: 'SWIPE'; fits: boolean; now: number }) => void; onPause: () => void; hidden?: boolean }) {
+/** `solo` replaces the who-wins line (Wheels Solo has a Boss Round too, Yazan 2026-11-12). */
+export function BossBoard({ g, seat, now, seats, onEvent, onPause, hidden, solo }: { g: Pick<OfflineGame, 'boss' | 'cycle' | 'target'>; seat: number; now: number; seats: Seats; onEvent: (e: { type: 'GO'; now: number } | { type: 'SWIPE'; fits: boolean; now: number }) => void; onPause: () => void; hidden?: boolean; solo?: string }) {
   const b = g.boss!;
   const swipe = useStableCallback((fits: boolean) => onEvent({ type: 'SWIPE', fits, now: Date.now() }));
   const pan = useMemo(
@@ -351,7 +352,7 @@ function BossBoard({ g, seat, now, seats, onEvent, onPause, hidden }: { g: Offli
           <T f={CD} size={19} color={VV.redInk} style={{ textAlign: 'center' }}>{b.category}</T>
           <Rule c="rgba(42,26,18,0.18)" />
           <T size={13} color={VV.paperInk} style={{ textAlign: 'center' }}>{`Swipe right if it belongs, left if it doesn’t. ${BOSS_MS / 1000} seconds. +${BOSS_RIGHT} for a right swipe, ${BOSS_WRONG} for a wrong one.`}</T>
-          <T size={12} color={VV.paperSoft} style={{ textAlign: 'center' }}>{`Everyone gets the same items in their own order. Highest score wins +${bossBonus(g.target)}.`}</T>
+          <T size={12} color={VV.paperSoft} style={{ textAlign: 'center' }}>{solo ?? `Everyone gets the same items in their own order. Highest score wins +${bossBonus(g.target)}.`}</T>
         </Bill>
         <View style={{ flex: 1 }} />
         <Btn label="Start swiping" onPress={() => onEvent({ type: 'GO', now: Date.now() })} />

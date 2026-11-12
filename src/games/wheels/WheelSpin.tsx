@@ -20,7 +20,7 @@ const RINGS = { field: [106, R], style: [44, 106], count: [18, 44] } as const;
 
 const COUNT_LABELS = ['1', '2', '3'];
 const STYLE_LABELS: Record<(typeof STYLE_KEYS)[number], string> = {
-  mcq: 'Direct\nMCQ', tf: 'True or\nFalse', r2o: 'Rule\n2 Out', match: 'Matching', riddle: 'Riddle\nMCQ', reverse: 'Reverse\nQuestion', lie: '3 Truths\n& a Lie',
+  mcq: 'Direct\nMCQ', tf: 'True or\nFalse', r2o: 'Rule\n2 Out', match: 'Matching', riddle: 'Riddle\nMCQ', reverse: 'Reverse\nQuestion', lie: '3 Truths\n& a Lie', closest: 'Closest\nNumber', order: 'Put in\nOrder',
 };
 const FIELD_LABELS: Record<string, string> = {
   anatomy: 'Anatomy', physiology: 'Physiology', pathology: 'Pathology', pharmacology: 'Pharmacology', microbiology: 'Microbiology',
@@ -102,7 +102,7 @@ function Spinning({ children, to, ms }: { children: React.ReactNode; to: number;
 }
 
 /** The brass rim with its bulbs, the pointer and the hub; the landed slices glow once each ring stops. */
-const Frame = memo(function Frame({ lit, fields }: { lit: { count: boolean; style: boolean; field: boolean }; fields: number }) {
+const Frame = memo(function Frame({ lit, fields, styleRing }: { lit: { count: boolean; style: boolean; field: boolean }; fields: number; styleRing: readonly [number, number] }) {
   const top = (r0: number, r1: number, n: number) => wedge(r0, r1, -90 - 180 / n, -90 + 180 / n);
   return (
     <Svg width="100%" height="100%" viewBox={`0 0 ${BOX} ${BOX}`} style={{ position: 'absolute' }}>
@@ -112,8 +112,8 @@ const Frame = memo(function Frame({ lit, fields }: { lit: { count: boolean; styl
           <Stop offset={1} stopColor="#6f8fe0" />
         </RadialGradient>
       </Defs>
-      {lit.field ? <Path d={top(RINGS.field[0], RINGS.field[1], fields)} fill="rgba(111,214,255,0.2)" stroke={VV.brass} strokeWidth={3} /> : null}
-      {lit.style ? <Path d={top(RINGS.style[0], RINGS.style[1], STYLE_KEYS.length)} fill="rgba(111,214,255,0.2)" stroke={VV.brass} strokeWidth={3} /> : null}
+      {lit.field && fields > 1 ? <Path d={top(RINGS.field[0], RINGS.field[1], fields)} fill="rgba(111,214,255,0.2)" stroke={VV.brass} strokeWidth={3} /> : null}
+      {lit.style ? <Path d={top(styleRing[0], styleRing[1], STYLE_KEYS.length)} fill="rgba(111,214,255,0.2)" stroke={VV.brass} strokeWidth={3} /> : null}
       {lit.count ? <Path d={top(RINGS.count[0], RINGS.count[1], 3)} fill="rgba(111,214,255,0.2)" stroke={VV.brass} strokeWidth={3} /> : null}
       <Circle cx={C} cy={C} r={R + 8} fill="none" stroke="#3a4f96" strokeWidth={13} />
       <Circle cx={C} cy={C} r={R + 14} fill="none" stroke="#6fd6ff" strokeWidth={1.2} />
@@ -139,18 +139,23 @@ export function WheelSpin({ turn, settled }: { turn: Turn; settled: { count: boo
     style: landing(STYLE_KEYS.indexOf(turn.combo.style), n.style, -4),
     field: landing(Math.max(0, fields.findIndex((f) => f.key === turn.combo.field)), n.field, 3),
   };
+  // Yazan 2026-11-12: one field picked means no field wheel; the style ring takes the outer place (2 wheels).
+  const one = fields.length === 1;
+  const styleRing = one ? ([RINGS.style[0], R] as const) : RINGS.style;
   return (
     <View style={{ width: '100%', maxWidth: u(380), aspectRatio: 1, alignSelf: 'center' }}>
-      <Spinning to={land.field} ms={STOP_MS.field}>
-        <Ring id="f" r0={RINGS.field[0]} r1={RINGS.field[1]} labels={fields.map((f) => FIELD_LABELS[f.key] ?? f.name)} land={land.field} base={12} />
-      </Spinning>
+      {one ? null : (
+        <Spinning to={land.field} ms={STOP_MS.field}>
+          <Ring id="f" r0={RINGS.field[0]} r1={RINGS.field[1]} labels={fields.map((f) => FIELD_LABELS[f.key] ?? f.name)} land={land.field} base={12} />
+        </Spinning>
+      )}
       <Spinning to={land.style} ms={STOP_MS.style}>
-        <Ring id="s" r0={RINGS.style[0]} r1={RINGS.style[1]} labels={STYLE_KEYS.map((k) => STYLE_LABELS[k])} land={land.style} base={12} />
+        <Ring id="s" r0={styleRing[0]} r1={styleRing[1]} labels={STYLE_KEYS.map((k) => STYLE_LABELS[k])} land={land.style} base={one ? 14 : 12} />
       </Spinning>
       <Spinning to={land.count} ms={STOP_MS.count}>
         <Ring id="c" r0={RINGS.count[0]} r1={RINGS.count[1]} labels={COUNT_LABELS} land={land.count} base={15} />
       </Spinning>
-      <Frame lit={settled} fields={fields.length} />
+      <Frame lit={settled} fields={fields.length} styleRing={styleRing} />
     </View>
   );
 }

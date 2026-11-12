@@ -4,9 +4,10 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useEffectEvent, useMemo, useState, type ReactNode } from 'react';
 import { Pressable, ScrollView, StyleSheet, View, type LayoutChangeEvent } from 'react-native';
 
+import { TextInput } from '@/components/AppText';
 import { u } from '@/theme/scale';
 
-import { STYLES, fieldName, timeLeft, type Answer, type Question, type Turn, type TurnEvent } from './core';
+import { STYLES, fieldName, mixFields, timeLeft, type Answer, type Question, type Turn, type TurnEvent } from './core';
 import { WheelSpin, STOP_MS } from './WheelSpin';
 import { BOX, Brass, Btn, BODY_B, Bulbs, CB, CD, CM, Gem, Kicker, PauseBtn, QF, QF_B, T, VV } from './velvet';
 
@@ -48,7 +49,7 @@ function Reels({ turn, onGo }: { turn: Turn; onGo: () => void }) {
   return (
     <>
       <WheelSpin turn={turn} settled={{ count: done('count'), style: done('style'), field: done('field') }} />
-      <T f={CM} size={9.5} color={VV.soft} style={{ textAlign: 'center', letterSpacing: u(0.6) }} lines={1}>CENTRE COUNT · MIDDLE STYLE · OUTER FIELD</T>
+      <T f={CM} size={9.5} color={VV.soft} style={{ textAlign: 'center', letterSpacing: u(0.6) }} lines={1}>{mixFields(turn.mix).length === 1 ? 'CENTRE COUNT · OUTER STYLE' : 'CENTRE COUNT · MIDDLE STYLE · OUTER FIELD'}</T>
       {done('field') ? <Banner parts={[turn.k ? `Question ${turn.k + 1} of ${turn.count}` : qWord(turn.count), st.name, fieldName(turn.combo.field)]} /> : <View style={{ height: u(66) }} />}
     </>
   );
@@ -132,7 +133,9 @@ function Answers({ q, given, onAnswer }: { q: Question; given: Answer | undefine
   const [picks, setPicks] = useState<number[]>([]);
   const [left, setLeft] = useState<number | null>(null);
   const [pairs, setPairs] = useState<(number | null)[]>(() => (q.style === 'match' ? q.pairs.map(() => null) : []));
-  const order = useMemo(() => (q.style === 'match' ? mixed(q.pairs.length, q.id) : []), [q]);
+  const order = useMemo(() => (q.style === 'match' ? mixed(q.pairs.length, q.id) : q.style === 'order' ? mixed(q.items.length, q.id) : []), [q]);
+  const [seq, setSeq] = useState<number[]>([]);
+  const [guess, setGuess] = useState('');
   const tall = useTallest();
 
   switch (q.style) {
@@ -233,10 +236,69 @@ function Answers({ q, given, onAnswer }: { q: Question; given: Answer | undefine
         </View>
       );
     }
+    // From Quick Fire Quiz (Yazan 2026-11-12): tap the items from first to last; tap a numbered one to take it back.
+    case 'order': {
+      const got = done ? ((given as number[] | null) ?? []) : seq;
+      const full = seq.length === q.items.length;
+      return (
+        <View style={{ gap: u(6) }}>
+          {order.map((i) => {
+            const at = got.indexOf(i);
+            const mark: Mark = done ? (at === i ? 'right' : 'wrong') : 'none';
+            return (
+              <Option
+                key={i}
+                letter={at >= 0 ? String(at + 1) : done ? String(i + 1) : '·'}
+                text={done && at !== i ? `${q.items[i]}  (goes ${i + 1})` : q.items[i]}
+                on={!done && at >= 0}
+                mark={mark}
+                disabled={done}
+                onPress={() => setSeq((x) => (x.includes(i) ? x.slice(0, x.indexOf(i)) : [...x, i]))}
+              />
+            );
+          })}
+          {done ? null : (
+            <>
+              <T size={11} color={VV.dim} style={{ textAlign: 'center' }}>Tap the items from first to last.</T>
+              <Btn label={full ? 'Lock in the order' : `${q.items.length - seq.length} left`} disabled={!full} onPress={() => onAnswer(seq)} />
+            </>
+          )}
+        </View>
+      );
+    }
+    case 'closest': {
+      const num = Number(guess.replace(',', '.'));
+      const ok = guess.trim() !== '' && Number.isFinite(num);
+      return (
+        <View style={{ gap: u(8) }}>
+          <View style={[s.cell, { minHeight: u(48) }]}>
+            <TextInput
+              value={done ? (typeof given === 'number' ? String(given) : '–') : guess}
+              onChangeText={(x) => setGuess(x.replace(/[^0-9.,-]/g, '').slice(0, 10))}
+              editable={!done}
+              keyboardType="decimal-pad"
+              placeholder="Your guess"
+              placeholderTextColor="#8a7a5a"
+              style={{ flex: 1, fontFamily: QF_B, fontSize: u(20), color: BOX.ink, paddingVertical: u(4) }}
+              accessibilityLabel="Your guess"
+            />
+            {q.unit ? <T f={QF} size={14} color={BOX.ink}>{q.unit}</T> : null}
+          </View>
+          {done ? (
+            <T f={CD} size={16} color={VV.right} style={{ textAlign: 'center' }}>{`Answer: ${q.answer}${q.unit ? ` ${q.unit}` : ''}`}</T>
+          ) : (
+            <>
+              <T size={11} color={VV.dim} style={{ textAlign: 'center' }}>Within 10% of the answer counts.</T>
+              <Btn label="Lock in my guess" disabled={!ok} onPress={() => onAnswer(num)} />
+            </>
+          )}
+        </View>
+      );
+    }
   }
 }
 
-const promptLead: Partial<Record<Question['style'], string>> = { reverse: 'Here is the answer. Pick its question.', tf: 'True or false?' };
+const promptLead: Partial<Record<Question['style'], string>> = { reverse: 'Here is the answer. Pick its question.', tf: 'True or false?', closest: 'Guess the number', order: 'First to last' };
 
 // ---------------------------------------------------------------- the board
 

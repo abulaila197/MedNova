@@ -27,6 +27,8 @@ export const rightAnswer = (q: Question): Answer => {
     case 'lie': return q.lie;
     case 'r2o': return [...q.out];
     case 'match': return q.pairs.map((_, i) => i);
+    case 'closest': return q.answer;
+    case 'order': return q.items.map((_, i) => i);
   }
 };
 
@@ -56,6 +58,16 @@ export function wrongAnswer(q: Question, wrongPick: number, r: Rand): Answer {
         [map[a], map[b]] = [map[b], map[a]];
       }
       return map;
+    }
+    case 'closest': // a guess well outside the 10%
+      return Math.round(q.answer * (r() < 0.5 ? 0.7 : 1.35)) || q.answer + 3;
+    case 'order': {
+      const seq = q.items.map((_, i) => i);
+      if (seq.length >= 2) {
+        const a = Math.floor(r() * (seq.length - 1));
+        [seq[a], seq[a + 1]] = [seq[a + 1], seq[a]];
+      }
+      return seq;
     }
   }
 }

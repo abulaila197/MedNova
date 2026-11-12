@@ -9,33 +9,41 @@ import { recordItem } from '../shell/flow';
 import type { PlayProps } from '../shell/types';
 import { isNoClock } from '../shell/clockOption';
 import { tickedFields } from '../shell/fields';
-import { startSolo, stepSolo, STYLES, fieldName, mixWith, type Mix, type QResult, type SoloEvent, type SoloRun, type Target } from './core';
+import { STYLES, fieldName, mixWith, type Mix, type QResult, type SoloRun, type Target } from './core';
+import { bossBonus, roundsIn } from './offline';
+import { BossBoard, RedemptionBoard, type Seats } from './OfflinePlay';
+import { asSoloGame, canRedeem, missedPoints, SOLO_BOSS_PER, startSoloGame, stepSoloGame, type SoloGame, type SoloGameEvent } from './solo';
 import { BANK } from './data';
 import { PauseMenu } from '../shell/PauseMenu';
 import { TurnBoard } from './TurnBoard';
-import { Btn, CB, CD, Kicker, Panel, Rule, T, VelvetScreen, VV } from './velvet';
+import { Btn, CB, CD, Kicker, Panel, ROMAN, Rule, T, VelvetScreen, VV } from './velvet';
 import { useTicker } from '../engine/useTicker';
-import { turnShown } from './shown';
+import { gameShown } from './shown';
 
-/** The saved run has its clock stopped, so resuming later picks up with the same time left (rules 7, 10). */
-const snapshot = (r: SoloRun, now: number): SoloRun => (r.turn && r.turn.pausedAt == null ? { ...r, turn: { ...r.turn, pausedAt: now } } : r);
+/** The saved game has its clocks stopped, so resuming later picks up with the same time left (rules 7, 10). */
+const snapshot = (g: SoloGame, now: number): SoloGame => stepSoloGame(g, { type: 'PAUSE', now }, BANK, Math.random);
+const SEATS: Seats = new Map([[0, { name: 'You' }]]);
 
-/** Solo (WC1, WC11): spin and answer, turn after turn, until the target. No cards, Boss Round or Redemption. */
+/**
+ * Solo (WC1, WC11): spin and answer, turn after turn, until the target. Since 2026-11-12 (Yazan) each act ends in a
+ * Boss Round and once a game a turn with a miss can be followed by a Redemption round (solo.ts).
+ */
 export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   const target = (Number(play.settings.target) || 50) as Target;
   const mix = mixWith((play.settings.mix as Mix) || 'mixed', tickedFields(play.settings));
-  // The saved run (its clock started again), or a new one.
+  // The saved game (its clocks started again), or a new one.
   const [first] = useState(() => {
-    const saved = (play.resume as { run?: SoloRun } | null)?.run ?? null;
-    if (saved) return { run: saved.turn?.pausedAt != null ? stepSolo(saved, { type: 'RESUME', now: Date.now() }, BANK, Math.random) : saved, fresh: false };
-    return { run: startSolo(BANK, target, [], Math.random, mix, isNoClock(play.settings)), fresh: true };
+    const saved = play.resume as { game?: SoloGame; run?: SoloRun } | null;
+    const was = saved?.game ?? saved?.run ?? null;
+    if (was) return { game: stepSoloGame(asSoloGame(was), { type: 'RESUME', now: Date.now() }, BANK, Math.random), fresh: false };
+    return { game: startSoloGame(BANK, target, Math.random, mix, isNoClock(play.settings)), fresh: true };
   });
-  const [run, setRun] = useState<SoloRun>(first.run);
-  const ref = useRef<SoloRun>(first.run);
+  const [game, setGame] = useState<SoloGame>(first.game);
+  const ref = useRef<SoloGame>(first.game);
   const [paused, setPaused] = useState(false);
 
   useEffect(() => {
-    if (first.fresh) engine.recorder.bookmark(play.id, { run: snapshot(first.run, Date.now()) }, 0);
+    if (first.fresh) engine.recorder.bookmark(play.id, { game: snapshot(first.game, Date.now()) }, 0);
   }, [first, play.id]);
 
   const record = useCallback(
@@ -51,25 +59,36 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   );
 
   const dispatch = useCallback(
-    (e: SoloEvent) => {
+    (e: SoloGameEvent) => {
       const prev = ref.current;
       if (!prev) return;
-      const next = stepSolo(prev, e, BANK, Math.random);
+      const next = stepSoloGame(prev, e, BANK, Math.random);
       if (next === prev) return;
       ref.current = next;
-      setRun(next);
-      engine.recorder.bookmark(play.id, { run: snapshot(next, Date.now()) }, next.score);
-      const before = prev.turnNo === next.turnNo ? (prev.turn?.results.length ?? 0) : 0;
-      record(next.turn?.results.slice(before) ?? []);
-      if (next.phase === 'done' && prev.phase !== 'done') onFinish(next.score);
+      setGame(next);
+      engine.recorder.bookmark(play.id, { game: snapshot(next, Date.now()) }, next.run.score);
+      const before = prev.run.turnNo === next.run.turnNo ? (prev.run.turn?.results.length ?? 0) : 0;
+      record(next.run.turn?.results.slice(before) ?? []);
+      if (next.run.phase === 'done' && prev.run.phase !== 'done') onFinish(next.run.score);
     },
     [play, record, onFinish],
   );
+  const run = game.run;
 
-  // The clock: ticks while a timer runs (Star window, question, the right/wrong moment).
-  const timed = run?.phase === 'turn' && run.turn?.until != null && !paused;
+  // The clock: ticks while a timer runs (question, the right/wrong moment, Boss Round, Redemption).
+  const timed = !paused && ((game.stage === 'run' && run.phase === 'turn' && run.turn?.until != null) || (game.stage === 'boss' && game.boss?.until != null) || (game.stage === 'redemption' && game.redemption?.until != null));
   // The screen redraws when the bulbs it shows change, not on every tick.
-  const now = useTicker(timed, 150, (n) => dispatch({ type: 'TICK', now: n }), { shown: (n) => turnShown(ref.current?.turn, n) });
+  const now = useTicker(
+    timed,
+    150,
+    (n) => {
+      const g = ref.current;
+      if (g.stage === 'boss') dispatch({ type: 'BOSS', e: { type: 'TICK', now: n } });
+      else if (g.stage === 'redemption') dispatch({ type: 'RED', e: { type: 'TICK', now: n } });
+      else dispatch({ type: 'RUN', e: { type: 'TICK', now: n } });
+    },
+    { shown: (n) => gameShown({ turn: ref.current.stage === 'run' ? ref.current.run.turn : null, boss: ref.current.boss, redemption: ref.current.redemption }, n) },
+  );
 
   const pause = () => {
     setPaused(true);
@@ -77,28 +96,42 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   };
   usePauseHide(pause);
 
-  if (!run) return <VelvetScreen>{null}</VelvetScreen>;
   const resume = () => {
     setPaused(false);
     dispatch({ type: 'RESUME', now: Date.now() });
   };
+  const bossLine = `Every ${SOLO_BOSS_PER} Boss points is +1, up to +${bossBonus(target)}.`;
+  const missed = missedPoints(game);
 
   return (
     <>
       <VelvetScreen>
-        {run.phase === 'turn' && run.turn ? (
+        {game.stage === 'boss' && game.boss ? (
+          <BossBoard g={{ boss: game.boss, cycle: game.act, target }} seat={0} now={now} seats={SEATS} solo={bossLine} onEvent={(e) => dispatch({ type: 'BOSS', e })} onPause={pause} hidden={paused} />
+        ) : game.stage === 'redemption' && game.redemption ? (
+          <RedemptionBoard g={{ redemption: game.redemption }} now={now} seats={SEATS} solo={`True or false, as fast as you can. Each right call wins back 1 of the ${missed} points you missed, up to all of them.`} onEvent={(e) => dispatch({ type: 'RED', e })} onPause={pause} hidden={paused} />
+        ) : game.stage === 'bossOver' || game.stage === 'redOver' ? (
+          <Extra game={game} onNext={() => dispatch({ type: 'ON' })} />
+        ) : run.phase === 'turn' && run.turn ? (
           <TurnBoard
             turn={run.turn}
             now={now}
-            kicker={`Solo · Turn ${run.turnNo}`}
+            kicker={`Solo · Act ${ROMAN[game.act]} · Turn ${game.inAct} of ${roundsIn(game.act)}`}
             title={`${run.score} of ${target}`}
             strip={[{ seat: 0, name: 'You', score: run.score, me: true }]}
-            onEvent={(e) => dispatch(e)}
+            onEvent={(e) => dispatch({ type: 'RUN', e })}
             onPause={pause}
             hidden={paused}
           />
         ) : run.turn ? (
-          <TurnOver run={run} onNext={() => dispatch({ type: 'NEXT' })} onEnd={() => dispatch({ type: 'END' })} />
+          <TurnOver
+            game={game}
+            boss={game.inAct >= roundsIn(game.act)}
+            redeem={canRedeem(game) ? missed : 0}
+            onRedeem={() => dispatch({ type: 'REDEEM' })}
+            onNext={() => dispatch({ type: 'RUN', e: { type: 'NEXT' } })}
+            onEnd={() => dispatch({ type: 'RUN', e: { type: 'END' } })}
+          />
         ) : null}
       </VelvetScreen>
       <PauseMenu open={paused} mode="solo" onResume={resume} onQuit={onQuit} />
@@ -106,14 +139,39 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   );
 }
 
+/** After a Boss Round or a Redemption: what it added. */
+function Extra({ game, onNext }: { game: SoloGame; onNext: () => void }) {
+  const x = game.extra;
+  const boss = x?.k === 'boss';
+  return (
+    <View style={{ flex: 1, gap: u(12) }}>
+      <View style={{ gap: u(2) }}>
+        <Kicker>{boss ? `Act ${ROMAN[game.act]} · Boss Round` : 'Redemption'}</Kicker>
+        <T f={CD} size={26}>{x?.points ? `+${x.points} points` : 'No points this time'}</T>
+      </View>
+      <Panel>
+        <T size={13} color={VV.soft}>{boss ? `${x?.of ?? 0} Boss points: every ${SOLO_BOSS_PER} is +1, up to +${bossBonus(game.run.target)}.` : `${x?.of ?? 0} right calls won back ${x?.points ?? 0} points.`}</T>
+        <Rule />
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' }}>
+          <T f={CB} size={12} color={VV.dim} style={{ letterSpacing: u(1.2) }}>SCORE</T>
+          <T f={CD} size={22} color={VV.gold}>{`${game.run.score} / ${game.run.target}`}</T>
+        </View>
+      </Panel>
+      <View style={{ flex: 1 }} />
+      <Btn label={boss ? `On to Act ${ROMAN[game.act + 1] ?? game.act + 2}` : 'Back to my turn'} onPress={onNext} />
+    </View>
+  );
+}
+
 /** Between turns: what this turn earned and how far the target is. */
-function TurnOver({ run, onNext, onEnd }: { run: SoloRun; onNext: () => void; onEnd: () => void }) {
+function TurnOver({ game, boss, redeem, onRedeem, onNext, onEnd }: { game: SoloGame; boss: boolean; redeem: number; onRedeem: () => void; onNext: () => void; onEnd: () => void }) {
+  const run = game.run;
   const t = run.turn!;
   const pts = t.results.reduce((a, r) => a + r.points, 0);
   return (
     <View style={{ flex: 1, gap: u(12) }}>
       <View style={{ gap: u(2) }}>
-        <Kicker>{`Solo · Turn ${run.turnNo}`}</Kicker>
+        <Kicker>{`Solo · Act ${ROMAN[game.act]} · Turn ${game.inAct} of ${roundsIn(game.act)}`}</Kicker>
         <T f={CD} size={26}>{pts ? `+${pts} points` : 'No points this turn'}</T>
       </View>
       <Panel>
@@ -134,7 +192,9 @@ function TurnOver({ run, onNext, onEnd }: { run: SoloRun; onNext: () => void; on
         </View>
       </Panel>
       <View style={{ flex: 1 }} />
-      <Btn label="Spin again" onPress={onNext} />
+      {/* Once a game, after a turn with a miss (Yazan 2026-11-12). */}
+      {redeem ? <Btn label={`Redemption: win back up to ${redeem}`} paper onPress={onRedeem} /> : null}
+      <Btn label={boss ? 'On to the Boss Round' : 'Spin again'} onPress={onNext} />
       <Btn label="Finish here" ghost onPress={onEnd} />
     </View>
   );

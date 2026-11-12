@@ -30,7 +30,7 @@ const KIND: Record<string, GameKind> = {
   'the-silent-artist': 'play',
   'nova-medicordle': 'both',
   'the-riddler': 'both',
-  'the-wheels-of-chaos': 'both',
+  'the-wheels-of-chaos': 'learn', // On duty since Quick Fire Quiz merged in (2026-11-12)
   'the-conqueror': 'both',
 };
 

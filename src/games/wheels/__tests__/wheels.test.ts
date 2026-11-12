@@ -28,6 +28,8 @@ const rightAnswer = (q: Question): Answer => {
     case 'lie': return q.lie;
     case 'r2o': return [...q.out];
     case 'match': return q.pairs.map((_, i) => i);
+    case 'closest': return q.answer;
+    case 'order': return q.items.map((_, i) => i);
   }
 };
 

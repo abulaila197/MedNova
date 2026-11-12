@@ -71,7 +71,7 @@ export function redemptionItems(bank: FullBank, field: FieldKey, rng: Rng, used:
 
 export type RedemptionEvent = { type: 'GO'; now: number } | { type: 'ANSWER'; value: boolean; now: number } | { type: 'TICK'; now: number };
 
-function stepRedemption(r: Redemption, e: RedemptionEvent): Redemption {
+export function stepRedemption(r: Redemption, e: RedemptionEvent): Redemption {
   if (r.phase === 'over' || r.pausedAt != null) return r;
   if (e.type === 'GO') return r.phase === 'reveal' ? { ...r, phase: 'playing', until: e.now + REDEMPTION_MS } : r;
   if (r.phase !== 'playing') return r;

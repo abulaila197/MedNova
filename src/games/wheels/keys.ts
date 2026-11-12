@@ -36,13 +36,15 @@ function answerCode(q: Question): number {
     case 'lie': return q.lie;
     case 'match': return q.pairs.length;
     case 'r2o': return q.out[0] * 8 + q.out[1];
+    case 'order': return q.items.length;
+    case 'closest': return 0; // online play was removed before these styles came (2026-11-12); never served
     default: return q.answer;
   }
 }
 
 function keyBody(bank: FullBank): Omit<Keys, 'v'> {
   return {
-    q: bank.questions.map((q) => ch(STYLE_KEYS.indexOf(q.style) * 10 + fieldIx(q.field)) + ch(answerCode(q))).join(''),
+    q: bank.questions.map((q) => ch(STYLE_KEYS.indexOf(q.style)) + ch(fieldIx(q.field)) + ch(answerCode(q))).join(''),
     r: bank.redemption.map((q) => ch(fieldIx(q.field)) + ch((q.round ?? -1) + 1) + ch(DIFFS.indexOf(q.difficulty) * 2 + (q.style === 'tf' && q.answer ? 1 : 0))).join(''),
     b: bank.boss.map((s) => ch(fieldIx(s.field)) + s.items.map((i) => (i.fits ? '1' : '0')).join('')).join(','),
   };
@@ -55,14 +57,16 @@ export function encodeKeys(bank: FullBank): Keys {
 /** A bank the engine can run on: ids are bank places, prompts are empty, Boss labels are item places. */
 export function decodeKeys(k: Keys): FullBank {
   const questions: Question[] = [];
-  for (let i = 0; i * 2 < k.q.length; i++) {
-    const c = at(k.q, i * 2), a = at(k.q, i * 2 + 1);
-    const style = STYLE_KEYS[Math.floor(c / 10)];
-    const base = { id: String(i), field: FIELDS[c % 10].key, difficulty: 'medium' as Difficulty, prompt: '' };
+  for (let i = 0; i * 3 < k.q.length; i++) {
+    const s = at(k.q, i * 3), f = at(k.q, i * 3 + 1), a = at(k.q, i * 3 + 2);
+    const style = STYLE_KEYS[s];
+    const base = { id: String(i), field: FIELDS[f].key, difficulty: 'medium' as Difficulty, prompt: '' };
     if (style === 'tf') questions.push({ ...base, style, answer: a === 1 });
     else if (style === 'lie') questions.push({ ...base, style, statements: [], lie: a });
     else if (style === 'match') questions.push({ ...base, style, pairs: Array.from({ length: a }, () => ['', ''] as [string, string]) });
     else if (style === 'r2o') questions.push({ ...base, style, items: [], out: [Math.floor(a / 8), a % 8] });
+    else if (style === 'order') questions.push({ ...base, style, items: Array.from({ length: a }, () => '') });
+    else if (style === 'closest') questions.push({ ...base, style, answer: a });
     else questions.push({ ...base, style, choices: [], answer: a });
   }
   const redemption: Question[] = [];
