@@ -5,7 +5,7 @@ import { Text } from "@/components/AppText";
 import { u } from "@/theme/scale";
 
 import type { Case, CaseRun } from "./core";
-import { Ask, Btn, C, Choices, NotePopup, Sheet, s } from "./Paper";
+import { Ask, Btn, C, Choices, HelpBtn, NotePopup, Sheet, s } from "./Paper";
 
 export type Help = {
   fifty: { label: string; onPress: () => void; disabled?: boolean };
@@ -62,8 +62,8 @@ export function CaseView({
       ) : null}
       {help ? (
         <View style={{ flexDirection: "row", gap: u(6) }}>
-          <Btn label={help.fifty.label} onPress={help.fifty.onPress} disabled={locked || run.stage === "done" || help.fifty.disabled} flex={1} />
-          <Btn label={help.highlight.label} onPress={help.highlight.onPress} disabled={locked || run.stage === "done" || help.highlight.disabled} flex={1} />
+          <HelpBtn tone="fifty" label={help.fifty.label} onPress={help.fifty.onPress} disabled={locked || run.stage === "done" || help.fifty.disabled} />
+          <HelpBtn tone="highlight" label={help.highlight.label} onPress={help.highlight.onPress} disabled={locked || run.stage === "done" || help.highlight.disabled} />
         </View>
       ) : null}
       <Btn

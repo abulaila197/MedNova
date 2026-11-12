@@ -241,6 +241,22 @@ export function Btn({ label, onPress, go, disabled, flex }: { label: string; onP
   );
 }
 
+/** A help button in Race to Diagnosis' colours (Yazan 2026-11-12): a dark tinted fill, a coloured edge and coloured text. */
+export const HELP_TONE = {
+  fifty: { bg: '#142741', line: '#19637e', fg: '#67e8f9', icon: '✂️' },
+  highlight: { bg: '#231b4e', line: '#504188', fg: '#d8b4fe', icon: '🖍️' },
+} as const;
+export function HelpBtn({ label, tone, onPress, disabled }: { label: string; tone: keyof typeof HELP_TONE; onPress: () => void; disabled?: boolean }) {
+  const t = HELP_TONE[tone];
+  return (
+    <Pressable onPress={tapped(onPress)} disabled={disabled} accessibilityRole="button" accessibilityLabel={label} style={[s.helpTone, { backgroundColor: t.bg, borderColor: t.line }]}>
+      <Text style={[s.helpToneT, { color: t.fg, opacity: disabled ? 0.45 : 1 }]} numberOfLines={1}>
+        {`${t.icon} ${label}`}
+      </Text>
+    </Pressable>
+  );
+}
+
 /** One line of the stage marks: "✔ Spotted it · ✘ Wrong fix". */
 const mark = (ok: boolean, yes: string, no: string) => `${ok ? '✔' : '✘'} ${ok ? yes : no}`;
 
@@ -329,6 +345,8 @@ export const s = StyleSheet.create({
   goT: { fontFamily: F.bodyBold, fontSize: u(14), color: '#fff' },
   help: { borderWidth: 1, borderColor: 'rgba(255,255,255,0.2)', borderRadius: 999, paddingVertical: u(7), paddingHorizontal: u(10), alignItems: 'center', justifyContent: 'center' },
   helpT: { fontFamily: F.bodySemi, fontSize: u(10.5), color: C.soft },
+  helpTone: { flex: 1, borderWidth: 1, borderRadius: u(10), paddingVertical: u(9), paddingHorizontal: u(4), alignItems: 'center' },
+  helpToneT: { fontFamily: F.bodyBold, fontSize: u(10.5), lineHeight: u(13) },
   card: { backgroundColor: C.paper, borderRadius: u(16), padding: u(14), gap: u(6) },
   cardHead: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   cardKick: { fontFamily: F.bodyBold, fontSize: u(9), letterSpacing: u(1.6), color: C.head },
