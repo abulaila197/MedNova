@@ -13,7 +13,7 @@ import type { RacePlayer, RaceState } from '@/match/race';
 import { RaceReveal } from '@/match/RaceReveal';
 import { RoomTalk } from '@/match/TalkBar';
 import { useTheme } from '@/state/app';
-import { u, useScreen } from '@/theme/scale';
+import { TABLET, u, useScreen } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 import { sfxVerdict } from '@/lib/sound';
 
@@ -24,7 +24,7 @@ import { gameDef } from '../shell/registry';
 import { presetTeam } from '../shell/teams';
 import type { PlayProps } from '../shell/types';
 import { GameScreen } from '../shell/ui';
-import { AppGrid, AppPopup, AppTopBar, TIP, useGridTaps } from './AppLook';
+import { FitGrid, AppPopup, AppTopBar, TIP, useGridTaps } from './AppLook';
 import { CW, buildSlots, composeAnswer, indexOf, isFilled, lockedCells, placeLetter, removeSlot, type PuzzleDef, type Typed } from './core';
 import { PUZZLES, clueText } from './data';
 import { ReviveCard } from './OfflinePlay';
@@ -179,10 +179,22 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
     </View>
   );
 
+  const bar = <AppTopBar kicker={`${left} ${left === 1 ? 'word' : 'words'} left`} title={total > 1 ? `Puzzle ${st.index + 1} of ${total}` : 'The race'} sub={sub} hearts={hearts} maxHearts={CW.onlineHearts} score={mine?.score ?? 0} onPause={g.openMenu} />;
+  // Tablet (look A): the grid on the left; the race title, hearts, score and the rivals' board in the side panel.
   return (
-    <GameScreen scroll={false} bodyStyle={{ paddingTop: u(12), paddingHorizontal: u(16), gap: u(10) }}>
-      <AppTopBar kicker={`${left} ${left === 1 ? 'word' : 'words'} left`} title={total > 1 ? `Puzzle ${st.index + 1} of ${total}` : 'The race'} sub={sub} hearts={hearts} maxHearts={CW.onlineHearts} score={mine?.score ?? 0} onPause={g.openMenu} />
-      {board}
+    <GameScreen
+      scroll={false}
+      bodyStyle={{ paddingTop: u(12), paddingHorizontal: u(16), gap: u(10) }}
+      panel={
+        TABLET ? (
+          <>
+            {bar}
+            {board}
+          </>
+        ) : undefined
+      }>
+      {TABLET ? null : bar}
+      {TABLET ? null : board}
       {!reveal && !out && !g.paused ? (
         <Race
           key={st.index}
@@ -200,7 +212,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
         />
       ) : (
         <>
-          <AppGrid puzzle={p} solved={solved} claims={claims} width={W - u(32)} />
+          <FitGrid puzzle={p} solved={solved} claims={claims} width={W - u(32)} />
           {!reveal ? <Text style={[s.tip, { color: t.mute }]}>{out && !canRevive ? 'Out of hearts. You’re watching the rest of the race.' : ' '}</Text> : null}
         </>
       )}
@@ -297,7 +309,7 @@ function Race({ onTyping, puzzle, solved, claims, hearts, width, submit, claimer
   const tip = line && !sel ? line : taken && taken !== 'You' ? `${taken} claimed it first.` : TIP;
   return (
     <>
-      <AppGrid puzzle={puzzle} solved={solved} claims={claims} selected={open ?? taps.lit} width={width - u(32)} onCell={taps.tap} onDouble={taps.double} />
+      <FitGrid puzzle={puzzle} solved={solved} claims={claims} selected={open ?? taps.lit} width={width - u(32)} onCell={taps.tap} onDouble={taps.double} />
       <View style={s.under}>
         <Text style={[s.tip, { color: t.mute, flex: 1 }]}>{tip}</Text>
       </View>

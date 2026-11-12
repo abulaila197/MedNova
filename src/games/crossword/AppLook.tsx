@@ -7,7 +7,7 @@ import { Text } from '@/components/AppText';
 import Svg, { Path, Polyline } from 'react-native-svg';
 
 import { useTheme } from '@/state/app';
-import { u } from '@/theme/scale';
+import { TABLET, u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import { slideColors } from '../medicordle/palette';
@@ -36,19 +36,20 @@ export function AppTopBar({ kicker, title = 'Nova Crossword', titleColor, sub, h
   const t = useTheme();
   const c = slideColors(t.mode);
   return (
-    <View style={[s.label, { backgroundColor: c.boxA, borderColor: c.line }]}>
-      <View style={[s.labelL, { borderLeftColor: titleColor ?? t.accent, flex: 1 }]}>
+    // Tablet: stacked for the side panel (title over hearts and score, pause in the corner).
+    <View style={[s.label, TABLET && s.labelTab, { backgroundColor: c.boxA, borderColor: c.line }]}>
+      <View style={[s.labelL, TABLET ? s.labelLTab : null, { borderLeftColor: titleColor ?? t.accent, flex: TABLET ? 0 : 1 }]}>
         <Text style={[s.no, { color: t.dim }]}>{kicker.toUpperCase()}</Text>
         <Text style={[s.ttl, { color: titleColor ?? t.white }]} numberOfLines={1}>{title}</Text>
         <Text style={[s.sub, { color: t.mute }]}>{sub}</Text>
       </View>
-      <View style={s.labelR}>
+      <View style={[s.labelR, TABLET && s.labelRTab]}>
         <View style={{ flexDirection: 'row', gap: u(2) }} accessibilityLabel={`${hearts} hearts`}>{Array.from({ length: Math.max(maxHearts, hearts) }, (_, i) => <Icon key={i} d={HEART} on={i < hearts} color="#ff6b7d" off={t.dim} size={13} />)}</View>
         {stars != null ? <View style={{ flexDirection: 'row', gap: u(1) }} accessibilityLabel={`${stars} of 3 stars`}>{[0, 1, 2].map((i) => <Icon key={i} d={STAR} on={i < stars} color={c.near} off={t.dim} size={13} />)}</View> : null}
         {score != null ? <Text style={[s.sub, { color: t.fg, fontFamily: F.bodySemi }]}>{`${score} pts`}</Text> : null}
       </View>
       {onPause ? (
-        <Pressable onPress={onPause} hitSlop={u(8)} accessibilityRole="button" accessibilityLabel="Pause" style={[s.pause, { borderLeftColor: c.line }]}>
+        <Pressable onPress={onPause} hitSlop={u(8)} accessibilityRole="button" accessibilityLabel="Pause" style={[s.pause, TABLET && s.pauseTab, { borderLeftColor: c.line }]}>
           <Text style={{ color: t.fg, fontFamily: F.bodyBold, fontSize: u(11), letterSpacing: u(1) }}>❚❚</Text>
         </Pressable>
       ) : null}
@@ -144,6 +145,21 @@ export const AppGrid = memo(function AppGrid({ puzzle, solved, revealed = [], se
   return <View style={{ width: W, height: H, alignSelf: 'center' }}>{cells}</View>;
 });
 
+/**
+ * The grid, sized to its room on a tablet (Yazan 2026-11-12, look A): as big as the play area allows by width and
+ * height. On a phone it is the plain grid at the width given.
+ */
+export function FitGrid(p: Parameters<typeof AppGrid>[0]) {
+  const [area, setArea] = useState<{ w: number; h: number } | null>(null);
+  if (!TABLET) return <AppGrid {...p} />;
+  const w = area ? Math.floor(Math.min(area.w, (area.h * p.puzzle.cols) / p.puzzle.rows)) : 0;
+  return (
+    <View style={s.fit} onLayout={(e) => setArea({ w: e.nativeEvent.layout.width, h: e.nativeEvent.layout.height })}>
+      {area ? <AppGrid {...p} width={w} /> : null}
+    </View>
+  );
+}
+
 /** The dash between the two words of a two-word answer. */
 function Dash({ w, color }: { w: number; color: string }) {
   return (
@@ -167,7 +183,9 @@ export function AppPopup({ word, slots, typed, tokens, width, notice, shake = 0,
   const shakeStyle = useAnimatedStyle(() => ({ transform: [{ translateX: sx.value }] }));
   const t = useTheme();
   const c = slideColors(t.mode);
-  const inner = width - u(28);
+  // Tablet: a card of a phone's width in the middle, not stretched across the play area.
+  const pw = TABLET ? Math.min(width, u(320)) : width;
+  const inner = pw - u(28);
   const n = slots.length;
   // #33 (Yazan 2026-11-01) + 2026-11-02: one word stays on one row (TACHYCARDIA split as
   // TACHYC / ARDIA read like two words); a two-word answer that needs two rows breaks between its words, and a
@@ -184,7 +202,7 @@ export function AppPopup({ word, slots, typed, tokens, width, notice, shake = 0,
   const slotW = Math.min(u(34), ...slotRows.map((row) => Math.floor((inner - (row.length - 1) * GAP - dashesIn(row) * (DASH + GAP)) / row.length)));
   const keyW = Math.floor((inner - 9 * u(4)) / 10);
   return (
-    <View style={[s.sheet, { backgroundColor: '#0c1130', borderColor: c.line }]}>
+    <View style={[s.sheet, { backgroundColor: '#0c1130', borderColor: c.line }, TABLET ? { width: pw, alignSelf: 'center', marginBottom: u(18) } : null]}>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
         <Text style={[s.kick, { color: t.accent }]}>{`${word.direction === 'across' ? 'ACROSS' : 'DOWN'}  ·  ${word.category.toUpperCase()}`}</Text>
         <Pressable onPress={onClose} hitSlop={u(10)} accessibilityRole="button" accessibilityLabel="Close" style={[s.close, { borderColor: c.line, backgroundColor: c.key }]}>
@@ -247,7 +265,7 @@ export function AppLevelMap({ best, count = 50, action, onOpen }: { best: Record
   const t = useTheme();
   const c = slideColors(t.mode);
   const [w, setW] = useState(0);
-  const per = 5;
+  const per = TABLET ? 10 : 5; // tablet: ten puzzles to a row across the whole page
   const box = u(42);
   const levels = Array.from({ length: count }, (_, i) => i + 1);
   const rows: number[][] = [];
@@ -304,9 +322,14 @@ export function AppLevelMap({ best, count = 50, action, onOpen }: { best: Record
 }
 
 const s = StyleSheet.create({
+  fit: { flex: 1, minHeight: u(120), justifyContent: 'center' },
   label: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'stretch', borderWidth: 1, borderRadius: u(6), overflow: 'hidden' },
   labelL: { borderLeftWidth: u(5), paddingVertical: u(7), paddingHorizontal: u(10), gap: u(1), flexShrink: 1 },
   labelR: { alignItems: 'flex-end', justifyContent: 'center', gap: u(5), paddingRight: u(10) },
+  labelTab: { flexDirection: 'column' },
+  labelLTab: { paddingRight: u(44) },
+  labelRTab: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingLeft: u(15), paddingBottom: u(9) },
+  pauseTab: { position: 'absolute', right: 0, top: 0, height: u(44), borderLeftWidth: 0 },
   no: { fontFamily: F.mono, fontSize: u(8.5), letterSpacing: u(1.2) },
   ttl: { fontFamily: F.display, fontSize: u(20), lineHeight: u(24) },
   sub: { fontFamily: F.body, fontSize: u(11) },

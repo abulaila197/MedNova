@@ -9,7 +9,7 @@ import type { Play } from '@/games/engine/types';
 import { useAccount } from '@/state/account';
 import { useTheme } from '@/state/app';
 import { useBalanceStore } from '@/state/balance';
-import { u } from '@/theme/scale';
+import { TABLET, u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import { LevelRing } from './LevelRing';
@@ -33,10 +33,10 @@ export function LevelCounter({ play }: { play: Play }) {
   const bar = useAnimatedStyle(() => ({ width: `${Math.min(1, fill.value) * 100}%` }));
   return (
     <View style={s.row}>
-      <LevelRing size={u(46)} level={level} progress={after} slug={slug} />
+      <LevelRing size={u(TABLET ? 38 : 46)} level={level} progress={after} slug={slug} />
       <View style={{ flex: 1, gap: u(5) }}>
-        <View style={s.top}>
-          <Text style={[s.lv, { color: t.white }]}>
+        <View style={[s.top, TABLET && s.topTab]}>
+          <Text style={[s.lv, { color: t.white }]} numberOfLines={1}>
             {'Level '}
             <Text style={[s.lv, { color: t.accent, fontFamily: F.displayItalic }]}>{level}</Text>
           </Text>
@@ -63,6 +63,8 @@ export function LevelCounter({ play }: { play: Play }) {
 const s = StyleSheet.create({
   row: { width: '100%', flexDirection: 'row', alignItems: 'center', gap: u(12), marginTop: u(10), paddingTop: u(10), borderTopWidth: 1, borderColor: 'rgba(255,255,255,0.08)' },
   top: { flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between' },
+  // tablet: the results side panel is narrow, so the EXP count may drop under "Level n"
+  topTab: { flexWrap: 'wrap', columnGap: u(8) },
   lv: { fontFamily: F.display, fontSize: u(16) },
   n: { fontFamily: F.mono, fontSize: u(8.5), letterSpacing: u(0.5) },
   track: { height: u(6), borderRadius: 99, overflow: 'hidden' },

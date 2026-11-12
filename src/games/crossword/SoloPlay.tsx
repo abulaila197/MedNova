@@ -4,7 +4,7 @@ import { Text } from '@/components/AppText';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { useTheme } from '@/state/app';
-import { u, useScreen } from '@/theme/scale';
+import { TABLET, u, useScreen } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 import { sfxVerdict } from '@/lib/sound';
 
@@ -13,7 +13,7 @@ import { recordItem } from '../shell/flow';
 import { PauseMenu } from '../shell/PauseMenu';
 import type { PlayProps } from '../shell/types';
 import { Btn, GameScreen, Ghost, Kick } from '../shell/ui';
-import { AppGrid, AppLevelMap, AppPopup, AppTopBar, TIP, useGridTaps } from './AppLook';
+import { FitGrid, AppLevelMap, AppPopup, AppTopBar, TIP, useGridTaps } from './AppLook';
 import {
   CW, buildSlots, composeAnswer, indexOf, isFilled, isUnlocked, judge, levelExp, lockedCells, pickHintCells, placeLetter, removeSlot, soloStars, startSolo, stepSolo,
   type PuzzleDef, type SoloEvent, type SoloRun, type Typed,
@@ -123,7 +123,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
 
   if (!run) {
     return (
-      <GameScreen bodyStyle={{ paddingTop: u(12), paddingHorizontal: u(16), gap: u(10) }}>
+      <GameScreen wide bodyStyle={{ paddingTop: u(12), paddingHorizontal: u(16), gap: u(10) }}>
         <AppLevelMap best={bestMap(session)} count={PUZZLES.length} onOpen={open} action={<Ghost label={session.length ? 'See results' : 'Leave'} onPress={finish} />} />
       </GameScreen>
     );
@@ -271,10 +271,9 @@ function Puzzle({ puzzle, run, playId, paused, onEvent, onPause, dock, children 
   const sel = word ? idx.wordById.get(word)! : null;
   const left = puzzle.words.length - run.solved.length;
 
-  return (
-    <GameScreen scroll={false} bodyStyle={{ paddingTop: u(12), paddingHorizontal: u(16), gap: u(10) }}>
-      <AppTopBar kicker="Nova Crossword" title={`Puzzle ${puzzle.level}`} sub={`${puzzle.words.length} words · ${left} to go`} hearts={run.hearts} stars={soloStars(puzzle, run)} onPause={onPause} />
-      <AppGrid puzzle={puzzle} solved={run.solved} revealed={run.revealed} selected={word ?? taps.lit} width={W - u(32)} onCell={taps.tap} onDouble={taps.double} />
+  const bar = <AppTopBar kicker="Nova Crossword" title={`Puzzle ${puzzle.level}`} sub={`${puzzle.words.length} words · ${left} to go`} hearts={run.hearts} stars={soloStars(puzzle, run)} onPause={onPause} />;
+  const under = (
+    <>
       <View style={s.under}>
         <Text style={[s.tip, { color: t.mute }]}>{TIP}</Text>
       </View>
@@ -283,6 +282,24 @@ function Puzzle({ puzzle, run, playId, paused, onEvent, onPause, dock, children 
           <Ghost label="End puzzle" onPress={() => onEvent({ type: 'LEAVE' })} />
         </View>
       ) : null}
+    </>
+  );
+  // Tablet (look A): the grid fills the left side; the title, hearts, stars, tip and End puzzle sit in the panel.
+  return (
+    <GameScreen
+      scroll={false}
+      bodyStyle={{ paddingTop: u(12), paddingHorizontal: u(16), gap: u(10) }}
+      panel={
+        TABLET ? (
+          <>
+            {bar}
+            {under}
+          </>
+        ) : undefined
+      }>
+      {TABLET ? null : bar}
+      <FitGrid puzzle={puzzle} solved={run.solved} revealed={run.revealed} selected={word ?? taps.lit} width={W - u(32)} onCell={taps.tap} onDouble={taps.double} />
+      {TABLET ? null : under}
       {sel && playing && !paused ? (
         <Animated.View entering={FadeIn.duration(160)} exiting={FadeOut.duration(140)} style={[StyleSheet.absoluteFill, s.sheetWrap]}>
           <Pressable style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(5,8,25,0.45)' }]} onPress={() => setWord(null)} accessibilityLabel="Close the word" />

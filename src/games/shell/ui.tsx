@@ -5,7 +5,7 @@ import { Text } from '@/components/AppText';
 
 import { Screen } from '@/components/Screen';
 import { useTheme } from '@/state/app';
-import { u } from '@/theme/scale';
+import { TABLET, u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 import { tapped } from '@/lib/sound';
 import { Bolt } from '@/features/sparks/Bolt';
@@ -16,7 +16,43 @@ import { Bolt } from '@/features/sparks/Bolt';
  * glow and grain are then not drawn at all, rather than drifting unseen underneath.
  */
 /** `bottom` stays on screen under the scrolling body: right after the content when it fits, pinned when it doesn't. */
-export function GameScreen({ children, scroll = true, top, under, side, bodyStyle, bottom }: { children: ReactNode; scroll?: boolean; top?: ReactNode; under?: ReactNode; side?: ReactNode; bodyStyle?: StyleProp<ViewStyle>; bottom?: ReactNode }) {
+/**
+ * Android tablets (look A, Yazan 2026-11-12): a screen that passes `panel` uses the whole width, with the play area on
+ * the left and a side panel on the right (score, clock, buttons), always in view; `bottom` then sits at the foot of the
+ * panel. `wide` without a panel spreads the body over the whole width. On phones both are ignored: a game puts the
+ * same pieces in its phone places itself.
+ */
+export function GameScreen({ children, scroll = true, top, under, side, bodyStyle, bottom, panel, wide }: { children: ReactNode; scroll?: boolean; top?: ReactNode; under?: ReactNode; side?: ReactNode; bodyStyle?: StyleProp<ViewStyle>; bottom?: ReactNode; panel?: ReactNode; wide?: boolean }) {
+  if (TABLET && (panel !== undefined || wide)) {
+    const main = scroll ? (
+      <ScrollView style={s.shrinkFill} contentContainerStyle={[s.body, s.tBody, bodyStyle]} showsVerticalScrollIndicator={false}>
+        {children}
+      </ScrollView>
+    ) : (
+      <View style={[s.body, s.tBody, bodyStyle, { flex: 1 }]}>{children}</View>
+    );
+    return (
+      <Screen dock={false} glow={under ? false : 1} game under={under} side={side} wide>
+        {top}
+        {panel !== undefined ? (
+          <View style={s.tRow}>
+            <View style={s.tMain}>{main}</View>
+            <View style={s.tPanel}>
+              <ScrollView style={s.shrink} contentContainerStyle={s.tPanelIn} showsVerticalScrollIndicator={false}>
+                {panel}
+              </ScrollView>
+              {bottom ? <View style={s.tPanelFoot}>{bottom}</View> : null}
+            </View>
+          </View>
+        ) : (
+          <>
+            {main}
+            {bottom ? <View style={[s.body, s.tBody, { paddingTop: u(10) }]}>{bottom}</View> : null}
+          </>
+        )}
+      </Screen>
+    );
+  }
   return (
     <Screen dock={false} glow={under ? false : 1} game under={under} side={side}>
       {top}
@@ -138,9 +174,20 @@ export function RoundBtn({ label, glyph, onPress }: { label: string; glyph: stri
   );
 }
 
+/** Width of a tablet game's side panel, design px. */
+export const PANEL_W = 190;
+
 export const s = StyleSheet.create({
   body: { paddingHorizontal: u(16), paddingTop: u(16), paddingBottom: u(28), gap: u(12) },
   shrink: { flexGrow: 0, flexShrink: 1 },
+  shrinkFill: { flex: 1 },
+  // tablet: play area on the left, a panel of PANEL_W design px on the right
+  tBody: { paddingHorizontal: u(18) },
+  tRow: { flex: 1, flexDirection: 'row' },
+  tMain: { flex: 1, minWidth: 0 },
+  tPanel: { width: u(PANEL_W), paddingTop: u(16), paddingBottom: u(18), paddingRight: u(18), gap: u(10), justifyContent: 'space-between' },
+  tPanelIn: { gap: u(10) },
+  tPanelFoot: { gap: u(8) },
   kick: { fontFamily: F.mono, fontSize: u(8.5), lineHeight: u(12), letterSpacing: u(1.7), textTransform: 'uppercase' },
   ttl: { fontFamily: F.display, letterSpacing: u(-0.5) },
   body2: { fontFamily: F.body, fontSize: u(11.5), lineHeight: u(17) },

@@ -319,7 +319,7 @@ function LevelGrid({ best, session, onOpen, onFinish }: { best: (id: string) => 
   const stars = RIDDLES.reduce((a, r) => a + best(r.id), 0);
   const firstOpen = RIDDLES.find((r) => best(r.id) === 0)?.id;
   return (
-    <GameScreen>
+    <GameScreen wide>
       <View style={s.gTop}>
         <View style={{ flex: 1 }}>
           <Kick>{`${solved} of ${RIDDLES.length} solved · ${stars} ★`}</Kick>

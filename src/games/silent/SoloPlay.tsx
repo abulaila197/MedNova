@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 
-import { u } from '@/theme/scale';
+import { TABLET, u } from '@/theme/scale';
 
 import { engine } from '../engine';
 import { usePauseHide } from '../engine/usePauseHide';
@@ -142,44 +142,65 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   const last = run.done[run.done.length - 1];
   const pause = () => dispatch({ type: 'PAUSE', now: Date.now() });
 
-  return (
-    <SlateScreen>
-      <TopRow
-        kicker={`Practice · word ${run.used.length}`}
-        title={phase === 'reveal' ? (last && last.timeMs >= run.turnMs ? "Time's up" : 'Done') : 'Draw this'}
-        right={
-          <>
-            {phase === 'drawing' ? <ClockChalkTimer clock={clock} leftAt={(n) => soloLeft(run, n)} totalMs={run.turnMs} /> : null}
-            <PauseBtn onPress={pause} />
-          </>
-        }
-      />
-      <Panel style={s.word}>
-        <Text style={[s.wordT, { color: R.mark }]} numberOfLines={2} adjustsFontSizeToFit>
-          {paused ? '· · ·' : w.name}
-        </Text>
-        <Text style={[s.field, { color: R.soft }]} numberOfLines={1}>{paused ? ' ' : [w.aliases.length ? w.aliases.join(', ') : null, w.field].filter(Boolean).join(' · ')}</Text>
-      </Panel>
-      <FitBoard boardKey={run.board} boardRef={board} ink={ink} size={size} erase={erase} enabled={phase === 'drawing'} paused={paused} initial={resumed?.sketch?.board === run.board ? resumed.sketch.strokes : undefined} onStrokes={onStrokes} />
-      {phase === 'drawing' ? (
+  const top = (
+    <TopRow
+      kicker={`Practice · word ${run.used.length}`}
+      title={phase === 'reveal' ? (last && last.timeMs >= run.turnMs ? "Time's up" : 'Done') : 'Draw this'}
+      right={
         <>
-          <Ledge ink={ink} size={size} erase={erase} onInk={(i) => (setInk(i), setErase(false))} onSize={() => setSize(size ? 0 : 1)} onErase={() => setErase(!erase)} onUndo={() => board.current?.undo()} onClear={() => board.current?.clear()} />
-          <View style={s.row}>
-            <ChalkBtn ghost label="Finish" onPress={() => dispatch({ type: 'FINISH' })} style={{ flex: 1 }} />
-            <ChalkBtn label="I'm done" onPress={() => dispatch({ type: 'REVEAL', now: Date.now() })} style={{ flex: 2 }} />
-          </View>
+          {phase === 'drawing' ? <ClockChalkTimer clock={clock} leftAt={(n) => soloLeft(run, n)} totalMs={run.turnMs} /> : null}
+          <PauseBtn onPress={pause} />
         </>
-      ) : (
-        <View style={s.row}>
-          <ChalkBtn ghost label="Retry" onPress={() => dispatch({ type: 'RETRY', now: Date.now() })} style={{ flex: 1 }} />
-          <ChalkBtn ghost label="Finish" onPress={() => dispatch({ type: 'FINISH' })} style={{ flex: 1 }} />
-          <ChalkBtn label="Next" onPress={() => dispatch({ type: 'NEXT', now: Date.now() })} style={{ flex: 1.3 }} />
-        </View>
-      )}
+      }
+    />
+  );
+  const word = (
+    <Panel style={s.word}>
+      <Text style={[s.wordT, { color: R.mark }]} numberOfLines={2} adjustsFontSizeToFit>
+        {paused ? '· · ·' : w.name}
+      </Text>
+      <Text style={[s.field, { color: R.soft }]} numberOfLines={1}>{paused ? ' ' : [w.aliases.length ? w.aliases.join(', ') : null, w.field].filter(Boolean).join(' · ')}</Text>
+    </Panel>
+  );
+  // Tablet (Yazan 2026-11-12, look A): the board fills the left side with its chalk ledge under it; the word, the
+  // timer and the buttons stand in the side panel.
+  const btns =
+    phase === 'drawing' ? (
+      <View style={TABLET ? s.col : s.row}>
+        <ChalkBtn ghost label="Finish" onPress={() => dispatch({ type: 'FINISH' })} style={fx(1)} />
+        <ChalkBtn label="I'm done" onPress={() => dispatch({ type: 'REVEAL', now: Date.now() })} style={fx(2)} />
+      </View>
+    ) : (
+      <View style={TABLET ? s.col : s.row}>
+        <ChalkBtn ghost label="Retry" onPress={() => dispatch({ type: 'RETRY', now: Date.now() })} style={fx(1)} />
+        <ChalkBtn ghost label="Finish" onPress={() => dispatch({ type: 'FINISH' })} style={fx(1)} />
+        <ChalkBtn label="Next" onPress={() => dispatch({ type: 'NEXT', now: Date.now() })} style={fx(1.3)} />
+      </View>
+    );
+
+  return (
+    <SlateScreen
+      panel={
+        TABLET ? (
+          <>
+            {top}
+            {word}
+            {btns}
+          </>
+        ) : undefined
+      }>
+      {TABLET ? null : top}
+      {TABLET ? null : word}
+      <FitBoard boardKey={run.board} boardRef={board} ink={ink} size={size} erase={erase} enabled={phase === 'drawing'} paused={paused} initial={resumed?.sketch?.board === run.board ? resumed.sketch.strokes : undefined} onStrokes={onStrokes} />
+      {phase === 'drawing' ? <Ledge ink={ink} size={size} erase={erase} onInk={(i) => (setInk(i), setErase(false))} onSize={() => setSize(size ? 0 : 1)} onErase={() => setErase(!erase)} onUndo={() => board.current?.undo()} onClear={() => board.current?.clear()} /> : null}
+      {TABLET ? null : btns}
       <PauseMenu open={paused} mode="solo" onResume={() => dispatch({ type: 'RESUME', now: Date.now() })} onQuit={onQuit} />
     </SlateScreen>
   );
 }
+
+/** A button's share of a phone row; on a tablet the panel stacks them at full width. */
+const fx = (n: number) => (TABLET ? null : { flex: n });
 
 const s = StyleSheet.create({
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: u(5) },
@@ -187,4 +208,5 @@ const s = StyleSheet.create({
   wordT: { fontFamily: SL.head, fontSize: u(21), lineHeight: u(25), textAlign: 'center' },
   field: { fontFamily: SL.body, fontSize: u(13) },
   row: { flexDirection: 'row', gap: u(8), flexWrap: 'wrap' },
+  col: { gap: u(8) },
 });

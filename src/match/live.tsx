@@ -5,7 +5,7 @@ import Animated, { FadeIn, FadeOut, SlideInUp } from 'react-native-reanimated';
 
 import { PlayerFace } from '@/features/style/Frame';
 import { useTheme } from '@/state/app';
-import { u } from '@/theme/scale';
+import { u, useBleed } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import { G } from './grey';
@@ -37,9 +37,11 @@ export function AlertPill({ alert }: { alert: { id: number; text: string; color:
 
 /** ON16: the 3-2-1 before the first case, with everyone's faces, in the match grey. */
 export function Countdown({ ms, faces, ids, line, dealing }: { ms: number; faces: string[]; ids?: string[]; line: string; dealing?: string }) {
+  const bleed = useBleed();
   const done = ms <= 0;
   return (
-    <Animated.View entering={FadeIn.duration(200)} style={[StyleSheet.absoluteFill, s.cd]}>
+    // In a tablet's centred column it still covers the whole screen.
+    <Animated.View entering={FadeIn.duration(200)} style={[StyleSheet.absoluteFill, s.cd, bleed ? { left: -bleed, right: -bleed } : null]}>
       <Text style={[s.cdK, { color: G.mute }]}>MATCH STARTING</Text>
       {done && dealing ? <Text style={[s.stuckT, { color: G.fg, marginVertical: u(30) }]}>{dealing}</Text> : <Text style={[s.cdN, { color: G.fg }]}>{Math.max(1, Math.ceil(ms / 1000))}</Text>}
       <View style={s.cdF}>
