@@ -127,7 +127,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
     <SlideTable
       label={{
         no: `WORD ${run.index + 1} OF ${run.wordIds.length}`,
-        title: 'Medicordle',
+        title: 'Six Word Tries',
         sub: phase === 'wordOver' ? `${STYLE_NAME[style]} · ${w.word.length} letters · ${run.rows} rows` : <TurnName name={who?.name ?? ''} color={who?.color} after={`’s turn · ${STYLE_NAME[style]} · ${w.word.length} letters`} />,
         right: phase === 'playing' ? <TurnClock ms={left} warn={left <= HURRY_MS} /> : undefined,
       }}

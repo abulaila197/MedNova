@@ -3,14 +3,14 @@
 export type Game = { key: string; lead: string; em: string; sub: string; desc: string };
 
 export const GAMES: Game[] = [
-  { key: 'the-diagnostic-pursuit', lead: 'The Diagnostic', em: 'Pursuit', sub: 'The Road to Diagnosis', desc: 'Race the clock to the right diagnosis, one clue at a time.' },
-  { key: 'the-silent-artist', lead: 'The Silent', em: 'Artist', sub: 'Chalk and Silence', desc: 'Draw the diagnosis without words while friends guess.' },
+  { key: 'the-diagnostic-pursuit', lead: 'Race to', em: 'Diagnosis', sub: 'Every Clue Counts', desc: 'Race the clock to the right diagnosis, one clue at a time.' },
+  { key: 'the-silent-artist', lead: 'Sketch', em: 'It', sub: 'Chalk and Silence', desc: 'Draw the diagnosis without words while friends guess.' },
   // Trust Me Not was cancelled (Yazan 2026-10-24); its code and database stay, it just isn't listed.
   // The Conqueror, Nova Password and Code Clinic were taken off (Yazan 2026-11-04, point 6): same, kept in PARKED_GAMES.
   { key: 'nova-crossword', lead: 'Nova', em: 'Crossword', sub: "The Clinician's Grid", desc: 'Fill the grid with diseases, drugs and signs.' },
-  { key: 'the-quiz-parade', lead: 'The Quiz', em: 'Parade', sub: 'March of Minds', desc: 'Seven kinds of question, one after another. Harder ones score more.' },
-  { key: 'the-riddler', lead: 'The', em: 'Riddler', sub: 'Puzzles in Plain Sight', desc: 'Picture riddles that spell out a condition or sign.' },
-  { key: 'nova-medicordle', lead: 'Nova', em: 'Medicordle', sub: 'Word of the Ward', desc: 'Guess the hidden medical term in six tries.' },
+  { key: 'the-quiz-parade', lead: 'Quick Fire', em: 'Quiz', sub: 'March of Minds', desc: 'Seven kinds of question, one after another. Harder ones score more.' },
+  { key: 'the-riddler', lead: 'Medical', em: 'Riddles', sub: 'Puzzles in Plain Sight', desc: 'Picture riddles that spell out a condition or sign.' },
+  { key: 'nova-medicordle', lead: 'Six Word', em: 'Tries', sub: 'Word of the Ward', desc: 'Guess the hidden medical term in six tries.' },
   { key: 'the-streak-master', lead: 'The Streak', em: 'Master', sub: 'One Miss Away', desc: 'Answer in a row and keep your streak alive.' },
   { key: 'case-files-unsolved', lead: 'Case', em: 'Files', sub: 'Unsolved Differentials', desc: 'Open the file, follow the clues and close the case.' },
   { key: 'the-wheels-of-chaos', lead: 'The Wheels of', em: 'Chaos', sub: 'Spin of Fate', desc: 'Spin the wheel and take on whatever case it lands on.' },

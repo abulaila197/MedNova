@@ -218,7 +218,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   };
 
   const no = (day: number | null) => (day != null ? `NO. ${day + 1}` : 'ENDLESS');
-  const titleFor = (day: number) => `Nova Medicordle No. ${day + 1} · ${STYLE_NAME[style]}`;
+  const titleFor = (day: number) => `Six Word Tries No. ${day + 1} · ${STYLE_NAME[style]}`;
 
   // The phone date reads earlier than the latest daily: no daily until that day has passed.
   if (locked != null) {
@@ -238,7 +238,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
     const w = wordById.get(done.wordId)!;
     return (
       <SlideTable
-        label={{ no: no(today), title: 'Medicordle', sub: `Daily ${STYLE_NAME[style]} · played today`, right: <SlideStack n={liveStreak(streak, today)} /> }}
+        label={{ no: no(today), title: 'Six Word Tries', sub: `Daily ${STYLE_NAME[style]} · played today`, right: <SlideStack n={liveStreak(streak, today)} /> }}
         answer={w.word}
         played={done.guesses.map((word) => ({ word }))}
         rows={MAX_ROWS}
@@ -281,7 +281,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
 
   return (
     <SlideTable
-      label={{ no: no(run.day), title: 'Medicordle', sub, right: run.kind === 'daily' ? <SlideStack n={liveStreak(streak, today)} /> : <Text style={[s.score, { color: t.accent }]}>{`${run.score} EXP`}</Text> }}
+      label={{ no: no(run.day), title: 'Six Word Tries', sub, right: run.kind === 'daily' ? <SlideStack n={liveStreak(streak, today)} /> : <Text style={[s.score, { color: t.accent }]}>{`${run.score} EXP`}</Text> }}
       answer={w.word}
       played={run.guesses.map((word) => ({ word }))}
       rows={MAX_ROWS}

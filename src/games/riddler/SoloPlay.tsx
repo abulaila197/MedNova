@@ -207,7 +207,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
     <RiddleBoard
       riddle={r}
       kicker={`Level ${idx + 1} of ${RIDDLES.length}`}
-      title={{ text: 'The Riddler' }}
+      title={{ text: 'Medical Riddles' }}
       clockMs={levelTime(level, now)}
       lives={livesLeft(level)}
       wrong={level.wrong}
@@ -324,7 +324,7 @@ function LevelGrid({ best, session, onOpen, onFinish }: { best: (id: string) => 
         <View style={{ flex: 1 }}>
           <Kick>{`${solved} of ${RIDDLES.length} solved · ${stars} ★`}</Kick>
           <Text style={[s.gTitle, { color: t.white }]} numberOfLines={1}>
-            The <Text style={{ color: t.accent, fontFamily: F.displayItalic }}>Riddler</Text>
+            Medical <Text style={{ color: t.accent, fontFamily: F.displayItalic }}>Riddles</Text>
           </Text>
         </View>
         <Ghost label={session.length ? 'See results' : 'Leave'} onPress={onFinish} />

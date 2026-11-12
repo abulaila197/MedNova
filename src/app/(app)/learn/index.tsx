@@ -239,7 +239,7 @@ function CasesPage() {
     }, [signedIn]),
   );
   const rows = [
-    ...(list ?? []).map((k) => ({ key: `case:${k.id}`, at: k.created_at, name: k.diagnosis, sub: `Diagnostic Pursuit · ${k.gender[0]}, ${k.age}`, status: k.status, play: k.answer_id && k.status !== 'declined' ? () => playCase(k) : null })),
+    ...(list ?? []).map((k) => ({ key: `case:${k.id}`, at: k.created_at, name: k.diagnosis, sub: `Race to Diagnosis · ${k.gender[0]}, ${k.age}`, status: k.status, play: k.answer_id && k.status !== 'declined' ? () => playCase(k) : null })),
     ...(words ?? []).map((w) => ({ key: `word:${w.id}`, at: w.created_at, name: wordTitle(w), sub: gameLabel(w.game), status: w.status, play: w.status !== 'declined' ? () => playWord(w) : null })),
   ].sort((x, y) => y.at.localeCompare(x.at));
   const go = (to: string) => router.push((signedIn ? to : '/auth') as never);
@@ -263,7 +263,7 @@ function CasesPage() {
       <OfflineLine at={savedAt} />
       {err ? <Text style={[s.csA, { color: t.error }]}>{err}</Text> : null}
       {signedIn && list && !rows.length ? (
-        <Text style={[s.csA, { color: c.mute }]}>Nothing yet. Write a case or add a word for Silent Artist, Medicordle, Streak Master or Imposter. You can practise it straight away; once approved it plays in rooms you host, and pays 10 tokens.</Text>
+        <Text style={[s.csA, { color: c.mute }]}>Nothing yet. Write a case or add a word for Sketch It, Six Word Tries, Streak Master or Imposter. You can practise it straight away; once approved it plays in rooms you host, and pays 10 tokens.</Text>
       ) : null}
       <View>
         {rows.map((r, i) => (

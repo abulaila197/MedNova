@@ -91,7 +91,7 @@ function MinePage({ mine }: { mine: string }) {
         <View style={s.dm}>
           <View style={[s.sw, { backgroundColor: c.swatch, borderColor: c.swatchLine }]} />
           <Text style={[s.dmT, { color: c.mute }]} numberOfLines={1}>
-            {`${k ? 'Diagnostic Pursuit case' : `${gameLabel(w!.game)} word`} · written by you`}
+            {`${k ? 'Race to Diagnosis case' : `${gameLabel(w!.game)} word`} · written by you`}
           </Text>
         </View>
         {note ? <Text style={[s.dmT, { color: t.fg }]}>{`Note from MedNova: ${note}`}</Text> : null}

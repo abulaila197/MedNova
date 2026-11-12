@@ -19,6 +19,8 @@ import { wrapOff } from './Dots';
 const DESC = { dark: '#c9cde8' };
 /** Cards whose art reaches up beside the text get a narrower description. */
 const DESC_W: Record<string, number> = { 'case-files-unsolved': 165 };
+// A title that would end right against the side buttons breaks onto two lines instead (Medical Riddles, renamed 2026-11-12).
+const TTL_W: Record<string, number> = { 'the-riddler': 160 };
 
 /** One game: the drawing in the lower right and the text block top left. Slides with the swipe. */
 export function GamePage({ game, j, pos, active, lift }: { game: Game; j: number; pos: SharedValue<number>; active: boolean; lift: number }) {
@@ -43,7 +45,7 @@ export function GamePage({ game, j, pos, active, lift }: { game: Game; j: number
           <Text style={[s.kick, { color: t.accent }]}>{`${String(j + 1).padStart(2, '0')} / ${String(GAMES.length).padStart(2, '0')}`}</Text>
           <GameTag game={game.key} />
         </View>
-        <Text style={[s.ttl, { color: t.white }]}>
+        <Text style={[s.ttl, { color: t.white }, TTL_W[game.key] ? { maxWidth: u(TTL_W[game.key]) } : null]}>
           {game.lead} <Text style={{ color: t.accent, fontFamily: F.displayItalic }}>{game.em}</Text>
         </Text>
         <Text style={[s.sub, { color: t.soft }]}>{game.sub}</Text>

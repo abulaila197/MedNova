@@ -141,7 +141,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
     <SlideTable
       label={{
         no: `WORD ${st.index + 1} OF ${st.total}`,
-        title: 'Medicordle',
+        title: 'Six Word Tries',
         sub: `Vs rivals · ${STYLE_NAME[style]} · ${w.word.length} letters`,
         right: reveal ? undefined : <TurnClock ms={left} warn={left <= HURRY_MS} />,
       }}

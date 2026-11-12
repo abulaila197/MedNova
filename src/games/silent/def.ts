@@ -62,7 +62,7 @@ export const silentArtist: GameDef = {
   setup: { solo: [], offline: [MIX, TURN, PERFORMS] },
   players: { offline: { min: 2, max: 6 } },
   teams: { offline: true },
-  playersNote: () => 'Player 1 is you, the phone owner. The Silent Artist earns no EXP and sends nothing to Learn.',
+  playersNote: () => 'Player 1 is you, the phone owner. Sketch It earns no EXP and sends nothing to Learn.',
   Play: { solo: SoloPlay, offline: OfflinePlay },
   // SA1: nothing to Learn in any mode. Online pays 1 EXP per 10 points, up to 60 (Yazan 2026-10-27); Solo and
   // Pass the phone stay EXP-free.
