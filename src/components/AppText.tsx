@@ -1,4 +1,4 @@
-import { AR_LETTERS } from '@/i18n';
+import { AR_LETTERS, isAr } from '@/i18n';
 import { Platform, StyleSheet, Text as RNText, TextInput as RNTextInput, type TextInputProps, type TextProps, type TextStyle } from 'react-native';
 
 // Every screen is laid out at fixed design sizes and scaled as one piece (theme/scale.ts), so text
@@ -67,7 +67,8 @@ function arabicStyle(style: TextProps['style']): TextStyle {
 
 /** react-native Text with the text-size cap. Use instead of importing Text from react-native. */
 export function Text(props: TextProps & { ref?: React.Ref<RNText> }) {
-  const ar = hasArabic(props.children);
+  // The Arabic fonts are only loaded when the app runs in Arabic.
+  const ar = isAr && hasArabic(props.children);
   const style = ar ? [props.style, arabicStyle(props.style)] : props.style;
   const room = Platform.OS === 'web' ? null : letterRoom(style);
   return <RNText maxFontSizeMultiplier={MAX_FONT_SCALE} textBreakStrategy={BREAK} {...props} style={room ? [style, room] : style} />;

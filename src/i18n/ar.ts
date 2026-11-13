@@ -54,4 +54,9 @@ export const AR: Record<string, string> = {
   'App language': 'لغة التطبيق',
   'Follow your phone, or pick one. The app restarts in the new language.': 'خليها زي لغة موبايلك أو اختار لغة. التطبيق هيفتح من جديد باللغة اللي اخترتها.',
   'Like my phone': 'زي الموبايل',
+  'your phone’s language': 'لغة موبايلك',
+  'Change the language?': 'تغيير اللغة؟',
+  'MedNova will close and open again in {name}. Are you sure?': 'التطبيق هيقفل ويفتح من جديد باللغة: {name}. متأكد إنك عايز تغيّرها؟',
+  'Yes, restart': 'أيوه، غيّرها',
+  Cancel: 'إلغاء',
 };

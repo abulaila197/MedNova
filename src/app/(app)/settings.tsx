@@ -1,10 +1,12 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
+import { create } from 'zustand';
 import { AppState, Linking, Platform, Pressable, StyleSheet, View } from 'react-native';
 
 import { Text } from '@/components/AppText';
 import { Screen } from '@/components/Screen';
+import { Sheet } from '@/components/Sheet';
 import { GradBtn, InfoScroll, Kicker, s as ui, useInfo } from '@/features/info/ui';
 import { useSession } from '@/games/shell/session';
 import { ADS_ON, openPrivacyChoices, privacyChoicesNeeded } from '@/lib/ads';
@@ -176,6 +178,7 @@ export default function Page() {
           <Text style={[s.link, { color: c.t.accent, borderBottomColor: c.t.accent }]}>{t('Read our Privacy Policy')}</Text>
         </Pressable>
       </InfoScroll>
+      <LangSheet />
     </Screen>
   );
 }
@@ -187,9 +190,36 @@ const LANGS: { k: LangChoice; label: string }[] = [
 ];
 
 /** The app's language (Yazan 2026-11-13): follow the phone, or English, or Arabic. A change restarts the app. */
+// Changing the language restarts the app, so it asks first (Yazan 2026-11-13).
+const useLangAsk = create<{ k: LangChoice | null }>(() => ({ k: null }));
+const langName = (k: LangChoice) => (k === 'phone' ? t('your phone’s language') : k === 'en' ? 'English' : 'العربية');
+
+function LangSheet() {
+  const c = useInfo();
+  const ask = useLangAsk((x) => x.k);
+  const close = () => useLangAsk.setState({ k: null });
+  return (
+    <Sheet open={!!ask} onClose={close}>
+      <View style={{ gap: u(10), paddingTop: u(2), paddingBottom: u(30) }}>
+        <Text style={[s.askH, { color: c.fg }]}>{t('Change the language?')}</Text>
+        <Text style={[ui.p, { color: c.mute }]}>{t('MedNova will close and open again in {name}. Are you sure?', { name: ask ? langName(ask) : '' })}</Text>
+        <Pressable onPress={() => ask && setLangChoice(ask)} accessibilityRole="button" style={{ marginTop: u(4) }}>
+          <LinearGradient colors={[c.t.gradA, c.t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.yes}>
+            <Text style={[s.yesT, { color: c.t.onGrad }]}>{t('Yes, restart')}</Text>
+          </LinearGradient>
+        </Pressable>
+        <Pressable onPress={close} accessibilityRole="button" style={s.cancel}>
+          <Text style={[s.cancelT, { color: c.mute }]}>{t('Cancel')}</Text>
+        </Pressable>
+      </View>
+    </Sheet>
+  );
+}
+
 function LanguageRow() {
   const c = useInfo();
   const pick = langChoice();
+  const setAsk = (k: LangChoice) => useLangAsk.setState({ k });
   return (
     <>
       <View style={{ marginTop: u(14) }}>
@@ -202,7 +232,7 @@ function LanguageRow() {
         </View>
         <View style={[s.pill, { backgroundColor: c.surf, borderColor: c.line, alignSelf: 'flex-start' }]}>
           {LANGS.map((v) => (
-            <Pressable key={v.k} onPress={tapped(() => setLangChoice(v.k))} accessibilityRole="button" accessibilityState={{ selected: pick === v.k }} accessibilityLabel={`${t('App language')}: ${t(v.label)}`}>
+            <Pressable key={v.k} onPress={tapped(() => v.k !== pick && setAsk(v.k))} accessibilityRole="button" accessibilityState={{ selected: pick === v.k }} accessibilityLabel={`${t('App language')}: ${t(v.label)}`}>
               {pick === v.k ? (
                 <LinearGradient colors={[c.t.gradA, c.t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={s.opt}>
                   <Text style={[s.optT, { color: c.t.onGrad }]}>{t(v.label)}</Text>
@@ -301,5 +331,10 @@ const s = StyleSheet.create({
   opt: { paddingVertical: u(5), paddingHorizontal: u(11), borderRadius: 999 },
   optT: { fontFamily: F.bodySemi, fontSize: u(9.5) },
   err: { fontFamily: F.bodyMedium, fontSize: u(10.5), marginTop: u(8) },
+  askH: { fontFamily: F.display, fontSize: u(19), lineHeight: u(23) },
+  yes: { height: u(38), borderRadius: u(19), alignItems: 'center', justifyContent: 'center' },
+  yesT: { fontFamily: F.display, fontSize: u(14), lineHeight: u(18) },
+  cancel: { alignSelf: 'center', paddingVertical: u(6), paddingHorizontal: u(14) },
+  cancelT: { fontFamily: F.bodySemi, fontSize: u(11) },
   link: { fontFamily: F.bodySemi, fontSize: u(10.5), alignSelf: 'flex-start', borderBottomWidth: 1 },
 });
