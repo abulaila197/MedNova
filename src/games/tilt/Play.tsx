@@ -4,6 +4,7 @@ import * as ScreenOrientation from 'expo-screen-orientation';
 import { Accelerometer } from 'expo-sensors';
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Platform, Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
+import Svg, { Defs, Ellipse, RadialGradient, Stop } from 'react-native-svg';
 
 import { Text } from '@/components/AppText';
 import { loadFonts } from '@/features/loading/fonts';
@@ -432,7 +433,18 @@ export function Play({ play, onFinish, onQuit }: PlayProps) {
     <View style={StyleSheet.absoluteFill}>
       <LinearGradient colors={[C.glow, C.plum, C.deep]} locations={[0, 0.55, 1]} start={{ x: 0.5, y: 0.1 }} end={{ x: 0.5, y: 1 }} style={StyleSheet.absoluteFill} />
       {/* The spotlight: one soft cone from the top, drawn once. */}
-      <LinearGradient colors={['rgba(255,230,180,0.18)', 'rgba(255,230,180,0)']} start={{ x: 0.5, y: 0 }} end={{ x: 0.5, y: 1 }} style={[st_.beam, { left: vl(30), right: vl(30) }]} />
+      {/* Soft at every edge (Yazan 2026-11-13): an oval glow from the top centre that fades out to the sides and
+          the bottom, so it reads as stage light and never as a pale box. */}
+      <Svg style={StyleSheet.absoluteFill} pointerEvents="none">
+        <Defs>
+          <RadialGradient id="tt-spot" cx="50%" cy="0%" rx="34%" ry="78%" fx="50%" fy="0%">
+            <Stop offset="0" stopColor="#ffe6b4" stopOpacity={0.24} />
+            <Stop offset="0.45" stopColor="#ffe6b4" stopOpacity={0.1} />
+            <Stop offset="1" stopColor="#ffe6b4" stopOpacity={0} />
+          </RadialGradient>
+        </Defs>
+        <Ellipse cx="50%" cy="0%" rx="34%" ry="78%" fill="url(#tt-spot)" />
+      </Svg>
       <Bulbs vs={vs} vl={vl} />
       {body}
       {fl ? (
@@ -517,7 +529,6 @@ function Pill({ label, onPress, gold, disabled, vs }: { label: string; onPress: 
 
 const st_ = StyleSheet.create({
   center: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, alignItems: 'center', justifyContent: 'center', gap: 8, paddingHorizontal: 24 },
-  beam: { position: 'absolute', top: 0, bottom: '25%', borderBottomLeftRadius: 400, borderBottomRightRadius: 400 },
   tag: { fontFamily: F.bodyBold, color: C.pink, textTransform: 'uppercase', textAlign: 'center' },
   name: { color: C.cream, textAlign: 'center', textShadowColor: C.shadow, textShadowRadius: 0 },
   count: { color: C.gold, textAlign: 'center' },

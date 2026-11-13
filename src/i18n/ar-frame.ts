@@ -518,7 +518,7 @@ export const AR_FRAME: Record<string, string> = {
   "Taken off.": "اتشال.",
   "Done. Everyone sees it now.": "تمام. كله شايفه دلوقتي.",
   "ADMIN": "أدمن",
-  "Earned, not sold": "مكتسب وليس مكسوب",
+  "Earned, not sold": "مكتسب، مش للبيع",
   "Buy · {costOf}": "اشتري · {costOf}",
   "Bought. Tap Wear to put it on.": "اتشرى. دوس \"البس\" عشان تلبسه.",
   "Sent to {name}. They get a pop-up next time they open MedNova.": "اتبعت لـ{name}. هيظهرله إشعار أول ما يفتح MedNova.",

@@ -308,9 +308,9 @@ export const PRIVACY: Section[] = [
   },
   {
     n: '17',
-    k: 'Contact',
+    k: 'Contact|legal',
     plain: 'Privacy questions? *Write to us.*',
-    legal: [{ p: `For privacy questions or requests, contact MedNova at ${CONTACT}.` }],
+    legal: [{ p: tr('For privacy questions or requests, contact MedNova at {c}.', { c: CONTACT }) }],
   },
 ];
 
@@ -452,9 +452,9 @@ export const TERMS: Section[] = [
   },
   {
     n: '18',
-    k: 'Contact',
+    k: 'Contact|legal',
     plain: 'Questions about these Terms? *Write to us.*',
-    legal: [{ p: `For questions about these Terms, contact MedNova at ${CONTACT}.` }],
+    legal: [{ p: tr('For questions about these Terms, contact MedNova at {c}.', { c: CONTACT }) }],
   },
 ];
 

@@ -253,20 +253,20 @@ function Frame({ si, w, h, padTop, padBottom, children }: Omit<SlideProps, 'onNe
   );
 }
 
-/** 01 / Ten games: scene on top, copy at the top-left. */
+/** 01 / +10 games: scene on top, copy at the top-left. */
 export function SlideGames(p: SlideProps) {
   return (
     <Frame {...p}>
       <View style={st.bar}>
-        <Text style={[st.barTxt, { color: CYAN }]}>{tr('01 / Ten games')}</Text>
+        <Text style={[st.barTxt, { color: CYAN }]}>{tr('01 / +10 games')}</Text>
         <Skip onPress={p.onSkip} />
       </View>
       <View style={st.copy}>
         <View>
-          <Text style={{ fontFamily: F.display, fontSize: z(76), lineHeight: z(60.8), letterSpacing: z(-2.28), color: FG }}>{tr('Play')}</Text>
+          <Text style={{ fontFamily: F.display, fontSize: z(isAr ? 60 : 76), lineHeight: z(isAr ? 72 : 60.8), letterSpacing: z(-2.28), color: FG }}>{tr('Play')}</Text>
           <Text
             style={{ fontFamily: F.displayItalic, fontSize: z(34), lineHeight: z(34), letterSpacing: z(-2.28), color: ACCENT, textAlign: 'center', marginTop: z(10) }}>
-            {tr('the case')}
+            {tr('the case|slide 1')}
           </Text>
         </View>
         <Text style={[st.p, { maxWidth: z(208) }]}>{tr('Hunt the diagnosis like a detective, solo or against smart rivals.')}</Text>
@@ -277,6 +277,9 @@ export function SlideGames(p: SlideProps) {
     </Frame>
   );
 }
+
+/** Arabic headings run about 10% smaller (Yazan 2026-11-13). */
+const AR_K = isAr ? 0.9 : 1;
 
 /** 02 / Learning Space: copy at the bottom-left, scene rising behind. */
 export function SlideLearn(p: SlideProps) {
@@ -290,16 +293,16 @@ export function SlideLearn(p: SlideProps) {
       <View style={st.copy}>
         <View>
           <View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
-            <Text style={{ fontFamily: F.display, fontSize: z(44), lineHeight: z(38.72), letterSpacing: z(-1.32), color: FG }}>{tr('Every ')}</Text>
+            <Text style={{ fontFamily: F.display, fontSize: z(44 * AR_K), lineHeight: z(38.72 * AR_K), letterSpacing: z(-1.32), color: FG }}>{tr('Every ')}</Text>
             <View>
-              <Text style={{ fontFamily: F.displayItalic, fontSize: z(44), lineHeight: z(38.72), letterSpacing: z(-1.32), color: ROSE }}>{tr('miss')}</Text>
+              <Text style={{ fontFamily: F.displayItalic, fontSize: z(44 * AR_K), lineHeight: z(38.72 * AR_K), letterSpacing: z(-1.32), color: ROSE }}>{tr('miss')}</Text>
               <View
                 pointerEvents="none"
                 style={{
                   position: 'absolute',
                   start: z(-3),
                   end: z(-3),
-                  top: z(21.16),
+                  top: z(21.16 * AR_K),
                   height: z(2),
                   backgroundColor: ROSE,
                   transform: [{ rotate: '-6deg' }],
@@ -308,7 +311,7 @@ export function SlideLearn(p: SlideProps) {
               />
             </View>
           </View>
-          <Text style={{ fontFamily: F.displayItalic, fontSize: z(54), lineHeight: z(47.52), letterSpacing: z(-1.32), color: ACCENT }}>{tr('becomes\na star')}</Text>
+          <Text style={{ fontFamily: F.displayItalic, fontSize: z(54 * AR_K), lineHeight: z(47.52 * AR_K), letterSpacing: z(-1.32), color: ACCENT }}>{tr('becomes\na star')}</Text>
         </View>
         <Text style={[st.p, { maxWidth: z(208) }]}>{tr('Every disease or term you get wrong lands in your dossier, ready to review.')}</Text>
       </View>
@@ -325,8 +328,8 @@ export function SlideCommunity(p: SlideProps) {
       <View style={[st.copy, { marginTop: z(28), alignItems: 'center' }]}>
         <Band />
         <Text style={{ fontFamily: F.mono, fontSize: z(9), lineHeight: z(12), letterSpacing: z(2.7), color: CYAN }}>{tr('NOVA COMMUNITY')}</Text>
-        <Text style={{ fontFamily: F.display, fontSize: z(40), lineHeight: z(36), letterSpacing: z(-1.2), color: FG, textAlign: 'center' }}>
-          {tr('Never the\nonly one\n')}
+        <Text style={{ fontFamily: F.display, fontSize: z(40 * AR_K), lineHeight: z(36 * AR_K), letterSpacing: z(-1.2), color: FG, textAlign: 'center' }}>
+          {tr('Never the\nonly one\n|slide 3')}
           <Text style={{ fontFamily: F.displayItalic, color: ACCENT }}>{tr('on call')}</Text>
         </Text>
         <Text style={[st.p, { maxWidth: z(194), textAlign: 'center' }]}>{tr('Share cases, challenge friends and read the MedNova newspaper.')}</Text>

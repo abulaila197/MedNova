@@ -164,7 +164,7 @@ export const LOAD: Record<string, LoadCfg> = {
       { x: 0.5, y: 0.66, r: 110, c: 'rgba(60,230,230,0.18)', a: 'still' },
     ],
     parts: [],
-    tips: ['One player has a different word, and even they don\'t know it.', 'Give a clue that proves you know the word without giving it away.', 'Caught? Guess everyone else\'s word to win a point back.'],
+    tips: ['One player has a different word and knows they\'re the imposter. Can they blend in?', 'Give a clue that proves you know the word without giving it away.', 'Caught? Guess everyone else\'s word to win a point back.'],
     fonts: ['BebasNeue_400Regular', 'BarlowCondensed_500Medium'],
   },
   // Tilt & Tell (Yazan 2026-11-12): a 1970s game-show dressing room, marquee bulbs round the mirror, plum and gold.
