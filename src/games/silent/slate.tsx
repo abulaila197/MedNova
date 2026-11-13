@@ -171,7 +171,7 @@ export function HintCard({ hint }: { hint: HintView }) {
     <Panel>
       <View style={s.hintRow}>
         <Text style={[s.hintK, ink]}>{`${hint.words} ${hint.words === 1 ? 'word' : 'words'}`}</Text>
-        <Text style={[s.hintK, ink, { opacity: hint.field ? 1 : 0.45 }]}>{hint.field ?? tr('Field soon')}</Text>
+        <Text style={[s.hintK, ink, { opacity: hint.field ? 1 : 0.45 }]}>{hint.field ?? tr('Field later')}</Text>
       </View>
       <Text style={[s.mask, ink]} numberOfLines={2} adjustsFontSizeToFit>
         {hint.mask ? hint.mask.replace(/ /g, '    ') : '· · ·'}
@@ -186,7 +186,7 @@ export function HintLine({ hint }: { hint: HintView }) {
   return (
     <Panel style={{ paddingVertical: u(5), gap: u(2) }}>
       <Text style={[s.hintK, ink, { fontSize: u(12), opacity: 0.85 }]} numberOfLines={1}>
-        {`${hint.words} ${hint.words === 1 ? 'word' : 'words'} · ${hint.field ?? tr('Field soon')}`}
+        {`${hint.words} ${hint.words === 1 ? 'word' : 'words'} · ${hint.field ?? tr('Field later')}`}
       </Text>
       <Text style={[s.mask, ink, { fontSize: u(16), textAlign: 'center' }]} numberOfLines={1} adjustsFontSizeToFit>
         {hint.mask ? hint.mask.replace(/ /g, '    ') : '· · ·'}

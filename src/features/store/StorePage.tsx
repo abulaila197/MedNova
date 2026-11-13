@@ -20,7 +20,7 @@ import { F } from '@/theme/tokens';
 
 import { StyleBanner } from './StyleBanner';
 import { FreeSheets, FreeTokens, useFree } from './FreeTokens';
-import { BILLING_LIVE, buy, isSubscribed, loadPrices, restore, useIsSubscribed, usePrice, useSubscription, type BuyResult } from './billing';
+import { buy, isSubscribed, loadPrices, restore, useIsSubscribed, usePrice, useSubscription, type BuyResult } from './billing';
 import { PACKS, SUBSCRIPTION, type Pack } from './catalog';
 import { tr } from '@/i18n';
 
@@ -32,7 +32,7 @@ const FAILED: Pop = { kick: tr('NOT BOUGHT'), title: tr('Something went wrong'),
 const ASK_RESTORE: Pop = { kick: tr('RESTORE'), title: tr('Restore purchases?'), big: '', line: tr('We\'ll check your {n} account for MedNova Unlimited and the Sovereign package and add them to this MedNova account.', { n: Platform.OS === 'ios' ? 'Apple' : 'Google' }), coin: false, button: tr('Restore'), confirm: true };
 // Each phone names only its own store (Apple 2.3.10, Yazan 2026-11-08).
 const STORE = Platform.OS === 'ios' ? tr('the App Store') : tr('Google Play');
-const SOON: Pop = { kick: tr('COMING SOON'), title: tr('Not open yet'), big: '', line: tr('Buying opens when MedNova is in {STORE}.', { STORE }), coin: false, button: 'OK' };
+const SOON: Pop = { kick: tr('IN THE APP'), title: tr('Buy in the app'), big: '', line: tr('Buying works in the MedNova app from {STORE}.', { STORE }), coin: false, button: 'OK' };
 
 function boughtPop(id: string): Pop {
   const pack = PACKS.find((p) => p.id === id);
@@ -203,7 +203,6 @@ function SovereignCard({ t, busy, onBuy }: { t: Theme; busy: boolean; onBuy: () 
           <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={[s.cBtn, s.sovBtn, s.sovWide]}>
             <Text style={[s.cBtnT, { color: t.onGrad }]} numberOfLines={1}>{price}</Text>
           </LinearGradient>
-          {!BILLING_LIVE ? <Text style={[s.mono, { color: t.mute, textAlign: 'center' }]}>{tr('COMING SOON')}</Text> : null}
         </View>
       )}
     </Pressable>

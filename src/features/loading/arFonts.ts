@@ -29,3 +29,9 @@ export const AR_FONTS: Record<string, { title: string; body: string }> = {
   'the-streak-master': { title: 'Rakkas_400Regular', body: 'Amiri_400Regular' },
   'nova-crossword': { title: 'Rakkas_400Regular', body: 'Amiri_400Regular' },
 };
+
+/** Arabic lines centred (Yazan 2026-11-13): Race to Diagnosis's sub clears the robot; Medical Riddles reads as one centred block. */
+export const AR_MID: Record<string, ('orig' | 'title' | 'sub')[]> = {
+  'the-diagnostic-pursuit': ['sub'],
+  'the-riddler': ['orig', 'title', 'sub'],
+};

@@ -16,7 +16,7 @@ import type { LoadCfg } from './configs';
 import { q } from './geo';
 import { TABLET } from '@/theme/scale';
 import { Particles } from './Particles';
-import { AR_FONTS } from './arFonts';
+import { AR_FONTS, AR_MID } from './arFonts';
 
 /**
  * One mode loading page: "MedNova:", the title and sub name, the game's own bar and a game tip,
@@ -52,6 +52,8 @@ export function LoadingPage({ g, w, h, live, p, tip, barRef }: { g: LoadCfg; w: 
   const align = g.txt.align === 'left' ? TA_START : 'center';
   const body = (f: string) => ar?.body ?? f;
   const name = GAMES.find((x) => x.key === g.key);
+  // Arabic lines centred on purpose (Yazan 2026-11-13): away from the robot, or to sit as one centred block.
+  const mid = (part: 'orig' | 'title' | 'sub') => !!ar && !!AR_MID[g.key]?.includes(part);
 
   return (
     <View style={[StyleSheet.absoluteFill, s.root, { backgroundColor: g.bg ?? '#000' }]}>
@@ -75,10 +77,10 @@ export function LoadingPage({ g, w, h, live, p, tip, barRef }: { g: LoadCfg; w: 
       <View style={[s.txt, { top: q(g.txt.top) + Math.max(0, ins.top - q(24)), alignItems: center ? 'center' : 'flex-start', transform: g.txt.rot ? [{ rotate: `${g.txt.rot}deg` }] : undefined }]}>
         {/* "Original" dropped from every loading page (Yazan 2026-10-26). */}
         {/* Each line spans the full text column (textAlign places it), so Android never wraps its last word out of sight. */}
-        <Text style={[s.orig, { fontFamily: body(g.orig.f), color: g.orig.c, textAlign: align }]}>MedNova:</Text>
+        <Text style={[s.orig, { fontFamily: body(g.orig.f), color: g.orig.c, textAlign: mid('orig') ? 'center' : align }, mid('orig') ? { alignSelf: 'stretch' } : null]}>MedNova:</Text>
         {/* #13: the two title words are separate texts, not one text with a nested span. On Android a nested span in
             another font (or one measured before its font loaded) sometimes lost the game's word. */}
-        <View style={{ marginTop: q(6), flexDirection: 'row', flexWrap: 'wrap', justifyContent: center ? 'center' : 'flex-start', columnGap: q(g.title.s * 0.24) }}>
+        <View style={{ marginTop: q(6), flexDirection: 'row', flexWrap: 'wrap', alignSelf: mid('title') ? 'stretch' : undefined, justifyContent: center || mid('title') ? 'center' : 'flex-start', columnGap: q(g.title.s * 0.24) }}>
           {[
             { t: name?.lead ?? '', c: g.title.c, f: ar?.title ?? g.title.f },
             { t: name?.em ?? '', c: g.title.em, f: ar?.title ?? g.title.emF ?? g.title.f },
@@ -91,7 +93,7 @@ export function LoadingPage({ g, w, h, live, p, tip, barRef }: { g: LoadCfg; w: 
                 lineHeight: q(g.title.s * (ar ? 1.45 : 1.02)),
                 color: x.c,
                 letterSpacing: ls(g.title.ls, g.title.s),
-                textAlign: align,
+                textAlign: mid('title') ? 'center' : align,
                 textShadowColor: g.title.sh ?? 'rgba(0,0,0,0.25)',
                 textShadowOffset: { width: 0, height: g.title.sh ? 0 : 2 },
                 textShadowRadius: q(g.title.sh ? 16 : 12),
@@ -101,7 +103,7 @@ export function LoadingPage({ g, w, h, live, p, tip, barRef }: { g: LoadCfg; w: 
             </Text>
           ))}
         </View>
-        <Text style={{ alignSelf: 'stretch', marginTop: q(8), fontFamily: body(g.sub.f), fontSize: q(g.sub.s), lineHeight: q(g.sub.s * (ar ? 1.6 : 1.25)), color: g.sub.c, letterSpacing: ls(g.sub.ls, g.sub.s), textAlign: align }}>{name?.sub ?? ''}</Text>
+        <Text style={{ alignSelf: 'stretch', marginTop: q(8), fontFamily: body(g.sub.f), fontSize: q(g.sub.s), lineHeight: q(g.sub.s * (ar ? 1.6 : 1.25)), color: g.sub.c, letterSpacing: ls(g.sub.ls, g.sub.s), textAlign: mid('sub') ? 'center' : align }}>{name?.sub ?? ''}</Text>
         <View ref={barRef} collapsable={false} style={{ marginTop: q(20), height: barHeight(g), width: barW, alignSelf: center ? 'center' : 'flex-start' }}>
           <Bar g={g} p={p} w={barW} />
         </View>

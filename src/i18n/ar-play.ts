@@ -1562,4 +1562,8 @@ export const AR_PLAY: Record<string, string> = {
   "Contact|legal": "التواصل",
   "For privacy questions or requests, contact MedNova at {c}.": "للاستفسارات أو الطلبات المتعلقة بالخصوصية، تواصل مع MedNova على {c}.",
   "For questions about these Terms, contact MedNova at {c}.": "للاستفسارات المتعلقة بهذه الشروط، تواصل مع MedNova على {c}.",
+  "IN THE APP": "من التطبيق",
+  "Buy in the app": "الشراء من التطبيق",
+  "Buying works in the MedNova app from {STORE}.": "الشراء بيشتغل في تطبيق MedNova من {STORE}.",
+  "Field later": "التخصص بيبان بعدين",
 };

@@ -249,8 +249,9 @@ export function FreeTokens({ t }: { t: Theme }) {
       <OfflineLine at={savedAt} style={{ marginTop: 0 }} />
       <Row>
         <Global t={t} st={st} signedIn={signedIn} />
-        <WayCard t={t} w={AD_WAY} label={ADS_LIVE && st ? tr('{label} · {n} of {AD_CAP} today', { label: AD_WAY.label, n: st.ads_today ?? 0, AD_CAP }) : AD_WAY.label} act={signedIn ? AD_WAY.act : tr('Sign in')} done={(st?.ads_today ?? 0) >= AD_CAP} locked={!ADS_LIVE} busy={busy === 'ad'} onPress={() => (signedIn ? watchAd() : router.navigate('/auth'))} />
-        {WAYS.map((w) => (
+        {ADS_LIVE ? <WayCard t={t} w={AD_WAY} label={ADS_LIVE && st ? tr('{label} · {n} of {AD_CAP} today', { label: AD_WAY.label, n: st.ads_today ?? 0, AD_CAP }) : AD_WAY.label} act={signedIn ? AD_WAY.act : tr('Sign in')} done={(st?.ads_today ?? 0) >= AD_CAP} locked={!ADS_LIVE} busy={busy === 'ad'} onPress={() => (signedIn ? watchAd() : router.navigate('/auth'))} /> : null}
+        {/* A way with no link is left out, never shown as "coming soon" (Yazan 2026-11-13). */}
+        {WAYS.filter((w) => !noLink(w)).map((w) => (
           <WayCard key={w.key} t={t} w={w} label={label(w)} act={act(w)} done={!unpaid(w) && isDone(w)} unpaid={unpaid(w)} locked={noLink(w)} busy={busy === w.key} onPress={() => tap(w)} reopen={LINKED.includes(w.key)} />
         ))}
       </Row>
@@ -280,7 +281,7 @@ function WayCard({ t, w, label, act, done, locked, busy, onPress, reopen, unpaid
       </Text>
       {done || locked ? (
         <View style={[s.cBtn, s.ghost, { borderColor: t.panelLine }]}>
-          <Text style={[s.cBtnT, { color: t.mute }]}>{locked ? tr('Coming soon') : w.each ? tr('Back tomorrow') : tr('Collected ✓')}</Text>
+          <Text style={[s.cBtnT, { color: t.mute }]}>{locked ? '' : w.each ? tr('Back tomorrow') : tr('Collected ✓')}</Text>
         </View>
       ) : (
         <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={s.cBtn}>

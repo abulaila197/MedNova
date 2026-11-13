@@ -291,14 +291,14 @@ export function BotRoom({ def, play, left }: { def: GameDef; play: Play; left?: 
       </View>
 
       <Text style={[st.note, { color: G.dim }]}>
-        {canPlay ? tr('Tap a rival to see its profile, swap it or kick it.') : tr('Tap a rival to see its profile, swap it or kick it. Rival matches come in the next build step.')}
+        {tr('Tap a rival to see its profile, swap it or kick it.')}
       </Text>
       <View style={[st.lbar, TABLET && st.lbarTab]}>
         <Pressable onPress={() => setSheet('talk')} style={st.talk} accessibilityRole="button" accessibilityLabel={tr('Talk: stickers and voice')}>
           <PlayerFace slug={me.face} size={u(20)} userId={profile?.id} still />
           <Text style={[st.talkT, { color: G.fg }]}>{tr('Talk')}</Text>
         </Pressable>
-        <GBtn style={st.grow} label={!canPlay ? tr('Start · coming soon') : allReady ? tr('Start') : tr('Start · {n} of {n2} ready', { n: ready.length, n2: live.length })} off={!allReady || !canPlay} onPress={start} />
+        <GBtn style={st.grow} label={allReady || !canPlay ? tr('Start') : tr('Start · {n} of {n2} ready', { n: ready.length, n2: live.length })} off={!allReady || !canPlay} onPress={start} />
       </View>
     </GameScreen>
   );

@@ -20,7 +20,7 @@ import { CardViewer } from '@/features/cards/CollectionPage';
 import { bonusLine, ROBOTS, type Robot, robotOf, SHOP_ROBOT_KEYS, SHOP_ROBOTS_PRIZE, SOVEREIGN_PACK } from '@/features/shop/robots';
 import { wearCharacter } from '@/features/shop/wear';
 import { loadFree, useFree } from '@/features/store/FreeTokens';
-import { BILLING_LIVE, usePrice } from '@/features/store/billing';
+import { usePrice } from '@/features/store/billing';
 import { useAccount } from '@/state/account';
 import { loadFriends, useFriends } from '@/state/friends';
 import type { Theme } from '@/theme/tokens';
@@ -281,11 +281,8 @@ export function StylePage() {
                 <Big t={t} label={tr('Wear')} busy={busy} onPress={() => act(() => wearCharacter(pick.key), tr('Done. Your star bonus changed with it.'))} />
               )
             ) : pick.key === 'sovereign' && pick.id.startsWith('robot:') ? (
-              BILLING_LIVE ? (
-                <Big t={t} label={tr('Get · {sovPrice}', { sovPrice })} busy={false} onPress={() => router.navigate('/store')} />
-              ) : (
-                <Text style={[s.barS, { color: c.mute }]}>{tr('{sovPrice} · Coming soon', { sovPrice })}</Text>
-              )
+              // Never "coming soon" (Yazan 2026-11-13): the Nova Shop sells it, or says where to buy it.
+              <Big t={t} label={tr('Get · {sovPrice}', { sovPrice })} busy={false} onPress={() => router.navigate('/store')} />
             ) : has(pick.id) ? (
               pick.id.startsWith('pack:') ? (
                 <Text style={[s.barS, { color: c.mute }]}>{tr('Yours in every room')}</Text>
