@@ -1,6 +1,6 @@
 import { Image } from 'expo-image';
 import type { ReactNode } from 'react';
-import { Platform, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { Text } from '@/components/AppText';
 import { useTheme } from '@/state/app';
@@ -38,9 +38,9 @@ const PASS: [string, string] = [tr('Good game, everyone.'), tr('Pass it round an
 // All three are cut at the same line under the ID badge and padded so the badge sits at the same spot; Omar's face is
 // the same size in each (90% of the first preview). The cut edge hides behind the stats card below.
 const STICKER = {
-  win: { src: require('@/assets/stickers/results/omar-win.webp'), w: 281, h: 357 },
-  mid: { src: require('@/assets/stickers/results/omar-mid.webp'), w: 245, h: 304 },
-  last: { src: require('@/assets/stickers/results/omar-last.webp'), w: 250, h: 323 },
+  win: { src: require('@/assets/stickers/results/omar-win.webp'), w: 281, h: 357, pad: 0 },
+  mid: { src: require('@/assets/stickers/results/omar-mid.webp'), w: 245, h: 304, pad: 38 },
+  last: { src: require('@/assets/stickers/results/omar-last.webp'), w: 250, h: 323, pad: 71 },
 };
 const SCALE = 0.325;
 const TUCK = 4; // how far the cut edge sits under the card
@@ -72,11 +72,11 @@ export function ResultTone({ play, items, uid, plain }: { play: Play; items: Pla
     <View style={s.row}>
       <Image
         source={st.src}
-        style={[s.sticker, ON_RIGHT(u(-4)), { width: u(st.w * SCALE), height: u(st.h * SCALE), bottom: -u(GAP + TUCK) }]}
+        style={[s.sticker, { end: u(edge(st)) }, { width: u(st.w * SCALE), height: u(st.h * SCALE), bottom: -u(GAP + TUCK) }]}
         contentFit="contain"
         accessibilityIgnoresInvertColors
       />
-      <View style={[s.words, PAD_RIGHT(u(isAr ? st.w * SCALE + 6 : 80))]}>
+      <View style={[s.words, { paddingEnd: u(clear(st)) }]}>
         {/* Cyan like "over" in Game over, upright (Yazan 2026-10-26, #48). */}
         <Text style={[s.head, isAr && s.headAr, { color: t.accent }]}>{head}</Text>
         <Text style={[s.sub, isAr && s.subAr, { color: t.soft }]}>{sub}</Text>
@@ -103,22 +103,23 @@ export function StickerRow({ tone, children }: { tone: Tone; children: ReactNode
     <View style={s.row}>
       <Image
         source={st.src}
-        style={[s.sticker, ON_RIGHT(u(-4)), { width: u(st.w * SCALE), height: u(st.h * SCALE), bottom: -u(GAP + TUCK) }]}
+        style={[s.sticker, { end: u(edge(st)) }, { width: u(st.w * SCALE), height: u(st.h * SCALE), bottom: -u(GAP + TUCK) }]}
         contentFit="contain"
         accessibilityIgnoresInvertColors
       />
-      <View style={PAD_RIGHT(u(isAr ? st.w * SCALE + 6 : 80))}>{children}</View>
+      <View style={{ paddingEnd: u(clear(st)) }}>{children}</View>
     </View>
   );
 }
 
 /**
- * Omar stands on the right in both languages (Yazan 2026-11-13: the Arabic page must not move him). Native Arabic
- * swaps left and right, the web preview does not, so the physical right side is picked per platform.
+ * Arabic mirrors the page, so Omar stands on the left. His pictures have empty space on their right (`pad`, in
+ * picture pixels), which in English sits against the edge; on the left it doesn't, so he looked pushed to the edge.
+ * Moving him in by that space keeps the same gap from the edge as in English (Yazan 2026-11-13).
  */
-const SWAP = isAr && Platform.OS !== 'web';
-const ON_RIGHT = (n: number) => (SWAP ? { left: n } : { right: n });
-const PAD_RIGHT = (n: number) => (SWAP ? { paddingLeft: n } : { paddingRight: n });
+const edge = (st: { pad: number }) => -4 + (isAr ? st.pad * SCALE : 0);
+/** Room the lines leave for Omar: in Arabic up to where his drawing ends, so the smaller lines never touch him. */
+const clear = (st: { w: number; pad: number }) => (isAr ? edge(st) + (st.w - st.pad) * SCALE + 8 : 80);
 
 const s = StyleSheet.create({
   // Tall enough for the biggest sticker above the card; the card that follows is drawn over the sticker's cut edge.
