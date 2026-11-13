@@ -166,7 +166,7 @@ function TopBar(p: BoardProps) {
         <Text style={[s.ct, { color: p.titleColor ?? t.white }]} numberOfLines={1}>
           {p.title} <Text style={[s.of, { color: t.mute }]}>{p.sub}</Text>
         </Text>
-        <Text style={[s.diff, { color: col, borderColor: alpha(col, 0.55), backgroundColor: alpha(col, 0.12) }]}>{p.c.difficulty}</Text>
+        <Text style={[s.diff, { color: col, borderColor: alpha(col, 0.55), backgroundColor: alpha(col, 0.12) }]}>{tr(p.c.difficulty)}</Text>
         <RoundBtn label={tr('Pause')} glyph="❚❚" onPress={p.onPause} />
       </View>
       <View style={[s.stats, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
@@ -206,7 +206,10 @@ function SlimBar(p: BoardProps) {
         {p.slim}
         {dot}
         <Text style={{ color: p.clock.warn ? t.rose : amber(t) }}>{clock(p.clock.ms, { pad: true, down: p.clock.down })}</Text>
-        {tr('{dot} {cluePoints} pts{dot} {cluesShown} / {clueCount}', { dot, cluePoints: cluePoints(p.attempt.cluesShown), cluesShown: p.attempt.cluesShown, clueCount: DP.clueCount })}
+        {dot}
+        {tr('{n} pts', { n: cluePoints(p.attempt.cluesShown) })}
+        {dot}
+        {`${p.attempt.cluesShown} / ${DP.clueCount}`}
       </Text>
     </View>
   );

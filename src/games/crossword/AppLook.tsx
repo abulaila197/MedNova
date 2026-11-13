@@ -15,7 +15,7 @@ import { F } from '@/theme/tokens';
 import { slideColors } from '../medicordle/palette';
 import { cellKey, CW, indexOf, lockedCells, QWERTY_ROWS, type CellPos, type PuzzleDef, type PuzzleIndex, type Slot, type Typed, type WordDef } from './core';
 import { IMAGES } from './data/images';
-import { tr } from '@/i18n';
+import { tr, LTR, LTR_WEB } from '@/i18n';
 
 // Nova Crossword's look (Yazan picked D, 2026-10-05): the app's own look, built like Nova Medicordle's slides:
 // glass tiles with a soft top sheen on a navy board, Gabarito titles, Inter Tight text.
@@ -144,7 +144,7 @@ export const AppGrid = memo(function AppGrid({ puzzle, solved, revealed = [], se
         </Pressable>,
       );
     }
-  return <View style={{ width: W, height: H, alignSelf: 'center' }}>{cells}</View>;
+  return <View {...LTR_WEB} style={{ width: W, height: H, alignSelf: 'center', ...LTR }}>{cells}</View>;
 });
 
 /** The dash between the two words of a two-word answer. */
@@ -201,7 +201,7 @@ export function AppPopup({ word, slots, typed, tokens, width, notice, shake = 0,
       ) : (
         <Text style={[s.clue, { color: t.fg }]}>{word.question.text}</Text>
       )}
-      <Animated.View style={[{ gap: u(5), marginTop: u(4) }, shakeStyle]}>
+      <Animated.View {...LTR_WEB} style={[{ gap: u(5), marginTop: u(4) }, LTR, shakeStyle]}>
         {slotRows.map((row, ri) => (
           <View key={ri} style={{ flexDirection: 'row', justifyContent: 'center', gap: GAP }}>
             {row.map((i, k) => {
@@ -223,7 +223,7 @@ export function AppPopup({ word, slots, typed, tokens, width, notice, shake = 0,
         ))}
       </Animated.View>
       <Text style={[s.notice, { color: t.mute }]} numberOfLines={1}>{notice ?? ' '}</Text>
-      <View style={{ gap: u(5) }}>
+      <View {...LTR_WEB} style={{ gap: u(5), ...LTR }}>
         {QWERTY_ROWS.map((row) => (
           <View key={row} style={{ flexDirection: 'row', justifyContent: 'center', gap: u(4) }}>
             {row.split('').map((k) => (

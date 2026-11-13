@@ -111,7 +111,7 @@ export const PinBoard = memo(function PinBoard({ def, run, sealed, onOpen }: { d
                   {!live ? <Lock /> : null}
                   <View style={s.label}>
                     <View style={s.strip}>
-                      <T size={8} color={live ? '#1f1a12' : '#6a6050'} lines={1} style={{ lineHeight: u(10), letterSpacing: 0.2 }}>{p.label}</T>
+                      <T size={8} color={live ? '#1f1a12' : '#6a6050'} lines={1} style={{ lineHeight: u(10), letterSpacing: 0.2 }}>{tr(p.label)}</T>
                     </View>
                   </View>
                 </Pressable>

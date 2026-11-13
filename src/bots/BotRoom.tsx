@@ -267,7 +267,7 @@ export function BotRoom({ def, play, left }: { def: GameDef; play: Play; left?: 
               <View style={st.tgh}>
                 <View style={[st.tdot, { backgroundColor: tm.color }]} />
                 <Text style={[st.tghT, { color: G.fg }]}>{i === you.team ? tr('{name} · your team', { name: tm.name }) : tm.name}</Text>
-                <Text style={[st.tghN, { color: G.dim }]}>{`${list.length} ${list.length === 1 ? 'player' : 'players'}`}</Text>
+                <Text style={[st.tghN, { color: G.dim }]}>{list.length === 1 ? tr('1 player') : tr('{n} players', { n: list.length })}</Text>
               </View>
               <View style={st.tiles}>
                 {list.map(tile)}

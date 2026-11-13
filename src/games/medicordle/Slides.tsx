@@ -13,7 +13,7 @@ import { F } from '@/theme/tokens';
 import { GameScreen, HelperButton } from '../shell/ui';
 import { keyStates, score, type Mark } from './core';
 import { slideColors, type SlideColors } from './palette';
-import { tr } from '@/i18n';
+import { tr, LTR, LTR_WEB } from '@/i18n';
 
 // Nova Medicordle's own design language (NM20, NM21): "Specimen slides".
 // Each letter is a glass slide on a lightbox; a sheen passes over a played slide, then it glows
@@ -217,7 +217,7 @@ function Board(p: {
   const activeRow = p.played.length < p.rows ? p.played.length : -1;
 
   return (
-    <View style={s.boardWrap} onLayout={onLayout}>
+    <View {...LTR_WEB} style={[s.boardWrap, LTR]} onLayout={onLayout}>
       <LinearGradient colors={[p.c.beigeA, p.c.beigeB]} style={[s.board, { borderColor: p.c.beigeLine, padding: pad }]}>
         {tile > 0 && !p.hidden
           ? Array.from({ length: p.rows }, (_, r) => {
@@ -332,7 +332,7 @@ function SpecimenNote({ c, text, hot, wait }: { c: SlideColors; text: string | n
 function Keys({ c, keys, onKey }: { c: SlideColors; keys: Record<string, 'ok' | 'near' | 'off'>; onKey: (k: string) => void }) {
   const t = useTheme();
   return (
-    <View style={s.kb}>
+    <View {...LTR_WEB} style={[s.kb, LTR]}>
       {ROWS_KB.map((row, n) => (
         <View key={row} style={s.krow}>
           {n === 2 ? <Key label={tr('Enter')} wide c={c} onPress={() => onKey('ENTER')} /> : null}

@@ -117,7 +117,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
           hearts={false}
           kicker={tr('Board solved')}
           title={boardLine}
-          line={table.map((x) => `${x.name} ${x.score}`).join(' · ')}
+          line={table.map((x) => `${x.name === 'You' ? tr('You') : x.name} ${x.score}`).join(' · ')}
           next={run.index + 1 < total ? tr('Next board') : tr('See results')}
           onNext={() => dispatch({ type: 'NEXT' })}
         />

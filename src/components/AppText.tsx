@@ -69,7 +69,7 @@ function arabicStyle(style: TextProps['style']): TextStyle {
 export function Text(props: TextProps & { ref?: React.Ref<RNText> }) {
   // Game seats keep the English name 'You' as a marker for the phone owner (game code compares it), so the word
   // itself is swapped only where it is drawn.
-  if (isAr && props.children === 'You') props = { ...props, children: 'انت' };
+  if (isAr && props.children === 'You') props = { ...props, children: 'إنت' };
   // The Arabic fonts are only loaded when the app runs in Arabic.
   const ar = isAr && hasArabic(props.children);
   const style = ar ? [props.style, arabicStyle(props.style)] : props.style;

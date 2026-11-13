@@ -82,7 +82,7 @@ export function HeatBoard(p: BoardProps) {
           <View style={[s.tube, { borderColor: t.panelLine, backgroundColor: t.panel }]} accessibilityLabel={tr('Streak {streak}', { streak: p.round.streak })}>
             {Array.from({ length: SEGMENTS }, (_, i) => (i < lit ? <Seg key={i} on hot={hc.hot} cool={t.accent} fresh={i === lit - 1 && showing && !!fb?.right} /> : <View key={i} style={[s.seg, { backgroundColor: hc.segOff }]} />))}
           </View>
-          <Text style={[s.colK, { color: t.dim }]}>{`${p.round.score}\nPTS`}</Text>
+          <Text style={[s.colK, { color: t.dim }]}>{`${p.round.score}\n${tr('PTS')}`}</Text>
         </View>
 
         <View style={s.main}>

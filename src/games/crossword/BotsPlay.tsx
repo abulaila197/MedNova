@@ -122,7 +122,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
       if (was.claims.has(c.word_id)) continue;
       was.claims.add(c.word_id);
       const who = byId.get(c.user_id);
-      if (c.user_id !== YOU && !c.auto && who) push(`${who.name} claimed ${indexOf(p).wordById.get(c.word_id)?.answer ?? 'a word'}`, colorOf(who));
+      if (c.user_id !== YOU && !c.auto && who) push(tr('{name} claimed {word}', { name: who.name, word: indexOf(p).wordById.get(c.word_id)?.answer ?? tr('a word') }), colorOf(who));
     }
     if (leader && leader !== was.leader && leaders[0].score > (leaders[1]?.score ?? 0)) {
       const who = byId.get(leader)!;
@@ -130,7 +130,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
       setTimeout(() => push(leader === YOU ? 'You take the lead' : `${who.name} takes the lead`, colorOf(who)), 2100);
     }
     was.leader = leader ?? was.leader;
-    for (const id of outNow) if (!was.out.has(id) && id !== YOU) push(`${byId.get(id)?.name ?? 'Someone'} is out of hearts`, '#f5b041');
+    for (const id of outNow) if (!was.out.has(id) && id !== YOU) push(tr('{name} is out of hearts', { name: byId.get(id)?.name ?? tr('Someone') }), '#f5b041');
     was.out = outNow;
   }, [st, push]); // eslint-disable-line react-hooks/exhaustive-deps
 

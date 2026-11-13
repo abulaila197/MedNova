@@ -2,6 +2,7 @@
 // each with a preset colour and a default name the host can rename. Team score is the players' average
 // unless the game counts team wins (Medicordle). In turn-based modes teams alternate.
 import type { Play, Seat, Standing } from '../engine/types';
+import { say } from '../../i18n/say';
 
 export type Team = { id: number; name: string; color: string };
 
@@ -14,12 +15,16 @@ export const TEAM_PRESETS = [
   { name: 'Team Coral', color: '#ff8a5b' },
 ];
 
-export const presetTeam = (id: number): Team => ({ id, ...TEAM_PRESETS[id % TEAM_PRESETS.length] });
+export const presetTeam = (id: number): Team => {
+  const x = TEAM_PRESETS[id % TEAM_PRESETS.length];
+  return { id, name: say(x.name), color: x.color };
+};
 
 /** Teams saved on the play's settings, or null when the host played without teams. */
 export function teamsOf(play: Pick<Play, 'settings'>): Team[] | null {
   const t = play.settings.teams as Team[] | undefined;
-  return Array.isArray(t) && t.length >= 2 ? t : null;
+  // Default names saved in English show in the app's language; renamed teams stay as typed.
+  return Array.isArray(t) && t.length >= 2 ? t.map((x) => ({ ...x, name: say(x.name) })) : null;
 }
 
 /**

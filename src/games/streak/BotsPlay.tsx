@@ -121,8 +121,8 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
       const before = streaks.current.get(p.user_id) ?? 0;
       streaks.current.set(p.user_id, p.streak);
       if (p.user_id === YOU || p.streak === before) continue;
-      if (p.streak > before && MILESTONES.includes(p.streak)) push(`${p.name} is on a ${p.streak} streak`, playerColour(st.players, p.user_id));
-      else if (p.streak === 0 && before >= 3) push(`${p.name}'s ${before} streak broke`, '#f5b041');
+      if (p.streak > before && MILESTONES.includes(p.streak)) push(tr('{name} is on a {n} streak', { name: p.name, n: p.streak }), playerColour(st.players, p.user_id));
+      else if (p.streak === 0 && before >= 3) push(tr('{name}’s {n} streak broke', { name: p.name, n: before }), '#f5b041');
     }
   });
 

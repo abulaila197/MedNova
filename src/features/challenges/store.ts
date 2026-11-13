@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { tr } from '@/i18n';
 
 import type { GameKey, Play } from '@/games/engine/types';
 import { useSession } from '@/games/shell/session';
@@ -106,11 +107,11 @@ export const isOver = (c: Challenge, now = Date.now()) => c.status === 'done' ||
 /** "2 d 4 h left", "3 h left", "12 min left", "Time's up". */
 export function timeLeft(c: Challenge, now = Date.now()) {
   const ms = Date.parse(c.ends_at) - now;
-  if (ms <= 0) return "Time's up";
+  if (ms <= 0) return tr("Time's up");
   const h = Math.floor(ms / 3_600_000);
-  if (h >= 24) return `${Math.floor(h / 24)} d ${h % 24} h left`;
-  if (h >= 1) return `${h} h left`;
-  return `${Math.max(1, Math.floor(ms / 60_000))} min left`;
+  if (h >= 24) return tr('{d} d {h} h left', { d: Math.floor(h / 24), h: h % 24 });
+  if (h >= 1) return tr('{h} h left', { h });
+  return tr('{n} min left', { n: Math.max(1, Math.floor(ms / 60_000)) });
 }
 
 /** A finished play counts for a challenge when it's the same game, mode and every setting the challenge fixed. */
@@ -134,7 +135,7 @@ export async function afterPlay(play: Play, score: number) {
   if (intent?.kind === 'score') {
     setIntent(null);
     const r = await sendChallenge({ other: intent.friend.id, kind: 'score', game: play.game, mode: play.mode as ChallengeMode, settings: fixedSettings(play.settings), days: 1, score }).catch(() => null);
-    notes.push(r?.ok ? `Challenge sent to ${intent.friend.name}: beat ${score} within a day.` : `Couldn’t send the challenge to ${intent.friend.name}. Check your connection.`);
+    notes.push(r?.ok ? tr('Challenge sent to {name}: beat {score} within a day.', { name: intent.friend.name, score }) : tr('Couldn’t send the challenge to {name}. Check your connection.', { name: intent.friend.name }));
   }
   if (!useChallenges.getState().loaded) await loadFriendChallenges();
   const now = Date.now();
@@ -143,7 +144,7 @@ export async function afterPlay(play: Play, score: number) {
     if (c.kind === 'score' && c.from.id === uid) continue; // the bar is set once
     const r = await reportScore(c.id, score).catch(() => null);
     const other = otherOf(c, uid);
-    if (r?.ok) notes.push(`${score} counted for your challenge with ${other.name}.`);
+    if (r?.ok) notes.push(tr('{score} counted for your challenge with {name}.', { score, name: other.name }));
   }
   if (notes.length) useIntent.setState({ note: { playId: play.id, text: notes.join(' ') } });
 }

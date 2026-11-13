@@ -135,8 +135,8 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
       const is = now.get(p.user_id)!;
       if (p.user_id === YOU || !was || is === was) continue;
       if (is === 'Finished') {
-        if (!p.solved) push(`${p.name} closed the case`, colorOf(p));
-      } else push(`${p.name} reached ${is}`, colorOf(p));
+        if (!p.solved) push(tr('{name} closed the case', { name: p.name }), colorOf(p));
+      } else push(tr('{name} reached {stage}', { name: p.name, stage: tr(is) }), colorOf(p));
     }
     seen.current.stages = now;
   }, [st, t, push]); // eslint-disable-line react-hooks/exhaustive-deps

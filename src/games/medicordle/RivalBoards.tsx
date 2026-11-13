@@ -11,6 +11,7 @@ import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import { MAX_ROWS } from './core';
+import { LTR, LTR_WEB } from '@/i18n';
 import { slideColors } from './palette';
 
 /**
@@ -33,7 +34,7 @@ export function RivalBoards({ st, race, t, len }: { st: RaceState; race: BotRace
         .map((p) => {
           const rows = (plans[p.user_id]?.rows ?? []).filter((r) => r.at <= el);
           return (
-            <View key={p.user_id} style={[s.card, { borderColor: p.solved ? c.ok : c.line, backgroundColor: c.glass }]}>
+            <View key={p.user_id} {...LTR_WEB} style={[s.card, LTR, { borderColor: p.solved ? c.ok : c.line, backgroundColor: c.glass }]}>
               <View style={s.head}>
                 <PlayerFace slug={p.character} size={u(16)} userId={p.user_id} still />
                 <Text style={[s.name, { color: th.fg }]} numberOfLines={1}>{p.name.split(' ')[0]}</Text>

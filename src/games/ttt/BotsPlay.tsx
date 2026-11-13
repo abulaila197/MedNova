@@ -69,7 +69,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
     for (const p of st.players) {
       if (p.user_id === YOU) continue;
       const n = locks[p.user_id];
-      if (n > (was.locks[p.user_id] ?? 0)) push(`${p.name} locked in`, colorOf(p));
+      if (n > (was.locks[p.user_id] ?? 0)) push(tr('{name} locked in', { name: p.name }), colorOf(p));
     }
   }, [st, push]); // eslint-disable-line react-hooks/exhaustive-deps
 

@@ -34,7 +34,7 @@ export function useSetup(def: GameDef, mode: Mode, prefill?: Record<string, unkn
   const only = def.teamsOnly?.[mode];
   const [seats, setSeats] = useState<Seat[]>(() => {
     if (!prefillSeats?.length)
-      return Array.from({ length: range?.min ?? 1 }, (_, i) => ({ seat: i, name: i === 0 ? 'You' : `Player ${i + 1}`, color: SEAT_COLOURS[i].color, ...(only ? { team: i % 2 } : null) }));
+      return Array.from({ length: range?.min ?? 1 }, (_, i) => ({ seat: i, name: i === 0 ? 'You' : tr('Player {n}', { n: i + 1 }), color: SEAT_COLOURS[i].color, ...(only ? { team: i % 2 } : null) }));
     const out: Seat[] = [];
     prefillSeats.forEach((x, i) => {
       const keep = SEAT_COLOURS.some((c) => c.color === x.color) && !out.some((o) => o.color === x.color);

@@ -111,7 +111,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
       .sort((a, b) => b.points - a.points);
     return (
       <GameScreen scroll={false} under={<PadSky />} bodyStyle={{ paddingTop: u(12), paddingHorizontal: u(16), paddingBottom: u(14), gap: u(10) }}>
-        <TopLine kicker={tr('{kicker} · Everyone’s answers', { kicker })} sub={table.map((x) => `${x.name} ${x.score}`).join(' · ')} />
+        <TopLine kicker={tr('{kicker} · Everyone’s answers', { kicker })} sub={table.map((x) => `${x.name === 'You' ? tr('You') : x.name} ${x.score}`).join(' · ')} />
         <Explain c={c} rows={rows} foot={<Btn label={run.index + 1 < total ? tr('Next case') : tr('See results')} onPress={() => dispatch({ type: 'NEXT' })} />} />
         {menu}
       </GameScreen>

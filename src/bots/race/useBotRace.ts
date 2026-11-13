@@ -12,6 +12,7 @@ import type { RacePlayer, RaceState } from '@/match/race';
 import { useRaceRevealSound } from '@/match/raceSound';
 import { useSession } from '@/games/shell/session';
 import { useBack } from '@/lib/useBack';
+import { tr } from '@/i18n';
 
 import { moodOf, type Mood } from '../brain';
 import { resetRoomTalk, rivalGuess, rivalMoment, rivalStudy, useRivalEars } from '../director';
@@ -176,7 +177,7 @@ export function useBotRace<R extends Race = BotRace>({ play, onFinish, onQuit, r
       const left = st.players.filter((p) => !p.done);
       if (!s.alone && n > 1 && left.length === 1 && left[0].user_id === YOU) {
         s.alone = true;
-        push('Only you left', '#f5b041');
+        push(tr('Only you left'), '#f5b041');
       }
     } else if (st.phase === 'reveal' && (s.phase !== 'reveal' || s.index !== st.index)) {
       s.index = st.index;
@@ -275,12 +276,12 @@ export function useBotRace<R extends Race = BotRace>({ play, onFinish, onQuit, r
       const receipt = await engine.wallet.spend(price, reason, play.id).catch(() => null);
       paying.current = false;
       if (!receipt) {
-        push(`You need ${price} token${price > 1 ? 's' : ''}. Each level up gives 1 token.`, '#f5b041');
+        push(tr('You need {price} token{n}. Each level up gives 1 token.', { price, n: price > 1 ? 's' : '' }), '#f5b041');
         return false;
       }
       if (!ok()) {
         await engine.wallet.refund(receipt);
-        push('Helper refunded.', '#f5b041');
+        push(tr('Helper refunded.'), '#f5b041');
         return false;
       }
       apply();

@@ -61,7 +61,7 @@ export function Results({ def, play, items }: { def: GameDef; play: Play; items:
         {stats.map((x) => (
           <View key={x.label} style={s.stat}>
             <Text style={[s.big, { color: t.white }]}>{x.value}</Text>
-            <Kick>{x.label}</Kick>
+            <Kick>{tr(x.label)}</Kick>
           </View>
         )).flatMap((el, i) => (i === 0 ? [el, <ExpStat key="exp" exp={play.expEarned} />] : [el]))}
         {uid ? <LevelCounter play={play} /> : lvl ? <Text style={[s.lvl, { color: t.accent }]}>{lvl}</Text> : null}

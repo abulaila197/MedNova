@@ -3,6 +3,7 @@
 // Offline (#57, #58): the last copy is kept per account and shown while the server can't be reached; wear changes
 // made offline show at once and wait on the phone, then go up with their time (the newest change wins on the server).
 import { create } from 'zustand';
+import { tr } from '@/i18n';
 
 import { engine } from '@/games/engine';
 import { useSession } from '@/games/shell/session';
@@ -364,4 +365,4 @@ export const WHY: Record<string, string> = {
   signin: 'Sign in first.',
 };
 
-export const whySay = (r: { why: string; need?: number }) => (r.why === 'tokens' && r.need ? `You need ${r.need} more tokens.` : (WHY[r.why] ?? WHY.offline));
+export const whySay = (r: { why: string; need?: number }) => (r.why === 'tokens' && r.need ? tr('You need {need} more tokens.', { need: r.need }) : (WHY[r.why] ?? WHY.offline));

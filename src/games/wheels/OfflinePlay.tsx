@@ -195,13 +195,13 @@ export function Board({ board, extra }: { board: Strip; extra?: Record<number, s
 export function recapLine(l: Log, n: (s: number) => string): string | null {
   switch (l.k) {
     case 'turn':
-      return `${n(l.seat)} scored ${l.points}`;
+      return tr('{name} scored {n}', { name: n(l.seat), n: l.points });
     case 'redemption':
-      return `${n(l.seat)} played Redemption · +${l.points}`;
+      return tr('{name} played Redemption · +{n}', { name: n(l.seat), n: l.points });
     case 'boss':
-      return `${l.winners.map(n).join(' and ')} won the Boss Round · +${l.bonus}`;
+      return tr('{names} won the Boss Round · +{n}', { names: l.winners.map(n).join(tr(' and ')), n: l.bonus });
     case 'left':
-      return `${n(l.seat)} left the game`;
+      return tr('{name} left the game', { name: n(l.seat) });
     default:
       return null;
   }

@@ -116,3 +116,7 @@ setSay(t);
 const WEB_FLIP = Platform.OS === 'web' && isAr;
 export const TA_START = (WEB_FLIP ? 'right' : 'left') as 'left' | 'right';
 export const TA_END = (WEB_FLIP ? 'left' : 'right') as 'left' | 'right';
+
+/** English word boards (crossword grid, letter slots, keyboards) stay left to right in Arabic. */
+export const LTR = { direction: 'ltr' } as const;
+export const LTR_WEB = (Platform.OS === 'web' ? { dir: 'ltr' } : {}) as object;

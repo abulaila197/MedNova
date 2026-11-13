@@ -73,8 +73,8 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
       if (p.user_id === YOU) continue;
       const n = greens[p.user_id] - (was.greens[p.user_id] ?? 0);
       // The fourth falls into place with the third: one alert, and the solve alert says the rest.
-      if (n > 0 && !p.solved) push(`${p.name} found a group`, colorOf(p));
-      if (out.has(p.user_id) && !was.out.has(p.user_id)) push(`${p.name} is out of hearts`, '#f5b041');
+      if (n > 0 && !p.solved) push(tr('{name} found a group', { name: p.name }), colorOf(p));
+      if (out.has(p.user_id) && !was.out.has(p.user_id)) push(tr('{name} is out of hearts', { name: p.name }), '#f5b041');
     }
   }, [st, push]); // eslint-disable-line react-hooks/exhaustive-deps
 

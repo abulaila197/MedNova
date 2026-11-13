@@ -79,7 +79,7 @@ export function Setup({ def, mode, prefill, prefillSeats }: { def: GameDef; mode
           {opts.map((o, i) => (
             <View key={o.key} style={[s.opt, (canTeam || i > 0) && { borderTopWidth: 1, borderTopColor: t.panelLine, paddingTop: u(8) }]}>
               <View style={s.line}>
-                <Text style={[s.lbl, s.side, { color: t.white }]}>{o.label}</Text>
+                <Text style={[s.lbl, s.side, { color: t.white }]}>{tr(o.label)}</Text>
                 <View style={{ flex: 1 }}>
                   <Chips
                     choices={o.choices}
@@ -151,7 +151,7 @@ function Players({ st, min, max, note, teams }: { st: SetupState; min: number; m
         <View key={i} style={s.prow}>
           <View style={[s.pin, { borderColor: (teams?.find((y) => y.id === x.team)?.color ?? x.color) ?? t.chipLine, backgroundColor: t.chip }]}>
             <TextInput
-              value={x.name}
+              value={x.name === 'You' ? tr('You') : x.name}
               onChangeText={(v) => set(i, { name: v })}
               maxLength={14}
               placeholder={tr('Player {n}', { n: i + 1 })}

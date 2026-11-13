@@ -74,7 +74,7 @@ function ScoreStrip({ strip }: { strip: Strip }) {
       {strip.map((p) => (
         <View key={p.seat} style={{ flexDirection: 'row', alignItems: 'center', gap: u(6) }}>
           <Gem c={p.color} size={7} />
-          <T f={BODY_B} size={12.5} color={p.me ? VV.ink : VV.dim}>{`${p.name} ${p.score}`}</T>
+          <T f={BODY_B} size={12.5} color={p.me ? VV.ink : VV.dim}>{`${p.name === 'You' ? tr('You') : p.name} ${p.score}`}</T>
         </View>
       ))}
     </View>
