@@ -2,6 +2,9 @@
 // so the app start stays as light as before.
 import * as Font from 'expo-font';
 
+import { isAr } from '@/i18n';
+
+import { AR_FONT_FILES, AR_FONTS } from './arFonts';
 import { LOAD } from './configs';
 
 const FILES: Record<string, number> = {
@@ -42,10 +45,12 @@ const FILES: Record<string, number> = {
   Fraunces_400Regular_Italic: require('@expo-google-fonts/fraunces/400Regular_Italic/Fraunces_400Regular_Italic.ttf'),
   Fraunces_800ExtraBold: require('@expo-google-fonts/fraunces/800ExtraBold/Fraunces_800ExtraBold.ttf'),
   Caveat_700Bold: require('@expo-google-fonts/caveat/700Bold/Caveat_700Bold.ttf'),
+  ...AR_FONT_FILES,
 };
 
 export async function loadFontsFor(key: string) {
-  await loadFonts(LOAD[key]?.fonts ?? []);
+  const ar = isAr && AR_FONTS[key] ? [AR_FONTS[key].title, AR_FONTS[key].body] : [];
+  await loadFonts([...(LOAD[key]?.fonts ?? []), ...ar]);
 }
 
 /** Loads any of the fonts above by name (games reuse their loading page's fonts). */

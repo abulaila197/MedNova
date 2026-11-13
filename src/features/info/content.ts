@@ -35,7 +35,7 @@ export const CHAPTERS: Chapter[] = [
       { q: 'What is MedNova?', a: 'MedNova teaches medicine through games. You read clues, name diseases, answer questions, draw, give clues and solve picture riddles, and what you miss comes back later in your Learning Space. It is for education only, not medical advice, and every patient in it is fictional.' },
       { q: 'Which games are there?', a: `${gameCount}: ${listed}.` },
       { q: 'Do I need an account?', a: 'No. As a guest you get 5 free plays across all games. A free account plays with Sparks, keeps your progress on our servers and lets you add friends, challenge them and join the leaderboards.' },
-      { q: 'What are Sparks?', a: 'Sparks are what a game costs to play. Your bar holds 150 and refills one Spark every 10 minutes, faster when you wear a character with more stars. Each game costs Sparks by how long it lasts, and you pay at your first answer. The Six Word Tries Daily word is always free. To refill sooner, use Watch an ad for 10 Sparks (20 a day) or swap tokens 1 for 1. With MedNova Unlimited your Sparks never run out.' },
+      { q: 'What are Sparks?', a: 'Sparks are what a game costs to play. Your bar holds 100 and refills one Spark every 10 minutes, faster when you wear a character with more stars. Each game costs Sparks by how long it lasts, and you pay at your first answer. The Six Word Tries Daily word is always free. To refill sooner, use Watch an ad for 10 Sparks (20 a day) or swap tokens 1 for 1. With MedNova Unlimited your Sparks never run out.' },
     ],
   },
   {

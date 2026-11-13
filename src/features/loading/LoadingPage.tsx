@@ -8,6 +8,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Circle, Defs, RadialGradient, Stop } from 'react-native-svg';
 
 import { GAMES } from '@/data/games';
+import { isAr, TA_START, tr } from '@/i18n';
 import { F } from '@/theme/tokens';
 
 import { Bar, barHeight } from './Bar';
@@ -15,6 +16,7 @@ import type { LoadCfg } from './configs';
 import { q } from './geo';
 import { TABLET } from '@/theme/scale';
 import { Particles } from './Particles';
+import { AR_FONTS } from './arFonts';
 
 /**
  * One mode loading page: "MedNova:", the title and sub name, the game's own bar and a game tip,
@@ -43,7 +45,13 @@ export function LoadingPage({ g, w, h, live, p, tip, barRef }: { g: LoadCfg; w: 
   const stepBar = ['tiles', 'squares', 'bulbs'].includes(g.bar.t);
   const textW = w - q(48);
   const barW = textW - (center && !stepBar ? q(36) : 0) - (g.bar.t === 'thread' ? q(8) : 0);
-  const ls = (em: number | undefined, size: number) => (em ? em * q(size) : 0);
+  // Arabic: an Arabic font in the game's mood, no letter spacing (it breaks the joined letters), taller lines, and
+  // the left-aligned pages start on the right.
+  const ar = isAr ? AR_FONTS[g.key] : undefined;
+  const ls = (em: number | undefined, size: number) => (em && !ar ? em * q(size) : 0);
+  const align = g.txt.align === 'left' ? TA_START : 'center';
+  const body = (f: string) => ar?.body ?? f;
+  const name = GAMES.find((x) => x.key === g.key);
 
   return (
     <View style={[StyleSheet.absoluteFill, s.root, { backgroundColor: g.bg ?? '#000' }]}>
@@ -67,23 +75,23 @@ export function LoadingPage({ g, w, h, live, p, tip, barRef }: { g: LoadCfg; w: 
       <View style={[s.txt, { top: q(g.txt.top) + Math.max(0, ins.top - q(24)), alignItems: center ? 'center' : 'flex-start', transform: g.txt.rot ? [{ rotate: `${g.txt.rot}deg` }] : undefined }]}>
         {/* "Original" dropped from every loading page (Yazan 2026-10-26). */}
         {/* Each line spans the full text column (textAlign places it), so Android never wraps its last word out of sight. */}
-        <Text style={[s.orig, { fontFamily: g.orig.f, color: g.orig.c, textAlign: g.txt.align }]}>MedNova:</Text>
+        <Text style={[s.orig, { fontFamily: body(g.orig.f), color: g.orig.c, textAlign: align }]}>MedNova:</Text>
         {/* #13: the two title words are separate texts, not one text with a nested span. On Android a nested span in
             another font (or one measured before its font loaded) sometimes lost the game's word. */}
         <View style={{ marginTop: q(6), flexDirection: 'row', flexWrap: 'wrap', justifyContent: center ? 'center' : 'flex-start', columnGap: q(g.title.s * 0.24) }}>
           {[
-            { t: LEAD[g.key], c: g.title.c, f: g.title.f },
-            { t: EM[g.key], c: g.title.em, f: g.title.emF ?? g.title.f },
+            { t: name?.lead ?? '', c: g.title.c, f: ar?.title ?? g.title.f },
+            { t: name?.em ?? '', c: g.title.em, f: ar?.title ?? g.title.emF ?? g.title.f },
           ].map((x, i) => (
             <Text
               key={i}
               style={{
                 fontFamily: x.f,
                 fontSize: q(g.title.s),
-                lineHeight: q(g.title.s * 1.02),
+                lineHeight: q(g.title.s * (ar ? 1.45 : 1.02)),
                 color: x.c,
                 letterSpacing: ls(g.title.ls, g.title.s),
-                textAlign: g.txt.align,
+                textAlign: align,
                 textShadowColor: g.title.sh ?? 'rgba(0,0,0,0.25)',
                 textShadowOffset: { width: 0, height: g.title.sh ? 0 : 2 },
                 textShadowRadius: q(g.title.sh ? 16 : 12),
@@ -93,29 +101,26 @@ export function LoadingPage({ g, w, h, live, p, tip, barRef }: { g: LoadCfg; w: 
             </Text>
           ))}
         </View>
-        <Text style={{ alignSelf: 'stretch', marginTop: q(8), fontFamily: g.sub.f, fontSize: q(g.sub.s), lineHeight: q(g.sub.s * 1.25), color: g.sub.c, letterSpacing: ls(g.sub.ls, g.sub.s), textAlign: g.txt.align }}>{SUB[g.key]}</Text>
+        <Text style={{ alignSelf: 'stretch', marginTop: q(8), fontFamily: body(g.sub.f), fontSize: q(g.sub.s), lineHeight: q(g.sub.s * (ar ? 1.6 : 1.25)), color: g.sub.c, letterSpacing: ls(g.sub.ls, g.sub.s), textAlign: align }}>{name?.sub ?? ''}</Text>
         <View ref={barRef} collapsable={false} style={{ marginTop: q(20), height: barHeight(g), width: barW, alignSelf: center ? 'center' : 'flex-start' }}>
           <Bar g={g} p={p} w={barW} />
         </View>
         <View style={[s.tip, { backgroundColor: g.tip.bg, borderColor: g.tip.b, alignSelf: center ? 'center' : 'flex-start' }]}>
-          <Text style={{ fontFamily: g.tip.f, fontSize: q(g.tip.s), lineHeight: q(g.tip.s * 1.35), color: g.tip.c, textAlign: g.txt.align }}>
-            <Text style={{ opacity: 0.7 }}>Tip: </Text>
-            {tip}
+          <Text style={{ fontFamily: body(g.tip.f), fontSize: q(g.tip.s), lineHeight: q(g.tip.s * (ar ? 1.6 : 1.35)), color: g.tip.c, textAlign: align }}>
+            <Text style={{ opacity: 0.7 }}>{tr('Tip: ')}</Text>
+            {tr(tip)}
           </Text>
         </View>
       </View>
 
       <View style={[s.tag, { [g.tag.side]: q(20), bottom: q(22) + ins.bottom, backgroundColor: g.tag.bg, borderColor: g.tag.b }]}>
-        <Text style={[s.tagT, { color: g.tag.c }]}>{g.tag.t.toUpperCase()}</Text>
+        <Text style={[s.tagT, { color: g.tag.c }, ar ? { fontFamily: ar.body, letterSpacing: 0 } : null]}>{tr(g.tag.t).toUpperCase()}</Text>
       </View>
     </View>
   );
 }
 
-// Title words come from the Games list so the names never drift apart.
-const LEAD = Object.fromEntries(GAMES.map((x) => [x.key, x.lead]));
-const EM = Object.fromEntries(GAMES.map((x) => [x.key, x.em]));
-const SUB = Object.fromEntries(GAMES.map((x) => [x.key, x.sub]));
+// Title words come from the Games list (read at draw time, after Arabic names are in) so the names never drift apart.
 
 /** Parses "rgba(r,g,b,a)" for SVG stops (colour and opacity apart). */
 function rgba(c: string) {

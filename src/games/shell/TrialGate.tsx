@@ -20,7 +20,7 @@ export function TrialGate({ game, mode }: { game: string; mode: Mode }) {
         <Kick>{tr('Free plays used')}</Kick>
         <Title lead={tr('Sign in to')} em={tr('play more')} size={26} />
         <Body>
-          {tr('You have used your 5 free plays. Sign in to play with Sparks: a full bar of 150 that refills on its own. Your misses, points and EXP from your plays come with you.')}
+          {tr('You have used your 5 free plays. Sign in to play with Sparks: a full bar of 100 that refills on its own. Your misses, points and EXP from your plays come with you.')}
         </Body>
         <View style={{ gap: u(8), marginTop: u(4) }}>
           <Btn label={tr('Sign in')} onPress={() => router.push('/auth')} />
