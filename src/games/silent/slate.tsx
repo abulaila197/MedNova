@@ -128,11 +128,11 @@ export function Frame({ children, style }: { children: ReactNode; style?: StyleP
 }
 
 /** Chalk-yellow main button; `ghost` is the chalk-outline one. */
-export function ChalkBtn({ label, onPress, ghost, disabled, style, color }: { label: string; onPress?: () => void; ghost?: boolean; disabled?: boolean; style?: StyleProp<ViewStyle>; color?: string }) {
+export function ChalkBtn({ label, onPress, ghost, disabled, style, color, small }: { label: string; onPress?: () => void; ghost?: boolean; disabled?: boolean; style?: StyleProp<ViewStyle>; color?: string; small?: boolean }) {
   const R = useSlateRoom();
   return (
     <Pressable onPress={onPress} disabled={disabled} accessibilityRole="button" accessibilityLabel={spoken(label)} style={({ pressed }) => [s.btn, ghost ? { borderWidth: 1.5, borderColor: R.line, borderStyle: 'dashed' } : { backgroundColor: color ?? R.btn }, { opacity: disabled ? 0.4 : pressed ? 0.85 : 1 }, style]}>
-      <CoinLabel text={label} style={[s.btnT, { color: ghost ? R.ink : color ? '#1d2b22' : R.btnText }]} />
+      <CoinLabel text={label} style={[s.btnT, small && s.btnSmall, { color: ghost ? R.ink : color ? '#1d2b22' : R.btnText }]} />
     </Pressable>
   );
 }
@@ -341,6 +341,8 @@ const s = StyleSheet.create({
   frame: { borderWidth: SL.frameW, borderColor: SL.frame, borderRadius: u(4), boxShadow: tr('inset 0 0 0 1px rgba(0,0,0,0.35), 0 6px 16px rgba(0,0,0,0.45)'), overflow: 'hidden' },
   btn: { borderRadius: u(12), paddingVertical: u(11), paddingHorizontal: u(16), alignItems: 'center', justifyContent: 'center' },
   btnT: { fontFamily: SL.head, fontSize: u(16) },
+  // A row of three priced buttons (Sketch It practice) fits only at this size (Yazan 2026-11-13).
+  btnSmall: { fontSize: u(13) },
   timeIn: { textAlign: 'center', fontFamily: SL.head },
   hintRow: { flexDirection: 'row', justifyContent: 'space-between' },
   hintK: { fontFamily: SL.body, fontSize: u(13) },

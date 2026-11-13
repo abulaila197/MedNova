@@ -204,9 +204,9 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
         </>
       ) : (
         <View style={s.row}>
-          <ChalkBtn ghost label={priced(tr('Retry'), custom ? 0 : shownCost(play.game, 'solo', play.settings))} onPress={() => void again('RETRY')} style={{ flex: 1.2, paddingHorizontal: 6 }} />
-          <ChalkBtn ghost label={tr('Finish')} onPress={() => dispatch({ type: 'FINISH' })} style={{ flex: 0.8, paddingHorizontal: 0 }} />
-          <ChalkBtn label={priced(tr('Next'), custom ? 0 : shownCost(play.game, 'solo', play.settings))} onPress={() => void again('NEXT')} style={{ flex: 1.3, paddingHorizontal: 6 }} />
+          <ChalkBtn ghost label={priced(tr('Retry'), custom ? 0 : shownCost(play.game, 'solo', play.settings))} onPress={() => void again('RETRY')} small style={{ flex: 1.2, paddingHorizontal: u(8) }} />
+          <ChalkBtn ghost label={tr('Finish')} onPress={() => dispatch({ type: 'FINISH' })} small style={{ flex: 0.9, paddingHorizontal: u(6) }} />
+          <ChalkBtn label={priced(tr('Next'), custom ? 0 : shownCost(play.game, 'solo', play.settings))} onPress={() => void again('NEXT')} small style={{ flex: 1.2, paddingHorizontal: u(8) }} />
         </View>
       )}
       <PauseMenu open={paused} mode="solo" onResume={() => dispatch({ type: 'RESUME', now: Date.now() })} onQuit={onQuit} />

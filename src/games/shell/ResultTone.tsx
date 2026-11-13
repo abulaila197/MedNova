@@ -1,6 +1,6 @@
 import { Image } from 'expo-image';
 import type { ReactNode } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 
 import { Text } from '@/components/AppText';
 import { useTheme } from '@/state/app';
@@ -8,7 +8,7 @@ import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import type { Play, PlayItem } from '../engine/types';
-import { tr } from '@/i18n';
+import { isAr, tr } from '@/i18n';
 
 export type Tone = 'win' | 'mid' | 'last';
 
@@ -72,14 +72,14 @@ export function ResultTone({ play, items, uid, plain }: { play: Play; items: Pla
     <View style={s.row}>
       <Image
         source={st.src}
-        style={[s.sticker, { width: u(st.w * SCALE), height: u(st.h * SCALE), bottom: -u(GAP + TUCK) }]}
+        style={[s.sticker, ON_RIGHT(u(-4)), { width: u(st.w * SCALE), height: u(st.h * SCALE), bottom: -u(GAP + TUCK) }]}
         contentFit="contain"
         accessibilityIgnoresInvertColors
       />
-      <View style={s.words}>
+      <View style={[s.words, PAD_RIGHT(u(isAr ? st.w * SCALE + 6 : 80))]}>
         {/* Cyan like "over" in Game over, upright (Yazan 2026-10-26, #48). */}
-        <Text style={[s.head, { color: t.accent }]}>{head}</Text>
-        <Text style={[s.sub, { color: t.soft }]}>{sub}</Text>
+        <Text style={[s.head, isAr && s.headAr, { color: t.accent }]}>{head}</Text>
+        <Text style={[s.sub, isAr && s.subAr, { color: t.soft }]}>{sub}</Text>
       </View>
     </View>
   );
@@ -103,20 +103,31 @@ export function StickerRow({ tone, children }: { tone: Tone; children: ReactNode
     <View style={s.row}>
       <Image
         source={st.src}
-        style={[s.sticker, { width: u(st.w * SCALE), height: u(st.h * SCALE), bottom: -u(GAP + TUCK) }]}
+        style={[s.sticker, ON_RIGHT(u(-4)), { width: u(st.w * SCALE), height: u(st.h * SCALE), bottom: -u(GAP + TUCK) }]}
         contentFit="contain"
         accessibilityIgnoresInvertColors
       />
-      <View style={{ paddingEnd: u(80) }}>{children}</View>
+      <View style={PAD_RIGHT(u(isAr ? st.w * SCALE + 6 : 80))}>{children}</View>
     </View>
   );
 }
 
+/**
+ * Omar stands on the right in both languages (Yazan 2026-11-13: the Arabic page must not move him). Native Arabic
+ * swaps left and right, the web preview does not, so the physical right side is picked per platform.
+ */
+const SWAP = isAr && Platform.OS !== 'web';
+const ON_RIGHT = (n: number) => (SWAP ? { left: n } : { right: n });
+const PAD_RIGHT = (n: number) => (SWAP ? { paddingLeft: n } : { paddingRight: n });
+
 const s = StyleSheet.create({
   // Tall enough for the biggest sticker above the card; the card that follows is drawn over the sticker's cut edge.
   row: { height: u(357 * SCALE - TUCK), justifyContent: 'flex-end', marginTop: u(-4) },
-  words: { paddingEnd: u(80), paddingBottom: u(10), gap: u(4) },
+  words: { paddingBottom: u(10), gap: u(4) },
   head: { fontFamily: F.display, fontSize: u(18), lineHeight: u(21) },
   sub: { fontFamily: F.body, fontSize: u(11) },
-  sticker: { position: 'absolute', end: u(-4) },
+  // Arabic lines run a little smaller, so they always end before Omar (Yazan 2026-11-13).
+  headAr: { fontSize: u(16), lineHeight: u(22) },
+  subAr: { fontSize: u(10) },
+  sticker: { position: 'absolute' },
 });

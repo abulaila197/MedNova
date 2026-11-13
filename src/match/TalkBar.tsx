@@ -22,8 +22,8 @@ import { navTo } from '@/lib/nav';
 import { RoomLookProvider, useRoomLook, type RoomLook } from './look';
 import { stickerById, STICKERS } from './stickers';
 import { TEXT_PACKS } from './textStickers';
-import { sendTalk, toggleMute, useTalk, useTalkRoom, type TalkMsg } from './talk';
-import { VOICE, voiceById } from './voice';
+import { genderFor, sendTalk, toggleMute, useTalk, useTalkRoom, type TalkMsg } from './talk';
+import { VOICE, voiceById, voiceLine } from './voice';
 import { tr } from '@/i18n';
 
 export type Me = { id: string; name: string; face: string };
@@ -58,6 +58,8 @@ export function TalkPanel({ room, me, onSent, maxH }: { room: string; me: Me; on
   const [tab, setTabState] = useState<Tab>(m.tab);
   const setTab = (k: Tab) => ((m.tab = k), setTabState(k));
   const cooling = useCooling();
+  // Your lines are captioned in your own voice (your character's, or the one picked in Settings).
+  const myVoice = genderFor(me.face, true);
   // Bought text packs (Yazan 2026-10-13) sit in their own "Special" tab; your character's stickers stay free.
   const owned = useStyle((x) => x.owned);
   // Only your profile character's stickers in the first tab; Special holds the non-character packs you own.
@@ -133,9 +135,9 @@ export function TalkPanel({ room, me, onSent, maxH }: { room: string; me: Me; on
         // 18 lines since the taunts (2026-10-26; "Give me a gift" removed 2026-11-11): the list scrolls instead of growing the tray.
         body('voice', <>
           {VOICE.map((v) => (
-            <Pressable key={v.id} disabled={cooling} onPress={() => send('voice', v.id)} style={[s.vl, { borderColor: L.line, backgroundColor: L.panel }]} accessibilityRole="button" accessibilityLabel={tr('Say: {line}', { line: v.line })}>
+            <Pressable key={v.id} disabled={cooling} onPress={() => send('voice', v.id)} style={[s.vl, { borderColor: L.line, backgroundColor: L.panel }]} accessibilityRole="button" accessibilityLabel={tr('Say: {line}', { line: voiceLine(v.id, myVoice) })}>
               <Text style={[s.vlI, { color: L.mute }]}>▶</Text>
-              <Text style={[s.vlT, { color: L.fg, fontFamily: L.semi }]} numberOfLines={2}>{v.line}</Text>
+              <Text style={[s.vlT, { color: L.fg, fontFamily: L.semi }]} numberOfLines={2}>{voiceLine(v.id, myVoice)}</Text>
             </Pressable>
           ))}
         </>, cooling ? s.cool : undefined)
@@ -150,6 +152,8 @@ export function TalkBubble({ m, face, size = 60 }: { m: TalkMsg; face?: boolean;
   const st = m.kind === 'sticker' ? stickerById.get(m.item) : null;
   const v = m.kind === 'voice' ? voiceById.get(m.item) : null;
   const L = useRoomLook();
+  // The caption in the speaker's voice (Arabic: آسفة / جاهزة from a woman).
+  const myId = useAccount((a) => a.profile?.id);
   return (
     <Animated.View entering={ZoomIn.springify().damping(14)} exiting={FadeOut.duration(250)} style={s.bub} pointerEvents="none">
       {st ? (
@@ -157,7 +161,7 @@ export function TalkBubble({ m, face, size = 60 }: { m: TalkMsg; face?: boolean;
       ) : v ? (
         <View style={[s.vb, { backgroundColor: L.raised }]}>
           <Text style={s.vbI}>🔊</Text>
-          <Text style={[s.vbT, { color: L.fg, fontFamily: L.semi }]} numberOfLines={2}>{v.line}</Text>
+          <Text style={[s.vbT, { color: L.fg, fontFamily: L.semi }]} numberOfLines={2}>{voiceLine(v.id, genderFor(m.face, m.user_id === myId))}</Text>
         </View>
       ) : m.kind === 'line' ? (
         <View style={[s.vb, { backgroundColor: L.raised }]}>
