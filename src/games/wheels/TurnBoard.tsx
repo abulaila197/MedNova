@@ -366,7 +366,8 @@ export function TurnBoard({ turn, now, kicker, title, strip, footer, onEvent, on
         </View>
       ) : null}
       {/* #63: a long Matching (or any long question) scrolls instead of running off small screens. */}
-      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ gap: u(8), paddingBottom: u(4) }} showsVerticalScrollIndicator={false}>
+      {/* A long question (Put in Order, Matching) scrolls; the bar stays on so it's clear there is more (Yazan 2026-11-13). */}
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ gap: u(8), paddingBottom: u(16) }} showsVerticalScrollIndicator persistentScrollbar indicatorStyle="white">
       <Brass r={14} inner={{ backgroundColor: VV.panel, paddingHorizontal: u(13), paddingVertical: u(10), gap: u(4) }}>
         <View style={s.spread}>
           <T f={CM} size={11} color={VV.right} style={{ letterSpacing: u(1.4) }}>{fieldName(q.field).toUpperCase()}</T>

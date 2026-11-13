@@ -287,7 +287,7 @@ export function RedemptionBoard({ g, now, seats, onEvent, onPause, hidden, watch
       </Panel>
       <View style={{ flex: 1 }} />
       <View style={{ flexDirection: 'row', gap: u(10), opacity: watch ? 0.4 : 1 }} pointerEvents={watch ? 'none' : 'auto'}>
-        <Btn label="False" ghost onPress={() => onEvent({ type: 'ANSWER', value: false, now: Date.now() })} style={{ flex: 1 }} />
+        <Btn label="False" no onPress={() => onEvent({ type: 'ANSWER', value: false, now: Date.now() })} style={{ flex: 1 }} />
         <Btn label="True" onPress={() => onEvent({ type: 'ANSWER', value: true, now: Date.now() })} style={{ flex: 1 }} />
       </View>
     </View>
@@ -384,7 +384,7 @@ export function BossBoard({ g, seat, now, seats, onEvent, onPause, hidden, solo 
         <T size={11.5} color={VV.dim} style={{ textAlign: 'center', marginTop: u(10) }}>Swipe the card, or tap below.</T>
       </View>
       <View style={{ flexDirection: 'row', gap: u(10) }}>
-        <Btn label="‹ Doesn’t fit" ghost onPress={() => onEvent({ type: 'SWIPE', fits: false, now: Date.now() })} style={{ flex: 1 }} />
+        <Btn label="‹ Doesn’t fit" no onPress={() => onEvent({ type: 'SWIPE', fits: false, now: Date.now() })} style={{ flex: 1 }} />
         <Btn label="Fits ›" onPress={() => onEvent({ type: 'SWIPE', fits: true, now: Date.now() })} style={{ flex: 1 }} />
       </View>
     </View>

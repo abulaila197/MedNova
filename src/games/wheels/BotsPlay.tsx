@@ -287,7 +287,7 @@ function LiveBoss({ show, g, t, seatName, onSwipe, onPause, hidden }: { show: Wh
         <T size={11.5} color={VV.dim} style={{ textAlign: 'center', marginTop: u(10) }}>Swipe the card, or tap below.</T>
       </View>
       <View style={{ flexDirection: 'row', gap: u(10) }}>
-        <Btn label="‹ Doesn’t fit" ghost onPress={() => onSwipe(false)} style={{ flex: 1 }} />
+        <Btn label="‹ Doesn’t fit" no onPress={() => onSwipe(false)} style={{ flex: 1 }} />
         <Btn label="Fits ›" onPress={() => onSwipe(true)} style={{ flex: 1 }} />
       </View>
     </View>

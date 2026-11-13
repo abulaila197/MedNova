@@ -109,10 +109,15 @@ export function Title({ text, size = 26 }: { text: string; size?: number }) {
 }
 
 /** The app's gradient button, or its outline button (ghost / paper). */
-export function Btn({ label, onPress, ghost, paper, disabled, style }: { label: string; onPress?: () => void; ghost?: boolean; paper?: boolean; disabled?: boolean; style?: StyleProp<ViewStyle> }) {
+/** `no`: the red button for a No answer (False, Doesn't fit; Yazan 2026-11-13). */
+export function Btn({ label, onPress, ghost, paper, no, disabled, style }: { label: string; onPress?: () => void; ghost?: boolean; paper?: boolean; no?: boolean; disabled?: boolean; style?: StyleProp<ViewStyle> }) {
   return (
     <Pressable onPress={tapped(onPress)} disabled={disabled} accessibilityRole="button" accessibilityLabel={label} style={({ pressed }) => [{ opacity: disabled ? 0.45 : pressed ? 0.85 : 1 }, style]}>
-      {ghost || paper ? (
+      {no ? (
+        <LinearGradient colors={['#ff5c6c', '#e2364a']} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.btn}>
+          <T f={F.bodyBold} size={13} color="#ffffff" style={{ textAlign: 'center' }}>{label}</T>
+        </LinearGradient>
+      ) : ghost || paper ? (
         <View style={s.ghost}>
           <T f={F.bodySemi} size={12.5} color={VV.ink} style={{ textAlign: 'center' }}>{label}</T>
         </View>
