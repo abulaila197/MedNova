@@ -6,6 +6,7 @@ import Svg, { Circle } from 'react-native-svg';
 import { useTheme } from '@/state/app';
 import { useBalanceStore, watchBalance } from '@/state/balance';
 import { F } from '@/theme/tokens';
+import { tr } from '@/i18n';
 
 /**
  * Your EXP, tokens and level progress (the wallet lives on the phone, rule 6). One shared store, read again only
@@ -29,7 +30,7 @@ export function LevelBadge({ level, progress = 0, size, edge }: { level: number;
   return (
     <View
       style={[{ width: size, height: size, borderRadius: size / 2 }, edge ? { boxShadow: `0px 0px 0px 2px ${edge}` } : null]}
-      accessibilityLabel={`Level ${level}`}
+      accessibilityLabel={tr('Level {level}', { level })}
     >
       <Svg width={size} height={size} style={StyleSheet.absoluteFill}>
         <Circle cx={size / 2} cy={size / 2} r={r} fill="#141a3f" stroke="rgba(255,255,255,0.16)" strokeWidth={sw} />
@@ -43,7 +44,7 @@ export function LevelBadge({ level, progress = 0, size, edge }: { level: number;
             strokeWidth={sw}
             strokeLinecap="round"
             strokeDasharray={`${len * p} ${len}`}
-            transform={`rotate(-90 ${size / 2} ${size / 2})`}
+            transform={tr('rotate(-90 {n} {n})', { n: size / 2 })}
           />
         ) : null}
       </Svg>

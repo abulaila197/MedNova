@@ -7,6 +7,7 @@ import { loadFriends, useFriends } from '@/state/friends';
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
+import { tr } from '@/i18n';
 
 /** Add a player you just played with: their state with you, and the request. */
 export function useAddFriend(userId: string) {
@@ -22,7 +23,7 @@ export function useAddFriend(userId: string) {
       setState('failed');
     }
   };
-  const label = rel === 'friend' ? 'Friends' : rel === 'outgoing' || state === 'sent' ? 'Sent' : rel === 'incoming' ? 'Accept' : state === 'failed' ? 'Retry' : '+ Add';
+  const label = rel === 'friend' ? tr('Friends') : rel === 'outgoing' || state === 'sent' ? tr('Sent') : rel === 'incoming' ? tr('Accept') : state === 'failed' ? tr('Retry') : tr('+ Add');
   const open = rel !== 'friend' && rel !== 'outgoing' && state !== 'sent' && state !== 'busy';
   return { label, open, send };
 }
@@ -34,7 +35,7 @@ export function AddPill({ userId, name, ink, dim, font }: { userId: string; name
   const on = ink ?? t.accent;
   const off = dim ?? t.mute;
   return (
-    <Pressable disabled={!a.open} onPress={a.send} hitSlop={u(6)} style={[s.pill, { borderColor: a.open ? on : dim ?? t.chipLine }]} accessibilityRole="button" accessibilityLabel={a.open ? `Add ${name} as a friend` : `${name}: ${a.label}`}>
+    <Pressable disabled={!a.open} onPress={a.send} hitSlop={u(6)} style={[s.pill, { borderColor: a.open ? on : dim ?? t.chipLine }]} accessibilityRole="button" accessibilityLabel={a.open ? tr('Add {name} as a friend', { name }) : `${name}: ${a.label}`}>
       <Text style={[s.pillT, { color: a.open ? on : off }, font ? { fontFamily: font } : null]}>{a.label}</Text>
     </Pressable>
   );

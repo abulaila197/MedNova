@@ -11,6 +11,7 @@ import { useAccount } from '@/state/account';
 import { u } from '@/theme/scale';
 import type { Theme } from '@/theme/tokens';
 import { F } from '@/theme/tokens';
+import { tr } from '@/i18n';
 
 /**
  * The way into the Style shop on Nova Shop (#48, Yazan 2026-10-31: more unique and eye-catching).
@@ -25,27 +26,27 @@ export function StyleBanner({ t }: { t: Theme }) {
   const frame = FRAMES.find((x) => x.id === deal[0]);
   const title = TITLES.find((x) => x.id === deal[1]);
   const dealKey = (frame?.key ?? 'nova') as FrameKey;
-  const dealLine = [frame && `${frame.name} frame`, title && `${title.name} title`].filter(Boolean).join(' + ');
+  const dealLine = [frame && tr('{name} frame', { name: frame.name }), title && tr('{name} title', { name: title.name })].filter(Boolean).join(' + ');
   const open = () => router.navigate('/style' as never);
 
   return (
-    <Pressable onPress={open} accessibilityRole="link" accessibilityLabel="Open the Style shop">
+    <Pressable onPress={open} accessibilityRole="link" accessibilityLabel={tr('Open the Style shop')}>
       <LinearGradient colors={['#2a1c6b', '#16245e', '#0d3a5c']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={[s.spot, { borderColor: 'rgba(164,139,255,0.45)' }]}>
         <View style={s.glow} />
         <View style={s.spotL}>
-          <Text style={[s.k, { color: t.kick }]}>STYLE SHOP</Text>
+          <Text style={[s.k, { color: t.kick }]}>{tr('STYLE SHOP')}</Text>
           <Text style={[s.h, { color: t.white }]}>
-            {'Dress your '}
-            <Text style={[s.h, { color: t.accent, fontFamily: F.displayItalic }]}>name</Text>
+            {tr('Dress your ')}
+            <Text style={[s.h, { color: t.accent, fontFamily: F.displayItalic }]}>{tr('name')}</Text>
           </Text>
-          <Text style={[s.p, { color: 'rgba(255,255,255,0.75)' }]}>Frames, titles, win effects and stickers</Text>
+          <Text style={[s.p, { color: 'rgba(255,255,255,0.75)' }]}>{tr('Frames, titles, win effects and stickers')}</Text>
           {dealLine ? (
             <View style={[s.badge, { backgroundColor: '#ffd45a' }]}>
-              <Text style={[s.badgeT, { color: '#2a1600' }]}>{`${DEAL_OFF}% OFF · ${dealLine}`}</Text>
+              <Text style={[s.badgeT, { color: '#2a1600' }]}>{tr('{DEAL_OFF}% OFF · {dealLine}', { DEAL_OFF, dealLine })}</Text>
             </View>
           ) : null}
           <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={s.cta}>
-            <Text style={[s.ctaT, { color: t.onGrad }]} numberOfLines={1}>Open the shop</Text>
+            <Text style={[s.ctaT, { color: t.onGrad }]} numberOfLines={1}>{tr('Open the shop')}</Text>
           </LinearGradient>
         </View>
         <View style={s.spotR}>
@@ -58,7 +59,7 @@ export function StyleBanner({ t }: { t: Theme }) {
 
 const s = StyleSheet.create({
   spot: { flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderRadius: u(20), padding: u(14), marginTop: u(6), overflow: 'hidden', minHeight: u(170) },
-  glow: { position: 'absolute', right: -u(30), top: u(10), width: u(170), height: u(170), borderRadius: u(85), backgroundColor: 'rgba(111,214,255,0.22)', boxShadow: '0px 0px 60px rgba(111,214,255,0.55)' },
+  glow: { position: 'absolute', end: -u(30), top: u(10), width: u(170), height: u(170), borderRadius: u(85), backgroundColor: 'rgba(111,214,255,0.22)', boxShadow: '0px 0px 60px rgba(111,214,255,0.55)' },
   spotL: { flex: 1, gap: u(4) },
   spotR: { width: u(100), alignItems: 'center', justifyContent: 'center' },
   k: { fontFamily: F.mono, fontSize: u(7.5), letterSpacing: u(1.4) },

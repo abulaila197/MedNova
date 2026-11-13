@@ -5,6 +5,7 @@ import { Platform, StyleSheet, View, type LayoutChangeEvent, type StyleProp, typ
 
 import { useTheme } from '@/state/app';
 import { useBleed } from '@/theme/scale';
+import { tr } from '@/i18n';
 
 type Stops = [number, number][];
 
@@ -58,7 +59,7 @@ export function Fade({
       </View>
     );
   if (Platform.OS === 'web') {
-    const g = `linear-gradient(${horizontal ? '90deg' : '180deg'}, ${st.map(([o, a]) => `rgba(0,0,0,${a}) ${(o * 100).toFixed(2)}%`).join(', ')})`;
+    const g = tr('linear-gradient({n}, {n2})', { n: horizontal ? '90deg' : '180deg', n2: st.map(([o, a]) => `rgba(0,0,0,${a}) ${(o * 100).toFixed(2)}%`).join(', ') });
     return (
       <View onLayout={onLayout} style={[style, { maskImage: g, WebkitMaskImage: g } as unknown as ViewStyle]}>
         {children}
@@ -117,7 +118,7 @@ function Veil({ stops, horizontal }: { stops: Stops; horizontal: boolean }) {
   // Inside a tablet's centred column the veil runs out to the screen's edges, so it doesn't draw a box.
   const bleed = useBleed();
   return (
-    <View pointerEvents="none" style={[StyleSheet.absoluteFill, !horizontal && bleed ? { left: -bleed, right: -bleed } : null]}>
+    <View pointerEvents="none" style={[StyleSheet.absoluteFill, !horizontal && bleed ? { start: -bleed, end: -bleed } : null]}>
       {bands(inv).map((b, i) => {
         const pos: ViewStyle = horizontal
           ? { position: 'absolute', top: 0, bottom: 0, left: `${b.from * 100}%`, width: `${(b.to - b.from) * 100}%` }

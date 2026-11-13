@@ -1,6 +1,7 @@
 import { Circle, Defs, G, LinearGradient, Path, Rect, Stop, Svg } from 'react-native-svg';
 
 import type { Mode } from '@/theme/tokens';
+import { tr } from '@/i18n';
 
 // The raised game symbols on the ring planets (24-unit icons, gradient stroke, three drop shadows).
 type Prim = { p?: string; c?: [number, number, number]; r?: [number, number, number, number, number]; fill?: boolean; noStroke?: boolean };
@@ -66,13 +67,13 @@ export function Glyph({ k, mode, px, id }: { k: string; mode: Mode; px: number; 
         </LinearGradient>
       </Defs>
       {/* drop-shadow(0 2px 3px) approximated by a soft offset copy */}
-      <G {...line} transform={`translate(0 ${2 * unit})`} opacity={0.45} strokeWidth={1.9 + 2 * unit}>
+      <G {...line} transform={tr('translate(0 {n})', { n: 2 * unit })} opacity={0.45} strokeWidth={1.9 + 2 * unit}>
         <Shapes k={k} paint={c.s3} />
       </G>
-      <G {...line} transform={`translate(0 ${-0.6 * unit})`}>
+      <G {...line} transform={tr('translate(0 {n})', { n: -0.6 * unit })}>
         <Shapes k={k} paint={c.s2} />
       </G>
-      <G {...line} transform={`translate(0 ${c.s1y * unit})`}>
+      <G {...line} transform={tr('translate(0 {n})', { n: c.s1y * unit })}>
         <Shapes k={k} paint={c.s1} />
       </G>
       <G {...line}>

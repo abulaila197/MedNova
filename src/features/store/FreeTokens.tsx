@@ -22,6 +22,7 @@ import { F } from '@/theme/tokens';
 
 import { LINKS } from './links';
 import { onAccountSwitch } from '@/state/accountSwitch';
+import { tr } from '@/i18n';
 
 type Icon = (p: { size: number; color: string }) => ReactNode;
 type Way = { key: string; label: string; tokens: number; each?: boolean; act: string; icon: Icon };
@@ -112,21 +113,21 @@ export const I: Record<string, Icon> = {
 
 // Amounts decided 2026-10-11 (each once per account); the server pays (free_claim and friends).
 const WAYS: Way[] = [
-  { key: 'tiktok', label: 'Follow us on TikTok', tokens: 3, act: 'Follow', icon: I.tiktok },
-  { key: 'instagram', label: 'Follow us on Instagram', tokens: 3, act: 'Follow', icon: I.instagram },
-  { key: 'facebook', label: 'Follow us on Facebook', tokens: 3, act: 'Follow', icon: I.facebook },
-  { key: 'youtube', label: 'Subscribe on YouTube', tokens: 3, act: 'Subscribe', icon: I.youtube },
+  { key: 'tiktok', label: tr('Follow us on TikTok'), tokens: 3, act: tr('Follow'), icon: I.tiktok },
+  { key: 'instagram', label: tr('Follow us on Instagram'), tokens: 3, act: tr('Follow'), icon: I.instagram },
+  { key: 'facebook', label: tr('Follow us on Facebook'), tokens: 3, act: tr('Follow'), icon: I.facebook },
+  { key: 'youtube', label: tr('Subscribe on YouTube'), tokens: 3, act: tr('Subscribe'), icon: I.youtube },
   // The Instagram channel item was removed (Yazan 2026-11-02, #28): there is no channel.
-  { key: 'community', label: 'Visit the Community page', tokens: 2, act: 'Visit', icon: I.community },
-  { key: 'listing', label: Platform.OS === 'android' ? 'Visit us on Google Play' : 'Visit us on the App Store', tokens: 3, act: 'Visit', icon: I.listing },
-  { key: 'feedback', label: 'Send us your feedback', tokens: 10, act: 'Write', icon: I.feedback },
-  { key: 'story', label: 'Share your story', tokens: 5, each: true, act: 'Write', icon: I.story },
-  { key: 'ambassador', label: 'Ambassador video', tokens: 200, act: 'Apply', icon: I.video },
-  { key: 'invite', label: 'Invite a friend with your code', tokens: 10, each: true, act: 'My code', icon: I.invite },
+  { key: 'community', label: tr('Visit the Community page'), tokens: 2, act: tr('Visit'), icon: I.community },
+  { key: 'listing', label: Platform.OS === 'android' ? tr('Visit us on Google Play') : tr('Visit us on the App Store'), tokens: 3, act: tr('Visit'), icon: I.listing },
+  { key: 'feedback', label: tr('Send us your feedback'), tokens: 10, act: tr('Write'), icon: I.feedback },
+  { key: 'story', label: tr('Share your story'), tokens: 5, each: true, act: tr('Write'), icon: I.story },
+  { key: 'ambassador', label: tr('Ambassador video'), tokens: 200, act: tr('Apply'), icon: I.video },
+  { key: 'invite', label: tr('Invite a friend with your code'), tokens: 10, each: true, act: tr('My code'), icon: I.invite },
 ];
 
 /** Store ads (1 token each, 10 a day since Yazan 2026-11-07; separate from play-again ads, which give a play and no tokens; the server's ad_watched holds the same numbers). Locked "Coming soon" until ads are live. */
-const AD_WAY: Way = { key: 'ad', label: 'Watch an ad', tokens: 1, each: true, act: 'Watch', icon: I.ad };
+const AD_WAY: Way = { key: 'ad', label: tr('Watch an ad'), tokens: 1, each: true, act: tr('Watch'), icon: I.ad };
 const AD_CAP = 10;
 
 type FreeStatus = { ads_today?: number; done: string[]; ambassador: 'pending' | 'approved' | 'rejected' | null; invites: number; invite_tokens: number; redeemed: boolean; downloads: number | null; goal: number };
@@ -221,15 +222,15 @@ export function FreeTokens({ t }: { t: Theme }) {
     setAdNote(null);
     try {
       const ad = await showRewarded('store', uid);
-      if (!ad.earned) setAdNote('The ad was closed early, so no token this time.');
+      if (!ad.earned) setAdNote(tr('The ad was closed early, so no token this time.'));
       else {
         const v = await waitForReward(ad.nonce);
-        if (v.why === 'slow') setAdNote('Your token is on its way. It will show in a moment.');
-        else if (v.why === 'cap') setAdNote(`No shop ads left today (${AD_CAP} a day).`);
+        if (v.why === 'slow') setAdNote(tr('Your token is on its way. It will show in a moment.'));
+        else if (v.why === 'cap') setAdNote(tr('No shop ads left today ({AD_CAP} a day).', { AD_CAP }));
         await settle();
       }
     } catch (e) {
-      setAdNote(String((e as Error)?.message) === 'no_ad' ? 'No ad is available right now. Try again in a minute.' : 'Couldn’t reach the server. Check your connection.');
+      setAdNote(String((e as Error)?.message) === 'no_ad' ? tr('No ad is available right now. Try again in a minute.') : tr('Couldn’t reach the server. Check your connection.'));
     }
     setBusy(null);
   };
@@ -239,16 +240,16 @@ export function FreeTokens({ t }: { t: Theme }) {
   // Apple 3.2.2 (Yazan 2026-11-08, call 1): on iPhone, following us and visiting the store page open the page but pay no
   // tokens. Android keeps the reward (Google only bans paying for ratings).
   const unpaid = (w: Way) => Platform.OS === 'ios' && ((SOCIAL as readonly string[]).includes(w.key) || w.key === 'listing');
-  const label = (w: Way) => (w.key === 'story' ? `${w.label} · ${stories} of 5` : w.key === 'invite' && st ? `${w.label} · ${st.invite_tokens} of 150` : w.label);
-  const act = (w: Way) => (!signedIn ? 'Sign in' : w.key === 'ambassador' && st?.ambassador === 'pending' ? 'In review' : w.act);
+  const label = (w: Way) => (w.key === 'story' ? tr('{label} · {stories} of 5', { label: w.label, stories }) : w.key === 'invite' && st ? tr('{label} · {invite_tokens} of 150', { label: w.label, invite_tokens: st.invite_tokens }) : w.label);
+  const act = (w: Way) => (!signedIn ? tr('Sign in') : w.key === 'ambassador' && st?.ambassador === 'pending' ? tr('In review') : w.act);
   return (
     <>
       <View style={{ height: u(14) }} />
-      <Kicker inSec>Free tokens</Kicker>
+      <Kicker inSec>{tr('Free tokens')}</Kicker>
       <OfflineLine at={savedAt} style={{ marginTop: 0 }} />
       <Row>
         <Global t={t} st={st} signedIn={signedIn} />
-        <WayCard t={t} w={AD_WAY} label={ADS_LIVE && st ? `${AD_WAY.label} · ${st.ads_today ?? 0} of ${AD_CAP} today` : AD_WAY.label} act={signedIn ? AD_WAY.act : 'Sign in'} done={(st?.ads_today ?? 0) >= AD_CAP} locked={!ADS_LIVE} busy={busy === 'ad'} onPress={() => (signedIn ? watchAd() : router.navigate('/auth'))} />
+        <WayCard t={t} w={AD_WAY} label={ADS_LIVE && st ? tr('{label} · {n} of {AD_CAP} today', { label: AD_WAY.label, n: st.ads_today ?? 0, AD_CAP }) : AD_WAY.label} act={signedIn ? AD_WAY.act : tr('Sign in')} done={(st?.ads_today ?? 0) >= AD_CAP} locked={!ADS_LIVE} busy={busy === 'ad'} onPress={() => (signedIn ? watchAd() : router.navigate('/auth'))} />
         {WAYS.map((w) => (
           <WayCard key={w.key} t={t} w={w} label={label(w)} act={act(w)} done={!unpaid(w) && isDone(w)} unpaid={unpaid(w)} locked={noLink(w)} busy={busy === w.key} onPress={() => tap(w)} reopen={LINKED.includes(w.key)} />
         ))}
@@ -271,15 +272,15 @@ const LINKED = ['tiktok', 'instagram', 'facebook', 'youtube', 'channel', 'commun
 
 function WayCard({ t, w, label, act, done, locked, busy, onPress, reopen, unpaid }: { t: Theme; w: Way; label: string; act: string; done: boolean; locked?: boolean; busy: boolean; onPress: () => void; reopen?: boolean; unpaid?: boolean }) {
   return (
-    <Pressable onPress={locked || (done && !reopen) ? undefined : onPress} accessibilityRole="button" accessibilityLabel={unpaid ? w.label : `${w.label}, ${w.tokens} tokens`} style={[s.card, { backgroundColor: t.panel, borderColor: t.panelLine }, busy && { opacity: 0.6 }]}>
+    <Pressable onPress={locked || (done && !reopen) ? undefined : onPress} accessibilityRole="button" accessibilityLabel={unpaid ? w.label : tr('{label}, {tokens} tokens', { label: w.label, tokens: w.tokens })} style={[s.card, { backgroundColor: t.panel, borderColor: t.panelLine }, busy && { opacity: 0.6 }]}>
       <View style={[s.ic, { backgroundColor: 'rgba(111,214,255,0.1)' }]}>{w.icon({ size: u(17), color: t.accent })}</View>
       <Text style={[s.cN, { color: unpaid ? t.mute : t.fg }]}>{unpaid ? '♥' : `+${w.tokens}`}</Text>
       <Text style={[s.cU, { color: t.mute }]} numberOfLines={2}>
-        {w.each ? `${label} · each` : label}
+        {w.each ? tr('{label} · each', { label }) : label}
       </Text>
       {done || locked ? (
         <View style={[s.cBtn, s.ghost, { borderColor: t.panelLine }]}>
-          <Text style={[s.cBtnT, { color: t.mute }]}>{locked ? 'Coming soon' : w.each ? 'Back tomorrow' : 'Collected ✓'}</Text>
+          <Text style={[s.cBtnT, { color: t.mute }]}>{locked ? tr('Coming soon') : w.each ? tr('Back tomorrow') : tr('Collected ✓')}</Text>
         </View>
       ) : (
         <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={s.cBtn}>
@@ -308,11 +309,11 @@ function Global({ t, st, signedIn }: { t: Theme; st: FreeStatus | null; signedIn
   };
   return (
     <LinearGradient colors={GOLD} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={s.gold}>
-      <Pressable disabled={!reached || got || busy} onPress={collect} style={[s.card, s.goldIn, { backgroundColor: '#1a1830' }]} accessibilityLabel={`Global mission: ${now} of ${goal} downloads`}>
-        <Text style={[s.gKick, { color: '#f3cf6c' }]}>GLOBAL MISSION</Text>
+      <Pressable disabled={!reached || got || busy} onPress={collect} style={[s.card, s.goldIn, { backgroundColor: '#1a1830' }]} accessibilityLabel={tr('Global mission: {now} of {goal} downloads', { now, goal })}>
+        <Text style={[s.gKick, { color: '#f3cf6c' }]}>{tr('GLOBAL MISSION')}</Text>
         <Text style={[s.cN, { color: t.fg }]}>+200</Text>
         <Text style={[s.cU, { color: t.mute }]} numberOfLines={2}>
-          {got ? 'Collected. Thank you!' : reached ? 'We made it! Tap to collect' : 'for everyone at 100k downloads'}
+          {got ? tr('Collected. Thank you!') : reached ? tr('We made it! Tap to collect') : tr('for everyone at 100k downloads')}
         </Text>
         <View style={[s.bar, { backgroundColor: 'rgba(243,207,108,0.15)' }]}>
           <LinearGradient colors={GOLD} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={{ width: `${Math.max(2, (now / goal) * 100)}%`, height: '100%', borderRadius: 999 }} />
@@ -324,7 +325,7 @@ function Global({ t, st, signedIn }: { t: Theme; st: FreeStatus | null; signedIn
 }
 
 export const PROMPTS = ['Why you chose medicine', 'A burnout story', 'Your hardest phase in college', 'The moment that kept you going', 'Your funniest moment'];
-const SAY: Record<string, string> = { short: 'Write at least 20 characters.', done: 'Already sent.', missing: 'Fill in every field.', 'too many': 'That is enough for today. Try tomorrow.' };
+const SAY: Record<string, string> = { short: tr('Write at least 20 characters.'), done: tr('Already sent.'), missing: tr('Fill in every field.'), 'too many': tr('That is enough for today. Try tomorrow.') };
 
 /** The three writing sheets of the free ways: story (5 tokens each prompt), feedback (10, first time) and Ambassador (200 after approval). */
 export function FreeSheets({ t }: { t: Theme }) {
@@ -354,9 +355,9 @@ function useSend(onDone: () => void) {
       if (r.ok) {
         await settle();
         onDone();
-      } else setMsg(SAY[r.why ?? ''] ?? 'Not sent. Try again.');
+      } else setMsg(SAY[r.why ?? ''] ?? tr('Not sent. Try again.'));
     } catch {
-      setMsg('Not sent. Check your connection and try again.');
+      setMsg(tr('Not sent. Check your connection and try again.'));
     }
     setBusy(false);
   };
@@ -372,22 +373,22 @@ function StoryForm({ t, onDone }: { t: Theme; onDone: () => void }) {
   const { busy, msg, send } = useSend(onDone);
   return (
     <>
-      <Title t={t} a="Share your " b="story" />
+      <Title t={t} a={tr('Share your ')} b={tr('story')} />
       <View style={s.chips}>
         {PROMPTS.map((x, i) => (
           <Pressable key={x} disabled={sent.includes(i)} onPress={() => setP(i)} style={[s.chip, { borderColor: i === p ? t.accent : t.panelLine, backgroundColor: i === p ? tint(t) : 'transparent', opacity: sent.includes(i) ? 0.5 : 1 }]}>
-            <Text style={[s.chipT, { color: i === p ? t.fg : t.mute }]}>{sent.includes(i) ? `${x} ✓` : x}</Text>
+            <Text style={[s.chipT, { color: i === p ? t.fg : t.mute }]}>{sent.includes(i) ? `${tr(x)} ✓` : tr(x)}</Text>
           </Pressable>
         ))}
       </View>
-      <TextInput multiline value={body} onChangeText={setBody} maxLength={4000} placeholder="Tell it your way..." placeholderTextColor={t.mute} style={[s.area, { color: t.fg, borderColor: t.panelLine, backgroundColor: t.panel2 }]} />
+      <TextInput multiline value={body} onChangeText={setBody} maxLength={4000} placeholder={tr('Tell it your way...')} placeholderTextColor={t.mute} style={[s.area, { color: t.fg, borderColor: t.panelLine, backgroundColor: t.panel2 }]} />
       <Pressable onPress={() => setCredit((v) => !v)} style={s.tick} accessibilityRole="checkbox" accessibilityState={{ checked: credit }}>
         <View style={[s.box, { borderColor: credit ? t.accent : t.mute, backgroundColor: credit ? t.accent : 'transparent' }]}>{credit ? <Text style={[s.boxT, { color: t.onGrad }]}>✓</Text> : null}</View>
-        <Text style={[s.tickT, { color: t.fg }]}>Credit me with my in-game name</Text>
+        <Text style={[s.tickT, { color: t.fg }]}>{tr('Credit me with my in-game name')}</Text>
       </Pressable>
-      <Text style={[s.note, { color: t.mute }]}>Keep it clean: adult (18+) content can get your account blocked. By sharing, you agree MedNova may post your story on our pages, without your name unless you tick Credit me.</Text>
+      <Text style={[s.note, { color: t.mute }]}>{tr('Keep it clean: adult (18+) content can get your account blocked. By sharing, you agree MedNova may post your story on our pages, without your name unless you tick Credit me.')}</Text>
       {msg ? <Text style={[s.note, { color: t.error }]}>{msg}</Text> : null}
-      <Send t={t} label="Send · +5 tokens" busy={busy || sent.includes(p)} onPress={() => send('submit_story', { prompt: p, body, credit })} />
+      <Send t={t} label={tr('Send · +5 tokens')} busy={busy || sent.includes(p)} onPress={() => send('submit_story', { prompt: p, body, credit })} />
     </>
   );
 }
@@ -398,11 +399,11 @@ function FeedbackForm({ t, onDone }: { t: Theme; onDone: () => void }) {
   const { busy, msg, send } = useSend(onDone);
   return (
     <>
-      <Title t={t} a="Tell us what you " b="think" />
-      <Text style={[s.note, { color: t.mute }]}>What you love, what bugs you, what you wish MedNova had. We read every word.</Text>
-      <TextInput multiline value={body} onChangeText={setBody} maxLength={2000} placeholder="Your feedback..." placeholderTextColor={t.mute} style={[s.area, { color: t.fg, borderColor: t.panelLine, backgroundColor: t.panel2 }]} />
+      <Title t={t} a={tr('Tell us what you ')} b={tr('think')} />
+      <Text style={[s.note, { color: t.mute }]}>{tr('What you love, what bugs you, what you wish MedNova had. We read every word.')}</Text>
+      <TextInput multiline value={body} onChangeText={setBody} maxLength={2000} placeholder={tr('Your feedback...')} placeholderTextColor={t.mute} style={[s.area, { color: t.fg, borderColor: t.panelLine, backgroundColor: t.panel2 }]} />
       {msg ? <Text style={[s.note, { color: t.error }]}>{msg}</Text> : null}
-      <Send t={t} label={paid ? 'Send' : 'Send · +10 tokens'} busy={busy} onPress={() => send('submit_feedback', { body })} />
+      <Send t={t} label={paid ? tr('Send') : tr('Send · +10 tokens')} busy={busy} onPress={() => send('submit_feedback', { body })} />
     </>
   );
 }
@@ -415,13 +416,13 @@ function AmbassadorForm({ t, onDone }: { t: Theme; onDone: () => void }) {
   const input = [s.input, { color: t.fg, borderColor: t.panelLine, backgroundColor: t.panel2 }];
   return (
     <>
-      <Title t={t} a="Become an " b="ambassador" />
-      <Text style={[s.note, { color: t.mute }]}>Post a video of you playing MedNova on your account (100+ followers) and mention us. Send the link here; once we check it, 200 tokens land in your wallet within a week.</Text>
-      <TextInput value={url} onChangeText={setUrl} autoCapitalize="none" keyboardType="url" placeholder="Link to your video" placeholderTextColor={t.mute} style={input} />
-      <TextInput value={email} onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address" placeholder="Your email" placeholderTextColor={t.mute} style={input} />
-      <TextInput value={name} onChangeText={setName} placeholder="Your in-game name" placeholderTextColor={t.mute} style={input} />
+      <Title t={t} a={tr('Become an ')} b={tr('ambassador')} />
+      <Text style={[s.note, { color: t.mute }]}>{tr('Post a video of you playing MedNova on your account (100+ followers) and mention us. Send the link here; once we check it, 200 tokens land in your wallet within a week.')}</Text>
+      <TextInput value={url} onChangeText={setUrl} autoCapitalize="none" keyboardType="url" placeholder={tr('Link to your video')} placeholderTextColor={t.mute} style={input} />
+      <TextInput value={email} onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address" placeholder={tr('Your email')} placeholderTextColor={t.mute} style={input} />
+      <TextInput value={name} onChangeText={setName} placeholder={tr('Your in-game name')} placeholderTextColor={t.mute} style={input} />
       {msg ? <Text style={[s.note, { color: t.error }]}>{msg}</Text> : null}
-      <Send t={t} label="Send for review" busy={busy} onPress={() => send('submit_ambassador', { email, game_name: name, video_url: url })} />
+      <Send t={t} label={tr('Send for review')} busy={busy} onPress={() => send('submit_ambassador', { email, game_name: name, video_url: url })} />
     </>
   );
 }

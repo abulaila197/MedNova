@@ -5,6 +5,7 @@ import { SEAT_COLOURS } from '@/games/shell/characters';
 import { addBot } from './core';
 import { rng } from './rng';
 import type { Bot, BotLevel } from './types';
+import { tr } from '@/i18n';
 
 export type After = {
   /** Rivals who finished above you (they brag). */
@@ -53,5 +54,5 @@ export function rematchSeats(play: Play, leave: Bot[]): Seat[] {
 /** "Omar", "Omar and Sara", "Omar, Sara and Lena". */
 export const namesOf = (bots: Bot[]) => {
   const n = bots.map((b) => b.name.split(' ')[0]);
-  return n.length <= 1 ? (n[0] ?? '') : `${n.slice(0, -1).join(', ')} and ${n[n.length - 1]}`;
+  return n.length <= 1 ? (n[0] ?? '') : tr('{a} and {b}', { a: n.slice(0, -1).join(tr(', ')), b: n[n.length - 1] });
 };

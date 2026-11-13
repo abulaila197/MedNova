@@ -13,17 +13,18 @@ import { useAccount } from '@/state/account';
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
+import { tr } from '@/i18n';
 
 type Why = 'shape' | 'bad' | 'same' | 'taken' | 'tokens' | 'guest' | 'offline';
 
 const SAY: Record<Why, string> = {
-  shape: 'Use 3 to 16 letters, numbers or _.',
-  bad: 'That name is not allowed. Try another.',
-  same: 'That’s already your name.',
-  taken: 'That name is taken. Try another.',
-  tokens: 'Not enough tokens.',
-  guest: 'Sign in to change your name.',
-  offline: 'Couldn’t reach the server. Check your connection.',
+  shape: tr('Use 3 to 16 letters, numbers or _.'),
+  bad: tr('That name is not allowed. Try another.'),
+  same: tr('That’s already your name.'),
+  taken: tr('That name is taken. Try another.'),
+  tokens: tr('Not enough tokens.'),
+  guest: tr('Sign in to change your name.'),
+  offline: tr('Couldn’t reach the server. Check your connection.'),
 };
 
 /**
@@ -60,37 +61,37 @@ export function ChangeName({ open, onClose }: { open: boolean; onClose: () => vo
       if (userId) await syncAccount(userId).catch(() => {});
       if (r.next) setCost(r.next);
       setName('');
-      setMsg({ text: `You’re Dr. ${name} now.`, good: true });
+      setMsg({ text: tr('You’re Dr. {name} now.', { name }), good: true });
     } else {
       const why = r.why ?? 'offline';
-      setMsg({ text: why === 'tokens' && r.need ? `You need ${r.need} more tokens.` : SAY[why], good: false });
+      setMsg({ text: why === 'tokens' && r.need ? tr('You need {need} more tokens.', { need: r.need }) : SAY[why], good: false });
     }
     setBusy(false);
   };
   return (
     <Sheet open={open} onClose={onClose}>
-      <Text style={[s.k, { color: t.mute }]}>CHANGE NAME</Text>
-      <Text style={[s.now, { color: t.fg }]} numberOfLines={1}>{`Dr. ${profile.display_name}`}</Text>
+      <Text style={[s.k, { color: t.mute }]}>{tr('CHANGE NAME')}</Text>
+      <Text style={[s.now, { color: t.fg }]} numberOfLines={1}>{tr('Dr. {display_name}', { display_name: profile.display_name })}</Text>
       <TextInput
         value={name}
         onChangeText={(v) => {
           setName(v.replace(/[^A-Za-z0-9_]/g, '').slice(0, 16));
           setMsg(null);
         }}
-        placeholder="New name"
+        placeholder={tr('New name')}
         placeholderTextColor={t.mute}
         autoCapitalize="none"
         autoCorrect={false}
         maxLength={16}
         style={[s.field, { color: t.fg, backgroundColor: t.panel2, borderColor: name ? 'rgba(111,214,255,0.5)' : t.panelLine }]}
-        accessibilityLabel="New name"
+        accessibilityLabel={tr('New name')}
       />
-      <Text style={[s.note, { color: t.mute }]}>Each change costs double the last one.</Text>
+      <Text style={[s.note, { color: t.mute }]}>{tr('Each change costs double the last one.')}</Text>
       {msg ? <Text style={[s.msg, { color: msg.good ? t.accent : t.mute }]}>{msg.text}</Text> : null}
       <Pressable disabled={!ok || busy} onPress={save} accessibilityRole="button" style={{ opacity: ok ? 1 : 0.5 }}>
         <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.btn}>
           {/* Yazan 2026-11-12: the price always shows on the button, with the token symbol. */}
-          <CoinLabel style={[s.btnT, { color: t.onGrad }]} text={busy ? 'Saving…' : cost == null ? 'Change name · …' : `Change name · ${cost}${COIN}`} />
+          <CoinLabel style={[s.btnT, { color: t.onGrad }]} text={busy ? tr('Saving…') : cost == null ? tr('Change name · …') : tr('Change name · {cost}{COIN}', { cost, COIN })} />
         </LinearGradient>
       </Pressable>
     </Sheet>

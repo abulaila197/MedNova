@@ -9,6 +9,7 @@ import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import { doneOf, timeLeft, weekName, type Rounds } from './useRounds';
+import { tr } from '@/i18n';
 
 /** Look B: a heartbeat line that lights up as you use Sparks; one beat for each of the week's 3 missions. */
 export function Beat({ r, more = true }: { r: Rounds; more?: boolean }) {
@@ -30,11 +31,11 @@ export function Beat({ r, more = true }: { r: Rounds; more?: boolean }) {
     <View style={s.beat}>
       <View style={s.row}>
         <Text style={[s.beatT, { color: t.white }]}>
-          Grand Rounds <Text style={{ fontFamily: F.displayItalic, color: t.accent }}>{weekName(r.this)}</Text>
+          {tr('Grand Rounds')} <Text style={{ fontFamily: F.displayItalic, color: t.accent }}>{weekName(r.this)}</Text>
         </Text>
       </View>
       <View style={s.row}>
-        <Text style={[s.left, { color: t.mute, flex: 1 }]}>{r.claimed ? 'DONE THIS WEEK' : `${timeLeft(r.ends).toUpperCase()} LEFT${more ? ' · TAP FOR MORE' : ''}`}</Text>
+        <Text style={[s.left, { color: t.mute, flex: 1 }]}>{r.claimed ? tr('DONE THIS WEEK') : tr('{toUpperCase} LEFT{n}', { toUpperCase: timeLeft(r.ends).toUpperCase(), n: more ? tr(' · TAP FOR MORE') : '' })}</Text>
         <View style={s.prize}>
           <Bolt size={u(9)} />
           <Text style={[s.prizeT, { color: t.fg }]}>{`${r.used} / ${TOP}`}</Text>
@@ -53,7 +54,7 @@ export function Beat({ r, more = true }: { r: Rounds; more?: boolean }) {
       </Svg>
       <View style={s.lbl}>
         {marks.map((m) => (
-          <Text key={m.label} style={[s.part, { left: `${(m.x / W) * 100}%`, color: t.mute }]}>
+          <Text key={m.label} style={[s.part, { start: `${(m.x / W) * 100}%`, color: t.mute }]}>
             {m.label}
           </Text>
         ))}
@@ -70,5 +71,5 @@ const s = StyleSheet.create({
   prize: { flexDirection: 'row', alignItems: 'center', gap: u(2) },
   prizeT: { fontFamily: F.bodySemi, fontSize: u(9) },
   lbl: { height: u(10) },
-  part: { position: 'absolute', width: u(50), marginLeft: u(-25), textAlign: 'center', fontFamily: F.mono, fontSize: u(6.5), letterSpacing: u(0.4) },
+  part: { position: 'absolute', width: u(50), marginStart: u(-25), textAlign: 'center', fontFamily: F.mono, fontSize: u(6.5), letterSpacing: u(0.4) },
 });

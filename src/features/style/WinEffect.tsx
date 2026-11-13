@@ -11,6 +11,7 @@ import type { EffectKey } from './catalog';
 import { Trophy } from './Trophy';
 import { useLook, wantLooks } from './useStyle';
 import { knock, thump } from './WinShake';
+import { tr } from '@/i18n';
 
 /*
  * Win effects (Yazan 2026-10-18): Confetti, Pulse Wave, two plain celebrations (Trophy, Medal) and four taunts that
@@ -385,9 +386,9 @@ function TooEasy() {
           ]}
         >
           <Text style={[s.stampT, { fontSize: 46 * k }]} numberOfLines={1}>
-            TOO EASY
+            {tr('TOO EASY')}
           </Text>
-          <Text style={[s.stampS, { fontSize: 11 * k }]}>BETTER LUCK NEXT TIME</Text>
+          <Text style={[s.stampS, { fontSize: 11 * k }]}>{tr('BETTER LUCK NEXT TIME')}</Text>
         </Animated.View>
       </View>
     </Animated.View>
@@ -432,7 +433,7 @@ function Ink({ T, a, sz, k }: { T: SharedValue<number>; a: number; sz: number; k
           width: sz,
           height: sz,
           borderRadius: sz / 2,
-          marginLeft: -sz / 2,
+          marginStart: -sz / 2,
           marginTop: -sz / 2,
         },
         st,
@@ -486,8 +487,8 @@ function MicDrop() {
     <Animated.View style={[StyleSheet.absoluteFill, layer]}>
       <Scrim T={T} />
       <Animated.View style={[s.words, { top: height * 0.44 }, txt]}>
-        <Text style={[s.big, { fontSize: 44 * k }]}>Mic drop.</Text>
-        <Text style={[s.small, { fontSize: 14 * k }]}>Nothing more to say.</Text>
+        <Text style={[s.big, { fontSize: 44 * k }]}>{tr('Mic drop.')}</Text>
+        <Text style={[s.small, { fontSize: 14 * k }]}>{tr('Nothing more to say.')}</Text>
       </Animated.View>
       <Svg width={width} height={height} style={StyleSheet.absoluteFill}>
         <AEllipse cx={width / 2} cy={floor + 6 * k} fill="none" stroke={CYAN} animatedProps={thud} />
@@ -499,7 +500,7 @@ function MicDrop() {
         style={[
           s.abs,
           {
-            left: width / 2 - 24 * k,
+            start: width / 2 - 24 * k,
             top: 0,
             width: 48 * k,
             height: 150 * k,
@@ -621,8 +622,8 @@ function Flatline() {
         <AG animatedProps={red}>{strokes(RED, '#ffd6db')}</AG>
       </Svg>
       <Animated.View style={[s.words, { top: height * 0.54 }, txt]}>
-        <Text style={[s.big, { fontSize: 46 * k, color: RED }]}>Flatline.</Text>
-        <Text style={[s.small, { fontSize: 14 * k, color: '#c6d0ee' }]}>{"That's you, everyone else."}</Text>
+        <Text style={[s.big, { fontSize: 46 * k, color: RED }]}>{tr('Flatline.')}</Text>
+        <Text style={[s.small, { fontSize: 14 * k, color: '#c6d0ee' }]}>{tr('That\'s you, everyone else.')}</Text>
       </Animated.View>
       <Animated.View style={[StyleSheet.absoluteFill, s.edge, { borderColor: RED }, edge]} />
     </Animated.View>
@@ -676,8 +677,8 @@ function Spotlight() {
           <Rect x={cx - 22 * k} y={-6} width={44 * k} height={16 * k} rx={5 * k} fill="#2b324d" />
         </Svg>
         <View style={[s.words, { top: floor + 35 * k }]}>
-          <Text style={[s.big, { fontSize: 38 * k, color: '#fff6d8' }]}>All eyes on me.</Text>
-          <Text style={[s.small, { fontSize: 14 * k }]}>The rest of you can sit in the dark.</Text>
+          <Text style={[s.big, { fontSize: 38 * k, color: '#fff6d8' }]}>{tr('All eyes on me.')}</Text>
+          <Text style={[s.small, { fontSize: 14 * k }]}>{tr('The rest of you can sit in the dark.')}</Text>
         </View>
       </Animated.View>
     </View>
@@ -698,7 +699,7 @@ function TrophyFx() {
         style={[
           s.abs,
           {
-            left: (width - size) / 2,
+            start: (width - size) / 2,
             top: height * 0.25,
             width: size,
             height: size,
@@ -759,7 +760,7 @@ function Medal() {
         style={[
           s.abs,
           {
-            left: width / 2 - 100 * k,
+            start: width / 2 - 100 * k,
             top,
             width: 200 * k,
             height: 260 * k,
@@ -798,15 +799,15 @@ function Medal() {
           <Rect x={38} y={10} width={124} height={32} rx={16} fill="url(#bar)" />
           <Rect x={44} y={13} width={112} height={7} rx={3.5} fill="#ffffff" opacity={0.25} />
           {[70, 100, 130].map((x) => (
-            <Path key={x} d={STAR} transform={`translate(${x},26) scale(0.55)`} fill="#ffffff" stroke="#ffffff" strokeWidth={2} strokeLinejoin="round" />
+            <Path key={x} d={STAR} transform={tr('translate({x},26) scale(0.55)', { x })} fill="#ffffff" stroke="#ffffff" strokeWidth={2} strokeLinejoin="round" />
           ))}
           <Circle cx={100} cy={182} r={62} fill="#d97810" />
           <Circle cx={100} cy={178} r={62} fill="url(#gold)" />
           <Circle cx={100} cy={178} r={45} fill="none" stroke="#ef7f2c" strokeWidth={7} opacity={0.85} />
           <Circle cx={100} cy={178} r={41} fill="url(#in)" />
-          <Path d={STAR} transform="translate(100,180) scale(1.9)" fill="#fff3c0" stroke="#fff3c0" strokeWidth={3} strokeLinejoin="round" />
+          <Path d={STAR} transform={tr('translate(100,180) scale(1.9)')} fill="#fff3c0" stroke="#fff3c0" strokeWidth={3} strokeLinejoin="round" />
           <G clipPath="url(#disc)">
-            <G transform="rotate(32 100 178)">
+            <G transform={tr('rotate(32 100 178)')}>
               <AnimatedRect y={90} width={26} height={180} fill="#ffffff" opacity={0.42} animatedProps={shine} />
             </G>
           </G>
@@ -850,7 +851,7 @@ function ChainHeart({ T, a, d, k, c }: { T: SharedValue<number>; a: number; d: n
     };
   });
   return (
-    <Animated.View style={[s.abs, { left: -12 * k, top: -12 * k }, st]}>
+    <Animated.View style={[s.abs, { start: -12 * k, top: -12 * k }, st]}>
       <Svg width={24 * k} height={24 * k} viewBox="-12 -12 24 24">
         <Path d={HEART} fill={c} />
       </Svg>
@@ -878,11 +879,11 @@ function FriendChain() {
   return (
     <Animated.View style={[StyleSheet.absoluteFill, layer]}>
       <Scrim T={T} />
-      <Animated.View style={[s.abs, { left: 0, right: 0, top: cy - 15 * kc, height: 30 * kc }, shake]}>
-        <Animated.View style={[s.abs, { left: width / 2 - half + 2 * kc, top: 0 }, left]}>
+      <Animated.View style={[s.abs, { start: 0, end: 0, top: cy - 15 * kc, height: 30 * kc }, shake]}>
+        <Animated.View style={[s.abs, { start: width / 2 - half + 2 * kc, top: 0 }, left]}>
           <ChainHalf k={kc} n={n} />
         </Animated.View>
-        <Animated.View style={[s.abs, { left: width / 2 - 2 * kc, top: 0 }, right]}>
+        <Animated.View style={[s.abs, { start: width / 2 - 2 * kc, top: 0 }, right]}>
           <ChainHalf k={kc} n={n} flip />
         </Animated.View>
       </Animated.View>
@@ -890,12 +891,12 @@ function FriendChain() {
         <Ring T={T} at={880} cx={width / 2} cy={cy} from={16 * k} to={120 * k} w={6 * k} color={CORAL} />
         <Ring T={T} at={1000} cx={width / 2} cy={cy} from={16 * k} to={150 * k} w={4 * k} color={LINK_CYAN} />
       </Svg>
-      <View style={[s.abs, { left: width / 2, top: cy }]}>
+      <View style={[s.abs, { start: width / 2, top: cy }]}>
         {hearts.map((h, i) => (
           <ChainHeart key={i} T={T} a={h.a} d={h.d} k={k} c={h.c} />
         ))}
       </View>
-      <Animated.View style={[s.abs, { left: width / 2 - 34 * k, top: cy - 34 * k }, heart]}>
+      <Animated.View style={[s.abs, { start: width / 2 - 34 * k, top: cy - 34 * k }, heart]}>
         <Svg width={68 * k} height={68 * k} viewBox="-13 -13 26 26">
           <Path d={HEART} fill="#ff4d6d" stroke="#ffffff" strokeWidth={1.4} />
           <Path d="M-5,-5 Q-7,-2 -5,1" stroke="#ffffff" strokeOpacity={0.7} strokeWidth={1.3} fill="none" strokeLinecap="round" />
@@ -924,14 +925,14 @@ const s = StyleSheet.create({
   box: { position: 'absolute', left: 0, right: 0, alignItems: 'center', justifyContent: 'center' },
   at: {
     position: 'absolute',
-    left: 0,
-    right: 0,
+    start: 0,
+    end: 0,
     height: 0,
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'visible',
   },
-  bit: { position: 'absolute', left: 0, top: 0, borderRadius: 1 },
+  bit: { position: 'absolute', start: 0, top: 0, borderRadius: 1 },
   edge: { borderWidth: 3 },
   stamp: {
     borderColor: '#e2465a',
@@ -947,11 +948,11 @@ const s = StyleSheet.create({
   },
   ink: {
     position: 'absolute',
-    left: '50%',
+    start: '50%',
     top: 0,
     backgroundColor: '#e2465a',
   },
-  words: { position: 'absolute', left: 0, right: 0, alignItems: 'center' },
+  words: { position: 'absolute', start: 0, end: 0, alignItems: 'center' },
   big: { fontFamily: F.display, color: '#ffffff' },
   small: { fontFamily: F.body, color: '#9fb0dc', marginTop: 4 },
 });
@@ -979,7 +980,7 @@ export function EffectSign({ kind, size }: { kind: EffectKey; size: number }) {
           <Path d="M11,20 L31,17 M12,25 L26,23" stroke="#e2465a" strokeWidth={2} strokeLinecap="round" />
         </>
       ) : kind === 'mic_drop' ? (
-        <G transform="rotate(-30 20 20)">
+        <G transform={tr('rotate(-30 20 20)')}>
           <Rect x={14} y={4} width={12} height={14} rx={6} fill="#c9d3ee" />
           <Rect x={13} y={16} width={14} height={3} rx={1} fill="#e0b44e" />
           <Path d="M15,19 L25,19 L23,36 L17,36 Z" fill="#3a4466" />
@@ -994,7 +995,7 @@ export function EffectSign({ kind, size }: { kind: EffectKey; size: number }) {
           <Ellipse cx={11} cy={20} rx={8} ry={5} fill="none" stroke={CORAL} strokeWidth={3} />
           <Rect x={16} y={18.5} width={9} height={3} rx={1.5} fill={LINK_CYAN} />
           <Ellipse cx={29} cy={20} rx={8} ry={5} fill="none" stroke={CORAL} strokeWidth={3} />
-          <Path d={HEART} transform="translate(20,9) scale(0.55)" fill="#ff4d6d" />
+          <Path d={HEART} transform={tr('translate(20,9) scale(0.55)')} fill="#ff4d6d" />
         </>
       ) : kind === 'trophy' ? (
         <>
@@ -1008,7 +1009,7 @@ export function EffectSign({ kind, size }: { kind: EffectKey; size: number }) {
           <Path d="M13,3 L27,3 L24,17 L20,20 L16,17 Z" fill="#7a70ff" />
           <Path d="M18.5,3 L21.5,3 L21,18 L19,18 Z" fill="#ffffff" />
           <Circle cx={20} cy={27} r={10} fill="#ffbf2a" />
-          <Path d={STAR} transform="translate(20,27.5) scale(0.45)" fill="#fff3c0" />
+          <Path d={STAR} transform={tr('translate(20,27.5) scale(0.45)')} fill="#fff3c0" />
         </>
       )}
     </Svg>

@@ -13,8 +13,9 @@ import { InfoScroll, Kicker, s as ui, useInfo } from '@/features/info/ui';
 import type { Theme } from '@/theme/tokens';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
+import { tr } from '@/i18n';
 
-const TIER = ['Bronze', 'Silver', 'Gold', 'Platinum'];
+const TIER = [tr('Bronze'), tr('Silver'), tr('Gold'), tr('Platinum')];
 const METAL = [
   ['#e6b089', '#a8693d'],
   ['#eef1f6', '#9aa3b2'],
@@ -31,19 +32,19 @@ export default function Page() {
   return (
     <Screen tab={null} glow={21} wide={460} symbols>
       <InfoScroll>
-        <Kicker>Achievements</Kicker>
+        <Kicker>{tr('Achievements')}</Kicker>
         <Text style={[ui.H, s.H, { color: c.fg }]}>
-          {'Your '}
-          <Text style={[ui.H, s.H, { color: c.t.accent, fontFamily: F.displayItalic }]}>logbook</Text>
+          {tr('Your ')}
+          <Text style={[ui.H, s.H, { color: c.t.accent, fontFamily: F.displayItalic }]}>{tr('logbook')}</Text>
         </Text>
         <Text style={[ui.p, { color: c.mute }]}>
-          {`${reached} of ${tiers} tiers reached`}
-          {waiting ? ` · ${tokensWaiting} token${tokensWaiting === 1 ? '' : 's'} waiting` : ''}
+          {tr('{reached} of {tiers} tiers reached', { reached, tiers })}
+          {waiting ? tr(' · {tokensWaiting} token{n} waiting', { tokensWaiting, n: tokensWaiting === 1 ? '' : 's' }) : ''}
         </Text>
         {!signedIn ? (
           <Pressable onPress={() => router.navigate('/auth')} style={[s.guest, { borderColor: c.line, backgroundColor: c.surf }]} accessibilityRole="button">
-            <Text style={[s.guestT, { color: c.fg }]}>Sign in to collect your tokens</Text>
-            <Text style={[s.guestA, { color: c.t.accent }]}>Sign in</Text>
+            <Text style={[s.guestT, { color: c.fg }]}>{tr('Sign in to collect your tokens')}</Text>
+            <Text style={[s.guestA, { color: c.t.accent }]}>{tr('Sign in')}</Text>
           </Pressable>
         ) : null}
         {error ? <Text style={[ui.p, { color: c.t.error }]}>{error}</Text> : null}
@@ -63,7 +64,7 @@ export default function Page() {
 /** The Platinum seal: a wax-like platinum disc with a four-point star, for an achievement finished to the end. */
 function PlatinumSeal() {
   return (
-    <View style={{ transform: [{ rotate: '-10deg' }] }} accessibilityLabel="Platinum">
+    <View style={{ transform: [{ rotate: '-10deg' }] }} accessibilityLabel={tr('Platinum')}>
       <Svg width={u(34)} height={u(34)} viewBox="0 0 40 40">
         <Defs>
           <SvgLinear id="pts" x1="6" y1="4" x2="34" y2="36" gradientUnits="userSpaceOnUse">
@@ -91,7 +92,7 @@ function CollectPill({ r, t, busy, onCollect, small = false }: Omit<RowP, 'canCo
   return (
     <Pressable onPress={busy ? undefined : onCollect} accessibilityRole="button" style={busy && { opacity: 0.6 }}>
       <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={[s.pill, small && s.pillS]}>
-        <Text style={[s.pillT, { color: t.onGrad }]}>{`Collect +${tierTokens(r.key)[r.paid]}`}</Text>
+        <Text style={[s.pillT, { color: t.onGrad }]}>{tr('Collect +{n}', { n: tierTokens(r.key)[r.paid] })}</Text>
       </LinearGradient>
     </Pressable>
   );
@@ -115,14 +116,14 @@ function LogRow({ r, t, canCollect, busy, onCollect }: RowP) {
         <Text style={[s.lName, { color: t.fg }]}>{r.name}</Text>
         <Text style={[s.lWhat, { color: t.mute }]}>
           {r.key === 'app_tour'
-            ? `${r.steps?.length ?? 0} / ${TOUR_STEPS.length} pages${r.next == null ? ' · signed' : ''}`
+            ? tr('{n} / {n2} pages{n3}', { n: r.steps?.length ?? 0, n2: TOUR_STEPS.length, n3: r.next == null ? tr(' · signed') : '' })
             : r.next == null
-              ? `${r.what} · ${r.goals.length > 3 ? 'all four signed' : 'all three signed'}`
-              : `${r.what} · ${Math.min(r.count, r.next)} / ${r.next} for ${TIER[r.reached].toLowerCase()}`}
+              ? `${r.what} · ${r.goals.length > 3 ? tr('all four signed') : tr('all three signed')}`
+              : tr('{what} · {min} / {next} for {toLowerCase}', { what: r.what, min: Math.min(r.count, r.next), next: r.next, toLowerCase: TIER[r.reached].toLowerCase() })}
         </Text>
         {r.key === 'app_tour' && r.next != null ? (
           <Text style={[s.lWhat, { color: t.mute }]} numberOfLines={2}>
-            {`Still to visit: ${TOUR_STEPS.filter((x) => !r.steps?.includes(x.key)).map((x) => x.name).join(', ')}`}
+            {tr('Still to visit: {n}', { n: TOUR_STEPS.filter((x) => !r.steps?.includes(x.key)).map((x) => x.name).join(', ') })}
           </Text>
         ) : null}
         <View style={[s.bar, { backgroundColor: t.chip }]}>
@@ -135,7 +136,7 @@ function LogRow({ r, t, canCollect, busy, onCollect }: RowP) {
         <PlatinumSeal />
       ) : r.paid === r.goals.length ? (
         <View style={[s.stamp, { borderColor: t.accent }]}>
-          <Text style={[s.stampT, { color: t.accent }]}>SIGNED</Text>
+          <Text style={[s.stampT, { color: t.accent }]}>{tr('SIGNED')}</Text>
         </View>
       ) : null}
     </View>
@@ -150,9 +151,9 @@ const s = StyleSheet.create({
   pill: { borderRadius: 999, paddingHorizontal: u(12), height: u(26), justifyContent: 'center' },
   pillS: { paddingHorizontal: u(9), height: u(22) },
   pillT: { fontFamily: F.bodyBold, fontSize: u(9.5) },
-  log: { marginTop: u(18), borderWidth: 1, borderRadius: u(18), paddingLeft: u(14), paddingRight: u(12), overflow: 'hidden' },
+  log: { marginTop: u(18), borderWidth: 1, borderRadius: u(18), paddingStart: u(14), paddingEnd: u(12), overflow: 'hidden' },
   // Halfway between the tier boxes (right edge 34) and the text (starts at 56).
-  margin: { position: 'absolute', left: u(45), top: 0, bottom: 0, width: 1, opacity: 0.35 },
+  margin: { position: 'absolute', start: u(45), top: 0, bottom: 0, width: 1, opacity: 0.35 },
   line: { flexDirection: 'row', alignItems: 'center', gap: u(14), paddingVertical: u(11), borderBottomWidth: 1 },
   tiers: { width: u(28), gap: u(3), alignItems: 'center' },
   box: { width: u(12), height: u(12), borderRadius: u(3), borderWidth: 1, alignItems: 'center', justifyContent: 'center' },

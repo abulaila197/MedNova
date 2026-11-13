@@ -40,8 +40,8 @@ export function RivalStrip({ st, race }: { st: RaceState; race: BotRace }) {
 }
 
 const s = StyleSheet.create({
-  row: { flexDirection: 'row', flexWrap: 'wrap', gap: u(6), marginBottom: u(8), marginRight: u(34) },
-  pill: { flexDirection: 'row', alignItems: 'center', gap: u(6), borderWidth: 1, borderRadius: 999, paddingVertical: u(3), paddingLeft: u(3), paddingRight: u(10), maxWidth: u(150) },
+  row: { flexDirection: 'row', flexWrap: 'wrap', gap: u(6), marginBottom: u(8), marginEnd: u(34) },
+  pill: { flexDirection: 'row', alignItems: 'center', gap: u(6), borderWidth: 1, borderRadius: 999, paddingVertical: u(3), paddingStart: u(3), paddingEnd: u(10), maxWidth: u(150) },
   txt: { flexShrink: 1 },
   name: { fontFamily: F.bodySemi, fontSize: u(10.5), lineHeight: u(13) },
   stat: { fontFamily: F.mono, fontSize: u(9.5), lineHeight: u(12) },

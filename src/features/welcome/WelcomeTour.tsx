@@ -13,6 +13,7 @@ import { tapped } from '@/lib/sound';
 import { useBack } from '@/lib/useBack';
 
 import { TOUR, type Stop } from './tour';
+import { tr } from '@/i18n';
 
 /** Types a line out letter by letter; a tap on the panel finishes it at once. */
 function useTyping(text: string, done: boolean) {
@@ -31,7 +32,7 @@ function useTyping(text: string, done: boolean) {
  * types out. Next hands over to the next character; the last one closes it and the daily reward follows.
  */
 // Also the help pop-ups of single pages (Yazan 2026-10-21): the same panel with that page's own stops.
-export function WelcomeTour({ onClose, stops = TOUR, lastLabel = 'Daily reward', skipLabel = 'Skip tour' }: { onClose: () => void; stops?: Stop[]; lastLabel?: string; skipLabel?: string }) {
+export function WelcomeTour({ onClose, stops = TOUR, lastLabel = tr('Daily reward'), skipLabel = tr('Skip tour') }: { onClose: () => void; stops?: Stop[]; lastLabel?: string; skipLabel?: string }) {
   // Android back skips the tour, like its close button (PB3).
   useBack(true, onClose);
   const [i, setI] = useState(0);
@@ -78,7 +79,7 @@ function Transmission({ stops, lastLabel, skipLabel, i, shown, typed, last, onNe
       <Animated.View entering={FadeInDown.duration(320)} style={[s.panel, { backgroundColor: t.panel2, borderColor: t.panelLine }]}>
         <View style={s.panelTop}>
           <View style={[s.live, { backgroundColor: ring }]} />
-          <Text style={[s.kick, { color: t.kick }]}>{`INCOMING · ${(c?.name ?? 'Nova').toUpperCase()}`}</Text>
+          <Text style={[s.kick, { color: t.kick }]}>{tr('INCOMING · {n}', { n: (c?.name ?? 'Nova').toUpperCase() })}</Text>
           <View style={{ flex: 1 }} />
           <Text style={[s.kick, { color: t.mute }]}>{`${i + 1} / ${stops.length}`}</Text>
         </View>
@@ -103,7 +104,7 @@ function Transmission({ stops, lastLabel, skipLabel, i, shown, typed, last, onNe
             <Text style={[s.skip, { color: t.mute }]}>{skipLabel}</Text>
           </Pressable>
           <Dots n={stops.length} i={i} color={ring} />
-          <NextBtn label={last ? lastLabel : 'Next'} onPress={onNext} />
+          <NextBtn label={last ? lastLabel : tr('Next')} onPress={onNext} />
         </View>
       </Animated.View>
     </View>
@@ -122,8 +123,8 @@ function Dots({ n, i, color }: { n: number; i: number; color: string }) {
 }
 
 const s = StyleSheet.create({
-  lowWrap: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'flex-end', paddingHorizontal: u(16), paddingBottom: u(118) },
-  panel: { borderWidth: 1, borderRadius: u(20), padding: u(16), gap: u(12), boxShadow: '0 18px 40px rgba(0,0,0,0.45)' },
+  lowWrap: { position: 'absolute', top: 0, start: 0, end: 0, bottom: 0, justifyContent: 'flex-end', paddingHorizontal: u(16), paddingBottom: u(118) },
+  panel: { borderWidth: 1, borderRadius: u(20), padding: u(16), gap: u(12), boxShadow: tr('0 18px 40px rgba(0,0,0,0.45)') },
   panelTop: { flexDirection: 'row', alignItems: 'center', gap: u(7) },
   live: { width: u(7), height: u(7), borderRadius: u(4) },
   kick: { fontFamily: F.mono, fontSize: u(10.5), letterSpacing: u(1.2) },

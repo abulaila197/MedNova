@@ -9,6 +9,7 @@ import type { Theme } from '@/theme/tokens';
 import { F } from '@/theme/tokens';
 
 import { HUNT_PRIZE, type HuntCard } from './deck';
+import { tr } from '@/i18n';
 
 export const RATIO = 860 / 480;
 
@@ -35,7 +36,7 @@ export function Sleeve({ t, card, w, locked, style }: { t: Theme; card: HuntCard
       {/* sheen across the plastic */}
       <LinearGradient pointerEvents="none" colors={['rgba(255,255,255,0)', g.sheen, 'rgba(255,255,255,0)']} locations={[0.18, 0.32, 0.46]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={[StyleSheet.absoluteFill, { borderRadius: r }]} />
       {/* the open lip of the saver */}
-      <View pointerEvents="none" style={{ position: 'absolute', left: pad * 1.6, right: pad * 1.6, top: pad * 0.45, height: 1, backgroundColor: g.lip }} />
+      <View pointerEvents="none" style={{ position: 'absolute', start: pad * 1.6, end: pad * 1.6, top: pad * 0.45, height: 1, backgroundColor: g.lip }} />
       <View pointerEvents="none" style={[StyleSheet.absoluteFill, { borderRadius: r, borderWidth: 1, borderColor: g.edge, opacity: 0.6 }]} />
       {locked ? (
         <View pointerEvents="none" style={[StyleSheet.absoluteFill, s.mid]}>
@@ -67,10 +68,10 @@ export function CardBack({ card, w, i }: { card: HuntCard; w: number; i: number 
         <View style={[s.frame2, { margin: w * 0.018, borderRadius: w * 0.025, borderColor: 'rgba(233,180,76,0.45)', padding: w * 0.07 }]}>
           <View style={s.mid}>
             <PulseStar width={w * 0.2} height={w * 0.21} glow={0.6} />
-            <Text style={[s.kick, { fontSize: w * 0.04, marginTop: w * 0.05 }]}>{last ? 'THE LAST CARD' : 'YOUR NEXT CLUE'}</Text>
+            <Text style={[s.kick, { fontSize: w * 0.04, marginTop: w * 0.05 }]}>{last ? tr('THE LAST CARD') : tr('YOUR NEXT CLUE')}</Text>
           </View>
           <Text style={[s.clue, { fontSize: w * (last ? 0.062 : 0.074), lineHeight: w * (last ? 0.088 : 0.1), marginTop: w * 0.06 }]}>{card.clue}</Text>
-          {last ? <Text style={[s.prize, { fontSize: w * 0.05, marginTop: w * 0.05 }]}>{`${HUNT_PRIZE} tokens wait for you`}</Text> : null}
+          {last ? <Text style={[s.prize, { fontSize: w * 0.05, marginTop: w * 0.05 }]}>{tr('{HUNT_PRIZE} tokens wait for you', { HUNT_PRIZE })}</Text> : null}
           <View style={{ flex: 1 }} />
           <View style={[s.foot, { borderTopColor: 'rgba(233,180,76,0.35)', paddingTop: w * 0.035 }]}>
             <Text style={[s.footT, { fontSize: w * 0.034 }]}>{card.name.toUpperCase()}</Text>

@@ -18,6 +18,7 @@ import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 import { tapped } from '@/lib/sound';
 import { navTo } from '@/lib/nav';
+import { tr } from '@/i18n';
 
 /** The header and everything in it at 80% of the approved size (Yazan, 2026-10-19). */
 const h = (n: number) => u(n * 0.8);
@@ -40,7 +41,7 @@ export function Header({ variant = 'app' }: { variant?: 'app' | 'game' }) {
     <View style={z.bar}>
       <View style={[z.edge, { backgroundColor: t.headerEdge }]} />
       <View style={z.row}>
-        <Pressable onPress={tapped(() => setMenu(true))} hitSlop={h(10)} style={[z.mb, { backgroundColor: t.chip, borderColor: t.chipLine }]} accessibilityLabel="Open menu">
+        <Pressable onPress={tapped(() => setMenu(true))} hitSlop={h(10)} style={[z.mb, { backgroundColor: t.chip, borderColor: t.chipLine }]} accessibilityLabel={tr('Open menu')}>
           <MenuIcon size={h(g ? 12 : 14)} color={t.menuBtn} />
         </Pressable>
         {/* Signed in, the logo makes way for you: photo, level and Sparks (look A, Yazan 2026-10-25). */}
@@ -54,13 +55,13 @@ export function Header({ variant = 'app' }: { variant?: 'app' | 'game' }) {
         )}
       </View>
       <View style={z.row}>
-        <Pressable onPress={tapped(() => setReport(true))} hitSlop={h(10)} style={[z.rp, { backgroundColor: t.red }]} accessibilityLabel="Report a problem">
+        <Pressable onPress={tapped(() => setReport(true))} hitSlop={h(10)} style={[z.rp, { backgroundColor: t.red }]} accessibilityLabel={tr('Report a problem')}>
           <Text style={z.rpT}>!</Text>
         </Pressable>
         {signedIn ? null : (
-          <Pressable onPress={tapped(() => navTo('/auth'))} hitSlop={h(8)} accessibilityLabel="Sign in">
+          <Pressable onPress={tapped(() => navTo('/auth'))} hitSlop={h(8)} accessibilityLabel={tr('Sign in')}>
             <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={z.si}>
-              <Text style={[z.siT, { color: t.onGrad }]}>Sign in</Text>
+              <Text style={[z.siT, { color: t.onGrad }]}>{tr('Sign in')}</Text>
             </LinearGradient>
           </Pressable>
         )}
@@ -76,7 +77,7 @@ function Coin({ g }: { g: boolean }) {
   const t = useTheme();
   const { tokens } = useBalance();
   return (
-    <Pressable onPress={tapped(() => navTo('/store'))} style={(g ? gs : s).coin} accessibilityRole="button" accessibilityLabel={`${tokens} tokens. Open the Nova Shop`}>
+    <Pressable onPress={tapped(() => navTo('/store'))} style={(g ? gs : s).coin} accessibilityRole="button" accessibilityLabel={tr('{tokens} tokens. Open the Nova Shop', { tokens })}>
       <Text style={[(g ? gs : s).coinT, { color: t.fg }]}>{tokens}</Text>
       <TokenCoin size={h(g ? 17 : 20)} progress={0} track="transparent" />
     </Pressable>
@@ -115,28 +116,28 @@ function Me({ g }: { g: boolean }) {
   const w = h(g ? 70 : 84);
   return (
     <View style={z.me}>
-      <Pressable onPress={tapped(() => navTo('/profile'))} hitSlop={h(6)} accessibilityRole="button" accessibilityLabel={`Level ${level}, ${into} of ${need} EXP to level ${level + 1}. Open your profile`}>
+      <Pressable onPress={tapped(() => navTo('/profile'))} hitSlop={h(6)} accessibilityRole="button" accessibilityLabel={tr('Level {level}, {into} of {need} EXP to level {n}. Open your profile', { level, into, need, n: level + 1 })}>
         <View style={{ width: size, height: size }}>
           <Svg width={size} height={size} style={StyleSheet.absoluteFill}>
             <Circle cx={size / 2} cy={size / 2} r={r} fill="#141a3f" stroke="rgba(255,255,255,0.16)" strokeWidth={sw} />
-            {p > 0 ? <Circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={t.accent} strokeWidth={sw} strokeLinecap="round" strokeDasharray={`${len * p} ${len}`} transform={`rotate(-90 ${size / 2} ${size / 2})`} /> : null}
+            {p > 0 ? <Circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={t.accent} strokeWidth={sw} strokeLinecap="round" strokeDasharray={`${len * p} ${len}`} transform={tr('rotate(-90 {n} {n})', { n: size / 2 })} /> : null}
           </Svg>
           <View style={[StyleSheet.absoluteFill, s.center]}>
             <Face slug={avatar} size={size - sw * 2 - 2} />
           </View>
-          <View style={[s.chip, { backgroundColor: t.accent, right: -size * 0.12, bottom: -size * 0.1, minWidth: size * 0.5, height: size * 0.42 }]}>
+          <View style={[s.chip, { backgroundColor: t.accent, end: -size * 0.12, bottom: -size * 0.1, minWidth: size * 0.5, height: size * 0.42 }]}>
             <Text style={{ fontFamily: F.bodyBold, fontSize: size * 0.27, lineHeight: size * 0.34, color: t.onGrad }}>{level}</Text>
           </View>
         </View>
       </Pressable>
-      <Pressable onPress={tapped(openSparks)} hitSlop={h(6)} style={{ gap: h(3) }} accessibilityRole="button" accessibilityLabel={unlimited ? 'Unlimited Sparks' : `${value} of ${max} Sparks${next ? `, one more in ${next}` : ''}. Recharge`}>
+      <Pressable onPress={tapped(openSparks)} hitSlop={h(6)} style={{ gap: h(3) }} accessibilityRole="button" accessibilityLabel={unlimited ? tr('Unlimited Sparks') : tr('{value} of {max} Sparks{n}. Recharge', { value, max, n: next ? `, one more in ${next}` : '' })}>
         <View style={s.line}>
           <Bolt size={h(g ? 10 : 12)} />
           <Text style={[z.spT, { color: t.fg }]}>
             {unlimited ? '∞' : value}
             {unlimited ? null : <Text style={{ color: t.mute, fontFamily: F.bodySemi }}>{`/${max}`}</Text>}
           </Text>
-          {next ? <Text style={[z.spN, { color: t.mute }]}>{`+1 in ${next}`}</Text> : null}
+          {next ? <Text style={[z.spN, { color: t.mute }]}>{tr('+1 in {next}', { next })}</Text> : null}
         </View>
         <View style={{ width: w, height: h(g ? 4.5 : 5.5), borderRadius: 99, backgroundColor: 'rgba(255,255,255,0.12)', overflow: 'hidden' }}>
           <LinearGradient colors={[...SPARK]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={{ width: unlimited ? w : (w * Math.min(value, max)) / max, height: '100%', borderRadius: 99 }} />
@@ -155,7 +156,7 @@ const s = StyleSheet.create({
     justifyContent: 'space-between',
     zIndex: 5,
   },
-  edge: { position: 'absolute', left: 0, right: 0, bottom: 0, height: 1 },
+  edge: { position: 'absolute', start: 0, end: 0, bottom: 0, height: 1 },
   row: { flexDirection: 'row', alignItems: 'center', gap: h(8) },
   mb: { width: h(26), height: h(26), borderRadius: h(9), borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
   lk: { flexDirection: 'row', alignItems: 'center', gap: h(6) },
@@ -170,7 +171,7 @@ const s = StyleSheet.create({
   chip: { position: 'absolute', borderRadius: 99, paddingHorizontal: 3, alignItems: 'center', justifyContent: 'center', borderWidth: 1.5, borderColor: '#0d1738' },
   line: { flexDirection: 'row', alignItems: 'center', gap: h(2) },
   spT: { fontFamily: F.bodyBold, fontSize: h(11), fontVariant: ['tabular-nums'] },
-  spN: { fontFamily: F.bodySemi, fontSize: h(8.5), marginLeft: h(4), fontVariant: ['tabular-nums'] },
+  spN: { fontFamily: F.bodySemi, fontSize: h(8.5), marginStart: h(4), fontVariant: ['tabular-nums'] },
 });
 
 /** Game header: everything about a fifth smaller; the coin with its ring is no wider than the report button. */

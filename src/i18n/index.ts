@@ -3,6 +3,8 @@ import { getLocales } from 'expo-localization';
 import { I18nManager, Platform } from 'react-native';
 
 import { AR } from './ar';
+import { AR_FRAME } from './ar-frame';
+import { localizeGames } from './ar-games';
 
 /**
  * Arabic (Yazan 2026-11-13). The app speaks English or Arabic; Arabic screens run right to left.
@@ -48,12 +50,16 @@ const LANG: Lang = CHOICE === 'phone' ? phoneLang() : CHOICE;
 /** The language this run of the app speaks. */
 export const lang = (): Lang => LANG;
 export const isAr = LANG === 'ar';
+if (isAr) localizeGames();
 /** What the player picked in Settings. */
 export const langChoice = (): LangChoice => CHOICE;
 
 /** The text in the app's language; `{name}` marks are filled from `vars`. */
-export function t(en: string, vars?: Record<string, string | number>): string {
-  let s = isAr ? (AR[en] ?? en) : en;
+export function t(en: string, vars?: Record<string, unknown>): string {
+  // A key may carry a context after '|' ('pack|shop') when one English word needs two Arabic ones; English drops it.
+  let s = isAr ? (AR[en] ?? AR_FRAME[en] ?? en) : en;
+  const bar = s.indexOf('|');
+  if (bar > 0 && s === en) s = s.slice(0, bar);
   if (vars) for (const k in vars) s = s.split(`{${k}}`).join(String(vars[k]));
   return s;
 }
@@ -99,3 +105,6 @@ export function setLangChoice(c: LangChoice) {
 
 /** Arabic letters in a text: such a text takes the Arabic fonts. */
 export const AR_LETTERS = /[؀-ۿݐ-ݿﭐ-﷿ﹰ-﻿]/;
+
+/** Same as t(), under a name that never clashes with the `t` theme variable most screens use. */
+export const tr = t;

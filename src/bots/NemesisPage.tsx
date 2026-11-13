@@ -22,6 +22,7 @@ import { grownLevel, loadRivals, regulars, toggleFav, useRivals, type Record_ } 
 import { openRoomWith } from './openRoom';
 import { recordText } from './revenge';
 import { TYPE_NAME, type Bot } from './types';
+import { tr } from '@/i18n';
 
 const gameName = (k: string) => {
   const g = GAMES.find((x) => x.key === k);
@@ -29,7 +30,7 @@ const gameName = (k: string) => {
 };
 const agoText = (at: number) => {
   const d = Math.floor((Date.now() - at) / 86_400_000);
-  return d <= 0 ? 'today' : d === 1 ? 'yesterday' : d < 7 ? `${d} days ago` : d < 30 ? `${Math.floor(d / 7)} wk ago` : `${Math.floor(d / 30)} mo ago`;
+  return d <= 0 ? 'today' : d === 1 ? 'yesterday' : d < 7 ? tr('{d} days ago', { d }) : d < 30 ? tr('{n} wk ago', { n: Math.floor(d / 7) }) : tr('{n} mo ago', { n: Math.floor(d / 30) });
 };
 
 /**
@@ -71,17 +72,17 @@ export function NemesisPage() {
   return (
     <Screen tab={null} glow={21} wide={460}>
       <InfoScroll>
-        <Kicker>Vs rivals</Kicker>
+        <Kicker>{tr('Vs rivals')}</Kicker>
         <Text style={[ui.H, { color: c.fg, fontFamily: F.display }]}>
-          {'Your '}
-          <Text style={[ui.H, { color: t.accent, fontFamily: F.displayItalic }]}>Nemesis</Text>
+          {tr('Your ')}
+          <Text style={[ui.H, { color: t.accent, fontFamily: F.displayItalic }]}>{tr('Nemesis')}</Text>
         </Text>
-        <Text style={[ui.p, { color: c.mute }]}>The rivals you keep meeting, and what the score is between you. Beat the rival of the day for a golden chest.</Text>
+        <Text style={[ui.p, { color: c.mute }]}>{tr('The rivals you keep meeting, and what the score is between you. Beat the rival of the day for a golden chest.')}</Text>
 
         {/* Rival of the day: one Genius, one game, the same for everyone today. */}
         <View style={[s.boss, { borderColor: day?.won ? '#5fd38a' : t.accent, backgroundColor: c.surf }]}>
           <LinearGradient colors={[`${t.accent}22`, 'transparent']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFill} />
-          <Text style={[s.k, { color: day?.won ? '#5fd38a' : c.kick }]}>{day?.won ? 'RIVAL OF THE DAY · BEATEN' : 'RIVAL OF THE DAY'}</Text>
+          <Text style={[s.k, { color: day?.won ? '#5fd38a' : c.kick }]}>{day?.won ? tr('RIVAL OF THE DAY · BEATEN') : tr('RIVAL OF THE DAY')}</Text>
           <View style={s.bossRow}>
             <View>
               <PlayerFace slug={boss.bot.character} size={u(56)} still />
@@ -91,27 +92,27 @@ export function NemesisPage() {
             </View>
             <View style={{ flex: 1, gap: u(2) }}>
               <Text style={[s.name, { color: c.fg }]}>{boss.bot.name}</Text>
-              <Text style={[s.small, { color: c.mute }]}>{`Genius · ${gameName(boss.game)}${bossRec ? ` · ${recordText(bossRec)}` : ''}`}</Text>
+              <Text style={[s.small, { color: c.mute }]}>{tr('Genius · {n}{n2}', { n: gameName(boss.game), n2: bossRec ? ` · ${recordText(bossRec)}` : '' })}</Text>
               <Text style={[s.small, { color: c.mute }]}>
                 {day?.won
                   ? day.paid
-                    ? 'Golden chest filed. It waits on your Chests page.'
+                    ? tr('Golden chest filed. It waits on your Chests page.')
                     : signedIn
-                      ? 'Golden chest earned. It is filed next time you are online.'
-                      : 'Golden chest earned. Sign in to collect it.'
-                  : `Finish above ${boss.bot.name.split(' ')[0]} in a Vs rivals match of ${gameName(boss.game)} today.`}
+                      ? tr('Golden chest earned. It is filed next time you are online.')
+                      : tr('Golden chest earned. Sign in to collect it.')
+                  : tr('Finish above {n} in a Vs rivals match of {gameName} today.', { n: boss.bot.name.split(' ')[0], gameName: gameName(boss.game) })}
               </Text>
             </View>
             <Image source={CHESTS.golden.art} style={[s.chest, day?.won && day.paid ? null : { opacity: 0.55 }]} contentFit="contain" />
           </View>
-          <Pressable onPress={() => go(boss.game, boss.bot, { botLevel: 'hard', botCount: 3 })} disabled={busy} style={s.goWrap} accessibilityRole="button" accessibilityLabel={`Challenge ${boss.bot.name}`}>
+          <Pressable onPress={() => go(boss.game, boss.bot, { botLevel: 'hard', botCount: 3 })} disabled={busy} style={s.goWrap} accessibilityRole="button" accessibilityLabel={tr('Challenge {name}', { name: boss.bot.name })}>
             <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.go}>
-              <Text style={[s.goT, { color: t.onGrad }]}>{day?.won ? 'Play it again' : 'Challenge'}</Text>
+              <Text style={[s.goT, { color: t.onGrad }]}>{day?.won ? tr('Play it again') : tr('Challenge')}</Text>
             </LinearGradient>
           </Pressable>
         </View>
 
-        <Kicker style={ui.xsec}>Your regulars</Kicker>
+        <Kicker style={ui.xsec}>{tr('Your regulars')}</Kicker>
         {!loaded ? null : list.length ? (
           <View style={{ gap: u(8), marginTop: u(8) }}>
             {list.map(({ bot, rec, met: n }) => (
@@ -119,7 +120,7 @@ export function NemesisPage() {
             ))}
           </View>
         ) : (
-          <Text style={[ui.p, { color: c.mute }]}>Nobody yet. Finish a Vs rivals match and the rivals you met gather here, with the score between you.</Text>
+          <Text style={[ui.p, { color: c.mute }]}>{tr('Nobody yet. Finish a Vs rivals match and the rivals you met gather here, with the score between you.')}</Text>
         )}
       </InfoScroll>
     </Screen>
@@ -143,17 +144,17 @@ function Regular({ bot, rec, met, level, fav, lit, onPlay }: { bot: Bot; rec: Re
           <Text style={[s.rName, { color: c.fg }]} numberOfLines={1}>
             {bot.name}
           </Text>
-          <Pressable onPress={() => toggleFav(bot)} hitSlop={u(8)} accessibilityRole="button" accessibilityLabel={fav ? `Remove ${bot.name} from favourites` : `Save ${bot.name} as a favourite`}>
+          <Pressable onPress={() => toggleFav(bot)} hitSlop={u(8)} accessibilityRole="button" accessibilityLabel={fav ? tr('Remove {name} from favourites', { name: bot.name }) : tr('Save {name} as a favourite', { name: bot.name })}>
             <Text style={[s.star, { color: fav ? '#f5b041' : c.mute }]}>{fav ? '★' : '☆'}</Text>
           </Pressable>
         </View>
-        <Text style={[s.small, { color: c.mute }]}>{`${TYPE_NAME[bot.type]} · AI player · met ${met} ${met === 1 ? 'time' : 'times'}`}</Text>
-        <Text style={[s.small, { color: c.mute }]}>{`Last: you ${rec.last} in ${gameName(rec.game)}, ${agoText(rec.at)}`}</Text>
+        <Text style={[s.small, { color: c.mute }]}>{tr('{n} · AI player · met {met} {n2}', { n: tr(TYPE_NAME[bot.type]), met, n2: met === 1 ? tr('time') : tr('times') })}</Text>
+        <Text style={[s.small, { color: c.mute }]}>{tr('Last: you {last} in {n}, {n2}', { last: rec.last, n: gameName(rec.game), n2: agoText(rec.at) })}</Text>
       </View>
       <View style={{ alignItems: 'flex-end', gap: u(6) }}>
         <Text style={[s.score, { color: lead === 'you' ? '#5fd38a' : lead === 'them' ? t.red : c.fg }]}>{`${rec.w}–${rec.l}`}</Text>
-        <Pressable onPress={onPlay} style={[s.again, { borderColor: t.accent }]} accessibilityRole="button" accessibilityLabel={`Play ${bot.name} again`}>
-          <Text style={[s.againT, { color: t.accent }]}>Play again</Text>
+        <Pressable onPress={onPlay} style={[s.again, { borderColor: t.accent }]} accessibilityRole="button" accessibilityLabel={tr('Play {name} again', { name: bot.name })}>
+          <Text style={[s.againT, { color: t.accent }]}>{tr('Play again')}</Text>
         </Pressable>
       </View>
     </View>
@@ -164,8 +165,8 @@ const s = StyleSheet.create({
   k: { fontFamily: F.mono, fontSize: u(8.5), lineHeight: u(12), letterSpacing: u(1.7) },
   boss: { marginTop: u(14), borderWidth: 1, borderRadius: u(16), padding: u(12), gap: u(10), overflow: 'hidden' },
   bossRow: { flexDirection: 'row', alignItems: 'center', gap: u(10) },
-  lvl: { position: 'absolute', right: u(-4), bottom: u(-2) },
-  lvlS: { position: 'absolute', right: u(-4), bottom: u(-3) },
+  lvl: { position: 'absolute', end: u(-4), bottom: u(-2) },
+  lvlS: { position: 'absolute', end: u(-4), bottom: u(-3) },
   name: { fontFamily: F.display, fontSize: u(18), lineHeight: u(22) },
   small: { fontFamily: F.body, fontSize: u(10.5), lineHeight: u(14) },
   chest: { width: u(44), height: u(44) },

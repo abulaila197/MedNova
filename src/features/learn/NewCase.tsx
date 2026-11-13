@@ -16,6 +16,7 @@ import type { Theme } from '@/theme/tokens';
 import { F } from '@/theme/tokens';
 
 import { saveCase } from './cases';
+import { tr } from '@/i18n';
 
 const FIELDS = ['Cardiology', 'Respiratory', 'Gastro', 'Neurology', 'Infectious', 'Endocrine', 'Renal', 'Paediatrics', 'Obs & Gyn', 'Other'];
 const GENDERS = ['Female', 'Male', 'Other'] as const;
@@ -42,7 +43,7 @@ export function NewCase() {
   const save = async () => {
     if (!signedIn) return router.navigate('/auth');
     const a = Number(age);
-    const missing = !answer ? 'Pick the diagnosis from the list.' : gender == null ? 'Pick a gender.' : !age || !(a >= 0 && a <= 120) ? 'Add an age.' : presentation.trim().length < 10 ? 'Describe the first presentation.' : '';
+    const missing = !answer ? tr('Pick the diagnosis from the list.') : gender == null ? tr('Pick a gender.') : !age || !(a >= 0 && a <= 120) ? tr('Add an age.') : presentation.trim().length < 10 ? tr('Describe the first presentation.') : '';
     if (missing) return setMsg(missing);
     setBusy(true);
     setMsg('');
@@ -53,7 +54,7 @@ export function NewCase() {
     } catch (e) {
       // The server allows 20 new cases a day; say that instead of blaming the connection (AP12d).
       const many = String((e as { message?: string })?.message ?? '').includes('too many');
-      setMsg(many ? 'That’s 20 cases today, the most for one day. Try again tomorrow.' : 'Not saved. Check your connection and try again.');
+      setMsg(many ? tr('That’s 20 cases today, the most for one day. Try again tomorrow.') : tr('Not saved. Check your connection and try again.'));
     }
     setBusy(false);
   };
@@ -61,16 +62,16 @@ export function NewCase() {
   return (
     <Screen tab="learn" glow={6} wide={460}>
       <InfoScroll>
-        <Back label="My diseases" fallback="/learn" />
-        <Kicker style={{ marginTop: u(10) }}>Case laboratory</Kicker>
+        <Back label={tr('My diseases')} fallback="/learn" />
+        <Kicker style={{ marginTop: u(10) }}>{tr('Case laboratory')}</Kicker>
         <Text style={[ui.H, { color: c.fg, fontFamily: F.display }]}>
-          {'Create your '}
-          <Text style={[ui.H, { color: t.accent, fontFamily: F.displayItalic }]}>own</Text>
+          {tr('Create your ')}
+          <Text style={[ui.H, { color: t.accent, fontFamily: F.displayItalic }]}>{tr('own')}</Text>
         </Text>
         <GameChoice t={t} on="the-diagnostic-pursuit" onPick={(g) => g !== 'the-diagnostic-pursuit' && router.replace(`/learn/new-word?game=${g}` as never)} />
-        <Box t={t} n="2" title="Patient">
-          <Label t={t} text="Diagnosis *" />
-          <TextInput value={dx} onChangeText={(v) => (setDx(v), setAnswer(null))} placeholder="Start typing, then pick it from the list" placeholderTextColor={ph(t)} style={inp(t)} autoCorrect={false} />
+        <Box t={t} n="2" title={tr('Patient')}>
+          <Label t={t} text={tr('Diagnosis *')} />
+          <TextInput value={dx} onChangeText={(v) => (setDx(v), setAnswer(null))} placeholder={tr('Start typing, then pick it from the list')} placeholderTextColor={ph(t)} style={inp(t)} autoCorrect={false} />
           {sugs.length ? (
             <View style={[s.sugs, { borderColor: t.panelLine, backgroundColor: t.panel2 }]}>
               {sugs.map((g) => (
@@ -80,45 +81,45 @@ export function NewCase() {
               ))}
             </View>
           ) : null}
-          <Label t={t} text="Medical field (optional)" />
+          <Label t={t} text={tr('Medical field (optional)')} />
           <Chips t={t} items={FIELDS} on={field} onPick={setField} />
           <View style={s.two}>
             <View style={{ flex: 1.4, gap: u(5) }}>
-              <Label t={t} text="Gender *" />
-              <Chips t={t} items={[...GENDERS]} on={gender} onPick={setGender} />
+              <Label t={t} text={tr('Gender *')} />
+              <Chips t={t} items={GENDERS.map((g) => tr(g))} on={gender} onPick={setGender} />
             </View>
             <View style={{ flex: 1, gap: u(5) }}>
-              <Label t={t} text="Age *" />
+              <Label t={t} text={tr('Age *')} />
               <TextInput value={age} onChangeText={(v) => setAge(v.replace(/\D/g, '').slice(0, 3))} keyboardType="number-pad" placeholder="34" placeholderTextColor={ph(t)} style={inp(t)} />
             </View>
           </View>
         </Box>
-        <Box t={t} n="3" title="Presentation">
-          <Label t={t} text="First presentation (ER or clinic) *" />
-          <TextInput value={presentation} onChangeText={setPresentation} multiline maxLength={1500} placeholder="A 34-year-old woman comes to the ER with sudden shortness of breath..." placeholderTextColor={ph(t)} style={[inp(t), s.big]} />
+        <Box t={t} n="3" title={tr('Presentation')}>
+          <Label t={t} text={tr('First presentation (ER or clinic) *')} />
+          <TextInput value={presentation} onChangeText={setPresentation} multiline maxLength={1500} placeholder={tr('A 34-year-old woman comes to the ER with sudden shortness of breath...')} placeholderTextColor={ph(t)} style={[inp(t), s.big]} />
         </Box>
-        <Box t={t} n="4" title="Findings">
-          <Field t={t} label="History finding" v={history} set={setHistory} ph="Long-haul flight 3 days ago" />
-          <Field t={t} label="Clinical exam finding" v={exam} set={setExam} ph="Swollen, tender left calf" />
-          <Field t={t} label="Investigation finding" v={investigation} set={setInvestigation} ph="Raised D-dimer" />
+        <Box t={t} n="4" title={tr('Findings')}>
+          <Field t={t} label={tr('History finding')} v={history} set={setHistory} ph="Long-haul flight 3 days ago" />
+          <Field t={t} label={tr('Clinical exam finding')} v={exam} set={setExam} ph="Swollen, tender left calf" />
+          <Field t={t} label={tr('Investigation finding')} v={investigation} set={setInvestigation} ph="Raised D-dimer" />
         </Box>
-        <Box t={t} n="5" title="Key findings">
+        <Box t={t} n="5" title={tr('Key findings')}>
           {findings.map((f, i) => (
-            <Field key={i} t={t} label={`Characteristic finding ${i + 1}`} v={f} set={(v) => setFindings((x) => x.map((y, j) => (j === i ? v : y)))} ph={i === 0 ? 'Filling defect on CT pulmonary angiogram' : ''} />
+            <Field key={i} t={t} label={tr('Characteristic finding {n}', { n: i + 1 })} v={f} set={(v) => setFindings((x) => x.map((y, j) => (j === i ? v : y)))} ph={i === 0 ? 'Filling defect on CT pulmonary angiogram' : ''} />
           ))}
           {findings.length < 6 ? (
             <Pressable onPress={() => setFindings((x) => [...x, ''])} accessibilityRole="button">
-              <Text style={[s.add, { color: t.accent }]}>+ Add another characteristic finding</Text>
+              <Text style={[s.add, { color: t.accent }]}>{tr('+ Add another characteristic finding')}</Text>
             </Pressable>
           ) : null}
         </Box>
         {msg ? <Text style={[s.msg, { color: t.error }]}>{msg}</Text> : null}
         <Pressable disabled={busy} onPress={save} accessibilityRole="button" style={busy && { opacity: 0.6 }}>
           <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.save}>
-            <Text style={[s.saveT, { color: t.onGrad }]}>{signedIn ? 'Save to My diseases' : 'Sign in to save'}</Text>
+            <Text style={[s.saveT, { color: t.onGrad }]}>{signedIn ? tr('Save to My diseases') : tr('Sign in to save')}</Text>
           </LinearGradient>
         </Pressable>
-        <Text style={[s.foot, { color: t.mute }]}>You can practise it alone straight away. Once it’s approved you get 10 tokens.</Text>
+        <Text style={[s.foot, { color: t.mute }]}>{tr('You can practise it alone straight away. Once it’s approved you get 10 tokens.')}</Text>
       </InfoScroll>
     </Screen>
   );
@@ -166,7 +167,7 @@ const WORD_KEYS = ['the-silent-artist', 'nova-medicordle', 'the-streak-master', 
 export function GameChoice({ t, on, onPick, words = WORD_KEYS }: { t: Theme; on: string; onPick: (g: string) => void; words?: string[] }) {
   const keys = ['the-diagnostic-pursuit', ...words];
   return (
-    <Box t={t} n="1" title="Game">
+    <Box t={t} n="1" title={tr('Game')}>
       <Chips t={t} items={keys.map(gameLabel)} on={keys.indexOf(on)} onPick={(i) => onPick(keys[i])} />
     </Box>
   );

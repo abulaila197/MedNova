@@ -1,6 +1,7 @@
 import { memo } from 'react';
 import { StyleSheet } from 'react-native';
 import Svg, { Circle, G, Path, Rect } from 'react-native-svg';
+import { tr } from '@/i18n';
 
 // Still medical symbols behind a page (Yazan 2026-11-12 list, item 5). Drawn here as plain line art on a 24 box.
 type Sym = (c: string, sw: number) => React.ReactNode;
@@ -16,7 +17,7 @@ const SYMS: Record<string, Sym> = {
     <Path d="M12 20.5S3 15 3 8.8A4.6 4.6 0 0 1 12 6.6a4.6 4.6 0 0 1 9 2.2C21 15 12 20.5 12 20.5z" stroke={c} strokeWidth={sw} fill="none" strokeLinejoin="round" />
   ),
   capsule: (c, sw) => (
-    <G stroke={c} strokeWidth={sw} fill="none" transform="rotate(-45 12 12)">
+    <G stroke={c} strokeWidth={sw} fill="none" transform={tr('rotate(-45 12 12)')}>
       <Rect x={3} y={8.5} width={18} height={7} rx={3.5} />
       <Path d="M12 8.5v7" />
     </G>
@@ -81,7 +82,7 @@ function MedSymbolsInner({ w, h, look, color }: { w: number; h: number; look: Sy
       {items.map((it, i) => {
         const k = it.s / 24;
         return (
-          <G key={i} opacity={it.o} transform={`translate(${it.x} ${it.y}) rotate(${it.r} ${it.s / 2} ${it.s / 2}) scale(${k})`}>
+          <G key={i} opacity={it.o} transform={tr('translate({x} {y}) rotate({r} {n} {n}) scale({k})', { x: it.x, y: it.y, r: it.r, n: it.s / 2, k })}>
             {SYMS[it.k](color, look === 'scatter' ? 1.3 : 0.9)}
           </G>
         );

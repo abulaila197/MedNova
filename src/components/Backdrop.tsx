@@ -7,6 +7,7 @@ import { MedSymbols } from "@/components/MedSymbols";
 import { BAKED_ART } from "@/features/start/baked";
 import { useTheme } from "@/state/app";
 import { useScreen } from "@/theme/scale";
+import { tr } from '@/i18n';
 
 // The page background (redesign stage 1, Yazan 2026-10-17): deep navy with the glow baked in and still, in the
 // top-right and bottom-left corners. The header and dock show this same picture, so they run on from the page.
@@ -75,7 +76,7 @@ export function Backdrop({ anchor = "top", symbols = false }: { anchor?: "top" |
               rx={p.rx * w}
               ry={p.ry * h}
               fill={`url(#bd${i})`}
-              transform={`rotate(${p.rot} ${p.x * w} ${p.y * h})`}
+              transform={tr('rotate({rot} {n} {n2})', { rot: p.rot, n: p.x * w, n2: p.y * h })}
             />
           ))}
         </Svg>

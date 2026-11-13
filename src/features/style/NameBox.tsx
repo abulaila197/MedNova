@@ -7,6 +7,7 @@ import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import type { FrameKey } from './Frame';
+import { tr } from '@/i18n';
 
 // A styled name box for each frame (Yazan 2026-10-25): a normal rounded box coloured inside. The 4 metal frames get
 // one plain colour; the higher frames get richer colours and small end artwork that grows with the price.
@@ -40,7 +41,7 @@ const LEAVES: [number, number, number][] = [
 ];
 
 function EndArt({ art, color, flip }: { art: NonNullable<Box['art']>; color: string; flip?: boolean }) {
-  const t = flip ? 'translate(24,0) scale(-1,1)' : undefined;
+  const t = flip ? tr('translate(24,0) scale(-1,1)') : undefined;
   return (
     <Svg width={u(20)} height={u(18)} viewBox="0 0 24 20" style={flip ? s.artR : s.artL}>
       <Path transform={t} d="" />
@@ -69,7 +70,7 @@ function EndArt({ art, color, flip }: { art: NonNullable<Box['art']>; color: str
         <>
           <Path transform={t} d="M22,13 C15,13 8,11 3,6" stroke="#5d3d06" strokeWidth={1.2} fill="none" strokeLinecap="round" />
           {LEAVES.map(([x, y, a], i) => (
-            <Path key={i} transform={`${t ?? ''} translate(${x},${y}) rotate(${a})`} d="M0,0 Q3.2,-2.3 7,0 Q3.2,2.3 0,0 Z" fill="#5d3d06" />
+            <Path key={i} transform={tr('{n} translate({x},{y}) rotate({a})', { n: t ?? '', x, y, a })} d="M0,0 Q3.2,-2.3 7,0 Q3.2,2.3 0,0 Z" fill="#5d3d06" />
           ))}
         </>
       ) : null}
@@ -123,7 +124,7 @@ const glyph = (ch: string) => (/[WM]/.test(ch) ? 0.95 : /[iIljtf.,' ]/.test(ch) 
  */
 export function NameBox({ name, frame, size = 14, maxWidth = u(200) }: { name: string; frame: FrameKey; size?: number; maxWidth?: number }) {
   const b = BOX[frame];
-  const label = `Dr. ${name}`;
+  const label = tr('Dr. {name}', { name });
   const pad = b?.art ? u(26) : b ? u(12) : 0;
   const em = [...label].reduce((w, ch) => w + glyph(ch), 0) * 1.06;
   const fs = Math.min(u(size), (maxWidth - pad * 2 - 2) / em);
@@ -148,6 +149,6 @@ const s = StyleSheet.create({
   plain: { fontFamily: F.display, color: '#f0f2ff' },
   box: { alignSelf: 'center', borderRadius: u(9), paddingHorizontal: u(12), paddingVertical: u(4), justifyContent: 'center' },
   name: { fontFamily: F.display, textAlign: 'center' },
-  artL: { position: 'absolute', left: u(4), top: '50%', marginTop: -u(9) },
-  artR: { position: 'absolute', right: u(4), top: '50%', marginTop: -u(9) },
+  artL: { position: 'absolute', start: u(4), top: '50%', marginTop: -u(9) },
+  artR: { position: 'absolute', end: u(4), top: '50%', marginTop: -u(9) },
 });

@@ -5,6 +5,7 @@ import { cover, Feather } from '@/features/community/fx';
 import { useTheme } from '@/state/app';
 import { DESIGN_W, u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
+import { tr } from '@/i18n';
 
 const ART = {
   dark: require('@/assets/art/rising-dark.webp'),
@@ -27,11 +28,11 @@ export function Soon() {
         stops={[[0, 1], [0.45, 1], [0.85, 0]]}
         style={s.art}
       />
-      <Text style={[s.kick, { color: t.kick }]}>NOVA COMMUNITY</Text>
+      <Text style={[s.kick, { color: t.kick }]}>{tr('NOVA COMMUNITY')}</Text>
       <Text style={[s.h2, { color: t.white }]}>
-        Still <Text style={{ fontFamily: F.displayItalic, color: t.accent }}>rising</Text>
+        {tr('Still')} <Text style={{ fontFamily: F.displayItalic, color: t.accent }}>{tr('rising')}</Text>
       </Text>
-      <Text style={[s.p, { color: t.mute }]}>Nova merch is a preview for now: the hoodies, tees and mugs come later. Reels, shorts and stories from MedNova will land here too.</Text>
+      <Text style={[s.p, { color: t.mute }]}>{tr('Nova merch is a preview for now: the hoodies, tees and mugs come later. Reels, shorts and stories from MedNova will land here too.')}</Text>
     </View>
   );
 }

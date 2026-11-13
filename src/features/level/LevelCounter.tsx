@@ -13,6 +13,7 @@ import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import { LevelRing } from './LevelRing';
+import { tr } from '@/i18n';
 
 /**
  * The Results level counter (#51): your face in the level ring, as in the header, and the EXP bar filling with
@@ -37,10 +38,10 @@ export function LevelCounter({ play }: { play: Play }) {
       <View style={{ flex: 1, gap: u(5) }}>
         <View style={s.top}>
           <Text style={[s.lv, { color: t.white }]}>
-            {'Level '}
+            {tr('Level ')}
             <Text style={[s.lv, { color: t.accent, fontFamily: F.displayItalic }]}>{level}</Text>
           </Text>
-          <Text style={[s.n, { color: t.mute }]}>{`${into} / ${need} EXP`}</Text>
+          <Text style={[s.n, { color: t.mute }]}>{tr('{into} / {need} EXP', { into, need })}</Text>
         </View>
         <View style={[s.track, { backgroundColor: t.chip }]}>
           <Animated.View style={[s.fillBox, bar]}>
@@ -49,11 +50,11 @@ export function LevelCounter({ play }: { play: Play }) {
         </View>
         {up ? (
           <View style={s.up}>
-            <Text style={[s.upT, { color: t.accent }]}>{`Level up! +${up.tokens}`}</Text>
+            <Text style={[s.upT, { color: t.accent }]}>{tr('Level up! +{tokens}', { tokens: up.tokens })}</Text>
             <TokenCoin size={u(11)} progress={0} track="transparent" />
           </View>
         ) : (
-          <Text style={[s.n, { color: t.mute }]}>{`${need - into} EXP to level ${level + 1}`}</Text>
+          <Text style={[s.n, { color: t.mute }]}>{tr('{n} EXP to level {n2}', { n: need - into, n2: level + 1 })}</Text>
         )}
       </View>
     </View>

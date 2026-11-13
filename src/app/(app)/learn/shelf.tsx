@@ -12,6 +12,7 @@ import { useLearn } from '@/features/learn/useLearn';
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
+import { tr } from '@/i18n';
 
 /** One specialty book: an A to Z index drawer of the diseases you missed in it (RL6), with a letter rail. */
 export default function ShelfPage() {
@@ -46,15 +47,15 @@ export default function ShelfPage() {
     <Screen tab="learn" glow={6} wide={460}>
       <View style={s.dpb}>
         <View style={s.dtop}>
-          <Back label="Dossiers" fallback="/learn" />
-          <Text style={[s.cnt, { color: c.mute }]}>{`${mine.length} missed of ${book.ids.length}`.toUpperCase()}</Text>
+          <Back label={tr('Dossiers')} fallback="/learn" />
+          <Text style={[s.cnt, { color: c.mute }]}>{tr('{n} missed of {n2}', { n: mine.length, n2: book.ids.length }).toUpperCase()}</Text>
         </View>
         <Text style={[s.dt, { color: t.fg }]}>
           {words.length > 1 ? `${words.slice(0, -1).join(' ')} ` : ''}
           <Text style={{ color: t.accent }}>{words[words.length - 1]}</Text>
         </Text>
         {data && !mine.length ? (
-          <Text style={[s.none, { color: c.mute }]}>No misses here yet. Diseases you miss in Race to Diagnosis, Case Files and Medical Riddles land in their book.</Text>
+          <Text style={[s.none, { color: c.mute }]}>{tr('No misses here yet. Diseases you miss in Race to Diagnosis, Case Files and Medical Riddles land in their book.')}</Text>
         ) : null}
         <Fade veil from={0.78} to={0.96} style={s.scr}>
           <ScrollView ref={list} showsVerticalScrollIndicator={false} contentContainerStyle={s.idx}>
@@ -71,7 +72,7 @@ export default function ShelfPage() {
                 key={g.letter}
                 hitSlop={{ top: u(3), bottom: u(3), left: u(8), right: u(8) }}
                 onPress={() => list.current?.scrollTo({ y: tops.current[g.letter] ?? 0, animated: true })}
-                accessibilityLabel={`Jump to ${g.letter}`}
+                accessibilityLabel={tr('Jump to {letter}', { letter: g.letter })}
               >
                 <Text style={[s.azT, { color: c.rail }]}>{g.letter}</Text>
               </Pressable>
@@ -89,12 +90,12 @@ const s = StyleSheet.create({
   cnt: { fontFamily: F.mono, fontSize: u(8.5), lineHeight: u(12), letterSpacing: u(0.85) },
   dt: { fontFamily: F.display, fontSize: u(30), lineHeight: u(30), letterSpacing: u(-0.6) },
   scr: { flex: 1 },
-  idx: { paddingRight: u(17), paddingBottom: u(96) },
+  idx: { paddingEnd: u(17), paddingBottom: u(96) },
   lt: { fontFamily: F.mono, fontSize: u(9), lineHeight: u(12), letterSpacing: u(1.44), paddingTop: u(10), paddingBottom: u(4), borderBottomWidth: 1 },
   ir: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: u(9), paddingHorizontal: u(2), borderBottomWidth: 1 },
   irT: { flexShrink: 1, fontFamily: F.display, fontSize: u(15), lineHeight: u(19) },
   n: { fontFamily: F.mono, fontSize: u(8.5), lineHeight: u(12) },
   none: { fontFamily: F.body, fontSize: u(11), lineHeight: u(15), marginTop: u(6) },
-  az: { position: 'absolute', right: 0, top: 0, width: u(5), paddingVertical: u(8), gap: u(7), alignItems: 'center' },
+  az: { position: 'absolute', end: 0, top: 0, width: u(5), paddingVertical: u(8), gap: u(7), alignItems: 'center' },
   azT: { fontFamily: F.mono, fontSize: u(8.5), lineHeight: u(12) },
 });

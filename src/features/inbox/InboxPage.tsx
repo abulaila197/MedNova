@@ -19,6 +19,7 @@ import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import { clearable, clearInbox, collect, collectAll, hasGift, loadInbox, readAll, useInbox, type Message } from './useInbox';
+import { tr } from '@/i18n';
 
 const when = (iso: string) => new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
 
@@ -42,14 +43,14 @@ export function InboxPage() {
     if (busy) return;
     setBusy('all');
     setErr('');
-    if (!(await collectAll())) setErr('Some gifts didn’t collect. Check your connection and try again.');
+    if (!(await collectAll())) setErr(tr('Some gifts didn’t collect. Check your connection and try again.'));
     setBusy(null);
   };
   const clear = async () => {
     if (busy) return;
     setBusy('clear');
     setErr('');
-    if (!(await clearInbox())) setErr('Couldn’t clear. Check your connection and try again.');
+    if (!(await clearInbox())) setErr(tr('Couldn’t clear. Check your connection and try again.'));
     setBusy(null);
   };
   // On every visit, and again when the player signs in or out here.
@@ -64,10 +65,10 @@ export function InboxPage() {
   return (
     <Screen tab={null} glow={21} wide={460} symbols>
       <InfoScroll>
-        <Kicker>Messages and gifts</Kicker>
+        <Kicker>{tr('Messages and gifts')}</Kicker>
         <Text style={[ui.H, { color: c.fg, fontFamily: F.display }]}>
-          {'Your '}
-          <Text style={[ui.H, { color: t.accent, fontFamily: F.displayItalic }]}>inbox</Text>
+          {tr('Your ')}
+          <Text style={[ui.H, { color: t.accent, fontFamily: F.displayItalic }]}>{tr('inbox')}</Text>
         </Text>
         <OfflineLine at={uid ? savedAt : null} style={{ marginTop: u(6) }} />
         {uid && (gifts || canClear) ? (
@@ -75,20 +76,20 @@ export function InboxPage() {
             {gifts ? (
               <Pressable onPress={all} disabled={!!busy} accessibilityRole="button" style={s.goWrapRow}>
                 <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.go}>
-                  <Text style={[s.goT, { color: t.onGrad }]}>{busy === 'all' ? 'Collecting…' : 'Collect all'}</Text>
+                  <Text style={[s.goT, { color: t.onGrad }]}>{busy === 'all' ? tr('Collecting…') : tr('Collect all')}</Text>
                 </LinearGradient>
               </Pressable>
             ) : (
               <Pressable onPress={clear} disabled={!!busy} accessibilityRole="button" style={[s.ghost, { borderColor: c.line }]}>
-                <Text style={[s.goT, { color: c.fg }]}>{busy === 'clear' ? 'Clearing…' : 'Clear messages'}</Text>
+                <Text style={[s.goT, { color: c.fg }]}>{busy === 'clear' ? tr('Clearing…') : tr('Clear messages')}</Text>
               </Pressable>
             )}
           </View>
         ) : null}
         {err ? <Text style={[s.err, { color: t.error }]}>{err}</Text> : null}
-        {!uid ? <Text style={[s.foot, { color: t.accent }]}>Sign in to get messages and gifts.</Text> : null}
-        {uid && failed && !list ? <Text style={[s.foot, { color: t.accent }]}>Can’t reach MedNova right now. Check your connection.</Text> : null}
-        {uid && list && !list.length ? <Text style={[s.foot, { color: c.mute }]}>Nothing here yet. Gifts and news from us land here.</Text> : null}
+        {!uid ? <Text style={[s.foot, { color: t.accent }]}>{tr('Sign in to get messages and gifts.')}</Text> : null}
+        {uid && failed && !list ? <Text style={[s.foot, { color: t.accent }]}>{tr('Can’t reach MedNova right now. Check your connection.')}</Text> : null}
+        {uid && list && !list.length ? <Text style={[s.foot, { color: c.mute }]}>{tr('Nothing here yet. Gifts and news from us land here.')}</Text> : null}
         {(list ?? []).map((m) => (
           <Card key={m.id} m={m} />
         ))}
@@ -115,14 +116,14 @@ function Card({ m }: { m: Message }) {
       {/* #30: who it's from: a friend's face and name, or the MedNova team. */}
       <View style={s.from}>
         {m.from ? <PlayerFace slug={m.from.avatar ?? 'yara'} size={u(18)} userId={m.from.id} still /> : <View style={[s.icon, { backgroundColor: '#0b0e24' }]}><PulseStar width={u(18)} height={u(18)} glow={0.3} /></View>}
-        <Text style={[s.k, { color: c.kick, flexShrink: 1 }]} numberOfLines={1}>{`${m.from ? `FROM ${m.from.name.toUpperCase()}` : 'FROM THE MEDNOVA TEAM'} · ${when(m.at).toUpperCase()}`}</Text>
+        <Text style={[s.k, { color: c.kick, flexShrink: 1 }]} numberOfLines={1}>{tr('{n} · {n2}', { n: m.from ? tr('FROM {n}', { n: m.from.name.toUpperCase() }) : tr('FROM THE MEDNOVA TEAM'), n2: when(m.at).toUpperCase() })}</Text>
       </View>
       {m.title ? <Text style={[s.h, { color: c.fg }]}>{m.title}</Text> : null}
       {m.item ? (
         <Text style={[s.body, { color: c.fg }]}>
-          {`${m.from?.name ?? 'A friend'} sent you `}
+          {tr('{n} sent you ', { n: m.from?.name ?? tr('A friend') })}
           <Text style={{ color: t.accent, fontFamily: F.bodySemi }}>{nameOf(m.item)}</Text>
-          {'. It’s already in your Style items.'}
+          {tr('. It’s already in your Style items.')}
         </Text>
       ) : null}
       {m.body ? <Text style={[s.body, { color: c.mute }]}>{m.body}</Text> : null}
@@ -150,21 +151,21 @@ function Card({ m }: { m: Message }) {
       ) : null}
       {gift ? (
         m.collected ? (
-          <Text style={[s.done, { color: '#5fd38a' }]}>COLLECTED</Text>
+          <Text style={[s.done, { color: '#5fd38a' }]}>{tr('COLLECTED')}</Text>
         ) : (
           <Pressable onPress={take} disabled={busy} accessibilityRole="button" style={s.goWrap}>
             <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.go}>
-              <Text style={[s.goT, { color: t.onGrad }]}>{busy ? 'Collecting…' : 'Collect'}</Text>
+              <Text style={[s.goT, { color: t.onGrad }]}>{busy ? tr('Collecting…') : tr('Collect')}</Text>
             </LinearGradient>
           </Pressable>
         )
       ) : null}
       {m.challenge && m.from ? (
         <Pressable onPress={() => openPlayer({ id: m.from!.id, display_name: m.from!.name, avatar: m.from!.avatar ?? undefined })} accessibilityRole="button" style={[s.ghost, s.goWrap]}>
-          <Text style={[s.goT, { color: c.fg }]}>{`Open ${m.from.name}’s profile`}</Text>
+          <Text style={[s.goT, { color: c.fg }]}>{tr('Open {name}’s profile', { name: m.from.name })}</Text>
         </Pressable>
       ) : null}
-      {err ? <Text style={[s.err, { color: t.error }]}>Couldn’t collect. Check your connection and try again.</Text> : null}
+      {err ? <Text style={[s.err, { color: t.error }]}>{tr('Couldn’t collect. Check your connection and try again.')}</Text> : null}
     </View>
   );
 }

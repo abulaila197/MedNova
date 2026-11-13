@@ -12,6 +12,7 @@ import { useApp, useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 import { deviceId } from '@/lib/device';
+import { tr } from '@/i18n';
 
 const KINDS = ['Medical content', 'Game', 'Technical', 'Other'];
 
@@ -82,9 +83,9 @@ export function ReportSheet() {
   };
   return (
     <Sheet open={reportOpen} onClose={() => setReport(false)}>
-      <Text style={[s.k, { color: '#e07a85' }]}>REPORT</Text>
-      <Display em="wrong?" italic style={s.h}>
-        What looks{' '}
+      <Text style={[s.k, { color: '#e07a85' }]}>{tr('REPORT')}</Text>
+      <Display em={tr('wrong?')} italic style={s.h}>
+        {tr('What looks ')}
       </Display>
       <View style={s.row}>
         {ctx.chips.map((c) => (
@@ -101,7 +102,7 @@ export function ReportSheet() {
               key={k}
               onPress={() => setKind(i)}
               style={[s.opt, { borderColor: on ? 'rgba(111,214,255,0.7)' : t.panelLine, backgroundColor: on ? 'rgba(111,214,255,0.12)' : 'transparent' }]}>
-              <Text style={[s.optT, { color: on ? t.fg : t.mute }]}>{k}</Text>
+              <Text style={[s.optT, { color: on ? t.fg : t.mute }]}>{tr(k)}</Text>
             </Pressable>
           );
         })}
@@ -109,18 +110,18 @@ export function ReportSheet() {
       <TextInput
         value={text}
         onChangeText={setText}
-        placeholder="What happened?"
+        placeholder={tr('What happened?')}
         placeholderTextColor={t.mute}
         multiline
         style={[s.ta, { color: t.fg, backgroundColor: t.panel, borderColor: t.panelLine }]}
       />
       <View style={s.sendRow}>
         <Pressable onPress={send} disabled={state === 'sending' || state === 'sent'} style={[s.btn, { backgroundColor: t.red, opacity: state === 'sending' ? 0.6 : 1 }]}>
-          <Text style={s.btnT}>{state === 'sending' ? 'Sending…' : state === 'sent' ? 'Sent' : 'Send report'}</Text>
+          <Text style={s.btnT}>{state === 'sending' ? tr('Sending…') : state === 'sent' ? tr('Sent') : tr('Send report')}</Text>
         </Pressable>
-        {state === 'sent' ? <Text style={[s.msg, { color: t.fg }]}>Thanks! We’ll look into it.</Text> : null}
-        {state === 'error' ? <Text style={[s.msg, { color: t.error }]}>Couldn’t send that. Check your connection and try again.</Text> : null}
-        {state === 'limit' ? <Text style={[s.msg, { color: t.error }]}>That’s the limit for today. Try again tomorrow.</Text> : null}
+        {state === 'sent' ? <Text style={[s.msg, { color: t.fg }]}>{tr('Thanks! We’ll look into it.')}</Text> : null}
+        {state === 'error' ? <Text style={[s.msg, { color: t.error }]}>{tr('Couldn’t send that. Check your connection and try again.')}</Text> : null}
+        {state === 'limit' ? <Text style={[s.msg, { color: t.error }]}>{tr('That’s the limit for today. Try again tomorrow.')}</Text> : null}
       </View>
     </Sheet>
   );

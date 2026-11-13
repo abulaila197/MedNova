@@ -7,6 +7,7 @@ import { tapped } from '@/lib/sound';
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
+import { tr } from '@/i18n';
 
 // Nova Verse's four pages on the Community page, one tile each in one row (Yazan 2026-11-08, look B). Each tile's border
 // takes its icon's colour: Instagram purple, YouTube red, Facebook blue, TikTok black (a black disc, white mark).
@@ -22,7 +23,7 @@ export function Socials() {
   const t = useTheme();
   return (
     <View style={s.wrap}>
-      <Text style={[s.kick, { color: t.kick }]}>FOLLOW NOVA VERSE</Text>
+      <Text style={[s.kick, { color: t.kick }]}>{tr('FOLLOW NOVA VERSE')}</Text>
       <View style={s.row}>
         {PAGES.map((p) => {
           const Icon = I[p.key];
@@ -31,7 +32,7 @@ export function Socials() {
               key={p.key}
               onPress={tapped(() => Linking.openURL(LINKS[p.key]).catch(() => {}))}
               accessibilityRole="link"
-              accessibilityLabel={`MedNova on ${p.name}`}
+              accessibilityLabel={tr('MedNova on {name}', { name: p.name })}
               style={[s.tile, { backgroundColor: t.panel2, borderColor: p.line }]}>
               <View style={[s.disc, { backgroundColor: p.disc, borderColor: p.line }]}>
                 <Icon size={u(20)} color={p.icon} />

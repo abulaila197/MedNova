@@ -10,11 +10,12 @@ import { F } from '@/theme/tokens';
 
 import { type Card, titleOf } from './library';
 import { useLearnColors } from './palette';
+import { tr } from '@/i18n';
 
 /** "3 days ago", "today", "yesterday". */
 function ago(at: number) {
   const days = Math.floor((Date.now() - at) / 86_400_000);
-  return days <= 0 ? 'today' : days === 1 ? 'yesterday' : `${days} days ago`;
+  return days <= 0 ? 'today' : days === 1 ? 'yesterday' : tr('{days} days ago', { days });
 }
 
 /**
@@ -49,7 +50,7 @@ function CardScroll({ children, onPress, label, center = true, fade }: { childre
         <View style={s.more} pointerEvents="none">
           <LinearGradient colors={[`${fade}00`, fade]} style={s.moreFade} />
           <View style={[s.moreBar, { backgroundColor: fade }]}>
-            <Text style={[s.moreT, { color: t.accent }]}>Scroll for more ↓</Text>
+            <Text style={[s.moreT, { color: t.accent }]}>{tr('Scroll for more ↓')}</Text>
           </View>
         </View>
       ) : null}
@@ -82,7 +83,7 @@ export function FlipCard({ card, flipped, onPress }: { card: Card; flipped: bool
   const src = (
     <View style={s.src}>
       <View style={[s.dot, { backgroundColor: c.miss }]} />
-      <Text style={[s.srcT, { color: c.mute }]}>Missed in</Text>
+      <Text style={[s.srcT, { color: c.mute }]}>{tr('Missed in')}</Text>
       <Text style={[s.srcT, s.srcB, { color: c.strong }]} numberOfLines={1}>
         {card.gameName}
       </Text>
@@ -94,18 +95,18 @@ export function FlipCard({ card, flipped, onPress }: { card: Card; flipped: bool
   // The card fills the room between the title and the buttons (flex 1); its answer scrolls inside it. A minimum height
   // taken from the whole screen (#7, 48%) pushed Again / Got it under the dock on phones with tall system bars and on
   // iPhones (Yazan 2026-11-08), so the card no longer has one.
-  const answer = card.kind === 'dossier' ? '' : card.answer ?? 'Not saved for this question.';
+  const answer = card.kind === 'dossier' ? '' : card.answer ?? tr('Not saved for this question.');
   // Longer answers step down in size so most fit without scrolling; the longest still scroll.
   const answerSize = answer.length > 320 ? s.factXL : answer.length > 200 ? s.factXLong : answer.length > 110 ? s.factLong : null;
   return (
-    <Pressable onPress={onPress} style={s.flip} accessibilityRole="button" accessibilityLabel={flipped ? 'Show the front' : isDossier ? 'Show the disease' : 'Show the answer'}>
+    <Pressable onPress={onPress} style={s.flip} accessibilityRole="button" accessibilityLabel={flipped ? tr('Show the front') : isDossier ? tr('Show the disease') : tr('Show the answer')}>
       <Animated.View style={[face, front]} pointerEvents={flipped ? 'none' : 'box-none'}>
         {bg}
         {src}
         {card.kind === 'dossier' ? (
           <>
             {/* #5: no clue labels, one point per line, and the box scrolls; a tap on it still flips the card. */}
-            <CardScroll onPress={onPress} label="Show the disease" fade={c.cardB}>
+            <CardScroll onPress={onPress} label={tr('Show the disease')} fade={c.cardB}>
               <View>
                 {card.facts.clues ? (
                   <Text style={[s.one, card.facts.clues.join(' ').length > 220 && s.oneLong, { color: t.fg }]}>{card.facts.clues.join(' ')}</Text>
@@ -119,12 +120,12 @@ export function FlipCard({ card, flipped, onPress }: { card: Card; flipped: bool
                 )}
               </View>
             </CardScroll>
-            <Text style={[s.hint, { color: c.mute }]}>Which disease is it? Tap to see</Text>
+            <Text style={[s.hint, { color: c.mute }]}>{tr('Which disease is it? Tap to see')}</Text>
           </>
         ) : (
           <>
             {/* A long question scrolls instead of being cut; a tap on it still turns the card. */}
-            <CardScroll onPress={onPress} label="Show the answer" fade={c.cardB}>
+            <CardScroll onPress={onPress} label={tr('Show the answer')} fade={c.cardB}>
               <View style={s.qmid}>
                 {card.image ? <Image source={card.image} style={s.img} resizeMode="contain" /> : null}
                 <Text style={[s.q, (card.q.length > 80 || card.choices.length > 4) && s.qLong, { color: t.fg }]}>{card.q}</Text>
@@ -137,7 +138,7 @@ export function FlipCard({ card, flipped, onPress }: { card: Card; flipped: bool
                 </View>
               </View>
             </CardScroll>
-            <Text style={[s.hint, { color: c.mute }]}>Tap for the answer</Text>
+            <Text style={[s.hint, { color: c.mute }]}>{tr('Tap for the answer')}</Text>
           </>
         )}
       </Animated.View>
@@ -145,17 +146,17 @@ export function FlipCard({ card, flipped, onPress }: { card: Card; flipped: bool
         {bg}
         {card.kind === 'dossier' ? (
           <>
-            <Text style={[s.fld, { color: t.accent }]}>THE DISEASE</Text>
+            <Text style={[s.fld, { color: t.accent }]}>{tr('THE DISEASE')}</Text>
             <View style={s.mid}>
               {title!.first ? <Text style={[s.big, { color: t.fg }]}>{title!.first}</Text> : null}
               <Text style={[s.big, { color: t.accent, fontFamily: F.displayItalic }]}>{title!.em}</Text>
             </View>
-            <Text style={[s.hint, { color: c.mute }]}>Its dossier is one tap below</Text>
+            <Text style={[s.hint, { color: c.mute }]}>{tr('Its dossier is one tap below')}</Text>
           </>
         ) : (
           <>
-            <Text style={[s.fld, { color: t.accent }]}>ANSWER</Text>
-            <CardScroll onPress={onPress} label="Show the front" center={false} fade={c.cardB}>
+            <Text style={[s.fld, { color: t.accent }]}>{tr('ANSWER')}</Text>
+            <CardScroll onPress={onPress} label={tr('Show the front')} center={false} fade={c.cardB}>
               <Text style={[s.fact, answerSize, { color: t.fg }]}>{answer}</Text>
             </CardScroll>
             <Text style={[s.hint, { color: c.mute }]} numberOfLines={2}>
@@ -202,7 +203,7 @@ const s = StyleSheet.create({
   factXLong: { fontSize: u(13), lineHeight: u(17.5) },
   factXL: { fontSize: u(12), lineHeight: u(16) },
   qtop: { paddingVertical: u(4) },
-  more: { position: 'absolute', left: 0, right: 0, bottom: 0 },
+  more: { position: 'absolute', start: 0, end: 0, bottom: 0 },
   moreFade: { height: u(26) },
   moreBar: { alignItems: 'center', paddingTop: u(1), paddingBottom: u(2) },
   moreT: { fontFamily: F.bodySemi, fontSize: u(9), lineHeight: u(12) },

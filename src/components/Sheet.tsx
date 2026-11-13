@@ -9,6 +9,7 @@ import { useBack } from '@/lib/useBack';
 import { useKeyboardHeight } from '@/lib/useKeyboard';
 import { useTheme } from '@/state/app';
 import { DESIGN_W, FRAME_W, TABLET, u, useBleed } from '@/theme/scale';
+import { tr } from '@/i18n';
 
 /** On a tablet a sheet is a phone-wide card centred at the bottom, not a strip across the whole screen. */
 const SIDE = TABLET ? Math.max(0, (FRAME_W - u(DESIGN_W + 40)) / 2) : 0;
@@ -35,14 +36,14 @@ export function Sheet({ open, onClose, children, tone, lift = true, still = fals
   const up = kb ? Math.max(0, kb - (Platform.OS === 'web' ? 0 : ins.bottom)) : 0;
   const maxHeight = height - up - (Platform.OS === 'web' ? 0 : ins.top) - u(12);
   return (
-    <View style={[StyleSheet.absoluteFill, { zIndex: 20, left: -bleed, right: -bleed }]}>
+    <View style={[StyleSheet.absoluteFill, { zIndex: 20, start: -bleed, end: -bleed }]}>
       <Animated.View entering={still ? undefined : FadeIn.duration(250)} exiting={still ? undefined : FadeOut.duration(200)} style={StyleSheet.absoluteFill}>
-        <Pressable style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(5,6,16,0.55)' }]} onPress={onClose} accessibilityLabel="Close" />
+        <Pressable style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(5,6,16,0.55)' }]} onPress={onClose} accessibilityLabel={tr('Close')} />
       </Animated.View>
       <Animated.View
         entering={still ? undefined : safeEnter(SlideInDown.duration(380))}
         exiting={still ? undefined : SlideOutDown.duration(250)}
-        style={[s.sheet, { bottom: up, maxHeight, left: SIDE, right: SIDE, paddingBottom: u(22) + (Platform.OS === 'web' ? 0 : ins.bottom) }, { backgroundColor: tone?.bg ?? t.panel, borderColor: tone?.line ?? t.panelLine, shadowColor: '#000' }]}>
+        style={[s.sheet, { bottom: up, maxHeight, start: SIDE, end: SIDE, paddingBottom: u(22) + (Platform.OS === 'web' ? 0 : ins.bottom) }, { backgroundColor: tone?.bg ?? t.panel, borderColor: tone?.line ?? t.panelLine, shadowColor: '#000' }]}>
         <View style={[s.grab, { backgroundColor: 'rgba(255,255,255,0.2)' }]} />
         <ScrollView
           style={s.scroll}
@@ -65,11 +66,11 @@ export function Sheet({ open, onClose, children, tone, lift = true, still = fals
 const s = StyleSheet.create({
   sheet: {
     position: 'absolute',
-    left: 0,
-    right: 0,
+    start: 0,
+    end: 0,
     bottom: 0,
-    borderTopLeftRadius: u(28),
-    borderTopRightRadius: u(28),
+    borderTopStartRadius: u(28),
+    borderTopEndRadius: u(28),
     borderTopWidth: 1,
     paddingTop: u(10),
     paddingHorizontal: u(18),

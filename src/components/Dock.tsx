@@ -61,7 +61,7 @@ export function Dock({ active }: { active: Tab }) {
           key={i}
           colors={['transparent', t.dockDivider, t.dockDivider, 'transparent']}
           locations={[0, 0.3, 0.7, 1]}
-          style={[s.div, { left: u(10) + ((i * (PAGE_W - 20)) / 3) * u(1), top: u(7), height: u(H - 14) }]}
+          style={[s.div, { start: u(10) + ((i * (PAGE_W - 20)) / 3) * u(1), top: u(7), height: u(H - 14) }]}
         />
       ))}
       {tab('learn', tx('Learn'), LearnIcon)}
@@ -98,7 +98,7 @@ const s = StyleSheet.create({
   },
   gslot: { width: u(18), height: u(18) },
   gfill: { flex: 1, borderRadius: u(14), alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
-  glit: { position: 'absolute', left: 0, right: 0, top: 0, height: 1, backgroundColor: 'rgba(255,255,255,0.45)' },
+  glit: { position: 'absolute', start: 0, end: 0, top: 0, height: 1, backgroundColor: 'rgba(255,255,255,0.45)' },
   lbl: { fontFamily: F.display, fontSize: u(10.5), letterSpacing: u(0.2) },
-  hm: { position: 'absolute', left: '50%', marginLeft: u(-50), bottom: u(3), width: u(100), height: u(4), borderRadius: u(4), opacity: 0.5 },
+  hm: { position: 'absolute', start: '50%', marginStart: u(-50), bottom: u(3), width: u(100), height: u(4), borderRadius: u(4), opacity: 0.5 },
 });

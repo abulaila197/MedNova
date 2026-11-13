@@ -7,6 +7,7 @@ import { tapped } from '@/lib/sound';
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
+import { tr } from '@/i18n';
 
 /**
  * An announcement from the MedNova team (Yazan, 2026-10-13: the Community page is announcements). The like
@@ -20,7 +21,7 @@ export function Post({ id, kick, lead, em, body }: { id: string; kick: string; l
     <View style={[s.card, { backgroundColor: t.panel2, borderColor: t.panelLine }]}>
       <View style={s.from}>
         <PulseStar width={u(18)} height={u(18)} glow={0.3} />
-        <Text style={[s.who, { color: t.fg }]}>The MedNova team</Text>
+        <Text style={[s.who, { color: t.fg }]}>{tr('The MedNova team')}</Text>
         <Text style={[s.kick, { color: t.kick }]}>{kick}</Text>
       </View>
       <Text style={[s.title, { color: t.white }]}>
@@ -31,7 +32,7 @@ export function Post({ id, kick, lead, em, body }: { id: string; kick: string; l
           {p}
         </Text>
       ))}
-      <Pressable onPress={tapped(like.toggle)} style={[s.like, { borderColor: liked ? t.accent : t.chipLine, backgroundColor: t.chip }]} accessibilityRole="button" accessibilityState={{ selected: liked }} accessibilityLabel={liked ? 'Unlike' : 'Like'}>
+      <Pressable onPress={tapped(like.toggle)} style={[s.like, { borderColor: liked ? t.accent : t.chipLine, backgroundColor: t.chip }]} accessibilityRole="button" accessibilityState={{ selected: liked }} accessibilityLabel={liked ? tr('Unlike') : tr('Like')}>
         <Text style={[s.heart, { color: liked ? t.accent : t.mute }]}>{liked ? '♥' : '♡'}</Text>
         <Text style={[s.count, { color: liked ? t.accent : t.fg }]}>{like.n}</Text>
       </Pressable>

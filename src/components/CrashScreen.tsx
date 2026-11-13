@@ -5,6 +5,7 @@ import { Text } from '@/components/AppText';
 
 import { u } from '@/theme/scale';
 import { F, THEMES } from '@/theme/tokens';
+import { tr } from '@/i18n';
 
 const t = THEMES.dark;
 
@@ -22,8 +23,8 @@ export function CrashScreen({ error, retry }: ErrorBoundaryProps) {
   };
   return (
     <View style={s.root}>
-      <Text style={s.ttl}>Oops, something went wrong</Text>
-      <Text style={s.sub}>This page ran into a problem. Send us a screenshot of this and we’ll fix it.</Text>
+      <Text style={s.ttl}>{tr('Oops, something went wrong')}</Text>
+      <Text style={s.sub}>{tr('This page ran into a problem. Send us a screenshot of this and we’ll fix it.')}</Text>
       <ScrollView style={s.box} contentContainerStyle={{ padding: u(10) }}>
         <Text style={s.err} selectable>
           {String(error?.message ?? error)}
@@ -31,10 +32,10 @@ export function CrashScreen({ error, retry }: ErrorBoundaryProps) {
       </ScrollView>
       <View style={s.row}>
         <Pressable onPress={() => void retry()} style={[s.btn, { backgroundColor: t.accent }]} accessibilityRole="button">
-          <Text style={[s.btnT, { color: t.onGrad }]}>Try again</Text>
+          <Text style={[s.btnT, { color: t.onGrad }]}>{tr('Try again')}</Text>
         </Pressable>
         <Pressable onPress={home} style={[s.btn, { borderWidth: 1, borderColor: t.hair }]} accessibilityRole="button">
-          <Text style={[s.btnT, { color: t.fg }]}>Go to Games</Text>
+          <Text style={[s.btnT, { color: t.fg }]}>{tr('Go to Games')}</Text>
         </Pressable>
       </View>
     </View>

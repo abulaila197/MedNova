@@ -1,6 +1,7 @@
 import { Circle, Defs, Ellipse, G, LinearGradient, Path, RadialGradient, Stop } from 'react-native-svg';
 
 import type { FrameKey } from './Frame';
+import { tr } from '@/i18n';
 
 // List #38 (Yazan 2026-10-25): every frame gets an emblem on its top line and art in the lower middle, never over the
 // face (radius 38 in the 100 box). The 4 metal frames share one design (star + winged medallion); every other frame has
@@ -211,7 +212,7 @@ function Nova({ id }: { id: string }) {
         return <Path key={i} d={`M${50 + Math.cos(a) * 3},${Math.sin(a) * 3} L${50 + Math.cos(a) * r1},${Math.sin(a) * r1}`} stroke="#e9ddff" strokeWidth={i % 2 ? 0.6 : 1} strokeLinecap="round" />;
       })}
       <Path d={STAR(50, 0, 9, 0.2)} fill="#ffffff" />
-      <Path d={STAR(50, 0, 5, 0.2)} fill="#6fd6ff" transform="rotate(45 50 0)" />
+      <Path d={STAR(50, 0, 5, 0.2)} fill="#6fd6ff" transform={tr('rotate(45 50 0)')} />
       <Path d={STAR(34, 5, 2)} fill="#e9ddff" />
       <Path d={STAR(67, -3, 2.4)} fill="#e9ddff" />
       {/* planet ring and comet below */}

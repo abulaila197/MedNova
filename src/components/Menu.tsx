@@ -17,20 +17,21 @@ import { loadFriends, useFriends } from '@/state/friends';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 import { navTo } from '@/lib/nav';
+import { tr } from '@/i18n';
 
 const ITEMS = [
   // Order set by Yazan 2026-10-31 (#49).
-  ['My Profile', '/profile'], // the moon button still opens it too
-  ['Friends', '/friends'],
-  ['Nova Shop', '/store'],
-  ['My cards', '/cards'],
-  ['Achievements', '/achievements'],
-  ['Leaderboard', '/leaderboard'],
-  ['Contact', '/contact'],
-  ['About', '/about'],
-  ['FAQ', '/faq'],
-  ['Privacy & Terms', '/privacy'],
-  ['Settings', '/settings'], // Group 2: notifications + Privacy choices
+  [tr('My Profile'), '/profile'], // the moon button still opens it too
+  [tr('Friends'), '/friends'],
+  [tr('Nova Shop'), '/store'],
+  [tr('My cards'), '/cards'],
+  [tr('Achievements'), '/achievements'],
+  [tr('Leaderboard'), '/leaderboard'],
+  [tr('Contact'), '/contact'],
+  [tr('About'), '/about'],
+  [tr('FAQ'), '/faq'],
+  [tr('Privacy & Terms'), '/privacy'],
+  [tr('Settings'), '/settings'], // Group 2: notifications + Privacy choices
 ] as const;
 
 /** Locked side menu ("Journal index"): sits under the app card, which slides aside. */
@@ -44,7 +45,7 @@ export function Menu() {
   const profile = useAccount((a) => a.profile);
   const { level, into, need } = useBalance();
   const isAdmin = useAccount((a) => a.isAdmin);
-  const items = isAdmin ? [...ITEMS, ['Admin', '/admin'] as const] : ITEMS;
+  const items = isAdmin ? [...ITEMS, [tr('Admin'), '/admin'] as const] : ITEMS;
   const [outErr, setOutErr] = useState(false);
   // AC6: a dot on Achievements while a reached tier waits to be collected (signed in only).
   const open = useApp((a) => a.menuOpen);
@@ -87,7 +88,7 @@ export function Menu() {
   return (
     // Keeps clear of the phone's own buttons at the bottom (2026-10-19: the version line sat under them).
     <View style={[s.col, { top, bottom: u(22) + (Platform.OS === 'web' ? 0 : ins.bottom) }]}>
-      <Pressable onPress={tapped(() => setMenu(false))} style={[s.close, { backgroundColor: t.panel, borderColor: t.panelLine }]} accessibilityLabel="Close menu">
+      <Pressable onPress={tapped(() => setMenu(false))} style={[s.close, { backgroundColor: t.panel, borderColor: t.panelLine }]} accessibilityLabel={tr('Close menu')}>
         <Text style={{ color: t.mute, fontSize: u(15) }}>×</Text>
       </Pressable>
       <Pressable style={s.moonc} onPress={() => go('/profile')}>
@@ -95,8 +96,8 @@ export function Menu() {
         <View>
           <Moon size={u(54)} f={profile ? 0.2 + 0.8 * (need ? into / need : 0) : 0.3} />
           {profile ? (
-            <View style={[StyleSheet.absoluteFill, s.moonL]} accessibilityLabel={`Level ${level}`}>
-              <Text style={[s.moonK, { color: t.white }]}>LEVEL</Text>
+            <View style={[StyleSheet.absoluteFill, s.moonL]} accessibilityLabel={tr('Level {level}', { level })}>
+              <Text style={[s.moonK, { color: t.white }]}>{tr('LEVEL')}</Text>
               <Text style={[s.moonN, { color: t.white }]}>{level}</Text>
             </View>
           ) : null}
@@ -104,21 +105,21 @@ export function Menu() {
         <View style={{ flex: 1 }}>
           {profile ? (
             <>
-              <Text style={[s.guest, { color: t.white }]} numberOfLines={1}>{`Dr. ${profile.display_name}`}</Text>
+              <Text style={[s.guest, { color: t.white }]} numberOfLines={1}>{tr('Dr. {display_name}', { display_name: profile.display_name })}</Text>
               <Text style={[s.small, { color: t.mute }]}>{`@${profile.username}`}</Text>
               <Pressable onPress={out}>
-                <Text style={[s.keep, { color: t.accent, borderBottomColor: t.accent }]}>Sign out</Text>
+                <Text style={[s.keep, { color: t.accent, borderBottomColor: t.accent }]}>{tr('Sign out')}</Text>
               </Pressable>
-              {outErr ? <Text style={[s.small, { color: t.error }]}>Couldn’t sign out. Please try again.</Text> : null}
+              {outErr ? <Text style={[s.small, { color: t.error }]}>{tr('Couldn’t sign out. Please try again.')}</Text> : null}
             </>
           ) : (
             <>
-              <Text style={[s.guest, { color: t.white }]}>Guest doctor</Text>
+              <Text style={[s.guest, { color: t.white }]}>{tr('Guest doctor')}</Text>
               <Text style={[s.small, { color: t.mute }]}>
-                {tries == null ? ' ' : tries === 0 ? 'No free plays left' : `${tries} of ${GUEST_PLAYS} free plays left`}
+                {tries == null ? ' ' : tries === 0 ? tr('No free plays left') : tr('{tries} of {GUEST_PLAYS} free plays left', { tries, GUEST_PLAYS })}
               </Text>
               <Pressable onPress={() => go('/auth')}>
-                <Text style={[s.keep, { color: t.accent, borderBottomColor: t.accent }]}>Sign in to keep it</Text>
+                <Text style={[s.keep, { color: t.accent, borderBottomColor: t.accent }]}>{tr('Sign in to keep it')}</Text>
               </Pressable>
             </>
           )}
@@ -133,10 +134,10 @@ export function Menu() {
               <Text style={[s.no, { color: t.kick }]} numberOfLines={1}>{String(i + 1).padStart(2, '0')}</Text>
               <Text style={[s.lbl, { color: on ? t.accent : t.white, fontFamily: on ? F.displayItalic : F.display }]}>{label}</Text>
               {to === '/achievements' && profile && (waiting || missions) ? (
-                <View style={[s.dot, { backgroundColor: waiting ? t.accent : t.red }]} accessibilityLabel={waiting ? 'Tokens waiting' : 'Daily missions not done'} />
+                <View style={[s.dot, { backgroundColor: waiting ? t.accent : t.red }]} accessibilityLabel={waiting ? tr('Tokens waiting') : tr('Daily missions not done')} />
               ) : null}
               {to === '/friends' && profile && requests ? (
-                <View style={[s.dot, { backgroundColor: t.red }]} accessibilityLabel="Friend request waiting" />
+                <View style={[s.dot, { backgroundColor: t.red }]} accessibilityLabel={tr('Friend request waiting')} />
               ) : null}
             </Pressable>
           );
@@ -144,7 +145,7 @@ export function Menu() {
       </ScrollView>
       <View style={s.pills}>
         <View style={[s.theme, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
-          {([[false, 'Sound'], [true, 'Mute']] as const).map(([key, label]) => (
+          {([[false, tr('Sound')], [true, tr('Mute')]] as const).map(([key, label]) => (
             <Pressable key={label} onPress={() => {
               setMuted(key);
               if (!key) void sfx('tap');
@@ -162,13 +163,13 @@ export function Menu() {
           ))}
         </View>
       </View>
-      <Text style={[s.ver, { color: t.mute }]}>MEDNOVA · V0.1</Text>
+      <Text style={[s.ver, { color: t.mute }]}>{tr('MEDNOVA · V0.1')}</Text>
     </View>
   );
 }
 
 const s = StyleSheet.create({
-  col: { position: 'absolute', left: u(18), bottom: u(22), width: '56%', zIndex: 1 },
+  col: { position: 'absolute', start: u(18), bottom: u(22), width: '56%', zIndex: 1 },
   close: { width: u(30), height: u(30), borderRadius: u(10), borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
   moonL: { alignItems: 'center', justifyContent: 'center' },
   moonK: { fontFamily: F.mono, fontSize: u(6), letterSpacing: u(1.2), marginBottom: -u(2), textShadowColor: 'rgba(0,0,0,0.9)', textShadowRadius: u(4) },
@@ -183,7 +184,7 @@ const s = StyleSheet.create({
   no: { fontFamily: F.mono, fontSize: u(8.5), letterSpacing: u(1.275), width: u(16) },
   lbl: { fontSize: u(14.5), lineHeight: u(16.5), flex: 1 },
   // #9: kept in from the row's right edge (Yazan 2026-10-31).
-  dot: { width: u(7), height: u(7), borderRadius: u(4), alignSelf: 'center', marginRight: u(14) },
+  dot: { width: u(7), height: u(7), borderRadius: u(4), alignSelf: 'center', marginEnd: u(14) },
   pills: { flexDirection: 'row', flexWrap: 'wrap', gap: u(8) },
   theme: { flexDirection: 'row', alignSelf: 'flex-start', borderWidth: 1, borderRadius: 999, padding: u(3) },
   opt: { paddingVertical: u(5), paddingHorizontal: u(11), borderRadius: 999 },

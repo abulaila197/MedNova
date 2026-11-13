@@ -257,16 +257,16 @@ export function Framed({ slug, size, frame, still = false, accent }: { slug: str
     const w = (fq / FACE) * HOLE * art.ext;
     return (
       <View style={{ width: size, height: size }}>
-        <View style={[s.face, { top: (size - fq) / 2, left: (size - fq) / 2 }]}>
+        <View style={[s.face, { top: (size - fq) / 2, start: (size - fq) / 2 }]}>
           <Face slug={slug} size={fq} />
         </View>
-        <Image source={art.src} style={{ position: 'absolute', width: w, height: w, left: (size - w) / 2, top: (size - w) / 2 }} transition={0} pointerEvents="none" />
+        <Image source={art.src} style={{ position: 'absolute', width: w, height: w, start: (size - w) / 2, top: (size - w) / 2 }} transition={0} pointerEvents="none" />
       </View>
     );
   }
   return (
     <View style={{ width: size, height: size }}>
-      <View style={[s.face, { top: (size - f) / 2, left: (size - f) / 2 }]}>
+      <View style={[s.face, { top: (size - f) / 2, start: (size - f) / 2 }]}>
         <Face slug={slug} size={f} />
       </View>
       <Svg width={size} height={size} viewBox={`0 0 ${V} ${V}`} style={StyleSheet.absoluteFill} pointerEvents="none">
@@ -278,7 +278,7 @@ export function Framed({ slug, size, frame, still = false, accent }: { slug: str
           width={size * (1 + (2 * PAD) / V)}
           height={size * (1 + (2 * PAD) / V)}
           viewBox={`${-PAD} ${-PAD} ${V + 2 * PAD} ${V + 2 * PAD}`}
-          style={{ position: 'absolute', left: (-size * PAD) / V, top: (-size * PAD) / V }}
+          style={{ position: 'absolute', start: (-size * PAD) / V, top: (-size * PAD) / V }}
           pointerEvents="none">
           <Accents k={frame} id={id3} />
         </Svg>

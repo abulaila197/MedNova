@@ -5,6 +5,7 @@ import Svg, { Defs, G, Image as SvgImage, LinearGradient as LinearGradientSvg, M
 import { useSvgId } from '@/components/svgId';
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
+import { tr } from '@/i18n';
 
 /** Where a photo sits inside its box, in design px (x/y = box-relative top-left of the image). */
 export type Place = { x: number; y: number; w: number; h: number };
@@ -54,7 +55,7 @@ export function Feather({
           ))}
         </RadialGradient>
         <Mask id={`${id}m`} maskUnits="userSpaceOnUse" x={-2000} y={-2000} width={5000} height={5000}>
-          <G transform={`translate(0 ${cy}) scale(1 ${k}) translate(0 ${-cy})`}>
+          <G transform={tr('translate(0 {cy}) scale(1 {k}) translate(0 {n})', { cy, k, n: -cy })}>
             <Rect x={-2000} y={-6000} width={5000} height={14000} fill={`url(#${id}g)`} />
           </G>
         </Mask>
@@ -80,7 +81,7 @@ export function Feather({
 export function Crop({ source, w, h, place, radius = 0, style, children }: { source: ImageSourcePropType; w: number; h: number; place: Place; radius?: number; style?: ViewStyle; children?: ReactNode }) {
   return (
     <View style={[{ width: u(w), height: u(h), borderRadius: u(radius), overflow: 'hidden' }, style]}>
-      <Image source={source} style={{ position: 'absolute', left: u(place.x), top: u(place.y), width: u(place.w), height: u(place.h) }} />
+      <Image source={source} style={{ position: 'absolute', start: u(place.x), top: u(place.y), width: u(place.w), height: u(place.h) }} />
       {children}
     </View>
   );

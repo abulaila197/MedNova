@@ -31,20 +31,21 @@ import { ChallengeSheet, ResultSheet } from '@/features/challenges/ChallengeShee
 import { loadFriendChallenges, useChallenges, withFriend } from '@/features/challenges/store';
 
 import { Name, openChallenge, openReport, openResult, useFriendSheet } from './Friends';
+import { tr } from '@/i18n';
 
 export const closeFriendSheet = () => useFriendSheet.setState({ open: null, friend: null, code: '', target: null });
 const close = closeFriendSheet;
 const ALLOWED = /[^A-HJ-NP-Z2-9]/g; // friend codes skip 0, O, 1 and I
 
 const SAY: Record<RequestResult | 'error', string> = {
-  sent: 'Request sent. You’re friends once they accept.',
-  accepted: 'They had asked you too, so you’re friends now.',
-  already: 'You’re already friends.',
-  pending: 'You already sent them a request.',
-  self: 'That’s your own code.',
-  not_found: 'No player has that code.',
-  unavailable: 'You can’t send a request to that player.',
-  error: 'Couldn’t reach the server. Check your connection.',
+  sent: tr('Request sent. You’re friends once they accept.'),
+  accepted: tr('They had asked you too, so you’re friends now.'),
+  already: tr('You’re already friends.'),
+  pending: tr('You already sent them a request.'),
+  self: tr('That’s your own code.'),
+  not_found: tr('No player has that code.'),
+  unavailable: tr('You can’t send a request to that player.'),
+  error: tr('Couldn’t reach the server. Check your connection.'),
 };
 
 /** The Add friend sheet and the remove/block sheet (FR1-FR3). Lives in the app layout so it covers the dock. */
@@ -101,7 +102,7 @@ function AddFriend() {
   const good = msg === 'sent' || msg === 'accepted';
   return (
     <>
-      <Text style={[s.k, { color: t.mute }]}>YOUR FRIEND CODE</Text>
+      <Text style={[s.k, { color: t.mute }]}>{tr('YOUR FRIEND CODE')}</Text>
       <LinearGradient colors={['#eef1ff', '#cfd6f3']} start={{ x: 0, y: 0 }} end={{ x: 0.6, y: 1 }} style={s.pass}>
         <View style={[s.slot, { backgroundColor: '#9aa3c9' }]} />
         <View style={s.idr}>
@@ -109,13 +110,13 @@ function AddFriend() {
             <PlayerFace slug={profile.avatar} size={u(40)} userId={profile.id} still />
           </View>
           <View style={{ flex: 1 }}>
-            <Text style={[s.idN, { color: ink }]} numberOfLines={1}>{`Dr. ${profile.display_name}`}</Text>
-            <Text style={[s.idS, { color: '#4b527a' }]}>{`@${profile.username.toUpperCase()} · LEVEL ${level}`}</Text>
+            <Text style={[s.idN, { color: ink }]} numberOfLines={1}>{tr('Dr. {display_name}', { display_name: profile.display_name })}</Text>
+            <Text style={[s.idS, { color: '#4b527a' }]}>{tr('@{n} · LEVEL {level}', { n: profile.username.toUpperCase(), level })}</Text>
           </View>
         </View>
-        <Text style={[s.code, { color: ink }]} accessibilityLabel={`Your friend code ${mine.split('').join(' ')}`}>{`${mine.slice(0, 3)} · ${mine.slice(3)}`}</Text>
+        <Text style={[s.code, { color: ink }]} accessibilityLabel={tr('Your friend code {n}', { n: mine.split('').join(' ') })}>{`${mine.slice(0, 3)} · ${mine.slice(3)}`}</Text>
         <View style={[s.strip, { backgroundColor: ink }]}>
-          <Text style={[s.stripT, { color: t.accent }]}>MEDNOVA · FRIEND PASS</Text>
+          <Text style={[s.stripT, { color: t.accent }]}>{tr('MEDNOVA · FRIEND PASS')}</Text>
         </View>
       </LinearGradient>
       <View style={s.row}>
@@ -123,17 +124,17 @@ function AddFriend() {
           style={[s.gh, { borderColor: t.panelLine }]}
           onPress={() => Clipboard.setStringAsync(mine).then(() => setCopied(true))}
           accessibilityRole="button">
-          <Text style={[s.ghT, { color: t.fg }]}>{copied ? 'Copied' : 'Copy'}</Text>
+          <Text style={[s.ghT, { color: t.fg }]}>{copied ? tr('Copied') : tr('Copy')}</Text>
         </Pressable>
         <Pressable
           style={[s.gh, { borderColor: t.panelLine }]}
-          onPress={() => shareText(`Add me on MedNova: ${link}\nOr type my friend code: ${mine}`)}
+          onPress={() => shareText(tr('Add me on MedNova: {link}\nOr type my friend code: {mine}', { link, mine }))}
           accessibilityRole="button">
-          <Text style={[s.ghT, { color: t.fg }]}>Share link</Text>
+          <Text style={[s.ghT, { color: t.fg }]}>{tr('Share link')}</Text>
         </Pressable>
       </View>
-      <Text style={[s.k, { color: t.mute, marginTop: u(4) }]}>ADD A FRIEND</Text>
-      <Pressable onPress={() => input.current?.focus()} style={s.boxes} accessibilityLabel="Friend code">
+      <Text style={[s.k, { color: t.mute, marginTop: u(4) }]}>{tr('ADD A FRIEND')}</Text>
+      <Pressable onPress={() => input.current?.focus()} style={s.boxes} accessibilityLabel={tr('Friend code')}>
         {Array.from({ length: 6 }, (_, i) => (
           <View key={i} style={[s.box, { backgroundColor: t.panel2, borderColor: code[i] ? 'rgba(111,214,255,0.5)' : t.panelLine }]}>
             <Text style={[s.boxT, { color: t.fg }]}>{code[i] ?? ''}</Text>
@@ -150,13 +151,13 @@ function AddFriend() {
           autoCorrect={false}
           maxLength={6}
           style={s.hidden}
-          accessibilityLabel="Type a friend code"
+          accessibilityLabel={tr('Type a friend code')}
         />
       </Pressable>
       {msg ? <Text style={[s.msg, { color: good ? t.accent : t.mute }]}>{SAY[msg]}</Text> : null}
       <Pressable disabled={code.length < 6 || busy} onPress={send} accessibilityRole="button" style={{ opacity: code.length < 6 ? 0.5 : 1 }}>
         <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.btn}>
-          <Text style={[s.btnT, { color: t.onGrad }]}>{busy ? 'Sending…' : 'Send request'}</Text>
+          <Text style={[s.btnT, { color: t.onGrad }]}>{busy ? tr('Sending…') : tr('Send request')}</Text>
         </LinearGradient>
       </Pressable>
     </>
@@ -170,7 +171,7 @@ function FriendMenu() {
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState(false);
   if (!f) return null;
-  const when = f.kind === 'outgoing' ? 'REQUEST SENT' : seenLabel(f.last_seen);
+  const when = f.kind === 'outgoing' ? tr('REQUEST SENT') : seenLabel(f.last_seen);
   const run = async (fn: () => Promise<void>) => {
     setBusy(true);
     setErr(false);
@@ -193,15 +194,15 @@ function FriendMenu() {
         </View>
       </View>
       {f.kind === 'outgoing' ? (
-        <Act t={t} title="Cancel request" note="They won’t see it any more. You can send a new one later." onPress={() => run(() => removeFriend(f.id))} disabled={busy} />
+        <Act t={t} title={tr('Cancel request')} note={tr('They won’t see it any more. You can send a new one later.')} onPress={() => run(() => removeFriend(f.id))} disabled={busy} />
       ) : (
-        <Act t={t} title="Remove friend" note={`Takes ${f.display_name} off both lists. They can send a new request later.`} onPress={() => run(() => removeFriend(f.id))} disabled={busy} />
+        <Act t={t} title={tr('Remove friend')} note={tr('Takes {display_name} off both lists. They can send a new request later.', { display_name: f.display_name })} onPress={() => run(() => removeFriend(f.id))} disabled={busy} />
       )}
-      <Act t={t} red title={`Block ${f.display_name}`} note="Also stops their requests and challenges. Undo any time under Blocked players on your Profile." onPress={() => run(() => blockUser(f.id))} disabled={busy} />
-      <Act t={t} title={`Report ${f.display_name}`} note="Tell us what happened. Reports are private." onPress={() => openReport({ id: f.id, name: f.display_name, avatar: f.avatar })} disabled={busy} />
-      {err ? <Text style={[s.msg, { color: t.error }]}>Couldn’t reach the server. Check your connection.</Text> : null}
+      <Act t={t} red title={tr('Block {display_name}', { display_name: f.display_name })} note={tr('Also stops their requests and challenges. Undo any time under Blocked players on your Profile.')} onPress={() => run(() => blockUser(f.id))} disabled={busy} />
+      <Act t={t} title={tr('Report {display_name}', { display_name: f.display_name })} note={tr('Tell us what happened. Reports are private.')} onPress={() => openReport({ id: f.id, name: f.display_name, avatar: f.avatar })} disabled={busy} />
+      {err ? <Text style={[s.msg, { color: t.error }]}>{tr('Couldn’t reach the server. Check your connection.')}</Text> : null}
       <Pressable onPress={close} accessibilityRole="button">
-        <Text style={[s.cancel, { color: t.mute }]}>Cancel</Text>
+        <Text style={[s.cancel, { color: t.mute }]}>{tr('Cancel')}</Text>
       </Pressable>
     </>
   );
@@ -251,7 +252,7 @@ function FriendProfileSheet() {
   const result = f && friend ? withFriend(chList, f.id).result : null;
   if (!f) return null;
   // Offline nobody shows ONLINE (#59): the time they were last seen instead.
-  const when = !friend ? null : live ? 'IN A MATCH' : off ? (f.last_seen ? `LAST SEEN ${agoText(Date.parse(f.last_seen)).toUpperCase()}` : 'NOT SEEN YET') : seenLabel(f.last_seen);
+  const when = !friend ? null : live ? tr('IN A MATCH') : off ? (f.last_seen ? tr('LAST SEEN {n}', { n: agoText(Date.parse(f.last_seen)).toUpperCase() }) : tr('NOT SEEN YET')) : seenLabel(f.last_seen);
   const run = async (fn: () => Promise<void>, stay?: boolean) => {
     setBusy(true);
     setErr(false);
@@ -273,13 +274,13 @@ function FriendProfileSheet() {
   // Friend challenges (G7): Challenge opens the sheet; Result shows a finished challenge, then it reads Challenge again.
   const main = friend
     ? result
-      ? { label: 'Result', go: () => openResult(f) }
-      : { label: `Challenge ${f.display_name}`, go: () => openChallenge(f) }
+      ? { label: tr('Result'), go: () => openResult(f) }
+      : { label: tr('Challenge {display_name}', { display_name: f.display_name }), go: () => openChallenge(f) }
     : f.kind === 'incoming'
-      ? { label: `Accept ${f.display_name}’s friend request`, go: add }
+      ? { label: tr('Accept {display_name}’s friend request', { display_name: f.display_name }), go: add }
       : f.kind === 'outgoing'
-        ? { label: 'Friend request sent', go: null }
-        : { label: `Add ${f.display_name} as a friend`, go: add };
+        ? { label: tr('Friend request sent'), go: null }
+        : { label: tr('Add {display_name} as a friend', { display_name: f.display_name }), go: add };
 
   return (
     <ScrollView style={{ maxHeight: maxH }} contentContainerStyle={{ gap: u(10), paddingTop: u(8) }} showsVerticalScrollIndicator={false}>
@@ -292,19 +293,19 @@ function FriendProfileSheet() {
         </View>
       </View>
       <View style={s.stats}>
-        <Stat t={t} label="LEVEL" value={ready ? String(ready.level) : '–'} />
-        {ready && ready.tokens == null ? null : <Stat t={t} label="TOKENS" value={ready?.tokens != null ? ready.tokens.toLocaleString() : '–'} coin />}
-        <Stat t={t} label="CHARACTERS" value={ready ? String(chars.length) : '–'} />
+        <Stat t={t} label={tr('LEVEL')} value={ready ? String(ready.level) : '–'} />
+        {ready && ready.tokens == null ? null : <Stat t={t} label={tr('TOKENS')} value={ready?.tokens != null ? ready.tokens.toLocaleString() : '–'} coin />}
+        <Stat t={t} label={tr('CHARACTERS')} value={ready ? String(chars.length) : '–'} />
       </View>
-      {p === 'error' ? <Text style={[s.msg, { color: t.mute }]}>Couldn’t load their profile. Check your connection.</Text> : null}
+      {p === 'error' ? <Text style={[s.msg, { color: t.mute }]}>{tr('Couldn’t load their profile. Check your connection.')}</Text> : null}
       {chars.length ? (
         <>
-          <Text style={[s.k, { color: t.kick }]}>THEIR CHARACTERS</Text>
+          <Text style={[s.k, { color: t.kick }]}>{tr('THEIR CHARACTERS')}</Text>
           <View style={s.chars}>
             {chars.map((c) => {
               const card = cardOf(c);
               return card ? (
-                <Pressable key={c} onPress={() => setView(card)} style={[s.card, { borderColor: t.panelLine }]} accessibilityRole="button" accessibilityLabel={`View ${card.name}'s card`}>
+                <Pressable key={c} onPress={() => setView(card)} style={[s.card, { borderColor: t.panelLine }]} accessibilityRole="button" accessibilityLabel={tr('View {name}\'s card', { name: card.name })}>
                   <Image source={card.card} style={s.cardImg} contentFit="cover" transition={0} />
                 </Pressable>
               ) : null;
@@ -312,7 +313,7 @@ function FriendProfileSheet() {
           </View>
         </>
       ) : null}
-      {ready?.since ? <Text style={[s.since, { color: t.mute }]}>{`Friends since ${new Date(ready.since).toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' })}`}</Text> : null}
+      {ready?.since ? <Text style={[s.since, { color: t.mute }]}>{tr('Friends since {n}', { n: new Date(ready.since).toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' }) })}</Text> : null}
       <OfflineLine at={offAt} style={{ marginTop: 0 }} />
       {main ? (
         <Pressable disabled={busy || off || !main.go || !ready} onPress={main.go ?? undefined} style={!main.go || off ? { opacity: off ? 0.4 : 0.55 } : null} accessibilityRole="button">
@@ -321,12 +322,12 @@ function FriendProfileSheet() {
           </LinearGradient>
         </Pressable>
       ) : null}
-      {friend ? <Act t={t} title="Remove friend" note={`Takes ${f.display_name} off both lists. They can send a new request later.`} onPress={() => run(() => removeFriend(f.id))} disabled={busy} /> : null}
-      <Act t={t} red title={`Block ${f.display_name}`} note="Also stops their requests and challenges. Undo any time under Blocked players on your Profile." onPress={() => run(() => blockUser(f.id))} disabled={busy} />
-      <Act t={t} title={`Report ${f.display_name}`} note="Tell us what happened. Reports are private." onPress={() => openReport({ id: f.id, name: f.display_name, avatar: f.avatar })} disabled={busy} />
-      {err ? <Text style={[s.msg, { color: t.error }]}>Couldn’t reach the server. Check your connection.</Text> : null}
+      {friend ? <Act t={t} title={tr('Remove friend')} note={tr('Takes {display_name} off both lists. They can send a new request later.', { display_name: f.display_name })} onPress={() => run(() => removeFriend(f.id))} disabled={busy} /> : null}
+      <Act t={t} red title={tr('Block {display_name}', { display_name: f.display_name })} note={tr('Also stops their requests and challenges. Undo any time under Blocked players on your Profile.')} onPress={() => run(() => blockUser(f.id))} disabled={busy} />
+      <Act t={t} title={tr('Report {display_name}', { display_name: f.display_name })} note={tr('Tell us what happened. Reports are private.')} onPress={() => openReport({ id: f.id, name: f.display_name, avatar: f.avatar })} disabled={busy} />
+      {err ? <Text style={[s.msg, { color: t.error }]}>{tr('Couldn’t reach the server. Check your connection.')}</Text> : null}
       <Pressable onPress={close} accessibilityRole="button">
-        <Text style={[s.cancel, { color: t.mute }]}>Close</Text>
+        <Text style={[s.cancel, { color: t.mute }]}>{tr('Close')}</Text>
       </Pressable>
       <CardViewer card={view} onClose={() => setView(null)} />
     </ScrollView>
@@ -337,7 +338,7 @@ type FriendCard = { card: ImageSource; name: string; title: string };
 /** A character's collectable card (Yazan 2026-10-26: their characters show as cards, tap to view): originals, Nova Mechs or shop robots. */
 function cardOf(slug: string): FriendCard | null {
   const d = DECK.find((x) => x.key === slug);
-  if (d) return { card: d.art as ImageSource, name: d.name, title: `${d.stars}-star original` };
+  if (d) return { card: d.art as ImageSource, name: d.name, title: tr('{stars}-star original', { stars: d.stars }) };
   const m = MECHS.find((x) => x.key === slug) ?? robotOf(slug) ?? teamOf(slug);
   return m ? { card: m.card, name: m.name, title: m.title } : null;
 }
@@ -374,10 +375,10 @@ function ReportPlayer() {
   if (state === 'sent')
     return (
       <>
-        <Text style={[s.idN, { color: t.fg, textAlign: 'center' }]}>Thanks, we got it.</Text>
-        <Text style={[s.msg, { color: t.mute }]}>{`We’ll look into it. ${p.name} isn’t told who reported them.`}</Text>
+        <Text style={[s.idN, { color: t.fg, textAlign: 'center' }]}>{tr('Thanks, we got it.')}</Text>
+        <Text style={[s.msg, { color: t.mute }]}>{tr('We’ll look into it. {name} isn’t told who reported them.', { name: p.name })}</Text>
         <Pressable onPress={close} accessibilityRole="button">
-          <Text style={[s.cancel, { color: t.mute }]}>Close</Text>
+          <Text style={[s.cancel, { color: t.mute }]}>{tr('Close')}</Text>
         </Pressable>
       </>
     );
@@ -385,28 +386,28 @@ function ReportPlayer() {
     <>
       <View style={s.mh}>
         <PlayerFace slug={p.avatar} size={u(34)} userId={p.id} still />
-        <Text style={[s.idN, { color: t.fg }]}>{`Report ${p.name}`}</Text>
+        <Text style={[s.idN, { color: t.fg }]}>{tr('Report {name}', { name: p.name })}</Text>
       </View>
-      <Text style={[s.k, { color: t.kick }]}>WHAT HAPPENED?</Text>
+      <Text style={[s.k, { color: t.kick }]}>{tr('WHAT HAPPENED?')}</Text>
       <View style={s.chips}>
         {REASONS.map((r) => {
           const on = why === r;
           return (
             <Pressable key={r} onPress={() => setWhy(r)} style={[s.chip, line, on && { borderColor: t.accent, backgroundColor: t.chip }]} accessibilityRole="button" accessibilityState={{ selected: on }}>
-              <Text style={[s.chipT, { color: on ? t.fg : t.mute }]}>{r}</Text>
+              <Text style={[s.chipT, { color: on ? t.fg : t.mute }]}>{tr(r)}</Text>
             </Pressable>
           );
         })}
       </View>
-      <TextInput value={note} onChangeText={setNote} placeholder="Add a note (optional)" placeholderTextColor={t.mute} maxLength={500} multiline style={[s.note, line, { color: t.fg }]} />
-      {state === 'error' ? <Text style={[s.msg, { color: t.error }]}>Couldn’t send. Check your connection.</Text> : null}
+      <TextInput value={note} onChangeText={setNote} placeholder={tr('Add a note (optional)')} placeholderTextColor={t.mute} maxLength={500} multiline style={[s.note, line, { color: t.fg }]} />
+      {state === 'error' ? <Text style={[s.msg, { color: t.error }]}>{tr('Couldn’t send. Check your connection.')}</Text> : null}
       <Pressable onPress={send} disabled={!why || state === 'busy'} accessibilityRole="button">
         <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={[s.btn, !why && { opacity: 0.45 }]}>
-          <Text style={[s.btnT, { color: t.onGrad }]}>{state === 'busy' ? 'Sending…' : 'Send report'}</Text>
+          <Text style={[s.btnT, { color: t.onGrad }]}>{state === 'busy' ? tr('Sending…') : tr('Send report')}</Text>
         </LinearGradient>
       </Pressable>
       <Pressable onPress={close} accessibilityRole="button">
-        <Text style={[s.cancel, { color: t.mute }]}>Cancel</Text>
+        <Text style={[s.cancel, { color: t.mute }]}>{tr('Cancel')}</Text>
       </Pressable>
     </>
   );
@@ -427,7 +428,7 @@ function Act({ t, title, note, red, onPress, disabled }: { t: Theme; title: stri
 const s = StyleSheet.create({
   k: { fontFamily: F.mono, fontSize: u(7.5), letterSpacing: u(1.4), marginTop: u(4) },
   pass: { borderRadius: u(16), paddingTop: u(16), paddingHorizontal: u(14), overflow: 'hidden' },
-  slot: { position: 'absolute', top: u(6), left: '50%', width: u(34), height: u(5), marginLeft: u(-17), borderRadius: u(3) },
+  slot: { position: 'absolute', top: u(6), start: '50%', width: u(34), height: u(5), marginStart: u(-17), borderRadius: u(3) },
   idr: { flexDirection: 'row', alignItems: 'center', gap: u(10) },
   face: { borderRadius: u(22), borderWidth: u(2), borderColor: '#fff' },
   idN: { fontFamily: F.display, fontSize: u(19), lineHeight: u(22) },
@@ -441,7 +442,7 @@ const s = StyleSheet.create({
   boxes: { flexDirection: 'row', gap: u(6) },
   box: { flex: 1, height: u(34), borderRadius: u(9), borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
   boxT: { fontFamily: F.mono, fontSize: u(16) },
-  hidden: { position: 'absolute', left: 0, right: 0, top: 0, bottom: 0, opacity: 0.01, color: 'transparent' },
+  hidden: { position: 'absolute', start: 0, end: 0, top: 0, bottom: 0, opacity: 0.01, color: 'transparent' },
   msg: { fontFamily: F.body, fontSize: u(9.5), textAlign: 'center' },
   btn: { height: u(34), borderRadius: u(12), alignItems: 'center', justifyContent: 'center' },
   btnT: { fontFamily: F.bodyBold, fontSize: u(11) },

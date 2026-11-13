@@ -17,6 +17,7 @@ import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import { LevelRing } from './LevelRing';
+import { tr } from '@/i18n';
 
 const SEEN = 'level:seen';
 /** Tokens the level ups from `from` (exclusive) to `to` paid. */
@@ -57,25 +58,25 @@ export function LevelUpHost() {
   const tokens = paid(from, level);
   return (
     <Modal transparent visible animationType="fade" onRequestClose={close}>
-      <Pressable style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(3,4,12,0.78)' }]} onPress={close} accessibilityLabel="Close" />
+      <Pressable style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(3,4,12,0.78)' }]} onPress={close} accessibilityLabel={tr('Close')} />
       <View style={s.mid} pointerEvents="box-none">
         <Animated.View entering={safeEnter(ZoomIn.springify().damping(14))} style={[s.card, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
           <View style={[s.halo, { backgroundColor: 'rgba(111,214,255,0.14)' }]}>
             <LevelRing size={u(96)} level={level} progress={need ? into / need : 0} slug={slug} />
           </View>
-          <Text style={[s.kick, { color: t.kick }]}>LEVEL UP</Text>
+          <Text style={[s.kick, { color: t.kick }]}>{tr('LEVEL UP')}</Text>
           <Text style={[s.h, { color: t.fg }]}>
-            {'Level '}
+            {tr('Level ')}
             <Text style={[s.h, { color: t.accent, fontFamily: F.displayItalic }]}>{level}</Text>
           </Text>
           <View style={s.tok}>
             <Text style={[s.big, { color: t.accent }]}>{`+${tokens}`}</Text>
             <TokenCoin size={u(20)} progress={0} track="transparent" />
           </View>
-          <Text style={[s.p, { color: t.mute }]}>{level % 5 === 0 ? `Every 5th level pays ${FIFTH_LEVEL_PRIZE} more. ${need - into} EXP to the next one.` : `${need - into} EXP to level ${level + 1}.`}</Text>
+          <Text style={[s.p, { color: t.mute }]}>{level % 5 === 0 ? tr('Every 5th level pays {FIFTH_LEVEL_PRIZE} more. {n} EXP to the next one.', { FIFTH_LEVEL_PRIZE, n: need - into }) : tr('{n} EXP to level {n2}.', { n: need - into, n2: level + 1 })}</Text>
           <Pressable onPress={close} accessibilityRole="button" style={{ alignSelf: 'stretch' }}>
             <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.btn}>
-              <Text style={[s.btnT, { color: t.onGrad }]}>Nice</Text>
+              <Text style={[s.btnT, { color: t.onGrad }]}>{tr('Nice')}</Text>
             </LinearGradient>
           </Pressable>
         </Animated.View>

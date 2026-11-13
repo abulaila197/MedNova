@@ -9,6 +9,7 @@ import { F } from '@/theme/tokens';
 
 import { Beat } from './Ribbon';
 import { loadRounds, readyOf, useRoundsStore } from './useRounds';
+import { tr } from '@/i18n';
 
 /** This week's Grand Rounds at the top of the Achievements page: the same heartbeat line, changing every week. */
 export function RoundsEntry() {
@@ -20,10 +21,10 @@ export function RoundsEntry() {
   if (!r) return null;
   const ready = readyOf(r).length > 0;
   return (
-    <Pressable onPress={() => router.navigate('/rounds' as never)} style={[s.card, { backgroundColor: t.panel, borderColor: ready ? t.accent : t.panelLine }]} accessibilityRole="link" accessibilityLabel="Open Grand Rounds">
+    <Pressable onPress={() => router.navigate('/rounds' as never)} style={[s.card, { backgroundColor: t.panel, borderColor: ready ? t.accent : t.panelLine }]} accessibilityRole="link" accessibilityLabel={tr('Open Grand Rounds')}>
       <View style={s.top}>
-        <Text style={[s.k, { color: t.kick }]}>THIS WEEK</Text>
-        <Text style={[s.k, { color: ready ? t.accent : t.mute }]}>{r.claimed ? 'STAMPED' : ready ? 'READY TO COLLECT' : `${r.stamps.length} WEEK${r.stamps.length === 1 ? '' : 'S'} DONE`}</Text>
+        <Text style={[s.k, { color: t.kick }]}>{tr('THIS WEEK')}</Text>
+        <Text style={[s.k, { color: ready ? t.accent : t.mute }]}>{r.claimed ? tr('STAMPED') : ready ? tr('READY TO COLLECT') : tr('{n} WEEK{n2} DONE', { n: r.stamps.length, n2: r.stamps.length === 1 ? '' : 'S' })}</Text>
       </View>
       <Beat r={r} more={false} />
     </Pressable>

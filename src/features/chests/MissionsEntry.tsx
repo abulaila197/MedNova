@@ -8,8 +8,9 @@ import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import { loadChallenges, missionsLeft, useChests } from './useChests';
+import { tr } from '@/i18n';
 
-const NAMES = ['Warm-up', 'Full Shift', 'Overtime'];
+const NAMES = [tr('Warm-up'), tr('Full Shift'), tr('Overtime')];
 
 /** Today's daily missions under Grand Rounds on the Achievements page (Yazan 2026-10-26); opens the Daily missions page. */
 export function MissionsEntry() {
@@ -22,18 +23,18 @@ export function MissionsEntry() {
   const dot = missionsLeft(c);
   const names = c?.names ?? NAMES;
   const now = step > 3 ? null : c?.tasks[step - 1];
-  const line = !now ? 'All 3 done today. New missions at midnight.' : now.map((x) => (x.k === 'review' ? `reviews ${x.n >= x.of ? 'done' : 'to finish'}` : `${x.n} of ${x.of} ${x.k === 'games' ? 'different games' : x.k}`)).join(', ');
+  const line = !now ? tr('All 3 done today. New missions at midnight.') : now.map((x) => (x.k === 'review' ? tr('reviews {n}', { n: x.n >= x.of ? tr('done') : tr('to finish') }) : tr('{n} of {of} {n2}', { n: x.n, of: x.of, n2: x.k === 'games' ? tr('different games') : tr(x.k) }))).join(', ');
   return (
-    <Pressable onPress={() => router.navigate('/challenges' as never)} style={[s.card, { backgroundColor: t.panel, borderColor: t.panelLine }]} accessibilityRole="link" accessibilityLabel="Open daily missions">
+    <Pressable onPress={() => router.navigate('/challenges' as never)} style={[s.card, { backgroundColor: t.panel, borderColor: t.panelLine }]} accessibilityRole="link" accessibilityLabel={tr('Open daily missions')}>
       <View style={s.top}>
         <View style={s.kRow}>
-          <Text style={[s.k, { color: t.kick }]}>DAILY MISSIONS</Text>
-          {dot ? <View style={[s.dot, { backgroundColor: t.red }]} accessibilityLabel="Not done yet" /> : null}
+          <Text style={[s.k, { color: t.kick }]}>{tr('DAILY MISSIONS')}</Text>
+          {dot ? <View style={[s.dot, { backgroundColor: t.red }]} accessibilityLabel={tr('Not done yet')} /> : null}
         </View>
-        <Text style={[s.k, { color: step > 3 ? t.accent : t.mute }]}>{step > 3 ? 'ALL DONE' : `${step - 1} OF 3 DONE`}</Text>
+        <Text style={[s.k, { color: step > 3 ? t.accent : t.mute }]}>{step > 3 ? tr('ALL DONE') : tr('{n} OF 3 DONE', { n: step - 1 })}</Text>
       </View>
-      <Text style={[s.h, { color: t.white }]}>{step > 3 ? 'Daily missions' : names[step - 1]}</Text>
-      <Text style={[s.p, { color: t.mute }]}>{c ? line : 'Play different games to earn tokens every day'}</Text>
+      <Text style={[s.h, { color: t.white }]}>{step > 3 ? tr('Daily missions') : names[step - 1]}</Text>
+      <Text style={[s.p, { color: t.mute }]}>{c ? line : tr('Play different games to earn tokens every day')}</Text>
     </Pressable>
   );
 }

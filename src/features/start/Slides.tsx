@@ -11,6 +11,7 @@ import { F } from '@/theme/tokens';
 import { BAKED, BAKED_ART } from './baked';
 import { cssAngle } from './ease';
 import { NAVY, Sky, Stars } from './Sky';
+import { tr, isAr } from '@/i18n';
 
 // Onboarding is always dark (Nebula). Colours from the prototype (ob.html).
 const FG = '#eef0ff';
@@ -82,7 +83,7 @@ function Scene({ si, w, h, padTop, padBottom }: { si: number; w: number; h: numb
     // a full-height gradient stretched to the screen.
     return (
       <View pointerEvents="none" style={StyleSheet.absoluteFill}>
-        <Image source={d.fade === 'top' ? BAKED.communityFade : d.src} style={{ position: 'absolute', left: x, top: y, width: iw, height: ih }} contentFit="fill" transition={0} accessibilityIgnoresInvertColors />
+        <Image source={d.fade === 'top' ? BAKED.communityFade : d.src} style={{ position: 'absolute', start: x, top: y, width: iw, height: ih }} contentFit="fill" transition={0} accessibilityIgnoresInvertColors />
         <Image source={BAKED.veils[si]} style={StyleSheet.absoluteFill} contentFit="fill" transition={0} accessibilityIgnoresInvertColors />
       </View>
     );
@@ -193,16 +194,16 @@ function Cta({ live, onPress }: { live: boolean; onPress: () => void }) {
           : { borderColor: 'rgba(255,255,255,0.14)', backgroundColor: 'rgba(7,10,28,0.55)' },
       ]}>
       {live ? <LinearGradient colors={['#a48bff', '#6fd6ff']} start={LIVE.start} end={LIVE.end} style={[StyleSheet.absoluteFill, { borderRadius: z(18) }]} /> : null}
-      <Text style={[st.ctaTxt, { color: live ? '#0b0b26' : 'rgba(238,240,255,0.35)' }]}>Get Started</Text>
-      <Text style={[st.arr, { color: live ? '#0b0b26' : 'rgba(238,240,255,0.35)' }]}>→</Text>
+      <Text style={[st.ctaTxt, { color: live ? '#0b0b26' : 'rgba(238,240,255,0.35)' }]}>{tr('Get Started')}</Text>
+      <Text style={[st.arr, { color: live ? '#0b0b26' : 'rgba(238,240,255,0.35)' }]}>{isAr ? '←' : '→'}</Text>
     </Pressable>
   );
 }
 
 function Skip({ onPress }: { onPress: () => void }) {
   return (
-    <Pressable onPress={onPress} hitSlop={z(12)} accessibilityRole="button" accessibilityLabel="Skip">
-      <Text style={st.barTxt}>Skip</Text>
+    <Pressable onPress={onPress} hitSlop={z(12)} accessibilityRole="button" accessibilityLabel={tr('Skip')}>
+      <Text style={st.barTxt}>{tr('Skip')}</Text>
     </Pressable>
   );
 }
@@ -210,7 +211,7 @@ function Skip({ onPress }: { onPress: () => void }) {
 /** Glass band behind the centred copy of slide 3 (copy::before, radial closest-side). */
 function Band() {
   return (
-    <Svg width={z(326)} height={z(261)} style={{ position: 'absolute', left: z(-40), top: z(-50) }} pointerEvents="none">
+    <Svg width={z(326)} height={z(261)} style={{ position: 'absolute', start: z(-40), top: z(-50) }} pointerEvents="none">
       <Defs>
         <RadialGradient id="obBand" cx="50%" cy="50%" rx="50%" ry="50%">
           <Stop offset={0} stopColor={NAVY} stopOpacity={0.82} />
@@ -256,18 +257,18 @@ export function SlideGames(p: SlideProps) {
   return (
     <Frame {...p}>
       <View style={st.bar}>
-        <Text style={[st.barTxt, { color: CYAN }]}>01 / Ten games</Text>
+        <Text style={[st.barTxt, { color: CYAN }]}>{tr('01 / Ten games')}</Text>
         <Skip onPress={p.onSkip} />
       </View>
       <View style={st.copy}>
         <View>
-          <Text style={{ fontFamily: F.display, fontSize: z(76), lineHeight: z(60.8), letterSpacing: z(-2.28), color: FG }}>Play</Text>
+          <Text style={{ fontFamily: F.display, fontSize: z(76), lineHeight: z(60.8), letterSpacing: z(-2.28), color: FG }}>{tr('Play')}</Text>
           <Text
             style={{ fontFamily: F.displayItalic, fontSize: z(34), lineHeight: z(34), letterSpacing: z(-2.28), color: ACCENT, textAlign: 'center', marginTop: z(10) }}>
-            the case
+            {tr('the case')}
           </Text>
         </View>
-        <Text style={[st.p, { maxWidth: z(208) }]}>Hunt the diagnosis like a detective, solo or against smart rivals.</Text>
+        <Text style={[st.p, { maxWidth: z(208) }]}>{tr('Hunt the diagnosis like a detective, solo or against smart rivals.')}</Text>
       </View>
       <View style={{ flex: 1 }} />
       <Dots on={0} />
@@ -282,21 +283,21 @@ export function SlideLearn(p: SlideProps) {
     <Frame {...p}>
       <View style={st.bar}>
         <Skip onPress={p.onSkip} />
-        <Text style={[st.barTxt, { color: CYAN }]}>02 / Learning Space</Text>
+        <Text style={[st.barTxt, { color: CYAN }]}>{tr('02 / Learning Space')}</Text>
       </View>
       <View style={{ flex: 1 }} />
       <View style={st.copy}>
         <View>
           <View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
-            <Text style={{ fontFamily: F.display, fontSize: z(44), lineHeight: z(38.72), letterSpacing: z(-1.32), color: FG }}>{'Every '}</Text>
+            <Text style={{ fontFamily: F.display, fontSize: z(44), lineHeight: z(38.72), letterSpacing: z(-1.32), color: FG }}>{tr('Every ')}</Text>
             <View>
-              <Text style={{ fontFamily: F.displayItalic, fontSize: z(44), lineHeight: z(38.72), letterSpacing: z(-1.32), color: ROSE }}>miss</Text>
+              <Text style={{ fontFamily: F.displayItalic, fontSize: z(44), lineHeight: z(38.72), letterSpacing: z(-1.32), color: ROSE }}>{tr('miss')}</Text>
               <View
                 pointerEvents="none"
                 style={{
                   position: 'absolute',
-                  left: z(-3),
-                  right: z(-3),
+                  start: z(-3),
+                  end: z(-3),
                   top: z(21.16),
                   height: z(2),
                   backgroundColor: ROSE,
@@ -306,9 +307,9 @@ export function SlideLearn(p: SlideProps) {
               />
             </View>
           </View>
-          <Text style={{ fontFamily: F.displayItalic, fontSize: z(54), lineHeight: z(47.52), letterSpacing: z(-1.32), color: ACCENT }}>{'becomes\na star'}</Text>
+          <Text style={{ fontFamily: F.displayItalic, fontSize: z(54), lineHeight: z(47.52), letterSpacing: z(-1.32), color: ACCENT }}>{tr('becomes\na star')}</Text>
         </View>
-        <Text style={[st.p, { maxWidth: z(208) }]}>Every disease or term you get wrong lands in your dossier, ready to review.</Text>
+        <Text style={[st.p, { maxWidth: z(208) }]}>{tr('Every disease or term you get wrong lands in your dossier, ready to review.')}</Text>
       </View>
       <Dots on={1} />
       <Cta live={false} onPress={p.onNext} />
@@ -322,12 +323,12 @@ export function SlideCommunity(p: SlideProps) {
     <Frame {...p}>
       <View style={[st.copy, { marginTop: z(28), alignItems: 'center' }]}>
         <Band />
-        <Text style={{ fontFamily: F.mono, fontSize: z(9), lineHeight: z(12), letterSpacing: z(2.7), color: CYAN }}>NOVA COMMUNITY</Text>
+        <Text style={{ fontFamily: F.mono, fontSize: z(9), lineHeight: z(12), letterSpacing: z(2.7), color: CYAN }}>{tr('NOVA COMMUNITY')}</Text>
         <Text style={{ fontFamily: F.display, fontSize: z(40), lineHeight: z(36), letterSpacing: z(-1.2), color: FG, textAlign: 'center' }}>
-          {'Never the\nonly one\n'}
-          <Text style={{ fontFamily: F.displayItalic, color: ACCENT }}>on call</Text>
+          {tr('Never the\nonly one\n')}
+          <Text style={{ fontFamily: F.displayItalic, color: ACCENT }}>{tr('on call')}</Text>
         </Text>
-        <Text style={[st.p, { maxWidth: z(194), textAlign: 'center' }]}>Share cases, challenge friends and read the MedNova newspaper.</Text>
+        <Text style={[st.p, { maxWidth: z(194), textAlign: 'center' }]}>{tr('Share cases, challenge friends and read the MedNova newspaper.')}</Text>
       </View>
       <View style={{ flex: 1 }} />
       <View style={{ alignItems: 'center' }}>

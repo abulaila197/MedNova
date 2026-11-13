@@ -1,6 +1,7 @@
 import { useId } from 'react';
 import Svg, { Circle, ClipPath, Defs, FeGaussianBlur, Filter, G, LinearGradient, Path, RadialGradient, Stop } from 'react-native-svg';
 import { useSvgId } from './svgId';
+import { tr } from '@/i18n';
 
 export const STAR = 'M512 138 L619 405 L865 503 L865 520 L619 620 L512 885 L405 620 L160 520 L160 503 L405 405Z';
 export const ECG =
@@ -74,7 +75,7 @@ export function TokenCoin({ size, progress, track }: { size: number; progress: n
       </Defs>
       <Circle cx={12} cy={12} r={10.6} fill="none" stroke={track} strokeWidth={1.3} />
       {p > 0 ? (
-        <Circle cx={12} cy={12} r={10.6} fill="none" stroke={c[3]} strokeWidth={1.3} strokeLinecap="round" strokeDasharray={`${C * p} ${C}`} transform="rotate(-90 12 12)" />
+        <Circle cx={12} cy={12} r={10.6} fill="none" stroke={c[3]} strokeWidth={1.3} strokeLinecap="round" strokeDasharray={`${C * p} ${C}`} transform={tr('rotate(-90 12 12)')} />
       ) : null}
       <Path d={`${disc} ${starAt(12, 12, 5.6)}`} fill={`url(#g${k})`} fillRule="evenodd" />
       <Path d="M6.6 8.4a7 7 0 0 1 8.6-3.5" fill="none" stroke="#fff" strokeOpacity={0.55} strokeWidth={0.6} />

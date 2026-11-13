@@ -20,13 +20,14 @@ import { F, type Theme } from '@/theme/tokens';
 import { ChangeName } from './ChangeName';
 import { CharacterPicker } from './CharacterPicker';
 import { loadHunt, useHunt } from '@/features/cards/hunt';
-
-const EMPTY: string[] = [];
 import { useProfileStats } from './stats';
 import { titleName } from '@/features/style/catalog';
 import { Framed } from '@/features/style/Frame';
 import { titleColor } from '@/features/style/PlayerTitle';
 import { loadStyle, useStyle } from '@/features/style/useStyle';
+import { tr } from '@/i18n';
+
+const EMPTY: string[] = [];
 
 
 // Page colours from the locked preview (d-/l-profile).
@@ -79,7 +80,7 @@ export function Profile() {
     wearing.current = false;
     if (r.ok) return setPick(false);
     // Say why instead of leaving the sheet open with no answer (AP12f).
-    setWearErr(r.why === 'not owned' ? 'That character isn’t yours yet.' : 'Could not reach MedNova. Check your connection and try again.');
+    setWearErr(r.why === 'not owned' ? tr('That character isn’t yours yet.') : tr('Could not reach MedNova. Check your connection and try again.'));
   };
   const pct = (a: number | null | undefined) => (a == null ? '–' : `${Math.round(a * 100)}%`);
   return (
@@ -94,19 +95,19 @@ export function Profile() {
           <View style={s.nm}>
             {/* Long names shrink to fit one line instead of wrapping onto the title lines (LV8). Sized from the name's
                 length: Android's adjustsFontSizeToFit shrank short names to a few pixels (2026-10-21). */}
-            <Display em={profile?.display_name ?? 'Guest'} italic numberOfLines={1} style={[s.h2, nameSize(`Dr. ${profile?.display_name ?? 'Guest'}`), { color: t.fg, flexShrink: 1 }]}>
-              {'Dr. '}
+            <Display em={profile?.display_name ?? tr('Guest')} italic numberOfLines={1} style={[s.h2, nameSize(`Dr. ${profile?.display_name ?? 'Guest'}`), { color: t.fg, flexShrink: 1 }]}>
+              {tr('Dr. ')}
             </Display>
             {/* LV3: your level beside your name, the ring filling toward the next level. */}
             <LevelBadge level={lv.level} progress={lv.into / lv.need} size={u(21)} />
           </View>
           <Text style={[s.title, { color: titleColor(t.mode, look.title, t.accent) }]}>{titleName(look.title)}</Text>
-          <Text style={[s.role, { color: t.mute }]}>{profile ? `@${profile.username.toUpperCase()}` : 'SIGN IN TO SAVE YOUR PROGRESS'}</Text>
+          <Text style={[s.role, { color: t.mute }]}>{profile ? `@${profile.username.toUpperCase()}` : tr('SIGN IN TO SAVE YOUR PROGRESS')}</Text>
           <View style={s.style}>
             {/* List #2: Change name first. */}
             {profile ? (
               <Pressable onPress={() => setRename(true)} style={[s.stBtn, { backgroundColor: t.chip, borderColor: CYAN }]} accessibilityRole="button">
-                <Text style={[s.stT, { color: t.fg }]}>Change name</Text>
+                <Text style={[s.stT, { color: t.fg }]}>{tr('Change name')}</Text>
               </Pressable>
             ) : null}
             <Pressable
@@ -115,9 +116,9 @@ export function Profile() {
                 setPick(true);
               }}
               style={[s.stBtn, { backgroundColor: t.chip, borderColor: CYAN }]} accessibilityRole="button">
-              <Text style={[s.stT, { color: t.fg }]}>Change character</Text>
+              <Text style={[s.stT, { color: t.fg }]}>{tr('Change character')}</Text>
             </Pressable>
-            {[['Change frame', 'frames'], ['Change title', 'titles']].map(([l, tab]) => (
+            {[[tr('Change frame'), 'frames'], [tr('Change title'), 'titles']].map(([l, tab]) => (
               <Pressable key={l} onPress={() => router.navigate(`/style?tab=${tab}` as never)} style={[s.stBtn, { backgroundColor: t.chip, borderColor: CYAN }]} accessibilityRole="button">
                 <Text style={[s.stT, { color: t.fg }]}>{l}</Text>
               </Pressable>
@@ -126,9 +127,9 @@ export function Profile() {
         </View>
         <View style={[s.nums, line]}>
           {[
-            [String(st?.finished ?? 0), 'SOLVED'],
-            [pct(st?.acc), 'ACCURACY'],
-            [String(st?.bestDays ?? 0), 'BEST STREAK'],
+            [String(st?.finished ?? 0), tr('SOLVED')],
+            [pct(st?.acc), tr('ACCURACY')],
+            [String(st?.bestDays ?? 0), tr('BEST STREAK')],
           ].map(([n, l]) => (
             <View key={l} style={s.num}>
               <Text style={[s.numB, { color: t.fg }]}>{n}</Text>
@@ -136,8 +137,8 @@ export function Profile() {
             </View>
           ))}
         </View>
-        <Text style={[s.sh2, { color: t.kick }]}>BY GAME</Text>
-        {st && !st.games.length ? <Text style={[s.none, { color: t.mute }]}>Play a game and your progress shows up here.</Text> : null}
+        <Text style={[s.sh2, { color: t.kick }]}>{tr('BY GAME')}</Text>
+        {st && !st.games.length ? <Text style={[s.none, { color: t.mute }]}>{tr('Play a game and your progress shows up here.')}</Text> : null}
         {st?.games.map((g) => (
           <View key={g.key} style={s.td}>
             <View style={s.tdTop}>
@@ -178,7 +179,7 @@ function Blocked({ t }: { t: Theme }) {
   }, []);
   return (
     <>
-      <Text style={[s.sh2, { color: t.kick }]}>BLOCKED PLAYERS</Text>
+      <Text style={[s.sh2, { color: t.kick }]}>{tr('BLOCKED PLAYERS')}</Text>
       <View style={[s.blk, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
         {blocked.length ? (
           blocked.map((b) => (
@@ -194,13 +195,13 @@ function Blocked({ t }: { t: Theme }) {
                 }}
                 style={[s.ch, s.ghost, { borderColor: t.panelLine }]}
                 accessibilityRole="button"
-                accessibilityLabel={`Unblock ${b.display_name}`}>
-                <Text style={[s.ghT, { color: t.mute }]}>Unblock</Text>
+                accessibilityLabel={tr('Unblock {display_name}', { display_name: b.display_name })}>
+                <Text style={[s.ghT, { color: t.mute }]}>{tr('Unblock')}</Text>
               </Pressable>
             </View>
           ))
         ) : (
-          <Text style={[s.none, { color: t.mute, paddingVertical: 0 }]}>You haven’t blocked anyone.</Text>
+          <Text style={[s.none, { color: t.mute, paddingVertical: 0 }]}>{tr('You haven’t blocked anyone.')}</Text>
         )}
       </View>
     </>
@@ -218,7 +219,7 @@ function DeleteAccount({ t }: { t: Theme }) {
     try {
       await deleteAccount();
     } catch {
-      setErr('Could not delete right now. Check your connection and try again.');
+      setErr(tr('Could not delete right now. Check your connection and try again.'));
       setBusy(false);
     }
   };
@@ -226,20 +227,20 @@ function DeleteAccount({ t }: { t: Theme }) {
     <View style={s.del}>
       {ask ? (
         <>
-          <Text style={[s.delQ, { color: t.fg }]}>Delete your account? Your EXP, tokens, misses and cards on the server are removed for good.</Text>
+          <Text style={[s.delQ, { color: t.fg }]}>{tr('Delete your account? Your EXP, tokens, misses and cards on the server are removed for good.')}</Text>
           <View style={s.delRow}>
             <Pressable onPress={() => setAsk(false)} style={[s.ch, s.ghost, { borderColor: t.panelLine }]} accessibilityRole="button">
-              <Text style={[s.ghT, { color: t.mute }]}>Keep it</Text>
+              <Text style={[s.ghT, { color: t.mute }]}>{tr('Keep it')}</Text>
             </Pressable>
             <Pressable onPress={go} disabled={busy} style={[s.ch, s.ghost, { borderColor: t.red }]} accessibilityRole="button">
-              <Text style={[s.ghT, { color: t.red }]}>{busy ? 'Deleting…' : 'Delete'}</Text>
+              <Text style={[s.ghT, { color: t.red }]}>{busy ? tr('Deleting…') : tr('Delete')}</Text>
             </Pressable>
           </View>
           {err ? <Text style={[s.delQ, { color: t.error }]}>{err}</Text> : null}
         </>
       ) : (
         <Pressable onPress={() => setAsk(true)} hitSlop={u(10)} accessibilityRole="button">
-          <Text style={[s.delL, { color: t.mute }]}>Delete my account</Text>
+          <Text style={[s.delL, { color: t.mute }]}>{tr('Delete my account')}</Text>
         </Pressable>
       )}
     </View>
@@ -280,7 +281,7 @@ const s = StyleSheet.create({
   bar: { height: u(9), borderRadius: 999, borderWidth: 1, overflow: 'hidden' },
   barF: { height: '100%', borderRadius: 999 },
   none: { fontFamily: F.body, fontSize: u(11), lineHeight: u(15), paddingVertical: u(7) },
-  tdN: { textAlign: 'right', fontFamily: F.display, fontSize: u(14), lineHeight: u(18), paddingRight: u(2) },
+  tdN: { textAlign: 'right', fontFamily: F.display, fontSize: u(14), lineHeight: u(18), paddingEnd: u(2) },
   ch: { height: u(23), paddingHorizontal: u(10), borderRadius: u(10), justifyContent: 'center' },
   ghost: { height: u(25), borderWidth: 1 },
   ghT: { fontFamily: F.bodySemi, fontSize: u(9.5) },

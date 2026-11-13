@@ -9,6 +9,7 @@ import { call } from '@/lib/rpc';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 import { deviceId } from '@/lib/device';
+import { tr } from '@/i18n';
 
 /** Contact, locked "C1 I want to ___": one sentence instead of a form. Tap the blank to cycle, or pick a chip. */
 export default function Page() {
@@ -21,26 +22,26 @@ export default function Page() {
   // Saved to Supabase and listed on the Admin page (Yazan 2026-10-11: Supabase only, no email app).
   const send = async () => {
     if (busy) return;
-    if (msg.trim().length < 2) return setSaid({ ok: false, text: 'Write your message first.' });
+    if (msg.trim().length < 2) return setSaid({ ok: false, text: tr('Write your message first.') });
     setBusy(true);
     try {
       await call('submit_contact', { kind: it.key, body: msg, device: await deviceId() });
       setMsg('');
-      setSaid({ ok: true, text: 'Sent! Thanks, we read every message.' });
+      setSaid({ ok: true, text: tr('Sent! Thanks, we read every message.') });
     } catch (e) {
       // The server caps messages per day (guests: 3 per device); say so instead of blaming the connection.
       const limit = String((e as { message?: string })?.message ?? '').includes('too many');
-      setSaid({ ok: false, text: limit ? 'That’s the limit for today. Try again tomorrow.' : 'Couldn’t send that. Check your connection and try again.' });
+      setSaid({ ok: false, text: limit ? tr('That’s the limit for today. Try again tomorrow.') : tr('Couldn’t send that. Check your connection and try again.') });
     }
     setBusy(false);
   };
   return (
     <Screen tab={null} glow={21} wide={460} symbols>
       <InfoScroll>
-        <Kicker>Contact</Kicker>
-        <Text style={[s.H, { color: c.fg }]}>I want to</Text>
-        <Pressable onPress={() => setPick((pick + 1) % INTENTS.length)} accessibilityRole="button" accessibilityLabel={`I want to ${it.key}`} style={[s.blank, { borderColor: c.t.accent }]}>
-          <Text style={[s.H, s.blankT, { color: c.t.accent }]}>{it.key}</Text>
+        <Kicker>{tr('Contact')}</Kicker>
+        <Text style={[s.H, { color: c.fg }]}>{tr('I want to')}</Text>
+        <Pressable onPress={() => setPick((pick + 1) % INTENTS.length)} accessibilityRole="button" accessibilityLabel={tr('I want to {key}', { key: tr(it.key) })} style={[s.blank, { borderColor: c.t.accent }]}>
+          <Text style={[s.H, s.blankT, { color: c.t.accent }]}>{tr(it.key)}</Text>
         </Pressable>
         <View style={s.opts}>
           {INTENTS.map((o, i) => {
@@ -53,7 +54,7 @@ export default function Page() {
                 accessibilityState={{ selected: on }}
                 style={[s.opt, on ? { borderColor: c.chipOnLine, backgroundColor: c.chipOnFill } : { borderColor: c.line }]}
               >
-                <Text style={[s.optT, { color: on ? c.fg : c.mute }]}>{o.key}</Text>
+                <Text style={[s.optT, { color: on ? c.fg : c.mute }]}>{tr(o.key)}</Text>
               </Pressable>
             );
           })}
@@ -61,15 +62,15 @@ export default function Page() {
         <TextInput
           value={msg}
           onChangeText={setMsg}
-          placeholder={it.hint}
+          placeholder={tr(it.hint)}
           placeholderTextColor={c.mute}
           multiline
           textAlignVertical="top"
           style={[s.ta, { backgroundColor: c.surf, borderColor: c.line, color: c.fg }]}
         />
         {said ? <Text style={[s.said, { color: said.ok ? c.t.accent : c.t.error }]}>{said.text}</Text> : null}
-        <GradBtn label={busy ? 'Sending...' : 'Send'} onPress={send} style={s.send} />
-        <Text style={[s.mail, { color: c.mute }]} selectable>{`Or write to ${CONTACT_EMAIL}`}</Text>
+        <GradBtn label={busy ? tr('Sending...') : tr('Send')} onPress={send} style={s.send} />
+        <Text style={[s.mail, { color: c.mute }]} selectable>{tr('Or write to {CONTACT_EMAIL}', { CONTACT_EMAIL })}</Text>
       </InfoScroll>
     </Screen>
   );

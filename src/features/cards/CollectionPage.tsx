@@ -25,6 +25,7 @@ import { F } from '@/theme/tokens';
 import { DECK, HUNT_PRIZE, type HuntCard } from './deck';
 import { loadHunt, redeemHuntPrize, useHunt } from './hunt';
 import { CardBack, RATIO, Sleeve } from './Sleeve';
+import { tr } from '@/i18n';
 
 /** My card collection: every card in a glass saver; found ones open (front, then flip for the clue), locked ones are dimmed. */
 export function CollectionPage() {
@@ -48,7 +49,7 @@ export function CollectionPage() {
     useCallback(() => {
       void loadStyle();
       // Offline with a saved copy, the cards stay open with the offline line instead of an error (#59).
-      loadHunt().catch(() => !useHunt.getState().status && setErr('Could not load your cards. Check your connection.'));
+      loadHunt().catch(() => !useHunt.getState().status && setErr(tr('Could not load your cards. Check your connection.')));
       // eslint-disable-next-line react-hooks/exhaustive-deps -- signedIn only re-runs the load when the account changes while the page is open
     }, [signedIn]),
   );
@@ -59,9 +60,9 @@ export function CollectionPage() {
     try {
       const r = await redeemHuntPrize();
       if (r.ok) setWon(true);
-      else if (r.why !== 'done') setErr('Not redeemed yet. Try again in a moment.');
+      else if (r.why !== 'done') setErr(tr('Not redeemed yet. Try again in a moment.'));
     } catch {
-      setErr('Not redeemed. Check your connection and try again.');
+      setErr(tr('Not redeemed. Check your connection and try again.'));
     }
     setBusy(false);
   };
@@ -70,35 +71,35 @@ export function CollectionPage() {
     <Screen tab={null} glow={13} wide={500}>
       <InfoScroll>
         <View>
-          <Kicker>Treasure hunt</Kicker>
+          <Kicker>{tr('Treasure hunt')}</Kicker>
           <Text style={[ui.H, { color: c.fg, fontFamily: F.display }]}>
-            {'My card '}
-            <Text style={[ui.H, { color: t.accent, fontFamily: F.displayItalic }]}>collection</Text>
+            {tr('My card ')}
+            <Text style={[ui.H, { color: t.accent, fontFamily: F.displayItalic }]}>{tr('collection')}</Text>
           </Text>
           <OfflineLine at={savedAt} />
           <View style={s.count}>
-            <Text style={[s.countT, { color: c.fg }]}>{`${found.length} of 9 found`}</Text>
+            <Text style={[s.countT, { color: c.fg }]}>{tr('{n} of 9 found', { n: found.length })}</Text>
             <View style={s.pips}>
               {DECK.map((k) => (
                 <View key={k.key} style={[s.pip, { backgroundColor: found.includes(k.key) ? t.accent : c.line }]} />
               ))}
             </View>
           </View>
-          <Text style={[s.hint, { color: c.mute }]}>Tap a card to see it. Flip a card you found for its clue.</Text>
+          <Text style={[s.hint, { color: c.mute }]}>{tr('Tap a card to see it. Flip a card you found for its clue.')}</Text>
           {!signedIn ? (
             <Pressable onPress={() => router.navigate('/auth')} style={[s.note, { borderColor: c.line, backgroundColor: c.surf }]} accessibilityRole="button">
-              <Text style={[s.noteT, { color: c.fg }]}>Sign in to find your first card and start the hunt.</Text>
-              <Text style={[s.noteA, { color: t.accent }]}>Sign in</Text>
+              <Text style={[s.noteT, { color: c.fg }]}>{tr('Sign in to find your first card and start the hunt.')}</Text>
+              <Text style={[s.noteA, { color: t.accent }]}>{tr('Sign in')}</Text>
             </Pressable>
           ) : null}
           {canRedeem ? (
             <Pressable onPress={redeem} accessibilityRole="button" style={[{ marginTop: u(12) }, busy && { opacity: 0.6 }]}>
               <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.prize}>
-                <Text style={[s.prizeT, { color: t.onGrad }]}>{`All nine found. Redeem ${HUNT_PRIZE} tokens`}</Text>
+                <Text style={[s.prizeT, { color: t.onGrad }]}>{tr('All nine found. Redeem {HUNT_PRIZE} tokens', { HUNT_PRIZE })}</Text>
               </LinearGradient>
             </Pressable>
           ) : status?.prize ? (
-            <Text style={[s.hint, { color: t.accent, marginTop: u(8) }]}>{`Hunt complete. ${HUNT_PRIZE} tokens collected.`}</Text>
+            <Text style={[s.hint, { color: t.accent, marginTop: u(8) }]}>{tr('Hunt complete. {HUNT_PRIZE} tokens collected.', { HUNT_PRIZE })}</Text>
           ) : null}
           {err ? <Text style={[s.hint, { color: t.error, marginTop: u(8) }]}>{err}</Text> : null}
         </View>
@@ -112,7 +113,7 @@ export function CollectionPage() {
       <MechViewer i={mech} locked={mech !== null && !mechs.includes(MECHS[mech]?.key ?? '')} onClose={() => setMech(null)} />
       <CardViewer card={robotOf(robot ?? undefined)} locked={!!robot && !robots.includes(robot)} onClose={() => setRobot(null)} />
       <Viewer t={t} i={open} locked={open !== null && !found.includes(DECK[open]?.key ?? '')} onClose={() => setOpen(null)} />
-      <Congrats open={won} tokens={HUNT_PRIZE} title="The hunt is complete" line="Nine cards, nine missions, one weary medic. Your tokens are in your wallet." onClose={() => setWon(false)} />
+      <Congrats open={won} tokens={HUNT_PRIZE} title={tr('The hunt is complete')} line={tr('Nine cards, nine missions, one weary medic. Your tokens are in your wallet.')} onClose={() => setWon(false)} />
     </Screen>
   );
 }
@@ -134,7 +135,7 @@ function Binder({ t, found, onOpen }: { t: Theme; found: string[]; onOpen: (i: n
       {DECK.map((k, i) => {
         const has = found.includes(k.key);
         return (
-          <Pressable key={k.key} onPress={() => onOpen(i)} style={{ width: w, alignItems: 'center' }} accessibilityRole="button" accessibilityLabel={has ? `Open ${k.name}` : 'Locked card, see the front'}>
+          <Pressable key={k.key} onPress={() => onOpen(i)} style={{ width: w, alignItems: 'center' }} accessibilityRole="button" accessibilityLabel={has ? tr('Open {name}', { name: k.name }) : tr('Locked card, see the front')}>
             <Sleeve t={t} card={k} w={w} locked={!has} />
             <Text style={[s.bName, { color: has ? t.fg : t.mute }]}>{has ? k.name : '★'.repeat(k.stars)}</Text>
           </Pressable>
@@ -150,25 +151,25 @@ function Mechs({ t, owned, onOpen }: { t: Theme; owned: string[]; onOpen: (i: nu
   const n = MECHS.filter((m) => owned.includes(m.key)).length;
   return (
     <View style={{ marginTop: u(22) }}>
-      <Kicker>Daily chests</Kicker>
+      <Kicker>{tr('Daily chests')}</Kicker>
       <Text style={[ui.H, { color: t.fg, fontFamily: F.display }]}>
-        {'Nova '}
-        <Text style={[ui.H, { color: t.accent, fontFamily: F.displayItalic }]}>Mechs</Text>
+        {tr('Nova ')}
+        <Text style={[ui.H, { color: t.accent, fontFamily: F.displayItalic }]}>{tr('Mechs')}</Text>
       </Text>
       <View style={s.count}>
-        <Text style={[s.countT, { color: t.fg }]}>{`${n} of ${MECHS.length} won`}</Text>
+        <Text style={[s.countT, { color: t.fg }]}>{tr('{n} of {n2} won', { n, n2: MECHS.length })}</Text>
         <View style={s.pips}>
           {MECHS.map((m) => (
             <View key={m.key} style={[s.pip, { backgroundColor: owned.includes(m.key) ? t.accent : t.panelLine }]} />
           ))}
         </View>
       </View>
-      <Text style={[s.hint, { color: t.mute }]}>{n === MECHS.length ? `All eight won. ${MECHS_PRIZE} tokens collected.` : `Robots drop from daily chests. Win all eight for ${MECHS_PRIZE} tokens.`}</Text>
+      <Text style={[s.hint, { color: t.mute }]}>{n === MECHS.length ? tr('All eight won. {MECHS_PRIZE} tokens collected.', { MECHS_PRIZE }) : tr('Robots drop from daily chests. Win all eight for {MECHS_PRIZE} tokens.', { MECHS_PRIZE })}</Text>
       <View style={[s.binder, { backgroundColor: 'rgba(255,255,255,0.03)', borderColor: t.panelLine }]}>
         {MECHS.map((m, i) => {
           const has = owned.includes(m.key);
           return (
-            <Pressable key={m.key} onPress={() => onOpen(i)} style={{ width: w, alignItems: 'center' }} accessibilityRole="button" accessibilityLabel={has ? `Open ${m.name}` : 'Locked robot, see the front'}>
+            <Pressable key={m.key} onPress={() => onOpen(i)} style={{ width: w, alignItems: 'center' }} accessibilityRole="button" accessibilityLabel={has ? tr('Open {name}', { name: m.name }) : tr('Locked robot, see the front')}>
               <View style={[s.mSleeve, { width: w, borderRadius: w * 0.07 }]}>
                 <Image source={m.card} style={[{ width: w - 6, height: (w - 6) * MECH_RATIO, borderRadius: w * 0.05 }, !has && { opacity: 0.12 }]} contentFit="cover" />
                 {!has ? (
@@ -198,25 +199,25 @@ function RobotPack({ t, owned, group, onOpen }: { t: Theme; owned: string[]; gro
   const n = list.filter((r) => owned.includes(r.key)).length;
   return (
     <View style={{ marginTop: u(22) }}>
-      <Kicker>{group === 'shop' ? 'Style shop' : 'Rare finds'}</Kicker>
+      <Kicker>{group === 'shop' ? tr('Style shop') : tr('Rare finds')}</Kicker>
       <Text style={[ui.H, { color: t.fg, fontFamily: F.display }]}>
-        {group === 'shop' ? 'Shop ' : 'Special '}
-        <Text style={[ui.H, { color: t.accent, fontFamily: F.displayItalic }]}>pack</Text>
+        {group === 'shop' ? tr('Shop ') : tr('Special ')}
+        <Text style={[ui.H, { color: t.accent, fontFamily: F.displayItalic }]}>{tr(group === 'shop' ? 'pack|shop' : 'pack|special')}</Text>
       </Text>
       <View style={s.count}>
-        <Text style={[s.countT, { color: t.fg }]}>{`${n} of ${list.length} owned`}</Text>
+        <Text style={[s.countT, { color: t.fg }]}>{tr('{n} of {n2} owned', { n, n2: list.length })}</Text>
         <View style={s.pips}>
           {list.map((r) => (
             <View key={r.key} style={[s.pip, { backgroundColor: owned.includes(r.key) ? t.accent : t.panelLine }]} />
           ))}
         </View>
       </View>
-      <Text style={[s.hint, { color: t.mute }]}>{group === 'shop' ? 'Bought with tokens in the Style shop.' : 'Never sold for tokens: earned, in a package, or one of a kind.'}</Text>
+      <Text style={[s.hint, { color: t.mute }]}>{group === 'shop' ? tr('Bought with tokens in the Style shop.') : tr('Never sold for tokens: earned, in a package, or one of a kind.')}</Text>
       <View style={[s.binder, { backgroundColor: 'rgba(255,255,255,0.03)', borderColor: t.panelLine }]}>
         {list.map((r) => {
           const has = owned.includes(r.key);
           return (
-            <Pressable key={r.key} onPress={() => onOpen(r.key)} style={{ width: w, alignItems: 'center' }} accessibilityRole="button" accessibilityLabel={has ? `Open ${r.name}` : 'Locked character, see the front'}>
+            <Pressable key={r.key} onPress={() => onOpen(r.key)} style={{ width: w, alignItems: 'center' }} accessibilityRole="button" accessibilityLabel={has ? tr('Open {name}', { name: r.name }) : tr('Locked character, see the front')}>
               <View style={[s.mSleeve, { width: w, borderRadius: w * 0.07 }]}>
                 <Image source={r.card} style={[{ width: w - 6, height: (w - 6) * MECH_RATIO, borderRadius: w * 0.05 }, !has && { opacity: 0.12 }]} contentFit="cover" />
                 {!has ? (
@@ -243,13 +244,13 @@ function TeamPack({ t, owned, onOpen }: { t: Theme; owned: string[]; onOpen: (ke
   const n = TEAM.filter((m) => owned.includes(m.key)).length;
   return (
     <View style={{ marginTop: u(22) }}>
-      <Kicker>Thank you</Kicker>
+      <Kicker>{tr('Thank you')}</Kicker>
       <Text style={[ui.H, { color: t.fg, fontFamily: F.display }]}>
-        {'SuperNova '}
-        <Text style={[ui.H, { color: t.accent, fontFamily: F.displayItalic }]}>team</Text>
+        {tr('SuperNova ')}
+        <Text style={[ui.H, { color: t.accent, fontFamily: F.displayItalic }]}>{tr('team')}</Text>
       </Text>
       <View style={s.count}>
-        <Text style={[s.countT, { color: t.fg }]}>{`${n} of ${TEAM.length} owned`}</Text>
+        <Text style={[s.countT, { color: t.fg }]}>{tr('{n} of {n2} owned', { n, n2: TEAM.length })}</Text>
         <View style={s.pips}>
           {TEAM.map((m) => (
             <View key={m.key} style={[s.pip, { backgroundColor: owned.includes(m.key) ? t.accent : t.panelLine }]} />
@@ -261,7 +262,7 @@ function TeamPack({ t, owned, onOpen }: { t: Theme; owned: string[]; onOpen: (ke
         {TEAM.map((m) => {
           const has = owned.includes(m.key);
           return (
-            <Pressable key={m.key} onPress={() => onOpen(m.key)} style={{ width: w, alignItems: 'center' }} accessibilityRole="button" accessibilityLabel={has ? `Open ${m.name}` : `${m.name}, locked, see the front`}>
+            <Pressable key={m.key} onPress={() => onOpen(m.key)} style={{ width: w, alignItems: 'center' }} accessibilityRole="button" accessibilityLabel={has ? tr('Open {name}', { name: m.name }) : tr('{name}, locked, see the front', { name: m.name })}>
               <View style={[s.mSleeve, { width: w, borderRadius: w * 0.07 }]}>
                 <Image source={m.card} style={[{ width: w - 6, height: (w - 6) * MECH_RATIO, borderRadius: w * 0.05 }, !has && { opacity: 0.12 }]} contentFit="cover" />
                 {!has ? (
@@ -304,15 +305,15 @@ function TeamViewer({ t, k, locked, onClose }: { t: Theme; k: string | null; loc
   };
   return (
     <Modal transparent visible animationType="fade" onRequestClose={close}>
-      <Pressable style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(3,4,12,0.86)' }]} onPress={close} accessibilityLabel="Close" />
+      <Pressable style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(3,4,12,0.86)' }]} onPress={close} accessibilityLabel={tr('Close')} />
       <View style={s.view} pointerEvents="box-none">
-        <Pressable onPress={flip} disabled={locked} accessibilityRole="button" accessibilityLabel={back ? 'Show the front' : 'Flip the card'}>
+        <Pressable onPress={flip} disabled={locked} accessibilityRole="button" accessibilityLabel={back ? tr('Show the front') : tr('Flip the card')}>
           <Animated.View style={anim}>
             <View style={[s.mSleeve, { width: w, borderRadius: w * 0.07 }]}>
               {back ? (
                 <LinearGradient colors={['#1b2a5c', '#0c1433']} style={[s.tBack, { width: w - 6, height: (w - 6) * MECH_RATIO, borderRadius: w * 0.05, borderColor: t.accent }]}>
                   <Image source={m.face} style={{ width: w * 0.42, height: w * 0.42 }} contentFit="contain" />
-                  <Text style={[s.tKick, { color: t.accent }]}>SUPERNOVA TEAM</Text>
+                  <Text style={[s.tKick, { color: t.accent }]}>{tr('SUPERNOVA TEAM')}</Text>
                   <Text style={s.tName}>{m.name}</Text>
                   <Text style={s.tLine}>{TEAM_THANKS}</Text>
                   <Text style={s.tStars}>{'★'.repeat(m.stars)}</Text>
@@ -323,9 +324,9 @@ function TeamViewer({ t, k, locked, onClose }: { t: Theme; k: string | null; loc
             </View>
           </Animated.View>
         </Pressable>
-        {locked ? <LockedTag t={t} line={`${TEAM_LOCKED_LINE}.`} /> : <Text style={[s.flipT, { color: 'rgba(240,242,255,0.75)' }]}>{back ? 'Tap to see the front' : 'Tap the card to flip it'}</Text>}
+        {locked ? <LockedTag t={t} line={`${TEAM_LOCKED_LINE}.`} /> : <Text style={[s.flipT, { color: 'rgba(240,242,255,0.75)' }]}>{back ? tr('Tap to see the front') : tr('Tap the card to flip it')}</Text>}
         <Pressable onPress={close} style={s.close} accessibilityRole="button">
-          <Text style={s.closeT}>Close</Text>
+          <Text style={s.closeT}>{tr('Close')}</Text>
         </Pressable>
       </View>
     </Modal>
@@ -340,7 +341,7 @@ function LockedTag({ t, line }: { t: Theme; line?: string }) {
   return (
     <View style={s.lockWrap}>
       <View style={[s.lockTag, { borderColor: t.accent }]}>
-        <Text style={[s.lockT, { color: t.accent }]}>LOCKED</Text>
+        <Text style={[s.lockT, { color: t.accent }]}>{tr('LOCKED')}</Text>
       </View>
       {line ? <Text style={[s.flipT, { color: 'rgba(240,242,255,0.75)', marginTop: u(6) }]}>{line}</Text> : null}
     </View>
@@ -359,7 +360,7 @@ export function CardViewer({ card: m, locked, onClose }: { card: { card: ImageSo
   const w = u(196);
   return (
     <Modal transparent visible animationType="fade" onRequestClose={onClose}>
-      <Pressable style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(3,4,12,0.86)' }]} onPress={onClose} accessibilityLabel="Close" />
+      <Pressable style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(3,4,12,0.86)' }]} onPress={onClose} accessibilityLabel={tr('Close')} />
       <View style={s.view} pointerEvents="box-none">
         <View style={[s.mSleeve, { width: w, borderRadius: w * 0.07 }]}>
           <Image source={m.card} style={{ width: w - 6, height: (w - 6) * MECH_RATIO, borderRadius: w * 0.05 }} contentFit="cover" />
@@ -367,7 +368,7 @@ export function CardViewer({ card: m, locked, onClose }: { card: { card: ImageSo
         <Text style={[s.flipT, { color: 'rgba(240,242,255,0.75)' }]}>{`${m.name}, ${m.title}`}</Text>
         {locked ? <LockedTag t={t} /> : null}
         <Pressable onPress={onClose} style={s.close} accessibilityRole="button">
-          <Text style={s.closeT}>Close</Text>
+          <Text style={s.closeT}>{tr('Close')}</Text>
         </Pressable>
       </View>
     </Modal>
@@ -395,14 +396,14 @@ function Viewer({ t, i, locked, onClose }: { t: Theme; i: number | null; locked?
   };
   return (
     <Modal transparent visible animationType="fade" onRequestClose={close}>
-      <Pressable style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(3,4,12,0.86)' }]} onPress={close} accessibilityLabel="Close" />
+      <Pressable style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(3,4,12,0.86)' }]} onPress={close} accessibilityLabel={tr('Close')} />
       <View style={s.view} pointerEvents="box-none">
-        <Pressable onPress={flip} disabled={locked} accessibilityRole="button" accessibilityLabel={back ? 'Show the front' : 'Flip for the clue'}>
+        <Pressable onPress={flip} disabled={locked} accessibilityRole="button" accessibilityLabel={back ? tr('Show the front') : tr('Flip for the clue')}>
           <Animated.View style={anim}>{back && !locked ? <BackInSleeve t={t} card={card} i={i} w={w} /> : <Sleeve t={t} card={card} w={w} locked={false} />}</Animated.View>
         </Pressable>
-        {locked ? <LockedTag t={t} /> : <Text style={[s.flipT, { color: 'rgba(240,242,255,0.75)' }]}>{back ? 'Tap to see the front' : 'Tap the card to flip it'}</Text>}
+        {locked ? <LockedTag t={t} /> : <Text style={[s.flipT, { color: 'rgba(240,242,255,0.75)' }]}>{back ? tr('Tap to see the front') : tr('Tap the card to flip it')}</Text>}
         <Pressable onPress={close} style={s.close} accessibilityRole="button">
-          <Text style={s.closeT}>Close</Text>
+          <Text style={s.closeT}>{tr('Close')}</Text>
         </Pressable>
       </View>
     </Modal>

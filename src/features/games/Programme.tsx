@@ -20,9 +20,10 @@ import { LISTED, useGamesFocus } from './focus';
 import { STRIP } from './strips';
 import { GameTagSheet } from './GameTag';
 import { GameInfoSheet, GameList } from './GameList';
+import { isAr, tr } from '@/i18n';
 
 
-const WORDS = ['No', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen'];
+const WORDS = [tr('No'), tr('One'), tr('Two'), tr('Three'), tr('Four'), tr('Five'), tr('Six'), tr('Seven'), tr('Eight'), tr('Nine'), tr('Ten'), tr('Eleven'), tr('Twelve'), tr('Thirteen'), tr('Fourteen'), tr('Fifteen')];
 const COUNT = WORDS[GAMES.length] ?? String(GAMES.length);
 const num = (j: number) => String(j + 1).padStart(2, '0');
 
@@ -45,7 +46,7 @@ function ListProgramme() {
   return (
     <Screen tab="games" glow={0} symbols>
       <View style={s.fill}>
-        <Head end="tap one to play" onHeight={setHeadH} split />
+        <Head end={tr('tap one to play')} onHeight={setHeadH} split />
         {headH ? <GameList top={headH + u(2)} /> : null}
         <Side split />
       </View>
@@ -80,9 +81,9 @@ function Head({ end, onHeight, split }: { end: string; onHeight?: (h: number) =>
   const t = useTheme();
   return (
     <View style={[s.head, split ? s.headSplit : null]} onLayout={onHeight ? (e) => onHeight(e.nativeEvent.layout.height) : undefined}>
-      {split ? null : <Text style={[s.k, { color: t.accent }]}>TONIGHT ON THE WARD</Text>}
+      {split ? null : <Text style={[s.k, { color: t.accent }]}>{tr('TONIGHT ON THE WARD')}</Text>}
       <Text style={[s.h, { color: t.white }, split ? [s.mid, s.hSplit] : null]}>
-        {`${COUNT} games, `}
+        {tr('{COUNT} games, ', { COUNT })}
         <Text style={{ color: t.accent, fontFamily: F.displayItalic }}>{end}</Text>
       </Text>
     </View>
@@ -95,7 +96,7 @@ function StripBody({ g, j, big }: { g: Game; j: number; big?: boolean }) {
   return (
     <>
       <Image source={STRIP[g.key]} style={StyleSheet.absoluteFill} contentFit="cover" contentPosition={big ? 'right center' : 'center'} transition={0} cachePolicy="memory-disk" accessible={false} />
-      <LinearGradient colors={['rgba(13,23,56,0.85)', 'rgba(13,23,56,0.2)', 'rgba(13,23,56,0)']} locations={[0.25, 0.55, 0.8]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />
+      <LinearGradient colors={['rgba(13,23,56,0.85)', 'rgba(13,23,56,0.2)', 'rgba(13,23,56,0)']} locations={[0.25, 0.55, 0.8]} start={{ x: isAr ? 1 : 0, y: 0.5 }} end={{ x: isAr ? 0 : 1, y: 0.5 }} style={StyleSheet.absoluteFill} />
       <Text style={[s.n, big && s.nBig, { color: t.accent }]}>{num(j)}</Text>
       <View style={[s.rt, big && s.rtBig]}>
         <Text style={[s.name, big && s.nameBig, { color: t.white }]} numberOfLines={1}>
@@ -134,7 +135,7 @@ function TabletStrip({ g, j }: { g: Game; j: number }) {
       onPressIn={() => setDown(true)}
       onPressOut={() => setDown(false)}
       accessibilityRole="button"
-      accessibilityLabel={`Play ${g.lead} ${g.em}`}
+      accessibilityLabel={tr('Play {lead} {em}', { lead: g.lead, em: g.em })}
       style={[s.row, s.tRow, { borderColor: down ? t.accent : t.panelLine, transform: [{ scale: down ? 0.98 : 1 }] }]}>
       <StripBody g={g} j={j} />
     </Pressable>
@@ -145,7 +146,7 @@ function TabletProgramme() {
   return (
     <Screen tab="games" glow={0} wide symbols>
       <View style={s.fill}>
-        <Head end="tap one to play" />
+        <Head end={tr('tap one to play')} />
         {/* rows of two; an odd last game sits alone on the left */}
         <View style={s.tGrid}>
           {Array.from({ length: Math.ceil(LISTED.length / 2) }, (_, r) => (
@@ -167,25 +168,25 @@ function TabletProgramme() {
 
 const s = StyleSheet.create({
   fill: { flex: 1, overflow: 'hidden' },
-  head: { paddingTop: u(10), paddingLeft: u(16), paddingRight: u(44), paddingBottom: u(8), gap: u(2) },
-  headSplit: { paddingLeft: u(52), paddingRight: u(52), minHeight: u(76), justifyContent: 'center' },
-  sideL: { right: undefined, left: u(16) },
+  head: { paddingTop: u(10), paddingStart: u(16), paddingEnd: u(44), paddingBottom: u(8), gap: u(2) },
+  headSplit: { paddingStart: u(52), paddingEnd: u(52), minHeight: u(76), justifyContent: 'center' },
+  sideL: { end: undefined, start: u(16) },
   mid: { textAlign: 'center' },
   hSplit: { fontSize: u(20), lineHeight: u(23) },
   k: { fontFamily: F.mono, fontSize: u(9), lineHeight: u(12), letterSpacing: u(1.44) },
   h: { fontFamily: F.display, fontSize: u(24), lineHeight: u(26), letterSpacing: u(-0.4) },
   row: { height: u(ROW_H), marginBottom: u(ROW_GAP), borderRadius: u(12), borderWidth: 1, overflow: 'hidden', justifyContent: 'center', backgroundColor: '#0b1331' },
-  n: { position: 'absolute', left: u(10), fontFamily: F.mono, fontSize: u(13), lineHeight: u(16) },
-  nBig: { left: u(14), top: u(14), fontSize: u(15), lineHeight: u(18) },
-  rt: { paddingLeft: u(40), paddingRight: u(10), gap: u(2) },
-  rtBig: { paddingLeft: u(14), paddingTop: u(36), paddingRight: u(12), gap: u(3) },
+  n: { position: 'absolute', start: u(10), fontFamily: F.mono, fontSize: u(13), lineHeight: u(16) },
+  nBig: { start: u(14), top: u(14), fontSize: u(15), lineHeight: u(18) },
+  rt: { paddingStart: u(40), paddingEnd: u(10), gap: u(2) },
+  rtBig: { paddingStart: u(14), paddingTop: u(36), paddingEnd: u(12), gap: u(3) },
   name: { fontFamily: F.display, fontSize: u(15), lineHeight: u(18) },
   nameBig: { fontSize: u(18), lineHeight: u(21) },
   sub: { fontFamily: F.mono, fontSize: u(8.5), lineHeight: u(11), letterSpacing: u(0.85) },
   subBig: { fontSize: u(8.5), lineHeight: u(11) },
-  desc: { marginTop: u(3), marginRight: u(58), fontFamily: F.body, fontSize: u(10.5), lineHeight: u(14) },
+  desc: { marginTop: u(3), marginEnd: u(58), fontFamily: F.body, fontSize: u(10.5), lineHeight: u(14) },
   // tablet (Yazan 2026-11-12): the phone's own strips, two to a row, each one a button
-  tGrid: { gap: u(ROW_GAP), paddingLeft: u(16), paddingRight: u(52), paddingTop: u(6) },
+  tGrid: { gap: u(ROW_GAP), paddingStart: u(16), paddingEnd: u(52), paddingTop: u(6) },
   tLine: { flexDirection: 'row', gap: u(10) },
   tGap: { flex: 1 },
   tRow: { flex: 1, minWidth: 0, marginBottom: 0 },

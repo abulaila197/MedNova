@@ -17,6 +17,7 @@ import { CHESTS } from '@/features/chests/data';
 import { Beat } from './Ribbon';
 import { CHEST_NAME, claimRounds, loadRounds, readyOf, useRoundsStore, weekName } from './useRounds';
 import { useLock } from '@/lib/useLock';
+import { tr } from '@/i18n';
 
 const kv = defaultKV();
 const SHOWN = 'rounds:popped';
@@ -47,20 +48,20 @@ export function RoundsHost() {
     setFailed(false);
     if (key) void kv.set(SHOWN, key);
   };
-  const prize = won ? <Congrats open tokens={won} title="Every week stamped" line="A stamp from all 12 Grand Rounds weeks. Your tokens are in your wallet, and a new count starts now." onClose={() => setWon(0)} /> : null;
+  const prize = won ? <Congrats open tokens={won} title={tr('Every week stamped')} line={tr('A stamp from all 12 Grand Rounds weeks. Your tokens are in your wallet, and a new count starts now.')} onClose={() => setWon(0)} /> : null;
   if (!r || !ready) return prize;
   return (
     <>
       {prize}
       <Sheet open={open} onClose={close}>
         <View style={s.wrap}>
-          <Text style={[s.k, { color: t.kick }]}>{`GRAND ROUNDS · MISSION ${ready.tier} DONE`}</Text>
+          <Text style={[s.k, { color: t.kick }]}>{tr('GRAND ROUNDS · MISSION {tier} DONE', { tier: ready.tier })}</Text>
           <Text style={[s.h, { color: t.fg }]}>
-            {`${ready.of} Sparks on `}
+            {tr('{of} Sparks on ', { of: ready.of })}
             <Text style={[s.h, { color: t.accent, fontFamily: F.displayItalic }]}>{weekName(r.this)}</Text>
           </Text>
           <Image source={CHESTS[ready.chest].art} style={s.chest} contentFit="contain" accessibilityLabel={CHEST_NAME[ready.chest]} />
-          {ready.tier === 3 ? <Text style={[s.fail, { color: t.mute }]}>The last mission also stamps this week.</Text> : null}
+          {ready.tier === 3 ? <Text style={[s.fail, { color: t.mute }]}>{tr('The last mission also stamps this week.')}</Text> : null}
           <View style={{ alignSelf: 'stretch', marginTop: u(6) }}>
             <Beat r={r} more={false} />
           </View>
@@ -81,10 +82,10 @@ export function RoundsHost() {
             accessibilityRole="button"
             style={[{ alignSelf: 'stretch', marginTop: u(12) }, busy && { opacity: 0.6 }]}>
             <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={s.btn}>
-              <Text style={[s.btnT, { color: t.onGrad }]}>{`Collect the ${CHEST_NAME[ready.chest].toLowerCase()}`}</Text>
+              <Text style={[s.btnT, { color: t.onGrad }]}>{tr('Collect the {n}', { n: CHEST_NAME[ready.chest].toLowerCase() })}</Text>
             </LinearGradient>
           </Pressable>
-          {failed ? <Text style={[s.fail, { color: t.mute }]}>Could not reach MedNova. Try again in a moment.</Text> : null}
+          {failed ? <Text style={[s.fail, { color: t.mute }]}>{tr('Could not reach MedNova. Try again in a moment.')}</Text> : null}
         </View>
       </Sheet>
     </>

@@ -19,16 +19,17 @@ import { useOfflineRetry } from '@/features/offline/useOfflineRetry';
 
 import { flushInBackground, giftsSeen, loadStyle, refusedSeen, useStyle } from './useStyle';
 import { navTo } from '@/lib/nav';
+import { tr } from '@/i18n';
 
 /** A Style shop item's name in a sentence ("the Aurora frame"); also used by Inbox gifts from friends (#20). */
 export const nameOf = (id: string) => {
   const [kind, key] = [id.slice(0, id.indexOf(':')), id.slice(id.indexOf(':') + 1)];
-  if (kind === 'robot') return ROBOTS.find((c) => c.key === key)?.name ?? 'a robot';
+  if (kind === 'robot') return ROBOTS.find((c) => c.key === key)?.name ?? tr('a robot');
   const all = kind === 'frame' ? FRAMES : kind === 'title' ? [...TITLES, ...PLATINUM_TITLES] : kind === 'effect' ? EFFECTS : [];
   const found = all.find((x) => x.key === key)?.name;
-  if (kind === 'avatar') return [...CHARACTERS.map((c) => ({ key: c.slug, name: c.name })), ...MECHS, ...ROBOTS].find((c) => c.key === key)?.name ?? 'that character';
-  if (kind === 'effect' && key === 'null') return 'taking off your win effect';
-  return kind === 'pack' ? 'a sticker pack' : kind === 'frame' ? `the ${found} frame` : kind === 'title' ? `the title ${found}` : `the ${found} win effect`;
+  if (kind === 'avatar') return [...CHARACTERS.map((c) => ({ key: c.slug, name: c.name })), ...MECHS, ...ROBOTS].find((c) => c.key === key)?.name ?? tr('that character');
+  if (kind === 'effect' && key === 'null') return tr('taking off your win effect');
+  return kind === 'pack' ? tr('a sticker pack') : kind === 'frame' ? tr('the {found} frame', { found }) : kind === 'title' ? tr('the title {found}', { found }) : tr('the {found} win effect', { found });
 };
 
 /** Keeps your style in step with the account and shows a pop-up when a friend sends you a gift. */
@@ -58,12 +59,12 @@ export function StyleHost() {
     return (
       <Sheet open onClose={refusedSeen}>
         <View style={s.wrap}>
-          <Text style={[s.k, { color: t.kick }]}>PUT BACK</Text>
-          <Text style={[s.h, { color: t.fg }]}>{`Couldn’t save ${refused.map(nameOf).join(', ')}`}</Text>
-          <Text style={[s.p, { color: t.mute, textAlign: 'center' }]}>You changed it while offline, but your account says it isn’t yours any more, so your look is back to what your account has.</Text>
+          <Text style={[s.k, { color: t.kick }]}>{tr('PUT BACK')}</Text>
+          <Text style={[s.h, { color: t.fg }]}>{tr('Couldn’t save {n}', { n: refused.map(nameOf).join(', ') })}</Text>
+          <Text style={[s.p, { color: t.mute, textAlign: 'center' }]}>{tr('You changed it while offline, but your account says it isn’t yours any more, so your look is back to what your account has.')}</Text>
           <View style={s.row}>
             <Pressable onPress={refusedSeen} style={[s.btn, { borderColor: t.panelLine }]} accessibilityRole="button">
-              <Text style={[s.btnT, { color: t.fg }]}>OK</Text>
+              <Text style={[s.btnT, { color: t.fg }]}>{tr('OK')}</Text>
             </Pressable>
           </View>
         </View>
@@ -75,15 +76,15 @@ export function StyleHost() {
       {g ? (
         <View style={s.wrap}>
           {frame ? <Framed slug={avatar} size={u(96)} frame={frame} /> : null}
-          <Text style={[s.k, { color: t.kick }]}>A GIFT FOR YOU</Text>
+          <Text style={[s.k, { color: t.kick }]}>{tr('A GIFT FOR YOU')}</Text>
           <Text style={[s.h, { color: t.fg }]}>
-            {`${g.from} sent you `}
+            {tr('{from} sent you ', { from: g.from })}
             <Text style={[s.h, { color: t.accent, fontFamily: F.displayItalic }]}>{nameOf(g.item)}</Text>
           </Text>
-          {gifts.length > 1 ? <Text style={[s.p, { color: t.mute }]}>{`And ${gifts.length - 1} more.`}</Text> : null}
+          {gifts.length > 1 ? <Text style={[s.p, { color: t.mute }]}>{tr('And {n} more.', { n: gifts.length - 1 })}</Text> : null}
           <View style={s.row}>
             <Pressable onPress={() => void giftsSeen()} style={[s.btn, { borderColor: t.panelLine }]} accessibilityRole="button">
-              <Text style={[s.btnT, { color: t.fg }]}>Thanks</Text>
+              <Text style={[s.btnT, { color: t.fg }]}>{tr('Thanks')}</Text>
             </Pressable>
             <Pressable
               onPress={() => {
@@ -92,7 +93,7 @@ export function StyleHost() {
               }}
               style={[s.btn, { borderColor: t.accent }]}
               accessibilityRole="button">
-              <Text style={[s.btnT, { color: t.accent }]}>Put it on</Text>
+              <Text style={[s.btnT, { color: t.accent }]}>{tr('Put it on')}</Text>
             </Pressable>
           </View>
         </View>

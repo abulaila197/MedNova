@@ -14,6 +14,7 @@ import { startAds } from '@/lib/ads';
 import { askPushNow, pushAllowed } from '@/lib/push';
 import { markOnboarded } from '@/state/start';
 import { u, useScreen } from '@/theme/scale';
+import { isAr } from '@/i18n';
 
 const LAST = 2;
 const EASE = Easing.bezier(0.25, 0.1, 0.25, 1);
@@ -69,7 +70,7 @@ export default function Onboarding() {
     })
     .onUpdate((e) => {
       // a little resistance past the first slide; past the last one the swipe leads to sign-in
-      const p = start.value - e.translationX / w;
+      const p = start.value - (isAr ? -e.translationX : e.translationX) / w; // swipes mirror in Arabic
       pos.set(p < 0 ? p * 0.3 : p);
     })
     .onEnd((e) => {
@@ -85,7 +86,7 @@ export default function Onboarding() {
       pos.set(withTiming(Math.max(0, target), { duration: 380, easing: EASE }));
     });
 
-  const row = useAnimatedStyle(() => ({ transform: [{ translateX: -Math.min(pos.value, LAST + 0.3) * w }] }));
+  const row = useAnimatedStyle(() => ({ transform: [{ translateX: (isAr ? 1 : -1) * Math.min(pos.value, LAST + 0.3) * w }] }));
   const slides = useSlides({ w, h, padTop, padBottom, onNext: next, onSkip: toAuth });
 
   return (
@@ -103,5 +104,5 @@ export default function Onboarding() {
 
 const s = StyleSheet.create({
   root: { flex: 1, overflow: 'hidden' },
-  status: { position: 'absolute', top: 0, left: 0, right: 0, zIndex: 30 },
+  status: { position: 'absolute', top: 0, start: 0, end: 0, zIndex: 30 },
 });

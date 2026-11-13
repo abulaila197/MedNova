@@ -23,6 +23,7 @@ import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import { type Challenge, type ChallengeKind, type ChallengeMode, DAYS, isOver, loadFriendChallenges, markSeen, otherOf, PRIZE, scoreOf, setIntent, timeLeft, useChallenges, withFriend } from './store';
+import { tr } from '@/i18n';
 
 /** Games a challenge can use, with the modes each offers (Solo, Vs rivals). */
 const GAME_MODES: { key: GameKey; modes: ChallengeMode[] }[] = GAMES.map((g) => {
@@ -35,14 +36,14 @@ const GAME_MODES: { key: GameKey; modes: ChallengeMode[] }[] = GAMES.map((g) => 
 /** Mode chips mint, duration chips amber (games keep the app's cyan). */
 const MODE_TINT = '#5fd38a';
 const TIME_TINT = '#f5b041';
-const MODE_NAME: Record<ChallengeMode, string> = { solo: 'Solo', bots: 'Vs rivals' };
+const MODE_NAME: Record<ChallengeMode, string> = { solo: tr('Solo'), bots: tr('Vs rivals') };
 const KIND: { k: ChallengeKind; title: string; say: string }[] = [
-  { k: 'score', title: 'Beat my score', say: 'You play first. Your score is the bar; they have one day to beat it.' },
-  { k: 'game', title: 'Game challenge', say: 'You both play within the time. The best score wins.' },
+  { k: 'score', title: tr('Beat my score'), say: tr('You play first. Your score is the bar; they have one day to beat it.') },
+  { k: 'game', title: tr('Game challenge'), say: tr('You both play within the time. The best score wins.') },
 ];
 export const gameName = (k: string) => {
   const g = GAMES.find((x) => x.key === k);
-  return g ? `${g.lead} ${g.em}` : k;
+  return g ? `${g.lead} ${g.em}`.trim() : k;
 };
 const useSheetMax = (design: number) => Math.min(u(design), useWindowDimensions().height * 0.75 - u(40));
 
@@ -108,13 +109,13 @@ export function ChallengeSheet({ f, onClose }: { f: Friend; onClose: () => void 
       <View style={s.head}>
         <PlayerFace slug={f.avatar} size={u(40)} userId={f.id} still />
         <View style={{ flex: 1, minWidth: 0 }}>
-          <Text style={[s.h, { color: t.fg }]} numberOfLines={1}>{`Challenge ${f.display_name}`}</Text>
-          <Text style={[s.sub, { color: t.mute }]}>{`The winner gets ${PRIZE} tokens when the challenge completes (first win against each friend per day).`}</Text>
+          <Text style={[s.h, { color: t.fg }]} numberOfLines={1}>{tr('Challenge {display_name}', { display_name: f.display_name })}</Text>
+          <Text style={[s.sub, { color: t.mute }]}>{tr('The winner gets {PRIZE} tokens when the challenge completes (first win against each friend per day).', { PRIZE })}</Text>
         </View>
       </View>
       {open.length ? (
         <>
-          <Text style={[s.k, { color: t.kick }]}>RUNNING NOW</Text>
+          <Text style={[s.k, { color: t.kick }]}>{tr('RUNNING NOW')}</Text>
           {open.map((c) => {
             const mine = scoreOf(c, uid);
             const theirs = scoreOf(c, otherOf(c, uid).id);
@@ -123,42 +124,42 @@ export function ChallengeSheet({ f, onClose }: { f: Friend; onClose: () => void 
             const can = !(bar && setter) && !isOver(c);
             return (
               <View key={c.id} style={[s.card, { borderColor: t.panelLine, backgroundColor: t.panel2 }]}>
-                <Text style={[s.cardK, { color: t.kick }]}>{`${bar ? 'BEAT MY SCORE' : 'GAME CHALLENGE'} · ${timeLeft(c).toUpperCase()}`}</Text>
+                <Text style={[s.cardK, { color: t.kick }]}>{`${bar ? tr('BEAT MY SCORE') : tr('GAME CHALLENGE')} · ${timeLeft(c).toUpperCase()}`}</Text>
                 <Text style={[s.cardH, { color: t.fg }]}>{`${gameName(c.game)} · ${MODE_NAME[c.mode]}`}</Text>
-                <Text style={[s.cardS, { color: t.mute }]}>{settingsLine(gameDef(c.game), c.settings) || 'Default settings'}</Text>
-                <Text style={[s.cardS, { color: t.fg }]}>{`You ${mine ?? '–'} · ${otherOf(c, uid).name} ${theirs ?? '–'}${bar ? (setter ? ' (your bar)' : ' (the bar)') : ''}`}</Text>
+                <Text style={[s.cardS, { color: t.mute }]}>{settingsLine(gameDef(c.game), c.settings) || tr('Default settings')}</Text>
+                <Text style={[s.cardS, { color: t.fg }]}>{tr('You {n} · {name} {n2}{n3}', { n: mine ?? '–', name: otherOf(c, uid).name, n2: theirs ?? '–', n3: bar ? (setter ? tr(' (your bar)') : tr(' (the bar)')) : '' })}</Text>
                 {can ? (
-                  <Pressable onPress={() => play(c)} disabled={!!busy} style={s.goWrap} accessibilityRole="button" accessibilityLabel={`Play ${gameName(c.game)} for this challenge`}>
+                  <Pressable onPress={() => play(c)} disabled={!!busy} style={s.goWrap} accessibilityRole="button" accessibilityLabel={tr('Play {gameName} for this challenge', { gameName: gameName(c.game) })}>
                     <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.go}>
-                      <Text style={[s.goT, { color: t.onGrad }]}>{busy === c.id ? 'Opening…' : mine == null ? 'Play' : 'Play again'}</Text>
+                      <Text style={[s.goT, { color: t.onGrad }]}>{busy === c.id ? tr('Opening…') : mine == null ? tr('Play') : tr('Play again')}</Text>
                     </LinearGradient>
                   </Pressable>
                 ) : (
-                  <Text style={[s.cardS, { color: t.mute }]}>{bar && setter ? `Waiting for ${c.to.name} to play.` : 'Waiting for the result.'}</Text>
+                  <Text style={[s.cardS, { color: t.mute }]}>{bar && setter ? tr('Waiting for {name} to play.', { name: c.to.name }) : tr('Waiting for the result.')}</Text>
                 )}
               </View>
             );
           })}
         </>
       ) : null}
-      {failed ? <Text style={[s.sub, { color: t.mute }]}>Couldn’t reach the server; showing what was saved.</Text> : null}
-      <Text style={[s.k, { color: t.kick }]}>NEW CHALLENGE</Text>
+      {failed ? <Text style={[s.sub, { color: t.mute }]}>{tr('Couldn’t reach the server; showing what was saved.')}</Text> : null}
+      <Text style={[s.k, { color: t.kick }]}>{tr('NEW CHALLENGE')}</Text>
       <View style={s.chips}>{KIND.map((x) => chip(x.title, kind === x.k, () => setKind(x.k)))}</View>
       <Text style={[s.sub, { color: t.mute }]}>{KIND.find((x) => x.k === kind)!.say}</Text>
-      <Text style={[s.k, { color: t.kick }]}>GAME</Text>
+      <Text style={[s.k, { color: t.kick }]}>{tr('GAME')}</Text>
       <View style={s.chips}>{GAME_MODES.map((g) => chip(gameName(g.key), game === g.key, () => pickGame(g.key), g.key))}</View>
-      <Text style={[s.k, { color: MODE_TINT }]}>PLAY AS</Text>
+      <Text style={[s.k, { color: MODE_TINT }]}>{tr('PLAY AS')}</Text>
       <View style={s.chips}>{modes.map((m) => chip(MODE_NAME[m], mode === m, () => setMode(m), m, MODE_TINT))}</View>
-      <Text style={[s.k, { color: TIME_TINT }]}>TIME TO PLAY</Text>
-      <View style={s.chips}>{kind === 'game' ? DAYS.map((d) => chip(`${d} day${d > 1 ? 's' : ''}`, days === d, () => setDays(d), `d${d}`, TIME_TINT)) : chip('1 day', true, () => {}, 'd1', TIME_TINT)}</View>
+      <Text style={[s.k, { color: TIME_TINT }]}>{tr('TIME TO PLAY')}</Text>
+      <View style={s.chips}>{kind === 'game' ? DAYS.map((d) => chip(tr('{d} day{n}', { d, n: d > 1 ? 's' : '' }), days === d, () => setDays(d), `d${d}`, TIME_TINT)) : chip(tr('1 day'), true, () => {}, 'd1', TIME_TINT)}</View>
       <Pressable onPress={go} accessibilityRole="button">
         <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.btn}>
-          <Text style={[s.btnT, { color: t.onGrad }]}>Set up and play</Text>
+          <Text style={[s.btnT, { color: t.onGrad }]}>{tr('Set up and play')}</Text>
         </LinearGradient>
       </Pressable>
-      <Text style={[s.sub, { color: t.mute, textAlign: 'center' }]}>{kind === 'score' ? 'Your score from this play becomes the bar.' : `${f.display_name} gets the challenge as soon as you start.`}</Text>
+      <Text style={[s.sub, { color: t.mute, textAlign: 'center' }]}>{kind === 'score' ? tr('Your score from this play becomes the bar.') : tr('{display_name} gets the challenge as soon as you start.', { display_name: f.display_name })}</Text>
       <Pressable onPress={onClose} accessibilityRole="button">
-        <Text style={[s.cancel, { color: t.mute }]}>Close</Text>
+        <Text style={[s.cancel, { color: t.mute }]}>{tr('Close')}</Text>
       </Pressable>
     </ScrollView>
   );
@@ -185,35 +186,35 @@ export function ResultSheet({ f, onClose, onAgain }: { f: Friend; onClose: () =>
   const won = c.winner === uid;
   const lost = c.winner === f.id;
   const nobody = mine == null && theirs == null;
-  const headline = won ? 'You won' : lost ? `${f.display_name} won` : nobody ? 'Nobody played' : mine == null ? "You didn't play" : theirs == null ? `${f.display_name} didn't play` : 'A tie';
+  const headline = won ? tr('You won') : lost ? tr('{display_name} won', { display_name: f.display_name }) : nobody ? tr('Nobody played') : mine == null ? tr('You didn\'t play') : theirs == null ? tr('{display_name} didn\'t play', { display_name: f.display_name }) : tr('A tie');
   const line = won
     ? c.prize > 0
-      ? `+${c.prize} tokens are waiting in your Inbox.`
-      : `No tokens this time: you already won against ${f.display_name} today.`
+      ? tr('+{prize} tokens are waiting in your Inbox.', { prize: c.prize })
+      : tr('No tokens this time: you already won against {display_name} today.', { display_name: f.display_name })
     : lost
-      ? `${f.display_name} takes the tokens.`
-      : 'No winner, no tokens.';
+      ? tr('{display_name} takes the tokens.', { display_name: f.display_name })
+      : tr('No winner, no tokens.');
   return (
     <View style={{ gap: u(12), paddingTop: u(8) }}>
-      <Text style={[s.k, { color: t.kick, textAlign: 'center' }]}>{`${c.kind === 'score' ? 'BEAT MY SCORE' : 'GAME CHALLENGE'} · ${gameName(c.game).toUpperCase()} · ${MODE_NAME[c.mode].toUpperCase()}`}</Text>
+      <Text style={[s.k, { color: t.kick, textAlign: 'center' }]}>{`${c.kind === 'score' ? tr('BEAT MY SCORE') : tr('GAME CHALLENGE')} · ${gameName(c.game).toUpperCase()} · ${MODE_NAME[c.mode].toUpperCase()}`}</Text>
       <Text style={[s.big, { color: won ? '#7be0a8' : lost ? t.error : t.fg }]}>{headline}</Text>
       <View style={s.duel}>
-        <Side t={t} face={me?.avatar ?? 'yara'} id={uid} name="You" score={mine} lit={won} />
-        <Text style={[s.vs, { color: t.mute }]}>vs</Text>
+        <Side t={t} face={me?.avatar ?? 'yara'} id={uid} name={tr('You')} score={mine} lit={won} />
+        <Text style={[s.vs, { color: t.mute }]}>{tr('vs')}</Text>
         <Side t={t} face={f.avatar} id={f.id} name={f.display_name} score={theirs} lit={lost} />
       </View>
-      <Text style={[s.cardS, { color: t.mute, textAlign: 'center' }]}>{settingsLine(gameDef(c.game), c.settings) || 'Default settings'}</Text>
+      <Text style={[s.cardS, { color: t.mute, textAlign: 'center' }]}>{settingsLine(gameDef(c.game), c.settings) || tr('Default settings')}</Text>
       <View style={s.prizeRow}>
         {won && c.prize > 0 ? <TokenCoin size={u(14)} progress={0} track="transparent" /> : null}
         <Text style={[s.sub, { color: t.fg }]}>{line}</Text>
       </View>
       <Pressable onPress={onAgain} accessibilityRole="button">
         <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.btn}>
-          <Text style={[s.btnT, { color: t.onGrad }]}>{`Challenge ${f.display_name} again`}</Text>
+          <Text style={[s.btnT, { color: t.onGrad }]}>{tr('Challenge {display_name} again', { display_name: f.display_name })}</Text>
         </LinearGradient>
       </Pressable>
       <Pressable onPress={onClose} accessibilityRole="button">
-        <Text style={[s.cancel, { color: t.mute }]}>Close</Text>
+        <Text style={[s.cancel, { color: t.mute }]}>{tr('Close')}</Text>
       </Pressable>
     </View>
   );

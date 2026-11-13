@@ -17,6 +17,7 @@ import { RoundsEntry } from '@/features/rounds/RoundsEntry';
 import { CHEST_ORDER, CHESTS, chestItems, ITEMS, MECHS, MECHS_PRIZE, RARITY, RARITY_ORDER, type ChestKind, type Item } from './data';
 import type { OpenResult } from './useChests';
 import { ItemTile } from './Tiles';
+import { tr } from '@/i18n';
 
 export type ChestsView = {
   owned: Record<ChestKind, number>;
@@ -91,10 +92,10 @@ export function ChestsPage({ v }: { v: ChestsView }) {
   return (
     <Screen tab={null} glow={21} wide={460}>
       <InfoScroll>
-        <Kicker>Grand Rounds rewards</Kicker>
+        <Kicker>{tr('Grand Rounds rewards')}</Kicker>
         <Text style={[ui.H, { color: c.fg, fontFamily: F.display }]}>
-          {'My '}
-          <Text style={[ui.H, { color: t.accent, fontFamily: F.displayItalic }]}>chests</Text>
+          {tr('My ')}
+          <Text style={[ui.H, { color: t.accent, fontFamily: F.displayItalic }]}>{tr('chests')}</Text>
         </Text>
         {/* Grand Rounds lives here now, not as its own Games page button (Yazan 2026-10-27). */}
         <RoundsEntry />
@@ -104,7 +105,7 @@ export function ChestsPage({ v }: { v: ChestsView }) {
             {CHEST_ORDER.map((k) => {
               const on = k === sel;
               return (
-                <Pressable key={k} onPress={() => !won && !busy && setSel(k)} style={s.kind} accessibilityRole="button" accessibilityState={{ selected: on }} accessibilityLabel={`${CHESTS[k].name}, ${v.owned[k]} owned`}>
+                <Pressable key={k} onPress={() => !won && !busy && setSel(k)} style={s.kind} accessibilityRole="button" accessibilityState={{ selected: on }} accessibilityLabel={tr('{name}, {n} owned', { name: CHESTS[k].name, n: v.owned[k] })}>
                   <Text style={[s.own, { color: v.owned[k] ? t.fg : c.mute }]}>{`×${v.owned[k]}`}</Text>
                   <View style={[s.kTile, { backgroundColor: on ? c.surf : c.surf2, borderColor: on ? t.accent : c.line }]}>
                     <Image source={CHESTS[k].art} style={[s.kArt, !v.owned[k] && { opacity: 0.45 }]} contentFit="contain" />
@@ -117,11 +118,11 @@ export function ChestsPage({ v }: { v: ChestsView }) {
           <View style={s.mid}>
             {won ? (
               <View style={s.won}>
-                <Text style={[s.wonK, { color: c.kick }]}>YOU GOT</Text>
+                <Text style={[s.wonK, { color: c.kick }]}>{tr('YOU GOT')}</Text>
                 {won.map(({ item, dupe, tokens }, i) => (
                   <Animated.View key={`${item.key}${i}`} entering={FadeInDown.delay(i * 140).duration(320)} style={s.wonRow}>
                     {item.kind === 'mech' ? (
-                      <Pressable onPress={() => setCard(MECHS.findIndex((m) => `mech:${m.key}` === item.key))} accessibilityRole="button" accessibilityLabel={`See ${item.name}'s card`}>
+                      <Pressable onPress={() => setCard(MECHS.findIndex((m) => `mech:${m.key}` === item.key))} accessibilityRole="button" accessibilityLabel={tr('See {name}\'s card', { name: item.name })}>
                         <ItemTile item={item} size={u(46)} />
                       </Pressable>
                     ) : (
@@ -131,13 +132,13 @@ export function ChestsPage({ v }: { v: ChestsView }) {
                       <Text style={[s.wonN, { color: c.fg }]} numberOfLines={1}>
                         {item.name}
                       </Text>
-                      <Text style={[s.wonR, { color: RARITY[item.rarity].color }]}>{RARITY[item.rarity].name}</Text>
-                      {dupe ? <Text style={[s.wonD, { color: c.mute }]}>{`Already yours: +${tokens} tokens`}</Text> : null}
+                      <Text style={[s.wonR, { color: RARITY[item.rarity].color }]}>{tr(RARITY[item.rarity].name)}</Text>
+                      {dupe ? <Text style={[s.wonD, { color: c.mute }]}>{tr('Already yours: +{tokens} tokens', { tokens })}</Text> : null}
                     </View>
                   </Animated.View>
                 ))}
-                {prize ? <Text style={[s.prize, { color: t.accent }]}>{`All 8 Nova Mechs! +${MECHS_PRIZE} tokens`}</Text> : null}
-                <GradPill label="Collect" onPress={collect} />
+                {prize ? <Text style={[s.prize, { color: t.accent }]}>{tr('All 8 Nova Mechs! +{MECHS_PRIZE} tokens', { MECHS_PRIZE })}</Text> : null}
+                <GradPill label={tr('Collect')} onPress={collect} />
               </View>
             ) : (
               <>
@@ -148,20 +149,20 @@ export function ChestsPage({ v }: { v: ChestsView }) {
                     <Image source={chest.art} style={[s.big, !n && { opacity: 0.4 }]} contentFit="contain" />
                   </Animated.View>
                 </View>
-                <Text style={[s.name, { color: c.fg }]}>{chest.name}</Text>
-                <Text style={[s.sub, { color: c.mute }]}>{`${chest.items} item${chest.items > 1 ? 's' : ''} · ${chest.from}`}</Text>
-                {n ? <GradPill label={busy ? 'Opening…' : 'Open'} onPress={openIt} /> : <Text style={[s.none, { color: c.mute }]}>None yet</Text>}
-                {failed ? <Text style={[s.none, { color: c.mute }]}>{'Couldn\u2019t open it. Check your connection.'}</Text> : null}
+                <Text style={[s.name, { color: c.fg }]}>{tr(chest.name)}</Text>
+                <Text style={[s.sub, { color: c.mute }]}>{tr('{items} item{n} · {from}', { items: chest.items, n: chest.items > 1 ? 's' : '', from: tr(chest.from) })}</Text>
+                {n ? <GradPill label={busy ? tr('Opening…') : tr('Open')} onPress={openIt} /> : <Text style={[s.none, { color: c.mute }]}>{tr('None yet')}</Text>}
+                {failed ? <Text style={[s.none, { color: c.mute }]}>{tr('Couldn’t open it. Check your connection.')}</Text> : null}
               </>
             )}
           </View>
 
           <View style={s.right}>
-            <Text style={[s.inK, { color: c.kick }]}>INSIDE</Text>
+            <Text style={[s.inK, { color: c.kick }]}>{tr('INSIDE')}</Text>
             <View style={s.grid}>
               {items.map((i) =>
                 i.kind === 'mech' ? (
-                  <Pressable key={i.key} onPress={() => setCard(MECHS.findIndex((m) => `mech:${m.key}` === i.key))} accessibilityRole="button" accessibilityLabel={`See ${i.name}'s card`}>
+                  <Pressable key={i.key} onPress={() => setCard(MECHS.findIndex((m) => `mech:${m.key}` === i.key))} accessibilityRole="button" accessibilityLabel={tr('See {name}\'s card', { name: i.name })}>
                     <ItemTile item={i} size={TILE} owned={v.have.includes(i.key)} />
                   </Pressable>
                 ) : (
@@ -176,14 +177,14 @@ export function ChestsPage({ v }: { v: ChestsView }) {
           {RARITY_ORDER.filter((r) => chest.odds[r]).map((r) => (
             <View key={r} style={s.odd}>
               <View style={[s.dot, { backgroundColor: RARITY[r].color }]} />
-              <Text style={[s.oddN, { color: c.fg }]}>{RARITY[r].name}</Text>
+              <Text style={[s.oddN, { color: c.fg }]}>{tr(RARITY[r].name)}</Text>
               <Text style={[s.oddP, { color: c.mute }]}>{`${chest.odds[r]}%`}</Text>
             </View>
           ))}
         </View>
-        {sel === 'epic' ? <Text style={[s.note, { color: c.mute }]}>At least one Rare or better, with the best odds for 5-star robots.</Text> : null}
+        {sel === 'epic' ? <Text style={[s.note, { color: c.mute }]}>{tr('At least one Rare or better, with the best odds for 5-star robots.')}</Text> : null}
 
-        <Pressable onPress={() => router.navigate('/rounds' as never)} style={[s.link, { backgroundColor: c.surf, borderColor: c.line }]} accessibilityRole="link" accessibilityLabel="Open Grand Rounds">
+        <Pressable onPress={() => router.navigate('/rounds' as never)} style={[s.link, { backgroundColor: c.surf, borderColor: c.line }]} accessibilityRole="link" accessibilityLabel={tr('Open Grand Rounds')}>
           <View style={{ flex: 1 }}>
             <Text style={[s.linkK, { color: c.kick }]}>{v.rounds.kick}</Text>
             <Text style={[s.linkT, { color: c.fg }]}>{v.rounds.line}</Text>

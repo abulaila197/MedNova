@@ -6,6 +6,7 @@ import { Sheet } from '@/components/Sheet';
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
+import { tr } from '@/i18n';
 
 /**
  * What a game is for (Yazan 2026-10-26, #75), as a tag beside the game counter in the style of the Diagnostic Pursuit
@@ -37,19 +38,19 @@ const KIND: Record<string, GameKind> = {
 // Three colours that stay clear of the navy page (Yazan: green, not blue, for Learn).
 const LOOK: Record<GameKind, { label: string; color: string; text: string }> = {
   learn: {
-    label: 'On duty',
+    label: tr('On duty'),
     color: '#34d399',
-    text: "Learning first. Every miss goes to Today's review on Learn.",
+    text: tr('Learning first. Every miss goes to Today\'s review on Learn.'),
   },
   both: {
-    label: 'Play and learn',
+    label: tr('Play and learn'),
     color: '#f59e0b',
-    text: 'Fun first, medicine along the way. Results link each answer to its dossier.',
+    text: tr('Fun first, medicine along the way. Results link each answer to its dossier.'),
   },
   play: {
-    label: 'Party time',
+    label: tr('Party time'),
     color: '#f472b6',
-    text: 'Group games on one phone with friends. Nothing goes to review.',
+    text: tr('Group games on one phone with friends. Nothing goes to review.'),
   },
 };
 const ORDER: GameKind[] = ['learn', 'both', 'play'];
@@ -75,7 +76,7 @@ export function GameTag({ game }: { game: string }) {
       hitSlop={u(8)}
       style={[s.tag, { borderColor: alpha(color, 0.4), backgroundColor: alpha(color, 0.16) }]}
       accessibilityRole="button"
-      accessibilityLabel={`${label}: what this means`}>
+      accessibilityLabel={tr('{label}: what this means', { label })}>
       <Text style={[s.t, { color }]}>{label}</Text>
     </Pressable>
   );
@@ -103,7 +104,7 @@ export function GameTagSheet() {
             );
           })}
           <Pressable onPress={close} style={[s.ok, { borderColor: t.panelLine }]} accessibilityRole="button">
-            <Text style={[s.okT, { color: t.fg }]}>Got it</Text>
+            <Text style={[s.okT, { color: t.fg }]}>{tr('Got it')}</Text>
           </Pressable>
         </View>
       ) : null}

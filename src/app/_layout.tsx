@@ -20,7 +20,7 @@ import { startAccount } from '@/state/account';
 import { watchResize } from '@/state/resize';
 import { useSidewaysFrame } from '@/state/sideways';
 import { bootStart, endIntro, useStart, useStartReady } from '@/state/start';
-import { View } from 'react-native';
+import { Platform, View } from 'react-native';
 import { FRAME_W, useScreen } from '@/theme/scale';
 import { THEMES } from '@/theme/tokens';
 import { freshImagesOnUpdate } from '@/lib/freshImages';
@@ -38,6 +38,8 @@ const SPLASH_MIN_MS = 1200;
 const AR_FONTS = { Alexandria_700Bold, IBMPlexSansArabic_400Regular, IBMPlexSansArabic_500Medium, IBMPlexSansArabic_600SemiBold, IBMPlexSansArabic_700Bold };
 
 bootDirection();
+/** On the web, styles learn right-to-left from a `dir` on an ancestor (react-native-web), so the app frame carries it. */
+const WEB_DIR = Platform.OS === 'web' ? ({ dir: isAr ? 'rtl' : 'ltr' } as object) : {};
 startAccount();
 bootStart();
 
@@ -80,7 +82,7 @@ export default function RootLayout() {
         <>
       <SideSky />
       {/* the app frame: the full screen, or a centred column (see theme/scale.ts); a sideways game fills the turned screen */}
-      <View style={{ flex: 1, width: sideways ? '100%' : FRAME_W, overflow: 'hidden' }}>
+      <View style={{ flex: 1, width: sideways ? '100%' : FRAME_W, overflow: 'hidden' }} {...WEB_DIR}>
       <Stack screenOptions={{ headerShown: false, animation: 'fade', animationDuration: 220, freezeOnBlur: true, contentStyle: { backgroundColor: THEMES.dark.sky } }} />
       {/* returning players: the intro plays over the first page (Games or sign-in) and bursts into it */}
       {intro ? <Intro w={width} h={height} onDone={endIntro} /> : null}

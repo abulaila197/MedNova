@@ -19,6 +19,7 @@ import { DECK } from './deck';
 import { loadHunt, useHunt } from './hunt';
 import { Sleeve } from './Sleeve';
 import { navTo } from '@/lib/nav';
+import { tr } from '@/i18n';
 
 const kv = defaultKV();
 const seenKey = (uid: string) => `cards:seen:${uid}`;
@@ -83,17 +84,17 @@ export function CardHost() {
   return (
     <View style={[StyleSheet.absoluteFill, s.wrap]}>
       <Animated.View entering={FadeIn.duration(250)} exiting={FadeOut.duration(200)} style={StyleSheet.absoluteFill}>
-        <Pressable style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(5,6,16,0.6)' }]} onPress={() => void done()} accessibilityLabel="Close" />
+        <Pressable style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(5,6,16,0.6)' }]} onPress={() => void done()} accessibilityLabel={tr('Close')} />
       </Animated.View>
       <Animated.View entering={safeEnter(ZoomIn.duration(320))} exiting={FadeOut.duration(200)} style={[s.card, { backgroundColor: t.panel2, borderColor: t.panelLine }]}>
-        <Text style={[s.kick, { color: t.kick }]}>NEW CARD FOUND</Text>
+        <Text style={[s.kick, { color: t.kick }]}>{tr('NEW CARD FOUND')}</Text>
         <Sleeve t={t} card={card} w={w} locked={false} style={{ marginTop: u(12) }} />
         <Text style={[s.name, { color: t.fg }]}>{card.name}</Text>
         <Text style={[s.stars, { color: t.accent }]}>{'★'.repeat(card.stars)}</Text>
         <Text style={[s.what, { color: t.mute }]}>{card.mission}</Text>
         <View style={s.row}>
           <Pressable onPress={() => void done()} style={[s.btn, { borderColor: t.panelLine }]} accessibilityRole="button">
-            <Text style={[s.btnT, { color: t.fg }]}>Nice!</Text>
+            <Text style={[s.btnT, { color: t.fg }]}>{tr('Nice!')}</Text>
           </Pressable>
           <Pressable
             onPress={() => {
@@ -102,7 +103,7 @@ export function CardHost() {
             }}
             style={[s.btn, { borderColor: t.accent }]}
             accessibilityRole="button">
-            <Text style={[s.btnT, { color: t.accent }]}>My cards</Text>
+            <Text style={[s.btnT, { color: t.accent }]}>{tr('My cards')}</Text>
           </Pressable>
         </View>
       </Animated.View>

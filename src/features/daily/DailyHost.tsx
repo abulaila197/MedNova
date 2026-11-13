@@ -16,6 +16,7 @@ import { useStart } from '@/state/start';
 import { useWelcome } from '../welcome/WelcomeHost';
 import { DailyPopup } from './DailyPopup';
 import { CALENDAR_DAYS } from './prizes';
+import { tr } from '@/i18n';
 
 type Status = { next_day: number; last_date: string | null };
 
@@ -99,7 +100,7 @@ export function DailyHost() {
       const copy = e || !data ? await copyOf<Status>('daily', userId) : null;
       if ((e || !data) && !copy) {
         setOpen({ day: 1, collected: false });
-        setError('Could not reach MedNova. Check your connection and try again.');
+        setError(tr('Could not reach MedNova. Check your connection and try again.'));
         return;
       }
       const st = copy ? copy.v : (data as Status);
@@ -108,7 +109,7 @@ export function DailyHost() {
       useDaily.setState({ ready: !done });
       // Already collected: show the dose taken today (the calendar has moved on to the next one).
       setOpen({ day: done ? (st.next_day > 1 ? st.next_day - 1 : CALENDAR_DAYS) : st.next_day, collected: done });
-      if (copy && !done) setError(`Offline · last updated ${agoText(copy.at)}. Collecting needs internet.`);
+      if (copy && !done) setError(tr('Offline · last updated {agoText}. Collecting needs internet.', { agoText: agoText(copy.at) }));
     })();
   }, [ask, userId]);
 
@@ -130,9 +131,9 @@ export function DailyHost() {
     setBusy(false);
     claiming.current = false;
     const r = data as { ok: boolean; day?: number; why?: string } | null;
-    if (e || !r) return setError('Could not reach MedNova. Check your connection and try again.');
+    if (e || !r) return setError(tr('Could not reach MedNova. Check your connection and try again.'));
     if (!r.ok)
-      return setError(r.why === 'done' ? "You've already grabbed today's reward." : "Your phone's date looks off, so today's reward can't be given. Check your date settings.");
+      return setError(r.why === 'done' ? tr('You\'ve already grabbed today\'s reward.') : tr('Your phone\'s date looks off, so today\'s reward can\'t be given. Check your date settings.'));
     setOpen({ day: r.day ?? open.day, collected: true });
     useDaily.setState({ ready: false });
     const day = r.day ?? open.day;

@@ -11,6 +11,7 @@ import { F } from '@/theme/tokens';
 import { useRoundsDot } from '@/features/rounds/useRounds';
 
 import { chestCount, loadChallenges, useChests } from './useChests';
+import { tr } from '@/i18n';
 
 /**
  * The chest button on the Games page (last of the three; Grand Rounds sits inside its page); the badge counts unopened chests. With none to open, the red
@@ -37,7 +38,7 @@ export function ChestButton({ style }: { style?: StyleProp<ViewStyle> } = {}) {
       onPress={() => router.navigate('/chests' as never)}
       style={[s.btn, { backgroundColor: t.panel, borderColor: t.panelLine }, style]}
       accessibilityRole='button'
-      accessibilityLabel={`Chests, ${count} to open`}
+      accessibilityLabel={tr('Chests, {count} to open', { count })}
     >
       {/* Same face as the Inbox button: a faint ring at the same size, the chest inside. */}
       <Svg width={u(24)} height={u(24)} viewBox='0 0 30 30'>
@@ -49,7 +50,7 @@ export function ChestButton({ style }: { style?: StyleProp<ViewStyle> } = {}) {
           stroke={t.chipLine}
           strokeWidth={1.6}
         />
-        <G transform='translate(7.5 7.5) scale(0.625)'>
+        <G transform={tr('translate(7.5 7.5) scale(0.625)')}>
           <Path
             d='M4 10 C4 6.5 6.5 4.5 12 4.5 C17.5 4.5 20 6.5 20 10 Z'
             {...line}
@@ -75,7 +76,7 @@ export function ChestButton({ style }: { style?: StyleProp<ViewStyle> } = {}) {
 const s = StyleSheet.create({
   btn: {
     position: 'absolute',
-    right: u(16),
+    end: u(16),
     top: u(68), // last of the three (Yazan 2026-10-27); 80% size since 2026-10-19
     width: u(27),
     height: u(27),
@@ -87,7 +88,7 @@ const s = StyleSheet.create({
   badge: {
     position: 'absolute',
     // A little bigger than the red dot only, so a number fits (Yazan 2026-10-27).
-    right: u(-2),
+    end: u(-2),
     top: u(-2),
     minWidth: u(10),
     height: u(10),
@@ -97,6 +98,6 @@ const s = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: u(2),
   },
-  dot: { position: 'absolute', right: u(-1), top: u(-1), width: u(7), height: u(7), borderRadius: u(3.5), borderWidth: 1 },
+  dot: { position: 'absolute', end: u(-1), top: u(-1), width: u(7), height: u(7), borderRadius: u(3.5), borderWidth: 1 },
   badgeT: { color: '#fff', fontFamily: F.bodyBold, fontSize: u(6), lineHeight: u(8) },
 });

@@ -20,13 +20,14 @@ import { supabase } from '@/lib/supabase';
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
+import { tr } from '@/i18n';
 
 // Page colours (dark only).
 const C = {
   dark: {
     rank: '#6fd6ff',
     pinLine: 'rgba(164,139,255,0.55)',
-    pinShadow: (k: number) => `0px ${12 * k}px ${30 * k}px ${-14 * k}px rgba(143,117,255,0.8)`,
+    pinShadow: (k: number) => tr('0px {n}px {n2}px {n3}px rgba(143,117,255,0.8)', { n: 12 * k, n2: 30 * k, n3: -14 * k }),
     prog: 'rgba(255,255,255,0.1)',
     box: ['#2a3c7a', '#1a2754'] as const,
     boxFirst: ['#3a3f86', '#1f2a5c'] as const,
@@ -46,11 +47,11 @@ const POD_ROOM = 44; // space above the tallest box for the 1st photo and its cr
 
 type Period = 'week' | 'month' | 'all';
 const PERIODS: { k: Period; label: string; empty: string }[] = [
-  { k: 'week', label: 'This week', empty: 'this week' },
-  { k: 'month', label: 'This month', empty: 'this month' },
-  { k: 'all', label: 'All time', empty: 'yet' },
+  { k: 'week', label: tr('This week'), empty: tr('this week') },
+  { k: 'month', label: tr('This month'), empty: tr('this month') },
+  { k: 'all', label: tr('All time'), empty: 'yet' },
 ];
-const SHORT: Record<Period, string> = { week: 'Week', month: 'Month', all: 'All time' };
+const SHORT: Record<Period, string> = { week: tr('Week'), month: tr('Month'), all: tr('All time') };
 type Row = { rank: number; id: string; name: string; level: number; exp: number; avatar?: string | null };
 /** `savedAt`: shown from the saved copy read then, because the server can't be reached (#59). */
 type Board = { rows: Row[]; me: { rank: number; exp: number; above: { name: string; gap: number } | null } | null; savedAt?: number };
@@ -87,8 +88,8 @@ function useBoard(period: Period, scope: 'everyone' | 'friends', game: string | 
 }
 
 // Monthly prizes (#73, Yazan 2026-10-25), paid by lb_claim on the server when the month ends.
-const MONTH_PRIZE_ALL = 'MONTHLY PRIZES · 1ST 500 · 2ND 300 · 3RD 150 · 4TH TO 10TH 50 TOKENS';
-const MONTH_PRIZE_GAME = 'MONTHLY PRIZES · THE TOP 3 OF THIS GAME WIN 100 TOKENS EACH';
+const MONTH_PRIZE_ALL = tr('MONTHLY PRIZES · 1ST 500 · 2ND 300 · 3RD 150 · 4TH TO 10TH 50 TOKENS');
+const MONTH_PRIZE_GAME = tr('MONTHLY PRIZES · THE TOP 3 OF THIS GAME WIN 100 TOKENS EACH');
 
 const TOP = 72; // content area top (design px)
 
@@ -132,7 +133,7 @@ export function Leaderboard() {
   const aiTag = (id: string) =>
     isRivalRow(id) ? (
       <View style={[s.ai, { borderColor: t.accent }]}>
-        <Text style={[s.aiT, { color: t.accent }]}>AI</Text>
+        <Text style={[s.aiT, { color: t.accent }]}>{tr('AI')}</Text>
       </View>
     ) : null;
   const rows = board && board !== 'error' ? board.rows : [];
@@ -141,21 +142,21 @@ export function Leaderboard() {
   const per = PERIODS.find((x) => x.k === period)!;
   const note =
     board === 'error'
-      ? 'Could not load the board. Check your connection.'
+      ? tr('Could not load the board. Check your connection.')
       : board && !rows.length
         ? scope === 'friends' && !userId
-          ? 'Sign in to see your friends here.'
-          : `No EXP earned ${per.empty}${g ? ` in ${g.lead} ${g.em}` : ''}.`
+          ? tr('Sign in to see your friends here.')
+          : tr('No EXP earned {empty}{n}.', { empty: per.empty, n: g ? tr(' in {n}', { n: `${g.lead} ${g.em}`.trim() }) : '' })
         : null;
   // #11 (Yazan 2026-10-31): the offline line gets its own red line above the podium, so it never sits behind a name.
-  const offline = board && board !== 'error' && board.savedAt ? `Offline · last updated ${agoText(board.savedAt)}` : null;
+  const offline = board && board !== 'error' && board.savedAt ? tr('Offline · last updated {n}', { n: agoText(board.savedAt) }) : null;
   const sub = !userId
     ? null
     : !mine
-      ? 'EARN EXP TO JOIN THE BOARD'
+      ? tr('EARN EXP TO JOIN THE BOARD')
       : mine.above
-        ? `${num(mine.above.gap)} EXP TO PASS ${mine.above.name.toUpperCase()}`
-        : 'YOU LEAD THE BOARD';
+        ? tr('{n} EXP TO PASS {n2}', { n: num(mine.above.gap), n2: mine.above.name.toUpperCase() })
+        : tr('YOU LEAD THE BOARD');
   const prog = !mine ? 0 : mine.above ? mine.exp / (mine.exp + mine.above.gap) : 1;
   const scopeBtn = (k: 'everyone' | 'friends', label: string) => (
     <Pressable key={k} onPress={() => setScope(k)} accessibilityRole="tab" accessibilityState={{ selected: scope === k }}>
@@ -183,12 +184,12 @@ export function Leaderboard() {
           <View style={s.lb}>
             <View style={s.top}>
               <View style={s.scope}>
-                {scopeBtn('everyone', 'Everyone')}
-                {scopeBtn('friends', 'Friends')}
+                {scopeBtn('everyone', tr('Everyone'))}
+                {scopeBtn('friends', tr('Friends'))}
               </View>
               <View style={s.flt}>
                 <Pressable style={pill} onPress={() => setPick('game')} accessibilityRole="button">
-                  <Text style={[s.pillT, { color: t.mute }]} numberOfLines={1}>{`${g ? g.em : 'All games'} ▾`}</Text>
+                  <Text style={[s.pillT, { color: t.mute }]} numberOfLines={1}>{`${g ? g.em : tr('All games')} ▾`}</Text>
                 </Pressable>
                 <Pressable style={pill} onPress={() => setPick('period')} accessibilityRole="button">
                   <Text style={[s.pillT, { color: t.mute }]}>{`${SHORT[period]} ▾`}</Text>
@@ -204,7 +205,7 @@ export function Leaderboard() {
                   const first = b.place === 1;
                   if (!who) return <View key={b.place} style={[s.box, s.boxEmpty, { height: u(b.h * 0.6), borderColor: p.boxLine }]} />;
                   return (
-                    <Pressable key={b.place} disabled={!canOpen(who.id)} onPress={() => open(who)} style={[s.box, { height: u(b.h), borderColor: first ? 'rgba(255,215,106,0.4)' : p.boxLine }]} accessibilityRole="button" accessibilityHint="Open their profile">
+                    <Pressable key={b.place} disabled={!canOpen(who.id)} onPress={() => open(who)} style={[s.box, { height: u(b.h), borderColor: first ? 'rgba(255,215,106,0.4)' : p.boxLine }]} accessibilityRole="button" accessibilityHint={tr('Open their profile')}>
                       <LinearGradient colors={first ? p.boxFirst : p.box} style={[StyleSheet.absoluteFill, s.boxFill]} />
                       <View style={[s.face, { top: u(-b.f / 2 - 3), width: u(b.f + 4), height: u(b.f + 4), borderColor: b.m, boxShadow: `0px 0px ${u(14)}px ${b.m}66` }]}>
                         <PlayerFace slug={who.avatar || 'yara'} size={u(b.f - 2)} userId={who.id} still />
@@ -216,7 +217,7 @@ export function Leaderboard() {
                       ) : null}
                       <View style={{ height: u(b.f / 2 + 4) }} />
                       <Text style={[s.bName, { color: t.fg }, glowOf(who.id)]} numberOfLines={1}>
-                        {who.id === userId ? 'You' : who.name}
+                        {who.id === userId ? tr('You') : who.name}
                       </Text>
                       <View style={[s.bLv, s.bLvRow]}>
                         <LevelBadge level={who.level} size={u(14)} />
@@ -231,18 +232,18 @@ export function Leaderboard() {
             ) : null}
             <View style={s.list}>
               {rows.slice(3).map((r) => (
-                <Pressable key={r.id} disabled={!canOpen(r.id)} onPress={() => open(r)} style={[s.r, { backgroundColor: p.row, borderColor: r.id === userId ? t.accent : t.panelLine }]} accessibilityRole="button" accessibilityHint="Open their profile">
+                <Pressable key={r.id} disabled={!canOpen(r.id)} onPress={() => open(r)} style={[s.r, { backgroundColor: p.row, borderColor: r.id === userId ? t.accent : t.panelLine }]} accessibilityRole="button" accessibilityHint={tr('Open their profile')}>
                   <Text style={[s.rN, { color: t.mute }]}>{r.rank}</Text>
                   <PlayerFace slug={r.avatar || 'yara'} size={u(26)} userId={r.id} still />
                   <View style={s.rNm}>
                     <Text style={[s.rB, { color: r.id === userId ? t.accent : t.fg }, glowOf(r.id)]} numberOfLines={1}>
-                      {r.id === userId ? 'You' : r.name}
+                      {r.id === userId ? tr('You') : r.name}
                     </Text>
                     <LevelBadge level={r.level} size={u(14)} />
                     {aiTag(r.id)}
                   </View>
                   <Text style={[s.rS, { color: t.fg }]}>
-                    {num(r.exp)} <Text style={[s.rU, { color: t.mute }]}>EXP</Text>
+                    {num(r.exp)} <Text style={[s.rU, { color: t.mute }]}>{tr('EXP')}</Text>
                   </Text>
                 </Pressable>
               ))}
@@ -261,7 +262,7 @@ export function Leaderboard() {
         </View>
         <View style={s.pinB}>
           <View style={s.nmRow}>
-            <Text style={[s.you, { color: t.fg }]}>You</Text>
+            <Text style={[s.you, { color: t.fg }]}>{tr('You')}</Text>
             <LevelBadge level={me.level} progress={me.into / me.need} size={u(15)} />
           </View>
           {userId ? (
@@ -274,7 +275,7 @@ export function Leaderboard() {
           ) : (
             <Pressable onPress={() => router.push('/auth')} accessibilityRole="link">
               <Text style={[s.guest, { color: t.mute }]}>
-                Sign in to join the board. <Text style={{ color: t.accent, fontFamily: F.bodySemi }}>Sign in</Text>
+                {tr('Sign in to join the board.')} <Text style={{ color: t.accent, fontFamily: F.bodySemi }}>{tr('Sign in')}</Text>
               </Text>
             </Pressable>
           )}
@@ -284,10 +285,10 @@ export function Leaderboard() {
       {/* Filter menu: drops down under the filters, two columns; a tap anywhere else closes it. */}
       {pick ? (
         <>
-          <Pressable style={StyleSheet.absoluteFill} onPress={() => setPick(null)} accessibilityLabel="Close" />
+          <Pressable style={StyleSheet.absoluteFill} onPress={() => setPick(null)} accessibilityLabel={tr('Close')} />
           <View style={[s.menu, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
             {pick === 'game'
-              ? [opt('All games', game == null, () => setGame(null)), ...GAMES.map((x) => opt(`${x.lead} ${x.em}`, game === x.key, () => setGame(x.key)))]
+              ? [opt(tr('All games'), game == null, () => setGame(null)), ...GAMES.map((x) => opt(`${x.lead} ${x.em}`, game === x.key, () => setGame(x.key)))]
               : PERIODS.map((x) => opt(x.label, period === x.k, () => setPeriod(x.k)))}
           </View>
         </>
@@ -309,7 +310,7 @@ const s = StyleSheet.create({
   pillT: { fontFamily: F.bodySemi, fontSize: u(9), maxWidth: u(90) },
   pod: { flexDirection: 'row', alignItems: 'flex-end', gap: u(7), marginTop: u(POD_ROOM), marginBottom: u(12) },
   box: { flex: 1, alignItems: 'center', borderWidth: 1, borderTopLeftRadius: u(14), borderTopRightRadius: u(14), borderBottomLeftRadius: u(10), borderBottomRightRadius: u(10), paddingHorizontal: u(4) },
-  boxFill: { borderTopLeftRadius: u(13), borderTopRightRadius: u(13), borderBottomLeftRadius: u(9), borderBottomRightRadius: u(9) },
+  boxFill: { borderTopStartRadius: u(13), borderTopEndRadius: u(13), borderBottomStartRadius: u(9), borderBottomEndRadius: u(9) },
   boxEmpty: { opacity: 0.4 },
   face: { position: 'absolute', alignSelf: 'center', borderRadius: 999, borderWidth: u(2), alignItems: 'center', justifyContent: 'center', backgroundColor: '#0d1738' },
   crown: { position: 'absolute', alignSelf: 'center' },
@@ -332,7 +333,7 @@ const s = StyleSheet.create({
   offline: { fontFamily: F.bodySemi, fontSize: u(10.5), textAlign: 'center', marginTop: u(8) },
   note: { marginTop: u(60), marginBottom: u(20), textAlign: 'center', fontFamily: F.body, fontSize: u(11), lineHeight: u(15) },
   guest: { marginTop: u(3), fontFamily: F.body, fontSize: u(10.5), lineHeight: u(14) },
-  menu: { position: 'absolute', top: u(88 - TOP + 30), left: u(14), right: u(14), flexDirection: 'row', flexWrap: 'wrap', borderWidth: 1, borderRadius: u(16), paddingHorizontal: u(10), paddingVertical: u(4) },
+  menu: { position: 'absolute', top: u(88 - TOP + 30), start: u(14), end: u(14), flexDirection: 'row', flexWrap: 'wrap', borderWidth: 1, borderRadius: u(16), paddingHorizontal: u(10), paddingVertical: u(4) },
   opt: { width: '50%', paddingVertical: u(8), paddingHorizontal: u(4), borderBottomWidth: 1 },
   optT: { fontFamily: F.display, fontSize: u(12.5), lineHeight: u(16) },
   pin: { marginTop: u(6), marginBottom: u(80), marginHorizontal: u(14), height: u(66), flexDirection: 'row', alignItems: 'center', gap: u(12), paddingHorizontal: u(14), borderRadius: u(18), borderWidth: 1 },

@@ -8,6 +8,7 @@ import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import DATA from './licences.json';
+import { tr } from '@/i18n';
 
 type Pkg = { n: string; v: string; l: string; c: string; f?: string };
 const PKGS = DATA.packages as Pkg[];
@@ -21,10 +22,10 @@ const GROUPS = Object.entries(
 ).sort((a, b) => b[1].length - a[1].length);
 const FONTS = PKGS.filter((p) => p.f);
 const LOTTIE =
-  'Lottie Simple License (LottieFiles). The animation may be used for free in personal and commercial work, and may be changed. It may not be sold or shared on its own as an animation file, or used in a way that breaks the law.';
+  tr('Lottie Simple License (LottieFiles). The animation may be used for free in personal and commercial work, and may be changed. It may not be sold or shared on its own as an animation file, or used in a way that breaks the law.');
 
 const CC0 =
-  'Creative Commons Zero (CC0 1.0). The maker gave these sounds to the public domain: they may be used, changed and shared for any purpose, commercial included, without asking or giving credit. We credit Kenney anyway.';
+  tr('Creative Commons Zero (CC0 1.0). The maker gave these sounds to the public domain: they may be used, changed and shared for any purpose, commercial included, without asking or giving credit. We credit Kenney anyway.');
 
 /** Open-source licences (Session 4, linked from About): every package the app ships, grouped by licence, with the full texts. Built by scripts/build-licences.mjs. */
 export function LicencesPage() {
@@ -32,17 +33,17 @@ export function LicencesPage() {
   return (
     <Screen tab={null} glow={21} wide={460} symbols>
       <InfoScroll>
-        <Kicker>Open-source licences</Kicker>
-        <Rich text={'Built on *open source.*'} style={ui.H} />
-        <Text style={[ui.p, { color: c.mute }]}>{`MedNova uses ${PKGS.length} open-source packages and ${FONTS.length} font families. Tap a licence to see who made them and read its full text.`}</Text>
+        <Kicker>{tr('Open-source licences')}</Kicker>
+        <Rich text={tr('Built on *open source.*')} style={ui.H} />
+        <Text style={[ui.p, { color: c.mute }]}>{tr('MedNova uses {n} open-source packages and {n2} font families. Tap a licence to see who made them and read its full text.', { n: PKGS.length, n2: FONTS.length })}</Text>
         <View style={ui.xsec}>
-          <Group title="Fonts · SIL Open Font License 1.1" rows={FONTS.map((p) => p.f!)} text={TEXTS['OFL-1.1']} />
+          <Group title={tr('Fonts · SIL Open Font License 1.1')} rows={FONTS.map((p) => p.f!)} text={TEXTS['OFL-1.1']} />
           {/* List #43: the Trophy credit sits with the other credits instead of the intro. */}
-          <Group title="Animations · Lottie Simple License" rows={['Trophy win effect  from LottieFiles']} text={LOTTIE} />
+          <Group title={tr('Animations · Lottie Simple License')} rows={[tr('Trophy win effect  from LottieFiles')]} text={LOTTIE} />
           {/* #15: the app sounds are Kenney's CC0 packs since 2026-10-26. */}
-          <Group title="Sounds · CC0 1.0" rows={['Tap, right, wrong, win, time up and token sounds  by Kenney (kenney.nl)']} text={CC0} />
+          <Group title={tr('Sounds · CC0 1.0')} rows={[tr('Tap, right, wrong, win, time up and token sounds  by Kenney (kenney.nl)')]} text={CC0} />
           {/* Yazan 2026-11-12: the female voice lines were made with Chatterbox (MIT); the male lines are a friend's own recordings. */}
-          <Group title="Female voice lines · MIT" rows={['Made with Chatterbox  Copyright (c) 2025 Resemble AI']} text={TEXTS.MIT} />
+          <Group title={tr('Female voice lines · MIT')} rows={[tr('Made with Chatterbox  Copyright (c) 2025 Resemble AI')]} text={TEXTS.MIT} />
           {GROUPS.map(([l, list]) => (
             <Group key={l} title={`${l} · ${list.length}`} rows={list.map((p) => `${p.n} ${p.v}${p.c ? `  ${p.c}` : ''}`)} text={TEXTS[l]} />
           ))}
@@ -71,7 +72,7 @@ function Group({ title, rows, text }: { title: string; rows: string[]; text?: st
           ))}
           {text ? (
             <Pressable onPress={() => setFull(!full)} accessibilityRole="button">
-              <Text style={[s.more, { color: c.t.accent }]}>{full ? 'Hide the licence' : 'Read the licence'}</Text>
+              <Text style={[s.more, { color: c.t.accent }]}>{full ? tr('Hide the licence') : tr('Read the licence')}</Text>
             </Pressable>
           ) : null}
           {full && text ? (

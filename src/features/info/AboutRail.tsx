@@ -22,12 +22,12 @@ export function AboutRail({ progress }: { progress: SharedValue<number> }) {
 
 const s = StyleSheet.create({
   // .rail: right 8, top 20 / bottom 30 of the page (y=108..515)
-  rail: { position: 'absolute', right: u(8), top: u(20), bottom: u(30), width: u(2) },
+  rail: { position: 'absolute', end: u(8), top: u(20), bottom: u(30), width: u(2) },
   line: { ...StyleSheet.absoluteFill, borderRadius: u(2) },
   dot: {
     position: 'absolute',
     top: 0,
-    left: u(-3),
+    start: u(-3),
     width: u(8),
     height: u(8),
     borderRadius: u(4),

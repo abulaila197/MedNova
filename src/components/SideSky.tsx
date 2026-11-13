@@ -33,19 +33,19 @@ export function SideSky() {
   if (own) {
     // A page with its own design: its own background, mirrored, under the same navy header band.
     const flip = (left: number) => (
-      <View style={[s.edge, { left, width: FRAME_W, transform: [{ scaleX: -1 }] }]}>{own.node}</View>
+      <View style={[s.edge, { start: left, width: FRAME_W, transform: [{ scaleX: -1 }] }]}>{own.node}</View>
     );
     return (
       <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: THEMES.dark.sky, overflow: 'hidden' }]}>
         {flip(side - FRAME_W + 1)}
         {flip(side + FRAME_W - 1)}
-        {own.header ? <View style={{ position: 'absolute', left: 0, right: 0, top: 0, height: own.header, backgroundColor: THEMES.dark.sky }} /> : null}
+        {own.header ? <View style={{ position: 'absolute', start: 0, end: 0, top: 0, height: own.header, backgroundColor: THEMES.dark.sky }} /> : null}
       </View>
     );
   }
   const look = START.some((p) => path.startsWith(p)) ? LOOK.start : LOOK.page;
   const mirror = (left: number) => (
-    <View style={[s.edge, { left, width: FRAME_W, transform: [{ scaleX: -1 }] }]}>
+    <View style={[s.edge, { start: left, width: FRAME_W, transform: [{ scaleX: -1 }] }]}>
       <Image source={look.art} contentFit="fill" transition={0} accessibilityIgnoresInvertColors style={StyleSheet.absoluteFill} />
     </View>
   );
@@ -58,8 +58,8 @@ export function SideSky() {
       ) : (
         // the sign-in sky as approved: a soft shade towards the screen's edge
         <>
-          <LinearGradient colors={[SHADE, 'transparent']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={[s.edge, { left: 0, width: side }]} />
-          <LinearGradient colors={['transparent', SHADE]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={[s.edge, { left: side + FRAME_W, width: side }]} />
+          <LinearGradient colors={[SHADE, 'transparent']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={[s.edge, { start: 0, width: side }]} />
+          <LinearGradient colors={['transparent', SHADE]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={[s.edge, { start: side + FRAME_W, width: side }]} />
         </>
       )}
     </View>

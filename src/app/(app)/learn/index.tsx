@@ -1,6 +1,6 @@
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Text, TextInput, MAX_FONT_SCALE } from '@/components/AppText';
 import { LinearGradient } from 'expo-linear-gradient';
 import Animated, { interpolateColor, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue, type SharedValue } from 'react-native-reanimated';
@@ -22,8 +22,11 @@ import { PageTitle } from '@/features/learn/Title';
 import { useTheme } from '@/state/app';
 import { u, useScreen } from '@/theme/scale';
 import { F } from '@/theme/tokens';
+import { tr, isAr } from '@/i18n';
 
-const NAMES = ['Review', 'Dossiers', 'My diseases'];
+const WEB_RTL = Platform.OS === 'web' && isAr;
+
+const NAMES = [tr('Review'), tr('Dossiers'), tr('My diseases')];
 
 /** Learn: three pages swiped sideways (Today's review, Disease dossiers, My diseases) under a fixed row of page names. */
 export default function Learn() {
@@ -32,11 +35,11 @@ export default function Learn() {
   const x = useSharedValue(0);
   const pager = useRef<Animated.ScrollView>(null);
   const onScroll = useAnimatedScrollHandler((e) => {
-    x.value = e.contentOffset.x;
+    x.value = Math.abs(e.contentOffset.x); // a right-to-left page on the web counts its offset below zero
   });
   const [H, setH] = useState(0);
   const { data, reload } = useLearn();
-  const go = (i: number) => pager.current?.scrollTo({ x: i * W, animated: true });
+  const go = (i: number) => pager.current?.scrollTo({ x: (WEB_RTL ? -1 : 1) * i * W, animated: true });
   return (
     <Screen tab="learn" glow={6} wide={460} symbols>
       <View style={s.wds}>
@@ -106,7 +109,7 @@ function ReviewPage({ pile, reload }: { pile: Card[] | null; reload: () => Promi
   };
   return (
     <View style={[s.pg, s.flex]}>
-      <PageTitle first="Today's" em="review" small={card ? `${done + 1} of ${total}` : ''} />
+      <PageTitle first={tr('Today\'s')} em={tr('review')} small={card ? tr('{n} of {total}', { n: done + 1, total }) : ''} />
       <View style={[s.lpg, { backgroundColor: c.track }]}>
         <View style={[s.lpgFill, { width: `${total ? (done / total) * 100 : 0}%`, backgroundColor: t.accent }]} />
       </View>
@@ -115,26 +118,26 @@ function ReviewPage({ pile, reload }: { pile: Card[] | null; reload: () => Promi
           <FlipCard key={card.key} card={card} flipped={flipped} onPress={() => setFlipped((f) => !f)} />
           {flipped && card.kind === 'dossier' ? (
             <Pressable onPress={() => router.push(`/learn/dossier?id=${card.dossier.id}`)} style={s.open} accessibilityRole="link">
-              <Text style={[s.openT, { color: t.accent }]}>Open dossier ›</Text>
+              <Text style={[s.openT, { color: t.accent }]}>{tr('Open dossier ›')}</Text>
             </Pressable>
           ) : null}
           <View style={s.lrow}>
             <Pressable onPress={() => act(again)} style={[s.btn, s.again, { borderColor: c.againLine }]} accessibilityRole="button">
-              <Text style={[s.btnT, { color: c.againText }]}>Again</Text>
+              <Text style={[s.btnT, { color: c.againText }]}>{tr('Again')}</Text>
             </Pressable>
             <Pressable onPress={() => act(gotIt)} style={s.btnWrap} accessibilityRole="button">
               <LinearGradient colors={[c.gotA, c.gotB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.btn}>
-                <Text style={[s.btnT, { color: c.gotText }]}>Got it</Text>
+                <Text style={[s.btnT, { color: c.gotText }]}>{tr('Got it')}</Text>
               </LinearGradient>
             </Pressable>
           </View>
           {/* #28 (Yazan 2026-11-01): what the two buttons do. */}
-          <Text style={[s.how, { color: c.mute }]}>Again: see it later today · Got it: put it away</Text>
+          <Text style={[s.how, { color: c.mute }]}>{tr('Again: see it later today · Got it: put it away')}</Text>
         </>
       ) : pile ? (
         <View style={[s.empty, { borderColor: c.cardLine }]}>
-          <Text style={[s.emptyH, { color: t.fg }]}>All caught up</Text>
-          <Text style={[s.emptyT, { color: c.mute }]}>Anything you miss in a game shows up here as a card, so you can go over it.</Text>
+          <Text style={[s.emptyH, { color: t.fg }]}>{tr('All caught up')}</Text>
+          <Text style={[s.emptyT, { color: c.mute }]}>{tr('Anything you miss in a game shows up here as a card, so you can go over it.')}</Text>
         </View>
       ) : null}
     </View>
@@ -167,11 +170,11 @@ function DossiersPage({ missed }: { missed: Map<string, { count: number; last: n
   const hits = q.trim() ? [...(missed?.keys() ?? [])].map((id) => DOSSIERS.get(id)!).filter((d) => d && norm(d.name).includes(norm(q))) : null;
   return (
     <ScrollPage>
-      <PageTitle first="Disease" em="dossiers" small={`${missed?.size ?? 0} missed`} />
+      <PageTitle first={tr('Disease')} em={tr('dossiers')} small={tr('{n} missed', { n: missed?.size ?? 0 })} />
       <TextInput
         value={q}
         onChangeText={setQ}
-        placeholder="Search your misses"
+        placeholder={tr('Search your misses')}
         placeholderTextColor={c.srchText}
         style={[s.srch, s.srchT, { backgroundColor: c.srchBg, borderColor: c.srchLine, color: t.fg }]}
         autoCorrect={false}
@@ -189,7 +192,7 @@ function DossiersPage({ missed }: { missed: Map<string, { count: number; last: n
               </Pressable>
             ))
           ) : (
-            <Text style={[s.emptyT, { color: c.mute }]}>No missed disease matches that.</Text>
+            <Text style={[s.emptyT, { color: c.mute }]}>{tr('No missed disease matches that.')}</Text>
           )}
         </View>
       ) : (
@@ -202,11 +205,11 @@ function DossiersPage({ missed }: { missed: Map<string, { count: number; last: n
   );
 }
 
-const STATE = { waiting: 'Waiting', approved: 'Approved', declined: 'Declined' } as const;
+const STATE = { waiting: tr('Waiting'), approved: tr('Approved'), declined: tr('Declined') } as const;
 
 /** Cases open straight into a Diagnostic Pursuit practice round (no EXP, no Sparks), before approval too (#21). */
 async function playCase(k: CustomCase) {
-  const play = await startPlay('the-diagnostic-pursuit', 'solo', { difficulty: 'Medium', cases: 1, custom: customId(k.id) });
+  const play = await startPlay('the-diagnostic-pursuit', 'solo', { difficulty: tr('Medium'), cases: 1, custom: customId(k.id) });
   router.push(`/play/the-diagnostic-pursuit/run?play=${play.id}` as never);
 }
 
@@ -234,32 +237,32 @@ function CasesPage() {
     useCallback(() => {
       setErr('');
       // Offline with a saved copy: the list shows with the offline line instead of an error (#59).
-      loadCases().catch(() => !useCases.getState().list && setErr('Could not load My diseases. Check your connection.'));
+      loadCases().catch(() => !useCases.getState().list && setErr(tr('Could not load My diseases. Check your connection.')));
       // eslint-disable-next-line react-hooks/exhaustive-deps -- signedIn only re-runs the load when the account changes while the page is open
     }, [signedIn]),
   );
   const rows = [
-    ...(list ?? []).map((k) => ({ key: `case:${k.id}`, at: k.created_at, name: k.diagnosis, sub: `Race to Diagnosis · ${k.gender[0]}, ${k.age}`, status: k.status, play: k.answer_id && k.status !== 'declined' ? () => playCase(k) : null })),
+    ...(list ?? []).map((k) => ({ key: `case:${k.id}`, at: k.created_at, name: k.diagnosis, sub: tr('Race to Diagnosis · {n}, {age}', { n: k.gender[0], age: k.age }), status: k.status, play: k.answer_id && k.status !== 'declined' ? () => playCase(k) : null })),
     ...(words ?? []).map((w) => ({ key: `word:${w.id}`, at: w.created_at, name: wordTitle(w), sub: gameLabel(w.game), status: w.status, play: w.status !== 'declined' ? () => playWord(w) : null })),
   ].sort((x, y) => y.at.localeCompare(x.at));
   const go = (to: string) => router.push((signedIn ? to : '/auth') as never);
   return (
     <ScrollPage>
-      <PageTitle first="My" em="diseases" small={`${rows.length}`} />
+      <PageTitle first={tr('My')} em={tr('diseases')} small={`${rows.length}`} />
       {signedIn ? (
         // One button for every game, Race to Diagnosis cases included (Yazan 2026-11-12).
         <Pressable onPress={() => go('/learn/new-word')} style={[s.newc, { borderColor: c.newcLine, backgroundColor: c.newcBg }]} accessibilityRole="button">
-          <Text style={[s.newcT, { color: t.accent }]}>+ Create your own</Text>
+          <Text style={[s.newcT, { color: t.accent }]}>{tr('+ Create your own')}</Text>
         </Pressable>
       ) : (
         <Pressable onPress={() => go('/auth')} style={[s.newc, { borderColor: c.newcLine, backgroundColor: c.newcBg }]} accessibilityRole="button">
-          <Text style={[s.newcT, { color: t.accent }]}>Sign in to write your own cases and words</Text>
+          <Text style={[s.newcT, { color: t.accent }]}>{tr('Sign in to write your own cases and words')}</Text>
         </Pressable>
       )}
       <OfflineLine at={savedAt} />
       {err ? <Text style={[s.csA, { color: t.error }]}>{err}</Text> : null}
       {signedIn && list && !rows.length ? (
-        <Text style={[s.csA, { color: c.mute }]}>Nothing yet. Write a case or add a word for Sketch It, Six Word Tries, Streak Master or Imposter. You can practise it straight away; once approved it plays in rooms you host, and pays 10 tokens.</Text>
+        <Text style={[s.csA, { color: c.mute }]}>{tr('Nothing yet. Write a case or add a word for Sketch It, Six Word Tries, Streak Master or Imposter. You can practise it straight away; once approved it plays in rooms you host, and pays 10 tokens.')}</Text>
       ) : null}
       <View>
         {rows.map((r, i) => (
@@ -269,9 +272,9 @@ function CasesPage() {
               <Text style={[s.csA, { color: c.mute }]}>{`${r.sub} · ${STATE[r.status]}`}</Text>
             </View>
             {r.play ? (
-              <Pressable onPress={() => r.play!().catch(() => setErr('Could not start it. Try again.'))} accessibilityRole="button" accessibilityLabel={`Practise ${r.name}`}>
+              <Pressable onPress={() => r.play!().catch(() => setErr(tr('Could not start it. Try again.')))} accessibilityRole="button" accessibilityLabel={tr('Practise {name}', { name: r.name })}>
                 <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.play}>
-                  <Text style={[s.playT, { color: t.onGrad }]}>Practise</Text>
+                  <Text style={[s.playT, { color: t.onGrad }]}>{tr('Practise')}</Text>
                 </LinearGradient>
               </Pressable>
             ) : (
@@ -344,12 +347,12 @@ const s = StyleSheet.create({
     paddingHorizontal: u(2),
   },
   csL: { flexShrink: 1, gap: u(3) },
-  play: { marginLeft: 'auto', height: u(24), paddingHorizontal: u(14), borderRadius: 999, justifyContent: 'center' },
+  play: { marginStart: 'auto', height: u(24), paddingHorizontal: u(14), borderRadius: 999, justifyContent: 'center' },
   playT: { fontFamily: F.bodyBold, fontSize: u(10) },
   csB: { fontFamily: F.display, fontSize: u(15), lineHeight: u(18) },
   csA: { fontFamily: F.body, fontSize: u(10), lineHeight: u(12) },
   csE: {
-    marginLeft: 'auto',
+    marginStart: 'auto',
     flexShrink: 0,
     fontFamily: F.mono,
     fontSize: u(8.5),

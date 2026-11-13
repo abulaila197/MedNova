@@ -7,6 +7,7 @@ import { tapped } from '@/lib/sound';
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
+import { tr } from '@/i18n';
 
 // Yazan's wallpapers and merch photos (2026-10-13). w11-w30 (2026-11-01, Group 11): the newer characters, 15 alone
 // and 5 small groups. Merch (2026-10-27): mugs between the clothes, m02 the black mug kept from the first set.
@@ -80,7 +81,7 @@ export function Shelf({ lead, em, note, photos, to }: { lead: string; em: string
   const n = hand.length;
   const step = 30;
   return (
-    <Pressable onPress={open} style={[s.card, { backgroundColor: t.panel, borderColor: t.panelLine }]} accessibilityRole="button" accessibilityLabel={`${lead} ${em}, open`}>
+    <Pressable onPress={open} style={[s.card, { backgroundColor: t.panel, borderColor: t.panelLine }]} accessibilityRole="button" accessibilityLabel={tr('{lead} {em}, open', { lead, em })}>
       <View style={s.top}>
         <Text style={[s.kick, { color: t.kick }]}>{`${lead} ${em}`.toUpperCase()}</Text>
         {note ? <Text style={[s.note, { color: t.mute }]}>{note}</Text> : null}
@@ -98,7 +99,7 @@ export function Shelf({ lead, em, note, photos, to }: { lead: string; em: string
               key={i}
               style={[
                 s.photo,
-                { left: u(i * step), top: u(6 + lift), borderColor: t.panel, transform: [{ rotate: `${tilt}deg` }], zIndex: i },
+                { start: u(i * step), top: u(6 + lift), borderColor: t.panel, transform: [{ rotate: `${tilt}deg` }], zIndex: i },
               ]}>
               <Image source={src} style={s.img} contentFit="cover" transition={0} cachePolicy="memory" />
             </View>
@@ -108,7 +109,7 @@ export function Shelf({ lead, em, note, photos, to }: { lead: string; em: string
           style={[
             s.photo,
             s.plus,
-            { left: u(n * step), top: u(6), borderColor: t.accent, backgroundColor: t.chip, zIndex: n, transform: [{ rotate: '10deg' }] },
+            { start: u(n * step), top: u(6), borderColor: t.accent, backgroundColor: t.chip, zIndex: n, transform: [{ rotate: '10deg' }] },
           ]}>
           <Text style={[s.plusT, { color: t.accent }]}>+</Text>
         </View>
@@ -124,7 +125,7 @@ const s = StyleSheet.create({
   note: { fontFamily: F.body, fontSize: u(9.5) },
   title: { fontFamily: F.display, fontSize: u(20), lineHeight: u(23), marginTop: u(4) },
   row: { marginTop: u(8) },
-  photo: { position: 'absolute', width: u(W), height: u(H), borderRadius: u(10), borderWidth: u(2), overflow: 'hidden', boxShadow: '0 6px 14px rgba(0,0,0,0.35)', transformOrigin: 'bottom center' },
+  photo: { position: 'absolute', width: u(W), height: u(H), borderRadius: u(10), borderWidth: u(2), overflow: 'hidden', boxShadow: tr('0 6px 14px rgba(0,0,0,0.35)'), transformOrigin: 'bottom center' },
   img: { width: '100%', height: '100%' },
   plus: { alignItems: 'center', justifyContent: 'center', borderStyle: 'dashed', borderWidth: 1.5 },
   plusT: { fontFamily: F.display, fontSize: u(30), lineHeight: u(34) },

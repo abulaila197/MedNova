@@ -14,6 +14,7 @@ import { F } from '@/theme/tokens';
 import { Bolt, SPARK } from '@/features/sparks/Bolt';
 
 import { CALENDAR_DAYS, dayPrize, daySparks } from './prizes';
+import { tr } from '@/i18n';
 
 type Props = {
   /** Calendar day (1-30) today's claim lands on. */
@@ -49,7 +50,7 @@ export function DailyPopup({ day, collected, signedIn, busy, error, onCollect, o
   const prize = dayPrize(day);
   // Today's Sparks know today's date (the weekend Sparks); later days show only the big days' Sparks.
   const sparks = daySparks(day, new Date());
-  const and = sparks ? ` + ${sparks} Sparks` : '';
+  const and = sparks ? tr(' + {sparks} Sparks', { sparks }) : '';
   const rows = Array.from({ length: Math.ceil(CALENDAR_DAYS / COLS) }, (_, r) => r);
   const nextPrize = dayPrize((day % CALENDAR_DAYS) + 1);
   const state = (d: number) => (d < day || (d === day && collected) ? 'done' : d === day ? 'today' : 'later');
@@ -65,7 +66,7 @@ export function DailyPopup({ day, collected, signedIn, busy, error, onCollect, o
             },
           ]}
           onPress={onClose}
-          accessibilityLabel="Close"
+          accessibilityLabel={tr('Close')}
         />
       </Animated.View>
       <Animated.View
@@ -82,14 +83,14 @@ export function DailyPopup({ day, collected, signedIn, busy, error, onCollect, o
         ]}
       >
         <View style={s.top}>
-          <Text style={[s.kick, { color: t.kick }]}>{`DAY ${day} OF 30`}</Text>
-          <Pressable onPress={onClose} hitSlop={10} accessibilityLabel="Close">
+          <Text style={[s.kick, { color: t.kick }]}>{tr('DAY {day} OF 30', { day })}</Text>
+          <Pressable onPress={onClose} hitSlop={10} accessibilityLabel={tr('Close')}>
             <Text style={{ color: t.mute, fontSize: u(15) }}>×</Text>
           </Pressable>
         </View>
         <Text style={[s.title, { color: t.fg }]}>
-          {"Today's "}
-          <Text style={[s.title, { color: t.accent, fontFamily: F.displayItalic }]}>reward</Text>
+          {tr('Today\'s ')}
+          <Text style={[s.title, { color: t.accent, fontFamily: F.displayItalic }]}>{tr('reward')}</Text>
         </Text>
 
         <View style={[s.grid, s.pack, { borderColor: t.panelLine }]}>
@@ -116,7 +117,7 @@ export function DailyPopup({ day, collected, signedIn, busy, error, onCollect, o
         {signedIn ? (
           collected ? (
             <Animated.View entering={FadeIn.duration(300).delay(250)}>
-              <Text style={[s.note, { color: t.soft }]}>{`+${prize} tokens${and} added! Come back tomorrow for ${nextPrize} more.`}</Text>
+              <Text style={[s.note, { color: t.soft }]}>{tr('+{prize} tokens{and} added! Come back tomorrow for {nextPrize} more.', { prize, and, nextPrize })}</Text>
             </Animated.View>
           ) : (
             <Pressable
@@ -127,20 +128,20 @@ export function DailyPopup({ day, collected, signedIn, busy, error, onCollect, o
             >
               <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={s.btn}>
                 <TokenCoin size={u(16)} progress={0} track="transparent" />
-                <Text style={[s.btnT, { color: t.onGrad }]}>{`Collect ${prize} tokens${and}`}</Text>
+                <Text style={[s.btnT, { color: t.onGrad }]}>{tr('Collect {prize} tokens{and}', { prize, and })}</Text>
               </LinearGradient>
             </Pressable>
           )
         ) : (
           <Pressable onPress={onSignIn} accessibilityRole="button" style={s.btnWrap}>
             <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={s.btn}>
-              <Text style={[s.btnT, { color: t.onGrad }]}>Sign in to collect</Text>
+              <Text style={[s.btnT, { color: t.onGrad }]}>{tr('Sign in to collect')}</Text>
             </LinearGradient>
           </Pressable>
         )}
         {error ? <Text style={[s.small, { color: t.error }]}>{error}</Text> : null}
         <Text style={[s.small, { color: t.mute }]}>
-          {signedIn ? 'Missed a day? No problem, you pick up where you left off.' : 'Your rewards are saved to your account.'}
+          {signedIn ? tr('Missed a day? No problem, you pick up where you left off.') : tr('Your rewards are saved to your account.')}
         </Text>
       </Animated.View>
     </View>
@@ -200,7 +201,7 @@ function Blister({ t, d, w, h, st, wide, popped, sparks }: CellP) {
       ) : wide ? (
         <Animated.View exiting={ZoomOut.duration(260)} style={s.month}>
           <Envelope size={h * 0.5} t={t} />
-          <Text style={[s.amtBig, { color: today ? t.accent : t.fg }]}>{`Day 30 · +${prize}`}</Text>
+          <Text style={[s.amtBig, { color: today ? t.accent : t.fg }]}>{tr('Day 30 · +{prize}', { prize })}</Text>
           {sparks ? <SparkTag n={sparks} big /> : null}
         </Animated.View>
       ) : (

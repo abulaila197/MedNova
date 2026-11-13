@@ -9,6 +9,7 @@ import { copyOf, keepCopy } from '@/lib/copies';
 import { supabase } from '@/lib/supabase';
 import { syncAccount } from '@/lib/sync';
 import { onAccountSwitch } from '@/state/accountSwitch';
+import { tr } from '@/i18n';
 
 export type Week = { kind: 'game'; slot: number; game: string } | { kind: 'mode'; slot: number; mode: 'online' | 'solo' | 'offline' };
 export type ChestKind = 'wooden' | 'golden' | 'diamond';
@@ -38,7 +39,7 @@ export const EPIC_RUN = 4;
 /** 9 game weeks, then a Vs rivals, a Solo and a Pass the phone week. 12 since 2026-11-12 (Quick Fire Quiz, The Imposter
  *  and Sketch It out, Four of a Kind and Spot the Flaw in; server rounds_week matches after the build-day SQL). */
 export const CYCLE_WEEKS = 12;
-export const CHEST_NAME: Record<ChestKind, string> = { wooden: 'Wooden chest', golden: 'Golden chest', diamond: 'Diamond chest' };
+export const CHEST_NAME: Record<ChestKind, string> = { wooden: tr('Wooden chest'), golden: tr('Golden chest'), diamond: tr('Diamond chest') };
 // The server's 'online' mode week counts Vs rivals matches now (2026-11-10, SQL with the G7 file).
 const MODE_WEEK: Record<string, string> = { online: 'Vs rivals week', solo: 'Solo week', offline: 'Pass the phone week' };
 const MODE_NAME: Record<string, string> = { online: 'Vs rivals', solo: 'Solo', offline: 'Pass the phone' };
@@ -55,7 +56,7 @@ export const weekGoal = (w: Week) =>
 
 export const timeLeft = (ends: number) => {
   const h = Math.max(0, Math.floor((ends - Date.now()) / 3600000));
-  return h >= 24 ? `${Math.floor(h / 24)}d ${h % 24}h` : `${h}h`;
+  return h >= 24 ? tr('{d}d {h}h', { d: Math.floor(h / 24), h: h % 24 }) : tr('{h}h', { h });
 };
 
 /** `failed`: the last read did not reach the server (offline) (AP8). */

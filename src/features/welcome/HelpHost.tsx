@@ -8,6 +8,7 @@ import { usePopups } from '@/state/popups';
 import { HELP } from './help';
 import { useWelcome } from './WelcomeHost';
 import { WelcomeTour } from './WelcomeTour';
+import { tr } from '@/i18n';
 
 /** Shows a page's help once, on its first visit after the welcome tour (Yazan 2026-10-21). Seen is kept on the account too (2026-11-04). */
 export function HelpHost() {
@@ -39,5 +40,5 @@ export function HelpHost() {
     markHelpSeen(page);
     setPage(null);
   };
-  return <WelcomeTour key={page} stops={HELP[page]} lastLabel="Got it" skipLabel="Skip" onClose={close} />;
+  return <WelcomeTour key={page} stops={HELP[page]} lastLabel={tr('Got it')} skipLabel={tr('Skip')} onClose={close} />;
 }

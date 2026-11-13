@@ -8,6 +8,7 @@ import { TokenCoin } from '@/components/PulseStar';
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
+import { tr } from '@/i18n';
 
 /**
  * Congratulations pop-up after a redeem (hunt prize, invite code): the coin, the tokens and one line. The shop also uses it
@@ -21,9 +22,9 @@ export function Congrats({
   line,
   onClose,
   big,
-  kick = 'CONGRATULATIONS',
+  kick = tr('CONGRATULATIONS'),
   coin = true,
-  button = 'Collect',
+  button = tr('Collect'),
   onButton,
   alt,
 }: {
@@ -45,7 +46,7 @@ export function Congrats({
   if (!open) return null;
   return (
     <Modal transparent visible animationType="fade" onRequestClose={onClose}>
-      <Pressable style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(3,4,12,0.78)' }]} onPress={onClose} accessibilityLabel="Close" />
+      <Pressable style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(3,4,12,0.78)' }]} onPress={onClose} accessibilityLabel={tr('Close')} />
       <View style={s.mid} pointerEvents="box-none">
         <Animated.View entering={safeEnter(ZoomIn.springify().damping(14))} style={[s.card, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
           {coin ? (
@@ -55,7 +56,7 @@ export function Congrats({
           ) : null}
           <Text style={[s.kick, { color: t.kick }]}>{kick}</Text>
           <Text style={[s.h, { color: t.fg }]}>{title}</Text>
-          {big === '' ? null : <Text style={[s.big, { color: t.accent }]}>{big ?? `+${tokens} tokens`}</Text>}
+          {big === '' ? null : <Text style={[s.big, { color: t.accent }]}>{big ?? tr('+{tokens} tokens', { tokens })}</Text>}
           <Text style={[s.p, { color: t.mute }]}>{line}</Text>
           <Pressable onPress={onButton ?? onClose} accessibilityRole="button" style={{ alignSelf: 'stretch' }}>
             <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.btn}>

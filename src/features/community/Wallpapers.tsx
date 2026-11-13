@@ -13,6 +13,7 @@ import { tapped } from '@/lib/sound';
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
+import { tr } from '@/i18n';
 
 function WallPost({ src, id }: { src: ImageSourcePropType; id: string }) {
   const t = useTheme();
@@ -24,23 +25,23 @@ function WallPost({ src, id }: { src: ImageSourcePropType; id: string }) {
     setSaved('saving');
     setSaved(await saveWallpaper(src, `mednova-wallpaper-${id.slice(1)}`));
   });
-  const saveLabel = saved === 'saving' ? 'Saving…' : saved === 'saved' ? 'Saved' : saved === 'denied' ? 'Allow photos to save' : saved === 'error' ? 'Try again' : 'Save';
+  const saveLabel = saved === 'saving' ? tr('Saving…') : saved === 'saved' ? tr('Saved') : saved === 'denied' ? tr('Allow photos to save') : saved === 'error' ? tr('Try again') : tr('Save');
   return (
     <View style={[s.post, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
       <View style={s.by}>
         <PulseStar width={u(18)} height={u(18)} glow={0.3} />
-        <Text style={[s.who, { color: t.fg }]}>MedNova</Text>
+        <Text style={[s.who, { color: t.fg }]}>{tr('MedNova')}</Text>
       </View>
       {/* The frame sets the shape; a bare Image takes the file's own height on web. */}
       <View style={s.photo}>
-        <Image source={src} style={s.fill} contentFit="cover" transition={0} cachePolicy="disk" recyclingKey={id} accessibilityLabel={`Wallpaper ${Number(id.slice(1))}`} />
+        <Image source={src} style={s.fill} contentFit="cover" transition={0} cachePolicy="disk" recyclingKey={id} accessibilityLabel={tr('Wallpaper {Number}', { Number: Number(id.slice(1)) })} />
       </View>
       <View style={s.acts}>
-        <Pressable onPress={tapped(like.toggle)} style={[s.act, { borderColor: liked ? t.accent : t.chipLine, backgroundColor: t.chip }]} accessibilityRole="button" accessibilityState={{ selected: liked }} accessibilityLabel={liked ? 'Unlike' : 'Like'}>
+        <Pressable onPress={tapped(like.toggle)} style={[s.act, { borderColor: liked ? t.accent : t.chipLine, backgroundColor: t.chip }]} accessibilityRole="button" accessibilityState={{ selected: liked }} accessibilityLabel={liked ? tr('Unlike') : tr('Like')}>
           <Text style={[s.ico, { color: liked ? t.accent : t.mute }]}>{liked ? '♥' : '♡'}</Text>
           <Text style={[s.actT, { color: liked ? t.accent : t.fg }]}>{like.n}</Text>
         </Pressable>
-        <Pressable onPress={save} style={[s.act, { borderColor: saved === 'saved' ? t.accent : t.chipLine, backgroundColor: t.chip }]} accessibilityRole="button" accessibilityLabel="Save to photos">
+        <Pressable onPress={save} style={[s.act, { borderColor: saved === 'saved' ? t.accent : t.chipLine, backgroundColor: t.chip }]} accessibilityRole="button" accessibilityLabel={tr('Save to photos')}>
           <Text style={[s.ico, { color: saved === 'saved' ? t.accent : t.mute }]}>⤓</Text>
           <Text style={[s.actT, { color: saved === 'saved' ? t.accent : t.fg }]}>{saveLabel}</Text>
         </Pressable>
@@ -70,11 +71,11 @@ export function Wallpapers() {
         removeClippedSubviews
         ListHeaderComponent={
           <View style={{ gap: u(14), paddingBottom: u(14) }}>
-            <Back label="Community" fallback="/community" />
+            <Back label={tr('Community')} fallback="/community" />
             <View>
-              <Text style={[s.kick, { color: t.kick }]}>NOVA COMMUNITY</Text>
+              <Text style={[s.kick, { color: t.kick }]}>{tr('NOVA COMMUNITY')}</Text>
               <Text style={[s.h2, { color: t.white }]}>
-                Nova <Text style={{ fontFamily: F.displayItalic, color: t.accent }}>Wallpapers</Text>
+                {tr('Nova')} <Text style={{ fontFamily: F.displayItalic, color: t.accent }}>{tr('Wallpapers')}</Text>
               </Text>
             </View>
           </View>

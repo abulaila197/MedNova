@@ -1,4 +1,5 @@
 import Svg, { Circle, Defs, Ellipse, G, LinearGradient, Path, RadialGradient, Stop } from 'react-native-svg';
+import { tr } from '@/i18n';
 
 // Ornate frames (Yazan 2026-10-13: "مزخرفة", fancy). Same 100 x 100 box as Frame.tsx; the face fills radius 38.
 const C = 50;
@@ -28,7 +29,7 @@ function curl(a: number, r: number, dir: 1 | -1, size = 1) {
 }
 function Curl({ a, r, dir, color, size = 1, w = 0.7 }: { a: number; r: number; dir: 1 | -1; color: string; size?: number; w?: number }) {
   const [x, y] = pt(r, a);
-  return <Path d={curl(a, r, dir, size)} transform={`translate(${x},${y}) rotate(${deg(a) + 90})`} stroke={color} strokeWidth={w} fill="none" strokeLinecap="round" />;
+  return <Path d={curl(a, r, dir, size)} transform={tr('translate({x},{y}) rotate({n})', { x, y, n: deg(a) + 90 })} stroke={color} strokeWidth={w} fill="none" strokeLinecap="round" />;
 }
 
 function Beads({ r, n, color, size = 0.8, skip = [] as number[] }: { r: number; n: number; color: string; size?: number; skip?: number[] }) {
@@ -47,7 +48,7 @@ function Beads({ r, n, color, size = 0.8, skip = [] as number[] }: { r: number; 
 function Gem({ a, r, len, wid, id, edge }: { a: number; r: number; len: number; wid: number; id: string; edge: string }) {
   const [x, y] = pt(r, a);
   return (
-    <G transform={`translate(${x},${y}) rotate(${deg(a) + 90})`}>
+    <G transform={tr('translate({x},{y}) rotate({n})', { x, y, n: deg(a) + 90 })}>
       <Path d={`M0,${-len} L${wid},0 L0,${len * 0.55} L${-wid},0 Z`} fill={`url(#${id})`} stroke={edge} strokeWidth={0.5} />
       <Path d={`M0,${-len} L0,${len * 0.55} M${-wid},0 L${wid},0`} stroke="#fff" strokeOpacity={0.45} strokeWidth={0.35} />
     </G>
@@ -260,7 +261,7 @@ export function AuroraMoving() {
         const c = HUES[i % HUES.length];
         const [x, y] = pt(44.5, a);
         return (
-          <G key={i} transform={`translate(${x},${y}) rotate(${deg(a) + 90}) scale(1.25)`}>
+          <G key={i} transform={tr('translate({x},{y}) rotate({n}) scale(1.25)', { x, y, n: deg(a) + 90 })}>
             {/* a glass petal with a lit edge */}
             <Path d="M0,-6.2 C3.6,-3.6 3.6,1.6 0,3.2 C-3.6,1.6 -3.6,-3.6 0,-6.2 Z" fill={c} fillOpacity={0.78} stroke="#fff" strokeOpacity={0.7} strokeWidth={0.35} />
             <Path d="M0,-5 C1.6,-3 1.4,0 0,1.6" stroke="#fff" strokeOpacity={0.75} strokeWidth={0.45} fill="none" />

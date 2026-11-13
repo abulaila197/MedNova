@@ -13,7 +13,8 @@ const files = (dir: string): string[] =>
     if (statSync(p).isDirectory()) return n === '__tests__' ? [] : files(p);
     return /\.(tsx?|jsx?)$/.test(n) ? [p] : [];
   });
-const code = files(SRC).map((p) => ({ path: relative(process.cwd(), p).split('\\').join('/'), text: readFileSync(p, 'utf8') }));
+// The Arabic dictionaries (src/i18n/ar*.ts) only hold texts keyed by their English, so they are not code here.
+const code = files(SRC).filter((p) => !/[\\/]i18n[\\/]ar[\w-]*\.ts$/.test(p)).map((p) => ({ path: relative(process.cwd(), p).split('\\').join('/'), text: readFileSync(p, 'utf8') }));
 const where = (re: RegExp) => code.filter((f) => re.test(f.text)).map((f) => f.path);
 
 test('the Pulse star outline exists only in PulseStar.tsx', () => {

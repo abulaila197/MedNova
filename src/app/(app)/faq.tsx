@@ -10,6 +10,7 @@ import { Fade } from '@/components/Fade';
 import { InfoScroll, Kicker, Rich, s as ui, useInfo } from '@/features/info/ui';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
+import { tr } from '@/i18n';
 
 const SEARCH = 'search';
 
@@ -31,12 +32,12 @@ export default function Page() {
   return (
     <Screen tab={null} glow={21} under={<Orb />} wide={460} symbols>
       <InfoScroll>
-        <Kicker>MedNova · Support</Kicker>
-        <Rich text={'Answers before\nthe *next case.*'} style={[ui.H, s.H]} />
+        <Kicker>{tr('MedNova · Support')}</Kicker>
+        <Rich text={tr('Answers before\nthe *next case.*')} style={[ui.H, s.H]} />
 
         <Fade veil from={0.85} horizontal style={s.areasWrap}>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={s.areas}>
-            <Pressable onPress={() => setArea(SEARCH)} accessibilityRole="button" accessibilityLabel="Search questions" style={[s.area, s.searchChip, { backgroundColor: c.surf, borderColor: area === SEARCH ? c.areaOnLine : c.line }]}>
+            <Pressable onPress={() => setArea(SEARCH)} accessibilityRole="button" accessibilityLabel={tr('Search questions')} style={[s.area, s.searchChip, { backgroundColor: c.surf, borderColor: area === SEARCH ? c.areaOnLine : c.line }]}>
               <SearchGlyph color={area === SEARCH ? c.fg : c.mute} />
             </Pressable>
             {CHAPTERS.map((x) => {
@@ -76,12 +77,12 @@ export default function Page() {
             <TextInput
               value={query}
               onChangeText={setQuery}
-              placeholder="Search questions"
+              placeholder={tr('Search questions')}
               placeholderTextColor={c.mute}
               autoFocus
               style={[s.search, { backgroundColor: c.surf, borderColor: c.line, color: c.fg }]}
             />
-            {query.trim() && !found.length ? <Text style={[s.none, { color: c.mute }]}>No question matches “{query.trim()}”.</Text> : null}
+            {query.trim() && !found.length ? <Text style={[s.none, { color: c.mute }]}>{tr('No question matches “{trim}”.', { trim: query.trim() })}</Text> : null}
             <View style={s.found}>
               {found.map((f) => (
                 <Card key={f.q} f={f} open={!!open[f.q]} onPress={() => toggle(f.q)} />
@@ -148,12 +149,12 @@ function Orb() {
 
 const s = StyleSheet.create({
   H: { fontSize: u(31), lineHeight: u(29.45), letterSpacing: u(-0.31) },
-  orb: { position: 'absolute', left: u(132), top: u(40), width: u(240), height: u(240) },
+  orb: { position: 'absolute', start: u(132), top: u(40), width: u(240), height: u(240) },
   // .areas: full-bleed swipeable row, fades out at the right edge
   areasWrap: { marginTop: u(14), marginHorizontal: u(-18) },
   areas: { paddingHorizontal: u(18), gap: u(6) },
-  area: { flexDirection: 'row', alignItems: 'center', gap: u(6), height: u(30), paddingLeft: u(6), paddingRight: u(10), borderRadius: u(12), borderWidth: 1 },
-  searchChip: { width: u(25), paddingLeft: 0, paddingRight: 0, justifyContent: 'center' },
+  area: { flexDirection: 'row', alignItems: 'center', gap: u(6), height: u(30), paddingStart: u(6), paddingEnd: u(10), borderRadius: u(12), borderWidth: 1 },
+  searchChip: { width: u(25), paddingStart: 0, paddingEnd: 0, justifyContent: 'center' },
   areaT: { fontFamily: F.bodySemi, fontSize: u(10) },
   no: { height: u(16), paddingHorizontal: u(5), borderRadius: u(6), justifyContent: 'center' },
   noT: { fontFamily: F.mono, fontSize: u(8) },

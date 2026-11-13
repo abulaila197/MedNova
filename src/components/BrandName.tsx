@@ -1,5 +1,6 @@
 import { memo } from 'react';
 import Svg, { ClipPath, Defs, G, Path, Rect } from 'react-native-svg';
+import { tr } from '@/i18n';
 
 /*
  * The MedNova name in the header (Yazan 2026-10-18, "Bold"): hand-drawn geometric letters in the style of the NOVA
@@ -22,7 +23,7 @@ const LETTERS = [
 /** `height` is the cap height in px; the name's width follows (about 6.18x the height). */
 export const BrandName = memo(function BrandName({ height, color, accent }: { height: number; color: string; accent: string }) {
   return (
-    <Svg width={(height * (W + 8)) / 108} height={height * 1.08} viewBox={`-4 -4 ${W + 8} 108`} accessibilityLabel="MedNova">
+    <Svg width={(height * (W + 8)) / 108} height={height * 1.08} viewBox={`-4 -4 ${W + 8} 108`} accessibilityLabel={tr('MedNova')}>
       <Defs>
         {LETTERS.map((l, i) => (
           <ClipPath key={i} id={`bn${i}`}>

@@ -17,6 +17,7 @@ import { CHARACTERS } from '@/games/shell/characters';
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F, type Theme } from '@/theme/tokens';
+import { tr } from '@/i18n';
 
 const ORIG = u(37);
 const MECH = u(46);
@@ -77,28 +78,28 @@ export function CharacterPicker({ open, onClose, wearing, owned, found, onWear, 
     <Sheet open={open} onClose={close}>
       <ScrollView style={{ maxHeight: u(392) }} showsVerticalScrollIndicator={false}>
         <Text style={[s.h, { color: t.fg }]}>
-          {'Choose your '}
-          <Text style={[s.h, { color: t.accent }]}>character</Text>
+          {tr('Choose your ')}
+          <Text style={[s.h, { color: t.accent }]}>{tr('character')}</Text>
         </Text>
 
         <View style={[s.top, { backgroundColor: t.panel2, borderColor: t.panelLine }]}>
           {mech ? <Image source={mech.face} style={s.big} contentFit="contain" /> : <Face slug={sel} size={u(72)} />}
           <View style={{ flex: 1 }}>
             <Text style={[s.name, { color: t.fg }]}>{mech?.name ?? orig?.name}</Text>
-            <Text style={[s.sub, { color: t.mute }]}>{mech ? mech.title : 'Original pack'}</Text>
+            <Text style={[s.sub, { color: t.mute }]}>{mech ? mech.title : tr('Original pack')}</Text>
             <Text style={s.stars}>{'★'.repeat(starsOf(sel))}</Text>
             {/* The character you wear sets your star bonus (Yazan 2026-10-25). */}
-            <Text style={[s.sub, { color: t.accent }]}>{`Star bonus: ${bonusLine(sel)}`}</Text>
+            <Text style={[s.sub, { color: t.accent }]}>{tr('Star bonus: {n}', { n: bonusLine(sel) })}</Text>
           </View>
         </View>
 
         {/* List #39: the Original pack opens card by card in the treasure hunt; the 1-star ones (Bolt, Iris) are open to everyone. */}
-        <Text style={[s.k, { color: t.kick }]}>{`ORIGINAL PACK · ${CHARACTERS.filter((c) => origOpen(c.slug, found)).length} OF ${CHARACTERS.length}`}</Text>
+        <Text style={[s.k, { color: t.kick }]}>{tr('ORIGINAL PACK · {n} OF {n2}', { n: CHARACTERS.filter((c) => origOpen(c.slug, found)).length, n2: CHARACTERS.length })}</Text>
         <View style={s.grid}>
           {CHARACTERS.map((c) => {
             const has = origOpen(c.slug, found);
             return (
-              <Pressable key={c.slug} disabled={!has} onPress={() => setSel(c.slug)} accessibilityRole="button" accessibilityLabel={has ? c.name : `${c.name}, locked`} accessibilityState={{ selected: sel === c.slug, disabled: !has }}>
+              <Pressable key={c.slug} disabled={!has} onPress={() => setSel(c.slug)} accessibilityRole="button" accessibilityLabel={has ? c.name : tr('{name}, locked', { name: c.name })} accessibilityState={{ selected: sel === c.slug, disabled: !has }}>
                 <Pick size={ORIG} on={sel === c.slug}>
                   <View style={!has && { opacity: 0.3 }}>
                     <Face slug={c.slug} size={ORIG} />
@@ -110,12 +111,12 @@ export function CharacterPicker({ open, onClose, wearing, owned, found, onWear, 
           })}
         </View>
 
-        <Text style={[s.k, { color: t.kick }]}>{`NOVA MECHS · ${owned.length} OF ${MECHS.length}`}</Text>
+        <Text style={[s.k, { color: t.kick }]}>{tr('NOVA MECHS · {n} OF {n2}', { n: owned.length, n2: MECHS.length })}</Text>
         <View style={s.grid}>
           {MECHS.map((m) => {
             const has = owned.includes(m.key);
             return (
-              <Pressable key={m.key} disabled={!has} onPress={() => setSel(m.key)} style={s.mCell} accessibilityRole="button" accessibilityLabel={has ? m.name : `${m.name}, locked`} accessibilityState={{ selected: sel === m.key, disabled: !has }}>
+              <Pressable key={m.key} disabled={!has} onPress={() => setSel(m.key)} style={s.mCell} accessibilityRole="button" accessibilityLabel={has ? m.name : tr('{name}, locked', { name: m.name })} accessibilityState={{ selected: sel === m.key, disabled: !has }}>
                 <Pick size={MECH} on={sel === m.key}>
                   <Image source={m.face} style={[{ width: MECH, height: MECH }, !has && { opacity: 0.3 }]} contentFit="contain" />
                   {!has ? <Lock t={t} /> : null}
@@ -125,12 +126,12 @@ export function CharacterPicker({ open, onClose, wearing, owned, found, onWear, 
             );
           })}
         </View>
-        <Text style={[s.k, { color: t.kick }]}>{`STYLE SHOP · ${ROBOTS.filter((r) => robots.includes(r.key)).length} OF ${ROBOTS.length}`}</Text>
+        <Text style={[s.k, { color: t.kick }]}>{tr('STYLE SHOP · {n} OF {n2}', { n: ROBOTS.filter((r) => robots.includes(r.key)).length, n2: ROBOTS.length })}</Text>
         <View style={s.grid}>
           {ROBOTS.map((m) => {
             const has = robots.includes(m.key);
             return (
-              <Pressable key={m.key} disabled={!has} onPress={() => setSel(m.key)} style={s.mCell} accessibilityRole="button" accessibilityLabel={has ? m.name : `${m.name}, locked`} accessibilityState={{ selected: sel === m.key, disabled: !has }}>
+              <Pressable key={m.key} disabled={!has} onPress={() => setSel(m.key)} style={s.mCell} accessibilityRole="button" accessibilityLabel={has ? m.name : tr('{name}, locked', { name: m.name })} accessibilityState={{ selected: sel === m.key, disabled: !has }}>
                 <Pick size={MECH} on={sel === m.key}>
                   <Image source={m.face} style={[{ width: MECH, height: MECH }, !has && { opacity: 0.3 }]} contentFit="contain" />
                   {!has ? <Lock t={t} /> : null}
@@ -140,12 +141,12 @@ export function CharacterPicker({ open, onClose, wearing, owned, found, onWear, 
             );
           })}
         </View>
-        <Text style={[s.k, { color: t.kick }]}>{`SUPERNOVA TEAM · ${TEAM.filter((m) => team.includes(m.key)).length} OF ${TEAM.length}`}</Text>
+        <Text style={[s.k, { color: t.kick }]}>{tr('SUPERNOVA TEAM · {n} OF {n2}', { n: TEAM.filter((m) => team.includes(m.key)).length, n2: TEAM.length })}</Text>
         <View style={s.grid}>
           {TEAM.map((m) => {
             const has = team.includes(m.key);
             return (
-              <Pressable key={m.key} disabled={!has} onPress={() => setSel(m.key)} style={s.mCell} accessibilityRole="button" accessibilityLabel={has ? m.name : `${m.name}, locked`} accessibilityState={{ selected: sel === m.key, disabled: !has }}>
+              <Pressable key={m.key} disabled={!has} onPress={() => setSel(m.key)} style={s.mCell} accessibilityRole="button" accessibilityLabel={has ? m.name : tr('{name}, locked', { name: m.name })} accessibilityState={{ selected: sel === m.key, disabled: !has }}>
                 <Pick size={MECH} on={sel === m.key}>
                   <Image source={m.face} style={[{ width: MECH, height: MECH }, !has && { opacity: 0.3 }]} contentFit="contain" />
                   {!has ? <Lock t={t} /> : null}
@@ -155,13 +156,13 @@ export function CharacterPicker({ open, onClose, wearing, owned, found, onWear, 
             );
           })}
         </View>
-        <Text style={[s.note, { color: t.mute }]}>Locked characters come from the treasure hunt, Nova Mechs from daily chests, the rest from the Style shop. SuperNova team cards are only given by Admin.</Text>
+        <Text style={[s.note, { color: t.mute }]}>{tr('Locked characters come from the treasure hunt, Nova Mechs from daily chests, the rest from the Style shop. SuperNova team cards are only given by Admin.')}</Text>
       </ScrollView>
 
       {error ? <Text style={[s.note, { color: t.mute, marginTop: u(8) }]}>{error}</Text> : null}
       <Pressable onPress={() => onWear?.(sel)} disabled={sel === wearing} style={[{ marginTop: u(12) }, sel === wearing && { opacity: 0.5 }]} accessibilityRole="button">
         <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.btn}>
-          <Text style={[s.btnT, { color: t.onGrad }]}>{sel === wearing ? 'Wearing now' : `Wear ${mech?.name ?? orig?.name}`}</Text>
+          <Text style={[s.btnT, { color: t.onGrad }]}>{sel === wearing ? tr('Wearing now') : tr('Wear {n}', { n: mech?.name ?? orig?.name })}</Text>
         </LinearGradient>
       </Pressable>
     </Sheet>
@@ -192,9 +193,9 @@ const s = StyleSheet.create({
   stars: { color: '#ffd76a', fontSize: u(10), marginTop: u(3) },
   k: { fontFamily: F.mono, fontSize: u(7.5), letterSpacing: u(1.3), marginTop: u(16), marginBottom: u(6) },
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: u(2) },
-  mCell: { alignItems: 'center', marginBottom: u(4), marginRight: u(2) },
+  mCell: { alignItems: 'center', marginBottom: u(4), marginEnd: u(2) },
   lock: { alignItems: 'center', justifyContent: 'center' },
-  tick: { position: 'absolute', right: 0, bottom: 0, width: u(13), height: u(13), borderRadius: u(7), borderWidth: 1.5, alignItems: 'center', justifyContent: 'center' },
+  tick: { position: 'absolute', end: 0, bottom: 0, width: u(13), height: u(13), borderRadius: u(7), borderWidth: 1.5, alignItems: 'center', justifyContent: 'center' },
   mStars: { color: '#ffd76a', fontSize: u(7), marginTop: u(1) },
   note: { fontFamily: F.body, fontSize: u(8.5), marginTop: u(10) },
   btn: { height: u(34), borderRadius: 999, alignItems: 'center', justifyContent: 'center' },

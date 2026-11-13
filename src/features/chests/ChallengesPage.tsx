@@ -12,6 +12,7 @@ import { TokenCoin } from '@/components/PulseStar';
 import { PlayerFace } from '@/features/style/Frame';
 import { Image } from 'expo-image';
 import { CHESTS } from './data';
+import { tr } from '@/i18n';
 
 /** `say` is the task as a phrase for a locked card, e.g. 'play 12 games'. */
 export type Task = { label: string; say: string; n: number; of: number; share?: boolean };
@@ -44,23 +45,23 @@ export function ChallengesPage({ v }: { v: ChallengesView }) {
   return (
     <Screen tab={null} glow={21} wide={460} symbols>
       <InfoScroll>
-        <Kicker>{v.resetIn ? `New missions in ${v.resetIn}` : 'Every day'}</Kicker>
+        <Kicker>{v.resetIn ? tr('New missions in {resetIn}', { resetIn: v.resetIn }) : tr('Every day')}</Kicker>
         <OfflineLine at={v.savedAt} style={{ marginTop: 0 }} />
         <Text style={[ui.H, { color: c.fg, fontFamily: F.display }]}>
-          {'Daily '}
-          <Text style={[ui.H, { color: t.accent, fontFamily: F.displayItalic }]}>missions</Text>
+          {tr('Daily ')}
+          <Text style={[ui.H, { color: t.accent, fontFamily: F.displayItalic }]}>{tr('missions')}</Text>
         </Text>
 
         {v.tasks.map((tasks, i) => {
           const step = (i + 1) as 1 | 2 | 3;
           const done = v.step > step;
           const locked = v.step < step;
-          const name = v.names[i] ?? `Mission ${step}`;
+          const name = v.names[i] ?? tr('Mission {step}', { step });
           return (
             <View key={step} style={[s.card, { backgroundColor: locked ? c.surf2 : c.surf, borderColor: v.step === step ? t.accent : c.line }]}>
               <View style={s.head}>
                 <View style={{ flex: 1 }}>
-                  <Text style={[s.k, { color: done ? '#5fd38a' : locked ? c.mute : c.kick }]}>{done ? `DONE · +${v.prizes[i]} TOKENS` : locked ? 'LOCKED' : 'NOW COUNTING'}</Text>
+                  <Text style={[s.k, { color: done ? '#5fd38a' : locked ? c.mute : c.kick }]}>{done ? tr('DONE · +{n} TOKENS', { n: v.prizes[i] }) : locked ? tr('LOCKED') : tr('NOW COUNTING')}</Text>
                   <Text style={[s.h, { color: locked ? c.mute : c.fg }]}>{name}</Text>
                 </View>
                 <View style={[s.prize, locked && { opacity: 0.45 }]}>
@@ -69,7 +70,7 @@ export function ChallengesPage({ v }: { v: ChallengesView }) {
                 </View>
               </View>
               {locked ? (
-                <Text style={[s.lock, { color: c.mute }]}>{`Starts after ${v.names[i - 1] ?? `mission ${step - 1}`}: ${tasks.map((x) => x.say).join(', ')}.`}</Text>
+                <Text style={[s.lock, { color: c.mute }]}>{tr('Starts after {n}: {n2}.', { n: v.names[i - 1] ?? tr('mission {n}', { n: step - 1 }), n2: tasks.map((x) => x.say).join(', ') })}</Text>
               ) : (
                 <View style={{ gap: u(7), marginTop: u(10) }}>
                   {tasks.map((x) => {
@@ -87,23 +88,23 @@ export function ChallengesPage({ v }: { v: ChallengesView }) {
                     );
                   })}
         {v.boss ? (
-          <Pressable onPress={v.boss.onGo} style={[s.card, { backgroundColor: c.surf, borderColor: v.boss.won ? '#5fd38a' : c.line }]} accessibilityRole="button" accessibilityLabel={`Rival of the day: ${v.boss.name}`}>
+          <Pressable onPress={v.boss.onGo} style={[s.card, { backgroundColor: c.surf, borderColor: v.boss.won ? '#5fd38a' : c.line }]} accessibilityRole="button" accessibilityLabel={tr('Rival of the day: {name}', { name: v.boss.name })}>
             <View style={s.head}>
               <View style={{ flex: 1 }}>
-                <Text style={[s.k, { color: v.boss.won ? '#5fd38a' : c.kick }]}>{v.boss.won ? (v.boss.paid ? 'DONE · GOLDEN CHEST' : 'DONE · CHEST ON ITS WAY') : 'BONUS · TODAY ONLY'}</Text>
-                <Text style={[s.h, { color: c.fg }]}>Beat the rival of the day</Text>
+                <Text style={[s.k, { color: v.boss.won ? '#5fd38a' : c.kick }]}>{v.boss.won ? (v.boss.paid ? tr('DONE · GOLDEN CHEST') : tr('DONE · CHEST ON ITS WAY')) : tr('BONUS · TODAY ONLY')}</Text>
+                <Text style={[s.h, { color: c.fg }]}>{tr('Beat the rival of the day')}</Text>
               </View>
               <Image source={CHESTS.golden.art} style={{ width: u(30), height: u(30) }} contentFit="contain" />
             </View>
             <View style={s.bossRow}>
               <PlayerFace slug={v.boss.face} size={u(26)} still />
-              <Text style={[s.lock, { color: c.mute, marginTop: 0, flex: 1 }]}>{v.boss.won ? `You beat ${v.boss.name} in ${v.boss.game} today.` : `Finish above ${v.boss.name} in a Vs rivals match of ${v.boss.game}. Tap to open the room.`}</Text>
+              <Text style={[s.lock, { color: c.mute, marginTop: 0, flex: 1 }]}>{v.boss.won ? tr('You beat {name} in {game} today.', { name: v.boss.name, game: v.boss.game }) : tr('Finish above {name} in a Vs rivals match of {game}. Tap to open the room.', { name: v.boss.name, game: v.boss.game })}</Text>
             </View>
           </Pressable>
         ) : null}
                   {!done && tasks.some((x) => x.share && x.n < x.of) ? (
                     <Pressable onPress={v.onShare} style={[s.share, { borderColor: t.accent }]} accessibilityRole="button">
-                      <Text style={[s.shareT, { color: t.accent }]}>Share the app</Text>
+                      <Text style={[s.shareT, { color: t.accent }]}>{tr('Share the app')}</Text>
                     </Pressable>
                   ) : null}
                 </View>
@@ -111,9 +112,9 @@ export function ChallengesPage({ v }: { v: ChallengesView }) {
             </View>
           );
         })}
-        {v.guest ? <Text style={[s.foot, { color: t.accent }]}>Sign in to start counting your missions.</Text> : null}
-        {v.offline ? <Text style={[s.foot, { color: t.accent }]}>Can’t reach MedNova right now, so your progress isn’t shown. Check your connection.</Text> : null}
-        <Text style={[s.foot, { color: c.mute }]}>Only games that use Sparks count, each game once per mission. A share counts when you pick an app to send the link to. An ad counts when you watch it to the end. With nothing to review, the review task is already done.</Text>
+        {v.guest ? <Text style={[s.foot, { color: t.accent }]}>{tr('Sign in to start counting your missions.')}</Text> : null}
+        {v.offline ? <Text style={[s.foot, { color: t.accent }]}>{tr('Can’t reach MedNova right now, so your progress isn’t shown. Check your connection.')}</Text> : null}
+        <Text style={[s.foot, { color: c.mute }]}>{tr('Only games that use Sparks count, each game once per mission. A share counts when you pick an app to send the link to. An ad counts when you watch it to the end. With nothing to review, the review task is already done.')}</Text>
       </InfoScroll>
     </Screen>
   );

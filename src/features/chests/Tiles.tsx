@@ -45,12 +45,12 @@ export function ItemTile({ item, size, owned, count }: { item: Item; size: numbe
 
 const s = StyleSheet.create({
   tile: { borderRadius: u(7), borderWidth: 1, overflow: 'hidden' },
-  center: { position: 'absolute', left: 0, right: 0, top: 0, bottom: 0, alignItems: 'center', justifyContent: 'center', padding: u(2) },
-  sticker: { position: 'absolute', left: '8%', right: '8%', top: '8%', bottom: '12%' },
+  center: { position: 'absolute', start: 0, end: 0, top: 0, bottom: 0, alignItems: 'center', justifyContent: 'center', padding: u(2) },
+  sticker: { position: 'absolute', start: '8%', end: '8%', top: '8%', bottom: '12%' },
   fx: { fontFamily: F.display, textAlign: 'center', letterSpacing: u(0.3) },
-  stars: { position: 'absolute', left: 0, right: 0, bottom: u(3), alignItems: 'center' },
+  stars: { position: 'absolute', start: 0, end: 0, bottom: u(3), alignItems: 'center' },
   starT: { textShadowColor: 'rgba(0,0,0,0.8)', textShadowRadius: 3 },
-  count: { position: 'absolute', right: u(3), top: u(1), fontFamily: F.bodyBold, fontSize: u(8), textShadowColor: 'rgba(0,0,0,0.8)', textShadowRadius: 3 },
-  own: { position: 'absolute', left: u(3), top: u(3), width: u(4), height: u(4), borderRadius: u(2) },
-  bar: { position: 'absolute', left: 0, right: 0, bottom: 0, height: u(2.5) },
+  count: { position: 'absolute', end: u(3), top: u(1), fontFamily: F.bodyBold, fontSize: u(8), textShadowColor: 'rgba(0,0,0,0.8)', textShadowRadius: 3 },
+  own: { position: 'absolute', start: u(3), top: u(3), width: u(4), height: u(4), borderRadius: u(2) },
+  bar: { position: 'absolute', start: 0, end: 0, bottom: 0, height: u(2.5) },
 });

@@ -23,7 +23,7 @@ export function CoinLabel({ text, style, numberOfLines }: { text: string; style?
         <Fragment key={i}>
           {p ? <Text style={[style, { opacity: 1, flexShrink: 1 }]} numberOfLines={numberOfLines ?? 1}>{p}</Text> : null}
           {i < parts.length - 1 ? (
-            <View style={{ marginLeft: fs * 0.22, marginRight: parts[i + 1] ? fs * 0.22 : 0 }}>
+            <View style={{ marginStart: fs * 0.22, marginEnd: parts[i + 1] ? fs * 0.22 : 0 }}>
               <TokenCoin size={Math.round(fs * 1.25)} progress={0} track="transparent" />
             </View>
           ) : null}

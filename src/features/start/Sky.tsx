@@ -6,6 +6,7 @@ import Svg, { Defs, RadialGradient, Rect, Stop } from 'react-native-svg';
 import { DESIGN_W, u } from '@/theme/scale';
 
 import { BAKED, BAKED_ART } from './baked';
+import { tr } from '@/i18n';
 
 // Nebula sky of the start flow: three soft radial washes over deep navy (prototype `.screen`).
 export const NAVY = '#070a1c';
@@ -51,7 +52,7 @@ function LiveSky({ w, h }: { w: number; h: number }) {
               cx={0}
               cy={0}
               r={1}
-              gradientTransform={`translate(${g.at[0] * w} ${g.at[1] * h}) scale(${g.r[0] * w} ${g.r[1] * h})`}>
+              gradientTransform={tr('translate({n} {n2}) scale({n3} {n4})', { n: g.at[0] * w, n2: g.at[1] * h, n3: g.r[0] * w, n4: g.r[1] * h })}>
               <Stop offset={0} stopColor={g.color} stopOpacity={g.alpha} />
               <Stop offset={g.end} stopColor={g.color} stopOpacity={0} />
               <Stop offset={1} stopColor={g.color} stopOpacity={0} />
@@ -114,7 +115,7 @@ export function Stars({ si, hd, wd = DESIGN_W }: { si: number; hd: number; wd?: 
             {g.stars.map((p, i) => (
               <View
                 key={i}
-                style={{ position: 'absolute', left: u(p.x - p.r), top: u(p.y - p.r), width: u(p.r * 2), height: u(p.r * 2), borderRadius: u(p.r), backgroundColor: '#fff' }}
+                style={{ position: 'absolute', start: u(p.x - p.r), top: u(p.y - p.r), width: u(p.r * 2), height: u(p.r * 2), borderRadius: u(p.r), backgroundColor: '#fff' }}
               />
             ))}
           </Animated.View>

@@ -17,11 +17,12 @@ import { VText } from '@/features/learn/VText';
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
+import { tr } from '@/i18n';
 
 // Folder tab heights from the locked preview (they size to their labels).
 const TAB_H = [69, 51, 51, 79, 56];
 
-const STATUS = { waiting: 'Waiting for approval', approved: 'Approved', declined: 'Declined' } as const;
+const STATUS = { waiting: tr('Waiting for approval'), approved: tr('Approved'), declined: tr('Declined') } as const;
 // Own items have their own tab names: each tab sizes to its label, and together they end above the folder's lower
 // corner, as the first one starts at its top (Yazan 2026-10-26).
 const FOLD_H = 322;
@@ -66,8 +67,8 @@ function MinePage({ mine }: { mine: string }) {
     return (
       <Screen tab="learn" glow={6} wide={460}>
         <View style={s.dpb}>
-          <Back label="My diseases" fallback="/learn" />
-          <Text style={[s.dmT, { color: c.mute }]}>This one isn’t in My diseases any more.</Text>
+          <Back label={tr('My diseases')} fallback="/learn" />
+          <Text style={[s.dmT, { color: c.mute }]}>{tr('This one isn’t in My diseases any more.')}</Text>
         </View>
       </Screen>
     );
@@ -81,7 +82,7 @@ function MinePage({ mine }: { mine: string }) {
     <Screen tab="learn" glow={6} wide={460}>
       <View style={s.dpb}>
         <View style={s.dtop}>
-          <Back label="My diseases" fallback="/learn" />
+          <Back label={tr('My diseases')} fallback="/learn" />
           <Text style={[s.ms, { color: status === 'approved' ? t.accent : c.mute }]}>{STATUS[status].toUpperCase()}</Text>
         </View>
         <Text style={[s.dt, { color: t.fg }]} numberOfLines={2}>
@@ -91,10 +92,10 @@ function MinePage({ mine }: { mine: string }) {
         <View style={s.dm}>
           <View style={[s.sw, { backgroundColor: c.swatch, borderColor: c.swatchLine }]} />
           <Text style={[s.dmT, { color: c.mute }]} numberOfLines={1}>
-            {`${k ? 'Race to Diagnosis case' : `${gameLabel(w!.game)} word`} · written by you`}
+            {tr('{n} · written by you', { n: k ? tr('Race to Diagnosis case') : tr('{n} word', { n: gameLabel(w!.game) }) })}
           </Text>
         </View>
-        {note ? <Text style={[s.dmT, { color: t.fg }]}>{`Note from MedNova: ${note}`}</Text> : null}
+        {note ? <Text style={[s.dmT, { color: t.fg }]}>{tr('Note from MedNova: {note}', { note })}</Text> : null}
         <Folder fields={fields} on={on} setOn={setOn} heights={tabHeights(fields.map((f) => f.tab))} />
       </View>
     </Screen>
@@ -117,8 +118,8 @@ function LibraryPage() {
     return (
       <Screen tab="learn" glow={6} wide={460}>
         <View style={s.dpb}>
-          <Back label="Dossiers" fallback="/learn" />
-          <Text style={[s.dmT, { color: c.mute }]}>This dossier is not in the library.</Text>
+          <Back label={tr('Dossiers')} fallback="/learn" />
+          <Text style={[s.dmT, { color: c.mute }]}>{tr('This dossier is not in the library.')}</Text>
         </View>
       </Screen>
     );
@@ -129,8 +130,8 @@ function LibraryPage() {
     <Screen tab="learn" glow={6} wide={460}>
       <View style={s.dpb}>
         <View style={s.dtop}>
-          <Back label={book?.spine ?? 'Dossiers'} fallback={book ? `/learn/shelf?book=${book.key}` : '/learn'} />
-          {n ? <Text style={[s.ms, { color: c.miss }]}>{(n === 1 ? 'Missed once' : n === 2 ? 'Missed twice' : `Missed ${n} times`).toUpperCase()}</Text> : null}
+          <Back label={book?.spine ?? tr('Dossiers')} fallback={book ? `/learn/shelf?book=${book.key}` : '/learn'} />
+          {n ? <Text style={[s.ms, { color: c.miss }]}>{(n === 1 ? tr('Missed once') : n === 2 ? tr('Missed twice') : tr('Missed {n} times', { n })).toUpperCase()}</Text> : null}
         </View>
         <Text style={[s.dt, { color: t.fg }]}>
           {title.first ? `${title.first} ` : ''}
@@ -139,7 +140,7 @@ function LibraryPage() {
         <View style={s.dm}>
           <View style={[s.sw, { backgroundColor: c.swatch, borderColor: c.swatchLine }]} />
           <Text style={[s.dmT, { color: c.mute }]} numberOfLines={1}>
-            {book ? book.name : 'Dossier'}
+            {book ? book.name : tr('Dossier')}
             {d.name !== `${title.first} ${title.em}`.trim() ? ` · ${d.name}` : ''}
           </Text>
         </View>
@@ -173,7 +174,7 @@ function Folder({ fields, on, setOn, heights }: { fields: { key: string; tab: st
                   accessibilityRole="tab"
                   accessibilityState={{ selected: sel }}
                   accessibilityLabel={f.tab}
-                  style={[s.tab, { height: u(heights[i]) }, sel ? { backgroundColor: c.tabOn, borderColor: c.tabOnLine, marginLeft: -1, width: u(30) + 1 } : { backgroundColor: c.tabOff, borderColor: c.tabOffLine }]}
+                  style={[s.tab, { height: u(heights[i]) }, sel ? { backgroundColor: c.tabOn, borderColor: c.tabOnLine, marginStart: -1, width: u(30) + 1 } : { backgroundColor: c.tabOff, borderColor: c.tabOffLine }]}
                 >
                   <VText h={u(heights[i]) - 2} line={u(10)} dir="down" style={{ fontFamily: F.mono, fontSize: u(7), letterSpacing: u(0.42), color: sel ? t.accent : c.tabOffText }}>
                     {f.tab.toUpperCase()}
@@ -215,20 +216,20 @@ const s = StyleSheet.create({
   dm: { flexDirection: 'row', alignItems: 'center', gap: u(6) },
   sw: { width: u(16), height: u(6), borderRadius: u(2), borderWidth: 1 },
   dmT: { fontFamily: F.body, fontSize: u(10), lineHeight: u(12) },
-  note: { position: 'absolute', left: u(16), right: u(12), bottom: u(12), fontSize: u(8.5) },
+  note: { position: 'absolute', start: u(16), end: u(12), bottom: u(12), fontSize: u(8.5) },
   fold: { flexDirection: 'row', marginTop: u(6), height: u(FOLD_H) },
   fcard: {
     flex: 1,
     borderWidth: 1,
-    borderRightWidth: 0,
-    borderTopLeftRadius: u(18),
-    borderBottomLeftRadius: u(18),
-    borderBottomRightRadius: u(18),
+    borderEndWidth: 0,
+    borderTopStartRadius: u(18),
+    borderBottomStartRadius: u(18),
+    borderBottomEndRadius: u(18),
   },
-  fbg: { borderTopLeftRadius: u(17), borderBottomLeftRadius: u(17), borderBottomRightRadius: u(18) },
+  fbg: { borderTopStartRadius: u(17), borderBottomStartRadius: u(17), borderBottomEndRadius: u(18) },
   fp: { ...StyleSheet.absoluteFill, paddingVertical: u(18), paddingHorizontal: u(14), gap: u(10) },
   cf: { fontFamily: F.mono, fontSize: u(9), lineHeight: u(12), letterSpacing: u(1.62) },
   p: { fontFamily: F.display, fontSize: u(16), lineHeight: u(21.12) },
   ftabs: { width: u(30), gap: u(TAB_GAP) },
-  tab: { width: u(30), borderWidth: 1, borderLeftWidth: 0, borderTopRightRadius: u(10), borderBottomRightRadius: u(10), justifyContent: 'center' },
+  tab: { width: u(30), borderWidth: 1, borderStartWidth: 0, borderTopEndRadius: u(10), borderBottomEndRadius: u(10), justifyContent: 'center' },
 });

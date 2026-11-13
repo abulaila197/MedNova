@@ -13,6 +13,7 @@ import { useAccount } from '@/state/account';
 import { type Friend, respondFriend, seenLabel, useFriends } from '@/state/friends';
 import { u } from '@/theme/scale';
 import { F, type Theme } from '@/theme/tokens';
+import { tr } from '@/i18n';
 
 /** Which friends sheet is open (drawn by FriendSheets at the app layout so it covers the dock). */
 /** A player to report: from the friends list or an online lobby. */
@@ -62,10 +63,10 @@ export function FriendsSection({ t, only }: { t: Theme; only?: 'friends' | 'requ
   if (!profile) {
     return (
       <>
-        <Text style={[s.sh2, { color: t.kick }]}>FRIENDS</Text>
+        <Text style={[s.sh2, { color: t.kick }]}>{tr('FRIENDS')}</Text>
         <Pressable onPress={() => router.push('/auth')} accessibilityRole="link">
           <Text style={[s.note, { color: t.mute }]}>
-            Sign in to add friends. <Text style={{ color: t.accent, fontFamily: F.bodySemi }}>Sign in</Text>
+            {tr('Sign in to add friends.')} <Text style={{ color: t.accent, fontFamily: F.bodySemi }}>{tr('Sign in')}</Text>
           </Text>
         </Pressable>
       </>
@@ -78,57 +79,57 @@ export function FriendsSection({ t, only }: { t: Theme; only?: 'friends' | 'requ
     <>
       {only ? null : (
         <View style={s.head}>
-          <Text style={[s.sh2, { color: t.kick }]}>FRIENDS</Text>
+          <Text style={[s.sh2, { color: t.kick }]}>{tr('FRIENDS')}</Text>
           <Pressable disabled={off} onPress={() => openAdd()} hitSlop={u(8)} style={dim} accessibilityRole="button">
-            <Text style={[s.add, { color: t.accent }]}>+ Add friend</Text>
+            <Text style={[s.add, { color: t.accent }]}>{tr('+ Add friend')}</Text>
           </Pressable>
         </View>
       )}
       <OfflineLine at={savedAt} />
-      {only === 'requests' && !incoming.length ? <Text style={[s.note, { color: t.mute }]}>No requests right now.</Text> : null}
-      {showReq && incoming.length && !only ? <Text style={[s.sub, { color: t.mute }]}>{`REQUESTS · ${incoming.length}`}</Text> : null}
+      {only === 'requests' && !incoming.length ? <Text style={[s.note, { color: t.mute }]}>{tr('No requests right now.')}</Text> : null}
+      {showReq && incoming.length && !only ? <Text style={[s.sub, { color: t.mute }]}>{tr('REQUESTS · {n}', { n: incoming.length })}</Text> : null}
       {(showReq ? incoming : []).map((f) => (
         <View key={f.id} style={[s.fr, line]}>
           <Ring t={t} f={f} />
           <View style={s.frT}>
             <Name t={t} f={f} />
-            <Text style={[s.frS, { color: t.mute }]}>WANTS TO BE FRIENDS</Text>
+            <Text style={[s.frS, { color: t.mute }]}>{tr('WANTS TO BE FRIENDS')}</Text>
           </View>
-          <Pressable disabled={off || busy === f.id} onPress={() => act(f.id, () => respondFriend(f.id, true))} style={dim} accessibilityRole="button" accessibilityLabel={`Accept ${f.display_name}`}>
+          <Pressable disabled={off || busy === f.id} onPress={() => act(f.id, () => respondFriend(f.id, true))} style={dim} accessibilityRole="button" accessibilityLabel={tr('Accept {display_name}', { display_name: f.display_name })}>
             <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.ch}>
-              <Text style={[s.chT, { color: t.onGrad }]}>Accept</Text>
+              <Text style={[s.chT, { color: t.onGrad }]}>{tr('Accept')}</Text>
             </LinearGradient>
           </Pressable>
-          <Pressable disabled={off || busy === f.id} onPress={() => act(f.id, () => respondFriend(f.id, false))} style={[s.x, line, dim]} accessibilityRole="button" accessibilityLabel={`Decline ${f.display_name}`}>
+          <Pressable disabled={off || busy === f.id} onPress={() => act(f.id, () => respondFriend(f.id, false))} style={[s.x, line, dim]} accessibilityRole="button" accessibilityLabel={tr('Decline {display_name}', { display_name: f.display_name })}>
             <Text style={[s.xT, { color: t.mute }]}>✕</Text>
           </Pressable>
         </View>
       ))}
-      {showFr && !only ? <Text style={[s.sub, { color: t.mute }]}>{`YOUR FRIENDS · ${friends.filter((f) => f.kind === 'friend').length}`}</Text> : null}
-      {showFr && friends.length === 0 ? <Text style={[s.note, { color: t.mute }]}>No friends yet. Find players or share your invite code.</Text> : null}
+      {showFr && !only ? <Text style={[s.sub, { color: t.mute }]}>{tr('YOUR FRIENDS · {n}', { n: friends.filter((f) => f.kind === 'friend').length })}</Text> : null}
+      {showFr && friends.length === 0 ? <Text style={[s.note, { color: t.mute }]}>{tr('No friends yet. Find players or share your invite code.')}</Text> : null}
       {(showFr ? friends : []).map((f) => {
         const live = f.kind === 'friend' ? playing[f.id] : undefined;
         const when =
           f.kind === 'outgoing'
-            ? 'REQUEST SENT'
+            ? tr('REQUEST SENT')
             : live
-              ? 'IN A MATCH'
+              ? tr('IN A MATCH')
               : off
                 ? f.last_seen
-                  ? `LAST SEEN ${agoText(Date.parse(f.last_seen)).toUpperCase()}`
-                  : 'NOT SEEN YET'
+                  ? tr('LAST SEEN {n}', { n: agoText(Date.parse(f.last_seen)).toUpperCase() })
+                  : tr('NOT SEEN YET')
                 : seenLabel(f.last_seen);
         return (
           <View key={f.id} style={[s.fr, line]}>
             <Ring t={t} f={f} />
-            <Pressable style={s.frT} onPress={() => (f.kind === 'friend' ? openProfile(f) : openMenu(f))} accessibilityRole="button" accessibilityHint={f.kind === 'friend' ? 'Open their profile' : 'Cancel the request'}>
+            <Pressable style={s.frT} onPress={() => (f.kind === 'friend' ? openProfile(f) : openMenu(f))} accessibilityRole="button" accessibilityHint={f.kind === 'friend' ? tr('Open their profile') : tr('Cancel the request')}>
               <Name t={t} f={f} />
               <Text style={[s.frS, { color: when === 'ONLINE' || live ? ONLINE[t.mode] : t.mute }]}>{when}</Text>
             </Pressable>
           </View>
         );
       })}
-      {showFr && friends.length ? <Text style={[s.tip, { color: t.mute }]}>Tap a friend to see their profile.</Text> : null}
+      {showFr && friends.length ? <Text style={[s.tip, { color: t.mute }]}>{tr('Tap a friend to see their profile.')}</Text> : null}
     </>
   );
 }
@@ -142,11 +143,11 @@ export function FriendCount({ t }: { t: Theme }) {
   return (
     <Pressable onPress={() => router.navigate((profile ? '/friends' : '/auth') as never)} style={[s.fr, { borderColor: t.panelLine, marginTop: u(10) }]} accessibilityRole="link">
       <View style={s.frT}>
-        <Text style={[s.sh2, { color: t.kick, marginTop: 0 }]}>FRIENDS</Text>
-        <Text style={[s.frB, { color: t.fg }]}>{profile ? `${n} friend${n === 1 ? '' : 's'}` : 'Sign in to add friends'}</Text>
-        {req ? <Text style={[s.frS, { color: t.accent }]}>{`${req} REQUEST${req === 1 ? '' : 'S'} WAITING`}</Text> : null}
+        <Text style={[s.sh2, { color: t.kick, marginTop: 0 }]}>{tr('FRIENDS')}</Text>
+        <Text style={[s.frB, { color: t.fg }]}>{profile ? tr('{n} friend{n2}', { n, n2: n === 1 ? '' : 's' }) : tr('Sign in to add friends')}</Text>
+        {req ? <Text style={[s.frS, { color: t.accent }]}>{tr('{req} REQUEST{n} WAITING', { req, n: req === 1 ? '' : 'S' })}</Text> : null}
       </View>
-      <Text style={[s.add, { color: t.accent }]}>Open ›</Text>
+      <Text style={[s.add, { color: t.accent }]}>{tr('Open ›')}</Text>
     </Pressable>
   );
 }

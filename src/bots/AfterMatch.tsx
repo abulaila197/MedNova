@@ -12,6 +12,7 @@ import { afterMatch, namesOf } from './after';
 import { rivalMoment } from './director';
 import type { Place } from './lines';
 import { loadRivals, useRivals } from './memory';
+import { tr } from '@/i18n';
 
 /**
  * Vs rivals results (G4): each rival reacts to how it finished (winners brag, losers want another go), and the card
@@ -55,7 +56,7 @@ export function AfterMatch({ play }: { play: Play }) {
             ))}
           </View>
           <Text style={[s.t, { color: t.fg }]}>
-            {namesOf(a.want)} {a.want.length === 1 ? 'wants' : 'want'} a rematch.
+            {tr(a.want.length === 1 ? '{names} wants a rematch.' : '{names} want a rematch.', { names: namesOf(a.want) })}
           </Text>
         </View>
       ) : null}
@@ -67,7 +68,7 @@ export function AfterMatch({ play }: { play: Play }) {
             ))}
           </View>
           <Text style={[s.t, { color: t.mute }]}>
-            {namesOf(a.leave)} {a.leave.length === 1 ? 'is' : 'are'} leaving. New rivals take {a.leave.length === 1 ? 'that seat' : 'those seats'} at the rematch.
+            {tr(a.leave.length === 1 ? '{names} is leaving. A new rival takes that seat at the rematch.' : '{names} are leaving. New rivals take those seats at the rematch.', { names: namesOf(a.leave) })}
           </Text>
         </View>
       ) : null}
@@ -77,7 +78,7 @@ export function AfterMatch({ play }: { play: Play }) {
 
 const s = StyleSheet.create({
   card: { borderWidth: 1, borderRadius: u(14), paddingVertical: u(10), paddingHorizontal: u(12), gap: u(8) },
-  row: { flexDirection: 'row', alignItems: 'center', gap: u(9), marginRight: u(30) },
+  row: { flexDirection: 'row', alignItems: 'center', gap: u(9), marginEnd: u(30) },
   faces: { flexDirection: 'row', gap: u(3) },
   t: { flex: 1, fontFamily: F.body, fontSize: u(11.5), lineHeight: u(15) },
 });

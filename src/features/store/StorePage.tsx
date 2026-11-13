@@ -22,31 +22,32 @@ import { StyleBanner } from './StyleBanner';
 import { FreeSheets, FreeTokens, useFree } from './FreeTokens';
 import { BILLING_LIVE, buy, isSubscribed, loadPrices, restore, useIsSubscribed, usePrice, useSubscription, type BuyResult } from './billing';
 import { PACKS, SUBSCRIPTION, type Pack } from './catalog';
+import { tr } from '@/i18n';
 
 // What a finished payment, restore or failure says, as a pop-up the player can't miss (Yazan 2026-11-08: the old line at
 // the top of the shop went unseen, so Restore looked like it did nothing).
 type Pop = { kick: string; title: string; big: string; line: string; coin: boolean; button: string; confirm?: boolean };
-const FAILED: Pop = { kick: 'NOT BOUGHT', title: 'Something went wrong', big: '', line: 'Nothing was charged. Check your connection and try again.', coin: false, button: 'OK' };
+const FAILED: Pop = { kick: tr('NOT BOUGHT'), title: tr('Something went wrong'), big: '', line: tr('Nothing was charged. Check your connection and try again.'), coin: false, button: 'OK' };
 // Restore asks first (Yazan 2026-11-08).
-const ASK_RESTORE: Pop = { kick: 'RESTORE', title: 'Restore purchases?', big: '', line: `We'll check your ${Platform.OS === 'ios' ? 'Apple' : 'Google'} account for MedNova Unlimited and the Sovereign package and add them to this MedNova account.`, coin: false, button: 'Restore', confirm: true };
+const ASK_RESTORE: Pop = { kick: tr('RESTORE'), title: tr('Restore purchases?'), big: '', line: tr('We\'ll check your {n} account for MedNova Unlimited and the Sovereign package and add them to this MedNova account.', { n: Platform.OS === 'ios' ? 'Apple' : 'Google' }), coin: false, button: tr('Restore'), confirm: true };
 // Each phone names only its own store (Apple 2.3.10, Yazan 2026-11-08).
-const STORE = Platform.OS === 'ios' ? 'the App Store' : 'Google Play';
-const SOON: Pop = { kick: 'COMING SOON', title: 'Not open yet', big: '', line: `Buying opens when MedNova is in ${STORE}.`, coin: false, button: 'OK' };
+const STORE = Platform.OS === 'ios' ? tr('the App Store') : tr('Google Play');
+const SOON: Pop = { kick: tr('COMING SOON'), title: tr('Not open yet'), big: '', line: tr('Buying opens when MedNova is in {STORE}.', { STORE }), coin: false, button: 'OK' };
 
 function boughtPop(id: string): Pop {
   const pack = PACKS.find((p) => p.id === id);
-  const base = { kick: 'CONGRATULATIONS', title: 'Your payment was successful', coin: true, button: 'Great' };
-  if (pack) return { ...base, big: `+${pack.tokens} tokens`, line: 'Your tokens are in your wallet.' };
-  if (id === SUBSCRIPTION.id) return { ...base, big: 'MedNova Unlimited', line: `${SUBSCRIPTION.perks.join(' · ')}. It's on for your account now.` };
-  return { ...base, big: 'Sovereign package', line: `Sovereign, its frame and ${SOVEREIGN_PACK.tokens} tokens are yours.` };
+  const base = { kick: tr('CONGRATULATIONS'), title: tr('Your payment was successful'), coin: true, button: tr('Great') };
+  if (pack) return { ...base, big: tr('+{tokens} tokens', { tokens: pack.tokens }), line: tr('Your tokens are in your wallet.') };
+  if (id === SUBSCRIPTION.id) return { ...base, big: tr('MedNova Unlimited'), line: tr('{n}. It\'s on for your account now.', { n: SUBSCRIPTION.perks.map((x) => tr(x)).join(' · ') }) };
+  return { ...base, big: tr('Sovereign package'), line: tr('Sovereign, its frame and {tokens} tokens are yours.', { tokens: SOVEREIGN_PACK.tokens }) };
 }
 
 async function restoredPop(): Promise<Pop> {
   await loadStyle(true).catch(() => {});
-  const found = [isSubscribed() && 'MedNova Unlimited', useStyle.getState().owned.includes('robot:sovereign') && 'the Sovereign package'].filter(Boolean);
+  const found = [isSubscribed() && tr('MedNova Unlimited'), useStyle.getState().owned.includes('robot:sovereign') && tr('the Sovereign package')].filter(Boolean);
   return found.length
-    ? { kick: 'RESTORE', title: 'Restore checked', big: '', line: `Your account has: ${found.join(' and ')}.`, coin: false, button: 'OK' }
-    : { kick: 'RESTORE', title: 'Nothing to restore', big: '', line: 'No subscription or package was found for this store account. Token packs are added once, when you buy them.', coin: false, button: 'OK' };
+    ? { kick: tr('RESTORE'), title: tr('Restore checked'), big: '', line: tr('Your account has: {n}.', { n: found.join(tr(' and ')) }), coin: false, button: tr('OK') }
+    : { kick: tr('RESTORE'), title: tr('Nothing to restore'), big: '', line: tr('No subscription or package was found for this store account. Token packs are added once, when you buy them.'), coin: false, button: tr('OK') };
 }
 
 const dateOf = (ms: number) => new Date(ms).toLocaleDateString(undefined, { day: 'numeric', month: 'short' });
@@ -83,11 +84,11 @@ export function StorePage() {
   return (
     <Screen tab={null} glow={21} wide={480}>
       <InfoScroll>
-        <Kicker>Nova Shop</Kicker>
+        <Kicker>{tr('Nova Shop')}</Kicker>
         <Text style={[ui.H, { color: c.fg, fontFamily: F.display }]}>
           {/* Not just buying: the shop is where tokens are earned, bought and spent (Yazan 2026-10-25, #32). */}
-          {'Earn, buy and spend '}
-          <Text style={[ui.H, { color: t.accent, fontFamily: F.displayItalic }]}>tokens</Text>
+          {tr('Earn, buy and spend ')}
+          <Text style={[ui.H, { color: t.accent, fontFamily: F.displayItalic }]}>{tr('tokens')}</Text>
         </Text>
         {/* Offline: what you own, from the saved copy; buying needs internet (#57). */}
         <OfflineLine at={styleSavedAt} />
@@ -95,16 +96,16 @@ export function StorePage() {
           <View style={s.bal}>
             <TokenCoin size={u(18)} progress={0} track="transparent" />
             <Text style={[s.balT, { color: c.mute }]}>
-              {'You have '}
+              {tr('You have ')}
               <Text style={[s.balT, { color: c.fg, fontFamily: F.bodyBold }]}>{tokens}</Text>
-              {' tokens'}
+              {tr(' tokens')}
             </Text>
           </View>
         ) : (
           <Pressable onPress={() => router.navigate('/auth')} style={s.bal} accessibilityRole="button">
             <Text style={[s.balT, { color: c.mute }]}>
-              {'Sign in to earn, buy and spend. '}
-              <Text style={[s.balT, { color: t.accent, fontFamily: F.bodyBold }]}>Sign in</Text>
+              {tr('Sign in to earn, buy and spend. ')}
+              <Text style={[s.balT, { color: t.accent, fontFamily: F.bodyBold }]}>{tr('Sign in')}</Text>
             </Text>
           </Pressable>
         )}
@@ -112,26 +113,26 @@ export function StorePage() {
         <Pressable
           onPress={subscribed ? undefined : () => run(SUBSCRIPTION.id, () => buy(SUBSCRIPTION.id))}
           accessibilityRole="button"
-          accessibilityLabel={subscribed ? 'MedNova Unlimited is active' : `Subscribe to MedNova Unlimited for ${subPrice} a month`}
+          accessibilityLabel={subscribed ? tr('MedNova Unlimited is active') : tr('Subscribe to MedNova Unlimited for {subPrice} a month', { subPrice })}
           style={[{ marginTop: u(16) }, busy === SUBSCRIPTION.id && s.busy]}
         >
           <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.3 }} end={{ x: 1, y: 0.7 }} style={s.sub}>
             <View style={{ flex: 1 }}>
-              <Text style={[s.mono, { color: t.onGrad, opacity: 0.7 }]}>MONTHLY</Text>
-              <Text style={[s.subH, { color: t.onGrad }]}>MedNova Unlimited</Text>
-              <Text style={[s.subP, { color: t.onGrad }]}>{SUBSCRIPTION.perks.join(' · ')}</Text>
-              <Text style={[s.subP, { color: t.onGrad, fontFamily: F.bodyBold }]}>{`+${SUBSCRIPTION.bonus} tokens on your first month, once`}</Text>
+              <Text style={[s.mono, { color: t.onGrad, opacity: 0.7 }]}>{tr('MONTHLY')}</Text>
+              <Text style={[s.subH, { color: t.onGrad }]}>{tr('MedNova Unlimited')}</Text>
+              <Text style={[s.subP, { color: t.onGrad }]}>{SUBSCRIPTION.perks.map((x) => tr(x)).join(' · ')}</Text>
+              <Text style={[s.subP, { color: t.onGrad, fontFamily: F.bodyBold }]}>{tr('+{bonus} tokens on your first month, once', { bonus: SUBSCRIPTION.bonus })}</Text>
             </View>
             <View style={[s.subBtn, { backgroundColor: t.onGrad }]}>
               {subscribed ? (
                 <>
-                  <Text style={[s.subBtnT, { color: t.gradB }]}>Active</Text>
-                  <Text style={[s.subBtnS, { color: t.gradB }]}>{`until ${dateOf(until!)}`}</Text>
+                  <Text style={[s.subBtnT, { color: t.gradB }]}>{tr('Active')}</Text>
+                  <Text style={[s.subBtnS, { color: t.gradB }]}>{tr('until {n}', { n: dateOf(until!) })}</Text>
                 </>
               ) : (
                 <>
                   <Text style={[s.subBtnT, { color: t.gradB }]}>{subPrice}</Text>
-                  <Text style={[s.subBtnS, { color: t.gradB }]}>{`a ${SUBSCRIPTION.period}`}</Text>
+                  <Text style={[s.subBtnS, { color: t.gradB }]}>{tr('a month')}</Text>
                 </>
               )}
             </View>
@@ -142,11 +143,11 @@ export function StorePage() {
 
         {/* Style shop (Yazan 2026-10-13): frames, titles, win effects and stickers, bought with tokens. */}
         <View style={{ height: u(14) }} />
-        <Kicker inSec>Style</Kicker>
+        <Kicker inSec>{tr('Style')}</Kicker>
         <StyleBanner t={t} />
 
         <View style={{ height: u(14) }} />
-        <Kicker inSec>Token packs</Kicker>
+        <Kicker inSec>{tr('Token packs')}</Kicker>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={s.rowScroll} contentContainerStyle={s.row} snapToInterval={CARD + GAP} decelerationRate="fast">
           {PACKS.map((p, i) => (
             <PackCard key={p.id} t={t} p={p} i={i} busy={busy === p.id} onBuy={() => run(p.id, () => buy(p.id))} />
@@ -155,26 +156,26 @@ export function StorePage() {
 
         {/* The Sovereign package (Yazan 2026-10-25): $10 for Sovereign, its frame and 500 tokens. */}
         <View style={{ height: u(14) }} />
-        <Kicker inSec>Packages</Kicker>
+        <Kicker inSec>{tr('Packages')}</Kicker>
         <SovereignCard t={t} busy={busy === SOVEREIGN_PACK.id} onBuy={() => run(SOVEREIGN_PACK.id, () => buy(SOVEREIGN_PACK.id))} />
 
         <Pressable onPress={() => (signedIn ? setPop(ASK_RESTORE) : router.navigate('/auth'))} hitSlop={u(10)} style={s.restore} accessibilityRole="button">
-          <Text style={[s.restoreT, { color: t.accent }]}>Restore purchases</Text>
+          <Text style={[s.restoreT, { color: t.accent }]}>{tr('Restore purchases')}</Text>
         </Pressable>
         <Text style={[s.foot, { color: c.mute }]}>
-          {`Paid through ${STORE}. Tokens and the subscription stay on your account. MedNova Unlimited is ${subPrice} a month and renews every month until you cancel it in your ${STORE} subscriptions, at least a day before it renews. See our `}
+          {tr('Paid through {STORE}. Tokens and the subscription stay on your account. MedNova Unlimited is {subPrice} a month and renews every month until you cancel it in your {STORE} subscriptions, at least a day before it renews. See our ', { STORE, subPrice })}
           <Text style={{ color: t.accent }} onPress={() => router.push({ pathname: '/privacy', params: { doc: 'terms' } })} accessibilityRole="link">
-            Terms
+            {tr('Terms')}
           </Text>
           {' and '}
           <Text style={{ color: t.accent }} onPress={() => router.push('/privacy')} accessibilityRole="link">
-            Privacy Policy
+            {tr('Privacy Policy')}
           </Text>
           .
         </Text>
       </InfoScroll>
       <FreeSheets t={t} />
-      <Congrats open={!!pop} title={pop?.title ?? ''} big={pop?.big} kick={pop?.kick} line={pop?.line ?? ''} coin={pop?.coin} button={pop?.button} alt={pop?.confirm ? 'Cancel' : undefined} onButton={pop?.confirm ? () => { setPop(null); void run('restore', restore); } : undefined} onClose={() => setPop(null)} />
+      <Congrats open={!!pop} title={pop?.title ?? ''} big={pop?.big} kick={pop?.kick} line={pop?.line ?? ''} coin={pop?.coin} button={pop?.button} alt={pop?.confirm ? tr('Cancel') : undefined} onButton={pop?.confirm ? () => { setPop(null); void run('restore', restore); } : undefined} onClose={() => setPop(null)} />
     </Screen>
   );
 }
@@ -185,24 +186,24 @@ function SovereignCard({ t, busy, onBuy }: { t: Theme; busy: boolean; onBuy: () 
   const price = usePrice(SOVEREIGN_PACK.id, SOVEREIGN_PACK.price);
   return (
     // Yazan 2026-11-12: a long local price (EGP) squeezed the words into broken lines, so the price sits under them.
-    <Pressable onPress={owned ? undefined : onBuy} accessibilityRole="button" accessibilityLabel={`Sovereign package for ${price}`} style={[s.style, s.sovCol, { backgroundColor: t.panel, borderColor: t.panelLine }, busy && s.busy]}>
+    <Pressable onPress={owned ? undefined : onBuy} accessibilityRole="button" accessibilityLabel={tr('Sovereign package for {price}', { price })} style={[s.style, s.sovCol, { backgroundColor: t.panel, borderColor: t.panelLine }, busy && s.busy]}>
       <View style={s.sovTop}>
         <Framed slug="sovereign" size={u(64)} frame="sovereign" still />
         <View style={{ flex: 1, minWidth: 0 }}>
           <Text style={[s.mono, { color: '#f5c542' }]} numberOfLines={1}>{'\u2605'.repeat(6)}</Text>
-          <Text style={[s.styleH, { color: t.fg }]} numberOfLines={1} adjustsFontSizeToFit>Sovereign package</Text>
-          <Text style={[s.styleS, { color: t.mute }]}>{`Sovereign, its frame and ${SOVEREIGN_PACK.tokens} tokens`}</Text>
-          <Text style={[s.styleS, { color: t.accent }]}>+30% EXP · refill 5 min</Text>
+          <Text style={[s.styleH, { color: t.fg }]} numberOfLines={1} adjustsFontSizeToFit>{tr('Sovereign package')}</Text>
+          <Text style={[s.styleS, { color: t.mute }]}>{tr('Sovereign, its frame and {tokens} tokens', { tokens: SOVEREIGN_PACK.tokens })}</Text>
+          <Text style={[s.styleS, { color: t.accent }]}>{tr('+30% EXP · refill 5 min')}</Text>
         </View>
       </View>
       {owned ? (
-        <Text style={[s.styleS, { color: t.mute, textAlign: 'center' }]}>Owned</Text>
+        <Text style={[s.styleS, { color: t.mute, textAlign: 'center' }]}>{tr('Owned')}</Text>
       ) : (
         <View style={{ alignItems: 'stretch', gap: u(3) }}>
           <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={[s.cBtn, s.sovBtn, s.sovWide]}>
             <Text style={[s.cBtnT, { color: t.onGrad }]} numberOfLines={1}>{price}</Text>
           </LinearGradient>
-          {!BILLING_LIVE ? <Text style={[s.mono, { color: t.mute, textAlign: 'center' }]}>COMING SOON</Text> : null}
+          {!BILLING_LIVE ? <Text style={[s.mono, { color: t.mute, textAlign: 'center' }]}>{tr('COMING SOON')}</Text> : null}
         </View>
       )}
     </Pressable>
@@ -219,10 +220,10 @@ function PackCard({ t, p, i, busy, onBuy }: { t: Theme; p: Pack; i: number; busy
   const step = coin * 0.45;
   const price = usePrice(p.id, p.price);
   return (
-    <Pressable onPress={onBuy} accessibilityRole="button" accessibilityLabel={`${p.tokens} tokens for ${price}`} style={[s.card, { backgroundColor: t.panel, borderColor: t.panelLine }, busy && s.busy]}>
+    <Pressable onPress={onBuy} accessibilityRole="button" accessibilityLabel={tr('{tokens} tokens for {price}', { tokens: p.tokens, price })} style={[s.card, { backgroundColor: t.panel, borderColor: t.panelLine }, busy && s.busy]}>
       <View style={[s.pile, { height: coin, width: coin + step * i }]}>
         {Array.from({ length: i + 1 }, (_, k) => (
-          <View key={k} style={{ position: 'absolute', left: step * k, top: 0 }}>
+          <View key={k} style={{ position: 'absolute', start: step * k, top: 0 }}>
             <TokenCoin size={coin} progress={0} track="transparent" />
           </View>
         ))}
@@ -233,7 +234,7 @@ function PackCard({ t, p, i, busy, onBuy }: { t: Theme; p: Pack; i: number; busy
         <View style={[s.wasLine, { backgroundColor: WAS }]} />
       </View>
       <Text style={[s.cN, { color: t.fg }]}>{p.tokens}</Text>
-      <Text style={[s.cU, { color: t.mute }]}>tokens</Text>
+      <Text style={[s.cU, { color: t.mute }]}>{tr('tokens')}</Text>
       <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={s.cBtn}>
         <Text style={[s.cBtnT, { color: t.onGrad }]}>{price}</Text>
       </LinearGradient>
@@ -259,7 +260,7 @@ const s = StyleSheet.create({
   cN: { fontFamily: F.display, fontSize: u(24), lineHeight: u(28) },
   was: { fontFamily: F.bodyBold, fontSize: u(12), lineHeight: u(14) },
   wasBox: { justifyContent: 'center' },
-  wasLine: { position: 'absolute', left: -u(2), right: -u(2), height: u(1.6), borderRadius: 1, transform: [{ rotate: '-12deg' }] },
+  wasLine: { position: 'absolute', start: -u(2), end: -u(2), height: u(1.6), borderRadius: 1, transform: [{ rotate: '-12deg' }] },
   cU: { fontFamily: F.body, fontSize: u(10) },
   cBtn: { alignSelf: 'stretch', height: u(30), borderRadius: 999, alignItems: 'center', justifyContent: 'center', marginTop: u(10) },
   sovBtn: { alignSelf: 'auto', marginTop: 0, paddingHorizontal: u(16) },

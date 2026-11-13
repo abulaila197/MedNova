@@ -33,14 +33,15 @@ import { titleColor } from './PlayerTitle';
 import { buyItem, loadStyle, spendTokens, useStyle, wear, whySay } from './useStyle';
 import { EffectSign, WinEffect } from './WinEffect';
 import { useLock } from '@/lib/useLock';
+import { tr } from '@/i18n';
 
 export type Tab = 'characters' | 'frames' | 'titles' | 'effects' | 'stickers';
 const TABS: { k: Tab; label: string }[] = [
-  { k: 'characters', label: 'Characters' },
-  { k: 'frames', label: 'Frames' },
-  { k: 'titles', label: 'Titles' },
-  { k: 'effects', label: 'Win effects' },
-  { k: 'stickers', label: 'Stickers' },
+  { k: 'characters', label: tr('Characters') },
+  { k: 'frames', label: tr('Frames') },
+  { k: 'titles', label: tr('Titles') },
+  { k: 'effects', label: tr('Win effects') },
+  { k: 'stickers', label: tr('Stickers') },
 ];
 
 // Text sticker packs (Yazan 2026-10-13); character stickers are free and not sold.
@@ -53,7 +54,7 @@ const ROBOT_ITEMS: Item[] = ROBOTS.map((r) => ({ id: `robot:${r.key}`, key: r.ke
 
 // The goal line over the shop robots: how many you own, or that the prize is collected.
 const shopGoal = (n: number) =>
-  n >= SHOP_ROBOT_KEYS.length ? `All five owned. ${SHOP_ROBOTS_PRIZE} tokens collected.` : `Own all five for ${SHOP_ROBOTS_PRIZE} tokens · ${n} of ${SHOP_ROBOT_KEYS.length}`;
+  n >= SHOP_ROBOT_KEYS.length ? tr('All five owned. {SHOP_ROBOTS_PRIZE} tokens collected.', { SHOP_ROBOTS_PRIZE }) : tr('Own all five for {SHOP_ROBOTS_PRIZE} tokens · {n} of {n2}', { SHOP_ROBOTS_PRIZE, n, n2: SHOP_ROBOT_KEYS.length });
 
 const left = (ms: number) => {
   const h = Math.max(0, Math.floor((ms - Date.now()) / 3600000));
@@ -108,7 +109,7 @@ export function StylePage() {
       const r = await fn();
       setBusy(false);
       // Offline, a wear change shows at once and goes up when the phone is back online (#58).
-      setSaid(r.ok ? (r.queued ? 'Done on this phone. It saves to your account when you’re back online.' : done) : whySay(r as { why: string; need?: number }));
+      setSaid(r.ok ? (r.queued ? tr('Done on this phone. It saves to your account when you’re back online.') : done) : whySay(r as { why: string; need?: number }));
       if (r.ok && (r as { prize?: number }).prize) setWon(true);
     });
   };
@@ -120,15 +121,15 @@ export function StylePage() {
     : it.id.startsWith('frame:') ? worn.frame === it.key : it.id.startsWith('title:') ? worn.title === it.key : it.id.startsWith('effect:') ? worn.effect === it.key : false;
   // Linky: 20 redeemed codes only (Yazan 2026-10-26).
   const earnedHow = (it: Item) =>
-    it.key === 'linky' ? `${robotOf('linky')!.how}. You have ${free?.invites ?? 0} of 20 codes.` : EARNED_HOW[it.id] ?? robotOf(it.key)?.how;
+    it.key === 'linky' ? tr('{how}. You have {n} of 20 codes.', { how: tr(robotOf('linky')!.how ?? ''), n: free?.invites ?? 0 }) : tr(EARNED_HOW[it.id] ?? robotOf(it.key)?.how ?? '');
 
   return (
     <Screen tab={null} glow={21} wide={500}>
       <InfoScroll>
-        <Kicker>Style shop</Kicker>
+        <Kicker>{tr('Style shop')}</Kicker>
         <Text style={[ui.H, { color: c.fg, fontFamily: F.display }]}>
-          {'Dress your '}
-          <Text style={[ui.H, { color: t.accent, fontFamily: F.displayItalic }]}>name</Text>
+          {tr('Dress your ')}
+          <Text style={[ui.H, { color: t.accent, fontFamily: F.displayItalic }]}>{tr('name')}</Text>
         </Text>
         {/* Offline: what you own, from the saved copy; buying needs internet (#57). */}
         <OfflineLine at={styleSavedAt} />
@@ -137,14 +138,14 @@ export function StylePage() {
         <View style={[s.me, { backgroundColor: c.surf, borderColor: c.line }]}>
           <Framed slug={avatar} size={u(92)} frame={frame} />
           <View style={{ flex: 1, gap: u(2) }}>
-            <Display em={profile?.display_name ?? 'Guest'} italic style={[s.meN, { color: c.fg }]}>
-              {'Dr. '}
+            <Display em={profile?.display_name ?? tr('Guest')} italic style={[s.meN, { color: c.fg }]}>
+              {tr('Dr. ')}
             </Display>
             <Text style={[s.meT, { color: titleColor(t.mode, title, t.accent) }]}>{titleName(title)}</Text>
-            {tab === 'characters' ? <Text style={[s.balT, { color: t.accent }]}>{`Star bonus: ${bonusLine(avatar)}`}</Text> : null}
+            {tab === 'characters' ? <Text style={[s.balT, { color: t.accent }]}>{tr('Star bonus: {n}', { n: bonusLine(avatar) })}</Text> : null}
             <View style={s.bal}>
               <TokenCoin size={u(13)} progress={0} track="transparent" />
-              <Text style={[s.balT, { color: c.mute }]}>{signedIn ? `${tokens} tokens` : 'Sign in to buy'}</Text>
+              <Text style={[s.balT, { color: c.mute }]}>{signedIn ? tr('{tokens} tokens', { tokens }) : tr('Sign in to buy')}</Text>
             </View>
           </View>
         </View>
@@ -164,7 +165,7 @@ export function StylePage() {
         {/* This week's deal: one frame and one title at DEAL_OFF% off. */}
         {deal.length ? (
           <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.3 }} end={{ x: 1, y: 0.7 }} style={s.deal}>
-            <Text style={[s.dealK, { color: t.onGrad }]}>{`THIS WEEK · ${DEAL_OFF}% OFF · ENDS IN ${left(dealEnds).toUpperCase()}`}</Text>
+            <Text style={[s.dealK, { color: t.onGrad }]}>{tr('THIS WEEK · {DEAL_OFF}% OFF · ENDS IN {n}', { DEAL_OFF, n: left(dealEnds).toUpperCase() })}</Text>
             <Text style={[s.dealT, { color: t.onGrad }]}>
               {[FRAMES, TITLES].map((l, i) => {
                 const it = l.find((x) => x.id === deal[i]);
@@ -201,7 +202,7 @@ export function StylePage() {
             const items = ROBOT_ITEMS.filter((it) => robotOf(it.key)!.group === g);
             return (
               <View key={g}>
-                <Text style={[s.gK, { color: c.mute }]}>{g === 'shop' ? 'BUY WITH TOKENS' : 'SPECIAL · NOT SOLD FOR TOKENS'}</Text>
+                <Text style={[s.gK, { color: c.mute }]}>{g === 'shop' ? tr('BUY WITH TOKENS') : tr('SPECIAL · NOT SOLD FOR TOKENS')}</Text>
                 {g === 'shop' ? <Text style={[s.goal, { color: t.accent }]}>{shopGoal(SHOP_ROBOT_KEYS.filter(has).length)}</Text> : null}
                 <View style={s.grid}>
                   {[...items, ...Array.from({ length: (3 - (items.length % 3)) % 3 }, () => null)].map((it, i) => !it ? <View key={`gap${i}`} style={s.cellGap} /> : (
@@ -246,7 +247,7 @@ export function StylePage() {
                   <Text style={[s.rN, { color: tab === 'titles' ? titleColor(t.mode, it.key, c.fg) : c.fg, fontFamily: tab === 'titles' ? F.displayItalic : F.bodySemi }]}>{it.name}</Text>
                   {tab === 'effects' ? <Text style={[s.rS, { color: c.mute }]}>{(it as (typeof EFFECTS)[number]).what}</Text> : null}
                   {tab === 'stickers' ? <Stickers slug={it.key} /> : null}
-                  {it.price == null ? <Text style={[s.rS, { color: c.mute }]}>{fromChest(it.id) ? 'From daily chests' : (earnedHow(it) ?? 'Earned at this achievement\u2019s Platinum tier')}</Text> : null}
+                  {it.price == null ? <Text style={[s.rS, { color: c.mute }]}>{fromChest(it.id) ? tr('From daily chests') : (earnedHow(it) ?? tr('Earned at this achievement’s Platinum tier'))}</Text> : null}
                 </View>
                 <Price t={t} it={it} deal={deal} owned={has(it.id)} wearing={wearing(it)} />
               </Pressable>
@@ -270,46 +271,46 @@ export function StylePage() {
             <Text style={[s.barS, { color: c.mute }]}>{earnedHow(pick)}</Text>
           ) : null}
           <View style={s.barBtns}>
-            {pick.id.startsWith('robot:') ? <Small t={t} label="Card" onPress={() => setCard(robotOf(pick.key)!)} /> : null}
-            {pick.id.startsWith('effect:') ? <Small t={t} label="Try it" onPress={() => setTrying(pick)} /> : null}
-            {pick.price ? <Small t={t} label="Gift" onPress={() => (signedIn ? setGift(true) : router.navigate('/auth'))} /> : null}
+            {pick.id.startsWith('robot:') ? <Small t={t} label={tr('Card')} onPress={() => setCard(robotOf(pick.key)!)} /> : null}
+            {pick.id.startsWith('effect:') ? <Small t={t} label={tr('Try it')} onPress={() => setTrying(pick)} /> : null}
+            {pick.price ? <Small t={t} label={tr('Gift')} onPress={() => (signedIn ? setGift(true) : router.navigate('/auth'))} /> : null}
             {pick.id.startsWith('robot:') && has(pick.id) ? (
               wearing(pick) ? (
-                <Text style={[s.barS, { color: c.mute }]}>Wearing</Text>
+                <Text style={[s.barS, { color: c.mute }]}>{tr('Wearing')}</Text>
               ) : (
-                <Big t={t} label="Wear" busy={busy} onPress={() => act(() => wearCharacter(pick.key), 'Done. Your star bonus changed with it.')} />
+                <Big t={t} label={tr('Wear')} busy={busy} onPress={() => act(() => wearCharacter(pick.key), tr('Done. Your star bonus changed with it.'))} />
               )
             ) : pick.key === 'sovereign' && pick.id.startsWith('robot:') ? (
               BILLING_LIVE ? (
-                <Big t={t} label={`Get · ${sovPrice}`} busy={false} onPress={() => router.navigate('/store')} />
+                <Big t={t} label={tr('Get · {sovPrice}', { sovPrice })} busy={false} onPress={() => router.navigate('/store')} />
               ) : (
-                <Text style={[s.barS, { color: c.mute }]}>{`${sovPrice} · Coming soon`}</Text>
+                <Text style={[s.barS, { color: c.mute }]}>{tr('{sovPrice} · Coming soon', { sovPrice })}</Text>
               )
             ) : has(pick.id) ? (
               pick.id.startsWith('pack:') ? (
-                <Text style={[s.barS, { color: c.mute }]}>Yours in every room</Text>
+                <Text style={[s.barS, { color: c.mute }]}>{tr('Yours in every room')}</Text>
               ) : wearing(pick) ? (
                 pick.id.startsWith('effect:') ? (
-                  <Big t={t} label="Take off" busy={busy} onPress={() => act(() => wear({ effect: null }), 'Taken off.')} />
+                  <Big t={t} label={tr('Take off')} busy={busy} onPress={() => act(() => wear({ effect: null }), tr('Taken off.'))} />
                 ) : (
-                  <Text style={[s.barS, { color: c.mute }]}>Wearing</Text>
+                  <Text style={[s.barS, { color: c.mute }]}>{tr('Wearing')}</Text>
                 )
               ) : (
-                <Big t={t} label="Wear" busy={busy} onPress={() => act(() => wear({ [pick.id.split(':')[0]]: pick.id.slice(pick.id.indexOf(':') + 1) }), 'Done. Everyone sees it now.')} />
+                <Big t={t} label={tr('Wear')} busy={busy} onPress={() => act(() => wear({ [pick.id.split(':')[0]]: pick.id.slice(pick.id.indexOf(':') + 1) }), tr('Done. Everyone sees it now.'))} />
               )
             ) : pick.id === 'robot:admin' ? (
-              <Text style={[s.pT, { color: t.error }]}>ADMIN</Text>
+              <Text style={[s.pT, { color: t.error }]}>{tr('ADMIN')}</Text>
             ) : pick.price == null ? (
-              <Text style={[s.barS, { color: c.mute }]}>{fromChest(pick.id) ? 'From daily chests' : 'Earned, not sold'}</Text>
+              <Text style={[s.barS, { color: c.mute }]}>{fromChest(pick.id) ? tr('From daily chests') : tr('Earned, not sold')}</Text>
             ) : (
-              <Big t={t} label={`Buy · ${costOf(pick, deal)}`} busy={busy} onPress={() => act(() => buyItem(pick.id), 'Bought. Tap Wear to put it on.')} />
+              <Big t={t} label={tr('Buy · {costOf}', { costOf: costOf(pick, deal) })} busy={busy} onPress={() => act(() => buyItem(pick.id), tr('Bought. Tap Wear to put it on.'))} />
             )}
           </View>
         </View>
       ) : null}
 
-      <GiftSheet open={gift} item={pick} onClose={() => setGift(false)} onSent={(name) => setSaid(`Sent to ${name}. They get a pop-up next time they open MedNova.`)} />
-      <Congrats open={won} tokens={SHOP_ROBOTS_PRIZE} title="All five robots are yours" line="Bloop, Pixel, Nimbus, Ember and Zenith. Your tokens are in your wallet." onClose={() => setWon(false)} />
+      <GiftSheet open={gift} item={pick} onClose={() => setGift(false)} onSent={(name) => setSaid(tr('Sent to {name}. They get a pop-up next time they open MedNova.', { name }))} />
+      <Congrats open={won} tokens={SHOP_ROBOTS_PRIZE} title={tr('All five robots are yours')} line={tr('Bloop, Pixel, Nimbus, Ember and Zenith. Your tokens are in your wallet.')} onClose={() => setWon(false)} />
       {card ? <CardViewer card={card} onClose={() => setCard(null)} /> : null}
       {trying ? <WinEffect kind={(trying as (typeof EFFECTS)[number]).key} onDone={() => setTrying(null)} /> : null}
     </Screen>
@@ -326,11 +327,11 @@ function Cell({ t, on, onPress, children }: { t: Theme; on: boolean; onPress: ()
 }
 
 function Price({ t, it, deal, owned, wearing }: { t: Theme; it: Item; deal: string[]; owned: boolean; wearing: boolean }) {
-  if (wearing) return <Text style={[s.pT, { color: t.accent }]}>WEARING</Text>;
-  if (owned) return <Text style={[s.pT, { color: t.mute }]}>OWNED</Text>;
+  if (wearing) return <Text style={[s.pT, { color: t.accent }]}>{tr('WEARING')}</Text>;
+  if (owned) return <Text style={[s.pT, { color: t.mute }]}>{tr('OWNED')}</Text>;
   // The Admin character is never earned: players see a red ADMIN tag (Yazan 2026-10-26).
-  if (it.id === 'robot:admin') return <Text style={[s.pT, { color: t.error }]}>ADMIN</Text>;
-  if (it.price == null) return <Text style={[s.pT, { color: t.mute }]}>EARNED</Text>;
+  if (it.id === 'robot:admin') return <Text style={[s.pT, { color: t.error }]}>{tr('ADMIN')}</Text>;
+  if (it.price == null) return <Text style={[s.pT, { color: t.mute }]}>{tr('EARNED')}</Text>;
   const now = costOf(it, deal)!;
   return (
     <View style={s.price}>
@@ -358,10 +359,10 @@ function Glow({ t, busy, act, glow, until }: { t: Theme; busy: boolean; act: (fn
   return (
     <View style={[s.list, s.glow, { borderColor: c.line, backgroundColor: c.surf }]}>
       <View style={{ flex: 1 }}>
-        <Text style={[s.rN, { color: c.fg, textShadowColor: t.accent, textShadowRadius: u(8) }]}>Name glow</Text>
-        <Text style={[s.rS, { color: c.mute }]}>{days ? `Glowing for ${days} more ${days === 1 ? 'day' : 'days'}. Buying again adds 7 days.` : 'Your name glows on the leaderboard for 7 days'}</Text>
+        <Text style={[s.rN, { color: c.fg, textShadowColor: t.accent, textShadowRadius: u(8) }]}>{tr('Name glow')}</Text>
+        <Text style={[s.rS, { color: c.mute }]}>{days ? tr('Glowing for {days} more {n}. Buying again adds 7 days.', { days, n: days === 1 ? tr('day') : tr('days') }) : tr('Your name glows on the leaderboard for 7 days')}</Text>
       </View>
-      <Big t={t} label="50" coin busy={busy} onPress={() => act(() => spendTokens('glow'), days ? `7 days added. ${days + 7} days in total.` : 'Your name glows for 7 days.')} />
+      <Big t={t} label="50" coin busy={busy} onPress={() => act(() => spendTokens('glow'), days ? tr('7 days added. {n} days in total.', { n: days + 7 }) : tr('Your name glows for 7 days.'))} />
     </View>
   );
 }
@@ -400,8 +401,8 @@ function GiftSheet({ open, item, onClose, onSent }: { open: boolean; item: Item 
   if (!item) return null;
   return (
     <Sheet open={open} onClose={onClose}>
-      <Text style={[s.gH, { color: c.fg }]}>{`Gift ${item.name}`}</Text>
-      <Text style={[s.rS, { color: c.mute, marginBottom: u(8) }]}>{`${costOf(item, deal)} tokens from you. It's theirs to keep.`}</Text>
+      <Text style={[s.gH, { color: c.fg }]}>{tr('Gift {name}', { name: item.name })}</Text>
+      <Text style={[s.rS, { color: c.mute, marginBottom: u(8) }]}>{tr('{n} tokens from you. It\'s theirs to keep.', { n: costOf(item, deal) })}</Text>
       {err ? <Text style={[s.rS, { color: c.t.error }]}>{err}</Text> : null}
       {mates.length ? (
         mates.map((f) => (
@@ -417,18 +418,18 @@ function GiftSheet({ open, item, onClose, onSent }: { open: boolean; item: Item 
                 if (r.ok) {
                   onClose();
                   onSent(f.display_name);
-                } else setErr(r.why === 'owned' ? `${f.display_name} already has it.` : whySay(r));
+                } else setErr(r.why === 'owned' ? tr('{display_name} already has it.', { display_name: f.display_name }) : whySay(r));
               })
             }
             style={[s.gRow, { borderColor: c.line }, busy === f.id && { opacity: 0.6 }]}
             accessibilityRole="button">
             <Face slug={f.avatar} size={u(26)} />
             <Text style={[s.rN, { color: c.fg, flex: 1 }]}>{f.display_name}</Text>
-            <Text style={[s.smallT, { color: c.t.accent }]}>Send</Text>
+            <Text style={[s.smallT, { color: c.t.accent }]}>{tr('Send')}</Text>
           </Pressable>
         ))
       ) : (
-        <Text style={[s.rS, { color: c.mute }]}>Add friends first, then you can send them gifts.</Text>
+        <Text style={[s.rS, { color: c.mute }]}>{tr('Add friends first, then you can send them gifts.')}</Text>
       )}
     </Sheet>
   );
@@ -469,7 +470,7 @@ const s = StyleSheet.create({
   packImg: { width: '23.5%', aspectRatio: 1.5 },
   fill: { width: '100%', height: '100%' },
   glow: { flexDirection: 'row', alignItems: 'center', padding: u(12), gap: u(10) },
-  bar: { position: 'absolute', left: u(14), right: u(14), bottom: u(18), borderWidth: 1, borderRadius: u(18), paddingVertical: u(10), paddingHorizontal: u(14), gap: u(8) },
+  bar: { position: 'absolute', start: u(14), end: u(14), bottom: u(18), borderWidth: 1, borderRadius: u(18), paddingVertical: u(10), paddingHorizontal: u(14), gap: u(8) },
   barN: { fontFamily: F.display, fontSize: u(15) },
   barBtns: { flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', gap: u(6) },
   barS: { fontFamily: F.bodyMedium, fontSize: u(10.5) },

@@ -3,6 +3,7 @@
 // reached, plus any changes still waiting to go up. Back online, waiting changes go up first, then the server's
 // copy replaces the phone's.
 import { engine } from '@/games/engine';
+import { tr } from '@/i18n';
 
 export const COPIES = ['style', 'friends', 'hunt', 'challenges', 'rounds', 'social', 'leaderboard', 'cases', 'free', 'profiles', 'daily', 'inbox', 'friend_challenges'] as const;
 export type CopyName = (typeof COPIES)[number];
@@ -24,10 +25,10 @@ export const dropCopies = (uid: string) => Promise.all(COPIES.map((n) => engine.
 /** "5 min ago" for the offline line. */
 export function agoText(at: number, now = Date.now()) {
   const m = Math.max(0, Math.floor((now - at) / 60000));
-  if (m < 1) return 'just now';
-  if (m < 60) return `${m} min ago`;
+  if (m < 1) return tr('just now');
+  if (m < 60) return tr('{m} min ago', { m });
   const h = Math.floor(m / 60);
-  if (h < 24) return `${h} h ago`;
+  if (h < 24) return tr('{h} h ago', { h });
   const d = Math.floor(h / 24);
-  return d === 1 ? 'yesterday' : `${d} days ago`;
+  return d === 1 ? tr('yesterday') : tr('{d} days ago', { d });
 }

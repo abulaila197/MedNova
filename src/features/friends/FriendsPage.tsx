@@ -19,6 +19,7 @@ import { u } from '@/theme/scale';
 import type { Theme } from '@/theme/tokens';
 import { F } from '@/theme/tokens';
 import { shareText } from '@/lib/share';
+import { tr } from '@/i18n';
 
 type Found = Omit<Friend, 'last_seen'>;
 
@@ -36,19 +37,19 @@ export function FriendsPage() {
   }, [profile]);
   const req = list.filter((f) => f.kind === 'incoming').length;
   const fr = list.filter((f) => f.kind === 'friend').length;
-  const names = [`Friends · ${fr}`, `Requests · ${req}`, 'Find'];
+  const names = [tr('Friends · {fr}', { fr }), tr('Requests · {req}', { req }), tr('Find')];
   return (
     <Screen tab={null} glow={9} wide={460} symbols>
       <InfoScroll>
-        <Kicker>Friends</Kicker>
+        <Kicker>{tr('Friends')}</Kicker>
         <Text style={[ui.H, { color: c.fg, fontFamily: F.display }]}>
-          {'Your '}
-          <Text style={[ui.H, { color: t.accent, fontFamily: F.displayItalic }]}>people</Text>
+          {tr('Your ')}
+          <Text style={[ui.H, { color: t.accent, fontFamily: F.displayItalic }]}>{tr('people')}</Text>
         </Text>
         {!profile ? (
           <Pressable onPress={() => router.navigate('/auth')} style={[s.guest, { borderColor: t.panelLine, backgroundColor: t.panel }]} accessibilityRole="button">
-            <Text style={[s.guestT, { color: t.fg }]}>Sign in to add friends, challenge them and get your invite code.</Text>
-            <Text style={[s.guestA, { color: t.accent }]}>Sign in</Text>
+            <Text style={[s.guestT, { color: t.fg }]}>{tr('Sign in to add friends, challenge them and get your invite code.')}</Text>
+            <Text style={[s.guestA, { color: t.accent }]}>{tr('Sign in')}</Text>
           </Pressable>
         ) : (
           <>
@@ -73,24 +74,24 @@ export function FriendsPage() {
 /** Your invite code (= friend code): a new player redeems it and you both get 10 tokens, up to 150 for you. */
 function Strip({ t, code }: { t: Theme; code: string }) {
   const earned = useFree((x) => x.status?.invite_tokens ?? 0);
-  const share = () => shareText(`Join me on MedNova, the medical games app. Enter my invite code ${code} on the Friends page and we both get 10 tokens.`);
+  const share = () => shareText(tr('Join me on MedNova, the medical games app. Enter my invite code {code} on the Friends page and we both get 10 tokens.', { code }));
   return (
     <View style={[s.strip, { borderColor: t.panelLine, backgroundColor: t.panel }]}>
       <View>
-        <Text style={[s.mono, { color: t.kick }]}>INVITE CODE</Text>
+        <Text style={[s.mono, { color: t.kick }]}>{tr('INVITE CODE')}</Text>
         <Text style={[s.stripC, { color: t.fg }]}>{code}</Text>
       </View>
-      <Text style={[s.stripS, { color: t.mute }]}>{`+10 each\n${earned} of 150 earned`}</Text>
+      <Text style={[s.stripS, { color: t.mute }]}>{tr('+10 each\n{earned} of 150 earned', { earned })}</Text>
       <View style={{ flex: 1 }} />
-      <Grad t={t} label="Share" onPress={share} />
+      <Grad t={t} label={tr('Share')} onPress={share} />
     </View>
   );
 }
 
 // Rewards for redeemed invite codes (Yazan 2026-10-25): the Inviter set at 10, Linky at 20 (the server grants both).
 const GOALS = [
-  { n: 10, name: 'Inviter set', item: 'frame:inviter', what: 'Frame, name box and the Friendship Chain win effect' },
-  { n: 20, name: 'Linky', item: 'robot:linky', what: 'The Friend Signal, a 4-star character' },
+  { n: 10, name: tr('Inviter set'), item: 'frame:inviter', what: tr('Frame, name box and the Friendship Chain win effect') },
+  { n: 20, name: tr('Linky'), item: 'robot:linky', what: tr('The Friend Signal, a 4-star character') },
 ];
 
 /** How far your redeemed codes are from each reward. Tapping opens the Style shop. */
@@ -99,14 +100,14 @@ function InviteGoals({ t }: { t: Theme }) {
   const owned = useStyle((x) => x.owned);
   return (
     <Pressable onPress={() => router.navigate('/style' as never)} style={[s.goals, { borderColor: t.panelLine, backgroundColor: t.panel }]} accessibilityRole="link">
-      <Text style={[s.mono, { color: t.kick }]}>{`FRIENDS WHO USED YOUR CODE · ${n}`}</Text>
+      <Text style={[s.mono, { color: t.kick }]}>{tr('FRIENDS WHO USED YOUR CODE · {n}', { n })}</Text>
       {GOALS.map((g) => {
         const done = n >= g.n || owned.includes(g.item); // Linky also comes from the social follows
         return (
           <View key={g.n} style={{ marginTop: u(8) }}>
             <View style={s.goalTop}>
               <Text style={[s.goalN, { color: t.fg }]}>{g.name}</Text>
-              <Text style={[s.mono, { color: done ? t.accent : t.mute }]}>{done ? 'UNLOCKED ✓' : `${n} / ${g.n}`}</Text>
+              <Text style={[s.mono, { color: done ? t.accent : t.mute }]}>{done ? tr('UNLOCKED ✓') : `${n} / ${g.n}`}</Text>
             </View>
             <View style={[s.bar, { backgroundColor: 'rgba(255,255,255,0.08)' }]}>
               <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={[s.barFill, { width: `${done ? 100 : (n / g.n) * 100}%` }]} />
@@ -127,7 +128,7 @@ function Redeem({ t }: { t: Theme }) {
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState('');
   const [won, setWon] = useState(false);
-  if (redeemed && !won) return <Text style={[s.done, { color: t.mute }]}>INVITE CODE REDEEMED ✓</Text>;
+  if (redeemed && !won) return <Text style={[s.done, { color: t.mute }]}>{tr('INVITE CODE REDEEMED ✓')}</Text>;
   const go = async () => {
     if (busy || code.trim().length < 4) return;
     setBusy(true);
@@ -140,23 +141,23 @@ function Redeem({ t }: { t: Theme }) {
         await loadFree(true).catch(() => {});
         setCode('');
         setWon(true);
-      } else setMsg(r.why === 'not_found' ? 'No player has that code.' : r.why === 'self' ? 'That is your own code.' : r.why === 'swap' ? 'You invited this player, so their code can’t pay you back.' : 'You already redeemed a code.');
+      } else setMsg(r.why === 'not_found' ? tr('No player has that code.') : r.why === 'self' ? tr('That is your own code.') : r.why === 'swap' ? tr('You invited this player, so their code can’t pay you back.') : tr('You already redeemed a code.'));
     } catch {
-      setMsg('Not redeemed. Check your connection and try again.');
+      setMsg(tr('Not redeemed. Check your connection and try again.'));
     }
     setBusy(false);
   };
   return (
     <View style={{ marginTop: u(10) }}>
-      <Text style={[s.mono, { color: t.mute }]}>GOT A CODE FROM A FRIEND?</Text>
+      <Text style={[s.mono, { color: t.mute }]}>{tr('GOT A CODE FROM A FRIEND?')}</Text>
       <View style={s.rd}>
-        <TextInput value={code} onChangeText={(v) => setCode(v.toUpperCase())} placeholder="Enter code" placeholderTextColor={t.mute} autoCapitalize="characters" autoCorrect={false} maxLength={12} style={[s.input, { flex: 1, minWidth: 0, width: 0, color: t.fg, borderColor: t.panelLine, backgroundColor: t.panel2 }]} />
+        <TextInput value={code} onChangeText={(v) => setCode(v.toUpperCase())} placeholder={tr('Enter code')} placeholderTextColor={t.mute} autoCapitalize="characters" autoCorrect={false} maxLength={12} style={[s.input, { flex: 1, minWidth: 0, width: 0, color: t.fg, borderColor: t.panelLine, backgroundColor: t.panel2 }]} />
         <View style={off ? { opacity: 0.4 } : null} pointerEvents={off ? 'none' : 'auto'}>
-          <Ghost t={t} label={busy ? '...' : 'Redeem'} onPress={go} />
+          <Ghost t={t} label={busy ? '...' : tr('Redeem')} onPress={go} />
         </View>
       </View>
       {msg ? <Text style={[s.msg, { color: t.error }]}>{msg}</Text> : null}
-      <Congrats open={won} tokens={10} title="Welcome aboard" line="Your friend's code worked. They get 10 tokens too." onClose={() => setWon(false)} />
+      <Congrats open={won} tokens={10} title={tr('Welcome aboard')} line={tr('Your friend\'s code worked. They get 10 tokens too.')} onClose={() => setWon(false)} />
     </View>
   );
 }
@@ -193,29 +194,29 @@ function Find({ t }: { t: Theme }) {
     }
   };
   // Finding players needs the server (#59).
-  if (off) return <Text style={[s.sub, { color: t.mute }]}>FINDING PLAYERS NEEDS INTERNET</Text>;
+  if (off) return <Text style={[s.sub, { color: t.mute }]}>{tr('FINDING PLAYERS NEEDS INTERNET')}</Text>;
   return (
     <>
       <View style={[s.input, s.search, { borderColor: t.panelLine, backgroundColor: t.panel2 }]}>
         <Text style={{ color: t.mute, fontSize: u(12) }}>⌕</Text>
-        <TextInput value={q} onChangeText={setQ} autoCapitalize="none" autoCorrect={false} placeholder="Find a player by name, @username or friend code" placeholderTextColor={t.mute} style={[s.searchT, { color: t.fg }]} />
+        <TextInput value={q} onChangeText={setQ} autoCapitalize="none" autoCorrect={false} placeholder={tr('Find a player by name, @username or friend code')} placeholderTextColor={t.mute} style={[s.searchT, { color: t.fg }]} />
       </View>
-      {rows ? <Text style={[s.sub, { color: t.mute }]}>{rows.length ? `${rows.length} PLAYER${rows.length === 1 ? '' : 'S'}` : 'NOBODY BY THAT NAME YET'}</Text> : null}
+      {rows ? <Text style={[s.sub, { color: t.mute }]}>{rows.length ? tr('{n} PLAYER{n2}', { n: rows.length, n2: rows.length === 1 ? '' : 'S' }) : tr('NOBODY BY THAT NAME YET')}</Text> : null}
       {rows?.map((f) => {
         const state = sent.includes(f.id) && f.kind === 'none' ? 'outgoing' : f.kind;
         return (
           <View key={f.id} style={[s.fr, { borderColor: t.panelLine }]}>
             <Ring t={t} f={f} />
-            <Pressable style={{ flex: 1 }} onPress={() => openPlayer(f)} accessibilityRole="button" accessibilityHint="Open their profile">
+            <Pressable style={{ flex: 1 }} onPress={() => openPlayer(f)} accessibilityRole="button" accessibilityHint={tr('Open their profile')}>
               <Name t={t} f={{ ...f, last_seen: null, kind: 'friend' }} />
               <Text style={[s.frS, { color: t.mute }]}>{`@${f.username.toUpperCase()}`}</Text>
             </Pressable>
             {state === 'none' ? (
-              <Grad t={t} label="+ Add" onPress={() => add(f.id)} />
+              <Grad t={t} label={tr('+ Add')} onPress={() => add(f.id)} />
             ) : state === 'incoming' ? (
-              <Grad t={t} label="Accept" onPress={() => add(f.id)} />
+              <Grad t={t} label={tr('Accept')} onPress={() => add(f.id)} />
             ) : (
-              <Text style={[s.frS, { color: t.mute }]}>{state === 'friend' ? 'FRIENDS' : 'REQUEST SENT'}</Text>
+              <Text style={[s.frS, { color: t.mute }]}>{state === 'friend' ? tr('FRIENDS') : tr('REQUEST SENT')}</Text>
             )}
           </View>
         );
