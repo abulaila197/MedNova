@@ -13,7 +13,6 @@ import { F } from '@/theme/tokens';
 
 import { MechViewer } from '@/features/cards/CollectionPage';
 import { RoundsEntry } from '@/features/rounds/RoundsEntry';
-import { useRoundsDot } from '@/features/rounds/useRounds';
 
 import { CHEST_ORDER, CHESTS, chestItems, ITEMS, MECHS, MECHS_PRIZE, RARITY, RARITY_ORDER, type ChestKind, type Item } from './data';
 import type { OpenResult } from './useChests';
@@ -40,7 +39,6 @@ const TILE = u(38);
  */
 export function ChestsPage({ v }: { v: ChestsView }) {
   const c = useInfo();
-  const roundsDot = useRoundsDot();
   const t = c.t;
   const first = CHEST_ORDER.find((k) => v.owned[k] > 0) ?? 'wooden';
   const [sel, setSel] = useState<ChestKind>(first);
@@ -100,7 +98,7 @@ export function ChestsPage({ v }: { v: ChestsView }) {
           <Text style={[ui.H, { color: t.accent, fontFamily: F.displayItalic }]}>{tr('chests')}</Text>
         </Text>
         {/* Grand Rounds lives here now, not as its own Games page button (Yazan 2026-10-27). */}
-        <RoundsEntry />
+        <RoundsEntry dot />
 
         <View style={s.row}>
           <View style={s.left}>
@@ -196,8 +194,6 @@ export function ChestsPage({ v }: { v: ChestsView }) {
               <View key={d} style={[s.sDot, { backgroundColor: d < v.rounds.run ? '#b07cff' : c.line }]} />
             ))}
           </View>
-          {/* The same red dot as the chest button (Yazan 2026-11-13): until this week's 3 missions are collected. */}
-          {roundsDot ? <View style={[s.redDot, { backgroundColor: c.t.red, borderColor: c.surf }]} /> : null}
         </Pressable>
       </InfoScroll>
       <MechViewer i={card} onClose={() => setCard(null)} />
@@ -246,7 +242,6 @@ const s = StyleSheet.create({
   odds: { flexDirection: 'row', flexWrap: 'wrap', borderWidth: 1, borderRadius: u(12), paddingHorizontal: u(10), paddingVertical: u(8), marginTop: u(16), columnGap: u(12), rowGap: u(5) },
   odd: { flexDirection: 'row', alignItems: 'center', gap: u(4) },
   dot: { width: u(6), height: u(6), borderRadius: u(3) },
-  redDot: { position: 'absolute', end: u(-2), top: u(-2), width: u(9), height: u(9), borderRadius: u(4.5), borderWidth: 1.5 },
   oddN: { fontFamily: F.bodySemi, fontSize: u(8.5) },
   oddP: { fontFamily: F.mono, fontSize: u(8) },
   note: { fontFamily: F.body, fontSize: u(8.5), marginTop: u(6) },

@@ -8,13 +8,15 @@ import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import { Beat } from './Ribbon';
-import { loadRounds, readyOf, useRoundsStore } from './useRounds';
+import { loadRounds, readyOf, useRoundsDot, useRoundsStore } from './useRounds';
 import { tr } from '@/i18n';
 
 /** This week's Grand Rounds at the top of the Achievements page: the same heartbeat line, changing every week. */
-export function RoundsEntry() {
+/** `dot`: the red dot while this week isn't finished (chests page, Yazan 2026-11-13). */
+export function RoundsEntry({ dot = false }: { dot?: boolean }) {
   const t = useTheme();
   const r = useRoundsStore((x) => x.r);
+  const red = useRoundsDot() && dot;
   useEffect(() => {
     void loadRounds();
   }, []);
@@ -27,6 +29,7 @@ export function RoundsEntry() {
         <Text style={[s.k, { color: ready ? t.accent : t.mute }]}>{r.claimed ? tr('STAMPED') : ready ? tr('READY TO COLLECT') : tr('{n} WEEK{n2} DONE', { n: r.stamps.length, n2: r.stamps.length === 1 ? '' : 'S' })}</Text>
       </View>
       <Beat r={r} more={false} />
+      {red ? <View style={[s.dot, { backgroundColor: t.red, borderColor: t.panel }]} /> : null}
     </Pressable>
   );
 }
@@ -34,5 +37,6 @@ export function RoundsEntry() {
 const s = StyleSheet.create({
   card: { borderWidth: 1, borderRadius: u(16), paddingHorizontal: u(12), paddingTop: u(9), paddingBottom: u(7), marginTop: u(14), gap: u(4) },
   top: { flexDirection: 'row', justifyContent: 'space-between' },
+  dot: { position: 'absolute', end: u(-3), top: u(-3), width: u(11), height: u(11), borderRadius: u(5.5), borderWidth: 2 },
   k: { fontFamily: F.mono, fontSize: u(7.5), letterSpacing: u(1.3) },
 });
