@@ -1,11 +1,9 @@
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
-import Animated, { cancelAnimation, Easing, useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from 'react-native-reanimated';
 
 import { Text } from '@/components/AppText';
-import { Fade } from '@/components/Fade';
 import { Screen } from '@/components/Screen';
 import { NemesisButton } from '@/bots/NemesisButton';
 import { type Game, GAMES } from '@/data/games';
@@ -20,20 +18,17 @@ import { F } from '@/theme/tokens';
 
 import { useGamesFocus } from './focus';
 import { STRIP } from './strips';
-import { openGames } from './gate';
 import { GameTagSheet } from './GameTag';
+import { GameInfoSheet, GameList } from './GameList';
 
 
 const WORDS = ['No', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen'];
 const COUNT = WORDS[GAMES.length] ?? String(GAMES.length);
 const num = (j: number) => String(j + 1).padStart(2, '0');
 
-// Phone strip geometry, design px (preview C).
+// Strip geometry, design px.
 const ROW_H = 70;
 const ROW_GAP = 8;
-const SET_H = GAMES.length * (ROW_H + ROW_GAP);
-/** One full turn of the list: the preview's 34 s for ten games, kept at the same speed as the list grows. */
-const TURN_MS = Math.round((34000 * GAMES.length) / 10);
 
 /**
  * The Games entrance page, "The programme" (option C, Yazan 2026-11-11): every game as a numbered strip, like a show's
@@ -41,7 +36,23 @@ const TURN_MS = Math.round((34000 * GAMES.length) / 10);
  * On an Android tablet (Yazan 2026-11-12) all of them fit at once, standing still, and a tap on one opens that game.
  */
 export function Programme() {
-  return TABLET ? <TabletProgramme /> : <PhoneProgramme />;
+  return TABLET ? <TabletProgramme /> : <ListProgramme />;
+}
+
+/** The one Games page on a phone (Yazan 2026-11-12): every game in a still list, each box opens its loading page. */
+function ListProgramme() {
+  const [headH, setHeadH] = useState(0);
+  return (
+    <Screen tab="games" glow={0} symbols>
+      <View style={s.fill}>
+        <Head end="tap one to play" onHeight={setHeadH} />
+        {headH ? <GameList top={headH + u(4)} /> : null}
+        <Side />
+      </View>
+      <GameTagSheet />
+      <GameInfoSheet />
+    </Screen>
+  );
 }
 
 function Side() {
@@ -91,60 +102,6 @@ function StripBody({ g, j, big }: { g: Game; j: number; big?: boolean }) {
         ) : null}
       </View>
     </>
-  );
-}
-
-function PhoneProgramme() {
-  const t = useTheme();
-  const y = useSharedValue(0);
-  const ring = useSharedValue(0);
-  useEffect(() => {
-    y.set(withRepeat(withTiming(-u(SET_H), { duration: TURN_MS, easing: Easing.linear }), -1, false));
-    ring.set(withRepeat(withSequence(withTiming(1, { duration: 2400, easing: Easing.out(Easing.quad) }), withTiming(0, { duration: 0 })), -1, false));
-    return () => {
-      cancelAnimation(y);
-      cancelAnimation(ring);
-    };
-  }, [y, ring]);
-  const roll = useAnimatedStyle(() => ({ transform: [{ translateY: y.value }] }));
-  const pulse = useAnimatedStyle(() => ({ opacity: 0.9 * (1 - ring.value), transform: [{ scaleX: 0.96 + 0.12 * ring.value }, { scaleY: 0.96 + 0.4 * ring.value }] }));
-  const start = () => {
-    void sfx('tap');
-    openGames();
-  };
-  // The list starts under the title however many lines it takes ("Twelve games, one Start" wraps on a narrow phone).
-  const [headH, setHeadH] = useState(0);
-  return (
-    <Screen tab="games" glow={0} symbols>
-      <View style={s.fill}>
-        <Head end="one Start" onHeight={setHeadH} />
-        {/* the list is drawn twice, so when the first copy has rolled out of sight the second is in its place */}
-        {/* A real mask, not the still veil: the veil's flat page colour drew lines against the shaded backdrop. */}
-        <Fade stops={[[0, 0], [0.08, 1], [0.72, 1], [0.94, 0], [1, 0]]} style={[s.reel, headH ? { top: headH + u(8) } : null]}>
-          <View style={s.reelIn} pointerEvents="none" accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
-            <Animated.View style={roll}>
-              {[0, 1].map((c) =>
-                GAMES.map((g, j) => (
-                  <View key={`${c}${g.key}`} style={[s.row, { borderColor: t.panelLine }]}>
-                    <StripBody g={g} j={j} />
-                  </View>
-                )),
-              )}
-            </Animated.View>
-          </View>
-        </Fade>
-        <View style={s.startBox}>
-          <Animated.View pointerEvents="none" style={[s.startRing, { borderColor: 'rgba(111,214,255,0.5)' }, pulse]} />
-          <Pressable onPress={start} accessibilityRole="button" accessibilityLabel="Start" style={s.startTap}>
-            <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.start}>
-              <Text style={[s.startT, { color: t.onGrad }]}>Start</Text>
-            </LinearGradient>
-          </Pressable>
-        </View>
-        <Side />
-      </View>
-      <GameTagSheet />
-    </Screen>
   );
 }
 
@@ -203,8 +160,6 @@ const s = StyleSheet.create({
   head: { paddingTop: u(10), paddingLeft: u(16), paddingRight: u(44), paddingBottom: u(8), gap: u(2) },
   k: { fontFamily: F.mono, fontSize: u(9), lineHeight: u(12), letterSpacing: u(1.44) },
   h: { fontFamily: F.display, fontSize: u(24), lineHeight: u(26), letterSpacing: u(-0.4) },
-  reel: { position: 'absolute', top: u(74), left: 0, right: 0, bottom: u(84) },
-  reelIn: { flex: 1, overflow: 'hidden', paddingLeft: u(14), paddingRight: u(56) },
   row: { height: u(ROW_H), marginBottom: u(ROW_GAP), borderRadius: u(12), borderWidth: 1, overflow: 'hidden', justifyContent: 'center', backgroundColor: '#0b1331' },
   n: { position: 'absolute', left: u(10), fontFamily: F.mono, fontSize: u(13), lineHeight: u(16) },
   nBig: { left: u(14), top: u(14), fontSize: u(15), lineHeight: u(18) },
@@ -215,11 +170,6 @@ const s = StyleSheet.create({
   sub: { fontFamily: F.mono, fontSize: u(8.5), lineHeight: u(11), letterSpacing: u(0.85) },
   subBig: { fontSize: u(8.5), lineHeight: u(11) },
   desc: { marginTop: u(3), marginRight: u(58), fontFamily: F.body, fontSize: u(10.5), lineHeight: u(14) },
-  startBox: { position: 'absolute', left: u(22), right: u(22), bottom: u(32), height: u(44) },
-  startRing: { position: 'absolute', left: -u(6), right: -u(6), top: -u(6), bottom: -u(6), borderRadius: u(28), borderWidth: u(1.5) },
-  startTap: { flex: 1, borderRadius: u(22), overflow: 'hidden' },
-  start: { flex: 1, borderRadius: u(22), alignItems: 'center', justifyContent: 'center' },
-  startT: { fontFamily: F.display, fontSize: u(16), lineHeight: u(20) },
   // tablet (Yazan 2026-11-12): the phone's own strips, two to a row, each one a button
   tGrid: { gap: u(ROW_GAP), paddingLeft: u(16), paddingRight: u(52), paddingTop: u(6) },
   tLine: { flexDirection: 'row', gap: u(10) },

@@ -10,7 +10,6 @@ import { PAGE_W, u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 import { tapped } from '@/lib/sound';
 import { navTo } from '@/lib/nav';
-import { shutGames } from '@/features/games/gate';
 
 export type Tab = 'learn' | 'games' | 'community' | null;
 
@@ -27,8 +26,6 @@ export function Dock({ active }: { active: Tab }) {
   const ins = useSafeAreaInsets();
   const bottom = Platform.OS === 'web' ? u(8) : Math.max(ins.bottom, u(8));
   const go = tapped((r: Tab) => {
-    // Games tapped on the Games pages: back to the entrance page (the programme).
-    if (r === 'games' && active === 'games') return shutGames();
     if (r) navTo(`/${r}`);
   });
   const tab = (key: Exclude<Tab, null>, label: string, Icon: typeof LearnIcon) => {

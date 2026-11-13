@@ -54,6 +54,11 @@ const LOOK: Record<GameKind, { label: string; color: string; text: string }> = {
 };
 const ORDER: GameKind[] = ['learn', 'both', 'play'];
 
+/** A game's tag label and colour, for the Games list boxes. */
+export const tagOf = (game: string) => (KIND[game] ? LOOK[KIND[game]] : null);
+/** Opens the tags pop-up on one kind. */
+export const openTagSheet = (game: string) => KIND[game] && useTagSheet.setState({ kind: KIND[game] });
+
 const alpha = (hex: string, a: number) => hex + Math.round(a * 255).toString(16).padStart(2, '0');
 
 const useTagSheet = create<{ kind: GameKind | null }>(() => ({ kind: null }));
