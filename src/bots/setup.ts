@@ -24,7 +24,7 @@ export function botSetup(def: GameDef): SetupOption[] {
       ],
       initial: 'medium',
     },
-    { key: 'botCount', label: tr('How many'), choices: counts.map((n) => ({ value: n, label: String(n) })), initial: Math.min(range.max, 3) },
+    { key: 'botCount', label: tr('How many|rivals'), choices: counts.map((n) => ({ value: n, label: String(n) })), initial: Math.min(range.max, 3) },
   ];
   // Teams with bots (Yazan 2026-11-09): you and bot teammates against a bot team.
   if (def.teams?.bots) extra.push({ key: 'botTeams', label: tr('Teams'), choices: [{ value: 0, label: tr('Off') }, { value: 2, label: tr('2 teams') }], initial: 0 });

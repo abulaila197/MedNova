@@ -45,14 +45,14 @@ const MODE_WEEK: Record<string, string> = { online: 'Vs rivals week', solo: 'Sol
 const MODE_NAME: Record<string, string> = { online: 'Vs rivals', solo: 'Solo', offline: 'Pass the phone' };
 
 /** "Diagnostic Pursuit", or "Online week" for the three mode weeks. */
-export const weekName = (w: Week) => (w.kind === 'mode' ? MODE_WEEK[w.mode] : (() => {
+export const weekName = (w: Week) => (w.kind === 'mode' ? tr(MODE_WEEK[w.mode]) : (() => {
   const g = GAMES.find((x) => x.key === w.game);
   return g ? `${g.lead.replace(/^The /, '')} ${g.em}`.trim() : w.game;
 })());
 
 /** What counts this week, in words. */
 export const weekGoal = (w: Week) =>
-  w.kind === 'mode' ? `Use Sparks on any game in ${MODE_NAME[w.mode]}` : 'Use Sparks on this game, in any mode';
+  w.kind === 'mode' ? tr('Use Sparks on any game in {n}', { n: tr(MODE_NAME[w.mode]) }) : tr('Use Sparks on this game, in any mode');
 
 export const timeLeft = (ends: number) => {
   const h = Math.max(0, Math.floor((ends - Date.now()) / 3600000));

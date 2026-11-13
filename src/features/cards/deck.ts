@@ -1,4 +1,5 @@
 import type { ImageSourcePropType } from 'react-native';
+import { isAr, tr } from '@/i18n';
 
 /** One collectable card of the hunt: art (stars are drawn on it), its mission, and the clue printed on its back. */
 export type HuntCard = { key: string; name: string; stars: number; art: ImageSourcePropType; mission: string; clue: string };
@@ -25,3 +26,11 @@ export const DECK: HuntCard[] = [
 
 /** Prize for the last card (Omar), redeemed on the collection page. */
 export const HUNT_PRIZE = 500;
+
+// Arabic (group 4): hunt missions and the clues on the card backs.
+if (isAr) {
+  for (const c of DECK) {
+    c.mission = tr(c.mission);
+    c.clue = tr(c.clue);
+  }
+}

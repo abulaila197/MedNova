@@ -31,7 +31,7 @@ import { ChallengeSheet, ResultSheet } from '@/features/challenges/ChallengeShee
 import { loadFriendChallenges, useChallenges, withFriend } from '@/features/challenges/store';
 
 import { Name, openChallenge, openReport, openResult, useFriendSheet } from './Friends';
-import { tr } from '@/i18n';
+import { RTL_INPUT, tr } from '@/i18n';
 
 export const closeFriendSheet = () => useFriendSheet.setState({ open: null, friend: null, code: '', target: null });
 const close = closeFriendSheet;
@@ -399,7 +399,7 @@ function ReportPlayer() {
           );
         })}
       </View>
-      <TextInput value={note} onChangeText={setNote} placeholder={tr('Add a note (optional)')} placeholderTextColor={t.mute} maxLength={500} multiline style={[s.note, line, { color: t.fg }]} />
+      <TextInput value={note} onChangeText={setNote} placeholder={tr('Add a note (optional)')} placeholderTextColor={t.mute} maxLength={500} multiline style={[s.note, RTL_INPUT, line, { color: t.fg }]} />
       {state === 'error' ? <Text style={[s.msg, { color: t.error }]}>{tr('Couldn’t send. Check your connection.')}</Text> : null}
       <Pressable onPress={send} disabled={!why || state === 'busy'} accessibilityRole="button">
         <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={[s.btn, !why && { opacity: 0.45 }]}>

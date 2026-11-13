@@ -107,7 +107,7 @@ export function StickerRow({ tone, children }: { tone: Tone; children: ReactNode
         contentFit="contain"
         accessibilityIgnoresInvertColors
       />
-      <View style={{ paddingRight: u(80) }}>{children}</View>
+      <View style={{ paddingEnd: u(80) }}>{children}</View>
     </View>
   );
 }
@@ -115,8 +115,8 @@ export function StickerRow({ tone, children }: { tone: Tone; children: ReactNode
 const s = StyleSheet.create({
   // Tall enough for the biggest sticker above the card; the card that follows is drawn over the sticker's cut edge.
   row: { height: u(357 * SCALE - TUCK), justifyContent: 'flex-end', marginTop: u(-4) },
-  words: { paddingRight: u(80), paddingBottom: u(10), gap: u(4) },
+  words: { paddingEnd: u(80), paddingBottom: u(10), gap: u(4) },
   head: { fontFamily: F.display, fontSize: u(18), lineHeight: u(21) },
   sub: { fontFamily: F.body, fontSize: u(11) },
-  sticker: { position: 'absolute', right: u(-4) },
+  sticker: { position: 'absolute', end: u(-4) },
 });

@@ -2,9 +2,10 @@
 // the FAQ was rewritten for the live app; About and Contact still come from the old MedPuzz pages,
 // with the app and games renamed.
 import { GAMES } from '@/data/games';
+import { isAr, tr } from '@/i18n';
 
 export const HABITS = ['Observation', 'Reasoning', 'Pattern recognition', 'Prioritisation', 'Clinical judgment'];
-export const ABOUT_GAMES = GAMES.map((g) => `${g.lead} ${g.em}`);
+export const ABOUT_GAMES = GAMES.map((g) => `${g.lead} ${g.em}`.trim());
 
 // ---------- Contact ("I want to ___")
 export const INTENTS = [
@@ -19,10 +20,10 @@ export const INTENTS = [
 export type Faq = { q: string; a: string; scoring?: boolean };
 export type Chapter = { n: string; chip: string; title: string; tag: string; items: Faq[] };
 
-const GAME_LIST = GAMES.map((g) => `${g.lead} ${g.em}`);
-const listed = `${GAME_LIST.slice(0, -1).join(', ')} and ${GAME_LIST[GAME_LIST.length - 1]}`;
+const GAME_LIST = GAMES.map((g) => `${g.lead} ${g.em}`.trim());
+const listed = isAr ? `${GAME_LIST.slice(0, -1).join('، ')} و${GAME_LIST[GAME_LIST.length - 1]}` : `${GAME_LIST.slice(0, -1).join(', ')} and ${GAME_LIST[GAME_LIST.length - 1]}`;
 const COUNT_WORDS = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen'];
-const gameCount = COUNT_WORDS[GAMES.length] ?? String(GAMES.length);
+const gameCount = isAr ? `${GAMES.length} لعبة` : (COUNT_WORDS[GAMES.length] ?? String(GAMES.length));
 
 export const CHAPTERS: Chapter[] = [
   {
@@ -458,4 +459,25 @@ export const TERMS: Section[] = [
 ];
 
 // One-line medical disclaimer shown on sign-in, About and each Learn dossier.
-export const DISCLAIMER = 'For education only, not medical advice. All cases are fictional.';
+export const DISCLAIMER = tr('For education only, not medical advice. All cases are fictional.');
+
+// Arabic (group 4 FAQ, group 6 Privacy and Terms in formal Arabic): the same structure, each text through tr().
+if (isAr) {
+  HABITS.forEach((h, i) => (HABITS[i] = tr(h)));
+  for (const it of INTENTS) it.hint = tr(it.hint);
+  for (const c of CHAPTERS) {
+    c.chip = tr(c.chip);
+    c.title = tr(c.title);
+    c.tag = tr(c.tag);
+    for (const f of c.items) {
+      f.q = tr(f.q);
+      f.a = tr(f.a);
+    }
+  }
+  for (const x of SCORING) x.k = tr(x.k);
+  for (const sec of [...PRIVACY, ...TERMS]) {
+    sec.k = tr(sec.k);
+    sec.plain = tr(sec.plain);
+    sec.legal = sec.legal.map((b) => ('li' in b ? { li: b.li.map((l) => tr(l)) } : { ...(b.b ? { b: tr(b.b) } : null), p: tr(b.p) }));
+  }
+}

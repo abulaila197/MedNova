@@ -54,7 +54,7 @@ export function Results({ def, play, items }: { def: GameDef; play: Play; items:
       }>
       <View style={{ gap: u(6) }}>
         <Kick>{`${g.lead} ${g.em}`}</Kick>
-        <Title lead={tr('Game')} em="over" />
+        <Title lead={tr('Game')} em={tr('over')} />
       </View>
       <ResultTone play={play} items={items} uid={uid} plain={plain} />
       <Card style={s.top}>
@@ -116,7 +116,7 @@ export function Results({ def, play, items }: { def: GameDef; play: Play; items:
           <View key={i.id} style={s.row}>
             {plain ? null : <Text style={[s.mark, { color: i.outcome === 'right' ? t.accent : t.rose }]}>{MARK[i.outcome]}</Text>}
             <Text style={[s.item, { color: t.fg }]} numberOfLines={1}>
-              {multi ? `${nameOf.get(i.seat) ?? tr('Nobody')} · ` : ''}
+              {multi ? `${(nameOf.get(i.seat) === 'You' ? tr('You') : nameOf.get(i.seat)) ?? tr('Nobody')} · ` : ''}
               {def.itemLabel?.(i) ?? i.itemId}
             </Text>
             {/* RS1: dossier links only here, once the game has ended. */}

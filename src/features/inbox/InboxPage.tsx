@@ -9,6 +9,7 @@ import { OfflineLine } from '@/components/OfflineLine';
 import { PulseStar, TokenCoin } from '@/components/PulseStar';
 import { Screen } from '@/components/Screen';
 import { CHESTS } from '@/features/chests/data';
+import { arNote } from '@/features/inbox/arNote';
 import { InfoScroll, Kicker, s as ui, useInfo } from '@/features/info/ui';
 import { nameOf } from '@/features/style/StyleHost';
 import { PlayerFace } from '@/features/style/Frame';
@@ -118,7 +119,7 @@ function Card({ m }: { m: Message }) {
         {m.from ? <PlayerFace slug={m.from.avatar ?? 'yara'} size={u(18)} userId={m.from.id} still /> : <View style={[s.icon, { backgroundColor: '#0b0e24' }]}><PulseStar width={u(18)} height={u(18)} glow={0.3} /></View>}
         <Text style={[s.k, { color: c.kick, flexShrink: 1 }]} numberOfLines={1}>{tr('{n} · {n2}', { n: m.from ? tr('FROM {n}', { n: m.from.name.toUpperCase() }) : tr('FROM THE MEDNOVA TEAM'), n2: when(m.at).toUpperCase() })}</Text>
       </View>
-      {m.title ? <Text style={[s.h, { color: c.fg }]}>{m.title}</Text> : null}
+      {m.title ? <Text style={[s.h, { color: c.fg }]}>{arNote(m.title)}</Text> : null}
       {m.item ? (
         <Text style={[s.body, { color: c.fg }]}>
           {tr('{n} sent you ', { n: m.from?.name ?? tr('A friend') })}
@@ -126,7 +127,7 @@ function Card({ m }: { m: Message }) {
           {tr('. It’s already in your Style items.')}
         </Text>
       ) : null}
-      {m.body ? <Text style={[s.body, { color: c.mute }]}>{m.body}</Text> : null}
+      {m.body ? <Text style={[s.body, { color: c.mute }]}>{arNote(m.body)}</Text> : null}
       {gift ? (
         <View style={s.gifts}>
           {m.tokens > 0 ? (

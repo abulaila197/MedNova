@@ -10,7 +10,7 @@ import { Fade } from '@/components/Fade';
 import { InfoScroll, Kicker, Rich, s as ui, useInfo } from '@/features/info/ui';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
-import { tr } from '@/i18n';
+import { RTL_INPUT, tr } from '@/i18n';
 
 const SEARCH = 'search';
 
@@ -80,7 +80,7 @@ export default function Page() {
               placeholder={tr('Search questions')}
               placeholderTextColor={c.mute}
               autoFocus
-              style={[s.search, { backgroundColor: c.surf, borderColor: c.line, color: c.fg }]}
+              style={[s.search, RTL_INPUT, { backgroundColor: c.surf, borderColor: c.line, color: c.fg }]}
             />
             {query.trim() && !found.length ? <Text style={[s.none, { color: c.mute }]}>{tr('No question matches “{trim}”.', { trim: query.trim() })}</Text> : null}
             <View style={s.found}>

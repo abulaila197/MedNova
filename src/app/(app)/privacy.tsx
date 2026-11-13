@@ -5,6 +5,7 @@ import { Text } from '@/components/AppText';
 import type Animated from 'react-native-reanimated';
 
 import { Screen } from '@/components/Screen';
+import { tr } from '@/i18n';
 import { PRIVACY, TERMS, type Legal } from '@/features/info/content';
 import { InfoScroll, Kicker, Rich, s as ui, useInfo } from '@/features/info/ui';
 import { u } from '@/theme/scale';
@@ -31,7 +32,7 @@ export default function Page() {
             const on = d === doc;
             return (
               <Pressable key={d} onPress={() => choose(d)} accessibilityRole="button" accessibilityState={{ selected: on }} style={[s.seg, on && { backgroundColor: c.fg }]}>
-                <Text style={[s.segT, { color: on ? c.pillOnText : c.mute }]}>{d}</Text>
+                <Text style={[s.segT, { color: on ? c.pillOnText : c.mute }]}>{tr(d)}</Text>
               </Pressable>
             );
           })}

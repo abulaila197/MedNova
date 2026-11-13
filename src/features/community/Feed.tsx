@@ -8,7 +8,7 @@ import { Socials } from '@/features/community/Socials';
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
-import { tr } from '@/i18n';
+import { isAr, tr } from '@/i18n';
 
 // The page name (Yazan, 2026-10-13: Community is announcements, no "This week").
 export const PAGE = { lead: tr('From the'), em: tr('Lab') };
@@ -35,10 +35,10 @@ export function Feed() {
           </Text>
         </View>
         <Socials />
-        <Shelf lead={tr('Nova')} em={tr('Wallpapers')} photos={SHELF_WALLPAPERS} to="/community/wallpapers" />
+        <Shelf lead={isAr ? tr('Wallpapers') : 'Nova'} em={isAr ? 'Nova' : tr('Wallpapers')} photos={SHELF_WALLPAPERS} to="/community/wallpapers" />
         <Post id="vision" kick={tr('OUR VISION')} lead={tr('Medicine,')} em={tr('reimagined as wonder')} body={VISION} />
         {/* A look-ahead, not an unfinished store (audit call 2, Yazan 2026-11-08). */}
-        <Shelf lead={tr('Nova')} em={tr('merch')} note={tr('Preview')} photos={MERCH} to="/community/soon" />
+        <Shelf lead={isAr ? tr('merch') : 'Nova'} em={isAr ? 'Nova' : tr('merch')} note={tr('Preview')} photos={MERCH} to="/community/soon" />
         <Post id="build" kick={tr('BEHIND MEDNOVA')} lead={tr('Built slowly,')} em={tr('with care')} body={BUILD} />
       </ScrollView>
     </Fade>

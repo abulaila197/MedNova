@@ -22,7 +22,7 @@ const STYLE: SetupOption = {
 // SM7: online rooms pick 5, 10 or 15 questions (Yazan 2026-10-25, was 10/15/20) and 15, 20 or 25 s per question (#76: +5 s, Online only, Yazan 2026-10-26).
 const QUESTIONS_N = {
   key: 'questions',
-  label: tr('How many'),
+  label: tr('How many|questions'),
   choices: [
     { value: 5, label: '5', note: 'quick' },
     { value: 10, label: '10' },

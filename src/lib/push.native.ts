@@ -7,6 +7,7 @@ import { router } from 'expo-router';
 import { Linking, Platform } from 'react-native';
 
 import { engine } from '@/games/engine';
+import { isAr } from '@/i18n';
 import { useSession } from '@/games/shell/session';
 import { supabase } from '@/lib/supabase';
 
@@ -42,7 +43,10 @@ export async function linkPush(uid: string | null): Promise<void> {
   await channel();
   const projectId = Constants.expoConfig?.extra?.eas?.projectId as string | undefined;
   const { data: token } = await Notifications.getExpoPushTokenAsync(projectId ? { projectId } : undefined);
-  const { error } = await supabase.rpc('push_register', { token, platform: Platform.OS });
+  // The phone's app language, so notifications come in Arabic or English. Before the build-day SQL the server
+  // only knows the two-argument version, so fall back to it.
+  let { error } = await supabase.rpc('push_register', { token, platform: Platform.OS, lang: isAr ? 'ar' : 'en' });
+  if (error) ({ error } = await supabase.rpc('push_register', { token, platform: Platform.OS }));
   if (!error) linkedFor = uid;
 }
 

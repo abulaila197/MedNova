@@ -13,7 +13,7 @@ import { tapped } from '@/lib/sound';
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
-import { tr } from '@/i18n';
+import { isAr, tr } from '@/i18n';
 
 function WallPost({ src, id }: { src: ImageSourcePropType; id: string }) {
   const t = useTheme();
@@ -75,7 +75,7 @@ export function Wallpapers() {
             <View>
               <Text style={[s.kick, { color: t.kick }]}>{tr('NOVA COMMUNITY')}</Text>
               <Text style={[s.h2, { color: t.white }]}>
-                {tr('Nova')} <Text style={{ fontFamily: F.displayItalic, color: t.accent }}>{tr('Wallpapers')}</Text>
+                {isAr ? tr('Wallpapers') : 'Nova'} <Text style={{ fontFamily: F.displayItalic, color: t.accent }}>{isAr ? 'Nova' : tr('Wallpapers')}</Text>
               </Text>
             </View>
           </View>

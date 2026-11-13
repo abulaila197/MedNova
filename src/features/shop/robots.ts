@@ -3,6 +3,7 @@ import type { ImageSource } from 'expo-image';
 import { DECK } from '@/features/cards/deck';
 import { MECHS } from '@/features/chests/data';
 import { teamOf } from '@/features/team/team';
+import { isAr, tr } from '@/i18n';
 
 /**
  * Style shop characters (Yazan 2026-10-25): five sold for tokens, and a special group of three that are never sold
@@ -53,5 +54,13 @@ export const bonusOf = (slug?: string | null) => STAR_BONUS[starsOf(slug)] ?? ST
 /** "+15% EXP · refill 7 min" (or just the refill for 1 star). */
 export function bonusLine(slug?: string | null) {
   const b = bonusOf(slug);
-  return `${b.exp ? `+${b.exp}% EXP · ` : ''}refill ${b.refillMin} min`;
+  return `${b.exp ? `+${tr('{exp}% EXP', { exp: b.exp })} · ` : ''}${tr('refill {n} min', { n: b.refillMin })}`;
+}
+
+// Arabic (group 4): robot titles and how the special ones are earned.
+if (isAr) {
+  for (const r of ROBOTS) {
+    r.title = tr(r.title);
+    if (r.how) r.how = tr(r.how);
+  }
 }

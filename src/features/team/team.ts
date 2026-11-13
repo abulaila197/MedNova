@@ -1,4 +1,5 @@
 import type { ImageSource } from 'expo-image';
+import { isAr, tr } from '@/i18n';
 
 /**
  * The SuperNova team (Yazan 2026-11-11): the six people who helped build MedNova. Never sold or won; only Admin gives
@@ -18,7 +19,10 @@ export const TEAM: TeamMember[] = [
 export const teamOf = (key?: string | null) => TEAM.find((m) => m.key === key);
 
 /** Shown on locked cards (Yazan 2026-11-11). */
-export const TEAM_LOCKED_LINE = 'Only given by Admin to the SuperNova team';
+export const TEAM_LOCKED_LINE = tr('Only given by Admin to the SuperNova team');
 
 /** The back of a given card. */
-export const TEAM_THANKS = 'Thank you for helping build MedNova.';
+export const TEAM_THANKS = tr('Thank you for helping build MedNova.');
+
+// Arabic (group 4).
+if (isAr) for (const m of TEAM) m.title = tr(m.title);

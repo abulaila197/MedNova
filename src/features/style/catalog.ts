@@ -1,6 +1,7 @@
 // The Style shop catalogue (Yazan 2026-10-13). Prices are mirrored from the server (style_price); the server decides.
 import { ACHIEVEMENTS } from '../achievements/progress';
 import type { FrameKey } from './Frame';
+import { isAr, tr } from '@/i18n';
 
 export type Item = { id: string; key: string; name: string; price: number | null };
 
@@ -87,3 +88,11 @@ export const isPlatinumTitle = (key?: string | null) => !!key?.startsWith('p:');
 /** The weekly deal's discount (Yazan 2026-10-13: 15%, was 30%). Same as the server's style_cost. */
 export const DEAL_OFF = 15;
 export const costOf = (item: Item, deal: string[]) => (item.price == null ? null : deal.includes(item.id) ? Math.round((item.price * (100 - DEAL_OFF)) / 100) : item.price);
+
+// Arabic (group 4): names and lines shown in the Style shop. Ids and keys stay English.
+if (isAr) {
+  for (const x of [...FRAMES, ...TITLES, ...SPECIAL_TITLES, ...EFFECTS]) x.name = tr(x.name);
+  for (const x of EFFECTS) x.what = tr(x.what);
+  for (const x of PLATINUM_TITLES) x.name = tr('{name} Platinum', { name: tr(x.name.replace(/ Platinum$/, '')) });
+  for (const k of Object.keys(EARNED_HOW)) EARNED_HOW[k] = tr(EARNED_HOW[k]);
+}

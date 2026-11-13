@@ -11,7 +11,7 @@ import { F } from '@/theme/tokens';
 import { BAKED, BAKED_ART } from './baked';
 import { cssAngle } from './ease';
 import { NAVY, Sky, Stars } from './Sky';
-import { tr, isAr } from '@/i18n';
+import { isAr, LTR, LTR_WEB, tr } from '@/i18n';
 
 // Onboarding is always dark (Nebula). Colours from the prototype (ob.html).
 const FG = '#eef0ff';
@@ -241,7 +241,8 @@ function Frame({ si, w, h, padTop, padBottom, children }: Omit<SlideProps, 'onNe
       {/* Only the still art is cached as one GPU picture, so a swipe moves it without redrawing the photo and
           masks. The twinkling stars sit outside it: their opacity changes every frame and would redraw the cache
           each frame (DEF-071). Same order and place, so nothing looks different. */}
-      <View pointerEvents="none" style={StyleSheet.absoluteFill} renderToHardwareTextureAndroid shouldRasterizeIOS>
+      {/* Arabic (Yazan 2026-11-13): the art keeps its English place and crop, never mirrored. */}
+      <View pointerEvents="none" style={[StyleSheet.absoluteFill, LTR]} {...LTR_WEB} renderToHardwareTextureAndroid shouldRasterizeIOS>
         <Sky w={w} h={h} />
         {/* Small phones (2026-11-12) are wider than the phone design at their size: the photo fills the screen as on tablets. */}
         {TABLET || w > u(DESIGN_W) + 1 ? <TabletScene si={si} w={w} h={h} /> : <Scene si={si} w={w} h={h} padTop={padTop} padBottom={padBottom} />}

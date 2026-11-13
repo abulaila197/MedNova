@@ -113,17 +113,17 @@ function LogRow({ r, t, canCollect, busy, onCollect }: RowP) {
         ))}
       </View>
       <View style={{ flex: 1 }}>
-        <Text style={[s.lName, { color: t.fg }]}>{r.name}</Text>
+        <Text style={[s.lName, { color: t.fg }]}>{tr(r.name)}</Text>
         <Text style={[s.lWhat, { color: t.mute }]}>
           {r.key === 'app_tour'
             ? tr('{n} / {n2} pages{n3}', { n: r.steps?.length ?? 0, n2: TOUR_STEPS.length, n3: r.next == null ? tr(' · signed') : '' })
             : r.next == null
-              ? `${r.what} · ${r.goals.length > 3 ? tr('all four signed') : tr('all three signed')}`
-              : tr('{what} · {min} / {next} for {toLowerCase}', { what: r.what, min: Math.min(r.count, r.next), next: r.next, toLowerCase: TIER[r.reached].toLowerCase() })}
+              ? `${tr(r.what)} · ${r.goals.length > 3 ? tr('all four signed') : tr('all three signed')}`
+              : tr('{what} · {min} / {next} for {toLowerCase}', { what: tr(r.what), min: Math.min(r.count, r.next), next: r.next, toLowerCase: TIER[r.reached].toLowerCase() })}
         </Text>
         {r.key === 'app_tour' && r.next != null ? (
           <Text style={[s.lWhat, { color: t.mute }]} numberOfLines={2}>
-            {tr('Still to visit: {n}', { n: TOUR_STEPS.filter((x) => !r.steps?.includes(x.key)).map((x) => x.name).join(', ') })}
+            {tr('Still to visit: {n}', { n: TOUR_STEPS.filter((x) => !r.steps?.includes(x.key)).map((x) => tr(x.name)).join(tr(', ')) })}
           </Text>
         ) : null}
         <View style={[s.bar, { backgroundColor: t.chip }]}>

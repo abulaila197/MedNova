@@ -12,7 +12,7 @@ import { useApp, useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 import { deviceId } from '@/lib/device';
-import { tr } from '@/i18n';
+import { RTL_INPUT, tr } from '@/i18n';
 
 const KINDS = ['Medical content', 'Game', 'Technical', 'Other'];
 
@@ -113,7 +113,7 @@ export function ReportSheet() {
         placeholder={tr('What happened?')}
         placeholderTextColor={t.mute}
         multiline
-        style={[s.ta, { color: t.fg, backgroundColor: t.panel, borderColor: t.panelLine }]}
+        style={[s.ta, RTL_INPUT, { color: t.fg, backgroundColor: t.panel, borderColor: t.panelLine }]}
       />
       <View style={s.sendRow}>
         <Pressable onPress={send} disabled={state === 'sending' || state === 'sent'} style={[s.btn, { backgroundColor: t.red, opacity: state === 'sending' ? 0.6 : 1 }]}>

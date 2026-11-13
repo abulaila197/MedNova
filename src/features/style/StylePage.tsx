@@ -169,7 +169,7 @@ export function StylePage() {
             <Text style={[s.dealT, { color: t.onGrad }]}>
               {[FRAMES, TITLES].map((l, i) => {
                 const it = l.find((x) => x.id === deal[i]);
-                return it ? `${it.name} ${i ? 'title' : 'frame'}` : '';
+                return it ? tr(i ? '{n} title' : '{n} frame', { n: it.name }) : '';
               }).filter(Boolean).join('  ·  ')}
             </Text>
           </LinearGradient>

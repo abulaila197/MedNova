@@ -1,4 +1,5 @@
 import type { ImageSource } from 'expo-image';
+import { isAr, tr } from '@/i18n';
 
 /** Chests (Yazan 2026-10-18), never sold: from the 3 Grand Rounds missions, and Epic for 4 weeks in a row (2026-10-26). */
 export type ChestKind = 'wooden' | 'golden' | 'diamond' | 'epic';
@@ -63,4 +64,15 @@ export const ITEMS: Item[] = [
 export function chestItems(k: ChestKind): Item[] {
   const odds = CHESTS[k].odds;
   return ITEMS.filter((i) => (odds[i.rarity] ?? 0) > 0 && !((k === 'wooden' || k === 'golden') && i.kind === 'mech' && i.stars === 5));
+}
+
+// Arabic (group 4): chest, rarity and item names. Character names stay as they are.
+if (isAr) {
+  for (const r of Object.values(RARITY)) r.name = tr(r.name);
+  for (const c of Object.values(CHESTS)) {
+    c.name = tr(c.name);
+    c.from = tr(c.from);
+  }
+  for (const m of MECHS) m.title = tr(m.title);
+  for (const i of ITEMS) i.name = i.kind === 'tokens' ? tr('{n} tokens', { n: i.tokens }) : tr(i.name);
 }

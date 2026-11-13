@@ -6,6 +6,8 @@ import { AR } from './ar';
 import { AR_FRAME } from './ar-frame';
 import { localizeGames } from './ar-games';
 import { AR_PLAY } from './ar-play';
+import { AR_DATA } from './ar-data';
+import { agree } from './plural';
 import { setSay } from './say';
 
 /**
@@ -59,11 +61,11 @@ export const langChoice = (): LangChoice => CHOICE;
 /** The text in the app's language; `{name}` marks are filled from `vars`. */
 export function t(en: string, vars?: Record<string, unknown>): string {
   // A key may carry a context after '|' ('pack|shop') when one English word needs two Arabic ones; English drops it.
-  let s = isAr ? (AR[en] ?? AR_FRAME[en] ?? AR_PLAY[en] ?? en) : en;
+  let s = isAr ? (AR[en] ?? AR_FRAME[en] ?? AR_PLAY[en] ?? AR_DATA[en] ?? en) : en;
   const bar = s.indexOf('|');
   if (bar > 0 && s === en) s = s.slice(0, bar);
   if (vars) for (const k in vars) s = s.split(`{${k}}`).join(String(vars[k]));
-  return s;
+  return isAr ? agree(s) : s;
 }
 
 /**
@@ -119,4 +121,6 @@ export const TA_END = (WEB_FLIP ? 'left' : 'right') as 'left' | 'right';
 
 /** English word boards (crossword grid, letter slots, keyboards) stay left to right in Arabic. */
 export const LTR = { direction: 'ltr' } as const;
+/** A text box where people may type Arabic (Yazan 2026-11-13): starts on the right in Arabic. */
+export const RTL_INPUT = { textAlign: TA_START, writingDirection: (isAr ? 'rtl' : 'ltr') as 'rtl' | 'ltr' };
 export const LTR_WEB = (Platform.OS === 'web' ? { dir: 'ltr' } : {}) as object;

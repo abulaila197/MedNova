@@ -9,7 +9,7 @@ import { call } from '@/lib/rpc';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 import { deviceId } from '@/lib/device';
-import { tr } from '@/i18n';
+import { RTL_INPUT, tr } from '@/i18n';
 
 /** Contact, locked "C1 I want to ___": one sentence instead of a form. Tap the blank to cycle, or pick a chip. */
 export default function Page() {
@@ -66,7 +66,7 @@ export default function Page() {
           placeholderTextColor={c.mute}
           multiline
           textAlignVertical="top"
-          style={[s.ta, { backgroundColor: c.surf, borderColor: c.line, color: c.fg }]}
+          style={[s.ta, RTL_INPUT, { backgroundColor: c.surf, borderColor: c.line, color: c.fg }]}
         />
         {said ? <Text style={[s.said, { color: said.ok ? c.t.accent : c.t.error }]}>{said.text}</Text> : null}
         <GradBtn label={busy ? tr('Sending...') : tr('Send')} onPress={send} style={s.send} />
