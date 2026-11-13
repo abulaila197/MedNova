@@ -229,24 +229,23 @@ export const LOAD: Record<string, LoadCfg> = {
     tips: ['Every detail in the story can look wrong. Only one really is.', 'Stage 2 always comes, even after a wrong stage 1.', 'Both stages wrong costs 3 points, so read the story twice.'],
     fonts: ['Fraunces_800ExtraBold', 'Fraunces_400Regular_Italic', 'Fraunces_400Regular', 'Caveat_700Bold'],
   },
-  // Trace the Treatment (Yazan 2026-11-12): Bloop in a night pharmacy. Placeholder photo until Yazan's art arrives.
+  // Trace the Treatment (Yazan 2026-11-13): a new bright style, unlike the dark lamp-lit pages. Bulwark in a sunny
+  // hospital supply room, holding one tiny pill; bold condensed label type, navy on white, cyan and safety yellow.
+  // Placeholder photo until Yazan's art arrives.
   'trace-the-treatment': {
     key: 'trace-the-treatment', photo: require('@/assets/loading/trace-the-treatment.webp'), fo: '50% 60%',
-    veil: { c: ['rgba(6,10,30,0.72)', 'rgba(0,0,0,0)'], at: [0, 0.38] },
-    txt: { top: 40, align: 'center' }, artY: 70, bg: '#0a1130',
-    orig: { f: 'LibreBaskerville_400Regular_Italic', c: '#a9e9ff' },
-    title: { f: 'LibreBaskerville_700Bold', s: 34, c: '#f4f6ff', em: '#6fd6ff', sh: 'rgba(111,214,255,0.45)' },
-    sub: { f: 'LibreBaskerville_400Regular_Italic', s: 14, c: '#dfe4ff' },
-    tip: { f: 'LibreBaskerville_400Regular_Italic', s: 13, c: '#f4f6ff', bg: 'rgba(8,12,34,0.66)', b: 'rgba(111,214,255,0.3)' },
-    bar: { t: 'line', c: '#6fd6ff', track: 'rgba(111,214,255,0.16)', glow: '0 0 10px #6fd6ff, 0 0 22px rgba(111,214,255,0.5)' },
-    tag: { t: ALL, side: 'left', c: '#f4f6ff', bg: 'rgba(0,0,0,0.45)', b: 'rgba(111,214,255,0.3)' },
-    glows: [
-      { x: 0.5, y: 0.5, r: 40, c: 'rgba(111,214,255,0.35)', a: 'pulse' },
-      { x: 0.25, y: 0.3, r: 70, c: 'rgba(164,139,255,0.25)', a: 'still' },
-    ],
-    parts: ['motes'],
+    veil: { c: ['rgba(246,250,252,0.9)', 'rgba(246,250,252,0)'], at: [0, 0.4] },
+    txt: { top: 44, align: 'left' }, bg: '#eef4f6',
+    orig: { f: 'BarlowCondensed_500Medium', c: '#3d5a80' },
+    title: { f: 'BarlowCondensed_800ExtraBold', s: 54, c: '#13204d', em: '#0a8fc0', ls: 0.01 },
+    sub: { f: 'BarlowCondensed_500Medium', s: 17, c: '#3d5a80' },
+    tip: { f: 'BarlowCondensed_500Medium', s: 15, c: '#13204d', bg: 'rgba(255,255,255,0.82)', b: 'rgba(10,143,192,0.3)' },
+    bar: { t: 'line', c: '#0a8fc0', track: 'rgba(19,32,77,0.12)', glow: '0 0 8px rgba(10,143,192,0.6)' },
+    tag: { t: ALL, side: 'left', c: '#13204d', bg: 'rgba(255,255,255,0.75)', b: 'rgba(242,193,0,0.6)' },
+    glows: [],
+    parts: [],
     tips: ['A treatment is not only a drug: think of operations, devices, diets and first aid too.', 'Timing is a clue: what was started, stopped or added just before?', 'Hard cases score 4 points, easy ones 2.'],
-    fonts: ['LibreBaskerville_700Bold', 'LibreBaskerville_400Regular_Italic', 'LibreBaskerville_400Regular'],
+    fonts: ['BarlowCondensed_800ExtraBold', 'BarlowCondensed_500Medium'],
   },
   'the-streak-master': {
     key: 'the-streak-master', photo: require('@/assets/loading/the-streak-master.webp'), fo: '45% 62%',
