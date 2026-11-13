@@ -13,6 +13,7 @@ import { scoreRun, snapshot, startRun, stepRun, type CaseDef, type Run, type Run
 import { CASES, PLAYED_KEY, caseById, caseLabel, dossierOf, type Played } from './data';
 import { Btn, Kicker, NR, NoirScreen, Stamp, T } from './noir';
 import { Review } from './Review';
+import { tr } from '@/i18n';
 
 type SoloState = { caseId: string; run: Run; replay: boolean };
 
@@ -129,9 +130,9 @@ function Library({ played, onPick }: { played: Played; onPick: (id: string) => v
   return (
     <NoirScreen scroll>
       <View style={{ gap: u(4) }}>
-        <Kicker>{`Case library · ${done} of ${CASES.length} closed`}</Kicker>
-        <T size={23}>Pick a case</T>
-        <T size={12} color={NR.soft}>Every case is open. A case you have played again earns no EXP the second time.</T>
+        <Kicker>{tr('Case library · {done} of {n} closed', { done, n: CASES.length })}</Kicker>
+        <T size={23}>{tr('Pick a case')}</T>
+        <T size={12} color={NR.soft}>{tr('Every case is open. A case you have played again earns no EXP the second time.')}</T>
       </View>
       <View style={{ gap: u(6) }}>
         {CASES.map((c) => {
@@ -146,7 +147,7 @@ function Library({ played, onPick }: { played: Played; onPick: (id: string) => v
               </View>
               {stamp ? <Stamp word={stamp} size={10} /> : null}
             </Pressable>
-            {on ? <Btn label={stamp ? 'Replay this case' : 'Open this case'} onPress={() => onPick(c.id)} /> : null}
+            {on ? <Btn label={stamp ? tr('Replay this case') : tr('Open this case')} onPress={() => onPick(c.id)} /> : null}
             </View>
           );
         })}

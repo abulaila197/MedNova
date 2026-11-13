@@ -25,8 +25,12 @@ import { DoneCard } from './SoloPlay';
 import { HURRY_MS, SlideTable, TurnClock } from './Slides';
 import { second, useTicker } from '../engine/useTicker';
 import { TurnName } from '@/games/shell/TurnName';
+import { tr } from '@/i18n';
 
-const STYLE_NAME: Record<Style, string> = { classic: 'Classic', five: 'Classic', custom: 'Custom' };
+/** Read outside render (React Compiler lint): only called from the submit handler. */
+const clockNow = () => Date.now();
+
+const STYLE_NAME: Record<Style, string> = { classic: tr('Classic'), five: tr('Classic'), custom: tr('Custom') };
 
 /** Offline Multiplayer: one shared board per word, turns in random full laps, a timer per guess, no hint, no EXP. */
 export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
@@ -115,10 +119,10 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
 
   const submit = (g: string) => {
     const bad = lengthCheck(g, style, w.word.length);
-    if (bad === 'short') return style === 'custom' ? 'At least 7 letters' : 'Not enough letters';
-    if (bad === 'long') return 'Too many letters';
-    if (!isWord(g)) return 'Not in word list';
-    dispatch({ type: 'GUESS', word: g, answer: w.word, now: Date.now() });
+    if (bad === 'short') return style === 'custom' ? tr('At least 7 letters') : tr('Not enough letters');
+    if (bad === 'long') return tr('Too many letters');
+    if (!isWord(g)) return tr('Not in word list');
+    dispatch({ type: 'GUESS', word: g, answer: w.word, now: clockNow() });
     return null;
   };
 
@@ -126,9 +130,9 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   return (
     <SlideTable
       label={{
-        no: `WORD ${run.index + 1} OF ${run.wordIds.length}`,
-        title: 'Six Word Tries',
-        sub: phase === 'wordOver' ? `${STYLE_NAME[style]} · ${w.word.length} letters · ${run.rows} rows` : <TurnName name={who?.name ?? ''} color={who?.color} after={`’s turn · ${STYLE_NAME[style]} · ${w.word.length} letters`} />,
+        no: tr('WORD {n} OF {n2}', { n: run.index + 1, n2: run.wordIds.length }),
+        title: tr('Six Word Tries'),
+        sub: phase === 'wordOver' ? tr('{n} · {n2} letters · {rows} rows', { n: STYLE_NAME[style], n2: w.word.length, rows: run.rows }) : <TurnName name={who?.name ?? ''} color={who?.color} after={tr('’s turn · {n} · {n2} letters', { n: STYLE_NAME[style], n2: w.word.length })} />,
         right: phase === 'playing' ? <TurnClock ms={left} warn={left <= HURRY_MS} /> : undefined,
       }}
       answer={w.word}
@@ -147,9 +151,9 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
       dock={
         res ? (
           <DoneCard
-            line={winner ? `${winner.name} wins the word` : `The word was ${w.word}`}
-            sub={winner ? `${w.word} on row ${res.turns.length}` : 'Nobody got it this time.'}
-            primary={{ label: lastWord ? 'See results' : 'Next word', onPress: () => dispatch({ type: 'NEXT' }) }}
+            line={winner ? tr('{name} wins the word', { name: winner.name }) : tr('The word was {word}', { word: w.word })}
+            sub={winner ? tr('{word} on row {n}', { word: w.word, n: res.turns.length }) : tr('Nobody got it this time.')}
+            primary={{ label: lastWord ? tr('See results') : tr('Next word'), onPress: () => dispatch({ type: 'NEXT' }) }}
           />
         ) : phase === 'ready' && run.turns.length > 0 ? (
           <TurnCard name={who?.name ?? ''} color={who?.color ?? t.accent} secs={secs} recap={recap} onReady={() => dispatch({ type: 'READY', now: Date.now() })} />
@@ -160,7 +164,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
         <Curtain
           name={who?.name ?? ''}
           color={who?.color}
-          sub={`Word ${run.index + 1} of ${run.wordIds.length} · ${secs} s per guess`}
+          sub={tr('Word {n} of {n2} · {secs} s per guess', { n: run.index + 1, n2: run.wordIds.length, secs })}
           board={board}
           recap={recap}
           onReady={() => dispatch({ type: 'READY', now: Date.now() })}
@@ -187,11 +191,11 @@ function TurnCard({ name, color, secs, recap, onReady }: { name: string; color: 
   const t = useTheme();
   return (
     <View style={s.card}>
-      <Text style={[s.k, { color: t.dim }]}>PASS THE PHONE TO</Text>
+      <Text style={[s.k, { color: t.dim }]}>{tr('PASS THE PHONE TO')}</Text>
       <Text style={[s.name, { color }]}>{name}</Text>
-      <Text style={[s.sub, { color: t.mute }]}>{`${secs} seconds for this guess`}</Text>
+      <Text style={[s.sub, { color: t.mute }]}>{tr('{secs} seconds for this guess', { secs })}</Text>
       {recap.length ? <View style={s.recap}><Recap lines={recap} /></View> : null}
-      <Btn label="I'm ready" onPress={onReady} style={{ alignSelf: 'stretch', marginTop: u(6) }} />
+      <Btn label={tr('I\'m ready')} onPress={onReady} style={{ alignSelf: 'stretch', marginTop: u(6) }} />
     </View>
   );
 }

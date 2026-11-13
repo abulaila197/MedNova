@@ -8,6 +8,7 @@ import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import type { Play, PlayItem } from '../engine/types';
+import { tr } from '@/i18n';
 
 export type Tone = 'win' | 'mid' | 'last';
 
@@ -17,22 +18,22 @@ export type Tone = 'win' | 'mid' | 'last';
  */
 const LINES: Record<Tone, [string, string][]> = {
   win: [
-    ['Built different.', 'Top of the table, as expected.'],
-    ['Was there ever any doubt?', 'Didn\'t even break a sweat.'],
-    ['Too smooth.', 'Try to keep up next time.'],
+    [tr('Built different.'), tr('Top of the table, as expected.')],
+    [tr('Was there ever any doubt?'), tr('Didn\'t even break a sweat.')],
+    [tr('Too smooth.'), tr('Try to keep up next time.')],
   ],
   mid: [
-    ['Not bad at all.', 'Solid game. Run it back?'],
-    ['Respectable.', 'One more and you\'ve got it.'],
-    ['Steady hands.', 'Keep it rolling.'],
+    [tr('Not bad at all.'), tr('Solid game. Run it back?')],
+    [tr('Respectable.'), tr('One more and you\'ve got it.')],
+    [tr('Steady hands.'), tr('Keep it rolling.')],
   ],
   last: [
-    ['Oof. That was rough.', 'Bold strategy. It didn\'t work.'],
-    ['Were you even trying?', 'Asking for a friend.'],
-    ['Well, someone had\nto be last.', 'Today it was you.'],
+    [tr('Oof. That was rough.'), tr('Bold strategy. It didn\'t work.')],
+    [tr('Were you even trying?'), tr('Asking for a friend.')],
+    [tr('Well, someone had\nto be last.'), tr('Today it was you.')],
   ],
 };
-const PASS: [string, string] = ['Good game, everyone.', 'Pass it round and go again?'];
+const PASS: [string, string] = [tr('Good game, everyone.'), tr('Pass it round and go again?')];
 
 // All three are cut at the same line under the ID badge and padded so the badge sits at the same spot; Omar's face is
 // the same size in each (90% of the first preview). The cut edge hides behind the stats card below.

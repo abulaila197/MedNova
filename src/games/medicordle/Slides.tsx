@@ -13,6 +13,7 @@ import { F } from '@/theme/tokens';
 import { GameScreen, HelperButton } from '../shell/ui';
 import { keyStates, score, type Mark } from './core';
 import { slideColors, type SlideColors } from './palette';
+import { tr } from '@/i18n';
 
 // Nova Medicordle's own design language (NM20, NM21): "Specimen slides".
 // Each letter is a glass slide on a lightbox; a sheen passes over a played slide, then it glows
@@ -168,7 +169,7 @@ export function SlideLabel({ no, title, sub, right, onPause }: TableProps['label
       </View>
       <View style={s.labelR}>
         {right}
-        <Pressable onPress={onPause} hitSlop={u(8)} style={[s.pause, { borderColor: c.line, backgroundColor: c.key }]} accessibilityRole="button" accessibilityLabel="Pause">
+        <Pressable onPress={onPause} hitSlop={u(8)} style={[s.pause, { borderColor: c.line, backgroundColor: c.key }]} accessibilityRole="button" accessibilityLabel={tr('Pause')}>
           <View style={[s.bar, { backgroundColor: t.fg }]} />
           <View style={[s.bar, { backgroundColor: t.fg }]} />
         </Pressable>
@@ -182,7 +183,7 @@ export function SlideStack({ n }: { n: number }) {
   const t = useTheme();
   const c = slideColors(t.mode);
   return (
-    <View style={s.stack} accessibilityLabel={`Streak ${n}`}>
+    <View style={s.stack} accessibilityLabel={tr('Streak {n}', { n })}>
       {[0, 1, 2, 3].map((i) => (
         <View key={i} style={[s.stackI, { top: u(i * 4.5), backgroundColor: c.glass, borderColor: i === 3 ? t.accent : c.line }]} />
       ))}
@@ -197,7 +198,7 @@ export function TurnClock({ ms, warn }: { ms: number; warn: boolean }) {
   return (
     <View style={s.clock}>
       <Text style={[s.clockN, { color: warn ? HURRY : t.white }]}>{Math.ceil(ms / 1000)}</Text>
-      <Text style={[s.clockL, { color: t.dim }]}>SEC</Text>
+      <Text style={[s.clockL, { color: t.dim }]}>{tr('SEC')}</Text>
     </View>
   );
 }
@@ -244,7 +245,7 @@ function Board(p: {
               );
             })
           : null}
-        {p.hidden ? <Text style={[s.hiddenT, { color: t.mute }]}>Board hidden while paused</Text> : null}
+        {p.hidden ? <Text style={[s.hiddenT, { color: t.mute }]}>{tr('Board hidden while paused')}</Text> : null}
       </LinearGradient>
       {p.note}
       {p.toast ? (
@@ -277,7 +278,7 @@ function ActiveRow({ c, cols, tile, input, answer, revealed, color, shake }: { c
 
 function PassedRow({ c, cols, tile, color }: { c: SlideColors; cols: number; tile: number; color?: string }) {
   return (
-    <View style={[s.row, { opacity: 0.55 }]} accessibilityLabel="Turn timed out">
+    <View style={[s.row, { opacity: 0.55 }]} accessibilityLabel={tr('Turn timed out')}>
       {Array.from({ length: cols }, (_, i) => (
         <Tile key={i} c={c} size={tile} letter={i === Math.floor((cols - 1) / 2) ? '·' : ''} mark={null} delay={-1} edge={i === 0 ? color : undefined} />
       ))}
@@ -321,8 +322,8 @@ function SpecimenNote({ c, text, hot, wait }: { c: SlideColors; text: string | n
   const t = useTheme();
   return (
     <View style={[s.note, hot ? { borderColor: HURRY, backgroundColor: HURRY_BG, borderStyle: 'solid' } : { borderColor: c.line, backgroundColor: c.boxA }]}>
-      <Text style={[s.noteL, { color: hot ? HURRY : t.accent }]}>SPECIMEN NOTE</Text>
-      <Text style={[s.noteT, { color: text ? t.fg : t.mute }]}>{text ?? wait ?? 'The definition appears on your last guess.'}</Text>
+      <Text style={[s.noteL, { color: hot ? HURRY : t.accent }]}>{tr('SPECIMEN NOTE')}</Text>
+      <Text style={[s.noteT, { color: text ? t.fg : t.mute }]}>{text ?? wait ?? tr('The definition appears on your last guess.')}</Text>
     </View>
   );
 }
@@ -334,14 +335,14 @@ function Keys({ c, keys, onKey }: { c: SlideColors; keys: Record<string, 'ok' | 
     <View style={s.kb}>
       {ROWS_KB.map((row, n) => (
         <View key={row} style={s.krow}>
-          {n === 2 ? <Key label="Enter" wide c={c} onPress={() => onKey('ENTER')} /> : null}
+          {n === 2 ? <Key label={tr('Enter')} wide c={c} onPress={() => onKey('ENTER')} /> : null}
           {[...row].map((ch) => {
             const st = keys[ch];
             const bg = st === 'ok' ? c.ok : st === 'near' ? c.near : st === 'off' ? c.off : c.key;
             const fg = st === 'ok' || st === 'near' ? c.onTile : st === 'off' ? c.offText : t.fg;
             return <Key key={ch} label={ch} c={c} bg={bg} fg={fg} onPress={() => onKey(ch)} />;
           })}
-          {n === 2 ? <Key label="⌫" a11y="Delete" wide c={c} onPress={() => onKey('DEL')} /> : null}
+          {n === 2 ? <Key label="⌫" a11y={tr('Delete')} wide c={c} onPress={() => onKey('DEL')} /> : null}
         </View>
       ))}
     </View>

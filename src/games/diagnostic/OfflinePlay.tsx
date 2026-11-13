@@ -18,6 +18,7 @@ import {
 } from './offline';
 import { shuffle } from '../engine/random';
 import { second, useTicker } from '../engine/useTicker';
+import { tr } from '@/i18n';
 
 /** Offline Multiplayer (pass and play): own case per player each round, 90 s turns, no hint (DPO1-DPO7). */
 export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
@@ -110,7 +111,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   const board = rows.map((x) => ({ seat: x.seat, name: x.name, score: x.score, color: seatOf.get(x.seat)?.color })).sort((a, b) => b.score - a.score);
   const active = run.order.filter((x) => !run.removed.includes(x));
   const lastTurn = run.round + 1 >= run.rounds && active[active.length - 1] === seat;
-  const roundText = `Round ${run.round + 1} of ${run.rounds}`;
+  const roundText = tr('Round {n} of {rounds}', { n: run.round + 1, rounds: run.rounds });
   const left = timeLeft(run, now);
 
   return (
@@ -119,11 +120,11 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
       c={c}
       attempt={run.attempt}
       phase={paused ? 'paused' : over ? 'over' : 'playing'}
-      title={who?.name ?? `Player ${seat + 1}`}
+      title={who?.name ?? tr('Player {n}', { n: seat + 1 })}
       titleColor={who?.color}
       sub={roundText}
       slim={`${who?.name ?? ''} · ${roundText}`}
-      clock={{ label: 'Time left', down: true, ms: over ? Math.max(0, 90_000 - (r?.timeMs ?? 0)) : left, warn: !over && left <= 15_000 }}
+      clock={{ label: tr('Time left'), down: true, ms: over ? Math.max(0, 90_000 - (r?.timeMs ?? 0)) : left, warn: !over && left <= 15_000 }}
       wrongSeq={run.wrongSeq}
       clueSeq={run.clueSeq}
       result={
@@ -131,19 +132,19 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
           ? {
               outcome: r.outcome,
               points: r.points,
-              line: pointsLine(r, r.outcome === 'timed_out' ? 'Time ran out. No points this turn.' : 'No points this turn.'),
-              nextLabel: lastTurn ? 'See results' : 'Pass the phone',
+              line: pointsLine(r, r.outcome === 'timed_out' ? tr('Time ran out. No points this turn.') : tr('No points this turn.')),
+              nextLabel: lastTurn ? tr('See results') : tr('Pass the phone'),
               onNext: () => dispatch({ type: 'NEXT', now: Date.now() }),
             }
           : null
       }
-      pausedNote="The clock is stopped. Resume to see the case again."
+      pausedNote={tr('The clock is stopped. Resume to see the case again.')}
       onPause={() => dispatch({ type: 'PAUSE', now: Date.now() })}
       onGuess={(g) => dispatch({ type: 'GUESS', answerId: g.id, accepted: g.id === c.answer_id, now: Date.now() })}
       onSkip={() => dispatch({ type: 'SKIP', now: Date.now() })}
       onReveal={() => dispatch({ type: 'REVEAL' })}>
       {run.phase === 'handoff' ? (
-        <Curtain name={who?.name ?? `Player ${seat + 1}`} color={who?.color} sub={`${roundText} · 90 seconds`} board={board} recap={offlineRecap(run, seat, play)} onReady={() => dispatch({ type: 'READY', now: Date.now() })} onPause={() => dispatch({ type: 'PAUSE', now: Date.now() })} />
+        <Curtain name={who?.name ?? tr('Player {n}', { n: seat + 1 })} color={who?.color} sub={tr('{roundText} · 90 seconds', { roundText })} board={board} recap={offlineRecap(run, seat, play)} onReady={() => dispatch({ type: 'READY', now: Date.now() })} onPause={() => dispatch({ type: 'PAUSE', now: Date.now() })} />
       ) : null}
       <PauseMenu
         open={paused}

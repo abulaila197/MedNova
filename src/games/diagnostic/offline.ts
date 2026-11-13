@@ -4,6 +4,7 @@ import type { Play } from '../engine/types';
 import { event, finishRecap, lastIndexOf, leadLine, sides, type RecapLine } from '../shell/recap';
 import { cluePoints, guess, newAttempt, reveal, speedBonus, type Attempt } from './core';
 import type { Row } from '../engine/standings';
+import { say } from '../../i18n/say';
 
 export const TURN_MS = 90_000;
 
@@ -150,7 +151,7 @@ export function offlineRows(r: OfflineRun, names: Record<number, string>): (Row 
     const mine = r.results.filter((x) => x.seat === seat);
     return {
       seat,
-      name: names[seat] ?? `Player ${seat + 1}`,
+      name: names[seat] ?? say('Player {v}', { v: seat + 1 }),
       score: mine.reduce((a, x) => a + x.points, 0),
       timeMs: mine.reduce((a, x) => a + x.timeMs, 0),
       speed: mine.reduce((a, x) => a + x.speedBonus, 0),
@@ -169,7 +170,7 @@ export function offlineRecap(r: OfflineRun, seat: number, play: Pick<Play, 'seat
   if (!since.length) return [];
   const seatOf = new Map(play.seats.map((x) => [x.seat, x]));
   const events = since.map((x, i) =>
-    event(`dp-${last + 1 + i}`, x.seat, seatOf.get(x.seat), x.outcome === 'right' ? `solved the case · +${x.points}` : x.outcome === 'timed_out' ? 'ran out of time' : 'missed the case'),
+    event(`dp-${last + 1 + i}`, x.seat, seatOf.get(x.seat), x.outcome === 'right' ? say('solved the case · +{v}', { v: x.points }) : x.outcome === 'timed_out' ? say('ran out of time') : say('missed the case')),
   );
   const scores = (rs: TurnResult[]) => r.order.map((s) => ({ seat: s, score: rs.filter((x) => x.seat === s).reduce((a, x) => a + x.points, 0) }));
   return finishRecap(events, leadLine(sides(scores(r.results.slice(0, last + 1)), play), sides(scores(r.results), play)));

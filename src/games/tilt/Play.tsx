@@ -22,6 +22,7 @@ import type { PlayProps } from '../shell/types';
 import { BANK, catLabel, wordById } from './data';
 import { confirm, current, endTurn, fix, freshDeck, leaders, mark, newGame, points, seatScores, startTurn, teamTotals, turnSeconds, type Mark, type TTState } from './game';
 import { freshTilt, held, stepHold, stepTilt, type Reading, type TiltState } from './tilt';
+import { tr, TA_START } from '@/i18n';
 
 // Look B "Spotlight stage" (Yazan 2026-11-12, claude.ai/artifact/3BBV24vDmvjkJKfhQLw3yt): a game-show stage under a
 // spotlight, marquee bulbs, a row of lights for the clock; correct floods green, pass floods orange. The whole
@@ -39,7 +40,7 @@ const C = {
   ok: ['#2ee59a', '#0f8a5a', '#06452e'] as const,
   pass: ['#ffb25c', '#d46a14', '#6e3005'] as const,
 };
-const WORD_FONT = 'Gabarito_800ExtraBold';
+const WORD_FONT = tr('Gabarito_800ExtraBold');
 const FLASH_MS = 650;
 const SEEN_KEY = 'tilt:seen';
 const kv = defaultKV();
@@ -331,11 +332,11 @@ export function Play({ play, onFinish, onQuit }: PlayProps) {
   if (paused) {
     body = (
       <View style={st_.center}>
-        <Text style={[st_.name, T(13), { fontFamily: WORD_FONT }]}>Paused</Text>
-        <Text style={[st_.hint, T(5.2), { maxWidth: vl(60) }]}>The clock is stopped and the word is hidden.</Text>
+        <Text style={[st_.name, T(13), { fontFamily: WORD_FONT }]}>{tr('Paused')}</Text>
+        <Text style={[st_.hint, T(5.2), { maxWidth: vl(60) }]}>{tr('The clock is stopped and the word is hidden.')}</Text>
         <View style={{ flexDirection: 'row', gap: vl(2), marginTop: vs(4) }}>
-          <Pill label="Resume" onPress={resume} gold vs={vs} />
-          <Pill label="Quit game" onPress={onQuit} vs={vs} />
+          <Pill label={tr('Resume')} onPress={resume} gold vs={vs} />
+          <Pill label={tr('Quit game')} onPress={onQuit} vs={vs} />
         </View>
       </View>
     );
@@ -343,7 +344,7 @@ export function Play({ play, onFinish, onQuit }: PlayProps) {
     body = (
       <View style={st_.center}>
         <Text style={[st_.tag, T(4.6, { letterSpacing: vs(1) })]}>
-          {turn?.sudden ? `Sudden death · ${team.name}` : `${team.name} · Round ${round} of ${rounds}`}
+          {turn?.sudden ? tr('Sudden death · {name}', { name: team.name }) : tr('{name} · Round {round} of {rounds}', { name: team.name, round, rounds })}
         </Text>
         <Text style={[st_.name, T(16), { fontFamily: WORD_FONT, textShadowOffset: { width: 0, height: vs(1) } }]} numberOfLines={1} adjustsFontSizeToFit>
           {holder.name}
@@ -352,11 +353,11 @@ export function Play({ play, onFinish, onQuit }: PlayProps) {
           <Text style={[st_.count, T(22), { fontFamily: WORD_FONT }]}>{String(count)}</Text>
         ) : (
           <Text style={[st_.hint, T(5.2), { maxWidth: vl(64) }]}>
-            {motion ? 'Hold the phone on your forehead, screen facing your team. The clock starts by itself.' : 'Hold the phone on your forehead, screen facing your team, and tap Start.'}
+            {motion ? tr('Hold the phone on your forehead, screen facing your team. The clock starts by itself.') : tr('Hold the phone on your forehead, screen facing your team, and tap Start.')}
           </Text>
         )}
         <View style={[st_.modePill, { paddingHorizontal: vl(2.4), paddingVertical: vs(1.2), borderRadius: vs(10) }]}>
-          <Text style={[st_.modeText, T(4.4)]}>{`${act ? 'Act it out' : 'Describe it'} · ${secs} s`}</Text>
+          <Text style={[st_.modeText, T(4.4)]}>{`${act ? tr('Act it out') : tr('Describe it')} · ${secs} s`}</Text>
         </View>
       </View>
     );
@@ -369,7 +370,7 @@ export function Play({ play, onFinish, onQuit }: PlayProps) {
         <View style={[st_.hud, { top: vs(9), left: vl(4.5) + vs(10), right: vl(4.5) + vs(10) }]}>
           <Chip text={`${team?.name ?? ''} · ${totals.get(turn.team) ?? 0}`} vs={vs} vl={vl} />
           <Text style={[st_.timer, T(9), { fontFamily: WORD_FONT }]}>{String(Math.ceil(remaining))}</Text>
-          <Chip text={`Passes ${s.passesLeft}`} vs={vs} vl={vl} />
+          <Chip text={tr('Passes {passesLeft}', { passesLeft: s.passesLeft })} vs={vs} vl={vl} />
         </View>
         <View style={st_.center}>
           <Text style={[st_.word, T(w && w.w.length > 16 ? 13 : 19), { fontFamily: WORD_FONT, maxWidth: vl(82), textShadowOffset: { width: 0, height: vs(1) } }]} numberOfLines={2} adjustsFontSizeToFit>
@@ -383,11 +384,11 @@ export function Play({ play, onFinish, onQuit }: PlayProps) {
           ))}
         </View>
         {/* Backup taps (TT: tilt not working, or the web preview): small, at the far ends. */}
-        <Pressable onPress={() => onMark('pass')} style={[st_.edge, { left: vl(2), bottom: vs(14), padding: vs(2.4), borderRadius: vs(8) }]} accessibilityLabel="Pass">
-          <Text style={[st_.edgeText, T(4)]}>Pass</Text>
+        <Pressable onPress={() => onMark('pass')} style={[st_.edge, { left: vl(2), bottom: vs(14), padding: vs(2.4), borderRadius: vs(8) }]} accessibilityLabel={tr('Pass')}>
+          <Text style={[st_.edgeText, T(4)]}>{tr('Pass')}</Text>
         </Pressable>
-        <Pressable onPress={() => onMark('right')} style={[st_.edge, { right: vl(2), bottom: vs(14), padding: vs(2.4), borderRadius: vs(8) }]} accessibilityLabel="Correct">
-          <Text style={[st_.edgeText, T(4)]}>Correct</Text>
+        <Pressable onPress={() => onMark('right')} style={[st_.edge, { right: vl(2), bottom: vs(14), padding: vs(2.4), borderRadius: vs(8) }]} accessibilityLabel={tr('Correct')}>
+          <Text style={[st_.edgeText, T(4)]}>{tr('Correct')}</Text>
         </Pressable>
       </>
     );
@@ -395,7 +396,7 @@ export function Play({ play, onFinish, onQuit }: PlayProps) {
     body = (
       <View style={[st_.review, { top: vs(10), bottom: vs(10), left: vl(8), right: vl(8), gap: vs(3) }]}>
         <View style={st_.row}>
-          <Text style={[st_.name, T(8), { fontFamily: WORD_FONT, textAlign: 'left' }]}>{holder.name === 'You' ? 'Your turn' : `${holder.name}'s turn`}</Text>
+          <Text style={[st_.name, T(8), { fontFamily: WORD_FONT, textAlign: TA_START }]}>{holder.name === 'You' ? tr('Your turn') : tr('{name}\'s turn', { name: holder.name })}</Text>
           <Text style={[st_.timer, T(11), { fontFamily: WORD_FONT }]}>{`+${points(turn)}`}</Text>
         </View>
         <View style={[st_.cards, { gap: vs(2) }]}>
@@ -405,18 +406,18 @@ export function Play({ play, onFinish, onQuit }: PlayProps) {
                 key={x.id + i}
                 onPress={() => commit(fix(ref.current.state, i))}
                 style={[st_.card, x.mark === 'right' ? st_.cardOk : st_.cardPass, { paddingHorizontal: vl(1.6), paddingVertical: vs(1.4), borderRadius: vs(2) }]}
-                accessibilityLabel={`${wordById.get(x.id)?.w ?? x.id}, ${x.mark === 'right' ? 'correct' : 'passed'}. Tap to change.`}>
+                accessibilityLabel={tr('{n}, {n2}. Tap to change.', { n: wordById.get(x.id)?.w ?? x.id, n2: x.mark === 'right' ? tr('correct') : tr('passed') })}>
                 <Text style={[x.mark === 'right' ? st_.okText : st_.passText, T(4.6)]}>{`${x.mark === 'right' ? '✓' : '↷'} ${wordById.get(x.id)?.w ?? x.id}`}</Text>
               </Pressable>
             ))
           ) : (
-            <Text style={[st_.hint, T(5)]}>No words this turn.</Text>
+            <Text style={[st_.hint, T(5)]}>{tr('No words this turn.')}</Text>
           )}
         </View>
         <View style={[st_.row, { marginTop: 'auto' }]}>
-          <Text style={[st_.hint, T(4.2), { textAlign: 'left', flexShrink: 1 }]}>Tap a word to fix a wrong tilt.</Text>
+          <Text style={[st_.hint, T(4.2), { textAlign: TA_START, flexShrink: 1 }]}>{tr('Tap a word to fix a wrong tilt.')}</Text>
           <Pill
-            label={nextTurn ? `Next: ${nextName} · ${nextTeam}` : tiedNow ? 'Sudden death!' : 'See results'}
+            label={nextTurn ? tr('Next: {nextName} · {nextTeam}', { nextName, nextTeam }) : tiedNow ? tr('Sudden death!') : tr('See results')}
             onPress={next}
             gold
             vs={vs}
@@ -438,7 +439,7 @@ export function Play({ play, onFinish, onQuit }: PlayProps) {
         <View style={StyleSheet.absoluteFill} pointerEvents="none">
           <LinearGradient colors={fl.kind === 'right' ? [...C.ok] : [...C.pass]} locations={[0, 0.6, 1]} start={{ x: 0.5, y: 0.3 }} end={{ x: 0.5, y: 1.2 }} style={StyleSheet.absoluteFill} />
           <View style={st_.center}>
-            <Text style={[st_.burst, T(7, { letterSpacing: vs(0.4) }), { fontFamily: WORD_FONT }]}>{fl.kind === 'right' ? 'GOT IT! +1' : `PASS · ${fl.left} LEFT`}</Text>
+            <Text style={[st_.burst, T(7, { letterSpacing: vs(0.4) }), { fontFamily: WORD_FONT }]}>{fl.kind === 'right' ? tr('GOT IT! +1') : tr('PASS · {left} LEFT', { left: fl.left })}</Text>
             <Text style={[st_.word, T(fl.word.length > 16 ? 13 : 19), { fontFamily: WORD_FONT, maxWidth: vl(82), textShadowColor: 'rgba(0,0,0,0.25)', textShadowOffset: { width: 0, height: vs(1) } }]} numberOfLines={2} adjustsFontSizeToFit>
               {fl.word}
             </Text>
@@ -447,8 +448,8 @@ export function Play({ play, onFinish, onQuit }: PlayProps) {
       ) : null}
       {/* Top corners: pause, and on the hand-off the team scores and a Start for phones without a motion sensor. */}
       {!paused && s.phase !== 'over' ? (
-        <Pressable onPress={pause} style={[st_.pause, { top: vs(6), left: vl(3), width: vs(10), height: vs(10), borderRadius: vs(5) }]} accessibilityLabel="Pause">
-          <Text style={[st_.edgeText, T(4.4)]}>II</Text>
+        <Pressable onPress={pause} style={[st_.pause, { top: vs(6), left: vl(3), width: vs(10), height: vs(10), borderRadius: vs(5) }]} accessibilityLabel={tr('Pause')}>
+          <Text style={[st_.edgeText, T(4.4)]}>{tr('II')}</Text>
         </Pressable>
       ) : null}
       {!paused && s.phase === 'handoff' ? (
@@ -460,7 +461,7 @@ export function Play({ play, onFinish, onQuit }: PlayProps) {
           </View>
           {count == null ? (
             <View style={[st_.startWrap, { bottom: vs(9) }]}>
-              <Pill label="Start" onPress={countdown} gold={!motion} vs={vs} disabled={!ready} />
+              <Pill label={tr('Start')} onPress={countdown} gold={!motion} vs={vs} disabled={!ready} />
             </View>
           ) : null}
         </>

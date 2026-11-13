@@ -1,4 +1,5 @@
 import type { SetupOption } from './types';
+import { tr } from '@/i18n';
 
 /**
  * "No clock" (Yazan 2026-11-12): a setup choice in the Solo modes he picked (Quick Fire Quiz, Wheels; Sketch It
@@ -6,10 +7,10 @@ import type { SetupOption } from './types';
  */
 export const clockOption = (note: string): SetupOption => ({
   key: 'clock',
-  label: 'Clock',
+  label: tr('Clock'),
   choices: [
-    { value: 'on', label: 'With clock', note },
-    { value: 'off', label: 'No clock', note: 'take your time' },
+    { value: 'on', label: tr('With clock'), note },
+    { value: 'off', label: tr('No clock'), note: tr('take your time') },
   ],
   initial: 'on',
 });

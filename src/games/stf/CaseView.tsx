@@ -6,6 +6,7 @@ import { u } from "@/theme/scale";
 
 import type { Case, CaseRun } from "./core";
 import { Ask, Btn, C, Choices, HelpBtn, NotePopup, Sheet, s } from "./Paper";
+import { tr } from '@/i18n';
 
 export type Help = {
   fifty: { label: string; onPress: () => void; disabled?: boolean };
@@ -67,7 +68,7 @@ export function CaseView({
         </View>
       ) : null}
       <Btn
-        label="Lock it in"
+        label={tr('Lock it in')}
         go
         onPress={() => picked != null && onLock(picked)}
         disabled={locked || picked == null || run.stage === "done"}

@@ -18,6 +18,7 @@ import { groupById } from './data';
 import { dealBoards } from './deal';
 import { boardItems } from './items';
 import { Bar, FokSky, GroupNotes, GroupRow, Hearts, TableBtn, TokenCard, TopLine, s as ts, C } from './Table';
+import { tr } from '@/i18n';
 
 /** One board's result in this game. */
 type Done = { points: number; stars: number; mistakes: number; ms: number; solved: boolean };
@@ -113,7 +114,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
     setHintBusy(true);
     try {
       const receipt = await engine.wallet.spend(FOK.revealCost, 'fok_hint', play.id);
-      if (!receipt) return setHintNote(`The hint costs ${FOK.revealCost} tokens. Each level up gives 1 token.`);
+      if (!receipt) return setHintNote(tr('The hint costs {revealCost} tokens. Each level up gives 1 token.', { revealCost: FOK.revealCost }));
       const now = ref.current;
       if (!now || now.run.phase !== 'play') return void engine.wallet.refund(receipt);
       setHintNote(null);
@@ -146,10 +147,10 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
         <BoardEnd
           board={board}
           run={run}
-          kicker={run.solved ? 'Board solved' : limitMs && spent >= limitMs ? 'Time up' : 'Out of hearts'}
-          title={total > 1 ? `Board ${save.index + 1} of ${total}` : 'Four of a Kind'}
-          line={`${'★'.repeat(d?.stars ?? 0)}${'☆'.repeat(3 - (d?.stars ?? 0))}   ${d?.points ?? 0} of ${FOK.maxPoints} points · ${clockText(d?.ms ?? 0)}`}
-          next={last ? 'See results' : 'Next board'}
+          kicker={run.solved ? tr('Board solved') : limitMs && spent >= limitMs ? tr('Time up') : tr('Out of hearts')}
+          title={total > 1 ? tr('Board {n} of {total}', { n: save.index + 1, total }) : tr('Four of a Kind')}
+          line={tr('{repeat}{repeat2}   {n} of {maxPoints} points · {clockText}', { repeat: '★'.repeat(d?.stars ?? 0), repeat2: '☆'.repeat(3 - (d?.stars ?? 0)), n: d?.points ?? 0, maxPoints: FOK.maxPoints, clockText: clockText(d?.ms ?? 0) })}
+          next={last ? tr('See results') : tr('Next board')}
           onNext={() => (last ? finish() : put({ ...save, index: save.index + 1, run: startRun(Math.random), ms: 0 }))}
         />
         {menuEl}
@@ -165,7 +166,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
         board={board}
         run={run}
         locked={paused || run.phase !== 'play'}
-        top={<TopLine kicker="Find 4 groups of 4" right={<Hearts n={run.hearts} />} title="Four of a Kind" sub={[total > 1 ? `Board ${save.index + 1} of ${total}` : null, left != null ? `${clockText(left, { down: true })} left` : null].filter(Boolean).join(' · ')} />}
+        top={<TopLine kicker={tr('Find 4 groups of 4')} right={<Hearts n={run.hearts} />} title={tr('Four of a Kind')} sub={[total > 1 ? tr('Board {n} of {total}', { n: save.index + 1, total }) : null, left != null ? tr('{n} left', { n: clockText(left, { down: true }) }) : null].filter(Boolean).join(' · ')} />}
         onSubmit={(tiles) => {
           const r = submit(run, tiles);
           if (r.run !== run) step(r.run);
@@ -173,7 +174,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
         }}
         onShuffle={() => step(reshuffle(run, Math.random))}
         tip={hintNote ?? undefined}
-        hint={{ label: run.revealed != null ? 'Hint used' : `Hint · ${FOK.revealCost}${COIN}`, onPress: buyHint, disabled: run.revealed != null || hintBusy }}
+        hint={{ label: run.revealed != null ? tr('Hint used') : tr('Hint · {revealCost}{COIN}', { revealCost: FOK.revealCost, COIN }), onPress: buyHint, disabled: run.revealed != null || hintBusy }}
       />
       {run.phase === 'out' ? (
         <View style={{ position: 'absolute', left: u(16), right: u(16), bottom: u(16) }}>
@@ -199,7 +200,7 @@ export function BoardEnd({ board, run, kicker, title, line, next, onNext, who, w
             {open === slot ? <GroupNotes board={board} slot={slot} /> : null}
           </View>
         ))}
-        <Text style={[ts.note, { textAlign: 'center' }]}>Tap a group to see each box.</Text>
+        <Text style={[ts.note, { textAlign: 'center' }]}>{tr('Tap a group to see each box.')}</Text>
       </ScrollView>
       <Text style={{ fontFamily: 'DMSerifDisplay_400Regular', fontSize: u(17), color: C.text, textAlign: 'center' }}>{line}</Text>
       {next && onNext ? (

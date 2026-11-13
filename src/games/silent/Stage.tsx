@@ -6,6 +6,7 @@ import { u } from '@/theme/scale';
 
 import { Board, type BoardHandle, type Stroke } from './Board';
 import { ChalkTitle, Frame, Note, PausedCover, SL, useSlateRoom } from './slate';
+import { tr } from '@/i18n';
 
 /**
  * The framed board sized to the free space. The shape is fixed the first time it is measured for a turn
@@ -50,9 +51,9 @@ export function ActingCard({ children, paused }: { children?: ReactNode; paused?
           <Path d="M36 15 l3 0 M45 15 l3 0 M38 21 q4 2 8 0" stroke={c} strokeWidth={1.6} strokeLinecap="round" fill="none" />
         </Svg>
         <ChalkTitle size={26} color={SL.chalk} style={{ textAlign: 'center' }}>
-          Act it out
+          {tr('Act it out')}
         </ChalkTitle>
-        <Note style={{ textAlign: 'center', maxWidth: u(210), color: room.boardSoft }}>No sounds, no words, no mouthing letters, no pointing at things in the room.</Note>
+        <Note style={{ textAlign: 'center', maxWidth: u(210), color: room.boardSoft }}>{tr('No sounds, no words, no mouthing letters, no pointing at things in the room.')}</Note>
         {children}
         {paused ? <PausedCover /> : null}
       </Frame>

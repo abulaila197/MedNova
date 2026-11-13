@@ -6,6 +6,7 @@
 import type { Row } from '../engine/standings';
 import type { Play } from '../engine/types';
 import { event, finishRecap, lastIndexOf, leadLine, sides, type RecapLine } from '../shell/recap';
+import { say } from '../../i18n/say';
 
 export const LOCK_MS = 5_000;
 export const RANK_POINTS = [100, 80, 65, 50, 40, 30];
@@ -144,8 +145,8 @@ export const snapshotOffline = (r: OfflineRun, now: number) => (r.phase === 'pla
 export function previousLine(r: OfflineRun, names: Record<number, string>, clock: (ms: number) => string) {
   const last = r.turns[r.turns.length - 1];
   if (!last) return null;
-  const who = names[last.seat] ?? `Player ${last.seat + 1}`;
-  return last.solved ? `${who} solved it in ${clock(last.timeMs)}` : `${who} ran out of time`;
+  const who = names[last.seat] ?? say('Player {v}', { v: last.seat + 1 });
+  return last.solved ? say('{v} solved it in {v2}', { v: who, v2: clock(last.timeMs) }) : say('{v} ran out of time', { v: who });
 }
 
 export type OfflineRow = Row & { wrong: number };
@@ -158,7 +159,7 @@ export function offlineRows(r: OfflineRun, names: Record<number, string>): Offli
       const mine = r.results.flatMap((p) => p.scores.filter((x) => x.seat === seat));
       return {
         seat,
-        name: names[seat] ?? `Player ${seat + 1}`,
+        name: names[seat] ?? say('Player {v}', { v: seat + 1 }),
         score: mine.reduce((a, x) => a + x.points, 0),
         timeMs: mine.reduce((a, x) => a + x.timeMs, 0),
         wrong: mine.reduce((a, x) => a + x.wrong, 0),
@@ -180,7 +181,7 @@ export function offlineRecap(r: OfflineRun, seat: number, play: Pick<Play, 'seat
   ];
   const last = lastIndexOf(flat, seat);
   const seatOf = new Map(play.seats.map((x) => [x.seat, x]));
-  const events: RecapLine[] = flat.slice(last + 1).map((x, i) => event(`rd-${last + 1 + i}`, x.seat, seatOf.get(x.seat), x.solved ? `solved it in ${clock(x.timeMs)}` : 'ran out of time'));
+  const events: RecapLine[] = flat.slice(last + 1).map((x, i) => event(`rd-${last + 1 + i}`, x.seat, seatOf.get(x.seat), x.solved ? say('solved it in {v}', { v: clock(x.timeMs) }) : say('ran out of time')));
   const others = r.order.filter((s) => s !== seat && !r.removed.includes(s));
   if (current.length && !current.some((x) => x.seat === seat) && others.every((s) => current.some((x) => x.seat === s && x.solved)))
     events.push({ key: `rd-left-${r.index}`, text: 'Everyone else has solved this picture' });

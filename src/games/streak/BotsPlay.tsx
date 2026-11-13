@@ -21,6 +21,7 @@ import { tickedFields } from '../shell/fields';
 import { QUESTIONS, idsOf, poolFor } from './data';
 import { HeatBoard } from './HeatBoard';
 import { HeatColumns } from './HeatColumns';
+import { tr } from '@/i18n';
 
 const questionOf = (n: number) => QUESTIONS[n - 1];
 const indexOf = new Map(QUESTIONS.map((q, i) => [q.id, i + 1]));
@@ -175,7 +176,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
     score: me?.score ?? 0,
     feedback: reveal ? { picked: mine ?? -1, right, points: st.me?.points ?? 0, untilMs: 0 } : null,
   } as unknown as Round;
-  const result = !reveal ? null : st.phase === 'done' ? 'Adding up the scores…' : `${right ? `${nth(st.me?.rank ?? 1)} right · +${st.me?.points ?? 0}` : mine == null ? (skipped ? 'Skipped · streak kept' : 'No answer') : 'Wrong'} · ${last ? 'Results' : 'next question'} in ${nextIn} s`;
+  const result = !reveal ? null : st.phase === 'done' ? tr('Adding up the scores…') : tr('{n} · {n2} in {nextIn} s', { n: right ? tr('{v} right · +{v2}', { v: nth(st.me?.rank ?? 1), v2: st.me?.points ?? 0 }) : mine == null ? (skipped ? tr('Skipped · streak kept') : tr('No answer')) : tr('Wrong'), n2: last ? tr('Results') : tr('next question'), nextIn });
 
   return (
     <HeatBoard
@@ -185,7 +186,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
       leftAt={(sv) => (reveal ? 0 : Math.max(0, ends - sv))}
       totalMs={qMs + mineHelp.added}
       helpers={{ onHelper, usable }}
-      who={{ name: `Question ${st.index + 1} of ${st.total}` }}
+      who={{ name: tr('Question {n} of {total}', { n: st.index + 1, total: st.total }) }}
       live={<HeatColumns players={st.players} reveal={reveal} />}
       hidden={g.paused}
       onAnswer={(choice) => {

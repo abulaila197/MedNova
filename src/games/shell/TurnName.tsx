@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 
 import { Text } from '@/components/AppText';
 import { F } from '@/theme/tokens';
+import { isAr, tr } from '@/i18n';
 
 /**
  * 13 (Yazan 2026-11-04): in every game with turns, the name of the player whose turn it is shows bold in that
@@ -11,8 +12,13 @@ import { F } from '@/theme/tokens';
 export function TurnName({ name, color, before, after }: { name: string; color?: string; before?: string; after?: string }): ReactNode {
   // Player 1 is called "You" in Pass the phone: "You’s turn" reads "Your turn".
   if (name === 'You' && after && /^[’']s\b/.test(after)) {
-    name = 'Your';
+    name = tr('Your');
     after = after.slice(2);
+  }
+  // Arabic: "، دورك" after "You" reads as just "دورك" (your turn), no name.
+  if (isAr && name === 'You' && after && after.startsWith('، ')) {
+    name = after.slice(2);
+    after = '';
   }
   return (
     <>

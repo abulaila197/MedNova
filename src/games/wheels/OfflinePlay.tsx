@@ -25,10 +25,11 @@ import { TurnName } from '../shell/TurnName';
 import { Bill, Btn, Bulbs, CB, CD, CM, Gem, Kicker, Panel, PauseBtn, QF_B, ROMAN, Rule, T, VelvetScreen, VV } from './velvet';
 import { useTicker } from '../engine/useTicker';
 import { gameShown } from './shown';
+import { isAr, tr } from '@/i18n';
 
 export type Seats = Map<number, { name: string; color?: string }>;
 const snapshot = (g: OfflineGame, now: number) => stepOffline(g, { type: 'PAUSE', now }, BANK, Math.random);
-export const actName = (g: OfflineGame) => `Act ${ROMAN[g.cycle]} · Round ${g.round + 1} of ${roundsIn(g.cycle)}`;
+export const actName = (g: OfflineGame) => tr('Act {n} · Round {n2} of {n3}', { n: ROMAN[g.cycle], n2: g.round + 1, n3: roundsIn(g.cycle) });
 
 export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   const target = (Number(play.settings.target) || 50) as Target;
@@ -46,7 +47,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   const [holder, setHolder] = useState<number | null>(null);
   const [seen, setSeen] = useState<Record<number, number>>({});
   const seats: Seats = useMemo(() => new Map(play.seats.map((x) => [x.seat, { name: x.name, color: x.color }])), [play.seats]);
-  const name = (s: number) => seats.get(s)?.name ?? `Player ${s + 1}`;
+  const name = (s: number) => seats.get(s)?.name ?? tr('Player {n}', { n: s + 1 });
 
   useEffect(() => {
     if (first.fresh) engine.recorder.bookmark(play.id, snapshot(first.g, Date.now()), 0);
@@ -130,7 +131,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
         turn={g.turn}
         now={now}
         kicker={actName(g)}
-        title={<TurnName name={name(who)} color={seats.get(who)?.color} after="’s turn" />}
+        title={<TurnName name={name(who)} color={seats.get(who)?.color} after={tr('’s turn')} />}
         strip={board}
         onEvent={(e) => dispatch({ type: 'TURN', e })}
         onPause={pause}
@@ -209,14 +210,14 @@ export function recapLine(l: Log, n: (s: number) => string): string | null {
 // ---------------------------------------------------------------- the curtain
 
 function Curtain({ g, seat, seats, board, since, onReady }: { g: OfflineGame; seat: number; seats: Seats; board: Strip; since: number; onReady: () => void }) {
-  const n = (s: number) => seats.get(s)?.name ?? `Player ${s + 1}`;
+  const n = (s: number) => seats.get(s)?.name ?? tr('Player {n}', { n: s + 1 });
   const lines = g.log.slice(since).map((l) => recapLine(l, n)).filter((x): x is string => !!x).slice(-RECAP_MAX);
-  const why = g.phase === 'boss' ? 'Boss Round' : 'Your turn';
+  const why = g.phase === 'boss' ? tr('Boss Round') : tr('Your turn');
   return (
     <View style={{ gap: u(14), paddingTop: u(18) }}>
       <View style={{ alignItems: 'center', gap: u(4) }}>
         <Kicker>{`${actName(g)} · ${why}`}</Kicker>
-        <T f={CM} size={13} color={VV.soft}>Pass the phone to</T>
+        <T f={CM} size={13} color={VV.soft}>{tr('Pass the phone to')}</T>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: u(12) }}>
           <Gem c={seats.get(seat)?.color} size={13} />
           <T f={CD} size={32} color={VV.gold}>{n(seat)}</T>
@@ -224,14 +225,14 @@ function Curtain({ g, seat, seats, board, since, onReady }: { g: OfflineGame; se
       </View>
       {lines.length ? (
         <Panel>
-          <T f={CM} size={10.5} color={VV.dim} style={{ letterSpacing: u(2) }}>SINCE YOUR LAST TURN</T>
+          <T f={CM} size={10.5} color={VV.dim} style={{ letterSpacing: u(2) }}>{tr('SINCE YOUR LAST TURN')}</T>
           {lines.map((x, i) => (
             <T key={i} size={12.5} color={VV.ink}>{x}</T>
           ))}
         </Panel>
       ) : null}
       <Board board={board} />
-      <Btn label="I’m ready" onPress={onReady} />
+      <Btn label={tr('I’m ready')} onPress={onReady} />
     </View>
   );
 }
@@ -241,13 +242,13 @@ function Curtain({ g, seat, seats, board, since, onReady }: { g: OfflineGame; se
 export function RedemptionOffer({ seat, seats, onPick, onPause }: { seat: number; seats: Seats; onPick: (use: boolean) => void; onPause: () => void }) {
   return (
     <View style={{ flex: 1, gap: u(14) }}>
-      <Top kicker={`Redemption · ${seats.get(seat)?.name ?? ''}`} title="A second chance" onPause={onPause} />
-      <T size={14} style={{ textAlign: 'center', paddingTop: u(8) }}>{`You’re last. Swap this turn for a Redemption round: ${REDEMPTION_ITEMS} quick true or false calls in ${REDEMPTION_MS / 1000} seconds, +1 each.`}</T>
-      <T size={12} color={VV.dim} style={{ textAlign: 'center' }}>Redemption is offered once a game, in the final round, to whoever is last first.</T>
+      <Top kicker={tr('Redemption · {n}', { n: seats.get(seat)?.name ?? '' })} title={tr('A second chance')} onPause={onPause} />
+      <T size={14} style={{ textAlign: 'center', paddingTop: u(8) }}>{tr('You’re last. Swap this turn for a Redemption round: {REDEMPTION_ITEMS} quick true or false calls in {n} seconds, +1 each.', { REDEMPTION_ITEMS, n: REDEMPTION_MS / 1000 })}</T>
+      <T size={12} color={VV.dim} style={{ textAlign: 'center' }}>{tr('Redemption is offered once a game, in the final round, to whoever is last first.')}</T>
       <View style={{ flex: 1 }} />
       <View style={{ flexDirection: 'row', gap: u(10) }}>
-        <Btn label="Keep my turn" ghost onPress={() => onPick(false)} style={{ flex: 1 }} />
-        <Btn label="Redemption" onPress={() => onPick(true)} style={{ flex: 1 }} />
+        <Btn label={tr('Keep my turn')} ghost onPress={() => onPick(false)} style={{ flex: 1 }} />
+        <Btn label={tr('Redemption')} onPress={() => onPick(true)} style={{ flex: 1 }} />
       </View>
     </View>
   );
@@ -259,13 +260,13 @@ export function RedemptionBoard({ g, now, seats, onEvent, onPause, hidden, watch
   if (r.phase === 'reveal')
     return (
       <View style={{ flex: 1, gap: u(14) }}>
-        <Top kicker={`Redemption · ${fieldName(r.field)}`} title={<TurnName name={seats.get(r.seat)?.name ?? ''} color={seats.get(r.seat)?.color} after="’s second chance" />} onPause={onPause} />
+        <Top kicker={tr('Redemption · {fieldName}', { fieldName: fieldName(r.field) })} title={<TurnName name={seats.get(r.seat)?.name ?? ''} color={seats.get(r.seat)?.color} after={tr('’s second chance')} />} onPause={onPause} />
         <Bill>
-          <T f={CD} size={18} color={VV.redInk} style={{ textAlign: 'center' }}>{`${REDEMPTION_ITEMS} calls · ${REDEMPTION_MS / 1000} seconds`}</T>
-          <T size={13} color={VV.paperSoft} style={{ textAlign: 'center' }}>{solo ?? `True or false, as fast as you can. Each right call is +1. A wrong call costs nothing but time.`}</T>
+          <T f={CD} size={18} color={VV.redInk} style={{ textAlign: 'center' }}>{tr('{REDEMPTION_ITEMS} calls · {n} seconds', { REDEMPTION_ITEMS, n: REDEMPTION_MS / 1000 })}</T>
+          <T size={13} color={VV.paperSoft} style={{ textAlign: 'center' }}>{solo ?? tr('True or false, as fast as you can. Each right call is +1. A wrong call costs nothing but time.')}</T>
         </Bill>
         <View style={{ flex: 1 }} />
-        {watch ? null : <Btn label="Begin" onPress={() => onEvent({ type: 'GO', now: Date.now() })} />}
+        {watch ? null : <Btn label={tr('Begin')} onPress={() => onEvent({ type: 'GO', now: Date.now() })} />}
       </View>
     );
   const q = r.items[Math.min(r.index, r.items.length - 1)];
@@ -279,16 +280,16 @@ export function RedemptionBoard({ g, now, seats, onEvent, onPause, hidden, watch
         {onPause ? <PauseBtn onPress={onPause} /> : null}
       </View>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-        <T f={CM} size={12} color={VV.brass} style={{ letterSpacing: u(1) }}>{`CALL ${Math.min(r.index + 1, r.items.length)} OF ${r.items.length}`}</T>
-        <T f={CM} size={12} color={VV.soft}>{`${r.right} right`}</T>
+        <T f={CM} size={12} color={VV.brass} style={{ letterSpacing: u(1) }}>{tr('CALL {n} OF {n2}', { n: Math.min(r.index + 1, r.items.length), n2: r.items.length })}</T>
+        <T f={CM} size={12} color={VV.soft}>{tr('{right} right', { right: r.right })}</T>
       </View>
       <Panel inner={{ paddingVertical: u(22) }}>
         <T f={QF_B} size={18.5} style={{ textAlign: 'center', lineHeight: u(23.5) }}>{q.prompt}</T>
       </Panel>
       <View style={{ flex: 1 }} />
       <View style={{ flexDirection: 'row', gap: u(10), opacity: watch ? 0.4 : 1 }} pointerEvents={watch ? 'none' : 'auto'}>
-        <Btn label="False" no onPress={() => onEvent({ type: 'ANSWER', value: false, now: Date.now() })} style={{ flex: 1 }} />
-        <Btn label="True" onPress={() => onEvent({ type: 'ANSWER', value: true, now: Date.now() })} style={{ flex: 1 }} />
+        <Btn label={tr('False')} no onPress={() => onEvent({ type: 'ANSWER', value: false, now: Date.now() })} style={{ flex: 1 }} />
+        <Btn label={tr('True')} onPress={() => onEvent({ type: 'ANSWER', value: true, now: Date.now() })} style={{ flex: 1 }} />
       </View>
     </View>
   );
@@ -303,7 +304,7 @@ export function TurnOver({ g, seat, seats, board, onNext }: { g: OfflineGame; se
   const red = last?.k === 'redemption' ? g.redemption : null;
   return (
     <View style={{ gap: u(12) }}>
-      <Top kicker={actName(g)} title={`${seats.get(seat)?.name ?? ''} ${pts ? `+${pts}` : 'scores nothing'}`} />
+      <Top kicker={actName(g)} title={tr('{n} {n2}', { n: seats.get(seat)?.name ?? '', n2: pts ? `+${pts}` : tr('scores nothing') })} />
       {results.length ? (
         <Panel>
           {results.map((r, i) => (
@@ -316,11 +317,11 @@ export function TurnOver({ g, seat, seats, board, onNext }: { g: OfflineGame; se
         </Panel>
       ) : red ? (
         <Panel>
-          <T size={13}>{`Redemption: ${red.right} right of ${red.items.length}.`}</T>
+          <T size={13}>{tr('Redemption: {right} right of {n}.', { right: red.right, n: red.items.length })}</T>
         </Panel>
       ) : null}
       <Board board={board} />
-      {onNext ? <Btn label="Pass the phone" onPress={onNext} /> : null}
+      {onNext ? <Btn label={tr('Pass the phone')} onPress={onNext} /> : null}
     </View>
   );
 }
@@ -336,7 +337,7 @@ export function BossBoard({ g, seat, now, seats, onEvent, onPause, hidden, solo 
       PanResponder.create({
         onMoveShouldSetPanResponder: (_, d) => Math.abs(d.dx) > 12,
         onPanResponderRelease: (_, d) => {
-          if (Math.abs(d.dx) > 60) swipe(d.dx > 0);
+          if (Math.abs(d.dx) > 60) swipe(isAr ? d.dx < 0 : d.dx > 0);
         },
       }),
     [swipe],
@@ -346,16 +347,16 @@ export function BossBoard({ g, seat, now, seats, onEvent, onPause, hidden, solo 
   if (b.phase === 'ready')
     return (
       <View style={{ flex: 1, gap: u(14) }}>
-        <Top kicker={`Act ${ROMAN[g.cycle]} · Boss Round`} title={<TurnName name={n} color={seats.get(seat)?.color} after="’s go" />} onPause={onPause} />
+        <Top kicker={tr('Act {n} · Boss Round', { n: ROMAN[g.cycle] })} title={<TurnName name={n} color={seats.get(seat)?.color} after={tr('’s go')} />} onPause={onPause} />
         <Bill>
           <T f={CM} size={10.5} color={VV.paperSoft} style={{ letterSpacing: u(2), textAlign: 'center' }}>{fieldName(b.field).toUpperCase()}</T>
           <T f={CD} size={19} color={VV.redInk} style={{ textAlign: 'center' }}>{b.category}</T>
           <Rule c="rgba(42,26,18,0.18)" />
-          <T size={13} color={VV.paperInk} style={{ textAlign: 'center' }}>{`Swipe right if it belongs, left if it doesn’t. ${BOSS_MS / 1000} seconds. +${BOSS_RIGHT} for a right swipe, ${BOSS_WRONG} for a wrong one.`}</T>
-          <T size={12} color={VV.paperSoft} style={{ textAlign: 'center' }}>{solo ?? `Everyone gets the same items in their own order. Highest score wins +${bossBonus(g.target)}.`}</T>
+          <T size={13} color={VV.paperInk} style={{ textAlign: 'center' }}>{tr('Swipe right if it belongs, left if it doesn’t. {n} seconds. +{BOSS_RIGHT} for a right swipe, {BOSS_WRONG} for a wrong one.', { n: BOSS_MS / 1000, BOSS_RIGHT, BOSS_WRONG })}</T>
+          <T size={12} color={VV.paperSoft} style={{ textAlign: 'center' }}>{solo ?? tr('Everyone gets the same items in their own order. Highest score wins +{bossBonus}.', { bossBonus: bossBonus(g.target) })}</T>
         </Bill>
         <View style={{ flex: 1 }} />
-        <Btn label="Start swiping" onPress={() => onEvent({ type: 'GO', now: Date.now() })} />
+        <Btn label={tr('Start swiping')} onPress={() => onEvent({ type: 'GO', now: Date.now() })} />
       </View>
     );
   const deck = b.decks[seat] ?? [];
@@ -372,20 +373,20 @@ export function BossBoard({ g, seat, now, seats, onEvent, onPause, hidden, solo 
       </View>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
         <T f={CM} size={12} color={VV.brass} style={{ letterSpacing: u(1) }}>{b.category.toUpperCase()}</T>
-        <T f={CM} size={12} color={VV.soft}>{`${bossPoints(b, seat)} pts`}</T>
+        <T f={CM} size={12} color={VV.soft}>{tr('{n} pts', { n: bossPoints(b, seat) })}</T>
       </View>
       <View style={{ flex: 1, justifyContent: 'center' }} {...pan.panHandlers}>
         <Bill style={{ marginHorizontal: u(20) }}>
           <View style={{ minHeight: u(150), alignItems: 'center', justifyContent: 'center', gap: u(8) }}>
-            <T f={CM} size={10.5} color={VV.paperSoft} style={{ letterSpacing: u(2) }}>{`${done + 1} OF ${b.items.length}`}</T>
+            <T f={CM} size={10.5} color={VV.paperSoft} style={{ letterSpacing: u(2) }}>{tr('{n} OF {n2}', { n: done + 1, n2: b.items.length })}</T>
             <T f={CD} size={20} color={VV.paperInk} style={{ textAlign: 'center' }}>{item.label}</T>
           </View>
         </Bill>
-        <T size={11.5} color={VV.dim} style={{ textAlign: 'center', marginTop: u(10) }}>Swipe the card, or tap below.</T>
+        <T size={11.5} color={VV.dim} style={{ textAlign: 'center', marginTop: u(10) }}>{tr('Swipe the card, or tap below.')}</T>
       </View>
       <View style={{ flexDirection: 'row', gap: u(10) }}>
-        <Btn label="‹ Doesn’t fit" no onPress={() => onEvent({ type: 'SWIPE', fits: false, now: Date.now() })} style={{ flex: 1 }} />
-        <Btn label="Fits ›" onPress={() => onEvent({ type: 'SWIPE', fits: true, now: Date.now() })} style={{ flex: 1 }} />
+        <Btn label={tr('‹ Doesn’t fit')} no onPress={() => onEvent({ type: 'SWIPE', fits: false, now: Date.now() })} style={{ flex: 1 }} />
+        <Btn label={tr('Fits ›')} onPress={() => onEvent({ type: 'SWIPE', fits: true, now: Date.now() })} style={{ flex: 1 }} />
       </View>
     </View>
   );
@@ -393,16 +394,16 @@ export function BossBoard({ g, seat, now, seats, onEvent, onPause, hidden, solo 
 
 export function BossOver({ g, seats, board, onNext }: { g: OfflineGame; seats: Seats; board: Strip; onNext?: () => void }) {
   const l = [...g.log].reverse().find((x) => x.k === 'boss');
-  const n = (s: number) => seats.get(s)?.name ?? `Player ${s + 1}`;
+  const n = (s: number) => seats.get(s)?.name ?? tr('Player {n}', { n: s + 1 });
   if (!l || l.k !== 'boss') return null;
-  const extra = Object.fromEntries(Object.entries(l.points).map(([s, p]) => [Number(s), `Boss ${p}`]));
+  const extra = Object.fromEntries(Object.entries(l.points).map(([s, p]) => [Number(s), tr('Boss {p}', { p })]));
   const last = g.cycle + 1 >= MAX_ACTS;
   return (
     <View style={{ gap: u(12) }}>
-      <Top kicker={`Act ${ROMAN[g.cycle]} · Boss Round`} title={`${l.winners.map(n).join(' and ')} +${l.bonus}`} />
-      <T size={13} color={VV.soft}>{l.winners.length > 1 ? `A tie at the top: +${l.bonus} each.` : `Best swiper takes +${l.bonus}.`}</T>
+      <Top kicker={tr('Act {n} · Boss Round', { n: ROMAN[g.cycle] })} title={`${l.winners.map(n).join(' and ')} +${l.bonus}`} />
+      <T size={13} color={VV.soft}>{l.winners.length > 1 ? tr('A tie at the top: +{bonus} each.', { bonus: l.bonus }) : tr('Best swiper takes +{bonus}.', { bonus: l.bonus })}</T>
       <Board board={board.map((p) => ({ ...p, me: l.winners.includes(p.seat) }))} extra={extra} />
-      {onNext ? <Btn label={last ? 'Final curtain' : `On to Act ${ROMAN[g.cycle + 1]}`} onPress={onNext} /> : null}
+      {onNext ? <Btn label={last ? tr('Final curtain') : tr('On to Act {n}', { n: ROMAN[g.cycle + 1] })} onPress={onNext} /> : null}
     </View>
   );
 }

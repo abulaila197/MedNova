@@ -15,6 +15,7 @@ import { boardItems } from './items';
 import { currentSeat, judgeTurn, offlineRecap, offlineStandings, startOffline, stepOffline, type OfflineEvent, type OfflineRun } from './offline';
 import { BoardEnd } from './SoloPlay';
 import { FokSky, TopLine } from './Table';
+import { tr } from '@/i18n';
 
 /** How long "One away" or the found group shows before the phone passes on. */
 const FLASH_MS = 1300;
@@ -27,7 +28,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   const [flash, setFlash] = useState(false);
   const seatOf = useMemo(() => new Map(play.seats.map((x) => [x.seat, x])), [play.seats]);
   const names = useMemo(() => Object.fromEntries(play.seats.map((x) => [x.seat, x.name])), [play.seats]);
-  const nameOf = (seat: number) => names[seat] ?? `Player ${seat + 1}`;
+  const nameOf = (seat: number) => names[seat] ?? tr('Player {n}', { n: seat + 1 });
 
   useEffect(() => {
     let live = true;
@@ -85,7 +86,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
     .filter((x) => !run.removed.includes(x))
     .map((x) => ({ seat: x, name: nameOf(x), score: run.players[x].score, color: seatOf.get(x)?.color }))
     .sort((a, b) => b.score - a.score);
-  const boardLine = total > 1 ? `Board ${run.index + 1} of ${total}` : 'Four of a Kind';
+  const boardLine = total > 1 ? tr('Board {n} of {total}', { n: run.index + 1, total }) : tr('Four of a Kind');
 
   const menu = (
     <PauseMenu
@@ -114,10 +115,10 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
           run={run.run}
           who={foundNames}
           hearts={false}
-          kicker="Board solved"
+          kicker={tr('Board solved')}
           title={boardLine}
           line={table.map((x) => `${x.name} ${x.score}`).join(' · ')}
-          next={run.index + 1 < total ? 'Next board' : 'See results'}
+          next={run.index + 1 < total ? tr('Next board') : tr('See results')}
           onNext={() => dispatch({ type: 'NEXT' })}
         />
         {menu}
@@ -133,9 +134,9 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
         run={run.run}
         who={foundNames}
         locked={flash || paused || run.phase !== 'playing'}
-        tip="Find one group, then the phone passes on"
-        rightStamp="Found it!"
-        top={<TopLine kicker={nameOf(seat) === 'You' ? 'Your turn' : `${nameOf(seat)}’s turn`} title="Four of a Kind" sub={`${boardLine} · ${run.players[seat].score} points`} />}
+        tip={tr('Find one group, then the phone passes on')}
+        rightStamp={tr('Found it!')}
+        top={<TopLine kicker={nameOf(seat) === 'You' ? tr('Your turn') : tr('{nameOf}’s turn', { nameOf: nameOf(seat) })} title={tr('Four of a Kind')} sub={tr('{boardLine} · {score} points', { boardLine, score: run.players[seat].score })} />}
         onSubmit={(tiles) => {
           const v = judgeTurn(run, tiles);
           if (v === 'ignored' || v === 'repeat') return v;
@@ -149,7 +150,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
         onShuffle={() => dispatch({ type: 'SHUFFLE', rand: Math.random })}
       />
       {run.phase === 'handoff' ? (
-        <Curtain name={nameOf(seat)} color={who?.color} sub={`${run.players[seat].score} points · one group this turn`} board={table} recap={offlineRecap(run, seat, play)} onReady={() => dispatch({ type: 'READY' })} onPause={() => setPaused(true)} />
+        <Curtain name={nameOf(seat)} color={who?.color} sub={tr('{score} points · one group this turn', { score: run.players[seat].score })} board={table} recap={offlineRecap(run, seat, play)} onReady={() => dispatch({ type: 'READY' })} onPause={() => setPaused(true)} />
       ) : null}
       {menu}
     </GameScreen>

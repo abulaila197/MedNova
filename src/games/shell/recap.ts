@@ -3,13 +3,14 @@
 // No answers are ever shown. With teams on, lead changes name the team.
 import type { Play } from '../engine/types';
 import { teamsOf } from './teams';
+import { say } from '../../i18n/say';
 
 /** `seat` and `note` (the line without the name) let the scoreboard show the event under that player. */
 export type RecapLine = { key: string; text: string; color?: string; lead?: boolean; seat?: number; note?: string };
 
 /** One player's event: "Sara solved the case · +85". */
 export function event(key: string, seat: number, who: { name?: string; color?: string } | undefined, note: string): RecapLine {
-  const name = who?.name ?? `Player ${seat + 1}`;
+  const name = who?.name ?? say('Player {v}', { v: seat + 1 });
   return { key, seat, note, text: `${name} ${note}`, color: who?.color };
 }
 
@@ -22,7 +23,7 @@ type Side = { id: string; name: string; color?: string; score: number };
 export function sides(scores: Score[], play: Pick<Play, 'seats' | 'settings'>, how: 'average' | 'sum' = 'average'): Side[] {
   const teams = teamsOf(play);
   const seatOf = new Map(play.seats.map((x) => [x.seat, x]));
-  if (!teams) return scores.map((r) => ({ id: `s${r.seat}`, name: seatOf.get(r.seat)?.name ?? `Player ${r.seat + 1}`, color: seatOf.get(r.seat)?.color, score: r.score }));
+  if (!teams) return scores.map((r) => ({ id: `s${r.seat}`, name: seatOf.get(r.seat)?.name ?? say('Player {v}', { v: r.seat + 1 }), color: seatOf.get(r.seat)?.color, score: r.score }));
   return teams
     .map((t) => {
       const mine = scores.filter((r) => seatOf.get(r.seat)?.team === t.id);
@@ -46,7 +47,7 @@ export function leadLine(before: Side[], after: Side[]): RecapLine | null {
   const b = leaderOf(after);
   if (!b || a?.id === b.id) return null;
   const seat = b.id.startsWith('s') ? Number(b.id.slice(1)) : undefined;
-  const note = b.name === 'You' ? 'take the lead' : 'takes the lead';
+  const note = b.name === 'You' ? say('take the lead') : say('takes the lead');
   return { key: `lead-${b.id}`, text: `${b.name} ${note}`, color: b.color, lead: true, seat, note };
 }
 

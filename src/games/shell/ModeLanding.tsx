@@ -14,8 +14,9 @@ import type { Mode } from '../engine/types';
 import type { GameDef } from './types';
 import { useLanding } from './useShellPages';
 import { Body, Btn, Card, GameScreen, Ghost, Kick, Title } from './ui';
+import { tr } from '@/i18n';
 
-export const MODE_NAME: Record<Mode, string> = { solo: 'Solo', offline: 'Pass the phone', bots: 'Vs rivals', online: 'Online Multiplayer' };
+export const MODE_NAME: Record<Mode, string> = { solo: tr('Solo'), offline: tr('Pass the phone'), bots: tr('Vs rivals'), online: tr('Online Multiplayer') };
 
 /** The app-look landing: title, then a card per mode with How to play, over the game's loading art. */
 export function ModeLanding({ def }: { def: GameDef }) {
@@ -42,9 +43,9 @@ export function ModeLanding({ def }: { def: GameDef }) {
         ) : null}
         </>
       }>
-      <Back label="Games" fallback="/games" />
+      <Back label={tr('Games')} fallback="/games" />
       <View style={{ gap: u(6), marginBottom: u(4) }}>
-        <Kick>Choose how to play</Kick>
+        <Kick>{tr('Choose how to play')}</Kick>
         <Title lead={g.lead} em={g.em} />
         <Body>{g.desc}</Body>
       </View>
@@ -67,7 +68,7 @@ export function ModeLanding({ def }: { def: GameDef }) {
             <Text style={[s.h, { color: t.white }]}>{m.title}</Text>
             <Body>{m.blurb}</Body>
             <Pressable onPress={tapped(() => setOpen(isOpen ? null : m.mode))} accessibilityRole="button" accessibilityState={{ expanded: isOpen }}>
-              <Text style={[s.how, { color: t.accent }]}>{isOpen ? 'Hide how to play' : 'How to play'}</Text>
+              <Text style={[s.how, { color: t.accent }]}>{isOpen ? tr('Hide how to play') : tr('How to play')}</Text>
             </Pressable>
             {isOpen
               ? m.howTo.map((step, i) => (
@@ -79,7 +80,7 @@ export function ModeLanding({ def }: { def: GameDef }) {
               : null}
             <View style={s.btns}>
               {bm ? <Btn label={resumeLabel(bm)} onPress={() => resumePlay(bm)} style={{ flex: 1 }} /> : null}
-              {bm ? <Ghost label="New game" onPress={() => go(m.mode)} style={{ flex: 1 }} /> : <Btn label="Play" onPress={() => go(m.mode)} style={{ flex: 1 }} />}
+              {bm ? <Ghost label={tr('New game')} onPress={() => go(m.mode)} style={{ flex: 1 }} /> : <Btn label={tr('Play')} onPress={() => go(m.mode)} style={{ flex: 1 }} />}
             </View>
           </Card>
         );

@@ -7,6 +7,7 @@ import { CaseBoard, pointsLine } from './CaseBoard';
 import { elapsed } from './solo';
 import { useSoloRun } from './useSoloRun';
 import { second, useTicker } from '../engine/useTicker';
+import { tr } from '@/i18n';
 
 /** Solo: a set of cases on the shared case screen, with the paid Hint. */
 export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
@@ -34,10 +35,10 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
       c={current}
       attempt={run.attempt}
       phase={paused ? 'paused' : over ? 'over' : 'playing'}
-      title={`Case ${run.index + 1}`}
-      sub={`of ${run.caseIds.length}`}
-      slim={`Case ${run.index + 1} of ${run.caseIds.length}`}
-      clock={{ label: 'Clock', ms: elapsed(run, now) }}
+      title={tr('Case {n}', { n: run.index + 1 })}
+      sub={tr('of {n}', { n: run.caseIds.length })}
+      slim={tr('Case {n} of {n2}', { n: run.index + 1, n2: run.caseIds.length })}
+      clock={{ label: tr('Clock'), ms: elapsed(run, now) }}
       wrongSeq={run.wrongSeq}
       clueSeq={run.clueSeq}
       hint={{ granted: run.hint, onHint: hint }}
@@ -46,14 +47,14 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
           ? {
               outcome: r.outcome,
               points: r.points,
-              line: pointsLine(r, 'No points this time. This case goes to your Learn review.'),
-              nextLabel: last ? 'See results' : 'Next case',
+              line: pointsLine(r, tr('No points this time. This case goes to your Learn review.')),
+              nextLabel: last ? tr('See results') : tr('Next case'),
               onNext: () => dispatch({ type: 'NEXT', now: Date.now() }),
             }
           : null
       }
       notice={notice}
-      pausedNote="The clock is stopped. Resume to see the case again."
+      pausedNote={tr('The clock is stopped. Resume to see the case again.')}
       onPause={() => dispatch({ type: 'PAUSE', now: Date.now() })}
       onGuess={(g) => dispatch({ type: 'GUESS', answerId: g.id, accepted: g.id === current.answer_id, now: Date.now() })}
       onSkip={() => dispatch({ type: 'SKIP', now: Date.now() })}

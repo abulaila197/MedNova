@@ -16,9 +16,10 @@ import { F } from '@/theme/tokens';
 
 import { LEVEL_NAME, casePoints, isRight, shownOf, type Case, type CaseRun } from './core';
 import { fieldShort } from './data';
+import { tr } from '@/i18n';
 
-export const SERIF = 'LibreBaskerville_400Regular';
-export const SERIF_IT = 'LibreBaskerville_400Regular_Italic';
+export const SERIF = tr('LibreBaskerville_400Regular');
+export const SERIF_IT = tr('LibreBaskerville_400Regular_Italic');
 export const C = {
   pad: '#fbfaf3',
   ink: '#1c2340',
@@ -65,7 +66,7 @@ export function TopLine({ kicker, right, sub }: { kicker: string; right?: ReactN
         {right}
       </View>
       <Text style={s.title} numberOfLines={1}>
-        Trace the <Text style={[s.title, { fontFamily: SERIF_IT, color: C.cyan }]}>Treatment</Text>
+        {tr('Trace the')} <Text style={[s.title, { fontFamily: SERIF_IT, color: C.cyan }]}>{tr('Treatment')}</Text>
       </Text>
       {sub ? <Text style={s.sub}>{sub}</Text> : null}
     </View>
@@ -85,7 +86,7 @@ function PadHead({ c }: { c: Case }) {
     <View style={s.padHead}>
       <Text style={s.padHeadT} numberOfLines={1}>{`${c.p} · ${fieldShort(c.f)}`.toUpperCase()}</Text>
       <View style={s.lvl}>
-        <Text style={s.lvlT}>{LEVEL_NAME[c.lv].toUpperCase()}</Text>
+        <Text style={s.lvlT}>{tr(LEVEL_NAME[c.lv]).toUpperCase()}</Text>
       </View>
     </View>
   );
@@ -124,8 +125,8 @@ export function Pad({ c, style, onOpen }: { c: Case; style?: object; onOpen?: ()
         {long ? <LinearGradient colors={['rgba(251,250,243,0)', C.pad]} style={s.fade} pointerEvents="none" /> : null}
       </View>
       {long && onOpen ? (
-        <Pressable onPress={tapped(onOpen)} accessibilityRole="button" accessibilityLabel="Tap to read the whole note" style={s.openBar}>
-          <Text style={s.openT}>Tap to read the whole note  ›</Text>
+        <Pressable onPress={tapped(onOpen)} accessibilityRole="button" accessibilityLabel={tr('Tap to read the whole note')} style={s.openBar}>
+          <Text style={s.openT}>{tr('Tap to read the whole note ›')}</Text>
         </Pressable>
       ) : null}
     </View>
@@ -148,7 +149,7 @@ export function NotePopup({ c, onClose }: { c: Case; onClose: () => void }) {
   };
   return (
     <Modal transparent visible animationType="fade" onRequestClose={onClose} statusBarTranslucent>
-      <Pressable style={s.popBack} onPress={onClose} accessibilityLabel="Close the note">
+      <Pressable style={s.popBack} onPress={onClose} accessibilityLabel={tr('Close the note')}>
         <Pressable style={[s.pad, s.popPad]} onPress={() => {}}>
           <Perf />
           <PadHead c={c} />
@@ -161,8 +162,8 @@ export function NotePopup({ c, onClose }: { c: Case; onClose: () => void }) {
               ))}
             </View>
           </View>
-          <Pressable onPress={tapped(onClose)} accessibilityRole="button" accessibilityLabel="Close" style={[s.openBar, s.closeBar]}>
-            <Text style={s.openT}>Close</Text>
+          <Pressable onPress={tapped(onClose)} accessibilityRole="button" accessibilityLabel={tr('Close')} style={[s.openBar, s.closeBar]}>
+            <Text style={s.openT}>{tr('Close')}</Text>
           </Pressable>
         </Pressable>
       </Pressable>
@@ -231,16 +232,16 @@ export function Explain({ c, run, rows, foot }: { c: Case; run?: CaseRun; rows?:
         <Animated.View entering={FadeInDown.duration(260)} style={s.card}>
           <Perf />
           <View style={s.cardHead}>
-            <Text style={s.cardKick}>THE TREATMENT</Text>
+            <Text style={s.cardKick}>{tr('THE TREATMENT')}</Text>
             {pts != null ? <Text style={[s.cardPts, { color: pts > 0 ? C.ok : C.inkSoft }]}>{pts > 0 ? `+${pts}` : '0'}</Text> : null}
           </View>
           <Text style={s.cardTitle}>{c.t}</Text>
-          {yours ? <Text style={s.yours}>{`You said: ${yours}`}</Text> : run?.timeUp ? <Text style={s.yours}>Time ran out</Text> : null}
-          <Text style={s.cardSec}>THE CLUE</Text>
+          {yours ? <Text style={s.yours}>{tr('You said: {yours}', { yours })}</Text> : run?.timeUp ? <Text style={s.yours}>{tr('Time ran out')}</Text> : null}
+          <Text style={s.cardSec}>{tr('THE CLUE')}</Text>
           <Text style={[s.cardBody, { color: C.why }]}>{c.c}</Text>
-          <Text style={s.cardSec}>WHY</Text>
+          <Text style={s.cardSec}>{tr('WHY')}</Text>
           <Text style={[s.cardBody, { color: C.why }]}>{c.a[0].w}</Text>
-          <Text style={s.cardSec}>WHY NOT THE OTHERS</Text>
+          <Text style={s.cardSec}>{tr('WHY NOT THE OTHERS')}</Text>
           {c.a.slice(1).map((a, i) => (
             <View key={i} style={s.rest}>
               <Text style={s.restO}>{a.o}</Text>
@@ -252,7 +253,7 @@ export function Explain({ c, run, rows, foot }: { c: Case; run?: CaseRun; rows?:
           <View style={s.rows}>
             {rows.map((r) => {
               const ok = isRight(r.run);
-              const said = r.run.pick != null && r.run.pick >= 0 ? c.a[r.run.pick].o : 'No answer';
+              const said = r.run.pick != null && r.run.pick >= 0 ? c.a[r.run.pick].o : tr('No answer');
               return (
                 <View key={r.id} style={[s.prow, { borderColor: r.color }]}>
                   <PlayerFace slug={r.character} size={u(22)} userId={r.id} still />

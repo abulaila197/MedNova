@@ -7,6 +7,7 @@ import { u, useScreen } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import { allKeys, type FieldMenu, toggleAll, toggleField } from './fields';
+import { tr } from '@/i18n';
 
 /**
  * The field menu under a setup choice (Yazan 2026-11-11). Opens below the choice's arrow and closes on a tap anywhere
@@ -24,7 +25,7 @@ export function FieldPicker({ menu, ticked, top, onChange, onClose }: { menu: Fi
   const flip = maxH < u(160);
   return (
     <Modal transparent animationType="fade" onRequestClose={onClose} statusBarTranslucent>
-      <Pressable style={StyleSheet.absoluteFill} onPress={onClose} accessibilityLabel="Close the field list" />
+      <Pressable style={StyleSheet.absoluteFill} onPress={onClose} accessibilityLabel={tr('Close the field list')} />
       <View
         style={[
           s.panel,
@@ -32,7 +33,7 @@ export function FieldPicker({ menu, ticked, top, onChange, onClose }: { menu: Fi
           flip ? { bottom: height - top + u(14) } : { top },
         ]}>
         <ScrollView bounces={false} contentContainerStyle={{ paddingVertical: u(4) }}>
-          <Row label="All" count={menu.total(null)} on={allOn} bold onPress={() => onChange(toggleAll(menu, ticked))} />
+          <Row label={tr('All')} count={menu.total(null)} on={allOn} bold onPress={() => onChange(toggleAll(menu, ticked))} />
           {menu.groups.map((g, gi) => (
             <View key={g.title ?? gi}>
               {g.title ? <Text style={[s.group, { color: t.dim }]}>{g.title.toUpperCase()}</Text> : null}
@@ -43,7 +44,7 @@ export function FieldPicker({ menu, ticked, top, onChange, onClose }: { menu: Fi
           ))}
         </ScrollView>
         <Text style={[s.foot, { color: short ? t.error : t.dim, borderTopColor: t.panelLine }]}>
-          {short ? `Tick at least ${menu.min} ${menu.unit} (now ${have}).` : `${have} ${menu.unit} ticked.`}
+          {short ? tr('Tick at least {min} {unit} (now {have}).', { min: menu.min, unit: menu.unit, have }) : tr('{have} {unit} ticked.', { have, unit: menu.unit })}
         </Text>
       </View>
     </Modal>

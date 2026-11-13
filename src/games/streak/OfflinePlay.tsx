@@ -27,6 +27,7 @@ import {
 import { OverCard } from './SoloPlay';
 import { shuffle } from '../engine/random';
 import { useTickerClock } from '../engine/useTicker';
+import { tr } from '@/i18n';
 
 /** Offline (SM5, SM13): each player's own timed round in turn, no helpers, no EXP; the owner's misses go to Learn. */
 export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
@@ -140,24 +141,24 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
       ticks={ticks}
       leftAt={(n) => (run.round ? timeLeft(run.round, n) : run.lengthSec * 1000)}
       totalMs={run.lengthSec * 1000}
-      who={{ name: who?.name ?? `Player ${seat + 1}`, color: who?.color }}
+      who={{ name: who?.name ?? tr('Player {n}', { n: seat + 1 }), color: who?.color }}
       onAnswer={(choice) => dispatch({ type: 'ROUND', e: { type: 'ANSWER', choice, now: Date.now() } })}
       onPause={() => dispatch({ type: 'PAUSE', now: Date.now() })}
       hidden={paused || run.phase === 'handoff' || run.phase === 'countdown'}
       dock={
         turnOver && run.round ? (
-          <OverCard round={run.round} title={`${who?.name ?? ''} scored ${run.round.score}`} next={left.length ? 'Pass the phone' : 'See results'} onNext={() => dispatch({ type: 'NEXT' })} />
+          <OverCard round={run.round} title={tr('{n} scored {score}', { n: who?.name ?? '', score: run.round.score })} next={left.length ? tr('Pass the phone') : tr('See results')} onNext={() => dispatch({ type: 'NEXT' })} />
         ) : undefined
       }>
       {run.phase === 'handoff' ? (
-        <Curtain name={who?.name ?? `Player ${seat + 1}`} color={who?.color} sub={`Turn ${turnNo} of ${run.order.length - run.removed.length} · ${run.lengthSec} s round`} board={board} recap={offlineRecap(run, seat, play)} onReady={() => dispatch({ type: 'READY', now: Date.now() })} />
+        <Curtain name={who?.name ?? tr('Player {n}', { n: seat + 1 })} color={who?.color} sub={tr('Turn {turnNo} of {n} · {lengthSec} s round', { turnNo, n: run.order.length - run.removed.length, lengthSec: run.lengthSec })} board={board} recap={offlineRecap(run, seat, play)} onReady={() => dispatch({ type: 'READY', now: Date.now() })} />
       ) : null}
       {run.phase === 'countdown' && run.countdownUntil != null ? (
         <Animated.View entering={FadeIn.duration(160)} exiting={FadeOut.duration(160)} style={[StyleSheet.absoluteFill, s.cd, { backgroundColor: t.sky, overflow: 'hidden' }]}>
           <Backdrop anchor="bottom" />
-          <Kick>Get ready</Kick>
+          <Kick>{tr('Get ready')}</Kick>
           <Text style={[s.cdN, { color: who?.color ?? t.accent }]}>{Math.max(1, Math.ceil((run.countdownUntil - now) / 1000))}</Text>
-          <Text style={[s.cdS, { color: t.mute }]}>{`${who?.name ?? ''}, your round starts`}</Text>
+          <Text style={[s.cdS, { color: t.mute }]}>{tr('{n}, your round starts', { n: who?.name ?? '' })}</Text>
         </Animated.View>
       ) : null}
       <PauseMenu

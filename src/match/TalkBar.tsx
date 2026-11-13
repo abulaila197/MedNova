@@ -24,6 +24,7 @@ import { stickerById, STICKERS } from './stickers';
 import { TEXT_PACKS } from './textStickers';
 import { sendTalk, toggleMute, useTalk, useTalkRoom, type TalkMsg } from './talk';
 import { VOICE, voiceById } from './voice';
+import { tr } from '@/i18n';
 
 export type Me = { id: string; name: string; face: string };
 
@@ -90,7 +91,7 @@ export function TalkPanel({ room, me, onSent, maxH }: { room: string; me: Me; on
       <View style={s.tabs}>
         {(['sticker', 'special', 'voice'] as const).map((k) => (
           <Pressable key={k} onPress={() => setTab(k)} style={[s.tab, { borderColor: L.line }, tab === k && { backgroundColor: L.btn, borderColor: 'transparent' }]} accessibilityRole="tab" accessibilityState={{ selected: tab === k }}>
-            <Text style={[s.tabT, { color: tab === k ? L.onBtn : L.mute, fontFamily: L.semi }]}>{k === 'sticker' ? 'Stickers' : k === 'special' ? 'Special' : 'Voice'}</Text>
+            <Text style={[s.tabT, { color: tab === k ? L.onBtn : L.mute, fontFamily: L.semi }]}>{k === 'sticker' ? tr('Stickers') : k === 'special' ? tr('Special') : tr('Voice')}</Text>
           </Pressable>
         ))}
       </View>
@@ -98,7 +99,7 @@ export function TalkPanel({ room, me, onSent, maxH }: { room: string; me: Me; on
         body('sticker', (
           <View style={s.sg}>
             {(STICKERS[me.face] ?? []).map((x) => (
-              <Pressable key={x.id} disabled={cooling} onPress={() => send('sticker', x.id)} style={s.sItem} accessibilityRole="button" accessibilityLabel={`Send sticker: ${x.label}`}>
+              <Pressable key={x.id} disabled={cooling} onPress={() => send('sticker', x.id)} style={s.sItem} accessibilityRole="button" accessibilityLabel={tr('Send sticker: {label}', { label: x.label })}>
                 <Image source={x.src} style={s.sImg} contentFit="contain" />
               </Pressable>
             ))}
@@ -117,29 +118,29 @@ export function TalkPanel({ room, me, onSent, maxH }: { room: string; me: Me; on
               </View>
             ) : null}
             {pack.stickers.map((x) => (
-              <Pressable key={x.id} disabled={cooling} onPress={() => send('sticker', x.id)} style={s.wItem} accessibilityRole="button" accessibilityLabel={`Send sticker: ${x.label}`}>
+              <Pressable key={x.id} disabled={cooling} onPress={() => send('sticker', x.id)} style={s.wItem} accessibilityRole="button" accessibilityLabel={tr('Send sticker: {label}', { label: x.label })}>
                 <Image source={x.src} style={s.sImg} contentFit="contain" />
               </Pressable>
             ))}
           </View>, cooling ? s.cool : undefined)
         ) : (
           <Pressable onPress={() => navTo('/style?tab=stickers')} style={s.empty} accessibilityRole="link">
-            <Text style={[s.emptyT, { color: L.mute, fontFamily: L.semi }]}>No special stickers yet.</Text>
-            <Text style={[s.emptyT, { color: L.acc, fontFamily: L.semi }]}>Get packs in the Style shop or daily chests ›</Text>
+            <Text style={[s.emptyT, { color: L.mute, fontFamily: L.semi }]}>{tr('No special stickers yet.')}</Text>
+            <Text style={[s.emptyT, { color: L.acc, fontFamily: L.semi }]}>{tr('Get packs in the Style shop or daily chests ›')}</Text>
           </Pressable>
         )
       ) : (
         // 18 lines since the taunts (2026-10-26; "Give me a gift" removed 2026-11-11): the list scrolls instead of growing the tray.
         body('voice', <>
           {VOICE.map((v) => (
-            <Pressable key={v.id} disabled={cooling} onPress={() => send('voice', v.id)} style={[s.vl, { borderColor: L.line, backgroundColor: L.panel }]} accessibilityRole="button" accessibilityLabel={`Say: ${v.line}`}>
+            <Pressable key={v.id} disabled={cooling} onPress={() => send('voice', v.id)} style={[s.vl, { borderColor: L.line, backgroundColor: L.panel }]} accessibilityRole="button" accessibilityLabel={tr('Say: {line}', { line: v.line })}>
               <Text style={[s.vlI, { color: L.mute }]}>▶</Text>
               <Text style={[s.vlT, { color: L.fg, fontFamily: L.semi }]} numberOfLines={2}>{v.line}</Text>
             </Pressable>
           ))}
         </>, cooling ? s.cool : undefined)
       )}
-      <Text style={[s.small, { color: L.dim, fontFamily: L.body }]}>{cooling ? 'One message every 3 seconds.' : tab === 'voice' ? 'Everyone hears the same voice.' : 'Tap a sticker to send it.'}</Text>
+      <Text style={[s.small, { color: L.dim, fontFamily: L.body }]}>{cooling ? tr('One message every 3 seconds.') : tab === 'voice' ? tr('Everyone hears the same voice.') : tr('Tap a sticker to send it.')}</Text>
     </View>
   );
 }
@@ -163,7 +164,7 @@ export function TalkBubble({ m, face, size = 60 }: { m: TalkMsg; face?: boolean;
           <Text style={[s.vbT, s.line, { color: L.fg, fontFamily: L.semi }]} numberOfLines={2}>{m.item}</Text>
         </View>
       ) : m.kind === 'guess' ? (
-        <View style={[s.vb, { backgroundColor: L.raised }]} accessibilityLabel={`${m.name} guessed ${m.item}, wrong`}>
+        <View style={[s.vb, { backgroundColor: L.raised }]} accessibilityLabel={tr('{name} guessed {item}, wrong', { name: m.name, item: m.item })}>
           <Text style={[s.vbT, s.guess, { fontFamily: L.semi }]} numberOfLines={2}>{m.item}?</Text>
         </View>
       ) : null}
@@ -245,7 +246,7 @@ export function FloatingTalk({ room, me }: { room: string; me: Me }) {
   const mute = (m: TalkMsg) => {
     if (m.user_id === me.id) return;
     toggleMute(room, m.user_id);
-    setNote(`Muted ${m.name}. Tap their face in the room to unmute.`);
+    setNote(tr('Muted {name}. Tap their face in the room to unmute.', { name: m.name }));
   };
   const toSide = side === 'right' ? { right: size + u(8) } : { left: size + u(8) };
 
@@ -258,12 +259,12 @@ export function FloatingTalk({ room, me }: { room: string; me: Me }) {
         boxH.set(hh);
         if (y.get() > hh - size - bottomGap) y.set(Math.max(topGap, hh - size - bottomGap));
       }}>
-      {open ? <Pressable style={StyleSheet.absoluteFill} onPress={() => setOpen(false)} accessibilityLabel="Close talk" /> : null}
+      {open ? <Pressable style={StyleSheet.absoluteFill} onPress={() => setOpen(false)} accessibilityLabel={tr('Close talk')} /> : null}
       <Animated.View style={[s.anchor, { width: size, height: size }, btn]} pointerEvents="box-none">
         {/* Pops and the fan open toward the middle of the screen. */}
         <View style={[s.pops, toSide, { alignItems: side === 'right' ? 'flex-end' : 'flex-start' }]} pointerEvents="box-none">
           {pops.map((m) => (
-            <Pressable key={m.id} onPress={() => mute(m)} accessibilityRole="button" accessibilityLabel={`${m.name} sent this. Tap to mute`}>
+            <Pressable key={m.id} onPress={() => mute(m)} accessibilityRole="button" accessibilityLabel={tr('{name} sent this. Tap to mute', { name: m.name })}>
               <TalkBubble m={m} face size={52} />
             </Pressable>
           ))}
@@ -274,7 +275,7 @@ export function FloatingTalk({ room, me }: { room: string; me: Me }) {
           </Animated.View>
         ) : null}
         <GestureDetector gesture={Gesture.Exclusive(pan, tap)}>
-          <View style={[s.fbtn, { backgroundColor: L.raised, width: size, height: size, borderRadius: size / 2 }]} accessibilityRole="button" accessibilityLabel="Talk: stickers and voice">
+          <View style={[s.fbtn, { backgroundColor: L.raised, width: size, height: size, borderRadius: size / 2 }]} accessibilityRole="button" accessibilityLabel={tr('Talk: stickers and voice')}>
             <PlayerFace slug={me.face} size={size - u(8)} userId={me.id} still />
           </View>
         </GestureDetector>

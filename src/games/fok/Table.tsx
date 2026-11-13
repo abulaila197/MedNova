@@ -17,6 +17,7 @@ import { F } from '@/theme/tokens';
 import { engine } from '../engine';
 import { FOK, LEVEL_NAME, groupOfTile, type Board, type Group } from './core';
 import { groupById } from './data';
+import { tr } from '@/i18n';
 
 export const SERIF = 'DMSerifDisplay_400Regular';
 export const C = {
@@ -51,7 +52,7 @@ export function FokSky() {
 const HEART = 'M12 21s-7.5-4.6-10-9.3C.4 8.4 2.3 4.5 6 4.5c2.2 0 3.6 1.3 6 3.6 2.4-2.3 3.8-3.6 6-3.6 3.7 0 5.6 3.9 4 7.2C19.5 16.4 12 21 12 21z';
 export function Hearts({ n, max = FOK.hearts }: { n: number; max?: number }) {
   return (
-    <View style={s.hearts} accessibilityLabel={`${n} of ${max} hearts`}>
+    <View style={s.hearts} accessibilityLabel={tr('{n} of {max} hearts', { n, max })}>
       {Array.from({ length: Math.max(max, n) }, (_, i) => (
         <Svg key={i} width={u(13)} height={u(13)} viewBox="0 0 24 24">
           <Path d={HEART} fill={i < n ? C.heart : C.heartOff} />
@@ -99,7 +100,7 @@ export function GroupRow({ board, slot, who, missed, line, onPress }: { board: B
           <Text style={s.rowName} numberOfLines={2}>
             {g.n}
           </Text>
-          <Text style={s.rowLv}>{(missed ? 'MISSED · ' : who ? `${who.toUpperCase()} · ` : '') + LEVEL_NAME[g.lv].toUpperCase()}</Text>
+          <Text style={s.rowLv}>{(missed ? tr('MISSED · ') : who ? `${who.toUpperCase()} · ` : '') + tr(LEVEL_NAME[g.lv]).toUpperCase()}</Text>
         </View>
         <Text style={s.rowBoxes}>{boxes.join(' · ')}</Text>
         {line ? <Text style={s.rowLine}>{g.l}</Text> : null}
@@ -107,7 +108,7 @@ export function GroupRow({ board, slot, who, missed, line, onPress }: { board: B
     </Animated.View>
   );
   return onPress ? (
-    <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={`${g.n}, see each box`}>
+    <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={tr('{n}, see each box', { n: g.n })}>
       {body}
     </Pressable>
   ) : (
@@ -177,7 +178,7 @@ export function Stamp({ text, tone = 'red' }: { text: string; tone?: 'red' | 'go
 export const Note = ({ children }: { children: ReactNode }) => <Text style={s.note}>{children}</Text>;
 
 /** Out of hearts: one token gives a heart back, once a board; otherwise the board shows its answers. */
-export function TokenCard({ playId, name, text, onBuy, onNo, noLabel = 'No, show the answers' }: { playId: string; name?: string; text?: string; onBuy: () => void; onNo: () => void; noLabel?: string }) {
+export function TokenCard({ playId, name, text, onBuy, onNo, noLabel = tr('No, show the answers') }: { playId: string; name?: string; text?: string; onBuy: () => void; onNo: () => void; noLabel?: string }) {
   const [note, setNote] = useState<string | null>(null);
   const busy = useRef(false);
   const [sending, setSending] = useState(false);
@@ -187,12 +188,12 @@ export function TokenCard({ playId, name, text, onBuy, onNo, noLabel = 'No, show
     setSending(true);
     try {
       const receipt = await engine.wallet.spend(FOK.tokenPrice, 'fok_heart', playId);
-      if (!receipt) return setNote('You need 1 token. Each level up gives 1 token.');
+      if (!receipt) return setNote(tr('You need 1 token. Each level up gives 1 token.'));
       try {
         onBuy();
       } catch {
         await engine.wallet.refund(receipt);
-        setNote('Couldn’t add the heart. Your token was refunded.');
+        setNote(tr('Couldn’t add the heart. Your token was refunded.'));
       }
     } finally {
       busy.current = false;
@@ -201,10 +202,10 @@ export function TokenCard({ playId, name, text, onBuy, onNo, noLabel = 'No, show
   };
   return (
     <View style={s.card}>
-      <Text style={[s.kick, { color: '#ff8a9a' }]}>OUT OF HEARTS</Text>
+      <Text style={[s.kick, { color: '#ff8a9a' }]}>{tr('OUT OF HEARTS')}</Text>
       {name ? <Text style={s.cardBig}>{name}</Text> : null}
-      <Text style={s.cardLine}>{note ?? text ?? `Second chance: ${FOK.tokenPrice} token gives ${FOK.tokenHearts} heart, once a board. Your found groups stay found.`}</Text>
-      <HelperButton label={`1 more heart · ${FOK.tokenPrice}${COIN}`} tone="rose" onPress={buy} disabled={sending} style={{ borderRadius: 999, paddingVertical: u(12) }} />
+      <Text style={s.cardLine}>{note ?? text ?? tr('Second chance: {tokenPrice} token gives {tokenHearts} heart, once a board. Your found groups stay found.', { tokenPrice: FOK.tokenPrice, tokenHearts: FOK.tokenHearts })}</Text>
+      <HelperButton label={tr('1 more heart · {tokenPrice}{COIN}', { tokenPrice: FOK.tokenPrice, COIN })} tone="rose" onPress={buy} disabled={sending} style={{ borderRadius: 999, paddingVertical: u(12) }} />
       <TableBtn label={noLabel} onPress={onNo} />
     </View>
   );

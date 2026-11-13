@@ -19,6 +19,7 @@ import { TurnBoard } from './TurnBoard';
 import { Btn, CB, CD, Kicker, Panel, ROMAN, Rule, T, VelvetScreen, VV } from './velvet';
 import { useTicker } from '../engine/useTicker';
 import { gameShown } from './shown';
+import { tr } from '@/i18n';
 
 /** The saved game has its clocks stopped, so resuming later picks up with the same time left (rules 7, 10). */
 const snapshot = (g: SoloGame, now: number): SoloGame => stepSoloGame(g, { type: 'PAUSE', now }, BANK, Math.random);
@@ -100,7 +101,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
     setPaused(false);
     dispatch({ type: 'RESUME', now: Date.now() });
   };
-  const bossLine = `Every ${SOLO_BOSS_PER} Boss points is +1, up to +${bossBonus(target)}.`;
+  const bossLine = tr('Every {SOLO_BOSS_PER} Boss points is +1, up to +{n}.', { SOLO_BOSS_PER, n: bossBonus(target) });
   const missed = missedPoints(game);
 
   return (
@@ -109,15 +110,15 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
         {game.stage === 'boss' && game.boss ? (
           <BossBoard g={{ boss: game.boss, cycle: game.act, target }} seat={0} now={now} seats={SEATS} solo={bossLine} onEvent={(e) => dispatch({ type: 'BOSS', e })} onPause={pause} hidden={paused} />
         ) : game.stage === 'redemption' && game.redemption ? (
-          <RedemptionBoard g={{ redemption: game.redemption }} now={now} seats={SEATS} solo={`True or false, as fast as you can. Each right call wins back 1 of the ${missed} points you missed, up to all of them.`} onEvent={(e) => dispatch({ type: 'RED', e })} onPause={pause} hidden={paused} />
+          <RedemptionBoard g={{ redemption: game.redemption }} now={now} seats={SEATS} solo={tr('True or false, as fast as you can. Each right call wins back 1 of the {missed} points you missed, up to all of them.', { missed })} onEvent={(e) => dispatch({ type: 'RED', e })} onPause={pause} hidden={paused} />
         ) : game.stage === 'bossOver' || game.stage === 'redOver' ? (
           <Extra game={game} onNext={() => dispatch({ type: 'ON' })} />
         ) : run.phase === 'turn' && run.turn ? (
           <TurnBoard
             turn={run.turn}
             now={now}
-            kicker={`Solo · Act ${ROMAN[game.act]} · Turn ${game.inAct} of ${roundsIn(game.act)}`}
-            title={`${run.score} of ${target}`}
+            kicker={tr('Solo · Act {n} · Turn {inAct} of {roundsIn}', { n: ROMAN[game.act], inAct: game.inAct, roundsIn: roundsIn(game.act) })}
+            title={tr('{score} of {target}', { score: run.score, target })}
             strip={[{ seat: 0, name: 'You', score: run.score, me: true }]}
             onEvent={(e) => dispatch({ type: 'RUN', e })}
             onPause={pause}
@@ -146,19 +147,19 @@ function Extra({ game, onNext }: { game: SoloGame; onNext: () => void }) {
   return (
     <View style={{ flex: 1, gap: u(12) }}>
       <View style={{ gap: u(2) }}>
-        <Kicker>{boss ? `Act ${ROMAN[game.act]} · Boss Round` : 'Redemption'}</Kicker>
-        <T f={CD} size={26}>{x?.points ? `+${x.points} points` : 'No points this time'}</T>
+        <Kicker>{boss ? tr('Act {n} · Boss Round', { n: ROMAN[game.act] }) : tr('Redemption')}</Kicker>
+        <T f={CD} size={26}>{x?.points ? tr('+{points} points', { points: x.points }) : tr('No points this time')}</T>
       </View>
       <Panel>
-        <T size={13} color={VV.soft}>{boss ? `${x?.of ?? 0} Boss points: every ${SOLO_BOSS_PER} is +1, up to +${bossBonus(game.run.target)}.` : `${x?.of ?? 0} right calls won back ${x?.points ?? 0} points.`}</T>
+        <T size={13} color={VV.soft}>{boss ? tr('{n} Boss points: every {SOLO_BOSS_PER} is +1, up to +{bossBonus}.', { n: x?.of ?? 0, SOLO_BOSS_PER, bossBonus: bossBonus(game.run.target) }) : tr('{n} right calls won back {n2} points.', { n: x?.of ?? 0, n2: x?.points ?? 0 })}</T>
         <Rule />
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' }}>
-          <T f={CB} size={12} color={VV.dim} style={{ letterSpacing: u(1.2) }}>SCORE</T>
+          <T f={CB} size={12} color={VV.dim} style={{ letterSpacing: u(1.2) }}>{tr('SCORE')}</T>
           <T f={CD} size={22} color={VV.gold}>{`${game.run.score} / ${game.run.target}`}</T>
         </View>
       </Panel>
       <View style={{ flex: 1 }} />
-      <Btn label={boss ? `On to Act ${ROMAN[game.act + 1] ?? game.act + 2}` : 'Back to my turn'} onPress={onNext} />
+      <Btn label={boss ? tr('On to Act {n}', { n: ROMAN[game.act + 1] ?? game.act + 2 }) : tr('Back to my turn')} onPress={onNext} />
     </View>
   );
 }
@@ -171,20 +172,20 @@ function TurnOver({ game, boss, redeem, onRedeem, onNext, onEnd }: { game: SoloG
   return (
     <View style={{ flex: 1, gap: u(12) }}>
       <View style={{ gap: u(2) }}>
-        <Kicker>{`Solo · Act ${ROMAN[game.act]} · Turn ${game.inAct} of ${roundsIn(game.act)}`}</Kicker>
-        <T f={CD} size={26}>{pts ? `+${pts} points` : 'No points this turn'}</T>
+        <Kicker>{tr('Solo · Act {n} · Turn {inAct} of {n2}', { n: ROMAN[game.act], inAct: game.inAct, n2: roundsIn(game.act) })}</Kicker>
+        <T f={CD} size={26}>{pts ? tr('+{pts} points', { pts }) : tr('No points this turn')}</T>
       </View>
       <Panel>
         {t.results.map((r, i) => (
           <View key={i} style={{ flexDirection: 'row', alignItems: 'center', gap: u(9) }}>
             <T f={CB} size={13} color={r.right ? VV.right : VV.wrong} style={{ width: u(16) }}>{r.right ? '✓' : '✕'}</T>
-            <T size={13} style={{ flex: 1 }}>{`${STYLES[r.style].name} · ${fieldName(r.field)}`}</T>
+            <T size={13} style={{ flex: 1 }}>{`${tr(STYLES[r.style].name)} · ${fieldName(r.field)}`}</T>
             <T f={CB} size={13} color={VV.soft}>{String(r.points)}</T>
           </View>
         ))}
         <Rule />
         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline' }}>
-          <T f={CB} size={12} color={VV.dim} style={{ letterSpacing: u(1.2) }}>SCORE</T>
+          <T f={CB} size={12} color={VV.dim} style={{ letterSpacing: u(1.2) }}>{tr('SCORE')}</T>
           <T f={CD} size={22} color={VV.gold}>{`${run.score} / ${run.target}`}</T>
         </View>
         <View style={{ height: u(6), borderRadius: u(3), backgroundColor: 'rgba(255,255,255,0.1)', overflow: 'hidden' }}>
@@ -193,9 +194,9 @@ function TurnOver({ game, boss, redeem, onRedeem, onNext, onEnd }: { game: SoloG
       </Panel>
       <View style={{ flex: 1 }} />
       {/* Once a game, after a turn with a miss (Yazan 2026-11-12). */}
-      {redeem ? <Btn label={`Redemption: win back up to ${redeem}`} paper onPress={onRedeem} /> : null}
-      <Btn label={boss ? 'On to the Boss Round' : 'Spin again'} onPress={onNext} />
-      <Btn label="Finish here" ghost onPress={onEnd} />
+      {redeem ? <Btn label={tr('Redemption: win back up to {redeem}', { redeem })} paper onPress={onRedeem} /> : null}
+      <Btn label={boss ? tr('On to the Boss Round') : tr('Spin again')} onPress={onNext} />
+      <Btn label={tr('Finish here')} ghost onPress={onEnd} />
     </View>
   );
 }

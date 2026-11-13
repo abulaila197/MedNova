@@ -5,6 +5,7 @@ import { closeThreshold, greenColumns, isClose, MAX_ROWS, nextLap, offlineRows, 
 import type { Play } from '../engine/types';
 import { event, finishRecap, lastIndexOf, leadLine, sides, type RecapLine } from '../shell/recap';
 import type { Row } from '../engine/standings';
+import { say } from '../../i18n/say';
 
 /** One turn on the board. `word` is null when the turn timed out (the row is used, the turn passes). */
 export type Turn = { seat: number; word: string | null; timeMs: number };
@@ -130,7 +131,7 @@ export function stepOffline(r: OfflineRun, e: OfflineEvent, rng: () => number = 
 export function offlineStandings(r: OfflineRun, names: Record<number, string>): Row[] {
   return r.seats.map((seat) => ({
     seat,
-    name: names[seat] ?? `Player ${seat + 1}`,
+    name: names[seat] ?? say('Player {v}', { v: seat + 1 }),
     score: r.results.filter((x) => x.winner === seat).length,
     timeMs: [...r.results.flatMap((x) => x.turns), ...r.turns].filter((t) => t.seat === seat).reduce((a, t) => a + t.timeMs, 0),
   }));

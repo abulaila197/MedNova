@@ -11,6 +11,7 @@ import { u } from '@/theme/scale';
 
 import { mixFields, STYLE_KEYS, type Turn } from './core';
 import { CB, VV } from './velvet';
+import { tr } from '@/i18n';
 
 /** The drawing's own units: a 390-wide box, the wheel's centre in the middle. */
 const BOX = 390;
@@ -20,11 +21,11 @@ const RINGS = { field: [106, R], style: [44, 106], count: [18, 44] } as const;
 
 const COUNT_LABELS = ['1', '2', '3'];
 const STYLE_LABELS: Record<(typeof STYLE_KEYS)[number], string> = {
-  mcq: 'Direct\nMCQ', tf: 'True or\nFalse', r2o: 'Rule\n2 Out', match: 'Matching', riddle: 'Riddle\nMCQ', reverse: 'Reverse\nQuestion', lie: '3 Truths\n& a Lie', closest: 'Closest\nNumber', order: 'Put in\nOrder',
+  mcq: tr('Direct\nMCQ'), tf: tr('True or\nFalse'), r2o: tr('Rule\n2 Out'), match: tr('Matching'), riddle: tr('Riddle\nMCQ'), reverse: tr('Reverse\nQuestion'), lie: tr('3 Truths\n& a Lie'), closest: tr('Closest\nNumber'), order: tr('Put in\nOrder'),
 };
 const FIELD_LABELS: Record<string, string> = {
-  anatomy: 'Anatomy', physiology: 'Physiology', pathology: 'Pathology', pharmacology: 'Pharmacology', microbiology: 'Microbiology',
-  biochemistry: 'Biochemistry', medicine: 'Internal\nMedicine', surgery: 'Surgery', pediatrics: 'Pediatrics', obgyn: 'Obs &\nGynae',
+  anatomy: tr('Anatomy'), physiology: tr('Physiology'), pathology: tr('Pathology'), pharmacology: tr('Pharmacology'), microbiology: tr('Microbiology'),
+  biochemistry: tr('Biochemistry'), medicine: tr('Internal\nMedicine'), surgery: tr('Surgery'), pediatrics: tr('Pediatrics'), obgyn: tr('Obs &\nGynae'),
 };
 /** Fitted so each line sits inside its slice with room to spare (largest that fits, at most 12; count 15). */
 const SIZE: Record<string, number> = {
@@ -75,7 +76,7 @@ const Ring = memo(function Ring({ id, r0, r1, labels, land, base }: { id: string
         return (
           <G key={label}>
             <Path d={wedge(r0, r1, am - seg / 2, am + seg / 2)} fill={`url(#${id}${dark ? 'd' : 'l'})`} stroke={VV.brass} strokeWidth={1.4} />
-            <G transform={`translate(${C} ${C}) rotate(${am + (low ? -90 : 90)})`}>
+            <G transform={tr('translate({C} {C}) rotate({n})', { C, n: am + (low ? -90 : 90) })}>
               {lines.map((ln, j) => {
                 const off = (j - (lines.length - 1) / 2) * lh;
                 return (

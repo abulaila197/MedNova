@@ -9,6 +9,7 @@ import { u } from '@/theme/scale';
 import { useClock, type Clock } from '../engine/useTicker';
 import { GameScreen } from '../shell/ui';
 import type { HintView } from './core';
+import { tr, TA_END } from '@/i18n';
 
 // The Silent Artist's own design language (SA9): "Classroom slate". A chalkboard in a worn wooden frame,
 // chalk sticks on the ledge as colours, chalk lettering. The room follows the app (SA10, SA11, Yazan 2026-10-05):
@@ -35,15 +36,15 @@ export const SL = {
     '#f4f1e6', '#f2df8a', '#f3a6b6', '#9fd3ef', '#a8e6c1', '#c9b6f2',
   ],
   inkNames: [
-    'Black', 'Red', 'Blue', 'Green', 'Orange', 'Amber',
-    'Lime', 'Teal', 'Sky blue', 'Indigo', 'Violet', 'Magenta',
-    'Rose', 'Brown', 'Dark red', 'Navy', 'Grey', 'Skin',
-    'White chalk', 'Yellow chalk', 'Pink chalk', 'Blue chalk', 'Mint', 'Lilac',
+    tr('Black'), tr('Red'), tr('Blue'), tr('Green'), tr('Orange'), tr('Amber'),
+    tr('Lime'), tr('Teal'), tr('Sky blue'), tr('Indigo'), tr('Violet'), tr('Magenta'),
+    tr('Rose'), tr('Brown'), tr('Dark red'), tr('Navy'), tr('Grey'), tr('Skin'),
+    tr('White chalk'), tr('Yellow chalk'), tr('Pink chalk'), tr('Blue chalk'), tr('Mint'), tr('Lilac'),
   ],
   sizes: [9, 20] as [number, number],
-  head: 'CabinSketch_700Bold',
-  headLight: 'CabinSketch_400Regular',
-  body: 'PatrickHand_400Regular',
+  head: tr('CabinSketch_700Bold'),
+  headLight: tr('CabinSketch_400Regular'),
+  body: tr('PatrickHand_400Regular'),
 };
 /** Colours that follow the app theme. `ink`/`soft`/`dim`/`mark` are text on the page; `boardSoft`/`boardDim` on the board. */
 const ROOMS = {
@@ -58,7 +59,7 @@ const ROOMS = {
 export type Room = (typeof ROOMS)['dark'];
 export const useSlateRoom = (): Room => ROOMS.dark;
 
-export const SLATE_FONTS = ['CabinSketch_700Bold', 'CabinSketch_400Regular', 'PatrickHand_400Regular'];
+export const SLATE_FONTS = [tr('CabinSketch_700Bold'), tr('CabinSketch_400Regular'), tr('PatrickHand_400Regular')];
 
 /** Loads the chalk fonts once; screens render after. */
 export function useSlateFonts() {
@@ -144,10 +145,10 @@ export function ChalkTimer({ leftMs, totalMs, size = 46 }: { leftMs: number; tot
   const R = useSlateRoom();
   const col = leftMs <= 10_000 ? R.alarm : R.ink;
   return (
-    <View style={{ width: d, height: d }} accessibilityRole="timer" accessibilityLabel={`${Math.ceil(leftMs / 1000)} seconds left`}>
+    <View style={{ width: d, height: d }} accessibilityRole="timer" accessibilityLabel={tr('{ceil} seconds left', { ceil: Math.ceil(leftMs / 1000) })}>
       <Svg width={d} height={d}>
         <Circle cx={d / 2} cy={d / 2} r={r} fill="none" stroke={R.ink} strokeOpacity={0.18} strokeWidth={u(3)} />
-        <Circle cx={d / 2} cy={d / 2} r={r} fill="none" stroke={col} strokeWidth={u(3)} strokeLinecap="round" strokeDasharray={`${c * frac} ${c}`} transform={`rotate(-90 ${d / 2} ${d / 2})`} />
+        <Circle cx={d / 2} cy={d / 2} r={r} fill="none" stroke={col} strokeWidth={u(3)} strokeLinecap="round" strokeDasharray={`${c * frac} ${c}`} transform={tr('rotate(-90 {n} {n})', { n: d / 2 })} />
       </Svg>
       <Text style={[StyleSheet.absoluteFill, s.timeIn, { color: col, lineHeight: d, fontSize: u(size * 0.37) }]}>{Math.ceil(leftMs / 1000)}</Text>
     </View>
@@ -170,7 +171,7 @@ export function HintCard({ hint }: { hint: HintView }) {
     <Panel>
       <View style={s.hintRow}>
         <Text style={[s.hintK, ink]}>{`${hint.words} ${hint.words === 1 ? 'word' : 'words'}`}</Text>
-        <Text style={[s.hintK, ink, { opacity: hint.field ? 1 : 0.45 }]}>{hint.field ?? 'Field soon'}</Text>
+        <Text style={[s.hintK, ink, { opacity: hint.field ? 1 : 0.45 }]}>{hint.field ?? tr('Field soon')}</Text>
       </View>
       <Text style={[s.mask, ink]} numberOfLines={2} adjustsFontSizeToFit>
         {hint.mask ? hint.mask.replace(/ /g, '    ') : '· · ·'}
@@ -185,7 +186,7 @@ export function HintLine({ hint }: { hint: HintView }) {
   return (
     <Panel style={{ paddingVertical: u(5), gap: u(2) }}>
       <Text style={[s.hintK, ink, { fontSize: u(12), opacity: 0.85 }]} numberOfLines={1}>
-        {`${hint.words} ${hint.words === 1 ? 'word' : 'words'} · ${hint.field ?? 'Field soon'}`}
+        {`${hint.words} ${hint.words === 1 ? 'word' : 'words'} · ${hint.field ?? tr('Field soon')}`}
       </Text>
       <Text style={[s.mask, ink, { fontSize: u(16), textAlign: 'center' }]} numberOfLines={1} adjustsFontSizeToFit>
         {hint.mask ? hint.mask.replace(/ /g, '    ') : '· · ·'}
@@ -228,13 +229,13 @@ export function Ledge({ ink, size, erase, onInk, onSize, onErase, onUndo, onClea
             {extra ? null : PALETTE_DOTS.map((c) => <View key={c} style={[s.wheelDot, { backgroundColor: c }]} />)}
           </View>,
           () => setOpen(!open),
-          'All colours',
+          tr('All colours'),
         )}
         <View style={s.sep} />
-        {tool('size', false, word(size ? 'Thick' : 'Thin'), onSize, 'Line size')}
-        {tool('erase', erase, word('Erase', erase), onErase, 'Eraser')}
-        {tool('undo', false, word('Undo'), onUndo, 'Undo')}
-        {tool('clear', false, word('Clear'), onClear, 'Clear the board')}
+        {tool('size', false, word(size ? tr('Thick') : tr('Thin')), onSize, tr('Line size'))}
+        {tool('erase', erase, word(tr('Erase'), erase), onErase, tr('Eraser'))}
+        {tool('undo', false, word(tr('Undo')), onUndo, tr('Undo'))}
+        {tool('clear', false, word(tr('Clear')), onClear, tr('Clear the board'))}
       </View>
     </View>
   );
@@ -252,9 +253,9 @@ export function Peek({ word }: { word: string }) {
   const [on, setOn] = useState(false);
   const R = useSlateRoom();
   return (
-    <Pressable onPressIn={() => setOn(true)} onPressOut={() => setOn(false)} style={[s.peek, { borderColor: R.line }]} accessibilityRole="button" accessibilityLabel="Hold to see the word">
+    <Pressable onPressIn={() => setOn(true)} onPressOut={() => setOn(false)} style={[s.peek, { borderColor: R.line }]} accessibilityRole="button" accessibilityLabel={tr('Hold to see the word')}>
       <Text style={[s.peekT, { color: on ? R.mark : R.soft }]} numberOfLines={1} adjustsFontSizeToFit>
-        {on ? word : 'Hold to peek'}
+        {on ? word : tr('Hold to peek')}
       </Text>
     </Pressable>
   );
@@ -264,7 +265,7 @@ export function Peek({ word }: { word: string }) {
 export function PauseBtn({ onPress, small }: { onPress: () => void; small?: boolean }) {
   const R = useSlateRoom();
   return (
-    <Pressable onPress={onPress} hitSlop={u(8)} style={[s.pause, small && s.pauseSmall, { borderColor: R.line }]} accessibilityRole="button" accessibilityLabel="Pause">
+    <Pressable onPress={onPress} hitSlop={u(8)} style={[s.pause, small && s.pauseSmall, { borderColor: R.line }]} accessibilityRole="button" accessibilityLabel={tr('Pause')}>
       <Text style={[s.pauseT, small && { fontSize: u(9) }, { color: R.ink }]}>❚❚</Text>
     </Pressable>
   );
@@ -325,7 +326,7 @@ export function PausedCover() {
   return (
     <View style={[StyleSheet.absoluteFill, s.cover, { backgroundColor: R.paperDeep }]}>
       <ChalkTitle size={24} color={R.paperSoft}>
-        Paused
+        {tr('Paused')}
       </ChalkTitle>
     </View>
   );
@@ -336,23 +337,23 @@ const s = StyleSheet.create({
   kick: { fontFamily: SL.body, fontSize: u(11), letterSpacing: u(1.2) },
   note: { fontFamily: SL.body, fontSize: u(14), lineHeight: u(19) },
   panel: { borderWidth: 1, borderStyle: 'dashed', borderRadius: u(10), paddingVertical: u(8), paddingHorizontal: u(12), gap: u(4) },
-  frame: { borderWidth: SL.frameW, borderColor: SL.frame, borderRadius: u(4), boxShadow: 'inset 0 0 0 1px rgba(0,0,0,0.35), 0 6px 16px rgba(0,0,0,0.45)', overflow: 'hidden' },
+  frame: { borderWidth: SL.frameW, borderColor: SL.frame, borderRadius: u(4), boxShadow: tr('inset 0 0 0 1px rgba(0,0,0,0.35), 0 6px 16px rgba(0,0,0,0.45)'), overflow: 'hidden' },
   btn: { borderRadius: u(12), paddingVertical: u(11), paddingHorizontal: u(16), alignItems: 'center', justifyContent: 'center' },
   btnT: { fontFamily: SL.head, fontSize: u(16) },
   timeIn: { textAlign: 'center', fontFamily: SL.head },
   hintRow: { flexDirection: 'row', justifyContent: 'space-between' },
   hintK: { fontFamily: SL.body, fontSize: u(13) },
   mask: { fontFamily: SL.head, fontSize: u(17), letterSpacing: u(3) },
-  ledge: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: SL.frame, borderRadius: u(3), paddingVertical: u(6), paddingHorizontal: u(8), boxShadow: 'inset 0 2px 3px rgba(0,0,0,0.35)' },
+  ledge: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: SL.frame, borderRadius: u(3), paddingVertical: u(6), paddingHorizontal: u(8), boxShadow: tr('inset 0 2px 3px rgba(0,0,0,0.35)') },
   tool: { paddingVertical: u(4), paddingHorizontal: u(2), alignItems: 'center', justifyContent: 'center' },
   // #17/#38 (Yazan 2026-11-01): the ledge colours are boxes like the grid's.
-  stick: { width: u(24), height: u(18), borderRadius: u(3), borderWidth: 1, borderColor: 'rgba(0,0,0,0.35)', boxShadow: '0 1px 1px rgba(0,0,0,0.4)' },
+  stick: { width: u(24), height: u(18), borderRadius: u(3), borderWidth: 1, borderColor: 'rgba(0,0,0,0.35)', boxShadow: tr('0 1px 1px rgba(0,0,0,0.4)') },
   wheel: { width: u(18), height: u(18), borderRadius: u(9), flexDirection: 'row', flexWrap: 'wrap', overflow: 'hidden', borderWidth: 1.5, borderColor: SL.chalk },
   wheelDot: { width: '50%', height: '50%' },
   // #17/#38 (Yazan 2026-11-01): 24 fixed boxes, 6 a row, in a panel sized to them (a % width with aspectRatio
   // collapsed into thin lines on Android).
   paletteWrap: { position: 'absolute', bottom: '100%', left: 0, right: 0, marginBottom: u(6), alignItems: 'center' },
-  palette: { width: u(SW * 6 + SG * 5 + SP * 2), flexDirection: 'row', flexWrap: 'wrap', gap: u(SG), padding: u(SP), backgroundColor: SL.frameDark, borderRadius: u(6), boxShadow: '0 4px 12px rgba(0,0,0,0.45)' },
+  palette: { width: u(SW * 6 + SG * 5 + SP * 2), flexDirection: 'row', flexWrap: 'wrap', gap: u(SG), padding: u(SP), backgroundColor: SL.frameDark, borderRadius: u(6), boxShadow: tr('0 4px 12px rgba(0,0,0,0.45)') },
   swatch: { width: u(SW), height: u(SH), borderRadius: u(4), borderWidth: 1, borderColor: 'rgba(0,0,0,0.35)' },
   swatchOn: { borderWidth: 2.5, borderColor: SL.chalk },
   toolT: { fontFamily: SL.body, fontSize: u(12), color: SL.chalk },
@@ -373,7 +374,7 @@ const s = StyleSheet.create({
   place: { width: u(14), fontFamily: SL.head, fontSize: u(14) },
   scoreName: { flex: 1, fontFamily: SL.body, fontSize: u(15) },
   mark: { fontFamily: SL.body, fontSize: u(12) },
-  score: { minWidth: u(34), textAlign: 'right', fontFamily: SL.head, fontSize: u(16) },
+  score: { minWidth: u(34), textAlign: TA_END, fontFamily: SL.head, fontSize: u(16) },
   cover: { alignItems: 'center', justifyContent: 'center', zIndex: 5 },
   peekT: { fontFamily: SL.body, fontSize: u(14), textAlign: 'center' },
 });

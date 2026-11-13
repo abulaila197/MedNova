@@ -10,6 +10,7 @@ import { u } from '@/theme/scale';
 import { STYLES, fieldName, mixFields, timeLeft, type Answer, type Question, type Turn, type TurnEvent } from './core';
 import { WheelSpin, STOP_MS } from './WheelSpin';
 import { BOX, Brass, Btn, BODY_B, Bulbs, CB, CD, CM, Gem, Kicker, PauseBtn, QF, QF_B, T, VV } from './velvet';
+import { tr } from '@/i18n';
 
 export type Strip = { seat: number; name: string; color?: string; score: number; me?: boolean }[];
 
@@ -20,7 +21,7 @@ const LETTERS = 'ABCD';
 const PAIR_INK = ['#1f9e86', '#7b4fd0', '#c48a12', '#d0455a', '#3c7be0', '#c06a2a'];
 /** A paired Matching box: the pair's colour on the edge, with a soft glow in the same colour. */
 const glow = (c: string) => ({ borderColor: c, shadowColor: c, shadowOpacity: 0.75, shadowRadius: u(7), shadowOffset: { width: 0, height: 0 } });
-const qWord = (n: number) => `${n} Question${n > 1 ? 's' : ''}`;
+const qWord = (n: number) => tr('{n} Question{n2}', { n, n2: n > 1 ? 's' : '' });
 
 /**
  * The wheel (#27, look A) and the banner. The three rings stop one after another, then the result holds for 3 s
@@ -49,8 +50,8 @@ function Reels({ turn, onGo }: { turn: Turn; onGo: () => void }) {
   return (
     <>
       <WheelSpin turn={turn} settled={{ count: done('count'), style: done('style'), field: done('field') }} />
-      <T f={CM} size={9.5} color={VV.soft} style={{ textAlign: 'center', letterSpacing: u(0.6) }} lines={1}>{mixFields(turn.mix).length === 1 ? 'CENTRE COUNT · OUTER STYLE' : 'CENTRE COUNT · MIDDLE STYLE · OUTER FIELD'}</T>
-      {done('field') ? <Banner parts={[turn.k ? `Question ${turn.k + 1} of ${turn.count}` : qWord(turn.count), st.name, fieldName(turn.combo.field)]} /> : <View style={{ height: u(66) }} />}
+      <T f={CM} size={9.5} color={VV.soft} style={{ textAlign: 'center', letterSpacing: u(0.6) }} lines={1}>{mixFields(turn.mix).length === 1 ? tr('CENTRE COUNT · OUTER STYLE') : tr('CENTRE COUNT · MIDDLE STYLE · OUTER FIELD')}</T>
+      {done('field') ? <Banner parts={[turn.k ? tr('Question {n} of {count}', { n: turn.k + 1, count: turn.count }) : qWord(turn.count), tr(st.name), fieldName(turn.combo.field)]} /> : <View style={{ height: u(66) }} />}
     </>
   );
 }
@@ -59,7 +60,7 @@ function Banner({ parts }: { parts: string[] }) {
   return (
     <Brass r={14}>
       <LinearGradient colors={['#a48bff', '#6fd6ff']} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={{ paddingVertical: u(12), paddingHorizontal: u(14), alignItems: 'center', gap: u(4) }}>
-        <T f={CM} size={10.5} color="#0b0b26" style={{ letterSpacing: u(2.4) }}>THE WHEELS HAVE SPOKEN</T>
+        <T f={CM} size={10.5} color="#0b0b26" style={{ letterSpacing: u(2.4) }}>{tr('THE WHEELS HAVE SPOKEN')}</T>
         <T f={CD} size={15} color="#0b0b26" style={{ textAlign: 'center' }}>{parts.join('  ★  ')}</T>
       </LinearGradient>
     </Brass>
@@ -162,7 +163,7 @@ function Answers({ q, given, onAnswer }: { q: Question; given: Answer | undefine
         <View style={{ flexDirection: 'row', gap: u(10) }}>
           {[true, false].map((v) => (
             <View key={String(v)} style={{ flex: 1 }}>
-              <Option text={v ? 'True' : 'False'} disabled={done} onPress={() => onAnswer(v)} mark={done ? (v === q.answer ? 'right' : v === given ? 'wrong' : 'none') : 'none'} />
+              <Option text={v ? tr('True') : tr('False')} disabled={done} onPress={() => onAnswer(v)} mark={done ? (v === q.answer ? 'right' : v === given ? 'wrong' : 'none') : 'none'} />
             </View>
           ))}
         </View>
@@ -182,7 +183,7 @@ function Answers({ q, given, onAnswer }: { q: Question; given: Answer | undefine
               );
             })}
           </View>
-          {done ? null : <Btn label={picks.length === 2 ? 'Rule these 2 out' : `Pick ${2 - picks.length} more`} disabled={picks.length !== 2} onPress={() => onAnswer(picks)} />}
+          {done ? null : <Btn label={picks.length === 2 ? tr('Rule these 2 out') : tr('Pick {n} more', { n: 2 - picks.length })} disabled={picks.length !== 2} onPress={() => onAnswer(picks)} />}
         </View>
       );
     }
@@ -229,8 +230,8 @@ function Answers({ q, given, onAnswer }: { q: Question; given: Answer | undefine
           </View>
           {done ? null : (
             <>
-              <T size={11} color={VV.dim} style={{ textAlign: 'center' }}>Tap a name on the left, then its match on the right.</T>
-              <Btn label={allSet ? 'Lock in the pairs' : `${pairs.filter((x) => x == null).length} left to pair`} disabled={!allSet} onPress={() => onAnswer(pairs as number[])} />
+              <T size={11} color={VV.dim} style={{ textAlign: 'center' }}>{tr('Tap a name on the left, then its match on the right.')}</T>
+              <Btn label={allSet ? tr('Lock in the pairs') : tr('{n} left to pair', { n: pairs.filter((x) => x == null).length })} disabled={!allSet} onPress={() => onAnswer(pairs as number[])} />
             </>
           )}
         </View>
@@ -249,7 +250,7 @@ function Answers({ q, given, onAnswer }: { q: Question; given: Answer | undefine
               <Option
                 key={i}
                 letter={at >= 0 ? String(at + 1) : done ? String(i + 1) : '·'}
-                text={done && at !== i ? `${q.items[i]}  (goes ${i + 1})` : q.items[i]}
+                text={done && at !== i ? tr('{n}  (goes {n2})', { n: q.items[i], n2: i + 1 }) : q.items[i]}
                 on={!done && at >= 0}
                 mark={mark}
                 disabled={done}
@@ -259,8 +260,8 @@ function Answers({ q, given, onAnswer }: { q: Question; given: Answer | undefine
           })}
           {done ? null : (
             <>
-              <T size={11} color={VV.dim} style={{ textAlign: 'center' }}>Tap the items from first to last.</T>
-              <Btn label={full ? 'Lock in the order' : `${q.items.length - seq.length} left`} disabled={!full} onPress={() => onAnswer(seq)} />
+              <T size={11} color={VV.dim} style={{ textAlign: 'center' }}>{tr('Tap the items from first to last.')}</T>
+              <Btn label={full ? tr('Lock in the order') : tr('{n} left', { n: q.items.length - seq.length })} disabled={!full} onPress={() => onAnswer(seq)} />
             </>
           )}
         </View>
@@ -277,19 +278,19 @@ function Answers({ q, given, onAnswer }: { q: Question; given: Answer | undefine
               onChangeText={(x) => setGuess(x.replace(/[^0-9.,-]/g, '').slice(0, 10))}
               editable={!done}
               keyboardType="decimal-pad"
-              placeholder="Your guess"
+              placeholder={tr('Your guess')}
               placeholderTextColor="#8a7a5a"
               style={{ flex: 1, fontFamily: QF_B, fontSize: u(20), color: BOX.ink, paddingVertical: u(4) }}
-              accessibilityLabel="Your guess"
+              accessibilityLabel={tr('Your guess')}
             />
             {q.unit ? <T f={QF} size={14} color={BOX.ink}>{q.unit}</T> : null}
           </View>
           {done ? (
-            <T f={CD} size={16} color={VV.right} style={{ textAlign: 'center' }}>{`Answer: ${q.answer}${q.unit ? ` ${q.unit}` : ''}`}</T>
+            <T f={CD} size={16} color={VV.right} style={{ textAlign: 'center' }}>{tr('Answer: {answer}{n}', { answer: q.answer, n: q.unit ? ` ${q.unit}` : '' })}</T>
           ) : (
             <>
-              <T size={11} color={VV.dim} style={{ textAlign: 'center' }}>Within 10% of the answer counts.</T>
-              <Btn label="Lock in my guess" disabled={!ok} onPress={() => onAnswer(num)} />
+              <T size={11} color={VV.dim} style={{ textAlign: 'center' }}>{tr('Within 10% of the answer counts.')}</T>
+              <Btn label={tr('Lock in my guess')} disabled={!ok} onPress={() => onAnswer(num)} />
             </>
           )}
         </View>
@@ -298,7 +299,7 @@ function Answers({ q, given, onAnswer }: { q: Question; given: Answer | undefine
   }
 }
 
-const promptLead: Partial<Record<Question['style'], string>> = { reverse: 'Here is the answer. Pick its question.', tf: 'True or false?', closest: 'Guess the number', order: 'First to last' };
+const promptLead: Partial<Record<Question['style'], string>> = { reverse: tr('Here is the answer. Pick its question.'), tf: tr('True or false?'), closest: tr('Guess the number'), order: tr('First to last') };
 
 // ---------------------------------------------------------------- the board
 
@@ -346,7 +347,7 @@ export function TurnBoard({ turn, now, kicker, title, strip, footer, onEvent, on
       <View style={s.top}>
         <View style={{ flex: 1 }}>
           {turn.noClock ? (
-            <T f={CM} size={12} color={VV.dim} style={{ letterSpacing: u(1) }}>NO CLOCK</T>
+            <T f={CM} size={12} color={VV.dim} style={{ letterSpacing: u(1) }}>{tr('NO CLOCK')}</T>
           ) : (
             <Bulbs frac={turn.phase === 'question' ? left / (st.seconds * 1000) : 0} />
           )}
@@ -354,15 +355,15 @@ export function TurnBoard({ turn, now, kicker, title, strip, footer, onEvent, on
         <PauseBtn onPress={onPause} />
       </View>
       <View style={s.spread}>
-        <T f={CM} size={12} color={VV.brass} style={{ letterSpacing: u(1) }}>{`QUESTION ${turn.k + 1} OF ${turn.count}`}</T>
-        <T f={CM} size={12} color={VV.soft}>{`${st.name} · ${st.points} pt${st.points > 1 ? 's' : ''}`}</T>
+        <T f={CM} size={12} color={VV.brass} style={{ letterSpacing: u(1) }}>{tr('QUESTION {n} OF {count}', { n: turn.k + 1, count: turn.count })}</T>
+        <T f={CM} size={12} color={VV.soft}>{tr('{name} · {points} pt{n}', { name: tr(st.name), points: st.points, n: st.points > 1 ? 's' : '' })}</T>
       </View>
       {strip ? <ScoreStrip strip={strip} /> : null}
       {/* #52 (2026-10-31): online, the answers belong to the player whose turn it is; the others see whose turn and watch. */}
       {watch ? (
         <View style={[s.whose, { borderColor: VV.brass }]}>
           <T f={CD} size={16} color={VV.ink} lines={1} style={{ textAlign: 'center' }}>{title}</T>
-          <T f={CM} size={11} color={VV.soft} lines={1}>Watch their answer</T>
+          <T f={CM} size={11} color={VV.soft} lines={1}>{tr('Watch their answer')}</T>
         </View>
       ) : null}
       {/* #63: a long Matching (or any long question) scrolls instead of running off small screens. */}
@@ -380,7 +381,7 @@ export function TurnBoard({ turn, now, kicker, title, strip, footer, onEvent, on
       </View>
       {result ? (
         <View style={{ alignItems: 'center', gap: u(2) }}>
-          <T f={CD} size={20} color={result.right ? VV.right : VV.wrong}>{result.right ? `Bravo! +${result.points}` : result.answer == null ? 'Time is up' : 'Not this time'}</T>
+          <T f={CD} size={20} color={result.right ? VV.right : VV.wrong}>{result.right ? tr('Bravo! +{points}', { points: result.points }) : result.answer == null ? tr('Time is up') : tr('Not this time')}</T>
         </View>
       ) : null}
       </ScrollView>

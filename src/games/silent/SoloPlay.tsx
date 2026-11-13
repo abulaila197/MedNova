@@ -16,6 +16,7 @@ import { SA } from './core';
 import { soloLeft, startSolo, stepSolo, type SoloEvent, type SoloRun } from './solo';
 import { FitBoard } from './Stage';
 import { useTickerClock } from '../engine/useTicker';
+import { tr } from '@/i18n';
 
 /** The lines on the board, saved with the bookmark so an app kill mid-drawing comes back to the same drawing. */
 type Sketch = { board: number; strokes: Stroke[] };
@@ -123,22 +124,22 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   if (!run)
     return (
       <SlateScreen>
-        <Kicker>Practice sketch</Kicker>
-        <ChalkTitle size={22}>What do you want to draw?</ChalkTitle>
-        <Note style={{ fontSize: u(12.5), lineHeight: u(16) }}>Pick one field or several, or keep all fields.</Note>
+        <Kicker>{tr('Practice sketch')}</Kicker>
+        <ChalkTitle size={22}>{tr('What do you want to draw?')}</ChalkTitle>
+        <Note style={{ fontSize: u(12.5), lineHeight: u(16) }}>{tr('Pick one field or several, or keep all fields.')}</Note>
         <View style={s.chips}>
-          <ChalkChip small label="All fields" on={!fields.length} onPress={() => setFields([])} />
+          <ChalkChip small label={tr('All fields')} on={!fields.length} onPress={() => setFields([])} />
           {FIELDS.map((f) => (
             <ChalkChip small key={f} label={f} on={fields.includes(f)} onPress={() => setFields(fields.includes(f) ? fields.filter((x) => x !== f) : [...fields, f])} />
           ))}
         </View>
-        <Note style={{ fontSize: u(12.5), lineHeight: u(16), marginTop: u(6) }}>Clock</Note>
+        <Note style={{ fontSize: u(12.5), lineHeight: u(16), marginTop: u(6) }}>{tr('Clock')}</Note>
         <View style={s.chips}>
-          <ChalkChip small label={`${SA.soloMs / 1000} s a drawing`} on={!noClock} onPress={() => setNoClock(false)} />
-          <ChalkChip small label="No clock" on={noClock} onPress={() => setNoClock(true)} />
+          <ChalkChip small label={tr('{n} s a drawing', { n: SA.soloMs / 1000 })} on={!noClock} onPress={() => setNoClock(false)} />
+          <ChalkChip small label={tr('No clock')} on={noClock} onPress={() => setNoClock(true)} />
         </View>
         <View style={{ flex: 1 }} />
-        <ChalkBtn label="Start drawing" onPress={begin} />
+        <ChalkBtn label={tr('Start drawing')} onPress={begin} />
       </SlateScreen>
     );
 
@@ -153,8 +154,8 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   return (
     <SlateScreen>
       <TopRow
-        kicker={`Practice · word ${run.used.length}`}
-        title={phase === 'reveal' ? (last && last.timeMs >= run.turnMs ? "Time's up" : 'Done') : 'Draw this'}
+        kicker={tr('Practice · word {n}', { n: run.used.length })}
+        title={phase === 'reveal' ? (last && last.timeMs >= run.turnMs ? tr('Time\'s up') : tr('Done')) : tr('Draw this')}
         right={
           <>
             {phase === 'drawing' && !run.noClock ? <ClockChalkTimer clock={clock} leftAt={(n) => soloLeft(run, n)} totalMs={run.turnMs} /> : null}
@@ -173,15 +174,15 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
         <>
           <Ledge ink={ink} size={size} erase={erase} onInk={(i) => (setInk(i), setErase(false))} onSize={() => setSize(size ? 0 : 1)} onErase={() => setErase(!erase)} onUndo={() => board.current?.undo()} onClear={() => board.current?.clear()} />
           <View style={s.row}>
-            <ChalkBtn ghost label="Finish" onPress={() => dispatch({ type: 'FINISH' })} style={{ flex: 1 }} />
-            <ChalkBtn label="I'm done" onPress={() => dispatch({ type: 'REVEAL', now: Date.now() })} style={{ flex: 2 }} />
+            <ChalkBtn ghost label={tr('Finish')} onPress={() => dispatch({ type: 'FINISH' })} style={{ flex: 1 }} />
+            <ChalkBtn label={tr('I\'m done')} onPress={() => dispatch({ type: 'REVEAL', now: Date.now() })} style={{ flex: 2 }} />
           </View>
         </>
       ) : (
         <View style={s.row}>
-          <ChalkBtn ghost label="Retry" onPress={() => dispatch({ type: 'RETRY', now: Date.now() })} style={{ flex: 1 }} />
-          <ChalkBtn ghost label="Finish" onPress={() => dispatch({ type: 'FINISH' })} style={{ flex: 1 }} />
-          <ChalkBtn label="Next" onPress={() => dispatch({ type: 'NEXT', now: Date.now() })} style={{ flex: 1.3 }} />
+          <ChalkBtn ghost label={tr('Retry')} onPress={() => dispatch({ type: 'RETRY', now: Date.now() })} style={{ flex: 1 }} />
+          <ChalkBtn ghost label={tr('Finish')} onPress={() => dispatch({ type: 'FINISH' })} style={{ flex: 1 }} />
+          <ChalkBtn label={tr('Next')} onPress={() => dispatch({ type: 'NEXT', now: Date.now() })} style={{ flex: 1.3 }} />
         </View>
       )}
       <PauseMenu open={paused} mode="solo" onResume={() => dispatch({ type: 'RESUME', now: Date.now() })} onQuit={onQuit} />

@@ -23,6 +23,7 @@ import { tickedFields } from '../shell/fields';
 import { answerOf, idsOf, poolFor, questionById } from './data';
 import { HeatBoard } from './HeatBoard';
 import { useTickerClock } from '../engine/useTicker';
+import { tr } from '@/i18n';
 
 /** Solo bookmark: the round plus what the screen needs to resume (rules 7, 10). */
 type SoloSave = { round: Round; style: Style; lengthSec: number; kept?: number };
@@ -143,11 +144,11 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
       const at = r.index;
       const receipt = await engine.wallet.spend(price, `streak_${kind}`, play.id);
       paying.current = false;
-      if (!receipt) return setNotice(`You need ${price} token${price > 1 ? 's' : ''}. Each level up gives 1 token.`);
+      if (!receipt) return setNotice(tr('You need {price} token{n}. Each level up gives 1 token.', { price, n: price > 1 ? 's' : '' }));
       const cur = ref.current;
       if (!cur || cur.index !== at || !helperUsable(cur, kind)) {
         await engine.wallet.refund(receipt);
-        return setNotice('Helper refunded.');
+        return setNotice(tr('Helper refunded.'));
       }
       dispatch({ type: 'HELPER', kind, now: Date.now() });
     },
@@ -172,7 +173,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
     setKept(used);
     const cur = ref.current;
     // The round ended while the purchase was on its way: the streak can't come back, so the tokens do.
-    if (!cur || cur.phase === 'over' || !cur.lost) return setNotice((await refundSecond(res.id)) ? 'Second chance refunded.' : 'The round ended first.');
+    if (!cur || cur.phase === 'over' || !cur.lost) return setNotice((await refundSecond(res.id)) ? tr('Second chance refunded.') : tr('The round ended first.'));
     dispatch({ type: 'KEEP' });
   }, [dispatch, kept, play.id]);
 
@@ -193,7 +194,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
       helpers={custom ? undefined : { onHelper: helper, usable: (k) => helperUsable(round, k) }}
       hidden={paused}
       notice={notice}
-      offer={signedIn && !custom && !round.noClock && !over && !paused && kept < 3 && (round.lost ?? 0) >= 3 ? { label: `Keep your streak of ${round.lost} · ${SECOND_PRICE[kept]}${COIN}`, onPress: () => void keep() } : null}
+      offer={signedIn && !custom && !round.noClock && !over && !paused && kept < 3 && (round.lost ?? 0) >= 3 ? { label: tr('Keep your streak of {lost} · {n}{COIN}', { lost: round.lost, n: SECOND_PRICE[kept], COIN }), onPress: () => void keep() } : null}
       dock={over ? <OverCard round={round} best={best} onNext={() => onFinish(round.score)} /> : undefined}>
       <PauseMenu open={paused} mode="solo" onResume={() => dispatch({ type: 'RESUME', now: Date.now() })} onQuit={onQuit} />
     </HeatBoard>
@@ -201,16 +202,16 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
 }
 
 /** Time up: score, best streak, high score for this style and length, then results. */
-export function OverCard({ round, best, title, onNext, next = 'See results' }: { round: Round; best?: { old: number; isNew: boolean } | null; title?: string; onNext: () => void; next?: string }) {
+export function OverCard({ round, best, title, onNext, next = tr('See results') }: { round: Round; best?: { old: number; isNew: boolean } | null; title?: string; onNext: () => void; next?: string }) {
   const t = useTheme();
   const right = round.answers.filter((a) => a.outcome === 'right').length;
   return (
     <View style={s.card}>
-      <Text style={[s.k, { color: t.dim }]}>{round.endReason === 'questions' ? 'NO QUESTIONS LEFT' : round.endReason === 'mistake' ? 'FIRST MISTAKE' : "TIME'S UP"}</Text>
-      <Text style={[s.line, { color: t.white }]}>{title ?? `${round.score} points`}</Text>
+      <Text style={[s.k, { color: t.dim }]}>{round.endReason === 'questions' ? tr('NO QUESTIONS LEFT') : round.endReason === 'mistake' ? tr('FIRST MISTAKE') : tr('TIME\'S UP')}</Text>
+      <Text style={[s.line, { color: t.white }]}>{title ?? tr('{score} points', { score: round.score })}</Text>
       <Text style={[s.sub, { color: t.mute }]}>
-        {`Best streak ${round.maxStreak} · ${right} right of ${round.answers.filter((a) => a.outcome !== 'skipped').length}`}
-        {best ? (best.isNew ? ' · New high score' : ` · High score ${best.old}`) : ''}
+        {tr('Best streak {maxStreak} · {right} right of {n}', { maxStreak: round.maxStreak, right, n: round.answers.filter((a) => a.outcome !== 'skipped').length })}
+        {best ? (best.isNew ? tr(' · New high score') : tr(' · High score {old}', { old: best.old })) : ''}
       </Text>
       <Btn label={next} onPress={onNext} style={{ alignSelf: 'stretch', marginTop: u(6) }} />
     </View>

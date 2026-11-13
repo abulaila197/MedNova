@@ -4,6 +4,7 @@ import { PUZZLES, wordById } from './data';
 import { BotsPlay } from './BotsPlay';
 import { OfflinePlay } from './OfflinePlay';
 import { SoloPlay } from './SoloPlay';
+import { tr } from '@/i18n';
 
 /** Online puzzles in a row (1-3; an older room has none and plays one). */
 const cases = (settings: Record<string, unknown>) => Math.min(3, Math.max(1, Number(settings.count) || 1));
@@ -14,40 +15,40 @@ export const novaCrossword: GameDef = {
   modes: [
     {
       mode: 'solo',
-      title: 'Puzzle by puzzle',
-      blurb: `${PUZZLES.length} medical crosswords. One star opens the next.`,
+      title: tr('Puzzle by puzzle'),
+      blurb: tr('{n} medical crosswords. One star opens the next.', { n: PUZZLES.length }),
       howTo: [
-        'Tap a square to light up its word, and tap it again for the word going the other way. Double tap to open the lit word.',
-        'Read the clue or the picture and type the answer. A full answer is checked straight away.',
-        `You have ${CW.hearts} hearts per puzzle. A wrong answer costs one; trying the same wrong answer again costs nothing.`,
-        'A hint costs 1 token and shows a third of the empty letters. Out of hearts, 1 token buys a heart, or replay.',
-        `Stars count the words left: none left is 3 stars, one is 2, two is 1. Each new star earns ${CW.expPerStar} EXP.`,
+        tr('Tap a square to light up its word, and tap it again for the word going the other way. Double tap to open the lit word.'),
+        tr('Read the clue or the picture and type the answer. A full answer is checked straight away.'),
+        tr('You have {hearts} hearts per puzzle. A wrong answer costs one; trying the same wrong answer again costs nothing.', { hearts: CW.hearts }),
+        tr('A hint costs 1 token and shows a third of the empty letters. Out of hearts, 1 token buys a heart, or replay.'),
+        tr('Stars count the words left: none left is 3 stars, one is 2, two is 1. Each new star earns {expPerStar} EXP.', { expPerStar: CW.expPerStar }),
       ],
     },
     {
       mode: 'offline',
-      title: 'One grid, take turns',
-      blurb: 'Pass the phone. Claim words to own their letters.',
+      title: tr('One grid, take turns'),
+      blurb: tr('Pass the phone. Claim words to own their letters.'),
       howTo: [
-        'Add 2 to 6 players. Everyone plays the same grid, one word per turn, in a random order each lap.',
-        `A right answer scores its length, plus any crossing word it completes. A wrong answer costs one of your ${CW.hearts} hearts.`,
-        'Closing a word ends your turn with no penalty. There are no hints and no EXP in this mode.',
-        'At 0 hearts each player gets one revive, 1 token paid by the phone owner, or they are out.',
-        'You can split players into teams. Teams take turns, and a team scores its players\' average.',
+        tr('Add 2 to 6 players. Everyone plays the same grid, one word per turn, in a random order each lap.'),
+        tr('A right answer scores its length, plus any crossing word it completes. A wrong answer costs one of your {hearts} hearts.', { hearts: CW.hearts }),
+        tr('Closing a word ends your turn with no penalty. There are no hints and no EXP in this mode.'),
+        tr('At 0 hearts each player gets one revive, 1 token paid by the phone owner, or they are out.'),
+        tr('You can split players into teams. Teams take turns, and a team scores its players\' average.'),
       ],
     },
     {
       mode: 'bots',
-      title: 'Grid showdown',
-      blurb: 'The same grid as the rivals. First right answer claims the word.',
+      title: tr('Grid showdown'),
+      blurb: tr('The same grid as the rivals. First right answer claims the word.'),
       howTo: [
-        'Pick Freshmen, Scholars or Geniuses and 1 to 3 rivals. Meet them in the room: tap a rival for its profile, swap it or kick it.',
-        'Everyone plays the same grid. The first right answer claims the word and its letters. A rival never takes the word you are typing.',
-        `Pick 1, 2 or 3 puzzles. They come one after another, each with the full time limit and ${CW.onlineHearts} fresh hearts.`,
-        `A wrong answer costs one of your ${CW.onlineHearts} hearts; trying the same wrong answer again costs nothing.`,
-        `Helpers cost tokens, like Solo: Hint shows some letters of a word (${CW.hintPrice}), and at 0 hearts ${CW.revivePrice} token buys ${CW.reviveHearts} heart, as often as you like.`,
-        'The race ends when every word is claimed, everyone is out, or time runs out. Most letters owned wins.',
-        `EXP by place on each puzzle: 1st earns 3 stars, 2nd 2, everyone else who claimed a word 1. Each star is ${CW.expPerStar} EXP.`,
+        tr('Pick Freshmen, Scholars or Geniuses and 1 to 3 rivals. Meet them in the room: tap a rival for its profile, swap it or kick it.'),
+        tr('Everyone plays the same grid. The first right answer claims the word and its letters. A rival never takes the word you are typing.'),
+        tr('Pick 1, 2 or 3 puzzles. They come one after another, each with the full time limit and {onlineHearts} fresh hearts.', { onlineHearts: CW.onlineHearts }),
+        tr('A wrong answer costs one of your {onlineHearts} hearts; trying the same wrong answer again costs nothing.', { onlineHearts: CW.onlineHearts }),
+        tr('Helpers cost tokens, like Solo: Hint shows some letters of a word ({hintPrice}), and at 0 hearts {revivePrice} token buys {reviveHearts} heart, as often as you like.', { hintPrice: CW.hintPrice, revivePrice: CW.revivePrice, reviveHearts: CW.reviveHearts }),
+        tr('The race ends when every word is claimed, everyone is out, or time runs out. Most letters owned wins.'),
+        tr('EXP by place on each puzzle: 1st earns 3 stars, 2nd 2, everyone else who claimed a word 1. Each star is {expPerStar} EXP.', { expPerStar: CW.expPerStar }),
       ],
     },
   ],
@@ -58,21 +59,21 @@ export const novaCrossword: GameDef = {
     bots: [
       {
         key: 'count',
-        label: 'Puzzles',
+        label: tr('Puzzles'),
         choices: [
-          { value: 1, label: '1 puzzle' },
-          { value: 2, label: '2 puzzles' },
-          { value: 3, label: '3 puzzles' },
+          { value: 1, label: tr('1 puzzle') },
+          { value: 2, label: tr('2 puzzles') },
+          { value: 3, label: tr('3 puzzles') },
         ],
         initial: 1,
       },
       {
         key: 'timelimit',
-        label: 'Time limit',
+        label: tr('Time limit'),
         choices: [
-          { value: 5, label: '5 min', note: 'quick' },
-          { value: 10, label: '10 min' },
-          { value: 15, label: '15 min', note: 'long' },
+          { value: 5, label: tr('5 min'), note: 'quick' },
+          { value: 10, label: tr('10 min') },
+          { value: 15, label: tr('15 min'), note: 'long' },
         ],
         initial: 10,
       },
@@ -83,25 +84,25 @@ export const novaCrossword: GameDef = {
   bots: { min: 1, max: 3 },
   teams: { offline: true, bots: true },
   teamScore: 'average',
-  playersNote: () => 'Player 1 is you, the phone owner, and pays for revives. Pass the phone earns no EXP.',
+  playersNote: () => tr('Player 1 is you, the phone owner, and pays for revives. Pass the phone earns no EXP.'),
   Play: { solo: SoloPlay, offline: OfflinePlay, bots: BotsPlay },
   // CW9: Solo pays the EXP each puzzle earned this session (stored on its first word); Offline earns none; CW12: Online up to 3 stars.
   exp: (_score, items) => items.reduce((a, i) => a + (Number(i.gameData.exp) || 0), 0),
   expCap: (settings, mode) => (mode === 'offline' ? 0 : mode === 'bots' ? cases(settings) * 3 * CW.expPerStar : PUZZLES.length * 3 * CW.expPerStar),
   itemLabel: (item) => wordById.get(item.itemId)?.answer ?? item.itemId,
   itemNoun: 'puzzle',
-  itemsTitle: 'Words',
+  itemsTitle: tr('Words'),
   summary: (play, items) => {
     if (play.mode === 'offline' || play.mode === 'bots') {
       const mine = items.filter((i) => i.seat === 0 && i.outcome === 'right');
       return [
-        { value: String(mine.reduce((a, i) => a + i.points, 0)), label: 'Your points' },
-        { value: String(mine.length), label: 'Words you claimed' },
+        { value: String(mine.reduce((a, i) => a + i.points, 0)), label: tr('Your points') },
+        { value: String(mine.length), label: tr('Words you claimed') },
       ];
     }
     return [
-      { value: `${items.filter((i) => i.outcome === 'right').length}/${items.length}`, label: 'Words solved' },
-      { value: String(items.reduce((a, i) => a + (Number(i.gameData.stars) || 0), 0)), label: 'Stars' },
+      { value: `${items.filter((i) => i.outcome === 'right').length}/${items.length}`, label: tr('Words solved') },
+      { value: String(items.reduce((a, i) => a + (Number(i.gameData.stars) || 0), 0)), label: tr('Stars') },
     ];
   },
 };

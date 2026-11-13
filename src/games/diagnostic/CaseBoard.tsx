@@ -15,6 +15,7 @@ import { Btn, GameScreen, Kick, RoundBtn } from '../shell/ui';
 import { DP, cluePoints, search, type Attempt, type DPCase, type GuessEntry } from './core';
 import { INDEX, guessById, guessName } from './data';
 import { clock } from '@/games/engine/clock';
+import { tr } from '@/i18n';
 
 // The Diagnostic Pursuit case screen (v2, DP10-DP13), shared by Solo and Offline Multiplayer:
 // old clue-card style in MedNova colours, Focus mode while typing.
@@ -100,12 +101,12 @@ export function CaseBoard(p: BoardProps) {
 
         {p.phase === 'paused' ? (
           <View style={[s.hidden, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
-            <Kick>Case hidden</Kick>
+            <Kick>{tr('Case hidden')}</Kick>
             <Text style={[s.hiddenT, { color: t.mute }]}>{p.pausedNote}</Text>
           </View>
         ) : focused ? (
           <View style={s.pinned}>
-            <Kick color={t.accent}>Newest clue</Kick>
+            <Kick color={t.accent}>{tr('Newest clue')}</Kick>
             <Clue i={shown.length - 1} text={shown[shown.length - 1]} />
           </View>
         ) : (
@@ -134,7 +135,7 @@ export function CaseBoard(p: BoardProps) {
             {focused || p.actions === false ? null : p.actions === 'hint' ? (
               p.hint ? (
                 <View style={s.row3}>
-                  <ActionBtn label={p.hint.granted ? '💡 Hint used' : `💡 Hint · 1${COIN}`} flex={1} onPress={p.hint.onHint} disabled={p.hint.granted || p.phase !== 'playing'} bg="#231b4e" line="#504188" fg="#d8b4fe" />
+                  <ActionBtn label={p.hint.granted ? tr('💡 Hint used') : tr('💡 Hint · 1{COIN}', { COIN })} flex={1} onPress={p.hint.onHint} disabled={p.hint.granted || p.phase !== 'playing'} bg="#231b4e" line="#504188" fg="#d8b4fe" />
                 </View>
               ) : null
             ) : <Actions canReveal={p.attempt.cluesShown < DP.clueCount} hint={p.hint} onSkip={p.onSkip} onReveal={p.onReveal} />}
@@ -166,12 +167,12 @@ function TopBar(p: BoardProps) {
           {p.title} <Text style={[s.of, { color: t.mute }]}>{p.sub}</Text>
         </Text>
         <Text style={[s.diff, { color: col, borderColor: alpha(col, 0.55), backgroundColor: alpha(col, 0.12) }]}>{p.c.difficulty}</Text>
-        <RoundBtn label="Pause" glyph="❚❚" onPress={p.onPause} />
+        <RoundBtn label={tr('Pause')} glyph="❚❚" onPress={p.onPause} />
       </View>
       <View style={[s.stats, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
         <Stat label={p.clock.label} value={clock(p.clock.ms, { pad: true, down: p.clock.down })} color={p.clock.warn ? t.rose : amber(t)} />
-        <Stat label={p.worth?.label ?? (p.result ? 'Scored' : 'Worth now')} value={p.worth?.value ?? String(worth)} />
-        <Stat label="Clues" value={`${p.attempt.cluesShown} / ${DP.clueCount}`} />
+        <Stat label={p.worth?.label ?? (p.result ? tr('Scored') : tr('Worth now'))} value={p.worth?.value ?? String(worth)} />
+        <Stat label={tr('Clues')} value={`${p.attempt.cluesShown} / ${DP.clueCount}`} />
       </View>
       <View style={[s.prog, { backgroundColor: t.chipLine }]}>
         <LinearGradient
@@ -205,9 +206,7 @@ function SlimBar(p: BoardProps) {
         {p.slim}
         {dot}
         <Text style={{ color: p.clock.warn ? t.rose : amber(t) }}>{clock(p.clock.ms, { pad: true, down: p.clock.down })}</Text>
-        {dot}
-        {cluePoints(p.attempt.cluesShown)} pts{dot}
-        {p.attempt.cluesShown} / {DP.clueCount}
+        {tr('{dot} {cluePoints} pts{dot} {cluesShown} / {clueCount}', { dot, cluePoints: cluePoints(p.attempt.cluesShown), cluesShown: p.attempt.cluesShown, clueCount: DP.clueCount })}
       </Text>
     </View>
   );
@@ -230,7 +229,7 @@ function FieldHint({ c }: { c: DPCase }) {
   const purple = '#d8b4fe';
   return (
     <Animated.View entering={FadeIn} style={[s.hint, { borderColor: alpha('#a78bfa', 0.4), backgroundColor: alpha('#6d28d9', 0.16) }]}>
-      <Text style={[s.hintK, { color: purple }]}>💡 Hint · Medical field</Text>
+      <Text style={[s.hintK, { color: purple }]}>{tr('💡 Hint · Medical field')}</Text>
       <Text style={[s.hintT, { color: t.fg }]}>{c.fields.join(' · ')}</Text>
     </Animated.View>
   );
@@ -242,7 +241,7 @@ function Differential({ wrong }: { wrong: string[] }) {
   return (
     <View style={s.ddx}>
       <Kick>
-        Differential
+        {tr('Differential')}
       </Kick>
       <View style={s.chips}>
         {wrong.map((id) => (
@@ -266,10 +265,10 @@ const ActionBtn = ({ label, flex, bg, line, fg, onPress, disabled }: { label: st
 function Actions({ canReveal, hint, onSkip, onReveal }: { canReveal: boolean; hint?: BoardProps['hint']; onSkip: () => void; onReveal: () => void }) {
   return (
     <View style={s.row3}>
-      <ActionBtn label="⏭ Skip" flex={0.8} onPress={onSkip} bg="#2e1a2e" line="#833f4a" fg="#fda4af" />
-      <ActionBtn label="🔍 Reveal a Clue" flex={1.3} onPress={onReveal} disabled={!canReveal} bg="#142741" line="#19637e" fg="#67e8f9" />
+      <ActionBtn label={tr('⏭ Skip')} flex={0.8} onPress={onSkip} bg="#2e1a2e" line="#833f4a" fg="#fda4af" />
+      <ActionBtn label={tr('🔍 Reveal a Clue')} flex={1.3} onPress={onReveal} disabled={!canReveal} bg="#142741" line="#19637e" fg="#67e8f9" />
       {hint ? (
-        <ActionBtn label={hint.granted ? '💡 Hint used' : '💡 Hint'} flex={1} onPress={hint.onHint} disabled={hint.granted} bg="#231b4e" line="#504188" fg="#d8b4fe" />
+        <ActionBtn label={hint.granted ? tr('💡 Hint used') : tr('💡 Hint')} flex={1} onPress={hint.onHint} disabled={hint.granted} bg="#231b4e" line="#504188" fg="#d8b4fe" />
       ) : null}
     </View>
   );
@@ -345,17 +344,17 @@ function AnswerBox({ wrong, wrongSeq, focused, onFocus, onBlur, onGuess }: { wro
           onFocus={onFocus}
           onBlur={onBlur}
           onSubmitEditing={submit}
-          placeholder="Type a diagnosis…"
+          placeholder={tr('Type a diagnosis…')}
           placeholderTextColor={t.dim}
           autoCorrect={false}
           autoCapitalize="none"
           returnKeyType="done"
           style={[s.input, { color: t.fg }]}
-          accessibilityLabel="Your diagnosis"
+          accessibilityLabel={tr('Your diagnosis')}
         />
-        <Pressable onPress={submit} disabled={!choice} style={{ opacity: choice ? 1 : 0.5 }} accessibilityRole="button" accessibilityLabel="Submit">
+        <Pressable onPress={submit} disabled={!choice} style={{ opacity: choice ? 1 : 0.5 }} accessibilityRole="button" accessibilityLabel={tr('Submit')}>
           <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={s.sub}>
-            <Text style={[s.subT, { color: t.onGrad }]}>Submit</Text>
+            <Text style={[s.subT, { color: t.onGrad }]}>{tr('Submit')}</Text>
           </LinearGradient>
         </Pressable>
       </Animated.View>
@@ -367,7 +366,7 @@ function AnswerBox({ wrong, wrongSeq, focused, onFocus, onBlur, onGuess }: { wro
 function ResultCard({ r, c }: { r: BoardResult; c: DPCase }) {
   const t = useTheme();
   const tone = r.outcome === 'right' ? '#34d399' : r.outcome === 'skipped' ? amber(t) : t.rose;
-  const word = { right: 'Solved', wrong: 'Missed', skipped: 'Skipped', timed_out: 'Time up' }[r.outcome];
+  const word = { right: tr('Solved'), wrong: tr('Missed'), skipped: tr('Skipped'), timed_out: tr('Time up') }[r.outcome];
   return (
     <Animated.View entering={FadeInDown.duration(280)} style={[s.res, { backgroundColor: t.panel, borderColor: alpha(tone, 0.6) }]}>
       <Kick color={tone}>{word}</Kick>
@@ -382,7 +381,7 @@ function ResultCard({ r, c }: { r: BoardResult; c: DPCase }) {
 /** "75 points: 60 for 3 clues + 15 speed, in 00:51" */
 export function pointsLine(o: { outcome: BoardResult['outcome']; points: number; cluePoints: number; speedBonus: number; cluesShown: number; timeMs: number }, miss: string) {
   return o.outcome === 'right'
-    ? `${o.points} points: ${o.cluePoints} for ${o.cluesShown} ${o.cluesShown === 1 ? 'clue' : 'clues'} + ${o.speedBonus} speed, in ${clock(o.timeMs, { pad: true })}`
+    ? tr('{points} points: {cluePoints} for {cluesShown} {n} + {speedBonus} speed, in {n2}', { points: o.points, cluePoints: o.cluePoints, cluesShown: o.cluesShown, n: o.cluesShown === 1 ? tr('clue') : tr('clues'), speedBonus: o.speedBonus, n2: clock(o.timeMs, { pad: true }) })
     : miss;
 }
 

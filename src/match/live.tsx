@@ -9,6 +9,7 @@ import { u, useBleed } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import { G } from './grey';
+import { tr } from '@/i18n';
 
 /** ON8 / DPN7: a pill slides in under the header for a big moment ("Sara solved it, 2nd"), then fades after 2 s. */
 export function useAlerts() {
@@ -42,7 +43,7 @@ export function Countdown({ ms, faces, ids, line, dealing }: { ms: number; faces
   return (
     // In a tablet's centred column it still covers the whole screen.
     <Animated.View entering={FadeIn.duration(200)} style={[StyleSheet.absoluteFill, s.cd, bleed ? { left: -bleed, right: -bleed } : null]}>
-      <Text style={[s.cdK, { color: G.mute }]}>MATCH STARTING</Text>
+      <Text style={[s.cdK, { color: G.mute }]}>{tr('MATCH STARTING')}</Text>
       {done && dealing ? <Text style={[s.stuckT, { color: G.fg, marginVertical: u(30) }]}>{dealing}</Text> : <Text style={[s.cdN, { color: G.fg }]}>{Math.max(1, Math.ceil(ms / 1000))}</Text>}
       <View style={s.cdF}>
         {faces.map((f, i) => (

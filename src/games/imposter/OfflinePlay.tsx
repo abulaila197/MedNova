@@ -16,6 +16,7 @@ import { privateWord } from './engine/engine';
 import type { GameAction, GameState, SubtypeChoice } from './engine/types';
 import { BigClock, DecisionButtons, Holder, HoldWord, ImposterScreen, PlayerTiles, RoundResult, s as k, type Person } from './kit';
 import { act, holderOf, idOf, ownFirst, roundOutcome, seatOf, shiftDeadlines, startOfflineGame, tally } from './offline';
+import { tr, TA_START } from '@/i18n';
 
 type Saved = { state: GameState; recorded: number };
 
@@ -135,13 +136,13 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   let bottom: ReactNode = null;
 
   if (paused) {
-    body = <Body style={{ textAlign: 'center', marginTop: u(40) }}>Paused. The clock is stopped.</Body>;
+    body = <Body style={{ textAlign: 'center', marginTop: u(40) }}>{tr('Paused. The clock is stopped.')}</Body>;
   } else if (ph.kind === 'wordReveal' && hp) {
     if (ready !== hp.id) {
-      body = <Holder lead="Pass the phone to" person={hp} sub="Only you should see the next screen." />;
+      body = <Holder lead={tr('Pass the phone to')} person={hp} sub={tr('Only you should see the next screen.')} />;
       bottom = (
         <Btn
-          label="I'm ready"
+          label={tr('I\'m ready')}
           onPress={() => {
             setReady(hp.id);
             setSeen(false);
@@ -151,42 +152,42 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
     } else {
       body = (
         <>
-          <Holder lead="Your word" person={hp} sub={`Category: ${r.pair.category}. One player is the imposter, with a different word. Hold to see your word, and whether it's you.`} />
+          <Holder lead={tr('Your word')} person={hp} sub={tr('Category: {category}. One player is the imposter, with a different word. Hold to see your word, and whether it\'s you.', { category: r.pair.category })} />
           <HoldWord word={privateWord(s, hp.id) ?? ''} imposter={hp.id === r.imposterId} onSeen={() => setSeen(true)} />
         </>
       );
-      bottom = <Btn label="Done, pass it on" disabled={!seen} onPress={() => send({ type: 'ACK_WORD', playerId: hp.id })} />;
+      bottom = <Btn label={tr('Done, pass it on')} disabled={!seen} onPress={() => send({ type: 'ACK_WORD', playerId: hp.id })} />;
     }
   } else if (ph.kind === 'offlineTurn') {
     const extra = ph.turn > 2;
     body = (
       <>
         <View style={k.holder}>
-          <Kick>{extra ? 'Extra turn' : `Turn ${ph.turn} of 2`}</Kick>
-          <Text style={[k.name, { color: t.white }]}>Say one word each</Text>
-          <Text style={[k.sub, { color: t.mute }]}>Out loud, in this order. Not your own word, and not a word already said this round.</Text>
+          <Kick>{extra ? tr('Extra turn') : tr('Turn {turn} of 2', { turn: ph.turn })}</Kick>
+          <Text style={[k.name, { color: t.white }]}>{tr('Say one word each')}</Text>
+          <Text style={[k.sub, { color: t.mute }]}>{tr('Out loud, in this order. Not your own word, and not a word already said this round.')}</Text>
         </View>
         <Card>
           {r.order.map((id, i) => {
             const p = by.get(id);
             return (
               <View key={id} style={k.row}>
-                <Text style={[k.rowP, { color: t.dim, minWidth: u(18), textAlign: 'left' }]}>{i + 1}</Text>
+                <Text style={[k.rowP, { color: t.dim, minWidth: u(18), textAlign: TA_START }]}>{i + 1}</Text>
                 <View style={[k.dot, { backgroundColor: p?.color ?? t.soft }]} />
                 <Text style={[k.rowN, { color: i === 0 ? t.accent : t.fg }]}>{p?.name}</Text>
-                {i === 0 ? <Text style={[k.mark, { color: t.accent }]}>STARTS</Text> : null}
+                {i === 0 ? <Text style={[k.mark, { color: t.accent }]}>{tr('STARTS')}</Text> : null}
               </View>
             );
           })}
         </Card>
       </>
     );
-    bottom = <Btn label={ph.turn >= 2 ? 'Everyone has spoken' : 'Next turn'} onPress={() => send({ type: 'NEXT_TURN', playerId: idOf(0) })} />;
+    bottom = <Btn label={ph.turn >= 2 ? tr('Everyone has spoken') : tr('Next turn')} onPress={() => send({ type: 'NEXT_TURN', playerId: idOf(0) })} />;
   } else if (ph.kind === 'decision' && hp) {
     body = (
       <>
-        <Holder lead="Pass the phone to" person={hp} sub="Vote now, or hear one more turn of clues? Most answers win; a tie means one more turn." />
-        <Text style={[k.sub, { color: t.dim }]}>{`${Object.keys(r.decisions).length} of ${r.participants.length} answered`}</Text>
+        <Holder lead={tr('Pass the phone to')} person={hp} sub={tr('Vote now, or hear one more turn of clues? Most answers win; a tie means one more turn.')} />
+        <Text style={[k.sub, { color: t.dim }]}>{tr('{n} of {n2} answered', { n: Object.keys(r.decisions).length, n2: r.participants.length })}</Text>
       </>
     );
     bottom = <DecisionButtons onVote={() => send({ type: 'DECIDE', playerId: hp.id, choice: 'vote' })} onExtra={() => send({ type: 'DECIDE', playerId: hp.id, choice: 'extra' })} />;
@@ -194,19 +195,19 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
     body = (
       <>
         <View style={k.holder}>
-          <Kick>Discuss</Kick>
-          <Text style={[k.name, { color: t.white }]}>Who is the imposter?</Text>
+          <Kick>{tr('Discuss')}</Kick>
+          <Text style={[k.name, { color: t.white }]}>{tr('Who is the imposter?')}</Text>
         </View>
         <BigClock ms={left} />
-        <Body style={{ textAlign: 'center' }}>Talk it over. Then the phone goes round for the vote.</Body>
+        <Body style={{ textAlign: 'center' }}>{tr('Talk it over. Then the phone goes round for the vote.')}</Body>
       </>
     );
-    bottom = <Btn label="Start the vote" onPress={() => send({ type: 'SKIP_DISCUSSION', playerId: idOf(0) })} />;
+    bottom = <Btn label={tr('Start the vote')} onPress={() => send({ type: 'SKIP_DISCUSSION', playerId: idOf(0) })} />;
   } else if (ph.kind === 'vote' && hp) {
     const cands = r.candidates;
     body = (
       <>
-        <Holder lead={cands ? 'Revote: pass the phone to' : 'Pass the phone to'} person={hp} sub={cands ? 'A tie. Vote again between the tied players. Your vote is final.' : 'Tap who you think is the imposter. Everyone can see the votes. Your vote is final.'} />
+        <Holder lead={cands ? tr('Revote: pass the phone to') : tr('Pass the phone to')} person={hp} sub={cands ? tr('A tie. Vote again between the tied players. Your vote is final.') : tr('Tap who you think is the imposter. Everyone can see the votes. Your vote is final.')} />
         <PlayerTiles people={inRound} votes={tally(s)} pickable={(id) => id !== hp.id && (!cands || cands.includes(id))} onPick={(id) => send({ type: 'CAST_VOTE', playerId: hp.id, target: id })} mark={{ [hp.id]: 'YOU' }} />
       </>
     );
@@ -215,24 +216,24 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
     const theirs = r.pair[r.imposterSide === 'a' ? 'b' : 'a'].word;
     body = (
       <>
-        <Holder lead="Caught" person={imp} sub={`${imp.name}, say your guess for everyone else's word, out loud. One try.`} />
+        <Holder lead={tr('Caught')} person={imp} sub={tr('{name}, say your guess for everyone else\'s word, out loud. One try.', { name: imp.name })} />
         <BigClock ms={left} warnAt={5_000} />
         <Card>
-          <Kick>{`${hp.name} decides`}</Kick>
-          <HoldWord word={theirs} label="Hold to check the word" small />
+          <Kick>{tr('{name} decides', { name: hp.name })}</Kick>
+          <HoldWord word={theirs} label={tr('Hold to check the word')} small />
         </Card>
       </>
     );
     bottom = (
       <View style={{ gap: u(8) }}>
-        <Btn label="Right guess" onPress={() => send({ type: 'CONFIRM_GUESS', playerId: hp.id, correct: true })} />
-        <Ghost label="Wrong guess" onPress={() => send({ type: 'CONFIRM_GUESS', playerId: hp.id, correct: false })} />
+        <Btn label={tr('Right guess')} onPress={() => send({ type: 'CONFIRM_GUESS', playerId: hp.id, correct: true })} />
+        <Ghost label={tr('Wrong guess')} onPress={() => send({ type: 'CONFIRM_GUESS', playerId: hp.id, correct: false })} />
       </View>
     );
   } else if (ph.kind === 'roundResult') {
     const last = s.roundIndex + 1 >= (s.config?.rounds ?? 1);
     body = <RoundResult sum={ph.summary} people={inRound} totals={s.players.map((p) => ({ id: p.id, score: p.score }))} />;
-    bottom = <Btn label={last ? 'See results' : 'Next round'} onPress={() => send({ type: 'NEXT_ROUND', playerId: idOf(0) })} />;
+    bottom = <Btn label={last ? tr('See results') : tr('Next round')} onPress={() => send({ type: 'NEXT_ROUND', playerId: idOf(0) })} />;
   }
 
   return (

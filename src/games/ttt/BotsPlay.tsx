@@ -27,6 +27,7 @@ import { dealCases } from './deal';
 import { caseItem } from './items';
 import { Btn, C, Explain, PadSky, Pill, TopLine, type RevealRow } from './Pad';
 import { TttRace } from './rivals';
+import { tr } from '@/i18n';
 
 /**
  * Trace the Treatment vs rivals: the same case for everyone at the same time. You see who has locked in, never what
@@ -51,7 +52,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
         const id = cases.current[m.index];
         return id && run ? [caseItem(id, run, { index: m.index, learn: true, ms: m.solved_ms ?? 0 })] : [];
       }),
-    solvedText: (name) => `${name} locked in`,
+    solvedText: (name) => tr('{name} locked in', { name }),
   });
   const { st, race, t: now, push } = g;
   const teams = Number(play.settings.teams) || 0;
@@ -80,7 +81,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
     setBusy(true);
     try {
       const receipt = await engine.wallet.spend(cost, reason, play.id);
-      if (!receipt) return setHelpNote(`This help costs ${cost} tokens. Each level up gives 1 token.`);
+      if (!receipt) return setHelpNote(tr('This help costs {cost} tokens. Each level up gives 1 token.', { cost }));
       if (!g.at((at) => race.help(at, apply))) return void engine.wallet.refund(receipt);
       setHelpNote(null);
     } finally {
@@ -105,7 +106,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
   const c = id ? caseById.get(id) : null;
   if (!c || !run) return <GameScreen scroll={false} under={<PadSky />}>{null}</GameScreen>;
   const total = st.total;
-  const kicker = total > 1 ? `Case ${st.index + 1} of ${total}` : 'One case';
+  const kicker = total > 1 ? tr('Case {n} of {total}', { n: st.index + 1, total }) : tr('One case');
   const me = st.players.find((p) => p.user_id === YOU);
 
   if (st.phase !== 'case') {
@@ -118,12 +119,12 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
     const last = st.index + 1 >= total;
     return (
       <GameScreen scroll={false} under={<PadSky />} bodyStyle={{ paddingTop: u(12), paddingHorizontal: u(16), paddingBottom: u(14), gap: u(10) }}>
-        <TopLine kicker={`${kicker} · Everyone’s answers`} right={<Pill text={`${me?.score ?? 0} pts`} />} />
+        <TopLine kicker={tr('{kicker} · Everyone’s answers', { kicker })} right={<Pill text={tr('{n} pts', { n: me?.score ?? 0 })} />} />
         <Explain
           c={c}
           run={race.runOfCase(st.index) ?? run}
           rows={rows}
-          foot={st.phase === 'done' ? <Text style={s.wait}>Adding up the scores…</Text> : <Btn label={`${last ? 'See results' : 'Next case'} · ${nextIn} s`} onPress={() => void g.at((at) => race.next(at))} />}
+          foot={st.phase === 'done' ? <Text style={s.wait}>{tr('Adding up the scores…')}</Text> : <Btn label={`${last ? tr('See results') : tr('Next case')} · ${nextIn} s`} onPress={() => void g.at((at) => race.next(at))} />}
         />
         <AlertPill alert={g.alert} />
         {menu}
@@ -139,13 +140,13 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
         c={c}
         run={run}
         locked={g.paused || run.done}
-        note={run.done ? 'Locked in. Waiting for the rivals…' : 'Answers stay hidden until the reveal.'}
+        note={run.done ? tr('Locked in. Waiting for the rivals…') : tr('Answers stay hidden until the reveal.')}
         help={{
-          fifty: { label: run.fifty ? '50/50 used' : `50/50 · ${TTT.fiftyCost}${COIN}`, onPress: () => void buy(TTT.fiftyCost, 'ttt_fifty', (r) => takeFifty(r, Math.random)), disabled: !!run.fifty || busy },
+          fifty: { label: run.fifty ? tr('50/50 used') : `50/50 · ${TTT.fiftyCost}${COIN}`, onPress: () => void buy(TTT.fiftyCost, 'ttt_fifty', (r) => takeFifty(r, Math.random)), disabled: !!run.fifty || busy },
           note: helpNote,
         }}
         // No chips over the paper (Yazan 2026-11-12): who locked in shows as live pop-ups, never what they picked.
-        top={<TopLine kicker={kicker} right={<Pill text={left != null ? clock(left, { down: true }) : `${me?.score ?? 0} pts`} warn={left != null && left < 15_000} />} />}
+        top={<TopLine kicker={kicker} right={<Pill text={left != null ? clock(left, { down: true }) : tr('{n} pts', { n: me?.score ?? 0 })} warn={left != null && left < 15_000} />} />}
         onLock={(pick) => void g.at((at) => race.lock(at, pick))}
       />
       <AlertPill alert={g.alert} />

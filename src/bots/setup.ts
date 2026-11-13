@@ -6,6 +6,7 @@ import { useAccount } from '@/state/account';
 
 import { dealBots } from './core';
 import type { Bot, BotLevel } from './types';
+import { tr } from '@/i18n';
 
 /** The Vs bots choices every game shares, after the game's own options (Yazan 2026-11-09). */
 export function botSetup(def: GameDef): SetupOption[] {
@@ -15,18 +16,18 @@ export function botSetup(def: GameDef): SetupOption[] {
   const extra: SetupOption[] = [
     {
       key: 'botLevel',
-      label: 'Rivals',
+      label: tr('Rivals'),
       choices: [
-        { value: 'easy', label: 'Freshmen' },
-        { value: 'medium', label: 'Scholars' },
-        { value: 'hard', label: 'Geniuses' },
+        { value: 'easy', label: tr('Freshmen') },
+        { value: 'medium', label: tr('Scholars') },
+        { value: 'hard', label: tr('Geniuses') },
       ],
       initial: 'medium',
     },
-    { key: 'botCount', label: 'How many', choices: counts.map((n) => ({ value: n, label: String(n) })), initial: Math.min(range.max, 3) },
+    { key: 'botCount', label: tr('How many'), choices: counts.map((n) => ({ value: n, label: String(n) })), initial: Math.min(range.max, 3) },
   ];
   // Teams with bots (Yazan 2026-11-09): you and bot teammates against a bot team.
-  if (def.teams?.bots) extra.push({ key: 'botTeams', label: 'Teams', choices: [{ value: 0, label: 'Off' }, { value: 2, label: '2 teams' }], initial: 0 });
+  if (def.teams?.bots) extra.push({ key: 'botTeams', label: tr('Teams'), choices: [{ value: 0, label: tr('Off') }, { value: 2, label: tr('2 teams') }], initial: 0 });
   return [...own, ...extra];
 }
 

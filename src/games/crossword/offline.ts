@@ -8,6 +8,7 @@ import type { Row } from '../engine/standings';
 import { nextLap } from '../medicordle/core';
 import { event, finishRecap, lastIndexOf, leadLine, sides, type RecapLine } from '../shell/recap';
 import { autoSolved, CW, indexOf, judge, type PuzzleDef } from './core';
+import { say } from '../../i18n/say';
 
 export type SeatState = { hearts: number; score: number; revived: boolean; out: boolean; tried: Record<string, string[]> };
 
@@ -115,7 +116,7 @@ function outSeat(r: OfflineRun, seat: number): OfflineRun {
 
 /** Standings: score, then hearts left (as coded); equal on both shares the rank. */
 export function offlineStandings(r: OfflineRun, names: Record<number, string>): Row[] {
-  return r.seats.map((seat) => ({ seat, name: names[seat] ?? `Player ${seat + 1}`, score: r.players[seat].score, timeMs: -r.players[seat].hearts }));
+  return r.seats.map((seat) => ({ seat, name: names[seat] ?? say('Player {v}', { v: seat + 1 }), score: r.players[seat].score, timeMs: -r.players[seat].hearts }));
 }
 
 /**

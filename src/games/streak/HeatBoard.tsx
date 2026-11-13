@@ -18,6 +18,7 @@ import { HELPER_PRICE, type HelperKind, type Question, type Round } from './core
 import { clock } from '@/games/engine/clock';
 import { useClock, type Clock } from '@/games/engine/useTicker';
 import { CHOSEN, ChosenTick } from '@/match/chosen';
+import { isAr, tr } from '@/i18n';
 
 // The Streak Master's own design language (SM10): "Heat column".
 // The streak fills a heat tube on the left, segment by segment; the round clock is a burning fuse with
@@ -77,8 +78,8 @@ export function HeatBoard(p: BoardProps) {
         {/* The heat tube: one segment per answer in the current streak. */}
         <View style={s.col}>
           <Text style={[s.streakN, { color: t.white }]}>{p.round.streak}</Text>
-          <Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7} style={[s.colK, { color: t.dim, letterSpacing: u(0.4) }]}>STREAK</Text>
-          <View style={[s.tube, { borderColor: t.panelLine, backgroundColor: t.panel }]} accessibilityLabel={`Streak ${p.round.streak}`}>
+          <Text numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7} style={[s.colK, { color: t.dim, letterSpacing: u(0.4) }]}>{tr('STREAK')}</Text>
+          <View style={[s.tube, { borderColor: t.panelLine, backgroundColor: t.panel }]} accessibilityLabel={tr('Streak {streak}', { streak: p.round.streak })}>
             {Array.from({ length: SEGMENTS }, (_, i) => (i < lit ? <Seg key={i} on hot={hc.hot} cool={t.accent} fresh={i === lit - 1 && showing && !!fb?.right} /> : <View key={i} style={[s.seg, { backgroundColor: hc.segOff }]} />))}
           </View>
           <Text style={[s.colK, { color: t.dim }]}>{`${p.round.score}\nPTS`}</Text>
@@ -90,15 +91,15 @@ export function HeatBoard(p: BoardProps) {
           <View style={s.top}>
             <Text style={[s.field, { color: t.accent }]} numberOfLines={1}>{p.hidden ? '' : p.q.field.toUpperCase()}</Text>
             <View style={s.right}>
-              {p.round.noClock ? <Text style={[s.clock, { color: t.dim }]}>No clock</Text> : <ClockText ticks={p.ticks} leftAt={p.leftAt} over={over} bad={hc.bad} white={t.white} />}
-              <RoundBtn label="Pause" glyph="❚❚" onPress={p.onPause} />
+              {p.round.noClock ? <Text style={[s.clock, { color: t.dim }]}>{tr('No clock')}</Text> : <ClockText ticks={p.ticks} leftAt={p.leftAt} over={over} bad={hc.bad} white={t.white} />}
+              <RoundBtn label={tr('Pause')} glyph="❚❚" onPress={p.onPause} />
             </View>
           </View>
           {p.round.noClock ? null : <LiveFuse ticks={p.ticks} leftAt={p.leftAt} totalMs={p.totalMs} cool={t.accent} hot={hc.hot} track={t.line} burning={p.round.phase === 'playing'} />}
 
           {p.hidden ? (
             <View style={[s.hide, { borderColor: t.panelLine, backgroundColor: t.panel }]}>
-              <Text style={[s.hideT, { color: t.mute }]}>Paused. The clock is stopped.</Text>
+              <Text style={[s.hideT, { color: t.mute }]}>{tr('Paused. The clock is stopped.')}</Text>
             </View>
           ) : p.dock ? null : (
             <Animated.View key={p.q.id} entering={FadeIn.duration(180)} style={{ gap: u(10) }}>
@@ -179,7 +180,7 @@ function ClockText({ ticks, leftAt, over, bad, white }: { ticks: Clock; leftAt: 
   const leftMs = leftAt(useClock(ticks));
   const warn = leftMs <= 10_000 && !over;
   return (
-    <Text style={[s.clock, { color: warn ? bad : white }]} accessibilityLabel={`${Math.ceil(leftMs / 1000)} seconds left`}>
+    <Text style={[s.clock, { color: warn ? bad : white }]} accessibilityLabel={tr('{ceil} seconds left', { ceil: Math.ceil(leftMs / 1000) })}>
       {clock(leftMs, { down: true })}
     </Text>
   );
@@ -201,8 +202,8 @@ function Fuse({ frac, cool, hot, track, burning }: { frac: number; cool: string;
   const pct = `${Math.max(0, Math.min(1, frac)) * 100}%` as const;
   return (
     <View style={[s.fuse, { backgroundColor: track }]}>
-      <LinearGradient colors={[cool, hot]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={[s.fuseFill, { width: pct }]} />
-      <Animated.View style={[s.spark, spark, { left: pct, shadowColor: hot }]} />
+      <LinearGradient colors={[cool, hot]} start={{ x: isAr ? 1 : 0, y: 0 }} end={{ x: isAr ? 0 : 1, y: 0 }} style={[s.fuseFill, { width: pct }]} />
+      <Animated.View style={[s.spark, spark, { start: pct, shadowColor: hot }]} />
     </View>
   );
 }
@@ -247,7 +248,7 @@ function Option({ label, state, late, gone, live, dim, faces, onPress, hc, minH 
         ]}
         accessibilityRole="button"
         accessibilityState={{ disabled: !live }}
-        accessibilityLabel={gone ? `${label}, removed` : label}>
+        accessibilityLabel={gone ? tr('{label}, removed', { label }) : label}>
         <Text style={[s.optT, { color: tint ? t.fg : BEIGE?.ink ?? t.fg, fontFamily: tint || state === 'locked' ? F.bodyBold : F.body, textDecorationLine: gone ? 'line-through' : 'none' }]}>{label}</Text>
       </Pressable>
       {state === 'locked' ? <ChosenTick /> : null}
@@ -276,7 +277,7 @@ function mix(a: string, b: string, k: number) {
 function HelperBtn({ kind, label, bg, line, fg, off, onPress }: { kind: HelperKind; label: string; bg: string; line: string; fg: string; off: boolean; onPress: () => void }) {
   const price = HELPER_PRICE[kind];
   return (
-    <Pressable onPress={onPress} disabled={off} style={[s.hb, { backgroundColor: bg, borderColor: line }]} accessibilityRole="button" accessibilityLabel={`${label}, ${price} token${price > 1 ? 's' : ''}`}>
+    <Pressable onPress={onPress} disabled={off} style={[s.hb, { backgroundColor: bg, borderColor: line }]} accessibilityRole="button" accessibilityLabel={tr('{label}, {price} token{n}', { label, price, n: price > 1 ? 's' : '' })}>
       <Text style={[s.hbT, { color: fg, opacity: off ? 0.45 : 1 }]} numberOfLines={1}>{label}</Text>
       <CoinLabel text={`${price}${COIN}`} style={[s.hbP, { color: fg, opacity: off ? 0.34 : 0.75 }]} />
     </Pressable>
@@ -287,8 +288,8 @@ function HelperBtn({ kind, label, bg, line, fg, off, onPress }: { kind: HelperKi
 function Helpers({ onHelper, usable, disabled, noTime }: { onHelper: (k: HelperKind) => void; usable: (k: HelperKind) => boolean; disabled: boolean; noTime?: boolean }) {
   return (
     <View style={s.hrow}>
-      <HelperBtn kind="remove" off={disabled || !usable('remove')} onPress={() => onHelper('remove')} label="Remove 2" bg="#142741" line="#19637e" fg="#67e8f9" />
-      <HelperBtn kind="skip" off={disabled || !usable('skip')} onPress={() => onHelper('skip')} label="Skip" bg="#2e1a2e" line="#833f4a" fg="#fda4af" />
+      <HelperBtn kind="remove" off={disabled || !usable('remove')} onPress={() => onHelper('remove')} label={tr('Remove 2')} bg="#142741" line="#19637e" fg="#67e8f9" />
+      <HelperBtn kind="skip" off={disabled || !usable('skip')} onPress={() => onHelper('skip')} label={tr('Skip')} bg="#2e1a2e" line="#833f4a" fg="#fda4af" />
       {noTime ? null : <HelperBtn kind="time" off={disabled || !usable('time')} onPress={() => onHelper('time')} label="+10 s" bg="#231b4e" line="#504188" fg="#d8b4fe" />}
     </View>
   );
@@ -308,8 +309,8 @@ const s = StyleSheet.create({
   right: { flexDirection: 'row', alignItems: 'center', gap: u(7) },
   clock: { fontFamily: F.mono, fontSize: u(13), letterSpacing: u(0.4) },
   fuse: { height: u(3.5), borderRadius: u(2), justifyContent: 'center' },
-  fuseFill: { position: 'absolute', left: 0, top: 0, bottom: 0, borderRadius: u(2) },
-  spark: { position: 'absolute', width: u(8), height: u(8), marginLeft: -u(4), borderRadius: u(4), backgroundColor: '#fff', shadowOpacity: 1, shadowRadius: u(6), shadowOffset: { width: 0, height: 0 } },
+  fuseFill: { position: 'absolute', start: 0, top: 0, bottom: 0, borderRadius: u(2) },
+  spark: { position: 'absolute', width: u(8), height: u(8), marginStart: -u(4), borderRadius: u(4), backgroundColor: '#fff', shadowOpacity: 1, shadowRadius: u(6), shadowOffset: { width: 0, height: 0 } },
   q: { fontFamily: F.body, fontSize: u(12), lineHeight: u(17) },
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: u(6) },
   optWrap: { width: '48.5%', borderRadius: u(11) },

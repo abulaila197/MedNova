@@ -5,6 +5,7 @@ import { createGame, nextDeadline, reduce } from './engine/engine';
 import { PROFANITY } from './engine/filter';
 import type { GameAction, GameEvent, GameState, RoundSummary, SubtypeChoice, WordBank, WordPair } from './engine/types';
 import { getView, type PlayerView } from './engine/view';
+import { say } from '../../i18n/say';
 
 /** The moves a phone may send; the referee fills in playerId from the signed-in user. */
 export type Move =
@@ -45,7 +46,7 @@ export function startOnlineGame(o: {
   const rng = o.rng ?? Math.random;
   const env = envAt(o.bank, o.now, rng, o.first);
   const host = o.seats.includes(o.host) ? o.host : o.seats[0];
-  const name = (id: string) => o.names[id]?.trim() || 'Player';
+  const name = (id: string) => o.names[id]?.trim() || say('Player');
   let s = createGame({ roomId: o.roomId, mode: 'online', host: { id: host, name: name(host) } });
   for (const id of o.seats) if (id !== host) s = reduce(s, { type: 'JOIN', playerId: id, name: name(id) }, env).state;
   const rounds = Math.min(5, Math.max(1, Math.round(o.rounds) || 3));
@@ -78,8 +79,8 @@ export function stepOnline(bank: WordBank, saved: Saved, me: string, move: Move,
   let alerts = saved.alerts;
   for (const e of events) {
     if (e.type !== 'profanity-threshold') continue;
-    const who = g.players.find((p) => p.id === e.playerId)?.name ?? 'A player';
-    alerts = [...alerts, { to: e.notifyId, text: `${who} has tried blocked words 3 times.`, at: now }].slice(-MAX_ALERTS);
+    const who = g.players.find((p) => p.id === e.playerId)?.name ?? say('A player');
+    alerts = [...alerts, { to: e.notifyId, text: say('{v} has tried blocked words 3 times.', { v: who }), at: now }].slice(-MAX_ALERTS);
   }
   const next = saved.own ? { g, alerts, own: saved.own } : { g, alerts };
   const refused = move.type === 'TICK' ? null : r.error;

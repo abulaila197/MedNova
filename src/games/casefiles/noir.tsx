@@ -9,6 +9,7 @@ import { F } from '@/theme/tokens';
 
 import { GameScreen } from '../shell/ui';
 import { clock } from '@/games/engine/clock';
+import { tr } from '@/i18n';
 
 // Case Files pieces, in the app's look since Yazan 2026-11-02 (#19: "the old design look shouldn't be present
 // anywhere"): app sky, navy panels, cyan accent, Inter Tight; the index cards are the app's soft beige (like Streak
@@ -89,7 +90,7 @@ export function Btn({ label, onPress, ghost, disabled, style }: { label: string;
 /** The square pause button in the corner (rule 4). */
 export function PauseBtn({ onPress }: { onPress: () => void }) {
   return (
-    <Pressable onPress={tapped(onPress)} hitSlop={u(8)} accessibilityRole="button" accessibilityLabel="Pause" style={s.pause}>
+    <Pressable onPress={tapped(onPress)} hitSlop={u(8)} accessibilityRole="button" accessibilityLabel={tr('Pause')} style={s.pause}>
       <View style={s.bar} />
       <View style={s.bar} />
     </Pressable>

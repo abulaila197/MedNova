@@ -10,6 +10,7 @@ import { tapped } from '@/lib/sound';
 
 import { Btn, Card, GameScreen, Kick, RoundBtn } from '../shell/ui';
 import type { RoundSummary } from './engine/types';
+import { tr, TA_END } from '@/i18n';
 
 // Imposter's screens in the app look (IM1), dark only. Shared by Pass the phone and Online.
 
@@ -24,14 +25,14 @@ export function ImposterScreen({ round, rounds, category, onPause, children, bot
     <GameScreen scroll bottom={bottom} top={over}>
       <View style={s.top}>
         <View style={{ flex: 1, minWidth: 0 }}>
-          <Kick>{`Round ${round} of ${rounds}`}</Kick>
+          <Kick>{tr('Round {round} of {rounds}', { round, rounds })}</Kick>
           {category ? (
             <Text style={[s.cat, { color: t.white }]} numberOfLines={1}>
               {category}
             </Text>
           ) : null}
         </View>
-        <RoundBtn label="Pause" glyph="❚❚" onPress={onPause} />
+        <RoundBtn label={tr('Pause')} glyph="❚❚" onPress={onPause} />
       </View>
       {children}
     </GameScreen>
@@ -54,7 +55,7 @@ export function Holder({ lead, person, sub }: { lead: string; person: Person; su
 
 /** Hold to view: the word shows only while the finger is down (offline word reveal and the guess check). */
 /** `imposter`: the word comes with a red "You are the imposter" line, shown only while held (Yazan 2026-11-12). */
-export function HoldWord({ word, label = 'Hold to see your word', onSeen, small, imposter }: { word: string; label?: string; onSeen?: () => void; small?: boolean; imposter?: boolean }) {
+export function HoldWord({ word, label = tr('Hold to see your word'), onSeen, small, imposter }: { word: string; label?: string; onSeen?: () => void; small?: boolean; imposter?: boolean }) {
   const t = useTheme();
   const [on, setOn] = useState(false);
   return (
@@ -69,17 +70,17 @@ export function HoldWord({ word, label = 'Hold to see your word', onSeen, small,
       accessibilityLabel={label}>
       {on ? (
         <>
-          {imposter ? <Text style={[s.imp, { color: IC.bad, borderColor: IC.bad }]}>YOU ARE THE IMPOSTER</Text> : null}
+          {imposter ? <Text style={[s.imp, { color: IC.bad, borderColor: IC.bad }]}>{tr('YOU ARE THE IMPOSTER')}</Text> : null}
           <Text style={[s.word, { color: t.white }]} adjustsFontSizeToFit numberOfLines={2}>
             {word}
           </Text>
-          {imposter ? <Text style={[s.holdS, { color: t.soft, textAlign: 'center' }]}>The others share a related word. Blend in.</Text> : null}
+          {imposter ? <Text style={[s.holdS, { color: t.soft, textAlign: 'center' }]}>{tr('The others share a related word. Blend in.')}</Text> : null}
         </>
       ) : (
         <>
           <Text style={[s.holdG, { color: t.accent }]}>◉</Text>
           <Text style={[s.holdT, { color: t.soft }]}>{label}</Text>
-          <Text style={[s.holdS, { color: t.dim }]}>Keep it hidden from the others</Text>
+          <Text style={[s.holdS, { color: t.dim }]}>{tr('Keep it hidden from the others')}</Text>
         </>
       )}
     </Pressable>
@@ -109,7 +110,7 @@ export function PlayerTiles({ people, votes, pickable, onPick, mark }: { people:
             onPress={tapped(() => onPick?.(p.id))}
             style={[s.tile, { borderColor: can ? (p.color ?? t.panelLine) : t.chipLine, backgroundColor: can ? t.panel : t.chip, opacity: can || !onPick ? 1 : 0.5 }]}
             accessibilityRole="button"
-            accessibilityLabel={`Vote for ${p.name}`}>
+            accessibilityLabel={tr('Vote for {name}', { name: p.name })}>
             <View style={[s.dot, { backgroundColor: p.color ?? t.soft }]} />
             <Text style={[s.tileT, { color: t.fg }]} numberOfLines={1}>
               {p.name}
@@ -131,8 +132,8 @@ export function PlayerTiles({ people, votes, pickable, onPick, mark }: { people:
 export function DecisionButtons({ onVote, onExtra }: { onVote: () => void; onExtra: () => void }) {
   return (
     <View style={{ gap: u(8) }}>
-      <Btn label="Vote now" onPress={onVote} />
-      <Ghostish label="One more turn" onPress={onExtra} />
+      <Btn label={tr('Vote now')} onPress={onVote} />
+      <Ghostish label={tr('One more turn')} onPress={onExtra} />
     </View>
   );
 }
@@ -153,32 +154,32 @@ export function RoundResult({ sum, people, totals }: { sum: RoundSummary; people
   const imp = by.get(sum.imposterId);
   const head =
     sum.outcome === 'imposter-disconnected'
-      ? 'The imposter left'
+      ? tr('The imposter left')
       : sum.outcome === 'caught'
         ? sum.redemptionCorrect
-          ? 'Caught, but they guessed the word'
-          : 'Caught'
-        : 'The imposter got away';
+          ? tr('Caught, but they guessed the word')
+          : tr('Caught')
+        : tr('The imposter got away');
   return (
     <Animated.View entering={FadeIn.duration(220)} style={{ gap: u(12) }}>
       <Card style={{ alignItems: 'center' }}>
         <Kick color={sum.outcome === 'not-caught' ? IC.bad : IC.good}>{head}</Kick>
         <Text style={[s.impName, { color: imp?.color ?? t.accent }]}>{imp?.name ?? '?'}</Text>
-        <Text style={[s.sub, { color: t.mute }]}>was the imposter</Text>
+        <Text style={[s.sub, { color: t.mute }]}>{tr('was the imposter')}</Text>
         <View style={s.words}>
           <View style={s.wordCol}>
-            <Text style={[s.wordK, { color: t.dim }]}>EVERYONE ELSE</Text>
+            <Text style={[s.wordK, { color: t.dim }]}>{tr('EVERYONE ELSE')}</Text>
             <Text style={[s.wordV, { color: t.white }]}>{sum.majorityWord}</Text>
           </View>
           <View style={[s.vline, { backgroundColor: t.panelLine }]} />
           <View style={s.wordCol}>
-            <Text style={[s.wordK, { color: t.dim }]}>IMPOSTER</Text>
+            <Text style={[s.wordK, { color: t.dim }]}>{tr('IMPOSTER')}</Text>
             <Text style={[s.wordV, { color: IC.bad }]}>{sum.imposterWord}</Text>
           </View>
         </View>
       </Card>
       <Card>
-        <Kick>Votes and points</Kick>
+        <Kick>{tr('Votes and points')}</Kick>
         {people.map((p) => {
           const v = sum.votes[p.id];
           const d = sum.deltas[p.id] ?? 0;
@@ -187,10 +188,10 @@ export function RoundResult({ sum, people, totals }: { sum: RoundSummary; people
               <View style={[s.dot, { backgroundColor: p.color ?? t.soft }]} />
               <Text style={[s.rowN, { color: t.fg }]} numberOfLines={1}>
                 {p.name}
-                {p.id === sum.imposterId ? '  (imposter)' : ''}
+                {p.id === sum.imposterId ? tr('  (imposter)') : ''}
               </Text>
               <Text style={[s.rowV, { color: v === sum.imposterId ? IC.good : t.mute }]} numberOfLines={1}>
-                {v ? `→ ${by.get(v)?.name ?? '?'}` : 'no vote'}
+                {v ? `→ ${by.get(v)?.name ?? '?'}` : tr('no vote')}
               </Text>
               <Text style={[s.rowP, { color: d ? IC.good : t.dim }]}>{d ? `+${d}` : '0'}</Text>
             </View>
@@ -198,7 +199,7 @@ export function RoundResult({ sum, people, totals }: { sum: RoundSummary; people
         })}
       </Card>
       <Card>
-        <Kick>Totals</Kick>
+        <Kick>{tr('Totals')}</Kick>
         {[...totals]
           .sort((a, b) => b.score - a.score)
           .map((x) => {
@@ -222,7 +223,7 @@ export function ClueList({ clues, people }: { clues: { playerId: string; text: s
   const by = new Map(people.map((p) => [p.id, p]));
   return (
     <Card>
-      <Kick>Last turn&apos;s clues</Kick>
+      <Kick>{tr('Last turn&apos;s clues')}</Kick>
       {clues.map((c, i) => (
         <View key={`${c.playerId}${i}`} style={s.row}>
           <View style={[s.dot, { backgroundColor: by.get(c.playerId)?.color ?? t.soft }]} />
@@ -265,5 +266,5 @@ export const s = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center', gap: u(8), paddingVertical: u(3) },
   rowN: { flex: 1, fontFamily: F.bodySemi, fontSize: u(12), lineHeight: u(16) },
   rowV: { fontFamily: F.body, fontSize: u(12), lineHeight: u(16), maxWidth: '45%' },
-  rowP: { fontFamily: F.mono, fontSize: u(11.5), minWidth: u(24), textAlign: 'right' },
+  rowP: { fontFamily: F.mono, fontSize: u(11.5), minWidth: u(24), textAlign: TA_END },
 });

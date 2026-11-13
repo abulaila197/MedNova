@@ -1,5 +1,6 @@
 import type { HeadToHead as Record_ } from './types';
 import { rng } from './rng';
+import { say } from '../i18n/say';
 
 /**
  * Revenge lines (G6): a rival you've met before greets you in the room by your record. Short text, said once as it
@@ -19,11 +20,11 @@ export function revengeLine(rec: Record_ | undefined, seed: string): string | nu
   const streak = itLost ? rec.w >= 3 && rec.w > rec.l * 2 : rec.l >= 3 && rec.l > rec.w * 2;
   const pool = itLost ? (streak ? STREAK_IT_LOST : AFTER_IT_LOST) : streak ? STREAK_IT_WON : AFTER_IT_WON;
   // Yazan 2026-11-12: it remembers the score too ("Rematch. Now. 3–2 to you.").
-  return `${pool[Math.floor(r() * pool.length)]} ${scoreSaid(rec)}`;
+  return `${say(pool[Math.floor(r() * pool.length)])} ${scoreSaid(rec)}`;
 }
 
 /** The record in the rival's own words: "3–2 to you.", "4–1 to me.", "2–2." */
-export const scoreSaid = (rec: Record_) => (rec.w === rec.l ? `${rec.w}–${rec.l}.` : rec.w > rec.l ? `${rec.w}–${rec.l} to you.` : `${rec.l}–${rec.w} to me.`);
+export const scoreSaid = (rec: Record_) => (rec.w === rec.l ? say('{v}–{v2}.', { v: rec.w, v2: rec.l }) : rec.w > rec.l ? say('{v}–{v2} to you.', { v: rec.w, v2: rec.l }) : say('{v}–{v2} to me.', { v: rec.l, v2: rec.w }));
 
 /** "3–1 to you", "1–3 to them", "2–2". */
-export const recordText = (rec: Record_) => (rec.w === rec.l ? `${rec.w}–${rec.l}` : rec.w > rec.l ? `${rec.w}–${rec.l} to you` : `${rec.l}–${rec.w} to them`);
+export const recordText = (rec: Record_) => (rec.w === rec.l ? say('{v}–{v2}', { v: rec.w, v2: rec.l }) : rec.w > rec.l ? say('{v}–{v2} to you', { v: rec.w, v2: rec.l }) : say('{v}–{v2} to them', { v: rec.l, v2: rec.w }));

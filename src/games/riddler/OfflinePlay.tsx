@@ -24,6 +24,7 @@ import {
 } from './offline';
 import { RiddleBoard } from './RiddleBoard';
 import { second, useTicker } from '../engine/useTicker';
+import { tr, TA_END } from '@/i18n';
 
 /** Offline (RD5, RD6, RD12, TMG-RD): the same picture for everyone in turn, then a reveal; no hint, no EXP. */
 export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
@@ -122,8 +123,8 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
     <RiddleBoard
       riddle={r}
       turnKey={`${run.index}:${run.turn}`}
-      kicker={over ? `Picture ${run.index + 1} of ${run.photos.length}` : `Picture ${run.index + 1} of ${run.photos.length} · turn ${turnNo} of ${players}`}
-      title={over ? { text: 'Everyone has played' } : { text: who?.name ?? `Player ${seat + 1}`, color: who?.color }}
+      kicker={over ? tr('Picture {n} of {n2}', { n: run.index + 1, n2: run.photos.length }) : tr('Picture {n} of {n2} · turn {turnNo} of {players}', { n: run.index + 1, n2: run.photos.length, turnNo, players })}
+      title={over ? { text: tr('Everyone has played') } : { text: who?.name ?? tr('Player {n}', { n: seat + 1 }), color: who?.color }}
       clockMs={playing ? turnLeft(run, now) : run.turnMs}
       countdown
       lives={null}
@@ -136,9 +137,9 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
       dock={over ? <Reveal run={run} names={names} colors={seatOf} onNext={() => dispatch({ type: 'NEXT' })} /> : undefined}>
       {run.phase === 'handoff' ? (
         <Curtain
-          name={who?.name ?? `Player ${seat + 1}`}
+          name={who?.name ?? tr('Player {n}', { n: seat + 1 })}
           color={who?.color}
-          sub={`Picture ${run.index + 1} of ${run.photos.length} · ${run.turnMs / 1000} s turn`}
+          sub={tr('Picture {n} of {n2} · {n3} s turn', { n: run.index + 1, n2: run.photos.length, n3: run.turnMs / 1000 })}
           board={board}
           recap={offlineRecap(run, seat, play, clock)}
           onReady={() => dispatch({ type: 'READY', now: Date.now() })}
@@ -169,19 +170,19 @@ function Reveal({ run, names, colors, onNext }: { run: OfflineRun; names: Record
   const rows = [...res.scores].sort((a, b) => b.points - a.points);
   return (
     <View style={[s.card, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
-      <Kick color={t.accent}>The answer</Kick>
+      <Kick color={t.accent}>{tr('The answer')}</Kick>
       <Text style={[s.ans, { color: t.white }]}>{riddleName(r)}</Text>
       <View style={{ gap: u(4) }}>
         {rows.map((x) => (
           <View key={x.seat} style={s.row}>
             <View style={[s.dot, { backgroundColor: colors.get(x.seat)?.color ?? t.accent }]} />
-            <Text style={[s.who, { color: t.fg }]} numberOfLines={1}>{names[x.seat] ?? `Player ${x.seat + 1}`}</Text>
-            <Text style={[s.how, { color: t.mute }]}>{x.solved ? clock(x.timeMs) : 'time up'}</Text>
+            <Text style={[s.who, { color: t.fg }]} numberOfLines={1}>{names[x.seat] ?? tr('Player {n}', { n: x.seat + 1 })}</Text>
+            <Text style={[s.how, { color: t.mute }]}>{x.solved ? clock(x.timeMs) : tr('time up')}</Text>
             <Text style={[s.pts, { color: x.points ? t.white : t.dim }]}>{x.points ? `+${x.points}` : '0'}</Text>
           </View>
         ))}
       </View>
-      <Btn label={last ? 'See results' : 'Next picture'} onPress={onNext} style={{ marginTop: u(4) }} />
+      <Btn label={last ? tr('See results') : tr('Next picture')} onPress={onNext} style={{ marginTop: u(4) }} />
     </View>
   );
 }
@@ -193,5 +194,5 @@ const s = StyleSheet.create({
   dot: { width: u(8), height: u(8), borderRadius: u(4) },
   who: { flex: 1, fontFamily: F.bodySemi, fontSize: u(12) },
   how: { fontFamily: F.mono, fontSize: u(10.5) },
-  pts: { fontFamily: F.mono, fontSize: u(11.5), minWidth: u(36), textAlign: 'right' },
+  pts: { fontFamily: F.mono, fontSize: u(11.5), minWidth: u(36), textAlign: TA_END },
 });

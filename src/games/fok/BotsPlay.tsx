@@ -30,6 +30,7 @@ import { boardItems } from './items';
 import { FokRace } from './rivals';
 import { BoardEnd } from './SoloPlay';
 import { C, FokSky, Hearts, TokenCard, TopLine } from './Table';
+import { tr } from '@/i18n';
 
 /**
  * Four of a Kind vs rivals: everyone plays the same boards at the same time, each on their own copy. You see how many
@@ -53,7 +54,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
         const board = boards.current[m.index];
         return board && run ? boardItems(board, run, { index: m.index, learn: true, ms: m.solved_ms ?? 0 }) : [];
       }),
-    solvedText: (name, rank) => (rank === 1 ? `${name} solved the board first` : `${name} solved the board`),
+    solvedText: (name, rank) => (rank === 1 ? tr('{name} solved the board first', { name }) : tr('{name} solved the board', { name })),
   });
   const { st, race, t: now, push } = g;
   const teams = Number(play.settings.teams) || 0;
@@ -85,7 +86,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
     setHintBusy(true);
     try {
       const receipt = await engine.wallet.spend(FOK.revealCost, 'fok_hint', play.id);
-      if (!receipt) return setHintNote(`The hint costs ${FOK.revealCost} tokens. Each level up gives 1 token.`);
+      if (!receipt) return setHintNote(tr('The hint costs {revealCost} tokens. Each level up gives 1 token.', { revealCost: FOK.revealCost }));
       if (!g.at((at) => race.hint(at))) return void engine.wallet.refund(receipt);
       setHintNote(null);
     } finally {
@@ -109,7 +110,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
   const run = race.mine();
   if (!board || !run) return <GameScreen scroll={false} under={<FokSky />}>{null}</GameScreen>;
   const total = st.total;
-  const boardLine = total > 1 ? `Board ${st.index + 1} of ${total}` : 'Four of a Kind';
+  const boardLine = total > 1 ? tr('Board {n} of {total}', { n: st.index + 1, total }) : tr('Four of a Kind');
   const reveal = st.phase !== 'case';
   const left = race.leftMs(now);
   const me = st.players.find((p) => p.user_id === YOU);
@@ -122,7 +123,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
           <View key={x.user_id} style={[s.chip, { borderColor: colorOf(x) }]}>
             <PlayerFace slug={x.character} size={u(18)} userId={x.user_id} still />
             <View style={{ flex: 1, minWidth: 0, gap: u(2) }}>
-              <Text style={s.chipT} numberOfLines={1}>{x.user_id === YOU ? 'You' : x.name.split(' ')[0]}</Text>
+              <Text style={s.chipT} numberOfLines={1}>{x.user_id === YOU ? tr('You') : x.name.split(' ')[0]}</Text>
               <View style={s.dots}>
                 {[0, 1, 2, 3].map((i) => (
                   <View key={i} style={[s.dot, { backgroundColor: i < (x.greens ?? 0) ? C.rows[i] : 'rgba(255,255,255,0.14)' }]} />
@@ -139,15 +140,15 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
     const nextIn = Math.max(0, Math.ceil((st.phase_ends_at - now) / 1000));
     return (
       <GameScreen scroll={false} under={<FokSky />} bodyStyle={{ paddingTop: u(12), paddingHorizontal: u(16) }}>
-        <BoardEnd board={board} run={run} kicker={run.solved ? 'Board solved' : 'Board over'} title={boardLine} line={`You · ${st.me?.points ?? 0} of ${FOK.maxPoints} points`} />
+        <BoardEnd board={board} run={run} kicker={run.solved ? tr('Board solved') : tr('Board over')} title={boardLine} line={tr('You · {n} of {maxPoints} points', { n: st.me?.points ?? 0, maxPoints: FOK.maxPoints })} />
         <Animated.View entering={FadeIn.duration(200)} style={[StyleSheet.absoluteFill, s.dock]} pointerEvents="box-none">
           <RaceReveal
-            label={run.solved ? 'Board solved' : 'Board over'}
-            answer={`${me?.item_rank ? `You placed ${nth(me.item_rank)}` : 'The board'} · ${st.me?.points ?? 0} points`}
+            label={run.solved ? tr('Board solved') : tr('Board over')}
+            answer={tr('{n} · {n2} points', { n: me?.item_rank ? tr('You placed {v}', { v: nth(me.item_rank) }) : tr('The board'), n2: st.me?.points ?? 0 })}
             players={st.players}
             me={YOU}
-            how={(x) => `${x.greens ?? 0} of 4 · ${x.item_points ?? 0} pts`}
-            next={st.phase === 'done' ? 'Adding up the scores…' : `${st.index + 1 < total ? 'Next board' : 'Results'} in ${nextIn} s`}
+            how={(x) => tr('{n} of 4 · {n2} pts', { n: x.greens ?? 0, n2: x.item_points ?? 0 })}
+            next={st.phase === 'done' ? tr('Adding up the scores…') : tr('{n} in {nextIn} s', { n: st.index + 1 < total ? tr('Next board') : tr('Results'), nextIn })}
           />
         </Animated.View>
         <AlertPill alert={g.alert} />
@@ -156,7 +157,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
     );
   }
 
-  const sub = [boardLine, left != null ? `${clock(left, { down: true })} left` : null, `${me?.score ?? 0} points so far`].filter(Boolean).join(' · ');
+  const sub = [boardLine, left != null ? tr('{n} left', { n: clock(left, { down: true }) }) : null, tr('{n} points so far', { n: me?.score ?? 0 })].filter(Boolean).join(' · ');
   return (
     <GameScreen scroll={false} under={<FokSky />} bodyStyle={{ paddingTop: u(12), paddingHorizontal: u(16), paddingBottom: u(14) }}>
       <BoardView
@@ -166,12 +167,12 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
         locked={g.paused || run.phase !== 'play'}
         top={
           <View style={{ gap: u(8) }}>
-            <TopLine kicker="Race the rivals" right={<Hearts n={run.hearts} />} title="Four of a Kind" sub={sub} />
+            <TopLine kicker={tr('Race the rivals')} right={<Hearts n={run.hearts} />} title={tr('Four of a Kind')} sub={sub} />
             {chips}
           </View>
         }
-        tip={hintNote ?? 'Everyone has the same board.'}
-        hint={{ label: run.revealed != null ? 'Hint used' : `Hint · ${FOK.revealCost}${COIN}`, onPress: () => void buyHint(), disabled: run.revealed != null || hintBusy || run.phase !== 'play' }}
+        tip={hintNote ?? tr('Everyone has the same board.')}
+        hint={{ label: run.revealed != null ? tr('Hint used') : tr('Hint · {revealCost}{COIN}', { revealCost: FOK.revealCost, COIN }), onPress: () => void buyHint(), disabled: run.revealed != null || hintBusy || run.phase !== 'play' }}
         onSubmit={(tiles) => g.at((at) => race.submit(at, tiles)) ?? 'ignored'}
         onShuffle={() => void g.at((at) => race.shuffle(at))}
       />
@@ -179,8 +180,8 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
         <View style={s.token}>
           <TokenCard
             playId={play.id}
-            text={`Second chance: ${FOK.tokenPrice} token gives ${FOK.tokenHearts} heart, once a board. Your found groups stay found.`}
-            noLabel="No, end my board"
+            text={tr('Second chance: {tokenPrice} token gives {tokenHearts} heart, once a board. Your found groups stay found.', { tokenPrice: FOK.tokenPrice, tokenHearts: FOK.tokenHearts })}
+            noLabel={tr('No, end my board')}
             onBuy={() => {
               // The board closed while the card was up: the token comes back (the card refunds on a throw).
               if (!g.at((at) => race.buyHeart(at))) throw new Error('over');

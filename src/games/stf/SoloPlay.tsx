@@ -17,6 +17,7 @@ import { caseById } from './data';
 import { dealCases } from './deal';
 import { caseItem } from './items';
 import { Btn, Explain, Pill, StfSky, TopLine } from './Paper';
+import { tr } from '@/i18n';
 
 /** One case's result in this game. */
 type Done = { points: number; exp: number; doubles: number; ms: number };
@@ -112,7 +113,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
     setBusy(true);
     try {
       const receipt = await engine.wallet.spend(cost, reason, play.id);
-      if (!receipt) return setHelpNote(`This help costs ${cost} tokens. Each level up gives 1 token.`);
+      if (!receipt) return setHelpNote(tr('This help costs {cost} tokens. Each level up gives 1 token.', { cost }));
       const now = ref.current;
       const next = now && now.run.stage !== 'done' ? apply(now.run) : null;
       if (!now || !next || next === now.run) return void engine.wallet.refund(receipt);
@@ -136,7 +137,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   const c = caseById.get(save.cases[save.index])!;
   const run = save.run;
   const total = save.cases.length;
-  const kicker = total > 1 ? `Case ${save.index + 1} of ${total}` : 'One case';
+  const kicker = total > 1 ? tr('Case {n} of {total}', { n: save.index + 1, total }) : tr('One case');
   const score = gameScore(save.done.map((d) => d.points));
   const menuEl = <PauseMenu open={menu} mode="solo" onResume={() => (setMenu(false), resume())} onQuit={() => (save.done.length > save.index ? finish() : onQuit())} />;
 
@@ -144,8 +145,8 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
     const last = save.index + 1 >= total;
     return (
       <GameScreen scroll={false} under={<StfSky />} bodyStyle={{ paddingTop: u(12), paddingHorizontal: u(16), paddingBottom: u(14), gap: u(10) }}>
-        <TopLine kicker={run.timeUp ? `${kicker} · Time up` : kicker} right={<Pill text={`${score} pts`} />} />
-        <Explain c={c} run={run} foot={<Btn label={last ? 'See results' : 'Next case'} go onPress={() => (last ? finish() : (setHelpNote(null), put({ ...save, index: save.index + 1, run: startCase(Math.random), ms: 0 })))} />} />
+        <TopLine kicker={run.timeUp ? tr('{kicker} · Time up', { kicker }) : kicker} right={<Pill text={tr('{score} pts', { score })} />} />
+        <Explain c={c} run={run} foot={<Btn label={last ? tr('See results') : tr('Next case')} go onPress={() => (last ? finish() : (setHelpNote(null), put({ ...save, index: save.index + 1, run: startCase(Math.random), ms: 0 })))} />} />
         {menuEl}
       </GameScreen>
     );
@@ -158,11 +159,11 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
         c={c}
         run={run}
         locked={paused || busy}
-        top={<TopLine kicker={kicker} right={<Pill text={left != null ? clockText(left, { down: true }) : `${score} pts`} warn={left != null && left < 15_000} />} />}
+        top={<TopLine kicker={kicker} right={<Pill text={left != null ? clockText(left, { down: true }) : tr('{score} pts', { score })} warn={left != null && left < 15_000} />} />}
         onLock={(pick) => step(lock(run, pick))}
         help={{
-          fifty: { label: run.fifty ? '50/50 used' : `50/50 · ${STF.fiftyCost}${COIN}`, onPress: () => void buy(STF.fiftyCost, 'stf_fifty', (r) => takeFifty(r, Math.random)), disabled: !!run.fifty || busy },
-          highlight: { label: run.highlight ? 'Highlighted' : `Highlight · ${STF.highlightCost}${COIN}`, onPress: () => void buy(STF.highlightCost, 'stf_highlight', takeHighlight), disabled: run.highlight || busy },
+          fifty: { label: run.fifty ? tr('50/50 used') : `50/50 · ${STF.fiftyCost}${COIN}`, onPress: () => void buy(STF.fiftyCost, 'stf_fifty', (r) => takeFifty(r, Math.random)), disabled: !!run.fifty || busy },
+          highlight: { label: run.highlight ? tr('Highlighted') : tr('Highlight · {highlightCost}{COIN}', { highlightCost: STF.highlightCost, COIN }), onPress: () => void buy(STF.highlightCost, 'stf_highlight', takeHighlight), disabled: run.highlight || busy },
           note: helpNote,
         }}
       />

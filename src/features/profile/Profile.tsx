@@ -25,7 +25,7 @@ import { titleName } from '@/features/style/catalog';
 import { Framed } from '@/features/style/Frame';
 import { titleColor } from '@/features/style/PlayerTitle';
 import { loadStyle, useStyle } from '@/features/style/useStyle';
-import { tr } from '@/i18n';
+import { tr, TA_END } from '@/i18n';
 
 const EMPTY: string[] = [];
 
@@ -281,7 +281,7 @@ const s = StyleSheet.create({
   bar: { height: u(9), borderRadius: 999, borderWidth: 1, overflow: 'hidden' },
   barF: { height: '100%', borderRadius: 999 },
   none: { fontFamily: F.body, fontSize: u(11), lineHeight: u(15), paddingVertical: u(7) },
-  tdN: { textAlign: 'right', fontFamily: F.display, fontSize: u(14), lineHeight: u(18), paddingEnd: u(2) },
+  tdN: { textAlign: TA_END, fontFamily: F.display, fontSize: u(14), lineHeight: u(18), paddingEnd: u(2) },
   ch: { height: u(23), paddingHorizontal: u(10), borderRadius: u(10), justifyContent: 'center' },
   ghost: { height: u(25), borderWidth: 1 },
   ghT: { fontFamily: F.bodySemi, fontSize: u(9.5) },

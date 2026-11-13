@@ -10,6 +10,7 @@ import { F } from '@/theme/tokens';
 import type { Standing } from '../engine/types';
 import type { RecapLine } from './recap';
 import { Btn, Kick, RoundBtn } from './ui';
+import { tr } from '@/i18n';
 
 /**
  * Rule 16: pass-the-phone curtain. Full cover, next player's name, scoreboard only (no answers), then "I'm ready".
@@ -24,10 +25,10 @@ export function Curtain({ name, color, sub, board, recap, onReady, onPause }: { 
       {/* The same pause as the board's, so an absent player can be removed or the game ended before their clock starts. */}
       {onPause ? (
         <View style={s.pause}>
-          <RoundBtn label="Pause" glyph="❚❚" onPress={onPause} />
+          <RoundBtn label={tr('Pause')} glyph="❚❚" onPress={onPause} />
         </View>
       ) : null}
-      <Kick>Pass the phone to</Kick>
+      <Kick>{tr('Pass the phone to')}</Kick>
       <Text style={[s.name, { color: color ?? t.accent }]}>{name}</Text>
       {sub ? <Kick>{sub}</Kick> : null}
       {recap?.length ? <Recap lines={recap} /> : null}
@@ -42,7 +43,7 @@ export function Curtain({ name, color, sub, board, recap, onReady, onPause }: { 
           </View>
         ))}
       </View>
-      <Btn label="I'm ready" onPress={onReady} style={{ alignSelf: 'stretch' }} />
+      <Btn label={tr('I\'m ready')} onPress={onReady} style={{ alignSelf: 'stretch' }} />
     </Animated.View>
   );
 }
@@ -52,7 +53,7 @@ export function Recap({ lines }: { lines: RecapLine[] }) {
   const t = useTheme();
   return (
     <View style={[s.recap, { borderColor: t.panelLine, backgroundColor: t.panel }]}>
-      <Text style={[s.recapK, { color: t.soft }]}>SINCE YOUR LAST TURN</Text>
+      <Text style={[s.recapK, { color: t.soft }]}>{tr('SINCE YOUR LAST TURN')}</Text>
       {lines.map((l) => (
         <View key={l.key} style={s.line}>
           <View style={[s.dot, { backgroundColor: l.color ?? t.soft }]} />

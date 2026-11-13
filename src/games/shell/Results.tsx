@@ -23,6 +23,7 @@ import { useSession } from './session';
 import { teamScoreOf, type GameDef } from './types';
 import { useResults } from './useShellPages';
 import { Body, Btn, Card, GameScreen, Ghost, Kick, Title } from './ui';
+import { tr } from '@/i18n';
 
 const MARK: Record<PlayItem['outcome'], string> = { right: '✓', wrong: '✕', skipped: '–', timed_out: '⏱' };
 
@@ -53,7 +54,7 @@ export function Results({ def, play, items }: { def: GameDef; play: Play; items:
       }>
       <View style={{ gap: u(6) }}>
         <Kick>{`${g.lead} ${g.em}`}</Kick>
-        <Title lead="Game" em="over" />
+        <Title lead={tr('Game')} em="over" />
       </View>
       <ResultTone play={play} items={items} uid={uid} plain={plain} />
       <Card style={s.top}>
@@ -68,7 +69,7 @@ export function Results({ def, play, items }: { def: GameDef; play: Play; items:
       </Card>
       {teamRows ? (
         <Card>
-          <Kick>Teams</Kick>
+          <Kick>{tr('Teams')}</Kick>
           {teamRows.map((r) => (
             <View key={r.id} style={s.row}>
               <Text style={[s.rank, { color: t.dim }]}>{r.rank}</Text>
@@ -77,12 +78,12 @@ export function Results({ def, play, items }: { def: GameDef; play: Play; items:
               <Text style={[s.pts, { color: t.soft }]}>{r.score}</Text>
             </View>
           ))}
-          <Body>{teamScoreOf(def, play.mode) === 'sum' ? 'A team scores every word its players won.' : 'A team scores its players\' average.'}</Body>
+          <Body>{teamScoreOf(def, play.mode) === 'sum' ? tr('A team scores every word its players won.') : tr('A team scores its players\' average.')}</Body>
         </Card>
       ) : null}
       {play.standings.length > 1 ? (
         <Card>
-          <Kick>{teamRows ? 'Players' : 'Standings'}</Kick>
+          <Kick>{teamRows ? tr('Players') : tr('Standings')}</Kick>
           {play.standings.map((r) => (
             <View key={r.seat} style={s.row}>
               <Text style={[s.rank, { color: t.dim }]}>{r.rank}</Text>
@@ -110,31 +111,31 @@ export function Results({ def, play, items }: { def: GameDef; play: Play; items:
       ) : null}
 
       <Card>
-        <Kick>{def.itemsTitle ?? 'Cases'}</Kick>
+        <Kick>{def.itemsTitle ?? tr('Cases')}</Kick>
         {items.map((i) => (
           <View key={i.id} style={s.row}>
             {plain ? null : <Text style={[s.mark, { color: i.outcome === 'right' ? t.accent : t.rose }]}>{MARK[i.outcome]}</Text>}
             <Text style={[s.item, { color: t.fg }]} numberOfLines={1}>
-              {multi ? `${nameOf.get(i.seat) ?? 'Nobody'} · ` : ''}
+              {multi ? `${nameOf.get(i.seat) ?? tr('Nobody')} · ` : ''}
               {def.itemLabel?.(i) ?? i.itemId}
             </Text>
             {/* RS1: dossier links only here, once the game has ended. */}
             {i.answerKey ? (
-              <Pressable onPress={() => openDossier(i.answerKey!)} hitSlop={u(6)} accessibilityRole="link" accessibilityLabel={`Open the dossier for ${def.itemLabel?.(i) ?? i.itemId}`}>
-                <Text style={[s.link, { color: t.accent }]}>Dossier ›</Text>
+              <Pressable onPress={() => openDossier(i.answerKey!)} hitSlop={u(6)} accessibilityRole="link" accessibilityLabel={tr('Open the dossier for {n}', { n: def.itemLabel?.(i) ?? i.itemId })}>
+                <Text style={[s.link, { color: t.accent }]}>{tr('Dossier ›')}</Text>
               </Pressable>
             ) : null}
             {plain ? null : <Text style={[s.pts, { color: t.soft }]}>{i.points}</Text>}
           </View>
         ))}
-        {missed ? <Body>{multi ? 'Your missed cases are waiting in Today\'s review.' : 'Missed cases are waiting in Today\'s review.'}</Body> : null}
+        {missed ? <Body>{multi ? tr('Your missed cases are waiting in Today\'s review.') : tr('Missed cases are waiting in Today\'s review.')}</Body> : null}
       </Card>
       {play.mode === 'bots' ? <AfterMatch play={play} /> : null}
       <View style={{ flexDirection: 'row', gap: u(8) }}>
-        <Btn label="Rematch" onPress={rematch} style={{ flex: 1 }} />
-        <Ghost label="Change settings" onPress={changeSettings} style={{ flex: 1 }} />
+        <Btn label={tr('Rematch')} onPress={rematch} style={{ flex: 1 }} />
+        <Ghost label={tr('Change settings')} onPress={changeSettings} style={{ flex: 1 }} />
       </View>
-      <Ghost label="Back to games" onPress={backToGames} />
+      <Ghost label={tr('Back to games')} onPress={backToGames} />
     </GameScreen>
     </WinShake>
   );
@@ -145,7 +146,7 @@ function ExpStat({ exp }: { exp: number }) {
   return (
     <View style={s.stat}>
       <Text style={[s.big, { color: t.accent }]}>{`+${exp}`}</Text>
-      <Kick>EXP</Kick>
+      <Kick>{tr('EXP')}</Kick>
     </View>
   );
 }

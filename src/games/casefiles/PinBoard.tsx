@@ -7,6 +7,7 @@ import { u } from '@/theme/scale';
 
 import { completed, invFile, status, type CaseDef, type FileId, type Run } from './core';
 import { NR, T } from './noir';
+import { tr } from '@/i18n';
 
 // The evidence board (Case Files look, decided 2026-10-05): files pinned to a grey felt board in rings by stage,
 // the personal file in the centre, red strings joining every file that glow as files unlock. Strings are
@@ -24,16 +25,16 @@ export function layout(def: CaseDef): Pin[] {
     [0.16, 0.09, 4],
   ];
   return [
-    { id: 'personal', label: 'Personal file', x: 0.5, y: 0.45, r: -2, kind: 'personal' },
-    { id: 'incident', label: 'Incident', x: 0.17, y: 0.33, r: -5, kind: 'paper' },
-    { id: 'background', label: 'Background', x: 0.83, y: 0.32, r: 4, kind: 'paper' },
-    { id: 'exam', label: 'Examination', x: 0.5, y: 0.09, r: 3, kind: 'paper' },
+    { id: 'personal', label: tr('Personal file'), x: 0.5, y: 0.45, r: -2, kind: 'personal' },
+    { id: 'incident', label: tr('Incident'), x: 0.17, y: 0.33, r: -5, kind: 'paper' },
+    { id: 'background', label: tr('Background'), x: 0.83, y: 0.32, r: 4, kind: 'paper' },
+    { id: 'exam', label: tr('Examination'), x: 0.5, y: 0.09, r: 3, kind: 'paper' },
     ...inv.map((v, i) => {
       const [x, y, r] = invSpots[i % invSpots.length];
-      return { id: invFile(i), label: v.title || 'Results', x, y, r, kind: 'paper' } as Pin;
+      return { id: invFile(i), label: v.title || tr('Results'), x, y, r, kind: 'paper' } as Pin;
     }),
-    { id: 'treatment', label: 'Treatment', x: 0.73, y: 0.9, r: 3, kind: 'paper' },
-    { id: 'discharge', label: 'Discharge', x: 0.27, y: 0.9, r: -3, kind: 'paper' },
+    { id: 'treatment', label: tr('Treatment'), x: 0.73, y: 0.9, r: 3, kind: 'paper' },
+    { id: 'discharge', label: tr('Discharge'), x: 0.27, y: 0.9, r: -3, kind: 'paper' },
   ];
 }
 
@@ -150,7 +151,7 @@ function PinHead({ x, y, glow, dim }: { x: number; y: number; glow: boolean; dim
         {glow ? <Circle cx={9} cy={8} r={9} fill="url(#pg)" /> : null}
         <Path d="M12.5 13.5 L19 22.5" stroke="#b9b9b4" strokeWidth={1.4} strokeLinecap="round" />
         <Path d="M12.5 13.5 L19 22.5" stroke="#000" strokeOpacity={0.25} strokeWidth={0.6} strokeLinecap="round" />
-        <Ellipse cx={11.6} cy={12.2} rx={3.2} ry={1.6} fill="#8e1018" transform="rotate(35 11.6 12.2)" />
+        <Ellipse cx={11.6} cy={12.2} rx={3.2} ry={1.6} fill="#8e1018" transform={tr('rotate(35 11.6 12.2)')} />
         <Path d="M5.2 7.6 L10.4 4.4 L13.8 9.6 L8.6 12.8 Z" fill="url(#ph)" />
         <Circle cx={7.4} cy={5.6} r={4.4} fill="url(#ph)" />
         <Circle cx={6.2} cy={4.4} r={1.2} fill="#fff" fillOpacity={0.55} />

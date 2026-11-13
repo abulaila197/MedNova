@@ -7,6 +7,7 @@ import { u } from '@/theme/scale';
 import { HelperButton } from '../shell/ui';
 import type { Case, CaseRun } from './core';
 import { Ask, Btn, C, Choices, NotePopup, Pad, s } from './Pad';
+import { tr } from '@/i18n';
 
 export type Help = { fifty: { label: string; onPress: () => void; disabled?: boolean }; note?: string | null };
 
@@ -29,7 +30,7 @@ export function CaseView({ c, run, top, onLock, help, locked, note }: { c: Case;
       <View style={{ flexGrow: 1, flexShrink: 0, flexBasis: 0 }} />
       {help?.note ? <Text style={[s.sub, { textAlign: 'center', color: C.soft }]}>{help.note}</Text> : note ? <Text style={[s.sub, { textAlign: 'center' }]}>{note}</Text> : null}
       {help ? <HelperButton tone="cyan" label={help.fifty.label} onPress={help.fifty.onPress} disabled={locked || run.done || help.fifty.disabled} /> : null}
-      <Btn label="Lock it in" onPress={() => picked != null && onLock(picked)} disabled={locked || picked == null || run.done} />
+      <Btn label={tr('Lock it in')} onPress={() => picked != null && onLock(picked)} disabled={locked || picked == null || run.done} />
       {open ? <NotePopup c={c} onClose={() => setOpen(false)} /> : null}
     </View>
   );

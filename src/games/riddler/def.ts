@@ -4,10 +4,11 @@ import { RIDDLES, riddleById, riddleName } from './data';
 import { BotsPlay } from './BotsPlay';
 import { OfflinePlay } from './OfflinePlay';
 import { SoloPlay } from './SoloPlay';
+import { tr } from '@/i18n';
 
 const PHOTOS = {
   key: 'photos',
-  label: 'Pictures',
+  label: tr('Pictures'),
   choices: [
     { value: 3, label: '3', note: 'quick' },
     { value: 5, label: '5', note: 'long' },
@@ -17,7 +18,7 @@ const PHOTOS = {
 
 const TURN = {
   key: 'turn',
-  label: 'Time per turn',
+  label: tr('Time per turn'),
   choices: [
     { value: 30, label: '30 s' },
     { value: 60, label: '60 s' },
@@ -33,38 +34,38 @@ export const riddler: GameDef = {
   modes: [
     {
       mode: 'solo',
-      title: 'Solve the board',
-      blurb: `${RIDDLES.length} picture riddles. Read the rebus, name the condition or sign.`,
+      title: tr('Solve the board'),
+      blurb: tr('{n} picture riddles. Read the rebus, name the condition or sign.', { n: RIDDLES.length }),
       howTo: [
-        'Pick any level. Each one is a picture puzzle that spells out a medical condition, sign or symptom.',
-        'Type 3 letters or more, then tap your answer. You have 3 lives per level.',
-        '3 stars: solved in 30 s with no wrong guess. 2 stars: 60 s and at most 1 wrong. Any other solve: 1 star.',
-        'Stuck? Show the definition for 1 token. It caps that level at 2 stars.',
-        'Each star is worth 4 EXP. Replays only pay for stars above your best. Missed conditions go to Today\'s review.',
+        tr('Pick any level. Each one is a picture puzzle that spells out a medical condition, sign or symptom.'),
+        tr('Type 3 letters or more, then tap your answer. You have 3 lives per level.'),
+        tr('3 stars: solved in 30 s with no wrong guess. 2 stars: 60 s and at most 1 wrong. Any other solve: 1 star.'),
+        tr('Stuck? Show the definition for 1 token. It caps that level at 2 stars.'),
+        tr('Each star is worth 4 EXP. Replays only pay for stars above your best. Missed conditions go to Today\'s review.'),
       ],
     },
     {
       mode: 'offline',
-      title: 'Pass the phone',
-      blurb: 'Same picture for everyone, one after another. Fastest solver wins it.',
+      title: tr('Pass the phone'),
+      blurb: tr('Same picture for everyone, one after another. Fastest solver wins it.'),
       howTo: [
-        'Add 2 to 6 players, or split them into teams. Pick 3 or 5 pictures and the time per turn.',
-        'Everyone plays the same picture in turn. Guess as often as you like, but a wrong guess locks you for 5 s.',
-        'Fastest solver scores 100, then 80, 65 and so on, plus up to 50 for time left. Time up scores 0.',
-        'Teams take turns one after another, and a team scores its players\' average. No hints and no EXP in this mode.',
+        tr('Add 2 to 6 players, or split them into teams. Pick 3 or 5 pictures and the time per turn.'),
+        tr('Everyone plays the same picture in turn. Guess as often as you like, but a wrong guess locks you for 5 s.'),
+        tr('Fastest solver scores 100, then 80, 65 and so on, plus up to 50 for time left. Time up scores 0.'),
+        tr('Teams take turns one after another, and a team scores its players\' average. No hints and no EXP in this mode.'),
       ],
     },
     {
       mode: 'bots',
-      title: 'Riddle duel',
-      blurb: 'The same picture as the rivals. Solve it first.',
+      title: tr('Riddle duel'),
+      blurb: tr('The same picture as the rivals. Solve it first.'),
       howTo: [
-        'Pick Freshmen, Scholars or Geniuses and 1 to 3 rivals. Meet them in the room: tap a rival for its profile, swap it or kick it.',
-        'Everyone gets the same picture at the same time, with 90 s to solve it.',
-        'Guess as often as you like, but a wrong guess locks you for 5 s.',
-        'Stuck? Show the definition for 1 token, like Solo. It caps that picture at 2 stars.',
-        'First solver scores 100, then 80, 65 and so on, plus up to 50 for time left.',
-        'EXP works like Solo: stars by time and wrong guesses, 4 EXP a star. Missed conditions go to Today\'s review.',
+        tr('Pick Freshmen, Scholars or Geniuses and 1 to 3 rivals. Meet them in the room: tap a rival for its profile, swap it or kick it.'),
+        tr('Everyone gets the same picture at the same time, with 90 s to solve it.'),
+        tr('Guess as often as you like, but a wrong guess locks you for 5 s.'),
+        tr('Stuck? Show the definition for 1 token, like Solo. It caps that picture at 2 stars.'),
+        tr('First solver scores 100, then 80, 65 and so on, plus up to 50 for time left.'),
+        tr('EXP works like Solo: stars by time and wrong guesses, 4 EXP a star. Missed conditions go to Today\'s review.'),
       ],
     },
   ],
@@ -72,25 +73,25 @@ export const riddler: GameDef = {
   players: { offline: { min: 2, max: 6 } },
   bots: { min: 1, max: 3 },
   teams: { offline: true, bots: true },
-  playersNote: () => 'Player 1 is you, the phone owner. Pass the phone earns no EXP; only your unsolved condition pictures go to Learn.',
+  playersNote: () => tr('Player 1 is you, the phone owner. Pass the phone earns no EXP; only your unsolved condition pictures go to Learn.'),
   Play: { solo: SoloPlay, offline: OfflinePlay, bots: BotsPlay },
   // RD9, RD10: Solo pays the EXP each level earned this session; RD12: Offline earns none.
   exp: (_score, items) => items.reduce((a, i) => a + (Number(i.gameData.exp) || 0), 0),
   expCap: (settings, mode) => (mode === 'offline' ? 0 : (mode === 'bots' ? Number(settings.photos) || 5 : RIDDLES.length) * 3 * RD.expPerStar),
   itemLabel: (item) => { const r = riddleById.get(item.itemId); return r ? riddleName(r) : item.itemId; },
   itemNoun: 'level',
-  itemsTitle: 'Pictures',
+  itemsTitle: tr('Pictures'),
   summary: (play, items) => {
     if (play.mode !== 'solo') {
       const mine = items.filter((i) => i.seat === 0);
       return [
-        { value: String(mine.reduce((a, i) => a + i.points, 0)), label: 'Your points' },
-        { value: `${mine.filter((i) => i.outcome === 'right').length}/${mine.length}`, label: 'You solved' },
+        { value: String(mine.reduce((a, i) => a + i.points, 0)), label: tr('Your points') },
+        { value: `${mine.filter((i) => i.outcome === 'right').length}/${mine.length}`, label: tr('You solved') },
       ];
     }
     return [
-      { value: `${items.filter((i) => i.outcome === 'right').length}/${items.length}`, label: 'Solved' },
-      { value: String(items.reduce((a, i) => a + i.points, 0)), label: 'Stars' },
+      { value: `${items.filter((i) => i.outcome === 'right').length}/${items.length}`, label: tr('Solved') },
+      { value: String(items.reduce((a, i) => a + i.points, 0)), label: tr('Stars') },
     ];
   },
 };

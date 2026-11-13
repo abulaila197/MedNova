@@ -1,5 +1,6 @@
 import type { PuzzleDef, WordDef } from './core';
 import puzzles from './data/puzzles.json';
+import { tr } from '@/i18n';
 
 /**
  * The 70 bundled puzzles in play order (publish task 1, 2026-11-02; 51-70 added 2026-11-09, one photo each): array place = `level` = online puzzle number
@@ -13,4 +14,4 @@ export const puzzleByLevel = new Map(PUZZLES.map((p) => [p.level, p]));
 export const wordById = new Map<string, WordDef>(PUZZLES.flatMap((p) => p.words.map((w) => [w.id, w] as const)));
 
 /** The clue as one line of text, for results and Learn (picture clues say so). */
-export const clueText = (w: WordDef) => (w.question.kind === 'text' ? w.question.text : 'Identify the picture.');
+export const clueText = (w: WordDef) => (w.question.kind === 'text' ? w.question.text : tr('Identify the picture.'));

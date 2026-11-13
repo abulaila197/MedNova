@@ -12,6 +12,7 @@ import { alwaysFree, startPlay } from './flow';
 import { freeColour, SEAT_COLOURS } from './characters';
 import { presetTeam, type Team } from './teams';
 import type { GameDef } from './types';
+import { tr } from '@/i18n';
 
 
 /** Everything a setup page does, apart from how it looks: option values, players, teams and Start (rule 9). */
@@ -60,7 +61,7 @@ export function useSetup(def: GameDef, mode: Mode, prefill?: Record<string, unkn
   const addSeat = () =>
     setSeats((p) => {
       const color = freeColour(p.map((x) => x.color));
-      return [...p, { seat: p.length, name: `Player ${p.length + 1}`, color, team: teams ? teams[p.length % teams.length].id : undefined }];
+      return [...p, { seat: p.length, name: tr('Player {n}', { n: p.length + 1 }), color, team: teams ? teams[p.length % teams.length].id : undefined }];
     });
   const removeSeat = (i: number) => setSeats((p) => p.filter((_, j) => j !== i).map((x, j) => ({ ...x, seat: j })));
 
@@ -78,7 +79,7 @@ export function useSetup(def: GameDef, mode: Mode, prefill?: Record<string, unkn
   const renameTeam = (i: number, name: string) => setTeams((ts) => ts && ts.map((y, j) => (j === i ? { ...y, name } : y)));
   const teamChoices = only
     ? Array.from({ length: Math.max(1, Math.min(only.max, Math.floor(seats.length / only.minEach)) - 1) }, (_, i) => ({ value: i + 2, label: String(i + 2) }))
-    : [{ value: 0, label: 'Off' }, ...Array.from({ length: Math.max(0, Math.min(6, seats.length) - 1) }, (_, i) => ({ value: i + 2, label: String(i + 2) }))];
+    : [{ value: 0, label: tr('Off') }, ...Array.from({ length: Math.max(0, Math.min(6, seats.length) - 1) }, (_, i) => ({ value: i + 2, label: String(i + 2) }))];
 
   const start = async () => {
     // A practice of my own word (My diseases) keeps its word id, which also makes it free.
@@ -95,7 +96,7 @@ export function useSetup(def: GameDef, mode: Mode, prefill?: Record<string, unkn
     const named = range
       ? seats.map((x, i) => {
           const tm = teams?.find((y) => y.id === x.team);
-          return { seat: i, name: x.name.trim() || `Player ${i + 1}`, color: tm?.color ?? x.color, ...(tm ? { team: tm.id } : null) };
+          return { seat: i, name: x.name.trim() || tr('Player {n}', { n: i + 1 }), color: tm?.color ?? x.color, ...(tm ? { team: tm.id } : null) };
         })
       : undefined;
     const settings = teams ? { ...own, teams: teams.map((x) => ({ ...x, name: x.name.trim() || preset(x.id).name })) } : own;

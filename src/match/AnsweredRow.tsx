@@ -4,6 +4,7 @@ import { Text } from '@/components/AppText';
 
 import { PlayerFace } from '@/features/style/Frame';
 import { u } from '@/theme/scale';
+import { tr } from '@/i18n';
 
 /** One seat in the row: its face, and whether it has answered this question. */
 export type Seat = { user_id: string; character: string; done: boolean; dropped?: boolean };
@@ -17,7 +18,7 @@ export function AnsweredRow({ seats, size = 26 }: { seats: Seat[]; size?: number
   if (list.length < 2) return null;
   const d = u(size);
   return (
-    <Animated.View entering={FadeIn.duration(200)} style={s.row} accessibilityLabel={`${list.filter((p) => p.done).length} of ${list.length} answered`}>
+    <Animated.View entering={FadeIn.duration(200)} style={s.row} accessibilityLabel={tr('{n} of {n2} answered', { n: list.filter((p) => p.done).length, n2: list.length })}>
       {list.map((p) => (
         <View key={p.user_id} style={{ width: d, height: d, opacity: p.done ? 1 : 0.38 }}>
           <PlayerFace slug={p.character} size={d} userId={p.user_id} still />

@@ -9,6 +9,7 @@ import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import type { RacePlayer } from './race';
+import { tr, TA_END } from '@/i18n';
 
 /**
  * Between items in a race match (Riddler, Medicordle, Streak online): the answer, each player's result for it,
@@ -25,7 +26,7 @@ export function RaceReveal({ label, answer, players, me, how, next }: { label: s
         {rows.map((p) => (
           <View key={p.user_id} style={s.row}>
             <PlayerFace slug={p.character} size={u(20)} userId={p.user_id} still />
-            <Text style={[s.who, { color: t.fg }]} numberOfLines={1}>{p.user_id === me ? 'You' : p.name}</Text>
+            <Text style={[s.who, { color: t.fg }]} numberOfLines={1}>{p.user_id === me ? tr('You') : p.name}</Text>
             <Text style={[s.how, { color: t.mute }]}>{how(p)}</Text>
             <Text style={[s.pts, { color: p.item_points ? t.white : t.dim }]}>{p.item_points ? `+${p.item_points}` : '0'}</Text>
           </View>
@@ -43,6 +44,6 @@ const s = StyleSheet.create({
   row: { flexDirection: 'row', alignItems: 'center', gap: u(8), marginRight: u(34) },
   who: { flex: 1, fontFamily: F.bodySemi, fontSize: u(12) },
   how: { fontFamily: F.mono, fontSize: u(10.5) },
-  pts: { fontFamily: F.mono, fontSize: u(11.5), minWidth: u(36), textAlign: 'right' },
+  pts: { fontFamily: F.mono, fontSize: u(11.5), minWidth: u(36), textAlign: TA_END },
   next: { fontFamily: F.body, fontSize: u(10.5), textAlign: 'center', marginTop: u(2) },
 });

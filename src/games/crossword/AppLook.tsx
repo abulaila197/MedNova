@@ -15,6 +15,7 @@ import { F } from '@/theme/tokens';
 import { slideColors } from '../medicordle/palette';
 import { cellKey, CW, indexOf, lockedCells, QWERTY_ROWS, type CellPos, type PuzzleDef, type PuzzleIndex, type Slot, type Typed, type WordDef } from './core';
 import { IMAGES } from './data/images';
+import { tr } from '@/i18n';
 
 // Nova Crossword's look (Yazan picked D, 2026-10-05): the app's own look, built like Nova Medicordle's slides:
 // glass tiles with a soft top sheen on a navy board, Gabarito titles, Inter Tight text.
@@ -32,7 +33,7 @@ function Icon({ d, on, color, off, size }: { d: string; on: boolean; color: stri
 }
 
 /** Title strip like Medicordle's slide label: accent end strip, kicker, Gabarito title, hearts and stars (Solo) or a score (Offline). */
-export function AppTopBar({ kicker, title = 'Nova Crossword', titleColor, sub, hearts, maxHearts = CW.hearts, stars, score, onPause }: {
+export function AppTopBar({ kicker, title = tr('Nova Crossword'), titleColor, sub, hearts, maxHearts = CW.hearts, stars, score, onPause }: {
   kicker: string; title?: string; titleColor?: string; sub: string; hearts: number; maxHearts?: number; stars?: number; score?: number; onPause?: () => void;
 }) {
   const t = useTheme();
@@ -45,12 +46,12 @@ export function AppTopBar({ kicker, title = 'Nova Crossword', titleColor, sub, h
         <Text style={[s.sub, { color: t.mute }]}>{sub}</Text>
       </View>
       <View style={s.labelR}>
-        <View style={{ flexDirection: 'row', gap: u(2) }} accessibilityLabel={`${hearts} hearts`}>{Array.from({ length: Math.max(maxHearts, hearts) }, (_, i) => <Icon key={i} d={HEART} on={i < hearts} color="#ff6b7d" off={t.dim} size={13} />)}</View>
-        {stars != null ? <View style={{ flexDirection: 'row', gap: u(1) }} accessibilityLabel={`${stars} of 3 stars`}>{[0, 1, 2].map((i) => <Icon key={i} d={STAR} on={i < stars} color={c.near} off={t.dim} size={13} />)}</View> : null}
-        {score != null ? <Text style={[s.sub, { color: t.fg, fontFamily: F.bodySemi }]}>{`${score} pts`}</Text> : null}
+        <View style={{ flexDirection: 'row', gap: u(2) }} accessibilityLabel={tr('{hearts} hearts', { hearts })}>{Array.from({ length: Math.max(maxHearts, hearts) }, (_, i) => <Icon key={i} d={HEART} on={i < hearts} color="#ff6b7d" off={t.dim} size={13} />)}</View>
+        {stars != null ? <View style={{ flexDirection: 'row', gap: u(1) }} accessibilityLabel={tr('{stars} of 3 stars', { stars })}>{[0, 1, 2].map((i) => <Icon key={i} d={STAR} on={i < stars} color={c.near} off={t.dim} size={13} />)}</View> : null}
+        {score != null ? <Text style={[s.sub, { color: t.fg, fontFamily: F.bodySemi }]}>{tr('{score} pts', { score })}</Text> : null}
       </View>
       {onPause ? (
-        <Pressable onPress={onPause} hitSlop={u(8)} accessibilityRole="button" accessibilityLabel="Pause" style={[s.pause, { borderLeftColor: c.line }]}>
+        <Pressable onPress={onPause} hitSlop={u(8)} accessibilityRole="button" accessibilityLabel={tr('Pause')} style={[s.pause, { borderLeftColor: c.line }]}>
           <Text style={{ color: t.fg, fontFamily: F.bodyBold, fontSize: u(11), letterSpacing: u(1) }}>❚❚</Text>
         </Pressable>
       ) : null}
@@ -61,7 +62,7 @@ export function AppTopBar({ kicker, title = 'Nova Crossword', titleColor, sub, h
 const HINT_DARK = '#5b8cff';
 /** #37 (Yazan 2026-11-01): two taps on the same square within this time open its word. */
 const DOUBLE_MS = 350;
-export const TIP = 'Tap a square to light up its word. Double tap to open it.';
+export const TIP = tr('Tap a square to light up its word. Double tap to open it.');
 
 /**
  * #37: no zoom. One tap lights up a square's word (tap the same square again for its other direction); a double tap
@@ -133,7 +134,7 @@ export const AppGrid = memo(function AppGrid({ puzzle, solved, revealed = [], se
         <Pressable
           key={k}
           onPress={() => press({ r, c: col })}
-          accessibilityLabel={`Row ${r + 1}, column ${col + 1}${shown.has(k) ? `, ${idx.letterAt.get(k)}` : ''}`}
+          accessibilityLabel={tr('Row {n}, column {n2}{n3}', { n: r + 1, n2: col + 1, n3: shown.has(k) ? `, ${idx.letterAt.get(k)}` : '' })}
           style={[s.tile, { left: col * step, top: r * step, width: size, height: size, borderRadius: Math.max(2, size * 0.14), backgroundColor: c.beigeTile, borderColor: picked ? t.accent : c.beigeLine, borderWidth: picked ? 2 : 1 }, bg ? { boxShadow: `0 0 ${Math.round(size * 0.35)}px ${bg}66` } : null]}
         >
           {bg ? <View style={[StyleSheet.absoluteFill, { backgroundColor: bg }]} /> : null}
@@ -149,7 +150,7 @@ export const AppGrid = memo(function AppGrid({ puzzle, solved, revealed = [], se
 /** The dash between the two words of a two-word answer. */
 function Dash({ w, color }: { w: number; color: string }) {
   return (
-    <View style={{ width: w, alignSelf: 'center', alignItems: 'center' }} accessibilityLabel="new word">
+    <View style={{ width: w, alignSelf: 'center', alignItems: 'center' }} accessibilityLabel={tr('new word')}>
       <View style={{ width: w, height: u(3), borderRadius: u(2), backgroundColor: color }} />
     </View>
   );
@@ -189,7 +190,7 @@ export function AppPopup({ word, slots, typed, tokens, width, notice, shake = 0,
     <View style={[s.sheet, { backgroundColor: '#0c1130', borderColor: c.line }]}>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
         <Text style={[s.kick, { color: t.accent }]}>{`${word.direction === 'across' ? 'ACROSS' : 'DOWN'}  ·  ${word.category.toUpperCase()}`}</Text>
-        <Pressable onPress={onClose} hitSlop={u(10)} accessibilityRole="button" accessibilityLabel="Close" style={[s.close, { borderColor: c.line, backgroundColor: c.key }]}>
+        <Pressable onPress={onClose} hitSlop={u(10)} accessibilityRole="button" accessibilityLabel={tr('Close')} style={[s.close, { borderColor: c.line, backgroundColor: c.key }]}>
           <Text style={{ color: t.fg, fontFamily: F.bodySemi, fontSize: u(13), lineHeight: u(15) }}>×</Text>
         </Pressable>
       </View>
@@ -208,7 +209,7 @@ export function AppPopup({ word, slots, typed, tokens, width, notice, shake = 0,
               const ch = sl.locked ? sl.letter : typed[i];
               const dash = breaks.includes(i) ? (k > 0 ? 'before' : 'row') : null;
               const tile = (
-                <Pressable key={i} onPress={() => onSlot?.(i)} accessibilityLabel={`Letter ${i + 1}`} style={[s.tile, s.slot, { width: slotW, height: slotW * 1.12, borderRadius: u(5), backgroundColor: sl.locked ? c.ok : c.glass, borderColor: !sl.locked && ch ? t.soft : c.line }]}>
+                <Pressable key={i} onPress={() => onSlot?.(i)} accessibilityLabel={tr('Letter {n}', { n: i + 1 })} style={[s.tile, s.slot, { width: slotW, height: slotW * 1.12, borderRadius: u(5), backgroundColor: sl.locked ? c.ok : c.glass, borderColor: !sl.locked && ch ? t.soft : c.line }]}>
                   <LinearGradient colors={[c.fadeTop, 'transparent']} style={[s.top, { height: '50%' }]} pointerEvents="none" />
                   <Text style={{ fontFamily: F.bodyBold, fontSize: Math.min(u(17), slotW * 0.58), lineHeight: Math.min(u(17), slotW * 0.58) * 1.2, color: sl.locked ? c.onTile : t.fg }}>{ch ?? ''}</Text>
                 </Pressable>
@@ -236,8 +237,8 @@ export function AppPopup({ word, slots, typed, tokens, width, notice, shake = 0,
       </View>
       {foot ?? (
         <View style={[s.hint, { borderColor: c.line, gap: u(10) }]}>
-          <HelperButton label={`Reveal letters · ${CW.hintPrice}${COIN}`} tone="purple" onPress={onHint} style={{ flexShrink: 1, paddingVertical: u(8), paddingHorizontal: u(14) }} />
-          <Text style={{ fontFamily: F.body, fontSize: u(11), color: t.mute }}>{`You have ${tokens ?? 0}`}</Text>
+          <HelperButton label={tr('Reveal letters · {hintPrice}{COIN}', { hintPrice: CW.hintPrice, COIN })} tone="purple" onPress={onHint} style={{ flexShrink: 1, paddingVertical: u(8), paddingHorizontal: u(14) }} />
+          <Text style={{ fontFamily: F.body, fontSize: u(11), color: t.mute }}>{tr('You have {n}', { n: tokens ?? 0 })}</Text>
         </View>
       )}
     </View>
@@ -266,9 +267,9 @@ export function AppLevelMap({ best, count = 50, action, onOpen }: { best: Record
     <View style={{ gap: u(12) }}>
       <View style={[s.label, { backgroundColor: c.boxA, borderColor: c.line }]}>
         <View style={[s.labelL, { borderLeftColor: t.accent, paddingVertical: u(10) }]}>
-          <Text style={[s.no, { color: t.dim }]}>{`${Object.values(best).reduce((a, b) => a + b, 0)} OF ${count * 3} STARS`}</Text>
-          <Text style={[s.ttl, { color: t.white, fontSize: u(24), lineHeight: u(28) }]}>Nova Crossword</Text>
-          <Text style={[s.sub, { color: t.mute }]}>One star opens the next puzzle.</Text>
+          <Text style={[s.no, { color: t.dim }]}>{tr('{n} OF {n2} STARS', { n: Object.values(best).reduce((a, b) => a + b, 0), n2: count * 3 })}</Text>
+          <Text style={[s.ttl, { color: t.white, fontSize: u(24), lineHeight: u(28) }]}>{tr('Nova Crossword')}</Text>
+          <Text style={[s.sub, { color: t.mute }]}>{tr('One star opens the next puzzle.')}</Text>
         </View>
         {action ? <View style={{ justifyContent: 'center', paddingRight: u(10) }}>{action}</View> : null}
       </View>
@@ -287,7 +288,7 @@ export function AppLevelMap({ best, count = 50, action, onOpen }: { best: Record
                 const now = on && !st;
                 const bg = st === 3 ? c.ok : st ? c.near : null;
                 return (
-                  <Pressable key={l} disabled={!on} onPress={() => onOpen?.(l)} accessibilityRole="button" accessibilityLabel={on ? `Puzzle ${l}, ${st} of 3 stars` : `Puzzle ${l}, locked`} style={{ alignItems: 'center', gap: u(4) }}>
+                  <Pressable key={l} disabled={!on} onPress={() => onOpen?.(l)} accessibilityRole="button" accessibilityLabel={on ? tr('Puzzle {l}, {st} of 3 stars', { l, st }) : tr('Puzzle {l}, locked', { l })} style={{ alignItems: 'center', gap: u(4) }}>
                     <View style={[s.tile, { position: 'relative', width: box, height: box, borderRadius: u(8), backgroundColor: '#121839', borderColor: now ? t.accent : c.line, borderWidth: now ? 1.5 : 1 }, bg ? { boxShadow: `0 0 ${u(12)}px ${bg}55` } : null]}>
                       {bg ? <View style={[StyleSheet.absoluteFill, { backgroundColor: bg }]} /> : null}
                       <LinearGradient colors={[c.fadeTop, 'transparent']} style={[s.top, { height: '50%' }]} pointerEvents="none" />

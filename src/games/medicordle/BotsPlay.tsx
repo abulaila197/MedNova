@@ -19,8 +19,9 @@ import { WORDS, isWord, packedOf, poolFor } from './data';
 import { wordPlan } from './rivals';
 import { RivalBoards } from './RivalBoards';
 import { HURRY_MS, SlideTable, TurnClock } from './Slides';
+import { tr } from '@/i18n';
 
-const STYLE_NAME: Record<Style, string> = { classic: 'Classic', five: 'Classic 5', custom: 'Custom' };
+const STYLE_NAME: Record<Style, string> = { classic: tr('Classic'), five: tr('Classic 5'), custom: tr('Custom') };
 const wordOf = (n: number) => WORDS[n - 1];
 const indexOf = new Map(WORDS.map((w, i) => [w.id, i + 1]));
 /** The definition opens in the last 20 s of each word (#9, Yazan 2026-11-04). */
@@ -105,11 +106,11 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
   const definition = reveal || hurry ? w.definition : null;
 
   const submit = (word: string) => {
-    if (g.paused) return 'Paused';
+    if (g.paused) return tr('Paused');
     const bad = lengthCheck(word, style, w.word.length);
-    if (bad === 'short') return style === 'custom' ? 'At least 7 letters' : 'Not enough letters';
-    if (bad === 'long') return 'Too many letters';
-    if (word !== w.word && !isWord(word)) return 'Not in word list';
+    if (bad === 'short') return style === 'custom' ? tr('At least 7 letters') : tr('Not enough letters');
+    if (bad === 'long') return tr('Too many letters');
+    if (word !== w.word && !isWord(word)) return tr('Not in word list');
     const greens = score(word, w.word).filter((m) => m === 'ok').length;
     if (word === w.word) g.solve({ guess: word, greens });
     else if (guesses.length + 1 >= MAX_ROWS) g.miss({ guess: word, greens });
@@ -119,30 +120,30 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
 
   const dock = reveal ? (
     <RaceReveal
-      label="The word"
+      label={tr('The word')}
       answer={w.word}
       players={st.players}
       me={YOU}
       how={(p) => (p.solved ? `${nth(p.item_rank ?? 1)} · ${p.tries} ${p.tries === 1 ? 'try' : 'tries'}` : 'missed')}
-      next={st.phase === 'done' ? 'Adding up the scores…' : `${last ? 'Results' : 'Next word'} in ${nextIn} s`}
+      next={st.phase === 'done' ? tr('Adding up the scores…') : tr('{n} in {nextIn} s', { n: last ? tr('Results') : tr('Next word'), nextIn })}
     />
   ) : solved || out ? (
     <RaceReveal
-      label={solved ? `Solved, ${nth(st.me!.rank ?? 1)}` : 'Out of guesses'}
-      answer={solved ? w.word : 'The word shows when time runs out.'}
+      label={solved ? tr('Solved, {nth}', { nth: nth(st.me!.rank ?? 1) }) : tr('Out of guesses')}
+      answer={solved ? w.word : tr('The word shows when time runs out.')}
       players={st.players.filter((p) => p.solved)}
       me={YOU}
       how={(p) => `${p.tries} ${p.tries === 1 ? 'try' : 'tries'}`}
-      next={waiting ? <AnsweredRow seats={st.players.map((p) => ({ user_id: p.user_id, character: p.character, done: p.done }))} /> : 'Everyone has finished'}
+      next={waiting ? <AnsweredRow seats={st.players.map((p) => ({ user_id: p.user_id, character: p.character, done: p.done }))} /> : tr('Everyone has finished')}
     />
   ) : undefined;
 
   return (
     <SlideTable
       label={{
-        no: `WORD ${st.index + 1} OF ${st.total}`,
-        title: 'Six Word Tries',
-        sub: `Vs rivals · ${STYLE_NAME[style]} · ${w.word.length} letters`,
+        no: tr('WORD {n} OF {total}', { n: st.index + 1, total: st.total }),
+        title: tr('Six Word Tries'),
+        sub: tr('Vs rivals · {n} · {n2} letters', { n: STYLE_NAME[style], n2: w.word.length }),
         right: reveal ? undefined : <TurnClock ms={left} warn={left <= HURRY_MS} />,
       }}
       answer={w.word}
@@ -151,7 +152,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
       rowSeq={guesses.length}
       definition={definition}
       noteHot={hurry}
-      noteWait="The definition appears in the last 20 seconds."
+      noteWait={tr('The definition appears in the last 20 seconds.')}
       live={!g.paused && !reveal && !solved && !out}
       hidden={g.paused}
       onSubmit={submit}

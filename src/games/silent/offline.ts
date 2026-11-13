@@ -7,6 +7,7 @@ import type { Row } from '../engine/standings';
 import type { Play } from '../engine/types';
 import { event, finishRecap, lastIndexOf, leadLine, sides, type RecapLine } from '../shell/recap';
 import { SA, guesserPoints, hashSeed, hintPlan, performerShare, pickWords, remember, type HintPlan, type Kind, type Word } from './core';
+import { say } from '../../i18n/say';
 
 export type PlanTurn = { seat: number; team: number | null };
 export type Outcome = 'guessed' | 'stolen' | 'missed' | 'skipped';
@@ -240,28 +241,28 @@ export function offlineRows(r: OfflineRun, names: Record<number, string>, teamOf
     const team = teamOf(seat);
     const score = r.teams && team != null ? (r.teamScores[team] ?? 0) : (r.scores[seat] ?? 0);
     const timeMs = r.turns.filter((t) => t.outcome === 'guessed' && (t.guesser === seat || (r.teams && t.team === team))).reduce((a, t) => a + t.atMs, 0);
-    return { seat, name: names[seat] ?? `Player ${seat + 1}`, score, timeMs };
+    return { seat, name: names[seat] ?? say('Player {v}', { v: seat + 1 }), score, timeMs };
   });
 }
 
 /** One line for a finished turn, as the pass-the-phone recap shows it (OF1). */
 export function turnNote(t: TurnRecord, nameOf: (seat: number) => string, teamName: (id: number) => string, clock: (ms: number) => string) {
-  const how = t.kind === 'acting' ? 'acting' : 'drawing';
-  if (t.outcome === 'guessed') return t.guesser != null ? `'s ${how} was guessed by ${nameOf(t.guesser)} in ${clock(t.atMs)}` : `'s ${how} was guessed in ${clock(t.atMs)}`;
-  if (t.outcome === 'stolen') return `'s ${how} was stolen by ${t.stealTeam != null ? teamName(t.stealTeam) : 'the next team'}`;
-  if (t.outcome === 'skipped') return ' was skipped';
-  return `'s ${how}: nobody got it`;
+  const how = t.kind === 'acting' ? say('acting') : say('drawing');
+  if (t.outcome === 'guessed') return t.guesser != null ? say('\'s {v} was guessed by {v2} in {v3}', { v: how, v2: nameOf(t.guesser), v3: clock(t.atMs) }) : say('\'s {v} was guessed in {v2}', { v: how, v2: clock(t.atMs) });
+  if (t.outcome === 'stolen') return say('\'s {v} was stolen by {v2}', { v: how, v2: t.stealTeam != null ? teamName(t.stealTeam) : 'the next team' });
+  if (t.outcome === 'skipped') return say(' was skipped');
+  return say('\'s {v}: nobody got it', { v: how });
 }
 
 /** OF1: what happened since `seat` last performed, plus a lead change. */
 export function offlineRecap(r: OfflineRun, seat: number, play: Pick<Play, 'seats' | 'settings'>, teamName: (id: number) => string, clock: (ms: number) => string): RecapLine[] {
   const last = lastIndexOf(r.turns, seat);
   const seatOf = new Map(play.seats.map((x) => [x.seat, x]));
-  const nameOf = (s: number) => seatOf.get(s)?.name ?? `Player ${s + 1}`;
+  const nameOf = (s: number) => seatOf.get(s)?.name ?? say('Player {v}', { v: s + 1 });
   const events = r.turns.slice(last + 1).map((t, i) => {
     const note = turnNote(t, nameOf, teamName, clock);
     const who = seatOf.get(t.seat);
-    return { ...event(`sa-${last + 1 + i}`, t.seat, who, note), text: `${who?.name ?? `Player ${t.seat + 1}`}${note}` };
+    return { ...event(`sa-${last + 1 + i}`, t.seat, who, note), text: say('{v}{v2}', { v: who?.name ?? `Player ${t.seat + 1}`, v2: note }) };
   });
   if (!events.length) return [];
   const scoresAt = (n: number) => {

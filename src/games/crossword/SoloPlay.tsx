@@ -20,6 +20,7 @@ import {
   type PuzzleDef, type SoloEvent, type SoloRun, type Typed,
 } from './core';
 import { PUZZLES, clueText, puzzleById, puzzleByLevel } from './data';
+import { tr } from '@/i18n';
 
 /** One finished puzzle attempt in this session. */
 type Done = { level: number; stars: number; exp: number; solved: number; total: number; left: boolean };
@@ -125,7 +126,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   if (!run) {
     return (
       <GameScreen bodyStyle={{ paddingTop: u(12), paddingHorizontal: u(16), gap: u(10) }}>
-        <AppLevelMap best={bestMap(session)} count={PUZZLES.length} onOpen={open} action={<Ghost label={session.length ? 'See results' : 'Leave'} onPress={finish} />} />
+        <AppLevelMap best={bestMap(session)} count={PUZZLES.length} onOpen={open} action={<Ghost label={session.length ? tr('See results') : tr('Leave')} onPress={finish} />} />
       </GameScreen>
     );
   }
@@ -229,14 +230,14 @@ function Puzzle({ puzzle, run, playId, paused, onEvent, onPause, dock, children 
     const answer = composeAnswer(slots, next);
     const out = judge(puzzle, run.solved, run.tried, word, answer);
     if (out === 'repeat') {
-      setNotice('You already tried that one.');
+      setNotice(tr('You already tried that one.'));
       setTyped(slots.map(() => null));
       return setShake((x) => x + 1);
     }
     onEvent({ type: 'SUBMIT', wordId: word, answer });
     if (out === 'right') return setWord(null);
     if (out === 'wrong') {
-      setNotice('Not this one. One heart lost.');
+      setNotice(tr('Not this one. One heart lost.'));
       setTyped(slots.map(() => null));
       setShake((x) => x + 1);
     }
@@ -253,15 +254,15 @@ function Puzzle({ puzzle, run, playId, paused, onEvent, onPause, dock, children 
   const hint = async () => {
     if (!word || paying.current) return;
     const cells = pickHintCells(idx, word, locked);
-    if (!cells.length) return setNotice('Only one letter left. Have a go.');
+    if (!cells.length) return setNotice(tr('Only one letter left. Have a go.'));
     paying.current = true;
     const receipt = await engine.wallet.spend(CW.hintPrice, 'crossword_hint', playId);
     paying.current = false;
-    if (!receipt) return setNotice('You need 1 token. Each level up gives 1 token.');
+    if (!receipt) return setNotice(tr('You need 1 token. Each level up gives 1 token.'));
     const now = live.current;
     if (now.word !== word || now.run.phase !== 'playing' || now.run.solved.includes(word)) {
       await engine.wallet.refund(receipt);
-      return setNotice('Hint refunded.');
+      return setNotice(tr('Hint refunded.'));
     }
     onEvent({ type: 'HINT', cells });
     setTyped(slots.map(() => null));
@@ -274,19 +275,19 @@ function Puzzle({ puzzle, run, playId, paused, onEvent, onPause, dock, children 
 
   return (
     <GameScreen scroll={false} bodyStyle={{ paddingTop: u(12), paddingHorizontal: u(16), gap: u(10) }}>
-      <AppTopBar kicker="Nova Crossword" title={`Puzzle ${puzzle.level}`} sub={`${puzzle.words.length} words · ${left} to go`} hearts={run.hearts} stars={soloStars(puzzle, run)} onPause={onPause} />
+      <AppTopBar kicker={tr('Nova Crossword')} title={tr('Puzzle {level}', { level: puzzle.level })} sub={tr('{n} words · {left} to go', { n: puzzle.words.length, left })} hearts={run.hearts} stars={soloStars(puzzle, run)} onPause={onPause} />
       <AppGrid puzzle={puzzle} solved={run.solved} revealed={run.revealed} selected={word ?? taps.lit} width={W - u(32)} onCell={taps.tap} onDouble={taps.double} />
       <View style={s.under}>
         <Text style={[s.tip, { color: t.mute }]}>{TIP}</Text>
       </View>
       {playing ? (
         <View style={s.endRow}>
-          <Ghost label="End puzzle" onPress={() => onEvent({ type: 'LEAVE' })} />
+          <Ghost label={tr('End puzzle')} onPress={() => onEvent({ type: 'LEAVE' })} />
         </View>
       ) : null}
       {sel && playing && !paused ? (
         <Animated.View entering={FadeIn.duration(160)} exiting={FadeOut.duration(140)} style={[StyleSheet.absoluteFill, s.sheetWrap]}>
-          <Pressable style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(5,8,25,0.45)' }]} onPress={() => setWord(null)} accessibilityLabel="Close the word" />
+          <Pressable style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(5,8,25,0.45)' }]} onPress={() => setWord(null)} accessibilityLabel={tr('Close the word')} />
           <AppPopup word={sel} slots={slots} typed={typed} tokens={tokens} width={W} notice={notice} shake={shake} onKey={key} onSlot={(i) => setTyped(removeSlot(slots, typed, i))} onHint={hint} onClose={() => setWord(null)} />
         </Animated.View>
       ) : null}
@@ -312,7 +313,7 @@ function OutCard({ playId, onRevive, onReplay, onEnd }: { playId: string; onRevi
     setSending(true);
     try {
       const receipt = await engine.wallet.spend(CW.revivePrice, 'crossword_revive', playId);
-      if (!receipt) return setNote('You need 1 token. Each level up gives 1 token.');
+      if (!receipt) return setNote(tr('You need 1 token. Each level up gives 1 token.'));
       onRevive();
     } finally {
       busy.current = false;
@@ -321,13 +322,13 @@ function OutCard({ playId, onRevive, onReplay, onEnd }: { playId: string; onRevi
   };
   return (
     <View style={[s.card, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
-      <Kick color="#ff6b7d">Out of hearts</Kick>
-      <Text style={[s.big, { color: t.white }]}>Keep going?</Text>
-      <Text style={[s.line, { color: t.mute }]}>{note ?? `${CW.revivePrice} token gives you ${CW.reviveHearts} heart. Words you solved stay solved.`}</Text>
-      <HelperButton label={`Revive · ${CW.revivePrice}${COIN}`} tone="rose" onPress={revive} disabled={sending} style={{ marginTop: u(4) }} />
+      <Kick color="#ff6b7d">{tr('Out of hearts')}</Kick>
+      <Text style={[s.big, { color: t.white }]}>{tr('Keep going?')}</Text>
+      <Text style={[s.line, { color: t.mute }]}>{note ?? tr('{revivePrice} token gives you {reviveHearts} heart. Words you solved stay solved.', { revivePrice: CW.revivePrice, reviveHearts: CW.reviveHearts })}</Text>
+      <HelperButton label={tr('Revive · {revivePrice}{COIN}', { revivePrice: CW.revivePrice, COIN })} tone="rose" onPress={revive} disabled={sending} style={{ marginTop: u(4) }} />
       <View style={s.row}>
-        <Ghost label="Replay" onPress={onReplay} style={{ flex: 1 }} />
-        <Ghost label="End puzzle" onPress={onEnd} style={{ flex: 1 }} />
+        <Ghost label={tr('Replay')} onPress={onReplay} style={{ flex: 1 }} />
+        <Ghost label={tr('End puzzle')} onPress={onEnd} style={{ flex: 1 }} />
       </View>
     </View>
   );
@@ -337,29 +338,29 @@ function OutCard({ playId, onRevive, onReplay, onEnd }: { playId: string; onRevi
 function ResultCard({ done, canNext, onNext, onRetry, onMap }: { done: Done; canNext: boolean; onNext: () => void; onRetry: () => void; onMap: () => void }) {
   const t = useTheme();
   const expLine = !done.stars
-    ? 'No stars this time. Solve all but two words for a star.'
+    ? tr('No stars this time. Solve all but two words for a star.')
     : done.exp
-      ? `+${done.exp} EXP${done.exp < done.stars * CW.expPerStar ? ' for your new star' + (done.exp > CW.expPerStar ? 's' : '') : ''}`
-      : 'No new stars, so no EXP. Beat your best to earn more.';
+      ? tr('+{exp} EXP{n}', { exp: done.exp, n: done.exp < done.stars * CW.expPerStar ? (done.exp > CW.expPerStar ? tr(' for your new stars') : tr(' for your new star')) : '' })
+      : tr('No new stars, so no EXP. Beat your best to earn more.');
   return (
     <View style={[s.card, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
       <View style={s.cardTop}>
-        <Kick color={done.stars ? t.accent : t.mute}>{`Puzzle ${done.level} · ${done.solved} of ${done.total} words`}</Kick>
-        <Text style={{ fontSize: u(15), letterSpacing: u(1) }} accessibilityLabel={`${done.stars} of 3 stars`}>
+        <Kick color={done.stars ? t.accent : t.mute}>{tr('Puzzle {level} · {solved} of {total} words', { level: done.level, solved: done.solved, total: done.total })}</Kick>
+        <Text style={{ fontSize: u(15), letterSpacing: u(1) }} accessibilityLabel={tr('{stars} of 3 stars', { stars: done.stars })}>
           {[0, 1, 2].map((i) => (
             <Text key={i} style={{ color: i < done.stars ? t.accent : '#2a3050' }}>★</Text>
           ))}
         </Text>
       </View>
-      <Text style={[s.big, { color: t.white }]}>{done.stars === 3 ? 'Grid complete' : done.stars ? 'Puzzle done' : done.left ? 'Puzzle ended' : 'Puzzle done'}</Text>
+      <Text style={[s.big, { color: t.white }]}>{done.stars === 3 ? tr('Grid complete') : done.stars ? tr('Puzzle done') : done.left ? tr('Puzzle ended') : tr('Puzzle done')}</Text>
       <Text style={[s.line, { color: t.soft }]}>{expLine}</Text>
       <View style={s.row}>
-        <Ghost label="Retry" onPress={onRetry} style={{ flex: 1 }} />
-        {canNext ? <Btn label="Next puzzle" onPress={onNext} style={{ flex: 1.4 }} /> : <Btn label="All puzzles" onPress={onMap} style={{ flex: 1.4 }} />}
+        <Ghost label={tr('Retry')} onPress={onRetry} style={{ flex: 1 }} />
+        {canNext ? <Btn label={tr('Next puzzle')} onPress={onNext} style={{ flex: 1.4 }} /> : <Btn label={tr('All puzzles')} onPress={onMap} style={{ flex: 1.4 }} />}
       </View>
       {canNext ? (
-        <Pressable onPress={onMap} hitSlop={u(6)} accessibilityRole="button" accessibilityLabel="All puzzles" style={{ alignSelf: 'flex-start' }}>
-          <Text style={[s.link, { color: t.mute }]}>All puzzles</Text>
+        <Pressable onPress={onMap} hitSlop={u(6)} accessibilityRole="button" accessibilityLabel={tr('All puzzles')} style={{ alignSelf: 'flex-start' }}>
+          <Text style={[s.link, { color: t.mute }]}>{tr('All puzzles')}</Text>
         </Pressable>
       ) : null}
     </View>

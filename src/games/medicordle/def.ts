@@ -4,14 +4,15 @@ import { wordById } from './data';
 import { BotsPlay } from './BotsPlay';
 import { OfflinePlay } from './OfflinePlay';
 import { SoloPlay } from './SoloPlay';
+import { tr } from '@/i18n';
 
 const STYLE = {
   key: 'style',
-  label: 'Style',
+  label: tr('Style'),
   choices: [
-    { value: 'classic', label: 'Classic', note: '6 letters' },
-    { value: 'five', label: 'Classic 5', note: '5 letters' },
-    { value: 'custom', label: 'Custom', note: '7 to 15 letters' },
+    { value: 'classic', label: tr('Classic'), note: tr('6 letters') },
+    { value: 'five', label: tr('Classic 5'), note: tr('5 letters') },
+    { value: 'custom', label: tr('Custom'), note: tr('7 to 15 letters') },
   ],
   initial: 'classic',
 };
@@ -22,39 +23,39 @@ export const novaMedicordle: GameDef = {
   modes: [
     {
       mode: 'solo',
-      title: 'One word, six tries',
-      blurb: "Today's word for everyone, or keep going with endless words.",
+      title: tr('One word, six tries'),
+      blurb: tr('Today\'s word for everyone, or keep going with endless words.'),
       howTo: [
-        'Guess the hidden medical word in six tries. Every guess must be a real word.',
-        'Green is the right letter in the right place, yellow is in the word but elsewhere, grey is not in the word.',
-        'Classic words have 6 letters, or 5 in Classic 5. Custom words have 7 to 15, and a guess can be shorter than the word.',
-        'The Daily word is always 6 letters. Classic 5 plays in Endless.',
-        'The definition appears on your last guess. Custom words also have up to two letter hints, 1 token then 2.',
-        'Fewer guesses earn more EXP. The daily word earns double and keeps your streak going.',
+        tr('Guess the hidden medical word in six tries. Every guess must be a real word.'),
+        tr('Green is the right letter in the right place, yellow is in the word but elsewhere, grey is not in the word.'),
+        tr('Classic words have 6 letters, or 5 in Classic 5. Custom words have 7 to 15, and a guess can be shorter than the word.'),
+        tr('The Daily word is always 6 letters. Classic 5 plays in Endless.'),
+        tr('The definition appears on your last guess. Custom words also have up to two letter hints, 1 token then 2.'),
+        tr('Fewer guesses earn more EXP. The daily word earns double and keeps your streak going.'),
       ],
     },
     {
       mode: 'offline',
-      title: 'One board, take turns',
-      blurb: 'Pass the phone. Whoever guesses the word wins it.',
+      title: tr('One board, take turns'),
+      blurb: tr('Pass the phone. Whoever guesses the word wins it.'),
       howTo: [
-        'Add 2 to 6 players. Everyone guesses on the same board, one guess per turn.',
-        'Each lap goes round every player in a random order, and nobody plays twice in a row.',
-        'Rows round up so everyone gets the same number of guesses. A turn that runs out of time passes.',
-        'Whoever guesses the word wins it. Most words wins. There are no hints and no EXP in this mode.',
-        'You can split players into teams. Teams take turns one after another, and the guesser\'s whole team wins the word.',
+        tr('Add 2 to 6 players. Everyone guesses on the same board, one guess per turn.'),
+        tr('Each lap goes round every player in a random order, and nobody plays twice in a row.'),
+        tr('Rows round up so everyone gets the same number of guesses. A turn that runs out of time passes.'),
+        tr('Whoever guesses the word wins it. Most words wins. There are no hints and no EXP in this mode.'),
+        tr('You can split players into teams. Teams take turns one after another, and the guesser\'s whole team wins the word.'),
       ],
     },
     {
       mode: 'bots',
-      title: 'Word duel',
-      blurb: 'The same word as the rivals, each on your own board.',
+      title: tr('Word duel'),
+      blurb: tr('The same word as the rivals, each on your own board.'),
       howTo: [
-        'Pick Freshmen, Scholars or Geniuses and 1 to 3 rivals. Meet them in the room: tap a rival for its profile, swap it or kick it.',
-        'Everyone gets the same word at the same time, six tries each. The rivals\' small boards fill with colours as they guess, never letters.',
-        'First solver scores 100, then 80, 65 and so on, plus 10 for each guess left.',
-        'No letter hints; the definition appears in the last 20 seconds of each word.',
-        'EXP works like Solo: 12 for a first-guess solve, down to 2 on the sixth.',
+        tr('Pick Freshmen, Scholars or Geniuses and 1 to 3 rivals. Meet them in the room: tap a rival for its profile, swap it or kick it.'),
+        tr('Everyone gets the same word at the same time, six tries each. The rivals\' small boards fill with colours as they guess, never letters.'),
+        tr('First solver scores 100, then 80, 65 and so on, plus 10 for each guess left.'),
+        tr('No letter hints; the definition appears in the last 20 seconds of each word.'),
+        tr('EXP works like Solo: 12 for a first-guess solve, down to 2 on the sixth.'),
       ],
     },
   ],
@@ -62,10 +63,10 @@ export const novaMedicordle: GameDef = {
     solo: [
       {
         key: 'word',
-        label: 'Word',
+        label: tr('Word'),
         choices: [
-          { value: 'daily', label: 'Daily', note: 'one a day, double EXP' },
-          { value: 'endless', label: 'Endless', note: 'word after word' },
+          { value: 'daily', label: tr('Daily'), note: tr('one a day, double EXP') },
+          { value: 'endless', label: tr('Endless'), note: tr('word after word') },
         ],
         initial: 'daily',
       },
@@ -75,7 +76,7 @@ export const novaMedicordle: GameDef = {
       STYLE,
       {
         key: 'words',
-        label: 'Words',
+        label: tr('Words'),
         choices: [
           { value: 3, label: '3', note: 'quick' },
           { value: 5, label: '5', note: 'long' },
@@ -84,7 +85,7 @@ export const novaMedicordle: GameDef = {
       },
       {
         key: 'turn',
-        label: 'Time per guess',
+        label: tr('Time per guess'),
         choices: [
           { value: 10, label: '10 s' },
           { value: 20, label: '20 s' },
@@ -98,7 +99,7 @@ export const novaMedicordle: GameDef = {
       STYLE,
       {
         key: 'words',
-        label: 'Words',
+        label: tr('Words'),
         choices: [
           { value: 3, label: '3', note: 'quick' },
           { value: 5, label: '5', note: 'long' },
@@ -107,7 +108,7 @@ export const novaMedicordle: GameDef = {
       },
       {
         key: 'wordtime',
-        label: 'Time per word',
+        label: tr('Time per word'),
         choices: [
           { value: 60, label: '60 s' },
           { value: 90, label: '90 s' },
@@ -122,19 +123,19 @@ export const novaMedicordle: GameDef = {
   bots: { min: 1, max: 3 },
   teams: { offline: true, bots: true },
   teamScore: { offline: 'sum', bots: 'average' },
-  playersNote: (n) => `Player 1 is you, the phone owner. With ${n} players the board has ${offlineRows(n)} rows, ${offlineRows(n) / n} guesses each.`,
+  playersNote: (n) => tr('Player 1 is you, the phone owner. With {n} players the board has {n2} rows, {n3} guesses each.', { n, n2: offlineRows(n), n3: offlineRows(n) / n }),
   Play: { solo: SoloPlay, offline: OfflinePlay, bots: BotsPlay },
   // NM22: Solo EXP per word is stored on each item; NM25: Offline earns none.
   exp: (_score, items) => items.reduce((a, i) => a + (Number(i.gameData.exp) || 0), 0),
   expCap: (settings, mode) => (mode === 'bots' ? 12 * (Number(settings.words) || 5) : settings.word === 'daily' ? 24 : settings.word === 'endless' ? 12 * 150 : 0),
   itemLabel: (item) => wordById.get(item.itemId)?.word ?? item.itemId,
   itemNoun: 'word',
-  itemsTitle: 'Words',
+  itemsTitle: tr('Words'),
   summary: (play, items) =>
     play.mode === 'offline'
       ? [
-          { value: String(items.filter((i) => i.seat === 0).length), label: 'Words you won' },
-          { value: `${items.filter((i) => i.outcome === 'right').length}/${items.length}`, label: 'Guessed' },
+          { value: String(items.filter((i) => i.seat === 0).length), label: tr('Words you won') },
+          { value: `${items.filter((i) => i.outcome === 'right').length}/${items.length}`, label: tr('Guessed') },
         ]
       : null,
 };

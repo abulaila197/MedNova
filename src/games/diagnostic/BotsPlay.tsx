@@ -20,6 +20,7 @@ import { DP, type Attempt, type Difficulty } from './core';
 import { tickedFields } from '../shell/fields';
 import { CASES, caseById, guessById, guessName, poolFor } from './data';
 import { gameDef } from '../shell/registry';
+import { tr } from '@/i18n';
 
 const CASE_MS = 60_000;
 const CLUE_MS = 10_000;
@@ -115,7 +116,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
     return (
       <GameScreen>
         <View style={s.done}>
-          <Kick>Adding up the scores…</Kick>
+          <Kick>{tr('Adding up the scores…')}</Kick>
         </View>
       </GameScreen>
     );
@@ -138,12 +139,12 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
     ? {
         outcome: 'right' as const,
         points: reveal ? (st.me!.points ?? 0) : 0,
-        line: reveal ? `${nth(st.me!.rank ?? 1)} to solve · ${st.me!.points} points with ${clueAt(st.me!.solved_ms!)} ${clueAt(st.me!.solved_ms!) === 1 ? 'clue' : 'clues'}` : `Solved, ${nth(me?.item_rank ?? 1)}. Waiting for the rest…`,
-        nextLabel: reveal ? `${last ? 'Results' : 'Next case'} in ${nextIn} s` : waiting ? '' : 'Everyone is done',
+        line: reveal ? tr('{nth} to solve · {points} points with {clueAt} {n}', { nth: nth(st.me!.rank ?? 1), points: st.me!.points, clueAt: clueAt(st.me!.solved_ms!), n: clueAt(st.me!.solved_ms!) === 1 ? tr('clue') : tr('clues') }) : tr('Solved, {nth}. Waiting for the rest…', { nth: nth(me?.item_rank ?? 1) }),
+        nextLabel: reveal ? tr('{n} in {nextIn} s', { n: last ? tr('Results') : tr('Next case'), nextIn }) : waiting ? '' : tr('Everyone is done'),
         wait: !reveal && waiting ? <AnsweredRow seats={st.players.map((p) => ({ user_id: p.user_id, character: p.character, done: p.done }))} /> : undefined,
       }
     : reveal
-      ? { outcome: 'timed_out' as const, points: 0, line: 'Not solved. No points this case. It goes to your Learn review.', nextLabel: `${last ? 'Results' : 'Next case'} in ${nextIn} s` }
+      ? { outcome: 'timed_out' as const, points: 0, line: tr('Not solved. No points this case. It goes to your Learn review.'), nextLabel: tr('{n} in {nextIn} s', { n: last ? tr('Results') : tr('Next case'), nextIn }) }
       : null;
 
   return (
@@ -152,25 +153,25 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
       c={reveal || solved ? { ...c, answer_id: st.answer ?? c.answer_id } : c}
       attempt={attempt}
       phase={g.paused ? 'paused' : !solved && !reveal ? 'playing' : 'over'}
-      title={`Case ${st.index + 1}`}
-      sub={`of ${st.total}`}
-      slim={`Case ${st.index + 1} of ${st.total}`}
-      clock={{ label: 'Time left', down: true, ms: left, warn: !reveal && left <= 15_000 }}
+      title={tr('Case {n}', { n: st.index + 1 })}
+      sub={tr('of {total}', { total: st.total })}
+      slim={tr('Case {n} of {total}', { n: st.index + 1, total: st.total })}
+      clock={{ label: tr('Time left'), down: true, ms: left, warn: !reveal && left <= 15_000 }}
       wrongSeq={wrongSeq}
       clueSeq={clues}
       actions="hint"
       hint={{ granted: hinted === st.index, onHint: () => (hinted === st.index || solved || reveal ? undefined : void g.buy(DP.hintTokenCost, 'diagnostic_hint', () => setHinted(st.index))) }}
       result={result}
-      notice={notice ?? (lockLeft > 0 ? `Wrong. Locked for ${Math.ceil(lockLeft / 1000)} s.` : null)}
-      pausedNote="The match is paused, rivals too. Resume to see the case again."
-      worth={{ label: 'Your points', value: String(me?.score ?? 0) }}
+      notice={notice ?? (lockLeft > 0 ? tr('Wrong. Locked for {n} s.', { n: Math.ceil(lockLeft / 1000) }) : null)}
+      pausedNote={tr('The match is paused, rivals too. Resume to see the case again.')}
+      worth={{ label: tr('Your points'), value: String(me?.score ?? 0) }}
       onPause={g.openMenu}
       onGuess={(guess) => {
         if (lockLeft > 0) return;
         setNotice(null);
         if (guess.id === c.answer_id) g.solve();
         else if (g.wrong(guess.id) === 'wrong') setWrongSeq((x) => x + 1);
-        else if ((st.me?.wrong ?? []).includes(guess.id)) setNotice('You already tried that one.');
+        else if ((st.me?.wrong ?? []).includes(guess.id)) setNotice(tr('You already tried that one.'));
       }}
       onSkip={() => {}}
       onReveal={() => {}}>

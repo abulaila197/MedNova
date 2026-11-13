@@ -6,6 +6,7 @@ import type { Row } from '../engine/standings';
 import { nextLap } from '../medicordle/core';
 import { casePoints, doubleWrong, gameScore, lock, startCase, type CaseRun } from './core';
 import { caseById } from './data';
+import { say } from '../../i18n/say';
 
 export type Seat = { points: number[]; doubles: number };
 export type OfflinePhase = 'handoff' | 'playing' | 'reveal' | 'done';
@@ -90,5 +91,5 @@ export function stepOffline(r: OfflineRun, e: OfflineEvent, rng: () => number = 
 
 /** Standings: points, then fewer double-wrongs; equal on both shares the place. */
 export function offlineStandings(r: OfflineRun, names: Record<number, string>): Row[] {
-  return r.seats.map((seat) => ({ seat, name: names[seat] ?? `Player ${seat + 1}`, score: scoreOf(r, seat), timeMs: r.players[seat].doubles }));
+  return r.seats.map((seat) => ({ seat, name: names[seat] ?? say('Player {v}', { v: seat + 1 }), score: scoreOf(r, seat), timeMs: r.players[seat].doubles }));
 }

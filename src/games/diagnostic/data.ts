@@ -5,6 +5,7 @@ import { buildIndex } from './core';
 
 import casesJson from './data/cases.json';
 import guessJson from './data/guess-list.json';
+import { tr } from '@/i18n';
 
 export const CASES = casesJson as DPCase[];
 export const GUESSES = guessJson as GuessEntry[];

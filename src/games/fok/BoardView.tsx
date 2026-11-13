@@ -8,13 +8,14 @@ import { groupById } from './data';
 import type { Board, BoardRun, Verdict } from './core';
 import { HelperButton } from '../shell/ui';
 import { Bar, GroupRow, Note, Stamp, TableBtn, Tiles } from './Table';
+import { tr } from '@/i18n';
 
 /**
  * The board in play: found groups on top, the boxes, then the free space where "One away" and the hint show, and the
  * buttons. `onSubmit` judges the four picked boxes and returns what happened. `who` names who found each group
  * (Pass the phone), `hint` is the hint button (Solo only).
  */
-export function BoardView({ board, run, top, onSubmit, onShuffle, hint, tip = 'Tap 4 boxes, then Submit', who, locked, extra, rightStamp }: {
+export function BoardView({ board, run, top, onSubmit, onShuffle, hint, tip = tr('Tap 4 boxes, then Submit'), who, locked, extra, rightStamp }: {
   board: Board; run: BoardRun; top: ReactNode; onSubmit: (tiles: number[]) => Verdict; onShuffle: () => void;
   hint?: { label: string; onPress: () => void; disabled?: boolean } | null; tip?: string; who?: Record<number, string>; locked?: boolean; extra?: ReactNode; rightStamp?: string;
 }) {
@@ -43,11 +44,11 @@ export function BoardView({ board, run, top, onSubmit, onShuffle, hint, tip = 'T
       else setPicked([]);
     } else if (v === 'oneAway') {
       void sfxVerdict(false);
-      show('One away', 'red');
+      show(tr('One away'), 'red');
     } else if (v === 'wrong') {
       void sfxVerdict(false);
-      show('Not a group', 'red');
-    } else if (v === 'repeat') show('Already tried', 'gold');
+      show(tr('Not a group'), 'red');
+    } else if (v === 'repeat') show(tr('Already tried'), 'gold');
   };
   const topic = run.revealed != null ? groupById.get(board.groups[run.revealed].id)?.n : null;
   return (
@@ -60,14 +61,14 @@ export function BoardView({ board, run, top, onSubmit, onShuffle, hint, tip = 'T
         <Tiles board={board} order={run.order} picked={live} onTap={locked ? undefined : tap} width={W} />
       </View>
       <View style={{ flex: 1, minHeight: u(64), justifyContent: 'center', alignItems: 'center', gap: u(8) }}>
-        {stamp ? <Stamp key={stamp.n} text={stamp.text} tone={stamp.tone} /> : topic ? <Note>{`Hint: one group is “${topic}”`}</Note> : <Note>{tip}</Note>}
+        {stamp ? <Stamp key={stamp.n} text={stamp.text} tone={stamp.tone} /> : topic ? <Note>{tr('Hint: one group is “{topic}”', { topic })}</Note> : <Note>{tip}</Note>}
         {extra}
       </View>
       <Bar>
-        <TableBtn label="Shuffle" onPress={onShuffle} disabled={locked} />
-        <TableBtn label="Deselect" onPress={() => setPicked([])} disabled={locked || !live.length} />
+        <TableBtn label={tr('Shuffle')} onPress={onShuffle} disabled={locked} />
+        <TableBtn label={tr('Deselect')} onPress={() => setPicked([])} disabled={locked || !live.length} />
         {hint ? <HelperButton label={hint.label} tone="purple" onPress={hint.onPress} disabled={locked || hint.disabled} style={{ flex: 1.3, borderRadius: 999, paddingVertical: u(10), paddingHorizontal: u(4) }} /> : null}
-        <TableBtn label="Submit" go flex={hint ? 1.2 : 1.4} onPress={send} disabled={locked || live.length !== 4} />
+        <TableBtn label={tr('Submit')} go flex={hint ? 1.2 : 1.4} onPress={send} disabled={locked || live.length !== 4} />
       </Bar>
     </View>
   );

@@ -29,6 +29,7 @@ import { CW, buildSlots, composeAnswer, indexOf, isFilled, lockedCells, pickHint
 import { PUZZLES, clueText } from './data';
 import { ReviveCard } from './OfflinePlay';
 import { CwRace, showdownStars } from './rivals';
+import { tr } from '@/i18n';
 
 const puzzleOf = (n: number) => PUZZLES[n - 1];
 const indexOfPuzzle = new Map(PUZZLES.map((p, i) => [p.id, i + 1]));
@@ -162,7 +163,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
   const canRevive = !reveal && out && !watching;
   const wordsOf = (id: string) => claimsList.filter((c) => c.user_id === id && !c.auto).length;
   const nextIn = Math.max(0, Math.ceil((st.phase_ends_at - now) / 1000));
-  const sub = reveal ? (left ? 'Time up' : 'Grid complete') : `${clock(Math.max(0, st.phase_ends_at - now), { down: true })} left · first right answer claims it`;
+  const sub = reveal ? (left ? tr('Time up') : tr('Grid complete')) : tr('{n} left · first right answer claims it', { n: clock(Math.max(0, st.phase_ends_at - now), { down: true }) });
 
   const board = (
     <View style={s.lead}>
@@ -171,7 +172,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
         .map((x) => (
           <View key={x.user_id} style={[s.chip, { borderColor: colorOf(x), backgroundColor: t.panel }]}>
             <PlayerFace slug={x.character} size={u(18)} userId={x.user_id} still />
-            <Text style={[s.chipT, { color: t.fg }]} numberOfLines={1}>{x.user_id === YOU ? 'You' : x.name.split(' ')[0]}</Text>
+            <Text style={[s.chipT, { color: t.fg }]} numberOfLines={1}>{x.user_id === YOU ? tr('You') : x.name.split(' ')[0]}</Text>
             <Text style={[s.chipN, { color: t.white }]}>{x.score}</Text>
             <Text style={[s.chipH, { color: (x.hearts ?? 0) > 0 ? '#ff6b7d' : t.dim }]}>{`♥${x.hearts ?? 0}`}</Text>
           </View>
@@ -181,7 +182,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
 
   return (
     <GameScreen scroll={false} bodyStyle={{ paddingTop: u(12), paddingHorizontal: u(16), gap: u(10) }}>
-      <AppTopBar kicker={`${left} ${left === 1 ? 'word' : 'words'} left`} title={total > 1 ? `Puzzle ${st.index + 1} of ${total}` : 'The race'} sub={sub} hearts={hearts} maxHearts={CW.onlineHearts} score={mine?.score ?? 0} onPause={g.openMenu} />
+      <AppTopBar kicker={tr('{left} {n} left', { left, n: left === 1 ? tr('word') : tr('words') })} title={total > 1 ? tr('Puzzle {n} of {total}', { n: st.index + 1, total }) : tr('The race')} sub={sub} hearts={hearts} maxHearts={CW.onlineHearts} score={mine?.score ?? 0} onPause={g.openMenu} />
       {board}
       {!reveal && !out && !g.paused ? (
         <Race
@@ -202,28 +203,28 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
       ) : (
         <>
           <AppGrid puzzle={p} solved={solved} claims={claims} width={W - u(32)} />
-          {!reveal ? <Text style={[s.tip, { color: t.mute }]}>{out && !canRevive ? 'Out of hearts. You’re watching the rest of the race.' : ' '}</Text> : null}
+          {!reveal ? <Text style={[s.tip, { color: t.mute }]}>{out && !canRevive ? tr('Out of hearts. You’re watching the rest of the race.') : ' '}</Text> : null}
         </>
       )}
       {reveal ? (
         <Animated.View entering={FadeIn.duration(200)} style={[StyleSheet.absoluteFill, s.dockWrap]}>
           <RaceReveal
-            label={left ? 'Time up' : 'Grid complete'}
-            answer={`${p.words.length - left} of ${p.words.length} words claimed`}
+            label={left ? tr('Time up') : tr('Grid complete')}
+            answer={tr('{n} of {n2} words claimed', { n: p.words.length - left, n2: p.words.length })}
             players={st.players}
             me={YOU}
-            how={(x) => `${wordsOf(x.user_id)} ${wordsOf(x.user_id) === 1 ? 'word' : 'words'} · ${x.item_points ?? 0} pts`}
-            next={st.phase === 'done' ? 'Adding up the scores…' : `${st.index + 1 < total ? 'Next puzzle' : 'Results'} in ${nextIn} s`}
+            how={(x) => tr('{n} {n2} · {n3} pts', { n: wordsOf(x.user_id), n2: wordsOf(x.user_id) === 1 ? tr('word') : tr('words'), n3: x.item_points ?? 0 })}
+            next={st.phase === 'done' ? tr('Adding up the scores…') : tr('{n} in {nextIn} s', { n: st.index + 1 < total ? tr('Next puzzle') : tr('Results'), nextIn })}
           />
         </Animated.View>
       ) : canRevive && !g.paused ? (
         <Animated.View entering={FadeIn.duration(200)} style={[StyleSheet.absoluteFill, s.dockWrap]}>
           <ReviveCard
             playId={play.id}
-            name="You"
+            name={tr('You')}
             payer="You"
-            text={`No hearts left. ${CW.revivePrice} token gives ${CW.reviveHearts} heart, as often as you like. Your claimed words stay yours.`}
-            decline="No revive, watch the rest"
+            text={tr('No hearts left. {revivePrice} token gives {reviveHearts} heart, as often as you like. Your claimed words stay yours.', { revivePrice: CW.revivePrice, reviveHearts: CW.reviveHearts })}
+            decline={tr('No revive, watch the rest')}
             onRevive={() => {
               // The race moved on while the card was up: the token comes back (the card refunds on a throw).
               if (!g.at((at) => race.revive(at))) throw new Error('over');
@@ -290,7 +291,7 @@ function Race({ onTyping, puzzle, solved, claims, hearts, width, submit, buy, cl
     void sfxVerdict(false);
     setShake((x) => x + 1);
     clear();
-    setLine(res === 'repeat' ? 'You already tried that one.' : hearts <= 1 ? 'Not this one. That was your last heart.' : 'Not this one. One heart lost.');
+    setLine(res === 'repeat' ? tr('You already tried that one.') : hearts <= 1 ? tr('Not this one. That was your last heart.') : tr('Not this one. One heart lost.'));
   };
 
   const key = (k: string) => {
@@ -308,7 +309,7 @@ function Race({ onTyping, puzzle, solved, claims, hearts, width, submit, buy, cl
   const hint = () => {
     if (!open) return;
     const cells = pickHintCells(idx, open, locked);
-    if (!cells.length) return setLine('Only one letter left. Have a go.');
+    if (!cells.length) return setLine(tr('Only one letter left. Have a go.'));
     const at = open;
     void buy(
       () => {
@@ -322,7 +323,7 @@ function Race({ onTyping, puzzle, solved, claims, hearts, width, submit, buy, cl
 
   const taps = useGridTaps(idx, solved, openWord);
   const sel = open ? idx.wordById.get(open)! : null;
-  const tip = line && !sel ? line : taken && taken !== 'You' ? `${taken} claimed it first.` : TIP;
+  const tip = line && !sel ? line : taken && taken !== 'You' ? tr('{taken} claimed it first.', { taken }) : TIP;
   return (
     <>
       <AppGrid puzzle={puzzle} solved={solved} revealed={revealed} claims={claims} selected={open ?? taps.lit} width={width - u(32)} onCell={taps.tap} onDouble={taps.double} />

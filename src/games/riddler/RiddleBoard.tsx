@@ -17,6 +17,7 @@ import { clock } from '@/games/engine/clock';
 import { RD, search, type Riddle } from './core';
 import { fullName } from '../shell/names';
 import { ANSWERS, answerLabel, imageOf } from './data';
+import { tr } from '@/i18n';
 
 // The Riddler's own design language (RD14): "Pinboard".
 // The rebus picture is a taped, slightly tilted instant print on a soft board, sized to the picture's own
@@ -78,7 +79,7 @@ export function RiddleBoard(p: BoardProps) {
     ? fitPicture(p.riddle.w, p.riddle.h, stage.w - 2 * PRINT.boardPadX - 2 * PRINT.pad - u(8), stage.h - barH - u(10) - 2 * PRINT.boardPadY - PRINT.pad - PRINT.capH - u(8))
     : null;
   const tilt = tiltOf(p.riddle.id);
-  const prompt = `Identify the medical ${p.riddle.kind}`;
+  const prompt = tr(`Identify the medical ${p.riddle.kind}`);
   const warn = p.countdown && p.clockMs <= 10_000;
 
   return (
@@ -89,7 +90,7 @@ export function RiddleBoard(p: BoardProps) {
             <Kick>{p.kicker}</Kick>
             <Text style={[s.title, { color: p.title.color ?? t.white }]} numberOfLines={1}>{p.title.text}</Text>
           </View>
-          <RoundBtn label="Pause" glyph="❚❚" onPress={p.onPause} />
+          <RoundBtn label={tr('Pause')} glyph="❚❚" onPress={p.onPause} />
         </View>
         {p.live}
 
@@ -100,10 +101,10 @@ export function RiddleBoard(p: BoardProps) {
                 <View style={s.tape} />
                 {p.hidden ? (
                   <View style={[pic, s.cover]}>
-                    <Text style={s.coverT}>Paused</Text>
+                    <Text style={s.coverT}>{tr('Paused')}</Text>
                   </View>
                 ) : (
-                  <Image source={imageOf(p.riddle.id)} style={pic} contentFit="contain" accessibilityLabel={`Rebus picture, level ${p.riddle.id.slice(2)}`} />
+                  <Image source={imageOf(p.riddle.id)} style={pic} contentFit="contain" accessibilityLabel={tr('Rebus picture, level {slice}', { slice: p.riddle.id.slice(2) })} />
                 )}
                 <Text style={s.cap} numberOfLines={1}>{prompt}</Text>
               </View>
@@ -111,16 +112,16 @@ export function RiddleBoard(p: BoardProps) {
           ) : null}
           <View style={[s.bar, { height: barH }]}>
             {p.lives != null ? (
-              <View style={s.lamps} accessibilityLabel={`${p.lives} of ${RD.lives} lives left`}>
-                <Text style={[s.barK, { color: t.dim }]}>LIVES</Text>
+              <View style={s.lamps} accessibilityLabel={tr('{lives} of {lives2} lives left', { lives: p.lives, lives2: RD.lives })}>
+                <Text style={[s.barK, { color: t.dim }]}>{tr('LIVES')}</Text>
                 {Array.from({ length: RD.lives }, (_, i) => (
                   <View key={i} style={[s.lamp, i < p.lives! ? { backgroundColor: t.accent, shadowColor: t.accent } : { backgroundColor: '#2a3050', shadowOpacity: 0 }]} />
                 ))}
               </View>
             ) : (
-              <Text style={[s.barK, { color: p.lockMs ? bad : t.dim }]}>{p.lockMs ? `LOCKED ${Math.ceil(p.lockMs / 1000)} S` : 'UNLIMITED GUESSES'}</Text>
+              <Text style={[s.barK, { color: p.lockMs ? bad : t.dim }]}>{p.lockMs ? tr('LOCKED {ceil} S', { ceil: Math.ceil(p.lockMs / 1000) }) : tr('UNLIMITED GUESSES')}</Text>
             )}
-            <Text style={[s.clock, { color: warn ? bad : t.white }]} accessibilityLabel={p.countdown ? `${Math.ceil(p.clockMs / 1000)} seconds left` : `Time ${clock(p.clockMs)}`}>
+            <Text style={[s.clock, { color: warn ? bad : t.white }]} accessibilityLabel={p.countdown ? tr('{ceil} seconds left', { ceil: Math.ceil(p.clockMs / 1000) }) : tr('Time {clock}', { clock: clock(p.clockMs) })}>
               {clock(p.clockMs, { down: p.countdown })}
             </Text>
           </View>
@@ -131,7 +132,7 @@ export function RiddleBoard(p: BoardProps) {
             {/* Only the latest notes, so a long turn of wrong guesses never pushes the answer box off the screen (GA14). */}
             {p.wrong.length > MAX_NOTES ? (
               <View style={s.sticky}>
-                <Text style={s.stickyT}>{`+${p.wrong.length - MAX_NOTES} more`}</Text>
+                <Text style={s.stickyT}>{tr('+{n} more', { n: p.wrong.length - MAX_NOTES })}</Text>
               </View>
             ) : null}
             {p.wrong.slice(-MAX_NOTES).map((id) => {
@@ -148,11 +149,11 @@ export function RiddleBoard(p: BoardProps) {
         {p.hint && !p.dock ? (
           p.hint.used ? (
             <Animated.View entering={FadeInDown.duration(220)} style={[s.def, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
-              <Kick color={t.accent}>Definition</Kick>
+              <Kick color={t.accent}>{tr('Definition')}</Kick>
               <Text style={[s.defT, { color: t.soft }]}>{p.riddle.definition}</Text>
             </Animated.View>
           ) : (
-            <HelperButton label={`Show definition · ${RD.hintPrice}${COIN}`} tone="purple" onPress={p.hint.onHint} style={{ alignSelf: 'flex-start', paddingVertical: u(8), paddingHorizontal: u(14) }} />
+            <HelperButton label={tr('Show definition · {hintPrice}{COIN}', { hintPrice: RD.hintPrice, COIN })} tone="purple" onPress={p.hint.onHint} style={{ alignSelf: 'flex-start', paddingVertical: u(8), paddingHorizontal: u(14) }} />
           )
         ) : null}
 
@@ -208,7 +209,7 @@ function AnswerBox({ wrong, wrongSeq, locked, disabled, onGuess }: { wrong: stri
             const name = fullName(a);
             const hit = name.toLowerCase().startsWith(q) ? text.trim().length : 0;
             return (
-              <Pressable key={a.id} onPress={() => pick(a.id)} style={[s.sg, i > 0 && { borderTopWidth: 1, borderTopColor: t.panelLine }]} accessibilityRole="button" accessibilityLabel={`Answer ${name}`}>
+              <Pressable key={a.id} onPress={() => pick(a.id)} style={[s.sg, i > 0 && { borderTopWidth: 1, borderTopColor: t.panelLine }]} accessibilityRole="button" accessibilityLabel={tr('Answer {name}', { name })}>
                 <Text style={[s.sgT, { color: t.fg }]} numberOfLines={2}>
                   <Text style={{ color: t.accent, fontFamily: F.bodyBold }}>{name.slice(0, hit)}</Text>
                   {name.slice(hit)}
@@ -224,15 +225,15 @@ function AnswerBox({ wrong, wrongSeq, locked, disabled, onGuess }: { wrong: stri
           onChangeText={setText}
           onSubmitEditing={() => exact && pick(exact.id)}
           editable={!locked && !disabled && !sending}
-          placeholder={locked ? 'Wait for the lock…' : 'Type 3+ letters, then tap your answer'}
+          placeholder={locked ? tr('Wait for the lock…') : tr('Type 3+ letters, then tap your answer')}
           placeholderTextColor={t.dim}
           autoCorrect={false}
           autoCapitalize="none"
           returnKeyType="done"
           style={[s.input, { color: t.fg }]}
-          accessibilityLabel="Your answer"
+          accessibilityLabel={tr('Your answer')}
         />
-        {text.trim().length >= RD.minQuery && !sugs.length ? <Text style={[s.ph, { color: t.dim }]}>No match</Text> : null}
+        {text.trim().length >= RD.minQuery && !sugs.length ? <Text style={[s.ph, { color: t.dim }]}>{tr('No match')}</Text> : null}
       </Animated.View>
     </View>
   );

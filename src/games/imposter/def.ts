@@ -1,24 +1,25 @@
 import type { GameDef } from '../shell/types';
 import { OfflinePlay } from './OfflinePlay';
 import { BANK } from './offline';
+import { tr } from '@/i18n';
 
 const count = (kind: string) => BANK.pairs.filter((p) => p.subtype === kind).length.toLocaleString('en-US');
 const pairById = new Map(BANK.pairs.map((p) => [p.id, p]));
 
 const STYLE = {
   key: 'style',
-  label: 'Words',
+  label: tr('Words'),
   choices: [
-    { value: 'mixed', label: 'Mixed', note: 'either, each round' },
-    { value: 'clinical', label: 'Clinical', note: `${count('clinical')} pairs` },
-    { value: 'basic', label: 'Basic science', note: `${count('basic')} pairs` },
+    { value: 'mixed', label: tr('Mixed'), note: tr('either, each round') },
+    { value: 'clinical', label: tr('Clinical'), note: tr('{n} pairs', { n: count('clinical') }) },
+    { value: 'basic', label: tr('Basic science'), note: tr('{n} pairs', { n: count('basic') }) },
   ],
   initial: 'mixed',
 };
 
 const ROUNDS = {
   key: 'rounds',
-  label: 'Rounds',
+  label: tr('Rounds'),
   choices: [1, 2, 3, 4, 5].map((n) => ({ value: n, label: String(n) })),
   initial: 3,
 };
@@ -29,28 +30,28 @@ export const imposter: GameDef = {
   modes: [
     {
       mode: 'offline',
-      title: 'Pass the phone',
-      blurb: 'Everyone gets the same word but one. Find who walked in.',
+      title: tr('Pass the phone'),
+      blurb: tr('Everyone gets the same word but one. Find who walked in.'),
       howTo: [
-        'Add 3 to 6 players. Pick clinical, basic science or mixed words, and 1 to 5 rounds.',
-        'Pass the phone: each player holds to see their word. One player has a different, related word and is told they are the imposter. Nobody else knows who.',
-        'Say one-word clues out loud, in order, for two turns. Then vote now or hear one more turn.',
-        'Pass the phone round to vote. Catch the imposter for 2 points each. A caught imposter can still guess your word for 1.',
-        'An imposter who gets away scores 2, plus 1 for every wrong vote. No EXP in this mode.',
+        tr('Add 3 to 6 players. Pick clinical, basic science or mixed words, and 1 to 5 rounds.'),
+        tr('Pass the phone: each player holds to see their word. One player has a different, related word and is told they are the imposter. Nobody else knows who.'),
+        tr('Say one-word clues out loud, in order, for two turns. Then vote now or hear one more turn.'),
+        tr('Pass the phone round to vote. Catch the imposter for 2 points each. A caught imposter can still guess your word for 1.'),
+        tr('An imposter who gets away scores 2, plus 1 for every wrong vote. No EXP in this mode.'),
       ],
     },
   ],
   setup: { offline: [STYLE, ROUNDS] },
   players: { offline: { min: 3, max: 6 } },
-  playersNote: () => 'Player 1 is you, the phone owner, who checks a caught imposter\'s guess. Pass the phone earns no EXP.',
+  playersNote: () => tr('Player 1 is you, the phone owner, who checks a caught imposter\'s guess. Pass the phone earns no EXP.'),
   Play: { offline: OfflinePlay },
   // IM4: online EXP is the points twice over, at most 60; Pass the phone earns none, like every Pass the phone mode.
   exp: (score) => Math.min(60, Math.max(0, 2 * score)),
   expCap: (_settings, mode) => (mode === 'offline' ? 0 : 60),
   itemLabel: (item) => {
     const p = pairById.get(item.itemId);
-    return p ? `${p.a.word} / ${p.b.word}${item.gameData.imposter ? ' · imposter' : ''}` : item.itemId;
+    return p ? `${p.a.word} / ${p.b.word}${item.gameData.imposter ? tr(' · imposter') : ''}` : item.itemId;
   },
   itemNoun: 'round',
-  itemsTitle: 'Rounds',
+  itemsTitle: tr('Rounds'),
 };

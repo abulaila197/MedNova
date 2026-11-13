@@ -162,7 +162,7 @@ export function BotRoom({ def, play, left }: { def: GameDef; play: Play; left?: 
     const id = setTimeout(() => setLeftNote(null), 6000);
     return () => clearTimeout(id);
   }, [left]);
-  const status = leftNote ? tr('{leftNote} left. {n}', { leftNote, n: joining ? tr('New rivals are joining…') : tr('New rivals are in.') }) : allReady ? tr('Everyone is ready') : joining ? (joining === 1 ? tr('A rival is joining…') : tr('{joining} rivals are joining…', { joining })) : tr('Waiting for {n}', { n: waitingOn?.name ?? 'the rivals' });
+  const status = leftNote ? tr('{leftNote} left. {n}', { leftNote, n: joining ? tr('New rivals are joining…') : tr('New rivals are in.') }) : allReady ? tr('Everyone is ready') : joining ? (joining === 1 ? tr('A rival is joining…') : tr('{joining} rivals are joining…', { joining })) : tr('Waiting for {n}', { n: waitingOn?.name ?? tr('the rivals') });
   const canPlay = !!def.Play.bots;
 
   const leave = async () => {

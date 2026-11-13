@@ -20,6 +20,7 @@ import { AppGrid, AppPopup, AppTopBar, TIP, useGridTaps } from './AppLook';
 import { CW, autoSolved, buildSlots, composeAnswer, indexOf, isFilled, judge, lockedCells, placeLetter, removeSlot, type PuzzleDef, type Typed } from './core';
 import { PUZZLES, clueText, puzzleById } from './data';
 import { currentSeat, offlineRecap, offlineStandings, startOffline, stepOffline, type OfflineEvent, type OfflineRun } from './offline';
+import { tr } from '@/i18n';
 
 /** How long the right / wrong line shows in the popup before the phone passes on. */
 const FLASH_MS = 1100;
@@ -34,7 +35,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   const [paused, setPaused] = useState(false);
   const seatOf = useMemo(() => new Map(play.seats.map((x) => [x.seat, x])), [play.seats]);
   const names = useMemo(() => Object.fromEntries(play.seats.map((x) => [x.seat, x.name])), [play.seats]);
-  const nameOf = (seat: number) => names[seat] ?? `Player ${seat + 1}`;
+  const nameOf = (seat: number) => names[seat] ?? tr('Player {n}', { n: seat + 1 });
 
   // Start: an unseen puzzle (rule 15); random laps, or teams alternate (TM5).
   useEffect(() => {
@@ -101,7 +102,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
 
   return (
     <GameScreen scroll={false} bodyStyle={{ paddingTop: u(12), paddingHorizontal: u(16), gap: u(10) }}>
-      <AppTopBar kicker={`${left} ${left === 1 ? 'word' : 'words'} left`} title={nameOf(seat)} titleColor={who?.color} sub={me.revived ? 'Revive used' : 'One word this turn'} hearts={me.hearts} score={me.score} onPause={() => setPaused(true)} />
+      <AppTopBar kicker={tr('{left} {n} left', { left, n: left === 1 ? tr('word') : tr('words') })} title={nameOf(seat)} titleColor={who?.color} sub={me.revived ? tr('Revive used') : tr('One word this turn')} hearts={me.hearts} score={me.score} onPause={() => setPaused(true)} />
       {run.phase === 'playing' && !paused ? (
         <Turn key={run.turns.length} puzzle={p} run={run} claims={claims} width={W} onEvent={dispatch} />
       ) : (
@@ -116,7 +117,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
         <Curtain
           name={nameOf(seat)}
           color={who?.color}
-          sub={`${me.hearts} ${me.hearts === 1 ? 'heart' : 'hearts'} left · one word this turn`}
+          sub={tr('{hearts} {n} left · one word this turn', { hearts: me.hearts, n: me.hearts === 1 ? tr('heart') : tr('hearts') })}
           board={board}
           recap={offlineRecap(p, run, seat, play)}
           onReady={() => dispatch({ type: 'READY' })}
@@ -189,7 +190,7 @@ function Turn({ puzzle, run, claims, width, onEvent }: { puzzle: PuzzleDef; run:
     const answer = composeAnswer(slots, next);
     const out = judge(puzzle, solved, me.tried, word, answer);
     if (out === 'repeat') {
-      setNotice('You already tried that one.');
+      setNotice(tr('You already tried that one.'));
       setTyped(slots.map(() => null));
       return setShake((x) => x + 1);
     }
@@ -200,10 +201,10 @@ function Turn({ puzzle, run, claims, width, onEvent }: { puzzle: PuzzleDef; run:
     void sfxVerdict(out !== 'wrong'); // as the result shows (the batch recorded at the end stays quiet)
     if (out === 'wrong') {
       setShake((x) => x + 1);
-      setNotice(me.hearts <= 1 ? 'Not this one. That was your last heart.' : 'Not this one. One heart lost.');
+      setNotice(me.hearts <= 1 ? tr('Not this one. That was your last heart.') : tr('Not this one. One heart lost.'));
     } else {
       const got = [w, ...autoSolved(idx, [...solved, w])];
-      setNotice(`Right! +${got.reduce((a, id) => a + idx.wordById.get(id)!.answer.length, 0)}`);
+      setNotice(tr('Right! +{n}', { n: got.reduce((a, id) => a + idx.wordById.get(id)!.answer.length, 0) }));
     }
     setTimeout(() => onEvent({ type: 'SUBMIT', wordId: w, answer }), FLASH_MS);
   };
@@ -239,10 +240,10 @@ function Turn({ puzzle, run, claims, width, onEvent }: { puzzle: PuzzleDef; run:
             onClose={() => !flash && onEvent({ type: 'CLOSE' })}
             foot={
               <View style={[s.foot, { borderColor: t.panelLine }]}>
-                <Text style={[s.footT, { color: t.mute }]}>{flash ? ' ' : 'No hints in this mode. Closing the word ends your turn.'}</Text>
+                <Text style={[s.footT, { color: t.mute }]}>{flash ? ' ' : tr('No hints in this mode. Closing the word ends your turn.')}</Text>
                 {!flash ? (
-                  <Pressable onPress={() => setWord(null)} hitSlop={u(6)} accessibilityRole="button" accessibilityLabel="Pick another word">
-                    <Text style={[s.footT, { color: t.accent, fontFamily: F.bodySemi }]}>Other word</Text>
+                  <Pressable onPress={() => setWord(null)} hitSlop={u(6)} accessibilityRole="button" accessibilityLabel={tr('Pick another word')}>
+                    <Text style={[s.footT, { color: t.accent, fontFamily: F.bodySemi }]}>{tr('Other word')}</Text>
                   </Pressable>
                 ) : null}
               </View>
@@ -255,7 +256,7 @@ function Turn({ puzzle, run, claims, width, onEvent }: { puzzle: PuzzleDef; run:
 }
 
 /** CW5 / CW6: at 0 hearts, one token revive per player per match (Offline: paid by the phone owner); otherwise out. */
-export function ReviveCard({ playId, name, text, payer = 'The phone owner', decline = 'No revive, leave the game', onRevive, onDecline }: {
+export function ReviveCard({ playId, name, text, payer = tr('The phone owner'), decline = tr('No revive, leave the game'), onRevive, onDecline }: {
   playId: string; name: string; text?: string; payer?: string; decline?: string; onRevive: () => void | Promise<void>; onDecline: () => void;
 }) {
   const t = useTheme();
@@ -269,12 +270,12 @@ export function ReviveCard({ playId, name, text, payer = 'The phone owner', decl
     setSending(true);
     try {
       const receipt = await engine.wallet.spend(CW.revivePrice, 'crossword_revive', playId);
-      if (!receipt) return setNote(`${payer} needs 1 token. Each level up gives 1 token.`);
+      if (!receipt) return setNote(tr('{payer} needs 1 token. Each level up gives 1 token.', { payer }));
       try {
         await onRevive();
       } catch {
         await engine.wallet.refund(receipt);
-        setNote('Couldn’t revive. Your token was refunded. Try again.');
+        setNote(tr('Couldn’t revive. Your token was refunded. Try again.'));
       }
     } finally {
       busy.current = false;
@@ -283,10 +284,10 @@ export function ReviveCard({ playId, name, text, payer = 'The phone owner', decl
   };
   return (
     <View style={[s.card, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
-      <Kick color="#ff6b7d">Out of hearts</Kick>
+      <Kick color="#ff6b7d">{tr('Out of hearts')}</Kick>
       <Text style={[s.big, { color: t.white }]}>{name}</Text>
-      <Text style={[s.line, { color: t.mute }]}>{note ?? text ?? `No hearts left. One revive per player: ${CW.revivePrice} token from the phone owner gives ${CW.reviveHearts} heart. Words claimed so far stay claimed.`}</Text>
-      <HelperButton label={`Revive · ${CW.revivePrice}${COIN}`} tone="rose" onPress={revive} disabled={sending} style={{ marginTop: u(4) }} />
+      <Text style={[s.line, { color: t.mute }]}>{note ?? text ?? tr('No hearts left. One revive per player: {revivePrice} token from the phone owner gives {reviveHearts} heart. Words claimed so far stay claimed.', { revivePrice: CW.revivePrice, reviveHearts: CW.reviveHearts })}</Text>
+      <HelperButton label={tr('Revive · {revivePrice}{COIN}', { revivePrice: CW.revivePrice, COIN })} tone="rose" onPress={revive} disabled={sending} style={{ marginTop: u(4) }} />
       <Ghost label={decline} onPress={onDecline} />
     </View>
   );

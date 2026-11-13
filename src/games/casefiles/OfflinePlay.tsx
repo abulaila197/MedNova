@@ -15,6 +15,7 @@ import { scoreRun, type RunEvent } from './core';
 import { CASES, PLAYED_KEY, caseById, caseLabel, dossierOf, type Played } from './data';
 import { Btn, Card, CaseTitle, Kicker, NR, NoirScreen, PauseBtn, Stamp, T, caseClock } from './noir';
 import { currentSeat, finishedLines, rankOffline, ready, removeSeat, snapshotOffline, startOffline, stepOffline, type OfflineRun } from './offline';
+import { tr, TA_END } from '@/i18n';
 
 /** A case none of this phone's Solo plays has opened if there is one, else any (as coded, phone owner only). */
 function pickCase(played: Played, seed: string) {
@@ -38,7 +39,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   const [handMenu, setHandMenu] = useState(false);
   const teams = useMemo(() => teamsOf(play), [play]);
   const seatOf = useMemo(() => new Map(play.seats.map((x) => [x.seat, x])), [play.seats]);
-  const nameOf = useCallback((seat: number) => seatOf.get(seat)?.name ?? `Player ${seat + 1}`, [seatOf]);
+  const nameOf = useCallback((seat: number) => seatOf.get(seat)?.name ?? tr('Player {n}', { n: seat + 1 }), [seatOf]);
   const colorOf = (seat: number) => {
     const team = teams?.find((t) => t.id === seatOf.get(seat)?.team);
     return team?.color ?? seatOf.get(seat)?.color ?? NR.red;
@@ -120,25 +121,25 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
     if (discharge)
       return (
         <NoirScreen scroll>
-          <Kicker>{`${caseLabel(def.id)} · follow-up and discharge`}</Kicker>
+          <Kicker>{tr('{n} · follow-up and discharge', { n: caseLabel(def.id) })}</Kicker>
           <CaseTitle title={def.title} />
           <Card style={{ gap: u(10) }}>
-            <T size={11} color={NR.red} style={{ letterSpacing: 2 }}>{`THE DIAGNOSIS: ${def.final.toUpperCase()}`}</T>
+            <T size={11} color={NR.red} style={{ letterSpacing: 2 }}>{tr('THE DIAGNOSIS: {n}', { n: def.final.toUpperCase() })}</T>
             {def.discharge.split(/\n+/).map((p, i) => (
               <T key={i} size={14} color={NR.cardInk} style={{ lineHeight: u(21) }}>{p}</T>
             ))}
           </Card>
-          <Btn ghost label="Back" onPress={() => setDischarge(false)} />
+          <Btn ghost label={tr('Back')} onPress={() => setDischarge(false)} />
         </NoirScreen>
       );
     return (
       <NoirScreen scroll>
         <View style={{ gap: u(2) }}>
-          <Kicker>Everyone has finished · seal broken</Kicker>
+          <Kicker>{tr('Everyone has finished · seal broken')}</Kicker>
           <CaseTitle title={def.title} />
         </View>
         <Card style={{ gap: u(4) }}>
-          <T size={11} color={NR.red} style={{ letterSpacing: 2 }}>THE DIAGNOSIS</T>
+          <T size={11} color={NR.red} style={{ letterSpacing: 2 }}>{tr('THE DIAGNOSIS')}</T>
           <T size={17} color={NR.cardInk}>{def.final}</T>
         </Card>
         <View style={{ gap: u(8) }}>
@@ -151,14 +152,14 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
                   <T size={14} lines={1} style={{ flexShrink: 1 }}>{nameOf(r.seat)}</T>
                   <Stamp word={r.score.stamp} size={8} />
                 </View>
-                <T size={11} color={NR.soft}>{`${caseClock(r.timeMs)} · differential +${r.score.dd} · time +${r.score.time}`}</T>
+                <T size={11} color={NR.soft}>{tr('{n} · differential +{dd} · time +{time}', { n: caseClock(r.timeMs), dd: r.score.dd, time: r.score.time })}</T>
               </View>
-              <T size={18} color={NR.red} style={{ minWidth: u(30), textAlign: 'right' }}>{r.score.total}</T>
+              <T size={18} color={NR.red} style={{ minWidth: u(30), textAlign: TA_END }}>{r.score.total}</T>
             </Animated.View>
           ))}
         </View>
-        <Btn ghost label="Read the discharge" onPress={() => setDischarge(true)} />
-        <Btn label="See results" onPress={() => onFinish(standings.find((x) => x.seat === 0)?.score ?? 0, standings)} />
+        <Btn ghost label={tr('Read the discharge')} onPress={() => setDischarge(true)} />
+        <Btn label={tr('See results')} onPress={() => onFinish(standings.find((x) => x.seat === 0)?.score ?? 0, standings)} />
       </NoirScreen>
     );
   }
@@ -171,16 +172,16 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
         <View style={{ flex: 1, justifyContent: 'center', gap: u(16) }}>
           <View style={{ gap: u(4) }}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-              <Kicker>{`Player ${o.turn + 1} of ${o.order.length}`}</Kicker>
+              <Kicker>{tr('Player {n} of {n2}', { n: o.turn + 1, n2: o.order.length })}</Kicker>
               <PauseBtn onPress={() => setHandMenu(true)} />
             </View>
-            <T size={14} color={NR.soft}>Pass the phone to</T>
+            <T size={14} color={NR.soft}>{tr('Pass the phone to')}</T>
             <T size={34} color={colorOf(seat)}>{nameOf(seat)}</T>
           </View>
           <Card style={{ gap: u(4) }}>
             <T size={10} color={NR.cardSoft} style={{ letterSpacing: 1.5 }}>{caseLabel(def.id)}</T>
             <T size={18} color={NR.cardInk}>{def.title}</T>
-            <T size={12} color={NR.cardSoft}>The same case for everyone. Results stay sealed until the last player closes it.</T>
+            <T size={12} color={NR.cardSoft}>{tr('The same case for everyone. Results stay sealed until the last player closes it.')}</T>
           </Card>
           {lines.length ? (
             <View style={s.recap}>
@@ -190,7 +191,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
             </View>
           ) : null}
         </View>
-        <Btn label="Start my case" onPress={() => save(ready(o, Date.now()))} />
+        <Btn label={tr('Start my case')} onPress={() => save(ready(o, Date.now()))} />
         {menu}
       </NoirScreen>
     );

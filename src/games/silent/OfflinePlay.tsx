@@ -22,6 +22,7 @@ import { ChalkBtn, ChalkChip, ChalkTitle, ClockChalkTimer, Frame, HintCard, Kick
 import { ActingCard, FitBoard } from './Stage';
 import { clock } from '@/games/engine/clock';
 import { useTickerClock } from '../engine/useTicker';
+import { tr } from '@/i18n';
 
 /** The lines on the current turn's board (and its shape), kept for the reveal and saved with the bookmark (rule 10). */
 type Sketch = { index: number; strokes: Stroke[]; ratio: number };
@@ -52,8 +53,8 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   const names = useMemo(() => Object.fromEntries(play.seats.map((x) => [x.seat, x.name])), [play.seats]);
   const teamOf = useCallback((seat: number) => seatOf.get(seat)?.team, [seatOf]);
   const team = useCallback((id: number | null | undefined) => teams?.find((t) => t.id === id), [teams]);
-  const teamName = useCallback((id: number) => team(id)?.name ?? `Team ${id + 1}`, [team]);
-  const nameOf = useCallback((seat: number) => names[seat] ?? `Player ${seat + 1}`, [names]);
+  const teamName = useCallback((id: number) => team(id)?.name ?? tr('Team {n}', { n: id + 1 }), [team]);
+  const nameOf = useCallback((seat: number) => names[seat] ?? tr('Player {n}', { n: seat + 1 }), [names]);
 
   useEffect(() => {
     let live = true;
@@ -166,7 +167,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   const phase = paused ? run.before! : run.phase;
   const live = run.plan.filter((p, i) => i <= run.index && !run.removed.includes(p.seat)).length;
   const total = run.plan.filter((p) => !run.removed.includes(p.seat)).length;
-  const kick = `Turn ${live} of ${total}${turn.team != null ? ` · ${teamName(turn.team)}` : ''}`;
+  const kick = tr('Turn {live} of {total}{n}', { live, total, n: turn.team != null ? ` · ${teamName(turn.team)}` : '' });
   const leftAt = (n: number) => timeLeft(run, n);
   const pause = () => dispatch({ type: 'PAUSE', now: Date.now() });
   const rows = offlineRows(run, names, teamOf);
@@ -206,7 +207,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   if (phase === 'picking')
     return (
       <SlateScreen scroll>
-        <TopRow kicker={kick} title={`${nameOf(turn.seat)}, pick one`} color={color} right={<><ClockChalkTimer clock={ticks} leftAt={leftAt} totalMs={10_000} /><PauseBtn onPress={pause} /></>} />
+        <TopRow kicker={kick} title={tr('{nameOf}, pick one', { nameOf: nameOf(turn.seat) })} color={color} right={<><ClockChalkTimer clock={ticks} leftAt={leftAt} totalMs={10_000} /><PauseBtn onPress={pause} /></>} />
         <Pick run={run} paused={paused} onKind={(kind) => dispatch({ type: 'KIND', kind })} onPick={(wordId) => dispatch({ type: 'PICK', wordId, now: Date.now() })} />
         {menu}
       </SlateScreen>
@@ -219,7 +220,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
     return (
       <SlateScreen scroll>
         <Kicker>{kick}</Kicker>
-        <ChalkTitle size={18} color={R.soft}>It was</ChalkTitle>
+        <ChalkTitle size={18} color={R.soft}>{tr('It was')}</ChalkTitle>
         <ChalkTitle size={27} color={R.mark}>{w ? wordName(w) : ''}</ChalkTitle>
         <Note style={{ marginTop: -u(6) }}>{w?.field}</Note>
         {t.kind === 'drawing' && sketch?.index === run.index && sketch.strokes.length ? (
@@ -231,10 +232,10 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
           <Text style={[s.result, { color: R.ink }]}>{outcomeLine(t, nameOf, teamName)}</Text>
         </Panel>
         <Panel style={{ paddingVertical: u(10) }}>
-          <Kicker>Scores</Kicker>
+          <Kicker>{tr('Scores')}</Kicker>
           <Scores rows={scoreRows} />
         </Panel>
-        <ChalkBtn label={last ? 'See results' : 'Next turn'} onPress={() => dispatch({ type: 'NEXT' })} />
+        <ChalkBtn label={last ? tr('See results') : tr('Next turn')} onPress={() => dispatch({ type: 'NEXT' })} />
         {menu}
       </SlateScreen>
     );
@@ -245,13 +246,13 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   const hint = run.hints ? hintView(w, run.hints, phase === 'performing' ? elapsed(run, now) : phase === 'whoGot' ? (run.gotAt ?? 0) : run.turnMs) : null;
   const steal = stealTeamOf(run, turn.team);
   const acting = run.kind === 'acting';
-  const title = phase === 'whoGot' ? 'Who got it?' : phase === 'stealing' ? `${steal != null ? teamName(steal) : 'Next team'} can steal` : `${nameOf(turn.seat)} is ${acting ? 'acting' : 'drawing'}`;
+  const title = phase === 'whoGot' ? tr('Who got it?') : phase === 'stealing' ? tr('{n} can steal', { n: steal != null ? teamName(steal) : tr('Next team') }) : tr('{n} is {n2}', { n: nameOf(turn.seat), n2: acting ? tr('acting') : tr('drawing') });
   const titleColor = phase === 'stealing' ? (team(steal)?.color ?? R.ink) : phase === 'whoGot' ? R.ink : color;
   const timer = phase === 'performing' ? <ClockChalkTimer clock={ticks} leftAt={leftAt} totalMs={run.turnMs} /> : phase === 'stealing' ? <ClockChalkTimer clock={ticks} leftAt={leftAt} totalMs={15_000} /> : null;
 
   return (
     <SlateScreen>
-      <TopRow kicker={phase === 'whoGot' ? `Guessed in ${clock(run.gotAt ?? 0)}` : phase === 'stealing' ? 'Time up · one guess, 15 s' : kick} title={title} color={titleColor} right={<>{timer}<PauseBtn onPress={pause} /></>} />
+      <TopRow kicker={phase === 'whoGot' ? tr('Guessed in {clock}', { clock: clock(run.gotAt ?? 0) }) : phase === 'stealing' ? tr('Time up · one guess, 15 s') : kick} title={title} color={titleColor} right={<>{timer}<PauseBtn onPress={pause} /></>} />
       {hint ? <HintCard hint={paused ? { words: hint.words, field: null, mask: null } : hint} /> : null}
       {acting ? (
         <ActingCard paused={paused} />
@@ -263,26 +264,26 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
           {acting ? null : <Ledge ink={ink} size={size} erase={erase} onInk={(i) => (setInk(i), setErase(false))} onSize={() => setSize(size ? 0 : 1)} onErase={() => setErase(!erase)} onUndo={() => board.current?.undo()} onClear={() => board.current?.clear()} />}
           <View style={s.row}>
             <Peek word={paused ? '' : w.name} />
-            <ChalkBtn ghost label="Give up" onPress={() => dispatch({ type: 'GIVE_UP', now: Date.now() })} style={s.act} />
-            <ChalkBtn label="Got it!" onPress={() => dispatch({ type: 'GOT_IT', now: Date.now() })} style={s.act} />
+            <ChalkBtn ghost label={tr('Give up')} onPress={() => dispatch({ type: 'GIVE_UP', now: Date.now() })} style={s.act} />
+            <ChalkBtn label={tr('Got it!')} onPress={() => dispatch({ type: 'GOT_IT', now: Date.now() })} style={s.act} />
           </View>
         </>
       ) : phase === 'whoGot' ? (
         <Panel style={{ gap: u(8), paddingVertical: u(10) }}>
-          <Note>Tap who said it first. They score by speed, and {nameOf(turn.seat)} gets half.</Note>
+          <Note>{tr('Tap who said it first. They score by speed, and {nameOf} gets half.', { nameOf: nameOf(turn.seat) })}</Note>
           <View style={s.wrap}>
             {rows.filter((r) => r.seat !== turn.seat).map((r) => (
               <ChalkChip key={r.seat} big label={r.name} dot={seatOf.get(r.seat)?.color} onPress={() => dispatch({ type: 'CREDIT', seat: r.seat })} />
             ))}
           </View>
-          <ChalkBtn ghost label="Not yet, keep going" onPress={() => dispatch({ type: 'UNDO_GOT', now: Date.now() })} />
+          <ChalkBtn ghost label={tr('Not yet, keep going')} onPress={() => dispatch({ type: 'UNDO_GOT', now: Date.now() })} />
         </Panel>
       ) : (
         <Panel style={{ gap: u(8), paddingVertical: u(10) }}>
-          <Note>{`${steal != null ? teamName(steal) : 'The next team'} talks it over and gives one answer. Right is worth 10.`}</Note>
+          <Note>{tr('{n} talks it over and gives one answer. Right is worth 10.', { n: steal != null ? teamName(steal) : tr('The next team') })}</Note>
           <View style={s.row}>
-            <ChalkBtn ghost label="Missed" onPress={() => dispatch({ type: 'STEAL', success: false })} style={{ flex: 1 }} />
-            <ChalkBtn label="They got it" onPress={() => dispatch({ type: 'STEAL', success: true })} style={{ flex: 1.4 }} />
+            <ChalkBtn ghost label={tr('Missed')} onPress={() => dispatch({ type: 'STEAL', success: false })} style={{ flex: 1 }} />
+            <ChalkBtn label={tr('They got it')} onPress={() => dispatch({ type: 'STEAL', success: true })} style={{ flex: 1.4 }} />
           </View>
         </Panel>
       )}
@@ -298,16 +299,16 @@ function Pick({ run, paused, onKind, onPick }: { run: OfflineRun; paused: boolea
   const open = show && !paused;
   return (
     <>
-      <Note>Only you should see this. If time runs out, number 1 is picked for you.</Note>
+      <Note>{tr('Only you should see this. If time runs out, number 1 is picked for you.')}</Note>
       <View style={s.row}>
-        <ChalkChip big label="Draw it" on={run.kind === 'drawing'} onPress={() => onKind('drawing')} />
-        <ChalkChip big label="Act it out" on={run.kind === 'acting'} onPress={() => onKind('acting')} />
+        <ChalkChip big label={tr('Draw it')} on={run.kind === 'drawing'} onPress={() => onKind('drawing')} />
+        <ChalkChip big label={tr('Act it out')} on={run.kind === 'acting'} onPress={() => onKind('acting')} />
       </View>
       <View style={{ gap: u(8) }}>
         {run.options.map((id, i) => {
           const w = wordById.get(id)!;
           return (
-            <Pressable key={id} onPress={() => onPick(id)} style={({ pressed }) => [s.option, { backgroundColor: R.board }, pressed && { opacity: 0.8 }]} accessibilityRole="button" accessibilityLabel={open ? `Pick ${w.name}` : `Pick number ${i + 1}`}>
+            <Pressable key={id} onPress={() => onPick(id)} style={({ pressed }) => [s.option, { backgroundColor: R.board }, pressed && { opacity: 0.8 }]} accessibilityRole="button" accessibilityLabel={open ? tr('Pick {name}', { name: w.name }) : tr('Pick number {n}', { n: i + 1 })}>
               <Text style={s.optNo}>{i + 1}</Text>
               <View style={{ flex: 1 }}>
                 <Text style={[s.optT, !open && { color: R.boardDim, letterSpacing: u(4) }]} numberOfLines={2}>
@@ -319,18 +320,18 @@ function Pick({ run, paused, onKind, onPick }: { run: OfflineRun; paused: boolea
           );
         })}
       </View>
-      <Pressable onPressIn={() => setShow(true)} onPressOut={() => setShow(false)} style={[s.hold, { borderColor: open ? R.mark : R.line }]} accessibilityRole="button" accessibilityLabel="Hold to see your words">
-        <Text style={[s.holdT, { color: open ? R.mark : R.ink }]}>{open ? 'Tap one while holding' : 'Hold here to see them'}</Text>
+      <Pressable onPressIn={() => setShow(true)} onPressOut={() => setShow(false)} style={[s.hold, { borderColor: open ? R.mark : R.line }]} accessibilityRole="button" accessibilityLabel={tr('Hold to see your words')}>
+        <Text style={[s.holdT, { color: open ? R.mark : R.ink }]}>{open ? tr('Tap one while holding') : tr('Hold here to see them')}</Text>
       </Pressable>
     </>
   );
 }
 
 function outcomeLine(t: TurnRecord, nameOf: (s: number) => string, teamName: (id: number) => string) {
-  if (t.outcome === 'guessed' && t.guesser != null) return `${nameOf(t.guesser)} got it in ${clock(t.atMs)}: +${t.points}. ${nameOf(t.seat)} +${t.performerPoints}.`;
-  if (t.outcome === 'guessed') return `${t.team != null ? teamName(t.team) : 'The room'} got it in ${clock(t.atMs)}: +${t.points}.`;
-  if (t.outcome === 'stolen') return `${t.stealTeam != null ? teamName(t.stealTeam) : 'The next team'} stole it: +${t.points}.`;
-  return 'Nobody got it this time.';
+  if (t.outcome === 'guessed' && t.guesser != null) return tr('{n} got it in {n2}: +{points}. {n3} +{performerPoints}.', { n: nameOf(t.guesser), n2: clock(t.atMs), points: t.points, n3: nameOf(t.seat), performerPoints: t.performerPoints });
+  if (t.outcome === 'guessed') return tr('{n} got it in {n2}: +{points}.', { n: t.team != null ? teamName(t.team) : tr('The room'), n2: clock(t.atMs), points: t.points });
+  if (t.outcome === 'stolen') return tr('{n} stole it: +{points}.', { n: t.stealTeam != null ? teamName(t.stealTeam) : tr('The next team'), points: t.points });
+  return tr('Nobody got it this time.');
 }
 
 const s = StyleSheet.create({

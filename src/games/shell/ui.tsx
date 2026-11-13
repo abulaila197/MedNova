@@ -10,6 +10,7 @@ import { TABLET, u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 import { tapped } from '@/lib/sound';
 import { Bolt } from '@/features/sparks/Bolt';
+import { tr } from '@/i18n';
 
 /**
  * A game page: the app sky and the game header (GH1), no dock, content scrolls with a gap under the header.
@@ -125,12 +126,12 @@ export function Chips<V extends string | number>({ choices, value, onChange, spa
             {arrow?.(c.value) ? (
               // Field ticks (Yazan 2026-11-11): the arrow opens the choice's field menu.
               <View style={s.chipRow}>
-                <Text style={[s.chipT, { color: on ? t.accent : t.fg }]}>{c.label}</Text>
+                <Text style={[s.chipT, { color: on ? t.accent : t.fg }]}>{tr(c.label)}</Text>
                 <Pressable
                   onPress={tapped((e) => onArrow?.(c.value, e?.nativeEvent?.pageY ?? 0))}
                   hitSlop={u(8)}
                   accessibilityRole="button"
-                  accessibilityLabel={`Pick ${c.label} fields`}
+                  accessibilityLabel={tr('Pick {label} fields', { label: c.label })}
                   style={[s.chipArrow, { borderColor: on ? t.accent : t.chipLine }]}>
                   <Text style={[s.chipArrowT, { color: on ? t.accent : t.dim }]}>▾</Text>
                 </Pressable>
@@ -138,11 +139,11 @@ export function Chips<V extends string | number>({ choices, value, onChange, spa
             ) : (
               <Text style={[s.chipT, { color: on ? t.accent : t.fg }]}>{c.label}</Text>
             )}
-            {on && ticks ? <Text style={[s.chipN, { color: t.accent }]}>{ticks}</Text> : c.note ? <Text style={[s.chipN, { color: t.dim }]}>{c.note}</Text> : null}
+            {on && ticks ? <Text style={[s.chipN, { color: t.accent }]}>{ticks}</Text> : c.note ? <Text style={[s.chipN, { color: t.dim }]}>{tr(c.note)}</Text> : null}
             {sparks?.(c.value) != null ? (
               <View style={s.chipSp}>
                 {sparks(c.value) ? <Bolt size={u(8.5)} color={on ? SPARK_ON : SPARK_OFF} /> : null}
-                <Text style={[s.chipS, { color: on ? SPARK_ON : SPARK_OFF }]}>{sparks(c.value) || 'Free'}</Text>
+                <Text style={[s.chipS, { color: on ? SPARK_ON : SPARK_OFF }]}>{sparks(c.value) || tr('Free')}</Text>
               </View>
             ) : null}
           </Pressable>

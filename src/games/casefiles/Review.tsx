@@ -5,29 +5,30 @@ import { u } from '@/theme/scale';
 import { CF, scoreRun, type CaseDef, type Run } from './core';
 import { caseNo } from './data';
 import { Btn, Card, CaseTitle, Kicker, NR, NoirScreen, Stamp, T } from './noir';
+import { tr } from '@/i18n';
 
 /**
  * The case review once the file is closed: the stamp, the points line by line, your two lists marked against the
  * doctor's list (#67: each name scores once across both), then the doctor's list. The right name is shown here, at the very end.
  */
-export function Review({ def, run, replay, onDone, doneLabel = 'See results' }: { def: CaseDef; run: Run; replay?: boolean; onDone: () => void; doneLabel?: string }) {
+export function Review({ def, run, replay, onDone, doneLabel = tr('See results') }: { def: CaseDef; run: Run; replay?: boolean; onDone: () => void; doneLabel?: string }) {
   const sc = scoreRun(def, run);
   const hit = (x: string) => def.answers.includes(x);
   const lines = [
-    { k: `Differential (${sc.ddRight} right, ${sc.ddWrong} wrong)`, v: sc.dd },
-    { k: 'Diagnosis', v: sc.provisional },
-    ...(run.provisional?.correct ? [] : [{ k: 'Last call', v: sc.redemption }]),
-    { k: 'Time bonus', v: sc.time },
+    { k: tr('Differential ({ddRight} right, {ddWrong} wrong)', { ddRight: sc.ddRight, ddWrong: sc.ddWrong }), v: sc.dd },
+    { k: tr('Diagnosis'), v: sc.provisional },
+    ...(run.provisional?.correct ? [] : [{ k: tr('Last call'), v: sc.redemption }]),
+    { k: tr('Time bonus'), v: sc.time },
   ];
   return (
     <NoirScreen scroll>
       <View style={{ gap: u(2) }}>
-        <Kicker>{`Case review · ${caseNo(def.id)}`}</Kicker>
+        <Kicker>{tr('Case review · {n}', { n: caseNo(def.id) })}</Kicker>
         <CaseTitle title={def.title} />
       </View>
       <Stamp word={sc.stamp} />
       <Card style={{ gap: u(4) }}>
-        <T size={11} color={NR.red} style={{ letterSpacing: 2 }}>THE DIAGNOSIS</T>
+        <T size={11} color={NR.red} style={{ letterSpacing: 2 }}>{tr('THE DIAGNOSIS')}</T>
         <T size={17} color={NR.cardInk}>{def.final}</T>
       </Card>
       <View style={s.box}>
@@ -38,14 +39,14 @@ export function Review({ def, run, replay, onDone, doneLabel = 'See results' }: 
           </View>
         ))}
         <View style={[s.line, s.total]}>
-          <T size={15}>Total</T>
+          <T size={15}>{tr('Total')}</T>
           <T size={15} color={NR.red}>{sc.total}</T>
         </View>
-        {replay ? <T size={11} color={NR.dim}>A replay: no EXP this time.</T> : null}
+        {replay ? <T size={11} color={NR.dim}>{tr('A replay: no EXP this time.')}</T> : null}
       </View>
       {[
-        { title: 'Your first list', list: run.dd ?? [], before: [] as string[] },
-        { title: 'Your narrowed list', list: run.filtered ?? [], before: run.dd ?? [] },
+        { title: tr('Your first list'), list: run.dd ?? [], before: [] as string[] },
+        { title: tr('Your narrowed list'), list: run.filtered ?? [], before: run.dd ?? [] },
       ].map((part) => (
         <View key={part.title} style={s.box}>
           <Kicker>{part.title}</Kicker>
@@ -55,14 +56,14 @@ export function Review({ def, run, replay, onDone, doneLabel = 'See results' }: 
             return (
               <T key={x} size={13} color={again ? NR.soft : hit(x) ? NR.green : NR.wrong}>
                 {again ? '·' : hit(x) ? `+${CF.points.ddRight}` : `-${CF.points.ddWrong}`}  {x}
-                {again ? '  (in your first list, counted once)' : ''}
+                {again ? tr('  (in your first list, counted once)') : ''}
               </T>
             );
           })}
         </View>
       ))}
       <View style={s.box}>
-        <Kicker>The doctor’s list</Kicker>
+        <Kicker>{tr('The doctor’s list')}</Kicker>
         <T size={13} style={{ lineHeight: u(19) }}>{def.answers.join('  /  ')}</T>
       </View>
       <Btn label={doneLabel} onPress={onDone} />

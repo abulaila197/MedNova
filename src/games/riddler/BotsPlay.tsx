@@ -21,6 +21,7 @@ import { GameScreen } from '../shell/ui';
 import { RD, starsFor } from './core';
 import { RIDDLES, answerLabel, feedsLearn, riddleName } from './data';
 import { RiddleBoard } from './RiddleBoard';
+import { tr } from '@/i18n';
 
 const PHOTO_MS = 90_000;
 const LOCK_MS = 5_000;
@@ -88,7 +89,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
     rules: RULES,
     pick: async () => (await engine.picker.pick(play.game, RIDDLES.map((x) => x.id), Number(play.settings.photos) || 5)).map((id) => indexOf.get(id)!).filter(Boolean),
     toItems: (st) => itemsOf(st, new Set(hintedNow.current)),
-    solvedText: (name, _rank, ms) => `${name} solved it in ${clock(ms)}`,
+    solvedText: (name, _rank, ms) => tr('{name} solved it in {n}', { name, n: clock(ms) }),
   });
   const [wrongSeq, setWrongSeq] = useState(0);
   const { st, race, t } = g;
@@ -115,21 +116,21 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
 
   const dock = reveal ? (
     <RaceReveal
-      label="The answer"
+      label={tr('The answer')}
       answer={riddleName(r)}
       players={st.players}
       me={YOU}
-      how={(p) => (p.solved ? nth(p.item_rank ?? 1) : 'time up')}
-      next={st.phase === 'done' ? 'Adding up the scores…' : `${last ? 'Results' : 'Next picture'} in ${nextIn} s`}
+      how={(p) => (p.solved ? nth(p.item_rank ?? 1) : tr('time up'))}
+      next={st.phase === 'done' ? tr('Adding up the scores…') : tr('{n} in {nextIn} s', { n: last ? tr('Results') : tr('Next picture'), nextIn })}
     />
   ) : solved ? (
     <RaceReveal
-      label={`Solved, ${nth(st.me!.rank ?? 1)}`}
+      label={tr('Solved, {nth}', { nth: nth(st.me!.rank ?? 1) })}
       answer={riddleName(r)}
       players={st.players.filter((p) => p.solved)}
       me={YOU}
       how={(p) => nth(p.item_rank ?? 1)}
-      next={waiting ? <AnsweredRow seats={st.players.map((p) => ({ user_id: p.user_id, character: p.character, done: p.solved }))} /> : 'Everyone solved it'}
+      next={waiting ? <AnsweredRow seats={st.players.map((p) => ({ user_id: p.user_id, character: p.character, done: p.solved }))} /> : tr('Everyone solved it')}
     />
   ) : undefined;
 
@@ -137,8 +138,8 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
     <RiddleBoard
       riddle={r}
       turnKey={`${st.index}`}
-      kicker={`Picture ${st.index + 1} of ${st.total}`}
-      title={{ text: 'Riddle duel' }}
+      kicker={tr('Picture {n} of {total}', { n: st.index + 1, total: st.total })}
+      title={{ text: tr('Riddle duel') }}
       clockMs={left}
       countdown
       lives={null}

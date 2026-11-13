@@ -2,6 +2,7 @@
 // order they were added. Results stay sealed (no stamp, no score, no discharge) until everyone has finished.
 import { scoreRun, snapshot, startRun, stepRun, type CaseDef, type Run, type RunEvent, type Score } from './core';
 import { clock } from '../engine/clock';
+import { say } from '../../i18n/say';
 
 export type OfflinePhase = 'handoff' | 'playing' | 'done';
 
@@ -57,7 +58,7 @@ export const snapshotOffline = (def: CaseDef, o: OfflineRun, now: number): Offli
 
 /** CF10: the hand-off shows only who finished and how long they took, nothing that would unseal the results. */
 export function finishedLines(o: OfflineRun, names: (seat: number) => string) {
-  return o.done.map((d) => `${names(d.seat)} finished the case in ${clock(d.run.finalMs ?? d.run.elapsedMs)}`);
+  return o.done.map((d) => say('{v} finished the case in {v2}', { v: names(d.seat), v2: clock(d.run.finalMs ?? d.run.elapsedMs) }));
 }
 
 export type Ranked = { seat: number; score: Score; timeMs: number; rank: number };

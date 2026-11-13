@@ -11,6 +11,7 @@ import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import { heatColors, SEGMENTS } from './HeatBoard';
+import { tr } from '@/i18n';
 
 /**
  * The rivals' heat columns (G4, Yazan 2026-11-09): a small tube per rival that rises with its streak and crashes when
@@ -52,7 +53,7 @@ function Column({ p, reveal }: { p: RacePlayer; reveal: boolean }) {
         <PlayerFace slug={p.character} size={u(20)} userId={p.user_id} still />
         {answered ? <View style={[s.dot, { backgroundColor: t.accent, borderColor: t.panel }]} /> : null}
       </View>
-      <View style={[s.tube, { borderColor: t.panelLine, backgroundColor: t.panel }]} accessibilityLabel={`${p.name}: streak ${p.streak}`}>
+      <View style={[s.tube, { borderColor: t.panelLine, backgroundColor: t.panel }]} accessibilityLabel={tr('{name}: streak {streak}', { name: p.name, streak: p.streak })}>
         {Array.from({ length: SEGMENTS }, (_, i) => (
           <View key={i} style={[s.seg, { backgroundColor: i < lit ? (i >= SEGMENTS - 3 ? hc.hot : t.accent) : hc.segOff }]} />
         ))}

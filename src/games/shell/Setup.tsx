@@ -22,6 +22,7 @@ import { useSparks } from '@/features/sparks/sparks';
 import { useIntent } from '@/features/challenges/store';
 import { useIsSubscribed } from '@/features/store/billing';
 import { Btn, Card, Chips, GameScreen, Title } from './ui';
+import { tr } from '@/i18n';
 
 
 /** Shared setup: the game's options as chips. Rule 9: they lock when the game starts. `prefill` comes from "Change settings". */
@@ -40,7 +41,7 @@ export function Setup({ def, mode, prefill, prefillSeats }: { def: GameDef; mode
   const free = alwaysFree({ game: def.key, mode, settings: vals });
   const { cost, per } = setupPrices(def.key, mode, vals, opts);
   const showCost = priced && !free && cost > 0;
-  const each = perUnit(def.key, mode, vals) ? (def.key === 'the-riddler' ? ' a level' : ' a word') : '';
+  const each = perUnit(def.key, mode, vals) ? (def.key === 'the-riddler' ? tr(' a level') : tr(' a word')) : '';
   // Field ticks (Yazan 2026-11-11): the open menu, and whether the ticks leave enough to start.
   const [open, setOpen] = useState<{ key: string; top: number } | null>(null);
   const ticked = tickedFields(vals);
@@ -63,11 +64,11 @@ export function Setup({ def, mode, prefill, prefillSeats }: { def: GameDef; mode
       bodyStyle={{ paddingTop: u(10), gap: u(10) }}
       bottom={
         <>
-          {intent ? <Text style={[s.small, { color: t.accent, textAlign: 'center' }]}>{`Challenge for ${intent.friend.name} · ${intent.kind === 'score' ? 'Beat my score, 1 day' : `Game challenge, ${intent.days} day${intent.days > 1 ? 's' : ''}`}`}</Text> : null}
+          {intent ? <Text style={[s.small, { color: t.accent, textAlign: 'center' }]}>{tr('Challenge for {name} · {n}', { name: intent.friend.name, n: intent.kind === 'score' ? tr('Beat my score, 1 day') : tr('Game challenge, {v} day{v2}', { v: intent.days, v2: intent.days > 1 ? 's' : '' }) })}</Text> : null}
           <Text style={[s.small, { color: t.dim, textAlign: 'center' }]}>
-            {emptyTeam ? `${emptyTeam.name} has no players yet.` : thinTeam ? `${thinTeam.name} needs at least ${minEach} players.` : short && menu ? `Tick at least ${menu.min} ${menu.unit} (now ${menu.total(ticked)}).` : showCost ? `${each ? 'Costs' : 'This game costs'} ${cost} Sparks${each} · you have ${have}` : 'Settings lock once the game starts.'}
+            {emptyTeam ? tr('{name} has no players yet.', { name: emptyTeam.name }) : thinTeam ? tr('{name} needs at least {minEach} players.', { name: thinTeam.name, minEach }) : short && menu ? tr('Tick at least {min} {unit} (now {total}).', { min: menu.min, unit: menu.unit, total: menu.total(ticked) }) : showCost ? tr('{n} {cost} Sparks{each} · you have {have}', { n: each ? tr('Costs') : tr('This game costs'), cost, each, have }) : tr('Settings lock once the game starts.')}
           </Text>
-          <Btn label="Start" onPress={start} disabled={busy || !!emptyTeam || !!thinTeam || short} />
+          <Btn label={tr('Start')} onPress={start} disabled={busy || !!emptyTeam || !!thinTeam || short} />
         </>
       }>
       <Back label={`${g.lead} ${g.em}`} fallback={`/play/${def.key}`} />
@@ -118,10 +119,10 @@ function Players({ st, min, max, note, teams }: { st: SetupState; min: number; m
   return (
     <Card style={s.card}>
       <View style={s.head}>
-        <Text style={[s.lbl, { color: t.white }]}>Players</Text>
+        <Text style={[s.lbl, { color: t.white }]}>{tr('Players')}</Text>
         {seats.length < max ? (
-          <Pressable onPress={add} hitSlop={u(8)} accessibilityRole="button" accessibilityLabel="Add player">
-            <Text style={[s.add, { color: t.accent }]}>+ Add player</Text>
+          <Pressable onPress={add} hitSlop={u(8)} accessibilityRole="button" accessibilityLabel={tr('Add player')}>
+            <Text style={[s.add, { color: t.accent }]}>{tr('+ Add player')}</Text>
           </Pressable>
         ) : null}
       </View>
@@ -140,7 +141,7 @@ function Players({ st, min, max, note, teams }: { st: SetupState; min: number; m
                   style={[s.tchip, { borderColor: on ? tm.color : t.chipLine, backgroundColor: on ? tm.color : 'transparent' }]}
                   accessibilityRole="button"
                   accessibilityState={{ selected: on }}
-                  accessibilityLabel={`Put player ${i + 1} in ${tm.name}`}
+                  accessibilityLabel={tr('Put player {n} in {name}', { n: i + 1, name: tm.name })}
                 />
               );
             })}
@@ -153,14 +154,14 @@ function Players({ st, min, max, note, teams }: { st: SetupState; min: number; m
               value={x.name}
               onChangeText={(v) => set(i, { name: v })}
               maxLength={14}
-              placeholder={`Player ${i + 1}`}
+              placeholder={tr('Player {n}', { n: i + 1 })}
               placeholderTextColor={t.dim}
               style={[s.pname, { color: t.fg }]}
-              accessibilityLabel={`Player ${i + 1} name`}
+              accessibilityLabel={tr('Player {n} name', { n: i + 1 })}
             />
             {teams && teams.length <= 3 ? teamDots : null}
             {seats.length > min ? (
-              <Pressable onPress={() => remove(i)} hitSlop={u(6)} accessibilityRole="button" accessibilityLabel={`Remove player ${i + 1}`}>
+              <Pressable onPress={() => remove(i)} hitSlop={u(6)} accessibilityRole="button" accessibilityLabel={tr('Remove player {n}', { n: i + 1 })}>
                 <Text style={[s.px, { color: t.dim }]}>✕</Text>
               </Pressable>
             ) : null}
@@ -178,7 +179,7 @@ function Players({ st, min, max, note, teams }: { st: SetupState; min: number; m
                   style={[s.face, { opacity: taken ? 0.2 : 1, borderColor: on ? t.white : 'transparent' }]}
                   accessibilityRole="button"
                   accessibilityState={{ selected: on, disabled: taken }}
-                  accessibilityLabel={`${c.name} for player ${i + 1}`}
+                  accessibilityLabel={tr('{name} for player {n}', { name: c.name, n: i + 1 })}
                 >
                   <View style={{ width: u(15.5), height: u(15.5), borderRadius: u(7.75), backgroundColor: c.color }} />
                 </Pressable>
@@ -190,7 +191,7 @@ function Players({ st, min, max, note, teams }: { st: SetupState; min: number; m
         );
       })}
       </View>
-      <Text style={[s.small, { color: t.mute }]}>{note ?? 'Player 1 is you, the phone owner. Pass the phone earns no EXP; only your missed cases go to Learn.'}</Text>
+      <Text style={[s.small, { color: t.mute }]}>{note ?? tr('Player 1 is you, the phone owner. Pass the phone earns no EXP; only your missed cases go to Learn.')}</Text>
     </Card>
   );
 }
@@ -203,7 +204,7 @@ function Teams({ st }: { st: SetupState }) {
   return (
     <View style={s.opt}>
       <View style={s.line}>
-        <Text style={[s.lbl, s.side, { color: t.white }]}>Teams</Text>
+        <Text style={[s.lbl, s.side, { color: t.white }]}>{tr('Teams')}</Text>
         <View style={{ flex: 1 }}>
           <Chips choices={choices} value={count} onChange={(v) => teamCount(Number(v))} />
         </View>
@@ -220,13 +221,13 @@ function Teams({ st }: { st: SetupState }) {
                 placeholder={preset(tm.id).name}
                 placeholderTextColor={t.dim}
                 style={[s.pname, { color: t.fg }]}
-                accessibilityLabel={`Team ${i + 1} name`}
+                accessibilityLabel={tr('Team {n} name', { n: i + 1 })}
               />
             </View>
           ))}
         </View>
       ) : null}
-      {teams ? <Text style={[s.small, { color: t.mute }]}>{'Tap a dot by each player to pick their team.'}</Text> : null}
+      {teams ? <Text style={[s.small, { color: t.mute }]}>{tr('Tap a dot by each player to pick their team.')}</Text> : null}
     </View>
   );
 }

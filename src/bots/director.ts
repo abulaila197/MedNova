@@ -6,6 +6,7 @@ import { isMuted, onTalk, popAsBot, sayAsBot } from '@/match/talk';
 import { CHATTY, personaOf } from './identity';
 import { heardKind, linesFor, replyTo, toneLines, type Heard, type Line, type Moment, type Place } from './lines';
 import type { Bot, Persona } from './types';
+import { tr } from '@/i18n';
 
 /**
  * Who says what, and when (G3, Yazan 2026-11-09). Games and the room tell the director what happened; it decides
@@ -102,14 +103,14 @@ export function rivalMoment(room: string, bot: Bot, m: Moment, ctx: Ctx = {}): b
  * text, a short line in its own manner). At most every 2 rounds per room; a Shy Genius less often.
  */
 const STUDY: Record<Persona, string[]> = {
-  showoff: ['Easy one. It\'s all in the dossier.', 'I read that dossier twice. Your turn.', 'Check the dossier, then come back.'],
-  shy: ['The dossier helped me with that one.', 'Maybe look at the dossier later?', 'I learned it in Learn, honestly.'],
-  joker: ['Dossier. Read it. Thank me later.', 'Spoiler: the dossier knew all along.', 'Homework: one dossier, no excuses.'],
-  sore: ['Go read the dossier before the next one.', 'That\'s in the dossier. Study it.', 'Learn it properly next time.'],
-  cheer: ['Open that dossier, you\'ve got this!', 'Add it to your Learn review!', 'One dossier read and it\'s yours!'],
-  cool: ['It\'s in the dossier.', 'Dossier covers that one.', 'Worth a look in Learn.'],
-  hot: ['READ the dossier!', 'Dossier. Now. Go!', 'Study it in Learn. Seriously.'],
-  sleepy: ['The dossier… explains it better than me.', 'Read the dossier… then nap.', 'Learn has it… go study.'],
+  showoff: [tr('Easy one. It\'s all in the dossier.'), tr('I read that dossier twice. Your turn.'), tr('Check the dossier, then come back.')],
+  shy: [tr('The dossier helped me with that one.'), tr('Maybe look at the dossier later?'), tr('I learned it in Learn, honestly.')],
+  joker: [tr('Dossier. Read it. Thank me later.'), tr('Spoiler: the dossier knew all along.'), tr('Homework: one dossier, no excuses.')],
+  sore: [tr('Go read the dossier before the next one.'), tr('That\'s in the dossier. Study it.'), tr('Learn it properly next time.')],
+  cheer: [tr('Open that dossier, you\'ve got this!'), tr('Add it to your Learn review!'), tr('One dossier read and it\'s yours!')],
+  cool: [tr('It\'s in the dossier.'), tr('Dossier covers that one.'), tr('Worth a look in Learn.')],
+  hot: [tr('READ the dossier!'), tr('Dossier. Now. Go!'), tr('Study it in Learn. Seriously.')],
+  sleepy: [tr('The dossier… explains it better than me.'), tr('Read the dossier… then nap.'), tr('Learn has it… go study.')],
 };
 export function rivalStudy(room: string, bot: Bot, round: number): boolean {
   if (bot.type !== 'genius' || isMuted(room, bot.id)) return false;

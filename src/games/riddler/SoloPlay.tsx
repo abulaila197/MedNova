@@ -23,6 +23,7 @@ import { RD, levelExp, levelTime, livesLeft, retryCap, snapshotLevel, startLevel
 import { RIDDLES, answerLabel, feedsLearn, riddleById, riddleName } from './data';
 import { RiddleBoard } from './RiddleBoard';
 import { second, useTicker } from '../engine/useTicker';
+import { tr } from '@/i18n';
 
 /** One finished level attempt in this session. */
 type Done = { riddleId: string; solved: boolean; stars: number; exp: number };
@@ -145,11 +146,11 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
     paying.current = true;
     const receipt = await engine.wallet.spend(RD.hintPrice, 'riddler_hint', play.id);
     paying.current = false;
-    if (!receipt) return setNotice('You need 1 token. Each level up gives 1 token.');
+    if (!receipt) return setNotice(tr('You need 1 token. Each level up gives 1 token.'));
     const cur = ref.current;
     if (!cur || cur.riddleId !== l.riddleId || cur.phase !== 'playing') {
       await engine.wallet.refund(receipt);
-      return setNotice('Hint refunded.');
+      return setNotice(tr('Hint refunded.'));
     }
     dispatch({ type: 'HINT' });
   }, [dispatch, play.id]);
@@ -168,7 +169,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
     if (!res.ok) return setNotice(whySay(res));
     const cur = ref.current;
     // Left the level (or it changed) while the purchase was on its way: the tokens come back instead.
-    if (!cur || cur.riddleId !== l.riddleId || cur.phase !== 'failed') return setNotice((await refundSecond(res.id)) ? 'Second chance refunded.' : 'The level was closed first.');
+    if (!cur || cur.riddleId !== l.riddleId || cur.phase !== 'failed') return setNotice((await refundSecond(res.id)) ? tr('Second chance refunded.') : tr('The level was closed first.'));
     dispatch({ type: 'REVIVE', now: Date.now() });
   }, [dispatch, play.id]);
   const signedIn = useSession((x) => !!x.userId);
@@ -207,8 +208,8 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   return (
     <RiddleBoard
       riddle={r}
-      kicker={`Level ${idx + 1} of ${RIDDLES.length}`}
-      title={{ text: 'Medical Riddles' }}
+      kicker={tr('Level {n} of {n2}', { n: idx + 1, n2: RIDDLES.length })}
+      title={{ text: tr('Medical Riddles') }}
       clockMs={levelTime(level, now)}
       lives={livesLeft(level)}
       wrong={level.wrong}
@@ -241,47 +242,47 @@ function ResultCard({ done, level, onNext, onRetry, onGrid, revive }: { done: Do
   const r = riddleById.get(done.riddleId)!;
   const tone = done.solved ? '#3fc58a' : '#ff5c6c';
   const expLine = !done.solved
-    ? 'Out of lives. No EXP this time.'
+    ? tr('Out of lives. No EXP this time.')
     : done.exp
-      ? `+${done.exp} EXP${done.exp < done.stars * RD.expPerStar ? ' for your new star' + (done.exp > RD.expPerStar ? 's' : '') : ''}`
-      : 'No new stars, so no EXP. Beat your best to earn more.';
-  const capLine = done.solved && level.revived ? ' A second chance earns 1 star at most.' : done.solved && level.maxStars === 1 ? ' A retry after a miss earns 1 star at most.' : '';
+      ? tr('+{exp} EXP{n}', { exp: done.exp, n: done.exp < done.stars * RD.expPerStar ? (done.exp > RD.expPerStar ? tr(' for your new stars') : tr(' for your new star')) : '' })
+      : tr('No new stars, so no EXP. Beat your best to earn more.');
+  const capLine = done.solved && level.revived ? tr(' A second chance earns 1 star at most.') : done.solved && level.maxStars === 1 ? tr(' A retry after a miss earns 1 star at most.') : '';
   // With a second chance on offer the answer stays hidden until you give up on it.
   const [gaveUp, setGaveUp] = useState(false);
   const hide = !!revive && !gaveUp;
   return (
     <View style={[s.card, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
       <View style={s.cardTop}>
-        <Kick color={tone}>{done.solved ? `Solved in ${Math.ceil(level.timeMs / 1000)} s` : 'Missed'}</Kick>
+        <Kick color={tone}>{done.solved ? tr('Solved in {ceil} s', { ceil: Math.ceil(level.timeMs / 1000) }) : tr('Missed')}</Kick>
         {done.solved ? <Stars n={done.stars} size={14} /> : null}
       </View>
       {hide ? (
-        <Text style={[s.ans, { color: t.white }]}>Out of lives</Text>
+        <Text style={[s.ans, { color: t.white }]}>{tr('Out of lives')}</Text>
       ) : (
         <>
           <Text style={[s.ans, { color: t.white }]}>{riddleName(r)}</Text>
           <Text style={[s.def, { color: t.mute }]} numberOfLines={3}>{r.definition}</Text>
         </>
       )}
-      <Text style={[s.exp, { color: t.soft }]}>{hide ? 'Keep going with 3 new lives, worth 1 star at most.' : expLine + capLine}</Text>
+      <Text style={[s.exp, { color: t.soft }]}>{hide ? tr('Keep going with 3 new lives, worth 1 star at most.') : expLine + capLine}</Text>
       {hide && revive ? (
         <View style={s.row}>
-          <Ghost label="Show the answer" onPress={() => setGaveUp(true)} style={{ flex: 1 }} />
-          <HelperButton label={`3 lives back · ${revive.price}${COIN}`} tone="rose" onPress={revive.onPress} style={{ flex: 1.4 }} />
+          <Ghost label={tr('Show the answer')} onPress={() => setGaveUp(true)} style={{ flex: 1 }} />
+          <HelperButton label={tr('3 lives back · {price}{COIN}', { price: revive.price, COIN })} tone="rose" onPress={revive.onPress} style={{ flex: 1.4 }} />
         </View>
       ) : (
         <View style={s.row}>
-          <Ghost label="Retry" onPress={onRetry} style={{ flex: 1 }} />
-          <Btn label="Next level" onPress={onNext} style={{ flex: 1.4 }} />
+          <Ghost label={tr('Retry')} onPress={onRetry} style={{ flex: 1 }} />
+          <Btn label={tr('Next level')} onPress={onNext} style={{ flex: 1.4 }} />
         </View>
       )}
       <View style={s.links}>
-        <Pressable onPress={onGrid} hitSlop={u(6)} accessibilityRole="button" accessibilityLabel="All levels">
-          <Text style={[s.link, { color: t.mute }]}>All levels</Text>
+        <Pressable onPress={onGrid} hitSlop={u(6)} accessibilityRole="button" accessibilityLabel={tr('All levels')}>
+          <Text style={[s.link, { color: t.mute }]}>{tr('All levels')}</Text>
         </Pressable>
         {r.dossier && !hide ? (
-          <Pressable onPress={() => router.push(`/learn/dossier?id=${r.dossier}`)} hitSlop={u(6)} accessibilityRole="link" accessibilityLabel={`Open the dossier for ${r.answer}`}>
-            <Text style={[s.link, { color: t.accent }]}>Open the dossier ›</Text>
+          <Pressable onPress={() => router.push(`/learn/dossier?id=${r.dossier}`)} hitSlop={u(6)} accessibilityRole="link" accessibilityLabel={tr('Open the dossier for {answer}', { answer: r.answer })}>
+            <Text style={[s.link, { color: t.accent }]}>{tr('Open the dossier ›')}</Text>
           </Pressable>
         ) : null}
       </View>
@@ -294,7 +295,7 @@ const PAPER_STAR = { on: '#e09a12', off: '#c9c1b2' };
 
 function PaperStars({ n }: { n: number }) {
   return (
-    <View style={s.pStars} accessibilityLabel={`${n} of 3 stars`}>
+    <View style={s.pStars} accessibilityLabel={tr('{n} of 3 stars', { n })}>
       {[0, 1, 2].map((i) => (
         <Text key={i} style={[s.pStar, { color: i < n ? PAPER_STAR.on : PAPER_STAR.off }]}>{i < n ? '★' : '☆'}</Text>
       ))}
@@ -305,7 +306,7 @@ function PaperStars({ n }: { n: number }) {
 function Stars({ n, size }: { n: number; size: number }) {
   const t = useTheme();
   return (
-    <Text style={{ fontSize: u(size), letterSpacing: u(1) }} accessibilityLabel={`${n} of 3 stars`}>
+    <Text style={{ fontSize: u(size), letterSpacing: u(1) }} accessibilityLabel={tr('{n} of 3 stars', { n })}>
       {[0, 1, 2].map((i) => (
         <Text key={i} style={{ color: i < n ? t.accent : '#2a3050' }}>★</Text>
       ))}
@@ -323,12 +324,12 @@ function LevelGrid({ best, session, onOpen, onFinish }: { best: (id: string) => 
     <GameScreen>
       <View style={s.gTop}>
         <View style={{ flex: 1 }}>
-          <Kick>{`${solved} of ${RIDDLES.length} solved · ${stars} ★`}</Kick>
+          <Kick>{tr('{solved} of {n} solved · {stars} ★', { solved, n: RIDDLES.length, stars })}</Kick>
           <Text style={[s.gTitle, { color: t.white }]} numberOfLines={1}>
-            Medical <Text style={{ color: t.accent, fontFamily: F.displayItalic }}>Riddles</Text>
+            {tr('Medical')} <Text style={{ color: t.accent, fontFamily: F.displayItalic }}>{tr('Riddles')}</Text>
           </Text>
         </View>
-        <Ghost label={session.length ? 'See results' : 'Leave'} onPress={onFinish} />
+        <Ghost label={session.length ? tr('See results') : tr('Leave')} onPress={onFinish} />
       </View>
       <Animated.View entering={FadeIn.duration(240)} style={[s.board, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
         {RIDDLES.map((r, i) => {
@@ -340,7 +341,7 @@ function LevelGrid({ best, session, onOpen, onFinish }: { best: (id: string) => 
               onPress={() => onOpen(r.id)}
               style={[s.tile, { transform: [{ rotate: `${((i * 37) % 7) - 3}deg` }] }, next && { borderColor: t.accent, borderWidth: 1.5 }]}
               accessibilityRole="button"
-              accessibilityLabel={`Level ${i + 1}, ${b ? `${b} of 3 stars` : 'not solved'}`}>
+              accessibilityLabel={tr('Level {n}, {n2}', { n: i + 1, n2: b ? tr('{v} of 3 stars', { v: b }) : tr('not solved') })}>
               <View style={[s.pin, { backgroundColor: b ? t.accent : '#b9b2a4' }]} />
               <Text style={s.tileN}>{i + 1}</Text>
               <PaperStars n={b} />

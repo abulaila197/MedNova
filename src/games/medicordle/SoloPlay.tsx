@@ -22,12 +22,16 @@ import {
 import { isWord, poolFor, wordById } from './data';
 import { SlideStack, SlideTable } from './Slides';
 import { showDefinition, snapshotSolo, startSolo, stepSolo, type SoloEvent, type SoloRun } from './solo';
+import { tr } from '@/i18n';
+
+/** Read outside render (React Compiler lint): only called from the submit handler. */
+const clockNow = () => Date.now();
 
 const streakKey = (style: Style) => `medicordle:streak:${style}`;
 const dailyKey = (style: Style, day: number) => `medicordle:daily:${style}:${day}`;
 const lastKey = (style: Style) => `medicordle:daily:last:${style}`;
 const PAID_KEY = 'medicordle:endless:paid'; // NM30: Endless words that already paid EXP
-const STYLE_NAME: Record<Style, string> = { classic: 'Classic', five: 'Classic', custom: 'Custom' };
+const STYLE_NAME: Record<Style, string> = { classic: tr('Classic'), five: tr('Classic'), custom: tr('Custom') };
 
 /**
  * The daily lock, written when the daily word starts so the day can't be replayed: while unfinished it keeps the run
@@ -176,21 +180,21 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
     if (!r || r.style !== 'custom' || r.phase !== 'playing' || r.hints >= HINT_COSTS.length || paying.current) return;
     const answer = wordById.get(r.wordIds[r.index])!.word;
     const pick = pickHint(answer, r.guesses, r.revealed);
-    if (!pick) return setNotice('Every letter is already showing.');
+    if (!pick) return setNotice(tr('Every letter is already showing.'));
     paying.current = true;
     try {
       const cost = HINT_COSTS[r.hints];
       const index = r.index;
       const hints = r.hints;
       const receipt = await engine.wallet.spend(cost, 'medicordle_hint', play.id);
-      if (!receipt) return setNotice(`You need ${cost} token${cost > 1 ? 's' : ''}. Each level up gives 1 token.`);
+      if (!receipt) return setNotice(tr('You need {cost} token{n}. Each level up gives 1 token.', { cost, n: cost > 1 ? 's' : '' }));
       const cur = runRef.current;
       if (!cur || cur.index !== index || cur.hints !== hints || cur.phase !== 'playing') {
         await engine.wallet.refund(receipt);
-        return setNotice('Hint refunded.');
+        return setNotice(tr('Hint refunded.'));
       }
       dispatch({ type: 'HINT_GRANTED', columns: pick.columns });
-      setNotice(`Letter ${pick.letter} revealed.`);
+      setNotice(tr('Letter {letter} revealed.', { letter: pick.letter }));
     } finally {
       paying.current = false;
     }
@@ -210,25 +214,25 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
         if (nav?.share) await nav.share({ text });
         else {
           await nav?.clipboard?.writeText(text);
-          setNotice('Result copied.');
+          setNotice(tr('Result copied.'));
         }
       } else await Share.share({ message: text });
     } catch {
-      setNotice('Sharing is not available here.');
+      setNotice(tr('Sharing is not available here.'));
     }
   };
 
-  const no = (day: number | null) => (day != null ? `NO. ${day + 1}` : 'ENDLESS');
-  const titleFor = (day: number) => `Six Word Tries No. ${day + 1} · ${STYLE_NAME[style]}`;
+  const no = (day: number | null) => (day != null ? tr('NO. {n}', { n: day + 1 }) : 'ENDLESS');
+  const titleFor = (day: number) => tr('Six Word Tries No. {n} · {n2}', { n: day + 1, n2: STYLE_NAME[style] });
 
   // The phone date reads earlier than the latest daily: no daily until that day has passed.
   if (locked != null) {
     return (
       <GameScreen scroll={false}>
         <DoneCard
-          line="Daily word locked"
-          sub={`Your phone's date is before your last daily (No. ${locked + 1}). The next one opens the day after it.`}
-          primary={{ label: 'Back', onPress: onQuit }}
+          line={tr('Daily word locked')}
+          sub={tr('Your phone\'s date is before your last daily (No. {n}). The next one opens the day after it.', { n: locked + 1 })}
+          primary={{ label: tr('Back'), onPress: onQuit }}
         />
       </GameScreen>
     );
@@ -239,7 +243,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
     const w = wordById.get(done.wordId)!;
     return (
       <SlideTable
-        label={{ no: no(today), title: 'Six Word Tries', sub: `Daily ${STYLE_NAME[style]} · played today`, right: <SlideStack n={liveStreak(streak, today)} /> }}
+        label={{ no: no(today), title: tr('Six Word Tries'), sub: tr('Daily {n} · played today', { n: STYLE_NAME[style] }), right: <SlideStack n={liveStreak(streak, today)} /> }}
         answer={w.word}
         played={done.guesses.map((word) => ({ word }))}
         rows={MAX_ROWS}
@@ -253,10 +257,10 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
         notice={notice}
         dock={
           <DoneCard
-            line={done.solved ? `Solved on guess ${done.guesses.length}` : `The word was ${w.word}`}
-            sub="A new daily word comes tomorrow."
-            primary={{ label: 'Share', onPress: () => share(titleFor(today), done.guesses, w.word, done.solved) }}
-            secondary={{ label: 'Back', onPress: onQuit }}
+            line={done.solved ? tr('Solved on guess {n}', { n: done.guesses.length }) : tr('The word was {word}', { word: w.word })}
+            sub={tr('A new daily word comes tomorrow.')}
+            primary={{ label: tr('Share'), onPress: () => share(titleFor(today), done.guesses, w.word, done.solved) }}
+            secondary={{ label: tr('Back'), onPress: onQuit }}
           />
         }
       />
@@ -269,20 +273,20 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   const over = run.phase === 'wordOver' || (paused && run.before === 'wordOver');
   const r = over ? run.results[run.results.length - 1] : null;
   const custom = style === 'custom';
-  const sub = run.kind === 'daily' ? `Daily ${STYLE_NAME[style]} · ${w.word.length} letters` : `${STYLE_NAME[style]} · word ${run.index + 1} · ${w.word.length} letters`;
+  const sub = run.kind === 'daily' ? tr('Daily {n} · {n2} letters', { n: STYLE_NAME[style], n2: w.word.length }) : tr('{n} · word {n2} · {n3} letters', { n: STYLE_NAME[style], n2: run.index + 1, n3: w.word.length });
 
   const submit = (g: string) => {
     const bad = lengthCheck(g, style, w.word.length);
-    if (bad === 'short') return custom ? 'At least 7 letters' : 'Not enough letters';
-    if (bad === 'long') return 'Too many letters';
-    if (g !== w.word && !isWord(g)) return 'Not in word list';
-    dispatch({ type: 'GUESS', word: g, answer: w.word, now: Date.now() });
+    if (bad === 'short') return custom ? tr('At least 7 letters') : tr('Not enough letters');
+    if (bad === 'long') return tr('Too many letters');
+    if (g !== w.word && !isWord(g)) return tr('Not in word list');
+    dispatch({ type: 'GUESS', word: g, answer: w.word, now: clockNow() });
     return null;
   };
 
   return (
     <SlideTable
-      label={{ no: no(run.day), title: 'Six Word Tries', sub, right: run.kind === 'daily' ? <SlideStack n={liveStreak(streak, today)} /> : <Text style={[s.score, { color: t.accent }]}>{`${run.score} EXP`}</Text> }}
+      label={{ no: no(run.day), title: tr('Six Word Tries'), sub, right: run.kind === 'daily' ? <SlideStack n={liveStreak(streak, today)} /> : <Text style={[s.score, { color: t.accent }]}>{tr('{score} EXP', { score: run.score })}</Text> }}
       answer={w.word}
       played={run.guesses.map((word) => ({ word }))}
       rows={MAX_ROWS}
@@ -296,7 +300,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
       minLen={minLen(style)}
       hint={
         custom && !over && run.hints < HINT_COSTS.length
-          ? { label: `Letter hint · ${HINT_COSTS[run.hints]}${COIN}`, onPress: hint, disabled: paused }
+          ? { label: tr('Letter hint · {n}{COIN}', { n: HINT_COSTS[run.hints], COIN }), onPress: hint, disabled: paused }
           : undefined
       }
       onPause={() => dispatch({ type: 'PAUSE', now: Date.now() })}
@@ -305,17 +309,17 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
       dock={
         r ? (
           <DoneCard
-            line={r.solved ? `Solved on guess ${r.guesses.length}` : `The word was ${w.word}`}
-            sub={r.exp ? `+${r.exp} EXP${run.kind === 'daily' ? ' · daily words earn double' : ''}` : r.solved && run.kind === 'endless' ? 'No EXP: this word already paid before.' : 'No EXP this time.'}
+            line={r.solved ? tr('Solved on guess {n}', { n: r.guesses.length }) : tr('The word was {word}', { word: w.word })}
+            sub={r.exp ? tr('+{exp} EXP{n}', { exp: r.exp, n: run.kind === 'daily' ? tr(' · daily words earn double') : '' }) : r.solved && run.kind === 'endless' ? tr('No EXP: this word already paid before.') : tr('No EXP this time.')}
             primary={
               run.kind === 'daily'
-                ? { label: 'See results', onPress: () => dispatch({ type: 'NEXT', now: Date.now() }) }
-                : { label: run.index + 1 >= run.wordIds.length ? 'See results' : 'Next word', onPress: () => void nextWord() }
+                ? { label: tr('See results'), onPress: () => dispatch({ type: 'NEXT', now: Date.now() }) }
+                : { label: run.index + 1 >= run.wordIds.length ? tr('See results') : tr('Next word'), onPress: () => void nextWord() }
             }
             secondary={
               run.kind === 'daily'
-                ? { label: 'Share', onPress: () => share(titleFor(run.day ?? today), r.guesses, w.word, r.solved) }
-                : { label: 'Finish', onPress: () => dispatch({ type: 'FINISH' }) }
+                ? { label: tr('Share'), onPress: () => share(titleFor(run.day ?? today), r.guesses, w.word, r.solved) }
+                : { label: tr('Finish'), onPress: () => dispatch({ type: 'FINISH' }) }
             }
           />
         ) : undefined

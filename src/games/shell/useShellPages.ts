@@ -13,6 +13,7 @@ import { focusGame } from '@/features/games/focus';
 import { useSession } from './session';
 import { teamsOf, teamStandings } from './teams';
 import { teamScoreOf, type GameDef } from './types';
+import { tr } from '@/i18n';
 
 /** Mode landing logic: resumable plays, what a play costs, the open How to play card, and Play (with the guest gate). */
 export function useLanding(def: GameDef) {
@@ -49,14 +50,14 @@ export function useLanding(def: GameDef) {
   const resumePlay = (p: Play) => router.push(`/play/${def.key}/${p.mode === 'bots' && p.resume == null ? 'room' : 'run'}?play=${p.id}`);
   /** "Resume case 3": the bookmark's item number when it has one. */
   const resumeLabel = (p: Play) => {
-    if (p.mode === 'bots' && p.resume == null) return 'Back to the room';
+    if (p.mode === 'bots' && p.resume == null) return tr('Back to the room');
     const i = (p.resume as { index?: number } | null)?.index;
-    return `Resume ${def.itemNoun ?? 'case'} ${i != null ? i + 1 : ''}`.trim();
+    return tr('Resume {n} {n2}', { n: tr(def.itemNoun ?? 'case'), n2: i != null ? i + 1 : '' }).trim();
   };
   /** The small note on a mode card: only a guest's free plays left. No Sparks text on the cards (Yazan 2026-10-27). */
   const note = (_mode: Mode) => {
     if (signedIn || left == null) return '';
-    return left > 0 ? `${left}/${GUEST_PLAYS} free` : 'Free plays used';
+    return left > 0 ? tr('{left}/{GUEST_PLAYS} free', { left, GUEST_PLAYS }) : tr('Free plays used');
   };
   return { open, setOpen, resume, go, resumePlay, resumeLabel, note };
 }
@@ -73,8 +74,8 @@ export function useResults(def: GameDef, play: Play, items: PlayItem[]) {
   const plain = def.plainItems?.(play) ?? false;
   const teamRows = teams && play.standings.length > 1 ? teamStandings(play.standings, play.seats, teams, teamScoreOf(def, play.mode)) : null;
   const stats = def.summary?.(play, items) ?? [
-    { value: String(play.score), label: multi ? 'Your points' : 'Points' },
-    { value: `${right}/${mine.length}`, label: 'Solved' },
+    { value: String(play.score), label: multi ? tr('Your points') : tr('Points') },
+    { value: `${right}/${mine.length}`, label: tr('Solved') },
   ];
   const missed = items.some((i) => i.feedsLearn && i.outcome !== 'right');
   const signedIn = !!useSession((s) => s.userId);

@@ -26,6 +26,7 @@ import { ONLINE_MS } from './online';
 import { WheelsShow } from './rivals';
 import { TurnBoard, type Strip } from './TurnBoard';
 import { Bill, Btn, Bulbs, CD, CM, GEMS, Panel, PauseBtn, ROMAN, Rule, T, VelvetScreen, VV } from './velvet';
+import { isAr, tr, TA_END } from '@/i18n';
 
 const WAITS: Partial<Record<OfflineGame['phase'], number>> = { redemptionOffer: ONLINE_MS.offer };
 
@@ -64,7 +65,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
   const { st, race: show, t, push } = g;
   const game = show && st ? show.game : null;
 
-  const seatName = (s: number) => (s === 0 ? 'You' : (show?.rivals[s - 1]?.name ?? `Player ${s + 1}`));
+  const seatName = (s: number) => (s === 0 ? 'You' : (show?.rivals[s - 1]?.name ?? tr('Player {n}', { n: s + 1 })));
   const n = game?.seats ?? 1;
   const placeOf = (seat: number): Place => {
     if (!game) return 'mid';
@@ -143,7 +144,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
   if (game.phase === 'done')
     body = (
       <View style={{ alignItems: 'center', gap: u(16), marginTop: u(120) }}>
-        <T f={CD} size={22} color={VV.gold} style={{ textAlign: 'center' }}>Final curtain…</T>
+        <T f={CD} size={22} color={VV.gold} style={{ textAlign: 'center' }}>{tr('Final curtain…')}</T>
         <Board board={board} />
       </View>
     );
@@ -151,7 +152,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
     body = mine ? (
       <RedemptionOffer seat={who} seats={seats} onPick={(use) => move({ type: 'REDEEM', use })} onPause={pause} />
     ) : (
-      <Watching kicker="Redemption" title={<TurnName name={seatName(who)} color={GEMS[who % GEMS.length]} after=" is last" />} line="Final round: last place may swap this turn for a Redemption round, once a game." board={board} onPause={pause} />
+      <Watching kicker={tr('Redemption')} title={<TurnName name={seatName(who)} color={GEMS[who % GEMS.length]} after={tr(' is last')} />} line={tr('Final round: last place may swap this turn for a Redemption round, once a game.')} board={board} onPause={pause} />
     );
   else if (game.phase === 'redemption' && game.redemption)
     body = (
@@ -171,11 +172,11 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
         turn={game.turn}
         now={t}
         kicker={actName(game)}
-        title={mine ? <TurnName name="Your turn" color={GEMS[who % GEMS.length]} /> : <TurnName name={seatName(who)} color={GEMS[who % GEMS.length]} after="’s turn" />}
+        title={mine ? <TurnName name={tr('Your turn')} color={GEMS[who % GEMS.length]} /> : <TurnName name={seatName(who)} color={GEMS[who % GEMS.length]} after={tr('’s turn')} />}
         strip={board}
         watch={!mine}
         hidden={g.paused}
-        footer={mine ? undefined : <T f={CM} size={12} color={VV.soft} style={{ textAlign: 'center' }}><TurnName name={seatName(who)} color={GEMS[who % GEMS.length]} after=" is answering" /></T>}
+        footer={mine ? undefined : <T f={CM} size={12} color={VV.soft} style={{ textAlign: 'center' }}><TurnName name={seatName(who)} color={GEMS[who % GEMS.length]} after={tr(' is answering')} /></T>}
         onEvent={(e: TurnEvent) => {
           if (e.type === 'ANSWER') move({ type: 'ANSWER', answer: e.answer as Answer });
           else if (e.type === 'GO') move({ type: 'GO' });
@@ -201,7 +202,7 @@ function WaitBar({ left, total, mine }: { left: number; total: number; mine: boo
   return (
     <View style={{ gap: u(4), marginBottom: u(10) }}>
       <Bulbs frac={left / total} />
-      <T f={CM} size={11} color={mine ? VV.gold : VV.dim} style={{ textAlign: 'right' }}>{`${Math.ceil(left / 1000)} s${mine ? ' to choose' : ''}`}</T>
+      <T f={CM} size={11} color={mine ? VV.gold : VV.dim} style={{ textAlign: TA_END }}>{`${Math.ceil(left / 1000)} s${mine ? tr(' to choose') : ''}`}</T>
     </View>
   );
 }
@@ -230,7 +231,7 @@ function LiveBoss({ show, g, t, seatName, onSwipe, onPause, hidden }: { show: Wh
       PanResponder.create({
         onMoveShouldSetPanResponder: (_, d) => Math.abs(d.dx) > 12,
         onPanResponderRelease: (_, d) => {
-          if (Math.abs(d.dx) > 60) swipe(d.dx > 0);
+          if (Math.abs(d.dx) > 60) swipe(isAr ? d.dx < 0 : d.dx > 0);
         },
       }),
     [swipe],
@@ -242,20 +243,20 @@ function LiveBoss({ show, g, t, seatName, onSwipe, onPause, hidden }: { show: Wh
     const startsIn = b.phase === 'ready' && show.deadline ? Math.max(0, Math.ceil((show.deadline - t) / 1000)) : null;
     return (
       <View style={{ gap: u(14) }}>
-        <Top kicker={`Act ${ROMAN[g.cycle]} · Boss Round`} title={b.phase === 'ready' ? 'Everyone swipes at once' : 'Deck done'} onPause={onPause} />
+        <Top kicker={tr('Act {n} · Boss Round', { n: ROMAN[g.cycle] })} title={b.phase === 'ready' ? tr('Everyone swipes at once') : tr('Deck done')} onPause={onPause} />
         <Bill>
           <T f={CM} size={10.5} color={VV.paperSoft} style={{ letterSpacing: u(2), textAlign: 'center' }}>{fieldName(b.field).toUpperCase()}</T>
           <T f={CD} size={19} color={VV.redInk} style={{ textAlign: 'center' }}>{b.category}</T>
           <Rule c="rgba(42,26,18,0.18)" />
-          <T size={13} color={VV.paperInk} style={{ textAlign: 'center' }}>{`Swipe right if it belongs, left if it doesn’t. ${BOSS_MS / 1000} seconds. +${BOSS_RIGHT} for a right swipe, ${BOSS_WRONG} for a wrong one.`}</T>
-          <T size={12} color={VV.paperSoft} style={{ textAlign: 'center' }}>{`Same items for everyone, each in their own order. Highest score wins +${bossBonus(g.target)}.`}</T>
+          <T size={13} color={VV.paperInk} style={{ textAlign: 'center' }}>{tr('Swipe right if it belongs, left if it doesn’t. {n} seconds. +{BOSS_RIGHT} for a right swipe, {BOSS_WRONG} for a wrong one.', { n: BOSS_MS / 1000, BOSS_RIGHT, BOSS_WRONG })}</T>
+          <T size={12} color={VV.paperSoft} style={{ textAlign: 'center' }}>{tr('Same items for everyone, each in their own order. Highest score wins +{n}.', { n: bossBonus(g.target) })}</T>
         </Bill>
         {startsIn != null ? <T f={CD} size={30} color={VV.gold} style={{ textAlign: 'center' }}>{String(startsIn)}</T> : null}
-        {done ? <T size={13} color={VV.soft} style={{ textAlign: 'center' }}>{`${show.myBossPoints()} points.`}</T> : null}
+        {done ? <T size={13} color={VV.soft} style={{ textAlign: 'center' }}>{tr('{n} points.', { n: show.myBossPoints() })}</T> : null}
         {b.phase === 'playing' ? (
           <Panel>
             {others.map((s) => (
-              <T key={s} size={12.5} color={VV.soft}>{`${seatName(s)}: ${show.swipesOf(s, t).length} of ${b.items.length}`}</T>
+              <T key={s} size={12.5} color={VV.soft}>{tr('{n}: {n2} of {n3}', { n: seatName(s), n2: show.swipesOf(s, t).length, n3: b.items.length })}</T>
             ))}
           </Panel>
         ) : null}
@@ -275,20 +276,20 @@ function LiveBoss({ show, g, t, seatName, onSwipe, onPause, hidden }: { show: Wh
       </View>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
         <T f={CM} size={12} color={VV.brass} style={{ letterSpacing: u(1), flexShrink: 1 }} lines={1}>{b.category.toUpperCase()}</T>
-        <T f={CM} size={12} color={VV.soft} style={{ flexShrink: 0 }}>{`${bossPoints({ ...b, swipes: { 0: mine } }, 0)} pts`}</T>
+        <T f={CM} size={12} color={VV.soft} style={{ flexShrink: 0 }}>{tr('{n} pts', { n: bossPoints({ ...b, swipes: { 0: mine } }, 0) })}</T>
       </View>
       <View style={{ flex: 1, justifyContent: 'center', minHeight: u(240) }} {...pan.panHandlers}>
         <Bill style={{ marginHorizontal: u(20) }}>
           <View style={{ minHeight: u(150), alignItems: 'center', justifyContent: 'center', gap: u(8) }}>
-            <T f={CM} size={10.5} color={VV.paperSoft} style={{ letterSpacing: u(2) }}>{`${mine.length + 1} OF ${b.items.length}`}</T>
+            <T f={CM} size={10.5} color={VV.paperSoft} style={{ letterSpacing: u(2) }}>{tr('{n} OF {n2}', { n: mine.length + 1, n2: b.items.length })}</T>
             <T f={CD} size={20} color={VV.paperInk} style={{ textAlign: 'center' }}>{item.label}</T>
           </View>
         </Bill>
-        <T size={11.5} color={VV.dim} style={{ textAlign: 'center', marginTop: u(10) }}>Swipe the card, or tap below.</T>
+        <T size={11.5} color={VV.dim} style={{ textAlign: 'center', marginTop: u(10) }}>{tr('Swipe the card, or tap below.')}</T>
       </View>
       <View style={{ flexDirection: 'row', gap: u(10) }}>
-        <Btn label="‹ Doesn’t fit" no onPress={() => onSwipe(false)} style={{ flex: 1 }} />
-        <Btn label="Fits ›" onPress={() => onSwipe(true)} style={{ flex: 1 }} />
+        <Btn label={tr('‹ Doesn’t fit')} no onPress={() => onSwipe(false)} style={{ flex: 1 }} />
+        <Btn label={tr('Fits ›')} onPress={() => onSwipe(true)} style={{ flex: 1 }} />
       </View>
     </View>
   );

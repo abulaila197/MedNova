@@ -1,4 +1,5 @@
-// Player levels (LV1, LV2, LV4, LV5): EXP raises the level; each level up gives 5 tokens and every 5th level 20 in
+
+import { say } from '../../i18n/say';// Player levels (LV1, LV2, LV4, LV5): EXP raises the level; each level up gives 5 tokens and every 5th level 20 in
 // all (Yazan 2026-10-26, was 1 and 4).
 // Climb: level 2 at 60 EXP, each next level needs 20 more up to level 10 (1,260 in total), then 6% more each level.
 
@@ -32,5 +33,5 @@ export function levelOf(totalExp: number) {
 /** The results line for a play that levelled the player up (LV1, step 3), e.g. "Level 7 · +5 tokens". */
 export function levelUpLine(up: { level: number; tokens: number } | undefined) {
   if (!up) return null;
-  return `Level ${up.level} · +${up.tokens} token${up.tokens === 1 ? '' : 's'}`;
+  return say('Level {v} · +{v2} token{v3}', { v: up.level, v2: up.tokens, v3: up.tokens === 1 ? '' : 's' });
 }

@@ -13,6 +13,7 @@ import { F } from '@/theme/tokens';
 
 import { SEAT_COLOURS } from '../shell/characters';
 import { GameScreen } from '../shell/ui';
+import { tr } from '@/i18n';
 
 /** App colours under the old names: brass = accent, paper = the app's soft beige (Yazan 2026-11-02), redInk = violet. */
 export const VV = {
@@ -42,8 +43,8 @@ export const CB = F.bodyBold;
 export const BODY = F.bodyMedium;
 export const BODY_B = F.bodySemi;
 /** #32 (Yazan 2026-11-01): questions and answers are set in Alegreya Sans. */
-export const QF = 'AlegreyaSans_500Medium';
-export const QF_B = 'AlegreyaSans_700Bold';
+export const QF = tr('AlegreyaSans_500Medium');
+export const QF_B = tr('AlegreyaSans_700Bold');
 const FONTS = [QF, QF_B];
 export const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
 
@@ -177,7 +178,7 @@ export function Chip({ label, color, on, onPress }: { label: string; color?: str
 /** The pause button, as the app's round icon button. */
 export function PauseBtn({ onPress }: { onPress: () => void }) {
   return (
-    <Pressable onPress={tapped(onPress)} hitSlop={u(8)} accessibilityRole="button" accessibilityLabel="Pause" style={s.pause}>
+    <Pressable onPress={tapped(onPress)} hitSlop={u(8)} accessibilityRole="button" accessibilityLabel={tr('Pause')} style={s.pause}>
       <View style={s.bar} />
       <View style={s.bar} />
     </Pressable>

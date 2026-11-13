@@ -9,6 +9,7 @@ import { tickedFields } from '../shell/fields';
 import { caseById, guessName, poolFor } from './data';
 import type { Difficulty } from './core';
 import { snapshot, startRun, step, type SoloEvent, type SoloRun } from './solo';
+import { tr } from '@/i18n';
 
 /** Runs one solo game on the engine: picks unseen cases, bookmarks every step, records each case, pays hints. */
 export function useSoloRun({ play, onFinish }: Pick<PlayProps, 'play' | 'onFinish'>) {
@@ -85,11 +86,11 @@ export function useSoloRun({ play, onFinish }: Pick<PlayProps, 'play' | 'onFinis
     try {
       const index = r.index;
       const receipt = await engine.wallet.spend(DP.hintTokenCost, 'diagnostic_hint', play.id);
-      if (!receipt) return setNotice('You need 1 token for a hint. Each level up gives 1 token.');
+      if (!receipt) return setNotice(tr('You need 1 token for a hint. Each level up gives 1 token.'));
       const cur = runRef.current;
       if (!cur || cur.index !== index || cur.hint || (cur.phase !== 'playing' && cur.phase !== 'paused')) {
         await engine.wallet.refund(receipt);
-        return setNotice('Hint refunded.');
+        return setNotice(tr('Hint refunded.'));
       }
       dispatch({ type: 'HINT_GRANTED' });
     } finally {

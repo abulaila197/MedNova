@@ -1,5 +1,6 @@
 import type { FieldMenu } from '../shell/fields';
 import WORDS from './data/words.json';
+import { tr } from '@/i18n';
 
 export type CatKey = 'diseases' | 'drugs' | 'anatomy' | 'signs' | 'tests' | 'hospital' | 'staff' | 'emergency' | 'body';
 export type Word = { id: string; w: string; c: CatKey };
@@ -10,15 +11,15 @@ export const wordById = new Map(BANK.map((x) => [x.id, x]));
 
 /** The categories in setup order. */
 export const CATS: { key: CatKey; label: string }[] = [
-  { key: 'diseases', label: 'Diseases' },
-  { key: 'drugs', label: 'Drugs' },
-  { key: 'anatomy', label: 'Anatomy' },
-  { key: 'signs', label: 'Signs and symptoms' },
-  { key: 'tests', label: 'Tests and procedures' },
-  { key: 'hospital', label: 'Hospital and equipment' },
-  { key: 'staff', label: 'Specialties and staff' },
-  { key: 'emergency', label: 'Emergencies and first aid' },
-  { key: 'body', label: 'Body in action' },
+  { key: 'diseases', label: tr('Diseases') },
+  { key: 'drugs', label: tr('Drugs') },
+  { key: 'anatomy', label: tr('Anatomy') },
+  { key: 'signs', label: tr('Signs and symptoms') },
+  { key: 'tests', label: tr('Tests and procedures') },
+  { key: 'hospital', label: tr('Hospital and equipment') },
+  { key: 'staff', label: tr('Specialties and staff') },
+  { key: 'emergency', label: tr('Emergencies and first aid') },
+  { key: 'body', label: tr('Body in action') },
 ];
 export const catLabel = (c: string) => CATS.find((x) => x.key === c)?.label ?? c;
 

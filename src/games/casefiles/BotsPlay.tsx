@@ -21,6 +21,7 @@ import { scoreRun, stageOf, startRun, stepRun, type Run, type RunEvent } from '.
 import { CASES, DIAGNOSES, caseLabel, dossierOf } from './data';
 import { Card, CaseTitle, Kicker, NR, NoirScreen, Stamp, T, caseClock } from './noir';
 import { casePlan, parseWork, stageAt, type CaseWork } from './rivals';
+import { tr, TA_END } from '@/i18n';
 
 const caseOf = (n: number) => CASES[n - 1];
 const indexOfCase = new Map(CASES.map((c, i) => [c.id, i + 1]));
@@ -102,7 +103,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
       return (await engine.picker.pick(play.game, CASES.map((x) => x.id), n)).map((id) => indexOfCase.get(id)!).filter(Boolean);
     },
     toItems,
-    solvedText: (name) => `${name} solved it`,
+    solvedText: (name) => tr('{name} solved it', { name }),
   });
   const { st, race, t, push } = g;
   const seen = useRef<{ index: number; stages: Map<string, string> } | null>(null);
@@ -113,10 +114,10 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
   /** Where each rival is on the case now (from its plan), and its answers once the seal breaks. */
   const workOf = (id: string, index: number): CaseWork | null => parseWork(race?.plansAt(index)?.[id]?.answer);
   const stageFor = (p: RacePlayer): string => {
-    if (!st) return 'History';
+    if (!st) return tr('History');
     if (p.user_id === YOU) {
       const run = runs.get(st.item ?? 0);
-      return run ? stageOf(run) : 'History';
+      return run ? stageOf(run) : tr('History');
     }
     return stageAt(workOf(p.user_id, st.index), t - st.phase_started_at, p.done);
   };
@@ -156,7 +157,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
   const index = st.index;
   const total = st.total;
   const left = Math.max(0, st.phase_ends_at - t);
-  const row = total > 1 ? `Case ${index + 1} of ${total} · ` : '';
+  const row = total > 1 ? tr('Case {n} of {total} · ', { n: index + 1, total }) : '';
   const myRun = runs.get(st.item) ?? null;
   const extras = (
     <>
@@ -173,38 +174,38 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
     return (
       <NoirScreen scroll>
         <View style={{ gap: u(2) }}>
-          <Kicker>{`${row}${caseLabel(c.id)} · seal broken`}</Kicker>
+          <Kicker>{tr('{row}{n} · seal broken', { row, n: caseLabel(c.id) })}</Kicker>
           <CaseTitle title={c.title} />
         </View>
         <Card style={{ gap: u(4) }}>
-          <T size={11} color={NR.red} style={{ letterSpacing: 2 }}>THE DIAGNOSIS</T>
+          <T size={11} color={NR.red} style={{ letterSpacing: 2 }}>{tr('THE DIAGNOSIS')}</T>
           <T size={17} color={NR.cardInk}>{c.final}</T>
-          <T size={11} color={NR.cardSoft} style={{ letterSpacing: 2, marginTop: u(6) }}>THE DOCTOR’S LIST</T>
+          <T size={11} color={NR.cardSoft} style={{ letterSpacing: 2, marginTop: u(6) }}>{tr('THE DOCTOR’S LIST')}</T>
           <T size={12.5} color={NR.cardInk}>{c.answers.join('  /  ')}</T>
         </Card>
         <View style={{ gap: u(8) }}>
           {rows.map((p, i) => {
             const cf = p.user_id === YOU ? cfOfRun(myRun) : cfOfWork(workOf(p.user_id, index));
             const ms = doneMs(p);
-            const how = p.done ? (total > 1 ? 'finished' : `finished in ${caseClock(ms ?? limitMs)}`) : myRun && p.user_id === YOU && (myRun.provisional || myRun.redemption) ? 'answered, didn’t end the case' : 'ran out of time';
+            const how = p.done ? (total > 1 ? 'finished' : tr('finished in {n}', { n: caseClock(ms ?? limitMs) })) : myRun && p.user_id === YOU && (myRun.provisional || myRun.redemption) ? tr('answered, didn’t end the case') : tr('ran out of time');
             return (
               <Animated.View key={p.user_id} entering={FadeIn.delay(200 + i * 180).duration(260)} style={[s.rank, cf ? { alignItems: 'flex-start' } : null]}>
                 <T size={18} color={NR.dim} style={{ width: u(24) }}>{String(i + 1)}</T>
                 <View style={[s.dot, { backgroundColor: colorOf(p) }]} />
                 <View style={{ flex: 1, gap: u(4) }}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: u(10) }}>
-                    <T size={14} lines={1} style={{ flexShrink: 1 }}>{p.user_id === YOU ? 'You' : p.name}</T>
+                    <T size={14} lines={1} style={{ flexShrink: 1 }}>{p.user_id === YOU ? tr('You') : p.name}</T>
                     <Stamp word={p.solved ? 'SOLVED' : 'CLOSED'} size={8} />
                   </View>
-                  <T size={11} color={NR.soft}>{`${total > 1 ? `+${p.item_points ?? 0} this case · ` : ''}${how}`}</T>
+                  <T size={11} color={NR.soft}>{tr('{n}{how}', { n: total > 1 ? tr('+{v} this case · ', { v: p.item_points ?? 0 }) : '', how })}</T>
                   {cf ? <Answers cf={cf} answers={c.answers} final={c.final} /> : null}
                 </View>
-                <T size={18} color={NR.red} style={{ minWidth: u(30), textAlign: 'right' }}>{String(p.score)}</T>
+                <T size={18} color={NR.red} style={{ minWidth: u(30), textAlign: TA_END }}>{String(p.score)}</T>
               </Animated.View>
             );
           })}
         </View>
-        <T size={12} color={NR.soft} style={{ textAlign: 'center' }}>{st.phase === 'done' ? 'Adding up the scores…' : `${index + 1 < total ? 'Next case' : 'Results'} in ${Math.max(0, Math.ceil(left / 1000))} s`}</T>
+        <T size={12} color={NR.soft} style={{ textAlign: 'center' }}>{st.phase === 'done' ? tr('Adding up the scores…') : tr('{n} in {max} s', { n: index + 1 < total ? tr('Next case') : tr('Results'), max: Math.max(0, Math.ceil(left / 1000)) })}</T>
         {extras}
       </NoirScreen>
     );
@@ -217,13 +218,13 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
       <NoirScreen>
         <View style={{ flex: 1, justifyContent: 'center', gap: u(16) }}>
           <View style={{ gap: u(4) }}>
-            <Kicker>{`${row}${caseLabel(c.id)} · ${caseClock(left, true)} left`}</Kicker>
-            <CaseTitle title="Case closed. Sealed." />
-            <T size={12.5} color={NR.soft}>Your stamp and points stay sealed until every rival closes the case or time runs out.</T>
+            <Kicker>{tr('{row}{n} · {n2} left', { row, n: caseLabel(c.id), n2: caseClock(left, true) })}</Kicker>
+            <CaseTitle title={tr('Case closed. Sealed.')} />
+            <T size={12.5} color={NR.soft}>{tr('Your stamp and points stay sealed until every rival closes the case or time runs out.')}</T>
           </View>
           <View style={s.recap}>
             {others.map((p) => (
-              <T key={p.user_id} size={12.5} color={NR.soft}>{`— ${p.name}: ${p.done ? (total > 1 ? 'finished' : `finished in ${caseClock(race.plansAt(index)?.[p.user_id]?.doneAt ?? 0)}`) : `at ${stageFor(p)}`}`}</T>
+              <T key={p.user_id} size={12.5} color={NR.soft}>{tr('— {name}: {n}', { name: p.name, n: p.done ? (total > 1 ? tr('finished') : tr('finished in {v}', { v: caseClock(race.plansAt(index)?.[p.user_id]?.doneAt ?? 0) })) : tr('at {v}', { v: tr(stageFor(p)) }) })}</T>
             ))}
           </View>
         </View>
@@ -243,7 +244,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
         now={() => g.at((at) => at) ?? t}
         paused={g.paused}
         kicker={`${row}${caseLabel(c.id)}`}
-        countdown={`${caseClock(left, true)} left`}
+        countdown={tr('{n} left', { n: caseClock(left, true) })}
         onPause={g.openMenu}
         onDone={(solved) => (solved ? g.solve({ guess: 'solved' }) : g.miss({ guess: 'closed' }))}
       />
@@ -285,10 +286,10 @@ function Answers({ cf, answers, final }: { cf: Cf; answers: string[]; final: str
   const list = (l: string[] | null) => (l?.length ? l.map((x) => `${answers.includes(x) ? '✓' : '✗'} ${x}`).join('\n') : '—');
   const call = (x: string | null) => (x ? `${x === final ? '✓' : '✗'} ${x}` : '—');
   const rows: [string, string][] = [
-    ['First list', list(cf.first ?? cf.dd)],
-    ['Narrowed list', list(cf.dd)],
-    ['Diagnosis', call(cf.prov)],
-    ...(cf.redeem ? ([['Last call', call(cf.redeem)]] as [string, string][]) : []),
+    [tr('First list'), list(cf.first ?? cf.dd)],
+    [tr('Narrowed list'), list(cf.dd)],
+    [tr('Diagnosis'), call(cf.prov)],
+    ...(cf.redeem ? ([[tr('Last call'), call(cf.redeem)]] as [string, string][]) : []),
   ];
   return (
     <View style={s.answers}>

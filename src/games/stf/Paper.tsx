@@ -16,10 +16,11 @@ import { F } from '@/theme/tokens';
 
 import { LEVEL_NAME, casePoints, right1, right2, shownOf, type Case, type CaseRun } from './core';
 import { hospitalOf } from './data';
+import { tr } from '@/i18n';
 
-export const SERIF = 'Fraunces_400Regular';
-export const SERIF_BOLD = 'Fraunces_800ExtraBold';
-export const PEN = 'Caveat_700Bold';
+export const SERIF = tr('Fraunces_400Regular');
+export const SERIF_BOLD = tr('Fraunces_800ExtraBold');
+export const PEN = tr('Caveat_700Bold');
 export const C = {
   paper: '#f7f8fc',
   ink: '#1c2340',
@@ -63,7 +64,7 @@ export function TopLine({ kicker, right, sub }: { kicker: string; right?: ReactN
         {right}
       </View>
       <Text style={s.title} numberOfLines={1}>
-        Spot the <Text style={[s.title, { color: C.coral }]}>Flaw</Text>
+        {tr('Spot the')} <Text style={[s.title, { color: C.coral }]}>{tr('Flaw')}</Text>
       </Text>
       {sub ? <Text style={s.sub}>{sub}</Text> : null}
     </View>
@@ -95,7 +96,7 @@ export function Sheet({ c, highlight, style, onOpen }: { c: Case; highlight?: bo
       <View style={s.margin} />
       <View style={s.sheetHead}>
         <Text style={s.sheetHeadT} numberOfLines={1}>{`${c.p} · ${hospitalOf(c.id)}`.toUpperCase()}</Text>
-        <Text style={s.sheetHeadT}>{LEVEL_NAME[c.lv].toUpperCase()}</Text>
+        <Text style={s.sheetHeadT}>{tr(LEVEL_NAME[c.lv]).toUpperCase()}</Text>
       </View>
       <ScrollView
         ref={scroll}
@@ -127,13 +128,13 @@ export function Sheet({ c, highlight, style, onOpen }: { c: Case; highlight?: bo
       </ScrollView>
       {highlight ? (
         <Animated.Text entering={FadeIn.duration(300)} style={s.penNote}>
-          look here
+          {tr('look here')}
         </Animated.Text>
       ) : null}
       {more ? <LinearGradient colors={['rgba(247,248,252,0)', C.paper]} style={[s.fade, onOpen ? { bottom: u(30) } : null]} pointerEvents="none" /> : null}
       {onOpen ? (
-        <Pressable onPress={tapped(onOpen)} accessibilityRole="button" accessibilityLabel="Tap to read the whole note" style={s.openBar}>
-          <Text style={s.openT}>Tap to read the whole note  ›</Text>
+        <Pressable onPress={tapped(onOpen)} accessibilityRole="button" accessibilityLabel={tr('Tap to read the whole note')} style={s.openBar}>
+          <Text style={s.openT}>{tr('Tap to read the whole note ›')}</Text>
         </Pressable>
       ) : null}
     </View>
@@ -158,12 +159,12 @@ export function NotePopup({ c, highlight, onClose }: { c: Case; highlight?: bool
   };
   return (
     <Modal transparent visible animationType="fade" onRequestClose={onClose} statusBarTranslucent>
-      <Pressable style={s.popBack} onPress={onClose} accessibilityLabel="Close the note">
+      <Pressable style={s.popBack} onPress={onClose} accessibilityLabel={tr('Close the note')}>
         <Pressable style={[s.sheet, s.popSheet]} onPress={() => {}}>
           <View style={s.margin} />
           <View style={s.sheetHead}>
             <Text style={s.sheetHeadT} numberOfLines={1}>{`${c.p} · ${hospitalOf(c.id)}`.toUpperCase()}</Text>
-            <Text style={s.sheetHeadT}>{LEVEL_NAME[c.lv].toUpperCase()}</Text>
+            <Text style={s.sheetHeadT}>{tr(LEVEL_NAME[c.lv]).toUpperCase()}</Text>
           </View>
           <View style={{ flex: 1, overflow: 'hidden' }} onLayout={(e) => { sizes.current.room = e.nativeEvent.layout.height; setRoom(sizes.current.room); check(); }}>
             <View key={fs} style={{ gap: fs * 0.6, opacity: fits || fs <= u(7) ? 1 : 0 }} onLayout={(e) => { sizes.current.need = e.nativeEvent.layout.height; setNeed(sizes.current.need); check(); }}>
@@ -184,8 +185,8 @@ export function NotePopup({ c, highlight, onClose }: { c: Case; highlight?: bool
               })}
             </View>
           </View>
-          <Pressable onPress={tapped(onClose)} accessibilityRole="button" accessibilityLabel="Close" style={s.openBar}>
-            <Text style={s.openT}>Close</Text>
+          <Pressable onPress={tapped(onClose)} accessibilityRole="button" accessibilityLabel={tr('Close')} style={s.openBar}>
+            <Text style={s.openT}>{tr('Close')}</Text>
           </Pressable>
         </Pressable>
       </Pressable>
@@ -197,8 +198,8 @@ export function NotePopup({ c, highlight, onClose }: { c: Case; highlight?: bool
 export function Ask({ stage }: { stage: 1 | 2 }) {
   return (
     <View style={s.askRow}>
-      {stage === 2 ? <Text style={[s.ask, { color: C.okLight, fontSize: u(8.5) }]}>✓ STAGE 1 LOCKED · STAGE 2</Text> : <Text style={[s.ask, { color: C.mute, fontSize: u(8.5) }]}>STAGE 1 OF 2</Text>}
-      <Text style={s.ask}>{stage === 1 ? 'WHAT WENT WRONG?' : 'WHAT SHOULD HAVE HAPPENED?'}</Text>
+      {stage === 2 ? <Text style={[s.ask, { color: C.okLight, fontSize: u(8.5) }]}>{tr('✓ STAGE 1 LOCKED · STAGE 2')}</Text> : <Text style={[s.ask, { color: C.mute, fontSize: u(8.5) }]}>{tr('STAGE 1 OF 2')}</Text>}
+      <Text style={s.ask}>{stage === 1 ? tr('WHAT WENT WRONG?') : tr('WHAT SHOULD HAVE HAPPENED?')}</Text>
     </View>
   );
 }
@@ -272,18 +273,18 @@ export function Explain({ c, run, rows, foot }: { c: Case; run?: CaseRun; rows?:
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ gap: u(10), paddingBottom: u(6) }} showsVerticalScrollIndicator={false}>
         <Animated.View entering={FadeInDown.duration(260)} style={s.card}>
           <View style={s.cardHead}>
-            <Text style={s.cardKick}>THE FLAW</Text>
+            <Text style={s.cardKick}>{tr('THE FLAW')}</Text>
             {pts != null ? <Text style={[s.cardPts, { color: pts > 0 ? C.ok : pts < 0 ? C.no : C.inkSoft }]}>{pts > 0 ? `+${pts}` : String(pts)}</Text> : null}
           </View>
           <Text style={s.cardTitle}>{c.t}</Text>
-          <Text style={s.cardSec}>WHAT WENT WRONG</Text>
+          <Text style={s.cardSec}>{tr('WHAT WENT WRONG')}</Text>
           <Text style={s.cardBody}>{c.a[0].o}</Text>
-          {run && run.pick1 != null && run.pick1 > 0 ? <Text style={s.yours}>{`You said: ${c.a[run.pick1].o}`}</Text> : null}
-          <Text style={s.cardSec}>WHAT SHOULD HAVE HAPPENED</Text>
+          {run && run.pick1 != null && run.pick1 > 0 ? <Text style={s.yours}>{tr('You said: {o}', { o: c.a[run.pick1].o })}</Text> : null}
+          <Text style={s.cardSec}>{tr('WHAT SHOULD HAVE HAPPENED')}</Text>
           <Text style={[s.cardBody, { fontFamily: F.bodySemi }]}>{c.a[0].x}</Text>
-          {run && run.pick2 != null && run.pick2 > 0 ? <Text style={s.yours}>{`You said: ${c.a[run.pick2].x}`}</Text> : null}
+          {run && run.pick2 != null && run.pick2 > 0 ? <Text style={s.yours}>{tr('You said: {x}', { x: c.a[run.pick2].x })}</Text> : null}
           <Text style={[s.cardBody, { color: C.why }]}>{c.a[0].w}</Text>
-          <Text style={s.cardSec}>WHY THE REST WERE FINE</Text>
+          <Text style={s.cardSec}>{tr('WHY THE REST WERE FINE')}</Text>
           {c.a.slice(1).map((a, i) => (
             <View key={i} style={s.rest}>
               <Text style={s.restO}>{a.o}</Text>
@@ -299,9 +300,9 @@ export function Explain({ c, run, rows, foot }: { c: Case; run?: CaseRun; rows?:
                 <View style={{ flex: 1, minWidth: 0 }}>
                   <Text style={s.pname} numberOfLines={1}>{r.rank ? `${r.rank}. ${r.name}` : r.name}</Text>
                   <Text style={s.pmarks}>
-                    <Text style={{ color: right1(r.run) ? C.okLight : C.coral }}>{mark(right1(r.run), 'Spotted', 'Missed')}</Text>
+                    <Text style={{ color: right1(r.run) ? C.okLight : C.coral }}>{mark(right1(r.run), tr('Spotted'), tr('Missed'))}</Text>
                     {'  ·  '}
-                    <Text style={{ color: right2(r.run) ? C.okLight : C.coral }}>{mark(right2(r.run), 'Fix', 'Fix')}</Text>
+                    <Text style={{ color: right2(r.run) ? C.okLight : C.coral }}>{mark(right2(r.run), tr('Fix'), tr('Fix'))}</Text>
                   </Text>
                 </View>
                 <Text style={[s.ppts, { color: r.points > 0 ? C.okLight : r.points < 0 ? C.coral : C.mute }]}>{r.points > 0 ? `+${r.points}` : String(r.points)}</Text>

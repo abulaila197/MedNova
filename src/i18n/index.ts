@@ -5,6 +5,8 @@ import { I18nManager, Platform } from 'react-native';
 import { AR } from './ar';
 import { AR_FRAME } from './ar-frame';
 import { localizeGames } from './ar-games';
+import { AR_PLAY } from './ar-play';
+import { setSay } from './say';
 
 /**
  * Arabic (Yazan 2026-11-13). The app speaks English or Arabic; Arabic screens run right to left.
@@ -57,7 +59,7 @@ export const langChoice = (): LangChoice => CHOICE;
 /** The text in the app's language; `{name}` marks are filled from `vars`. */
 export function t(en: string, vars?: Record<string, unknown>): string {
   // A key may carry a context after '|' ('pack|shop') when one English word needs two Arabic ones; English drops it.
-  let s = isAr ? (AR[en] ?? AR_FRAME[en] ?? en) : en;
+  let s = isAr ? (AR[en] ?? AR_FRAME[en] ?? AR_PLAY[en] ?? en) : en;
   const bar = s.indexOf('|');
   if (bar > 0 && s === en) s = s.slice(0, bar);
   if (vars) for (const k in vars) s = s.split(`{${k}}`).join(String(vars[k]));
@@ -108,3 +110,9 @@ export const AR_LETTERS = /[؀-ۿݐ-ݿﭐ-﷿ﹰ-﻿]/;
 
 /** Same as t(), under a name that never clashes with the `t` theme variable most screens use. */
 export const tr = t;
+setSay(t);
+
+/** Text alignment to the reading start / end. Native RTL already swaps left and right; the web preview does not. */
+const WEB_FLIP = Platform.OS === 'web' && isAr;
+export const TA_START = (WEB_FLIP ? 'right' : 'left') as 'left' | 'right';
+export const TA_END = (WEB_FLIP ? 'left' : 'right') as 'left' | 'right';
