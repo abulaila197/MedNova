@@ -59,12 +59,12 @@ function Ask({ j, style }: { j: number; style: object }) {
   );
 }
 
-function Tag({ game }: { game: string }) {
+function Tag({ game, small }: { game: string; small?: boolean }) {
   const tag = tagOf(game);
   if (!tag) return null;
   return (
-    <Pressable onPress={() => openTagSheet(game)} hitSlop={u(6)} style={[s.tag, { borderColor: alpha(tag.color, 0.45), backgroundColor: alpha(tag.color, 0.14) }]} accessibilityRole="button" accessibilityLabel={`${tag.label}: what this means`}>
-      <Text style={[s.tagT, { color: tag.color }]}>{tag.label}</Text>
+    <Pressable onPress={() => openTagSheet(game)} hitSlop={u(6)} style={[s.tag, small ? s.tagS : null, { borderColor: alpha(tag.color, 0.45), backgroundColor: alpha(tag.color, 0.14) }]} accessibilityRole="button" accessibilityLabel={`${tag.label}: what this means`}>
+      <Text style={[s.tagT, small ? s.tagTS : null, { color: tag.color }]}>{tag.label}</Text>
     </Pressable>
   );
 }
@@ -84,6 +84,8 @@ function Strip({ g, j }: { g: Game; j: number }) {
       <Image source={STRIP[g.key]} style={s.stripArt} contentFit="cover" contentPosition="center" transition={0} cachePolicy="memory-disk" accessible={false} />
       {end ? <LinearGradient colors={[BG, BG, alpha(BG, 0)]} locations={[0, (end + u(10)) / veil, 1]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={[s.veil, { width: veil }]} /> : null}
       <View style={s.stripTxt} onLayout={(e) => setEnd(e.nativeEvent.layout.x + e.nativeEvent.layout.width)}>
+        {/* The game's tag above its name (Yazan 2026-11-13); tap it for what it means. */}
+        <Tag game={g.key} small />
         <Text style={[s.name, { color: t.white }]} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.8}>
           {`${g.lead} `}
           <Text style={{ color: t.accent, fontFamily: F.displayItalic }}>{g.em}</Text>
@@ -166,6 +168,8 @@ const s = StyleSheet.create({
   name: { fontFamily: F.display, fontSize: u(15), lineHeight: u(18) },
   sub: { fontFamily: F.mono, fontSize: u(8.5), lineHeight: u(11), letterSpacing: u(0.85) },
   tag: { alignSelf: 'flex-start', marginTop: u(3), borderWidth: 1, borderRadius: u(7), paddingVertical: u(2), paddingHorizontal: u(7) },
+  tagS: { marginTop: 0, marginBottom: u(1), paddingVertical: u(1), paddingHorizontal: u(6), borderRadius: u(6) },
+  tagTS: { fontSize: u(7), lineHeight: u(9) },
   tagT: { fontFamily: F.bodyBold, fontSize: u(8), lineHeight: u(10), letterSpacing: u(0.5), textTransform: 'uppercase' },
   ask: { position: 'absolute', width: u(26), height: u(26), borderRadius: u(13), borderWidth: 1, backgroundColor: 'rgba(8,16,41,0.75)', alignItems: 'center', justifyContent: 'center' },
   askT: { fontFamily: F.display, fontSize: u(14), lineHeight: u(17) },
