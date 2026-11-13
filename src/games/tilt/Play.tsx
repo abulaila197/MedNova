@@ -435,15 +435,15 @@ export function Play({ play, onFinish, onQuit }: PlayProps) {
       {/* The spotlight: one soft cone from the top, drawn once. */}
       {/* Soft at every edge (Yazan 2026-11-13): an oval glow from the top centre that fades out to the sides and
           the bottom, so it reads as stage light and never as a pale box. */}
-      <Svg style={StyleSheet.absoluteFill} pointerEvents="none">
+      <Svg style={StyleSheet.absoluteFill} viewBox="0 0 100 100" preserveAspectRatio="none" pointerEvents="none">
         <Defs>
-          <RadialGradient id="tt-spot" cx="50%" cy="0%" rx="34%" ry="78%" fx="50%" fy="0%">
-            <Stop offset="0" stopColor="#ffe6b4" stopOpacity={0.24} />
-            <Stop offset="0.45" stopColor="#ffe6b4" stopOpacity={0.1} />
+          <RadialGradient id="tt-spot" cx="50%" cy="50%" r="50%">
+            <Stop offset="0" stopColor="#ffe6b4" stopOpacity={0.3} />
+            <Stop offset="0.5" stopColor="#ffe6b4" stopOpacity={0.12} />
             <Stop offset="1" stopColor="#ffe6b4" stopOpacity={0} />
           </RadialGradient>
         </Defs>
-        <Ellipse cx="50%" cy="0%" rx="34%" ry="78%" fill="url(#tt-spot)" />
+        <Ellipse cx={50} cy={0} rx={36} ry={80} fill="url(#tt-spot)" />
       </Svg>
       <Bulbs vs={vs} vl={vl} />
       {body}

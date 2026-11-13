@@ -1557,7 +1557,7 @@ export const AR_PLAY: Record<string, string> = {
   "Other|gender": "غير ذلك",
   "01 / +10 games": "01 / ⁦+10⁩ ألعاب",
   "the case|slide 1": "الحالات",
-  "Never the\nonly one\n|slide 3": "عمرك ما هتبقى\nلوحدك\n",
+  "Never the\nonly one\n|slide 3": "مش هتبقى\nلوحدك\n",
   "One player has a different word and knows they're the imposter. Can they blend in?": "لاعب واحد معاه كلمة مختلفة وعارف إنه الدخيل. هيعرف يستخبّى وسطكم؟",
   "Contact|legal": "التواصل",
   "For privacy questions or requests, contact MedNova at {c}.": "للاستفسارات أو الطلبات المتعلقة بالخصوصية، تواصل مع MedNova على {c}.",
