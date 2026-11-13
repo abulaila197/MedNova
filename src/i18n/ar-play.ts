@@ -1546,4 +1546,13 @@ export const AR_PLAY: Record<string, string> = {
   "A wrong answer costs a heart. You have 3.": "الإجابة الغلط بتاخد قلب. معاك 3.",
   "Leave no word unsolved for 3 stars.": "حلّ كل الكلمات وخد 3 نجوم.",
   "A letter hint opens a third of the empty letters.": "تلميح الحروف بيفتح تلت الحروف الفاضية.",
+  "Rude name": "اسم قليل الأدب",
+  "Abusive chat": "كلام مسيء",
+  "Cheating": "غش",
+  "Other": "حاجة تانية",
+  "Medical content": "محتوى طبي",
+  "Technical": "مشكلة تقنية",
+  "Female": "أنثى",
+  "Male": "ذكر",
+  "Other|gender": "غير ذلك",
 };

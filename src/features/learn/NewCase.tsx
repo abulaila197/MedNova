@@ -86,7 +86,7 @@ export function NewCase() {
           <View style={s.two}>
             <View style={{ flex: 1.4, gap: u(5) }}>
               <Label t={t} text={tr('Gender *')} />
-              <Chips t={t} items={GENDERS.map((g) => tr(g))} on={gender} onPick={setGender} />
+              <Chips t={t} items={GENDERS.map((g) => tr(g === 'Other' ? 'Other|gender' : g))} on={gender} onPick={setGender} />
             </View>
             <View style={{ flex: 1, gap: u(5) }}>
               <Label t={t} text={tr('Age *')} />
