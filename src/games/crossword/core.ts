@@ -160,6 +160,12 @@ export function removeSlot(slots: Slot[], typed: Typed, i: number): Typed {
   return next;
 }
 
+/** The ⌫ key (Yazan 2026-11-13): the last letter the player typed, skipping the given (locked) ones; -1 when none. */
+export function lastTyped(slots: Slot[], typed: Typed): number {
+  for (let i = slots.length - 1; i >= 0; i--) if (!slots[i].locked && typed[i] != null) return i;
+  return -1;
+}
+
 export const isFilled = (slots: Slot[], typed: Typed) => slots.some((s) => !s.locked) && slots.every((s, i) => s.locked || typed[i] != null);
 export const composeAnswer = (slots: Slot[], typed: Typed) => slots.map((s, i) => (s.locked ? s.letter! : (typed[i] ?? ''))).join('');
 

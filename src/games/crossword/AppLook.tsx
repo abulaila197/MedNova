@@ -13,7 +13,7 @@ import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import { slideColors } from '../medicordle/palette';
-import { cellKey, CW, indexOf, lockedCells, QWERTY_ROWS, type CellPos, type PuzzleDef, type PuzzleIndex, type Slot, type Typed, type WordDef } from './core';
+import { cellKey, CW, indexOf, lastTyped, lockedCells, QWERTY_ROWS, type CellPos, type PuzzleDef, type PuzzleIndex, type Slot, type Typed, type WordDef } from './core';
 import { IMAGES } from './data/images';
 import { tr, LTR, LTR_WEB } from '@/i18n';
 
@@ -224,7 +224,7 @@ export function AppPopup({ word, slots, typed, tokens, width, notice, shake = 0,
       </Animated.View>
       <Text style={[s.notice, { color: t.mute }]} numberOfLines={1}>{notice ?? ' '}</Text>
       <View {...LTR_WEB} style={{ gap: u(5), ...LTR }}>
-        {QWERTY_ROWS.map((row) => (
+        {QWERTY_ROWS.map((row, ri) => (
           <View key={row} style={{ flexDirection: 'row', justifyContent: 'center', gap: u(4) }}>
             {row.split('').map((k) => (
               <Pressable key={k} onPress={() => onKey?.(k)} accessibilityRole="button" accessibilityLabel={k} style={({ pressed }) => [s.key, { width: keyW, backgroundColor: c.key, borderColor: c.line, opacity: pressed ? 0.7 : 1 }]}>
@@ -232,6 +232,13 @@ export function AppPopup({ word, slots, typed, tokens, width, notice, shake = 0,
                 <Text style={{ fontFamily: F.bodySemi, fontSize: u(14), color: t.fg }}>{k}</Text>
               </Pressable>
             ))}
+            {ri === QWERTY_ROWS.length - 1 ? (
+              // ⌫ (Yazan 2026-11-13): deletes the last typed letter; tapping a box still clears that box.
+              <Pressable onPress={() => { const i = lastTyped(slots, typed); if (i >= 0) onSlot?.(i); }} accessibilityRole="button" accessibilityLabel={tr('Delete')} style={({ pressed }) => [s.key, { width: Math.round(keyW * 1.5), backgroundColor: c.key, borderColor: c.line, opacity: pressed ? 0.7 : 1 }]}>
+                <LinearGradient colors={[c.fadeTop, 'transparent']} style={[s.top, { height: '50%' }]} pointerEvents="none" />
+                <Text style={{ fontFamily: F.bodySemi, fontSize: u(16), color: t.fg }}>⌫</Text>
+              </Pressable>
+            ) : null}
           </View>
         ))}
       </View>

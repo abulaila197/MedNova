@@ -3,15 +3,11 @@
 
 export type Stop = { who: string; title: string; text: string };
 
+// Simpler tour (Yazan 2026-11-13): 5 stops, updated to the app as it is now.
 export const TOUR: Stop[] = [
-  { who: 'nova', title: 'Hey, welcome!', text: 'Learn medicine by playing games. Let’s take a quick look around before your first daily reward.' },
-  { who: 'bolt', title: 'Ten original games', text: 'Play alone, pass one phone around the room, or race smart rivals that talk back.' },
-  { who: 'iris', title: 'Learn from every miss', text: 'Every answer you miss waits in Learn as a review card, with a full disease dossier behind it.' },
-  { who: 'layla', title: 'Community', text: 'Stories from people in medicine are on the way. Tap Notify me on the Community page and you’ll be the first to know.' },
-  { who: 'atlas', title: 'Your profile', text: 'Your level, EXP and game stats grow with every play, and each new level pays tokens.' },
-  { who: 'omar', title: 'Friends', text: 'Add friends, see their profiles and climb the leaderboard together.' },
-  { who: 'yara', title: 'Achievements', text: 'Your trophy shelf. Bronze, silver and gold badges, and each one pays tokens.' },
-  { who: 'pip', title: 'Nova Shop', text: 'Spend tokens on extra plays, or go unlimited with no ads.' },
-  { who: 'yazan', title: 'Cards', text: 'Collect the named cards in the treasure hunt. Finish the set for a big token prize.' },
-  { who: 'nova', title: 'Only on MedNova', text: 'Every game has its own world, and the rivals you race live on your phone, so you can play anywhere, no internet needed. Now let’s grab your first daily reward!' },
+  { who: 'nova', title: 'Welcome to MedNova', text: 'Learn medicine by playing 13 games, alone, around one phone, or against rivals.' },
+  { who: 'bolt', title: 'Pick a game', text: 'Games are grouped into On duty, Play and learn, and Party time. Tap ? on any game to see how to play.' },
+  { who: 'iris', title: 'Learn from every miss', text: 'Every answer you miss becomes a review card in Learn, with a full disease dossier behind it.' },
+  { who: 'atlas', title: 'Sparks and tokens', text: 'Each play uses Sparks, which refill over time. Tokens buy helpers, extra plays and Nova Shop items.' },
+  { who: 'yara', title: 'Come back daily', text: 'Daily missions, Grand Rounds, achievements and the card hunt all pay tokens. Now grab your first daily reward!' },
 ];
