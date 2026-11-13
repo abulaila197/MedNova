@@ -31,7 +31,7 @@ const dark = {
   dockEdge: 'rgba(255,255,255,0.06)',
   dockDivider: 'rgba(255,255,255,0.14)',
   tabOn: 'rgba(255,255,255,0.08)',
-  tabOff: '#9aa0c4',
+  tabOff: '#c3c7e4',
   gamesGlow: 'rgba(120,130,255,0.8)',
   menuBtn: '#dfe3ff',
   panel: NAVY.panel,

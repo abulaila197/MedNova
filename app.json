@@ -116,7 +116,8 @@
         {
           "initialOrientation": "PORTRAIT_UP"
         }
-      ]
+      ],
+      ["expo-localization", { "supportsRTL": true, "supportedLocales": ["en", "ar"] }]
     ],
     "experiments": {
       "typedRoutes": true,

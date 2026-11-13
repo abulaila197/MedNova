@@ -1,6 +1,8 @@
 import '@/lib/storage-install';
 import { Gabarito_700Bold } from '@expo-google-fonts/gabarito';
 import { InterTight_400Regular, InterTight_500Medium, InterTight_600SemiBold, InterTight_700Bold } from '@expo-google-fonts/inter-tight';
+import { Alexandria_700Bold } from '@expo-google-fonts/alexandria';
+import { IBMPlexSansArabic_400Regular, IBMPlexSansArabic_500Medium, IBMPlexSansArabic_600SemiBold, IBMPlexSansArabic_700Bold } from '@expo-google-fonts/ibm-plex-sans-arabic';
 import { JetBrainsMono_500Medium } from '@expo-google-fonts/jetbrains-mono';
 import { useFonts } from 'expo-font';
 import { Stack, useGlobalSearchParams, usePathname } from 'expo-router';
@@ -13,6 +15,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { BootSplash } from '@/features/start/BootSplash';
 import { Intro } from '@/features/start/Intro';
 import { SideSky } from '@/components/SideSky';
+import { bootDirection, isAr } from '@/i18n';
 import { startAccount } from '@/state/account';
 import { watchResize } from '@/state/resize';
 import { useSidewaysFrame } from '@/state/sideways';
@@ -32,6 +35,9 @@ SplashScreen.preventAutoHideAsync();
 SplashScreen.setOptions({ fade: false });
 /** How long the NOVA splash stays up at least, so it is seen even when the app starts fast. */
 const SPLASH_MIN_MS = 1200;
+const AR_FONTS = { Alexandria_700Bold, IBMPlexSansArabic_400Regular, IBMPlexSansArabic_500Medium, IBMPlexSansArabic_600SemiBold, IBMPlexSansArabic_700Bold };
+
+bootDirection();
 startAccount();
 bootStart();
 
@@ -47,6 +53,8 @@ export default function RootLayout() {
     InterTight_600SemiBold,
     InterTight_700Bold,
     JetBrainsMono_500Medium,
+    // the Arabic fonts load only when the app runs in Arabic
+    ...(isAr ? AR_FONTS : {}),
   });
   // A font that fails to load falls back to the system font instead of keeping the splash up for good (PB13a).
   const loaded = fontsLoaded || !!fontError;

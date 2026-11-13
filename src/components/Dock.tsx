@@ -10,6 +10,7 @@ import { PAGE_W, u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 import { tapped } from '@/lib/sound';
 import { navTo } from '@/lib/nav';
+import { t as tx } from '@/i18n';
 
 export type Tab = 'learn' | 'games' | 'community' | null;
 
@@ -63,9 +64,9 @@ export function Dock({ active }: { active: Tab }) {
           style={[s.div, { left: u(10) + ((i * (PAGE_W - 20)) / 3) * u(1), top: u(7), height: u(H - 14) }]}
         />
       ))}
-      {tab('learn', 'Learn', LearnIcon)}
-      {tab('games', 'Games', GamesIcon)}
-      {tab('community', 'Community', CommunityIcon)}
+      {tab('learn', tx('Learn'), LearnIcon)}
+      {tab('games', tx('Games'), GamesIcon)}
+      {tab('community', tx('Community'), CommunityIcon)}
       {Platform.OS === 'web' ? <View style={[s.hm, { backgroundColor: t.fg }]} /> : null}
     </View>
   );

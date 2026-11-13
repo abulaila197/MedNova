@@ -15,6 +15,7 @@ import { supabase } from '@/lib/supabase';
 import { loadVoicePick, setVoicePick, useVoicePick, type VoicePick } from '@/state/voicePick';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
+import { langChoice, setLangChoice, t, type LangChoice } from '@/i18n';
 
 type Prefs = { social: boolean; reminders: boolean };
 const WAYS: Record<string, string> = { email: 'email', google: 'Google', apple: 'Apple' };
@@ -58,12 +59,12 @@ export default function Page() {
     try {
       if (await linkGoogle()) {
         setWays(await signInMethods());
-        setLinkNote({ text: 'Google added. Sign in with Google on any phone to open this account.', bad: false });
+        setLinkNote({ text: t('Google added. Sign in with Google on any phone to open this account.'), bad: false });
       }
     } catch (e) {
       const m = String((e as Error).message ?? '').toLowerCase();
       setLinkNote({
-        text: m.includes('already') ? 'That Google account already has its own MedNova account. Pick another Google account.' : 'Couldn’t add Google. Check your connection and try again.',
+        text: m.includes('already') ? t('That Google account already has its own MedNova account. Pick another Google account.') : t('Couldn’t add Google. Check your connection and try again.'),
         bad: true,
       });
     } finally {
@@ -78,7 +79,7 @@ export default function Page() {
     const { error } = await supabase.rpc('push_set_prefs', next);
     if (error) {
       setPrefs(was);
-      setErr('Couldn’t save that. Check your connection and try again.');
+      setErr(t('Couldn’t save that. Check your connection and try again.'));
     }
   };
   const turnOn = async () => {
@@ -89,56 +90,58 @@ export default function Page() {
   return (
     <Screen tab={null} glow={21} wide={460} symbols>
       <InfoScroll>
-        <Kicker>Settings</Kicker>
-        <Text style={[ui.H, { color: c.fg, fontFamily: F.display }]}>Settings</Text>
+        <Kicker>{t('Settings')}</Kicker>
+        <Text style={[ui.H, { color: c.fg, fontFamily: F.display }]}>{t('Settings')}</Text>
+
+        <LanguageRow />
 
         {uid && Platform.OS !== 'web' && ways ? (
           <>
             <View style={{ marginTop: u(14) }}>
-              <Kicker inSec>Sign-in</Kicker>
+              <Kicker inSec>{t('Sign-in')}</Kicker>
             </View>
             <Text style={[ui.p, { color: c.mute }]}>
-              You sign in with {ways.map((w) => WAYS[w] ?? w).join(' and ')}.
-              {ways.includes('google') ? ' Use Google to open this account on any phone.' : ' Add Google to open this same account on an Android phone or any other phone.'}
+              {t('You sign in with {ways}.', { ways: ways.map((w) => t(WAYS[w] ?? w)).join(t(' and ')) })}
+              {ways.includes('google') ? t(' Use Google to open this account on any phone.') : t(' Add Google to open this same account on an Android phone or any other phone.')}
             </Text>
-            {!ways.includes('google') ? <GradBtn label={linking ? 'Opening Google…' : 'Add Google sign-in'} onPress={linking ? () => {} : addGoogle} style={{ marginTop: u(10) }} /> : null}
+            {!ways.includes('google') ? <GradBtn label={linking ? t('Opening Google…') : t('Add Google sign-in')} onPress={linking ? () => {} : addGoogle} style={{ marginTop: u(10) }} /> : null}
             {linkNote ? <Text style={[s.err, { color: linkNote.bad ? c.t.error : c.t.accent }]}>{linkNote.text}</Text> : null}
           </>
         ) : null}
 
         <View style={{ marginTop: u(uid && Platform.OS !== 'web' && ways ? 22 : 14) }}>
-          <Kicker inSec>Notifications</Kicker>
+          <Kicker inSec>{t('Notifications')}</Kicker>
         </View>
         {!PUSH_ON ? (
-          <Text style={[ui.p, { color: c.mute }]}>Notifications are only in the phone app.</Text>
+          <Text style={[ui.p, { color: c.mute }]}>{t('Notifications are only in the phone app.')}</Text>
         ) : !uid ? (
           <>
-            <Text style={[ui.p, { color: c.mute }]}>Sign in to get notifications about friends, gifts and your daily reward.</Text>
-            <GradBtn label="Sign in" onPress={() => router.navigate('/auth')} style={{ marginTop: u(10) }} />
+            <Text style={[ui.p, { color: c.mute }]}>{t('Sign in to get notifications about friends, gifts and your daily reward.')}</Text>
+            <GradBtn label={t('Sign in')} onPress={() => router.navigate('/auth')} style={{ marginTop: u(10) }} />
           </>
         ) : (
           <>
             {allowed === 'no' ? (
               <View style={[s.note, { borderColor: c.line, backgroundColor: c.surf }]}>
-                <Text style={[s.noteT, { color: c.fg }]}>Notifications are off for MedNova in your phone’s settings.</Text>
-                <GradBtn label="Open phone settings" onPress={() => Linking.openSettings().catch(() => {})} style={{ marginTop: u(8) }} />
+                <Text style={[s.noteT, { color: c.fg }]}>{t('Notifications are off for MedNova in your phone’s settings.')}</Text>
+                <GradBtn label={t('Open phone settings')} onPress={() => Linking.openSettings().catch(() => {})} style={{ marginTop: u(8) }} />
               </View>
             ) : allowed === 'ask' ? (
               <View style={[s.note, { borderColor: c.line, backgroundColor: c.surf }]}>
-                <Text style={[s.noteT, { color: c.fg }]}>Your phone hasn’t been asked yet.</Text>
-                <GradBtn label="Turn on notifications" onPress={turnOn} style={{ marginTop: u(8) }} />
+                <Text style={[s.noteT, { color: c.fg }]}>{t('Your phone hasn’t been asked yet.')}</Text>
+                <GradBtn label={t('Turn on notifications')} onPress={turnOn} style={{ marginTop: u(8) }} />
               </View>
             ) : null}
             <Row
-              title="Friends and gifts"
-              sub="Friend requests, challenges and gifts in your Inbox."
+              title={t('Friends and gifts')}
+              sub={t('Friend requests, challenges and gifts in your Inbox.')}
               on={prefs?.social ?? true}
               off={!prefs}
               onChange={(v) => prefs && set({ ...prefs, social: v })}
             />
             <Row
-              title="Reminders"
-              sub="One a day at most: your daily reward, a full Sparks bar, or Grand Rounds closing."
+              title={t('Reminders')}
+              sub={t('One a day at most: your daily reward, a full Sparks bar, or Grand Rounds closing.')}
               on={prefs?.reminders ?? true}
               off={!prefs}
               onChange={(v) => prefs && set({ ...prefs, reminders: v })}
@@ -150,30 +153,70 @@ export default function Page() {
         <VoiceRow />
 
         <View style={{ marginTop: u(22) }}>
-          <Kicker inSec>Ads and privacy</Kicker>
+          <Kicker inSec>{t('Ads and privacy')}</Kicker>
         </View>
         {!ADS_ON ? (
-          <Text style={[ui.p, { color: c.mute }]}>Ads are only in the phone app.</Text>
+          <Text style={[ui.p, { color: c.mute }]}>{t('Ads are only in the phone app.')}</Text>
         ) : (
           <>
             <Text style={[ui.p, { color: c.mute }]}>
               {choices
-                ? 'Change what you agreed to about ads and data, any time.'
-                : 'Where you live, the law asks for no ad choices. Ads in MedNova are never personalised from your games.'}
+                ? t('Change what you agreed to about ads and data, any time.')
+                : t('Where you live, the law asks for no ad choices. Ads in MedNova are never personalised from your games.')}
             </Text>
-            {choices ? <GradBtn label="Privacy choices" onPress={() => openPrivacyChoices().then(look)} style={{ marginTop: u(10) }} /> : null}
+            {choices ? <GradBtn label={t('Privacy choices')} onPress={() => openPrivacyChoices().then(look)} style={{ marginTop: u(10) }} /> : null}
             {Platform.OS === 'ios' ? (
               <Pressable onPress={() => Linking.openSettings().catch(() => {})} style={{ marginTop: u(10) }} accessibilityRole="link">
-                <Text style={[s.link, { color: c.t.accent, borderBottomColor: c.t.accent }]}>Ad tracking: change it in iPhone Settings</Text>
+                <Text style={[s.link, { color: c.t.accent, borderBottomColor: c.t.accent }]}>{t('Ad tracking: change it in iPhone Settings')}</Text>
               </Pressable>
             ) : null}
           </>
         )}
         <Pressable onPress={() => router.navigate('/privacy')} style={{ marginTop: u(14) }} accessibilityRole="link">
-          <Text style={[s.link, { color: c.t.accent, borderBottomColor: c.t.accent }]}>Read our Privacy Policy</Text>
+          <Text style={[s.link, { color: c.t.accent, borderBottomColor: c.t.accent }]}>{t('Read our Privacy Policy')}</Text>
         </Pressable>
       </InfoScroll>
     </Screen>
+  );
+}
+
+const LANGS: { k: LangChoice; label: string }[] = [
+  { k: 'phone', label: 'Like my phone' },
+  { k: 'en', label: 'English' },
+  { k: 'ar', label: 'العربية' },
+];
+
+/** The app's language (Yazan 2026-11-13): follow the phone, or English, or Arabic. A change restarts the app. */
+function LanguageRow() {
+  const c = useInfo();
+  const pick = langChoice();
+  return (
+    <>
+      <View style={{ marginTop: u(14) }}>
+        <Kicker inSec>{t('Language')}</Kicker>
+      </View>
+      <View style={[s.row, { borderBottomColor: c.line, flexDirection: 'column', alignItems: 'stretch', gap: u(8) }]}>
+        <View>
+          <Text style={[s.rowT, { color: c.fg }]}>{t('App language')}</Text>
+          <Text style={[s.rowS, { color: c.mute }]}>{t('Follow your phone, or pick one. The app restarts in the new language.')}</Text>
+        </View>
+        <View style={[s.pill, { backgroundColor: c.surf, borderColor: c.line, alignSelf: 'flex-start' }]}>
+          {LANGS.map((v) => (
+            <Pressable key={v.k} onPress={tapped(() => setLangChoice(v.k))} accessibilityRole="button" accessibilityState={{ selected: pick === v.k }} accessibilityLabel={`${t('App language')}: ${t(v.label)}`}>
+              {pick === v.k ? (
+                <LinearGradient colors={[c.t.gradA, c.t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={s.opt}>
+                  <Text style={[s.optT, { color: c.t.onGrad }]}>{t(v.label)}</Text>
+                </LinearGradient>
+              ) : (
+                <View style={s.opt}>
+                  <Text style={[s.optT, { color: c.mute }]}>{t(v.label)}</Text>
+                </View>
+              )}
+            </Pressable>
+          ))}
+        </View>
+      </View>
+    </>
   );
 }
 
@@ -193,23 +236,23 @@ function VoiceRow() {
   return (
     <>
       <View style={{ marginTop: u(22) }}>
-        <Kicker inSec>Voice lines</Kicker>
+        <Kicker inSec>{t('Voice lines')}</Kicker>
       </View>
       <View style={[s.row, { borderBottomColor: c.line, flexDirection: 'column', alignItems: 'stretch', gap: u(8) }]}>
         <View>
-          <Text style={[s.rowT, { color: c.fg }]}>Your voice</Text>
-          <Text style={[s.rowS, { color: c.mute }]}>The voice your lines play in. My character: a female character speaks in the female voice. Rivals always follow their character.</Text>
+          <Text style={[s.rowT, { color: c.fg }]}>{t('Your voice')}</Text>
+          <Text style={[s.rowS, { color: c.mute }]}>{t('The voice your lines play in. My character: a female character speaks in the female voice. Rivals always follow their character.')}</Text>
         </View>
         <View style={[s.pill, { backgroundColor: c.surf, borderColor: c.line, alignSelf: 'flex-start' }]}>
           {VOICES.map((v) => (
-            <Pressable key={v.k} onPress={tapped(() => setVoicePick(v.k))} accessibilityRole="button" accessibilityState={{ selected: pick === v.k }} accessibilityLabel={`Voice: ${v.label}`}>
+            <Pressable key={v.k} onPress={tapped(() => setVoicePick(v.k))} accessibilityRole="button" accessibilityState={{ selected: pick === v.k }} accessibilityLabel={`${t('Your voice')}: ${t(v.label)}`}>
               {pick === v.k ? (
                 <LinearGradient colors={[c.t.gradA, c.t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={s.opt}>
-                  <Text style={[s.optT, { color: c.t.onGrad }]}>{v.label}</Text>
+                  <Text style={[s.optT, { color: c.t.onGrad }]}>{t(v.label)}</Text>
                 </LinearGradient>
               ) : (
                 <View style={s.opt}>
-                  <Text style={[s.optT, { color: c.mute }]}>{v.label}</Text>
+                  <Text style={[s.optT, { color: c.mute }]}>{t(v.label)}</Text>
                 </View>
               )}
             </Pressable>
@@ -231,14 +274,14 @@ function Row({ title, sub, on, off, onChange }: { title: string; sub: string; on
       </View>
       <View style={[s.pill, { backgroundColor: c.surf, borderColor: c.line }, off && { opacity: 0.5 }]}>
         {([true, false] as const).map((v) => (
-          <Pressable key={String(v)} disabled={off} onPress={tapped(() => v !== on && onChange(v))} accessibilityRole="button" accessibilityState={{ selected: on === v }} accessibilityLabel={`${title} ${v ? 'on' : 'off'}`}>
+          <Pressable key={String(v)} disabled={off} onPress={tapped(() => v !== on && onChange(v))} accessibilityRole="button" accessibilityState={{ selected: on === v }} accessibilityLabel={`${title} ${v ? t('On') : t('Off')}`}>
             {on === v ? (
               <LinearGradient colors={[c.t.gradA, c.t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={s.opt}>
-                <Text style={[s.optT, { color: c.t.onGrad }]}>{v ? 'On' : 'Off'}</Text>
+                <Text style={[s.optT, { color: c.t.onGrad }]}>{v ? t('On') : t('Off')}</Text>
               </LinearGradient>
             ) : (
               <View style={s.opt}>
-                <Text style={[s.optT, { color: c.mute }]}>{v ? 'On' : 'Off'}</Text>
+                <Text style={[s.optT, { color: c.mute }]}>{v ? t('On') : t('Off')}</Text>
               </View>
             )}
           </Pressable>

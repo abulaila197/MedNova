@@ -1,3 +1,4 @@
+import { AR_LETTERS } from '@/i18n';
 import { Platform, StyleSheet, Text as RNText, TextInput as RNTextInput, type TextInputProps, type TextProps, type TextStyle } from 'react-native';
 
 // Every screen is laid out at fixed design sizes and scaled as one piece (theme/scale.ts), so text
@@ -39,10 +40,37 @@ function letterRoom(style: TextProps['style']): TextStyle | null {
   return room;
 }
 
+// Arabic fonts (Yazan 2026-11-13): big headings in Alexandria Bold, everything else in IBM Plex Sans Arabic. A text
+// takes them only when it has Arabic letters, so English medical words inside an Arabic screen keep the app's fonts.
+// Arabic letters join, so letter spacing (used by the small mono labels) is dropped, and the taller Arabic letters
+// get a slightly roomier line.
+const BIG = 18;
+const AR_FONT: Record<string, string> = {
+  InterTight_400Regular: 'IBMPlexSansArabic_400Regular',
+  InterTight_500Medium: 'IBMPlexSansArabic_500Medium',
+  InterTight_600SemiBold: 'IBMPlexSansArabic_600SemiBold',
+  InterTight_700Bold: 'IBMPlexSansArabic_700Bold',
+  JetBrainsMono_500Medium: 'IBMPlexSansArabic_600SemiBold',
+};
+function hasArabic(children: unknown): boolean {
+  if (typeof children === 'string') return AR_LETTERS.test(children);
+  return Array.isArray(children) && children.some((c) => typeof c === 'string' && AR_LETTERS.test(c));
+}
+function arabicStyle(style: TextProps['style']): TextStyle {
+  const f = (StyleSheet.flatten(style) ?? {}) as TextStyle;
+  const size = f.fontSize ?? 14;
+  const fam = f.fontFamily === 'Gabarito_700Bold' ? (size >= BIG ? 'Alexandria_700Bold' : 'IBMPlexSansArabic_700Bold') : (f.fontFamily && AR_FONT[f.fontFamily]) || 'IBMPlexSansArabic_400Regular';
+  const out: TextStyle = { fontFamily: fam, letterSpacing: 0 };
+  if (f.lineHeight && f.lineHeight < size * 1.45) out.lineHeight = Math.round(size * 1.45);
+  return out;
+}
+
 /** react-native Text with the text-size cap. Use instead of importing Text from react-native. */
 export function Text(props: TextProps & { ref?: React.Ref<RNText> }) {
-  const room = Platform.OS === 'web' ? null : letterRoom(props.style);
-  return <RNText maxFontSizeMultiplier={MAX_FONT_SCALE} textBreakStrategy={BREAK} {...props} style={room ? [props.style, room] : props.style} />;
+  const ar = hasArabic(props.children);
+  const style = ar ? [props.style, arabicStyle(props.style)] : props.style;
+  const room = Platform.OS === 'web' ? null : letterRoom(style);
+  return <RNText maxFontSizeMultiplier={MAX_FONT_SCALE} textBreakStrategy={BREAK} {...props} style={room ? [style, room] : style} />;
 }
 // eslint-disable-next-line @typescript-eslint/no-redeclare -- the type that goes with the component, as in react-native
 export type Text = RNText;

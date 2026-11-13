@@ -1,0 +1,57 @@
+/**
+ * Arabic texts, keyed by the English they replace (Yazan 2026-11-13). Written as Arabic, not translated word for
+ * word: Egyptian where it reads naturally, plain Arabic where Egyptian would blur the meaning; legal pages in
+ * formal Arabic. Medical content stays English. A text missing here shows in English.
+ */
+export const AR: Record<string, string> = {
+  // bottom bar
+  Learn: 'تعلّم',
+  Games: 'الألعاب',
+  Community: 'المجتمع',
+
+  // Settings
+  Settings: 'الإعدادات',
+  'Sign-in': 'تسجيل الدخول',
+  'You sign in with {ways}.': 'بتدخل حسابك عن طريق {ways}.',
+  ' and ': ' و',
+  email: 'الإيميل',
+  ' Use Google to open this account on any phone.': ' استخدم Google عشان تفتح نفس الحساب من أي موبايل.',
+  ' Add Google to open this same account on an Android phone or any other phone.': ' ضيف Google عشان تقدر تفتح نفس الحساب من موبايل أندرويد أو أي موبايل تاني.',
+  'Opening Google…': 'بنفتح Google…',
+  'Add Google sign-in': 'ضيف الدخول بـ Google',
+  'Google added. Sign in with Google on any phone to open this account.': 'اتضاف Google. ادخل بيه من أي موبايل وهتلاقي حسابك.',
+  'That Google account already has its own MedNova account. Pick another Google account.': 'حساب Google ده متسجّل بيه حساب MedNova تاني. اختار حساب Google مختلف.',
+  'Couldn’t add Google. Check your connection and try again.': 'معرفناش نضيف Google. اتأكد من الإنترنت وجرّب تاني.',
+  'Couldn’t save that. Check your connection and try again.': 'معرفناش نحفظ التغيير. اتأكد من الإنترنت وجرّب تاني.',
+  Notifications: 'الإشعارات',
+  'Notifications are only in the phone app.': 'الإشعارات موجودة في تطبيق الموبايل بس.',
+  'Sign in to get notifications about friends, gifts and your daily reward.': 'سجّل دخولك عشان توصلك إشعارات عن أصحابك والهدايا ومكافأتك اليومية.',
+  'Sign in': 'تسجيل الدخول',
+  'Notifications are off for MedNova in your phone’s settings.': 'إشعارات MedNova مقفولة من إعدادات موبايلك.',
+  'Open phone settings': 'افتح إعدادات الموبايل',
+  'Your phone hasn’t been asked yet.': 'لسه ماطلبناش إذن الإشعارات من موبايلك.',
+  'Turn on notifications': 'شغّل الإشعارات',
+  'Friends and gifts': 'الأصحاب والهدايا',
+  'Friend requests, challenges and gifts in your Inbox.': 'طلبات الصداقة والتحديات والهدايا اللي بتوصلك.',
+  Reminders: 'التذكيرات',
+  'One a day at most: your daily reward, a full Sparks bar, or Grand Rounds closing.': 'تذكير واحد في اليوم بالكتير: مكافأتك اليومية، أو لما طاقتك تتملي، أو قبل ما تحدي الأسبوع يقفل.',
+  On: 'تشغيل',
+  Off: 'إيقاف',
+  'Voice lines': 'الجمل الصوتية',
+  'Your voice': 'صوتك',
+  'The voice your lines play in. My character: a female character speaks in the female voice. Rivals always follow their character.': 'الصوت اللي جملك بتتقال بيه في اللعب. «حسب شخصيتي»: لو شخصيتك بنت يبقى الصوت صوت بنت. المنافسين دايمًا بصوت شخصياتهم.',
+  'My character': 'حسب شخصيتي',
+  Female: 'صوت أنثى',
+  Male: 'صوت ذكر',
+  'Ads and privacy': 'الإعلانات والخصوصية',
+  'Ads are only in the phone app.': 'الإعلانات في تطبيق الموبايل بس.',
+  'Change what you agreed to about ads and data, any time.': 'تقدر تغيّر موافقتك على الإعلانات واستخدام بياناتك في أي وقت.',
+  'Where you live, the law asks for no ad choices. Ads in MedNova are never personalised from your games.': 'في بلدك القانون مش بيطلب اختيارات للإعلانات. وإعلانات MedNova عمرها ما بتتخصص على حسب لعبك.',
+  'Privacy choices': 'اختيارات الخصوصية',
+  'Ad tracking: change it in iPhone Settings': 'تتبّع الإعلانات: غيّره من إعدادات الآيفون',
+  'Read our Privacy Policy': 'اقرأ سياسة الخصوصية',
+  Language: 'اللغة',
+  'App language': 'لغة التطبيق',
+  'Follow your phone, or pick one. The app restarts in the new language.': 'خليها زي لغة موبايلك أو اختار لغة. التطبيق هيفتح من جديد باللغة اللي اخترتها.',
+  'Like my phone': 'زي الموبايل',
+};
