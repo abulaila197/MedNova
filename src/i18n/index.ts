@@ -62,6 +62,8 @@ export const langChoice = (): LangChoice => CHOICE;
 export function t(en: string, vars?: Record<string, unknown>): string {
   // A key may carry a context after '|' ('pack|shop') when one English word needs two Arabic ones; English drops it.
   let s = isAr ? (AR[en] ?? AR_FRAME[en] ?? AR_PLAY[en] ?? AR_DATA[en] ?? en) : en;
+  // Time chips written as "60 s" read "60 ث" in Arabic.
+  if (isAr && s === en && /^\d+ s$/.test(en)) s = `${en.slice(0, -2)} ث`;
   const bar = s.indexOf('|');
   if (bar > 0 && s === en) s = s.slice(0, bar);
   if (vars) for (const k in vars) s = s.split(`{${k}}`).join(String(vars[k]));

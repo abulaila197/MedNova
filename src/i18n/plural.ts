@@ -45,6 +45,7 @@ const NOUNS: [string, string, string][] = [
   ['لقب', 'لقبين', 'ألقاب'],
   ['مجموعة', 'مجموعتين', 'مجموعات'],
   ['خانة', 'خانتين', 'خانات'],
+  ['طلب', 'طلبين', 'طلبات'],
 ];
 
 const FORMS = new Map<string, [string, string, string]>();

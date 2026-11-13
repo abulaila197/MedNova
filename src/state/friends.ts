@@ -2,6 +2,7 @@ import { AppState } from 'react-native';
 import { create } from 'zustand';
 
 import { useSession } from '@/games/shell/session';
+import { tr } from '@/i18n';
 import { copyOf, keepCopy } from '@/lib/copies';
 import { call } from '@/lib/rpc';
 import { onAccountSwitch } from '@/state/accountSwitch';
@@ -115,18 +116,20 @@ export function clearFriends() {
   useFriends.setState(EMPTY);
 }
 
+export const ONLINE_LABEL = tr('ONLINE');
+
 /** FR4: "ONLINE" while seen in the last 2 minutes, else how long ago. */
 export function seenLabel(lastSeen: string | null, now = Date.now()) {
-  if (!lastSeen) return 'NOT SEEN YET';
+  if (!lastSeen) return tr('NOT SEEN YET');
   const m = Math.floor((now - Date.parse(lastSeen)) / 60000);
-  if (m < 2) return 'ONLINE';
-  if (m < 60) return `${m}M AGO`;
+  if (m < 2) return ONLINE_LABEL;
+  if (m < 60) return tr('{m}M AGO', { m });
   const h = Math.floor(m / 60);
-  if (h < 24) return `${h}H AGO`;
+  if (h < 24) return tr('{h}H AGO', { h });
   const d = Math.floor(h / 24);
-  if (d === 1) return 'YESTERDAY';
-  if (d < 30) return `${d} DAYS AGO`;
-  return 'A WHILE AGO';
+  if (d === 1) return tr('YESTERDAY');
+  if (d < 30) return tr('{d} DAYS AGO', { d });
+  return tr('A WHILE AGO');
 }
 
 let beat: ReturnType<typeof setInterval> | null = null;

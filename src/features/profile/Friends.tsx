@@ -10,7 +10,7 @@ import { OfflineLine } from '@/components/OfflineLine';
 import { agoText } from '@/lib/copies';
 import { PlayerFace } from '@/features/style/Frame';
 import { useAccount } from '@/state/account';
-import { type Friend, respondFriend, seenLabel, useFriends } from '@/state/friends';
+import { type Friend, respondFriend, ONLINE_LABEL, seenLabel, useFriends } from '@/state/friends';
 import { u } from '@/theme/scale';
 import { F, type Theme } from '@/theme/tokens';
 import { tr } from '@/i18n';
@@ -124,7 +124,7 @@ export function FriendsSection({ t, only }: { t: Theme; only?: 'friends' | 'requ
             <Ring t={t} f={f} />
             <Pressable style={s.frT} onPress={() => (f.kind === 'friend' ? openProfile(f) : openMenu(f))} accessibilityRole="button" accessibilityHint={f.kind === 'friend' ? tr('Open their profile') : tr('Cancel the request')}>
               <Name t={t} f={f} />
-              <Text style={[s.frS, { color: when === 'ONLINE' || live ? ONLINE[t.mode] : t.mute }]}>{when}</Text>
+              <Text style={[s.frS, { color: when === ONLINE_LABEL || live ? ONLINE[t.mode] : t.mute }]}>{when}</Text>
             </Pressable>
           </View>
         );

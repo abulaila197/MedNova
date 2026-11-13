@@ -14,7 +14,7 @@ import { useAccount } from '@/state/account';
 import { useTheme } from '@/state/app';
 import { OfflineLine } from '@/components/OfflineLine';
 import { agoText } from '@/lib/copies';
-import { blockUser, type FriendProfile, loadFriendProfile, loadFriends, removeFriend, type RequestResult, requestFriend, seenLabel, useFriends } from '@/state/friends';
+import { blockUser, type FriendProfile, loadFriendProfile, loadFriends, removeFriend, type RequestResult, requestFriend, ONLINE_LABEL, seenLabel, useFriends } from '@/state/friends';
 import { u } from '@/theme/scale';
 import { F, type Theme } from '@/theme/tokens';
 import { shareText } from '@/lib/share';
@@ -190,7 +190,7 @@ function FriendMenu() {
         <View>
           <Name t={t} f={f} size={19} />
           <PlayerTitle userId={f.id} size={11} />
-          <Text style={[s.mhS, { color: when === 'ONLINE' ? '#7be0a8' : t.mute }]}>{when}</Text>
+          <Text style={[s.mhS, { color: when === ONLINE_LABEL ? '#7be0a8' : t.mute }]}>{when}</Text>
         </View>
       </View>
       {f.kind === 'outgoing' ? (
@@ -289,7 +289,7 @@ function FriendProfileSheet() {
         <View style={{ flex: 1, minWidth: 0, gap: u(2) }}>
           <Name t={t} f={f} size={21} />
           <PlayerTitle userId={f.id} size={11} />
-          {f.username ? <Text style={[s.mhS, { color: when === 'ONLINE' || live ? '#7be0a8' : t.mute }]}>{when ? `@${f.username.toUpperCase()} · ${when}` : `@${f.username.toUpperCase()}`}</Text> : null}
+          {f.username ? <Text style={[s.mhS, { color: when === ONLINE_LABEL || live ? '#7be0a8' : t.mute }]}>{when ? `@${f.username.toUpperCase()} · ${when}` : `@${f.username.toUpperCase()}`}</Text> : null}
         </View>
       </View>
       <View style={s.stats}>

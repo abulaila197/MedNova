@@ -20,9 +20,9 @@ import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import { clearable, clearInbox, collect, collectAll, hasGift, loadInbox, readAll, useInbox, type Message } from './useInbox';
-import { tr } from '@/i18n';
+import { isAr, tr } from '@/i18n';
 
-const when = (iso: string) => new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+const when = (iso: string) => new Date(iso).toLocaleDateString(isAr ? 'ar-EG-u-nu-latn' : 'en-GB', { day: 'numeric', month: 'short' });
 
 /**
  * Inbox (Yazan 2026-10-27): messages and gifts from the MedNova team, newest first. Opening the page reads them;

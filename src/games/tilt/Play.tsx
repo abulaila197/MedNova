@@ -357,7 +357,7 @@ export function Play({ play, onFinish, onQuit }: PlayProps) {
           </Text>
         )}
         <View style={[st_.modePill, { paddingHorizontal: vl(2.4), paddingVertical: vs(1.2), borderRadius: vs(10) }]}>
-          <Text style={[st_.modeText, T(4.4)]}>{`${act ? tr('Act it out') : tr('Describe it')} · ${secs} s`}</Text>
+          <Text style={[st_.modeText, T(4.4)]}>{`${act ? tr('Act it out') : tr('Describe it')} · ${tr('{n} s', { n: secs })}`}</Text>
         </View>
       </View>
     );

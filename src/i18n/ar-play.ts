@@ -1496,4 +1496,11 @@ export const AR_PLAY: Record<string, string> = {
   "Pass the phone week": "أسبوع مرّر الموبايل",
   "Use Sparks on any game in {n}": "استخدم شرارات في أي لعبة {n}",
   "Use Sparks on this game, in any mode": "استخدم شرارات في اللعبة دي، بأي طريقة لعب",
+  "{n} s": "{n} ثانية",
+  "ONLINE": "أونلاين",
+  "{m}M AGO": "من {m} دقيقة",
+  "{h}H AGO": "من {h} ساعة",
+  "YESTERDAY": "امبارح",
+  "{d} DAYS AGO": "من {d} يوم",
+  "A WHILE AGO": "من فترة",
 };

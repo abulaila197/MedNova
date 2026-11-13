@@ -124,7 +124,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
           c={c}
           run={race.runOfCase(st.index) ?? run}
           rows={rows}
-          foot={st.phase === 'done' ? <Text style={s.wait}>{tr('Adding up the scores…')}</Text> : <Btn label={`${last ? tr('See results') : tr('Next case')} · ${nextIn} s`} onPress={() => void g.at((at) => race.next(at))} />}
+          foot={st.phase === 'done' ? <Text style={s.wait}>{tr('Adding up the scores…')}</Text> : <Btn label={`${last ? tr('See results') : tr('Next case')} · ${tr('{n} s', { n: nextIn })}`} onPress={() => void g.at((at) => race.next(at))} />}
         />
         <AlertPill alert={g.alert} />
         {menu}

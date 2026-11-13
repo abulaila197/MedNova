@@ -195,7 +195,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
         <Curtain
           name={nameOf(turn.seat)}
           color={color}
-          sub={`${kick} · ${run.turnMs / 1000} s`}
+          sub={`${kick} · ${tr('{n} s', { n: run.turnMs / 1000 })}`}
           board={scoreRows.map((r, i) => ({ seat: i, name: r.name, score: r.score, color: r.color }))}
           recap={offlineRecap(run, turn.seat, play, teamName, clock)}
           onReady={() => dispatch({ type: 'READY', now: Date.now() })}
