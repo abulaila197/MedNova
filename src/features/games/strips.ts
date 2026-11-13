@@ -1,4 +1,4 @@
-/** A wide strip cut from each game's poster (assets/games/full, the band around 38% down). */
+/** A wide strip of each game's Games list art (Yazan's 16:9 Flow pictures, 2026-11-13, middle band; full size in project files mednova/brand/strips-v2). */
 export const STRIP: Record<string, number> = {
   'the-diagnostic-pursuit': require('@/assets/games/strips/the-diagnostic-pursuit.webp'),
   'the-silent-artist': require('@/assets/games/strips/the-silent-artist.webp'),

@@ -85,7 +85,7 @@ function StripBody({ g, j, big }: { g: Game; j: number; big?: boolean }) {
   return (
     <>
       <Image source={STRIP[g.key]} style={StyleSheet.absoluteFill} contentFit="cover" contentPosition={big ? 'right center' : 'center'} transition={0} cachePolicy="memory-disk" accessible={false} />
-      <LinearGradient colors={['rgba(13,23,56,0.95)', 'rgba(13,23,56,0.35)', 'rgba(13,23,56,0.1)']} locations={[0.3, 0.75, 1]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />
+      <LinearGradient colors={['rgba(13,23,56,0.85)', 'rgba(13,23,56,0.2)', 'rgba(13,23,56,0)']} locations={[0.25, 0.55, 0.8]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />
       <Text style={[s.n, big && s.nBig, { color: t.accent }]}>{num(j)}</Text>
       <View style={[s.rt, big && s.rtBig]}>
         <Text style={[s.name, big && s.nameBig, { color: t.white }]} numberOfLines={1}>

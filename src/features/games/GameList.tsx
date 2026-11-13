@@ -76,8 +76,9 @@ function Strip({ g, j }: { g: Game; j: number }) {
   return (
     <Pressable ref={box} onPress={go} onPressIn={() => setDown(true)} onPressOut={() => setDown(false)} accessibilityRole="button" accessibilityLabel={`Play ${g.lead} ${g.em}`}
       style={[s.strip, { borderColor: down ? t.accent : t.panelLine, transform: [{ scale: down ? 0.98 : 1 }] }]}>
-      <Image source={STRIP[g.key]} style={StyleSheet.absoluteFill} contentFit="cover" contentPosition="center" transition={0} cachePolicy="memory-disk" accessible={false} />
-      <LinearGradient colors={['rgba(13,23,56,0.95)', 'rgba(13,23,56,0.35)', 'rgba(13,23,56,0.1)']} locations={[0.3, 0.75, 1]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />
+      {/* The art's left half is plain navy, so the picture sits to the right and its object clears the name. */}
+      <Image source={STRIP[g.key]} style={s.stripArt} contentFit="cover" contentPosition="center" transition={0} cachePolicy="memory-disk" accessible={false} />
+      <LinearGradient colors={['rgba(13,23,56,0.9)', 'rgba(13,23,56,0.45)', 'rgba(13,23,56,0)']} locations={[0.3, 0.55, 0.75]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />
       <Text style={[s.n, { color: t.accent }]}>{num(j)}</Text>
       <View style={s.stripTxt}>
         <Text style={[s.name, { color: t.white }]} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.8}>
@@ -156,6 +157,7 @@ const s = StyleSheet.create({
   fill: { flex: 1 },
   inC: { paddingLeft: u(14), paddingRight: u(56), paddingTop: u(6), paddingBottom: u(40), gap: u(8) },
   strip: { height: u(70), borderRadius: u(12), borderWidth: 1, overflow: 'hidden', justifyContent: 'center', backgroundColor: '#0b1331' },
+  stripArt: { position: 'absolute', top: 0, bottom: 0, right: 0, width: '80%' },
   stripTxt: { paddingLeft: u(40), paddingRight: u(40), gap: u(2) },
   n: { position: 'absolute', left: u(10), fontFamily: F.mono, fontSize: u(13), lineHeight: u(16) },
   name: { fontFamily: F.display, fontSize: u(15), lineHeight: u(18) },
