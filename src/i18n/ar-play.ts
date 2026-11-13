@@ -1566,4 +1566,5 @@ export const AR_PLAY: Record<string, string> = {
   "Buy in the app": "الشراء من التطبيق",
   "Buying works in the MedNova app from {STORE}.": "الشراء بيشتغل في تطبيق MedNova من {STORE}.",
   "Field later": "التخصص بيبان بعدين",
+  " and |links": " و",
 };

@@ -167,7 +167,7 @@ export function StorePage() {
           <Text style={{ color: t.accent }} onPress={() => router.push({ pathname: '/privacy', params: { doc: 'terms' } })} accessibilityRole="link">
             {tr('Terms')}
           </Text>
-          {' and '}
+          {tr(' and |links')}
           <Text style={{ color: t.accent }} onPress={() => router.push('/privacy')} accessibilityRole="link">
             {tr('Privacy Policy')}
           </Text>
