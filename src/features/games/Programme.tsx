@@ -6,7 +6,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 import { Screen } from '@/components/Screen';
 import { NemesisButton } from '@/bots/NemesisButton';
-import { type Game, GAMES } from '@/data/games';
+import { type Game } from '@/data/games';
 import { ChestButton } from '@/features/chests/ChestButton';
 import { DailyButton } from '@/features/daily/DailyButton';
 import { InboxButton } from '@/features/inbox/InboxButton';
@@ -23,8 +23,6 @@ import { GameInfoSheet, GameList } from './GameList';
 import { isAr, tr } from '@/i18n';
 
 
-const WORDS = [tr('No'), tr('One'), tr('Two'), tr('Three'), tr('Four'), tr('Five'), tr('Six'), tr('Seven'), tr('Eight'), tr('Nine'), tr('Ten'), tr('Eleven'), tr('Twelve'), tr('Thirteen'), tr('Fourteen'), tr('Fifteen')];
-const COUNT = WORDS[GAMES.length] ?? String(GAMES.length);
 const num = (j: number) => String(j + 1).padStart(2, '0');
 
 // Strip geometry, design px.
@@ -83,7 +81,8 @@ function Head({ end, onHeight, split }: { end: string; onHeight?: (h: number) =>
     <View style={[s.head, split ? s.headSplit : null]} onLayout={onHeight ? (e) => onHeight(e.nativeEvent.layout.height) : undefined}>
       {split ? null : <Text style={[s.k, { color: t.accent }]}>{tr('TONIGHT ON THE WARD')}</Text>}
       <Text style={[s.h, { color: t.white }, split ? [s.mid, s.hSplit] : null]}>
-        {tr('{COUNT} games, ', { COUNT })}
+        {/* "+10 games" (Yazan 2026-11-13), not the exact count; Arabic keeps ألعاب كثير. */}
+        {tr('{COUNT} games, ', { COUNT: '+10' })}
         <Text style={{ color: t.accent, fontFamily: F.displayItalic }}>{end}</Text>
       </Text>
     </View>
