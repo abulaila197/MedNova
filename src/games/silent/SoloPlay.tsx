@@ -17,6 +17,9 @@ import { soloLeft, startSolo, stepSolo, type SoloEvent, type SoloRun } from './s
 import { FitBoard } from './Stage';
 import { useTickerClock } from '../engine/useTicker';
 import { tr } from '@/i18n';
+import { priced } from '@/components/CoinLabel';
+import { sparksCost } from '@/features/sparks/costs';
+import { chargeUnit, needSparks, shownCost } from '@/features/sparks/sparks';
 
 /** The lines on the board, saved with the bookmark so an app kill mid-drawing comes back to the same drawing. */
 type Sketch = { board: number; strokes: Stroke[] };
@@ -52,6 +55,18 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   // A word of my own (My diseases): only that word, no field picker.
   const custom = typeof play.settings.custom === 'string' ? wordById.get(play.settings.custom) : undefined;
   const [pool] = useState(() => (custom ? [custom] : PICKABLE));
+  // Each practice drawing pays the setup price (Yazan 2026-11-13), so Next and Retry cost Sparks like a new game.
+  // Drawing n is paid under its own number, so a resumed play never pays twice. A word of your own stays free.
+  const cost = custom ? 0 : sparksCost(play.game, 'solo', play.settings);
+  const paid = useCallback(
+    async (n: number) => {
+      if (!cost) return true;
+      if (!(await needSparks(cost))) return false; // offline too: the phone keeps its own bar
+      void chargeUnit(play, `${play.id}:D${n}`, cost);
+      return true;
+    },
+    [cost, play],
+  );
 
   const set = useCallback(
     (next: SoloRun) => {
@@ -64,9 +79,10 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   );
 
   const begin = useCallback(async () => {
+    if (!(await paid(1))) return;
     const recent = (await engine.kv.get<string[]>(RECENT_KEY)) ?? [];
     set(startSolo(pool, { seed: play.id, fields: custom ? [] : fields, recent: custom ? [] : recent, now: Date.now(), noClock: !custom && noClock }));
-  }, [play.id, fields, set, pool, custom, noClock]);
+  }, [play.id, fields, set, pool, custom, noClock, paid]);
 
   useEffect(() => {
     if (custom && !ref.current) void begin();
@@ -102,6 +118,14 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
     [play, set, onFinish, pool],
   );
 
+  /** Next or Retry: the new drawing is paid first. */
+  const again = useCallback(
+    async (type: 'NEXT' | 'RETRY') => {
+      const n = (ref.current?.done.length ?? 0) + 1;
+      if (await paid(n)) dispatch({ type, now: Date.now() });
+    },
+    [paid, dispatch],
+  );
   // Each finished line, Undo or Clear updates the bookmark's drawing.
   const onStrokes = useCallback(
     (strokes: Stroke[]) => {
@@ -180,9 +204,9 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
         </>
       ) : (
         <View style={s.row}>
-          <ChalkBtn ghost label={tr('Retry')} onPress={() => dispatch({ type: 'RETRY', now: Date.now() })} style={{ flex: 1 }} />
-          <ChalkBtn ghost label={tr('Finish')} onPress={() => dispatch({ type: 'FINISH' })} style={{ flex: 1 }} />
-          <ChalkBtn label={tr('Next')} onPress={() => dispatch({ type: 'NEXT', now: Date.now() })} style={{ flex: 1.3 }} />
+          <ChalkBtn ghost label={priced(tr('Retry'), custom ? 0 : shownCost(play.game, 'solo', play.settings))} onPress={() => void again('RETRY')} style={{ flex: 1.2, paddingHorizontal: 6 }} />
+          <ChalkBtn ghost label={tr('Finish')} onPress={() => dispatch({ type: 'FINISH' })} style={{ flex: 0.8, paddingHorizontal: 0 }} />
+          <ChalkBtn label={priced(tr('Next'), custom ? 0 : shownCost(play.game, 'solo', play.settings))} onPress={() => void again('NEXT')} style={{ flex: 1.3, paddingHorizontal: 6 }} />
         </View>
       )}
       <PauseMenu open={paused} mode="solo" onResume={() => dispatch({ type: 'RESUME', now: Date.now() })} onQuit={onQuit} />

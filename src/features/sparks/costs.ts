@@ -48,9 +48,14 @@ const COSTS: Partial<Record<GameKey, Partial<Record<Mode, Price>>>> = {
   'nova-password': { offline: PASSWORD },
 };
 
-/** Games paid level by level or word by word (#64, #69): Riddler Solo and Medicordle Endless. */
+/**
+ * Games paid level by level or word by word (#64, #69): Riddler Solo and Medicordle Endless. Since 2026-11-13 (Yazan)
+ * also Crossword Solo (each puzzle opened, including Next, Retry and Replay) and Sketch It practice (each drawing),
+ * so one payment no longer opens endless puzzles or drawings.
+ */
 export const perUnit = (game: GameKey, mode: Mode, settings: Settings) =>
-  mode === 'solo' && (game === 'the-riddler' || (game === 'nova-medicordle' && settings.word === 'endless'));
+  mode === 'solo' &&
+  (game === 'the-riddler' || game === 'nova-crossword' || (game === 'the-silent-artist' && !settings.custom) || (game === 'nova-medicordle' && settings.word === 'endless'));
 
 /** Sparks one play (or one level / word, for the games charged that way) costs with these settings. */
 export function sparksCost(game: GameKey, mode: Mode, settings: Settings) {

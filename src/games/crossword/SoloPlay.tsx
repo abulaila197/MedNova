@@ -1,4 +1,6 @@
-import { COIN } from '@/components/CoinLabel';
+import { COIN, priced } from '@/components/CoinLabel';
+import { chargeUnit, needSparks, shownCost } from '@/features/sparks/sparks';
+import { sparksCost } from '@/features/sparks/costs';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
@@ -24,8 +26,8 @@ import { tr } from '@/i18n';
 
 /** One finished puzzle attempt in this session. */
 type Done = { level: number; stars: number; exp: number; solved: number; total: number; left: boolean };
-/** Solo bookmark (rules 7, 10): the open puzzle and the session so far. */
-type SoloSave = { run: SoloRun | null; session: Done[] };
+/** Solo bookmark (rules 7, 10): the open puzzle, the session so far and how many puzzles were opened (each one paid). */
+type SoloSave = { run: SoloRun | null; session: Done[]; opens?: number };
 
 const BEST_KEY = 'crossword:best';
 
@@ -49,6 +51,10 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   const [paused, setPaused] = useState(false);
   // Each open puzzle (including a replay) gets a fresh screen: nothing open.
   const [attempt, setAttempt] = useState(0);
+  // Puzzles opened in this play: each one pays the setup price once, under its own number, so a resumed play never
+  // pays twice for the same puzzle (Yazan 2026-11-13: Next, Retry and Replay cost Sparks like a new game).
+  const opens = useRef(saved?.opens ?? (savedRun ? 1 : 0));
+  const cost = sparksCost(play.game, 'solo', play.settings);
 
   useEffect(() => {
     engine.kv.get<Record<number, number>>(BEST_KEY).then((b) => setStored(b ?? {}));
@@ -58,14 +64,18 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   const bestMap = useCallback((list: Done[]) => bestsOf(stored, list), [stored]);
 
   const save = useCallback(
-    (r: SoloRun | null, list: Done[]) => engine.recorder.bookmark(play.id, { run: r, session: list } satisfies SoloSave, list.reduce((a, d) => a + d.stars, 0)),
+    (r: SoloRun | null, list: Done[]) => engine.recorder.bookmark(play.id, { run: r, session: list, opens: opens.current } satisfies SoloSave, list.reduce((a, d) => a + d.stars, 0)),
     [play.id],
   );
 
   const open = useCallback(
-    (level: number) => {
+    async (level: number) => {
       const p = puzzleByLevel.get(level);
       if (!p) return;
+      // Too few Sparks (also offline: the phone keeps its own bar): the Recharge sheet asks first.
+      if (!(await needSparks(cost))) return;
+      opens.current += 1;
+      void chargeUnit(play, `${play.id}:P${opens.current}`, cost);
       const r = startSolo(p.id);
       ref.current = r;
       setRun(r);
@@ -73,7 +83,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
       setPaused(false);
       save(r, sessionRef.current);
     },
-    [save],
+    [save, cost, play],
   );
 
   const dispatch = useCallback(
@@ -148,9 +158,9 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
       onPause={() => setPaused(true)}
       dock={
         run.phase === 'out' ? (
-          <OutCard playId={play.id} onRevive={() => dispatch({ type: 'REVIVE' })} onReplay={() => open(p.level)} onEnd={() => dispatch({ type: 'LEAVE' })} />
+          <OutCard playId={play.id} price={shownCost(play.game, 'solo', play.settings)} onRevive={() => dispatch({ type: 'REVIVE' })} onReplay={() => open(p.level)} onEnd={() => dispatch({ type: 'LEAVE' })} />
         ) : run.phase === 'done' && last ? (
-          <ResultCard done={last} canNext={canNext} onNext={() => open(nextLevel)} onRetry={() => open(p.level)} onMap={toMap} />
+          <ResultCard done={last} price={shownCost(play.game, 'solo', play.settings)} canNext={canNext} onNext={() => open(nextLevel)} onRetry={() => open(p.level)} onMap={toMap} />
         ) : null
       }>
       <PauseMenu open={paused} mode="solo" onResume={() => setPaused(false)} onQuit={quit} />
@@ -302,7 +312,7 @@ function Puzzle({ puzzle, run, playId, paused, onEvent, onPause, dock, children 
 }
 
 /** CW3, CW8: out of hearts. A token buys 1 heart (as often as you like), or replay, or end with the stars you have. */
-function OutCard({ playId, onRevive, onReplay, onEnd }: { playId: string; onRevive: () => void; onReplay: () => void; onEnd: () => void }) {
+function OutCard({ playId, price, onRevive, onReplay, onEnd }: { playId: string; price: number; onRevive: () => void; onReplay: () => void; onEnd: () => void }) {
   const t = useTheme();
   const [note, setNote] = useState<string | null>(null);
   const busy = useRef(false);
@@ -327,7 +337,7 @@ function OutCard({ playId, onRevive, onReplay, onEnd }: { playId: string; onRevi
       <Text style={[s.line, { color: t.mute }]}>{note ?? tr('{revivePrice} token gives you {reviveHearts} heart. Words you solved stay solved.', { revivePrice: CW.revivePrice, reviveHearts: CW.reviveHearts })}</Text>
       <HelperButton label={tr('Revive · {revivePrice}{COIN}', { revivePrice: CW.revivePrice, COIN })} tone="rose" onPress={revive} disabled={sending} style={{ marginTop: u(4) }} />
       <View style={s.row}>
-        <Ghost label={tr('Replay')} onPress={onReplay} style={{ flex: 1 }} />
+        <Ghost label={priced(tr('Replay'), price)} onPress={onReplay} style={{ flex: 1 }} />
         <Ghost label={tr('End puzzle')} onPress={onEnd} style={{ flex: 1 }} />
       </View>
     </View>
@@ -335,7 +345,7 @@ function OutCard({ playId, onRevive, onReplay, onEnd }: { playId: string; onRevi
 }
 
 /** The puzzle's stars and EXP, with Next puzzle, Retry and the level map. */
-function ResultCard({ done, canNext, onNext, onRetry, onMap }: { done: Done; canNext: boolean; onNext: () => void; onRetry: () => void; onMap: () => void }) {
+function ResultCard({ done, price, canNext, onNext, onRetry, onMap }: { done: Done; price: number; canNext: boolean; onNext: () => void; onRetry: () => void; onMap: () => void }) {
   const t = useTheme();
   const expLine = !done.stars
     ? tr('No stars this time. Solve all but two words for a star.')
@@ -355,8 +365,8 @@ function ResultCard({ done, canNext, onNext, onRetry, onMap }: { done: Done; can
       <Text style={[s.big, { color: t.white }]}>{done.stars === 3 ? tr('Grid complete') : done.stars ? tr('Puzzle done') : done.left ? tr('Puzzle ended') : tr('Puzzle done')}</Text>
       <Text style={[s.line, { color: t.soft }]}>{expLine}</Text>
       <View style={s.row}>
-        <Ghost label={tr('Retry')} onPress={onRetry} style={{ flex: 1 }} />
-        {canNext ? <Btn label={tr('Next puzzle')} onPress={onNext} style={{ flex: 1.4 }} /> : <Btn label={tr('All puzzles')} onPress={onMap} style={{ flex: 1.4 }} />}
+        <Ghost label={priced(tr('Retry'), price)} onPress={onRetry} style={{ flex: 1 }} />
+        {canNext ? <Btn label={priced(tr('Next'), price)} onPress={onNext} style={{ flex: 1.4 }} /> : <Btn label={tr('All puzzles')} onPress={onMap} style={{ flex: 1.4 }} />}
       </View>
       {canNext ? (
         <Pressable onPress={onMap} hitSlop={u(6)} accessibilityRole="button" accessibilityLabel={tr('All puzzles')} style={{ alignSelf: 'flex-start' }}>

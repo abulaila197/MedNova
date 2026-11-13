@@ -1,10 +1,10 @@
-import { COIN } from '@/components/CoinLabel';
+import { COIN, priced } from '@/components/CoinLabel';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Platform, Share, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 
 import { sparksCost } from '@/features/sparks/costs';
-import { chargeUnit, needSparks } from '@/features/sparks/sparks';
+import { chargeUnit, needSparks, shownCost } from '@/features/sparks/sparks';
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
@@ -314,7 +314,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
             primary={
               run.kind === 'daily'
                 ? { label: tr('See results'), onPress: () => dispatch({ type: 'NEXT', now: Date.now() }) }
-                : { label: run.index + 1 >= run.wordIds.length ? tr('See results') : tr('Next word'), onPress: () => void nextWord() }
+                : { label: run.index + 1 >= run.wordIds.length ? tr('See results') : priced(tr('Next word'), shownCost(play.game, 'solo', play.settings)), onPress: () => void nextWord() }
             }
             secondary={
               run.kind === 'daily'

@@ -93,8 +93,8 @@ export function HelperButton({ label, tone, onPress, disabled, style }: { label:
 export function Ghost({ label, onPress, style, danger }: { label: string; onPress?: () => void; style?: StyleProp<ViewStyle>; danger?: boolean }) {
   const t = useTheme();
   return (
-    <Pressable onPress={tapped(onPress)} style={[s.ghost, { borderColor: t.chipLine, backgroundColor: t.chip }, style]} accessibilityRole="button" accessibilityLabel={label}>
-      <Text style={[s.ghostT, { color: danger ? t.rose : t.fg }]}>{label}</Text>
+    <Pressable onPress={tapped(onPress)} style={[s.ghost, { borderColor: t.chipLine, backgroundColor: t.chip }, style]} accessibilityRole="button" accessibilityLabel={spoken(label)}>
+      <CoinLabel text={label} style={[s.ghostT, { color: danger ? t.rose : t.fg }]} />
     </Pressable>
   );
 }

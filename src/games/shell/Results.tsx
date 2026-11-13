@@ -24,6 +24,9 @@ import { teamScoreOf, type GameDef } from './types';
 import { useResults } from './useShellPages';
 import { Body, Btn, Card, GameScreen, Ghost, Kick, Title } from './ui';
 import { tr } from '@/i18n';
+import { priced } from '@/components/CoinLabel';
+import { shownCost } from '@/features/sparks/sparks';
+import { alwaysFree } from './flow';
 
 const MARK: Record<PlayItem['outcome'], string> = { right: '✓', wrong: '✕', skipped: '–', timed_out: '⏱' };
 
@@ -132,7 +135,7 @@ export function Results({ def, play, items }: { def: GameDef; play: Play; items:
       </Card>
       {play.mode === 'bots' ? <AfterMatch play={play} /> : null}
       <View style={{ flexDirection: 'row', gap: u(8) }}>
-        <Btn label={tr('Rematch')} onPress={rematch} style={{ flex: 1 }} />
+        <Btn label={priced(tr('Rematch'), shownCost(def.key, play.mode, play.settings, alwaysFree(play)))} onPress={rematch} style={{ flex: 1.3 }} />
         <Ghost label={tr('Change settings')} onPress={changeSettings} style={{ flex: 1 }} />
       </View>
       <Ghost label={tr('Back to games')} onPress={backToGames} />

@@ -1,3 +1,4 @@
+import { CoinLabel, spoken } from '@/components/CoinLabel';
 import { useEffect, useState, type ReactNode } from 'react';
 import { Pressable, StyleSheet, View, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
 import { Text } from '@/components/AppText';
@@ -130,8 +131,8 @@ export function Frame({ children, style }: { children: ReactNode; style?: StyleP
 export function ChalkBtn({ label, onPress, ghost, disabled, style, color }: { label: string; onPress?: () => void; ghost?: boolean; disabled?: boolean; style?: StyleProp<ViewStyle>; color?: string }) {
   const R = useSlateRoom();
   return (
-    <Pressable onPress={onPress} disabled={disabled} accessibilityRole="button" accessibilityLabel={label} style={({ pressed }) => [s.btn, ghost ? { borderWidth: 1.5, borderColor: R.line, borderStyle: 'dashed' } : { backgroundColor: color ?? R.btn }, { opacity: disabled ? 0.4 : pressed ? 0.85 : 1 }, style]}>
-      <Text style={[s.btnT, { color: ghost ? R.ink : color ? '#1d2b22' : R.btnText }]}>{label}</Text>
+    <Pressable onPress={onPress} disabled={disabled} accessibilityRole="button" accessibilityLabel={spoken(label)} style={({ pressed }) => [s.btn, ghost ? { borderWidth: 1.5, borderColor: R.line, borderStyle: 'dashed' } : { backgroundColor: color ?? R.btn }, { opacity: disabled ? 0.4 : pressed ? 0.85 : 1 }, style]}>
+      <CoinLabel text={label} style={[s.btnT, { color: ghost ? R.ink : color ? '#1d2b22' : R.btnText }]} />
     </Pressable>
   );
 }

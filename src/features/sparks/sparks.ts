@@ -84,6 +84,15 @@ export async function chargeUnit(play: Play, unit: string, cost: number) {
   if (await engine.sparks.charge(unit, cost, play.game)) syncSparks(play.userId).catch(() => {});
 }
 
+/**
+ * The Sparks a replay button shows (Yazan 2026-11-13): the same price the setup page showed for this game, mode and
+ * settings. Nothing for guests (they use free plays), subscribers (unlimited) and free plays.
+ */
+export function shownCost(game: Play['game'], mode: Play['mode'], settings: Play['settings'], free = false) {
+  if (free || !useSession.getState().userId || isSubscribed()) return 0;
+  return sparksCost(game, mode, settings);
+}
+
 type Ask = { cost: number; done: (ok: boolean) => void };
 export const useRecharge = create<{ ask: Ask | null; busy: boolean; why: string | null }>(() => ({ ask: null, busy: false, why: null }));
 

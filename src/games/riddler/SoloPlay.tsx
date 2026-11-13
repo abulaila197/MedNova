@@ -1,4 +1,4 @@
-import { COIN } from '@/components/CoinLabel';
+import { COIN, priced } from '@/components/CoinLabel';
 import { router } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
@@ -14,7 +14,7 @@ import { engine } from '../engine';
 import { usePauseHide } from '../engine/usePauseHide';
 import { recordItem } from '../shell/flow';
 import { sparksCost } from '@/features/sparks/costs';
-import { chargeUnit, needSparks } from '@/features/sparks/sparks';
+import { chargeUnit, needSparks, shownCost } from '@/features/sparks/sparks';
 import { useSession } from '../shell/session';
 import { PauseMenu } from '../shell/PauseMenu';
 import type { PlayProps } from '../shell/types';
@@ -224,6 +224,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
           <ResultCard
             done={last}
             level={level}
+            price={shownCost(play.game, 'solo', play.settings)}
             onNext={() => open(nextId)}
             onRetry={() => open(r.id)}
             onGrid={toGrid}
@@ -237,7 +238,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
 }
 
 /** RD11: the answer, stars and EXP, with Next level, Retry and a dossier link where the answer has one. */
-function ResultCard({ done, level, onNext, onRetry, onGrid, revive }: { done: Done; level: Level; onNext: () => void; onRetry: () => void; onGrid: () => void; revive?: { price: number; onPress: () => void } | null }) {
+function ResultCard({ done, level, price, onNext, onRetry, onGrid, revive }: { done: Done; level: Level; price: number; onNext: () => void; onRetry: () => void; onGrid: () => void; revive?: { price: number; onPress: () => void } | null }) {
   const t = useTheme();
   const r = riddleById.get(done.riddleId)!;
   const tone = done.solved ? '#3fc58a' : '#ff5c6c';
@@ -272,8 +273,8 @@ function ResultCard({ done, level, onNext, onRetry, onGrid, revive }: { done: Do
         </View>
       ) : (
         <View style={s.row}>
-          <Ghost label={tr('Retry')} onPress={onRetry} style={{ flex: 1 }} />
-          <Btn label={tr('Next level')} onPress={onNext} style={{ flex: 1.4 }} />
+          <Ghost label={priced(tr('Retry'), price)} onPress={onRetry} style={{ flex: 1 }} />
+          <Btn label={priced(tr('Next level'), price)} onPress={onNext} style={{ flex: 1.4 }} />
         </View>
       )}
       <View style={s.links}>
