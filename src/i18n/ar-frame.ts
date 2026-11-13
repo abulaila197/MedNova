@@ -888,6 +888,8 @@ export const AR_FRAME: Record<string, string> = {
   "Tap, right, wrong, win, time up and token sounds  by Kenney (kenney.nl)": "أصوات الضغط والصح والغلط والفوز وخلص الوقت والعملات  من Kenney (kenney.nl)",
   "Female voice lines · MIT": "أصوات البنت · MIT",
   "Made with Chatterbox  Copyright (c) 2025 Resemble AI": "معمولة بـChatterbox  Copyright (c) 2025 Resemble AI",
+  "Arabic voice lines · TTSMaker": "الأصوات العربي · TTSMaker",
+  "Made with TTSMaker (ttsmaker.com), commercial use allowed": "معمولة بـTTSMaker (ttsmaker.com)، والاستخدام التجاري مسموح",
   "Hide the licence": "اخفي الرخصة",
   "Read the licence": "اقرا الرخصة",
   "About MedNova": "عن MedNova",

@@ -44,6 +44,8 @@ export function LicencesPage() {
           <Group title={tr('Sounds · CC0 1.0')} rows={[tr('Tap, right, wrong, win, time up and token sounds  by Kenney (kenney.nl)')]} text={CC0} />
           {/* Yazan 2026-11-12: the female voice lines were made with Chatterbox (MIT); the male lines are a friend's own recordings. */}
           <Group title={tr('Female voice lines · MIT')} rows={[tr('Made with Chatterbox  Copyright (c) 2025 Resemble AI')]} text={TEXTS.MIT} />
+          {/* Yazan 2026-11-13: the Arabic voice lines (man and woman) were made by Yazan with TTSMaker, whose free tier allows commercial use without attribution. */}
+          <Group title={tr('Arabic voice lines · TTSMaker')} rows={[tr('Made with TTSMaker (ttsmaker.com), commercial use allowed')]} />
           {GROUPS.map(([l, list]) => (
             <Group key={l} title={`${l} · ${list.length}`} rows={list.map((p) => `${p.n} ${p.v}${p.c ? `  ${p.c}` : ''}`)} text={TEXTS[l]} />
           ))}

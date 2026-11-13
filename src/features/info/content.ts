@@ -402,7 +402,7 @@ export const TERMS: Section[] = [
     n: '10',
     k: 'Intellectual property',
     plain: "MedNova's games and content *belong to MedNova.*",
-    legal: [{ p: "MedNova's software, branding, games, cases and written content belong to MedNova and are protected by intellectual-property laws. Artwork was made for MedNova, including with AI image tools. Some photos are the owner's own, and others are public domain or CC0. The game voice lines were recorded for MedNova with the speaker's permission, and the app sounds are public domain (CC0, by Kenney). Fonts and open-source software are used under their own licences, listed in About. Except where expressly permitted, you may not copy, redistribute, reverse engineer or commercially exploit MedNova materials." }],
+    legal: [{ p: "MedNova's software, branding, games, cases and written content belong to MedNova and are protected by intellectual-property laws. Artwork was made for MedNova, including with AI image tools. Some photos are the owner's own, and others are public domain or CC0. Some game voice lines were recorded for MedNova with the speaker's permission and others were made with text-to-speech tools whose terms allow this use, and the app sounds are public domain (CC0, by Kenney). Fonts and open-source software are used under their own licences, listed in About. Except where expressly permitted, you may not copy, redistribute, reverse engineer or commercially exploit MedNova materials." }],
   },
   {
     n: '11',
