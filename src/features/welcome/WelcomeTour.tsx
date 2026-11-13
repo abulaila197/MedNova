@@ -37,7 +37,7 @@ export function WelcomeTour({ onClose, stops = TOUR, lastLabel = tr('Daily rewar
   useBack(true, onClose);
   const [i, setI] = useState(0);
   const [full, setFull] = useState(false);
-  const stop = stops[i];
+  const stop = { ...stops[i], title: tr(stops[i].title), text: tr(stops[i].text) };
   const shown = useTyping(stop.text, full);
   const typed = shown >= stop.text.length;
   const last = i === stops.length - 1;
@@ -71,7 +71,7 @@ function NextBtn({ label, onPress }: { label: string; onPress: () => void }) {
 /** "Incoming transmission" (Yazan's pick, 2026-10-13): a comms panel low on the screen; the face pops into a signal ring. */
 function Transmission({ stops, lastLabel, skipLabel, i, shown, typed, last, onNext, onSkip }: BodyProps) {
   const t = useTheme();
-  const stop = stops[i];
+  const stop = { ...stops[i], title: tr(stops[i].title), text: tr(stops[i].text) };
   const c = characterOf(stop.who);
   const ring = c?.ring ?? t.accent;
   return (

@@ -1477,4 +1477,13 @@ export const AR_PLAY: Record<string, string> = {
   "{name} claimed {word}": "{name} خد {word}",
   "a word": "كلمة",
   "Someone": "حد",
+  "Welcome to MedNova": "أهلاً بيك في ميدنوفا",
+  "Learn medicine by playing 13 games, alone, around one phone, or against rivals.": "اتعلّم الطب وانت بتلعب 13 لعبة: لوحدك، أو مع صحابك على موبايل واحد، أو قدام المنافسين.",
+  "Pick a game": "اختار لعبة",
+  "Games are grouped into On duty, Play and learn, and Party time. Tap ? on any game to see how to play.": "الألعاب متقسمة لـ: نبطشية، والعب واتعلّم، ووقت الشلة. دوس على ؟ في أي لعبة عشان تعرف تلعبها إزاي.",
+  "Every answer you miss becomes a review card in Learn, with a full disease dossier behind it.": "كل إجابة تغلط فيها بتتحول لكارت مراجعة في صفحة اتعلّم، ووراه ملف كامل عن المرض.",
+  "Sparks and tokens": "الشرارات والعملات",
+  "Each play uses Sparks, which refill over time. Tokens buy helpers, extra plays and Nova Shop items.": "كل لعبة بتاخد شرارات، وبتتملي تاني مع الوقت. والعملات بتشتري بيها مساعدات ولعبات زيادة وحاجات من متجر نوفا.",
+  "Come back daily": "ارجع كل يوم",
+  "Daily missions, Grand Rounds, achievements and the card hunt all pay tokens. Now grab your first daily reward!": "المهام اليومية وتحدّي الأسبوع والإنجازات ورحلة جمع الكروت، كلهم بيدّوك عملات. يلا خد أول مكافأة يومية ليك!",
 };
