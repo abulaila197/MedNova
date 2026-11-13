@@ -16,7 +16,7 @@ import { useTheme } from '@/state/app';
 import { TABLET, u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
-import { useGamesFocus } from './focus';
+import { LISTED, useGamesFocus } from './focus';
 import { STRIP } from './strips';
 import { GameTagSheet } from './GameTag';
 import { GameInfoSheet, GameList } from './GameList';
@@ -148,11 +148,11 @@ function TabletProgramme() {
         <Head end="tap one to play" />
         {/* rows of two; an odd last game sits alone on the left */}
         <View style={s.tGrid}>
-          {Array.from({ length: Math.ceil(GAMES.length / 2) }, (_, r) => (
+          {Array.from({ length: Math.ceil(LISTED.length / 2) }, (_, r) => (
             <View key={r} style={s.tLine}>
               {[0, 1].map((c) => {
                 const j = r * 2 + c;
-                const g = GAMES[j];
+                const g = LISTED[j];
                 return g ? <TabletStrip key={g.key} g={g} j={j} /> : <View key={c} style={s.tGap} />;
               })}
             </View>

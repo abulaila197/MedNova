@@ -7,7 +7,7 @@ import { create } from 'zustand';
 import { Text } from '@/components/AppText';
 import { Fade } from '@/components/Fade';
 import { Sheet } from '@/components/Sheet';
-import { type Game, GAMES } from '@/data/games';
+import { type Game } from '@/data/games';
 import { useLoading } from '@/features/loading/store';
 import { gameDef } from '@/games/shell/registry';
 import { sfx } from '@/lib/sound';
@@ -15,7 +15,7 @@ import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
-import { useGamesFocus } from './focus';
+import { LISTED, useGamesFocus } from './focus';
 import { openTagSheet, tagOf } from './GameTag';
 import { STRIP } from './strips';
 
@@ -43,7 +43,7 @@ function useOpen(g: Game, j: number) {
 
 function Ask({ j, style }: { j: number; style: object }) {
   const t = useTheme();
-  const g = GAMES[j];
+  const g = LISTED[j];
   return (
     <Pressable
       onPress={() => {
@@ -108,7 +108,7 @@ export function GameList({ top }: { top: number }) {
   return (
     <Fade stops={[[0, 0], [0.03, 1], [0.95, 1], [1, 0]]} style={[s.list, { top }]}>
       <ScrollView ref={list} style={s.fill} contentContainerStyle={s.inC} showsVerticalScrollIndicator={false}>
-        {GAMES.map((g, j) => <Strip key={g.key} g={g} j={j} />)}
+        {LISTED.map((g, j) => <Strip key={g.key} g={g} j={j} />)}
       </ScrollView>
     </Fade>
   );
@@ -118,7 +118,7 @@ export function GameList({ top }: { top: number }) {
 export function GameInfoSheet() {
   const t = useTheme();
   const j = useInfo((x) => x.j);
-  const g = j == null ? null : GAMES[j];
+  const g = j == null ? null : LISTED[j];
   const close = () => useInfo.setState({ j: null });
   const modes = g ? gameDef(g.key)?.modes ?? [] : [];
   return (

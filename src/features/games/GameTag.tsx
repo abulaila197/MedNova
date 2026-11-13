@@ -54,6 +54,8 @@ const LOOK: Record<GameKind, { label: string; color: string; text: string }> = {
 };
 const ORDER: GameKind[] = ['learn', 'both', 'play'];
 
+/** Where a game's tag sits in the Games list: On duty, then Play and learn, then Party time (Yazan 2026-11-13). */
+export const tagRank = (game: string) => (KIND[game] ? ORDER.indexOf(KIND[game]) : ORDER.length);
 /** A game's tag label and colour, for the Games list boxes. */
 export const tagOf = (game: string) => (KIND[game] ? LOOK[KIND[game]] : null);
 /** Opens the tags pop-up on one kind. */
