@@ -5,6 +5,7 @@ import { useEffect, useEffectEvent, useMemo, useState, type ReactNode } from 're
 import { Pressable, ScrollView, StyleSheet, View, type LayoutChangeEvent } from 'react-native';
 
 import { TextInput } from '@/components/AppText';
+import { KeyboardLift } from '../shell/KeyboardLift';
 import { u } from '@/theme/scale';
 
 import { STYLES, fieldName, mixFields, timeLeft, type Answer, type Question, type Turn, type TurnEvent } from './core';
@@ -342,8 +343,9 @@ export function TurnBoard({ turn, now, kicker, title, strip, footer, onEvent, on
   }
 
   const left = turn.phase === 'question' ? timeLeft(turn, now) : 0;
+  // Closest number is typed: the board lifts over the keyboard so the guess box and its button stay in sight.
   return (
-    <View style={{ flex: 1, gap: u(8) }}>
+    <KeyboardLift style={{ flex: 1, gap: u(8) }}>
       <View style={s.top}>
         <View style={{ flex: 1 }}>
           {turn.noClock ? (
@@ -368,7 +370,7 @@ export function TurnBoard({ turn, now, kicker, title, strip, footer, onEvent, on
       ) : null}
       {/* #63: a long Matching (or any long question) scrolls instead of running off small screens. */}
       {/* A long question (Put in Order, Matching) scrolls; the bar stays on so it's clear there is more (Yazan 2026-11-13). */}
-      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ gap: u(8), paddingBottom: u(16) }} showsVerticalScrollIndicator persistentScrollbar indicatorStyle="white">
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ gap: u(8), paddingBottom: u(16) }} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator persistentScrollbar indicatorStyle="white">
       <Brass r={14} inner={{ backgroundColor: VV.panel, paddingHorizontal: u(13), paddingVertical: u(10), gap: u(4) }}>
         <View style={s.spread}>
           <T f={CM} size={11} color={VV.right} style={{ letterSpacing: u(1.4) }}>{fieldName(q.field).toUpperCase()}</T>
@@ -386,7 +388,7 @@ export function TurnBoard({ turn, now, kicker, title, strip, footer, onEvent, on
       ) : null}
       </ScrollView>
       {footer}
-    </View>
+    </KeyboardLift>
   );
 }
 

@@ -1,11 +1,12 @@
-import { useMemo, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { useEffect, useMemo, useState } from 'react';
+import { Keyboard, Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Text, TextInput } from '@/components/AppText';
 import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
+import { KeyboardLift } from '../shell/KeyboardLift';
 import { searchNames } from '../shell/names';
 import { CF, completed, elapsed, invFile, scoreRun, status, type CaseDef, type FileId, type Run, type RunEvent } from './core';
 import { DIAG_INDEX, caseLabel, diagName } from './data';
@@ -254,48 +255,74 @@ function Picker({ kind, initial, onCancel, onSubmit }: { kind: keyof typeof PICK
     if (p.max === 1) setChosen([label]);
     else if (!full) setChosen([...chosen, label]);
     setQ('');
+    // The last name it can take: close the keyboard so the file button shows.
+    if (p.max === 1 || chosen.length + 1 >= p.max) Keyboard.dismiss();
   };
+  // While typing (Yazan 2026-11-13) the box docks just above the keyboard with the matches right over it, and the
+  // long note and the buttons step aside; they come back when the keyboard closes.
+  const [typing, setTyping] = useState(false);
+  useEffect(() => {
+    const sub = Keyboard.addListener('keyboardDidHide', () => setTyping(false));
+    return () => sub.remove();
+  }, []);
+  const box = !full || p.max === 1 ? (
+    <TextInput
+      value={q}
+      onChangeText={setQ}
+      onFocus={() => setTyping(true)}
+      onBlur={() => Platform.OS === 'web' && setTyping(false)}
+      placeholder={tr('Type a diagnosis…')}
+      placeholderTextColor={NR.dim}
+      autoCorrect={false}
+      autoCapitalize="none"
+      style={s.input}
+      accessibilityLabel={tr('Search diagnoses')}
+    />
+  ) : null;
+  const list = (
+    <ScrollView keyboardShouldPersistTaps="handled" style={{ flex: 1 }} contentContainerStyle={[{ gap: u(2) }, typing ? { flexGrow: 1, justifyContent: 'flex-end' } : null]}>
+      {hits.map((d) => (
+        <Pressable key={d.id} onPress={() => add(d.label)} accessibilityRole="button" accessibilityLabel={tr('Add {label}', { label: d.label })} style={({ pressed }) => [s.hit, pressed ? { backgroundColor: NR.panel } : null]}>
+          <T size={13.5}>{diagName(d.label)}</T>
+        </Pressable>
+      ))}
+      {q.trim().length >= 3 && !hits.length ? <T size={12} color={NR.dim}>{tr('No diagnosis by that name.')}</T> : null}
+    </ScrollView>
+  );
   return (
     <NoirScreen>
-      <View style={{ gap: u(4) }}>
-        <Kicker>{p.max > 1 ? tr('{n} of {max}', { n: chosen.length, max: p.max }) : tr('One name')}</Kicker>
-        <T size={22}>{p.title}</T>
-        <T size={12} color={NR.soft}>{p.note}</T>
-      </View>
-      <View style={{ gap: u(6) }}>
-        {chosen.map((c, i) => (
-          <View key={c} style={s.chosen}>
-            <T size={13.5} color={NR.cardInk} style={{ flex: 1 }}>{p.max > 1 ? `${i + 1}. ` : ''}{c}</T>
-            <Pressable onPress={() => setChosen(chosen.filter((x) => x !== c))} hitSlop={u(8)} accessibilityRole="button" accessibilityLabel={tr('Remove {c}', { c })}>
-              <T size={15} color={NR.red}>×</T>
-            </Pressable>
-          </View>
-        ))}
-      </View>
-      {!full || p.max === 1 ? (
-        <TextInput
-          value={q}
-          onChangeText={setQ}
-          placeholder={tr('Type a diagnosis…')}
-          placeholderTextColor={NR.dim}
-          autoCorrect={false}
-          autoCapitalize="none"
-          style={s.input}
-          accessibilityLabel={tr('Search diagnoses')}
-        />
-      ) : null}
-      <ScrollView keyboardShouldPersistTaps="handled" style={{ flex: 1 }} contentContainerStyle={{ gap: u(2) }}>
-        {hits.map((d) => (
-          <Pressable key={d.id} onPress={() => add(d.label)} accessibilityRole="button" accessibilityLabel={tr('Add {label}', { label: d.label })} style={({ pressed }) => [s.hit, pressed ? { backgroundColor: NR.panel } : null]}>
-            <T size={13.5}>{diagName(d.label)}</T>
-          </Pressable>
-        ))}
-        {q.trim().length >= 3 && !hits.length ? <T size={12} color={NR.dim}>{tr('No diagnosis by that name.')}</T> : null}
-      </ScrollView>
-      <View style={{ flexDirection: 'row', gap: u(8) }}>
-        <Btn ghost label={tr('Back')} onPress={onCancel} style={{ flex: 1 }} />
-        <Btn label={p.go} onPress={() => onSubmit(chosen)} disabled={!chosen.length} style={{ flex: 2.4 }} />
-      </View>
+      <KeyboardLift style={{ flex: 1, gap: u(12) }}>
+        <View style={{ gap: u(4) }}>
+          <Kicker>{p.max > 1 ? tr('{n} of {max}', { n: chosen.length, max: p.max }) : tr('One name')}</Kicker>
+          <T size={typing ? 18 : 22}>{p.title}</T>
+          {typing ? null : <T size={12} color={NR.soft}>{p.note}</T>}
+        </View>
+        <View style={{ gap: u(6) }}>
+          {chosen.map((c, i) => (
+            <View key={c} style={[s.chosen, typing ? s.chosenTight : null]}>
+              <T size={13.5} color={NR.cardInk} style={{ flex: 1 }} lines={1}>{p.max > 1 ? `${i + 1}. ` : ''}{c}</T>
+              <Pressable onPress={() => setChosen(chosen.filter((x) => x !== c))} hitSlop={u(8)} accessibilityRole="button" accessibilityLabel={tr('Remove {c}', { c })}>
+                <T size={15} color={NR.red}>×</T>
+              </Pressable>
+            </View>
+          ))}
+        </View>
+        {typing ? (
+          <>
+            {list}
+            {box}
+          </>
+        ) : (
+          <>
+            {box}
+            {list}
+            <View style={{ flexDirection: 'row', gap: u(8) }}>
+              <Btn ghost label={tr('Back')} onPress={onCancel} style={{ flex: 1 }} />
+              <Btn label={p.go} onPress={() => onSubmit(chosen)} disabled={!chosen.length} style={{ flex: 2.4 }} />
+            </View>
+          </>
+        )}
+      </KeyboardLift>
     </NoirScreen>
   );
 }
@@ -346,5 +373,6 @@ const s = StyleSheet.create({
   report: { gap: u(3), borderTopWidth: 3, borderTopColor: NR.red },
   chosen: { flexDirection: 'row', alignItems: 'center', backgroundColor: NR.card, paddingHorizontal: u(12), paddingVertical: u(8), borderRadius: u(10), borderLeftWidth: 4, borderLeftColor: NR.red },
   input: { fontFamily: NR.type, fontSize: u(15), color: NR.white, borderWidth: 1.5, borderColor: NR.red, borderRadius: u(12), paddingVertical: u(9), paddingHorizontal: u(12), outlineStyle: 'none' } as never,
+  chosenTight: { paddingVertical: u(5) },
   hit: { paddingVertical: u(9), paddingHorizontal: u(4), borderBottomWidth: 1, borderBottomColor: NR.line },
 });

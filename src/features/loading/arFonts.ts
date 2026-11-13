@@ -19,7 +19,7 @@ export const AR_FONTS: Record<string, { title: string; body: string }> = {
   'the-silent-artist': { title: 'Marhey_700Bold', body: 'Marhey_400Regular' },
   'the-wheels-of-chaos': { title: 'ArefRuqaa_700Bold', body: 'Amiri_400Regular' },
   'the-riddler': { title: 'ArefRuqaa_700Bold', body: 'Amiri_400Regular' },
-  'case-files-unsolved': { title: 'ReemKufi_700Bold', body: 'ReemKufi_500Medium' },
+  'case-files-unsolved': { title: 'ReemKufi_700Bold', body: 'Changa_500Medium' },
   'nova-medicordle': { title: 'Changa_800ExtraBold', body: 'Changa_500Medium' },
   imposter: { title: 'Lalezar_400Regular', body: 'Changa_500Medium' },
   'tilt-and-tell': { title: 'Changa_800ExtraBold', body: 'Changa_500Medium' },

@@ -56,9 +56,12 @@ function hasArabic(children: unknown): boolean {
   if (typeof children === 'string') return AR_LETTERS.test(children);
   return Array.isArray(children) && children.some((c) => typeof c === 'string' && AR_LETTERS.test(c));
 }
+// Fonts that already have Arabic letters (the loading pages' own fonts) are kept as they are.
+const AR_OWN = /^(Lalezar|Changa|Marhey|ArefRuqaa|Amiri|Rakkas|ReemKufi|Alexandria|IBMPlexSansArabic)_/;
 function arabicStyle(style: TextProps['style']): TextStyle {
   const f = (StyleSheet.flatten(style) ?? {}) as TextStyle;
   const size = f.fontSize ?? 14;
+  if (f.fontFamily && AR_OWN.test(f.fontFamily)) return { letterSpacing: 0 };
   const fam = f.fontFamily === 'Gabarito_700Bold' ? (size >= BIG ? 'Alexandria_700Bold' : 'IBMPlexSansArabic_700Bold') : (f.fontFamily && AR_FONT[f.fontFamily]) || 'IBMPlexSansArabic_400Regular';
   const out: TextStyle = { fontFamily: fam, letterSpacing: 0 };
   if (f.lineHeight && f.lineHeight < size * 1.45) out.lineHeight = Math.round(size * 1.45);
