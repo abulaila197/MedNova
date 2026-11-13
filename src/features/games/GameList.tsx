@@ -22,7 +22,8 @@ import { STRIP } from './strips';
 
 /** One strip and its gap, design px. */
 const STEP = 78;
-const num = (j: number) => String(j + 1).padStart(2, '0');
+/** The strip's own navy, the colour the art fades into. */
+const BG = '#0b1331';
 const alpha = (hex: string, a: number) => hex + Math.round(a * 255).toString(16).padStart(2, '0');
 
 const useInfo = create<{ j: number | null }>(() => ({ j: null }));
@@ -68,19 +69,21 @@ function Tag({ game }: { game: string }) {
   );
 }
 
-/** Look C: the programme's numbered strip (2026-11-11), standing still, each one a button. */
+/** Look C: the programme's strip (2026-11-11, numbers dropped 2026-11-13), standing still, each one a button. */
 function Strip({ g, j }: { g: Game; j: number }) {
   const t = useTheme();
   const { box, go } = useOpen(g, j);
   const [down, setDown] = useState(false);
+  // Where the name ends: the art is veiled up to just past it, so a long name never sits on the drawing.
+  const [end, setEnd] = useState(0);
+  const veil = end + u(56);
   return (
     <Pressable ref={box} onPress={go} onPressIn={() => setDown(true)} onPressOut={() => setDown(false)} accessibilityRole="button" accessibilityLabel={`Play ${g.lead} ${g.em}`}
       style={[s.strip, { borderColor: down ? t.accent : t.panelLine, transform: [{ scale: down ? 0.98 : 1 }] }]}>
-      {/* The art's left half is plain navy, so the picture sits to the right and its object clears the name. */}
+      {/* The art fades in from clear (baked into each picture, Yazan 2026-11-13), so the drawing never runs under the name. */}
       <Image source={STRIP[g.key]} style={s.stripArt} contentFit="cover" contentPosition="center" transition={0} cachePolicy="memory-disk" accessible={false} />
-      <LinearGradient colors={['rgba(13,23,56,0.9)', 'rgba(13,23,56,0.45)', 'rgba(13,23,56,0)']} locations={[0.3, 0.55, 0.75]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={StyleSheet.absoluteFill} />
-      <Text style={[s.n, { color: t.accent }]}>{num(j)}</Text>
-      <View style={s.stripTxt}>
+      {end ? <LinearGradient colors={[BG, BG, alpha(BG, 0)]} locations={[0, (end + u(10)) / veil, 1]} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={[s.veil, { width: veil }]} /> : null}
+      <View style={s.stripTxt} onLayout={(e) => setEnd(e.nativeEvent.layout.x + e.nativeEvent.layout.width)}>
         <Text style={[s.name, { color: t.white }]} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.8}>
           {`${g.lead} `}
           <Text style={{ color: t.accent, fontFamily: F.displayItalic }}>{g.em}</Text>
@@ -155,18 +158,18 @@ export function GameInfoSheet() {
 const s = StyleSheet.create({
   list: { position: 'absolute', left: 0, right: 0, bottom: 0 },
   fill: { flex: 1 },
-  inC: { paddingLeft: u(14), paddingRight: u(56), paddingTop: u(6), paddingBottom: u(40), gap: u(8) },
-  strip: { height: u(70), borderRadius: u(12), borderWidth: 1, overflow: 'hidden', justifyContent: 'center', backgroundColor: '#0b1331' },
+  inC: { paddingHorizontal: u(14), paddingTop: u(6), paddingBottom: u(40), gap: u(8) },
+  strip: { height: u(70), borderRadius: u(12), borderWidth: 1, overflow: 'hidden', justifyContent: 'center', backgroundColor: BG },
   stripArt: { position: 'absolute', top: 0, bottom: 0, right: 0, width: '80%' },
-  stripTxt: { paddingLeft: u(40), paddingRight: u(40), gap: u(2) },
-  n: { position: 'absolute', left: u(10), fontFamily: F.mono, fontSize: u(13), lineHeight: u(16) },
+  stripTxt: { alignSelf: 'flex-start', maxWidth: '84%', marginLeft: u(14), gap: u(2) },
+  veil: { position: 'absolute', top: 0, bottom: 0, left: 0 },
   name: { fontFamily: F.display, fontSize: u(15), lineHeight: u(18) },
   sub: { fontFamily: F.mono, fontSize: u(8.5), lineHeight: u(11), letterSpacing: u(0.85) },
   tag: { alignSelf: 'flex-start', marginTop: u(3), borderWidth: 1, borderRadius: u(7), paddingVertical: u(2), paddingHorizontal: u(7) },
   tagT: { fontFamily: F.bodyBold, fontSize: u(8), lineHeight: u(10), letterSpacing: u(0.5), textTransform: 'uppercase' },
   ask: { position: 'absolute', width: u(26), height: u(26), borderRadius: u(13), borderWidth: 1, backgroundColor: 'rgba(8,16,41,0.75)', alignItems: 'center', justifyContent: 'center' },
   askT: { fontFamily: F.display, fontSize: u(14), lineHeight: u(17) },
-  askC: { right: u(9), top: u(22) },
+  askC: { right: u(8), bottom: u(8) },
   body: { gap: u(8), paddingTop: u(2) },
   sheetT: { fontFamily: F.display, fontSize: u(21), lineHeight: u(25) },
   p: { fontFamily: F.body, fontSize: u(12), lineHeight: u(17) },

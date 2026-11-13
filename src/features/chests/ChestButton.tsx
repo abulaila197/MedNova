@@ -1,6 +1,6 @@
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 import Svg, { Circle, G, Path } from 'react-native-svg';
 
 import { Text } from '@/components/AppText';
@@ -16,7 +16,7 @@ import { chestCount, loadChallenges, useChests } from './useChests';
  * The chest button on the Games page (last of the three; Grand Rounds sits inside its page); the badge counts unopened chests. With none to open, the red
  * Grand Rounds dot shows until this week's missions are done (Yazan 2026-10-26).
  */
-export function ChestButton() {
+export function ChestButton({ style }: { style?: StyleProp<ViewStyle> } = {}) {
   const t = useTheme();
   const count = useChests((x) => chestCount(x.c));
   const dot = useRoundsDot();
@@ -35,7 +35,7 @@ export function ChestButton() {
   return (
     <Pressable
       onPress={() => router.navigate('/chests' as never)}
-      style={[s.btn, { backgroundColor: t.panel, borderColor: t.panelLine }]}
+      style={[s.btn, { backgroundColor: t.panel, borderColor: t.panelLine }, style]}
       accessibilityRole='button'
       accessibilityLabel={`Chests, ${count} to open`}
     >

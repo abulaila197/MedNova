@@ -1,6 +1,6 @@
 import { useFocusEffect } from 'expo-router';
 import { useCallback, useEffect } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 import Svg, { Circle, G, Path } from 'react-native-svg';
 
 import { useSession } from '@/games/shell/session';
@@ -14,7 +14,7 @@ import { navTo } from '@/lib/nav';
  * The Inbox button, first of the four round buttons on the Games page (Yazan 2026-10-27: Inbox, daily reward, Grand
  * Rounds, chests). The red dot shows while a message is unopened or a gift is not collected.
  */
-export function InboxButton() {
+export function InboxButton({ style }: { style?: StyleProp<ViewStyle> } = {}) {
   const t = useTheme();
   const uid = useSession((x) => x.userId);
   const waiting = useInbox((x) => x.waiting);
@@ -31,7 +31,7 @@ export function InboxButton() {
   return (
     <Pressable
       onPress={() => navTo('/inbox')}
-      style={[s.btn, { backgroundColor: t.panel, borderColor: t.panelLine }]}
+      style={[s.btn, { backgroundColor: t.panel, borderColor: t.panelLine }, style]}
       accessibilityRole="button"
       accessibilityLabel={waiting ? `Inbox, ${waiting} new` : 'Inbox'}>
       {/* Same face as the other three: a faint ring, an envelope inside. */}

@@ -45,9 +45,9 @@ function ListProgramme() {
   return (
     <Screen tab="games" glow={0} symbols>
       <View style={s.fill}>
-        <Head end="tap one to play" onHeight={setHeadH} />
-        {headH ? <GameList top={headH + u(4)} /> : null}
-        <Side />
+        <Head end="tap one to play" onHeight={setHeadH} split />
+        {headH ? <GameList top={headH + u(2)} /> : null}
+        <Side split />
       </View>
       <GameTagSheet />
       <GameInfoSheet />
@@ -55,7 +55,17 @@ function ListProgramme() {
   );
 }
 
-function Side() {
+/** `split` (phone, Yazan 2026-11-13): two buttons each side of the title, so the games start higher. */
+function Side({ split }: { split?: boolean }) {
+  if (split)
+    return (
+      <>
+        <InboxButton style={[s.sideL, { top: u(10) }]} />
+        <DailyButton style={[s.sideL, { top: u(41) }]} />
+        <ChestButton style={{ top: u(10) }} />
+        <NemesisButton style={{ top: u(41) }} />
+      </>
+    );
   return (
     <>
       <InboxButton />
@@ -66,12 +76,12 @@ function Side() {
   );
 }
 
-function Head({ end, onHeight }: { end: string; onHeight?: (h: number) => void }) {
+function Head({ end, onHeight, split }: { end: string; onHeight?: (h: number) => void; split?: boolean }) {
   const t = useTheme();
   return (
-    <View style={s.head} onLayout={onHeight ? (e) => onHeight(e.nativeEvent.layout.height) : undefined}>
-      <Text style={[s.k, { color: t.accent }]}>TONIGHT ON THE WARD</Text>
-      <Text style={[s.h, { color: t.white }]}>
+    <View style={[s.head, split ? s.headSplit : null]} onLayout={onHeight ? (e) => onHeight(e.nativeEvent.layout.height) : undefined}>
+      {split ? null : <Text style={[s.k, { color: t.accent }]}>TONIGHT ON THE WARD</Text>}
+      <Text style={[s.h, { color: t.white }, split ? [s.mid, s.hSplit] : null]}>
         {`${COUNT} games, `}
         <Text style={{ color: t.accent, fontFamily: F.displayItalic }}>{end}</Text>
       </Text>
@@ -158,6 +168,10 @@ function TabletProgramme() {
 const s = StyleSheet.create({
   fill: { flex: 1, overflow: 'hidden' },
   head: { paddingTop: u(10), paddingLeft: u(16), paddingRight: u(44), paddingBottom: u(8), gap: u(2) },
+  headSplit: { paddingLeft: u(52), paddingRight: u(52), minHeight: u(76), justifyContent: 'center' },
+  sideL: { right: undefined, left: u(16) },
+  mid: { textAlign: 'center' },
+  hSplit: { fontSize: u(20), lineHeight: u(23) },
   k: { fontFamily: F.mono, fontSize: u(9), lineHeight: u(12), letterSpacing: u(1.44) },
   h: { fontFamily: F.display, fontSize: u(24), lineHeight: u(26), letterSpacing: u(-0.4) },
   row: { height: u(ROW_H), marginBottom: u(ROW_GAP), borderRadius: u(12), borderWidth: 1, overflow: 'hidden', justifyContent: 'center', backgroundColor: '#0b1331' },

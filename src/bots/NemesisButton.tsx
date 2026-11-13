@@ -1,6 +1,6 @@
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 
 import { PlayerFace } from '@/features/style/Frame';
 import { useTheme } from '@/state/app';
@@ -13,7 +13,7 @@ import { loadRivals, useRivals } from './memory';
  * The Nemesis button on the Games page (G6), under the chests: the rival of the day's face in the same ring as the
  * other three buttons. A red dot while today's boss is unbeaten; green once beaten, until the page is opened.
  */
-export function NemesisButton() {
+export function NemesisButton({ style }: { style?: StyleProp<ViewStyle> } = {}) {
   const t = useTheme();
   const day = useRivals((x) => todayWin(x.day));
   useFocusEffect(
@@ -23,7 +23,7 @@ export function NemesisButton() {
   );
   const boss = rivalOfDay();
   return (
-    <Pressable onPress={() => router.navigate('/nemesis' as never)} style={[s.btn, { backgroundColor: t.panel, borderColor: t.panelLine }]} accessibilityRole="button" accessibilityLabel={`Nemesis: rival of the day ${boss.bot.name}`}>
+    <Pressable onPress={() => router.navigate('/nemesis' as never)} style={[s.btn, { backgroundColor: t.panel, borderColor: t.panelLine }, style]} accessibilityRole="button" accessibilityLabel={`Nemesis: rival of the day ${boss.bot.name}`}>
       <View style={[s.ring, { borderColor: t.chipLine }]}>
         <PlayerFace slug={boss.bot.character} size={u(19)} still />
       </View>
