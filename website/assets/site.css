@@ -1,6 +1,9 @@
 /* MedNova website: the app's deep navy Nebula look (theme/tokens.ts), one reading column, phone first. */
 @font-face { font-family: 'Gabarito'; font-weight: 700; font-display: swap; src: url(/assets/fonts/gabarito-700.woff2) format('woff2'); }
 @font-face { font-family: 'Inter Tight'; font-weight: 100 900; font-display: swap; src: url(/assets/fonts/inter-tight.woff2) format('woff2'); }
+@font-face { font-family: 'Alexandria'; font-weight: 700; font-display: swap; src: url(/assets/fonts/alexandria-700.woff2) format('woff2'); }
+@font-face { font-family: 'IBM Plex Sans Arabic'; font-weight: 400; font-display: swap; src: url(/assets/fonts/plex-arabic-400.woff2) format('woff2'); }
+@font-face { font-family: 'IBM Plex Sans Arabic'; font-weight: 600; font-display: swap; src: url(/assets/fonts/plex-arabic-600.woff2) format('woff2'); }
 @font-face { font-family: 'JetBrains Mono'; font-weight: 500; font-display: swap; src: url(/assets/fonts/jetbrains-mono-500.woff2) format('woff2'); }
 
 :root {
@@ -42,7 +45,7 @@ main > section.hero, main > section.cards { background: none; border: 0; padding
 .legal { margin: 8px 0 0; color: var(--mute); font-size: 15px; }
 .legal b { color: var(--fg); font-weight: 600; }
 .next { margin-top: 12px; }
-ul, ol { margin: 10px 0 0; padding-left: 20px; color: var(--mute); font-size: 15px; display: grid; gap: 6px; }
+ul, ol { margin: 10px 0 0; padding-inline-start: 20px; color: var(--mute); font-size: 15px; display: grid; gap: 6px; }
 ul li::marker { color: var(--kick); }
 .steps { color: var(--soft); }
 .steps li::marker { color: var(--accent); font-family: var(--mono); }
@@ -66,3 +69,22 @@ ul li::marker { color: var(--kick); }
 footer { max-width: 760px; margin: 0 auto; padding: 0 16px 40px; color: var(--mute); font-size: 13px; }
 footer p { margin: 4px 0; }
 a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+/* Store buttons (Yazan 2026-11-13: instead of "Coming soon"). */
+.stores { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
+.open .stores { justify-content: center; }
+.store { display: inline-flex; align-items: center; gap: 6px; padding: 11px 18px; border-radius: 14px; background: #fff; color: #0b0b26; text-decoration: none; font-size: 14px; }
+.store b { font-weight: 700; }
+.store:hover { box-shadow: 0 0 0 2px var(--accent); }
+
+/* Language switch at the end of the menu. */
+nav a.lang { color: var(--fg); border-color: var(--line); }
+
+/* Arabic pages (/ar/): right to left, the app's Arabic fonts (Alexandria for headings, IBM Plex Sans Arabic for the
+   rest). Latin words inside (MedNova, Google Play) fall back to the English fonts. */
+:root:lang(ar) { --display: 'Alexandria', 'Gabarito', system-ui, sans-serif; --body: 'IBM Plex Sans Arabic', 'Inter Tight', system-ui, sans-serif; }
+:lang(ar) .kick { font-family: var(--body); font-weight: 600; letter-spacing: 0; font-size: 13px; text-transform: none; }
+:lang(ar) h1 { line-height: 1.3; letter-spacing: 0; }
+:lang(ar) h2 { line-height: 1.5; }
+:lang(ar) body, body:lang(ar) { line-height: 1.8; }
+.brand, .code { direction: ltr; }

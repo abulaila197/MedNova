@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>افتح في MedNova</title>
+<meta name="description" content="افتح الدعوة دي في تطبيق MedNova.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0d1738">
+<link rel="icon" href="/assets/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/site.css">
+</head>
+<body>
+<header class="top"><a class="brand" href="/ar/" dir="ltr"><img src="/assets/icon-192.png" alt="" width="34" height="34"><span>Med<em>Nova</em></span></a><nav><a href="/ar/privacy/">الخصوصية</a><a href="/ar/terms/">الشروط</a><a href="/ar/delete-account/">مسح الحساب</a><a href="/ar/support/">الدعم</a><a class="lang" href="/" hreflang="en" lang="en" aria-label="Read in English">English</a></nav></header>
+<main>
+<section class="hero open"><img src="/assets/icon-192.png" alt="" width="96" height="96"><p class="kick">دعوة صداقة</p><h1>معزوم <em>تبقوا صحاب.</em></h1><p class="code" id="code" dir="ltr" hidden></p><a class="btn" id="go" href="/ar/">افتح MedNova</a><p class="lead">لو مفيش حاجة حصلت، يبقى MedNova لسه مش على الموبايل ده. نزّله من تحت، وبعدين افتح البروفايل، دوس + ضيف صاحب واكتب الكود اللي فوق.</p><div class="stores"><a class="store" href="https://play.google.com/store/apps/details?id=com.novagames.mednova">نزّله من <b>Google Play</b></a><a class="store" href="https://apps.apple.com/app/id6831704683">نزّله من <b>App Store</b></a></div></section>
+</main>
+<footer><p>© 2026 MedNova · للتعليم بس، مش نصيحة طبية. كل الحالات والمرضى من الخيال.</p><p><a href="mailto:Support.novagames@gmail.com">Support.novagames@gmail.com</a></p></footer>
+<script>
+(function () {
+  var m = location.pathname.match(/^\/(?:ar\/)?add\/([A-Za-z0-9-]{1,24})\/?$/);
+  if (!m) return;
+  var code = m[1].toUpperCase();
+  
+  var link = 'mednova://add/' + code;
+  var el = document.getElementById('code');
+  el.hidden = false;
+  el.textContent = code;
+  document.getElementById('go').href = link;
+  location.href = link;
+})();
+</script>
+</body>
+</html>

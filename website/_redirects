@@ -1,4 +1,5 @@
 /add/*   /open/  200
-/join/*  /open/  200
+/ar/add/*  /ar/open/  200
+/join/*  /  302
 /privacy-policy  /privacy/  301
 /delete  /delete-account/  301
