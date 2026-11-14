@@ -43,7 +43,7 @@ export function ModeLanding({ def }: { def: GameDef }) {
         ) : null}
         </>
       }>
-      <Back label={tr('Games')} fallback="/games" />
+      <Back label={tr('Games')} fallback="/games" exact />
       <View style={{ gap: u(6), marginBottom: u(4) }}>
         <Kick>{tr('Choose how to play')}</Kick>
         <Title lead={g.lead} em={g.em} />

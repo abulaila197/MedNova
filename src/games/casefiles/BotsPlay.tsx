@@ -172,7 +172,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
     const rows = [...st.players].sort((a, b) => b.score - a.score || (a.item_rank ?? 9) - (b.item_rank ?? 9));
     const doneMs = (p: RacePlayer) => (p.user_id === YOU ? (myRun?.finalMs ?? null) : (race.plansAt(index)?.[p.user_id]?.doneAt ?? null));
     return (
-      <NoirScreen scroll>
+      <NoirScreen scroll layer={extras}>
         <View style={{ gap: u(2) }}>
           <Kicker>{tr('{row}{n} · seal broken', { row, n: caseLabel(c.id) })}</Kicker>
           <CaseTitle title={c.title} />
@@ -206,7 +206,6 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
           })}
         </View>
         <T size={12} color={NR.soft} style={{ textAlign: 'center' }}>{st.phase === 'done' ? tr('Adding up the scores…') : tr('{n} in {max} s', { n: index + 1 < total ? tr('Next case') : tr('Results'), max: Math.max(0, Math.ceil(left / 1000)) })}</T>
-        {extras}
       </NoirScreen>
     );
   }

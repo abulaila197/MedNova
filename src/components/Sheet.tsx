@@ -36,7 +36,9 @@ export function Sheet({ open, onClose, children, tone, lift = true, still = fals
   const up = kb ? Math.max(0, kb - (Platform.OS === 'web' ? 0 : ins.bottom)) : 0;
   const maxHeight = height - up - (Platform.OS === 'web' ? 0 : ins.top) - u(12);
   return (
-    <View style={[StyleSheet.absoluteFill, { zIndex: 20, start: -bleed, end: -bleed }]}>
+    // zIndex 35: above a pass-the-phone curtain (30), a countdown (30) and the chat (25). The pause menu hid under the
+    // Sketch It curtain after the app came back, so "I'm ready" seemed dead (Yazan 2026-11-15).
+    <View style={[StyleSheet.absoluteFill, { zIndex: 35, start: -bleed, end: -bleed }]}>
       <Animated.View entering={still ? undefined : FadeIn.duration(250)} exiting={still ? undefined : FadeOut.duration(200)} style={StyleSheet.absoluteFill}>
         <Pressable style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(5,6,16,0.55)' }]} onPress={onClose} accessibilityLabel={tr('Close')} />
       </Animated.View>

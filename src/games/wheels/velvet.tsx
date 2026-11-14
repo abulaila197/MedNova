@@ -62,10 +62,10 @@ export function useVelvetFonts() {
 }
 
 /** A Wheels page: the game header over the app sky. */
-export function VelvetScreen({ children, scroll = false, top }: { children: ReactNode; scroll?: boolean; dark?: number; top?: ReactNode }) {
+export function VelvetScreen({ children, scroll = false, top, layer }: { children: ReactNode; scroll?: boolean; dark?: number; top?: ReactNode; layer?: ReactNode }) {
   const ok = useVelvetFonts();
   return (
-    <GameScreen scroll={scroll} top={ok ? top : null} bodyStyle={{ paddingTop: u(12), paddingHorizontal: u(16), paddingBottom: u(16), gap: u(12) }}>
+    <GameScreen scroll={scroll} top={ok ? top : null} layer={layer} bodyStyle={{ paddingTop: u(12), paddingHorizontal: u(16), paddingBottom: u(16), gap: u(12) }}>
       {ok ? children : null}
     </GameScreen>
   );

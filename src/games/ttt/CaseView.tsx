@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from 'react';
-import { View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 
 import { Text } from '@/components/AppText';
 import { u } from '@/theme/scale';
@@ -24,8 +24,12 @@ export function CaseView({ c, run, top, onLock, help, locked, note }: { c: Case;
     <View style={{ flex: 1, gap: u(7) }}>
       {top}
       <Pad c={c} style={{ flexShrink: 1, minHeight: u(120) }} onOpen={() => setOpen(true)} />
-      <Ask q={c.q} />
-      <Choices c={c} run={run} picked={picked} onPick={(i) => setPick({ key: c.id, i })} disabled={locked || run.done} />
+      {/* The question and choices scroll when they don't fit, so the buttons below always stay on the screen and
+          clear of the phone's own buttons (Yazan 2026-11-15). */}
+      <ScrollView style={{ flexGrow: 0, flexShrink: 1 }} contentContainerStyle={{ gap: u(7) }} showsVerticalScrollIndicator={false}>
+        <Ask q={c.q} />
+        <Choices c={c} run={run} picked={picked} onPick={(i) => setPick({ key: c.id, i })} disabled={locked || run.done} />
+      </ScrollView>
       {/* The room left sits here, so the buttons stay at the bottom. */}
       <View style={{ flexGrow: 1, flexShrink: 0, flexBasis: 0 }} />
       {help?.note ? <Text style={[s.sub, { textAlign: 'center', color: C.soft }]}>{help.note}</Text> : note ? <Text style={[s.sub, { textAlign: 'center' }]}>{note}</Text> : null}

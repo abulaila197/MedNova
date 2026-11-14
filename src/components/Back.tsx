@@ -9,9 +9,10 @@ import { tapped } from '@/lib/sound';
 import { tr } from '@/i18n';
 
 /** "‹ Dossiers" style back link: goes back, or to `fallback` when the page was opened directly. */
-export function Back({ label, fallback }: { label: string; fallback: Href }) {
+/** `exact`: always land on `fallback`, closing any pages above it (a game page's "‹ Games"). */
+export function Back({ label, fallback, exact }: { label: string; fallback: Href; exact?: boolean }) {
   const t = useTheme();
-  const go = tapped(() => (router.canGoBack() ? router.back() : router.replace(fallback)));
+  const go = tapped(() => (exact ? router.dismissTo(fallback) : router.canGoBack() ? router.back() : router.replace(fallback)));
   return (
     <Pressable onPress={go} hitSlop={u(8)} accessibilityRole="link" accessibilityLabel={tr('Back to {label}', { label })}>
       <Text style={[s.bk, { color: t.accent }]}>‹ {label}</Text>

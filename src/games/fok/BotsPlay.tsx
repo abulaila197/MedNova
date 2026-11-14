@@ -81,6 +81,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
   // The hint in Vs rivals too, at Solo's token price (Yazan 2026-11-12); a failed step gives the tokens back.
   const [hintNote, setHintNote] = useState<string | null>(null);
   const [hintBusy, setHintBusy] = useState(false);
+  const [dockH, setDockH] = useState(0);
   const buyHint = async () => {
     if (!race || hintBusy) return;
     setHintBusy(true);
@@ -140,8 +141,10 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
     const nextIn = Math.max(0, Math.ceil((st.phase_ends_at - now) / 1000));
     return (
       <GameScreen scroll={false} under={<FokSky />} bodyStyle={{ paddingTop: u(12), paddingHorizontal: u(16) }}>
-        <BoardEnd board={board} run={run} kicker={run.solved ? tr('Board solved') : tr('Board over')} title={boardLine} line={tr('You · {n} of {maxPoints} points', { n: st.me?.points ?? 0, maxPoints: FOK.maxPoints })} />
+        {/* The board ends above the docked card, so the last group shows whole and scrolls (Yazan 2026-11-15). */}
+        <BoardEnd board={board} run={run} under={dockH} kicker={run.solved ? tr('Board solved') : tr('Board over')} title={boardLine} line={tr('You · {n} of {maxPoints} points', { n: st.me?.points ?? 0, maxPoints: FOK.maxPoints })} />
         <Animated.View entering={FadeIn.duration(200)} style={[StyleSheet.absoluteFill, s.dock]} pointerEvents="box-none">
+          <View onLayout={(e) => setDockH(Math.ceil(e.nativeEvent.layout.height))}>
           <RaceReveal
             label={run.solved ? tr('Board solved') : tr('Board over')}
             answer={tr('{n} · {n2} points', { n: me?.item_rank ? tr('You placed {v}', { v: nth(me.item_rank) }) : tr('The board'), n2: st.me?.points ?? 0 })}
@@ -150,6 +153,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
             how={(x) => tr('{n} of 4 · {n2} pts', { n: x.greens ?? 0, n2: x.item_points ?? 0 })}
             next={st.phase === 'done' ? tr('Adding up the scores…') : tr('{n} in {nextIn} s', { n: st.index + 1 < total ? tr('Next board') : tr('Results'), nextIn })}
           />
+          </View>
         </Animated.View>
         <AlertPill alert={g.alert} />
         {menu}

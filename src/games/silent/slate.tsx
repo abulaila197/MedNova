@@ -10,7 +10,7 @@ import { u } from '@/theme/scale';
 import { useClock, type Clock } from '../engine/useTicker';
 import { GameScreen } from '../shell/ui';
 import type { HintView } from './core';
-import { tr, TA_END } from '@/i18n';
+import { isAr, tr, TA_END } from '@/i18n';
 
 // The Silent Artist's own design language (SA9): "Classroom slate". A chalkboard in a worn wooden frame,
 // chalk sticks on the ledge as colours, chalk lettering. The room follows the app (SA10, SA11, Yazan 2026-10-05):
@@ -72,9 +72,9 @@ export function useSlateFonts() {
 }
 
 /** A Silent Artist page: the game header over the dark slate room. `scroll` for long pages (pick, reveal). */
-export function SlateScreen({ children, scroll = false }: { children: ReactNode; scroll?: boolean }) {
+export function SlateScreen({ children, scroll = false, layer }: { children: ReactNode; scroll?: boolean; layer?: ReactNode }) {
   return (
-    <GameScreen scroll={scroll} bodyStyle={[s.body, { paddingBottom: u(14) }]}>
+    <GameScreen scroll={scroll} layer={layer} bodyStyle={[s.body, { paddingBottom: u(14) }]}>
       {children}
     </GameScreen>
   );
@@ -171,7 +171,7 @@ export function HintCard({ hint }: { hint: HintView }) {
   return (
     <Panel>
       <View style={s.hintRow}>
-        <Text style={[s.hintK, ink]}>{`${hint.words} ${hint.words === 1 ? 'word' : 'words'}`}</Text>
+        <Text style={[s.hintK, ink]}>{wordsLabel(hint.words)}</Text>
         <Text style={[s.hintK, ink, { opacity: hint.field ? 1 : 0.45 }]}>{hint.field ?? tr('Field later')}</Text>
       </View>
       <Text style={[s.mask, ink]} numberOfLines={2} adjustsFontSizeToFit>
@@ -187,7 +187,7 @@ export function HintLine({ hint }: { hint: HintView }) {
   return (
     <Panel style={{ paddingVertical: u(5), gap: u(2) }}>
       <Text style={[s.hintK, ink, { fontSize: u(12), opacity: 0.85 }]} numberOfLines={1}>
-        {`${hint.words} ${hint.words === 1 ? 'word' : 'words'} · ${hint.field ?? tr('Field later')}`}
+        {`${wordsLabel(hint.words)} · ${hint.field ?? tr('Field later')}`}
       </Text>
       <Text style={[s.mask, ink, { fontSize: u(16), textAlign: 'center' }]} numberOfLines={1} adjustsFontSizeToFit>
         {hint.mask ? hint.mask.replace(/ /g, '    ') : '· · ·'}
@@ -197,6 +197,9 @@ export function HintLine({ hint }: { hint: HintView }) {
 }
 
 /** Chalk sticks and actions on the wooden ledge under the board; the palette opens all 24 colours above it (#11). */
+/** "2 words" in the app's language. */
+const wordsLabel = (n: number) => (n === 1 ? tr('1 word') : n === 2 ? tr('2 words') : tr('{n} words', { n }));
+
 export function Ledge({ ink, size, erase, onInk, onSize, onErase, onUndo, onClear }: { ink: number; size: number; erase: boolean; onInk: (i: number) => void; onSize: () => void; onErase: () => void; onUndo: () => void; onClear: () => void }) {
   const [open, setOpen] = useState(false);
   const tool = (key: string, on: boolean, child: ReactNode, onPress: () => void, label: string) => (
@@ -204,7 +207,11 @@ export function Ledge({ ink, size, erase, onInk, onSize, onErase, onUndo, onClea
       {child}
     </Pressable>
   );
-  const word = (t: string, on = false) => <Text style={[s.toolT, on && { color: SL.yellow }]}>{t}</Text>;
+  const word = (t: string, on = false) => (
+    <Text style={[s.toolT, on && { color: SL.yellow }]} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.6}>
+      {t}
+    </Text>
+  );
   const pick = (i: number) => {
     onInk(i);
     setOpen(false);
@@ -348,7 +355,7 @@ const s = StyleSheet.create({
   hintK: { fontFamily: SL.body, fontSize: u(13) },
   mask: { fontFamily: SL.head, fontSize: u(17), letterSpacing: u(3) },
   ledge: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: SL.frame, borderRadius: u(3), paddingVertical: u(6), paddingHorizontal: u(8), boxShadow: tr('inset 0 2px 3px rgba(0,0,0,0.35)') },
-  tool: { paddingVertical: u(4), paddingHorizontal: u(2), alignItems: 'center', justifyContent: 'center' },
+  tool: { flexShrink: 1, minWidth: 0, paddingVertical: u(4), paddingHorizontal: u(2), alignItems: 'center', justifyContent: 'center' },
   // #17/#38 (Yazan 2026-11-01): the ledge colours are boxes like the grid's.
   stick: { width: u(24), height: u(18), borderRadius: u(3), borderWidth: 1, borderColor: 'rgba(0,0,0,0.35)', boxShadow: tr('0 1px 1px rgba(0,0,0,0.4)') },
   wheel: { width: u(18), height: u(18), borderRadius: u(9), flexDirection: 'row', flexWrap: 'wrap', overflow: 'hidden', borderWidth: 1.5, borderColor: SL.chalk },
@@ -359,7 +366,7 @@ const s = StyleSheet.create({
   palette: { width: u(SW * 6 + SG * 5 + SP * 2), flexDirection: 'row', flexWrap: 'wrap', gap: u(SG), padding: u(SP), backgroundColor: SL.frameDark, borderRadius: u(6), boxShadow: tr('0 4px 12px rgba(0,0,0,0.45)') },
   swatch: { width: u(SW), height: u(SH), borderRadius: u(4), borderWidth: 1, borderColor: 'rgba(0,0,0,0.35)' },
   swatchOn: { borderWidth: 2.5, borderColor: SL.chalk },
-  toolT: { fontFamily: SL.body, fontSize: u(12), color: SL.chalk },
+  toolT: { fontFamily: SL.body, fontSize: u(isAr ? 10.5 : 12), color: SL.chalk },
   sep: { width: 1, height: u(18), backgroundColor: 'rgba(0,0,0,0.25)' },
   peek: { flex: 1.15, justifyContent: 'center', borderWidth: 1, borderStyle: 'dashed', borderRadius: u(10), paddingVertical: u(10), paddingHorizontal: u(10) },
   pause: { width: u(34), height: u(34), borderRadius: u(17), borderWidth: 1.5, borderStyle: 'dashed', alignItems: 'center', justifyContent: 'center' },

@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from "react";
-import { View } from "react-native";
+import { ScrollView, View } from "react-native";
 
 import { Text } from "@/components/AppText";
 import { u } from "@/theme/scale";
@@ -47,15 +47,19 @@ export function CaseView({
       {top}
       {/* The paper takes what is left once the 4 choices fit (Yazan 2026-11-12); the whole note opens in a pop-up. */}
       <Sheet c={c} highlight={run.highlight} style={{ flex: 1, minHeight: u(110) }} onOpen={() => setOpen(true)} />
-      <Ask stage={stage} />
-      <Choices
-        c={c}
-        run={run}
-        stage={stage}
-        picked={picked}
-        onPick={setPicked}
-        disabled={locked || run.stage === "done"}
-      />
+      {/* The question and choices scroll when they don't fit, so the helpers and Lock it in always stay on the
+          screen, clear of the phone's own buttons (Yazan 2026-11-15). */}
+      <ScrollView style={{ flexGrow: 0, flexShrink: 1 }} contentContainerStyle={{ gap: u(8) }} showsVerticalScrollIndicator={false}>
+        <Ask stage={stage} />
+        <Choices
+          c={c}
+          run={run}
+          stage={stage}
+          picked={picked}
+          onPick={setPicked}
+          disabled={locked || run.stage === "done"}
+        />
+      </ScrollView>
       {help?.note ? (
         <Text style={[s.sub, { textAlign: "center", color: C.soft }]}>{help.note}</Text>
       ) : note ? (

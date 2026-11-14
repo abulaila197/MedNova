@@ -39,10 +39,10 @@ export function useNoirFonts() {
 }
 
 /** A Case Files page: the game header over the app sky. */
-export function NoirScreen({ children, scroll = false, top }: { children: ReactNode; scroll?: boolean; top?: ReactNode }) {
+export function NoirScreen({ children, scroll = false, top, layer }: { children: ReactNode; scroll?: boolean; top?: ReactNode; layer?: ReactNode }) {
   const fonts = useNoirFonts();
   return (
-    <GameScreen scroll={scroll} top={fonts ? top : null} bodyStyle={[s.body, { paddingBottom: u(14) }]}>
+    <GameScreen scroll={scroll} top={fonts ? top : null} layer={layer} bodyStyle={[s.body, { paddingBottom: u(14) }]}>
       {fonts ? children : null}
     </GameScreen>
   );

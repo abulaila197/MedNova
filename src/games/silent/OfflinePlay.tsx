@@ -54,7 +54,8 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   const teamOf = useCallback((seat: number) => seatOf.get(seat)?.team, [seatOf]);
   const team = useCallback((id: number | null | undefined) => teams?.find((t) => t.id === id), [teams]);
   const teamName = useCallback((id: number) => team(id)?.name ?? tr('Team {n}', { n: id + 1 }), [team]);
-  const nameOf = useCallback((seat: number) => names[seat] ?? tr('Player {n}', { n: seat + 1 }), [names]);
+  // The phone owner's seat is stored as 'You'; show it in the app's language ('You، اختار واحدة' in Arabic, Yazan 2026-11-15).
+  const nameOf = useCallback((seat: number) => (names[seat] === 'You' ? tr('You') : names[seat]) ?? tr('Player {n}', { n: seat + 1 }), [names]);
 
   useEffect(() => {
     let live = true;
@@ -156,7 +157,8 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
     setErase(false);
   }
 
-  usePauseHide(() => dispatch({ type: 'PAUSE', now: Date.now() }));
+  // No clock runs behind the pass-the-phone curtain, so leaving the app there doesn't pause.
+  usePauseHide(() => ref.current?.phase !== 'handoff' && dispatch({ type: 'PAUSE', now: Date.now() }));
 
   if (!fonts || !run || run.phase === 'done') return <SlateScreen>{null}</SlateScreen>;
 
@@ -206,10 +208,9 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
 
   if (phase === 'picking')
     return (
-      <SlateScreen scroll>
+      <SlateScreen scroll layer={menu}>
         <TopRow kicker={kick} title={tr('{nameOf}, pick one', { nameOf: nameOf(turn.seat) })} color={color} right={<><ClockChalkTimer clock={ticks} leftAt={leftAt} totalMs={10_000} /><PauseBtn onPress={pause} /></>} />
         <Pick run={run} paused={paused} onKind={(kind) => dispatch({ type: 'KIND', kind })} onPick={(wordId) => dispatch({ type: 'PICK', wordId, now: Date.now() })} />
-        {menu}
       </SlateScreen>
     );
 
@@ -218,7 +219,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
     const w = wordById.get(t.wordId);
     const last = run.index + 1 >= run.plan.length || run.plan.slice(run.index + 1).every((p) => run.removed.includes(p.seat));
     return (
-      <SlateScreen scroll>
+      <SlateScreen scroll layer={menu}>
         <Kicker>{kick}</Kicker>
         <ChalkTitle size={18} color={R.soft}>{tr('It was')}</ChalkTitle>
         <ChalkTitle size={27} color={R.mark}>{w ? wordName(w) : ''}</ChalkTitle>
@@ -236,7 +237,6 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
           <Scores rows={scoreRows} />
         </Panel>
         <ChalkBtn label={last ? tr('See results') : tr('Next turn')} onPress={() => dispatch({ type: 'NEXT' })} />
-        {menu}
       </SlateScreen>
     );
   }
@@ -246,7 +246,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   const hint = run.hints ? hintView(w, run.hints, phase === 'performing' ? elapsed(run, now) : phase === 'whoGot' ? (run.gotAt ?? 0) : run.turnMs) : null;
   const steal = stealTeamOf(run, turn.team);
   const acting = run.kind === 'acting';
-  const title = phase === 'whoGot' ? tr('Who got it?') : phase === 'stealing' ? tr('{n} can steal', { n: steal != null ? teamName(steal) : tr('Next team') }) : tr('{n} is {n2}', { n: nameOf(turn.seat), n2: acting ? tr('acting') : tr('drawing') });
+  const title = phase === 'whoGot' ? tr('Who got it?') : phase === 'stealing' ? tr('{n} can steal', { n: steal != null ? teamName(steal) : tr('Next team') }) : (names[turn.seat] === 'You' ? (acting ? tr('You are acting') : tr('You are drawing')) : acting ? tr('{n} is acting', { n: nameOf(turn.seat) }) : tr('{n} is drawing', { n: nameOf(turn.seat) }));
   const titleColor = phase === 'stealing' ? (team(steal)?.color ?? R.ink) : phase === 'whoGot' ? R.ink : color;
   const timer = phase === 'performing' ? <ClockChalkTimer clock={ticks} leftAt={leftAt} totalMs={run.turnMs} /> : phase === 'stealing' ? <ClockChalkTimer clock={ticks} leftAt={leftAt} totalMs={15_000} /> : null;
 

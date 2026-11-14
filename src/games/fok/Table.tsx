@@ -119,9 +119,10 @@ export function GroupRow({ board, slot, who, missed, line, onPress }: { board: B
 const TILE_FONT = u(10.5);
 
 /** The boxes still on the table, four to a row. */
-export function Tiles({ board, order, picked, onTap, width, disabled }: { board: Board; order: number[]; picked: number[]; onTap?: (t: number) => void; width: number; disabled?: boolean }) {
+export function Tiles({ board, order, picked, onTap, width, disabled, maxH }: { board: Board; order: number[]; picked: number[]; onTap?: (t: number) => void; width: number; disabled?: boolean; /** The tallest a box may be, so the board fits the screen. */ maxH?: number }) {
   const gap = u(6);
   const w = (width - gap * 3) / 4;
+  const h = Math.min(w * 1.08, maxH ?? Infinity);
   return (
     <View style={[s.grid, { gap }]}>
       {order.map((t) => {
@@ -131,7 +132,8 @@ export function Tiles({ board, order, picked, onTap, width, disabled }: { board:
         // Words never break in the middle: the longest word sets the size (adjustsFontSizeToFit is native only).
         const longest = Math.max(...label.split(/[\s-]+/).map((x) => x.length));
         const base = TILE_FONT * Math.min(1.5, Math.max(1, w / u(78)));
-        const size = Math.max(base * 0.5, Math.min(base, (w - u(9)) / (longest * 0.6)));
+        // ...and a lower box takes a smaller size, so 3-4 lines still fit inside it.
+        const size = Math.max(base * 0.5, Math.min(base, (w - u(9)) / (longest * 0.6), (h - u(12)) / (3 * 1.2)));
         return (
           <Pressable
             key={t}
@@ -140,10 +142,10 @@ export function Tiles({ board, order, picked, onTap, width, disabled }: { board:
             accessibilityRole="button"
             accessibilityState={{ selected: on }}
             accessibilityLabel={label}
-            style={[s.tile, { width: w, height: w * 1.08 }, on ? s.tileOn : null]}>
+            style={[s.tile, { width: w, height: h }, on ? s.tileOn : null]}>
             <Text style={[s.pip, { top: u(2), left: u(4) }]}>✚</Text>
             <Text style={[s.pip, { bottom: u(2), right: u(4), transform: [{ rotate: '180deg' }] }]}>✚</Text>
-            <Text style={[s.tileT, { fontSize: size, lineHeight: size * 1.2 }]} numberOfLines={4} adjustsFontSizeToFit minimumFontScale={0.72}>
+            <Text style={[s.tileT, { fontSize: size, lineHeight: size * 1.2 }]} numberOfLines={4} adjustsFontSizeToFit minimumFontScale={0.5}>
               {label}
             </Text>
           </Pressable>

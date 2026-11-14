@@ -24,6 +24,9 @@ export function BoardView({ board, run, top, onSubmit, onShuffle, hint, tip = tr
   const [box, setBox] = useState(0);
   const W = Math.min(box || Math.min(width, 430) - u(32), 620);
   const [picked, setPicked] = useState<number[]>([]);
+  const [room, setRoom] = useState(0);
+  const rows = Math.max(1, Math.ceil(run.order.length / 4));
+  const tileH = room ? Math.max(u(44), (room - u(48) - u(8) - u(6) * (rows - 1)) / rows) : undefined;
   const [stamp, setStamp] = useState<{ text: string; tone: 'red' | 'gold'; n: number } | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => () => void (timer.current && clearTimeout(timer.current)), []);
@@ -57,12 +60,16 @@ export function BoardView({ board, run, top, onSubmit, onShuffle, hint, tip = tr
       {run.found.map((slot) => (
         <GroupRow key={slot} board={board} slot={slot} who={who?.[slot]} />
       ))}
-      <View style={{ width: W, alignSelf: 'center' }}>
-        <Tiles board={board} order={run.order} picked={live} onTap={locked ? undefined : tap} width={W} />
-      </View>
-      <View style={{ flex: 1, minHeight: u(64), justifyContent: 'center', alignItems: 'center', gap: u(8) }}>
-        {stamp ? <Stamp key={stamp.n} text={stamp.text} tone={stamp.tone} /> : topic ? <Note>{tr('Hint: one group is “{topic}”', { topic })}</Note> : <Note>{tip}</Note>}
-        {extra}
+      {/* The boxes take the height that is left (Yazan 2026-11-15): on a short screen or with the rivals' row they get
+          lower, so the buttons stay pinned at the bottom and never fall under the phone's own buttons. */}
+      <View style={{ flex: 1, minHeight: 0, gap: u(8) }} onLayout={(e) => setRoom(e.nativeEvent.layout.height)}>
+        <View style={{ width: W, alignSelf: 'center' }}>
+          <Tiles board={board} order={run.order} picked={live} onTap={locked ? undefined : tap} width={W} maxH={tileH} />
+        </View>
+        <View style={{ flex: 1, minHeight: u(40), justifyContent: 'center', alignItems: 'center', gap: u(8) }}>
+          {stamp ? <Stamp key={stamp.n} text={stamp.text} tone={stamp.tone} /> : topic ? <Note>{tr('Hint: one group is “{topic}”', { topic })}</Note> : <Note>{tip}</Note>}
+          {extra}
+        </View>
       </View>
       <Bar>
         <TableBtn label={tr('Shuffle')} onPress={onShuffle} disabled={locked} />

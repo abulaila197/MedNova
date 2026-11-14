@@ -237,17 +237,20 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   }
 
   return (
-    <ImposterScreen round={r.index + 1} rounds={s.config?.rounds ?? 1} category={ph.kind === 'roundResult' || paused ? null : r.pair.category} onPause={pause} bottom={bottom}>
+    <ImposterScreen round={r.index + 1} rounds={s.config?.rounds ?? 1} category={ph.kind === 'roundResult' || paused ? null : r.pair.category} onPause={pause}
+      bottom={bottom}
+      layer={
+        <PauseMenu
+          open={paused}
+          mode="offline"
+          onResume={() => {
+            unhide();
+            resume();
+          }}
+          onQuit={onQuit}
+        />
+      }>
       {body}
-      <PauseMenu
-        open={paused}
-        mode="offline"
-        onResume={() => {
-          unhide();
-          resume();
-        }}
-        onQuit={onQuit}
-      />
     </ImposterScreen>
   );
 }

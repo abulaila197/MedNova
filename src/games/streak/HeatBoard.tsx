@@ -1,7 +1,7 @@
 import { COIN, CoinLabel, spoken } from '@/components/CoinLabel';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useState, type ReactNode } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { MAX_FONT_SCALE, Text } from '@/components/AppText';
 import Animated, {
   FadeIn, FadeInDown, useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming,
@@ -102,6 +102,9 @@ export function HeatBoard(p: BoardProps) {
               <Text style={[s.hideT, { color: t.mute }]}>{tr('Paused. The clock is stopped.')}</Text>
             </View>
           ) : p.dock ? null : (
+            // The question and its choices scroll when long; the helpers and the note stay pinned at the bottom
+            // (Yazan 2026-11-15: they were pushed off the screen in Vs rivals).
+            <ScrollView style={s.scroll} contentContainerStyle={{ paddingBottom: u(6) }} showsVerticalScrollIndicator={false}>
             <Animated.View key={p.q.id} entering={FadeIn.duration(180)} style={{ gap: u(10) }}>
               <Text style={[s.q, { color: t.fg }]}>{p.q.stem}</Text>
               {(
@@ -132,9 +135,10 @@ export function HeatBoard(p: BoardProps) {
                 <Animated.Text maxFontSizeMultiplier={MAX_FONT_SCALE} entering={FadeIn.delay(350)} style={[s.expl, { color: t.mute }]}>{p.q.explanation}</Animated.Text>
               ) : null}
             </Animated.View>
+            </ScrollView>
           )}
 
-          <View style={{ flex: 1 }} />
+          {p.hidden || p.dock ? <View style={{ flex: 1 }} /> : null}
           {p.offer && !p.dock ? (
             <Animated.View entering={FadeIn}>
               <Pressable onPress={p.offer.onPress} style={[s.offer, { borderColor: t.accent }]} accessibilityRole="button" accessibilityLabel={spoken(p.offer.label)}>
@@ -296,6 +300,7 @@ function Helpers({ onHelper, usable, disabled, noTime }: { onHelper: (k: HelperK
 }
 
 const s = StyleSheet.create({
+  scroll: { flex: 1, marginBottom: u(4) },
   body: { flex: 1, flexDirection: 'row', gap: u(10) },
   col: { width: u(30), alignItems: 'center', gap: u(5) },
   streakN: { fontFamily: F.display, fontSize: u(22), lineHeight: u(25) },

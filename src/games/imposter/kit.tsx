@@ -19,10 +19,10 @@ export const IC = { good: '#3fc58a', bad: '#ff5c6c', warn: '#f0b54a' };
 export type Person = { id: string; name: string; color?: string };
 
 /** The game page: round counter and category on top, the pause button, then the phase's own body. */
-export function ImposterScreen({ round, rounds, category, onPause, children, bottom, over }: { round: number; rounds: number; category?: string | null; onPause: () => void; children: ReactNode; bottom?: ReactNode; over?: ReactNode }) {
+export function ImposterScreen({ round, rounds, category, onPause, children, bottom, over, layer }: { round: number; rounds: number; category?: string | null; onPause: () => void; children: ReactNode; bottom?: ReactNode; over?: ReactNode; layer?: ReactNode }) {
   const t = useTheme();
   return (
-    <GameScreen scroll bottom={bottom} top={over}>
+    <GameScreen scroll bottom={bottom} top={over} layer={layer}>
       <View style={s.top}>
         <View style={{ flex: 1, minWidth: 0 }}>
           <Kick>{tr('Round {round} of {rounds}', { round, rounds })}</Kick>

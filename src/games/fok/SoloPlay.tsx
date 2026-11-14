@@ -187,11 +187,11 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
 }
 
 /** The end of a board: every group with its link (tap one for each box's note), stars and points, then on. */
-export function BoardEnd({ board, run, kicker, title, line, next, onNext, who, wait, hearts = true }: { board: Board; run: BoardRun; kicker: string; title: string; line: string; next?: string; onNext?: () => void; who?: Record<number, string>; wait?: string; hearts?: boolean }) {
+export function BoardEnd({ board, run, kicker, title, line, next, onNext, who, wait, hearts = true, under = 0 }: { board: Board; run: BoardRun; kicker: string; title: string; line: string; next?: string; onNext?: () => void; who?: Record<number, string>; wait?: string; hearts?: boolean; /** Height of a card docked over the bottom (Vs rivals): the board ends above it. */ under?: number }) {
   const [open, setOpen] = useState<number | null>(null);
   const order = [...run.found, ...[0, 1, 2, 3].filter((x) => !run.found.includes(x))];
   return (
-    <View style={{ flex: 1, gap: u(10) }}>
+    <View style={{ flex: 1, gap: u(10), paddingBottom: under }}>
       <TopLine kicker={kicker} right={hearts ? <Hearts n={run.hearts} /> : undefined} title={title} />
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ gap: u(8), paddingBottom: u(8) }} showsVerticalScrollIndicator={false}>
         {order.map((slot) => (

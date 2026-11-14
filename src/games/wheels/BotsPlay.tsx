@@ -189,10 +189,9 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
   else if (game.phase === 'bossOver') body = <BossOver g={game} seats={seats} board={board} />;
 
   return (
-    <VelvetScreen scroll={game.phase === 'turnOver' || game.phase === 'bossOver'}>
+    <VelvetScreen scroll={game.phase === 'turnOver' || game.phase === 'bossOver'} layer={extras}>
       {waitBar}
       {body}
-      {extras}
     </VelvetScreen>
   );
 }

@@ -34,7 +34,9 @@ export default function Run() {
   // added by Yazan 2026-11-15). A Vs rivals match ends.
   const onQuit = useCallback(async () => {
     if (play && play.mode !== 'solo' && play.mode !== 'offline') await engine.recorder.discard(play.id);
-    router.replace(`/play/${game}`);
+    // Back to the game's page already under this one, never a second copy of it: with a copy on top, its "‹ Games"
+    // led to the same page again (Yazan 2026-11-15).
+    router.dismissTo(`/play/${game}`);
   }, [play, game]);
 
   if (!def || play === null) return <Redirect href="/games" />;

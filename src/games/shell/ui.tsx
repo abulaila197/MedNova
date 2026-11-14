@@ -22,7 +22,9 @@ import { tr } from '@/i18n';
  * Android tablets (Yazan 2026-11-12): the same stacked layout as the phone, one piece under the other, spread over
  * the whole width; `bottom` (Start and the like) stays phone-wide in the middle.
  */
-export function GameScreen({ children, scroll = true, top, under, side, bodyStyle, bottom }: { children: ReactNode; scroll?: boolean; top?: ReactNode; under?: ReactNode; side?: ReactNode; bodyStyle?: StyleProp<ViewStyle>; bottom?: ReactNode }) {
+/** `layer`: drawn over the whole game area, after the body (pause menus), so a scrolling page can't trap it inside its
+ * scroll content (Imposter pause pop-up, Yazan 2026-11-15). */
+export function GameScreen({ children, scroll = true, top, under, side, bodyStyle, bottom, layer }: { children: ReactNode; scroll?: boolean; top?: ReactNode; under?: ReactNode; side?: ReactNode; bodyStyle?: StyleProp<ViewStyle>; bottom?: ReactNode; layer?: ReactNode }) {
   if (TABLET && bottom) bottom = <View style={s.tBottom}>{bottom}</View>;
   return (
     <Screen dock={false} glow={under ? false : 1} game under={under} side={side} wide={TABLET}>
@@ -37,6 +39,7 @@ export function GameScreen({ children, scroll = true, top, under, side, bodyStyl
       ) : (
         <View style={[s.body, bodyStyle, { flex: 1 }]}>{children}</View>
       )}
+      {layer}
     </Screen>
   );
 }
@@ -131,13 +134,13 @@ export function Chips<V extends string | number>({ choices, value, onChange, spa
                   onPress={tapped((e) => onArrow?.(c.value, e?.nativeEvent?.pageY ?? 0))}
                   hitSlop={u(8)}
                   accessibilityRole="button"
-                  accessibilityLabel={tr('Pick {label} fields', { label: c.label })}
+                  accessibilityLabel={tr('Pick {label} fields', { label: tr(c.label) })}
                   style={[s.chipArrow, { borderColor: on ? t.accent : t.chipLine }]}>
                   <Text style={[s.chipArrowT, { color: on ? t.accent : t.dim }]}>▾</Text>
                 </Pressable>
               </View>
             ) : (
-              <Text style={[s.chipT, { color: on ? t.accent : t.fg }]}>{c.label}</Text>
+              <Text style={[s.chipT, { color: on ? t.accent : t.fg }]}>{tr(c.label)}</Text>
             )}
             {on && ticks ? <Text style={[s.chipN, { color: t.accent }]}>{ticks}</Text> : c.note ? <Text style={[s.chipN, { color: t.dim }]}>{tr(c.note)}</Text> : null}
             {sparks?.(c.value) != null ? (
