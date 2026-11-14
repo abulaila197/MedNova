@@ -7,21 +7,37 @@ import { AppState } from 'react-native';
 
 import { useApp } from '@/state/app';
 
-export function usePauseHide(onPause: () => void, onResume?: () => void) {
+/**
+ * `backResumes` (Vs rivals, Yazan 2026-11-15): leaving the app stops the match without the pause menu, and coming
+ * back carries on by itself. A page opened over the game or the side menu still pauses with the menu as before.
+ */
+export function usePauseHide(onPause: (why: 'away' | 'page') => void, onResume?: () => void, { backResumes = false }: { backResumes?: boolean } = {}) {
   const [hidden, setHidden] = useState(false);
   const hiddenRef = useRef(false);
-  const pause = useEffectEvent(() => onPause());
+  const awayRef = useRef(false);
+  const pause = useEffectEvent((why: 'away' | 'page') => onPause(why));
+  const back = useEffectEvent(() => {
+    hiddenRef.current = false;
+    setHidden(false);
+    onResume?.();
+  });
   useEffect(() => {
     const sub = AppState.addEventListener('change', (s) => {
       // Back in the app: arm again, so every later trip away pauses too (Yazan 2026-10-13).
       if (s === 'active') {
+        if (backResumes && awayRef.current) {
+          awayRef.current = false;
+          back();
+          return;
+        }
         hiddenRef.current = false;
         return;
       }
       if (hiddenRef.current) return;
       hiddenRef.current = true;
+      awayRef.current = true;
       setHidden(true);
-      pause();
+      pause('away');
     });
     return () => sub.remove();
   }, []);
@@ -34,7 +50,7 @@ export function usePauseHide(onPause: () => void, onResume?: () => void) {
         if (!mounted || hiddenRef.current) return;
         hiddenRef.current = true;
         setHidden(true);
-        pause();
+        pause('page');
       }, 0);
     });
     return () => {
@@ -49,12 +65,13 @@ export function usePauseHide(onPause: () => void, onResume?: () => void) {
         if (!a.menuOpen || b.menuOpen || hiddenRef.current) return;
         hiddenRef.current = true;
         setHidden(true);
-        pause();
+        pause('page');
       }),
     [],
   );
   const resume = () => {
     hiddenRef.current = false;
+    awayRef.current = false;
     setHidden(false);
     onResume?.();
   };

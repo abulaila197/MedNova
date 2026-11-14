@@ -87,7 +87,9 @@ export function useBotRace<R extends Race = BotRace>({ play, onFinish, onQuit, r
   useEffect(() => () => resetRoomTalk(room), [room]);
 
   // Pause: the menu, the app going away, or a page opened over the match. Match time stops; so do the rivals.
-  const { hidden, resume } = usePauseHide(() => setMenu(true));
+  // Leaving the app stops the match and coming back carries on by itself (Yazan 2026-11-15); a page opened over it
+  // or the side menu opens the pause menu.
+  const { hidden, resume } = usePauseHide((why) => why === 'page' && setMenu(true), undefined, { backResumes: true });
   const paused = menu || hidden;
   const closeMenu = () => {
     setMenu(false);
@@ -100,17 +102,27 @@ export function useBotRace<R extends Race = BotRace>({ play, onFinish, onQuit, r
     if (!running) return;
     const c = clock.current;
     c.since = Date.now();
+    // The clock widgets follow the store every tick; the whole screen redraws at most 4 times a second, or at once
+    // when the match moves on (2026-11-15: ten full redraws a second froze Streak Master on phones).
+    let drawn = 0;
+    let sig = '';
     const id = setInterval(() => {
       const n = now();
       store.set(n, n);
-      setT(n);
+      const x = race ? race.state(n) : null;
+      const k = x ? `${x.phase}:${x.index}:${x.players.map((p) => `${p.done ? 1 : 0}${p.solved ? 1 : 0}${p.tries}`).join(',')}` : '';
+      if (k !== sig || n - drawn >= 250) {
+        sig = k;
+        drawn = n;
+        setT(n);
+      }
     }, fine ? 100 : 250);
     return () => {
       clearInterval(id);
       c.base += Date.now() - (c.since ?? Date.now());
       c.since = null;
     };
-  }, [running, fine, now, store]);
+  }, [running, fine, now, store, race]);
 
   const st = race ? race.state(t) : null;
   useRaceRevealSound(st, YOU);

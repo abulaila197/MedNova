@@ -11,7 +11,7 @@ import { BEIGE } from '@/theme/beige';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
-import { KeyboardLift } from '../shell/KeyboardLift';
+import { KeyboardLift, useKeyboardOpen } from '../shell/KeyboardLift';
 import { GameScreen, HelperButton, Kick, RoundBtn } from '../shell/ui';
 import { clock } from '@/games/engine/clock';
 import { RD, search, type Riddle } from './core';
@@ -81,6 +81,9 @@ export function RiddleBoard(p: BoardProps) {
   const tilt = tiltOf(p.riddle.id);
   const prompt = tr(`Identify the medical ${p.riddle.kind}`);
   const warn = p.countdown && p.clockMs <= 10_000;
+  // While typing, the rivals' row steps aside and the picture may shrink further, so the board always fits above the
+  // keyboard (2026-11-15: in Vs rivals it ran past the screen's bottom).
+  const typing = useKeyboardOpen();
 
   return (
     <GameScreen scroll={false}>
@@ -92,9 +95,9 @@ export function RiddleBoard(p: BoardProps) {
           </View>
           <RoundBtn label={tr('Pause')} glyph="❚❚" onPress={p.onPause} />
         </View>
-        {p.live}
+        {typing ? null : p.live}
 
-        <View style={s.stage} onLayout={onStage}>
+        <View style={[s.stage, typing || p.dock ? { minHeight: u(90) } : null]} onLayout={onStage}>
           {pic ? (
             <View style={[s.board, { backgroundColor: BEIGE?.board ?? t.panel, borderColor: BEIGE?.boardLine ?? t.panelLine }]}>
               <View style={[s.print, BEIGE ? { backgroundColor: BEIGE.paper } : null, { transform: [{ rotate: `${tilt}deg` }] }]}>

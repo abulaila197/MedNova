@@ -24,7 +24,7 @@ import { stickerById, STICKERS } from './stickers';
 import { TEXT_PACKS } from './textStickers';
 import { genderFor, sendTalk, toggleMute, useTalk, useTalkRoom, type TalkMsg } from './talk';
 import { VOICE, voiceById, voiceLine } from './voice';
-import { tr } from '@/i18n';
+import { isAr, tr } from '@/i18n';
 
 export type Me = { id: string; name: string; face: string };
 
@@ -137,7 +137,7 @@ export function TalkPanel({ room, me, onSent, maxH }: { room: string; me: Me; on
           {VOICE.map((v) => (
             <Pressable key={v.id} disabled={cooling} onPress={() => send('voice', v.id)} style={[s.vl, { borderColor: L.line, backgroundColor: L.panel }]} accessibilityRole="button" accessibilityLabel={tr('Say: {line}', { line: voiceLine(v.id, myVoice) })}>
               <Text style={[s.vlI, { color: L.mute }]}>▶</Text>
-              <Text style={[s.vlT, { color: L.fg, fontFamily: L.semi }]} numberOfLines={2}>{voiceLine(v.id, myVoice)}</Text>
+              <Text style={[s.vlT, { color: L.fg, fontFamily: L.semi }]} numberOfLines={4}>{voiceLine(v.id, myVoice)}</Text>
             </Pressable>
           ))}
         </>, cooling ? s.cool : undefined)
@@ -159,13 +159,14 @@ export function TalkBubble({ m, face, size = 60 }: { m: TalkMsg; face?: boolean;
       {st ? (
         <Image source={st.src} style={{ width: u(st.wide ? size * 1.7 : size), height: u(size) }} contentFit="contain" accessibilityLabel={`${m.name}: ${st.label}`} />
       ) : v ? (
-        <View style={[s.vb, { backgroundColor: L.raised }]}>
+        <View style={[s.vb, LANG_DIR, { backgroundColor: L.raised }]}>
           <Text style={s.vbI}>🔊</Text>
-          <Text style={[s.vbT, { color: L.fg, fontFamily: L.semi }]} numberOfLines={2}>{voiceLine(v.id, genderFor(m.face, m.user_id === myId))}</Text>
+          <Text style={[s.vbT, { color: L.fg, fontFamily: L.semi }]} numberOfLines={4}>{voiceLine(v.id, genderFor(m.face, m.user_id === myId))}</Text>
         </View>
       ) : m.kind === 'line' ? (
-        <View style={[s.vb, { backgroundColor: L.raised }]}>
-          <Text style={[s.vbT, s.line, { color: L.fg, fontFamily: L.semi }]} numberOfLines={2}>{m.item}</Text>
+        <View style={[s.vb, LANG_DIR, { backgroundColor: L.raised }]}>
+          {/* The whole line (2026-11-15: two lines cut rival chat after a few words). */}
+          <Text style={[s.vbT, s.line, { color: L.fg, fontFamily: L.semi }]} numberOfLines={6}>{m.item}</Text>
         </View>
       ) : m.kind === 'guess' ? (
         <View style={[s.vb, { backgroundColor: L.raised }]} accessibilityLabel={tr('{name} guessed {item}, wrong', { name: m.name, item: m.item })}>
@@ -182,6 +183,8 @@ export function TalkBubble({ m, face, size = 60 }: { m: TalkMsg; face?: boolean;
 }
 
 const BTN = 46;
+/** Text inside the chat (tray, bubbles) keeps the app's own direction inside the left-to-right overlay. */
+const LANG_DIR = { direction: isAr ? 'rtl' : 'ltr' } as const;
 /** How far under the top of its area the button starts. */
 const START_DROP = 58;
 
@@ -256,7 +259,9 @@ export function FloatingTalk({ room, me }: { room: string; me: Me }) {
 
   return (
     <View
-      style={[StyleSheet.absoluteFill, { zIndex: 25 }]}
+      // Placed left to right in both languages (2026-11-15): in Arabic the button's left edge flipped to the right
+      // and its slide pushed it off the screen, so the chat button was missing. Its contents stay in the app's language.
+      style={[StyleSheet.absoluteFill, { zIndex: 25, direction: 'ltr' }]}
       pointerEvents="box-none"
       onLayout={(e) => {
         const hh = e.nativeEvent.layout.height;
@@ -274,7 +279,7 @@ export function FloatingTalk({ room, me }: { room: string; me: Me }) {
           ))}
         </View>
         {open ? (
-          <Animated.View entering={FadeIn.duration(160)} style={[s.fan, { backgroundColor: L.raised, borderColor: L.line, maxHeight: fan.room }, fan.up ? { bottom: u(BTN + 8) } : { top: size + u(8) }, side === 'right' ? { right: 0 } : { left: 0 }]}>
+          <Animated.View entering={FadeIn.duration(160)} style={[s.fan, LANG_DIR, { backgroundColor: L.raised, borderColor: L.line, maxHeight: fan.room }, fan.up ? { bottom: u(BTN + 8) } : { top: size + u(8) }, side === 'right' ? { right: 0 } : { left: 0 }]}>
             <TalkPanel room={room} me={me} onSent={() => setOpen(false)} maxH={fan.room - u(20)} />
           </Animated.View>
         ) : null}
@@ -319,11 +324,11 @@ const s = StyleSheet.create({
   vb: { flexDirection: 'row', alignItems: 'center', gap: u(5), backgroundColor: G.raised, borderWidth: 1, borderColor: 'rgba(255,255,255,0.14)', borderRadius: u(14), paddingVertical: u(6), paddingHorizontal: u(10), boxShadow: '0px 8px 16px rgba(0,0,0,0.35)' },
   vbI: { fontSize: u(9) },
   vbT: { fontFamily: F.bodySemi, fontSize: u(11), color: G.fg, flexShrink: 1 },
-  line: { maxWidth: u(160) },
+  line: { maxWidth: u(210) },
   guess: { color: '#f87171', textDecorationLine: 'line-through', maxWidth: u(150) },
   bf: { position: 'absolute', right: u(-4), bottom: u(-4), borderRadius: u(10), borderWidth: 1.5, borderColor: G.page },
   anchor: { position: 'absolute', left: 0, top: 0, zIndex: 25 },
-  pops: { position: 'absolute', bottom: 0, width: u(180), gap: u(4) },
+  pops: { position: 'absolute', bottom: 0, width: u(240), gap: u(4) },
   fan: { position: 'absolute', width: u(250), backgroundColor: G.raised, borderWidth: 1, borderColor: G.line, borderRadius: u(16), padding: u(10), boxShadow: '0px 14px 30px rgba(0,0,0,0.45)' },
   fbtn: { backgroundColor: G.raised, borderWidth: 1, borderColor: 'rgba(255,255,255,0.18)', alignItems: 'center', justifyContent: 'center', boxShadow: '0px 8px 18px rgba(0,0,0,0.45)' },
   note: { position: 'absolute', left: u(20), right: u(20), bottom: u(30), textAlign: 'center', fontFamily: F.bodySemi, fontSize: u(10), color: G.fg, backgroundColor: G.raised, borderRadius: u(10), paddingVertical: u(7), paddingHorizontal: u(10), overflow: 'hidden', zIndex: 26 },

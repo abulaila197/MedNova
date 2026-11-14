@@ -307,20 +307,17 @@ function Picker({ kind, initial, onCancel, onSubmit }: { kind: keyof typeof PICK
             </View>
           ))}
         </View>
-        {typing ? (
-          <>
-            {list}
-            {box}
-          </>
-        ) : (
-          <>
-            {box}
-            {list}
-            <View style={{ flexDirection: 'row', gap: u(8) }}>
-              <Btn ghost label={tr('Back')} onPress={onCancel} style={{ flex: 1 }} />
-              <Btn label={p.go} onPress={() => onSubmit(chosen)} disabled={!chosen.length} style={{ flex: 2.4 }} />
-            </View>
-          </>
+        {/* The box and the list never change places in the tree (2026-11-15): swapping them remounted the box on
+            focus, which closed the keyboard at once and you couldn't type. While typing they only flip visually. */}
+        <View style={{ flex: 1, gap: u(12), flexDirection: typing ? 'column-reverse' : 'column' }}>
+          {box}
+          {list}
+        </View>
+        {typing ? null : (
+          <View style={{ flexDirection: 'row', gap: u(8) }}>
+            <Btn ghost label={tr('Back')} onPress={onCancel} style={{ flex: 1 }} />
+            <Btn label={p.go} onPress={() => onSubmit(chosen)} disabled={!chosen.length} style={{ flex: 2.4 }} />
+          </View>
         )}
       </KeyboardLift>
     </NoirScreen>

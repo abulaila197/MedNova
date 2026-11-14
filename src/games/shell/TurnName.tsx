@@ -20,6 +20,14 @@ export function TurnName({ name, color, before, after }: { name: string; color?:
     name = after.slice(2);
     after = '';
   }
+  // Arabic, someone else's turn (Yazan 2026-11-15): "دور Manon", never "Manon، دورك"; دورك is only for your own turn.
+  if (isAr && after) {
+    const m = after.match(/^، (يلا )?دورك/);
+    if (m) {
+      before = `${before ?? ''}${m[1] ?? ''}دور `;
+      after = after.slice(m[0].length);
+    }
+  }
   return (
     <>
       {before ?? ''}

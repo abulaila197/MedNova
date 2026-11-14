@@ -21,7 +21,8 @@ export function RaceReveal({ label, answer, players, me, how, next }: { label: s
   return (
     <View style={[s.card, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
       <Kick color={t.accent}>{label}</Kick>
-      <Text style={[s.ans, { color: t.white }]}>{answer}</Text>
+      {/* Long names shrink to fit two lines, so the card never runs past the screen (2026-11-15). */}
+      <Text style={[s.ans, { color: t.white }]} numberOfLines={2} adjustsFontSizeToFit minimumFontScale={0.6}>{answer}</Text>
       <View style={{ gap: u(5) }}>
         {rows.map((p) => (
           <View key={p.user_id} style={s.row}>

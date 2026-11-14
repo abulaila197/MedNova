@@ -1,42 +1,45 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
-import { Keyboard, Platform, StyleSheet, View, type KeyboardEvent, type StyleProp, type ViewStyle } from 'react-native';
+import { Keyboard, Platform, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
+import Animated, { useAnimatedKeyboard, useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
+
+import { useScreen } from '@/theme/scale';
 
 /**
  * Keeps the bottom of a game board (the answer box) just above the on-screen keyboard (Yazan 2026-11-13: the player
- * must see what they type). SDK 57 Android apps are edge-to-edge, so the window no longer shrinks for the keyboard
- * and RN's KeyboardAvoidingView lifted too little on some phones. This measures where the wrapper's bottom sits in
- * the window and where the keyboard's top is, and lifts the content by exactly the overlap. If the window did
- * shrink (older Android), the overlap is 0 and nothing moves twice. With the keyboard closed it is a plain view.
- * `behavior` is kept for old callers; both lift the same way now.
+ * must see what they type). 2026-11-15: the keyboard's height now comes from Reanimated, which reads it from the
+ * window insets on Android (edge-to-edge apps never shrink their window, and the old screenY maths left the box under
+ * the keyboard on Yazan's phone). The wrapper's bottom is measured once; the content lifts by the overlap, on the
+ * UI thread, following the keyboard as it slides. With the keyboard closed it is a plain view.
+ * `behavior` is kept for old callers.
  */
 export function KeyboardLift({ style, children }: { style?: StyleProp<ViewStyle>; behavior?: 'padding' | 'height'; children: ReactNode }) {
-  const [ref, by] = useKeyboardLift();
+  const ref = useRef<View>(null);
+  const kb = useAnimatedKeyboard();
+  const { height: H } = useScreen();
+  // How far the wrapper's bottom sits above the screen's bottom (the dock, the phone's own buttons).
+  const below = useSharedValue(0);
+  const measure = () => ref.current?.measureInWindow((_x, y, _w, h) => (below.value = Math.max(0, H - (y + h))));
+  const lift = useAnimatedStyle(() => ({ marginBottom: Math.max(0, kb.height.value - below.value) }));
+  if (Platform.OS === 'web') return <View style={[s.fill, style]}>{children}</View>;
   return (
-    <View ref={ref} style={s.fill} collapsable={false}>
-      <View style={[style ?? s.fill, by ? { marginBottom: by } : null]}>{children}</View>
+    <View ref={ref} style={s.fill} collapsable={false} onLayout={measure}>
+      <Animated.View style={[style ?? s.fill, lift]}>{children}</Animated.View>
     </View>
   );
 }
 
-/** How far a view must lift so its bottom clears the keyboard. Attach `ref` to the view that fills the board. */
-export function useKeyboardLift() {
-  const ref = useRef<View>(null);
-  const [by, setBy] = useState(0);
+/** True while the on-screen keyboard is open (to tuck away what isn't needed while typing). */
+export function useKeyboardOpen() {
+  const [open, setOpen] = useState(false);
   useEffect(() => {
-    if (Platform.OS === 'web') return;
     const ios = Platform.OS === 'ios';
-    const place = (e: KeyboardEvent) => {
-      const kbTop = e.endCoordinates.screenY;
-      ref.current?.measureInWindow((_x, y, _w, h) => setBy(Math.max(0, Math.round(y + h - kbTop))));
-    };
     const subs = [
-      Keyboard.addListener(ios ? 'keyboardWillShow' : 'keyboardDidShow', place),
-      Keyboard.addListener(ios ? 'keyboardWillChangeFrame' : 'keyboardDidChangeFrame', place),
-      Keyboard.addListener(ios ? 'keyboardWillHide' : 'keyboardDidHide', () => setBy(0)),
+      Keyboard.addListener(ios ? 'keyboardWillShow' : 'keyboardDidShow', () => setOpen(true)),
+      Keyboard.addListener(ios ? 'keyboardWillHide' : 'keyboardDidHide', () => setOpen(false)),
     ];
     return () => subs.forEach((x) => x.remove());
   }, []);
-  return [ref, by] as const;
+  return open;
 }
 
 const s = StyleSheet.create({ fill: { flex: 1 } });

@@ -30,9 +30,10 @@ export default function Run() {
     },
     [def, play, game],
   );
-  // Solo keeps its bookmark (rule 7); multiplayer ends the game.
+  // Solo and Pass the phone keep their bookmark, so the game's page offers to resume it (rule 7; Pass the phone
+  // added by Yazan 2026-11-15). A Vs rivals match ends.
   const onQuit = useCallback(async () => {
-    if (play && play.mode !== 'solo') await engine.recorder.discard(play.id);
+    if (play && play.mode !== 'solo' && play.mode !== 'offline') await engine.recorder.discard(play.id);
     router.replace(`/play/${game}`);
   }, [play, game]);
 
