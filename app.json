@@ -117,7 +117,22 @@
           "initialOrientation": "PORTRAIT_UP"
         }
       ],
-      ["expo-localization", { "supportsRTL": true, "supportedLocales": ["en", "ar"] }]
+      [
+        "expo-localization",
+        {
+          "supportsRTL": true,
+          "supportedLocales": [
+            "en",
+            "ar"
+          ]
+        }
+      ],
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps.212035954830-ns492cg9k2579g1snl1u8oq8kh8fut92"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,
