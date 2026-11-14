@@ -17,6 +17,9 @@
       "usesAppleSignIn": true,
       "config": {
         "usesNonExemptEncryption": false
+      },
+      "infoPlist": {
+        "NSMotionUsageDescription": "MedNova uses motion to detect phone tilts in the Tilt & Tell game."
       }
     },
     "android": {
