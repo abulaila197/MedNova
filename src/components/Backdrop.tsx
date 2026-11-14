@@ -3,7 +3,6 @@ import { StyleSheet, View } from "react-native";
 import Svg, { Defs, Ellipse, RadialGradient, Stop } from "react-native-svg";
 
 import { Grain } from "@/components/Grain";
-import { MedSymbols } from "@/components/MedSymbols";
 import { BAKED_ART } from "@/features/start/baked";
 import { useTheme } from "@/state/app";
 import { useScreen } from "@/theme/scale";
@@ -32,6 +31,10 @@ const SPOTS = [
 ];
 const STRENGTH = 0.55;
 const PAGE = require("@/assets/images/backdrop/page.webp");
+// The same background with the still medical symbols baked in (scripts/bake-backdrop/bake-symbols.mjs, Yazan
+// 2026-11-15, lag): one plain picture instead of ~40 live vector symbols. A tablet shape so they never stretch.
+const PAGE_SYM = require("@/assets/images/backdrop/page-symbols-phone.webp");
+const PAGE_SYM_TAB = require("@/assets/images/backdrop/page-symbols-tablet.webp");
 
 /**
  * Full-screen background, pinned to the screen's top (pages, header) or bottom (the dock). `symbols` adds the still
@@ -49,7 +52,16 @@ export function Backdrop({ anchor = "top", symbols = false }: { anchor?: "top" |
         anchor === "top" ? { top: 0 } : { bottom: 0 },
       ]}
     >
-      {BAKED_ART ? (
+      {symbols ? (
+        <Image
+          source={w / h > 0.6 ? PAGE_SYM_TAB : PAGE_SYM}
+          contentFit="cover"
+          contentPosition={anchor === "top" ? "top" : "bottom"}
+          transition={0}
+          accessibilityIgnoresInvertColors
+          style={StyleSheet.absoluteFill}
+        />
+      ) : BAKED_ART ? (
         // The navy and all three glows in one opaque picture (scripts/bake-backdrop/bake-page.py), stretched to the
         // screen: one plain image per backdrop instead of three big rotated see-through ones (2026-10-19, lag).
         <Image source={PAGE} contentFit="fill" transition={0} accessibilityIgnoresInvertColors style={StyleSheet.absoluteFill} />
@@ -81,7 +93,6 @@ export function Backdrop({ anchor = "top", symbols = false }: { anchor?: "top" |
           ))}
         </Svg>
       )}
-      {symbols && anchor === "top" ? <MedSymbols w={w} h={h} look="scatter" color="#a9c8ff" /> : null}
       <Grain />
     </View>
   );

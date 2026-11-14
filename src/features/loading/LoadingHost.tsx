@@ -155,7 +155,8 @@ function Run({ run }: { run: LoadRun }) {
     <View ref={host} collapsable={false} style={[StyleSheet.absoluteFill, s.host, { opacity: shown ? 1 : 0 }]}>
       <Animated.View style={[s.clip, outer]}>
         <Animated.View style={[s.page, { width: W, height: H }, inner]}>
-          <Animated.View style={[StyleSheet.absoluteFill, settleSt]}>
+          {/* While the doors open nothing inside the page moves, so Android draws it once as a picture and only scales that. */}
+          <Animated.View style={[StyleSheet.absoluteFill, settleSt]} renderToHardwareTextureAndroid={stage === 'doors'}>
             {/* Laid out only once its fonts are in: text measured in the stand-in font kept that size when the real font
                 drew, so titles lost letters ("The Para") or gained gaps (Yazan 2026-10-27). */}
             {split === null ? null : (
@@ -167,7 +168,7 @@ function Run({ run }: { run: LoadRun }) {
         </Animated.View>
       </Animated.View>
       {stage === 'doors' && run.shot ? (
-        <View style={StyleSheet.absoluteFill} pointerEvents="none">
+        <View style={[StyleSheet.absoluteFill, s.ltr]} pointerEvents="none">
           {split === null ? null : (
             <>
               <Animated.View style={[s.door, { top: y, height: H - y }, botDoor]}>
@@ -182,7 +183,12 @@ function Run({ run }: { run: LoadRun }) {
           )}
         </View>
       ) : null}
-      {stage === 'out' ? <Animated.View pointerEvents="none" style={[s.line, { width: W, transformOrigin: 'left center', backgroundColor: col, boxShadow: `0 0 12px ${col}, 0 0 30px ${col}` }, lineSt]} /> : null}
+      {/* Always left to right (2026-11-15): in Arabic the line's left edge and grow point flipped, so it ran behind the page. */}
+      {stage === 'out' ? (
+        <View pointerEvents="none" style={[StyleSheet.absoluteFill, s.ltr]}>
+          <Animated.View style={[s.line, { width: W, transformOrigin: 'left center', backgroundColor: col, boxShadow: `0 0 12px ${col}, 0 0 30px ${col}` }, lineSt]} />
+        </View>
+      ) : null}
     </View>
   );
 }
@@ -199,4 +205,5 @@ const s = StyleSheet.create({
   door: { position: 'absolute', left: 0, right: 0, overflow: 'hidden' },
   shadow: { boxShadow: '0 8px 20px rgba(0,0,0,0.5)' },
   line: { position: 'absolute', left: 0, top: 0, height: 3 },
+  ltr: { direction: 'ltr' },
 });

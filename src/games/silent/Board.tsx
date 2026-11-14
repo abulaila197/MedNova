@@ -155,8 +155,12 @@ export function Board({ ref, color, width, erase, bg, enabled = true, ratio = 4 
     <GestureDetector gesture={pan}>
       <View onLayout={onLayout} style={[s.board, { aspectRatio: 1 / ratio, backgroundColor: bg }, style]} collapsable={false}>
         {children}
+        {/* Two canvases (2026-11-15, the line lagged behind the finger): a canvas redraws everything in it on any
+            change, so the finished lines sit in their own and each move only redraws the one live line. */}
         <Svg style={StyleSheet.absoluteFill} viewBox={`0 0 ${UNITS} ${UNITS * ratio}`} preserveAspectRatio="none">
           <Done strokes={strokes} bg={bg} />
+        </Svg>
+        <Svg style={StyleSheet.absoluteFill} viewBox={`0 0 ${UNITS} ${UNITS * ratio}`} preserveAspectRatio="none" pointerEvents="none">
           <LiveLine live={pad.live} bg={bg} />
         </Svg>
       </View>
@@ -171,8 +175,12 @@ export function Sketch({ strokes, live, bg, ratio, children, style }: { strokes:
       {children}
       <Svg style={StyleSheet.absoluteFill} viewBox={`0 0 ${UNITS} ${UNITS * ratio}`} preserveAspectRatio="none">
         <Done strokes={strokes} bg={bg} />
-        {live ? <LiveLine live={live} bg={bg} min={2} /> : null}
       </Svg>
+      {live ? (
+        <Svg style={StyleSheet.absoluteFill} viewBox={`0 0 ${UNITS} ${UNITS * ratio}`} preserveAspectRatio="none" pointerEvents="none">
+          <LiveLine live={live} bg={bg} min={2} />
+        </Svg>
+      ) : null}
     </View>
   );
 }

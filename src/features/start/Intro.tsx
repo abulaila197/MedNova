@@ -220,7 +220,8 @@ export function Intro({ w, h, onDone }: { w: number; h: number; onDone: () => vo
   const backdrop = useMemo(() => <Backdrop w={w} h={h} />, [w, h]);
   const burst = useMemo(() => <Burst w={w} h={h} />, [w, h]);
   return (
-    <View style={[StyleSheet.absoluteFill, { zIndex: 60 }]}>
+    // Never mirrored (Yazan 2026-11-15): star left of the wordmark and the same moves in Arabic.
+    <View style={[StyleSheet.absoluteFill, { zIndex: 60, direction: 'ltr' }]}>
       <Animated.View style={[StyleSheet.absoluteFill, stage]}>
         {backdrop}
         <View style={[StyleSheet.absoluteFill, { alignItems: 'center', justifyContent: 'center' }]}>
