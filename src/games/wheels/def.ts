@@ -77,9 +77,9 @@ export const wheelsOfChaos: GameDef = {
     {
       mode: 'bots',
       title: tr('Live on stage'),
-      blurb: tr('The full show against 1 to 3 rivals.'),
+      blurb: tr('The full show against 1 or 2 rivals.'),
       howTo: [
-        tr('Pick Freshmen, Scholars or Geniuses and 1 to 3 rivals. Meet them in the room: tap a rival for its profile, swap it or kick it.'),
+        tr('Pick Freshmen, Scholars or Geniuses and 1 or 2 rivals. Meet them in the room: tap a rival for its profile, swap it or kick it.'),
         tr('Pick a target of 25 or 50 points and the question type. No teams.'),
         tr('You and the rivals take turns. After Act III, extra acts follow until someone reaches the target.'),
         tr('In the final round, whoever is last first can swap a turn for a Redemption round. Once a game, for everyone.'),
@@ -90,7 +90,7 @@ export const wheelsOfChaos: GameDef = {
   setup: { solo: [TARGET, MIX, clockOption(tr('each question timed'))], offline: [TARGET, MIX], bots: [TARGET, MIX] },
   players: { offline: { min: 2, max: 4 } },
   playersNote: () => tr('2 to 4 players, each with a character. Player I is you, the phone owner. Pass the phone earns no EXP.'),
-  bots: { min: 1, max: 3 },
+  bots: { min: 1, max: 2 }, // a room holds 3 at most, you included (Yazan 2026-11-15)
   Play: { solo: SoloPlay, offline: OfflinePlay, bots: BotsPlay },
   // WC11: Solo and Online EXP is half the points; Offline earns none. Online can add a Boss bonus.
   exp: (score) => soloExp(score),
