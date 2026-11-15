@@ -22,7 +22,7 @@ import { grownLevel, loadRivals, regulars, toggleFav, useRivals, type Record_ } 
 import { openRoomWith } from './openRoom';
 import { recordText } from './revenge';
 import { TYPE_NAME, type Bot } from './types';
-import { tr } from '@/i18n';
+import { isAr, tr } from '@/i18n';
 
 const gameName = (k: string) => {
   const g = GAMES.find((x) => x.key === k);
@@ -30,7 +30,7 @@ const gameName = (k: string) => {
 };
 const agoText = (at: number) => {
   const d = Math.floor((Date.now() - at) / 86_400_000);
-  return d <= 0 ? 'today' : d === 1 ? 'yesterday' : d < 7 ? tr('{d} days ago', { d }) : d < 30 ? tr('{n} wk ago', { n: Math.floor(d / 7) }) : tr('{n} mo ago', { n: Math.floor(d / 30) });
+  return d <= 0 ? tr('today') : d === 1 ? tr('yesterday') : d < 7 ? tr('{d} days ago', { d }) : d < 30 ? tr('{n} wk ago', { n: Math.floor(d / 7) }) : tr('{n} mo ago', { n: Math.floor(d / 30) });
 };
 
 /**
@@ -149,10 +149,17 @@ function Regular({ bot, rec, met, level, fav, lit, onPlay }: { bot: Bot; rec: Re
           </Pressable>
         </View>
         <Text style={[s.small, { color: c.mute }]}>{tr('{n} · AI player · met {met} {n2}', { n: tr(TYPE_NAME[bot.type]), met, n2: met === 1 ? tr('time') : tr('times') })}</Text>
-        <Text style={[s.small, { color: c.mute }]}>{tr('Last: you {last} in {n}, {n2}', { last: rec.last, n: gameName(rec.game), n2: agoText(rec.at) })}</Text>
+        <Text style={[s.small, { color: c.mute }]}>{tr('Last: you {last} in {n}, {n2}', { last: rec.last === 'won' ? tr('won') : tr('lost'), n: gameName(rec.game), n2: agoText(rec.at) })}</Text>
       </View>
       <View style={{ alignItems: 'flex-end', gap: u(6) }}>
-        <Text style={[s.score, { color: lead === 'you' ? '#5fd38a' : lead === 'them' ? t.red : c.fg }]}>{`${rec.w}–${rec.l}`}</Text>
+        {/* Item 11 (Yazan 2026-11-16): always you first, never turned round by Arabic, with English digits. */}
+        <View style={{ alignItems: 'center' }}>
+          <Text style={[s.score, { color: lead === 'you' ? '#5fd38a' : lead === 'them' ? t.red : c.fg, writingDirection: 'ltr', direction: 'ltr' }]}>{`\u2066${rec.w} – ${rec.l}\u2069`}</Text>
+          <View style={{ flexDirection: 'row', direction: 'ltr', gap: u(6) }}>
+            <Text style={[s.small, { color: c.mute, fontSize: u(8.5), lineHeight: u(11) }]}>{isAr ? 'إنت' : 'you'}</Text>
+            <Text style={[s.small, { color: c.mute, fontSize: u(8.5), lineHeight: u(11) }]}>{isAr ? 'هو' : 'them'}</Text>
+          </View>
+        </View>
         <Pressable onPress={onPlay} style={[s.again, { borderColor: t.accent }]} accessibilityRole="button" accessibilityLabel={tr('Play {name} again', { name: bot.name })}>
           <Text style={[s.againT, { color: t.accent }]}>{tr('Play again')}</Text>
         </Pressable>

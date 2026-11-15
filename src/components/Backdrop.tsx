@@ -40,9 +40,10 @@ const PAGE_SYM_TAB = require("@/assets/images/backdrop/page-symbols-tablet.webp"
  * Full-screen background, pinned to the screen's top (pages, header) or bottom (the dock). `symbols` adds the still
  * medical line symbols (Yazan 2026-11-12, look A2) on the menu pages he approved; never in games or on pages with their own art.
  */
-export function Backdrop({ anchor = "top", symbols = false }: { anchor?: "top" | "bottom"; symbols?: boolean }) {
+export function Backdrop({ anchor = "top", symbols = false, size }: { anchor?: "top" | "bottom"; symbols?: boolean; /** A fixed size (a veil's copy inside a column). */ size?: { width: number; height: number } }) {
   const t = useTheme();
-  const { width: w, height: h } = useScreen();
+  const screen = useScreen();
+  const { width: w, height: h } = size ?? screen;
   return (
     <View
       pointerEvents="none"

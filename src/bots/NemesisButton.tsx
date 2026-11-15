@@ -36,5 +36,6 @@ export function NemesisButton({ style }: { style?: StyleProp<ViewStyle> } = {}) 
 const s = StyleSheet.create({
   btn: { position: 'absolute', end: u(16), top: u(98), width: u(27), height: u(27), borderRadius: u(13.5), borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
   ring: { width: u(22), height: u(22), borderRadius: u(11), borderWidth: 1, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
-  dot: { position: 'absolute', end: u(-1), top: u(-1), width: u(7), height: u(7), borderRadius: u(3.5), borderWidth: 1 },
+  // On the button's circle, not floating off it (item 5, Yazan 2026-11-16).
+  dot: { position: 'absolute', end: u(0.5), top: u(0.5), width: u(7), height: u(7), borderRadius: u(3.5), borderWidth: 1 },
 });

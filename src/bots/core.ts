@@ -2,6 +2,7 @@ import { starsOf } from '@/features/shop/robots';
 import { CHARACTERS, MECH_CHARACTERS, SHOP_CHARACTERS, TEAM_CHARACTERS } from '@/games/shell/characters';
 
 import { faceOf, levelOf, personaOf } from './identity';
+import { hiddenCharacters } from '@/state/flags';
 import { BOT_NAMES } from './names';
 import type { Bot, BotLevel, BotType } from './types';
 
@@ -11,6 +12,12 @@ const WEARABLE = [...CHARACTERS, ...MECH_CHARACTERS, ...SHOP_CHARACTERS, ...TEAM
 /** More stars = more smart (Yazan 2026-11-09): which star counts each type wears. */
 const STARS_FOR: Record<BotType, number[]> = { freshman: [1, 2, 3], scholar: [3, 4], genius: [5, 6] };
 const facesFor = (t: BotType) => WEARABLE.filter((slug) => STARS_FOR[t].includes(starsOf(slug)));
+/** A rival whose face Admin hid (Razan, 2026-11-16) gets another one; every other rival keeps its face. */
+const faceFor = (t: BotType, name: string) => {
+  const face = faceOf(facesFor(t), name);
+  const hidden = hiddenCharacters();
+  return hidden.includes(face) ? faceOf(facesFor(t).filter((slug) => !hidden.includes(slug)), name) : face;
+};
 
 /** The mix of types each level deals (Yazan 2026-11-09: the level sets the mix, always with some variety). */
 const MIX: Record<BotLevel, Record<BotType, number>> = {
@@ -34,7 +41,7 @@ const ALL_NAMES = new Set(Object.values(BOT_NAMES).flat());
 
 /** The full rival for a name: type, hidden personality, face and starting level all come from the name. */
 export function botNamed(type: BotType, name: string): Bot {
-  return { id: `bot:${type}:${name}`, type, name, character: faceOf(facesFor(type), name), level: levelOf(type, name), persona: personaOf(name) };
+  return { id: `bot:${type}:${name}`, type, name, character: faceFor(type, name), level: levelOf(type, name), persona: personaOf(name) };
 }
 
 /**

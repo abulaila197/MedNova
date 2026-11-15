@@ -23,15 +23,15 @@ export function CaseView({ c, run, top, onLock, help, locked, note }: { c: Case;
   return (
     <View style={{ flex: 1, gap: u(7) }}>
       {top}
-      <Pad c={c} style={{ flexShrink: 1, minHeight: u(120) }} onOpen={() => setOpen(true)} />
+      {/* Item 7 (Yazan 2026-11-16): the pad takes the room the question, choices and buttons leave (whole story on a
+          tablet, a scrolling story on a small phone), instead of an empty gap above the buttons. */}
+      <Pad c={c} style={{ flexGrow: 1, flexShrink: 1, flexBasis: 0, minHeight: u(110) }} onOpen={() => setOpen(true)} />
       {/* The question and choices scroll when they don't fit, so the buttons below always stay on the screen and
           clear of the phone's own buttons (Yazan 2026-11-15). */}
       <ScrollView style={{ flexGrow: 0, flexShrink: 1 }} contentContainerStyle={{ gap: u(7) }} showsVerticalScrollIndicator={false}>
         <Ask q={c.q} />
         <Choices c={c} run={run} picked={picked} onPick={(i) => setPick({ key: c.id, i })} disabled={locked || run.done} />
       </ScrollView>
-      {/* The room left sits here, so the buttons stay at the bottom. */}
-      <View style={{ flexGrow: 1, flexShrink: 0, flexBasis: 0 }} />
       {help?.note ? <Text style={[s.sub, { textAlign: 'center', color: C.soft }]}>{help.note}</Text> : note ? <Text style={[s.sub, { textAlign: 'center' }]}>{note}</Text> : null}
       {help ? <HelperButton tone="cyan" label={help.fifty.label} onPress={help.fifty.onPress} disabled={locked || run.done || help.fifty.disabled} /> : null}
       <Btn label={tr('Lock it in')} onPress={() => picked != null && onLock(picked)} disabled={locked || picked == null || run.done} />

@@ -17,6 +17,8 @@ export const TEAM: TeamMember[] = [
 ];
 
 export const teamOf = (key?: string | null) => TEAM.find((m) => m.key === key);
+/** The team members shown now: Admin's switches hide some (Razan until shown, Yazan 2026-11-16). */
+export const visibleTeam = (hidden: string[]) => (hidden.length ? TEAM.filter((m) => !hidden.includes(m.key)) : TEAM);
 
 /** Shown on locked cards (Yazan 2026-11-11). */
 export const TEAM_LOCKED_LINE = tr('Only given by Admin to the SuperNova team');

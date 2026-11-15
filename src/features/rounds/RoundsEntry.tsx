@@ -37,6 +37,7 @@ export function RoundsEntry({ dot = false }: { dot?: boolean }) {
 const s = StyleSheet.create({
   card: { borderWidth: 1, borderRadius: u(16), paddingHorizontal: u(12), paddingTop: u(9), paddingBottom: u(7), marginTop: u(14), gap: u(4) },
   top: { flexDirection: 'row', justifyContent: 'space-between' },
-  dot: { position: 'absolute', end: u(-3), top: u(-3), width: u(11), height: u(11), borderRadius: u(5.5), borderWidth: 2 },
+  // Inside the card's rounded corner, not off it (item 5, Yazan 2026-11-16).
+  dot: { position: 'absolute', end: u(5), top: u(5), width: u(11), height: u(11), borderRadius: u(5.5), borderWidth: 2 },
   k: { fontFamily: F.mono, fontSize: u(7.5), letterSpacing: u(1.3) },
 });

@@ -1,10 +1,11 @@
 import { useFocusEffect } from 'expo-router';
-import { type ReactNode, useCallback, useId, useState } from 'react';
+import { type ReactNode, useCallback, useId, useMemo, useRef, useState } from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Dock, type Tab } from '@/components/Dock';
 import { Backdrop } from '@/components/Backdrop';
+import { BackdropCtx } from '@/components/backdropCtx';
 import { Header } from '@/components/Header';
 import { TopInset } from '@/components/TopInset';
 import { useTheme } from '@/state/app';
@@ -35,8 +36,11 @@ export function Screen({ children, tab = null, glow = 0, header = true, dock = t
   );
   const ins = useSafeAreaInsets();
   const bottom = dock || Platform.OS === 'web' ? 0 : ins.bottom;
+  const rootRef = useRef<View>(null);
+  const bd = useMemo(() => (glow === false ? null : { symbols: symbols && !game, root: rootRef }), [glow, symbols, game]);
   return (
-    <View style={[s.root, { backgroundColor: t.sky }]}>
+    <BackdropCtx.Provider value={bd}>
+    <View ref={rootRef} collapsable={false} style={[s.root, { backgroundColor: t.sky }]}>
       {glow === false ? null : <Backdrop symbols={symbols && !game} />}
       {under}
       {header ? (
@@ -64,6 +68,7 @@ export function Screen({ children, tab = null, glow = 0, header = true, dock = t
       </View>
       {dock ? <Dock active={tab} /> : null}
     </View>
+    </BackdropCtx.Provider>
   );
 }
 

@@ -9,6 +9,7 @@ import { Downloads, Inbox } from '@/features/admin/Inbox';
 import { Notify } from '@/features/admin/Notify';
 import { Players, type AdminPlayer } from '@/features/admin/Players';
 import { ServerUsage } from '@/features/admin/ServerUsage';
+import { Switches } from '@/features/admin/Switches';
 import { GradBtn, InfoScroll, Kicker, s as ui, useInfo } from '@/features/info/ui';
 import { supabase } from '@/lib/supabase';
 import { useAccount } from '@/state/account';
@@ -228,6 +229,7 @@ export default function Page() {
       <InfoScroll scrollRef={scroll}>
         <Kicker>Admin</Kicker>
         <ServerUsage c={c} />
+        <Switches c={c} />
         <Players c={c} onMessage={messagePlayer} onTakeBack={takeBackFrom} />
         <Notify c={c} />
         <Text onLayout={(e) => (ySend.current = e.nativeEvent.layout.y)} style={[ui.H, s.H, s.gapL, { color: c.fg }]}>Send to Inbox</Text>

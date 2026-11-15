@@ -1,8 +1,11 @@
 import MaskedView from '@react-native-masked-view/masked-view';
 import { LinearGradient } from 'expo-linear-gradient';
-import { type ReactNode } from 'react';
+import { type ReactNode, useContext, useRef, useState } from 'react';
 import { Platform, StyleSheet, View, type LayoutChangeEvent, type StyleProp, type ViewStyle } from 'react-native';
 
+import { Backdrop } from '@/components/Backdrop';
+import { BackdropCtx } from '@/components/backdropCtx';
+import { isAr } from '@/i18n';
 import { useTheme } from '@/state/app';
 import { useBleed } from '@/theme/scale';
 import { tr } from '@/i18n';
@@ -111,14 +114,82 @@ function bands(inv: Stops): { from: number; to: number; stops: Stops }[] {
  * square in the wrong place on some pages. Now each edge is a plain gradient into the page colour: no copy, no mask.
  */
 function Veil({ stops, horizontal }: { stops: Stops; horizontal: boolean }) {
-  const t = useTheme();
   // Where the content is fully gone the page colour is fully drawn: the veil's alpha is the content's alpha flipped.
-  const inv: Stops = stops.map(([o, a]) => [o, 1 - a]);
+  // Item 2 (Yazan 2026-11-16): a sideways fade runs to the row's end, which is the left in Arabic.
+  const flip = horizontal && isAr;
+  const inv: Stops = (flip ? [...stops].reverse().map(([o, a]): [number, number] => [1 - o, a]) : stops).map(([o, a]) => [o, 1 - a]);
+  const bd = useContext(BackdropCtx);
+  return bd ? <PictureVeil inv={inv} horizontal={horizontal} bd={bd} /> : <FlatVeil inv={inv} horizontal={horizontal} />;
+}
+
+/** The veil's alpha inside one band (stops normalised to 0..1). */
+function alphaAt(st: Stops, x: number) {
+  for (let i = 1; i < st.length; i++) {
+    const [o0, a0] = st[i - 1];
+    const [o1, a1] = st[i];
+    if (x <= o1) return o1 > o0 ? a0 + ((a1 - a0) * (x - o0)) / (o1 - o0) : a1;
+  }
+  return st[st.length - 1][1];
+}
+
+const STEPS = 16;
+
+/**
+ * Item 2 (Yazan 2026-11-16, "shadow"): the flat navy veil showed as a dark box with straight sides, because the page
+ * behind it has glows, symbols and a gradient. This veil is the page's own backdrop picture, copied over the edge in
+ * thin strips that fade in step by step, so the edge dissolves into exactly the background behind it. Still strips,
+ * no mask: nothing redraws while the list scrolls (the reason for the veil, Yazan 2026-11-02).
+ */
+function PictureVeil({ inv, horizontal, bd }: { inv: Stops; horizontal: boolean; bd: NonNullable<React.ContextType<typeof BackdropCtx>> }) {
+  const me = useRef<View>(null);
+  const [at, setAt] = useState<{ x: number; y: number; w: number; h: number; rw: number; rh: number } | null>(null);
+  const measure = () => {
+    const root = bd.root.current;
+    if (!root || !me.current) return;
+    me.current.measureInWindow((x, y, w, h) => {
+      root.measureInWindow((rx, ry, rw, rh) => {
+        const next = { x: Math.round(x - rx), y: Math.round(y - ry), w, h, rw, rh };
+        setAt((was) => (was && Object.keys(next).every((k) => Math.abs(was[k as keyof typeof next] - next[k as keyof typeof next]) < 0.5) ? was : next));
+      });
+    });
+  };
+  const size = at ? at.h : 0;
+  const len = at ? (horizontal ? at.w : at.h) : 0;
+  return (
+    <View ref={me} collapsable={false} onLayout={measure} pointerEvents="none" style={[StyleSheet.absoluteFill, { direction: 'ltr' }]}>
+      {at && size > 0
+        ? bands(inv).flatMap((b, bi) =>
+            Array.from({ length: STEPS }, (_, k) => {
+              const p0 = Math.round(len * (b.from + ((b.to - b.from) * k) / STEPS));
+              const p1 = Math.round(len * (b.from + ((b.to - b.from) * (k + 1)) / STEPS));
+              const a = alphaAt(b.stops, (k + 0.5) / STEPS);
+              if (p1 <= p0 || a <= 0.01) return null;
+              const strip: ViewStyle = horizontal
+                ? { position: 'absolute', top: 0, bottom: 0, left: p0, width: p1 - p0, overflow: 'hidden', opacity: Math.min(1, a) }
+                : { position: 'absolute', left: 0, right: 0, top: p0, height: p1 - p0, overflow: 'hidden', opacity: Math.min(1, a) };
+              const pic: ViewStyle = { position: 'absolute', width: at.rw, height: at.rh, left: -at.x - (horizontal ? p0 : 0), top: -at.y - (horizontal ? 0 : p0) };
+              return (
+                <View key={`${bi}-${k}`} style={strip}>
+                  <View style={pic}>
+                    <Backdrop symbols={bd.symbols} size={{ width: at.rw, height: at.rh }} />
+                  </View>
+                </View>
+              );
+            }),
+          )
+        : null}
+    </View>
+  );
+}
+
+/** A page without the shared backdrop (its own opaque background): a plain gradient into the page colour. */
+function FlatVeil({ inv, horizontal }: { inv: Stops; horizontal: boolean }) {
+  const t = useTheme();
   const rgb = hexRgb(t.sky);
   // Inside a tablet's centred column the veil runs out to the screen's edges, so it doesn't draw a box.
   const bleed = useBleed();
   return (
-    <View pointerEvents="none" style={[StyleSheet.absoluteFill, !horizontal && bleed ? { start: -bleed, end: -bleed } : null]}>
+    <View pointerEvents="none" style={[StyleSheet.absoluteFill, { direction: 'ltr' }, !horizontal && bleed ? { left: -bleed, right: -bleed } : null]}>
       {bands(inv).map((b, i) => {
         const pos: ViewStyle = horizontal
           ? { position: 'absolute', top: 0, bottom: 0, left: `${b.from * 100}%`, width: `${(b.to - b.from) * 100}%` }

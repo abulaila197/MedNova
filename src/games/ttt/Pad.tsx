@@ -102,27 +102,43 @@ const Perf = () => (
 );
 
 /**
- * The prescription pad with the story. A note that fits shows whole on a short pad (Yazan 2026-11-12); a long one
- * fills the room left, fades out, and gets the line that opens the whole note.
+ * The prescription pad with the story. Item 7 (Yazan 2026-11-16): the pad takes the room left on the screen and the
+ * story scrolls inside it (swipe), like Spot the Flaw's sheet; a tap anywhere on it opens the whole note. The old pad
+ * only shrank and decided "too long" from two measurements, which on some phones came out equal: the story was cut
+ * with no line to open it and no way to scroll.
  */
 export function Pad({ c, style, onOpen }: { c: Case; style?: object; onOpen?: () => void }) {
   const paras = c.s.split('\n\n');
   const [room, setRoom] = useState(0);
   const [need, setNeed] = useState(0);
-  const long = room > 0 && need > room + 1;
+  const [atEnd, setAtEnd] = useState(false);
+  const long = room > 0 && need > room + 2;
   return (
     <View style={[s.pad, style]}>
       <Perf />
       <PadHead c={c} />
-      <View style={{ flexShrink: 1, overflow: 'hidden' }} onLayout={(e) => setRoom(e.nativeEvent.layout.height)}>
-        <View style={{ gap: u(8) }} onLayout={(e) => setNeed(e.nativeEvent.layout.height)}>
-          {paras.map((p, i) => (
-            <Text key={i} style={s.story}>
-              {p}
-            </Text>
-          ))}
-        </View>
-        {long ? <LinearGradient colors={['rgba(251,250,243,0)', C.pad]} style={s.fade} pointerEvents="none" /> : null}
+      <View style={{ flexShrink: 1, flexGrow: 1, overflow: 'hidden' }}>
+        <ScrollView
+          nestedScrollEnabled
+          style={{ flexGrow: 0, flexShrink: 1 }}
+          showsVerticalScrollIndicator={long}
+          onLayout={(e) => setRoom(e.nativeEvent.layout.height)}
+          onContentSizeChange={(_, h) => setNeed(h)}
+          onScroll={(e) => {
+            const { contentOffset, contentSize, layoutMeasurement } = e.nativeEvent;
+            setAtEnd(contentOffset.y + layoutMeasurement.height >= contentSize.height - u(8));
+          }}
+          scrollEventThrottle={64}
+        >
+          <Pressable onPress={onOpen ? tapped(onOpen) : undefined} disabled={!onOpen} accessibilityRole={onOpen ? 'button' : undefined} accessibilityLabel={onOpen ? tr('Tap to read the whole note') : undefined} style={{ gap: u(8) }}>
+            {paras.map((p, i) => (
+              <Text key={i} style={s.story}>
+                {p}
+              </Text>
+            ))}
+          </Pressable>
+        </ScrollView>
+        {long && !atEnd ? <LinearGradient colors={['rgba(251,250,243,0)', C.pad]} style={s.fade} pointerEvents="none" /> : null}
       </View>
       {long && onOpen ? (
         <Pressable onPress={tapped(onOpen)} accessibilityRole="button" accessibilityLabel={tr('Tap to read the whole note')} style={s.openBar}>

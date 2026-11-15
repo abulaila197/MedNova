@@ -14,7 +14,8 @@ import { Screen } from '@/components/Screen';
 import { useSession } from '@/games/shell/session';
 import { MECHS, MECHS_PRIZE } from '@/features/chests/data';
 import { ROBOTS, robotOf } from '@/features/shop/robots';
-import { TEAM, TEAM_LOCKED_LINE, TEAM_THANKS, teamOf } from '@/features/team/team';
+import { useHiddenCharacters } from '@/state/flags';
+import { visibleTeam, TEAM_LOCKED_LINE, TEAM_THANKS, teamOf } from '@/features/team/team';
 import { InfoScroll, Kicker, s as ui, useInfo } from '@/features/info/ui';
 import { loadStyle, useStyle } from '@/features/style/useStyle';
 import { useTheme } from '@/state/app';
@@ -241,6 +242,7 @@ function RobotPack({ t, owned, group, onOpen }: { t: Theme; owned: string[]; gro
 /** SuperNova team (Yazan 2026-11-11): the six people who helped build MedNova; only Admin gives these cards. */
 function TeamPack({ t, owned, onOpen }: { t: Theme; owned: string[]; onOpen: (key: string) => void }) {
   const w = useCardW();
+  const TEAM = visibleTeam(useHiddenCharacters());
   const n = TEAM.filter((m) => owned.includes(m.key)).length;
   return (
     <View style={{ marginTop: u(22) }}>
