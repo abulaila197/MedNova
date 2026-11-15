@@ -1,3 +1,4 @@
+import { navTo } from '@/lib/nav';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { useEffect, useState, type ReactNode } from 'react';
@@ -207,7 +208,7 @@ export function FreeTokens({ t }: { t: Theme }) {
     if (w.key === 'listing') return openAfter(Platform.OS === 'android' ? LINKS.listingAndroid : LINKS.listing, 'listing');
     if (w.key === 'community') {
       if (!again) claim('community');
-      return router.navigate('/community' as never);
+      return navTo('/community');
     }
     if (w.key === 'invite') return router.navigate('/friends' as never);
     if (w.key === 'ambassador' && st?.ambassador === 'pending') return;
