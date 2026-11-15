@@ -10,10 +10,11 @@ export type Reading = { x: number; y: number; z: number };
 export type Tilt = 'down' | 'up';
 
 /** How far z must go for a tilt, and how close to upright it must come back before the next one counts. */
-export const TILT_ON = 0.7;
-export const TILT_OFF = 0.35;
+// A smaller nod counts (Yazan 2026-11-15: 0.7, about 45 degrees, was too much): about 30 degrees now.
+export const TILT_ON = 0.5;
+export const TILT_OFF = 0.25;
 /** A tilt right after another (a wobble) is ignored. */
-export const TILT_GAP_MS = 450;
+export const TILT_GAP_MS = 350;
 /** Upright on a forehead: little z, nearly all of gravity along the screen. */
 export const UPRIGHT_Z = 0.4;
 export const UPRIGHT_G = 0.75;

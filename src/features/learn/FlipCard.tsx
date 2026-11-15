@@ -1,6 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { type ReactNode, useEffect, useState } from 'react';
-import { Image, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Image } from 'expo-image';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
@@ -127,7 +128,9 @@ export function FlipCard({ card, flipped, onPress }: { card: Card; flipped: bool
             {/* A long question scrolls instead of being cut; a tap on it still turns the card. */}
             <CardScroll onPress={onPress} label={tr('Show the answer')} fade={c.cardB}>
               <View style={s.qmid}>
-                {card.image ? <Image source={card.image} style={s.img} resizeMode="contain" /> : null}
+                {/* expo-image, as in the game: the plain Image could stay blank on the turning card on Android (the hip picture,
+                    Yazan 2026-11-15). */}
+                {card.image ? <Image source={card.image} style={s.img} contentFit="contain" transition={0} /> : null}
                 <Text style={[s.q, (card.q.length > 80 || card.choices.length > 4) && s.qLong, { color: t.fg }]}>{card.q}</Text>
                 <View style={[s.chs, card.choices.length > 4 && s.chGrid]}>
                   {card.choices.map((ch, i) => (
@@ -187,7 +190,7 @@ const s = StyleSheet.create({
   // Five or six choices sit two to a row.
   chGrid: { flexDirection: 'row', flexWrap: 'wrap' },
   chHalf: { width: '48.5%', paddingHorizontal: u(8), paddingVertical: u(4), fontSize: u(10), lineHeight: u(12) },
-  img: { width: '100%', height: u(96), borderRadius: u(10) },
+  img: { alignSelf: 'stretch', height: u(110), borderRadius: u(10) },
   hint: { fontFamily: F.body, fontSize: u(9.5), lineHeight: u(11) },
   tail: { marginTop: 'auto' },
   qscroll: { flex: 1 },

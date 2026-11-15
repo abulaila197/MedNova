@@ -44,7 +44,7 @@ export function BookShelf({ books, missed, onOpen }: { books: Book[]; missed: (b
               <View style={[s.band, { backgroundColor: col, top: u(7) }]} />
               <View style={[s.band, { backgroundColor: col, bottom: u(21) }]} />
               <View style={s.name}>
-                <VText h={u(H - 12 - 26)} line={u(12)} dir="up" top style={{ fontFamily: F.display, fontSize: u(9), letterSpacing: u(0.1), color: t.fg }}>
+                <VText h={u(H - 12 - 26)} line={u(12)} dir="up" top style={{ fontFamily: F.display, fontSize: u(9), letterSpacing: u(0.1), color: t.fg, writingDirection: 'ltr' }}>
                   {b.spine}
                 </VText>
               </View>
@@ -59,7 +59,8 @@ export function BookShelf({ books, missed, onOpen }: { books: Book[]; missed: (b
 }
 
 const s = StyleSheet.create({
-  shelf: { marginHorizontal: u(-4) },
+  // Never mirrored: the same books, order, lean and spine names as in English (Yazan 2026-11-15).
+  shelf: { marginHorizontal: u(-4), direction: 'ltr' },
   row: { flexDirection: 'row', alignItems: 'flex-end', gap: u(4), paddingTop: u(4), paddingHorizontal: u(4) },
   book: {
     flexBasis: 0,

@@ -126,6 +126,14 @@ export function FriendsSection({ t, only }: { t: Theme; only?: 'friends' | 'requ
               <Name t={t} f={f} />
               <Text style={[s.frS, { color: when === ONLINE_LABEL || live ? ONLINE[t.mode] : t.mute }]}>{when}</Text>
             </Pressable>
+            {/* Challenge right from the row (Yazan 2026-11-15), the same sheet as the profile's Challenge button. */}
+            {f.kind === 'friend' ? (
+              <Pressable disabled={off} onPress={() => openChallenge(f)} style={dim} accessibilityRole="button" accessibilityLabel={tr('Challenge {display_name}', { display_name: f.display_name })}>
+                <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.ch}>
+                  <Text style={[s.chT, { color: t.onGrad }]}>{tr('Challenge')}</Text>
+                </LinearGradient>
+              </Pressable>
+            ) : null}
           </View>
         );
       })}

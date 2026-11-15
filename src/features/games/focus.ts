@@ -5,7 +5,11 @@ import { GAMES } from '@/data/games';
 import { tagRank } from './GameTag';
 
 /** The Games list order: grouped by tag (On duty, Play and learn, Party time), each group keeping the games order. */
-export const LISTED = [...GAMES].sort((a, b) => tagRank(a.key) - tagRank(b.key));
+// Inside a group the games order holds, except where Yazan placed a game (2026-11-15): Spot the Flaw and Trace the
+// Treatment end On duty; Four of a Kind opens Play and learn and Six Word Tries ends it.
+const PLACE: Record<string, number> = { 'spot-the-flaw': 1, 'trace-the-treatment': 2, 'four-of-a-kind': -1, 'nova-medicordle': 3 };
+const place = (key: string) => PLACE[key] ?? 0;
+export const LISTED = [...GAMES].sort((a, b) => tagRank(a.key) - tagRank(b.key) || place(a.key) - place(b.key));
 
 /** Which game the Games page shows next; `n` changes on every request so the same game can be asked for twice. */
 export const useGamesFocus = create<{ j: number; n: number }>(() => ({ j: 0, n: 0 }));

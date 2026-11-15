@@ -26,12 +26,12 @@ const KIND: Record<string, GameKind> = {
   imposter: 'play',
   'tilt-and-tell': 'play',
   'four-of-a-kind': 'both',
-  'spot-the-flaw': 'both',
-  'trace-the-treatment': 'both',
+  'spot-the-flaw': 'learn', // On duty, at the end of it (Yazan 2026-11-15)
+  'trace-the-treatment': 'learn',
   'the-silent-artist': 'play',
   'nova-medicordle': 'both',
   'the-riddler': 'both',
-  'the-wheels-of-chaos': 'learn', // On duty since Quick Fire Quiz merged in (2026-11-12)
+  'the-wheels-of-chaos': 'both', // Play and learn (Yazan 2026-11-15)
   'the-conqueror': 'both',
 };
 

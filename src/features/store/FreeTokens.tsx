@@ -197,14 +197,14 @@ export function FreeTokens({ t }: { t: Theme }) {
     if (busy) return;
     // A collected link still opens its page, with no reward again (Yazan 2026-10-27).
     const again = isDone(w) || unpaid(w);
-    if ((SOCIAL as readonly string[]).includes(w.key)) {
-      Linking.openURL(LINKS[w.key as (typeof SOCIAL)[number]]).catch(() => {});
-      return again ? undefined : claim(w.key);
-    }
-    if (w.key === 'listing') {
-      Linking.openURL(Platform.OS === 'android' ? LINKS.listingAndroid : LINKS.listing).catch(() => {});
-      return again ? undefined : claim('listing');
-    }
+    // Pay first, then open the page (Yazan 2026-11-15): opening Instagram or YouTube first sends the app to the
+    // background, and on Android the claim could be cut off there, so a follow sometimes paid nothing.
+    const openAfter = async (url: string, key: string) => {
+      if (!again) await claim(key);
+      Linking.openURL(url).catch(() => {});
+    };
+    if ((SOCIAL as readonly string[]).includes(w.key)) return openAfter(LINKS[w.key as (typeof SOCIAL)[number]], w.key);
+    if (w.key === 'listing') return openAfter(Platform.OS === 'android' ? LINKS.listingAndroid : LINKS.listing, 'listing');
     if (w.key === 'community') {
       if (!again) claim('community');
       return router.navigate('/community' as never);

@@ -2,8 +2,10 @@
 // middle ring the style, the outer ring the field. All three spin at once and stop from the inside out, each landing
 // its pick under the pointer. Every name is written out in full and fits inside its slice (Yazan: never cut); the
 // label sizes below were fitted once for Cinzel Bold in this drawing's own units, so the wheel scales as one piece.
-import { memo, useEffect } from 'react';
-import { View } from 'react-native';
+import { memo, useEffect, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
+
+import { Text } from '@/components/AppText';
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withDelay, withTiming } from 'react-native-reanimated';
 import Svg, { Circle, Defs, G, Path, RadialGradient, Stop, Text as SvgText } from 'react-native-svg';
 
@@ -11,7 +13,7 @@ import { u } from '@/theme/scale';
 
 import { mixFields, STYLE_KEYS, type Turn } from './core';
 import { CB, VV } from './velvet';
-import { tr } from '@/i18n';
+import { isAr, tr } from '@/i18n';
 
 /** The drawing's own units: a 390-wide box, the wheel's centre in the middle. */
 const BOX = 390;
@@ -48,7 +50,7 @@ function wedge(r0: number, r1: number, a0: number, a1: number) {
 const landing = (pick: number, n: number, turns: number) => -(pick * 360) / n - turns * 360;
 
 /** One ring, drawn once; it turns as a whole. `land` is its final angle, so labels are upright where it stops. */
-const Ring = memo(function Ring({ id, r0, r1, labels, land, base }: { id: string; r0: number; r1: number; labels: string[]; land: number; base: number }) {
+const Ring = memo(function Ring({ id, r0, r1, labels, land, base, plain }: { id: string; r0: number; r1: number; labels: string[]; land: number; base: number; plain?: boolean }) {
   const n = labels.length;
   const seg = 360 / n;
   const mid = (r0 + r1) / 2;
@@ -77,7 +79,7 @@ const Ring = memo(function Ring({ id, r0, r1, labels, land, base }: { id: string
           <G key={label}>
             <Path d={wedge(r0, r1, am - seg / 2, am + seg / 2)} fill={`url(#${id}${dark ? 'd' : 'l'})`} stroke={VV.brass} strokeWidth={1.4} />
             <G transform={tr('translate({C} {C}) rotate({n})', { C, n: am + (low ? -90 : 90) })}>
-              {lines.map((ln, j) => {
+              {plain ? null : lines.map((ln, j) => {
                 const off = (j - (lines.length - 1) / 2) * lh;
                 return (
                   <SvgText key={j} x={0} y={(low ? mid + off : -mid + off) + fs * 0.36} fontFamily={CB} fontSize={fs} fill={dark ? VV.cream : VV.paperInk} textAnchor="middle">
@@ -90,6 +92,36 @@ const Ring = memo(function Ring({ id, r0, r1, labels, land, base }: { id: string
         );
       })}
     </Svg>
+  );
+});
+
+/**
+ * Arabic names on a ring as app text, not SVG text: SVG text on Android drew the Arabic letters apart (Yazan
+ * 2026-11-15). Same place, turn and flip as the SVG labels; `px` is the wheel's width on screen.
+ */
+const RingWords = memo(function RingWords({ r0, r1, labels, land, base, px, dark }: { r0: number; r1: number; labels: string[]; land: number; base: number; px: number; dark: (i: number) => boolean }) {
+  const k = px / BOX;
+  const n = labels.length;
+  const seg = 360 / n;
+  const mid = (r0 + r1) / 2;
+  const w = Math.min(2 * mid * Math.sin(rad(seg / 2)) * 0.86, (r1 - r0) * 2) * k;
+  const h = (r1 - r0) * 0.86 * k;
+  return (
+    <View style={StyleSheet.absoluteFill} pointerEvents="none">
+      {labels.map((label, i) => {
+        const am = -90 + i * seg;
+        const rest = (((am + land) % 360) + 360) % 360;
+        const low = rest > 0.01 && rest < 179.99;
+        const fs = Math.min(sizeOf(label, base), 13) * k;
+        return (
+          <View key={label} style={{ position: 'absolute', left: C * k - w / 2, top: C * k - h / 2, width: w, height: h, alignItems: 'center', justifyContent: 'center', transform: [{ rotate: `${am + (low ? -90 : 90)}deg` }, { translateY: (low ? mid : -mid) * k }] }}>
+            <Text style={{ fontSize: fs, lineHeight: fs * 1.25, textAlign: 'center', color: dark(i) ? VV.cream : VV.paperInk, fontWeight: '700' }} numberOfLines={2} adjustsFontSizeToFit minimumFontScale={0.6}>
+              {label.replace(/\n/g, ' ')}
+            </Text>
+          </View>
+        );
+      })}
+    </View>
   );
 });
 
@@ -143,15 +175,20 @@ export function WheelSpin({ turn, settled }: { turn: Turn; settled: { count: boo
   // Yazan 2026-11-12: one field picked means no field wheel; the style ring takes the outer place (2 wheels).
   const one = fields.length === 1;
   const styleRing = one ? ([RINGS.style[0], R] as const) : RINGS.style;
+  const [px, setPx] = useState(0);
+  const ar = isAr && px > 0;
+  const even = (i: number) => i % 2 === 0;
   return (
-    <View style={{ width: '100%', maxWidth: u(380), aspectRatio: 1, alignSelf: 'center' }}>
+    <View style={{ width: '100%', maxWidth: u(380), aspectRatio: 1, alignSelf: 'center' }} onLayout={(e) => setPx(e.nativeEvent.layout.width)}>
       {one ? null : (
         <Spinning to={land.field} ms={STOP_MS.field}>
-          <Ring id="f" r0={RINGS.field[0]} r1={RINGS.field[1]} labels={fields.map((f) => FIELD_LABELS[f.key] ?? f.name)} land={land.field} base={12} />
+          <Ring id="f" r0={RINGS.field[0]} r1={RINGS.field[1]} labels={fields.map((f) => FIELD_LABELS[f.key] ?? f.name)} land={land.field} base={12} plain={isAr} />
+          {ar ? <RingWords r0={RINGS.field[0]} r1={RINGS.field[1]} labels={fields.map((f) => FIELD_LABELS[f.key] ?? f.name)} land={land.field} base={12} px={px} dark={even} /> : null}
         </Spinning>
       )}
       <Spinning to={land.style} ms={STOP_MS.style}>
-        <Ring id="s" r0={styleRing[0]} r1={styleRing[1]} labels={STYLE_KEYS.map((k) => STYLE_LABELS[k])} land={land.style} base={one ? 14 : 12} />
+        <Ring id="s" r0={styleRing[0]} r1={styleRing[1]} labels={STYLE_KEYS.map((k) => STYLE_LABELS[k])} land={land.style} base={one ? 14 : 12} plain={isAr} />
+        {ar ? <RingWords r0={styleRing[0]} r1={styleRing[1]} labels={STYLE_KEYS.map((k) => STYLE_LABELS[k])} land={land.style} base={one ? 14 : 12} px={px} dark={even} /> : null}
       </Spinning>
       <Spinning to={land.count} ms={STOP_MS.count}>
         <Ring id="c" r0={RINGS.count[0]} r1={RINGS.count[1]} labels={COUNT_LABELS} land={land.count} base={15} />

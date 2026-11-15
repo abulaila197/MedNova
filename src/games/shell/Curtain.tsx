@@ -1,7 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 import { Backdrop } from '@/components/Backdrop';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import Animated, { FadeIn } from 'react-native-reanimated';
 
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
@@ -19,7 +19,9 @@ import { tr } from '@/i18n';
 export function Curtain({ name, color, sub, board, recap, onReady, onPause }: { name: string; color?: string; sub?: string; board: (Pick<Standing, 'seat' | 'name' | 'score'> & { color?: string })[]; recap?: RecapLine[]; onReady: () => void; onPause?: () => void }) {
   const t = useTheme();
   return (
-    <Animated.View entering={FadeIn.duration(220)} exiting={FadeOut.duration(180)} style={[StyleSheet.absoluteFill, s.root, { backgroundColor: t.sky, overflow: 'hidden' }]}>
+    // No exit fade: on Android a fading-out curtain could stay on screen over the next page and swallow taps, so
+    // "I'm ready" seemed to do nothing in Sketch It (Yazan 2026-11-15).
+    <Animated.View entering={FadeIn.duration(220)} style={[StyleSheet.absoluteFill, s.root, { backgroundColor: t.sky, overflow: 'hidden' }]}>
       {/* the page's still backdrop, lined up with the screen bottom so it runs on from the header above */}
       <Backdrop anchor="bottom" />
       {/* The same pause as the board's, so an absent player can be removed or the game ended before their clock starts. */}

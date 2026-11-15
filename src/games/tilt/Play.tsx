@@ -97,8 +97,11 @@ function useMotion(on: boolean, onReading: (r: Reading) => void) {
   }, []);
   useEffect(() => {
     if (!on || !ok) return;
-    Accelerometer.setUpdateInterval(50);
-    const sub = Accelerometer.addListener((r) => cb.current(r));
+    Accelerometer.setUpdateInterval(30);
+    // Android reports the push back against gravity (face up z = +1), iOS gravity itself (face up z = -1): Android's
+    // readings are flipped so a nod is CORRECT on both (it was the other way round on Android, Yazan 2026-11-15).
+    const flip = Platform.OS === 'android' ? -1 : 1;
+    const sub = Accelerometer.addListener((r) => cb.current({ x: r.x * flip, y: r.y * flip, z: r.z * flip }));
     return () => sub.remove();
   }, [on, ok]);
   return ok;

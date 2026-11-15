@@ -1,6 +1,6 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 import { openPlayer } from '@/features/profile/Friends';
@@ -8,8 +8,7 @@ import { useStyle, wantLooks } from '@/features/style/useStyle';
 import Svg, { Path } from 'react-native-svg';
 import { PlayerFace } from '@/features/style/Frame';
 import { useAccount } from '@/state/account';
-import { isRivalRow, withRivals } from '@/bots/board';
-import { loadRivals, useRivals } from '@/bots/memory';
+import { isRivalRow } from '@/bots/board';
 
 import { LevelBadge, useBalance } from '@/components/LevelBadge';
 import { Fade } from '@/components/Fade';
@@ -118,15 +117,8 @@ export function Leaderboard() {
   const [game, setGame] = useState<string | null>(null);
   const [pick, setPick] = useState<'game' | 'period' | null>(null);
   const raw = useBoard(period, scope, game, userId);
-  // G6: rivals sit on the Everyone board with EXP of their own (fixed per week, month and game).
-  const rMet = useRivals((x) => x.met);
-  const rRecord = useRivals((x) => x.record);
-  const rFavs = useRivals((x) => x.favs);
-  useEffect(() => void loadRivals(), []);
-  const board = useMemo(() => {
-    if (!raw || raw === 'error' || scope !== 'everyone') return raw;
-    return withRivals(raw, { period, game, userId, met: rMet, known: [...Object.keys(rRecord), ...rFavs] });
-  }, [raw, scope, period, game, userId, rMet, rRecord, rFavs]);
+  // Real players only (Yazan 2026-11-15): the rivals no longer sit on the board.
+  const board = raw;
   // Tap a player for their profile sheet (Yazan 2026-10-26, pick B); signed in only, not yourself. A rival opens Nemesis.
   const canOpen = (id: string) => isRivalRow(id) || (!!userId && id !== userId);
   const open = (r: Row) => (isRivalRow(r.id) ? router.push(`/nemesis?rival=${encodeURIComponent(r.id)}` as never) : openPlayer({ id: r.id, display_name: r.name, avatar: r.avatar ?? undefined }));
