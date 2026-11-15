@@ -47,14 +47,13 @@ export default function Page() {
             <Text style={[s.guestA, { color: c.t.accent }]}>{tr('Sign in')}</Text>
           </Pressable>
         ) : null}
-        {error ? <Text style={[ui.p, { color: c.t.error }]}>{error}</Text> : null}
         {/* This week's Grand Rounds, changing every week like the Games page button (Yazan 2026-10-13). */}
         <RoundsEntry />
         {/* Today's daily missions, paying tokens (Yazan 2026-10-26). */}
         <MissionsEntry />
         <View style={[s.log, { backgroundColor: c.surf, borderColor: c.line }]}>
           <View style={[s.margin, { backgroundColor: c.t.rose }]} />
-          {rows?.map((r) => <LogRow key={r.key} r={r} t={c.t} canCollect={signedIn} busy={busy === r.key} onCollect={() => collect(r.key)} />)}
+          {rows?.map((r) => <LogRow key={r.key} r={r} t={c.t} canCollect={signedIn} busy={busy === r.key} error={error?.key === r.key ? error.text : null} onCollect={() => collect(r.key)} />)}
         </View>
       </InfoScroll>
     </Screen>
@@ -86,7 +85,7 @@ function PlatinumSeal() {
   );
 }
 
-type RowP = { r: AchRow; t: Theme; canCollect: boolean; busy: boolean; onCollect: () => void };
+type RowP = { r: AchRow; t: Theme; canCollect: boolean; busy: boolean; error?: string | null; onCollect: () => void };
 
 function CollectPill({ r, t, busy, onCollect, small = false }: Omit<RowP, 'canCollect'> & { small?: boolean }) {
   return (
@@ -99,7 +98,7 @@ function CollectPill({ r, t, busy, onCollect, small = false }: Omit<RowP, 'canCo
 }
 
 /** One ruled line per achievement; each tier is a signed box, gold gets the stamp. */
-function LogRow({ r, t, canCollect, busy, onCollect }: RowP) {
+function LogRow({ r, t, canCollect, busy, error, onCollect }: RowP) {
   const ready = canCollect && r.paid < r.reached;
   const goal = r.next ?? r.goals[r.goals.length - 1];
   const pct = Math.min(1, r.count / goal);
@@ -129,6 +128,7 @@ function LogRow({ r, t, canCollect, busy, onCollect }: RowP) {
         <View style={[s.bar, { backgroundColor: t.chip }]}>
           <View style={[s.fill, { width: `${pct * 100}%`, backgroundColor: r.reached ? METAL[r.reached - 1][1] : t.accent }]} />
         </View>
+        {error ? <Text style={[s.lWhat, { color: t.error }]}>{error}</Text> : null}
       </View>
       {ready ? (
         <CollectPill r={r} t={t} busy={busy} onCollect={onCollect} small />

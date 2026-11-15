@@ -11,7 +11,7 @@ import { useStyle } from '@/features/style/useStyle';
 import { FriendsSection, Name, openPlayer, Ring } from '@/features/profile/Friends';
 import { InfoScroll, Kicker, s as ui, useInfo } from '@/features/info/ui';
 import { useSession } from '@/games/shell/session';
-import { syncAccount } from '@/lib/sync';
+import { refreshWallet } from '@/lib/sync';
 import { call } from '@/lib/rpc';
 import { useAccount } from '@/state/account';
 import { type Friend, loadFriends, useFriends } from '@/state/friends';
@@ -137,7 +137,7 @@ function Redeem({ t }: { t: Theme }) {
       const r = await call<{ ok: boolean; why?: string }>('redeem_code', { code });
       if (r.ok) {
         const uid = useSession.getState().userId;
-        if (uid) await syncAccount(uid).catch(() => {});
+        if (uid) await refreshWallet(uid).catch(() => {});
         await loadFree(true).catch(() => {});
         setCode('');
         setWon(true);

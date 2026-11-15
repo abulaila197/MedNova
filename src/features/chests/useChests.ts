@@ -5,7 +5,7 @@ import { create } from 'zustand';
 import { useSession } from '@/games/shell/session';
 import { supabase } from '@/lib/supabase';
 import { copyOf, keepCopy } from '@/lib/copies';
-import { syncAccount } from '@/lib/sync';
+import { refreshWallet } from '@/lib/sync';
 import { loadStyle } from '@/features/style/useStyle';
 
 import type { ChestKind, Rarity } from './data';
@@ -50,7 +50,7 @@ export async function loadChallenges(force = false) {
   if (!force && Date.now() - useChests.getState().at < 20000) return;
   useChests.setState({ at: Date.now() });
   const userId = useSession.getState().userId;
-  if (userId) await syncAccount(userId).catch(() => {});
+  if (userId) await refreshWallet(userId).catch(() => {});
   const { data } = await supabase.rpc('challenges_status', { tz_min: -new Date().getTimezoneOffset() });
   const c = data as Challenges | null;
   if (c && Array.isArray(c.tasks)) {
@@ -80,7 +80,7 @@ export async function openChest(kind: ChestKind): Promise<OpenResult> {
   const c = useChests.getState().c;
   if (c && r.chests) useChests.setState({ c: { ...c, chests: r.chests } });
   const userId = useSession.getState().userId;
-  if (userId) await syncAccount(userId).catch(() => {});
+  if (userId) await refreshWallet(userId).catch(() => {});
   void loadStyle(true);
   return { ok: true, items: r.items ?? [], prize: r.prize ?? 0 };
 }

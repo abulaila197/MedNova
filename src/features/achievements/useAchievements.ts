@@ -5,7 +5,8 @@ import { useSession } from '@/games/shell/session';
 import { learnCounts } from '@/features/learn/library';
 import { copyOf, keepCopy } from '@/lib/copies';
 import { supabase } from '@/lib/supabase';
-import { syncAccount } from '@/lib/sync';
+import { refreshWallet } from '@/lib/sync';
+import { tr } from '@/i18n';
 import { useFriends } from '@/state/friends';
 
 import { ACHIEVEMENTS, achievementProgress, tiersReached, tierTokens, tourStepOf, type AchKey, type SocialCounts } from './progress';
@@ -96,7 +97,8 @@ export function useAchievements() {
   const friends = useFriends((s) => s.list);
   const [rows, setRows] = useState<AchRow[] | null>(null);
   const [busy, setBusy] = useState<AchKey | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  /** The message and the row it belongs to, so it shows next to the button that was tapped (fix A1). */
+  const [error, setErrorAt] = useState<{ key: AchKey; text: string } | null>(null);
 
   const reload = useCallback(async () => {
     setRows(await loadAchievements(friends.map((f) => f.id), userId ?? undefined));
@@ -110,15 +112,22 @@ export function useAchievements() {
     const row = rows?.find((r) => r.key === key);
     if (!userId || !row || row.paid >= row.reached) return;
     setBusy(key);
-    setError(null);
+    setErrorAt(null);
     // The server pays tiers in order, re-counting what it can see.
     const { data, error: e } = await supabase.rpc('achievement_collect', { key, tier: row.paid + 1, steps: row.steps ?? null });
-    setBusy(null);
     const r = data as { ok: boolean; why?: string } | null;
-    if (e || !r) return setError('Could not reach MedNova. Check your connection and try again.');
-    if (!r.ok && r.why !== 'done') return setError('Not saved yet: your account is still catching up with this phone. Try again later.');
-    await syncAccount(userId).catch(() => {});
+    if (e || !r) {
+      setBusy(null);
+      return setErrorAt({ key, text: tr('Could not reach MedNova. Check your connection and try again.') });
+    }
+    if (!r.ok && r.why !== 'done') {
+      setBusy(null);
+      return setErrorAt({ key, text: tr('Not saved yet: your account is still catching up with this phone. Try again later.') });
+    }
+    // 'done' means the server already paid this tier: the phone only has to bring the row down, not pay again.
+    await refreshWallet(userId).catch(() => {});
     await reload();
+    setBusy(null);
   };
 
   const waiting = rows?.reduce((n, r) => n + Math.max(0, r.reached - r.paid), 0) ?? 0;

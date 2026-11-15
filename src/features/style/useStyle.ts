@@ -9,7 +9,7 @@ import { engine } from '@/games/engine';
 import { useSession } from '@/games/shell/session';
 import { copyOf, keepCopy } from '@/lib/copies';
 import { supabase } from '@/lib/supabase';
-import { syncAccount } from '@/lib/sync';
+import { refreshWallet } from '@/lib/sync';
 import { refreshProfile, useAccount } from '@/state/account';
 
 import type { FrameKey } from './Frame';
@@ -251,7 +251,7 @@ export type ShopResult = { ok: true; prize?: number } | { ok: false; why: string
 
 const after = async () => {
   const userId = useSession.getState().userId;
-  if (userId) await syncAccount(userId).catch(() => {});
+  if (userId) await refreshWallet(userId).catch(() => {});
   await loadStyle(true);
 };
 
@@ -259,7 +259,7 @@ const after = async () => {
 export async function buyItem(item: string, giftTo?: string): Promise<ShopResult> {
   const userId = useSession.getState().userId;
   if (!userId) return { ok: false, why: 'signin' };
-  await syncAccount(userId).catch(() => {});
+  await refreshWallet(userId).catch(() => {});
   const { data, error } = await supabase.rpc('style_buy', { item, gift_to: giftTo ?? null });
   if (error || !data) return { ok: false, why: 'offline' };
   await after();
@@ -304,7 +304,7 @@ export async function wearCharacterNow(slug: string): Promise<WearResult> {
 export async function spendTokens(what: 'glow' | 'second', ref?: string): Promise<ShopResult & { cost?: number; id?: string }> {
   const userId = useSession.getState().userId;
   if (!userId) return { ok: false, why: 'signin' };
-  await syncAccount(userId).catch(() => {});
+  await refreshWallet(userId).catch(() => {});
   const { data, error } = await supabase.rpc('token_spend', { what, ref: ref ?? null });
   if (error || !data) return what === 'second' && ref ? secondOnPhone(userId, ref) : { ok: false, why: 'offline' };
   await after();
@@ -328,7 +328,7 @@ async function secondOnPhone(userId: string, ref: string): Promise<ShopResult & 
   const cost = SECOND_COST[bought.length];
   const id = await engine.wallet.spend(cost, reason);
   if (!id) return { ok: false, why: 'tokens', need: cost - (await engine.wallet.balance()).tokens };
-  void syncAccount(userId).catch(() => {});
+  void refreshWallet(userId).catch(() => {});
   return { ok: true, cost, id: PHONE + id };
 }
 
@@ -339,7 +339,7 @@ export async function refundSecond(spendId: string | undefined) {
   if (spendId.startsWith(PHONE)) {
     const back = await engine.wallet.refund(spendId.slice(PHONE.length));
     const uid = useSession.getState().userId;
-    if (back && uid) void syncAccount(uid).catch(() => {});
+    if (back && uid) void refreshWallet(uid).catch(() => {});
     return back;
   }
   const { data, error } = await supabase.rpc('token_second_refund', { spend_id: spendId });

@@ -2,7 +2,7 @@ import { create } from 'zustand';
 
 import { useSession } from '@/games/shell/session';
 import { copyOf, keepCopy } from '@/lib/copies';
-import { syncAccount } from '@/lib/sync';
+import { refreshWallet } from '@/lib/sync';
 import { call } from '@/lib/rpc';
 import { onAccountSwitch } from '@/state/accountSwitch';
 
@@ -39,7 +39,7 @@ export async function loadHunt() {
 export async function redeemHuntPrize() {
   const r = await call<{ ok: boolean; why?: string; tokens?: number }>('hunt_prize');
   const uid = useSession.getState().userId;
-  if (uid) await syncAccount(uid).catch(() => {});
+  if (uid) await refreshWallet(uid).catch(() => {});
   // Paid already: a failed reload must not turn the Congrats into "Not redeemed" (AP12d).
   await loadHunt().catch(() => {});
   return r;

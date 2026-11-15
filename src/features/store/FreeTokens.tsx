@@ -14,7 +14,7 @@ import { OfflineLine } from '@/components/OfflineLine';
 import { copyOf, keepCopy } from '@/lib/copies';
 import { Kicker } from '@/features/info/ui';
 import { useSession } from '@/games/shell/session';
-import { syncAccount } from '@/lib/sync';
+import { refreshWallet } from '@/lib/sync';
 import { call } from '@/lib/rpc';
 import { u } from '@/theme/scale';
 import type { Theme } from '@/theme/tokens';
@@ -159,7 +159,7 @@ export async function loadFree(force = false) {
 /** After the server paid: bring the new wallet rows to the phone, then refresh what's collected. */
 async function settle() {
   const uid = useSession.getState().userId;
-  if (uid) await syncAccount(uid).catch(() => {});
+  if (uid) await refreshWallet(uid).catch(() => {});
   await loadFree(true).catch(() => {});
 }
 

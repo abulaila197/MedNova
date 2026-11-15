@@ -51,12 +51,9 @@ type Saved = { list: Friend[]; blocked: Blocked[] };
 export async function loadFriends() {
   const uid = useSession.getState().userId;
   try {
-    const [list, blocked, playing] = await Promise.all([
-      call<Friend[]>('my_friends'),
-      call<Blocked[]>('my_blocks'),
-      call<Playing[]>('friends_playing').catch(() => [] as Playing[]),
-    ]);
-    useFriends.setState({ list: list ?? [], blocked: blocked ?? [], playing: Object.fromEntries((playing ?? []).map((p) => [p.friend, p])), loaded: true, savedAt: null });
+    // "Who is mid-match" went with online play (its server call is gone), so it is no longer asked (item 13, 2026-11-16).
+    const [list, blocked] = await Promise.all([call<Friend[]>('my_friends'), call<Blocked[]>('my_blocks')]);
+    useFriends.setState({ list: list ?? [], blocked: blocked ?? [], playing: {}, loaded: true, savedAt: null });
     if (uid) void keepCopy<Saved>('friends', uid, { list: list ?? [], blocked: blocked ?? [] });
   } catch (e) {
     const copy = uid ? await copyOf<Saved>('friends', uid) : null;
@@ -136,22 +133,27 @@ let beat: ReturnType<typeof setInterval> | null = null;
 let sub: { remove: () => void } | null = null;
 let lastList = 0;
 /**
- * While signed in and the app is open: mark yourself seen every minute (FR4). The friends list (3 server calls) now
- * reloads every 5 minutes, on coming back to the app, and whenever you open Friends or Profile (G7 #2: less load).
+ * While signed in and the app is open: mark yourself seen every 5 minutes (FR4; was every minute until item 13,
+ * 2026-11-16). The friends list (2 server calls) reloads every 10 minutes, on coming back to the app, and whenever
+ * you open Friends or Profile.
  */
 export function startPresence() {
   stopPresence();
   lastList = 0;
+  let lastSeen = 0;
   const tick = () => {
     if (AppState.currentState !== 'active') return;
-    void call('touch_seen').catch(() => {});
-    if (Date.now() - lastList < 290000) return;
+    if (Date.now() - lastSeen >= 290000) {
+      lastSeen = Date.now();
+      void call('touch_seen').catch(() => {});
+    }
+    if (Date.now() - lastList < 590000) return;
     lastList = Date.now();
     void loadFriends().catch(() => {});
   };
   tick();
   beat = setInterval(tick, 60000);
-  sub = AppState.addEventListener('change', (s) => s === 'active' && ((lastList = 0), tick()));
+  sub = AppState.addEventListener('change', (s) => s === 'active' && ((lastList = 0), (lastSeen = 0), tick()));
 }
 export function stopPresence() {
   if (beat) clearInterval(beat);

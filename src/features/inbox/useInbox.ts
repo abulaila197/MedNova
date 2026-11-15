@@ -6,7 +6,7 @@ import { refreshSparks } from '@/features/sparks/sparks';
 import { useSession } from '@/games/shell/session';
 import { copyOf, keepCopy } from '@/lib/copies';
 import { supabase } from '@/lib/supabase';
-import { syncAccount } from '@/lib/sync';
+import { refreshWallet } from '@/lib/sync';
 
 /** One Inbox message from the MedNova team (Yazan 2026-10-27) with its gifts, or a friend's Style shop gift (#20). */
 export type Message = {
@@ -79,7 +79,7 @@ async function take(id: string): Promise<boolean> {
 /** Brings the wallet, Sparks and chests up to date after collecting. */
 async function refresh() {
   const uid = useSession.getState().userId;
-  if (uid) await syncAccount(uid).catch(() => {});
+  if (uid) await refreshWallet(uid).catch(() => {});
   await Promise.all([refreshSparks().catch(() => {}), loadChallenges(true).catch(() => {})]);
 }
 

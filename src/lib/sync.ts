@@ -10,19 +10,69 @@ const iso = (ms: number | null) => (ms == null ? null : new Date(ms).toISOString
 const ms = (s: string | null) => (s == null ? null : Date.parse(s));
 
 let running: Promise<void> | null = null;
+let queued: Promise<void> | null = null;
 
-/** Claims guest plays, uploads unsynced rows, then merges the account's rows into the phone. Safe to call often. */
-export function syncAccount(userId: string) {
-  running ??= run(userId).finally(() => (running = null));
-  return running;
+/**
+ * Claims guest plays, uploads unsynced rows, then merges the account's rows into the phone. Safe to call often.
+ * A call made while a sync is already running waits for one more full run after it (Yazan 2026-11-16, fix A1):
+ * the running one may have read the server before the caller's reward existed, so handing it back would leave the
+ * reward on the server and not on the phone.
+ */
+export function syncAccount(userId: string): Promise<void> {
+  if (!running) {
+    running = run(userId).finally(() => (running = null));
+    return running;
+  }
+  queued ??= running
+    .catch(() => {})
+    .then(() => {
+      queued = null;
+      return syncAccount(userId);
+    });
+  return queued;
+}
+
+/**
+ * Brings the account's newest wallet rows down now, in one call, without the full sync (fix A1, 2026-11-16).
+ * For a reward or purchase the server has just written: the screen updates at once, and a full sync follows
+ * in the background for everything else.
+ */
+export async function refreshWallet(userId: string, { full = true }: { full?: boolean } = {}) {
+  try {
+    const w = await pullLedger(userId);
+    if (w.data) await mergeLedger(userId, w.data);
+  } finally {
+    if (full) void syncAccount(userId).catch(() => {});
+  }
 }
 
 /** What an offline sign-out holds back for the account (SO2): rows not yet uploaded, plus stars and bests. */
 type Held = { plays: Play[]; items: PlayItem[]; ledger: LedgerEntry[]; progress: Record<string, unknown> };
 const heldKey = (userId: string) => `held:${userId}`;
 
-async function uploadPlays(userId: string, plays: Play[], items: PlayItem[]) {
-  if (!plays.length) return;
+/**
+ * Uploads plays and their answers; returns the ids of the plays the server would not take. Fix A1 (2026-11-16):
+ * one refused play (Vs rivals games were refused for days) used to stop the whole sync, so nothing went up or came
+ * down any more. Now a refused batch is retried play by play, the refused ones stay on the phone for the next sync,
+ * and everything else carries on.
+ */
+async function uploadPlays(userId: string, plays: Play[], items: PlayItem[]): Promise<string[]> {
+  if (!plays.length) return [];
+  try {
+    await uploadPlayBatch(userId, plays, items);
+    return [];
+  } catch (e) {
+    if (plays.length === 1) {
+      console.warn('[sync] play refused', plays[0].id, (e as { message?: string })?.message);
+      return [plays[0].id];
+    }
+    const refused: string[] = [];
+    for (const p of plays) refused.push(...(await uploadPlays(userId, [p], items.filter((i) => i.playId === p.id))));
+    return refused;
+  }
+}
+
+async function uploadPlayBatch(userId: string, plays: Play[], items: PlayItem[]) {
   const { error } = await supabase.from('plays').upsert(
     plays.map((p) => ({
       id: p.id,
@@ -99,7 +149,8 @@ export async function holdUnsynced(userId: string) {
 async function uploadHeld(userId: string) {
   const held = await engine.kv.get<Held>(heldKey(userId));
   if (!held) return;
-  await uploadPlays(userId, held.plays, held.items);
+  const refusedPlays = await uploadPlays(userId, held.plays, held.items);
+  if (refusedPlays.length) return; // kept for the next sync; nothing else from the pile goes up before its games
   await uploadLedger(held.ledger);
   const keys = PROGRESS_KEYS.filter((k) => k in held.progress);
   if (keys.length) {
@@ -155,41 +206,68 @@ async function saveCursor(userId: string, key: string, last: string | undefined)
   else if (c?.user !== userId) await engine.kv.set(key, { user: userId, at: new Date(0).toISOString() });
 }
 
-async function run(userId: string) {
-  await uploadHeld(userId);
-  await engine.recorder.claimGuestPlays(userId);
-
-  const { plays, items } = await engine.recorder.unsynced(userId);
-  if (plays.length) {
-    await uploadPlays(userId, plays, items);
-    await engine.recorder.markSynced(plays.map((p) => p.id));
+/** Runs one sync step; a failing step is remembered but no longer stops the steps after it (fix A1). */
+async function step(errors: unknown[], what: string, fn: () => Promise<unknown>) {
+  try {
+    await fn();
+  } catch (e) {
+    console.warn(`[sync] ${what} failed`, (e as { message?: string })?.message ?? e);
+    errors.push(e);
   }
+}
+
+async function mergeLedger(userId: string, rows: LedgerRow[]) {
+  await engine.wallet.mergeRemote(
+    rows.map((e): LedgerEntry => ({ id: e.id, kind: e.kind, exp: e.exp, tokens: e.tokens, reason: e.reason, playId: e.play_id ?? undefined, note: e.note ?? undefined, at: ms(e.at)!, synced: true })),
+  );
+  await saveCursor(userId, LEDGER_CURSOR, rows[rows.length - 1]?.uploaded_at);
+}
+
+/** Fix A1 (2026-11-16): one full wallet pull per account after this update, so rows missed while the sync was blocked arrive. */
+const LEDGER_REPULL = 'sync:ledger:repull-2026-11-16';
+
+async function run(userId: string) {
+  const errors: unknown[] = [];
+  if ((await engine.kv.get<string>(LEDGER_REPULL)) !== userId) {
+    await engine.kv.remove(LEDGER_CURSOR);
+    await engine.kv.set(LEDGER_REPULL, userId);
+  }
+  await step(errors, 'held rows', () => uploadHeld(userId));
+  await step(errors, 'guest plays', () => engine.recorder.claimGuestPlays(userId));
+
+  // Plays the server would not take stay unsynced; their wallet rows wait with them (the server checks each EXP
+  // row against its play, so sending it first would get it refused and dropped).
+  let waiting = new Set<string>();
+  await step(errors, 'plays', async () => {
+    const { plays, items } = await engine.recorder.unsynced(userId);
+    if (!plays.length) return;
+    const refused = await uploadPlays(userId, plays, items);
+    waiting = new Set(refused);
+    await engine.recorder.markSynced(plays.map((p) => p.id).filter((id) => !waiting.has(id)));
+  });
 
   // Refused wallet rows leave the phone.
-  const ledger = await engine.wallet.unsynced();
-  if (ledger.length) {
+  await step(errors, 'wallet', async () => {
+    const ledger = (await engine.wallet.unsynced()).filter((e) => !e.playId || !waiting.has(e.playId));
+    if (!ledger.length) return;
     const refused = await uploadLedger(ledger);
     await engine.wallet.drop(refused);
     await engine.wallet.markSynced(ledger.map((e) => e.id).filter((id) => !refused.includes(id)));
-  }
+  });
 
-  await syncProgress(userId);
+  await step(errors, 'progress', () => syncProgress(userId));
   // The Sparks bar: the phone's spends go up, the server's bar comes down.
   // (Loaded here, not at the top: the Sparks module reads the account, which imports this file.)
   await import('@/features/sparks/sparks').then((m) => m.syncSparks(userId, true)).catch(() => {});
 
-  // Bring down what other phones saved.
+  // Bring down what other phones (and the server's rewards) saved.
   const [w, p, it] = await Promise.all([
     pullLedger(userId),
     pullSince<PlayRow>(userId, PLAYS_CURSOR, 'plays', '*', 'updated_at', 1000, true),
     pullSince<ItemRow>(userId, ITEMS_CURSOR, 'play_items', '*', 'updated_at', 5000),
   ]);
-  if (w.data) {
-    await engine.wallet.mergeRemote(
-      w.data.map((e): LedgerEntry => ({ id: e.id, kind: e.kind, exp: e.exp, tokens: e.tokens, reason: e.reason, playId: e.play_id ?? undefined, note: e.note ?? undefined, at: ms(e.at)!, synced: true })),
-    );
-    await saveCursor(userId, LEDGER_CURSOR, w.data[w.data.length - 1]?.uploaded_at);
-  }
+  if (w.error) errors.push(w.error);
+  if (w.data) await mergeLedger(userId, w.data);
   if (p.data && it.data) {
     await engine.recorder.mergeRemote({
       plays: p.data.map(
@@ -235,6 +313,8 @@ async function run(userId: string) {
     await saveCursor(userId, PLAYS_CURSOR, p.data[p.data.length - 1]?.updated_at);
     await saveCursor(userId, ITEMS_CURSOR, it.data[it.data.length - 1]?.updated_at);
   }
+  // Callers that track being online still learn that something failed.
+  if (errors.length) throw errors[0];
 }
 
 /** Stars, bests and stamps: merge this phone with the account (best wins), then save the result on both. */

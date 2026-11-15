@@ -6,7 +6,7 @@ import { create } from 'zustand';
 import { engine } from '@/games/engine';
 import { useSession } from '@/games/shell/session';
 import { supabase } from '@/lib/supabase';
-import { syncAccount } from '@/lib/sync';
+import { refreshWallet, syncAccount } from '@/lib/sync';
 
 import { makeStoreProvider } from './storeSdk';
 
@@ -88,10 +88,18 @@ export async function restore(): Promise<BuyResult> {
   return 'done';
 }
 
-/** The server may take a moment to hear from RevenueCat, so look a few times. */
+/**
+ * The server may take a moment to hear from RevenueCat, so look a few times, and stop as soon as the purchase is
+ * there (fix A1, 2026-11-16: it used to wait about 10 s and run 3 full syncs whatever happened).
+ */
 async function settle(userId: string) {
-  for (const wait of [1500, 3000, 6000]) {
+  const rows = async () => (await engine.wallet.ledger()).length;
+  const before = await rows();
+  const subBefore = useSubscription.getState().until;
+  for (const wait of [600, 900, 1200, 1800, 2500, 3500]) {
     await new Promise((r) => setTimeout(r, wait));
-    await Promise.all([syncAccount(userId).catch(() => {}), loadSubscription(userId)]);
+    await Promise.all([refreshWallet(userId, { full: false }).catch(() => {}), loadSubscription(userId).catch(() => {})]);
+    if ((await rows()) > before || useSubscription.getState().until !== subBefore) break;
   }
+  void syncAccount(userId).catch(() => {});
 }

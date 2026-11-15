@@ -261,6 +261,7 @@ export const AR_FRAME: Record<string, string> = {
   "Sign out instead": "سجّل خروج بدل كده",
   "That character isn’t yours yet.": "الشخصية دي لسه مش بتاعتك.",
   "Could not reach MedNova. Check your connection and try again.": "مش قادرين نوصل لـMedNova. اتأكد من الإنترنت وجرّب تاني.",
+  "Not saved yet: your account is still catching up with this phone. Try again later.": "لسه ما اتحفظش: حسابك لسه بيلحق الموبايل ده. جرّب تاني بعد شوية.",
   "Guest": "ضيف",
   "Dr. ": "Dr. ",
   "SIGN IN TO SAVE YOUR PROGRESS": "سجّل دخولك عشان تحفظ تقدّمك",

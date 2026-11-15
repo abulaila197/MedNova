@@ -7,7 +7,7 @@ import { loadChallenges } from '@/features/chests/useChests';
 import { useSession } from '@/games/shell/session';
 import { copyOf, keepCopy } from '@/lib/copies';
 import { supabase } from '@/lib/supabase';
-import { syncAccount } from '@/lib/sync';
+import { refreshWallet } from '@/lib/sync';
 import { onAccountSwitch } from '@/state/accountSwitch';
 import { tr } from '@/i18n';
 
@@ -70,7 +70,7 @@ export async function loadRounds(force = false) {
   if (!force && Date.now() - useRoundsStore.getState().at < 180000) return;
   useRoundsStore.setState({ at: Date.now() });
   const userId = useSession.getState().userId;
-  if (userId) await syncAccount(userId).catch(() => {});
+  if (userId) await refreshWallet(userId).catch(() => {});
   const { data } = await supabase.rpc('rounds_status');
   const r = data as Rounds | null;
   if (r?.this && Array.isArray(r.missions)) {
@@ -106,7 +106,7 @@ export async function claimRounds(tier: number) {
   const { data, error } = await supabase.rpc('rounds_claim', { tier });
   if (error || !data) return { ok: false, why: 'offline' } as const;
   const userId = useSession.getState().userId;
-  if (userId) await syncAccount(userId).catch(() => {});
+  if (userId) await refreshWallet(userId).catch(() => {});
   await loadRounds(true);
   void loadChallenges(true);
   return data as { ok: boolean; why?: string; chest?: ChestKind; stamp?: boolean; prize?: number; epic?: boolean };

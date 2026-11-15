@@ -8,7 +8,7 @@ import { Sheet } from '@/components/Sheet';
 import { useSession } from '@/games/shell/session';
 import { nameIsClean } from '@/lib/names';
 import { supabase } from '@/lib/supabase';
-import { syncAccount } from '@/lib/sync';
+import { refreshWallet } from '@/lib/sync';
 import { useAccount } from '@/state/account';
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
@@ -53,12 +53,12 @@ export function ChangeName({ open, onClose }: { open: boolean; onClose: () => vo
     setMsg(null);
     const userId = useSession.getState().userId;
     // Unsynced spends on this phone go up first so the server sees the right balance.
-    if (userId) await syncAccount(userId).catch(() => {});
+    if (userId) await refreshWallet(userId).catch(() => {});
     const { data, error } = await supabase.rpc('change_name', { name });
     const r = (error || !data ? { ok: false, why: 'offline' } : data) as { ok: boolean; why?: Why; need?: number; next?: number };
     if (r.ok) {
       useAccount.setState({ profile: { ...profile, username: name, display_name: name } });
-      if (userId) await syncAccount(userId).catch(() => {});
+      if (userId) await refreshWallet(userId).catch(() => {});
       if (r.next) setCost(r.next);
       setName('');
       setMsg({ text: tr('You’re Dr. {name} now.', { name }), good: true });

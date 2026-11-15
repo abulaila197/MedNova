@@ -4,7 +4,7 @@ import { Congrats } from '@/components/Congrats';
 import { GAMES } from '@/data/games';
 import { useSession } from '@/games/shell/session';
 import { supabase } from '@/lib/supabase';
-import { syncAccount } from '@/lib/sync';
+import { refreshWallet } from '@/lib/sync';
 import { tr } from '@/i18n';
 
 type Paid = { month: string; board: string; rank: number; tokens: number };
@@ -26,7 +26,7 @@ export function LeaderPrizeHost() {
       const got = ((data as { paid?: Paid[] } | null)?.paid ?? []).filter((x) => x.tokens > 0);
       if (!live || !got.length) return;
       setPaid(got);
-      syncAccount(userId).catch(() => {});
+      refreshWallet(userId).catch(() => {});
     });
     return () => {
       live = false;

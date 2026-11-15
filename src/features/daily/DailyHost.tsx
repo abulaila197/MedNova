@@ -8,7 +8,7 @@ import { defaultKV } from '@/games/engine/storage';
 import { useSession } from '@/games/shell/session';
 import { agoText, copyOf, keepCopy } from '@/lib/copies';
 import { supabase } from '@/lib/supabase';
-import { syncAccount } from '@/lib/sync';
+import { refreshWallet } from '@/lib/sync';
 import { useBack } from '@/lib/useBack';
 import { usePopups } from '@/state/popups';
 import { useStart } from '@/state/start';
@@ -90,26 +90,40 @@ export function DailyHost() {
 
   // The button: opens the pop-up any time; today's reward can be collected only if it wasn't yet.
   const ask = useDaily((x) => x.ask);
+  const asking = useRef(false);
   useEffect(() => {
-    if (!ask) return;
+    if (!ask || asking.current) return; // taps while it opens are ignored (item 6, 2026-11-16)
+    asking.current = true;
     void (async () => {
-      setError(null);
-      if (!userId) return setOpen({ day: 1, collected: false });
-      const { data, error: e } = await supabase.rpc('daily_status');
-      // Offline (#59): the calendar opens from the saved copy; collecting still needs the server.
-      const copy = e || !data ? await copyOf<Status>('daily', userId) : null;
-      if ((e || !data) && !copy) {
-        setOpen({ day: 1, collected: false });
-        setError(tr('Could not reach MedNova. Check your connection and try again.'));
-        return;
+      try {
+        setError(null);
+        if (!userId) return setOpen({ day: 1, collected: false });
+        // Item 6 (Yazan 2026-11-16): the button needed several presses because the pop-up waited for the server
+        // with no sign of the tap. It now opens at once from the saved copy, Collect waits (busy) until the server
+        // answers, and the calendar is corrected if the server says otherwise.
+        const copy = await copyOf<Status>('daily', userId);
+        const show = (st: Status) => {
+          const done = st.last_date === localDay();
+          useDaily.setState({ ready: !done });
+          // Already collected: show the dose taken today (the calendar has moved on to the next one).
+          setOpen({ day: done ? (st.next_day > 1 ? st.next_day - 1 : CALENDAR_DAYS) : st.next_day, collected: done });
+        };
+        if (copy) show(copy.v);
+        else setOpen({ day: 1, collected: false });
+        setBusy(true);
+        const { data, error: e } = await supabase.rpc('daily_status');
+        setBusy(false);
+        if (e || !data) {
+          // Offline (#59): the calendar stays on the saved copy; collecting still needs the server.
+          setError(copy ? tr('Offline · last updated {agoText}. Collecting needs internet.', { agoText: agoText(copy.at) }) : tr('Could not reach MedNova. Check your connection and try again.'));
+          return;
+        }
+        const st = data as Status;
+        void keepCopy('daily', userId, st);
+        show(st);
+      } finally {
+        asking.current = false;
       }
-      const st = copy ? copy.v : (data as Status);
-      if (!copy) void keepCopy('daily', userId, st);
-      const done = st.last_date === localDay();
-      useDaily.setState({ ready: !done });
-      // Already collected: show the dose taken today (the calendar has moved on to the next one).
-      setOpen({ day: done ? (st.next_day > 1 ? st.next_day - 1 : CALENDAR_DAYS) : st.next_day, collected: done });
-      if (copy && !done) setError(tr('Offline · last updated {agoText}. Collecting needs internet.', { agoText: agoText(copy.at) }));
     })();
   }, [ask, userId]);
 
@@ -138,7 +152,7 @@ export function DailyHost() {
     useDaily.setState({ ready: false });
     const day = r.day ?? open.day;
     if (userId) void keepCopy<Status>('daily', userId, { next_day: day >= CALENDAR_DAYS ? 1 : day + 1, last_date: localDay() });
-    if (userId) syncAccount(userId).catch(() => {}); // brings the new tokens down to the wallet
+    if (userId) refreshWallet(userId).catch(() => {}); // brings the new tokens down to the wallet
   };
 
   return (
