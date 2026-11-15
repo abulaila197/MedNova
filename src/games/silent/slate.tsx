@@ -208,7 +208,7 @@ export function Ledge({ ink, size, erase, onInk, onSize, onErase, onUndo, onClea
     </Pressable>
   );
   const word = (t: string, on = false) => (
-    <Text style={[s.toolT, on && { color: SL.yellow }]} numberOfLines={isAr ? 1 : undefined} adjustsFontSizeToFit={isAr} minimumFontScale={0.6}>
+    <Text style={[s.toolT, on && { color: SL.yellow }]} numberOfLines={1}>
       {t}
     </Text>
   );
@@ -248,10 +248,12 @@ export function Ledge({ ink, size, erase, onInk, onSize, onErase, onUndo, onClea
     </View>
   );
 }
-const QUICK = 4;
+// Arabic: 3 quick colours (green moves to the grid) so the tool words have room (Yazan 2026-11-15).
+const QUICK = isAr ? 3 : 4;
 /** Palette box width, height, gap and padding. */
-const SW = 34;
-const SH = 26;
+// Arabic (Yazan 2026-11-15): smaller colour boxes on the ledge and in the grid, so the tool words fit whole at full size.
+const SW = isAr ? 28 : 34;
+const SH = isAr ? 21 : 26;
 const SG = 6;
 const SP = 8;
 const PALETTE_DOTS = ['#ef4444', '#f5b82e', '#22c55e', '#3b82f6'];
@@ -355,10 +357,10 @@ const s = StyleSheet.create({
   hintK: { fontFamily: SL.body, fontSize: u(13) },
   mask: { fontFamily: SL.head, fontSize: u(17), letterSpacing: u(3) },
   ledge: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: SL.frame, borderRadius: u(3), paddingVertical: u(6), paddingHorizontal: u(8), boxShadow: tr('inset 0 2px 3px rgba(0,0,0,0.35)') },
-  tool: { flexShrink: isAr ? 1 : 0, minWidth: isAr ? 0 : undefined, paddingVertical: u(4), paddingHorizontal: u(2), alignItems: 'center', justifyContent: 'center' },
+  tool: { flexShrink: 0, paddingVertical: u(4), paddingHorizontal: u(2), alignItems: 'center', justifyContent: 'center' },
   // #17/#38 (Yazan 2026-11-01): the ledge colours are boxes like the grid's.
-  stick: { width: u(24), height: u(18), borderRadius: u(3), borderWidth: 1, borderColor: 'rgba(0,0,0,0.35)', boxShadow: tr('0 1px 1px rgba(0,0,0,0.4)') },
-  wheel: { width: u(18), height: u(18), borderRadius: u(9), flexDirection: 'row', flexWrap: 'wrap', overflow: 'hidden', borderWidth: 1.5, borderColor: SL.chalk },
+  stick: { width: u(isAr ? 18 : 24), height: u(isAr ? 14 : 18), borderRadius: u(3), borderWidth: 1, borderColor: 'rgba(0,0,0,0.35)', boxShadow: tr('0 1px 1px rgba(0,0,0,0.4)') },
+  wheel: { width: u(isAr ? 16 : 18), height: u(isAr ? 16 : 18), borderRadius: u(isAr ? 8 : 9), flexDirection: 'row', flexWrap: 'wrap', overflow: 'hidden', borderWidth: 1.5, borderColor: SL.chalk },
   wheelDot: { width: '50%', height: '50%' },
   // #17/#38 (Yazan 2026-11-01): 24 fixed boxes, 6 a row, in a panel sized to them (a % width with aspectRatio
   // collapsed into thin lines on Android).
@@ -366,7 +368,7 @@ const s = StyleSheet.create({
   palette: { width: u(SW * 6 + SG * 5 + SP * 2), flexDirection: 'row', flexWrap: 'wrap', gap: u(SG), padding: u(SP), backgroundColor: SL.frameDark, borderRadius: u(6), boxShadow: tr('0 4px 12px rgba(0,0,0,0.45)') },
   swatch: { width: u(SW), height: u(SH), borderRadius: u(4), borderWidth: 1, borderColor: 'rgba(0,0,0,0.35)' },
   swatchOn: { borderWidth: 2.5, borderColor: SL.chalk },
-  toolT: { fontFamily: SL.body, fontSize: u(isAr ? 10.5 : 12), color: SL.chalk },
+  toolT: { fontFamily: SL.body, fontSize: u(12), color: SL.chalk },
   sep: { width: 1, height: u(18), backgroundColor: 'rgba(0,0,0,0.25)' },
   peek: { flex: 1.15, justifyContent: 'center', borderWidth: 1, borderStyle: 'dashed', borderRadius: u(10), paddingVertical: u(10), paddingHorizontal: u(10) },
   pause: { width: u(34), height: u(34), borderRadius: u(17), borderWidth: 1.5, borderStyle: 'dashed', alignItems: 'center', justifyContent: 'center' },
