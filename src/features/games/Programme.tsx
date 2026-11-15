@@ -80,7 +80,7 @@ function Head({ end, onHeight, split }: { end: string; onHeight?: (h: number) =>
   return (
     <View style={[s.head, split ? s.headSplit : null]} onLayout={onHeight ? (e) => onHeight(e.nativeEvent.layout.height) : undefined}>
       {split ? null : <Text style={[s.k, { color: t.accent }]}>{tr('TONIGHT ON THE WARD')}</Text>}
-      <Text style={[s.h, { color: t.white }, split ? [s.mid, s.hSplit] : null]}>
+      <Text style={[s.h, { color: t.white }, split ? [s.mid, s.hSplit, isAr && s.hSplitAr] : null]}>
         {/* "+10 games" (Yazan 2026-11-13), not the exact count; Arabic keeps ألعاب كثير. */}
         {tr('{COUNT} games, ', { COUNT: '+10' })}
         <Text style={{ color: t.accent, fontFamily: F.displayItalic }}>{end}</Text>
@@ -172,6 +172,8 @@ const s = StyleSheet.create({
   sideL: { end: undefined, start: u(16) },
   mid: { textAlign: 'center' },
   hSplit: { fontSize: u(20), lineHeight: u(23) },
+  // Arabic runs longer: about 11% smaller so the title sits on one line on normal phones (Yazan 2026-11-16, B).
+  hSplitAr: { fontSize: u(17.8), lineHeight: u(20.5) },
   k: { fontFamily: F.mono, fontSize: u(9), lineHeight: u(12), letterSpacing: u(1.44) },
   h: { fontFamily: F.display, fontSize: u(24), lineHeight: u(26), letterSpacing: u(-0.4) },
   row: { height: u(ROW_H), marginBottom: u(ROW_GAP), borderRadius: u(12), borderWidth: 1, overflow: 'hidden', justifyContent: 'center', backgroundColor: '#0b1331' },
