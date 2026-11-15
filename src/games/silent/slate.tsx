@@ -208,7 +208,7 @@ export function Ledge({ ink, size, erase, onInk, onSize, onErase, onUndo, onClea
     </Pressable>
   );
   const word = (t: string, on = false) => (
-    <Text style={[s.toolT, on && { color: SL.yellow }]} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.6}>
+    <Text style={[s.toolT, on && { color: SL.yellow }]} numberOfLines={isAr ? 1 : undefined} adjustsFontSizeToFit={isAr} minimumFontScale={0.6}>
       {t}
     </Text>
   );
@@ -355,7 +355,7 @@ const s = StyleSheet.create({
   hintK: { fontFamily: SL.body, fontSize: u(13) },
   mask: { fontFamily: SL.head, fontSize: u(17), letterSpacing: u(3) },
   ledge: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: SL.frame, borderRadius: u(3), paddingVertical: u(6), paddingHorizontal: u(8), boxShadow: tr('inset 0 2px 3px rgba(0,0,0,0.35)') },
-  tool: { flexShrink: 1, minWidth: 0, paddingVertical: u(4), paddingHorizontal: u(2), alignItems: 'center', justifyContent: 'center' },
+  tool: { flexShrink: isAr ? 1 : 0, minWidth: isAr ? 0 : undefined, paddingVertical: u(4), paddingHorizontal: u(2), alignItems: 'center', justifyContent: 'center' },
   // #17/#38 (Yazan 2026-11-01): the ledge colours are boxes like the grid's.
   stick: { width: u(24), height: u(18), borderRadius: u(3), borderWidth: 1, borderColor: 'rgba(0,0,0,0.35)', boxShadow: tr('0 1px 1px rgba(0,0,0,0.4)') },
   wheel: { width: u(18), height: u(18), borderRadius: u(9), flexDirection: 'row', flexWrap: 'wrap', overflow: 'hidden', borderWidth: 1.5, borderColor: SL.chalk },

@@ -22,7 +22,7 @@ import { F } from '@/theme/tokens';
 
 import { LINKS } from './links';
 import { onAccountSwitch } from '@/state/accountSwitch';
-import { tr } from '@/i18n';
+import { isAr, tr } from '@/i18n';
 
 type Icon = (p: { size: number; color: string }) => ReactNode;
 type Way = { key: string; label: string; tokens: number; each?: boolean; act: string; icon: Icon };
@@ -251,7 +251,8 @@ export function FreeTokens({ t }: { t: Theme }) {
         <Global t={t} st={st} signedIn={signedIn} />
         {ADS_LIVE ? <WayCard t={t} w={AD_WAY} label={ADS_LIVE && st ? tr('{label} · {n} of {AD_CAP} today', { label: AD_WAY.label, n: st.ads_today ?? 0, AD_CAP }) : AD_WAY.label} act={signedIn ? AD_WAY.act : tr('Sign in')} done={(st?.ads_today ?? 0) >= AD_CAP} locked={!ADS_LIVE} busy={busy === 'ad'} onPress={() => (signedIn ? watchAd() : router.navigate('/auth'))} /> : null}
         {/* A way with no link is left out, never shown as "coming soon" (Yazan 2026-11-13). */}
-        {WAYS.filter((w) => !noLink(w)).map((w) => (
+        {/* The invite box comes right after the ad box (Yazan 2026-11-15). */}
+        {[...WAYS.filter((w) => w.key === 'invite'), ...WAYS.filter((w) => w.key !== 'invite')].filter((w) => !noLink(w)).map((w) => (
           <WayCard key={w.key} t={t} w={w} label={label(w)} act={act(w)} done={!unpaid(w) && isDone(w)} unpaid={unpaid(w)} locked={noLink(w)} busy={busy === w.key} onPress={() => tap(w)} reopen={LINKED.includes(w.key)} />
         ))}
       </Row>
@@ -276,7 +277,7 @@ function WayCard({ t, w, label, act, done, locked, busy, onPress, reopen, unpaid
     <Pressable onPress={locked || (done && !reopen) ? undefined : onPress} accessibilityRole="button" accessibilityLabel={unpaid ? w.label : tr('{label}, {tokens} tokens', { label: w.label, tokens: w.tokens })} style={[s.card, { backgroundColor: t.panel, borderColor: t.panelLine }, busy && { opacity: 0.6 }]}>
       <View style={[s.ic, { backgroundColor: 'rgba(111,214,255,0.1)' }]}>{w.icon({ size: u(17), color: t.accent })}</View>
       <Text style={[s.cN, { color: unpaid ? t.mute : t.fg }]}>{unpaid ? '♥' : `+${w.tokens}`}</Text>
-      <Text style={[s.cU, { color: t.mute }]} numberOfLines={2}>
+      <Text style={[s.cU, { color: t.mute, marginBottom: u(8) }]} numberOfLines={3}>
         {w.each ? tr('{label} · each', { label }) : label}
       </Text>
       {done || locked ? (
@@ -313,7 +314,7 @@ function Global({ t, st, signedIn }: { t: Theme; st: FreeStatus | null; signedIn
       <Pressable disabled={!reached || got || busy} onPress={collect} style={[s.card, s.goldIn, { backgroundColor: '#1a1830' }]} accessibilityLabel={tr('Global mission: {now} of {goal} downloads', { now, goal })}>
         <Text style={[s.gKick, { color: '#f3cf6c' }]}>{tr('GLOBAL MISSION')}</Text>
         <Text style={[s.cN, { color: t.fg }]}>+200</Text>
-        <Text style={[s.cU, { color: t.mute }]} numberOfLines={2}>
+        <Text style={[s.cU, { color: t.mute, marginBottom: u(8) }]} numberOfLines={3}>
           {got ? tr('Collected. Thank you!') : reached ? tr('We made it! Tap to collect') : tr('for everyone at 100k downloads')}
         </Text>
         <View style={[s.bar, { backgroundColor: 'rgba(243,207,108,0.15)' }]}>
@@ -446,11 +447,12 @@ const Send = ({ t, label, busy, onPress }: { t: Theme; label: string; busy: bool
 const s = StyleSheet.create({
   rowScroll: { marginHorizontal: -u(18) },
   row: { paddingHorizontal: u(18), gap: GAP, paddingTop: u(6), paddingBottom: u(4), alignItems: 'stretch' },
-  card: { width: CARD, borderWidth: 1, borderRadius: u(18), padding: u(12), alignItems: 'center' },
+  card: { width: CARD, borderWidth: 1, borderRadius: u(18), padding: u(12), alignItems: 'center', gap: 0 },
   ic: { width: u(30), height: u(30), borderRadius: u(10), alignItems: 'center', justifyContent: 'center', marginBottom: u(4) },
   cN: { fontFamily: F.display, fontSize: u(22), lineHeight: u(26) },
-  cU: { fontFamily: F.body, fontSize: u(9.5), lineHeight: u(12), height: u(24), textAlign: 'center' },
-  cBtn: { alignSelf: 'stretch', height: u(28), borderRadius: 999, alignItems: 'center', justifyContent: 'center', marginTop: u(8) },
+  // No fixed height (Yazan 2026-11-15: the Arabic second line was cut); the button sits at the card's foot instead.
+  cU: { fontFamily: F.body, fontSize: u(9.5), lineHeight: u(isAr ? 15 : 12), minHeight: u(isAr ? 30 : 24), textAlign: 'center' },
+  cBtn: { alignSelf: 'stretch', height: u(28), borderRadius: 999, alignItems: 'center', justifyContent: 'center', marginTop: 'auto' },
   ghost: { borderWidth: 1 },
   cBtnT: { fontFamily: F.bodyBold, fontSize: u(11) },
   gold: { width: CARD, borderRadius: u(18), padding: u(2) },
