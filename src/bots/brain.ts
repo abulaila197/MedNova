@@ -14,14 +14,15 @@ import type { Bot, BotType, Persona } from './types';
  *  - the score: a rival far ahead of you eases off a little, one far behind tries harder (hidden, keeps matches close).
  */
 
-const BASE: Record<BotType, number> = { freshman: 0.35, scholar: 0.65, genius: 0.9 };
-/** The most each type ever reaches from your level: the Genius tops out at 92%, so it stays beatable. */
-const CAP: Record<BotType, number> = { freshman: 0.5, scholar: 0.78, genius: 0.92 };
+// A little easier in every game (Yazan 2026-11-15: rivals felt too strong).
+const BASE: Record<BotType, number> = { freshman: 0.32, scholar: 0.6, genius: 0.82 };
+/** The most each type ever reaches from your level: the Genius tops out at 88%, so it stays beatable. */
+const CAP: Record<BotType, number> = { freshman: 0.48, scholar: 0.74, genius: 0.88 };
 /** Growth per level of yours. */
 const GROW = 0.003;
 
 /** How long each type takes, as a share of the time the question gives. */
-const SPEED: Record<BotType, [number, number]> = { freshman: [0.45, 0.9], scholar: [0.3, 0.65], genius: [0.12, 0.4] };
+const SPEED: Record<BotType, [number, number]> = { freshman: [0.45, 0.9], scholar: [0.3, 0.65], genius: [0.18, 0.45] };
 /** How often each type runs out of time on a question. */
 const TIMEOUT: Record<BotType, number> = { freshman: 0.08, scholar: 0.03, genius: 0.01 };
 
@@ -129,7 +130,7 @@ export function solveClue(m: Mind, a: Pick<Ask, 'seed' | 'gap' | 'progress'>, cl
   const p = persona(m);
   const mood = moodOf(m);
   const table: Record<BotType, [number | null, number][]> = {
-    genius: [[1, 0.03], [2, 0.07], [3, 0.6], [4, 0.25], [5, 0.05]],
+    genius: [[2, 0.05], [3, 0.5], [4, 0.33], [5, 0.12]],
     scholar: [[3, 0.25], [4, 0.45], [5, 0.2], [6, 0.1]],
     freshman: [[5, 0.4], [6, 0.35], [null, 0.25]],
   };

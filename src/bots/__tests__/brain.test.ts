@@ -29,10 +29,10 @@ test('identity: a name always has the same personality; every personality is use
 });
 
 test('skill: Freshman < Scholar < Genius, growth is capped and the Genius stays beatable', () => {
-  assert.equal(skillOf('freshman', 1), 0.35);
-  assert.equal(skillOf('scholar', 1), 0.65);
-  assert.equal(skillOf('genius', 1), 0.9);
-  assert.equal(skillOf('genius', 500), 0.92);
+  assert.equal(skillOf('freshman', 1), 0.32);
+  assert.equal(skillOf('scholar', 1), 0.6);
+  assert.equal(skillOf('genius', 1), 0.82);
+  assert.equal(skillOf('genius', 500), 0.88);
   const f = rate(mindFor(bot('freshman')));
   const s = rate(mindFor(bot('scholar')));
   const g = rate(mindFor(bot('genius')));

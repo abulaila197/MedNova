@@ -92,7 +92,7 @@ test('range plan: each type solves inside its own range, never at one set second
   const times = new Set<number>();
   for (let i = 0; i < 200; i++) {
     const p = rangePlan(mindFor(rival('genius', 'Mei')), { seed: `r${i}`, limitMs: 90_000, right: true });
-    assert.ok(p.doneAt! >= 0.08 * 90_000 - 1 && p.doneAt! <= 0.35 * 90_000 + 1);
+    assert.ok(p.doneAt! >= 0.15 * 90_000 - 1 && p.doneAt! <= 0.45 * 90_000 + 1);
     times.add(p.doneAt!);
   }
   assert.ok(times.size > 150);

@@ -7,12 +7,13 @@ import { MAX_ROWS, score } from './core';
 
 /** The row each type usually solves on (Yazan 2026-11-09: rivals play real words, so their colours follow the rules). */
 const SOLVE_ROW: Record<BotType, [number, number][]> = {
-  genius: [[2, 0.05], [3, 0.4], [4, 0.4], [5, 0.15]],
-  scholar: [[3, 0.15], [4, 0.4], [5, 0.3], [6, 0.15]],
-  freshman: [[4, 0.15], [5, 0.35], [6, 0.5]],
+  // Easier (Yazan 2026-11-15: rivals solved on try 1 or 2 too often). Never before try 3.
+  genius: [[3, 0.2], [4, 0.45], [5, 0.3], [6, 0.05]],
+  scholar: [[4, 0.3], [5, 0.4], [6, 0.3]],
+  freshman: [[5, 0.35], [6, 0.65]],
 };
 /** Seconds between a type's rows. */
-const ROW_SECONDS: Record<BotType, [number, number]> = { genius: [7, 13], scholar: [9, 17], freshman: [11, 20] };
+const ROW_SECONDS: Record<BotType, [number, number]> = { genius: [9, 16], scholar: [11, 19], freshman: [13, 22] };
 
 /** Colours of a row as letters: g green, y yellow, x grey. */
 export const coloursOf = (guess: string, answer: string) =>
@@ -46,10 +47,10 @@ export function wordPlan(mind: Mind, a: { seed: string; answer: string; limitMs:
   const r = rng(`${a.seed}:${mind.bot.id}:word`);
   const type = mind.bot.type;
   // The brain's answer for this word decides whether it gets there at all; its form moves the row.
-  const right = decide(mind, { seed: a.seed, limitMs: a.limitMs, gap: a.gap, progress: a.progress }).right || type === 'genius';
+  const right = decide(mind, { seed: a.seed, limitMs: a.limitMs, gap: a.gap, progress: a.progress }).right;
   let at: number | null = weighted(r, SOLVE_ROW[type]);
   const mood = moodOf(mind);
-  if (mood === 'fire') at = Math.max(2, at - 1);
+  if (mood === 'fire') at = Math.max(3, at - 1);
   if (mood === 'tilt') at += 1;
   if (a.gap > 0.25) at += 1;
   if (!right || at > MAX_ROWS) at = null;

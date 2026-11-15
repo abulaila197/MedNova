@@ -33,7 +33,8 @@ export function cluePlan(mind: Mind, a: { seed: string; gap: number; progress: n
  * Timed-moment games (The Riddler vs rivals): each type solves at a random moment inside its own range
  * (Yazan 2026-11-09: a range per type, never a set second), or not at all. Shares of the time the picture gives.
  */
-const SOLVE_RANGE: Record<BotType, [number, number]> = { genius: [0.08, 0.35], scholar: [0.2, 0.6], freshman: [0.4, 0.92] };
+// Slower (Yazan 2026-11-15): a Genius no longer solves a picture in its first few seconds.
+const SOLVE_RANGE: Record<BotType, [number, number]> = { genius: [0.15, 0.45], scholar: [0.25, 0.7], freshman: [0.45, 0.95] };
 export function rangePlan(mind: Mind, a: { seed: string; limitMs: number; right: boolean; pace?: number }): Plan {
   if (!a.right) return { doneAt: null, solved: false, wrongAt: [] };
   const r = rng(`${a.seed}:${mind.bot.id}:range`);

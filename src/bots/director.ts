@@ -12,23 +12,24 @@ import { tr } from '@/i18n';
  * Who says what, and when (G3, Yazan 2026-11-09). Games and the room tell the director what happened; it decides
  * whether a rival speaks, picks the line by hidden personality and place, and queues it so two rivals never talk
  * at once. Each personality sits between Normal and Chatty. Nobody repeats a line twice in a row, a rival waits
- * 8 to 15 seconds between lines, and a line whose moment has passed is dropped.
+ * 5 to 9 seconds between lines, and a line whose moment has passed is dropped.
  */
 
 /** How likely a moment is to make a rival speak, at the Normal end; the Chatty end is about twice this. */
+// Chattier (Yazan 2026-11-15, all Vs rivals games): about 1.6 times the old chances, and a shorter wait between lines.
 const RATE: Record<Moment, number> = {
-  ready: 0.55,
+  ready: 0.8,
   kicked: 1,
-  start: 0.3,
-  right: 0.14,
-  wrong: 0.12,
-  overtake: 0.4,
-  fire: 0.55,
-  tilt: 0.45,
-  round: 0.3,
-  end: 0.75,
-  youRight: 0.1,
-  youWrong: 0.1,
+  start: 0.5,
+  right: 0.24,
+  wrong: 0.2,
+  overtake: 0.65,
+  fire: 0.85,
+  tilt: 0.7,
+  round: 0.5,
+  end: 0.95,
+  youRight: 0.18,
+  youWrong: 0.18,
   heard: 1,
 };
 /** Moments that always get through: a kicked rival always reacts, the end of a match matters. */
@@ -70,7 +71,7 @@ export function rivalMoment(room: string, bot: Bot, m: Moment, ctx: Ctx = {}): b
   const now = Date.now();
   if (!ctx.force && !NO_WAIT.includes(m) && now < (nextAt.get(bot.id) ?? 0)) return false;
   // Between Normal and Chatty by personality; at a big table each rival speaks a little less.
-  const crowd = Math.min(1, 3 / Math.max(1, ctx.tableSize ?? 3));
+  const crowd = Math.min(1, 4 / Math.max(1, ctx.tableSize ?? 4));
   const chance = Math.min(1, RATE[m] * (1 + CHATTY[persona(bot)]) * (m === 'heard' || m === 'kicked' ? 1 : crowd));
   if (!ctx.force && Math.random() >= chance) return false;
 
@@ -93,7 +94,7 @@ export function rivalMoment(room: string, bot: Bot, m: Moment, ctx: Ctx = {}): b
   if (ok) {
     last.set(bot.id, lineKey(l));
     done.add(sticker ? `k:${sticker}` : lineKey(l));
-    nextAt.set(bot.id, now + 8000 + Math.random() * 7000);
+    nextAt.set(bot.id, now + 5000 + Math.random() * 4000);
   }
   return ok;
 }
@@ -116,7 +117,7 @@ export function rivalStudy(room: string, bot: Bot, round: number): boolean {
   if (bot.type !== 'genius' || isMuted(room, bot.id)) return false;
   const lastRound = factRound.get(room);
   if (lastRound != null && round - lastRound < 2) return false;
-  if (Math.random() >= (persona(bot) === 'shy' ? 0.3 : 0.6)) return false;
+  if (Math.random() >= (persona(bot) === 'shy' ? 0.45 : 0.8)) return false;
   const pool = STUDY[persona(bot)].filter((x) => `t:${x}` !== last.get(bot.id));
   const text = pool[Math.floor(Math.random() * pool.length)];
   const ok = sayAsBot(room, { user_id: bot.id, name: bot.name, face: bot.character, kind: 'line', item: text }, 6000);

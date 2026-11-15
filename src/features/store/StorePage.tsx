@@ -18,7 +18,7 @@ import { u } from '@/theme/scale';
 import type { Theme } from '@/theme/tokens';
 import { F } from '@/theme/tokens';
 
-import { StyleBanner } from './StyleBanner';
+import { StyleWardrobe } from './StyleBanner';
 import { FreeSheets, FreeTokens, useFree } from './FreeTokens';
 import { buy, isSubscribed, loadPrices, restore, useIsSubscribed, usePrice, useSubscription, type BuyResult } from './billing';
 import { PACKS, SUBSCRIPTION, type Pack } from './catalog';
@@ -110,6 +110,10 @@ export function StorePage() {
           </Pressable>
         )}
 
+        {/* Style shop first on Nova Shop, in its own look (Yazan 2026-11-15). */}
+        <View style={{ height: u(10) }} />
+        <StyleWardrobe t={t} />
+
         <Pressable
           onPress={subscribed ? undefined : () => run(SUBSCRIPTION.id, () => buy(SUBSCRIPTION.id))}
           accessibilityRole="button"
@@ -141,10 +145,6 @@ export function StorePage() {
 
         <FreeTokens t={t} />
 
-        {/* Style shop (Yazan 2026-10-13): frames, titles, win effects and stickers, bought with tokens. */}
-        <View style={{ height: u(14) }} />
-        <Kicker inSec>{tr('Style')}</Kicker>
-        <StyleBanner t={t} />
 
         <View style={{ height: u(14) }} />
         <Kicker inSec>{tr('Token packs')}</Kicker>

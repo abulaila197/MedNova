@@ -1480,6 +1480,7 @@ export const AR_PLAY: Record<string, string> = {
   "Welcome to MedNova": "أهلاً بيك في MedNova",
   "Learn medicine by playing +10 games, alone, around one phone, or against rivals.": "اتعلّم الطب وانت بتلعب +10 ألعاب: لوحدك، أو مع صحابك على موبايل واحد، أو قدام المنافسين.",
   "Your profile": "ملفك",
+  "{DEAL_OFF}% OFF THIS WEEK": "خصم {DEAL_OFF}% الأسبوع ده",
   "1 word": "كلمة واحدة",
   "2 words": "كلمتين",
   "You are drawing": "إنت بترسم",
