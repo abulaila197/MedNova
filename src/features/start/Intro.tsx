@@ -2,7 +2,7 @@ import { Image } from 'expo-image';
 import { memo, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import Animated, { Easing, useAnimatedProps, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
-import Svg, { ClipPath, Defs, G, LinearGradient, Path, RadialGradient, Rect, Stop } from 'react-native-svg';
+import Svg, { ClipPath, Defs, G, LinearGradient, Path, RadialGradient, Stop } from 'react-native-svg';
 import { scheduleOnRN } from 'react-native-worklets';
 
 import { Backdrop as AppBackdrop } from '@/components/Backdrop';
@@ -135,23 +135,14 @@ function Backdrop(_: { w: number; h: number }) {
   return <AppBackdrop />;
 }
 
-/** The light burst of the handover. */
+/**
+ * The light burst of the handover: radial-gradient(circle at 50% 60%) out to the farthest corner, baked into
+ * assets/images/intro/burst.webp (Yazan 2026-11-15, intro lag). The picture holds the circle out to half its radius
+ * (the light ends at 0.45), so it is placed as a square of side r around the burst's centre: same look on every screen.
+ */
 function Burst({ w, h }: { w: number; h: number }) {
-  // radial-gradient(circle at 50% 60%, ...) : a circle out to the farthest corner
   const r = Math.hypot(w / 2, h * 0.6);
-  return (
-    <Svg width={w} height={h} style={StyleSheet.absoluteFill}>
-      <Defs>
-        <RadialGradient id="inFx" gradientUnits="userSpaceOnUse" cx={w / 2} cy={h * 0.6} r={r} fx={w / 2} fy={h * 0.6}>
-          <Stop offset={0} stopColor="rgb(190,240,255)" stopOpacity={0.95} />
-          <Stop offset={0.18} stopColor="rgb(111,214,255)" stopOpacity={0.5} />
-          <Stop offset={0.45} stopColor="rgb(111,214,255)" stopOpacity={0} />
-          <Stop offset={1} stopColor="rgb(111,214,255)" stopOpacity={0} />
-        </RadialGradient>
-      </Defs>
-      <Rect x={0} y={0} width={w} height={h} fill="url(#inFx)" />
-    </Svg>
-  );
+  return <Image source={require('@/assets/images/intro/burst.webp')} style={{ position: 'absolute', left: w / 2 - r / 2, top: h * 0.6 - r / 2, width: r, height: r }} contentFit="fill" transition={0} />;
 }
 
 /** Full-screen intro overlay. Calls onDone once the handover has revealed the page below. */
@@ -240,7 +231,7 @@ export function Intro({ w, h, onDone }: { w: number; h: number; onDone: () => vo
           </Animated.View>
         </View>
       </Animated.View>
-      <Animated.View pointerEvents="none" style={[StyleSheet.absoluteFill, fx]}>
+      <Animated.View pointerEvents="none" renderToHardwareTextureAndroid style={[StyleSheet.absoluteFill, fx]}>
         {burst}
       </Animated.View>
     </View>
