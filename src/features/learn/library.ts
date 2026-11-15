@@ -8,7 +8,7 @@ import { wordById } from '@/games/crossword/data';
 import { CASES, caseById } from '@/games/diagnostic/data';
 import { questionById } from '@/games/streak/data';
 import { questionById as wheelsById } from '@/games/wheels/data';
-import { groupById as fokById } from '@/games/fok/data';
+import { groupById as fokById, teachesNothing } from '@/games/fok/data';
 import { caseById as stfById } from '@/games/stf/data';
 import { caseById as tttById } from '@/games/ttt/data';
 
@@ -111,11 +111,12 @@ function qaOf(game: string, item: PlayItem): Omit<Extract<Card, { kind: 'qa' }>,
         return { q: q.prompt, choices: [], answer: q.items.map((x, i) => `${i + 1}. ${x}`).join('\n') };
     }
   }
-  // Four of a Kind: the four boxes you saw; the answer is the link and each box's note. Wordplay never comes here.
+  // Four of a Kind: the four boxes you saw; the answer is the link and each box's note. Wordplay and theme-only groups never come here,
+  // including misses saved before a group was marked.
   if (game === 'four-of-a-kind') {
     const g = fokById.get(item.itemId);
     const boxes = (item.gameData.boxes as string[] | undefined) ?? [];
-    if (!g || boxes.length !== 4) return null;
+    if (!g || teachesNothing(g) || boxes.length !== 4) return null;
     const notes = boxes.map((b) => `${b}: ${g.b.find((x) => x[0] === b)?.[1] ?? ''}`);
     return { q: `What links these four?\n${boxes.join(' · ')}`, choices: [], answer: [`${g.n}. ${g.l}`, ...notes].join('\n') };
   }

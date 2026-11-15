@@ -6,6 +6,13 @@ import groupsJson from './data/groups.json';
 export const GROUPS = groupsJson as Group[];
 export const groupById: ReadonlyMap<string, Group> = new Map(GROUPS.map((g) => [g.id, g]));
 
+/**
+ * Groups whose link is only a theme or trivia, so a miss teaches nothing: they never go to Learn, like Wordplay
+ * (Yazan 2026-11-16, the 5 theme groups plus the 3 borderline ones).
+ */
+const NO_LEARN = new Set(['gastro-10', 'cardiology-09', 'endocrine-10', 'anatomy-10', 'micro-11', 'rheum-11', 'heme-10', 'emergency-10']);
+export const teachesNothing = (g: Group) => g.f === 'wordplay' || NO_LEARN.has(g.id);
+
 /** The 26 field ticks (Yazan 2026-11-12): Race to Diagnosis's 19 clinical fields, 6 basic sciences and Wordplay. */
 export const FIELDS: { key: string; label: string; group: 'Clinical' | 'Basic science' | 'Wordplay' }[] = [
   { key: 'cardiology', label: 'Cardiology', group: 'Clinical' },

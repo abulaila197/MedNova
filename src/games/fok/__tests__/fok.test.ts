@@ -168,3 +168,9 @@ test('race with a clock: time up closes the board where everyone is', () => {
   assert.equal(st.me?.points, 0);
   assert.equal(race.state(4_000 + 7_000).phase, 'done');
 });
+
+test('theme-only groups and Wordplay never go to Learn (Yazan 2026-11-16)', async () => {
+  const { groupById, teachesNothing } = await import('../data');
+  for (const id of ['gastro-10', 'cardiology-09', 'endocrine-10', 'anatomy-10', 'micro-11', 'rheum-11', 'heme-10', 'emergency-10', 'wordplay-01']) assert.ok(teachesNothing(groupById.get(id)!), id);
+  assert.ok(!teachesNothing(groupById.get('heme-07')!));
+});
