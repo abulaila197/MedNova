@@ -253,12 +253,12 @@ function Frame({ si, w, h, padTop, padBottom, children }: Omit<SlideProps, 'onNe
   );
 }
 
-/** 01 / Medical games: scene on top, copy at the top-left. */
+/** 01 / +10 games: scene on top, copy at the top-left. */
 export function SlideGames(p: SlideProps) {
   return (
     <Frame {...p}>
       <View style={st.bar}>
-        <Text style={[st.barTxt, { color: CYAN }]}>{tr('01 / Medical games')}</Text>
+        <Text style={[st.barTxt, { color: CYAN }]}>{tr('01 / +10 games')}</Text>
         <Skip onPress={p.onSkip} />
       </View>
       <View style={st.copy}>

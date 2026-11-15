@@ -81,8 +81,8 @@ function Head({ end, onHeight, split }: { end: string; onHeight?: (h: number) =>
     <View style={[s.head, split ? s.headSplit : null]} onLayout={onHeight ? (e) => onHeight(e.nativeEvent.layout.height) : undefined}>
       {split ? null : <Text style={[s.k, { color: t.accent }]}>{tr('TONIGHT ON THE WARD')}</Text>}
       <Text style={[s.h, { color: t.white }, split ? [s.mid, s.hSplit] : null]}>
-        {/* No game count at all, not even "+10" (Yazan 2026-11-15: too vague). */}
-        {tr('Learn by playing, ')}
+        {/* "+10 games" (Yazan 2026-11-13), not the exact count; Arabic keeps ألعاب كثير. */}
+        {tr('{COUNT} games, ', { COUNT: '+10' })}
         <Text style={{ color: t.accent, fontFamily: F.displayItalic }}>{end}</Text>
       </Text>
     </View>

@@ -18,7 +18,7 @@ const VISION = [
   tr('MedNova turns long nights of memorising into moments of wonder, rivalry and laughter, so that learning medicine feels less like surviving and more like falling in love with it all over again.'),
 ];
 const BUILD = [
-  tr('MedNova took many months of quiet, stubborn work. We could have shipped one more quiz app. Instead we built game after game, each with its own world, its own rules and its own surprises.'),
+  tr('MedNova took many months of quiet, stubborn work. We could have shipped one more quiz app. Instead we built ten games, each with its own world, its own rules and its own surprises.'),
   tr('Live matches refereed by our server, pass-the-phone nights with friends, a Learn space that remembers every miss. We poured ourselves into every detail, and we truly hope you love playing it as much as we loved making it.'),
 ];
 
