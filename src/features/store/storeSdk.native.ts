@@ -18,11 +18,20 @@ export function makeStoreProvider(): BillingProvider | null {
     ready = true;
   };
   const cache = new Map<string, PurchasesStoreProduct>();
+  // Asked again right before Buy when the shop's first ask didn't bring it, with one more try a moment later: the
+  // store sometimes answers empty while it is still waking up. If it is still missing, the error says so plainly
+  // and is logged with the store's country (billing.ts), so the cause is read, not covered.
+  const fetchOne = async (id: string) =>
+    (await Purchases.getProducts([id], SUBS.has(id) ? PRODUCT_CATEGORY.SUBSCRIPTION : PRODUCT_CATEGORY.NON_SUBSCRIPTION)).find((x) => x.identifier.split(':')[0] === id);
   const product = async (id: string) => {
     const hit = cache.get(id);
     if (hit) return hit;
-    const [p] = await Purchases.getProducts([id], SUBS.has(id) ? PRODUCT_CATEGORY.SUBSCRIPTION : PRODUCT_CATEGORY.NON_SUBSCRIPTION);
-    if (!p) throw new Error(`No store product ${id}`);
+    let p = await fetchOne(id);
+    if (!p) {
+      await new Promise((r) => setTimeout(r, 1500));
+      p = await fetchOne(id);
+    }
+    if (!p) throw new Error(`The store returned no product for ${id}`);
     cache.set(id, p);
     return p;
   };
@@ -58,6 +67,10 @@ export function makeStoreProvider(): BillingProvider | null {
         out[id] = p.priceString;
       }
       return out;
+    },
+    async storefront() {
+      start();
+      return (await Purchases.getStorefront())?.countryCode ?? null;
     },
   };
 }

@@ -1,6 +1,9 @@
 // Buying from the Store (MN2-MN4). RevenueCat takes the payment through Apple or Google and tells our server
 // (supabase/functions/revenuecat), which adds the tokens or marks the subscription. The phone then syncs.
 // Off until the RevenueCat keys are in (storeKeys.ts): BILLING_LIVE stays false and nothing is charged.
+import * as Application from 'expo-application';
+import * as Device from 'expo-device';
+import { Platform } from 'react-native';
 import { create } from 'zustand';
 
 import { engine } from '@/games/engine';
@@ -17,6 +20,8 @@ export type BillingProvider = {
   restore(): Promise<void>;
   /** The store's own price text for each product, in the player's currency. */
   prices(ids: string[]): Promise<Record<string, string>>;
+  /** The store account's country ("GBR"), or null when the store won't say. */
+  storefront(): Promise<string | null>;
 };
 
 // RevenueCat on phones (storeSdk.native.ts); nothing on web. Live once its key is filled in (storeKeys.ts).
@@ -30,10 +35,57 @@ export const usePrices = create<Record<string, string>>(() => ({}));
 /** The store's price for one product, or the default until the store answers. */
 export const usePrice = (id: string, fallback: string) => usePrices((p) => p[id] ?? fallback);
 let pricesAsked = false;
+/**
+ * Asks the store for the products when the shop opens. A product the store doesn't return is logged (with what the
+ * store said) and asked again on the next open, so a slow first answer doesn't leave the default prices for good.
+ */
 export function loadPrices(ids: string[]) {
   if (!provider || pricesAsked) return;
   pricesAsked = true;
-  provider.prices(ids).then((p) => usePrices.setState(p), () => (pricesAsked = false));
+  provider.prices(ids).then(
+    (p) => {
+      usePrices.setState(p);
+      const missing = ids.filter((i) => !p[i]);
+      if (missing.length) {
+        pricesAsked = false;
+        void logStoreError('products', missing.join(','), null, Object.keys(p).length);
+      }
+    },
+    (e) => {
+      pricesAsked = false;
+      void logStoreError('products', ids.join(','), e, 0);
+    },
+  );
+}
+
+type StoreError = { code?: unknown; message?: unknown; underlyingErrorMessage?: unknown; userInfo?: { readableErrorCode?: unknown } };
+const cut = (v: unknown, n: number) => (v == null || v === '' ? null : String(v).slice(0, n));
+/**
+ * Keeps what the store answered when a purchase, a restore or loading the products went wrong (store_errors, read
+ * on the Admin page), so a failed buy is read exactly instead of guessed (App Review, Nov 2026). Never throws.
+ */
+async function logStoreError(stage: 'products' | 'login' | 'buy' | 'restore', product: string | null, e: unknown, found?: number) {
+  const userId = useSession.getState().userId;
+  if (!userId) return;
+  try {
+    const err = (e ?? {}) as StoreError;
+    const front = await provider?.storefront().catch(() => null);
+    await supabase.from('store_errors').insert({
+      user_id: userId,
+      stage,
+      product: cut(product, 80),
+      platform: cut(`${Platform.OS} ${Platform.Version}`, 40),
+      app: cut(`${Application.nativeApplicationVersion ?? '?'} (${Application.nativeBuildVersion ?? '?'})`, 40),
+      device: cut(Device.modelName, 80),
+      storefront: cut(front, 10),
+      found: found ?? null,
+      code: cut(err.userInfo?.readableErrorCode ?? err.code, 80),
+      message: cut(e == null ? 'The store returned no product' : (err.message ?? e), 600),
+      underlying: cut(err.underlyingErrorMessage, 600),
+    });
+  } catch {
+    // the log is a help, never a new problem
+  }
 }
 
 const SUB_KEY = 'subscription';
@@ -65,8 +117,14 @@ export async function buy(productId: string): Promise<BuyResult> {
   if (!BILLING_LIVE || !provider) return 'soon';
   try {
     await provider.logIn(userId);
+  } catch (e) {
+    void logStoreError('login', productId, e);
+    return 'failed';
+  }
+  try {
     if (!(await provider.buy(productId))) return 'cancelled';
-  } catch {
+  } catch (e) {
+    void logStoreError('buy', productId, e);
     return 'failed';
   }
   await settle(userId);
@@ -81,7 +139,8 @@ export async function restore(): Promise<BuyResult> {
   try {
     await provider.logIn(userId);
     await provider.restore();
-  } catch {
+  } catch (e) {
+    void logStoreError('restore', null, e);
     return 'failed';
   }
   await settle(userId);
