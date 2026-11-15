@@ -54,3 +54,16 @@ test('fit: Android tablets fill the screen at a reading size (look A, 2026-11-12
   // Phones never switch, Android or not.
   assert.equal(frameFit({ width: 412, height: 867 }, { width: 412, height: 915 }, true).tablet, false);
 });
+
+test('fit: every Android tablet gets the tablet layout, small ones too (2026-11-16); phones never do', () => {
+  // Huawei MatePad T8 / small 8-inch tablets: 533 x 853 dp.
+  assert.equal(frameFit({ width: 533, height: 813 }, { width: 533, height: 853 }, true).tablet, true);
+  // 7-inch tablet at 600 dp.
+  assert.equal(frameFit({ width: 600, height: 912 }, { width: 600, height: 960 }, true).tablet, true);
+  // Wide-shaped small tablet (452 x 723 dp).
+  assert.equal(frameFit({ width: 452, height: 683 }, { width: 452, height: 723 }, true).tablet, true);
+  // Phones: S9 (360 x 740), a big phone (412 x 915), an old 16:9 phone (360 x 640), a wide phone (480 x 1000).
+  for (const [w, h] of [[360, 740], [412, 915], [360, 640], [480, 1000], [432, 960]])
+    assert.equal(frameFit({ width: w, height: h - 48 }, { width: w, height: h }, true).tablet, false, `${w}x${h}`);
+});
+
