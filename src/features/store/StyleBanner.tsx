@@ -41,20 +41,19 @@ export function StyleWardrobe({ t }: { t: Theme }) {
     <Pressable onPress={() => router.navigate('/style' as never)} accessibilityRole="link" accessibilityLabel={tr('Open the Style shop')}>
       <LinearGradient colors={['#3a1458', '#1b1446', '#0c1638']} start={{ x: 0.5, y: 0 }} end={{ x: 0.5, y: 1 }} style={[b.card, { borderColor: GOLD }]}>
         <View style={a.beam} />
-        <View style={b.top}>
-          <View style={{ flex: 1 }}>
-            <Text style={[a.k, { color: GOLD_T }]}>{tr('STYLE SHOP')}</Text>
-            <Text style={[a.h, { color: t.white, textAlign: 'auto' }]}>
-              {tr('Dress your ')}
-              <Text style={[a.h, { color: GOLD_T, fontFamily: F.displayItalic }]}>{tr('name')}</Text>
-            </Text>
-          </View>
+        {/* Yazan 2026-11-15: the deal badge sits on the kicker's row, so "Dress your name" gets the whole width on one line. */}
+        <View style={[b.top, { alignItems: 'center' }]}>
+          <Text style={[a.k, { color: GOLD_T, flex: 1 }]}>{tr('STYLE SHOP')}</Text>
           {frame || title ? (
-            <View style={[a.badge, { backgroundColor: '#ffd45a', alignSelf: 'flex-start' }]}>
+            <View style={[a.badge, { backgroundColor: '#ffd45a' }]}>
               <Text style={[a.badgeT, { color: '#2a1600' }]} numberOfLines={1}>{tr('{DEAL_OFF}% OFF THIS WEEK', { DEAL_OFF })}</Text>
             </View>
           ) : null}
         </View>
+        <Text style={[a.h, { color: t.white, textAlign: 'auto', alignSelf: 'stretch' }]} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.8}>
+          {tr('Dress your ')}
+          <Text style={[a.h, { color: GOLD_T, fontFamily: F.displayItalic }]}>{tr('name')}</Text>
+        </Text>
         <View style={b.grid}>
           {tile(tr('Frames'), <Framed slug={avatar} size={u(46)} frame={(frame?.key ?? 'gold') as FrameKey} />)}
           {tile(
@@ -76,7 +75,7 @@ export function StyleWardrobe({ t }: { t: Theme }) {
 
 const a = StyleSheet.create({
   card: { borderWidth: 1.5, borderRadius: u(22), paddingVertical: u(16), paddingHorizontal: u(14), marginTop: u(6), overflow: 'hidden', alignItems: 'center', gap: u(4) },
-  beam: { position: 'absolute', top: -u(60), alignSelf: 'center', width: u(220), height: u(260), borderRadius: u(130), backgroundColor: 'rgba(243,217,138,0.12)', boxShadow: '0px 0px 70px rgba(243,217,138,0.35)' },
+  beam: { position: 'absolute', top: '50%', marginTop: -u(130), alignSelf: 'center', width: u(220), height: u(260), borderRadius: u(130), backgroundColor: 'rgba(243,217,138,0.12)', boxShadow: '0px 0px 70px rgba(243,217,138,0.35)' },
   k: { fontFamily: F.mono, fontSize: u(7.5), letterSpacing: u(1.6) },
   h: { fontFamily: F.display, fontSize: u(21), lineHeight: u(25), textAlign: 'center' },
   row: { flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'center', gap: u(12), marginTop: u(8), direction: 'ltr' },

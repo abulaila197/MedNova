@@ -9,7 +9,7 @@ import { F } from '@/theme/tokens';
 import type { Book } from './library';
 import { useLearnColors } from './palette';
 import { VText } from './VText';
-import { tr } from '@/i18n';
+import { isAr, tr } from '@/i18n';
 
 const H = 108; // every book is the same height (RL6)
 const MIN = 17; // the thinnest spine still fits its name
@@ -76,8 +76,10 @@ const s = StyleSheet.create({
     borderBottomEndRadius: u(2),
     overflow: 'hidden',
   },
-  lean: { transform: [{ rotate: '-9deg' }], transformOrigin: 'left bottom', marginStart: u(16), marginEnd: u(2) },
-  leanR: { transform: [{ rotate: '7deg' }], transformOrigin: 'right bottom', marginEnd: u(14) },
+  // The app's right-to-left setting still swaps start/end margins inside this left-to-right shelf, which moved the
+  // leaning books' gaps to the wrong side in Arabic (Yazan 2026-11-15), so Arabic gets them the other way round.
+  lean: { transform: [{ rotate: '-9deg' }], transformOrigin: 'left bottom', [isAr ? 'marginEnd' : 'marginStart']: u(16), [isAr ? 'marginStart' : 'marginEnd']: u(2) },
+  leanR: { transform: [{ rotate: '7deg' }], transformOrigin: 'right bottom', [isAr ? 'marginStart' : 'marginEnd']: u(14) },
   band: { position: 'absolute', start: u(3), end: u(3), height: u(2), borderRadius: u(1), opacity: 0.85 },
   name: { position: 'absolute', start: 0, end: 0, top: u(NAME_TOP) },
   count: { position: 'absolute', start: 0, end: 0, bottom: u(6), textAlign: 'center', fontFamily: F.mono, fontSize: u(8.5), lineHeight: u(11) },
