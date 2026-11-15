@@ -13,6 +13,9 @@ import { tr } from '@/i18n';
 
 const H = 108; // every book is the same height (RL6)
 const MIN = 17; // the thinnest spine still fits its name
+// the space between the bands: the top band ends at 9, the bottom band starts 23 from the foot
+const NAME_TOP = 9;
+const NAME_BOTTOM = 23;
 
 /**
  * One shelf of specialty books, look "Leaning" (RL6, picked 2026-10-11): same height, width from the specialty's
@@ -43,8 +46,9 @@ export function BookShelf({ books, missed, onOpen }: { books: Book[]; missed: (b
               <LinearGradient colors={[...c.spineSheen]} locations={[0, 0.3, 1]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={StyleSheet.absoluteFill} />
               <View style={[s.band, { backgroundColor: col, top: u(7) }]} />
               <View style={[s.band, { backgroundColor: col, bottom: u(21) }]} />
+              {/* centred between the two coloured bands (Yazan 2026-11-15) */}
               <View style={s.name}>
-                <VText h={u(H - 12 - 26)} line={u(12)} dir="up" top style={{ fontFamily: F.display, fontSize: u(9), letterSpacing: u(0.1), color: t.fg, writingDirection: 'ltr' }}>
+                <VText h={u(H - NAME_TOP - NAME_BOTTOM)} line={u(12)} dir="up" style={{ fontFamily: F.display, fontSize: u(9), letterSpacing: u(0.1), color: t.fg, writingDirection: 'ltr' }}>
                   {b.spine}
                 </VText>
               </View>
@@ -75,7 +79,7 @@ const s = StyleSheet.create({
   lean: { transform: [{ rotate: '-9deg' }], transformOrigin: 'left bottom', marginStart: u(16), marginEnd: u(2) },
   leanR: { transform: [{ rotate: '7deg' }], transformOrigin: 'right bottom', marginEnd: u(14) },
   band: { position: 'absolute', start: u(3), end: u(3), height: u(2), borderRadius: u(1), opacity: 0.85 },
-  name: { position: 'absolute', start: 0, end: 0, top: u(13) },
+  name: { position: 'absolute', start: 0, end: 0, top: u(NAME_TOP) },
   count: { position: 'absolute', start: 0, end: 0, bottom: u(6), textAlign: 'center', fontFamily: F.mono, fontSize: u(8.5), lineHeight: u(11) },
   ledge: { height: u(6), marginHorizontal: u(2), borderRadius: u(2) },
 });

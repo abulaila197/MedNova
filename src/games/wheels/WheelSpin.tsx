@@ -25,9 +25,10 @@ const COUNT_LABELS = ['1', '2', '3'];
 const STYLE_LABELS: Record<(typeof STYLE_KEYS)[number], string> = {
   mcq: tr('Direct\nMCQ'), tf: tr('True or\nFalse'), r2o: tr('Rule\n2 Out'), match: tr('Matching'), riddle: tr('Riddle\nMCQ'), reverse: tr('Reverse\nQuestion'), lie: tr('3 Truths\n& a Lie'), closest: tr('Closest\nNumber'), order: tr('Put in\nOrder'),
 };
+// Field names stay English on the wheel in Arabic too (Yazan 2026-11-15), drawn like the English wheel.
 const FIELD_LABELS: Record<string, string> = {
-  anatomy: tr('Anatomy'), physiology: tr('Physiology'), pathology: tr('Pathology'), pharmacology: tr('Pharmacology'), microbiology: tr('Microbiology'),
-  biochemistry: tr('Biochemistry'), medicine: tr('Internal\nMedicine'), surgery: tr('Surgery'), pediatrics: tr('Pediatrics'), obgyn: tr('Obs &\nGynae'),
+  anatomy: 'Anatomy', physiology: 'Physiology', pathology: 'Pathology', pharmacology: 'Pharmacology', microbiology: 'Microbiology',
+  biochemistry: 'Biochemistry', medicine: 'Internal\nMedicine', surgery: 'Surgery', pediatrics: 'Pediatrics', obgyn: 'Obs &\nGynae',
 };
 /** Fitted so each line sits inside its slice with room to spare (largest that fits, at most 12; count 15). */
 const SIZE: Record<string, number> = {
@@ -55,7 +56,7 @@ const Ring = memo(function Ring({ id, r0, r1, labels, land, base, plain }: { id:
   const seg = 360 / n;
   const mid = (r0 + r1) / 2;
   return (
-    <Svg width="100%" height="100%" viewBox={`0 0 ${BOX} ${BOX}`}>
+    <Svg width="100%" height="100%" viewBox={`0 0 ${BOX} ${BOX}`} style={{ direction: 'ltr' }}>
       <Defs>
         <RadialGradient id={`${id}d`} cx={C} cy={C} r={r1} gradientUnits="userSpaceOnUse">
           <Stop offset={r0 / r1} stopColor="#1a2858" />
@@ -182,8 +183,7 @@ export function WheelSpin({ turn, settled }: { turn: Turn; settled: { count: boo
     <View style={{ width: '100%', maxWidth: u(380), aspectRatio: 1, alignSelf: 'center' }} onLayout={(e) => setPx(e.nativeEvent.layout.width)}>
       {one ? null : (
         <Spinning to={land.field} ms={STOP_MS.field}>
-          <Ring id="f" r0={RINGS.field[0]} r1={RINGS.field[1]} labels={fields.map((f) => FIELD_LABELS[f.key] ?? f.name)} land={land.field} base={12} plain={isAr} />
-          {ar ? <RingWords r0={RINGS.field[0]} r1={RINGS.field[1]} labels={fields.map((f) => FIELD_LABELS[f.key] ?? f.name)} land={land.field} base={12} px={px} dark={even} /> : null}
+          <Ring id="f" r0={RINGS.field[0]} r1={RINGS.field[1]} labels={fields.map((f) => FIELD_LABELS[f.key] ?? f.name)} land={land.field} base={12} />
         </Spinning>
       )}
       <Spinning to={land.style} ms={STOP_MS.style}>
