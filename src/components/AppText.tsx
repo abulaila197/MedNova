@@ -1,4 +1,5 @@
 import { AR_LETTERS, isAr } from '@/i18n';
+import { K } from '@/theme/scale';
 import { Platform, StyleSheet, Text as RNText, TextInput as RNTextInput, type TextInputProps, type TextProps, type TextStyle } from 'react-native';
 
 // Every screen is laid out at fixed design sizes and scaled as one piece (theme/scale.ts), so text
@@ -45,6 +46,10 @@ function letterRoom(style: TextProps['style']): TextStyle | null {
 // Arabic letters join, so letter spacing (used by the small mono labels) is dropped, and the taller Arabic letters
 // get a slightly roomier line.
 const BIG = 18;
+// Option A (Yazan 2026-11-15): Arabic keeps its size and boxes grow to fit, but the big page titles (design size 26
+// and up, Alexandria) are 10% smaller, as Arabic words run longer than English and wrapped to a second line.
+const TITLE = 26;
+const TITLE_SHRINK = 0.9;
 const AR_FONT: Record<string, string> = {
   InterTight_400Regular: 'IBMPlexSansArabic_400Regular',
   InterTight_500Medium: 'IBMPlexSansArabic_500Medium',
@@ -64,6 +69,11 @@ function arabicStyle(style: TextProps['style']): TextStyle {
   if (f.fontFamily && AR_OWN.test(f.fontFamily)) return { letterSpacing: 0 };
   const fam = f.fontFamily === 'Gabarito_700Bold' ? (size >= BIG ? 'Alexandria_700Bold' : 'IBMPlexSansArabic_700Bold') : (f.fontFamily && AR_FONT[f.fontFamily]) || 'IBMPlexSansArabic_400Regular';
   const out: TextStyle = { fontFamily: fam, letterSpacing: 0 };
+  if (fam === 'Alexandria_700Bold' && size >= TITLE * K) {
+    out.fontSize = size * TITLE_SHRINK;
+    if (f.lineHeight) out.lineHeight = Math.round(Math.max(f.lineHeight * TITLE_SHRINK, out.fontSize * 1.45));
+    return out;
+  }
   if (f.lineHeight && f.lineHeight < size * 1.45) out.lineHeight = Math.round(size * 1.45);
   return out;
 }
