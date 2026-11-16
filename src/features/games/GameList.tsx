@@ -113,7 +113,8 @@ export function GameList({ top }: { top: number }) {
   }, [focus]);
   return (
     // veil, not a mask (2026-11-15, lag): a mask over the scrolling list redraws all 13 strips through an extra layer.
-    <Fade veil stops={[[0, 0], [0.03, 1], [0.95, 1], [1, 0]]} style={[s.list, { top }]}>
+    // Softer, longer edges (Yazan 2026-11-16, option A): cards dissolve into the page under the title and above the bar.
+    <Fade veil stops={[[0, 0], [0.06, 1], [0.86, 1], [1, 0]]} style={[s.list, { top }]}>
       <ScrollView ref={list} style={s.fill} contentContainerStyle={s.inC} showsVerticalScrollIndicator={false}>
         {LISTED.map((g, j) => <Strip key={g.key} g={g} j={j} />)}
       </ScrollView>

@@ -115,6 +115,10 @@ const SPARK_OFF = 'rgba(255,209,102,0.7)';
 /** Setup choices as chips; `sparks` gives a choice's Sparks cost, shown under it (#36). */
 export function Chips<V extends string | number>({ choices, value, onChange, sparks, arrow, onArrow, ticks }: { choices: { value: V; label: string; note?: string }[]; value: V; onChange: (v: V) => void; sparks?: (v: V) => number | null; arrow?: (v: V) => boolean; onArrow?: (v: V, y: number) => void; ticks?: string | null }) {
   const t = useTheme();
+  // An even grid (Yazan 2026-11-16, the Arabic clock boxes wrapped into an uneven stack): up to 3 choices share one row,
+  // 4 sit two by two, more sit three to a row, every box the same width. A long name wraps inside its own box.
+  const n = choices.length;
+  const cell = n <= 3 ? s.chipRow1 : n === 4 ? s.chipHalf : s.chipThird;
   return (
     <View style={s.chips}>
       {choices.map((c) => {
@@ -123,7 +127,7 @@ export function Chips<V extends string | number>({ choices, value, onChange, spa
           <Pressable
             key={String(c.value)}
             onPress={tapped(() => onChange(c.value))}
-            style={[s.chip, { borderColor: on ? t.accent : t.chipLine, backgroundColor: on ? t.tabOn : t.chip }]}
+            style={[s.chip, cell, { borderColor: on ? t.accent : t.chipLine, backgroundColor: on ? t.tabOn : t.chip }]}
             accessibilityRole="button"
             accessibilityState={{ selected: on }}>
             {arrow?.(c.value) ? (
@@ -182,8 +186,11 @@ export const s = StyleSheet.create({
   ghostT: { fontFamily: F.bodySemi, fontSize: u(12), lineHeight: u(15) },
   card: { borderRadius: u(18), borderWidth: 1, padding: u(14), gap: u(8) },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: u(5) },
+  chipRow1: { flexGrow: 1, flexShrink: 1, flexBasis: 0 },
+  chipHalf: { width: '48%' },
+  chipThird: { width: '31%' },
   chip: { borderRadius: u(10), borderWidth: 1, paddingVertical: u(5), paddingHorizontal: u(10), minWidth: u(44), alignItems: 'center' },
-  chipT: { fontFamily: F.bodySemi, fontSize: u(10.5), lineHeight: u(13) },
+  chipT: { fontFamily: F.bodySemi, fontSize: u(10.5), lineHeight: u(13), flexShrink: 1, textAlign: 'center' },
   chipRow: { flexDirection: 'row', alignItems: 'center', gap: u(5) },
   chipArrow: { borderWidth: 1, borderRadius: u(6), width: u(15), height: u(15), alignItems: 'center', justifyContent: 'center' },
   chipArrowT: { fontFamily: F.bodyBold, fontSize: u(9), lineHeight: u(11) },

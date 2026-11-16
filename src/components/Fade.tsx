@@ -122,23 +122,13 @@ function Veil({ stops, horizontal }: { stops: Stops; horizontal: boolean }) {
   return bd ? <PictureVeil inv={inv} horizontal={horizontal} bd={bd} /> : <FlatVeil inv={inv} horizontal={horizontal} />;
 }
 
-/** The veil's alpha inside one band (stops normalised to 0..1). */
-function alphaAt(st: Stops, x: number) {
-  for (let i = 1; i < st.length; i++) {
-    const [o0, a0] = st[i - 1];
-    const [o1, a1] = st[i];
-    if (x <= o1) return o1 > o0 ? a0 + ((a1 - a0) * (x - o0)) / (o1 - o0) : a1;
-  }
-  return st[st.length - 1][1];
-}
-
-const STEPS = 16;
-
 /**
- * Item 2 (Yazan 2026-11-16, "shadow"): the flat navy veil showed as a dark box with straight sides, because the page
- * behind it has glows, symbols and a gradient. This veil is the page's own backdrop picture, copied over the edge in
- * thin strips that fade in step by step, so the edge dissolves into exactly the background behind it. Still strips,
- * no mask: nothing redraws while the list scrolls (the reason for the veil, Yazan 2026-11-02).
+ * The page's own backdrop picture over the faded edge, so the edge dissolves into exactly the background behind it
+ * (item 2, Yazan 2026-11-16, "shadow"). Fix list 2026-11-16 (Yazan picked A): ONE still copy per faded band, faded in
+ * by one gradient mask, instead of 16 strips that each held a whole screen's backdrop (32 copies a page: lag, and lines
+ * where the strips met). Placed against the page itself (measureLayout to the Screen root) instead of the window, so a
+ * page measured while it was still sliding in can no longer leave the copy shifted (the box with a straight side).
+ * Nothing in it moves while the list scrolls, so the mask is drawn once.
  */
 function PictureVeil({ inv, horizontal, bd }: { inv: Stops; horizontal: boolean; bd: NonNullable<React.ContextType<typeof BackdropCtx>> }) {
   const me = useRef<View>(null);
@@ -146,37 +136,41 @@ function PictureVeil({ inv, horizontal, bd }: { inv: Stops; horizontal: boolean;
   const measure = () => {
     const root = bd.root.current;
     if (!root || !me.current) return;
-    me.current.measureInWindow((x, y, w, h) => {
-      root.measureInWindow((rx, ry, rw, rh) => {
-        const next = { x: Math.round(x - rx), y: Math.round(y - ry), w, h, rw, rh };
+    me.current.measureLayout(root as never, (x, y, w, h) => {
+      root.measureInWindow((_rx, _ry, rw, rh) => {
+        const next = { x: Math.round(x), y: Math.round(y), w, h, rw, rh };
         setAt((was) => (was && Object.keys(next).every((k) => Math.abs(was[k as keyof typeof next] - next[k as keyof typeof next]) < 0.5) ? was : next));
       });
     });
   };
-  const size = at ? at.h : 0;
   const len = at ? (horizontal ? at.w : at.h) : 0;
   return (
     <View ref={me} collapsable={false} onLayout={measure} pointerEvents="none" style={[StyleSheet.absoluteFill, { direction: 'ltr' }]}>
-      {at && size > 0
-        ? bands(inv).flatMap((b, bi) =>
-            Array.from({ length: STEPS }, (_, k) => {
-              const p0 = Math.round(len * (b.from + ((b.to - b.from) * k) / STEPS));
-              const p1 = Math.round(len * (b.from + ((b.to - b.from) * (k + 1)) / STEPS));
-              const a = alphaAt(b.stops, (k + 0.5) / STEPS);
-              if (p1 <= p0 || a <= 0.01) return null;
-              const strip: ViewStyle = horizontal
-                ? { position: 'absolute', top: 0, bottom: 0, left: p0, width: p1 - p0, overflow: 'hidden', opacity: Math.min(1, a) }
-                : { position: 'absolute', left: 0, right: 0, top: p0, height: p1 - p0, overflow: 'hidden', opacity: Math.min(1, a) };
-              const pic: ViewStyle = { position: 'absolute', width: at.rw, height: at.rh, left: -at.x - (horizontal ? p0 : 0), top: -at.y - (horizontal ? 0 : p0) };
-              return (
-                <View key={`${bi}-${k}`} style={strip}>
-                  <View style={pic}>
-                    <Backdrop symbols={bd.symbols} size={{ width: at.rw, height: at.rh }} />
-                  </View>
-                </View>
-              );
-            }),
-          )
+      {at && len > 0
+        ? bands(inv).map((b, bi) => {
+            const p0 = Math.round(len * b.from);
+            const p1 = Math.round(len * b.to);
+            const box: ViewStyle = horizontal
+              ? { position: 'absolute', top: 0, bottom: 0, left: p0, width: p1 - p0, overflow: 'hidden' }
+              : { position: 'absolute', left: 0, right: 0, top: p0, height: p1 - p0, overflow: 'hidden' };
+            const pic: ViewStyle = { position: 'absolute', width: at.rw, height: at.rh, left: -at.x - (horizontal ? p0 : 0), top: -at.y - (horizontal ? 0 : p0) };
+            const picture = (
+              <View style={pic}>
+                <Backdrop symbols={bd.symbols} size={{ width: at.rw, height: at.rh }} />
+              </View>
+            );
+            const cols = b.stops.map(([, a]) => `rgba(0,0,0,${a})`) as unknown as [string, string, ...string[]];
+            const locs = b.stops.map(([o]) => o) as unknown as [number, number, ...number[]];
+            if (Platform.OS === 'web') {
+              const g = `linear-gradient(${horizontal ? '90deg' : '180deg'}, ${b.stops.map(([o, a]) => `rgba(0,0,0,${a}) ${(o * 100).toFixed(2)}%`).join(', ')})`;
+              return <View key={bi} style={[box, { maskImage: g, WebkitMaskImage: g } as unknown as ViewStyle]}>{picture}</View>;
+            }
+            return (
+              <MaskedView key={bi} style={box} androidRenderingMode="hardware" maskElement={<LinearGradient colors={cols} locations={locs} start={{ x: 0, y: 0 }} end={horizontal ? { x: 1, y: 0 } : { x: 0, y: 1 }} style={StyleSheet.absoluteFill} />}>
+                {picture}
+              </MaskedView>
+            );
+          })
         : null}
     </View>
   );

@@ -235,8 +235,9 @@ function Teams({ st }: { st: SetupState }) {
 const s = StyleSheet.create({
   card: { padding: u(10), gap: u(7) },
   opt: { gap: u(5) },
-  line: { flexDirection: 'row', alignItems: 'center', gap: u(8) },
-  side: { width: u(62) },
+  // The option's name sits above its choices (Yazan 2026-11-16, option B): the choices get the box's full width.
+  line: { gap: u(6) },
+  side: {},
   head: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   add: { fontFamily: F.bodySemi, fontSize: u(11) },
   small: { fontFamily: F.body, fontSize: u(9.5), lineHeight: u(13) },

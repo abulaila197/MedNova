@@ -78,14 +78,33 @@ export async function sfx(name: Sound) {
     lastTap = now;
   }
   try {
-    await audioMode();
-    const p = (players[name] ??= track(createAudioPlayer(FX[name])));
+    // Plays at once (Yazan 2026-11-16, the tap on a game sounded late): the players are made at start-up and nothing
+    // waits for the phone before play. Before, each tap first waited for the audio mode and for the rewind, and those
+    // queued behind the work of opening the game.
+    const p = player(name);
     p.volume = VOLUME[name];
-    await p.seekTo(0);
+    void p.seekTo(0)?.catch?.(() => {});
     (p.play() as unknown as Promise<void> | undefined)?.catch?.(() => {});
   } catch {
     // Sound is a nicety.
   }
+}
+
+function player(name: Sound) {
+  return (players[name] ??= track(createAudioPlayer(FX[name])));
+}
+
+/** Sets the audio mode and loads every short sound once, at start-up, so the first tap doesn't wait for either. */
+export function warmSounds() {
+  void audioMode().then(() => {
+    for (const k of Object.keys(FX) as Sound[]) {
+      try {
+        player(k);
+      } catch {
+        // A phone without sound just stays quiet.
+      }
+    }
+  });
 }
 
 /** A judged answer: right, wrong, or the clock ran out first. */

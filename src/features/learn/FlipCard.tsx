@@ -1,9 +1,10 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import { type ReactNode, useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { Image } from 'expo-image';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import { scheduleOnRN } from 'react-native-worklets';
 
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
@@ -68,8 +69,20 @@ export function FlipCard({ card, flipped, onPress }: { card: Card; flipped: bool
   const t = useTheme();
   const c = useLearnColors(t.mode);
   const r = useSharedValue(0);
+  // The soft shadow is left off while the card turns (Yazan's video 2026-11-16: the turn ran at ~7 frames a second): a
+  // blurred shadow under a face that turns in 3D is drawn again on every frame. It comes back once the card is still.
+  const [turning, setTurning] = useState(false);
+  const first = useRef(true);
   useEffect(() => {
-    r.value = withTiming(flipped ? 180 : 0, { duration: 600, easing: Easing.bezier(0.3, 0.8, 0.3, 1) });
+    if (first.current) {
+      first.current = false;
+      r.value = flipped ? 180 : 0;
+      return;
+    }
+    setTurning(true);
+    r.value = withTiming(flipped ? 180 : 0, { duration: 600, easing: Easing.bezier(0.3, 0.8, 0.3, 1) }, (done) => {
+      if (done) scheduleOnRN(setTurning, false);
+    });
   }, [flipped, r]);
   const front = useAnimatedStyle(() => ({
     opacity: r.value < 90 ? 1 : 0,
@@ -79,7 +92,7 @@ export function FlipCard({ card, flipped, onPress }: { card: Card; flipped: bool
     opacity: r.value >= 90 ? 1 : 0,
     transform: [{ perspective: u(900) }, { rotateY: `${180 - r.value}deg` }],
   }));
-  const face = [s.face, { borderColor: c.cardLine, boxShadow: c.cardShadow }];
+  const face = [s.face, { borderColor: c.cardLine }, turning ? null : { boxShadow: c.cardShadow }];
   const bg = <LinearGradient colors={[c.cardA, c.cardB]} style={[StyleSheet.absoluteFill, { borderRadius: u(19) }]} />;
   const src = (
     <View style={s.src}>

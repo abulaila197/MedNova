@@ -1,9 +1,11 @@
 import { LinearGradient } from 'expo-linear-gradient';
+import { useContext } from 'react';
 import { Platform, Pressable, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Backdrop } from '@/components/Backdrop';
+import { BackdropCtx } from '@/components/backdropCtx';
 import { CommunityIcon, GamesIcon, LearnIcon } from '@/components/Icons';
 import { useTheme } from '@/state/app';
 import { PAGE_W, u } from '@/theme/scale';
@@ -24,6 +26,7 @@ const H = Platform.OS === 'web' ? 46 : 40;
  */
 export function Dock({ active }: { active: Tab }) {
   const t = useTheme();
+  const bd = useContext(BackdropCtx);
   const ins = useSafeAreaInsets();
   const bottom = Platform.OS === 'web' ? u(8) : Math.max(ins.bottom, u(8));
   const go = tapped((r: Tab) => {
@@ -54,8 +57,9 @@ export function Dock({ active }: { active: Tab }) {
   };
   return (
     <View style={[s.dock, { paddingBottom: bottom, height: u(H) + bottom, borderTopColor: t.headerEdge }]}>
-      <View style={[StyleSheet.absoluteFill, { overflow: 'hidden' }]}><Backdrop anchor="bottom" /></View>
-      {/* The header's own navy (Yazan 2026-10-13). */}
+      <View style={[StyleSheet.absoluteFill, { overflow: 'hidden' }]}><Backdrop anchor="bottom" symbols={!!bd?.symbols} /></View>
+      {/* The page's own picture, symbols included (Yazan 2026-11-16: the bar showed a different, stretched picture). The
+          screen-tall copy pinned to the bar's bottom lines up with the page's copy pinned to the top. */}
       {[1, 2].map((i) => (
         <LinearGradient
           key={i}

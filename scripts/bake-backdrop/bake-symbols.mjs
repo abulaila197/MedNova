@@ -9,7 +9,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '../..');
-const page64 = fs.readFileSync(path.join(root, 'assets/images/backdrop/page.webp')).toString('base64');
+// Hi-res bases from bake-hd.py base (no grain yet); the symbols are drawn on them in place.
+const TMP = process.env.BAKE_TMP ?? '/tmp/mednova-bake';
 const C = '#a9c8ff';
 const SYMS = {
   stetho: (sw) => `<g stroke="${C}" stroke-width="${sw}" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M5 2v6a5 5 0 0 0 10 0V2M3.5 2h3M13.5 2h3M10 13v2.5a5.5 5.5 0 0 0 11 0V13"/><circle cx="21" cy="10.8" r="2.2"/></g>`,
@@ -42,15 +43,15 @@ function symbols(w, h) {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" style="position:absolute;left:0;top:0">${out}</svg>`;
 }
 const SHAPES = [
-  ['page-symbols-phone', 720, 1570],
-  ['page-symbols-tablet', 1200, 1600],
+  ['page-symbols-phone', 1080, 2355],
+  ['page-symbols-tablet', 1920, 2560],
 ];
 const b = await chromium.launch();
 const p = await b.newPage();
 for (const [name, w, h] of SHAPES) {
   await p.setViewportSize({ width: w, height: h });
-  await p.setContent(`<html><body style="margin:0;width:${w}px;height:${h}px;position:relative;overflow:hidden;background:url(data:image/webp;base64,${page64}) 0 0/100% 100% no-repeat">${symbols(w, h)}</body></html>`);
-  await p.screenshot({ path: path.join(root, `assets/images/backdrop/${name}.png`) });
+  await p.setContent(`<html><body style="margin:0;width:${w}px;height:${h}px;position:relative;overflow:hidden;background:url(data:image/png;base64,${fs.readFileSync(path.join(TMP, name + '.png')).toString('base64')}) 0 0/100% 100% no-repeat">${symbols(w, h)}</body></html>`);
+  await p.screenshot({ path: path.join(TMP, `${name}.png`) });
   console.log('baked', name, w, h);
 }
 await b.close();

@@ -33,6 +33,8 @@ const STRENGTH = 0.55;
 const PAGE = require("@/assets/images/backdrop/page.webp");
 // The same background with the still medical symbols baked in (scripts/bake-backdrop/bake-symbols.mjs, Yazan
 // 2026-11-15, lag): one plain picture instead of ~40 live vector symbols. A tablet shape so they never stretch.
+// Since 2026-11-16 all three are full phone resolution with the film grain baked in (bake-hd.py): no colour steps,
+// and nothing else is drawn over them.
 const PAGE_SYM = require("@/assets/images/backdrop/page-symbols-phone.webp");
 const PAGE_SYM_TAB = require("@/assets/images/backdrop/page-symbols-tablet.webp");
 
@@ -94,7 +96,8 @@ export function Backdrop({ anchor = "top", symbols = false, size }: { anchor?: "
           ))}
         </Svg>
       )}
-      <Grain />
+      {/* The baked pictures carry the grain themselves (bake-hd.py, 2026-11-16); only the live fallback lays it on. */}
+      {symbols || BAKED_ART ? null : <Grain />}
     </View>
   );
 }

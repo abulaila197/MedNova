@@ -5,7 +5,6 @@ import { StyleSheet, useWindowDimensions, View } from 'react-native';
 
 import { BAKED } from '@/features/start/baked';
 import { NAVY } from '@/features/start/Sky';
-import { Grain } from '@/components/Grain';
 import { useSideBg } from '@/state/sideBg';
 import { FRAME_W } from '@/theme/scale';
 import { THEMES } from '@/theme/tokens';
@@ -53,9 +52,7 @@ export function SideSky() {
     <View pointerEvents="none" style={[StyleSheet.absoluteFill, { backgroundColor: look.base, overflow: 'hidden' }]}>
       {mirror(side - FRAME_W + 1)}
       {mirror(side + FRAME_W - 1)}
-      {look === LOOK.page ? (
-        <Grain />
-      ) : (
+      {look === LOOK.page ? null : (
         // the sign-in sky as approved: a soft shade towards the screen's edge
         <>
           <LinearGradient colors={[SHADE, 'transparent']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={[s.edge, { start: 0, width: side }]} />

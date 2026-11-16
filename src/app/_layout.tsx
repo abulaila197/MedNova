@@ -1,4 +1,6 @@
 import '@/lib/storage-install';
+import { warmSounds } from '@/lib/sound';
+import { bootUpdates } from '@/lib/updates';
 import { Gabarito_700Bold } from '@expo-google-fonts/gabarito';
 import { InterTight_400Regular, InterTight_500Medium, InterTight_600SemiBold, InterTight_700Bold } from '@expo-google-fonts/inter-tight';
 import { Alexandria_700Bold } from '@expo-google-fonts/alexandria';
@@ -43,6 +45,10 @@ bootDirection();
 const WEB_DIR = Platform.OS === 'web' ? ({ dir: isAr ? 'rtl' : 'ltr' } as object) : {};
 startAccount();
 bootStart();
+// The short sounds load once now, so the first tap on a game plays at once (2026-11-16).
+warmSounds();
+// Over-the-air updates: puts back this phone's "Get updates first" switch (Admin).
+bootUpdates();
 
 export default function RootLayout() {
   const ready = useStartReady();

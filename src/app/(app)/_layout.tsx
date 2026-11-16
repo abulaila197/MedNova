@@ -6,6 +6,7 @@ import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from '
 import { Menu } from '@/components/Menu';
 import { ReportSheet } from '@/components/ReportSheet';
 import { LoadingHost } from '@/features/loading/LoadingHost';
+import { useLoading } from '@/features/loading/store';
 import { pageCard } from '@/features/loading/snapshot';
 import { closeFriendSheet, FriendSheets } from '@/features/profile/FriendSheets';
 import { PickNameHost } from '@/features/profile/PickName';
@@ -38,6 +39,7 @@ export default function AppLayout() {
   const t = useTheme();
   const { width } = useScreen();
   const open = useApp((s) => s.menuOpen);
+  const covered = useLoading((x) => x.covered);
   const setMenu = useApp((s) => s.setMenu);
   const p = useSharedValue(0);
   useStopSoundsOnLeave();
@@ -91,8 +93,13 @@ export default function AppLayout() {
       <Animated.View style={[StyleSheet.absoluteFill, menuSt]} pointerEvents={open ? 'box-none' : 'none'}>
         <Menu />
       </Animated.View>
-      <Animated.View ref={pageCard} collapsable={false} style={[s.card, { transformOrigin: 'left center' }, open && { borderRadius: u(34) }, card]} renderToHardwareTextureAndroid={open}>
-        <Stack screenOptions={{ headerShown: false, animation: 'fade', animationDuration: 220, freezeOnBlur: true, contentStyle: { backgroundColor: t.sky } }} />
+      <Animated.View ref={pageCard} collapsable={false} style={[s.card, { transformOrigin: 'left center' }, open && { borderRadius: u(34) }, card, covered && s.hidden]} renderToHardwareTextureAndroid={open}>
+        <Stack screenOptions={{ headerShown: false, animation: 'fade', animationDuration: 220, freezeOnBlur: true, contentStyle: { backgroundColor: t.sky } }}>
+          {/* Learn, Games and Community keep up while a game or another page is on top (Yazan's video 2026-11-16):
+              frozen, the Games page caught up on everything at once on the way back from a game, a 0.35 s stall that
+              left the fade-in 3 frames. Game pages stay frozen when hidden, so their clocks don't redraw unseen. */}
+          <Stack.Screen name="(main)" options={{ freezeOnBlur: false }} />
+        </Stack>
         {open ? <Pressable style={s.catch} onPress={() => setMenu(false)} accessibilityLabel={tr('Close menu')} /> : null}
       </Animated.View>
       <TalkHost />
@@ -114,6 +121,7 @@ export default function AppLayout() {
 }
 
 const s = StyleSheet.create({
+  hidden: { opacity: 0 },
   card: { ...StyleSheet.absoluteFill, overflow: 'hidden', zIndex: 2, shadowColor: '#000', shadowOffset: { width: -12, height: 12 }, shadowRadius: 24, shadowOpacity: 0.1 },
   catch: { ...StyleSheet.absoluteFill, backgroundColor: 'rgba(8,10,25,0.04)' },
 });

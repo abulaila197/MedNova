@@ -5,11 +5,19 @@ import { dropShot, snapPage } from './snapshot';
 /** A loading page run: which game, where its Play button sat (window y) and the picture the doors are cut from. */
 export type LoadRun = { key: string; y: number; shot: string | null; id: number };
 
-type Loading = { run: LoadRun | null; busy: boolean; start: (key: string, y: number) => void; end: () => void };
+type Loading = {
+  run: LoadRun | null;
+  busy: boolean;
+  /** The loading page fully covers the app (Yazan 2026-11-16, lag): the pages under it aren't drawn meanwhile. */
+  covered: boolean;
+  start: (key: string, y: number) => void;
+  end: () => void;
+}
 
 export const useLoading = create<Loading>((set, get) => ({
   run: null,
   busy: false,
+  covered: false,
   start: (key, y) => {
     if (get().run || get().busy) return;
     set({ busy: true });
@@ -18,7 +26,7 @@ export const useLoading = create<Loading>((set, get) => ({
   },
   end: () => {
     const shot = get().run?.shot ?? null;
-    set({ run: null });
+    set({ run: null, covered: false });
     dropShot(shot);
   },
 }));

@@ -138,6 +138,14 @@ function Run({ run }: { run: LoadRun }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shown]);
 
+  // While the loading page is all there is on screen, the page under it (the Games page with its pictures) isn't drawn:
+  // Android draws every view under an opaque one too, on every frame (Yazan's video 2026-11-16: ~7 frames a second).
+  useEffect(() => {
+    // From the first frame the doors (a picture of the page) are up until the sweep out starts.
+    useLoading.setState({ covered: shown && stage !== 'out' });
+    return () => useLoading.setState({ covered: false });
+  }, [shown, stage]);
+
   const settleSt = useAnimatedStyle(() => ({ transform: [{ scale: settle.value }] }));
   // moved with transforms, not top/left/width, so nothing is laid out again on each frame
   const outer = useAnimatedStyle(() => ({ transform: [{ translateY: clip.value }] }));
