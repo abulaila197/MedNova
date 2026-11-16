@@ -1,11 +1,11 @@
 import { useFocusEffect } from 'expo-router';
-import { type ReactNode, useCallback, useId, useMemo, useRef, useState } from 'react';
+import { type ReactNode, useCallback, useId, useState } from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Dock, type Tab } from '@/components/Dock';
 import { Backdrop } from '@/components/Backdrop';
-import { BackdropCtx } from '@/components/backdropCtx';
+import { Calm, type CalmStops } from '@/components/Calm';
 import { Header } from '@/components/Header';
 import { TopInset } from '@/components/TopInset';
 import { useTheme } from '@/state/app';
@@ -13,10 +13,15 @@ import { clearSideBg, setSideBg } from '@/state/sideBg';
 import { ColumnW, DESIGN_W, FRAME_W, TABLET, u } from '@/theme/scale';
 
 const COL = u(DESIGN_W);
+/** Calm edge above the dock: clear at the top of its strip, plain navy from just above the dock down (Yazan 2026-11-16). */
+const CALM_H = u(120);
+const CALM_DOCK: CalmStops = [[0, 0], [0.3, 0.22], [0.6, 0.7], [0.82, 1], [1, 1]];
 
 /**
- * A page of the app: the still navy backdrop, header, content, docked nav. The header and dock show the same
- * backdrop, so they run on from the page. `glow` is false when the page draws its own opaque background.
+ * A page of the app: the still navy backdrop, header, content, docked nav. `glow` is false when the page draws its own
+ * opaque background. The background is drawn once, at the page's own laid-out size (not the window's, which on Android leaves out the
+ * system buttons): the header is see-through over it, and the dock is plain navy with a calm edge above it, so lists
+ * fade into plain navy (Calm). Nothing draws a second copy of the picture.
  * The one owner of the screen edges: the header keeps clear of the status bar, and the bottom keeps
  * clear of the phone's system buttons (the dock does it when shown, the content does it otherwise).
  */
@@ -36,25 +41,20 @@ export function Screen({ children, tab = null, glow = 0, header = true, dock = t
   );
   const ins = useSafeAreaInsets();
   const bottom = dock || Platform.OS === 'web' ? 0 : ins.bottom;
-  const rootRef = useRef<View>(null);
-  const [size, setSize] = useState<{ w: number; h: number } | null>(null);
-  const bd = useMemo(() => (glow === false ? null : { symbols: symbols && !game, root: rootRef, size }), [glow, symbols, game, size]);
+  const [size, setSize] = useState<{ width: number; height: number } | null>(null);
   return (
-    <BackdropCtx.Provider value={bd}>
     <View
-      ref={rootRef}
-      collapsable={false}
       style={[s.root, { backgroundColor: t.sky }]}
       onLayout={(e) => {
-        const { width: w, height: h } = e.nativeEvent.layout;
-        setSize((was) => (was && Math.abs(was.w - w) < 0.5 && Math.abs(was.h - h) < 0.5 ? was : { w, h }));
+        const { width, height } = e.nativeEvent.layout;
+        setSize((was) => (was && Math.abs(was.width - width) < 0.5 && Math.abs(was.height - height) < 0.5 ? was : { width, height }));
       }}
     >
-      {glow === false ? null : <Backdrop symbols={symbols && !game} />}
+      {glow === false ? null : <Backdrop symbols={symbols && !game} size={size ?? undefined} />}
       {under}
       {header ? (
         <View style={{ overflow: 'hidden', zIndex: 5 }} onLayout={(e) => setHeadH(Math.round(e.nativeEvent.layout.height))}>
-          {glow === false ? <View style={[StyleSheet.absoluteFill, { backgroundColor: t.sky }]} /> : <Backdrop symbols={symbols && !game} />}
+          {glow === false ? <View style={[StyleSheet.absoluteFill, { backgroundColor: t.sky }]} /> : null}
           {/* Stuck to the top edge (Yazan 2026-10-17): only the phone's own status bar sits above it, in the same navy. */}
           <View style={{ height: Platform.OS === 'web' ? 0 : ins.top }} />
           <Header variant={game ? 'game' : 'app'} />
@@ -63,6 +63,7 @@ export function Screen({ children, tab = null, glow = 0, header = true, dock = t
         <TopInset />
       )}
       <View style={[s.body, { paddingBottom: bottom }]}>
+        {dock && glow !== false ? <Calm stops={CALM_DOCK} style={{ bottom: 0, height: CALM_H }} /> : null}
         {/* Android tablets: a page laid out for the width (`wide`) gets the whole screen; any other page keeps its
             phone layout in a centred phone-wide column, at the tablet's reading size, under the full-width header and
             bottom bar (Yazan 2026-11-12, look A). A number is a wider reading column (design px) for list pages
@@ -77,7 +78,6 @@ export function Screen({ children, tab = null, glow = 0, header = true, dock = t
       </View>
       {dock ? <Dock active={tab} /> : null}
     </View>
-    </BackdropCtx.Provider>
   );
 }
 

@@ -6,7 +6,6 @@ import Svg, { Circle, Line } from 'react-native-svg';
 
 import { Screen } from '@/components/Screen';
 import { CHAPTERS, SCORING, type Faq } from '@/features/info/content';
-import { Fade } from '@/components/Fade';
 import { InfoScroll, Kicker, Rich, s as ui, useInfo } from '@/features/info/ui';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
@@ -35,7 +34,9 @@ export default function Page() {
         <Kicker>{tr('MedNova · Support')}</Kicker>
         <Rich text={tr('Answers before\nthe *next case.*')} style={[ui.H, s.H]} />
 
-        <Fade veil from={0.85} horizontal style={s.areasWrap}>
+        {/* A sliding row of chips, cut at the screen edge: no faded end (calm edges, Yazan 2026-11-16: a navy fade there
+            would sit on the symbols as a box). */}
+        <View style={s.areasWrap}>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={s.areas}>
             <Pressable onPress={() => setArea(SEARCH)} accessibilityRole="button" accessibilityLabel={tr('Search questions')} style={[s.area, s.searchChip, { backgroundColor: c.surf, borderColor: area === SEARCH ? c.areaOnLine : c.line }]}>
               <SearchGlyph color={area === SEARCH ? c.fg : c.mute} />
@@ -58,7 +59,7 @@ export default function Page() {
               );
             })}
           </ScrollView>
-        </Fade>
+        </View>
 
         {ch ? (
           <>

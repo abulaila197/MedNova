@@ -9,7 +9,7 @@ import { useScreen } from "@/theme/scale";
 import { tr } from '@/i18n';
 
 // The page background (redesign stage 1, Yazan 2026-10-17): deep navy with the glow baked in and still, in the
-// top-right and bottom-left corners. The header and dock show this same picture, so they run on from the page.
+// top-right and bottom-left corners. The header is see-through over it, so it runs on from the page.
 const SPOTS = [
   {
     x: 1.02,
@@ -39,10 +39,10 @@ const PAGE_SYM = require("@/assets/images/backdrop/page-symbols-phone.webp");
 const PAGE_SYM_TAB = require("@/assets/images/backdrop/page-symbols-tablet.webp");
 
 /**
- * Full-screen background, pinned to the screen's top (pages, header) or bottom (the dock). `symbols` adds the still
+ * Full-screen background, pinned to the screen's top (pages) or bottom (game curtains). `symbols` adds the still
  * medical line symbols (Yazan 2026-11-12, look A2) on the menu pages he approved; never in games or on pages with their own art.
  */
-export function Backdrop({ anchor = "top", symbols = false, size }: { anchor?: "top" | "bottom"; symbols?: boolean; /** A fixed size (a veil's copy inside a column). */ size?: { width: number; height: number } }) {
+export function Backdrop({ anchor = "top", symbols = false, size }: { anchor?: "top" | "bottom"; symbols?: boolean; /** The page's own laid-out size (Screen); the window's size otherwise. */ size?: { width: number; height: number } }) {
   const t = useTheme();
   const screen = useScreen();
   const { width: w, height: h } = size ?? screen;

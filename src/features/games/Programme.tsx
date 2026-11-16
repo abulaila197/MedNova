@@ -4,6 +4,7 @@ import { useRef, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Text } from '@/components/AppText';
+import { Calm } from '@/components/Calm';
 import { Screen } from '@/components/Screen';
 import { NemesisButton } from '@/bots/NemesisButton';
 import { type Game } from '@/data/games';
@@ -44,6 +45,8 @@ function ListProgramme() {
   return (
     <Screen tab="games" glow={0} symbols>
       <View style={s.fill}>
+        {/* Calm edge under the title (Yazan 2026-11-16): the background turns plain navy where the list fades in. */}
+        {headH ? <Calm stops={[[0, 0], [0.45, 0.35], [1, 1]]} style={{ top: 0, height: headH + u(2) }} /> : null}
         <Head end={tr('tap one to play')} onHeight={setHeadH} split />
         {headH ? <GameList top={headH + u(2)} /> : null}
         <Side split />

@@ -1,13 +1,10 @@
 import MaskedView from '@react-native-masked-view/masked-view';
 import { LinearGradient } from 'expo-linear-gradient';
-import { type ReactNode, useContext, useRef, useState } from 'react';
+import type { ReactNode } from 'react';
 import { Platform, StyleSheet, View, type LayoutChangeEvent, type StyleProp, type ViewStyle } from 'react-native';
 
-import { Backdrop } from '@/components/Backdrop';
-import { BackdropCtx } from '@/components/backdropCtx';
-import { isAr } from '@/i18n';
+import { FAR, hexRgb } from '@/components/Calm';
 import { useTheme } from '@/state/app';
-import { useBleed } from '@/theme/scale';
 import { tr } from '@/i18n';
 
 type Stops = [number, number][];
@@ -15,12 +12,14 @@ type Stops = [number, number][];
 /**
  * Fades its content out towards an edge, like CSS mask-image: linear-gradient(...), so scrolling content dissolves
  * before the dock or the screen edge. Either `from`/`to` (solid until `from`, gone by `to`) or `stops`
- * ([offset 0..1, alpha 0..1] pairs). `horizontal` fades to the right; `off` drops the mask (content that fits needs none).
+ * ([offset 0..1, alpha 0..1] pairs). `horizontal` fades to the right (not with `veil`); `off` drops the mask (content that fits needs none).
  * Web uses a CSS mask; phones use MaskedView with a gradient.
  *
- * `veil` (Yazan 2026-11-02, lag): for scrolling pages. A mask over a scrolling list makes Android redraw the whole
- * list through an extra layer on every frame. The veil leaves the list alone and lays a still copy of the page
- * colour over the edge instead, faded in by a gradient, so the content seems to dissolve into the page.
+ * `veil` (Yazan 2026-11-02, lag): for scrolling lists, top and bottom edges only. A mask over a scrolling list makes
+ * Android redraw the whole list through an extra layer on every frame. The veil leaves the list alone and lays a plain
+ * navy gradient over the edge. The page background is plain navy there too (calm edges, components/Calm.tsx), so the
+ * content dissolves into the page. Never a copy of the background picture, never a mask (Yazan 2026-11-16: Android's
+ * mask cut through to black, and a copy never lined up on every phone).
  */
 export function Fade({
   from = 1,
@@ -57,8 +56,9 @@ export function Fade({
   if (veil)
     return (
       <View onLayout={onLayout} style={style}>
+        {st[st.length - 1][1] === 0 ? <CalmBelow /> : null}
         {children}
-        <Veil stops={st} horizontal={horizontal} />
+        <Veil stops={st} />
       </View>
     );
   if (Platform.OS === 'web') {
@@ -90,7 +90,7 @@ export function Fade({
   );
 }
 
-/** Splits flipped stops into the bands where the backdrop shows at all, so the veil only covers the edges. */
+/** Splits the veil's stops into the bands where it shows at all, so it only covers the edges. */
 function bands(inv: Stops): { from: number; to: number; stops: Stops }[] {
   const out: { from: number; to: number; stops: Stops }[] = [];
   let cur: Stops = [];
@@ -109,145 +109,32 @@ function bands(inv: Stops): { from: number; to: number; stops: Stops }[] {
 }
 
 /**
- * The still veil over the faded edges: see `veil` above. Nothing in it moves while the list scrolls.
- * #3 (Yazan 2026-11-04): it used to lay a copy of the page backdrop through a mask, which Android drew as a dark
- * square in the wrong place on some pages. Now each edge is a plain gradient into the page colour: no copy, no mask.
+ * The still navy gradient over the faded edges: where the content is fully gone, the navy is fully drawn (the content's
+ * alpha flipped). It runs out to the screen's sides (the page clips it), so it never draws a box beside a narrower list.
  */
-function Veil({ stops, horizontal }: { stops: Stops; horizontal: boolean }) {
-  // Where the content is fully gone the page colour is fully drawn: the veil's alpha is the content's alpha flipped.
-  // Item 2 (Yazan 2026-11-16): a sideways fade runs to the row's end, which is the left in Arabic.
-  const flip = horizontal && isAr;
-  const inv: Stops = (flip ? [...stops].reverse().map(([o, a]): [number, number] => [1 - o, a]) : stops).map(([o, a]) => [o, 1 - a]);
-  const bd = useContext(BackdropCtx);
-  return bd ? <PictureVeil inv={inv} horizontal={horizontal} bd={bd} /> : <FlatVeil inv={inv} horizontal={horizontal} />;
-}
-
-/**
- * The page's own backdrop picture over the faded edge, so the edge dissolves into exactly the background behind it
- * (item 2, Yazan 2026-11-16, "shadow"). Fix list 2026-11-16 (Yazan picked A): ONE still copy per faded band, faded in
- * by one gradient mask, instead of 16 strips that each held a whole screen's backdrop (32 copies a page: lag, and lines
- * where the strips met). Placed against the page itself (measureLayout to the Screen root) instead of the window, so a
- * page measured while it was still sliding in can no longer leave the copy shifted (the box with a straight side).
- * Nothing in it moves while the list scrolls, so the mask is drawn once.
- */
-function PictureVeil({ inv, horizontal, bd }: { inv: Stops; horizontal: boolean; bd: NonNullable<React.ContextType<typeof BackdropCtx>> }) {
-  const me = useRef<View>(null);
-  // measureLayout (to the page root) and the root's own layout size both ignore transforms: a page opened from the
-  // side menu is laid out while its card is still scaled to 80%, and a window measurement then gave an 80% copy of
-  // the picture in the wrong place (the dark band on side pages, Yazan 2026-11-16).
-  const [pos, setPos] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
-  const measure = () => {
-    const root = bd.root.current;
-    if (!root || !me.current) return;
-    me.current.measureLayout(root as never, (x, y, w, h) => {
-      const next = { x: Math.round(x), y: Math.round(y), w, h };
-      setPos((was) => (was && Object.keys(next).every((k) => Math.abs(was[k as keyof typeof next] - next[k as keyof typeof next]) < 0.5) ? was : next));
-    });
-  };
-  const at = pos && bd.size ? { ...pos, rw: bd.size.w, rh: bd.size.h } : null;
-  const len = at ? (horizontal ? at.w : at.h) : 0;
-  return (
-    <View ref={me} collapsable={false} onLayout={measure} pointerEvents="none" style={[StyleSheet.absoluteFill, { direction: 'ltr' }]}>
-      {at && len > 0
-        ? bands(inv).map((b, bi) => {
-            const p0 = Math.round(len * b.from);
-            const p1 = Math.round(len * b.to);
-            const box: ViewStyle = horizontal
-              ? { position: 'absolute', top: 0, bottom: 0, left: p0, width: p1 - p0, overflow: 'hidden' }
-              : { position: 'absolute', left: 0, right: 0, top: p0, height: p1 - p0, overflow: 'hidden' };
-            const pic: ViewStyle = { position: 'absolute', width: at.rw, height: at.rh, left: -at.x - (horizontal ? p0 : 0), top: -at.y - (horizontal ? 0 : p0) };
-            // Stacked see-through copies instead of a mask (Yazan's video 2026-11-16): Android's masked view went black
-            // during page fades and kept a shrunk copy after the side menu, on every side page. Each layer is the same
-            // picture, clipped to run from its step to the band's far end and a little see-through, so together they
-            // build the fade with no seams between them and nothing that needs a mask.
-            return (
-              <View key={bi} style={box}>
-                {layers(b.stops).map(([from, to, o], li) => {
-                  const q0 = Math.round((p1 - p0) * from);
-                  const q1 = Math.round((p1 - p0) * to);
-                  const clip: ViewStyle = horizontal
-                    ? { position: 'absolute', top: 0, bottom: 0, left: q0, width: q1 - q0, overflow: 'hidden', opacity: o }
-                    : { position: 'absolute', left: 0, right: 0, top: q0, height: q1 - q0, overflow: 'hidden', opacity: o };
-                  const shifted: ViewStyle = { ...pic, left: (pic.left as number) - (horizontal ? q0 : 0), top: (pic.top as number) - (horizontal ? 0 : q0) };
-                  return (
-                    <View key={li} style={clip}>
-                      <View style={shifted}>
-                        <Backdrop symbols={bd.symbols} size={{ width: at.rw, height: at.rh }} />
-                      </View>
-                    </View>
-                  );
-                })}
-              </View>
-            );
-          })
-        : null}
-    </View>
-  );
-}
-
-/** How many see-through layers build one faded band (more = smoother steps, more drawing). */
-const LAYERS = 12;
-
-/**
- * Turns a band's alpha curve into nested layers [from, to, opacity] (0-1 along the band). Where the picture gets
- * stronger towards the band's end, layer k runs from step k to the end; towards the start, from the start to step k.
- * Opacities are picked so the layers stacked over a step add up to the curve's alpha there.
- */
-function layers(stops: Stops): [number, number, number][] {
-  const alpha = (x: number) => {
-    for (let i = 1; i < stops.length; i++) {
-      const [o0, a0] = stops[i - 1];
-      const [o1, a1] = stops[i];
-      if (x <= o1) return o1 > o0 ? a0 + ((a1 - a0) * (x - o0)) / (o1 - o0) : a1;
-    }
-    return stops[stops.length - 1][1];
-  };
-  const up = alpha(1) >= alpha(0);
-  const out: [number, number, number][] = [];
-  let shown = 0; // alpha already built by the layers so far
-  for (let k = 0; k < LAYERS; k++) {
-    // steps walk from the weak end to the strong end
-    const s0 = k / LAYERS;
-    const mid = (k + 0.5) / LAYERS;
-    const want = Math.min(1, Math.max(shown, alpha(up ? mid : 1 - mid)));
-    const o = shown >= 1 ? 0 : 1 - (1 - want) / (1 - shown);
-    shown = want;
-    if (o <= 0.002) continue;
-    out.push(up ? [s0, 1, o] : [0, 1 - s0, o]);
-  }
-  return out;
-}
-
-/** A page without the shared backdrop (its own opaque background): a plain gradient into the page colour. */
-function FlatVeil({ inv, horizontal }: { inv: Stops; horizontal: boolean }) {
+function Veil({ stops }: { stops: Stops }) {
   const t = useTheme();
   const rgb = hexRgb(t.sky);
-  // Inside a tablet's centred column the veil runs out to the screen's edges, so it doesn't draw a box.
-  const bleed = useBleed();
   return (
-    <View pointerEvents="none" style={[StyleSheet.absoluteFill, { direction: 'ltr' }, !horizontal && bleed ? { left: -bleed, right: -bleed } : null]}>
-      {bands(inv).map((b, i) => {
-        const pos: ViewStyle = horizontal
-          ? { position: 'absolute', top: 0, bottom: 0, left: `${b.from * 100}%`, width: `${(b.to - b.from) * 100}%` }
-          : { position: 'absolute', left: 0, right: 0, top: `${b.from * 100}%`, height: `${(b.to - b.from) * 100}%` };
-        return (
-          <LinearGradient
-            key={i}
-            pointerEvents="none"
-            colors={b.stops.map(([, a]) => `rgba(${rgb},${a})`) as unknown as [string, string, ...string[]]}
-            locations={b.stops.map(([o]) => o) as unknown as [number, number, ...number[]]}
-            start={{ x: 0, y: 0 }}
-            end={horizontal ? { x: 1, y: 0 } : { x: 0, y: 1 }}
-            style={pos}
-          />
-        );
-      })}
+    <View pointerEvents="none" style={[StyleSheet.absoluteFill, { left: -FAR, right: -FAR }]}>
+      {bands(stops.map(([o, a]) => [o, 1 - a])).map((b, i) => (
+        <LinearGradient
+          key={i}
+          pointerEvents="none"
+          colors={b.stops.map(([, a]) => `rgba(${rgb},${a})`) as unknown as [string, string, ...string[]]}
+          locations={b.stops.map(([o]) => o) as unknown as [number, number, ...number[]]}
+          style={{ position: 'absolute', left: 0, right: 0, top: `${b.from * 100}%`, height: `${(b.to - b.from) * 100}%` }}
+        />
+      ))}
     </View>
   );
 }
 
-/** "#0d1738" -> "13,23,56" (a colour that isn't 6-digit hex falls back to the app navy). */
-function hexRgb(hex: string) {
-  const m = /^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(hex.trim());
-  return m ? [m[1], m[2], m[3]].map((x) => parseInt(x, 16)).join(',') : '13,23,56';
+/**
+ * Under a list that fades out at its bottom: the background stays plain navy from the list's bottom edge down to the
+ * dock, under whatever sits between them (Leaderboard's own row), so the fade never ends in a navy strip over the picture.
+ */
+function CalmBelow() {
+  const t = useTheme();
+  return <View pointerEvents="none" style={{ position: 'absolute', top: '100%', height: FAR, left: -FAR, right: -FAR, backgroundColor: t.sky }} />;
 }

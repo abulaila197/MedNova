@@ -1,11 +1,8 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import { useContext } from 'react';
 import { Platform, Pressable, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Backdrop } from '@/components/Backdrop';
-import { BackdropCtx } from '@/components/backdropCtx';
 import { CommunityIcon, GamesIcon, LearnIcon } from '@/components/Icons';
 import { useTheme } from '@/state/app';
 import { PAGE_W, u } from '@/theme/scale';
@@ -21,12 +18,12 @@ export type Tab = 'learn' | 'games' | 'community' | null;
 const H = Platform.OS === 'web' ? 46 : 40;
 
 /**
- * Docked nav (decision 46, slimmed 2026-10-13; redesign 2026-10-17): edge to edge, shows the page's own navy backdrop
- * (no bar colour of its own), hairline top edge and dividers, brand type, raised Games box.
+ * Docked nav (decision 46, slimmed 2026-10-13; redesign 2026-10-17): edge to edge, plain page navy (calm edges, Yazan
+ * 2026-11-16: the page background turns plain navy just above it, so lists fade into it), hairline top edge and
+ * dividers, brand type, raised Games box.
  */
 export function Dock({ active }: { active: Tab }) {
   const t = useTheme();
-  const bd = useContext(BackdropCtx);
   const ins = useSafeAreaInsets();
   const bottom = Platform.OS === 'web' ? u(8) : Math.max(ins.bottom, u(8));
   const go = tapped((r: Tab) => {
@@ -56,10 +53,7 @@ export function Dock({ active }: { active: Tab }) {
     );
   };
   return (
-    <View style={[s.dock, { paddingBottom: bottom, height: u(H) + bottom, borderTopColor: t.headerEdge }]}>
-      <View style={[StyleSheet.absoluteFill, { overflow: 'hidden' }]}><Backdrop anchor="bottom" symbols={!!bd?.symbols} /></View>
-      {/* The page's own picture, symbols included (Yazan 2026-11-16: the bar showed a different, stretched picture). The
-          screen-tall copy pinned to the bar's bottom lines up with the page's copy pinned to the top. */}
+    <View style={[s.dock, { paddingBottom: bottom, height: u(H) + bottom, borderTopColor: t.headerEdge, backgroundColor: t.sky }]}>
       {[1, 2].map((i) => (
         <LinearGradient
           key={i}

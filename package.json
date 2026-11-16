@@ -91,10 +91,12 @@
     "badwords-list": "^2.0.1-4",
     "eslint": "^9.0.0",
     "eslint-config-expo": "~57.0.2",
+    "patch-package": "8.0.0",
     "typescript": "~6.0.3",
     "word-list": "^4.1.0"
   },
   "scripts": {
+    "postinstall": "patch-package",
     "start": "expo start",
     "android": "expo run:android",
     "ios": "expo run:ios",
