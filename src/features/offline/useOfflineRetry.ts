@@ -1,7 +1,11 @@
-// While any page shows its saved copy (offline, #59), try the server again (Yazan 2026-10-26), so buttons light up
-// and the offline line goes away soon after being back online, without reopening the page. The wait doubles after each
-// try that still fails (5 s, 10 s, 20 s ... 2 min, Yazan 2026-11-16): a load that keeps failing with the server
-// reachable no longer asks every 5 s for as long as the app is open. Coming back to the app tries at once.
+// While any page shows its saved copy (offline, #59), the page refreshes by itself once the server answers again
+// (Yazan 2026-10-26), the way big apps do it (Yazan 2026-11-16):
+// - It listens to the phone: with no internet it never asks the server; the moment the internet comes back it asks.
+// - With internet, a load that still fails is a server-side failure that asking again soon won't fix: it waits
+//   2 minutes between tries instead of 5 s.
+// - A weak signal that the phone calls "online" gets the growing wait (5 s, 10 s, 20 s ... 2 min), with a small random
+//   spread so phones don't all ask in the same second after an outage. Coming back to the app asks at once.
+import * as Network from 'expo-network';
 import { useEffect } from 'react';
 import { AppState } from 'react-native';
 
@@ -37,6 +41,19 @@ export function useOfflineRetry() {
     if (!userId) return;
     let wait = FIRST_MS;
     let nextAt = 0;
+    let online = true; // until the phone says otherwise
+    const now = () => {
+      wait = FIRST_MS;
+      nextAt = 0;
+    };
+    const net = Network.addNetworkStateListener((e) => {
+      const up = e.isInternetReachable ?? e.isConnected ?? true;
+      if (up && !online) now();
+      online = up;
+    });
+    void Network.getNetworkStateAsync()
+      .then((e) => (online = e.isInternetReachable ?? e.isConnected ?? true))
+      .catch(() => {});
     // Looks every 5 s (on the phone only, no server call) whether a page waits; asks the server only when its turn comes.
     const id = setInterval(() => {
       // On a weak signal a try can take longer than the wait: the next one waits for it instead of piling up.
@@ -47,22 +64,25 @@ export function useOfflineRetry() {
         nextAt = 0;
         return;
       }
-      if (Date.now() < nextAt) return;
+      if (!online || Date.now() < nextAt) return;
       trying = true;
-      void Promise.allSettled(jobs.map((j) => j())).finally(() => {
-        trying = false;
-        wait = pending().length ? Math.min(wait * 2, MAX_MS) : FIRST_MS;
-        nextAt = Date.now() + wait;
-      });
+      void Promise.allSettled(jobs.map((j) => j()))
+        .then(async () => {
+          if (!pending().length) return (wait = FIRST_MS);
+          // Still failing: with a solid connection the server itself is failing, so wait the longest; else keep growing.
+          const st = await Network.getNetworkStateAsync().catch(() => null);
+          wait = st?.isInternetReachable === true ? MAX_MS : Math.min(wait * 2, MAX_MS);
+        })
+        .finally(() => {
+          trying = false;
+          nextAt = Date.now() + wait * (0.85 + Math.random() * 0.3);
+        });
     }, FIRST_MS);
-    const sub = AppState.addEventListener('change', (st) => {
-      if (st !== 'active') return;
-      wait = FIRST_MS;
-      nextAt = 0;
-    });
+    const sub = AppState.addEventListener('change', (st) => st === 'active' && now());
     return () => {
       clearInterval(id);
       sub.remove();
+      net.remove();
     };
   }, [userId]);
 }
