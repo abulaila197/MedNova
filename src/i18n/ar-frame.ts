@@ -1138,4 +1138,6 @@ export const AR_FRAME: Record<string, string> = {
   "Grand Rounds mission 3": "المهمة 3 في تحدّي الأسبوع",
   "Grand Rounds 4 weeks in a row": "4 أسابيع ورا بعض في تحدّي الأسبوع",
   "You’re offline. Connect to the internet and try again.": "إنت مش متصل بالنت. اتصل بالنت وجرّب تاني.",
+  "You’re offline": "مفيش نت",
+  "Connect to the internet and try again.": "اتصل بالنت وجرّب تاني.",
 };

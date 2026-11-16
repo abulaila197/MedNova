@@ -1,4 +1,4 @@
-import { isOnline, offlineText } from '@/lib/net';
+import { isOnline } from '@/lib/net';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
@@ -28,12 +28,12 @@ import { tr } from '@/i18n';
 // What a finished payment, restore or failure says, as a pop-up the player can't miss (Yazan 2026-11-08: the old line at
 // the top of the shop went unseen, so Restore looked like it did nothing).
 type Pop = { kick: string; title: string; big: string; line: string; coin: boolean; button: string; confirm?: boolean };
-const FAILED: Pop = { kick: tr('NOT BOUGHT'), title: tr('Something went wrong'), big: '', line: tr('Nothing was charged. Check your connection and try again.'), coin: false, button: 'OK' };
+const FAILED: Pop = { kick: tr('NOT BOUGHT'), title: tr('Something went wrong'), big: '', line: tr('Nothing was charged. Check your connection and try again.'), coin: false, button: tr('OK') };
 // Restore asks first (Yazan 2026-11-08).
 const ASK_RESTORE: Pop = { kick: tr('RESTORE'), title: tr('Restore purchases?'), big: '', line: tr('We\'ll check your {n} account for MedNova Unlimited and the Sovereign package and add them to this MedNova account.', { n: Platform.OS === 'ios' ? 'Apple' : 'Google' }), coin: false, button: tr('Restore'), confirm: true };
 // Each phone names only its own store (Apple 2.3.10, Yazan 2026-11-08).
 const STORE = Platform.OS === 'ios' ? tr('the App Store') : tr('Google Play');
-const SOON: Pop = { kick: tr('IN THE APP'), title: tr('Buy in the app'), big: '', line: tr('Buying works in the MedNova app from {STORE}.', { STORE }), coin: false, button: 'OK' };
+const SOON: Pop = { kick: tr('IN THE APP'), title: tr('Buy in the app'), big: '', line: tr('Buying works in the MedNova app from {STORE}.', { STORE }), coin: false, button: tr('OK') };
 
 function boughtPop(id: string): Pop {
   const pack = PACKS.find((p) => p.id === id);
@@ -73,7 +73,7 @@ export function StorePage() {
     if (!signedIn) return router.navigate('/auth'); // MN8: guests sign in first
     if (busy) return;
     // No internet: say so before the store is asked, so it isn't a vague failure or a store error (2026-11-16).
-    if (!isOnline()) return setPop({ ...FAILED, title: tr('You’re offline'), line: offlineText() });
+    if (!isOnline()) return setPop({ ...FAILED, title: tr('You’re offline'), line: tr('Connect to the internet and try again.') });
     setBusy(id);
     const r = await act();
     setBusy(null);
