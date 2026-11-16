@@ -1,6 +1,6 @@
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
-import { Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { I18nManager, Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Text, TextInput, MAX_FONT_SCALE } from '@/components/AppText';
 import { noticeLine } from '@/components/Notice';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -26,21 +26,31 @@ import { F } from '@/theme/tokens';
 import { tr, isAr } from '@/i18n';
 
 const WEB_RTL = Platform.OS === 'web' && isAr;
+/** Android in Arabic: the sideways strip reports and takes its position from its LEFT edge, while the pages start at
+ *  the right (Yazan 2026-11-16: the name lit up and the page a name opened were mirrored). Counted from the right here.
+ *  The web counts below zero from the right (WEB_RTL); iPhone already counts from the right. */
+const ANDROID_RTL = Platform.OS === 'android' && I18nManager.isRTL;
 
 const NAMES = [tr('Review'), tr('Dossiers'), tr('My diseases')];
+const LAST = NAMES.length - 1;
 
 /** Learn: three pages swiped sideways (Today's review, Disease dossiers, My diseases) under a fixed row of page names. */
 export default function Learn() {
   // The pages' width comes from their own box (on a tablet the page is a column narrower than the screen).
   const [W, setW] = useState(useScreen().width);
+  /** How far along the pages you are, from the first page (Review), in px: the same in every language and platform. */
   const x = useSharedValue(0);
+  const w = useSharedValue(W);
+  useEffect(() => {
+    w.value = W;
+  }, [W, w]);
   const pager = useRef<Animated.ScrollView>(null);
   const onScroll = useAnimatedScrollHandler((e) => {
-    x.value = Math.abs(e.contentOffset.x); // a right-to-left page on the web counts its offset below zero
+    x.value = ANDROID_RTL ? LAST * w.value - e.contentOffset.x : Math.abs(e.contentOffset.x); // web RTL counts below zero
   });
   const [H, setH] = useState(0);
   const { data, reload } = useLearn();
-  const go = (i: number) => pager.current?.scrollTo({ x: (WEB_RTL ? -1 : 1) * i * W, animated: true });
+  const go = (i: number) => pager.current?.scrollTo({ x: (ANDROID_RTL ? LAST - i : WEB_RTL ? -i : i) * W, animated: true });
   return (
     <Screen tab="learn" glow={6} wide={460} symbols>
       <View style={s.wds}>
