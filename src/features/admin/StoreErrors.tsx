@@ -12,24 +12,38 @@ type Row = { id: number; at: string; stage: string; product: string | null; plat
 /**
  * Admin: what Apple or Google answered when a purchase, a restore or loading the products went wrong, newest first
  * (store_errors, 2026-11-16). Each row has the store's own error, the store country, the phone and the app build.
+ * Ten at a time (Yazan 2026-11-16): "Show 10 more" fetches the next ten; Refresh starts again from the newest.
  */
 export function StoreErrors({ c }: { c: ReturnType<typeof useInfo> }) {
   const [rows, setRows] = useState<Row[] | null>(null);
   const [err, setErr] = useState<string | null>(null);
-  const load = useCallback(async () => {
-    setErr(null);
-    const { data, error } = await supabase.from('store_errors').select('*').order('at', { ascending: false }).limit(30);
-    if (error) setErr(error.message);
-    else setRows(data as Row[]);
+  const [more, setMore] = useState(false);
+  const [busy, setBusy] = useState(false);
+  /** Puts a fetched page in: from 0 replaces the list, later pages go under it. */
+  const take = useCallback((from: number, p: Page) => {
+    setBusy(false);
+    setErr(p.error);
+    if (p.error) return;
+    setMore(p.more);
+    setRows((was) => (from === 0 ? p.rows : [...(was ?? []), ...p.rows]));
   }, []);
+  const load = (from: number) => {
+    if (busy) return;
+    setBusy(true);
+    void fetchPage(from).then((p) => take(from, p));
+  };
   useEffect(() => {
-    void load();
-  }, [load]);
+    let live = true;
+    void fetchPage(0).then((p) => live && take(0, p));
+    return () => {
+      live = false;
+    };
+  }, [take]);
   return (
     <View style={[s.box, { backgroundColor: c.surf, borderColor: c.line }]}>
       <View style={s.head}>
         <Text style={[s.k, { color: c.kick }]}>STORE ERRORS</Text>
-        <Pressable onPress={load} hitSlop={u(8)} accessibilityRole="button">
+        <Pressable onPress={() => load(0)} hitSlop={u(8)} accessibilityRole="button">
           <Text style={[s.k, { color: c.t.accent }]}>REFRESH</Text>
         </Pressable>
       </View>
@@ -54,8 +68,28 @@ export function StoreErrors({ c }: { c: ReturnType<typeof useInfo> }) {
           </Text>
         </View>
       ))}
+      {more ? (
+        <Pressable onPress={() => load(rows?.length ?? 0)} style={[s.more, { borderColor: c.line }]} accessibilityRole="button">
+          <Text style={[s.k, { color: c.t.accent }]}>{busy ? 'LOADING…' : 'SHOW 10 MORE'}</Text>
+        </Pressable>
+      ) : null}
     </View>
   );
+}
+
+const PAGE = 10;
+type Page = { rows: Row[]; more: boolean; error: string | null };
+
+/** PAGE rows from `from`, newest first; asks for one extra to know whether there are more. */
+async function fetchPage(from: number): Promise<Page> {
+  const { data, error } = await supabase
+    .from('store_errors')
+    .select('*')
+    .order('at', { ascending: false })
+    .order('id', { ascending: false })
+    .range(from, from + PAGE);
+  if (error) return { rows: [], more: false, error: error.message };
+  return { rows: (data as Row[]).slice(0, PAGE), more: data.length > PAGE, error: null };
 }
 
 const s = StyleSheet.create({
@@ -65,4 +99,5 @@ const s = StyleSheet.create({
   row: { borderTopWidth: StyleSheet.hairlineWidth, paddingTop: u(8), gap: u(3) },
   name: { fontFamily: F.bodySemi, fontSize: u(11) },
   sub: { fontFamily: F.body, fontSize: u(9.5), lineHeight: u(13) },
+  more: { alignSelf: 'center', borderWidth: 1, borderRadius: u(10), paddingVertical: u(6), paddingHorizontal: u(14), marginTop: u(4) },
 });
