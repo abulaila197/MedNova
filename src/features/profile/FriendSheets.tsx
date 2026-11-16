@@ -4,6 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { Text, TextInput } from '@/components/AppText';
+import { notice, noticeFail } from '@/components/Notice';
 
 import { useBalance } from '@/components/LevelBadge';
 import { Sheet } from '@/components/Sheet';
@@ -76,7 +77,11 @@ function AddFriend() {
   const [code, setCode] = useState(start.toUpperCase().replace(ALLOWED, '').slice(0, 6));
   const [copied, setCopied] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [msg, setMsg] = useState<RequestResult | 'error' | null>(null);
+  // The answer pops up with an (x) instead of a line under the code (Yazan 2026-11-16).
+  const setMsg = (m: RequestResult | 'error' | null) => {
+    if (m === 'error') noticeFail(SAY.error);
+    else if (m) notice({ line: SAY[m], good: m === 'sent' || m === 'accepted' });
+  };
   const input = useRef<TextInput>(null);
   useEffect(() => {
     if (!copied) return;
@@ -99,7 +104,6 @@ function AddFriend() {
     }
     setBusy(false);
   };
-  const good = msg === 'sent' || msg === 'accepted';
   return (
     <>
       <Text style={[s.k, { color: t.mute }]}>{tr('YOUR FRIEND CODE')}</Text>
@@ -154,7 +158,6 @@ function AddFriend() {
           accessibilityLabel={tr('Type a friend code')}
         />
       </Pressable>
-      {msg ? <Text style={[s.msg, { color: good ? t.accent : t.mute }]}>{SAY[msg]}</Text> : null}
       <Pressable disabled={code.length < 6 || busy} onPress={send} accessibilityRole="button" style={{ opacity: code.length < 6 ? 0.5 : 1 }}>
         <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.btn}>
           <Text style={[s.btnT, { color: t.onGrad }]}>{busy ? tr('Sending…') : tr('Send request')}</Text>
@@ -169,7 +172,7 @@ function FriendMenu() {
   const t = useTheme();
   const f = useFriendSheet((x) => x.friend);
   const [busy, setBusy] = useState(false);
-  const [err, setErr] = useState(false);
+  const setErr = (on: boolean) => on && noticeFail(tr('Couldn’t reach the server. Check your connection.'));
   if (!f) return null;
   const when = f.kind === 'outgoing' ? tr('REQUEST SENT') : seenLabel(f.last_seen);
   const run = async (fn: () => Promise<void>) => {
@@ -200,7 +203,6 @@ function FriendMenu() {
       )}
       <Act t={t} red title={tr('Block {display_name}', { display_name: f.display_name })} note={tr('Also stops their requests and challenges. Undo any time under Blocked players on your Profile.')} onPress={() => run(() => blockUser(f.id))} disabled={busy} />
       <Act t={t} title={tr('Report {display_name}', { display_name: f.display_name })} note={tr('Tell us what happened. Reports are private.')} onPress={() => openReport({ id: f.id, name: f.display_name, avatar: f.avatar })} disabled={busy} />
-      {err ? <Text style={[s.msg, { color: t.error }]}>{tr('Couldn’t reach the server. Check your connection.')}</Text> : null}
       <Pressable onPress={close} accessibilityRole="button">
         <Text style={[s.cancel, { color: t.mute }]}>{tr('Cancel')}</Text>
       </Pressable>
@@ -225,7 +227,7 @@ function FriendProfileSheet() {
   const hint = useFriendSheet((x) => x.friend);
   const [p, setP] = useState<FriendProfile | null | 'error'>(null);
   const [busy, setBusy] = useState(false);
-  const [err, setErr] = useState(false);
+  const setErr = (on: boolean) => on && noticeFail(tr('Couldn’t reach the server. Check your connection.'));
   const [view, setView] = useState<FriendCard | null>(null);
   useEffect(() => {
     if (!hint) return;
@@ -325,7 +327,6 @@ function FriendProfileSheet() {
       {friend ? <Act t={t} title={tr('Remove friend')} note={tr('Takes {display_name} off both lists. They can send a new request later.', { display_name: f.display_name })} onPress={() => run(() => removeFriend(f.id))} disabled={busy} /> : null}
       <Act t={t} red title={tr('Block {display_name}', { display_name: f.display_name })} note={tr('Also stops their requests and challenges. Undo any time under Blocked players on your Profile.')} onPress={() => run(() => blockUser(f.id))} disabled={busy} />
       <Act t={t} title={tr('Report {display_name}', { display_name: f.display_name })} note={tr('Tell us what happened. Reports are private.')} onPress={() => openReport({ id: f.id, name: f.display_name, avatar: f.avatar })} disabled={busy} />
-      {err ? <Text style={[s.msg, { color: t.error }]}>{tr('Couldn’t reach the server. Check your connection.')}</Text> : null}
       <Pressable onPress={close} accessibilityRole="button">
         <Text style={[s.cancel, { color: t.mute }]}>{tr('Close')}</Text>
       </Pressable>

@@ -87,11 +87,16 @@ function apply(id: string | null, email: string | null) {
   void import('./flags').then((m) => m.loadFlags()).catch(() => {}); // Admin's switches (Razan, 2026-11-16)
   if (id) {
     void loadProfile(id);
-    ready.then(() => syncAccount(id)).catch(() => {}); // retried on the next sign-in, finish or app start
+    ready.then(() => syncAccount(id)).then(() => flushOffline(id)).catch(() => {}); // retried on the next sign-in, finish or app start
     startPresence();
   } else {
     stopPresence();
   }
+}
+
+/** Rewards collected offline go to the server after the sync, so achievements see the plays first (2026-11-16). */
+function flushOffline(id: string) {
+  return import('@/lib/claims').then((m) => m.flushClaims(id)).catch(() => {});
 }
 
 /** The player whose session is saved on this phone, read straight from Supabase's storage key (no network). */
@@ -144,7 +149,7 @@ export function startAccount() {
     const id = useSession.getState().userId;
     if (!id) return;
     retryProfile();
-    void syncAccount(id).catch(() => {});
+    void syncAccount(id).catch(() => {}).then(() => flushOffline(id));
   });
 }
 
@@ -260,6 +265,7 @@ export async function deleteAccount() {
     await engine.kv.remove(profileKey(id));
     await engine.kv.remove(`wear:pending:${id}`);
     await dropCopies(id);
+    await import('@/lib/claims').then((m) => m.dropClaims(id)).catch(() => {});
   }
   await engine.kv.remove(OWNER_KEY);
   await supabase.auth.signOut({ scope: 'local' });

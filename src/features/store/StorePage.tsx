@@ -1,4 +1,5 @@
 import { isOnline } from '@/lib/net';
+import { noticeOffline } from '@/components/Notice';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
@@ -73,7 +74,7 @@ export function StorePage() {
     if (!signedIn) return router.navigate('/auth'); // MN8: guests sign in first
     if (busy) return;
     // No internet: say so before the store is asked, so it isn't a vague failure or a store error (2026-11-16).
-    if (!isOnline()) return setPop({ ...FAILED, title: tr('You’re offline'), line: tr('Connect to the internet and try again.') });
+    if (!isOnline()) return noticeOffline();
     setBusy(id);
     const r = await act();
     setBusy(null);

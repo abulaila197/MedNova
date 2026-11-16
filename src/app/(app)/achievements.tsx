@@ -26,7 +26,7 @@ const METAL = [
 /** Achievements (AC1-AC8), locked look B "Residency logbook": bronze, silver and gold tiers; reached tiers wait for a tap to collect. */
 export default function Page() {
   const c = useInfo();
-  const { rows, signedIn, busy, error, collect, waiting, tokensWaiting } = useAchievements();
+  const { rows, signedIn, busy, collect, waiting, tokensWaiting } = useAchievements();
   const reached = rows?.reduce((n, r) => n + r.reached, 0) ?? 0;
   const tiers = rows?.reduce((n, r) => n + r.goals.length, 0) ?? 0;
   return (
@@ -53,7 +53,7 @@ export default function Page() {
         <MissionsEntry />
         <View style={[s.log, { backgroundColor: c.surf, borderColor: c.line }]}>
           <View style={[s.margin, { backgroundColor: c.t.rose }]} />
-          {rows?.map((r) => <LogRow key={r.key} r={r} t={c.t} canCollect={signedIn} busy={busy === r.key} error={error?.key === r.key ? error.text : null} onCollect={() => collect(r.key)} />)}
+          {rows?.map((r) => <LogRow key={r.key} r={r} t={c.t} canCollect={signedIn} busy={busy === r.key} onCollect={() => collect(r.key)} />)}
         </View>
       </InfoScroll>
     </Screen>
@@ -85,7 +85,7 @@ function PlatinumSeal() {
   );
 }
 
-type RowP = { r: AchRow; t: Theme; canCollect: boolean; busy: boolean; error?: string | null; onCollect: () => void };
+type RowP = { r: AchRow; t: Theme; canCollect: boolean; busy: boolean; onCollect: () => void };
 
 function CollectPill({ r, t, busy, onCollect, small = false }: Omit<RowP, 'canCollect'> & { small?: boolean }) {
   return (
@@ -98,7 +98,7 @@ function CollectPill({ r, t, busy, onCollect, small = false }: Omit<RowP, 'canCo
 }
 
 /** One ruled line per achievement; each tier is a signed box, gold gets the stamp. */
-function LogRow({ r, t, canCollect, busy, error, onCollect }: RowP) {
+function LogRow({ r, t, canCollect, busy, onCollect }: RowP) {
   const ready = canCollect && r.paid < r.reached;
   const goal = r.next ?? r.goals[r.goals.length - 1];
   const pct = Math.min(1, r.count / goal);
@@ -128,7 +128,6 @@ function LogRow({ r, t, canCollect, busy, error, onCollect }: RowP) {
         <View style={[s.bar, { backgroundColor: t.chip }]}>
           <View style={[s.fill, { width: `${pct * 100}%`, backgroundColor: r.reached ? METAL[r.reached - 1][1] : t.accent }]} />
         </View>
-        {error ? <Text style={[s.lWhat, { color: t.error }]}>{error}</Text> : null}
       </View>
       {ready ? (
         <CollectPill r={r} t={t} busy={busy} onCollect={onCollect} small />

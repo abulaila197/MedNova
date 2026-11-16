@@ -1,7 +1,8 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
 
-import { isOnline, offlineText } from '@/lib/net';
+import { isOnline } from '@/lib/net';
+import { noticeOffline } from '@/components/Notice';
 
 import { sparksCost } from '@/features/sparks/costs';
 import { needSparks } from '@/features/sparks/sparks';
@@ -89,7 +90,7 @@ export function useSetup(def: GameDef, mode: Mode, prefill?: Record<string, unkn
     const own = typeof prefill?.custom === 'string' ? { ...vals, custom: prefill.custom } : vals;
     // A Game challenge goes to the friend at Start, so with no internet the game waits instead of starting without it.
     setNote(null);
-    if (intentFor(def.key, mode)?.kind === 'game' && !isOnline()) return setNote(offlineText());
+    if (intentFor(def.key, mode)?.kind === 'game' && !isOnline()) return noticeOffline();
     // The chosen setup sets the cost; too few Sparks opens the Recharge sheet first (#70). Daily Medicordle is free (TR3).
     if (!alwaysFree({ game: def.key, mode, settings: own }) && !(await needSparks(sparksCost(def.key, mode, own)))) return;
     setBusy(true);

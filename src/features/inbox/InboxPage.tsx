@@ -1,4 +1,3 @@
-import { isOnline, offlineText } from '@/lib/net';
 import { useFocusEffect } from 'expo-router';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -6,6 +5,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Text } from '@/components/AppText';
+import { noticeFail } from '@/components/Notice';
 import { OfflineLine } from '@/components/OfflineLine';
 import { PulseStar, TokenCoin } from '@/components/PulseStar';
 import { Screen } from '@/components/Screen';
@@ -37,23 +37,19 @@ export function InboxPage() {
   const failed = useInbox((x) => x.failed);
   const savedAt = useInbox((x) => x.savedAt);
   const [busy, setBusy] = useState<'all' | 'clear' | null>(null);
-  const [err, setErr] = useState('');
   // Collect all while gifts wait; Clear messages only once everything is collected (Yazan 2026-10-27).
   const gifts = (list ?? []).filter((m) => hasGift(m) && !m.collected).length;
   const canClear = !gifts && (list ?? []).some(clearable);
   const all = async () => {
     if (busy) return;
-    if (!isOnline()) return setErr(offlineText());
     setBusy('all');
-    setErr('');
-    if (!(await collectAll())) setErr(tr('Some gifts didn’t collect. Check your connection and try again.'));
+    if (!(await collectAll())) noticeFail(tr('Some gifts didn’t collect. Check your connection and try again.'));
     setBusy(null);
   };
   const clear = async () => {
     if (busy) return;
     setBusy('clear');
-    setErr('');
-    if (!(await clearInbox())) setErr(tr('Couldn’t clear. Check your connection and try again.'));
+    if (!(await clearInbox())) noticeFail(tr('Couldn’t clear. Check your connection and try again.'));
     setBusy(null);
   };
   // On every visit, and again when the player signs in or out here.
@@ -89,7 +85,6 @@ export function InboxPage() {
             )}
           </View>
         ) : null}
-        {err ? <Text style={[s.err, { color: t.error }]}>{err}</Text> : null}
         {!uid ? <Text style={[s.foot, { color: t.accent }]}>{tr('Sign in to get messages and gifts.')}</Text> : null}
         {uid && failed && !list ? <Text style={[s.foot, { color: t.accent }]}>{tr('Can’t reach MedNova right now. Check your connection.')}</Text> : null}
         {uid && list && !list.length ? <Text style={[s.foot, { color: c.mute }]}>{tr('Nothing here yet. Gifts and news from us land here.')}</Text> : null}
@@ -105,14 +100,11 @@ function Card({ m }: { m: Message }) {
   const c = useInfo();
   const t = c.t;
   const [busy, setBusy] = useState(false);
-  const [err, setErr] = useState<string | false>(false);
   const gift = hasGift(m);
   const take = async () => {
     if (busy) return;
-    if (!isOnline()) return setErr(offlineText());
     setBusy(true);
-    setErr(false);
-    if (!(await collect(m.id))) setErr(tr('Couldn’t collect. Check your connection and try again.'));
+    if (!(await collect(m.id))) noticeFail(tr('Couldn’t collect. Check your connection and try again.'));
     setBusy(false);
   };
   return (
@@ -169,7 +161,6 @@ function Card({ m }: { m: Message }) {
           <Text style={[s.goT, { color: c.fg }]}>{tr('Open {name}’s profile', { name: m.from.name })}</Text>
         </Pressable>
       ) : null}
-      {err ? <Text style={[s.err, { color: t.error }]}>{err}</Text> : null}
     </View>
   );
 }

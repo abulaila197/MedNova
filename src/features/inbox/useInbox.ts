@@ -7,6 +7,8 @@ import { useSession } from '@/games/shell/session';
 import { copyOf, keepCopy } from '@/lib/copies';
 import { supabase } from '@/lib/supabase';
 import { refreshWallet } from '@/lib/sync';
+import { queueClaim, waitingClaims } from '@/lib/claims';
+import { isOnline } from '@/lib/net';
 
 /** One Inbox message from the MedNova team (Yazan 2026-10-27) with its gifts, or a friend's Style shop gift (#20). */
 export type Message = {
@@ -34,7 +36,7 @@ export async function loadWaiting() {
   if (!error && typeof data === 'number') useInbox.setState({ waiting: data });
 }
 
-/** Offline, the last saved copy shows (Yazan 2026-10-27); Collect still needs the server. */
+/** Offline, the last saved copy shows (Yazan 2026-10-27); Collect works offline too and waits for the server (2026-11-16). */
 export async function loadInbox() {
   const uid = useSession.getState().userId;
   if (!uid) return useInbox.setState({ list: [], waiting: 0, failed: false, savedAt: null });
@@ -44,7 +46,9 @@ export async function loadInbox() {
     if (copy && useSession.getState().userId === uid && !useInbox.getState().list) useInbox.setState({ list: copy.v, waiting: waitingIn(copy.v), savedAt: copy.at });
     return useInbox.setState({ failed: true });
   }
-  const list = data as Message[];
+  // Gifts collected offline that the server hasn't had yet stay collected here.
+  const mine = new Set((await waitingClaims(uid).catch(() => [])).flatMap((c) => (c.kind === 'inbox' ? [c.msg] : [])));
+  const list = (data as Message[]).map((m) => (mine.has(m.id) ? { ...m, read: true, collected: true } : m));
   useInbox.setState({ list, waiting: waitingIn(list), failed: false, savedAt: null });
   void keepCopy('inbox', uid, list);
 }
@@ -67,9 +71,18 @@ export async function readAll() {
 
 /** Collects one message's gifts on the server (no wallet refresh). */
 async function take(id: string): Promise<boolean> {
-  const { data, error } = await supabase.rpc('inbox_collect', { msg: id });
-  const r = (data ?? {}) as { ok?: boolean; why?: string };
-  if (error || (!r.ok && r.why !== 'done')) return false;
+  const uid = useSession.getState().userId;
+  if (!uid) return false;
+  if (!isOnline()) {
+    // Offline (Yazan 2026-11-16): the tokens show now; Sparks and chests come when the server has it.
+    const m = (useInbox.getState().list ?? []).find((x) => x.id === id);
+    if (!m) return false;
+    await queueClaim(uid, { id: `inbox:${id}`, kind: 'inbox', msg: id, tokens: m.tokens });
+  } else {
+    const { data, error } = await supabase.rpc('inbox_collect', { msg: id });
+    const r = (data ?? {}) as { ok?: boolean; why?: string };
+    if (error || (!r.ok && r.why !== 'done')) return false;
+  }
   const next = (useInbox.getState().list ?? []).map((m) => (m.id === id ? { ...m, read: true, collected: true } : m));
   useInbox.setState({ list: next, waiting: waitingIn(next) });
   save(next);
@@ -86,7 +99,7 @@ async function refresh() {
 /** Collects a message's gifts on the server, then brings the wallet, Sparks and chests up to date. */
 export async function collect(id: string): Promise<boolean> {
   const ok = await take(id);
-  if (ok) await refresh();
+  if (ok && isOnline()) await refresh();
   return ok;
 }
 
@@ -95,7 +108,7 @@ export async function collectAll(): Promise<boolean> {
   const waiting = (useInbox.getState().list ?? []).filter((m) => hasGift(m) && !m.collected);
   let ok = true;
   for (const m of waiting) if (!(await take(m.id))) ok = false;
-  if (waiting.length) await refresh();
+  if (waiting.length && isOnline()) await refresh();
   return ok;
 }
 

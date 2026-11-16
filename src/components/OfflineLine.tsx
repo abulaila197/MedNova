@@ -1,17 +1,32 @@
-import { StyleSheet } from 'react-native';
+import { usePathname } from 'expo-router';
+import { useEffect } from 'react';
 
-import { Text } from '@/components/AppText';
+import { notice } from '@/components/Notice';
 import { agoText } from '@/lib/copies';
-import { useTheme } from '@/state/app';
-import { u } from '@/theme/scale';
-import { F } from '@/theme/tokens';
+import { isOnline, onBackOnline } from '@/lib/net';
 import { tr } from '@/i18n';
 
-/** The line over a page shown from its saved copy while the server can't be reached (#59, Yazan 2026-10-26). */
-export function OfflineLine({ at, style }: { at: number | null | undefined; style?: object }) {
-  const t = useTheme();
-  if (at == null) return null;
-  return <Text style={[s.l, { color: t.mute }, style]}>{tr('OFFLINE · LAST UPDATED {n}', { n: agoText(at).toUpperCase() })}</Text>;
-}
+// Each page says it once while the internet is away; the next time it goes away, it says it again.
+const told = new Set<string>();
+onBackOnline(() => told.clear());
 
-const s = StyleSheet.create({ l: { fontFamily: F.mono, fontSize: u(8.5), letterSpacing: u(1.2), marginTop: u(8) } });
+/**
+ * A page shown from its saved copy while the server can't be reached (#59). It was a line at the top of the page,
+ * out of sight once the player scrolled; now a pop-up with an (x), once per page (Yazan 2026-11-16).
+ */
+export function OfflineLine({ at }: { at: number | null | undefined; style?: object }) {
+  const path = usePathname();
+  const shown = at != null;
+  useEffect(() => {
+    if (!shown || told.has(path)) return;
+    told.add(path);
+    const when = agoText(at!);
+    notice(
+      isOnline()
+        ? { kick: tr('SAVED COPY'), title: tr('Couldn’t reach MedNova'), line: tr('What you see was last updated {n}.', { n: when }) }
+        : { kick: tr('NO INTERNET'), title: tr('You’re offline'), line: tr('What you see was last updated {n}.', { n: when }) },
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [shown, path]);
+  return null;
+}

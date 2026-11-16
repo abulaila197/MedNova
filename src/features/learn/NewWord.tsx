@@ -5,6 +5,7 @@ import { Pressable, View } from 'react-native';
 
 import { Back } from '@/components/Back';
 import { Text, TextInput } from '@/components/AppText';
+import { noticeLine } from '@/components/Notice';
 import { Screen } from '@/components/Screen';
 import { InfoScroll, Kicker, s as ui, useInfo } from '@/features/info/ui';
 import { useSession } from '@/games/shell/session';
@@ -35,7 +36,8 @@ export function NewWord({ start }: { start?: WordGame }) {
   const [b, setB] = useState('');
   const [forbidden, setForbidden] = useState(['', '', '', '', '']);
   const [busy, setBusy] = useState(false);
-  const [msg, setMsg] = useState('');
+  // A pop-up with an (x) instead of a line that can sit out of sight (Yazan 2026-11-16).
+  const setMsg = noticeLine;
 
   const letters = name.replace(/[^A-Za-z]/g, '');
   const form = (): { ok: true; w: WordData[WordGame] } | { ok: false; why: string } => {
@@ -133,7 +135,6 @@ export function NewWord({ start }: { start?: WordGame }) {
           </Box>
         )}
 
-        {msg ? <Text style={[s.msg, { color: t.error }]}>{msg}</Text> : null}
         <Pressable disabled={busy} onPress={save} accessibilityRole="button" style={busy && { opacity: 0.6 }}>
           <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.save}>
             <Text style={[s.saveT, { color: t.onGrad }]}>{signedIn ? tr('Save to My diseases') : tr('Sign in to save')}</Text>

@@ -5,6 +5,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import Animated, { FadeIn, FadeOut, SlideInDown } from 'react-native-reanimated';
 
 import { Text } from '@/components/AppText';
+import { notice } from '@/components/Notice';
 import { engine } from '@/games/engine';
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
@@ -38,6 +39,10 @@ export function RechargeSheet() {
   const ask = useRecharge((s) => s.ask);
   const busy = useRecharge((s) => s.busy);
   const why = useRecharge((s) => s.why);
+  // A refusal pops up with an (x) instead of a line in the sheet (Yazan 2026-11-16).
+  useEffect(() => {
+    if (why && why !== 'tokens') notice({ line: WHY[why] ?? tr('Something went wrong. Try again.') });
+  }, [why]);
   const bar = useSparks();
   const [tokens, setTokens] = useState<number | null>(null);
   useEffect(() => {
@@ -77,7 +82,7 @@ export function RechargeSheet() {
         {bar.unlimited ? (
           <UnlimitedPanel t={t} />
         ) : (
-          <Panel t={t} cost={ask.cost} value={bar.value} max={bar.max} refill={bar.refillMin} note={why && why !== 'tokens' ? (WHY[why] ?? tr('Something went wrong. Try again.')) : null} choices={choices} />
+          <Panel t={t} cost={ask.cost} value={bar.value} max={bar.max} refill={bar.refillMin} note={null} choices={choices} />
         )}
       </Animated.View>
     </View>

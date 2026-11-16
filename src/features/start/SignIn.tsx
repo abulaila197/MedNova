@@ -3,6 +3,7 @@ import { router } from 'expo-router';
 import { useState, type ReactNode } from 'react';
 import { Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Text, TextInput } from '@/components/AppText';
+import { noticeLine } from '@/components/Notice';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Path } from 'react-native-svg';
 
@@ -121,7 +122,14 @@ export function SignIn() {
   const [username, setUsername] = useState('');
   const [code, setCode] = useState('');
   const [busy, setBusy] = useState(false);
-  const [note, setNote] = useState<{ text: string; bad: boolean } | null>(null);
+  const [note, setNoteLine] = useState<{ text: string; bad: boolean } | null>(null);
+  // A problem pops up with an (x); the next-step notes (a code was sent) stay under the form (Yazan 2026-11-16).
+  const setNote = (n: { text: string; bad: boolean } | null) => {
+    if (n?.bad) {
+      noticeLine(n.text);
+      setNoteLine(null);
+    } else setNoteLine(n);
+  };
   const [agreed, setAgreed] = useState(false);
   // The page sits at one height for every tab and step: placed so the tallest tab (Sign In, with Google and Apple)
   // has equal space above the title and under the card.

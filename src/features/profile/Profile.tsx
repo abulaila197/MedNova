@@ -2,6 +2,7 @@ import { router } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
+import { noticeLine } from '@/components/Notice';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useShallow } from 'zustand/react/shallow';
 
@@ -212,7 +213,8 @@ function Blocked({ t }: { t: Theme }) {
 function DeleteAccount({ t }: { t: Theme }) {
   const [ask, setAsk] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [err, setErr] = useState<string | null>(null);
+  // A pop-up with an (x) instead of a line that can sit out of sight (Yazan 2026-11-16).
+  const setErr = noticeLine;
   const go = async () => {
     setBusy(true);
     setErr(null);
@@ -236,7 +238,6 @@ function DeleteAccount({ t }: { t: Theme }) {
               <Text style={[s.ghT, { color: t.red }]}>{busy ? tr('Deleting…') : tr('Delete')}</Text>
             </Pressable>
           </View>
-          {err ? <Text style={[s.delQ, { color: t.error }]}>{err}</Text> : null}
         </>
       ) : (
         <Pressable onPress={() => setAsk(true)} hitSlop={u(10)} accessibilityRole="button">

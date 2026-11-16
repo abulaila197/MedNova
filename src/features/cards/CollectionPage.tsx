@@ -9,6 +9,7 @@ import { useShallow } from 'zustand/react/shallow';
 
 import { OfflineLine } from '@/components/OfflineLine';
 import { Text } from '@/components/AppText';
+import { noticeLine } from '@/components/Notice';
 import { Congrats } from '@/components/Congrats';
 import { Screen } from '@/components/Screen';
 import { useSession } from '@/games/shell/session';
@@ -45,7 +46,8 @@ export function CollectionPage() {
   const [member, setMember] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [won, setWon] = useState(false);
-  const [err, setErr] = useState('');
+  // A pop-up with an (x) instead of a line that can sit out of sight (Yazan 2026-11-16).
+  const setErr = noticeLine;
   useFocusEffect(
     useCallback(() => {
       void loadStyle();
@@ -102,7 +104,6 @@ export function CollectionPage() {
           ) : status?.prize ? (
             <Text style={[s.hint, { color: t.accent, marginTop: u(8) }]}>{tr('Hunt complete. {HUNT_PRIZE} tokens collected.', { HUNT_PRIZE })}</Text>
           ) : null}
-          {err ? <Text style={[s.hint, { color: t.error, marginTop: u(8) }]}>{err}</Text> : null}
         </View>
         <Binder t={t} found={found} onOpen={setOpen} />
         <Mechs t={t} owned={mechs} onOpen={setMech} />

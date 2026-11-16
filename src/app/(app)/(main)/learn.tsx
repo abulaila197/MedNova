@@ -2,6 +2,7 @@ import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { Platform, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Text, TextInput, MAX_FONT_SCALE } from '@/components/AppText';
+import { noticeLine } from '@/components/Notice';
 import { LinearGradient } from 'expo-linear-gradient';
 import Animated, { interpolateColor, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue, type SharedValue } from 'react-native-reanimated';
 
@@ -232,7 +233,8 @@ function CasesPage() {
   const list = useCases((x) => x.list);
   const words = useCases((x) => x.words);
   const savedAt = useCases((x) => x.savedAt);
-  const [err, setErr] = useState('');
+  // A pop-up with an (x) instead of a line that can sit out of sight (Yazan 2026-11-16).
+  const setErr = noticeLine;
   useFocusEffect(
     useCallback(() => {
       setErr('');
@@ -260,7 +262,6 @@ function CasesPage() {
         </Pressable>
       )}
       <OfflineLine at={savedAt} />
-      {err ? <Text style={[s.csA, { color: t.error }]}>{err}</Text> : null}
       {signedIn && list && !rows.length ? (
         <Text style={[s.csA, { color: c.mute }]}>{tr('Nothing yet. Write a case or add a word for Sketch It, Six Word Tries, Streak Master or Imposter. You can practise it straight away; once approved it plays in rooms you host, and pays 10 tokens.')}</Text>
       ) : null}

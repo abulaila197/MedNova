@@ -1,4 +1,6 @@
-import { isOnline, offlineText } from '@/lib/net';
+import { isOnline } from '@/lib/net';
+import { noticeFail } from '@/components/Notice';
+import { queueClaim } from '@/lib/claims';
 import { useCallback, useEffect, useState } from 'react';
 
 import { engine } from '@/games/engine';
@@ -98,8 +100,6 @@ export function useAchievements() {
   const friends = useFriends((s) => s.list);
   const [rows, setRows] = useState<AchRow[] | null>(null);
   const [busy, setBusy] = useState<AchKey | null>(null);
-  /** The message and the row it belongs to, so it shows next to the button that was tapped (fix A1). */
-  const [error, setErrorAt] = useState<{ key: AchKey; text: string } | null>(null);
 
   const reload = useCallback(async () => {
     setRows(await loadAchievements(friends.map((f) => f.id), userId ?? undefined));
@@ -112,19 +112,25 @@ export function useAchievements() {
   const collect = async (key: AchKey) => {
     const row = rows?.find((r) => r.key === key);
     if (!userId || !row || row.paid >= row.reached) return;
-    if (!isOnline()) return setErrorAt({ key, text: offlineText() });
+    if (!isOnline()) {
+      // Offline (Yazan 2026-11-16): paid on the phone now, checked by the server when the internet is back.
+      setBusy(key);
+      await queueClaim(userId, { id: `ach:${key}:${row.paid + 1}`, kind: 'ach', key, tier: row.paid + 1, steps: row.steps ?? null, tokens: tierTokens(key)[row.paid] ?? 0 }).catch(() => {});
+      await reload();
+      setBusy(null);
+      return;
+    }
     setBusy(key);
-    setErrorAt(null);
     // The server pays tiers in order, re-counting what it can see.
     const { data, error: e } = await supabase.rpc('achievement_collect', { key, tier: row.paid + 1, steps: row.steps ?? null });
     const r = data as { ok: boolean; why?: string } | null;
     if (e || !r) {
       setBusy(null);
-      return setErrorAt({ key, text: tr('Could not reach MedNova. Check your connection and try again.') });
+      return noticeFail(tr('Could not reach MedNova. Check your connection and try again.'));
     }
     if (!r.ok && r.why !== 'done') {
       setBusy(null);
-      return setErrorAt({ key, text: tr('Not saved yet: your account is still catching up with this phone. Try again later.') });
+      return noticeFail(tr('Not saved yet: your account is still catching up with this phone. Try again later.'), tr('Not yet'));
     }
     // 'done' means the server already paid this tier: the phone only has to bring the row down, not pay again.
     await refreshWallet(userId).catch(() => {});
@@ -134,5 +140,5 @@ export function useAchievements() {
 
   const waiting = rows?.reduce((n, r) => n + Math.max(0, r.reached - r.paid), 0) ?? 0;
   const tokensWaiting = rows?.reduce((n, r) => n + tierTokens(r.key).slice(r.paid, r.reached).reduce((a, b) => a + b, 0), 0) ?? 0;
-  return { rows, signedIn: !!userId, busy, error, collect, waiting, tokensWaiting };
+  return { rows, signedIn: !!userId, busy, collect, waiting, tokensWaiting };
 }

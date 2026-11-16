@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Text } from '@/components/AppText';
+import { noticeFail } from '@/components/Notice';
 import { Image } from 'expo-image';
 import { Congrats } from '@/components/Congrats';
 import { Sheet } from '@/components/Sheet';
@@ -29,7 +30,8 @@ export function RoundsHost() {
   const r = useRoundsStore((s) => s.r);
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [failed, setFailed] = useState(false);
+  // A pop-up with an (x) instead of a line that can sit out of sight (Yazan 2026-11-16).
+  const setFailed = (on: boolean) => on && noticeFail(tr('Could not reach MedNova. Try again in a moment.'));
   const [won, setWon] = useState(0);
   const lock = useLock();
   useEffect(() => {
@@ -85,7 +87,6 @@ export function RoundsHost() {
               <Text style={[s.btnT, { color: t.onGrad }]}>{tr('Collect the {n}', { n: CHEST_NAME[ready.chest].toLowerCase() })}</Text>
             </LinearGradient>
           </Pressable>
-          {failed ? <Text style={[s.fail, { color: t.mute }]}>{tr('Could not reach MedNova. Try again in a moment.')}</Text> : null}
         </View>
       </Sheet>
     </>

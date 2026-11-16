@@ -24,6 +24,7 @@ import { Platform, View } from 'react-native';
 import { FRAME_W, useScreen } from '@/theme/scale';
 import { THEMES } from '@/theme/tokens';
 import { freshImagesOnUpdate } from '@/lib/freshImages';
+import { NoticeHost } from '@/components/Notice';
 
 // Before any picture shows: drop a picture cache left over from an older install (see freshImages.ts).
 void freshImagesOnUpdate();
@@ -86,6 +87,7 @@ export default function RootLayout() {
       <Stack screenOptions={{ headerShown: false, animation: 'fade', animationDuration: 220, freezeOnBlur: true, contentStyle: { backgroundColor: THEMES.dark.sky } }} />
       {/* returning players: the intro plays over the first page (Games or sign-in) and bursts into it */}
       {intro ? <Intro w={width} h={height} onDone={endIntro} /> : null}
+      <NoticeHost />
       </View>
         </>
       ) : null}

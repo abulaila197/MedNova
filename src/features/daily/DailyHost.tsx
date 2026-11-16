@@ -1,4 +1,6 @@
-import { isOnline, offlineText } from '@/lib/net';
+import { isOnline } from '@/lib/net';
+import { noticeFail } from '@/components/Notice';
+import { queueClaim } from '@/lib/claims';
 import { router, usePathname } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { AppState } from 'react-native';
@@ -7,7 +9,7 @@ import { create } from 'zustand';
 import { localDay } from '@/games/engine/gate';
 import { defaultKV } from '@/games/engine/storage';
 import { useSession } from '@/games/shell/session';
-import { agoText, copyOf, keepCopy } from '@/lib/copies';
+import { copyOf, keepCopy } from '@/lib/copies';
 import { supabase } from '@/lib/supabase';
 import { refreshWallet } from '@/lib/sync';
 import { useBack } from '@/lib/useBack';
@@ -16,7 +18,7 @@ import { useStart } from '@/state/start';
 
 import { useWelcome } from '../welcome/WelcomeHost';
 import { DailyPopup } from './DailyPopup';
-import { CALENDAR_DAYS } from './prizes';
+import { CALENDAR_DAYS, dayPrize } from './prizes';
 import { tr } from '@/i18n';
 
 type Status = { next_day: number; last_date: string | null };
@@ -47,7 +49,6 @@ export function DailyHost() {
   const [open, setOpen] = useState<Open | null>(null);
   const checked = useRef<string | null>(null); // `${user}:${date}` already looked at
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const claiming = useRef(false);
   // Looks again when the app comes back to the front and at the phone's midnight, so a Games page left open
   // over midnight still gets the new day's pop-up (AP12a).
@@ -78,7 +79,14 @@ export function DailyHost() {
       }
       const { data, error: e } = await supabase.rpc('daily_status');
       if (e || !data) {
-        if (checked.current === key) checked.current = null; // offline: try again on the next visit
+        // Offline (2026-11-16): today's reward can be collected offline too, so the saved calendar opens it.
+        const copy = await copyOf<Status>('daily', userId);
+        if (!copy || copy.v.last_date === today) {
+          if (checked.current === key) checked.current = null; // try again on the next visit
+          return;
+        }
+        useDaily.setState({ ready: true });
+        setOpen({ day: copy.v.next_day, collected: false });
         return;
       }
       const st = data as Status;
@@ -97,7 +105,6 @@ export function DailyHost() {
     asking.current = true;
     void (async () => {
       try {
-        setError(null);
         if (!userId) return setOpen({ day: 1, collected: false });
         // Item 6 (Yazan 2026-11-16): the button needed several presses because the pop-up waited for the server
         // with no sign of the tap. It now opens at once from the saved copy, Collect waits (busy) until the server
@@ -115,8 +122,8 @@ export function DailyHost() {
         const { data, error: e } = await supabase.rpc('daily_status');
         setBusy(false);
         if (e || !data) {
-          // Offline (#59): the calendar stays on the saved copy; collecting still needs the server.
-          setError(copy ? tr('Offline · last updated {agoText}. Collecting needs internet.', { agoText: agoText(copy.at) }) : tr('Could not reach MedNova. Check your connection and try again.'));
+          // Offline: the calendar stays on the saved copy, and collecting works offline (2026-11-16).
+          if (!copy) noticeFail(tr('Could not reach MedNova. Check your connection and try again.'));
           return;
         }
         const st = data as Status;
@@ -137,19 +144,29 @@ export function DailyHost() {
 
   const collect = async () => {
     if (claiming.current) return; // a double tap claims once (AP10a)
-    if (!isOnline()) return setError(offlineText());
+    if (!userId) return;
+    if (!isOnline()) {
+      // Offline (Yazan 2026-11-16): collected now, checked by the server when the internet is back.
+      claiming.current = true;
+      const date = localDay();
+      await queueClaim(userId, { id: `daily:${date}`, kind: 'daily', date, tokens: dayPrize(open.day) }).catch(() => {});
+      claiming.current = false;
+      setOpen({ day: open.day, collected: true });
+      useDaily.setState({ ready: false });
+      void keepCopy<Status>('daily', userId, { next_day: open.day >= CALENDAR_DAYS ? 1 : open.day + 1, last_date: date });
+      return;
+    }
     claiming.current = true;
     setBusy(true);
-    setError(null);
     const { data, error: e } = await supabase.rpc('daily_claim', {
       local_date: localDay(),
     });
     setBusy(false);
     claiming.current = false;
     const r = data as { ok: boolean; day?: number; why?: string } | null;
-    if (e || !r) return setError(tr('Could not reach MedNova. Check your connection and try again.'));
+    if (e || !r) return noticeFail(tr('Could not reach MedNova. Check your connection and try again.'));
     if (!r.ok)
-      return setError(r.why === 'done' ? tr('You\'ve already grabbed today\'s reward.') : tr('Your phone\'s date looks off, so today\'s reward can\'t be given. Check your date settings.'));
+      return noticeFail(r.why === 'done' ? tr('You\'ve already grabbed today\'s reward.') : tr('Your phone\'s date looks off, so today\'s reward can\'t be given. Check your date settings.'));
     setOpen({ day: r.day ?? open.day, collected: true });
     useDaily.setState({ ready: false });
     const day = r.day ?? open.day;
@@ -163,7 +180,6 @@ export function DailyHost() {
       collected={open.collected}
       signedIn={!!userId}
       busy={busy}
-      error={error}
       onCollect={collect}
       onSignIn={() => {
         setOpen(null);

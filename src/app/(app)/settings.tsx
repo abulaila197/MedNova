@@ -5,6 +5,7 @@ import { create } from 'zustand';
 import { AppState, Linking, Platform, Pressable, StyleSheet, View } from 'react-native';
 
 import { Text } from '@/components/AppText';
+import { noticeLine } from '@/components/Notice';
 import { Screen } from '@/components/Screen';
 import { Sheet } from '@/components/Sheet';
 import { GradBtn, InfoScroll, Kicker, s as ui, useInfo } from '@/features/info/ui';
@@ -34,7 +35,8 @@ export default function Page() {
   const [allowed, setAllowed] = useState<'yes' | 'no' | 'ask' | null>(null);
   const [prefs, setPrefs] = useState<Prefs | null>(null);
   const [choices, setChoices] = useState(false);
-  const [err, setErr] = useState<string | null>(null);
+  // A pop-up with an (x) instead of a line that can sit out of sight (Yazan 2026-11-16).
+  const setErr = noticeLine;
   const [ways, setWays] = useState<string[] | null>(null);
   const [linkNote, setLinkNote] = useState<{ text: string; bad: boolean } | null>(null);
   const [linking, setLinking] = useState(false);
@@ -148,7 +150,6 @@ export default function Page() {
               off={!prefs}
               onChange={(v) => prefs && set({ ...prefs, reminders: v })}
             />
-            {err ? <Text style={[s.err, { color: c.t.error }]}>{err}</Text> : null}
           </>
         )}
 

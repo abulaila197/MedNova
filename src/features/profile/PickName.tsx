@@ -3,6 +3,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Text, TextInput } from '@/components/AppText';
+import { noticeLine } from '@/components/Notice';
 
 import { Sheet } from '@/components/Sheet';
 import { nameIsClean } from '@/lib/names';
@@ -38,7 +39,8 @@ export function PickNameHost() {
   const [name, setName] = useState('');
   const [agreed, setAgreed] = useState(false);
   const [busy, setBusy] = useState(false);
-  const [msg, setMsg] = useState<string | null>(null);
+  // A pop-up with an (x) instead of a line that can sit out of sight (Yazan 2026-11-16).
+  const setMsg = noticeLine;
   // Steps aside while the Terms or Privacy Policy it links to is open, and comes back after.
   const path = usePathname();
   const open = path !== '/privacy' && !!profile && profile.username.toLowerCase() === defaultName(profile.id);
@@ -88,7 +90,6 @@ export function PickNameHost() {
           .
         </Text>
       </Pressable>
-      {msg ? <Text style={[s.msg, { color: t.mute }]}>{msg}</Text> : null}
       <Pressable disabled={!ok || busy} onPress={save} accessibilityRole="button" style={{ opacity: ok ? 1 : 0.5 }}>
         <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.btn}>
           <Text style={[s.btnT, { color: t.onGrad }]}>{busy ? tr('Saving…') : tr('Start playing')}</Text>

@@ -1,4 +1,5 @@
-import { isOnline, offlineText } from '@/lib/net';
+import { isOnline } from '@/lib/net';
+import { noticeLine, noticeOffline } from '@/components/Notice';
 import { navTo } from '@/lib/nav';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
@@ -216,13 +217,12 @@ export function FreeTokens({ t }: { t: Theme }) {
     useFree.setState({ sheet: w.key as OpenSheet });
   };
   // The rewarded ad first; Google tells our server it was watched to the end and the server pays the token.
-  const [adNote, setAdNote] = useState<string | null>(null);
+  const setAdNote = noticeLine; // a pop-up with (x), not a line that can sit out of sight (Yazan 2026-11-16)
   const watchAd = async () => {
     const uid = useSession.getState().userId;
     if (busy || !ADS_LIVE || !uid) return;
-    if (!isOnline()) return setAdNote(offlineText());
+    if (!isOnline()) return noticeOffline();
     setBusy('ad');
-    setAdNote(null);
     try {
       const ad = await showRewarded('store', uid);
       if (!ad.earned) setAdNote(tr('The ad was closed early, so no token this time.'));
@@ -259,7 +259,6 @@ export function FreeTokens({ t }: { t: Theme }) {
           <WayCard key={w.key} t={t} w={w} label={label(w)} act={act(w)} done={!unpaid(w) && isDone(w)} unpaid={unpaid(w)} locked={noLink(w)} busy={busy === w.key} onPress={() => tap(w)} reopen={LINKED.includes(w.key)} />
         ))}
       </Row>
-      {adNote ? <Text style={{ fontFamily: F.body, fontSize: u(11.5), color: t.soft, marginTop: u(6) }}>{adNote}</Text> : null}
     </>
   );
 }
@@ -350,11 +349,10 @@ export function FreeSheets({ t }: { t: Theme }) {
 /** Sends one form; shows the server's answer under it. */
 function useSend(onDone: () => void) {
   const [busy, setBusy] = useState(false);
-  const [msg, setMsg] = useState('');
+  const setMsg = noticeLine;
   const send = async (fn: string, args: Record<string, unknown>) => {
     if (busy) return;
     setBusy(true);
-    setMsg('');
     try {
       const r = await call<{ ok: boolean; why?: string }>(fn, args);
       if (r.ok) {
@@ -366,7 +364,7 @@ function useSend(onDone: () => void) {
     }
     setBusy(false);
   };
-  return { busy, msg, send };
+  return { busy, send };
 }
 
 function StoryForm({ t, onDone }: { t: Theme; onDone: () => void }) {
@@ -375,7 +373,7 @@ function StoryForm({ t, onDone }: { t: Theme; onDone: () => void }) {
   const [p, setP] = useState([0, 1, 2, 3, 4].find((i) => !sent.includes(i)) ?? 0);
   const [body, setBody] = useState('');
   const [credit, setCredit] = useState(false);
-  const { busy, msg, send } = useSend(onDone);
+  const { busy, send } = useSend(onDone);
   return (
     <>
       <Title t={t} a={tr('Share your ')} b={tr('story')} />
@@ -392,7 +390,6 @@ function StoryForm({ t, onDone }: { t: Theme; onDone: () => void }) {
         <Text style={[s.tickT, { color: t.fg }]}>{tr('Credit me with my in-game name')}</Text>
       </Pressable>
       <Text style={[s.note, { color: t.mute }]}>{tr('Keep it clean: adult (18+) content can get your account blocked. By sharing, you agree MedNova may post your story on our pages, without your name unless you tick Credit me.')}</Text>
-      {msg ? <Text style={[s.note, { color: t.error }]}>{msg}</Text> : null}
       <Send t={t} label={tr('Send · +5 tokens')} busy={busy || sent.includes(p)} onPress={() => send('submit_story', { prompt: p, body, credit })} />
     </>
   );
@@ -401,13 +398,12 @@ function StoryForm({ t, onDone }: { t: Theme; onDone: () => void }) {
 function FeedbackForm({ t, onDone }: { t: Theme; onDone: () => void }) {
   const paid = (useFree((x) => x.status?.done) ?? []).includes('free:feedback');
   const [body, setBody] = useState('');
-  const { busy, msg, send } = useSend(onDone);
+  const { busy, send } = useSend(onDone);
   return (
     <>
       <Title t={t} a={tr('Tell us what you ')} b={tr('think')} />
       <Text style={[s.note, { color: t.mute }]}>{tr('What you love, what bugs you, what you wish MedNova had. We read every word.')}</Text>
       <TextInput multiline value={body} onChangeText={setBody} maxLength={2000} placeholder={tr('Your feedback...')} placeholderTextColor={t.mute} style={[s.area, { color: t.fg, borderColor: t.panelLine, backgroundColor: t.panel2 }]} />
-      {msg ? <Text style={[s.note, { color: t.error }]}>{msg}</Text> : null}
       <Send t={t} label={paid ? tr('Send') : tr('Send · +10 tokens')} busy={busy} onPress={() => send('submit_feedback', { body })} />
     </>
   );
@@ -417,7 +413,7 @@ function AmbassadorForm({ t, onDone }: { t: Theme; onDone: () => void }) {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [url, setUrl] = useState('');
-  const { busy, msg, send } = useSend(onDone);
+  const { busy, send } = useSend(onDone);
   const input = [s.input, { color: t.fg, borderColor: t.panelLine, backgroundColor: t.panel2 }];
   return (
     <>
@@ -426,7 +422,6 @@ function AmbassadorForm({ t, onDone }: { t: Theme; onDone: () => void }) {
       <TextInput value={url} onChangeText={setUrl} autoCapitalize="none" keyboardType="url" placeholder={tr('Link to your video')} placeholderTextColor={t.mute} style={input} />
       <TextInput value={email} onChangeText={setEmail} autoCapitalize="none" keyboardType="email-address" placeholder={tr('Your email')} placeholderTextColor={t.mute} style={input} />
       <TextInput value={name} onChangeText={setName} placeholder={tr('Your in-game name')} placeholderTextColor={t.mute} style={input} />
-      {msg ? <Text style={[s.note, { color: t.error }]}>{msg}</Text> : null}
       <Send t={t} label={tr('Send for review')} busy={busy} onPress={() => send('submit_ambassador', { email, game_name: name, video_url: url })} />
     </>
   );

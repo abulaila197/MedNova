@@ -1,4 +1,5 @@
-import { isOnline, offlineText } from '@/lib/net';
+import { isOnline } from '@/lib/net';
+import { noticeFail, noticeOffline } from '@/components/Notice';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
@@ -50,7 +51,6 @@ export function ChestsPage({ v }: { v: ChestsView }) {
   const [prize, setPrize] = useState(0);
   const [busy, setBusy] = useState(false);
   const [card, setCard] = useState<number | null>(null);
-  const [failed, setFailed] = useState(false);
   const opening = useRef(false);
 
   // The Light opening (Yazan 2026-10-18): the chest shakes, the lid pops with a glow, then the items slide in.
@@ -64,16 +64,16 @@ export function ChestsPage({ v }: { v: ChestsView }) {
   const openIt = async () => {
     // A ref holds from the first tap; state alone lets a same-frame second tap open a second chest (AP10a).
     if (busy || opening.current || !n) return;
-    if (!isOnline()) return setFailed(true);
+    // Chests open online only: the server picks what's inside (Yazan 2026-11-16).
+    if (!isOnline()) return noticeOffline();
     opening.current = true;
     setBusy(true);
-    setFailed(false);
     shake.set(withSequence(...[-7, 7, -6, 6, -4, 4, 0].map((d) => withTiming(d, { duration: 70 }))));
     const [r] = await Promise.all([v.open(sel), new Promise((res) => setTimeout(res, 500))]);
     if (!r.ok) {
       opening.current = false;
       setBusy(false);
-      setFailed(true);
+      noticeFail(tr('Couldn’t open it. Check your connection.'));
       return;
     }
     pop.set(withTiming(1, { duration: 260, easing: Easing.out(Easing.back(2)) }));
@@ -154,7 +154,6 @@ export function ChestsPage({ v }: { v: ChestsView }) {
                 <Text style={[s.name, { color: c.fg }]}>{tr(chest.name)}</Text>
                 <Text style={[s.sub, { color: c.mute }]}>{tr('{items} item{n} · {from}', { items: chest.items, n: chest.items > 1 ? 's' : '', from: tr(chest.from) })}</Text>
                 {n ? <GradPill label={busy ? tr('Opening…') : tr('Open')} onPress={openIt} /> : <Text style={[s.none, { color: c.mute }]}>{tr('None yet')}</Text>}
-                {failed ? <Text style={[s.none, { color: c.mute }]}>{isOnline() ? tr('Couldn’t open it. Check your connection.') : offlineText()}</Text> : null}
               </>
             )}
           </View>

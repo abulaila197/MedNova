@@ -5,6 +5,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Back } from '@/components/Back';
 import { Text, TextInput } from '@/components/AppText';
+import { noticeLine } from '@/components/Notice';
 import { Screen } from '@/components/Screen';
 import { GAMES } from '@/data/games';
 import { InfoScroll, Kicker, s as ui, useInfo } from '@/features/info/ui';
@@ -37,7 +38,8 @@ export function NewCase() {
   const [investigation, setInvestigation] = useState('');
   const [findings, setFindings] = useState(['', '']);
   const [busy, setBusy] = useState(false);
-  const [msg, setMsg] = useState('');
+  // A pop-up with an (x) instead of a line that can sit out of sight (Yazan 2026-11-16).
+  const setMsg = noticeLine;
   const sugs = useMemo(() => (answer ? [] : search(INDEX, dx)), [dx, answer]);
 
   const save = async () => {
@@ -113,7 +115,6 @@ export function NewCase() {
             </Pressable>
           ) : null}
         </Box>
-        {msg ? <Text style={[s.msg, { color: t.error }]}>{msg}</Text> : null}
         <Pressable disabled={busy} onPress={save} accessibilityRole="button" style={busy && { opacity: 0.6 }}>
           <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.save}>
             <Text style={[s.saveT, { color: t.onGrad }]}>{signedIn ? tr('Save to My diseases') : tr('Sign in to save')}</Text>

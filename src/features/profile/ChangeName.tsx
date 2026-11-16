@@ -2,6 +2,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet } from 'react-native';
 import { Text, TextInput } from '@/components/AppText';
+import { notice, noticeLine } from '@/components/Notice';
 import { COIN, CoinLabel } from '@/components/CoinLabel';
 
 import { Sheet } from '@/components/Sheet';
@@ -37,7 +38,8 @@ export function ChangeName({ open, onClose }: { open: boolean; onClose: () => vo
   const [name, setName] = useState('');
   const [cost, setCost] = useState<number | null>(null);
   const [busy, setBusy] = useState(false);
-  const [msg, setMsg] = useState<{ text: string; good: boolean } | null>(null);
+  // A pop-up with an (x) instead of a line that can sit out of sight (Yazan 2026-11-16).
+  const setMsg = (m: { text: string; good: boolean } | null) => m && (m.good ? notice({ kick: tr('DONE'), line: m.text, good: true }) : noticeLine(m.text));
   useEffect(() => {
     if (!open) return;
     setName('');
@@ -87,7 +89,6 @@ export function ChangeName({ open, onClose }: { open: boolean; onClose: () => vo
         accessibilityLabel={tr('New name')}
       />
       <Text style={[s.note, { color: t.mute }]}>{tr('Each change costs double the last one.')}</Text>
-      {msg ? <Text style={[s.msg, { color: msg.good ? t.accent : t.mute }]}>{msg.text}</Text> : null}
       <Pressable disabled={!ok || busy} onPress={save} accessibilityRole="button" style={{ opacity: ok ? 1 : 0.5 }}>
         <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.btn}>
           {/* Yazan 2026-11-12: the price always shows on the button, with the token symbol. */}

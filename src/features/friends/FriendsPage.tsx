@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Text, TextInput } from '@/components/AppText';
+import { noticeLine } from '@/components/Notice';
 import { Congrats } from '@/components/Congrats';
 import { Screen } from '@/components/Screen';
 import { loadFree, useFree } from '@/features/store/FreeTokens';
@@ -126,7 +127,8 @@ function Redeem({ t }: { t: Theme }) {
   const off = useFriends((x) => x.savedAt != null);
   const [code, setCode] = useState('');
   const [busy, setBusy] = useState(false);
-  const [msg, setMsg] = useState('');
+  // A pop-up with an (x) instead of a line that can sit out of sight (Yazan 2026-11-16).
+  const setMsg = noticeLine;
   const [won, setWon] = useState(false);
   if (redeemed && !won) return <Text style={[s.done, { color: t.mute }]}>{tr('INVITE CODE REDEEMED ✓')}</Text>;
   const go = async () => {
@@ -156,7 +158,6 @@ function Redeem({ t }: { t: Theme }) {
           <Ghost t={t} label={busy ? '...' : tr('Redeem')} onPress={go} />
         </View>
       </View>
-      {msg ? <Text style={[s.msg, { color: t.error }]}>{msg}</Text> : null}
       <Congrats open={won} tokens={10} title={tr('Welcome aboard')} line={tr('Your friend\'s code worked. They get 10 tokens too.')} onClose={() => setWon(false)} />
     </View>
   );

@@ -5,6 +5,7 @@ import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Image } from 'expo-image';
 
 import { Text } from '@/components/AppText';
+import { noticeLine } from '@/components/Notice';
 import { Congrats } from '@/components/Congrats';
 import { Display } from '@/components/Txt';
 import { useBalance } from '@/components/LevelBadge';
@@ -390,7 +391,8 @@ function GiftSheet({ open, item, onClose, onSent }: { open: boolean; item: Item 
   const mates = useMemo(() => friends.filter((f) => f.kind === 'friend'), [friends]);
   const [busy, setBusy] = useState<string | null>(null);
   const lock = useLock();
-  const [err, setErr] = useState('');
+  // A pop-up with an (x) instead of a line that can sit out of sight (Yazan 2026-11-16).
+  const setErr = noticeLine;
   const deal = useStyle((x) => x.deal);
   useEffect(() => {
     if (open) loadFriends().catch(() => {});
@@ -400,7 +402,6 @@ function GiftSheet({ open, item, onClose, onSent }: { open: boolean; item: Item 
     <Sheet open={open} onClose={onClose}>
       <Text style={[s.gH, { color: c.fg }]}>{tr('Gift {name}', { name: item.name })}</Text>
       <Text style={[s.rS, { color: c.mute, marginBottom: u(8) }]}>{tr('{n} tokens from you. It\'s theirs to keep.', { n: costOf(item, deal) })}</Text>
-      {err ? <Text style={[s.rS, { color: c.t.error }]}>{err}</Text> : null}
       {mates.length ? (
         mates.map((f) => (
           <Pressable
