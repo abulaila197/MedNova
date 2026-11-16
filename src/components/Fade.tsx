@@ -1,12 +1,12 @@
 import MaskedView from '@react-native-masked-view/masked-view';
 import { LinearGradient } from 'expo-linear-gradient';
-import { type ReactNode, useContext, useEffect, useRef, useState } from 'react';
+import { type ReactNode, useContext, useRef, useState } from 'react';
 import { Platform, StyleSheet, View, type LayoutChangeEvent, type StyleProp, type ViewStyle } from 'react-native';
 
 import { Backdrop } from '@/components/Backdrop';
 import { BackdropCtx } from '@/components/backdropCtx';
 import { isAr } from '@/i18n';
-import { MENU_SETTLE_MS, useApp, useTheme } from '@/state/app';
+import { useTheme } from '@/state/app';
 import { useBleed } from '@/theme/scale';
 import { tr } from '@/i18n';
 
@@ -145,15 +145,10 @@ function PictureVeil({ inv, horizontal, bd }: { inv: Stops; horizontal: boolean;
     });
   };
   const at = pos && bd.size ? { ...pos, rw: bd.size.w, rh: bd.size.h } : null;
-  // Drawn only while the page card is at rest (Yazan's phone 2026-11-16, still a dark band after the measuring fix):
-  // a side page opens while the menu still holds its card shrunk, on a hardware layer, and Android kept the masked
-  // copy as it was first drawn there, at 80%. Leaving it out until the card is back to full size, then drawing it
-  // fresh, means it is only ever drawn at full size. While the menu is open the page is pushed aside anyway.
-  const settled = useSettledCard();
   const len = at ? (horizontal ? at.w : at.h) : 0;
   return (
     <View ref={me} collapsable={false} onLayout={measure} pointerEvents="none" style={[StyleSheet.absoluteFill, { direction: 'ltr' }]}>
-      {at && len > 0 && settled
+      {at && len > 0
         ? bands(inv).map((b, bi) => {
             const p0 = Math.round(len * b.from);
             const p1 = Math.round(len * b.to);
@@ -161,21 +156,28 @@ function PictureVeil({ inv, horizontal, bd }: { inv: Stops; horizontal: boolean;
               ? { position: 'absolute', top: 0, bottom: 0, left: p0, width: p1 - p0, overflow: 'hidden' }
               : { position: 'absolute', left: 0, right: 0, top: p0, height: p1 - p0, overflow: 'hidden' };
             const pic: ViewStyle = { position: 'absolute', width: at.rw, height: at.rh, left: -at.x - (horizontal ? p0 : 0), top: -at.y - (horizontal ? 0 : p0) };
-            const picture = (
-              <View style={pic}>
-                <Backdrop symbols={bd.symbols} size={{ width: at.rw, height: at.rh }} />
-              </View>
-            );
-            const cols = b.stops.map(([, a]) => `rgba(0,0,0,${a})`) as unknown as [string, string, ...string[]];
-            const locs = b.stops.map(([o]) => o) as unknown as [number, number, ...number[]];
-            if (Platform.OS === 'web') {
-              const g = `linear-gradient(${horizontal ? '90deg' : '180deg'}, ${b.stops.map(([o, a]) => `rgba(0,0,0,${a}) ${(o * 100).toFixed(2)}%`).join(', ')})`;
-              return <View key={bi} style={[box, { maskImage: g, WebkitMaskImage: g } as unknown as ViewStyle]}>{picture}</View>;
-            }
+            // Stacked see-through copies instead of a mask (Yazan's video 2026-11-16): Android's masked view went black
+            // during page fades and kept a shrunk copy after the side menu, on every side page. Each layer is the same
+            // picture, clipped to run from its step to the band's far end and a little see-through, so together they
+            // build the fade with no seams between them and nothing that needs a mask.
             return (
-              <MaskedView key={bi} style={box} androidRenderingMode="hardware" maskElement={<LinearGradient colors={cols} locations={locs} start={{ x: 0, y: 0 }} end={horizontal ? { x: 1, y: 0 } : { x: 0, y: 1 }} style={StyleSheet.absoluteFill} />}>
-                {picture}
-              </MaskedView>
+              <View key={bi} style={box}>
+                {layers(b.stops).map(([from, to, o], li) => {
+                  const q0 = Math.round((p1 - p0) * from);
+                  const q1 = Math.round((p1 - p0) * to);
+                  const clip: ViewStyle = horizontal
+                    ? { position: 'absolute', top: 0, bottom: 0, left: q0, width: q1 - q0, overflow: 'hidden', opacity: o }
+                    : { position: 'absolute', left: 0, right: 0, top: q0, height: q1 - q0, overflow: 'hidden', opacity: o };
+                  const shifted: ViewStyle = { ...pic, left: (pic.left as number) - (horizontal ? q0 : 0), top: (pic.top as number) - (horizontal ? 0 : q0) };
+                  return (
+                    <View key={li} style={clip}>
+                      <View style={shifted}>
+                        <Backdrop symbols={bd.symbols} size={{ width: at.rw, height: at.rh }} />
+                      </View>
+                    </View>
+                  );
+                })}
+              </View>
             );
           })
         : null}
@@ -183,19 +185,37 @@ function PictureVeil({ inv, horizontal, bd }: { inv: Stops; horizontal: boolean;
   );
 }
 
-/** True while the side menu is closed and the page card has finished coming back to full size. */
-function useSettledCard() {
-  const open = useApp((a) => a.menuOpen);
-  const closedAt = useApp((a) => a.menuClosedAt);
-  // Set by the timer below once the card has come back; until then the edge waits.
-  const [doneFor, setDoneFor] = useState(-1);
-  useEffect(() => {
-    if (open) return;
-    const id = setTimeout(() => setDoneFor(closedAt), Math.max(0, closedAt + MENU_SETTLE_MS - Date.now()));
-    return () => clearTimeout(id);
-  }, [open, closedAt]);
-  // At launch the menu has never closed (closedAt 0): nothing to wait for.
-  return !open && (closedAt === 0 || doneFor === closedAt);
+/** How many see-through layers build one faded band (more = smoother steps, more drawing). */
+const LAYERS = 12;
+
+/**
+ * Turns a band's alpha curve into nested layers [from, to, opacity] (0-1 along the band). Where the picture gets
+ * stronger towards the band's end, layer k runs from step k to the end; towards the start, from the start to step k.
+ * Opacities are picked so the layers stacked over a step add up to the curve's alpha there.
+ */
+function layers(stops: Stops): [number, number, number][] {
+  const alpha = (x: number) => {
+    for (let i = 1; i < stops.length; i++) {
+      const [o0, a0] = stops[i - 1];
+      const [o1, a1] = stops[i];
+      if (x <= o1) return o1 > o0 ? a0 + ((a1 - a0) * (x - o0)) / (o1 - o0) : a1;
+    }
+    return stops[stops.length - 1][1];
+  };
+  const up = alpha(1) >= alpha(0);
+  const out: [number, number, number][] = [];
+  let shown = 0; // alpha already built by the layers so far
+  for (let k = 0; k < LAYERS; k++) {
+    // steps walk from the weak end to the strong end
+    const s0 = k / LAYERS;
+    const mid = (k + 0.5) / LAYERS;
+    const want = Math.min(1, Math.max(shown, alpha(up ? mid : 1 - mid)));
+    const o = shown >= 1 ? 0 : 1 - (1 - want) / (1 - shown);
+    shown = want;
+    if (o <= 0.002) continue;
+    out.push(up ? [s0, 1, o] : [0, 1 - s0, o]);
+  }
+  return out;
 }
 
 /** A page without the shared backdrop (its own opaque background): a plain gradient into the page colour. */
