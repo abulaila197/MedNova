@@ -5,6 +5,7 @@ import { Text, TextInput } from '@/components/AppText';
 import { s as ui, type useInfo } from '@/features/info/ui';
 import { gameLabel } from '@/features/learn/NewWord';
 import { call } from '@/lib/rpc';
+import { ShowMore, useShown } from './ShowMore';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
@@ -25,9 +26,15 @@ const label = (k: string) => LABEL[k] ?? k[0].toUpperCase() + k.slice(1).replace
 export function Submissions({ c, show }: { c: C; show: 'open' | 'all' }) {
   const [items, setItems] = useState<Sub[] | null>(null);
   const [err, setErr] = useState('');
+  const [n, more] = useShown(show);
+  // Another tab empties the list until its answer comes (set while rendering, not in the effect).
+  const [shownTab, setShownTab] = useState(show);
+  if (shownTab !== show) {
+    setShownTab(show);
+    setItems(null);
+  }
   useEffect(() => {
     let live = true;
-    setItems(null);
     call<Sub[]>('admin_submissions', { show: show === 'open' ? 'waiting' : 'all' })
       .then((r) => live && setItems(r ?? []))
       .catch(() => live && (setErr('Could not load. Check the connection.'), setItems([])));
@@ -42,10 +49,11 @@ export function Submissions({ c, show }: { c: C; show: 'open' | 'all' }) {
       {err ? <Text style={[s.small, { color: c.t.error }]}>{err}</Text> : null}
       {items && !items.length ? <Text style={[s.small, { color: c.mute, marginTop: u(8) }]}>{show === 'open' ? 'Nothing waiting.' : 'Nothing yet.'}</Text> : null}
       <View style={s.list}>
-        {(items ?? []).map((it) => (
+        {(items ?? []).slice(0, n).map((it) => (
           <One key={it.id} c={c} it={it} onDone={done} onErr={setErr} />
         ))}
       </View>
+      {(items?.length ?? 0) > n ? <ShowMore c={c} onPress={more} /> : null}
     </>
   );
 }

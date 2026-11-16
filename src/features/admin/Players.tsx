@@ -6,6 +6,7 @@ import { GAMES, PARKED_GAMES } from '@/data/games';
 import { s as ui, type useInfo } from '@/features/info/ui';
 import { PlayerFace } from '@/features/style/Frame';
 import { CHARACTERS, MECH_CHARACTERS, SHOP_CHARACTERS, TEAM_CHARACTERS } from '@/games/shell/characters';
+import { ADMIN_PAGE, ShowMore } from '@/features/admin/ShowMore';
 import { supabase } from '@/lib/supabase';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
@@ -43,7 +44,7 @@ type Detail = {
   ban: { reason: string; at: string } | null;
 };
 
-const PAGE = 20; // first 20 of each list (Yazan 2026-11-16), "Show more" adds 20
+const PAGE = ADMIN_PAGE; // first 10 of each list, "Show 10 more" adds 10 (Yazan 2026-11-16)
 /** The app pings last_seen every 5 minutes while open (friends.ts), so 6 minutes = online now. */
 const ONLINE_MS = 6 * 60 * 1000;
 const REFRESH_MS = 30 * 1000;
@@ -120,7 +121,7 @@ export function Players({ c, onMessage, onTakeBack }: { c: C; onMessage: (p: Adm
     [q, sort],
   );
 
-  // A new search or sort starts from the first 20 again, after a short pause in typing.
+  // A new search or sort starts from the first 10 again, after a short pause in typing.
   useEffect(() => {
     shown.current = PAGE;
     const t = setTimeout(() => void load(PAGE), 300);
@@ -200,11 +201,7 @@ export function Players({ c, onMessage, onTakeBack }: { c: C; onMessage: (p: Adm
           </View>
         ))}
       </View>
-      {more ? (
-        <Pressable onPress={loadMore} accessibilityRole="button" style={[s.chip, s.gapS, { borderColor: c.line, alignSelf: 'center' }]}>
-          <Text style={[s.chipT, { color: c.fg }]}>Load more</Text>
-        </Pressable>
-      ) : null}
+      {more ? <ShowMore c={c} onPress={loadMore} /> : null}
     </>
   );
 }

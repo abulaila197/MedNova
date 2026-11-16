@@ -9,6 +9,7 @@ import { Downloads, Inbox } from '@/features/admin/Inbox';
 import { Notify } from '@/features/admin/Notify';
 import { Players, type AdminPlayer } from '@/features/admin/Players';
 import { ServerUsage } from '@/features/admin/ServerUsage';
+import { ShowMore, useShown } from '@/features/admin/ShowMore';
 import { StoreErrors } from '@/features/admin/StoreErrors';
 import { Switches } from '@/features/admin/Switches';
 import { GradBtn, InfoScroll, Kicker, s as ui, useInfo } from '@/features/info/ui';
@@ -60,6 +61,7 @@ export default function Page() {
   const [note, setNote] = useState('');
   const [msg, setMsg] = useState<{ text: string; bad?: boolean } | null>(null);
   const [sent, setSent] = useState<Sent[] | null>(null);
+  const [nSent, moreSent] = useShown('sent');
   // Where the Send and Take back parts start, so a player's actions can jump there.
   const ySend = useRef(0);
   const yBack = useRef(0);
@@ -105,6 +107,7 @@ export default function Page() {
   };
   const [show, setShow] = useState<'new' | 'all'>('new');
   const [reports, setReports] = useState<Report[] | null>(null);
+  const [nRep, moreRep] = useShown(show);
   const [repErr, setRepErr] = useState(false);
   // A new list (or admin rights) starts from "loading" again.
   const repFor = `${isAdmin}:${show}`;
@@ -279,7 +282,7 @@ export default function Page() {
         <Text style={[ui.p, { color: c.mute }]}>Your last 50 messages: who opened them and who collected. Reuse fills the form above; Clear hides one from this list.</Text>
         {sent && !sent.length ? <Text style={[s.small, s.gapS, { color: c.mute }]}>Nothing sent yet.</Text> : null}
         <View style={s.list}>
-          {(sent ?? []).map((m) => (
+          {(sent ?? []).slice(0, nSent).map((m) => (
             <View key={m.id} style={[s.rep, { borderColor: c.line }]}>
               <Text style={[s.small, { color: c.mute }]}>{`${when(m.at)} · ${m.to ? '@' + m.to : 'All players'}`}</Text>
               {m.title ? <Text style={[s.name, { color: c.fg }]}>{m.title}</Text> : null}
@@ -308,6 +311,7 @@ export default function Page() {
             </View>
           ))}
         </View>
+        {(sent?.length ?? 0) > nSent ? <ShowMore c={c} onPress={moreSent} /> : null}
 
         <Text onLayout={(e) => (yBack.current = e.nativeEvent.layout.y)} style={[ui.H, s.H, s.gapL, { color: c.fg }]}>Take tokens back</Text>
         <Text style={[ui.p, { color: c.mute }]}>A correction for one player, taken from their wallet at once.</Text>
@@ -329,7 +333,7 @@ export default function Page() {
         {repErr ? <Text style={[s.small, { color: c.t.error }]}>Could not load reports. Check the connection.</Text> : null}
         {reports && !reports.length ? <Text style={[s.small, s.gapS, { color: c.mute }]}>{show === 'new' ? 'No new reports.' : 'No reports yet.'}</Text> : null}
         <View style={s.list}>
-          {(reports ?? []).map((r) => (
+          {(reports ?? []).slice(0, nRep).map((r) => (
             <View key={r.id} style={[s.rep, { borderColor: c.line, opacity: r.status === 'done' ? 0.55 : 1 }]}>
               <Text style={[s.small, { color: c.mute }]}>{`${r.kind.toUpperCase()} · ${when(r.created_at)} · ${r.username ? '@' + r.username : 'Guest'}`}</Text>
               {r.context?.chips?.length ? <Text style={[s.small, { color: c.fg }]}>{r.context.chips.join(' · ')}</Text> : null}
@@ -340,6 +344,7 @@ export default function Page() {
             </View>
           ))}
         </View>
+        {(reports?.length ?? 0) > nRep ? <ShowMore c={c} onPress={moreRep} /> : null}
         <Inbox c={c} />
         <Downloads c={c} />
       </InfoScroll>

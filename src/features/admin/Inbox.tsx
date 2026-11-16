@@ -6,6 +6,7 @@ import { GradBtn, Kicker, s as ui, type useInfo } from '@/features/info/ui';
 import { PROMPTS } from '@/features/store/FreeTokens';
 import { call } from '@/lib/rpc';
 
+import { ShowMore, useShown } from './ShowMore';
 import { Submissions } from './Submissions';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
@@ -34,6 +35,7 @@ export function Inbox({ c }: { c: C }) {
   const kind = KINDS.find((k) => k.key === what)!;
   // Another list starts from "loading" again.
   const list = `${what}:${show}`;
+  const [n, more] = useShown(list);
   const [shownList, setShownList] = useState(list);
   if (shownList !== list) {
     setShownList(list);
@@ -82,7 +84,7 @@ export function Inbox({ c }: { c: C }) {
       {what !== 'cases' && err ? <Text style={[s.small, { color: c.t.error }]}>Could not load or save. Check the connection.</Text> : null}
       {what !== 'cases' && items && !items.length ? <Text style={[s.small, s.gapS, { color: c.mute }]}>{show === 'open' ? 'Nothing waiting.' : 'Nothing yet.'}</Text> : null}
       <View style={s.list}>
-        {(items ?? []).map((it) => {
+        {(items ?? []).slice(0, n).map((it) => {
           const shut = it.status !== kind.open;
           return (
             <View key={it.id} style={[s.rep, { borderColor: c.line, opacity: shut ? 0.55 : 1 }]}>
@@ -104,6 +106,7 @@ export function Inbox({ c }: { c: C }) {
           );
         })}
       </View>
+      {what !== 'cases' && (items?.length ?? 0) > n ? <ShowMore c={c} onPress={more} /> : null}
     </>
   );
 }

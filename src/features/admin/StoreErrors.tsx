@@ -3,6 +3,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Text } from '@/components/AppText';
 import type { useInfo } from '@/features/info/ui';
+import { ADMIN_PAGE as PAGE, ShowMore } from '@/features/admin/ShowMore';
 import { supabase } from '@/lib/supabase';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
@@ -12,7 +13,7 @@ type Row = { id: number; at: string; stage: string; product: string | null; plat
 /**
  * Admin: what Apple or Google answered when a purchase, a restore or loading the products went wrong, newest first
  * (store_errors, 2026-11-16). Each row has the store's own error, the store country, the phone and the app build.
- * Ten at a time (Yazan 2026-11-16): "Show 10 more" fetches the next ten; Refresh starts again from the newest.
+ * Ten at a time (ShowMore): each tap fetches the next ten; Refresh starts again from the newest.
  */
 export function StoreErrors({ c }: { c: ReturnType<typeof useInfo> }) {
   const [rows, setRows] = useState<Row[] | null>(null);
@@ -68,16 +69,11 @@ export function StoreErrors({ c }: { c: ReturnType<typeof useInfo> }) {
           </Text>
         </View>
       ))}
-      {more ? (
-        <Pressable onPress={() => load(rows?.length ?? 0)} style={[s.more, { borderColor: c.line }]} accessibilityRole="button">
-          <Text style={[s.k, { color: c.t.accent }]}>{busy ? 'LOADING…' : 'SHOW 10 MORE'}</Text>
-        </Pressable>
-      ) : null}
+      {more ? <ShowMore c={c} busy={busy} onPress={() => load(rows?.length ?? 0)} /> : null}
     </View>
   );
 }
 
-const PAGE = 10;
 type Page = { rows: Row[]; more: boolean; error: string | null };
 
 /** PAGE rows from `from`, newest first; asks for one extra to know whether there are more. */
@@ -99,5 +95,4 @@ const s = StyleSheet.create({
   row: { borderTopWidth: StyleSheet.hairlineWidth, paddingTop: u(8), gap: u(3) },
   name: { fontFamily: F.bodySemi, fontSize: u(11) },
   sub: { fontFamily: F.body, fontSize: u(9.5), lineHeight: u(13) },
-  more: { alignSelf: 'center', borderWidth: 1, borderRadius: u(10), paddingVertical: u(6), paddingHorizontal: u(14), marginTop: u(4) },
 });

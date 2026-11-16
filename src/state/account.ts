@@ -84,7 +84,6 @@ function apply(id: string | null, email: string | null) {
   // first sync, so one account's wallet and plays are never uploaded to another (AP3).
   const ready = queueCleanSlate(id);
   void loadSubscription(id);
-  void import('./flags').then((m) => m.loadFlags()).catch(() => {}); // Admin's switches (Razan, 2026-11-16)
   if (id) {
     void loadProfile(id);
     ready.then(() => syncAccount(id)).then(() => flushOffline(id)).catch(() => {}); // retried on the next sign-in, finish or app start

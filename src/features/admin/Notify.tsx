@@ -3,6 +3,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Text, TextInput } from '@/components/AppText';
 import { GradBtn, s as ui, type useInfo } from '@/features/info/ui';
+import { ShowMore, useShown } from '@/features/admin/ShowMore';
 import { supabase } from '@/lib/supabase';
 import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
@@ -32,15 +33,21 @@ export function Notify({ c }: { c: C }) {
   const [log, setLog] = useState<Log[] | null>(null);
   // Bumped after a send, so the list below reloads.
   const [tick, setTick] = useState(0);
+  // Sent so far: ten, then ten more per tap; one extra row asked for tells whether there are more.
+  const [n, more] = useShown('sent');
+  const [hasMore, setHasMore] = useState(false);
   useEffect(() => {
     let live = true;
-    void supabase.rpc('admin_push_sent').then(({ data }) => {
-      if (live) setLog((data as Log[]) ?? []);
+    void supabase.rpc('admin_push_sent', { lim: n + 1 }).then(({ data }) => {
+      if (!live) return;
+      const rows = (data as Log[]) ?? [];
+      setLog(rows.slice(0, n));
+      setHasMore(rows.length > n);
     });
     return () => {
       live = false;
     };
-  }, [tick]);
+  }, [tick, n]);
 
   const send = async (kind: Kind) => {
     if (busy) return;
@@ -96,6 +103,7 @@ export function Notify({ c }: { c: C }) {
               <Text style={[s.small, { color: c.fg }]}>{l.body}</Text>
             </View>
           ))}
+          {hasMore ? <ShowMore c={c} onPress={more} /> : null}
         </View>
       ) : null}
       {sure ? (

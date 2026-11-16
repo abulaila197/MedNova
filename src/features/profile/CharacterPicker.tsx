@@ -10,8 +10,7 @@ import { Sheet } from '@/components/Sheet';
 import { useSvgId } from '@/components/svgId';
 import { MECHS } from '@/features/chests/data';
 import { bonusLine, ROBOTS, starsOf } from '@/features/shop/robots';
-import { visibleTeam } from '@/features/team/team';
-import { useHiddenCharacters } from '@/state/flags';
+import { TEAM } from '@/features/team/team';
 import { useStyle } from '@/features/style/useStyle';
 import { Face } from '@/games/shell/Face';
 import { CHARACTERS } from '@/games/shell/characters';
@@ -61,7 +60,6 @@ function Pick({ size, on, children }: { size: number; on: boolean; children: Rea
 
 /** Choose your character (Yazan 2026-10-18): the free Original pack, then the Nova Mechs you won from chests. */
 export function CharacterPicker({ open, onClose, wearing, owned, found, onWear, error }: { open: boolean; onClose: () => void; wearing: string; owned: string[]; found: string[]; onWear?: (slug: string) => void; error?: string | null }) {
-  const TEAM = visibleTeam(useHiddenCharacters()); // Admin's switches hide some (Razan, 2026-11-16)
   const t = useTheme();
   // Your pick while the sheet is open; closing it forgets the pick.
   const [picked, setSel] = useState<string | null>(null);
