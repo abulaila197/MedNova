@@ -1,3 +1,4 @@
+import { isOnline, onBackOnline } from '@/lib/net';
 import { useEffect } from 'react';
 import { AppState, Pressable, StyleSheet, View } from 'react-native';
 
@@ -47,10 +48,12 @@ export function StyleHost() {
   useEffect(() => {
     if (!userId) return;
     const sub = AppState.addEventListener('change', (st) => st === 'active' && void flushInBackground());
-    const id = setInterval(() => void flushInBackground(), 60000);
+    const id = setInterval(() => isOnline() && void flushInBackground(), 60000);
+    const offBack = onBackOnline(() => void flushInBackground());
     return () => {
       sub.remove();
       clearInterval(id);
+      offBack();
     };
   }, [userId]);
   const g = gifts[0];

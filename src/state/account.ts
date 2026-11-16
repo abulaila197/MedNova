@@ -1,3 +1,4 @@
+import { onBackOnline } from '@/lib/net';
 import type { Session } from '@supabase/supabase-js';
 import { AppState } from 'react-native';
 import { create } from 'zustand';
@@ -137,6 +138,13 @@ export function startAccount() {
   supabase.auth.onAuthStateChange((e, session) => (e === 'INITIAL_SESSION' ? settle(session) : apply(session?.user.id ?? null, session?.user.email ?? null)));
   AppState.addEventListener('change', (st) => {
     if (st === 'active') retryProfile();
+  });
+  // Games played offline go up the moment the internet comes back, not at the next game or app start (2026-11-16).
+  onBackOnline(() => {
+    const id = useSession.getState().userId;
+    if (!id) return;
+    retryProfile();
+    void syncAccount(id).catch(() => {});
   });
 }
 

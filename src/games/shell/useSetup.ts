@@ -1,6 +1,8 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
 
+import { isOnline, offlineText } from '@/lib/net';
+
 import { sparksCost } from '@/features/sparks/costs';
 import { needSparks } from '@/features/sparks/sparks';
 
@@ -28,6 +30,7 @@ export function useSetup(def: GameDef, mode: Mode, prefill?: Record<string, unkn
     }),
   );
   const [busy, setBusy] = useState(false);
+  const [note, setNote] = useState<string | null>(null);
   const range = def.players?.[mode];
   // Every player picks one of the 8 colours (Yazan 2026-10-18); characters live in Profile.
   // Teams only (Tilt & Tell): teams are always on, at least 2, dealt round the players from the start.
@@ -84,6 +87,9 @@ export function useSetup(def: GameDef, mode: Mode, prefill?: Record<string, unkn
   const start = async () => {
     // A practice of my own word (My diseases) keeps its word id, which also makes it free.
     const own = typeof prefill?.custom === 'string' ? { ...vals, custom: prefill.custom } : vals;
+    // A Game challenge goes to the friend at Start, so with no internet the game waits instead of starting without it.
+    setNote(null);
+    if (intentFor(def.key, mode)?.kind === 'game' && !isOnline()) return setNote(offlineText());
     // The chosen setup sets the cost; too few Sparks opens the Recharge sheet first (#70). Daily Medicordle is free (TR3).
     if (!alwaysFree({ game: def.key, mode, settings: own }) && !(await needSparks(sparksCost(def.key, mode, own)))) return;
     setBusy(true);
@@ -111,5 +117,5 @@ export function useSetup(def: GameDef, mode: Mode, prefill?: Record<string, unkn
     router.replace(`/play/${def.key}/run?play=${play.id}`);
   };
 
-  return { opts, vals, setVals, range, seats, setSeat, pickColour, addSeat, removeSeat, canTeam, teams, teamCount, renameTeam, teamChoices, preset, emptyTeam, thinTeam, minEach: only?.minEach ?? 1, busy, start };
+  return { opts, vals, setVals, range, seats, setSeat, pickColour, addSeat, removeSeat, canTeam, teams, teamCount, renameTeam, teamChoices, preset, emptyTeam, thinTeam, minEach: only?.minEach ?? 1, busy, note, start };
 }

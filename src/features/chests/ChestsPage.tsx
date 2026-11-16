@@ -1,3 +1,4 @@
+import { isOnline, offlineText } from '@/lib/net';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
@@ -63,6 +64,7 @@ export function ChestsPage({ v }: { v: ChestsView }) {
   const openIt = async () => {
     // A ref holds from the first tap; state alone lets a same-frame second tap open a second chest (AP10a).
     if (busy || opening.current || !n) return;
+    if (!isOnline()) return setFailed(true);
     opening.current = true;
     setBusy(true);
     setFailed(false);
@@ -152,7 +154,7 @@ export function ChestsPage({ v }: { v: ChestsView }) {
                 <Text style={[s.name, { color: c.fg }]}>{tr(chest.name)}</Text>
                 <Text style={[s.sub, { color: c.mute }]}>{tr('{items} item{n} · {from}', { items: chest.items, n: chest.items > 1 ? 's' : '', from: tr(chest.from) })}</Text>
                 {n ? <GradPill label={busy ? tr('Opening…') : tr('Open')} onPress={openIt} /> : <Text style={[s.none, { color: c.mute }]}>{tr('None yet')}</Text>}
-                {failed ? <Text style={[s.none, { color: c.mute }]}>{tr('Couldn’t open it. Check your connection.')}</Text> : null}
+                {failed ? <Text style={[s.none, { color: c.mute }]}>{isOnline() ? tr('Couldn’t open it. Check your connection.') : offlineText()}</Text> : null}
               </>
             )}
           </View>

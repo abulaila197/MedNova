@@ -1,3 +1,4 @@
+import { isOnline, onBackOnline } from '@/lib/net';
 import { AppState } from 'react-native';
 import { create } from 'zustand';
 
@@ -132,6 +133,7 @@ export function seenLabel(lastSeen: string | null, now = Date.now()) {
 
 let beat: ReturnType<typeof setInterval> | null = null;
 let sub: { remove: () => void } | null = null;
+let offBack: (() => void) | null = null;
 let lastList = 0;
 /**
  * While signed in and the app is open: mark yourself seen every 5 minutes (FR4; was every minute until item 13,
@@ -143,7 +145,8 @@ export function startPresence() {
   lastList = 0;
   let lastSeen = 0;
   const tick = () => {
-    if (AppState.currentState !== 'active') return;
+    // No internet: nothing is asked; the first tick after it comes back catches up (2026-11-16).
+    if (AppState.currentState !== 'active' || !isOnline()) return;
     if (Date.now() - lastSeen >= 290000) {
       lastSeen = Date.now();
       void call('touch_seen').catch(() => {});
@@ -155,11 +158,14 @@ export function startPresence() {
   tick();
   beat = setInterval(tick, 60000);
   sub = AppState.addEventListener('change', (s) => s === 'active' && ((lastList = 0), (lastSeen = 0), tick()));
+  offBack = onBackOnline(() => ((lastSeen = 0), tick()));
 }
 export function stopPresence() {
   if (beat) clearInterval(beat);
   sub?.remove();
+  offBack?.();
   beat = null;
   sub = null;
+  offBack = null;
   clearFriends();
 }

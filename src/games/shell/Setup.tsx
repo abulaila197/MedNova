@@ -30,7 +30,7 @@ export function Setup({ def, mode, prefill, prefillSeats }: { def: GameDef; mode
   const t = useTheme();
   const g = GAMES.find((x) => x.key === def.key)!;
   const st = useSetup(def, mode, prefill, prefillSeats);
-  const { opts, vals, setVals, range, seats, teams, canTeam, emptyTeam, thinTeam, minEach, busy, start } = st;
+  const { opts, vals, setVals, range, seats, teams, canTeam, emptyTeam, thinTeam, minEach, busy, note, start } = st;
   // Signed in without the subscription, every choice that changes the cost shows its Sparks (#36).
   const signedIn = !!useSession((x) => x.userId);
   const subscribed = useIsSubscribed();
@@ -65,8 +65,8 @@ export function Setup({ def, mode, prefill, prefillSeats }: { def: GameDef; mode
       bottom={
         <>
           {intent ? <Text style={[s.small, { color: t.accent, textAlign: 'center' }]}>{tr('Challenge for {name} · {n}', { name: intent.friend.name, n: intent.kind === 'score' ? tr('Beat my score, 1 day') : tr('Game challenge, {v} day{v2}', { v: intent.days, v2: intent.days > 1 ? 's' : '' }) })}</Text> : null}
-          <Text style={[s.small, { color: t.dim, textAlign: 'center' }]}>
-            {emptyTeam ? tr('{name} has no players yet.', { name: emptyTeam.name }) : thinTeam ? tr('{name} needs at least {minEach} players.', { name: thinTeam.name, minEach }) : short && menu ? tr('Tick at least {min} {unit} (now {total}).', { min: menu.min, unit: menu.unit, total: menu.total(ticked) }) : showCost ? tr('{n} {cost} Sparks{each} · you have {have}', { n: each ? tr('Costs') : tr('This game costs'), cost, each, have }) : tr('Settings lock once the game starts.')}
+          <Text style={[s.small, { color: note ? t.error : t.dim, textAlign: 'center' }]}>
+            {note ? note : emptyTeam ? tr('{name} has no players yet.', { name: emptyTeam.name }) : thinTeam ? tr('{name} needs at least {minEach} players.', { name: thinTeam.name, minEach }) : short && menu ? tr('Tick at least {min} {unit} (now {total}).', { min: menu.min, unit: menu.unit, total: menu.total(ticked) }) : showCost ? tr('{n} {cost} Sparks{each} · you have {have}', { n: each ? tr('Costs') : tr('This game costs'), cost, each, have }) : tr('Settings lock once the game starts.')}
           </Text>
           <Btn label={tr('Start')} onPress={start} disabled={busy || !!emptyTeam || !!thinTeam || short} />
         </>

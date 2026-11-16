@@ -6,6 +6,7 @@
 // - A weak signal that the phone calls "online" gets the growing wait (5 s, 10 s, 20 s ... 2 min), with a small random
 //   spread so phones don't all ask in the same second after an outage. Coming back to the app asks at once.
 import * as Network from 'expo-network';
+import { isOnline, onBackOnline } from '@/lib/net';
 import { useEffect } from 'react';
 import { AppState } from 'react-native';
 
@@ -41,19 +42,11 @@ export function useOfflineRetry() {
     if (!userId) return;
     let wait = FIRST_MS;
     let nextAt = 0;
-    let online = true; // until the phone says otherwise
     const now = () => {
       wait = FIRST_MS;
       nextAt = 0;
     };
-    const net = Network.addNetworkStateListener((e) => {
-      const up = e.isInternetReachable ?? e.isConnected ?? true;
-      if (up && !online) now();
-      online = up;
-    });
-    void Network.getNetworkStateAsync()
-      .then((e) => (online = e.isInternetReachable ?? e.isConnected ?? true))
-      .catch(() => {});
+    const offBack = onBackOnline(now);
     // Looks every 5 s (on the phone only, no server call) whether a page waits; asks the server only when its turn comes.
     const id = setInterval(() => {
       // On a weak signal a try can take longer than the wait: the next one waits for it instead of piling up.
@@ -64,7 +57,7 @@ export function useOfflineRetry() {
         nextAt = 0;
         return;
       }
-      if (!online || Date.now() < nextAt) return;
+      if (!isOnline() || Date.now() < nextAt) return;
       trying = true;
       void Promise.allSettled(jobs.map((j) => j()))
         .then(async () => {
@@ -82,7 +75,7 @@ export function useOfflineRetry() {
     return () => {
       clearInterval(id);
       sub.remove();
-      net.remove();
+      offBack();
     };
   }, [userId]);
 }

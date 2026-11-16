@@ -1,3 +1,4 @@
+import { isOnline, offlineText } from '@/lib/net';
 import { useFocusEffect } from 'expo-router';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -42,6 +43,7 @@ export function InboxPage() {
   const canClear = !gifts && (list ?? []).some(clearable);
   const all = async () => {
     if (busy) return;
+    if (!isOnline()) return setErr(offlineText());
     setBusy('all');
     setErr('');
     if (!(await collectAll())) setErr(tr('Some gifts didn’t collect. Check your connection and try again.'));
@@ -103,13 +105,14 @@ function Card({ m }: { m: Message }) {
   const c = useInfo();
   const t = c.t;
   const [busy, setBusy] = useState(false);
-  const [err, setErr] = useState(false);
+  const [err, setErr] = useState<string | false>(false);
   const gift = hasGift(m);
   const take = async () => {
     if (busy) return;
+    if (!isOnline()) return setErr(offlineText());
     setBusy(true);
     setErr(false);
-    if (!(await collect(m.id))) setErr(true);
+    if (!(await collect(m.id))) setErr(tr('Couldn’t collect. Check your connection and try again.'));
     setBusy(false);
   };
   return (
@@ -166,7 +169,7 @@ function Card({ m }: { m: Message }) {
           <Text style={[s.goT, { color: c.fg }]}>{tr('Open {name}’s profile', { name: m.from.name })}</Text>
         </Pressable>
       ) : null}
-      {err ? <Text style={[s.err, { color: t.error }]}>{tr('Couldn’t collect. Check your connection and try again.')}</Text> : null}
+      {err ? <Text style={[s.err, { color: t.error }]}>{err}</Text> : null}
     </View>
   );
 }

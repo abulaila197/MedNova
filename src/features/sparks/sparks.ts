@@ -1,5 +1,6 @@
 // The Sparks bar on the phone (#4, #82): what the header and setup pages show, what a play pays at its first answer,
 // and the Recharge sheet when a play costs more than the bar holds. The bar itself is src/games/engine/sparks.ts.
+import { isOnline } from '@/lib/net';
 import { router } from 'expo-router';
 import { create } from 'zustand';
 
@@ -137,6 +138,7 @@ const once = (job: (uid: string) => Promise<View>) => async () => {
 
 /** 'Watch an ad': +10 Sparks, 20 a day. Google tells our server the ad was watched; the server pays, then we read it. */
 export const rechargeWithAd = once(async (uid) => {
+  if (!isOnline()) return { ok: false, why: 'offline' } as View;
   let ad;
   try {
     ad = await showRewarded('sparks', uid);

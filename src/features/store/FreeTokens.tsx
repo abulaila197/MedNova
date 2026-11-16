@@ -1,3 +1,4 @@
+import { isOnline, offlineText } from '@/lib/net';
 import { navTo } from '@/lib/nav';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
@@ -219,6 +220,7 @@ export function FreeTokens({ t }: { t: Theme }) {
   const watchAd = async () => {
     const uid = useSession.getState().userId;
     if (busy || !ADS_LIVE || !uid) return;
+    if (!isOnline()) return setAdNote(offlineText());
     setBusy('ad');
     setAdNote(null);
     try {

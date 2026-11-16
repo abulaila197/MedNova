@@ -1,3 +1,4 @@
+import { isOnline, offlineText } from '@/lib/net';
 import { router, usePathname } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { AppState } from 'react-native';
@@ -136,6 +137,7 @@ export function DailyHost() {
 
   const collect = async () => {
     if (claiming.current) return; // a double tap claims once (AP10a)
+    if (!isOnline()) return setError(offlineText());
     claiming.current = true;
     setBusy(true);
     setError(null);

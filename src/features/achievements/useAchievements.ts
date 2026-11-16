@@ -1,3 +1,4 @@
+import { isOnline, offlineText } from '@/lib/net';
 import { useCallback, useEffect, useState } from 'react';
 
 import { engine } from '@/games/engine';
@@ -111,6 +112,7 @@ export function useAchievements() {
   const collect = async (key: AchKey) => {
     const row = rows?.find((r) => r.key === key);
     if (!userId || !row || row.paid >= row.reached) return;
+    if (!isOnline()) return setErrorAt({ key, text: offlineText() });
     setBusy(key);
     setErrorAt(null);
     // The server pays tiers in order, re-counting what it can see.
