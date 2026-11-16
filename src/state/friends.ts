@@ -119,7 +119,8 @@ export const ONLINE_LABEL = tr('ONLINE');
 export function seenLabel(lastSeen: string | null, now = Date.now()) {
   if (!lastSeen) return tr('NOT SEEN YET');
   const m = Math.floor((now - Date.parse(lastSeen)) / 60000);
-  if (m < 2) return ONLINE_LABEL;
+  // The app pings every 5 minutes while open (startPresence), so seen in the last 6 minutes = online now.
+  if (m < 6) return ONLINE_LABEL;
   if (m < 60) return tr('{m}M AGO', { m });
   const h = Math.floor(m / 60);
   if (h < 24) return tr('{h}H AGO', { h });

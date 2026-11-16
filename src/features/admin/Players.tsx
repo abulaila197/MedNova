@@ -44,8 +44,8 @@ type Detail = {
 };
 
 const PAGE = 20; // first 20 of each list (Yazan 2026-11-16), "Show more" adds 20
-/** The app pings last_seen every minute while open (friends.ts), so 2 minutes = online now. */
-const ONLINE_MS = 2 * 60 * 1000;
+/** The app pings last_seen every 5 minutes while open (friends.ts), so 6 minutes = online now. */
+const ONLINE_MS = 6 * 60 * 1000;
 const REFRESH_MS = 30 * 1000;
 const GREEN = '#3ecf8e';
 const SORTS: { k: Sort; label: string }[] = [
