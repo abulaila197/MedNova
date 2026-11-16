@@ -43,7 +43,7 @@ type Detail = {
   ban: { reason: string; at: string } | null;
 };
 
-const PAGE = 50;
+const PAGE = 20; // first 20 of each list (Yazan 2026-11-16), "Show more" adds 20
 /** The app pings last_seen every minute while open (friends.ts), so 2 minutes = online now. */
 const ONLINE_MS = 2 * 60 * 1000;
 const REFRESH_MS = 30 * 1000;
@@ -120,7 +120,7 @@ export function Players({ c, onMessage, onTakeBack }: { c: C; onMessage: (p: Adm
     [q, sort],
   );
 
-  // A new search or sort starts from the first 50 again, after a short pause in typing.
+  // A new search or sort starts from the first 20 again, after a short pause in typing.
   useEffect(() => {
     shown.current = PAGE;
     const t = setTimeout(() => void load(PAGE), 300);
