@@ -198,7 +198,11 @@ export function Leaderboard() {
                   if (!who) return <View key={b.place} style={[s.box, s.boxEmpty, { height: u(b.h * 0.6), borderColor: p.boxLine }]} />;
                   return (
                     <Pressable key={b.place} disabled={!canOpen(who.id)} onPress={() => open(who)} style={[s.box, { height: u(b.h), borderColor: first ? 'rgba(255,215,106,0.4)' : p.boxLine }]} accessibilityRole="button" accessibilityHint={tr('Open their profile')}>
-                      <LinearGradient colors={first ? p.boxFirst : p.box} style={[StyleSheet.absoluteFill, s.boxFill]} />
+                      {/* The fill is clipped by a plain view: Android ignored the gradient's own start/end corners, so its square
+                          corners stuck out past the rounded border as little ears (Yazan's photo 2026-11-16). */}
+                      <View style={[StyleSheet.absoluteFill, s.boxFill]} pointerEvents="none">
+                        <LinearGradient colors={first ? p.boxFirst : p.box} style={StyleSheet.absoluteFill} />
+                      </View>
                       <View style={[s.face, { top: u(-b.f / 2 - 3), width: u(b.f + 4), height: u(b.f + 4), borderColor: b.m, boxShadow: `0px 0px ${u(14)}px ${b.m}66` }]}>
                         <PlayerFace slug={who.avatar || 'yara'} size={u(b.f - 2)} userId={who.id} still />
                       </View>
@@ -302,7 +306,7 @@ const s = StyleSheet.create({
   pillT: { fontFamily: F.bodySemi, fontSize: u(9), maxWidth: u(90) },
   pod: { flexDirection: 'row', alignItems: 'flex-end', gap: u(7), marginTop: u(POD_ROOM), marginBottom: u(12) },
   box: { flex: 1, alignItems: 'center', borderWidth: 1, borderTopLeftRadius: u(14), borderTopRightRadius: u(14), borderBottomLeftRadius: u(10), borderBottomRightRadius: u(10), paddingHorizontal: u(4) },
-  boxFill: { borderTopStartRadius: u(13), borderTopEndRadius: u(13), borderBottomStartRadius: u(9), borderBottomEndRadius: u(9) },
+  boxFill: { overflow: 'hidden', borderTopLeftRadius: u(13), borderTopRightRadius: u(13), borderBottomLeftRadius: u(9), borderBottomRightRadius: u(9) },
   boxEmpty: { opacity: 0.4 },
   face: { position: 'absolute', alignSelf: 'center', borderRadius: 999, borderWidth: u(2), alignItems: 'center', justifyContent: 'center', backgroundColor: '#0d1738' },
   crown: { position: 'absolute', alignSelf: 'center' },

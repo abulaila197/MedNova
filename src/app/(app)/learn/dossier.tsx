@@ -157,7 +157,10 @@ function Folder({ fields, on, setOn, heights }: { fields: { key: string; tab: st
   return (
     <View style={s.fold}>
           <View style={[s.fcard, { borderColor: c.cardLine, boxShadow: c.cardShadow }]}>
-            <LinearGradient colors={[c.fcardA, c.fcardB]} style={[StyleSheet.absoluteFill, s.fbg]} />
+            {/* Clipped by a plain view: Android's gradient ignores start/end corners (same fix as the Leaderboard podium). */}
+            <View style={[StyleSheet.absoluteFill, s.fbg]} pointerEvents="none">
+              <LinearGradient colors={[c.fcardA, c.fcardB]} style={StyleSheet.absoluteFill} />
+            </View>
             {fields.map((f, i) => (
               <Pane key={f.key} f={f} on={i === on} />
             ))}
@@ -226,7 +229,7 @@ const s = StyleSheet.create({
     borderBottomStartRadius: u(18),
     borderBottomEndRadius: u(18),
   },
-  fbg: { borderTopStartRadius: u(17), borderBottomStartRadius: u(17), borderBottomEndRadius: u(18) },
+  fbg: { overflow: 'hidden', borderTopStartRadius: u(17), borderBottomStartRadius: u(17), borderBottomEndRadius: u(18) },
   fp: { ...StyleSheet.absoluteFill, paddingVertical: u(18), paddingHorizontal: u(14), gap: u(10) },
   cf: { fontFamily: F.mono, fontSize: u(9), lineHeight: u(12), letterSpacing: u(1.62) },
   p: { fontFamily: F.display, fontSize: u(16), lineHeight: u(21.12) },
