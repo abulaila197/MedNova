@@ -1,12 +1,12 @@
 import MaskedView from '@react-native-masked-view/masked-view';
 import { LinearGradient } from 'expo-linear-gradient';
-import { type ReactNode, useContext, useRef, useState } from 'react';
+import { type ReactNode, useContext, useEffect, useRef, useState } from 'react';
 import { Platform, StyleSheet, View, type LayoutChangeEvent, type StyleProp, type ViewStyle } from 'react-native';
 
 import { Backdrop } from '@/components/Backdrop';
 import { BackdropCtx } from '@/components/backdropCtx';
 import { isAr } from '@/i18n';
-import { useTheme } from '@/state/app';
+import { MENU_SETTLE_MS, useApp, useTheme } from '@/state/app';
 import { useBleed } from '@/theme/scale';
 import { tr } from '@/i18n';
 
@@ -145,10 +145,15 @@ function PictureVeil({ inv, horizontal, bd }: { inv: Stops; horizontal: boolean;
     });
   };
   const at = pos && bd.size ? { ...pos, rw: bd.size.w, rh: bd.size.h } : null;
+  // Drawn only while the page card is at rest (Yazan's phone 2026-11-16, still a dark band after the measuring fix):
+  // a side page opens while the menu still holds its card shrunk, on a hardware layer, and Android kept the masked
+  // copy as it was first drawn there, at 80%. Leaving it out until the card is back to full size, then drawing it
+  // fresh, means it is only ever drawn at full size. While the menu is open the page is pushed aside anyway.
+  const settled = useSettledCard();
   const len = at ? (horizontal ? at.w : at.h) : 0;
   return (
     <View ref={me} collapsable={false} onLayout={measure} pointerEvents="none" style={[StyleSheet.absoluteFill, { direction: 'ltr' }]}>
-      {at && len > 0
+      {at && len > 0 && settled
         ? bands(inv).map((b, bi) => {
             const p0 = Math.round(len * b.from);
             const p1 = Math.round(len * b.to);
@@ -176,6 +181,21 @@ function PictureVeil({ inv, horizontal, bd }: { inv: Stops; horizontal: boolean;
         : null}
     </View>
   );
+}
+
+/** True while the side menu is closed and the page card has finished coming back to full size. */
+function useSettledCard() {
+  const open = useApp((a) => a.menuOpen);
+  const closedAt = useApp((a) => a.menuClosedAt);
+  // Set by the timer below once the card has come back; until then the edge waits.
+  const [doneFor, setDoneFor] = useState(-1);
+  useEffect(() => {
+    if (open) return;
+    const id = setTimeout(() => setDoneFor(closedAt), Math.max(0, closedAt + MENU_SETTLE_MS - Date.now()));
+    return () => clearTimeout(id);
+  }, [open, closedAt]);
+  // At launch the menu has never closed (closedAt 0): nothing to wait for.
+  return !open && (closedAt === 0 || doneFor === closedAt);
 }
 
 /** A page without the shared backdrop (its own opaque background): a plain gradient into the page colour. */
