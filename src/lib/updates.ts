@@ -53,6 +53,9 @@ export async function setUpdatesFirst(first: boolean) {
 export function runningLabel() {
   if (!live) return 'Updates are off here (web or a development build).';
   const ch = Updates.channel ?? '?';
+  // Safety mode (2026-11-16): the phone couldn't load its stored updates and fell back to the built-in code; it can't
+  // switch to any update until that clears. Say why, so it is never a guess.
+  if (Updates.isEmergencyLaunch) return `Safety mode, built-in code · channel ${ch} · ${Updates.emergencyLaunchReason ?? 'no reason given'}`;
   if (Updates.isEmbeddedLaunch || !Updates.createdAt) return `Built-in code · channel ${ch}`;
   return `Update of ${Updates.createdAt.toISOString().slice(0, 16).replace('T', ' ')} UTC · channel ${ch}`;
 }
