@@ -34,8 +34,8 @@ export default function Page() {
         <Kicker>{tr('MedNova · Support')}</Kicker>
         <Rich text={tr('Answers before\nthe *next case.*')} style={[ui.H, s.H]} />
 
-        {/* A sliding row of chips, cut at the screen edge: no faded end (calm edges, Yazan 2026-11-16: a navy fade there
-            would sit on the symbols as a box). */}
+        {/* A sliding row of chips inside the page margin, cut there in a straight line (Yazan 2026-11-16): no faded end,
+            which could only be a navy patch over the symbols. */}
         <View style={s.areasWrap}>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={s.areas}>
             <Pressable onPress={() => setArea(SEARCH)} accessibilityRole="button" accessibilityLabel={tr('Search questions')} style={[s.area, s.searchChip, { backgroundColor: c.surf, borderColor: area === SEARCH ? c.areaOnLine : c.line }]}>
@@ -151,9 +151,9 @@ function Orb() {
 const s = StyleSheet.create({
   H: { fontSize: u(31), lineHeight: u(29.45), letterSpacing: u(-0.31) },
   orb: { position: 'absolute', start: u(132), top: u(40), width: u(240), height: u(240) },
-  // .areas: full-bleed swipeable row, fades out at the right edge
-  areasWrap: { marginTop: u(14), marginHorizontal: u(-18) },
-  areas: { paddingHorizontal: u(18), gap: u(6) },
+  // .areas: swipeable row, lined up with the cards and cut at the page margin
+  areasWrap: { marginTop: u(14), overflow: 'hidden' },
+  areas: { gap: u(6) },
   area: { flexDirection: 'row', alignItems: 'center', gap: u(6), height: u(30), paddingStart: u(6), paddingEnd: u(10), borderRadius: u(12), borderWidth: 1 },
   searchChip: { width: u(25), paddingStart: 0, paddingEnd: 0, justifyContent: 'center' },
   areaT: { fontFamily: F.bodySemi, fontSize: u(10) },

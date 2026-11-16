@@ -8,6 +8,7 @@ import { useShallow } from 'zustand/react/shallow';
 
 import { LevelBadge, useBalance } from '@/components/LevelBadge';
 import { Display } from '@/components/Txt';
+import { Calm } from '@/components/Calm';
 import { Fade } from '@/components/Fade';
 import { FriendCount } from '@/features/profile/Friends';
 import { Face } from '@/games/shell/Face';
@@ -86,7 +87,9 @@ export function Profile() {
   const pct = (a: number | null | undefined) => (a == null ? '–' : `${Math.round(a * 100)}%`);
   return (
     <>
-    <Fade veil from={0.9} style={s.area}>
+    {/* Calm edge under the header (Yazan 2026-11-16): the page dissolves into plain navy as it scrolls up. */}
+    <Calm stops={[[0, 1], [0.4, 0.6], [1, 0]]} style={{ top: 0, height: u(70) }} />
+    <Fade veil stops={[[0, 0], [0.04, 1], [0.9, 1], [1, 0]]} style={s.area}>
       <ScrollView style={s.fill} contentContainerStyle={s.pf} showsVerticalScrollIndicator={false}>
         {/* Your framed face where the planet was (Yazan 2026-10-13: on the planet spot, orbit and moons removed). */}
         <View style={s.me}>
