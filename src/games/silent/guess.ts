@@ -1,6 +1,6 @@
 // The Silent Artist online guess matcher (SA7, SA8), copied as coded from games-src/code/the-silent-artist
 // (src/game/guessMatching.ts). Only the types are local. The 'silent-artist' edge function bundles this file and
-// judges online guesses with it (scripts/build-silent-artist-function.sh: rebuild and redeploy after a change).
+// (online guess judging was removed with online play, 2026-11-16).
 import type { Word } from './core';
 
 type DiseaseWord = Pick<Word, 'id' | 'name' | 'aliases'>;
