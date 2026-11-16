@@ -132,17 +132,19 @@ function Veil({ stops, horizontal }: { stops: Stops; horizontal: boolean }) {
  */
 function PictureVeil({ inv, horizontal, bd }: { inv: Stops; horizontal: boolean; bd: NonNullable<React.ContextType<typeof BackdropCtx>> }) {
   const me = useRef<View>(null);
-  const [at, setAt] = useState<{ x: number; y: number; w: number; h: number; rw: number; rh: number } | null>(null);
+  // measureLayout (to the page root) and the root's own layout size both ignore transforms: a page opened from the
+  // side menu is laid out while its card is still scaled to 80%, and a window measurement then gave an 80% copy of
+  // the picture in the wrong place (the dark band on side pages, Yazan 2026-11-16).
+  const [pos, setPos] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
   const measure = () => {
     const root = bd.root.current;
     if (!root || !me.current) return;
     me.current.measureLayout(root as never, (x, y, w, h) => {
-      root.measureInWindow((_rx, _ry, rw, rh) => {
-        const next = { x: Math.round(x), y: Math.round(y), w, h, rw, rh };
-        setAt((was) => (was && Object.keys(next).every((k) => Math.abs(was[k as keyof typeof next] - next[k as keyof typeof next]) < 0.5) ? was : next));
-      });
+      const next = { x: Math.round(x), y: Math.round(y), w, h };
+      setPos((was) => (was && Object.keys(next).every((k) => Math.abs(was[k as keyof typeof next] - next[k as keyof typeof next]) < 0.5) ? was : next));
     });
   };
+  const at = pos && bd.size ? { ...pos, rw: bd.size.w, rh: bd.size.h } : null;
   const len = at ? (horizontal ? at.w : at.h) : 0;
   return (
     <View ref={me} collapsable={false} onLayout={measure} pointerEvents="none" style={[StyleSheet.absoluteFill, { direction: 'ltr' }]}>

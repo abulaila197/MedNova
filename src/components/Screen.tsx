@@ -37,10 +37,19 @@ export function Screen({ children, tab = null, glow = 0, header = true, dock = t
   const ins = useSafeAreaInsets();
   const bottom = dock || Platform.OS === 'web' ? 0 : ins.bottom;
   const rootRef = useRef<View>(null);
-  const bd = useMemo(() => (glow === false ? null : { symbols: symbols && !game, root: rootRef }), [glow, symbols, game]);
+  const [size, setSize] = useState<{ w: number; h: number } | null>(null);
+  const bd = useMemo(() => (glow === false ? null : { symbols: symbols && !game, root: rootRef, size }), [glow, symbols, game, size]);
   return (
     <BackdropCtx.Provider value={bd}>
-    <View ref={rootRef} collapsable={false} style={[s.root, { backgroundColor: t.sky }]}>
+    <View
+      ref={rootRef}
+      collapsable={false}
+      style={[s.root, { backgroundColor: t.sky }]}
+      onLayout={(e) => {
+        const { width: w, height: h } = e.nativeEvent.layout;
+        setSize((was) => (was && Math.abs(was.w - w) < 0.5 && Math.abs(was.h - h) < 0.5 ? was : { w, h }));
+      }}
+    >
       {glow === false ? null : <Backdrop symbols={symbols && !game} />}
       {under}
       {header ? (
