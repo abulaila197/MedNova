@@ -2,7 +2,6 @@ import { usePathname } from 'expo-router';
 import { useEffect } from 'react';
 
 import { notice } from '@/components/Notice';
-import { agoText } from '@/lib/copies';
 import { isOnline, onBackOnline } from '@/lib/net';
 import { tr } from '@/i18n';
 
@@ -20,11 +19,10 @@ export function OfflineLine({ at }: { at: number | null | undefined; style?: obj
   useEffect(() => {
     if (!shown || told.has(path)) return;
     told.add(path);
-    const when = agoText(at!);
     notice(
       isOnline()
-        ? { kick: tr('SAVED COPY'), title: tr('Couldn’t reach MedNova'), line: tr('What you see was last updated {n}.', { n: when }) }
-        : { kick: tr('NO INTERNET'), title: tr('You’re offline'), line: tr('What you see was last updated {n}.', { n: when }) },
+        ? { kick: tr('SAVED COPY'), title: tr('Couldn’t reach MedNova'), line: tr('Try again in a moment.') }
+        : { kick: tr('NO INTERNET'), title: tr('You’re offline'), line: tr('Try again when you have a connection.') },
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shown, path]);
