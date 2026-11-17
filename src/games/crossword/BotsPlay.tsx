@@ -353,8 +353,8 @@ function Race({ onTyping, puzzle, solved, claims, hearts, width, submit, buy, cl
 }
 
 const s = StyleSheet.create({
-  lead: { flexDirection: 'row', flexWrap: 'wrap', gap: u(6), marginRight: u(34) },
-  chip: { flexDirection: 'row', alignItems: 'center', gap: u(5), borderWidth: 1, borderRadius: 999, paddingVertical: u(3), paddingLeft: u(3), paddingRight: u(9), maxWidth: '48%' },
+  lead: { flexDirection: 'row', flexWrap: 'wrap', gap: u(6), marginEnd: u(34) },
+  chip: { flexDirection: 'row', alignItems: 'center', gap: u(5), borderWidth: 1, borderRadius: 999, paddingVertical: u(3), paddingStart: u(3), paddingEnd: u(9), maxWidth: '48%' },
   chipT: { fontFamily: F.bodySemi, fontSize: u(11), flexShrink: 1 },
   chipN: { fontFamily: F.mono, fontSize: u(11) },
   chipH: { fontFamily: F.mono, fontSize: u(10) },

@@ -388,10 +388,10 @@ export function Play({ play, onFinish, onQuit }: PlayProps) {
           ))}
         </View>
         {/* Backup taps (TT: tilt not working, or the web preview): small, at the far ends. */}
-        <Pressable onPress={() => onMark('pass')} style={[st_.edge, { left: vl(2), bottom: vs(14), padding: vs(2.4), borderRadius: vs(8) }]} accessibilityLabel={tr('Pass')}>
+        <Pressable onPress={() => onMark('pass')} style={[st_.edge, { start: vl(2), bottom: vs(14), padding: vs(2.4), borderRadius: vs(8) }]} accessibilityLabel={tr('Pass')}>
           <Text style={[st_.edgeText, T(4)]}>{tr('Pass')}</Text>
         </Pressable>
-        <Pressable onPress={() => onMark('right')} style={[st_.edge, { right: vl(2), bottom: vs(14), padding: vs(2.4), borderRadius: vs(8) }]} accessibilityLabel={tr('Correct')}>
+        <Pressable onPress={() => onMark('right')} style={[st_.edge, { end: vl(2), bottom: vs(14), padding: vs(2.4), borderRadius: vs(8) }]} accessibilityLabel={tr('Correct')}>
           <Text style={[st_.edgeText, T(4)]}>{tr('Correct')}</Text>
         </Pressable>
       </>
@@ -463,13 +463,13 @@ export function Play({ play, onFinish, onQuit }: PlayProps) {
       ) : null}
       {/* Top corners: pause, and on the hand-off the team scores and a Start for phones without a motion sensor. */}
       {!paused && s.phase !== 'over' ? (
-        <Pressable onPress={pause} style={[st_.pause, { top: vs(6), left: vl(3), width: vs(10), height: vs(10), borderRadius: vs(5) }]} accessibilityLabel={tr('Pause')}>
+        <Pressable onPress={pause} style={[st_.pause, { top: vs(6), start: vl(3), width: vs(10), height: vs(10), borderRadius: vs(5) }]} accessibilityLabel={tr('Pause')}>
           <Text style={[st_.edgeText, T(4.4)]}>{tr('II')}</Text>
         </Pressable>
       ) : null}
       {!paused && s.phase === 'handoff' ? (
         <>
-          <View style={[st_.scores, { top: vs(7), right: vl(3), gap: vl(1) }]}>
+          <View style={[st_.scores, { top: vs(7), end: vl(3), gap: vl(1) }]}>
             {teams.map((t) => (
               <Chip key={t.id} text={`${t.name} · ${totals.get(t.id) ?? 0}`} dot={t.color} vs={vs} vl={vl} />
             ))}

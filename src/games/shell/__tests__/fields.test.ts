@@ -37,3 +37,10 @@ test('fields: a case in two fields counts once', () => {
   const cases = [{ fs: ['a', 'b'] }, { fs: ['b'] }, { fs: ['c'] }];
   assert.equal(inFields(cases, (x) => x.fs, ['a', 'b']).length, 2);
 });
+
+test('fields: one untitled group (Clinical or Basic science alone) still lists its fields when an order is given (2026-11-17)', () => {
+  const g = groupsOf(items, (x) => x.f, () => undefined, (f) => f, ['Y', 'X']);
+  assert.equal(g.length, 1);
+  assert.equal(g[0].title, undefined);
+  assert.deepEqual(g[0].items.map((i) => i.key), ['a', 'b', 'c']);
+});

@@ -202,8 +202,8 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
 }
 
 const s = StyleSheet.create({
-  lead: { flexDirection: 'row', flexWrap: 'wrap', gap: u(6), marginRight: u(52) },
-  chip: { flexDirection: 'row', alignItems: 'center', gap: u(5), borderWidth: 1, borderRadius: 999, paddingVertical: u(3), paddingLeft: u(3), paddingRight: u(8), flexGrow: 1, flexBasis: '45%', backgroundColor: 'rgba(255,255,255,0.05)' },
+  lead: { flexDirection: 'row', flexWrap: 'wrap', gap: u(6), marginEnd: u(52) },
+  chip: { flexDirection: 'row', alignItems: 'center', gap: u(5), borderWidth: 1, borderRadius: 999, paddingVertical: u(3), paddingStart: u(3), paddingEnd: u(8), flexGrow: 1, flexBasis: '45%', backgroundColor: 'rgba(255,255,255,0.05)' },
   chipT: { fontFamily: F.bodySemi, fontSize: u(11), lineHeight: u(13), color: C.text },
   dots: { flexDirection: 'row', gap: u(2) },
   dot: { width: u(6), height: u(6), borderRadius: u(3) },

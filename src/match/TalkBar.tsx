@@ -326,7 +326,7 @@ const s = StyleSheet.create({
   vbT: { fontFamily: F.bodySemi, fontSize: u(11), color: G.fg, flexShrink: 1 },
   line: { maxWidth: u(210) },
   guess: { color: '#f87171', textDecorationLine: 'line-through', maxWidth: u(150) },
-  bf: { position: 'absolute', right: u(-4), bottom: u(-4), borderRadius: u(10), borderWidth: 1.5, borderColor: G.page },
+  bf: { position: 'absolute', end: u(-4), bottom: u(-4), borderRadius: u(10), borderWidth: 1.5, borderColor: G.page },
   anchor: { position: 'absolute', left: 0, top: 0, zIndex: 25 },
   pops: { position: 'absolute', bottom: 0, width: u(240), gap: u(4) },
   fan: { position: 'absolute', width: u(250), backgroundColor: G.raised, borderWidth: 1, borderColor: G.line, borderRadius: u(16), padding: u(10), boxShadow: '0px 14px 30px rgba(0,0,0,0.45)' },

@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { AppState, Pressable, StyleSheet, View } from 'react-native';
+import { AppState, Keyboard, Pressable, StyleSheet, TextInput as RNTextInput, View } from 'react-native';
 
 import { Text, TextInput } from '@/components/AppText';
-import { GAMES, PARKED_GAMES } from '@/data/games';
 import { s as ui, type useInfo } from '@/features/info/ui';
 import { PlayerFace } from '@/features/style/Frame';
 import { CHARACTERS, MECH_CHARACTERS, SHOP_CHARACTERS, TEAM_CHARACTERS } from '@/games/shell/characters';
@@ -36,9 +35,7 @@ type Detail = {
   tokens: number;
   sparks: number | null;
   plays: number;
-  online: number;
   friends: number;
-  top_games: { game: string; n: number }[];
   reports: { at: string; chips?: string[]; body?: string }[];
   reports_total: number;
   ban: { reason: string; at: string } | null;
@@ -65,10 +62,6 @@ const UNLIMITED_DAYS: { d: number; label: string }[] = [
 /** Every character a player can own (Bolt and Iris are open to all; Admin stays yours). */
 const UNLOCKABLE = [...CHARACTERS, ...MECH_CHARACTERS, ...SHOP_CHARACTERS].filter((x) => !['bolt', 'iris', 'admin'].includes(x.slug));
 const PROVIDER: Record<string, string> = { google: 'Google', apple: 'Apple', email: 'Email' };
-const gameName = (key: string) => {
-  const g = [...GAMES, ...PARKED_GAMES].find((x) => x.key === key);
-  return g ? `${g.lead} ${g.em}` : key;
-};
 const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 /** "30 Sep", with the year only when it isn't this year. */
 const day = (iso: string) => {
@@ -139,6 +132,13 @@ export function Players({ c, onMessage, onTakeBack }: { c: C; onMessage: (p: Adm
     shown.current += PAGE;
     void load(shown.current);
   };
+  // Tapping a player only opens their actions where they are (Yazan 2026-11-17). A text box still focused further down
+  // (Send to Inbox, Take back) made Android scroll back down to it when the row grew, so the focus is let go first.
+  const toggle = (id: string) => {
+    RNTextInput.State.currentlyFocusedInput()?.blur();
+    Keyboard.dismiss();
+    setOpen((o) => (o === id ? null : id));
+  };
   const patch = (id: string, p: Partial<AdminPlayer>) => setRows((l) => (l ?? []).map((r) => (r.id === id ? { ...r, ...p } : r)));
 
   const stats: [string, number | undefined, string?][] = [
@@ -175,7 +175,7 @@ export function Players({ c, onMessage, onTakeBack }: { c: C; onMessage: (p: Adm
       <View style={s.list}>
         {(rows ?? []).map((p) => (
           <View key={p.id} style={[s.card, { borderColor: open === p.id ? c.chipOnLine : c.line, opacity: p.banned ? 0.6 : 1 }]}>
-            <Pressable onPress={() => setOpen(open === p.id ? null : p.id)} accessibilityRole="button" accessibilityState={{ expanded: open === p.id }} accessibilityLabel={`@${p.username}, actions`} style={s.row}>
+            <Pressable onPress={() => toggle(p.id)} accessibilityRole="button" accessibilityState={{ expanded: open === p.id }} accessibilityLabel={`@${p.username}, actions`} style={s.row}>
               <View>
                 <PlayerFace slug={p.avatar || 'yara'} size={u(30)} userId={p.id} still />
                 {isOnline(p) ? <View style={[s.dot, { borderColor: c.surf }]} /> : null}
@@ -288,9 +288,8 @@ function Actions({ c, p, onMessage, onTakeBack, onChange }: { c: C; p: AdminPlay
     ? [
         `Level ${d.level} · ${d.exp.toLocaleString('en-GB')} EXP`,
         `${d.tokens.toLocaleString('en-GB')} tokens · ${d.sparks ?? 'full'} Sparks`,
-        `${d.plays} games played · ${d.online} old online matches · ${d.friends} friends`,
-        d.top_games.length ? `Plays most: ${d.top_games.map((g) => `${gameName(g.game)} (${g.n})`).join(', ')}` : '',
-      ].filter(Boolean)
+        `${d.plays} games played · ${d.friends} friends`,
+      ]
     : [];
   return (
     <View style={[s.more, { borderTopColor: c.line }]}>
@@ -367,7 +366,7 @@ const s = StyleSheet.create({
   list: { gap: u(6), marginTop: u(10) },
   card: { borderWidth: 1, borderRadius: u(14), paddingVertical: u(8), paddingHorizontal: u(10) },
   row: { flexDirection: 'row', alignItems: 'center', gap: u(10) },
-  dot: { position: 'absolute', right: -u(1), bottom: -u(1), width: u(10), height: u(10), borderRadius: u(5), borderWidth: u(2), backgroundColor: GREEN },
+  dot: { position: 'absolute', end: -u(1), bottom: -u(1), width: u(10), height: u(10), borderRadius: u(5), borderWidth: u(2), backgroundColor: GREEN },
   name: { fontFamily: F.display, fontSize: u(13) },
   small: { fontFamily: F.body, fontSize: u(9), marginTop: u(2) },
   tags: { alignItems: 'flex-end', gap: u(4) },

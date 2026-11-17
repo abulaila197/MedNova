@@ -1,6 +1,6 @@
 import type { GameDef, SetupOption } from '../shell/types';
 import { expForRight, SM_EXP, type Style } from './core';
-import { fieldMenu, questionById } from './data';
+import { fieldMenu, idsOf, questionById } from './data';
 import { BotsPlay } from './BotsPlay';
 import { OfflinePlay } from './OfflinePlay';
 import { SoloPlay } from './SoloPlay';
@@ -11,8 +11,9 @@ const STYLE: SetupOption = {
   key: 'style',
   label: tr('Questions'),
   choices: [
-    { value: 'clinical', label: tr('Clinical'), note: tr('644 cases') },
-    { value: 'basic', label: tr('Basic science'), note: tr('400 questions') },
+    // Counted from the bank, so the notes stay right as questions are added (they said 644 and 400 when the bank had grown).
+    { value: 'clinical', label: tr('Clinical'), note: tr('{n} cases', { n: idsOf('clinical').length }) },
+    { value: 'basic', label: tr('Basic science'), note: tr('{n} questions', { n: idsOf('basic').length }) },
     { value: 'mixed', label: tr('Mixed'), note: tr('about half each') },
   ],
   initial: 'mixed',

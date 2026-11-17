@@ -44,7 +44,7 @@ export function FieldPicker({ menu, ticked, top, onChange, onClose }: { menu: Fi
           ))}
         </ScrollView>
         <Text style={[s.foot, { color: short ? t.error : t.dim, borderTopColor: t.panelLine }]}>
-          {short ? tr('Tick at least {min} {unit} (now {have}).', { min: menu.min, unit: menu.unit, have }) : tr('{have} {unit} ticked.', { have, unit: menu.unit })}
+          {short ? tr('Tick at least {min} {unit} (now {have}).', { min: menu.min, unit: tr(menu.unit), have }) : tr('{have} {unit} ticked.', { have, unit: tr(menu.unit) })}
         </Text>
       </View>
     </Modal>

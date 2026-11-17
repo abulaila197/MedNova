@@ -258,7 +258,7 @@ const s = StyleSheet.create({
   coverT: { fontFamily: F.displayItalic, fontSize: u(14), color: '#6b6a66' },
   bar: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: u(4) },
   lamps: { flexDirection: 'row', alignItems: 'center', gap: u(7) },
-  barK: { fontFamily: F.bodyBold, fontSize: u(8), letterSpacing: u(1.3), marginRight: u(2) },
+  barK: { fontFamily: F.bodyBold, fontSize: u(8), letterSpacing: u(1.3), marginEnd: u(2) },
   lamp: { width: u(11), height: u(11), borderRadius: u(6), shadowOpacity: 0.9, shadowRadius: u(5), shadowOffset: { width: 0, height: 0 } },
   clock: { fontFamily: F.mono, fontSize: u(15), letterSpacing: u(0.6), fontVariant: ['tabular-nums'] },
   notes: { flexDirection: 'row', flexWrap: 'wrap', gap: u(7) },

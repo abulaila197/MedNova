@@ -23,6 +23,7 @@ import { u } from '@/theme/scale';
 import type { Theme } from '@/theme/tokens';
 import { F } from '@/theme/tokens';
 
+import { CARD, GAP } from './cards';
 import { LINKS } from './links';
 import { onAccountSwitch } from '@/state/accountSwitch';
 import { isAr, tr } from '@/i18n';
@@ -166,8 +167,6 @@ async function settle() {
   await loadFree(true).catch(() => {});
 }
 
-const CARD = u(124);
-const GAP = u(10);
 const GOLD = ['#f7dd8b', '#d39a2c', '#f3cf6c'] as const;
 const SOCIAL = ['tiktok', 'instagram', 'facebook', 'youtube', 'channel'] as const;
 
@@ -277,7 +276,7 @@ const LINKED = ['tiktok', 'instagram', 'facebook', 'youtube', 'channel', 'commun
 function WayCard({ t, w, label, act, done, locked, busy, onPress, reopen, unpaid }: { t: Theme; w: Way; label: string; act: string; done: boolean; locked?: boolean; busy: boolean; onPress: () => void; reopen?: boolean; unpaid?: boolean }) {
   return (
     <Pressable onPress={locked || (done && !reopen) ? undefined : onPress} accessibilityRole="button" accessibilityLabel={unpaid ? w.label : tr('{label}, {tokens} tokens', { label: w.label, tokens: w.tokens })} style={[s.card, { backgroundColor: t.panel, borderColor: t.panelLine }, busy && { opacity: 0.6 }]}>
-      <View style={[s.ic, { backgroundColor: 'rgba(111,214,255,0.1)' }]}>{w.icon({ size: u(17), color: t.accent })}</View>
+      <View style={[s.ic, { backgroundColor: 'rgba(111,214,255,0.1)' }]}>{w.icon({ size: u(14), color: t.accent })}</View>
       <Text style={[s.cN, { color: unpaid ? t.mute : t.fg }]}>{unpaid ? '♥' : `+${w.tokens}`}</Text>
       <Text style={[s.cU, { color: t.mute, marginBottom: u(8) }]} numberOfLines={3}>
         {w.each ? tr('{label} · each', { label }) : label}
@@ -445,17 +444,17 @@ const Send = ({ t, label, busy, onPress }: { t: Theme; label: string; busy: bool
 const s = StyleSheet.create({
   rowScroll: { marginHorizontal: -u(18) },
   row: { paddingHorizontal: u(18), gap: GAP, paddingTop: u(6), paddingBottom: u(4), alignItems: 'stretch' },
-  card: { width: CARD, borderWidth: 1, borderRadius: u(18), padding: u(12), alignItems: 'center', gap: 0 },
-  ic: { width: u(30), height: u(30), borderRadius: u(10), alignItems: 'center', justifyContent: 'center', marginBottom: u(4) },
-  cN: { fontFamily: F.display, fontSize: u(22), lineHeight: u(26) },
+  card: { width: CARD, borderWidth: 1, borderRadius: u(16), padding: u(9), alignItems: 'center', gap: 0 },
+  ic: { width: u(24), height: u(24), borderRadius: u(8), alignItems: 'center', justifyContent: 'center', marginBottom: u(4) },
+  cN: { fontFamily: F.display, fontSize: u(18), lineHeight: u(22) },
   // No fixed height (Yazan 2026-11-15: the Arabic second line was cut); the button sits at the card's foot instead.
-  cU: { fontFamily: F.body, fontSize: u(9.5), lineHeight: u(isAr ? 15 : 12), minHeight: u(isAr ? 30 : 24), textAlign: 'center' },
-  cBtn: { alignSelf: 'stretch', height: u(28), borderRadius: 999, alignItems: 'center', justifyContent: 'center', marginTop: 'auto' },
+  cU: { fontFamily: F.body, fontSize: u(8.5), lineHeight: u(isAr ? 13.5 : 11), minHeight: u(isAr ? 27 : 22), textAlign: 'center' },
+  cBtn: { alignSelf: 'stretch', height: u(25), borderRadius: 999, alignItems: 'center', justifyContent: 'center', marginTop: 'auto' },
   ghost: { borderWidth: 1 },
-  cBtnT: { fontFamily: F.bodyBold, fontSize: u(11) },
+  cBtnT: { fontFamily: F.bodyBold, fontSize: u(10) },
   gold: { width: CARD, borderRadius: u(18), padding: u(2) },
   goldIn: { width: CARD - u(4), flex: 1, borderWidth: 0, borderRadius: u(16) },
-  gKick: { fontFamily: F.mono, fontSize: u(6.5), letterSpacing: u(1.2), height: u(30), lineHeight: u(30), marginBottom: u(4) },
+  gKick: { fontFamily: F.mono, fontSize: u(6.5), letterSpacing: u(1.2), height: u(24), lineHeight: u(24), marginBottom: u(4) },
   bar: { alignSelf: 'stretch', height: u(6), borderRadius: 999, overflow: 'hidden', marginTop: u(10) },
   gNum: { fontFamily: F.mono, fontSize: u(7.5), marginTop: u(5) },
   shH: { fontFamily: F.display, fontSize: u(22), lineHeight: u(26) },

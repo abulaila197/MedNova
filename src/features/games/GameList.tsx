@@ -1,6 +1,6 @@
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { create } from 'zustand';
 
@@ -73,7 +73,7 @@ function Tag({ game, small }: { game: string; small?: boolean }) {
 }
 
 /** Look C: the programme's strip (2026-11-11, numbers dropped 2026-11-13), standing still, each one a button. */
-function Strip({ g, j }: { g: Game; j: number }) {
+function Strip({ g, j, onTop }: { g: Game; j: number; onTop: (j: number, y: number) => void }) {
   const t = useTheme();
   const { box, go } = useOpen(g, j);
   const [down, setDown] = useState(false);
@@ -83,7 +83,7 @@ function Strip({ g, j }: { g: Game; j: number }) {
   const veil = end + u(56);
   return (
     <Pressable ref={box} onPress={go} onPressIn={() => setDown(true)} onPressOut={() => setDown(false)} accessibilityRole="button" accessibilityLabel={tr('Play {lead} {em}', { lead: g.lead, em: g.em })}
-      onLayout={(e) => { stripW.current = e.nativeEvent.layout.width; }}
+      onLayout={(e) => { stripW.current = e.nativeEvent.layout.width; onTop(j, e.nativeEvent.layout.y); }}
       style={[s.strip, { borderColor: down ? t.accent : t.panelLine, transform: [{ scale: down ? 0.98 : 1 }] }]}>
       {/* The art fades in from clear (baked into each picture, Yazan 2026-11-13), so the drawing never runs under the name. */}
       {/* In Arabic the strip mirrors: the art (and its baked fade) flips to the left, the veil runs from the right. */}
@@ -107,16 +107,19 @@ function Strip({ g, j }: { g: Game; j: number }) {
 export function GameList({ top }: { top: number }) {
   const list = useRef<ScrollView>(null);
   const focus = useGamesFocus((f) => f.n);
+  // Where each strip really starts: a strip grows when a phone draws its text taller, so steps aren't fixed.
+  const tops = useRef<number[]>([]);
+  const onTop = useCallback((j: number, y: number) => { tops.current[j] = y; }, []);
   useEffect(() => {
-    const j = useGamesFocus.getState().j;
-    list.current?.scrollTo({ y: Math.max(0, j - 1) * u(STEP), animated: false });
+    const j = Math.max(0, useGamesFocus.getState().j - 1);
+    list.current?.scrollTo({ y: tops.current[j] ?? j * u(STEP), animated: false });
   }, [focus]);
   return (
     // veil, not a mask (2026-11-15, lag): a mask over the scrolling list redraws all 13 strips through an extra layer.
     // Softer, longer edges (Yazan 2026-11-16, option A): cards dissolve into the page under the title and above the bar.
     <Fade veil stops={[[0, 0], [0.06, 1], [0.86, 1], [1, 0]]} style={[s.list, { top }]}>
       <ScrollView ref={list} style={s.fill} contentContainerStyle={s.inC} showsVerticalScrollIndicator={false}>
-        {LISTED.map((g, j) => <Strip key={g.key} g={g} j={j} />)}
+        {LISTED.map((g, j) => <Strip key={g.key} g={g} j={j} onTop={onTop} />)}
       </ScrollView>
     </Fade>
   );
@@ -169,7 +172,9 @@ const s = StyleSheet.create({
   list: { position: 'absolute', start: 0, end: 0, bottom: 0 },
   fill: { flex: 1 },
   inC: { paddingHorizontal: u(14), paddingTop: u(6), paddingBottom: u(40), gap: u(8) },
-  strip: { height: u(70), borderRadius: u(12), borderWidth: 1, overflow: 'hidden', justifyContent: 'center', backgroundColor: BG },
+  // minHeight, not height (2026-11-17): a phone that draws the name taller (Galaxy S9+ in Arabic) grows the strip
+  // instead of cutting the tag off at the top.
+  strip: { minHeight: u(70), paddingVertical: u(6), borderRadius: u(12), borderWidth: 1, overflow: 'hidden', justifyContent: 'center', backgroundColor: BG },
   stripArt: { position: 'absolute', top: 0, bottom: 0, end: 0, width: '80%' },
   stripTxt: { alignSelf: 'flex-start', maxWidth: '84%', marginStart: u(14), gap: u(2) },
   veil: { position: 'absolute', top: 0, bottom: 0, start: 0 },

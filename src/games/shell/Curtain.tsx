@@ -69,7 +69,7 @@ export function Recap({ lines }: { lines: RecapLine[] }) {
 const s = StyleSheet.create({
   root: { zIndex: 30, alignItems: 'center', justifyContent: 'center', padding: u(24), gap: u(14) },
   name: { fontFamily: F.display, fontSize: u(34), lineHeight: u(36) },
-  pause: { position: 'absolute', top: u(16), right: u(16) },
+  pause: { position: 'absolute', top: u(16), end: u(16) },
   board: { alignSelf: 'stretch', borderRadius: u(16), borderWidth: 1, padding: u(12), gap: u(6) },
   row: { flexDirection: 'row', justifyContent: 'space-between' },
   who2: { flexDirection: 'row', alignItems: 'center', gap: u(6) },

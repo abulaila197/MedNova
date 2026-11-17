@@ -66,7 +66,7 @@ export function Setup({ def, mode, prefill, prefillSeats }: { def: GameDef; mode
         <>
           {intent ? <Text style={[s.small, { color: t.accent, textAlign: 'center' }]}>{tr('Challenge for {name} · {n}', { name: intent.friend.name, n: intent.kind === 'score' ? tr('Beat my score, 1 day') : tr('Game challenge, {v} day{v2}', { v: intent.days, v2: intent.days > 1 ? 's' : '' }) })}</Text> : null}
           <Text style={[s.small, { color: note ? t.error : t.dim, textAlign: 'center' }]}>
-            {note ? note : emptyTeam ? tr('{name} has no players yet.', { name: emptyTeam.name }) : thinTeam ? tr('{name} needs at least {minEach} players.', { name: thinTeam.name, minEach }) : short && menu ? tr('Tick at least {min} {unit} (now {total}).', { min: menu.min, unit: menu.unit, total: menu.total(ticked) }) : showCost ? tr('{n} {cost} Sparks{each} · you have {have}', { n: each ? tr('Costs') : tr('This game costs'), cost, each, have }) : tr('Settings lock once the game starts.')}
+            {note ? note : emptyTeam ? tr('{name} has no players yet.', { name: emptyTeam.name }) : thinTeam ? tr('{name} needs at least {minEach} players.', { name: thinTeam.name, minEach }) : short && menu ? tr('Tick at least {min} {unit} (now {total}).', { min: menu.min, unit: tr(menu.unit), total: menu.total(ticked) }) : showCost ? tr('{n} {cost} Sparks{each} · you have {have}', { n: each ? tr('Costs') : tr('This game costs'), cost, each, have }) : tr('Settings lock once the game starts.')}
           </Text>
           <Btn label={tr('Start')} onPress={start} disabled={busy || !!emptyTeam || !!thinTeam || short} />
         </>
@@ -96,7 +96,7 @@ export function Setup({ def, mode, prefill, prefillSeats }: { def: GameDef; mode
                       if (v !== vals[o.key]) setVals((p) => { const n = { ...p, [o.key]: v }; delete n.fields; return n; });
                       setOpen({ key: o.key, top: y + u(16) });
                     }}
-                    ticks={o.fields && ticked && menu ? `${menu.total(ticked)} ${menu.unit}` : null}
+                    ticks={o.fields && ticked && menu ? `${menu.total(ticked)} ${tr(menu.unit)}` : null}
                   />
                 </View>
               </View>
@@ -213,7 +213,7 @@ function Teams({ st }: { st: SetupState }) {
         <View style={s.tnames}>
           {teams.map((tm, i) => (
             <View key={tm.id} style={[s.pin, s.tname, { borderColor: tm.color, backgroundColor: t.chip }]}>
-              <View style={[s.tdot, { backgroundColor: tm.color, marginRight: u(6) }]} />
+              <View style={[s.tdot, { backgroundColor: tm.color, marginEnd: u(6) }]} />
               <TextInput
                 value={tm.name}
                 onChangeText={(v) => renameTeam(i, v)}
@@ -243,7 +243,7 @@ const s = StyleSheet.create({
   small: { fontFamily: F.body, fontSize: u(9.5), lineHeight: u(13) },
   tnames: { flexDirection: 'row', flexWrap: 'wrap', gap: u(6) },
   tname: { flexBasis: '47%', flexGrow: 1, flex: 1 },
-  tin: { flexDirection: 'row', gap: u(4), marginRight: u(6) },
+  tin: { flexDirection: 'row', gap: u(4), marginEnd: u(6) },
   tchip: { width: u(12), height: u(12), borderRadius: u(6), borderWidth: 1.5 },
   tdot: { width: u(8), height: u(8), borderRadius: u(4) },
   lbl: { fontFamily: F.bodySemi, fontSize: u(11), lineHeight: u(14) },
@@ -252,7 +252,7 @@ const s = StyleSheet.create({
   pin: { flexDirection: 'row', alignItems: 'center', borderWidth: 1.5, borderRadius: u(10), paddingHorizontal: u(9) },
   pname: { flex: 1, minWidth: 0, fontFamily: F.bodySemi, fontSize: u(11), paddingVertical: u(4.5), ...(Platform.OS === 'web' ? ({ outlineStyle: 'none' } as object) : null) },
   px: { fontFamily: F.bodyBold, fontSize: u(10) },
-  sw: { flexDirection: 'row', flexWrap: 'wrap', gap: u(2), paddingLeft: u(1) },
+  sw: { flexDirection: 'row', flexWrap: 'wrap', gap: u(2), paddingStart: u(1) },
   face: { padding: 1, borderRadius: u(12), borderWidth: 2 },
-  tsw: { flexDirection: 'row', gap: u(5), paddingLeft: u(2) },
+  tsw: { flexDirection: 'row', gap: u(5), paddingStart: u(2) },
 });

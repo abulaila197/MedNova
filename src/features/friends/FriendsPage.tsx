@@ -166,6 +166,8 @@ function Redeem({ t }: { t: Theme }) {
 /** Find players by name or @username and send a request. */
 function Find({ t }: { t: Theme }) {
   const off = useFriends((x) => x.savedAt != null);
+  // The code row shows until a code is redeemed (Redeem above).
+  const codeRow = !useFree((x) => x.status?.redeemed);
   const [q, setQ] = useState('');
   const [rows, setRows] = useState<Found[] | null>(null);
   const [sent, setSent] = useState<string[]>([]);
@@ -198,7 +200,15 @@ function Find({ t }: { t: Theme }) {
   if (off) return <Text style={[s.sub, { color: t.mute }]}>{tr('FINDING PLAYERS NEEDS INTERNET')}</Text>;
   return (
     <>
-      <View style={[s.input, s.search, { borderColor: t.panelLine, backgroundColor: t.panel2 }]}>
+      {/* Two different ways in (Yazan 2026-11-17): the friend's code row above, an "Or" line, then the search. */}
+      {codeRow ? (
+        <View style={s.or} accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
+          <View style={[s.orLine, { backgroundColor: t.panelLine }]} />
+          <Text style={[s.orT, { color: t.mute }]}>{tr('Or')}</Text>
+          <View style={[s.orLine, { backgroundColor: t.panelLine }]} />
+        </View>
+      ) : null}
+      <View style={[s.input, s.search, codeRow && { marginTop: u(10) }, { borderColor: t.panelLine, backgroundColor: t.panel2 }]}>
         <Text style={{ color: t.mute, fontSize: u(12) }}>⌕</Text>
         <TextInput value={q} onChangeText={setQ} autoCapitalize="none" autoCorrect={false} placeholder={tr('Find a player by name, @username or friend code')} placeholderTextColor={t.mute} style={[s.searchT, { color: t.fg }]} />
       </View>
@@ -254,6 +264,9 @@ const s = StyleSheet.create({
   msg: { fontFamily: F.bodyMedium, fontSize: u(10), marginTop: u(6) },
   done: { fontFamily: F.mono, fontSize: u(7.5), letterSpacing: u(1.2), marginTop: u(10) },
   input: { height: u(34), borderWidth: 1, borderRadius: u(12), paddingHorizontal: u(12), fontFamily: F.body, fontSize: u(11) },
+  or: { flexDirection: 'row', alignItems: 'center', gap: u(10), marginTop: u(12) },
+  orLine: { flex: 1, height: 1 },
+  orT: { fontFamily: F.bodySemi, fontSize: u(10) },
   search: { marginTop: u(12), flexDirection: 'row', alignItems: 'center', gap: u(8) },
   searchT: { flex: 1, fontFamily: F.body, fontSize: u(11), height: '100%' },
   tabs: { flexDirection: 'row', borderRadius: u(14), padding: u(3), marginTop: u(14) },

@@ -1,6 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { Platform, Pressable, StyleSheet, View, type LayoutChangeEvent } from 'react-native';
+import Svg, { Path } from 'react-native-svg';
 import { Text } from '@/components/AppText';
 import Animated, {
   FadeIn, FadeInDown, interpolate, useAnimatedStyle, useSharedValue, withDelay, withSequence, withTiming,
@@ -162,7 +163,7 @@ export function SlideLabel({ no, title, sub, right, onPause }: TableProps['label
   const c = slideColors(t.mode);
   return (
     <View style={[s.label, { backgroundColor: c.boxA, borderColor: c.line }]}>
-      <View style={[s.labelL, { borderLeftColor: t.accent }]}>
+      <View style={[s.labelL, { borderStartColor: t.accent }]}>
         <Text style={[s.no, { color: t.dim }]}>{no}</Text>
         <Text style={[s.ttl, { color: t.white }]}>{title}</Text>
         <Text style={[s.sub, { color: t.mute }]}>{sub}</Text>
@@ -178,17 +179,28 @@ export function SlideLabel({ no, title, sub, right, onPause }: TableProps['label
   );
 }
 
-/** The daily streak as a little stack of slides (NM7). */
+/** The daily streak (NM7): a framed chip with a flame, the number and a label (Yazan 2026-11-17, look B). */
 export function SlideStack({ n }: { n: number }) {
   const t = useTheme();
   const c = slideColors(t.mode);
   return (
-    <View style={s.stack} accessibilityLabel={tr('Streak {n}', { n })}>
-      {[0, 1, 2, 3].map((i) => (
-        <View key={i} style={[s.stackI, { top: u(i * 4.5), backgroundColor: c.glass, borderColor: i === 3 ? t.accent : c.line }]} />
-      ))}
-      <Text style={[s.stackN, { color: t.accent }]}>{n}</Text>
+    <View style={[s.stB, { borderColor: t.accent, backgroundColor: c.boxA }]} accessibilityLabel={tr('Streak {n}', { n })}>
+      <Flame size={u(12)} color={t.accent} />
+      <View>
+        <Text style={[s.stBN, { color: t.fg }]}>{n}</Text>
+        <Text style={[s.stBL, { color: t.accent }]}>{tr('STREAK')}</Text>
+      </View>
     </View>
+  );
+}
+
+/** A small flame for the streak. */
+function Flame({ size, color }: { size: number; color: string }) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Path d="M12 2.5c.6 3.2 3.9 5.1 4.9 8.4.9 3.1-.6 7.1-4.9 8.6-4.3-1.5-5.8-5.4-4.9-8.3.4-1.4 1.3-2.4 2.1-3.4.2 1.6.9 2.7 2 3.3-.3-3 .2-6.1.8-8.6z" fill={color} />
+      <Path d="M12 21.5c-2.6-.9-3.7-3.2-3.1-5.2.3 1 .9 1.7 1.7 2 .1-1.8.8-3.2 1.9-4.5.5 2.1 2.6 3.2 2.6 5.2 0 1.2-1.1 2.1-3.1 2.5z" fill={color} opacity={0.55} />
+    </Svg>
   );
 }
 
@@ -317,11 +329,11 @@ function Tile({ c, size, letter, mark, delay, ghost, typed, edge }: { c: SlideCo
   );
 }
 
-/** The definition as a specimen note (dashed card). */
+/** The definition as a specimen note (dashed card, accent border so it stands out: Yazan 2026-11-17). */
 function SpecimenNote({ c, text, hot, wait }: { c: SlideColors; text: string | null; hot?: boolean; wait?: string }) {
   const t = useTheme();
   return (
-    <View style={[s.note, hot ? { borderColor: HURRY, backgroundColor: HURRY_BG, borderStyle: 'solid' } : { borderColor: c.line, backgroundColor: c.boxA }]}>
+    <View style={[s.note, hot ? { borderColor: HURRY, backgroundColor: HURRY_BG, borderStyle: 'solid' } : { borderColor: t.accent, backgroundColor: c.boxA }]}>
       <Text style={[s.noteL, { color: hot ? HURRY : t.accent }]}>{tr('SPECIMEN NOTE')}</Text>
       <Text style={[s.noteT, { color: text ? t.fg : t.mute }]}>{text ?? wait ?? tr('The definition appears on your last guess.')}</Text>
     </View>
@@ -361,16 +373,16 @@ function Key({ label, a11y, wide, c, bg, fg, onPress }: { label: string; a11y?: 
 
 const s = StyleSheet.create({
   label: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'stretch', borderWidth: 1, borderRadius: u(6), overflow: 'hidden' },
-  labelL: { borderLeftWidth: u(5), paddingVertical: u(6), paddingHorizontal: u(9), gap: u(1), flexShrink: 1 },
+  labelL: { borderStartWidth: u(5), paddingVertical: u(6), paddingHorizontal: u(9), gap: u(1), flexShrink: 1 },
   no: { fontFamily: F.mono, fontSize: u(7.5), letterSpacing: u(1.1) },
   ttl: { fontFamily: F.display, fontSize: u(18), lineHeight: u(21) },
   sub: { fontFamily: F.body, fontSize: u(9.5) },
-  labelR: { flexDirection: 'row', alignItems: 'center', gap: u(10), paddingRight: u(9) },
+  labelR: { flexDirection: 'row', alignItems: 'center', gap: u(10), paddingEnd: u(9) },
   pause: { width: u(26), height: u(26), borderRadius: u(13), borderWidth: 1, flexDirection: 'row', gap: u(3), alignItems: 'center', justifyContent: 'center' },
   bar: { width: u(2.5), height: u(9), borderRadius: u(1) },
-  stack: { width: u(26), height: u(26) },
-  stackI: { position: 'absolute', left: 0, width: u(23), height: u(8), borderRadius: u(2), borderWidth: 1 },
-  stackN: { position: 'absolute', right: -u(6), bottom: -u(4), fontFamily: F.bodyBold, fontSize: u(10) },
+  stB: { flexDirection: 'row', alignItems: 'center', gap: u(5), borderWidth: 1, borderRadius: u(10), paddingVertical: u(4), paddingHorizontal: u(8) },
+  stBN: { fontFamily: F.bodyBold, fontSize: u(12), lineHeight: u(14) },
+  stBL: { fontFamily: F.mono, fontSize: u(5.5), letterSpacing: u(1) },
   clock: { alignItems: 'center' },
   clockN: { fontFamily: F.mono, fontSize: u(16), lineHeight: u(18) },
   clockL: { fontFamily: F.mono, fontSize: u(6.5), letterSpacing: u(1) },
@@ -379,13 +391,13 @@ const s = StyleSheet.create({
   row: { flexDirection: 'row', gap: GAP },
   tile: { borderWidth: 1, overflow: 'hidden', alignItems: 'center', justifyContent: 'center' },
   slideTop: { position: 'absolute', left: 0, right: 0, top: 0 },
-  edge: { position: 'absolute', left: 0, top: 0, bottom: 0, width: 3 },
+  edge: { position: 'absolute', start: 0, top: 0, bottom: 0, width: 3 },
   sheen: { position: 'absolute' },
   tileT: { fontFamily: F.bodyBold },
   hiddenT: { fontFamily: F.body, fontSize: u(11), padding: u(24) },
   toast: { position: 'absolute', top: u(6), alignSelf: 'center', borderRadius: u(10), paddingVertical: u(6), paddingHorizontal: u(12) },
   toastT: { fontFamily: F.bodySemi, fontSize: u(10.5) },
-  note: { borderWidth: 1, borderStyle: 'dashed', borderRadius: u(10), paddingVertical: u(6), paddingHorizontal: u(10), gap: u(2) },
+  note: { borderWidth: 1.5, borderStyle: 'dashed', borderRadius: u(10), paddingVertical: u(6), paddingHorizontal: u(10), gap: u(2) },
   noteL: { fontFamily: F.bodyBold, fontSize: u(7), letterSpacing: u(1.3) },
   noteT: { fontFamily: F.body, fontSize: u(10.5), lineHeight: u(14) },
   hint: { alignSelf: 'center', borderWidth: 1, borderRadius: u(4), paddingVertical: u(5), paddingHorizontal: u(12) },

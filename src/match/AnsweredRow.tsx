@@ -35,6 +35,6 @@ export function AnsweredRow({ seats, size = 26 }: { seats: Seat[]; size?: number
 
 const s = StyleSheet.create({
   row: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: u(8), paddingVertical: u(4) },
-  tick: { position: 'absolute', right: -u(3), bottom: -u(3), width: u(13), height: u(13), borderRadius: u(7), borderWidth: 1.5, alignItems: 'center', justifyContent: 'center' },
+  tick: { position: 'absolute', end: -u(3), bottom: -u(3), width: u(13), height: u(13), borderRadius: u(7), borderWidth: 1.5, alignItems: 'center', justifyContent: 'center' },
   tickT: { color: '#fff', fontSize: u(8), lineHeight: u(10), fontWeight: '800' },
 });

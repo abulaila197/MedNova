@@ -25,6 +25,7 @@ import { FreeSheets, FreeTokens, useFree } from './FreeTokens';
 import { buy, isSubscribed, loadPrices, restore, useIsSubscribed, usePrice, useSubscription, type BuyResult } from './billing';
 import { PACKS, SUBSCRIPTION, type Pack } from './catalog';
 import { tr } from '@/i18n';
+import { CARD, GAP } from './cards';
 
 // What a finished payment, restore or failure says, as a pop-up the player can't miss (Yazan 2026-11-08: the old line at
 // the top of the shop went unseen, so Restore looked like it did nothing).
@@ -213,13 +214,11 @@ function SovereignCard({ t, busy, onBuy }: { t: Theme; busy: boolean; onBuy: () 
   );
 }
 
-const CARD = u(124);
-const GAP = u(10);
 const WAS = '#e5534b'; // the old amount, struck through in red
 
 /** One pack: a small pile of coins (more coins, bigger pack), the count and the price. */
 function PackCard({ t, p, i, busy, onBuy }: { t: Theme; p: Pack; i: number; busy: boolean; onBuy: () => void }) {
-  const coin = u(22);
+  const coin = u(18);
   const step = coin * 0.45;
   const price = usePrice(p.id, p.price);
   return (
@@ -239,7 +238,7 @@ function PackCard({ t, p, i, busy, onBuy }: { t: Theme; p: Pack; i: number; busy
       <Text style={[s.cN, { color: t.fg }]}>{p.tokens}</Text>
       <Text style={[s.cU, { color: t.mute }]}>{tr('tokens')}</Text>
       <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={s.cBtn}>
-        <Text style={[s.cBtnT, { color: t.onGrad }]}>{price}</Text>
+        <Text style={[s.cBtnT, { color: t.onGrad }]} numberOfLines={1} adjustsFontSizeToFit>{price}</Text>
       </LinearGradient>
     </Pressable>
   );
@@ -258,16 +257,16 @@ const s = StyleSheet.create({
   subBtnS: { fontFamily: F.body, fontSize: u(8.5) },
   rowScroll: { marginHorizontal: -u(18) },
   row: { paddingHorizontal: u(18), gap: GAP, paddingTop: u(6), paddingBottom: u(4) },
-  card: { width: CARD, borderWidth: 1, borderRadius: u(18), padding: u(12), alignItems: 'center' },
-  pile: { marginBottom: u(6) },
-  cN: { fontFamily: F.display, fontSize: u(24), lineHeight: u(28) },
-  was: { fontFamily: F.bodyBold, fontSize: u(12), lineHeight: u(14) },
+  card: { width: CARD, borderWidth: 1, borderRadius: u(16), padding: u(9), alignItems: 'center' },
+  pile: { marginBottom: u(4) },
+  cN: { fontFamily: F.display, fontSize: u(19), lineHeight: u(23) },
+  was: { fontFamily: F.bodyBold, fontSize: u(10), lineHeight: u(12) },
   wasBox: { justifyContent: 'center' },
   wasLine: { position: 'absolute', start: -u(2), end: -u(2), height: u(1.6), borderRadius: 1, transform: [{ rotate: '-12deg' }] },
-  cU: { fontFamily: F.body, fontSize: u(10) },
-  cBtn: { alignSelf: 'stretch', height: u(30), borderRadius: 999, alignItems: 'center', justifyContent: 'center', marginTop: u(10) },
+  cU: { fontFamily: F.body, fontSize: u(8.5) },
+  cBtn: { alignSelf: 'stretch', height: u(25), borderRadius: 999, alignItems: 'center', justifyContent: 'center', marginTop: u(8), paddingHorizontal: u(4) },
   sovBtn: { alignSelf: 'auto', marginTop: 0, paddingHorizontal: u(16) },
-  cBtnT: { fontFamily: F.bodyBold, fontSize: u(12) },
+  cBtnT: { fontFamily: F.bodyBold, fontSize: u(10) },
   restore: { alignSelf: 'center', marginTop: u(14), padding: u(4) },
   style: { flexDirection: 'row', alignItems: 'center', gap: u(12), borderWidth: 1, borderRadius: u(18), padding: u(12), marginTop: u(6) },
   styleH: { fontFamily: F.display, fontSize: u(15) },

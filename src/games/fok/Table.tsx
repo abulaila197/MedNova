@@ -82,7 +82,7 @@ function Fan() {
   return (
     <View style={s.fan}>
       {[-14, -5, 5, 14].map((r, i) => (
-        <View key={r} style={[s.fanCard, { transform: [{ rotate: `${r}deg` }], marginLeft: i ? -u(6) : 0 }]} />
+        <View key={r} style={[s.fanCard, { transform: [{ rotate: `${r}deg` }], marginStart: i ? -u(6) : 0 }]} />
       ))}
     </View>
   );
@@ -143,8 +143,8 @@ export function Tiles({ board, order, picked, onTap, width, disabled, maxH }: { 
             accessibilityState={{ selected: on }}
             accessibilityLabel={label}
             style={[s.tile, { width: w, height: h }, on ? s.tileOn : null]}>
-            <Text style={[s.pip, { top: u(2), left: u(4) }]}>✚</Text>
-            <Text style={[s.pip, { bottom: u(2), right: u(4), transform: [{ rotate: '180deg' }] }]}>✚</Text>
+            <Text style={[s.pip, { top: u(2), start: u(4) }]}>✚</Text>
+            <Text style={[s.pip, { bottom: u(2), end: u(4), transform: [{ rotate: '180deg' }] }]}>✚</Text>
             <Text style={[s.tileT, { fontSize: size, lineHeight: size * 1.2 }]} numberOfLines={4} adjustsFontSizeToFit minimumFontScale={0.5}>
               {label}
             </Text>
@@ -236,7 +236,7 @@ export const s = StyleSheet.create({
   kick: { fontFamily: F.mono, fontSize: u(9.5), letterSpacing: u(1.4), color: C.soft, textTransform: 'uppercase' },
   title: { fontFamily: SERIF, fontSize: u(26), lineHeight: u(32), color: C.text },
   sub: { fontFamily: F.body, fontSize: u(11.5), color: C.mute },
-  fan: { flexDirection: 'row', width: u(34), flexShrink: 0, paddingLeft: u(4), alignItems: 'center' },
+  fan: { flexDirection: 'row', width: u(34), flexShrink: 0, paddingStart: u(4), alignItems: 'center' },
   fanCard: { width: u(11), height: u(15), borderRadius: u(2), backgroundColor: C.cream, borderWidth: 1, borderColor: 'rgba(0,0,0,0.25)' },
   row: { borderRadius: u(10), paddingVertical: u(7), paddingHorizontal: u(10), flexDirection: 'row', alignItems: 'center', gap: u(9), shadowColor: '#000', shadowOpacity: 0.3, shadowRadius: u(8), shadowOffset: { width: 0, height: u(3) }, elevation: 3 },
   rowHead: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: u(6) },
@@ -259,6 +259,6 @@ export const s = StyleSheet.create({
   card: { borderRadius: u(16), padding: u(14), gap: u(8), backgroundColor: '#18245a', borderWidth: 1, borderColor: 'rgba(242,193,78,0.3)' },
   cardBig: { fontFamily: SERIF, fontSize: u(21), lineHeight: u(26), color: C.text },
   cardLine: { fontFamily: F.body, fontSize: u(12), lineHeight: u(17), color: C.soft },
-  notes: { borderLeftWidth: u(3), paddingLeft: u(10), gap: u(3) },
+  notes: { borderStartWidth: u(3), paddingStart: u(10), gap: u(3) },
   noteLine: { fontFamily: F.body, fontSize: u(11), lineHeight: u(15.5), color: C.mute },
 });

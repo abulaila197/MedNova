@@ -40,7 +40,7 @@ export function AppTopBar({ kicker, title = tr('Nova Crossword'), titleColor, su
   const c = slideColors(t.mode);
   return (
     <View style={[s.label, { backgroundColor: c.boxA, borderColor: c.line }]}>
-      <View style={[s.labelL, { borderLeftColor: titleColor ?? t.accent, flex: 1 }]}>
+      <View style={[s.labelL, { borderStartColor: titleColor ?? t.accent, flex: 1 }]}>
         <Text style={[s.no, { color: t.dim }]}>{kicker.toUpperCase()}</Text>
         <Text style={[s.ttl, { color: titleColor ?? t.white }]} numberOfLines={1}>{title}</Text>
         <Text style={[s.sub, { color: t.mute }]}>{sub}</Text>
@@ -51,7 +51,7 @@ export function AppTopBar({ kicker, title = tr('Nova Crossword'), titleColor, su
         {score != null ? <Text style={[s.sub, { color: t.fg, fontFamily: F.bodySemi }]}>{tr('{score} pts', { score })}</Text> : null}
       </View>
       {onPause ? (
-        <Pressable onPress={onPause} hitSlop={u(8)} accessibilityRole="button" accessibilityLabel={tr('Pause')} style={[s.pause, { borderLeftColor: c.line }]}>
+        <Pressable onPress={onPause} hitSlop={u(8)} accessibilityRole="button" accessibilityLabel={tr('Pause')} style={[s.pause, { borderStartColor: c.line }]}>
           <Text style={{ color: t.fg, fontFamily: F.bodyBold, fontSize: u(11), letterSpacing: u(1) }}>❚❚</Text>
         </Pressable>
       ) : null}
@@ -273,12 +273,12 @@ export function AppLevelMap({ best, count = 50, action, onOpen }: { best: Record
   return (
     <View style={{ gap: u(12) }}>
       <View style={[s.label, { backgroundColor: c.boxA, borderColor: c.line }]}>
-        <View style={[s.labelL, { borderLeftColor: t.accent, paddingVertical: u(10) }]}>
+        <View style={[s.labelL, { borderStartColor: t.accent, paddingVertical: u(10) }]}>
           <Text style={[s.no, { color: t.dim }]}>{tr('{n} OF {n2} STARS', { n: Object.values(best).reduce((a, b) => a + b, 0), n2: count * 3 })}</Text>
           <Text style={[s.ttl, { color: t.white, fontSize: u(24), lineHeight: u(28) }]}>{tr('Nova Crossword')}</Text>
           <Text style={[s.sub, { color: t.mute }]}>{tr('One star opens the next puzzle.')}</Text>
         </View>
-        {action ? <View style={{ justifyContent: 'center', paddingRight: u(10) }}>{action}</View> : null}
+        {action ? <View style={{ justifyContent: 'center', paddingEnd: u(10) }}>{action}</View> : null}
       </View>
       <View style={[s.board, { alignSelf: 'stretch', backgroundColor: c.boxB, borderColor: c.line, padding: u(14) }]}>
         <View style={{ gap: u(14) }} onLayout={(e) => setW(e.nativeEvent.layout.width)}>
@@ -315,8 +315,8 @@ export function AppLevelMap({ best, count = 50, action, onOpen }: { best: Record
 
 const s = StyleSheet.create({
   label: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'stretch', borderWidth: 1, borderRadius: u(6), overflow: 'hidden' },
-  labelL: { borderLeftWidth: u(5), paddingVertical: u(7), paddingHorizontal: u(10), gap: u(1), flexShrink: 1 },
-  labelR: { alignItems: 'flex-end', justifyContent: 'center', gap: u(5), paddingRight: u(10) },
+  labelL: { borderStartWidth: u(5), paddingVertical: u(7), paddingHorizontal: u(10), gap: u(1), flexShrink: 1 },
+  labelR: { alignItems: 'flex-end', justifyContent: 'center', gap: u(5), paddingEnd: u(10) },
   no: { fontFamily: F.mono, fontSize: u(8.5), letterSpacing: u(1.2) },
   ttl: { fontFamily: F.display, fontSize: u(20), lineHeight: u(24) },
   sub: { fontFamily: F.body, fontSize: u(11) },
@@ -331,6 +331,6 @@ const s = StyleSheet.create({
   slot: { position: 'relative' },
   key: { height: u(40), borderRadius: u(4), borderWidth: 1, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
   notice: { fontFamily: F.body, fontSize: u(11.5), textAlign: 'center', minHeight: u(15) },
-  pause: { width: u(40), borderLeftWidth: 1, alignItems: 'center', justifyContent: 'center' },
+  pause: { width: u(40), borderStartWidth: 1, alignItems: 'center', justifyContent: 'center' },
   hint: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderTopWidth: 1, paddingTop: u(9), marginTop: u(2) },
 });

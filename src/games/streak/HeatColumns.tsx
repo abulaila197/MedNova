@@ -65,9 +65,9 @@ function Column({ p, reveal }: { p: RacePlayer; reveal: boolean }) {
 }
 
 const s = StyleSheet.create({
-  row: { flexDirection: 'row', gap: u(8), marginRight: u(34) },
+  row: { flexDirection: 'row', gap: u(8), marginEnd: u(34) },
   col: { alignItems: 'center', gap: u(3), width: u(24) },
-  dot: { position: 'absolute', right: -u(2), bottom: -u(2), width: u(8), height: u(8), borderRadius: u(4), borderWidth: 1.5 },
+  dot: { position: 'absolute', end: -u(2), bottom: -u(2), width: u(8), height: u(8), borderRadius: u(4), borderWidth: 1.5 },
   tube: { width: u(10), borderWidth: 1, borderRadius: u(4), padding: u(1.5), gap: u(1.5), flexDirection: 'column-reverse', overflow: 'hidden' },
   seg: { height: u(3), borderRadius: u(1) },
   crash: { borderRadius: u(4) },

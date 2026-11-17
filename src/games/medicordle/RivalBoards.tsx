@@ -62,7 +62,7 @@ export function RivalBoards({ st, race, t, len }: { st: RaceState; race: BotRace
 }
 
 const s = StyleSheet.create({
-  row: { flexDirection: 'row', gap: u(6), justifyContent: 'center', marginBottom: u(6), marginRight: u(34) },
+  row: { flexDirection: 'row', gap: u(6), justifyContent: 'center', marginBottom: u(6), marginEnd: u(34) },
   card: { borderWidth: 1, borderRadius: u(10), padding: u(5), gap: u(4), alignItems: 'center' },
   head: { flexDirection: 'row', alignItems: 'center', gap: u(4), maxWidth: u(96) },
   name: { fontFamily: F.bodySemi, fontSize: u(9.5), flexShrink: 1 },

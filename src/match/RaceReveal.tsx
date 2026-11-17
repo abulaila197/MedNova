@@ -42,7 +42,7 @@ const s = StyleSheet.create({
   card: { borderWidth: 1, borderRadius: u(16), padding: u(13), gap: u(7) },
   ans: { fontFamily: F.display, fontSize: u(20), lineHeight: u(24) },
   // Rows stop short of the right edge so the floating talk button (ON22) never covers the points.
-  row: { flexDirection: 'row', alignItems: 'center', gap: u(8), marginRight: u(34) },
+  row: { flexDirection: 'row', alignItems: 'center', gap: u(8), marginEnd: u(34) },
   who: { flex: 1, fontFamily: F.bodySemi, fontSize: u(12) },
   how: { fontFamily: F.mono, fontSize: u(10.5) },
   pts: { fontFamily: F.mono, fontSize: u(11.5), minWidth: u(36), textAlign: TA_END },

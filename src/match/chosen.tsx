@@ -30,7 +30,7 @@ export function ChosenTick() {
 }
 
 const s = StyleSheet.create({
-  tick: { position: 'absolute', top: -u(7), left: -u(5), width: u(20), height: u(20), borderRadius: u(10), backgroundColor: RING, borderWidth: 2, borderColor: '#0d1738', alignItems: 'center', justifyContent: 'center' },
+  tick: { position: 'absolute', top: -u(7), start: -u(5), width: u(20), height: u(20), borderRadius: u(10), backgroundColor: RING, borderWidth: 2, borderColor: '#0d1738', alignItems: 'center', justifyContent: 'center' },
   t: { color: '#0b0b26', fontSize: u(11), lineHeight: u(13), fontWeight: '900' },
 });
 

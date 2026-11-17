@@ -368,7 +368,7 @@ const s = StyleSheet.create({
   tab: { borderRadius: u(10), borderWidth: 1, borderColor: NR.line, paddingHorizontal: u(9), paddingVertical: u(4) },
   tabOn: { backgroundColor: NR.card, borderColor: NR.card },
   report: { gap: u(3), borderTopWidth: 3, borderTopColor: NR.red },
-  chosen: { flexDirection: 'row', alignItems: 'center', backgroundColor: NR.card, paddingHorizontal: u(12), paddingVertical: u(8), borderRadius: u(10), borderLeftWidth: 4, borderLeftColor: NR.red },
+  chosen: { flexDirection: 'row', alignItems: 'center', backgroundColor: NR.card, paddingHorizontal: u(12), paddingVertical: u(8), borderRadius: u(10), borderStartWidth: 4, borderStartColor: NR.red },
   input: { fontFamily: NR.type, fontSize: u(15), color: NR.white, borderWidth: 1.5, borderColor: NR.red, borderRadius: u(12), paddingVertical: u(9), paddingHorizontal: u(12), outlineStyle: 'none' } as never,
   chosenTight: { paddingVertical: u(5) },
   hit: { paddingVertical: u(9), paddingHorizontal: u(4), borderBottomWidth: 1, borderBottomColor: NR.line },

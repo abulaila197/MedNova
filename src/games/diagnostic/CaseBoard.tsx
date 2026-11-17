@@ -219,7 +219,7 @@ function SlimBar(p: BoardProps) {
 function Clue({ i, text }: { i: number; text: string }) {
   const t = useTheme();
   return (
-    <View style={[s.cl, { borderLeftColor: CLUE[i], backgroundColor: alpha(CLUE[i], 0.12) }]}>
+    <View style={[s.cl, { borderStartColor: CLUE[i], backgroundColor: alpha(CLUE[i], 0.12) }]}>
       <Text style={[s.cn, { color: CLUE_NUM_DARK[i] }]}>{i + 1}</Text>
       <Text style={[s.clT, { color: t.fg }]}>{text}</Text>
     </View>
@@ -394,7 +394,7 @@ const s = StyleSheet.create({
   caseRow: { flexDirection: 'row', alignItems: 'center', gap: u(8) },
   ct: { fontFamily: F.display, fontSize: u(21), lineHeight: u(24) },
   of: { fontFamily: F.bodyMedium, fontSize: u(12) },
-  diff: { marginLeft: 'auto', fontFamily: F.bodyBold, fontSize: u(8.5), letterSpacing: u(0.8), textTransform: 'uppercase', borderWidth: 1, borderRadius: u(6), paddingVertical: u(4), paddingHorizontal: u(7), overflow: 'hidden' },
+  diff: { marginStart: 'auto', fontFamily: F.bodyBold, fontSize: u(8.5), letterSpacing: u(0.8), textTransform: 'uppercase', borderWidth: 1, borderRadius: u(6), paddingVertical: u(4), paddingHorizontal: u(7), overflow: 'hidden' },
   stats: { flexDirection: 'row', borderWidth: 1, borderRadius: u(12), paddingVertical: u(9), paddingHorizontal: u(11), gap: u(8) },
   st: { flex: 1, gap: u(2) },
   sl: { fontFamily: F.bodyBold, fontSize: u(7.5), lineHeight: u(10), letterSpacing: u(0.6), textTransform: 'uppercase' },
@@ -402,7 +402,7 @@ const s = StyleSheet.create({
   prog: { height: u(4), borderRadius: u(4), overflow: 'hidden' },
   scroll: { gap: u(9), paddingBottom: u(10) },
   clues: { gap: u(7) },
-  cl: { flexDirection: 'row', gap: u(9), paddingVertical: u(8), paddingLeft: u(10), paddingRight: u(11), borderLeftWidth: u(3), borderRadius: u(7) },
+  cl: { flexDirection: 'row', gap: u(9), paddingVertical: u(8), paddingStart: u(10), paddingEnd: u(11), borderStartWidth: u(3), borderRadius: u(7) },
   cn: { fontFamily: F.bodyBold, fontSize: u(9), lineHeight: u(16), minWidth: u(8) },
   clT: { flex: 1, fontFamily: F.body, fontSize: u(11), lineHeight: u(16) },
   hint: { borderWidth: 1, borderRadius: u(10), paddingVertical: u(7), paddingHorizontal: u(10), gap: u(2) },
@@ -419,7 +419,7 @@ const s = StyleSheet.create({
   sugs: { borderWidth: 1, borderBottomWidth: 0, borderTopLeftRadius: u(12), borderTopRightRadius: u(12), padding: u(4) },
   sg: { borderRadius: u(8), paddingVertical: u(8), paddingHorizontal: u(9) },
   sgT: { fontFamily: F.body, fontSize: u(11.5) },
-  in2: { flexDirection: 'row', alignItems: 'center', gap: u(7), borderWidth: 1, borderRadius: u(12), paddingVertical: u(5), paddingRight: u(5), paddingLeft: u(10) },
+  in2: { flexDirection: 'row', alignItems: 'center', gap: u(7), borderWidth: 1, borderRadius: u(12), paddingVertical: u(5), paddingEnd: u(5), paddingStart: u(10) },
   in2Open: { borderTopLeftRadius: 0, borderTopRightRadius: 0 },
   ic: { fontFamily: F.bodyBold, fontSize: u(13) },
   input: { flex: 1, minWidth: 0, fontFamily: F.body, fontSize: u(12), paddingVertical: u(6), ...(Platform.OS === 'web' ? ({ outlineStyle: 'none' } as object) : null) },

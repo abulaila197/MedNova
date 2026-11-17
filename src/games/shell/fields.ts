@@ -63,7 +63,9 @@ export function groupsOf<T>(items: readonly T[], fieldOf: (x: T) => string, grou
     m.set(f, (m.get(f) ?? 0) + 1);
     by.set(g, m);
   }
-  const keys = order ? order.filter((g) => by.has(g)) : [...by.keys()];
+  // Groups named in `order` come first, then any other group (the untitled one too), so a menu with a single
+  // untitled group (Clinical or Basic science alone) is never filtered away.
+  const keys = order ? [...order.filter((g) => by.has(g)), ...[...by.keys()].filter((g) => !order.includes(g))] : [...by.keys()];
   return keys.map((g) => ({
     title: g || undefined,
     items: [...by.get(g)!].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).map(([key, count]) => ({ key, label: label(key), count })),

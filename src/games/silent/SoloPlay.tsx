@@ -28,7 +28,7 @@ const FIELD_MENU: FieldMenu = {
   groups: groupsOf(PICKABLE, (w) => w.field, (w) => (isBasic(w) ? tr('Basic science') : tr('Clinical')), (f) => f, [tr('Clinical'), tr('Basic science')]),
   total: (t) => inFields(PICKABLE, (w) => w.field, t).length,
   min: 1,
-  unit: tr('words'),
+  unit: 'words',
 };
 
 /** The lines on the board, saved with the bookmark so an app kill mid-drawing comes back to the same drawing. */

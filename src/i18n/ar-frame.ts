@@ -344,6 +344,7 @@ export const AR_FRAME: Record<string, string> = {
   "FRIENDS WHO USED YOUR CODE · {n}": "أصحاب استخدموا كودك · {n}",
   "UNLOCKED ✓": "اتفتح ✓",
   "INVITE CODE REDEEMED ✓": "كود الدعوة اتاستخدم ✓",
+  "Or": "أو",
   "That is your own code.": "ده الكود بتاعك إنت.",
   "You invited this player, so their code can’t pay you back.": "إنت اللي دعيت اللاعب ده، فكوده مينفعش يرجعلك.",
   "You already redeemed a code.": "إنت استخدمت كود قبل كده.",

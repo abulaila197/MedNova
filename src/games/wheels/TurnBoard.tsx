@@ -398,7 +398,7 @@ const s = StyleSheet.create({
   whose: { alignItems: 'center', gap: u(1), borderWidth: 1, borderRadius: u(14), paddingVertical: u(6), paddingHorizontal: u(12), backgroundColor: VV.panel },
   spread: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', columnGap: u(10) },
   opt: { flexDirection: 'row', alignItems: 'center', gap: u(10), paddingVertical: u(6.5), paddingHorizontal: u(12) },
-  cross: { position: 'absolute', top: u(3), right: u(7), zIndex: 1 },
+  cross: { position: 'absolute', top: u(3), end: u(7), zIndex: 1 },
   letter: { width: u(24), height: u(24), borderRadius: u(12), backgroundColor: '#24346c', alignItems: 'center', justifyContent: 'center' },
   cellTight: { minHeight: u(28), paddingHorizontal: u(8), paddingVertical: u(3), gap: u(5) },
   cell: { flexDirection: 'row', alignItems: 'center', gap: u(7), minHeight: u(40), paddingHorizontal: u(10), paddingVertical: u(6), borderRadius: u(10), borderWidth: 1.5, borderColor: BOX.line, backgroundColor: BOX.bg },

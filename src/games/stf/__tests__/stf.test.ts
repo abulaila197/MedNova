@@ -28,6 +28,27 @@ test('the bank: every case has a story, 4 choices with fixes and reasons, and a 
   }
 });
 
+// Yazan 2026-11-17: the right choice's length must not give it away. In each field and stage it is the longest in at
+// most 30% of cases and the shortest in at most 35%, and it is never 10% or more longer than every other choice.
+test('the bank: the right choice is not given away by its length', () => {
+  const tally = new Map<string, { n: number; long: number; short: number }>();
+  for (const c of CASES) {
+    for (const k of ['o', 'x'] as const) {
+      const [right, ...rest] = c.a.map((a) => a[k].length);
+      const t = tally.get(`${c.f} ${k}`) ?? { n: 0, long: 0, short: 0 };
+      t.n += 1;
+      if (right >= Math.max(...rest)) t.long += 1;
+      if (right < Math.min(...rest)) t.short += 1;
+      tally.set(`${c.f} ${k}`, t);
+      assert.ok(right < 1.1 * Math.max(...rest), `${c.id} ${k}: right choice stands out by length`);
+    }
+  }
+  for (const [key, t] of tally) {
+    assert.ok(t.long <= 0.3 * t.n, `${key}: right choice longest in ${t.long} of ${t.n}`);
+    assert.ok(t.short <= 0.35 * t.n, `${key}: right choice shortest in ${t.short} of ${t.n}`);
+  }
+});
+
 const hard = CASES[0].id;
 const run0 = () => startCase(rng('c'));
 

@@ -157,6 +157,6 @@ function Library({ played, onPick }: { played: Played; onPick: (id: string) => v
 }
 
 const s = StyleSheet.create({
-  row: { flexDirection: 'row', alignItems: 'center', gap: u(8), backgroundColor: NR.card, paddingHorizontal: u(12), paddingVertical: u(7), borderRadius: u(10), borderLeftWidth: 4, borderLeftColor: 'transparent' },
-  on: { borderLeftColor: NR.red, backgroundColor: '#e3d4b2' },
+  row: { flexDirection: 'row', alignItems: 'center', gap: u(8), backgroundColor: NR.card, paddingHorizontal: u(12), paddingVertical: u(7), borderRadius: u(10), borderStartWidth: 4, borderStartColor: 'transparent' },
+  on: { borderStartColor: NR.red, backgroundColor: '#e3d4b2' },
 });

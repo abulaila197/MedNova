@@ -260,7 +260,7 @@ function Option({ label, state, late, gone, live, dim, faces, onPress, hc, minH 
         // Online: the faces of everyone who picked this answer, on its top corner.
         <Animated.View entering={FadeIn.duration(220)} style={s.faces} pointerEvents="none">
           {faces.slice(0, 6).map((f, i) => (
-            <View key={i} style={[s.faceRing, { borderColor: t.panel, marginLeft: i ? -u(5) : 0 }]}>
+            <View key={i} style={[s.faceRing, { borderColor: t.panel, marginStart: i ? -u(5) : 0 }]}>
               <Face slug={f} size={u(17)} />
             </View>
           ))}
@@ -322,7 +322,7 @@ const s = StyleSheet.create({
   halo: { position: 'absolute', left: -u(2), right: -u(2), top: -u(2), bottom: -u(2), borderRadius: u(13), shadowOpacity: 0.9, shadowRadius: u(10), shadowOffset: { width: 0, height: 0 } },
   opt: { minHeight: u(42), borderRadius: u(11), borderWidth: 1, paddingHorizontal: u(8), paddingVertical: u(8), justifyContent: 'center' },
   optT: { fontSize: u(10.5), lineHeight: u(13.5) },
-  faces: { position: 'absolute', top: -u(8), right: u(4), flexDirection: 'row' },
+  faces: { position: 'absolute', top: -u(8), end: u(4), flexDirection: 'row' },
   faceRing: { borderWidth: 1.5, borderRadius: u(10) },
   expl: { fontFamily: F.body, fontSize: u(10), lineHeight: u(14) },
   hide: { borderRadius: u(14), borderWidth: 1, padding: u(18), alignItems: 'center' },
