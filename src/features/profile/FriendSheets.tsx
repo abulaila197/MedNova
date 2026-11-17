@@ -2,7 +2,7 @@ import * as Clipboard from 'expo-clipboard';
 import { Image, type ImageSource } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useRef, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { Text, TextInput } from '@/components/AppText';
 import { notice, noticeFail } from '@/components/Notice';
 
@@ -215,15 +215,8 @@ function FriendMenu() {
  * Remove, Block and Report sit at the bottom. Any other player (pick B) gets the same sheet without tokens,
  * with Add friend (or Accept) instead of Challenge, and no Remove.
  */
-/** 23 (Yazan 2026-11-04): a sheet's list stops at 75% of the screen, so on a big-text phone it never covers the header. */
-function useSheetMax(design: number) {
-  const { height } = useWindowDimensions();
-  return Math.min(u(design), height * 0.75 - u(40));
-}
-
 function FriendProfileSheet() {
   const t = useTheme();
-  const maxH = useSheetMax(560);
   const hint = useFriendSheet((x) => x.friend);
   const [p, setP] = useState<FriendProfile | null | 'error'>(null);
   const [busy, setBusy] = useState(false);
@@ -285,7 +278,7 @@ function FriendProfileSheet() {
         : { label: tr('Add {display_name} as a friend', { display_name: f.display_name }), go: add };
 
   return (
-    <ScrollView style={{ maxHeight: maxH }} contentContainerStyle={{ gap: u(10), paddingTop: u(8) }} showsVerticalScrollIndicator={false}>
+    <View style={{ gap: u(10), paddingTop: u(8) }}>
       <View style={s.ph}>
         <PlayerFace slug={f.avatar} size={u(64)} userId={f.id} />
         <View style={{ flex: 1, minWidth: 0, gap: u(2) }}>
@@ -331,7 +324,7 @@ function FriendProfileSheet() {
         <Text style={[s.cancel, { color: t.mute }]}>{tr('Close')}</Text>
       </Pressable>
       <CardViewer card={view} onClose={() => setView(null)} />
-    </ScrollView>
+    </View>
   );
 }
 

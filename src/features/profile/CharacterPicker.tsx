@@ -2,7 +2,7 @@ import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useState, type ReactNode } from 'react';
 import { useShallow } from 'zustand/react/shallow';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import Svg, { Circle, Defs, LinearGradient as SvgLinear, Path, Rect, Stop } from 'react-native-svg';
 
 import { Text } from '@/components/AppText';
@@ -75,8 +75,21 @@ export function CharacterPicker({ open, onClose, wearing, owned, found, onWear, 
   const mech = MECHS.find((m) => m.key === sel) ?? ROBOTS.find((r) => r.key === sel) ?? TEAM.find((m) => m.key === sel);
   const orig = CHARACTERS.find((c) => c.slug === sel);
   return (
-    <Sheet open={open} onClose={close}>
-      <ScrollView style={{ maxHeight: u(392) }} showsVerticalScrollIndicator={false}>
+    // The sheet scrolls the characters itself; Wear stays pinned at the bottom on every screen (Yazan 2026-11-18).
+    <Sheet
+      open={open}
+      onClose={close}
+      foot={
+        <View>
+          {error ? <Text style={[s.note, { color: t.mute, marginTop: u(8) }]}>{error}</Text> : null}
+          <Pressable onPress={() => onWear?.(sel)} disabled={sel === wearing} style={[sel === wearing && { opacity: 0.5 }]} accessibilityRole="button">
+            <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.btn}>
+              <Text style={[s.btnT, { color: t.onGrad }]}>{sel === wearing ? tr('Wearing now') : tr('Wear {n}', { n: mech?.name ?? orig?.name })}</Text>
+            </LinearGradient>
+          </Pressable>
+        </View>
+      }>
+      <View>
         <Text style={[s.h, { color: t.fg }]}>
           {tr('Choose your ')}
           <Text style={[s.h, { color: t.accent }]}>{tr('character')}</Text>
@@ -157,14 +170,7 @@ export function CharacterPicker({ open, onClose, wearing, owned, found, onWear, 
           })}
         </View>
         <Text style={[s.note, { color: t.mute }]}>{tr('Locked characters come from the treasure hunt, Nova Mechs from daily chests, the rest from the Style shop. SuperNova team cards are only given by Admin.')}</Text>
-      </ScrollView>
-
-      {error ? <Text style={[s.note, { color: t.mute, marginTop: u(8) }]}>{error}</Text> : null}
-      <Pressable onPress={() => onWear?.(sel)} disabled={sel === wearing} style={[{ marginTop: u(12) }, sel === wearing && { opacity: 0.5 }]} accessibilityRole="button">
-        <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.btn}>
-          <Text style={[s.btnT, { color: t.onGrad }]}>{sel === wearing ? tr('Wearing now') : tr('Wear {n}', { n: mech?.name ?? orig?.name })}</Text>
-        </LinearGradient>
-      </Pressable>
+      </View>
     </Sheet>
   );
 }

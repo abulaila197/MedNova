@@ -1,7 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Text } from '@/components/AppText';
 import { TokenCoin } from '@/components/PulseStar';
@@ -45,7 +45,6 @@ export const gameName = (k: string) => {
   const g = GAMES.find((x) => x.key === k);
   return g ? `${g.lead} ${g.em}`.trim() : k;
 };
-const useSheetMax = (design: number) => Math.min(u(design), useWindowDimensions().height * 0.75 - u(40));
 
 /**
  * The Challenge sheet (G7): the open challenges with this friend (Play, time left, scores so far), then a new one:
@@ -53,7 +52,6 @@ const useSheetMax = (design: number) => Math.min(u(design), useWindowDimensions(
  */
 export function ChallengeSheet({ f, onClose }: { f: Friend; onClose: () => void }) {
   const t = useTheme();
-  const maxH = useSheetMax(600);
   const uid = useSession((x) => x.userId) ?? '';
   const list = useChallenges((x) => x.list);
   const failed = useChallenges((x) => x.failed);
@@ -105,7 +103,7 @@ export function ChallengeSheet({ f, onClose }: { f: Friend; onClose: () => void 
     }
   };
   return (
-    <ScrollView style={{ maxHeight: maxH }} contentContainerStyle={{ gap: u(10), paddingTop: u(8) }} showsVerticalScrollIndicator={false}>
+    <View style={{ gap: u(10), paddingTop: u(8) }}>
       <View style={s.head}>
         <PlayerFace slug={f.avatar} size={u(40)} userId={f.id} still />
         <View style={{ flex: 1, minWidth: 0 }}>
@@ -161,7 +159,7 @@ export function ChallengeSheet({ f, onClose }: { f: Friend; onClose: () => void 
       <Pressable onPress={onClose} accessibilityRole="button">
         <Text style={[s.cancel, { color: t.mute }]}>{tr('Close')}</Text>
       </Pressable>
-    </ScrollView>
+    </View>
   );
 }
 

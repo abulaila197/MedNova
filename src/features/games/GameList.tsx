@@ -84,7 +84,7 @@ function Tag({ game, small }: { game: string; small?: boolean }) {
 }
 
 /** Look C: the programme's strip (2026-11-11, numbers dropped 2026-11-13), standing still, each one a button. */
-function Strip({ g, j, onTop }: { g: Game; j: number; onTop: (j: number, y: number) => void }) {
+export function Strip({ g, j, onTop }: { g: Game; j: number; onTop: (j: number, y: number) => void }) {
   const t = useTheme();
   const { box, go } = useOpen(g, j);
   const [down, setDown] = useState(false);

@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { safeEnter } from '@/lib/enter';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Platform, Pressable, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
 import Animated, { FadeIn, FadeOut, SlideInDown, SlideOutDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -31,17 +31,30 @@ export function Sheet({ open, onClose, children, tone, lift = true, still = fals
   const { height } = useWindowDimensions();
   const [box, setBox] = useState(0);
   const [inner, setInner] = useState(0);
+  // The space the sheet really has (Yazan 2026-11-18, the character pop-up ran over the header on a short phone): a
+  // sheet sits inside its page, under the app header, so the window's height is too tall a limit. Measured in the
+  // window, so a sheet in a full-screen Modal still keeps clear of the status bar.
+  const area = useRef<View>(null);
+  const [room, setRoom] = useState<{ top: number; h: number } | null>(null);
   const bleed = useBleed();
   if (!open) return null;
   const up = kb ? Math.max(0, kb - (Platform.OS === 'web' ? 0 : ins.bottom)) : 0;
-  const maxHeight = height - up - (Platform.OS === 'web' ? 0 : ins.top) - u(12);
+  const bar = Platform.OS === 'web' ? 0 : ins.top;
+  // u(28) of the page stays in view above a tall sheet, so it reads as a pop-up, not a new page.
+  const maxHeight = (room ? room.h - Math.max(0, bar - room.top) : height - bar) - up - u(28);
+  const measure = () =>
+    area.current?.measureInWindow((_x, top, _w, h) => {
+      if (h > 0) setRoom((r) => (r && r.top === top && r.h === h ? r : { top, h }));
+    });
   return (
     // zIndex 35: above a pass-the-phone curtain (30), a countdown (30) and the chat (25). The pause menu hid under the
     // Sketch It curtain after the app came back, so "I'm ready" seemed dead (Yazan 2026-11-15).
-    <View style={[StyleSheet.absoluteFill, { zIndex: 35, start: -bleed, end: -bleed }]}>
+    <View ref={area} onLayout={measure} style={[StyleSheet.absoluteFill, { zIndex: 35, start: -bleed, end: -bleed }]}>
       <Animated.View entering={still ? undefined : FadeIn.duration(250)} exiting={still ? undefined : FadeOut.duration(200)} style={StyleSheet.absoluteFill}>
         <Pressable style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(5,6,16,0.55)' }]} onPress={onClose} accessibilityLabel={tr('Close')} />
       </Animated.View>
+      {/* Drawn once its room is known, so it never opens too tall for a frame. */}
+      {room ? (
       <Animated.View
         entering={still ? undefined : safeEnter(SlideInDown.duration(380))}
         exiting={still ? undefined : SlideOutDown.duration(250)}
@@ -61,6 +74,7 @@ export function Sheet({ open, onClose, children, tone, lift = true, still = fals
         </ScrollView>
         {foot}
       </Animated.View>
+      ) : null}
     </View>
   );
 }
