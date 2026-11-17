@@ -160,7 +160,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
         run.phase === 'out' ? (
           <OutCard playId={play.id} price={shownCost(play.game, 'solo', play.settings)} onRevive={() => dispatch({ type: 'REVIVE' })} onReplay={() => open(p.level)} onEnd={() => dispatch({ type: 'LEAVE' })} />
         ) : run.phase === 'done' && last ? (
-          <ResultCard done={last} price={shownCost(play.game, 'solo', play.settings)} canNext={canNext} onNext={() => open(nextLevel)} onRetry={() => open(p.level)} onMap={toMap} />
+          <ResultCard done={last} price={shownCost(play.game, 'solo', play.settings)} canNext={canNext} onNext={() => open(nextLevel)} onRetry={() => open(p.level)} onMap={toMap} onResults={() => (toMap(), void finish())} />
         ) : null
       }>
       <PauseMenu open={paused} mode="solo" onResume={() => setPaused(false)} onQuit={quit} />
@@ -345,7 +345,7 @@ function OutCard({ playId, price, onRevive, onReplay, onEnd }: { playId: string;
 }
 
 /** The puzzle's stars and EXP, with Next puzzle, Retry and the level map. */
-function ResultCard({ done, price, canNext, onNext, onRetry, onMap }: { done: Done; price: number; canNext: boolean; onNext: () => void; onRetry: () => void; onMap: () => void }) {
+function ResultCard({ done, price, canNext, onNext, onRetry, onMap, onResults }: { done: Done; price: number; canNext: boolean; onNext: () => void; onRetry: () => void; onMap: () => void; onResults: () => void }) {
   const t = useTheme();
   const expLine = !done.stars
     ? tr('No stars this time. Solve all but two words for a star.')
@@ -368,11 +368,17 @@ function ResultCard({ done, price, canNext, onNext, onRetry, onMap }: { done: Do
         <Ghost label={priced(tr('Retry'), price)} onPress={onRetry} style={{ flex: 1 }} />
         {canNext ? <Btn label={priced(tr('Next'), price)} onPress={onNext} style={{ flex: 1.4 }} /> : <Btn label={tr('All puzzles')} onPress={onMap} style={{ flex: 1.4 }} />}
       </View>
-      {canNext ? (
-        <Pressable onPress={onMap} hitSlop={u(6)} accessibilityRole="button" accessibilityLabel={tr('All puzzles')} style={[s.mapB, { borderColor: t.accent }]}>
-          <Text style={[s.mapT, { color: t.accent }]}>{tr('All puzzles')}</Text>
+      <View style={s.links}>
+        {canNext ? (
+          <Pressable onPress={onMap} hitSlop={u(6)} accessibilityRole="button" accessibilityLabel={tr('All puzzles')} style={[s.mapB, { borderColor: t.accent }]}>
+            <Text style={[s.mapT, { color: t.accent }]}>{tr('All puzzles')}</Text>
+          </Pressable>
+        ) : <View />}
+        {/* Yazan 2026-11-17: the session's results, as the puzzle map's See results opens them. */}
+        <Pressable onPress={onResults} hitSlop={u(6)} accessibilityRole="button" accessibilityLabel={tr('See results')} style={[s.mapB, { borderColor: t.error }]}>
+          <Text style={[s.mapT, { color: t.error }]}>{tr('See results')}</Text>
         </Pressable>
-      ) : null}
+      </View>
     </View>
   );
 }
@@ -389,6 +395,7 @@ const s = StyleSheet.create({
   line: { fontFamily: F.body, fontSize: u(12), lineHeight: u(17) },
   row: { flexDirection: 'row', gap: u(8), marginTop: u(4) },
   // Yazan 2026-11-17: a small outlined button in the accent colour, not a faint text link.
-  mapB: { alignSelf: 'flex-start', borderWidth: 1, borderRadius: u(10), paddingVertical: u(5), paddingHorizontal: u(12), marginTop: u(2) },
+  links: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: u(2) },
+  mapB: { borderWidth: 1, borderRadius: u(10), paddingVertical: u(5), paddingHorizontal: u(12) },
   mapT: { fontFamily: F.bodySemi, fontSize: u(11.5) },
 });

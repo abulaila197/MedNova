@@ -228,6 +228,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
             onNext={() => open(nextId)}
             onRetry={() => open(r.id)}
             onGrid={toGrid}
+            onResults={() => (toGrid(), void finish())}
             revive={signedIn && level.phase === 'failed' && Math.max(seconds[level.riddleId] ?? 0, level.revived ?? 0) < 3 ? { price: SECOND_PRICE[Math.max(seconds[level.riddleId] ?? 0, level.revived ?? 0)], onPress: () => void revive() } : null}
           />
         ) : undefined
@@ -238,7 +239,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
 }
 
 /** RD11: the answer, stars and EXP, with Next level, Retry and a dossier link where the answer has one. */
-function ResultCard({ done, level, price, onNext, onRetry, onGrid, revive }: { done: Done; level: Level; price: number; onNext: () => void; onRetry: () => void; onGrid: () => void; revive?: { price: number; onPress: () => void } | null }) {
+function ResultCard({ done, level, price, onNext, onRetry, onGrid, onResults, revive }: { done: Done; level: Level; price: number; onNext: () => void; onRetry: () => void; onGrid: () => void; onResults: () => void; revive?: { price: number; onPress: () => void } | null }) {
   const t = useTheme();
   const r = riddleById.get(done.riddleId)!;
   const tone = done.solved ? '#3fc58a' : '#ff5c6c';
@@ -281,12 +282,16 @@ function ResultCard({ done, level, price, onNext, onRetry, onGrid, revive }: { d
         <Pressable onPress={onGrid} hitSlop={u(6)} accessibilityRole="button" accessibilityLabel={tr('All levels')} style={[s.mapB, { borderColor: t.accent }]}>
           <Text style={[s.mapT, { color: t.accent }]}>{tr('All levels')}</Text>
         </Pressable>
-        {r.dossier && !hide ? (
-          <Pressable onPress={() => router.push(`/learn/dossier?id=${r.dossier}`)} hitSlop={u(6)} accessibilityRole="link" accessibilityLabel={tr('Open the dossier for {answer}', { answer: r.answer })}>
-            <Text style={[s.link, { color: t.accent }]}>{tr('Open the dossier ›')}</Text>
-          </Pressable>
-        ) : null}
+        {/* Yazan 2026-11-17: the session's results, as the level grid's See results opens them. */}
+        <Pressable onPress={onResults} hitSlop={u(6)} accessibilityRole="button" accessibilityLabel={tr('See results')} style={[s.mapB, { borderColor: t.error }]}>
+          <Text style={[s.mapT, { color: t.error }]}>{tr('See results')}</Text>
+        </Pressable>
       </View>
+      {r.dossier && !hide ? (
+        <Pressable onPress={() => router.push(`/learn/dossier?id=${r.dossier}`)} hitSlop={u(6)} accessibilityRole="link" accessibilityLabel={tr('Open the dossier for {answer}', { answer: r.answer })} style={s.dossier}>
+          <Text style={[s.link, { color: t.accent }]}>{tr('Open the dossier ›')}</Text>
+        </Pressable>
+      ) : null}
     </View>
   );
 }
@@ -365,6 +370,7 @@ const s = StyleSheet.create({
   // Yazan 2026-11-17: a small outlined button in the accent colour, not a faint text link.
   mapB: { borderWidth: 1, borderRadius: u(10), paddingVertical: u(5), paddingHorizontal: u(12) },
   mapT: { fontFamily: F.bodySemi, fontSize: u(11.5) },
+  dossier: { alignSelf: 'center', paddingTop: u(2) },
   link: { fontFamily: F.bodySemi, fontSize: u(11) },
   gTop: { flexDirection: 'row', alignItems: 'center', gap: u(10) },
   gTitle: { fontFamily: F.display, fontSize: u(24), lineHeight: u(28) },
