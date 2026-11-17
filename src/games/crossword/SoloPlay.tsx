@@ -369,8 +369,8 @@ function ResultCard({ done, price, canNext, onNext, onRetry, onMap }: { done: Do
         {canNext ? <Btn label={priced(tr('Next'), price)} onPress={onNext} style={{ flex: 1.4 }} /> : <Btn label={tr('All puzzles')} onPress={onMap} style={{ flex: 1.4 }} />}
       </View>
       {canNext ? (
-        <Pressable onPress={onMap} hitSlop={u(6)} accessibilityRole="button" accessibilityLabel={tr('All puzzles')} style={{ alignSelf: 'flex-start' }}>
-          <Text style={[s.link, { color: t.mute }]}>{tr('All puzzles')}</Text>
+        <Pressable onPress={onMap} hitSlop={u(6)} accessibilityRole="button" accessibilityLabel={tr('All puzzles')} style={[s.mapB, { borderColor: t.accent }]}>
+          <Text style={[s.mapT, { color: t.accent }]}>{tr('All puzzles')}</Text>
         </Pressable>
       ) : null}
     </View>
@@ -388,5 +388,7 @@ const s = StyleSheet.create({
   big: { fontFamily: F.display, fontSize: u(22), lineHeight: u(26) },
   line: { fontFamily: F.body, fontSize: u(12), lineHeight: u(17) },
   row: { flexDirection: 'row', gap: u(8), marginTop: u(4) },
-  link: { fontFamily: F.bodySemi, fontSize: u(11) },
+  // Yazan 2026-11-17: a small outlined button in the accent colour, not a faint text link.
+  mapB: { alignSelf: 'flex-start', borderWidth: 1, borderRadius: u(10), paddingVertical: u(5), paddingHorizontal: u(12), marginTop: u(2) },
+  mapT: { fontFamily: F.bodySemi, fontSize: u(11.5) },
 });

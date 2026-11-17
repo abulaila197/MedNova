@@ -1,8 +1,8 @@
 import { CoinLabel, spoken } from '@/components/CoinLabel';
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { Pressable, StyleSheet, View, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
 import { Text } from '@/components/AppText';
-import Svg, { Circle } from 'react-native-svg';
+import Svg, { Circle, Path } from 'react-native-svg';
 
 import { loadFonts } from '@/features/loading/fonts';
 import { u } from '@/theme/scale';
@@ -15,6 +15,8 @@ import { isAr, tr, TA_END } from '@/i18n';
 // The Silent Artist's own design language (SA9): "Classroom slate". A chalkboard in a worn wooden frame,
 // chalk sticks on the ledge as colours, chalk lettering. The room follows the app (SA10, SA11, Yazan 2026-10-05):
 // the Nebula sky and a navy slate.
+
+/** PREVIEW ONLY (2026-11-17): the two button looks for Yazan to pick; removed once he picks. */
 
 /** Fixed colours: the wood, the chalk on the board, fonts. */
 export const SL = {
@@ -72,9 +74,10 @@ export function useSlateFonts() {
 }
 
 /** A Silent Artist page: the game header over the dark slate room. `scroll` for long pages (pick, reveal). */
-export function SlateScreen({ children, scroll = false, layer }: { children: ReactNode; scroll?: boolean; layer?: ReactNode }) {
+/** `bottom` (Start and the like) stays on screen under a scrolling page. */
+export function SlateScreen({ children, scroll = false, layer, bottom }: { children: ReactNode; scroll?: boolean; layer?: ReactNode; bottom?: ReactNode }) {
   return (
-    <GameScreen scroll={scroll} layer={layer} bodyStyle={[s.body, { paddingBottom: u(14) }]}>
+    <GameScreen scroll={scroll} layer={layer} bottom={bottom} bodyStyle={[s.body, { paddingBottom: u(14) }]}>
       {children}
     </GameScreen>
   );
@@ -128,12 +131,72 @@ export function Frame({ children, style }: { children: ReactNode; style?: StyleP
 }
 
 /** Chalk-yellow main button; `ghost` is the chalk-outline one. */
-export function ChalkBtn({ label, onPress, ghost, disabled, style, color, small }: { label: string; onPress?: () => void; ghost?: boolean; disabled?: boolean; style?: StyleProp<ViewStyle>; color?: string; small?: boolean }) {
+/**
+ * Sketch It buttons (Yazan 2026-11-17): one clear look for every screen. The main action is filled chalk-yellow; a
+ * second action is a plain solid outline; a choice is a ChalkChoice (pick one). `icon` puts a small chalk icon first.
+ */
+export function ChalkBtn({ label, onPress, ghost, disabled, style, color, small, icon }: { label: string; onPress?: () => void; ghost?: boolean; disabled?: boolean; style?: StyleProp<ViewStyle>; color?: string; small?: boolean; icon?: 'eye' }) {
+  const R = useSlateRoom();
+  const ink = ghost ? R.ink : color ? '#1d2b22' : R.btnText;
+  return (
+    <Pressable onPress={onPress} disabled={disabled} accessibilityRole="button" accessibilityLabel={spoken(label)} style={({ pressed }) => [s.btn, ghost ? { borderWidth: 1.5, borderColor: R.soft } : { backgroundColor: color ?? R.btn }, { opacity: disabled ? 0.4 : pressed ? 0.85 : 1 }, style]}>
+      <View style={s.btnRow}>
+        {icon ? <Eye color={ink} /> : null}
+        <CoinLabel text={label} style={[s.btnT, small && s.btnSmall, { color: ink }]} />
+      </View>
+    </Pressable>
+  );
+}
+
+/** Hold-to-see: the main button that shows the secret words while it is held. */
+export function HoldBtn({ label, open, onHold }: { label: string; open: boolean; onHold: (on: boolean) => void }) {
   const R = useSlateRoom();
   return (
-    <Pressable onPress={onPress} disabled={disabled} accessibilityRole="button" accessibilityLabel={spoken(label)} style={({ pressed }) => [s.btn, ghost ? { borderWidth: 1.5, borderColor: R.line, borderStyle: 'dashed' } : { backgroundColor: color ?? R.btn }, { opacity: disabled ? 0.4 : pressed ? 0.85 : 1 }, style]}>
-      <CoinLabel text={label} style={[s.btnT, small && s.btnSmall, { color: ghost ? R.ink : color ? '#1d2b22' : R.btnText }]} />
+    <Pressable onPressIn={() => onHold(true)} onPressOut={() => onHold(false)} accessibilityRole="button" accessibilityLabel={label} style={[s.btn, s.hold, { backgroundColor: open ? R.mark : R.btn }]}>
+      <View style={s.btnRow}>
+        <Eye color={R.btnText} />
+        <Text style={[s.btnT, { color: R.btnText }]}>{label}</Text>
+      </View>
     </Pressable>
+  );
+}
+
+function Eye({ color }: { color: string }) {
+  const d = u(18);
+  return (
+    <Svg width={d} height={d} viewBox="0 0 24 24">
+      <Path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z" fill="none" stroke={color} strokeWidth={2} strokeLinejoin="round" />
+      <Circle cx={12} cy={12} r={3.2} fill={color} />
+    </Svg>
+  );
+}
+
+/**
+ * Pick one (Yazan 2026-11-17): the options side by side under a small "pick one" line. The chosen one is filled and
+ * ticked, so it never looks like a button to press next.
+ */
+export function ChalkChoice<K extends string | number>({ options, value, onChange, big, note = true }: { options: { key: K; label: string }[]; value: K; onChange: (k: K) => void; big?: boolean; note?: boolean }) {
+  const R = useSlateRoom();
+  return (
+    <View style={{ gap: u(5) }}>
+      {note ? <Text style={[s.pickOne, { color: R.dim }]}>{tr('Pick one')}</Text> : null}
+      <View style={[s.track, { borderColor: R.soft, backgroundColor: R.card }]} accessibilityRole="radiogroup">
+        {options.map((o) => {
+          const on = o.key === value;
+          return (
+            <Pressable key={String(o.key)} onPress={() => onChange(o.key)} accessibilityRole="radio" accessibilityState={{ selected: on }} accessibilityLabel={o.label}
+              style={({ pressed }) => [
+                s.opt, big && s.optBig,
+                on && { backgroundColor: R.ink },
+                pressed && { opacity: 0.85 },
+              ]}>
+              {on ? <Text style={[s.tick, big && { fontSize: u(16) }, { color: R.onInk }]}>✓</Text> : null}
+              <Text style={[s.optT, big && s.optTBig, { color: on ? R.onInk : R.ink }]} numberOfLines={1}>{o.label}</Text>
+            </Pressable>
+          );
+        })}
+      </View>
+    </View>
   );
 }
 
@@ -303,14 +366,32 @@ export function TopRow({ kicker, title, color, right, small }: { kicker: string;
 }
 
 /** A chalk chip: fields in Solo, players on "Who got it?". `on` fills it with chalk. */
+/** A pill for a list of names to tap (who guessed it): a second action, so a solid outline, never dashed. */
 export function ChalkChip({ label, on, dot, onPress, big, small }: { label: string; on?: boolean; dot?: string; onPress: () => void; big?: boolean; small?: boolean }) {
   const R = useSlateRoom();
   return (
-    <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={label} accessibilityState={{ selected: !!on }} style={({ pressed }) => [s.chip, { borderColor: R.line }, big && s.chipBig, small && s.chipSmall, on && { backgroundColor: R.ink, borderStyle: 'solid', borderColor: R.ink }, pressed && { opacity: 0.8 }]}>
+    <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={label} accessibilityState={{ selected: !!on }} style={({ pressed }) => [s.chip, { borderColor: R.soft, backgroundColor: R.card }, big && s.chipBig, small && s.chipSmall, on && { backgroundColor: R.ink, borderColor: R.ink }, pressed && { opacity: 0.8 }]}>
       {dot ? <View style={[s.dot, { backgroundColor: dot }]} /> : null}
       <Text style={[s.chipT, big && { fontSize: u(17) }, small && { fontSize: u(11.5) }, { color: on ? R.onInk : R.ink }]} numberOfLines={1}>
         {label}
       </Text>
+    </Pressable>
+  );
+}
+
+/**
+ * A chalk dropdown ("Fields: All ▾", Yazan 2026-11-17): one line that opens a list. `onOpen` gets the line's bottom
+ * edge on screen, where the list opens.
+ */
+export function ChalkSelect({ label, value, onOpen }: { label: string; value: string; onOpen: (top: number) => void }) {
+  const R = useSlateRoom();
+  const box = useRef<View>(null);
+  const open = () => box.current?.measureInWindow((_x, y, _w, h) => onOpen(y + h + u(4)));
+  return (
+    <Pressable ref={box} onPress={open} accessibilityRole="button" accessibilityLabel={`${label}: ${value}`} style={({ pressed }) => [s.select, { borderColor: R.soft, backgroundColor: R.card }, pressed && { opacity: 0.8 }]}>
+      <Text style={[s.selT, { color: R.soft }]} numberOfLines={1}>{label}</Text>
+      <Text style={[s.selV, { color: R.ink }]} numberOfLines={1}>{value}</Text>
+      <Text style={[s.selA, { color: R.mark }]}>▾</Text>
     </Pressable>
   );
 }
@@ -348,6 +429,10 @@ export function PausedCover() {
 }
 
 const s = StyleSheet.create({
+  select: { flexDirection: 'row', alignItems: 'center', gap: u(8), borderWidth: 1.5, borderRadius: u(12), paddingVertical: u(10), paddingHorizontal: u(14) },
+  selT: { fontFamily: SL.body, fontSize: u(13) },
+  selV: { fontFamily: SL.head, fontSize: u(15), flex: 1 },
+  selA: { fontFamily: SL.head, fontSize: u(16) },
   body: { paddingHorizontal: u(14), paddingTop: u(12), gap: u(10) },
   kick: { fontFamily: SL.body, fontSize: u(11), letterSpacing: u(1.2) },
   note: { fontFamily: SL.body, fontSize: u(14), lineHeight: u(19) },
@@ -383,7 +468,16 @@ const s = StyleSheet.create({
   fit: { flex: 1, alignSelf: 'stretch', alignItems: 'center', justifyContent: 'center', minHeight: u(90) },
   top: { flexDirection: 'row', alignItems: 'center', gap: u(10) },
   topRight: { flexDirection: 'row', alignItems: 'center', gap: u(8) },
-  chip: { flexDirection: 'row', alignItems: 'center', gap: u(6), borderWidth: 1.5, borderStyle: 'dashed', borderRadius: u(20), paddingVertical: u(6), paddingHorizontal: u(12) },
+  chip: { flexDirection: 'row', alignItems: 'center', gap: u(6), borderWidth: 1, borderRadius: u(20), paddingVertical: u(6), paddingHorizontal: u(12) },
+  btnRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: u(8) },
+  hold: { paddingVertical: u(16), borderRadius: u(14) },
+  pickOne: { fontFamily: SL.body, fontSize: u(12) },
+  track: { flexDirection: 'row', borderWidth: 1.5, borderRadius: u(16), padding: u(3) },
+  opt: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: u(7), borderRadius: u(13), paddingVertical: u(8), paddingHorizontal: u(10) },
+  optBig: { paddingVertical: u(13) },
+  optT: { fontFamily: SL.body, fontSize: u(14) },
+  optTBig: { fontFamily: SL.head, fontSize: u(17) },
+  tick: { fontFamily: SL.head, fontSize: u(13) },
   chipBig: { paddingVertical: u(11), paddingHorizontal: u(16), borderRadius: u(14) },
   chipSmall: { paddingVertical: u(3), paddingHorizontal: u(8), borderWidth: 1 },
   chipT: { fontFamily: SL.body, fontSize: u(14) },

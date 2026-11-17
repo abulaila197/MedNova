@@ -10,8 +10,10 @@ import { recordItem } from '../shell/flow';
 import { PauseMenu } from '../shell/PauseMenu';
 import type { PlayProps } from '../shell/types';
 import type { BoardHandle, Stroke } from './Board';
-import { FIELDS, PICKABLE, RECENT_KEY, WORDS, wordById } from './data';
-import { ChalkBtn, ChalkChip, ChalkTitle, ClockChalkTimer, Kicker, Ledge, Note, PauseBtn, Panel, SL, SlateScreen, TopRow, useSlateRoom, useSlateFonts } from './slate';
+import { isBasic, PICKABLE, RECENT_KEY, WORDS, wordById } from './data';
+import { FieldPicker } from '../shell/FieldPicker';
+import { type FieldMenu, fieldsValue, groupsOf, inFields } from '../shell/fields';
+import { ChalkBtn, ChalkChoice, ChalkSelect, ChalkTitle, ClockChalkTimer, Kicker, Ledge, Note, PauseBtn, Panel, SL, SlateScreen, TopRow, useSlateRoom, useSlateFonts } from './slate';
 import { SA } from './core';
 import { soloLeft, startSolo, stepSolo, type SoloEvent, type SoloRun } from './solo';
 import { FitBoard } from './Stage';
@@ -20,6 +22,14 @@ import { tr } from '@/i18n';
 import { priced } from '@/components/CoinLabel';
 import { sparksCost } from '@/features/sparks/costs';
 import { chargeUnit, needSparks, shownCost } from '@/features/sparks/sparks';
+
+/** The practice field list: clinical fields largest first, then the basic sciences, each with its word count. */
+const FIELD_MENU: FieldMenu = {
+  groups: groupsOf(PICKABLE, (w) => w.field, (w) => (isBasic(w) ? tr('Basic science') : tr('Clinical')), (f) => f, [tr('Clinical'), tr('Basic science')]),
+  total: (t) => inFields(PICKABLE, (w) => w.field, t).length,
+  min: 1,
+  unit: tr('words'),
+};
 
 /** The lines on the board, saved with the bookmark so an app kill mid-drawing comes back to the same drawing. */
 type Sketch = { board: number; strokes: Stroke[] };
@@ -45,7 +55,9 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   const [run, setRun] = useState<SoloRun | null>(resumed?.run ?? null);
   const ref = useRef<SoloRun | null>(run);
   const sketch = useRef<Sketch | null>(resumed?.sketch ?? null);
-  const [fields, setFields] = useState<string[]>([]);
+  // null = every field; [] = none ticked (Start waits for one).
+  const [fields, setFields] = useState<string[] | null>(null);
+  const [menuTop, setMenuTop] = useState<number | null>(null);
   // Yazan 2026-11-12: Practice may have No clock, chosen on this game's own start page.
   const [noClock, setNoClock] = useState(false);
   const board = useRef<BoardHandle>(null);
@@ -81,7 +93,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   const begin = useCallback(async () => {
     if (!(await paid(1))) return;
     const recent = (await engine.kv.get<string[]>(RECENT_KEY)) ?? [];
-    set(startSolo(pool, { seed: play.id, fields: custom ? [] : fields, recent: custom ? [] : recent, now: Date.now(), noClock: !custom && noClock }));
+    set(startSolo(pool, { seed: play.id, fields: custom ? [] : (fields ?? []), recent: custom ? [] : recent, now: Date.now(), noClock: !custom && noClock }));
   }, [play.id, fields, set, pool, custom, noClock, paid]);
 
   useEffect(() => {
@@ -146,24 +158,17 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
 
   if (!run && custom) return <SlateScreen>{null}</SlateScreen>;
   if (!run)
+    // Yazan 2026-11-17: the fields sit in one dropdown (the same list as other games' setups) instead of 39 chips,
+    // and the page scrolls with Start kept on screen under it.
     return (
-      <SlateScreen>
+      <SlateScreen scroll bottom={<ChalkBtn label={tr('Start drawing')} onPress={begin} disabled={fields?.length === 0} />}>
         <Kicker>{tr('Practice sketch')}</Kicker>
         <ChalkTitle size={22}>{tr('What do you want to draw?')}</ChalkTitle>
         <Note style={{ fontSize: u(12.5), lineHeight: u(16) }}>{tr('Pick one field or several, or keep all fields.')}</Note>
-        <View style={s.chips}>
-          <ChalkChip small label={tr('All fields')} on={!fields.length} onPress={() => setFields([])} />
-          {FIELDS.map((f) => (
-            <ChalkChip small key={f} label={f} on={fields.includes(f)} onPress={() => setFields(fields.includes(f) ? fields.filter((x) => x !== f) : [...fields, f])} />
-          ))}
-        </View>
+        <ChalkSelect label={tr('Fields')} value={fields == null ? tr('All') : fields.length === 1 ? fields[0] : tr('{n} picked', { n: fields.length })} onOpen={setMenuTop} />
         <Note style={{ fontSize: u(12.5), lineHeight: u(16), marginTop: u(6) }}>{tr('Clock')}</Note>
-        <View style={s.chips}>
-          <ChalkChip small label={tr('{n} s a drawing', { n: SA.soloMs / 1000 })} on={!noClock} onPress={() => setNoClock(false)} />
-          <ChalkChip small label={tr('No clock')} on={noClock} onPress={() => setNoClock(true)} />
-        </View>
-        <View style={{ flex: 1 }} />
-        <ChalkBtn label={tr('Start drawing')} onPress={begin} />
+        <ChalkChoice value={noClock ? 'off' : 'on'} onChange={(k) => setNoClock(k === 'off')} options={[{ key: 'on', label: tr('{n} s a drawing', { n: SA.soloMs / 1000 }) }, { key: 'off', label: tr('No clock') }]} />
+        {menuTop != null ? <FieldPicker menu={FIELD_MENU} ticked={fields} top={menuTop} onChange={(t) => setFields(fieldsValue(FIELD_MENU, t) == null ? null : t)} onClose={() => setMenuTop(null)} /> : null}
       </SlateScreen>
     );
 
@@ -215,7 +220,6 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
 }
 
 const s = StyleSheet.create({
-  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: u(5) },
   word: { alignItems: 'center', paddingVertical: u(8) },
   wordT: { fontFamily: SL.head, fontSize: u(21), lineHeight: u(25), textAlign: 'center' },
   field: { fontFamily: SL.body, fontSize: u(13) },

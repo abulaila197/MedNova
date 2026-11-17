@@ -108,14 +108,18 @@ const RingWords = memo(function RingWords({ r0, r1, labels, land, base, px, dark
   const w = Math.min(2 * mid * Math.sin(rad(seg / 2)) * 0.86, (r1 - r0) * 2) * k;
   const h = (r1 - r0) * 0.86 * k;
   return (
-    <View style={StyleSheet.absoluteFill} pointerEvents="none">
+    <View style={[StyleSheet.absoluteFill, { direction: 'ltr' }]} pointerEvents="none">
       {labels.map((label, i) => {
         const am = -90 + i * seg;
         const rest = (((am + land) % 360) + 360) % 360;
         const low = rest > 0.01 && rest < 179.99;
         const fs = Math.min(sizeOf(label, base), 13) * k;
+        // The word's centre is placed directly on the ring and the box only turns in place, so nothing depends on how
+        // a layout direction or screen size treats a turn followed by a shift (it threw the words off on tablets).
+        const x = (C + mid * Math.cos(rad(am))) * k;
+        const y = (C + mid * Math.sin(rad(am))) * k;
         return (
-          <View key={label} style={{ position: 'absolute', left: C * k - w / 2, top: C * k - h / 2, width: w, height: h, alignItems: 'center', justifyContent: 'center', transform: [{ rotate: `${am + (low ? -90 : 90)}deg` }, { translateY: (low ? mid : -mid) * k }] }}>
+          <View key={label} style={{ position: 'absolute', left: x - w / 2, top: y - h / 2, width: w, height: h, alignItems: 'center', justifyContent: 'center', transform: [{ rotate: `${am + (low ? -90 : 90)}deg` }] }}>
             <Text style={{ fontSize: fs, lineHeight: fs * 1.25, textAlign: 'center', color: dark(i) ? VV.cream : VV.paperInk, fontWeight: '700' }} numberOfLines={2} adjustsFontSizeToFit minimumFontScale={0.6}>
               {label.replace(/\n/g, ' ')}
             </Text>

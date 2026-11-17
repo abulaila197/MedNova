@@ -278,8 +278,8 @@ function ResultCard({ done, level, price, onNext, onRetry, onGrid, revive }: { d
         </View>
       )}
       <View style={s.links}>
-        <Pressable onPress={onGrid} hitSlop={u(6)} accessibilityRole="button" accessibilityLabel={tr('All levels')}>
-          <Text style={[s.link, { color: t.mute }]}>{tr('All levels')}</Text>
+        <Pressable onPress={onGrid} hitSlop={u(6)} accessibilityRole="button" accessibilityLabel={tr('All levels')} style={[s.mapB, { borderColor: t.accent }]}>
+          <Text style={[s.mapT, { color: t.accent }]}>{tr('All levels')}</Text>
         </Pressable>
         {r.dossier && !hide ? (
           <Pressable onPress={() => router.push(`/learn/dossier?id=${r.dossier}`)} hitSlop={u(6)} accessibilityRole="link" accessibilityLabel={tr('Open the dossier for {answer}', { answer: r.answer })}>
@@ -361,7 +361,10 @@ const s = StyleSheet.create({
   def: { fontFamily: F.body, fontSize: u(11), lineHeight: u(15.5) },
   exp: { fontFamily: F.bodySemi, fontSize: u(11.5) },
   row: { flexDirection: 'row', gap: u(8), marginTop: u(4) },
-  links: { flexDirection: 'row', justifyContent: 'space-between', paddingTop: u(2) },
+  links: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingTop: u(2) },
+  // Yazan 2026-11-17: a small outlined button in the accent colour, not a faint text link.
+  mapB: { borderWidth: 1, borderRadius: u(10), paddingVertical: u(5), paddingHorizontal: u(12) },
+  mapT: { fontFamily: F.bodySemi, fontSize: u(11.5) },
   link: { fontFamily: F.bodySemi, fontSize: u(11) },
   gTop: { flexDirection: 'row', alignItems: 'center', gap: u(10) },
   gTitle: { fontFamily: F.display, fontSize: u(24), lineHeight: u(28) },

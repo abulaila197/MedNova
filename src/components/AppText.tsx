@@ -12,34 +12,57 @@ export const MAX_FONT_SCALE = 1;
 // Yazan 2026-10-27). "simple" measures and draws the same way, so every text in the app keeps all its words.
 const BREAK = Platform.OS === 'android' ? 'simple' : undefined;
 
-// iPhone cuts off the tops of letters (and the bottoms of g, y, p) that reach past a line height smaller than the font's
-// own height; Android mostly lets them spill, so tight display titles ("Play", game names) only broke on iPhone (Yazan
-// 2026-11-08). Such a text gets a little room above and below, taken back by equal negative margins, so the letters
-// draw whole and the layout doesn't move. Texts with a background or a border are left alone.
-// Android cut them too, on lines only a little taller than the font ("Continue as guest", Yazan 2026-11-09), so it gets
-// the same room, from a slightly looser line height.
-const TIGHT = Platform.OS === 'android' ? 1.3 : 1.2;
+// A line height smaller than the font's own height cuts off the tops of letters (and the bottoms of g, y, p): iPhone
+// cut tight display titles ("Play", game names, Yazan 2026-11-08), Android cut lines only a little taller than the
+// font ("Continue as guest", 2026-11-09), names and numbers boxed to their line height ("Dr. Huda", "57%", 2026-11-11)
+// and the profile name and stats (2026-11-17). Such a text gets more room, and equal negative margins take it back so
+// the layout doesn't move. Texts with a background or a border are left alone.
+// The room is made differently per system. iPhone draws into padding, so it gets padding. Android clips a text to the
+// inside of its padding, so padding gave it nothing (that is why the 2026-11-09 and 11-11 fixes didn't hold there):
+// it gets a taller line instead, which Android centres the letters in.
+// A text boxed to a height smaller than its line (Arabic raises the line height, the box stayed) grows its box too.
+const ANDROID = Platform.OS === 'android';
+const TIGHT = ANDROID ? 1.3 : 1.2;
 const ROOM = 1.36;
 const num = (v: unknown) => (typeof v === 'number' ? v : v == null ? 0 : NaN);
 function letterRoom(style: TextProps['style']): TextStyle | null {
   const f = StyleSheet.flatten(style) as TextStyle | undefined;
-  if (!f?.fontSize || !f.lineHeight || f.lineHeight >= f.fontSize * TIGHT) return null;
+  if (!f?.fontSize) return null;
   if (f.backgroundColor || f.borderWidth || f.borderTopWidth || f.borderBottomWidth) return null;
-  // A text boxed to its own line height (big numbers and names, "57%", "Dr. Huda") was left alone and its bottoms were
-  // cut on small Android phones (Yazan 2026-11-11): the box grows by the same room, and the margins take it back.
-  if (f.height != null && (typeof f.height !== 'number' || f.height >= f.fontSize * TIGHT)) return null;
-  const box = typeof f.height === 'number' ? Math.max(f.height, f.lineHeight) : f.lineHeight;
-  const pad = Math.ceil((f.fontSize * ROOM - box) / 2);
-  if (pad <= 0) return null;
-  const pt = num(f.paddingTop ?? f.paddingVertical ?? f.padding);
-  const pb = num(f.paddingBottom ?? f.paddingVertical ?? f.padding);
+  if (f.height != null && typeof f.height !== 'number') return null;
+  const lh = f.lineHeight;
+  const h = f.height as number | undefined;
+  if (lh == null && h == null) return null;
+  const tight = lh != null && lh < f.fontSize * TIGHT;
+  // What one line needs, and the box it gets now.
+  const line = tight || lh == null ? Math.ceil(f.fontSize * ROOM) : lh;
+  const box = h ?? (lh as number);
+  const want = Math.max(box, line);
+  if (want <= box) return null;
+  const pad = (want - box) / 2;
   const mt = num(f.marginTop ?? f.marginVertical ?? f.margin);
   const mb = num(f.marginBottom ?? f.marginVertical ?? f.margin);
-  if ([pt, pb, mt, mb].some(Number.isNaN)) return null;
-  const room: TextStyle = { paddingTop: pt + pad, paddingBottom: pb + pad, marginTop: mt - pad, marginBottom: mb - pad };
-  if (typeof f.height === 'number') room.height = f.height + 2 * pad;
+  if ([mt, mb].some(Number.isNaN)) return null;
+  const room: TextStyle = { marginTop: mt - pad, marginBottom: mb - pad };
+  if (h != null) room.height = want;
+  if (ANDROID || !tight) {
+    if (tight) room.lineHeight = line;
+  } else {
+    const pt = num(f.paddingTop ?? f.paddingVertical ?? f.padding);
+    const pb = num(f.paddingBottom ?? f.paddingVertical ?? f.padding);
+    if ([pt, pb].some(Number.isNaN)) return null;
+    room.paddingTop = pt + pad;
+    room.paddingBottom = pb + pad;
+  }
   return room;
 }
+
+/**
+ * Android measures some Arabic texts a little narrower than it draws them, so a short label's last word went to a
+ * line with no room and vanished ("غيّر" with no "الإطار", Yazan 2026-11-17). A no-break space on each side gives the
+ * measured width that much to spare, evenly, and can't itself break off. Elsewhere the label is unchanged.
+ */
+export const roomy = (label: string) => (ANDROID && isAr && AR_LETTERS.test(label) ? `\u00A0${label}\u00A0` : label);
 
 // Arabic fonts (Yazan 2026-11-13): big headings in Alexandria Bold, everything else in IBM Plex Sans Arabic. A text
 // takes them only when it has Arabic letters, so English medical words inside an Arabic screen keep the app's fonts.

@@ -18,7 +18,7 @@ import {
   buildPlan, currentTurn, elapsed, offlineRecap, offlineRows, snapshotOffline, startOffline, stealTeamOf, stepOffline, timeLeft,
   type OfflineEvent, type OfflineRun, type TurnRecord,
 } from './offline';
-import { ChalkBtn, ChalkChip, ChalkTitle, ClockChalkTimer, Frame, HintCard, Kicker, Ledge, Note, Panel, PauseBtn, Peek, SL, Scores, SlateScreen, TopRow, useSlateRoom, useSlateFonts } from './slate';
+import { ChalkBtn, ChalkChip, ChalkChoice, ChalkTitle, HoldBtn, ClockChalkTimer, Frame, HintCard, Kicker, Ledge, Note, Panel, PauseBtn, Peek, SL, Scores, SlateScreen, TopRow, useSlateRoom, useSlateFonts } from './slate';
 import { ActingCard, FitBoard } from './Stage';
 import { clock } from '@/games/engine/clock';
 import { useTickerClock } from '../engine/useTicker';
@@ -300,10 +300,7 @@ function Pick({ run, paused, onKind, onPick }: { run: OfflineRun; paused: boolea
   return (
     <>
       <Note>{tr('Only you should see this. If time runs out, number 1 is picked for you.')}</Note>
-      <View style={s.row}>
-        <ChalkChip big label={tr('Draw it')} on={run.kind === 'drawing'} onPress={() => onKind('drawing')} />
-        <ChalkChip big label={tr('Act it out')} on={run.kind === 'acting'} onPress={() => onKind('acting')} />
-      </View>
+      <ChalkChoice big value={run.kind} onChange={onKind} options={[{ key: 'drawing', label: tr('Draw it') }, { key: 'acting', label: tr('Act it out') }]} />
       <View style={{ gap: u(8) }}>
         {run.options.map((id, i) => {
           const w = wordById.get(id)!;
@@ -320,9 +317,7 @@ function Pick({ run, paused, onKind, onPick }: { run: OfflineRun; paused: boolea
           );
         })}
       </View>
-      <Pressable onPressIn={() => setShow(true)} onPressOut={() => setShow(false)} style={[s.hold, { borderColor: open ? R.mark : R.line }]} accessibilityRole="button" accessibilityLabel={tr('Hold to see your words')}>
-        <Text style={[s.holdT, { color: open ? R.mark : R.ink }]}>{open ? tr('Tap one while holding') : tr('Hold here to see them')}</Text>
-      </Pressable>
+      <HoldBtn label={open ? tr('Tap one while holding') : tr('Hold here to see them')} open={open} onHold={setShow} />
     </>
   );
 }
@@ -343,6 +338,4 @@ const s = StyleSheet.create({
   optNo: { fontFamily: SL.head, fontSize: u(24), color: SL.yellow, width: u(18) },
   optT: { fontFamily: SL.head, fontSize: u(18), lineHeight: u(21), color: SL.chalk },
   optF: { fontFamily: SL.body, fontSize: u(12.5) },
-  hold: { borderWidth: 1.5, borderStyle: 'dashed', borderRadius: u(14), paddingVertical: u(16), alignItems: 'center' },
-  holdT: { fontFamily: SL.head, fontSize: u(17) },
 });
