@@ -331,7 +331,7 @@ export const AR_FRAME: Record<string, string> = {
   "Requests · {req}": "الطلبات · {req}",
   "Find": "دوّر",
   "Your ": "",
-  "people": "ناسك",
+  "people": "شلتك",
   "Sign in to add friends, challenge them and get your invite code.": "سجّل دخولك عشان تضيف أصحابك وتتحداهم وتاخد كود الدعوة بتاعك.",
   "Join me on MedNova, the medical games app. Enter my invite code {code} on the Friends page and we both get 10 tokens.": "تعالى العب معايا على MedNova، تطبيق الألعاب الطبية. اكتب كود الدعوة بتاعي {code} في صفحة الأصحاب وهناخد إحنا الاتنين 10 عملات.",
   "INVITE CODE": "كود الدعوة",
