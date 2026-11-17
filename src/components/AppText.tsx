@@ -1,5 +1,7 @@
 import { AR_LETTERS, isAr } from '@/i18n';
 import { K } from '@/theme/scale';
+import { createContext, useContext } from 'react';
+import * as RN from 'react-native';
 import { Platform, StyleSheet, Text as RNText, TextInput as RNTextInput, type TextInputProps, type TextProps, type TextStyle } from 'react-native';
 
 // Every screen is laid out at fixed design sizes and scaled as one piece (theme/scale.ts), so text
@@ -58,11 +60,13 @@ function letterRoom(style: TextProps['style']): TextStyle | null {
 }
 
 /**
- * Android measures some Arabic texts a little narrower than it draws them, so a short label's last word went to a
- * line with no room and vanished ("غيّر" with no "الإطار", Yazan 2026-11-17). A no-break space on each side gives the
- * measured width that much to spare, evenly, and can't itself break off. Elsewhere the label is unchanged.
+ * Android measures an Arabic text a little narrower than it draws it, so a label sized to its own text loses its last
+ * word to a line with no room ("غيّر" with no "الإطار", "صوت" with no "ذكر", Yazan 2026-11-17). Every Arabic text on
+ * Android gets a no-break space at each end: the measure then has that much to spare, evenly on both sides, and the
+ * space can't break off. Only the outer text gets them (a word inside a sentence would get spaces around it).
  */
-export const roomy = (label: string) => (ANDROID && isAr && AR_LETTERS.test(label) ? `\u00A0${label}\u00A0` : label);
+const TextAncestor: React.Context<boolean> = (RN as { unstable_TextAncestorContext?: React.Context<boolean> }).unstable_TextAncestorContext ?? createContext(false);
+const NBSP = '\u00A0';
 
 // Arabic fonts (Yazan 2026-11-13): big headings in Alexandria Bold, everything else in IBM Plex Sans Arabic. A text
 // takes them only when it has Arabic letters, so English medical words inside an Arabic screen keep the app's fonts.
@@ -108,6 +112,8 @@ export function Text(props: TextProps & { ref?: React.Ref<RNText> }) {
   if (isAr && props.children === 'You') props = { ...props, children: 'إنت' };
   // The Arabic fonts are only loaded when the app runs in Arabic.
   const ar = isAr && hasArabic(props.children);
+  const nested = useContext(TextAncestor);
+  if (ANDROID && ar && !nested && typeof props.children === 'string') props = { ...props, children: NBSP + props.children + NBSP };
   const style = ar ? [props.style, arabicStyle(props.style)] : props.style;
   const room = Platform.OS === 'web' ? null : letterRoom(style);
   return <RNText maxFontSizeMultiplier={MAX_FONT_SCALE} textBreakStrategy={BREAK} {...props} style={room ? [style, room] : style} />;

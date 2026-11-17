@@ -36,7 +36,7 @@ const FACES: Record<string, number> = {
   dina: require('../../../assets/team/dina-face.webp'),
   abdo: require('../../../assets/team/abdo-face.webp'),
   osama: require('../../../assets/team/osama-face.webp'),
-  razan: require('../../../assets/team/razan-face.webp'),
+  sara: require('../../../assets/team/sara-face.webp'),
 };
 
 /** A character's round face (its ring is drawn into the picture). */

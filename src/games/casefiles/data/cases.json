@@ -2,17 +2,17 @@
  {
   "id": "MP-2291",
   "title": "The Migrating Pain",
-  "personal": "Sarah Mitchell, 22, Female, 165 cm, 58 kg, final-year art student. Admitted to ward 4B this evening under case number MP-2291.",
+  "personal": "Megan Mitchell, 22, Female, 165 cm, 58 kg, final-year art student. Admitted to ward 4B this evening under case number MP-2291.",
   "incident": "It started as a dull ache circling her navel, the kind she blamed on a late lunch eaten too fast between critiques. She almost didn't mention it at all. But twelve hours later the pain had packed its bags and moved — settling low and sharp on her right side, just above the hip bone, as if it had finally found where it wanted to stay. Her appetite disappeared somewhere around dinner, and not long after, dinner disappeared too, once, into a hallway bin. Walking hurt. Bending hurt more. Coughing, she said, felt like being kicked from the inside by something that knew exactly where to aim. By the time her roommate called it in, she was curled on the bathroom floor, forehead damp, refusing point-blank to straighten her right leg. No blood in what she'd brought up, no diarrhea, nothing she could point to that made sense of it.",
-  "background": "When the doctor sat down to take a fuller history, Sarah answered slowly, still wincing every few minutes. Her last period, she said, had been two weeks ago, right on schedule — she wasn't the type to lose track of that. She'd been with her boyfriend for over a year, and yes, they were sexually active, though she admitted with a small, embarrassed laugh that they didn't always remember protection. She'd never had anything like this before — no surgeries, no chronic conditions, nothing worth mentioning until tonight. Her mother, she added, had her gallbladder taken out years back, for whatever that was worth. She didn't smoke, had a glass of wine here and there, and admitted the timing was rotten — finals were this week. Oh, and her roommate had come down with some kind of stomach bug about ten days ago, though it had passed on its own after a couple of days.",
+  "background": "When the doctor sat down to take a fuller history, Megan answered slowly, still wincing every few minutes. Her last period, she said, had been two weeks ago, right on schedule — she wasn't the type to lose track of that. She'd been with her boyfriend for over a year, and yes, they were sexually active, though she admitted with a small, embarrassed laugh that they didn't always remember protection. She'd never had anything like this before — no surgeries, no chronic conditions, nothing worth mentioning until tonight. Her mother, she added, had her gallbladder taken out years back, for whatever that was worth. She didn't smoke, had a glass of wine here and there, and admitted the timing was rotten — finals were this week. Oh, and her roommate had come down with some kind of stomach bug about ten days ago, though it had passed on its own after a couple of days.",
   "exam": [
    {
     "title": "General",
-    "body": "The doctor began with a general examination, watching how Sarah held herself before even laying a hand on her. She lay curled on the trolley, knees drawn toward her chest, flinching at anything that came too close. Her temperature read 37.8°C, her pulse ticked along at 96 beats a minute, and her blood pressure sat at a steady 112 over 70. She looked unwell, certainly — but not gravely so. More like someone bracing for pain than someone in real danger."
+    "body": "The doctor began with a general examination, watching how Megan held herself before even laying a hand on her. She lay curled on the trolley, knees drawn toward her chest, flinching at anything that came too close. Her temperature read 37.8°C, her pulse ticked along at 96 beats a minute, and her blood pressure sat at a steady 112 over 70. She looked unwell, certainly — but not gravely so. More like someone bracing for pain than someone in real danger."
    },
    {
     "title": "Abdominal",
-    "body": "Moving to the abdomen, the doctor pressed gently over the point just above her right hip bone, and Sarah's breath caught sharply. Letting go hurt even worse than pressing down had — the kind of rebound doctors take seriously. Asking her to lift her right leg against resistance brought the same wince back. There was no lump to feel anywhere, and — thankfully — no board-like rigidity across her belly, which would have meant something far more urgent than what this looked like."
+    "body": "Moving to the abdomen, the doctor pressed gently over the point just above her right hip bone, and Megan's breath caught sharply. Letting go hurt even worse than pressing down had — the kind of rebound doctors take seriously. Asking her to lift her right leg against resistance brought the same wince back. There was no lump to feel anywhere, and — thankfully — no board-like rigidity across her belly, which would have meant something far more urgent than what this looked like."
    },
    {
     "title": "Pelvic, chaperoned",
@@ -61,7 +61,7 @@
    }
   ],
   "treatment": "The surgical team decided the safest course was to take her to theatre for a closer look. Working through three small incisions, they found what had been causing the trouble, dealt with it carefully, and left everything around it undisturbed and healthy. There was no rupture, no pus, nothing that had spread beyond where it started. By the next morning, her fever had settled on its own, her appetite was creeping back before breakfast even arrived, and she was already asking when she could go home rather than asking for more pain relief.",
-  "discharge": "The pathology report landed on her chart the following afternoon, quietly confirming what the surgical team had suspected all along — an inflamed appendix, caught early, with clean margins and no sign of rupture or spread. Sarah went home on day two, three small dressings taped along her side, a stack of wound-care instructions in hand, and strict orders to stay off the gym for a couple of weeks.",
+  "discharge": "The pathology report landed on her chart the following afternoon, quietly confirming what the surgical team had suspected all along — an inflamed appendix, caught early, with clean margins and no sign of rupture or spread. Megan went home on day two, three small dressings taped along her side, a stack of wound-care instructions in hand, and strict orders to stay off the gym for a couple of weeks.",
   "answers": [
    "Acute appendicitis",
    "Ectopic pregnancy",
@@ -5716,13 +5716,13 @@
  {
   "id": "MP-2395",
   "title": "Hours in the Pool",
-  "personal": "Sarah Kim, 27, Female, 163 cm, 58 kg, swim instructor. Seen in urgent care clinic.",
-  "incident": "Over the past two days, Sarah has had increasing pain and itching in her right ear, made worse whenever she tugs gently on her earlobe or chews food, along with a sensation of fullness and slightly reduced hearing on that side. She spends several hours a day in the pool for work and can't recall the last time her ears felt properly dry.",
+  "personal": "Claire Kim, 27, Female, 163 cm, 58 kg, swim instructor. Seen in urgent care clinic.",
+  "incident": "Over the past two days, Claire has had increasing pain and itching in her right ear, made worse whenever she tugs gently on her earlobe or chews food, along with a sensation of fullness and slightly reduced hearing on that side. She spends several hours a day in the pool for work and can't recall the last time her ears felt properly dry.",
   "background": "No previous ear infections of this type, no known allergies, no recent air travel, no discharge noticed until today when she saw a small amount of clear fluid on her pillow.",
   "exam": [
    {
     "title": "General",
-    "body": "Sarah was otherwise well, afebrile, no signs of feeling generally unwell."
+    "body": "Claire was otherwise well, afebrile, no signs of feeling generally unwell."
    },
    {
     "title": "Ear examination",
@@ -5759,7 +5759,7 @@
     ]
    }
   ],
-  "treatment": "Sarah was started on antibiotic ear drops along with advice to keep the ear completely dry for the next couple of weeks, avoiding swimming and using a hairdryer on a cool setting after showering if needed. Within a few days, the pain and swelling had noticeably improved.",
+  "treatment": "Claire was started on antibiotic ear drops along with advice to keep the ear completely dry for the next couple of weeks, avoiding swimming and using a hairdryer on a cool setting after showering if needed. Within a few days, the pain and swelling had noticeably improved.",
   "discharge": "She completed her course of ear drops with the infection fully settled, and was given practical advice on using earplugs while swimming and thoroughly drying her ears afterward to help prevent this recurring given her job.",
   "answers": [
    "Otitis externa",
@@ -7891,9 +7891,9 @@
  {
   "id": "MP-2429",
   "title": "The Spreading Ring",
-  "personal": "Sarah Lockwood, 35, Female, 170 cm, 64 kg, forestry worker. Seen in the GP surgery, then the infectious diseases clinic.",
-  "incident": "Two weeks after a camping trip in the woods, Sarah noticed a red patch on the back of her knee. Over a week it slowly grew to the size of a dinner plate, with a clearer centre, like a target. It wasn't itchy or painful. She felt fluey, with headaches, aching joints and tiredness. Now, a few weeks on, the right side of her face had dropped: she couldn't close her right eye fully and drooled from the corner of her mouth.",
-  "background": "Sarah remembers pulling a tiny black bug off her leg after the trip but thought nothing of it. She is otherwise healthy, takes no medicines and is not pregnant. No recent cold sores.",
+  "personal": "Emily Lockwood, 35, Female, 170 cm, 64 kg, forestry worker. Seen in the GP surgery, then the infectious diseases clinic.",
+  "incident": "Two weeks after a camping trip in the woods, Emily noticed a red patch on the back of her knee. Over a week it slowly grew to the size of a dinner plate, with a clearer centre, like a target. It wasn't itchy or painful. She felt fluey, with headaches, aching joints and tiredness. Now, a few weeks on, the right side of her face had dropped: she couldn't close her right eye fully and drooled from the corner of her mouth.",
+  "background": "Emily remembers pulling a tiny black bug off her leg after the trip but thought nothing of it. She is otherwise healthy, takes no medicines and is not pregnant. No recent cold sores.",
   "exam": [
    {
     "title": "General",
@@ -7935,7 +7935,7 @@
     ]
    }
   ],
-  "treatment": "Sarah was given a course of oral antibiotics for three weeks. The rashes faded within a fortnight, and over the next two months the weakness in her face gradually recovered.",
+  "treatment": "Emily was given a course of oral antibiotics for three weeks. The rashes faded within a fortnight, and over the next two months the weakness in her face gradually recovered.",
   "discharge": "She was advised on preventing future bites, checking her skin after outdoor work and removing any attached bugs promptly with fine tweezers.",
   "answers": [
    "Lyme disease",

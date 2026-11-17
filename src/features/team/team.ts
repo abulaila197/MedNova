@@ -13,7 +13,7 @@ export const TEAM: TeamMember[] = [
   { key: 'dina', name: 'Dina', title: 'SuperNova team', stars: 3, card: require('../../../assets/team/dina-card.webp'), face: require('../../../assets/team/dina-face.webp') },
   { key: 'abdo', name: 'Abdo', title: 'SuperNova team', stars: 3, card: require('../../../assets/team/abdo-card.webp'), face: require('../../../assets/team/abdo-face.webp') },
   { key: 'osama', name: 'Osama', title: 'SuperNova team', stars: 3, card: require('../../../assets/team/osama-card.webp'), face: require('../../../assets/team/osama-face.webp') },
-  { key: 'razan', name: 'Razan', title: 'SuperNova team', stars: 3, card: require('../../../assets/team/razan-card.webp'), face: require('../../../assets/team/razan-face.webp') },
+  { key: 'sara', name: 'Sara', title: 'SuperNova team', stars: 3, card: require('../../../assets/team/sara-card.webp'), face: require('../../../assets/team/sara-face.webp') },
 ];
 
 export const teamOf = (key?: string | null) => TEAM.find((m) => m.key === key);

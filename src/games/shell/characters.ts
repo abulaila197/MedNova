@@ -44,7 +44,7 @@ export const TEAM_CHARACTERS: Character[] = [
   { slug: 'dina', name: 'Dina', ring: '#e0607a' },
   { slug: 'abdo', name: 'Abdo', ring: '#c76a52' },
   { slug: 'osama', name: 'Osama', ring: '#b8895a' },
-  { slug: 'razan', name: 'Razan', ring: '#7d93e8' },
+  { slug: 'sara', name: 'Sara', ring: '#7d93e8' },
 ];
 
 export const characterOf = (slug?: string) =>
@@ -81,5 +81,5 @@ export function playerColour(players: { user_id: string }[], userId: string) {
  * Characters that speak in the female voice (Yazan 2026-11-12: the voice follows the character worn, by players and
  * rivals). The robots are a best guess from their art; every other character uses the male voice.
  */
-export const FEMALE_CHARACTERS = new Set(['yara', 'layla', 'iris', 'aurora', 'vex', 'dina', 'razan']);
+export const FEMALE_CHARACTERS = new Set(['yara', 'layla', 'iris', 'aurora', 'vex', 'dina', 'sara']);
 export const voiceGender = (slug: string): 'female' | 'male' => (FEMALE_CHARACTERS.has(slug) ? 'female' : 'male');

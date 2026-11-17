@@ -307,15 +307,15 @@ export const STICKERS: Record<string, { id: string; src: number; label: string }
     { id: 'osama-07', src: require('../../assets/stickers/osama-07.webp'), label: tr('Zzz') },
     { id: 'osama-08', src: require('../../assets/stickers/osama-08.webp'), label: tr('Yes!') },
   ],
-  razan: [
-    { id: 'razan-01', src: require('../../assets/stickers/razan-01.webp'), label: tr('Hi there') },
-    { id: 'razan-02', src: require('../../assets/stickers/razan-02.webp'), label: tr('Coffee time') },
-    { id: 'razan-03', src: require('../../assets/stickers/razan-03.webp'), label: tr('Need coffee') },
-    { id: 'razan-04', src: require('../../assets/stickers/razan-04.webp'), label: tr('Nice one') },
-    { id: 'razan-05', src: require('../../assets/stickers/razan-05.webp'), label: tr('Ugh') },
-    { id: 'razan-06', src: require('../../assets/stickers/razan-06.webp'), label: tr('No way!') },
-    { id: 'razan-07', src: require('../../assets/stickers/razan-07.webp'), label: tr('Zzz') },
-    { id: 'razan-08', src: require('../../assets/stickers/razan-08.webp'), label: tr('Yes!') },
+  sara: [
+    { id: 'sara-01', src: require('../../assets/stickers/sara-01.webp'), label: tr('Hi there') },
+    { id: 'sara-02', src: require('../../assets/stickers/sara-02.webp'), label: tr('Coffee time') },
+    { id: 'sara-03', src: require('../../assets/stickers/sara-03.webp'), label: tr('Need coffee') },
+    { id: 'sara-04', src: require('../../assets/stickers/sara-04.webp'), label: tr('Nice one') },
+    { id: 'sara-05', src: require('../../assets/stickers/sara-05.webp'), label: tr('Ugh') },
+    { id: 'sara-06', src: require('../../assets/stickers/sara-06.webp'), label: tr('No way!') },
+    { id: 'sara-07', src: require('../../assets/stickers/sara-07.webp'), label: tr('Zzz') },
+    { id: 'sara-08', src: require('../../assets/stickers/sara-08.webp'), label: tr('Yes!') },
   ],
 };
 
