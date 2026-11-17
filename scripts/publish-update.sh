@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Over-the-air update (Yazan 2026-11-16). Every update goes to the "test" channel first: phones with Admin >
 # "Get updates first" on take it at their next open. Only after Yazan's OK is the same update sent to everyone:
-#   scripts/publish-update.sh test "message"        publish the current code to the test channel
+#   scripts/publish-update.sh test "message" [android|ios|all]   publish the current code to the test channel
+#                                                   (default android; iPhone added 2026-11-17)
 #   scripts/publish-update.sh production <groupId>  send that tested update group to everyone (no new bundle)
 #
 # The app's EXPO_PUBLIC_* values are baked into the code when it is bundled. A store build reads them from .env (and
@@ -21,14 +22,18 @@ for v in EXPO_PUBLIC_SUPABASE_URL EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY EXPO_PUBL
 done
 case "${1:-}" in
   test)
+    plat="${3:-android}"
+    case "$plat" in android) list=android ;; ios) list=ios ;; all) list="android ios" ;; *) echo "platform: android, ios or all" >&2; exit 1 ;; esac
     rm -rf dist
-    npx expo export --platform android --output-dir dist --clear
+    npx expo export --platform "$plat" --output-dir dist --clear
     host="${EXPO_PUBLIC_SUPABASE_URL#https://}"
-    if ! grep -rqa "$host" dist/_expo/static/js/android/; then
-      echo "The bundle has no server address ($host): not publishing." >&2
-      exit 1
-    fi
-    npx eas-cli@latest update --channel test --message "${2:?message}" --platform android --skip-bundler --input-dir dist \
+    for p in $list; do
+      if ! grep -rqa "$host" "dist/_expo/static/js/$p/"; then
+        echo "The $p bundle has no server address ($host): not publishing." >&2
+        exit 1
+      fi
+    done
+    npx eas-cli@latest update --channel test --message "${2:?message}" --platform "$plat" --skip-bundler --input-dir dist \
       --environment production --non-interactive
     ;;
   production) npx eas-cli@latest update:republish --group "${2:?group id}" --destination-channel production --non-interactive ;;

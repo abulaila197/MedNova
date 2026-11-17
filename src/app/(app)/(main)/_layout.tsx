@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import { Tabs } from 'expo-router';
 import type { BottomTabSceneStyleInterpolator } from 'expo-router/build/react-navigation/bottom-tabs/types';
 
@@ -19,12 +20,19 @@ const fadeOver: BottomTabSceneStyleInterpolator = ({ current }) => ({
  * shows the page that is already there, and the pages you are not on are taken off the screen (patches/expo-router:
  * the tab view kept every page left of the open one drawn behind it, so Community scrolled under Learn and Games).
  * The dock itself is drawn by each page's Screen, so the tab bar is hidden.
+ *
+ * iPhone keeps the pages it leaves attached (Yazan 2026-11-17, TestFlight build 10): taking them off the screen made
+ * iOS sometimes hide the page you go to as well (a stuck plain-navy screen after Learn -> Games, cleared by tapping
+ * another tab). On iPhone the pages you are not on are only made see-through by fadeOver, as before 2026-11-16.
+ * Android keeps detaching them: that is what stopped the page-switch lag there.
  */
+const DETACH = Platform.OS !== 'ios';
 export default function MainTabs() {
   const t = useTheme();
   return (
     <Tabs
       tabBar={() => null}
+      detachInactiveScreens={DETACH}
       backBehavior="history"
       screenOptions={{
         headerShown: false,
