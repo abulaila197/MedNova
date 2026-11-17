@@ -79,7 +79,7 @@ export const wheelsOfChaos: GameDef = {
       title: tr('Live on stage'),
       blurb: tr('The full show against 1 or 2 rivals.'),
       howTo: [
-        tr('Pick Freshmen, Scholars or Geniuses and 1 or 2 rivals. Meet them in the room: tap a rival for its profile, swap it or kick it.'),
+        tr('Pick Freshmen, Scholars, Geniuses or Random and 1 or 2 rivals. Meet them in the room: tap a rival for its profile, swap it or kick it.'),
         tr('Pick a target of 25 or 50 points and the question type. No teams.'),
         tr('You and the rivals take turns. After Act III, extra acts follow until someone reaches the target.'),
         tr('In the final round, whoever is last first can swap a turn for a Redemption round. Once a game, for everyone.'),

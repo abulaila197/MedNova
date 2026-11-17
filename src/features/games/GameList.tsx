@@ -16,7 +16,7 @@ import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import { LISTED, useGamesFocus } from './focus';
-import { openTagSheet, tagOf } from './GameTag';
+import { knowOf, openKnowSheet, openTagSheet, tagOf } from './GameTag';
 import { STRIP } from './strips';
 import { isAr, tr } from '@/i18n';
 
@@ -62,13 +62,24 @@ function Ask({ j, style }: { j: number; style: object }) {
   );
 }
 
+/** The game's two tags side by side: what it is for, and what it asks about (Yazan 2026-11-17). Tap one for what it means. */
 function Tag({ game, small }: { game: string; small?: boolean }) {
   const tag = tagOf(game);
-  if (!tag) return null;
+  const know = knowOf(game);
+  if (!tag && !know) return null;
   return (
-    <Pressable onPress={() => openTagSheet(game)} hitSlop={u(6)} style={[s.tag, small ? s.tagS : null, { borderColor: alpha(tag.color, 0.45), backgroundColor: alpha(tag.color, 0.14) }]} accessibilityRole="button" accessibilityLabel={tr('{label}: what this means', { label: tag.label })}>
-      <Text style={[s.tagT, small ? s.tagTS : null, { color: tag.color }]}>{tag.label}</Text>
-    </Pressable>
+    <View style={s.tags}>
+      {tag ? (
+        <Pressable onPress={() => openTagSheet(game)} hitSlop={u(6)} style={[s.tag, small ? s.tagS : null, { borderColor: alpha(tag.color, 0.45), backgroundColor: alpha(tag.color, 0.14) }]} accessibilityRole="button" accessibilityLabel={tr('{label}: what this means', { label: tag.label })}>
+          <Text style={[s.tagT, small ? s.tagTS : null, { color: tag.color }]}>{tag.label}</Text>
+        </Pressable>
+      ) : null}
+      {know ? (
+        <Pressable onPress={() => openKnowSheet(game)} hitSlop={u(6)} style={[s.tag, small ? s.tagS : null, { borderColor: alpha(know.color, 0.45), backgroundColor: alpha(know.color, 0.14) }]} accessibilityRole="button" accessibilityLabel={tr('{label}: what this means', { label: know.label })}>
+          <Text style={[s.tagT, small ? s.tagTS : null, { color: know.color }]}>{know.label}</Text>
+        </Pressable>
+      ) : null}
+    </View>
   );
 }
 
@@ -180,6 +191,7 @@ const s = StyleSheet.create({
   veil: { position: 'absolute', top: 0, bottom: 0, start: 0 },
   name: { fontFamily: F.display, fontSize: u(15), lineHeight: u(18) },
   sub: { fontFamily: F.mono, fontSize: u(8.5), lineHeight: u(11), letterSpacing: u(0.85) },
+  tags: { flexDirection: 'row', flexWrap: 'wrap', gap: u(5), alignSelf: 'flex-start' },
   tag: { alignSelf: 'flex-start', marginTop: u(3), borderWidth: 1, borderRadius: u(7), paddingVertical: u(2), paddingHorizontal: u(7) },
   tagS: { marginTop: 0, marginBottom: u(1), paddingVertical: u(1), paddingHorizontal: u(6), borderRadius: u(6) },
   tagTS: { fontSize: u(7), lineHeight: u(9) },

@@ -3,6 +3,7 @@ import { CHARACTERS, MECH_CHARACTERS, SHOP_CHARACTERS, TEAM_CHARACTERS } from '@
 
 import { faceOf, levelOf, personaOf } from './identity';
 import { BOT_NAMES } from './names';
+import { randomTypes } from './mix';
 import type { Bot, BotLevel, BotType } from './types';
 
 /** Every character a bot may wear: all of them except Admin (Yazan 2026-11-09), SuperNova team included (2026-11-11). */
@@ -18,6 +19,7 @@ const MIX: Record<BotLevel, Record<BotType, number>> = {
   easy: { freshman: 0.6, scholar: 0.3, genius: 0.1 },
   medium: { freshman: 0.25, scholar: 0.5, genius: 0.25 },
   hard: { freshman: 0.1, scholar: 0.3, genius: 0.6 },
+  random: { freshman: 1 / 3, scholar: 1 / 3, genius: 1 / 3 },
 };
 
 const pick = <T,>(xs: T[]) => xs[Math.floor(Math.random() * xs.length)];
@@ -54,8 +56,8 @@ export function makeBot(type: BotType, taken: string[] = []): Bot {
  * if the dice dealt only one type, one seat changes to the next most likely type.
  */
 export function dealBots(level: BotLevel, n: number, taken: string[] = []): Bot[] {
-  const types = Array.from({ length: n }, () => typeFor(level));
-  if (n >= 2 && types.every((t) => t === types[0])) {
+  const types = level === 'random' ? randomTypes(n) : Array.from({ length: n }, () => typeFor(level));
+  if (level !== 'random' && n >= 2 && types.every((t) => t === types[0])) {
     const order = (Object.entries(MIX[level]) as [BotType, number][]).sort((a, b) => b[1] - a[1]).map(([t]) => t);
     types[n - 1] = order.find((t) => t !== types[0])!;
   }
@@ -67,7 +69,7 @@ export function dealBots(level: BotLevel, n: number, taken: string[] = []): Bot[
 /** One more bot for an empty seat (Add bot), in the level's mix. */
 export const addBot = (level: BotLevel, taken: string[]) => makeBot(typeFor(level), taken);
 
-/** Swap: a new random bot of the same type (Yazan 2026-11-09: same level). */
-export const swapBot = (old: Bot, taken: string[]) => makeBot(old.type, [...taken, old.name]);
+/** Swap: a new random bot of the same type (Yazan 2026-11-09: same level); with Random rivals, any type (2026-11-17). */
+export const swapBot = (old: Bot, taken: string[], level?: BotLevel) => makeBot(level === 'random' ? typeFor('random') : old.type, [...taken, old.name]);
 
 export const isBotId = (id?: string | null) => !!id && id.startsWith('bot:');

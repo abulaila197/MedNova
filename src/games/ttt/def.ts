@@ -60,7 +60,7 @@ export const traceTheTreatment: GameDef = {
       title: tr('Race the rivals'),
       blurb: tr('The same case as the rivals, answers hidden till the end.'),
       howTo: [
-        tr('Pick Freshmen, Scholars or Geniuses and 1 to 3 rivals. Meet them in the room: tap a rival for its profile, swap it or kick it.'),
+        tr('Pick Freshmen, Scholars, Geniuses or Random and 1 to 3 rivals. Meet them in the room: tap a rival for its profile, swap it or kick it.'),
         tr('Everyone reads the same case. You see who has locked in, never what they picked.'),
         tr('{POINTS} 50/50 at Solo\'s price, once a case.', { POINTS }),
         tr('Ties go to the faster player.'),

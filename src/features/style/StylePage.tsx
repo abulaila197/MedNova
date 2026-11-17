@@ -282,7 +282,7 @@ export function StylePage() {
                 <Big t={t} label={tr('Wear')} busy={busy} onPress={() => act(() => wearCharacter(pick.key), tr('Done. Your star bonus changed with it.'))} />
               )
             ) : pick.key === 'sovereign' && pick.id.startsWith('robot:') ? (
-              // Never "coming soon" (Yazan 2026-11-13): the Nova Shop sells it, or says where to buy it.
+              // Never "coming soon" (Yazan 2026-11-13): the Nova Store sells it, or says where to buy it.
               <Big t={t} label={tr('Get · {sovPrice}', { sovPrice })} busy={false} onPress={() => router.navigate('/store')} />
             ) : has(pick.id) ? (
               pick.id.startsWith('pack:') ? (

@@ -144,7 +144,7 @@ export function BotRoom({ def, play, left }: { def: GameDef; play: Play; left?: 
   };
   const swap = (old: Bot) => {
     setSheet(null);
-    const b = swapBot(old, taken());
+    const b = swapBot(old, taken(), level);
     save(recolour(seats.map((x) => (x.bot?.id === old.id ? { ...x, name: b.name, character: b.character, bot: b } : x)), teams));
     arrive(b, 500);
   };
@@ -244,7 +244,7 @@ export function BotRoom({ def, play, left }: { def: GameDef; play: Play; left?: 
         </Pressable>
       </View>
       <View>
-        <Text style={[st.k, { color: G.mute }]}>{tr('VS RIVALS · MOSTLY {toUpperCase}', { toUpperCase: tr(LEVEL_NAME[level]).toUpperCase() })}</Text>
+        <Text style={[st.k, { color: G.mute }]}>{level === 'random' ? tr('VS RIVALS · RANDOM') : tr('VS RIVALS · MOSTLY {toUpperCase}', { toUpperCase: tr(LEVEL_NAME[level]).toUpperCase() })}</Text>
         <Text style={[st.h, { color: G.fg }]}>{tr('Your room')}</Text>
       </View>
       <View style={st.stl}>
@@ -286,7 +286,7 @@ export function BotRoom({ def, play, left }: { def: GameDef; play: Play; left?: 
       <View style={st.sum}>
         <View style={{ gap: u(2), flex: 1 }}>
           <Text style={[st.k, { color: G.mute }]}>{tr('SETTINGS')}</Text>
-          <Text style={[st.sumT, { color: G.fg }]}>{[settingsLine(def, play.settings), tr('Mostly {n}', { n: tr(LEVEL_NAME[level]) })].filter(Boolean).join(' · ')}</Text>
+          <Text style={[st.sumT, { color: G.fg }]}>{[settingsLine(def, play.settings), level === 'random' ? tr('Random rivals') : tr('Mostly {n}', { n: tr(LEVEL_NAME[level]) })].filter(Boolean).join(' · ')}</Text>
         </View>
       </View>
 

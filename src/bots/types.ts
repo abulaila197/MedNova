@@ -4,7 +4,8 @@
 export type BotType = 'freshman' | 'scholar' | 'genius';
 
 /** The level the player picks in setup; it sets the mix of types at the table. */
-export type BotLevel = 'easy' | 'medium' | 'hard';
+/** Random (Yazan 2026-11-17): one of each type first, then any type. */
+export type BotLevel = 'easy' | 'medium' | 'hard' | 'random';
 
 /** One bot at the table. Saved on its seat, so a resumed or rematched match keeps the same bots. */
 export type Bot = {
@@ -29,7 +30,7 @@ export const PERSONAS: Persona[] = ['showoff', 'shy', 'joker', 'sore', 'cheer', 
 
 export const TYPE_NAME: Record<BotType, string> = { freshman: 'Freshman', scholar: 'Scholar', genius: 'Genius' };
 /** What the player picks (Yazan 2026-11-09: named by the type the table is mostly made of). */
-export const LEVEL_NAME: Record<BotLevel, string> = { easy: 'Freshmen', medium: 'Scholars', hard: 'Geniuses' };
+export const LEVEL_NAME: Record<BotLevel, string> = { easy: 'Freshmen', medium: 'Scholars', hard: 'Geniuses', random: 'Random' };
 
 /** Your head-to-head record with one rival (G6): wins and losses are yours. */
 export type HeadToHead = {

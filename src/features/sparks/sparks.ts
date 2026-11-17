@@ -210,7 +210,7 @@ export const cancelRecharge = () => close(false);
 /** The header's Sparks: the same sheet with no play waiting (cost 0), to watch an ad or fill up with tokens. */
 export const openSparks = () => useRecharge.setState({ ask: { cost: 0, done: () => {} }, why: null });
 
-/** 'Subscribe': closes the sheet and opens the Nova Shop (MN7). */
+/** 'Subscribe': closes the sheet and opens the Nova Store (MN7). */
 export const subscribeFromRecharge = () => {
   close(false);
   router.navigate('/store');

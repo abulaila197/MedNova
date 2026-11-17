@@ -42,7 +42,7 @@ export const novaCrossword: GameDef = {
       title: tr('Grid showdown'),
       blurb: tr('The same grid as the rivals. First right answer claims the word.'),
       howTo: [
-        tr('Pick Freshmen, Scholars or Geniuses and 1 to 3 rivals. Meet them in the room: tap a rival for its profile, swap it or kick it.'),
+        tr('Pick Freshmen, Scholars, Geniuses or Random and 1 to 3 rivals. Meet them in the room: tap a rival for its profile, swap it or kick it.'),
         tr('Everyone plays the same grid. The first right answer claims the word and its letters. A rival never takes the word you are typing.'),
         tr('Pick 1, 2 or 3 puzzles. They come one after another, each with the full time limit and {onlineHearts} fresh hearts.', { onlineHearts: CW.onlineHearts }),
         tr('A wrong answer costs one of your {onlineHearts} hearts; trying the same wrong answer again costs nothing.', { onlineHearts: CW.onlineHearts }),

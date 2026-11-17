@@ -60,7 +60,7 @@ export const CHAPTERS: Chapter[] = [
     tag: 'Multiplayer',
     items: [
       { q: 'How do I play with friends?', a: 'Most games have Pass the phone, where you take turns on one phone. Empty seats can be filled with rivals, and many games let you split players into teams.' },
-      { q: 'What is Vs rivals?', a: 'Race rivals in most games, with no internet needed. Pick Freshmen, Scholars or Geniuses and how many rivals. There are three kinds: Freshman, Scholar and Genius. They send stickers and voice lines and react to yours. Tap a rival in the room to see its profile, swap it or kick it.' },
+      { q: 'What is Vs rivals?', a: 'Race rivals in most games, with no internet needed. Pick Freshmen, Scholars, Geniuses or Random and how many rivals. There are three kinds: Freshman, Scholar and Genius. They send stickers and voice lines and react to yours. Tap a rival in the room to see its profile, swap it or kick it.' },
       { q: 'What is Nemesis?', a: 'The small button under the chests on the Games page. It keeps the rivals you meet most, with the score between you and a Play again button. Up top is the rival of the day: one Genius, one game, the same for everyone. Finish above it in a Vs rivals match of that game and a golden chest is yours, once a day.' },
       { q: 'How do friend challenges work?', a: 'Open a friend’s profile and tap Challenge. Beat my score: you play first and your score is the bar; your friend has one day to beat it. Game challenge: you both play within 1, 3 or 7 days and the best score wins. The winner gets 10 tokens in the Inbox (the first win against each friend per day). When a challenge is over, the button reads Result until you have seen it.' },
       { q: 'Who wins a tie?', a: 'The faster player. On a leaderboard, whoever got there first. In a friend challenge, a tie means no winner.' },
@@ -93,12 +93,12 @@ export const CHAPTERS: Chapter[] = [
   {
     n: '06',
     chip: 'Shop',
-    title: 'Nova Shop and purchases',
+    title: 'Nova Store and purchases',
     tag: 'Purchases',
     items: [
-      { q: 'What can I buy?', a: 'Open the menu, then Nova Shop. Token packs add tokens to your account. The Sovereign package is a one-time buy: the Sovereign robot, its frame and 500 tokens. MedNova Unlimited is a monthly subscription with unlimited Sparks and no ads, plus 500 tokens on your first month (once per account). Everything is paid through Google Play or the App Store.' },
+      { q: 'What can I buy?', a: 'Open the menu, then Store, then Nova Store. Token packs add tokens to your account. The Sovereign package is a one-time buy: the Sovereign robot, its frame and 500 tokens. MedNova Unlimited is a monthly subscription with unlimited Sparks and no ads, plus 500 tokens on your first month (once per account). Everything is paid through Google Play or the App Store.' },
       { q: 'How do I cancel MedNova Unlimited?', a: 'In your Google Play or App Store subscriptions. You keep Unlimited until the paid month ends.' },
-      { q: 'I changed phone or account. How do I get my purchases back?', a: 'Sign in, open Nova Shop and tap Restore purchases at the bottom. It asks first, then checks your store account. MedNova Unlimited and the Sovereign package come back; token packs are already on your MedNova account. If you restore on a different MedNova account, Unlimited moves to it and leaves the old one.' },
+      { q: 'I changed phone or account. How do I get my purchases back?', a: 'Sign in, open Nova Store and tap Restore purchases at the bottom. It asks first, then checks your store account. MedNova Unlimited and the Sovereign package come back; token packs are already on your MedNova account. If you restore on a different MedNova account, Unlimited moves to it and leaves the old one.' },
       { q: 'Can I get a refund?', a: 'Refunds go through Google Play or the App Store. If a purchase is refunded, what it gave is taken back: the tokens from a pack, Sovereign and its frame, or Unlimited. The full rules are in the Terms, section 06.' },
     ],
   },

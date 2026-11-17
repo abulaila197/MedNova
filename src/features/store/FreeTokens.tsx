@@ -198,7 +198,7 @@ export function FreeTokens({ t }: { t: Theme }) {
     if (!signedIn) return router.navigate('/auth');
     if (busy) return;
     // A collected link still opens its page, with no reward again (Yazan 2026-10-27).
-    const again = isDone(w) || unpaid(w);
+    const again = isDone(w);
     // Pay first, then open the page (Yazan 2026-11-15): opening Instagram or YouTube first sends the app to the
     // background, and on Android the claim could be cut off there, so a follow sometimes paid nothing.
     const openAfter = async (url: string, key: string) => {
@@ -239,9 +239,9 @@ export function FreeTokens({ t }: { t: Theme }) {
   // Social and store-listing ways wait for their real links.
   const noLink = (w: Way) =>
     (SOCIAL as readonly string[]).includes(w.key) ? !LINKS[w.key as (typeof SOCIAL)[number]] : w.key === 'listing' && !(Platform.OS === 'android' ? LINKS.listingAndroid : LINKS.listing);
-  // Apple 3.2.2 (Yazan 2026-11-08, call 1): on iPhone, following us and visiting the store page open the page but pay no
-  // tokens. Android keeps the reward (Google only bans paying for ratings).
-  const unpaid = (w: Way) => Platform.OS === 'ios' && ((SOCIAL as readonly string[]).includes(w.key) || w.key === 'listing');
+  // Apple 3.2.2 (Yazan 2026-11-08): iPhone can't pay for following us or visiting the store page. Those cards gave
+  // nothing there, so iPhone leaves them out (Yazan 2026-11-17). Android keeps them (Google only bans paying for ratings).
+  const shown = (w: Way) => !noLink(w) && !(Platform.OS === 'ios' && ((SOCIAL as readonly string[]).includes(w.key) || w.key === 'listing'));
   const label = (w: Way) => (w.key === 'story' ? tr('{label} · {stories} of 5', { label: w.label, stories }) : w.key === 'invite' && st ? tr('{label} · {invite_tokens} of 150', { label: w.label, invite_tokens: st.invite_tokens }) : w.label);
   const act = (w: Way) => (!signedIn ? tr('Sign in') : w.key === 'ambassador' && st?.ambassador === 'pending' ? tr('In review') : w.act);
   return (
@@ -254,8 +254,8 @@ export function FreeTokens({ t }: { t: Theme }) {
         {ADS_LIVE ? <WayCard t={t} w={AD_WAY} label={ADS_LIVE && st ? tr('{label} · {n} of {AD_CAP} today', { label: AD_WAY.label, n: st.ads_today ?? 0, AD_CAP }) : AD_WAY.label} act={signedIn ? AD_WAY.act : tr('Sign in')} done={(st?.ads_today ?? 0) >= AD_CAP} locked={!ADS_LIVE} busy={busy === 'ad'} onPress={() => (signedIn ? watchAd() : router.navigate('/auth'))} /> : null}
         {/* A way with no link is left out, never shown as "coming soon" (Yazan 2026-11-13). */}
         {/* The invite box comes right after the ad box (Yazan 2026-11-15). */}
-        {[...WAYS.filter((w) => w.key === 'invite'), ...WAYS.filter((w) => w.key !== 'invite')].filter((w) => !noLink(w)).map((w) => (
-          <WayCard key={w.key} t={t} w={w} label={label(w)} act={act(w)} done={!unpaid(w) && isDone(w)} unpaid={unpaid(w)} locked={noLink(w)} busy={busy === w.key} onPress={() => tap(w)} reopen={LINKED.includes(w.key)} />
+        {[...WAYS.filter((w) => w.key === 'invite'), ...WAYS.filter((w) => w.key !== 'invite')].filter(shown).map((w) => (
+          <WayCard key={w.key} t={t} w={w} label={label(w)} act={act(w)} done={isDone(w)} busy={busy === w.key} onPress={() => tap(w)} reopen={LINKED.includes(w.key)} />
         ))}
       </Row>
     </>
@@ -273,11 +273,11 @@ function Row({ children }: { children: ReactNode }) {
 /** Ways that open a page; they stay tappable after collecting. */
 const LINKED = ['tiktok', 'instagram', 'facebook', 'youtube', 'channel', 'community', 'listing'];
 
-function WayCard({ t, w, label, act, done, locked, busy, onPress, reopen, unpaid }: { t: Theme; w: Way; label: string; act: string; done: boolean; locked?: boolean; busy: boolean; onPress: () => void; reopen?: boolean; unpaid?: boolean }) {
+function WayCard({ t, w, label, act, done, locked, busy, onPress, reopen }: { t: Theme; w: Way; label: string; act: string; done: boolean; locked?: boolean; busy: boolean; onPress: () => void; reopen?: boolean }) {
   return (
-    <Pressable onPress={locked || (done && !reopen) ? undefined : onPress} accessibilityRole="button" accessibilityLabel={unpaid ? w.label : tr('{label}, {tokens} tokens', { label: w.label, tokens: w.tokens })} style={[s.card, { backgroundColor: t.panel, borderColor: t.panelLine }, busy && { opacity: 0.6 }]}>
+    <Pressable onPress={locked || (done && !reopen) ? undefined : onPress} accessibilityRole="button" accessibilityLabel={tr('{label}, {tokens} tokens', { label: w.label, tokens: w.tokens })} style={[s.card, { backgroundColor: t.panel, borderColor: t.panelLine }, busy && { opacity: 0.6 }]}>
       <View style={[s.ic, { backgroundColor: 'rgba(111,214,255,0.1)' }]}>{w.icon({ size: u(14), color: t.accent })}</View>
-      <Text style={[s.cN, { color: unpaid ? t.mute : t.fg }]}>{unpaid ? '♥' : `+${w.tokens}`}</Text>
+      <Text style={[s.cN, { color: t.fg }]}>{`+${w.tokens}`}</Text>
       <Text style={[s.cU, { color: t.mute, marginBottom: u(8) }]} numberOfLines={3}>
         {w.each ? tr('{label} · each', { label }) : label}
       </Text>

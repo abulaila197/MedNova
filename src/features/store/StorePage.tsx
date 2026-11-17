@@ -89,7 +89,7 @@ export function StorePage() {
   return (
     <Screen tab={null} glow={21} wide={480}>
       <InfoScroll>
-        <Kicker>{tr('Nova Shop')}</Kicker>
+        <Kicker>{tr('Nova Store')}</Kicker>
         <Text style={[ui.H, { color: c.fg, fontFamily: F.display }]}>
           {/* Not just buying: the shop is where tokens are earned, bought and spent (Yazan 2026-10-25, #32). */}
           {tr('Earn, buy and spend ')}
@@ -115,7 +115,7 @@ export function StorePage() {
           </Pressable>
         )}
 
-        {/* Style shop first on Nova Shop, in its own look (Yazan 2026-11-15). */}
+        {/* Style shop first on Nova Store, in its own look (Yazan 2026-11-15). */}
         <View style={{ height: u(10) }} />
         <StyleWardrobe t={t} />
 

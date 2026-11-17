@@ -56,7 +56,7 @@ export const fourOfAKind: GameDef = {
       title: tr('Race the rivals'),
       blurb: tr('The same board as the rivals, each on your own copy.'),
       howTo: [
-        tr('Pick Freshmen, Scholars or Geniuses and 1 to 3 rivals. Meet them in the room: tap a rival for its profile, swap it or kick it.'),
+        tr('Pick Freshmen, Scholars, Geniuses or Random and 1 to 3 rivals. Meet them in the room: tap a rival for its profile, swap it or kick it.'),
         tr('Everyone plays the same board at the same time. You see how many groups each rival has found, never which.'),
         tr('{hearts} hearts a board and one token heart. The hint at Solo\'s price, once a board.', { hearts: FOK.hearts }),
         tr('A board ends when you finish it or its clock runs out. Points, then fewer mistakes, then the faster player.'),

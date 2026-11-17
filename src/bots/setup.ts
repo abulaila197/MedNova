@@ -21,6 +21,7 @@ export function botSetup(def: GameDef): SetupOption[] {
         { value: 'easy', label: tr('Freshmen') },
         { value: 'medium', label: tr('Scholars') },
         { value: 'hard', label: tr('Geniuses') },
+        { value: 'random', label: tr('Random') },
       ],
       initial: 'medium',
     },

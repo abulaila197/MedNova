@@ -8,7 +8,7 @@ export type HuntCard = { key: string; name: string; stars: number; art: ImageSou
 export const DECK: HuntCard[] = [
   { key: 'bolt', name: 'Bolt', stars: 1, art: require('../../../assets/cards/bolt.webp'), mission: 'Sign in', clue: 'Play every game outside Party time, in any mode. One round of each is enough.' },
   { key: 'iris', name: 'Iris', stars: 1, art: require('../../../assets/cards/iris.webp'), mission: 'Play every game outside Party time (any mode)', clue: 'Show up like the morning ward round. Seven days in a row, no excuses.' },
-  { key: 'atlas', name: 'Atlas', stars: 2, art: require('../../../assets/cards/atlas.webp'), mission: 'Log in 7 days in a row', clue: 'Some things in the Nova Shop cost nothing at all. Taste every free sample.' },
+  { key: 'atlas', name: 'Atlas', stars: 2, art: require('../../../assets/cards/atlas.webp'), mission: 'Log in 7 days in a row', clue: 'Some things in the Nova Store cost nothing at all. Taste every free sample.' },
   { key: 'nova', name: 'Nova', stars: 2, art: require('../../../assets/cards/nova.webp'), mission: 'Collect every free token way', clue: 'Rivals are waiting on the other side. Face them fifty times.' },
   { key: 'pip', name: 'Pip', stars: 3, art: require('../../../assets/cards/pip.webp'), mission: 'Play 50 Vs rivals matches', clue: 'Be a student again. Clear a hundred cards from your review pile.' },
   { key: 'yara', name: 'Yara', stars: 3, art: require('../../../assets/cards/yara.webp'), mission: 'Clear 100 review cards', clue: 'Nobody survives medicine alone. Gather ten friends around you.' },

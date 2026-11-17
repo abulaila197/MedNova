@@ -4,6 +4,7 @@ import { describe, it } from 'node:test';
 import { mergeBoard, passingNames, periodKey, rivalExp } from '../boardMath';
 import { BOSS_GAMES, bossOf } from '../boss';
 import { revengeLine } from '../revenge';
+import { randomTypes } from '../mix';
 import { rivalBoost } from '../rewards';
 
 describe('G6 rewards, boss and board', () => {
@@ -11,7 +12,15 @@ describe('G6 rewards, boss and board', () => {
     assert.equal(rivalBoost('bots', { botLevel: 'easy' }), 1);
     assert.equal(rivalBoost('bots', { botLevel: 'medium' }), 1.25);
     assert.equal(rivalBoost('bots', { botLevel: 'hard' }), 1.5);
+    assert.equal(rivalBoost('bots', { botLevel: 'random' }), 1.25);
     assert.equal(rivalBoost('solo', { botLevel: 'hard' }), 1);
+  });
+  it('Random rivals: 3 rivals are one of each type, 2 are two different types', () => {
+    for (let k = 0; k < 50; k++) {
+      assert.deepEqual([...randomTypes(3)].sort(), ['freshman', 'genius', 'scholar']);
+      const two = randomTypes(2);
+      assert.notEqual(two[0], two[1]);
+    }
   });
   it('deals the same Genius boss for a day, in a Vs rivals game, never twice the same game in a row', () => {
     const a = bossOf('2026-11-10');

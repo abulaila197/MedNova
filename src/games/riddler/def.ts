@@ -60,7 +60,7 @@ export const riddler: GameDef = {
       title: tr('Riddle duel'),
       blurb: tr('The same picture as the rivals. Solve it first.'),
       howTo: [
-        tr('Pick Freshmen, Scholars or Geniuses and 1 to 3 rivals. Meet them in the room: tap a rival for its profile, swap it or kick it.'),
+        tr('Pick Freshmen, Scholars, Geniuses or Random and 1 to 3 rivals. Meet them in the room: tap a rival for its profile, swap it or kick it.'),
         tr('Everyone gets the same picture at the same time, with 90 s to solve it.'),
         tr('Guess as often as you like, but a wrong guess locks you for 5 s.'),
         tr('Stuck? Show the definition for 1 token, like Solo. It caps that picture at 2 stars.'),

@@ -42,7 +42,7 @@ export const diagnosticPursuit: GameDef = {
       title: tr('Diagnosis showdown'),
       blurb: tr('A new clue every 10 seconds. Beat the rivals to the diagnosis.'),
       howTo: [
-        tr('Pick Freshmen, Scholars or Geniuses and 1 to 5 rivals. Meet them in the room: tap a rival for its profile, swap it or kick it.'),
+        tr('Pick Freshmen, Scholars, Geniuses or Random and 1 to 5 rivals. Meet them in the room: tap a rival for its profile, swap it or kick it.'),
         tr('Everyone gets the same case. A new clue appears every 10 seconds, and a case lasts 60 seconds.'),
         tr('Guess as often as you like. A wrong guess locks you out for 5 seconds. There is no Skip or Reveal.'),
         tr('Hint shows the medical field for 1 token, like Solo.'),

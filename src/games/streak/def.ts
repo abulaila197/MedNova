@@ -100,7 +100,7 @@ export const streakMaster: GameDef = {
       title: tr('Streak showdown'),
       blurb: tr('Answer first and keep your streak. The rivals\' heat columns rise and crash beside yours.'),
       howTo: [
-        tr('Pick Freshmen, Scholars or Geniuses and 1 to 5 rivals. Meet them in the room: tap a rival for its profile, swap it or kick it.'),
+        tr('Pick Freshmen, Scholars, Geniuses or Random and 1 to 5 rivals. Meet them in the room: tap a rival for its profile, swap it or kick it.'),
         tr('Everyone gets the same question with the same choices at once. One pick each.'),
         tr('Helpers cost tokens, like Solo: Remove 2 wrong (1), Skip and keep your streak (3), +10 seconds (1).'),
         tr('Right answers score by order: 100, 80, 65 and so on, plus 10 for each answer in your streak after the first (up to 50).'),

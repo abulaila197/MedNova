@@ -20,7 +20,7 @@ const GOLD_T = '#f3d98a';
 const STICKER = require('../../../assets/stickers/text/comic-01.webp');
 
 /**
- * The Style shop entry, first on Nova Shop (Yazan 2026-11-15: "Wardrobe" boxes in the gold-and-velvet look of the
+ * The Style shop entry, first on Nova Store (Yazan 2026-11-15: "Wardrobe" boxes in the gold-and-velvet look of the
  * Showcase preview): one box per kind (frame, title, win effect, sticker), each showing a real item.
  */
 export function StyleWardrobe({ t }: { t: Theme }) {

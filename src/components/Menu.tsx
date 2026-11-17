@@ -19,20 +19,28 @@ import { F } from '@/theme/tokens';
 import { navTo } from '@/lib/nav';
 import { tr } from '@/i18n';
 
-const ITEMS = [
-  // Order set by Yazan 2026-10-31 (#49).
-  [tr('My Profile'), '/profile'], // the moon button still opens it too
-  [tr('Friends'), '/friends'],
-  [tr('Nova Shop'), '/store'],
-  [tr('My cards'), '/cards'],
-  [tr('Achievements'), '/achievements'],
-  [tr('Leaderboard'), '/leaderboard'],
-  [tr('Contact'), '/contact'],
-  [tr('About'), '/about'],
-  [tr('FAQ'), '/faq'],
-  [tr('Privacy & Terms'), '/privacy'],
-  [tr('Settings'), '/settings'], // Group 2: notifications + Privacy choices
-] as const;
+type Line = { label: string; to: string } | { label: string; group: { label: string; to: string }[] };
+
+// Order set by Yazan 2026-10-31 (#49). Yazan 2026-11-17 (additions point 10): every page stays on its own, and two
+// lines open with an arrow: Store (Nova Store, Style shop) and MedNova (FAQ, About, Contact, Privacy & Terms).
+const ITEMS: Line[] = [
+  { label: tr('My Profile'), to: '/profile' }, // the moon button still opens it too
+  { label: tr('Friends'), to: '/friends' },
+  { label: tr('Store'), group: [{ label: tr('Nova Store'), to: '/store' }, { label: tr('Style shop'), to: '/style' }] },
+  { label: tr('My cards'), to: '/cards' },
+  { label: tr('Achievements'), to: '/achievements' },
+  { label: tr('Leaderboard'), to: '/leaderboard' },
+  {
+    label: 'MedNova',
+    group: [
+      { label: tr('FAQ'), to: '/faq' },
+      { label: tr('About'), to: '/about' },
+      { label: tr('Contact'), to: '/contact' },
+      { label: tr('Privacy & Terms'), to: '/privacy' },
+    ],
+  },
+  { label: tr('Settings'), to: '/settings' }, // Group 2: notifications + Privacy choices
+];
 
 /** Locked side menu ("Journal index"): sits under the app card, which slides aside. */
 export function Menu() {
@@ -45,10 +53,13 @@ export function Menu() {
   const profile = useAccount((a) => a.profile);
   const { level, into, need } = useBalance();
   const isAdmin = useAccount((a) => a.isAdmin);
-  const items = isAdmin ? [...ITEMS, [tr('Admin'), '/admin'] as const] : ITEMS;
+  const items: Line[] = isAdmin ? [...ITEMS, { label: tr('Admin'), to: '/admin' }] : ITEMS;
+  // The open arrow line; it folds back on a tap anywhere else in the menu, or when the menu closes.
+  const [unfold, setUnfold] = useState<string | null>(null);
   const [outErr, setOutErr] = useState(false);
   // AC6: a dot on Achievements while a reached tier waits to be collected (signed in only).
   const open = useApp((a) => a.menuOpen);
+  if (!open && unfold) setUnfold(null);
   const friends = useFriends((f) => f.list);
   // As text, so reloading the same list doesn't ask for achievements again.
   const friendIds = friends.map((f) => f.id).join(',');
@@ -127,21 +138,50 @@ export function Menu() {
       </Pressable>
       {/* The list scrolls if it can't fit, so it never runs over the profile or the Sound switch (2026-10-19). */}
       <ScrollView style={s.items} contentContainerStyle={s.itemsIn} showsVerticalScrollIndicator={false}>
-        {items.map(([label, to], i) => {
-          const on = path === to;
-          return (
-            <Pressable key={to} onPress={() => go(to)} style={[s.r, { borderBottomColor: t.panelLine }, i === 0 && { borderTopWidth: 1, borderTopColor: t.panelLine }]}>
-              <Text style={[s.no, { color: t.kick }]} numberOfLines={1}>{String(i + 1).padStart(2, '0')}</Text>
-              <Text style={[s.lbl, { color: on ? t.accent : t.white, fontFamily: on ? F.displayItalic : F.display }]}>{label}</Text>
-              {to === '/achievements' && profile && (waiting || missions) ? (
-                <View style={[s.dot, { backgroundColor: waiting ? t.accent : t.red }]} accessibilityLabel={waiting ? tr('Tokens waiting') : tr('Daily missions not done')} />
-              ) : null}
-              {to === '/friends' && profile && requests ? (
-                <View style={[s.dot, { backgroundColor: t.red }]} accessibilityLabel={tr('Friend request waiting')} />
-              ) : null}
-            </Pressable>
-          );
-        })}
+        <Pressable onPress={() => setUnfold(null)} style={s.fold} accessible={false}>
+          {items.map((line, i) => {
+            const first = i === 0 && { borderTopWidth: 1, borderTopColor: t.panelLine };
+            const no = <Text style={[s.no, { color: t.kick }]} numberOfLines={1}>{String(i + 1).padStart(2, '0')}</Text>;
+            if ('group' in line) {
+              const isOpen = unfold === line.label;
+              const here = line.group.some((g) => g.to === path);
+              return (
+                <View key={line.label} style={[{ borderBottomWidth: 1, borderBottomColor: t.panelLine }, first]}>
+                  <Pressable onPress={tapped(() => setUnfold(isOpen ? null : line.label))} style={s.r} accessibilityRole="button" accessibilityState={{ expanded: isOpen }}>
+                    {no}
+                    <Text style={[s.lbl, { color: here ? t.accent : t.white, fontFamily: here ? F.displayItalic : F.display }]}>{line.label}</Text>
+                    <Text style={[s.arrow, { color: isOpen ? t.accent : t.mute, transform: [{ rotate: isOpen ? '180deg' : '0deg' }] }]}>▾</Text>
+                  </Pressable>
+                  {isOpen
+                    ? line.group.map((g) => {
+                        const on = path === g.to;
+                        return (
+                          <Pressable key={g.to} onPress={() => go(g.to)} style={s.sub} accessibilityRole="link">
+                            <View style={[s.subBar, { backgroundColor: on ? t.accent : t.panelLine }]} />
+                            <Text style={[s.subT, { color: on ? t.accent : t.white, fontFamily: on ? F.displayItalic : F.display }]}>{g.label}</Text>
+                          </Pressable>
+                        );
+                      })
+                    : null}
+                </View>
+              );
+            }
+            const { label, to } = line;
+            const on = path === to;
+            return (
+              <Pressable key={to} onPress={() => go(to)} style={[s.r, { borderBottomWidth: 1, borderBottomColor: t.panelLine }, first]}>
+                {no}
+                <Text style={[s.lbl, { color: on ? t.accent : t.white, fontFamily: on ? F.displayItalic : F.display }]}>{label}</Text>
+                {to === '/achievements' && profile && (waiting || missions) ? (
+                  <View style={[s.dot, { backgroundColor: waiting ? t.accent : t.red }]} accessibilityLabel={waiting ? tr('Tokens waiting') : tr('Daily missions not done')} />
+                ) : null}
+                {to === '/friends' && profile && requests ? (
+                  <View style={[s.dot, { backgroundColor: t.red }]} accessibilityLabel={tr('Friend request waiting')} />
+                ) : null}
+              </Pressable>
+            );
+          })}
+        </Pressable>
       </ScrollView>
       <View style={s.pills}>
         <View style={[s.theme, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
@@ -180,7 +220,12 @@ const s = StyleSheet.create({
   keep: { fontFamily: F.bodySemi, fontSize: u(9.5), marginTop: u(7), alignSelf: 'flex-start', borderBottomWidth: 1 },
   items: { flex: 1, marginVertical: u(10) },
   itemsIn: { flexGrow: 1, justifyContent: 'center' },
-  r: { flexDirection: 'row', alignItems: 'baseline', gap: u(12), paddingVertical: u(9), borderBottomWidth: 1 },
+  fold: { flexGrow: 1, justifyContent: 'center' },
+  r: { flexDirection: 'row', alignItems: 'baseline', gap: u(12), paddingVertical: u(9) },
+  arrow: { fontSize: u(11), lineHeight: u(14), marginEnd: u(14), alignSelf: 'center' },
+  sub: { flexDirection: 'row', alignItems: 'center', gap: u(10), paddingVertical: u(7), paddingStart: u(28) },
+  subBar: { width: u(2), height: u(14), borderRadius: u(1) },
+  subT: { fontSize: u(12.5), lineHeight: u(15), flex: 1 },
   no: { fontFamily: F.mono, fontSize: u(8.5), letterSpacing: u(1.275), width: u(16) },
   lbl: { fontSize: u(14.5), lineHeight: u(16.5), flex: 1 },
   // #9: kept in from the row's right edge (Yazan 2026-10-31).

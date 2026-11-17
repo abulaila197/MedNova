@@ -51,7 +51,7 @@ export const novaMedicordle: GameDef = {
       title: tr('Word duel'),
       blurb: tr('The same word as the rivals, each on your own board.'),
       howTo: [
-        tr('Pick Freshmen, Scholars or Geniuses and 1 to 3 rivals. Meet them in the room: tap a rival for its profile, swap it or kick it.'),
+        tr('Pick Freshmen, Scholars, Geniuses or Random and 1 to 3 rivals. Meet them in the room: tap a rival for its profile, swap it or kick it.'),
         tr('Everyone gets the same word at the same time, six tries each. The rivals\' small boards fill with colours as they guess, never letters.'),
         tr('First solver scores 100, then 80, 65 and so on, plus 10 for each guess left.'),
         tr('No letter hints; the definition appears in the last 20 seconds of each word.'),

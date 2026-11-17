@@ -77,7 +77,7 @@ function Coin({ g }: { g: boolean }) {
   const t = useTheme();
   const { tokens } = useBalance();
   return (
-    <Pressable onPress={tapped(() => navTo('/store'))} style={(g ? gs : s).coin} accessibilityRole="button" accessibilityLabel={tr('{tokens} tokens. Open the Nova Shop', { tokens })}>
+    <Pressable onPress={tapped(() => navTo('/store'))} style={(g ? gs : s).coin} accessibilityRole="button" accessibilityLabel={tr('{tokens} tokens. Open the Nova Store', { tokens })}>
       <Text style={[(g ? gs : s).coinT, { color: t.fg }]}>{tokens}</Text>
       <TokenCoin size={h(g ? 17 : 20)} progress={0} track="transparent" />
     </Pressable>
