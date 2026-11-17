@@ -236,11 +236,11 @@ function LanguageRow() {
             <Pressable key={v.k} onPress={tapped(() => v.k !== pick && setAsk(v.k))} accessibilityRole="button" accessibilityState={{ selected: pick === v.k }} accessibilityLabel={`${t('App language')}: ${t(v.label)}`}>
               {pick === v.k ? (
                 <LinearGradient colors={[c.t.gradA, c.t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={s.opt}>
-                  <Text style={[s.optT, { color: c.t.onGrad }]}>{t(v.label)}</Text>
+                  <Text style={[s.optT, { color: c.t.onGrad }]} numberOfLines={1}>{t(v.label)}</Text>
                 </LinearGradient>
               ) : (
                 <View style={s.opt}>
-                  <Text style={[s.optT, { color: c.mute }]}>{t(v.label)}</Text>
+                  <Text style={[s.optT, { color: c.mute }]} numberOfLines={1}>{t(v.label)}</Text>
                 </View>
               )}
             </Pressable>
@@ -279,11 +279,11 @@ function VoiceRow() {
             <Pressable key={v.k} onPress={tapped(() => setVoicePick(v.k))} accessibilityRole="button" accessibilityState={{ selected: pick === v.k }} accessibilityLabel={`${t('Your voice')}: ${t(v.label)}`}>
               {pick === v.k ? (
                 <LinearGradient colors={[c.t.gradA, c.t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={s.opt}>
-                  <Text style={[s.optT, { color: c.t.onGrad }]}>{t(v.label)}</Text>
+                  <Text style={[s.optT, { color: c.t.onGrad }]} numberOfLines={1}>{t(v.label)}</Text>
                 </LinearGradient>
               ) : (
                 <View style={s.opt}>
-                  <Text style={[s.optT, { color: c.mute }]}>{t(v.label)}</Text>
+                  <Text style={[s.optT, { color: c.mute }]} numberOfLines={1}>{t(v.label)}</Text>
                 </View>
               )}
             </Pressable>
@@ -308,11 +308,11 @@ function Row({ title, sub, on, off, onChange }: { title: string; sub: string; on
           <Pressable key={String(v)} disabled={off} onPress={tapped(() => v !== on && onChange(v))} accessibilityRole="button" accessibilityState={{ selected: on === v }} accessibilityLabel={`${title} ${v ? t('On') : t('Off')}`}>
             {on === v ? (
               <LinearGradient colors={[c.t.gradA, c.t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={s.opt}>
-                <Text style={[s.optT, { color: c.t.onGrad }]}>{v ? t('On') : t('Off')}</Text>
+                <Text style={[s.optT, { color: c.t.onGrad }]} numberOfLines={1}>{v ? t('On') : t('Off')}</Text>
               </LinearGradient>
             ) : (
               <View style={s.opt}>
-                <Text style={[s.optT, { color: c.mute }]}>{v ? t('On') : t('Off')}</Text>
+                <Text style={[s.optT, { color: c.mute }]} numberOfLines={1}>{v ? t('On') : t('Off')}</Text>
               </View>
             )}
           </Pressable>

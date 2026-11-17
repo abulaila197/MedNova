@@ -111,7 +111,7 @@ export function Profile() {
             {/* List #2: Change name first. */}
             {profile ? (
               <Pressable onPress={() => setRename(true)} style={[s.stBtn, { backgroundColor: t.chip, borderColor: CYAN }]} accessibilityRole="button">
-                <Text style={[s.stT, { color: t.fg }]}>{tr('Change name')}</Text>
+                <Text style={[s.stT, { color: t.fg }]} numberOfLines={1}>{tr('Change name')}</Text>
               </Pressable>
             ) : null}
             <Pressable
@@ -120,11 +120,11 @@ export function Profile() {
                 setPick(true);
               }}
               style={[s.stBtn, { backgroundColor: t.chip, borderColor: CYAN }]} accessibilityRole="button">
-              <Text style={[s.stT, { color: t.fg }]}>{tr('Change character')}</Text>
+              <Text style={[s.stT, { color: t.fg }]} numberOfLines={1}>{tr('Change character')}</Text>
             </Pressable>
             {[[tr('Change frame'), 'frames'], [tr('Change title'), 'titles']].map(([l, tab]) => (
               <Pressable key={l} onPress={() => router.navigate(`/style?tab=${tab}` as never)} style={[s.stBtn, { backgroundColor: t.chip, borderColor: CYAN }]} accessibilityRole="button">
-                <Text style={[s.stT, { color: t.fg }]}>{l}</Text>
+                <Text style={[s.stT, { color: t.fg }]} numberOfLines={1}>{l}</Text>
               </Pressable>
             ))}
           </View>

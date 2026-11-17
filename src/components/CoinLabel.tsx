@@ -1,6 +1,7 @@
 import { StyleSheet, View, type StyleProp, type TextStyle } from 'react-native';
 
 import { Text } from '@/components/AppText';
+import { isAr } from '@/i18n';
 import { TokenCoin } from '@/components/PulseStar';
 import { Bolt } from '@/features/sparks/Bolt';
 
@@ -22,7 +23,8 @@ export function CoinLabel({ text, style, numberOfLines }: { text: string; style?
   const parts = text.split(/(\{coin\}|\{spark\})/);
   // A price label on a centred button keeps its full width: shrinking there cut "Rematch · 25" to "Remat..." on web.
   const bolt = parts.includes(SPARK);
-  if (parts.length === 1) return <Text style={style} numberOfLines={numberOfLines}>{text}</Text>;
+  // Arabic button labels stay on one line (Yazan 2026-11-17); English keeps its old wrapping.
+  if (parts.length === 1) return <Text style={style} numberOfLines={numberOfLines ?? (isAr ? 1 : undefined)}>{text}</Text>;
   const flat = StyleSheet.flatten(style) ?? {};
   const fs = flat.fontSize ?? 14;
   const align = flat.textAlign === 'left' ? 'flex-start' : flat.textAlign === 'right' ? 'flex-end' : 'center';

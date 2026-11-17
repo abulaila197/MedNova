@@ -114,6 +114,9 @@ export function Text(props: TextProps & { ref?: React.Ref<RNText> }) {
   const ar = isAr && hasArabic(props.children);
   const nested = useContext(TextAncestor);
   if (ANDROID && ar && !nested && typeof props.children === 'string') props = { ...props, children: NBSP + props.children + NBSP };
+  // One-line Arabic (buttons, options, pills; Yazan 2026-11-17): never a second line and never "..": a label still a
+  // little too wide for its box shrinks to fit, at most to 85%. Labels that would need more were given shorter words.
+  if (ANDROID && ar && !nested && props.numberOfLines === 1 && props.adjustsFontSizeToFit == null) props = { ...props, adjustsFontSizeToFit: true, minimumFontScale: 0.85 };
   const style = ar ? [props.style, arabicStyle(props.style)] : props.style;
   const room = Platform.OS === 'web' ? null : letterRoom(style);
   return <RNText maxFontSizeMultiplier={MAX_FONT_SCALE} textBreakStrategy={BREAK} {...props} style={room ? [style, room] : style} />;

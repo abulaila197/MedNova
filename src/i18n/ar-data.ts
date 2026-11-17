@@ -300,7 +300,6 @@ export const AR_DATA: Record<string, string> = {
   "The Friend Signal": "إشارة الصحاب",
   "The Crown Engine": "محرّك التاج",
   "The Architect": "المهندس",
-  "Sign in": "سجّل دخول",
   "Play every game outside Party time, in any mode. One round of each is enough.": "العب كل لعبة برّه وقت الشلة، بأي طريقة. جولة واحدة من كل لعبة تكفي.",
   "Play every game outside Party time (any mode)": "العب كل الألعاب اللي برّه وقت الشلة (أي طريقة)",
   "Show up like the morning ward round. Seven days in a row, no excuses.": "تعالى زي مرور الصبح. سبع أيام ورا بعض، من غير أعذار.",
