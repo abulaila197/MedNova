@@ -114,7 +114,7 @@ export const SOLO_WORD_GAMES: WordGame[] = ['the-silent-artist', 'nova-medicordl
 function addToGame(w: PlayerWord) {
   const id = customId(w.id);
   if (w.game === 'the-silent-artist') saWordById.set(id, { id, name: w.data.name, field: w.data.field, aliases: w.data.aliases });
-  else if (w.game === 'nova-medicordle') mcWordById.set(id, { id, style: w.data.word.length === 6 ? 'classic' : 'custom', word: w.data.word, definition: w.data.definition, dossier: null });
+  else if (w.game === 'nova-medicordle') mcWordById.set(id, { id, style: w.data.word.length === 6 ? 'classic' : 'custom', word: w.data.word, definition: w.data.definition, dossier: null, know: 'clinical' });
   else if (w.game === 'imposter') OWN_PAIRS.set(id, { id, subtype: 'clinical', category: w.data.category, a: { word: w.data.a, alts: [] }, b: { word: w.data.b, alts: [] }, kind: 'disease' });
   // Nova Password was removed (2026-11-09): a saved Password word stays in My diseases but has no game to practise in.
   else if (w.game === 'the-streak-master') questionById.set(id, { id, kind: 'clinical', field: 'My diseases', stem: w.data.stem, choices: w.data.choices, answer: w.data.answer, explanation: null, dossier: null });

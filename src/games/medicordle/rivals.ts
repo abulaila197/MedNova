@@ -43,7 +43,7 @@ const weighted = (r: Rand, t: [number, number][]) => {
  * A rival's rows for one word: real words from the guess list, getting warmer row by row, then the word itself on the
  * row its type and form say. A Freshman sometimes runs out of rows. `wordsOf(len)` is the packed list for that length.
  */
-export function wordPlan(mind: Mind, a: { seed: string; answer: string; limitMs: number; gap: number; progress: number; wordsOf: (len: number) => string | undefined }): Plan {
+export function wordPlan(mind: Mind, a: { seed: string; answer: string; limitMs: number; gap: number; progress: number; wordsOf: (len: number) => string | undefined; surgeon?: boolean }): Plan {
   const r = rng(`${a.seed}:${mind.bot.id}:word`);
   const type = mind.bot.type;
   // The brain's answer for this word decides whether it gets there at all; its form moves the row.
@@ -56,6 +56,8 @@ export function wordPlan(mind: Mind, a: { seed: string; answer: string; limitMs:
   if (!right || at > MAX_ROWS) at = null;
 
   const len = a.answer.length;
+  // Word Surgeon (Yazan 2026-11-18): a rival's tries are only right or wrong.
+  if (a.surgeon) return timed(r, type, a.limitMs, at, surgeonRows(len, at));
   const packed = a.wordsOf(len) ?? '';
   const n = Math.floor(packed.length / len);
   const sharp = type !== 'freshman';
@@ -83,16 +85,28 @@ export function wordPlan(mind: Mind, a: { seed: string; answer: string; limitMs:
   }
   if (at != null) words.push(a.answer);
 
-  // When each row goes in.
+  return timed(r, type, a.limitMs, at, words.map((w) => coloursOf(w, a.answer)));
+}
+
+/** A Surgeon rival's rows as colours: wrong tries all grey, the solving row all green (no letter shows in place). */
+function surgeonRows(len: number, at: number | null): string[] {
+  const misses = (at ?? MAX_ROWS + 1) - 1;
+  const out = Array.from({ length: misses }, () => 'x'.repeat(len));
+  if (at != null) out.push('g'.repeat(len));
+  return out;
+}
+
+/** When each row goes in; a word solved is one whose last row (all green) made it in time. */
+function timed(r: Rand, type: BotType, limitMs: number, at: number | null, colours: string[]): Plan {
   const [lo, hi] = ROW_SECONDS[type];
   let t = 0;
   const rows: { at: number; colours: string }[] = [];
-  for (const w of words) {
+  for (const c of colours) {
     t += Math.round(between(r, lo, hi) * 1000);
-    if (t >= a.limitMs - 300) break;
-    rows.push({ at: t, colours: coloursOf(w, a.answer) });
+    if (t >= limitMs - 300) break;
+    rows.push({ at: t, colours: c });
   }
-  const solved = at != null && rows.length === words.length;
+  const solved = at != null && rows.length === colours.length;
   const outOfRows = !solved && rows.length >= MAX_ROWS;
   return { doneAt: solved || outOfRows ? rows[rows.length - 1].at : null, solved, wrongAt: [], rows };
 }

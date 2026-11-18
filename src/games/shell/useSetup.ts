@@ -22,14 +22,16 @@ import { tr } from '@/i18n';
 export function useSetup(def: GameDef, mode: Mode, prefill?: Record<string, unknown>, prefillSeats?: Seat[]) {
   const preset = (id: number): Team => (def.palette ? { id, ...def.palette.teams[id % def.palette.teams.length] } : presetTeam(id));
   // Vs bots adds the level, how many bots and (where the game has teams) Teams to the game's own options.
-  const opts = mode === 'bots' ? botSetup(def) : (def.setup[mode] ?? []);
+  const all = mode === 'bots' ? botSetup(def) : (def.setup[mode] ?? []);
   const [vals, setVals] = useState<Record<string, string | number>>(() =>
     ({
-      ...Object.fromEntries(opts.map((o) => [o.key, (prefill?.[o.key] as string | number | undefined) ?? o.initial])),
+      ...Object.fromEntries(all.map((o) => [o.key, (prefill?.[o.key] as string | number | undefined) ?? o.initial])),
       // Field ticks carry over to "Change settings" and Play again.
-      ...(typeof prefill?.fields === 'string' && opts.some((o) => o.fields) ? { fields: prefill.fields } : {}),
+      ...(typeof prefill?.fields === 'string' && all.some((o) => o.fields) ? { fields: prefill.fields } : {}),
     }),
   );
+  // The rows to show now: a row with `when` comes and goes with the other picks.
+  const opts = all.filter((o) => !o.when || o.when(vals));
   const [busy, setBusy] = useState(false);
   const [note, setNote] = useState<string | null>(null);
   const range = def.players?.[mode];
@@ -87,7 +89,9 @@ export function useSetup(def: GameDef, mode: Mode, prefill?: Record<string, unkn
 
   const start = async () => {
     // A practice of my own word (My diseases) keeps its word id, which also makes it free.
-    const own = typeof prefill?.custom === 'string' ? { ...vals, custom: prefill.custom } : vals;
+    // A row hidden by the other picks (its `when`) sends nothing, so the game never reads a choice the player couldn't see.
+    const seen = Object.fromEntries(Object.entries(vals).filter(([k]) => all.find((o) => o.key === k)?.when?.(vals) !== false));
+    const own = typeof prefill?.custom === 'string' ? { ...seen, custom: prefill.custom } : seen;
     // A Game challenge goes to the friend at Start, so with no internet the game waits instead of starting without it.
     setNote(null);
     if (intentFor(def.key, mode)?.kind === 'game' && !isOnline()) return noticeOffline();

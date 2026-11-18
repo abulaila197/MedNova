@@ -3,8 +3,12 @@
 /** #34 (Yazan 2026-11-01): 'five' is Classic with 5 letters. */
 export type Style = 'classic' | 'five' | 'custom';
 
+/** What a word asks about (Yazan 2026-11-17): clinical subjects or basic sciences; 'mixed' in setup takes both. */
+export type Know = 'clinical' | 'basic';
+export type KnowPick = Know | 'mixed';
+
 /** A word from the bank. `dossier` is the canonical disease id for the results link (RS1), when there is one. */
-export type Word = { id: string; style: Style; word: string; definition: string; dossier: string | null };
+export type Word = { id: string; style: Style; word: string; definition: string; dossier: string | null; know: Know };
 
 /** ok = right letter, right place (green); near = in the word, wrong place (yellow); off = not in the word (grey);
  *  missing = a column past the end of a short Custom guess (grey, NM4). */
@@ -19,8 +23,43 @@ export const fixedLen = (style: Style): number | null => (style === 'classic' ? 
 export const minLen = (style: Style): number => fixedLen(style) ?? CUSTOM_MIN;
 export const CUSTOM_MIN = 7;
 
-/** NM23: up to two letter hints per Custom word, 1 token then 2 tokens. */
+/**
+ * Paid helpers (Yazan 2026-11-17, Endless and Vs rivals only): a letter (up to two a word, 1 token then 2, as NM23 was
+ * for Custom), clearing 3 wrong letters from the keyboard (1 token, once a word) and the definition early (1 token).
+ */
 export const HINT_COSTS = [1, 2];
+export const CLEAR_COST = 1;
+export const DEFINE_COST = 1;
+/** How many wrong letters one Clear greys out. */
+export const CLEAR_N = 3;
+
+// ---- Paid helper state: pure, so the rules tests can run it. ----
+
+/** What the helpers have shown on the current word. */
+export type Help = { revealed: number[]; letters: number; cleared: string[]; defined: boolean };
+export const NO_HELP: Help = { revealed: [], letters: 0, cleared: [], defined: false };
+/** How many helpers a word used, for its results line. */
+export const helpsUsed = (h: Help) => h.letters + (h.cleared.length ? 1 : 0) + (h.defined ? 1 : 0);
+
+export type Grant = { kind: 'letter'; columns: number[] } | { kind: 'clear'; letters: string[] } | { kind: 'define' };
+/** Applies a paid helper to a word's help. */
+export function withGrant(h: Help, g: Grant): Help {
+  if (g.kind === 'letter') return { ...h, letters: h.letters + 1, revealed: [...h.revealed, ...g.columns.filter((c) => !h.revealed.includes(c))] };
+  if (g.kind === 'clear') return { ...h, cleared: [...new Set([...h.cleared, ...g.letters])] };
+  return { ...h, defined: true };
+}
+
+/** Clear helper: up to 3 random keyboard letters that are not in the word and not already grey. Null when none are left. */
+export function pickClear(answer: string, guesses: string[], cleared: string[], rng: () => number = Math.random): string[] | null {
+  const grey = keyStates(guesses, answer);
+  const open = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'].filter((ch) => !answer.includes(ch) && !grey[ch] && !cleared.includes(ch));
+  if (!open.length) return null;
+  for (let i = open.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    [open[i], open[j]] = [open[j], open[i]];
+  }
+  return open.slice(0, CLEAR_N).sort();
+}
 
 /** Scores one guess against the answer, with the usual duplicate-letter rule: greens first, then yellows left to right
  *  from the answer letters that are left (including the columns a short guess doesn't reach). */
@@ -40,6 +79,42 @@ export function score(guess: string, answer: string): Mark[] {
     }
   }
   return marks;
+}
+
+// ---- Word Surgeon (Yazan 2026-11-18): the word's own letters come scrambled; fill every slot and Check. A try is only
+// right or wrong: no letter shows green, nothing locks, and every try starts from the whole word scrambled again. ----
+
+/** How a word is played: guessed with real words (six tries) or repaired from its own scrambled letters. */
+export type Way = 'tries' | 'surgeon';
+export const wayOf = (settings: Record<string, unknown>): Way => (settings.way === 'surgeon' ? 'surgeon' : 'tries');
+
+/** A Surgeon try is all green when it is the word, else all grey: it never tells which letters were in place. */
+export function surgeonMarks(guess: string, answer: string): Mark[] {
+  const right = guess === answer;
+  return [...answer].map(() => (right ? 'ok' : 'off'));
+}
+/** Marks for a row in either way. */
+export const marksFor = (way: Way) => (way === 'surgeon' ? surgeonMarks : score);
+
+/** The letters still to place, in a shuffled order that never spells the word back (when it can be shuffled at all). */
+export function trayOf(answer: string, locked: Set<number>, seed: number): string[] {
+  const open = [...answer].filter((_, i) => !locked.has(i));
+  const rng = seeded(seed);
+  for (let k = 0; k < 6; k++) {
+    for (let i = open.length - 1; i > 0; i--) {
+      const j = Math.floor(rng() * (i + 1));
+      [open[i], open[j]] = [open[j], open[i]];
+    }
+    const back = [...answer].filter((_, i) => !locked.has(i)).join('');
+    if (open.join('') !== back || new Set(open).size < 2) break;
+  }
+  return open;
+}
+
+/** A Surgeon guess: the locked letters where they are, the placed ones in the open slots in order. */
+export function surgeonGuess(answer: string, locked: Set<number>, placed: string): string {
+  let k = 0;
+  return [...answer].map((ch, i) => (locked.has(i) ? ch : placed[k++] ?? '')).join('');
 }
 
 /** Why a guess can't be played; costs no try (NM2). */

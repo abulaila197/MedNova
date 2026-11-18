@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { orderPoints, YOU, type Rules } from '@/bots/race/engine';
 import { useBotRace } from '@/bots/race/useBotRace';
@@ -14,10 +14,11 @@ import { PauseMenu } from '../shell/PauseMenu';
 import { gameDef } from '../shell/registry';
 import type { PlayProps } from '../shell/types';
 import { GameScreen } from '../shell/ui';
-import { MAX_ROWS, lengthCheck, minLen, score, soloExp, type Style } from './core';
-import { WORDS, isWord, packedOf, poolFor } from './data';
+import { MAX_ROWS, NO_HELP, lengthCheck, marksFor, minLen, soloExp, wayOf, withGrant, type Grant, type Help, type Style } from './core';
+import { WORDS, isWord, knowOf, packedOf, poolFor } from './data';
 import { wordPlan } from './rivals';
 import { RivalBoards } from './RivalBoards';
+import { useHelpers } from './helpers';
 import { HURRY_MS, SlideTable, TurnClock } from './Slides';
 import { tr } from '@/i18n';
 
@@ -28,12 +29,12 @@ const indexOf = new Map(WORDS.map((w, i) => [w.id, i + 1]));
 const NOTE_AT_MS = 20_000;
 const REVEAL_MS = 6_000;
 
-const rulesFor = (limitMs: number): Rules => ({
+const rulesFor = (limitMs: number, surgeon: boolean): Rules => ({
   limitMs,
   revealMs: REVEAL_MS,
   lockMs: 0,
   maxPoints: 150,
-  plan: (_bot, x) => wordPlan(x.mind, { seed: x.seed, answer: wordOf(x.item).word, limitMs, gap: x.gap, progress: x.progress, wordsOf: packedOf }),
+  plan: (_bot, x) => wordPlan(x.mind, { seed: x.seed, answer: wordOf(x.item).word, limitMs, gap: x.gap, progress: x.progress, wordsOf: packedOf, surgeon }),
   // 100, 80, 65... by solve order, plus 10 for each guess left.
   points: ({ rank, solved, tries }) => (solved && rank ? orderPoints(rank) + 10 * Math.max(0, MAX_ROWS - tries) : 0),
   answerOf: (item) => wordOf(item)?.word ?? null,
@@ -65,22 +66,59 @@ function itemsOf(st: RaceState) {
 }
 
 /**
- * Word duel (Medicordle vs rivals, G4): the same word for everyone, each on their own board, six tries, no hints.
+ * Word duel (Medicordle vs rivals, G4): the same word for everyone, each on their own board, six tries, and the paid
+ * helpers above the keyboard (Yazan 2026-11-17).
  * The rivals' mini boards fill with colours as they play real words.
  */
 export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
   const style = (play.settings.style as Style) ?? 'classic';
   const limitMs = (Number(play.settings.wordtime) || 90) * 1000;
-  const [rules] = useState(() => rulesFor(limitMs));
+  const way = wayOf(play.settings);
+  const [rules] = useState(() => rulesFor(limitMs, way === 'surgeon'));
   const g = useBotRace({
     play,
     onFinish,
     onQuit,
     rules,
-    pick: async () => (await engine.picker.pick(play.game, poolFor(style).map((w) => w.id), Number(play.settings.words) || 5)).map((id) => indexOf.get(id)!).filter(Boolean),
+    pick: async () => (await engine.picker.pick(play.game, poolFor(style, knowOf(play.settings)).map((w) => w.id), Number(play.settings.words) || 5)).map((id) => indexOf.get(id)!).filter(Boolean),
     toItems: itemsOf,
   });
   const { st, race, t } = g;
+  // This word's helpers; a new word starts with none.
+  const [helped, setHelped] = useState<{ item: number | null; help: Help }>({ item: null, help: NO_HELP });
+  const help = st && helped.item === st.item ? helped.help : NO_HELP;
+  const [note, setNote] = useState<string | null>(null);
+  useEffect(() => {
+    if (!note) return;
+    const id = setTimeout(() => setNote(null), 2200);
+    return () => clearTimeout(id);
+  }, [note]);
+  const word = st?.item != null ? wordOf(st.item) : undefined;
+  const mine = st?.me?.guesses ?? [];
+  const reveal = !!st && st.phase !== 'case';
+  const isSolved = st?.me?.solved_ms != null;
+  const isOut = !isSolved && mine.length >= MAX_ROWS;
+  const left = !st || reveal ? 0 : Math.max(0, st.phase_ends_at - t);
+  const hurry = !!st && !reveal && left <= NOTE_AT_MS;
+  // The word and row a helper was bought on, read when its payment comes back.
+  const at = useRef({ item: st?.item, rows: mine.length, open: false });
+  const open = !!st && !g.paused && !reveal && !isSolved && !isOut;
+  useEffect(() => {
+    at.current = { item: st?.item, rows: mine.length, open };
+  });
+  const bought = { item: st?.item, rows: mine.length };
+  const helpers = useHelpers({
+    playId: play.id,
+    answer: word?.word ?? '',
+    guesses: mine,
+    help,
+    defShown: reveal || hurry,
+    open,
+    same: useCallback(() => at.current.open && at.current.item === bought.item && at.current.rows === bought.rows, [bought.item, bought.rows]),
+    grant: useCallback((x: Grant) => setHelped((h) => (h.item === st?.item ? { ...h, help: withGrant(h.help, x) } : { item: st?.item ?? null, help: withGrant(NO_HELP, x) })), [st?.item]),
+    surgeon: way === 'surgeon',
+    notice: setNote,
+  });
   const menu = <PauseMenu open={g.menu} mode="bots" onResume={g.closeMenu} onQuit={g.quit} />;
   if (!st || !race) return <GameScreen scroll={false}>{null}</GameScreen>;
   if (st.phase === 'countdown' || st.item == null) {
@@ -93,25 +131,25 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
     );
   }
 
-  const w = wordOf(st.item);
-  const reveal = st.phase !== 'case';
-  const guesses = st.me?.guesses ?? [];
-  const solved = st.me?.solved_ms != null;
-  const out = !solved && guesses.length >= MAX_ROWS;
-  const left = reveal ? 0 : Math.max(0, st.phase_ends_at - t);
+  const w = word!;
+  const guesses = mine;
+  const solved = isSolved;
+  const out = isOut;
   const last = st.index + 1 >= st.total;
   const nextIn = Math.max(0, Math.ceil((st.phase_ends_at - t) / 1000));
   const waiting = st.players.filter((p) => !p.done).length;
-  const hurry = !reveal && left <= NOTE_AT_MS;
-  const definition = reveal || hurry ? w.definition : null;
+  const definition = reveal || hurry || help.defined ? w.definition : null;
 
   const submit = (word: string) => {
     if (g.paused) return tr('Paused');
-    const bad = lengthCheck(word, style, w.word.length);
-    if (bad === 'short') return style === 'custom' ? tr('At least 7 letters') : tr('Not enough letters');
-    if (bad === 'long') return tr('Too many letters');
-    if (word !== w.word && !isWord(word)) return tr('Not in word list');
-    const greens = score(word, w.word).filter((m) => m === 'ok').length;
+    // A Surgeon try is the word's own letters, always the full length: no list or length check.
+    if (way !== 'surgeon') {
+      const bad = lengthCheck(word, style, w.word.length);
+      if (bad === 'short') return style === 'custom' ? tr('At least 7 letters') : tr('Not enough letters');
+      if (bad === 'long') return tr('Too many letters');
+      if (word !== w.word && !isWord(word)) return tr('Not in word list');
+    }
+    const greens = marksFor(way)(word, w.word).filter((m) => m === 'ok').length;
     if (word === w.word) g.solve({ guess: word, greens });
     else if (guesses.length + 1 >= MAX_ROWS) g.miss({ guess: word, greens });
     else g.row(word, greens);
@@ -143,13 +181,18 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
       label={{
         no: tr('WORD {n} OF {total}', { n: st.index + 1, total: st.total }),
         title: tr('Six Word Tries'),
-        sub: tr('Vs rivals · {n} · {n2} letters', { n: STYLE_NAME[style], n2: w.word.length }),
+        sub: tr('Vs rivals · {n} · {n2} letters', { n: way === 'surgeon' ? tr('Word Surgeon') : STYLE_NAME[style], n2: w.word.length }),
         right: reveal ? undefined : <TurnClock ms={left} warn={left <= HURRY_MS} />,
       }}
       answer={w.word}
       played={guesses.map((x) => ({ word: x }))}
       rows={MAX_ROWS}
       rowSeq={guesses.length}
+      revealed={help.revealed}
+      cleared={help.cleared}
+      way={way}
+      helpers={open ? helpers : undefined}
+      notice={note}
       definition={definition}
       noteHot={hurry}
       noteWait={tr('The definition appears in the last 20 seconds.')}

@@ -1,4 +1,4 @@
-import { COIN, priced } from '@/components/CoinLabel';
+import { priced } from '@/components/CoinLabel';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Platform, Share, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
@@ -16,12 +16,13 @@ import { PauseMenu } from '../shell/PauseMenu';
 import type { PlayProps } from '../shell/types';
 import { Btn, GameScreen, Ghost } from '../shell/ui';
 import {
-  bumpStreak, dailyOpen, dailyWord, dayNumber, HINT_COSTS, lengthCheck, liveStreak, minLen, MAX_ROWS, pickHint, score, shareText,
+  bumpStreak, dailyOpen, dailyWord, dayNumber, lengthCheck, marksFor, NO_HELP, wayOf, type Grant, type Way, liveStreak, minLen, MAX_ROWS, shareText,
   type DailyLast, type Streak, type Style,
 } from './core';
-import { isWord, poolFor, wordById } from './data';
+import { isWord, knowOf, poolFor, wordById } from './data';
 import { SlideStack, SlideTable } from './Slides';
-import { showDefinition, snapshotSolo, startSolo, stepSolo, type SoloEvent, type SoloRun } from './solo';
+import { useHelpers } from './helpers';
+import { definitionDue, showDefinition, snapshotSolo, startSolo, stepSolo, upgradeRun, type SoloEvent, type SoloRun } from './solo';
 import { tr } from '@/i18n';
 
 /** Read outside render (React Compiler lint): only called from the submit handler. */
@@ -46,6 +47,9 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   // #34 (Yazan 2026-11-01): the Daily word stays 6 letters; 5 letters is for Endless.
   const picked = (play.settings.style as Style) ?? 'classic';
   const style: Style = kind === 'daily' && picked === 'five' ? 'classic' : picked;
+  // Word Surgeon is Endless only; the Daily word is always guessed.
+  const way: Way = kind === 'daily' ? 'tries' : wayOf(play.settings);
+  const styleName = way === 'surgeon' ? tr('Word Surgeon') : STYLE_NAME[style];
   const [run, setRun] = useState<SoloRun | null>(null);
   const runRef = useRef<SoloRun | null>(null);
   const [done, setDone] = useState<DailyDone | null>(null);
@@ -61,12 +65,12 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
     let live = true;
     (async () => {
       const st = (await engine.kv.get<Streak>(streakKey(style))) ?? { current: 0, best: 0, lastDay: null };
-      let r = play.resume as SoloRun | null;
+      let r = play.resume ? upgradeRun(play.resume as SoloRun) : null;
       if (r && !r.wordIds.every((id) => wordById.has(id))) r = null; // a word left the list since: start fresh
       if (!r && kind === 'daily') {
         const kept = await engine.kv.get<DailyDone>(dailyKey(style, today));
         const prev = kept && wordById.has(kept.wordId) ? kept : null; // today's word left the list since: drop it
-        if (prev && prev.finished === false && prev.run) r = prev.run; // started earlier today: same word, same board
+        if (prev && prev.finished === false && prev.run) r = upgradeRun(prev.run); // started earlier today: same word, same board
         else if (prev) {
           // NM6: one daily word per style; today's is already played.
           await engine.recorder.discard(play.id);
@@ -96,7 +100,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
       const custom = typeof play.settings.custom === 'string' && wordById.has(play.settings.custom) ? play.settings.custom : null;
       if (!r && custom) r = startSolo('endless', style, [custom], null, Date.now(), [custom]);
       if (!r) {
-        const pool = poolFor(style).map((w) => w.id);
+        const pool = poolFor(style, knowOf(play.settings)).map((w) => w.id);
         r = startSolo('endless', style, await engine.picker.pick(play.game, pool, pool.length), null, Date.now(), (await engine.kv.get<string[]>(PAID_KEY)) ?? []);
       }
       if (live) {
@@ -119,7 +123,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
       runRef.current = next;
       setRun(next);
       engine.recorder.bookmark(play.id, snapshotSolo(next, Date.now()), next.score);
-      if (next.kind === 'daily' && next.day != null && next.results.length === 0 && (next.guesses !== prev.guesses || next.hints !== prev.hints)) {
+      if (next.kind === 'daily' && next.day != null && next.results.length === 0 && (next.guesses !== prev.guesses || next.help !== prev.help)) {
         // Keep the daily lock's board current, so a new game continues this word instead of restarting it.
         engine.kv.set(dailyKey(style, next.day), { wordId: next.wordIds[0], guesses: next.guesses, solved: false, finished: false, run: snapshotSolo(next, Date.now()) } satisfies DailyDone);
       }
@@ -170,35 +174,24 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
     dispatch({ type: 'NEXT', now: Date.now() });
   }, [dispatch, play]);
 
-  /**
-   * NM23: up to two hints per Custom word, 1 then 2 tokens; refunded if the word ended first (rule 18). One payment at
-   * a time, so a double tap can't pay twice or buy the second hint by accident (A2).
-   */
-  const paying = useRef(false);
-  const hint = useCallback(async () => {
-    const r = runRef.current;
-    if (!r || r.style !== 'custom' || r.phase !== 'playing' || r.hints >= HINT_COSTS.length || paying.current) return;
-    const answer = wordById.get(r.wordIds[r.index])!.word;
-    const pick = pickHint(answer, r.guesses, r.revealed);
-    if (!pick) return setNotice(tr('Every letter is already showing.'));
-    paying.current = true;
-    try {
-      const cost = HINT_COSTS[r.hints];
-      const index = r.index;
-      const hints = r.hints;
-      const receipt = await engine.wallet.spend(cost, 'medicordle_hint', play.id);
-      if (!receipt) return setNotice(tr('You need {cost} token{n}. Each level up gives 1 token.', { cost, n: cost > 1 ? 's' : '' }));
-      const cur = runRef.current;
-      if (!cur || cur.index !== index || cur.hints !== hints || cur.phase !== 'playing') {
-        await engine.wallet.refund(receipt);
-        return setNotice(tr('Hint refunded.'));
-      }
-      dispatch({ type: 'HINT_GRANTED', columns: pick.columns });
-      setNotice(tr('Letter {letter} revealed.', { letter: pick.letter }));
-    } finally {
-      paying.current = false;
-    }
-  }, [dispatch, play.id]);
+  // Paid helpers (Yazan 2026-11-17): Endless only; the Daily word stays the same for everyone.
+  const cur = run ? wordById.get(run.wordIds[run.index]) : undefined;
+  const helpers = useHelpers({
+    playId: play.id,
+    answer: cur?.word ?? '',
+    guesses: run?.guesses ?? [],
+    help: run?.help ?? NO_HELP,
+    defShown: !!run && definitionDue(run),
+    open: run?.phase === 'playing',
+    // Still the word it was bought on: same word, still being played, no guess played meanwhile.
+    same: useCallback(() => {
+      const r = runRef.current;
+      return !!r && !!run && r.index === run.index && r.phase === 'playing' && r.guesses.length === run.guesses.length;
+    }, [run]),
+    grant: useCallback((g: Grant) => dispatch({ type: 'HELP', grant: g }), [dispatch]),
+    surgeon: way === 'surgeon',
+    notice: setNotice,
+  });
 
   useEffect(() => {
     if (!notice) return;
@@ -207,7 +200,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   }, [notice]);
 
   const share = async (title: string, guesses: string[], answer: string, solved: boolean) => {
-    const text = shareText(title, guesses.map((g) => score(g, answer)), solved);
+    const text = shareText(title, guesses.map((g) => marksFor(way)(g, answer)), solved);
     try {
       if (Platform.OS === 'web') {
         const nav = (globalThis as { navigator?: Navigator }).navigator;
@@ -273,9 +266,14 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   const over = run.phase === 'wordOver' || (paused && run.before === 'wordOver');
   const r = over ? run.results[run.results.length - 1] : null;
   const custom = style === 'custom';
-  const sub = run.kind === 'daily' ? tr('Daily {n} · {n2} letters', { n: STYLE_NAME[style], n2: w.word.length }) : tr('{n} · word {n2} · {n3} letters', { n: STYLE_NAME[style], n2: run.index + 1, n3: w.word.length });
+  const sub = run.kind === 'daily' ? tr('Daily {n} · {n2} letters', { n: styleName, n2: w.word.length }) : tr('{n} · word {n2} · {n3} letters', { n: styleName, n2: run.index + 1, n3: w.word.length });
 
   const submit = (g: string) => {
+    // A Surgeon try is the word's own letters, always the full length: no list or length check.
+    if (way === 'surgeon') {
+      dispatch({ type: 'GUESS', word: g, answer: w.word, now: clockNow() });
+      return null;
+    }
     const bad = lengthCheck(g, style, w.word.length);
     if (bad === 'short') return custom ? tr('At least 7 letters') : tr('Not enough letters');
     if (bad === 'long') return tr('Too many letters');
@@ -290,7 +288,9 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
       answer={w.word}
       played={run.guesses.map((word) => ({ word }))}
       rows={MAX_ROWS}
-      revealed={run.revealed}
+      revealed={run.help.revealed}
+      cleared={run.help.cleared}
+      way={way}
       rowSeq={run.rowSeq}
       definition={showDefinition(run) ? w.definition : null}
       noteHot={run.phase === 'playing' || (run.phase === 'paused' && run.before === 'playing')}
@@ -298,11 +298,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
       onSubmit={submit}
       maxLen={w.word.length}
       minLen={minLen(style)}
-      hint={
-        custom && !over && run.hints < HINT_COSTS.length
-          ? { label: tr('Letter hint · {n}{COIN}', { n: HINT_COSTS[run.hints], COIN }), onPress: hint, disabled: paused }
-          : undefined
-      }
+      helpers={run.kind === 'endless' && !over ? helpers : undefined}
       onPause={() => dispatch({ type: 'PAUSE', now: Date.now() })}
       notice={notice}
       hidden={paused && run.before === 'playing'}

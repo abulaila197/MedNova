@@ -12,8 +12,9 @@ import { TABLET, u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import { GameScreen, HelperButton } from '../shell/ui';
-import { keyStates, score, type Mark } from './core';
+import { keyStates, marksFor, surgeonGuess, trayOf, type Mark, type Way } from './core';
 import { slideColors, type SlideColors } from './palette';
+import type { HelperProp } from './helpers';
 import { tr, LTR, LTR_WEB } from '@/i18n';
 
 // Nova Medicordle's own design language (NM20, NM21): "Specimen slides".
@@ -55,7 +56,12 @@ export type TableProps = {
   onSubmit: (word: string) => string | null;
   maxLen: number;
   minLen: number;
-  hint?: { label: string; disabled?: boolean; onPress: () => void };
+  /** Paid helpers above the keyboard (Endless, Vs rivals). */
+  helpers?: HelperProp[];
+  /** Letters a Clear helper greyed out on the keyboard. */
+  cleared?: string[];
+  /** Word Surgeon: the word's own letters in a tray instead of the keyboard; green letters stay put. */
+  way?: Way;
   onPause: () => void;
   /** Replaces the keyboard: the result card, or whose turn it is. */
   dock?: ReactNode;
@@ -73,7 +79,19 @@ export function SlideTable(p: TableProps) {
   const [toast, setToast] = useState<string | null>(null);
   const [shake, setShake] = useState(0);
   const guesses = useMemo(() => p.played.filter((r) => r.word).map((r) => r.word as string), [p.played]);
-  const keys = useMemo(() => keyStates(guesses, p.answer), [guesses, p.answer]);
+  const surgeon = p.way === 'surgeon';
+  // Surgeon: nothing locks (Yazan 2026-11-18): each try starts from the whole word scrambled again. Only a slot a paid
+  // Letter helper showed keeps its letter.
+  const revealedCols = p.revealed;
+  const locked = useMemo(() => new Set<number>(surgeon ? (revealedCols ?? []) : []), [surgeon, revealedCols]);
+  const tray = useMemo(() => (surgeon ? trayOf(p.answer, locked, hashOf(p.answer) + guesses.length * 977) : []), [surgeon, p.answer, locked, guesses.length]);
+  const maxLen = surgeon ? p.answer.length - locked.size : p.maxLen;
+  const cleared = p.cleared;
+  const keys = useMemo(() => {
+    const k = keyStates(guesses, p.answer);
+    for (const ch of cleared ?? []) k[ch] ??= 'off';
+    return k;
+  }, [guesses, p.answer, cleared]);
 
   // A new row or a new word clears what was typed.
   const row = `${p.played.length}|${p.answer}`;
@@ -91,7 +109,7 @@ export function SlideTable(p: TableProps) {
   const press = (k: string) => {
     if (!p.live) return;
     if (k === 'ENTER') {
-      const why = p.onSubmit(input);
+      const why = surgeon && input.length < maxLen ? tr('Fill every slot') : p.onSubmit(surgeon ? surgeonGuess(p.answer, locked, input) : input);
       if (why) {
         setToast(why);
         setShake((n) => n + 1);
@@ -99,7 +117,9 @@ export function SlideTable(p: TableProps) {
       return;
     }
     if (k === 'DEL') return setInput((v) => v.slice(0, -1));
-    setInput((v) => (v.length < p.maxLen ? v + k : v));
+    // Surgeon: only a letter still in the tray can be placed.
+    if (surgeon && left(tray, input).indexOf(k) < 0) return;
+    setInput((v) => (v.length < maxLen ? v + k : v));
   };
 
   // A hardware keyboard works too (web preview, tablets).
@@ -133,6 +153,8 @@ export function SlideTable(p: TableProps) {
         rows={p.rows}
         input={p.live ? input : ''}
         revealed={p.revealed ?? []}
+        locked={locked}
+        way={p.way ?? 'tries'}
         activeColor={p.activeColor}
         rowSeq={p.rowSeq}
         shake={shake}
@@ -146,10 +168,14 @@ export function SlideTable(p: TableProps) {
         </Animated.View>
       ) : (
         <View style={{ gap: u(6) }}>
-          {p.hint ? (
-            <HelperButton label={p.hint.label} tone="purple" onPress={p.hint.onPress} disabled={p.hint.disabled} style={{ alignSelf: 'center', paddingVertical: u(7), paddingHorizontal: u(16) }} />
+          {p.helpers?.length ? (
+            <View style={s.helpers}>
+              {p.helpers.map((h) => (
+                <HelperButton key={h.tone} label={h.label} tone={h.tone} onPress={h.onPress} disabled={h.disabled} style={s.helper} compact />
+              ))}
+            </View>
           ) : null}
-          <Keys c={c} keys={keys} onKey={press} />
+          {surgeon ? <Tray c={c} letters={left(tray, input)} onKey={press} /> : <Keys c={c} keys={keys} onKey={press} />}
         </View>
       )}
       {p.children}
@@ -217,8 +243,9 @@ export function TurnClock({ ms, warn }: { ms: number; warn: boolean }) {
 
 function Board(p: {
   c: SlideColors; answer: string; played: PlayedRow[]; rows: number; input: string; revealed: number[]; activeColor?: string;
-  rowSeq: number; shake: number; hidden?: boolean; toast: string | null; note: ReactNode;
+  rowSeq: number; shake: number; hidden?: boolean; toast: string | null; note: ReactNode; locked: Set<number>; way: Way;
 }) {
+  const mark = marksFor(p.way);
   const t = useTheme();
   const cols = p.answer.length;
   const [box, setBox] = useState({ w: 0, h: 0 });
@@ -236,7 +263,7 @@ function Board(p: {
               const row = p.played[r];
               if (row) {
                 if (!row.word) return <PassedRow key={r} c={p.c} cols={cols} tile={tile} color={row.color} />;
-                const marks = score(row.word, p.answer);
+                const marks = mark(row.word, p.answer);
                 const fresh = r === p.played.length - 1;
                 return (
                   <View key={r} style={s.row}>
@@ -247,7 +274,7 @@ function Board(p: {
                 );
               }
               if (r === activeRow)
-                return <ActiveRow key={r} c={p.c} cols={cols} tile={tile} input={p.input} answer={p.answer} revealed={p.revealed} color={p.activeColor} shake={p.shake} />;
+                return <ActiveRow key={r} c={p.c} cols={cols} tile={tile} input={p.input} answer={p.answer} revealed={p.revealed} locked={p.way === 'surgeon' ? p.locked : null} color={p.activeColor} shake={p.shake} />;
               return (
                 <View key={r} style={s.row}>
                   {Array.from({ length: cols }, (_, i) => (
@@ -269,7 +296,7 @@ function Board(p: {
   );
 }
 
-function ActiveRow({ c, cols, tile, input, answer, revealed, color, shake }: { c: SlideColors; cols: number; tile: number; input: string; answer: string; revealed: number[]; color?: string; shake: number }) {
+function ActiveRow({ c, cols, tile, input, answer, revealed, locked, color, shake }: { c: SlideColors; cols: number; tile: number; input: string; answer: string; revealed: number[]; locked: Set<number> | null; color?: string; shake: number }) {
   const x = useSharedValue(0);
   useEffect(() => {
     if (!shake) return;
@@ -280,7 +307,9 @@ function ActiveRow({ c, cols, tile, input, answer, revealed, color, shake }: { c
   return (
     <Animated.View style={[s.row, st]}>
       {Array.from({ length: cols }, (_, i) => {
-        const typed = input[i];
+        // Surgeon: a slot shown by the Letter helper keeps its letter; the placed letters fill the other slots in order.
+        if (locked?.has(i)) return <Tile key={i} c={c} size={tile} letter={answer[i]} mark="ok" delay={-1} edge={i === 0 ? color : undefined} />;
+        const typed = locked ? input[[...Array(i).keys()].filter((j) => !locked.has(j)).length] : input[i];
         const ghost = !typed && revealed.includes(i) ? answer[i] : undefined;
         return <Tile key={i} c={c} size={tile} letter={typed ?? ''} ghost={ghost} mark={null} delay={-1} typed={!!typed} edge={i === 0 ? color : undefined} />;
       })}
@@ -340,6 +369,36 @@ function SpecimenNote({ c, text, hot, wait }: { c: SlideColors; text: string | n
   );
 }
 
+/** A stable number from a word, so its tray shuffles the same way on every render. */
+const hashOf = (w: string) => [...w].reduce((h, ch) => (h * 31 + ch.charCodeAt(0)) >>> 0, 7);
+/** The tray's letters not placed yet (each placed letter takes one copy out). */
+function left(tray: string[], placed: string): string[] {
+  const out = [...tray];
+  for (const ch of placed) {
+    const i = out.indexOf(ch);
+    if (i >= 0) out.splice(i, 1);
+  }
+  return out;
+}
+
+/** Word Surgeon's tray (Yazan 2026-11-18): the scrambled letters still to place, then Back and Check. */
+function Tray({ c, letters, onKey }: { c: SlideColors; letters: string[]; onKey: (k: string) => void }) {
+  return (
+    <View {...LTR_WEB} style={[s.kb, LTR]}>
+      <View style={[s.krow, s.tray]}>
+        {letters.map((ch, i) => (
+          <Key key={`${ch}${i}`} label={ch} c={c} big onPress={() => onKey(ch)} />
+        ))}
+        {!letters.length ? <Text style={[s.trayDone, { color: c.offText }]}>{tr('Every slot is filled')}</Text> : null}
+      </View>
+      <View style={s.krow}>
+        <Key label="⌫" a11y={tr('Delete')} act c={c} onPress={() => onKey('DEL')} />
+        <Key label={tr('Check')} act c={c} onPress={() => onKey('ENTER')} />
+      </View>
+    </View>
+  );
+}
+
 /** Glass key slides; each letter shows its best result in green, yellow or grey (NM21). */
 function Keys({ c, keys, onKey }: { c: SlideColors; keys: Record<string, 'ok' | 'near' | 'off'>; onKey: (k: string) => void }) {
   const t = useTheme();
@@ -361,10 +420,10 @@ function Keys({ c, keys, onKey }: { c: SlideColors; keys: Record<string, 'ok' | 
   );
 }
 
-function Key({ label, a11y, wide, c, bg, fg, onPress }: { label: string; a11y?: string; wide?: boolean; c: SlideColors; bg?: string; fg?: string; onPress: () => void }) {
+function Key({ label, a11y, wide, big, act, c, bg, fg, onPress }: { label: string; a11y?: string; wide?: boolean; big?: boolean; act?: boolean; c: SlideColors; bg?: string; fg?: string; onPress: () => void }) {
   const t = useTheme();
   return (
-    <Pressable onPress={onPress} style={({ pressed }) => [s.key, wide && s.keyWide, { backgroundColor: bg ?? c.key, borderColor: c.line, opacity: pressed ? 0.7 : 1 }]} accessibilityRole="button" accessibilityLabel={a11y ?? label}>
+    <Pressable onPress={onPress} style={({ pressed }) => [s.key, wide && s.keyWide, big && s.keyBig, act && s.keyAct, { backgroundColor: bg ?? c.key, borderColor: c.line, opacity: pressed ? 0.7 : 1 }]} accessibilityRole="button" accessibilityLabel={a11y ?? label}>
       <LinearGradient colors={[c.fadeTop, 'transparent']} style={s.keyTop} pointerEvents="none" />
       <Text style={[s.keyT, wide && s.keyTW, { color: fg ?? t.fg }]}>{label}</Text>
     </Pressable>
@@ -400,13 +459,20 @@ const s = StyleSheet.create({
   note: { borderWidth: 1.5, borderStyle: 'dashed', borderRadius: u(10), paddingVertical: u(6), paddingHorizontal: u(10), gap: u(2) },
   noteL: { fontFamily: F.bodyBold, fontSize: u(7), letterSpacing: u(1.3) },
   noteT: { fontFamily: F.body, fontSize: u(10.5), lineHeight: u(14) },
-  hint: { alignSelf: 'center', borderWidth: 1, borderRadius: u(4), paddingVertical: u(5), paddingHorizontal: u(12) },
-  hintT: { fontFamily: F.bodySemi, fontSize: u(10) },
+  // Up to three helpers share one row; each shrinks, never wraps the keyboard down.
+  helpers: { flexDirection: 'row', gap: u(5), justifyContent: 'center' },
+  helper: { flexShrink: 1, paddingVertical: u(7), paddingHorizontal: u(8) },
   kb: { gap: u(4.5) },
+  tray: { flexWrap: 'wrap', minHeight: u(40), alignItems: 'center' },
+  trayDone: { fontFamily: F.body, fontSize: u(10.5) },
   krow: { flexDirection: 'row', justifyContent: 'center', gap: u(3.5) },
   // tablet (Yazan 2026-11-12): the phone's keyboard, just bigger keys across the wider screen
   key: { flex: 1, maxWidth: u(TABLET ? 38 : 23), height: u(TABLET ? 44 : 34), borderRadius: u(3), borderWidth: 1, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
   keyWide: { flex: 1.6, maxWidth: u(TABLET ? 62 : 38) },
+  // Surgeon tray tiles: fixed size, so up to 15 letters wrap into neat rows.
+  keyBig: { flexGrow: 0, flexShrink: 0, flexBasis: 'auto', width: u(TABLET ? 44 : 30), maxWidth: u(TABLET ? 44 : 30), height: u(TABLET ? 48 : 38) },
+  // Surgeon's Back and Check: wide enough to read and hit.
+  keyAct: { flexGrow: 0, flexShrink: 0, flexBasis: 'auto', width: u(TABLET ? 120 : 92), maxWidth: u(TABLET ? 120 : 92) },
   keyTop: { position: 'absolute', left: 0, right: 0, top: 0, height: '50%' },
   keyT: { fontFamily: F.bodySemi, fontSize: u(TABLET ? 14 : 11) },
   keyTW: { fontSize: u(9) },

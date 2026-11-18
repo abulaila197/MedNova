@@ -84,11 +84,12 @@ export const HELPER = {
 export type HelperTone = keyof typeof HELPER;
 
 /** A paid helper in the Race to Diagnosis style. */
-export function HelperButton({ label, tone, onPress, disabled, style }: { label: string; tone: HelperTone; onPress?: () => void; disabled?: boolean; style?: StyleProp<ViewStyle> }) {
+/** `compact`: smaller text, for a row of three helpers on a phone (Six Word Tries). */
+export function HelperButton({ label, tone, onPress, disabled, style, compact }: { label: string; tone: HelperTone; onPress?: () => void; disabled?: boolean; style?: StyleProp<ViewStyle>; compact?: boolean }) {
   const c = HELPER[tone];
   return (
     <Pressable onPress={tapped(onPress)} disabled={disabled} accessibilityRole="button" accessibilityLabel={spoken(label)} style={[s.helper, { backgroundColor: c.bg, borderColor: c.line }, style]}>
-      <CoinLabel text={label} style={[s.helperT, { color: c.fg, opacity: disabled ? 0.45 : 1 }]} numberOfLines={1} />
+      <CoinLabel text={label} style={[s.helperT, compact && s.helperTS, { color: c.fg, opacity: disabled ? 0.45 : 1 }]} numberOfLines={1} />
     </Pressable>
   );
 }
@@ -182,6 +183,7 @@ export const s = StyleSheet.create({
   btnT: { fontFamily: F.bodyBold, fontSize: u(12.5), lineHeight: u(15) },
   helper: { borderWidth: 1, borderRadius: u(10), paddingVertical: u(11), paddingHorizontal: u(10), alignItems: 'center', justifyContent: 'center' },
   helperT: { fontFamily: F.bodyBold, fontSize: u(12), lineHeight: u(15) },
+  helperTS: { fontSize: u(10), lineHeight: u(13) },
   ghost: { borderRadius: u(14), borderWidth: 1, paddingVertical: u(10), paddingHorizontal: u(16), alignItems: 'center' },
   ghostT: { fontFamily: F.bodySemi, fontSize: u(12), lineHeight: u(15) },
   card: { borderRadius: u(18), borderWidth: 1, padding: u(14), gap: u(8) },

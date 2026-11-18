@@ -3,10 +3,7 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
 import { rank } from '../../engine/standings';
-import {
-  bumpStreak, closeThreshold, dailyOpen, dailyWord, dayNumber, inList, isClose, keyStates, lengthCheck, liveStreak, nextLap, offlineRows,
-  pickHint, score, seeded, shareText, soloExp,
-} from '../core';
+import { bumpStreak, closeThreshold, dailyOpen, dailyWord, dayNumber, helpsUsed, inList, isClose, keyStates, lengthCheck, liveStreak, nextLap, NO_HELP, offlineRows, pickClear, pickHint, score, seeded, shareText, soloExp, surgeonGuess, surgeonMarks, trayOf, wayOf, withGrant } from '../core';
 import { currentSeat, guessesOf, offlineStandings, startOffline, stepOffline, turnLeft } from '../offline';
 import { showDefinition, startSolo, stepSolo } from '../solo';
 
@@ -119,12 +116,12 @@ test('solo: definition on the last try, win scores by guess, daily ends after on
 
 test('solo endless: next word, hints reset, finish any time between words', () => {
   let r = startSolo('endless', 'custom', ['a', 'b'], null, 0);
-  r = stepSolo(r, { type: 'HINT_GRANTED', columns: [1, 6] });
-  assert.equal(r.hints, 1);
+  r = stepSolo(r, { type: 'HELP', grant: { kind: 'letter', columns: [1, 6] } });
+  assert.equal(r.help.letters, 1);
   r = stepSolo(r, { type: 'GUESS', word: 'MALARIA', answer: 'MALARIA', now: 1 });
   assert.equal(r.results[0].exp, 12);
   r = stepSolo(r, { type: 'NEXT', now: 2 });
-  assert.deepEqual([r.index, r.hints, r.revealed.length], [1, 0, 0]);
+  assert.deepEqual([r.index, r.help.letters, r.help.revealed.length], [1, 0, 0]);
   r = stepSolo(r, { type: 'PAUSE', now: 3 });
   r = stepSolo(r, { type: 'RESUME', now: 4 });
   for (let i = 0; i < 6; i++) r = stepSolo(r, { type: 'GUESS', word: 'CHOLERA', answer: 'MALARIA', now: 5 });
@@ -232,4 +229,27 @@ test('endless (NM30): a word that already paid EXP pays nothing again', () => {
   r = stepSolo(r, { type: 'GUESS', word: 'ANEMIA', answer: 'ANEMIA', now: 3 });
   assert.ok(r.results[1].exp > 0);
   assert.deepEqual(r.paid, ['w1', 'w2']);
+});
+
+test('helpers: Clear picks 3 grey-able letters not in the word; grants add up', () => {
+  const pick = pickClear('MALARIA', ['CHOLERA'], [], () => 0.3)!;
+  assert.equal(pick.length, 3);
+  for (const ch of pick) assert.ok(!'MALARIA'.includes(ch) && !'CHOLE'.includes(ch));
+  let h = withGrant(NO_HELP, { kind: 'letter', columns: [1, 3] });
+  h = withGrant(h, { kind: 'clear', letters: pick });
+  h = withGrant(h, { kind: 'define' });
+  assert.deepEqual([h.letters, h.revealed, h.cleared.length, h.defined, helpsUsed(h)], [1, [1, 3], 3, true, 3]);
+});
+
+test('Word Surgeon: a try is all green or all grey; the tray never spells the word; guesses keep shown letters', () => {
+  assert.deepEqual(surgeonMarks('MALARIA', 'MALARIA'), Array(7).fill('ok'));
+  assert.deepEqual(surgeonMarks('MALAIRA', 'MALARIA'), Array(7).fill('off'));
+  for (let seed = 0; seed < 50; seed++) {
+    const tray = trayOf('SCURVY', new Set(), seed);
+    assert.equal([...tray].sort().join(''), 'CRSUVY');
+    assert.notEqual(tray.join(''), 'SCURVY');
+  }
+  assert.equal(surgeonGuess('SCURVY', new Set([0, 5]), 'CURV'), 'SCURVY');
+  assert.equal(wayOf({ way: 'surgeon' }), 'surgeon');
+  assert.equal(wayOf({}), 'tries');
 });

@@ -1,6 +1,6 @@
 // Nova Medicordle Solo: a daily word or an endless queue (NM5-NM7), 6 tries, free definition on the last try,
-// letter hints in Custom only (NM3, NM23), EXP by guesses used (NM22); in Endless each word pays EXP once for life (NM30). The clock is for stats; it pauses and hides (rule 4).
-import { MAX_ROWS, soloExp, type Style } from './core';
+// paid helpers in Endless (2026-11-18, were letter hints in Custom only, NM3/NM23), EXP by guesses used (NM22); in Endless each word pays EXP once for life (NM30). The clock is for stats; it pauses and hides (rule 4).
+import { helpsUsed, MAX_ROWS, NO_HELP, soloExp, withGrant, type Grant, type Help, type Style } from './core';
 
 export type WordResult = {
   wordId: string;
@@ -21,9 +21,8 @@ export type SoloRun = {
   wordIds: string[];
   index: number;
   guesses: string[];
-  /** Columns shown by paid hints (NM3). */
-  revealed: number[];
-  hints: number;
+  /** What the paid helpers showed on this word (Endless only). */
+  help: Help;
   phase: SoloPhase;
   before: 'playing' | 'wordOver' | null;
   elapsedMs: number;
@@ -38,7 +37,7 @@ export type SoloRun = {
 
 export type SoloEvent =
   | { type: 'GUESS'; word: string; answer: string; now: number }
-  | { type: 'HINT_GRANTED'; columns: number[] }
+  | { type: 'HELP'; grant: Grant }
   | { type: 'PAUSE'; now: number }
   | { type: 'RESUME'; now: number }
   | { type: 'NEXT'; now: number; more?: string[] }
@@ -46,7 +45,7 @@ export type SoloEvent =
 
 export function startSolo(kind: SoloRun['kind'], style: Style, wordIds: string[], day: number | null, now: number, paid: string[] = []): SoloRun {
   return {
-    kind, style, day, wordIds, index: 0, guesses: [], revealed: [], hints: 0, phase: 'playing', before: null,
+    kind, style, day, wordIds, index: 0, guesses: [], help: NO_HELP, phase: 'playing', before: null,
     elapsedMs: 0, runningSince: now, results: [], score: 0, rowSeq: 0, paid,
   };
 }
@@ -60,7 +59,16 @@ export function snapshotSolo(r: SoloRun, now: number): SoloRun {
 }
 
 /** The definition shows on the last try and after the word ends (as coded, NM19 for Custom). */
-export const showDefinition = (r: SoloRun) => r.guesses.length >= MAX_ROWS - 1 || r.phase === 'wordOver' || (r.phase === 'paused' && r.before === 'wordOver');
+export const definitionDue = (r: SoloRun) => r.guesses.length >= MAX_ROWS - 1 || r.phase === 'wordOver' || (r.phase === 'paused' && r.before === 'wordOver');
+/** ...or earlier, when the Definition helper was bought. */
+export const showDefinition = (r: SoloRun) => r.help.defined || definitionDue(r);
+
+/** A save from before the helpers (2026-11-18) kept `revealed` and `hints`; it resumes with the same letters shown. */
+export function upgradeRun(r: SoloRun & { revealed?: number[]; hints?: number }): SoloRun {
+  if (r.help) return r;
+  const { revealed, hints, ...rest } = r;
+  return { ...rest, help: { ...NO_HELP, revealed: revealed ?? [], letters: hints ?? 0 } };
+}
 
 export function stepSolo(r: SoloRun, e: SoloEvent): SoloRun {
   switch (e.type) {
@@ -73,16 +81,16 @@ export function stepSolo(r: SoloRun, e: SoloEvent): SoloRun {
       const wordId = r.wordIds[r.index];
       const paidBefore = r.kind === 'endless' && (r.paid ?? []).includes(wordId);
       const exp = paidBefore ? 0 : soloExp(solved ? guesses.length : null, r.kind === 'daily');
-      const res: WordResult = { wordId, solved, guesses, timeMs, hints: r.hints, exp };
+      const res: WordResult = { wordId, solved, guesses, timeMs, hints: helpsUsed(r.help), exp };
       return {
         ...r, guesses, rowSeq: r.rowSeq + 1, phase: 'wordOver', elapsedMs: timeMs, runningSince: null,
         results: [...r.results, res], score: r.score + exp,
         ...(r.kind === 'endless' && exp > 0 ? { paid: [...(r.paid ?? []), wordId] } : null),
       };
     }
-    case 'HINT_GRANTED':
+    case 'HELP':
       if (r.phase !== 'playing' && !(r.phase === 'paused' && r.before === 'playing')) return r;
-      return { ...r, hints: r.hints + 1, revealed: [...r.revealed, ...e.columns.filter((c) => !r.revealed.includes(c))] };
+      return { ...r, help: withGrant(r.help, e.grant) };
     case 'PAUSE':
       if (r.phase === 'playing') return { ...r, phase: 'paused', before: 'playing', elapsedMs: soloElapsed(r, e.now), runningSince: null };
       if (r.phase === 'wordOver') return { ...r, phase: 'paused', before: 'wordOver' };
@@ -95,7 +103,7 @@ export function stepSolo(r: SoloRun, e: SoloEvent): SoloRun {
       if (r.kind === 'daily') return { ...r, phase: 'done' };
       const wordIds = e.more?.length ? [...r.wordIds, ...e.more] : r.wordIds;
       if (r.index + 1 >= wordIds.length) return { ...r, phase: 'done' };
-      return { ...r, wordIds, index: r.index + 1, guesses: [], revealed: [], hints: 0, phase: 'playing', elapsedMs: 0, runningSince: e.now };
+      return { ...r, wordIds, index: r.index + 1, guesses: [], help: NO_HELP, phase: 'playing', elapsedMs: 0, runningSince: e.now };
     }
     case 'FINISH':
       return r.phase === 'wordOver' || (r.phase === 'paused' && r.before === 'wordOver') ? { ...r, phase: 'done', before: null } : r;

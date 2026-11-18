@@ -17,6 +17,29 @@ const STYLE = {
   initial: 'classic',
 };
 
+/** How a word is played (Yazan 2026-11-18): guessed in six tries, or repaired from its scrambled letters. */
+const WAY = {
+  key: 'way',
+  label: tr('Play style'),
+  choices: [
+    { value: 'tries', label: tr('Six tries'), note: tr('guess real words') },
+    { value: 'surgeon', label: tr('Word Surgeon'), note: tr('fix the scrambled word') },
+  ],
+  initial: 'tries',
+};
+
+/** What the words ask about (Yazan 2026-11-17): every word is tagged clinical or basic science. */
+const KNOW = {
+  key: 'know',
+  label: tr('Knowledge'),
+  choices: [
+    { value: 'clinical', label: tr('Clinical'), note: tr('diseases and care') },
+    { value: 'basic', label: tr('Basic sciences'), note: tr('body, cells, lab') },
+    { value: 'mixed', label: tr('Mixed'), note: tr('both') },
+  ],
+  initial: 'mixed',
+};
+
 /** Nova Medicordle on the shared shell (NM1-NM25): Solo, Offline and Online Multiplayer. */
 export const novaMedicordle: GameDef = {
   key: 'nova-medicordle',
@@ -27,10 +50,11 @@ export const novaMedicordle: GameDef = {
       blurb: tr('Today\'s word for everyone, or keep going with endless words.'),
       howTo: [
         tr('Guess the hidden medical word in six tries. Every guess must be a real word.'),
+        tr('Word Surgeon: the word\'s own letters come scrambled. Fill every slot and tap Check: a try is only right or wrong, then every letter goes back for the next try. Six tries.'),
         tr('Green is the right letter in the right place, yellow is in the word but elsewhere, grey is not in the word.'),
         tr('Classic words have 6 letters, or 5 in Classic 5. Custom words have 7 to 15, and a guess can be shorter than the word.'),
         tr('The Daily word is always 6 letters. Classic 5 plays in Endless.'),
-        tr('The definition appears on your last guess. Custom words also have up to two letter hints, 1 token then 2.'),
+        tr('The definition appears on your last guess. In Endless, helpers above the keyboard give a letter (1 token, then 2), clear 3 wrong letters (1) or show the definition early (1).'),
         tr('Fewer guesses earn more EXP. The daily word earns double and keeps your streak going.'),
       ],
     },
@@ -40,6 +64,7 @@ export const novaMedicordle: GameDef = {
       blurb: tr('Pass the phone. Whoever guesses the word wins it.'),
       howTo: [
         tr('Add 2 to 6 players. Everyone guesses on the same board, one guess per turn.'),
+        tr('Word Surgeon: the word\'s own letters come scrambled. Fill every slot and tap Check: a try is only right or wrong, then every letter goes back for the next try. Six tries.'),
         tr('Each lap goes round every player in a random order, and nobody plays twice in a row.'),
         tr('Rows round up so everyone gets the same number of guesses. A turn that runs out of time passes.'),
         tr('Whoever guesses the word wins it. Most words wins. There are no hints and no EXP in this mode.'),
@@ -53,8 +78,9 @@ export const novaMedicordle: GameDef = {
       howTo: [
         tr('Pick Freshmen, Scholars, Geniuses or Random and 1 to 3 rivals. Meet them in the room: tap a rival for its profile, swap it or kick it.'),
         tr('Everyone gets the same word at the same time, six tries each. The rivals\' small boards fill with colours as they guess, never letters.'),
+        tr('Word Surgeon: the word\'s own letters come scrambled. Fill every slot and tap Check: a try is only right or wrong, then every letter goes back for the next try. Six tries.'),
         tr('First solver scores 100, then 80, 65 and so on, plus 10 for each guess left.'),
-        tr('No letter hints; the definition appears in the last 20 seconds of each word.'),
+        tr('Helpers above the keyboard give a letter (1 token, then 2), clear 3 wrong letters (1) or show the definition early (1). The definition also appears free in the last 20 seconds.'),
         tr('EXP works like Solo: 12 for a first-guess solve, down to 2 on the sixth.'),
       ],
     },
@@ -70,10 +96,15 @@ export const novaMedicordle: GameDef = {
         ],
         initial: 'daily',
       },
+      // The Daily word is one word for everyone, so Word Surgeon and the Knowledge row are for Endless only.
+      { ...WAY, when: (v) => v.word === 'endless' },
       STYLE,
+      { ...KNOW, when: (v) => v.word === 'endless' },
     ],
     offline: [
+      WAY,
       STYLE,
+      KNOW,
       {
         key: 'words',
         label: tr('Words'),
@@ -96,7 +127,9 @@ export const novaMedicordle: GameDef = {
     ],
     // NM15: style, 3, 5 or 10 words, and 60, 90 or 120 s per word.
     bots: [
+      WAY,
       STYLE,
+      KNOW,
       {
         key: 'words',
         label: tr('Words'),

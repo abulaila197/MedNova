@@ -15,8 +15,8 @@ import { PauseMenu } from '../shell/PauseMenu';
 import { teamLap, teamsOf } from '../shell/teams';
 import type { PlayProps } from '../shell/types';
 import { Btn, GameScreen } from '../shell/ui';
-import { lengthCheck, minLen, type Style } from './core';
-import { isWord, poolFor, wordById } from './data';
+import { lengthCheck, minLen, wayOf, type Style } from './core';
+import { isWord, knowOf, poolFor, wordById } from './data';
 import {
   currentSeat, offlineRecap, offlineStandings, showDefinition, snapshotOffline, startOffline, stepOffline, turnLeft,
   type OfflineEvent, type OfflineRun,
@@ -36,6 +36,7 @@ const STYLE_NAME: Record<Style, string> = { classic: tr('Classic'), five: tr('Cl
 export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   const t = useTheme();
   const style = (play.settings.style as Style) ?? 'classic';
+  const way = wayOf(play.settings);
   const [run, setRun] = useState<OfflineRun | null>(null);
   const runRef = useRef<OfflineRun | null>(null);
   const seatOf = useMemo(() => new Map(play.seats.map((x) => [x.seat, x])), [play.seats]);
@@ -50,7 +51,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
         const live = play.seats.filter((x) => !x.removed);
         const seats = live.map((x) => x.seat);
         const words = Number(play.settings.words) || 3;
-        const ids = await engine.picker.pick(play.game, poolFor(style).map((w) => w.id), words);
+        const ids = await engine.picker.pick(play.game, poolFor(style, knowOf(play.settings)).map((w) => w.id), words);
         const teams = teamsOf(play);
         r = startOffline(style, seats, ids, (Number(play.settings.turn) || 20) * 1000, Math.random, teams ? teamLap(live, teams) : null);
       }
@@ -118,6 +119,11 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   const recap = phase === 'ready' ? offlineRecap(run, seat, play, (id) => wordById.get(id)!.word) : [];
 
   const submit = (g: string) => {
+    // A Surgeon try is the word's own letters, always the full length: no list or length check.
+    if (way === 'surgeon') {
+      dispatch({ type: 'GUESS', word: g, answer: w.word, now: clockNow() });
+      return null;
+    }
     const bad = lengthCheck(g, style, w.word.length);
     if (bad === 'short') return style === 'custom' ? tr('At least 7 letters') : tr('Not enough letters');
     if (bad === 'long') return tr('Too many letters');
@@ -132,7 +138,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
       label={{
         no: tr('WORD {n} OF {n2}', { n: run.index + 1, n2: run.wordIds.length }),
         title: tr('Six Word Tries'),
-        sub: phase === 'wordOver' ? tr('{n} · {n2} letters · {rows} rows', { n: STYLE_NAME[style], n2: w.word.length, rows: run.rows }) : <TurnName name={who?.name ?? ''} color={who?.color} after={tr('’s turn · {n} · {n2} letters', { n: STYLE_NAME[style], n2: w.word.length })} />,
+        sub: phase === 'wordOver' ? tr('{n} · {n2} letters · {rows} rows', { n: way === 'surgeon' ? tr('Word Surgeon') : STYLE_NAME[style], n2: w.word.length, rows: run.rows }) : <TurnName name={who?.name ?? ''} color={who?.color} after={tr('’s turn · {n} · {n2} letters', { n: way === 'surgeon' ? tr('Word Surgeon') : STYLE_NAME[style], n2: w.word.length })} />,
         right: phase === 'playing' ? <TurnClock ms={left} warn={left <= HURRY_MS} /> : undefined,
       }}
       answer={w.word}
@@ -144,6 +150,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
       noteHot={run.phase === 'playing' || (run.phase === 'paused' && run.before === 'playing')}
       live={run.phase === 'playing'}
       onSubmit={submit}
+      way={way}
       maxLen={w.word.length}
       minLen={minLen(style)}
       onPause={() => dispatch({ type: 'PAUSE', now: Date.now() })}
