@@ -435,8 +435,19 @@ const DragCard = memo(function DragCard({ card, text, from, ctx, half, fixed }: 
 
 /** The beige card itself, with a small grip of dots on its start side. */
 function StepCard({ text, edge, fixed, lifted }: { text: string; edge?: boolean; fixed?: boolean; lifted?: boolean }) {
+  // A long unbroken word (Acetylcholinesterase, Phosphoenolpyruvate) gets a smaller font so it never runs out of the
+  // card on a narrow phone; everything else keeps the normal size.
+  const [w, setW] = useState(0);
+  const run = longestRun(text);
+  const room = w - u(32);
+  const size = w && room < run * u(11.5) * 0.56 ? Math.max(u(8.5), room / (run * 0.56)) : u(11.5);
   return (
-    <View style={[s.card, edge && { borderStartWidth: u(4), borderStartColor: fixed ? GREEN : CYAN }, lifted && s.lifted]}>
+    <View
+      style={[s.card, edge && { borderStartWidth: u(4), borderStartColor: fixed ? GREEN : CYAN }, lifted && s.lifted]}
+      onLayout={(e) => {
+        const nw = Math.round(e.nativeEvent.layout.width);
+        if (nw !== w) setW(nw);
+      }}>
       <View style={s.grip}>
         {[0, 1, 2].map((r) => (
           <View key={r} style={s.gripRow}>
@@ -445,10 +456,13 @@ function StepCard({ text, edge, fixed, lifted }: { text: string; edge?: boolean;
           </View>
         ))}
       </View>
-      <Text style={s.cardT}>{text}</Text>
+      <Text style={[s.cardT, size !== u(11.5) && { fontSize: size, lineHeight: size * 1.3 }]}>{text}</Text>
     </View>
   );
 }
+
+/** Letters in the longest piece of text that can't wrap (words split at spaces and hyphens). */
+const longestRun = (t: string) => Math.max(...t.split(/[\s-]+/).map((x) => x.length));
 
 /** The step under the finger. Drawn left to right in both languages, so its place matches the finger. */
 function Ghost({ drag, q, setRef }: { drag: Drag; q: Question; setRef: { current: (card: number | null) => void } }) {
