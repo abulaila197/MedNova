@@ -164,7 +164,7 @@ function TopBar(p: BoardProps) {
         <Text style={[s.ct, { color: p.titleColor ?? t.white }]} numberOfLines={1}>
           {p.title} <Text style={[s.of, { color: t.mute }]}>{p.sub}</Text>
         </Text>
-        <Text style={[s.diff, { color: col, borderColor: alpha(col, 0.55), backgroundColor: alpha(col, 0.12) }]}>{pill.label}</Text>
+        <Text style={[s.diff, { color: col, borderColor: alpha(col, 0.55), backgroundColor: alpha(col, 0.12) }]} numberOfLines={1}>{pill.label}</Text>
         <RoundBtn label={tr('Pause')} glyph="❚❚" onPress={p.onPause} />
       </View>
       <View style={[s.stats, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
@@ -244,12 +244,15 @@ function LetterHint({ c }: { c: DPCase }) {
   const purple = '#d8b4fe';
   const name = kit.guessById.get(c.answer_id)?.label ?? c.disease;
   const words = name.split(/\s+/).filter(Boolean);
-  // Long names (an enzyme can have 25 letters in one word) get smaller boxes and wrap inside the word.
-  const small = Math.max(...words.map((w) => w.length)) > 12;
+  // Very long names (an enzyme can have 25 letters in one word) get smaller boxes and wrap inside the word.
+  const small = Math.max(...words.map((w) => w.length)) > 18;
   let first = true;
   return (
-    <Animated.View entering={FadeIn} style={[s.hint, { borderColor: alpha('#a78bfa', 0.4), backgroundColor: alpha('#6d28d9', 0.16) }]}>
-      <Text style={[s.hintK, { color: purple }]}>{kit.hint.title}</Text>
+    <Animated.View entering={FadeIn} style={[s.lHint, { borderColor: alpha('#a78bfa', 0.4), backgroundColor: alpha('#6d28d9', 0.16) }]}>
+      <View style={s.lHead}>
+        <Text style={[s.hintK, { color: purple }]}>{kit.hint.title}</Text>
+        <Text style={[s.lN, { color: t.mute }]}>{tr('{n} letters', { n: [...name].filter((ch) => /[A-Za-z0-9]/.test(ch)).length })}</Text>
+      </View>
       <View style={s.lWords}>
         {words.map((w, wi) => (
           <View key={wi} style={s.lWord}>
@@ -268,7 +271,6 @@ function LetterHint({ c }: { c: DPCase }) {
           </View>
         ))}
       </View>
-      <Text style={[s.lN, { color: t.mute }]}>{tr('{n} letters', { n: [...name].filter((ch) => /[A-Za-z0-9]/.test(ch)).length })}</Text>
     </Animated.View>
   );
 }
@@ -431,9 +433,10 @@ const s = StyleSheet.create({
   fill: { flex: 1 },
   top: { gap: u(9), marginBottom: u(9) },
   caseRow: { flexDirection: 'row', alignItems: 'center', gap: u(8) },
-  ct: { fontFamily: F.display, fontSize: u(21), lineHeight: u(24) },
+  // The title gives way first; the pill (a long category such as Biochemistry) never wraps.
+  ct: { flexShrink: 1, fontFamily: F.display, fontSize: u(21), lineHeight: u(24) },
   of: { fontFamily: F.bodyMedium, fontSize: u(12) },
-  diff: { marginStart: 'auto', fontFamily: F.bodyBold, fontSize: u(8.5), letterSpacing: u(0.8), textTransform: 'uppercase', borderWidth: 1, borderRadius: u(6), paddingVertical: u(4), paddingHorizontal: u(7), overflow: 'hidden' },
+  diff: { flexShrink: 0, marginStart: 'auto', fontFamily: F.bodyBold, fontSize: u(8.5), letterSpacing: u(0.8), textTransform: 'uppercase', borderWidth: 1, borderRadius: u(6), paddingVertical: u(4), paddingHorizontal: u(7), overflow: 'hidden' },
   stats: { flexDirection: 'row', borderWidth: 1, borderRadius: u(12), paddingVertical: u(9), paddingHorizontal: u(11), gap: u(8) },
   st: { flex: 1, gap: u(2) },
   sl: { fontFamily: F.bodyBold, fontSize: u(7.5), lineHeight: u(10), letterSpacing: u(0.6), textTransform: 'uppercase' },
@@ -476,12 +479,14 @@ const s = StyleSheet.create({
   resN: { fontFamily: F.bodySemi, fontSize: u(10.5), textAlign: 'center', marginTop: u(6) },
   resL: { fontFamily: F.body, fontSize: u(11.5), lineHeight: u(16), marginTop: u(2) },
   resFact: { fontFamily: F.body, fontSize: u(11.5), lineHeight: u(16), marginTop: u(4), paddingTop: u(7), borderTopWidth: 1 },
-  // Letter hint: answers stay English, so the boxes always read left to right.
-  lWords: { flexDirection: 'row', flexWrap: 'wrap', columnGap: u(10), rowGap: u(6), marginTop: u(4), direction: 'ltr' },
-  lWord: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: u(3) },
-  lBox: { width: u(17), height: u(21), borderWidth: 1, borderRadius: u(4), alignItems: 'center', justifyContent: 'center' },
-  lBoxS: { width: u(12), height: u(16), borderRadius: u(3) },
-  lT: { fontFamily: F.bodyBold, fontSize: u(11), lineHeight: u(14) },
-  lSep: { fontFamily: F.bodyBold, fontSize: u(12) },
-  lN: { fontFamily: F.bodyMedium, fontSize: u(9.5), marginTop: u(3) },
+  // Letter hint (Yazan 2026-11-18: smaller box and tiles): answers stay English, so the boxes always read left to right.
+  lHint: { borderWidth: 1, borderRadius: u(9), paddingVertical: u(5), paddingHorizontal: u(8), gap: u(4) },
+  lHead: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: u(8) },
+  lWords: { flexDirection: 'row', flexWrap: 'wrap', columnGap: u(8), rowGap: u(4), direction: 'ltr' },
+  lWord: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: u(2) },
+  lBox: { width: u(12), height: u(15), borderWidth: 1, borderRadius: u(3), alignItems: 'center', justifyContent: 'center' },
+  lBoxS: { width: u(9.5), height: u(12.5), borderRadius: u(2.5) },
+  lT: { fontFamily: F.bodyBold, fontSize: u(8.5), lineHeight: u(11) },
+  lSep: { fontFamily: F.bodyBold, fontSize: u(10) },
+  lN: { fontFamily: F.bodyMedium, fontSize: u(8.5) },
 });

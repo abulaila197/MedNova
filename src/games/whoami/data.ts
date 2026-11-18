@@ -49,7 +49,7 @@ export function categoryMenu(min: number): FieldMenu {
     groups: [{ title: 'Basic science', items: CATEGORIES.map((c) => ({ key: c, label: c, count: count(c) })) }],
     total: (ticked) => poolOf(ticked).length,
     min,
-    unit: 'puzzles',
+    unit: 'questions',
   };
 }
 
