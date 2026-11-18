@@ -12,6 +12,7 @@ import { groupById as fokById, teachesNothing } from '@/games/fok/data';
 import { caseById as stfById } from '@/games/stf/data';
 import { caseById as tttById } from '@/games/ttt/data';
 import { puzzleById as waiById } from '@/games/whoami/data';
+import { questionById as orderById } from '@/games/order/data';
 
 import dossiersJson from './data/dossiers.json';
 import shelvesJson from './data/shelves.json';
@@ -131,6 +132,11 @@ function qaOf(game: string, item: PlayItem): Omit<Extract<Card, { kind: 'qa' }>,
   if (game === 'trace-the-treatment') {
     const c = tttById.get(item.itemId);
     return c ? { q: c.lq, choices: [], answer: c.la } : null;
+  }
+  // Put it in order (Yazan 2026-11-18): the question and its steps mixed up; the back shows the right order with notes.
+  if (game === 'put-in-order') {
+    const q = orderById.get(item.itemId);
+    return q ? { q: `${q.q}\n${[...q.steps].sort((a, b) => a.t.localeCompare(b.t)).map((s) => `• ${s.t}`).join('\n')}`, choices: [], answer: q.steps.map((s, i) => `${i + 1}. ${s.t}: ${s.n}`).join('\n') } : null;
   }
   // Who am I? (Yazan 2026-11-17): the five clues; the back shows the answer, what it is and its key fact.
   if (game === 'who-am-i') {

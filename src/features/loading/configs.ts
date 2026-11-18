@@ -249,6 +249,27 @@ export const LOAD: Record<string, LoadCfg> = {
     tips: ['A treatment is not only a drug: think of operations, devices, diets and first aid too.', 'Timing is a clue: what was started, stopped or added just before?', 'Hard cases score 4 points, easy ones 2.'],
     fonts: ['Bangers_400Regular', 'BarlowCondensed_500Medium'],
   },
+  // Put it in order (Yazan 2026-11-18): Pixel, the purple handheld robot, laying a slide tray in order on a dark lab
+  // bench, a brass microscope beside it, a green banker's lamp behind. Lime from Pixel's screen and purple; two soft
+  // glows only (the lamp and the screen).
+  'put-in-order': {
+    key: 'put-in-order', photo: require('@/assets/loading/put-in-order.webp'), fo: '55% 55%',
+    veil: { c: ['rgba(4,10,12,0.72)', 'rgba(0,0,0,0)'], at: [0, 0.36] },
+    txt: { top: 40, align: 'center' }, artY: 90, bg: '#050b0c',
+    orig: { f: 'Archivo_500Medium', c: '#b9d98a' },
+    title: { f: 'Archivo_900Black', s: 38, c: '#f3f7ee', em: '#b6f05a', ls: 0.01, sh: 'rgba(182,240,90,0.4)' },
+    sub: { f: 'Archivo_500Medium', s: 15, c: '#d9e6cf' },
+    tip: { f: 'Archivo_500Medium', s: 14, c: '#f3f7ee', bg: 'rgba(5,12,14,0.68)', b: 'rgba(182,240,90,0.3)' },
+    bar: { t: 'line', c: '#b6f05a', track: 'rgba(182,240,90,0.16)', glow: '0 0 10px #b6f05a, 0 0 22px rgba(182,240,90,0.5)' },
+    tag: { t: ALL, side: 'left', c: '#f3f7ee', bg: 'rgba(0,0,0,0.45)', b: 'rgba(182,240,90,0.3)' },
+    glows: [
+      { x: 0.9, y: 0.41, r: 46, c: 'rgba(220,255,170,0.32)', a: 'flicker' },
+      { x: 0.633, y: 0.552, r: 26, c: 'rgba(182,240,90,0.38)', a: 'pulse' },
+    ],
+    parts: ['motes'],
+    tips: ['Decoys look like they belong. Each one is from a nearby process.', 'A wrong try never says which step is wrong. Check the ends first.', 'Dropping a step on a filled slot swaps the two.'],
+    fonts: ['Archivo_900Black', 'Archivo_500Medium'],
+  },
   // Who am I? (Yazan 2026-11-18): Zenith in a stone observatory at night, five bright stars through the dome slit, a
   // brass lamp on the star chart. Midnight, starlight white and gold; the five stars twinkle one by one (the five clues).
   'who-am-i': {

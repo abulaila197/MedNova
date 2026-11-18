@@ -23,6 +23,8 @@ export const GAMES: Game[] = [
   // New game 4 (Yazan 2026-11-12): placed last.
   { key: 'trace-the-treatment', lead: 'Trace the', em: 'Treatment', sub: 'Follow the Clues', desc: 'One story, one treatment. Follow the clues to find it.' },
   // Group 6 (Yazan 2026-11-17): basic sciences, Play and learn.
+  // Group 7 (Yazan 2026-11-18): basic sciences, Play and learn.
+  { key: 'put-in-order', lead: 'Put it in', em: 'order', sub: 'Step by Step', desc: 'Drag the steps into the right order. Watch out for the ones that do not belong.' },
   { key: 'who-am-i', lead: 'Who am', em: 'I?', sub: 'Written in the Stars', desc: 'Five clues, one hidden answer. Name it with as few as you can.' },
 ];
 

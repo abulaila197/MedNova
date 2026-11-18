@@ -19,6 +19,7 @@ export type GameKey =
   | 'spot-the-flaw'
   | 'trace-the-treatment'
   | 'who-am-i'
+  | 'put-in-order'
   | 'code-clinic'
   | 'nova-password';
 

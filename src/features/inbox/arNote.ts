@@ -24,6 +24,7 @@ const EN_GAME: Record<string, string> = {
   'Spot The Flaw': 'spot-the-flaw',
   'Trace The Treatment': 'trace-the-treatment',
   'Who am I?': 'who-am-i',
+  'Put it in order': 'put-in-order',
 };
 
 function game(en: string): string {

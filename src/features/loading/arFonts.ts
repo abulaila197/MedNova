@@ -27,6 +27,7 @@ export const AR_FONTS: Record<string, { title: string; body: string }> = {
   'spot-the-flaw': { title: 'Amiri_700Bold', body: 'Amiri_400Regular' },
   'trace-the-treatment': { title: 'Lalezar_400Regular', body: 'Changa_500Medium' },
   'who-am-i': { title: 'ArefRuqaa_700Bold', body: 'Amiri_400Regular' },
+  'put-in-order': { title: 'Changa_800ExtraBold', body: 'Changa_500Medium' },
   'the-streak-master': { title: 'Rakkas_400Regular', body: 'Amiri_400Regular' },
   'nova-crossword': { title: 'Rakkas_400Regular', body: 'Amiri_400Regular' },
 };

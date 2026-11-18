@@ -25,6 +25,8 @@ const GLY: Record<string, Prim[]> = {
   // four boxes, the top row found
   'four-of-a-kind': [{ r: [3.5, 3.5, 7.5, 7.5, 1.5], fill: true }, { r: [13, 3.5, 7.5, 7.5, 1.5], fill: true }, { r: [3.5, 13, 7.5, 7.5, 1.5] }, { r: [13, 13, 7.5, 7.5, 1.5] }],
   // a head in profile with a question mark inside
+  // a numbered list: three dots and three lines, with a down arrow
+  'put-in-order': [{ c: [5, 6, 1.4], fill: true }, { c: [5, 12, 1.4], fill: true }, { c: [5, 18, 1.4], fill: true }, { p: 'M9.5 6h7M9.5 12h7M9.5 18h4' }, { p: 'M20 5v13M17.5 15.5 20 18l2.5-2.5' }],
   'who-am-i': [{ p: 'M15.5 20v-3.2c2.3-1 3.8-3.4 3.8-6.1A7.3 7.3 0 0 0 5 9.6l-1.6 3.2h1.9v2.4a2 2 0 0 0 2 2h1.9V20' }, { p: 'M10 8.4a2.2 2.2 0 1 1 3.1 2c-.6.3-1 .8-1 1.6' }, { c: [12.1, 14.4, 0.6], fill: true }],
   // a sheet with lines, one circled in red pen
   'spot-the-flaw': [{ r: [5, 3, 14, 18, 1.5] }, { p: 'M8 8h8M8 15.5h8' }, { c: [12, 11.8, 3.6] }],
