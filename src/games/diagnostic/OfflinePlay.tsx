@@ -9,9 +9,7 @@ import { teamLap, teamsOf } from '../shell/teams';
 import type { PlayProps } from '../shell/types';
 import { GameScreen } from '../shell/ui';
 import { CaseBoard, pointsLine } from './CaseBoard';
-import type { Difficulty } from './core';
-import { tickedFields } from '../shell/fields';
-import { caseById, guessName, poolFor } from './data';
+import { useKit } from './kit';
 import {
   currentCase, currentSeat, dpTieBreak, offlineRecap, offlineRows, snapshotOffline, startOffline, stepOffline, timeLeft,
   type OfflineEvent, type OfflineRun,
@@ -22,6 +20,8 @@ import { tr } from '@/i18n';
 
 /** Offline Multiplayer (pass and play): own case per player each round, 90 s turns, no hint (DPO1-DPO7). */
 export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
+  const kit = useKit();
+  const { byId: caseById, guessName, rules, words } = kit;
   const [run, setRun] = useState<OfflineRun | null>(null);
   const runRef = useRef<OfflineRun | null>(null);
   const seatOf = useMemo(() => new Map(play.seats.map((x) => [x.seat, x])), [play.seats]);
@@ -36,7 +36,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
       if (!r) {
         const seats = play.seats.filter((x) => !x.removed);
         const rounds = Number(play.settings.cases) || 3;
-        const ids = await engine.picker.pick(play.game, poolFor(play.settings.difficulty as Difficulty, tickedFields(play.settings)), rounds * seats.length);
+        const ids = await engine.picker.pick(play.game, kit.pool(play.settings), rounds * seats.length);
         // TMG-DP: own cases as before; with teams on, teams alternate in the turn order (TM5).
         const teams = teamsOf(play);
         r = startOffline(teams ? teamLap(seats, teams) : shuffle(seats.map((x) => x.seat)), rounds, ids);
@@ -49,13 +49,13 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
     return () => {
       live = false;
     };
-  }, [play]);
+  }, [play, kit, caseById]);
 
   const dispatch = useCallback(
     (e: OfflineEvent) => {
       const prev = runRef.current;
       if (!prev) return;
-      const next = stepOffline(prev, e);
+      const next = stepOffline(prev, e, rules);
       if (next === prev) return;
       runRef.current = next;
       setRun(next);
@@ -77,7 +77,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
           revealsUsed: r.reveals,
           points: r.points,
           feedsLearn: r.seat === 0 && r.outcome !== 'right',
-          gameData: { cluesShown: r.cluesShown, cluePoints: r.cluePoints, speedBonus: r.speedBonus, difficulty: c.difficulty, round: r.round },
+          gameData: { cluesShown: r.cluesShown, cluePoints: r.cluePoints, speedBonus: r.speedBonus, ...kit.gameData(c), round: r.round },
         });
       }
       if (next.phase === 'done' && prev.phase !== 'done') {
@@ -90,7 +90,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
         onFinish(owner, standings);
       }
     },
-    [play, onFinish, names],
+    [play, onFinish, names, kit, caseById, guessName, rules],
   );
 
   // Clock tick while a turn runs; the turn ends at 90 s (DPO3).
@@ -138,13 +138,13 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
             }
           : null
       }
-      pausedNote={tr('The clock is stopped. Resume to see the case again.')}
+      pausedNote={tr(words.pausedSolo)}
       onPause={() => dispatch({ type: 'PAUSE', now: Date.now() })}
       onGuess={(g) => dispatch({ type: 'GUESS', answerId: g.id, accepted: g.id === c.answer_id, now: Date.now() })}
       onSkip={() => dispatch({ type: 'SKIP', now: Date.now() })}
       onReveal={() => dispatch({ type: 'REVEAL' })}>
       {run.phase === 'handoff' ? (
-        <Curtain name={who?.name ?? tr('Player {n}', { n: seat + 1 })} color={who?.color} sub={tr('{roundText} · 90 seconds', { roundText })} board={board} recap={offlineRecap(run, seat, play)} onReady={() => dispatch({ type: 'READY', now: Date.now() })} onPause={() => dispatch({ type: 'PAUSE', now: Date.now() })} />
+        <Curtain name={who?.name ?? tr('Player {n}', { n: seat + 1 })} color={who?.color} sub={tr('{roundText} · 90 seconds', { roundText })} board={board} recap={offlineRecap(run, seat, play, words)} onReady={() => dispatch({ type: 'READY', now: Date.now() })} onPause={() => dispatch({ type: 'PAUSE', now: Date.now() })} />
       ) : null}
       <PauseMenu
         open={paused}

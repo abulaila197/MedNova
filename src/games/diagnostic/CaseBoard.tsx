@@ -12,23 +12,17 @@ import { F, type Theme } from '@/theme/tokens';
 import { fullName } from '../shell/names';
 import { KeyboardLift } from '../shell/KeyboardLift';
 import { Btn, GameScreen, Kick, RoundBtn } from '../shell/ui';
-import { DP, cluePoints, search, type Attempt, type DPCase, type GuessEntry } from './core';
-import { INDEX, guessById, guessName } from './data';
+import { cluePoints, search, type Attempt, type DPCase, type GuessEntry } from './core';
+import { useKit } from './kit';
 import { clock } from '@/games/engine/clock';
 import { tr } from '@/i18n';
 
-// The Diagnostic Pursuit case screen (v2, DP10-DP13), shared by Solo and Offline Multiplayer:
-// old clue-card style in MedNova colours, Focus mode while typing.
+// The clue game case screen (v2, DP10-DP13), shared by Solo, Pass the phone and Vs rivals of Race to Diagnosis and
+// Who am I? (each game's kit gives its rules, bank, hint and words): old clue-card style in MedNova colours, Focus mode while typing.
 
 /** Clue edge colours in order, as in the old screen: blue, amber, purple, cyan, pink, green. */
 const CLUE = ['#007AFF', '#f59e0b', '#a855f7', '#06b6d4', '#ec4899', '#10b981'];
 const CLUE_NUM_DARK = ['#3b9bff', '#f59e0b', '#b77cf8', '#22d3ee', '#f472b6', '#34d399'];
-const DIFF_COLOR: Record<string, string> = {
-  Easy: '#34d399',
-  Medium: '#f59e0b',
-  Hard: '#fb7185',
-  Extreme: '#c084fc',
-};
 
 export const amber = (t: Theme) => '#f59e0b';
 const alpha = (hex: string, a: number) => hex + Math.round(a * 255).toString(16).padStart(2, '0');
@@ -73,6 +67,7 @@ export type BoardProps = {
 
 export function CaseBoard(p: BoardProps) {
   const t = useTheme();
+  const kit = useKit();
   const [focus, setFocus] = useState(false);
   const scroller = useRef<ScrollView>(null);
 
@@ -101,7 +96,7 @@ export function CaseBoard(p: BoardProps) {
 
         {p.phase === 'paused' ? (
           <View style={[s.hidden, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
-            <Kick>{tr('Case hidden')}</Kick>
+            <Kick>{tr(kit.words.hidden)}</Kick>
             <Text style={[s.hiddenT, { color: t.mute }]}>{p.pausedNote}</Text>
           </View>
         ) : focused ? (
@@ -111,7 +106,7 @@ export function CaseBoard(p: BoardProps) {
           </View>
         ) : (
           <ScrollView ref={scroller} style={s.fill} contentContainerStyle={s.scroll} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
-            {p.hint?.granted ? <FieldHint c={p.c} /> : null}
+            {p.hint?.granted ? kit.hint.kind === 'letters' ? <LetterHint c={p.c} /> : <FieldHint c={p.c} /> : null}
             <View style={s.clues}>
               {shown.map((txt, i) => (
                 <Animated.View key={`${p.turnKey}-${i}`} entering={i === 0 ? FadeIn.duration(200) : FadeInDown.duration(260)}>
@@ -138,7 +133,7 @@ export function CaseBoard(p: BoardProps) {
                   <ActionBtn label={p.hint.granted ? tr('💡 Hint used') : tr('💡 Hint · 1{COIN}', { COIN })} flex={1} onPress={p.hint.onHint} disabled={p.hint.granted || p.phase !== 'playing'} bg="#231b4e" line="#504188" fg="#d8b4fe" />
                 </View>
               ) : null
-            ) : <Actions canReveal={p.attempt.cluesShown < DP.clueCount} hint={p.hint} onSkip={p.onSkip} onReveal={p.onReveal} />}
+            ) : <Actions canReveal={p.attempt.cluesShown < kit.rules.clueCount} hint={p.hint} onSkip={p.onSkip} onReveal={p.onReveal} />}
             <AnswerBox
               key={p.turnKey}
               wrong={p.attempt.wrong}
@@ -158,28 +153,31 @@ export function CaseBoard(p: BoardProps) {
 
 function TopBar(p: BoardProps) {
   const t = useTheme();
-  const col = DIFF_COLOR[p.c.difficulty] ?? DIFF_COLOR.Medium;
-  const worth = p.result ? p.result.points : cluePoints(p.attempt.cluesShown);
+  const kit = useKit();
+  const n = kit.rules.clueCount;
+  const pill = kit.pill(p.c);
+  const col = pill.color;
+  const worth = p.result ? p.result.points : cluePoints(p.attempt.cluesShown, kit.rules);
   return (
     <View style={s.top}>
       <View style={s.caseRow}>
         <Text style={[s.ct, { color: p.titleColor ?? t.white }]} numberOfLines={1}>
           {p.title} <Text style={[s.of, { color: t.mute }]}>{p.sub}</Text>
         </Text>
-        <Text style={[s.diff, { color: col, borderColor: alpha(col, 0.55), backgroundColor: alpha(col, 0.12) }]}>{tr(p.c.difficulty)}</Text>
+        <Text style={[s.diff, { color: col, borderColor: alpha(col, 0.55), backgroundColor: alpha(col, 0.12) }]}>{pill.label}</Text>
         <RoundBtn label={tr('Pause')} glyph="❚❚" onPress={p.onPause} />
       </View>
       <View style={[s.stats, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
         <Stat label={p.clock.label} value={clock(p.clock.ms, { pad: true, down: p.clock.down })} color={p.clock.warn ? t.rose : amber(t)} />
         <Stat label={p.worth?.label ?? (p.result ? tr('Scored') : tr('Worth now'))} value={p.worth?.value ?? String(worth)} />
-        <Stat label={tr('Clues')} value={`${p.attempt.cluesShown} / ${DP.clueCount}`} />
+        <Stat label={tr('Clues')} value={`${p.attempt.cluesShown} / ${n}`} />
       </View>
       <View style={[s.prog, { backgroundColor: t.chipLine }]}>
         <LinearGradient
           colors={['#10b981', '#06b6d4', '#007AFF']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
-          style={{ height: '100%', width: `${(p.attempt.cluesShown / DP.clueCount) * 100}%` }}
+          style={{ height: '100%', width: `${(p.attempt.cluesShown / n) * 100}%` }}
         />
       </View>
     </View>
@@ -199,6 +197,7 @@ function Stat({ label, value, color }: { label: string; value: string; color?: s
 /** Focus mode top: one slim line (DP13). */
 function SlimBar(p: BoardProps) {
   const t = useTheme();
+  const kit = useKit();
   const dot = <Text style={{ color: t.dim }}> · </Text>;
   return (
     <View style={[s.slim, { backgroundColor: t.panel, borderColor: t.panelLine }]}>
@@ -207,9 +206,9 @@ function SlimBar(p: BoardProps) {
         {dot}
         <Text style={{ color: p.clock.warn ? t.rose : amber(t) }}>{clock(p.clock.ms, { pad: true, down: p.clock.down })}</Text>
         {dot}
-        {tr('{n} pts', { n: cluePoints(p.attempt.cluesShown) })}
+        {tr('{n} pts', { n: cluePoints(p.attempt.cluesShown, kit.rules) })}
         {dot}
-        {`${p.attempt.cluesShown} / ${DP.clueCount}`}
+        {`${p.attempt.cluesShown} / ${kit.rules.clueCount}`}
       </Text>
     </View>
   );
@@ -232,8 +231,44 @@ function FieldHint({ c }: { c: DPCase }) {
   const purple = '#d8b4fe';
   return (
     <Animated.View entering={FadeIn} style={[s.hint, { borderColor: alpha('#a78bfa', 0.4), backgroundColor: alpha('#6d28d9', 0.16) }]}>
-      <Text style={[s.hintK, { color: purple }]}>{tr('💡 Hint · Medical field')}</Text>
+      <Text style={[s.hintK, { color: purple }]}>{useKit().hint.title}</Text>
       <Text style={[s.hintT, { color: t.fg }]}>{c.fields.join(' · ')}</Text>
+    </Animated.View>
+  );
+}
+
+/** Who am I? paid hint: the answer's first letter, then one empty box per letter, word by word. */
+function LetterHint({ c }: { c: DPCase }) {
+  const t = useTheme();
+  const kit = useKit();
+  const purple = '#d8b4fe';
+  const name = kit.guessById.get(c.answer_id)?.label ?? c.disease;
+  const words = name.split(/\s+/).filter(Boolean);
+  // Long names (an enzyme can have 25 letters in one word) get smaller boxes and wrap inside the word.
+  const small = Math.max(...words.map((w) => w.length)) > 12;
+  let first = true;
+  return (
+    <Animated.View entering={FadeIn} style={[s.hint, { borderColor: alpha('#a78bfa', 0.4), backgroundColor: alpha('#6d28d9', 0.16) }]}>
+      <Text style={[s.hintK, { color: purple }]}>{kit.hint.title}</Text>
+      <View style={s.lWords}>
+        {words.map((w, wi) => (
+          <View key={wi} style={s.lWord}>
+            {[...w].map((ch, i) => {
+              const letter = /[A-Za-z0-9]/.test(ch);
+              const show = letter && first;
+              if (letter) first = false;
+              return letter ? (
+                <View key={i} style={[s.lBox, small && s.lBoxS, { borderColor: show ? purple : alpha('#a78bfa', 0.45), backgroundColor: show ? alpha('#6d28d9', 0.35) : 'transparent' }]}>
+                  <Text style={[s.lT, { color: t.white }]}>{show ? ch.toUpperCase() : ''}</Text>
+                </View>
+              ) : (
+                <Text key={i} style={[s.lSep, { color: t.soft }]}>{ch}</Text>
+              );
+            })}
+          </View>
+        ))}
+      </View>
+      <Text style={[s.lN, { color: t.mute }]}>{tr('{n} letters', { n: [...name].filter((ch) => /[A-Za-z0-9]/.test(ch)).length })}</Text>
     </Animated.View>
   );
 }
@@ -241,10 +276,11 @@ function FieldHint({ c }: { c: DPCase }) {
 /** Wrong guesses as a crossed-out differential (DP12). */
 function Differential({ wrong }: { wrong: string[] }) {
   const t = useTheme();
+  const { guessName, words } = useKit();
   return (
     <View style={s.ddx}>
       <Kick>
-        {tr('Differential')}
+        {tr(words.wrongList)}
       </Kick>
       <View style={s.chips}>
         {wrong.map((id) => (
@@ -280,9 +316,10 @@ function Actions({ canReveal, hint, onSkip, onReveal }: { canReveal: boolean; hi
 /** Type-ahead answer box: 3+ letters (a short name typed in full from 2), up to 5 suggestions above the field, Submit takes a picked suggestion. */
 function AnswerBox({ wrong, wrongSeq, focused, onFocus, onBlur, onGuess }: { wrong: string[]; wrongSeq: number; focused: boolean; onFocus: () => void; onBlur: () => void; onGuess: (g: GuessEntry) => void }) {
   const t = useTheme();
+  const kit = useKit();
   const [text, setText] = useState('');
   const [picked, setPicked] = useState<GuessEntry | null>(null);
-  const sugs = useMemo(() => (picked ? [] : search(INDEX, text).filter((g) => !wrong.includes(g.id))), [text, picked, wrong]);
+  const sugs = useMemo(() => (picked ? [] : search(kit.index, text).filter((g) => !wrong.includes(g.id))), [kit.index, text, picked, wrong]);
   const exact = sugs.find((g) => fullName(g).toLowerCase() === text.trim().toLowerCase()) ?? null;
   const choice = picked ?? exact;
 
@@ -347,13 +384,13 @@ function AnswerBox({ wrong, wrongSeq, focused, onFocus, onBlur, onGuess }: { wro
           onFocus={onFocus}
           onBlur={onBlur}
           onSubmitEditing={submit}
-          placeholder={tr('Type a diagnosis…')}
+          placeholder={tr(kit.words.placeholder)}
           placeholderTextColor={t.dim}
           autoCorrect={false}
           autoCapitalize="none"
           returnKeyType="done"
           style={[s.input, { color: t.fg }]}
-          accessibilityLabel={tr('Your diagnosis')}
+          accessibilityLabel={tr(kit.words.inputLabel)}
         />
         <Pressable onPress={submit} disabled={!choice} style={{ opacity: choice ? 1 : 0.5 }} accessibilityRole="button" accessibilityLabel={tr('Submit')}>
           <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={s.sub}>
@@ -368,13 +405,15 @@ function AnswerBox({ wrong, wrongSeq, focused, onFocus, onBlur, onGuess }: { wro
 /** Shown when a case or turn closes: answer, fields, how the points were made, then the next step. */
 function ResultCard({ r, c }: { r: BoardResult; c: DPCase }) {
   const t = useTheme();
+  const kit = useKit();
   const tone = r.outcome === 'right' ? '#34d399' : r.outcome === 'skipped' ? amber(t) : t.rose;
   const word = { right: tr('Solved'), wrong: tr('Missed'), skipped: tr('Skipped'), timed_out: tr('Time up') }[r.outcome];
   return (
     <Animated.View entering={FadeInDown.duration(280)} style={[s.res, { backgroundColor: t.panel, borderColor: alpha(tone, 0.6) }]}>
       <Kick color={tone}>{word}</Kick>
-      <Text style={[s.resD, { color: t.white }]}>{guessById.has(c.answer_id) ? guessName(c.answer_id) : c.disease}</Text>
-      <Text style={[s.resF, { color: t.mute }]}>{c.fields.join(' · ')}</Text>
+      <Text style={[s.resD, { color: t.white }]}>{kit.guessById.has(c.answer_id) ? kit.guessName(c.answer_id) : c.disease}</Text>
+      <Text style={[s.resF, { color: t.mute }]}>{kit.resultSub(c)}</Text>
+      {c.fact ? <Text style={[s.resFact, { color: t.fg, borderColor: t.panelLine }]}>{c.fact}</Text> : null}
       <Text style={[s.resL, { color: t.soft }]}>{r.line}</Text>
       {r.onNext ? <Btn label={r.nextLabel} onPress={r.onNext} style={{ marginTop: u(4) }} /> : r.wait ? r.wait : <Text style={[s.resN, { color: t.dim }]}>{r.nextLabel}</Text>}
     </Animated.View>
@@ -436,4 +475,13 @@ const s = StyleSheet.create({
   resF: { fontFamily: F.bodyMedium, fontSize: u(10.5) },
   resN: { fontFamily: F.bodySemi, fontSize: u(10.5), textAlign: 'center', marginTop: u(6) },
   resL: { fontFamily: F.body, fontSize: u(11.5), lineHeight: u(16), marginTop: u(2) },
+  resFact: { fontFamily: F.body, fontSize: u(11.5), lineHeight: u(16), marginTop: u(4), paddingTop: u(7), borderTopWidth: 1 },
+  // Letter hint: answers stay English, so the boxes always read left to right.
+  lWords: { flexDirection: 'row', flexWrap: 'wrap', columnGap: u(10), rowGap: u(6), marginTop: u(4), direction: 'ltr' },
+  lWord: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: u(3) },
+  lBox: { width: u(17), height: u(21), borderWidth: 1, borderRadius: u(4), alignItems: 'center', justifyContent: 'center' },
+  lBoxS: { width: u(12), height: u(16), borderRadius: u(3) },
+  lT: { fontFamily: F.bodyBold, fontSize: u(11), lineHeight: u(14) },
+  lSep: { fontFamily: F.bodyBold, fontSize: u(12) },
+  lN: { fontFamily: F.bodyMedium, fontSize: u(9.5), marginTop: u(3) },
 });

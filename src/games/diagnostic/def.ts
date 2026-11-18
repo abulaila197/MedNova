@@ -5,6 +5,8 @@ import { caseById, fieldMenu, guessById, guessName, LEVELS, levelCount } from '.
 import { BotsPlay } from './BotsPlay';
 import { OfflinePlay } from './OfflinePlay';
 import { SoloPlay } from './SoloPlay';
+import { DP_KIT } from './dpKit';
+import { withKit } from './kit';
 import { tr } from '@/i18n';
 
 /** The Diagnostic Pursuit on the shared shell: Solo, Pass the phone and Vs bots. */
@@ -113,7 +115,7 @@ export const diagnosticPursuit: GameDef = {
   bots: { min: 1, max: 5 },
   teams: { offline: true, bots: true },
   players: { offline: { min: 2, max: 6 } },
-  Play: { solo: SoloPlay, offline: OfflinePlay, bots: BotsPlay },
+  Play: { solo: withKit(DP_KIT, SoloPlay), offline: withKit(DP_KIT, OfflinePlay), bots: withKit(DP_KIT, BotsPlay) },
   // DP4: EXP = points ÷ 10, each case counted up to the Solo most (120 points = 12 EXP), online too (DPN3: race bonuses
   // still rank players, they don't add EXP).
   // Playing your own case is practice: no EXP (Yazan 2026-10-12).

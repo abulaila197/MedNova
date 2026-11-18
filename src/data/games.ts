@@ -22,6 +22,8 @@ export const GAMES: Game[] = [
   { key: 'spot-the-flaw', lead: 'Spot the', em: 'Flaw', sub: 'Read Between the Lines', desc: 'One story, one hidden mistake. Catch it, then fix it.' },
   // New game 4 (Yazan 2026-11-12): placed last.
   { key: 'trace-the-treatment', lead: 'Trace the', em: 'Treatment', sub: 'Follow the Clues', desc: 'One story, one treatment. Follow the clues to find it.' },
+  // Group 6 (Yazan 2026-11-17): basic sciences, Play and learn.
+  { key: 'who-am-i', lead: 'Who am', em: 'I?', sub: 'Written in the Stars', desc: 'Five clues, one hidden answer. Name it with as few as you can.' },
 ];
 
 /** Games taken off the Games page but kept for later (Yazan 2026-11-04): code, art, banks and database all stay. */

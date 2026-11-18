@@ -28,6 +28,7 @@ const KIND: Record<string, GameKind> = {
   'four-of-a-kind': 'both',
   'spot-the-flaw': 'learn', // On duty, at the end of it (Yazan 2026-11-15)
   'trace-the-treatment': 'learn',
+  'who-am-i': 'both', // Play and learn (Yazan 2026-11-17)
   'the-silent-artist': 'play',
   'nova-medicordle': 'both',
   'the-riddler': 'both',
@@ -64,6 +65,7 @@ export type Knowledge = 'clinical' | 'basic' | 'mixed';
 const KNOW: Record<string, Knowledge> = {
   'the-diagnostic-pursuit': 'clinical',
   'trace-the-treatment': 'clinical',
+  'who-am-i': 'basic',
   'case-files-unsolved': 'clinical',
   'the-riddler': 'clinical',
   'spot-the-flaw': 'mixed',

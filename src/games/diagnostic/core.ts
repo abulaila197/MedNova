@@ -3,7 +3,7 @@
 
 import { indexNames, searchNames, type NameIndex } from '../shell/names';
 
-export const DP = {
+export const DP: ClueRules & { search: { minQueryLength: number; maxSuggestions: number } } = {
   clueCount: 6,
   maxGuesses: 6,
   /** Points by clues shown when solved (index 0 = 1 clue shown). */
@@ -15,17 +15,34 @@ export const DP = {
   search: { minQueryLength: 3, maxSuggestions: 5 },
 };
 
+/** A clue game's numbers. Race to Diagnosis uses DP; Who am I? has its own (5 clues). */
+export type ClueRules = {
+  clueCount: number;
+  maxGuesses: number;
+  cluePoints: readonly number[];
+  speedBonusMax: number;
+  fullBonusUntilMs: number;
+  zeroBonusAtMs: number;
+  hintTokenCost: number;
+};
+
 export type Difficulty = 'Easy' | 'Medium' | 'Hard' | 'Extreme';
 
 export type DPCase = {
   number: number;
-  difficulty: Difficulty;
+  /** Race to Diagnosis only; Who am I? has no difficulty. */
+  difficulty?: Difficulty;
+  /** Medical fields (Race to Diagnosis) or the one category (Who am I?). */
   fields: string[];
+  /** The answer's name when it is not on the guess list. */
   disease: string;
   canonical_id: string;
   /** Guess-list entry that is correct for this case. */
   answer_id: string;
   clues: string[];
+  /** Who am I?: what the answer is (bone, enzyme…) and its key fact, shown on the result card. */
+  type?: string;
+  fact?: string;
 };
 
 export type GuessEntry = { id: string; label: string; aliases: string[]; answer: boolean; canonical_id: string | null };
@@ -37,8 +54,8 @@ export type Attempt = { cluesShown: number; wrong: string[]; reveals: number; st
 
 export const newAttempt = (): Attempt => ({ cluesShown: 1, wrong: [], reveals: 0, status: 'active' });
 
-export function reveal(a: Attempt): Attempt {
-  return a.status === 'active' && a.cluesShown < DP.clueCount ? { ...a, cluesShown: a.cluesShown + 1, reveals: a.reveals + 1 } : a;
+export function reveal(a: Attempt, R: ClueRules = DP): Attempt {
+  return a.status === 'active' && a.cluesShown < R.clueCount ? { ...a, cluesShown: a.cluesShown + 1, reveals: a.reveals + 1 } : a;
 }
 
 export type GuessOutcome = 'correct' | 'wrong' | 'wrong_out' | 'ignored';
@@ -48,34 +65,35 @@ export type GuessOutcome = 'correct' | 'wrong' | 'wrong_out' | 'ignored';
  * so a player who revealed 2 clues has 4 guesses. A wrong guess shows the next clue; the last allowed
  * wrong guess fails the case. The same wrong pick twice is ignored.
  */
-export const guessesAllowed = (a: Attempt) => Math.max(1, DP.maxGuesses - a.reveals);
-export const guessesLeft = (a: Attempt) => Math.max(0, guessesAllowed(a) - a.wrong.length);
+export const guessesAllowed = (a: Attempt, R: ClueRules = DP) => Math.max(1, R.maxGuesses - a.reveals);
+export const guessesLeft = (a: Attempt, R: ClueRules = DP) => Math.max(0, guessesAllowed(a, R) - a.wrong.length);
 
-export function guess(a: Attempt, answerId: string, accepted: boolean): { attempt: Attempt; outcome: GuessOutcome } {
+export function guess(a: Attempt, answerId: string, accepted: boolean, R: ClueRules = DP): { attempt: Attempt; outcome: GuessOutcome } {
   if (a.status !== 'active') return { attempt: a, outcome: 'ignored' };
   if (accepted) return { attempt: { ...a, status: 'solved' }, outcome: 'correct' };
   if (a.wrong.includes(answerId)) return { attempt: a, outcome: 'ignored' };
   const wrong = [...a.wrong, answerId];
-  if (wrong.length >= guessesAllowed(a)) return { attempt: { ...a, wrong, status: 'failed' }, outcome: 'wrong_out' };
-  return { attempt: { ...a, wrong, cluesShown: Math.min(DP.clueCount, a.cluesShown + 1) }, outcome: 'wrong' };
+  if (wrong.length >= guessesAllowed(a, R)) return { attempt: { ...a, wrong, status: 'failed' }, outcome: 'wrong_out' };
+  return { attempt: { ...a, wrong, cluesShown: Math.min(R.clueCount, a.cluesShown + 1) }, outcome: 'wrong' };
 }
 
 // ---- scoring ----
 
-export function cluePoints(cluesShown: number) {
-  const t = DP.cluePoints;
+export function cluePoints(cluesShown: number, R: ClueRules = DP) {
+  const t = R.cluePoints;
   return t[Math.min(t.length, Math.max(1, Math.trunc(cluesShown))) - 1];
 }
 
 /** Full bonus up to 30 s, then linear down to 0 at 2 minutes. */
-export function speedBonus(elapsedMs: number) {
-  if (elapsedMs <= DP.fullBonusUntilMs) return DP.speedBonusMax;
-  if (elapsedMs >= DP.zeroBonusAtMs) return 0;
-  return Math.round((DP.speedBonusMax * (DP.zeroBonusAtMs - elapsedMs)) / (DP.zeroBonusAtMs - DP.fullBonusUntilMs));
+export function speedBonus(elapsedMs: number, R: ClueRules = DP) {
+  if (elapsedMs <= R.fullBonusUntilMs) return R.speedBonusMax;
+  if (elapsedMs >= R.zeroBonusAtMs) return 0;
+  return Math.round((R.speedBonusMax * (R.zeroBonusAtMs - elapsedMs)) / (R.zeroBonusAtMs - R.fullBonusUntilMs));
 }
 
-/** Most points a case can give: first clue + full speed bonus = 120. */
-export const MAX_CASE_POINTS = DP.cluePoints[0] + DP.speedBonusMax;
+/** Most points a case can give: first clue + full speed bonus (120 in both clue games). */
+export const maxCasePoints = (R: ClueRules = DP) => R.cluePoints[0] + R.speedBonusMax;
+export const MAX_CASE_POINTS = maxCasePoints(DP);
 
 // ---- answer search (NL1: the main name and up to 2 other names; a missing 's doesn't count) ----
 

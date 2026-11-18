@@ -13,5 +13,6 @@ export const STRIP: Record<string, number> = {
   'four-of-a-kind': require('@/assets/games/strips/four-of-a-kind.webp'),
   'spot-the-flaw': require('@/assets/games/strips/spot-the-flaw.webp'),
   'trace-the-treatment': require('@/assets/games/strips/trace-the-treatment.webp'),
+  'who-am-i': require('@/assets/games/strips/who-am-i.webp'),
 };
 

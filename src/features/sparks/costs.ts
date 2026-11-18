@@ -44,6 +44,8 @@ const COSTS: Partial<Record<GameKey, Partial<Record<Mode, Price>>>> = {
   // By cases, like Four of a Kind (Yazan 2026-11-12).
   'spot-the-flaw': { solo: FLAWS, offline: FLAWS, bots: FLAWS },
   'trace-the-treatment': { solo: FLAWS, offline: FLAWS, bots: FLAWS },
+  // By puzzles, like Race to Diagnosis by cases (Yazan 2026-11-17).
+  'who-am-i': { solo: CASES, offline: CASES, bots: CASES },
   'code-clinic': { offline: flat(30) },
   'nova-password': { offline: PASSWORD },
 };

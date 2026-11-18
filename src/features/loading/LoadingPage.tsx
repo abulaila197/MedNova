@@ -3,7 +3,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { type Ref, useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
-import Animated, { cancelAnimation, Easing, type SharedValue, useAnimatedStyle, useFrameCallback, useSharedValue, withRepeat, withSequence, withTiming } from 'react-native-reanimated';
+import Animated, { cancelAnimation, Easing, type SharedValue, useAnimatedStyle, useFrameCallback, useSharedValue, withDelay, withRepeat, withSequence, withTiming } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Circle, Defs, RadialGradient, Stop } from 'react-native-svg';
 
@@ -141,7 +141,8 @@ function Glow({ o, id, artW, artH, live }: { o: LoadCfg['glows'][number]; id: st
     const ms = (n: number) => ({ duration: n, easing: Easing.inOut(Easing.ease) });
     if (o.a === 'pulse') {
       // Opacity only (Yazan 2026-11-09, lighter loading pages): growing and shrinking a soft glow redraws it every frame.
-      op.value = withRepeat(withSequence(withTiming(1, ms(1300)), withTiming(0.55, ms(1300))), -1);
+      const loop = withRepeat(withSequence(withTiming(1, ms(1300)), withTiming(0.55, ms(1300))), -1);
+      op.value = o.d ? withDelay(o.d, loop) : loop;
     } else {
       // The preview's candle flicker keyframes over 2.2 s.
       const k = [0.6, 1, 0.75, 0.95, 0.7, 1, 0.85];
@@ -149,7 +150,7 @@ function Glow({ o, id, artW, artH, live }: { o: LoadCfg['glows'][number]; id: st
       op.value = withRepeat(withSequence(...k.map((v, i) => withTiming(v, ms(at[i])))), -1);
     }
     return () => [op, sc, dy].forEach(cancelAnimation);
-  }, [live, o.a, op, sc, dy]);
+  }, [live, o.a, o.d, op, sc, dy]);
   const d = q(o.r * 2);
   const st = useAnimatedStyle(() => ({ opacity: op.value, transform: [{ translateY: dy.value * d }, { scale: sc.value }] }));
   const col = rgba(o.c);

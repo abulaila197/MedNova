@@ -11,6 +11,7 @@ import { questionById as wheelsById } from '@/games/wheels/data';
 import { groupById as fokById, teachesNothing } from '@/games/fok/data';
 import { caseById as stfById } from '@/games/stf/data';
 import { caseById as tttById } from '@/games/ttt/data';
+import { puzzleById as waiById } from '@/games/whoami/data';
 
 import dossiersJson from './data/dossiers.json';
 import shelvesJson from './data/shelves.json';
@@ -130,6 +131,11 @@ function qaOf(game: string, item: PlayItem): Omit<Extract<Card, { kind: 'qa' }>,
   if (game === 'trace-the-treatment') {
     const c = tttById.get(item.itemId);
     return c ? { q: c.lq, choices: [], answer: c.la } : null;
+  }
+  // Who am I? (Yazan 2026-11-17): the five clues; the back shows the answer, what it is and its key fact.
+  if (game === 'who-am-i') {
+    const p = waiById.get(item.itemId);
+    return p ? { q: `Who am I?\n${p.clues.map((c, i) => `${i + 1}. ${c}`).join('\n')}`, choices: [], answer: `${p.answer} (${p.type})\n${p.fact}` } : null;
   }
   if (game === 'trust-me-not') {
     const q = tmnQuestion(item.itemId);

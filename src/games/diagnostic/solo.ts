@@ -1,5 +1,5 @@
 // Diagnostic Pursuit solo run: a set of cases (DP5), no retry (DP6), stopwatch per case that pauses and hides (rule 4).
-import { cluePoints, guess, newAttempt, reveal, speedBonus, type Attempt } from './core';
+import { DP, cluePoints, guess, newAttempt, reveal, speedBonus, type Attempt, type ClueRules } from './core';
 
 export type CaseResult = {
   caseId: string;
@@ -57,10 +57,10 @@ export function snapshot(r: SoloRun, now: number): SoloRun {
   return { ...r, phase: 'paused', before: 'playing', elapsedMs: elapsed(r, now), runningSince: null };
 }
 
-function close(r: SoloRun, attempt: Attempt, now: number, outcome: CaseResult['outcome']): SoloRun {
+function close(r: SoloRun, attempt: Attempt, now: number, outcome: CaseResult['outcome'], R: ClueRules): SoloRun {
   const timeMs = elapsed(r, now);
-  const cp = outcome === 'right' ? cluePoints(attempt.cluesShown) : 0;
-  const sb = outcome === 'right' ? speedBonus(timeMs) : 0;
+  const cp = outcome === 'right' ? cluePoints(attempt.cluesShown, R) : 0;
+  const sb = outcome === 'right' ? speedBonus(timeMs, R) : 0;
   const res: CaseResult = {
     caseId: r.caseIds[r.index], outcome, cluesShown: attempt.cluesShown, timeMs, wrong: attempt.wrong,
     reveals: attempt.reveals, hint: r.hint, cluePoints: cp, speedBonus: sb, points: cp + sb,
@@ -68,23 +68,23 @@ function close(r: SoloRun, attempt: Attempt, now: number, outcome: CaseResult['o
   return { ...r, attempt, phase: 'caseOver', elapsedMs: timeMs, runningSince: null, results: [...r.results, res], score: r.score + res.points };
 }
 
-export function step(r: SoloRun, e: SoloEvent): SoloRun {
+export function step(r: SoloRun, e: SoloEvent, R: ClueRules = DP): SoloRun {
   switch (e.type) {
     case 'GUESS': {
       if (r.phase !== 'playing') return r;
-      const { attempt, outcome } = guess(r.attempt, e.answerId, e.accepted);
+      const { attempt, outcome } = guess(r.attempt, e.answerId, e.accepted, R);
       if (outcome === 'ignored') return r;
-      if (outcome === 'correct') return close(r, attempt, e.now, 'right');
-      if (outcome === 'wrong_out') return close({ ...r, wrongSeq: r.wrongSeq + 1 }, attempt, e.now, 'wrong');
+      if (outcome === 'correct') return close(r, attempt, e.now, 'right', R);
+      if (outcome === 'wrong_out') return close({ ...r, wrongSeq: r.wrongSeq + 1 }, attempt, e.now, 'wrong', R);
       return { ...r, attempt, wrongSeq: r.wrongSeq + 1, clueSeq: r.clueSeq + (attempt.cluesShown > r.attempt.cluesShown ? 1 : 0) };
     }
     case 'REVEAL': {
       if (r.phase !== 'playing') return r;
-      const attempt = reveal(r.attempt);
+      const attempt = reveal(r.attempt, R);
       return attempt === r.attempt ? r : { ...r, attempt, clueSeq: r.clueSeq + 1 };
     }
     case 'SKIP':
-      return r.phase === 'playing' ? close(r, { ...r.attempt, status: 'skipped' }, e.now, 'skipped') : r;
+      return r.phase === 'playing' ? close(r, { ...r.attempt, status: 'skipped' }, e.now, 'skipped', R) : r;
     case 'HINT_GRANTED':
       return r.phase === 'playing' || r.phase === 'paused' ? (r.hint ? r : { ...r, hint: true }) : r;
     case 'PAUSE':

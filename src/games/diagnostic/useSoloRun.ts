@@ -4,15 +4,14 @@ import { engine } from '../engine';
 import { recordItem } from '../shell/flow';
 import type { PlayProps } from '../shell/types';
 import { usePauseHide } from '../engine/usePauseHide';
-import { DP } from './core';
-import { tickedFields } from '../shell/fields';
-import { caseById, guessName, poolFor } from './data';
-import type { Difficulty } from './core';
+import { useKit } from './kit';
 import { snapshot, startRun, step, type SoloEvent, type SoloRun } from './solo';
 import { tr } from '@/i18n';
 
 /** Runs one solo game on the engine: picks unseen cases, bookmarks every step, records each case, pays hints. */
 export function useSoloRun({ play, onFinish }: Pick<PlayProps, 'play' | 'onFinish'>) {
+  const kit = useKit();
+  const { byId: caseById, guessName, rules } = kit;
   const [run, setRun] = useState<SoloRun | null>(null);
   const runRef = useRef<SoloRun | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
@@ -27,7 +26,7 @@ export function useSoloRun({ play, onFinish }: Pick<PlayProps, 'play' | 'onFinis
       if (!r) {
         // Your own approved case (practice: one case, no EXP, no free play, not fed to Learn).
         const custom = typeof play.settings.custom === 'string' && caseById.has(play.settings.custom) ? play.settings.custom : null;
-        const ids = custom ? [custom] : await engine.picker.pick(play.game, poolFor(play.settings.difficulty as Difficulty, tickedFields(play.settings)), Number(play.settings.cases) || 5);
+        const ids = custom ? [custom] : await engine.picker.pick(play.game, kit.pool(play.settings), Number(play.settings.cases) || 5);
         r = startRun(ids, Date.now());
       }
       if (live) {
@@ -38,13 +37,13 @@ export function useSoloRun({ play, onFinish }: Pick<PlayProps, 'play' | 'onFinis
     return () => {
       live = false;
     };
-  }, [play]);
+  }, [play, kit, caseById]);
 
   const dispatch = useCallback(
     (e: SoloEvent) => {
       const prev = runRef.current;
       if (!prev) return;
-      const next = step(prev, e);
+      const next = step(prev, e, rules);
       if (next === prev) return;
       runRef.current = next;
       setRun(next);
@@ -66,12 +65,12 @@ export function useSoloRun({ play, onFinish }: Pick<PlayProps, 'play' | 'onFinis
           revealsUsed: r.reveals,
           points: r.points,
           feedsLearn: r.outcome !== 'right' && !play.settings.custom,
-          gameData: { cluesShown: r.cluesShown, cluePoints: r.cluePoints, speedBonus: r.speedBonus, difficulty: c.difficulty },
+          gameData: { cluesShown: r.cluesShown, cluePoints: r.cluePoints, speedBonus: r.speedBonus, ...kit.gameData(c) },
         });
       }
       if (next.phase === 'done' && prev.phase !== 'done') onFinish(next.score);
     },
-    [play, onFinish],
+    [play, onFinish, kit, caseById, guessName, rules],
   );
 
   // Rule 4: leaving the app pauses and hides the case.
@@ -85,7 +84,7 @@ export function useSoloRun({ play, onFinish }: Pick<PlayProps, 'play' | 'onFinis
     paying.current = true;
     try {
       const index = r.index;
-      const receipt = await engine.wallet.spend(DP.hintTokenCost, 'diagnostic_hint', play.id);
+      const receipt = await engine.wallet.spend(rules.hintTokenCost, kit.hint.reason, play.id);
       if (!receipt) return setNotice(tr('You need 1 token for a hint. Each level up gives 1 token.'));
       const cur = runRef.current;
       if (!cur || cur.index !== index || cur.hint || (cur.phase !== 'playing' && cur.phase !== 'paused')) {
@@ -96,7 +95,7 @@ export function useSoloRun({ play, onFinish }: Pick<PlayProps, 'play' | 'onFinis
     } finally {
       paying.current = false;
     }
-  }, [dispatch, play.id]);
+  }, [dispatch, play.id, rules, kit]);
 
   const current = run ? caseById.get(run.caseIds[run.index]) ?? null : null;
   return { run, current, dispatch, hint, notice, clearNotice: () => setNotice(null) };

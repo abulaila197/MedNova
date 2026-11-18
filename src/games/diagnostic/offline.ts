@@ -2,7 +2,7 @@
 // 2-6 players, each gets their own case every round, 90 s per turn, Solo's scoring and guess rules, no hint.
 import type { Play } from '../engine/types';
 import { event, finishRecap, lastIndexOf, leadLine, sides, type RecapLine } from '../shell/recap';
-import { cluePoints, guess, newAttempt, reveal, speedBonus, type Attempt } from './core';
+import { DP, cluePoints, guess, newAttempt, reveal, speedBonus, type Attempt, type ClueRules } from './core';
 import type { Row } from '../engine/standings';
 import { say } from '../../i18n/say';
 
@@ -75,10 +75,10 @@ export function snapshotOffline(r: OfflineRun, now: number): OfflineRun {
   return { ...r, phase: 'paused', before: 'playing', elapsedMs: turnElapsed(r, now), runningSince: null };
 }
 
-function close(r: OfflineRun, attempt: Attempt, now: number, outcome: TurnResult['outcome']): OfflineRun {
+function close(r: OfflineRun, attempt: Attempt, now: number, outcome: TurnResult['outcome'], R: ClueRules): OfflineRun {
   const timeMs = outcome === 'timed_out' ? TURN_MS : turnElapsed(r, now);
-  const cp = outcome === 'right' ? cluePoints(attempt.cluesShown) : 0;
-  const sb = outcome === 'right' ? speedBonus(timeMs) : 0;
+  const cp = outcome === 'right' ? cluePoints(attempt.cluesShown, R) : 0;
+  const sb = outcome === 'right' ? speedBonus(timeMs, R) : 0;
   const res: TurnResult = {
     seat: currentSeat(r), round: r.round, caseId: currentCase(r), outcome, cluesShown: attempt.cluesShown, timeMs,
     wrong: attempt.wrong, reveals: attempt.reveals, cluePoints: cp, speedBonus: sb, points: cp + sb,
@@ -100,28 +100,28 @@ function advance(r: OfflineRun, removed = r.removed): OfflineRun {
   return { ...r, removed, round, turn, phase: 'handoff', before: null, attempt: newAttempt(), elapsedMs: 0, runningSince: null };
 }
 
-export function stepOffline(r: OfflineRun, e: OfflineEvent): OfflineRun {
+export function stepOffline(r: OfflineRun, e: OfflineEvent, R: ClueRules = DP): OfflineRun {
   switch (e.type) {
     case 'READY':
       return r.phase === 'handoff' ? { ...r, phase: 'playing', runningSince: e.now } : r;
     case 'GUESS': {
       if (r.phase !== 'playing') return r;
-      if (timeLeft(r, e.now) <= 0) return close(r, r.attempt, e.now, 'timed_out');
-      const { attempt, outcome } = guess(r.attempt, e.answerId, e.accepted);
+      if (timeLeft(r, e.now) <= 0) return close(r, r.attempt, e.now, 'timed_out', R);
+      const { attempt, outcome } = guess(r.attempt, e.answerId, e.accepted, R);
       if (outcome === 'ignored') return r;
-      if (outcome === 'correct') return close(r, attempt, e.now, 'right');
-      if (outcome === 'wrong_out') return close({ ...r, wrongSeq: r.wrongSeq + 1 }, attempt, e.now, 'wrong');
+      if (outcome === 'correct') return close(r, attempt, e.now, 'right', R);
+      if (outcome === 'wrong_out') return close({ ...r, wrongSeq: r.wrongSeq + 1 }, attempt, e.now, 'wrong', R);
       return { ...r, attempt, wrongSeq: r.wrongSeq + 1, clueSeq: r.clueSeq + (attempt.cluesShown > r.attempt.cluesShown ? 1 : 0) };
     }
     case 'REVEAL': {
       if (r.phase !== 'playing') return r;
-      const attempt = reveal(r.attempt);
+      const attempt = reveal(r.attempt, R);
       return attempt === r.attempt ? r : { ...r, attempt, clueSeq: r.clueSeq + 1 };
     }
     case 'SKIP':
-      return r.phase === 'playing' ? close(r, { ...r.attempt, status: 'skipped' }, e.now, 'skipped') : r;
+      return r.phase === 'playing' ? close(r, { ...r.attempt, status: 'skipped' }, e.now, 'skipped', R) : r;
     case 'TICK':
-      return r.phase === 'playing' && timeLeft(r, e.now) <= 0 ? close(r, { ...r.attempt, status: 'failed' }, e.now, 'timed_out') : r;
+      return r.phase === 'playing' && timeLeft(r, e.now) <= 0 ? close(r, { ...r.attempt, status: 'failed' }, e.now, 'timed_out', R) : r;
     case 'PAUSE':
       if (r.phase === 'playing') return { ...r, phase: 'paused', before: 'playing', elapsedMs: turnElapsed(r, e.now), runningSince: null };
       if (r.phase === 'turnOver') return { ...r, phase: 'paused', before: 'turnOver' };
@@ -164,13 +164,13 @@ export function offlineRows(r: OfflineRun, names: Record<number, string>): (Row 
 export const dpTieBreak = (a: { speed: number; wrong: number }, b: { speed: number; wrong: number }) => b.speed - a.speed || a.wrong - b.wrong;
 
 /** OF1: what happened since `seat` last played: each solved or missed case with its points, then a lead change. */
-export function offlineRecap(r: OfflineRun, seat: number, play: Pick<Play, 'seats' | 'settings'>): RecapLine[] {
+export function offlineRecap(r: OfflineRun, seat: number, play: Pick<Play, 'seats' | 'settings'>, w = { solved: 'solved the case · +{v}', missed: 'missed the case' }): RecapLine[] {
   const last = lastIndexOf(r.results, seat);
   const since = r.results.slice(last + 1);
   if (!since.length) return [];
   const seatOf = new Map(play.seats.map((x) => [x.seat, x]));
   const events = since.map((x, i) =>
-    event(`dp-${last + 1 + i}`, x.seat, seatOf.get(x.seat), x.outcome === 'right' ? say('solved the case · +{v}', { v: x.points }) : x.outcome === 'timed_out' ? say('ran out of time') : say('missed the case')),
+    event(`dp-${last + 1 + i}`, x.seat, seatOf.get(x.seat), x.outcome === 'right' ? say(w.solved, { v: x.points }) : x.outcome === 'timed_out' ? say('ran out of time') : say(w.missed)),
   );
   const scores = (rs: TurnResult[]) => r.order.map((s) => ({ seat: s, score: rs.filter((x) => x.seat === s).reduce((a, x) => a + x.points, 0) }));
   return finishRecap(events, leadLine(sides(scores(r.results.slice(0, last + 1)), play), sides(scores(r.results), play)));

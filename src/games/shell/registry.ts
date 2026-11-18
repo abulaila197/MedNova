@@ -21,6 +21,7 @@ const LOAD: Record<string, () => GameDef> = {
   'four-of-a-kind': () => require('../fok/def').fourOfAKind,
   'spot-the-flaw': () => require('../stf/def').spotTheFlaw,
   'trace-the-treatment': () => require('../ttt/def').traceTheTreatment,
+  'who-am-i': () => require('../whoami/def').whoAmI,
 };
 
 const loaded = new Map<string, GameDef>();

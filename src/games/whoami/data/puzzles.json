@@ -1,0 +1,5091 @@
+[
+{
+"id": "1",
+"cat": "Anatomy",
+"answer": "Femur",
+"type": "Bone",
+"aliases": [
+"thigh bone"
+],
+"clues": [
+"I am part of the skeleton that carries your weight.",
+"I am a long bone, and you have two of me.",
+"I sit between a ball-and-socket joint above and a hinge joint below.",
+"My neck often breaks when an older person falls on their hip.",
+"I am the longest and strongest bone in the human body."
+],
+"fact": "The femoral neck fracture after a fall is a classic injury in older people with osteoporosis."
+},
+{
+"id": "2",
+"cat": "Anatomy",
+"answer": "Scaphoid",
+"type": "Bone",
+"aliases": [
+"navicular of the hand"
+],
+"clues": [
+"I am small, and you can hardly see me from the outside.",
+"I live in a group of eight close neighbours.",
+"I sit on the thumb side, in the row closest to the forearm.",
+"Tenderness in the anatomical snuffbox after a fall makes doctors worry about me.",
+"My blood comes in from the far end, so a fracture through my waist can leave my near pole to die."
+],
+"fact": "Scaphoid fractures may not show on the first X-ray, and poor blood supply puts the proximal pole at risk of avascular necrosis."
+},
+{
+"id": "3",
+"cat": "Anatomy",
+"answer": "Clavicle",
+"type": "Bone",
+"aliases": [
+"collarbone"
+],
+"clues": [
+"You can feel me easily under your skin.",
+"I am a long bone, but I lie flat instead of standing up.",
+"I join your arm to the trunk, the only bony link between them.",
+"I am the first bone to start hardening in the fetus.",
+"I am the bone most often broken at birth and in falls on an outstretched hand, usually in my middle third."
+],
+"fact": "It is the only long bone that ossifies in membrane, and it is the most commonly fractured bone."
+},
+{
+"id": "4",
+"cat": "Anatomy",
+"answer": "Hyoid bone",
+"type": "Bone",
+"aliases": [
+"lingual bone"
+],
+"clues": [
+"I am a small bone in the neck.",
+"I am shaped like a horseshoe.",
+"I hold up the tongue and give muscles of swallowing a place to attach.",
+"I touch no other bone at all.",
+"When I am broken, forensic doctors start to think about strangulation."
+],
+"fact": "It is the only bone in the body that does not articulate with another bone."
+},
+{
+"id": "5",
+"cat": "Anatomy",
+"answer": "Patella",
+"type": "Bone",
+"aliases": [
+"kneecap"
+],
+"clues": [
+"I am a bone you can move with your fingers.",
+"I sit at the front of a large joint.",
+"I am the biggest sesamoid bone, buried inside a tendon.",
+"I make the quadriceps a stronger lever when you straighten your leg.",
+"I usually slip out of place to the lateral side."
+],
+"fact": "The largest sesamoid bone sits in the quadriceps tendon and improves the leverage of knee extension."
+},
+{
+"id": "6",
+"cat": "Anatomy",
+"answer": "Sciatic nerve",
+"type": "Nerve",
+"aliases": [
+"ischiadic nerve"
+],
+"clues": [
+"I carry messages to and from the lower limb.",
+"I come from the lumbar and sacral roots.",
+"I leave the pelvis through a large notch in the hip bone, usually below the piriformis.",
+"A badly placed injection in the upper outer buttock is safe, but the lower inner part can hurt me.",
+"I am the thickest and longest nerve in the body, splitting into tibial and common fibular branches."
+],
+"fact": "It is the largest nerve in the body; gluteal injections go in the upper outer quadrant to avoid it."
+},
+{
+"id": "7",
+"cat": "Anatomy",
+"answer": "Phrenic nerve",
+"type": "Nerve",
+"aliases": [],
+"clues": [
+"I am a nerve that works every few seconds, day and night.",
+"I come from the neck, from roots C3, C4 and C5.",
+"I run down over the scalenus anterior muscle and then through the chest beside the heart.",
+"Pain from my territory can be felt at the tip of the shoulder.",
+"I am the only motor supply to the diaphragm."
+],
+"fact": "\"C3, 4, 5 keeps the diaphragm alive\": damage paralyses half of the diaphragm."
+},
+{
+"id": "8",
+"cat": "Anatomy",
+"answer": "Recurrent laryngeal nerve",
+"type": "Nerve",
+"aliases": [
+"inferior laryngeal nerve"
+],
+"clues": [
+"I am a branch of a cranial nerve.",
+"I take a long trip down into the chest and then climb back up.",
+"On the left I hook under the aortic arch; on the right, under the subclavian artery.",
+"Surgeons look for me carefully during thyroid operations.",
+"If I am cut on one side, the voice becomes hoarse."
+],
+"fact": "It supplies all intrinsic laryngeal muscles except cricothyroid, so injury causes hoarseness."
+},
+{
+"id": "9",
+"cat": "Anatomy",
+"answer": "Median nerve",
+"type": "Nerve",
+"aliases": [],
+"clues": [
+"I come from the brachial plexus.",
+"I run down the middle of the arm, beside the brachial artery.",
+"I pass through a tight tunnel at the wrist under the flexor retinaculum.",
+"When I am squeezed there, the thumb, index and middle fingers tingle at night.",
+"I am the nerve trapped in carpal tunnel syndrome, and damage can waste the thenar muscles."
+],
+"fact": "Compression in the carpal tunnel gives numbness of the lateral three and a half fingers and thenar wasting."
+},
+{
+"id": "10",
+"cat": "Anatomy",
+"answer": "Ulnar nerve",
+"type": "Nerve",
+"aliases": [],
+"clues": [
+"I come from the medial cord of the brachial plexus.",
+"I supply most of the small muscles of the hand.",
+"I run behind the medial epicondyle, where you can roll me under your finger.",
+"When you knock me there, your little finger tingles.",
+"People call me the funny bone, and my injury leaves a claw hand."
+],
+"fact": "Injury causes a claw hand with loss of finger abduction and numbness of the little finger."
+},
+{
+"id": "11",
+"cat": "Anatomy",
+"answer": "Common fibular nerve",
+"type": "Nerve",
+"aliases": [
+"common peroneal nerve"
+],
+"clues": [
+"I am a branch in the lower limb.",
+"I split off from a much bigger nerve above the knee.",
+"I wrap around the neck of the thin outer leg bone, right under the skin.",
+"A tight plaster cast or crossing your legs for too long can press on me.",
+"When I am damaged, the foot drops and the toes drag when you walk."
+],
+"fact": "It is the most commonly injured nerve in the leg, causing foot drop."
+},
+{
+"id": "12",
+"cat": "Anatomy",
+"answer": "Facial nerve",
+"type": "Cranial nerve",
+"aliases": [
+"cranial nerve VII"
+],
+"clues": [
+"I am one of twelve paired nerves that leave the brain.",
+"I travel through a narrow bony canal in the temporal bone.",
+"I carry taste from the front two thirds of the tongue and make tears and saliva flow.",
+"I leave the skull through the stylomastoid foramen and pass through the parotid gland.",
+"When I fail on one side, the whole half of the face droops, as in Bell palsy."
+],
+"fact": "Bell palsy is an idiopathic lower motor neuron lesion that paralyses one whole side of the face."
+},
+{
+"id": "13",
+"cat": "Anatomy",
+"answer": "Vagus nerve",
+"type": "Cranial nerve",
+"aliases": [
+"cranial nerve X"
+],
+"clues": [
+"I am a cranial nerve.",
+"My name means \"wanderer\", because I travel far from the head.",
+"I reach the heart, lungs and gut down to the last part of the transverse colon.",
+"Pressing on the carotid sinus can make me slow the heart down.",
+"I am the main parasympathetic nerve of the body, number ten of twelve."
+],
+"fact": "It carries most of the body's parasympathetic supply to the thoracic and abdominal organs."
+},
+{
+"id": "14",
+"cat": "Anatomy",
+"answer": "Diaphragm",
+"type": "Muscle",
+"aliases": [],
+"clues": [
+"I am a muscle you use without thinking.",
+"I am shaped like a dome.",
+"I separate two big body cavities.",
+"The aorta, oesophagus and inferior vena cava pass through me at different levels.",
+"I am the main muscle of breathing: when I contract I flatten and pull air in."
+],
+"fact": "The vena cava passes at T8, the oesophagus at T10 and the aorta at T12."
+},
+{
+"id": "15",
+"cat": "Anatomy",
+"answer": "Deltoid",
+"type": "Muscle",
+"aliases": [],
+"clues": [
+"I am a muscle of the upper limb.",
+"I give the shoulder its round shape.",
+"My shape looks like an upside-down triangle, like a Greek letter.",
+"The axillary nerve supplies me, and nurses often give vaccines into me.",
+"I lift the arm away from the side, from about 15 to 90 degrees."
+],
+"fact": "Supplied by the axillary nerve, it is the main abductor of the arm and a common injection site."
+},
+{
+"id": "16",
+"cat": "Anatomy",
+"answer": "Sternocleidomastoid",
+"type": "Muscle",
+"aliases": [],
+"clues": [
+"I am a muscle of the neck.",
+"I divide the neck into front and back triangles.",
+"I run from the breastbone and collarbone up to the bony bump behind the ear.",
+"When I am tight in a newborn, the head tilts to one side.",
+"I turn the face to the opposite side, and the accessory nerve supplies me."
+],
+"fact": "Torticollis in babies is often from a shortened muscle; contraction turns the head to the opposite side."
+},
+{
+"id": "17",
+"cat": "Anatomy",
+"answer": "Serratus anterior",
+"type": "Muscle",
+"aliases": [
+"boxer's muscle"
+],
+"clues": [
+"I am a muscle on the side of the chest.",
+"My edge has a jagged, saw-like look.",
+"I hold the shoulder blade flat against the rib cage.",
+"The long thoracic nerve supplies me and can be cut in breast surgery.",
+"When I am paralysed, the shoulder blade sticks out like a wing."
+],
+"fact": "Long thoracic nerve injury paralyses it and causes a winged scapula."
+},
+{
+"id": "18",
+"cat": "Anatomy",
+"answer": "Psoas major",
+"type": "Muscle",
+"aliases": [],
+"clues": [
+"I am a muscle you cannot feel from the outside.",
+"I start on the sides of the lumbar spine.",
+"I join another muscle and attach to the lesser trochanter.",
+"An abscess from spinal tuberculosis can track down inside my sheath into the groin.",
+"I am the strongest flexor of the hip."
+],
+"fact": "Together with iliacus it forms iliopsoas, the main hip flexor; a sign of irritation is pain on hip extension."
+},
+{
+"id": "19",
+"cat": "Anatomy",
+"answer": "Gluteus medius",
+"type": "Muscle",
+"aliases": [],
+"clues": [
+"I am a muscle of the buttock.",
+"I am fan-shaped and lie partly under a bigger muscle.",
+"My nerve leaves the pelvis above the piriformis.",
+"I keep the pelvis level when you stand on one leg.",
+"When I am weak, the pelvis drops on the opposite side as you walk: the Trendelenburg sign."
+],
+"fact": "Weakness gives a positive Trendelenburg sign and a waddling gait."
+},
+{
+"id": "20",
+"cat": "Anatomy",
+"answer": "Popliteus",
+"type": "Muscle",
+"aliases": [],
+"clues": [
+"I am a small muscle at the back of a joint.",
+"I lie deep, on the floor of a diamond-shaped fossa.",
+"Part of me attaches to the lateral meniscus.",
+"I am supplied by the tibial nerve.",
+"I unlock the fully straightened knee by rotating it at the start of bending."
+],
+"fact": "It is called the key that unlocks the knee."
+},
+{
+"id": "21",
+"cat": "Anatomy",
+"answer": "Left anterior descending artery",
+"type": "Artery",
+"aliases": [
+"LAD",
+"anterior interventricular artery"
+],
+"clues": [
+"I am a blood vessel.",
+"I come from a short trunk that leaves the aorta.",
+"I run down the groove between the two ventricles on the front of the heart.",
+"I supply the front two thirds of the septum and much of the left ventricle.",
+"When I block suddenly, the heart attack is so deadly I am called the widow maker."
+],
+"fact": "It is the most commonly blocked coronary artery and gives anterior myocardial infarctions."
+},
+{
+"id": "22",
+"cat": "Anatomy",
+"answer": "Middle meningeal artery",
+"type": "Artery",
+"aliases": [],
+"clues": [
+"I am a branch of the maxillary artery.",
+"I enter the skull through the foramen spinosum.",
+"I run on the inner surface of the skull, under the thin pterion.",
+"A blow to the side of the head can tear me.",
+"My bleeding gives an extradural haematoma with a lucid interval."
+],
+"fact": "Rupture under the pterion causes an extradural (epidural) haematoma with a lucid interval."
+},
+{
+"id": "23",
+"cat": "Anatomy",
+"answer": "Great saphenous vein",
+"type": "Vein",
+"aliases": [
+"long saphenous vein"
+],
+"clues": [
+"I am a vein of the lower limb.",
+"I am superficial, lying just under the skin.",
+"I start in front of the medial malleolus at the ankle.",
+"I join the deep system at the groin through an opening in the fascia.",
+"Surgeons often take me to use as a bypass graft for the heart."
+],
+"fact": "The longest vein in the body, often harvested for coronary artery bypass grafts."
+},
+{
+"id": "24",
+"cat": "Anatomy",
+"answer": "Azygos vein",
+"type": "Vein",
+"aliases": [],
+"clues": [
+"I am a vein in the chest.",
+"My name means \"unpaired\".",
+"I drain the back of the chest wall on the right side.",
+"I arch over the root of the right lung.",
+"I join the superior vena cava and connect it with the inferior vena cava when it is blocked."
+],
+"fact": "It links the two venae cavae and becomes an important bypass route when one is obstructed."
+},
+{
+"id": "25",
+"cat": "Anatomy",
+"answer": "Portal vein",
+"type": "Vein",
+"aliases": [
+"hepatic portal vein"
+],
+"clues": [
+"I am a blood vessel that does not go straight back to the heart.",
+"I am made where two veins meet behind the neck of the pancreas.",
+"I carry blood rich in nutrients from the gut.",
+"When pressure in me rises, varices can open in the oesophagus.",
+"I bring about three quarters of the liver's blood supply."
+],
+"fact": "Raised pressure (portal hypertension) causes oesophageal varices, ascites and splenomegaly."
+},
+{
+"id": "26",
+"cat": "Anatomy",
+"answer": "Circle of Willis",
+"type": "Arterial circle",
+"aliases": [
+"cerebral arterial circle"
+],
+"clues": [
+"I am made of several blood vessels.",
+"I sit at the base of the brain.",
+"I join the internal carotid and the vertebrobasilar systems.",
+"Berry aneurysms often form where my vessels meet.",
+"I am a ring that can keep blood flowing to the brain if one feeding artery is blocked."
+],
+"fact": "Most berry aneurysms occur on it, especially at the anterior communicating artery."
+},
+{
+"id": "27",
+"cat": "Anatomy",
+"answer": "Thoracic duct",
+"type": "Lymph vessel",
+"aliases": [],
+"clues": [
+"I am a vessel, but I don't carry blood.",
+"I start in the abdomen as a sac called the cisterna chyli.",
+"I climb through the chest beside the oesophagus.",
+"I empty at the junction of the left subclavian and left internal jugular veins.",
+"I carry most of the body's lymph and the fat absorbed from the gut."
+],
+"fact": "Injury causes chylothorax, milky fluid in the pleural space."
+},
+{
+"id": "28",
+"cat": "Anatomy",
+"answer": "Spleen",
+"type": "Organ",
+"aliases": [],
+"clues": [
+"I am an organ in the abdomen.",
+"I sit high on the left, under ribs 9 to 11.",
+"I filter the blood and remove old red cells.",
+"I am the organ most often damaged in blunt abdominal trauma.",
+"Without me, people are at risk of serious infection by encapsulated bacteria."
+],
+"fact": "After its removal patients need vaccines against pneumococcus, meningococcus and Haemophilus."
+},
+{
+"id": "29",
+"cat": "Anatomy",
+"answer": "Appendix",
+"type": "Organ",
+"aliases": [
+"vermiform appendix"
+],
+"clues": [
+"I am a small part of the digestive tract.",
+"I am a narrow tube with a closed end.",
+"I hang from the caecum, where the three taeniae coli meet.",
+"My base lies at McBurney's point on the skin.",
+"When I am inflamed, pain starts around the navel and moves to the right lower abdomen."
+],
+"fact": "Its base projects to McBurney's point, one third of the way from the anterior superior iliac spine to the umbilicus."
+},
+{
+"id": "30",
+"cat": "Anatomy",
+"answer": "Pancreas",
+"type": "Organ",
+"aliases": [],
+"clues": [
+"I am an organ that lies behind the stomach.",
+"I am both an exocrine and an endocrine gland.",
+"My head sits in the curve of the duodenum and my tail reaches the spleen.",
+"My main duct joins the common bile duct at the ampulla of Vater.",
+"I make digestive enzymes and, in my islets, insulin and glucagon."
+],
+"fact": "A gallstone stuck at the ampulla is a common cause of acute inflammation of this organ."
+},
+{
+"id": "31",
+"cat": "Anatomy",
+"answer": "Thyroid gland",
+"type": "Gland",
+"aliases": [],
+"clues": [
+"I am a gland in the neck.",
+"I am shaped like a butterfly.",
+"My two lobes are joined by an isthmus in front of the trachea.",
+"I move up when you swallow, because I am wrapped to the larynx.",
+"I make hormones that set your metabolic rate, and I need iodine to do it."
+],
+"fact": "Lack of iodine makes it enlarge into a goitre."
+},
+{
+"id": "32",
+"cat": "Anatomy",
+"answer": "Pituitary gland",
+"type": "Gland",
+"aliases": [
+"hypophysis"
+],
+"clues": [
+"I am a gland in the head.",
+"I am about the size of a pea.",
+"I sit in a saddle of bone called the sella turcica.",
+"A tumour in me can press on the optic chiasm and cause bitemporal hemianopia.",
+"People call me the master gland, as I control many other glands."
+],
+"fact": "Tumours press on the optic chiasm above it, causing loss of both outer visual fields."
+},
+{
+"id": "33",
+"cat": "Anatomy",
+"answer": "Carpal tunnel",
+"type": "Space",
+"aliases": [],
+"clues": [
+"I am a passage, not an organ.",
+"I am at the wrist.",
+"My floor is made of small bones and my roof is the flexor retinaculum.",
+"Nine tendons and one nerve pass through me.",
+"When I get too tight, the median nerve is squeezed."
+],
+"fact": "It contains the median nerve and nine flexor tendons; compression causes carpal tunnel syndrome."
+},
+{
+"id": "34",
+"cat": "Anatomy",
+"answer": "Inguinal canal",
+"type": "Canal",
+"aliases": [],
+"clues": [
+"I am a passage through the abdominal wall.",
+"I am about four centimetres long and run obliquely.",
+"I have a deep ring and a superficial ring.",
+"In men I carry the spermatic cord; in women, the round ligament.",
+"Indirect hernias come down through me."
+],
+"fact": "Indirect inguinal hernias pass through the deep ring lateral to the inferior epigastric vessels."
+},
+{
+"id": "35",
+"cat": "Anatomy",
+"answer": "Anatomical snuffbox",
+"type": "Space",
+"aliases": [],
+"clues": [
+"I am a small hollow on the body surface.",
+"You can see me best when you stretch your thumb back.",
+"My borders are tendons of the thumb muscles.",
+"The radial artery runs across my floor.",
+"Pain here after a fall suggests a fracture of the scaphoid."
+],
+"fact": "Tenderness here after a fall on an outstretched hand points to a scaphoid fracture."
+},
+{
+"id": "36",
+"cat": "Anatomy",
+"answer": "Rotator cuff",
+"type": "Muscle group",
+"aliases": [],
+"clues": [
+"I am a group, not a single structure.",
+"I am made of four muscles and their tendons.",
+"My members are supraspinatus, infraspinatus, teres minor and subscapularis.",
+"I hold the head of the humerus in its shallow socket.",
+"My supraspinatus part tears most often, giving a painful arc."
+],
+"fact": "The four \"SITS\" muscles stabilise the shoulder joint."
+},
+{
+"id": "37",
+"cat": "Anatomy",
+"answer": "Anterior cruciate ligament",
+"type": "Ligament",
+"aliases": [
+"ACL"
+],
+"clues": [
+"I am a strong band inside a joint.",
+"I cross another band of my own kind.",
+"I run from the front of the tibia to the back of the femur.",
+"I stop the tibia from sliding forward.",
+"I tear in sudden twisting injuries in football, and the anterior drawer test checks me."
+],
+"fact": "Tears are common in pivoting sports; the Lachman and anterior drawer tests examine it."
+},
+{
+"id": "38",
+"cat": "Anatomy",
+"answer": "Achilles tendon",
+"type": "Tendon",
+"aliases": [
+"calcaneal tendon"
+],
+"clues": [
+"I am a strong cord at the back of the leg.",
+"I join muscles to bone.",
+"I am made by the gastrocnemius and soleus joining together.",
+"I attach to the heel bone.",
+"I am the thickest and strongest tendon in the body, and squeezing the calf tests if I am torn."
+],
+"fact": "The Thompson (calf squeeze) test checks for its rupture."
+},
+{
+"id": "39",
+"cat": "Anatomy",
+"answer": "Eustachian tube",
+"type": "Tube",
+"aliases": [
+"pharyngotympanic tube",
+"auditory tube"
+],
+"clues": [
+"I am a passage in the head.",
+"I connect two spaces filled with air.",
+"I run from the middle ear to the nasopharynx.",
+"In children I am shorter and more horizontal, so infections climb up easily.",
+"I open when you swallow or yawn to even out the pressure on the eardrum."
+],
+"fact": "It equalises middle ear pressure, which is why swallowing helps on a plane."
+},
+{
+"id": "40",
+"cat": "Anatomy",
+"answer": "Corpus callosum",
+"type": "Brain structure",
+"aliases": [],
+"clues": [
+"I am part of the brain.",
+"I am made of white matter.",
+"I lie deep in the middle, under the longitudinal fissure.",
+"If I am cut, the two sides of the brain can no longer share information.",
+"I am the largest bundle of fibres joining the two cerebral hemispheres."
+],
+"fact": "It is the largest commissure, connecting the left and right hemispheres."
+},
+{
+"id": "41",
+"cat": "Physiology",
+"answer": "Sinoatrial node",
+"type": "Pacemaker tissue",
+"aliases": [
+"SA node",
+"sinus node"
+],
+"clues": [
+"I am a small group of special cells.",
+"I am found in the wall of the heart.",
+"I sit in the right atrium, near where the superior vena cava enters.",
+"My cells leak sodium slowly, so they fire on their own without any nerve.",
+"I am the natural pacemaker that sets the normal heart rate."
+],
+"fact": "Its cells have the fastest spontaneous depolarisation, so they set the sinus rhythm."
+},
+{
+"id": "42",
+"cat": "Physiology",
+"answer": "Atrioventricular node",
+"type": "Conduction tissue",
+"aliases": [
+"AV node"
+],
+"clues": [
+"I am a small cluster of special heart cells.",
+"I sit in the floor of the right atrium, near the opening of the coronary sinus.",
+"I am the only normal electrical path from the atria to the ventricles.",
+"I slow the signal down on purpose, which shows as the PR interval.",
+"That pause lets the atria finish filling the ventricles before they contract."
+],
+"fact": "Its delay (most of the PR interval) gives the atria time to empty into the ventricles."
+},
+{
+"id": "43",
+"cat": "Physiology",
+"answer": "Purkinje fibres",
+"type": "Conduction fibres",
+"aliases": [
+"Purkinje fibers"
+],
+"clues": [
+"I am a network inside the heart.",
+"I am made of large, pale muscle cells full of glycogen.",
+"I spread under the inner lining of both ventricles.",
+"I am the last part of the conduction system after the bundle branches.",
+"I carry the impulse faster than any other heart tissue, so the ventricles contract together."
+],
+"fact": "They conduct at about 4 m/s, the fastest in the heart, for a coordinated ventricular contraction."
+},
+{
+"id": "44",
+"cat": "Physiology",
+"answer": "Carotid sinus",
+"type": "Baroreceptor",
+"aliases": [
+"carotid bulb"
+],
+"clues": [
+"I am a sensor in the neck.",
+"I am a small widening at the start of an artery.",
+"My nerve endings feel stretch and report through the glossopharyngeal nerve.",
+"When blood pressure rises, I tell the brain to slow the heart.",
+"Massaging me can stop some fast heart rhythms, but it can make older people faint."
+],
+"fact": "Carotid sinus massage raises vagal tone and can end supraventricular tachycardia."
+},
+{
+"id": "45",
+"cat": "Physiology",
+"answer": "Carotid body",
+"type": "Chemoreceptor",
+"aliases": [
+"glomus caroticum"
+],
+"clues": [
+"I am a tiny organ in the neck.",
+"I sit at the fork where the main artery of the neck splits in two.",
+"I have one of the highest blood flows per gram of any tissue.",
+"My type I cells sense the blood's gases and acidity.",
+"I raise breathing when the oxygen pressure in arterial blood falls."
+],
+"fact": "It is the main peripheral sensor of low arterial oxygen."
+},
+{
+"id": "46",
+"cat": "Physiology",
+"answer": "Surfactant",
+"type": "Lung secretion",
+"aliases": [],
+"clues": [
+"I am a substance, not a cell.",
+"I am mostly made of phospholipids, especially dipalmitoylphosphatidylcholine.",
+"I line the inside of the alveoli as a thin film.",
+"I lower surface tension so small air sacs don't collapse when you breathe out.",
+"Babies born too early lack me and develop respiratory distress syndrome."
+],
+"fact": "Made by type II pneumocytes from about 24 to 28 weeks; steroids before preterm birth increase it."
+},
+{
+"id": "47",
+"cat": "Physiology",
+"answer": "Hemoglobin",
+"type": "Protein",
+"aliases": [
+"haemoglobin"
+],
+"clues": [
+"I am a protein found in huge numbers in your blood.",
+"I am made of four chains, each holding a heme group.",
+"My curve with oxygen is S-shaped because my parts help each other bind.",
+"Carbon monoxide sticks to me about 200 times more tightly than oxygen does.",
+"I live inside red blood cells and carry oxygen to the tissues."
+],
+"fact": "Its sigmoid oxygen curve comes from cooperative binding; 2,3-BPG shifts it to the right."
+},
+{
+"id": "48",
+"cat": "Physiology",
+"answer": "Erythropoietin",
+"type": "Hormone",
+"aliases": [
+"EPO"
+],
+"clues": [
+"I am a hormone.",
+"I am a glycoprotein.",
+"Most of me is made by cells around the tubules of the kidney.",
+"Low oxygen in the blood makes my level go up.",
+"I tell the bone marrow to make more red blood cells."
+],
+"fact": "Kidney failure lowers it and causes anaemia; some athletes have abused it for doping."
+},
+{
+"id": "49",
+"cat": "Physiology",
+"answer": "Aldosterone",
+"type": "Hormone",
+"aliases": [],
+"clues": [
+"I am a hormone.",
+"I am a steroid made from cholesterol.",
+"I come from the outer layer of the adrenal cortex, the zona glomerulosa.",
+"Angiotensin II and high potassium make me rise.",
+"I make the kidney keep sodium and lose potassium."
+],
+"fact": "An adrenal tumour making too much of it (Conn syndrome) causes high blood pressure with low potassium."
+},
+{
+"id": "50",
+"cat": "Physiology",
+"answer": "Antidiuretic hormone",
+"type": "Hormone",
+"aliases": [
+"vasopressin",
+"ADH"
+],
+"clues": [
+"I am a hormone.",
+"I am made in the hypothalamus and stored in the posterior pituitary.",
+"I rise when the blood gets too concentrated.",
+"I put water channels, aquaporin-2, into the collecting ducts.",
+"Without me you pass large amounts of dilute urine, as in diabetes insipidus."
+],
+"fact": "Lack of it causes central diabetes insipidus; alcohol blocks its release."
+},
+{
+"id": "51",
+"cat": "Physiology",
+"answer": "Atrial natriuretic peptide",
+"type": "Hormone",
+"aliases": [
+"ANP"
+],
+"clues": [
+"I am a hormone.",
+"I am a small peptide.",
+"I am released when the walls of the heart's upper chambers are stretched.",
+"I make the kidney lose more salt and water and I widen blood vessels.",
+"I am the heart's own hormone that works against the renin-angiotensin system."
+],
+"fact": "Released by atrial stretch, it promotes sodium excretion; its cousin BNP helps diagnose heart failure."
+},
+{
+"id": "52",
+"cat": "Physiology",
+"answer": "Renin",
+"type": "Enzyme",
+"aliases": [
+"angiotensinogenase"
+],
+"clues": [
+"I am a protein that cuts another protein.",
+"I am made by special cells in the wall of the afferent arteriole.",
+"Low pressure in the kidney, low sodium and sympathetic signals all make me rise.",
+"I cut angiotensinogen from the liver into angiotensin I.",
+"I am the first and rate-limiting step of the system that raises blood pressure."
+],
+"fact": "It starts the renin-angiotensin-aldosterone system; aliskiren blocks it directly."
+},
+{
+"id": "53",
+"cat": "Physiology",
+"answer": "Macula densa",
+"type": "Kidney cells",
+"aliases": [],
+"clues": [
+"I am a group of cells in the nephron.",
+"My cells are tall and packed close together.",
+"I sit in the wall of the distal tubule where it touches its own glomerulus.",
+"I sense how much sodium chloride is flowing past me.",
+"I send signals that adjust filtration and renin release: tubuloglomerular feedback."
+],
+"fact": "It senses NaCl in the distal tubule and controls GFR by tubuloglomerular feedback."
+},
+{
+"id": "54",
+"cat": "Physiology",
+"answer": "Loop of Henle",
+"type": "Nephron segment",
+"aliases": [],
+"clues": [
+"I am part of the nephron.",
+"I am shaped like a hairpin.",
+"I dip down into the medulla and come back up.",
+"My thick ascending limb pumps salt out but lets no water follow.",
+"I build the salt gradient that lets the kidney make concentrated urine."
+],
+"fact": "Its countercurrent multiplier builds the medullary gradient; loop diuretics act on its thick ascending limb."
+},
+{
+"id": "55",
+"cat": "Physiology",
+"answer": "Glomerulus",
+"type": "Capillary tuft",
+"aliases": [],
+"clues": [
+"I am a ball of very small blood vessels.",
+"I sit between two arterioles, not between an artery and a vein.",
+"Bowman's capsule wraps around me.",
+"My wall has three layers that block cells and most proteins.",
+"I am the filter of the nephron, where blood plasma becomes the first urine."
+],
+"fact": "Its filtration rate (GFR) is the main measure of kidney function."
+},
+{
+"id": "56",
+"cat": "Physiology",
+"answer": "Juxtaglomerular cells",
+"type": "Kidney cells",
+"aliases": [
+"granular cells"
+],
+"clues": [
+"I am a group of cells in the kidney.",
+"I am smooth muscle cells that have changed their job.",
+"I sit in the wall of the afferent arteriole.",
+"I hold granules and act as a pressure sensor.",
+"I release renin when blood pressure in the kidney falls."
+],
+"fact": "Modified smooth muscle cells that release renin; with the macula densa they form an apparatus."
+},
+{
+"id": "57",
+"cat": "Physiology",
+"answer": "Cortisol",
+"type": "Hormone",
+"aliases": [
+"hydrocortisone"
+],
+"clues": [
+"I am a hormone.",
+"I am a steroid, and I am highest in the morning.",
+"I come from the zona fasciculata of the adrenal cortex.",
+"I raise blood sugar, break down protein and calm the immune system.",
+"I am the body's main stress hormone, and ACTH controls me."
+],
+"fact": "Too much gives Cushing syndrome; too little gives Addison disease."
+},
+{
+"id": "58",
+"cat": "Physiology",
+"answer": "Thyroxine",
+"type": "Hormone",
+"aliases": [
+"T4",
+"tetraiodothyronine"
+],
+"clues": [
+"I am a hormone.",
+"I carry four iodine atoms.",
+"Most of me travels in the blood bound to proteins.",
+"Tissues change me into a more active form by removing one iodine.",
+"I am the main hormone the thyroid gland releases."
+],
+"fact": "It is converted in the tissues to the more active T3."
+},
+{
+"id": "59",
+"cat": "Physiology",
+"answer": "Parathyroid hormone",
+"type": "Hormone",
+"aliases": [
+"PTH",
+"parathormone"
+],
+"clues": [
+"I am a hormone.",
+"I am a peptide made by four tiny glands in the neck.",
+"Low calcium in the blood makes me rise.",
+"I free calcium from bone, keep it in the kidney and lose phosphate in the urine.",
+"I turn on the enzyme that makes active vitamin D."
+],
+"fact": "High levels from an adenoma cause high calcium: \"bones, stones, groans and moans\"."
+},
+{
+"id": "60",
+"cat": "Physiology",
+"answer": "Calcitonin",
+"type": "Hormone",
+"aliases": [
+"thyrocalcitonin"
+],
+"clues": [
+"I am a hormone.",
+"I am a peptide made in the neck.",
+"I come from the parafollicular C cells of the thyroid.",
+"I lower blood calcium by slowing down osteoclasts.",
+"I am a tumour marker for medullary thyroid cancer."
+],
+"fact": "It is raised in medullary thyroid carcinoma."
+},
+{
+"id": "61",
+"cat": "Physiology",
+"answer": "Oxytocin",
+"type": "Hormone",
+"aliases": [],
+"clues": [
+"I am a hormone.",
+"I am made in the hypothalamus and released from the posterior pituitary.",
+"I am a small peptide of nine amino acids.",
+"A baby sucking at the breast makes me rise and the milk flow out.",
+"I make the womb contract during labour, and I am given as a drip to speed it up."
+],
+"fact": "It causes uterine contraction and milk let-down; it is used to induce labour."
+},
+{
+"id": "62",
+"cat": "Physiology",
+"answer": "Prolactin",
+"type": "Hormone",
+"aliases": [],
+"clues": [
+"I am a hormone.",
+"I come from the anterior pituitary.",
+"Dopamine from the hypothalamus keeps me down all the time.",
+"A tumour making too much of me can stop periods and cause milk outside pregnancy.",
+"My main job is to make the breasts produce milk."
+],
+"fact": "Prolactinoma is the most common pituitary tumour; dopamine agonists treat it."
+},
+{
+"id": "63",
+"cat": "Physiology",
+"answer": "Growth hormone",
+"type": "Hormone",
+"aliases": [
+"somatotropin",
+"GH"
+],
+"clues": [
+"I am a hormone.",
+"I come from the anterior pituitary, mostly during deep sleep.",
+"I work through IGF-1 from the liver.",
+"Too much of me after the long bones stop lengthening causes acromegaly.",
+"Too much of me in childhood makes a person very tall: gigantism."
+],
+"fact": "Excess before puberty causes gigantism; after it, acromegaly."
+},
+{
+"id": "64",
+"cat": "Physiology",
+"answer": "Melatonin",
+"type": "Hormone",
+"aliases": [],
+"clues": [
+"I am a hormone.",
+"I am made from serotonin.",
+"I come from the pineal gland.",
+"Light at the eyes stops my release.",
+"I rise in the dark and help set the sleep-wake cycle."
+],
+"fact": "Sometimes taken to help with jet lag."
+},
+{
+"id": "65",
+"cat": "Physiology",
+"answer": "Gastrin",
+"type": "Hormone",
+"aliases": [],
+"clues": [
+"I am a hormone of the gut.",
+"I am made by G cells in the antrum of the stomach.",
+"Protein in the stomach and stretching of its wall make me rise.",
+"A tumour in the pancreas making too much of me gives many ulcers.",
+"My main job is to make parietal cells release acid."
+],
+"fact": "Zollinger-Ellison syndrome is a tumour that makes too much of it."
+},
+{
+"id": "66",
+"cat": "Physiology",
+"answer": "Cholecystokinin",
+"type": "Hormone",
+"aliases": [
+"CCK"
+],
+"clues": [
+"I am a hormone of the gut.",
+"I am made by I cells in the duodenum and jejunum.",
+"Fat and protein reaching the small intestine make me rise.",
+"I relax the sphincter of Oddi and help you feel full.",
+"I make the gallbladder contract and the pancreas release enzymes."
+],
+"fact": "It squeezes the gallbladder, so a fatty meal can trigger biliary colic."
+},
+{
+"id": "67",
+"cat": "Physiology",
+"answer": "Secretin",
+"type": "Hormone",
+"aliases": [],
+"clues": [
+"I am a hormone, and the very first one ever discovered.",
+"I am made by S cells in the duodenum.",
+"Acid arriving from the stomach makes me rise.",
+"I make the pancreas release water and bicarbonate.",
+"I neutralise the acid entering the small intestine."
+],
+"fact": "The first hormone discovered (1902); it makes the pancreas secrete bicarbonate."
+},
+{
+"id": "68",
+"cat": "Physiology",
+"answer": "Ghrelin",
+"type": "Hormone",
+"aliases": [],
+"clues": [
+"I am a hormone.",
+"I am made mainly by the stomach.",
+"I rise before meals and fall after you eat.",
+"I also make the pituitary release growth hormone.",
+"People call me the hunger hormone."
+],
+"fact": "The only known gut hormone that increases appetite."
+},
+{
+"id": "69",
+"cat": "Physiology",
+"answer": "Leptin",
+"type": "Hormone",
+"aliases": [],
+"clues": [
+"I am a hormone.",
+"I am made by fat cells.",
+"The more body fat you have, the more of me there is.",
+"I act on the hypothalamus.",
+"I tell the brain that the body has enough energy stores, so appetite falls."
+],
+"fact": "Obese people usually have high levels but respond poorly to it (resistance)."
+},
+{
+"id": "70",
+"cat": "Physiology",
+"answer": "Intrinsic factor",
+"type": "Glycoprotein",
+"aliases": [
+"gastric intrinsic factor"
+],
+"clues": [
+"I am a protein, not a hormone.",
+"I am made by the parietal cells of the stomach.",
+"I bind a vitamin and protect it on its trip through the gut.",
+"I am absorbed together with that vitamin in the terminal ileum.",
+"Antibodies against me cause pernicious anaemia."
+],
+"fact": "It is needed to absorb vitamin B12; autoimmune loss causes pernicious anaemia."
+},
+{
+"id": "71",
+"cat": "Physiology",
+"answer": "Bile salts",
+"type": "Molecules",
+"aliases": [
+"bile acids"
+],
+"clues": [
+"I am a group of molecules.",
+"I am made by the liver from cholesterol.",
+"I am stored in the gallbladder.",
+"About 95% of me is taken back in the terminal ileum and reused.",
+"I break fat into small drops so it can be digested and absorbed."
+],
+"fact": "They emulsify fat; their enterohepatic circulation recycles them several times a day."
+},
+{
+"id": "72",
+"cat": "Physiology",
+"answer": "Muscle spindle",
+"type": "Sensory receptor",
+"aliases": [],
+"clues": [
+"I am a sensor.",
+"I lie inside a skeletal muscle, parallel to its fibres.",
+"My special intrafusal fibres are supplied by gamma motor neurons.",
+"I sense how much and how fast a muscle is stretched.",
+"I start the knee-jerk reflex when the patellar tendon is tapped."
+],
+"fact": "It drives the stretch (myotatic) reflex such as the knee jerk."
+},
+{
+"id": "73",
+"cat": "Physiology",
+"answer": "Golgi tendon organ",
+"type": "Sensory receptor",
+"aliases": [],
+"clues": [
+"I am a sensor.",
+"I sit where a muscle joins its tendon.",
+"I lie in series with the muscle fibres.",
+"My signals come through Ib fibres.",
+"I sense tension and make the muscle relax if it pulls too hard."
+],
+"fact": "It mediates the inverse stretch reflex that protects against too much force."
+},
+{
+"id": "74",
+"cat": "Physiology",
+"answer": "Pacinian corpuscle",
+"type": "Mechanoreceptor",
+"aliases": [
+"lamellar corpuscle"
+],
+"clues": [
+"I am a sensor in the skin and deeper tissues.",
+"I look like a sliced onion under the microscope.",
+"I adapt very fast.",
+"I am the biggest of the skin's touch sensors.",
+"I sense vibration and deep pressure."
+],
+"fact": "Its onion-like layers make it respond to vibration and quickly adapt."
+},
+{
+"id": "75",
+"cat": "Physiology",
+"answer": "Hypothalamus",
+"type": "Brain region",
+"aliases": [],
+"clues": [
+"I am part of the brain.",
+"I sit below the thalamus and above the pituitary.",
+"I control body temperature, hunger and thirst.",
+"I make releasing hormones that reach the pituitary through portal vessels.",
+"I am the link between the nervous system and the endocrine system."
+],
+"fact": "It controls the pituitary and keeps homeostasis (temperature, thirst, hunger)."
+},
+{
+"id": "76",
+"cat": "Physiology",
+"answer": "Cerebellum",
+"type": "Brain region",
+"aliases": [],
+"clues": [
+"I am part of the brain.",
+"I sit at the back of the skull, behind the brainstem.",
+"I hold more neurons than the rest of the brain together.",
+"Damage to me causes a wide-based gait, intention tremor and slurred speech.",
+"I coordinate movement and balance."
+],
+"fact": "Damage gives ataxia on the same side, intention tremor and dysdiadochokinesia."
+},
+{
+"id": "77",
+"cat": "Physiology",
+"answer": "Acetylcholine",
+"type": "Neurotransmitter",
+"aliases": [
+"ACh"
+],
+"clues": [
+"I am a messenger between cells.",
+"I am made from choline and a two-carbon unit carried by coenzyme A.",
+"I am broken down in the gap by an esterase within milliseconds.",
+"I act on nicotinic and muscarinic receptors.",
+"I am released at the neuromuscular junction to make skeletal muscle contract."
+],
+"fact": "Myasthenia gravis is caused by antibodies against its nicotinic receptor."
+},
+{
+"id": "78",
+"cat": "Physiology",
+"answer": "Dopamine",
+"type": "Neurotransmitter",
+"aliases": [],
+"clues": [
+"I am a messenger in the brain.",
+"I am made from tyrosine.",
+"I am the step just before noradrenaline.",
+"Neurons making me in the substantia nigra die in Parkinson disease.",
+"I am the brain's reward signal and I stop prolactin release."
+],
+"fact": "Loss in the nigrostriatal pathway causes Parkinson disease."
+},
+{
+"id": "79",
+"cat": "Physiology",
+"answer": "Myoglobin",
+"type": "Protein",
+"aliases": [],
+"clues": [
+"I am a protein.",
+"I hold iron in a heme group.",
+"I have only one chain, so my curve with oxygen is not S-shaped.",
+"When muscle is crushed, I leak out and can block the kidneys.",
+"I store oxygen inside muscle cells."
+],
+"fact": "Released in rhabdomyolysis, it can cause acute kidney injury."
+},
+{
+"id": "80",
+"cat": "Physiology",
+"answer": "Insulin",
+"type": "Hormone",
+"aliases": [],
+"clues": [
+"I am a hormone.",
+"I am a peptide made of two chains joined by disulfide bridges.",
+"I come from the beta cells of the pancreatic islets, cut from a longer precursor with C-peptide.",
+"I put GLUT4 transporters into the membranes of muscle and fat cells.",
+"I am the only hormone that lowers blood sugar."
+],
+"fact": "Lack of it causes type 1 diabetes; C-peptide shows how much the body makes itself."
+},
+{
+"id": "81",
+"cat": "Biochemistry",
+"answer": "Glucokinase",
+"type": "Enzyme",
+"aliases": [
+"hexokinase IV"
+],
+"clues": [
+"I am an enzyme.",
+"I add a phosphate to a sugar as soon as it enters the cell.",
+"I work in the liver and in the beta cells of the pancreas.",
+"Unlike my cousins, glucose-6-phosphate does not stop me, and I need a lot of sugar before I work fast.",
+"I am the glucose sensor of the beta cell; faults in me cause a mild inherited diabetes, MODY 2."
+],
+"fact": "Its high Km makes it a glucose sensor; mutations cause MODY type 2."
+},
+{
+"id": "82",
+"cat": "Biochemistry",
+"answer": "Phosphofructokinase-1",
+"type": "Enzyme",
+"aliases": [
+"PFK-1"
+],
+"clues": [
+"I am an enzyme.",
+"I work in the cytoplasm.",
+"I use ATP to add a second phosphate to a six-carbon sugar.",
+"AMP and fructose-2,6-bisphosphate switch me on; ATP and citrate slow me down.",
+"I am the main control step of glycolysis."
+],
+"fact": "It catalyses the rate-limiting, committed step of glycolysis."
+},
+{
+"id": "83",
+"cat": "Biochemistry",
+"answer": "Pyruvate kinase",
+"type": "Enzyme",
+"aliases": [],
+"clues": [
+"I am an enzyme.",
+"I work at the very end of a pathway in the cytoplasm.",
+"I move a phosphate onto ADP and make ATP directly.",
+"Fructose-1,6-bisphosphate switches me on ahead of time.",
+"When I am missing in red cells, they cannot make enough energy and break down: a hemolytic anaemia."
+],
+"fact": "Its deficiency is the most common glycolysis enzyme defect that causes haemolytic anaemia."
+},
+{
+"id": "84",
+"cat": "Biochemistry",
+"answer": "Pyruvate dehydrogenase complex",
+"type": "Enzyme complex",
+"aliases": [
+"PDH"
+],
+"clues": [
+"I am a group of enzymes working as one.",
+"I live in the mitochondrial matrix.",
+"I need five helpers: thiamine, lipoic acid, CoA, FAD and NAD.",
+"Arsenic blocks me, and lack of vitamin B1 slows me down.",
+"I turn pyruvate into acetyl-CoA, linking glycolysis to the citric acid cycle."
+],
+"fact": "It needs thiamine; in thiamine deficiency it fails and lactate builds up."
+},
+{
+"id": "85",
+"cat": "Biochemistry",
+"answer": "Glucose-6-phosphate dehydrogenase",
+"type": "Enzyme",
+"aliases": [
+"G6PD"
+],
+"clues": [
+"I am an enzyme.",
+"I start the pentose phosphate pathway.",
+"I make NADPH, which keeps glutathione ready to fight oxidants.",
+"My deficiency is X-linked and common in Africa, the Mediterranean and the Middle East.",
+"Without enough of me, fava beans, primaquine or infection can burst red blood cells, showing Heinz bodies."
+],
+"fact": "Its deficiency is the most common enzyme deficiency in the world and protects partly against malaria."
+},
+{
+"id": "86",
+"cat": "Biochemistry",
+"answer": "HMG-CoA reductase",
+"type": "Enzyme",
+"aliases": [],
+"clues": [
+"I am an enzyme.",
+"I sit in the membrane of the smooth endoplasmic reticulum.",
+"I make mevalonate.",
+"Insulin switches me on, and cholesterol inside the cell switches me off.",
+"I am the rate-limiting step of cholesterol synthesis and the target of statins."
+],
+"fact": "Statins block it to lower LDL cholesterol."
+},
+{
+"id": "87",
+"cat": "Biochemistry",
+"answer": "Acetyl-CoA carboxylase",
+"type": "Enzyme",
+"aliases": [],
+"clues": [
+"I am an enzyme.",
+"I need biotin to work.",
+"I make malonyl-CoA.",
+"Citrate turns me on, and the product I make stops fat from entering mitochondria to be burned.",
+"I am the rate-limiting step of fatty acid synthesis."
+],
+"fact": "It catalyses the committed step of fatty acid synthesis and needs biotin."
+},
+{
+"id": "88",
+"cat": "Biochemistry",
+"answer": "Carnitine",
+"type": "Molecule",
+"aliases": [],
+"clues": [
+"I am a small molecule.",
+"Your body makes me from lysine and methionine, and red meat is full of me.",
+"I work at the membranes of the mitochondria.",
+"When I am missing, muscles get weak and blood sugar falls during fasting without ketones.",
+"I carry long-chain fatty acids into the mitochondria to be burned."
+],
+"fact": "It shuttles long-chain fatty acids into mitochondria for beta-oxidation."
+},
+{
+"id": "89",
+"cat": "Biochemistry",
+"answer": "Lipoprotein lipase",
+"type": "Enzyme",
+"aliases": [],
+"clues": [
+"I am an enzyme.",
+"I sit on the inner walls of capillaries in fat, muscle and the heart.",
+"Apolipoprotein C-II turns me on.",
+"Insulin makes my level rise in fat tissue.",
+"I break down triglycerides in chylomicrons and VLDL so the tissues can take up fatty acids."
+],
+"fact": "Its deficiency causes very high triglycerides and pancreatitis (type I hyperlipoproteinaemia)."
+},
+{
+"id": "90",
+"cat": "Biochemistry",
+"answer": "Ornithine transcarbamylase",
+"type": "Enzyme",
+"aliases": [
+"OTC"
+],
+"clues": [
+"I am an enzyme.",
+"I work inside the mitochondria of liver cells.",
+"I join carbamoyl phosphate to an amino acid that is not used in proteins, making citrulline.",
+"My deficiency is X-linked and raises orotic acid in the urine.",
+"I am the urea cycle enzyme most often missing, causing high ammonia in babies."
+],
+"fact": "Its deficiency is the commonest urea cycle disorder."
+},
+{
+"id": "91",
+"cat": "Biochemistry",
+"answer": "Phenylalanine hydroxylase",
+"type": "Enzyme",
+"aliases": [
+"PAH"
+],
+"clues": [
+"I am an enzyme.",
+"I need tetrahydrobiopterin as my helper.",
+"I add a hydroxyl group to an essential amino acid.",
+"Babies are screened for my deficiency with a heel prick test.",
+"When I am missing, phenylalanine builds up and causes phenylketonuria."
+],
+"fact": "Deficiency causes PKU, treated with a low-phenylalanine diet."
+},
+{
+"id": "92",
+"cat": "Biochemistry",
+"answer": "Tyrosinase",
+"type": "Enzyme",
+"aliases": [],
+"clues": [
+"I am an enzyme.",
+"I contain copper.",
+"I work inside melanosomes.",
+"I change tyrosine into DOPA and then dopaquinone.",
+"When I am missing, the skin, hair and eyes have no pigment: albinism."
+],
+"fact": "Its absence causes oculocutaneous albinism type 1."
+},
+{
+"id": "93",
+"cat": "Biochemistry",
+"answer": "Glycogen phosphorylase",
+"type": "Enzyme",
+"aliases": [],
+"clues": [
+"I am an enzyme.",
+"I need vitamin B6 as my helper.",
+"I break bonds at the ends of a big branched store, one glucose at a time.",
+"Glucagon and adrenaline switch me on through phosphorylation.",
+"When my muscle form is missing, exercise causes cramps and dark urine: McArdle disease."
+],
+"fact": "Its muscle form is missing in McArdle disease (glycogen storage disease type V)."
+},
+{
+"id": "94",
+"cat": "Biochemistry",
+"answer": "Glucose-6-phosphatase",
+"type": "Enzyme",
+"aliases": [],
+"clues": [
+"I am an enzyme.",
+"I sit in the membrane of the endoplasmic reticulum.",
+"I work only in the liver and kidney, not in muscle.",
+"I do the final step that lets the liver release free sugar into the blood, in both glycogen breakdown and gluconeogenesis.",
+"When I am missing, babies get severe low blood sugar and a big liver: von Gierke disease."
+],
+"fact": "Deficiency causes von Gierke disease (glycogen storage disease type I)."
+},
+{
+"id": "95",
+"cat": "Biochemistry",
+"answer": "Hypoxanthine-guanine phosphoribosyltransferase",
+"type": "Enzyme",
+"aliases": [
+"HGPRT"
+],
+"clues": [
+"I am an enzyme.",
+"I recycle purine bases instead of letting them be thrown away.",
+"I use PRPP to save two purine bases from the scrap heap.",
+"When I am missing, uric acid rises very high.",
+"My total absence in boys causes self-biting and gout: Lesch-Nyhan syndrome."
+],
+"fact": "Its deficiency causes Lesch-Nyhan syndrome."
+},
+{
+"id": "96",
+"cat": "Biochemistry",
+"answer": "Xanthine oxidase",
+"type": "Enzyme",
+"aliases": [],
+"clues": [
+"I am an enzyme.",
+"I work at the end of purine breakdown.",
+"I make uric acid.",
+"Allopurinol and febuxostat block me.",
+"Blocking me raises the level of azathioprine, so doses must be cut."
+],
+"fact": "Allopurinol inhibits it to prevent gout; it also breaks down azathioprine and mercaptopurine."
+},
+{
+"id": "97",
+"cat": "Biochemistry",
+"answer": "Adenosine deaminase",
+"type": "Enzyme",
+"aliases": [
+"ADA"
+],
+"clues": [
+"I am an enzyme.",
+"I work in purine breakdown.",
+"I am very active in lymphocytes.",
+"When I am missing, toxic deoxyadenosine kills T and B cells.",
+"My deficiency is a classic cause of severe combined immunodeficiency."
+],
+"fact": "Its deficiency causes SCID, one of the first diseases treated with gene therapy."
+},
+{
+"id": "98",
+"cat": "Biochemistry",
+"answer": "Vitamin C",
+"type": "Vitamin",
+"aliases": [
+"ascorbic acid"
+],
+"clues": [
+"I am a vitamin.",
+"I dissolve in water, and humans cannot make me.",
+"I help absorb iron from food by keeping it in the ferrous form.",
+"I am needed to hydroxylate proline and lysine in collagen.",
+"Without me, gums bleed and wounds don't heal: scurvy."
+],
+"fact": "Its deficiency causes scurvy, once common among sailors."
+},
+{
+"id": "99",
+"cat": "Biochemistry",
+"answer": "Thiamine",
+"type": "Vitamin",
+"aliases": [
+"vitamin B1"
+],
+"clues": [
+"I am a vitamin.",
+"I dissolve in water.",
+"I am a helper for pyruvate dehydrogenase and transketolase.",
+"People who drink too much alcohol often lack me.",
+"Without me you get beriberi or Wernicke encephalopathy."
+],
+"fact": "Always give it before glucose to an alcoholic patient to avoid Wernicke encephalopathy."
+},
+{
+"id": "100",
+"cat": "Biochemistry",
+"answer": "Niacin",
+"type": "Vitamin",
+"aliases": [
+"vitamin B3",
+"nicotinic acid"
+],
+"clues": [
+"I am a vitamin.",
+"Your body can make me from tryptophan.",
+"I am used to build NAD and NADP.",
+"In high doses I lower cholesterol but make the face flush.",
+"Without me, people get dermatitis, diarrhoea and dementia: pellagra."
+],
+"fact": "Its deficiency causes pellagra (the three Ds)."
+},
+{
+"id": "101",
+"cat": "Biochemistry",
+"answer": "Vitamin B12",
+"type": "Vitamin",
+"aliases": [
+"cobalamin"
+],
+"clues": [
+"I am a vitamin.",
+"I hold a cobalt atom.",
+"Only animal foods give me, so strict vegans can run short.",
+"I need intrinsic factor to be absorbed in the terminal ileum.",
+"Without me, you get big red cells and damage to the spinal cord."
+],
+"fact": "Deficiency causes megaloblastic anaemia and subacute combined degeneration of the cord."
+},
+{
+"id": "102",
+"cat": "Biochemistry",
+"answer": "Folic acid",
+"type": "Vitamin",
+"aliases": [
+"folate",
+"vitamin B9"
+],
+"clues": [
+"I am a vitamin.",
+"I am found in green leafy vegetables.",
+"I carry one-carbon units to make the building blocks of DNA.",
+"Methotrexate and trimethoprim block the enzyme that activates me.",
+"Taking me before pregnancy prevents neural tube defects."
+],
+"fact": "Supplements before conception lower the risk of spina bifida."
+},
+{
+"id": "103",
+"cat": "Biochemistry",
+"answer": "Vitamin K",
+"type": "Vitamin",
+"aliases": [
+"phylloquinone"
+],
+"clues": [
+"I am a vitamin.",
+"I dissolve in fat.",
+"Bacteria in your gut make some of me.",
+"I am needed to carboxylate factors II, VII, IX and X.",
+"Newborns get an injection of me to prevent bleeding, and warfarin blocks my recycling."
+],
+"fact": "Warfarin works against it; newborns get it at birth."
+},
+{
+"id": "104",
+"cat": "Biochemistry",
+"answer": "Vitamin D",
+"type": "Vitamin",
+"aliases": [
+"calciferol"
+],
+"clues": [
+"I am a vitamin, though I work like a hormone.",
+"Your skin makes me when sunlight hits it.",
+"I am activated first in the liver and then in the kidney.",
+"I raise calcium absorption from the gut.",
+"Without me, children get rickets and adults get osteomalacia."
+],
+"fact": "Its deficiency causes rickets in children and osteomalacia in adults."
+},
+{
+"id": "105",
+"cat": "Biochemistry",
+"answer": "ATP synthase",
+"type": "Enzyme",
+"aliases": [
+"complex V"
+],
+"clues": [
+"I am an enzyme.",
+"I sit in the inner membrane of the mitochondria.",
+"I am a tiny rotating motor.",
+"Protons flowing back through me turn my rotor.",
+"I make most of the cell's ATP."
+],
+"fact": "It uses the proton gradient to make ATP; oligomycin blocks it."
+},
+{
+"id": "106",
+"cat": "Biochemistry",
+"answer": "Cytochrome c oxidase",
+"type": "Enzyme",
+"aliases": [
+"complex IV"
+],
+"clues": [
+"I am an enzyme.",
+"I sit in the inner mitochondrial membrane.",
+"I contain copper and heme.",
+"Cyanide and carbon monoxide block me.",
+"I hand electrons to oxygen and turn it into water at the end of the chain."
+],
+"fact": "The last complex of the electron transport chain; cyanide poisons it."
+},
+{
+"id": "107",
+"cat": "Biochemistry",
+"answer": "Coenzyme Q",
+"type": "Molecule",
+"aliases": [
+"ubiquinone",
+"CoQ10"
+],
+"clues": [
+"I am a small molecule.",
+"I dissolve in fat and move freely in a membrane.",
+"I carry electrons from complexes I and II to complex III.",
+"Statins can lower my level, which some link to muscle aches.",
+"I am the mobile carrier of the electron transport chain."
+],
+"fact": "It shuttles electrons in the inner mitochondrial membrane."
+},
+{
+"id": "108",
+"cat": "Biochemistry",
+"answer": "NADPH",
+"type": "Coenzyme",
+"aliases": [],
+"clues": [
+"I am a helper molecule.",
+"I carry electrons.",
+"I am made mostly by the pentose phosphate pathway.",
+"I keep glutathione reduced and help white cells make their oxidative burst.",
+"I power the building of fatty acids and cholesterol."
+],
+"fact": "It is the reducing power for synthesis and for defence against oxidants."
+},
+{
+"id": "109",
+"cat": "Biochemistry",
+"answer": "Aminolevulinic acid synthase",
+"type": "Enzyme",
+"aliases": [
+"ALA synthase"
+],
+"clues": [
+"I am an enzyme.",
+"I work inside the mitochondria.",
+"I need vitamin B6.",
+"I join glycine and succinyl-CoA.",
+"I am the rate-limiting step of heme synthesis."
+],
+"fact": "Heme switches it off; lack of B6 can cause sideroblastic anaemia."
+},
+{
+"id": "110",
+"cat": "Biochemistry",
+"answer": "Ferrochelatase",
+"type": "Enzyme",
+"aliases": [],
+"clues": [
+"I am an enzyme.",
+"I work in the mitochondria.",
+"I do the last step of a pathway that makes a red pigment.",
+"Lead poisoning blocks me.",
+"I put iron into protoporphyrin to make heme."
+],
+"fact": "Lead inhibits it; its deficiency causes erythropoietic protoporphyria."
+},
+{
+"id": "111",
+"cat": "Biochemistry",
+"answer": "Bilirubin",
+"type": "Pigment",
+"aliases": [],
+"clues": [
+"I am a pigment.",
+"I am made when old red cells are broken down.",
+"I travel in the blood bound to albumin until the liver takes me in.",
+"The liver joins me to glucuronic acid so I can leave in the bile.",
+"When I build up, the skin and eyes turn yellow."
+],
+"fact": "Its build-up causes jaundice."
+},
+{
+"id": "112",
+"cat": "Biochemistry",
+"answer": "Collagen",
+"type": "Protein",
+"aliases": [],
+"clues": [
+"I am a protein.",
+"I am the most common protein in the body.",
+"I am a triple helix, and every third amino acid in my chains is glycine.",
+"Faults in my type I form cause brittle bones in children.",
+"I give strength to skin, bone, tendons and scars."
+],
+"fact": "Defects cause osteogenesis imperfecta and some Ehlers-Danlos syndromes."
+},
+{
+"id": "113",
+"cat": "Biochemistry",
+"answer": "Glycogen",
+"type": "Polysaccharide",
+"aliases": [],
+"clues": [
+"I am a large molecule.",
+"I am made of many glucose units.",
+"I am branched every 8 to 12 units with alpha-1,6 bonds.",
+"I am stored mostly in the liver and muscles.",
+"I am the body's store of sugar for quick energy."
+],
+"fact": "The liver's store keeps blood glucose up for about a day of fasting."
+},
+{
+"id": "114",
+"cat": "Biochemistry",
+"answer": "Cholesterol",
+"type": "Lipid",
+"aliases": [],
+"clues": [
+"I am a lipid.",
+"I have four rings and a hydroxyl group.",
+"I am made from acetyl-CoA, and statins lower how much of me the liver makes.",
+"I am the starting point for steroid hormones, bile acids and vitamin D.",
+"I keep cell membranes stable, and too much of me in LDL clogs arteries."
+],
+"fact": "High LDL levels raise the risk of atherosclerosis."
+},
+{
+"id": "115",
+"cat": "Biochemistry",
+"answer": "Beta-hydroxybutyrate",
+"type": "Ketone body",
+"aliases": [
+"3-hydroxybutyrate"
+],
+"clues": [
+"I am a small fuel molecule.",
+"The liver makes me during fasting from fatty acids.",
+"The brain can use me when glucose is short.",
+"The urine dipstick does not detect me well, since it tests a cousin.",
+"I am the main ketone in the blood in diabetic ketoacidosis."
+],
+"fact": "It is the most abundant ketone body in DKA, but nitroprusside strips miss it."
+},
+{
+"id": "116",
+"cat": "Biochemistry",
+"answer": "Urea",
+"type": "Molecule",
+"aliases": [],
+"clues": [
+"I am a small molecule.",
+"I contain two nitrogen atoms.",
+"I am made in the liver in a five-step cycle.",
+"I leave the body in urine, and my level in blood rises when the kidneys fail.",
+"I am the body's main way to get rid of ammonia."
+],
+"fact": "Its blood level (BUN) rises in kidney failure and falls in liver failure."
+},
+{
+"id": "117",
+"cat": "Biochemistry",
+"answer": "Glutathione",
+"type": "Tripeptide",
+"aliases": [
+"GSH"
+],
+"clues": [
+"I am a small peptide of three amino acids.",
+"I have a thiol group from cysteine.",
+"I protect red cells from oxidant damage.",
+"Paracetamol overdose uses me up in the liver.",
+"Acetylcysteine is given to rebuild my stores."
+],
+"fact": "Paracetamol overdose depletes it; N-acetylcysteine replaces it."
+},
+{
+"id": "118",
+"cat": "Biochemistry",
+"answer": "Telomerase",
+"type": "Enzyme",
+"aliases": [],
+"clues": [
+"I am an enzyme.",
+"I carry my own RNA template.",
+"I am a reverse transcriptase.",
+"I am active in stem cells and many cancer cells, but quiet in most adult cells.",
+"I add repeats to the ends of chromosomes so they don't shorten."
+],
+"fact": "It lengthens telomeres; cancer cells often reactivate it."
+},
+{
+"id": "119",
+"cat": "Biochemistry",
+"answer": "RNA polymerase II",
+"type": "Enzyme",
+"aliases": [],
+"clues": [
+"I am an enzyme.",
+"I work in the nucleus.",
+"I bind at the TATA box with help from transcription factors.",
+"The death cap mushroom toxin, alpha-amanitin, blocks me.",
+"I make messenger RNA from DNA."
+],
+"fact": "It transcribes mRNA; alpha-amanitin inhibits it."
+},
+{
+"id": "120",
+"cat": "Biochemistry",
+"answer": "Lactate dehydrogenase",
+"type": "Enzyme",
+"aliases": [
+"LDH"
+],
+"clues": [
+"I am an enzyme.",
+"I am found in almost every cell.",
+"I work at the end of glycolysis when oxygen is short, regenerating NAD so the pathway can keep going.",
+"My level in the blood rises when cells are destroyed.",
+"I am a marker of haemolysis, tissue damage and some tumours like lymphoma."
+],
+"fact": "Raised levels suggest cell breakdown, for example haemolysis or lymphoma."
+},
+{
+"id": "121",
+"cat": "Pathology",
+"answer": "Reed-Sternberg cell",
+"type": "Cell",
+"aliases": [],
+"clues": [
+"I am a cell you find under the microscope.",
+"I am large, with lots of pale cytoplasm.",
+"I come from B cells and carry CD15 and CD30 on my surface.",
+"I am rare in my tumour; most of the cells around me are normal reactive cells.",
+"I have two nuclei with big nucleoli, like owl's eyes, and I mark Hodgkin lymphoma."
+],
+"fact": "Its presence defines classical Hodgkin lymphoma."
+},
+{
+"id": "122",
+"cat": "Pathology",
+"answer": "Aschoff body",
+"type": "Lesion",
+"aliases": [],
+"clues": [
+"I am a small lesion in tissue.",
+"I am a granuloma with fibrinoid change in the middle.",
+"I am found in the heart after a streptococcal sore throat.",
+"Large macrophages with caterpillar-like nuclei sit inside me.",
+"I am the hallmark of rheumatic heart disease."
+],
+"fact": "It is the characteristic lesion of rheumatic carditis."
+},
+{
+"id": "123",
+"cat": "Pathology",
+"answer": "Mallory body",
+"type": "Inclusion",
+"aliases": [
+"Mallory-Denk body"
+],
+"clues": [
+"I am something you see inside a cell.",
+"I am pink and twisted, like rope.",
+"I am made of damaged keratin filaments.",
+"I sit in swollen liver cells.",
+"I am classic in alcoholic hepatitis."
+],
+"fact": "Twisted ropes of cytokeratin in hepatocytes, typical of alcoholic liver disease."
+},
+{
+"id": "124",
+"cat": "Pathology",
+"answer": "Psammoma body",
+"type": "Calcification",
+"aliases": [],
+"clues": [
+"I am something small and hard seen under the microscope.",
+"I am made of calcium.",
+"I have rings inside me, like the layers of an onion.",
+"I form in papillary tumours, when the tips of the papillae die and calcify.",
+"I appear in papillary thyroid cancer, serous ovarian tumours and meningioma."
+],
+"fact": "Laminated calcifications typical of papillary thyroid carcinoma, serous cystadenocarcinoma and meningioma."
+},
+{
+"id": "125",
+"cat": "Pathology",
+"answer": "Lewy body",
+"type": "Inclusion",
+"aliases": [],
+"clues": [
+"I am something you find inside nerve cells.",
+"I am round and pink, with a pale halo.",
+"I am made mostly of alpha-synuclein.",
+"I collect in the substantia nigra when dopamine neurons die.",
+"I mark Parkinson disease and a dementia named after me."
+],
+"fact": "Alpha-synuclein inclusions typical of Parkinson disease."
+},
+{
+"id": "126",
+"cat": "Pathology",
+"answer": "Negri body",
+"type": "Inclusion",
+"aliases": [],
+"clues": [
+"I am something you find inside nerve cells.",
+"I am pink, round and sit in the cytoplasm.",
+"I am made by a virus.",
+"I am seen best in Purkinje cells and in the hippocampus.",
+"I prove infection after a bite from a sick dog or bat."
+],
+"fact": "The classic inclusion of rabies."
+},
+{
+"id": "127",
+"cat": "Pathology",
+"answer": "Councilman body",
+"type": "Dead cell",
+"aliases": [
+"acidophil body"
+],
+"clues": [
+"I am a liver cell that has died.",
+"I am small, round and very pink.",
+"I died by apoptosis, not by necrosis.",
+"I am seen in viral hepatitis.",
+"I was first described in yellow fever."
+],
+"fact": "An apoptotic hepatocyte seen in viral hepatitis and yellow fever."
+},
+{
+"id": "128",
+"cat": "Pathology",
+"answer": "Russell body",
+"type": "Inclusion",
+"aliases": [],
+"clues": [
+"I am a pink drop inside a cell.",
+"I am made of protein that could not be released.",
+"I live in plasma cells.",
+"I am packed with immunoglobulin stuck in the endoplasmic reticulum.",
+"I show a plasma cell full of antibodies it cannot send out."
+],
+"fact": "An immunoglobulin-filled inclusion in plasma cells."
+},
+{
+"id": "129",
+"cat": "Pathology",
+"answer": "Heart failure cell",
+"type": "Cell",
+"aliases": [
+"siderophage"
+],
+"clues": [
+"I am a cell you find in the lungs.",
+"I am a macrophage.",
+"I ate red cells that leaked into the air spaces.",
+"I am full of brown iron pigment that stains blue with Prussian blue.",
+"I appear in the lungs when the left side of the heart fails."
+],
+"fact": "Hemosiderin-laden alveolar macrophages seen in chronic pulmonary congestion."
+},
+{
+"id": "130",
+"cat": "Pathology",
+"answer": "Langhans giant cell",
+"type": "Cell",
+"aliases": [],
+"clues": [
+"I am a very big cell.",
+"I am made when many macrophages fuse together.",
+"My many nuclei are lined up in a horseshoe at my edge.",
+"I live inside granulomas.",
+"I am classic in tuberculosis."
+],
+"fact": "A multinucleated giant cell with horseshoe nuclei, typical of tuberculous granulomas."
+},
+{
+"id": "131",
+"cat": "Pathology",
+"answer": "Auer rod",
+"type": "Inclusion",
+"aliases": [],
+"clues": [
+"I am something you see inside a cell.",
+"I am thin, pink-red and needle-shaped.",
+"I am made of fused granules.",
+"I live in myeloblasts.",
+"I point to acute myeloid leukaemia, especially the promyelocytic type."
+],
+"fact": "Seen in AML, especially APL, where they can cause DIC when the cells burst."
+},
+{
+"id": "132",
+"cat": "Pathology",
+"answer": "Schistocyte",
+"type": "Cell",
+"aliases": [
+"helmet cell",
+"schizocyte"
+],
+"clues": [
+"I am something you see on a blood film.",
+"I am a piece of a red cell.",
+"I am cut when red cells pass through damaged small vessels.",
+"I am seen with mechanical heart valves too.",
+"I mark microangiopathic haemolytic anaemia, like in TTP, HUS and DIC."
+],
+"fact": "Fragmented red cells typical of microangiopathic haemolysis."
+},
+{
+"id": "133",
+"cat": "Pathology",
+"answer": "Neurofibrillary tangle",
+"type": "Inclusion",
+"aliases": [],
+"clues": [
+"I am something you find inside nerve cells.",
+"I am shaped like a flame.",
+"I am made of tau protein with too much phosphate on it.",
+"I build up in the hippocampus with age.",
+"Together with amyloid plaques, I am the hallmark of Alzheimer disease."
+],
+"fact": "Hyperphosphorylated tau inside neurons, a key lesion of Alzheimer disease."
+},
+{
+"id": "134",
+"cat": "Pathology",
+"answer": "Amyloid",
+"type": "Protein deposit",
+"aliases": [],
+"clues": [
+"I am a deposit outside cells.",
+"I am made of misfolded proteins.",
+"I form beta-pleated sheets.",
+"I look pink and smooth, and I can stiffen the heart and swell the kidneys.",
+"I turn apple-green under polarised light after Congo red staining."
+],
+"fact": "Congo red staining with apple-green birefringence is diagnostic."
+},
+{
+"id": "135",
+"cat": "Pathology",
+"answer": "Ferruginous body",
+"type": "Fibre",
+"aliases": [
+"asbestos body"
+],
+"clues": [
+"I am something you find in the lungs.",
+"I am long and thin, with knobs like a beaded stick.",
+"I am a mineral fibre coated in iron and protein.",
+"I am seen in people who worked in shipyards or with insulation.",
+"I point to asbestos exposure and a risk of mesothelioma."
+],
+"fact": "Iron-coated asbestos fibres; exposure raises the risk of mesothelioma and lung cancer."
+},
+{
+"id": "136",
+"cat": "Pathology",
+"answer": "Charcot-Leyden crystals",
+"type": "Crystals",
+"aliases": [],
+"clues": [
+"I am something you find in sputum or stool.",
+"I am shaped like a needle with two sharp ends.",
+"I am made of a protein from eosinophils.",
+"I show when eosinophils have broken down.",
+"I am found in asthma and parasitic infections."
+],
+"fact": "Eosinophil protein crystals seen in asthma and parasite infections."
+},
+{
+"id": "137",
+"cat": "Pathology",
+"answer": "Curschmann spirals",
+"type": "Mucus casts",
+"aliases": [],
+"clues": [
+"I am something you find in sputum.",
+"I am a twisted thread.",
+"I am made of mucus and shed cells.",
+"I am a cast of a small airway.",
+"I am a classic finding in asthma."
+],
+"fact": "Spiral mucus casts of small bronchi seen in asthma."
+},
+{
+"id": "138",
+"cat": "Pathology",
+"answer": "Michaelis-Gutmann bodies",
+"type": "Inclusions",
+"aliases": [],
+"clues": [
+"I am something round inside a cell.",
+"I have rings inside me like a target.",
+"I am made of calcium and iron on old bacteria.",
+"I live inside macrophages in the bladder.",
+"I mark malakoplakia."
+],
+"fact": "Laminated calcified inclusions diagnostic of malakoplakia."
+},
+{
+"id": "139",
+"cat": "Pathology",
+"answer": "Call-Exner bodies",
+"type": "Structure",
+"aliases": [],
+"clues": [
+"I am a small structure in a tumour.",
+"I am a tiny space filled with pink fluid.",
+"I am surrounded by cells lined up like a rosette.",
+"I am found in an ovarian tumour that can make oestrogen.",
+"I am the clue to a granulosa cell tumour."
+],
+"fact": "Small follicle-like spaces typical of granulosa cell tumour."
+},
+{
+"id": "140",
+"cat": "Pathology",
+"answer": "Pick bodies",
+"type": "Inclusions",
+"aliases": [],
+"clues": [
+"I am something round inside nerve cells.",
+"I stain with silver.",
+"I am made of tau protein.",
+"I collect in the frontal and temporal lobes.",
+"I mark a dementia that changes personality early."
+],
+"fact": "Tau inclusions in frontotemporal dementia (Pick disease)."
+},
+{
+"id": "141",
+"cat": "Pathology",
+"answer": "Koilocyte",
+"type": "Cell",
+"aliases": [],
+"clues": [
+"I am a changed skin cell.",
+"I live in squamous epithelium.",
+"I have a clear halo around my nucleus.",
+"My nucleus is wrinkled like a raisin.",
+"I am the sign of human papillomavirus infection."
+],
+"fact": "A squamous cell with a perinuclear halo, typical of HPV infection on a Pap smear."
+},
+{
+"id": "142",
+"cat": "Pathology",
+"answer": "Signet ring cell",
+"type": "Cell",
+"aliases": [],
+"clues": [
+"I am a cancer cell.",
+"I am full of mucin.",
+"My mucin pushes my nucleus to the side.",
+"I often spread through the stomach wall and make it stiff.",
+"I am classic in diffuse gastric cancer and the Krukenberg tumour."
+],
+"fact": "Seen in diffuse gastric cancer and its ovarian spread (Krukenberg tumour)."
+},
+{
+"id": "143",
+"cat": "Pathology",
+"answer": "Smudge cell",
+"type": "Cell",
+"aliases": [
+"basket cell"
+],
+"clues": [
+"I am something you see on a blood film.",
+"I am a broken white cell.",
+"I am a lymphocyte crushed while the slide was made.",
+"I am fragile because I am a cancer cell.",
+"I am classic in chronic lymphocytic leukaemia."
+],
+"fact": "Fragile CLL lymphocytes crushed during smear preparation."
+},
+{
+"id": "144",
+"cat": "Pathology",
+"answer": "Sezary cell",
+"type": "Cell",
+"aliases": [
+"Sézary cell"
+],
+"clues": [
+"I am a cancer cell.",
+"I am a T cell.",
+"My nucleus is folded like a brain.",
+"I travel from the skin into the blood.",
+"I mark the leukaemic stage of mycosis fungoides."
+],
+"fact": "A malignant T cell with a cerebriform nucleus in Sézary syndrome."
+},
+{
+"id": "145",
+"cat": "Pathology",
+"answer": "Rouleaux",
+"type": "Red cell stack",
+"aliases": [
+"rouleaux formation"
+],
+"clues": [
+"I am something you see on a blood film.",
+"I am made of red cells.",
+"I look like a stack of coins.",
+"High levels of proteins in plasma make cells stick together like this.",
+"I am classic in multiple myeloma."
+],
+"fact": "Red cells stacked like coins, seen with high plasma proteins as in myeloma."
+},
+{
+"id": "146",
+"cat": "Pathology",
+"answer": "Howell-Jolly bodies",
+"type": "Inclusions",
+"aliases": [],
+"clues": [
+"I am something you see inside red cells.",
+"I am small, round and dark purple.",
+"I am a piece of nucleus left behind.",
+"Normally the spleen removes me.",
+"I appear after the spleen is removed or stops working."
+],
+"fact": "DNA remnants in red cells, a sign of asplenia."
+},
+{
+"id": "147",
+"cat": "Pathology",
+"answer": "Heinz bodies",
+"type": "Inclusions",
+"aliases": [],
+"clues": [
+"I am something you see inside red cells.",
+"I need a special supravital stain to be seen.",
+"I am made of damaged haemoglobin that clumped.",
+"When macrophages bite me out, they leave bite cells behind.",
+"I am classic in G6PD deficiency."
+],
+"fact": "Denatured haemoglobin in red cells, typical of G6PD deficiency."
+},
+{
+"id": "148",
+"cat": "Pathology",
+"answer": "Target cell",
+"type": "Cell",
+"aliases": [
+"codocyte"
+],
+"clues": [
+"I am something you see on a blood film.",
+"I am a red cell.",
+"I have a dark centre and a dark ring with a pale band between.",
+"I have too much membrane for my contents.",
+"I am seen in thalassaemia, liver disease and after spleen removal."
+],
+"fact": "A red cell with a bullseye look, seen in thalassaemia, HbC and liver disease."
+},
+{
+"id": "149",
+"cat": "Pathology",
+"answer": "Spherocyte",
+"type": "Cell",
+"aliases": [],
+"clues": [
+"I am something you see on a blood film.",
+"I am a red cell.",
+"I am small and round, without a pale centre.",
+"I am made when red cells lose membrane, from a hereditary defect or antibodies.",
+"I break easily in salt solutions: the osmotic fragility test."
+],
+"fact": "Seen in hereditary spherocytosis and autoimmune haemolytic anaemia."
+},
+{
+"id": "150",
+"cat": "Pathology",
+"answer": "Alpha-fetoprotein",
+"type": "Tumour marker",
+"aliases": [
+"AFP"
+],
+"clues": [
+"I am a protein in blood.",
+"A fetus makes lots of me.",
+"My level in the mother's blood is checked in pregnancy.",
+"High levels in an adult with cirrhosis are a warning.",
+"I am the tumour marker for hepatocellular carcinoma and yolk sac tumours."
+],
+"fact": "Raised in liver cancer and yolk sac tumours; abnormal levels in pregnancy suggest neural tube defects."
+},
+{
+"id": "151",
+"cat": "Pathology",
+"answer": "CA-125",
+"type": "Tumour marker",
+"aliases": [
+"cancer antigen 125"
+],
+"clues": [
+"I am a protein in blood.",
+"I am a tumour marker.",
+"I can rise with endometriosis, pregnancy or any peritoneal irritation.",
+"I am used to follow treatment of a gynaecological cancer.",
+"I am the marker for epithelial ovarian cancer."
+],
+"fact": "The tumour marker for epithelial ovarian cancer."
+},
+{
+"id": "152",
+"cat": "Pathology",
+"answer": "Prostate-specific antigen",
+"type": "Tumour marker",
+"aliases": [
+"PSA"
+],
+"clues": [
+"I am a protein in blood.",
+"I am an enzyme that makes semen more liquid.",
+"I rise with infection, a big gland or cancer.",
+"Men over 50 often have me checked.",
+"I am the marker for prostate cancer."
+],
+"fact": "Used to screen for and follow prostate cancer."
+},
+{
+"id": "153",
+"cat": "Pathology",
+"answer": "Carcinoembryonic antigen",
+"type": "Tumour marker",
+"aliases": [
+"CEA"
+],
+"clues": [
+"I am a protein in blood.",
+"I am a tumour marker.",
+"Smokers can have slightly high levels of me.",
+"I am used after surgery to watch for the cancer coming back.",
+"I am mostly linked to colorectal cancer."
+],
+"fact": "Used to follow colorectal cancer after treatment."
+},
+{
+"id": "154",
+"cat": "Pathology",
+"answer": "Philadelphia chromosome",
+"type": "Chromosome",
+"aliases": [
+"t(9",
+"22)"
+],
+"clues": [
+"I am something seen in genetic studies of a cancer.",
+"I am a shortened chromosome.",
+"I am made when chromosomes 9 and 22 swap pieces.",
+"I make a fusion gene, BCR-ABL, with a tyrosine kinase that is always on.",
+"I am the hallmark of chronic myeloid leukaemia, and imatinib targets my product."
+],
+"fact": "Its BCR-ABL fusion drives CML and is blocked by imatinib."
+},
+{
+"id": "155",
+"cat": "Pathology",
+"answer": "Caseating granuloma",
+"type": "Lesion",
+"aliases": [],
+"clues": [
+"I am a lesion.",
+"I am a collection of activated macrophages.",
+"I have a cheesy dead centre.",
+"Giant cells with horseshoe nuclei often sit in me.",
+"I am classic in tuberculosis."
+],
+"fact": "The cheese-like necrotic granuloma of tuberculosis."
+},
+{
+"id": "156",
+"cat": "Pathology",
+"answer": "Fatty streak",
+"type": "Lesion",
+"aliases": [],
+"clues": [
+"I am a lesion.",
+"I am flat and yellow.",
+"I am made of foam cells full of lipid.",
+"I can be seen in arteries even in children.",
+"I am the first visible lesion of atherosclerosis."
+],
+"fact": "The earliest lesion of atherosclerosis."
+},
+{
+"id": "157",
+"cat": "Pathology",
+"answer": "Teratoma",
+"type": "Tumour",
+"aliases": [],
+"clues": [
+"I am a tumour.",
+"I come from germ cells.",
+"I can hold tissues from all three germ layers.",
+"I may contain hair, teeth and fat.",
+"I am the most common ovarian germ cell tumour, often called a dermoid cyst."
+],
+"fact": "The mature cystic form is the dermoid cyst of the ovary."
+},
+{
+"id": "158",
+"cat": "Pathology",
+"answer": "Rokitansky-Aschoff sinuses",
+"type": "Structures",
+"aliases": [],
+"clues": [
+"I am a structure in a wall.",
+"I am a pocket of lining.",
+"I push down into the muscle layer.",
+"I form when pressure builds up inside a hollow organ.",
+"I am seen in chronic inflammation of the gallbladder."
+],
+"fact": "Outpouchings of gallbladder mucosa seen in chronic cholecystitis."
+},
+{
+"id": "159",
+"cat": "Pathology",
+"answer": "Birbeck granules",
+"type": "Organelles",
+"aliases": [],
+"clues": [
+"I am something tiny inside a cell.",
+"I need an electron microscope to be seen.",
+"I am shaped like a tennis racket.",
+"I live in Langerhans cells.",
+"I mark Langerhans cell histiocytosis."
+],
+"fact": "Tennis racket granules seen in Langerhans cells and their tumours."
+},
+{
+"id": "160",
+"cat": "Pathology",
+"answer": "Foam cell",
+"type": "Cell",
+"aliases": [],
+"clues": [
+"I am a cell.",
+"I am a macrophage.",
+"I am full of lipid drops that make me look bubbly.",
+"I gather under the lining of arteries.",
+"I am the main cell of atherosclerotic plaques."
+],
+"fact": "Lipid-filled macrophages that build fatty streaks and plaques."
+},
+{
+"id": "161",
+"cat": "Pharmacology",
+"answer": "Aspirin",
+"type": "Drug",
+"aliases": [
+"acetylsalicylic acid"
+],
+"clues": [
+"I am a drug.",
+"I am one of the oldest medicines still in daily use, first taken from willow bark.",
+"I relieve pain and fever and calm inflammation.",
+"I block COX enzymes forever by adding an acetyl group, so platelets can't recover for their whole life.",
+"I am given at once in a heart attack, but never to children with a viral illness because of Reye syndrome."
+],
+"fact": "It irreversibly inhibits COX-1 in platelets; avoid in children (Reye syndrome)."
+},
+{
+"id": "162",
+"cat": "Pharmacology",
+"answer": "Warfarin",
+"type": "Drug",
+"aliases": [
+"coumadin"
+],
+"clues": [
+"I am a drug.",
+"I am taken by mouth, and my effect takes days to build up.",
+"I was first used as rat poison.",
+"I block the recycling of vitamin K, so the liver makes fewer clotting factors.",
+"My dose is checked with the INR, and I am a classic cause of drug interactions."
+],
+"fact": "Monitored by INR; reversed with vitamin K and prothrombin complex concentrate."
+},
+{
+"id": "163",
+"cat": "Pharmacology",
+"answer": "Heparin",
+"type": "Drug",
+"aliases": [
+"unfractionated heparin"
+],
+"clues": [
+"I am a drug.",
+"I am given into a vein or under the skin.",
+"I am a large sugar-like molecule from animal tissue.",
+"I boost antithrombin, and my effect is checked by the aPTT.",
+"I am reversed by protamine, and I can rarely drop the platelets with clots (HIT)."
+],
+"fact": "Protamine reverses it; heparin-induced thrombocytopenia is a dangerous side effect."
+},
+{
+"id": "164",
+"cat": "Pharmacology",
+"answer": "Metformin",
+"type": "Drug",
+"aliases": [],
+"clues": [
+"I am a drug taken by mouth.",
+"I come from a plant called French lilac.",
+"I lower the sugar the liver makes and help muscles use insulin.",
+"I rarely cause low blood sugar, but I can upset the stomach.",
+"I am the first-line drug for type 2 diabetes, but I am stopped before iodine contrast for fear of lactic acidosis."
+],
+"fact": "First-line for type 2 diabetes; the rare serious risk is lactic acidosis."
+},
+{
+"id": "165",
+"cat": "Pharmacology",
+"answer": "Glibenclamide",
+"type": "Drug",
+"aliases": [
+"glyburide"
+],
+"clues": [
+"I am a drug taken by mouth.",
+"I am used for a long-term disease of blood sugar.",
+"I belong to the sulfonylurea family.",
+"I close potassium channels in beta cells, so they release insulin.",
+"My main danger is low blood sugar, especially in older people."
+],
+"fact": "A sulfonylurea that closes K-ATP channels; hypoglycaemia is the main risk."
+},
+{
+"id": "166",
+"cat": "Pharmacology",
+"answer": "Atropine",
+"type": "Drug",
+"aliases": [],
+"clues": [
+"I am a drug.",
+"I come from deadly nightshade.",
+"I block muscarinic receptors.",
+"I make the pupils wide, the mouth dry and the heart beat faster.",
+"I am the antidote to organophosphate poisoning and a treatment for slow heart rate."
+],
+"fact": "\"Hot as a hare, dry as a bone, red as a beet, blind as a bat, mad as a hatter.\""
+},
+{
+"id": "167",
+"cat": "Pharmacology",
+"answer": "Propranolol",
+"type": "Drug",
+"aliases": [],
+"clues": [
+"I am a drug.",
+"I block beta receptors, both beta-1 and beta-2.",
+"I cross into the brain easily, and I can calm the shaking of stage fright.",
+"I can make asthma worse, so asthmatics should avoid me.",
+"I am used for migraine prevention, thyrotoxicosis symptoms and varices."
+],
+"fact": "A non-selective beta-blocker; contraindicated in asthma."
+},
+{
+"id": "168",
+"cat": "Pharmacology",
+"answer": "Salbutamol",
+"type": "Drug",
+"aliases": [
+"albuterol"
+],
+"clues": [
+"I am a drug.",
+"I am usually breathed in from a small inhaler.",
+"I act on beta-2 receptors.",
+"I can cause a fast heartbeat, tremor and low potassium.",
+"I am the reliever inhaler that opens the airways in an asthma attack."
+],
+"fact": "A short-acting beta-2 agonist, the first-line reliever for asthma."
+},
+{
+"id": "169",
+"cat": "Pharmacology",
+"answer": "Furosemide",
+"type": "Drug",
+"aliases": [
+"frusemide"
+],
+"clues": [
+"I am a drug.",
+"I make you pass a lot of urine.",
+"I work on the thick ascending limb of the loop of Henle.",
+"I can lower potassium and, at high doses, damage hearing.",
+"I am the drug given in a vein for fluid in the lungs in acute heart failure."
+],
+"fact": "A loop diuretic that blocks the Na-K-2Cl co-transporter."
+},
+{
+"id": "170",
+"cat": "Pharmacology",
+"answer": "Spironolactone",
+"type": "Drug",
+"aliases": [],
+"clues": [
+"I am a drug.",
+"I am a weak diuretic that keeps potassium.",
+"I block aldosterone receptors.",
+"I can make men grow breasts.",
+"I am used in heart failure, liver cirrhosis with ascites and Conn syndrome."
+],
+"fact": "An aldosterone antagonist; side effects include hyperkalaemia and gynaecomastia."
+},
+{
+"id": "171",
+"cat": "Pharmacology",
+"answer": "Captopril",
+"type": "Drug",
+"aliases": [],
+"clues": [
+"I am a drug.",
+"I was the first of my class, designed from snake venom.",
+"I block the enzyme that makes angiotensin II.",
+"I can cause a dry cough because bradykinin builds up.",
+"I am an ACE inhibitor used for high blood pressure and heart failure."
+],
+"fact": "The first ACE inhibitor; cough and angioedema are known side effects."
+},
+{
+"id": "172",
+"cat": "Pharmacology",
+"answer": "Losartan",
+"type": "Drug",
+"aliases": [],
+"clues": [
+"I am a drug.",
+"I lower blood pressure.",
+"I block the AT1 receptor.",
+"I don't build up bradykinin, so I don't cause the dry cough of my cousins.",
+"I am an angiotensin receptor blocker, the first in my class."
+],
+"fact": "An angiotensin II receptor blocker (ARB), used when ACE inhibitors cause cough."
+},
+{
+"id": "173",
+"cat": "Pharmacology",
+"answer": "Amlodipine",
+"type": "Drug",
+"aliases": [],
+"clues": [
+"I am a drug.",
+"I am taken once a day, as I last a long time.",
+"I block calcium channels in blood vessel walls.",
+"I can make the ankles swell.",
+"I am a dihydropyridine used for high blood pressure and angina."
+],
+"fact": "A long-acting calcium channel blocker; ankle oedema is common."
+},
+{
+"id": "174",
+"cat": "Pharmacology",
+"answer": "Digoxin",
+"type": "Drug",
+"aliases": [
+"digitalis"
+],
+"clues": [
+"I am a drug.",
+"I come from the foxglove plant.",
+"I block the sodium-potassium pump in heart cells.",
+"Too much of me can make people see yellow-green halos and cause many arrhythmias.",
+"I slow the heart in atrial fibrillation and help a weak heart pump harder."
+],
+"fact": "Toxicity is worse with low potassium; its antidote is specific antibody fragments."
+},
+{
+"id": "175",
+"cat": "Pharmacology",
+"answer": "Glyceryl trinitrate",
+"type": "Drug",
+"aliases": [
+"nitroglycerin",
+"GTN"
+],
+"clues": [
+"I am a drug.",
+"I am also used in explosives.",
+"I release nitric oxide, which relaxes veins more than arteries.",
+"I can cause a pounding headache, and I must not be mixed with sildenafil.",
+"I am sprayed or placed under the tongue to relieve angina within minutes."
+],
+"fact": "Sublingual relief for angina; dangerous with PDE-5 inhibitors."
+},
+{
+"id": "176",
+"cat": "Pharmacology",
+"answer": "Atorvastatin",
+"type": "Drug",
+"aliases": [],
+"clues": [
+"I am a drug.",
+"I am taken by mouth, once a day.",
+"I block HMG-CoA reductase.",
+"I can rarely cause muscle pain and raised liver enzymes.",
+"I am a statin that lowers LDL cholesterol and the risk of heart attack."
+],
+"fact": "A statin; rare but serious side effects are myopathy and rhabdomyolysis."
+},
+{
+"id": "177",
+"cat": "Pharmacology",
+"answer": "Morphine",
+"type": "Drug",
+"aliases": [],
+"clues": [
+"I am a drug.",
+"I come from the opium poppy.",
+"I act on mu receptors.",
+"I make the pupils small, slow the breathing and cause constipation.",
+"I am the classic strong painkiller, reversed by naloxone."
+],
+"fact": "The prototype opioid analgesic; overdose causes pinpoint pupils and respiratory depression."
+},
+{
+"id": "178",
+"cat": "Pharmacology",
+"answer": "Naloxone",
+"type": "Drug",
+"aliases": [
+"narcan"
+],
+"clues": [
+"I am a drug.",
+"I am given into a vein, a muscle or the nose.",
+"I block opioid receptors.",
+"I act within minutes but wear off quickly, so the poison can come back.",
+"I am the antidote for an opioid overdose."
+],
+"fact": "It reverses opioid overdose; repeat doses may be needed."
+},
+{
+"id": "179",
+"cat": "Pharmacology",
+"answer": "Paracetamol",
+"type": "Drug",
+"aliases": [
+"acetaminophen"
+],
+"clues": [
+"I am a drug.",
+"I am one of the most used medicines for pain and fever.",
+"I don't calm inflammation much.",
+"Too much of me uses up glutathione and destroys the liver.",
+"My overdose is treated with N-acetylcysteine."
+],
+"fact": "Overdose causes liver failure; N-acetylcysteine is the antidote."
+},
+{
+"id": "180",
+"cat": "Pharmacology",
+"answer": "Ibuprofen",
+"type": "Drug",
+"aliases": [],
+"clues": [
+"I am a drug.",
+"I am bought over the counter in most countries.",
+"I block COX-1 and COX-2 for a short time.",
+"I can cause stomach ulcers and harm the kidneys.",
+"I am a common NSAID for pain, fever and inflammation."
+],
+"fact": "A reversible COX inhibitor; risks include peptic ulcers and kidney injury."
+},
+{
+"id": "181",
+"cat": "Pharmacology",
+"answer": "Omeprazole",
+"type": "Drug",
+"aliases": [],
+"clues": [
+"I am a drug.",
+"I am taken before breakfast.",
+"I turn on only in acid.",
+"I block the H+/K+ ATPase pump of parietal cells forever.",
+"I am a proton pump inhibitor used for ulcers and reflux."
+],
+"fact": "The first proton pump inhibitor; used with antibiotics to clear H. pylori."
+},
+{
+"id": "182",
+"cat": "Pharmacology",
+"answer": "Levodopa",
+"type": "Drug",
+"aliases": [
+"L-DOPA"
+],
+"clues": [
+"I am a drug.",
+"I am an amino acid.",
+"I am given with carbidopa so I am not broken down before reaching the brain.",
+"I can cause on-off swings and uncontrolled movements after years of use.",
+"I am turned into dopamine and I am the most effective treatment for Parkinson disease."
+],
+"fact": "Converted to dopamine in the brain; given with carbidopa."
+},
+{
+"id": "183",
+"cat": "Pharmacology",
+"answer": "Lithium",
+"type": "Drug",
+"aliases": [],
+"clues": [
+"I am a drug.",
+"I am a simple metal element.",
+"I have a narrow safe range, so my blood level is checked often.",
+"Too much of me causes tremor, confusion and kidney problems, and I can cause hypothyroidism.",
+"I am the classic mood stabiliser for bipolar disorder."
+],
+"fact": "Narrow therapeutic index; diuretics and NSAIDs can raise its level."
+},
+{
+"id": "184",
+"cat": "Pharmacology",
+"answer": "Haloperidol",
+"type": "Drug",
+"aliases": [],
+"clues": [
+"I am a drug.",
+"I act in the brain.",
+"I strongly block D2 receptors.",
+"I can cause stiffness, tremor and, rarely, a fever with rigid muscles.",
+"I am a typical antipsychotic used for psychosis and acute agitation."
+],
+"fact": "A typical antipsychotic; side effects include parkinsonism and neuroleptic malignant syndrome."
+},
+{
+"id": "185",
+"cat": "Pharmacology",
+"answer": "Fluoxetine",
+"type": "Drug",
+"aliases": [
+"prozac"
+],
+"clues": [
+"I am a drug.",
+"I act in the brain.",
+"I block the reuptake of serotonin.",
+"I stay in the body for weeks because my active product lasts long.",
+"I am an SSRI used for depression, OCD and bulimia."
+],
+"fact": "An SSRI with a very long half-life."
+},
+{
+"id": "186",
+"cat": "Pharmacology",
+"answer": "Diazepam",
+"type": "Drug",
+"aliases": [
+"valium"
+],
+"clues": [
+"I am a drug.",
+"I calm people down.",
+"I make GABA-A receptors open more often.",
+"I am used to stop a seizure that won't end and to treat alcohol withdrawal.",
+"I am a long-acting benzodiazepine, and flumazenil reverses me."
+],
+"fact": "A long-acting benzodiazepine; flumazenil is its antagonist."
+},
+{
+"id": "187",
+"cat": "Pharmacology",
+"answer": "Phenytoin",
+"type": "Drug",
+"aliases": [],
+"clues": [
+"I am a drug.",
+"I block sodium channels in nerves.",
+"I make the gums grow and the body hairier.",
+"My level rises steeply at higher doses, as my breakdown saturates.",
+"I am an old antiepileptic used for tonic-clonic seizures."
+],
+"fact": "An antiepileptic with zero-order kinetics; causes gum overgrowth."
+},
+{
+"id": "188",
+"cat": "Pharmacology",
+"answer": "Sodium valproate",
+"type": "Drug",
+"aliases": [
+"valproic acid"
+],
+"clues": [
+"I am a drug.",
+"I am used for many seizure types and for bipolar disorder.",
+"I can damage the liver and the pancreas.",
+"I cause the most birth defects of my class, including spina bifida.",
+"I am a broad-spectrum antiepileptic avoided in women who may get pregnant."
+],
+"fact": "Highly teratogenic (neural tube defects); avoided in pregnancy."
+},
+{
+"id": "189",
+"cat": "Pharmacology",
+"answer": "Benzylpenicillin",
+"type": "Drug",
+"aliases": [
+"penicillin G"
+],
+"clues": [
+"I am a drug.",
+"I was discovered by accident in a mould.",
+"I block bacteria from building their cell walls.",
+"I am broken down by stomach acid, so I am given by injection.",
+"I am the first antibiotic, still the treatment of choice for syphilis."
+],
+"fact": "The first antibiotic; still used for syphilis and streptococcal infection."
+},
+{
+"id": "190",
+"cat": "Pharmacology",
+"answer": "Vancomycin",
+"type": "Drug",
+"aliases": [],
+"clues": [
+"I am a drug.",
+"I am a large antibiotic that doesn't pass the gut wall.",
+"I bind to D-ala-D-ala and stop cell wall building.",
+"Giving me too fast flushes the upper body red.",
+"I am used for MRSA, and by mouth for C. difficile colitis."
+],
+"fact": "Used for MRSA; rapid infusion causes red man syndrome."
+},
+{
+"id": "191",
+"cat": "Pharmacology",
+"answer": "Gentamicin",
+"type": "Drug",
+"aliases": [],
+"clues": [
+"I am a drug.",
+"I am an antibiotic given by injection.",
+"I bind to the 30S subunit of the bacterial ribosome.",
+"I can damage the kidneys and the inner ear.",
+"I am an aminoglycoside used for serious Gram-negative infections."
+],
+"fact": "An aminoglycoside; nephrotoxic and ototoxic."
+},
+{
+"id": "192",
+"cat": "Pharmacology",
+"answer": "Doxycycline",
+"type": "Drug",
+"aliases": [],
+"clues": [
+"I am a drug.",
+"I am an antibiotic taken by mouth.",
+"I bind the 30S subunit and stop protein building.",
+"I stain growing teeth and should not be taken with milk.",
+"I am a tetracycline used for chlamydia, Lyme disease and malaria prevention."
+],
+"fact": "A tetracycline; avoid in children and pregnancy because of tooth staining."
+},
+{
+"id": "193",
+"cat": "Pharmacology",
+"answer": "Ciprofloxacin",
+"type": "Drug",
+"aliases": [],
+"clues": [
+"I am a drug.",
+"I am an antibiotic taken by mouth or into a vein.",
+"I block DNA gyrase.",
+"I can damage tendons, especially the Achilles tendon.",
+"I am a fluoroquinolone used for urinary and gut infections."
+],
+"fact": "A fluoroquinolone; tendinopathy and tendon rupture are known risks."
+},
+{
+"id": "194",
+"cat": "Pharmacology",
+"answer": "Metronidazole",
+"type": "Drug",
+"aliases": [
+"flagyl"
+],
+"clues": [
+"I am a drug.",
+"I kill anaerobic bacteria and some protozoa.",
+"I make free radicals that break DNA.",
+"Drinking alcohol with me makes you flush and vomit.",
+"I treat C. difficile, trichomonas, giardia and amoebic dysentery."
+],
+"fact": "Disulfiram-like reaction with alcohol."
+},
+{
+"id": "195",
+"cat": "Pharmacology",
+"answer": "Isoniazid",
+"type": "Drug",
+"aliases": [
+"INH"
+],
+"clues": [
+"I am a drug.",
+"I am taken for many months.",
+"I block the building of mycolic acids.",
+"I can cause numb hands and feet unless pyridoxine is given with me.",
+"I am a first-line tuberculosis drug."
+],
+"fact": "An anti-TB drug; give vitamin B6 to prevent peripheral neuropathy."
+},
+{
+"id": "196",
+"cat": "Pharmacology",
+"answer": "Rifampicin",
+"type": "Drug",
+"aliases": [
+"rifampin"
+],
+"clues": [
+"I am a drug.",
+"I am an antibiotic.",
+"I block bacterial RNA polymerase.",
+"I turn tears, urine and sweat orange-red.",
+"I strongly speed up liver enzymes and I am a first-line tuberculosis drug."
+],
+"fact": "Colours body fluids orange; a strong enzyme inducer that reduces the effect of the pill."
+},
+{
+"id": "197",
+"cat": "Pharmacology",
+"answer": "Aciclovir",
+"type": "Drug",
+"aliases": [
+"acyclovir"
+],
+"clues": [
+"I am a drug.",
+"I treat viruses, not bacteria.",
+"I need a viral enzyme, thymidine kinase, to switch me on.",
+"I can form crystals in the kidneys if the patient is dry.",
+"I treat herpes simplex and chickenpox-shingles infections."
+],
+"fact": "Activated by viral thymidine kinase; used for HSV and VZV."
+},
+{
+"id": "198",
+"cat": "Pharmacology",
+"answer": "Methotrexate",
+"type": "Drug",
+"aliases": [],
+"clues": [
+"I am a drug.",
+"I am used both in cancer and in autoimmune disease.",
+"I block dihydrofolate reductase.",
+"Folinic acid can rescue normal cells from me.",
+"I am the main long-term drug for rheumatoid arthritis, taken only once a week."
+],
+"fact": "A folate antagonist; weekly dosing for rheumatoid arthritis."
+},
+{
+"id": "199",
+"cat": "Pharmacology",
+"answer": "Prednisolone",
+"type": "Drug",
+"aliases": [],
+"clues": [
+"I am a drug.",
+"I am a steroid taken by mouth.",
+"I calm inflammation and the immune system.",
+"Long use of me thins bones, raises sugar and rounds the face.",
+"I must not be stopped suddenly after long use, or the adrenals may fail."
+],
+"fact": "A corticosteroid; stop slowly after long use to avoid adrenal crisis."
+},
+{
+"id": "200",
+"cat": "Pharmacology",
+"answer": "Adrenaline",
+"type": "Drug",
+"aliases": [
+"epinephrine"
+],
+"clues": [
+"I am a drug and a hormone.",
+"I act on alpha and beta receptors.",
+"I raise blood pressure and open the airways.",
+"I am given in a muscle of the thigh by an auto-injector.",
+"I am the first drug for anaphylaxis and I am used in cardiac arrest."
+],
+"fact": "First-line for anaphylaxis (0.5 mg IM for adults)."
+},
+{
+"id": "201",
+"cat": "Microbiology",
+"answer": "Staphylococcus aureus",
+"type": "Bacterium",
+"aliases": [
+"S. aureus"
+],
+"clues": [
+"I am a bacterium.",
+"I am Gram-positive and round.",
+"I grow in clusters like grapes and I make coagulase.",
+"Many people carry me in their noses without being sick.",
+"I cause boils, food poisoning and toxic shock, and my resistant form is called MRSA."
+],
+"fact": "Coagulase-positive; MRSA strains resist methicillin."
+},
+{
+"id": "202",
+"cat": "Microbiology",
+"answer": "Streptococcus pyogenes",
+"type": "Bacterium",
+"aliases": [
+"group A strep"
+],
+"clues": [
+"I am a bacterium.",
+"I am Gram-positive and grow in chains.",
+"I break red cells fully on blood agar and bacitracin kills me.",
+"After I infect the throat, rheumatic fever or kidney inflammation can follow.",
+"I cause strep throat, scarlet fever and flesh-eating fasciitis."
+],
+"fact": "Group A beta-haemolytic; complications include rheumatic fever and glomerulonephritis."
+},
+{
+"id": "203",
+"cat": "Microbiology",
+"answer": "Streptococcus pneumoniae",
+"type": "Bacterium",
+"aliases": [
+"pneumococcus"
+],
+"clues": [
+"I am a bacterium.",
+"I am Gram-positive and look like a pair of lancets.",
+"Optochin kills me and bile dissolves me.",
+"My thick capsule is the target of a vaccine for babies and older people.",
+"I am the commonest cause of community-acquired pneumonia."
+],
+"fact": "Lancet-shaped diplococci; the top cause of community pneumonia and of adult meningitis."
+},
+{
+"id": "204",
+"cat": "Microbiology",
+"answer": "Neisseria meningitidis",
+"type": "Bacterium",
+"aliases": [
+"meningococcus"
+],
+"clues": [
+"I am a bacterium.",
+"I am Gram-negative and come in pairs like kidney beans.",
+"I ferment maltose as well as glucose.",
+"I cause a rash that doesn't fade under a glass, and I can destroy the adrenal glands.",
+"I cause epidemic meningitis in young people and pilgrims."
+],
+"fact": "Causes meningitis with a purpuric rash; Waterhouse-Friderichsen syndrome."
+},
+{
+"id": "205",
+"cat": "Microbiology",
+"answer": "Neisseria gonorrhoeae",
+"type": "Bacterium",
+"aliases": [
+"gonococcus"
+],
+"clues": [
+"I am a bacterium.",
+"I am a Gram-negative diplococcus.",
+"I ferment only glucose, and I can change my surface to escape immunity.",
+"I am caught through sex and can cause a pus discharge.",
+"In newborns I can infect the eyes during birth."
+],
+"fact": "Causes gonorrhoea and neonatal conjunctivitis; often treated with ceftriaxone."
+},
+{
+"id": "206",
+"cat": "Microbiology",
+"answer": "Escherichia coli",
+"type": "Bacterium",
+"aliases": [
+"E. coli"
+],
+"clues": [
+"I am a bacterium.",
+"I am a Gram-negative rod.",
+"I normally live in your large intestine.",
+"I ferment lactose and turn MacConkey agar pink.",
+"I am the most common cause of urinary tract infections, and one strain, O157:H7, causes HUS."
+],
+"fact": "The commonest cause of UTI; O157:H7 makes Shiga-like toxin and causes HUS."
+},
+{
+"id": "207",
+"cat": "Microbiology",
+"answer": "Helicobacter pylori",
+"type": "Bacterium",
+"aliases": [
+"H. pylori"
+],
+"clues": [
+"I am a bacterium.",
+"I am a curved Gram-negative rod.",
+"I make urease to survive in acid.",
+"A breath test can find me.",
+"I cause most peptic ulcers and raise the risk of stomach cancer."
+],
+"fact": "Causes peptic ulcers and gastric cancer; detected by the urea breath test."
+},
+{
+"id": "208",
+"cat": "Microbiology",
+"answer": "Mycobacterium tuberculosis",
+"type": "Bacterium",
+"aliases": [
+"Koch's bacillus",
+"TB bacillus"
+],
+"clues": [
+"I am a bacterium.",
+"I grow very slowly, and my culture takes weeks.",
+"My waxy wall holds red dye in the Ziehl-Neelsen stain.",
+"I make caseating granulomas and can hide for years.",
+"I cause tuberculosis."
+],
+"fact": "Acid-fast bacillus; cause of tuberculosis."
+},
+{
+"id": "209",
+"cat": "Microbiology",
+"answer": "Mycobacterium leprae",
+"type": "Bacterium",
+"aliases": [
+"Hansen's bacillus"
+],
+"clues": [
+"I am a bacterium.",
+"I am acid-fast.",
+"I like cool parts of the body, like skin and nerves.",
+"I cannot be grown in the lab, but armadillos can carry me.",
+"I cause leprosy."
+],
+"fact": "Causes leprosy; damages peripheral nerves and skin."
+},
+{
+"id": "210",
+"cat": "Microbiology",
+"answer": "Clostridioides difficile",
+"type": "Bacterium",
+"aliases": [
+"C. difficile",
+"C. diff"
+],
+"clues": [
+"I am a bacterium.",
+"I am a Gram-positive rod that forms spores.",
+"I grow when antibiotics kill off normal gut bacteria.",
+"My toxins can make a membrane-like coat on the colon.",
+"I cause severe diarrhoea in hospital patients after antibiotics."
+],
+"fact": "Causes pseudomembranous colitis; treated with oral vancomycin or fidaxomicin."
+},
+{
+"id": "211",
+"cat": "Microbiology",
+"answer": "Clostridium tetani",
+"type": "Bacterium",
+"aliases": [],
+"clues": [
+"I am a bacterium.",
+"I form spores that live in soil.",
+"I enter through deep, dirty wounds.",
+"My toxin stops inhibitory neurotransmitters from being released.",
+"I cause lockjaw and painful muscle spasms."
+],
+"fact": "Its toxin blocks GABA and glycine release, causing tetanus."
+},
+{
+"id": "212",
+"cat": "Microbiology",
+"answer": "Clostridium botulinum",
+"type": "Bacterium",
+"aliases": [],
+"clues": [
+"I am a bacterium.",
+"I form spores.",
+"I can grow in badly canned food and honey.",
+"My toxin stops acetylcholine release.",
+"I cause a descending flaccid paralysis, and my toxin is used to smooth wrinkles."
+],
+"fact": "Causes botulism; its toxin is used medically as Botox."
+},
+{
+"id": "213",
+"cat": "Microbiology",
+"answer": "Corynebacterium diphtheriae",
+"type": "Bacterium",
+"aliases": [],
+"clues": [
+"I am a bacterium.",
+"I am a Gram-positive rod shaped like a club.",
+"I sit in Chinese letter patterns under the microscope.",
+"My toxin is coded by a virus that infects me.",
+"I make a grey membrane in the throat that can block breathing."
+],
+"fact": "Its toxin causes a pseudomembrane, myocarditis and neuropathy."
+},
+{
+"id": "214",
+"cat": "Microbiology",
+"answer": "Bacillus anthracis",
+"type": "Bacterium",
+"aliases": [],
+"clues": [
+"I am a bacterium.",
+"I am a large Gram-positive rod that forms spores.",
+"My capsule is made of protein, not sugar.",
+"I can infect skin, lungs or gut, and I have been used as a weapon.",
+"I cause a black, painless skin ulcer."
+],
+"fact": "Causes anthrax, with a painless black eschar."
+},
+{
+"id": "215",
+"cat": "Microbiology",
+"answer": "Listeria monocytogenes",
+"type": "Bacterium",
+"aliases": [],
+"clues": [
+"I am a bacterium.",
+"I am a Gram-positive rod that tumbles when I move.",
+"I can grow in the fridge.",
+"I am found in soft cheese and cold meats.",
+"I cause meningitis in newborns and the elderly, and I am dangerous in pregnancy."
+],
+"fact": "Grows at fridge temperature; a cause of neonatal meningitis."
+},
+{
+"id": "216",
+"cat": "Microbiology",
+"answer": "Pseudomonas aeruginosa",
+"type": "Bacterium",
+"aliases": [],
+"clues": [
+"I am a bacterium.",
+"I am a Gram-negative rod that needs oxygen.",
+"My colonies are green and smell sweet like grapes.",
+"I infect burns, ventilated patients and people with cystic fibrosis.",
+"I am a stubborn hospital germ resistant to many antibiotics."
+],
+"fact": "Green pigment and grape smell; infects burns and CF lungs."
+},
+{
+"id": "217",
+"cat": "Microbiology",
+"answer": "Vibrio cholerae",
+"type": "Bacterium",
+"aliases": [],
+"clues": [
+"I am a bacterium.",
+"I am a Gram-negative rod shaped like a comma.",
+"I like salty, alkaline water.",
+"My toxin turns on cAMP in gut cells.",
+"I cause rice-water diarrhoea that can kill in hours."
+],
+"fact": "Causes cholera; oral rehydration saves most lives."
+},
+{
+"id": "218",
+"cat": "Microbiology",
+"answer": "Salmonella Typhi",
+"type": "Bacterium",
+"aliases": [
+"S. Typhi"
+],
+"clues": [
+"I am a bacterium.",
+"I am a Gram-negative rod that moves.",
+"I am spread by dirty food and water and only infects humans.",
+"I cause rose spots and a slow pulse, and some people carry me in the gallbladder.",
+"I cause typhoid fever."
+],
+"fact": "Causes typhoid fever; chronic carriers hold it in the gallbladder."
+},
+{
+"id": "219",
+"cat": "Microbiology",
+"answer": "Treponema pallidum",
+"type": "Bacterium",
+"aliases": [],
+"clues": [
+"I am a bacterium.",
+"I am a thin spiral that can't be seen with a normal stain.",
+"I am seen with dark-field microscopy.",
+"I start as a painless ulcer on the genitals.",
+"I cause syphilis."
+],
+"fact": "Causes syphilis; penicillin is still the treatment."
+},
+{
+"id": "220",
+"cat": "Microbiology",
+"answer": "Borrelia burgdorferi",
+"type": "Bacterium",
+"aliases": [],
+"clues": [
+"I am a bacterium.",
+"I am a spirochete.",
+"A tick passes me to people.",
+"I make a bull's-eye rash.",
+"I cause Lyme disease."
+],
+"fact": "Causes Lyme disease, with erythema migrans."
+},
+{
+"id": "221",
+"cat": "Microbiology",
+"answer": "Chlamydia trachomatis",
+"type": "Bacterium",
+"aliases": [],
+"clues": [
+"I am a bacterium.",
+"I live only inside cells.",
+"I can't make my own energy.",
+"I am the most common sexually passed bacterium.",
+"I also cause trachoma, a leading cause of preventable blindness."
+],
+"fact": "Causes chlamydia and trachoma."
+},
+{
+"id": "222",
+"cat": "Microbiology",
+"answer": "Legionella pneumophila",
+"type": "Bacterium",
+"aliases": [],
+"clues": [
+"I am a bacterium.",
+"I am a Gram-negative rod that needs iron and cysteine to grow.",
+"I live in water systems like air conditioning towers.",
+"I can be found in the urine as an antigen.",
+"I cause a severe pneumonia with confusion and low sodium."
+],
+"fact": "Causes Legionnaires' disease; spread by water aerosols."
+},
+{
+"id": "223",
+"cat": "Microbiology",
+"answer": "Bordetella pertussis",
+"type": "Bacterium",
+"aliases": [],
+"clues": [
+"I am a bacterium.",
+"I am a small Gram-negative coccobacillus.",
+"I stick to the cilia of the airway.",
+"My toxin raises the lymphocyte count very high.",
+"I cause whooping cough."
+],
+"fact": "Causes whooping cough; prevented by vaccination."
+},
+{
+"id": "224",
+"cat": "Microbiology",
+"answer": "Haemophilus influenzae",
+"type": "Bacterium",
+"aliases": [],
+"clues": [
+"I am a bacterium.",
+"I am a small Gram-negative coccobacillus.",
+"I need factors X and V to grow.",
+"My type b used to cause meningitis and epiglottitis in children.",
+"A vaccine called Hib has made me rare."
+],
+"fact": "Type b caused meningitis and epiglottitis before the Hib vaccine."
+},
+{
+"id": "225",
+"cat": "Microbiology",
+"answer": "Candida albicans",
+"type": "Fungus",
+"aliases": [],
+"clues": [
+"I am a fungus.",
+"I live in the mouth, gut and vagina.",
+"I can grow as yeast or as false hyphae.",
+"I grow when antibiotics or steroids disturb normal flora.",
+"I cause thrush and white patches in the mouth."
+],
+"fact": "Causes oral and vaginal thrush; makes germ tubes in serum."
+},
+{
+"id": "226",
+"cat": "Microbiology",
+"answer": "Aspergillus fumigatus",
+"type": "Fungus",
+"aliases": [],
+"clues": [
+"I am a fungus.",
+"I grow as a mould.",
+"My hyphae branch at sharp, 45-degree angles.",
+"I can make a fungus ball in old lung cavities.",
+"I cause allergic and invasive lung disease in weak immune systems."
+],
+"fact": "Causes aspergilloma and invasive aspergillosis."
+},
+{
+"id": "227",
+"cat": "Microbiology",
+"answer": "Cryptococcus neoformans",
+"type": "Fungus",
+"aliases": [],
+"clues": [
+"I am a fungus.",
+"I am a yeast with a thick capsule.",
+"I am found in pigeon droppings.",
+"India ink shows me as a clear halo.",
+"I cause meningitis in people with HIV."
+],
+"fact": "Causes meningitis in AIDS; India ink stain shows its capsule."
+},
+{
+"id": "228",
+"cat": "Microbiology",
+"answer": "Pneumocystis jirovecii",
+"type": "Fungus",
+"aliases": [],
+"clues": [
+"I am a fungus.",
+"I cannot be grown in the lab.",
+"I am seen with a silver stain in lung samples.",
+"I strike when CD4 counts drop below 200.",
+"I cause pneumonia in people with AIDS."
+],
+"fact": "Causes PCP in AIDS; prevented and treated with co-trimoxazole."
+},
+{
+"id": "229",
+"cat": "Microbiology",
+"answer": "Plasmodium falciparum",
+"type": "Parasite",
+"aliases": [],
+"clues": [
+"I am a parasite.",
+"I am spread by Anopheles mosquitoes.",
+"I make red cells sticky so they block small vessels.",
+"I show as banana-shaped gametocytes on a blood film.",
+"I cause the most dangerous kind of malaria."
+],
+"fact": "Causes severe malaria, including cerebral malaria."
+},
+{
+"id": "230",
+"cat": "Microbiology",
+"answer": "Entamoeba histolytica",
+"type": "Parasite",
+"aliases": [],
+"clues": [
+"I am a parasite.",
+"I am an amoeba.",
+"I eat red blood cells.",
+"I can make flask-shaped ulcers in the colon.",
+"I cause amoebic dysentery and liver abscess."
+],
+"fact": "Causes amoebic dysentery and liver abscess."
+},
+{
+"id": "231",
+"cat": "Microbiology",
+"answer": "Giardia lamblia",
+"type": "Parasite",
+"aliases": [
+"Giardia intestinalis"
+],
+"clues": [
+"I am a parasite.",
+"I have flagella and two nuclei that make me look like a face.",
+"I stick to the wall of the small intestine.",
+"I cause fatty, smelly diarrhoea after drinking stream water.",
+"I am a common cause of traveller's diarrhoea."
+],
+"fact": "Causes giardiasis with fatty diarrhoea."
+},
+{
+"id": "232",
+"cat": "Microbiology",
+"answer": "Toxoplasma gondii",
+"type": "Parasite",
+"aliases": [],
+"clues": [
+"I am a parasite.",
+"My final host is the cat.",
+"I am caught from cat litter or undercooked meat.",
+"I can cause ring-enhancing lesions in the brain in AIDS.",
+"I can harm a baby in pregnancy, causing calcifications in the brain."
+],
+"fact": "Dangerous in pregnancy and AIDS."
+},
+{
+"id": "233",
+"cat": "Microbiology",
+"answer": "Schistosoma haematobium",
+"type": "Parasite",
+"aliases": [],
+"clues": [
+"I am a parasite.",
+"I am a worm.",
+"My young swim in fresh water and enter through the skin.",
+"My eggs have a spine at the end and pass out in the urine.",
+"I cause blood in the urine and raise the risk of bladder cancer, as in the Nile valley."
+],
+"fact": "Causes urinary schistosomiasis and squamous bladder cancer."
+},
+{
+"id": "234",
+"cat": "Microbiology",
+"answer": "Ascaris lumbricoides",
+"type": "Parasite",
+"aliases": [],
+"clues": [
+"I am a parasite.",
+"I am a worm.",
+"My eggs are swallowed with dirty food.",
+"My larvae pass through the lungs and cause a cough.",
+"I am the largest roundworm of the human gut."
+],
+"fact": "The giant intestinal roundworm; can block the bowel."
+},
+{
+"id": "235",
+"cat": "Microbiology",
+"answer": "Enterobius vermicularis",
+"type": "Parasite",
+"aliases": [
+"pinworm",
+"threadworm"
+],
+"clues": [
+"I am a parasite.",
+"I am a small worm.",
+"I am common in children.",
+"I lay my eggs around the anus at night.",
+"I cause night itching, found with a sticky tape test."
+],
+"fact": "Causes anal itching; diagnosed with the Scotch tape test."
+},
+{
+"id": "236",
+"cat": "Microbiology",
+"answer": "Taenia solium",
+"type": "Parasite",
+"aliases": [],
+"clues": [
+"I am a parasite.",
+"I am a flat worm.",
+"I am caught from undercooked pork.",
+"My larvae can make cysts in the brain.",
+"I cause cysticercosis, a cause of seizures."
+],
+"fact": "Neurocysticercosis is a leading cause of acquired epilepsy."
+},
+{
+"id": "237",
+"cat": "Microbiology",
+"answer": "Human immunodeficiency virus",
+"type": "Virus",
+"aliases": [
+"HIV"
+],
+"clues": [
+"I am a virus.",
+"I carry RNA and use reverse transcriptase.",
+"I bind to CD4 and to CCR5 or CXCR4.",
+"I slowly destroy helper T cells.",
+"Without treatment, I cause AIDS."
+],
+"fact": "Causes AIDS; treated with antiretroviral therapy."
+},
+{
+"id": "238",
+"cat": "Microbiology",
+"answer": "Hepatitis B virus",
+"type": "Virus",
+"aliases": [
+"HBV"
+],
+"clues": [
+"I am a virus.",
+"I have DNA but use reverse transcription.",
+"I am spread through blood, sex and from mother to baby.",
+"My surface antigen shows I am present.",
+"I cause liver inflammation and can lead to cirrhosis and liver cancer."
+],
+"fact": "Its vaccine was the first against a cancer."
+},
+{
+"id": "239",
+"cat": "Microbiology",
+"answer": "Epstein-Barr virus",
+"type": "Virus",
+"aliases": [
+"EBV"
+],
+"clues": [
+"I am a virus.",
+"I am a herpesvirus.",
+"I infect B cells through CD21.",
+"I cause atypical lymphocytes and a positive Monospot test.",
+"I cause glandular fever and some cancers like Burkitt lymphoma."
+],
+"fact": "Causes infectious mononucleosis; linked to Burkitt and nasopharyngeal cancer."
+},
+{
+"id": "240",
+"cat": "Microbiology",
+"answer": "Varicella-zoster virus",
+"type": "Virus",
+"aliases": [
+"VZV"
+],
+"clues": [
+"I am a virus.",
+"I am a herpesvirus.",
+"I hide in sensory nerve ganglia after the first infection.",
+"I come back later in one band of skin.",
+"I cause chickenpox and shingles."
+],
+"fact": "Causes chickenpox, and later shingles."
+},
+{
+"id": "241",
+"cat": "Histology",
+"answer": "Goblet cell",
+"type": "Cell",
+"aliases": [],
+"clues": [
+"I am a cell in a lining.",
+"I am shaped like a wine glass.",
+"I am found in the gut and the airways.",
+"My top is packed with mucin granules that stain with PAS.",
+"I make mucus, and I am rare in the stomach but common in the colon."
+],
+"fact": "Mucus-secreting cells; in the stomach they signal intestinal metaplasia."
+},
+{
+"id": "242",
+"cat": "Histology",
+"answer": "Parietal cell",
+"type": "Cell",
+"aliases": [
+"oxyntic cell"
+],
+"clues": [
+"I am a cell in a gland.",
+"I am large and pink, shaped like a fried egg.",
+"I live in the body and fundus of the stomach.",
+"My canaliculi are lined with proton pumps.",
+"I make stomach acid and intrinsic factor."
+],
+"fact": "Secretes HCl and intrinsic factor; target of proton pump inhibitors."
+},
+{
+"id": "243",
+"cat": "Histology",
+"answer": "Chief cell",
+"type": "Cell",
+"aliases": [
+"zymogen cell"
+],
+"clues": [
+"I am a cell in a gland.",
+"I sit at the bottom of the gastric glands.",
+"I am blue at my base because I am full of rough endoplasmic reticulum.",
+"I store my product in granules at my top until a meal arrives.",
+"I make pepsinogen and gastric lipase."
+],
+"fact": "Secretes pepsinogen, which acid turns into pepsin."
+},
+{
+"id": "244",
+"cat": "Histology",
+"answer": "Paneth cell",
+"type": "Cell",
+"aliases": [],
+"clues": [
+"I am a cell in a gland.",
+"I sit at the bottom of the crypts of the small intestine.",
+"I have big red granules.",
+"I help control the gut bacteria.",
+"I make lysozyme and defensins."
+],
+"fact": "Defends the crypts with lysozyme and defensins."
+},
+{
+"id": "245",
+"cat": "Histology",
+"answer": "Kupffer cell",
+"type": "Cell",
+"aliases": [],
+"clues": [
+"I am a cell.",
+"I am a macrophage.",
+"I live in the liver.",
+"I sit inside the sinusoids.",
+"I clean the blood from the gut of bacteria and old red cells."
+],
+"fact": "The resident macrophage of the liver sinusoids."
+},
+{
+"id": "246",
+"cat": "Histology",
+"answer": "Hepatocyte",
+"type": "Cell",
+"aliases": [
+"liver cell"
+],
+"clues": [
+"I am a cell.",
+"I am large, with one or two round nuclei.",
+"I live in plates between sinusoids.",
+"I make albumin, clotting factors and bile.",
+"I am the main working cell of the liver."
+],
+"fact": "Makes up about 80% of the liver's mass."
+},
+{
+"id": "247",
+"cat": "Histology",
+"answer": "Type II pneumocyte",
+"type": "Cell",
+"aliases": [
+"type II alveolar cell",
+"great alveolar cell"
+],
+"clues": [
+"I am a cell.",
+"I am cube-shaped.",
+"I have lamellar bodies.",
+"I can divide and replace damaged neighbours.",
+"I make surfactant in the alveoli."
+],
+"fact": "Makes surfactant and repairs the alveolar lining."
+},
+{
+"id": "248",
+"cat": "Histology",
+"answer": "Alveolar macrophage",
+"type": "Cell",
+"aliases": [
+"dust cell"
+],
+"clues": [
+"I am a cell.",
+"I am a phagocyte that started life as a blood monocyte.",
+"I live in the air spaces of the lungs.",
+"I eat inhaled particles, bacteria and leaked red cells.",
+"In smokers I fill with brown particles."
+],
+"fact": "The lung's resident macrophage."
+},
+{
+"id": "249",
+"cat": "Histology",
+"answer": "Osteoclast",
+"type": "Cell",
+"aliases": [],
+"clues": [
+"I am a cell.",
+"I am huge, with many nuclei.",
+"I come from the monocyte line.",
+"I sit in shallow pits called Howship lacunae.",
+"I dissolve bone."
+],
+"fact": "Breaks down bone; bisphosphonates and denosumab slow it."
+},
+{
+"id": "250",
+"cat": "Histology",
+"answer": "Osteoblast",
+"type": "Cell",
+"aliases": [],
+"clues": [
+"I am a cell.",
+"I am cube-shaped and line the surface of bone.",
+"I make alkaline phosphatase.",
+"I lay down osteoid, the matrix that later hardens.",
+"I build bone."
+],
+"fact": "Bone-forming cell; becomes an osteocyte once trapped in matrix."
+},
+{
+"id": "251",
+"cat": "Histology",
+"answer": "Chondrocyte",
+"type": "Cell",
+"aliases": [],
+"clues": [
+"I am a cell.",
+"I live in a small space called a lacuna.",
+"I sit in groups of two or four.",
+"I make type II collagen.",
+"I am the only cell of cartilage."
+],
+"fact": "The cell of cartilage, which has no blood vessels."
+},
+{
+"id": "252",
+"cat": "Histology",
+"answer": "Schwann cell",
+"type": "Cell",
+"aliases": [
+"neurolemmocyte"
+],
+"clues": [
+"I am a support cell.",
+"I live outside the brain and spinal cord.",
+"I wrap myself around a single axon.",
+"I help nerves grow back after injury.",
+"I make myelin in peripheral nerves."
+],
+"fact": "Myelinates peripheral nerves; Guillain-Barré targets its myelin."
+},
+{
+"id": "253",
+"cat": "Histology",
+"answer": "Oligodendrocyte",
+"type": "Cell",
+"aliases": [],
+"clues": [
+"I am a support cell.",
+"I live in the brain and spinal cord.",
+"I look like a fried egg under the microscope.",
+"I wrap many axons at once.",
+"I make myelin in the central nervous system, and multiple sclerosis attacks me."
+],
+"fact": "Myelinates CNS axons; damaged in multiple sclerosis."
+},
+{
+"id": "254",
+"cat": "Histology",
+"answer": "Astrocyte",
+"type": "Cell",
+"aliases": [],
+"clues": [
+"I am a support cell of the brain.",
+"I am shaped like a star.",
+"I stain for GFAP.",
+"My feet wrap around brain blood vessels.",
+"I hold the blood-brain barrier together and form scars after injury."
+],
+"fact": "The most common glial cell; forms glial scars."
+},
+{
+"id": "255",
+"cat": "Histology",
+"answer": "Microglia",
+"type": "Cell",
+"aliases": [],
+"clues": [
+"I am a support cell of the brain.",
+"I am small.",
+"I come from the bone marrow.",
+"I wake up when the brain is injured.",
+"I am the brain's own macrophage."
+],
+"fact": "The resident immune cells of the CNS."
+},
+{
+"id": "256",
+"cat": "Histology",
+"answer": "Ependymal cell",
+"type": "Cell",
+"aliases": [],
+"clues": [
+"I am a cell.",
+"I am cube-shaped and have cilia.",
+"I line the ventricles of the brain.",
+"I also line the central canal of the spinal cord.",
+"I help make and move cerebrospinal fluid."
+],
+"fact": "Lines the ventricles; forms the choroid plexus with capillaries."
+},
+{
+"id": "257",
+"cat": "Histology",
+"answer": "Langerhans cell",
+"type": "Cell",
+"aliases": [],
+"clues": [
+"I am a cell.",
+"I am a dendritic cell.",
+"I live in the epidermis.",
+"I have tennis racket granules.",
+"I catch antigens in the skin and show them to T cells."
+],
+"fact": "The antigen-presenting cell of the skin."
+},
+{
+"id": "258",
+"cat": "Histology",
+"answer": "Melanocyte",
+"type": "Cell",
+"aliases": [],
+"clues": [
+"I am a cell.",
+"I come from the neural crest.",
+"I sit in the basal layer of the epidermis.",
+"I pass pigment to keratinocytes.",
+"I make melanin."
+],
+"fact": "Makes melanin; its cancer is melanoma."
+},
+{
+"id": "259",
+"cat": "Histology",
+"answer": "Merkel cell",
+"type": "Cell",
+"aliases": [],
+"clues": [
+"I am a cell in the skin.",
+"I sit in the basal layer.",
+"I touch a nerve ending.",
+"I sense light touch.",
+"My rare cancer is aggressive and linked to a polyomavirus."
+],
+"fact": "A touch receptor cell; gives rise to Merkel cell carcinoma."
+},
+{
+"id": "260",
+"cat": "Histology",
+"answer": "Keratinocyte",
+"type": "Cell",
+"aliases": [],
+"clues": [
+"I am a cell.",
+"I make up most of the epidermis.",
+"I move up from the basal layer as I age.",
+"I lose my nucleus and become a flat, dead scale.",
+"I make keratin."
+],
+"fact": "The main cell of the epidermis."
+},
+{
+"id": "261",
+"cat": "Histology",
+"answer": "Podocyte",
+"type": "Cell",
+"aliases": [],
+"clues": [
+"I am a cell.",
+"I live in the kidney.",
+"I have feet that wrap around capillaries.",
+"My filtration slits block proteins.",
+"When my feet flatten, protein pours into the urine."
+],
+"fact": "Its foot processes efface in minimal change disease."
+},
+{
+"id": "262",
+"cat": "Histology",
+"answer": "Mesangial cell",
+"type": "Cell",
+"aliases": [],
+"clues": [
+"I am a cell.",
+"I live in the kidney.",
+"I sit between glomerular capillaries.",
+"I can contract and eat debris.",
+"IgA can build up around me."
+],
+"fact": "Supports the glomerular tuft; IgA nephropathy deposits here."
+},
+{
+"id": "263",
+"cat": "Histology",
+"answer": "Leydig cell",
+"type": "Cell",
+"aliases": [
+"interstitial cell of Leydig"
+],
+"clues": [
+"I am a cell.",
+"I live in the testis.",
+"I sit between the seminiferous tubules.",
+"LH makes me work.",
+"I make testosterone."
+],
+"fact": "Makes testosterone under LH control."
+},
+{
+"id": "264",
+"cat": "Histology",
+"answer": "Sertoli cell",
+"type": "Cell",
+"aliases": [
+"sustentacular cell"
+],
+"clues": [
+"I am a cell.",
+"I live in the testis.",
+"I line the seminiferous tubules.",
+"FSH makes me work, and I make inhibin and anti-Müllerian hormone.",
+"I support sperm as they develop and form the blood-testis barrier."
+],
+"fact": "Nurses developing sperm and forms the blood-testis barrier."
+},
+{
+"id": "265",
+"cat": "Histology",
+"answer": "Granulosa cell",
+"type": "Cell",
+"aliases": [
+"follicular cell"
+],
+"clues": [
+"I am a cell.",
+"I live in the ovary.",
+"I surround the egg in a follicle.",
+"FSH makes me switch on aromatase.",
+"I turn androgens from my theca neighbours into oestrogen, and my tumour shows Call-Exner bodies."
+],
+"fact": "Converts androgens to oestrogen using aromatase."
+},
+{
+"id": "266",
+"cat": "Histology",
+"answer": "Beta cell",
+"type": "Cell",
+"aliases": [
+"pancreatic beta cell"
+],
+"clues": [
+"I am a cell.",
+"I live in the pancreas.",
+"I sit in the islets.",
+"I make insulin.",
+"Type 1 diabetes destroys me."
+],
+"fact": "Makes insulin; destroyed in type 1 diabetes."
+},
+{
+"id": "267",
+"cat": "Histology",
+"answer": "Plasma cell",
+"type": "Cell",
+"aliases": [],
+"clues": [
+"I am a cell.",
+"I come from B cells.",
+"My nucleus looks like a clock face.",
+"I have a pale area next to my nucleus where the Golgi sits.",
+"I make antibodies."
+],
+"fact": "The antibody factory; its cancer is multiple myeloma."
+},
+{
+"id": "268",
+"cat": "Histology",
+"answer": "Mast cell",
+"type": "Cell",
+"aliases": [],
+"clues": [
+"I am a cell.",
+"I live in connective tissue.",
+"I am full of dark granules.",
+"I carry IgE on my surface.",
+"I release histamine in allergic reactions."
+],
+"fact": "Releases histamine in type I hypersensitivity."
+},
+{
+"id": "269",
+"cat": "Histology",
+"answer": "Neutrophil",
+"type": "Cell",
+"aliases": [],
+"clues": [
+"I am a white blood cell.",
+"My nucleus has three to five lobes.",
+"I am the most common white cell in the blood.",
+"I am the first to arrive at an infection.",
+"I eat bacteria and make pus."
+],
+"fact": "The first responder to bacterial infection."
+},
+{
+"id": "270",
+"cat": "Histology",
+"answer": "Eosinophil",
+"type": "Cell",
+"aliases": [],
+"clues": [
+"I am a white blood cell.",
+"My nucleus has two lobes.",
+"My granules are bright red-orange.",
+"I fight parasites.",
+"I rise in asthma and allergies."
+],
+"fact": "Raised in parasite infections and allergy."
+},
+{
+"id": "271",
+"cat": "Histology",
+"answer": "Megakaryocyte",
+"type": "Cell",
+"aliases": [],
+"clues": [
+"I am a cell in the bone marrow.",
+"I am huge, with a many-lobed nucleus.",
+"Thrombopoietin makes me grow.",
+"I break off pieces of myself.",
+"I make platelets."
+],
+"fact": "The platelet-forming cell of the bone marrow."
+},
+{
+"id": "272",
+"cat": "Histology",
+"answer": "Fibroblast",
+"type": "Cell",
+"aliases": [],
+"clues": [
+"I am a cell.",
+"I am long and thin.",
+"I live in connective tissue.",
+"I come to heal wounds.",
+"I make collagen."
+],
+"fact": "The main cell of connective tissue."
+},
+{
+"id": "273",
+"cat": "Histology",
+"answer": "Brown adipose tissue",
+"type": "Tissue",
+"aliases": [
+"brown fat"
+],
+"clues": [
+"I am a tissue.",
+"I am full of many small lipid drops.",
+"I have many mitochondria with iron that gives me my colour.",
+"I use thermogenin, UCP1.",
+"I make heat in newborns."
+],
+"fact": "Generates heat by uncoupling oxidative phosphorylation."
+},
+{
+"id": "274",
+"cat": "Histology",
+"answer": "Intercalated disc",
+"type": "Structure",
+"aliases": [],
+"clues": [
+"I am a structure between cells.",
+"I am only in heart muscle.",
+"I have gap junctions and desmosomes.",
+"I look like a dark step line under the microscope.",
+"I let the heart cells beat as one."
+],
+"fact": "Joins cardiac muscle cells electrically and mechanically."
+},
+{
+"id": "275",
+"cat": "Histology",
+"answer": "Osteon",
+"type": "Structure",
+"aliases": [
+"Haversian system"
+],
+"clues": [
+"I am a structure in bone.",
+"I am a cylinder.",
+"I have rings of bone around a central canal.",
+"My canal carries blood vessels and nerves.",
+"I am the basic unit of compact bone."
+],
+"fact": "The structural unit of compact bone."
+},
+{
+"id": "276",
+"cat": "Histology",
+"answer": "Hassall's corpuscle",
+"type": "Structure",
+"aliases": [
+"thymic corpuscle"
+],
+"clues": [
+"I am a structure.",
+"I am made of layered, flattened cells.",
+"I look like an onion.",
+"I live in the medulla of an organ in the chest.",
+"I am the hallmark of the thymus."
+],
+"fact": "Concentric whorls of epithelial cells in the thymic medulla."
+},
+{
+"id": "277",
+"cat": "Histology",
+"answer": "Peyer's patches",
+"type": "Lymphoid tissue",
+"aliases": [],
+"clues": [
+"I am a group of lymph nodules.",
+"I live in the small intestine.",
+"I am most numerous in the ileum.",
+"I have M cells that sample the gut.",
+"I make IgA."
+],
+"fact": "Gut-associated lymphoid tissue of the ileum; Salmonella Typhi enters here."
+},
+{
+"id": "278",
+"cat": "Histology",
+"answer": "Brunner's glands",
+"type": "Glands",
+"aliases": [
+"duodenal glands"
+],
+"clues": [
+"I am a group of glands.",
+"I live in the submucosa.",
+"I am found only in the duodenum.",
+"I make alkaline mucus.",
+"I protect the duodenum from acid."
+],
+"fact": "Submucosal glands unique to the duodenum."
+},
+{
+"id": "279",
+"cat": "Histology",
+"answer": "Transitional epithelium",
+"type": "Epithelium",
+"aliases": [
+"urothelium"
+],
+"clues": [
+"I am a lining.",
+"I can stretch.",
+"My top cells are dome-shaped umbrella cells.",
+"I line the ureters and the bladder.",
+"I am found only in the urinary tract."
+],
+"fact": "Stretches as the bladder fills; most bladder cancers start here."
+},
+{
+"id": "280",
+"cat": "Histology",
+"answer": "Hyaline cartilage",
+"type": "Tissue",
+"aliases": [],
+"clues": [
+"I am a tissue.",
+"I have no blood vessels.",
+"I am glassy and smooth.",
+"I cover the ends of bones at joints.",
+"I make the rings of the trachea."
+],
+"fact": "The most common cartilage; forms the fetal skeleton."
+},
+{
+"id": "281",
+"cat": "Embryology",
+"answer": "Notochord",
+"type": "Embryonic structure",
+"aliases": [],
+"clues": [
+"I am a structure in the early embryo.",
+"I am a rod.",
+"I am made from mesoderm.",
+"I tell the ectoderm above me to make the neural plate.",
+"My remains are in the nucleus pulposus of discs."
+],
+"fact": "It induces the neural tube and leaves the nucleus pulposus behind."
+},
+{
+"id": "282",
+"cat": "Embryology",
+"answer": "Neural tube",
+"type": "Embryonic structure",
+"aliases": [],
+"clues": [
+"I am a structure in the early embryo.",
+"I come from ectoderm.",
+"I close in the fourth week.",
+"Folic acid helps me close.",
+"I become the brain and spinal cord."
+],
+"fact": "Failure to close causes spina bifida or anencephaly."
+},
+{
+"id": "283",
+"cat": "Embryology",
+"answer": "Neural crest",
+"type": "Cell group",
+"aliases": [],
+"clues": [
+"I am a group of cells.",
+"I come from the edges of the folds that roll up to make the spinal cord's tube.",
+"I travel all over the body.",
+"I make melanocytes, adrenal medulla cells and the bones of the face.",
+"My faults cause Hirschsprung disease."
+],
+"fact": "Gives rise to melanocytes, the adrenal medulla and gut nerves."
+},
+{
+"id": "284",
+"cat": "Embryology",
+"answer": "Primitive streak",
+"type": "Embryonic structure",
+"aliases": [],
+"clues": [
+"I am a structure in the early embryo.",
+"I appear in the third week.",
+"I form at the tail end of the epiblast.",
+"Cells pass through me to make the three germ layers.",
+"I start gastrulation."
+],
+"fact": "Gastrulation begins here; leftovers can form sacrococcygeal teratoma."
+},
+{
+"id": "285",
+"cat": "Embryology",
+"answer": "Somite",
+"type": "Embryonic structure",
+"aliases": [],
+"clues": [
+"I am a block in the early embryo.",
+"I come in pairs.",
+"I form along the neural tube from paraxial mesoderm.",
+"I split into sclerotome, myotome and dermatome.",
+"I give rise to the vertebrae, back muscles and dermis."
+],
+"fact": "Paired mesoderm blocks that form vertebrae and skeletal muscle."
+},
+{
+"id": "286",
+"cat": "Embryology",
+"answer": "Syncytiotrophoblast",
+"type": "Embryonic tissue",
+"aliases": [],
+"clues": [
+"I am a tissue.",
+"I have many nuclei but no cell walls between them.",
+"I invade the wall of the uterus.",
+"I make hCG.",
+"I am the outer layer of the placenta that talks to the mother's blood."
+],
+"fact": "Makes hCG, the hormone detected in pregnancy tests."
+},
+{
+"id": "287",
+"cat": "Embryology",
+"answer": "Inner cell mass",
+"type": "Embryonic structure",
+"aliases": [
+"embryoblast"
+],
+"clues": [
+"I am a group of cells.",
+"I am in the blastocyst.",
+"I sit at one side of the cavity.",
+"My cells are pluripotent stem cells.",
+"I become the embryo itself."
+],
+"fact": "Gives rise to the embryo; source of embryonic stem cells."
+},
+{
+"id": "288",
+"cat": "Embryology",
+"answer": "Yolk sac",
+"type": "Embryonic structure",
+"aliases": [],
+"clues": [
+"I am a sac.",
+"I am found in the early embryo.",
+"I make the first blood cells.",
+"The primordial germ cells start in my wall.",
+"Part of me becomes the gut, and I shrink later."
+],
+"fact": "The first site of blood formation."
+},
+{
+"id": "289",
+"cat": "Embryology",
+"answer": "Allantois",
+"type": "Embryonic structure",
+"aliases": [],
+"clues": [
+"I am a small pouch.",
+"I grow from the yolk sac into the stalk.",
+"My vessels become the umbilical vessels.",
+"Part of me becomes the urachus.",
+"I join the bladder to the umbilicus."
+],
+"fact": "Becomes the urachus, which closes to the median umbilical ligament."
+},
+{
+"id": "290",
+"cat": "Embryology",
+"answer": "Amnion",
+"type": "Embryonic membrane",
+"aliases": [],
+"clues": [
+"I am a membrane.",
+"I surround the embryo.",
+"I am filled with fluid.",
+"I protect the fetus from knocks.",
+"I break when the waters break."
+],
+"fact": "Forms the amniotic sac."
+},
+{
+"id": "291",
+"cat": "Embryology",
+"answer": "Chorion",
+"type": "Embryonic membrane",
+"aliases": [],
+"clues": [
+"I am a membrane.",
+"I am the outer membrane around the embryo.",
+"I have villi.",
+"My smooth part fades away.",
+"My villous part helps form the placenta."
+],
+"fact": "The fetal part of the placenta."
+},
+{
+"id": "292",
+"cat": "Embryology",
+"answer": "Foramen ovale",
+"type": "Embryonic opening",
+"aliases": [],
+"clues": [
+"I am an opening in the heart.",
+"I am between the atria.",
+"I let blood skip the lungs before birth.",
+"I usually close after the first breath.",
+"If I stay open, a clot can cross to the brain."
+],
+"fact": "A patent foramen ovale can let clots pass (paradoxical embolism)."
+},
+{
+"id": "293",
+"cat": "Embryology",
+"answer": "Ductus arteriosus",
+"type": "Fetal vessel",
+"aliases": [],
+"clues": [
+"I am a blood vessel.",
+"I join the pulmonary artery to the aorta.",
+"I let blood skip the lungs before birth.",
+"Prostaglandin E keeps me open.",
+"I close after birth, and indomethacin helps close me."
+],
+"fact": "Becomes the ligamentum arteriosum; a patent one makes a machinery murmur."
+},
+{
+"id": "294",
+"cat": "Embryology",
+"answer": "Ductus venosus",
+"type": "Fetal vessel",
+"aliases": [],
+"clues": [
+"I am a blood vessel.",
+"I am in the fetal liver.",
+"I carry oxygen-rich blood past the liver.",
+"I close after birth.",
+"I become the ligamentum venosum."
+],
+"fact": "Shunts placental blood past the liver to the inferior vena cava."
+},
+{
+"id": "295",
+"cat": "Embryology",
+"answer": "Umbilical vein",
+"type": "Fetal vessel",
+"aliases": [],
+"clues": [
+"I am a blood vessel.",
+"I run in the cord between mother and baby.",
+"I am alone; my two partners are arteries.",
+"I carry the most oxygen-rich blood in the fetus.",
+"I become the round ligament of the liver."
+],
+"fact": "Carries oxygenated blood from the placenta; becomes the ligamentum teres."
+},
+{
+"id": "296",
+"cat": "Embryology",
+"answer": "Bulbus cordis",
+"type": "Embryonic structure",
+"aliases": [],
+"clues": [
+"I am part of the early heart tube.",
+"I sit between the primitive ventricle and the truncus arteriosus.",
+"Before the heart folds, I am one of its five swellings.",
+"I make the smooth outflow parts of both ventricles.",
+"I become the conus arteriosus of the right ventricle and the aortic vestibule of the left."
+],
+"fact": "Becomes the conus arteriosus and aortic vestibule."
+},
+{
+"id": "297",
+"cat": "Embryology",
+"answer": "Truncus arteriosus",
+"type": "Embryonic structure",
+"aliases": [],
+"clues": [
+"I am part of the early heart.",
+"I am the outflow tract.",
+"A spiral septum divides me.",
+"If I don't divide, one big vessel leaves both ventricles.",
+"I become the aorta and the pulmonary trunk."
+],
+"fact": "Splits into the aorta and pulmonary trunk; persistence is a cyanotic heart defect."
+},
+{
+"id": "298",
+"cat": "Embryology",
+"answer": "Sinus venosus",
+"type": "Embryonic structure",
+"aliases": [],
+"clues": [
+"I am part of the early heart.",
+"I receive blood from veins.",
+"My right horn joins the right atrium.",
+"I form the smooth part of the right atrium.",
+"My left horn becomes the coronary sinus."
+],
+"fact": "Becomes the smooth right atrium and the coronary sinus."
+},
+{
+"id": "299",
+"cat": "Embryology",
+"answer": "Third pharyngeal pouch",
+"type": "Embryonic structure",
+"aliases": [],
+"clues": [
+"I am a pouch in the neck.",
+"I am lined by endoderm.",
+"I make two organs.",
+"I make the inferior parathyroids.",
+"I make the thymus."
+],
+"fact": "Forms the thymus and inferior parathyroid glands."
+},
+{
+"id": "300",
+"cat": "Embryology",
+"answer": "First pharyngeal arch",
+"type": "Embryonic structure",
+"aliases": [
+"mandibular arch"
+],
+"clues": [
+"I am an arch in the neck.",
+"I have the trigeminal nerve.",
+"I make the muscles of chewing.",
+"I make the malleus and incus.",
+"I make the jaw."
+],
+"fact": "Gives rise to the jaw, malleus and incus."
+},
+{
+"id": "301",
+"cat": "Embryology",
+"answer": "Second pharyngeal arch",
+"type": "Embryonic structure",
+"aliases": [
+"hyoid arch"
+],
+"clues": [
+"I am an arch in the neck.",
+"I have the facial nerve.",
+"I make the stapes.",
+"I make the muscles of facial expression.",
+"I make part of the hyoid."
+],
+"fact": "Gives rise to the stapes and muscles of facial expression."
+},
+{
+"id": "302",
+"cat": "Embryology",
+"answer": "Thyroglossal duct",
+"type": "Embryonic structure",
+"aliases": [],
+"clues": [
+"I am a duct.",
+"I start at the foramen caecum of the tongue.",
+"I go down the neck.",
+"I usually disappear.",
+"If I leave a cyst, it moves up when you stick out your tongue."
+],
+"fact": "A remnant forms a midline neck cyst that moves with tongue protrusion."
+},
+{
+"id": "303",
+"cat": "Embryology",
+"answer": "Rathke's pouch",
+"type": "Embryonic structure",
+"aliases": [],
+"clues": [
+"I am a pouch.",
+"I grow up from the roof of the mouth.",
+"I meet a downgrowth of the brain.",
+"I make the anterior pituitary.",
+"My remains can form a craniopharyngioma."
+],
+"fact": "Becomes the anterior pituitary; leftovers can form craniopharyngioma."
+},
+{
+"id": "304",
+"cat": "Embryology",
+"answer": "Mesonephric duct",
+"type": "Embryonic structure",
+"aliases": [
+"Wolffian duct"
+],
+"clues": [
+"I am a duct.",
+"I run beside the early kidney.",
+"Testosterone keeps me alive.",
+"I become the epididymis, vas deferens and seminal vesicles.",
+"I make the male internal genital ducts."
+],
+"fact": "Forms male ducts under the influence of testosterone."
+},
+{
+"id": "305",
+"cat": "Embryology",
+"answer": "Paramesonephric duct",
+"type": "Embryonic structure",
+"aliases": [
+"Mullerian duct"
+],
+"clues": [
+"I am a duct.",
+"I run beside another duct.",
+"Anti-Müllerian hormone makes me disappear in males.",
+"I make the fallopian tubes and uterus.",
+"I make the female internal genital tract."
+],
+"fact": "Forms the uterus, tubes and upper vagina."
+},
+{
+"id": "306",
+"cat": "Embryology",
+"answer": "Ureteric bud",
+"type": "Embryonic structure",
+"aliases": [],
+"clues": [
+"I am a bud.",
+"I grow from the mesonephric duct.",
+"I grow into the metanephric tissue.",
+"I make the ureter, pelvis and collecting ducts.",
+"I make the drainage part of the kidney."
+],
+"fact": "Forms the collecting system of the kidney."
+},
+{
+"id": "307",
+"cat": "Embryology",
+"answer": "Metanephric mesoderm",
+"type": "Embryonic tissue",
+"aliases": [
+"metanephric blastema"
+],
+"clues": [
+"I am a tissue.",
+"I am in the early kidney.",
+"The ureteric bud talks to me.",
+"I make the nephrons.",
+"I make the filtering part of the kidney."
+],
+"fact": "Forms the nephrons, from glomerulus to distal tubule."
+},
+{
+"id": "308",
+"cat": "Embryology",
+"answer": "Urachus",
+"type": "Embryonic structure",
+"aliases": [],
+"clues": [
+"I am a structure.",
+"I join the bladder to the umbilicus.",
+"I am a remains of the allantois.",
+"I usually close.",
+"If I stay open, urine leaks from the umbilicus."
+],
+"fact": "A patent one leaks urine from the umbilicus."
+},
+{
+"id": "309",
+"cat": "Embryology",
+"answer": "Vitelline duct",
+"type": "Embryonic structure",
+"aliases": [
+"omphalomesenteric duct"
+],
+"clues": [
+"I am a duct.",
+"I join the gut to the yolk sac.",
+"I usually close.",
+"If I stay partly open, I leave a pouch in the ileum.",
+"I can leave a Meckel diverticulum."
+],
+"fact": "Its remnant is Meckel's diverticulum."
+},
+{
+"id": "310",
+"cat": "Embryology",
+"answer": "Midgut",
+"type": "Embryonic structure",
+"aliases": [],
+"clues": [
+"I am part of the early gut.",
+"I am supplied by the superior mesenteric artery.",
+"I turn 270 degrees around this artery.",
+"I herniate into the umbilical cord.",
+"If I turn wrongly, I can twist."
+],
+"fact": "Malrotation can lead to volvulus."
+},
+{
+"id": "311",
+"cat": "Embryology",
+"answer": "Septum transversum",
+"type": "Embryonic structure",
+"aliases": [],
+"clues": [
+"I am a plate of mesoderm.",
+"I am in the early embryo.",
+"I sit between the heart and the yolk stalk.",
+"I help make the liver.",
+"I make the central tendon of the diaphragm."
+],
+"fact": "Forms the central tendon of the diaphragm."
+},
+{
+"id": "312",
+"cat": "Embryology",
+"answer": "Processus vaginalis",
+"type": "Embryonic structure",
+"aliases": [],
+"clues": [
+"I am a pouch.",
+"I go down to the scrotum.",
+"I go with the testis.",
+"I usually close.",
+"If I stay open, an indirect hernia or hydrocele can form."
+],
+"fact": "A patent one leads to indirect inguinal hernia or hydrocele."
+},
+{
+"id": "313",
+"cat": "Embryology",
+"answer": "Gubernaculum",
+"type": "Embryonic structure",
+"aliases": [],
+"clues": [
+"I am a band.",
+"I join the testis to the scrotum.",
+"I guide the testis down.",
+"In adult males my remnant is the scrotal ligament.",
+"In females I become the round ligament."
+],
+"fact": "Guides the descent of the testis."
+},
+{
+"id": "314",
+"cat": "Embryology",
+"answer": "Genital tubercle",
+"type": "Embryonic structure",
+"aliases": [],
+"clues": [
+"I am a structure.",
+"I am in the early embryo.",
+"DHT makes me grow.",
+"I become the penis in males.",
+"I become the clitoris in females."
+],
+"fact": "Becomes the glans penis or clitoris."
+},
+{
+"id": "315",
+"cat": "Embryology",
+"answer": "Urogenital sinus",
+"type": "Embryonic structure",
+"aliases": [],
+"clues": [
+"I am a structure.",
+"I am part of the cloaca.",
+"I make the bladder.",
+"I make the urethra.",
+"I make the prostate in males."
+],
+"fact": "Forms the bladder, urethra and prostate."
+},
+{
+"id": "316",
+"cat": "Embryology",
+"answer": "Cloaca",
+"type": "Embryonic structure",
+"aliases": [],
+"clues": [
+"I am a structure.",
+"I am at the end of the hindgut.",
+"I am divided by the urorectal septum.",
+"I become the rectum and the urogenital sinus.",
+"I am the common end of the gut and urinary tract."
+],
+"fact": "Divided by the urorectal septum into rectum and urogenital sinus."
+},
+{
+"id": "317",
+"cat": "Embryology",
+"answer": "Morula",
+"type": "Embryonic structure",
+"aliases": [],
+"clues": [
+"I am a ball of cells.",
+"I have 16 cells.",
+"I form about three days after fertilization.",
+"I look like a mulberry.",
+"I become the blastocyst."
+],
+"fact": "A solid ball of 16 cells that becomes the blastocyst."
+},
+{
+"id": "318",
+"cat": "Embryology",
+"answer": "Blastocyst",
+"type": "Embryonic structure",
+"aliases": [],
+"clues": [
+"I am a ball of cells.",
+"I have a fluid-filled cavity.",
+"I form about five days after fertilization.",
+"I have an inner cell mass and a trophoblast.",
+"I implant in the uterus."
+],
+"fact": "Implants in the uterus at about day 6 to 7."
+},
+{
+"id": "319",
+"cat": "Embryology",
+"answer": "Zygote",
+"type": "Embryonic structure",
+"aliases": [],
+"clues": [
+"I am a cell.",
+"I am the first cell of a new life.",
+"I have two sets of chromosomes.",
+"I form when a sperm and an egg join.",
+"I divide to make the embryo."
+],
+"fact": "Forms at fertilization."
+},
+{
+"id": "320",
+"cat": "Embryology",
+"answer": "Placenta",
+"type": "Organ",
+"aliases": [],
+"clues": [
+"I am an organ.",
+"I am made by both mother and fetus.",
+"I make hormones.",
+"I let oxygen and nutrients pass from the mother.",
+"I am delivered after the baby, as the afterbirth."
+],
+"fact": "Exchanges gases and nutrients between mother and fetus."
+}
+]

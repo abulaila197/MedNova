@@ -18,6 +18,7 @@ export type GameKey =
   | 'four-of-a-kind'
   | 'spot-the-flaw'
   | 'trace-the-treatment'
+  | 'who-am-i'
   | 'code-clinic'
   | 'nova-password';
 

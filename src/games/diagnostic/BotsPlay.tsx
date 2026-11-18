@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { orderPoints, YOU, type Rules } from '@/bots/race/engine';
@@ -16,65 +16,53 @@ import { PauseMenu } from '../shell/PauseMenu';
 import type { PlayProps } from '../shell/types';
 import { GameScreen, Kick } from '../shell/ui';
 import { CaseBoard } from './CaseBoard';
-import { DP, type Attempt, type Difficulty } from './core';
-import { tickedFields } from '../shell/fields';
-import { CASES, caseById, guessById, guessName, poolFor } from './data';
+import type { Attempt } from './core';
+import { useKit, type ClueKit } from './kit';
 import { gameDef } from '../shell/registry';
 import { tr } from '@/i18n';
 
-const CASE_MS = 60_000;
-const CLUE_MS = 10_000;
-const LOCK_MS = 5_000;
-const REVEAL_MS = 6_000;
-/** Fewer clues (up to 50): 50 on clue 1 down to 0 on clue 6. Time left adds up to 20. */
-const CLUE_BONUS = [50, 40, 30, 20, 10, 0];
-const clueAt = (ms: number) => Math.min(DP.clueCount, Math.floor(ms / CLUE_MS) + 1);
+/** The clue showing at `ms` into a case: one more every clueMs. */
+const clueAtOf = (k: ClueKit) => (ms: number) => Math.min(k.rules.clueCount, Math.floor(ms / k.race.clueMs) + 1);
 
-/** Tempting wrong diagnoses for a case: diseases from the same field, in a fixed order per rival. */
-function nearMisses(item: number, seed: string, n: number) {
-  const c = caseById.get(String(item));
-  if (!c || !n) return [];
-  // Closest first: the most fields in common, the main field counting double; then the nearest dozen.
-  const near = (x: (typeof CASES)[number]) => x.fields.filter((f) => c.fields.includes(f)).length + (x.fields[0] === c.fields[0] ? 1 : 0);
-  const ranked = CASES.filter((x) => x.answer_id !== c.answer_id && guessById.has(x.answer_id) && near(x) > 0).sort((a, b) => near(b) - near(a));
-  const pool = [...new Set(ranked.map((x) => x.answer_id))].slice(0, 12);
-  const r = rng(seed);
-  const out: string[] = [];
-  while (out.length < n && pool.length) out.push(pool.splice(Math.floor(r() * pool.length), 1)[0]);
-  return out;
+/** A kit's race rules. Points: solving order + fewer clues (up to 50) + time left (up to 20). */
+function raceRules(k: ClueKit): Rules {
+  const { itemMs, clueMs, lockMs, revealMs, clueBonus } = k.race;
+  const clueAt = clueAtOf(k);
+  return {
+    limitMs: itemMs,
+    revealMs,
+    lockMs,
+    maxPoints: 170,
+    plan: (bot, x) => {
+      const p = cluePlan(x.mind, { seed: x.seed, gap: x.gap, progress: x.progress, limitMs: itemMs, clueMs, lockMs, clues: k.rules.clueCount });
+      const c = k.byId.get(String(x.item));
+      const r = rng(`${x.seed}:${bot.id}:dx`);
+      return { ...p, wrongs: c ? k.nearMisses(c, (n) => Math.floor(r() * n), p.wrongAt.length) : [] };
+    },
+    points: ({ rank, solved, doneAt }) => (solved && rank && doneAt != null ? orderPoints(rank) + clueBonus[clueAt(doneAt) - 1] + Math.round((20 * (itemMs - doneAt)) / itemMs) : 0),
+    answerOf: (item) => k.byId.get(String(item))?.answer_id ?? null,
+  };
 }
 
-const RULES: Rules = {
-  limitMs: CASE_MS,
-  revealMs: REVEAL_MS,
-  lockMs: LOCK_MS,
-  maxPoints: 170,
-  plan: (bot, x) => {
-    const p = cluePlan(x.mind, { seed: x.seed, gap: x.gap, progress: x.progress, limitMs: CASE_MS, clueMs: CLUE_MS, lockMs: LOCK_MS, clues: DP.clueCount });
-    return { ...p, wrongs: nearMisses(x.item, `${x.seed}:${bot.id}:dx`, p.wrongAt.length) };
-  },
-  points: ({ rank, solved, doneAt }) => (solved && rank && doneAt != null ? orderPoints(rank) + CLUE_BONUS[clueAt(doneAt) - 1] + Math.round((20 * (CASE_MS - doneAt)) / CASE_MS) : 0),
-  answerOf: (item) => caseById.get(String(item))?.answer_id ?? null,
-};
-
-function itemsOf(st: RaceState) {
+function itemsOf(k: ClueKit, st: RaceState) {
+  const clueAt = clueAtOf(k);
   return (st.my_items ?? [])
-    .filter((m) => caseById.has(String(m.item)))
+    .filter((m) => k.byId.has(String(m.item)))
     .map((m) => {
-      const c = caseById.get(String(m.item))!;
+      const c = k.byId.get(String(m.item))!;
       const right = m.solved_ms != null;
       return {
         seat: 0,
         itemId: String(m.item),
         answerKey: c.canonical_id ?? null,
         outcome: right ? ('right' as const) : ('timed_out' as const),
-        answersGiven: m.wrong.map((id) => guessName(id)),
-        timeMs: m.solved_ms ?? CASE_MS,
+        answersGiven: m.wrong.map((id) => k.guessName(id)),
+        timeMs: m.solved_ms ?? k.race.itemMs,
         hintsUsed: 0,
         revealsUsed: 0,
         points: m.points,
         feedsLearn: !right, // your unsolved cases go to Learn
-        gameData: { cluesShown: right ? clueAt(m.solved_ms!) : DP.clueCount, caseRank: m.rank, difficulty: c.difficulty },
+        gameData: { cluesShown: right ? clueAt(m.solved_ms!) : k.rules.clueCount, caseRank: m.rank, ...k.gameData(c) },
       };
     });
 }
@@ -84,15 +72,19 @@ function itemsOf(st: RaceState) {
  * as you like; a wrong guess locks you for 5 s. Rivals guess too, wrong ones in sight, and solve on their type's clue.
  */
 export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
+  const kit = useKit();
+  const rules = useMemo(() => raceRules(kit), [kit]);
+  const clueAt = clueAtOf(kit);
+  const { words } = kit;
   const g = useBotRace({
     play,
     onFinish,
     onQuit,
-    rules: RULES,
-    pick: async () => (await engine.picker.pick(play.game, poolFor(play.settings.difficulty as Difficulty, tickedFields(play.settings)), Number(play.settings.cases) || 5)).map(Number),
-    toItems: itemsOf,
+    rules,
+    pick: async () => (await engine.picker.pick(play.game, kit.pool(play.settings), Number(play.settings.cases) || 5)).map(Number),
+    toItems: (st) => itemsOf(kit, st),
     // The short name only, so the bubble stays small.
-    guessName: (id) => guessById.get(id)?.label ?? guessName(id),
+    guessName: (id) => kit.guessById.get(id)?.label ?? kit.guessName(id),
   });
   const [wrongSeq, setWrongSeq] = useState(0);
   const [notice, setNotice] = useState<string | null>(null);
@@ -122,11 +114,12 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
     );
   }
 
-  const c = caseById.get(String(st.item))!;
+  const c = kit.byId.get(String(st.item))!;
+  const N = kit.rules.clueCount;
   const elapsed = Math.max(0, t - st.phase_started_at);
   const reveal = st.phase === 'reveal';
   const solved = st.me?.solved_ms != null;
-  const clues = reveal ? DP.clueCount : solved ? clueAt(st.me!.solved_ms!) : Math.min(DP.clueCount, Math.floor(elapsed / CLUE_MS) + 1);
+  const clues = reveal ? N : solved ? clueAt(st.me!.solved_ms!) : clueAt(elapsed);
   const attempt: Attempt = { cluesShown: clues, wrong: st.me?.wrong ?? [], reveals: 0, status: solved ? 'solved' : 'active' };
   const left = reveal ? 0 : Math.max(0, st.phase_ends_at - t);
   const lockLeft = st.me?.locked_until ? st.me.locked_until - t : 0;
@@ -140,11 +133,11 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
         outcome: 'right' as const,
         points: reveal ? (st.me!.points ?? 0) : 0,
         line: reveal ? tr('{nth} to solve · {points} points with {clueAt} {n}', { nth: nth(st.me!.rank ?? 1), points: st.me!.points, clueAt: clueAt(st.me!.solved_ms!), n: clueAt(st.me!.solved_ms!) === 1 ? tr('clue') : tr('clues') }) : tr('Solved, {nth}. Waiting for the rest…', { nth: nth(me?.item_rank ?? 1) }),
-        nextLabel: reveal ? tr('{n} in {nextIn} s', { n: last ? tr('Results') : tr('Next case'), nextIn }) : waiting ? '' : tr('Everyone is done'),
+        nextLabel: reveal ? tr('{n} in {nextIn} s', { n: last ? tr('Results') : tr(words.next), nextIn }) : waiting ? '' : tr('Everyone is done'),
         wait: !reveal && waiting ? <AnsweredRow seats={st.players.map((p) => ({ user_id: p.user_id, character: p.character, done: p.done }))} /> : undefined,
       }
     : reveal
-      ? { outcome: 'timed_out' as const, points: 0, line: tr('Not solved. No points this case. It goes to your Learn review.'), nextLabel: tr('{n} in {nextIn} s', { n: last ? tr('Results') : tr('Next case'), nextIn }) }
+      ? { outcome: 'timed_out' as const, points: 0, line: tr(words.missLearn), nextLabel: tr('{n} in {nextIn} s', { n: last ? tr('Results') : tr(words.next), nextIn }) }
       : null;
 
   return (
@@ -153,17 +146,17 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
       c={reveal || solved ? { ...c, answer_id: st.answer ?? c.answer_id } : c}
       attempt={attempt}
       phase={g.paused ? 'paused' : !solved && !reveal ? 'playing' : 'over'}
-      title={tr('Case {n}', { n: st.index + 1 })}
+      title={tr(words.item, { n: st.index + 1 })}
       sub={tr('of {total}', { total: st.total })}
-      slim={tr('Case {n} of {total}', { n: st.index + 1, total: st.total })}
+      slim={tr(words.itemOf, { n: st.index + 1, n2: st.total })}
       clock={{ label: tr('Time left'), down: true, ms: left, warn: !reveal && left <= 15_000 }}
       wrongSeq={wrongSeq}
       clueSeq={clues}
       actions="hint"
-      hint={{ granted: hinted === st.index, onHint: () => (hinted === st.index || solved || reveal ? undefined : void g.buy(DP.hintTokenCost, 'diagnostic_hint', () => setHinted(st.index))) }}
+      hint={{ granted: hinted === st.index, onHint: () => (hinted === st.index || solved || reveal ? undefined : void g.buy(kit.rules.hintTokenCost, kit.hint.reason, () => setHinted(st.index))) }}
       result={result}
       notice={notice ?? (lockLeft > 0 ? tr('Wrong. Locked for {n} s.', { n: Math.ceil(lockLeft / 1000) }) : null)}
-      pausedNote={tr('The match is paused, rivals too. Resume to see the case again.')}
+      pausedNote={tr(words.pausedBots)}
       worth={{ label: tr('Your points'), value: String(me?.score ?? 0) }}
       onPause={g.openMenu}
       onGuess={(guess) => {

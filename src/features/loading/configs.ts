@@ -21,8 +21,8 @@ export type LoadCfg = {
   tip: { f: string; s: number; c: string; bg: string; b: string };
   bar: { t: BarType; c?: string; track?: string; glow?: string; flag?: string };
   tag: { t: string; side: 'left' | 'right'; c: string; bg: string; b: string };
-  /** 'still': drawn once, no motion. */
-  glows: { x: number; y: number; r: number; c: string; a: 'pulse' | 'flicker' | 'still' }[];
+  /** 'still': drawn once, no motion. `d`: ms before a pulse starts, so glows can take turns (Who am I?'s five stars). */
+  glows: { x: number; y: number; r: number; c: string; a: 'pulse' | 'flicker' | 'still'; d?: number }[];
   parts: PartType[];
   chase?: { y: number; xs: number[] };
   sweep?: boolean;
@@ -248,6 +248,31 @@ export const LOAD: Record<string, LoadCfg> = {
     parts: [],
     tips: ['A treatment is not only a drug: think of operations, devices, diets and first aid too.', 'Timing is a clue: what was started, stopped or added just before?', 'Hard cases score 4 points, easy ones 2.'],
     fonts: ['Bangers_400Regular', 'BarlowCondensed_500Medium'],
+  },
+  // Who am I? (Yazan 2026-11-18): Zenith in a stone observatory at night, five bright stars through the dome slit, a
+  // brass lamp on the star chart. Midnight, starlight white and gold; the five stars twinkle one by one (the five clues).
+  'who-am-i': {
+    key: 'who-am-i', photo: require('@/assets/loading/who-am-i.webp'), fo: '50% 45%',
+    veil: { c: ['rgba(4,7,12,0.7)', 'rgba(0,0,0,0)'], at: [0, 0.34] },
+    txt: { top: 40, align: 'center' }, artY: 110, bg: '#04070b',
+    orig: { f: 'Cinzel_500Medium', c: '#c9b98f' },
+    title: { f: 'Cinzel_700Bold', s: 36, c: '#eef1fb', em: '#f5c96b', ls: 0.02, sh: 'rgba(245,201,107,0.4)' },
+    sub: { f: 'CormorantGaramond_400Regular_Italic', s: 17, c: '#cfd6f2' },
+    tip: { f: 'CormorantGaramond_400Regular_Italic', s: 15.5, c: '#eef1fb', bg: 'rgba(6,9,18,0.66)', b: 'rgba(245,201,107,0.3)' },
+    bar: { t: 'line', c: '#f5c96b', track: 'rgba(245,201,107,0.16)', glow: '0 0 10px #f5c96b, 0 0 22px rgba(245,201,107,0.5)' },
+    tag: { t: ALL, side: 'left', c: '#eef1fb', bg: 'rgba(0,0,0,0.45)', b: 'rgba(245,201,107,0.35)' },
+    glows: [
+      { x: 0.633, y: 0.234, r: 9, c: 'rgba(255,246,220,0.75)', a: 'pulse' },
+      { x: 0.531, y: 0.259, r: 9, c: 'rgba(255,246,220,0.75)', a: 'pulse', d: 520 },
+      { x: 0.699, y: 0.298, r: 9, c: 'rgba(255,246,220,0.75)', a: 'pulse', d: 1040 },
+      { x: 0.777, y: 0.317, r: 9, c: 'rgba(255,246,220,0.75)', a: 'pulse', d: 1560 },
+      { x: 0.639, y: 0.361, r: 9, c: 'rgba(255,246,220,0.75)', a: 'pulse', d: 2080 },
+      { x: 0.414, y: 0.43, r: 18, c: 'rgba(225,240,255,0.45)', a: 'pulse' },
+      { x: 0.898, y: 0.59, r: 44, c: 'rgba(255,200,110,0.35)', a: 'flicker' },
+    ],
+    parts: ['motes'],
+    tips: ['A wrong guess is not wasted: it shows you the next clue.', 'The hint shows the first letter and the length. Use it when you are close.', 'Clue 1 is the vaguest. Answer on it for the most points.'],
+    fonts: ['Cinzel_500Medium', 'Cinzel_700Bold', 'CormorantGaramond_400Regular_Italic'],
   },
   'the-streak-master': {
     key: 'the-streak-master', photo: require('@/assets/loading/the-streak-master.webp'), fo: '45% 62%',

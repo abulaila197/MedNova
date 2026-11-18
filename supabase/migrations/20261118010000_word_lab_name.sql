@@ -13,6 +13,7 @@ create or replace function public.challenge_game_name(slug text) returns text la
     when 'the-wheels-of-chaos' then 'The Wheels of Chaos'
     when 'imposter' then 'The Imposter'
     when 'tilt-and-tell' then 'Tilt & Tell'
+    when 'who-am-i' then 'Who am I?'
     else initcap(replace(coalesce(slug, 'a game'), '-', ' ')) end;
 $$;
 create or replace function public.challenge_game_name_ar(slug text) returns text language sql immutable set search_path to '' as $$
@@ -31,12 +32,13 @@ create or replace function public.challenge_game_name_ar(slug text) returns text
     when 'four-of-a-kind' then 'رباعيات'
     when 'spot-the-flaw' then 'اكتشف الغلطة'
     when 'trace-the-treatment' then 'تتبّع العلاج'
+    when 'who-am-i' then 'مين أنا؟'
     else public.challenge_game_name(slug) end;
 $$;
 -- Old rows still say "Six Word Tries" in English.
 create or replace function public.game_en_to_ar(en text) returns text language sql immutable set search_path to '' as $$
   select case when en = 'Six Word Tries' then 'معمل الكلمات' else coalesce((select public.challenge_game_name_ar(s) from unnest(array['the-diagnostic-pursuit', 'the-silent-artist',
     'nova-crossword', 'the-quiz-parade', 'the-riddler', 'nova-medicordle', 'the-streak-master', 'case-files-unsolved',
-    'the-wheels-of-chaos', 'imposter', 'tilt-and-tell', 'four-of-a-kind', 'spot-the-flaw', 'trace-the-treatment']) s
+    'the-wheels-of-chaos', 'imposter', 'tilt-and-tell', 'four-of-a-kind', 'spot-the-flaw', 'trace-the-treatment', 'who-am-i']) s
     where public.challenge_game_name(s) = en limit 1), en) end;
 $$;

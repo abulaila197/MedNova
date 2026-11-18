@@ -23,6 +23,7 @@ const EN_GAME: Record<string, string> = {
   'Four Of A Kind': 'four-of-a-kind',
   'Spot The Flaw': 'spot-the-flaw',
   'Trace The Treatment': 'trace-the-treatment',
+  'Who am I?': 'who-am-i',
 };
 
 function game(en: string): string {
