@@ -12,7 +12,7 @@ import { StfRace, planCase, runAt } from '../rivals';
 import CASES_JSON from '../data/cases.json';
 
 const CASES = CASES_JSON as Case[];
-const FIELDS = ['cardiology', 'dermatology', 'ent', 'emergency', 'endocrine', 'gastro', 'genetics', 'heme', 'infectious', 'nephro', 'neuro', 'obgyn', 'ophtho', 'ortho', 'peds', 'psych', 'pulm', 'rheum', 'surgery', 'ethics', 'safety', 'flow'];
+const FIELDS = ['cardiology', 'dermatology', 'ent', 'emergency', 'endocrine', 'gastro', 'genetics', 'heme', 'infectious', 'nephro', 'neuro', 'obgyn', 'ophtho', 'ortho', 'peds', 'psych', 'pulm', 'rheum', 'surgery', 'ethics', 'safety', 'flow', 'anatomy', 'physiology', 'biochemistry', 'pathology', 'pharmacology', 'microbiology', 'histology', 'embryology'];
 
 test('the bank: every case has a story, 4 choices with fixes and reasons, and a highlight inside the story', () => {
   assert.ok(CASES.length >= 1);

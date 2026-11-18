@@ -58,7 +58,7 @@ const ORDER: GameKind[] = ['learn', 'both', 'play'];
 /**
  * What a game asks about (Yazan 2026-11-17, additions point 8): a second tag beside the one above. Mixed is given only
  * where the bank really holds both (counted 2026-11-17: basic science is 22% of Four of a Kind up to 62% of Crossword).
- * Spot the Flaw stays Clinical until its basic science bank is in.
+ * Spot the Flaw is Mixed since its basic science bank (8 fields, 320 cases) went in on 2026-11-18.
  */
 export type Knowledge = 'clinical' | 'basic' | 'mixed';
 const KNOW: Record<string, Knowledge> = {
@@ -66,7 +66,7 @@ const KNOW: Record<string, Knowledge> = {
   'trace-the-treatment': 'clinical',
   'case-files-unsolved': 'clinical',
   'the-riddler': 'clinical',
-  'spot-the-flaw': 'clinical',
+  'spot-the-flaw': 'mixed',
   'the-streak-master': 'mixed',
   'four-of-a-kind': 'mixed',
   'nova-medicordle': 'mixed',

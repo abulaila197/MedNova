@@ -36,7 +36,7 @@ export function FieldPicker({ menu, ticked, top, onChange, onClose }: { menu: Fi
           <Row label={tr('All')} count={menu.total(null)} on={allOn} bold onPress={() => onChange(toggleAll(menu, ticked))} />
           {menu.groups.map((g, gi) => (
             <View key={g.title ?? gi}>
-              {g.title ? <Text style={[s.group, { color: t.dim }]}>{g.title.toUpperCase()}</Text> : null}
+              {g.title ? <Text style={[s.group, { color: t.dim }]}>{tr(g.title).toUpperCase()}</Text> : null}
               {g.items.map((i) => (
                 <Row key={i.key} label={i.label} count={i.count} on={on(i.key)} onPress={() => onChange(toggleField(menu, ticked, i.key))} />
               ))}

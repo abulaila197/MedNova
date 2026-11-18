@@ -34,7 +34,7 @@ export const spotTheFlaw: GameDef = {
       title: tr('Case by case'),
       blurb: tr('Read the story, catch the mistake, then fix it.'),
       howTo: [
-        tr('Each case is a short hospital story with one real mistake. Many details look wrong; only one is.'),
+        tr('Each case is a short story from the hospital or the study desk, with one real mistake. Many details look wrong; only one is.'),
         tr('Stage 1: what went wrong? Lock in one of 4 choices. Stage 2: what should have happened? It comes even if stage 1 was wrong.'),
         POINTS,
         tr('Help, once each a case: 50/50 for {fiftyCost} tokens, or Highlight the part of the story for {highlightCost} tokens.', { fiftyCost: STF.fiftyCost, highlightCost: STF.highlightCost }),
