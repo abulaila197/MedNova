@@ -18,6 +18,8 @@ export type Message = {
   from?: { id: string; name: string; avatar: string | null } | null;
   /** G7: the friend challenge this message is about (sent, received or completed); the card opens the friend's profile. */
   challenge?: string | null;
+  /** 2026-11-18: 'welcome' (the new-account gift) or 'character:<slug>' (a character unlocked by the team): drawn as a special card. */
+  special?: string | null;
 };
 
 /** `savedAt`: the list is the saved copy from then, because the server can't be reached. */

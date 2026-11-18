@@ -107,8 +107,10 @@ function Card({ m }: { m: Message }) {
     if (!(await collect(m.id))) noticeFail(tr('Couldn’t collect. Check your connection and try again.'));
     setBusy(false);
   };
-  return (
-    <View style={[s.card, { backgroundColor: c.surf, borderColor: gift && !m.collected ? t.accent : c.line }]}>
+  const sp = specialOf(m);
+  const body = (
+    <>
+      {sp ? <Ribbon sp={sp} /> : null}
       {/* #30: who it's from: a friend's face and name, or the MedNova team. */}
       <View style={s.from}>
         {m.from ? <PlayerFace slug={m.from.avatar ?? 'yara'} size={u(18)} userId={m.from.id} still /> : <View style={[s.icon, { backgroundColor: '#0b0e24' }]}><PulseStar width={u(18)} height={u(18)} glow={0.3} /></View>}
@@ -161,11 +163,67 @@ function Card({ m }: { m: Message }) {
           <Text style={[s.goT, { color: c.fg }]}>{tr('Open {name}’s profile', { name: m.from.name })}</Text>
         </Pressable>
       ) : null}
+    </>
+  );
+  if (sp) return <SpecialCard sp={sp}>{body}</SpecialCard>;
+  return <View style={[s.card, { backgroundColor: c.surf, borderColor: gift && !m.collected ? t.accent : c.line }]}>{body}</View>;
+}
+
+/**
+ * Special cards (Yazan 2026-11-18): the welcome gift and a character unlocked by the team get their own colours and frame.
+ * Look A 'Glow frame' (Yazan's pick): gradient frame, soft wash, label pill, picture in the corner.
+ * Welcome = cyan to purple, new character = gold to rose.
+ */
+type Special = { kind: 'welcome' } | { kind: 'character'; slug: string };
+function specialOf(m: Message): Special | null {
+  if (m.special === 'welcome') return { kind: 'welcome' };
+  if (m.special?.startsWith('character:')) return { kind: 'character', slug: m.special.slice(10) };
+  return null;
+}
+const SPECIAL = {
+  welcome: { pair: ['#22d3ee', '#a78bfa'] as const, label: () => tr('WELCOME GIFT') },
+  character: { pair: ['#f5c96b', '#fb7185'] as const, label: () => tr('NEW CHARACTER') },
+};
+function Art({ sp, size }: { sp: Special; size: number }) {
+  if (sp.kind === 'character') return <PlayerFace slug={sp.slug} size={size} still />;
+  return (
+    <View style={[s.icon, { width: size, height: size, borderRadius: size / 3.5, backgroundColor: '#0b0e24' }]}>
+      <PulseStar width={size} height={size} glow={0.5} />
     </View>
   );
 }
 
+function Ribbon({ sp }: { sp: Special }) {
+  const k = SPECIAL[sp.kind];
+  return (
+    <View style={s.ribbonRow}>
+      <LinearGradient colors={k.pair} start={{ x: 0, y: 0.5 }} end={{ x: 1, y: 0.5 }} style={s.ribbon}>
+        <Text style={s.ribbonT}>{k.label()}</Text>
+      </LinearGradient>
+      <Art sp={sp} size={u(40)} />
+    </View>
+  );
+}
+
+function SpecialCard({ sp, children }: { sp: Special; children: React.ReactNode }) {
+  const c = useInfo();
+  const k = SPECIAL[sp.kind];
+  return (
+    <LinearGradient colors={k.pair} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={s.frame}>
+      <View style={[s.frameIn, { backgroundColor: c.surf }]}>
+        <LinearGradient colors={[k.pair[0] + '2e', k.pair[1] + '00']} start={{ x: 0, y: 0 }} end={{ x: 0.6, y: 1 }} style={StyleSheet.absoluteFill} pointerEvents="none" />
+        {children}
+      </View>
+    </LinearGradient>
+  );
+}
+
 const s = StyleSheet.create({
+  frame: { borderRadius: u(17), padding: u(1.5), marginTop: u(12) },
+  frameIn: { borderRadius: u(15.5), paddingHorizontal: u(12), paddingTop: u(10), paddingBottom: u(12), overflow: 'hidden' },
+  ribbonRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: u(8), marginBottom: u(8) },
+  ribbon: { borderRadius: 999, paddingHorizontal: u(10), paddingVertical: u(3.5) },
+  ribbonT: { fontFamily: F.bodyBold, fontSize: u(8), letterSpacing: u(1.2), color: '#0b0e24' },
   card: { borderWidth: 1, borderRadius: u(16), paddingHorizontal: u(12), paddingTop: u(10), paddingBottom: u(12), marginTop: u(12) },
   k: { fontFamily: F.mono, fontSize: u(7.5), letterSpacing: u(1.3) },
   from: { flexDirection: 'row', alignItems: 'center', gap: u(6) },

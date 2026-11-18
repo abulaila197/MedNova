@@ -429,6 +429,8 @@ export const AR_PLAY: Record<string, string> = {
   "Clinical": "إكلينيكي",
   "{n} pairs": "{n} زوج",
   "Basic science": "علوم أساسية",
+  "WELCOME GIFT": "هدية ترحيب",
+  "NEW CHARACTER": "شخصية جديدة",
   "Hospital": "المستشفى",
   "First aid": "إسعافات أولية",
   "Everyone gets the same word but one. Find who walked in.": "الكل معاه نفس الكلمة إلا واحد. اكتشف مين اللي دخل.",

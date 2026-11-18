@@ -40,9 +40,13 @@ const FIXED: Record<string, string> = {
   'Challenge lost': 'خسرت التحدّي',
   'A gift for you': 'هدية ليك',
   'Open MedNova to see it.': 'افتح MedNova وشوفها.',
+  'Welcome to MedNova, Doctor!': 'أهلًا بيك في MedNova يا دكتور!',
+  "We're glad you're here. Here are 50 tokens and 100 Sparks to start your first games. Learn, play and have fun!": 'مبسوطين إنك معانا. دي 50 عملة و100 شرارة عشان تبدأ أول ألعابك. اتعلّم والعب واستمتع!',
 };
 
 const RULES: [RegExp, (m: RegExpMatchArray) => string][] = [
+  [/^(.+) is unlocked$/, (m) => `شخصية ${m[1]} اتفتحت ليك`],
+  [/^A gift from the MedNova team: (.+) is now yours\. Wear it from your profile\.$/, (m) => `هدية من فريق MedNova: شخصية ${m[1]} بقت بتاعتك. تقدر تلبسها من البروفايل.`],
   [/^New challenge from (.+)$/, (m) => `تحدّي جديد من ${m[1]}`],
   [/^(.+) scored (\d+) in (.+)\. Beat it within a day\.$/, (m) => `${m[1]} جاب ${m[2]} في ${game(m[3])}. اكسر الرقم ده خلال يوم.`],
   [/^(.+) scored (\d+)\. Beat it within a day\.$/, (m) => `${m[1]} جاب ${m[2]}. اكسر الرقم ده خلال يوم.`],
