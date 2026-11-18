@@ -180,7 +180,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
     <SlideTable
       label={{
         no: tr('WORD {n} OF {total}', { n: st.index + 1, total: st.total }),
-        title: tr('Six Word Tries'),
+        title: tr('Word Lab'),
         sub: tr('Vs rivals · {n} · {n2} letters', { n: way === 'surgeon' ? tr('Word Surgeon') : STYLE_NAME[style], n2: w.word.length }),
         right: reveal ? undefined : <TurnClock ms={left} warn={left <= HURRY_MS} />,
       }}

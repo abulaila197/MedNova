@@ -216,7 +216,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   };
 
   const no = (day: number | null) => (day != null ? tr('NO. {n}', { n: day + 1 }) : 'ENDLESS');
-  const titleFor = (day: number) => tr('Six Word Tries No. {n} · {n2}', { n: day + 1, n2: STYLE_NAME[style] });
+  const titleFor = (day: number) => tr('Word Lab No. {n} · {n2}', { n: day + 1, n2: STYLE_NAME[style] });
 
   // The phone date reads earlier than the latest daily: no daily until that day has passed.
   if (locked != null) {
@@ -236,7 +236,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
     const w = wordById.get(done.wordId)!;
     return (
       <SlideTable
-        label={{ no: no(today), title: tr('Six Word Tries'), sub: tr('Daily {n} · played today', { n: STYLE_NAME[style] }), right: <SlideStack n={liveStreak(streak, today)} /> }}
+        label={{ no: no(today), title: tr('Word Lab'), sub: tr('Daily {n} · played today', { n: STYLE_NAME[style] }), right: <SlideStack n={liveStreak(streak, today)} /> }}
         answer={w.word}
         played={done.guesses.map((word) => ({ word }))}
         rows={MAX_ROWS}
@@ -284,7 +284,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
 
   return (
     <SlideTable
-      label={{ no: no(run.day), title: tr('Six Word Tries'), sub, right: run.kind === 'daily' ? <SlideStack n={liveStreak(streak, today)} /> : <Text style={[s.score, { color: t.accent }]}>{tr('{score} EXP', { score: run.score })}</Text> }}
+      label={{ no: no(run.day), title: tr('Word Lab'), sub, right: run.kind === 'daily' ? <SlideStack n={liveStreak(streak, today)} /> : <Text style={[s.score, { color: t.accent }]}>{tr('{score} EXP', { score: run.score })}</Text> }}
       answer={w.word}
       played={run.guesses.map((word) => ({ word }))}
       rows={MAX_ROWS}

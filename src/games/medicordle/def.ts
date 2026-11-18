@@ -22,7 +22,7 @@ const WAY = {
   key: 'way',
   label: tr('Play style'),
   choices: [
-    { value: 'tries', label: tr('Six tries'), note: tr('guess real words') },
+    { value: 'tries', label: tr('Guess It'), note: tr('guess real words') },
     { value: 'surgeon', label: tr('Word Surgeon'), note: tr('fix the scrambled word') },
   ],
   initial: 'tries',

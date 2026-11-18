@@ -273,7 +273,7 @@ function CasesPage() {
       )}
       <OfflineLine at={savedAt} />
       {signedIn && list && !rows.length ? (
-        <Text style={[s.csA, { color: c.mute }]}>{tr('Nothing yet. Write a case or add a word for Sketch It, Six Word Tries, Streak Master or Imposter. You can practise it straight away; once approved it plays in rooms you host, and pays 10 tokens.')}</Text>
+        <Text style={[s.csA, { color: c.mute }]}>{tr('Nothing yet. Write a case or add a word for Sketch It, Word Lab, Streak Master or Imposter. You can practise it straight away; once approved it plays in rooms you host, and pays 10 tokens.')}</Text>
       ) : null}
       <View>
         {rows.map((r, i) => (

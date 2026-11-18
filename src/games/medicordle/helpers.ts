@@ -1,4 +1,4 @@
-// Six Word Tries paid helpers (Yazan 2026-11-17): Endless and Vs rivals only, above the keyboard, never over the board.
+// Word Lab paid helpers (Yazan 2026-11-17): Endless and Vs rivals only, above the keyboard, never over the board.
 import { COIN } from '@/components/CoinLabel';
 import { useCallback } from 'react';
 

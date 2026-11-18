@@ -137,7 +137,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
     <SlideTable
       label={{
         no: tr('WORD {n} OF {n2}', { n: run.index + 1, n2: run.wordIds.length }),
-        title: tr('Six Word Tries'),
+        title: tr('Word Lab'),
         sub: phase === 'wordOver' ? tr('{n} · {n2} letters · {rows} rows', { n: way === 'surgeon' ? tr('Word Surgeon') : STYLE_NAME[style], n2: w.word.length, rows: run.rows }) : <TurnName name={who?.name ?? ''} color={who?.color} after={tr('’s turn · {n} · {n2} letters', { n: way === 'surgeon' ? tr('Word Surgeon') : STYLE_NAME[style], n2: w.word.length })} />,
         right: phase === 'playing' ? <TurnClock ms={left} warn={left <= HURRY_MS} /> : undefined,
       }}

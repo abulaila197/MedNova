@@ -35,7 +35,7 @@ export const CHAPTERS: Chapter[] = [
       { q: 'What is MedNova?', a: 'MedNova teaches medicine through games. You read clues, name diseases, answer questions, draw, give clues and solve picture riddles, and what you miss comes back later in your Learning Space. It is for education only, not medical advice, and every patient in it is fictional.' },
       { q: 'Which games are there?', a: `${gameCount}: ${listed}.` },
       { q: 'Do I need an account?', a: 'No. As a guest you get 5 free plays across all games. A free account plays with Sparks, keeps your progress on our servers and lets you add friends, challenge them and join the leaderboards.' },
-      { q: 'What are Sparks?', a: 'Sparks are what a game costs to play. Your bar holds 100 and refills one Spark every 10 minutes, faster when you wear a character with more stars. Each game costs Sparks by how long it lasts, and you pay at your first answer. The Six Word Tries Daily word is always free. To refill sooner, use Watch an ad for 10 Sparks (20 a day) or swap tokens 1 for 1. With MedNova Unlimited your Sparks never run out.' },
+      { q: 'What are Sparks?', a: 'Sparks are what a game costs to play. Your bar holds 100 and refills one Spark every 10 minutes, faster when you wear a character with more stars. Each game costs Sparks by how long it lasts, and you pay at your first answer. The Word Lab Daily word is always free. To refill sooner, use Watch an ad for 10 Sparks (20 a day) or swap tokens 1 for 1. With MedNova Unlimited your Sparks never run out.' },
     ],
   },
   {
@@ -46,7 +46,7 @@ export const CHAPTERS: Chapter[] = [
     items: [
       { q: 'How does Race to Diagnosis score?', a: 'Clues arrive one by one. Name the disease on an earlier clue to score more, plus up to 20 points for speed. A wrong guess shows the next clue.', scoring: true },
       { q: 'How does Case Files work?', a: 'Work a case from history to discharge: write your differentials, read the examination and investigations, then make your diagnosis. Each case pays once; replaying it is free but earns no EXP.' },
-      { q: 'How does Six Word Tries work?', a: "Guess the medical word in six tries. Green is the right letter in the right place, yellow is in the word but elsewhere, grey is not in the word. The Daily word has 6 letters and earns double; Endless also has Classic 5 with 5-letter words." },
+      { q: 'How does Word Lab work?', a: "Guess the medical word in six tries. Green is the right letter in the right place, yellow is in the word but elsewhere, grey is not in the word. The Daily word has 6 letters and earns double; Endless also has Classic 5 with 5-letter words." },
       { q: 'How does The Streak Master work?', a: 'The Streak Master is a race against the clock: every right answer in a row is worth one point more than the last, and a wrong answer resets your streak.' },
       { q: 'How do Medical Riddles and Nova Crossword work?', a: 'Medical Riddles shows a picture riddle that you read as a condition or sign. Nova Crossword is a medical crossword: tap a square to light up its word, double tap to open it, and you have 3 hearts per puzzle (5 online). Both are played level by level, and stars open the next level.' },
       { q: 'How does The Wheels of Chaos work?', a: 'One wheel with three rings picks how many questions you get, one of nine styles and the field (pick one field and only two rings spin). Reach the target, 25 or 50 points. Every act ends in a Boss Round. In Solo, once a game after a turn with a miss, a Redemption round wins those points back; with friends, whoever is last in the final round can swap a turn for one.' },
@@ -72,7 +72,7 @@ export const CHAPTERS: Chapter[] = [
     title: 'EXP, tokens and rewards',
     tag: 'Progress',
     items: [
-      { q: 'How do I earn EXP?', a: 'By playing Solo and Vs rivals. Each game pays for what you get right; for example, Six Word Tries gives up to 12 EXP a word and The Streak Master 2 EXP per right answer. Pass the phone and Sketch It practice are for fun and earn no EXP.' },
+      { q: 'How do I earn EXP?', a: 'By playing Solo and Vs rivals. Each game pays for what you get right; for example, Word Lab gives up to 12 EXP a word and The Streak Master 2 EXP per right answer. Pass the phone and Sketch It practice are for fun and earn no EXP.' },
       { q: 'What are levels and tokens?', a: 'EXP raises your level, and each new level pays tokens. Tokens buy extras such as hints, revives and helpers, and looks in the Style shop: characters, frames, titles, win effects and sticker packs.' },
       { q: 'What are daily missions and the daily gift?', a: 'Every day: Warm-up, Full Shift and Overtime, done in order, paying 10, 30 and 50 tokens. Only games that use Sparks count, and each game counts once per mission. The daily gift calendar pays tokens and Sparks each day you claim it.' },
       { q: 'What are Grand Rounds and chests?', a: 'Grand Rounds gives you 3 missions each week, and each one pays a chest: wooden, golden, then diamond. Finish all three 4 weeks in a row for an epic chest. Chests hold tokens, chat stickers, rare win effects and Nova Mechs cards; a card you already have turns into tokens.' },

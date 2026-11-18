@@ -13,7 +13,8 @@ const EN_GAME: Record<string, string> = {
   'Nova Crossword': 'nova-crossword',
   'Quick Fire Quiz': 'the-quiz-parade',
   'Medical Riddles': 'the-riddler',
-  'Six Word Tries': 'nova-medicordle',
+  'Word Lab': 'nova-medicordle',
+  'Six Word Tries': 'nova-medicordle', // its old name, on rows sent before the rename
   'The Streak Master': 'the-streak-master',
   'Case Files': 'case-files-unsolved',
   'The Wheels of Chaos': 'the-wheels-of-chaos',

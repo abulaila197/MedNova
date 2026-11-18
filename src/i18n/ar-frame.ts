@@ -970,7 +970,7 @@ export const AR_FRAME: Record<string, string> = {
   "diseases": "أمراضي",
   "+ Create your own": "+ اعمل بإيدك",
   "Sign in to write your own cases and words": "سجّل دخول عشان تكتب حالاتك وكلماتك",
-  "Nothing yet. Write a case or add a word for Sketch It, Six Word Tries, Streak Master or Imposter. You can practise it straight away; once approved it plays in rooms you host, and pays 10 tokens.": "لسه مفيش حاجة. اكتب حالة أو ضيف كلمة لـ ارسم وخمّن، أو خمّن الكلمة، أو سلسلة الإجابات، أو الدخيل. تقدر تتمرّن عليها على طول؛ ولما تتقبل هتتلعب في الأوض اللي بتعملها، وتاخد 10 عملة.",
+  "Nothing yet. Write a case or add a word for Sketch It, Word Lab, Streak Master or Imposter. You can practise it straight away; once approved it plays in rooms you host, and pays 10 tokens.": "لسه مفيش حاجة. اكتب حالة أو ضيف كلمة لـ ارسم وخمّن، أو معمل الكلمات، أو سلسلة الإجابات، أو الدخيل. تقدر تتمرّن عليها على طول؛ ولما تتقبل هتتلعب في الأوض اللي بتعملها، وتاخد 10 عملة.",
   "Could not start it. Try again.": "معرفناش نبدأها. جرّب تاني.",
   "Practise {name}": "اتمرّن على {name}",
   "Practise": "اتمرّن",

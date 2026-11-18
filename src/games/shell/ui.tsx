@@ -84,7 +84,7 @@ export const HELPER = {
 export type HelperTone = keyof typeof HELPER;
 
 /** A paid helper in the Race to Diagnosis style. */
-/** `compact`: smaller text, for a row of three helpers on a phone (Six Word Tries). */
+/** `compact`: smaller text, for a row of three helpers on a phone (Word Lab). */
 export function HelperButton({ label, tone, onPress, disabled, style, compact }: { label: string; tone: HelperTone; onPress?: () => void; disabled?: boolean; style?: StyleProp<ViewStyle>; compact?: boolean }) {
   const c = HELPER[tone];
   return (
