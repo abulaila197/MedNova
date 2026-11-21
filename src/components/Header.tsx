@@ -114,6 +114,8 @@ function Me({ g }: { g: boolean }) {
   const len = 2 * Math.PI * r;
   const p = Math.max(0, Math.min(1, into / need));
   const w = h(g ? 70 : 84);
+  const chipFont = size * 0.27;
+  const chipLine = Math.ceil(chipFont * 1.36);
   return (
     <View style={z.me}>
       <Pressable onPress={tapped(() => navTo('/profile'))} hitSlop={h(6)} accessibilityRole="button" accessibilityLabel={tr('Level {level}, {into} of {need} EXP to level {n}. Open your profile', { level, into, need, n: level + 1 })}>
@@ -125,8 +127,10 @@ function Me({ g }: { g: boolean }) {
           <View style={[StyleSheet.absoluteFill, s.center]}>
             <Face slug={avatar} size={size - sw * 2 - 2} />
           </View>
-          <View style={[s.chip, { backgroundColor: t.accent, end: -size * 0.12, bottom: -size * 0.1, minWidth: size * 0.5, height: size * 0.42 }]}>
-            <Text style={{ fontFamily: F.bodyBold, fontSize: size * 0.27, lineHeight: size * 0.34, color: t.onGrad }}>{level}</Text>
+          {/* The chip is as tall as the number's line plus its border, so the number is never cut at the bottom (Yazan
+              2026-11-22, small phones: a box of 0.42 left less than the line Android draws). */}
+          <View style={[s.chip, { backgroundColor: t.accent, end: -size * 0.12, bottom: -size * 0.1, minWidth: size * 0.5, height: chipLine + CHIP_BORDER * 2 }]}>
+            <Text style={{ fontFamily: F.bodyBold, fontSize: chipFont, lineHeight: chipLine, color: t.onGrad }}>{level}</Text>
           </View>
         </View>
       </Pressable>
@@ -147,6 +151,7 @@ function Me({ g }: { g: boolean }) {
   );
 }
 
+const CHIP_BORDER = 1.5;
 const s = StyleSheet.create({
   bar: {
     height: h(42),
@@ -168,7 +173,7 @@ const s = StyleSheet.create({
   coinT: { fontFamily: F.bodyBold, fontSize: h(12.5), lineHeight: h(15), fontVariant: ['tabular-nums'] },
   me: { flexDirection: 'row', alignItems: 'center', gap: h(11) },
   center: { alignItems: 'center', justifyContent: 'center' },
-  chip: { position: 'absolute', borderRadius: 99, paddingHorizontal: 3, alignItems: 'center', justifyContent: 'center', borderWidth: 1.5, borderColor: '#0d1738' },
+  chip: { position: 'absolute', borderRadius: 99, paddingHorizontal: 3, alignItems: 'center', justifyContent: 'center', borderWidth: CHIP_BORDER, borderColor: '#0d1738' },
   line: { flexDirection: 'row', alignItems: 'center', gap: h(2) },
   spT: { fontFamily: F.bodyBold, fontSize: h(11), fontVariant: ['tabular-nums'] },
   spN: { fontFamily: F.bodySemi, fontSize: h(8.5), marginStart: h(4), fontVariant: ['tabular-nums'] },

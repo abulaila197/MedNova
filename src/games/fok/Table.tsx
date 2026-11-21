@@ -117,6 +117,42 @@ export function GroupRow({ board, slot, who, missed, line, onPress }: { board: B
 }
 
 const TILE_FONT = u(10.5);
+const TILE_PAD_X = u(4);
+const TILE_PAD_Y = u(10);
+/** Average letter width and line height, as parts of the font size (Inter, semibold). The line is the one AppText
+ * gives Android anyway (a tighter line there is raised to 1.36 and the second line was cut). */
+const CHAR_W = 0.6;
+const LINE_H = 1.36;
+
+/** How many lines `label` takes at font `size` in `width`: whole words to a line, never broken in the middle. */
+function linesAt(label: string, size: number, width: number) {
+  const per = Math.max(1, Math.floor(width / (size * CHAR_W)));
+  let lines = 1;
+  let used = 0;
+  for (const word of label.split(/\s+/)) {
+    const n = word.length;
+    if (used && used + 1 + n > per) {
+      lines += 1;
+      used = n;
+    } else used += used ? 1 + n : n;
+  }
+  return lines;
+}
+
+/**
+ * The biggest font that shows the whole label inside a box (Yazan 2026-11-22: two-line names like "Pyloric stenosis"
+ * were cut at the bottom, mostly on small phones): every word fits the width and all lines fit the height left
+ * inside the padding. adjustsFontSizeToFit is native only, so the size is worked out here.
+ */
+function tileFont(label: string, w: number, h: number, base: number) {
+  const width = w - TILE_PAD_X * 2;
+  const height = h - TILE_PAD_Y * 2;
+  const longest = Math.max(...label.split(/\s+/).map((x) => x.length));
+  for (let size = base; size > base * 0.45; size -= 0.5) {
+    if (longest * size * CHAR_W <= width && linesAt(label, size, width) * size * LINE_H <= height) return size;
+  }
+  return base * 0.45;
+}
 
 /** The boxes still on the table, four to a row. */
 export function Tiles({ board, order, picked, onTap, width, disabled, maxH }: { board: Board; order: number[]; picked: number[]; onTap?: (t: number) => void; width: number; disabled?: boolean; /** The tallest a box may be, so the board fits the screen. */ maxH?: number }) {
@@ -129,11 +165,7 @@ export function Tiles({ board, order, picked, onTap, width, disabled, maxH }: { 
         const on = picked.includes(t);
         const g = groupById.get(board.groups[groupOfTile(t)].id)!;
         const label = g.b[board.groups[groupOfTile(t)].boxes[t % 4]][0];
-        // Words never break in the middle: the longest word sets the size (adjustsFontSizeToFit is native only).
-        const longest = Math.max(...label.split(/[\s-]+/).map((x) => x.length));
-        const base = TILE_FONT * Math.min(1.5, Math.max(1, w / u(78)));
-        // ...and a lower box takes a smaller size, so 3-4 lines still fit inside it.
-        const size = Math.max(base * 0.5, Math.min(base, (w - u(9)) / (longest * 0.6), (h - u(12)) / (3 * 1.2)));
+        const size = tileFont(label, w, h, TILE_FONT * Math.min(1.5, Math.max(1, w / u(78))));
         return (
           <Pressable
             key={t}
@@ -145,7 +177,7 @@ export function Tiles({ board, order, picked, onTap, width, disabled, maxH }: { 
             style={[s.tile, { width: w, height: h }, on ? s.tileOn : null]}>
             <Text style={[s.pip, { top: u(2), start: u(4) }]}>✚</Text>
             <Text style={[s.pip, { bottom: u(2), end: u(4), transform: [{ rotate: '180deg' }] }]}>✚</Text>
-            <Text style={[s.tileT, { fontSize: size, lineHeight: size * 1.2 }]} numberOfLines={4} adjustsFontSizeToFit minimumFontScale={0.5}>
+            <Text style={[s.tileT, { fontSize: size, lineHeight: size * LINE_H }]} numberOfLines={4}>
               {label}
             </Text>
           </Pressable>
@@ -245,7 +277,7 @@ export const s = StyleSheet.create({
   rowBoxes: { fontFamily: F.bodyMedium, fontSize: u(10), lineHeight: u(13.5), color: 'rgba(22,24,42,0.85)' },
   rowLine: { fontFamily: F.body, fontSize: u(10), lineHeight: u(13.5), color: 'rgba(22,24,42,0.75)', marginTop: u(2) },
   grid: { flexDirection: 'row', flexWrap: 'wrap' },
-  tile: { borderRadius: u(8), backgroundColor: C.cream, alignItems: 'center', justifyContent: 'center', paddingHorizontal: u(4), paddingVertical: u(10), shadowColor: '#000', shadowOpacity: 0.35, shadowRadius: u(7), shadowOffset: { width: 0, height: u(4) }, elevation: 4 },
+  tile: { borderRadius: u(8), backgroundColor: C.cream, alignItems: 'center', justifyContent: 'center', paddingHorizontal: TILE_PAD_X, paddingVertical: TILE_PAD_Y, shadowColor: '#000', shadowOpacity: 0.35, shadowRadius: u(7), shadowOffset: { width: 0, height: u(4) }, elevation: 4 },
   tileOn: { backgroundColor: C.creamOn, borderWidth: u(2), borderColor: C.gold, transform: [{ translateY: -u(5) }], shadowColor: C.gold, shadowOpacity: 0.55, shadowRadius: u(10) },
   pip: { position: 'absolute', fontSize: u(7.5), lineHeight: u(10), color: C.cross },
   tileT: { fontFamily: F.bodySemi, fontSize: u(10.5), lineHeight: u(12.5), color: C.ink, textAlign: 'center' },
