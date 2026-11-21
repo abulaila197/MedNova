@@ -83,7 +83,7 @@ const KNOW: Record<string, Knowledge> = {
 const KNOW_LOOK: Record<Knowledge, { label: string; color: string; text: string }> = {
   clinical: { label: tr('Clinical subjects'), color: '#e6cf9f', text: tr('Diseases, patients and treatment: the wards and the clinic.') },
   basic: { label: tr('Basic sciences'), color: '#a78bfa', text: tr('Anatomy, physiology, biochemistry and the rest of the first years.') },
-  choice: { label: tr('By choice'), color: '#5fd38a', text: tr('You pick in the setup: clinical subjects, basic sciences or both.') },
+  choice: { label: tr('By choice'), color: '#93c5fd', text: tr('You pick in the setup: clinical subjects, basic sciences or both.') },
   mixed: { label: tr('Mixed knowledge'), color: '#22d3ee', text: tr('Both: clinical subjects and basic sciences in one game.') },
 };
 const KNOW_ORDER: Knowledge[] = ['clinical', 'basic', 'choice', 'mixed'];
