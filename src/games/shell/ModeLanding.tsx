@@ -4,6 +4,8 @@ import { Text } from '@/components/AppText';
 import { Back } from '@/components/Back';
 import { FeatherArt } from '@/components/FeatherArt';
 import { GAMES } from '@/data/games';
+import { GAME_MODES } from '@/features/challenges/ChallengeSheets';
+import { navTo } from '@/lib/nav';
 import { LOAD } from '@/features/loading/configs';
 import { useTheme } from '@/state/app';
 import { IS_COLUMN, u } from '@/theme/scale';
@@ -85,6 +87,18 @@ export function ModeLanding({ def }: { def: GameDef }) {
           </Card>
         );
       })}
+      {/* A 4th card for every game a friend can be challenged in (not Party time): it opens the Friends page, where
+          the challenge starts (Yazan 2026-11-22). */}
+      {GAME_MODES.some((x) => x.key === def.key) ? (
+        <Card>
+          <Kick color={t.accent}>{tr('Challenge')}</Kick>
+          <Text style={[s.h, { color: t.white }]}>{tr('Challenge a friend')}</Text>
+          <Body>{tr('Pick a friend on the Friends page, then choose Beat my score or Game challenge in this game.')}</Body>
+          <View style={s.btns}>
+            <Btn label={tr('Friends page')} onPress={() => navTo('/friends')} style={{ flex: 1 }} />
+          </View>
+        </Card>
+      ) : null}
     </GameScreen>
   );
 }

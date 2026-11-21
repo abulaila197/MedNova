@@ -6,6 +6,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 import { TokenCoin } from '@/components/PulseStar';
 import { GAMES } from '@/data/games';
+import { isParty } from '@/features/games/GameTag';
 import { PlayerFace } from '@/features/style/Frame';
 import { botSeats } from '@/bots/setup';
 import { engine } from '@/games/engine';
@@ -25,8 +26,8 @@ import { F } from '@/theme/tokens';
 import { type Challenge, type ChallengeKind, type ChallengeMode, DAYS, isOver, loadFriendChallenges, markSeen, otherOf, PRIZE, scoreOf, setIntent, timeLeft, useChallenges, withFriend } from './store';
 import { tr } from '@/i18n';
 
-/** Games a challenge can use, with the modes each offers (Solo, Vs rivals). */
-const GAME_MODES: { key: GameKey; modes: ChallengeMode[] }[] = GAMES.map((g) => {
+/** Games a challenge can use, with the modes each offers (Solo, Vs rivals). Party time games are left out. */
+export const GAME_MODES: { key: GameKey; modes: ChallengeMode[] }[] = GAMES.filter((g) => !isParty(g.key)).map((g) => {
   const def = gameDef(g.key);
   const modes: ChallengeMode[] = [];
   if (def?.modes.some((m) => m.mode === 'solo')) modes.push('solo');

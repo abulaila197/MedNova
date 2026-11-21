@@ -94,6 +94,9 @@ export const openKnowSheet = (game: string) => KNOW[game] && useTagSheet.setStat
 /** Where a game's tag sits in the Games list: On duty, then Play and learn, then Party time (Yazan 2026-11-13). */
 export const tagRank = (game: string) => (KIND[game] ? ORDER.indexOf(KIND[game]) : ORDER.length);
 /** A game's tag label and colour, for the Games list boxes. */
+/** Party time games can't be challenged (Yazan 2026-11-22). */
+export const isParty = (game: string) => KIND[game] === 'play';
+
 export const tagOf = (game: string) => (KIND[game] ? LOOK[KIND[game]] : null);
 /** Opens the tags pop-up on one kind. */
 export const openTagSheet = (game: string) => KIND[game] && useTagSheet.setState({ kind: KIND[game] });
