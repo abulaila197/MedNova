@@ -58,34 +58,35 @@ const LOOK: Record<GameKind, { label: string; color: string; text: string }> = {
 const ORDER: GameKind[] = ['learn', 'both', 'play'];
 
 /**
- * What a game asks about (Yazan 2026-11-17, additions point 8): a second tag beside the one above. Mixed is given only
- * where the bank really holds both (counted 2026-11-17: basic science is 22% of Four of a Kind up to 62% of Crossword).
- * Spot the Flaw is Mixed since its basic science bank (8 fields, 320 cases) went in on 2026-11-18.
+ * What a game asks about (Yazan 2026-11-17, additions point 8): a second tag beside the one above. By choice
+ * (Yazan 2026-11-22): the setup lets you pick clinical only, basic science only or both. Mixed only for games that
+ * hold both with no such pick (Crossword, Heads up). Spot the Flaw counts as Clinical.
  */
-export type Knowledge = 'clinical' | 'basic' | 'mixed';
+export type Knowledge = 'clinical' | 'basic' | 'choice' | 'mixed';
 const KNOW: Record<string, Knowledge> = {
   'the-diagnostic-pursuit': 'clinical',
   'trace-the-treatment': 'clinical',
-  'who-am-i': 'basic',
-  'put-in-order': 'basic',
   'case-files-unsolved': 'clinical',
   'the-riddler': 'clinical',
-  'spot-the-flaw': 'mixed',
-  'the-streak-master': 'mixed',
-  'four-of-a-kind': 'mixed',
-  'nova-medicordle': 'mixed',
-  'the-wheels-of-chaos': 'mixed',
+  'spot-the-flaw': 'clinical',
+  'who-am-i': 'basic',
+  'put-in-order': 'basic',
+  'the-streak-master': 'choice',
+  'four-of-a-kind': 'choice',
+  'nova-medicordle': 'choice',
+  'the-wheels-of-chaos': 'choice',
+  'the-silent-artist': 'choice',
+  imposter: 'choice',
   'nova-crossword': 'mixed',
-  'the-silent-artist': 'mixed',
   'tilt-and-tell': 'mixed',
-  imposter: 'mixed',
 };
 const KNOW_LOOK: Record<Knowledge, { label: string; color: string; text: string }> = {
   clinical: { label: tr('Clinical subjects'), color: '#e6cf9f', text: tr('Diseases, patients and treatment: the wards and the clinic.') },
   basic: { label: tr('Basic sciences'), color: '#a78bfa', text: tr('Anatomy, physiology, biochemistry and the rest of the first years.') },
+  choice: { label: tr('By choice'), color: '#5fd38a', text: tr('You pick in the setup: clinical subjects, basic sciences or both.') },
   mixed: { label: tr('Mixed knowledge'), color: '#22d3ee', text: tr('Both: clinical subjects and basic sciences in one game.') },
 };
-const KNOW_ORDER: Knowledge[] = ['clinical', 'basic', 'mixed'];
+const KNOW_ORDER: Knowledge[] = ['clinical', 'basic', 'choice', 'mixed'];
 /** A game's knowledge tag label and colour. */
 export const knowOf = (game: string) => (KNOW[game] ? KNOW_LOOK[KNOW[game]] : null);
 /** Opens the knowledge tags pop-up on the game's one. */
@@ -121,7 +122,7 @@ export function GameTag({ game }: { game: string }) {
   );
 }
 
-/** All three tags of the tapped set (what a game is for, or what it asks about) in one pop-up, the tapped one first. */
+/** All the tags of the tapped set (what a game is for, or what it asks about) in one pop-up, the tapped one first. */
 export function GameTagSheet() {
   const t = useTheme();
   const kind = useTagSheet((x) => x.kind);

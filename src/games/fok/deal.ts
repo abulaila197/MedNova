@@ -2,7 +2,7 @@ import { engine } from '../engine';
 import type { Play } from '../engine/types';
 import { tickedFields } from '../shell/fields';
 import { buildBoard, shuffle, type Board } from './core';
-import { groupById, poolOf } from './data';
+import { groupById, poolOf, styleOf } from './data';
 
 const SEEN = 'fok:seen';
 
@@ -12,7 +12,7 @@ const SEEN = 'fok:seen';
  */
 export async function dealBoards(play: Pick<Play, 'settings'>, rand: () => number = Math.random): Promise<Board[]> {
   const n = Math.max(1, Number(play.settings.boards) || 3);
-  const pool = poolOf(tickedFields(play.settings)).map((g) => g.id);
+  const pool = poolOf(styleOf(play.settings), tickedFields(play.settings)).map((g) => g.id);
   let seen = new Set((await engine.kv.get<string[]>(SEEN)) ?? []);
   if (pool.every((id) => seen.has(id))) seen = new Set([...seen].filter((id) => !pool.includes(id)));
   const order = [...shuffle(pool.filter((id) => !seen.has(id)), rand), ...shuffle(pool.filter((id) => seen.has(id)), rand)];

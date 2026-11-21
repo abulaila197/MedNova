@@ -858,6 +858,8 @@ export const AR_FRAME: Record<string, string> = {
   "Clinical subjects": "مواد إكلينيكية",
   "Basic sciences": "علوم أساسية",
   "Mixed knowledge": "معلومات متنوعة",
+  "By choice": "باختيارك",
+  "You pick in the setup: clinical subjects, basic sciences or both.": "إنت بتختار في الإعداد: مواد إكلينيكية، علوم أساسية، أو الاتنين.",
   "Diseases, patients and treatment: the wards and the clinic.": "أمراض وعيانين وعلاج: العنابر والعيادة.",
   "Anatomy, physiology, biochemistry and the rest of the first years.": "تشريح وفسيولوجي وكيمياء حيوية وباقي مواد أول سنين.",
   "Both: clinical subjects and basic sciences in one game.": "الاتنين: مواد إكلينيكية وعلوم أساسية في لعبة واحدة.",

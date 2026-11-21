@@ -392,6 +392,7 @@ export const AR_PLAY: Record<string, string> = {
   "Your points are your EXP. Groups you miss go to Learn.": "نقطك هي خبرتك. والمجموعات اللي تفوتك بتروح للتعلّم.",
   "Player 1 is you, the phone owner. Pass the phone earns no EXP.": "لاعب 1 هو انت، صاحب الموبايل. مرّر الموبايل مفيهوش خبرة.",
   "Groups": "المجموعات",
+  "{n} groups": "{n} مجموعة",
   "Groups you found": "المجموعات اللي لقيتها",
   "Groups found": "المجموعات",
   "Points": "النقط",

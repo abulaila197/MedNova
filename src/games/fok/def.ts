@@ -1,6 +1,6 @@
 import type { GameDef, SetupOption } from '../shell/types';
 import { FOK } from './core';
-import { GROUPS, fieldLabel, fieldMenu, groupById } from './data';
+import { GROUPS, fieldLabel, fieldMenu, groupById, poolOf, type FokStyle } from './data';
 import { BotsPlay } from './BotsPlay';
 import { OfflinePlay } from './OfflinePlay';
 import { SoloPlay } from './SoloPlay';
@@ -14,7 +14,18 @@ const BOARDS: SetupOption = {
   label: tr('Boards'),
   choices: FOK.boards.map((n) => ({ value: n, label: n === 1 ? tr('1 board') : tr('{n} boards', { n }), note: n === 1 ? 'quick' : n === 5 ? 'long' : undefined })),
   initial: 3,
-  fields: () => fieldMenu(),
+};
+// Mixed, Clinical or Basic science groups, the fields behind the arrow (Yazan 2026-11-22, like Streak Master).
+const STYLE: SetupOption = {
+  key: 'style',
+  label: tr('Groups'),
+  choices: [
+    { value: 'clinical', label: tr('Clinical'), note: tr('{n} groups', { n: poolOf('clinical', null).length }) },
+    { value: 'basic', label: tr('Basic science'), note: tr('{n} groups', { n: poolOf('basic', null).length }) },
+    { value: 'mixed', label: tr('Mixed'), note: tr('{n} groups', { n: poolOf('mixed', null).length }) },
+  ],
+  initial: 'mixed',
+  fields: (v) => fieldMenu(v as FokStyle),
 };
 const CLOCK: SetupOption = {
   key: 'clock',
@@ -65,9 +76,9 @@ export const fourOfAKind: GameDef = {
     },
   ],
   setup: {
-    solo: [BOARDS, CLOCK],
-    offline: [BOARDS],
-    bots: [BOARDS, CLOCK],
+    solo: [STYLE, BOARDS, CLOCK],
+    offline: [STYLE, BOARDS],
+    bots: [STYLE, BOARDS, CLOCK],
   },
   players: { offline: { min: 2, max: 6 } },
   bots: { min: 1, max: 3 },

@@ -44,18 +44,35 @@ export const FIELDS: { key: string; label: string; group: 'Clinical' | 'Basic sc
 ];
 export const fieldLabel = (f: string) => FIELDS.find((x) => x.key === f)?.label ?? f;
 
-/** The groups the ticked fields allow (null = every field). */
-export const poolOf = (ticked: string[] | null) => inFields(GROUPS, (g) => g.f, ticked);
+/**
+ * Which groups a game asks (Yazan 2026-11-22): Mixed is every field with Wordplay, Clinical only the clinical fields,
+ * Basic science only the basic sciences.
+ */
+export type FokStyle = 'mixed' | 'clinical' | 'basic';
+const TITLES: Record<FokStyle, readonly ('Clinical' | 'Basic science' | 'Wordplay')[]> = {
+  mixed: ['Clinical', 'Basic science', 'Wordplay'],
+  clinical: ['Clinical'],
+  basic: ['Basic science'],
+};
+export const styleOf = (settings: Record<string, unknown> | undefined): FokStyle => (settings?.style === 'clinical' || settings?.style === 'basic' ? settings.style : 'mixed');
+const fieldsOf = (style: FokStyle) => new Set(FIELDS.filter((x) => TITLES[style].includes(x.group)).map((x) => x.key));
+const ofStyle = (style: FokStyle) => {
+  const keep = fieldsOf(style);
+  return GROUPS.filter((g) => keep.has(g.f));
+};
 
-/** The field ticks behind "All fields". A board needs at least 4 groups that can sit together. */
-export function fieldMenu(): FieldMenu {
+/** The groups the style and the ticked fields allow (null = every field of the style). */
+export const poolOf = (style: FokStyle, ticked: string[] | null) => inFields(ofStyle(style), (g) => g.f, ticked);
+
+/** The field ticks behind "All fields", for the style picked. A board needs at least 4 groups that can sit together. */
+export function fieldMenu(style: FokStyle = 'mixed'): FieldMenu {
   const count = (f: string) => GROUPS.filter((g) => g.f === f).length;
   return {
-    groups: (['Clinical', 'Basic science', 'Wordplay'] as const).map((title) => ({
+    groups: TITLES[style].map((title) => ({
       title,
       items: FIELDS.filter((x) => x.group === title).map((x) => ({ key: x.key, label: x.label, count: count(x.key) })),
     })),
-    total: (ticked) => poolOf(ticked).length,
+    total: (ticked) => poolOf(style, ticked).length,
     min: 11,
     unit: 'groups',
   };
