@@ -269,7 +269,7 @@ function FriendProfileSheet() {
   // Friend challenges (G7): Challenge opens the sheet; Result shows a finished challenge, then it reads Challenge again.
   const main = friend
     ? result
-      ? { label: tr('Result'), go: () => openResult(f) }
+      ? { label: tr('Result'), go: () => openResult(f), result: true }
       : { label: tr('Challenge {display_name}', { display_name: f.display_name }), go: () => openChallenge(f) }
     : f.kind === 'incoming'
       ? { label: tr('Accept {display_name}’s friend request', { display_name: f.display_name }), go: add }
@@ -312,8 +312,9 @@ function FriendProfileSheet() {
       <OfflineLine at={offAt} style={{ marginTop: 0 }} />
       {main ? (
         <Pressable disabled={busy || off || !main.go || !ready} onPress={main.go ?? undefined} style={!main.go || off ? { opacity: off ? 0.4 : 0.55 } : null} accessibilityRole="button">
-          <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.btn}>
-            <Text style={[s.btnT, { color: t.onGrad }]}>{main.label}</Text>
+          {/* Result has its own green, so it never looks like the Challenge button it replaces (Yazan 2026-11-22). */}
+          <LinearGradient colors={'result' in main ? RESULT_GRAD : [t.gradA, t.gradB]} start={{ x: 0, y: 0.41 }} end={{ x: 1, y: 0.59 }} style={s.btn}>
+            <Text style={[s.btnT, { color: 'result' in main ? RESULT_INK : t.onGrad }]}>{main.label}</Text>
           </LinearGradient>
         </Pressable>
       ) : null}
@@ -419,6 +420,8 @@ function Act({ t, title, note, red, onPress, disabled }: { t: Theme; title: stri
   );
 }
 
+const RESULT_GRAD = ['#4ade80', '#0f9f6e'] as const;
+const RESULT_INK = '#04291b';
 const s = StyleSheet.create({
   k: { fontFamily: F.mono, fontSize: u(7.5), letterSpacing: u(1.4), marginTop: u(4) },
   pass: { borderRadius: u(16), paddingTop: u(16), paddingHorizontal: u(14), overflow: 'hidden' },
