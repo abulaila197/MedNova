@@ -120,6 +120,10 @@ export const tierTokens = (key: AchKey): readonly number[] => {
   return [...b, b[0] + b[1] + b[2]];
 };
 
+/** Sparks paid with each tier, the same for every achievement (Yazan 2026-11-22); "Get to Know MedNova" pays the first. */
+export const TIER_SPARKS = [10, 20, 30, 60] as const;
+export const tierSparks = (key: AchKey): readonly number[] => (key === 'app_tour' ? [TIER_SPARKS[0]] : TIER_SPARKS);
+
 /** Counts only the server knows (invites redeemed, challenges sent, cases written, ads watched). */
 export type SocialCounts = Partial<Record<'recruiter' | 'challenger' | 'case_writer' | 'ad_watcher' | 'grand_rounds' | 'frame_collector' | 'title_collector', number>>;
 

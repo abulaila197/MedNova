@@ -689,7 +689,7 @@ export const AR_PLAY: Record<string, string> = {
   "Free plays used": "اللعبات المجانية خلصت",
   "Sign in to": "سجّل دخول عشان",
   "play more": "تلعب أكتر",
-  "You have used your 5 free plays. Sign in to play with Sparks: a full bar of 100 that refills on its own. Your misses, points and EXP from your plays come with you.": "استخدمت الـ5 لعبات المجانية بتوعك. سجّل دخول والعب بالشرارات: شريط مليان 100 بيتشحن لوحده. وغلطاتك ونقطك وخبرتك من اللي لعبته بتيجي معاك.",
+  "You have used your 5 free plays. Sign in to play with Sparks: a full bar of 120 that refills on its own. Your misses, points and EXP from your plays come with you.": "استخدمت الـ5 لعبات المجانية بتوعك. سجّل دخول والعب بالشرارات: شريط مليان 120 بيتشحن لوحده. وغلطاتك ونقطك وخبرتك من اللي لعبته بتيجي معاك.",
   "Your": "دورك",
   "With clock": "بوقت محدد",
   "take your time": "خد وقتك",

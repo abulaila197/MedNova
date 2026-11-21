@@ -153,14 +153,14 @@ test('gate: a guest gets 5 plays in total across all games, idempotent per play;
   assert.equal(GUEST_PLAYS, 5);
 });
 
-test('sparks: refill one every N minutes up to 100, above full it waits, never below 0', () => {
+test('sparks: refill one every N minutes up to 120, above full it waits, never below 0', () => {
   const m = 60000;
-  assert.equal(SPARKS_MAX, 100);
+  assert.equal(SPARKS_MAX, 120);
   assert.deepEqual(refill({ value: 50, at: 0 }, 25 * m, 10), { value: 52, at: 20 * m }, 'the part-filled Spark keeps its time');
-  assert.deepEqual(refill({ value: 99, at: 0 }, 60 * m, 10), { value: 100, at: 60 * m });
+  assert.deepEqual(refill({ value: 119, at: 0 }, 60 * m, 10), { value: 120, at: 60 * m });
   assert.deepEqual(refill({ value: 180, at: 0 }, 60 * m, 10), { value: 180, at: 60 * m }, 'gifts above full do not refill');
   assert.deepEqual(refill({ value: 10, at: 0 }, 25 * m, 5), { value: 15, at: 25 * m });
-  assert.deepEqual(spendAt({ value: 100, at: 0 }, 30 * m, 25, 10), { value: 75, at: 30 * m }, 'a full bar starts refilling at the spend');
+  assert.deepEqual(spendAt({ value: 120, at: 0 }, 30 * m, 25, 10), { value: 95, at: 30 * m }, 'a full bar starts refilling at the spend');
   assert.deepEqual(spendAt({ value: 3, at: 0 }, 0, 25, 10), { value: 0, at: 0 });
 });
 

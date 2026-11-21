@@ -919,7 +919,7 @@ export const AR_FRAME: Record<string, string> = {
   "{reached} of {tiers} tiers reached": "وصلت {reached} من {tiers} مستوى",
   " · {tokensWaiting} token{n} waiting": " · {tokensWaiting} عملة مستنياك",
   "Sign in to collect your tokens": "سجّل دخول عشان تستلم عملاتك",
-  "Collect +{n}": "استلم +{n}",
+  "Collect +{n}{coin} +{s}{spark}": "استلم +{n}{coin} +{s}{spark}",
   "{n} / {n2} pages{n3}": "{n} / {n2} صفحة{n3}",
   "all four signed": "الأربعة اتمضوا",
   "all three signed": "التلاتة اتمضوا",
