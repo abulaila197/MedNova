@@ -3,7 +3,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { Accelerometer } from 'expo-sensors';
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { Platform, Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { Platform, Pressable, ScrollView, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { useSafeAreaInsets, type EdgeInsets } from 'react-native-safe-area-context';
 import Svg, { Defs, Ellipse, RadialGradient, Stop } from 'react-native-svg';
 
 import { Text } from '@/components/AppText';
@@ -49,11 +50,16 @@ const kv = defaultKV();
 type Saved = { state: TTState };
 type Flash = { kind: Mark; word: string; left: number } | null;
 
-/** Sizes in % of the short side (s) and the long side (l) of the sideways screen. */
-function useUnits() {
+/**
+ * Sizes in % of the short side (s) and the long side (l) of the sideways screen, inside the phone's safe area: the
+ * status bar and the system buttons stay outside the stage (Yazan 2026-11-22: the bulbs ran under them).
+ */
+function useUnits(ins: EdgeInsets) {
   const { width, height } = useWindowDimensions();
-  const S = Math.min(width, height);
-  const L = Math.max(width, height);
+  const w = width - ins.left - ins.right;
+  const h = height - ins.top - ins.bottom;
+  const S = Math.min(w, h);
+  const L = Math.max(w, h);
   return { s: (n: number) => (n * S) / 100, l: (n: number) => (n * L) / 100 };
 }
 
@@ -126,7 +132,8 @@ function resumeOrStart(play: PlayProps['play'], seats: Seat[], teams: Team[]): S
 
 export function Play({ play, onFinish, onQuit }: PlayProps) {
   useSideways();
-  const { s: vs, l: vl } = useUnits();
+  const ins = useSafeAreaInsets();
+  const { s: vs, l: vl } = useUnits(ins);
   const seats = useMemo(() => play.seats.filter((x) => !x.removed), [play.seats]);
   const teams = useMemo(() => teamsOf(play) ?? [], [play]);
   const bySeat = useMemo(() => new Map(seats.map((x) => [x.seat, x])), [seats]);
@@ -403,7 +410,8 @@ export function Play({ play, onFinish, onQuit }: PlayProps) {
           <Text style={[st_.name, T(8), { fontFamily: WORD_FONT, textAlign: TA_START }]}>{holder.name === 'You' ? tr('Your turn') : tr('{name}\'s turn', { name: holder.name })}</Text>
           <Text style={[st_.timer, T(11), { fontFamily: WORD_FONT }]}>{`+${points(turn)}`}</Text>
         </View>
-        <View style={[st_.cards, { gap: vs(2) }]}>
+        {/* A long turn's words scroll between the title and the button (Yazan 2026-11-22: they ran off the screen). */}
+        <ScrollView style={st_.cardScroll} contentContainerStyle={[st_.cards, { gap: vs(2) }]} showsVerticalScrollIndicator={false}>
           {turn.words.length ? (
             turn.words.map((x, i) => (
               <Pressable
@@ -417,8 +425,8 @@ export function Play({ play, onFinish, onQuit }: PlayProps) {
           ) : (
             <Text style={[st_.hint, T(5)]}>{tr('No words this turn.')}</Text>
           )}
-        </View>
-        <View style={[st_.row, { marginTop: 'auto' }]}>
+        </ScrollView>
+        <View style={st_.row}>
           <Text style={[st_.hint, T(4.2), { textAlign: TA_START, flexShrink: 1 }]}>{tr('Tap a word to fix a wrong tilt.')}</Text>
           <Pill
             label={nextTurn ? tr('Next: {nextName} · {nextTeam}', { nextName, nextTeam }) : tiedNow ? tr('Sudden death!') : tr('See results')}
@@ -448,39 +456,42 @@ export function Play({ play, onFinish, onQuit }: PlayProps) {
         </Defs>
         <Ellipse cx={50} cy={0} rx={36} ry={80} fill="url(#tt-spot)" />
       </Svg>
-      <Bulbs vs={vs} vl={vl} />
-      {body}
-      {fl ? (
-        <View style={StyleSheet.absoluteFill} pointerEvents="none">
-          <LinearGradient colors={fl.kind === 'right' ? [...C.ok] : [...C.pass]} locations={[0, 0.6, 1]} start={{ x: 0.5, y: 0.3 }} end={{ x: 0.5, y: 1.2 }} style={StyleSheet.absoluteFill} />
-          <View style={st_.center}>
-            <Text style={[st_.burst, T(7, { letterSpacing: vs(0.4) }), { fontFamily: WORD_FONT }]}>{fl.kind === 'right' ? tr('GOT IT! +1') : tr('PASS · {left} LEFT', { left: fl.left })}</Text>
-            <Text style={[st_.word, T(fl.word.length > 16 ? 13 : 19), { fontFamily: WORD_FONT, maxWidth: vl(82), textShadowColor: 'rgba(0,0,0,0.25)', textShadowOffset: { width: 0, height: vs(1) } }]} numberOfLines={2} adjustsFontSizeToFit>
-              {fl.word}
-            </Text>
-          </View>
-        </View>
-      ) : null}
-      {/* Top corners: pause, and on the hand-off the team scores and a Start for phones without a motion sensor. */}
-      {!paused && s.phase !== 'over' ? (
-        <Pressable onPress={pause} style={[st_.pause, { top: vs(6), start: vl(3), width: vs(10), height: vs(10), borderRadius: vs(5) }]} accessibilityLabel={tr('Pause')}>
-          <Text style={[st_.edgeText, T(4.4)]}>{tr('II')}</Text>
-        </Pressable>
-      ) : null}
-      {!paused && s.phase === 'handoff' ? (
-        <>
-          <View style={[st_.scores, { top: vs(7), end: vl(3), gap: vl(1) }]}>
-            {teams.map((t) => (
-              <Chip key={t.id} text={`${t.name} · ${totals.get(t.id) ?? 0}`} dot={t.color} vs={vs} vl={vl} />
-            ))}
-          </View>
-          {count == null ? (
-            <View style={[st_.startWrap, { bottom: vs(9) }]}>
-              <Pill label={tr('Start')} onPress={countdown} gold={!motion} vs={vs} disabled={!ready} />
+      {/* The stage: everything on it stays inside the safe area; the backgrounds above fill the whole screen. */}
+      <View style={[st_.stage, { top: ins.top, bottom: ins.bottom, left: ins.left, right: ins.right }]}>
+        <Bulbs vs={vs} vl={vl} />
+        {body}
+        {fl ? (
+          <View style={StyleSheet.absoluteFill} pointerEvents="none">
+            <LinearGradient colors={fl.kind === 'right' ? [...C.ok] : [...C.pass]} locations={[0, 0.6, 1]} start={{ x: 0.5, y: 0.3 }} end={{ x: 0.5, y: 1.2 }} style={{ position: 'absolute', top: -ins.top, bottom: -ins.bottom, left: -ins.left, right: -ins.right }} />
+            <View style={st_.center}>
+              <Text style={[st_.burst, T(7, { letterSpacing: vs(0.4) }), { fontFamily: WORD_FONT }]}>{fl.kind === 'right' ? tr('GOT IT! +1') : tr('PASS · {left} LEFT', { left: fl.left })}</Text>
+              <Text style={[st_.word, T(fl.word.length > 16 ? 13 : 19), { fontFamily: WORD_FONT, maxWidth: vl(82), textShadowColor: 'rgba(0,0,0,0.25)', textShadowOffset: { width: 0, height: vs(1) } }]} numberOfLines={2} adjustsFontSizeToFit>
+                {fl.word}
+              </Text>
             </View>
-          ) : null}
-        </>
-      ) : null}
+          </View>
+        ) : null}
+        {/* Top corners: pause, and on the hand-off the team scores and a Start for phones without a motion sensor. */}
+        {!paused && s.phase !== 'over' ? (
+          <Pressable onPress={pause} style={[st_.pause, { top: vs(6), start: vl(3), width: vs(10), height: vs(10), borderRadius: vs(5) }]} accessibilityLabel={tr('Pause')}>
+            <Text style={[st_.edgeText, T(4.4)]}>{tr('II')}</Text>
+          </Pressable>
+        ) : null}
+        {!paused && s.phase === 'handoff' ? (
+          <>
+            <View style={[st_.scores, { top: vs(7), end: vl(3), gap: vl(1) }]}>
+              {teams.map((t) => (
+                <Chip key={t.id} text={`${t.name} · ${totals.get(t.id) ?? 0}`} dot={t.color} vs={vs} vl={vl} />
+              ))}
+            </View>
+            {count == null ? (
+              <View style={[st_.startWrap, { bottom: vs(9) }]}>
+                <Pill label={tr('Start')} onPress={countdown} gold={!motion} vs={vs} disabled={!ready} />
+              </View>
+            ) : null}
+          </>
+        ) : null}
+      </View>
     </View>
   );
 }
@@ -552,6 +563,8 @@ const st_ = StyleSheet.create({
   edgeText: { fontFamily: F.bodyBold, color: C.soft, textAlign: 'center' },
   burst: { color: '#fff', textAlign: 'center' },
   review: { position: 'absolute' },
+  stage: { position: 'absolute' },
+  cardScroll: { flex: 1 },
   row: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 12 },
   cards: { flexDirection: 'row', flexWrap: 'wrap' },
   card: { borderWidth: 1 },
