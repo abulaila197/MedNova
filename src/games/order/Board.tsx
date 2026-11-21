@@ -248,7 +248,7 @@ export function OrderBoard(p: OrderBoardProps) {
               {p.title} {p.sub ? <Text style={[s.of, { color: t.mute }]}>{p.sub}</Text> : null}
             </Text>
             <Text style={[s.pill, { color: PINK, borderColor: 'rgba(244,114,182,0.55)', backgroundColor: 'rgba(244,114,182,0.12)' }]} numberOfLines={1}>
-              {tr(q.cat)}
+              {q.cat}
             </Text>
             <RoundBtn label={tr('Pause')} glyph="❚❚" onPress={p.onPause} />
           </View>

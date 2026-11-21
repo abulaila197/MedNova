@@ -1695,12 +1695,4 @@ export const AR_PLAY: Record<string, string> = {
   "Decoys look like they belong. Each one is from a nearby process.": "الدخيلة شكلها من نفس العملية. كل واحدة من عملية قريبة.",
   "A wrong try never says which step is wrong. Check the ends first.": "المحاولة الغلط عمرها ما تقول أنهي خطوة غلط. راجع الأول والآخر الأول.",
   "Dropping a step on a filled slot swaps the two.": "لو سبت خطوة على خانة مليانة الاتنين يبدّلوا.",
-  // Basic science category names on the top-bar pill (Who am I?, Put it in order)
-  "Physiology": "فسيولوجي",
-  "Biochemistry": "كيمياء حيوية",
-  "Pathology": "باثولوجي",
-  "Pharmacology": "فارماكولوجي",
-  "Microbiology": "ميكروبيولوجي",
-  "Histology": "هستولوجي",
-  "Embryology": "أجنة",
 };

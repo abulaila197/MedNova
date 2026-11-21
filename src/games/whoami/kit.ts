@@ -25,7 +25,7 @@ export const WAI_KIT: ClueKit = {
   guessById,
   guessName,
   pool: (settings) => poolOf(tickedFields(settings)),
-  pill: (c) => ({ label: tr(c.fields[0]), color: CAT_COLOR[c.fields[0]] ?? '#f5c96b' }),
+  pill: (c) => ({ label: c.fields[0], color: CAT_COLOR[c.fields[0]] ?? '#f5c96b' }),
   resultSub: (c) => [c.type, c.fields[0]].filter(Boolean).join(' · '),
   hint: { reason: 'whoami_hint', title: tr('💡 Hint · First letter and length'), kind: 'letters' },
   gameData: (c) => ({ category: c.fields[0] }),
