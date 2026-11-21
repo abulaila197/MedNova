@@ -1,4 +1,5 @@
--- 2026-11-22 (Yazan): the Sparks bar holds 120 (was 100). Run at the release that ships SPARKS_MAX = 120.
+-- 2026-11-22 (Yazan). Run at the PRODUCTION release that ships this app version, not before: older apps still have
+-- a 100 bar and the old Full Rotation list, and the server would refuse what they show as reached.
 
 -- Sparks bar holds 120 (was 100). Refill stays 1 every 10 minutes (sparks_refill_min).
 alter table public.sparks_state alter column value set default 120;
@@ -123,3 +124,11 @@ begin
   delete from public.push_sent where at < now() - interval '30 days';
   return n;
 end $function$;
+
+-- Full Rotation counts the newer games too (the app's ROTATION_GAMES).
+create or replace function public.rotation_games()
+ returns text[] language sql immutable set search_path to '' as $function$
+  select array['case-files-unsolved','nova-crossword','the-diagnostic-pursuit','nova-medicordle',
+    'the-riddler','the-silent-artist','the-streak-master','the-wheels-of-chaos','imposter',
+    'tilt-and-tell','four-of-a-kind','spot-the-flaw','trace-the-treatment','who-am-i','put-in-order']
+$function$;

@@ -36,11 +36,11 @@ test('achievements: finished plays, unfinished and other accounts left out', () 
 
 test('achievements: full rotation is the least-played game', () => {
   const keys: GameKey[] = [...ROTATION_GAMES];
-  assert.equal(keys.length, 9); // Quick Fire Quiz merged into Wheels (2026-11-12)
+  assert.equal(keys.length, 15); // Quick Fire Quiz merged into Wheels (2026-11-12); the 6 newer games (2026-11-22)
   assert.ok(!keys.includes('trust-me-not') && !keys.includes('the-quiz-parade'));
-  const most = keys.slice(0, 8).flatMap((g) => [play(g), play(g)]);
+  const most = keys.slice(0, -1).flatMap((g) => [play(g), play(g)]);
   assert.equal(achievementProgress(base({ plays: most })).full_rotation, 0);
-  const last = keys[8];
+  const last = keys[keys.length - 1];
   const all = [...most, play(last), play(last), play('the-riddler'), play('trust-me-not')];
   assert.equal(achievementProgress(base({ plays: all })).full_rotation, 2);
 });

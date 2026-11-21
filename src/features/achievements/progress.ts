@@ -150,6 +150,8 @@ export const ROTATION_GAMES: GameKey[] = [
   'case-files-unsolved', 'nova-crossword', 'the-diagnostic-pursuit', 'nova-medicordle',
   'the-riddler', 'the-silent-artist', 'the-streak-master', 'the-wheels-of-chaos',
   'imposter', // Quick Fire Quiz merged into Wheels (2026-11-12): 9 games
+  // The newer games (2026-11-22): the server's rotation_games() matches after the release SQL.
+  'tilt-and-tell', 'four-of-a-kind', 'spot-the-flaw', 'trace-the-treatment', 'who-am-i', 'put-in-order',
 ];
 
 const OWNER = 0;
