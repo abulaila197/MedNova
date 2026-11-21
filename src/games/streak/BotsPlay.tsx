@@ -12,6 +12,7 @@ import type { RaceState } from '@/match/race';
 import { RoomTalk } from '@/match/TalkBar';
 
 import { engine } from '../engine';
+import { pickFor } from '../shell/deal';
 import { PauseMenu } from '../shell/PauseMenu';
 import { gameDef } from '../shell/registry';
 import type { PlayProps } from '../shell/types';
@@ -103,8 +104,8 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
       const n = Number(play.settings.questions) || 10;
       const ids =
         style === 'mixed' && !ticked
-          ? mixQueue(await engine.picker.pick(play.game, idsOf('clinical'), Math.ceil(n / 2)), await engine.picker.pick(play.game, idsOf('basic'), Math.floor(n / 2)))
-          : await engine.picker.pick(play.game, poolFor(style, ticked), n);
+          ? mixQueue(await pickFor(play, idsOf('clinical'), Math.ceil(n / 2)), await pickFor(play, idsOf('basic'), Math.floor(n / 2)))
+          : await pickFor(play, poolFor(style, ticked), n);
       return ids.map((id) => indexOf.get(id)!).filter(Boolean);
     },
     toItems: itemsOf,

@@ -9,6 +9,7 @@ import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import { engine } from '../engine';
+import { pickFor } from '../shell/deal';
 import { usePauseHide } from '../engine/usePauseHide';
 import { recordItem } from '../shell/flow';
 import { useSession } from '../shell/session';
@@ -73,7 +74,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
       let r = (play.resume as SoloSave | null)?.round ?? null;
       if (r && !r.queue.every((id) => questionById.has(id))) r = null; // a question left the bank since: start fresh
       if (!r) {
-        const pick = (ids: string[]) => engine.picker.pick(play.game, ids, ids.length);
+        const pick = (ids: string[]) => pickFor(play, ids, ids.length);
         const queue = custom ? [custom] : style === 'mixed' && !ticked ? mixQueue(await pick(idsOf('clinical')), await pick(idsOf('basic'))) : await pick(poolFor(style, ticked));
         r = startRound(queue, lengthSec, Date.now(), Math.random, lengthSec === 0);
         engine.recorder.bookmark(play.id, { round: snapshotRound(r, Date.now()), style, lengthSec } satisfies SoloSave, 0);

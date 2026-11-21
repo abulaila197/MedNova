@@ -5,6 +5,7 @@ import { u } from '@/theme/scale';
 
 import { engine } from '../engine';
 import { usePauseHide } from '../engine/usePauseHide';
+import { dealOf, keepDeal } from '../shell/deal';
 import { recordItem } from '../shell/flow';
 import type { PlayProps } from '../shell/types';
 import { CaseBoard } from './CaseBoard';
@@ -84,25 +85,30 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   );
 
   usePauseHide(() => dispatch({ type: 'PAUSE', now: Date.now() }));
+  // Beat my score (Yazan 2026-11-22): a challenge brings its case, which opens straight away instead of the library.
+  const fixedCase = dealOf(play.settings)?.find((id) => caseById.has(id)) ?? null;
+  const openCase = async (id: string) => {
+    // CF6: the case counts as played once it is opened, so reading it, quitting and picking it again earns no EXP.
+    // A resumed case keeps the replay flag it opened with, so it still pays once.
+    const now = (await engine.kv.get<Played>(PLAYED_KEY)) ?? {};
+    const s0 = { caseId: id, run: startRun(id, Date.now()), replay: now[id] != null };
+    save(s0); // bookmark first, so a crash between the two still resumes as a first play
+    if (!now[id]) {
+      const next: Played = { ...now, [id]: 'CLOSED' };
+      setPlayed(next);
+      await engine.kv.set(PLAYED_KEY, next);
+    }
+    await keepDeal(play.id, [id]);
+  };
+  const opening = useRef(false);
+  useEffect(() => {
+    if (state || !fixedCase || opening.current) return;
+    opening.current = true;
+    void openCase(fixedCase);
+  });
 
-  if (!state)
-    return (
-      <Library
-        played={played}
-        onPick={async (id) => {
-          // CF6: the case counts as played once it is opened, so reading it, quitting and picking it again earns no EXP.
-          // A resumed case keeps the replay flag it opened with, so it still pays once.
-          const now = (await engine.kv.get<Played>(PLAYED_KEY)) ?? {};
-          const s0 = { caseId: id, run: startRun(id, Date.now()), replay: now[id] != null };
-          save(s0); // bookmark first, so a crash between the two still resumes as a first play
-          if (!now[id]) {
-            const next: Played = { ...now, [id]: 'CLOSED' };
-            setPlayed(next);
-            await engine.kv.set(PLAYED_KEY, next);
-          }
-        }}
-      />
-    );
+
+  if (!state) return fixedCase ? null : <Library played={played} onPick={openCase} />;
 
   const def = caseById.get(state.caseId)!;
   if (review || state.run.phase === 'done')

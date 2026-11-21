@@ -12,6 +12,7 @@ import type { RaceState } from '@/match/race';
 import { RoomTalk } from '@/match/TalkBar';
 
 import { engine } from '../engine';
+import { pickFor } from '../shell/deal';
 import { PauseMenu } from '../shell/PauseMenu';
 import type { PlayProps } from '../shell/types';
 import { GameScreen, Kick } from '../shell/ui';
@@ -81,7 +82,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
     onFinish,
     onQuit,
     rules,
-    pick: async () => (await engine.picker.pick(play.game, kit.pool(play.settings), Number(play.settings.cases) || 5)).map(Number),
+    pick: async () => (await pickFor(play, kit.pool(play.settings), Number(play.settings.cases) || 5)).map(Number),
     toItems: (st) => itemsOf(kit, st),
     // The short name only, so the bubble stays small.
     guessName: (id) => kit.guessById.get(id)?.label ?? kit.guessName(id),

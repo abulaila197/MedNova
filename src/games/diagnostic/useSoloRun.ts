@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { engine } from '../engine';
+import { pickFor } from '../shell/deal';
 import { recordItem } from '../shell/flow';
 import type { PlayProps } from '../shell/types';
 import { usePauseHide } from '../engine/usePauseHide';
@@ -26,7 +27,7 @@ export function useSoloRun({ play, onFinish }: Pick<PlayProps, 'play' | 'onFinis
       if (!r) {
         // Your own approved case (practice: one case, no EXP, no free play, not fed to Learn).
         const custom = typeof play.settings.custom === 'string' && caseById.has(play.settings.custom) ? play.settings.custom : null;
-        const ids = custom ? [custom] : await engine.picker.pick(play.game, kit.pool(play.settings), Number(play.settings.cases) || 5);
+        const ids = custom ? [custom] : await pickFor(play, kit.pool(play.settings), Number(play.settings.cases) || 5);
         r = startRun(ids, Date.now());
       }
       if (live) {

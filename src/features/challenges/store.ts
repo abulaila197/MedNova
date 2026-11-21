@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { tr } from '@/i18n';
 
 import type { GameKey, Play } from '@/games/engine/types';
+import { takeDeal } from '@/games/shell/deal';
 import { useSession } from '@/games/shell/session';
 import { copyOf, keepCopy } from '@/lib/copies';
 import { call } from '@/lib/rpc';
@@ -132,9 +133,12 @@ export async function afterPlay(play: Play, score: number) {
   if (!uid || play.settings.custom) return;
   const notes: string[] = [];
   const intent = intentFor(play.game, play.mode);
+  // What this play dealt: a Beat my score sends it, so the friend gets the same questions (shell/deal.ts).
+  const deal = await takeDeal(play.id);
   if (intent?.kind === 'score') {
     setIntent(null);
-    const r = await sendChallenge({ other: intent.friend.id, kind: 'score', game: play.game, mode: play.mode as ChallengeMode, settings: fixedSettings(play.settings), days: 1, score }).catch(() => null);
+    const settings = { ...fixedSettings(play.settings), ...(deal ? { deal } : {}) };
+    const r = await sendChallenge({ other: intent.friend.id, kind: 'score', game: play.game, mode: play.mode as ChallengeMode, settings, days: 1, score }).catch(() => null);
     notes.push(r?.ok ? tr('Challenge sent to {name}: beat {score} within a day.', { name: intent.friend.name, score }) : tr('Couldn’t send the challenge to {name}. Check your connection.', { name: intent.friend.name }));
   }
   if (!useChallenges.getState().loaded) await loadFriendChallenges();

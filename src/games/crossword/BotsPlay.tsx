@@ -18,6 +18,7 @@ import { F } from '@/theme/tokens';
 import { sfxVerdict } from '@/lib/sound';
 
 import { engine } from '../engine';
+import { pickFor } from '../shell/deal';
 import { playerColour } from '../shell/characters';
 import { PauseMenu } from '../shell/PauseMenu';
 import { gameDef } from '../shell/registry';
@@ -86,7 +87,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
     build: (ctx) => new CwRace({ ...ctx, puzzleOf, limitMs }),
     pick: async () => {
       const n = Math.min(3, Math.max(1, Number(play.settings.count) || 1));
-      return (await engine.picker.pick(play.game, PUZZLES.map((x) => x.id), n)).map((id) => indexOfPuzzle.get(id)!).filter(Boolean);
+      return (await pickFor(play, PUZZLES.map((x) => x.id), n)).map((id) => indexOfPuzzle.get(id)!).filter(Boolean);
     },
     toItems: itemsOf,
   });

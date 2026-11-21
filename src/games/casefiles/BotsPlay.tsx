@@ -11,6 +11,7 @@ import { RoomTalk } from '@/match/TalkBar';
 import { u } from '@/theme/scale';
 
 import { engine } from '../engine';
+import { pickFor } from '../shell/deal';
 import { playerColour } from '../shell/characters';
 import { PauseMenu } from '../shell/PauseMenu';
 import { gameDef } from '../shell/registry';
@@ -100,7 +101,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
     rules,
     pick: async () => {
       const n = Math.min(3, Math.max(1, Number(play.settings.count) || 1));
-      return (await engine.picker.pick(play.game, CASES.map((x) => x.id), n)).map((id) => indexOfCase.get(id)!).filter(Boolean);
+      return (await pickFor(play, CASES.map((x) => x.id), n)).map((id) => indexOfCase.get(id)!).filter(Boolean);
     },
     toItems,
     solvedText: (name) => tr('{name} solved it', { name }),

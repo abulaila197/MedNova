@@ -10,6 +10,7 @@ import { u } from '@/theme/scale';
 import { F } from '@/theme/tokens';
 
 import { engine } from '../engine';
+import { pickFor } from '../shell/deal';
 import { usePauseHide } from '../engine/usePauseHide';
 import { recordItem } from '../shell/flow';
 import { PauseMenu } from '../shell/PauseMenu';
@@ -101,7 +102,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
       if (!r && custom) r = startSolo('endless', style, [custom], null, Date.now(), [custom]);
       if (!r) {
         const pool = poolFor(style, knowOf(play.settings)).map((w) => w.id);
-        r = startSolo('endless', style, await engine.picker.pick(play.game, pool, pool.length), null, Date.now(), (await engine.kv.get<string[]>(PAID_KEY)) ?? []);
+        r = startSolo('endless', style, await pickFor(play, pool, pool.length), null, Date.now(), (await engine.kv.get<string[]>(PAID_KEY)) ?? []);
       }
       if (live) {
         runRef.current = r;

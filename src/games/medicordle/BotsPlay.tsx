@@ -10,6 +10,7 @@ import { RaceReveal } from '@/match/RaceReveal';
 import { RoomTalk } from '@/match/TalkBar';
 
 import { engine } from '../engine';
+import { pickFor } from '../shell/deal';
 import { PauseMenu } from '../shell/PauseMenu';
 import { gameDef } from '../shell/registry';
 import type { PlayProps } from '../shell/types';
@@ -80,7 +81,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
     onFinish,
     onQuit,
     rules,
-    pick: async () => (await engine.picker.pick(play.game, poolFor(style, knowOf(play.settings)).map((w) => w.id), Number(play.settings.words) || 5)).map((id) => indexOf.get(id)!).filter(Boolean),
+    pick: async () => (await pickFor(play, poolFor(style, knowOf(play.settings)).map((w) => w.id), Number(play.settings.words) || 5)).map((id) => indexOf.get(id)!).filter(Boolean),
     toItems: itemsOf,
   });
   const { st, race, t } = g;
