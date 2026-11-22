@@ -467,8 +467,11 @@ const s = StyleSheet.create({
   trayDone: { fontFamily: F.body, fontSize: u(10.5) },
   krow: { flexDirection: 'row', justifyContent: 'center', gap: u(3.5) },
   // tablet (Yazan 2026-11-12): the phone's keyboard, just bigger keys across the wider screen
-  key: { flex: 1, maxWidth: u(TABLET ? 38 : 23), height: u(TABLET ? 44 : 34), borderRadius: u(3), borderWidth: 1, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
-  keyWide: { flex: 1.6, maxWidth: u(TABLET ? 62 : 38) },
+  // flexGrow/flexShrink/flexBasis spelled out, never the flex shorthand: on Android a key's flex: 1 keeps its basis at 0
+  // even when a style after it sets flexBasis auto and a width, so the Word Surgeon letters and Check drew as thin lines
+  // (Yazan 2026-11-22). Spelled out, keyBig and keyAct can override each part.
+  key: { flexGrow: 1, flexShrink: 1, flexBasis: 0, maxWidth: u(TABLET ? 38 : 23), height: u(TABLET ? 44 : 34), borderRadius: u(3), borderWidth: 1, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
+  keyWide: { flexGrow: 1.6, maxWidth: u(TABLET ? 62 : 38) },
   // Surgeon tray tiles: fixed size, so up to 15 letters wrap into neat rows.
   keyBig: { flexGrow: 0, flexShrink: 0, flexBasis: 'auto', width: u(TABLET ? 44 : 30), maxWidth: u(TABLET ? 44 : 30), height: u(TABLET ? 48 : 38) },
   // Surgeon's Back and Check: wide enough to read and hit.
