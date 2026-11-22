@@ -68,7 +68,7 @@ const KNOW: Record<string, Knowledge> = {
   'trace-the-treatment': 'clinical',
   'case-files-unsolved': 'clinical',
   'the-riddler': 'clinical',
-  'spot-the-flaw': 'clinical',
+  'spot-the-flaw': 'choice', // By choice: clinical and basic science fields in its setup (Yazan 2026-11-22)
   'who-am-i': 'basic',
   'put-in-order': 'basic',
   'the-streak-master': 'choice',
