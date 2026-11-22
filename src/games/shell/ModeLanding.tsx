@@ -16,7 +16,7 @@ import type { Mode } from '../engine/types';
 import type { GameDef } from './types';
 import { useLanding } from './useShellPages';
 import { Body, Btn, Card, GameScreen, Ghost, Kick, Title } from './ui';
-import { tr } from '@/i18n';
+import { isAr, tr } from '@/i18n';
 
 export const MODE_NAME: Record<Mode, string> = { solo: tr('Solo'), offline: tr('Pass the phone'), bots: tr('Vs rivals'), online: tr('Online Multiplayer') };
 
@@ -125,7 +125,9 @@ const s = StyleSheet.create({
   slim: { paddingVertical: u(11), paddingHorizontal: u(13), gap: 0, borderWidth: 1.5 },
   line: { flexDirection: 'row', alignItems: 'center', gap: u(10) },
   side: { minWidth: u(84), gap: u(6) },
-  hS: { fontFamily: F.display, fontSize: u(15), lineHeight: u(19) },
+  // Arabic titles 15% smaller (Yazan 2026-11-22: Arabic only, English stays 15), in the heading font (his pick), which
+  // the app would otherwise swap for the body bold under 18.
+  hS: isAr ? { fontFamily: 'Alexandria_700Bold', fontSize: u(15 * 0.85), lineHeight: u(19) } : { fontFamily: F.display, fontSize: u(15), lineHeight: u(19) },
   // The art fills the whole page behind the cards (Yazan 2026-11-22), fading only at the very bottom.
   art: { position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 },
   row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: u(10) },
