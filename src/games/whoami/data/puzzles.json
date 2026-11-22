@@ -14,7 +14,12 @@
 "My neck often breaks when an older person falls on their hip.",
 "I am the longest and strongest bone in the human body."
 ],
-"fact": "The femoral neck fracture after a fall is a classic injury in older people with osteoporosis."
+"fact": "The femoral neck fracture after a fall is a classic injury in older people with osteoporosis.",
+"decoys": [
+"Tibia",
+"Humerus",
+"Fibula"
+]
 },
 {
 "id": "2",
@@ -31,7 +36,12 @@
 "Tenderness in the anatomical snuffbox after a fall makes doctors worry about me.",
 "My blood comes in from the far end, so a fracture through my waist can leave my near pole to die."
 ],
-"fact": "Scaphoid fractures may not show on the first X-ray, and poor blood supply puts the proximal pole at risk of avascular necrosis."
+"fact": "Scaphoid fractures may not show on the first X-ray, and poor blood supply puts the proximal pole at risk of avascular necrosis.",
+"decoys": [
+"Lunate",
+"Trapezium",
+"Hamate"
+]
 },
 {
 "id": "3",
@@ -48,7 +58,12 @@
 "I am the first bone to start hardening in the fetus.",
 "I am the bone most often broken at birth and in falls on an outstretched hand, usually in my middle third."
 ],
-"fact": "It is the only long bone that ossifies in membrane, and it is the most commonly fractured bone."
+"fact": "It is the only long bone that ossifies in membrane, and it is the most commonly fractured bone.",
+"decoys": [
+"Scapula",
+"Acromion",
+"First rib"
+]
 },
 {
 "id": "4",
@@ -65,7 +80,12 @@
 "I touch no other bone at all.",
 "When I am broken, forensic doctors start to think about strangulation."
 ],
-"fact": "It is the only bone in the body that does not articulate with another bone."
+"fact": "It is the only bone in the body that does not articulate with another bone.",
+"decoys": [
+"Thyroid cartilage",
+"Cricoid cartilage",
+"Styloid process"
+]
 },
 {
 "id": "5",
@@ -82,7 +102,12 @@
 "I make the quadriceps a stronger lever when you straighten your leg.",
 "I usually slip out of place to the lateral side."
 ],
-"fact": "The largest sesamoid bone sits in the quadriceps tendon and improves the leverage of knee extension."
+"fact": "The largest sesamoid bone sits in the quadriceps tendon and improves the leverage of knee extension.",
+"decoys": [
+"Pisiform",
+"Sesamoid bone of the hallux",
+"Fabella"
+]
 },
 {
 "id": "6",
@@ -99,7 +124,12 @@
 "A badly placed injection in the upper outer buttock is safe, but the lower inner part can hurt me.",
 "I am the thickest and longest nerve in the body, splitting into tibial and common fibular branches."
 ],
-"fact": "It is the largest nerve in the body; gluteal injections go in the upper outer quadrant to avoid it."
+"fact": "It is the largest nerve in the body; gluteal injections go in the upper outer quadrant to avoid it.",
+"decoys": [
+"Femoral nerve",
+"Obturator nerve",
+"Pudendal nerve"
+]
 },
 {
 "id": "7",
@@ -114,7 +144,12 @@
 "Pain from my territory can be felt at the tip of the shoulder.",
 "I am the only motor supply to the diaphragm."
 ],
-"fact": "\"C3, 4, 5 keeps the diaphragm alive\": damage paralyses half of the diaphragm."
+"fact": "\"C3, 4, 5 keeps the diaphragm alive\": damage paralyses half of the diaphragm.",
+"decoys": [
+"Long thoracic nerve",
+"Accessory nerve",
+"Intercostal nerve"
+]
 },
 {
 "id": "8",
@@ -131,7 +166,12 @@
 "Surgeons look for me carefully during thyroid operations.",
 "If I am cut on one side, the voice becomes hoarse."
 ],
-"fact": "It supplies all intrinsic laryngeal muscles except cricothyroid, so injury causes hoarseness."
+"fact": "It supplies all intrinsic laryngeal muscles except cricothyroid, so injury causes hoarseness.",
+"decoys": [
+"Superior laryngeal nerve",
+"Hypoglossal nerve",
+"Glossopharyngeal nerve"
+]
 },
 {
 "id": "9",
@@ -146,7 +186,12 @@
 "When I am squeezed there, the thumb, index and middle fingers tingle at night.",
 "I am the nerve trapped in carpal tunnel syndrome, and damage can waste the thenar muscles."
 ],
-"fact": "Compression in the carpal tunnel gives numbness of the lateral three and a half fingers and thenar wasting."
+"fact": "Compression in the carpal tunnel gives numbness of the lateral three and a half fingers and thenar wasting.",
+"decoys": [
+"Radial nerve",
+"Musculocutaneous nerve",
+"Anterior interosseous nerve"
+]
 },
 {
 "id": "10",
@@ -161,7 +206,12 @@
 "When you knock me there, your little finger tingles.",
 "People call me the funny bone, and my injury leaves a claw hand."
 ],
-"fact": "Injury causes a claw hand with loss of finger abduction and numbness of the little finger."
+"fact": "Injury causes a claw hand with loss of finger abduction and numbness of the little finger.",
+"decoys": [
+"Axillary nerve",
+"Posterior interosseous nerve",
+"Medial cutaneous nerve of the forearm"
+]
 },
 {
 "id": "11",
@@ -178,7 +228,12 @@
 "A tight plaster cast or crossing your legs for too long can press on me.",
 "When I am damaged, the foot drops and the toes drag when you walk."
 ],
-"fact": "It is the most commonly injured nerve in the leg, causing foot drop."
+"fact": "It is the most commonly injured nerve in the leg, causing foot drop.",
+"decoys": [
+"Tibial nerve",
+"Sural nerve",
+"Saphenous nerve"
+]
 },
 {
 "id": "12",
@@ -195,7 +250,12 @@
 "I leave the skull through the stylomastoid foramen and pass through the parotid gland.",
 "When I fail on one side, the whole half of the face droops, as in Bell palsy."
 ],
-"fact": "Bell palsy is an idiopathic lower motor neuron lesion that paralyses one whole side of the face."
+"fact": "Bell palsy is an idiopathic lower motor neuron lesion that paralyses one whole side of the face.",
+"decoys": [
+"Trigeminal nerve",
+"Vestibulocochlear nerve",
+"Abducens nerve"
+]
 },
 {
 "id": "13",
@@ -212,7 +272,12 @@
 "Pressing on the carotid sinus can make me slow the heart down.",
 "I am the main parasympathetic nerve of the body, number ten of twelve."
 ],
-"fact": "It carries most of the body's parasympathetic supply to the thoracic and abdominal organs."
+"fact": "It carries most of the body's parasympathetic supply to the thoracic and abdominal organs.",
+"decoys": [
+"Oculomotor nerve",
+"Trochlear nerve",
+"Olfactory nerve"
+]
 },
 {
 "id": "14",
@@ -227,7 +292,12 @@
 "The aorta, oesophagus and inferior vena cava pass through me at different levels.",
 "I am the main muscle of breathing: when I contract I flatten and pull air in."
 ],
-"fact": "The vena cava passes at T8, the oesophagus at T10 and the aorta at T12."
+"fact": "The vena cava passes at T8, the oesophagus at T10 and the aorta at T12.",
+"decoys": [
+"External intercostal",
+"Transversus abdominis",
+"Rectus abdominis"
+]
 },
 {
 "id": "15",
@@ -242,7 +312,12 @@
 "The axillary nerve supplies me, and nurses often give vaccines into me.",
 "I lift the arm away from the side, from about 15 to 90 degrees."
 ],
-"fact": "Supplied by the axillary nerve, it is the main abductor of the arm and a common injection site."
+"fact": "Supplied by the axillary nerve, it is the main abductor of the arm and a common injection site.",
+"decoys": [
+"Supraspinatus",
+"Teres major",
+"Pectoralis major"
+]
 },
 {
 "id": "16",
@@ -257,7 +332,12 @@
 "When I am tight in a newborn, the head tilts to one side.",
 "I turn the face to the opposite side, and the accessory nerve supplies me."
 ],
-"fact": "Torticollis in babies is often from a shortened muscle; contraction turns the head to the opposite side."
+"fact": "Torticollis in babies is often from a shortened muscle; contraction turns the head to the opposite side.",
+"decoys": [
+"Trapezius",
+"Scalenus anterior",
+"Platysma"
+]
 },
 {
 "id": "17",
@@ -274,7 +354,12 @@
 "The long thoracic nerve supplies me and can be cut in breast surgery.",
 "When I am paralysed, the shoulder blade sticks out like a wing."
 ],
-"fact": "Long thoracic nerve injury paralyses it and causes a winged scapula."
+"fact": "Long thoracic nerve injury paralyses it and causes a winged scapula.",
+"decoys": [
+"Rhomboid major",
+"Pectoralis minor",
+"Latissimus dorsi"
+]
 },
 {
 "id": "18",
@@ -289,7 +374,12 @@
 "An abscess from spinal tuberculosis can track down inside my sheath into the groin.",
 "I am the strongest flexor of the hip."
 ],
-"fact": "Together with iliacus it forms iliopsoas, the main hip flexor; a sign of irritation is pain on hip extension."
+"fact": "Together with iliacus it forms iliopsoas, the main hip flexor; a sign of irritation is pain on hip extension.",
+"decoys": [
+"Iliacus",
+"Quadratus lumborum",
+"Piriformis"
+]
 },
 {
 "id": "19",
@@ -304,7 +394,12 @@
 "I keep the pelvis level when you stand on one leg.",
 "When I am weak, the pelvis drops on the opposite side as you walk: the Trendelenburg sign."
 ],
-"fact": "Weakness gives a positive Trendelenburg sign and a waddling gait."
+"fact": "Weakness gives a positive Trendelenburg sign and a waddling gait.",
+"decoys": [
+"Gluteus maximus",
+"Gluteus minimus",
+"Tensor fasciae latae"
+]
 },
 {
 "id": "20",
@@ -319,7 +414,12 @@
 "I am supplied by the tibial nerve.",
 "I unlock the fully straightened knee by rotating it at the start of bending."
 ],
-"fact": "It is called the key that unlocks the knee."
+"fact": "It is called the key that unlocks the knee.",
+"decoys": [
+"Plantaris",
+"Gastrocnemius",
+"Soleus"
+]
 },
 {
 "id": "21",
@@ -337,7 +437,12 @@
 "I supply the front two thirds of the septum and much of the left ventricle.",
 "When I block suddenly, the heart attack is so deadly I am called the widow maker."
 ],
-"fact": "It is the most commonly blocked coronary artery and gives anterior myocardial infarctions."
+"fact": "It is the most commonly blocked coronary artery and gives anterior myocardial infarctions.",
+"decoys": [
+"Left circumflex artery",
+"Right coronary artery",
+"Posterior descending artery"
+]
 },
 {
 "id": "22",
@@ -352,7 +457,12 @@
 "A blow to the side of the head can tear me.",
 "My bleeding gives an extradural haematoma with a lucid interval."
 ],
-"fact": "Rupture under the pterion causes an extradural (epidural) haematoma with a lucid interval."
+"fact": "Rupture under the pterion causes an extradural (epidural) haematoma with a lucid interval.",
+"decoys": [
+"Superficial temporal artery",
+"Maxillary artery",
+"Ophthalmic artery"
+]
 },
 {
 "id": "23",
@@ -369,7 +479,12 @@
 "I join the deep system at the groin through an opening in the fascia.",
 "Surgeons often take me to use as a bypass graft for the heart."
 ],
-"fact": "The longest vein in the body, often harvested for coronary artery bypass grafts."
+"fact": "The longest vein in the body, often harvested for coronary artery bypass grafts.",
+"decoys": [
+"Small saphenous vein",
+"Femoral vein",
+"Cephalic vein"
+]
 },
 {
 "id": "24",
@@ -384,7 +499,12 @@
 "I arch over the root of the right lung.",
 "I join the superior vena cava and connect it with the inferior vena cava when it is blocked."
 ],
-"fact": "It links the two venae cavae and becomes an important bypass route when one is obstructed."
+"fact": "It links the two venae cavae and becomes an important bypass route when one is obstructed.",
+"decoys": [
+"Hemiazygos vein",
+"Superior vena cava",
+"Brachiocephalic vein"
+]
 },
 {
 "id": "25",
@@ -401,7 +521,12 @@
 "When pressure in me rises, varices can open in the oesophagus.",
 "I bring about three quarters of the liver's blood supply."
 ],
-"fact": "Raised pressure (portal hypertension) causes oesophageal varices, ascites and splenomegaly."
+"fact": "Raised pressure (portal hypertension) causes oesophageal varices, ascites and splenomegaly.",
+"decoys": [
+"Splenic vein",
+"Superior mesenteric vein",
+"Hepatic vein"
+]
 },
 {
 "id": "26",
@@ -418,7 +543,12 @@
 "Berry aneurysms often form where my vessels meet.",
 "I am a ring that can keep blood flowing to the brain if one feeding artery is blocked."
 ],
-"fact": "Most berry aneurysms occur on it, especially at the anterior communicating artery."
+"fact": "Most berry aneurysms occur on it, especially at the anterior communicating artery.",
+"decoys": [
+"Vertebrobasilar system",
+"Superior sagittal sinus",
+"Cavernous sinus"
+]
 },
 {
 "id": "27",
@@ -433,7 +563,12 @@
 "I empty at the junction of the left subclavian and left internal jugular veins.",
 "I carry most of the body's lymph and the fat absorbed from the gut."
 ],
-"fact": "Injury causes chylothorax, milky fluid in the pleural space."
+"fact": "Injury causes chylothorax, milky fluid in the pleural space.",
+"decoys": [
+"Right lymphatic duct",
+"Cisterna chyli",
+"Bronchomediastinal trunk"
+]
 },
 {
 "id": "28",
@@ -448,7 +583,12 @@
 "I am the organ most often damaged in blunt abdominal trauma.",
 "Without me, people are at risk of serious infection by encapsulated bacteria."
 ],
-"fact": "After its removal patients need vaccines against pneumococcus, meningococcus and Haemophilus."
+"fact": "After its removal patients need vaccines against pneumococcus, meningococcus and Haemophilus.",
+"decoys": [
+"Liver",
+"Kidney",
+"Gallbladder"
+]
 },
 {
 "id": "29",
@@ -465,7 +605,12 @@
 "My base lies at McBurney's point on the skin.",
 "When I am inflamed, pain starts around the navel and moves to the right lower abdomen."
 ],
-"fact": "Its base projects to McBurney's point, one third of the way from the anterior superior iliac spine to the umbilicus."
+"fact": "Its base projects to McBurney's point, one third of the way from the anterior superior iliac spine to the umbilicus.",
+"decoys": [
+"Caecum",
+"Meckel's diverticulum",
+"Sigmoid colon"
+]
 },
 {
 "id": "30",
@@ -480,7 +625,12 @@
 "My main duct joins the common bile duct at the ampulla of Vater.",
 "I make digestive enzymes and, in my islets, insulin and glucagon."
 ],
-"fact": "A gallstone stuck at the ampulla is a common cause of acute inflammation of this organ."
+"fact": "A gallstone stuck at the ampulla is a common cause of acute inflammation of this organ.",
+"decoys": [
+"Duodenum",
+"Adrenal gland",
+"Stomach"
+]
 },
 {
 "id": "31",
@@ -495,7 +645,12 @@
 "I move up when you swallow, because I am wrapped to the larynx.",
 "I make hormones that set your metabolic rate, and I need iodine to do it."
 ],
-"fact": "Lack of iodine makes it enlarge into a goitre."
+"fact": "Lack of iodine makes it enlarge into a goitre.",
+"decoys": [
+"Parathyroid glands",
+"Thymus",
+"Submandibular gland"
+]
 },
 {
 "id": "32",
@@ -512,7 +667,12 @@
 "A tumour in me can press on the optic chiasm and cause bitemporal hemianopia.",
 "People call me the master gland, as I control many other glands."
 ],
-"fact": "Tumours press on the optic chiasm above it, causing loss of both outer visual fields."
+"fact": "Tumours press on the optic chiasm above it, causing loss of both outer visual fields.",
+"decoys": [
+"Pineal gland",
+"Parotid gland",
+"Mammillary body"
+]
 },
 {
 "id": "33",
@@ -527,7 +687,12 @@
 "Nine tendons and one nerve pass through me.",
 "When I get too tight, the median nerve is squeezed."
 ],
-"fact": "It contains the median nerve and nine flexor tendons; compression causes carpal tunnel syndrome."
+"fact": "It contains the median nerve and nine flexor tendons; compression causes carpal tunnel syndrome.",
+"decoys": [
+"Cubital tunnel",
+"Guyon's canal",
+"Tarsal tunnel"
+]
 },
 {
 "id": "34",
@@ -542,7 +707,12 @@
 "In men I carry the spermatic cord; in women, the round ligament.",
 "Indirect hernias come down through me."
 ],
-"fact": "Indirect inguinal hernias pass through the deep ring lateral to the inferior epigastric vessels."
+"fact": "Indirect inguinal hernias pass through the deep ring lateral to the inferior epigastric vessels.",
+"decoys": [
+"Femoral canal",
+"Obturator canal",
+"Adductor canal"
+]
 },
 {
 "id": "35",
@@ -557,7 +727,12 @@
 "The radial artery runs across my floor.",
 "Pain here after a fall suggests a fracture of the scaphoid."
 ],
-"fact": "Tenderness here after a fall on an outstretched hand points to a scaphoid fracture."
+"fact": "Tenderness here after a fall on an outstretched hand points to a scaphoid fracture.",
+"decoys": [
+"Cubital fossa",
+"Popliteal fossa",
+"Femoral triangle"
+]
 },
 {
 "id": "36",
@@ -572,7 +747,12 @@
 "I hold the head of the humerus in its shallow socket.",
 "My supraspinatus part tears most often, giving a painful arc."
 ],
-"fact": "The four \"SITS\" muscles stabilise the shoulder joint."
+"fact": "The four \"SITS\" muscles stabilise the shoulder joint.",
+"decoys": [
+"Hamstrings",
+"Quadriceps femoris",
+"Pes anserinus"
+]
 },
 {
 "id": "37",
@@ -589,7 +769,12 @@
 "I stop the tibia from sliding forward.",
 "I tear in sudden twisting injuries in football, and the anterior drawer test checks me."
 ],
-"fact": "Tears are common in pivoting sports; the Lachman and anterior drawer tests examine it."
+"fact": "Tears are common in pivoting sports; the Lachman and anterior drawer tests examine it.",
+"decoys": [
+"Posterior cruciate ligament",
+"Medial collateral ligament",
+"Lateral collateral ligament"
+]
 },
 {
 "id": "38",
@@ -606,7 +791,12 @@
 "I attach to the heel bone.",
 "I am the thickest and strongest tendon in the body, and squeezing the calf tests if I am torn."
 ],
-"fact": "The Thompson (calf squeeze) test checks for its rupture."
+"fact": "The Thompson (calf squeeze) test checks for its rupture.",
+"decoys": [
+"Patellar tendon",
+"Tibialis posterior tendon",
+"Plantar fascia"
+]
 },
 {
 "id": "39",
@@ -624,7 +814,12 @@
 "In children I am shorter and more horizontal, so infections climb up easily.",
 "I open when you swallow or yawn to even out the pressure on the eardrum."
 ],
-"fact": "It equalises middle ear pressure, which is why swallowing helps on a plane."
+"fact": "It equalises middle ear pressure, which is why swallowing helps on a plane.",
+"decoys": [
+"Nasolacrimal duct",
+"External acoustic meatus",
+"Semicircular canals"
+]
 },
 {
 "id": "40",
@@ -639,7 +834,12 @@
 "If I am cut, the two sides of the brain can no longer share information.",
 "I am the largest bundle of fibres joining the two cerebral hemispheres."
 ],
-"fact": "It is the largest commissure, connecting the left and right hemispheres."
+"fact": "It is the largest commissure, connecting the left and right hemispheres.",
+"decoys": [
+"Anterior commissure",
+"Internal capsule",
+"Fornix"
+]
 },
 {
 "id": "41",
@@ -657,7 +857,12 @@
 "My cells leak sodium slowly, so they fire on their own without any nerve.",
 "I am the natural pacemaker that sets the normal heart rate."
 ],
-"fact": "Its cells have the fastest spontaneous depolarisation, so they set the sinus rhythm."
+"fact": "Its cells have the fastest spontaneous depolarisation, so they set the sinus rhythm.",
+"decoys": [
+"Bundle of His",
+"Bachmann's bundle",
+"Left bundle branch"
+]
 },
 {
 "id": "42",
@@ -674,7 +879,12 @@
 "I slow the signal down on purpose, which shows as the PR interval.",
 "That pause lets the atria finish filling the ventricles before they contract."
 ],
-"fact": "Its delay (most of the PR interval) gives the atria time to empty into the ventricles."
+"fact": "Its delay (most of the PR interval) gives the atria time to empty into the ventricles.",
+"decoys": [
+"Right bundle branch",
+"Internodal pathways",
+"Accessory pathway"
+]
 },
 {
 "id": "43",
@@ -691,7 +901,12 @@
 "I am the last part of the conduction system after the bundle branches.",
 "I carry the impulse faster than any other heart tissue, so the ventricles contract together."
 ],
-"fact": "They conduct at about 4 m/s, the fastest in the heart, for a coordinated ventricular contraction."
+"fact": "They conduct at about 4 m/s, the fastest in the heart, for a coordinated ventricular contraction.",
+"decoys": [
+"Moderator band",
+"Chordae tendineae",
+"Papillary muscle"
+]
 },
 {
 "id": "44",
@@ -708,7 +923,12 @@
 "When blood pressure rises, I tell the brain to slow the heart.",
 "Massaging me can stop some fast heart rhythms, but it can make older people faint."
 ],
-"fact": "Carotid sinus massage raises vagal tone and can end supraventricular tachycardia."
+"fact": "Carotid sinus massage raises vagal tone and can end supraventricular tachycardia.",
+"decoys": [
+"Aortic arch baroreceptors",
+"Cardiopulmonary receptors",
+"Atrial stretch receptors"
+]
 },
 {
 "id": "45",
@@ -725,7 +945,12 @@
 "My type I cells sense the blood's gases and acidity.",
 "I raise breathing when the oxygen pressure in arterial blood falls."
 ],
-"fact": "It is the main peripheral sensor of low arterial oxygen."
+"fact": "It is the main peripheral sensor of low arterial oxygen.",
+"decoys": [
+"Aortic body",
+"Central chemoreceptors",
+"Area postrema"
+]
 },
 {
 "id": "46",
@@ -740,7 +965,12 @@
 "I lower surface tension so small air sacs don't collapse when you breathe out.",
 "Babies born too early lack me and develop respiratory distress syndrome."
 ],
-"fact": "Made by type II pneumocytes from about 24 to 28 weeks; steroids before preterm birth increase it."
+"fact": "Made by type II pneumocytes from about 24 to 28 weeks; steroids before preterm birth increase it.",
+"decoys": [
+"Mucin",
+"Alpha-1 antitrypsin",
+"Pulmonary lavage fluid"
+]
 },
 {
 "id": "47",
@@ -757,7 +987,12 @@
 "Carbon monoxide sticks to me about 200 times more tightly than oxygen does.",
 "I live inside red blood cells and carry oxygen to the tissues."
 ],
-"fact": "Its sigmoid oxygen curve comes from cooperative binding; 2,3-BPG shifts it to the right."
+"fact": "Its sigmoid oxygen curve comes from cooperative binding; 2,3-BPG shifts it to the right.",
+"decoys": [
+"Haptoglobin",
+"Transferrin",
+"Ferritin"
+]
 },
 {
 "id": "48",
@@ -774,7 +1009,12 @@
 "Low oxygen in the blood makes my level go up.",
 "I tell the bone marrow to make more red blood cells."
 ],
-"fact": "Kidney failure lowers it and causes anaemia; some athletes have abused it for doping."
+"fact": "Kidney failure lowers it and causes anaemia; some athletes have abused it for doping.",
+"decoys": [
+"Thrombopoietin",
+"Granulocyte colony-stimulating factor",
+"Interleukin-3"
+]
 },
 {
 "id": "49",
@@ -789,7 +1029,12 @@
 "Angiotensin II and high potassium make me rise.",
 "I make the kidney keep sodium and lose potassium."
 ],
-"fact": "An adrenal tumour making too much of it (Conn syndrome) causes high blood pressure with low potassium."
+"fact": "An adrenal tumour making too much of it (Conn syndrome) causes high blood pressure with low potassium.",
+"decoys": [
+"Corticosterone",
+"Deoxycorticosterone",
+"Androstenedione"
+]
 },
 {
 "id": "50",
@@ -807,7 +1052,12 @@
 "I put water channels, aquaporin-2, into the collecting ducts.",
 "Without me you pass large amounts of dilute urine, as in diabetes insipidus."
 ],
-"fact": "Lack of it causes central diabetes insipidus; alcohol blocks its release."
+"fact": "Lack of it causes central diabetes insipidus; alcohol blocks its release.",
+"decoys": [
+"Corticotropin-releasing hormone",
+"Thyrotropin-releasing hormone",
+"Gonadotropin-releasing hormone"
+]
 },
 {
 "id": "51",
@@ -824,7 +1074,12 @@
 "I make the kidney lose more salt and water and I widen blood vessels.",
 "I am the heart's own hormone that works against the renin-angiotensin system."
 ],
-"fact": "Released by atrial stretch, it promotes sodium excretion; its cousin BNP helps diagnose heart failure."
+"fact": "Released by atrial stretch, it promotes sodium excretion; its cousin BNP helps diagnose heart failure.",
+"decoys": [
+"Brain natriuretic peptide",
+"Endothelin",
+"Bradykinin"
+]
 },
 {
 "id": "52",
@@ -841,7 +1096,12 @@
 "I cut angiotensinogen from the liver into angiotensin I.",
 "I am the first and rate-limiting step of the system that raises blood pressure."
 ],
-"fact": "It starts the renin-angiotensin-aldosterone system; aliskiren blocks it directly."
+"fact": "It starts the renin-angiotensin-aldosterone system; aliskiren blocks it directly.",
+"decoys": [
+"Angiotensin-converting enzyme",
+"Chymase",
+"Kallikrein"
+]
 },
 {
 "id": "53",
@@ -856,7 +1116,12 @@
 "I sense how much sodium chloride is flowing past me.",
 "I send signals that adjust filtration and renin release: tubuloglomerular feedback."
 ],
-"fact": "It senses NaCl in the distal tubule and controls GFR by tubuloglomerular feedback."
+"fact": "It senses NaCl in the distal tubule and controls GFR by tubuloglomerular feedback.",
+"decoys": [
+"Proximal tubule cells",
+"Intercalated cells",
+"Principal cells"
+]
 },
 {
 "id": "54",
@@ -871,7 +1136,12 @@
 "My thick ascending limb pumps salt out but lets no water follow.",
 "I build the salt gradient that lets the kidney make concentrated urine."
 ],
-"fact": "Its countercurrent multiplier builds the medullary gradient; loop diuretics act on its thick ascending limb."
+"fact": "Its countercurrent multiplier builds the medullary gradient; loop diuretics act on its thick ascending limb.",
+"decoys": [
+"Proximal convoluted tubule",
+"Distal convoluted tubule",
+"Collecting duct"
+]
 },
 {
 "id": "55",
@@ -886,7 +1156,12 @@
 "My wall has three layers that block cells and most proteins.",
 "I am the filter of the nephron, where blood plasma becomes the first urine."
 ],
-"fact": "Its filtration rate (GFR) is the main measure of kidney function."
+"fact": "Its filtration rate (GFR) is the main measure of kidney function.",
+"decoys": [
+"Peritubular capillaries",
+"Vasa recta",
+"Bowman's capsule"
+]
 },
 {
 "id": "56",
@@ -903,7 +1178,12 @@
 "I hold granules and act as a pressure sensor.",
 "I release renin when blood pressure in the kidney falls."
 ],
-"fact": "Modified smooth muscle cells that release renin; with the macula densa they form an apparatus."
+"fact": "Modified smooth muscle cells that release renin; with the macula densa they form an apparatus.",
+"decoys": [
+"Extraglomerular mesangial cells",
+"Lacis cells",
+"Interstitial fibroblasts of the kidney"
+]
 },
 {
 "id": "57",
@@ -920,7 +1200,12 @@
 "I raise blood sugar, break down protein and calm the immune system.",
 "I am the body's main stress hormone, and ACTH controls me."
 ],
-"fact": "Too much gives Cushing syndrome; too little gives Addison disease."
+"fact": "Too much gives Cushing syndrome; too little gives Addison disease.",
+"decoys": [
+"Cortisone",
+"Corticotropin",
+"Dehydroepiandrosterone"
+]
 },
 {
 "id": "58",
@@ -938,7 +1223,12 @@
 "Tissues change me into a more active form by removing one iodine.",
 "I am the main hormone the thyroid gland releases."
 ],
-"fact": "It is converted in the tissues to the more active T3."
+"fact": "It is converted in the tissues to the more active T3.",
+"decoys": [
+"Triiodothyronine",
+"Reverse T3",
+"Thyroid-stimulating hormone"
+]
 },
 {
 "id": "59",
@@ -956,7 +1246,12 @@
 "I free calcium from bone, keep it in the kidney and lose phosphate in the urine.",
 "I turn on the enzyme that makes active vitamin D."
 ],
-"fact": "High levels from an adenoma cause high calcium: \"bones, stones, groans and moans\"."
+"fact": "High levels from an adenoma cause high calcium: \"bones, stones, groans and moans\".",
+"decoys": [
+"Parathyroid hormone-related peptide",
+"Fibroblast growth factor 23",
+"Calcitriol"
+]
 },
 {
 "id": "60",
@@ -973,7 +1268,12 @@
 "I lower blood calcium by slowing down osteoclasts.",
 "I am a tumour marker for medullary thyroid cancer."
 ],
-"fact": "It is raised in medullary thyroid carcinoma."
+"fact": "It is raised in medullary thyroid carcinoma.",
+"decoys": [
+"Osteocalcin",
+"Osteoprotegerin",
+"Calcitonin gene-related peptide"
+]
 },
 {
 "id": "61",
@@ -988,7 +1288,12 @@
 "A baby sucking at the breast makes me rise and the milk flow out.",
 "I make the womb contract during labour, and I am given as a drip to speed it up."
 ],
-"fact": "It causes uterine contraction and milk let-down; it is used to induce labour."
+"fact": "It causes uterine contraction and milk let-down; it is used to induce labour.",
+"decoys": [
+"Relaxin",
+"Inhibin",
+"Human chorionic gonadotropin"
+]
 },
 {
 "id": "62",
@@ -1003,7 +1308,12 @@
 "A tumour making too much of me can stop periods and cause milk outside pregnancy.",
 "My main job is to make the breasts produce milk."
 ],
-"fact": "Prolactinoma is the most common pituitary tumour; dopamine agonists treat it."
+"fact": "Prolactinoma is the most common pituitary tumour; dopamine agonists treat it.",
+"decoys": [
+"Human placental lactogen",
+"Follicle-stimulating hormone",
+"Luteinizing hormone"
+]
 },
 {
 "id": "63",
@@ -1021,7 +1331,12 @@
 "Too much of me after the long bones stop lengthening causes acromegaly.",
 "Too much of me in childhood makes a person very tall: gigantism."
 ],
-"fact": "Excess before puberty causes gigantism; after it, acromegaly."
+"fact": "Excess before puberty causes gigantism; after it, acromegaly.",
+"decoys": [
+"Insulin-like growth factor 1",
+"Somatostatin",
+"Growth hormone-releasing hormone"
+]
 },
 {
 "id": "64",
@@ -1036,7 +1351,12 @@
 "Light at the eyes stops my release.",
 "I rise in the dark and help set the sleep-wake cycle."
 ],
-"fact": "Sometimes taken to help with jet lag."
+"fact": "Sometimes taken to help with jet lag.",
+"decoys": [
+"Serotonin",
+"Orexin",
+"Adenosine"
+]
 },
 {
 "id": "65",
@@ -1051,7 +1371,12 @@
 "A tumour in the pancreas making too much of me gives many ulcers.",
 "My main job is to make parietal cells release acid."
 ],
-"fact": "Zollinger-Ellison syndrome is a tumour that makes too much of it."
+"fact": "Zollinger-Ellison syndrome is a tumour that makes too much of it.",
+"decoys": [
+"Motilin",
+"Histamine",
+"Gastric inhibitory peptide"
+]
 },
 {
 "id": "66",
@@ -1068,7 +1393,12 @@
 "I relax the sphincter of Oddi and help you feel full.",
 "I make the gallbladder contract and the pancreas release enzymes."
 ],
-"fact": "It squeezes the gallbladder, so a fatty meal can trigger biliary colic."
+"fact": "It squeezes the gallbladder, so a fatty meal can trigger biliary colic.",
+"decoys": [
+"Vasoactive intestinal peptide",
+"Peptide YY",
+"Neuropeptide Y"
+]
 },
 {
 "id": "67",
@@ -1083,7 +1413,12 @@
 "I make the pancreas release water and bicarbonate.",
 "I neutralise the acid entering the small intestine."
 ],
-"fact": "The first hormone discovered (1902); it makes the pancreas secrete bicarbonate."
+"fact": "The first hormone discovered (1902); it makes the pancreas secrete bicarbonate.",
+"decoys": [
+"Glucagon-like peptide 1",
+"Pancreatic polypeptide",
+"Enteroglucagon"
+]
 },
 {
 "id": "68",
@@ -1098,7 +1433,12 @@
 "I also make the pituitary release growth hormone.",
 "People call me the hunger hormone."
 ],
-"fact": "The only known gut hormone that increases appetite."
+"fact": "The only known gut hormone that increases appetite.",
+"decoys": [
+"Obestatin",
+"Agouti-related peptide",
+"Alpha-MSH"
+]
 },
 {
 "id": "69",
@@ -1113,7 +1453,12 @@
 "I act on the hypothalamus.",
 "I tell the brain that the body has enough energy stores, so appetite falls."
 ],
-"fact": "Obese people usually have high levels but respond poorly to it (resistance)."
+"fact": "Obese people usually have high levels but respond poorly to it (resistance).",
+"decoys": [
+"Adiponectin",
+"Resistin",
+"Visfatin"
+]
 },
 {
 "id": "70",
@@ -1130,7 +1475,12 @@
 "I am absorbed together with that vitamin in the terminal ileum.",
 "Antibodies against me cause pernicious anaemia."
 ],
-"fact": "It is needed to absorb vitamin B12; autoimmune loss causes pernicious anaemia."
+"fact": "It is needed to absorb vitamin B12; autoimmune loss causes pernicious anaemia.",
+"decoys": [
+"Haptocorrin",
+"Transcobalamin II",
+"Pepsinogen"
+]
 },
 {
 "id": "71",
@@ -1147,7 +1497,12 @@
 "About 95% of me is taken back in the terminal ileum and reused.",
 "I break fat into small drops so it can be digested and absorbed."
 ],
-"fact": "They emulsify fat; their enterohepatic circulation recycles them several times a day."
+"fact": "They emulsify fat; their enterohepatic circulation recycles them several times a day.",
+"decoys": [
+"Phospholipids",
+"Bile pigments",
+"Micelles"
+]
 },
 {
 "id": "72",
@@ -1162,7 +1517,12 @@
 "I sense how much and how fast a muscle is stretched.",
 "I start the knee-jerk reflex when the patellar tendon is tapped."
 ],
-"fact": "It drives the stretch (myotatic) reflex such as the knee jerk."
+"fact": "It drives the stretch (myotatic) reflex such as the knee jerk.",
+"decoys": [
+"Meissner's corpuscle",
+"Ruffini ending",
+"Free nerve ending"
+]
 },
 {
 "id": "73",
@@ -1177,7 +1537,12 @@
 "My signals come through Ib fibres.",
 "I sense tension and make the muscle relax if it pulls too hard."
 ],
-"fact": "It mediates the inverse stretch reflex that protects against too much force."
+"fact": "It mediates the inverse stretch reflex that protects against too much force.",
+"decoys": [
+"Joint capsule receptor",
+"Krause end bulb",
+"Hair follicle receptor"
+]
 },
 {
 "id": "74",
@@ -1194,7 +1559,12 @@
 "I am the biggest of the skin's touch sensors.",
 "I sense vibration and deep pressure."
 ],
-"fact": "Its onion-like layers make it respond to vibration and quickly adapt."
+"fact": "Its onion-like layers make it respond to vibration and quickly adapt.",
+"decoys": [
+"Merkel disc",
+"Nociceptor",
+"Thermoreceptor"
+]
 },
 {
 "id": "75",
@@ -1209,7 +1579,12 @@
 "I make releasing hormones that reach the pituitary through portal vessels.",
 "I am the link between the nervous system and the endocrine system."
 ],
-"fact": "It controls the pituitary and keeps homeostasis (temperature, thirst, hunger)."
+"fact": "It controls the pituitary and keeps homeostasis (temperature, thirst, hunger).",
+"decoys": [
+"Thalamus",
+"Medulla oblongata",
+"Pons"
+]
 },
 {
 "id": "76",
@@ -1224,7 +1599,12 @@
 "Damage to me causes a wide-based gait, intention tremor and slurred speech.",
 "I coordinate movement and balance."
 ],
-"fact": "Damage gives ataxia on the same side, intention tremor and dysdiadochokinesia."
+"fact": "Damage gives ataxia on the same side, intention tremor and dysdiadochokinesia.",
+"decoys": [
+"Basal ganglia",
+"Hippocampus",
+"Amygdala"
+]
 },
 {
 "id": "77",
@@ -1241,7 +1621,12 @@
 "I act on nicotinic and muscarinic receptors.",
 "I am released at the neuromuscular junction to make skeletal muscle contract."
 ],
-"fact": "Myasthenia gravis is caused by antibodies against its nicotinic receptor."
+"fact": "Myasthenia gravis is caused by antibodies against its nicotinic receptor.",
+"decoys": [
+"Aspartate",
+"Glutamate",
+"Glycine"
+]
 },
 {
 "id": "78",
@@ -1256,7 +1641,12 @@
 "Neurons making me in the substantia nigra die in Parkinson disease.",
 "I am the brain's reward signal and I stop prolactin release."
 ],
-"fact": "Loss in the nigrostriatal pathway causes Parkinson disease."
+"fact": "Loss in the nigrostriatal pathway causes Parkinson disease.",
+"decoys": [
+"GABA",
+"Substance P",
+"Endorphin"
+]
 },
 {
 "id": "79",
@@ -1271,7 +1661,12 @@
 "When muscle is crushed, I leak out and can block the kidneys.",
 "I store oxygen inside muscle cells."
 ],
-"fact": "Released in rhabdomyolysis, it can cause acute kidney injury."
+"fact": "Released in rhabdomyolysis, it can cause acute kidney injury.",
+"decoys": [
+"Neuroglobin",
+"Cytoglobin",
+"Troponin"
+]
 },
 {
 "id": "80",
@@ -1286,7 +1681,12 @@
 "I put GLUT4 transporters into the membranes of muscle and fat cells.",
 "I am the only hormone that lowers blood sugar."
 ],
-"fact": "Lack of it causes type 1 diabetes; C-peptide shows how much the body makes itself."
+"fact": "Lack of it causes type 1 diabetes; C-peptide shows how much the body makes itself.",
+"decoys": [
+"Glucagon",
+"C-peptide",
+"Insulin-like growth factor 2"
+]
 },
 {
 "id": "81",
@@ -1303,7 +1703,12 @@
 "Unlike my cousins, glucose-6-phosphate does not stop me, and I need a lot of sugar before I work fast.",
 "I am the glucose sensor of the beta cell; faults in me cause a mild inherited diabetes, MODY 2."
 ],
-"fact": "Its high Km makes it a glucose sensor; mutations cause MODY type 2."
+"fact": "Its high Km makes it a glucose sensor; mutations cause MODY type 2.",
+"decoys": [
+"Hexokinase I",
+"Phosphoglucomutase",
+"Glucose-6-phosphate isomerase"
+]
 },
 {
 "id": "82",
@@ -1320,7 +1725,12 @@
 "AMP and fructose-2,6-bisphosphate switch me on; ATP and citrate slow me down.",
 "I am the main control step of glycolysis."
 ],
-"fact": "It catalyses the rate-limiting, committed step of glycolysis."
+"fact": "It catalyses the rate-limiting, committed step of glycolysis.",
+"decoys": [
+"Phosphofructokinase-2",
+"Fructose-1,6-bisphosphatase",
+"Aldolase B"
+]
 },
 {
 "id": "83",
@@ -1335,7 +1745,12 @@
 "Fructose-1,6-bisphosphate switches me on ahead of time.",
 "When I am missing in red cells, they cannot make enough energy and break down: a hemolytic anaemia."
 ],
-"fact": "Its deficiency is the most common glycolysis enzyme defect that causes haemolytic anaemia."
+"fact": "Its deficiency is the most common glycolysis enzyme defect that causes haemolytic anaemia.",
+"decoys": [
+"Pyruvate carboxylase",
+"Phosphoenolpyruvate carboxykinase",
+"Enolase"
+]
 },
 {
 "id": "84",
@@ -1352,7 +1767,12 @@
 "Arsenic blocks me, and lack of vitamin B1 slows me down.",
 "I turn pyruvate into acetyl-CoA, linking glycolysis to the citric acid cycle."
 ],
-"fact": "It needs thiamine; in thiamine deficiency it fails and lactate builds up."
+"fact": "It needs thiamine; in thiamine deficiency it fails and lactate builds up.",
+"decoys": [
+"Alpha-ketoglutarate dehydrogenase complex",
+"Branched-chain alpha-keto acid dehydrogenase",
+"Citrate synthase"
+]
 },
 {
 "id": "85",
@@ -1369,7 +1789,12 @@
 "My deficiency is X-linked and common in Africa, the Mediterranean and the Middle East.",
 "Without enough of me, fava beans, primaquine or infection can burst red blood cells, showing Heinz bodies."
 ],
-"fact": "Its deficiency is the most common enzyme deficiency in the world and protects partly against malaria."
+"fact": "Its deficiency is the most common enzyme deficiency in the world and protects partly against malaria.",
+"decoys": [
+"6-phosphogluconate dehydrogenase",
+"Transketolase",
+"Transaldolase"
+]
 },
 {
 "id": "86",
@@ -1384,7 +1809,12 @@
 "Insulin switches me on, and cholesterol inside the cell switches me off.",
 "I am the rate-limiting step of cholesterol synthesis and the target of statins."
 ],
-"fact": "Statins block it to lower LDL cholesterol."
+"fact": "Statins block it to lower LDL cholesterol.",
+"decoys": [
+"HMG-CoA synthase",
+"HMG-CoA lyase",
+"Mevalonate kinase"
+]
 },
 {
 "id": "87",
@@ -1399,7 +1829,12 @@
 "Citrate turns me on, and the product I make stops fat from entering mitochondria to be burned.",
 "I am the rate-limiting step of fatty acid synthesis."
 ],
-"fact": "It catalyses the committed step of fatty acid synthesis and needs biotin."
+"fact": "It catalyses the committed step of fatty acid synthesis and needs biotin.",
+"decoys": [
+"Fatty acid synthase",
+"Propionyl-CoA carboxylase",
+"Malonyl-CoA decarboxylase"
+]
 },
 {
 "id": "88",
@@ -1414,7 +1849,12 @@
 "When I am missing, muscles get weak and blood sugar falls during fasting without ketones.",
 "I carry long-chain fatty acids into the mitochondria to be burned."
 ],
-"fact": "It shuttles long-chain fatty acids into mitochondria for beta-oxidation."
+"fact": "It shuttles long-chain fatty acids into mitochondria for beta-oxidation.",
+"decoys": [
+"Carnitine palmitoyltransferase I",
+"Creatine",
+"Acyl-CoA synthetase"
+]
 },
 {
 "id": "89",
@@ -1429,7 +1869,12 @@
 "Insulin makes my level rise in fat tissue.",
 "I break down triglycerides in chylomicrons and VLDL so the tissues can take up fatty acids."
 ],
-"fact": "Its deficiency causes very high triglycerides and pancreatitis (type I hyperlipoproteinaemia)."
+"fact": "Its deficiency causes very high triglycerides and pancreatitis (type I hyperlipoproteinaemia).",
+"decoys": [
+"Hormone-sensitive lipase",
+"Hepatic lipase",
+"Pancreatic lipase"
+]
 },
 {
 "id": "90",
@@ -1446,7 +1891,12 @@
 "My deficiency is X-linked and raises orotic acid in the urine.",
 "I am the urea cycle enzyme most often missing, causing high ammonia in babies."
 ],
-"fact": "Its deficiency is the commonest urea cycle disorder."
+"fact": "Its deficiency is the commonest urea cycle disorder.",
+"decoys": [
+"Carbamoyl phosphate synthetase I",
+"Argininosuccinate synthetase",
+"Arginase"
+]
 },
 {
 "id": "91",
@@ -1463,7 +1913,12 @@
 "Babies are screened for my deficiency with a heel prick test.",
 "When I am missing, phenylalanine builds up and causes phenylketonuria."
 ],
-"fact": "Deficiency causes PKU, treated with a low-phenylalanine diet."
+"fact": "Deficiency causes PKU, treated with a low-phenylalanine diet.",
+"decoys": [
+"Tyrosine hydroxylase",
+"Homogentisate oxidase",
+"Dihydropteridine reductase"
+]
 },
 {
 "id": "92",
@@ -1478,7 +1933,12 @@
 "I change tyrosine into DOPA and then dopaquinone.",
 "When I am missing, the skin, hair and eyes have no pigment: albinism."
 ],
-"fact": "Its absence causes oculocutaneous albinism type 1."
+"fact": "Its absence causes oculocutaneous albinism type 1.",
+"decoys": [
+"Dopamine beta-hydroxylase",
+"DOPA decarboxylase",
+"Tryptophan hydroxylase"
+]
 },
 {
 "id": "93",
@@ -1493,7 +1953,12 @@
 "Glucagon and adrenaline switch me on through phosphorylation.",
 "When my muscle form is missing, exercise causes cramps and dark urine: McArdle disease."
 ],
-"fact": "Its muscle form is missing in McArdle disease (glycogen storage disease type V)."
+"fact": "Its muscle form is missing in McArdle disease (glycogen storage disease type V).",
+"decoys": [
+"Glycogen synthase",
+"Debranching enzyme",
+"Branching enzyme"
+]
 },
 {
 "id": "94",
@@ -1508,7 +1973,12 @@
 "I do the final step that lets the liver release free sugar into the blood, in both glycogen breakdown and gluconeogenesis.",
 "When I am missing, babies get severe low blood sugar and a big liver: von Gierke disease."
 ],
-"fact": "Deficiency causes von Gierke disease (glycogen storage disease type I)."
+"fact": "Deficiency causes von Gierke disease (glycogen storage disease type I).",
+"decoys": [
+"Fructose-1,6-bisphosphatase 1",
+"Glucose-6-phosphate translocase",
+"Acid maltase"
+]
 },
 {
 "id": "95",
@@ -1525,7 +1995,12 @@
 "When I am missing, uric acid rises very high.",
 "My total absence in boys causes self-biting and gout: Lesch-Nyhan syndrome."
 ],
-"fact": "Its deficiency causes Lesch-Nyhan syndrome."
+"fact": "Its deficiency causes Lesch-Nyhan syndrome.",
+"decoys": [
+"Adenine phosphoribosyltransferase",
+"PRPP synthetase",
+"IMP dehydrogenase"
+]
 },
 {
 "id": "96",
@@ -1540,7 +2015,12 @@
 "Allopurinol and febuxostat block me.",
 "Blocking me raises the level of azathioprine, so doses must be cut."
 ],
-"fact": "Allopurinol inhibits it to prevent gout; it also breaks down azathioprine and mercaptopurine."
+"fact": "Allopurinol inhibits it to prevent gout; it also breaks down azathioprine and mercaptopurine.",
+"decoys": [
+"Uricase",
+"Purine nucleoside phosphorylase",
+"Aldehyde oxidase"
+]
 },
 {
 "id": "97",
@@ -1557,7 +2037,12 @@
 "When I am missing, toxic deoxyadenosine kills T and B cells.",
 "My deficiency is a classic cause of severe combined immunodeficiency."
 ],
-"fact": "Its deficiency causes SCID, one of the first diseases treated with gene therapy."
+"fact": "Its deficiency causes SCID, one of the first diseases treated with gene therapy.",
+"decoys": [
+"AMP deaminase",
+"Adenosine kinase",
+"Ribonucleotide reductase"
+]
 },
 {
 "id": "98",
@@ -1574,7 +2059,12 @@
 "I am needed to hydroxylate proline and lysine in collagen.",
 "Without me, gums bleed and wounds don't heal: scurvy."
 ],
-"fact": "Its deficiency causes scurvy, once common among sailors."
+"fact": "Its deficiency causes scurvy, once common among sailors.",
+"decoys": [
+"Vitamin E",
+"Vitamin A",
+"Vitamin B6"
+]
 },
 {
 "id": "99",
@@ -1591,7 +2081,12 @@
 "People who drink too much alcohol often lack me.",
 "Without me you get beriberi or Wernicke encephalopathy."
 ],
-"fact": "Always give it before glucose to an alcoholic patient to avoid Wernicke encephalopathy."
+"fact": "Always give it before glucose to an alcoholic patient to avoid Wernicke encephalopathy.",
+"decoys": [
+"Riboflavin",
+"Pyridoxine",
+"Pantothenic acid"
+]
 },
 {
 "id": "100",
@@ -1609,7 +2104,12 @@
 "In high doses I lower cholesterol but make the face flush.",
 "Without me, people get dermatitis, diarrhoea and dementia: pellagra."
 ],
-"fact": "Its deficiency causes pellagra (the three Ds)."
+"fact": "Its deficiency causes pellagra (the three Ds).",
+"decoys": [
+"Biotin",
+"Tryptophan",
+"Lipoic acid"
+]
 },
 {
 "id": "101",
@@ -1626,7 +2126,12 @@
 "I need intrinsic factor to be absorbed in the terminal ileum.",
 "Without me, you get big red cells and damage to the spinal cord."
 ],
-"fact": "Deficiency causes megaloblastic anaemia and subacute combined degeneration of the cord."
+"fact": "Deficiency causes megaloblastic anaemia and subacute combined degeneration of the cord.",
+"decoys": [
+"Vitamin B2",
+"Vitamin B5",
+"Vitamin B7"
+]
 },
 {
 "id": "102",
@@ -1644,7 +2149,12 @@
 "Methotrexate and trimethoprim block the enzyme that activates me.",
 "Taking me before pregnancy prevents neural tube defects."
 ],
-"fact": "Supplements before conception lower the risk of spina bifida."
+"fact": "Supplements before conception lower the risk of spina bifida.",
+"decoys": [
+"Tetrahydrobiopterin",
+"Dihydrofolate reductase",
+"Methylmalonic acid"
+]
 },
 {
 "id": "103",
@@ -1661,7 +2171,12 @@
 "I am needed to carboxylate factors II, VII, IX and X.",
 "Newborns get an injection of me to prevent bleeding, and warfarin blocks my recycling."
 ],
-"fact": "Warfarin works against it; newborns get it at birth."
+"fact": "Warfarin works against it; newborns get it at birth.",
+"decoys": [
+"Menaquinone",
+"Vitamin K epoxide reductase",
+"Gamma-carboxyglutamate"
+]
 },
 {
 "id": "104",
@@ -1678,7 +2193,12 @@
 "I raise calcium absorption from the gut.",
 "Without me, children get rickets and adults get osteomalacia."
 ],
-"fact": "Its deficiency causes rickets in children and osteomalacia in adults."
+"fact": "Its deficiency causes rickets in children and osteomalacia in adults.",
+"decoys": [
+"Calcidiol",
+"7-dehydrocholesterol",
+"Ergosterol"
+]
 },
 {
 "id": "105",
@@ -1695,7 +2215,12 @@
 "Protons flowing back through me turn my rotor.",
 "I make most of the cell's ATP."
 ],
-"fact": "It uses the proton gradient to make ATP; oligomycin blocks it."
+"fact": "It uses the proton gradient to make ATP; oligomycin blocks it.",
+"decoys": [
+"NADH dehydrogenase",
+"Succinate dehydrogenase",
+"Cytochrome bc1 complex"
+]
 },
 {
 "id": "106",
@@ -1712,7 +2237,12 @@
 "Cyanide and carbon monoxide block me.",
 "I hand electrons to oxygen and turn it into water at the end of the chain."
 ],
-"fact": "The last complex of the electron transport chain; cyanide poisons it."
+"fact": "The last complex of the electron transport chain; cyanide poisons it.",
+"decoys": [
+"Cytochrome c",
+"Cytochrome P450",
+"Catalase"
+]
 },
 {
 "id": "107",
@@ -1730,7 +2260,12 @@
 "Statins can lower my level, which some link to muscle aches.",
 "I am the mobile carrier of the electron transport chain."
 ],
-"fact": "It shuttles electrons in the inner mitochondrial membrane."
+"fact": "It shuttles electrons in the inner mitochondrial membrane.",
+"decoys": [
+"Flavin adenine dinucleotide",
+"Lipoamide",
+"Tetrahydrofolate"
+]
 },
 {
 "id": "108",
@@ -1745,7 +2280,12 @@
 "I keep glutathione reduced and help white cells make their oxidative burst.",
 "I power the building of fatty acids and cholesterol."
 ],
-"fact": "It is the reducing power for synthesis and for defence against oxidants."
+"fact": "It is the reducing power for synthesis and for defence against oxidants.",
+"decoys": [
+"NADH",
+"FADH2",
+"Acetyl-CoA"
+]
 },
 {
 "id": "109",
@@ -1762,7 +2302,12 @@
 "I join glycine and succinyl-CoA.",
 "I am the rate-limiting step of heme synthesis."
 ],
-"fact": "Heme switches it off; lack of B6 can cause sideroblastic anaemia."
+"fact": "Heme switches it off; lack of B6 can cause sideroblastic anaemia.",
+"decoys": [
+"Aminolevulinic acid dehydratase",
+"Porphobilinogen deaminase",
+"Uroporphyrinogen decarboxylase"
+]
 },
 {
 "id": "110",
@@ -1777,7 +2322,12 @@
 "Lead poisoning blocks me.",
 "I put iron into protoporphyrin to make heme."
 ],
-"fact": "Lead inhibits it; its deficiency causes erythropoietic protoporphyria."
+"fact": "Lead inhibits it; its deficiency causes erythropoietic protoporphyria.",
+"decoys": [
+"Heme oxygenase",
+"Coproporphyrinogen oxidase",
+"Protoporphyrinogen oxidase"
+]
 },
 {
 "id": "111",
@@ -1792,7 +2342,12 @@
 "The liver joins me to glucuronic acid so I can leave in the bile.",
 "When I build up, the skin and eyes turn yellow."
 ],
-"fact": "Its build-up causes jaundice."
+"fact": "Its build-up causes jaundice.",
+"decoys": [
+"Biliverdin",
+"Urobilinogen",
+"Stercobilin"
+]
 },
 {
 "id": "112",
@@ -1807,7 +2362,12 @@
 "Faults in my type I form cause brittle bones in children.",
 "I give strength to skin, bone, tendons and scars."
 ],
-"fact": "Defects cause osteogenesis imperfecta and some Ehlers-Danlos syndromes."
+"fact": "Defects cause osteogenesis imperfecta and some Ehlers-Danlos syndromes.",
+"decoys": [
+"Elastin",
+"Fibrillin",
+"Keratin"
+]
 },
 {
 "id": "113",
@@ -1822,7 +2382,12 @@
 "I am stored mostly in the liver and muscles.",
 "I am the body's store of sugar for quick energy."
 ],
-"fact": "The liver's store keeps blood glucose up for about a day of fasting."
+"fact": "The liver's store keeps blood glucose up for about a day of fasting.",
+"decoys": [
+"Starch",
+"Cellulose",
+"Amylopectin"
+]
 },
 {
 "id": "114",
@@ -1837,7 +2402,12 @@
 "I am the starting point for steroid hormones, bile acids and vitamin D.",
 "I keep cell membranes stable, and too much of me in LDL clogs arteries."
 ],
-"fact": "High LDL levels raise the risk of atherosclerosis."
+"fact": "High LDL levels raise the risk of atherosclerosis.",
+"decoys": [
+"Triglyceride",
+"Sphingomyelin",
+"Phosphatidylcholine"
+]
 },
 {
 "id": "115",
@@ -1854,7 +2424,12 @@
 "The urine dipstick does not detect me well, since it tests a cousin.",
 "I am the main ketone in the blood in diabetic ketoacidosis."
 ],
-"fact": "It is the most abundant ketone body in DKA, but nitroprusside strips miss it."
+"fact": "It is the most abundant ketone body in DKA, but nitroprusside strips miss it.",
+"decoys": [
+"Acetoacetate",
+"Acetone",
+"Lactate"
+]
 },
 {
 "id": "116",
@@ -1869,7 +2444,12 @@
 "I leave the body in urine, and my level in blood rises when the kidneys fail.",
 "I am the body's main way to get rid of ammonia."
 ],
-"fact": "Its blood level (BUN) rises in kidney failure and falls in liver failure."
+"fact": "Its blood level (BUN) rises in kidney failure and falls in liver failure.",
+"decoys": [
+"Uric acid",
+"Creatinine",
+"Ammonia"
+]
 },
 {
 "id": "117",
@@ -1886,7 +2466,12 @@
 "Paracetamol overdose uses me up in the liver.",
 "Acetylcysteine is given to rebuild my stores."
 ],
-"fact": "Paracetamol overdose depletes it; N-acetylcysteine replaces it."
+"fact": "Paracetamol overdose depletes it; N-acetylcysteine replaces it.",
+"decoys": [
+"Thioredoxin",
+"Cysteine",
+"Taurine"
+]
 },
 {
 "id": "118",
@@ -1901,7 +2486,12 @@
 "I am active in stem cells and many cancer cells, but quiet in most adult cells.",
 "I add repeats to the ends of chromosomes so they don't shorten."
 ],
-"fact": "It lengthens telomeres; cancer cells often reactivate it."
+"fact": "It lengthens telomeres; cancer cells often reactivate it.",
+"decoys": [
+"Reverse transcriptase",
+"DNA polymerase delta",
+"Primase"
+]
 },
 {
 "id": "119",
@@ -1916,7 +2506,12 @@
 "The death cap mushroom toxin, alpha-amanitin, blocks me.",
 "I make messenger RNA from DNA."
 ],
-"fact": "It transcribes mRNA; alpha-amanitin inhibits it."
+"fact": "It transcribes mRNA; alpha-amanitin inhibits it.",
+"decoys": [
+"RNA polymerase I",
+"RNA polymerase III",
+"DNA polymerase III"
+]
 },
 {
 "id": "120",
@@ -1933,7 +2528,12 @@
 "My level in the blood rises when cells are destroyed.",
 "I am a marker of haemolysis, tissue damage and some tumours like lymphoma."
 ],
-"fact": "Raised levels suggest cell breakdown, for example haemolysis or lymphoma."
+"fact": "Raised levels suggest cell breakdown, for example haemolysis or lymphoma.",
+"decoys": [
+"Creatine kinase",
+"Alanine aminotransferase",
+"Malate dehydrogenase"
+]
 },
 {
 "id": "121",
@@ -1948,7 +2548,12 @@
 "I am rare in my tumour; most of the cells around me are normal reactive cells.",
 "I have two nuclei with big nucleoli, like owl's eyes, and I mark Hodgkin lymphoma."
 ],
-"fact": "Its presence defines classical Hodgkin lymphoma."
+"fact": "Its presence defines classical Hodgkin lymphoma.",
+"decoys": [
+"Hairy cell",
+"Blast cell",
+"Lacunar cell"
+]
 },
 {
 "id": "122",
@@ -1963,7 +2568,12 @@
 "Large macrophages with caterpillar-like nuclei sit inside me.",
 "I am the hallmark of rheumatic heart disease."
 ],
-"fact": "It is the characteristic lesion of rheumatic carditis."
+"fact": "It is the characteristic lesion of rheumatic carditis.",
+"decoys": [
+"Tophus",
+"Rheumatoid nodule",
+"Gumma"
+]
 },
 {
 "id": "123",
@@ -1980,7 +2590,12 @@
 "I sit in swollen liver cells.",
 "I am classic in alcoholic hepatitis."
 ],
-"fact": "Twisted ropes of cytokeratin in hepatocytes, typical of alcoholic liver disease."
+"fact": "Twisted ropes of cytokeratin in hepatocytes, typical of alcoholic liver disease.",
+"decoys": [
+"Hyaline droplet",
+"Hyaline arteriolosclerosis",
+"Cytoplasmic hyaline"
+]
 },
 {
 "id": "124",
@@ -1995,7 +2610,12 @@
 "I form in papillary tumours, when the tips of the papillae die and calcify.",
 "I appear in papillary thyroid cancer, serous ovarian tumours and meningioma."
 ],
-"fact": "Laminated calcifications typical of papillary thyroid carcinoma, serous cystadenocarcinoma and meningioma."
+"fact": "Laminated calcifications typical of papillary thyroid carcinoma, serous cystadenocarcinoma and meningioma.",
+"decoys": [
+"Dystrophic calcification",
+"Metastatic calcification",
+"Corpora amylacea"
+]
 },
 {
 "id": "125",
@@ -2010,7 +2630,12 @@
 "I collect in the substantia nigra when dopamine neurons die.",
 "I mark Parkinson disease and a dementia named after me."
 ],
-"fact": "Alpha-synuclein inclusions typical of Parkinson disease."
+"fact": "Alpha-synuclein inclusions typical of Parkinson disease.",
+"decoys": [
+"Hirano body",
+"Bunina body",
+"Lafora body"
+]
 },
 {
 "id": "126",
@@ -2025,7 +2650,12 @@
 "I am seen best in Purkinje cells and in the hippocampus.",
 "I prove infection after a bite from a sick dog or bat."
 ],
-"fact": "The classic inclusion of rabies."
+"fact": "The classic inclusion of rabies.",
+"decoys": [
+"Guarnieri body",
+"Cowdry type A body",
+"Owl's eye inclusion"
+]
 },
 {
 "id": "127",
@@ -2042,7 +2672,12 @@
 "I am seen in viral hepatitis.",
 "I was first described in yellow fever."
 ],
-"fact": "An apoptotic hepatocyte seen in viral hepatitis and yellow fever."
+"fact": "An apoptotic hepatocyte seen in viral hepatitis and yellow fever.",
+"decoys": [
+"Ballooning degeneration",
+"Ground glass hepatocyte",
+"Apoptotic body"
+]
 },
 {
 "id": "128",
@@ -2057,7 +2692,12 @@
 "I am packed with immunoglobulin stuck in the endoplasmic reticulum.",
 "I show a plasma cell full of antibodies it cannot send out."
 ],
-"fact": "An immunoglobulin-filled inclusion in plasma cells."
+"fact": "An immunoglobulin-filled inclusion in plasma cells.",
+"decoys": [
+"Dutcher body",
+"Mott cell",
+"Hyaline globule"
+]
 },
 {
 "id": "129",
@@ -2074,7 +2714,12 @@
 "I am full of brown iron pigment that stains blue with Prussian blue.",
 "I appear in the lungs when the left side of the heart fails."
 ],
-"fact": "Hemosiderin-laden alveolar macrophages seen in chronic pulmonary congestion."
+"fact": "Hemosiderin-laden alveolar macrophages seen in chronic pulmonary congestion.",
+"decoys": [
+"Lipofuscin-laden macrophage",
+"Gaucher cell",
+"Niemann-Pick cell"
+]
 },
 {
 "id": "130",
@@ -2089,7 +2734,12 @@
 "I live inside granulomas.",
 "I am classic in tuberculosis."
 ],
-"fact": "A multinucleated giant cell with horseshoe nuclei, typical of tuberculous granulomas."
+"fact": "A multinucleated giant cell with horseshoe nuclei, typical of tuberculous granulomas.",
+"decoys": [
+"Foreign body giant cell",
+"Touton giant cell",
+"Osteoclast-like giant cell"
+]
 },
 {
 "id": "131",
@@ -2104,7 +2754,12 @@
 "I live in myeloblasts.",
 "I point to acute myeloid leukaemia, especially the promyelocytic type."
 ],
-"fact": "Seen in AML, especially APL, where they can cause DIC when the cells burst."
+"fact": "Seen in AML, especially APL, where they can cause DIC when the cells burst.",
+"decoys": [
+"Dohle body",
+"Toxic granulation",
+"Pelger-Huet cell"
+]
 },
 {
 "id": "132",
@@ -2122,7 +2777,12 @@
 "I am seen with mechanical heart valves too.",
 "I mark microangiopathic haemolytic anaemia, like in TTP, HUS and DIC."
 ],
-"fact": "Fragmented red cells typical of microangiopathic haemolysis."
+"fact": "Fragmented red cells typical of microangiopathic haemolysis.",
+"decoys": [
+"Acanthocyte",
+"Echinocyte",
+"Dacrocyte"
+]
 },
 {
 "id": "133",
@@ -2137,7 +2797,12 @@
 "I build up in the hippocampus with age.",
 "Together with amyloid plaques, I am the hallmark of Alzheimer disease."
 ],
-"fact": "Hyperphosphorylated tau inside neurons, a key lesion of Alzheimer disease."
+"fact": "Hyperphosphorylated tau inside neurons, a key lesion of Alzheimer disease.",
+"decoys": [
+"Senile plaque",
+"Granulovacuolar degeneration",
+"Rosenthal fibre"
+]
 },
 {
 "id": "134",
@@ -2152,7 +2817,12 @@
 "I look pink and smooth, and I can stiffen the heart and swell the kidneys.",
 "I turn apple-green under polarised light after Congo red staining."
 ],
-"fact": "Congo red staining with apple-green birefringence is diagnostic."
+"fact": "Congo red staining with apple-green birefringence is diagnostic.",
+"decoys": [
+"Hyaline",
+"Fibrinoid",
+"Mucoid"
+]
 },
 {
 "id": "135",
@@ -2169,7 +2839,12 @@
 "I am seen in people who worked in shipyards or with insulation.",
 "I point to asbestos exposure and a risk of mesothelioma."
 ],
-"fact": "Iron-coated asbestos fibres; exposure raises the risk of mesothelioma and lung cancer."
+"fact": "Iron-coated asbestos fibres; exposure raises the risk of mesothelioma and lung cancer.",
+"decoys": [
+"Silicotic nodule",
+"Schaumann body",
+"Asteroid body"
+]
 },
 {
 "id": "136",
@@ -2184,7 +2859,12 @@
 "I show when eosinophils have broken down.",
 "I am found in asthma and parasitic infections."
 ],
-"fact": "Eosinophil protein crystals seen in asthma and parasite infections."
+"fact": "Eosinophil protein crystals seen in asthma and parasite infections.",
+"decoys": [
+"Cholesterol crystals",
+"Monosodium urate crystals",
+"Calcium pyrophosphate crystals"
+]
 },
 {
 "id": "137",
@@ -2199,7 +2879,12 @@
 "I am a cast of a small airway.",
 "I am a classic finding in asthma."
 ],
-"fact": "Spiral mucus casts of small bronchi seen in asthma."
+"fact": "Spiral mucus casts of small bronchi seen in asthma.",
+"decoys": [
+"Creola bodies",
+"Mucus plugs",
+"Bronchial casts"
+]
 },
 {
 "id": "138",
@@ -2214,7 +2899,12 @@
 "I live inside macrophages in the bladder.",
 "I mark malakoplakia."
 ],
-"fact": "Laminated calcified inclusions diagnostic of malakoplakia."
+"fact": "Laminated calcified inclusions diagnostic of malakoplakia.",
+"decoys": [
+"Donovan bodies",
+"Medlar bodies",
+"Leishman-Donovan bodies"
+]
 },
 {
 "id": "139",
@@ -2229,7 +2919,12 @@
 "I am found in an ovarian tumour that can make oestrogen.",
 "I am the clue to a granulosa cell tumour."
 ],
-"fact": "Small follicle-like spaces typical of granulosa cell tumour."
+"fact": "Small follicle-like spaces typical of granulosa cell tumour.",
+"decoys": [
+"Schiller-Duval bodies",
+"Homer Wright rosettes",
+"Flexner-Wintersteiner rosettes"
+]
 },
 {
 "id": "140",
@@ -2244,7 +2939,12 @@
 "I collect in the frontal and temporal lobes.",
 "I mark a dementia that changes personality early."
 ],
-"fact": "Tau inclusions in frontotemporal dementia (Pick disease)."
+"fact": "Tau inclusions in frontotemporal dementia (Pick disease).",
+"decoys": [
+"Marinesco bodies",
+"Lewy neurites",
+"Glial cytoplasmic inclusions"
+]
 },
 {
 "id": "141",
@@ -2259,7 +2959,12 @@
 "My nucleus is wrinkled like a raisin.",
 "I am the sign of human papillomavirus infection."
 ],
-"fact": "A squamous cell with a perinuclear halo, typical of HPV infection on a Pap smear."
+"fact": "A squamous cell with a perinuclear halo, typical of HPV infection on a Pap smear.",
+"decoys": [
+"Dyskeratotic cell",
+"Clue cell",
+"Tzanck cell"
+]
 },
 {
 "id": "142",
@@ -2274,7 +2979,12 @@
 "I often spread through the stomach wall and make it stiff.",
 "I am classic in diffuse gastric cancer and the Krukenberg tumour."
 ],
-"fact": "Seen in diffuse gastric cancer and its ovarian spread (Krukenberg tumour)."
+"fact": "Seen in diffuse gastric cancer and its ovarian spread (Krukenberg tumour).",
+"decoys": [
+"Clear cell",
+"Oncocyte",
+"Hobnail cell"
+]
 },
 {
 "id": "143",
@@ -2291,7 +3001,12 @@
 "I am fragile because I am a cancer cell.",
 "I am classic in chronic lymphocytic leukaemia."
 ],
-"fact": "Fragile CLL lymphocytes crushed during smear preparation."
+"fact": "Fragile CLL lymphocytes crushed during smear preparation.",
+"decoys": [
+"Flower cell",
+"Atypical lymphocyte",
+"Prolymphocyte"
+]
 },
 {
 "id": "144",
@@ -2308,7 +3023,12 @@
 "I travel from the skin into the blood.",
 "I mark the leukaemic stage of mycosis fungoides."
 ],
-"fact": "A malignant T cell with a cerebriform nucleus in Sézary syndrome."
+"fact": "A malignant T cell with a cerebriform nucleus in Sézary syndrome.",
+"decoys": [
+"Lymphoplasmacytoid cell",
+"Large granular lymphocyte",
+"Plasmacytoid lymphocyte"
+]
 },
 {
 "id": "145",
@@ -2325,7 +3045,12 @@
 "High levels of proteins in plasma make cells stick together like this.",
 "I am classic in multiple myeloma."
 ],
-"fact": "Red cells stacked like coins, seen with high plasma proteins as in myeloma."
+"fact": "Red cells stacked like coins, seen with high plasma proteins as in myeloma.",
+"decoys": [
+"Agglutination",
+"Red cell clumping",
+"Poikilocytosis"
+]
 },
 {
 "id": "146",
@@ -2340,7 +3065,12 @@
 "Normally the spleen removes me.",
 "I appear after the spleen is removed or stops working."
 ],
-"fact": "DNA remnants in red cells, a sign of asplenia."
+"fact": "DNA remnants in red cells, a sign of asplenia.",
+"decoys": [
+"Pappenheimer bodies",
+"Basophilic stippling",
+"Cabot rings"
+]
 },
 {
 "id": "147",
@@ -2355,7 +3085,12 @@
 "When macrophages bite me out, they leave bite cells behind.",
 "I am classic in G6PD deficiency."
 ],
-"fact": "Denatured haemoglobin in red cells, typical of G6PD deficiency."
+"fact": "Denatured haemoglobin in red cells, typical of G6PD deficiency.",
+"decoys": [
+"Bite cells",
+"Blister cells",
+"Hemoglobin C crystals"
+]
 },
 {
 "id": "148",
@@ -2372,7 +3107,12 @@
 "I have too much membrane for my contents.",
 "I am seen in thalassaemia, liver disease and after spleen removal."
 ],
-"fact": "A red cell with a bullseye look, seen in thalassaemia, HbC and liver disease."
+"fact": "A red cell with a bullseye look, seen in thalassaemia, HbC and liver disease.",
+"decoys": [
+"Stomatocyte",
+"Elliptocyte",
+"Sickle cell"
+]
 },
 {
 "id": "149",
@@ -2387,7 +3127,12 @@
 "I am made when red cells lose membrane, from a hereditary defect or antibodies.",
 "I break easily in salt solutions: the osmotic fragility test."
 ],
-"fact": "Seen in hereditary spherocytosis and autoimmune haemolytic anaemia."
+"fact": "Seen in hereditary spherocytosis and autoimmune haemolytic anaemia.",
+"decoys": [
+"Microcyte",
+"Macrocyte",
+"Ovalocyte"
+]
 },
 {
 "id": "150",
@@ -2404,7 +3149,12 @@
 "High levels in an adult with cirrhosis are a warning.",
 "I am the tumour marker for hepatocellular carcinoma and yolk sac tumours."
 ],
-"fact": "Raised in liver cancer and yolk sac tumours; abnormal levels in pregnancy suggest neural tube defects."
+"fact": "Raised in liver cancer and yolk sac tumours; abnormal levels in pregnancy suggest neural tube defects.",
+"decoys": [
+"Beta-hCG",
+"CA 19-9",
+"CA 15-3"
+]
 },
 {
 "id": "151",
@@ -2421,7 +3171,12 @@
 "I am used to follow treatment of a gynaecological cancer.",
 "I am the marker for epithelial ovarian cancer."
 ],
-"fact": "The tumour marker for epithelial ovarian cancer."
+"fact": "The tumour marker for epithelial ovarian cancer.",
+"decoys": [
+"Inhibin B",
+"HE4",
+"Lactate dehydrogenase isoenzyme 1"
+]
 },
 {
 "id": "152",
@@ -2438,7 +3193,12 @@
 "Men over 50 often have me checked.",
 "I am the marker for prostate cancer."
 ],
-"fact": "Used to screen for and follow prostate cancer."
+"fact": "Used to screen for and follow prostate cancer.",
+"decoys": [
+"Prostatic acid phosphatase",
+"PCA3",
+"Thyroglobulin"
+]
 },
 {
 "id": "153",
@@ -2455,7 +3215,12 @@
 "I am used after surgery to watch for the cancer coming back.",
 "I am mostly linked to colorectal cancer."
 ],
-"fact": "Used to follow colorectal cancer after treatment."
+"fact": "Used to follow colorectal cancer after treatment.",
+"decoys": [
+"Neuron-specific enolase",
+"Chromogranin A",
+"Beta-2 microglobulin"
+]
 },
 {
 "id": "154",
@@ -2473,7 +3238,12 @@
 "I make a fusion gene, BCR-ABL, with a tyrosine kinase that is always on.",
 "I am the hallmark of chronic myeloid leukaemia, and imatinib targets my product."
 ],
-"fact": "Its BCR-ABL fusion drives CML and is blocked by imatinib."
+"fact": "Its BCR-ABL fusion drives CML and is blocked by imatinib.",
+"decoys": [
+"BCR gene amplification",
+"PML-RARA fusion",
+"MYC translocation"
+]
 },
 {
 "id": "155",
@@ -2488,7 +3258,12 @@
 "Giant cells with horseshoe nuclei often sit in me.",
 "I am classic in tuberculosis."
 ],
-"fact": "The cheese-like necrotic granuloma of tuberculosis."
+"fact": "The cheese-like necrotic granuloma of tuberculosis.",
+"decoys": [
+"Non-caseating granuloma",
+"Suppurative granuloma",
+"Foreign body granuloma"
+]
 },
 {
 "id": "156",
@@ -2503,7 +3278,12 @@
 "I can be seen in arteries even in children.",
 "I am the first visible lesion of atherosclerosis."
 ],
-"fact": "The earliest lesion of atherosclerosis."
+"fact": "The earliest lesion of atherosclerosis.",
+"decoys": [
+"Fibrous plaque",
+"Complicated plaque",
+"Mönckeberg sclerosis"
+]
 },
 {
 "id": "157",
@@ -2518,7 +3298,12 @@
 "I may contain hair, teeth and fat.",
 "I am the most common ovarian germ cell tumour, often called a dermoid cyst."
 ],
-"fact": "The mature cystic form is the dermoid cyst of the ovary."
+"fact": "The mature cystic form is the dermoid cyst of the ovary.",
+"decoys": [
+"Dermoid cyst",
+"Seminoma",
+"Yolk sac tumour"
+]
 },
 {
 "id": "158",
@@ -2533,7 +3318,12 @@
 "I form when pressure builds up inside a hollow organ.",
 "I am seen in chronic inflammation of the gallbladder."
 ],
-"fact": "Outpouchings of gallbladder mucosa seen in chronic cholecystitis."
+"fact": "Outpouchings of gallbladder mucosa seen in chronic cholecystitis.",
+"decoys": [
+"Crypt abscesses",
+"Diverticula of the colon",
+"Cholesterolosis"
+]
 },
 {
 "id": "159",
@@ -2548,7 +3338,12 @@
 "I live in Langerhans cells.",
 "I mark Langerhans cell histiocytosis."
 ],
-"fact": "Tennis racket granules seen in Langerhans cells and their tumours."
+"fact": "Tennis racket granules seen in Langerhans cells and their tumours.",
+"decoys": [
+"Weibel-Palade bodies",
+"Lamellar bodies",
+"Zymogen granules"
+]
 },
 {
 "id": "160",
@@ -2563,7 +3358,12 @@
 "I gather under the lining of arteries.",
 "I am the main cell of atherosclerotic plaques."
 ],
-"fact": "Lipid-filled macrophages that build fatty streaks and plaques."
+"fact": "Lipid-filled macrophages that build fatty streaks and plaques.",
+"decoys": [
+"Lipophage",
+"Epithelioid cell",
+"Xanthoma cell"
+]
 },
 {
 "id": "161",
@@ -2580,7 +3380,12 @@
 "I block COX enzymes forever by adding an acetyl group, so platelets can't recover for their whole life.",
 "I am given at once in a heart attack, but never to children with a viral illness because of Reye syndrome."
 ],
-"fact": "It irreversibly inhibits COX-1 in platelets; avoid in children (Reye syndrome)."
+"fact": "It irreversibly inhibits COX-1 in platelets; avoid in children (Reye syndrome).",
+"decoys": [
+"Clopidogrel",
+"Naproxen",
+"Dipyridamole"
+]
 },
 {
 "id": "162",
@@ -2597,7 +3402,12 @@
 "I block the recycling of vitamin K, so the liver makes fewer clotting factors.",
 "My dose is checked with the INR, and I am a classic cause of drug interactions."
 ],
-"fact": "Monitored by INR; reversed with vitamin K and prothrombin complex concentrate."
+"fact": "Monitored by INR; reversed with vitamin K and prothrombin complex concentrate.",
+"decoys": [
+"Rivaroxaban",
+"Apixaban",
+"Dabigatran"
+]
 },
 {
 "id": "163",
@@ -2614,7 +3424,12 @@
 "I boost antithrombin, and my effect is checked by the aPTT.",
 "I am reversed by protamine, and I can rarely drop the platelets with clots (HIT)."
 ],
-"fact": "Protamine reverses it; heparin-induced thrombocytopenia is a dangerous side effect."
+"fact": "Protamine reverses it; heparin-induced thrombocytopenia is a dangerous side effect.",
+"decoys": [
+"Enoxaparin",
+"Fondaparinux",
+"Bivalirudin"
+]
 },
 {
 "id": "164",
@@ -2629,7 +3444,12 @@
 "I rarely cause low blood sugar, but I can upset the stomach.",
 "I am the first-line drug for type 2 diabetes, but I am stopped before iodine contrast for fear of lactic acidosis."
 ],
-"fact": "First-line for type 2 diabetes; the rare serious risk is lactic acidosis."
+"fact": "First-line for type 2 diabetes; the rare serious risk is lactic acidosis.",
+"decoys": [
+"Pioglitazone",
+"Sitagliptin",
+"Empagliflozin"
+]
 },
 {
 "id": "165",
@@ -2646,7 +3466,12 @@
 "I close potassium channels in beta cells, so they release insulin.",
 "My main danger is low blood sugar, especially in older people."
 ],
-"fact": "A sulfonylurea that closes K-ATP channels; hypoglycaemia is the main risk."
+"fact": "A sulfonylurea that closes K-ATP channels; hypoglycaemia is the main risk.",
+"decoys": [
+"Gliclazide",
+"Glipizide",
+"Repaglinide"
+]
 },
 {
 "id": "166",
@@ -2661,7 +3486,12 @@
 "I make the pupils wide, the mouth dry and the heart beat faster.",
 "I am the antidote to organophosphate poisoning and a treatment for slow heart rate."
 ],
-"fact": "\"Hot as a hare, dry as a bone, red as a beet, blind as a bat, mad as a hatter.\""
+"fact": "\"Hot as a hare, dry as a bone, red as a beet, blind as a bat, mad as a hatter.\"",
+"decoys": [
+"Glycopyrrolate",
+"Hyoscine butylbromide",
+"Ipratropium"
+]
 },
 {
 "id": "167",
@@ -2676,7 +3506,12 @@
 "I can make asthma worse, so asthmatics should avoid me.",
 "I am used for migraine prevention, thyrotoxicosis symptoms and varices."
 ],
-"fact": "A non-selective beta-blocker; contraindicated in asthma."
+"fact": "A non-selective beta-blocker; contraindicated in asthma.",
+"decoys": [
+"Atenolol",
+"Metoprolol",
+"Carvedilol"
+]
 },
 {
 "id": "168",
@@ -2693,7 +3528,12 @@
 "I can cause a fast heartbeat, tremor and low potassium.",
 "I am the reliever inhaler that opens the airways in an asthma attack."
 ],
-"fact": "A short-acting beta-2 agonist, the first-line reliever for asthma."
+"fact": "A short-acting beta-2 agonist, the first-line reliever for asthma.",
+"decoys": [
+"Terbutaline",
+"Salmeterol",
+"Formoterol"
+]
 },
 {
 "id": "169",
@@ -2710,7 +3550,12 @@
 "I can lower potassium and, at high doses, damage hearing.",
 "I am the drug given in a vein for fluid in the lungs in acute heart failure."
 ],
-"fact": "A loop diuretic that blocks the Na-K-2Cl co-transporter."
+"fact": "A loop diuretic that blocks the Na-K-2Cl co-transporter.",
+"decoys": [
+"Bumetanide",
+"Hydrochlorothiazide",
+"Indapamide"
+]
 },
 {
 "id": "170",
@@ -2725,7 +3570,12 @@
 "I can make men grow breasts.",
 "I am used in heart failure, liver cirrhosis with ascites and Conn syndrome."
 ],
-"fact": "An aldosterone antagonist; side effects include hyperkalaemia and gynaecomastia."
+"fact": "An aldosterone antagonist; side effects include hyperkalaemia and gynaecomastia.",
+"decoys": [
+"Eplerenone",
+"Amiloride",
+"Triamterene"
+]
 },
 {
 "id": "171",
@@ -2740,7 +3590,12 @@
 "I can cause a dry cough because bradykinin builds up.",
 "I am an ACE inhibitor used for high blood pressure and heart failure."
 ],
-"fact": "The first ACE inhibitor; cough and angioedema are known side effects."
+"fact": "The first ACE inhibitor; cough and angioedema are known side effects.",
+"decoys": [
+"Enalapril",
+"Lisinopril",
+"Ramipril"
+]
 },
 {
 "id": "172",
@@ -2755,7 +3610,12 @@
 "I don't build up bradykinin, so I don't cause the dry cough of my cousins.",
 "I am an angiotensin receptor blocker, the first in my class."
 ],
-"fact": "An angiotensin II receptor blocker (ARB), used when ACE inhibitors cause cough."
+"fact": "An angiotensin II receptor blocker (ARB), used when ACE inhibitors cause cough.",
+"decoys": [
+"Valsartan",
+"Candesartan",
+"Irbesartan"
+]
 },
 {
 "id": "173",
@@ -2770,7 +3630,12 @@
 "I can make the ankles swell.",
 "I am a dihydropyridine used for high blood pressure and angina."
 ],
-"fact": "A long-acting calcium channel blocker; ankle oedema is common."
+"fact": "A long-acting calcium channel blocker; ankle oedema is common.",
+"decoys": [
+"Nifedipine",
+"Verapamil",
+"Diltiazem"
+]
 },
 {
 "id": "174",
@@ -2787,7 +3652,12 @@
 "Too much of me can make people see yellow-green halos and cause many arrhythmias.",
 "I slow the heart in atrial fibrillation and help a weak heart pump harder."
 ],
-"fact": "Toxicity is worse with low potassium; its antidote is specific antibody fragments."
+"fact": "Toxicity is worse with low potassium; its antidote is specific antibody fragments.",
+"decoys": [
+"Amiodarone",
+"Ivabradine",
+"Dobutamine"
+]
 },
 {
 "id": "175",
@@ -2805,7 +3675,12 @@
 "I can cause a pounding headache, and I must not be mixed with sildenafil.",
 "I am sprayed or placed under the tongue to relieve angina within minutes."
 ],
-"fact": "Sublingual relief for angina; dangerous with PDE-5 inhibitors."
+"fact": "Sublingual relief for angina; dangerous with PDE-5 inhibitors.",
+"decoys": [
+"Isosorbide mononitrate",
+"Nicorandil",
+"Hydralazine"
+]
 },
 {
 "id": "176",
@@ -2820,7 +3695,12 @@
 "I can rarely cause muscle pain and raised liver enzymes.",
 "I am a statin that lowers LDL cholesterol and the risk of heart attack."
 ],
-"fact": "A statin; rare but serious side effects are myopathy and rhabdomyolysis."
+"fact": "A statin; rare but serious side effects are myopathy and rhabdomyolysis.",
+"decoys": [
+"Simvastatin",
+"Rosuvastatin",
+"Ezetimibe"
+]
 },
 {
 "id": "177",
@@ -2835,7 +3715,12 @@
 "I make the pupils small, slow the breathing and cause constipation.",
 "I am the classic strong painkiller, reversed by naloxone."
 ],
-"fact": "The prototype opioid analgesic; overdose causes pinpoint pupils and respiratory depression."
+"fact": "The prototype opioid analgesic; overdose causes pinpoint pupils and respiratory depression.",
+"decoys": [
+"Fentanyl",
+"Codeine",
+"Tramadol"
+]
 },
 {
 "id": "178",
@@ -2852,7 +3737,12 @@
 "I act within minutes but wear off quickly, so the poison can come back.",
 "I am the antidote for an opioid overdose."
 ],
-"fact": "It reverses opioid overdose; repeat doses may be needed."
+"fact": "It reverses opioid overdose; repeat doses may be needed.",
+"decoys": [
+"Naltrexone",
+"Flumazenil",
+"Buprenorphine"
+]
 },
 {
 "id": "179",
@@ -2869,7 +3759,12 @@
 "Too much of me uses up glutathione and destroys the liver.",
 "My overdose is treated with N-acetylcysteine."
 ],
-"fact": "Overdose causes liver failure; N-acetylcysteine is the antidote."
+"fact": "Overdose causes liver failure; N-acetylcysteine is the antidote.",
+"decoys": [
+"Diclofenac",
+"Celecoxib",
+"Metamizole"
+]
 },
 {
 "id": "180",
@@ -2884,7 +3779,12 @@
 "I can cause stomach ulcers and harm the kidneys.",
 "I am a common NSAID for pain, fever and inflammation."
 ],
-"fact": "A reversible COX inhibitor; risks include peptic ulcers and kidney injury."
+"fact": "A reversible COX inhibitor; risks include peptic ulcers and kidney injury.",
+"decoys": [
+"Indometacin",
+"Ketorolac",
+"Mefenamic acid"
+]
 },
 {
 "id": "181",
@@ -2899,7 +3799,12 @@
 "I block the H+/K+ ATPase pump of parietal cells forever.",
 "I am a proton pump inhibitor used for ulcers and reflux."
 ],
-"fact": "The first proton pump inhibitor; used with antibiotics to clear H. pylori."
+"fact": "The first proton pump inhibitor; used with antibiotics to clear H. pylori.",
+"decoys": [
+"Ranitidine",
+"Famotidine",
+"Lansoprazole"
+]
 },
 {
 "id": "182",
@@ -2916,7 +3821,12 @@
 "I can cause on-off swings and uncontrolled movements after years of use.",
 "I am turned into dopamine and I am the most effective treatment for Parkinson disease."
 ],
-"fact": "Converted to dopamine in the brain; given with carbidopa."
+"fact": "Converted to dopamine in the brain; given with carbidopa.",
+"decoys": [
+"Carbidopa",
+"Bromocriptine",
+"Selegiline"
+]
 },
 {
 "id": "183",
@@ -2931,7 +3841,12 @@
 "Too much of me causes tremor, confusion and kidney problems, and I can cause hypothyroidism.",
 "I am the classic mood stabiliser for bipolar disorder."
 ],
-"fact": "Narrow therapeutic index; diuretics and NSAIDs can raise its level."
+"fact": "Narrow therapeutic index; diuretics and NSAIDs can raise its level.",
+"decoys": [
+"Carbamazepine",
+"Lamotrigine",
+"Quetiapine"
+]
 },
 {
 "id": "184",
@@ -2946,7 +3861,12 @@
 "I can cause stiffness, tremor and, rarely, a fever with rigid muscles.",
 "I am a typical antipsychotic used for psychosis and acute agitation."
 ],
-"fact": "A typical antipsychotic; side effects include parkinsonism and neuroleptic malignant syndrome."
+"fact": "A typical antipsychotic; side effects include parkinsonism and neuroleptic malignant syndrome.",
+"decoys": [
+"Chlorpromazine",
+"Risperidone",
+"Olanzapine"
+]
 },
 {
 "id": "185",
@@ -2963,7 +3883,12 @@
 "I stay in the body for weeks because my active product lasts long.",
 "I am an SSRI used for depression, OCD and bulimia."
 ],
-"fact": "An SSRI with a very long half-life."
+"fact": "An SSRI with a very long half-life.",
+"decoys": [
+"Sertraline",
+"Citalopram",
+"Amitriptyline"
+]
 },
 {
 "id": "186",
@@ -2980,7 +3905,12 @@
 "I am used to stop a seizure that won't end and to treat alcohol withdrawal.",
 "I am a long-acting benzodiazepine, and flumazenil reverses me."
 ],
-"fact": "A long-acting benzodiazepine; flumazenil is its antagonist."
+"fact": "A long-acting benzodiazepine; flumazenil is its antagonist.",
+"decoys": [
+"Lorazepam",
+"Midazolam",
+"Alprazolam"
+]
 },
 {
 "id": "187",
@@ -2995,7 +3925,12 @@
 "My level rises steeply at higher doses, as my breakdown saturates.",
 "I am an old antiepileptic used for tonic-clonic seizures."
 ],
-"fact": "An antiepileptic with zero-order kinetics; causes gum overgrowth."
+"fact": "An antiepileptic with zero-order kinetics; causes gum overgrowth.",
+"decoys": [
+"Levetiracetam",
+"Phenobarbital",
+"Ethosuximide"
+]
 },
 {
 "id": "188",
@@ -3012,7 +3947,12 @@
 "I cause the most birth defects of my class, including spina bifida.",
 "I am a broad-spectrum antiepileptic avoided in women who may get pregnant."
 ],
-"fact": "Highly teratogenic (neural tube defects); avoided in pregnancy."
+"fact": "Highly teratogenic (neural tube defects); avoided in pregnancy.",
+"decoys": [
+"Topiramate",
+"Gabapentin",
+"Clonazepam"
+]
 },
 {
 "id": "189",
@@ -3029,7 +3969,12 @@
 "I am broken down by stomach acid, so I am given by injection.",
 "I am the first antibiotic, still the treatment of choice for syphilis."
 ],
-"fact": "The first antibiotic; still used for syphilis and streptococcal infection."
+"fact": "The first antibiotic; still used for syphilis and streptococcal infection.",
+"decoys": [
+"Amoxicillin",
+"Flucloxacillin",
+"Ceftriaxone"
+]
 },
 {
 "id": "190",
@@ -3044,7 +3989,12 @@
 "Giving me too fast flushes the upper body red.",
 "I am used for MRSA, and by mouth for C. difficile colitis."
 ],
-"fact": "Used for MRSA; rapid infusion causes red man syndrome."
+"fact": "Used for MRSA; rapid infusion causes red man syndrome.",
+"decoys": [
+"Teicoplanin",
+"Linezolid",
+"Daptomycin"
+]
 },
 {
 "id": "191",
@@ -3059,7 +4009,12 @@
 "I can damage the kidneys and the inner ear.",
 "I am an aminoglycoside used for serious Gram-negative infections."
 ],
-"fact": "An aminoglycoside; nephrotoxic and ototoxic."
+"fact": "An aminoglycoside; nephrotoxic and ototoxic.",
+"decoys": [
+"Amikacin",
+"Streptomycin",
+"Tobramycin"
+]
 },
 {
 "id": "192",
@@ -3074,7 +4029,12 @@
 "I stain growing teeth and should not be taken with milk.",
 "I am a tetracycline used for chlamydia, Lyme disease and malaria prevention."
 ],
-"fact": "A tetracycline; avoid in children and pregnancy because of tooth staining."
+"fact": "A tetracycline; avoid in children and pregnancy because of tooth staining.",
+"decoys": [
+"Tetracycline",
+"Minocycline",
+"Tigecycline"
+]
 },
 {
 "id": "193",
@@ -3089,7 +4049,12 @@
 "I can damage tendons, especially the Achilles tendon.",
 "I am a fluoroquinolone used for urinary and gut infections."
 ],
-"fact": "A fluoroquinolone; tendinopathy and tendon rupture are known risks."
+"fact": "A fluoroquinolone; tendinopathy and tendon rupture are known risks.",
+"decoys": [
+"Levofloxacin",
+"Moxifloxacin",
+"Nalidixic acid"
+]
 },
 {
 "id": "194",
@@ -3106,7 +4071,12 @@
 "Drinking alcohol with me makes you flush and vomit.",
 "I treat C. difficile, trichomonas, giardia and amoebic dysentery."
 ],
-"fact": "Disulfiram-like reaction with alcohol."
+"fact": "Disulfiram-like reaction with alcohol.",
+"decoys": [
+"Tinidazole",
+"Clindamycin",
+"Nitrofurantoin"
+]
 },
 {
 "id": "195",
@@ -3123,7 +4093,12 @@
 "I can cause numb hands and feet unless pyridoxine is given with me.",
 "I am a first-line tuberculosis drug."
 ],
-"fact": "An anti-TB drug; give vitamin B6 to prevent peripheral neuropathy."
+"fact": "An anti-TB drug; give vitamin B6 to prevent peripheral neuropathy.",
+"decoys": [
+"Pyrazinamide",
+"Ethambutol",
+"Rifabutin"
+]
 },
 {
 "id": "196",
@@ -3140,7 +4115,12 @@
 "I turn tears, urine and sweat orange-red.",
 "I strongly speed up liver enzymes and I am a first-line tuberculosis drug."
 ],
-"fact": "Colours body fluids orange; a strong enzyme inducer that reduces the effect of the pill."
+"fact": "Colours body fluids orange; a strong enzyme inducer that reduces the effect of the pill.",
+"decoys": [
+"Rifaximin",
+"Dapsone",
+"Clofazimine"
+]
 },
 {
 "id": "197",
@@ -3157,7 +4137,12 @@
 "I can form crystals in the kidneys if the patient is dry.",
 "I treat herpes simplex and chickenpox-shingles infections."
 ],
-"fact": "Activated by viral thymidine kinase; used for HSV and VZV."
+"fact": "Activated by viral thymidine kinase; used for HSV and VZV.",
+"decoys": [
+"Valaciclovir",
+"Ganciclovir",
+"Oseltamivir"
+]
 },
 {
 "id": "198",
@@ -3172,7 +4157,12 @@
 "Folinic acid can rescue normal cells from me.",
 "I am the main long-term drug for rheumatoid arthritis, taken only once a week."
 ],
-"fact": "A folate antagonist; weekly dosing for rheumatoid arthritis."
+"fact": "A folate antagonist; weekly dosing for rheumatoid arthritis.",
+"decoys": [
+"Azathioprine",
+"Mycophenolate mofetil",
+"Hydroxychloroquine"
+]
 },
 {
 "id": "199",
@@ -3187,7 +4177,12 @@
 "Long use of me thins bones, raises sugar and rounds the face.",
 "I must not be stopped suddenly after long use, or the adrenals may fail."
 ],
-"fact": "A corticosteroid; stop slowly after long use to avoid adrenal crisis."
+"fact": "A corticosteroid; stop slowly after long use to avoid adrenal crisis.",
+"decoys": [
+"Dexamethasone",
+"Methylprednisolone",
+"Fludrocortisone"
+]
 },
 {
 "id": "200",
@@ -3204,7 +4199,12 @@
 "I am given in a muscle of the thigh by an auto-injector.",
 "I am the first drug for anaphylaxis and I am used in cardiac arrest."
 ],
-"fact": "First-line for anaphylaxis (0.5 mg IM for adults)."
+"fact": "First-line for anaphylaxis (0.5 mg IM for adults).",
+"decoys": [
+"Noradrenaline",
+"Ephedrine",
+"Isoprenaline"
+]
 },
 {
 "id": "201",
@@ -3221,7 +4221,12 @@
 "Many people carry me in their noses without being sick.",
 "I cause boils, food poisoning and toxic shock, and my resistant form is called MRSA."
 ],
-"fact": "Coagulase-positive; MRSA strains resist methicillin."
+"fact": "Coagulase-positive; MRSA strains resist methicillin.",
+"decoys": [
+"Staphylococcus epidermidis",
+"Staphylococcus saprophyticus",
+"Enterococcus faecalis"
+]
 },
 {
 "id": "202",
@@ -3238,7 +4243,12 @@
 "After I infect the throat, rheumatic fever or kidney inflammation can follow.",
 "I cause strep throat, scarlet fever and flesh-eating fasciitis."
 ],
-"fact": "Group A beta-haemolytic; complications include rheumatic fever and glomerulonephritis."
+"fact": "Group A beta-haemolytic; complications include rheumatic fever and glomerulonephritis.",
+"decoys": [
+"Streptococcus agalactiae",
+"Streptococcus mutans",
+"Streptococcus viridans"
+]
 },
 {
 "id": "203",
@@ -3255,7 +4265,12 @@
 "My thick capsule is the target of a vaccine for babies and older people.",
 "I am the commonest cause of community-acquired pneumonia."
 ],
-"fact": "Lancet-shaped diplococci; the top cause of community pneumonia and of adult meningitis."
+"fact": "Lancet-shaped diplococci; the top cause of community pneumonia and of adult meningitis.",
+"decoys": [
+"Moraxella catarrhalis",
+"Klebsiella pneumoniae",
+"Enterococcus faecium"
+]
 },
 {
 "id": "204",
@@ -3272,7 +4287,12 @@
 "I cause a rash that doesn't fade under a glass, and I can destroy the adrenal glands.",
 "I cause epidemic meningitis in young people and pilgrims."
 ],
-"fact": "Causes meningitis with a purpuric rash; Waterhouse-Friderichsen syndrome."
+"fact": "Causes meningitis with a purpuric rash; Waterhouse-Friderichsen syndrome.",
+"decoys": [
+"Neisseria lactamica",
+"Acinetobacter baumannii",
+"Kingella kingae"
+]
 },
 {
 "id": "205",
@@ -3289,7 +4309,12 @@
 "I am caught through sex and can cause a pus discharge.",
 "In newborns I can infect the eyes during birth."
 ],
-"fact": "Causes gonorrhoea and neonatal conjunctivitis; often treated with ceftriaxone."
+"fact": "Causes gonorrhoea and neonatal conjunctivitis; often treated with ceftriaxone.",
+"decoys": [
+"Mycoplasma genitalium",
+"Gardnerella vaginalis",
+"Haemophilus ducreyi"
+]
 },
 {
 "id": "206",
@@ -3306,7 +4331,12 @@
 "I ferment lactose and turn MacConkey agar pink.",
 "I am the most common cause of urinary tract infections, and one strain, O157:H7, causes HUS."
 ],
-"fact": "The commonest cause of UTI; O157:H7 makes Shiga-like toxin and causes HUS."
+"fact": "The commonest cause of UTI; O157:H7 makes Shiga-like toxin and causes HUS.",
+"decoys": [
+"Klebsiella oxytoca",
+"Proteus mirabilis",
+"Enterobacter cloacae"
+]
 },
 {
 "id": "207",
@@ -3323,7 +4353,12 @@
 "A breath test can find me.",
 "I cause most peptic ulcers and raise the risk of stomach cancer."
 ],
-"fact": "Causes peptic ulcers and gastric cancer; detected by the urea breath test."
+"fact": "Causes peptic ulcers and gastric cancer; detected by the urea breath test.",
+"decoys": [
+"Campylobacter jejuni",
+"Helicobacter heilmannii",
+"Tropheryma whipplei"
+]
 },
 {
 "id": "208",
@@ -3341,7 +4376,12 @@
 "I make caseating granulomas and can hide for years.",
 "I cause tuberculosis."
 ],
-"fact": "Acid-fast bacillus; cause of tuberculosis."
+"fact": "Acid-fast bacillus; cause of tuberculosis.",
+"decoys": [
+"Mycobacterium bovis",
+"Mycobacterium avium complex",
+"Mycobacterium kansasii"
+]
 },
 {
 "id": "209",
@@ -3358,7 +4398,12 @@
 "I cannot be grown in the lab, but armadillos can carry me.",
 "I cause leprosy."
 ],
-"fact": "Causes leprosy; damages peripheral nerves and skin."
+"fact": "Causes leprosy; damages peripheral nerves and skin.",
+"decoys": [
+"Mycobacterium ulcerans",
+"Mycobacterium marinum",
+"Nocardia asteroides"
+]
 },
 {
 "id": "210",
@@ -3376,7 +4421,12 @@
 "My toxins can make a membrane-like coat on the colon.",
 "I cause severe diarrhoea in hospital patients after antibiotics."
 ],
-"fact": "Causes pseudomembranous colitis; treated with oral vancomycin or fidaxomicin."
+"fact": "Causes pseudomembranous colitis; treated with oral vancomycin or fidaxomicin.",
+"decoys": [
+"Clostridium perfringens",
+"Clostridium septicum",
+"Bacteroides fragilis"
+]
 },
 {
 "id": "211",
@@ -3391,7 +4441,12 @@
 "My toxin stops inhibitory neurotransmitters from being released.",
 "I cause lockjaw and painful muscle spasms."
 ],
-"fact": "Its toxin blocks GABA and glycine release, causing tetanus."
+"fact": "Its toxin blocks GABA and glycine release, causing tetanus.",
+"decoys": [
+"Clostridium sordellii",
+"Clostridium novyi",
+"Clostridium tertium"
+]
 },
 {
 "id": "212",
@@ -3406,7 +4461,12 @@
 "My toxin stops acetylcholine release.",
 "I cause a descending flaccid paralysis, and my toxin is used to smooth wrinkles."
 ],
-"fact": "Causes botulism; its toxin is used medically as Botox."
+"fact": "Causes botulism; its toxin is used medically as Botox.",
+"decoys": [
+"Bacillus cereus",
+"Clostridium butyricum",
+"Clostridium baratii"
+]
 },
 {
 "id": "213",
@@ -3421,7 +4481,12 @@
 "My toxin is coded by a virus that infects me.",
 "I make a grey membrane in the throat that can block breathing."
 ],
-"fact": "Its toxin causes a pseudomembrane, myocarditis and neuropathy."
+"fact": "Its toxin causes a pseudomembrane, myocarditis and neuropathy.",
+"decoys": [
+"Corynebacterium jeikeium",
+"Arcanobacterium haemolyticum",
+"Corynebacterium ulcerans"
+]
 },
 {
 "id": "214",
@@ -3436,7 +4501,12 @@
 "I can infect skin, lungs or gut, and I have been used as a weapon.",
 "I cause a black, painless skin ulcer."
 ],
-"fact": "Causes anthrax, with a painless black eschar."
+"fact": "Causes anthrax, with a painless black eschar.",
+"decoys": [
+"Bacillus subtilis",
+"Yersinia pestis",
+"Francisella tularensis"
+]
 },
 {
 "id": "215",
@@ -3451,7 +4521,12 @@
 "I am found in soft cheese and cold meats.",
 "I cause meningitis in newborns and the elderly, and I am dangerous in pregnancy."
 ],
-"fact": "Grows at fridge temperature; a cause of neonatal meningitis."
+"fact": "Grows at fridge temperature; a cause of neonatal meningitis.",
+"decoys": [
+"Erysipelothrix rhusiopathiae",
+"Streptococcus bovis",
+"Lactobacillus"
+]
 },
 {
 "id": "216",
@@ -3466,7 +4541,12 @@
 "I infect burns, ventilated patients and people with cystic fibrosis.",
 "I am a stubborn hospital germ resistant to many antibiotics."
 ],
-"fact": "Green pigment and grape smell; infects burns and CF lungs."
+"fact": "Green pigment and grape smell; infects burns and CF lungs.",
+"decoys": [
+"Burkholderia cepacia",
+"Stenotrophomonas maltophilia",
+"Serratia marcescens"
+]
 },
 {
 "id": "217",
@@ -3481,7 +4561,12 @@
 "My toxin turns on cAMP in gut cells.",
 "I cause rice-water diarrhoea that can kill in hours."
 ],
-"fact": "Causes cholera; oral rehydration saves most lives."
+"fact": "Causes cholera; oral rehydration saves most lives.",
+"decoys": [
+"Vibrio parahaemolyticus",
+"Vibrio vulnificus",
+"Aeromonas hydrophila"
+]
 },
 {
 "id": "218",
@@ -3498,7 +4583,12 @@
 "I cause rose spots and a slow pulse, and some people carry me in the gallbladder.",
 "I cause typhoid fever."
 ],
-"fact": "Causes typhoid fever; chronic carriers hold it in the gallbladder."
+"fact": "Causes typhoid fever; chronic carriers hold it in the gallbladder.",
+"decoys": [
+"Salmonella Enteritidis",
+"Shigella dysenteriae",
+"Yersinia enterocolitica"
+]
 },
 {
 "id": "219",
@@ -3513,7 +4603,12 @@
 "I start as a painless ulcer on the genitals.",
 "I cause syphilis."
 ],
-"fact": "Causes syphilis; penicillin is still the treatment."
+"fact": "Causes syphilis; penicillin is still the treatment.",
+"decoys": [
+"Treponema pertenue",
+"Leptospira interrogans",
+"Borrelia recurrentis"
+]
 },
 {
 "id": "220",
@@ -3528,7 +4623,12 @@
 "I make a bull's-eye rash.",
 "I cause Lyme disease."
 ],
-"fact": "Causes Lyme disease, with erythema migrans."
+"fact": "Causes Lyme disease, with erythema migrans.",
+"decoys": [
+"Rickettsia rickettsii",
+"Ehrlichia chaffeensis",
+"Anaplasma phagocytophilum"
+]
 },
 {
 "id": "221",
@@ -3543,7 +4643,12 @@
 "I am the most common sexually passed bacterium.",
 "I also cause trachoma, a leading cause of preventable blindness."
 ],
-"fact": "Causes chlamydia and trachoma."
+"fact": "Causes chlamydia and trachoma.",
+"decoys": [
+"Chlamydophila pneumoniae",
+"Chlamydophila psittaci",
+"Ureaplasma urealyticum"
+]
 },
 {
 "id": "222",
@@ -3558,7 +4663,12 @@
 "I can be found in the urine as an antigen.",
 "I cause a severe pneumonia with confusion and low sodium."
 ],
-"fact": "Causes Legionnaires' disease; spread by water aerosols."
+"fact": "Causes Legionnaires' disease; spread by water aerosols.",
+"decoys": [
+"Mycoplasma pneumoniae",
+"Coxiella burnetii",
+"Chlamydia psittaci"
+]
 },
 {
 "id": "223",
@@ -3573,7 +4683,12 @@
 "My toxin raises the lymphocyte count very high.",
 "I cause whooping cough."
 ],
-"fact": "Causes whooping cough; prevented by vaccination."
+"fact": "Causes whooping cough; prevented by vaccination.",
+"decoys": [
+"Bordetella parapertussis",
+"Bordetella bronchiseptica",
+"Pasteurella multocida"
+]
 },
 {
 "id": "224",
@@ -3588,7 +4703,12 @@
 "My type b used to cause meningitis and epiglottitis in children.",
 "A vaccine called Hib has made me rare."
 ],
-"fact": "Type b caused meningitis and epiglottitis before the Hib vaccine."
+"fact": "Type b caused meningitis and epiglottitis before the Hib vaccine.",
+"decoys": [
+"Haemophilus parainfluenzae",
+"Haemophilus aegyptius",
+"Eikenella corrodens"
+]
 },
 {
 "id": "225",
@@ -3603,7 +4723,12 @@
 "I grow when antibiotics or steroids disturb normal flora.",
 "I cause thrush and white patches in the mouth."
 ],
-"fact": "Causes oral and vaginal thrush; makes germ tubes in serum."
+"fact": "Causes oral and vaginal thrush; makes germ tubes in serum.",
+"decoys": [
+"Candida glabrata",
+"Candida auris",
+"Malassezia furfur"
+]
 },
 {
 "id": "226",
@@ -3618,7 +4743,12 @@
 "I can make a fungus ball in old lung cavities.",
 "I cause allergic and invasive lung disease in weak immune systems."
 ],
-"fact": "Causes aspergilloma and invasive aspergillosis."
+"fact": "Causes aspergilloma and invasive aspergillosis.",
+"decoys": [
+"Aspergillus niger",
+"Mucor",
+"Rhizopus"
+]
 },
 {
 "id": "227",
@@ -3633,7 +4763,12 @@
 "India ink shows me as a clear halo.",
 "I cause meningitis in people with HIV."
 ],
-"fact": "Causes meningitis in AIDS; India ink stain shows its capsule."
+"fact": "Causes meningitis in AIDS; India ink stain shows its capsule.",
+"decoys": [
+"Histoplasma capsulatum",
+"Coccidioides immitis",
+"Blastomyces dermatitidis"
+]
 },
 {
 "id": "228",
@@ -3648,7 +4783,12 @@
 "I strike when CD4 counts drop below 200.",
 "I cause pneumonia in people with AIDS."
 ],
-"fact": "Causes PCP in AIDS; prevented and treated with co-trimoxazole."
+"fact": "Causes PCP in AIDS; prevented and treated with co-trimoxazole.",
+"decoys": [
+"Cryptococcus gattii",
+"Sporothrix schenckii",
+"Talaromyces marneffei"
+]
 },
 {
 "id": "229",
@@ -3663,7 +4803,12 @@
 "I show as banana-shaped gametocytes on a blood film.",
 "I cause the most dangerous kind of malaria."
 ],
-"fact": "Causes severe malaria, including cerebral malaria."
+"fact": "Causes severe malaria, including cerebral malaria.",
+"decoys": [
+"Plasmodium vivax",
+"Plasmodium malariae",
+"Plasmodium ovale"
+]
 },
 {
 "id": "230",
@@ -3678,7 +4823,12 @@
 "I can make flask-shaped ulcers in the colon.",
 "I cause amoebic dysentery and liver abscess."
 ],
-"fact": "Causes amoebic dysentery and liver abscess."
+"fact": "Causes amoebic dysentery and liver abscess.",
+"decoys": [
+"Entamoeba coli",
+"Naegleria fowleri",
+"Balantidium coli"
+]
 },
 {
 "id": "231",
@@ -3695,7 +4845,12 @@
 "I cause fatty, smelly diarrhoea after drinking stream water.",
 "I am a common cause of traveller's diarrhoea."
 ],
-"fact": "Causes giardiasis with fatty diarrhoea."
+"fact": "Causes giardiasis with fatty diarrhoea.",
+"decoys": [
+"Cryptosporidium parvum",
+"Cyclospora cayetanensis",
+"Trichomonas vaginalis"
+]
 },
 {
 "id": "232",
@@ -3710,7 +4865,12 @@
 "I can cause ring-enhancing lesions in the brain in AIDS.",
 "I can harm a baby in pregnancy, causing calcifications in the brain."
 ],
-"fact": "Dangerous in pregnancy and AIDS."
+"fact": "Dangerous in pregnancy and AIDS.",
+"decoys": [
+"Leishmania donovani",
+"Trypanosoma cruzi",
+"Babesia microti"
+]
 },
 {
 "id": "233",
@@ -3725,7 +4885,12 @@
 "My eggs have a spine at the end and pass out in the urine.",
 "I cause blood in the urine and raise the risk of bladder cancer, as in the Nile valley."
 ],
-"fact": "Causes urinary schistosomiasis and squamous bladder cancer."
+"fact": "Causes urinary schistosomiasis and squamous bladder cancer.",
+"decoys": [
+"Schistosoma mansoni",
+"Schistosoma japonicum",
+"Fasciola hepatica"
+]
 },
 {
 "id": "234",
@@ -3740,7 +4905,12 @@
 "My larvae pass through the lungs and cause a cough.",
 "I am the largest roundworm of the human gut."
 ],
-"fact": "The giant intestinal roundworm; can block the bowel."
+"fact": "The giant intestinal roundworm; can block the bowel.",
+"decoys": [
+"Trichuris trichiura",
+"Ancylostoma duodenale",
+"Strongyloides stercoralis"
+]
 },
 {
 "id": "235",
@@ -3758,7 +4928,12 @@
 "I lay my eggs around the anus at night.",
 "I cause night itching, found with a sticky tape test."
 ],
-"fact": "Causes anal itching; diagnosed with the Scotch tape test."
+"fact": "Causes anal itching; diagnosed with the Scotch tape test.",
+"decoys": [
+"Toxocara canis",
+"Necator americanus",
+"Trichinella spiralis"
+]
 },
 {
 "id": "236",
@@ -3773,7 +4948,12 @@
 "My larvae can make cysts in the brain.",
 "I cause cysticercosis, a cause of seizures."
 ],
-"fact": "Neurocysticercosis is a leading cause of acquired epilepsy."
+"fact": "Neurocysticercosis is a leading cause of acquired epilepsy.",
+"decoys": [
+"Taenia saginata",
+"Echinococcus granulosus",
+"Diphyllobothrium latum"
+]
 },
 {
 "id": "237",
@@ -3790,7 +4970,12 @@
 "I slowly destroy helper T cells.",
 "Without treatment, I cause AIDS."
 ],
-"fact": "Causes AIDS; treated with antiretroviral therapy."
+"fact": "Causes AIDS; treated with antiretroviral therapy.",
+"decoys": [
+"Human T-lymphotropic virus 1",
+"Hepatitis C virus",
+"Human papillomavirus"
+]
 },
 {
 "id": "238",
@@ -3807,7 +4992,12 @@
 "My surface antigen shows I am present.",
 "I cause liver inflammation and can lead to cirrhosis and liver cancer."
 ],
-"fact": "Its vaccine was the first against a cancer."
+"fact": "Its vaccine was the first against a cancer.",
+"decoys": [
+"Hepatitis A virus",
+"Hepatitis D virus",
+"Hepatitis E virus"
+]
 },
 {
 "id": "239",
@@ -3824,7 +5014,12 @@
 "I cause atypical lymphocytes and a positive Monospot test.",
 "I cause glandular fever and some cancers like Burkitt lymphoma."
 ],
-"fact": "Causes infectious mononucleosis; linked to Burkitt and nasopharyngeal cancer."
+"fact": "Causes infectious mononucleosis; linked to Burkitt and nasopharyngeal cancer.",
+"decoys": [
+"Cytomegalovirus",
+"Human herpesvirus 8",
+"Herpes simplex virus 1"
+]
 },
 {
 "id": "240",
@@ -3841,7 +5036,12 @@
 "I come back later in one band of skin.",
 "I cause chickenpox and shingles."
 ],
-"fact": "Causes chickenpox, and later shingles."
+"fact": "Causes chickenpox, and later shingles.",
+"decoys": [
+"Herpes simplex virus 2",
+"Measles virus",
+"Rubella virus"
+]
 },
 {
 "id": "241",
@@ -3856,7 +5056,12 @@
 "My top is packed with mucin granules that stain with PAS.",
 "I make mucus, and I am rare in the stomach but common in the colon."
 ],
-"fact": "Mucus-secreting cells; in the stomach they signal intestinal metaplasia."
+"fact": "Mucus-secreting cells; in the stomach they signal intestinal metaplasia.",
+"decoys": [
+"Clara cell",
+"Ciliated columnar cell",
+"Brush cell"
+]
 },
 {
 "id": "242",
@@ -3873,7 +5078,12 @@
 "My canaliculi are lined with proton pumps.",
 "I make stomach acid and intrinsic factor."
 ],
-"fact": "Secretes HCl and intrinsic factor; target of proton pump inhibitors."
+"fact": "Secretes HCl and intrinsic factor; target of proton pump inhibitors.",
+"decoys": [
+"Mucous neck cell",
+"G cell",
+"Enterochromaffin-like cell"
+]
 },
 {
 "id": "243",
@@ -3890,7 +5100,12 @@
 "I store my product in granules at my top until a meal arrives.",
 "I make pepsinogen and gastric lipase."
 ],
-"fact": "Secretes pepsinogen, which acid turns into pepsin."
+"fact": "Secretes pepsinogen, which acid turns into pepsin.",
+"decoys": [
+"D cell",
+"Enteroendocrine cell",
+"Surface mucous cell"
+]
 },
 {
 "id": "244",
@@ -3905,7 +5120,12 @@
 "I help control the gut bacteria.",
 "I make lysozyme and defensins."
 ],
-"fact": "Defends the crypts with lysozyme and defensins."
+"fact": "Defends the crypts with lysozyme and defensins.",
+"decoys": [
+"Enterocyte",
+"M cell",
+"Tuft cell"
+]
 },
 {
 "id": "245",
@@ -3920,7 +5140,12 @@
 "I sit inside the sinusoids.",
 "I clean the blood from the gut of bacteria and old red cells."
 ],
-"fact": "The resident macrophage of the liver sinusoids."
+"fact": "The resident macrophage of the liver sinusoids.",
+"decoys": [
+"Ito cell",
+"Pit cell",
+"Liver sinusoidal endothelial cell"
+]
 },
 {
 "id": "246",
@@ -3937,7 +5162,12 @@
 "I make albumin, clotting factors and bile.",
 "I am the main working cell of the liver."
 ],
-"fact": "Makes up about 80% of the liver's mass."
+"fact": "Makes up about 80% of the liver's mass.",
+"decoys": [
+"Cholangiocyte",
+"Oval cell",
+"Acinar cell"
+]
 },
 {
 "id": "247",
@@ -3955,7 +5185,12 @@
 "I can divide and replace damaged neighbours.",
 "I make surfactant in the alveoli."
 ],
-"fact": "Makes surfactant and repairs the alveolar lining."
+"fact": "Makes surfactant and repairs the alveolar lining.",
+"decoys": [
+"Type I pneumocyte",
+"Basal cell of the airway",
+"Club cell"
+]
 },
 {
 "id": "248",
@@ -3972,7 +5207,12 @@
 "I eat inhaled particles, bacteria and leaked red cells.",
 "In smokers I fill with brown particles."
 ],
-"fact": "The lung's resident macrophage."
+"fact": "The lung's resident macrophage.",
+"decoys": [
+"Microfold cell",
+"Histiocyte",
+"Dendritic cell"
+]
 },
 {
 "id": "249",
@@ -3987,7 +5227,12 @@
 "I sit in shallow pits called Howship lacunae.",
 "I dissolve bone."
 ],
-"fact": "Breaks down bone; bisphosphonates and denosumab slow it."
+"fact": "Breaks down bone; bisphosphonates and denosumab slow it.",
+"decoys": [
+"Osteocyte",
+"Osteoprogenitor cell",
+"Bone lining cell"
+]
 },
 {
 "id": "250",
@@ -4002,7 +5247,12 @@
 "I lay down osteoid, the matrix that later hardens.",
 "I build bone."
 ],
-"fact": "Bone-forming cell; becomes an osteocyte once trapped in matrix."
+"fact": "Bone-forming cell; becomes an osteocyte once trapped in matrix.",
+"decoys": [
+"Chondroblast",
+"Odontoblast",
+"Cementoblast"
+]
 },
 {
 "id": "251",
@@ -4017,7 +5267,12 @@
 "I make type II collagen.",
 "I am the only cell of cartilage."
 ],
-"fact": "The cell of cartilage, which has no blood vessels."
+"fact": "The cell of cartilage, which has no blood vessels.",
+"decoys": [
+"Tenocyte",
+"Myofibroblast",
+"Pericyte"
+]
 },
 {
 "id": "252",
@@ -4034,7 +5289,12 @@
 "I help nerves grow back after injury.",
 "I make myelin in peripheral nerves."
 ],
-"fact": "Myelinates peripheral nerves; Guillain-Barré targets its myelin."
+"fact": "Myelinates peripheral nerves; Guillain-Barré targets its myelin.",
+"decoys": [
+"Satellite glial cell",
+"Muller cell",
+"Radial glia"
+]
 },
 {
 "id": "253",
@@ -4049,7 +5309,12 @@
 "I wrap many axons at once.",
 "I make myelin in the central nervous system, and multiple sclerosis attacks me."
 ],
-"fact": "Myelinates CNS axons; damaged in multiple sclerosis."
+"fact": "Myelinates CNS axons; damaged in multiple sclerosis.",
+"decoys": [
+"Bergmann glia",
+"Tanycyte",
+"Pituicyte"
+]
 },
 {
 "id": "254",
@@ -4064,7 +5329,12 @@
 "My feet wrap around brain blood vessels.",
 "I hold the blood-brain barrier together and form scars after injury."
 ],
-"fact": "The most common glial cell; forms glial scars."
+"fact": "The most common glial cell; forms glial scars.",
+"decoys": [
+"Purkinje cell",
+"Pyramidal cell",
+"Granule cell"
+]
 },
 {
 "id": "255",
@@ -4079,7 +5349,12 @@
 "I wake up when the brain is injured.",
 "I am the brain's own macrophage."
 ],
-"fact": "The resident immune cells of the CNS."
+"fact": "The resident immune cells of the CNS.",
+"decoys": [
+"Monocyte",
+"Langerhans histiocyte",
+"Hofbauer cell"
+]
 },
 {
 "id": "256",
@@ -4094,7 +5369,12 @@
 "I also line the central canal of the spinal cord.",
 "I help make and move cerebrospinal fluid."
 ],
-"fact": "Lines the ventricles; forms the choroid plexus with capillaries."
+"fact": "Lines the ventricles; forms the choroid plexus with capillaries.",
+"decoys": [
+"Choroid plexus epithelial cell",
+"Arachnoid cap cell",
+"Pia mater cell"
+]
 },
 {
 "id": "257",
@@ -4109,7 +5389,12 @@
 "I have tennis racket granules.",
 "I catch antigens in the skin and show them to T cells."
 ],
-"fact": "The antigen-presenting cell of the skin."
+"fact": "The antigen-presenting cell of the skin.",
+"decoys": [
+"Follicular dendritic cell",
+"Interdigitating dendritic cell",
+"Plasmacytoid dendritic cell"
+]
 },
 {
 "id": "258",
@@ -4124,7 +5409,12 @@
 "I pass pigment to keratinocytes.",
 "I make melanin."
 ],
-"fact": "Makes melanin; its cancer is melanoma."
+"fact": "Makes melanin; its cancer is melanoma.",
+"decoys": [
+"Melanophage",
+"Nevus cell",
+"Chromaffin cell"
+]
 },
 {
 "id": "259",
@@ -4139,7 +5429,12 @@
 "I sense light touch.",
 "My rare cancer is aggressive and linked to a polyomavirus."
 ],
-"fact": "A touch receptor cell; gives rise to Merkel cell carcinoma."
+"fact": "A touch receptor cell; gives rise to Merkel cell carcinoma.",
+"decoys": [
+"Basal keratinocyte",
+"Pacinian capsule cell",
+"Glomus cell"
+]
 },
 {
 "id": "260",
@@ -4154,7 +5449,12 @@
 "I lose my nucleus and become a flat, dead scale.",
 "I make keratin."
 ],
-"fact": "The main cell of the epidermis."
+"fact": "The main cell of the epidermis.",
+"decoys": [
+"Corneocyte",
+"Sebocyte",
+"Trichocyte"
+]
 },
 {
 "id": "261",
@@ -4169,7 +5469,12 @@
 "My filtration slits block proteins.",
 "When my feet flatten, protein pours into the urine."
 ],
-"fact": "Its foot processes efface in minimal change disease."
+"fact": "Its foot processes efface in minimal change disease.",
+"decoys": [
+"Parietal epithelial cell of Bowman's capsule",
+"Glomerular endothelial cell",
+"Peritubular interstitial cell"
+]
 },
 {
 "id": "262",
@@ -4184,7 +5489,12 @@
 "I can contract and eat debris.",
 "IgA can build up around me."
 ],
-"fact": "Supports the glomerular tuft; IgA nephropathy deposits here."
+"fact": "Supports the glomerular tuft; IgA nephropathy deposits here.",
+"decoys": [
+"Vascular smooth muscle cell",
+"Renal interstitial cell",
+"Endothelial cell"
+]
 },
 {
 "id": "263",
@@ -4201,7 +5511,12 @@
 "LH makes me work.",
 "I make testosterone."
 ],
-"fact": "Makes testosterone under LH control."
+"fact": "Makes testosterone under LH control.",
+"decoys": [
+"Spermatogonium",
+"Peritubular myoid cell",
+"Spermatocyte"
+]
 },
 {
 "id": "264",
@@ -4218,7 +5533,12 @@
 "FSH makes me work, and I make inhibin and anti-Müllerian hormone.",
 "I support sperm as they develop and form the blood-testis barrier."
 ],
-"fact": "Nurses developing sperm and forms the blood-testis barrier."
+"fact": "Nurses developing sperm and forms the blood-testis barrier.",
+"decoys": [
+"Spermatid",
+"Rete testis cell",
+"Epididymal principal cell"
+]
 },
 {
 "id": "265",
@@ -4235,7 +5555,12 @@
 "FSH makes me switch on aromatase.",
 "I turn androgens from my theca neighbours into oestrogen, and my tumour shows Call-Exner bodies."
 ],
-"fact": "Converts androgens to oestrogen using aromatase."
+"fact": "Converts androgens to oestrogen using aromatase.",
+"decoys": [
+"Theca interna cell",
+"Theca externa cell",
+"Oocyte"
+]
 },
 {
 "id": "266",
@@ -4252,7 +5577,12 @@
 "I make insulin.",
 "Type 1 diabetes destroys me."
 ],
-"fact": "Makes insulin; destroyed in type 1 diabetes."
+"fact": "Makes insulin; destroyed in type 1 diabetes.",
+"decoys": [
+"Alpha cell",
+"Delta cell",
+"PP cell"
+]
 },
 {
 "id": "267",
@@ -4267,7 +5597,12 @@
 "I have a pale area next to my nucleus where the Golgi sits.",
 "I make antibodies."
 ],
-"fact": "The antibody factory; its cancer is multiple myeloma."
+"fact": "The antibody factory; its cancer is multiple myeloma.",
+"decoys": [
+"B lymphocyte",
+"T helper cell",
+"Natural killer cell"
+]
 },
 {
 "id": "268",
@@ -4282,7 +5617,12 @@
 "I carry IgE on my surface.",
 "I release histamine in allergic reactions."
 ],
-"fact": "Releases histamine in type I hypersensitivity."
+"fact": "Releases histamine in type I hypersensitivity.",
+"decoys": [
+"Basophil",
+"Lymphocyte",
+"Monocyte-derived macrophage"
+]
 },
 {
 "id": "269",
@@ -4297,7 +5637,12 @@
 "I am the first to arrive at an infection.",
 "I eat bacteria and make pus."
 ],
-"fact": "The first responder to bacterial infection."
+"fact": "The first responder to bacterial infection.",
+"decoys": [
+"Band cell",
+"Myelocyte",
+"Metamyelocyte"
+]
 },
 {
 "id": "270",
@@ -4312,7 +5657,12 @@
 "I fight parasites.",
 "I rise in asthma and allergies."
 ],
-"fact": "Raised in parasite infections and allergy."
+"fact": "Raised in parasite infections and allergy.",
+"decoys": [
+"Promyelocyte",
+"Myeloblast",
+"Reticulocyte"
+]
 },
 {
 "id": "271",
@@ -4327,7 +5677,12 @@
 "I break off pieces of myself.",
 "I make platelets."
 ],
-"fact": "The platelet-forming cell of the bone marrow."
+"fact": "The platelet-forming cell of the bone marrow.",
+"decoys": [
+"Platelet",
+"Erythroblast",
+"Haemocytoblast"
+]
 },
 {
 "id": "272",
@@ -4342,7 +5697,12 @@
 "I come to heal wounds.",
 "I make collagen."
 ],
-"fact": "The main cell of connective tissue."
+"fact": "The main cell of connective tissue.",
+"decoys": [
+"Fibrocyte",
+"Mesenchymal stem cell",
+"Adipocyte"
+]
 },
 {
 "id": "273",
@@ -4359,7 +5719,12 @@
 "I use thermogenin, UCP1.",
 "I make heat in newborns."
 ],
-"fact": "Generates heat by uncoupling oxidative phosphorylation."
+"fact": "Generates heat by uncoupling oxidative phosphorylation.",
+"decoys": [
+"White adipose tissue",
+"Beige adipose tissue",
+"Bone marrow fat"
+]
 },
 {
 "id": "274",
@@ -4374,7 +5739,12 @@
 "I look like a dark step line under the microscope.",
 "I let the heart cells beat as one."
 ],
-"fact": "Joins cardiac muscle cells electrically and mechanically."
+"fact": "Joins cardiac muscle cells electrically and mechanically.",
+"decoys": [
+"Desmosome",
+"Gap junction",
+"Tight junction"
+]
 },
 {
 "id": "275",
@@ -4391,7 +5761,12 @@
 "My canal carries blood vessels and nerves.",
 "I am the basic unit of compact bone."
 ],
-"fact": "The structural unit of compact bone."
+"fact": "The structural unit of compact bone.",
+"decoys": [
+"Volkmann's canal",
+"Trabecula",
+"Interstitial lamellae"
+]
 },
 {
 "id": "276",
@@ -4408,7 +5783,12 @@
 "I live in the medulla of an organ in the chest.",
 "I am the hallmark of the thymus."
 ],
-"fact": "Concentric whorls of epithelial cells in the thymic medulla."
+"fact": "Concentric whorls of epithelial cells in the thymic medulla.",
+"decoys": [
+"Thymic cortex",
+"Germinal centre",
+"Splenic white pulp"
+]
 },
 {
 "id": "277",
@@ -4423,7 +5803,12 @@
 "I have M cells that sample the gut.",
 "I make IgA."
 ],
-"fact": "Gut-associated lymphoid tissue of the ileum; Salmonella Typhi enters here."
+"fact": "Gut-associated lymphoid tissue of the ileum; Salmonella Typhi enters here.",
+"decoys": [
+"Mesenteric lymph nodes",
+"Tonsils",
+"Splenic red pulp"
+]
 },
 {
 "id": "278",
@@ -4440,7 +5825,12 @@
 "I make alkaline mucus.",
 "I protect the duodenum from acid."
 ],
-"fact": "Submucosal glands unique to the duodenum."
+"fact": "Submucosal glands unique to the duodenum.",
+"decoys": [
+"Crypts of Lieberkuhn",
+"Gastric glands",
+"Ebner's glands"
+]
 },
 {
 "id": "279",
@@ -4457,7 +5847,12 @@
 "I line the ureters and the bladder.",
 "I am found only in the urinary tract."
 ],
-"fact": "Stretches as the bladder fills; most bladder cancers start here."
+"fact": "Stretches as the bladder fills; most bladder cancers start here.",
+"decoys": [
+"Stratified squamous epithelium",
+"Pseudostratified columnar epithelium",
+"Simple cuboidal epithelium"
+]
 },
 {
 "id": "280",
@@ -4472,7 +5867,12 @@
 "I cover the ends of bones at joints.",
 "I make the rings of the trachea."
 ],
-"fact": "The most common cartilage; forms the fetal skeleton."
+"fact": "The most common cartilage; forms the fetal skeleton.",
+"decoys": [
+"Elastic cartilage",
+"Fibrocartilage",
+"Articular disc"
+]
 },
 {
 "id": "281",
@@ -4487,7 +5887,12 @@
 "I tell the ectoderm above me to make the neural plate.",
 "My remains are in the nucleus pulposus of discs."
 ],
-"fact": "It induces the neural tube and leaves the nucleus pulposus behind."
+"fact": "It induces the neural tube and leaves the nucleus pulposus behind.",
+"decoys": [
+"Prechordal plate",
+"Paraxial mesoderm",
+"Neural plate"
+]
 },
 {
 "id": "282",
@@ -4502,7 +5907,12 @@
 "Folic acid helps me close.",
 "I become the brain and spinal cord."
 ],
-"fact": "Failure to close causes spina bifida or anencephaly."
+"fact": "Failure to close causes spina bifida or anencephaly.",
+"decoys": [
+"Neural groove",
+"Neural fold",
+"Neuropore"
+]
 },
 {
 "id": "283",
@@ -4517,7 +5927,12 @@
 "I make melanocytes, adrenal medulla cells and the bones of the face.",
 "My faults cause Hirschsprung disease."
 ],
-"fact": "Gives rise to melanocytes, the adrenal medulla and gut nerves."
+"fact": "Gives rise to melanocytes, the adrenal medulla and gut nerves.",
+"decoys": [
+"Placode",
+"Neuroepithelium",
+"Mantle layer"
+]
 },
 {
 "id": "284",
@@ -4532,7 +5947,12 @@
 "Cells pass through me to make the three germ layers.",
 "I start gastrulation."
 ],
-"fact": "Gastrulation begins here; leftovers can form sacrococcygeal teratoma."
+"fact": "Gastrulation begins here; leftovers can form sacrococcygeal teratoma.",
+"decoys": [
+"Primitive node",
+"Primitive pit",
+"Oropharyngeal membrane"
+]
 },
 {
 "id": "285",
@@ -4547,7 +5967,12 @@
 "I split into sclerotome, myotome and dermatome.",
 "I give rise to the vertebrae, back muscles and dermis."
 ],
-"fact": "Paired mesoderm blocks that form vertebrae and skeletal muscle."
+"fact": "Paired mesoderm blocks that form vertebrae and skeletal muscle.",
+"decoys": [
+"Sclerotome",
+"Dermomyotome",
+"Intermediate mesoderm"
+]
 },
 {
 "id": "286",
@@ -4562,7 +5987,12 @@
 "I make hCG.",
 "I am the outer layer of the placenta that talks to the mother's blood."
 ],
-"fact": "Makes hCG, the hormone detected in pregnancy tests."
+"fact": "Makes hCG, the hormone detected in pregnancy tests.",
+"decoys": [
+"Cytotrophoblast",
+"Extraembryonic mesoderm",
+"Decidua basalis"
+]
 },
 {
 "id": "287",
@@ -4579,7 +6009,12 @@
 "My cells are pluripotent stem cells.",
 "I become the embryo itself."
 ],
-"fact": "Gives rise to the embryo; source of embryonic stem cells."
+"fact": "Gives rise to the embryo; source of embryonic stem cells.",
+"decoys": [
+"Trophoblast",
+"Hypoblast",
+"Epiblast"
+]
 },
 {
 "id": "288",
@@ -4594,7 +6029,12 @@
 "The primordial germ cells start in my wall.",
 "Part of me becomes the gut, and I shrink later."
 ],
-"fact": "The first site of blood formation."
+"fact": "The first site of blood formation.",
+"decoys": [
+"Chorionic cavity",
+"Connecting stalk",
+"Exocoelomic cavity"
+]
 },
 {
 "id": "289",
@@ -4609,7 +6049,12 @@
 "Part of me becomes the urachus.",
 "I join the bladder to the umbilicus."
 ],
-"fact": "Becomes the urachus, which closes to the median umbilical ligament."
+"fact": "Becomes the urachus, which closes to the median umbilical ligament.",
+"decoys": [
+"Amniotic cavity",
+"Body stalk",
+"Umbilical cord"
+]
 },
 {
 "id": "290",
@@ -4624,7 +6069,12 @@
 "I protect the fetus from knocks.",
 "I break when the waters break."
 ],
-"fact": "Forms the amniotic sac."
+"fact": "Forms the amniotic sac.",
+"decoys": [
+"Decidua capsularis",
+"Decidua parietalis",
+"Zona pellucida"
+]
 },
 {
 "id": "291",
@@ -4639,7 +6089,12 @@
 "My smooth part fades away.",
 "My villous part helps form the placenta."
 ],
-"fact": "The fetal part of the placenta."
+"fact": "The fetal part of the placenta.",
+"decoys": [
+"Chorion frondosum",
+"Chorionic villi",
+"Corona radiata"
+]
 },
 {
 "id": "292",
@@ -4654,7 +6109,12 @@
 "I usually close after the first breath.",
 "If I stay open, a clot can cross to the brain."
 ],
-"fact": "A patent foramen ovale can let clots pass (paradoxical embolism)."
+"fact": "A patent foramen ovale can let clots pass (paradoxical embolism).",
+"decoys": [
+"Ostium primum",
+"Ostium secundum",
+"Septum primum"
+]
 },
 {
 "id": "293",
@@ -4669,7 +6129,12 @@
 "Prostaglandin E keeps me open.",
 "I close after birth, and indomethacin helps close me."
 ],
-"fact": "Becomes the ligamentum arteriosum; a patent one makes a machinery murmur."
+"fact": "Becomes the ligamentum arteriosum; a patent one makes a machinery murmur.",
+"decoys": [
+"Ligamentum arteriosum",
+"Pulmonary trunk",
+"Aortic sac"
+]
 },
 {
 "id": "294",
@@ -4684,7 +6149,12 @@
 "I close after birth.",
 "I become the ligamentum venosum."
 ],
-"fact": "Shunts placental blood past the liver to the inferior vena cava."
+"fact": "Shunts placental blood past the liver to the inferior vena cava.",
+"decoys": [
+"Ligamentum venosum",
+"Ligamentum teres",
+"Inferior vena cava"
+]
 },
 {
 "id": "295",
@@ -4699,7 +6169,12 @@
 "I carry the most oxygen-rich blood in the fetus.",
 "I become the round ligament of the liver."
 ],
-"fact": "Carries oxygenated blood from the placenta; becomes the ligamentum teres."
+"fact": "Carries oxygenated blood from the placenta; becomes the ligamentum teres.",
+"decoys": [
+"Umbilical arteries",
+"Vitelline veins",
+"Cardinal veins"
+]
 },
 {
 "id": "296",
@@ -4714,7 +6189,12 @@
 "I make the smooth outflow parts of both ventricles.",
 "I become the conus arteriosus of the right ventricle and the aortic vestibule of the left."
 ],
-"fact": "Becomes the conus arteriosus and aortic vestibule."
+"fact": "Becomes the conus arteriosus and aortic vestibule.",
+"decoys": [
+"Primitive ventricle",
+"Primitive atrium",
+"Aortic roots"
+]
 },
 {
 "id": "297",
@@ -4729,7 +6209,12 @@
 "If I don't divide, one big vessel leaves both ventricles.",
 "I become the aorta and the pulmonary trunk."
 ],
-"fact": "Splits into the aorta and pulmonary trunk; persistence is a cyanotic heart defect."
+"fact": "Splits into the aorta and pulmonary trunk; persistence is a cyanotic heart defect.",
+"decoys": [
+"Conus arteriosus",
+"Aorticopulmonary septum",
+"Endocardial cushions"
+]
 },
 {
 "id": "298",
@@ -4744,7 +6229,12 @@
 "I form the smooth part of the right atrium.",
 "My left horn becomes the coronary sinus."
 ],
-"fact": "Becomes the smooth right atrium and the coronary sinus."
+"fact": "Becomes the smooth right atrium and the coronary sinus.",
+"decoys": [
+"Common cardinal vein",
+"Coronary sinus",
+"Crista terminalis"
+]
 },
 {
 "id": "299",
@@ -4759,7 +6249,12 @@
 "I make the inferior parathyroids.",
 "I make the thymus."
 ],
-"fact": "Forms the thymus and inferior parathyroid glands."
+"fact": "Forms the thymus and inferior parathyroid glands.",
+"decoys": [
+"First pharyngeal pouch",
+"Second pharyngeal pouch",
+"Fourth pharyngeal pouch"
+]
 },
 {
 "id": "300",
@@ -4776,7 +6271,12 @@
 "I make the malleus and incus.",
 "I make the jaw."
 ],
-"fact": "Gives rise to the jaw, malleus and incus."
+"fact": "Gives rise to the jaw, malleus and incus.",
+"decoys": [
+"Third pharyngeal arch",
+"Fourth pharyngeal arch",
+"Sixth pharyngeal arch"
+]
 },
 {
 "id": "301",
@@ -4793,7 +6293,12 @@
 "I make the muscles of facial expression.",
 "I make part of the hyoid."
 ],
-"fact": "Gives rise to the stapes and muscles of facial expression."
+"fact": "Gives rise to the stapes and muscles of facial expression.",
+"decoys": [
+"First pharyngeal cleft",
+"Second pharyngeal cleft",
+"Cervical sinus"
+]
 },
 {
 "id": "302",
@@ -4808,7 +6313,12 @@
 "I usually disappear.",
 "If I leave a cyst, it moves up when you stick out your tongue."
 ],
-"fact": "A remnant forms a midline neck cyst that moves with tongue protrusion."
+"fact": "A remnant forms a midline neck cyst that moves with tongue protrusion.",
+"decoys": [
+"Foramen caecum",
+"Pyramidal lobe",
+"Lingual thyroid"
+]
 },
 {
 "id": "303",
@@ -4823,7 +6333,12 @@
 "I make the anterior pituitary.",
 "My remains can form a craniopharyngioma."
 ],
-"fact": "Becomes the anterior pituitary; leftovers can form craniopharyngioma."
+"fact": "Becomes the anterior pituitary; leftovers can form craniopharyngioma.",
+"decoys": [
+"Infundibulum",
+"Pars intermedia",
+"Craniopharyngeal canal"
+]
 },
 {
 "id": "304",
@@ -4840,7 +6355,12 @@
 "I become the epididymis, vas deferens and seminal vesicles.",
 "I make the male internal genital ducts."
 ],
-"fact": "Forms male ducts under the influence of testosterone."
+"fact": "Forms male ducts under the influence of testosterone.",
+"decoys": [
+"Pronephros",
+"Mesonephros",
+"Gartner's duct"
+]
 },
 {
 "id": "305",
@@ -4857,7 +6377,12 @@
 "I make the fallopian tubes and uterus.",
 "I make the female internal genital tract."
 ],
-"fact": "Forms the uterus, tubes and upper vagina."
+"fact": "Forms the uterus, tubes and upper vagina.",
+"decoys": [
+"Appendix of testis",
+"Sinovaginal bulb",
+"Mullerian tubercle"
+]
 },
 {
 "id": "306",
@@ -4872,7 +6397,12 @@
 "I make the ureter, pelvis and collecting ducts.",
 "I make the drainage part of the kidney."
 ],
-"fact": "Forms the collecting system of the kidney."
+"fact": "Forms the collecting system of the kidney.",
+"decoys": [
+"Metanephric vesicle",
+"Renal pelvis",
+"Collecting tubules"
+]
 },
 {
 "id": "307",
@@ -4889,7 +6419,12 @@
 "I make the nephrons.",
 "I make the filtering part of the kidney."
 ],
-"fact": "Forms the nephrons, from glomerulus to distal tubule."
+"fact": "Forms the nephrons, from glomerulus to distal tubule.",
+"decoys": [
+"Nephrogenic cord",
+"Renal corpuscle",
+"Lateral plate mesoderm"
+]
 },
 {
 "id": "308",
@@ -4904,7 +6439,12 @@
 "I usually close.",
 "If I stay open, urine leaks from the umbilicus."
 ],
-"fact": "A patent one leaks urine from the umbilicus."
+"fact": "A patent one leaks urine from the umbilicus.",
+"decoys": [
+"Median umbilical ligament",
+"Medial umbilical ligament",
+"Allantoic duct remnant"
+]
 },
 {
 "id": "309",
@@ -4921,7 +6461,12 @@
 "If I stay partly open, I leave a pouch in the ileum.",
 "I can leave a Meckel diverticulum."
 ],
-"fact": "Its remnant is Meckel's diverticulum."
+"fact": "Its remnant is Meckel's diverticulum.",
+"decoys": [
+"Vitelline cyst",
+"Vitelline artery",
+"Umbilical ring"
+]
 },
 {
 "id": "310",
@@ -4936,7 +6481,12 @@
 "I herniate into the umbilical cord.",
 "If I turn wrongly, I can twist."
 ],
-"fact": "Malrotation can lead to volvulus."
+"fact": "Malrotation can lead to volvulus.",
+"decoys": [
+"Foregut",
+"Hindgut",
+"Primitive gut tube"
+]
 },
 {
 "id": "311",
@@ -4951,7 +6501,12 @@
 "I help make the liver.",
 "I make the central tendon of the diaphragm."
 ],
-"fact": "Forms the central tendon of the diaphragm."
+"fact": "Forms the central tendon of the diaphragm.",
+"decoys": [
+"Pleuroperitoneal membranes",
+"Dorsal mesentery",
+"Body wall mesoderm"
+]
 },
 {
 "id": "312",
@@ -4966,7 +6521,12 @@
 "I usually close.",
 "If I stay open, an indirect hernia or hydrocele can form."
 ],
-"fact": "A patent one leads to indirect inguinal hernia or hydrocele."
+"fact": "A patent one leads to indirect inguinal hernia or hydrocele.",
+"decoys": [
+"Tunica vaginalis",
+"Canal of Nuck",
+"Tunica albuginea"
+]
 },
 {
 "id": "313",
@@ -4981,7 +6541,12 @@
 "In adult males my remnant is the scrotal ligament.",
 "In females I become the round ligament."
 ],
-"fact": "Guides the descent of the testis."
+"fact": "Guides the descent of the testis.",
+"decoys": [
+"Round ligament of the uterus",
+"Ovarian ligament",
+"Suspensory ligament of the ovary"
+]
 },
 {
 "id": "314",
@@ -4996,7 +6561,12 @@
 "I become the penis in males.",
 "I become the clitoris in females."
 ],
-"fact": "Becomes the glans penis or clitoris."
+"fact": "Becomes the glans penis or clitoris.",
+"decoys": [
+"Urogenital folds",
+"Labioscrotal swellings",
+"Genital ridge"
+]
 },
 {
 "id": "315",
@@ -5011,7 +6581,12 @@
 "I make the urethra.",
 "I make the prostate in males."
 ],
-"fact": "Forms the bladder, urethra and prostate."
+"fact": "Forms the bladder, urethra and prostate.",
+"decoys": [
+"Anorectal canal",
+"Urorectal septum",
+"Cloacal membrane"
+]
 },
 {
 "id": "316",
@@ -5026,7 +6601,12 @@
 "I become the rectum and the urogenital sinus.",
 "I am the common end of the gut and urinary tract."
 ],
-"fact": "Divided by the urorectal septum into rectum and urogenital sinus."
+"fact": "Divided by the urorectal septum into rectum and urogenital sinus.",
+"decoys": [
+"Proctodeum",
+"Stomodeum",
+"Anal pit"
+]
 },
 {
 "id": "317",
@@ -5041,7 +6621,12 @@
 "I look like a mulberry.",
 "I become the blastocyst."
 ],
-"fact": "A solid ball of 16 cells that becomes the blastocyst."
+"fact": "A solid ball of 16 cells that becomes the blastocyst.",
+"decoys": [
+"Two-cell stage",
+"Compacted embryo",
+"Blastomere"
+]
 },
 {
 "id": "318",
@@ -5056,7 +6641,12 @@
 "I have an inner cell mass and a trophoblast.",
 "I implant in the uterus."
 ],
-"fact": "Implants in the uterus at about day 6 to 7."
+"fact": "Implants in the uterus at about day 6 to 7.",
+"decoys": [
+"Gastrula",
+"Bilaminar disc",
+"Trilaminar disc"
+]
 },
 {
 "id": "319",
@@ -5071,7 +6661,12 @@
 "I form when a sperm and an egg join.",
 "I divide to make the embryo."
 ],
-"fact": "Forms at fertilization."
+"fact": "Forms at fertilization.",
+"decoys": [
+"Secondary oocyte",
+"Pronucleus",
+"Polar body"
+]
 },
 {
 "id": "320",
@@ -5086,6 +6681,11 @@
 "I let oxygen and nutrients pass from the mother.",
 "I am delivered after the baby, as the afterbirth."
 ],
-"fact": "Exchanges gases and nutrients between mother and fetus."
+"fact": "Exchanges gases and nutrients between mother and fetus.",
+"decoys": [
+"Decidua",
+"Amniotic fluid",
+"Chorionic plate"
+]
 }
 ]

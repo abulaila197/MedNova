@@ -5,7 +5,7 @@ import { test } from 'node:test';
 import { DP, cluePoints, guess, maxCasePoints, newAttempt, reveal, search } from '../../diagnostic/core';
 import { startOffline, stepOffline } from '../../diagnostic/offline';
 import { startRun, step } from '../../diagnostic/solo';
-import { CASES, CATEGORIES, GUESSES, INDEX, PUZZLES, caseById, nearMisses, poolOf } from '../data';
+import { CASES, CATEGORIES, GUESSES, INDEX, PUZZLES, caseById, nearMisses, poolOf, slug } from '../data';
 import { WAI } from '../rules';
 
 
@@ -36,7 +36,7 @@ test('the bank: answers are unique, and no clue says the answer or one of its ot
 });
 
 test('typing finds every answer by its name and by its other names', () => {
-  assert.equal(GUESSES.length, 320);
+  assert.equal(GUESSES.filter((g) => g.answer).length, 320);
   for (const p of PUZZLES) {
     const c = caseById.get(p.id)!;
     for (const n of [p.answer, ...p.aliases]) assert.ok(search(INDEX, n).some((g) => g.id === c.answer_id), `"${n}" doesn't find ${p.answer}`);
@@ -50,10 +50,22 @@ test('categories filter the pool; rivals guess wrong inside the same category', 
   let i = 0;
   const wrong = nearMisses(c, (n) => i++ % n, 4);
   assert.equal(wrong.length, 4);
+  const own = PUZZLES[0].decoys.map(slug);
   for (const id of wrong) {
     assert.notEqual(id, c.answer_id);
-    assert.ok(CASES.some((x) => x.answer_id === id && x.fields[0] === c.fields[0]));
+    assert.ok(own.includes(id) || CASES.some((x) => x.answer_id === id && x.fields[0] === c.fields[0]));
   }
+  assert.ok(own.every((d) => wrong.includes(d)), 'its own 3 distractors come first');
+});
+
+test('every answer brings 3 distractors to the guess list, none an answer, none twice', () => {
+  const answers = new Set(PUZZLES.flatMap((p) => [p.answer, ...p.aliases].map(slug)));
+  const all = PUZZLES.flatMap((p) => p.decoys.map(slug));
+  assert.ok(PUZZLES.every((p) => p.decoys.length === 3));
+  assert.equal(new Set(all).size, 960);
+  assert.ok(all.every((d) => !answers.has(d)));
+  assert.equal(GUESSES.filter((g) => !g.answer).length, 960);
+  assert.ok(search(INDEX, 'Tibia').some((g) => g.label === 'Tibia' && !g.answer));
 });
 
 test('Who am I? rules: 5 clues, 100 to 20 points, a 5th wrong guess ends the puzzle', () => {
