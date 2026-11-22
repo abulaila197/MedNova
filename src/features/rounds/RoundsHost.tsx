@@ -16,7 +16,7 @@ import { F } from '@/theme/tokens';
 import { CHESTS } from '@/features/chests/data';
 
 import { Beat } from './Ribbon';
-import { CHEST_NAME, claimRounds, loadRounds, readyOf, useRoundsStore, weekName } from './useRounds';
+import { CHEST_NAME, claimRounds, CYCLE_WEEKS, loadRounds, readyOf, useRoundsStore, weekName } from './useRounds';
 import { useLock } from '@/lib/useLock';
 import { tr } from '@/i18n';
 
@@ -50,7 +50,7 @@ export function RoundsHost() {
     setFailed(false);
     if (key) void kv.set(SHOWN, key);
   };
-  const prize = won ? <Congrats open tokens={won} title={tr('Every week stamped')} line={tr('A stamp from all 12 Grand Rounds weeks. Your tokens are in your wallet, and a new count starts now.')} onClose={() => setWon(0)} /> : null;
+  const prize = won ? <Congrats open tokens={won} title={tr('Every week stamped')} line={tr('A stamp from all {n} Grand Rounds weeks. Your tokens are in your wallet, and a new count starts now.', { n: CYCLE_WEEKS })} onClose={() => setWon(0)} /> : null;
   if (!r || !ready) return prize;
   return (
     <>

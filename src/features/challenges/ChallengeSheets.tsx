@@ -34,6 +34,16 @@ export const GAME_MODES: { key: GameKey; modes: ChallengeMode[] }[] = GAMES.filt
   if (def?.bots) modes.push('bots');
   return { key: g.key as GameKey, modes };
 }).filter((g) => g.modes.length);
+/**
+ * Beat my score plays the same questions, which these games' Solo can't do: it runs on your own level (Crossword,
+ * Medical Riddles) or on the wheel's spins (Wheels). Their Beat my score is Vs rivals only (Yazan 2026-11-22).
+ */
+const OWN_SOLO: GameKey[] = ['nova-crossword', 'the-riddler', 'the-wheels-of-chaos'];
+const modesFor = (game: GameKey, kind: ChallengeKind): ChallengeMode[] => {
+  const m = GAME_MODES.find((g) => g.key === game)?.modes ?? ['solo'];
+  const ok = kind === 'score' && OWN_SOLO.includes(game) ? m.filter((x) => x !== 'solo') : m;
+  return ok.length ? ok : m;
+};
 /** Mode chips mint, duration chips amber (games keep the app's cyan). */
 const MODE_TINT = '#5fd38a';
 const TIME_TINT = '#f5b041';
@@ -59,16 +69,14 @@ export function ChallengeSheet({ f, onClose }: { f: Friend; onClose: () => void 
   const { open } = withFriend(list, f.id);
   const [kind, setKind] = useState<ChallengeKind>('score');
   const [game, setGame] = useState<GameKey>(GAME_MODES[0].key);
-  const [mode, setMode] = useState<ChallengeMode>('solo');
+  const [picked, setMode] = useState<ChallengeMode>('solo');
   const [days, setDays] = useState(1);
   const [busy, setBusy] = useState<string | null>(null);
   useEffect(() => void loadFriendChallenges(), []);
-  const modes = GAME_MODES.find((g) => g.key === game)?.modes ?? ['solo'];
-  const pickGame = (k: GameKey) => {
-    setGame(k);
-    const m = GAME_MODES.find((g) => g.key === k)?.modes ?? ['solo'];
-    if (!m.includes(mode)) setMode(m[0]);
-  };
+  const modes = modesFor(game, kind);
+  // The mode picked, or the first this game and kind allow.
+  const mode = modes.includes(picked) ? picked : modes[0];
+  const pickGame = (k: GameKey) => setGame(k);
   // Yazan 2026-11-10: game, mode and duration each on their own line, each in its own colour.
   const chip = (label: string, on: boolean, go: () => void, key = label, tint = t.accent) => (
     <Pressable key={key} onPress={go} style={[s.chip, { borderColor: on ? tint : `${tint}55`, backgroundColor: on ? `${tint}26` : 'transparent' }]} accessibilityRole="button" accessibilityState={{ selected: on }}>

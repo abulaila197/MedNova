@@ -132,3 +132,77 @@ create or replace function public.rotation_games()
     'the-riddler','the-silent-artist','the-streak-master','the-wheels-of-chaos','imposter',
     'tilt-and-tell','four-of-a-kind','spot-the-flaw','trace-the-treatment','who-am-i','put-in-order']
 $function$;
+
+-- Grand Rounds: Trace the Treatment, Who am I? and Put it in order get their own weeks (Yazan 2026-11-22), 15 weeks a
+-- cycle; the cycle prize needs 15 stamps. Weeks 0-8 keep their slot, so the running cycle's stamps stay where they are.
+create or replace function public.rounds_week(w integer)
+ returns jsonb language sql immutable set search_path to '' as $function$
+  select case when s < 12 then jsonb_build_object('kind', 'game', 'slot', s, 'game', (array['the-diagnostic-pursuit','nova-crossword',
+      'the-riddler','nova-medicordle','the-streak-master','case-files-unsolved','the-wheels-of-chaos',
+      'four-of-a-kind','spot-the-flaw','trace-the-treatment','who-am-i','put-in-order'])[s + 1])
+    else jsonb_build_object('kind', 'mode', 'slot', s, 'mode', (array['online','solo','offline'])[s - 11]) end
+  from (select ((w % 15) + 15) % 15 s) x
+$function$;
+
+create or replace function public.rounds_cycle_have(uid uuid)
+ returns integer language sql stable security definer set search_path to '' as $function$
+  select count(distinct ((substr(l.reason, 8)::int % 15) + 15) % 15)::int
+  from public.wallet_ledger l
+  where l.user_id = uid and l.kind = 'rounds' and l.reason ~ '^rounds:-?[0-9]+$'
+    and l.at > coalesce((select max(c.at) from public.wallet_ledger c where c.user_id = uid and c.reason like 'rounds:cycle:%'), '-infinity'::timestamptz)
+$function$;
+
+create or replace function public.rounds_claim(tier integer)
+ returns jsonb language plpgsql security definer set search_path to '' as $function$
+declare uid uuid := auth.uid(); w int := public.week_index(); m jsonb := public.rounds_missions()->(tier - 1); d date; prize int := 0; n int; epic boolean := false;
+begin
+  if uid is null then raise exception 'not signed in'; end if;
+  if m is null then return jsonb_build_object('ok', false, 'why', 'tier'); end if;
+  perform pg_advisory_xact_lock(hashtext('rounds:' || uid::text));
+  d := date '2026-10-10' + w * 7;
+  if exists (select 1 from public.chest_earned where user_id = uid and src = 'rounds' and day = d and kind = m->>'chest') then
+    return jsonb_build_object('ok', false, 'why', 'done');
+  end if;
+  if public.rounds_used(uid, w) < (m->>'of')::int then return jsonb_build_object('ok', false, 'why', 'not yet'); end if;
+  insert into public.chest_earned (user_id, day, kind, src) values (uid, d, m->>'chest', 'rounds');
+  if tier = 3 then
+    insert into public.wallet_ledger (id, user_id, kind, exp, tokens, reason, at)
+    values ('r' || replace(gen_random_uuid()::text, '-', ''), uid, 'rounds', 0, 0, 'rounds:' || w, now());
+    if public.rounds_cycle_have(uid) >= 15 then
+      select count(*) + 1 into n from public.wallet_ledger where user_id = uid and reason like 'rounds:cycle:%';
+      perform public.pay_free(uid, 'chest', 3000, 'rounds:cycle:' || n, 'Grand Rounds: every week stamped');
+      prize := 3000;
+    end if;
+    if public.rounds_run(uid, w) % 4 = 0 then
+      insert into public.chest_earned (user_id, day, kind, src) values (uid, d, 'epic', 'rounds') on conflict do nothing;
+      epic := true;
+    end if;
+  end if;
+  return jsonb_build_object('ok', true, 'chest', m->>'chest', 'stamp', tier = 3, 'prize', prize, 'epic', epic);
+end $function$;
+
+create or replace function public.rounds_status()
+ returns jsonb language sql stable security definer set search_path to '' as $function$
+  with w as (select public.week_index() i),
+  used as (select case when auth.uid() is null then 0 else public.rounds_used(auth.uid(), w.i) end n from w),
+  stamped as (select exists (select 1 from public.wallet_ledger l where l.user_id = auth.uid() and l.kind = 'rounds' and l.reason = 'rounds:' || w.i) yes from w),
+  run as (select case when auth.uid() is null then 0
+      when stamped.yes then (select r from (select public.rounds_run(auth.uid(), w.i) r) x)
+      else public.rounds_run(auth.uid(), w.i - 1) end n from w, stamped)
+  select jsonb_build_object(
+    'week', w.i,
+    'this', public.rounds_week(w.i),
+    'next', public.rounds_week(w.i + 1),
+    'ends', (extract(epoch from (timestamptz '2026-10-10 00:00:00+00' + (w.i + 1) * interval '7 days')) * 1000)::bigint,
+    'used', used.n,
+    'missions', (select jsonb_agg(m || jsonb_build_object('claimed', exists (select 1 from public.chest_earned e
+        where e.user_id = auth.uid() and e.src = 'rounds' and e.kind = m->>'chest'
+          and e.day = (date '2026-10-10' + w.i * 7))) order by o)
+      from jsonb_array_elements(public.rounds_missions()) with ordinality x(m, o)),
+    'claimed', stamped.yes,
+    'stamps', coalesce((select jsonb_agg((substr(l.reason, 8))::int order by l.at) from public.wallet_ledger l
+      where l.user_id = auth.uid() and l.kind = 'rounds' and l.reason ~ '^rounds:-?[0-9]+$'), '[]'::jsonb),
+    'cycle', jsonb_build_object('have', case when auth.uid() is null then 0 else public.rounds_cycle_have(auth.uid()) end, 'of', 15, 'prize', 3000),
+    'run', case when run.n > 0 and run.n % 4 = 0 and stamped.yes then 4 else run.n % 4 end
+  ) from w, used, stamped, run
+$function$;

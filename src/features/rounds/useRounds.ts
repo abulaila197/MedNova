@@ -1,4 +1,4 @@
-// Grand Rounds (Yazan 2026-10-13, missions 2026-10-25): a 12-week cycle (16 until 2026-11-04, 13 until 2026-11-12); each week has 3 missions counted in Sparks
+// Grand Rounds (Yazan 2026-10-13, missions 2026-10-25): a 15-week cycle (16 until 2026-11-04, 13 until 2026-11-12, 12 until 2026-11-22); each week has 3 missions counted in Sparks
 // used, each paying a chest, counted on the server from synced spends.
 import { create } from 'zustand';
 
@@ -36,9 +36,10 @@ export type Rounds = {
 /** Weeks in a row with all 3 missions done that pay an Epic chest (Yazan 2026-10-26). */
 export const EPIC_RUN = 4;
 
-/** 9 game weeks, then a Vs rivals, a Solo and a Pass the phone week. 12 since 2026-11-12 (Quick Fire Quiz, The Imposter
- *  and Sketch It out, Four of a Kind and Spot the Flaw in; server rounds_week matches after the build-day SQL). */
-export const CYCLE_WEEKS = 12;
+/** 12 game weeks, then a Vs rivals, a Solo and a Pass the phone week. 12 weeks from 2026-11-12 (Quick Fire Quiz, The
+ *  Imposter and Sketch It out, Four of a Kind and Spot the Flaw in); 15 from 2026-11-22 (Trace the Treatment, Who am I?
+ *  and Put it in order in; server rounds_week matches after the release SQL). */
+export const CYCLE_WEEKS = 15;
 export const CHEST_NAME: Record<ChestKind, string> = { wooden: tr('Wooden chest'), golden: tr('Golden chest'), diamond: tr('Diamond chest') };
 // The server's 'online' mode week counts Vs rivals matches now (2026-11-10, SQL with the G7 file).
 const MODE_WEEK: Record<string, string> = { online: 'Vs rivals week', solo: 'Solo week', offline: 'Pass the phone week' };

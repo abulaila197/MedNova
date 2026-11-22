@@ -63,12 +63,13 @@ function WeekSign({ w, px, t, dim }: { w: Week; px: number; t: Theme; dim?: bool
 // The same order as rounds_week on the server.
 const CYCLE: Week[] = [
   // Party games (The Imposter, Sketch It) left Grand Rounds and Quick Fire Quiz merged into Wheels (Yazan 2026-11-12).
-  ...['the-diagnostic-pursuit', 'nova-crossword', 'the-riddler', 'nova-medicordle', 'the-streak-master', 'case-files-unsolved', 'the-wheels-of-chaos', 'four-of-a-kind', 'spot-the-flaw'].map(
+  // Trace the Treatment, Who am I? and Put it in order joined (Yazan 2026-11-22): 15 weeks a cycle.
+  ...['the-diagnostic-pursuit', 'nova-crossword', 'the-riddler', 'nova-medicordle', 'the-streak-master', 'case-files-unsolved', 'the-wheels-of-chaos', 'four-of-a-kind', 'spot-the-flaw', 'trace-the-treatment', 'who-am-i', 'put-in-order'].map(
     (game, slot) => ({ kind: 'game' as const, slot, game }),
   ),
-  { kind: 'mode', slot: 9, mode: 'online' },
-  { kind: 'mode', slot: 10, mode: 'solo' },
-  { kind: 'mode', slot: 11, mode: 'offline' },
+  { kind: 'mode', slot: 12, mode: 'online' },
+  { kind: 'mode', slot: 13, mode: 'solo' },
+  { kind: 'mode', slot: 14, mode: 'offline' },
 ];
 const slotOf = (week: number) => ((week % CYCLE_WEEKS) + CYCLE_WEEKS) % CYCLE_WEEKS;
 
@@ -225,7 +226,7 @@ export function RoundsPage() {
         </Text>
         <View style={{ height: u(30) }} />
       </InfoScroll>
-      <Congrats open={won > 0} tokens={won} title={tr('Every week stamped')} line={tr('A stamp from all 12 Grand Rounds weeks. Your tokens are in your wallet, and a new count starts now.')} onClose={() => setWon(0)} />
+      <Congrats open={won > 0} tokens={won} title={tr('Every week stamped')} line={tr('A stamp from all {n} Grand Rounds weeks. Your tokens are in your wallet, and a new count starts now.', { n: CYCLE_WEEKS })} onClose={() => setWon(0)} />
     </Screen>
   );
 }

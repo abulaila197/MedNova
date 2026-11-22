@@ -573,7 +573,7 @@ export const AR_FRAME: Record<string, string> = {
   "Next week": "الأسبوع الجاي",
   "Weeks start Saturday 00:00 UTC. Every Spark you use on the week’s game counts, in any mode (in a mode week, on any game in that mode), once your phone has synced. Subscribers’ plays count at their usual price.": "الأسابيع بتبدأ السبت الساعة 00:00 بتوقيت UTC. كل شرارة بتستخدمها في لعبة الأسبوع بتتحسب، في أي وضع (ولو الأسبوع لوضع معيّن، في أي لعبة من الوضع ده)، أول ما موبايلك يعمل مزامنة. لعب المشتركين بيتحسب بسعره العادي.",
   "Every week stamped": "كل الأسابيع اتختمت",
-  "A stamp from all 12 Grand Rounds weeks. Your tokens are in your wallet, and a new count starts now.": "ختم من كل أسابيع تحدّي الأسبوع الـ12. عملاتك وصلت محفظتك، وعدّ جديد بيبدأ دلوقتي.",
+  "A stamp from all {n} Grand Rounds weeks. Your tokens are in your wallet, and a new count starts now.": "ختم من كل أسابيع تحدّي الأسبوع الـ{n}. عملاتك وصلت محفظتك، وعدّ جديد بيبدأ دلوقتي.",
   "GRAND ROUNDS · MISSION {tier} DONE": "تحدّي الأسبوع · المهمة {tier} خلصت",
   "{of} Sparks on ": "{of} شرارة على ",
   "The last mission also stamps this week.": "آخر مهمة كمان بتختم الأسبوع ده.",
