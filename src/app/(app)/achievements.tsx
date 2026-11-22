@@ -3,10 +3,9 @@ import { router } from 'expo-router';
 import { Pressable, StyleSheet, View } from 'react-native';
 
 import { Text } from '@/components/AppText';
-import { COIN, CoinLabel, SPARK } from '@/components/CoinLabel';
 import { Screen } from '@/components/Screen';
 import { type AchRow, useAchievements } from '@/features/achievements/useAchievements';
-import { tierSparks, tierTokens, TOUR_STEPS } from '@/features/achievements/progress';
+import { tierTokens, TOUR_STEPS } from '@/features/achievements/progress';
 import { MissionsEntry } from '@/features/chests/MissionsEntry';
 import { RoundsEntry } from '@/features/rounds/RoundsEntry';
 import Svg, { Circle, Defs, LinearGradient as SvgLinear, Path, Stop } from 'react-native-svg';
@@ -92,8 +91,7 @@ function CollectPill({ r, t, busy, onCollect, small = false }: Omit<RowP, 'canCo
   return (
     <Pressable onPress={busy ? undefined : onCollect} accessibilityRole="button" style={busy && { opacity: 0.6 }}>
       <LinearGradient colors={[t.gradA, t.gradB]} start={{ x: 0, y: 0.4 }} end={{ x: 1, y: 0.6 }} style={[s.pill, small && s.pillS]}>
-        {/* Tokens and Sparks together (Yazan 2026-11-22: achievements give Sparks too). */}
-        <CoinLabel style={[s.pillT, { color: t.onGrad }]} text={tr('Collect +{n}{coin} +{s}{spark}', { n: tierTokens(r.key)[r.paid], s: tierSparks(r.key)[r.paid] ?? 0, coin: COIN, spark: SPARK })} />
+        <Text style={[s.pillT, { color: t.onGrad }]}>{tr('Collect +{n}', { n: tierTokens(r.key)[r.paid] })}</Text>
       </LinearGradient>
     </Pressable>
   );

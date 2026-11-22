@@ -9,7 +9,6 @@ import { useSession } from '@/games/shell/session';
 import { notice } from '@/components/Notice';
 import { isOnline } from '@/lib/net';
 import { supabase } from '@/lib/supabase';
-import { syncSparks } from '@/features/sparks/sparks';
 import { refreshWallet } from '@/lib/sync';
 import { tr } from '@/i18n';
 
@@ -95,8 +94,6 @@ export function flushClaims(uid: string) {
     // The server's rows come down first, then the stand-ins go, so the balance never dips in between.
     await refreshWallet(uid).catch(() => {});
     await engine.wallet.drop([...done, ...refused].map(standIn));
-    // An achievement tier also adds Sparks on the server (Yazan 2026-11-22): take the new bar.
-    if (done.some((c) => c.kind === 'ach')) await syncSparks(uid).catch(() => {});
     if (useSession.getState().userId !== uid) return;
     const back = refused.reduce((n, c) => n + c.tokens, 0);
     if (refused.length)
