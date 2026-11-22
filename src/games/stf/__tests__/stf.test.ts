@@ -186,3 +186,18 @@ test('race with a clock: time up closes the case, unlocked stages are wrong', ()
   race.next(5_000);
   assert.equal(race.state(5_000).phase, 'done');
 });
+
+test('knowledge row: Clinical, Basic sciences and Mixed pick their own cases and fields (2026-11-22)', async () => {
+  const { poolOf, fieldMenu, FIELDS } = await import('../data');
+  const groupOf = (f: string) => FIELDS.find((x) => x.key === f)!.group;
+  const clin = poolOf(null, 'clinical');
+  const basic = poolOf(null, 'basic');
+  assert.ok(clin.length > 0 && basic.length > 0);
+  assert.ok(clin.every((c) => groupOf(c.f) !== 'Basic science'));
+  assert.ok(basic.every((c) => groupOf(c.f) === 'Basic science'));
+  assert.equal(poolOf(null, 'mixed').length, clin.length + basic.length);
+  // Ticks from the other knowledge are dropped, so the pool never goes empty after switching.
+  assert.equal(poolOf(['anatomy'], 'clinical').length, clin.length);
+  assert.ok(poolOf(['anatomy'], 'basic').every((c) => c.f === 'anatomy'));
+  assert.deepEqual(fieldMenu('basic').groups.map((g) => g.title), ['Basic science']);
+});

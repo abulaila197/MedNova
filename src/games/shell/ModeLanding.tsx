@@ -19,6 +19,10 @@ import { useLanding } from './useShellPages';
 import { Body, Btn, Card, GameScreen, Ghost, Kick, Title } from './ui';
 import { isAr, tr } from '@/i18n';
 
+/** The mode's colour, faint, for its card border (Yazan 2026-11-22: the full colour was too loud). */
+const BORDER_ALPHA = 0.45;
+const soft = (hex: string) => hex + Math.round(BORDER_ALPHA * 255).toString(16).padStart(2, '0');
+
 export const MODE_NAME: Record<Mode, string> = { solo: tr('Solo'), offline: tr('Pass the phone'), bots: tr('Vs rivals'), online: tr('Online Multiplayer') };
 
 /** The app-look landing: title, then a card per mode with How to play, over the game's loading art. */
@@ -77,7 +81,7 @@ export function ModeLanding({ def }: { def: GameDef }) {
             const isOpen = open === m.mode;
             return (
               <View key={m.mode} onLayout={(e) => reveal(m.mode, e.nativeEvent.layout.y, e.nativeEvent.layout.height)}>
-              <Card style={[s.slim, { borderColor: MODE_COLOR[m.mode] }]}>
+              <Card style={[s.slim, { borderColor: soft(MODE_COLOR[m.mode]) }]}>
                 <View style={s.line}>
                   <View style={{ flex: 1, gap: u(3) }}>
                     <View style={s.row}>
@@ -107,7 +111,7 @@ export function ModeLanding({ def }: { def: GameDef }) {
             );
           })}
           {challenge ? (
-            <Card style={[s.slim, { borderColor: CHALLENGE_COLOR }]}>
+            <Card style={[s.slim, { borderColor: soft(CHALLENGE_COLOR) }]}>
               <View style={s.line}>
                 <View style={{ flex: 1, gap: u(3) }}>
                   <Kick color={CHALLENGE_COLOR}>{tr('Challenge')}</Kick>
@@ -146,7 +150,7 @@ function HowTo({ m }: { m: GameDef['modes'][number] }) {
 }
 
 const s = StyleSheet.create({
-  slim: { paddingVertical: u(11), paddingHorizontal: u(13), gap: 0, borderWidth: 1.5 },
+  slim: { paddingVertical: u(11), paddingHorizontal: u(13), gap: 0, borderWidth: 1.2 },
   line: { flexDirection: 'row', alignItems: 'center', gap: u(10) },
   side: { minWidth: u(84), gap: u(6) },
   // Arabic titles 15% smaller (Yazan 2026-11-22: Arabic only, English stays 15), in the heading font (his pick), which

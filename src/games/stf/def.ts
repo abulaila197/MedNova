@@ -1,6 +1,6 @@
 import type { GameDef, SetupOption } from '../shell/types';
 import { STF } from './core';
-import { caseById, fieldLabel, fieldMenu } from './data';
+import { caseById, fieldLabel, fieldMenu, knowOf } from './data';
 import { BotsPlay } from './BotsPlay';
 import { OfflinePlay } from './OfflinePlay';
 import { SoloPlay } from './SoloPlay';
@@ -14,7 +14,18 @@ const CASES: SetupOption = {
   label: tr('Cases'),
   choices: STF.cases.map((n) => ({ value: n, label: n === 1 ? tr('1 case') : tr('{n} cases', { n }), note: n === 1 ? 'quick' : n === 5 ? 'long' : undefined })),
   initial: 3,
-  fields: () => fieldMenu(),
+  fields: (_v, vals) => fieldMenu(knowOf(vals)),
+};
+/** Clinical, Basic sciences or Mixed (Yazan 2026-11-22), the same row as Word Lab's; the fields menu follows it. */
+const KNOW: SetupOption = {
+  key: 'know',
+  label: tr('Knowledge'),
+  choices: [
+    { value: 'clinical', label: tr('Clinical'), note: tr('diseases and care') },
+    { value: 'basic', label: tr('Basic sciences'), note: tr('body, cells, lab') },
+    { value: 'mixed', label: tr('Mixed'), note: tr('both') },
+  ],
+  initial: 'mixed',
 };
 const CLOCK: SetupOption = {
   key: 'clock',
@@ -67,9 +78,9 @@ export const spotTheFlaw: GameDef = {
     },
   ],
   setup: {
-    solo: [CASES, CLOCK],
-    offline: [CASES],
-    bots: [CASES, CLOCK],
+    solo: [KNOW, CASES, CLOCK],
+    offline: [KNOW, CASES],
+    bots: [KNOW, CASES, CLOCK],
   },
   players: { offline: { min: 2, max: 6 } },
   bots: { min: 1, max: 3 },

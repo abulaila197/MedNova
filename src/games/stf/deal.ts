@@ -3,7 +3,7 @@ import type { Play } from '../engine/types';
 import { dealFirst, keepDeal } from '../shell/deal';
 import { tickedFields } from '../shell/fields';
 import { shuffle } from './core';
-import { poolOf } from './data';
+import { knowOf, poolOf } from './data';
 
 const SEEN = 'stf:seen';
 
@@ -13,7 +13,7 @@ const SEEN = 'stf:seen';
  */
 export async function dealCases(play: Pick<Play, 'id' | 'settings'>, rand: () => number = Math.random): Promise<string[]> {
   const n = Math.max(1, Number(play.settings.cases) || 3);
-  const pool = poolOf(tickedFields(play.settings)).map((c) => c.id);
+  const pool = poolOf(tickedFields(play.settings), knowOf(play.settings)).map((c) => c.id);
   let seen = new Set((await engine.kv.get<string[]>(SEEN)) ?? []);
   if (pool.every((id) => seen.has(id))) seen = new Set([...seen].filter((id) => !pool.includes(id)));
   // A Beat my score challenge's own questions come first (shell/deal.ts).

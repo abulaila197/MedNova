@@ -50,18 +50,35 @@ export function hospitalOf(id: string) {
   return HOSPITALS[h % HOSPITALS.length];
 }
 
-/** The cases the ticked fields allow (null = every field). */
-export const poolOf = (ticked: string[] | null) => inFields(CASES, (c) => c.f, ticked);
+/** What the cases ask about (Yazan 2026-11-22), its own setup row like Word Lab's: Clinical (clinical and hospital
+ * fields), Basic sciences, or Mixed (all). */
+export type StfKnow = 'clinical' | 'basic' | 'mixed';
+export const knowOf = (settings: Record<string, unknown> | undefined): StfKnow =>
+  settings?.know === 'clinical' || settings?.know === 'basic' ? settings.know : 'mixed';
+const GROUPS: Record<StfKnow, readonly (typeof FIELDS)[number]['group'][]> = {
+  clinical: ['Clinical', 'Hospital'],
+  basic: ['Basic science'],
+  mixed: ['Clinical', 'Hospital', 'Basic science'],
+};
+const fieldsOf = (know: StfKnow) => new Set(FIELDS.filter((x) => GROUPS[know].includes(x.group)).map((x) => x.key));
 
-/** The field ticks behind "All fields". */
-export function fieldMenu(): FieldMenu {
+/** The cases the knowledge row and the ticked fields allow (null = every field of that knowledge). Ticks left over
+ * from another knowledge are dropped; if none are left, every field of the knowledge counts. */
+export function poolOf(ticked: string[] | null, know: StfKnow = 'mixed') {
+  const keys = fieldsOf(know);
+  const kept = ticked?.filter((f) => keys.has(f)) ?? null;
+  return inFields(CASES.filter((c) => keys.has(c.f)), (c) => c.f, kept?.length ? kept : null);
+}
+
+/** The field ticks behind "All fields", only those of the chosen knowledge. */
+export function fieldMenu(know: StfKnow = 'mixed'): FieldMenu {
   const count = (f: string) => CASES.filter((c) => c.f === f).length;
   return {
-    groups: (['Clinical', 'Hospital', 'Basic science'] as const).map((title) => ({
+    groups: GROUPS[know].map((title) => ({
       title,
       items: FIELDS.filter((x) => x.group === title).map((x) => ({ key: x.key, label: x.label, count: count(x.key) })),
     })),
-    total: (ticked) => poolOf(ticked).length,
+    total: (ticked) => poolOf(ticked, know).length,
     min: 5,
     unit: 'cases',
   };
