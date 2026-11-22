@@ -9,7 +9,6 @@ import { Fade } from '@/components/Fade';
 import { Sheet } from '@/components/Sheet';
 import { type Game } from '@/data/games';
 import { useLoading } from '@/features/loading/store';
-import { gameDef } from '@/games/shell/registry';
 import { sfx } from '@/lib/sound';
 import { useTheme } from '@/state/app';
 import { u } from '@/theme/scale';
@@ -136,13 +135,12 @@ export function GameList({ top }: { top: number }) {
   );
 }
 
-/** The ? pop-up: what the game is, its tag and its modes, and Play. */
+/** The ? pop-up: what the game is, its tag, and Play. */
 export function GameInfoSheet() {
   const t = useTheme();
   const j = useInfo((x) => x.j);
   const g = j == null ? null : LISTED[j];
   const close = () => useInfo.setState({ j: null });
-  const modes = g ? gameDef(g.key)?.modes ?? [] : [];
   return (
     <Sheet open={!!g} onClose={close}>
       {g ? (
@@ -152,15 +150,8 @@ export function GameInfoSheet() {
             <Text style={{ color: t.accent, fontFamily: F.displayItalic }}>{g.em}</Text>
           </Text>
           <Tag game={g.key} />
-          <Text style={[s.p, { color: t.soft }]}>{g.desc}</Text>
-          <View style={s.modes}>
-            {modes.map((m) => (
-              <Text key={m.mode} style={[s.p, { color: t.soft }]}>
-                <Text style={{ color: t.white, fontFamily: F.bodyBold }}>{`${m.title}: `}</Text>
-                {m.blurb}
-              </Text>
-            ))}
-          </View>
+          {/* What the game is, in plain words; the per-mode steps are on the mode page's ? (Yazan 2026-11-22). */}
+          <Text style={[s.p, { color: t.soft }]}>{g.about ?? g.desc}</Text>
           <Pressable
             onPress={() => {
               close();
@@ -202,7 +193,6 @@ const s = StyleSheet.create({
   body: { gap: u(8), paddingTop: u(2) },
   sheetT: { fontFamily: F.display, fontSize: u(21), lineHeight: u(25) },
   p: { fontFamily: F.body, fontSize: u(12), lineHeight: u(17) },
-  modes: { gap: u(6) },
   playTap: { marginTop: u(6), height: u(42), borderRadius: u(21), overflow: 'hidden' },
   play: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   playT: { fontFamily: F.display, fontSize: u(15), lineHeight: u(19) },
