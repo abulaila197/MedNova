@@ -1,7 +1,7 @@
 import { CoinLabel, spoken } from '@/components/CoinLabel';
 import { LinearGradient } from 'expo-linear-gradient';
-import type { ReactNode } from 'react';
-import { Pressable, ScrollView, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
+import type { ReactNode, Ref } from 'react';
+import { Pressable, ScrollView, StyleSheet, View, type ScrollViewProps, type StyleProp, type ViewStyle } from 'react-native';
 import { Text } from '@/components/AppText';
 
 import { Screen } from '@/components/Screen';
@@ -24,14 +24,15 @@ import { tr } from '@/i18n';
  */
 /** `layer`: drawn over the whole game area, after the body (pause menus), so a scrolling page can't trap it inside its
  * scroll content (Imposter pause pop-up, Yazan 2026-11-15). */
-export function GameScreen({ children, scroll = true, top, under, side, bodyStyle, bottom, layer }: { children: ReactNode; scroll?: boolean; top?: ReactNode; under?: ReactNode; side?: ReactNode; bodyStyle?: StyleProp<ViewStyle>; bottom?: ReactNode; layer?: ReactNode }) {
+/** `scrollRef` / `onScroll` / `onBodyLayout`: let a page follow its own scroll and move it (mode page opening a card's steps). */
+export function GameScreen({ children, scroll = true, top, under, side, bodyStyle, bottom, layer, scrollRef, onScroll, onBodyLayout }: { children: ReactNode; scroll?: boolean; top?: ReactNode; under?: ReactNode; side?: ReactNode; bodyStyle?: StyleProp<ViewStyle>; bottom?: ReactNode; layer?: ReactNode; scrollRef?: Ref<ScrollView>; onScroll?: ScrollViewProps['onScroll']; onBodyLayout?: ScrollViewProps['onLayout'] }) {
   if (TABLET && bottom) bottom = <View style={s.tBottom}>{bottom}</View>;
   return (
     <Screen dock={false} glow={under ? false : 1} game under={under} side={side} wide={TABLET}>
       {top}
       {scroll ? (
         <>
-          <ScrollView style={bottom ? s.shrink : null} contentContainerStyle={[s.body, bodyStyle, bottom ? { paddingBottom: 0 } : null]} showsVerticalScrollIndicator={false}>
+          <ScrollView ref={scrollRef} onScroll={onScroll} scrollEventThrottle={onScroll ? 32 : undefined} onLayout={onBodyLayout} style={bottom ? s.shrink : null} contentContainerStyle={[s.body, bodyStyle, bottom ? { paddingBottom: 0 } : null]} showsVerticalScrollIndicator={false}>
             {children}
           </ScrollView>
           {bottom ? <View style={[s.body, bodyStyle, { paddingTop: u(10) }]}>{bottom}</View> : null}

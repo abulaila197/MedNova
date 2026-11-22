@@ -1,4 +1,5 @@
-import { Pressable, StyleSheet, View } from 'react-native';
+import { useRef } from 'react';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 
 import { Back } from '@/components/Back';
@@ -28,8 +29,26 @@ export function ModeLanding({ def }: { def: GameDef }) {
 
   const art = LOAD[def.key];
   const challenge = GAME_MODES.some((x) => x.key === def.key);
+  // Opening a card's steps scrolls the page just enough to show the whole card (Yazan 2026-11-22), never past its top.
+  const sv = useRef<ScrollView>(null);
+  const view = useRef({ y: 0, h: 0 });
+  const follow = useRef<Mode | null>(null);
+  const toggle = (mode: Mode, isOpen: boolean) => {
+    follow.current = isOpen ? null : mode;
+    setOpen(isOpen ? null : mode);
+  };
+  const reveal = (mode: Mode, y: number, h: number) => {
+    if (follow.current !== mode || !view.current.h) return;
+    follow.current = null;
+    const pad = u(12);
+    const want = Math.min(y - pad, y + h + pad - view.current.h);
+    if (want > view.current.y) sv.current?.scrollTo({ y: want, animated: true });
+  };
   return (
     <GameScreen
+      scrollRef={sv}
+      onScroll={(e) => { view.current.y = e.nativeEvent.contentOffset.y; }}
+      onBodyLayout={(e) => { view.current.h = e.nativeEvent.layout.height; }}
       top={
         // The game's loading-page art as a quiet backdrop behind the title (Yazan 2026-10-14), in its own colours,
         // dissolving into the page with real transparency so no edge can show.
@@ -57,11 +76,18 @@ export function ModeLanding({ def }: { def: GameDef }) {
             const bm = resume[m.mode];
             const isOpen = open === m.mode;
             return (
-              <Card key={m.mode} style={[s.slim, { borderColor: MODE_COLOR[m.mode] }]}>
+              <View key={m.mode} onLayout={(e) => reveal(m.mode, e.nativeEvent.layout.y, e.nativeEvent.layout.height)}>
+              <Card style={[s.slim, { borderColor: MODE_COLOR[m.mode] }]}>
                 <View style={s.line}>
                   <View style={{ flex: 1, gap: u(3) }}>
                     <View style={s.row}>
-                      <Kick color={MODE_COLOR[m.mode]}>{MODE_NAME[m.mode]}</Kick>
+                      {/* How to play is a small circled ? beside the mode's name (Yazan 2026-11-22); it opens the steps. */}
+                      <View style={s.kq}>
+                        <Kick color={MODE_COLOR[m.mode]}>{MODE_NAME[m.mode]}</Kick>
+                        <Pressable onPress={tapped(() => toggle(m.mode, isOpen))} hitSlop={u(8)} style={[s.q, { borderColor: MODE_COLOR[m.mode], backgroundColor: isOpen ? MODE_COLOR[m.mode] : 'transparent' }]} accessibilityRole="button" accessibilityLabel={isOpen ? tr('Hide how to play') : tr('How to play')} accessibilityState={{ expanded: isOpen }}>
+                          <Text style={[s.qT, { color: isOpen ? '#0d1738' : MODE_COLOR[m.mode] }]}>?</Text>
+                        </Pressable>
+                      </View>
                       {note(m.mode) ? (
                         <View style={[s.free, { borderColor: t.panelLine }]}>
                           <Text style={[s.freeT, { color: t.mute }]} numberOfLines={1}>{note(m.mode)}</Text>
@@ -69,9 +95,6 @@ export function ModeLanding({ def }: { def: GameDef }) {
                       ) : null}
                     </View>
                     <Text style={[s.hS, { color: t.white }]} numberOfLines={2}>{m.title}</Text>
-                    <Pressable onPress={tapped(() => setOpen(isOpen ? null : m.mode))} accessibilityRole="button" accessibilityState={{ expanded: isOpen }}>
-                      <Text style={[s.how, { color: t.accent }]}>{isOpen ? tr('Hide how to play') : tr('How to play')}</Text>
-                    </Pressable>
                   </View>
                   <View style={s.side}>
                     {bm ? <Btn label={resumeLabel(bm)} onPress={() => resumePlay(bm)} /> : null}
@@ -80,6 +103,7 @@ export function ModeLanding({ def }: { def: GameDef }) {
                 </View>
                 {isOpen ? <HowTo m={m} /> : null}
               </Card>
+              </View>
             );
           })}
           {challenge ? (
@@ -133,7 +157,9 @@ const s = StyleSheet.create({
   row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: u(10) },
   free: { borderWidth: 1, borderRadius: 999, paddingVertical: u(2), paddingHorizontal: u(8), flexShrink: 0 },
   freeT: { fontFamily: F.bodySemi, fontSize: u(9) },
-  how: { fontFamily: F.bodySemi, fontSize: u(11), lineHeight: u(14) },
+  kq: { flexDirection: 'row', alignItems: 'center', gap: u(6) },
+  q: { width: u(15 * 0.8), height: u(15 * 0.8), borderRadius: u(6), borderWidth: 1.1, alignItems: 'center', justifyContent: 'center' },
+  qT: { fontFamily: F.bodyBold, fontSize: u(9 * 0.8), lineHeight: u(11 * 0.8), includeFontPadding: false, textAlign: 'center' },
   step: { flexDirection: 'row', gap: u(8) },
   num: { fontFamily: F.mono, fontSize: u(10), lineHeight: u(17), width: u(10) },
   btns: { flexDirection: 'row', gap: u(8), marginTop: u(4) },
