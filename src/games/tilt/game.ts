@@ -25,7 +25,7 @@ export type TTState = {
   deck: string[];
 };
 
-export const MAX_PASSES = 3;
+export const MAX_PASSES = 5;
 export const SUDDEN_SECONDS = 30;
 
 /** Every regular turn, in order: one lap of the players (teams alternating) per round. */

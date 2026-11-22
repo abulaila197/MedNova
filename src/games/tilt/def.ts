@@ -14,7 +14,7 @@ export const tiltAndTell: GameDef = {
       howTo: [
         tr('Make 2 to 4 teams with at least 2 players each. Pick the words, Describe it or Act it out, the turn time and the rounds.'),
         tr('The phone turns sideways. Hold it on your forehead, screen facing your team, and the clock starts after 3-2-1.'),
-        tr('Your team describes the word without saying it (or acts it out, no talking). Tilt the phone down when you get it, up to pass. 3 passes a turn.'),
+        tr('Your team describes the word without saying it (or acts it out, no talking). Tilt the phone down when you get it, up to pass. 5 passes a turn.'),
         tr('When time is up, check the list and tap any word the tilt got wrong. Teams take turns: A, B, A, B.'),
         tr('Most words wins. Teams tied at the top get one 30 s sudden-death turn each. No EXP in this game.'),
       ],

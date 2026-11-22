@@ -34,18 +34,18 @@ test('teams alternate, one lap per round', () => {
   assert.deepEqual(t.map((x) => x.team), [0, 1, 0, 1, 0, 1, 0, 1]);
 });
 
-test('a turn: rights count, passes stop at 3, the word showing at time up is dropped', () => {
+test('a turn: rights count, passes stop at MAX_PASSES, the word showing at time up is dropped', () => {
   let s = startTurn(newGame(seats, teams, 1, deck));
   assert.equal(s.showing, 'w0');
   s = mark(s, 'right');
-  for (let i = 0; i < 5; i++) s = mark(s, 'pass');
+  for (let i = 0; i < MAX_PASSES + 2; i++) s = mark(s, 'pass');
   assert.equal(s.passesLeft, 0);
   assert.equal(s.turns[0].words.length, 1 + MAX_PASSES);
   const showing = s.showing;
   s = mark(s, 'right');
   s = endTurn(s);
   assert.equal(s.phase, 'review');
-  assert.equal(s.turns[0].words.length, 5);
+  assert.equal(s.turns[0].words.length, 2 + MAX_PASSES);
   assert.ok(!s.turns[0].words.some((w) => w.id === s.showing) && showing !== null);
   assert.equal(seatScores(s).get(0), 2);
 });

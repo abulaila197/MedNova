@@ -27,6 +27,7 @@ export function ModeLanding({ def }: { def: GameDef }) {
   const { open, setOpen, resume, go, resumePlay, resumeLabel, note } = useLanding(def);
 
   const art = LOAD[def.key];
+  const challenge = GAME_MODES.some((x) => x.key === def.key);
   return (
     <GameScreen
       top={
@@ -39,7 +40,7 @@ export function ModeLanding({ def }: { def: GameDef }) {
             position={art.fo}
             opacity={0.34}
             // #12: on a centred column the art also fades at its sides, so no box edge shows beside the page.
-            edges={IS_COLUMN ? { bottom: 0.65, left: 0.12, right: 0.12 } : { bottom: 0.65 }}
+            edges={IS_COLUMN ? { bottom: 0.2, left: 0.12, right: 0.12 } : { bottom: 0.2 }}
             style={s.art}
           />
         ) : null}
@@ -51,65 +52,85 @@ export function ModeLanding({ def }: { def: GameDef }) {
         <Title lead={g.lead} em={g.em} />
         <Body>{g.desc}</Body>
       </View>
-      {def.modes.map((m) => {
-        const bm = resume[m.mode];
-        const isOpen = open === m.mode;
-        return (
-          <Card key={m.mode}>
-            <View style={s.row}>
-              <View style={s.name}>
-                <Kick color={t.accent}>{MODE_NAME[m.mode]}</Kick>
-              </View>
-              {/* Yazan 2026-11-09: a small pill, not the big spaced label that ran into the mode name. */}
-              {note(m.mode) ? (
-                <View style={[s.free, { borderColor: t.panelLine }]}>
-                  <Text style={[s.freeT, { color: t.mute }]} numberOfLines={1}>{note(m.mode)}</Text>
-                </View>
-              ) : null}
-            </View>
-            <Text style={[s.h, { color: t.white }]}>{m.title}</Text>
-            <Body>{m.blurb}</Body>
-            <Pressable onPress={tapped(() => setOpen(isOpen ? null : m.mode))} accessibilityRole="button" accessibilityState={{ expanded: isOpen }}>
-              <Text style={[s.how, { color: t.accent }]}>{isOpen ? tr('Hide how to play') : tr('How to play')}</Text>
-            </Pressable>
-            {isOpen
-              ? m.howTo.map((step, i) => (
-                  <View key={i} style={s.step}>
-                    <Text style={[s.num, { color: t.dim }]}>{i + 1}</Text>
-                    <Body style={{ flex: 1 }}>{step}</Body>
+        <>
+          {def.modes.map((m) => {
+            const bm = resume[m.mode];
+            const isOpen = open === m.mode;
+            return (
+              <Card key={m.mode} style={[s.slim, { borderColor: MODE_COLOR[m.mode] }]}>
+                <View style={s.line}>
+                  <View style={{ flex: 1, gap: u(3) }}>
+                    <View style={s.row}>
+                      <Kick color={MODE_COLOR[m.mode]}>{MODE_NAME[m.mode]}</Kick>
+                      {note(m.mode) ? (
+                        <View style={[s.free, { borderColor: t.panelLine }]}>
+                          <Text style={[s.freeT, { color: t.mute }]} numberOfLines={1}>{note(m.mode)}</Text>
+                        </View>
+                      ) : null}
+                    </View>
+                    <Text style={[s.hS, { color: t.white }]} numberOfLines={2}>{m.title}</Text>
+                    <Pressable onPress={tapped(() => setOpen(isOpen ? null : m.mode))} accessibilityRole="button" accessibilityState={{ expanded: isOpen }}>
+                      <Text style={[s.how, { color: t.accent }]}>{isOpen ? tr('Hide how to play') : tr('How to play')}</Text>
+                    </Pressable>
                   </View>
-                ))
-              : null}
-            <View style={s.btns}>
-              {bm ? <Btn label={resumeLabel(bm)} onPress={() => resumePlay(bm)} style={{ flex: 1 }} /> : null}
-              {bm ? <Ghost label={tr('New game')} onPress={() => go(m.mode)} style={{ flex: 1 }} /> : <Btn label={tr('Play')} onPress={() => go(m.mode)} style={{ flex: 1 }} />}
-            </View>
-          </Card>
-        );
-      })}
-      {/* A 4th card for every game a friend can be challenged in (not Party time): it opens the Friends page, where
-          the challenge starts (Yazan 2026-11-22). */}
-      {GAME_MODES.some((x) => x.key === def.key) ? (
-        <Card>
-          <Kick color={t.accent}>{tr('Challenge')}</Kick>
-          <Text style={[s.h, { color: t.white }]}>{tr('Challenge a friend')}</Text>
-          <Body>{tr('Pick a friend on the Friends page, then choose Beat my score or Game challenge in this game.')}</Body>
-          <View style={s.btns}>
-            <Btn label={tr('Friends page')} onPress={() => navTo('/friends')} style={{ flex: 1 }} />
-          </View>
-        </Card>
-      ) : null}
+                  <View style={s.side}>
+                    {bm ? <Btn label={resumeLabel(bm)} onPress={() => resumePlay(bm)} /> : null}
+                    {bm ? <Ghost label={tr('New game')} onPress={() => go(m.mode)} /> : <Btn label={tr('Play')} onPress={() => go(m.mode)} />}
+                  </View>
+                </View>
+                {isOpen ? <HowTo m={m} /> : null}
+              </Card>
+            );
+          })}
+          {challenge ? (
+            <Card style={[s.slim, { borderColor: CHALLENGE_COLOR }]}>
+              <View style={s.line}>
+                <View style={{ flex: 1, gap: u(3) }}>
+                  <Kick color={CHALLENGE_COLOR}>{tr('Challenge')}</Kick>
+                  <Text style={[s.hS, { color: t.white }]} numberOfLines={2}>{tr('Challenge a friend')}</Text>
+                </View>
+                <View style={s.side}>
+                  <Btn label={tr('Friends page')} onPress={() => navTo('/friends')} />
+                </View>
+              </View>
+            </Card>
+          ) : null}
+        </>
     </GameScreen>
   );
 }
 
+/** Each way to play has its own colour on every game's mode page: the card's border and its label (Yazan 2026-11-22). */
+export const MODE_COLOR: Record<Mode, string> = { solo: '#22d3ee', offline: '#fbbf24', bots: '#fb7185', online: '#a78bfa' };
+export const CHALLENGE_COLOR = '#4ade80';
+
+/** A mode's blurb and steps, shown when How to play is open. */
+function HowTo({ m }: { m: GameDef['modes'][number] }) {
+  const t = useTheme();
+  const body = (
+    <>
+      <Body>{m.blurb}</Body>
+      {m.howTo.map((step, i) => (
+        <View key={i} style={s.step}>
+          <Text style={[s.num, { color: t.dim }]}>{i + 1}</Text>
+          <Body style={{ flex: 1 }}>{step}</Body>
+        </View>
+      ))}
+    </>
+  );
+  return <View style={{ gap: u(6), marginTop: u(8) }}>{body}</View>;
+}
+
 const s = StyleSheet.create({
-  art: { position: 'absolute', left: 0, right: 0, top: 0, height: u(330) },
+  slim: { paddingVertical: u(11), paddingHorizontal: u(13), gap: 0, borderWidth: 1.5 },
+  line: { flexDirection: 'row', alignItems: 'center', gap: u(10) },
+  side: { minWidth: u(84), gap: u(6) },
+  hS: { fontFamily: F.display, fontSize: u(15), lineHeight: u(19) },
+  // The art fills the whole page behind the cards (Yazan 2026-11-22), fading only at the very bottom.
+  art: { position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 },
   row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: u(10) },
   free: { borderWidth: 1, borderRadius: 999, paddingVertical: u(2), paddingHorizontal: u(8), flexShrink: 0 },
   freeT: { fontFamily: F.bodySemi, fontSize: u(9) },
-  name: { flexDirection: 'row', alignItems: 'center', gap: u(6) },
-  h: { fontFamily: F.display, fontSize: u(19), lineHeight: u(22) },
   how: { fontFamily: F.bodySemi, fontSize: u(11), lineHeight: u(14) },
   step: { flexDirection: 'row', gap: u(8) },
   num: { fontFamily: F.mono, fontSize: u(10), lineHeight: u(17), width: u(10) },

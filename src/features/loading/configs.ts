@@ -14,7 +14,8 @@ export type LoadCfg = {
   fo: string;
   /** Top veil: colours and stops. */
   veil: { c: string[]; at: number[] };
-  txt: { top: number; align: 'left' | 'center'; rot?: number };
+  /** arTop: the text block's top in Arabic, where the taller Arabic lines would push the sub name onto bright art. */
+  txt: { top: number; align: 'left' | 'center'; rot?: number; arTop?: number };
   orig: { f: string; c: string };
   title: Txt & { em: string; emF?: string };
   sub: Txt;
@@ -151,7 +152,7 @@ export const LOAD: Record<string, LoadCfg> = {
   imposter: {
     key: 'imposter', photo: require('@/assets/loading/imposter.webp'), fo: '50% 45%',
     veil: { c: ['rgba(0,6,8,0.6)', 'rgba(0,0,0,0)'], at: [0, 0.36] },
-    txt: { top: 62, align: 'center' },
+    txt: { top: 62, align: 'center', arTop: 44 },
     orig: { f: 'BarlowCondensed_500Medium', c: '#8fb3b0' },
     title: { f: 'BebasNeue_400Regular', s: 54, c: '#e6f2f0', em: '#ff3b3b', ls: 0.02, sh: 'rgba(255,40,40,0.45)' },
     sub: { f: 'BarlowCondensed_500Medium', s: 15, c: '#b9d3d0' },
@@ -171,7 +172,7 @@ export const LOAD: Record<string, LoadCfg> = {
   'tilt-and-tell': {
     key: 'tilt-and-tell', photo: require('@/assets/loading/tilt-and-tell.webp'), fo: '40% 55%',
     veil: { c: ['rgba(18,4,20,0.7)', 'rgba(0,0,0,0)'], at: [0, 0.38] },
-    txt: { top: 54, align: 'center' },
+    txt: { top: 54, align: 'center', arTop: 40 },
     orig: { f: 'AlegreyaSans_500Medium', c: '#e7b7d3' },
     title: { f: 'Gabarito_800ExtraBold', s: 46, c: '#fff4e3', em: '#ffd780', sh: 'rgba(255,200,110,0.55)' },
     sub: { f: 'AlegreyaSans_500Medium', s: 16, c: '#f3d9e6' },
@@ -185,7 +186,7 @@ export const LOAD: Record<string, LoadCfg> = {
       { x: 0.36, y: 0.628, r: 26, c: 'rgba(120,255,170,0.45)', a: 'pulse' },
     ],
     parts: ['motes'],
-    tips: ['Tilt down when you get it, up to pass.', 'Only 3 passes a turn, so think before you skip.', 'Hold the phone flat on your forehead, screen facing your team.'],
+    tips: ['Tilt down when you get it, up to pass.', 'Only 5 passes a turn, so think before you skip.', 'Hold the phone flat on your forehead, screen facing your team.'],
     fonts: ['Gabarito_800ExtraBold', 'AlegreyaSans_500Medium'],
   },
   // Four of a Kind (Yazan 2026-11-12): Sovereign sorting cards in a sunlit medical library, gold and crimson.

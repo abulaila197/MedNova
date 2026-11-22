@@ -127,10 +127,10 @@ function Me({ g }: { g: boolean }) {
           <View style={[StyleSheet.absoluteFill, s.center]}>
             <Face slug={avatar} size={size - sw * 2 - 2} />
           </View>
-          {/* The chip is as tall as the number's line plus its border, so the number is never cut at the bottom (Yazan
-              2026-11-22, small phones: a box of 0.42 left less than the line Android draws). */}
-          <View style={[s.chip, { backgroundColor: t.accent, end: -size * 0.12, bottom: -size * 0.1, minWidth: size * 0.5, height: chipLine + CHIP_BORDER * 2 }]}>
-            <Text style={{ fontFamily: F.bodyBold, fontSize: chipFont, lineHeight: chipLine, color: t.onGrad }}>{level}</Text>
+          {/* The chip has no height of its own: it takes the number's line, so the number is never cut on any phone
+              (Yazan 2026-11-22, small phones). No font padding, so Android draws the line at the size it measures. */}
+          <View style={[s.chip, { backgroundColor: t.accent, end: -size * 0.12, bottom: -size * 0.1, minWidth: size * 0.5 }]}>
+            <Text style={{ fontFamily: F.bodyBold, fontSize: chipFont, lineHeight: chipLine, color: t.onGrad, includeFontPadding: false, textAlignVertical: 'center' }}>{level}</Text>
           </View>
         </View>
       </Pressable>

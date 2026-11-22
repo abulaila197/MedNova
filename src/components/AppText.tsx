@@ -90,9 +90,13 @@ function hasArabic(children: unknown): boolean {
 }
 // Fonts that already have Arabic letters (the loading pages' own fonts) are kept as they are.
 const AR_OWN = /^(Lalezar|Changa|Marhey|ArefRuqaa|Amiri|Rakkas|ReemKufi|Alexandria|IBMPlexSansArabic)_/;
-function arabicStyle(style: TextProps['style']): TextStyle {
+// A word inside a text (the cyan word of a game name) has no size of its own: it draws at its parent's size, so it
+// must also take the Arabic font for that size, or it gets the small-text font beside a heading font (Yazan
+// 2026-11-22, Games page names). Each text passes its size down to the texts inside it.
+const ParentSize = createContext<number | undefined>(undefined);
+function arabicStyle(style: TextProps['style'], inherited?: number): TextStyle {
   const f = (StyleSheet.flatten(style) ?? {}) as TextStyle;
-  const size = f.fontSize ?? 14;
+  const size = f.fontSize ?? inherited ?? 14;
   if (f.fontFamily && AR_OWN.test(f.fontFamily)) return { letterSpacing: 0 };
   const fam = f.fontFamily === 'Gabarito_700Bold' ? (size >= BIG ? 'Alexandria_700Bold' : 'IBMPlexSansArabic_700Bold') : (f.fontFamily && AR_FONT[f.fontFamily]) || 'IBMPlexSansArabic_400Regular';
   const out: TextStyle = { fontFamily: fam, letterSpacing: 0 };
@@ -113,13 +117,17 @@ export function Text(props: TextProps & { ref?: React.Ref<RNText> }) {
   // The Arabic fonts are only loaded when the app runs in Arabic.
   const ar = isAr && hasArabic(props.children);
   const nested = useContext(TextAncestor);
+  const parentSize = useContext(ParentSize);
   if (ANDROID && ar && !nested && typeof props.children === 'string') props = { ...props, children: NBSP + props.children + NBSP };
   // One-line Arabic (buttons, options, pills; Yazan 2026-11-17): never a second line and never "..": a label still a
   // little too wide for its box shrinks to fit, at most to 85%. Labels that would need more were given shorter words.
   if (ANDROID && ar && !nested && props.numberOfLines === 1 && props.adjustsFontSizeToFit == null) props = { ...props, adjustsFontSizeToFit: true, minimumFontScale: 0.85 };
-  const style = ar ? [props.style, arabicStyle(props.style)] : props.style;
+  const style = ar ? [props.style, arabicStyle(props.style, parentSize)] : props.style;
   const room = Platform.OS === 'web' ? null : letterRoom(style);
-  return <RNText maxFontSizeMultiplier={MAX_FONT_SCALE} textBreakStrategy={BREAK} {...props} style={room ? [style, room] : style} />;
+  const own = (StyleSheet.flatten(props.style) as TextStyle | undefined)?.fontSize ?? parentSize;
+  // Only texts with texts inside them pass their size on.
+  const inner = typeof props.children === 'string' || typeof props.children === 'number' || props.children == null ? props.children : <ParentSize.Provider value={own}>{props.children}</ParentSize.Provider>;
+  return <RNText maxFontSizeMultiplier={MAX_FONT_SCALE} textBreakStrategy={BREAK} {...props} style={room ? [style, room] : style}>{inner}</RNText>;
 }
 // eslint-disable-next-line @typescript-eslint/no-redeclare -- the type that goes with the component, as in react-native
 export type Text = RNText;

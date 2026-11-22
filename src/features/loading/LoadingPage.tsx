@@ -1,6 +1,6 @@
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import { type Ref, useEffect } from 'react';
+import { type Ref, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 import Animated, { cancelAnimation, Easing, type SharedValue, useAnimatedStyle, useFrameCallback, useSharedValue, withDelay, withRepeat, withSequence, withTiming } from 'react-native-reanimated';
@@ -54,6 +54,11 @@ export function LoadingPage({ g, w, h, live, p, tip, barRef }: { g: LoadCfg; w: 
   const name = GAMES.find((x) => x.key === g.key);
   // Arabic lines centred on purpose (Yazan 2026-11-13): away from the robot, or to sit as one centred block.
   const mid = (part: 'orig' | 'title' | 'sub') => !!ar && !!AR_MID[g.key]?.includes(part);
+  // The game name stays on one line (Yazan 2026-11-22: "على راسك" broke in two and pushed the sub name onto the
+  // bright mirror): an Arabic name that wraps is drawn a step smaller until it fits (English pages keep their look).
+  const [fit, setFit] = useState(1);
+  const ts = g.title.s * fit;
+  const tl = ts * (ar ? 1.45 : 1.02);
 
   return (
     <View style={[StyleSheet.absoluteFill, s.root, { backgroundColor: g.bg ?? '#000' }]}>
@@ -74,13 +79,13 @@ export function LoadingPage({ g, w, h, live, p, tip, barRef }: { g: LoadCfg; w: 
       ) : null}
       <LinearGradient colors={g.veil.c as [string, string, ...string[]]} locations={g.veil.at as [number, number, ...number[]]} style={StyleSheet.absoluteFill} pointerEvents="none" />
 
-      <View style={[s.txt, { top: q(g.txt.top) + Math.max(0, ins.top - q(24)), alignItems: center ? 'center' : 'flex-start', transform: g.txt.rot ? [{ rotate: `${g.txt.rot}deg` }] : undefined }]}>
+      <View style={[s.txt, { top: q(ar && g.txt.arTop != null ? g.txt.arTop : g.txt.top) + Math.max(0, ins.top - q(24)), alignItems: center ? 'center' : 'flex-start', transform: g.txt.rot ? [{ rotate: `${g.txt.rot}deg` }] : undefined }]}>
         {/* "Original" dropped from every loading page (Yazan 2026-10-26). */}
         {/* Each line spans the full text column (textAlign places it), so Android never wraps its last word out of sight. */}
         <Text style={[s.orig, { fontFamily: body(g.orig.f), color: g.orig.c, textAlign: mid('orig') ? 'center' : align }, mid('orig') ? { alignSelf: 'stretch' } : null]}>MedNova:</Text>
         {/* #13: the two title words are separate texts, not one text with a nested span. On Android a nested span in
             another font (or one measured before its font loaded) sometimes lost the game's word. */}
-        <View style={{ marginTop: q(6), flexDirection: 'row', flexWrap: 'wrap', alignSelf: mid('title') ? 'stretch' : undefined, justifyContent: center || mid('title') ? 'center' : 'flex-start', columnGap: q(g.title.s * 0.24) }}>
+        <View onLayout={(e) => ar && fit > 0.7 && e.nativeEvent.layout.height > q(tl) * 1.5 && setFit((f) => f * 0.92)} style={{ marginTop: q(6), flexDirection: 'row', flexWrap: 'wrap', alignSelf: mid('title') ? 'stretch' : undefined, justifyContent: center || mid('title') ? 'center' : 'flex-start', columnGap: q(ts * 0.24) }}>
           {[
             { t: name?.lead ?? '', c: g.title.c, f: ar?.title ?? g.title.f },
             { t: name?.em ?? '', c: g.title.em, f: ar?.title ?? g.title.emF ?? g.title.f },
@@ -89,8 +94,8 @@ export function LoadingPage({ g, w, h, live, p, tip, barRef }: { g: LoadCfg; w: 
               key={i}
               style={{
                 fontFamily: x.f,
-                fontSize: q(g.title.s),
-                lineHeight: q(g.title.s * (ar ? 1.45 : 1.02)),
+                fontSize: q(ts),
+                lineHeight: q(tl),
                 color: x.c,
                 letterSpacing: ls(g.title.ls, g.title.s),
                 textAlign: mid('title') ? 'center' : align,
@@ -103,7 +108,8 @@ export function LoadingPage({ g, w, h, live, p, tip, barRef }: { g: LoadCfg; w: 
             </Text>
           ))}
         </View>
-        <Text style={{ alignSelf: 'stretch', marginTop: q(8), fontFamily: body(g.sub.f), fontSize: q(g.sub.s), lineHeight: q(g.sub.s * (ar ? 1.6 : 1.25)), color: g.sub.c, letterSpacing: ls(g.sub.ls, g.sub.s), textAlign: mid('sub') ? 'center' : align }}>{name?.sub ?? ''}</Text>
+        {/* A soft dark shadow keeps the sub name readable on any part of the art (Yazan 2026-11-22). */}
+        <Text style={{ alignSelf: 'stretch', marginTop: q(8), fontFamily: body(g.sub.f), fontSize: q(g.sub.s), lineHeight: q(g.sub.s * (ar ? 1.6 : 1.25)), color: g.sub.c, letterSpacing: ls(g.sub.ls, g.sub.s), textAlign: mid('sub') ? 'center' : align, textShadowColor: 'rgba(0,0,0,0.85)', textShadowOffset: { width: 0, height: 1 }, textShadowRadius: q(8) }}>{name?.sub ?? ''}</Text>
         <View ref={barRef} collapsable={false} style={{ marginTop: q(20), height: barHeight(g), width: barW, alignSelf: center ? 'center' : 'flex-start' }}>
           <Bar g={g} p={p} w={barW} />
         </View>
