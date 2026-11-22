@@ -150,3 +150,18 @@ export function rankRows<T extends { points: number; ms: number }>(rows: T[]): (
   sorted.forEach((x, i) => out.push({ ...x, rank: i > 0 && cmp(sorted[i - 1], x) === 0 ? out[i - 1].rank : i + 1 }));
   return out;
 }
+
+/** First-fit packing: each pill goes on the first line with room for it, so a short pill fills an earlier gap. */
+export function packLines(cards: number[], widths: Record<number, number>, room: number, gap: number): number[] {
+  if (room <= 0 || cards.some((c) => !widths[c])) return cards;
+  const lines: { left: number; cards: number[] }[] = [];
+  for (const c of cards) {
+    const w = Math.min(widths[c], room);
+    const line = lines.find((l) => l.left >= w + gap);
+    if (line) {
+      line.cards.push(c);
+      line.left -= w + gap;
+    } else lines.push({ left: room - w, cards: [c] });
+  }
+  return lines.flatMap((l) => l.cards);
+}

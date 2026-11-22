@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
-import { ORDER, cardOf, full, move, placeStep, poolOf, removeDecoy, runExp, runPoints, speedOf, startRun, submit, timeUp, type QRun } from '../core';
+import { ORDER, cardOf, full, move, packLines, placeStep, poolOf, removeDecoy, runExp, runPoints, speedOf, startRun, submit, timeUp, type QRun } from '../core';
 import { CATEGORIES, QUESTIONS, categoryMenu, questionById } from '../data';
 import { startOffline, stepOffline } from '../offline';
 import { OrderRace, planQuestion, progressAt } from '../rivals';
@@ -183,4 +183,11 @@ test('vs rivals: the same question, close when you are done and the rivals finis
   st = race.state(18_000 + ORDER.turnMs + 10);
   assert.equal(st.phase, 'reveal');
   assert.ok(race.runOf(1)!.run.timeUp);
+});
+
+test('pills pack first-fit: a short pill goes back to an earlier line with room', () => {
+  // room 100, gap 4: [60, 50] can't share a line, so the 30 goes back up beside the 60.
+  assert.deepEqual(packLines([1, 2, 3], { 1: 60, 2: 50, 3: 30 }, 100, 4), [1, 3, 2]);
+  // Not measured yet: the order stays as dealt.
+  assert.deepEqual(packLines([1, 2], { 1: 60 }, 100, 4), [1, 2]);
 });

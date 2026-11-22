@@ -4,6 +4,7 @@ import { StyleSheet, View } from 'react-native';
 import { Gesture, GestureDetector, type GestureType } from 'react-native-gesture-handler';
 import Animated, {
   type AnimatedRef,
+  LinearTransition,
   type SharedValue,
   measure,
   scrollTo,
@@ -26,7 +27,7 @@ import { F } from '@/theme/tokens';
 
 import { clock } from '../engine/clock';
 import { Btn, GameScreen, HelperButton, Kick, RoundBtn } from '../shell/ui';
-import { ORDER, cardOf, full, poolOf, type QRun, type Question, type Target } from './core';
+import { ORDER, cardOf, full, packLines, poolOf, type QRun, type Question, type Target } from './core';
 
 const BEIGE = B ?? { bg: '#efe4cb', line: '#cdb88c', ink: '#3b2f1c', paper: '#f1e6cc' };
 
@@ -223,6 +224,12 @@ export function OrderBoard(p: OrderBoardProps) {
   const poolHot = useAnimatedStyle(() => ({ borderColor: drag.hover.get() === POOL && drag.phase.get() === 1 ? CYAN : 'transparent', backgroundColor: drag.hover.get() === POOL && drag.phase.get() === 1 ? 'rgba(34,211,238,0.06)' : 'transparent' }));
 
   const pool = poolOf(run);
+  // Go back a line (Yazan 2026-11-22): the pills are packed first-fit, so a pill that fits in the room left at the end
+  // of an earlier line moves up into it, and no line ends with a gap a later pill could fill.
+  const [widths, setWidths] = useState<Record<number, number>>({});
+  const [poolW, setPoolW] = useState(0);
+  const onPillW = useCallback((card: number, w: number) => setWidths((m) => (m[card] === w ? m : { ...m, [card]: w })), []);
+  const packed = useMemo(() => packLines(pool, widths, poolW - u(8) - 2, u(5)), [pool, widths, poolW]);
   const triesLeft = ORDER.tries - run.wrong;
   const bottom = (
     <View style={[s.bottom, TABLET && s.tBottom]}>
@@ -285,8 +292,8 @@ export function OrderBoard(p: OrderBoardProps) {
               }}>
               <Text style={[s.q, { color: t.white }]}>{q.q}</Text>
               <Kick>{tr('Steps · drag them down')}</Kick>
-              <Animated.View ref={poolRef} collapsable={false} style={[s.pool, poolHot]}>
-                {pool.length ? pool.map((c) => <DragCard key={c} card={c} text={cardOf(q, c).t} from={null} ctx={ctx} half />) : <Text style={[s.poolEmpty, { color: t.dim }]}>{tr('Every step is in a slot.')}</Text>}
+              <Animated.View ref={poolRef} collapsable={false} style={[s.pool, poolHot]} onLayout={(e) => setPoolW(Math.floor(e.nativeEvent.layout.width))}>
+                {pool.length ? packed.map((c) => <DragCard key={c} card={c} text={cardOf(q, c).t} from={null} ctx={ctx} pill onWidth={onPillW} />) : <Text style={[s.poolEmpty, { color: t.dim }]}>{tr('Every step is in a slot.')}</Text>}
               </Animated.View>
               <Kick>{tr('Your order')}</Kick>
               <Animated.View style={[s.line, shakeStyle]}>
@@ -352,7 +359,7 @@ type CardCtx = {
 };
 
 /** A beige step card that can be dragged (a fixed one, placed by the helper, can't). */
-const DragCard = memo(function DragCard({ card, text, from, ctx, half, fixed }: { card: number; text: string; from: number | null; ctx: CardCtx; half?: boolean; fixed?: boolean }) {
+const DragCard = memo(function DragCard({ card, text, from, ctx, pill, fixed, onWidth }: { card: number; text: string; from: number | null; ctx: CardCtx; pill?: boolean; fixed?: boolean; onWidth?: (card: number, w: number) => void }) {
   const self = useAnimatedRef<View>();
   const { drag, rootRef, slotRefs, poolRef, native, begin, land } = ctx;
   const enabled = ctx.enabled && !fixed;
@@ -426,37 +433,48 @@ const DragCard = memo(function DragCard({ card, text, from, ctx, half, fixed }: 
   /* eslint-enable react-hooks/refs */
   return (
     <GestureDetector gesture={pan}>
-      <Animated.View ref={self} collapsable={false} style={[half ? s.half : s.wide, dim]}>
-        <StepCard text={text} edge={from != null} fixed={fixed} />
+      <Animated.View
+        ref={self}
+        collapsable={false}
+        style={[pill ? s.pillBox : s.wide, dim]}
+        // Pills glide to their new place when the pool repacks.
+        layout={pill ? LinearTransition.duration(220) : undefined}
+        onLayout={onWidth ? (e) => onWidth(card, Math.ceil(e.nativeEvent.layout.width)) : undefined}>
+        <StepCard text={text} edge={from != null} fixed={fixed} pill={pill} />
       </Animated.View>
     </GestureDetector>
   );
 });
 
-/** The beige card itself, with a small grip of dots on its start side. */
-function StepCard({ text, edge, fixed, lifted }: { text: string; edge?: boolean; fixed?: boolean; lifted?: boolean }) {
+/**
+ * The beige step. In the pool (Yazan 2026-11-22) it is a pill as wide as its words, side by side with the others, so
+ * the pool stays short; in a slot it is a full-width card with a small grip of dots on its start side.
+ */
+function StepCard({ text, edge, fixed, lifted, pill }: { text: string; edge?: boolean; fixed?: boolean; lifted?: boolean; pill?: boolean }) {
   // A long unbroken word (Acetylcholinesterase, Phosphoenolpyruvate) gets a smaller font so it never runs out of the
   // card on a narrow phone; everything else keeps the normal size.
   const [w, setW] = useState(0);
   const run = longestRun(text);
-  const room = w - u(32);
-  const size = w && room < run * u(11.5) * 0.56 ? Math.max(u(8.5), room / (run * 0.56)) : u(11.5);
+  const room = w - (pill ? u(22) : u(32));
+  const size = !pill && w && room < run * u(11.5) * 0.56 ? Math.max(u(8.5), room / (run * 0.56)) : u(11.5);
   return (
     <View
-      style={[s.card, edge && { borderStartWidth: u(4), borderStartColor: fixed ? GREEN : CYAN }, lifted && s.lifted]}
+      style={[s.card, pill && s.stepPill, edge && { borderStartWidth: u(4), borderStartColor: fixed ? GREEN : CYAN }, lifted && s.lifted]}
       onLayout={(e) => {
         const nw = Math.round(e.nativeEvent.layout.width);
         if (nw !== w) setW(nw);
       }}>
-      <View style={s.grip}>
-        {[0, 1, 2].map((r) => (
-          <View key={r} style={s.gripRow}>
-            <View style={s.gripDot} />
-            <View style={s.gripDot} />
-          </View>
-        ))}
-      </View>
-      <Text style={[s.cardT, size !== u(11.5) && { fontSize: size, lineHeight: size * 1.3 }]}>{text}</Text>
+      {pill ? null : (
+        <View style={s.grip}>
+          {[0, 1, 2].map((r) => (
+            <View key={r} style={s.gripRow}>
+              <View style={s.gripDot} />
+              <View style={s.gripDot} />
+            </View>
+          ))}
+        </View>
+      )}
+      <Text style={[s.cardT, pill ? s.pillT : s.cardFill, size !== u(11.5) && { fontSize: size, lineHeight: size * 1.3 }]}>{text}</Text>
     </View>
   );
 }
@@ -505,13 +523,17 @@ const s = StyleSheet.create({
   hiddenT: { fontFamily: F.body, fontSize: u(12), textAlign: 'center' },
   scroll: { gap: u(8), paddingBottom: u(12) },
   q: { fontFamily: F.bodyBold, fontSize: u(14), lineHeight: u(19) },
-  pool: { flexDirection: 'row', flexWrap: 'wrap', gap: u(6), minHeight: u(40), padding: u(4), marginHorizontal: -u(4), borderRadius: u(10), borderWidth: 1, borderStyle: 'dashed' },
+  pool: { flexDirection: 'row', flexWrap: 'wrap', gap: u(5), minHeight: u(40), padding: u(4), marginHorizontal: -u(4), borderRadius: u(10), borderWidth: 1, borderStyle: 'dashed' },
   poolEmpty: { fontFamily: F.body, fontSize: u(11), paddingVertical: u(8), paddingHorizontal: u(4) },
-  half: { width: '48.5%' },
+  pillBox: { maxWidth: '100%' },
+  // Small pills (Yazan 2026-11-22: much smaller, several on one line).
+  stepPill: { flexGrow: 0, borderRadius: u(99), paddingVertical: u(3), paddingStart: u(8), paddingEnd: u(8), gap: 0 },
+  cardFill: { flex: 1 },
+  pillT: { flexShrink: 1, textAlign: 'center', fontSize: u(9.5), lineHeight: u(13) },
   wide: { flex: 1 },
   card: { flexGrow: 1, flexDirection: 'row', alignItems: 'center', gap: u(7), backgroundColor: BEIGE.bg, borderColor: BEIGE.line, borderWidth: 1, borderRadius: u(9), paddingVertical: u(7), paddingStart: u(7), paddingEnd: u(9), shadowColor: '#000', shadowOpacity: 0.2, shadowRadius: 2, shadowOffset: { width: 0, height: 2 }, elevation: 2 },
   lifted: { borderColor: CYAN, borderWidth: 2, shadowOpacity: 0.55, shadowRadius: 14, shadowOffset: { width: 0, height: 10 }, elevation: 12 },
-  cardT: { flex: 1, fontFamily: F.bodyMedium, fontSize: u(11.5), lineHeight: u(15), color: BEIGE.ink },
+  cardT: { fontFamily: F.bodyMedium, fontSize: u(11.5), lineHeight: u(15), color: BEIGE.ink },
   grip: { gap: u(2) },
   gripRow: { flexDirection: 'row', gap: u(2) },
   gripDot: { width: u(2.4), height: u(2.4), borderRadius: u(2), backgroundColor: '#9c8458' },
