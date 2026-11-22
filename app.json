@@ -82,6 +82,7 @@
       ],
       "./plugins/withAndroidGameAndSaveOnly",
       "./plugins/withPhoneArchsOnly",
+      "./plugins/withOptionalFeatures",
       "./plugins/withFixedFontWeight",
       [
         "expo-build-properties",
