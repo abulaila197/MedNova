@@ -28,8 +28,8 @@ const KIND: Record<string, GameKind> = {
   'four-of-a-kind': 'both',
   'spot-the-flaw': 'learn', // On duty, at the end of it (Yazan 2026-11-15)
   'trace-the-treatment': 'learn',
-  'who-am-i': 'both', // Play and learn (Yazan 2026-11-17)
-  'put-in-order': 'both', // Play and learn (Yazan 2026-11-18)
+  'who-am-i': 'learn', // On duty (Yazan 2026-11-22; was Play and learn)
+  'put-in-order': 'learn', // On duty (Yazan 2026-11-22; was Play and learn)
   'the-silent-artist': 'play',
   'nova-medicordle': 'both',
   'the-riddler': 'both',
@@ -81,9 +81,9 @@ const KNOW: Record<string, Knowledge> = {
   'tilt-and-tell': 'mixed',
 };
 const KNOW_LOOK: Record<Knowledge, { label: string; color: string; text: string }> = {
-  clinical: { label: tr('Clinical subjects'), color: '#e6cf9f', text: tr('Diseases, patients and treatment: the wards and the clinic.') },
+  clinical: { label: tr('Clinical subjects'), color: '#60a5fa', text: tr('Diseases, patients and treatment: the wards and the clinic.') },
   basic: { label: tr('Basic sciences'), color: '#a78bfa', text: tr('Anatomy, physiology, biochemistry and the rest of the first years.') },
-  choice: { label: tr('By choice'), color: '#93c5fd', text: tr('You pick in the setup: clinical subjects, basic sciences or both.') },
+  choice: { label: tr('By choice'), color: '#bef264', text: tr('You pick in the setup: clinical subjects, basic sciences or both.') },
   mixed: { label: tr('Mixed knowledge'), color: '#22d3ee', text: tr('Both: clinical subjects and basic sciences in one game.') },
 };
 const KNOW_ORDER: Knowledge[] = ['clinical', 'basic', 'choice', 'mixed'];

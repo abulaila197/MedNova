@@ -7,7 +7,8 @@ import { tagRank } from './GameTag';
 /** The Games list order: grouped by tag (On duty, Play and learn, Party time), each group keeping the games order. */
 // Inside a group the games order holds, except where Yazan placed a game (2026-11-15): On duty opens with Race to
 // Diagnosis, Spot the Flaw, Trace the Treatment; Four of a Kind opens Play and learn and Word Lab ends it.
-const PLACE: Record<string, number> = { 'the-diagnostic-pursuit': -3, 'spot-the-flaw': -2, 'trace-the-treatment': -1, 'four-of-a-kind': -1, 'nova-medicordle': 3 };
+// 2026-11-22: Put it in order and Who am I? moved to On duty, 2nd and 3rd.
+const PLACE: Record<string, number> = { 'the-diagnostic-pursuit': -5, 'put-in-order': -4, 'who-am-i': -3, 'spot-the-flaw': -2, 'trace-the-treatment': -1, 'four-of-a-kind': -1, 'nova-medicordle': 3 };
 const place = (key: string) => PLACE[key] ?? 0;
 export const LISTED = [...GAMES].sort((a, b) => tagRank(a.key) - tagRank(b.key) || place(a.key) - place(b.key));
 

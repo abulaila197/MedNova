@@ -184,8 +184,9 @@ const s = StyleSheet.create({
   sub: { fontFamily: F.mono, fontSize: u(8.5), lineHeight: u(11), letterSpacing: u(0.85) },
   tags: { flexDirection: 'row', flexWrap: 'wrap', gap: u(5), alignSelf: 'flex-start' },
   tag: { alignSelf: 'flex-start', marginTop: u(3), borderWidth: 1, borderRadius: u(7), paddingVertical: u(2), paddingHorizontal: u(7) },
-  tagS: { marginTop: 0, marginBottom: u(1), paddingVertical: u(1), paddingHorizontal: u(6), borderRadius: u(6) },
-  tagTS: { fontSize: u(7), lineHeight: u(9) },
+  // Card tags 20% smaller, box and words (Yazan 2026-11-22).
+  tagS: { marginTop: 0, marginBottom: u(1), paddingVertical: u(1 * 0.8), paddingHorizontal: u(6 * 0.8), borderRadius: u(6 * 0.8) },
+  tagTS: { fontSize: u(7 * 0.8), lineHeight: u(9 * 0.8), letterSpacing: u(0.4) },
   tagT: { fontFamily: F.bodyBold, fontSize: u(8), lineHeight: u(10), letterSpacing: u(0.5), textTransform: 'uppercase' },
   ask: { position: 'absolute', width: u(26), height: u(26), borderRadius: u(13), borderWidth: 1, backgroundColor: 'rgba(8,16,41,0.75)', alignItems: 'center', justifyContent: 'center' },
   askT: { fontFamily: F.display, fontSize: u(14), lineHeight: u(17) },
