@@ -12,9 +12,9 @@ const STYLE: SetupOption = {
   label: tr('Questions'),
   choices: [
     // Counted from the bank, so the notes stay right as questions are added (they said 644 and 400 when the bank had grown).
-    { value: 'clinical', label: tr('Clinical'), note: tr('{n} cases', { n: idsOf('clinical').length }) },
-    { value: 'basic', label: tr('Basic science'), note: tr('{n} questions', { n: idsOf('basic').length }) },
-    { value: 'mixed', label: tr('Mixed'), note: tr('about half each') },
+    { value: 'clinical', label: tr('Clinical years|setup'), note: tr('{n} cases', { n: idsOf('clinical').length }) },
+    { value: 'basic', label: tr('Preclinical years|chip'), note: tr('{n} questions', { n: idsOf('basic').length }) },
+    { value: 'mixed', label: tr('All years|chip'), note: tr('about half each') },
   ],
   initial: 'mixed',
   fields: (v) => fieldMenu(v as Style, 60),
@@ -76,7 +76,7 @@ export const streakMaster: GameDef = {
       title: tr('Beat the clock'),
       blurb: tr('Answer as many as you can. Every right answer in a row is worth more.'),
       howTo: [
-        tr('Pick clinical, basic science or mixed questions, and a round of 1, 2 or 3 minutes.'),
+        tr('Pick clinical years, preclinical years or all years questions, and a round of 1, 2 or 3 minutes.'),
         tr('Or pick No clock: take your time, but the round ends on your first wrong answer. It counts toward the same high score.'),
         tr('Each question has six choices. The 1st right answer in a row scores 1, the 2nd scores 2, and so on.'),
         tr('A wrong answer turns red, shows the right one in green, and drops your streak to 0.'),

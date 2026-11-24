@@ -858,6 +858,9 @@ export const AR_FRAME: Record<string, string> = {
   "Clinical years": "سنين إكلينيكي",
   "Clinical years|setup": "إكلينيكي",
   "Preclinical years": "سنين أولى",
+  // On setup chips that also carry the fields arrow (Streak Master, Four of a Kind, Wheels): one line in Arabic.
+  "Preclinical years|chip": "أولى",
+  "All years|chip": "الكل",
   "All years": "كل السنين",
   "By choice": "باختيارك",
   "You pick in the setup: preclinical years, clinical years or all years.": "إنت بتختار في الإعداد: سنين أولى، سنين إكلينيكي، أو كل السنين.",

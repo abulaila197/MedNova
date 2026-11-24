@@ -15,14 +15,14 @@ const BOARDS: SetupOption = {
   choices: FOK.boards.map((n) => ({ value: n, label: n === 1 ? tr('1 board') : tr('{n} boards', { n }), note: n === 1 ? 'quick' : n === 5 ? 'long' : undefined })),
   initial: 3,
 };
-// Mixed, Clinical or Basic science groups, the fields behind the arrow (Yazan 2026-11-22, like Streak Master).
+// All years, Clinical years or Preclinical years groups (year wording, Yazan 2026-11-24), the fields behind the arrow (Yazan 2026-11-22, like Streak Master).
 const STYLE: SetupOption = {
   key: 'style',
   label: tr('Groups'),
   choices: [
-    { value: 'clinical', label: tr('Clinical'), note: tr('{n} groups', { n: poolOf('clinical', null).length }) },
-    { value: 'basic', label: tr('Basic science'), note: tr('{n} groups', { n: poolOf('basic', null).length }) },
-    { value: 'mixed', label: tr('Mixed'), note: tr('{n} groups', { n: poolOf('mixed', null).length }) },
+    { value: 'clinical', label: tr('Clinical years|setup'), note: tr('{n} groups', { n: poolOf('clinical', null).length }) },
+    { value: 'basic', label: tr('Preclinical years|chip'), note: tr('{n} groups', { n: poolOf('basic', null).length }) },
+    { value: 'mixed', label: tr('All years|chip'), note: tr('{n} groups', { n: poolOf('mixed', null).length }) },
   ],
   initial: 'mixed',
   fields: (v) => fieldMenu(v as FokStyle),

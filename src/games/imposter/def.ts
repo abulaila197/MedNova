@@ -10,9 +10,9 @@ const STYLE = {
   key: 'style',
   label: tr('Words'),
   choices: [
-    { value: 'mixed', label: tr('Mixed'), note: tr('either, each round') },
-    { value: 'clinical', label: tr('Clinical'), note: tr('{n} pairs', { n: count('clinical') }) },
-    { value: 'basic', label: tr('Basic science'), note: tr('{n} pairs', { n: count('basic') }) },
+    { value: 'mixed', label: tr('All years'), note: tr('either, each round') },
+    { value: 'clinical', label: tr('Clinical years|setup'), note: tr('{n} pairs', { n: count('clinical') }) },
+    { value: 'basic', label: tr('Preclinical years'), note: tr('{n} pairs', { n: count('basic') }) },
   ],
   initial: 'mixed',
 };
@@ -33,7 +33,7 @@ export const imposter: GameDef = {
       title: tr('Pass the phone'),
       blurb: tr('Everyone gets the same word but one. Find who walked in.'),
       howTo: [
-        tr('Add 3 to 6 players. Pick clinical, basic science or mixed words, and 1 to 5 rounds.'),
+        tr('Add 3 to 6 players. Pick clinical years, preclinical years or all years words, and 1 to 5 rounds.'),
         tr('Pass the phone: each player holds to see their word. One player has a different, related word and is told they are the imposter. Nobody else knows who.'),
         tr('Say one-word clues out loud, in order, for two turns. Then vote now or hear one more turn.'),
         tr('Pass the phone round to vote. Catch the imposter for 2 points each. A caught imposter can still guess your word for 1.'),

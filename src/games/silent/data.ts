@@ -19,9 +19,9 @@ export const PICKABLE = WORDS;
 /** QS1: Mixed (default), Clinical or Basic science, for Pass the phone and Online rooms. */
 export type Mix = 'mixed' | 'clinical' | 'basic';
 export const MIXES: { value: Mix; label: string }[] = [
-  { value: 'mixed', label: 'Mixed' },
-  { value: 'clinical', label: 'Clinical' },
-  { value: 'basic', label: 'Basic science' },
+  { value: 'mixed', label: 'All years' },
+  { value: 'clinical', label: 'Clinical years|setup' },
+  { value: 'basic', label: 'Preclinical years' },
 ];
 export const isBasic = (w: Word) => w.id.startsWith('b');
 export const wordsFor = (mix: unknown): Word[] => (mix === 'clinical' ? PICKABLE.filter((w) => !isBasic(w)) : mix === 'basic' ? PICKABLE.filter(isBasic) : PICKABLE);

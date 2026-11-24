@@ -50,9 +50,9 @@ export const FIELD_WEIGHTS: [FieldKey, number][] = FIELDS.map((f) => [f.key, f.g
 // pick from the spun field).
 export type Mix = 'mixed' | 'clinical' | 'basic' | `only:${string}`;
 export const MIXES: { value: Mix; label: string }[] = [
-  { value: 'mixed', label: 'Mixed' },
-  { value: 'clinical', label: 'Clinical' },
-  { value: 'basic', label: 'Basic science' },
+  { value: 'mixed', label: 'All years|chip' },
+  { value: 'clinical', label: 'Clinical years|setup' },
+  { value: 'basic', label: 'Preclinical years|chip' },
 ];
 /** The fields a mix spins. */
 export const mixFields = (mix: Mix = 'mixed') => {

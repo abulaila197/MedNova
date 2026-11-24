@@ -53,7 +53,7 @@ export const wheelsOfChaos: GameDef = {
       title: tr('Spin to the target'),
       blurb: tr('Spin the wheel\'s three rings and answer what they pick, turn after turn, until you reach the target.'),
       howTo: [
-        tr('Pick a target of 25 or 50 points, and mixed, clinical or basic science questions.'),
+        tr('Pick a target of 25 or 50 points, and all years, clinical years or preclinical years questions.'),
         tr('Each turn one spin of the wheel\'s rings picks how many questions (1 to 3), their style and their field. Pick one field and only the count and style rings spin.'),
         tr('Nine styles, each with its own points and timer: from True or False (1 point) to Matching and Put in Order (3 points). Closest Number counts within 10% of the answer.'),
         tr('Acts of 3, 2 and 2 turns, then 2 each. Every act ends with a Boss Round: swipe what fits in 40 seconds. Every 4 Boss points is +1, up to a fifth of the target.'),
