@@ -144,11 +144,13 @@ export function resetRoomTalk(room: string) {
  * Rivals hear what you send (Yazan 2026-11-09: room-wide). One rival answers for the whole room, after a beat;
  * chattier personalities are likelier to be the one, and its personality picks the reply.
  */
-export function useRivalEars(room: string | undefined, bots: Bot[]) {
+export function useRivalEars(room: string | undefined, bots: Bot[], later?: (fn: () => void, lo: number, hi: number) => void) {
   const ref = useRef(bots);
+  const wait = useRef(later);
   useEffect(() => {
     ref.current = bots;
-  }, [bots]);
+    wait.current = later;
+  }, [bots, later]);
   useEffect(() => {
     if (!room) return;
     let quietUntil = 0;
@@ -167,7 +169,10 @@ export function useRivalEars(room: string | undefined, bots: Bot[]) {
       if (heard === 'nice' || heard === 'taunt') for (const b of live) tone.set(key(room, b), heard);
       quietUntil = now + 3500;
       const said = msg.kind === 'voice' ? msg.item : undefined;
-      timers.push(setTimeout(() => rivalMoment(room, who, 'heard', { heard, said }), 2000 + Math.random() * 1000));
+      const reply = () => rivalMoment(room, who, 'heard', { heard, said });
+      // In a match the reply waits on match time, so a pause holds it (Yazan 2026-11-24); the room has no pause.
+      if (wait.current) wait.current(reply, 2000, 3000);
+      else timers.push(setTimeout(reply, 2000 + Math.random() * 1000));
     });
     return () => {
       off();

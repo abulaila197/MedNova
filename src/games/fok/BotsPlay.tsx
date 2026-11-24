@@ -142,7 +142,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
     return (
       <GameScreen scroll={false} under={<FokSky />} bodyStyle={{ paddingTop: u(12), paddingHorizontal: u(16) }}>
         {/* The board ends above the docked card, so the last group shows whole and scrolls (Yazan 2026-11-15). */}
-        <BoardEnd board={board} run={run} under={dockH} kicker={run.solved ? tr('Board solved') : tr('Board over')} title={boardLine} line={tr('You · {n} of {maxPoints} points', { n: st.me?.points ?? 0, maxPoints: FOK.maxPoints })} />
+        <BoardEnd onPause={g.openMenu} board={board} run={run} under={dockH} kicker={run.solved ? tr('Board solved') : tr('Board over')} title={boardLine} line={tr('You · {n} of {maxPoints} points', { n: st.me?.points ?? 0, maxPoints: FOK.maxPoints })} />
         <Animated.View entering={FadeIn.duration(200)} style={[StyleSheet.absoluteFill, s.dock]} pointerEvents="box-none">
           <View onLayout={(e) => setDockH(Math.ceil(e.nativeEvent.layout.height))}>
           <RaceReveal
@@ -171,7 +171,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
         locked={g.paused || run.phase !== 'play'}
         top={
           <View style={{ gap: u(8) }}>
-            <TopLine kicker={tr('Race the rivals')} right={<Hearts n={run.hearts} />} title={tr('Four of a Kind')} sub={sub} />
+            <TopLine onPause={g.openMenu} kicker={tr('Race the rivals')} right={<Hearts n={run.hearts} />} title={tr('Four of a Kind')} sub={sub} />
             {chips}
           </View>
         }

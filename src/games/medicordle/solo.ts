@@ -1,5 +1,5 @@
-// Nova Medicordle Solo: a daily word or an endless queue (NM5-NM7), 6 tries, free definition on the last try,
-// paid helpers in Endless (2026-11-18, were letter hints in Custom only, NM3/NM23), EXP by guesses used (NM22); in Endless each word pays EXP once for life (NM30). The clock is for stats; it pauses and hides (rule 4).
+// Nova Medicordle Solo: an endless queue of words (the Daily word was removed 2026-11-24, Yazan), 6 tries, free definition on the last try,
+// paid helpers (2026-11-18, were letter hints in Custom only, NM3/NM23), EXP by guesses used (NM22); each word pays EXP once for life (NM30). The clock is for stats; it pauses and hides (rule 4).
 import { helpsUsed, MAX_ROWS, NO_HELP, soloExp, withGrant, type Grant, type Help, type Style } from './core';
 
 export type WordResult = {
@@ -14,14 +14,11 @@ export type WordResult = {
 export type SoloPhase = 'playing' | 'paused' | 'wordOver' | 'done';
 
 export type SoloRun = {
-  kind: 'daily' | 'endless';
   style: Style;
-  /** Daily: the local day number; null for endless. */
-  day: number | null;
   wordIds: string[];
   index: number;
   guesses: string[];
-  /** What the paid helpers showed on this word (Endless only). */
+  /** What the paid helpers showed on this word. */
   help: Help;
   phase: SoloPhase;
   before: 'playing' | 'wordOver' | null;
@@ -31,7 +28,7 @@ export type SoloRun = {
   score: number;
   /** Bumps on each played guess so the newest row plays its reveal. */
   rowSeq: number;
-  /** Endless: words that already paid EXP, ever (NM30). Older saves have none. */
+  /** Words that already paid EXP, ever (NM30). Older saves have none. */
   paid?: string[];
 };
 
@@ -43,9 +40,9 @@ export type SoloEvent =
   | { type: 'NEXT'; now: number; more?: string[] }
   | { type: 'FINISH' };
 
-export function startSolo(kind: SoloRun['kind'], style: Style, wordIds: string[], day: number | null, now: number, paid: string[] = []): SoloRun {
+export function startSolo(style: Style, wordIds: string[], now: number, paid: string[] = []): SoloRun {
   return {
-    kind, style, day, wordIds, index: 0, guesses: [], help: NO_HELP, phase: 'playing', before: null,
+    style, wordIds, index: 0, guesses: [], help: NO_HELP, phase: 'playing', before: null,
     elapsedMs: 0, runningSince: now, results: [], score: 0, rowSeq: 0, paid,
   };
 }
@@ -63,11 +60,13 @@ export const definitionDue = (r: SoloRun) => r.guesses.length >= MAX_ROWS - 1 ||
 /** ...or earlier, when the Definition helper was bought. */
 export const showDefinition = (r: SoloRun) => r.help.defined || definitionDue(r);
 
-/** A save from before the helpers (2026-11-18) kept `revealed` and `hints`; it resumes with the same letters shown. */
-export function upgradeRun(r: SoloRun & { revealed?: number[]; hints?: number }): SoloRun {
-  if (r.help) return r;
-  const { revealed, hints, ...rest } = r;
-  return { ...rest, help: { ...NO_HELP, revealed: revealed ?? [], letters: hints ?? 0 } };
+/**
+ * Older saves: before the helpers (2026-11-18) a run kept `revealed` and `hints` (it resumes with the same letters
+ * shown); before 2026-11-24 it also had a `kind` and `day` (a Daily word resumes as a one-word run).
+ */
+export function upgradeRun(old: SoloRun & { revealed?: number[]; hints?: number; kind?: string; day?: number | null }): SoloRun {
+  const { revealed, hints, kind: _kind, day: _day, ...rest } = old;
+  return rest.help ? rest : { ...rest, help: { ...NO_HELP, revealed: revealed ?? [], letters: hints ?? 0 } };
 }
 
 export function stepSolo(r: SoloRun, e: SoloEvent): SoloRun {
@@ -79,13 +78,12 @@ export function stepSolo(r: SoloRun, e: SoloEvent): SoloRun {
       if (!solved && guesses.length < MAX_ROWS) return { ...r, guesses, rowSeq: r.rowSeq + 1 };
       const timeMs = soloElapsed(r, e.now);
       const wordId = r.wordIds[r.index];
-      const paidBefore = r.kind === 'endless' && (r.paid ?? []).includes(wordId);
-      const exp = paidBefore ? 0 : soloExp(solved ? guesses.length : null, r.kind === 'daily');
+      const exp = (r.paid ?? []).includes(wordId) ? 0 : soloExp(solved ? guesses.length : null);
       const res: WordResult = { wordId, solved, guesses, timeMs, hints: helpsUsed(r.help), exp };
       return {
         ...r, guesses, rowSeq: r.rowSeq + 1, phase: 'wordOver', elapsedMs: timeMs, runningSince: null,
         results: [...r.results, res], score: r.score + exp,
-        ...(r.kind === 'endless' && exp > 0 ? { paid: [...(r.paid ?? []), wordId] } : null),
+        ...(exp > 0 ? { paid: [...(r.paid ?? []), wordId] } : null),
       };
     }
     case 'HELP':
@@ -100,7 +98,6 @@ export function stepSolo(r: SoloRun, e: SoloEvent): SoloRun {
       return r.before === 'wordOver' ? { ...r, phase: 'wordOver', before: null } : { ...r, phase: 'playing', before: null, runningSince: e.now };
     case 'NEXT': {
       if (r.phase !== 'wordOver') return r;
-      if (r.kind === 'daily') return { ...r, phase: 'done' };
       const wordIds = e.more?.length ? [...r.wordIds, ...e.more] : r.wordIds;
       if (r.index + 1 >= wordIds.length) return { ...r, phase: 'done' };
       return { ...r, wordIds, index: r.index + 1, guesses: [], help: NO_HELP, phase: 'playing', elapsedMs: 0, runningSince: e.now };

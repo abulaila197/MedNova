@@ -33,9 +33,9 @@ const KNOW = {
   key: 'know',
   label: tr('Knowledge'),
   choices: [
-    { value: 'clinical', label: tr('Clinical'), note: tr('diseases and care') },
-    { value: 'basic', label: tr('Basic sciences'), note: tr('body, cells, lab') },
-    { value: 'mixed', label: tr('Mixed'), note: tr('both') },
+    { value: 'clinical', label: tr('Clinical years|setup'), note: tr('diseases and care') },
+    { value: 'basic', label: tr('Preclinical years'), note: tr('body, cells, lab') },
+    { value: 'mixed', label: tr('All years'), note: tr('both') },
   ],
   initial: 'mixed',
 };
@@ -47,15 +47,14 @@ export const novaMedicordle: GameDef = {
     {
       mode: 'solo',
       title: tr('One word, six tries'),
-      blurb: tr('Today\'s word for everyone, or keep going with endless words.'),
+      blurb: tr('Word after word, as long as you like.'),
       howTo: [
         tr('Guess the hidden medical word in six tries. Every guess must be a real word.'),
         tr('Word Surgeon: the word\'s own letters come scrambled. Fill every slot and tap Check: a try is only right or wrong, then every letter goes back for the next try. Six tries.'),
         tr('Green is the right letter in the right place, yellow is in the word but elsewhere, grey is not in the word.'),
         tr('Classic words have 6 letters, or 5 in Classic 5. Custom words have 7 to 15, and a guess can be shorter than the word.'),
-        tr('The Daily word is always 6 letters. Classic 5 plays in Endless.'),
-        tr('The definition appears on your last guess. In Endless, helpers above the keyboard give a letter (1 token, then 2), clear 3 wrong letters (1) or show the definition early (1).'),
-        tr('Fewer guesses earn more EXP. The daily word earns double and keeps your streak going.'),
+        tr('The definition appears on your last guess. Helpers above the keyboard give a letter (1 token, then 2), clear 3 wrong letters (1) or show the definition early (1).'),
+        tr('Fewer guesses earn more EXP. Each word costs 10 Sparks, paid as it ends.'),
       ],
     },
     {
@@ -87,19 +86,10 @@ export const novaMedicordle: GameDef = {
   ],
   setup: {
     solo: [
-      {
-        key: 'word',
-        label: tr('Word'),
-        choices: [
-          { value: 'daily', label: tr('Daily'), note: tr('one a day, double EXP') },
-          { value: 'endless', label: tr('Endless'), note: tr('word after word') },
-        ],
-        initial: 'daily',
-      },
-      // The Daily word is one word for everyone, so Word Surgeon and the Knowledge row are for Endless only.
-      { ...WAY, when: (v) => v.word === 'endless' },
+      // Endless words only (Yazan 2026-11-24: the Daily word is gone).
+      WAY,
       STYLE,
-      { ...KNOW, when: (v) => v.word === 'endless' },
+      KNOW,
     ],
     offline: [
       WAY,
@@ -160,7 +150,7 @@ export const novaMedicordle: GameDef = {
   Play: { solo: SoloPlay, offline: OfflinePlay, bots: BotsPlay },
   // NM22: Solo EXP per word is stored on each item; NM25: Offline earns none.
   exp: (_score, items) => items.reduce((a, i) => a + (Number(i.gameData.exp) || 0), 0),
-  expCap: (settings, mode) => (mode === 'bots' ? 12 * (Number(settings.words) || 5) : settings.word === 'daily' ? 24 : settings.word === 'endless' ? 12 * 150 : 0),
+  expCap: (settings, mode) => (mode === 'bots' ? 12 * (Number(settings.words) || 5) : mode === 'solo' ? 12 * 150 : 0),
   itemLabel: (item) => wordById.get(item.itemId)?.word ?? item.itemId,
   itemNoun: 'word',
   itemsTitle: tr('Words'),

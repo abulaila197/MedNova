@@ -1,6 +1,6 @@
 // Four of a Kind's own look (look E, Yazan 2026-11-12): the card table moved onto the app's navy. Cream boxes with
 // small red crosses, picked boxes lift with a gold edge, found groups become coloured rows, gold Submit. Plain words.
-import { HelperButton } from '../shell/ui';
+import { HelperButton, RoundBtn } from '../shell/ui';
 import { COIN, CoinLabel, spoken } from '@/components/CoinLabel';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
@@ -63,12 +63,15 @@ export function Hearts({ n, max = FOK.hearts }: { n: number; max?: number }) {
 }
 
 /** The line over the board: a small kicker on the left, hearts (or anything) on the right, then the title. */
-export function TopLine({ kicker, right, title, sub }: { kicker: string; right?: ReactNode; title: string; sub?: string }) {
+export function TopLine({ kicker, right, title, sub, onPause }: { kicker: string; right?: ReactNode; title: string; sub?: string; /** Shows the pause button (Yazan 2026-11-24: every game has one). */ onPause?: () => void }) {
   return (
     <View style={{ gap: u(2) }}>
       <View style={s.topRow}>
         <Text style={s.kick}>{kicker}</Text>
-        {right}
+        <View style={s.topEnd}>
+          {right}
+          {onPause ? <RoundBtn label={tr('Pause')} glyph="❚❚" onPress={onPause} /> : null}
+        </View>
       </View>
       <Text style={s.title} numberOfLines={1}>
         {title}
@@ -119,53 +122,82 @@ export function GroupRow({ board, slot, who, missed, line, onPress }: { board: B
 const TILE_FONT = u(10.5);
 const TILE_PAD_X = u(4);
 const TILE_PAD_Y = u(10);
-/** Average letter width and line height, as parts of the font size (Inter, semibold). The line is the one AppText
- * gives Android anyway (a tighter line there is raised to 1.36 and the second line was cut). */
-const CHAR_W = 0.6;
+/** The line height AppText gives Android anyway (a tighter line there is raised to 1.36). */
 const LINE_H = 1.36;
 
-/** How many lines `label` takes at font `size` in `width`: whole words to a line, never broken in the middle. */
-function linesAt(label: string, size: number, width: number) {
-  const per = Math.max(1, Math.floor(width / (size * CHAR_W)));
-  let lines = 1;
-  let used = 0;
-  for (const word of label.split(/\s+/)) {
-    const n = word.length;
-    if (used && used + 1 + n > per) {
-      lines += 1;
-      used = n;
-    } else used += used ? 1 + n : n;
-  }
-  return lines;
-}
+/** The box font for a board this wide: bigger boxes (tablets) get bigger letters. */
+const baseFont = (w: number) => TILE_FONT * Math.min(1.5, Math.max(1, w / u(78)));
+/** The longest word of a label: a box never breaks a word. */
+const longestWord = (label: string) => label.split(/\s+/).reduce((a, x) => (x.length > a.length ? x : a), '');
+
+/** A box's width, four to a row with `gap` between. */
+const tileW = (width: number) => (width - TILE_GAP * 3) / 4;
+const TILE_GAP = u(6);
+
+/** The label shown on box `t`. */
+const labelOf = (board: Board, t: number) => {
+  const slot = board.groups[groupOfTile(t)];
+  return groupById.get(slot.id)!.b[slot.boxes[t % 4]][0];
+};
+
+export type TileFit = { height: number; sizes: number[] };
 
 /**
- * The biggest font that shows the whole label inside a box (Yazan 2026-11-22: two-line names like "Pyloric stenosis"
- * were cut at the bottom, mostly on small phones): every word fits the width and all lines fit the height left
- * inside the padding. adjustsFontSizeToFit is native only, so the size is worked out here.
+ * The boxes' one fixed size for the whole board (Yazan 2026-11-24: boxes got squeezed as groups were found, and words
+ * were cut, mostly on small phones). The 16 labels are laid out once, unseen, in the real font: first each label's
+ * longest word, so its font is the box font or only as much smaller as that word needs to fit the width; then each
+ * whole label at that font and the box width. The box is as tall as the tallest label needs (never less than a card
+ * shape) and keeps that height for the whole board; when the screen runs out of room the board scrolls.
+ * Gives null until the labels are measured.
  */
-function tileFont(label: string, w: number, h: number, base: number) {
-  const width = w - TILE_PAD_X * 2;
-  const height = h - TILE_PAD_Y * 2;
-  const longest = Math.max(...label.split(/\s+/).map((x) => x.length));
-  for (let size = base; size > base * 0.45; size -= 0.5) {
-    if (longest * size * CHAR_W <= width && linesAt(label, size, width) * size * LINE_H <= height) return size;
-  }
-  return base * 0.45;
+export function useTileFit(board: Board, width: number): { fit: TileFit | null; measure: ReactNode } {
+  const w = tileW(width);
+  const base = baseFont(w);
+  const room = w - TILE_PAD_X * 2;
+  const labels = Array.from({ length: 16 }, (_, t) => labelOf(board, t));
+  const key = `${board.groups.map((g) => g.id).join(',')}:${Math.round(w)}`;
+  const [seen, setSeen] = useState<{ key: string; word: Record<number, number>; h: Record<number, number> }>({ key, word: {}, h: {} });
+  const m = seen.key === key ? seen : { key, word: {}, h: {} };
+  const note = (part: 'word' | 'h', t: number, v: number) =>
+    setSeen((x) => {
+      const cur = x.key === key ? x : { key, word: {}, h: {} };
+      return { ...cur, [part]: { ...cur[part], [t]: v } };
+    });
+  const wordsDone = Object.keys(m.word).length === 16;
+  // 10% to spare, so a long word keeps some air from the box edges (the measure and the drawing can differ a hair).
+  const sizes = wordsDone ? labels.map((_, t) => Math.max(base * 0.6, Math.min(base, (base * room * 0.9) / Math.max(1, m.word[t])))) : null;
+  const heightsDone = Object.keys(m.h).length === 16;
+  const fit = sizes && heightsDone ? { sizes, height: Math.max(w * 0.8, Math.max(...Object.values(m.h)) + TILE_PAD_Y * 2) } : null;
+  const measure =
+    width > 0 && !fit ? (
+      <View pointerEvents="none" style={s.measure} aria-hidden>
+        {labels.map((label, t) =>
+          sizes ? (
+            <Text key={`h${key}:${t}`} style={[s.tileT, { fontSize: sizes[t], lineHeight: sizes[t] * LINE_H, width: room }]} onLayout={(e) => note('h', t, e.nativeEvent.layout.height)}>
+              {label}
+            </Text>
+          ) : (
+            <View key={`w${key}:${t}`} style={s.measureRow}>
+              <Text style={[s.tileT, { fontSize: base, lineHeight: base * LINE_H }]} onLayout={(e) => note('word', t, e.nativeEvent.layout.width)}>
+                {longestWord(label)}
+              </Text>
+            </View>
+          ),
+        )}
+      </View>
+    ) : null;
+  return { fit, measure };
 }
 
-/** The boxes still on the table, four to a row. */
-export function Tiles({ board, order, picked, onTap, width, disabled, maxH }: { board: Board; order: number[]; picked: number[]; onTap?: (t: number) => void; width: number; disabled?: boolean; /** The tallest a box may be, so the board fits the screen. */ maxH?: number }) {
-  const gap = u(6);
-  const w = (width - gap * 3) / 4;
-  const h = Math.min(w * 1.08, maxH ?? Infinity);
+/** The boxes still on the table, four to a row, all one fixed size (`fit`, from useTileFit). */
+export function Tiles({ board, order, picked, onTap, width, disabled, fit }: { board: Board; order: number[]; picked: number[]; onTap?: (t: number) => void; width: number; disabled?: boolean; fit: TileFit }) {
+  const w = tileW(width);
   return (
-    <View style={[s.grid, { gap }]}>
+    <View style={[s.grid, { gap: TILE_GAP }]}>
       {order.map((t) => {
         const on = picked.includes(t);
-        const g = groupById.get(board.groups[groupOfTile(t)].id)!;
-        const label = g.b[board.groups[groupOfTile(t)].boxes[t % 4]][0];
-        const size = tileFont(label, w, h, TILE_FONT * Math.min(1.5, Math.max(1, w / u(78))));
+        const label = labelOf(board, t);
+        const size = fit.sizes[t];
         return (
           <Pressable
             key={t}
@@ -174,12 +206,10 @@ export function Tiles({ board, order, picked, onTap, width, disabled, maxH }: { 
             accessibilityRole="button"
             accessibilityState={{ selected: on }}
             accessibilityLabel={label}
-            style={[s.tile, { width: w, height: h }, on ? s.tileOn : null]}>
+            style={[s.tile, { width: w, height: fit.height }, on ? s.tileOn : null]}>
             <Text style={[s.pip, { top: u(2), start: u(4) }]}>✚</Text>
             <Text style={[s.pip, { bottom: u(2), end: u(4), transform: [{ rotate: '180deg' }] }]}>✚</Text>
-            <Text style={[s.tileT, { fontSize: size, lineHeight: size * LINE_H }]} numberOfLines={4}>
-              {label}
-            </Text>
+            <Text style={[s.tileT, { fontSize: size, lineHeight: size * LINE_H }]}>{label}</Text>
           </Pressable>
         );
       })}
@@ -264,6 +294,7 @@ export function GroupNotes({ board, slot }: { board: Board; slot: number }) {
 
 export const s = StyleSheet.create({
   hearts: { flexDirection: 'row', gap: u(3) },
+  topEnd: { flexDirection: 'row', alignItems: 'center', gap: u(8) },
   topRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: u(10) },
   kick: { fontFamily: F.mono, fontSize: u(9.5), letterSpacing: u(1.4), color: C.soft, textTransform: 'uppercase' },
   title: { fontFamily: SERIF, fontSize: u(26), lineHeight: u(32), color: C.text },
@@ -280,6 +311,8 @@ export const s = StyleSheet.create({
   tile: { borderRadius: u(8), backgroundColor: C.cream, alignItems: 'center', justifyContent: 'center', paddingHorizontal: TILE_PAD_X, paddingVertical: TILE_PAD_Y, shadowColor: '#000', shadowOpacity: 0.35, shadowRadius: u(7), shadowOffset: { width: 0, height: u(4) }, elevation: 4 },
   tileOn: { backgroundColor: C.creamOn, borderWidth: u(2), borderColor: C.gold, transform: [{ translateY: -u(5) }], shadowColor: C.gold, shadowOpacity: 0.55, shadowRadius: u(10) },
   pip: { position: 'absolute', fontSize: u(7.5), lineHeight: u(10), color: C.cross },
+  measure: { position: 'absolute', top: 0, start: 0, width: 2000, opacity: 0 },
+  measureRow: { flexDirection: 'row', alignItems: 'flex-start' },
   tileT: { fontFamily: F.bodySemi, fontSize: u(10.5), lineHeight: u(12.5), color: C.ink, textAlign: 'center' },
   bar: { flexDirection: 'row', gap: u(6) },
   btn: { borderRadius: 999, paddingVertical: u(10), alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: 'rgba(242,193,78,0.45)', backgroundColor: 'rgba(255,255,255,0.03)' },

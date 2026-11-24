@@ -18,9 +18,9 @@ import { perUnit, sparksCost } from './costs';
 
 /** Real rewarded ads on phones (Group 2, 2026-11-07); the web preview has none. */
 export const ADS_LIVE = ADS_ON;
-export const AD_CAP = 20;
+export const AD_CAP = 5;
 /** What one Recharge ad pays (Yazan 2026-11-06). */
-export const AD_SPARKS = 10;
+export const AD_SPARKS = 25;
 
 type Bar = { value: number; max: number; /** when the next Spark lands (ms), null when full */ nextAt: number | null; refillMin: number; unlimited: boolean; adsLeft: number | null };
 export const useSparks = create<Bar>(() => ({ value: SPARKS_MAX, max: SPARKS_MAX, nextAt: null, refillMin: 10, unlimited: false, adsLeft: null }));
@@ -127,7 +127,7 @@ const once = (job: (uid: string) => Promise<View>) => async () => {
     await syncSparks(uid); // offline spends first, so the server's bar is the real one
     const v = await job(uid);
     if (v.value != null) await take(uid, v, []); // a skipped or missing ad brings no bar back
-    // Google's call reached us late: read the bar again a little later so the 10 Sparks show up.
+    // Google's call reached us late: read the bar again a little later so the 25 Sparks show up.
     if (v.why === 'slow') setTimeout(() => void syncSparks(uid).then(settled).catch(() => {}), 15000);
     useRecharge.setState({ busy: false, why: v.ok === false ? (v.why ?? 'error') : null });
     if (v.ok !== false) await settled();
@@ -136,7 +136,7 @@ const once = (job: (uid: string) => Promise<View>) => async () => {
   }
 };
 
-/** 'Watch an ad': +10 Sparks, 20 a day. Google tells our server the ad was watched; the server pays, then we read it. */
+/** 'Watch an ad': +25 Sparks, 5 a day. Google tells our server the ad was watched; the server pays, then we read it. */
 export const rechargeWithAd = once(async (uid) => {
   if (!isOnline()) return { ok: false, why: 'offline' } as View;
   let ad;

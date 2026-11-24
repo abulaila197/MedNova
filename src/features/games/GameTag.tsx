@@ -81,10 +81,10 @@ const KNOW: Record<string, Knowledge> = {
   'tilt-and-tell': 'mixed',
 };
 const KNOW_LOOK: Record<Knowledge, { label: string; color: string; text: string }> = {
-  clinical: { label: tr('Clinical subjects'), color: '#60a5fa', text: tr('Diseases, patients and treatment: the wards and the clinic.') },
-  basic: { label: tr('Basic sciences'), color: '#a78bfa', text: tr('Anatomy, physiology, biochemistry and the rest of the first years.') },
-  choice: { label: tr('By choice'), color: '#bef264', text: tr('You pick in the setup: clinical subjects, basic sciences or both.') },
-  mixed: { label: tr('Mixed knowledge'), color: '#22d3ee', text: tr('Both: clinical subjects and basic sciences in one game.') },
+  clinical: { label: tr('Clinical years'), color: '#60a5fa', text: tr('The clinical years: diseases, patients and treatment, on the wards and in the clinic.') },
+  basic: { label: tr('Preclinical years'), color: '#a78bfa', text: tr('The preclinical years: anatomy, physiology, biochemistry and the other first-year subjects.') },
+  choice: { label: tr('By choice'), color: '#bef264', text: tr('You pick in the setup: preclinical years, clinical years or all years.') },
+  mixed: { label: tr('All years'), color: '#22d3ee', text: tr('All years: preclinical and clinical subjects in one game.') },
 };
 const KNOW_ORDER: Knowledge[] = ['clinical', 'basic', 'choice', 'mixed'];
 /** A game's knowledge tag label and colour. */

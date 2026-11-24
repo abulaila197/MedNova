@@ -1,6 +1,6 @@
 import { priced } from '@/components/CoinLabel';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Platform, Share, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Text } from '@/components/AppText';
 
 import { sparksCost } from '@/features/sparks/costs';
@@ -16,12 +16,9 @@ import { recordItem } from '../shell/flow';
 import { PauseMenu } from '../shell/PauseMenu';
 import type { PlayProps } from '../shell/types';
 import { Btn, GameScreen, Ghost } from '../shell/ui';
-import {
-  bumpStreak, dailyOpen, dailyWord, dayNumber, lengthCheck, marksFor, NO_HELP, wayOf, type Grant, type Way, liveStreak, minLen, MAX_ROWS, shareText,
-  type DailyLast, type Streak, type Style,
-} from './core';
+import { lengthCheck, minLen, MAX_ROWS, NO_HELP, wayOf, type Grant, type Style, type Way } from './core';
 import { isWord, knowOf, poolFor, wordById } from './data';
-import { SlideStack, SlideTable } from './Slides';
+import { SlideTable } from './Slides';
 import { useHelpers } from './helpers';
 import { definitionDue, showDefinition, snapshotSolo, startSolo, stepSolo, upgradeRun, type SoloEvent, type SoloRun } from './solo';
 import { tr } from '@/i18n';
@@ -29,91 +26,41 @@ import { tr } from '@/i18n';
 /** Read outside render (React Compiler lint): only called from the submit handler. */
 const clockNow = () => Date.now();
 
-const streakKey = (style: Style) => `medicordle:streak:${style}`;
-const dailyKey = (style: Style, day: number) => `medicordle:daily:${style}:${day}`;
-const lastKey = (style: Style) => `medicordle:daily:last:${style}`;
 const PAID_KEY = 'medicordle:endless:paid'; // NM30: Endless words that already paid EXP
-const STYLE_NAME: Record<Style, string> = { classic: tr('Classic'), five: tr('Classic'), custom: tr('Custom') };
+const STYLE_NAME: Record<Style, string> = { classic: tr('Classic'), five: tr('Classic 5'), custom: tr('Custom') };
 
-/**
- * The daily lock, written when the daily word starts so the day can't be replayed: while unfinished it keeps the run
- * (a new game continues the same word); once finished, what the share card needs. Older saves have no `finished`.
- */
-type DailyDone = { wordId: string; guesses: string[]; solved: boolean; finished?: boolean; run?: SoloRun };
-
-/** Solo: today's word or an endless queue, on the Specimen slides board. */
+/** Solo: an endless queue of words, on the Specimen slides board (the Daily word was removed, Yazan 2026-11-24). */
 export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   const t = useTheme();
-  const kind = play.settings.word === 'endless' ? 'endless' : 'daily';
-  // #34 (Yazan 2026-11-01): the Daily word stays 6 letters; 5 letters is for Endless.
-  const picked = (play.settings.style as Style) ?? 'classic';
-  const style: Style = kind === 'daily' && picked === 'five' ? 'classic' : picked;
-  // Word Surgeon is Endless only; the Daily word is always guessed.
-  const way: Way = kind === 'daily' ? 'tries' : wayOf(play.settings);
+  const style: Style = (play.settings.style as Style) ?? 'classic';
+  const way: Way = wayOf(play.settings);
   const styleName = way === 'surgeon' ? tr('Word Surgeon') : STYLE_NAME[style];
   const [run, setRun] = useState<SoloRun | null>(null);
   const runRef = useRef<SoloRun | null>(null);
-  const [done, setDone] = useState<DailyDone | null>(null);
-  const [streak, setStreak] = useState<Streak>({ current: 0, best: 0, lastDay: null });
   const [notice, setNotice] = useState<string | null>(null);
-  /** Set when the phone date reads earlier than the latest daily: the day of that daily. */
-  const [locked, setLocked] = useState<number | null>(null);
-  // Frozen for the whole game, so a daily that crosses midnight keeps its word.
-  const [today] = useState(() => dayNumber(new Date()));
 
-  // Start: resume the bookmark, or today's word, or an endless queue (unseen first, rule 15).
+  // Start: resume the bookmark, or an endless queue (unseen first, rule 15).
   useEffect(() => {
     let live = true;
     (async () => {
-      const st = (await engine.kv.get<Streak>(streakKey(style))) ?? { current: 0, best: 0, lastDay: null };
       let r = play.resume ? upgradeRun(play.resume as SoloRun) : null;
       if (r && !r.wordIds.every((id) => wordById.has(id))) r = null; // a word left the list since: start fresh
-      if (!r && kind === 'daily') {
-        const kept = await engine.kv.get<DailyDone>(dailyKey(style, today));
-        const prev = kept && wordById.has(kept.wordId) ? kept : null; // today's word left the list since: drop it
-        if (prev && prev.finished === false && prev.run) r = upgradeRun(prev.run); // started earlier today: same word, same board
-        else if (prev) {
-          // NM6: one daily word per style; today's is already played.
-          await engine.recorder.discard(play.id);
-          if (live) {
-            setStreak(st);
-            setDone(prev);
-          }
-          return;
-        } else {
-          const now = Date.now();
-          const last = (await engine.kv.get<DailyLast>(lastKey(style))) ?? (st.lastDay != null ? { day: st.lastDay, at: 0 } : null);
-          if (!dailyOpen(last, today, now)) {
-            // The phone date went back: no daily before the latest one played, at most one per real day.
-            await engine.recorder.discard(play.id);
-            if (live) {
-              setStreak(st);
-              setLocked(last!.day);
-            }
-            return;
-          }
-          r = startSolo('daily', style, [dailyWord(poolFor(style), style, today).id], today, now);
-          await engine.kv.set(lastKey(style), { day: today, at: now } satisfies DailyLast);
-          await engine.kv.set(dailyKey(style, today), { wordId: r.wordIds[0], guesses: [], solved: false, finished: false, run: snapshotSolo(r, now) } satisfies DailyDone);
-        }
-      }
       // A word of my own (My diseases): just that word, practice only, no EXP.
       const custom = typeof play.settings.custom === 'string' && wordById.has(play.settings.custom) ? play.settings.custom : null;
-      if (!r && custom) r = startSolo('endless', style, [custom], null, Date.now(), [custom]);
+      if (!r && custom) r = startSolo(style, [custom], Date.now(), [custom]);
       if (!r) {
         const pool = poolFor(style, knowOf(play.settings)).map((w) => w.id);
-        r = startSolo('endless', style, await pickFor(play, pool, pool.length), null, Date.now(), (await engine.kv.get<string[]>(PAID_KEY)) ?? []);
+        r = startSolo(style, await pickFor(play, pool, pool.length), Date.now(), (await engine.kv.get<string[]>(PAID_KEY)) ?? []);
       }
       if (live) {
         runRef.current = r;
-        setStreak(st);
         setRun(r);
       }
     })();
     return () => {
       live = false;
     };
-  }, [play, style, kind, today]);
+  }, [play, style]);
 
   const dispatch = useCallback(
     (e: SoloEvent) => {
@@ -124,15 +71,11 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
       runRef.current = next;
       setRun(next);
       engine.recorder.bookmark(play.id, snapshotSolo(next, Date.now()), next.score);
-      if (next.kind === 'daily' && next.day != null && next.results.length === 0 && (next.guesses !== prev.guesses || next.help !== prev.help)) {
-        // Keep the daily lock's board current, so a new game continues this word instead of restarting it.
-        engine.kv.set(dailyKey(style, next.day), { wordId: next.wordIds[0], guesses: next.guesses, solved: false, finished: false, run: snapshotSolo(next, Date.now()) } satisfies DailyDone);
-      }
       if (next.results.length > prev.results.length) {
         const r = next.results[next.results.length - 1];
         const w = wordById.get(r.wordId)!;
         if (!play.settings.custom) engine.picker.markSeen(play.game, r.wordId);
-        if (next.kind === 'endless' && r.exp > 0) {
+        if (r.exp > 0) {
           engine.kv.get<string[]>(PAID_KEY).then((old) => engine.kv.set(PAID_KEY, [...new Set([...(old ?? []), r.wordId])]));
         }
         recordItem(play, {
@@ -146,23 +89,14 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
           revealsUsed: 0,
           points: r.exp,
           feedsLearn: false,
-          gameData: { style, kind, guesses: r.guesses.length, exp: r.exp, day: next.day },
+          gameData: { style, kind: 'endless', guesses: r.guesses.length, exp: r.exp },
         });
-        // Endless costs 10 Sparks a word (#69), paid as each word ends.
-        if (next.kind === 'endless') void chargeUnit(play, `${play.id}:${r.wordId}`, sparksCost(play.game, 'solo', play.settings));
-        if (next.kind === 'daily' && next.day != null) {
-          const day = next.day;
-          engine.kv.set(dailyKey(style, day), { wordId: r.wordId, guesses: r.guesses, solved: r.solved, finished: true } satisfies DailyDone);
-          engine.kv.get<Streak>(streakKey(style)).then((old) => {
-            const s = bumpStreak(old ?? { current: 0, best: 0, lastDay: null }, day, r.solved);
-            engine.kv.set(streakKey(style), s);
-            setStreak(s);
-          });
-        }
+        // Each word costs 10 Sparks (#69), paid as it ends.
+        void chargeUnit(play, `${play.id}:${r.wordId}`, sparksCost(play.game, 'solo', play.settings));
       }
       if (next.phase === 'done' && prev.phase !== 'done') onFinish(next.score);
     },
-    [play, style, kind, onFinish],
+    [play, style, onFinish],
   );
 
   usePauseHide(() => dispatch({ type: 'PAUSE', now: Date.now() }));
@@ -170,12 +104,12 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   /** The next Endless word costs 10 Sparks: an empty bar opens Recharge first (#69). */
   const nextWord = useCallback(async () => {
     const r = runRef.current;
-    const more = r && r.kind === 'endless' && r.index + 1 < r.wordIds.length;
+    const more = r && r.index + 1 < r.wordIds.length;
     if (more && !(await needSparks(sparksCost(play.game, 'solo', play.settings)))) return;
     dispatch({ type: 'NEXT', now: Date.now() });
   }, [dispatch, play]);
 
-  // Paid helpers (Yazan 2026-11-17): Endless only; the Daily word stays the same for everyone.
+  // Paid helpers (Yazan 2026-11-17).
   const cur = run ? wordById.get(run.wordIds[run.index]) : undefined;
   const helpers = useHelpers({
     playId: play.id,
@@ -200,66 +134,6 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
     return () => clearTimeout(id);
   }, [notice]);
 
-  const share = async (title: string, guesses: string[], answer: string, solved: boolean) => {
-    const text = shareText(title, guesses.map((g) => marksFor(way)(g, answer)), solved);
-    try {
-      if (Platform.OS === 'web') {
-        const nav = (globalThis as { navigator?: Navigator }).navigator;
-        if (nav?.share) await nav.share({ text });
-        else {
-          await nav?.clipboard?.writeText(text);
-          setNotice(tr('Result copied.'));
-        }
-      } else await Share.share({ message: text });
-    } catch {
-      setNotice(tr('Sharing is not available here.'));
-    }
-  };
-
-  const no = (day: number | null) => (day != null ? tr('NO. {n}', { n: day + 1 }) : 'ENDLESS');
-  const titleFor = (day: number) => tr('Word Lab No. {n} · {n2}', { n: day + 1, n2: STYLE_NAME[style] });
-
-  // The phone date reads earlier than the latest daily: no daily until that day has passed.
-  if (locked != null) {
-    return (
-      <GameScreen scroll={false}>
-        <DoneCard
-          line={tr('Daily word locked')}
-          sub={tr('Your phone\'s date is before your last daily (No. {n}). The next one opens the day after it.', { n: locked + 1 })}
-          primary={{ label: tr('Back'), onPress: onQuit }}
-        />
-      </GameScreen>
-    );
-  }
-
-  // Today's word is already done: show it with the share card.
-  if (done) {
-    const w = wordById.get(done.wordId)!;
-    return (
-      <SlideTable
-        label={{ no: no(today), title: tr('Word Lab'), sub: tr('Daily {n} · played today', { n: STYLE_NAME[style] }), right: <SlideStack n={liveStreak(streak, today)} /> }}
-        answer={w.word}
-        played={done.guesses.map((word) => ({ word }))}
-        rows={MAX_ROWS}
-        rowSeq={0}
-        definition={w.definition}
-        live={false}
-        onSubmit={() => null}
-        maxLen={w.word.length}
-        minLen={w.word.length}
-        onPause={onQuit}
-        notice={notice}
-        dock={
-          <DoneCard
-            line={done.solved ? tr('Solved on guess {n}', { n: done.guesses.length }) : tr('The word was {word}', { word: w.word })}
-            sub={tr('A new daily word comes tomorrow.')}
-            primary={{ label: tr('Share'), onPress: () => share(titleFor(today), done.guesses, w.word, done.solved) }}
-            secondary={{ label: tr('Back'), onPress: onQuit }}
-          />
-        }
-      />
-    );
-  }
   if (!run) return <GameScreen scroll={false}>{null}</GameScreen>;
 
   const w = wordById.get(run.wordIds[run.index])!;
@@ -267,7 +141,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
   const over = run.phase === 'wordOver' || (paused && run.before === 'wordOver');
   const r = over ? run.results[run.results.length - 1] : null;
   const custom = style === 'custom';
-  const sub = run.kind === 'daily' ? tr('Daily {n} · {n2} letters', { n: styleName, n2: w.word.length }) : tr('{n} · word {n2} · {n3} letters', { n: styleName, n2: run.index + 1, n3: w.word.length });
+  const sub = tr('{n} · word {n2} · {n3} letters', { n: styleName, n2: run.index + 1, n3: w.word.length });
 
   const submit = (g: string) => {
     // A Surgeon try is the word's own letters, always the full length: no list or length check.
@@ -285,7 +159,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
 
   return (
     <SlideTable
-      label={{ no: no(run.day), title: tr('Word Lab'), sub, right: run.kind === 'daily' ? <SlideStack n={liveStreak(streak, today)} /> : <Text style={[s.score, { color: t.accent }]}>{tr('{score} EXP', { score: run.score })}</Text> }}
+      label={{ no: 'ENDLESS', title: tr('Word Lab'), sub, right: <Text style={[s.score, { color: t.accent }]}>{tr('{score} EXP', { score: run.score })}</Text> }}
       answer={w.word}
       played={run.guesses.map((word) => ({ word }))}
       rows={MAX_ROWS}
@@ -299,7 +173,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
       onSubmit={submit}
       maxLen={w.word.length}
       minLen={minLen(style)}
-      helpers={run.kind === 'endless' && !over ? helpers : undefined}
+      helpers={!over ? helpers : undefined}
       onPause={() => dispatch({ type: 'PAUSE', now: Date.now() })}
       notice={notice}
       hidden={paused && run.before === 'playing'}
@@ -307,17 +181,9 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
         r ? (
           <DoneCard
             line={r.solved ? tr('Solved on guess {n}', { n: r.guesses.length }) : tr('The word was {word}', { word: w.word })}
-            sub={r.exp ? tr('+{exp} EXP{n}', { exp: r.exp, n: run.kind === 'daily' ? tr(' · daily words earn double') : '' }) : r.solved && run.kind === 'endless' ? tr('No EXP: this word already paid before.') : tr('No EXP this time.')}
-            primary={
-              run.kind === 'daily'
-                ? { label: tr('See results'), onPress: () => dispatch({ type: 'NEXT', now: Date.now() }) }
-                : { label: run.index + 1 >= run.wordIds.length ? tr('See results') : priced(tr('Next word'), shownCost(play.game, 'solo', play.settings)), onPress: () => void nextWord() }
-            }
-            secondary={
-              run.kind === 'daily'
-                ? { label: tr('Share'), onPress: () => share(titleFor(run.day ?? today), r.guesses, w.word, r.solved) }
-                : { label: tr('Finish'), onPress: () => dispatch({ type: 'FINISH' }) }
-            }
+            sub={r.exp ? tr('+{exp} EXP', { exp: r.exp }) : r.solved ? tr('No EXP: this word already paid before.') : tr('No EXP this time.')}
+            primary={{ label: run.index + 1 >= run.wordIds.length ? tr('See results') : priced(tr('Next word'), shownCost(play.game, 'solo', play.settings)), onPress: () => void nextWord() }}
+            secondary={{ label: tr('Finish'), onPress: () => dispatch({ type: 'FINISH' }) }}
           />
         ) : undefined
       }>

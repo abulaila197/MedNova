@@ -145,7 +145,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
     const last = save.index + 1 >= total;
     return (
       <GameScreen scroll={false} under={<StfSky />} bodyStyle={{ paddingTop: u(12), paddingHorizontal: u(16), paddingBottom: u(14), gap: u(10) }}>
-        <TopLine kicker={run.timeUp ? tr('{kicker} · Time up', { kicker }) : kicker} right={<Pill text={tr('{score} pts', { score })} />} />
+        <TopLine onPause={() => setMenu(true)} kicker={run.timeUp ? tr('{kicker} · Time up', { kicker }) : kicker} right={<Pill text={tr('{score} pts', { score })} />} />
         <Explain c={c} run={run} foot={<Btn label={last ? tr('See results') : tr('Next case')} go onPress={() => (last ? finish() : (setHelpNote(null), put({ ...save, index: save.index + 1, run: startCase(Math.random), ms: 0 })))} />} />
         {menuEl}
       </GameScreen>
@@ -159,7 +159,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
         c={c}
         run={run}
         locked={paused || busy}
-        top={<TopLine kicker={kicker} right={<Pill text={left != null ? clockText(left, { down: true }) : tr('{score} pts', { score })} warn={left != null && left < 15_000} />} />}
+        top={<TopLine onPause={() => setMenu(true)} kicker={kicker} right={<Pill text={left != null ? clockText(left, { down: true }) : tr('{score} pts', { score })} warn={left != null && left < 15_000} />} />}
         onLock={(pick) => step(lock(run, pick))}
         help={{
           fifty: { label: run.fifty ? tr('50/50 used') : `50/50 · ${STF.fiftyCost}${COIN}`, onPress: () => void buy(STF.fiftyCost, 'stf_fifty', (r) => takeFifty(r, Math.random)), disabled: !!run.fifty || busy },

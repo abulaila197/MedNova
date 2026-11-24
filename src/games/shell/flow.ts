@@ -17,9 +17,8 @@ import { rivalBoost } from '@/bots/rewards';
 import { useSession } from './session';
 import type { GameDef } from './types';
 
-/** Medicordle's Daily word never costs Sparks (TR3), nor does playing your own custom case (practice). */
-export const alwaysFree = (play: Pick<Play, 'game' | 'mode' | 'settings'>) =>
-  (play.game === 'nova-medicordle' && play.mode === 'solo' && play.settings.word !== 'endless') || !!play.settings.custom;
+/** Playing your own custom case (practice) never costs Sparks. */
+export const alwaysFree = (play: Pick<Play, 'game' | 'mode' | 'settings'>) => !!play.settings.custom;
 
 /** Pays for the play once (TR2: at its first answer; online: when the match ends): Sparks, or a guest play. */
 export const countPlay = (play: Play) => chargePlay(play, alwaysFree(play));

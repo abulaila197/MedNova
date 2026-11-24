@@ -95,7 +95,7 @@ export function useSetup(def: GameDef, mode: Mode, prefill?: Record<string, unkn
     // A Game challenge goes to the friend at Start, so with no internet the game waits instead of starting without it.
     setNote(null);
     if (intentFor(def.key, mode)?.kind === 'game' && !isOnline()) return noticeOffline();
-    // The chosen setup sets the cost; too few Sparks opens the Recharge sheet first (#70). Daily Medicordle is free (TR3).
+    // The chosen setup sets the cost; too few Sparks opens the Recharge sheet first (#70).
     if (!alwaysFree({ game: def.key, mode, settings: own }) && !(await needSparks(sparksCost(def.key, mode, own)))) return;
     setBusy(true);
     // G7: a Game challenge being set up goes to the friend now, with these settings; a Beat my score waits for the score.

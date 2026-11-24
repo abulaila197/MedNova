@@ -128,7 +128,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
     if (leader && leader !== was.leader && leaders[0].score > (leaders[1]?.score ?? 0)) {
       const who = byId.get(leader)!;
       // A claim alert of the same moment goes first; the lead change follows it.
-      setTimeout(() => push(leader === YOU ? 'You take the lead' : `${who.name} takes the lead`, colorOf(who)), 2100);
+      g.later(() => push(leader === YOU ? 'You take the lead' : `${who.name} takes the lead`, colorOf(who)), 2100, 2100);
     }
     was.leader = leader ?? was.leader;
     for (const id of outNow) if (!was.out.has(id) && id !== YOU) push(tr('{name} is out of hearts', { name: byId.get(id)?.name ?? tr('Someone') }), '#f5b041');

@@ -18,7 +18,7 @@ export type SetupOption = {
   label: string;
   choices: { value: string | number; label: string; note?: string }[];
   initial: string | number;
-  /** Shown only when this says so for the other picks (Word Lab' Knowledge row is for Endless, not Daily). */
+  /** Shown only when this says so for the other picks (e.g. a row that only fits one play style). */
   when?: (vals: Record<string, string | number>) => boolean;
   /** Field ticks (Yazan 2026-11-11): the menu behind a choice's arrow, or null for a choice without one. */
   fields?: (value: string | number, vals: Record<string, string | number>, seats: number) => FieldMenu | null;

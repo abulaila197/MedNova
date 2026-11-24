@@ -12,6 +12,7 @@ import { F } from '@/theme/tokens';
 
 import { type Card, titleOf } from './library';
 import { useLearnColors } from './palette';
+import { lockPager } from './pagerLock';
 import { tr } from '@/i18n';
 
 /** "3 days ago", "today", "yesterday". */
@@ -21,27 +22,41 @@ function ago(at: number) {
 }
 
 /**
- * The scrolling middle of a card face (Yazan 2026-11-09: a long answer was cut with no sign it scrolls). It takes the
- * vertical swipe before the Learn pager does, shows its scroll bar, and while more is hidden below it fades the last
- * lines out over a small "Scroll for more" cue. A tap on its content still turns the card.
+ * The scrolling middle of a card face (Yazan 2026-11-09: a long answer was cut with no sign it scrolls). It shows its
+ * scroll bar, and while more is hidden below it fades the last lines out over a small "Scroll for more" cue. A tap on
+ * its content still turns the card.
+ * Yazan 2026-11-24 (the scroll stopped before the end): while a finger is on a box that scrolls, the Learn pages hold
+ * still (lockPager), so a swipe that drifts sideways keeps scrolling the card instead of being taken by the pages. The
+ * "more below" cue changes state only when it turns on or off, not on every scroll step.
  */
 function CardScroll({ children, onPress, label, center = true, fade }: { children: ReactNode; onPress: () => void; label: string; center?: boolean; fade: string }) {
   const t = useTheme();
   const [boxH, setBoxH] = useState(0);
   const [inH, setInH] = useState(0);
-  const [y, setY] = useState(0);
-  const more = inH > boxH + 2 && y + boxH < inH - 6;
+  const [atEnd, setAtEnd] = useState(false);
+  const scrolls = inH > boxH + 2;
+  const more = scrolls && !atEnd;
+  const hold = () => {
+    if (scrolls) lockPager(true);
+  };
+  const free = () => lockPager(false);
+  useEffect(() => free, []);
   return (
-    <View style={s.qscroll}>
+    <View style={s.qscroll} onTouchStart={hold} onTouchEnd={free} onTouchCancel={free}>
       <ScrollView
         style={s.qscroll}
         contentContainerStyle={center ? s.qin : s.qtop}
         nestedScrollEnabled
         persistentScrollbar
-        showsVerticalScrollIndicator={inH > boxH + 2}
+        showsVerticalScrollIndicator={scrolls}
         onLayout={(e) => setBoxH(e.nativeEvent.layout.height)}
         onContentSizeChange={(_w, h) => setInH(h)}
-        onScroll={(e) => setY(e.nativeEvent.contentOffset.y)}
+        onScroll={(e) => {
+          const { contentOffset, layoutMeasurement, contentSize } = e.nativeEvent;
+          const end = contentOffset.y + layoutMeasurement.height >= contentSize.height - 6;
+          if (end !== atEnd) setAtEnd(end);
+        }}
+        onMomentumScrollEnd={free}
         scrollEventThrottle={32}
       >
         <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={label}>

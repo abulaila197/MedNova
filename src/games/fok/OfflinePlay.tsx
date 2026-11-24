@@ -110,7 +110,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
   if (run.phase === 'boardEnd') {
     return (
       <GameScreen scroll={false} under={<FokSky />} bodyStyle={{ paddingTop: u(12), paddingHorizontal: u(16) }}>
-        <BoardEnd
+        <BoardEnd onPause={() => setPaused(true)}
           board={board}
           run={run.run}
           who={foundNames}
@@ -136,7 +136,7 @@ export function OfflinePlay({ play, onFinish, onQuit }: PlayProps) {
         locked={flash || paused || run.phase !== 'playing'}
         tip={tr('Find one group, then the phone passes on')}
         rightStamp={tr('Found it!')}
-        top={<TopLine kicker={nameOf(seat) === 'You' ? tr('Your turn') : tr('{nameOf}’s turn', { nameOf: nameOf(seat) })} title={tr('Four of a Kind')} sub={tr('{boardLine} · {score} points', { boardLine, score: run.players[seat].score })} />}
+        top={<TopLine onPause={() => setPaused(true)} kicker={nameOf(seat) === 'You' ? tr('Your turn') : tr('{nameOf}’s turn', { nameOf: nameOf(seat) })} title={tr('Four of a Kind')} sub={tr('{boardLine} · {score} points', { boardLine, score: run.players[seat].score })} />}
         onSubmit={(tiles) => {
           const v = judgeTurn(run, tiles);
           if (v === 'ignored' || v === 'repeat') return v;

@@ -60,8 +60,8 @@ function itemsOf(st: RaceState) {
         revealsUsed: 0,
         points: m.points,
         feedsLearn: false,
-        // Solo's EXP per word (12 for guess 1 down to 2 for guess 6), no daily double.
-        gameData: { style, guesses: used, exp: right ? soloExp(used, false) : 0, rank: m.rank },
+        // Solo's EXP per word (12 for guess 1 down to 2 for guess 6).
+        gameData: { style, guesses: used, exp: right ? soloExp(used) : 0, rank: m.rank },
       };
     });
 }

@@ -109,6 +109,11 @@ export function useBotRace<R extends Race = BotRace>({ play, onFinish, onQuit, r
     const id = setInterval(() => {
       const n = now();
       store.set(n, n);
+      if (queue.current.some((x) => x.at <= n)) {
+        const due = queue.current.filter((x) => x.at <= n);
+        queue.current = queue.current.filter((x) => x.at > n);
+        due.forEach((x) => x.fn());
+      }
       const x = race ? race.state(n) : null;
       const k = x ? `${x.phase}:${x.index}:${x.players.map((p) => `${p.done ? 1 : 0}${p.solved ? 1 : 0}${p.tries}`).join(',')}` : '';
       if (k !== sig || n - drawn >= 250) {
@@ -126,23 +131,20 @@ export function useBotRace<R extends Race = BotRace>({ play, onFinish, onQuit, r
 
   const st = race ? race.state(t) : null;
   useRaceRevealSound(st, YOU);
-  useRivalEars(room, bots);
 
   // What happened since the last draw: alerts and the rivals' talk.
   const seen = useRef({ index: -1, phase: '', solved: new Set<string>(), tries: {} as Record<string, number>, alone: false, ranks: {} as Record<string, number>, moods: {} as Record<string, Mood> });
   // Reactions come a beat later, never on the same instant (Yazan 2026-11-09: 2 to 3 s, so they don't look coded).
-  const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
+  // They wait on match time (Yazan 2026-11-24: pause freezes everything): while paused they are held, not dropped,
+  // and they come once the match runs again. The clock tick below lets them out.
+  const queue = useRef<{ at: number; fn: () => void }[]>([]);
+  // A helper bought across a pause is refunded (read after the payment's wait).
   const pausedRef = useRef(false);
   useEffect(() => {
     pausedRef.current = paused;
   }, [paused]);
-  useEffect(() => () => timers.current.forEach(clearTimeout), []);
-  const later = (fn: () => void, lo = 2000, hi = 3000) =>
-    void timers.current.push(
-      setTimeout(() => {
-        if (!pausedRef.current) fn();
-      }, lo + Math.random() * (hi - lo)),
-    );
+  const later = useCallback((fn: () => void, lo = 2000, hi = 3000) => void queue.current.push({ at: now() + lo + Math.random() * (hi - lo), fn }), [now]);
+  useRivalEars(room, bots, later);
   useEffect(() => {
     if (!st || !race) return;
     const s = seen.current;
@@ -257,6 +259,8 @@ export function useBotRace<R extends Race = BotRace>({ play, onFinish, onQuit, r
     /** Match time now (ms); the clocks draw from it. */
     t,
     paused,
+    /** Runs `fn` 2 to 3 s of match time from now (or lo..hi ms): held while the match is paused. */
+    later,
     menu: paused,
     openMenu: () => setMenu(true),
     closeMenu,

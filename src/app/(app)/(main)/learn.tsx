@@ -14,6 +14,7 @@ import { gameLabel } from '@/features/learn/NewWord';
 import { startPlay } from '@/games/shell/flow';
 import { useSession } from '@/games/shell/session';
 import { Fade } from '@/components/Fade';
+import { usePagerLock } from '@/features/learn/pagerLock';
 import { FlipCard } from '@/features/learn/FlipCard';
 import { useLearnColors } from '@/features/learn/palette';
 import { BookShelf } from '@/features/learn/BookShelf';
@@ -49,6 +50,8 @@ export default function Learn() {
     x.value = ANDROID_RTL ? LAST * w.value - e.contentOffset.x : Math.abs(e.contentOffset.x); // web RTL counts below zero
   });
   const [H, setH] = useState(0);
+  // A finger on a card that scrolls holds the pages still (pagerLock.ts).
+  const held = usePagerLock((x) => x.locked);
   const { data, reload } = useLearn();
   const go = (i: number) => pager.current?.scrollTo({ x: (ANDROID_RTL ? LAST - i : WEB_RTL ? -i : i) * W, animated: true });
   return (
@@ -62,7 +65,7 @@ export default function Learn() {
           setH(e.nativeEvent.layout.height);
           setW(e.nativeEvent.layout.width);
         }}>
-        <Animated.ScrollView ref={pager} horizontal pagingEnabled showsHorizontalScrollIndicator={false} onScroll={onScroll} scrollEventThrottle={16} style={s.flex}>
+        <Animated.ScrollView ref={pager} horizontal pagingEnabled scrollEnabled={!held} showsHorizontalScrollIndicator={false} onScroll={onScroll} scrollEventThrottle={16} style={s.flex}>
           <View style={{ width: W, height: H }}>
             <ReviewPage pile={data?.pile ?? null} reload={reload} />
           </View>

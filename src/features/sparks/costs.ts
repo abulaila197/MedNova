@@ -24,8 +24,8 @@ const PASSWORD: Price = (s) => PASSWORD_TABLE[`${s.words}:${s.rounds}`] ?? 30;
 
 const COSTS: Partial<Record<GameKey, Partial<Record<Mode, Price>>>> = {
   'the-diagnostic-pursuit': { solo: CASES, offline: CASES, bots: CASES },
-  // Daily is free (TR3); Endless costs 10 a word, charged word by word.
-  'nova-medicordle': { solo: (s) => (s.word === 'endless' ? 10 : 0), offline: WORDS, bots: WORDS },
+  // Solo costs 10 a word, charged word by word.
+  'nova-medicordle': { solo: () => 10, offline: WORDS, bots: WORDS },
   'the-streak-master': { solo: STREAK_TIME, offline: STREAK_TIME, bots: by('questions', { 5: 10, 10: 15, 15: 25, 20: 30 }, 15) },
   // Riddler Solo: 10 a level (#64), charged level by level.
   'the-riddler': { solo: flat(10), offline: PHOTOS, bots: PHOTOS },
@@ -59,7 +59,7 @@ const COSTS: Partial<Record<GameKey, Partial<Record<Mode, Price>>>> = {
  */
 export const perUnit = (game: GameKey, mode: Mode, settings: Settings) =>
   mode === 'solo' &&
-  (game === 'the-riddler' || game === 'nova-crossword' || (game === 'the-silent-artist' && !settings.custom) || (game === 'nova-medicordle' && settings.word === 'endless'));
+  (game === 'the-riddler' || game === 'nova-crossword' || (game === 'the-silent-artist' && !settings.custom) || game === 'nova-medicordle');
 
 /** Sparks one play (or one level / word, for the games charged that way) costs with these settings. */
 export function sparksCost(game: GameKey, mode: Mode, settings: Settings) {

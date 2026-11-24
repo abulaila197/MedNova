@@ -157,22 +157,13 @@ const ACCOUNT_KEYS = [...RECORDER_KEYS, 'wallet', LEDGER_CURSOR, PLAYS_CURSOR, I
 
 // Per-account keys that live only on this phone (AP4). They are not on the server, so instead of being lost they
 // are put aside for the account on sign-out and given back when that account signs in here again. The next
-// account starts clean, and nobody can replay a Medicordle daily or re-earn Endless EXP by signing out and in.
-const MEDI_STYLES = ['classic', 'custom'] as const;
-const PHONE_KEYS = [
-  'free_plays', 'rounds_boost', 'ads:play', 'tour:visited', 'medicordle:endless:paid',
-  ...MEDI_STYLES.flatMap((st) => [`medicordle:streak:${st}`, `medicordle:daily:last:${st}`]),
-];
+// account starts clean, and nobody can re-earn Word Lab EXP by signing out and in.
+const PHONE_KEYS = ['free_plays', 'rounds_boost', 'ads:play', 'tour:visited', 'medicordle:endless:paid'];
 const stashKey = (id: string) => `stash:${id}`;
 
-/** The phone keys in use now, including each Medicordle style's latest daily board. */
+/** The phone keys in use now. */
 async function phoneKeys() {
-  const keys = [...PHONE_KEYS];
-  for (const st of MEDI_STYLES) {
-    const last = await engine.kv.get<{ day?: number }>(`medicordle:daily:last:${st}`);
-    if (typeof last?.day === 'number') keys.push(`medicordle:daily:${st}:${last.day}`);
-  }
-  return keys;
+  return [...PHONE_KEYS];
 }
 
 /** Puts this account's phone-only keys aside, under its id. */

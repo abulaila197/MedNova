@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
 import { rank } from '../../engine/standings';
-import { bumpStreak, closeThreshold, dailyOpen, dailyWord, dayNumber, helpsUsed, inList, isClose, keyStates, lengthCheck, liveStreak, nextLap, NO_HELP, offlineRows, pickClear, pickHint, score, seeded, shareText, soloExp, surgeonGuess, surgeonMarks, trayOf, wayOf, withGrant } from '../core';
+import { closeThreshold, helpsUsed, inList, isClose, keyStates, lengthCheck, nextLap, NO_HELP, offlineRows, pickClear, pickHint, score, seeded, soloExp, surgeonGuess, surgeonMarks, trayOf, wayOf, withGrant } from '../core';
 import { currentSeat, guessesOf, offlineStandings, startOffline, stepOffline, turnLeft } from '../offline';
 import { showDefinition, startSolo, stepSolo } from '../solo';
 
@@ -67,55 +67,26 @@ test('close alert (NM11): two-thirds green, rounded up', () => {
   assert.ok(!isClose(['ANEMIA'], 'SEPSIS'));
 });
 
-test('Solo EXP (NM22): 12, 10, 8, 6, 4, 2 and double on daily', () => {
-  assert.deepEqual([1, 2, 3, 4, 5, 6].map((n) => soloExp(n, false)), [12, 10, 8, 6, 4, 2]);
-  assert.equal(soloExp(1, true), 24);
-  assert.equal(soloExp(null, true), 0);
+test('Solo EXP (NM22): 12, 10, 8, 6, 4, 2; a miss pays nothing', () => {
+  assert.deepEqual([1, 2, 3, 4, 5, 6].map((n) => soloExp(n)), [12, 10, 8, 6, 4, 2]);
+  assert.equal(soloExp(null), 0);
 });
 
-test('daily (NM6): same word for everyone on a day, no repeat until the bank runs out', () => {
-  const pool = Array.from({ length: 30 }, (_, i) => ({ id: `w${String(i).padStart(2, '0')}` }));
-  assert.equal(dailyWord(pool, 'classic', 5).id, dailyWord([...pool].reverse(), 'classic', 5).id);
-  const month = new Set(Array.from({ length: 30 }, (_, d) => dailyWord(pool, 'classic', d).id));
-  assert.equal(month.size, 30);
-  assert.equal(dayNumber(new Date(2026, 9, 1)), 0);
-  assert.equal(dayNumber(new Date(2026, 9, 3, 23, 59)), 2);
-});
-
-test('daily streak (NM7): consecutive solved days; a miss resets', () => {
-  let s = { current: 0, best: 0, lastDay: null as number | null };
-  s = bumpStreak(s, 10, true);
-  s = bumpStreak(s, 11, true);
-  assert.equal(s.current, 2);
-  assert.equal(liveStreak(s, 12), 2);
-  assert.equal(liveStreak(s, 13), 0);
-  s = bumpStreak(s, 13, true);
-  assert.equal(s.current, 1);
-  s = bumpStreak(s, 14, false);
-  assert.deepEqual([s.current, s.best], [0, 2]);
-});
-
-test('share card: squares only, no letters', () => {
-  const t = shareText('Nova Medicordle No. 3', [score('ANEMIA', 'SEPSIS'), score('SEPSIS', 'SEPSIS')], true);
-  assert.ok(t.startsWith('Nova Medicordle No. 3 2/6'));
-  assert.ok(!/[A-Z]{3}/.test(t.split('\n').slice(1).join('')));
-});
-
-test('solo: definition on the last try, win scores by guess, daily ends after one word', () => {
-  let r = startSolo('daily', 'classic', ['w1'], 2, 0);
+test('solo: definition on the last try, win scores by guess, the last word ends the run', () => {
+  let r = startSolo('classic', ['w1'], 0);
   for (const g of ['ANEMIA', 'ASTHMA', 'STASIS', 'ANEMIA']) r = stepSolo(r, { type: 'GUESS', word: g, answer: 'SEPSIS', now: 1 });
   assert.ok(!showDefinition(r));
   r = stepSolo(r, { type: 'GUESS', word: 'ASTHMA', answer: 'SEPSIS', now: 1 });
   assert.ok(showDefinition(r));
   r = stepSolo(r, { type: 'GUESS', word: 'SEPSIS', answer: 'SEPSIS', now: 5_000 });
   assert.equal(r.phase, 'wordOver');
-  assert.equal(r.results[0].exp, 4); // guess 6 on daily = 2 x 2
+  assert.equal(r.results[0].exp, 2); // guess 6
   r = stepSolo(r, { type: 'NEXT', now: 6_000 });
   assert.equal(r.phase, 'done');
 });
 
 test('solo endless: next word, hints reset, finish any time between words', () => {
-  let r = startSolo('endless', 'custom', ['a', 'b'], null, 0);
+  let r = startSolo('custom', ['a', 'b'], 0);
   r = stepSolo(r, { type: 'HELP', grant: { kind: 'letter', columns: [1, 6] } });
   assert.equal(r.help.letters, 1);
   r = stepSolo(r, { type: 'GUESS', word: 'MALARIA', answer: 'MALARIA', now: 1 });
@@ -212,17 +183,8 @@ test('offline: removing a player skips their turns; at least 2 stay', () => {
   assert.equal(r, before);
 });
 
-test('daily date guard: no daily before the latest one, none while the clock reads earlier than its start', () => {
-  assert.equal(dailyOpen(null, 10, 1_000), true);
-  const last = { day: 10, at: 5_000_000 };
-  assert.equal(dailyOpen(last, 10, 6_000_000), false); // same day: already started
-  assert.equal(dailyOpen(last, 9, 6_000_000), false); // date moved back
-  assert.equal(dailyOpen(last, 11, 4_000_000), false); // clock went backwards
-  assert.equal(dailyOpen(last, 11, 5_000_001), true); // the next day
-});
-
 test('endless (NM30): a word that already paid EXP pays nothing again', () => {
-  let r = startSolo('endless', 'classic', ['w1', 'w2'], null, 0, ['w1']);
+  let r = startSolo('classic', ['w1', 'w2'], 0, ['w1']);
   r = stepSolo(r, { type: 'GUESS', word: 'SEPSIS', answer: 'SEPSIS', now: 1 });
   assert.equal(r.results[0].exp, 0);
   r = stepSolo(r, { type: 'NEXT', now: 2 });

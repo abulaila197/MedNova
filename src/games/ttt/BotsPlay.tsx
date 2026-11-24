@@ -119,7 +119,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
     const last = st.index + 1 >= total;
     return (
       <GameScreen scroll={false} under={<PadSky />} bodyStyle={{ paddingTop: u(12), paddingHorizontal: u(16), paddingBottom: u(14), gap: u(10) }}>
-        <TopLine kicker={tr('{kicker} · Everyone’s answers', { kicker })} right={<Pill text={tr('{n} pts', { n: me?.score ?? 0 })} />} />
+        <TopLine onPause={g.openMenu} kicker={tr('{kicker} · Everyone’s answers', { kicker })} right={<Pill text={tr('{n} pts', { n: me?.score ?? 0 })} />} />
         <Explain
           c={c}
           run={race.runOfCase(st.index) ?? run}
@@ -146,7 +146,7 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
           note: helpNote,
         }}
         // No chips over the paper (Yazan 2026-11-12): who locked in shows as live pop-ups, never what they picked.
-        top={<TopLine kicker={kicker} right={<Pill text={left != null ? clock(left, { down: true }) : tr('{n} pts', { n: me?.score ?? 0 })} warn={left != null && left < 15_000} />} />}
+        top={<TopLine onPause={g.openMenu} kicker={kicker} right={<Pill text={left != null ? clock(left, { down: true }) : tr('{n} pts', { n: me?.score ?? 0 })} warn={left != null && left < 15_000} />} />}
         onLock={(pick) => void g.at((at) => race.lock(at, pick))}
       />
       <AlertPill alert={g.alert} />

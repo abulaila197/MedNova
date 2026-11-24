@@ -21,9 +21,9 @@ const KNOW: SetupOption = {
   key: 'know',
   label: tr('Knowledge'),
   choices: [
-    { value: 'clinical', label: tr('Clinical'), note: tr('diseases and care') },
-    { value: 'basic', label: tr('Basic sciences'), note: tr('body, cells, lab') },
-    { value: 'mixed', label: tr('Mixed'), note: tr('both') },
+    { value: 'clinical', label: tr('Clinical years|setup'), note: tr('diseases and care') },
+    { value: 'basic', label: tr('Preclinical years'), note: tr('body, cells, lab') },
+    { value: 'mixed', label: tr('All years'), note: tr('both') },
   ],
   initial: 'mixed',
 };

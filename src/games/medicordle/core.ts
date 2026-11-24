@@ -187,10 +187,10 @@ export function pickHint(answer: string, guesses: string[], revealed: number[], 
 export const closeThreshold = (len: number) => Math.ceil((len * 2) / 3);
 export const isClose = (guesses: string[], answer: string) => greenColumns(guesses, answer).size >= closeThreshold(answer.length);
 
-/** NM22 Solo EXP by the guess that solved it: 12, 10, 8, 6, 4, 2; a miss is 0. Daily words earn double. */
-export function soloExp(solvedOnGuess: number | null, daily: boolean): number {
+/** NM22 Solo EXP by the guess that solved it: 12, 10, 8, 6, 4, 2; a miss is 0. */
+export function soloExp(solvedOnGuess: number | null): number {
   if (!solvedOnGuess || solvedOnGuess < 1 || solvedOnGuess > MAX_ROWS) return 0;
-  return (14 - 2 * solvedOnGuess) * (daily ? 2 : 1);
+  return 14 - 2 * solvedOnGuess;
 }
 
 /** NM14: rows round up to full laps so every player gets the same number of guesses. */
@@ -216,23 +216,7 @@ export function nextLap(seats: number[], last: number | null, rng: () => number 
   return a;
 }
 
-/** Share card (NM7): coloured squares only, never letters. */
-export function shareText(title: string, rows: Mark[][], solved: boolean): string {
-  const sq: Record<Mark, string> = { ok: '🟩', near: '🟨', off: '⬛', missing: '⬛' };
-  return [`${title} ${solved ? rows.length : 'X'}/${MAX_ROWS}`, '', ...rows.map((r) => r.map((m) => sq[m]).join(''))].join('\n');
-}
-
-// ---- Daily words (NM5, NM6): picked from the local date, the same for everyone, works offline. ----
-
-/** Day 1 of the daily number shown on the slide label. */
-const EPOCH = Date.UTC(2026, 9, 1);
-
-/** Whole days since the epoch for a local calendar date. */
-export function dayNumber(d: Date): number {
-  return Math.floor((Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) - EPOCH) / 86_400_000);
-}
-
-/** Small seeded generator, so every phone shuffles the bank the same way. */
+/** Small seeded generator, so a word's scrambled tray is the same each time it is drawn. */
 export function seeded(seed: number) {
   let s = seed >>> 0;
   return () => {
@@ -243,35 +227,3 @@ export function seeded(seed: number) {
     return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
   };
 }
-
-/** The daily word for a style: a fixed shuffle of the bank walked one per day, so no word repeats until the bank runs out. */
-export function dailyWord<T extends { id: string }>(pool: T[], style: Style, day: number): T {
-  const order = [...pool].sort((a, b) => (a.id < b.id ? -1 : 1));
-  const cycle = Math.floor(day / order.length);
-  const rng = seeded((style === 'classic' ? 0x51ed : style === 'five' ? 0xf1fe : 0xc0de) + cycle * 7919);
-  for (let i = order.length - 1; i > 0; i--) {
-    const j = Math.floor(rng() * (i + 1));
-    [order[i], order[j]] = [order[j], order[i]];
-  }
-  return order[((day % order.length) + order.length) % order.length];
-}
-
-/** Daily streak (NM7): consecutive days solved; a missed or failed day resets it. */
-export type Streak = { current: number; best: number; lastDay: number | null };
-export function bumpStreak(s: Streak, day: number, solved: boolean): Streak {
-  if (s.lastDay === day) return s;
-  const current = solved ? (s.lastDay === day - 1 ? s.current + 1 : 1) : 0;
-  return { current, best: Math.max(s.best, current), lastDay: day };
-}
-/** The latest daily started on this phone (per style): its day and the phone time it started. */
-export type DailyLast = { day: number; at: number };
-/**
- * Phone-date guard for a new daily word: only a day after the latest daily already started, and never while the
- * phone clock reads earlier than that start (the clock went backwards), so at most one daily per real day.
- */
-export function dailyOpen(last: DailyLast | null, today: number, now: number): boolean {
-  if (!last) return true;
-  return today > last.day && now >= last.at;
-}
-/** What the label shows today: yesterday's streak still counts until today is played. */
-export const liveStreak = (s: Streak, day: number) => (s.lastDay != null && day - s.lastDay <= 1 ? s.current : 0);

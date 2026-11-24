@@ -76,9 +76,8 @@ export function BotsPlay({ play, onFinish, onQuit }: PlayProps) {
 
   // WC8: turn points, Redemption and Boss winners as alerts; the rivals react a beat later (never on the instant).
   const seenLog = useRef<number | null>(null);
-  const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
-  useEffect(() => () => timers.current.forEach(clearTimeout), []);
-  const later = (fn: () => void) => void timers.current.push(setTimeout(fn, 2000 + Math.random() * 1000));
+  // On match time, so a pause holds them (Yazan 2026-11-24).
+  const later = (fn: () => void) => g.later(fn);
   useEffect(() => {
     if (!game || !show) return;
     if (seenLog.current == null || game.log.length < seenLog.current) {

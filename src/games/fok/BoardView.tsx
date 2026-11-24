@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
-import { View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 
 import { sfxVerdict } from '@/lib/sound';
 import { u, useScreen } from '@/theme/scale';
@@ -7,7 +7,7 @@ import { u, useScreen } from '@/theme/scale';
 import { groupById } from './data';
 import type { Board, BoardRun, Verdict } from './core';
 import { HelperButton } from '../shell/ui';
-import { Bar, GroupRow, Note, Stamp, TableBtn, Tiles } from './Table';
+import { Bar, GroupRow, Note, Stamp, TableBtn, Tiles, useTileFit } from './Table';
 import { tr } from '@/i18n';
 
 /**
@@ -24,10 +24,16 @@ export function BoardView({ board, run, top, onSubmit, onShuffle, hint, tip = tr
   const [box, setBox] = useState(0);
   const W = Math.min(box || Math.min(width, 430) - u(32), 620);
   const [picked, setPicked] = useState<number[]>([]);
-  const [room, setRoom] = useState(0);
-  const rows = Math.max(1, Math.ceil(run.order.length / 4));
-  const tileH = room ? Math.max(u(44), (room - u(48) - u(8) - u(6) * (rows - 1)) / rows) : undefined;
+  const { fit, measure } = useTileFit(board, W);
+  // A found group lands on top: bring the boxes left back into view...
+  const scroller = useRef<ScrollView>(null);
+  const found = run.found.length;
   const [stamp, setStamp] = useState<{ text: string; tone: 'red' | 'gold'; n: number } | null>(null);
+  // ...and so does a stamp ("One away"), which shows in the free space under the boxes.
+  const stamped = stamp?.n ?? 0;
+  useEffect(() => {
+    if (found || stamped) scroller.current?.scrollToEnd({ animated: true });
+  }, [found, stamped]);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => () => void (timer.current && clearTimeout(timer.current)), []);
   // Boxes that left the table (a group found) drop out of the pick.
@@ -57,20 +63,23 @@ export function BoardView({ board, run, top, onSubmit, onShuffle, hint, tip = tr
   return (
     <View style={{ flex: 1, gap: u(8) }} onLayout={(e) => setBox(e.nativeEvent.layout.width)}>
       {top}
-      {run.found.map((slot) => (
-        <GroupRow key={slot} board={board} slot={slot} who={who?.[slot]} />
-      ))}
-      {/* The boxes take the height that is left (Yazan 2026-11-15): on a short screen or with the rivals' row they get
-          lower, so the buttons stay pinned at the bottom and never fall under the phone's own buttons. */}
-      <View style={{ flex: 1, minHeight: 0, gap: u(8) }} onLayout={(e) => setRoom(e.nativeEvent.layout.height)}>
-        <View style={{ width: W, alignSelf: 'center' }}>
-          <Tiles board={board} order={run.order} picked={live} onTap={locked ? undefined : tap} width={W} maxH={tileH} />
-        </View>
-        <View style={{ flex: 1, minHeight: u(40), justifyContent: 'center', alignItems: 'center', gap: u(8) }}>
+      {/* Found groups, the boxes and the free space scroll together above the pinned buttons (Yazan 2026-11-24): the
+          boxes keep one size that fits their words, and a short screen scrolls instead of squeezing them. */}
+      <ScrollView ref={scroller} style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1, gap: u(8) }} showsVerticalScrollIndicator={false}>
+        {run.found.map((slot) => (
+          <GroupRow key={slot} board={board} slot={slot} who={who?.[slot]} />
+        ))}
+        {fit ? (
+          <View style={{ width: W, alignSelf: 'center' }}>
+            <Tiles board={board} order={run.order} picked={live} onTap={locked ? undefined : tap} width={W} fit={fit} />
+          </View>
+        ) : null}
+        <View style={{ flexGrow: 1, minHeight: u(40), justifyContent: 'center', alignItems: 'center', gap: u(8) }}>
           {stamp ? <Stamp key={stamp.n} text={stamp.text} tone={stamp.tone} /> : topic ? <Note>{tr('Hint: one group is “{topic}”', { topic })}</Note> : <Note>{tip}</Note>}
           {extra}
         </View>
-      </View>
+      </ScrollView>
+      {measure}
       <Bar>
         <TableBtn label={tr('Shuffle')} onPress={onShuffle} disabled={locked} />
         <TableBtn label={tr('Deselect')} onPress={() => setPicked([])} disabled={locked || !live.length} />

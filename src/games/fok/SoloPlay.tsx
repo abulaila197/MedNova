@@ -145,6 +145,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
     return (
       <GameScreen scroll={false} under={<FokSky />} bodyStyle={{ paddingTop: u(12), paddingHorizontal: u(16) }}>
         <BoardEnd
+          onPause={() => setMenu(true)}
           board={board}
           run={run}
           kicker={run.solved ? tr('Board solved') : limitMs && spent >= limitMs ? tr('Time up') : tr('Out of hearts')}
@@ -166,7 +167,7 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
         board={board}
         run={run}
         locked={paused || run.phase !== 'play'}
-        top={<TopLine kicker={tr('Find 4 groups of 4')} right={<Hearts n={run.hearts} />} title={tr('Four of a Kind')} sub={[total > 1 ? tr('Board {n} of {total}', { n: save.index + 1, total }) : null, left != null ? tr('{n} left', { n: clockText(left, { down: true }) }) : null].filter(Boolean).join(' · ')} />}
+        top={<TopLine onPause={() => setMenu(true)} kicker={tr('Find 4 groups of 4')} right={<Hearts n={run.hearts} />} title={tr('Four of a Kind')} sub={[total > 1 ? tr('Board {n} of {total}', { n: save.index + 1, total }) : null, left != null ? tr('{n} left', { n: clockText(left, { down: true }) }) : null].filter(Boolean).join(' · ')} />}
         onSubmit={(tiles) => {
           const r = submit(run, tiles);
           if (r.run !== run) step(r.run);
@@ -187,12 +188,12 @@ export function SoloPlay({ play, onFinish, onQuit }: PlayProps) {
 }
 
 /** The end of a board: every group with its link (tap one for each box's note), stars and points, then on. */
-export function BoardEnd({ board, run, kicker, title, line, next, onNext, who, wait, hearts = true, under = 0 }: { board: Board; run: BoardRun; kicker: string; title: string; line: string; next?: string; onNext?: () => void; who?: Record<number, string>; wait?: string; hearts?: boolean; /** Height of a card docked over the bottom (Vs rivals): the board ends above it. */ under?: number }) {
+export function BoardEnd({ board, run, kicker, title, line, next, onNext, who, wait, hearts = true, under = 0, onPause }: { onPause?: () => void; board: Board; run: BoardRun; kicker: string; title: string; line: string; next?: string; onNext?: () => void; who?: Record<number, string>; wait?: string; hearts?: boolean; /** Height of a card docked over the bottom (Vs rivals): the board ends above it. */ under?: number }) {
   const [open, setOpen] = useState<number | null>(null);
   const order = [...run.found, ...[0, 1, 2, 3].filter((x) => !run.found.includes(x))];
   return (
     <View style={{ flex: 1, gap: u(10), paddingBottom: under }}>
-      <TopLine kicker={kicker} right={hearts ? <Hearts n={run.hearts} /> : undefined} title={title} />
+      <TopLine onPause={onPause} kicker={kicker} right={hearts ? <Hearts n={run.hearts} /> : undefined} title={title} />
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ gap: u(8), paddingBottom: u(8) }} showsVerticalScrollIndicator={false}>
         {order.map((slot) => (
           <View key={slot} style={{ gap: u(8) }}>

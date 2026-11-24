@@ -1,7 +1,6 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { Platform, Pressable, StyleSheet, View, type LayoutChangeEvent } from 'react-native';
-import Svg, { Path } from 'react-native-svg';
 import { Text } from '@/components/AppText';
 import Animated, {
   FadeIn, FadeInDown, interpolate, useAnimatedStyle, useSharedValue, withDelay, withSequence, withTiming,
@@ -202,31 +201,6 @@ export function SlideLabel({ no, title, sub, right, onPause }: TableProps['label
         </Pressable>
       </View>
     </View>
-  );
-}
-
-/** The daily streak (NM7): a framed chip with a flame, the number and a label (Yazan 2026-11-17, look B). */
-export function SlideStack({ n }: { n: number }) {
-  const t = useTheme();
-  const c = slideColors(t.mode);
-  return (
-    <View style={[s.stB, { borderColor: t.accent, backgroundColor: c.boxA }]} accessibilityLabel={tr('Streak {n}', { n })}>
-      <Flame size={u(12)} color={t.accent} />
-      <View>
-        <Text style={[s.stBN, { color: t.fg }]}>{n}</Text>
-        <Text style={[s.stBL, { color: t.accent }]}>{tr('STREAK')}</Text>
-      </View>
-    </View>
-  );
-}
-
-/** A small flame for the streak. */
-function Flame({ size, color }: { size: number; color: string }) {
-  return (
-    <Svg width={size} height={size} viewBox="0 0 24 24">
-      <Path d="M12 2.5c.6 3.2 3.9 5.1 4.9 8.4.9 3.1-.6 7.1-4.9 8.6-4.3-1.5-5.8-5.4-4.9-8.3.4-1.4 1.3-2.4 2.1-3.4.2 1.6.9 2.7 2 3.3-.3-3 .2-6.1.8-8.6z" fill={color} />
-      <Path d="M12 21.5c-2.6-.9-3.7-3.2-3.1-5.2.3 1 .9 1.7 1.7 2 .1-1.8.8-3.2 1.9-4.5.5 2.1 2.6 3.2 2.6 5.2 0 1.2-1.1 2.1-3.1 2.5z" fill={color} opacity={0.55} />
-    </Svg>
   );
 }
 
@@ -439,9 +413,6 @@ const s = StyleSheet.create({
   labelR: { flexDirection: 'row', alignItems: 'center', gap: u(10), paddingEnd: u(9) },
   pause: { width: u(26), height: u(26), borderRadius: u(13), borderWidth: 1, flexDirection: 'row', gap: u(3), alignItems: 'center', justifyContent: 'center' },
   bar: { width: u(2.5), height: u(9), borderRadius: u(1) },
-  stB: { flexDirection: 'row', alignItems: 'center', gap: u(5), borderWidth: 1, borderRadius: u(10), paddingVertical: u(4), paddingHorizontal: u(8) },
-  stBN: { fontFamily: F.bodyBold, fontSize: u(12), lineHeight: u(14) },
-  stBL: { fontFamily: F.mono, fontSize: u(5.5), letterSpacing: u(1) },
   clock: { alignItems: 'center' },
   clockN: { fontFamily: F.mono, fontSize: u(16), lineHeight: u(18) },
   clockL: { fontFamily: F.mono, fontSize: u(6.5), letterSpacing: u(1) },

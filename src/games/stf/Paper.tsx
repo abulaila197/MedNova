@@ -4,6 +4,7 @@
 import { CoinLabel, spoken } from '@/components/CoinLabel';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { RoundBtn } from '../shell/ui';
 import { Modal, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 
@@ -56,12 +57,15 @@ export function StfSky() {
 }
 
 /** "CASE 2 OF 3" with the clock (or anything) on the right, then "Spot the Flaw" with Flaw in coral. */
-export function TopLine({ kicker, right, sub }: { kicker: string; right?: ReactNode; sub?: string }) {
+export function TopLine({ kicker, right, sub, onPause }: { kicker: string; right?: ReactNode; sub?: string; /** Shows the pause button (Yazan 2026-11-24: every game has one). */ onPause?: () => void }) {
   return (
     <View style={{ gap: u(2) }}>
       <View style={s.topRow}>
         <Text style={s.kick}>{kicker}</Text>
-        {right}
+        <View style={s.topEnd}>
+          {right}
+          {onPause ? <RoundBtn label={tr('Pause')} glyph="❚❚" onPress={onPause} /> : null}
+        </View>
       </View>
       <Text style={s.title} numberOfLines={1}>
         {tr('Spot the')} <Text style={[s.title, { color: C.coral }]}>{tr('Flaw')}</Text>
@@ -317,6 +321,7 @@ export function Explain({ c, run, rows, foot }: { c: Case; run?: CaseRun; rows?:
 }
 
 export const s = StyleSheet.create({
+  topEnd: { flexDirection: 'row', alignItems: 'center', gap: u(8) },
   topRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: u(10) },
   kick: { fontFamily: F.bodySemi, fontSize: u(10), letterSpacing: u(1.6), color: C.mute, textTransform: 'uppercase' },
   title: { fontFamily: SERIF_BOLD, fontSize: u(25), lineHeight: u(31), color: C.text },
