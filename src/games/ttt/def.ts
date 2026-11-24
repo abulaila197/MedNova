@@ -1,6 +1,6 @@
 import type { GameDef, SetupOption } from '../shell/types';
 import { TTT } from './core';
-import { caseById, fieldLabel, fieldMenu } from './data';
+import { caseById, fieldLabel, fieldMenu, poolOf } from './data';
 import { BotsPlay } from './BotsPlay';
 import { OfflinePlay } from './OfflinePlay';
 import { SoloPlay } from './SoloPlay';
@@ -10,12 +10,19 @@ const casesOf = (settings: Record<string, unknown>) => Number(settings.cases) ||
 /** The most a case can give (a hard case). */
 const CASE_MAX = TTT.points[3];
 
-// Setup (Yazan 2026-11-12): 1, 3 or 5 cases (fields behind the arrow), and an optional clock a case in Solo and vs rivals.
+// Setup (Yazan 2026-11-12): 1, 3 or 5 cases, and an optional clock a case in Solo and vs rivals.
 const CASES: SetupOption = {
   key: 'cases',
   label: tr('Cases'),
   choices: TTT.cases.map((n) => ({ value: n, label: n === 1 ? tr('1 case') : tr('{n} cases', { n }), note: n === 1 ? 'quick' : n === 5 ? 'long' : undefined })),
   initial: 3,
+};
+/** Every case is clinical: one chip, with the fields behind its arrow (Yazan 2026-11-24: they were behind the Cases arrow). */
+const KNOW: SetupOption = {
+  key: 'know',
+  label: tr('Knowledge'),
+  choices: [{ value: 'clinical', label: tr('Clinical years|setup'), note: tr('{n} cases', { n: poolOf(null).length }) }],
+  initial: 'clinical',
   fields: () => fieldMenu(),
 };
 const CLOCK: SetupOption = {
@@ -69,9 +76,9 @@ export const traceTheTreatment: GameDef = {
     },
   ],
   setup: {
-    solo: [CASES, CLOCK],
-    offline: [CASES],
-    bots: [CASES, CLOCK],
+    solo: [KNOW, CASES, CLOCK],
+    offline: [KNOW, CASES],
+    bots: [KNOW, CASES, CLOCK],
   },
   players: { offline: { min: 2, max: 6 } },
   bots: { min: 1, max: 3 },

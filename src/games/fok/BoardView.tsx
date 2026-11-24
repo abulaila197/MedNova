@@ -25,15 +25,13 @@ export function BoardView({ board, run, top, onSubmit, onShuffle, hint, tip = tr
   const W = Math.min(box || Math.min(width, 430) - u(32), 620);
   const [picked, setPicked] = useState<number[]>([]);
   const { fit, measure } = useTileFit(board, W);
-  // A found group lands on top: bring the boxes left back into view...
+  // A found group lands on top: bring the boxes left back into view.
   const scroller = useRef<ScrollView>(null);
   const found = run.found.length;
-  const [stamp, setStamp] = useState<{ text: string; tone: 'red' | 'gold'; n: number } | null>(null);
-  // ...and so does a stamp ("One away"), which shows in the free space under the boxes.
-  const stamped = stamp?.n ?? 0;
   useEffect(() => {
-    if (found || stamped) scroller.current?.scrollToEnd({ animated: true });
-  }, [found, stamped]);
+    if (found) scroller.current?.scrollToEnd({ animated: true });
+  }, [found]);
+  const [stamp, setStamp] = useState<{ text: string; tone: 'red' | 'gold'; n: number } | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => () => void (timer.current && clearTimeout(timer.current)), []);
   // Boxes that left the table (a group found) drop out of the pick.
@@ -65,7 +63,7 @@ export function BoardView({ board, run, top, onSubmit, onShuffle, hint, tip = tr
       {top}
       {/* Found groups, the boxes and the free space scroll together above the pinned buttons (Yazan 2026-11-24): the
           boxes keep one size that fits their words, and a short screen scrolls instead of squeezing them. */}
-      <ScrollView ref={scroller} style={{ flex: 1 }} contentContainerStyle={{ flexGrow: 1, gap: u(8) }} showsVerticalScrollIndicator={false}>
+      <ScrollView ref={scroller} style={{ flex: 1 }} contentContainerStyle={{ gap: u(8) }} showsVerticalScrollIndicator={false}>
         {run.found.map((slot) => (
           <GroupRow key={slot} board={board} slot={slot} who={who?.[slot]} />
         ))}
@@ -74,11 +72,13 @@ export function BoardView({ board, run, top, onSubmit, onShuffle, hint, tip = tr
             <Tiles board={board} order={run.order} picked={live} onTap={locked ? undefined : tap} width={W} fit={fit} />
           </View>
         ) : null}
-        <View style={{ flexGrow: 1, minHeight: u(40), justifyContent: 'center', alignItems: 'center', gap: u(8) }}>
-          {stamp ? <Stamp key={stamp.n} text={stamp.text} tone={stamp.tone} /> : topic ? <Note>{tr('Hint: one group is “{topic}”', { topic })}</Note> : <Note>{tip}</Note>}
-          {extra}
-        </View>
       </ScrollView>
+      {/* The verdict ("Not a group", "One away") and the tip have their own line right above the buttons, outside the
+          scrolling board (Yazan 2026-11-24): tall boards used to push them off screen or behind the buttons. */}
+      <View style={{ minHeight: u(46), justifyContent: 'center', alignItems: 'center', gap: u(8) }}>
+        {stamp ? <Stamp key={stamp.n} text={stamp.text} tone={stamp.tone} /> : topic ? <Note>{tr('Hint: one group is “{topic}”', { topic })}</Note> : <Note>{tip}</Note>}
+        {extra}
+      </View>
       {measure}
       <Bar>
         <TableBtn label={tr('Shuffle')} onPress={onShuffle} disabled={locked} />

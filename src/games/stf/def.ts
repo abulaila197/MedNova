@@ -8,24 +8,25 @@ import { tr } from '@/i18n';
 
 const casesOf = (settings: Record<string, unknown>) => Number(settings.cases) || 3;
 
-// Setup (Yazan 2026-11-12): 1, 3 or 5 cases (fields behind the arrow), and a clock per case in Solo and vs rivals.
+// Setup (Yazan 2026-11-12): 1, 3 or 5 cases, and a clock per case in Solo and vs rivals.
 const CASES: SetupOption = {
   key: 'cases',
   label: tr('Cases'),
   choices: STF.cases.map((n) => ({ value: n, label: n === 1 ? tr('1 case') : tr('{n} cases', { n }), note: n === 1 ? 'quick' : n === 5 ? 'long' : undefined })),
   initial: 3,
-  fields: (_v, vals) => fieldMenu(knowOf(vals)),
 };
-/** Clinical, Basic sciences or Mixed (Yazan 2026-11-22), the same row as Word Lab's; the fields menu follows it. */
+/** Clinical, Preclinical or All years (Yazan 2026-11-22), the same row as Word Lab's. The fields sit behind this row's
+ * arrow and follow the pick (Yazan 2026-11-24: they were behind the Cases arrow). */
 const KNOW: SetupOption = {
   key: 'know',
   label: tr('Knowledge'),
   choices: [
     { value: 'clinical', label: tr('Clinical years|setup'), note: tr('diseases and care') },
-    { value: 'basic', label: tr('Preclinical years'), note: tr('body, cells, lab') },
-    { value: 'mixed', label: tr('All years'), note: tr('both') },
+    { value: 'basic', label: tr('Preclinical years|chip'), note: tr('body, cells, lab') },
+    { value: 'mixed', label: tr('All years|chip'), note: tr('both') },
   ],
   initial: 'mixed',
+  fields: (v) => fieldMenu(knowOf({ know: v })),
 };
 const CLOCK: SetupOption = {
   key: 'clock',
