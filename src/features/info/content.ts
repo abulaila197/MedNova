@@ -1,6 +1,7 @@
 // Text of the info pages. The first screen of each page is the locked preview word for word;
 // the FAQ was rewritten for the live app; About and Contact still come from the old MedPuzz pages,
 // with the app and games renamed.
+import { Platform } from 'react-native';
 import { GAMES } from '@/data/games';
 import { isAr, tr } from '@/i18n';
 
@@ -22,8 +23,10 @@ export type Chapter = { n: string; chip: string; title: string; tag: string; ite
 
 const GAME_LIST = GAMES.map((g) => `${g.lead} ${g.em}`.trim());
 const listed = isAr ? `${GAME_LIST.slice(0, -1).join('، ')} و${GAME_LIST[GAME_LIST.length - 1]}` : `${GAME_LIST.slice(0, -1).join(', ')} and ${GAME_LIST[GAME_LIST.length - 1]}`;
-const COUNT_WORDS = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen'];
-const gameCount = isAr ? `${GAMES.length} لعبة` : (COUNT_WORDS[GAMES.length] ?? String(GAMES.length));
+// Never the exact number of games (Yazan 2026-11-13): "+10", so the answer stays true as games are added.
+const gameCount = isAr ? '+10 ألعاب' : '+10 games';
+// Only this phone's own store is named (Yazan 2026-11-25): Apple can reject an iPhone app that names Google Play.
+const STORE = Platform.OS === 'ios' ? (isAr ? 'App Store' : 'the App Store') : 'Google Play';
 
 export const CHAPTERS: Chapter[] = [
   {
@@ -98,10 +101,10 @@ export const CHAPTERS: Chapter[] = [
     title: 'Nova Store and purchases',
     tag: 'Purchases',
     items: [
-      { q: 'What can I buy?', a: 'Open the menu, then Store, then Nova Store. Token packs add tokens to your account. The Sovereign package is a one-time buy: the Sovereign robot, its frame and 500 tokens. MedNova Unlimited is a monthly subscription with unlimited Sparks and no ads, plus 500 tokens on your first month (once per account). Everything is paid through Google Play or the App Store.' },
-      { q: 'How do I cancel MedNova Unlimited?', a: 'In your Google Play or App Store subscriptions. You keep Unlimited until the paid month ends.' },
+      { q: 'What can I buy?', a: 'Open the menu, then Store, then Nova Store. Token packs add tokens to your account. The Sovereign package is a one-time buy: the Sovereign robot, its frame and 500 tokens. MedNova Unlimited is a monthly subscription with unlimited Sparks and no ads, plus 500 tokens on your first month (once per account). Everything is paid through {store}.' },
+      { q: 'How do I cancel MedNova Unlimited?', a: 'In your {store} subscriptions. You keep Unlimited until the paid month ends.' },
       { q: 'I changed phone or account. How do I get my purchases back?', a: 'Sign in, open Nova Store and tap Restore purchases at the bottom. It asks first, then checks your store account. MedNova Unlimited and the Sovereign package come back; token packs are already on your MedNova account. If you restore on a different MedNova account, Unlimited moves to it and leaves the old one.' },
-      { q: 'Can I get a refund?', a: 'Refunds go through Google Play or the App Store. If a purchase is refunded, what it gave is taken back: the tokens from a pack, Sovereign and its frame, or Unlimited. The full rules are in the Terms, section 06.' },
+      { q: 'Can I get a refund?', a: 'Refunds go through {store}. If a purchase is refunded, what it gave is taken back: the tokens from a pack, Sovereign and its frame, or Unlimited. The full rules are in the Terms, section 06.' },
     ],
   },
   {
@@ -463,6 +466,9 @@ export const TERMS: Section[] = [
 // One-line medical disclaimer shown on sign-in, About and each Learn dossier.
 export const DISCLAIMER = tr('For education only, not medical advice. All cases are fictional.');
 
+// Every FAQ answer, in both languages: translated in Arabic, and {store} filled in with this phone's store.
+for (const c of CHAPTERS) for (const f of c.items) f.a = tr(f.a, { store: STORE });
+
 // Arabic (group 4 FAQ, group 6 Privacy and Terms in formal Arabic): the same structure, each text through tr().
 if (isAr) {
   HABITS.forEach((h, i) => (HABITS[i] = tr(h)));
@@ -471,10 +477,7 @@ if (isAr) {
     c.chip = tr(c.chip);
     c.title = tr(c.title);
     c.tag = tr(c.tag);
-    for (const f of c.items) {
-      f.q = tr(f.q);
-      f.a = tr(f.a);
-    }
+    for (const f of c.items) f.q = tr(f.q);
   }
   for (const x of SCORING) x.k = tr(x.k);
   for (const sec of [...PRIVACY, ...TERMS]) {
