@@ -294,7 +294,7 @@ function WayCard({ t, w, label, act, done, locked, busy, onPress, reopen }: { t:
   );
 }
 
-/** The global mission: the same box, in a gold frame, with the download bar. When it's reached, players who were here collect 200. */
+/** The global mission: the same box, in a gold frame, with the players bar (counted by the server monthly). When it's reached, players who were here collect 200. */
 function Global({ t, st, signedIn }: { t: Theme; st: FreeStatus | null; signedIn: boolean }) {
   const goal = st?.goal ?? 100000;
   const now = Math.min(goal, st?.downloads ?? 0);
@@ -312,11 +312,11 @@ function Global({ t, st, signedIn }: { t: Theme; st: FreeStatus | null; signedIn
   };
   return (
     <LinearGradient colors={GOLD} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={s.gold}>
-      <Pressable disabled={!reached || got || busy} onPress={collect} style={[s.card, s.goldIn, { backgroundColor: '#1a1830' }]} accessibilityLabel={tr('Global mission: {now} of {goal} downloads', { now, goal })}>
+      <Pressable disabled={!reached || got || busy} onPress={collect} style={[s.card, s.goldIn, { backgroundColor: '#1a1830' }]} accessibilityLabel={tr('Global mission: {now} of {goal} players', { now, goal })}>
         <Text style={[s.gKick, { color: '#f3cf6c' }]}>{tr('GLOBAL MISSION')}</Text>
         <Text style={[s.cN, { color: t.fg }]}>+200</Text>
         <Text style={[s.cU, { color: t.mute, marginBottom: u(8) }]} numberOfLines={3}>
-          {got ? tr('Collected. Thank you!') : reached ? tr('We made it! Tap to collect') : tr('for everyone at 100k downloads')}
+          {got ? tr('Collected. Thank you!') : reached ? tr('We made it! Tap to collect') : tr('for everyone at 100k players')}
         </Text>
         <View style={[s.bar, { backgroundColor: 'rgba(243,207,108,0.15)' }]}>
           <LinearGradient colors={GOLD} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={{ width: `${Math.max(2, (now / goal) * 100)}%`, height: '100%', borderRadius: 999 }} />

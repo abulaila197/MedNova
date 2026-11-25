@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Linking, Pressable, StyleSheet, View } from 'react-native';
 
-import { Text, TextInput } from '@/components/AppText';
-import { GradBtn, Kicker, s as ui, type useInfo } from '@/features/info/ui';
+import { Text } from '@/components/AppText';
+import { Kicker, s as ui, type useInfo } from '@/features/info/ui';
 import { PROMPTS } from '@/features/store/FreeTokens';
 import { call } from '@/lib/rpc';
 
@@ -155,36 +155,20 @@ const Act = ({ c, label, mute, onPress }: { c: C; label: string; mute?: boolean;
   </Pressable>
 );
 
-/** The live count behind the global 100k mission (until a daily store job sets it). */
+/** The count behind the global 100k mission: real signed-up players, counted by the server on the 1st of every month
+ * (Cairo time, Yazan 2026-11-25). Read only: nobody types it any more. */
 export function Downloads({ c }: { c: C }) {
   const [now, setNow] = useState<number | null>(null);
-  const [n, setN] = useState('');
-  const [msg, setMsg] = useState('');
   useEffect(() => {
     call<{ downloads?: number }>('free_status')
       .then((r) => setNow(Number(r?.downloads ?? 0)))
       .catch(() => undefined);
   }, []);
-  const save = async () => {
-    const v = Math.trunc(Number(n));
-    if (!(v >= 0)) return setMsg('Type a number.');
-    try {
-      await call('admin_set_downloads', { n: v });
-      setNow(v);
-      setN('');
-      setMsg(`Saved. The bar now shows ${v.toLocaleString('en-GB')} of 100,000.`);
-    } catch {
-      setMsg('Not saved. Check the connection.');
-    }
-  };
   return (
     <>
-      <Text style={[ui.H, s.H, s.gapL, { color: c.fg }]}>Downloads</Text>
-      <Text style={[ui.p, { color: c.mute }]}>The global mission bar in the Nova Store. Reaching 100,000 opens the 200-token reward.</Text>
-      <Kicker style={s.gapS}>{now == null ? 'Loading' : `Now ${now.toLocaleString('en-GB')}`}</Kicker>
-      <TextInput value={n} onChangeText={(v) => setN(v.replace(/\D/g, ''))} placeholder="New total" placeholderTextColor={c.mute} keyboardType="number-pad" style={[s.in, s.gapS, { backgroundColor: c.surf, borderColor: c.line, color: c.fg }]} />
-      <GradBtn label="Save total" onPress={save} style={s.gapS} />
-      {msg ? <Text style={[ui.p, { color: c.fg }]}>{msg}</Text> : null}
+      <Text style={[ui.H, s.H, s.gapL, { color: c.fg }]}>Players count</Text>
+      <Text style={[ui.p, { color: c.mute }]}>The global mission bar in the Nova Store. The server counts signed-up players on the 1st of every month. Reaching 100,000 opens the 200-token reward.</Text>
+      <Kicker style={s.gapS}>{now == null ? 'Loading' : `Now ${now.toLocaleString('en-GB')} of 100,000`}</Kicker>
     </>
   );
 }
@@ -199,7 +183,6 @@ const s = StyleSheet.create({
   rep: { borderWidth: 1, borderRadius: u(14), paddingVertical: u(10), paddingHorizontal: u(12), gap: u(4) },
   body: { fontFamily: F.body, fontSize: u(11), lineHeight: u(15) },
   name: { fontFamily: F.display, fontSize: u(14) },
-  in: { borderWidth: 1, borderRadius: u(14), paddingHorizontal: u(12), height: u(38), fontFamily: F.body, fontSize: u(11) },
   list: { gap: u(6), marginTop: u(8) },
   small: { fontFamily: F.body, fontSize: u(9), marginTop: u(2) },
   acts: { flexDirection: 'row', gap: u(16), marginTop: u(2) },
