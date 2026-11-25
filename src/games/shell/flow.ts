@@ -9,6 +9,7 @@ import { sfxVerdict } from '@/lib/sound';
 import { syncAccount } from '@/lib/sync';
 import { stat } from '@/lib/stats';
 import { askPushAfterFirstGame } from '@/lib/push';
+import { goodGame, rateAfterGoodGame } from '@/lib/rate';
 import { checkBossWin } from '@/bots/daily';
 import { afterPlay as afterPlayChallenges } from '@/features/challenges/store';
 import { recordMatch } from '@/bots/memory';
@@ -79,5 +80,7 @@ export async function finishPlay(def: GameDef, play: Play, score: number, standi
   stat('game_end', { game: play.game, mode: play.mode });
   // Notifications are asked for after a first finished game, never on the first screen (Yazan 2026-11-07).
   if (uid) askPushAfterFirstGame();
+  // A good game counts toward the store rating prompt (Yazan 2026-11-25).
+  if (goodGame(play, items, standings)) rateAfterGoodGame();
   return { exp: paid.amount, levelUp: paid.levelsGained > 0 ? paid.level : null, items };
 }
